@@ -7,16 +7,16 @@ on:
 jobs:
   jira_issue:
     name: Create Jira issue
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
     - name: Login
-      uses: atlassian/gajira-login@v2.0.0
+      uses: atlassian/gajira-login@v3.0.1
       env:
         JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
         JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
         JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
     - name: Create Bug
-      uses: atlassian/gajira-create@v2.0.1
+      uses: atlassian/gajira-create@v3.0.1
       if: contains(github.event.issue.labels.*.name, 'bug')
       with:
         project: TKET
@@ -24,7 +24,7 @@ jobs:
         summary: «${{ github.event.issue.title }}»
         description: ${{ github.event.issue.html_url }}
     - name: Create Task
-      uses: atlassian/gajira-create@v2.0.1
+      uses: atlassian/gajira-create@v3.0.1
       if: "! contains(github.event.issue.labels.*.name, 'bug')"
       with:
         project: TKET

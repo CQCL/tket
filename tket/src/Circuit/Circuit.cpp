@@ -103,6 +103,12 @@ std::vector<Command> Circuit::get_commands() const {
   return coms;
 }
 
+VertexVec Circuit::all_vertices() const {
+  VertexVec vs;
+  BGL_FORALL_VERTICES(v, dag, DAG) { vs.push_back(v); }
+  return vs;
+}
+
 void Circuit::index_vertices() /*const*/ {
   VIndex index = boost::get(boost::vertex_index, dag);
   int i = 0;
@@ -214,6 +220,16 @@ bool Circuit::circuit_equality(
     check &= (this->all_bits() == other.all_bits());
     if (throw_error && !check) {
       throw CircuitInequality(std::string("Circuit bits do not match."));
+    }
+    check &= (this->created_qubits() == other.created_qubits());
+    if (throw_error && !check) {
+      throw CircuitInequality(
+          std::string("Circuit created qubits do not match."));
+    }
+    check &= (this->discarded_qubits() == other.discarded_qubits());
+    if (throw_error && !check) {
+      throw CircuitInequality(
+          std::string("Circuit discarded qubits do not match."));
     }
   }
 

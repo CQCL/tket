@@ -42,6 +42,7 @@
 #include <vector>
 
 #include "Boxes.hpp"
+#include "ClassicalExpBox.hpp"
 #include "Command.hpp"
 #include "Conditional.hpp"
 #include "DAGDefs.hpp"
@@ -423,6 +424,8 @@ class Circuit {
   VertexVec c_outputs() const;
 
   qubit_vector_t all_qubits() const;
+  qubit_vector_t created_qubits() const;
+  qubit_vector_t discarded_qubits() const;
   bit_vector_t all_bits() const;
   unit_vector_t all_units() const;
 
@@ -536,6 +539,17 @@ class Circuit {
    */
   std::vector<std::optional<Edge>> get_linear_out_edges(
       const Vertex &vert) const;
+
+  /**
+   * @brief Get the linear edge corresponding to `e`
+   *
+   * If `e` is linear, return itself, otherwise (if `e` is Boolean), return
+   * the corresponding Classical edge.
+   *
+   * EdgeType::Classical and EdgeType::Quantum are linear types (and thus left
+   * unchanged), whereas EdgeType::Boolean is not.
+   */
+  Edge get_linear_edge(const Edge &e) const;
 
   /**
    * Outward edges for all types, ordered by port number
@@ -748,6 +762,11 @@ class Circuit {
 
   // O(V), `V` the number of vertices
   void remove_blank_wires();
+
+  /**
+   * Remove all gates in the circuits that are identities
+   */
+  void remove_noops();
 
   /**
    * Append an operation to the circuit.
@@ -1089,6 +1108,19 @@ class Circuit {
    */
   std::list<Command> get_commands_of_type(OpType op_type) const;
 
+  /**
+   * @brief Get the number of gates with the specified number of Qubits.
+   *
+   * Counts vertices, ignoring Input, Output, create, Discard, Reset,
+   * Measure and Barrier.
+   *
+   * @param size Number of quantum edges a vertex has to be counted
+   *
+   * @return Number of vertices with given number of quantum edges in the
+   * circuit
+   */
+  unsigned count_n_qubit_gates(unsigned size) const;
+
   // returns 'slices' of 'parallel' actions in dag as a vector encompassing
   // all vertices
   // O(D qlog^2(q!) alpha log(alpha!))
@@ -1323,14 +1355,23 @@ class Circuit {
 
   /**
    * this function replaces an implicit wire swap between the two given qubits
-   * with three CX operations
+   * with a SWAP gate or three CX operations
    *
    * @param first qubits to add the wireswap on
    * @param second qubits to add the wireswap on
+   * @param using_cx use three CX gates instead of a SWAP gate
    *
    * O(c)
    */
-  void replace_implicit_wire_swap(const Qubit first, const Qubit second);
+  void replace_implicit_wire_swap(
+      const Qubit first, const Qubit second, bool using_cx = true);
+
+  /**
+   * replaces all implicit wire swaps with SWAP gates
+   *
+   * O(n_qubits)
+   */
+  void replace_all_implicit_wire_swaps();
 
   // O(E+V+q)
   Circuit dagger() const;
@@ -1424,6 +1465,10 @@ class Circuit {
 
   /**
    * Adds a condition to every op in the circuit.
+   *
+   * If the circuit has a global phase, this is expressed by appending a
+   * conditional Phase operation.
+   *
    * Will throw a CircuitInvalidity error if the circuit contains implicit
    * wireswaps (as these cannot be applied conditionally) or writes to the
    * condition bits at any point.
@@ -1494,6 +1539,13 @@ class Circuit {
    * of qubits and \f$ D \f$ is the circuit depth.
    */
   std::vector<Command> get_commands() const;
+
+  /**
+   * All vertices of the DAG.
+   *
+   * @return vector of vertices
+   */
+  std::vector<Vertex> all_vertices() const;
 
   /**
    * Set the vertex indices in the DAG.
@@ -1592,6 +1644,7 @@ bool Circuit::rename_units(const std::map<UnitA, UnitB> &qm) {
       std::is_base_of<UnitB, UnitA>::value);
   std::map<UnitID, BoundaryElement> new_elems;
   bool modified = false;
+  std::map<Bit, Bit> bm;
   for (const std::pair<const UnitA, UnitB> &pair : qm) {
     boundary_t::iterator found = boundary.get<TagID>().find(pair.first);
     if (found == boundary.get<TagID>().end()) {
@@ -1619,6 +1672,9 @@ bool Circuit::rename_units(const std::map<UnitA, UnitB> &qm) {
           "Mapping two units to the same id: " + pair.second.repr());
     modified = true;
     boundary.erase(found);
+    if (pair.first.type() == UnitType::Bit) {
+      bm.insert({Bit(pair.first), Bit(pair.second)});
+    }
   }
   for (const std::pair<const UnitID, BoundaryElement> &pair : new_elems) {
     std::pair<boundary_t::iterator, bool> added = boundary.insert(pair.second);
@@ -1627,6 +1683,21 @@ bool Circuit::rename_units(const std::map<UnitA, UnitB> &qm) {
           "Unit already exists in circuit: " + pair.first.repr());
     TKET_ASSERT(modified);
   }
+
+  // For every ClassicalExpBox, update its logic expressions
+  if (!bm.empty()) {
+    BGL_FORALL_VERTICES(v, dag, DAG) {
+      Op_ptr op = get_Op_ptr_from_Vertex(v);
+      if (op->get_type() == OpType::ClassicalExpBox) {
+        const ClassicalExpBoxBase &cbox =
+            static_cast<const ClassicalExpBoxBase &>(*op);
+        // rename_units is marked as const to get around the Op_ptr
+        // cast, but it can still mutate a python object
+        modified |= cbox.rename_units(bm);
+      }
+    }
+  }
+
   return modified;
 }
 
@@ -1639,9 +1710,6 @@ Vertex Circuit::add_op(
     const Op_ptr &op, const std::vector<ID> &args,
     std::optional<std::string> opgroup) {
   static_assert(std::is_base_of<UnitID, ID>::value);
-  if (args.empty()) {
-    throw CircuitInvalidity("An operation must act on at least one wire");
-  }
   op_signature_t sig = op->get_signature();
   if (sig.size() != args.size()) {
     throw CircuitInvalidity(

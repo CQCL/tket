@@ -35,6 +35,7 @@ add_library(tket-${COMP}
     SingleQubitSquash.cpp
     PhasedXFrontier.cpp
     PQPSquash.cpp
+    RzPhasedXSquash.cpp
     StandardSquash.cpp)
 
 list(APPEND DEPS_${COMP}

@@ -14,13 +14,17 @@
 
 """Display a circuit as html."""
 
-import os
-from typing import Dict, Union, Optional
-import uuid
 import json
-import jinja2
-from pytket.circuit import Circuit  # type: ignore
+import os
+import tempfile
+import time
+import uuid
+import webbrowser
+from typing import Dict, Optional, Union, cast
 
+import jinja2
+
+from pytket.circuit import Circuit  # type: ignore
 
 # Set up jinja to access our templates
 dirname = os.path.dirname(__file__)
@@ -28,9 +32,11 @@ dirname = os.path.dirname(__file__)
 loader = jinja2.FileSystemLoader(searchpath=dirname)
 env = jinja2.Environment(loader=loader)
 
+RenderCircuit = Union[Dict[str, Union[str, float, dict]], Circuit]
+
 
 def render_circuit_as_html(
-    circuit: Union[Dict[str, Union[str, float, dict]], Circuit],
+    circuit: RenderCircuit,
     jupyter: bool = False,
 ) -> Optional[str]:
     """
@@ -66,10 +72,36 @@ def render_circuit_as_html(
 
 
 def render_circuit_jupyter(
-    circuit: Union[Dict[str, Union[str, float, dict]], Circuit],
+    circuit: RenderCircuit,
 ) -> None:
     """Render a circuit as jupyter cell output.
 
     :param circuit: the circuit to render.
     """
     render_circuit_as_html(circuit, True)
+
+
+def view_browser(circuit: RenderCircuit, browser_new: int = 2, sleep: int = 5) -> None:
+    """Write circuit render html to a tempfile and open in browser.
+
+    Waits for some time for browser to load then deletes tempfile.
+
+    :param circuit: the Circuit or serialized Circuit to render.
+    :param browser_new: ``new`` parameter to ``webbrowser.open``, default 2.
+    :param sleep: Number of seconds to sleep before deleting file, default 5.
+
+    """
+
+    fp = tempfile.NamedTemporaryFile(
+        mode="w", suffix=".html", delete=False, dir=os.getcwd()
+    )
+    try:
+        fp.write(cast(str, render_circuit_as_html(circuit)))
+        fp.close()
+
+        webbrowser.open("file://" + os.path.realpath(fp.name), new=browser_new)
+
+        # give browser enough time to open before deleting file
+        time.sleep(sleep)
+    finally:
+        os.remove(fp.name)

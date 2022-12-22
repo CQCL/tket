@@ -35,7 +35,18 @@ set(Boost_NO_BOOST_CMAKE ON)
 if (WIN32)
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc /WX")
 else()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -Wunreachable-code -Wunused")
+endif()
+
+if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    # Suppress warnings coming from headers in pybind11_json/0.2.13:
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-redundant-move")
+endif()
+
+if (UNIX)
+    # Allow binder libraries to load other shared libraries from same directory.
+    set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+    set(CMAKE_INSTALL_RPATH "\${ORIGIN}")
 endif()
 
 pybind11_add_module(circuit

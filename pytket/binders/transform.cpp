@@ -216,7 +216,9 @@ PYBIND11_MODULE(transform, m) {
           "type achieving the highest fidelity will be chosen for the "
           "decomposition, as measured using squared trace fidelity. "
           "If no fidelities are provided, the TK2 gates will be decomposed "
-          "exactly using CX gates.\n\n"
+          "exactly using CX gates. For equal fidelities, ZZPhase will be "
+          "prefered over ZZMax and CX if the decomposition results in fewer "
+          "two-qubit gates.\n\n"
           "All TK2 gate parameters must be normalised, i.e. they must satisfy "
           "`NormalisedTK2Predicate`."
           "\n\n"
@@ -417,7 +419,12 @@ PYBIND11_MODULE(transform, m) {
           py::arg("cx_config") = CXConfigType::Snake)
       .def_static(
           "ZZPhaseToRz", &Transforms::ZZPhase_to_Rz,
-          "Fixes all ZZPhase gate angles to [-1, 1) half turns.");
+          "Fixes all ZZPhase gate angles to [-1, 1) half turns.")
+      .def_static(
+          "CnXPairwiseDecomposition", &Transforms::cnx_pairwise_decomposition,
+          "Decompose CnX gates to 2-qubit gates and single qubit gates. "
+          "For every two CnX gates, reorder their control qubits to improve "
+          "the chance of gate cancellation.");
   m.def(
       "separate_classical", &Transforms::separate_classical,
       "Separate the input circuit into a 'main' circuit and a classical "

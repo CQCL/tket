@@ -31,7 +31,7 @@ SCENARIO("class NeighbourPlacments") {
          {Node(5), Node(6)},
          {Node(6), Node(7)},
          {Node(5), Node(7)}});
-    qubit_mapping_t map(
+    std::map<Qubit, Node> map(
         {{Qubit(0), Node(4)},
          {Qubit(1), Node(5)},
          {Qubit(2), Node(6)},
@@ -79,7 +79,7 @@ SCENARIO("class NeighbourPlacments") {
   }
   GIVEN("the simplest possible instance") {
     Architecture arc(std::vector<std::pair<Node, Node>>{{Node(0), Node(1)}});
-    qubit_mapping_t map({{Qubit(0), Node(0)}, {Qubit(1), Node(1)}});
+    std::map<Qubit, Node> map({{Qubit(0), Node(0)}, {Qubit(1), Node(1)}});
     NeighbourPlacements np(arc, map);
     WHEN("Getting a placement dist=2, optimise=false") {
       auto res = np.get(2, 1, false);
@@ -105,7 +105,7 @@ SCENARIO("class NeighbourPlacments") {
   }
   GIVEN("an instance with unlucky seed") {
     Architecture arc({{Node(0), Node(1)}, {Node(1), Node(2)}});
-    qubit_mapping_t map(
+    std::map<Qubit, Node> map(
         {{Qubit(0), Node(0)}, {Qubit(1), Node(1)}, {Qubit(2), Node(2)}});
     NeighbourPlacements np(arc, map);
 

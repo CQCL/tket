@@ -12,8 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <symengine/eval.h>
-
 #include <catch2/catch_test_macros.hpp>
 #include <optional>
 #include <stdexcept>
@@ -32,6 +30,7 @@
 #include "Simulation/CircuitSimulator.hpp"
 #include "Transformations/OptimisationPass.hpp"
 #include "Utils/Constants.hpp"
+#include "Utils/Expression.hpp"
 
 namespace tket {
 namespace test_Ops {
@@ -82,6 +81,9 @@ SCENARIO("Check op retrieval overloads are working correctly.", "[ops]") {
     const Op_ptr cnx = (get_op_ptr(OpType::CnX));
     CHECK(cnx->get_name() == "CnX");
     REQUIRE(*cnx->transpose() == *cnx);
+    const Op_ptr cnz = (get_op_ptr(OpType::CnZ));
+    CHECK(cnz->get_name() == "CnZ");
+    REQUIRE(*cnz->transpose() == *cnz);
     const Op_ptr bridge = (get_op_ptr(OpType::BRIDGE));
     CHECK(bridge->get_name() == "BRIDGE");
     REQUIRE(*bridge->transpose() == *bridge);
@@ -180,6 +182,9 @@ SCENARIO("Check op retrieval overloads are working correctly.", "[ops]") {
     CHECK(
         nphasedx->transpose()->get_params() ==
         std::vector<SymEngine::Expression>{0.5, 0.5});
+    const Op_ptr phase = (get_op_ptr(OpType::Phase, 0.5));
+    CHECK(phase->get_name() == "Phase(0.5)");
+    REQUIRE(*phase->transpose() == *phase);
   }
 
   GIVEN("Check the transpose at the Box level") {
@@ -336,6 +341,57 @@ SCENARIO("Check exceptions in basic Op methods", "[ops]") {
   }
 }
 
+SCENARIO("Commutation relations") {
+  GIVEN("An arbitary TK1") {
+    Op_ptr op = get_op_ptr(OpType::TK1, std::vector<Expr>{0.2, 0.4, 0.4});
+    REQUIRE(op->commuting_basis(0) == std::nullopt);
+  }
+  GIVEN("An X-commuting TK1") {
+    Op_ptr op = get_op_ptr(OpType::TK1, std::vector<Expr>{0., 0.4, 0.});
+    REQUIRE(op->commuting_basis(0) == Pauli::X);
+  }
+  GIVEN("A Z-commuting TK1") {
+    Op_ptr op = get_op_ptr(OpType::TK1, std::vector<Expr>{0.3, 2., 0.2});
+    REQUIRE(op->commuting_basis(0) == Pauli::Z);
+  }
+  GIVEN("An I-commuting TK1") {
+    Op_ptr op = get_op_ptr(OpType::TK1, std::vector<Expr>{0.3, 0., -0.3});
+    REQUIRE(op->commuting_basis(0) == Pauli::I);
+  }
+  GIVEN("A noop TK1") {
+    Op_ptr op = get_op_ptr(OpType::TK1, std::vector<Expr>{0., 0., 0.});
+    REQUIRE(op->commuting_basis(0) == Pauli::I);
+  }
+  GIVEN("A noop") {
+    Op_ptr op = get_op_ptr(OpType::noop);
+    REQUIRE(op->commuting_basis(0) == Pauli::I);
+  }
+  GIVEN("A PhasedX") {
+    Op_ptr op = get_op_ptr(OpType::PhasedX, std::vector<Expr>{0.2, 0.3});
+    REQUIRE(op->commuting_basis(0) == std::nullopt);
+  }
+  GIVEN("A PhasedX that is a Rx") {
+    Op_ptr op = get_op_ptr(OpType::PhasedX, std::vector<Expr>{0.2, 0.});
+    REQUIRE(op->commuting_basis(0) == Pauli::X);
+  }
+  GIVEN("A PhasedX that is a noop") {
+    Op_ptr op = get_op_ptr(OpType::PhasedX, std::vector<Expr>{0., 0.4});
+    REQUIRE(op->commuting_basis(0) == Pauli::I);
+  }
+  GIVEN("A Rz that is a noop") {
+    Op_ptr op = get_op_ptr(OpType::Rz, 0.);
+    REQUIRE(op->commuting_basis(0) == Pauli::I);
+  }
+  GIVEN("A Rx that is a global phase") {
+    Op_ptr op = get_op_ptr(OpType::Rx, 2.);
+    REQUIRE(op->commuting_basis(0) == Pauli::I);
+  }
+  GIVEN("A Rx") {
+    Op_ptr op = get_op_ptr(OpType::Rx, 2.32);
+    REQUIRE(op->commuting_basis(0) == Pauli::X);
+  }
+}
+
 SCENARIO("Check some daggers work correctly", "[ops]") {
   WHEN("Check U2 gets daggered correctly") {
     Expr e(0.33);
@@ -445,6 +501,12 @@ SCENARIO("Check some daggers work correctly", "[ops]") {
     const Op_ptr op = get_op_ptr(OpType::ECR);
     const Op_ptr daggered = (op)->dagger();
     REQUIRE(daggered->get_type() == OpType::ECR);
+  }
+  WHEN("Check Phase gets daggered correctly") {
+    const Op_ptr op = get_op_ptr(OpType::Phase, 0.5);
+    const Op_ptr daggered = (op)->dagger();
+    REQUIRE(daggered->get_type() == OpType::Phase);
+    REQUIRE(test_equiv_val(daggered->get_params()[0], -0.5));
   }
 }
 

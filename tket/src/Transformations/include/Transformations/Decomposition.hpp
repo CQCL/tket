@@ -51,6 +51,11 @@ Transform decompose_single_qubits_TK1();
  */
 Transform decompose_ZYZ_to_TK1();
 
+/**
+ * Starting with Rz, Rx and multi-qubit gates, replace all singles with TK1.
+ */
+Transform decompose_ZXZ_to_TK1();
+
 // converts all single-qubit gates into Rz and Rx gates
 // Expects: any gates
 // Produces: Rz, Rx and any multi-qubit gates
@@ -105,7 +110,8 @@ Transform decompose_MolmerSorensen();
  * convenient to reduce the two-qubit gate count of the decomposed TK2.
  *
  * If no fidelities are provided, the decomposition will be exact, using CX
- * gates.
+ * gates. For equal fidelities, ZZPhase will be prefered over ZZMax and CX if
+ * it requires fewer gates.
  *
  * If the TK2 angles are symbolic values, the decomposition will be exact
  * (i.e. not noise-aware). It is not possible in general to obtain optimal
@@ -231,9 +237,17 @@ Transform decomp_CCX();
 Transform decomp_controlled_Rys();
 
 // does not use ancillae
-// Expects: any CnRys + CnXs + any other gates
-// returns Ry, CX, H, T, Tdg + any previous gates
+// Expects: CCX, CnX, CnY, CnZ, CnRy and any other gates
+// returns CX and single-qubit gate + any previous gates
 Transform decomp_arbitrary_controlled_gates();
+
+// For every two CnX gates, we try to reorder their control qubits
+// and adjust the direction of their decomposition (i.e. CnX = CnX.dagger)
+// to improve the chance of gate cancellation. This method will not improve
+// the decomposition when the CnX gates are scattered; but it works the best
+// when CnX gates are very close to each other, such as the circuit produced by
+// a ToffoliBox.
+Transform cnx_pairwise_decomposition();
 
 }  // namespace Transforms
 

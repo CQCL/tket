@@ -37,7 +37,7 @@ namespace Transforms {
 
 static bool redundancy_removal(Circuit &circ);
 static bool remove_redundancy(
-    Circuit &circ, const Vertex &vert, VertexList &bin,
+    Circuit &circ, const Vertex &vert, VertexSet &bin,
     std::set<IVertex> &new_affected_verts, IndexMap &im);
 static bool commute_singles_to_front(Circuit &circ);
 
@@ -55,14 +55,15 @@ static bool redundancy_removal(Circuit &circ) {
   BGL_FORALL_VERTICES(v, circ.dag, DAG) {
     old_affected_verts.insert({im.at(v), v});
   }
-  VertexList bin;
+  VertexSet bin;
   while (found_redundancy) {
     std::set<IVertex> new_affected_verts;
+    bool removed = false;
     for (const IVertex &p : old_affected_verts) {
-      remove_redundancy(circ, p.second, bin, new_affected_verts, im);
+      removed |= remove_redundancy(circ, p.second, bin, new_affected_verts, im);
     }
-    found_redundancy = new_affected_verts.size() != 0;
-    success |= found_redundancy;
+    found_redundancy = removed;
+    success |= removed;
     old_affected_verts = new_affected_verts;
   }
   circ.remove_vertices(
@@ -73,33 +74,30 @@ static bool redundancy_removal(Circuit &circ) {
 // called by the previous method. This should generally not be called
 // independently
 static bool remove_redundancy(
-    Circuit &circ, const Vertex &vert, VertexList &bin,
+    Circuit &circ, const Vertex &vert, VertexSet &bin,
     std::set<IVertex> &new_affected_verts, IndexMap &im) {
   const Op_ptr op = circ.get_Op_ptr_from_Vertex(vert);
   const OpDesc desc = op->get_desc();
   if (!desc.is_gate()) return false;
-  if (circ.n_out_edges(vert) == 0 || circ.n_in_edges(vert) == 0) {
-    return false;  // either a boundary vert or we have already removed it
+
+  if (bin.contains(vert)) {
+    return false;  // we have already removed it
   }
 
   auto remove_single_vertex = [&bin, &circ, &new_affected_verts,
                                &im](const Vertex &v_remove) {
-    bin.push_back(v_remove);
+    bin.insert(v_remove);
     for (const Vertex &l : circ.get_predecessors(v_remove)) {
       new_affected_verts.insert({im.at(l), l});
     }
     circ.remove_vertex(
         v_remove, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
   };
-  // remove 0 angle rotations from circuit
+  // remove identities from circuit
   std::optional<double> a = op->is_identity();
   if (a) {
     remove_single_vertex(vert);
     circ.add_phase(a.value());
-    return true;
-  } else if (desc.type() == OpType::noop) {
-    // remove "noop" gates from circuit
-    remove_single_vertex(vert);
     return true;
   }
   VertexVec kids = circ.get_successors(vert);
@@ -145,8 +143,8 @@ static bool remove_redundancy(
       // Rotation gates are covered by the rotation gate combiner, everything
       // else in this.
       if (*b_op->dagger() == *op) {
-        bin.push_back(vert);
-        bin.push_back(b);
+        bin.insert(vert);
+        bin.insert(b);
         VertexVec last_verts = circ.get_predecessors(vert);
         for (const Vertex &l : last_verts) {
           new_affected_verts.insert({im.at(l), l});
@@ -169,12 +167,12 @@ static bool remove_redundancy(
           }
           circ.remove_vertex(
               b, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
-          bin.push_back(b);
+          bin.insert(b);
           std::vector<Expr> params_new = {expr1 + expr2};
           Op_ptr op_new = get_op_ptr(desc.type(), params_new, ins.size());
           std::optional<double> a = op_new->is_identity();
           if (a) {
-            bin.push_back(vert);
+            bin.insert(vert);
             circ.remove_vertex(
                 vert, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
             circ.add_phase(a.value());
@@ -194,6 +192,24 @@ Transform commute_through_multis() {
   return Transform(commute_singles_to_front);
 }
 
+// whether source and target commute
+static bool ends_commute(const Circuit &circ, const Edge &e) {
+  const std::pair<port_t, port_t> ports = circ.get_ports(e);
+  const Vertex source = circ.source(e);
+  const Vertex target = circ.target(e);
+
+  // We currently do not support commuting multi-qubit gates
+  // TODO: It would be useful to support commuting single-qubit gates with
+  // classical conditioning
+  if (circ.n_in_edges(source) > 1 && circ.n_in_edges(target) > 1) {
+    return false;
+  }
+
+  auto colour = circ.commuting_basis(target, PortType::Target, ports.second);
+  return circ.commutes_with_basis(
+      source, colour, PortType::Source, ports.first);
+}
+
 // moves single qubit operations past multiqubit operations they commute with,
 // towards front of circuit (hardcoded)
 static bool commute_singles_to_front(Circuit &circ) {
@@ -206,33 +222,31 @@ static bool commute_singles_to_front(Circuit &circ) {
     while (!is_initial_q_type(circ.get_OpType_from_Vertex(current_v))) {
       const Op_ptr curr_op = circ.get_Op_ptr_from_Vertex(current_v);
       // if current vertex is a multiqubit gate
-      if (circ.n_in_edges_of_type(current_v, EdgeType::Quantum) > 1 &&
-          curr_op->get_desc().is_gate()) {
-        // need gate check to access commuting_basis
-        const std::pair<port_t, port_t> ports = circ.get_ports(current_e);
-      check_prev_commutes:
-        const Op_ptr prev_op = circ.get_Op_ptr_from_Vertex(prev_v);
-        // if previous vertex is single qubit gate
-        if (prev_op->get_desc().is_gate() &&
-            circ.n_in_edges_of_type(prev_v, EdgeType::Quantum) == 1) {
-          const std::optional<Pauli> prev_colour =
-              circ.commuting_basis(prev_v, PortType::Target, ports.second);
-
-          if (circ.commutes_with_basis(
-                  current_v, prev_colour, PortType::Source, ports.first)) {
-            // subsequent op on qubit path is a single qubit gate
-            // and commutes with current multi qubit gate
-            success = true;
-            circ.remove_vertex(
-                prev_v, Circuit::GraphRewiring::Yes,
-                Circuit::VertexDeletion::No);
-            Edge rewire_edge = circ.get_nth_in_edge(current_v, ports.first);
-            circ.rewire(prev_v, {rewire_edge}, {EdgeType::Quantum});
-            current_e = circ.get_nth_out_edge(current_v, ports.first);
-            prev_v = circ.target(current_e);
-            // check if new previous gate can be commuted through too
-            goto check_prev_commutes;
+      if (circ.n_in_edges_of_type(current_v, EdgeType::Quantum) > 1) {
+        while (circ.n_in_edges_of_type(prev_v, EdgeType::Quantum) == 1 &&
+               ends_commute(circ, current_e)) {
+          // subsequent op on qubit path is a single qubit gate
+          // and commutes with current multi qubit gate
+          success = true;
+          EdgeVec rewire_edges;
+          op_signature_t edge_types;
+          for (const Edge &e : circ.get_in_edges(prev_v)) {
+            EdgeType type = circ.get_edgetype(e);
+            Edge boundary_edge;
+            // Currently, only purely-quantum operations can be commuted
+            // through. This is guaranteed by `ends_commute`. It follows that
+            // any wire out of `prev_v` must be EdgeType::Quantum.
+            TKET_ASSERT(type == EdgeType::Quantum);
+            boundary_edge = circ.get_last_edge(current_v, current_e);
+            rewire_edges.push_back(boundary_edge);
+            edge_types.push_back(type);
           }
+          const port_t backup_port = circ.get_source_port(current_e);
+          circ.remove_vertex(
+              prev_v, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
+          circ.rewire(prev_v, rewire_edges, edge_types);
+          current_e = circ.get_nth_out_edge(current_v, backup_port);
+          prev_v = circ.target(current_e);
         }
       }
       // move to next vertex (towards input)
@@ -287,7 +301,6 @@ static bool replace_two_qubit_interaction(
   if (target != OpType::TK2) {
     decompose_TK2(fid, allow_swaps).apply(replacement);
   }
-  squash_1qb_to_tk1().apply(replacement);
 
   // Whether to substitute old circuit with new
   bool substitute = false;
@@ -521,6 +534,10 @@ Transform two_qubit_squash(
     }
     circ.remove_vertices(
         bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
+
+    if (success) {
+      squash_1qb_to_tk1().apply(circ);
+    }
     return success;
   });
 }

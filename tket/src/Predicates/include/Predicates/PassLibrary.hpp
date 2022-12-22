@@ -47,6 +47,12 @@ PassPtr ComposePhasePolyBoxes(unsigned min_size = 0);
 /** Squash sequences of single-qubit gates to TK1 gates. */
 const PassPtr &SquashTK1();
 
+/**
+ * @brief Squash single qubit gates into PhasedX and Rz gates.
+ * Commute Rzs to the back if possible.
+ */
+const PassPtr &SquashRzPhasedX();
+
 const PassPtr &RebaseTket();
 const PassPtr &RebaseUFR();
 
@@ -96,5 +102,15 @@ const PassPtr &NormaliseTK2();
  * @return compilation pass to perform this transformation
  */
 const PassPtr &ZZPhaseToRz();
+
+/**
+ * @brief Decompose CnX gates to 2-qubit gates and single qubit gates.
+ *
+ * For every two CnX gates, reorder their control qubits to improve
+ * the chance of gate cancellation
+ *
+ * @return compilation pass to perform this transformation
+ */
+const PassPtr &CnXPairwiseDecomposition();
 
 }  // namespace tket

@@ -15,6 +15,7 @@
 #include "BestTsaTester.hpp"
 
 #include <catch2/catch_test_macros.hpp>
+#include <tktokenswap/SwapFunctions.hpp>
 #include <tktokenswap/VertexMappingFunctions.hpp>
 #include <tktokenswap/VertexSwapResult.hpp>
 
@@ -114,8 +115,11 @@ size_t BestTsaTester::get_checked_solution_size(
     REQUIRE(edge.first < number_of_vertices);
     REQUIRE(edge.second < number_of_vertices);
   }
-  m_edges_vect = vector<std::pair<unsigned, unsigned>>{
-      architecture_data.edges.cbegin(), architecture_data.edges.cend()};
+
+  m_edges_vect.clear();
+  for (const Swap& swap : architecture_data.edges) {
+    m_edges_vect.push_back({unsigned(swap.first), unsigned(swap.second)});
+  }
 
   REQUIRE(problem_data.vertex_mapping.size() >= 1);
   REQUIRE(problem_data.vertex_mapping.size() <= number_of_vertices);

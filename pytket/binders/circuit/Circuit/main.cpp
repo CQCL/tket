@@ -94,8 +94,14 @@ void init_circuit(py::module &m) {
           [](const Circuit &circ) {
             std::stringstream ss;
             ss << "[";
+            for (auto q : circ.created_qubits()) {
+              ss << "Create " << q.repr() << "; ";
+            }
             for (auto com : circ.get_commands()) {
               ss << com.to_str() << " ";
+            }
+            for (auto q : circ.discarded_qubits()) {
+              ss << "Discard " << q.repr() << "; ";
             }
             ss << "]";
             return ss.str();
@@ -302,6 +308,12 @@ void init_circuit(py::module &m) {
           "qubits", &Circuit::all_qubits,
           "A list of all qubit ids in the circuit")
       .def_property_readonly(
+          "created_qubits", &Circuit::created_qubits,
+          "A list of qubits whose input is a Create operation")
+      .def_property_readonly(
+          "discarded_qubits", &Circuit::discarded_qubits,
+          "A list of qubits whose output is a Discard operation")
+      .def_property_readonly(
           "bits", &Circuit::all_bits,
           "A list of all classical bit ids in the circuit")
       .def_property_readonly(
@@ -469,6 +481,25 @@ void init_circuit(py::module &m) {
           "type: The operation type to search for\n:return: the "
           "number of operations matching `type`",
           py::arg("type"))
+      .def(
+          "n_1qb_gates",
+          [](const Circuit &circ) { return circ.count_n_qubit_gates(1); },
+          "Returns the number of vertices in the dag with one quantum edge."
+          "Ignores Input, Create, Output, Discard, Reset, Measure and Barrier "
+          "vertices.")
+      .def(
+          "n_2qb_gates",
+          [](const Circuit &circ) { return circ.count_n_qubit_gates(2); },
+          "Returns the number of vertices in the dag with two quantum edges."
+          "Ignores Input, Create, Output, Discard, Reset, Measure and Barrier "
+          "vertices.")
+      .def(
+          "n_nqb_gates", &Circuit::count_n_qubit_gates,
+          "Returns the number of vertices in the dag with given number of  "
+          "quantum edges."
+          "Ignores Input, Create, Output, Discard, Reset, Measure and Barrier "
+          "vertices.",
+          py::arg("size"))
       .def(
           "depth_by_type", &Circuit::depth_by_type,
           "Returns the number of vertices in the longest path through the "
@@ -673,6 +704,17 @@ void init_circuit(py::module &m) {
           py::arg("box"), py::arg("opgroup"))
       .def(
           "substitute_named",
+          [](Circuit &circ, const ToffoliBox &box, const std::string opgroup) {
+            return circ.substitute_named(box, opgroup);
+          },
+          "Substitute all ops with the given name for the given box."
+          "The replacement boxes retain the same name.\n\n"
+          ":param box: the replacement ToffoliBox\n"
+          ":param opgroup: the name of the operations group to replace\n"
+          ":return: whether any replacements were made",
+          py::arg("box"), py::arg("opgroup"))
+      .def(
+          "substitute_named",
           [](Circuit &circ, const QControlBox &box, const std::string opgroup) {
             return circ.substitute_named(box, opgroup);
           },
@@ -731,6 +773,13 @@ void init_circuit(py::module &m) {
           "implicit_qubit_permutation", &Circuit::implicit_qubit_permutation,
           ":return: dictionary mapping input qubit to output qubit on "
           "the same path")
+      .def(
+          "replace_SWAPs", &Circuit::replace_SWAPs,
+          "Replace all SWAP gates with implicit wire swaps.")
+      .def(
+          "replace_implicit_wire_swaps",
+          &Circuit::replace_all_implicit_wire_swaps,
+          "Replace all implicit wire swaps with SWAP gates.")
       .def(
           "ops_of_type",
           [](const Circuit &circ, OpType optype) {

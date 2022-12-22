@@ -19,7 +19,7 @@ set -evu
 # Choose a Python to install conan
 export PYBIN=/opt/python/cp39-cp39/bin
 
-${PYBIN}/pip install conan
+${PYBIN}/pip install conan~=1.53
 
 export CONAN_CMD=${PYBIN}/conan
 export CONAN_REVISIONS_ENABLED=1
@@ -29,8 +29,9 @@ cd /tket
 ${CONAN_CMD} profile new tket --detect
 ${CONAN_CMD} profile update options.tklog:shared=True tket
 ${CONAN_CMD} profile update options.tket:shared=True tket
-${CONAN_CMD} remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
-${CONAN_CMD} create --profile=tket --test-folder=None recipes/tket
+${CONAN_CMD} remote clean
+${CONAN_CMD} remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+${CONAN_CMD} create --profile=tket --test-folder=None recipes/tket tket/stable --build=missing --build=tket
 ${CONAN_CMD} create --profile=tket --test-folder=None recipes/pybind11
 
 cd /tket/pytket
@@ -47,5 +48,5 @@ do
     export PYVER=`${PYEX} -c 'import sys; print(".".join(map(str, sys.version_info[:3])))'`
     ${PYEX} -m pip install -U pip build
     ${PYEX} -m build --outdir "tmpwheel_${PYVER}"
-    auditwheel repair "tmpwheel_${PYVER}/pytket-"*".whl" -w "audited/${PYVER}/"
+    LD_LIBRARY_PATH=./pytket/_tket auditwheel repair "tmpwheel_${PYVER}/pytket-"*".whl" -w "audited/${PYVER}/"
 done

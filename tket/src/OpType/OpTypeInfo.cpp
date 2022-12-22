@@ -30,6 +30,7 @@ const std::map<OpType, OpTypeInfo>& optypeinfo() {
 
   // OpTypeInfo: name, latex_name, param_mod, signature
   static const std::map<OpType, OpTypeInfo> typeinfo{
+      {OpType::Phase, {"Phase", "Phase", {2}, noargs}},
       {OpType::Z, {"Z", "$Z$", {}, singleq}},
       {OpType::X, {"X", "$X$", {}, singleq}},
       {OpType::Y, {"Y", "$Y$", {}, singleq}},
@@ -108,6 +109,8 @@ const std::map<OpType, OpTypeInfo>& optypeinfo() {
        {"XXPhase3", "$R_{X_0X_1}R_{X_0X_2}R_{X_1X_2}$", {4}, tripleq}},
       {OpType::CnRy, {"CnRy", "CnRy", {4}, std::nullopt}},
       {OpType::CnX, {"CnX", "CnX", {}, std::nullopt}},
+      {OpType::CnZ, {"CnZ", "CnZ", {}, std::nullopt}},
+      {OpType::CnY, {"CnY", "CnY", {}, std::nullopt}},
       {OpType::TK1, {"TK1", "TK1", {4, 4, 4}, singleq}},
       {OpType::TK2, {"TK2", "TK2", {4, 4, 4}, doubleq}},
       {OpType::ESWAP, {"ESWAP", "$\\mathrm{eSWAP}$", {4}, doubleq}},
@@ -124,6 +127,7 @@ const std::map<OpType, OpTypeInfo>& optypeinfo() {
        {"ProjectorAssertionBox", "ProjectorAssertionBox", {}, std::nullopt}},
       {OpType::StabiliserAssertionBox,
        {"StabiliserAssertionBox", "StabiliserAssertionBox", {}, std::nullopt}},
+      {OpType::ToffoliBox, {"ToffoliBox", "ToffoliBox", {}, std::nullopt}},
       {OpType::ClassicalTransform,
        {"ClassicalTransform", "ClassicalTransform", {}, std::nullopt}},
       {OpType::WASM, {"WASM", "WASM", {}, std::nullopt}},

@@ -15,14 +15,17 @@
 from io import StringIO
 import re
 from pathlib import Path
+from typing import List
 
 import pytest  # type: ignore
 
+from pytket._tket.circuit import _TEMP_BIT_NAME, _TEMP_BIT_REG_BASE  # type: ignore
 from pytket.circuit import (  # type: ignore
     Circuit,
     OpType,
     fresh_symbol,
     Qubit,
+    Bit,
     reg_eq,
     reg_neq,
     reg_lt,
@@ -49,7 +52,7 @@ from pytket.qasm.includes.load_includes import (
     _load_gdict,
 )
 from pytket.transform import Transform  # type: ignore
-from pytket.passes import DecomposeClassicalExp  # type: ignore
+from pytket.passes import DecomposeClassicalExp, DecomposeBoxes  # type: ignore
 
 curr_file_path = Path(__file__).resolve().parent
 
@@ -184,6 +187,7 @@ def test_custom_gate() -> None:
     fname = str(curr_file_path / "qasm_test_files/test6.qasm")
     c = circuit_from_qasm(fname)
     assert str(c.get_commands()) == "[mygate(alpha,0.2) q[0], q[1];]"
+
     with open(curr_file_path / "qasm_test_files/test6_output.qasm") as f:
         # test custom gates are unrolled
         assert circuit_to_qasm_str(c) == f.read()
@@ -327,17 +331,8 @@ def test_output_error_modes() -> None:
         c = Circuit()
         c.add_qubit(Qubit("q"))
         circuit_to_qasm_str(c)
+
     assert "OPENQASM registers must use a single index" in str(errorinfo.value)
-    with pytest.raises(Exception) as errorinfo:
-        c = Circuit(2)
-        c.CV(0, 1)
-        circuit_to_qasm_str(c)
-    assert "Cannot print command of type: CV" in str(errorinfo.value)
-    with pytest.raises(Exception) as errorinfo:
-        c = Circuit(2)
-        c.add_gate(OpType.ZZMax, [0, 1])
-        circuit_to_qasm_str(c, header="qelib1")
-    assert "Gate of type ZZ is not defined in header qelib1.inc" in str(errorinfo.value)
     with pytest.raises(Exception) as errorinfo:
         c = Circuit(2, 2)
         c.CX(0, 1, condition_bits=[0], condition_value=0)
@@ -354,6 +349,22 @@ def test_output_error_modes() -> None:
         circuit_to_qasm_str(c)
     assert "OpenQASM conditions must be a single classical register" in str(
         errorinfo.value
+    )
+
+
+def test_header_stops_gate_definition() -> None:
+    c = Circuit(2)
+    c.add_gate(OpType.ZZMax, [0, 1])
+    # adds a custom gate, "zzmax"
+    qasm_str_qelib1 = circuit_to_qasm_str(c, header="qelib1")
+    # adds "ZZ"
+    qasm_str_hqslib1 = circuit_to_qasm_str(c, header="hqslib1")
+    assert "gate zzmax zzmaxq0,zzmaxq1 {" in qasm_str_qelib1
+    assert "}" in qasm_str_qelib1
+    assert "zzmax q[0],q[1];" in qasm_str_qelib1
+    assert "ZZ q[0],q[1];" in qasm_str_hqslib1
+    assert circuit_from_qasm_str(qasm_str_qelib1) == circuit_from_qasm_str(
+        qasm_str_hqslib1
     )
 
 
@@ -428,7 +439,7 @@ def test_opaque() -> None:
     )
     with pytest.raises(QASMUnsupportedError) as e:
         circuit_to_qasm_str(c)
-    assert "CustomGate myopaq has empty definition"
+    assert "CustomGate myopaq has empty definition" in str(e.value)
 
 
 def test_alternate_encoding() -> None:
@@ -441,6 +452,17 @@ def test_alternate_encoding() -> None:
             circuit_from_qasm(fil)
         c = circuit_from_qasm(fil, encoding=enc)
         assert c.n_gates == 6
+
+
+def test_opaque_gates() -> None:
+    # test opaque handled as barrier
+    input_qasm = """OPENQASM 2.0;\ninclude "hqslib1_dev.inc";\n\nqreg q[4];
+order2() q[0],q[2];\nrz(1.5*pi) q[3];\nsleep(1) q[0];\nrx(0.0375*pi) q[3];
+cu1(0.8*pi) q[0],q[1];\nsleep(1,2) q[3];\n"""
+    c = circuit_from_qasm_str(input_qasm)
+
+    result_circ_qasm = circuit_to_qasm_str(c, "hqslib1_dev")
+    assert input_qasm == result_circ_qasm
 
 
 @pytest.mark.parametrize("fi", _get_files())
@@ -465,6 +487,228 @@ def test_include_loading(fi: Path) -> None:
         assert bytes(defs_string, "utf-8") == bytes(fil_content, "utf-8")
 
 
+def test_custom_gate_with_barrier() -> None:
+    c = circuit_from_qasm_str(
+        """
+    OPENQASM 2.0;
+    include "qelib1.inc";
+
+    gate my_gate q
+    {
+        barrier q;
+    }
+
+    qreg r[1];
+    my_gate r[0];
+    """
+    )
+    cmds = c.get_commands()
+    assert len(cmds) == 1
+    op = cmds[0].op
+    assert op.type == OpType.CustomGate
+    opcirc = op.get_circuit()
+    opcmds = opcirc.get_commands()
+    assert len(opcmds) == 1
+    assert opcmds[0].op.type == OpType.Barrier
+
+
+def test_non_lib_gates() -> None:
+    c = Circuit(3)
+    c.add_gate(OpType.TK2, [0.2, 0.5, 0.7], [0, 1])
+    c.add_gate(OpType.CV, [1, 2])
+    c.add_gate(OpType.CVdg, [0, 1])
+    c.add_gate(OpType.BRIDGE, [0, 1, 2])
+    c.add_gate(OpType.ISWAP, [0.5], [0, 1])
+    c.add_gate(OpType.PhasedISWAP, [0.2, 0.3], [0, 1])
+    c.add_gate(OpType.YYPhase, [0.3], [0, 1])
+    c.add_gate(OpType.XXPhase3, [0.4], [2, 0, 1])
+    c.add_gate(OpType.ZZMax, [0, 1])
+    c.add_gate(OpType.ESWAP, [0.7], [0, 1])
+    c.add_gate(OpType.FSim, [0.3, 0.4], [1, 2])
+    c.add_gate(OpType.ISWAPMax, [1, 2])
+    c.add_gate(OpType.ECR, [2, 0])
+    # add copies
+    c.add_gate(OpType.TK2, [0.3, 0.6, 0.8], [2, 1])
+    c.add_gate(OpType.CV, [1, 0])
+    c.add_gate(OpType.CVdg, [1, 0])
+    c.add_gate(OpType.BRIDGE, [0, 2, 1])
+    c.add_gate(OpType.ISWAP, [0.7], [1, 2])
+    c.add_gate(OpType.PhasedISWAP, [0.1, 0.2], [2, 1])
+    c.add_gate(OpType.YYPhase, [0.4], [1, 2])
+    c.add_gate(OpType.XXPhase3, [0.5], [2, 1, 0])
+    c.add_gate(OpType.ZZMax, [1, 2])
+    c.add_gate(OpType.ESWAP, [0.8], [2, 1])
+    c.add_gate(OpType.FSim, [0.9, 0.2], [0, 2])
+    c.add_gate(OpType.ISWAPMax, [0, 2])
+    c.add_gate(OpType.ECR, [0, 1])
+
+    qs = circuit_to_qasm_str(c)
+    c2 = circuit_from_qasm_str(qs)
+    qs2 = circuit_to_qasm_str(c2)
+    assert qs == qs2
+
+
+def test_scratch_bits_filtering() -> None:
+    # test removing unused scratch register
+    c = Circuit(1)
+    a = c.add_c_register("a", 2)
+    b = c.add_c_register("b", 3)
+    c.add_c_copybits([b[1]], [a[1]], condition=reg_neq(b, 2))
+    assert c.get_c_register(_TEMP_BIT_NAME)
+    qstr = circuit_to_qasm_str(c, "hqslib1")
+    assert _TEMP_BIT_NAME not in qstr
+    qasm_out = str(curr_file_path / "qasm_test_files/testout6.qasm")
+    circuit_to_qasm(c, qasm_out, "hqslib1")
+    with open(qasm_out, "r") as f:
+        assert _TEMP_BIT_NAME not in f.read()
+
+    # test keeping used
+    c = Circuit(1)
+    a = c.add_c_register("a", 4)
+    b = c.add_c_register("b", 3)
+    c.X(0, condition=(a[0] ^ b[0]))
+    assert c.get_c_register(_TEMP_BIT_NAME)
+    qstr = circuit_to_qasm_str(c, "hqslib1")
+    assert _TEMP_BIT_NAME in qstr
+    circuit_to_qasm(c, qasm_out, "hqslib1")
+    with open(qasm_out, "r") as f:
+        assert _TEMP_BIT_NAME in f.read()
+
+    # test multiple scratch registers
+    c = circuit_from_qasm_str(
+        f"""
+    OPENQASM 2.0;
+    include "hqslib1.inc";
+    qreg q[1];
+    creg a[1];
+    creg b[1];
+    creg d[2];
+    creg {_TEMP_BIT_NAME}[100];
+    creg {_TEMP_BIT_NAME}_1[100];
+    {_TEMP_BIT_NAME}[0] = (a[0] ^ b[0]);
+    if({_TEMP_BIT_NAME}[0]==1) x q[0];
+    """
+    )
+    assert c.get_c_register(_TEMP_BIT_NAME)
+    assert c.get_c_register(f"{_TEMP_BIT_NAME}_1")
+    qstr = circuit_to_qasm_str(c, "hqslib1")
+    assert _TEMP_BIT_NAME in qstr
+    assert f"{_TEMP_BIT_NAME}_1" not in qstr
+    circuit_to_qasm(c, qasm_out, "hqslib1")
+    with open(qasm_out, "r") as f:
+        fstr = f.read()
+        assert _TEMP_BIT_NAME in fstr
+        assert f"{_TEMP_BIT_NAME}_1" not in fstr
+
+    # test leaving _TEMP_BIT_REG_BASE untouched
+    qasm_str = f"""OPENQASM 2.0;
+    include "hqslib1.inc";
+    qreg q[1];
+    creg a[8];
+    creg b[10];
+    creg d[10];
+    creg {_TEMP_BIT_REG_BASE}_0[32];
+    {_TEMP_BIT_REG_BASE}_0 = (a ^ b);
+    """
+    c = circuit_from_qasm_str(qasm_str)
+    assert c.get_c_register(f"{_TEMP_BIT_REG_BASE}_0")
+    qstr = circuit_to_qasm_str(c, "hqslib1")
+    assert f"creg {_TEMP_BIT_REG_BASE}_0[32]" in qstr
+    circuit_to_qasm(c, qasm_out, "hqslib1")
+    with open(qasm_out, "r") as f:
+        fstr = f.read()
+        assert f"creg {_TEMP_BIT_REG_BASE}_0[32]" in fstr
+
+
+def test_qasm_phase() -> None:
+    c = Circuit(1, 1)
+    c.H(0)
+    c.Phase(0.5)
+    c.Phase(0.5, condition_bits=[Bit(0)], condition_value=1)
+    c.add_barrier([0])
+    c.H(0)
+    c.add_phase(0.5)
+    c0 = Circuit(1, 1)
+    c0.H(0)
+    c0.add_barrier([0])
+    c0.H(0)
+    for header in ["qelib1", "hqslib1"]:
+        qstr = circuit_to_qasm_str(c, header)
+        c1 = circuit_from_qasm_str(qstr)
+        assert c1 == c0
+
+
+def test_CopyBits() -> None:
+    input_qasm = """OPENQASM 2.0;\ninclude "hqslib1.inc";\n\ncreg c0[1];
+creg c1[3];\nc0[0] = c1[1];\n"""
+    c = circuit_from_qasm_str(input_qasm)
+    result_circ_qasm = circuit_to_qasm_str(c, "hqslib1")
+    assert input_qasm == result_circ_qasm
+
+    c = Circuit()
+    creg0 = c.add_c_register("c0", 1)
+    creg1 = c.add_c_register("c1", 2)
+    creg2 = c.add_c_register("c2", 2)
+    # should output bit-wise assignment
+    c.add_c_copybits([creg1[1]], [creg0[0]])
+    # should output register-wise assignment
+    c.add_c_copybits([creg2[0], creg2[1]], [creg1[0], creg1[1]])
+    # should output bit-wise assignment
+    c.add_c_copybits([creg2[0], creg2[1]], [creg1[1], creg1[0]])
+    result_circ_qasm = circuit_to_qasm_str(c, "hqslib1")
+
+    correct_qasm = """OPENQASM 2.0;\ninclude "hqslib1.inc";\n\ncreg c0[1];
+creg c1[2];\ncreg c2[2];\nc0[0] = c1[1];\nc1 = c2;\nc1[1] = c2[0];\nc1[0] = c2[1];\n"""
+    assert result_circ_qasm == correct_qasm
+
+
+def test_RZZ_read_from() -> None:
+    c = circuit_from_qasm_str(
+        """
+    OPENQASM 2.0;
+    include "hqslib1.inc";
+
+    qreg q[2];
+    RZZ(0.5*pi) q[0],q[1];
+    """
+    )
+    DecomposeBoxes().apply(c)
+    assert "RZZ(0.5*pi) q[0],q[1];" in circuit_to_qasm_str(c, header="hqslib1")
+    assert "rzz(0.5*pi) q[0],q[1];" in circuit_to_qasm_str(c)
+
+
+def test_conditional_expressions() -> None:
+    def cond_circ(bits: List[int]) -> Circuit:
+        c = Circuit(4, 4)
+        c.X(0)
+        c.X(1)
+        c.X(2)
+        c.Measure(0, 0)
+        c.Measure(1, 1)
+        c.Measure(2, 2)
+        c.X(3, condition_bits=bits, condition_value=3)
+        c.Measure(3, 3)
+        return c
+
+    c1 = cond_circ([1])
+    with pytest.raises(QASMUnsupportedError):
+        circuit_to_qasm_str(c1)
+    assert "if(c[1]==3)" in circuit_to_qasm_str(c1, header="hqslib1")
+    c12 = cond_circ([1, 2])
+    with pytest.raises(QASMUnsupportedError):
+        circuit_to_qasm_str(c12)
+    with pytest.raises(QASMUnsupportedError):
+        circuit_to_qasm_str(c12, header="hqslib1")
+    c0123 = cond_circ([0, 1, 2, 3])
+    assert "if(c==3)" in circuit_to_qasm_str(c0123)
+    assert "if(c==3)" in circuit_to_qasm_str(c0123, header="hqslib1")
+    c0132 = cond_circ([0, 1, 3, 2])
+    with pytest.raises(QASMUnsupportedError):
+        circuit_to_qasm_str(c0132)
+    with pytest.raises(QASMUnsupportedError):
+        circuit_to_qasm_str(c0132, header="hqslib1")
+
+
 if __name__ == "__main__":
     test_qasm_correct()
     test_qasm_qubit()
@@ -472,12 +716,28 @@ if __name__ == "__main__":
     test_qasm_gate()
     test_qasm_measure()
     test_qasm_roundtrip()
+    test_qasm_str_roundtrip()
     test_qasm_str_roundtrip_oqc()
     test_readout()
     test_symbolic_write()
     test_custom_gate()
+    test_custom_gate_with_barrier()
     test_input_error_modes()
     test_output_error_modes()
     test_builtin_gates()
     test_new_qelib1_aliases()
     test_h1_rzz()
+    test_opaque()
+    test_opaque_gates()
+    test_non_lib_gates()
+    test_scratch_bits_filtering()
+    test_extended_qasm()
+    test_register_commands()
+    test_conditional_gates()
+    test_hqs_conditional()
+    test_hqs_conditional_params()
+    test_barrier()
+    test_barrier_2()
+    test_decomposable_extended()
+    test_alternate_encoding()
+    test_header_stops_gate_definition()

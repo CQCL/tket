@@ -20,7 +20,8 @@
 
 namespace tket {
 
-// Forward declare classes for friend converters
+// Forward declare friend classes for converters
+class ChoiMixTableau;
 class UnitaryTableau;
 class Circuit;
 namespace pg {
@@ -161,6 +162,16 @@ class SymplecticTableau {
    */
   unsigned rank() const;
 
+  /**
+   * Applies row-wise gaussian elimination over the entire tableau, in qubit
+   * order, subdivided by X first and then Z, reducing the combined boolean
+   * matrix to reduced row echelon form.
+   * Users of this class should only apply this in settings where row
+   * multiplications are free actions, e.g. ok in ChoiMixTableau, not ok in
+   * UnitaryTableau
+   */
+  void gaussian_form();
+
  private:
   /**
    * Number of rows
@@ -196,7 +207,10 @@ class SymplecticTableau {
       MatrixXb::ColXpr &w, VectorXb &pw);
 
   friend class UnitaryTableau;
+  friend class ChoiMixTableau;
   friend Circuit unitary_tableau_to_circuit(const UnitaryTableau &tab);
+  friend std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(
+      const ChoiMixTableau &tab);
   friend std::vector<pg::PGOp_ptr> op_to_pgops(const Op_ptr& op, const unit_vector_t& args, pg::PauliGraph& pg, bool allow_tableau);
   friend std::ostream &operator<<(std::ostream &os, const UnitaryTableau &tab);
 

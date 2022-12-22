@@ -99,8 +99,17 @@ PYBIND11_MODULE(predicates, m) {
           "dict representation of the Predicate.");
   py::class_<GateSetPredicate, std::shared_ptr<GateSetPredicate>, Predicate>(
       m, "GateSetPredicate",
-      "Predicate asserting that the circuit contains only gates from a "
-      "given set.")
+      "Predicate asserting that all operations are in the specified set of "
+      "types."
+      "\n\n"
+      "Note that the following are always permitted and do not need to be "
+      "included in the specified set:"
+      "\n\n"
+      "- 'meta' operations (inputs, outputs, barriers);\n"
+      "- ``OpType.Phase`` gates (which have no input or output wires)."
+      "\n\n"
+      "Classically conditioned operations are permitted provided that the "
+      "conditioned operation is of a permitted type.")
       .def(
           py::init<const OpTypeSet &>(), "Construct from a set of gate types.",
           py::arg("allowed_types"))

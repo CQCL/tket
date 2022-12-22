@@ -21,6 +21,7 @@
 #include "Circuit/Circuit.hpp"
 #include "Gate/Gate.hpp"
 #include "Gate/GateUnitaryMatrix.hpp"
+#include "Gate/GateUnitaryMatrixError.hpp"
 #include "GateNodesBuffer.hpp"
 #include "PauliExpBoxUnitaryCalculator.hpp"
 
@@ -131,25 +132,18 @@ static void decompose_circuit_recursive(
   for (const Command& command : circ) {
     const Op_ptr current_op = command.get_op_ptr();
     TKET_ASSERT(current_op.get());
-    {
-      const auto current_type = current_op->get_type();
-      if (current_type == OpType::noop || current_type == OpType::Barrier ||
-          current_type == OpType::Measure) {
-        // Really, ignoring OpType::Measure is the wrong thing to do,
-        // since get_unitary is completely meaningless for such circuits.
-        // But this was the old behaviour in pytket tests with other
-        // simulators, e.g. QuEST, purely for testing purposes.
-        // Other OpTypes which are inherently meaningless
-        // with get_unitary will throw automatically,
-        // simply because they are unknown types.
-        continue;
-      }
+    const OpType current_type = current_op->get_type();
+    if (is_classical_type(current_type) || is_projective_type(current_type) ||
+        current_type == OpType::Conditional) {
+      throw GateUnitaryMatrixError(
+          "Unsupported OpType " + current_op->get_name(),
+          GateUnitaryMatrixError::Cause::GATE_NOT_IMPLEMENTED);
+    }
+    if (current_type == OpType::noop || current_type == OpType::Barrier) {
+      continue;
     }
     const OpDesc desc = current_op->get_desc();
     args = command.get_args();
-    if (args.empty()) {
-      throw_with_op_error_message(desc.name(), qmap, circ, "No args!");
-    }
     fill_qubit_indices(args, qmap, node);
     if (desc.is_gate()) {
       const Gate* gate = dynamic_cast<const Gate*>(current_op.get());

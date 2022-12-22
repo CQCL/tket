@@ -37,7 +37,7 @@
     {
       "if": {
         "properties": {
-          "type": {
+          "pass_class": {
             "const": "StandardPass"
           }
         }
@@ -51,7 +51,7 @@
     {
       "if": {
         "properties": {
-          "type": {
+          "pass_class": {
             "const": "SequencePass"
           }
         }
@@ -65,7 +65,7 @@
     {
       "if": {
         "properties": {
-          "type": {
+          "pass_class": {
             "const": "RepeatPass"
           }
         }
@@ -79,7 +79,7 @@
     {
       "if": {
         "properties": {
-          "type": {
+          "pass_class": {
             "const": "RepeatWithMetricPass"
           }
         }
@@ -93,7 +93,7 @@
     {
       "if": {
         "properties": {
-          "type": {
+          "pass_class": {
             "const": "RepeatUntilSatisfiedPass"
           }
         }
@@ -112,7 +112,58 @@
       "properties": {
         "name": {
           "type": "string",
-          "description": "The name of the compiler pass. Matches the name of the pytket method used to generate it."
+          "enum": [
+            "RebaseCustom",
+            "RebaseCustomViaTK2",
+            "CommuteThroughMultis",
+            "DecomposeArbitrarilyControlledGates",
+            "DecomposeBoxes",
+            "DecomposeMultiQubitsCX",
+            "DecomposeSingleQubitsTK1",
+            "PeepholeOptimise2Q",
+            "RebaseTket",
+            "RebaseUFR",
+            "RemoveRedundancies",
+            "SynthesiseHQS",
+            "SynthesiseTK",
+            "SynthesiseTket",
+            "SynthesiseOQC",
+            "SynthesiseUMD",
+            "SquashTK1",
+            "SquashRzPhasedX",
+            "FlattenRegisters",
+            "DelayMeasures",
+            "ZZPhaseToRz",
+            "RemoveDiscarded",
+            "SimplifyMeasured",
+            "RemoveBarriers",
+            "DecomposeBridges",
+            "KAKDecomposition",
+            "ThreeQubitSquash",
+            "FullPeepholeOptimise",
+            "ComposePhasePolyBoxes",
+            "EulerAngleReduction",
+            "RoutingPass",
+            "PlacementPass",
+            "NaivePlacementPass",
+            "RenameQubitsPass",
+            "CliffordSimp",
+            "DecomposeSwapsToCXs",
+            "DecomposeSwapsToCircuit",
+            "OptimisePhaseGadgets",
+            "OptimisePairwiseGadgets",
+            "PauliSimp",
+            "GuidedPauliSimp",
+            "SimplifyInitial",
+            "FullMappingPass",
+            "DefaultMappingPass",
+            "CXMappingPass",
+            "PauliSquash",
+            "ContextSimp",
+            "DecomposeTK2",
+            "CnXPairwiseDecomposition"
+          ],
+          "description": "The name of the compiler pass. Matches the name of the pytket method used to generate it. List all the passes as enum."
         },
         "basis_allowed": {
           "type": "array",
@@ -122,7 +173,7 @@
           "description": "OpTypes of supported gates. Used in \"RebaseCustom\"."
         },
         "basis_cx_replacement": {
-          "$ref": "file:///circuit_v1.json#",
+          "$ref": "circuit_v1.json#",
           "description": "A circuit implementing a CX gate in a target gate set. Used in \"RebaseCustom\"."
         },
         "basis_tk1_replacement": {
@@ -162,26 +213,26 @@
             "type": "array",
             "items": [
               {
-                "$ref": "#/definitions/unitid"
+                "$ref": "circuit_v1.json#/definitions/unitid"
               },
               {
-                "$ref": "#/definitions/unitid"
+                "$ref": "circuit_v1.json#/definitions/unitid"
               }
             ]
           }
         },
         "placement": {
-          "$ref": "#/definitions/placement"
+          "$ref": "placement_v1.json#"
         },
         "architecture": {
-          "$ref": "#/definitions/architecture"
+          "$ref": "architecture_v1.json#"
         },
         "directed": {
           "type": "boolean",
           "description": "Whether to consider directedness of the architecture for CXs in \"DecomposeSwapsToCXs\"."
         },
         "swap_replacement": {
-          "$ref": "file:///circuit_v1.json#"
+          "$ref": "circuit_v1.json#"
         },
         "fidelity": {
           "type": "number",
@@ -215,12 +266,42 @@
           "type": "boolean",
           "description": "Whether to automatically annotate all qubits as initialised to the zero state for \"SimplifyInitial\"."
         },
-        "c_xircuit": {
-          "$ref": "file:///circuit_v1.json#"
+        "x_circuit": {
+          "$ref": "circuit_v1.json#"
         },
         "delay_measures": {
           "type": "boolean",
           "description": "Whether to include a \"DelayMeasures\" pass in a \"CXMappingPass\"."
+        },
+        "target_2qb_gate": {
+          "type": "string",
+          "enum": [
+            "CX",
+            "TK2"
+          ]
+        },
+        "min_size": {
+          "type": "integer",
+          "description": "Minimal number of CX gates in each phase in \"ComposePhasePolyBoxes\"."
+        },
+        "routing_config": {
+          "$ref": "#definitions/routing_config"
+        },
+        "fidelities": {
+          "type": "object",
+          "description": "Gate fidelities in \"DecomposeTK2\".",
+          "properties": {
+            "CX": {
+              "type": ["number", "null"],
+              "minimum": 0,
+              "maximum": 1
+            },
+            "ZZMax": {
+              "type": ["number", "null"],
+              "minimum": 0,
+              "maximum": 1
+            }
+          }
         }
       },
       "required": [
@@ -240,7 +321,8 @@
               "basis_allowed",
               "basis_cx_replacement",
               "basis_tk1_replacement"
-            ]
+            ],
+            "maxProperties": 4
           }
         },
         {
@@ -255,7 +337,8 @@
             "required": [
               "basis_singleqs",
               "basis_tk1_replacement"
-            ]
+            ],
+            "maxProperties": 3
           }
         },
         {
@@ -271,7 +354,8 @@
               "euler_p",
               "euler_q",
               "euler_strict"
-            ]
+            ],
+            "maxProperties": 4
           }
         },
         {
@@ -284,8 +368,42 @@
           },
           "then": {
             "required": [
-              "fidelity"
-            ]
+              "fidelity",
+              "allow_swaps",
+              "target_2qb_gate"
+            ],
+            "maxProperties": 4
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "name": {
+                "const": "FullPeepholeOptimise"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "allow_swaps",
+              "target_2qb_gate"
+            ],
+            "maxProperties": 3
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "name": {
+                "const": "ComposePhasePolyBoxes"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "min_size"
+            ],
+            "maxProperties": 2
           }
         },
         {
@@ -299,7 +417,8 @@
           "then": {
             "required": [
               "allow_swaps"
-            ]
+            ],
+            "maxProperties": 2
           }
         },
         {
@@ -313,7 +432,8 @@
           "then": {
             "required": [
               "allow_swaps"
-            ]
+            ],
+            "maxProperties": 2
           }
         },
         {
@@ -327,7 +447,8 @@
           "then": {
             "required": [
               "cx_config"
-            ]
+            ],
+            "maxProperties": 2
           }
         },
         {
@@ -342,7 +463,8 @@
             "required": [
               "pauli_synth_strat",
               "cx_config"
-            ]
+            ],
+            "maxProperties": 3
           }
         },
         {
@@ -357,7 +479,8 @@
             "required": [
               "pauli_synth_strat",
               "cx_config"
-            ]
+            ],
+            "maxProperties": 3
           }
         },
         {
@@ -372,7 +495,9 @@
             "required": [
               "allow_classical",
               "create_all_qubits"
-            ]
+            ],
+            "$comment": "TODO We need to make sure that the optional parameter must be x_circuit",
+            "maxProperties": 4
           }
         },
         {
@@ -386,7 +511,8 @@
           "then": {
             "required": [
               "qubit_map"
-            ]
+            ],
+            "maxProperties": 2
           }
         },
         {
@@ -400,7 +526,8 @@
           "then": {
             "required": [
               "placement"
-            ]
+            ],
+            "maxProperties": 2
           }
         },
         {
@@ -414,7 +541,8 @@
           "then": {
             "required": [
               "architecture"
-            ]
+            ],
+            "maxProperties": 2
           }
         },
         {
@@ -429,7 +557,8 @@
             "required": [
               "architecture",
               "routing_config"
-            ]
+            ],
+            "maxProperties": 3
           }
         },
         {
@@ -443,7 +572,9 @@
           "then": {
             "required": [
               "architecture",
-            ]
+              "routing_config"
+            ],
+            "maxProperties": 3
           }
         },
         {
@@ -458,7 +589,8 @@
             "required": [
               "architecture",
               "directed"
-            ]
+            ],
+            "maxProperties": 3
           }
         },
         {
@@ -472,7 +604,8 @@
           "then": {
             "required": [
               "swap_replacement"
-            ]
+            ],
+            "maxProperties": 2
           }
         },
         {
@@ -488,7 +621,8 @@
               "architecture",
               "placement",
               "routing_config"
-            ]
+            ],
+            "maxProperties": 4
           }
         },
         {
@@ -503,7 +637,8 @@
             "required": [
               "architecture",
               "delay_measures"
-            ]
+            ],
+            "maxProperties": 3
           }
         },
         {
@@ -521,7 +656,8 @@
               "routing_config",
               "directed",
               "delay_measures"
-            ]
+            ],
+            "maxProperties": 6
           }
         },
         {
@@ -536,7 +672,8 @@
             "required": [
               "pauli_synth_strat",
               "cx_config"
-            ]
+            ],
+            "maxProperties": 3
           }
         },
         {
@@ -551,10 +688,49 @@
             "required": [
               "allow_classical",
               "x_circuit"
-            ]
+            ],
+            "maxProperties": 3
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "name": {
+                "$comment": "List all non-parametrized passes",
+                "enum": [
+                  "CommuteThroughMultis",
+                  "DecomposeArbitrarilyControlledGates",
+                  "DecomposeBoxes",
+                  "DecomposeMultiQubitsCX",
+                  "DecomposeSingleQubitsTK1",
+                  "PeepholeOptimise2Q",
+                  "RebaseTket",
+                  "RebaseUFR",
+                  "RemoveRedundancies",
+                  "SynthesiseHQS",
+                  "SynthesiseTK",
+                  "SynthesiseTket",
+                  "SynthesiseOQC",
+                  "SynthesiseUMD",
+                  "SquashTK1",
+                  "SquashRzPhasedX",
+                  "FlattenRegisters",
+                  "DelayMeasures",
+                  "ZZPhaseToRz",
+                  "RemoveDiscarded",
+                  "SimplifyMeasured",
+                  "RemoveBarriers",
+                  "DecomposeBridges"
+                ]
+              }
+            }
+          },
+          "then": {
+            "maxProperties": 1
           }
         }
-      ]
+      ],
+      "additionalProperties": false
     },
     "SequencePass": {
       "type": "object",
@@ -570,7 +746,8 @@
       },
       "required": [
         "sequence"
-      ]
+      ],
+      "additionalProperties": false
     },
     "RepeatPass": {
       "type": "object",
@@ -583,7 +760,8 @@
       },
       "required": [
         "body"
-      ]
+      ],
+      "additionalProperties": false
     },
     "RepeatWithMetricPass": {
       "type": "object",
@@ -601,7 +779,8 @@
       "required": [
         "body",
         "metric"
-      ]
+      ],
+      "additionalProperties": false
     },
     "RepeatUntilSatisfiedPass": {
       "type": "object",
@@ -612,413 +791,15 @@
           "description": "The body of the loop."
         },
         "predicate": {
-          "$ref": "#/definitions/predicate",
+          "$ref": "predicate_v1.json#",
           "description": "The predicate that conditions the loop. The loop is terminated when this predicate returns True."
         }
       },
       "required": [
         "body",
         "predicate"
-      ]
-    },
-    "predicate": {
-      "type": "object",
-      "description": "A function of a Circuit which determines the success of a part of compilation.",
-      "properties": {
-        "type": {
-          "type": "string",
-          "description": "The subclass of \"Predicate\" implemented."
-        },
-        "allowed_types": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          },
-          "description": "The set of allowed \"OpType\"s for a \"GateSetPredicate\"."
-        },
-        "node_set": {
-          "type": "array",
-          "items": {
-            "$ref": "file:///circuit_v1.json#/definitions/unitid"
-          },
-          "description": "The set of allowed node names for a \"PlacementPredicate\"."
-        },
-        "architecture": {
-          "$ref": "#/definitions/architecture",
-          "description": "The coupling map required by \"ConnectivityPredicate\" or \"DirectednessPredicate\"."
-        },
-        "n_qubits": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "The maximum number of qubits supported by \"MaxNQubitsPredicate\"."
-        },
-        "custom": {
-          "type": "string",
-          "description": "The python dill string of a custom predicate function for \"UserDefinedPredicate\"."
-        }
-      },
-      "required": [
-        "class"
       ],
-      "allOf": [
-        {
-          "if": {
-            "properties": {
-              "class": {
-                "const": "GateSetPredicate"
-              }
-            }
-          },
-          "then": {
-            "required": [
-              "allowed_types"
-            ]
-          }
-        },
-        {
-          "if": {
-            "properties": {
-              "class": {
-                "const": "PlacementPredicate"
-              }
-            }
-          },
-          "then": {
-            "required": [
-              "node_set"
-            ]
-          }
-        },
-        {
-          "if": {
-            "properties": {
-              "class": {
-                "const": "ConnectivityPredicate"
-              }
-            }
-          },
-          "then": {
-            "required": [
-              "architecture"
-            ]
-          }
-        },
-        {
-          "if": {
-            "properties": {
-              "class": {
-                "const": "DirectednessPredicate"
-              }
-            }
-          },
-          "then": {
-            "required": [
-              "architecture"
-            ]
-          }
-        },
-        {
-          "if": {
-            "properties": {
-              "class": {
-                "const": "MaxNQubitsPredicate"
-              }
-            }
-          },
-          "then": {
-            "required": [
-              "n_qubits"
-            ]
-          }
-        },
-        {
-          "if": {
-            "properties": {
-              "class": {
-                "const": "UserDefinedPredicate"
-              }
-            }
-          },
-          "then": {
-            "required": [
-              "custom"
-            ]
-          }
-        }
-      ]
-    },
-    "placement": {
-      "type": "object",
-      "description": "A configuration for the placement procedure.",
-      "properties": {
-        "type": {
-          "type": "string",
-          "enum": [
-            "Placement",
-            "GraphPlacement",
-            "NoiseAwarePlacement",
-            "LinePlacement"
-          ],
-          "description": "The placement algorithm in use."
-        },
-        "architecture": {
-          "$ref": "#/definitions/architecture"
-        },
-        "config": {
-          "$ref": "#/definitions/placement_config"
-        },
-        "characterisation": {
-          "$ref": "#/definitions/device_characterisation"
-        }
-      },
-      "required": [
-        "type",
-        "architecture"
-      ],
-      "allOf": [
-        {
-          "if": {
-            "properties": {
-              "type": {
-                "const": "GraphPlacement"
-              }
-            }
-          },
-          "then": {
-            "required": [
-              "config"
-            ]
-          }
-        },
-        {
-          "if": {
-            "properties": {
-              "type": {
-                "const": "NoiseAwarePlacement"
-              }
-            }
-          },
-          "then": {
-            "required": [
-              "config",
-              "characterisation"
-            ]
-          }
-        }
-      ]
-    },
-    "placement_config": {
-      "type": "object",
-      "description": "A finer-grained set of parameters for placement.",
-      "properties": {
-        "depth_limit": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "The look ahead limit for placement."
-        },
-        "max_interaction_edges": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "The maximum number of edges in the interaction graph."
-        },
-        "monomorphism_max_matches": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "The maximum number of matches from the monomorphism solver."
-        },
-        "arc_contraction_ratio": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "Tradeoff parameter between swap count and initial noise minimisation."
-        },
-        "timeout": {
-          "type": "integer",
-          "minimum": 0,
-          "description": "Timeout for monomorphism search, in milliseconds."
-        }
-      },
-      "required": [
-        "depth_limit",
-        "max_interaction_edges",
-        "monomorphism_max_matches",
-        "arc_contraction_ratio",
-        "timeout"
-      ]
-    },
-    "architecture": {
-      "type": "object",
-      "description": "A description of a target coupling map.",
-      "properties": {
-        "links": {
-          "type": "array",
-          "items": {
-            "type": "object",
-            "properties": {
-              "link": {
-                "type": "array",
-                "items": [
-                  {
-                    "$ref": "file:///circuit_v1.json#/definitions/unitid"
-                  },
-                  {
-                    "$ref": "file:///circuit_v1.json#/definitions/unitid"
-                  }
-                ]
-              },
-              "weight": {
-                "type": "number"
-              }
-            },
-            "required": [
-              "link",
-              "weight"
-            ]
-          },
-          "description": "The set of weighted edges in the coupling map."
-        },
-        "nodes": {
-          "type": "array",
-          "items": {
-            "$ref": "file:///circuit_v1.json#/definitions/unitid"
-          },
-          "description": "The set of nodes present on the device. This may include nodes not present in the list of links if the qubits are disconnected."
-        }
-      },
-      "required": [
-        "links",
-        "nodes"
-      ]
-    },
-    "device_characterisation": {
-      "type": "object",
-      "description": "A description of the error levels on the qubits and links of a particular device.",
-      "properties": {
-        "def_node_errors": {
-          "type": "array",
-          "items": {
-            "type": "array",
-            "items": [
-              {
-                "$ref": "file:///circuit_v1.json#/definitions/unitid"
-              },
-              {
-                "type": "number",
-                "minimum": 0,
-                "maximum": 1
-              }
-            ]
-          }
-        },
-        "def_link_errors": {
-          "type": "array",
-          "items": {
-            "type": "array",
-            "items": [
-              {
-                "type": "array",
-                "items": [
-                  {
-                    "$ref": "file:///circuit_v1.json#/definitions/unitid"
-                  },
-                  {
-                    "$ref": "file:///circuit_v1.json#/definitions/unitid"
-                  }
-                ]
-              },
-              {
-                "type": "number",
-                "minimum": 0,
-                "maximum": 1
-              }
-            ]
-          }
-        },
-        "readouts": {
-          "type": "array",
-          "items": {
-            "type": "array",
-            "items": [
-              {
-                "$ref": "file:///circuit_v1.json#/definitions/unitid"
-              },
-              {
-                "type": "number",
-                "minimum": 0,
-                "maximum": 1
-              }
-            ]
-          }
-        },
-        "op_node_errors": {
-          "type": "array",
-          "items": {
-            "type": "array",
-            "items": [
-              {
-                "$ref": "file:///circuit_v1.json#/definitions/unitid"
-              },
-              {
-                "type": "array",
-                "items": {
-                  "type": "array",
-                  "items": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "number",
-                      "minimum": 0,
-                      "maximum": 1
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        },
-        "op_link_errors": {
-          "type": "array",
-          "items": {
-            "type": "array",
-            "items": [
-              {
-                "type": "array",
-                "items": [
-                  {
-                    "$ref": "file:///circuit_v1.json#/definitions/unitid"
-                  },
-                  {
-                    "$ref": "file:///circuit_v1.json#/definitions/unitid"
-                  }
-                ]
-              },
-              {
-                "type": "array",
-                "items": {
-                  "type": "array",
-                  "items": [
-                    {
-                      "type": "string"
-                    },
-                    {
-                      "type": "number",
-                      "minimum": 0,
-                      "maximum": 1
-                    }
-                  ]
-                }
-              }
-            ]
-          }
-        }
-      },
-      "required": [
-        "def_node_errors",
-        "def_link_errors",
-        "readouts",
-        "op_node_errors",
-        "op_link_errors"
-      ]
+      "additionalProperties": false
     },
     "routingmethod": {
       "type": "object",
@@ -1027,15 +808,15 @@
         "name": {
           "type": "string",
           "description": "Name of method."
-        },
-      },
+        }
+      }
     },
     "routing_config": {
       "type": "array",
       "description": "A configuration for routing defined by an array of RoutingMethod.",
       "items": {
         "$ref": "#/definitions/routingmethod"
-      },
-    },
+      }
+    }
   }
 }

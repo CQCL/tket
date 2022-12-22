@@ -26,6 +26,7 @@ from pytket.utils.expectations import (
     expectation_from_shots,
     expectation_from_counts,
     get_operator_expectation_value,
+    get_pauli_expectation_value,
 )
 from pytket.utils.measurements import append_pauli_measurement, _all_pauli_measurements
 from pytket.utils.results import (
@@ -254,13 +255,27 @@ def test_outcomearray() -> None:
     )
 
 
+def test_pauli_expectation_value() -> None:
+    c = Circuit(2).H(0).CX(0, 1)
+    qps_zz = QubitPauliString({Qubit(0): Pauli.Z, Qubit(1): Pauli.Z})
+    qps_0 = QubitPauliString()
+    z = get_pauli_expectation_value(
+        c, qps_zz, TketSimShotBackend(ignore_measures=True), 10
+    )
+    w = get_pauli_expectation_value(c, qps_zz, TketSimBackend(), None)
+    x = get_pauli_expectation_value(c, qps_0, TketSimBackend(), None)
+    assert np.isclose(z, 1)
+    assert np.isclose(w, 1)
+    assert np.isclose(x, 1)
+
+
 def test_small_pauli_partition_expectation() -> None:
     c = Circuit(2)
     c.X(1)
     qps1 = QubitPauliString(Qubit(0), Pauli.Z)
     qps2 = QubitPauliString(Qubit(1), Pauli.Z)
     op = QubitPauliOperator({qps1: 0.5, qps2: 1.0})
-    backend = TketSimShotBackend()
+    backend = TketSimShotBackend(ignore_measures=True)
     n_shots = 10000
     strats = [
         None,
@@ -284,8 +299,14 @@ def test_medium_pauli_partition_expectation() -> None:
     qps3 = QubitPauliString({Qubit(1): Pauli.X, Qubit(3): Pauli.X})
 
     op = QubitPauliOperator({qps1: 0.5, qps2: 0.8, qps3: -10.2})
-    backends = [TketSimShotBackend(), TketSimBackend()]
-    n_shots_list = [10000, None]
+    backends = [
+        TketSimShotBackend(ignore_measures=True),
+        TketSimShotBackend(ignore_measures=True),
+        TketSimBackend(ignore_measures=True),
+    ]
+    backends[0]._supports_shots = False
+    backends[1]._supports_counts = False
+    n_shots_list = [10000, 10000, None]
     strats = [
         None,
         PauliPartitionStrat.NonConflictingSets,
@@ -315,7 +336,10 @@ def test_large_pauli_partition_expectation() -> None:
     op = QubitPauliOperator(
         {qps1: 0.3, qps2: -0.7j, qps3: 0.9, qps4: 0.83, qps5: 0.5, qps6: 0.5}
     )
-    backends = [TketSimShotBackend(), TketSimBackend()]
+    backends = [
+        TketSimShotBackend(ignore_measures=True),
+        TketSimBackend(ignore_measures=True),
+    ]
     n_shots_list = [10000, None]
     strats = [
         None,
@@ -378,7 +402,7 @@ def test_inversion_pauli_partition_expectation() -> None:
             qps8: 0.8,
         }
     )
-    backend = TketSimShotBackend()
+    backend = TketSimShotBackend(ignore_measures=True)
     n_shots = 10000
     strats = [
         None,
@@ -477,7 +501,7 @@ def unitary_circuits(draw: Callable[[SearchStrategy[Any]], Any]) -> Circuit:
         {typ: (1, 1) for typ in (OpType.Rx, OpType.Rz, OpType.Ry, OpType.U1)}
     )
     optype_dict.update({typ: (1, 2) for typ in (OpType.U2, OpType.PhasedX)})
-    optype_dict.update({typ: (1, 3) for typ in (OpType.U3,)})
+    optype_dict.update({typ: (1, 3) for typ in (OpType.U3, OpType.TK1)})
 
     optype_dict.update(
         {
@@ -515,7 +539,7 @@ def unitary_circuits(draw: Callable[[SearchStrategy[Any]], Any]) -> Circuit:
         }
     )
     optype_dict.update({typ: (2, 2) for typ in (OpType.PhasedISWAP, OpType.FSim)})
-    optype_dict.update({typ: (2, 3) for typ in (OpType.CU3,)})
+    optype_dict.update({typ: (2, 3) for typ in (OpType.CU3, OpType.TK2)})
 
     optype_dict.update(
         {typ: (3, 0) for typ in (OpType.CCX, OpType.CSWAP, OpType.BRIDGE)}

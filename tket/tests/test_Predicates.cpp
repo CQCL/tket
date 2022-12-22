@@ -19,6 +19,7 @@
 #include "Gate/SymTable.hpp"
 #include "Placement/Placement.hpp"
 #include "Predicates/CompilationUnit.hpp"
+#include "Predicates/PassGenerators.hpp"
 #include "Predicates/PassLibrary.hpp"
 #include "Predicates/Predicates.hpp"
 #include "Simulation/CircuitSimulator.hpp"
@@ -382,7 +383,7 @@ SCENARIO("Test basic functionality of CompilationUnit") {
 
 SCENARIO("Test PlacementPredicate") {
   GIVEN(
-      "Does the GraphPlacement class correctly modify Circuits and return "
+      "Does the Placement class correctly modify Circuits and return "
       "maps?") {
     Architecture test_arc({{0, 1}, {1, 2}, {1, 3}, {1, 4}, {2, 3}, {2, 5}});
 
@@ -418,6 +419,19 @@ SCENARIO("Test PlacementPredicate") {
       REQUIRE(placement_pred->verify(test_circ));
     }
   }
+}
+
+SCENARIO("Test ConnectivityPredicate") {
+  // https://github.com/CQCL/tket/issues/683
+  Architecture arc({{0, 1}, {0, 2}, {1, 2}});
+  Circuit c(2, 2);
+  c.add_conditional_gate<unsigned>(OpType::Phase, {0.5}, {}, {0}, 1);
+  PredicatePtr conn = std::make_shared<ConnectivityPredicate>(arc);
+  PassPtr pp = gen_default_mapping_pass(arc);
+  CompilationUnit cu(c);
+  pp->apply(cu);
+  const Circuit &c1 = cu.get_circ_ref();
+  REQUIRE(conn->verify(c1));
 }
 
 SCENARIO("Verifying whether or not circuits have mid-circuit measurements") {

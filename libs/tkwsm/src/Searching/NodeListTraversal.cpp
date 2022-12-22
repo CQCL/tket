@@ -40,8 +40,8 @@ static unsigned get_final_node_index_for_shared_domain(
   return domain_data_for_pv.entries[entries_index + 1].node_index - 1;
 }
 
-std::set<VertexWSM> NodeListTraversal::get_used_target_vertices() const {
-  std::set<VertexWSM> target_vertices;
+boost::dynamic_bitset<> NodeListTraversal::get_used_target_vertices() const {
+  boost::dynamic_bitset<> target_vertices(m_raw_data.number_of_tv);
 
   // Examine all PV.
   for (unsigned pv = 0; pv < m_raw_data.domains_data.size(); ++pv) {
@@ -73,15 +73,8 @@ std::set<VertexWSM> NodeListTraversal::get_used_target_vertices() const {
           continue;
         }
       }
-      const std::set<VertexWSM>& domain =
-          domain_data.entries[entries_index].domain;
-      if (target_vertices.empty()) {
-        target_vertices = domain;
-      } else {
-        for (VertexWSM tv : domain) {
-          target_vertices.insert(tv);
-        }
-      }
+
+      target_vertices |= domain_data.entries[entries_index].domain;
     }
   }
   return target_vertices;
@@ -122,31 +115,27 @@ bool NodeListTraversal::move_up() {
 // Also handles the new assignment PV->y, if necessary,
 // for the CURRENT node (not new node).
 static bool when_moving_down_check_current_domain_size(
-    const std::set<VertexWSM>& existing_domain, NodesRawData& raw_data,
+    const boost::dynamic_bitset<>& existing_domain, NodesRawData& raw_data,
     VertexWSM p_vertex, VertexWSM t_vertex) {
-  switch (existing_domain.size()) {
-    case 0:
-      TKET_ASSERT(false);
-      return false;
-    case 1:
-      // Already Dom(PV) = {TV}, so it will become a nogood.
-      raw_data.get_current_node_nonconst().nogood = true;
-      return false;
-    case 2: {
-      // Dom(PV) = {TV, y}, so it will become Dom(PV) = {y}
-      // at this node, so we need a new assignment PV->y.
-      // The elements of a set of size 2 can be found using
-      // cbegin and crbegin.
-      VertexWSM tv_other = *existing_domain.cbegin();
-      if (tv_other == t_vertex) {
-        tv_other = *existing_domain.crbegin();
-      }
-      raw_data.get_current_node_nonconst().new_assignments.emplace_back(
-          p_vertex, tv_other);
-      break;
+  const auto tv1 = existing_domain.find_first();
+  TKET_ASSERT(tv1 < existing_domain.size());
+
+  const auto tv2 = existing_domain.find_next(tv1);
+  if (tv2 >= existing_domain.size()) {
+    // Already Dom(PV) = {TV}, so it will become a nogood.
+    TKET_ASSERT(tv1 == t_vertex);
+    raw_data.get_current_node_nonconst().nogood = true;
+    return false;
+  }
+  const auto tv3 = existing_domain.find_next(tv2);
+  if (tv3 >= existing_domain.size()) {
+    // There are exactly two t-vertices, so a new assignment is needed.
+    VertexWSM tv_other = tv1;
+    if (tv_other == t_vertex) {
+      tv_other = tv2;
     }
-    default:
-      break;
+    raw_data.get_current_node_nonconst().new_assignments.emplace_back(
+        p_vertex, tv_other);
   }
   return true;
 }
@@ -178,9 +167,10 @@ static void complete_move_down(
   data_for_this_pv.entries.top().node_index = raw_data.current_node_index();
 
   // The domain data for the current node is now "junk".
-  std::set<VertexWSM>& new_domain = data_for_this_pv.entries.top().domain;
-  new_domain.clear();
-  new_domain.insert(t_vertex);
+  auto& domain = data_for_this_pv.entries.top().domain;
+  domain.resize(raw_data.number_of_tv);
+  domain.reset();
+  domain.set(t_vertex);
 }
 
 void NodeListTraversal::move_down(VertexWSM p_vertex, VertexWSM t_vertex) {
@@ -191,13 +181,9 @@ void NodeListTraversal::move_down(VertexWSM p_vertex, VertexWSM t_vertex) {
 
   NodesRawData::DomainData& data_for_this_pv =
       m_raw_data.domains_data.at(p_vertex);
-  std::set<VertexWSM>& existing_domain = data_for_this_pv.entries.top().domain;
-  auto iter = existing_domain.find(t_vertex);
 
-  // TV must be present!
-  TKET_ASSERT(iter != existing_domain.end());
   existing_node_valid = when_moving_down_check_current_domain_size(
-      existing_domain, m_raw_data, p_vertex, t_vertex);
+      data_for_this_pv.entries.top().domain, m_raw_data, p_vertex, t_vertex);
 
   // Next, we need to erase TV from the existing domain.
   if (existing_node_valid) {
@@ -205,29 +191,33 @@ void NodeListTraversal::move_down(VertexWSM p_vertex, VertexWSM t_vertex) {
         m_raw_data.current_node_index()) {
       // The data is not shared by previous nodes, so we can just overwrite it
       // in place.
-      existing_domain.erase(iter);
+      TKET_ASSERT(
+          data_for_this_pv.entries.top().domain.test_set(t_vertex, false));
+
     } else {
       data_for_this_pv.entries.push();
       data_for_this_pv.entries.top().node_index =
           m_raw_data.current_node_index();
+
       data_for_this_pv.entries.top().domain =
           data_for_this_pv.entries.one_below_top().domain;
-      TKET_ASSERT(data_for_this_pv.entries.top().domain.erase(t_vertex) == 1);
+      TKET_ASSERT(
+          data_for_this_pv.entries.top().domain.test_set(t_vertex, false));
     }
   }
-
   complete_move_down(m_raw_data, data_for_this_pv, p_vertex, t_vertex);
 }
 
 static void fill_nogood_or_new_assignment_in_all_shared_nodes(
-    VertexWSM pv, const std::set<VertexWSM>& new_domain,
+    VertexWSM pv, const boost::dynamic_bitset<>& new_domain,
     unsigned data_for_this_pv_entry_index,
     const NodesRawData::DomainData& data_for_this_pv, NodesRawData& raw_data) {
   // Which nodes share the domain?
   const unsigned final_node_index = get_final_node_index_for_shared_domain(
       data_for_this_pv, data_for_this_pv_entry_index, raw_data);
 
-  if (new_domain.empty()) {
+  const BitsetInformation bitset_info(new_domain);
+  if (bitset_info.empty) {
     // The nodes are all nogoods.
     for (unsigned jj =
              data_for_this_pv.entries[data_for_this_pv_entry_index].node_index;
@@ -236,9 +226,14 @@ static void fill_nogood_or_new_assignment_in_all_shared_nodes(
     }
     return;
   }
+  if (!bitset_info.single_element) {
+    // It's not a nogood OR new assignment, so nothing to do.
+    return;
+  }
 
   // It's the same new assignment PV->TV to be added to all nodes.
-  const auto new_assignment = std::make_pair(pv, *new_domain.cbegin());
+  const auto new_assignment =
+      std::make_pair(pv, bitset_info.single_element.value());
 
   for (unsigned jj =
            data_for_this_pv.entries[data_for_this_pv_entry_index].node_index;
@@ -266,16 +261,15 @@ void NodeListTraversal::erase_impossible_assignment(
       // Don't waste time with nogood nodes.
       continue;
     }
-    std::set<VertexWSM>& domain = data_for_this_pv.entries[ii].domain;
-    if (domain.erase(impossible_assignment.second) == 0 || domain.size() >= 2) {
-      // EITHER nothing changed, OR the change had no significant effect.
+
+    if (!data_for_this_pv.entries[ii].domain.test_set(
+            impossible_assignment.second, false)) {
+      // No change.
       continue;
     }
-    // Now, it's EITHER a nogood, OR a new assignment is created.
-    // Anyway, we go through all the nodes which share this domain and
-    // process them (the same Domain(pv) may be shared across several nodes).
     fill_nogood_or_new_assignment_in_all_shared_nodes(
-        impossible_assignment.first, domain, ii, data_for_this_pv, m_raw_data);
+        impossible_assignment.first, data_for_this_pv.entries[ii].domain, ii,
+        data_for_this_pv, m_raw_data);
   }
 }
 

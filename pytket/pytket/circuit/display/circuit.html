@@ -5,10 +5,9 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-
     <script type="application/javascript" src="https://cdn.jsdelivr.net/npm/vue@3"></script>
-    <script type="application/javascript" src="https://unpkg.com/pytket-circuit-renderer@0.2/dist/pytket-circuit-renderer.umd.js"></script>
-    <link rel="stylesheet" href="https://unpkg.com/pytket-circuit-renderer@0.2/dist/pytket-circuit-renderer.css">
+    <script type="application/javascript" src="https://unpkg.com/pytket-circuit-renderer@0.3/dist/pytket-circuit-renderer.umd.js"></script>
+    <link rel="stylesheet" href="https://unpkg.com/pytket-circuit-renderer@0.3/dist/pytket-circuit-renderer.css">
 </head>
 <body>
     <div id="circuit-display-vue-container-{{uid}}" class="pytket-circuit-display-container">
@@ -17,23 +16,22 @@
         </div>
         <circuit-display-container :circuit-element-str="'#circuit-json-to-display'"></circuit-display-container>
     </div>
-
     <script type="application/javascript">
         const { createApp } = Vue;
         const circuitDisplayContainer = window["pytket-circuit-renderer"].default;
-
         // Init variables to be shared between circuit display instances
         if (typeof window.pytketCircuitDisplays === "undefined") {
             window.pytketCircuitDisplays = {};
         }
-
         const uid = "{{ uid }}";
-
         // Create the root Vue component
-        window.pytketCircuitDisplays[uid] = createApp({
+        const app = createApp({
             delimiters: ['[[#', '#]]'],
             components: { circuitDisplayContainer },
-        }).mount("#circuit-display-vue-container-"+uid);
+        })
+        app.config.unwrapInjectedRef = true;
+        app.mount("#circuit-display-vue-container-"+uid);
+        window.pytketCircuitDisplays[uid] = app;
     </script>
 </body>
 </html>

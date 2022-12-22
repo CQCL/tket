@@ -411,6 +411,13 @@ class QubitPauliTensor {
       : string(_map), coeff(_coeff) {}
 
   /**
+   * Transpose as a tensor
+   * Since all Paulis are self-adjoint, this is the same as complex conjugate
+   * Adds a -1 phase if the string contains an odd number of Y's
+   */
+  void transpose();
+
+  /**
    * Calculate the product of two tensors
    *
    * @param other second tensor

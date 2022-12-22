@@ -124,7 +124,7 @@ const Circuit &Z0_CX();
  */
 const Circuit &CCX_modulo_phase_shift();
 
-/** Equivalent to CCX, using five CX */
+/** Equivalent to CCX, using 6 CX */
 const Circuit &CCX_normal_decomp();
 
 /** Equivalent to CCCX, using 14 CX */

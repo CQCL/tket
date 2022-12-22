@@ -118,12 +118,11 @@ std::ostream &operator<<(std::ostream &os, const SymplecticTableau &tab) {
 }
 
 bool SymplecticTableau::operator==(const SymplecticTableau &other) const {
-  bool same = this->n_rows_ == other.n_rows_;
-  same &= this->n_qubits_ == other.n_qubits_;
-  same &= this->xmat_ == other.xmat_;
-  same &= this->zmat_ == other.zmat_;
-  same &= this->phase_ == other.phase_;
-  return same;
+  // Need this to short-circuit before matrix checks as comparing matrices of
+  // different sizes will throw an exception
+  return (this->n_rows_ == other.n_rows_) &&
+         (this->n_qubits_ == other.n_qubits_) && (this->xmat_ == other.xmat_) &&
+         (this->zmat_ == other.zmat_) && (this->phase_ == other.phase_);
 }
 
 void SymplecticTableau::row_mult(unsigned ra, unsigned rw, Complex coeff) {
@@ -147,6 +146,9 @@ void SymplecticTableau::apply_V(unsigned qb) {
 }
 
 void SymplecticTableau::apply_CX(unsigned qc, unsigned qt) {
+  if (qc == qt)
+    throw std::logic_error(
+        "Attempting to apply a CX with equal control and target in a tableau");
   for (unsigned i = 0; i < n_rows_; ++i) {
     phase_(i) = phase_(i) ^ (xmat_(i, qc) && zmat_(i, qt) &&
                              !(xmat_(i, qt) ^ zmat_(i, qc)));
@@ -320,11 +322,18 @@ MatrixXb SymplecticTableau::anticommuting_rows() const {
 }
 
 unsigned SymplecticTableau::rank() const {
-  MatrixXb fullmat(n_rows_, 2 * n_qubits_);
-  fullmat << xmat_, zmat_;
-  Eigen::FullPivLU<Eigen::Matrix<double, Eigen::Dynamic, Eigen::Dynamic>> lu(
-      fullmat.cast<double>());
-  return lu.rank();
+  // Create a copy in gaussian form and count the empty rows
+  SymplecticTableau copy(*this);
+  copy.gaussian_form();
+  unsigned empty_rows = 0;
+  for (unsigned i = 0; i < n_rows_; ++i) {
+    if (copy.xmat_.row(n_rows_ - 1 - i).isZero() &&
+        copy.zmat_.row(n_rows_ - 1 - i).isZero())
+      ++empty_rows;
+    else
+      break;
+  }
+  return n_rows_ - empty_rows;
 }
 
 SymplecticTableau SymplecticTableau::conjugate() const {
@@ -337,6 +346,17 @@ SymplecticTableau SymplecticTableau::conjugate() const {
     if (sum % 2 == 1) conj.phase_(i) ^= true;
   }
   return conj;
+}
+
+void SymplecticTableau::gaussian_form() {
+  MatrixXb fullmat = MatrixXb::Zero(n_rows_, 2 * n_qubits_);
+  fullmat(Eigen::all, Eigen::seq(0, Eigen::last, 2)) = xmat_;
+  fullmat(Eigen::all, Eigen::seq(1, Eigen::last, 2)) = zmat_;
+  std::vector<std::pair<unsigned, unsigned>> row_ops =
+      gaussian_elimination_row_ops(fullmat);
+  for (const std::pair<unsigned, unsigned> &op : row_ops) {
+    row_mult(op.first, op.second);
+  }
 }
 
 void SymplecticTableau::row_mult(

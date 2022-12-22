@@ -69,7 +69,7 @@ def test_resulthandle() -> None:
 
 
 def test_check_handle_single() -> None:
-    b = TketSimBackend()
+    b = TketSimBackend(ignore_measures=True)
     c = Circuit(2).measure_all()
     handles = b.process_circuits([c, c])
     assert b.get_results(handles)
@@ -107,7 +107,7 @@ def test_basisorder() -> None:
     assert (r.get_state() == np.asarray([0, 1, 0, 0])).all()
     assert (r.get_state(basis=BasisOrder.dlo) == np.asarray([0, 0, 1, 0])).all()
     assert (c.get_statevector() == np.asarray([0, 1, 0, 0])).all()
-    b = TketSimShotBackend()
+    b = TketSimShotBackend(ignore_measures=True)
     c.measure_all()
     r = b.run_circuit(c, n_shots=4, seed=4)
     assert r.get_shots().shape == (4, 2)
@@ -329,14 +329,30 @@ def test_backendresult() -> None:
 
     assert np.array_equal(backres_unitary.get_state(), teststate)
 
-    shots_dist = backres_shots.get_distribution()
-    assert len(shots_dist) == 2
-    assert shots_dist[tuple(shots_list[0])] == 0.5
-    assert shots_dist[tuple(shots_list[1])] == 0.5
+    with pytest.deprecated_call():
+        shots_dist0 = backres_shots.get_distribution()
+        assert len(shots_dist0) == 2
+        assert shots_dist0[tuple(shots_list[0])] == 0.5
+        assert shots_dist0[tuple(shots_list[1])] == 0.5
 
-    state_dist = backres_state.get_distribution([qbits[1], qbits[0]])
+        state_dist0 = backres_state.get_distribution([qbits[1], qbits[0]])
+        assert np.isclose(state_dist0[(0, 1)], abs(teststate[2]) ** 2)
+        assert np.isclose(state_dist0[(1, 0)], abs(teststate[1]) ** 2)
+
+    shots_dist = backres_shots.get_empirical_distribution()
+    assert len(shots_dist.support) == 2
+    assert shots_dist[tuple(shots_list[0])] == 1
+    assert shots_dist[tuple(shots_list[1])] == 1
+
+    with pytest.raises(InvalidResultType):
+        backres_shots.get_probability_distribution()
+
+    state_dist = backres_state.get_probability_distribution([qbits[1], qbits[0]])
     assert np.isclose(state_dist[(0, 1)], abs(teststate[2]) ** 2)
     assert np.isclose(state_dist[(1, 0)], abs(teststate[1]) ** 2)
+
+    with pytest.raises(InvalidResultType):
+        backres_state.get_empirical_distribution()
 
 
 def test_backendresult_ppcirc() -> None:
@@ -430,7 +446,7 @@ def test_status_serialization(c_stat: CircuitStatus) -> None:
 
 def test_shots_with_unmeasured() -> None:
     # TKET-1193
-    b = TketSimShotBackend()
+    b = TketSimShotBackend(ignore_measures=True)
     c = Circuit(4, 3).H(0).X(1).H(2).H(3)
     c.add_gate(OpType.Measure, [0, 1])
     c.add_gate(OpType.Measure, [1, 0])
@@ -440,6 +456,9 @@ def test_shots_with_unmeasured() -> None:
     shots = r.get_shots()
     assert all(shots[i, 0] == 1 for i in range(10))
     assert all(shots[i, 2] == 0 for i in range(10))
+    shots1 = r.get_shots(cbits=[Bit(1), Bit(2), Bit(0)])
+    assert all(shots1[i, 2] == 1 for i in range(10))
+    assert all(shots1[i, 1] == 0 for i in range(10))
 
 
 def test_tket_sim_backend_equivalence_with_circuit_functions() -> None:
@@ -483,7 +502,7 @@ def test_tket_sim_backend_equivalence_with_circuit_functions() -> None:
 
 
 def test_postprocess_1() -> None:
-    b = TketSimShotBackend()
+    b = TketSimShotBackend(ignore_measures=True)
     n_shots = 100
     seed = 7
 
@@ -509,7 +528,7 @@ def test_postprocess_1() -> None:
 
 
 def test_postprocess_2() -> None:
-    b = TketSimShotBackend()
+    b = TketSimShotBackend(ignore_measures=True)
     c = Circuit(3).CX(0, 1).Y(0).H(1).CX(1, 2)
     c.measure_all()
     for xcirc in [None, Circuit(1).Y(0).Z(0)]:
@@ -540,7 +559,7 @@ def test_postprocess_2() -> None:
 
 
 def test_postprocess_3() -> None:
-    b = TketSimShotBackend()
+    b = TketSimShotBackend(ignore_measures=True)
     qbs = [Node("qn", i) for i in range(4)]
     arc = Architecture([[qbs[i], qbs[i + 1]] for i in range(3)])
     c = Circuit(3, 3).H(0).CX(0, 2).measure_all()
@@ -558,7 +577,7 @@ def test_postprocess_3() -> None:
 
 
 def test_postprocess_4() -> None:
-    b = TketSimShotBackend()
+    b = TketSimShotBackend(ignore_measures=True)
     c = Circuit(3, 2)
     c.X(0).H(1).H(2).CY(1, 2)
     c.measure_all()

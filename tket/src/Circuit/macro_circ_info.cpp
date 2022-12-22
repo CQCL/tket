@@ -19,6 +19,8 @@
 #include <tklog/TketLog.hpp>
 
 #include "Circuit.hpp"
+#include "DAGDefs.hpp"
+#include "OpType/EdgeType.hpp"
 #include "OpType/OpType.hpp"
 #include "Ops/OpPtr.hpp"
 #include "Utils/GraphHeaders.hpp"
@@ -90,6 +92,30 @@ std::list<Command> Circuit::get_commands_of_type(OpType op_type) const {
   }
   return coms;
 }
+unsigned Circuit::count_n_qubit_gates(unsigned size) const {
+  unsigned counter = 0;
+  if (size == 0) return counter;
+  BGL_FORALL_VERTICES(v, dag, DAG) {
+    if (n_in_edges_of_type(v, EdgeType::Quantum) == size) {
+      const Op_ptr op_ptr = get_Op_ptr_from_Vertex(v);
+      switch (op_ptr->get_type()) {
+        case OpType::Input:
+        case OpType::Create:
+        case OpType::Output:
+        case OpType::Discard:
+        case OpType::Reset:
+        case OpType::Measure:
+        case OpType::Barrier: {
+          break;
+        }
+        default: {
+          counter++;
+        }
+      }
+    }
+  }
+  return counter;
+}
 
 Circuit Circuit::subcircuit(const Subcircuit& sc) const {
   Circuit sub;
@@ -143,9 +169,7 @@ Circuit Circuit::subcircuit(const Subcircuit& sc) const {
       port_t in_port = get_source_port(e);
       OpType type = sub.get_OpType_from_Vertex(sub_source);
       if (is_initial_q_type(type) || type == OpType::ClInput) {
-        // For Quantum and Classical edges, boundary_edge == *it;
-        // for Boolean, this gives the corresponding Classical
-        Edge boundary_edge = this->get_nth_out_edge(source, in_port);
+        Edge boundary_edge = get_linear_edge(e);
         // Multiple inputs might be mapped to the same source
         // so need to distinguish them.
         sub_source = in_boundary_map.at(boundary_edge);
@@ -736,6 +760,18 @@ Circuit::SliceIterator::SliceIterator(const Circuit& circ)
   }
   prev_b_frontier_ = cut_.b_frontier;
   cut_ = circ.next_cut(cut_.u_frontier, cut_.b_frontier);
+
+  // Add all vertices that have no Quantum or Classical edges (e.g. Phase) and
+  // no Boolean inputs:
+  VertexSet loners;
+  BGL_FORALL_VERTICES(v, circ.dag, DAG) {
+    if (circ.n_in_edges(v) == 0 &&
+        circ.n_out_edges_of_type(v, EdgeType::Quantum) == 0 &&
+        circ.n_out_edges_of_type(v, EdgeType::Classical) == 0) {
+      loners.insert(v);
+    }
+  }
+  cut_.slice->insert(cut_.slice->end(), loners.begin(), loners.end());
 }
 
 Circuit::SliceIterator::SliceIterator(

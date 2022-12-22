@@ -1,6 +1,154 @@
 Changelog
 =========
 
+1.10.0 (December 2022)
+----------------------
+
+Minor new features:
+
+* Add support for PhasedX gates in Pauli graph synthesis.
+
+Fixes:
+
+* Handle 0-qubit operations in connectivity check.
+* Fix handling of Tdg, CY, ZZMax and Clifford-angle YYPhase gates in Pauli
+  graph synthesis.
+* Disallow conversion to QASM of operations conditioned on strict subregisters
+  larger than one bit, or reordered registers.
+
+1.9.1 (December 2022)
+---------------------
+
+Minor new features:
+
+* New ``view_browser`` function for opening a browser with circuit render.
+
+Fixes:
+
+* Warn rather than abort when significant rounding errors are detected in
+  TK2-to-CX rebase.
+* Fix incorrect QASM output for ``OpType.CopyBits``.
+* Fix incorrect QASM read in ``OpType.ZZPhase``.
+
+1.9.0 (November 2022)
+---------------------
+
+Fixes:
+
+* Rebase and synthesis passes now respect conditional phase, by adding
+  conditional ``OpType.Phase`` operations to the rebased circuit. Any code that
+  relies on the circuit having gates only in the specified gate set should be
+  updated to handle ``OpType.Phase`` as well when conditional operations are
+  present.
+* A bug where the sequence of ``RoutingMethod`` used in ``DefaultMappingPass`` could 
+  add a cycle to the ``Circuit`` DAG has been fixed.
+* Fix support for ECR gate in QASM converters.
+
+API changes:
+
+* The default value of ``optimisation_level`` in ``Backend`` methods that have
+  this parameter (such as ``get_compiled_circuit()``) has been changed from 1 to
+  2.
+
+Minor new features:
+
+* Added shortcuts for adding ``U1``, ``U2``, ``U3``, ``TK1``, ``TK2``, ``CU1``, 
+  ``CU3``, ``ISWAP``, ``PhasedISWAP``, ``ESWAP``, ``PhasedX``, ``FSim``, ``Sycamore``
+  and ``ISWAPMax`` gates to a ``pytket`` ``Circuit``.
+* New ``Circuit`` methods ``n_1qb_gates``, ``n_2qb_gates``, ``n_nqb_gates``.
+* New ``EmpriricalDistribution`` and ``ProbabilityDistribution`` utility classes
+  for manipulating distributions, and methods to extract them from
+  ``BackendResult`` objects.
+
+1.8.1 (November 2022)
+---------------------
+
+Fixes:
+
+* Incorrect qasm filtering.
+* Make graph placement work with multi-qubit barriers.
+
+1.8.0 (November 2022)
+---------------------
+
+Minor new features:
+
+* New ``OpType::Phase`` 0-qubit gate affecting global phase.
+* New ``CnXPairwiseDecomposition`` pass.
+* Allow ``QControlBox`` with implicit wire swaps to be decomposed.
+* New ``Circuit`` methods ``replace_SWAPs`` and ``replace_implicit_wire_swaps``.
+
+Fixes:
+
+* Remove unused ``tk_SCRATCH_BIT`` registers from qasm output.
+* Update the ``LogicExp`` in every ``ClassicalExpBox`` when calling ``Circuit.rename_units``.
+* Fix the json schema for ``LinePlacement``
+* Fix issue with ``QControlBox`` throwing error during decomposition
+  if the controlled circuit contains identity gates.
+* Fix issue with ``KAKDecomposition`` raising exception if the circuit contains ``ClassicalExpBox``.
+
+1.7.3 (October 2022)
+--------------------
+
+Minor new features:
+
+* New ``Circuit`` properties ``created_qubits`` and ``discarded_qubits``.
+* Barrier operations inside QASM custom gates are now accepted.
+* Added wasm functions will be checked if the signatures are supported
+
+Fixes:
+
+* Circuit equality check now takes into account qubit creations and qubit discards.
+* Created qubits and discarded qubits are now shown in ``Circuit.__repr__`` and ``Circuit.to_dict``.
+* Allow symbolic operations in initial simplification.
+* Fix the json schema for compiler passes.
+* Fix ``SquashRzPhasedX`` so it now preserves phase.
+
+1.6.1 (September 2022)
+----------------------
+
+Minor new features:
+
+* New ``OpType.CnY`` and ``OpType.CnZ``.
+* Update ``DecomposeArbitrarilyControlledGates`` pass to decompose ``CnX``,
+  ``CnY``, and ``CnZ`` gates.
+
+Fixes:
+
+* ``Circuit.get_unitary()`` and ``Circuit.get_statevector()`` now throw an error
+  when the circuit contains measurements.
+* Fix critical issue with compilation of circuits containing conditional gates.
+
+1.6.0 (September 2022)
+----------------------
+
+* New ``ToffoliBox`` for constructing circuits that implement permutations of
+  basis states.
+
+1.5.2 (August 2022)
+-------------------
+
+Minor new features:
+
+* Prefer `ZZPhase` in ``DecomposeTK2`` if it results in the same fidelity but
+  fewer two-qubit gates.
+
+* Add ``SquashRzPhasedX`` pass to squash single qubit gates into
+  ``Rz`` and ``PhasedX`` gates while trying to commute ``Rz``s to the back. 
+
+1.5.1 (August 2022)
+-------------------
+
+Minor new features:
+
+* Improve ``FullPeepholeOptimise`` performance.
+
+Fixes:
+
+* Squash two-qubit circuits properly in ``FullPeepholeOptimise`` for parameter
+  `target_2qb_gate=OpType.TK2`.
+* Floating point inaccuracies in ``NormalisedTK2Predicate``.
+
 1.5.0 (August 2022)
 -------------------
 

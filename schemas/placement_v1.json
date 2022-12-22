@@ -1,0 +1,254 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "http://cambridgequantum.com/schemas/tket/placement_v1.json",
+  "type": "object",
+  "description": "Serialization of a pytket placement v1",
+  "properties": {
+    "type": {
+      "type": "string",
+      "enum": [
+        "Placement",
+        "GraphPlacement",
+        "NoiseAwarePlacement",
+        "LinePlacement"
+      ],
+      "description": "The placement algorithm in use."
+    },
+    "architecture": {
+      "$ref": "architecture_v1.json#"
+    },
+    "config": {
+      "$ref": "#/definitions/placement_config"
+    },
+    "characterisation": {
+      "$ref": "#/definitions/device_characterisation"
+    }
+  },
+  "required": [
+    "type",
+    "architecture"
+  ],
+  "allOf": [
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "GraphPlacement"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "matches",
+          "timeout",
+          "maximum_pattern_gates",
+          "maximum_pattern_depth"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "LinePlacement"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "maximum_pattern_gates",
+          "maximum_pattern_depth"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "NoiseAwarePlacement"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "matches",
+          "timeout",
+          "maximum_pattern_gates",
+          "maximum_pattern_depth",
+          "characterisation"
+        ]
+      }
+    }
+  ],
+  "definitions": {
+    "placement_config": {
+      "type": "object",
+      "description": "A finer-grained set of parameters for placement.",
+      "properties": {
+        "depth_limit": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The look ahead limit for placement."
+        },
+        "max_interaction_edges": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The maximum number of edges in the interaction graph."
+        },
+        "monomorphism_max_matches": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "The maximum number of matches from the monomorphism solver."
+        },
+        "arc_contraction_ratio": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Tradeoff parameter between swap count and initial noise minimisation."
+        },
+        "timeout": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Timeout for monomorphism search, in milliseconds."
+        }
+      },
+      "required": [
+        "depth_limit",
+        "max_interaction_edges",
+        "monomorphism_max_matches",
+        "arc_contraction_ratio",
+        "timeout"
+      ]
+    },
+    "device_characterisation": {
+      "type": "object",
+      "description": "A description of the error levels on the qubits and links of a particular device.",
+      "properties": {
+        "def_node_errors": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": [
+              {
+                "$ref": "circuit_v1.json#/definitions/unitid"
+              },
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            ]
+          }
+        },
+        "def_link_errors": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": [
+              {
+                "type": "array",
+                "items": [
+                  {
+                    "$ref": "circuit_v1.json#/definitions/unitid"
+                  },
+                  {
+                    "$ref": "circuit_v1.json#/definitions/unitid"
+                  }
+                ]
+              },
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            ]
+          }
+        },
+        "readouts": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": [
+              {
+                "$ref": "circuit_v1.json#/definitions/unitid"
+              },
+              {
+                "type": "number",
+                "minimum": 0,
+                "maximum": 1
+              }
+            ]
+          }
+        },
+        "op_node_errors": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": [
+              {
+                "$ref": "circuit_v1.json#/definitions/unitid"
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "items": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        },
+        "op_link_errors": {
+          "type": "array",
+          "items": {
+            "type": "array",
+            "items": [
+              {
+                "type": "array",
+                "items": [
+                  {
+                    "$ref": "circuit_v1.json#/definitions/unitid"
+                  },
+                  {
+                    "$ref": "circuit_v1.json#/definitions/unitid"
+                  }
+                ]
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "array",
+                  "items": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  ]
+                }
+              }
+            ]
+          }
+        }
+      },
+      "required": [
+        "def_node_errors",
+        "def_link_errors",
+        "readouts",
+        "op_node_errors",
+        "op_link_errors"
+      ]
+    }
+  }
+}

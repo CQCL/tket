@@ -38,6 +38,7 @@
 #include "Transformations/PauliOptimisation.hpp"
 #include "Transformations/Rebase.hpp"
 #include "Transformations/Replacement.hpp"
+#include "Transformations/RzPhasedXSquash.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/Expression.hpp"
 #include "testutil.hpp"
@@ -160,6 +161,86 @@ SCENARIO("Check commutation through multiqubit ops") {
         REQUIRE(circ == correct);
       }
     }
+  }
+  GIVEN("A circuit with classical control") {
+    Circuit circ(2, 1);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_conditional_gate<unsigned>(OpType::Rz, {0.142}, {0}, {0}, 1);
+
+    circ.add_barrier({0, 1});
+
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
+    circ.add_op<unsigned>(OpType::Rz, 0.142, {0});
+
+    circ.add_barrier({0, 1});
+
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {1, 0}, {0}, 0);
+    circ.add_conditional_gate<unsigned>(OpType::CX, {}, {1, 0}, {0}, 1);
+    circ.add_op<unsigned>(OpType::X, {0});
+
+    REQUIRE(Transforms::commute_through_multis().apply(circ));
+
+    Circuit solution(2, 1);
+    solution.add_op<unsigned>(OpType::CX, {0, 1});
+    solution.add_conditional_gate<unsigned>(OpType::Rz, {0.142}, {0}, {0}, 1);
+
+    solution.add_barrier({0, 1});
+
+    solution.add_op<unsigned>(OpType::Rz, 0.142, {0});
+    solution.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
+
+    solution.add_barrier({0, 1});
+
+    solution.add_op<unsigned>(OpType::X, {0});
+    solution.add_conditional_gate<unsigned>(OpType::CX, {}, {1, 0}, {0}, 0);
+    solution.add_conditional_gate<unsigned>(OpType::CX, {}, {1, 0}, {0}, 1);
+
+    REQUIRE(circ == solution);
+  }
+  GIVEN("A circuit with classical control (2)") {
+    Circuit circ(3, 3);
+    circ.add_op<unsigned>(OpType::CX, {1, 2});
+    circ.add_measure(0, 0);
+    circ.add_measure(1, 1);
+    circ.add_conditional_gate<unsigned>(OpType::X, {}, {2}, {0, 1}, 1);
+
+    Circuit old_circ = circ;
+    REQUIRE(!Transforms::commute_through_multis().apply(circ));
+    REQUIRE(old_circ == circ);
+  }
+  GIVEN("A circuit with classical control (3)") {
+    Circuit circ(3, 3);
+    circ.add_measure(0, 0);
+    circ.add_measure(1, 1);
+    circ.add_conditional_gate<unsigned>(OpType::ZZMax, {}, {0, 2}, {0, 1}, 1);
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {0});
+    circ.add_op<unsigned>(OpType::Z, {2});
+
+    Circuit solution(3, 3);
+    solution.add_measure(0, 0);
+    solution.add_measure(1, 1);
+    solution.add_op<unsigned>(OpType::Rz, 0.3, {0});
+    solution.add_op<unsigned>(OpType::Z, {2});
+    solution.add_conditional_gate<unsigned>(
+        OpType::ZZMax, {}, {0, 2}, {0, 1}, 1);
+
+    REQUIRE(Transforms::commute_through_multis().apply(circ));
+    REQUIRE(solution == circ);
+  }
+  GIVEN("A bridge") {
+    Circuit circ(3);
+    circ.add_op<unsigned>(OpType::BRIDGE, {1, 2, 0});
+    REQUIRE_FALSE(Transforms::commute_through_multis().apply(circ));
+  }
+  GIVEN("A circuit with a conditional measure") {
+    Circuit circ(2, 3);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_conditional_gate<unsigned>(OpType::Measure, {}, {0, 0}, {1}, 1);
+    circ.add_conditional_gate<unsigned>(OpType::Measure, {}, {1, 0}, {2}, 1);
+    Circuit orig = circ;
+
+    REQUIRE(!Transforms::commute_through_multis().apply(circ));
+    REQUIRE(orig == circ);
   }
 }
 
@@ -299,6 +380,15 @@ SCENARIO(
     const StateVector s1 = tket_sim::get_statevector(circ);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(s0, s1));
   }
+  GIVEN("A controlled phase") {
+    // https://github.com/CQCL/tket/issues/576
+    Circuit circ(1, 1);
+    circ.add_conditional_gate<unsigned>(OpType::Rz, {2.}, {0}, {0}, 1);
+    Transforms::squash_1qb_to_pqp(OpType::Rz, OpType::Ry).apply(circ);
+    Circuit circ1(1, 1);
+    circ1.add_conditional_gate<unsigned>(OpType::Phase, {1.}, {}, {0}, 1);
+    REQUIRE(circ == circ1);
+  }
 }
 
 SCENARIO(
@@ -385,7 +475,7 @@ SCENARIO(
 
   GIVEN("A circuit with Z basis operations at the end") {
     Circuit test1(4, 4);
-    Vertex h0 = test1.add_op<unsigned>(OpType::H, {0});
+    test1.add_op<unsigned>(OpType::H, {0});
     test1.add_op<unsigned>(OpType::X, {1});
     test1.add_op<unsigned>(OpType::Y, {2});
     test1.add_op<unsigned>(OpType::Z, {3});
@@ -398,7 +488,7 @@ SCENARIO(
 
     CHECK_FALSE(Transforms::remove_redundancies().apply(test1));
     WHEN("Measurements are added") {
-      Vertex measure0 = test1.add_measure(0, 0);
+      test1.add_measure(0, 0);
       test1.add_measure(1, 1);
       test1.add_measure(2, 2);
       THEN("Redundant gates before a measurement are removed.") {
@@ -537,8 +627,11 @@ SCENARIO("Testing general 1qb squash") {
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::Ry, 1., {0});
     circ.add_op<unsigned>(OpType::Rx, 1., {0});
+    auto u0 = tket_sim::get_unitary(circ);
     bool success =
         Transforms::squash_1qb_to_pqp(OpType::Rx, OpType::Ry).apply(circ);
+    auto u1 = tket_sim::get_unitary(circ);
+    REQUIRE(u0.isApprox(u1));
     REQUIRE(!success);
   }
 
@@ -931,7 +1024,7 @@ SCENARIO("Test commutation through CXsw", "[transform]") {
     // an isomorphism)
     SliceVec circslice = circ.get_slices();
     SliceVec newcircslice = new_circ.get_slices();
-    for (int i = 0; i < circslice.size(); ++i) {
+    for (unsigned i = 0; i < circslice.size(); ++i) {
       Slice::iterator k = newcircslice[i].begin();
       for (Slice::iterator j = circslice[i].begin(); j != circslice[i].end();
            ++j) {
@@ -1775,6 +1868,32 @@ SCENARIO("Test TK1 gate decomp for some gates") {
   }
 }
 
+SCENARIO("Testing in_weyl_chamber") {
+  GIVEN("Normalised angles (1)") { REQUIRE(in_weyl_chamber({0.5, 0.5, 0})); }
+  GIVEN("Normalised angles (2)") { REQUIRE(in_weyl_chamber({0.5, 0.3, 0})); }
+  GIVEN("Normalised angles (2)") { REQUIRE(in_weyl_chamber({0.3, 0.3, -0.2})); }
+  GIVEN("Non normalised angles (1)") {
+    REQUIRE_FALSE(in_weyl_chamber({0.3, 0.3, -0.31}));
+  }
+  GIVEN("Non normalised angles (2)") {
+    REQUIRE_FALSE(in_weyl_chamber({0.2, 0.3, 0}));
+  }
+  GIVEN("Non normalised angles (3)") {
+    REQUIRE_FALSE(in_weyl_chamber({1, 0, 0}));
+  }
+  GIVEN("Non normalised angles (4)") {
+    REQUIRE_FALSE(in_weyl_chamber({0, 0, 0.1}));
+  }
+  GIVEN("A close to invalid TK2") {
+    Circuit c = CircPool::TK2_using_normalised_TK2(
+        3.48828125, 0.51171875000000022, 0.48828124999999983);
+    Vertex tk2 = *c.get_gates_of_type(OpType::TK2).begin();
+    Op_ptr op = c.get_Op_ptr_from_Vertex(tk2);
+    auto params = op->get_params();
+    REQUIRE(in_weyl_chamber({params[0], params[1], params[2]}));
+  }
+}
+
 SCENARIO("Testing decompose_TK2") {
   GIVEN("Parameterless decompose_TK2") {
     Circuit c(2);
@@ -1782,6 +1901,30 @@ SCENARIO("Testing decompose_TK2") {
     REQUIRE(Transforms::decompose_TK2().apply(c));
     REQUIRE(c.count_gates(OpType::CX) == 2);
     REQUIRE(c.count_gates(OpType::TK2) == 0);
+    REQUIRE(!Transforms::decompose_TK2().apply(c));
+  }
+  GIVEN("Prioritise ZZPhase over ZZMax for equal fidelity (1)") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::TK2, {0.3, 0., 0.}, {0, 1});
+    Transforms::TwoQbFidelities fid;
+    fid.ZZPhase_fidelity = [](double) { return 1.; };
+    fid.ZZMax_fidelity = 1.;
+    REQUIRE(Transforms::decompose_TK2(fid).apply(c));
+    REQUIRE(c.count_gates(OpType::ZZPhase) == 1);
+    REQUIRE(c.count_gates(OpType::TK2) == 0);
+    REQUIRE(c.count_gates(OpType::ZZMax) == 0);
+    REQUIRE(!Transforms::decompose_TK2().apply(c));
+  }
+  GIVEN("Prioritise ZZPhase over ZZMax for equal fidelity (2)") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::TK2, {0.3, 0., 0.}, {0, 1});
+    Transforms::TwoQbFidelities fid;
+    fid.ZZPhase_fidelity = [](double) { return .9; };
+    fid.ZZMax_fidelity = .9;
+    REQUIRE(Transforms::decompose_TK2(fid).apply(c));
+    REQUIRE(c.count_gates(OpType::ZZPhase) == 1);
+    REQUIRE(c.count_gates(OpType::TK2) == 0);
+    REQUIRE(c.count_gates(OpType::ZZMax) == 0);
     REQUIRE(!Transforms::decompose_TK2().apply(c));
   }
 
@@ -2186,5 +2329,300 @@ SCENARIO("Restricting ZZPhase gate angles.") {
 
   REQUIRE(comparison == c);
 }
+
+SCENARIO("Test squash Rz PhasedX") {
+  GIVEN("A simple circuit") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    c.add_op<unsigned>(OpType::CZ, {0, 1});
+    c.add_op<unsigned>(OpType::Rz, 0.8, {0});
+    c.add_op<unsigned>(OpType::Rz, 0.7, {1});
+    c.add_op<unsigned>(OpType::CZ, {0, 1});
+    c.add_op<unsigned>(OpType::Ry, 0.4, {0});
+    c.add_op<unsigned>(OpType::Rz, 0.3, {0});
+    c.add_op<unsigned>(OpType::Rx, 0.11, {0});
+    c.add_op<unsigned>(OpType::CZ, {0, 1});
+    c.add_op<unsigned>(OpType::Rz, 0.5, {0});
+    c.add_op<unsigned>(OpType::Rz, 0.5, {1});
+    const Eigen::MatrixXcd u = tket_sim::get_unitary(c);
+
+    WHEN("Squash forwards") {
+      AND_WHEN("Use squash_1qb_to_Rz_PhasedX") {
+        bool reverse = false;
+        auto squasher =
+            std::make_unique<Transforms::RzPhasedXSquasher>(reverse);
+        Transforms::decompose_ZX().apply(c);
+        SingleQubitSquash(std::move(squasher), c, reverse).squash();
+      }
+      AND_WHEN("Use squash_1qb_to_Rz_PhasedX") {
+        Transforms::squash_1qb_to_Rz_PhasedX().apply(c);
+      }
+      AND_WHEN("Use SquashRzPhasedX") {
+        CompilationUnit cu(c);
+        SquashRzPhasedX()->apply(cu);
+        c = cu.get_circ_ref();
+      }
+      const Eigen::MatrixXcd v = tket_sim::get_unitary(c);
+      REQUIRE(u.isApprox(v, ERR_EPS));
+      std::vector<VertPort> q0_path = c.unit_path(Qubit(0));
+      std::vector<VertPort> q1_path = c.unit_path(Qubit(1));
+      REQUIRE(
+          c.get_OpType_from_Vertex(q0_path[q0_path.size() - 2].first) ==
+          OpType::Rz);
+      REQUIRE(c.get_OpType_from_Vertex(q0_path[4].first) == OpType::PhasedX);
+      REQUIRE(
+          c.get_OpType_from_Vertex(q1_path[q1_path.size() - 2].first) ==
+          OpType::Rz);
+      REQUIRE(c.count_gates(OpType::Rz) == 2);
+      REQUIRE(c.count_gates(OpType::PhasedX) == 1);
+      REQUIRE(c.count_gates(OpType::CZ) == 3);
+      REQUIRE(c.count_gates(OpType::CX) == 1);
+      REQUIRE(c.n_gates() == 7);
+    }
+
+    WHEN("Squash backwards") {
+      bool reverse = true;
+      auto squasher = std::make_unique<Transforms::RzPhasedXSquasher>(reverse);
+      Transforms::decompose_ZX().apply(c);
+      SingleQubitSquash(std::move(squasher), c, reverse).squash();
+      const Eigen::MatrixXcd v = tket_sim::get_unitary(c);
+      REQUIRE(u.isApprox(v, ERR_EPS));
+      std::vector<VertPort> q0_path = c.unit_path(Qubit(0));
+      std::vector<VertPort> q1_path = c.unit_path(Qubit(1));
+      REQUIRE(c.get_OpType_from_Vertex(q0_path[1].first) == OpType::Rz);
+      REQUIRE(c.get_OpType_from_Vertex(q0_path[5].first) == OpType::PhasedX);
+      REQUIRE(c.get_OpType_from_Vertex(q1_path[2].first) == OpType::Rz);
+      REQUIRE(c.count_gates(OpType::Rz) == 2);
+      REQUIRE(c.count_gates(OpType::PhasedX) == 1);
+      REQUIRE(c.count_gates(OpType::CZ) == 3);
+      REQUIRE(c.count_gates(OpType::CX) == 1);
+      REQUIRE(c.n_gates() == 7);
+    }
+  }
+  GIVEN("Special case: a Rx gate") {
+    // Test there is no leftover Rz
+    Circuit c(1);
+    c.add_op<unsigned>(OpType::Rx, 0.77, {0});
+    const Eigen::MatrixXcd u = tket_sim::get_unitary(c);
+    Transforms::squash_1qb_to_Rz_PhasedX().apply(c);
+    REQUIRE(c.count_gates(OpType::PhasedX) == 1);
+    REQUIRE(c.n_gates() == 1);
+    const Eigen::MatrixXcd v = tket_sim::get_unitary(c);
+    REQUIRE(u.isApprox(v, ERR_EPS));
+  }
+  GIVEN("Special case: a decomposed phased X") {
+    // Test there is no leftover Rz
+    Circuit c(1);
+    c.add_op<unsigned>(OpType::Rz, -0.6, {0});
+    c.add_op<unsigned>(OpType::Rx, 1.3, {0});
+    c.add_op<unsigned>(OpType::Rz, 0.6, {0});
+    const Eigen::MatrixXcd u = tket_sim::get_unitary(c);
+    Transforms::squash_1qb_to_Rz_PhasedX().apply(c);
+    REQUIRE(c.count_gates(OpType::PhasedX) == 1);
+    REQUIRE(c.n_gates() == 1);
+    const Eigen::MatrixXcd v = tket_sim::get_unitary(c);
+    REQUIRE(u.isApprox(v, ERR_EPS));
+  }
+  GIVEN("Special case: a Rz gate") {
+    // Test there is no PhasedX
+    Circuit c(1);
+    c.add_op<unsigned>(OpType::Rz, 0.77, {0});
+    const Eigen::MatrixXcd u = tket_sim::get_unitary(c);
+    Transforms::squash_1qb_to_Rz_PhasedX().apply(c);
+    REQUIRE(c.count_gates(OpType::Rz) == 1);
+    REQUIRE(c.n_gates() == 1);
+    const Eigen::MatrixXcd v = tket_sim::get_unitary(c);
+    REQUIRE(u.isApprox(v, ERR_EPS));
+  }
+
+  GIVEN("A symbolic circuit") {
+    Sym a = SymEngine::symbol("alpha");
+    Expr alpha(a);
+    Sym b = SymEngine::symbol("beta");
+    Expr beta(b);
+    Sym c = SymEngine::symbol("gamma");
+    Expr gamma(c);
+
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::PhaseGadget, beta, {0});
+    circ.add_op<unsigned>(OpType::Rz, alpha, {0});
+    circ.add_op<unsigned>(OpType::PhasedX, {gamma, beta}, {0});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+
+    Circuit circ2(circ);
+    Transforms::squash_1qb_to_Rz_PhasedX().apply(circ2);
+    auto cmds = circ2.get_commands();
+    REQUIRE(cmds.size() == 3);
+    REQUIRE(cmds[0].get_op_ptr()->get_type() == OpType::PhasedX);
+    REQUIRE(cmds[1].get_op_ptr()->get_type() == OpType::CX);
+    REQUIRE(cmds[2].get_op_ptr()->get_type() == OpType::Rz);
+
+    symbol_map_t symbol_map;
+    symbol_map[a] = Expr(0.3);
+    symbol_map[b] = Expr(0.5);
+    symbol_map[c] = Expr(1.);
+    circ.symbol_substitution(symbol_map);
+    circ2.symbol_substitution(symbol_map);
+    const Eigen::MatrixXcd u = tket_sim::get_unitary(circ);
+    const Eigen::MatrixXcd v = tket_sim::get_unitary(circ2);
+    REQUIRE(u.isApprox(v, ERR_EPS));
+  }
+}
+
+// https://github.com/CQCL/tket/issues/535
+SCENARIO("squash_1qb_to_Rz_PhasedX should preserve phase") {
+  Circuit circ(1);
+  circ.add_op<unsigned>(OpType::H, {0});
+  circ.add_op<unsigned>(OpType::H, {0});
+  const Eigen::MatrixXcd u = tket_sim::get_unitary(circ);
+  Transforms::squash_1qb_to_Rz_PhasedX().apply(circ);
+  const Eigen::MatrixXcd v = tket_sim::get_unitary(circ);
+  REQUIRE(u.isApprox(v, ERR_EPS));
+  REQUIRE(equiv_0(circ.get_phase()));
+}
+
+SCENARIO("Test decompose_ZXZ_to_TK1") {
+  Circuit circ;
+  unsigned tk1_count, total_count;
+  GIVEN("A simple ZZ circuit") {
+    circ = Circuit(1);
+    circ.add_op<unsigned>(OpType::Rz, 0.234, {0});
+    circ.add_op<unsigned>(OpType::Rz, 0.434, {0});
+    tk1_count = 1;
+    total_count = 1;
+  }
+  GIVEN("A simple XX circuit") {
+    circ = Circuit(1);
+    circ.add_op<unsigned>(OpType::Rx, 0.234, {0});
+    circ.add_op<unsigned>(OpType::Rx, 0.434, {0});
+    tk1_count = 2;
+    total_count = 2;
+  }
+  GIVEN("A simple ZXZ circuit") {
+    circ = Circuit(1);
+    circ.add_op<unsigned>(OpType::Rz, 0.234, {0});
+    circ.add_op<unsigned>(OpType::Rx, 1.334, {0});
+    circ.add_op<unsigned>(OpType::Rz, 0.434, {0});
+    tk1_count = 1;
+    total_count = 1;
+  }
+  GIVEN("A simple ZXZ circuit with global phases") {
+    circ = Circuit(1);
+    circ.add_op<unsigned>(OpType::Rz, 2.234, {0});
+    circ.add_op<unsigned>(OpType::Rx, 3.334, {0});
+    circ.add_op<unsigned>(OpType::Rz, 2.434, {0});
+    tk1_count = 1;
+    total_count = 1;
+  }
+  GIVEN("A circuit with irreducible gates") {
+    circ = Circuit(2);
+    circ.add_op<unsigned>(OpType::Rz, 2.234, {0});
+    circ.add_op<unsigned>(OpType::Rx, 3.334, {0});
+    circ.add_op<unsigned>(OpType::V, {0});
+    circ.add_op<unsigned>(OpType::Rz, 2.434, {0});
+    circ.add_op<unsigned>(OpType::Rz, 12.23, {1});
+    circ.add_op<unsigned>(OpType::Sdg, {1});
+    circ.add_op<unsigned>(OpType::Rx, 22.22, {1});
+    tk1_count = 4;
+    total_count = 6;
+  }
+  GIVEN("A circuit with irreducible gates and blocking multiqb gates") {
+    circ = Circuit(2);
+    circ.add_op<unsigned>(OpType::Rz, 2.234, {0});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::Rx, 3.334, {0});
+    circ.add_op<unsigned>(OpType::Rz, 0.123, {0});
+    circ.add_op<unsigned>(OpType::V, {0});
+    circ.add_op<unsigned>(OpType::Rz, 2.434, {0});
+    circ.add_op<unsigned>(OpType::Rz, 12.23, {1});
+    circ.add_op<unsigned>(OpType::T, {0});
+    circ.add_op<unsigned>(OpType::T, {1});
+    circ.add_op<unsigned>(OpType::Sdg, {1});
+    circ.add_op<unsigned>(OpType::Rz, 2.434, {0});
+    circ.add_op<unsigned>(OpType::CZ, {0, 1});
+    circ.add_op<unsigned>(OpType::Rx, 22.22, {1});
+    circ.add_op<unsigned>(OpType::Rx, 3.334, {0});
+    tk1_count = 7;
+    total_count = 13;
+  }
+
+  auto u0 = tket_sim::get_unitary(circ);
+  REQUIRE(Transforms::decompose_ZXZ_to_TK1().apply(circ));
+  auto u1 = tket_sim::get_unitary(circ);
+
+  REQUIRE(circ.count_gates(OpType::TK1) == tk1_count);
+  REQUIRE(circ.n_gates() == total_count);
+
+  REQUIRE(u1.isApprox(u1));
+}
+
+SCENARIO("Test decompose_ZYZ_to_TK1") {
+  Circuit circ;
+  unsigned tk1_count, total_count;
+  GIVEN("A simple YY circuit") {
+    circ = Circuit(1);
+    circ.add_op<unsigned>(OpType::Ry, 0.234, {0});
+    circ.add_op<unsigned>(OpType::Ry, 0.434, {0});
+    tk1_count = 2;
+    total_count = 2;
+  }
+  GIVEN("A simple ZYZ circuit") {
+    circ = Circuit(1);
+    circ.add_op<unsigned>(OpType::Rz, 0.234, {0});
+    circ.add_op<unsigned>(OpType::Ry, 1.334, {0});
+    circ.add_op<unsigned>(OpType::Rz, 0.434, {0});
+    tk1_count = 1;
+    total_count = 1;
+  }
+  GIVEN("A simple ZYZ circuit with global phases") {
+    circ = Circuit(1);
+    circ.add_op<unsigned>(OpType::Rz, 2.234, {0});
+    circ.add_op<unsigned>(OpType::Ry, 3.334, {0});
+    circ.add_op<unsigned>(OpType::Rz, 2.434, {0});
+    tk1_count = 1;
+    total_count = 1;
+  }
+  GIVEN("A circuit with irreducible gates") {
+    circ = Circuit(2);
+    circ.add_op<unsigned>(OpType::Rz, 2.234, {0});
+    circ.add_op<unsigned>(OpType::Ry, 3.334, {0});
+    circ.add_op<unsigned>(OpType::V, {0});
+    circ.add_op<unsigned>(OpType::Rz, 2.434, {0});
+    circ.add_op<unsigned>(OpType::Rz, 12.23, {1});
+    circ.add_op<unsigned>(OpType::Sdg, {1});
+    circ.add_op<unsigned>(OpType::Ry, 22.22, {1});
+    tk1_count = 4;
+    total_count = 6;
+  }
+  GIVEN("A circuit with irreducible gates and blocking multiqb gates") {
+    circ = Circuit(2);
+    circ.add_op<unsigned>(OpType::Rz, 2.234, {0});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::Ry, 3.334, {0});
+    circ.add_op<unsigned>(OpType::Rz, 0.123, {0});
+    circ.add_op<unsigned>(OpType::V, {0});
+    circ.add_op<unsigned>(OpType::Rz, 2.434, {0});
+    circ.add_op<unsigned>(OpType::Rz, 12.23, {1});
+    circ.add_op<unsigned>(OpType::T, {0});
+    circ.add_op<unsigned>(OpType::T, {1});
+    circ.add_op<unsigned>(OpType::Sdg, {1});
+    circ.add_op<unsigned>(OpType::Rz, 2.434, {0});
+    circ.add_op<unsigned>(OpType::CZ, {0, 1});
+    circ.add_op<unsigned>(OpType::Ry, 22.22, {1});
+    circ.add_op<unsigned>(OpType::Ry, 3.334, {0});
+    tk1_count = 7;
+    total_count = 13;
+  }
+
+  auto u0 = tket_sim::get_unitary(circ);
+  Transforms::decompose_ZYZ_to_TK1().apply(circ);
+  auto u1 = tket_sim::get_unitary(circ);
+
+  REQUIRE(circ.count_gates(OpType::TK1) == tk1_count);
+  REQUIRE(circ.n_gates() == total_count);
+
+  REQUIRE(u1.isApprox(u1));
+}
+
 }  // namespace test_Synthesis
 }  // namespace tket

@@ -153,7 +153,7 @@ static bool test_op_with_parameters(
   // GateUnitaryMatrix functions, so we demand equality.
   CHECK(matrices_are_equal(unitary, gate.get_unitary()));
   REQUIRE(unitary.cols() >= 2);
-  REQUIRE(unitary.cols() == (1ULL << qubits.size()));
+  REQUIRE(unitary.cols() == (1L << qubits.size()));
 
   success &= check_is_unitary(name, current_values, qubits.size(), unitary, ss);
 
@@ -345,7 +345,8 @@ SCENARIO("Invalid numbers of arguments cause exceptions") {
                   type, number_of_qubits, parameters);
             } catch (const GateUnitaryMatrixError& e) {
               CHECK(e.cause == GateUnitaryMatrixError::Cause::INPUT_ERROR);
-              if (type != OpType::CnX && type != OpType::CnRy) {
+              if (type != OpType::CnX && type != OpType::CnRy &&
+                  type != OpType::CnY && type != OpType::CnZ) {
                 CHECK_THAT(e.what(), ContainsSubstring(name));
               }
               CHECK_THAT(
@@ -492,8 +493,6 @@ struct EquivalenceData {
 
 SCENARIO("Trivial unitary matrix identities") {
   GIVEN("Fixed ops, special cases of ops with parameters") {
-    const auto& gates_data = internal::GatesData::get();
-
     // KEY: number of qubits, for an op taking no parameters
     // VALUE: (this op) -> (data about another op taking parameters,
     //                      which should be equivalent)

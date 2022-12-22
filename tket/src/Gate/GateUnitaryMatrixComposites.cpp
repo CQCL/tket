@@ -77,6 +77,11 @@ Eigen::Matrix4cd GateUnitaryMatrixImplementations::PhasedISWAP(
   return matr;
 }
 
+Eigen::Matrix<std::complex<double>, 1, 1>
+GateUnitaryMatrixImplementations::Phase(double alpha) {
+  return Eigen::Matrix<std::complex<double>, 1, 1>(std::exp(i_ * PI * alpha));
+}
+
 Eigen::Matrix2cd GateUnitaryMatrixImplementations::PhasedX(
     double alpha, double beta) {
   const auto rz_beta_matr = Rz(beta);
@@ -104,6 +109,18 @@ Eigen::MatrixXcd GateUnitaryMatrixImplementations::CnX(
     unsigned int number_of_qubits) {
   return GateUnitaryMatrixUtils::get_multi_controlled_gate_dense_unitary(
       X(), number_of_qubits);
+}
+
+Eigen::MatrixXcd GateUnitaryMatrixImplementations::CnZ(
+    unsigned int number_of_qubits) {
+  return GateUnitaryMatrixUtils::get_multi_controlled_gate_dense_unitary(
+      Z(), number_of_qubits);
+}
+
+Eigen::MatrixXcd GateUnitaryMatrixImplementations::CnY(
+    unsigned int number_of_qubits) {
+  return GateUnitaryMatrixUtils::get_multi_controlled_gate_dense_unitary(
+      Y(), number_of_qubits);
 }
 
 }  // namespace internal

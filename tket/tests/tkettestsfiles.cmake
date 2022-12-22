@@ -55,12 +55,15 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/Circuit/test_ThreeQubitConversion.cpp
     ${TKET_TESTS_DIR}/test_CliffTableau.cpp
     ${TKET_TESTS_DIR}/test_UnitaryTableau.cpp
+    ${TKET_TESTS_DIR}/test_ChoiMixTableau.cpp
     ${TKET_TESTS_DIR}/test_PhasePolynomials.cpp
     ${TKET_TESTS_DIR}/test_PauliGraph.cpp
     ${TKET_TESTS_DIR}/test_PauliGraph2.cpp
     ${TKET_TESTS_DIR}/test_Architectures.cpp
     ${TKET_TESTS_DIR}/test_ArchitectureAwareSynthesis.cpp
-    ${TKET_TESTS_DIR}/Placement/test_Monomorphism_Edge_Break.cpp
+    ${TKET_TESTS_DIR}/Placement/test_GraphPlacement.cpp
+    ${TKET_TESTS_DIR}/Placement/test_LinePlacement.cpp
+    ${TKET_TESTS_DIR}/Placement/test_NoiseAwarePlacement.cpp
     ${TKET_TESTS_DIR}/Placement/test_Placement.cpp
     ${TKET_TESTS_DIR}/Placement/test_NeighbourPlacements.cpp
     ${TKET_TESTS_DIR}/test_MappingVerification.cpp

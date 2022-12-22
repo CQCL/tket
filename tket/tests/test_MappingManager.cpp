@@ -51,9 +51,9 @@ SCENARIO("Test MappingManager::route_circuit") {
     REQUIRE_THROWS_AS(
         test_mm.route_circuit(circ, test_vrm), MappingManagerError);
   }
-  GIVEN("Circuit unmodified.") {
+  GIVEN("Empty.") {
     Circuit circ(2);
-    REQUIRE(!test_mm.route_circuit(circ, test_vrm, false));
+    REQUIRE(test_mm.route_circuit(circ, test_vrm));
   }
   GIVEN("No method can route circuit.") {
     Circuit circ(3);

@@ -125,6 +125,12 @@ enum class OpType {
   MultiBit,
 
   /**
+   * \f$ \mathrm{Phase}(\alpha) = \left[ \begin{array}{c} e^{i \pi \alpha}
+   * \end{array} \right] \f$
+   */
+  Phase,
+
+  /**
    * \f$ \left[ \begin{array}{cc} 1 & 0 \\ 0 & -1 \end{array} \right] \f$
    */
   Z,
@@ -541,6 +547,16 @@ enum class OpType {
   CnX,
 
   /**
+   * Multiply-controlled \ref OpType::Z
+   */
+  CnZ,
+
+  /**
+   * Multiply-controlled \ref OpType::Y
+   */
+  CnY,
+
+  /**
    * See \ref CircBox
    */
   CircBox,
@@ -609,6 +625,11 @@ enum class OpType {
    * See \ref StabiliserAssertionBox
    */
   StabiliserAssertionBox,
+
+  /**
+   * See \ref ToffoliBox
+   */
+  ToffoliBox,
 
   /**
    * See \ref UnitaryTableauBox

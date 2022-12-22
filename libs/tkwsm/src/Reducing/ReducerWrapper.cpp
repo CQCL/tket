@@ -19,19 +19,10 @@
 namespace tket {
 namespace WeightedSubgraphMonomorphism {
 
-bool ReducerInterface::check(std::pair<VertexWSM, VertexWSM> /*assignment*/) {
-  return true;
-}
-
-ReductionResult ReducerInterface::reduce(
-    std::pair<VertexWSM, VertexWSM> /*assignment*/,
-    DomainsAccessor& /*accessor*/, std::set<VertexWSM>& /*work_set*/) {
-  return ReductionResult::SUCCESS;
-}
-
 bool ReducerInterface::other_vertex_reduction_can_be_skipped_by_symmetry(
-    const std::set<VertexWSM>& other_domain, const DomainsAccessor& accessor,
-    VertexWSM this_vertex, VertexWSM other_vertex) {
+    const boost::dynamic_bitset<>& other_domain,
+    const DomainsAccessor& accessor, VertexWSM this_vertex,
+    VertexWSM other_vertex) {
   // If this other pv was already assigned in a previous node
   // (i.e., its domain was the same as now), then the reducer
   // already reduced this domain when that node was reduced
@@ -44,7 +35,7 @@ bool ReducerInterface::other_vertex_reduction_can_be_skipped_by_symmetry(
   // but that information is not available (although it could be deduced
   // using some labour).
   // Instead, we decide by using vertex numbers.
-  return other_domain.size() == 1 &&
+  return other_domain.count() == 1 &&
          (!accessor.domain_created_in_current_node(other_vertex) ||
           other_vertex < this_vertex);
 }
@@ -59,7 +50,7 @@ bool ReducerWrapper::check(std::pair<VertexWSM, VertexWSM> assignment) {
 }
 
 ReductionResult ReducerWrapper::reduce(
-    DomainsAccessor& accessor, std::set<VertexWSM>& work_set) {
+    DomainsAccessor& accessor, boost::dynamic_bitset<>& work_set) {
   auto result = ReductionResult::SUCCESS;
   for (const std::vector<std::pair<VertexWSM, VertexWSM>>& new_assignments =
            accessor.get_new_assignments();

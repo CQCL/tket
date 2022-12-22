@@ -43,6 +43,10 @@ struct VertexRelabelling {
   GraphEdgeWeights new_edges_and_weights;
 
   explicit VertexRelabelling(GraphEdgeWeights edges_and_weights);
+
+  unsigned get_new_label(VertexWSM v) const;
+
+  VertexWSM get_old_label(unsigned v) const;
 };
 
 }  // namespace WeightedSubgraphMonomorphism

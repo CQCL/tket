@@ -214,8 +214,8 @@ SCENARIO("Check that diagram conversions achieve the correct form") {
     ZXVert qx = diag.add_vertex(ZXType::XSpider);
     ZXVert cz = diag.add_vertex(ZXType::ZSpider, QuantumType::Classical);
     ZXDiagram inner(1, 1, 0, 0);
-    ZXVert h = inner.add_vertex(ZXType::Hbox, Expr(i_));
-    ZXVert tri = inner.add_vertex(ZXType::Triangle);
+    inner.add_vertex(ZXType::Hbox, Expr(i_));
+    inner.add_vertex(ZXType::Triangle);
     ZXGen_ptr box = std::make_shared<const ZXBox>(inner);
     ZXVert b = diag.add_vertex(box);
     diag.add_wire(ins[0], qz);

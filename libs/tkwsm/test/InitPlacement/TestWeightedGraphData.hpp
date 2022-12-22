@@ -13,32 +13,24 @@
 // limitations under the License.
 
 #pragma once
-#include "ReducerWrapper.hpp"
+#include <tkwsm/GraphTheoretic/GeneralStructs.hpp>
 
 namespace tket {
+class RNG;
 namespace WeightedSubgraphMonomorphism {
+namespace InitialPlacement {
+namespace tests {
 
-class NeighboursData;
+// Returns data for a random graph GUARANTEED to use exactly the vertices
+// {0,1,2,...,num_vertices-1}, with a mixture of weights.
+// Note that the final number of edges, and min/max weights,
+// are likely but not guaranteed to hold, because we don't bother
+// to fiddle with the random selection to guarantee them.
+GraphEdgeWeights get_graph_data(
+    RNG& rng, unsigned num_vertices, unsigned approx_edges,
+    WeightWSM approx_min_weight, WeightWSM approx_max_weight);
 
-/** This is like DistancesReducer, but with d=1, i.e.
- * simply ensure, when pv->tv is made, that all neighbours of pv
- * have domains contained within the set of neighbours of tv.
- */
-class NeighboursReducer : public ReducerInterface {
- public:
-  NeighboursReducer(
-      const NeighboursData& pattern_ndata, const NeighboursData& target_ndata);
-
-  virtual bool check(std::pair<VertexWSM, VertexWSM> assignment) override;
-
-  virtual ReductionResult reduce(
-      std::pair<VertexWSM, VertexWSM> assignment, DomainsAccessor& accessor,
-      std::set<VertexWSM>& work_set) override;
-
- private:
-  const NeighboursData& m_pattern_ndata;
-  const NeighboursData& m_target_ndata;
-};
-
+}  // namespace tests
+}  // namespace InitialPlacement
 }  // namespace WeightedSubgraphMonomorphism
 }  // namespace tket

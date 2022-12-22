@@ -35,7 +35,8 @@ ELSE()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -Wunreachable-code -Wunused")
 ENDIF()
 if(CMAKE_CXX_COMPILER_ID MATCHES "(Apple)?Clang")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Winconsistent-missing-override -Wloop-analysis")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Winconsistent-missing-override -Wloop-analysis -Wno-deprecated-declarations")
+    # remove -Wno-deprecated-declarations once https://github.com/boostorg/boost/issues/688 is resolved
 endif()
 
 set(PROFILE_COVERAGE no CACHE BOOL "Build library with profiling for test coverage")
@@ -55,6 +56,9 @@ ELSEIF(APPLE)
     # set correct install_name
     set(CMAKE_INSTALL_NAME_DIR "@loader_path")
     set(CMAKE_BUILD_WITH_INSTALL_NAME_DIR ON)
+ELSEIF(UNIX)
+    set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
+    set(CMAKE_INSTALL_RPATH "\${ORIGIN}")
 ENDIF()
 
 # if you add new modules here make sure that it is added at the right position

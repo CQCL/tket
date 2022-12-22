@@ -27,6 +27,7 @@
 #include "OpType/OpTypeInfo.hpp"
 #include "Ops/Op.hpp"
 #include "Utils/Expression.hpp"
+#include "Utils/PauliStrings.hpp"
 #include "symengine/eval_double.h"
 
 namespace tket {
@@ -51,7 +52,9 @@ Op_ptr Gate::dagger() const {
     case OpType::BRIDGE: {
       return get_op_ptr(optype);
     }
-    case OpType::CnX: {
+    case OpType::CnX:
+    case OpType::CnZ:
+    case OpType::CnY: {
       return get_op_ptr(optype, std::vector<Expr>(), n_qubits_);
     }
     case OpType::S: {
@@ -90,6 +93,7 @@ Op_ptr Gate::dagger() const {
     case OpType::CSXdg: {
       return get_op_ptr(OpType::CSX);
     }
+    case OpType::Phase:
     case OpType::CRz:
     case OpType::CRx:
     case OpType::CRy:
@@ -169,6 +173,7 @@ Op_ptr Gate::dagger() const {
 Op_ptr Gate::transpose() const {
   OpType optype = get_type();
   switch (optype) {
+    case OpType::Phase:
     case OpType::H:
     case OpType::X:
     case OpType::Z:
@@ -215,7 +220,8 @@ Op_ptr Gate::transpose() const {
     case OpType::CnRy: {
       return get_op_ptr(optype, minus_times(params_[0]), n_qubits_);
     }
-    case OpType::CnX: {
+    case OpType::CnX:
+    case OpType::CnZ: {
       return get_op_ptr(optype, std::vector<Expr>(), n_qubits_);
     }
     case OpType::U2: {
@@ -334,6 +340,16 @@ std::optional<double> Gate::is_identity() const {
   static const std::optional<double> notid;
   const std::vector<Expr>& params = get_params();
   switch (get_type()) {
+    case OpType::noop: {
+      return 0.;
+    }
+    case OpType::Phase: {
+      // This is _always_ the identity up to phase, but the method does not
+      // allow us to return a symbolic phase, so we must reject in that case.
+      std::optional<double> eval = eval_expr(params[0]);
+      if (!eval) return notid;
+      return eval.value();
+    }
     case OpType::Rx:
     case OpType::Ry:
     case OpType::Rz:
@@ -614,17 +630,81 @@ std::vector<Expr> Gate::get_params() const { return params_; }
 
 SymSet Gate::free_symbols() const { return expr_free_symbols(get_params()); }
 
+/**
+ * @brief The commutation colour of TK1(a,b,c)
+ *
+ * - commutes with everything if b == 0 && a == -c
+ * - commutes with Z if b == 0
+ * - commutes with X if a == c == 0
+ * - commutes with nothing otherwise
+ *
+ * @param params the TK1 angles
+ * @return std::optional<Pauli> commutation colour
+ */
+static std::optional<Pauli> tk1_commuting_basis(std::vector<Expr> params) {
+  const bool p0_is_zero = equiv_0(params[0], 2);
+  const bool p1_is_zero = equiv_0(params[1], 2);
+  const bool p2_is_zero = equiv_0(params[2], 2);
+  if (p1_is_zero && equiv_expr(params[0], -params[2], 2)) {
+    return Pauli::I;
+  } else if (p1_is_zero) {
+    return Pauli::Z;
+  } else if (p0_is_zero && p2_is_zero) {
+    return Pauli::X;
+  } else {
+    return std::nullopt;
+  }
+}
+
+/**
+ * @brief The commutation colour of TK2(a,b,c)
+ *
+ * - commutes with everything if a == b == c
+ * - commutes with X if b == c == 0
+ * - commutes with Y if a == c == 0
+ * - commutes with Z if a == b == 0
+ * - commutes with nothing otherwise
+ *
+ * @param params the TK2 angles
+ * @return std::optional<Pauli> commutation colour
+ */
+static std::optional<Pauli> tk2_commuting_basis(std::vector<Expr> params) {
+  const bool p0_is_zero = equiv_0(params[0], 2);
+  const bool p1_is_zero = equiv_0(params[1], 2);
+  const bool p2_is_zero = equiv_0(params[2], 2);
+  if (p0_is_zero && p1_is_zero && p2_is_zero) {
+    return Pauli::I;
+  } else if (p1_is_zero && p2_is_zero) {
+    return Pauli::X;
+  } else if (p0_is_zero && p2_is_zero) {
+    return Pauli::Y;
+  } else if (p0_is_zero && p1_is_zero) {
+    return Pauli::Z;
+  } else {
+    return std::nullopt;
+  }
+}
+
 std::optional<Pauli> Gate::commuting_basis(unsigned i) const {
   unsigned n_q = n_qubits();
   if (i >= n_q) throw std::domain_error("Qubit index out of range");
   switch (get_type()) {
-    case OpType::XXPhase:
-    case OpType::XXPhase3: {
-      return Pauli::X;
+    case OpType::Phase: {
+      return Pauli::I;
     }
-    case OpType::YYPhase: {
-      return Pauli::Y;
-    }
+    case OpType::X:
+    case OpType::V:
+    case OpType::Vdg:
+    case OpType::SX:
+    case OpType::SXdg:
+    case OpType::Rx:
+    case OpType::Y:
+    case OpType::Ry:
+    case OpType::noop:
+    case OpType::H:
+    case OpType::U3:
+    case OpType::U2:
+    case OpType::PhasedX:
     case OpType::Z:
     case OpType::S:
     case OpType::Sdg:
@@ -632,25 +712,30 @@ std::optional<Pauli> Gate::commuting_basis(unsigned i) const {
     case OpType::Tdg:
     case OpType::Rz:
     case OpType::U1:
+    case OpType::TK1: {
+      return tk1_commuting_basis(get_tk1_angles());
+    }
+    case OpType::XXPhase:
+    case OpType::XXPhase3: {
+      return Pauli::X;
+    }
+    case OpType::YYPhase: {
+      return Pauli::Y;
+    }
     case OpType::CZ:
     case OpType::CRz:
     case OpType::CU1:
     case OpType::PhaseGadget:
     case OpType::ZZMax:
-    case OpType::ZZPhase: {
+    case OpType::ZZPhase:
+    case OpType::CnZ: {
       return Pauli::Z;
     }
-    case OpType::noop: {
-      return Pauli::I;
-    }
-    case OpType::H:
-    case OpType::U3:
-    case OpType::U2:
-    case OpType::PhasedX:
-    case OpType::NPhasedX:
-    case OpType::TK1:
-    case OpType::TK2: {
+    case OpType::NPhasedX: {
       return std::nullopt;
+    }
+    case OpType::TK2: {
+      return tk2_commuting_basis(params_);
     }
     case OpType::CH:
     case OpType::CU3:
@@ -670,16 +755,10 @@ std::optional<Pauli> Gate::commuting_basis(unsigned i) const {
         return Pauli::I;
       }
     }
-    case OpType::X:
-    case OpType::V:
-    case OpType::Vdg:
     case OpType::CV:
     case OpType::CVdg:
-    case OpType::SX:
-    case OpType::SXdg:
     case OpType::CSX:
     case OpType::CSXdg:
-    case OpType::Rx:
     case OpType::CRx:
     case OpType::CX:
     case OpType::CCX:
@@ -697,11 +776,10 @@ std::optional<Pauli> Gate::commuting_basis(unsigned i) const {
         return std::nullopt;
       }
     }
-    case OpType::Y:
-    case OpType::Ry:
     case OpType::CY:
     case OpType::CRy:
-    case OpType::CnRy: {
+    case OpType::CnRy:
+    case OpType::CnY: {
       if (i == n_q - 1) {
         return Pauli::Y;
       } else {
@@ -716,11 +794,13 @@ std::optional<Pauli> Gate::commuting_basis(unsigned i) const {
 
 bool Gate::commutes_with_basis(
     const std::optional<Pauli>& colour, unsigned i) const {
-  if (colour == Pauli::I) return true;
   const std::optional<Pauli> my_colour = commuting_basis(i);
-  if (!colour && !my_colour) return false;
-  if (my_colour == Pauli::I || my_colour == colour) return true;
-  return false;
+  if (!colour || !my_colour) {
+    // Nothing can commute with std::nullopt
+    return false;
+  } else {
+    return colour == Pauli::I || my_colour == Pauli::I || colour == my_colour;
+  }
 }
 
 op_signature_t Gate::get_signature() const {

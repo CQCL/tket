@@ -64,6 +64,18 @@ class Predicate {
 };
 
 // all Predicate subclasses must inherit from `Predicate`
+
+/**
+ * Asserts that all operations are in the specified set of types.
+ *
+ * Note that the following are always permitted and do not need to be included
+ * in the permitted set:
+ * - "meta" operations (inputs, outputs, barriers);
+ * - OpType::Phase gates (which have no input or output wires).
+ *
+ * Classically conditioned operations are permitted provided that the
+ * conditional operation is of a permitted type.
+ */
 class GateSetPredicate : public Predicate {
  public:
   explicit GateSetPredicate(const OpTypeSet& allowed_types)

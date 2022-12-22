@@ -55,7 +55,7 @@ Transforms::TwoQbFidelities get_fidelities(const py::kwargs &kwargs) {
 }
 
 static PassPtr gen_cx_mapping_pass_kwargs(
-    const Architecture &arc, const PlacementPtr &placer, py::kwargs kwargs) {
+    const Architecture &arc, const Placement::Ptr &placer, py::kwargs kwargs) {
   std::vector<RoutingMethodPtr> config = {
       std::make_shared<LexiLabellingMethod>(),
       std::make_shared<LexiRouteRoutingMethod>()};
@@ -96,16 +96,6 @@ static PassPtr gen_default_aas_routing_pass(
   }
 
   return gen_full_mapping_pass_phase_poly(arc, lookahead, cnotsynthtype);
-}
-
-static PassPtr gen_composephasepolybox_pass(py::kwargs kwargs) {
-  unsigned min_size = 0;
-
-  if (kwargs.contains("min_size")) {
-    min_size = py::cast<unsigned>(kwargs["min_size"]);
-  }
-
-  return RebaseUFR() >> ComposePhasePolyBoxes(min_size);
 }
 
 const PassPtr &DecomposeClassicalExp() {
@@ -380,7 +370,9 @@ PYBIND11_MODULE(passes, m) {
       "to return the optimal decomposition of each TK2 gate, taking "
       "noise into consideration.\n\n"
       "If no fidelities are provided, the TK2 gates will be decomposed "
-      "exactly using CX gates.\n\n"
+      "exactly using CX gates. For equal fidelities, ZZPhase will be prefered "
+      "over ZZMax and CX if the decomposition results in fewer two-qubit "
+      "gates.\n\n"
       "All TK2 gate parameters must be normalised, i.e. they must satisfy "
       "`NormalisedTK2Predicate`.\n\n"
       "Using the `allow_swaps=True` (default) option, qubits will be swapped "
@@ -418,7 +410,8 @@ PYBIND11_MODULE(passes, m) {
   m.def(
       "DecomposeArbitrarilyControlledGates",
       &DecomposeArbitrarilyControlledGates,
-      "Decomposes CnX and CnRy gates into Ry, CX, H, T and Tdg gates.");
+      "Decomposes CCX, CnX, CnY, CnZ, and CnRy gates into "
+      "CX and single-qubit gates.");
   m.def(
       "DecomposeBoxes", &DecomposeBoxes,
       "Replaces all boxes by their decomposition into circuits.");
@@ -461,10 +454,11 @@ PYBIND11_MODULE(passes, m) {
       "FullPeepholeOptimise", &FullPeepholeOptimise,
       "Performs peephole optimisation including resynthesis of 2- and 3-qubit "
       "gate sequences, and converts to a circuit containing only the given "
-      "2-qubit gate (which may be CX or TK2) and TK1 gates."
+      "2-qubit gate (which may be CX or TK2) and TK1 gates.\n\n"
+      "The `allow_swaps` parameter has no effect when the target gate is TK2."
       "\n\n:param allow_swaps: whether to allow implicit wire swaps",
       py::arg("allow_swaps") = true, py::arg("target_2qb_gate") = OpType::CX);
-  m.def("RebaseTket", &RebaseTket, "Converts all gates to CX and TK1.");
+  m.def("RebaseTket", &RebaseTket, "Converts all gates to CX, TK1 and Phase.");
   m.def(
       "RemoveRedundancies", &RemoveRedundancies,
       "Removes gate-inverse pairs, merges rotations, removes identity "
@@ -475,22 +469,26 @@ PYBIND11_MODULE(passes, m) {
   m.def(
       "SynthesiseHQS", &SynthesiseHQS,
       "Optimises and converts a circuit consisting of CX and single-qubit "
-      "gates into one containing only ZZMax, PhasedX and Rz.");
+      "gates into one containing only ZZMax, PhasedX, Rz and Phase.");
   m.def(
       "SynthesiseTK", &SynthesiseTK,
-      "Optimises and converts all gates to TK2 and TK1 gates.");
+      "Optimises and converts all gates to TK2, TK1 and Phase gates.");
   m.def(
       "SynthesiseTket", &SynthesiseTket,
-      "Optimises and converts all gates to CX and TK1 gates.");
+      "Optimises and converts all gates to CX, TK1 and Phase gates.");
   m.def(
       "SynthesiseOQC", &SynthesiseOQC,
-      "Optimises and converts all gates to ECR, Rz and SX.");
+      "Optimises and converts all gates to ECR, Rz, SX and Phase.");
   m.def(
       "SynthesiseUMD", &SynthesiseUMD,
-      "Optimises and converts all gates to XXPhase, PhasedX and Rz.");
+      "Optimises and converts all gates to XXPhase, PhasedX, Rz and Phase.");
   m.def(
       "SquashTK1", &SquashTK1,
       "Squash sequences of single-qubit gates to TK1 gates.");
+  m.def(
+      "SquashRzPhasedX", &SquashRzPhasedX,
+      "Squash single qubit gates into PhasedX and Rz gates. "
+      "Commute Rz gates to the back if possible.");
   m.def(
       "FlattenRegisters", &FlattenRegisters,
       "Merges all quantum and classical registers into their "
@@ -553,7 +551,8 @@ PYBIND11_MODULE(passes, m) {
       "\n:param tk1_replacement: a function which, given the parameters of an "
       "Rz(a)Rx(b)Rz(c) triple, returns an equivalent circuit in the desired "
       "basis"
-      "\n:return: a pass that rebases to the given gate set",
+      "\n:return: a pass that rebases to the given gate set (possibly "
+      "including conditional and phase operations)",
       py::arg("gateset"), py::arg("cx_replacement"),
       py::arg("tk1_replacement"));
 
@@ -577,7 +576,8 @@ PYBIND11_MODULE(passes, m) {
       ":param tk1_replacement: a function which, given the parameters (a,b,c) "
       "of an Rz(a)Rx(b)Rz(c) triple, returns an equivalent circuit in the "
       "desired basis\n"
-      ":return: a pass that rebases to the given gate set");
+      ":return: a pass that rebases to the given gate set (possibly including "
+      "conditional and phase operations)");
 
   m.def(
       "EulerAngleReduction", &gen_euler_pass,
@@ -679,7 +679,7 @@ PYBIND11_MODULE(passes, m) {
       py::arg("arc"));
 
   m.def(
-      "ComposePhasePolyBoxes", &gen_composephasepolybox_pass,
+      "ComposePhasePolyBoxes", &ComposePhasePolyBoxes,
       "Pass to convert a given :py:class:`Circuit` to the CX, Rz, H gateset "
       "and compose "
       "phase polynomial boxes from the groups of the CX+Rz gates."
@@ -687,7 +687,8 @@ PYBIND11_MODULE(passes, m) {
       "polynominal box: groups with a smaller number of CX gates are not "
       "affected by this transformation\n"
       "\n:param \\**kwargs: parameters for composition (described above)"
-      "\n:return: a pass to perform the composition");
+      "\n:return: a pass to perform the composition",
+      py::arg("min_size") = 0);
 
   m.def(
       "CXMappingPass", &gen_cx_mapping_pass_kwargs,
@@ -736,7 +737,7 @@ PYBIND11_MODULE(passes, m) {
   m.def(
       "OptimisePhaseGadgets", &gen_optimise_phase_gadgets,
       "Construct a pass that synthesises phase gadgets and converts to a "
-      "circuit containing only CX and TK1 gates."
+      "circuit containing only CX, TK1 and Phase gates."
       "\n\n:param cx_config: A configuration of CXs to convert phase "
       "gadgets into."
       "\n:return: a pass to perform the synthesis",
@@ -825,6 +826,12 @@ PYBIND11_MODULE(passes, m) {
       "ZZPhaseToRz", &ZZPhaseToRz,
       "Converts ZZPhase gates with angle pi or -pi to two Rz gates with"
       "angle pi.\n:return: a pass to convert ZZPhase gates to Rz");
+
+  m.def(
+      "CnXPairwiseDecomposition", &CnXPairwiseDecomposition,
+      "Decompose CnX gates to 2-qubit gates and single qubit gates. "
+      "For every two CnX gates, reorder their control qubits to improve "
+      "the chance of gate cancellation");
 
   m.def(
       "CustomPass", &CustomPass,

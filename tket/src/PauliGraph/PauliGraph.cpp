@@ -14,8 +14,12 @@
 
 #include "PauliGraph.hpp"
 
+#include <tkassert/Assert.hpp>
+
 #include "Gate/Gate.hpp"
+#include "OpType/OpType.hpp"
 #include "Utils/GraphHeaders.hpp"
+#include "Utils/PauliStrings.hpp"
 
 namespace tket {
 
@@ -108,7 +112,9 @@ void PauliGraph::apply_gate_at_end(
     case OpType::CX:
     case OpType::CY:
     case OpType::CZ:
-    case OpType::SWAP: {
+    case OpType::SWAP:
+    case OpType::noop:
+    case OpType::Phase: {
       cliff_.apply_gate_at_end(type, qbs);
       break;
     }
@@ -155,6 +161,39 @@ void PauliGraph::apply_gate_at_end(
       }
       break;
     }
+    case OpType::PhasedX: {
+      Expr alpha = gate.get_params().at(0);
+      Expr beta = gate.get_params().at(1);
+      QubitPauliTensor zpauli = cliff_.get_zpauli(qbs.at(0));
+      QubitPauliTensor xpauli = cliff_.get_xpauli(qbs.at(0));
+      std::optional<unsigned> cliff_alpha = equiv_Clifford(alpha);
+      std::optional<unsigned> cliff_beta = equiv_Clifford(beta);
+      // Rz(-b)
+      if (cliff_beta) {
+        for (unsigned i = 0; i < cliff_beta.value(); i++) {
+          cliff_.apply_gate_at_end(OpType::Sdg, qbs);
+        }
+      } else {
+        apply_pauli_gadget_at_end(zpauli, -beta);
+      }
+      // Rx(a)
+      if (cliff_alpha) {
+        for (unsigned i = 0; i < cliff_alpha.value(); i++) {
+          cliff_.apply_gate_at_end(OpType::V, qbs);
+        }
+      } else {
+        apply_pauli_gadget_at_end(xpauli, alpha);
+      }
+      // Rz(b)
+      if (cliff_beta) {
+        for (unsigned i = 0; i < cliff_beta.value(); i++) {
+          cliff_.apply_gate_at_end(OpType::S, qbs);
+        }
+      } else {
+        apply_pauli_gadget_at_end(zpauli, beta);
+      }
+      break;
+    }
     case OpType::T: {
       QubitPauliTensor pauli = cliff_.get_zpauli(qbs.at(0));
       apply_pauli_gadget_at_end(pauli, 0.25);
@@ -162,13 +201,16 @@ void PauliGraph::apply_gate_at_end(
     }
     case OpType::Tdg: {
       QubitPauliTensor pauli = cliff_.get_zpauli(qbs.at(0));
-      apply_pauli_gadget_at_end(pauli, 0.25);
+      apply_pauli_gadget_at_end(pauli, -0.25);
       break;
     }
     case OpType::ZZMax: {
-      cliff_.apply_gate_at_end(OpType::H, {qbs.at(1)});
+      cliff_.apply_gate_at_end(OpType::S, {qbs.at(0)});
+      cliff_.apply_gate_at_end(OpType::Z, {qbs.at(1)});
+      cliff_.apply_gate_at_end(OpType::S, {qbs.at(1)});
+      cliff_.apply_gate_at_end(OpType::V, {qbs.at(1)});
+      cliff_.apply_gate_at_end(OpType::S, {qbs.at(1)});
       cliff_.apply_gate_at_end(OpType::CX, qbs);
-      cliff_.apply_gate_at_end(OpType::Sdg, {qbs.at(0)});
       cliff_.apply_gate_at_end(OpType::S, {qbs.at(1)});
       cliff_.apply_gate_at_end(OpType::V, {qbs.at(1)});
       break;
@@ -223,15 +265,15 @@ void PauliGraph::apply_gate_at_end(
         if (cliff_angle.value() != 0) {
           const Qubit &arg0 = qbs.at(0);
           const Qubit &arg1 = qbs.at(1);
-          cliff_.apply_gate_at_end(OpType::V, {arg0});
-          cliff_.apply_gate_at_end(OpType::V, {arg1});
+          cliff_.apply_gate_at_end(OpType::S, {arg0});
+          cliff_.apply_gate_at_end(OpType::S, {arg1});
           cliff_.apply_gate_at_end(OpType::CX, {arg1, arg0});
           for (unsigned i = 0; i < cliff_angle.value(); i++) {
             cliff_.apply_gate_at_end(OpType::V, {arg1});
           }
           cliff_.apply_gate_at_end(OpType::CX, {arg1, arg0});
-          cliff_.apply_gate_at_end(OpType::Vdg, {arg0});
-          cliff_.apply_gate_at_end(OpType::Vdg, {arg1});
+          cliff_.apply_gate_at_end(OpType::Sdg, {arg0});
+          cliff_.apply_gate_at_end(OpType::Sdg, {arg1});
         }
       } else {
         QubitPauliTensor pauli =
@@ -312,85 +354,6 @@ void PauliGraph::apply_pauli_gadget_at_end(
   if (get_predecessors(new_vert).empty()) start_line_.insert(new_vert);
 }
 
-PauliGraph::TopSortIterator::TopSortIterator()
-    : pg_(nullptr),
-      current_vert_(boost::graph_traits<PauliDAG>::null_vertex()) {}
-
-PauliGraph::TopSortIterator::TopSortIterator(const PauliGraph &pg) {
-  if (pg.start_line_.empty()) {
-    current_vert_ = boost::graph_traits<PauliDAG>::null_vertex();
-    return;
-  }
-  pg_ = &pg;
-  for (const PauliVert &vert : pg.start_line_) {
-    search_set_.insert({pg.graph_[vert].tensor_, vert});
-  }
-  current_vert_ = search_set_.begin()->second;
-  search_set_.erase(search_set_.begin());
-  visited_ = {current_vert_};
-  for (const PauliVert &child : pg_->get_successors(current_vert_)) {
-    search_set_.insert({pg.graph_[child].tensor_, child});
-  }
-}
-
-const PauliVert &PauliGraph::TopSortIterator::operator*() const {
-  return current_vert_;
-}
-
-const PauliVert *PauliGraph::TopSortIterator::operator->() const {
-  return &current_vert_;
-}
-
-bool PauliGraph::TopSortIterator::operator==(
-    const TopSortIterator &other) const {
-  return this->current_vert_ == other.current_vert_;
-}
-
-bool PauliGraph::TopSortIterator::operator!=(
-    const TopSortIterator &other) const {
-  return !(*this == other);
-}
-
-PauliGraph::TopSortIterator PauliGraph::TopSortIterator::operator++(int) {
-  PauliGraph::TopSortIterator it = *this;
-  ++*this;
-  return it;
-}
-
-PauliGraph::TopSortIterator &PauliGraph::TopSortIterator::operator++() {
-  bool found_next = false;
-  while (!found_next && !search_set_.empty()) {
-    current_vert_ = search_set_.begin()->second;
-    search_set_.erase(search_set_.begin());
-
-    // Check that we have visited all parents
-    found_next = true;
-    for (const PauliVert &parent : pg_->get_predecessors(current_vert_)) {
-      if (visited_.find(parent) == visited_.end()) {
-        found_next = false;
-        break;
-      }
-    }
-  }
-  if (found_next) {
-    visited_.insert(current_vert_);
-    for (const PauliVert &child : pg_->get_successors(current_vert_)) {
-      search_set_.insert({pg_->graph_[child].tensor_, child});
-    }
-  } else {
-    *this = TopSortIterator();
-  }
-  return *this;
-}
-
-PauliGraph::TopSortIterator PauliGraph::begin() const {
-  return TopSortIterator(*this);
-}
-
-PauliGraph::TopSortIterator PauliGraph::end() const {
-  return TopSortIterator();
-}
-
 void PauliGraph::to_graphviz_file(const std::string &filename) const {
   std::ofstream dot_file(filename);
   to_graphviz(dot_file);
@@ -415,6 +378,36 @@ void PauliGraph::to_graphviz(std::ostream &out) const {
   }
 
   out << "}";
+}
+
+std::vector<PauliVert> PauliGraph::vertices_in_order() const {
+  PauliVIndex index = boost::get(boost::vertex_index, graph_);
+  int i = 0;
+  BGL_FORALL_VERTICES(v, graph_, PauliDAG) { boost::put(index, v, i++); }
+  std::vector<PauliVert> vertices;
+  boost::topological_sort(graph_, std::back_inserter(vertices));
+  std::reverse(vertices.begin(), vertices.end());
+  return vertices;
+}
+
+void PauliGraph::sanity_check() const {
+  for (const PauliVert &vert : vertices_in_order()) {
+    PauliVertSet succs;
+    boost::graph_traits<PauliDAG>::adjacency_iterator ai, a_end;
+    boost::tie(ai, a_end) = boost::adjacent_vertices(vert, graph_);
+    for (; ai != a_end; ai++) {
+      TKET_ASSERT(!succs.contains(*ai));
+      succs.insert(*ai);
+    }
+
+    PauliVertSet preds;
+    PauliDAG::inv_adjacency_iterator iai, ia_end;
+    boost::tie(iai, ia_end) = boost::inv_adjacent_vertices(vert, graph_);
+    for (; iai != ia_end; iai++) {
+      TKET_ASSERT(!preds.contains(*iai));
+      preds.insert(*iai);
+    }
+  }
 }
 
 }  // namespace tket

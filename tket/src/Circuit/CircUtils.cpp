@@ -16,6 +16,7 @@
 
 #include <cmath>
 #include <complex>
+#include <sstream>
 #include <vector>
 
 #include "CircPool.hpp"
@@ -29,6 +30,7 @@
 #include "Utils/Expression.hpp"
 #include "Utils/MatrixAnalysis.hpp"
 #include "Utils/UnitID.hpp"
+#include "tklog/TketLog.hpp"
 
 namespace tket {
 
@@ -233,9 +235,13 @@ static void replace_TK2_2CX(Circuit &circ) {
     if (circ.get_OpType_from_Vertex(v) != OpType::TK2) continue;
     auto params = circ.get_Op_ptr_from_Vertex(v)->get_params();
     TKET_ASSERT(params.size() == 3);
-    // We need to have a fairly high tolerance in the assertion below, since in
-    // practice rounding errors can accumulate:
-    TKET_ASSERT(equiv_0(params[2], 4, 1e-6));
+    // Rounding errors can accumulate here; warn if so:
+    if (!equiv_0(params[2], 4, 1e-6)) {
+      std::stringstream ss;
+      ss << "Rounding errors in CX decomposition: ZZPhase parameter = "
+         << params[2] << " when it should be 0 (mod 4). Ignoring.";
+      tket_log()->warn(ss.str());
+    }
     Circuit sub = CircPool::approx_TK2_using_2xCX(params[0], params[1]);
     bin.push_back(v);
     circ.substitute(sub, v, Circuit::VertexDeletion::No);
@@ -404,7 +410,11 @@ Circuit with_TK2(Gate_ptr op) {
   std::vector<Expr> params = op->get_params();
   unsigned n = op->n_qubits();
   if (n == 0) {
-    return Circuit();
+    Circuit c(0);
+    if (op->get_type() == OpType::Phase) {
+      c.add_phase(op->get_params()[0]);
+    }
+    return c;
   } else if (n == 1) {
     Circuit c(1);
     c.add_op(op, std::vector<unsigned>{0});
@@ -505,7 +515,11 @@ Circuit with_CX(Gate_ptr op) {
   std::vector<Expr> params = op->get_params();
   unsigned n = op->n_qubits();
   if (n == 0) {
-    return Circuit();
+    Circuit c(0);
+    if (op->get_type() == OpType::Phase) {
+      c.add_phase(op->get_params()[0]);
+    }
+    return c;
   } else if (n == 1) {
     Circuit c(1);
     c.add_op(op, std::vector<unsigned>{0});
@@ -586,7 +600,9 @@ Circuit with_CX(Gate_ptr op) {
 
 #define CNXTYPE(n) \
   (((n) == 2) ? OpType::CX : ((n) == 3) ? OpType::CCX : OpType::CnX)
-
+#define CNZTYPE(n) (((n) == 2) ? OpType::CZ : OpType::CnZ)
+#define CNYTYPE(n) (((n) == 2) ? OpType::CY : OpType::CnY)
+#define CNRYTYPE(n) (((n) == 2) ? OpType::CRy : OpType::CnRy)
 /**
  * Construct a circuit representing CnU1.
  */
@@ -606,19 +622,23 @@ static Circuit with_controls_symbolic(const Circuit &c, unsigned n_controls) {
   if (c.n_bits() != 0 || !c.is_simple()) {
     throw CircuitInvalidity("Only default qubit register allowed");
   }
-  if (c.has_implicit_wireswaps()) {
-    throw CircuitInvalidity("Circuit has implicit wireswaps");
-  }
+
+  Circuit c1(c);
+  // Replace wire swaps with SWAP gates
+  c1.replace_all_implicit_wire_swaps();
 
   // Dispose of the trivial case
   if (n_controls == 0) {
-    return c;
+    return c1;
   }
 
-  unsigned c_n_qubits = c.n_qubits();
+  static const OpTypeSet multiq_gate_set = {
+      OpType::CX, OpType::CCX, OpType::CnX, OpType::CRy, OpType::CnRy,
+      OpType::CZ, OpType::CnZ, OpType::CY,  OpType::CnY};
+
+  unsigned c_n_qubits = c1.n_qubits();
 
   // 1. Rebase to {CX, CCX, CnX, CnRy} and single-qubit gates
-  Circuit c1(c);
   VertexList bin;
   BGL_FORALL_VERTICES(v, c1.dag, DAG) {
     Op_ptr op = c1.get_Op_ptr_from_Vertex(v);
@@ -633,8 +653,7 @@ static Circuit with_controls_symbolic(const Circuit &c, unsigned n_controls) {
       if (is_single_qubit_type(optype)) {
         continue;
       }
-      if (optype == OpType::CX || optype == OpType::CCX ||
-          optype == OpType::CnX || optype == OpType::CnRy) {
+      if (multiq_gate_set.find(optype) != multiq_gate_set.end()) {
         continue;
       }
       Circuit replacement = with_CX(as_gate_ptr(op));
@@ -674,8 +693,19 @@ static Circuit with_controls_symbolic(const Circuit &c, unsigned n_controls) {
         c2.add_op<Qubit>(CNXTYPE(n_new_args), new_args);
         break;
       case OpType::Ry:
+      case OpType::CRy:
       case OpType::CnRy:
-        c2.add_op<Qubit>(OpType::CnRy, params, new_args);
+        c2.add_op<Qubit>(CNRYTYPE(n_new_args), params, new_args);
+        break;
+      case OpType::Z:
+      case OpType::CZ:
+      case OpType::CnZ:
+        c2.add_op<Qubit>(CNZTYPE(n_new_args), new_args);
+        break;
+      case OpType::Y:
+      case OpType::CY:
+      case OpType::CnY:
+        c2.add_op<Qubit>(CNYTYPE(n_new_args), new_args);
         break;
       default: {
         std::vector<Expr> tk1_angles = as_gate_ptr(op)->get_tk1_angles();
@@ -707,6 +737,7 @@ static Circuit with_controls_symbolic(const Circuit &c, unsigned n_controls) {
     c2.append(cnu1);
   }
 
+  c2.remove_noops();
   return c2;
 }
 
@@ -733,10 +764,12 @@ static Eigen::Matrix2cd get_target_op_matrix(const Op_ptr &op) {
     case OpType::CRy:
       return Gate(OpType::Ry, op->get_params(), 1).get_unitary();
     case OpType::CY:
+    case OpType::CnY:
       return Gate(OpType::Y, {}, 1).get_unitary();
     case OpType::CRz:
       return Gate(OpType::Rz, op->get_params(), 1).get_unitary();
     case OpType::CZ:
+    case OpType::CnZ:
       return Gate(OpType::Z, {}, 1).get_unitary();
     case OpType::CH:
       return Gate(OpType::H, {}, 1).get_unitary();
@@ -767,7 +800,8 @@ struct CnGateBlock {
     }
     target_qubit = args.back().index()[0];
     is_symmetric =
-        (op->get_type() == OpType::CZ || op->get_type() == OpType::CU1);
+        (op->get_type() == OpType::CZ || op->get_type() == OpType::CnZ ||
+         op->get_type() == OpType::CU1);
     color = as_gate_ptr(op)->commuting_basis(args.size() - 1);
     if (color == Pauli::I) {
       throw std::invalid_argument(
@@ -855,16 +889,16 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
   if (c.n_bits() != 0 || !c.is_simple()) {
     throw CircuitInvalidity("Only default qubit register allowed");
   }
-  if (c.has_implicit_wireswaps()) {
-    throw CircuitInvalidity("Circuit has implicit wireswaps");
-  }
+
+  Circuit c1(c);
+  // Replace wire swaps with SWAP gates
+  c1.replace_all_implicit_wire_swaps();
 
   // Dispose of the trivial case
   if (n_controls == 0) {
-    return c;
+    return c1;
   }
   // 1. Rebase to Cn* gates (n=0 for single qubit gates)
-  Circuit c1(c);
   VertexList bin;
   BGL_FORALL_VERTICES(v, c1.dag, DAG) {
     Op_ptr op = c1.get_Op_ptr_from_Vertex(v);
@@ -895,9 +929,15 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
   std::vector<Command> commands = c1.get_commands();
   std::vector<CnGateBlock> blocks;
 
-  for (const Command &c : commands) {
-    if (c.get_op_ptr()->get_type() != OpType::noop) {
-      blocks.push_back(CnGateBlock(c));
+  Expr controlled_phase = c1.get_phase();
+
+  for (const Command &cmd : commands) {
+    // if the gate is an identity up to a phase, add it as a controlled phase
+    std::optional<double> phase = cmd.get_op_ptr()->is_identity();
+    if (phase != std::nullopt) {
+      controlled_phase += phase.value();
+    } else {
+      blocks.push_back(CnGateBlock(cmd));
     }
   }
 
@@ -945,10 +985,11 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
       }
     }
   }
-  // 3. Add each block to c2 either as a CnX, a CnSU(2) decomposition or a CnU
-  // decomposition
+  // 3. Add each block to c2 either as a CnX, CnZ, CnY or a CnU decomposition
   Circuit c2(n_controls + c1.n_qubits());
   const static Eigen::Matrix2cd X = Gate(OpType::X, {}, 1).get_unitary();
+  const static Eigen::Matrix2cd Y = Gate(OpType::Y, {}, 1).get_unitary();
+  const static Eigen::Matrix2cd Z = Gate(OpType::Z, {}, 1).get_unitary();
 
   for (const CnGateBlock &b : blocks) {
     if (b.ops.empty()) {
@@ -959,7 +1000,7 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
     if (m.isApprox(Eigen::Matrix2cd::Identity(), EPS)) {
       continue;
     }
-    if (m.isApprox(X, EPS)) {
+    std::function<qubit_vector_t()> get_args = [&]() {
       qubit_vector_t new_args;
       for (unsigned i = 0; i < n_controls; i++) {
         new_args.push_back(Qubit(i));
@@ -968,10 +1009,23 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
         new_args.push_back(Qubit(i + n_controls));
       }
       new_args.push_back(Qubit(b.target_qubit + n_controls));
+      return new_args;
+    };
+    if (m.isApprox(X, EPS)) {
+      qubit_vector_t new_args = get_args();
       c2.add_op<Qubit>(CNXTYPE(new_args.size()), new_args);
       continue;
     }
-
+    if (m.isApprox(Y, EPS)) {
+      qubit_vector_t new_args = get_args();
+      c2.add_op<Qubit>(CNYTYPE(new_args.size()), new_args);
+      continue;
+    }
+    if (m.isApprox(Z, EPS)) {
+      qubit_vector_t new_args = get_args();
+      c2.add_op<Qubit>(CNZTYPE(new_args.size()), new_args);
+      continue;
+    }
     unit_map_t unit_map;
     for (unsigned i = 0; i < n_controls; i++) {
       unit_map.insert({Qubit(i), Qubit(i)});
@@ -1022,9 +1076,9 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
     c2.append_with_map(replacement, unit_map);
   }
 
-  // 4. implement the conditional phase as a CnU1 gate
-  if (!equiv_0(c1.get_phase())) {
-    Circuit cnu1_circ = CnU1(n_controls - 1, c1.get_phase());
+  // 4. implement the controlled phase as a CnU1 gate
+  if (!equiv_0(controlled_phase)) {
+    Circuit cnu1_circ = CnU1(n_controls - 1, controlled_phase);
     c2.append(cnu1_circ);
   }
   return c2;
@@ -1039,6 +1093,9 @@ Circuit with_controls(const Circuit &c, unsigned n_controls) {
 }
 
 #undef CNXTYPE
+#undef CNZTYPE
+#undef CNYTYPE
+#undef CNRYTYPE
 
 std::tuple<Circuit, std::array<Expr, 3>, Circuit> normalise_TK2_angles(
     Expr a, Expr b, Expr c) {
@@ -1152,7 +1209,7 @@ std::tuple<Circuit, std::array<Expr, 3>, Circuit> normalise_TK2_angles(
     pre.add_op<unsigned>(OpType::Z, {0});
     post.add_op<unsigned>(OpType::Z, {1});
   }
-  if (b_eval && *b_eval > .5) {
+  if (b_eval && (*b_eval > .5)) {
     b = 1 - b;
     *b_eval = 1. - *b_eval;
     c = 1 - c;

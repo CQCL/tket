@@ -143,6 +143,39 @@ SCENARIO("Simple circuits produce the correct statevectors") {
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(
         tket_sim::get_statevector(circ), tket_sim::get_statevector(circ2)));
   }
+
+  GIVEN("A circuit with 0 qubits and a global phase") {
+    Circuit circ(0);
+    circ.add_op<unsigned>(OpType::Phase, 0.125, {});
+    StateVector sv = tket_sim::get_statevector(circ);
+    REQUIRE(sv.size() == 1);
+    REQUIRE(sv(0).real() == Approx(cos(PI * 0.125)));
+    REQUIRE(sv(0).imag() == Approx(sin(PI * 0.125)));
+  }
+}
+
+SCENARIO("Simulate circuit with unsupported operations") {
+  GIVEN("Circuit with measurements") {
+    Circuit circ(1, 1);
+    circ.add_op<unsigned>(OpType::Measure, {0, 0});
+    REQUIRE_THROWS_MATCHES(
+        tket_sim::get_unitary(circ), Unsupported,
+        MessageContains("Unsupported OpType Measure"));
+  }
+  GIVEN("Circuit with resets") {
+    Circuit circ(1, 1);
+    circ.add_op<unsigned>(OpType::Reset, {0});
+    REQUIRE_THROWS_MATCHES(
+        tket_sim::get_unitary(circ), Unsupported,
+        MessageContains("Unsupported OpType Reset"));
+  }
+  GIVEN("Circuit with conditionals") {
+    Circuit circ(1, 1);
+    circ.add_conditional_gate<unsigned>(OpType::H, {}, {0}, {0}, 1);
+    REQUIRE_THROWS_MATCHES(
+        tket_sim::get_unitary(circ), Unsupported,
+        MessageContains("Unsupported OpType Conditional"));
+  }
 }
 
 SCENARIO("Ignored op types don't affect get unitary") {
@@ -151,7 +184,6 @@ SCENARIO("Ignored op types don't affect get unitary") {
   Circuit circ2(3, 2);
 
   circ1.add_op<unsigned>(OpType::H, {0});
-  circ2.add_op<unsigned>(OpType::Measure, {0, 1});
   circ2.add_op<unsigned>(OpType::H, {0});
 
   circ1.add_op<unsigned>(OpType::CZ, {0, 1});
@@ -163,7 +195,6 @@ SCENARIO("Ignored op types don't affect get unitary") {
   circ2.add_op<unsigned>(OpType::noop, {2});
   circ2.add_op<unsigned>(OpType::Ry, 2.1, {2});
 
-  circ2.add_op<unsigned>(OpType::Measure, {2, 0});
   REQUIRE(matrices_are_equal(
       tket_sim::get_statevector(circ1), tket_sim::get_statevector(circ2)));
   REQUIRE(matrices_are_equal(
@@ -465,6 +496,26 @@ SCENARIO("Unitaries for controlled operations") {
     Eigen::MatrixXcd V = Eigen::MatrixXcd::Identity(16, 16);
     V(14, 14) = V(15, 15) = 0.;
     V(14, 15) = V(15, 14) = 1.;
+    REQUIRE(U.isApprox(V));
+  }
+  GIVEN("CnY") {
+    Circuit circ(4);
+    circ.add_op<unsigned>(OpType::CnY, {0, 1, 2, 3});
+    const Eigen::MatrixXcd U = tket_sim::get_unitary(circ);
+    Eigen::MatrixXcd V = Eigen::MatrixXcd::Identity(16, 16);
+    V(14, 14) = V(15, 15) = 0.;
+    V(14, 15) = -i_;
+    V(15, 14) = i_;
+    REQUIRE(U.isApprox(V));
+  }
+  GIVEN("CnZ") {
+    Circuit circ(4);
+    circ.add_op<unsigned>(OpType::CnZ, {0, 1, 2, 3});
+    const Eigen::MatrixXcd U = tket_sim::get_unitary(circ);
+    Eigen::MatrixXcd V = Eigen::MatrixXcd::Identity(16, 16);
+    V(14, 14) = 1.;
+    V(15, 15) = -1.;
+    V(14, 15) = V(15, 14) = 0.;
     REQUIRE(U.isApprox(V));
   }
   GIVEN("CnRy") {

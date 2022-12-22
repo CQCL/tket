@@ -24,8 +24,8 @@
 # functions: 100.0% (10 out of 10)
 # branches: 46.4% (23147 out of 49885)
 #
-# Returns status 0 if `file1` is at least as good as `file` on the "lines" score,
-# otherwise returns status 1.
+# Returns status 0 if `file1` is at least as good as `file` on the "lines" score
+# and the "functions" score, otherwise returns status 1.
 
 import sys
 
@@ -58,14 +58,16 @@ def compare(summary, summary1):
     lpercent, fpercent, bpercent = get_percentages(summary)
     lpercent1, fpercent1, bpercent1 = get_percentages(summary1)
 
-    # Ignore branch coverage since it includes compiler-generated branches beyond our
-    # control.
-    # TODO: Maybe use the `--decisions` flag (available in gcovr 5.1) to mitigate this
-    # issue, but this seems to throw an error.
-    # TODO: Take account of function coverage
     if lpercent1 < lpercent:
         print("Percentage line coverage has decreased.")
         exit(1)
+    if fpercent1 < fpercent:
+        print("Percentage function coverage has decreased.")
+        exit(1)
+    if bpercent1 < bpercent:
+        print("Percentage branch coverage has decreased.")
+        exit(1)
+
 
 
 if __name__ == "__main__":
