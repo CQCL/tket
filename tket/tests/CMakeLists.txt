@@ -25,8 +25,8 @@ endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-find_file(CONANBUILDINFO_FILE conanbuildinfo.cmake HINTS ${CMAKE_BINARY_DIR})
-include(${CONANBUILDINFO_FILE})
+find_file(CONANBUILDINFO_FILE_TKET_TESTS conanbuildinfo.cmake HINTS ${CMAKE_CURRENT_BINARY_DIR})
+include(${CONANBUILDINFO_FILE_TKET_TESTS})
 conan_basic_setup()
 
 IF (WIN32)
@@ -53,4 +53,6 @@ include(tkettestsfiles.cmake)
 
 add_executable(test_tket ${TESTUTILS_SOURCES} ${TEST_SOURCES})
 
-target_link_libraries(test_tket PRIVATE ${CONAN_LIBS})
+IF(CONAN_LIBS)
+    target_link_libraries(test_tket PRIVATE ${CONAN_LIBS})
+ENDIF()
