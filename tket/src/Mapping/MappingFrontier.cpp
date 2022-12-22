@@ -313,6 +313,11 @@ void MappingFrontier::advance_frontier_boundary(
             uid = get_bit_from_bool_frontier(this->boolean_boundary, {edge});
             break;
           }
+          default: {
+            throw std::runtime_error(
+                "Input Edge to Vertex encountered during Mapping has "
+                "unsupported Edge type.");
+          }
         }
         in_uids.push_back({uid, edge_type});
       }
@@ -348,6 +353,11 @@ void MappingFrontier::advance_frontier_boundary(
                    {this->circuit_.source(replacement_edge),
                     this->circuit_.get_source_port(replacement_edge)}});
               break;
+            }
+            default: {
+              throw std::runtime_error(
+                  "Input Edge to Vertex encountered during Mapping has "
+                  "unsupported Edge type.");
             }
           }
         }
@@ -439,6 +449,11 @@ void MappingFrontier::advance_frontier_boundary(
                 this->boolean_boundary->replace(boolean_it, {bit, out_bundle});
               }
               break;
+            }
+            default: {
+              throw std::runtime_error(
+                  "Input Edge to Vertex encountered during Mapping has "
+                  "unsupported Edge type.");
             }
           }
         }
