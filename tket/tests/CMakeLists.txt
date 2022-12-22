@@ -48,6 +48,8 @@ add_definitions(-DALL_LOGS)
 
 set(TKET_TESTS_DIR ${CMAKE_CURRENT_SOURCE_DIR})
 
+add_definitions(-DTEST_CIRCUITS_DIR="${CMAKE_CURRENT_SOURCE_DIR}/test_circuits")
+
 include(tkettestutilsfiles.cmake)
 include(tkettestsfiles.cmake)
 

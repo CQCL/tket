@@ -34,7 +34,7 @@ class TketTestsConan(ConanFile):
     default_options = {"with_coverage": False, "full": False, "long": False}
     generators = "cmake"
     exports_sources = "../../tket/tests/*"
-    requires = ("tket/1.0.36@tket/stable", "catch2/3.2.1", "tklog/0.1.2@tket/stable",)
+    requires = ("tket/1.0.36@tket/stable", "catch2/3.2.1")
 
     _cmake = None
 
@@ -57,6 +57,10 @@ class TketTestsConan(ConanFile):
     def build(self):
         cmake = self._configure_cmake()
         cmake.build()
+
+    def imports(self):
+        self.copy("*.dll", dst="bin", src="bin")
+        self.copy("*.dylib*", dst="bin", src="lib")
 
     def package(self):
         executable_filename = "bin/test_tket"
