@@ -55,6 +55,4 @@ include(tkettestsfiles.cmake)
 
 add_executable(test_tket ${TESTUTILS_SOURCES} ${TEST_SOURCES})
 
-IF(CONAN_LIBS)
-    target_link_libraries(test_tket PRIVATE ${CONAN_LIBS})
-ENDIF()
+target_link_libraries(test_tket PRIVATE ${CONAN_LIBS})

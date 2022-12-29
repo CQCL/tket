@@ -26,8 +26,8 @@ endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-find_file(CONANBUILDINFO_FILE conanbuildinfo.cmake HINTS ${CMAKE_BINARY_DIR})
-include(${CONANBUILDINFO_FILE})
+find_file(CONANBUILDINFO_FILE_TKET_PROPTESTS conanbuildinfo.cmake HINTS ${CMAKE_CURRENT_BINARY_DIR})
+include(${CONANBUILDINFO_FILE_TKET_PROPTESTS})
 conan_basic_setup()
 
 IF (WIN32)
@@ -35,6 +35,10 @@ IF (WIN32)
 ELSE()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -Wunreachable-code -Wunused")
 ENDIF()
+if(CMAKE_CXX_COMPILER_ID MATCHES "(Apple)?Clang")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Winconsistent-missing-override -Wloop-analysis -Wno-deprecated-declarations")
+    # remove -Wno-deprecated-declarations once https://github.com/boostorg/boost/issues/688 is resolved
+endif()
 
 add_executable(proptest
     ComparisonFunctions.cpp

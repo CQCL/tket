@@ -1,56 +1,93 @@
-conan_profile=tket
-conan_build_type=Release
-conan_build_dir=cmake-build-debug
+# This makefile bundles commands for streamlined development
+# Use `make help` for an overview of commands
 
-.PHONY: setup
- setup:
-	-conan profile new $(conan_profile) --detect
-	-conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+conan_profile_name=tket
+tket_remote_repository=https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+build_type=Debug
+ifeq ($(build_type), Release)
+  conan_build_dir=cmake-build-release
+else
+  conan_build_dir=cmake-build-debug
+endif
 
-.PHONY: configure
-configure:
+##@ General
+
+
+.PHONY: help
+help: ## Display this help
+	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n"} /^[a-zA-Z_0-9-]+:.*?##/ { printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
+
+##@ Setup and Install Dependencies
+
+.PHONY: conan-profile
+conan-profile: ## Create and configure conan profile
+	-conan profile new $(conan_profile_name) --detect
+	-conan remote add tket-libs $(tket_remote_repository)
 	conan config set general.revisions_enabled=1
-	conan profile update options.tket:shared=True tket
-	conan profile update options.tklog:shared=True tket
-	conan profile update settings.build_type=$(conan_build_type) tket
+	conan profile update options.tket:shared=True $(conan_profile_name)
+	conan profile update options.tklog:shared=True $(conan_profile_name)
+	conan profile update settings.build_type=$(build_type) $(conan_profile_name)
 
 .PHONY: pybind
-pybind:
+pybind: ## install custom pybind package
+	conan profile update settings.build_type=$(build_type) $(conan_profile_name)
 	conan remove -f "pybind11/*"
-	conan create --profile=$(conan_profile) recipes/pybind11
+	conan create --profile=$(conan_profile_name) recipes/pybind11
 
- # currently the b2 package in the remote tket-libs does not include compiler info
- # which can lead to errors when building boost from source, since conan will try to use
- # the remote binary even if it is incompatible with the compiler
- # this fixes that
-.PHONY: build-b2-from-source
-build-b2-from-source:
-	conan install --profile=$(conan_profile) b2/4.9.2@ --build
+ # Currently the b2 package (a dependency of boost) in the remote tket-libs does not include compiler info
+ # which can lead to errors when building boost from source. Conan will try to use
+ # the remote binary even if it is incompatible with the compiler, leading to linking issues.
+ # This fixes that problem by forcing a b2 build from source
+.PHONY: b2
+b2: ## install and build b2 (for boost builds) from source
+	conan profile update settings.build_type=$(build_type) $(conan_profile_name)
+	conan install --profile=$(conan_profile_name) b2/4.9.2@ --build
 
-.PHONY: build-local-libs
-build-local-libs:
-	conan create --profile=$(conan_profile) libs/tklog tket/stable --build=missing
-	conan create --profile=$(conan_profile) libs/tkassert tket/stable --build=missing
-	conan create --profile=$(conan_profile) libs/tkrng tket/stable --build=missing
-	conan create --profile=$(conan_profile) libs/tktokenswap tket/stable --build=missing
-	conan create --profile=$(conan_profile) libs/tkwsm tket/stable --build=missing
+.PHONY: local-libs
+local-libs: ## create conan packages for local libs from this repository
+	conan profile update settings.build_type=$(build_type) $(conan_profile_name)
+	conan create --profile=$(conan_profile_name) libs/tklog tket/stable --build=missing
+	conan create --profile=$(conan_profile_name) libs/tkassert tket/stable --build=missing
+	conan create --profile=$(conan_profile_name) libs/tkrng tket/stable --build=missing
+	conan create --profile=$(conan_profile_name) libs/tktokenswap tket/stable --build=missing
+	conan create --profile=$(conan_profile_name) libs/tkwsm tket/stable --build=missing
 
-.PHONY: install-tket
-install-tket:
-	conan install --profile=$(conan_profile) recipes/tket  --install-folder=$(conan_build_dir)/tket/src -build=missing
-	conan install --profile=$(conan_profile) recipes/tket-tests --install-folder=$(conan_build_dir)/tket/tests --build=missing
+.PHONY: dev-env-from-scratch
+dev-env-from-scratch: b2 local-libs ## Install tket, tket-tests, and tket-proptests into a local build directory and configure cmake (build everything from source)
+	conan profile update settings.build_type=$(build_type) $(conan_profile_name)
+	conan install --profile=$(conan_profile_name) recipes/tket  --install-folder=$(conan_build_dir)/tket/src --build=missing
+	conan install --profile=$(conan_profile_name) recipes/tket-tests --install-folder=$(conan_build_dir)/tket/tests --build=missing
+	conan install --profile=$(conan_profile_name) recipes/tket-proptests --install-folder=$(conan_build_dir)/tket/proptests --build=missing
+	cmake -DCMAKE_BUILD_TYPE=$(build_type) -DCMAKE_MAKE_PROGRAM=ninja -G Ninja -S . -B $(conan_build_dir)
 
-.PHONY: configure-tket
-configure-tket:
-	cmake -DCMAKE_BUILD_TYPE=$(conan_build_type) -DCMAKE_MAKE_PROGRAM=ninja -G Ninja -S . -B $(conan_build_dir)
+.PHONY: dev-env
+dev-env: ## Install tket, tket-tests, and tket-proptests into a local build directory and configure cmake (dependencies from cache or remote)
+	conan profile update settings.build_type=$(build_type) $(conan_profile_name)
+	conan install --profile=$(conan_profile_name) recipes/tket  --install-folder=$(conan_build_dir)/tket/src
+	conan install --profile=$(conan_profile_name) recipes/tket-tests --install-folder=$(conan_build_dir)/tket/tests
+	conan install --profile=$(conan_profile_name) recipes/tket-proptests --install-folder=$(conan_build_dir)/tket/proptests
+	cmake -DCMAKE_BUILD_TYPE=$(build_type) -DCMAKE_MAKE_PROGRAM=ninja -G Ninja -S . -B $(conan_build_dir)
 
-.PHONY: build-tket
-build-tket:
+##@ Build
+
+.PHONY: build
+build: ## build with cmake
 	cmake --build $(conan_build_dir) --target test_tket -j 6
+	cmake --build $(conan_build_dir) --target proptest -j 6
 
+##@ Test
+
+test_args="~[latex]"
 .PHONY: test
-test:
-	$(conan_build_dir)/tket/tests/bin/test_tket "~[latex]"
+test: ## run tket tests
+	-$(conan_build_dir)/tket/tests/bin/test_tket $(test_args)
 
-.PHONY: all
-all: setup configure pybind build-b2-from-source build-local-libs install-tket configure-tket test
+.PHONY: test-file
+File=""
+file_test_filter=$(patsubst %.cpp,%, $(notdir $(File)))
+test-file: ## run tket tests from a specific test file (usage: `make File=<test_file> test-file`)
+	-$(conan_build_dir)/tket/tests/bin/test_tket -# -r compact "[#$(file_test_filter)]"
+
+.PHONY: proptest
+proptest: ## run tket proptests
+	$(conan_build_dir)/tket/proptests/bin/proptest

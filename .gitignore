@@ -13,6 +13,8 @@ CMakeCache.txt
 CMakeFiles
 __pycache__
 build
+cmake-build-debug
+cmake-build-release
 depgraph.png
 dist
 doc
@@ -23,3 +25,7 @@ pytket/tests/qasm_test_files/testout3.qasm
 pytket/tests/qasm_test_files/testout4.qasm
 pytket/tests/qasm_test_files/testout5.qasm
 pytket/tests/qasm_test_files/testout6.qasm
+
+# IDEs
+.idea
+.vscode
