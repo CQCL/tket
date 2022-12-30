@@ -274,6 +274,19 @@ First create a `build` folder in the project root. Then proceed as follows.
    conan export-pkg recipes/tket tket/${VERSION}@tket/stable -f --build-folder=build --source-folder=tket/src
    ```
    where `${VERSION}` is the tket library version, e.g. `1.0.3`.
+ 
+#### Method 3: Makefile
+
+A [Makefile](Makefile) is provided with commands for a simplified development process
+
+1. Setup recommended conan profile: `make conan-profile`
+2. Install all dependencies for tket, tket-tests, and tket-proptests in a build directory (`cmake-build-debug` per default):
+   1. `make dev-env-from-scratch` -> Build dependencies from source (e.g., for unsupported conan configurations) 
+   2. `make dev-env` -> Dependencies from conan cache or remote (for supported conan configurations)
+3. Build (and rebuild changes to) tket, tket-tests, and tket-proptests: `make build`
+4. run tests, proptests: `make test`, `make proptests`
+
+For more details and options run `make help`
 
 ## Test coverage
 

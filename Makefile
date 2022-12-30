@@ -17,7 +17,7 @@ endif
 help: ## Display this help
 	@awk 'BEGIN {FS = ":.*##"; printf "\nUsage:\n  make \033[36m<target>\033[0m\n"} /^[a-zA-Z_0-9-]+:.*?##/ { printf "  \033[36m%-20s\033[0m %s\n", $$1, $$2 } /^##@/ { printf "\n\033[1m%s\033[0m\n", substr($$0, 5) } ' $(MAKEFILE_LIST)
 
-##@ Setup and Install Dependencies
+##@ Setup Conan Profile
 
 .PHONY: conan-profile
 conan-profile: ## Create and configure conan profile
@@ -27,6 +27,8 @@ conan-profile: ## Create and configure conan profile
 	conan profile update options.tket:shared=True $(conan_profile_name)
 	conan profile update options.tklog:shared=True $(conan_profile_name)
 	conan profile update settings.build_type=$(build_type) $(conan_profile_name)
+
+##@ Install Dependencies
 
 .PHONY: pybind
 pybind: ## install custom pybind package
@@ -39,12 +41,12 @@ pybind: ## install custom pybind package
  # the remote binary even if it is incompatible with the compiler, leading to linking issues.
  # This fixes that problem by forcing a b2 build from source
 .PHONY: b2
-b2: ## install and build b2 (for boost builds) from source
+b2: # install and build b2 (for boost builds) from source
 	conan profile update settings.build_type=$(build_type) $(conan_profile_name)
 	conan install --profile=$(conan_profile_name) b2/4.9.2@ --build
 
 .PHONY: local-libs
-local-libs: ## create conan packages for local libs from this repository
+local-libs: # create conan packages for local libs from this repository
 	conan profile update settings.build_type=$(build_type) $(conan_profile_name)
 	conan create --profile=$(conan_profile_name) libs/tklog tket/stable --build=missing
 	conan create --profile=$(conan_profile_name) libs/tkassert tket/stable --build=missing
@@ -79,7 +81,7 @@ build: ## build with cmake
 
 test_args="~[latex]"
 .PHONY: test
-test: ## run tket tests
+test: ## run tket tests, override arguments to test binary using test_args variable, e.g., `make test_args='-r compact "[long]"' test`
 	-$(conan_build_dir)/tket/tests/bin/test_tket $(test_args)
 
 .PHONY: test-file
@@ -88,6 +90,6 @@ file_test_filter=$(patsubst %.cpp,%, $(notdir $(File)))
 test-file: ## run tket tests from a specific test file (usage: `make File=<test_file> test-file`)
 	-$(conan_build_dir)/tket/tests/bin/test_tket -# -r compact "[#$(file_test_filter)]"
 
-.PHONY: proptest
-proptest: ## run tket proptests
+.PHONY: proptests
+proptests: ## run tket proptests
 	$(conan_build_dir)/tket/proptests/bin/proptest
