@@ -13,8 +13,7 @@ CMakeCache.txt
 CMakeFiles
 __pycache__
 build
-cmake-build-debug
-cmake-build-release
+cmake-build*
 depgraph.png
 dist
 doc
