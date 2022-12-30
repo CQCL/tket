@@ -13,8 +13,8 @@
 // limitations under the License.
 
 #include <catch2/catch_test_macros.hpp>
-#include <fstream>
 #include <filesystem>
+#include <fstream>
 
 #include "Mapping/LexiLabelling.hpp"
 #include "Mapping/LexiRoute.hpp"
@@ -1609,7 +1609,8 @@ SCENARIO("Lexi relabel with partially mapped circuit") {
 }
 
 SCENARIO("Test failing case") {
-  auto lexiroute_circuit_path = std::filesystem::path(TEST_CIRCUITS_DIR).append("lexiroute_circuit.json");
+  auto lexiroute_circuit_path =
+      std::filesystem::path(TEST_CIRCUITS_DIR).append("lexiroute_circuit.json");
   std::ifstream circuit_file(lexiroute_circuit_path);
   nlohmann::json j = nlohmann::json::parse(circuit_file);
   auto c = j.get<Circuit>();
