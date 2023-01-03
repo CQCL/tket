@@ -348,7 +348,7 @@ void init_boxes(py::module &m) {
           ":return: the list of pauli stabilisers");
   py::class_<UniformQControlBox, std::shared_ptr<UniformQControlBox>, Op>(
       m, "UniformQControlBox",
-      "A user-defined uniformly controlled operations (i.e. multiplexor) "
+      "A user-defined uniformly controlled operations (i.e. multiplexor gates) "
       "specified by a "
       "map from bitstrings to :py:class:`Op`s")
       .def(
