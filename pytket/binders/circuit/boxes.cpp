@@ -389,7 +389,7 @@ void init_boxes(py::module &m) {
             if (axis != OpType::Rx && axis != OpType::Ry &&
                 axis != OpType::Rz) {
               throw std::invalid_argument(
-                  "The axis must be either Rx, Ry, or Rz.", axis);
+                  "The axis must be either Rx, Ry, or Rz.");
             }
             unsigned bitstring_width = (unsigned)log2(angles.size());
             ctrl_op_map_t op_map;
