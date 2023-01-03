@@ -348,7 +348,8 @@ void init_boxes(py::module &m) {
           ":return: the list of pauli stabilisers");
   py::class_<UniformQControlBox, std::shared_ptr<UniformQControlBox>, Op>(
       m, "UniformQControlBox",
-      "A user-defined uniformly controlled operations specified by a "
+      "A user-defined uniformly controlled operations (i.e. multiplexor) "
+      "specified by a "
       "map from bitstrings to :py:class:`Op`s")
       .def(
           py::init<const ctrl_op_map_t &>(),
@@ -366,12 +367,14 @@ void init_boxes(py::module &m) {
       UniformQControlRotationBox, std::shared_ptr<UniformQControlRotationBox>,
       Op>(
       m, "UniformQControlRotationBox",
-      "A user-defined uniformly controlled single-axis rotations specified by "
+      "A user-defined uniformly controlled single-axis rotations (i.e. "
+      "multiplexed rotations) specified by "
       "a map from bitstrings to :py:class:`Op`s")
       .def(
           py::init<const ctrl_op_map_t &>(),
           "Construct from a map from bitstrings to :py:class:`Op`s."
-          "Only supports Rx, Ry, Rz :py:class:`Op`s\n\n"
+          "All :py:class:`Op`s must share the same single-qubit rotation type: "
+          "Rx, Ry, or Rz.\n\n"
           ":param op_map: Map from bitstrings to :py:class:`Op`s\n",
           py::arg("op_map"))
       .def(
@@ -382,6 +385,11 @@ void init_boxes(py::module &m) {
             if (angles.size() & (angles.size() - 1)) {
               throw std::invalid_argument(
                   "The size of the angles is not power of 2.");
+            }
+            if (axis != OpType::Rx && axis != OpType::Ry &&
+                axis != OpType::Rz) {
+              throw std::invalid_argument(
+                  "The axis must be either Rx, Ry, or Rz.", axis);
             }
             unsigned bitstring_width = (unsigned)log2(angles.size());
             ctrl_op_map_t op_map;
@@ -411,7 +419,8 @@ void init_boxes(py::module &m) {
           ":return: the underlying op map");
   py::class_<UniformQControlU2Box, std::shared_ptr<UniformQControlU2Box>, Op>(
       m, "UniformQControlU2Box",
-      "A user-defined uniformly controlled U2 operations specified by a "
+      "A user-defined uniformly controlled U2 operations (i.e. multiplexed U2 "
+      "gates) specified by a "
       "map from bitstrings to :py:class:`Op`s")
       .def(
           py::init<const ctrl_op_map_t &, bool>(),
