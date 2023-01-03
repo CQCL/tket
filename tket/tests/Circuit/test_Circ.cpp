@@ -2632,6 +2632,10 @@ SCENARIO("(qu)bit_readout/mapping for a circuit") {
   c.add_measure(Qubit(qreg[2]), Bit(creg[2]));
   c.add_measure(Qubit(qreg[3]), Bit(creg[1]));
   c.add_op<Qubit>(OpType::X, {Qubit(qreg[3])});
+  // barriers should have no effect
+  c.add_barrier({qreg[2]});
+  c.add_barrier({qreg[2]});
+  c.add_barrier({creg[0], creg[1]});
   std::map<Bit, unsigned> readout = c.bit_readout();
   REQUIRE(readout.size() == 4);
   REQUIRE(readout.at(Bit(creg[0])) == 0);
