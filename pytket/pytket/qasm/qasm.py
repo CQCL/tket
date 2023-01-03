@@ -141,6 +141,7 @@ PARAM_COMMANDS = {
     "rxx": OpType.XXPhase,
     "ry": OpType.Ry,
     "rz": OpType.Rz,
+    "RZZ": OpType.ZZPhase,
     "rzz": OpType.ZZPhase,
     "Rz": OpType.Rz,
     "U1q": OpType.PhasedX,
@@ -1141,12 +1142,17 @@ def circuit_to_qasm_io(
                     variable = control_bit
                 else:
                     variable = control_bit.reg_name
+                    if hqs_header(header) and bits != list(cregs[variable]):
+                        raise QASMUnsupportedError(
+                            "hqslib1 QASM conditions must be an entire classical "
+                            "register or a single bit"
+                        )
             if not hqs_header(header):
                 if op.width != cregs[variable].size:
                     raise QASMUnsupportedError(
                         "OpenQASM conditions must be an entire classical register"
                     )
-                if sorted(bits) != list(cregs[variable]):
+                if bits != list(cregs[variable]):
                     raise QASMUnsupportedError(
                         "OpenQASM conditions must be a single classical register"
                     )
@@ -1177,7 +1183,7 @@ def circuit_to_qasm_io(
             r_name = r_args[0].reg_name
 
             # check if whole register can be set at once
-            if l_args == list(cregs[l_name]) or r_args == list(cregs[r_name]):
+            if l_args == list(cregs[l_name]) and r_args == list(cregs[r_name]):
                 buffer.write(f"{l_name} = {r_name};\n")
             else:
                 for bit_l, bit_r in zip(l_args, r_args):

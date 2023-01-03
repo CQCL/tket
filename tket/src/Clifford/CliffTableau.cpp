@@ -355,11 +355,11 @@ void CliffTableau::apply_gate_at_end(
       break;
     }
     case OpType::CY: {
-      apply_V_at_end(qbs.at(1));
-      apply_V_at_end(qbs.at(1));
-      apply_V_at_end(qbs.at(1));
+      apply_S_at_end(qbs.at(1));
+      apply_S_at_end(qbs.at(1));
+      apply_S_at_end(qbs.at(1));
       apply_CX_at_end(qbs.at(0), qbs.at(1));
-      apply_V_at_end(qbs.at(1));
+      apply_S_at_end(qbs.at(1));
       break;
     }
     case OpType::CZ: {

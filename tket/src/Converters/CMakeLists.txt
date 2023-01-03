@@ -20,6 +20,7 @@ endif()
 
 add_library(tket-${COMP}
     CliffTableauConverters.cpp
+    ChoiMixTableauConverters.cpp
     PauliGadget.cpp
     PauliGraphConverters.cpp
     Gauss.cpp

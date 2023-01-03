@@ -15,6 +15,7 @@
 #pragma once
 
 #include "Circuit/Circuit.hpp"
+#include "Clifford/ChoiMixTableau.hpp"
 #include "Clifford/CliffTableau.hpp"
 #include "Clifford/UnitaryTableau.hpp"
 #include "PauliGraph/PauliGraph.hpp"
@@ -37,6 +38,23 @@ UnitaryTableau circuit_to_unitary_tableau(const Circuit &circ);
  */
 Circuit tableau_to_circuit(const CliffTableau &tab);
 Circuit unitary_tableau_to_circuit(const UnitaryTableau &tab);
+
+/**
+ * Construct a ChoiMixTableau for a given circuit.
+ * Will incorporate qubit initialisations and discarding into the circuit.
+ * Will throw an exception if it contains non-Clifford gates.
+ */
+ChoiMixTableau circuit_to_cm_tableau(const Circuit &circ);
+
+/**
+ * Constructs a circuit producing the same effect as a ChoiMixTableau.
+ * Uses a naive synthesis method until we develop a good heuristic.
+ * Since Circuit does not support distinct qubit addresses for inputs and
+ * outputs, also returns a map from the output qubit IDs in the tableau to their
+ * corresponding outputs in the circuit
+ */
+std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(
+    const ChoiMixTableau &circ);
 
 PauliGraph circuit_to_pauli_graph(const Circuit &circ);
 

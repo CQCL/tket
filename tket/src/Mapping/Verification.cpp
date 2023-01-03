@@ -53,6 +53,7 @@ bool respects_connectivity_constraints(
     }
     unsigned n_qbs = qbs.size();
     switch (n_qbs) {
+      case 0:
       case 1:
         break;
       case 2: {
