@@ -7,6 +7,6 @@ py
 hypothesis
 docker
 jsonschema
-quimb
+quimb;python_version<"3.11"
 opt_einsum
 autoray

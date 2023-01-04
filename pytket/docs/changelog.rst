@@ -9,6 +9,10 @@ Major new features:
 * New boxes to implement uniformly controlled operations (i.e. multiplexor gates):
   ``UniformQControlBox``, ``UniformQControlRotationBox`` and ``UniformQControlU2Box``.
 
+General:
+
+* Python 3.11 support added; 3.8 dropped.
+
 Minor new features:
 
 * Circuit methods ``qubit_readout`` and ``qubit_to_bit_map`` now ignore barriers.

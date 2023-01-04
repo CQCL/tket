@@ -30,7 +30,7 @@ Frequently Asked Questions
 Is there a build of ``pytket`` for my system?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The non-commercial version of ``pytket``, and most additional modules available through PyPI, are built to work on Linux, MacOS and Windows with Python versions 3.8, 3.9, or 3.10, and ``pip`` version 20.0.0+.
+The non-commercial version of ``pytket``, and most additional modules available through PyPI, are built to work on Linux, MacOS and Windows with Python versions 3.9, 3.10, or 3.11, and ``pip`` version 20.0.0+.
 
 
 Do all versions of ``pytket`` work with Windows?
