@@ -115,10 +115,14 @@ static void recursive_demultiplex_rotation(
     p_angles.push_back((angles[i] - angles[mid + i]) / 2);
     q_angles.push_back((angles[i] + angles[mid + i]) / 2);
   }
+  // UCR = CX P CX Q = Q CX P CX
+  // the left recursion step implements P CX Q, and the
+  // right recursion step implements Q CX P to cancel the CXs
   if (direction != std::nullopt && !direction.value()) {
     std::swap(p_angles, q_angles);
   }
   if (q_angles.size() == 1) {
+    // base step
     circ.add_op<unsigned>(axis, q_angles[0], {total_qubits - 1});
   } else {
     recursive_demultiplex_rotation(q_angles, axis, total_qubits, circ, true);
@@ -126,11 +130,13 @@ static void recursive_demultiplex_rotation(
   circ.add_op<unsigned>(
       OpType::CX, {total_qubits - n_qubits, total_qubits - 1});
   if (p_angles.size() == 1) {
+    // base step
     circ.add_op<unsigned>(axis, p_angles[0], {total_qubits - 1});
   } else {
     recursive_demultiplex_rotation(p_angles, axis, total_qubits, circ, false);
   }
   if (direction == std::nullopt) {
+    // for the root step, we implement UCR = CX P CX Q
     circ.add_op<unsigned>(
         OpType::CX, {total_qubits - n_qubits, total_qubits - 1});
   }
