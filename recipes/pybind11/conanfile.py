@@ -19,7 +19,7 @@ import sys
 
 class PyBind11Conan(ConanFile):
     name = "pybind11"
-    version = "2.10.2"
+    version = "2.10.3"
     description = "Seamless operability between C++11 and Python"
     topics = "conan", "pybind11", "python", "binding"
     homepage = "https://github.com/pybind/pybind11"
