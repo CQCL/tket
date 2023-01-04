@@ -156,7 +156,6 @@ class UniformQControlRotationBox : public Box {
 
  private:
   unsigned n_controls_;
-  unsigned n_targets_;
   ctrl_op_map_t op_map_;
   OpType axis_;
 };
@@ -225,7 +224,6 @@ class UniformQControlU2Box : public Box {
 
  private:
   unsigned n_controls_;
-  unsigned n_targets_;
   ctrl_op_map_t op_map_;
   bool impl_diag_;
 };

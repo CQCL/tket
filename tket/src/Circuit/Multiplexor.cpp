@@ -441,7 +441,6 @@ UniformQControlRotationBox::UniformQControlRotationBox(
   if (it == op_map.end()) {
     throw std::invalid_argument("No Ops provided.");
   }
-  n_targets_ = 1;
   for (; it != op_map.end(); it++) {
     if (it == op_map.begin()) {
       n_controls_ = (unsigned)it->first.size();
@@ -462,7 +461,6 @@ UniformQControlRotationBox::UniformQControlRotationBox(
     const UniformQControlRotationBox &other)
     : Box(other),
       n_controls_(other.n_controls_),
-      n_targets_(other.n_targets_),
       op_map_(other.op_map_),
       axis_(other.axis_) {}
 
@@ -547,7 +545,6 @@ UniformQControlU2Box::UniformQControlU2Box(
     throw std::invalid_argument("No Ops provided.");
   }
   n_controls_ = (unsigned)it->first.size();
-  n_targets_ = 1;
   for (; it != op_map.end(); it++) {
     OpType optype = it->second->get_type();
     if (!is_single_qubit_unitary_type(optype) &&
@@ -563,7 +560,6 @@ UniformQControlU2Box::UniformQControlU2Box(
 UniformQControlU2Box::UniformQControlU2Box(const UniformQControlU2Box &other)
     : Box(other),
       n_controls_(other.n_controls_),
-      n_targets_(other.n_targets_),
       op_map_(other.op_map_),
       impl_diag_(other.impl_diag_) {}
 
