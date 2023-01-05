@@ -17,6 +17,10 @@ Minor new features:
 
 * Circuit methods ``qubit_readout`` and ``qubit_to_bit_map`` now ignore barriers.
 
+Fixes:
+
+* ``MultiGateReorderRoutingMethod`` raising unknown edge missing error.
+
 1.10.0 (December 2022)
 ----------------------
 
