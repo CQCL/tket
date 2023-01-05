@@ -374,8 +374,8 @@ static ctrl_op_map_t op_map_transpose(const ctrl_op_map_t &op_map) {
   return new_op_map;
 }
 
-UniformQControlBox::UniformQControlBox(const ctrl_op_map_t &op_map)
-    : Box(OpType::UniformQControlBox), op_map_(op_map) {
+MultiplexorBox::MultiplexorBox(const ctrl_op_map_t &op_map)
+    : Box(OpType::MultiplexorBox), op_map_(op_map) {
   auto it = op_map.begin();
   if (it == op_map.end()) {
     throw std::invalid_argument("No Ops provided.");
@@ -385,51 +385,50 @@ UniformQControlBox::UniformQControlBox(const ctrl_op_map_t &op_map)
   op_map_validate(op_map);
 }
 
-UniformQControlBox::UniformQControlBox(const UniformQControlBox &other)
+MultiplexorBox::MultiplexorBox(const MultiplexorBox &other)
     : Box(other),
       n_controls_(other.n_controls_),
       n_targets_(other.n_targets_),
       op_map_(other.op_map_) {}
 
-Op_ptr UniformQControlBox::symbol_substitution(
+Op_ptr MultiplexorBox::symbol_substitution(
     const SymEngine::map_basic_basic &sub_map) const {
   ctrl_op_map_t new_op_map = op_map_symbol_sub(sub_map, op_map_);
-  return std::make_shared<UniformQControlBox>(new_op_map);
+  return std::make_shared<MultiplexorBox>(new_op_map);
 }
 
-SymSet UniformQControlBox::free_symbols() const {
+SymSet MultiplexorBox::free_symbols() const {
   return op_map_free_symbols(op_map_);
 }
 
-Op_ptr UniformQControlBox::dagger() const {
-  return std::make_shared<UniformQControlBox>(op_map_dagger(op_map_));
+Op_ptr MultiplexorBox::dagger() const {
+  return std::make_shared<MultiplexorBox>(op_map_dagger(op_map_));
 }
 
-Op_ptr UniformQControlBox::transpose() const {
-  return std::make_shared<UniformQControlBox>(op_map_transpose(op_map_));
+Op_ptr MultiplexorBox::transpose() const {
+  return std::make_shared<MultiplexorBox>(op_map_transpose(op_map_));
 }
 
-op_signature_t UniformQControlBox::get_signature() const {
+op_signature_t MultiplexorBox::get_signature() const {
   op_signature_t qubits(n_controls_ + n_targets_, EdgeType::Quantum);
   return qubits;
 }
 
-nlohmann::json UniformQControlBox::to_json(const Op_ptr &op) {
-  const auto &box = static_cast<const UniformQControlBox &>(*op);
+nlohmann::json MultiplexorBox::to_json(const Op_ptr &op) {
+  const auto &box = static_cast<const MultiplexorBox &>(*op);
   nlohmann::json j = core_box_json(box);
   j["op_map"] = box.get_op_map();
   return j;
 }
 
-Op_ptr UniformQControlBox::from_json(const nlohmann::json &j) {
-  UniformQControlBox box =
-      UniformQControlBox(j.at("op_map").get<ctrl_op_map_t>());
+Op_ptr MultiplexorBox::from_json(const nlohmann::json &j) {
+  MultiplexorBox box = MultiplexorBox(j.at("op_map").get<ctrl_op_map_t>());
   return set_box_id(
       box,
       boost::lexical_cast<boost::uuids::uuid>(j.at("id").get<std::string>()));
 }
 
-void UniformQControlBox::generate_circuit() const {
+void MultiplexorBox::generate_circuit() const {
   circ_ = std::make_shared<Circuit>(
       multiplexor_sequential_decomp(op_map_, n_controls_, n_targets_));
 }
@@ -663,7 +662,7 @@ void UniformQControlU2Box::generate_circuit() const {
   circ_ = std::make_shared<Circuit>(circ);
 }
 
-REGISTER_OPFACTORY(UniformQControlBox, UniformQControlBox)
+REGISTER_OPFACTORY(MultiplexorBox, MultiplexorBox)
 REGISTER_OPFACTORY(UniformQControlRotationBox, UniformQControlRotationBox)
 REGISTER_OPFACTORY(UniformQControlU2Box, UniformQControlU2Box)
 

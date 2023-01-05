@@ -163,7 +163,7 @@ bool is_box_type(OpType optype) {
       OpType::CliffBox,
       OpType::PhasePolyBox,
       OpType::QControlBox,
-      OpType::UniformQControlBox,
+      OpType::MultiplexorBox,
       OpType::UniformQControlRotationBox,
       OpType::UniformQControlU2Box,
       OpType::ClassicalExpBox,

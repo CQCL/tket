@@ -27,9 +27,9 @@ namespace tket {
 typedef std::map<std::vector<bool>, Op_ptr> ctrl_op_map_t;
 
 /**
- * Uniformly controlled quantum ops
+ * Multiplexed ops
  */
-class UniformQControlBox : public Box {
+class MultiplexorBox : public Box {
  public:
   /**
    * Construct from a given ctrl_op_map_t.
@@ -42,14 +42,14 @@ class UniformQControlBox : public Box {
    *
    * @param op_map
    */
-  explicit UniformQControlBox(const ctrl_op_map_t &op_map);
+  explicit MultiplexorBox(const ctrl_op_map_t &op_map);
 
   /**
    * Copy constructor
    */
-  UniformQControlBox(const UniformQControlBox &other);
+  MultiplexorBox(const MultiplexorBox &other);
 
-  ~UniformQControlBox() override {}
+  ~MultiplexorBox() override {}
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &sub_map) const override;
@@ -59,11 +59,11 @@ class UniformQControlBox : public Box {
   ctrl_op_map_t get_ops() const { return op_map_; }
 
   /**
-   * Equality check between two UniformQControlBox instances
+   * Equality check between two MultiplexorBox instances
    */
   bool is_equal(const Op &op_other) const override {
-    const UniformQControlBox &other =
-        dynamic_cast<const UniformQControlBox &>(op_other);
+    const MultiplexorBox &other =
+        dynamic_cast<const MultiplexorBox &>(op_other);
     return id_ == other.get_id();
   }
 
@@ -85,11 +85,8 @@ class UniformQControlBox : public Box {
    *
    */
   void generate_circuit() const override;
-  UniformQControlBox()
-      : Box(OpType::UniformQControlBox),
-        n_controls_(0),
-        n_targets_(0),
-        op_map_() {}
+  MultiplexorBox()
+      : Box(OpType::MultiplexorBox), n_controls_(0), n_targets_(0), op_map_() {}
 
  private:
   unsigned n_controls_;

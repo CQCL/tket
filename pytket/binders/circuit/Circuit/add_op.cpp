@@ -603,13 +603,13 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("box"), py::arg("qubits"), py::arg("ancilla"),
           py::arg("name") = std::nullopt)
       .def(
-          "add_uniformqcontrolbox",
-          [](Circuit *circ, const UniformQControlBox &box,
+          "add_multiplexor",
+          [](Circuit *circ, const MultiplexorBox &box,
              const unit_vector_t &args, const py::kwargs &kwargs) {
             return add_box_method(
-                circ, std::make_shared<UniformQControlBox>(box), args, kwargs);
+                circ, std::make_shared<MultiplexorBox>(box), args, kwargs);
           },
-          "Append a :py:class:`UniformQControlBox` to the circuit.\n\n"
+          "Append a :py:class:`MultiplexorBox` to the circuit.\n\n"
           ":param box: The box to append\n"
           ":param args: The qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",

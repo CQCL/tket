@@ -71,8 +71,8 @@ static bool check_multiplexor(
   return (correct_u - circ_u).cwiseAbs().sum() < ERR_EPS;
 }
 
-SCENARIO("UniformQControlBox decomposition", "[boxes]") {
-  GIVEN("Simple UniformQControlBox construction") {
+SCENARIO("MultiplexorBox decomposition", "[boxes]") {
+  GIVEN("Simple MultiplexorBox construction") {
     Circuit c0(2);
     c0.add_op<unsigned>(OpType::H, {0});
     CircBox cbox(c0);
@@ -81,8 +81,8 @@ SCENARIO("UniformQControlBox decomposition", "[boxes]") {
         {{1, 1}, op0},
         {{0, 1}, get_op_ptr(OpType::CX)},
         {{1, 0}, get_op_ptr(OpType::TK2, std::vector<Expr>{0.2, 0.4, 0.4})}};
-    UniformQControlBox uqc_box(op_map);
-    std::shared_ptr<Circuit> c = uqc_box.to_circuit();
+    MultiplexorBox multiplexor(op_map);
+    std::shared_ptr<Circuit> c = multiplexor.to_circuit();
     std::vector<Command> cmds = c->get_commands();
     // 4 X gates and 3 QControlBoxes
     REQUIRE(cmds.size() == 7);
@@ -93,18 +93,18 @@ SCENARIO("UniformQControlBox decomposition", "[boxes]") {
     }
     REQUIRE(check_multiplexor(op_map, *c));
   }
-  GIVEN("UniformQControlBox with one control") {
+  GIVEN("MultiplexorBox with one control") {
     ctrl_op_map_t op_map = {{{1}, get_op_ptr(OpType::H)}};
-    UniformQControlBox uqc_box(op_map);
-    std::shared_ptr<Circuit> c = uqc_box.to_circuit();
+    MultiplexorBox multiplexor(op_map);
+    std::shared_ptr<Circuit> c = multiplexor.to_circuit();
     std::vector<Command> cmds = c->get_commands();
     REQUIRE(cmds.size() == 1);
     REQUIRE(check_multiplexor(op_map, *c));
   }
-  GIVEN("UniformQControlBox with zero control") {
+  GIVEN("MultiplexorBox with zero control") {
     ctrl_op_map_t op_map = {{{}, get_op_ptr(OpType::H)}};
-    UniformQControlBox uqc_box(op_map);
-    std::shared_ptr<Circuit> c = uqc_box.to_circuit();
+    MultiplexorBox multiplexor(op_map);
+    std::shared_ptr<Circuit> c = multiplexor.to_circuit();
     std::vector<Command> cmds = c->get_commands();
     REQUIRE(cmds.size() == 1);
     REQUIRE(check_multiplexor(op_map, *c));
@@ -284,7 +284,7 @@ SCENARIO("Exception handling", "[boxes]") {
   GIVEN("Empty op_map") {
     ctrl_op_map_t op_map;
     REQUIRE_THROWS_MATCHES(
-        UniformQControlBox(op_map), std::invalid_argument,
+        MultiplexorBox(op_map), std::invalid_argument,
         MessageContains("No Ops provided"));
   }
   GIVEN("Classical wire") {
@@ -297,28 +297,28 @@ SCENARIO("Exception handling", "[boxes]") {
         {{0, 1}, get_op_ptr(OpType::CX)},
         {{1, 0}, get_op_ptr(OpType::TK2, std::vector<Expr>{0.2, 0.4, 0.4})}};
     REQUIRE_THROWS_MATCHES(
-        UniformQControlBox(op_map), BadOpType,
+        MultiplexorBox(op_map), BadOpType,
         MessageContains("Quantum control of classical wires not supported"));
   }
   GIVEN("Bitstrings are too long") {
     std::vector<bool> bits(33);
     ctrl_op_map_t op_map = {{bits, get_op_ptr(OpType::H)}};
     REQUIRE_THROWS_MATCHES(
-        UniformQControlBox(op_map), std::invalid_argument,
+        MultiplexorBox(op_map), std::invalid_argument,
         MessageContains("Bitstrings longer than 32 are not supported"));
   }
   GIVEN("Unmatched bitstrings") {
     ctrl_op_map_t op_map = {
         {{0, 1}, get_op_ptr(OpType::H)}, {{1}, get_op_ptr(OpType::X)}};
     REQUIRE_THROWS_MATCHES(
-        UniformQControlBox(op_map), std::invalid_argument,
+        MultiplexorBox(op_map), std::invalid_argument,
         MessageContains("Bitstrings must have the same width"));
   }
   GIVEN("Unmatched op sizes") {
     ctrl_op_map_t op_map = {
         {{0, 1}, get_op_ptr(OpType::H)}, {{1, 0}, get_op_ptr(OpType::CX)}};
     REQUIRE_THROWS_MATCHES(
-        UniformQControlBox(op_map), std::invalid_argument,
+        MultiplexorBox(op_map), std::invalid_argument,
         MessageContains("Ops must have the same width"));
   }
   GIVEN("Mixed rotation axis") {
@@ -354,18 +354,18 @@ SCENARIO("Exception handling", "[boxes]") {
 }
 
 TEMPLATE_TEST_CASE(
-    "Auxiliary methods", "[boxes]", UniformQControlBox,
-    UniformQControlRotationBox, UniformQControlU2Box) {
+    "Auxiliary methods", "[boxes]", MultiplexorBox, UniformQControlRotationBox,
+    UniformQControlU2Box) {
   GIVEN("symbol_substitution") {
     Sym a = SymTable::fresh_symbol("a");
     Expr expr_a(a);
     ctrl_op_map_t op_map = {{{0}, get_op_ptr(OpType::Rz, expr_a)}};
     ctrl_op_map_t num_op_map = {{{0}, get_op_ptr(OpType::Rz, 1.34)}};
-    TestType uqc_box(op_map);
+    TestType multiplexor(op_map);
     SymEngine::map_basic_basic smap;
     smap[a] = Expr(1.34);
     const TestType new_box =
-        static_cast<const TestType &>(*uqc_box.symbol_substitution(smap));
+        static_cast<const TestType &>(*multiplexor.symbol_substitution(smap));
 
     std::shared_ptr<Circuit> c = new_box.to_circuit();
     REQUIRE(check_multiplexor(num_op_map, *c));
@@ -379,8 +379,8 @@ TEMPLATE_TEST_CASE(
         {{0, 1}, get_op_ptr(OpType::Rz, expr_a)},
         {{1, 1}, get_op_ptr(OpType::Rz, expr_b)},
         {{1, 0}, get_op_ptr(OpType::Rz, expr_a)}};
-    TestType uqc_box(op_map);
-    const SymSet symbols = uqc_box.free_symbols();
+    TestType multiplexor(op_map);
+    const SymSet symbols = multiplexor.free_symbols();
     REQUIRE(symbols.size() == 2);
     REQUIRE(symbols.find(a) != symbols.end());
     REQUIRE(symbols.find(b) != symbols.end());
@@ -390,33 +390,34 @@ TEMPLATE_TEST_CASE(
         {{0, 1}, get_op_ptr(OpType::Rz, 3.7)},
         {{1, 1}, get_op_ptr(OpType::Rz, 1)},
         {{1, 0}, get_op_ptr(OpType::Rz, 2.5)}};
-    TestType uqc_box(op_map);
+    TestType multiplexor(op_map);
     // Test dagger
-    const TestType dag_box = static_cast<const TestType &>(*uqc_box.dagger());
+    const TestType dag_box =
+        static_cast<const TestType &>(*multiplexor.dagger());
     std::shared_ptr<Circuit> c = dag_box.to_circuit();
     REQUIRE(check_multiplexor(op_map, c->dagger()));
     // Test transpose
     const TestType transpose_box =
-        static_cast<const TestType &>(*uqc_box.transpose());
+        static_cast<const TestType &>(*multiplexor.transpose());
     std::shared_ptr<Circuit> d = transpose_box.to_circuit();
     REQUIRE(check_multiplexor(op_map, d->transpose()));
   }
 }
 
-SCENARIO("UniformQControlBox Dagger & transpose", "[boxes]") {
+SCENARIO("MultiplexorBox Dagger & transpose", "[boxes]") {
   ctrl_op_map_t op_map = {
       {{1, 1}, get_op_ptr(OpType::TK2, std::vector<Expr>{0.3, 1.8, 3.4})},
       {{0, 1}, get_op_ptr(OpType::CX)},
       {{1, 0}, get_op_ptr(OpType::TK2, std::vector<Expr>{0.2, 0.4, 0.4})}};
-  UniformQControlBox uqc_box(op_map);
+  MultiplexorBox multiplexor(op_map);
   // Test dagger
-  const UniformQControlBox dag_box =
-      static_cast<const UniformQControlBox &>(*uqc_box.dagger());
+  const MultiplexorBox dag_box =
+      static_cast<const MultiplexorBox &>(*multiplexor.dagger());
   std::shared_ptr<Circuit> c = dag_box.to_circuit();
   REQUIRE(check_multiplexor(op_map, c->dagger()));
   // Test transpose
-  const UniformQControlBox transpose_box =
-      static_cast<const UniformQControlBox &>(*uqc_box.transpose());
+  const MultiplexorBox transpose_box =
+      static_cast<const MultiplexorBox &>(*multiplexor.transpose());
   std::shared_ptr<Circuit> d = transpose_box.to_circuit();
   REQUIRE(check_multiplexor(op_map, d->transpose()));
 }

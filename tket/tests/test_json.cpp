@@ -338,7 +338,7 @@ SCENARIO("Test Circuit serialization") {
     REQUIRE(*qc_b.get_op() == *qc_b.get_op());
   }
 
-  GIVEN("UniformQControlBox") {
+  GIVEN("MultiplexorBox") {
     Circuit c0(2);
     c0.add_op<unsigned>(OpType::H, {0});
     CircBox cbox(c0);
@@ -347,14 +347,14 @@ SCENARIO("Test Circuit serialization") {
         {{1, 1}, op0},
         {{0, 1}, get_op_ptr(OpType::CX)},
         {{1, 0}, get_op_ptr(OpType::TK2, std::vector<Expr>{0.2, 0.4, 0.4})}};
-    UniformQControlBox uqc_box(op_map);
+    MultiplexorBox multiplexor(op_map);
     Circuit c(4);
-    c.add_box(uqc_box, {0, 1, 2, 3});
+    c.add_box(multiplexor, {0, 1, 2, 3});
     nlohmann::json j_box = c;
     const Circuit new_c = j_box.get<Circuit>();
-    const auto& qc_b = static_cast<const UniformQControlBox&>(
+    const auto& m_b = static_cast<const MultiplexorBox&>(
         *new_c.get_commands()[0].get_op_ptr());
-    ctrl_op_map_t new_op_map = qc_b.get_op_map();
+    ctrl_op_map_t new_op_map = m_b.get_op_map();
     REQUIRE(new_op_map.size() == op_map.size());
     for (auto it = op_map.begin(); it != op_map.end(); it++) {
       auto new_it = new_op_map.find(it->first);

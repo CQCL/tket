@@ -27,7 +27,7 @@ from pytket.circuit import (  # type: ignore
     Unitary1qBox,
     Unitary2qBox,
     Unitary3qBox,
-    UniformQControlBox,
+    MultiplexorBox,
     UniformQControlRotationBox,
     UniformQControlU2Box,
     ExpBox,
@@ -447,7 +447,7 @@ def test_boxes() -> None:
 
     # UniformQControlU2Box, UniformQControlU2Box
     op_map = {(0, 0): Op.create(OpType.Rz, 0.3), (1, 1): Op.create(OpType.H)}
-    uc_box = UniformQControlBox(op_map)
+    uc_box = MultiplexorBox(op_map)
     ucu2_box = UniformQControlU2Box(op_map)
     c0 = uc_box.get_circuit()
     DecomposeBoxes().apply(c0)
@@ -463,7 +463,7 @@ def test_boxes() -> None:
     )
     assert np.allclose(unitary0, comparison)
     assert np.allclose(unitary1, comparison)
-    d.add_uniformqcontrolbox(uc_box, [Qubit(0), Qubit(1), Qubit(2)])
+    d.add_multiplexor(uc_box, [Qubit(0), Qubit(1), Qubit(2)])
     d.add_uniformqcontrolu2box(ucu2_box, [Qubit(0), Qubit(1), Qubit(2)])
     assert d.n_gates == 10
     # UniformQControlRotationBox

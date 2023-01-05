@@ -346,9 +346,9 @@ void init_boxes(py::module &m) {
       .def(
           "get_stabilisers", &StabiliserAssertionBox::get_stabilisers,
           ":return: the list of pauli stabilisers");
-  py::class_<UniformQControlBox, std::shared_ptr<UniformQControlBox>, Op>(
-      m, "UniformQControlBox",
-      "A user-defined uniformly controlled operations (i.e. multiplexor gates) "
+  py::class_<MultiplexorBox, std::shared_ptr<MultiplexorBox>, Op>(
+      m, "MultiplexorBox",
+      "A user-defined multiplexor (i.e. uniformly controlled operations) "
       "specified by a "
       "map from bitstrings to :py:class:`Op`s")
       .def(
@@ -357,11 +357,10 @@ void init_boxes(py::module &m) {
           ":param op_map: Map from bitstrings to :py:class:`Op`s\n",
           py::arg("op_map"))
       .def(
-          "get_circuit",
-          [](UniformQControlBox &box) { return *box.to_circuit(); },
+          "get_circuit", [](MultiplexorBox &box) { return *box.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the box")
       .def(
-          "get_op_map", &UniformQControlBox::get_op_map,
+          "get_op_map", &MultiplexorBox::get_op_map,
           ":return: the underlying op map");
   py::class_<
       UniformQControlRotationBox, std::shared_ptr<UniformQControlRotationBox>,

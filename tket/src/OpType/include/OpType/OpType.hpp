@@ -607,9 +607,9 @@ enum class OpType {
   QControlBox,
 
   /**
-   * See \ref UniformQControlBox
+   * See \ref MultiplexorBox
    */
-  UniformQControlBox,
+  MultiplexorBox,
 
   /**
    * See \ref UniformQControlRotationBox
