@@ -1649,7 +1649,7 @@ SCENARIO("Test RangePredicate operations with LexiRoute.") {
         (x >= a && x <= b));
   }
 
-  Circuit circ(2, 4);
+  Circuit circ(3, 4);
   circ.add_op<unsigned>(OpType::H, {0});
   circ.add_op<unsigned>(and_ttop, {0, 1, 2});
   circ.add_op<unsigned>(and_ttop, {1, 2, 3});
