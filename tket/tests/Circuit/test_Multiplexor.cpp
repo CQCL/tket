@@ -111,14 +111,14 @@ SCENARIO("MultiplexorBox decomposition", "[boxes]") {
   }
 }
 
-SCENARIO("UniformQControlRotationBox decomposition", "[boxes]") {
+SCENARIO("MultiplexedRotationBox decomposition", "[boxes]") {
   GIVEN("Controlled Rz construction") {
     ctrl_op_map_t op_map = {
         {{1, 1}, get_op_ptr(OpType::Rz, 0.3)},
         {{0, 1}, get_op_ptr(OpType::Rz, 1.4)},
         {{1, 0}, get_op_ptr(OpType::Rz, 0.7)}};
-    UniformQControlRotationBox uqr_box(op_map);
-    std::shared_ptr<Circuit> c = uqr_box.to_circuit();
+    MultiplexedRotationBox multiplexor(op_map);
+    std::shared_ptr<Circuit> c = multiplexor.to_circuit();
     std::vector<Command> cmds = c->get_commands();
     REQUIRE(cmds.size() == 8);
     for (auto cmd : cmds) {
@@ -133,8 +133,8 @@ SCENARIO("UniformQControlRotationBox decomposition", "[boxes]") {
         {{1, 1, 0, 1, 0, 0}, get_op_ptr(OpType::Ry, 0.3)},
         {{0, 1, 1, 1, 1, 0}, get_op_ptr(OpType::Ry, 1.4)},
         {{1, 0, 1, 1, 1, 0}, get_op_ptr(OpType::Ry, 0.7)}};
-    UniformQControlRotationBox uqr_box(op_map);
-    std::shared_ptr<Circuit> c = uqr_box.to_circuit();
+    MultiplexedRotationBox multiplexor(op_map);
+    std::shared_ptr<Circuit> c = multiplexor.to_circuit();
     std::vector<Command> cmds = c->get_commands();
     REQUIRE(cmds.size() == 128);
     for (auto cmd : cmds) {
@@ -149,8 +149,8 @@ SCENARIO("UniformQControlRotationBox decomposition", "[boxes]") {
         {{1, 1}, get_op_ptr(OpType::Rx, 0.3)},
         {{0, 1}, get_op_ptr(OpType::Rx, 1.4)},
         {{1, 0}, get_op_ptr(OpType::Rx, 0.7)}};
-    UniformQControlRotationBox uqr_box(op_map);
-    std::shared_ptr<Circuit> c = uqr_box.to_circuit();
+    MultiplexedRotationBox multiplexor(op_map);
+    std::shared_ptr<Circuit> c = multiplexor.to_circuit();
     std::vector<Command> cmds = c->get_commands();
     REQUIRE(cmds.size() == 10);
     for (auto cmd : cmds) {
@@ -161,24 +161,24 @@ SCENARIO("UniformQControlRotationBox decomposition", "[boxes]") {
     }
     REQUIRE(check_multiplexor(op_map, *c));
   }
-  GIVEN("UniformQControlRotationBox with one control") {
+  GIVEN("MultiplexedRotationBox with one control") {
     ctrl_op_map_t op_map = {
         {{1}, get_op_ptr(OpType::Rz, 0.3)}, {{0}, get_op_ptr(OpType::Rz, 1.4)}};
-    UniformQControlRotationBox uqr_box(op_map);
-    std::shared_ptr<Circuit> c = uqr_box.to_circuit();
+    MultiplexedRotationBox multiplexor(op_map);
+    std::shared_ptr<Circuit> c = multiplexor.to_circuit();
     std::vector<Command> cmds = c->get_commands();
     REQUIRE(cmds.size() == 4);
     REQUIRE(check_multiplexor(op_map, *c));
   }
-  GIVEN("UniformQControlRotationBox with zero control") {
+  GIVEN("MultiplexedRotationBox with zero control") {
     ctrl_op_map_t op_map = {{{}, get_op_ptr(OpType::Rx, 0.3)}};
-    UniformQControlRotationBox uqr_box(op_map);
-    std::shared_ptr<Circuit> c = uqr_box.to_circuit();
+    MultiplexedRotationBox multiplexor(op_map);
+    std::shared_ptr<Circuit> c = multiplexor.to_circuit();
     std::vector<Command> cmds = c->get_commands();
     REQUIRE(cmds.size() == 1);
     REQUIRE(check_multiplexor(op_map, *c));
   }
-  GIVEN("UniformQControlRotationBox with symbols") {
+  GIVEN("MultiplexedRotationBox with symbols") {
     Sym a = SymTable::fresh_symbol("a");
     Expr expr_a(a);
     Sym b = SymTable::fresh_symbol("b");
@@ -191,8 +191,8 @@ SCENARIO("UniformQControlRotationBox decomposition", "[boxes]") {
         {{1, 1, 0}, get_op_ptr(OpType::Ry, 0.3)},
         {{0, 1, 1}, get_op_ptr(OpType::Ry, 1.4)},
         {{1, 0, 1}, get_op_ptr(OpType::Ry, 1.8)}};
-    UniformQControlRotationBox uqrsb_box(op_map);
-    std::shared_ptr<Circuit> c_sb = uqrsb_box.to_circuit();
+    MultiplexedRotationBox multiplexor(op_map);
+    std::shared_ptr<Circuit> c_sb = multiplexor.to_circuit();
     std::vector<Command> cmds = c_sb->get_commands();
     REQUIRE(cmds.size() == 16);
     SymEngine::map_basic_basic smap;
@@ -223,7 +223,7 @@ SCENARIO("UniformQControlU2Box decomposition", "[boxes]") {
       REQUIRE(
           (cmd.get_op_ptr()->get_type() == OpType::Unitary1qBox ||
            cmd.get_op_ptr()->get_type() == OpType::CX ||
-           cmd.get_op_ptr()->get_type() == OpType::UniformQControlRotationBox));
+           cmd.get_op_ptr()->get_type() == OpType::MultiplexedRotationBox));
     }
     REQUIRE(check_multiplexor(op_map, *c));
   }
@@ -245,7 +245,7 @@ SCENARIO("UniformQControlU2Box decomposition", "[boxes]") {
       REQUIRE(
           (cmd.get_op_ptr()->get_type() == OpType::Unitary1qBox ||
            cmd.get_op_ptr()->get_type() == OpType::CX ||
-           cmd.get_op_ptr()->get_type() == OpType::UniformQControlRotationBox));
+           cmd.get_op_ptr()->get_type() == OpType::MultiplexedRotationBox));
     }
     REQUIRE(check_multiplexor(op_map, *c));
   }
@@ -266,7 +266,7 @@ SCENARIO("UniformQControlU2Box decomposition", "[boxes]") {
       REQUIRE(
           (cmd.get_op_ptr()->get_type() == OpType::Unitary1qBox ||
            cmd.get_op_ptr()->get_type() == OpType::CX ||
-           cmd.get_op_ptr()->get_type() == OpType::UniformQControlRotationBox));
+           cmd.get_op_ptr()->get_type() == OpType::MultiplexedRotationBox));
     }
     REQUIRE(check_multiplexor(op_map, *c));
   }
@@ -325,13 +325,13 @@ SCENARIO("Exception handling", "[boxes]") {
     ctrl_op_map_t op_map = {
         {{1}, get_op_ptr(OpType::Rz, 0.3)}, {{0}, get_op_ptr(OpType::Rx, 1.4)}};
     REQUIRE_THROWS_MATCHES(
-        UniformQControlRotationBox(op_map), std::invalid_argument,
+        MultiplexedRotationBox(op_map), std::invalid_argument,
         MessageContains("Ops must have the same rotation type"));
   }
   GIVEN("Non-rotation type") {
     ctrl_op_map_t op_map = {{{1}, get_op_ptr(OpType::H)}};
     REQUIRE_THROWS_MATCHES(
-        UniformQControlRotationBox(op_map), BadOpType,
+        MultiplexedRotationBox(op_map), BadOpType,
         MessageContains("Ops must be either Rx, Ry, or Rz"));
   }
   GIVEN("UniformQControlU2Box unsupported gate") {
@@ -354,7 +354,7 @@ SCENARIO("Exception handling", "[boxes]") {
 }
 
 TEMPLATE_TEST_CASE(
-    "Auxiliary methods", "[boxes]", MultiplexorBox, UniformQControlRotationBox,
+    "Auxiliary methods", "[boxes]", MultiplexorBox, MultiplexedRotationBox,
     UniformQControlU2Box) {
   GIVEN("symbol_substitution") {
     Sym a = SymTable::fresh_symbol("a");

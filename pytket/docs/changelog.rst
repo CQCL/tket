@@ -7,7 +7,7 @@ Unreleased
 Major new features:
 
 * New boxes to implement uniformly controlled operations (i.e. multiplexor gates):
-  ``MultiplexorBox``, ``UniformQControlRotationBox`` and ``UniformQControlU2Box``.
+  ``MultiplexorBox``, ``MultiplexedRotationBox`` and ``UniformQControlU2Box``.
 
 General:
 

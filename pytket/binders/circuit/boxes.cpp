@@ -363,11 +363,10 @@ void init_boxes(py::module &m) {
           "get_op_map", &MultiplexorBox::get_op_map,
           ":return: the underlying op map");
   py::class_<
-      UniformQControlRotationBox, std::shared_ptr<UniformQControlRotationBox>,
-      Op>(
-      m, "UniformQControlRotationBox",
-      "A user-defined uniformly controlled single-axis rotations (i.e. "
-      "multiplexed rotations) specified by "
+      MultiplexedRotationBox, std::shared_ptr<MultiplexedRotationBox>, Op>(
+      m, "MultiplexedRotationBox",
+      "A user-defined multiplexed rotation box (i.e. "
+      "uniformly controlled single-axis rotations) specified by "
       "a map from bitstrings to :py:class:`Op`s")
       .def(
           py::init<const ctrl_op_map_t &>(),
@@ -402,7 +401,7 @@ void init_boxes(py::module &m) {
                 op_map.insert({bits, get_op_ptr(axis, angles[i])});
               }
             }
-            return UniformQControlRotationBox(op_map);
+            return MultiplexedRotationBox(op_map);
           }),
           "Construct from a list of angles and the rotation axis.\n\n"
           ":param angles: List of rotation angles in half-turns. angles[i] is "
@@ -411,10 +410,10 @@ void init_boxes(py::module &m) {
           py::arg("angles"), py::arg("axis"))
       .def(
           "get_circuit",
-          [](UniformQControlRotationBox &box) { return *box.to_circuit(); },
+          [](MultiplexedRotationBox &box) { return *box.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the box")
       .def(
-          "get_op_map", &UniformQControlRotationBox::get_op_map,
+          "get_op_map", &MultiplexedRotationBox::get_op_map,
           ":return: the underlying op map");
   py::class_<UniformQControlU2Box, std::shared_ptr<UniformQControlU2Box>, Op>(
       m, "UniformQControlU2Box",

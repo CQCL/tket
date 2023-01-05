@@ -213,10 +213,11 @@ static std::vector<Eigen::Matrix2cd> ucrz_angles_to_diagonal(
   return diag;
 }
 /**
- * @brief Recursively decompose a uniformly controlled U2 gate.
+ * @brief Recursively decompose a multiplexed U2 gate. i.e. uniformly controlled
+ * U2
  *
  * Generates 2^ctrl_qubits Unitary1qBox, 2^ctrl_qubits CXs and a ladder of
- * UniformQControlRotationBoxes https://arxiv.org/abs/quant-ph/0410066 eq(3)
+ * MultiplexedRotationBoxes https://arxiv.org/abs/quant-ph/0410066 eq(3)
  *
  * During each recursion step, the multiplexor with n qubits defined
  * using `unitaries` are decomposed into
@@ -235,10 +236,10 @@ static std::vector<Eigen::Matrix2cd> ucrz_angles_to_diagonal(
  * @param unitaries list of 2^ctrl_qubits 2x2 unitaries, unitaries[i] is the
  * unitary activated by bitstring binary(i)
  * @param total_qubits the total number of qubits in the final output circuit
- * @param circ circuit to update, won't contain the UniformQControlRotationBoxes
- * @param ucrzs keep track of the ladder of UniformQControlRotationBoxes (R
+ * @param circ circuit to update, won't contain the MultiplexedRotationBoxes
+ * @param ucrzs keep track of the ladder of MultiplexedRotationBoxes (R
  * gates). ucrzs[i] stores the Rz rotations angles (in half-turns) for the
- * UniformQControlRotationBoxe with i+2 qubits.
+ * MultiplexedRotationBox with i+2 qubits.
  * @param left_compose 2x2 unitary to be absorbed to left half
  * @param right_compose 2x2 unitary to be absorbed to right half
  */
@@ -433,9 +434,8 @@ void MultiplexorBox::generate_circuit() const {
       multiplexor_sequential_decomp(op_map_, n_controls_, n_targets_));
 }
 
-UniformQControlRotationBox::UniformQControlRotationBox(
-    const ctrl_op_map_t &op_map)
-    : Box(OpType::UniformQControlRotationBox), op_map_(op_map) {
+MultiplexedRotationBox::MultiplexedRotationBox(const ctrl_op_map_t &op_map)
+    : Box(OpType::MultiplexedRotationBox), op_map_(op_map) {
   auto it = op_map.begin();
   if (it == op_map.end()) {
     throw std::invalid_argument("No Ops provided.");
@@ -456,53 +456,52 @@ UniformQControlRotationBox::UniformQControlRotationBox(
   op_map_validate(op_map);
 }
 
-UniformQControlRotationBox::UniformQControlRotationBox(
-    const UniformQControlRotationBox &other)
+MultiplexedRotationBox::MultiplexedRotationBox(
+    const MultiplexedRotationBox &other)
     : Box(other),
       n_controls_(other.n_controls_),
       op_map_(other.op_map_),
       axis_(other.axis_) {}
 
-Op_ptr UniformQControlRotationBox::symbol_substitution(
+Op_ptr MultiplexedRotationBox::symbol_substitution(
     const SymEngine::map_basic_basic &sub_map) const {
   ctrl_op_map_t new_op_map = op_map_symbol_sub(sub_map, op_map_);
-  return std::make_shared<UniformQControlRotationBox>(new_op_map);
+  return std::make_shared<MultiplexedRotationBox>(new_op_map);
 }
 
-SymSet UniformQControlRotationBox::free_symbols() const {
+SymSet MultiplexedRotationBox::free_symbols() const {
   return op_map_free_symbols(op_map_);
 }
 
-Op_ptr UniformQControlRotationBox::dagger() const {
-  return std::make_shared<UniformQControlRotationBox>(op_map_dagger(op_map_));
+Op_ptr MultiplexedRotationBox::dagger() const {
+  return std::make_shared<MultiplexedRotationBox>(op_map_dagger(op_map_));
 }
 
-Op_ptr UniformQControlRotationBox::transpose() const {
-  return std::make_shared<UniformQControlRotationBox>(
-      op_map_transpose(op_map_));
+Op_ptr MultiplexedRotationBox::transpose() const {
+  return std::make_shared<MultiplexedRotationBox>(op_map_transpose(op_map_));
 }
 
-op_signature_t UniformQControlRotationBox::get_signature() const {
+op_signature_t MultiplexedRotationBox::get_signature() const {
   op_signature_t qubits(n_controls_ + 1, EdgeType::Quantum);
   return qubits;
 }
 
-nlohmann::json UniformQControlRotationBox::to_json(const Op_ptr &op) {
-  const auto &box = static_cast<const UniformQControlRotationBox &>(*op);
+nlohmann::json MultiplexedRotationBox::to_json(const Op_ptr &op) {
+  const auto &box = static_cast<const MultiplexedRotationBox &>(*op);
   nlohmann::json j = core_box_json(box);
   j["op_map"] = box.get_op_map();
   return j;
 }
 
-Op_ptr UniformQControlRotationBox::from_json(const nlohmann::json &j) {
-  UniformQControlRotationBox box =
-      UniformQControlRotationBox(j.at("op_map").get<ctrl_op_map_t>());
+Op_ptr MultiplexedRotationBox::from_json(const nlohmann::json &j) {
+  MultiplexedRotationBox box =
+      MultiplexedRotationBox(j.at("op_map").get<ctrl_op_map_t>());
   return set_box_id(
       box,
       boost::lexical_cast<boost::uuids::uuid>(j.at("id").get<std::string>()));
 }
 
-void UniformQControlRotationBox::generate_circuit() const {
+void MultiplexedRotationBox::generate_circuit() const {
   Circuit circ(n_controls_ + 1);
   if (n_controls_ == 0) {
     auto it = op_map_.begin();
@@ -648,7 +647,7 @@ void UniformQControlU2Box::generate_circuit() const {
       std::iota(std::begin(args), std::end(args), n_controls_ - i - 1);
       // swap the first and the last args
       std::swap(args[0], args[i + 1]);
-      // create UniformQControlRotationBox
+      // create MultiplexedRotationBox
       ctrl_op_map_t rz_map;
       for (unsigned k = 0; k < ucrzs[i].size(); k++) {
         if (std::abs(ucrzs[i][k]) > EPS) {
@@ -656,14 +655,14 @@ void UniformQControlU2Box::generate_circuit() const {
               {dec_to_bin(k, i + 1), get_op_ptr(OpType::Rz, ucrzs[i][k])});
         }
       }
-      circ.add_box(UniformQControlRotationBox(rz_map), args);
+      circ.add_box(MultiplexedRotationBox(rz_map), args);
     }
   }
   circ_ = std::make_shared<Circuit>(circ);
 }
 
 REGISTER_OPFACTORY(MultiplexorBox, MultiplexorBox)
-REGISTER_OPFACTORY(UniformQControlRotationBox, UniformQControlRotationBox)
+REGISTER_OPFACTORY(MultiplexedRotationBox, MultiplexedRotationBox)
 REGISTER_OPFACTORY(UniformQControlU2Box, UniformQControlU2Box)
 
 }  // namespace tket

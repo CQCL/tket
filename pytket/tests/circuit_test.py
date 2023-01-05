@@ -28,7 +28,7 @@ from pytket.circuit import (  # type: ignore
     Unitary2qBox,
     Unitary3qBox,
     MultiplexorBox,
-    UniformQControlRotationBox,
+    MultiplexedRotationBox,
     UniformQControlU2Box,
     ExpBox,
     PauliExpBox,
@@ -447,9 +447,9 @@ def test_boxes() -> None:
 
     # UniformQControlU2Box, UniformQControlU2Box
     op_map = {(0, 0): Op.create(OpType.Rz, 0.3), (1, 1): Op.create(OpType.H)}
-    uc_box = MultiplexorBox(op_map)
+    multiplexor = MultiplexorBox(op_map)
     ucu2_box = UniformQControlU2Box(op_map)
-    c0 = uc_box.get_circuit()
+    c0 = multiplexor.get_circuit()
     DecomposeBoxes().apply(c0)
     unitary0 = c0.get_unitary()
     c1 = ucu2_box.get_circuit()
@@ -463,13 +463,13 @@ def test_boxes() -> None:
     )
     assert np.allclose(unitary0, comparison)
     assert np.allclose(unitary1, comparison)
-    d.add_multiplexor(uc_box, [Qubit(0), Qubit(1), Qubit(2)])
+    d.add_multiplexor(multiplexor, [Qubit(0), Qubit(1), Qubit(2)])
     d.add_uniformqcontrolu2box(ucu2_box, [Qubit(0), Qubit(1), Qubit(2)])
     assert d.n_gates == 10
-    # UniformQControlRotationBox
+    # MultiplexedRotationBox
     op_map = {(0, 0): Op.create(OpType.Rz, 0.3), (1, 1): Op.create(OpType.Rz, 1.7)}
-    uc_box = UniformQControlRotationBox(op_map)
-    c0 = uc_box.get_circuit()
+    multiplexor = MultiplexedRotationBox(op_map)
+    c0 = multiplexor.get_circuit()
     unitary = c0.get_unitary()
     comparison = block_diag(
         Circuit(1).Rz(0.3, 0).get_unitary(),
@@ -478,12 +478,12 @@ def test_boxes() -> None:
         Circuit(1).Rz(1.7, 0).get_unitary(),
     )
     assert np.allclose(unitary, comparison)
-    d.add_uniformqcontrolrotationbox(uc_box, [Qubit(0), Qubit(1), Qubit(2)])
+    d.add_multiplexedrotation(multiplexor, [Qubit(0), Qubit(1), Qubit(2)])
     assert d.n_gates == 11
-    uc_box = UniformQControlRotationBox([0.3, 0, 0, 1.7], OpType.Rz)
-    unitary = uc_box.get_circuit().get_unitary()
+    multiplexor = MultiplexedRotationBox([0.3, 0, 0, 1.7], OpType.Rz)
+    unitary = multiplexor.get_circuit().get_unitary()
     assert np.allclose(unitary, comparison)
-    d.add_uniformqcontrolrotationbox(uc_box, [Qubit(0), Qubit(1), Qubit(2)])
+    d.add_multiplexedrotation(multiplexor, [Qubit(0), Qubit(1), Qubit(2)])
     assert d.n_gates == 12
 
 

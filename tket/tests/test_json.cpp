@@ -363,19 +363,19 @@ SCENARIO("Test Circuit serialization") {
     }
   }
 
-  GIVEN("UniformQControlRotationBox") {
+  GIVEN("MultiplexedRotationBox") {
     ctrl_op_map_t op_map = {
         {{1, 1, 0, 1, 0, 0}, get_op_ptr(OpType::Ry, 0.3)},
         {{0, 1, 1, 1, 1, 0}, get_op_ptr(OpType::Ry, 1.4)},
         {{1, 0, 1, 1, 1, 0}, get_op_ptr(OpType::Ry, 0.7)}};
-    UniformQControlRotationBox uqr_box(op_map);
+    MultiplexedRotationBox multiplexor(op_map);
     Circuit c(7);
-    c.add_box(uqr_box, {0, 1, 2, 3, 4, 5, 6});
+    c.add_box(multiplexor, {0, 1, 2, 3, 4, 5, 6});
     nlohmann::json j_box = c;
     const Circuit new_c = j_box.get<Circuit>();
-    const auto& qc_b = static_cast<const UniformQControlRotationBox&>(
+    const auto& m_b = static_cast<const MultiplexedRotationBox&>(
         *new_c.get_commands()[0].get_op_ptr());
-    ctrl_op_map_t new_op_map = qc_b.get_op_map();
+    ctrl_op_map_t new_op_map = m_b.get_op_map();
     REQUIRE(new_op_map.size() == op_map.size());
     for (auto it = op_map.begin(); it != op_map.end(); it++) {
       auto new_it = new_op_map.find(it->first);

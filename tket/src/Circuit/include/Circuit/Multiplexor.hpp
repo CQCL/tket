@@ -95,9 +95,9 @@ class MultiplexorBox : public Box {
 };
 
 /**
- * Uniformly controlled single-axis rotations
+ * Multiplexed single-axis rotations
  */
-class UniformQControlRotationBox : public Box {
+class MultiplexedRotationBox : public Box {
  public:
   /**
    * @brief Construct from a op_map. All ops should be of the same type.
@@ -105,13 +105,13 @@ class UniformQControlRotationBox : public Box {
    *
    * @param op_map
    */
-  explicit UniformQControlRotationBox(const ctrl_op_map_t &op_map);
+  explicit MultiplexedRotationBox(const ctrl_op_map_t &op_map);
   /**
    * Copy constructor
    */
-  UniformQControlRotationBox(const UniformQControlRotationBox &other);
+  MultiplexedRotationBox(const MultiplexedRotationBox &other);
 
-  ~UniformQControlRotationBox() override {}
+  ~MultiplexedRotationBox() override {}
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &sub_map) const override;
@@ -121,11 +121,11 @@ class UniformQControlRotationBox : public Box {
   ctrl_op_map_t get_ops() const { return op_map_; }
 
   /**
-   * Equality check between two UniformQControlRotationBox instances
+   * Equality check between two MultiplexedRotationBox instances
    */
   bool is_equal(const Op &op_other) const override {
-    const UniformQControlRotationBox &other =
-        dynamic_cast<const UniformQControlRotationBox &>(op_other);
+    const MultiplexedRotationBox &other =
+        dynamic_cast<const MultiplexedRotationBox &>(op_other);
     return id_ == other.get_id();
   }
 
@@ -143,7 +143,8 @@ class UniformQControlRotationBox : public Box {
 
  protected:
   /**
-   * @brief Implement uniformly controlled same-axis rotations (UCR)
+   * @brief Implement multiplexed rotation
+   * (i.e. uniformly controlled same-axis rotations (UCR)),
    * with 2^ctrl_qubits SQ rotations, 2^ctrl_qubits CXs, and 2 H gates for
    * X-axis rotations.
    *
@@ -167,7 +168,7 @@ class UniformQControlU2Box : public Box {
    * or Unitary1QBox.
    *
    * @param op_map
-   * @param impl_diag whether to implement the final UniformQControlRotationBox,
+   * @param impl_diag whether to implement the final MultiplexedRotationBox,
    * default to true
    */
   explicit UniformQControlU2Box(
@@ -213,7 +214,7 @@ class UniformQControlU2Box : public Box {
   /**
    * @brief Implement uniformly controlled U2 gates (UCU2)
    * with 2^ctrl_qubits SQ gates, 2^ctrl_qubits CXs, and a
-   * UniformQControlRotationBox at the end
+   * MultiplexedRotationBox at the end
    *
    * https://arxiv.org/abs/quant-ph/0410066
    */

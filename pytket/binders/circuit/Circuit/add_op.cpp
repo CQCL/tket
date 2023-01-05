@@ -615,14 +615,14 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n:return: the new :py:class:`Circuit`",
           py::arg("box"), py::arg("args"))
       .def(
-          "add_uniformqcontrolrotationbox",
-          [](Circuit *circ, const UniformQControlRotationBox &box,
+          "add_multiplexedrotation",
+          [](Circuit *circ, const MultiplexedRotationBox &box,
              const unit_vector_t &args, const py::kwargs &kwargs) {
             return add_box_method(
-                circ, std::make_shared<UniformQControlRotationBox>(box), args,
+                circ, std::make_shared<MultiplexedRotationBox>(box), args,
                 kwargs);
           },
-          "Append a :py:class:`UniformQControlRotationBox` to the circuit.\n\n"
+          "Append a :py:class:`MultiplexedRotationBox` to the circuit.\n\n"
           ":param box: The box to append\n"
           ":param args: The qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
