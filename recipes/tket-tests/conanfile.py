@@ -34,7 +34,7 @@ class TketTestsConan(ConanFile):
     default_options = {"with_coverage": False, "full": False, "long": False}
     generators = "cmake"
     exports_sources = "../../tket/tests/*"
-    requires = ("tket/1.0.40@tket/stable", "catch2/3.2.1")
+    requires = ("tket/1.0.41@tket/stable", "catch2/3.2.1")
 
     _cmake = None
 
