@@ -1,6 +1,17 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+General:
+
+* Python 3.11 support added; 3.8 dropped.
+
+Minor new features:
+
+* Circuit methods ``qubit_readout`` and ``qubit_to_bit_map`` now ignore barriers.
+
 1.10.0 (December 2022)
 ----------------------
 
