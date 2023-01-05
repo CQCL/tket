@@ -76,6 +76,13 @@ static std::vector<bool> dec_to_bin(unsigned dec, unsigned width) {
 }
 
 /**
+ * @brief Indicates whether a recursion step in recursive_demultiplex_rotation
+ * is either a left child, a right child, or the root.
+ *
+ */
+enum class RecursionNodeType { Left = 0, Right = 1, Root = 2 };
+
+/**
  * @brief Implement multiplexed rotation gate (i.e.uniformly controlled
  * same-axis rotations (UCR)) with 2^ctrl_qubits SQ rotations, 2^ctrl_qubits
  * CXs, and 2 H gates for X-axis rotations.
@@ -98,14 +105,15 @@ static std::vector<bool> dec_to_bin(unsigned dec, unsigned width) {
  * @param axis can be either Ry or Rz
  * @param total_qubits the total number of qubits in the final output circuit
  * @param circ circuit to update
- * @param direction controls the decomposition direction of each demultiplex
- * step. Will be implemented as P CX Q if true, and Q CX P if false. If nullopt,
- * CX P CX Q will be implemented as the root step.
+ * @param node_type controls the decomposition of each demultiplex
+ * step. Will be implemented as P CX Q if the step is a left child, and Q CX P
+ * if the step is a right child. CX P CX Q will be implemented if the step is
+ * the root.
  *
  */
 static void recursive_demultiplex_rotation(
     const std::vector<Expr> &angles, const OpType &axis, unsigned total_qubits,
-    Circuit &circ, std::optional<bool> direction) {
+    Circuit &circ, const RecursionNodeType &node_type) {
   unsigned n_rotations = angles.size();
   unsigned n_qubits = (unsigned)log2(n_rotations) + 1;
   unsigned mid = (unsigned)(n_rotations / 2);
@@ -116,16 +124,17 @@ static void recursive_demultiplex_rotation(
     q_angles.push_back((angles[i] + angles[mid + i]) / 2);
   }
   // UCR = CX P CX Q = Q CX P CX
-  // the left recursion step implements P CX Q, and the
-  // right recursion step implements Q CX P to cancel the CXs
-  if (direction != std::nullopt && !direction.value()) {
+  // the left recursion child implements P CX Q, and the
+  // right recursion child implements Q CX P to cancel the CXs
+  if (node_type == RecursionNodeType::Right) {
     std::swap(p_angles, q_angles);
   }
   if (q_angles.size() == 1) {
     // base step
     circ.add_op<unsigned>(axis, q_angles[0], {total_qubits - 1});
   } else {
-    recursive_demultiplex_rotation(q_angles, axis, total_qubits, circ, true);
+    recursive_demultiplex_rotation(
+        q_angles, axis, total_qubits, circ, RecursionNodeType::Left);
   }
   circ.add_op<unsigned>(
       OpType::CX, {total_qubits - n_qubits, total_qubits - 1});
@@ -133,9 +142,10 @@ static void recursive_demultiplex_rotation(
     // base step
     circ.add_op<unsigned>(axis, p_angles[0], {total_qubits - 1});
   } else {
-    recursive_demultiplex_rotation(p_angles, axis, total_qubits, circ, false);
+    recursive_demultiplex_rotation(
+        p_angles, axis, total_qubits, circ, RecursionNodeType::Right);
   }
-  if (direction == std::nullopt) {
+  if (node_type == RecursionNodeType::Root) {
     // for the root step, we implement UCR = CX P CX Q
     circ.add_op<unsigned>(
         OpType::CX, {total_qubits - n_qubits, total_qubits - 1});
@@ -526,7 +536,7 @@ void MultiplexedRotationBox::generate_circuit() const {
     axis = OpType::Rz;
   }
   recursive_demultiplex_rotation(
-      rotations, axis, n_controls_ + 1, circ, std::nullopt);
+      rotations, axis, n_controls_ + 1, circ, RecursionNodeType::Root);
   if (axis_ == OpType::Rx) {
     circ.add_op<unsigned>(OpType::H, {n_controls_});
   }
