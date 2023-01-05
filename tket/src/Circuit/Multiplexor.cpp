@@ -26,6 +26,8 @@
 
 namespace tket {
 
+// to limit the time to decompose MultiplexedRotationBox and MultiplexedU2Box.
+// can be relaxed in the future
 static const unsigned MAX_N_CONTROLS = 32;
 
 /**
@@ -334,11 +336,6 @@ static void op_map_validate(const ctrl_op_map_t &op_map) {
     }
     if (it == op_map.begin()) {
       n_controls = (unsigned)it->first.size();
-      if (n_controls > MAX_N_CONTROLS) {
-        throw std::invalid_argument(
-            "Bitstrings longer than " + std::to_string(MAX_N_CONTROLS) +
-            " are not supported.");
-      }
       n_targets = (unsigned)op_sig.size();
     } else {
       if (it->first.size() != n_controls) {
@@ -453,6 +450,11 @@ MultiplexedRotationBox::MultiplexedRotationBox(const ctrl_op_map_t &op_map)
   for (; it != op_map.end(); it++) {
     if (it == op_map.begin()) {
       n_controls_ = (unsigned)it->first.size();
+      if (n_controls_ > MAX_N_CONTROLS) {
+        throw std::invalid_argument(
+            "Bitstrings longer than " + std::to_string(MAX_N_CONTROLS) +
+            " are not supported.");
+      }
       axis_ = it->second->get_type();
       if (axis_ != OpType::Rx && axis_ != OpType::Ry && axis_ != OpType::Rz) {
         throw BadOpType("Ops must be either Rx, Ry, or Rz.", axis_);
@@ -550,6 +552,11 @@ MultiplexedU2Box::MultiplexedU2Box(const ctrl_op_map_t &op_map, bool impl_diag)
     throw std::invalid_argument("No Ops provided.");
   }
   n_controls_ = (unsigned)it->first.size();
+  if (n_controls_ > MAX_N_CONTROLS) {
+    throw std::invalid_argument(
+        "Bitstrings longer than " + std::to_string(MAX_N_CONTROLS) +
+        " are not supported.");
+  }
   for (; it != op_map.end(); it++) {
     OpType optype = it->second->get_type();
     if (!is_single_qubit_unitary_type(optype) &&
