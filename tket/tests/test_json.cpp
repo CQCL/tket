@@ -384,7 +384,7 @@ SCENARIO("Test Circuit serialization") {
     }
   }
 
-  GIVEN("UniformQControlU2Box") {
+  GIVEN("MultiplexedU2Box") {
     Circuit c0(1);
     c0.add_op<unsigned>(OpType::TK1, {0.2374, 1.0353, 0.5372}, {0});
     Eigen::Matrix2cd m = tket_sim::get_unitary(c0);
@@ -394,12 +394,12 @@ SCENARIO("Test Circuit serialization") {
         {{1, 1}, mbox_op},
         {{0, 1}, get_op_ptr(OpType::X)},
         {{1, 0}, get_op_ptr(OpType::TK1, std::vector<Expr>{0.3, 1.8, 3.4})}};
-    UniformQControlU2Box uqcu2_box(op_map, false);
+    MultiplexedU2Box multiplexor(op_map, false);
     Circuit c(3);
-    c.add_box(uqcu2_box, {0, 1, 2});
+    c.add_box(multiplexor, {0, 1, 2});
     nlohmann::json j_box = c;
     const Circuit new_c = j_box.get<Circuit>();
-    const auto& qc_b = static_cast<const UniformQControlU2Box&>(
+    const auto& qc_b = static_cast<const MultiplexedU2Box&>(
         *new_c.get_commands()[0].get_op_ptr());
     ctrl_op_map_t new_op_map = qc_b.get_op_map();
     REQUIRE(new_op_map.size() == op_map.size());
@@ -408,7 +408,7 @@ SCENARIO("Test Circuit serialization") {
       REQUIRE(new_it != new_op_map.end());
       REQUIRE(*it->second == *new_it->second);
     }
-    REQUIRE(uqcu2_box.get_impl_diag() == qc_b.get_impl_diag());
+    REQUIRE(multiplexor.get_impl_diag() == qc_b.get_impl_diag());
   }
 
   GIVEN("PhasePolyBox") {

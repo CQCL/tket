@@ -159,9 +159,9 @@ class MultiplexedRotationBox : public Box {
 };
 
 /**
- * Uniformly controlled U2 gate
+ * Multiplexed U2 gate
  */
-class UniformQControlU2Box : public Box {
+class MultiplexedU2Box : public Box {
  public:
   /**
    * @brief Construct from a op_map. Ops must be single-qubit unitary gate types
@@ -171,14 +171,13 @@ class UniformQControlU2Box : public Box {
    * @param impl_diag whether to implement the final MultiplexedRotationBox,
    * default to true
    */
-  explicit UniformQControlU2Box(
-      const ctrl_op_map_t &op_map, bool impl_diag = true);
+  explicit MultiplexedU2Box(const ctrl_op_map_t &op_map, bool impl_diag = true);
   /**
    * Copy constructor
    */
-  UniformQControlU2Box(const UniformQControlU2Box &other);
+  MultiplexedU2Box(const MultiplexedU2Box &other);
 
-  ~UniformQControlU2Box() override {}
+  ~MultiplexedU2Box() override {}
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &sub_map) const override;
@@ -188,11 +187,11 @@ class UniformQControlU2Box : public Box {
   ctrl_op_map_t get_ops() const { return op_map_; }
 
   /**
-   * Equality check between two UniformQControlU2Box instances
+   * Equality check between two MultiplexedU2Box instances
    */
   bool is_equal(const Op &op_other) const override {
-    const UniformQControlU2Box &other =
-        dynamic_cast<const UniformQControlU2Box &>(op_other);
+    const MultiplexedU2Box &other =
+        dynamic_cast<const MultiplexedU2Box &>(op_other);
     return id_ == other.get_id();
   }
 
@@ -212,7 +211,8 @@ class UniformQControlU2Box : public Box {
 
  protected:
   /**
-   * @brief Implement uniformly controlled U2 gates (UCU2)
+   * @brief Implement multiplexed U2 gate
+   * (i.e. uniformly controlled U2 gate (UCU2))
    * with 2^ctrl_qubits SQ gates, 2^ctrl_qubits CXs, and a
    * MultiplexedRotationBox at the end
    *

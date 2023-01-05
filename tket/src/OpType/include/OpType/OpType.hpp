@@ -617,9 +617,9 @@ enum class OpType {
   MultiplexedRotationBox,
 
   /**
-   * See \ref UniformQControlU2Box
+   * See \ref MultiplexedU2Box
    */
-  UniformQControlU2Box,
+  MultiplexedU2Box,
 
   /**
    * See \ref ClassicalExpBox

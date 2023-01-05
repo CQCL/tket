@@ -365,7 +365,7 @@ void init_boxes(py::module &m) {
   py::class_<
       MultiplexedRotationBox, std::shared_ptr<MultiplexedRotationBox>, Op>(
       m, "MultiplexedRotationBox",
-      "A user-defined multiplexed rotation box (i.e. "
+      "A user-defined multiplexed rotation gate (i.e. "
       "uniformly controlled single-axis rotations) specified by "
       "a map from bitstrings to :py:class:`Op`s")
       .def(
@@ -415,10 +415,10 @@ void init_boxes(py::module &m) {
       .def(
           "get_op_map", &MultiplexedRotationBox::get_op_map,
           ":return: the underlying op map");
-  py::class_<UniformQControlU2Box, std::shared_ptr<UniformQControlU2Box>, Op>(
-      m, "UniformQControlU2Box",
-      "A user-defined uniformly controlled U2 operations (i.e. multiplexed U2 "
-      "gates) specified by a "
+  py::class_<MultiplexedU2Box, std::shared_ptr<MultiplexedU2Box>, Op>(
+      m, "MultiplexedU2Box",
+      "A user-defined multiplexed U2 gate (i.e. uniformly controlled U2 "
+      "gate) specified by a "
       "map from bitstrings to :py:class:`Op`s")
       .def(
           py::init<const ctrl_op_map_t &, bool>(),
@@ -431,13 +431,13 @@ void init_boxes(py::module &m) {
           py::arg("op_map"), py::arg("impl_diag") = true)
       .def(
           "get_circuit",
-          [](UniformQControlU2Box &box) { return *box.to_circuit(); },
+          [](MultiplexedU2Box &box) { return *box.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the box")
       .def(
-          "get_op_map", &UniformQControlU2Box::get_op_map,
+          "get_op_map", &MultiplexedU2Box::get_op_map,
           ":return: the underlying op map")
       .def(
-          "get_impl_diag", &UniformQControlU2Box::get_impl_diag,
+          "get_impl_diag", &MultiplexedU2Box::get_impl_diag,
           ":return: flag indicating whether to implement the final diagonal "
           "gate.");
 }

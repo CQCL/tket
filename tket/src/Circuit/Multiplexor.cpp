@@ -76,9 +76,9 @@ static std::vector<bool> dec_to_bin(unsigned dec, unsigned width) {
 }
 
 /**
- * @brief Implement uniformly controlled same-axis rotations (UCR)
- * with 2^ctrl_qubits SQ rotations, 2^ctrl_qubits CXs, and 2 H gates for X-axis
- * rotations.
+ * @brief Implement multiplexed rotation gate (i.e.uniformly controlled
+ * same-axis rotations (UCR)) with 2^ctrl_qubits SQ rotations, 2^ctrl_qubits
+ * CXs, and 2 H gates for X-axis rotations.
  *
  * https://arxiv.org/abs/quant-ph/0410066
  * This is a special case derived from equation (3)
@@ -144,7 +144,7 @@ static void recursive_demultiplex_rotation(
 
 /**
  * @brief Decompose diag(a,b) using eq(3)
- * Returns the matrices u and v, and the uniformly controlled Z rotation matrix
+ * Returns the matrices u and v, and the multiplexed Z rotation matrix
  * R defined by the rotation angles a0 and a1 (in half-turns) activated by 0 and
  * 1 respectively. The matrix D is fixed to ZZPhase(-0.5)
  *
@@ -213,8 +213,8 @@ static std::vector<Eigen::Matrix2cd> ucrz_angles_to_diagonal(
   return diag;
 }
 /**
- * @brief Recursively decompose a multiplexed U2 gate. i.e. uniformly controlled
- * U2
+ * @brief Recursively decompose a multiplexed U2 gate. (i.e. uniformly
+ * controlled U2)
  *
  * Generates 2^ctrl_qubits Unitary1qBox, 2^ctrl_qubits CXs and a ladder of
  * MultiplexedRotationBoxes https://arxiv.org/abs/quant-ph/0410066 eq(3)
@@ -533,11 +533,8 @@ void MultiplexedRotationBox::generate_circuit() const {
   circ_ = std::make_shared<Circuit>(circ);
 }
 
-UniformQControlU2Box::UniformQControlU2Box(
-    const ctrl_op_map_t &op_map, bool impl_diag)
-    : Box(OpType::UniformQControlU2Box),
-      op_map_(op_map),
-      impl_diag_(impl_diag) {
+MultiplexedU2Box::MultiplexedU2Box(const ctrl_op_map_t &op_map, bool impl_diag)
+    : Box(OpType::MultiplexedU2Box), op_map_(op_map), impl_diag_(impl_diag) {
   auto it = op_map.begin();
   if (it == op_map.end()) {
     throw std::invalid_argument("No Ops provided.");
@@ -555,54 +552,53 @@ UniformQControlU2Box::UniformQControlU2Box(
   op_map_validate(op_map);
 }
 
-UniformQControlU2Box::UniformQControlU2Box(const UniformQControlU2Box &other)
+MultiplexedU2Box::MultiplexedU2Box(const MultiplexedU2Box &other)
     : Box(other),
       n_controls_(other.n_controls_),
       op_map_(other.op_map_),
       impl_diag_(other.impl_diag_) {}
 
-Op_ptr UniformQControlU2Box::symbol_substitution(
+Op_ptr MultiplexedU2Box::symbol_substitution(
     const SymEngine::map_basic_basic &sub_map) const {
   ctrl_op_map_t new_op_map = op_map_symbol_sub(sub_map, op_map_);
-  return std::make_shared<UniformQControlU2Box>(new_op_map, impl_diag_);
+  return std::make_shared<MultiplexedU2Box>(new_op_map, impl_diag_);
 }
 
-SymSet UniformQControlU2Box::free_symbols() const {
+SymSet MultiplexedU2Box::free_symbols() const {
   return op_map_free_symbols(op_map_);
 }
 
-Op_ptr UniformQControlU2Box::dagger() const {
-  return std::make_shared<UniformQControlU2Box>(
-      op_map_dagger(op_map_), impl_diag_);
+Op_ptr MultiplexedU2Box::dagger() const {
+  return std::make_shared<MultiplexedU2Box>(op_map_dagger(op_map_), impl_diag_);
 }
 
-Op_ptr UniformQControlU2Box::transpose() const {
-  return std::make_shared<UniformQControlU2Box>(
+Op_ptr MultiplexedU2Box::transpose() const {
+  return std::make_shared<MultiplexedU2Box>(
       op_map_transpose(op_map_), impl_diag_);
 }
 
-op_signature_t UniformQControlU2Box::get_signature() const {
+op_signature_t MultiplexedU2Box::get_signature() const {
   op_signature_t qubits(n_controls_ + 1, EdgeType::Quantum);
   return qubits;
 }
 
-nlohmann::json UniformQControlU2Box::to_json(const Op_ptr &op) {
-  const auto &box = static_cast<const UniformQControlU2Box &>(*op);
+nlohmann::json MultiplexedU2Box::to_json(const Op_ptr &op) {
+  const auto &box = static_cast<const MultiplexedU2Box &>(*op);
   nlohmann::json j = core_box_json(box);
   j["op_map"] = box.get_op_map();
   j["impl_diag"] = box.get_impl_diag();
   return j;
 }
 
-Op_ptr UniformQControlU2Box::from_json(const nlohmann::json &j) {
-  UniformQControlU2Box box = UniformQControlU2Box(
+Op_ptr MultiplexedU2Box::from_json(const nlohmann::json &j) {
+  MultiplexedU2Box box = MultiplexedU2Box(
       j.at("op_map").get<ctrl_op_map_t>(), j.at("impl_diag").get<bool>());
   return set_box_id(
       box,
       boost::lexical_cast<boost::uuids::uuid>(j.at("id").get<std::string>()));
 }
 
-void UniformQControlU2Box::generate_circuit() const {
+void MultiplexedU2Box::generate_circuit() const {
   Circuit circ(n_controls_ + 1);
   if (n_controls_ == 0) {
     auto it = op_map_.begin();
@@ -624,7 +620,7 @@ void UniformQControlU2Box::generate_circuit() const {
         unitaries[i] = u1box->get_matrix();
       } else {
         if (!it->second->free_symbols().empty()) {
-          throw Unsupported("Can't decompose symbolic UniformQControlU2Box.");
+          throw Unsupported("Can't decompose symbolic MultiplexedU2Box.");
         }
         unitaries[i] = GateUnitaryMatrix::get_unitary(*as_gate_ptr(it->second));
       }
@@ -663,6 +659,6 @@ void UniformQControlU2Box::generate_circuit() const {
 
 REGISTER_OPFACTORY(MultiplexorBox, MultiplexorBox)
 REGISTER_OPFACTORY(MultiplexedRotationBox, MultiplexedRotationBox)
-REGISTER_OPFACTORY(UniformQControlU2Box, UniformQControlU2Box)
+REGISTER_OPFACTORY(MultiplexedU2Box, MultiplexedU2Box)
 
 }  // namespace tket
