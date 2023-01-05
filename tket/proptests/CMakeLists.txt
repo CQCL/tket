@@ -30,6 +30,11 @@ find_file(CONANBUILDINFO_FILE conanbuildinfo.cmake HINTS ${CMAKE_BINARY_DIR})
 include(${CONANBUILDINFO_FILE})
 conan_basic_setup()
 
+if(CMAKE_CXX_COMPILER_ID MATCHES "(Apple)?Clang")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations")
+    # remove -Wno-deprecated-declarations once https://github.com/boostorg/boost/issues/688 is resolved
+endif()
+
 IF (WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /WX /EHsc")
 ELSE()
