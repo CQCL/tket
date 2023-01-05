@@ -1664,8 +1664,8 @@ SCENARIO("Test RangePredicate operations with LexiRoute.") {
   circ.add_op<unsigned>(AndWithOp(), {2, 3});
   circ.add_conditional_gate<unsigned>(OpType::CX, {}, {1, 0}, {0, 1, 2}, 1);
   circ.add_op<unsigned>(OrWithOp(), {1, 0});
-  circuit.add_op<unsigned>(OpType::CX, {2, 0});
-  circuit.add_op<unsigned>(OpType::CX, {2, 1});
+  circ.add_op<unsigned>(OpType::CX, {2, 0});
+  circ.add_op<unsigned>(OpType::CX, {2, 1});
   circ.add_op<unsigned>(OpType::H, {0});
   circ.add_op<unsigned>(OpType::H, {1});
   circ.add_op<unsigned>(OpType::H, {2});
