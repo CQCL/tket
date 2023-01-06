@@ -34,7 +34,7 @@ ${CONAN_CMD} remote add conan-center https://center.conan.io --force
 
 # Edit this list as required:
 PACKAGES="b2/4.9.2@ \
-          boost/1.80.0@ \
+          boost/1.81.0@ \
           bzip2/1.0.8@ \
           eigen/3.4.0@ \
           gmp/6.2.1@ \
