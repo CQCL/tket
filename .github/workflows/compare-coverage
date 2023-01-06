@@ -64,8 +64,8 @@ def compare(summary, summary1):
     if fpercent1 < fpercent:
         print("Percentage function coverage has decreased.")
         exit(1)
-    if bpercent1 + 0.5 < bpercent:
-        print("Percentage branch coverage has decreased by more than 0.5%.")
+    if bpercent1 + 0.1 < bpercent:
+        print("Percentage branch coverage has decreased by more than 0.1%.")
         exit(1)
 
 
