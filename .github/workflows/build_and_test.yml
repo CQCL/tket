@@ -85,8 +85,6 @@ jobs:
       with:
         format: YYYYMMDDHHmmss
     - name: Use ccache
-      # Skip for macos-12: issue with macOS-12/20221215.1
-      if: matrix.os != 'macos-12'
       uses: hendrikmuhs/ccache-action@v1.2.8
       with:
         key: ${{ github.job }}-${{ runner.os }}-ccache-${{ steps.current_time.outputs.formattedTime }}
