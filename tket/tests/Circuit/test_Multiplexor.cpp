@@ -302,9 +302,9 @@ SCENARIO("Exception handling", "[boxes]") {
   }
   GIVEN("Bitstrings are too long") {
     std::vector<bool> bits(33);
-    ctrl_op_map_t op_map = {{bits, get_op_ptr(OpType::H)}};
+    ctrl_op_map_t op_map = {{bits, get_op_ptr(OpType::Rx, 1.4)}};
     REQUIRE_THROWS_MATCHES(
-        MultiplexorBox(op_map), std::invalid_argument,
+        MultiplexedRotationBox(op_map), std::invalid_argument,
         MessageContains("Bitstrings longer than 32 are not supported"));
   }
   GIVEN("Unmatched bitstrings") {
