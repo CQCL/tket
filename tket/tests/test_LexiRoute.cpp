@@ -1739,4 +1739,38 @@ SCENARIO(
   mapping_frontier.circuit_.get_commands();
   REQUIRE(true);
 }
+SCENARIO(
+    "Test relabelling a Circuit UnitID that is an Architeture Node but "
+    "reassignable to an Ancilla Node.") {
+  std::vector<std::pair<unsigned, unsigned>> coupling_map = {
+      {1, 0},  {1, 2},   {2, 3},   {4, 3},  {4, 10}, {5, 4},
+      {5, 6},  {5, 9},   {6, 8},   {7, 8},  {9, 8},  {9, 10},
+      {11, 3}, {11, 10}, {11, 12}, {12, 2}, {13, 1}, {13, 12}};
+  Architecture architecture(coupling_map);
+  std::ifstream circuit_file("lexiroute_circuit_relabel_to_ancilla.json");
+  nlohmann::json j = nlohmann::json::parse(circuit_file);
+  auto c = j.get<Circuit>();
+  std::map<Qubit, Node> p_map = {
+      {Qubit(0), Node("unplaced", 0)},
+      {Qubit(1), Node("unplaced", 1)},
+      {Qubit(2), Node("unplaced", 2)},
+      {Qubit(3), Node(10)},
+      {Qubit(4), Node(4)},
+      {Qubit(5), Node(3)},
+      {Qubit(6), Node("unplaced", 3)},
+      {Qubit(7), Node("unplaced", 4)},
+      {Qubit(8), Node("unplaced", 5)},
+      {Qubit(9), Node("unplaced", 6)},
+      {Qubit(10), Node(11)},
+      {Qubit(11), Node("unplaced", 7)},
+      {Qubit(12), Node("unplaced", 8)},
+      {Qubit(13), Node("unplaced", 9)}};
+
+  Placement::place_with_map(c, p_map);
+  CompilationUnit cu(c);
+  PassPtr r_p = gen_routing_pass(
+      architecture, {std::make_shared<LexiLabellingMethod>(),
+                     std::make_shared<LexiRouteRoutingMethod>()});
+  REQUIRE(r_p->apply(cu));
+}
 }  // namespace tket
