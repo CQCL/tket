@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -192,6 +192,39 @@ SCENARIO("Reorder circuits") {
       REQUIRE(mf->valid_boundary_operation(
           shared_arc, commands[i].get_op_ptr(), nodes));
     }
+    const auto u = tket_sim::get_unitary(circ);
+    const auto u1 = tket_sim::get_unitary(circ_copy);
+    REQUIRE(tket_sim::compare_statevectors_or_unitaries(
+        u, u1, tket_sim::MatrixEquivalence::EQUAL));
+  }
+
+  GIVEN("Reorder that frees up physically permitted gates") {
+    // TKET-2714
+    Circuit circ(5);
+    std::vector<Qubit> qubits = circ.all_qubits();
+    Vertex v1 = circ.add_op<UnitID>(OpType::CZ, {qubits[0], qubits[3]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[2], qubits[3]});
+    circ.add_op<UnitID>(OpType::CZ, {qubits[1], qubits[2]});
+    // the last CZ will be freed by reordering the second CZ
+    std::map<UnitID, UnitID> rename_map = {
+        {qubits[0], nodes[0]},
+        {qubits[1], nodes[1]},
+        {qubits[2], nodes[2]},
+        {qubits[3], nodes[3]}};
+    circ.rename_units(rename_map);
+    Circuit circ_copy(circ);
+    MappingFrontier_ptr mf = std::make_shared<MappingFrontier>(circ);
+    mf->advance_frontier_boundary(shared_arc);
+    Subcircuit subc = mf->get_frontier_subcircuit(5, 5);
+    // all gates should lie after the frontier due to the first CZ
+    REQUIRE(subc.verts.size() == 3);
+    MultiGateReorder mr(shared_arc, mf);
+    mr.solve(5, 5);
+    // advance_frontier_boundary should now be able to resolve two CZs
+    mf->advance_frontier_boundary(shared_arc);
+    subc = mf->get_frontier_subcircuit(5, 5);
+    REQUIRE(subc.verts.size() == 1);
+    REQUIRE(*subc.verts.begin() == v1);
     const auto u = tket_sim::get_unitary(circ);
     const auto u1 = tket_sim::get_unitary(circ_copy);
     REQUIRE(tket_sim::compare_statevectors_or_unitaries(

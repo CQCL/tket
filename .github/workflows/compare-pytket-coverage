@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Copyright 2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -41,7 +41,7 @@ def validate(cov_file):
 
 
 def get_rates(cov_root):
-    """ Returns line and branch rates up to 2 decimal places """
+    """Returns line and branch rates up to 2 decimal places"""
     assert "line-rate" in cov_root.attrib
     assert "branch-rate" in cov_root.attrib
     line_rate = round(float(cov_root.attrib["line-rate"]), 2)
