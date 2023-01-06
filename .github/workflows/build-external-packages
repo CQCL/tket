@@ -10,6 +10,7 @@ PACKAGES="b2/4.9.2@ \
           gmp/6.2.1@ \
           libbacktrace/cci.20210118@ \
           libiconv/1.17@ \
+          m4/1.4.19@ \
           nlohmann_json/3.11.2@ \
           pybind11_json/0.2.12@ \
           rapidcheck/cci.20220514@ \
