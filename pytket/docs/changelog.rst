@@ -4,6 +4,11 @@ Changelog
 Unreleased
 ----------
 
+Major new features:
+
+* New boxes to implement multiplexor gates (i.e. uniformly controlled operations):
+  ``MultiplexorBox``, ``MultiplexedRotationBox`` and ``MultiplexedU2Box``.
+
 General:
 
 * Python 3.11 support added; 3.8 dropped.
