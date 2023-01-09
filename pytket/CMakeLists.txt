@@ -52,11 +52,6 @@ if (UNIX)
     set(CMAKE_INSTALL_RPATH "\${ORIGIN}")
 endif()
 
-if(CMAKE_CXX_COMPILER_ID MATCHES "(Apple)?Clang")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations")
-    # remove -Wno-deprecated-declarations once https://github.com/boostorg/boost/issues/688 is resolved
-endif()
-
 pybind11_add_module(circuit
     binders/circuit/main.cpp
     binders/circuit/unitid.cpp
