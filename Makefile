@@ -10,8 +10,9 @@ else
   conan_build_dir=cmake-build-debug
 endif
 
-##@ General
+n_cpus=$(shell python -c 'import multiprocessing as m; print(m.cpu_count())')
 
+##@ General
 
 .PHONY: help
 help: ## Display this help
@@ -75,8 +76,8 @@ dev-env: ## Install tket, tket-tests, and tket-proptests into a local build dire
 
 .PHONY: build
 build: ## build with cmake
-	cmake --build $(conan_build_dir) --target test_tket -j 6
-	cmake --build $(conan_build_dir) --target proptest -j 6
+	cmake --build $(conan_build_dir) --target test_tket -j $(n_cpus)
+	cmake --build $(conan_build_dir) --target proptest -j $(n_cpus)
 
 ##@ Test
 
