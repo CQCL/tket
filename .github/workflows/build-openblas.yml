@@ -45,7 +45,7 @@ jobs:
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: build openblas
       run: conan create --profile=tket recipes/openblas tket/stable --build=missing
-   macos-m1:
+  macos-m1:
     name: build library (macos-m1)
     runs-on: ['self-hosted', 'macOS', 'ARM64']
     env:
