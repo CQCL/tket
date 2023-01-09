@@ -15,6 +15,8 @@
 #include "CosSinDecomposition.hpp"
 
 #include <cmath>
+#include <openblas-pthread/cblas.h>
+#include <openblas/cblas.h>
 #include <tklog/TketLog.hpp>
 
 #include "Constants.hpp"
@@ -27,6 +29,7 @@ csd_t CS_decomp(const Eigen::MatrixXcd &u) {
   if (!is_unitary(u)) {
     throw std::invalid_argument("Matrix for CS decomposition is not unitary");
   }
+
   unsigned N = u.rows();
   if (N % 2 != 0) {
     throw std::invalid_argument(
