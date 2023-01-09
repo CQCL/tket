@@ -1,0 +1,78 @@
+name: build libraries
+on:
+  push:
+    branches:
+      - test-build-lapack
+jobs:
+  build_library:
+    name: build library
+    strategy:
+      matrix:
+        os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
+    runs-on: ${{ matrix.os }}
+    env:
+      CONAN_REVISIONS_ENABLED: 1
+    steps:
+    - uses: actions/checkout@v3
+    - name: normalize line endings in conanfile and src directory
+      if: matrix.os == 'windows-2022'
+      # This is necessary to ensure consistent revisions across platforms.
+      # Conan's revision hash is composed of hashes all the exported files, so
+      # we must normalize the line endings in these.
+      run: |
+        $conanfile ='recipes/openblas/conanfile.py'
+        $normalized_file = [IO.File]::ReadAllText($conanfile) -replace "`r`n", "`n"
+        [IO.File]::WriteAllText($conanfile, $normalized_file)
+        $src_files = Get-ChildItem "libs/${{ matrix.lib }}/src" -File -Recurse
+        foreach ($f in $src_files) {
+          $normalized_file = [IO.File]::ReadAllText($f) -replace "`r`n", "`n"
+          [IO.File]::WriteAllText($f, $normalized_file)
+        }
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    - name: install conan
+      run: pip install conan~=1.53
+    - name: create profile
+      run: conan profile new tket --detect
+    - name: set libcxx
+      if: matrix.os == 'ubuntu-22.04'
+      run: conan profile update settings.compiler.libcxx=libstdc++11 tket
+    - name: add remote
+      run: |
+        conan remote clean
+        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+    - name: build openblas
+      run: conan create --profile=tket recipes/openblas tket/stable --build=missing
+   macos-m1:
+    name: build library (macos-m1)
+    runs-on: ['self-hosted', 'macOS', 'ARM64']
+    env:
+      CONAN_REVISIONS_ENABLED: 1
+    steps:
+    - uses: actions/checkout@v3
+    - name: install conan
+      run: pip install conan~=1.53
+    - name: create profile
+      run: conan profile new tket --detect --force
+    - name: add remote
+      run: |
+        conan remote clean
+        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+    - name: build openblas
+      run: conan create --profile=tket recipes/openblas tket/stable --build=missing
+  manylinux:
+    name: build library (manylinux)
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v3
+    - name: set up container
+      run: |
+        docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux2014_x86_64:latest /bin/bash
+        docker cp ./recipes/openblas linux_build:/
+        docker cp ./.github/workflows/linuxbuildopenblas linux_build:/
+    - name: build openblas
+      run: |
+        docker start linux_build
+        docker exec linux_build /bin/bash -c "/linuxbuildopenblas"
