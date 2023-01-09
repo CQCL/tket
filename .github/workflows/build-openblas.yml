@@ -44,8 +44,8 @@ jobs:
       run: |
         conan remote clean
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
-    - name: Setup GNU Fortran
-      uses: modflowpy/install-gfortran-action@v1
+    # - name: Setup GNU Fortran
+    #   uses: modflowpy/install-gfortran-action@v1
     - name: build openblas
       run: conan create --profile=tket recipes/openblas tket/stable --build=missing
   # macos-m1:
