@@ -8,8 +8,7 @@ jobs:
     name: build library
     strategy:
       matrix:
-        # os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
-        os: ['ubuntu-22.04', 'macos-12']
+        os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
     runs-on: ${{ matrix.os }}
     env:
       CONAN_REVISIONS_ENABLED: 1
@@ -44,8 +43,12 @@ jobs:
       run: |
         conan remote clean
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
-    # - name: Setup GNU Fortran
-    #   uses: modflowpy/install-gfortran-action@v1
+    - name: Setup GNU Fortran
+      if: matrix.os == 'macos-12'
+      uses: modflowpy/install-gfortran-action@v1
+    - name: Setup Intel Fortran
+      if: matrix.os == 'windows-2022'
+      uses: modflowpy/install-intelfortran-action@v1
     - name: build openblas
       run: conan create --profile=tket recipes/openblas tket/stable --build=missing
   # macos-m1:
