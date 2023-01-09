@@ -1,4 +1,4 @@
-# Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,6 +27,9 @@ from pytket.circuit import (  # type: ignore
     Unitary1qBox,
     Unitary2qBox,
     Unitary3qBox,
+    MultiplexorBox,
+    MultiplexedRotationBox,
+    MultiplexedU2Box,
     ExpBox,
     PauliExpBox,
     QControlBox,
@@ -47,6 +50,7 @@ from pytket.predicates import CompilationUnit  # type: ignore
 from pytket.transform import Transform, PauliSynthStrat  # type: ignore
 
 import numpy as np
+from scipy.linalg import block_diag  # type: ignore
 import sympy  # type: ignore
 from sympy import Symbol, pi, sympify, functions  # type: ignore
 from math import sqrt
@@ -440,6 +444,47 @@ def test_boxes() -> None:
     assert np.allclose(unitary, comparison)
     d.add_toffolibox(tb, [0, 1])
     assert d.n_gates == 8
+
+    # MultiplexedU2Box, MultiplexedU2Box
+    op_map = {(0, 0): Op.create(OpType.Rz, 0.3), (1, 1): Op.create(OpType.H)}
+    multiplexor = MultiplexorBox(op_map)
+    ucu2_box = MultiplexedU2Box(op_map)
+    c0 = multiplexor.get_circuit()
+    DecomposeBoxes().apply(c0)
+    unitary0 = c0.get_unitary()
+    c1 = ucu2_box.get_circuit()
+    DecomposeBoxes().apply(c1)
+    unitary1 = c1.get_unitary()
+    comparison = block_diag(
+        Circuit(1).Rz(0.3, 0).get_unitary(),
+        np.eye(2),
+        np.eye(2),
+        Circuit(1).H(0).get_unitary(),
+    )
+    assert np.allclose(unitary0, comparison)
+    assert np.allclose(unitary1, comparison)
+    d.add_multiplexor(multiplexor, [Qubit(0), Qubit(1), Qubit(2)])
+    d.add_multiplexedu2(ucu2_box, [Qubit(0), Qubit(1), Qubit(2)])
+    assert d.n_gates == 10
+    # MultiplexedRotationBox
+    op_map = {(0, 0): Op.create(OpType.Rz, 0.3), (1, 1): Op.create(OpType.Rz, 1.7)}
+    multiplexor = MultiplexedRotationBox(op_map)
+    c0 = multiplexor.get_circuit()
+    unitary = c0.get_unitary()
+    comparison = block_diag(
+        Circuit(1).Rz(0.3, 0).get_unitary(),
+        np.eye(2),
+        np.eye(2),
+        Circuit(1).Rz(1.7, 0).get_unitary(),
+    )
+    assert np.allclose(unitary, comparison)
+    d.add_multiplexedrotation(multiplexor, [Qubit(0), Qubit(1), Qubit(2)])
+    assert d.n_gates == 11
+    multiplexor = MultiplexedRotationBox([0.3, 0, 0, 1.7], OpType.Rz)
+    unitary = multiplexor.get_circuit().get_unitary()
+    assert np.allclose(unitary, comparison)
+    d.add_multiplexedrotation(multiplexor, [Qubit(0), Qubit(1), Qubit(2)])
+    assert d.n_gates == 12
 
 
 def test_u1q_stability() -> None:

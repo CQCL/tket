@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -122,6 +122,12 @@ const std::map<OpType, OpTypeInfo>& optypeinfo() {
       {OpType::PhasePolyBox,
        {"PhasePolyBox", "PhasePolyBox", {}, std::nullopt}},
       {OpType::QControlBox, {"QControlBox", "Ctrl", {}, std::nullopt}},
+      {OpType::MultiplexorBox,
+       {"MultiplexorBox", "MultiplexorBox", {}, std::nullopt}},
+      {OpType::MultiplexedRotationBox,
+       {"MultiplexedRotationBox", "MultiplexedRotationBox", {}, std::nullopt}},
+      {OpType::MultiplexedU2Box,
+       {"MultiplexedU2Box", "MultiplexedU2Box", {}, std::nullopt}},
       {OpType::Conditional, {"Conditional", "If", {}, std::nullopt}},
       {OpType::ProjectorAssertionBox,
        {"ProjectorAssertionBox", "ProjectorAssertionBox", {}, std::nullopt}},

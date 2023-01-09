@@ -336,7 +336,7 @@ jobs:
     - name: Install pip, wheel
       run: pip install -U pip wheel
     - name: Install pytket
-      run: for w in `find wheelhouse/ -type f -name "*-cp39-cp39-*.whl"` ; do pip install $w ; done
+      run: for w in `find wheelhouse/ -type f -name "*-cp310-cp310-*.whl"` ; do pip install $w ; done
     - name: Install docs dependencies
       run: pip install -r pytket/docs/requirements.txt
     - name: Build docs

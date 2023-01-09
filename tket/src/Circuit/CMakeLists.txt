@@ -1,4 +1,4 @@
-# Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -35,7 +35,8 @@ add_library(tket-${COMP}
     DAGProperties.cpp
     OpJson.cpp
     Conditional.cpp
-    ControlledGates.cpp)
+    ControlledGates.cpp
+    Multiplexor.cpp)
 
 list(APPEND DEPS_${COMP}
     Gate

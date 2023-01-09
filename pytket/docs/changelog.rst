@@ -4,6 +4,11 @@ Changelog
 Unreleased
 ----------
 
+Major new features:
+
+* New boxes to implement multiplexor gates (i.e. uniformly controlled operations):
+  ``MultiplexorBox``, ``MultiplexedRotationBox`` and ``MultiplexedU2Box``.
+
 General:
 
 * Python 3.11 support added; 3.8 dropped.
@@ -11,6 +16,10 @@ General:
 Minor new features:
 
 * Circuit methods ``qubit_readout`` and ``qubit_to_bit_map`` now ignore barriers.
+
+Fixes:
+
+* ``MultiGateReorderRoutingMethod`` raising unknown edge missing error.
 
 1.10.0 (December 2022)
 ----------------------

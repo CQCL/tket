@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@
 #include "Circuit/Boxes.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Circuit/ClassicalExpBox.hpp"
+#include "Circuit/Multiplexor.hpp"
 #include "Converters/PhasePoly.hpp"
 #include "Gate/OpPtrFunctions.hpp"
 #include "Ops/Op.hpp"
@@ -601,6 +602,43 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n:return: the new :py:class:`Circuit`",
           py::arg("box"), py::arg("qubits"), py::arg("ancilla"),
           py::arg("name") = std::nullopt)
+      .def(
+          "add_multiplexor",
+          [](Circuit *circ, const MultiplexorBox &box,
+             const unit_vector_t &args, const py::kwargs &kwargs) {
+            return add_box_method(
+                circ, std::make_shared<MultiplexorBox>(box), args, kwargs);
+          },
+          "Append a :py:class:`MultiplexorBox` to the circuit.\n\n"
+          ":param box: The box to append\n"
+          ":param args: The qubits to append the box to"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("box"), py::arg("args"))
+      .def(
+          "add_multiplexedrotation",
+          [](Circuit *circ, const MultiplexedRotationBox &box,
+             const unit_vector_t &args, const py::kwargs &kwargs) {
+            return add_box_method(
+                circ, std::make_shared<MultiplexedRotationBox>(box), args,
+                kwargs);
+          },
+          "Append a :py:class:`MultiplexedRotationBox` to the circuit.\n\n"
+          ":param box: The box to append\n"
+          ":param args: The qubits to append the box to"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("box"), py::arg("args"))
+      .def(
+          "add_multiplexedu2",
+          [](Circuit *circ, const MultiplexedU2Box &box,
+             const unit_vector_t &args, const py::kwargs &kwargs) {
+            return add_box_method(
+                circ, std::make_shared<MultiplexedU2Box>(box), args, kwargs);
+          },
+          "Append a :py:class:`MultiplexedU2Box` to the circuit.\n\n"
+          ":param box: The box to append\n"
+          ":param args: The qubits to append the box to"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("box"), py::arg("args"))
       .def(
           "H",
           [](Circuit *circ, unsigned qb, const py::kwargs &kwargs) {
