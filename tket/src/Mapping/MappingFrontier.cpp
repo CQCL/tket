@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -50,8 +50,13 @@ static Bit get_bit_from_bool_frontier(
       }
     }
   }
-  throw MappingFrontierError(
-      std::string("EdgeVec provided not in b_frontier_t object."));
+  /**
+   * static function should only be called by advance_frontier_boundary.
+   * Passed Edge known to be boolean
+   * Edge collected from a vertex known to be in next slice of vertices after
+   * boundary held in MappingFrontier, i.e. connected to b_frontier
+   */
+  TKET_ASSERT(false);
 }
 
 std::shared_ptr<unit_frontier_t> frontier_convert_vertport_to_edge(
