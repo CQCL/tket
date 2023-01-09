@@ -30,6 +30,7 @@ class OpenblasConan(ConanFile):
     }
     generators = "cmake"
     short_paths = True
+    version = "0.3.10"
 
     @property
     def _source_subfolder(self):
@@ -51,7 +52,9 @@ class OpenblasConan(ConanFile):
             del self.options.fPIC
 
     def validate(self):
-        if hasattr(self, "settings_build") and tools.cross_building(self, skip_x64_x86=True):
+        if hasattr(self, "settings_build") and tools.cross_building(
+            self, skip_x64_x86=True
+        ):
             raise ConanInvalidConfiguration("Cross-building not implemented")
 
     def source(self):
@@ -66,7 +69,9 @@ class OpenblasConan(ConanFile):
         cmake = CMake(self)
 
         if self.options.build_lapack:
-            self.output.warn("Building with lapack support requires a Fortran compiler.")
+            self.output.warn(
+                "Building with lapack support requires a Fortran compiler."
+            )
         cmake.definitions["NOFORTRAN"] = not self.options.build_lapack
         cmake.definitions["BUILD_WITHOUT_LAPACK"] = not self.options.build_lapack
         cmake.definitions["DYNAMIC_ARCH"] = self.options.dynamic_arch
@@ -89,9 +94,7 @@ class OpenblasConan(ConanFile):
     def build(self):
         if tools.Version(self.version) >= "0.3.12":
             search = """message(STATUS "No Fortran compiler found, can build only BLAS but not LAPACK")"""
-            replace = (
-                """message(FATAL_ERROR "No Fortran compiler found. Cannot build with LAPACK.")"""
-            )
+            replace = """message(FATAL_ERROR "No Fortran compiler found. Cannot build with LAPACK.")"""
         else:
             search = "enable_language(Fortran)"
             replace = """include(CheckLanguage)
@@ -127,8 +130,12 @@ endif()"""
         self.cpp_info.set_property("cmake_file_name", "OpenBLAS")
         self.cpp_info.set_property("cmake_target_name", "OpenBLAS::OpenBLAS")
         self.cpp_info.set_property("pkg_config_name", "openblas")
-        cmake_component_name = "pthread" if self.options.use_thread else "serial" # TODO: ow to model this in CMakeDeps?
-        self.cpp_info.components["openblas_component"].set_property("pkg_config_name", "openblas")
+        cmake_component_name = (
+            "pthread" if self.options.use_thread else "serial"
+        )  # TODO: ow to model this in CMakeDeps?
+        self.cpp_info.components["openblas_component"].set_property(
+            "pkg_config_name", "openblas"
+        )
         self.cpp_info.components["openblas_component"].includedirs.append(
             os.path.join("include", "openblas")
         )
@@ -136,9 +143,13 @@ endif()"""
         if self.settings.os in ["Linux", "FreeBSD"]:
             self.cpp_info.components["openblas_component"].system_libs.append("m")
             if self.options.use_thread:
-                self.cpp_info.components["openblas_component"].system_libs.append("pthread")
+                self.cpp_info.components["openblas_component"].system_libs.append(
+                    "pthread"
+                )
             if self.options.build_lapack:
-                self.cpp_info.components["openblas_component"].system_libs.append("gfortran")
+                self.cpp_info.components["openblas_component"].system_libs.append(
+                    "gfortran"
+                )
 
         self.output.info(
             "Setting OpenBLAS_HOME environment variable: {}".format(self.package_folder)
@@ -148,5 +159,9 @@ endif()"""
         # TODO: to remove in conan v2 once cmake_find_package_* generators removed
         self.cpp_info.names["cmake_find_package"] = "OpenBLAS"
         self.cpp_info.names["cmake_find_package_multi"] = "OpenBLAS"
-        self.cpp_info.components["openblas_component"].names["cmake_find_package"] = cmake_component_name
-        self.cpp_info.components["openblas_component"].names["cmake_find_package_multi"] = cmake_component_name
+        self.cpp_info.components["openblas_component"].names[
+            "cmake_find_package"
+        ] = cmake_component_name
+        self.cpp_info.components["openblas_component"].names[
+            "cmake_find_package_multi"
+        ] = cmake_component_name
