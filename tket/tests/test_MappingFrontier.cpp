@@ -993,7 +993,7 @@ SCENARIO("Test MappingFrontier maps checking") {
     maps->final.insert({Qubit(1), Qubit(1)});
     REQUIRE_THROWS_AS(MappingFrontier(circ, maps), MappingFrontierError);
   }
-  GIVEN("Uids not found in map") {
+  GIVEN("Uids not found in initial map") {
     std::shared_ptr<unit_bimaps_t> maps = std::make_shared<unit_bimaps_t>();
     maps->initial.insert({Qubit(0), Node(0)});
     maps->final.insert({Qubit(0), Qubit(0)});
@@ -1001,7 +1001,16 @@ SCENARIO("Test MappingFrontier maps checking") {
     maps->final.insert({Qubit(1), Qubit(1)});
     maps->initial.insert({Qubit(2), Qubit(2)});
     maps->final.insert({Qubit(2), Qubit(2)});
-
+    REQUIRE_THROWS_AS(MappingFrontier(circ, maps), MappingFrontierError);
+  }
+  GIVEN("Uids not found in final map") {
+    std::shared_ptr<unit_bimaps_t> maps = std::make_shared<unit_bimaps_t>();
+    maps->initial.insert({Qubit(0), Qubit(0)});
+    maps->final.insert({Qubit(0), Node(0)});
+    maps->initial.insert({Qubit(1), Qubit(1)});
+    maps->final.insert({Qubit(1), Qubit(1)});
+    maps->initial.insert({Qubit(2), Qubit(2)});
+    maps->final.insert({Qubit(2), Qubit(2)});
     REQUIRE_THROWS_AS(MappingFrontier(circ, maps), MappingFrontierError);
   }
 }

@@ -28,7 +28,7 @@ class TketProptestsConan(ConanFile):
     generators = "cmake"
     exports_sources = "../../tket/proptests/*"
     requires = (
-        "tket/1.0.42@tket/stable",
+        "tket/1.0.43@tket/stable",
         "rapidcheck/cci.20220514",
     )
 
