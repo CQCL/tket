@@ -93,7 +93,7 @@ class OpenblasConan(ConanFile):
 
     def build(self):
         if tools.Version(self.version) >= "0.3.12":
-            search = """message(STATUS "No Fortran compiler found, can build only BLAS but not LAPACK")"""
+            search = """message(STATUS "No Fortran compiler found, can build only BLAS and f2c-converted LAPACK")"""
             replace = """message(FATAL_ERROR "No Fortran compiler found. Cannot build with LAPACK.")"""
         else:
             search = "enable_language(Fortran)"
