@@ -34,4 +34,4 @@ ${CONAN_CMD} remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/
 pwd
 ls -l
 
-${CONAN_CMD} create --profile=tket recipes/openblas tket/stable
+${CONAN_CMD} create --profile=tket openblas tket/stable
