@@ -30,7 +30,7 @@ class OpenblasConan(ConanFile):
     }
     generators = "cmake"
     short_paths = True
-    version = "0.3.10"
+    version = "0.3.21"
 
     @property
     def _source_subfolder(self):
