@@ -82,7 +82,7 @@ build: ## build with cmake
 
 test_args="~[latex]"
 .PHONY: test
-test: ## run tket tests, override arguments to test binary using test_args variable, e.g., `make test_args='-r compact "[long]"' test`
+test: build ## run tket tests, override arguments to test binary using test_args variable, e.g., `make test_args='-r compact "[long]"' test`
 	-$(conan_build_dir)/tket/tests/bin/test_tket $(test_args)
 
 .PHONY: test-file

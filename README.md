@@ -283,8 +283,8 @@ A [Makefile](Makefile) is provided with commands for a simplified development pr
 2. Install all dependencies for tket, tket-tests, and tket-proptests in a build directory (`cmake-build-debug` per default):
    1. `make dev-env-from-scratch` -> Build dependencies from source (e.g., for unsupported conan configurations) 
    2. `make dev-env` -> Dependencies from conan cache or remote (for supported conan configurations)
-3. Build (and rebuild changes to) tket, tket-tests, and tket-proptests: `make build`
-4. run tests, proptests: `make test`, `make proptests`
+3. Build tket, tket-tests, and tket-proptests: `make build`
+4. Build and run tests or proptests: `make test` or `make proptests`
 
 For more details and options run `make help`
 
