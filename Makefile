@@ -74,24 +74,30 @@ dev-env: ## Install tket, tket-tests, and tket-proptests into a local build dire
 
 ##@ Build
 
-.PHONY: build
-build: ## build with cmake
+.PHONY: build-tests
+build-tests: ## build test_tket binary
 	cmake --build $(conan_build_dir) --target test_tket -j $(n_cpus)
+
+.PHONY: build-proptests
+build-proptests: ## build proptest binary
 	cmake --build $(conan_build_dir) --target proptest -j $(n_cpus)
+
+.PHONY: build
+build: build-tests build-proptests ## build all
 
 ##@ Test
 
 test_args="~[latex]"
 .PHONY: test
-test: build ## run tket tests, override arguments to test binary using test_args variable, e.g., `make test_args='-r compact "[long]"' test`
+test: build-tests ## build and run tket tests, override arguments to test binary using test_args variable, e.g., `make test_args='-r compact "[long]"' test`
 	-$(conan_build_dir)/tket/tests/bin/test_tket $(test_args)
 
 .PHONY: test-file
 File=""
 file_test_filter=$(patsubst %.cpp,%, $(notdir $(File)))
-test-file: ## run tket tests from a specific test file (usage: `make File=<test_file> test-file`)
+test-file: build-tests ## build and run tket tests from a specific test file (usage: `make File=<test_file> test-file`)
 	-$(conan_build_dir)/tket/tests/bin/test_tket -# -r compact "[#$(file_test_filter)]"
 
 .PHONY: proptests
-proptests: ## run tket proptests
+proptests: build-proptests ## build and run tket proptests
 	$(conan_build_dir)/tket/proptests/bin/proptest
