@@ -1,5 +1,6 @@
 from conans import ConanFile, CMake, tools
 from conans.errors import ConanInvalidConfiguration
+from conans.tools import OSInfo
 import os
 import functools
 
@@ -87,6 +88,12 @@ class OpenblasConan(ConanFile):
         # This is a workaround to add the libm dependency on linux,
         # which is required to successfully compile on older gcc versions.
         cmake.definitions["ANDROID"] = self.settings.os in ["Linux", "Android"]
+
+        info = OSInfo()
+        if self.options.build_lapack and info.is_windows:
+            cmake.definitions[
+                "FORTRAN_COMPILER"
+            ] = "/c/ProgramData/Chocolatey/bin/gfortran"
 
         cmake.configure(build_folder=self._build_subfolder)
         return cmake
