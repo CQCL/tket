@@ -66,6 +66,7 @@ dev-env-from-scratch: b2 local-libs ## Install tket, tket-tests, and tket-propte
 dev-env: ## Install tket, tket-tests, and tket-proptests into a local build directory and configure cmake (dependencies from cache or remote)
 	conan profile update settings.build_type=$(build_type) $(conan_profile_name)
 	conan install --profile=$(conan_profile_name) recipes/tket  --install-folder=$(conan_build_dir)/tket/src
+	conan create --profile=$(conan_profile_name) recipes/tket  tket/stable
 	conan install --profile=$(conan_profile_name) recipes/tket-tests --install-folder=$(conan_build_dir)/tket/tests
 	conan install --profile=$(conan_profile_name) recipes/tket-proptests --install-folder=$(conan_build_dir)/tket/proptests
 	cmake -DCMAKE_BUILD_TYPE=$(build_type) -DCMAKE_MAKE_PROGRAM=ninja -G Ninja -S . -B $(conan_build_dir)
