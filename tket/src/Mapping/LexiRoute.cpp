@@ -34,173 +34,198 @@ LexiRoute::LexiRoute(
   }
 }
 
+void LexiRoute::reassign_to_any_ancilla_node(const Node& reassign_node) {
+  /**
+   * Find any ancilla node.
+   * Merge the back of the ancilla path with the start of the
+   * "reassign_node" path.
+   * We know that "reassign_node" is for a Qubit wire with no
+   * multi-qubit gates.
+   * Remove as a known ancilla node and update the Cirucit.
+   */
+  TKET_ASSERT(!this->mapping_frontier_->ancilla_nodes_.empty());
+  auto ancilla_it = this->mapping_frontier_->ancilla_nodes_.begin();
+  Node ancilla_node = *ancilla_it;
+  this->mapping_frontier_->ancilla_nodes_.erase(ancilla_it);
+  this->mapping_frontier_->merge_ancilla(reassign_node, ancilla_node);
+  auto it = std::find_if(
+      this->labelling_.begin(), this->labelling_.end(),
+      [&reassign_node](const std::pair<const UnitID, UnitID>& pair_unitid) {
+        return pair_unitid.second == reassign_node;
+      });
+  TKET_ASSERT(it != this->labelling_.end());
+  this->labelling_[it->first] = ancilla_node;
+  unit_map_t relabel = {{UnitID(reassign_node), UnitID(ancilla_node)}};
+  this->mapping_frontier_->circuit_.rename_units(relabel);
+}
+
+bool LexiRoute::reassign_to_any_spare_node(const Node& reassign_node) {
+  /**
+   * First find an Architecture Node that is not already being used to label
+   * a Circuit wire.
+   * If there are no unused Node, return false.
+   */
+  std::set<Node> all_nodes_s;
+  for (const std::pair<const UnitID, UnitID>& p : this->labelling_) {
+    all_nodes_s.insert(Node(p.second));
+  }
+  std::set<Node> architecture_nodes = this->architecture_->nodes();
+  auto it = std::find_if(
+      architecture_nodes.begin(), architecture_nodes.end(),
+      [&all_nodes_s](const Node& node) {
+        return all_nodes_s.find(node) == all_nodes_s.end();
+      });
+
+  if (it == architecture_nodes.end()) {
+    return false;
+  }
+
+  /**
+   * Update this->labelling_.
+   * "reassign_node" will already have an entry
+   * in this->labelling_, as a relabelling of an original Circuit UnitID.
+   * Find this->labelling_, remove it, and add a new labelling between
+   * whatever this original Circuit UnitID is and the found spare node.
+   *
+   */
+  Node spare_node = *it;
+  auto jt = std::find_if(
+      this->labelling_.begin(), this->labelling_.end(),
+      [&reassign_node](const std::pair<const UnitID, UnitID>& pair_unitid) {
+        return pair_unitid.second == reassign_node;
+      });
+  TKET_ASSERT(jt != this->labelling_.end());
+  this->labelling_[jt->first] = spare_node;
+
+  /**
+   * Update set of "reassignable nodes" to know that "spare_node"
+   * is now reassignable.
+   */
+  auto reassign_node_reassignable_it =
+      this->mapping_frontier_->reassignable_nodes_.find(reassign_node);
+  TKET_ASSERT(
+      reassign_node_reassignable_it !=
+      this->mapping_frontier_->reassignable_nodes_.end());
+  this->mapping_frontier_->reassignable_nodes_.erase(
+      reassign_node_reassignable_it);
+  this->mapping_frontier_->reassignable_nodes_.insert(spare_node);
+
+  /**
+   * Update linear boundary so that the wire for "reassign_node"
+   * is now labelled as "spare_node"
+   */
+  auto reassign_node_boundary_it =
+      this->mapping_frontier_->linear_boundary->get<TagKey>().find(
+          reassign_node);
+  TKET_ASSERT(
+      reassign_node_boundary_it !=
+      this->mapping_frontier_->linear_boundary->get<TagKey>().end());
+  this->mapping_frontier_->linear_boundary->replace(
+      reassign_node_boundary_it,
+      {spare_node, reassign_node_boundary_it->second});
+
+  /**
+   * Update the Circuit object so that the wire for "reassign_node" is now
+   * "spare_node"
+   */
+  unit_map_t relabel = {{UnitID(reassign_node), UnitID(spare_node)}};
+  this->mapping_frontier_->circuit_.rename_units(relabel);
+
+  /**
+   * Update bimaps such that where things were known to be labelled as
+   * "reassign_node" are now known as "spare_node"
+   */
+  auto initial_reassign_it =
+      this->mapping_frontier_->bimaps_->initial.right.find(reassign_node);
+  TKET_ASSERT(
+      initial_reassign_it !=
+      this->mapping_frontier_->bimaps_->initial.right.end());
+  UnitID preserved_orig = initial_reassign_it->second;
+  std::pair<UnitID, UnitID> initial_replacement = {preserved_orig, spare_node};
+  this->mapping_frontier_->bimaps_->initial.right.erase(initial_reassign_it);
+  this->mapping_frontier_->bimaps_->initial.left.insert(initial_replacement);
+  auto final_reassign_it =
+      this->mapping_frontier_->bimaps_->final.left.find(preserved_orig);
+  TKET_ASSERT(
+      final_reassign_it != this->mapping_frontier_->bimaps_->final.left.end());
+  std::pair<UnitID, UnitID> final_replacement = {preserved_orig, spare_node};
+  this->mapping_frontier_->bimaps_->final.left.erase(final_reassign_it);
+  this->mapping_frontier_->bimaps_->final.left.insert(final_replacement);
+
+  /**
+   * Set "spare_node" to be a know assigned node in the Circuit
+   */
+  this->assigned_nodes_.insert(spare_node);
+  return true;
+}
+
 void LexiRoute::reassign_node(
-    const Node& pre_assigned, const UnitID& assignee) {
+    const Node& reassign_node, const UnitID& assignee) {
   /**
    * A "reassignable" node has no relevant use for the purposes of
    * routing.
    * It is assigned  at the start of routing to avoid causal constraints from
    * Barriers and other classical controlled but not quantum vertices
    *
-   * We first find a replacement Architecture Node for "pre_assigned" (the
+   * We first find a replacement Architecture Node for "reassign_node" (the
    * reassignable node) to be relabelled to.
    *
    * First we check for any unused Architecture Node we can use to relabel with.
    * If there are none we use an ancilla Node, removing it as "ancillary" and
    * merging the end of the ancilla path with the start of the "reassignable"
-   * (i.e. pre_assigned) path.
+   * (i.e. reassign_node) path.
    */
 
-  // First find a spare Architecture Node
-  std::set<Node> all_nodes_s;
-  for (const std::pair<const UnitID, UnitID>& p : this->labelling_) {
-    all_nodes_s.insert(Node(p.second));
+  if (!reassign_to_any_spare_node(reassign_node)) {
+    reassign_to_any_ancilla_node(reassign_node);
   }
-  std::set<Node> architecture_nodes = this->architecture_->nodes();
-  auto jt = std::find_if(
-      architecture_nodes.begin(), architecture_nodes.end(),
-      [&all_nodes_s](const Node& node) {
-        return all_nodes_s.find(node) == all_nodes_s.end();
-      });
 
-  // condition implies that there is a free Architecture Node for reassigning
-  // "pre_assigned" to
-  if (jt == architecture_nodes.end()) {
-    TKET_ASSERT(!this->mapping_frontier_->ancilla_nodes_.empty());
-    auto ancilla_it = this->mapping_frontier_->ancilla_nodes_.begin();
-    Node node = *ancilla_it;
-    this->mapping_frontier_->ancilla_nodes_.erase(ancilla_it);
-    this->mapping_frontier_->merge_ancilla(pre_assigned, node);
-    auto kt = std::find_if(
-        this->labelling_.begin(), this->labelling_.end(),
-        [&pre_assigned](const std::pair<const UnitID, UnitID>& pair_unitid) {
-          return pair_unitid.second == pre_assigned;
-        });
-    TKET_ASSERT(kt != this->labelling_.end());
-    this->labelling_[kt->first] = node;
-    this->labelling_[assignee] = pre_assigned;
-    auto it = this->mapping_frontier_->reassignable_nodes_.find(pre_assigned);
-    this->mapping_frontier_->reassignable_nodes_.erase(it);
+  /**
+   * Regardless of whether a spare or ancilla node is used, the "assignee"
+   * UnitID in the Circuit is being relabelled as "reassign_node" and so we
+   * update attributes, first the labelling.
+   */
 
-    auto assignee_boundary_it =
-        this->mapping_frontier_->linear_boundary->get<TagKey>().find(assignee);
-    auto end_it = this->mapping_frontier_->linear_boundary->get<TagKey>().end();
-    TKET_ASSERT(assignee_boundary_it != end_it);
-
-    this->mapping_frontier_->linear_boundary->replace(
-        assignee_boundary_it, {pre_assigned, assignee_boundary_it->second});
-    unit_map_t relabel0 = {{UnitID(pre_assigned), UnitID(node)}};
-    unit_map_t relabel1 = {{UnitID(assignee), UnitID(pre_assigned)}};
-    this->mapping_frontier_->circuit_.rename_units(relabel0);
-    this->mapping_frontier_->circuit_.rename_units(relabel1);
-
-    // assignee should now point to preserved node in initial
-    // preserved node should now point to node in initial
-    auto initial_assignee_it =
-        this->mapping_frontier_->bimaps_->initial.right.find(assignee);
-
-    TKET_ASSERT(
-        initial_assignee_it !=
-        this->mapping_frontier_->bimaps_->initial.right.end());
-
-    UnitID preserved_orig_0 = initial_assignee_it->second;
-    std::pair<UnitID, UnitID> initial_replacement_0 = {
-        preserved_orig_0, pre_assigned};
-    this->mapping_frontier_->bimaps_->initial.right.erase(initial_assignee_it);
-    this->mapping_frontier_->bimaps_->initial.left.insert(
-        initial_replacement_0);
-    auto final_assignee_it =
-        this->mapping_frontier_->bimaps_->final.left.find(preserved_orig_0);
-
-    TKET_ASSERT(
-        final_assignee_it !=
-        this->mapping_frontier_->bimaps_->final.left.end());
-    std::pair<UnitID, UnitID> final_replacement_0 = {
-        preserved_orig_0, pre_assigned};
-    this->mapping_frontier_->bimaps_->final.left.erase(final_assignee_it);
-    this->mapping_frontier_->bimaps_->final.left.insert(final_replacement_0);
-    return;
-  }
-  Node node = *jt;
-  auto kt = std::find_if(
-      this->labelling_.begin(), this->labelling_.end(),
-      [&pre_assigned](const std::pair<const UnitID, UnitID>& pair_unitid) {
-        return pair_unitid.second == pre_assigned;
-      });
-  TKET_ASSERT(kt != this->labelling_.end());
-  this->labelling_[kt->first] = node;
-  this->labelling_[assignee] = pre_assigned;
-  auto it = this->mapping_frontier_->reassignable_nodes_.find(pre_assigned);
-  this->mapping_frontier_->reassignable_nodes_.erase(it);
-  this->mapping_frontier_->reassignable_nodes_.insert(node);
-
+  this->labelling_[assignee] = reassign_node;
+  /**
+   * Update linear boundary, reflecting that the wire corresponding to
+   * "assignee" is now labelled as "reassign_node"
+   */
   auto assignee_boundary_it =
       this->mapping_frontier_->linear_boundary->get<TagKey>().find(assignee);
-  auto pre_assigned_boundary_it =
-      this->mapping_frontier_->linear_boundary->get<TagKey>().find(
-          pre_assigned);
   auto end_it = this->mapping_frontier_->linear_boundary->get<TagKey>().end();
   TKET_ASSERT(assignee_boundary_it != end_it);
-  TKET_ASSERT(pre_assigned_boundary_it != end_it);
   this->mapping_frontier_->linear_boundary->replace(
-      pre_assigned_boundary_it, {node, pre_assigned_boundary_it->second});
-  this->mapping_frontier_->linear_boundary->replace(
-      assignee_boundary_it, {pre_assigned, assignee_boundary_it->second});
-  unit_map_t relabel0 = {{UnitID(pre_assigned), UnitID(node)}};
-  unit_map_t relabel1 = {{UnitID(assignee), UnitID(pre_assigned)}};
-  this->mapping_frontier_->circuit_.rename_units(relabel0);
-  this->mapping_frontier_->circuit_.rename_units(relabel1);
+      assignee_boundary_it, {reassign_node, assignee_boundary_it->second});
 
-  // assignee should now point to preserved node in initial
-  // preserved node should now point to node in initial
+  /**
+   * Update the Circuit UnitID, such that the wire for "assignee" is now
+   * "reassign_node"
+   */
+  unit_map_t relabel = {{UnitID(assignee), UnitID(reassign_node)}};
+  this->mapping_frontier_->circuit_.rename_units(relabel);
+
+  /** Update bimaps such that what was previously relabelled as "assignee" is
+   * now relabelled as "erassign_node"
+   *
+   */
   auto initial_assignee_it =
       this->mapping_frontier_->bimaps_->initial.right.find(assignee);
-  auto initial_pre_assigned_it =
-      this->mapping_frontier_->bimaps_->initial.right.find(pre_assigned);
-
   TKET_ASSERT(
       initial_assignee_it !=
       this->mapping_frontier_->bimaps_->initial.right.end());
-  TKET_ASSERT(
-      initial_pre_assigned_it !=
-      this->mapping_frontier_->bimaps_->initial.right.end());
-
-  UnitID preserved_orig_0 = initial_assignee_it->second;
-  UnitID preserved_orig_1 = initial_pre_assigned_it->second;
-  std::pair<UnitID, UnitID> initial_replacement_0 = {
-      preserved_orig_0, pre_assigned};
-  std::pair<UnitID, UnitID> initial_replacement_1 = {preserved_orig_1, node};
-
+  UnitID preserved_orig = initial_assignee_it->second;
+  std::pair<UnitID, UnitID> initial_replacement = {
+      preserved_orig, reassign_node};
   this->mapping_frontier_->bimaps_->initial.right.erase(initial_assignee_it);
-  this->mapping_frontier_->bimaps_->initial.right.erase(
-      initial_pre_assigned_it);
-
-  this->mapping_frontier_->bimaps_->initial.left.insert(initial_replacement_0);
-  this->mapping_frontier_->bimaps_->initial.left.insert(initial_replacement_1);
-
+  this->mapping_frontier_->bimaps_->initial.left.insert(initial_replacement);
   auto final_assignee_it =
-      this->mapping_frontier_->bimaps_->final.left.find(preserved_orig_0);
-  auto final_pre_assigned_it =
-      this->mapping_frontier_->bimaps_->final.left.find(preserved_orig_1);
-
+      this->mapping_frontier_->bimaps_->final.left.find(preserved_orig);
   TKET_ASSERT(
       final_assignee_it != this->mapping_frontier_->bimaps_->final.left.end());
-  TKET_ASSERT(
-      final_pre_assigned_it !=
-      this->mapping_frontier_->bimaps_->final.left.end());
-
-  // if placing, can assume its not been swapped yet
-  std::pair<UnitID, UnitID> final_replacement_0 = {
-      preserved_orig_0, pre_assigned};
-  std::pair<UnitID, UnitID> final_replacement_1 = {preserved_orig_1, node};
-
+  std::pair<UnitID, UnitID> final_replacement = {preserved_orig, reassign_node};
   this->mapping_frontier_->bimaps_->final.left.erase(final_assignee_it);
-  this->mapping_frontier_->bimaps_->final.left.erase(final_pre_assigned_it);
-
-  this->mapping_frontier_->bimaps_->final.left.insert(final_replacement_0);
-  this->mapping_frontier_->bimaps_->final.left.insert(final_replacement_1);
-
-  this->assigned_nodes_.insert(node);
+  this->mapping_frontier_->bimaps_->final.left.insert(final_replacement);
 }
 
 // "assignee" is Circuit UnitID being relabelled to UnitID "replacement"
