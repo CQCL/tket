@@ -1,6 +1,7 @@
 from conans import ConanFile, CMake, tools
 from conans.errors import ConanInvalidConfiguration
-from conans.tools import OSInfo
+
+# from conans.tools import OSInfo
 import os
 import functools
 
@@ -89,11 +90,11 @@ class OpenblasConan(ConanFile):
         # which is required to successfully compile on older gcc versions.
         cmake.definitions["ANDROID"] = self.settings.os in ["Linux", "Android"]
 
-        info = OSInfo()
-        if self.options.build_lapack and info.is_windows:
-            cmake.definitions[
-                "CMAKE_Fortran_COMPILER"
-            ] = "C:/ProgramData/Chocolatey/bin/gfortran.exe"
+        # info = OSInfo()
+        # if self.options.build_lapack and info.is_windows:
+        #     cmake.definitions[
+        #         "CMAKE_Fortran_COMPILER"
+        #     ] = "C:/ProgramData/Chocolatey/bin/gfortran.exe"
 
         cmake.configure(build_folder=self._build_subfolder)
         return cmake
