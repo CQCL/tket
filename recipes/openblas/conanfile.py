@@ -90,10 +90,6 @@ class OpenblasConan(ConanFile):
         # which is required to successfully compile on older gcc versions.
         cmake.definitions["ANDROID"] = self.settings.os in ["Linux", "Android"]
 
-        info = OSInfo()
-        if self.options.build_lapack and info.is_windows:
-            cmake.definitions["MAKE_NB_JOBS"] = "0"
-
         cmake.configure(build_folder=self._build_subfolder)
         return cmake
 
@@ -118,6 +114,26 @@ endif()"""
             search,
             replace,
         )
+
+        info = OSInfo()
+        if self.options.build_lapack and info.is_windows:
+            tools.replace_in_file(
+                os.path.join(self._source_subfolder, "getarch.c"),
+                """#ifdef MAKE_NB_JOBS
+  #if MAKE_NB_JOBS > 0
+    printf("MAKE += -j %d\n", MAKE_NB_JOBS);
+  #else
+    // Let make use parent -j argument or -j1 if there
+    // is no make parent
+  #endif
+#elif NO_PARALLEL_MAKE==1
+    printf("MAKE += -j 1\n");
+#else
+    printf("MAKE += -j %d\n", get_num_cores());
+#endif""",
+                "",
+            )
+
         cmake = self._configure_cmake()
         cmake.build()
 
