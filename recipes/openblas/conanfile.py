@@ -93,7 +93,7 @@ class OpenblasConan(ConanFile):
         if self.options.build_lapack and info.is_windows:
             cmake.definitions[
                 "CMAKE_Fortran_COMPILER"
-            ] = "C:\\ProgramData\\Chocolatey\\bin\\gfortran.exe"
+            ] = "C:/ProgramData/Chocolatey/bin/gfortran.exe"
 
         cmake.configure(build_folder=self._build_subfolder)
         return cmake
