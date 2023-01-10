@@ -121,15 +121,15 @@ endif()"""
                 os.path.join(self._source_subfolder, "getarch.c"),
                 """#ifdef MAKE_NB_JOBS
   #if MAKE_NB_JOBS > 0
-    printf("MAKE += -j %d\n", MAKE_NB_JOBS);
+    printf("MAKE += -j %d\\n", MAKE_NB_JOBS);
   #else
     // Let make use parent -j argument or -j1 if there
     // is no make parent
   #endif
 #elif NO_PARALLEL_MAKE==1
-    printf("MAKE += -j 1\n");
+    printf("MAKE += -j 1\\n");
 #else
-    printf("MAKE += -j %d\n", get_num_cores());
+    printf("MAKE += -j %d\\n", get_num_cores());
 #endif""",
                 "",
             )
