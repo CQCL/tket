@@ -42,6 +42,11 @@ class OpenblasConan(ConanFile):
     def _build_subfolder(self):
         return "build_subfolder"
 
+    def requirements(self):
+        info = OSInfo()
+        if self.options.build_lapack and info.is_windows:
+            self.requires("gfortran/10.2")
+
     def export_sources(self):
         self.copy("CMakeLists.txt")
 
@@ -90,9 +95,9 @@ class OpenblasConan(ConanFile):
         # which is required to successfully compile on older gcc versions.
         cmake.definitions["ANDROID"] = self.settings.os in ["Linux", "Android"]
 
-        info = OSInfo()
-        if self.options.build_lapack and info.is_windows:
-            cmake.definitions["MAKE_NB_JOBS"] = "0"
+        # info = OSInfo()
+        # if self.options.build_lapack and info.is_windows:
+        #     cmake.definitions["MAKE_NB_JOBS"] = "0"
 
         cmake.configure(build_folder=self._build_subfolder)
         return cmake
