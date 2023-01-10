@@ -48,11 +48,11 @@ jobs:
     #   # if: matrix.os == 'macos-12'
     #   if: matrix.os == 'windows-2022'
     #   uses: modflowpy/install-gfortran-action@v1
-    # - name: Setup Intel Fortran
-    #   if: matrix.os == 'windows-2022'
-    #   uses: modflowpy/install-intelfortran-action@v1
-    #   with:
-    #     cache: 'false'
+    - name: Setup Intel Fortran
+      if: matrix.os == 'windows-2022'
+      uses: modflowpy/install-intelfortran-action@v1
+      with:
+        cache: 'false'
     - name: build openblas
       run: conan create --profile=tket recipes/openblas tket/stable --build=missing
   # macos-m1:
