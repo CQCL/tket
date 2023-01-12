@@ -974,6 +974,7 @@ void MappingFrontier::merge_ancilla(
    */
   this->ancilla_nodes_.erase(Node(ancilla));
   this->reassignable_nodes_.erase(Node(ancilla));
+
   return;
 }
 

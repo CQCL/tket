@@ -260,8 +260,11 @@ void LexiRoute::assign_valid_node(
      * paths together.
      */
     this->mapping_frontier_->merge_ancilla(assignee, replacement);
+    std::cout << "this labelling" << std::endl;
     this->labelling_.erase(replacement);
+    std::cout << "ERased" << std::endl;
     this->labelling_[assignee] = replacement;
+    std::cout << "assigned" << std::endl;
     return;
   }
 
@@ -372,14 +375,18 @@ bool LexiRoute::update_labelling() {
   // Node if they aren't already
   bool relabelled = false;
   for (const auto& pair : this->interacting_uids_) {
+    std::cout << pair.first.repr() << " " << pair.second.repr() << std::endl;
     bool uid_0_exist =
         this->architecture_->node_exists(Node(this->labelling_[pair.first]));
+    std::cout << uid_0_exist << std::endl;
     bool uid_1_exist =
         this->architecture_->node_exists(Node(this->labelling_[pair.second]));
+    std::cout << uid_1_exist << std::endl;
     if (!uid_0_exist || !uid_1_exist) {
       relabelled = true;
     }
     if (!uid_0_exist && !uid_1_exist) {
+      std::cout << "case 0 " << std::endl;
       /**
        * If neither is assigned then we place one on some spare
        * unassigned Qubit. The unplaced Qubit will then
@@ -393,6 +400,7 @@ bool LexiRoute::update_labelling() {
        * close to pre-assigned Node.
        */
       if (this->assigned_nodes_.size() == 0) {
+        std::cout << "case 00 " << std::endl;
         /**
          * To assign this Node, we find a spare
          * Architecture Node with the best averaged distance to other
@@ -465,6 +473,7 @@ bool LexiRoute::update_labelling() {
 
         // given best node, do something
       } else {
+        std::cout << "case 01 " << std::endl;
         /**
          * Find a Node for uid_0 that is already adjacent to an assigned
          * Node but that has a neighbour with a spare slot (for assigning uid_1
@@ -484,6 +493,7 @@ bool LexiRoute::update_labelling() {
       }
     }
     if (!uid_0_exist && uid_1_exist) {
+      std::cout << "case 1 " << std::endl;
       Node root(this->labelling_[pair.second]);
       for (unsigned k = 1; k <= this->architecture_->get_diameter(); k++) {
         if (this->assign_at_distance(pair.first, root, k)) {
@@ -501,6 +511,7 @@ bool LexiRoute::update_labelling() {
       }
     }
     if (uid_0_exist && !uid_1_exist) {
+      std::cout << "case 2 " << std::endl;
       Node root(this->labelling_[pair.first]);
       for (unsigned k = 1; k <= this->architecture_->get_diameter(); k++) {
         if (this->assign_at_distance(pair.second, root, k)) {
@@ -514,6 +525,7 @@ bool LexiRoute::update_labelling() {
       }
     }
   }
+  std::cout << "returning" << std::endl;
   return relabelled;
 }
 
