@@ -885,13 +885,25 @@ void MappingFrontier::merge_ancilla(
           .op->get_type() == OpType::Output);
 
   VertPort merge_vp = merge_boundary_it->second;
+  Edge merge_edge = this->circuit_.get_nth_out_edge(merge_vp.first, merge_vp.second);
+  Vertex merge_target = this->circuit_.target(merge_edge);
+
+  port_t merge_target_port = this->circuit_.get_target_port(merge_edge);
+
+
   this->linear_boundary->erase(merge_boundary_it);
 
+
+  std::cout << "Linear boundary vertices: " << this->circuit_.dag[merge_vp.first].op->get_name() << " " << this->circuit_.dag[ancilla_vp.first].op->get_name() << std::endl;
+  std::cout << "Targets: " << this->circuit_.dag[this->circuit_.target(this->circuit_.get_nth_out_edge(merge_vp.first, merge_vp.second))].op->get_name() << " " << this->circuit_.dag[this->circuit_.target(this->circuit_.get_nth_out_edge(ancilla_vp.first, ancilla_vp.second))].op->get_name() << std::endl;
   /**
    * Update DAG to reflect unified qubit path
    */
   rewire(ancilla, merge);
+  // std::cout << "Targets: " << this->circuit_.dag[this->circuit_.target(this->circuit_.get_nth_out_edge(merge_vp.first, merge_vp.second))].op->get_name() << " " << this->circuit_.dag[this->circuit_.target(this->circuit_.get_nth_out_edge(ancilla_vp.first, ancilla_vp.second))].op->get_name() << std::endl;
 
+
+  std::cout << "Targets: " << this->circuit_.dag[this->circuit_.target(this->circuit_.get_nth_out_edge(ancilla_vp.first, ancilla_vp.second))].op->get_name() << std::endl;
   /**
    * In most cases merge_vp should correspond to the correct edge.
    * However, if "merge" is coming from an input, then this
@@ -899,8 +911,12 @@ void MappingFrontier::merge_ancilla(
    * entry VertPort as in this case it will be added to the output
    * of the Merge vert port.
    */
+
   if (this->circuit_.dag[merge_vp.first].op->get_type() != OpType::noop) {
-    this->linear_boundary->replace(ancilla_boundary_it, {ancilla, {merge_vp}});
+    Edge merge_source_edge = this->circuit_.get_nth_in_edge(merge_target, merge_target_port);
+    Vertex merge_source = this->circuit_.source(merge_source_edge);
+    port_t merge_source_port = this->circuit_.get_source_port(merge_source_edge);
+    this->linear_boundary->replace(ancilla_boundary_it, {ancilla, {merge_source, merge_source_port}});
   }
 
   // Update the qubit mappings
