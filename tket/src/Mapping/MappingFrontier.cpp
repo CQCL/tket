@@ -932,15 +932,19 @@ void MappingFrontier::merge_ancilla(
    */
 
   if (this->circuit_.dag[merge_vp.first].op->get_type() != OpType::noop) {
+    std::cout << "in this bit" << std::endl;
     Edge merge_source_edge =
         this->circuit_.get_nth_in_edge(merge_target, merge_target_port);
+    std::cout << "get edge" << std::endl;
     Vertex merge_source = this->circuit_.source(merge_source_edge);
+    std::cout << "get source" << std::endl;
     port_t merge_source_port =
         this->circuit_.get_source_port(merge_source_edge);
+    std::cout << "get port " << std::endl;
     this->linear_boundary->replace(
         ancilla_boundary_it, {ancilla, {merge_source, merge_source_port}});
+    std::cout << "done this bit" << std::endl;
   }
-
   // Update the qubit mappings
   // let's call the arguments ancilla_node and merge_node
   // e.g. before merge:
@@ -952,6 +956,7 @@ void MappingFrontier::merge_ancilla(
   // Basically, in both qubit maps, erase the entry with qubit merge_q
   // then replace the entry ancilla_q -> x with the merge_q -> x
 
+  std::cout << "bimaps " << std::endl;
   auto merge_it = this->bimaps_->initial.right.find(merge);
   TKET_ASSERT(merge_it != this->bimaps_->initial.right.end());
   UnitID merge_q = merge_it->second;
@@ -972,6 +977,7 @@ void MappingFrontier::merge_ancilla(
   /**
    * Node type no longer an ancilla or reassignable after reassignment.
    */
+  std::cout << "erasing " << std::endl;
   this->ancilla_nodes_.erase(Node(ancilla));
   this->reassignable_nodes_.erase(Node(ancilla));
 
