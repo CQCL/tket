@@ -907,6 +907,8 @@ void MappingFrontier::merge_ancilla(
                        ancilla_vp.first, ancilla_vp.second))]
                    .op->get_name()
             << std::endl;
+
+  OpType merge_target_optype = this->circuit_.dag[merge_target].op->get_type();
   /**
    * Update DAG to reflect unified qubit path
    */
@@ -931,7 +933,7 @@ void MappingFrontier::merge_ancilla(
    * of the Merge vert port.
    */
 
-  if (this->circuit_.dag[merge_vp.first].op->get_type() != OpType::noop) {
+  if (merge_target_optype != OpType::Output) {
     std::cout << "in this bit" << std::endl;
     Edge merge_source_edge =
         this->circuit_.get_nth_in_edge(merge_target, merge_target_port);
