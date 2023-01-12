@@ -50,6 +50,7 @@ from pytket.passes import (  # type: ignore
     auto_rebase_pass,
     ZZPhaseToRz,
     CnXPairwiseDecomposition,
+    RemoveImplicitQubitPermutation,
 )
 from pytket.predicates import (  # type: ignore
     GateSetPredicate,
@@ -776,6 +777,24 @@ def test_cnx_pairwise_decomp() -> None:
     CnXPairwiseDecomposition().apply(c)
     DecomposeMultiQubitsCX().apply(c)
     assert c.n_gates_of_type(OpType.CX) < 217
+
+
+def test_remove_implicit_qubit_permutation() -> None:
+    c = Circuit(3).X(0).SWAP(0, 1).SWAP(1, 2)
+    c.replace_SWAPs()
+    assert c.n_gates_of_type(OpType.SWAP) == 0
+    assert c.implicit_qubit_permutation() == {
+        Qubit(0): Qubit(2),
+        Qubit(1): Qubit(0),
+        Qubit(2): Qubit(1),
+    }
+    assert RemoveImplicitQubitPermutation().apply(c)
+    assert c.n_gates_of_type(OpType.SWAP) == 2
+    assert c.implicit_qubit_permutation() == {
+        Qubit(0): Qubit(0),
+        Qubit(1): Qubit(1),
+        Qubit(2): Qubit(2),
+    }
 
 
 def test_rz_phasedX_squash() -> None:
