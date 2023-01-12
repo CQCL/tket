@@ -96,7 +96,6 @@ bool LexiRoute::reassign_to_any_spare_node(const Node& reassign_node) {
       });
   TKET_ASSERT(jt != this->labelling_.end());
   this->labelling_[jt->first] = spare_node;
-
   /**
    * Update set of "reassignable nodes" to know that "spare_node"
    * is now reassignable.
@@ -175,7 +174,6 @@ void LexiRoute::reassign_node(
    * merging the end of the ancilla path with the start of the "reassignable"
    * (i.e. reassign_node) path.
    */
-
   if (!reassign_to_any_spare_node(reassign_node)) {
     reassign_to_any_ancilla_node(reassign_node);
   }
@@ -193,8 +191,9 @@ void LexiRoute::reassign_node(
    */
   auto assignee_boundary_it =
       this->mapping_frontier_->linear_boundary->get<TagKey>().find(assignee);
-  auto end_it = this->mapping_frontier_->linear_boundary->get<TagKey>().end();
-  TKET_ASSERT(assignee_boundary_it != end_it);
+  TKET_ASSERT(
+      assignee_boundary_it !=
+      this->mapping_frontier_->linear_boundary->get<TagKey>().end());
   this->mapping_frontier_->linear_boundary->replace(
       assignee_boundary_it, {reassign_node, assignee_boundary_it->second});
 
@@ -226,6 +225,8 @@ void LexiRoute::reassign_node(
   std::pair<UnitID, UnitID> final_replacement = {preserved_orig, reassign_node};
   this->mapping_frontier_->bimaps_->final.left.erase(final_assignee_it);
   this->mapping_frontier_->bimaps_->final.left.insert(final_replacement);
+
+  this->mapping_frontier_->reassignable_nodes_.erase(reassign_node);
 }
 
 // "assignee" is Circuit UnitID being relabelled to UnitID "replacement"
@@ -308,6 +309,13 @@ void LexiRoute::assign_valid_node(
 
 bool LexiRoute::assign_at_distance(
     const UnitID& assignee, const Node& root, unsigned distances) {
+  /**
+   * First we find a set of valid Architecture Node that are a
+   * distance "distances" away on the connectivity graph
+   * from "root".
+   *
+   * An Architecture Node is "valid" if it is not already assigned.
+   */
   node_set_t valid_nodes;
   for (const Node& neighbour :
        this->architecture_->nodes_at_distance(root, distances)) {
@@ -321,29 +329,42 @@ bool LexiRoute::assign_at_distance(
       valid_nodes.insert(neighbour);
     }
   }
+  /**
+   * Node will need to be found at a larger distance than "distances"
+   */
+  if (valid_nodes.empty()) {
+    return false;
+  }
+  auto it = valid_nodes.begin();
+  /** early exit to avoid getting distances
+   * if only one Node to choose from.
+   */
   if (valid_nodes.size() == 1) {
-    auto it = valid_nodes.begin();
     this->assign_valid_node(assignee, Node(*it));
     return true;
   }
-  if (valid_nodes.size() > 1) {
-    auto it = valid_nodes.begin();
-    lexicographical_distances_t winning_distances =
+  /**
+   * Else we compare how "good" a candidate Node
+   * is by looking at lexicographical distances
+   */
+  lexicographical_distances_t winning_distances =
+      this->architecture_->get_distances(*it);
+  Node preserved_node = *it;
+  ++it;
+  while (it != valid_nodes.end()) {
+    lexicographical_distances_t comparison_distances =
         this->architecture_->get_distances(*it);
-    Node preserved_node = *it;
-    ++it;
-    for (; it != valid_nodes.end(); ++it) {
-      lexicographical_distances_t comparison_distances =
-          this->architecture_->get_distances(*it);
-      if (comparison_distances < winning_distances) {
-        preserved_node = *it;
-        winning_distances = comparison_distances;
-      }
+    if (comparison_distances < winning_distances) {
+      preserved_node = *it;
+      winning_distances = comparison_distances;
     }
-    this->assign_valid_node(assignee, preserved_node);
-    return true;
+    ++it;
   }
-  return false;
+  /**
+   * assign unplaced Node to "winning" preserved_node
+   */
+  this->assign_valid_node(assignee, preserved_node);
+  return true;
 }
 
 bool LexiRoute::update_labelling() {
@@ -359,15 +380,40 @@ bool LexiRoute::update_labelling() {
       relabelled = true;
     }
     if (!uid_0_exist && !uid_1_exist) {
-      // Place one on free unassigned qubit
-      // Then place second later
-      // condition => No ancilla qubits assigned, so don't check
+      /**
+       * If neither is assigned then we place one on some spare
+       * unassigned Qubit. The unplaced Qubit will then
+       * naturally be placed next time update_labelling()
+       * is called.
+       *
+       * If no Nodes are assigned in the Architecture,
+       * then we assign it to a "good" Architecture Node.
+       *
+       * If there are some other assigned, we assign it
+       * close to pre-assigned Node.
+       */
       if (this->assigned_nodes_.size() == 0) {
-        // find nodes with best averaged distance to other nodes
-        // place it there...
+        /**
+         * To assign this Node, we find a spare
+         * Architecture Node with the best averaged distance to other
+         * Nodes in the Architecture.
+         */
+
+        // Find Architecture Node with best out degree
         std::set<Node> max_degree_nodes =
             this->architecture_->max_degree_nodes();
         auto it = max_degree_nodes.begin();
+
+        /**
+         * For each of these Nodes, get the distance to each other
+         * Architecture Node.
+         *
+         * Do a lexicographical comparison between each set
+         * of distances.
+         *
+         * Preserve the distance vector "closest" to all
+         * other Node
+         */
         lexicographical_distances_t winning_distances =
             this->architecture_->get_distances(*it);
         Node preserved_node = Node(*it);
@@ -380,13 +426,11 @@ bool LexiRoute::update_labelling() {
             winning_distances = comparison_distances;
           }
         }
+        // assign unplaced Qubit to "best" Node
         this->labelling_[pair.first] = preserved_node;
         this->assigned_nodes_.insert(preserved_node);
-        // Update bimaps
-        TKET_ASSERT(
-            this->mapping_frontier_->reassignable_nodes_.find(preserved_node) ==
-            this->mapping_frontier_->reassignable_nodes_.end());
 
+        // update bimaps
         auto initial_assignee_it =
             this->mapping_frontier_->bimaps_->initial.right.find(pair.first);
         TKET_ASSERT(
@@ -403,6 +447,8 @@ bool LexiRoute::update_labelling() {
         this->mapping_frontier_->bimaps_->final.left.erase(final_assignee_it);
         this->mapping_frontier_->bimaps_->final.left.insert(
             {original, preserved_node});
+
+        // this prompts next if statement to place "uid1"
         uid_0_exist = true;
 
         // update circuit with new labelling
@@ -419,9 +465,12 @@ bool LexiRoute::update_labelling() {
 
         // given best node, do something
       } else {
-        // Assign uid_0 to an unassigned node that is
-        // 1. adjacent to the already assigned nodes
-        // 2. has an unassigned neighbour
+        /**
+         * Find a Node for uid_0 that is already adjacent to an assigned
+         * Node but that has a neighbour with a spare slot (for assigning uid_1
+         * to).
+         */
+
         auto root_it = this->assigned_nodes_.begin();
         while (!uid_0_exist && root_it != this->assigned_nodes_.end()) {
           Node root = *root_it;
@@ -437,6 +486,10 @@ bool LexiRoute::update_labelling() {
     if (!uid_0_exist && uid_1_exist) {
       Node root(this->labelling_[pair.second]);
       for (unsigned k = 1; k <= this->architecture_->get_diameter(); k++) {
+        if (this->assign_at_distance(pair.first, root, k)) {
+          uid_0_exist = true;
+          break;
+        }
         uid_0_exist = this->assign_at_distance(pair.first, root, k);
         if (uid_0_exist) {
           break;
@@ -450,8 +503,8 @@ bool LexiRoute::update_labelling() {
     if (uid_0_exist && !uid_1_exist) {
       Node root(this->labelling_[pair.first]);
       for (unsigned k = 1; k <= this->architecture_->get_diameter(); k++) {
-        uid_1_exist = this->assign_at_distance(pair.second, root, k);
-        if (uid_1_exist) {
+        if (this->assign_at_distance(pair.second, root, k)) {
+          uid_1_exist = true;
           break;
         }
       }

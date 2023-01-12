@@ -1698,6 +1698,7 @@ SCENARIO("Test RangePredicate operations with LexiRoute.") {
             std::make_shared<LexiRouteRoutingMethod>()});
   REQUIRE(r_p->apply(cu));
 }
+
 SCENARIO(
     "Test adding ancilla Node, using as end of path swaps and then merging "
     "with unplaced Qubit.") {
@@ -1739,38 +1740,113 @@ SCENARIO(
   mapping_frontier.circuit_.get_commands();
   REQUIRE(true);
 }
-SCENARIO(
-    "Test relabelling a Circuit UnitID that is an Architeture Node but "
-    "reassignable to an Ancilla Node.") {
-  std::vector<std::pair<unsigned, unsigned>> coupling_map = {
-      {1, 0},  {1, 2},   {2, 3},   {4, 3},  {4, 10}, {5, 4},
-      {5, 6},  {5, 9},   {6, 8},   {7, 8},  {9, 8},  {9, 10},
-      {11, 3}, {11, 10}, {11, 12}, {12, 2}, {13, 1}, {13, 12}};
-  Architecture architecture(coupling_map);
-  std::ifstream circuit_file("lexiroute_circuit_relabel_to_ancilla.json");
-  nlohmann::json j = nlohmann::json::parse(circuit_file);
-  auto c = j.get<Circuit>();
-  std::map<Qubit, Node> p_map = {
-      {Qubit(0), Node("unplaced", 0)},
-      {Qubit(1), Node("unplaced", 1)},
-      {Qubit(2), Node("unplaced", 2)},
-      {Qubit(3), Node(10)},
-      {Qubit(4), Node(4)},
-      {Qubit(5), Node(3)},
-      {Qubit(6), Node("unplaced", 3)},
-      {Qubit(7), Node("unplaced", 4)},
-      {Qubit(8), Node("unplaced", 5)},
-      {Qubit(9), Node("unplaced", 6)},
-      {Qubit(10), Node(11)},
-      {Qubit(11), Node("unplaced", 7)},
-      {Qubit(12), Node("unplaced", 8)},
-      {Qubit(13), Node("unplaced", 9)}};
 
-  Placement::place_with_map(c, p_map);
-  CompilationUnit cu(c);
+SCENARIO(
+    "Test case fails if the linear boundary in merge_ancilla replaces the "
+    "ancilla entry before erasing the merge entry.") {
+  SquareGrid architecture(5, 5);
+  std::vector<Node> nodes = architecture.get_all_nodes_vec();
+  Circuit circuit(10);
+  circuit.add_op<unsigned>(OpType::CX, {0, 1});
+  circuit.add_op<unsigned>(OpType::CX, {0, 3});
+  circuit.add_op<unsigned>(OpType::CX, {1, 2});
+  circuit.add_barrier({0, 1, 2, 3, 4, 5, 6, 7, 8, 9});
+  circuit.add_op<unsigned>(OpType::CX, {6, 7});
+  std::map<Qubit, Node> p_map = {
+      // mapping for qbs with 2qb gates
+      {Qubit(0), nodes[0]},  {Qubit(1), nodes[4]},  {Qubit(2), nodes[20]},
+      {Qubit(3), nodes[24]}, {Qubit(4), nodes[11]}, {Qubit(5), nodes[17]},
+  };
+  Placement::place_with_map(circuit, p_map);
+  CompilationUnit cu(circuit);
   PassPtr r_p = gen_routing_pass(
       architecture, {std::make_shared<LexiLabellingMethod>(),
                      std::make_shared<LexiRouteRoutingMethod>()});
   REQUIRE(r_p->apply(cu));
+}
+
+SCENARIO(
+    "Test relabelling a Circuit UnitID that is an Architecture Node but "
+    "reassignable to an Ancilla Node.") {
+  GIVEN("") {
+    SquareGrid architecture(5, 5);
+    std::vector<Node> nodes = architecture.get_all_nodes_vec();
+    Circuit circuit(15);
+    circuit.add_op<unsigned>(OpType::CX, {0, 1});
+    circuit.add_op<unsigned>(OpType::CX, {0, 2});
+    circuit.add_op<unsigned>(OpType::CX, {0, 3});
+    circuit.add_op<unsigned>(OpType::CX, {0, 4});
+    circuit.add_op<unsigned>(OpType::CX, {0, 5});
+    circuit.add_op<unsigned>(OpType::CX, {1, 2});
+    circuit.add_op<unsigned>(OpType::CX, {1, 3});
+    circuit.add_op<unsigned>(OpType::CX, {1, 4});
+    circuit.add_op<unsigned>(OpType::CX, {1, 5});
+    circuit.add_op<unsigned>(OpType::CX, {2, 3});
+    circuit.add_op<unsigned>(OpType::CX, {2, 4});
+    circuit.add_op<unsigned>(OpType::CX, {2, 5});
+    circuit.add_op<unsigned>(OpType::CX, {3, 4});
+    circuit.add_op<unsigned>(OpType::CX, {3, 5});
+    circuit.add_op<unsigned>(OpType::CX, {4, 5});
+    for (unsigned i = 0; i < 15; i++) {
+      circuit.add_op<unsigned>(OpType::H, {i});
+    }
+    circuit.add_barrier({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14});
+    for (unsigned i = 0; i < 15; i++) {
+      circuit.add_op<unsigned>(OpType::H, {i});
+    }
+    circuit.add_op<unsigned>(OpType::CX, {6, 7});
+    circuit.add_op<unsigned>(OpType::CX, {6, 8});
+    circuit.add_op<unsigned>(OpType::CX, {6, 9});
+    circuit.add_op<unsigned>(OpType::CX, {7, 8});
+    circuit.add_op<unsigned>(OpType::CX, {7, 9});
+    circuit.add_op<unsigned>(OpType::CX, {7, 4});
+    circuit.add_op<unsigned>(OpType::CX, {7, 5});
+    circuit.add_op<unsigned>(OpType::CX, {8, 9});
+    circuit.add_op<unsigned>(OpType::CX, {9, 12});
+    std::map<Qubit, Node> p_map = {
+        // mapping for qbs with 2qb gates
+        {Qubit(0), nodes[0]},  {Qubit(1), nodes[4]},  {Qubit(2), nodes[20]},
+        {Qubit(3), nodes[24]}, {Qubit(4), nodes[11]}, {Qubit(5), nodes[17]},
+        // // mapping for 1qb qubits
+    };
+    Placement::place_with_map(circuit, p_map);
+    CompilationUnit cu(circuit);
+    PassPtr r_p = gen_routing_pass(
+        architecture, {std::make_shared<LexiLabellingMethod>(),
+                       std::make_shared<LexiRouteRoutingMethod>()});
+    REQUIRE(r_p->apply(cu));
+  }
+  GIVEN("Known failing case from json file.") {
+    std::vector<std::pair<unsigned, unsigned>> coupling_map = {
+        {1, 0},  {1, 2},   {2, 3},   {4, 3},  {4, 10}, {5, 4},
+        {5, 6},  {5, 9},   {6, 8},   {7, 8},  {9, 8},  {9, 10},
+        {11, 3}, {11, 10}, {11, 12}, {12, 2}, {13, 1}, {13, 12}};
+    Architecture architecture(coupling_map);
+    std::ifstream circuit_file("lexiroute_circuit_relabel_to_ancilla.json");
+    nlohmann::json j = nlohmann::json::parse(circuit_file);
+    auto c = j.get<Circuit>();
+    std::map<Qubit, Node> p_map = {
+        {Qubit(0), Node("unplaced", 0)},
+        {Qubit(1), Node("unplaced", 1)},
+        {Qubit(2), Node("unplaced", 2)},
+        {Qubit(3), Node(10)},
+        {Qubit(4), Node(4)},
+        {Qubit(5), Node(3)},
+        {Qubit(6), Node("unplaced", 3)},
+        {Qubit(7), Node("unplaced", 4)},
+        {Qubit(8), Node("unplaced", 5)},
+        {Qubit(9), Node("unplaced", 6)},
+        {Qubit(10), Node(11)},
+        {Qubit(11), Node("unplaced", 7)},
+        {Qubit(12), Node("unplaced", 8)},
+        {Qubit(13), Node("unplaced", 9)}};
+
+    Placement::place_with_map(c, p_map);
+    CompilationUnit cu(c);
+    PassPtr r_p = gen_routing_pass(
+        architecture, {std::make_shared<LexiLabellingMethod>(),
+                       std::make_shared<LexiRouteRoutingMethod>()});
+    REQUIRE(r_p->apply(cu));
+  }
 }
 }  // namespace tket
