@@ -1795,10 +1795,12 @@ SCENARIO(
         architecture, {std::make_shared<LexiLabellingMethod>(),
                        std::make_shared<LexiRouteRoutingMethod>()});
     REQUIRE(r_p->apply(cu));
-    std::cout << "\ntest of interest complete.\n" << std::endl;
+    ;
   }
 
-  GIVEN("") {
+  GIVEN(
+      "Line archtiecture, reassigned Nodes both at end of Circuit so extra "
+      "logic required.") {
     std::vector<std::pair<unsigned, unsigned>> coupling_map;
     for (unsigned i = 0; i < 15; i++) {
       coupling_map.push_back({i, i + 1});
