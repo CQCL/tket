@@ -834,6 +834,13 @@ PYBIND11_MODULE(passes, m) {
       "the chance of gate cancellation");
 
   m.def(
+      "RemoveImplicitQubitPermutation", &RemoveImplicitQubitPermutation,
+      "Remove any implicit qubit permutation by appending SWAP gates."
+      "\n\n"
+      "Note that if the circuit contains measurements, they may become "
+      "mid-circuit measurements in the transformed circuit.");
+
+  m.def(
       "CustomPass", &CustomPass,
       "Generate a custom pass from a user-provided circuit transfomation "
       "function."

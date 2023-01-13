@@ -53,7 +53,8 @@ using namespace tket;
   DO(GlobalisePhasedX)                    \
   DO(NormaliseTK2)                        \
   DO(SquashRzPhasedX)                     \
-  DO(CnXPairwiseDecomposition)
+  DO(CnXPairwiseDecomposition)            \
+  DO(RemoveImplicitQubitPermutation)
 
 static const std::map<PassPtr, std::string> &pass_name() {
   // Map from PassPtr to readable name
