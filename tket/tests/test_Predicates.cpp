@@ -515,5 +515,24 @@ SCENARIO("Verifying whether or not circuits have mid-circuit measurements") {
   }
 }
 
+SCENARIO("RemoveImplicitQubitPermutation") {
+  Circuit c(3, 3);
+  c.add_op<unsigned>(OpType::X, {0});
+  c.add_op<unsigned>(OpType::X, {2});
+  c.add_op<unsigned>(OpType::SWAP, {0, 1});
+  c.add_op<unsigned>(OpType::Measure, {0, 0});
+  c.add_op<unsigned>(OpType::Measure, {1, 1});
+  c.add_op<unsigned>(OpType::Measure, {2, 2});
+  CompilationUnit cu(c);
+  REQUIRE(FullPeepholeOptimise()->apply(cu));
+  PredicatePtr no_wire_swaps = std::make_shared<NoWireSwapsPredicate>();
+  PredicatePtr no_mid_meas = std::make_shared<NoMidMeasurePredicate>();
+  REQUIRE(!no_wire_swaps->verify(cu.get_circ_ref()));
+  REQUIRE(no_mid_meas->verify(cu.get_circ_ref()));
+  REQUIRE(RemoveImplicitQubitPermutation()->apply(cu));
+  REQUIRE(no_wire_swaps->verify(cu.get_circ_ref()));
+  REQUIRE(!no_mid_meas->verify(cu.get_circ_ref()));
+}
+
 }  // namespace test_Predicates
 }  // namespace tket

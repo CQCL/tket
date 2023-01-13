@@ -34,7 +34,7 @@ class TketTestsConan(ConanFile):
     default_options = {"with_coverage": False, "full": False, "long": False}
     generators = "cmake"
     exports_sources = "../../tket/tests/*"
-    requires = ("tket/1.0.45@tket/stable", "catch2/3.2.1")
+    requires = ("tket/1.0.44@tket/stable", "catch2/3.2.1")
 
     _cmake = None
 
@@ -65,11 +65,6 @@ class TketTestsConan(ConanFile):
         self.copy(executable_filename)
         self.copy(
             os.path.join("test_circuits", "lexiroute_circuit.json"),
-            dst="bin",
-            keep_path=False,
-        )
-        self.copy(
-            os.path.join("test_circuits", "lexiroute_circuit_relabel_to_ancilla.json"),
             dst="bin",
             keep_path=False,
         )

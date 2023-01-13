@@ -17,7 +17,9 @@
 #include <memory>
 
 #include "Circuit/CircPool.hpp"
+#include "CompilationUnit.hpp"
 #include "PassGenerators.hpp"
+#include "Predicates.hpp"
 #include "Predicates/CompilerPass.hpp"
 #include "Transformations/BasicOptimisation.hpp"
 #include "Transformations/Decomposition.hpp"
@@ -461,6 +463,31 @@ const PassPtr &CnXPairwiseDecomposition() {
     nlohmann::json j;
     j["name"] = "CnXPairwiseDecomposition";
     return std::make_shared<StandardPass>(s_ps, t, postcon, j);
+  }());
+  return pp;
+}
+
+const PassPtr &RemoveImplicitQubitPermutation() {
+  static const PassPtr pp([]() {
+    Transform t = Transform([](Circuit &circ) {
+      bool has_implicit_wire_swaps = circ.has_implicit_wireswaps();
+      circ.replace_all_implicit_wire_swaps();
+      return has_implicit_wire_swaps;
+    });
+    PredicatePtrMap precons;
+    PredicatePtr no_wire_swap = std::make_shared<NoWireSwapsPredicate>();
+    PredicatePtrMap specific_postcons = {
+        CompilationUnit::make_type_pair(no_wire_swap)};
+    PredicateClassGuarantees generic_postcons;
+    Guarantee default_postcon = Guarantee::Preserve;
+    PostConditions postcons{
+        specific_postcons, generic_postcons, default_postcon};
+    PredicateClassGuarantees g_postcons = {
+        {typeid(GateSetPredicate), Guarantee::Clear},
+        {typeid(NoMidMeasurePredicate), Guarantee::Clear}};
+    nlohmann::json j;
+    j["name"] = "RemoveImplicitQubitPermutation";
+    return std::make_shared<StandardPass>(precons, t, postcons, j);
   }());
   return pp;
 }

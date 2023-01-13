@@ -16,6 +16,7 @@ General:
 Minor new features:
 
 * Circuit methods ``qubit_readout`` and ``qubit_to_bit_map`` now ignore barriers.
+* New pass ``RemoveImplicitQubitPermutation``.
 
 Fixes:
 
