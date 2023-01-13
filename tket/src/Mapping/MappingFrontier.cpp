@@ -913,6 +913,16 @@ void MappingFrontier::merge_ancilla(
         this->circuit_.get_source_port(merge_source_edge);
     this->linear_boundary->replace(
         ancilla_boundary_it, {ancilla, {merge_source, merge_source_port}});
+  } else {
+    Vertex ancilla_out_vertex = this->circuit_.get_out(ancilla);
+    Edge ancilla_out_in_edge =
+        this->circuit_.get_nth_in_edge(ancilla_out_vertex, 0);
+    Vertex ancilla_out_source = this->circuit_.source(ancilla_out_in_edge);
+    port_t ancilla_out_source_port =
+        this->circuit_.get_source_port(ancilla_out_in_edge);
+    this->linear_boundary->replace(
+        ancilla_boundary_it,
+        {ancilla, {ancilla_out_source, ancilla_out_source_port}});
   }
 
   // Update the qubit mappings

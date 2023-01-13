@@ -647,7 +647,7 @@ SCENARIO("Test LexiLabellingMethod") {
     REQUIRE(pre_label == post_label);
   }
   GIVEN(
-      "One unlabelled qubit, two slices, lookahead for better solution, check"
+      "One unlabelled qubit, two slices, lookahead for better solution,check"
       " and route.") {
     Circuit circ(5);
     std::vector<Qubit> qubits = circ.all_qubits();
@@ -1768,8 +1768,43 @@ SCENARIO(
 SCENARIO(
     "Test relabelling a Circuit UnitID that is an Architecture Node but "
     "reassignable to an Ancilla Node.") {
+  GIVEN("Line Architecture, one reassignment.") {
+    std::vector<std::pair<unsigned, unsigned>> coupling_map = {
+        {0, 1}, {1, 2}, {2, 3}, {3, 4}, {4, 5}, {5, 6}, {6, 7}, {7, 8}};
+    Architecture architecture(coupling_map);
+    std::vector<Node> nodes = architecture.get_all_nodes_vec();
+    Circuit circuit(9);
+    circuit.add_op<unsigned>(OpType::CX, {0, 1});
+    for (unsigned i = 0; i < 9; i++) {
+      circuit.add_op<unsigned>(OpType::H, {i});
+    }
+    circuit.add_barrier({0, 1, 2, 3, 4, 5, 6, 7});
+    for (unsigned i = 0; i < 8; i++) {
+      circuit.add_op<unsigned>(OpType::H, {i});
+    }
+    circuit.add_op<unsigned>(OpType::CX, {0, 3});
+    circuit.add_op<unsigned>(OpType::CX, {0, 2});
+    circuit.add_op<unsigned>(OpType::CX, {0, 4});
+
+    std::map<Qubit, Node> p_map = {// mapping for qbs with 2qb gates
+                                   {Qubit(0), nodes[0]},
+                                   {Qubit(1), nodes[8]}};
+    Placement::place_with_map(circuit, p_map);
+    CompilationUnit cu(circuit);
+    PassPtr r_p = gen_routing_pass(
+        architecture, {std::make_shared<LexiLabellingMethod>(),
+                       std::make_shared<LexiRouteRoutingMethod>()});
+    REQUIRE(r_p->apply(cu));
+    std::cout << "\ntest of interest complete.\n" << std::endl;
+  }
+
   GIVEN("") {
-    SquareGrid architecture(5, 5);
+    std::vector<std::pair<unsigned, unsigned>> coupling_map;
+    for (unsigned i = 0; i < 15; i++) {
+      coupling_map.push_back({i, i + 1});
+    }
+    // coupling_map.push_back({15,0});
+    Architecture architecture(coupling_map);
     std::vector<Node> nodes = architecture.get_all_nodes_vec();
     Circuit circuit(15);
     circuit.add_op<unsigned>(OpType::CX, {0, 1});
@@ -1790,23 +1825,23 @@ SCENARIO(
     for (unsigned i = 0; i < 15; i++) {
       circuit.add_op<unsigned>(OpType::H, {i});
     }
-    circuit.add_barrier({0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14});
+    std::vector<unsigned> barrier_indices(15);
+    std::iota(barrier_indices.begin(), barrier_indices.end(), 0);
+    circuit.add_barrier(barrier_indices);
     for (unsigned i = 0; i < 15; i++) {
       circuit.add_op<unsigned>(OpType::H, {i});
     }
     circuit.add_op<unsigned>(OpType::CX, {6, 7});
-    circuit.add_op<unsigned>(OpType::CX, {6, 8});
-    circuit.add_op<unsigned>(OpType::CX, {6, 9});
-    circuit.add_op<unsigned>(OpType::CX, {7, 8});
-    circuit.add_op<unsigned>(OpType::CX, {7, 9});
+    circuit.add_op<unsigned>(OpType::CX, {6, 2});
+    circuit.add_op<unsigned>(OpType::CX, {6, 5});
+    circuit.add_op<unsigned>(OpType::CX, {7, 0});
+    circuit.add_op<unsigned>(OpType::CX, {7, 1});
     circuit.add_op<unsigned>(OpType::CX, {7, 4});
     circuit.add_op<unsigned>(OpType::CX, {7, 5});
-    circuit.add_op<unsigned>(OpType::CX, {8, 9});
-    circuit.add_op<unsigned>(OpType::CX, {9, 12});
     std::map<Qubit, Node> p_map = {
         // mapping for qbs with 2qb gates
-        {Qubit(0), nodes[0]},  {Qubit(1), nodes[4]},  {Qubit(2), nodes[20]},
-        {Qubit(3), nodes[24]}, {Qubit(4), nodes[11]}, {Qubit(5), nodes[17]},
+        {Qubit(0), nodes[1]},  {Qubit(1), nodes[7]}, {Qubit(2), nodes[13]},
+        {Qubit(3), nodes[15]}, {Qubit(4), nodes[8]}, {Qubit(5), nodes[10]},
         // // mapping for 1qb qubits
     };
     Placement::place_with_map(circuit, p_map);

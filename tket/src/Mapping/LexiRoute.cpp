@@ -43,6 +43,7 @@ void LexiRoute::reassign_to_any_ancilla_node(const Node& reassign_node) {
    * multi-qubit gates.
    * Remove as a known ancilla node and update the Cirucit.
    */
+
   TKET_ASSERT(!this->mapping_frontier_->ancilla_nodes_.empty());
   auto ancilla_it = this->mapping_frontier_->ancilla_nodes_.begin();
   Node ancilla_node = *ancilla_it;
@@ -89,6 +90,7 @@ bool LexiRoute::reassign_to_any_spare_node(const Node& reassign_node) {
    *
    */
   Node spare_node = *it;
+
   auto jt = std::find_if(
       this->labelling_.begin(), this->labelling_.end(),
       [&reassign_node](const std::pair<const UnitID, UnitID>& pair_unitid) {
@@ -242,6 +244,7 @@ void LexiRoute::assign_valid_node(
    * end of "replacement".
    * 3) It is unused and we can just relabel various MappingFrontier attributes
    */
+
   if (this->mapping_frontier_->reassignable_nodes_.find(Node(replacement)) !=
       this->mapping_frontier_->reassignable_nodes_.end()) {
     /**
@@ -329,6 +332,7 @@ bool LexiRoute::assign_at_distance(
       valid_nodes.insert(neighbour);
     }
   }
+
   /**
    * Node will need to be found at a larger distance than "distances"
    */
