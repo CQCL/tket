@@ -494,10 +494,6 @@ bool LexiRoute::update_labelling() {
           uid_0_exist = true;
           break;
         }
-        uid_0_exist = this->assign_at_distance(pair.first, root, k);
-        if (uid_0_exist) {
-          break;
-        }
       }
       if (!uid_0_exist) {
         throw LexiRouteError(
