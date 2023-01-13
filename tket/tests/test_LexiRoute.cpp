@@ -1795,7 +1795,85 @@ SCENARIO(
         architecture, {std::make_shared<LexiLabellingMethod>(),
                        std::make_shared<LexiRouteRoutingMethod>()});
     REQUIRE(r_p->apply(cu));
-    ;
+  }
+
+  GIVEN("Line Architecture, two reassignments.") {
+    unsigned n_nodes = 20;
+    std::vector<std::pair<unsigned, unsigned>> coupling_map;
+    for (unsigned i = 0; i < n_nodes; i++) {
+      coupling_map.push_back({i, i + 1});
+    }
+    Architecture architecture(coupling_map);
+    std::vector<Node> nodes = architecture.get_all_nodes_vec();
+
+    Circuit circuit(n_nodes);
+    circuit.add_op<unsigned>(OpType::CX, {0, 2});
+    circuit.add_op<unsigned>(OpType::CX, {2, 1});
+    circuit.add_op<unsigned>(OpType::CX, {2, 3});
+    for (unsigned i = 0; i < n_nodes; i++) {
+      circuit.add_op<unsigned>(OpType::H, {i});
+    }
+    std::vector<unsigned> barrier_arg(n_nodes);
+    std::iota(barrier_arg.begin(), barrier_arg.end(), 0);
+    circuit.add_barrier(barrier_arg);
+    for (unsigned i = 0; i < n_nodes; i++) {
+      circuit.add_op<unsigned>(OpType::H, {i});
+    }
+    circuit.add_op<unsigned>(OpType::CX, {2, 3});
+    circuit.add_op<unsigned>(OpType::CX, {2, 4});
+    std::map<Qubit, Node> p_map = {// mapping for qbs with 2qb gates
+                                   {Qubit(0), nodes[6]},
+                                   {Qubit(1), nodes[n_nodes - 1]}};
+
+    Placement::place_with_map(circuit, p_map);
+    CompilationUnit cu(circuit);
+    PassPtr r_p = gen_routing_pass(
+        architecture, {std::make_shared<LexiLabellingMethod>(),
+                       std::make_shared<LexiRouteRoutingMethod>()});
+    REQUIRE(r_p->apply(cu));
+  }
+  GIVEN("Line Architecture, two reassignments., more gates.") {
+    unsigned n_nodes = 30;
+    std::vector<std::pair<unsigned, unsigned>> coupling_map;
+    for (unsigned i = 0; i < n_nodes; i++) {
+      coupling_map.push_back({i, i + 1});
+    }
+    Architecture architecture(coupling_map);
+    std::vector<Node> nodes = architecture.get_all_nodes_vec();
+
+    Circuit circuit(n_nodes);
+    circuit.add_op<unsigned>(OpType::CZ, {3, 4});
+    circuit.add_op<unsigned>(OpType::CZ, {4, 10});
+    circuit.add_op<unsigned>(OpType::CZ, {4, 5});
+    circuit.add_op<unsigned>(OpType::CZ, {5, 6});
+    for (unsigned i = 0; i < n_nodes; i++) {
+      circuit.add_op<unsigned>(OpType::H, {i});
+    }
+    std::vector<unsigned> barrier_arg(n_nodes);
+    std::iota(barrier_arg.begin(), barrier_arg.end(), 0);
+    circuit.add_barrier(barrier_arg);
+    for (unsigned i = 0; i < n_nodes; i++) {
+      circuit.add_op<unsigned>(OpType::H, {i});
+    }
+    circuit.add_op<unsigned>(OpType::CX, {5, 3});
+    circuit.add_op<unsigned>(OpType::CX, {5, 4});
+    circuit.add_barrier(barrier_arg);
+    for (unsigned i = 0; i < n_nodes; i++) {
+      circuit.add_op<unsigned>(OpType::H, {i});
+    }
+    circuit.add_op<unsigned>(OpType::CZ, {3, 4});
+    circuit.add_op<unsigned>(OpType::CZ, {4, 10});
+
+    std::map<Qubit, Node> p_map = {// mapping for qbs with 2qb gates
+                                   {Qubit(3), nodes[14]},
+                                   {Qubit(10), nodes[n_nodes - 1]}};
+
+    Placement::place_with_map(circuit, p_map);
+    CompilationUnit cu(circuit);
+    PassPtr r_p = gen_routing_pass(
+        architecture, {std::make_shared<LexiLabellingMethod>(),
+                       std::make_shared<LexiRouteRoutingMethod>()});
+    REQUIRE(r_p->apply(cu));
   }
 
   GIVEN(
