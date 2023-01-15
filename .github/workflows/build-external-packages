@@ -15,7 +15,7 @@ PACKAGES="b2/4.9.2@ \
           pybind11_json/0.2.12@ \
           rapidcheck/cci.20220514@ \
           symengine/0.9.0@ \
-          zlib/1.2.12@"
+          zlib/1.2.13@"
 
 BUILD_TYPES="Release Debug"
 
