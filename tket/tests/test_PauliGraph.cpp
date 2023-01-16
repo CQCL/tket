@@ -1008,14 +1008,5 @@ SCENARIO("Measure handling in PauliGraph") {
   }
 }
 
-SCENARIO("Error handling with implicit permutations") {
-  Circuit circ(2);
-  circ.add_op<unsigned>(OpType::CX, {0, 1});
-  circ.add_op<unsigned>(OpType::CX, {1, 0});
-  Transforms::clifford_simp().apply(circ);
-  REQUIRE_THROWS_AS(
-      circuit_to_pauli_graph(circ), ImplicitPermutationNotAllowed);
-}
-
 }  // namespace test_PauliGraph
 }  // namespace tket

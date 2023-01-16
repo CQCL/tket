@@ -17,10 +17,12 @@ Minor new features:
 
 * Circuit methods ``qubit_readout`` and ``qubit_to_bit_map`` now ignore barriers.
 * New pass ``RemoveImplicitQubitPermutation``.
+* ``PauliSimp`` pass accepts circuits containing implicit wire swaps.
 
 Fixes:
 
 * ``MultiGateReorderRoutingMethod`` raising unknown edge missing error.
+* ``PauliSimp`` pass preserves circuit name.
 
 1.10.0 (December 2022)
 ----------------------
