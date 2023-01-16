@@ -1117,7 +1117,7 @@ SCENARIO("Test Pauli Graph Synthesis Pass") {
   PassPtr graph_synth = gen_synthesise_pauli_graph(
       Transforms::PauliSynthStrat::Sets, CXConfigType::Star);
   GIVEN("Two PauliExpBoxes") {
-    Circuit circ(3);
+    Circuit circ(3, "test");
     PauliExpBox peb({Pauli::Z, Pauli::X, Pauli::Z}, 0.333);
     circ.add_box(peb, {0, 1, 2});
     PauliExpBox peb2({Pauli::Y, Pauli::X, Pauli::X}, 0.174);
@@ -1125,8 +1125,10 @@ SCENARIO("Test Pauli Graph Synthesis Pass") {
 
     CompilationUnit cu(circ);
     graph_synth->apply(cu);
+    const Circuit& circ1 = cu.get_circ_ref();
 
-    REQUIRE(test_unitary_comparison(circ, cu.get_circ_ref()));
+    REQUIRE(test_unitary_comparison(circ, circ1));
+    REQUIRE(circ1.get_name() == "test");
   }
   GIVEN("Lots of different gates") {
     Circuit circ(3);
