@@ -58,11 +58,11 @@ local-libs: # create conan packages for local libs from this repository
 	conan create --profile=$(conan_profile_name) $(libs_dir)/tktokenswap tket/stable --build=missing
 	conan create --profile=$(conan_profile_name) $(libs_dir)/tkwsm tket/stable --build=missing
 
-.PHONY: package-local-tket-if-necessary #if the required tket version package is not in cache or remotely available, package it
+.PHONY: package-local-tket-if-necessary # if the required tket version package is not in cache, package it (skip test phase with --test-folder=None)
 required_tket_version_available=$(shell ./helper_scripts/local_tket_version_in_cache.sh $(tket_recipe_dir)/conanfile.py)
 package-local-tket-if-necessary:
 ifeq ($(required_tket_version_available), false)
-	conan create --profile=$(conan_profile_name) $(tket_recipe_dir) tket/stable
+	-conan create --profile=$(conan_profile_name) $(tket_recipe_dir) tket/stable --test-folder=None
 endif
 
 .PHONY: dev-env-from-scratch
@@ -75,10 +75,10 @@ dev-env-from-scratch: b2 local-libs ## Install tket, tket-tests, and tket-propte
 
 .PHONY: dev-env
 dev-env: ## Install tket, tket-tests, and tket-proptests into a local build directory and configure cmake (dependencies from cache or remote)
-	conan install --profile=$(conan_profile_name) $(tket_recipe_dir)  --install-folder=$(conan_build_dir)/tket/src --build=missing
+	conan install --profile=$(conan_profile_name) $(tket_recipe_dir)  --install-folder=$(conan_build_dir)/tket/src
 	make package-local-tket-if-necessary
-	conan install --profile=$(conan_profile_name) $(tket_tests_recipe_dir) --install-folder=$(conan_build_dir)/tket/tests --build=missing
-	conan install --profile=$(conan_profile_name) $(tket_proptests_recipe_dir) --install-folder=$(conan_build_dir)/tket/proptests --build=missing
+	conan install --profile=$(conan_profile_name) $(tket_tests_recipe_dir) --install-folder=$(conan_build_dir)/tket/tests
+	conan install --profile=$(conan_profile_name) $(tket_proptests_recipe_dir) --install-folder=$(conan_build_dir)/tket/proptests
 	cmake -DCMAKE_BUILD_TYPE=$(build_type) -DCMAKE_MAKE_PROGRAM=ninja -G Ninja -S $(cmake_source_dir) -B $(conan_build_dir)
 
 ##@ Build
