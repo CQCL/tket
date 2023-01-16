@@ -189,6 +189,7 @@ Transform synthesise_pauli_graph(
   return Transform([=](Circuit &circ) {
     Expr t = circ.get_phase();
     std::optional<std::string> name = circ.get_name();
+    circ.replace_all_implicit_wire_swaps();
     PauliGraph pg = circuit_to_pauli_graph(circ);
     switch (strat) {
       case PauliSynthStrat::Individual: {
