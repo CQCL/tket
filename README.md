@@ -277,16 +277,9 @@ First create a `build` folder in the project root. Then proceed as follows.
  
 #### Method 3: Makefile
 
-A [Makefile](dev-tools/Makefile) is provided with commands for a simplified development process
-
-1. Setup recommended conan profile: `make conan-profile`
-2. Install all dependencies for tket, tket-tests, and tket-proptests in a build directory (`cmake-build-debug` per default):
-   1. `make dev-env-from-scratch` -> Build dependencies from source (e.g., for unsupported conan configurations) 
-   2. `make dev-env` -> Dependencies from conan cache or remote (for supported conan configurations)
-3. Build tket, tket-tests, and tket-proptests: `make build`
-4. Build and run tests or proptests: `make test` or `make proptests`
-
-For more details and options run `make help`
+An alternative build setup and development process is offered through a Makefile in the [`dev-tools`](dev-tools) directory.
+This setup can also simplify integration with an IDE supporting `cmake` builds.
+See the file [`dev-tools/README.md`](dev-tools/README.md) for instructions and more information.
 
 ## Test coverage
 

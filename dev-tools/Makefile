@@ -3,12 +3,11 @@
 SHELL=/usr/bin/env bash
 
 build_type=Debug
+cmake_build_dir=cmake-build-debug
+conan_profile_name=tket
 ifeq ($(build_type), Release)
-  conan_build_dir=cmake-build-release
+  cmake_build_dir=cmake-build-release
   conan_profile_name=tket-release
-else
-  conan_build_dir=cmake-build-debug
-  conan_profile_name=tket-debug
 endif
 tket_remote_repository=https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
 libs_dir=../libs
@@ -40,7 +39,7 @@ conan-profile: ## Create and configure conan profile
 linux-profile-settings: ## Set suggested settings for conan profile on linux
 	conan profile update settings.compiler.libcxx=libstdc++11 $(conan_profile_name) # see warning about gcc ABI compatibility at profile creation
 
-##@ Install Dependencies
+##@ Install Dependencies and Setup Cmake
 
  # Currently the b2 package (a dependency of boost) in the remote tket-libs does not include compiler info
  # which can lead to errors when building boost from source. Conan will try to use
@@ -65,51 +64,49 @@ ifeq ($(required_tket_version_available), false)
 	-conan create --profile=$(conan_profile_name) $(tket_recipe_dir) tket/stable --test-folder=None
 endif
 
-.PHONY: dev-env-from-scratch
-dev-env-from-scratch: b2 local-libs ## Install tket, tket-tests, and tket-proptests into a local build directory and configure cmake (build from source if not in conan cache or remotes)
-	conan install --profile=$(conan_profile_name) $(tket_recipe_dir)  --install-folder=$(conan_build_dir)/tket/src --build=missing
+.PHONY: dev-env-from-source
+dev-env-from-source: b2 local-libs ## Install tket, tket-tests, and tket-proptests into a local build directory and configure cmake (build from source if not in conan cache or remotes)
+	conan install --profile=$(conan_profile_name) $(tket_recipe_dir)  --install-folder=$(cmake_build_dir)/tket/src --build=missing
 	make package-local-tket-if-necessary
-	conan install --profile=$(conan_profile_name) $(tket_tests_recipe_dir) --install-folder=$(conan_build_dir)/tket/tests --build=missing
-	conan install --profile=$(conan_profile_name) $(tket_proptests_recipe_dir) --install-folder=$(conan_build_dir)/tket/proptests --build=missing
-	cmake -DCMAKE_BUILD_TYPE=$(build_type) -DCMAKE_MAKE_PROGRAM=ninja -G Ninja -S $(cmake_source_dir) -B $(conan_build_dir)
+	conan install --profile=$(conan_profile_name) $(tket_tests_recipe_dir) --install-folder=$(cmake_build_dir)/tket/tests --build=missing
+	conan install --profile=$(conan_profile_name) $(tket_proptests_recipe_dir) --install-folder=$(cmake_build_dir)/tket/proptests --build=missing
+	cmake -DCMAKE_BUILD_TYPE=$(build_type) -DCMAKE_MAKE_PROGRAM=ninja -G Ninja -S $(cmake_source_dir) -B $(cmake_build_dir)
 
 .PHONY: dev-env
 dev-env: ## Install tket, tket-tests, and tket-proptests into a local build directory and configure cmake (dependencies from cache or remote)
-	conan install --profile=$(conan_profile_name) $(tket_recipe_dir)  --install-folder=$(conan_build_dir)/tket/src
+	conan install --profile=$(conan_profile_name) $(tket_recipe_dir)  --install-folder=$(cmake_build_dir)/tket/src
 	make package-local-tket-if-necessary
-	conan install --profile=$(conan_profile_name) $(tket_tests_recipe_dir) --install-folder=$(conan_build_dir)/tket/tests
-	conan install --profile=$(conan_profile_name) $(tket_proptests_recipe_dir) --install-folder=$(conan_build_dir)/tket/proptests
-	cmake -DCMAKE_BUILD_TYPE=$(build_type) -DCMAKE_MAKE_PROGRAM=ninja -G Ninja -S $(cmake_source_dir) -B $(conan_build_dir)
+	conan install --profile=$(conan_profile_name) $(tket_tests_recipe_dir) --install-folder=$(cmake_build_dir)/tket/tests
+	conan install --profile=$(conan_profile_name) $(tket_proptests_recipe_dir) --install-folder=$(cmake_build_dir)/tket/proptests
+	cmake -DCMAKE_BUILD_TYPE=$(build_type) -DCMAKE_MAKE_PROGRAM=ninja -G Ninja -S $(cmake_source_dir) -B $(cmake_build_dir)
 
-##@ Build
+##@ Build and Test
 
 .PHONY: build-tests
 build-tests: ## build test_tket binary
-	cmake --build $(conan_build_dir) --target test_tket -j $(n_cpus)
+	cmake --build $(cmake_build_dir) --target test_tket -j $(n_cpus)
 
 .PHONY: build-proptests
 build-proptests: ## build proptests binary
-	cmake --build $(conan_build_dir) --target proptest -j $(n_cpus)
+	cmake --build $(cmake_build_dir) --target proptest -j $(n_cpus)
 
 .PHONY: build
 build: build-tests build-proptests ## build all
 
-##@ Test
-
 test_args="~[latex]"
 .PHONY: test
 test: build-tests ## build and run tket tests, override arguments to test binary using test_args variable, e.g., `make test_args='-r compact "[long]"' test`
-	-$(conan_build_dir)/tket/tests/bin/test_tket $(test_args)
+	-$(cmake_build_dir)/tket/tests/bin/test_tket $(test_args)
 
 .PHONY: test-file
 File=""
 file_test_filter=$(patsubst %.cpp,%, $(notdir $(File)))
 test-file: build-tests ## build and run tket tests from a specific test file (usage: `make File=<test_file> test-file`)
-	-$(conan_build_dir)/tket/tests/bin/test_tket -# -r compact "[#$(file_test_filter)]"
+	-$(cmake_build_dir)/tket/tests/bin/test_tket -# -r compact "[#$(file_test_filter)]"
 
 .PHONY: proptests
 proptests: build-proptests ## build and run tket proptests
-	$(conan_build_dir)/tket/proptests/bin/proptest
+	$(cmake_build_dir)/tket/proptests/bin/proptest
 
 ##@ Helpers
 
