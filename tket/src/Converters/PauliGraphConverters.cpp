@@ -25,14 +25,6 @@ PauliGraph circuit_to_pauli_graph(const Circuit &circ);
 Circuit pauli_graph_to_circuit(const PauliGraph &pg);
 
 PauliGraph circuit_to_pauli_graph(const Circuit &circ) {
-  for (const std::pair<const Qubit, Qubit> &pair :
-       circ.implicit_qubit_permutation()) {
-    if (pair.first != pair.second) {
-      throw ImplicitPermutationNotAllowed(
-          "Cannot build a PauliGraph from circuits with implicit "
-          "permutations");
-    }
-  }
   PauliGraph pg(circ.all_qubits(), circ.all_bits());
   for (const Command &com : circ) {
     const Op &op = *com.get_op_ptr();
