@@ -9,6 +9,7 @@
 .hypothesis
 .ipynb_checkpoints
 .mypy_cache
+.venv
 CMakeCache.txt
 CMakeFiles
 __pycache__
