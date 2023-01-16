@@ -113,4 +113,14 @@ const PassPtr &ZZPhaseToRz();
  */
 const PassPtr &CnXPairwiseDecomposition();
 
+/**
+ * @brief Remove any implicit qubit permutation by appending SWAP gates.
+ *
+ * Note that if the circuit contains measurements, they may become mid-circuit
+ * measurements in the transformed circuit.
+ *
+ * @return compilation pass to perform this transformation
+ */
+const PassPtr &RemoveImplicitQubitPermutation();
+
 }  // namespace tket

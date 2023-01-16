@@ -289,6 +289,7 @@ TWO_WAY_NONPARAM_PASSES = [
     "RemoveBarriers",
     "DecomposeBridges",
     "CnXPairwiseDecomposition",
+    "RemoveImplicitQubitPermutation",
 ]
 
 TWO_WAY_PASSES = {name: nonparam_pass_dict(name) for name in TWO_WAY_NONPARAM_PASSES}
