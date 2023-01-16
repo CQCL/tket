@@ -68,3 +68,8 @@ class TketTestsConan(ConanFile):
             dst="bin",
             keep_path=False,
         )
+        self.copy(
+            os.path.join("test_circuits", "lexiroute_circuit_relabel_to_ancilla.json"),
+            dst="bin",
+            keep_path=False,
+        )
