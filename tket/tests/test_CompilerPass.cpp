@@ -33,6 +33,7 @@
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
 #include "Transformations/ContextualReduction.hpp"
+#include "Transformations/OptimisationPass.hpp"
 #include "Transformations/PauliOptimisation.hpp"
 #include "Transformations/Rebase.hpp"
 #include "Utils/Expression.hpp"
@@ -1164,6 +1165,18 @@ SCENARIO("Test Pauli Graph Synthesis Pass") {
     circ.add_op<unsigned>(OpType::XXPhase, 1.5, {1, 2});
     circ.add_op<unsigned>(OpType::YYPhase, 2.5, {2, 0});
     circ.add_op<unsigned>(OpType::PhasedX, {3.5, 0.5}, {0});
+
+    CompilationUnit cu(circ);
+    graph_synth->apply(cu);
+
+    REQUIRE(test_unitary_comparison(circ, cu.get_circ_ref(), true));
+  }
+  GIVEN("Implicit qubit permutation") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::CX, {1, 0});
+    Transforms::clifford_simp().apply(circ);
+    REQUIRE(circ.has_implicit_wireswaps());
 
     CompilationUnit cu(circ);
     graph_synth->apply(cu);
