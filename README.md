@@ -274,6 +274,12 @@ First create a `build` folder in the project root. Then proceed as follows.
    conan export-pkg recipes/tket tket/${VERSION}@tket/stable -f --build-folder=build --source-folder=tket/src
    ```
    where `${VERSION}` is the tket library version, e.g. `1.0.3`.
+ 
+#### Method 3: Makefile
+
+An alternative build setup and development process is offered through a Makefile in the [`dev-tools`](dev-tools) directory.
+This setup can also simplify integration with an IDE supporting `cmake` builds.
+See the file [`dev-tools/README.md`](dev-tools/README.md) for instructions and more information.
 
 ## Test coverage
 

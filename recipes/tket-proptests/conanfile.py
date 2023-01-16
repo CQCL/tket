@@ -28,7 +28,7 @@ class TketProptestsConan(ConanFile):
     generators = "cmake"
     exports_sources = "../../tket/proptests/*"
     requires = (
-        "tket/1.0.45@tket/stable",
+        "tket/1.0.46@tket/stable",
         "rapidcheck/cci.20220514",
     )
 
@@ -36,6 +36,10 @@ class TketProptestsConan(ConanFile):
         cmake = CMake(self)
         cmake.configure()
         cmake.build()
+
+    def imports(self):
+        self.copy("*.dll", dst="bin", src="bin")
+        self.copy("*.dylib*", dst="bin", src="lib")
 
     def package(self):
         executable_filename = "bin/proptest"
