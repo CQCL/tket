@@ -1,0 +1,30 @@
+{
+  "dependencies": {
+    "pytket-circuit-renderer": "^0.4.2",
+    "vue": "^3.2.45"
+  },
+  "name": "pytket",
+  "description": "## Circuit renderer component from within pytket.",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "build": "webpack",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/CQCL/tket.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "APACHE 2",
+  "bugs": {
+    "url": "https://github.com/CQCL/tket/issues"
+  },
+  "homepage": "https://github.com/CQCL/tket#readme",
+  "devDependencies": {
+    "css-loader": "^6.7.3",
+    "webpack": "^5.75.0",
+    "webpack-cli": "^5.0.1"
+  }
+}
