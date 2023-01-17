@@ -199,7 +199,18 @@ class LexiRoute {
    */
   void reassign_to_any_ancilla_node(const Node& reassign_node);
 
+  /**
+   * Method for relabelling the qubit wire associated to "assignee"
+   * to "replacement". If "replacement" is already used to label another
+   * reassignable qubit wire, then a new Node is found to update
+   * the qubit wire assoiated with "replacement"
+   *
+   * @param assignee UnitID representing a Qubit wire to be updated
+   * @param replacement UnitID tag to now represent the Qubit wire associated
+   * with assignee
+   */
   void assign_valid_node(const UnitID& assignee, const UnitID& replacement);
+
   // Architecture all new physical operations must respect
   ArchitecturePtr architecture_;
   //   Contains circuit for finding SWAP from and non-routed/routed boundary
