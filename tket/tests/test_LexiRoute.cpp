@@ -2128,7 +2128,7 @@ SCENARIO(
     REQUIRE(final_map.left.find(Qubit(13))->second == Node(14));
     REQUIRE(final_map.left.find(Qubit(14))->second == Node(15));
   }
-  GIVEN("Known failing case from json file.") {
+  GIVEN("Known failing case from json file, 14 qubit architecture.") {
     std::vector<std::pair<unsigned, unsigned>> coupling_map = {
         {1, 0},  {1, 2},   {2, 3},   {4, 3},  {4, 10}, {5, 4},
         {5, 6},  {5, 9},   {6, 8},   {7, 8},  {9, 8},  {9, 10},
@@ -2197,6 +2197,94 @@ SCENARIO(
     REQUIRE(final_map.left.find(Node("unplaced", 7))->second == Node(4));
     REQUIRE(final_map.left.find(Node("unplaced", 8))->second == Node(5));
     REQUIRE(final_map.left.find(Node("unplaced", 9))->second == Node(13));
+  }
+  GIVEN("Twenty qubit Circuit, Twenty Seven Qubit architecture.") {
+    Circuit circuit(20);
+    for (unsigned i = 0; i < 20; i++) {
+      circuit.add_op<unsigned>(OpType::H, {0});
+    }
+    circuit.add_op<unsigned>(OpType::CZ, {0, 1});
+    circuit.add_op<unsigned>(OpType::CZ, {2, 3});
+    circuit.add_op<unsigned>(OpType::CZ, {4, 5});
+    circuit.add_op<unsigned>(OpType::CZ, {6, 7});
+    circuit.add_op<unsigned>(OpType::CZ, {8, 9});
+    circuit.add_op<unsigned>(OpType::CZ, {0, 16});
+    circuit.add_op<unsigned>(OpType::CZ, {1, 18});
+    circuit.add_op<unsigned>(OpType::CZ, {2, 12});
+    circuit.add_op<unsigned>(OpType::CZ, {3, 10});
+    circuit.add_op<unsigned>(OpType::CZ, {4, 19});
+    circuit.add_op<unsigned>(OpType::CZ, {5, 13});
+    circuit.add_op<unsigned>(OpType::CZ, {6, 15});
+    circuit.add_op<unsigned>(OpType::CZ, {7, 11});
+    circuit.add_op<unsigned>(OpType::CZ, {8, 16});
+    circuit.add_op<unsigned>(OpType::CZ, {9, 10});
+    circuit.add_op<unsigned>(OpType::CZ, {11, 15});
+    circuit.add_op<unsigned>(OpType::CZ, {12, 14});
+    circuit.add_op<unsigned>(OpType::CZ, {17, 18});
+    circuit.add_op<unsigned>(OpType::CZ, {13, 14});
+    circuit.add_op<unsigned>(OpType::CZ, {17, 19});
+
+    std::vector<std::pair<unsigned, unsigned>> coupling_map = {
+        {0, 1},   {1, 0},   {1, 2},   {1, 4},   {2, 1},   {2, 3},   {3, 2},
+        {3, 5},   {4, 1},   {4, 7},   {5, 3},   {5, 8},   {6, 7},   {7, 4},
+        {7, 6},   {7, 10},  {8, 5},   {8, 9},   {8, 11},  {9, 8},   {10, 7},
+        {10, 12}, {11, 8},  {11, 14}, {12, 10}, {12, 13}, {12, 15}, {13, 12},
+        {13, 14}, {14, 11}, {14, 13}, {14, 16}, {15, 12}, {15, 18}, {16, 14},
+        {16, 19}, {17, 18}, {18, 15}, {18, 17}, {18, 21}, {19, 16}, {19, 20},
+        {19, 22}, {20, 19}, {21, 18}, {21, 23}, {22, 19}, {22, 25}, {23, 21},
+        {23, 24}, {24, 23}, {24, 25}, {25, 22}, {25, 24}, {25, 26}, {26, 25}};
+    Architecture architecture(coupling_map);
+
+    CompilationUnit cu(circuit);
+    PassPtr r_p = gen_routing_pass(
+        architecture, {std::make_shared<LexiLabellingMethod>(),
+                       std::make_shared<LexiRouteRoutingMethod>()});
+    REQUIRE(r_p->apply(cu));
+
+    auto init_map = cu.get_initial_map_ref();
+    auto final_map = cu.get_final_map_ref();
+
+    REQUIRE(init_map.left.find(Qubit(0))->second == Node(1));
+    REQUIRE(init_map.left.find(Qubit(1))->second == Node(0));
+    REQUIRE(init_map.left.find(Qubit(2))->second == Node(2));
+    REQUIRE(init_map.left.find(Qubit(3))->second == Node(3));
+    REQUIRE(init_map.left.find(Qubit(4))->second == Node(4));
+    REQUIRE(init_map.left.find(Qubit(5))->second == Node(7));
+    REQUIRE(init_map.left.find(Qubit(6))->second == Node(5));
+    REQUIRE(init_map.left.find(Qubit(7))->second == Node(8));
+    REQUIRE(init_map.left.find(Qubit(8))->second == Node(10));
+    REQUIRE(init_map.left.find(Qubit(9))->second == Node(12));
+    REQUIRE(init_map.left.find(Qubit(10))->second == Node(14));
+    REQUIRE(init_map.left.find(Qubit(11))->second == Node(19));
+    REQUIRE(init_map.left.find(Qubit(12))->second == Node(9));
+    REQUIRE(init_map.left.find(Qubit(13))->second == Node(15));
+    REQUIRE(init_map.left.find(Qubit(14))->second == Node(22));
+    REQUIRE(init_map.left.find(Qubit(15))->second == Node(16));
+    REQUIRE(init_map.left.find(Qubit(16))->second == Node(11));
+    REQUIRE(init_map.left.find(Qubit(17))->second == Node(18));
+    REQUIRE(init_map.left.find(Qubit(18))->second == Node(6));
+    REQUIRE(init_map.left.find(Qubit(19))->second == Node(13));
+
+    REQUIRE(final_map.left.find(Qubit(0))->second == Node(0));
+    REQUIRE(final_map.left.find(Qubit(1))->second == Node(4));
+    REQUIRE(final_map.left.find(Qubit(2))->second == Node(3));
+    REQUIRE(final_map.left.find(Qubit(3))->second == Node(5));
+    REQUIRE(final_map.left.find(Qubit(4))->second == Node(6));
+    REQUIRE(final_map.left.find(Qubit(5))->second == Node(18));
+    REQUIRE(final_map.left.find(Qubit(6))->second == Node(9));
+    REQUIRE(final_map.left.find(Qubit(7))->second == Node(22));
+    REQUIRE(final_map.left.find(Qubit(8))->second == Node(1));
+    REQUIRE(final_map.left.find(Qubit(9))->second == Node(16));
+    REQUIRE(final_map.left.find(Qubit(10))->second == Node(8));
+    REQUIRE(final_map.left.find(Qubit(11))->second == Node(19));
+    REQUIRE(final_map.left.find(Qubit(12))->second == Node(11));
+    REQUIRE(final_map.left.find(Qubit(13))->second == Node(15));
+    REQUIRE(final_map.left.find(Qubit(14))->second == Node(13));
+    REQUIRE(final_map.left.find(Qubit(15))->second == Node(14));
+    REQUIRE(final_map.left.find(Qubit(16))->second == Node(2));
+    REQUIRE(final_map.left.find(Qubit(17))->second == Node(10));
+    REQUIRE(final_map.left.find(Qubit(18))->second == Node(7));
+    REQUIRE(final_map.left.find(Qubit(19))->second == Node(12));
   }
 }
 }  // namespace tket
