@@ -37,6 +37,10 @@ class TketProptestsConan(ConanFile):
         cmake.configure()
         cmake.build()
 
+    def imports(self):
+        self.copy("*.dll", dst="bin", src="bin")
+        self.copy("*.dylib*", dst="bin", src="lib")
+
     def package(self):
         executable_filename = "bin/proptest"
         if platform.system() == "Windows":

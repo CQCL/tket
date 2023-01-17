@@ -57,6 +57,7 @@ extensions = [
     "sphinx.ext.autosummary",
     "sphinx.ext.intersphinx",
     "sphinx.ext.mathjax",
+    "sphinx_copybutton",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -84,7 +85,7 @@ language = "en"
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = "pastie"
+pygments_style = "borland"
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -124,7 +125,7 @@ html_css_files = ["custom.css"]
 
 # -- Options for HTMLHelp output ---------------------------------------------
 
-html_logo = "_static/Quantinuum_logo2.png"
+html_logo = "_static/Quantinuum_logo.png"
 # Output file base name for HTML help builder.
 htmlhelp_basename = "pytketdoc"
 

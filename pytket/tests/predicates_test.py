@@ -514,7 +514,7 @@ def test_user_defined_swap_decomp() -> None:
 
 
 def test_pauligraph_synth() -> None:
-    circ = Circuit(4, 4)
+    circ = Circuit(4, 4, name="test")
     pg = PauliExpBox([Pauli.X, Pauli.Z, Pauli.Y, Pauli.I], 0.3)
     circ.add_pauliexpbox(pg, [0, 1, 2, 3])
     circ.measure_all()
@@ -524,6 +524,7 @@ def test_pauligraph_synth() -> None:
     assert pss.apply(cu)
     circ1 = cu.circuit
     assert circ1.depth_by_type(OpType.CX) == 4
+    assert circ1.name == "test"
 
 
 def test_squash_chains() -> None:

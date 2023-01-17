@@ -25,8 +25,8 @@ endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-find_file(CONANBUILDINFO_FILE conanbuildinfo.cmake HINTS ${CMAKE_BINARY_DIR})
-include(${CONANBUILDINFO_FILE})
+find_file(CONANBUILDINFO_FILE_TKET conanbuildinfo.cmake HINTS ${CMAKE_CURRENT_BINARY_DIR})
+include(${CONANBUILDINFO_FILE_TKET})
 conan_basic_setup()
 
 IF (WIN32)

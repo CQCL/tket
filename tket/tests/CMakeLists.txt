@@ -25,8 +25,8 @@ endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-find_file(CONANBUILDINFO_FILE conanbuildinfo.cmake HINTS ${CMAKE_BINARY_DIR})
-include(${CONANBUILDINFO_FILE})
+find_file(CONANBUILDINFO_FILE_TKET_TESTS conanbuildinfo.cmake HINTS ${CMAKE_CURRENT_BINARY_DIR})
+include(${CONANBUILDINFO_FILE_TKET_TESTS})
 conan_basic_setup()
 
 IF (WIN32)
@@ -47,6 +47,8 @@ ENDIF()
 add_definitions(-DALL_LOGS)
 
 set(TKET_TESTS_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+
+add_definitions(-DTEST_CIRCUITS_DIR="${CMAKE_CURRENT_SOURCE_DIR}/test_circuits")
 
 include(tkettestutilsfiles.cmake)
 include(tkettestsfiles.cmake)

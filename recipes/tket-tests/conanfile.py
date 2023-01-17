@@ -58,6 +58,10 @@ class TketTestsConan(ConanFile):
         cmake = self._configure_cmake()
         cmake.build()
 
+    def imports(self):
+        self.copy("*.dll", dst="bin", src="bin")
+        self.copy("*.dylib*", dst="bin", src="lib")
+
     def package(self):
         executable_filename = "bin/test_tket"
         if platform.system() == "Windows":
