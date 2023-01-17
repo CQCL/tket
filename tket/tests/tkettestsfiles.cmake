@@ -30,6 +30,7 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/Graphs/test_DirectedGraph.cpp
     ${TKET_TESTS_DIR}/Graphs/test_ArticulationPoints.cpp
     ${TKET_TESTS_DIR}/Graphs/test_TreeSearch.cpp
+    ${TKET_TESTS_DIR}/Transformations/test_BasicOptimisation.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_ArchitectureMappingEndToEnd.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_BestTsaFixedSwapSequences.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_DistancesFromArchitecture.cpp

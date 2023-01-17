@@ -30,7 +30,7 @@ namespace Transforms {
 
 static bool fixup_angles(
     Expr &angle_p1, Expr &angle_q, Expr &angle_p2, bool reversed = false);
-static bool redundancy_removal(Circuit &circ);
+static bool redundancy_removal(Circuit &circuit);
 static Rotation merge_rotations(
     OpType r, const std::vector<Gate_ptr> &chain,
     std::vector<Gate_ptr>::const_iterator &iter);

@@ -35,153 +35,180 @@ namespace tket {
 
 namespace Transforms {
 
-static bool redundancy_removal(Circuit &circ);
-static bool remove_redundancy(
-    Circuit &circ, const Vertex &vert, VertexSet &bin,
-    std::set<IVertex> &new_affected_verts, IndexMap &im);
+struct VertexRemovalInfo{
+  VertexSet removedVertices;
+  VertexVec predecessors;
+  std::optional<double> phaseToAdd = {};
+};
+
+static bool redundancy_removal(Circuit &circuit);
+static std::optional<VertexRemovalInfo> remove_redundancy(
+    Circuit &circuit, const Vertex &vert);
+static std::set<IVertex> get_all_indexed_vertices(Circuit &circuit);
 static bool commute_singles_to_front(Circuit &circ);
 
 Transform remove_redundancies() { return Transform(redundancy_removal); }
+
 
 // this method annihilates all primitives next to each other (accounting for
 // previous annihilations)
 // also removes redundant non-classically controlled Z basis gates before a z
 // basis measurement so that eg. -H-X-X-H- always annihilates to -----
-static bool redundancy_removal(Circuit &circ) {
-  bool success = false;
-  bool found_redundancy = true;
-  IndexMap im = circ.index_map();
-  std::set<IVertex> old_affected_verts;
-  BGL_FORALL_VERTICES(v, circ.dag, DAG) {
-    old_affected_verts.insert({im.at(v), v});
-  }
+static bool redundancy_removal(Circuit &circuit) {
+  const auto startingNumberOfVertices = circuit.n_vertices();
+  auto verticesToCheckForRemoval = circuit.vertices_in_order();
   VertexSet bin;
-  while (found_redundancy) {
+
+  while (true) {
     std::set<IVertex> new_affected_verts;
     bool removed = false;
-    for (const IVertex &p : old_affected_verts) {
-      removed |= remove_redundancy(circ, p.second, bin, new_affected_verts, im);
+    for (const auto&vertex: verticesToCheckForRemoval) {
+      if (bin.contains(vertex)) continue; // vertex could have already been removed as a successor to a vertex that has already been checked
+      auto removalInfo = remove_redundancy(circuit, vertex);
+      if(removalInfo.value_or().phaseToAdd)
     }
-    found_redundancy = removed;
-    success |= removed;
-    old_affected_verts = new_affected_verts;
+    verticesToCheckForRemoval = new_affected_verts;
+    if (!removed) break;
   }
-  circ.remove_vertices(
+  circuit.remove_vertices(
       bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
-  return success;
+  return circuit.n_vertices() != startingNumberOfVertices;
+}
+
+static IVertex get_indexed_vertex(const Circuit &circuit, const Vertex& vertex) {
+  return {circuit.index_map().at(vertex), vertex};
+}
+
+static std::set<IVertex> get_all_indexed_vertices(Circuit &circuit) {
+  std::set<IVertex> indexed_vertex_set;
+  BGL_FORALL_VERTICES(v, circuit.dag, DAG) {
+    indexed_vertex_set.insert(get_indexed_vertex(circuit,v));
+  }
+  return indexed_vertex_set;
+}
+
+static std::optional<VertexRemovalInfo> check_single_vertex_is_identity(const Circuit &circuit, const Vertex &vertex) {
+  auto vertex_operator = circuit.get_Op_ptr_from_Vertex(vertex);
+  if(auto phase = vertex_operator->is_identity()) return std::make_optional(VertexRemovalInfo{{vertex}, circuit.get_predecessors(vertex), phase});
+  return std::nullopt;
+}
+
+static bool vertex_is_a_measurement(const Circuit &circuit, const Vertex &vertex){
+  return circuit.get_OpType_from_Vertex(vertex) == OpType::Measure;
+}
+
+static bool vertex_is_succeeded_only_by_z_basis_measurements(const Circuit &circuit, const Vertex &vertex) {
+
+  // If vertex has no classical out edges, no need to continue
+  if (circuit.n_out_edges_of_type(vertex, EdgeType::Classical) != 0) return false;
+
+  auto successors = circuit.get_successors(vertex);
+  std::vector<port_t> ports(successors.size());
+  std::iota(ports.begin(), ports.end(), 0);
+
+  return std::all_of(ports.cbegin(), ports.cend(), [&](port_t port) {
+    return (
+        vertex_is_a_measurement(circuit, successors[port]) &&
+        circuit.commutes_with_basis(vertex, Pauli::Z, PortType::Source, port));
+  });
+}
+
+static std::optional<VertexRemovalInfo> get_removal_info_single_vertex(const Circuit &circuit, const Vertex &vertex){
+
+  if(auto removalInfo = check_single_vertex_is_identity(circuit, vertex)) return removalInfo;
+  if(vertex_is_succeeded_only_by_z_basis_measurements(circuit, vertex)) return VertexRemovalInfo{{vertex}, {}};
+  return std::nullopt;
 }
 
 // called by the previous method. This should generally not be called
 // independently
-static bool remove_redundancy(
-    Circuit &circ, const Vertex &vert, VertexSet &bin,
-    std::set<IVertex> &new_affected_verts, IndexMap &im) {
-  const Op_ptr op = circ.get_Op_ptr_from_Vertex(vert);
+static std::optional<VertexRemovalInfo> remove_redundancy(
+    Circuit &circuit, const Vertex &vert) {
+
+  const Op_ptr op = circuit.get_Op_ptr_from_Vertex(vert);
   const OpDesc desc = op->get_desc();
-  if (!desc.is_gate()) return false;
+  if (!desc.is_gate()) return std::nullopt;
 
-  if (bin.contains(vert)) {
-    return false;  // we have already removed it
-  }
+  if (auto removalInfo = get_removal_info_single_vertex(circuit, vert)) return removalInfo;
 
-  auto remove_single_vertex = [&bin, &circ, &new_affected_verts,
-                               &im](const Vertex &v_remove) {
+  auto remove_single_vertex = [&bin, &circuit,
+                               &new_affected_verts](const Vertex &v_remove) {
     bin.insert(v_remove);
-    for (const Vertex &l : circ.get_predecessors(v_remove)) {
-      new_affected_verts.insert({im.at(l), l});
+    for (const Vertex &l : circuit.get_predecessors(v_remove)) {
+      new_affected_verts.insert(get_indexed_vertex(circuit,l));
     }
-    circ.remove_vertex(
+    circuit.remove_vertex(
         v_remove, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
   };
   // remove identities from circuit
-  std::optional<double> a = op->is_identity();
-  if (a) {
+  auto phase = op->is_identity();
+  if (phase) {
     remove_single_vertex(vert);
-    circ.add_phase(a.value());
+    circuit.add_phase(phase.value());
     return true;
   }
-  VertexVec kids = circ.get_successors(vert);
 
-  // if op is immediately followed by a z basis measurement on all qubits,
-  // remove
-  if (circ.n_out_edges_of_type(vert, EdgeType::Classical) == 0) {
-    bool z_followed_by_measures = true;
-    for (port_t port = 0; port < kids.size() && z_followed_by_measures;
-         port++) {
-      if (circ.get_OpType_from_Vertex(kids[port]) == OpType::Measure) {
-        z_followed_by_measures &=
-            circ.commutes_with_basis(vert, Pauli::Z, PortType::Source, port);
-      } else {
-        z_followed_by_measures = false;
-      }
-    }
-    if (z_followed_by_measures) {
-      remove_single_vertex(vert);
-      return true;
-    }
-  }
 
   // check that both the vertex and its successor have each other and only each
   // other
-  if ((kids.size() == 1) && (circ.get_predecessors(kids[0]).size() == 1)) {
+  if ((kids.size() == 1) && (circuit.get_predecessors(kids[0]).size() == 1)) {
     // check that the ports match up between vertices
     Vertex b = kids[0];
-    EdgeVec ins = circ.get_in_edges(b);
+    EdgeVec ins = circuit.get_in_edges(b);
     for (const Edge &in : ins) {
-      if (circ.get_source_port(in) != circ.get_target_port(in)) return false;
+      if (circuit.get_source_port(in) != circuit.get_target_port(in)) return false;
     }
 
     // check that the classical edges match up correctly
-    if (circ.n_in_edges_of_type(vert, EdgeType::Boolean) != 0) return false;
+    if (circuit.n_in_edges_of_type(vert, EdgeType::Boolean) != 0) return false;
 
-    const Op_ptr b_op = circ.get_Op_ptr_from_Vertex(b);
+    const Op_ptr b_op = circuit.get_Op_ptr_from_Vertex(b);
     const OpDesc b_desc = b_op->get_desc();
 
-    if (!b_desc.is_oneway()) {
-      // if A = B.dagger(), AB = I
-      // This method cannot detect matches between rotation gates.
-      // Rotation gates are covered by the rotation gate combiner, everything
-      // else in this.
-      if (*b_op->dagger() == *op) {
-        bin.insert(vert);
+    if (b_desc.is_oneway()) return false;
+    // if A = B.dagger(), AB = I
+    // This method cannot detect matches between rotation gates.
+    // Rotation gates are covered by the rotation gate combiner, everything
+    // else in this.
+    if (*b_op->dagger() == *op) {
+      bin.insert(vert);
+      bin.insert(b);
+      VertexVec last_verts = circuit.get_predecessors(vert);
+      for (const Vertex &l1 : last_verts) {
+        new_affected_verts.insert({circuit.index_map().at(l1), l1});
+      }
+      VertexList to_detach{vert, b};
+      // detached from circuit but not removed from graph
+      circuit.remove_vertices(
+          to_detach, Circuit::GraphRewiring::Yes,
+          Circuit::VertexDeletion::No);
+      return true;
+    } else if (desc.is_rotation()) {
+      // combine two rotation gates together, then if the combined
+      // operation is the identity up to phase, remove from circuit
+      if (b_desc.type() == desc.type()) {
+        Expr expr1 = op->get_params()[0];
+        Expr expr2 = b_op->get_params()[0];
+        VertexVec last_verts = circuit.get_predecessors(vert);
+        for (const Vertex &l2 : last_verts) {
+          new_affected_verts.insert({circuit.index_map().at(l2), l2});
+        }
+        circuit.remove_vertex(
+            b, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
         bin.insert(b);
-        VertexVec last_verts = circ.get_predecessors(vert);
-        for (const Vertex &l : last_verts) {
-          new_affected_verts.insert({im.at(l), l});
+        std::vector<Expr> params_new = {expr1 + expr2};
+        Op_ptr op_new = get_op_ptr(desc.type(), params_new, ins.size());
+        std::optional<double> a1 = op_new->is_identity();
+        if (a1) {
+          bin.insert(vert);
+          circuit.remove_vertex(
+              vert, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
+          circuit.add_phase(a1.value());
+        } else {
+          new_affected_verts.insert({circuit.index_map()[vert], vert});
+          circuit.dag[vert].op = op_new;
         }
-        VertexList to_detach{vert, b};
-        // detached from circuit but not removed from graph
-        circ.remove_vertices(
-            to_detach, Circuit::GraphRewiring::Yes,
-            Circuit::VertexDeletion::No);
         return true;
-      } else if (desc.is_rotation()) {
-        // combine two rotation gates together, then if the combined
-        // operation is the identity up to phase, remove from circuit
-        if (b_desc.type() == desc.type()) {
-          Expr expr1 = op->get_params()[0];
-          Expr expr2 = b_op->get_params()[0];
-          VertexVec last_verts = circ.get_predecessors(vert);
-          for (const Vertex &l : last_verts) {
-            new_affected_verts.insert({im.at(l), l});
-          }
-          circ.remove_vertex(
-              b, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
-          bin.insert(b);
-          std::vector<Expr> params_new = {expr1 + expr2};
-          Op_ptr op_new = get_op_ptr(desc.type(), params_new, ins.size());
-          std::optional<double> a = op_new->is_identity();
-          if (a) {
-            bin.insert(vert);
-            circ.remove_vertex(
-                vert, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
-            circ.add_phase(a.value());
-          } else {
-            new_affected_verts.insert({im[vert], vert});
-            circ.dag[vert].op = op_new;
-          }
-          return true;
-        }
       }
     }
   }
