@@ -22,15 +22,35 @@ import uuid
 import webbrowser
 from typing import Dict, Optional, Union, cast
 
-import jinja2
+from jinja2 import nodes, FileSystemLoader, Environment
+from jinja2.ext import Extension
+from jinja2.utils import markupsafe
 
 from pytket.circuit import Circuit  # type: ignore
 
 # Set up jinja to access our templates
 dirname = os.path.dirname(__file__)
 
-loader = jinja2.FileSystemLoader(searchpath=dirname)
-env = jinja2.Environment(loader=loader)
+
+# js scripts to be loaded must not be parsed as template files.
+class IncludeRawExtension(Extension):
+    tags = {"include_raw"}
+
+    def parse(self, parser):
+        lineno = parser.stream.expect("name:include_raw").lineno
+        template = parser.parse_expression()
+        result = self.call_method("_render", [template], lineno=lineno)
+        return nodes.Output([result], lineno=lineno)
+
+    def _render(self, filename):
+        return markupsafe.Markup(self.environment.loader.get_source(self.environment, filename)[0])
+
+
+loader = FileSystemLoader(searchpath=dirname)
+env = Environment(
+    loader=loader,
+    extensions=[IncludeRawExtension]
+)
 
 RenderCircuit = Union[Dict[str, Union[str, float, dict]], Circuit]
 
