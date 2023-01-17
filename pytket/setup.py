@@ -26,6 +26,7 @@ from shutil import which
 import setuptools  # type: ignore
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext  # type: ignore
+from setuptools.command.build_py import build_py
 from wheel.bdist_wheel import bdist_wheel as _bdist_wheel
 
 
@@ -232,6 +233,41 @@ class bdist_wheel(_bdist_wheel):
             self.plat_name_supplied = True
 
 
+class NPMBuild(build_py):
+    def get_source_files(self):
+        base_files = build_py.get_source_files(self)
+        base_files += [
+            "pytket/circuit/display/src/index.js",
+            "pytket/circuit/display/webpack.config.js",
+            "pytket/circuit/display/package.json",
+            "pytket/circuit/display/package-lock.json",
+        ]
+        return base_files
+
+    def get_outputs(self, include_bytecode: int = ...):
+        base_outputs = build_py.get_outputs(self)
+        base_outputs += [f"{self.build_lib}/circuit/display/dist/main.js"]
+        return base_outputs
+
+    def run(self):
+        # Build the circuit renderer app for (offline) inclusion within pytket.
+        try:
+            out = subprocess.check_output(
+                "npm --version", shell=True  # Needed for windows?
+            )
+        except OSError:
+            raise RuntimeError("NPM must be installed to build the circuit renderer.")
+
+        print("NPM is installed!")
+        circuit_display_dir = os.path.join(
+            os.path.dirname(__file__), "pytket/circuit/display"
+        )
+        subprocess.run("npm ci", cwd=circuit_display_dir, check=True, shell=True)
+        subprocess.run("npm run build", cwd=circuit_display_dir, check=True, shell=True)
+
+        build_py.run(self)
+
+
 setup(
     name="pytket",
     author="TKET development team",
@@ -263,7 +299,11 @@ setup(
     ext_modules=[
         CMakeExtension("pytket._tket.{}".format(binder)) for binder in binders
     ],
-    cmdclass={"build_ext": CMakeBuild, "bdist_wheel": bdist_wheel},
+    cmdclass={
+        "build_ext": CMakeBuild,
+        "bdist_wheel": bdist_wheel,
+        "build_py": NPMBuild,
+    },
     classifiers=[
         "Environment :: Console",
         "Programming Language :: Python :: 3.8",

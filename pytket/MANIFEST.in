@@ -1,1 +1,2 @@
 include pytket/circuit/display/circuit.html
+include pytket/circuit/display/dist/main.js

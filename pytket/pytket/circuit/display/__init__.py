@@ -43,14 +43,13 @@ class IncludeRawExtension(Extension):
         return nodes.Output([result], lineno=lineno)
 
     def _render(self, filename):
-        return markupsafe.Markup(self.environment.loader.get_source(self.environment, filename)[0])
+        return markupsafe.Markup(
+            self.environment.loader.get_source(self.environment, filename)[0]
+        )
 
 
 loader = FileSystemLoader(searchpath=dirname)
-env = Environment(
-    loader=loader,
-    extensions=[IncludeRawExtension]
-)
+env = Environment(loader=loader, extensions=[IncludeRawExtension])
 
 RenderCircuit = Union[Dict[str, Union[str, float, dict]], Circuit]
 
