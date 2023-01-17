@@ -27,7 +27,8 @@ class Circuit;
 namespace pg {
 class PauliGraph;
 class PGOp;
-typedef std::shared_ptr<const PGOp> PGOp_ptr;
+// typedef std::shared_ptr<const PGOp> PGOp_ptr;
+typedef std::shared_ptr<PGOp> PGOp_ptr;
 }
 class Op;
 typedef std::shared_ptr<const Op> Op_ptr;
