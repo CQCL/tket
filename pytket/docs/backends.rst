@@ -3,6 +3,8 @@ pytket.backends
 .. automodule:: pytket.backends
     :members: backend
 
+pytket.backends.backend
+~~~~~~~~~~~~~~~~~~~~~~~
 .. autoclass:: Backend
    :special-members: __init__
    :members:
