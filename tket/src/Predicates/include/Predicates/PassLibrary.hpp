@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -112,5 +112,15 @@ const PassPtr &ZZPhaseToRz();
  * @return compilation pass to perform this transformation
  */
 const PassPtr &CnXPairwiseDecomposition();
+
+/**
+ * @brief Remove any implicit qubit permutation by appending SWAP gates.
+ *
+ * Note that if the circuit contains measurements, they may become mid-circuit
+ * measurements in the transformed circuit.
+ *
+ * @return compilation pass to perform this transformation
+ */
+const PassPtr &RemoveImplicitQubitPermutation();
 
 }  // namespace tket

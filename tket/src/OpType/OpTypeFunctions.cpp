@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -163,6 +163,9 @@ bool is_box_type(OpType optype) {
       OpType::CliffBox,
       OpType::PhasePolyBox,
       OpType::QControlBox,
+      OpType::MultiplexorBox,
+      OpType::MultiplexedRotationBox,
+      OpType::MultiplexedU2Box,
       OpType::ClassicalExpBox,
       OpType::ProjectorAssertionBox,
       OpType::StabiliserAssertionBox,

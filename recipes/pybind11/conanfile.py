@@ -1,4 +1,4 @@
-# Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,7 +19,7 @@ import sys
 
 class PyBind11Conan(ConanFile):
     name = "pybind11"
-    version = "2.10.1"
+    version = "2.10.3"
     description = "Seamless operability between C++11 and Python"
     topics = "conan", "pybind11", "python", "binding"
     homepage = "https://github.com/pybind/pybind11"

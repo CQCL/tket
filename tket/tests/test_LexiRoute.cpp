@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,12 +13,14 @@
 // limitations under the License.
 
 #include <catch2/catch_test_macros.hpp>
+#include <filesystem>
 #include <fstream>
 
 #include "Mapping/LexiLabelling.hpp"
 #include "Mapping/LexiRoute.hpp"
 #include "Mapping/MappingManager.hpp"
 #include "Mapping/Verification.hpp"
+#include "Ops/ClassicalOps.hpp"
 #include "Placement/Placement.hpp"
 #include "Predicates/CompilationUnit.hpp"
 #include "Predicates/CompilerPass.hpp"
@@ -1608,7 +1610,9 @@ SCENARIO("Lexi relabel with partially mapped circuit") {
 }
 
 SCENARIO("Test failing case") {
-  std::ifstream circuit_file("lexiroute_circuit.json");
+  auto lexiroute_circuit_path =
+      std::filesystem::path(TEST_CIRCUITS_DIR).append("lexiroute_circuit.json");
+  std::ifstream circuit_file(lexiroute_circuit_path);
   nlohmann::json j = nlohmann::json::parse(circuit_file);
   auto c = j.get<Circuit>();
   Architecture arc({{0, 1},   {1, 2},   {2, 3},   {3, 5},   {4, 1},   {4, 7},
@@ -1618,6 +1622,80 @@ SCENARIO("Test failing case") {
                     {22, 25}, {23, 24}, {24, 25}, {25, 26}});
 
   CompilationUnit cu(c);
+  PassPtr r_p = gen_routing_pass(
+      arc, {std::make_shared<LexiLabellingMethod>(),
+            std::make_shared<LexiRouteRoutingMethod>()});
+  REQUIRE(r_p->apply(cu));
+}
+SCENARIO("Test RangePredicate operations with LexiRoute.") {
+  std::vector<uint32_t> and_table = {0, 1, 2, 7, 0, 1, 2, 7};
+  std::shared_ptr<ClassicalTransformOp> and_ttop =
+      std::make_shared<ClassicalTransformOp>(3, and_table);
+  for (unsigned i = 0; i < 2; i++) {
+    for (unsigned j = 0; j < 2; j++) {
+      for (unsigned k = 0; k < 2; k++) {
+        std::vector<bool> y = and_ttop->eval({(bool)i, (bool)j, (bool)k});
+        REQUIRE(y[0] == i);
+        REQUIRE(y[1] == j);
+        REQUIRE(y[2] == (i & j));
+      }
+    }
+  }
+
+  uint32_t a = 2, b = 6;
+  std::shared_ptr<RangePredicateOp> rpop =
+      std::make_shared<RangePredicateOp>(3, a, b);
+  for (uint32_t x = 0; x < 8; x++) {
+    REQUIRE(
+        rpop->eval(
+            {(bool)(x & 1), (bool)((x >> 1) & 1), (bool)((x >> 2) & 1)})[0] ==
+        (x >= a && x <= b));
+  }
+
+  Circuit circ(3, 4);
+  circ.add_op<unsigned>(OpType::H, {0});
+  circ.add_op<unsigned>(and_ttop, {0, 1, 2});
+  circ.add_op<unsigned>(and_ttop, {1, 2, 3});
+  circ.add_op<unsigned>(rpop, {0, 1, 2, 3});
+  circ.add_op<unsigned>(AndOp(), {2, 3, 0});
+  circ.add_op<unsigned>(OrOp(), {0, 1, 2});
+  circ.add_op<unsigned>(NotOp(), {2, 3});
+  circ.add_op<unsigned>(OpType::CX, {0, 1});
+  circ.add_op<unsigned>(ClassicalX(), {1});
+  circ.add_conditional_gate<unsigned>(OpType::CZ, {}, {0, 1}, {0}, 1);
+  circ.add_op<unsigned>(ClassicalCX(), {0, 1});
+  circ.add_op<unsigned>(AndWithOp(), {2, 3});
+  circ.add_conditional_gate<unsigned>(OpType::CX, {}, {1, 0}, {0, 1, 2}, 1);
+  circ.add_op<unsigned>(OrWithOp(), {1, 0});
+  circ.add_op<unsigned>(OpType::CX, {2, 0});
+  circ.add_op<unsigned>(OpType::CX, {2, 1});
+  circ.add_op<unsigned>(OpType::H, {0});
+  circ.add_op<unsigned>(OpType::H, {1});
+  circ.add_op<unsigned>(OpType::H, {2});
+  circ.add_op<unsigned>(AndOp(), {2, 3, 0});
+  circ.add_op<unsigned>(OrOp(), {0, 1, 2});
+  circ.add_op<unsigned>(NotOp(), {2, 3});
+  circ.add_op<unsigned>(OpType::CX, {0, 1});
+  circ.add_op<unsigned>(ClassicalX(), {1});
+  circ.add_conditional_gate<unsigned>(OpType::CZ, {}, {0, 1}, {0}, 1);
+  circ.add_op<unsigned>(ClassicalCX(), {0, 1});
+  circ.add_op<unsigned>(AndWithOp(), {2, 3});
+  circ.add_conditional_gate<unsigned>(OpType::CX, {}, {1, 0}, {0, 1, 2}, 1);
+  circ.add_conditional_gate<unsigned>(OpType::CX, {}, {1, 0}, {0, 1}, 1);
+  circ.add_conditional_gate<unsigned>(OpType::CX, {}, {1, 0}, {0}, 1);
+  circ.add_conditional_gate<unsigned>(OpType::CZ, {}, {1, 2}, {0, 1, 2}, 1);
+  circ.add_conditional_gate<unsigned>(OpType::CZ, {}, {1, 2}, {0, 1}, 1);
+  circ.add_conditional_gate<unsigned>(OpType::CZ, {}, {1, 2}, {0}, 1);
+  circ.add_op<unsigned>(OpType::CX, {2, 0});
+  circ.add_op<unsigned>(OpType::CX, {2, 1});
+  circ.add_op<unsigned>(OpType::H, {0});
+  circ.add_op<unsigned>(OpType::H, {1});
+  circ.add_op<unsigned>(OpType::H, {2});
+  circ.add_op<unsigned>(AndOp(), {2, 3, 0});
+  circ.add_op<unsigned>(OrOp(), {0, 1, 2});
+  circ.add_op<unsigned>(NotOp(), {2, 3});
+  RingArch arc(3);
+  CompilationUnit cu(circ);
   PassPtr r_p = gen_routing_pass(
       arc, {std::make_shared<LexiLabellingMethod>(),
             std::make_shared<LexiRouteRoutingMethod>()});

@@ -1,4 +1,4 @@
-# Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ class TketTestsConan(ConanFile):
     default_options = {"with_coverage": False, "full": False, "long": False}
     generators = "cmake"
     exports_sources = "../../tket/tests/*"
-    requires = ("tket/1.0.35@tket/stable", "catch2/3.2.1")
+    requires = ("tket/1.0.46@tket/stable", "catch2/3.2.1")
 
     _cmake = None
 
@@ -57,6 +57,10 @@ class TketTestsConan(ConanFile):
     def build(self):
         cmake = self._configure_cmake()
         cmake.build()
+
+    def imports(self):
+        self.copy("*.dll", dst="bin", src="bin")
+        self.copy("*.dylib*", dst="bin", src="lib")
 
     def package(self):
         executable_filename = "bin/test_tket"

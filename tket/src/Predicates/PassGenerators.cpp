@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -25,6 +25,7 @@
 #include "Mapping/LexiLabelling.hpp"
 #include "Mapping/LexiRoute.hpp"
 #include "Mapping/MappingManager.hpp"
+#include "OpType/OpType.hpp"
 #include "Placement/Placement.hpp"
 #include "Predicates/CompilationUnit.hpp"
 #include "Predicates/CompilerPass.hpp"
@@ -693,7 +694,6 @@ PassPtr gen_synthesise_pauli_graph(
   Transform t = Transforms::synthesise_pauli_graph(strat, cx_config);
   PredicatePtr ccontrol_pred = std::make_shared<NoClassicalControlPredicate>();
   PredicatePtr mid_pred = std::make_shared<NoMidMeasurePredicate>();
-  PredicatePtr wire_pred = std::make_shared<NoWireSwapsPredicate>();
   OpTypeSet ins = {OpType::Z,       OpType::X,           OpType::Y,
                    OpType::S,       OpType::Sdg,         OpType::V,
                    OpType::Vdg,     OpType::H,           OpType::CX,
@@ -701,12 +701,12 @@ PassPtr gen_synthesise_pauli_graph(
                    OpType::Rz,      OpType::Rx,          OpType::Ry,
                    OpType::T,       OpType::Tdg,         OpType::ZZMax,
                    OpType::ZZPhase, OpType::PhaseGadget, OpType::XXPhase,
-                   OpType::YYPhase, OpType::PauliExpBox, OpType::Measure};
+                   OpType::YYPhase, OpType::PauliExpBox, OpType::Measure,
+                   OpType::PhasedX};
   PredicatePtr in_gates = std::make_shared<GateSetPredicate>(ins);
   PredicatePtrMap precons{
       CompilationUnit::make_type_pair(ccontrol_pred),
       CompilationUnit::make_type_pair(mid_pred),
-      CompilationUnit::make_type_pair(wire_pred),
       CompilationUnit::make_type_pair(in_gates)};
   PredicateClassGuarantees g_postcons = {
       {typeid(ConnectivityPredicate), Guarantee::Clear},

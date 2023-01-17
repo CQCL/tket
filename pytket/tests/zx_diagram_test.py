@@ -1,4 +1,4 @@
-# Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -31,13 +31,18 @@ from pytket.zx import (  # type: ignore
     DirectedGen,
     ZXBox,
 )
-from zx_tensor import (  # type: ignore
-    unitary_from_quantum_diagram,
-    fix_inputs_to_binary_state,
-    tensor_from_quantum_diagram,
-    unitary_from_classical_diagram,
-    density_matrix_from_cptp_diagram,
-)
+
+have_quimb: bool = True
+try:
+    from zx_tensor import (  # type: ignore
+        unitary_from_quantum_diagram,
+        fix_inputs_to_binary_state,
+        tensor_from_quantum_diagram,
+        unitary_from_classical_diagram,
+        density_matrix_from_cptp_diagram,
+    )
+except ModuleNotFoundError:
+    have_quimb = False
 
 
 def test_generator_creation() -> None:
@@ -130,6 +135,7 @@ def test_diagram_creation() -> None:
     diag.check_validity()
 
 
+@pytest.mark.skipif(not have_quimb, reason="quimb not installed")
 def test_known_tensors() -> None:
     # A single basic edge
     diag = ZXDiagram(1, 1, 0, 0)
@@ -333,6 +339,7 @@ def test_known_tensors() -> None:
     assert np.allclose(evaluated, np.exp(1j * 0.3 * np.pi))
 
 
+@pytest.mark.skipif(not have_quimb, reason="quimb not installed")
 def test_classical_and_cptp() -> None:
     # A single classical spider in a classical diagram
     diag = ZXDiagram(0, 0, 1, 2)
@@ -439,6 +446,7 @@ def test_classical_and_cptp() -> None:
     assert np.allclose(simulated, np.asarray([[0, 0], [0, 1]]))
 
 
+@pytest.mark.skipif(not have_quimb, reason="quimb not installed")
 def test_graph_like_reduction() -> None:
     # Diagram on https://arxiv.org/pdf/1902.03178.pdf, Figure 2
     # We have added an extra input/output pair for testing purposes
@@ -500,6 +508,7 @@ def test_graph_like_reduction() -> None:
     assert np.allclose(original, final)
 
 
+@pytest.mark.skipif(not have_quimb, reason="quimb not installed")
 def test_spider_fusion() -> None:
     diag = ZXDiagram(2, 1, 0, 0)
     ins = diag.get_boundary(ZXType.Input)
@@ -560,6 +569,9 @@ def test_spider_fusion() -> None:
     diag.check_validity()
 
 
+@pytest.mark.skipif(not have_quimb, reason="quimb not installed")(
+    not have_quimb, reason="quimb not installed"
+)
 def test_simplification() -> None:
     # This diagram follows from section A of https://arxiv.org/pdf/1902.03178.pdf
     diag = ZXDiagram(4, 4, 0, 0)
@@ -639,6 +651,7 @@ def test_simplification() -> None:
     assert np.allclose(original, final)
 
 
+@pytest.mark.skipif(not have_quimb, reason="quimb not installed")
 def test_converting_from_circuit() -> None:
     c = Circuit(4)
     c.CZ(0, 1)
@@ -671,6 +684,7 @@ def test_constructors() -> None:
     assert zx_box.diagram.scalar == diag.scalar
 
 
+@pytest.mark.skipif(not have_quimb, reason="quimb not installed")
 def test_XY_extraction() -> None:
     # Identical to the diagram in test_ZXExtraction.cpp
     diag = ZXDiagram(3, 3, 0, 0)
@@ -714,6 +728,7 @@ def test_XY_extraction() -> None:
     assert compare_unitaries(diag_u, circ_u)
 
 
+@pytest.mark.skipif(not have_quimb, reason="quimb not installed")
 def test_XY_YZ_extraction() -> None:
     # Almost identical to the diagram in test_ZXExtraction.cpp
     # Gadgets g3 and g8 removed as they made tensor evaluation real slow

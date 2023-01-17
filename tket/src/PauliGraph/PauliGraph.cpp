@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,6 +19,7 @@
 #include "Gate/Gate.hpp"
 #include "OpType/OpType.hpp"
 #include "Utils/GraphHeaders.hpp"
+#include "Utils/PauliStrings.hpp"
 
 namespace tket {
 
@@ -160,6 +161,39 @@ void PauliGraph::apply_gate_at_end(
       }
       break;
     }
+    case OpType::PhasedX: {
+      Expr alpha = gate.get_params().at(0);
+      Expr beta = gate.get_params().at(1);
+      QubitPauliTensor zpauli = cliff_.get_zpauli(qbs.at(0));
+      QubitPauliTensor xpauli = cliff_.get_xpauli(qbs.at(0));
+      std::optional<unsigned> cliff_alpha = equiv_Clifford(alpha);
+      std::optional<unsigned> cliff_beta = equiv_Clifford(beta);
+      // Rz(-b)
+      if (cliff_beta) {
+        for (unsigned i = 0; i < cliff_beta.value(); i++) {
+          cliff_.apply_gate_at_end(OpType::Sdg, qbs);
+        }
+      } else {
+        apply_pauli_gadget_at_end(zpauli, -beta);
+      }
+      // Rx(a)
+      if (cliff_alpha) {
+        for (unsigned i = 0; i < cliff_alpha.value(); i++) {
+          cliff_.apply_gate_at_end(OpType::V, qbs);
+        }
+      } else {
+        apply_pauli_gadget_at_end(xpauli, alpha);
+      }
+      // Rz(b)
+      if (cliff_beta) {
+        for (unsigned i = 0; i < cliff_beta.value(); i++) {
+          cliff_.apply_gate_at_end(OpType::S, qbs);
+        }
+      } else {
+        apply_pauli_gadget_at_end(zpauli, beta);
+      }
+      break;
+    }
     case OpType::T: {
       QubitPauliTensor pauli = cliff_.get_zpauli(qbs.at(0));
       apply_pauli_gadget_at_end(pauli, 0.25);
@@ -167,13 +201,16 @@ void PauliGraph::apply_gate_at_end(
     }
     case OpType::Tdg: {
       QubitPauliTensor pauli = cliff_.get_zpauli(qbs.at(0));
-      apply_pauli_gadget_at_end(pauli, 0.25);
+      apply_pauli_gadget_at_end(pauli, -0.25);
       break;
     }
     case OpType::ZZMax: {
-      cliff_.apply_gate_at_end(OpType::H, {qbs.at(1)});
+      cliff_.apply_gate_at_end(OpType::S, {qbs.at(0)});
+      cliff_.apply_gate_at_end(OpType::Z, {qbs.at(1)});
+      cliff_.apply_gate_at_end(OpType::S, {qbs.at(1)});
+      cliff_.apply_gate_at_end(OpType::V, {qbs.at(1)});
+      cliff_.apply_gate_at_end(OpType::S, {qbs.at(1)});
       cliff_.apply_gate_at_end(OpType::CX, qbs);
-      cliff_.apply_gate_at_end(OpType::Sdg, {qbs.at(0)});
       cliff_.apply_gate_at_end(OpType::S, {qbs.at(1)});
       cliff_.apply_gate_at_end(OpType::V, {qbs.at(1)});
       break;
@@ -228,15 +265,15 @@ void PauliGraph::apply_gate_at_end(
         if (cliff_angle.value() != 0) {
           const Qubit &arg0 = qbs.at(0);
           const Qubit &arg1 = qbs.at(1);
-          cliff_.apply_gate_at_end(OpType::V, {arg0});
-          cliff_.apply_gate_at_end(OpType::V, {arg1});
+          cliff_.apply_gate_at_end(OpType::S, {arg0});
+          cliff_.apply_gate_at_end(OpType::S, {arg1});
           cliff_.apply_gate_at_end(OpType::CX, {arg1, arg0});
           for (unsigned i = 0; i < cliff_angle.value(); i++) {
             cliff_.apply_gate_at_end(OpType::V, {arg1});
           }
           cliff_.apply_gate_at_end(OpType::CX, {arg1, arg0});
-          cliff_.apply_gate_at_end(OpType::Vdg, {arg0});
-          cliff_.apply_gate_at_end(OpType::Vdg, {arg1});
+          cliff_.apply_gate_at_end(OpType::Sdg, {arg0});
+          cliff_.apply_gate_at_end(OpType::Sdg, {arg1});
         }
       } else {
         QubitPauliTensor pauli =

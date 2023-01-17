@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -53,7 +53,8 @@ using namespace tket;
   DO(GlobalisePhasedX)                    \
   DO(NormaliseTK2)                        \
   DO(SquashRzPhasedX)                     \
-  DO(CnXPairwiseDecomposition)
+  DO(CnXPairwiseDecomposition)            \
+  DO(RemoveImplicitQubitPermutation)
 
 static const std::map<PassPtr, std::string> &pass_name() {
   // Map from PassPtr to readable name

@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -355,11 +355,11 @@ void CliffTableau::apply_gate_at_end(
       break;
     }
     case OpType::CY: {
-      apply_V_at_end(qbs.at(1));
-      apply_V_at_end(qbs.at(1));
-      apply_V_at_end(qbs.at(1));
+      apply_S_at_end(qbs.at(1));
+      apply_S_at_end(qbs.at(1));
+      apply_S_at_end(qbs.at(1));
       apply_CX_at_end(qbs.at(0), qbs.at(1));
-      apply_V_at_end(qbs.at(1));
+      apply_S_at_end(qbs.at(1));
       break;
     }
     case OpType::CZ: {

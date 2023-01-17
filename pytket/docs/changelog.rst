@@ -4,9 +4,40 @@ Changelog
 Unreleased
 ----------
 
+Major new features:
+
+* New boxes to implement multiplexor gates (i.e. uniformly controlled operations):
+  ``MultiplexorBox``, ``MultiplexedRotationBox`` and ``MultiplexedU2Box``.
+
+General:
+
+* Python 3.11 support added; 3.8 dropped.
+
+Minor new features:
+
+* Circuit methods ``qubit_readout`` and ``qubit_to_bit_map`` now ignore barriers.
+* New pass ``RemoveImplicitQubitPermutation``.
+* ``PauliSimp`` pass accepts circuits containing implicit wire swaps.
+
+Fixes:
+
+* ``MultiGateReorderRoutingMethod`` raising unknown edge missing error.
+* ``PauliSimp`` pass preserves circuit name.
+
+1.10.0 (December 2022)
+----------------------
+
+Minor new features:
+
+* Add support for PhasedX gates in Pauli graph synthesis.
+
 Fixes:
 
 * Handle 0-qubit operations in connectivity check.
+* Fix handling of Tdg, CY, ZZMax and Clifford-angle YYPhase gates in Pauli
+  graph synthesis.
+* Disallow conversion to QASM of operations conditioned on strict subregisters
+  larger than one bit, or reordered registers.
 
 1.9.1 (December 2022)
 ---------------------

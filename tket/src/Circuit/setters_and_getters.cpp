@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -180,23 +180,12 @@ std::map<Bit, unsigned> Circuit::bit_readout() const {
 }
 
 std::map<Qubit, unsigned> Circuit::qubit_readout() const {
+  std::map<Qubit, Bit> q2b_res = qubit_to_bit_map();
   std::map<Qubit, unsigned> res;
   std::map<Bit, unsigned> bmap = bit_readout();
-
-  // Find measurement map from qubits to index
-  for (auto [it, end] = boundary.get<TagType>().equal_range(UnitType::Qubit);
-       it != end; it++) {
-    Vertex q_out = it->out_;
-    Vertex last_gate = source(get_nth_in_edge(q_out, 0));
-    if (get_OpType_from_Vertex(last_gate) == OpType::Measure) {
-      Vertex possible_c_out = target(get_nth_out_edge(last_gate, 1));
-      if (get_OpType_from_Vertex(possible_c_out) == OpType::ClOutput) {
-        Bit b(get_id_from_out(possible_c_out));
-        res.insert({Qubit(it->id_), bmap.at(b)});
-      }
-    }
+  for (auto it = q2b_res.begin(); it != q2b_res.end(); it++) {
+    res.insert({it->first, bmap.at(it->second)});
   }
-
   return res;
 }
 
@@ -205,9 +194,21 @@ std::map<Qubit, Bit> Circuit::qubit_to_bit_map() const {
   for (auto [it, end] = boundary.get<TagType>().equal_range(UnitType::Qubit);
        it != end; it++) {
     Vertex q_out = it->out_;
-    Vertex last_gate = source(get_nth_in_edge(q_out, 0));
+    Edge last_gate_out_edge = get_nth_in_edge(q_out, 0);
+    Vertex last_gate = source(last_gate_out_edge);
+    // ignore barriers
+    while (get_OpType_from_Vertex(last_gate) == OpType::Barrier) {
+      std::tie(last_gate, last_gate_out_edge) =
+          get_prev_pair(last_gate, last_gate_out_edge);
+    }
     if (get_OpType_from_Vertex(last_gate) == OpType::Measure) {
-      Vertex possible_c_out = target(get_nth_out_edge(last_gate, 1));
+      Edge possible_c_out_in_edge = get_nth_out_edge(last_gate, 1);
+      Vertex possible_c_out = target(possible_c_out_in_edge);
+      // ignore barriers
+      while (get_OpType_from_Vertex(possible_c_out) == OpType::Barrier) {
+        std::tie(possible_c_out, possible_c_out_in_edge) =
+            get_next_pair(possible_c_out, possible_c_out_in_edge);
+      }
       if (get_OpType_from_Vertex(possible_c_out) == OpType::ClOutput) {
         Bit b(get_id_from_out(possible_c_out));
         res.insert({Qubit(it->id_), b});

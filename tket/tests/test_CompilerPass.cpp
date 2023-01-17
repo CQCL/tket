@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -33,6 +33,7 @@
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
 #include "Transformations/ContextualReduction.hpp"
+#include "Transformations/OptimisationPass.hpp"
 #include "Transformations/PauliOptimisation.hpp"
 #include "Transformations/Rebase.hpp"
 #include "Utils/Expression.hpp"
@@ -1116,16 +1117,72 @@ SCENARIO("Precomposed passes successfully compose") {
 SCENARIO("Test Pauli Graph Synthesis Pass") {
   PassPtr graph_synth = gen_synthesise_pauli_graph(
       Transforms::PauliSynthStrat::Sets, CXConfigType::Star);
-  Circuit circ(3);
-  PauliExpBox peb({Pauli::Z, Pauli::X, Pauli::Z}, 0.333);
-  circ.add_box(peb, {0, 1, 2});
-  PauliExpBox peb2({Pauli::Y, Pauli::X, Pauli::X}, 0.174);
-  circ.add_box(peb2, {0, 1, 2});
+  GIVEN("Two PauliExpBoxes") {
+    Circuit circ(3, "test");
+    PauliExpBox peb({Pauli::Z, Pauli::X, Pauli::Z}, 0.333);
+    circ.add_box(peb, {0, 1, 2});
+    PauliExpBox peb2({Pauli::Y, Pauli::X, Pauli::X}, 0.174);
+    circ.add_box(peb2, {0, 1, 2});
 
-  CompilationUnit cu(circ);
-  graph_synth->apply(cu);
+    CompilationUnit cu(circ);
+    graph_synth->apply(cu);
+    const Circuit& circ1 = cu.get_circ_ref();
 
-  REQUIRE(test_unitary_comparison(circ, cu.get_circ_ref()));
+    REQUIRE(test_unitary_comparison(circ, circ1));
+    REQUIRE(circ1.get_name() == "test");
+  }
+  GIVEN("Lots of different gates") {
+    Circuit circ(3);
+    circ.add_op<unsigned>(OpType::Z, {0});
+    circ.add_op<unsigned>(OpType::X, {1});
+    circ.add_op<unsigned>(OpType::Y, {2});
+    circ.add_op<unsigned>(OpType::S, {0});
+    circ.add_op<unsigned>(OpType::Sdg, {1});
+    circ.add_op<unsigned>(OpType::V, {2});
+    circ.add_op<unsigned>(OpType::Vdg, {0});
+    circ.add_op<unsigned>(OpType::H, {1});
+    circ.add_op<unsigned>(OpType::CX, {2, 0});
+    circ.add_op<unsigned>(OpType::CY, {0, 1});
+    circ.add_op<unsigned>(OpType::CZ, {1, 2});
+    circ.add_op<unsigned>(OpType::SWAP, {2, 0});
+    circ.add_op<unsigned>(OpType::Rz, 0.25, {0});
+    circ.add_op<unsigned>(OpType::Rx, 0.25, {1});
+    circ.add_op<unsigned>(OpType::Ry, 0.25, {2});
+    circ.add_op<unsigned>(OpType::T, {0});
+    circ.add_op<unsigned>(OpType::Tdg, {1});
+    circ.add_op<unsigned>(OpType::ZZMax, {2, 0});
+    circ.add_op<unsigned>(OpType::ZZPhase, 0.25, {0, 1});
+    circ.add_op<unsigned>(OpType::PhaseGadget, 0.25, {0, 1, 2});
+    circ.add_op<unsigned>(OpType::XXPhase, 0.25, {1, 2});
+    circ.add_op<unsigned>(OpType::YYPhase, 0.25, {2, 0});
+    circ.add_op<unsigned>(OpType::PhasedX, {0.25, 1.75}, {0});
+    // ... and some with Clifford angles...
+    circ.add_op<unsigned>(OpType::Rz, 0.5, {0});
+    circ.add_op<unsigned>(OpType::Rx, 1.0, {1});
+    circ.add_op<unsigned>(OpType::Ry, 1.5, {2});
+    circ.add_op<unsigned>(OpType::ZZPhase, 0.5, {0, 1});
+    circ.add_op<unsigned>(OpType::PhaseGadget, 1.0, {0, 1, 2});
+    circ.add_op<unsigned>(OpType::XXPhase, 1.5, {1, 2});
+    circ.add_op<unsigned>(OpType::YYPhase, 2.5, {2, 0});
+    circ.add_op<unsigned>(OpType::PhasedX, {3.5, 0.5}, {0});
+
+    CompilationUnit cu(circ);
+    graph_synth->apply(cu);
+
+    REQUIRE(test_unitary_comparison(circ, cu.get_circ_ref(), true));
+  }
+  GIVEN("Implicit qubit permutation") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::CX, {1, 0});
+    Transforms::clifford_simp().apply(circ);
+    REQUIRE(circ.has_implicit_wireswaps());
+
+    CompilationUnit cu(circ);
+    graph_synth->apply(cu);
+
+    REQUIRE(test_unitary_comparison(circ, cu.get_circ_ref(), true));
+  }
 }
 
 SCENARIO("Compose Pauli Graph synthesis Passes") {

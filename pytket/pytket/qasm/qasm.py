@@ -1,4 +1,4 @@
-# Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -930,7 +930,8 @@ def circuit_from_qasm_wasm(
 
 
 def circuit_to_qasm(circ: Circuit, output_file: str, header: str = "qelib1") -> None:
-    """A method to generate a qasm file from a tket Circuit"""
+    """A method to generate a qasm file from a tket Circuit.
+    Note that this will not account for implicit qubit permutations in the Circuit."""
     with open(output_file, "w") as out:
         circuit_to_qasm_io(circ, out, header=header)
 
@@ -960,7 +961,8 @@ def _filtered_qasm_str(qasm: str) -> str:
 
 
 def circuit_to_qasm_str(circ: Circuit, header: str = "qelib1") -> str:
-    """A method to generate a qasm str from a tket Circuit"""
+    """A method to generate a qasm str from a tket Circuit.
+    Note that this will not account for implicit qubit permutations in the Circuit."""
     buffer = io.StringIO()
     circuit_to_qasm_io(circ, buffer, header=header)
     return buffer.getvalue()
@@ -1069,7 +1071,8 @@ def circuit_to_qasm_io(
     header: str = "qelib1",
     include_gate_defs: Optional[Set[str]] = None,
 ) -> None:
-    """A method to generate a qasm text stream from a tket Circuit"""
+    """A method to generate a qasm text stream from a tket Circuit.
+    Note that this will not account for implicit qubit permutations in the Circuit."""
     # Write to a buffer since the output qasm might need additional filtering.
     # e.g. remove unused tket scratch bits.
     buffer = io.StringIO()
@@ -1142,12 +1145,17 @@ def circuit_to_qasm_io(
                     variable = control_bit
                 else:
                     variable = control_bit.reg_name
+                    if hqs_header(header) and bits != list(cregs[variable]):
+                        raise QASMUnsupportedError(
+                            "hqslib1 QASM conditions must be an entire classical "
+                            "register or a single bit"
+                        )
             if not hqs_header(header):
                 if op.width != cregs[variable].size:
                     raise QASMUnsupportedError(
                         "OpenQASM conditions must be an entire classical register"
                     )
-                if sorted(bits) != list(cregs[variable]):
+                if bits != list(cregs[variable]):
                     raise QASMUnsupportedError(
                         "OpenQASM conditions must be a single classical register"
                     )

@@ -5,7 +5,7 @@ pytket
 `numerous providers <https://github.com/CQCL/pytket-extensions>`_, allowing the
 tket tools to be used in conjunction with projects on their platforms.
 
-``pytket`` is available for Python 3.8, 3.9 and 3.10, on Linux, MacOS and
+``pytket`` is available for Python 3.9, 3.10 and 3.11, on Linux, MacOS and
 Windows. To install, run
 
 ::
