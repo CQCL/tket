@@ -1,4 +1,4 @@
-# Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -50,6 +50,7 @@ from pytket.passes import (  # type: ignore
     auto_rebase_pass,
     ZZPhaseToRz,
     CnXPairwiseDecomposition,
+    RemoveImplicitQubitPermutation,
 )
 from pytket.predicates import (  # type: ignore
     GateSetPredicate,
@@ -513,7 +514,7 @@ def test_user_defined_swap_decomp() -> None:
 
 
 def test_pauligraph_synth() -> None:
-    circ = Circuit(4, 4)
+    circ = Circuit(4, 4, name="test")
     pg = PauliExpBox([Pauli.X, Pauli.Z, Pauli.Y, Pauli.I], 0.3)
     circ.add_pauliexpbox(pg, [0, 1, 2, 3])
     circ.measure_all()
@@ -523,6 +524,7 @@ def test_pauligraph_synth() -> None:
     assert pss.apply(cu)
     circ1 = cu.circuit
     assert circ1.depth_by_type(OpType.CX) == 4
+    assert circ1.name == "test"
 
 
 def test_squash_chains() -> None:
@@ -776,6 +778,24 @@ def test_cnx_pairwise_decomp() -> None:
     CnXPairwiseDecomposition().apply(c)
     DecomposeMultiQubitsCX().apply(c)
     assert c.n_gates_of_type(OpType.CX) < 217
+
+
+def test_remove_implicit_qubit_permutation() -> None:
+    c = Circuit(3).X(0).SWAP(0, 1).SWAP(1, 2)
+    c.replace_SWAPs()
+    assert c.n_gates_of_type(OpType.SWAP) == 0
+    assert c.implicit_qubit_permutation() == {
+        Qubit(0): Qubit(2),
+        Qubit(1): Qubit(0),
+        Qubit(2): Qubit(1),
+    }
+    assert RemoveImplicitQubitPermutation().apply(c)
+    assert c.n_gates_of_type(OpType.SWAP) == 2
+    assert c.implicit_qubit_permutation() == {
+        Qubit(0): Qubit(0),
+        Qubit(1): Qubit(1),
+        Qubit(2): Qubit(2),
+    }
 
 
 def test_rz_phasedX_squash() -> None:

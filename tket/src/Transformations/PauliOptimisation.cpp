@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -188,6 +188,8 @@ Transform synthesise_pauli_graph(
     PauliSynthStrat strat, CXConfigType cx_config) {
   return Transform([=](Circuit &circ) {
     Expr t = circ.get_phase();
+    std::optional<std::string> name = circ.get_name();
+    circ.replace_all_implicit_wire_swaps();
     PauliGraph pg = circuit_to_pauli_graph(circ);
     switch (strat) {
       case PauliSynthStrat::Individual: {
@@ -206,6 +208,9 @@ Transform synthesise_pauli_graph(
         TKET_ASSERT(!"Unknown Pauli Synthesis Strategy");
     }
     circ.add_phase(t);
+    if (name) {
+      circ.set_name(*name);
+    }
     // always turn circuit into PauliGraph and back, so always return true
     return true;
   });

@@ -1,4 +1,4 @@
-# Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,7 +20,7 @@ import shutil
 
 class TketConan(ConanFile):
     name = "tket"
-    version = "1.0.36"
+    version = "1.0.47"
     license = "CQC Proprietary"
     homepage = "https://github.com/CQCL/tket"
     url = "https://github.com/conan-io/conan-center-index"
@@ -37,7 +37,7 @@ class TketConan(ConanFile):
     requires = (
         # libraries installed from remote:
         # https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
-        "boost/1.80.0",
+        "boost/1.81.0",
         "symengine/0.9.0",
         "eigen/3.4.0",
         "nlohmann_json/3.11.2",

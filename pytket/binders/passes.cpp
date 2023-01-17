@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -832,6 +832,13 @@ PYBIND11_MODULE(passes, m) {
       "Decompose CnX gates to 2-qubit gates and single qubit gates. "
       "For every two CnX gates, reorder their control qubits to improve "
       "the chance of gate cancellation");
+
+  m.def(
+      "RemoveImplicitQubitPermutation", &RemoveImplicitQubitPermutation,
+      "Remove any implicit qubit permutation by appending SWAP gates."
+      "\n\n"
+      "Note that if the circuit contains measurements, they may become "
+      "mid-circuit measurements in the transformed circuit.");
 
   m.def(
       "CustomPass", &CustomPass,

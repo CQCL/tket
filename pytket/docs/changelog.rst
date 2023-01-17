@@ -1,6 +1,30 @@
 Changelog
 =========
 
+1.11.0 (January 2023)
+---------------------
+
+Major new features:
+
+* New boxes to implement multiplexor gates (i.e. uniformly controlled operations):
+  ``MultiplexorBox``, ``MultiplexedRotationBox`` and ``MultiplexedU2Box``.
+
+General:
+
+* Python 3.11 support added; 3.8 dropped.
+
+Minor new features:
+
+* Circuit methods ``qubit_readout`` and ``qubit_to_bit_map`` now ignore barriers.
+* New pass ``RemoveImplicitQubitPermutation``.
+* ``PauliSimp`` pass accepts circuits containing implicit wire swaps.
+
+Fixes:
+
+* ``MultiGateReorderRoutingMethod`` raising unknown edge missing error.
+* ``LexiRouteLabellingMethod`` hitting assertion during dynamic qubit allocation.
+* ``PauliSimp`` pass preserves circuit name.
+
 1.10.0 (December 2022)
 ----------------------
 

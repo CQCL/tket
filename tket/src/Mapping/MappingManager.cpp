@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -137,6 +137,11 @@ bool MappingManager::route_circuit_with_maps(
   mapping_frontier->reassignable_nodes_ = reassignable_nodes;
   // updates routed/un-routed boundary
   mapping_frontier->advance_frontier_boundary(this->architecture_);
+
+  /**
+   * Criteria for Routing being finished.
+   * Each linear edge has reached end of Circuit.
+   */
   auto check_finish = [&mapping_frontier]() {
     for (const std::pair<UnitID, VertPort>& pair :
          mapping_frontier->linear_boundary->get<TagKey>()) {

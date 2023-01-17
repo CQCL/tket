@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -1006,15 +1006,6 @@ SCENARIO("Measure handling in PauliGraph") {
     REQUIRE_THROWS_AS(
         circuit_to_pauli_graph(circ), MidCircuitMeasurementNotAllowed);
   }
-}
-
-SCENARIO("Error handling with implicit permutations") {
-  Circuit circ(2);
-  circ.add_op<unsigned>(OpType::CX, {0, 1});
-  circ.add_op<unsigned>(OpType::CX, {1, 0});
-  Transforms::clifford_simp().apply(circ);
-  REQUIRE_THROWS_AS(
-      circuit_to_pauli_graph(circ), ImplicitPermutationNotAllowed);
 }
 
 }  // namespace test_PauliGraph

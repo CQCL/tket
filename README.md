@@ -48,7 +48,7 @@ depend on the features they support. The compiler version can be controlled by
 setting `CC` and `CXX` in your environment (e.g. `CC=gcc-11` and `CXX=g++-11`),
 or on Debian-based Linux systems using `update-alternatives`.
 
-You should also have Python (3.8, 3.9 or 3.10) and `pip` installed. We use
+You should also have Python (3.9, 3.10 or 3.11) and `pip` installed. We use
 `cmake` and the package manager `conan` to build tket. Both can be installed
 with `pip`:
 
@@ -274,6 +274,12 @@ First create a `build` folder in the project root. Then proceed as follows.
    conan export-pkg recipes/tket tket/${VERSION}@tket/stable -f --build-folder=build --source-folder=tket/src
    ```
    where `${VERSION}` is the tket library version, e.g. `1.0.3`.
+ 
+#### Method 3: Makefile
+
+An alternative build setup and development process is offered through a Makefile in the [`dev-tools`](dev-tools) directory.
+This setup can also simplify integration with an IDE supporting `cmake` builds.
+See the file [`dev-tools/README.md`](dev-tools/README.md) for instructions and more information.
 
 ## Test coverage
 

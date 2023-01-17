@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -436,19 +436,18 @@ class Circuit {
   std::map<Bit, unsigned> bit_readout() const;
 
   /**
-   * If a Measure op is the last operation on both its qubit and bit, this
-   * will map that qubit id to the same readout index as the bit. This is
-   * useful to extract from the circuit before compilation to correctly
+   * If a Measure op is the last operation (ignoring Barriers) on both its qubit
+   * and bit, this will map that qubit id to the same readout index as the bit.
+   * This is useful to extract from the circuit before compilation to correctly
    * interpret the readouts, and after compilation to identify how to apply
    * corrections for error mitigation.
    */
   std::map<Qubit, unsigned> qubit_readout() const;
 
   /**
-   * If a Measure op is the last operation on both its qubit and bit, this
-   * will map that qubit id to bit id. This is
-   * useful after compilation to identify how to apply
-   * corrections for error mitigation.
+   * If a Measure op is the last operation (ignoring Barriers) on both its qubit
+   * and bit, this will map that qubit id to bit id. This is useful after
+   * compilation to identify how to apply corrections for error mitigation.
    */
   std::map<Qubit, Bit> qubit_to_bit_map() const;
 

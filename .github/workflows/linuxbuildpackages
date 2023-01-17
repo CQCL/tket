@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -34,16 +34,17 @@ ${CONAN_CMD} remote add conan-center https://center.conan.io --force
 
 # Edit this list as required:
 PACKAGES="b2/4.9.2@ \
-          boost/1.80.0@ \
+          boost/1.81.0@ \
           bzip2/1.0.8@ \
           eigen/3.4.0@ \
           gmp/6.2.1@ \
           libbacktrace/cci.20210118@ \
           libiconv/1.17@ \
+          m4/1.4.19@ \
           nlohmann_json/3.11.2@ \
           pybind11_json/0.2.12@ \
           symengine/0.9.0@ \
-          zlib/1.2.12@"
+          zlib/1.2.13@"
 
 for PACKAGE in ${PACKAGES}
 do

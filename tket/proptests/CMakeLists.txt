@@ -1,4 +1,4 @@
-# Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -26,9 +26,14 @@ endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-find_file(CONANBUILDINFO_FILE conanbuildinfo.cmake HINTS ${CMAKE_BINARY_DIR})
-include(${CONANBUILDINFO_FILE})
+find_file(CONANBUILDINFO_FILE_TKET_PROPTESTS conanbuildinfo.cmake HINTS ${CMAKE_CURRENT_BINARY_DIR})
+include(${CONANBUILDINFO_FILE_TKET_PROPTESTS})
 conan_basic_setup()
+
+if(CMAKE_CXX_COMPILER_ID MATCHES "(Apple)?Clang")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations")
+    # remove -Wno-deprecated-declarations once https://github.com/boostorg/boost/issues/688 is resolved
+endif()
 
 IF (WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /WX /EHsc")

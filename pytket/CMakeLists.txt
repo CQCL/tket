@@ -1,4 +1,4 @@
-# Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -37,7 +37,10 @@ if (WIN32)
 else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -Wunreachable-code -Wunused")
 endif()
-
+if(CMAKE_CXX_COMPILER_ID MATCHES "(Apple)?Clang")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations")
+    # remove -Wno-deprecated-declarations once https://github.com/boostorg/boost/issues/688 is resolved
+endif()
 if (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     # Suppress warnings coming from headers in pybind11_json/0.2.13:
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-redundant-move")

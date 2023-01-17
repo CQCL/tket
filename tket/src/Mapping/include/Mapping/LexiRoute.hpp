@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -172,12 +172,45 @@ class LexiRoute {
    * In some cases, we may want to assign an unlabelled Qubit
    * to a Node that's already been used (but can reasonably be reassigned)
    *
-   * @param pre_assigned Node to reassign
+   * @param reassign_node Node to reassign
    * @param assigned Node to newly assign
    */
-  void reassign_node(const Node& pre_assigned, const UnitID& asignee);
+  void reassign_node(const Node& reassign_node, const UnitID& asignee);
 
+  /**
+   * When reassigning a Circuit UnitID labelled as a Node
+   * in reassign_node, one option is to assign to an unused Architecture Node,
+   * i.e. one that is not already used to label a Circuit wire.
+   *
+   * @param reassign_node Circuit wire Node to reassign
+   *
+   * @return true if there is a spare Architecture Node
+   *
+   */
+  bool reassign_to_any_spare_node(const Node& reassign_node);
+
+  /**
+   * When reassigning a Circuit UnitID labelled as a Node in
+   * reassign_node, one option is to assign the Node to
+   * an ancilla Node that's been used in the Circuit, assuming that
+   * there are no spare Architecture Node.
+   *
+   * @param reassign_node Circuit wire Node to reassign.
+   */
+  void reassign_to_any_ancilla_node(const Node& reassign_node);
+
+  /**
+   * Method for relabelling the qubit wire associated to "assignee"
+   * to "replacement". If "replacement" is already used to label another
+   * reassignable qubit wire, then a new Node is found to update
+   * the qubit wire assoiated with "replacement"
+   *
+   * @param assignee UnitID representing a Qubit wire to be updated
+   * @param replacement UnitID tag to now represent the Qubit wire associated
+   * with assignee
+   */
   void assign_valid_node(const UnitID& assignee, const UnitID& replacement);
+
   // Architecture all new physical operations must respect
   ArchitecturePtr architecture_;
   //   Contains circuit for finding SWAP from and non-routed/routed boundary
