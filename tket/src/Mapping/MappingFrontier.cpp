@@ -276,7 +276,6 @@ void MappingFrontier::advance_frontier_boundary(
             this->circuit_, this->linear_boundary);
     CutFrontier next_cut =
         this->circuit_.next_cut(l_frontier_edges, this->boolean_boundary);
-
     /**
      * For each vertex in a slice we check to see if its
      * Quantum arguments are permitted by the Architecture.
@@ -324,7 +323,6 @@ void MappingFrontier::advance_frontier_boundary(
         }
         in_uids.push_back({uid, edge_type});
       }
-
       /**
        * If there are no valid vertices in the boundary then
        * the while loop will terminate.
@@ -617,7 +615,6 @@ bool MappingFrontier::add_swap(const UnitID& uid_0, const UnitID& uid_1) {
   // get iterators to linear_boundary uids
   auto uid0_in_it = this->linear_boundary->find(uid_0);
   auto uid1_in_it = this->linear_boundary->find(uid_1);
-
   // Add Qubit if not in MappingFrontier boundary (i.e. not in circuit)
   if (uid0_in_it == this->linear_boundary->end()) {
     this->add_ancilla(uid_0);
@@ -627,6 +624,9 @@ bool MappingFrontier::add_swap(const UnitID& uid_0, const UnitID& uid_1) {
     this->add_ancilla(uid_1);
     uid1_in_it = this->linear_boundary->find(uid_1);
   }
+
+  this->reassignable_nodes_.erase(Node(uid_0));
+  this->reassignable_nodes_.erase(Node(uid_1));
 
   // Get predecessor edges to SWAP insert location
   VertPort vp0 = uid0_in_it->second;
@@ -785,6 +785,7 @@ void MappingFrontier::merge_ancilla(
     const UnitID& merge, const UnitID& ancilla) {
   // "front" meaning causally ahead
   // ancilla front, merge back
+
   auto rewire = [&](const UnitID& front, const UnitID& back) {
     // get output and input vertices
     Vertex back_v_in = this->circuit_.get_in(back);
@@ -866,7 +867,67 @@ void MappingFrontier::merge_ancilla(
     this->circuit_.boundary.get<TagID>().erase(back);
   };
 
+  /**
+   * Before rewiring, we get the target vertex of the "merge" UnitID
+   * from the linear boundary.
+   * We use this to confirm the right rewiring has happened later.
+   */
+
+  auto merge_boundary_it = this->linear_boundary->get<TagKey>().find(merge);
+  auto ancilla_boundary_it = this->linear_boundary->get<TagKey>().find(ancilla);
+  TKET_ASSERT(
+      ancilla_boundary_it != this->linear_boundary->get<TagKey>().end());
+  TKET_ASSERT(merge_boundary_it != this->linear_boundary->get<TagKey>().end());
+
+  // If a valid ancilla, this should always be true
+  VertPort ancilla_vp = ancilla_boundary_it->second;
+  TKET_ASSERT(
+      this->circuit_
+          .dag[this->circuit_.target(this->circuit_.get_nth_out_edge(
+              ancilla_vp.first, ancilla_vp.second))]
+          .op->get_type() == OpType::Output);
+
+  VertPort merge_vp = merge_boundary_it->second;
+  Edge merge_edge =
+      this->circuit_.get_nth_out_edge(merge_vp.first, merge_vp.second);
+  Vertex merge_target = this->circuit_.target(merge_edge);
+  port_t merge_target_port = this->circuit_.get_target_port(merge_edge);
+
+  this->linear_boundary->erase(merge_boundary_it);
+  OpType merge_target_optype = this->circuit_.dag[merge_target].op->get_type();
+  /**
+   * Update DAG to reflect unified qubit path
+   */
   rewire(ancilla, merge);
+
+  /**
+   * In most cases merge_vp should correspond to the correct edge.
+   * However, if "merge" is coming from an input, then this
+   * Vertex is now "noop", but instead we can use the ancilla
+   * entry VertPort as in this case it will be added to the output
+   * of the Merge vert port.
+   */
+
+  if (merge_target_optype != OpType::Output) {
+    Edge merge_source_edge =
+        this->circuit_.get_nth_in_edge(merge_target, merge_target_port);
+    Vertex merge_source = this->circuit_.source(merge_source_edge);
+    port_t merge_source_port =
+        this->circuit_.get_source_port(merge_source_edge);
+    this->linear_boundary->replace(
+        ancilla_boundary_it, {ancilla, {merge_source, merge_source_port}});
+  } else {
+    Vertex ancilla_out_vertex = this->circuit_.get_out(ancilla);
+    Edge ancilla_out_in_edge =
+        this->circuit_.get_nth_in_edge(ancilla_out_vertex, 0);
+    Vertex ancilla_out_source = this->circuit_.source(ancilla_out_in_edge);
+    port_t ancilla_out_source_port =
+        this->circuit_.get_source_port(ancilla_out_in_edge);
+    this->linear_boundary->replace(
+        ancilla_boundary_it,
+        {ancilla, {ancilla_out_source, ancilla_out_source_port}});
+  }
+
   // Update the qubit mappings
   // let's call the arguments ancilla_node and merge_node
   // e.g. before merge:
@@ -877,6 +938,7 @@ void MappingFrontier::merge_ancilla(
   //  final := {merge_q:ancilla_node}
   // Basically, in both qubit maps, erase the entry with qubit merge_q
   // then replace the entry ancilla_q -> x with the merge_q -> x
+
   auto merge_it = this->bimaps_->initial.right.find(merge);
   TKET_ASSERT(merge_it != this->bimaps_->initial.right.end());
   UnitID merge_q = merge_it->second;
@@ -894,18 +956,13 @@ void MappingFrontier::merge_ancilla(
   this->bimaps_->initial.left.erase(init_it);
   this->bimaps_->initial.left.insert({merge_q, init_ancilla_node});
 
-  // update linear boundaries
-  auto merge_boundary_it = this->linear_boundary->get<TagKey>().find(merge);
-  auto ancilla_boundary_it = this->linear_boundary->get<TagKey>().find(ancilla);
-  TKET_ASSERT(
-      ancilla_boundary_it != this->linear_boundary->get<TagKey>().end());
-  TKET_ASSERT(merge_boundary_it != this->linear_boundary->get<TagKey>().end());
-  this->linear_boundary->replace(
-      ancilla_boundary_it, {ancilla, merge_boundary_it->second});
-  this->linear_boundary->erase(merge_boundary_it);
-
+  /**
+   * Node type no longer an ancilla or reassignable after reassignment.
+   */
   this->ancilla_nodes_.erase(Node(ancilla));
   this->reassignable_nodes_.erase(Node(ancilla));
+
+  return;
 }
 
 bool MappingFrontier::valid_boundary_operation(
