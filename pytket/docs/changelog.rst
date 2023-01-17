@@ -21,6 +21,7 @@ Minor new features:
 Fixes:
 
 * ``MultiGateReorderRoutingMethod`` raising unknown edge missing error.
+* ``LexiRouteLabellingMethod`` hitting assertion during dynamic qubit allocation.
 
 1.10.0 (December 2022)
 ----------------------
