@@ -625,6 +625,9 @@ bool MappingFrontier::add_swap(const UnitID& uid_0, const UnitID& uid_1) {
     uid1_in_it = this->linear_boundary->find(uid_1);
   }
 
+  this->reassignable_nodes_.erase(Node(uid_0));
+  this->reassignable_nodes_.erase(Node(uid_1));
+
   // Get predecessor edges to SWAP insert location
   VertPort vp0 = uid0_in_it->second;
   VertPort vp1 = uid1_in_it->second;
