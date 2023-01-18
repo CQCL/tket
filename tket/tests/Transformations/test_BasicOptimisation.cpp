@@ -21,12 +21,27 @@
 namespace tket {
 namespace test_BasicOptimisation {
 
-SCENARIO("Transforms::remove_redundancies removes 1 and 2 qubit identities from a simple two qubit circuit", "[BasicOptimization], [!mayfail]") {
-
+SCENARIO("Transforms::remove_redundancies removes 1 and 2 qubit identities from a simple two qubit circuit") {
   Circuit original_circuit(2);
   Circuit test_circuit(original_circuit);
 
-  GIVEN("two consecutive identical swaps are added") {
+  GIVEN("noop") {
+    test_circuit.add_op<unsigned>(OpType::noop, {0});
+    WHEN("calling Transforms::remove_redundancies on rcuit") {
+      Transforms::remove_redundancies().apply(test_circuit);
+      THEN("added gates should be removed") {
+        REQUIRE(test_circuit.circuit_equality(original_circuit));
+      }
+    }
+  }
+}
+
+SCENARIO("Transforms::remove_redundancies removes swaps") {
+
+    Circuit original_circuit(2);
+    Circuit test_circuit(original_circuit);
+
+    GIVEN("two consecutive identical swaps are added") {
     test_circuit.add_op<unsigned>(OpType::SWAP, {1, 0});
     test_circuit.add_op<unsigned>(OpType::SWAP, {1, 0});
     WHEN("calling Transforms::remove_redundancies on rcuit") {

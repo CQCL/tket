@@ -349,6 +349,23 @@ VertexVec Circuit::get_predecessors(const Vertex &vert) const {
   return parents;
 }
 
+// given a vertex, returns a set of all its predecessor vertices
+// this set can be empty, and no warnings are given if it is
+// there are no checks to ensure the vertex exists in the graph
+VertexList Circuit::get_predecessors_list(const Vertex &vert) const {
+  EdgeVec ins = get_in_edges(vert);
+  VertexList parents;
+  std::unordered_set<Vertex> lookup;
+  for (const Edge &e : ins) {
+    Vertex pred = source(e);
+    if (lookup.find(pred) == lookup.end()) {
+      parents.push_back(pred);
+      lookup.insert(pred);
+    }
+  }
+  return parents;
+}
+
 VertexVec Circuit::get_predecessors_of_type(
     const Vertex &vert, EdgeType type) const {
   EdgeVec ins = get_in_edges_of_type(vert, type);

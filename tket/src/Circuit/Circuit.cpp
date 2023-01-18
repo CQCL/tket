@@ -123,6 +123,14 @@ VertexVec Circuit::vertices_in_order() /*const*/ {
   return vertices;
 }
 
+VertexList Circuit::vertices_list_in_order() /*const*/ {
+  index_vertices();
+  VertexList vertices;
+  boost::topological_sort(dag, std::back_inserter(vertices));
+  std::reverse(vertices.begin(), vertices.end());
+  return vertices;
+}
+
 IndexMap Circuit::index_map() const {
   IndexMap im;
   unsigned i = 0;

@@ -498,6 +498,7 @@ class Circuit {
   // collisions) given a vertex, returns a vector of all its predecessor
   // vertices (no duplicates)
   VertexVec get_predecessors(const Vertex &vert) const;
+  VertexList get_predecessors_list(const Vertex &vert) const;
   VertexVec get_predecessors_of_type(const Vertex &vert, EdgeType type) const;
 
   // O(1)
@@ -1561,6 +1562,15 @@ class Circuit {
    * @return vector of vertices in a topological (causal) order
    */
   std::vector<Vertex> vertices_in_order() /*const*/;
+
+  /**
+   * All vertices of the DAG, topologically sorted.
+   *
+   * This method is "morally" const, but it sets the vertex indices in the DAG.
+   *
+   * @return list of vertices in a topological (causal) order
+   */
+  std::list<Vertex> vertices_list_in_order() /*const*/;
 
   /**
    * Index the vertices according to their ordering in the DAG.
