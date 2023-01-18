@@ -29,7 +29,6 @@
 #include "Utils/EigenConfig.hpp"
 #include "Utils/MatrixAnalysis.hpp"
 
-
 namespace tket::Transforms {
 
 static bool commute_singles_to_front(Circuit &circ);

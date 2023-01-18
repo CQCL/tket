@@ -12,11 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "BasicOptimisation.hpp"
-
 #include <optional>
 #include <tkassert/Assert.hpp>
 
+#include "BasicOptimisation.hpp"
 #include "Characterisation/ErrorTypes.hpp"
 #include "Circuit/DAGDefs.hpp"
 #include "Gate/Gate.hpp"
@@ -25,8 +24,6 @@
 #include "Utils/MatrixAnalysis.hpp"
 
 namespace tket::Transforms {
-
-
 
 // A helper struct for holding which vertices have been detached (a.k.a bin)
 // the predecessors of those vertices
@@ -63,7 +60,7 @@ static VertexDetachmentInfo detach_vertex(
 static std::optional<VertexDetachmentInfo> try_detach_vertex_and_successor(
     Circuit &circuit, const Vertex &vertex);
 
-Transform remove_redundancies(){return Transform(redundancy_removal);}
+Transform remove_redundancies() { return Transform(redundancy_removal); }
 // this method annihilates all primitives next to each other (accounting for
 // previous annihilation)
 // also removes redundant non-classically controlled Z basis gates before a z
@@ -102,10 +99,10 @@ static bool is_apriori_not_detachable(
   const OpDesc op_descriptor =
       circuit.get_Op_ptr_from_Vertex(vertex)->get_desc();
 
-  return (not op_descriptor.is_gate()) or
-         (circuit.n_out_edges(vertex) == 0 or
-          circuit.n_in_edges(vertex) ==
-              0);  // vertex is boundary or already detached
+  return (not op_descriptor.is_gate()) or  // not a gate
+         circuit.n_out_edges(vertex) ==
+             0 or  // vertex is boundary or already detached
+         circuit.n_in_edges(vertex) == 0;  // vertex is boundary
 }
 
 static VertexDetachmentInfo try_detach_vertex(

@@ -24,9 +24,8 @@ namespace Transforms {
 // removes gate-inverse pairs, merges rotations, removes identity rotations,
 // and removes redundant gates before measure Expects: Any gates Produces: The
 // same gate set
-bool redundancy_removal(Circuit &circuit);
+bool redundancy_removal(Circuit& circuit);
 Transform remove_redundancies();
-
 
 /**
  * Squash all single-qubit gates to TK1.
