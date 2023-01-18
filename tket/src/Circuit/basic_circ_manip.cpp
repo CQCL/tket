@@ -80,18 +80,42 @@ Vertex Circuit::add_op<unsigned>(
     const Op_ptr& gate, const std::vector<unsigned>& args,
     std::optional<std::string> opgroup) {
   op_signature_t sig = gate->get_signature();
-  if (sig.size() != args.size()) {
+
+  // check if there is wasm in the signature
+  bool sig_contains_wasm = false;
+  for (EdgeType e : sig) {
+    if (e == EdgeType::WASM) {
+      sig_contains_wasm = true;
+      break;
+    }
+  }
+
+  // sig without wasm
+  if (sig.size() != args.size() && !sig_contains_wasm) {
     throw CircuitInvalidity(
         std::to_string(args.size()) + " args provided, but " +
         gate->get_name() + " requires " + std::to_string(sig.size()));
+  }
+
+  // sig with wasm
+  // there is only one or none wasm edge allowed in each signature
+  if (sig.size() != (args.size() + 1) && sig_contains_wasm) {
+    throw CircuitInvalidity(
+        std::to_string(args.size()) + " args provided, but " +
+        gate->get_name() + " requires " + std::to_string(sig.size()) +
+        " the sig cotaines one wasm edge, which should not be given");
   }
   OpType optype = gate->get_type();
   unit_vector_t arg_ids;
   for (unsigned i = 0; i < args.size(); ++i) {
     if (sig.at(i) == EdgeType::Quantum) {
       arg_ids.push_back(Qubit(args[i]));
-    } else {
-      arg_ids.push_back(Bit(args[i]));
+    } else {  // TODO this could be a problem
+      if (sig.at(i) == EdgeType::WASM) {
+        throw CircuitInvalidity("found wasm edge in op");
+      } else {
+        arg_ids.push_back(Bit(args[i]));
+      }
     }
   }
   if (optype == OpType::CnRy && args.size() == 1) {
@@ -457,6 +481,18 @@ register_t Circuit::add_c_register(std::string reg_name, unsigned size) {
     ids.insert({i, id});
   }
   return ids;
+}
+
+void Circuit::add_wasm_register() {
+  if (!wasm_added) {
+    Vertex in = add_vertex(OpType::WASMInput);
+    Vertex out = add_vertex(OpType::WASMOutput);
+    add_edge({in, 0}, {out, 0}, EdgeType::WASM);
+    WASMUID wuid = WASMUID();
+    wasmwire = wuid;
+    boundary.insert({wasmwire, in, out});
+    wasm_added = true;
+  }
 }
 
 void Circuit::qubit_create(const Qubit& id) {

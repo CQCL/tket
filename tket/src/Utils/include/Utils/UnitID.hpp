@@ -35,7 +35,7 @@
 namespace tket {
 
 /** Type of information held */
-enum class UnitType { Qubit, Bit };
+enum class UnitType { Qubit, Bit, WASMUIDT };
 
 /** The type and dimension of a register */
 typedef std::pair<UnitType, unsigned> register_info_t;
@@ -214,9 +214,24 @@ class Bit : public UnitID {
       : UnitID(name, index, UnitType::Bit) {}
 
   explicit Bit(const UnitID &other) : UnitID(other) {
+    if (other.type() == UnitType::WASMUIDT) {
+      std::cout << "try to convert wasmuid to bit\n";
+    }
     if (other.type() != UnitType::Bit) {
       throw InvalidUnitConversion(other.repr(), "Bit");
     }
+  }
+};
+
+/** Location holding a wasm UID */
+class WASMUID : public UnitID {
+ public:
+  WASMUID() : UnitID("_wasm_wire", {}, UnitType::WASMUIDT) {}
+
+  std::string wasm_givestring() {
+    throw std::logic_error(
+        "try to print wasm string, that should not happen\n");
+    return UnitID::repr();
   }
 };
 
@@ -249,6 +264,14 @@ class Node : public Qubit {
 };
 
 JSON_DECL(Node)
+
+/** Architectural qubit location */
+class WasmNode : public WASMUID {
+ public:
+  WasmNode() : WASMUID() {}
+};
+
+JSON_DECL(WasmNode)
 
 /** A correspondence between two sets of unit IDs */
 typedef boost::bimap<UnitID, UnitID> unit_bimap_t;

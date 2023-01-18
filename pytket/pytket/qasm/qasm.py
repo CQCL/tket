@@ -910,7 +910,8 @@ def circuit_from_qasm_str(qasm_str: str) -> Circuit:
     cast(CircuitTransformer, parser.options.transformer)._reset_context(
         reset_wasm=False
     )
-    return Circuit.from_dict(parser.parse(qasm_str))
+    new_dict = parser.parse(qasm_str)
+    return Circuit.from_dict(new_dict)  # this will not work with wasm
 
 
 def circuit_from_qasm_io(stream_in: TextIO) -> Circuit:

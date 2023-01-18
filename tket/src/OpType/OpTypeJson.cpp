@@ -36,14 +36,19 @@ const std::map<std::string, OpType>& name_to_optype() {
 }
 
 void to_json(nlohmann::json& j, const OpType& type) {
-  j = optypeinfo().at(type).name;
+  j = optypeinfo().at(type).name;  // TODO wasm wire
+  const std::string name = j.get<std::string>();
+  const auto result = name_to_optype().find(name);
+  if (result == name_to_optype().end()) {
+    throw JsonError("No OpType with name " + name);
+  }
 }
 
 void from_json(const nlohmann::json& j, OpType& type) {
   const std::string name = j.get<std::string>();
   const auto result = name_to_optype().find(name);
   if (result == name_to_optype().end()) {
-    throw JsonError("No OpType with name " + name);
+    throw JsonError("No OpType with name " + name);  // TODO wasm wire
   }
 
   type = result->second;

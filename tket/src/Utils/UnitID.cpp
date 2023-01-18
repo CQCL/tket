@@ -42,6 +42,13 @@ void from_json(const nlohmann::json& j, Bit& cb) { json_to_unitid(j, cb); }
 void to_json(nlohmann::json& j, const Node& node) { unitid_to_json(j, node); }
 void from_json(const nlohmann::json& j, Node& node) { json_to_unitid(j, node); }
 
+void to_json(nlohmann::json&, const WASMUID&) {
+  throw std::logic_error("wasm to json conversion");
+}
+void from_json(const nlohmann::json&, WASMUID&) {
+  throw std::logic_error("json to wasm conversion");
+}
+
 void to_json(nlohmann::json& j, const qubit_map_t& qm) {
   for (const auto& pair : qm) {
     nlohmann::json qm_j;

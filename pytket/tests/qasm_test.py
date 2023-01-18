@@ -422,6 +422,7 @@ def test_extended_qasm() -> None:
 
 
 def test_decomposable_extended() -> None:
+
     fname = str(curr_file_path / "qasm_test_files/test18.qasm")
     out_fname = str(curr_file_path / "qasm_test_files/test18_output.qasm")
 

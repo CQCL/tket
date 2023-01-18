@@ -65,9 +65,10 @@ bool check_circuit(const Circuit& c) {
 
 SCENARIO("Test Op serialization") {
   GIVEN("OpType") {
-    const OpTypeSet metaops = {
-        OpType::Input, OpType::Output, OpType::ClInput, OpType::ClOutput,
-        OpType::Barrier};
+    const OpTypeSet metaops = {OpType::Input,     OpType::Output,
+                               OpType::ClInput,   OpType::ClOutput,
+                               OpType::WASMInput, OpType::WASMOutput,
+                               OpType::Barrier};
     const OpTypeSet boxes = {
         OpType::CircBox,      OpType::Unitary1qBox, OpType::Unitary2qBox,
         OpType::Unitary3qBox, OpType::ExpBox,       OpType::PauliExpBox,

@@ -33,10 +33,12 @@ void to_json(nlohmann::json& j, const Command& com) {
     if (sig[i] == EdgeType::Quantum) {
       const Qubit& qb = static_cast<const Qubit&>(args[i]);
       j_args.push_back(qb);
-    } else {
+    } else if (sig[i] == EdgeType::Classical || sig[i] == EdgeType::Boolean) {
       const Bit& cb = static_cast<const Bit&>(args[i]);
       j_args.push_back(cb);
-    }
+    } /*else {
+      TODO wasm wire
+    }*/
   }
 
   j["args"] = j_args;
@@ -48,7 +50,6 @@ void from_json(const nlohmann::json& j, Command& com) {
     opgroup = j.at("opgroup").get<std::string>();
   }
   const op_signature_t& sig = op->get_signature();
-
   const nlohmann::json& j_args = j.at("args");
   if (sig.size() != j_args.size()) {
     JsonError("Number of args does not match signature of op.");
@@ -57,9 +58,11 @@ void from_json(const nlohmann::json& j, Command& com) {
   for (size_t i = 0; i < sig.size(); i++) {
     if (sig[i] == EdgeType::Quantum) {
       args.push_back(j_args[i].get<Qubit>());
-    } else {
+    } else if (sig[i] == EdgeType::Classical || sig[i] == EdgeType::Boolean) {
       args.push_back(j_args[i].get<Bit>());
-    }
+    } /*else {
+      TODO wasm wire
+    }*/
   }
 
   com = Command(op, args, opgroup);

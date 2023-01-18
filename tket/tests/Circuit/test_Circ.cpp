@@ -24,9 +24,11 @@
 #include "Circuit/Circuit.hpp"
 #include "Circuit/DAGDefs.hpp"
 #include "Gate/GatePtr.hpp"
+#include "Gate/OpPtrFunctions.hpp"
 #include "OpType/EdgeType.hpp"
 #include "OpType/OpType.hpp"
 #include "OpType/OpTypeFunctions.hpp"
+#include "Ops/ClassicalOps.hpp"
 #include "Ops/Op.hpp"
 #include "Ops/OpPtr.hpp"
 #include "Simulation/CircuitSimulator.hpp"
@@ -189,6 +191,20 @@ SCENARIO("Creating gates via Qubits and Registers") {
     REQUIRE(
         circ.n_in_edges_of_type(circ.get_out(creg[0]), EdgeType::Classical) ==
         1);
+  }
+
+  GIVEN("A new circuit - wasm") {
+    Circuit circ;
+
+    std::string funcname = "wasm_func_name";
+    std::string wasm_uid = "wasm_file_hash";
+    std::vector<unsigned> i32list_i = {1};
+    std::vector<unsigned> i32list_o = {1};
+    std::vector<unsigned> args = {0, 1};
+
+    unsigned n_args = args.size();
+    std::shared_ptr<WASMOp> op = std::make_shared<WASMOp>(
+        n_args, i32list_i, i32list_o, funcname, wasm_uid);
   }
 }
 

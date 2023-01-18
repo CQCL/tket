@@ -448,7 +448,8 @@ PYBIND11_MODULE(circuit, m) {
           "ClassicalTransform", OpType::ClassicalTransform,
           "A general classical operation where all inputs are also outputs")
       .value(
-          "WASM", OpType::WASM, "Op containing a classical wasm function call")
+          "WASM", OpType::WASM,
+          "Op containing a classical wasm function call")  // TODO
       .value(
           "SetBits", OpType::SetBits,
           "An operation to set some bits to specified values")

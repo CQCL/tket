@@ -59,6 +59,16 @@ enum class OpType {
   ClOutput,
 
   /**
+   * WASM input node of the circuit
+   */
+  WASMInput,
+
+  /**
+   * WASM output node of the circuit
+   */
+  WASMOutput,
+
+  /**
    * No-op that must be preserved by compilation
    */
   Barrier,

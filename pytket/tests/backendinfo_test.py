@@ -168,6 +168,7 @@ def test_to_json() -> None:
 @settings(deadline=None)
 def test_backendinfo_serialization(backinfo: BackendInfo) -> None:
     serializable = backinfo.to_dict()
+    # print(serializable)
     assert BackendInfo.from_dict(serializable) == backinfo
     assert loads(dumps(serializable)) == serializable
 
