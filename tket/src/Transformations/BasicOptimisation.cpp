@@ -54,7 +54,6 @@ static VertexList detach_redundant_vertices(Circuit &circuit);
 static VertexDetachmentInfo try_detach_vertices(Circuit &circuit, const VertexList &vertices);
 static VertexDetachmentInfo try_detach_vertex(Circuit &circuit, const Vertex &vertex);
 static std::optional<VertexDetachmentInfo> try_detach_single_vertex(Circuit &circuit, const Vertex &vertex);
-static std::optional<VertexDetachmentInfo> try_detach_noop(Circuit &circuit, const Vertex &vertex);
 static std::optional<VertexDetachmentInfo> try_detach_identity(Circuit &circuit, const Vertex &vertex);
 static std::optional<VertexDetachmentInfo> try_detach_zbasis_commuting_vertex(Circuit& circuit, const Vertex &vertex);
 static bool
@@ -109,19 +108,8 @@ static VertexDetachmentInfo try_detach_vertex(Circuit &circuit, const Vertex &ve
 }
 
 static std::optional<VertexDetachmentInfo> try_detach_single_vertex(Circuit &circuit, const Vertex &vertex){
-  if(auto detachmentInfo = try_detach_noop(circuit, vertex)) return detachmentInfo;
   if(auto detachmentInfo = try_detach_identity(circuit, vertex)) return detachmentInfo;
   if(auto detachmentInfo = try_detach_zbasis_commuting_vertex(circuit, vertex)) return detachmentInfo;
-  return std::nullopt;
-}
-
-
-static std::optional<VertexDetachmentInfo> try_detach_noop(
-    Circuit& circuit, const Vertex &vertex) {
-  const OpDesc op_descriptor = circuit.get_Op_ptr_from_Vertex(vertex)->get_desc();
-  if(op_descriptor.type() == OpType::noop){
-    return std::make_optional(detach_vertex(circuit,vertex));
-  }
   return std::nullopt;
 }
 
@@ -179,7 +167,6 @@ vertex_is_succeeded_only_by_z_basis_measurements_with_which_it_commutes(const Ci
         circuit.commutes_with_basis(vertex, Pauli::Z, PortType::Source, port);
   });
 }
-
 
 static std::optional<VertexDetachmentInfo> try_detach_vertex_and_successor(Circuit &circuit, const Vertex &vertex){
   auto successors = circuit.get_successors(vertex);
