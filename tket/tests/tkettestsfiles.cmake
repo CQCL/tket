@@ -30,7 +30,6 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/Graphs/test_DirectedGraph.cpp
     ${TKET_TESTS_DIR}/Graphs/test_ArticulationPoints.cpp
     ${TKET_TESTS_DIR}/Graphs/test_TreeSearch.cpp
-    ${TKET_TESTS_DIR}/Transformations/test_BasicOptimisation.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_ArchitectureMappingEndToEnd.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_BestTsaFixedSwapSequences.cpp
     ${TKET_TESTS_DIR}/TokenSwapping/test_DistancesFromArchitecture.cpp
@@ -67,6 +66,7 @@ set(TEST_SOURCES
     ${TKET_TESTS_DIR}/Placement/test_NoiseAwarePlacement.cpp
     ${TKET_TESTS_DIR}/Placement/test_Placement.cpp
     ${TKET_TESTS_DIR}/Placement/test_NeighbourPlacements.cpp
+    ${TKET_TESTS_DIR}/Transformations/test_RedundancyRemoval.cpp
     ${TKET_TESTS_DIR}/test_MappingVerification.cpp
     ${TKET_TESTS_DIR}/test_MappingFrontier.cpp
     ${TKET_TESTS_DIR}/test_RoutingMethod.cpp
