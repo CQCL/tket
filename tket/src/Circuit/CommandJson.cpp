@@ -48,16 +48,6 @@ void to_json(nlohmann::json& j, const Command& com) {
         TKET_ASSERT("command to json found invalid edge type in signature");
       }  // melf
     }
-
-    /*if (sig[i] == EdgeType::Quantum) {
-      const Qubit& qb = static_cast<const Qubit&>(args[i]);
-      j_args.push_back(qb);
-    } else if (sig[i] == EdgeType::Classical || sig[i] == EdgeType::Boolean) {
-      const Bit& cb = static_cast<const Bit&>(args[i]);
-      j_args.push_back(cb);
-    } / *else {
-      TODO wasm wire melf
-    }*/
   }
 
   j["args"] = j_args;
@@ -75,13 +65,20 @@ void from_json(const nlohmann::json& j, Command& com) {
   }
   unit_vector_t args;
   for (size_t i = 0; i < sig.size(); i++) {
-    if (sig[i] == EdgeType::Quantum) {
-      args.push_back(j_args[i].get<Qubit>());
-    } else if (sig[i] == EdgeType::Classical || sig[i] == EdgeType::Boolean) {
-      args.push_back(j_args[i].get<Bit>());
-    } /*else {
-      TODO wasm wire
-    }*/
+    switch (sig[i]) {
+      case EdgeType::Quantum: {
+        args.push_back(j_args[i].get<Qubit>());
+        break;
+      }
+      case EdgeType::Classical:
+      case EdgeType::Boolean: {
+        args.push_back(j_args[i].get<Bit>());
+        break;
+      }
+      default: {
+        TKET_ASSERT("command from json found invalid edge type in signature");
+      }  // melf switch
+    }
   }
 
   com = Command(op, args, opgroup);

@@ -700,7 +700,8 @@ bool Circuit::detect_final_Op(const Vertex &vertex) const {
 
 bool Circuit::detect_boundary_Op(const Vertex &vertex) const {
   OpType type = get_OpType_from_Vertex(vertex);
-  return is_boundary_q_type(type) || is_boundary_c_type(type);
+  return is_boundary_q_type(type) || is_boundary_c_type(type) ||
+         is_boundary_w_type(type);
 }
 
 bool Circuit::detect_singleq_unitary_op(const Vertex &vert) const {

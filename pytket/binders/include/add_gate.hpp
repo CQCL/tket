@@ -70,9 +70,7 @@ static Circuit *add_gate_method(
       if (sig.at(i) == EdgeType::Quantum) {
         new_args.push_back(Qubit(args[i]));
       } else if (sig.at(i) == EdgeType::WASM) {
-        throw CircuitInvalidity("signatur contains wasm");
-
-        // new_args.push_back(Qubit(args[i]));
+        throw CircuitInvalidity("signatur contains wasm");        
       } else {
         new_args.push_back(Bit(args[i]));
       }

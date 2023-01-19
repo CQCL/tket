@@ -146,9 +146,11 @@ bool is_boundary_q_type(OpType optype) {
 }
 
 bool is_boundary_c_type(OpType optype) {
-  return optype == OpType::ClInput || optype == OpType::ClOutput ||
-         optype == OpType::WASMInput ||
-         optype == OpType::WASMOutput;  // TODO wasm wire
+  return optype == OpType::ClInput || optype == OpType::ClOutput;
+}
+
+bool is_boundary_w_type(OpType optype) {
+  return optype == OpType::WASMInput || optype == OpType::WASMOutput;
 }
 
 bool is_gate_type(OpType optype) {

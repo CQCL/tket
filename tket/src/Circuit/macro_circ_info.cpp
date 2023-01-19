@@ -332,7 +332,7 @@ Edge Circuit::skip_irrelevant_edges(Edge current) const {
   return current;
 }
 
-static std::shared_ptr<unit_frontier_t> get_next_u_frontier(  // TODO wasm wire
+static std::shared_ptr<unit_frontier_t> get_next_u_frontier(
     const Circuit& circ, std::shared_ptr<const unit_frontier_t> u_frontier,
     const VertexSet& next_slice_lookup) {
   std::shared_ptr<unit_frontier_t> next_frontier =
@@ -370,18 +370,28 @@ static std::shared_ptr<b_frontier_t> get_next_b_frontier(
   }
   // Add any new bits introduced in this slice
   for (const std::pair<UnitID, Edge>& pair : u_frontier->get<TagKey>()) {
-    if ((circ.get_edgetype(pair.second) == EdgeType::Quantum) ||
-        (circ.get_edgetype(pair.second) == EdgeType::WASM))
-      continue;
-    Vertex next_v = circ.target(pair.second);
-    if (next_slice_lookup.find(next_v) == next_slice_lookup.end()) continue;
-    if (next_b_frontier->get<TagKey>().find(Bit(pair.first)) !=
-        next_b_frontier->end()) {
-      throw CircuitInvalidity("RAW hazard created in slicing");
+    switch (circ.get_edgetype(pair.second)) {
+      case EdgeType::Quantum:
+      case EdgeType::WASM: {
+        break;
+      }
+      case EdgeType::Classical:
+      case EdgeType::Boolean: {
+        Vertex next_v = circ.target(pair.second);
+        if (next_slice_lookup.find(next_v) == next_slice_lookup.end()) continue;
+        if (next_b_frontier->get<TagKey>().find(Bit(pair.first)) !=
+            next_b_frontier->end()) {
+          throw CircuitInvalidity("RAW hazard created in slicing");
+        }
+        port_t p = circ.get_target_port(pair.second);
+        EdgeVec reads = circ.get_nth_b_out_bundle(next_v, p);
+        if (!reads.empty()) next_b_frontier->insert({Bit(pair.first), reads});
+        break;
+      }
+      default: {
+        TKET_ASSERT("get_next_b_frontier found invalid edge type in signature");
+      }  // melf switch
     }
-    port_t p = circ.get_target_port(pair.second);
-    EdgeVec reads = circ.get_nth_b_out_bundle(next_v, p);
-    if (!reads.empty()) next_b_frontier->insert({Bit(pair.first), reads});
   }
   return next_b_frontier;
 }
