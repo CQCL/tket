@@ -236,7 +236,7 @@ bool is_valid(const DAG &G) {
           q_in.size() == 1 && q_out.size() == 1 && c_in.size() == 1 &&
           c_out.size() == 1);
     } else {
-      throw CircuitInvalidity("Found invalid circuit");
+      TKET_ASSERT(!"Found invalid circuit");
     }
   }
   return true;

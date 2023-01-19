@@ -34,6 +34,9 @@ void to_json(nlohmann::json& j, const Command& com) {
   nlohmann::json j_args;
   for (size_t i = 0; i < sig.size(); i++) {
     switch (sig[i]) {
+      case EdgeType::WASM: {
+        continue;
+      }
       case EdgeType::Quantum: {
         const Qubit& qb = static_cast<const Qubit&>(args[i]);
         j_args.push_back(qb);
@@ -60,6 +63,7 @@ void from_json(const nlohmann::json& j, Command& com) {
     opgroup = j.at("opgroup").get<std::string>();
   }
   const op_signature_t& sig = op->get_signature();
+
   const nlohmann::json& j_args = j.at("args");
   if (sig.size() != j_args.size()) {
     JsonError("Number of args does not match signature of op.");

@@ -64,7 +64,22 @@ SCENARIO("Check that a Circuit cannot have 2 registers with the same name") {
   GIVEN("Duplication") {
     Circuit circ;
     circ.add_q_register("duplicate", 4);
+    REQUIRE_THROWS_AS(circ.add_q_register("duplicate", 4), CircuitInvalidity);
+  }
+  GIVEN("Duplication - classic") {
+    Circuit circ;
+    circ.add_c_register("duplicate", 4);
     REQUIRE_THROWS_AS(circ.add_c_register("duplicate", 4), CircuitInvalidity);
+  }
+  GIVEN("Duplication - q - c") {
+    Circuit circ;
+    circ.add_q_register("duplicate", 4);
+    REQUIRE_THROWS_AS(circ.add_c_register("duplicate", 4), CircuitInvalidity);
+  }
+  GIVEN("Duplication - c - q") {
+    Circuit circ;
+    circ.add_c_register("duplicate", 4);
+    REQUIRE_THROWS_AS(circ.add_q_register("duplicate", 4), CircuitInvalidity);
   }
   GIVEN("Check default registers do nothing weird") {
     Circuit circ(1);
@@ -111,6 +126,11 @@ SCENARIO(
     Circuit circ(2);
     REQUIRE_THROWS(circ.add_op<unsigned>(OpType::H, {}));
     REQUIRE_THROWS(circ.add_op<unsigned>(OpType::H, {0, 1}));
+  }
+  GIVEN("A badly-formed vertex - wasm") {
+    Circuit circ(2);
+    REQUIRE_THROWS(circ.add_op<unsigned>(OpType::WASM, {}));
+    REQUIRE_THROWS(circ.add_op<unsigned>(OpType::WASM, {0, 1}));
   }
 }
 
@@ -203,7 +223,7 @@ SCENARIO("Creating gates via Qubits and Registers") {
     std::vector<unsigned> args = {0, 1};
 
     unsigned n_args = args.size();
-    std::shared_ptr<WASMOp> op = std::make_shared<WASMOp>(
+    const std::shared_ptr<WASMOp> op = std::make_shared<WASMOp>(
         n_args, i32list_i, i32list_o, funcname, wasm_uid);
   }
 }
@@ -1104,8 +1124,12 @@ SCENARIO("circuit equality ", "[equality]") {
     test1.add_qubit(Qubit(3));
 
     REQUIRE(test1 == test2);
-  }
 
+    REQUIRE_THROWS(test1.add_qubit(Qubit(3), true));
+    test1.add_qubit(Qubit(3), false);
+    REQUIRE_THROWS(test1.add_bit(Bit(0), true));
+    test1.add_bit(Bit(0), false);
+  }
   GIVEN("Circuits with mismatched created qubits") {
     Circuit test1(2);
     Circuit test2(2);

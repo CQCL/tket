@@ -103,7 +103,7 @@ Vertex Circuit::add_op<unsigned>(
     throw CircuitInvalidity(
         std::to_string(args.size()) + " args provided, but " +
         gate->get_name() + " requires " + std::to_string(sig.size()) +
-        " the sig cotaines one wasm edge, which should not be given");
+        ". The sig cotaines one wasm edge, which should not be given");
   }
   OpType optype = gate->get_type();
   unit_vector_t arg_ids;
@@ -170,7 +170,7 @@ std::string Circuit::get_next_c_reg_name(const std::string& reg_name) {
     if (!get_reg_info(incremented_reg_name)) {
       return incremented_reg_name;
     }
-    post_fix++;
+    post_fix++;  // unused
   }
 }
 
@@ -385,7 +385,7 @@ unit_map_t Circuit::flatten_registers() {
 void Circuit::add_blank_wires(unsigned n) {
   if (!default_regs_ok())
     throw CircuitInvalidity(
-        "Incompatible registers exist with the default names");
+        "Incompatible registers exist with the default names");  // unused
   unsigned index = 0;
   for (unsigned i = 0; i < n; i++) {
     Vertex in = add_vertex(OpType::Input);
@@ -413,9 +413,6 @@ void Circuit::add_qubit(const Qubit& id, bool reject_dups) {
           "A unit with ID \"" + id.repr() + "\" already exists");
     } else if (found->type() == UnitType::Qubit) {
       return;
-    } else {
-      throw CircuitInvalidity(
-          "A bit with ID \"" + id.repr() + "\" already exists");
     }
   }
   opt_reg_info_t reg_info = get_reg_info(id.reg_name());
@@ -439,9 +436,6 @@ void Circuit::add_bit(const Bit& id, bool reject_dups) {
           "A unit with ID \"" + id.repr() + "\" already exists");
     } else if (found->type() == UnitType::Bit) {
       return;
-    } else {
-      throw CircuitInvalidity(
-          "A qubit with ID \"" + id.repr() + "\" already exists");
     }
   }
   opt_reg_info_t reg_info = get_reg_info(id.reg_name());
@@ -459,7 +453,7 @@ void Circuit::add_bit(const Bit& id, bool reject_dups) {
 register_t Circuit::add_q_register(std::string reg_name, unsigned size) {
   if (get_reg_info(reg_name))
     throw CircuitInvalidity(
-        "A register with name \"" + reg_name + "\" already exists");
+        "A q register with name \"" + reg_name + "\" already exists");
   register_t ids;
   for (unsigned i = 0; i < size; i++) {
     Vertex in = add_vertex(OpType::Input);
@@ -475,7 +469,7 @@ register_t Circuit::add_q_register(std::string reg_name, unsigned size) {
 register_t Circuit::add_c_register(std::string reg_name, unsigned size) {
   if (get_reg_info(reg_name))
     throw CircuitInvalidity(
-        "A register with name \"" + reg_name + "\" already exists");
+        "A c register with name \"" + reg_name + "\" already exists");
   register_t ids;
   for (unsigned i = 0; i < size; i++) {
     Vertex in = add_vertex(OpType::ClInput);
@@ -535,17 +529,16 @@ void Circuit::rewire(
     port_t port2 = get_target_port(preds[i]);
     Vertex old_v1 = source(preds[i]);
     Vertex old_v2 = target(preds[i]);
+
     if (insert_type == EdgeType::Boolean) {
-      if (replace_type != EdgeType::Classical) {
-        throw CircuitInvalidity(
-            "Cannot rewire; Boolean needs a classical value "
-            "to read from");
-      }
+      // Cannot rewire; Boolean needs a classical value to read from
+      TKET_ASSERT(replace_type == EdgeType::Classical);
+
       add_edge({old_v1, port1}, {new_vert, i}, insert_type);
     } else {
-      if (insert_type != replace_type) {
-        throw CircuitInvalidity("Cannot rewire; changing type of edge");
-      }
+      // Cannot rewire; changing type of edge
+      TKET_ASSERT(insert_type == replace_type);
+
       add_edge({old_v1, port1}, {new_vert, i}, insert_type);
       add_edge({new_vert, i}, {old_v2, port2}, insert_type);
       bin.push_back(preds[i]);

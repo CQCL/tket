@@ -116,6 +116,19 @@ SCENARIO(
     CompilationUnit cu(circ);
     REQUIRE(DecomposeBoxes()->apply(cu));
   }
+  GIVEN("A 2q projector - check error message") {
+    Circuit circ(2);
+    Eigen::MatrixXcd bell(4, 4);
+    bell << 0.5, 0, 0, 0.5, 0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0, 0, 0.5;
+    ProjectorAssertionBox box(bell);
+    circ.add_assertion(
+        box, {Qubit(0), Qubit(1)}, std::nullopt, "bell projector");
+    circ.add_assertion(
+        box, {Qubit(1), Qubit(0)}, std::nullopt, "bell projector");
+    circ.add_assertion(box, {Qubit(0), Qubit(1)});
+    circ.add_assertion(box, {Qubit(1), Qubit(0)});
+    REQUIRE_THROWS(circ.add_assertion(box, {Qubit(0)}));
+  }
   GIVEN("A 3q projector") {
     Circuit circ(3);
     circ.add_op<unsigned>(OpType::Rz, 1.5, {0});
