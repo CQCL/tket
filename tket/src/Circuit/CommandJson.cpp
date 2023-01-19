@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <tkassert/Assert.hpp>
+
 #include "Command.hpp"
 #include "Utils/Json.hpp"
 
@@ -30,14 +32,31 @@ void to_json(nlohmann::json& j, const Command& com) {
 
   nlohmann::json j_args;
   for (size_t i = 0; i < sig.size(); i++) {
-    if (sig[i] == EdgeType::Quantum) {
+    switch (sig[i]) {
+      case EdgeType::Quantum: {
+        const Qubit& qb = static_cast<const Qubit&>(args[i]);
+        j_args.push_back(qb);
+        break;
+      }
+      case EdgeType::Classical:
+      case EdgeType::Boolean: {
+        const Bit& cb = static_cast<const Bit&>(args[i]);
+        j_args.push_back(cb);
+        break;
+      }
+      default: {
+        TKET_ASSERT("command to json found invalid edge type in signature");
+      }  // melf
+    }
+
+    /*if (sig[i] == EdgeType::Quantum) {
       const Qubit& qb = static_cast<const Qubit&>(args[i]);
       j_args.push_back(qb);
     } else if (sig[i] == EdgeType::Classical || sig[i] == EdgeType::Boolean) {
       const Bit& cb = static_cast<const Bit&>(args[i]);
       j_args.push_back(cb);
-    } /*else {
-      TODO wasm wire
+    } / *else {
+      TODO wasm wire melf
     }*/
   }
 

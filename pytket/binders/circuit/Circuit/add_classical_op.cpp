@@ -95,7 +95,7 @@ void init_circuit_add_classical_op(
           "See :py:meth:`add_c_transform`.", py::arg("values"), py::arg("args"),
           py::arg("name") = "ClassicalTransform")
       .def(
-          "_add_wasm", // TODO wasm wire
+          "_add_wasm",
           [](Circuit &circ, const std::string &funcname,
              const std::string &wasm_uid,
              const std::vector<unsigned> &i32list_i,
@@ -123,7 +123,7 @@ void init_circuit_add_classical_op(
           py::arg("funcname"), py::arg("wasm_uid"), py::arg("i32list_i"),
           py::arg("i32list_o"), py::arg("args"))
       .def(
-          "_add_wasm", // TODO wasm wire
+          "_add_wasm",
           [](Circuit &circ, const std::string &funcname,
              const std::string &wasm_uid,
              const std::vector<unsigned> &i32list_i,
@@ -151,7 +151,7 @@ void init_circuit_add_classical_op(
           py::arg("funcname"), py::arg("wasm_uid"), py::arg("i32list_i"),
           py::arg("i32list_o"), py::arg("args"))
       .def(
-          "_add_wasm",// TODO wasm wire
+          "_add_wasm",
           [](Circuit &circ, const std::string &funcname,
              const std::string &wasm_uid,
              const std::vector<BitRegister> &list_reg_in,

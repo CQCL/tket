@@ -990,7 +990,6 @@ def test_conditional_classicals() -> None:
 def test_conditional_wasm() -> None:
     c = Circuit(0, 6)
     b = c.add_c_register("b", 2)
-    # TODO wasm wire
     c._add_wasm("funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(1)], condition=b[0])
 
     assert c.depth() == 1
@@ -1016,7 +1015,6 @@ def test_conditional_wasm_iii() -> None:
 
     b = c.add_c_register("b", 2)
 
-    # TODO wasm wire
     c.add_wasm_to_reg("multi", w, [c0, c1], [c2], condition=b[0])
     c.add_wasm_to_reg("add_one", w, [c2], [c2], condition=b[1])
 

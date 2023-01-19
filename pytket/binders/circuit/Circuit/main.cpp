@@ -115,7 +115,7 @@ void init_circuit(py::module &m) {
           py::keep_alive<
               0, 1>() /* Essential: keep object alive while iterator exists */)
       .def(
-          "get_commands",  // TODO wasm wire
+          "get_commands",
           [](const Circuit &circ) {
             std::vector<Command> out;
             for (Command c : circ) {

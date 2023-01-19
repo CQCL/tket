@@ -68,6 +68,10 @@ enum class OpType {
    */
   WASMOutput,
 
+  // when adding more in and out optypes make sure to add them in the exclusion
+  // of the python test in
+  // def optypes(draw: Callable[[SearchStrategy[Any]], Any]) -> OpType:
+
   /**
    * No-op that must be preserved by compilation
    */

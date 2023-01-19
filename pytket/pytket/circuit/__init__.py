@@ -88,7 +88,6 @@ def overload_add_wasm(  # type: ignore
             raise ValueError("only functions with i32 type are allowed")
 
     if filehandler.check_function(funcname, len(list_i), len(list_o)):
-        # TODO wasm wire
         return self._add_wasm(
             funcname, str(filehandler), list_i, list_o, args, **kwargs
         )
@@ -121,7 +120,6 @@ def overload_add_wasm_to_reg(  # type: ignore
     \n:return: the new :py:class:`Circuit`"""
 
     if filehandler.check_function(funcname, len(list_i), len(list_o)):
-        # TODO wasm wire
         return self._add_wasm(funcname, str(filehandler), list_i, list_o, **kwargs)
 
     raise ValueError(f"{funcname} not found, check {repr(filehandler)}")

@@ -143,7 +143,8 @@ def architecture(
 
 @st.composite
 def optypes(draw: Callable[[SearchStrategy[Any]], Any]) -> OpType:
-    return OpType(draw(st.integers(min_value=6, max_value=49)))
+    # the min value excludes the in and out optypes for quantum, classical and wasm
+    return OpType(draw(st.integers(min_value=8, max_value=54)))
 
 
 @st.composite
