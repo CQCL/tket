@@ -108,13 +108,18 @@ Vertex Circuit::add_op<unsigned>(
   OpType optype = gate->get_type();
   unit_vector_t arg_ids;
   for (unsigned i = 0; i < args.size(); ++i) {
-    if (sig.at(i) == EdgeType::Quantum) {
-      arg_ids.push_back(Qubit(args[i]));
-    } else {  // TODO this could be a problem
-      if (sig.at(i) == EdgeType::WASM) {
-        throw CircuitInvalidity("found wasm edge in op");
-      } else {
+    switch (sig.at(i)) {
+      case EdgeType::Quantum: {
+        arg_ids.push_back(Qubit(args[i]));
+        break;
+      }
+      case EdgeType::Classical:
+      case EdgeType::Boolean: {
         arg_ids.push_back(Bit(args[i]));
+        break;
+      }
+      default: {
+        TKET_ASSERT("add_op found invalid edge type in signature");
       }
     }
   }

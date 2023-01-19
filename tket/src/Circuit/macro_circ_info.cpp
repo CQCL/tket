@@ -390,7 +390,7 @@ static std::shared_ptr<b_frontier_t> get_next_b_frontier(
       }
       default: {
         TKET_ASSERT("get_next_b_frontier found invalid edge type in signature");
-      }  // melf switch
+      }
     }
   }
   return next_b_frontier;
@@ -935,41 +935,55 @@ unit_vector_t Circuit::args_from_frontier(
   EdgeVec ins = get_in_edges(vert);
   unit_vector_t args;
   for (port_t p = 0; p < ins.size(); ++p) {
-    if (get_edgetype(ins[p]) == EdgeType::WASM)
-      continue;  // hide wasm from the world
-    if (get_edgetype(ins[p]) == EdgeType::Boolean) {
-      bool found = false;
-      for (const std::pair<Bit, EdgeVec>& pair :
-           prev_b_frontier->get<TagKey>()) {
-        for (const Edge& edge : pair.second) {
-          if (edge == ins[p]) {
+    switch (get_edgetype(ins[p])) {
+      case EdgeType::WASM: {
+        continue;
+      }
+      case EdgeType::Boolean: {
+        bool found = false;
+        for (const std::pair<Bit, EdgeVec>& pair :
+             prev_b_frontier->get<TagKey>()) {
+          for (const Edge& edge : pair.second) {
+            if (edge == ins[p]) {
+              args.push_back(pair.first);
+              found = true;
+              break;
+            }
+          }
+          if (found) {
+            break;
+          }
+        }
+        if (!found)
+          throw CircuitInvalidity(
+              "Vertex edges not found in CRead frontier. Edge: " +
+              get_Op_ptr_from_Vertex(source(ins[p]))->get_name() + " -> " +
+              get_Op_ptr_from_Vertex(target(ins[p]))->get_name());
+
+        break;
+      }
+      case EdgeType::Classical:
+      case EdgeType::Quantum: {
+        Edge out = get_next_edge(vert, ins[p]);
+        bool found = false;
+        for (const std::pair<UnitID, Edge>& pair : u_frontier->get<TagKey>()) {
+          if (pair.second == out) {
             args.push_back(pair.first);
             found = true;
             break;
           }
         }
-        if (found) break;
+        if (!found)
+          throw CircuitInvalidity(
+              "Vertex edges not found in frontier. Edge: " +
+              get_Op_ptr_from_Vertex(source(out))->get_name() + " -> " +
+              get_Op_ptr_from_Vertex(target(out))->get_name());
+
+        break;
       }
-      if (!found)
-        throw CircuitInvalidity(
-            "Vertex edges not found in CRead frontier. Edge: " +
-            get_Op_ptr_from_Vertex(source(ins[p]))->get_name() + " -> " +
-            get_Op_ptr_from_Vertex(target(ins[p]))->get_name());
-    } else {
-      Edge out = get_next_edge(vert, ins[p]);
-      bool found = false;
-      for (const std::pair<UnitID, Edge>& pair : u_frontier->get<TagKey>()) {
-        if (pair.second == out) {
-          args.push_back(pair.first);
-          found = true;
-          break;
-        }
+      default: {
+        TKET_ASSERT("args_from_frontier found invalid edge type in signature");
       }
-      if (!found)
-        throw CircuitInvalidity(
-            "Vertex edges not found in frontier. Edge: " +
-            get_Op_ptr_from_Vertex(source(out))->get_name() + " -> " +
-            get_Op_ptr_from_Vertex(target(out))->get_name());
     }
   }
   return args;

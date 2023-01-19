@@ -46,7 +46,7 @@ void to_json(nlohmann::json& j, const Command& com) {
       }
       default: {
         TKET_ASSERT("command to json found invalid edge type in signature");
-      }  // melf
+      }
     }
   }
 
@@ -77,7 +77,7 @@ void from_json(const nlohmann::json& j, Command& com) {
       }
       default: {
         TKET_ASSERT("command from json found invalid edge type in signature");
-      }  // melf switch
+      }
     }
   }
 
