@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cmake_minimum_required(VERSION 3.16.0)
+cmake_minimum_required(VERSION 3.23)
 project(tkrng CXX)
 
 set(CMAKE_CXX_STANDARD 20)
