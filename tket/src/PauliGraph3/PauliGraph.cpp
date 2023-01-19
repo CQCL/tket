@@ -27,8 +27,6 @@ bool PGOp::operator==(const PGOp& other) const {
   return (type_ == other.type_) && is_equal(other);
 }
 
-bool PGOp::is_equal(const PGOp&) const { return true; }
-
 PGOp::~PGOp() {}
 
 PGOp::PGOp(PGOpType type) : type_(type) {}
@@ -70,11 +68,11 @@ const QubitPauliTensor& PGRotation::get_tensor() const { return tensor_; }
 const Expr& PGRotation::get_angle() const { return angle_; }
 
 PGRotation::PGRotation(const QubitPauliTensor& tensor, const Expr& angle) : PGOp(PGOpType::Rotation), tensor_(tensor), angle_(angle) {
-  if (tensor_.coeff == -1.) {
+  if (std::abs(tensor.coeff + 1.) < EPS) {
     angle_ *= -1.;
     tensor_.coeff = 1.;
   }
-  else if (tensor_.coeff != 1.) throw PGError("Invalid coefficient in tensor for PauliGraph rotation");
+  else if (std::abs(tensor.coeff - 1.) >= EPS) throw PGError("Invalid coefficient in tensor for PauliGraph rotation");
 }
 
 SymSet PGRotation::free_symbols() const { return expr_free_symbols(angle_); }
@@ -469,7 +467,7 @@ PGVert PauliGraph::add_vertex_at_end(PGOp_ptr op) {
         pauli_ac_(mat_offset, prev_pauli.index) = false;
       }
       else {
-        pauli_ac_ mat_offset, prev_pauli.index) = !tensor.commutes_with(other_op->port(prev_pauli.port));
+        pauli_ac_(mat_offset, prev_pauli.index) = !tensor.commutes_with(other_op->port(prev_pauli.port));
       }
     }
   }

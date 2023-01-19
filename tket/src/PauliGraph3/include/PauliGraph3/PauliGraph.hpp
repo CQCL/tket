@@ -109,7 +109,7 @@ class PGOp {
    *
    * For base class PGOp, it is sufficient that they have same type
    */
-  virtual bool is_equal(const PGOp& other) const;
+  virtual bool is_equal(const PGOp& other) const = 0;
 
   bool commutes_with(const PGOp& other) const;
 
