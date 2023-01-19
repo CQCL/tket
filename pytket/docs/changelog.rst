@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+General:
+
+* Support for MacOS >= 11.0 on both x86_64 and arm64.
+
 1.11.0 (January 2023)
 ---------------------
 
