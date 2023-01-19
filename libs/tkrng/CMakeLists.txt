@@ -23,9 +23,6 @@ if(CCACHE_PROGRAM)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
 endif()
 
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()
-
 if(WIN32)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS yes)
 endif()
