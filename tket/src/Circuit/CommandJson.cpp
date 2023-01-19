@@ -28,6 +28,7 @@ void to_json(nlohmann::json& j, const Command& com) {
   }
 
   const op_signature_t& sig = op->get_signature();
+
   const unit_vector_t& args = com.get_args();
 
   nlohmann::json j_args;
@@ -45,7 +46,7 @@ void to_json(nlohmann::json& j, const Command& com) {
         break;
       }
       default: {
-        TKET_ASSERT("command to json found invalid edge type in signature");
+        TKET_ASSERT(!"command to json found invalid edge type in signature");
       }
     }
   }
@@ -66,6 +67,9 @@ void from_json(const nlohmann::json& j, Command& com) {
   unit_vector_t args;
   for (size_t i = 0; i < sig.size(); i++) {
     switch (sig[i]) {
+      case EdgeType::WASM: {
+        break;
+      }
       case EdgeType::Quantum: {
         args.push_back(j_args[i].get<Qubit>());
         break;
@@ -76,7 +80,7 @@ void from_json(const nlohmann::json& j, Command& com) {
         break;
       }
       default: {
-        TKET_ASSERT("command from json found invalid edge type in signature");
+        TKET_ASSERT(!"command from json found invalid edge type in signature");
       }
     }
   }

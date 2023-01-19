@@ -911,7 +911,7 @@ def circuit_from_qasm_str(qasm_str: str) -> Circuit:
         reset_wasm=False
     )
     new_dict = parser.parse(qasm_str)
-    return Circuit.from_dict(new_dict)  # this will not work with wasm
+    return Circuit.from_dict(new_dict)
 
 
 def circuit_from_qasm_io(stream_in: TextIO) -> Circuit:

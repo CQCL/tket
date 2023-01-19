@@ -78,7 +78,7 @@ static Circuit *add_gate_method(
           break;
         }
         default: {
-          TKET_ASSERT("add_gate_method found invalid edge type in signature");
+          TKET_ASSERT(!"add_gate_method found invalid edge type in signature");
         }
       }
     }

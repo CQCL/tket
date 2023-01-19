@@ -54,7 +54,7 @@ bool is_valid(const DAG &G) {
           w_in.insert(e);
           break;
         default:
-          CHECK(!"unknown edge type");
+          CHECK(!"found unknown edge type in is_valid check");
       }
     }
     EdgeSet q_out, c_out, b_out, w_out;
@@ -73,7 +73,7 @@ bool is_valid(const DAG &G) {
           w_out.insert(e);
           break;
         default:
-          CHECK(!"unknown edge type");
+          CHECK(!"found unknown edge type in is_valid check");
       }
     }
     std::set<port_t> in_ports, q_in_ports, q_out_ports, c_in_ports, c_out_ports,

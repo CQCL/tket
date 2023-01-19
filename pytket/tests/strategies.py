@@ -175,7 +175,6 @@ def backendinfo(
     supports_fast_feedforward = draw(st.booleans())
     supports_reset = draw(st.booleans())
     supports_midcircuit_measurement = draw(st.booleans())
-    # is it possible to exclude some optyps at this point
     all_node_gate_errors = draw(st.dictionaries(nodes(), optype_errors()))
     all_edge_gate_errors = draw(st.dictionaries(edges(), optype_errors()))
     all_readout_errors = draw(st.dictionaries(nodes(), st.lists(st.lists(errors()))))

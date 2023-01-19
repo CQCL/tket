@@ -119,7 +119,7 @@ Vertex Circuit::add_op<unsigned>(
         break;
       }
       default: {
-        TKET_ASSERT("add_op found invalid edge type in signature");
+        TKET_ASSERT(!"add_op found invalid edge type in signature");
       }
     }
   }

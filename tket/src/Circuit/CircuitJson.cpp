@@ -46,25 +46,19 @@ void from_json(const nlohmann::json& j, Circuit& circ) {
   if (j.contains("name")) {
     circ.set_name(j["name"].get<std::string>());
   }
-
   circ.add_phase(j.at("phase").get<Expr>());
-
   const auto& qubits = j.at("qubits").get<qubit_vector_t>();
   for (const auto& qb : qubits) {
     circ.add_qubit(qb);
   }
-
   const auto& bits = j.at("bits").get<bit_vector_t>();
   for (const auto& b : bits) {
     circ.add_bit(b);
   }
 
-  unsigned int i = 0;
   for (const auto& j_com : j.at("commands")) {
     const auto& com = j_com.get<Command>();
     circ.add_op(com.get_op_ptr(), com.get_args(), com.get_opgroup());
-
-    ++i;
   }
   const auto& imp_perm = j.at("implicit_permutation").get<qubit_map_t>();
   circ.permute_boundary_output(imp_perm);

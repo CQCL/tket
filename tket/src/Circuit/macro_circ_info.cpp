@@ -389,7 +389,8 @@ static std::shared_ptr<b_frontier_t> get_next_b_frontier(
         break;
       }
       default: {
-        TKET_ASSERT("get_next_b_frontier found invalid edge type in signature");
+        TKET_ASSERT(
+            !"get_next_b_frontier found invalid edge type in signature");
       }
     }
   }
@@ -978,11 +979,10 @@ unit_vector_t Circuit::args_from_frontier(
               "Vertex edges not found in frontier. Edge: " +
               get_Op_ptr_from_Vertex(source(out))->get_name() + " -> " +
               get_Op_ptr_from_Vertex(target(out))->get_name());
-
         break;
       }
       default: {
-        TKET_ASSERT("args_from_frontier found invalid edge type in signature");
+        TKET_ASSERT(!"args_from_frontier found invalid edge type in signature");
       }
     }
   }
