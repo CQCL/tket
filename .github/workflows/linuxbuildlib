@@ -35,8 +35,8 @@ ${CONAN_CMD} user -p ${JFROG_ARTIFACTORY_TOKEN_2} -r tket-libs ${JFROG_ARTIFACTO
 
 LIB_VER=$(${CONAN_CMD} inspect --raw version ${TKLIB})
 
-${CONAN_CMD} create --profile=tket -o ${TKLIB}:shared=False ${TKLIB} tket/stable
-${CONAN_CMD} create --profile=tket -o ${TKLIB}:shared=True ${TKLIB} tket/stable
+${CONAN_CMD} create --profile=tket -o ${TKLIB}:shared=False ${TKLIB} tket/stable --build=missing
+${CONAN_CMD} create --profile=tket -o ${TKLIB}:shared=True ${TKLIB} tket/stable --build=missing
 
 if [ ${UPLOAD_PACKAGE} == "YES" ]
 then

@@ -15,6 +15,11 @@
 cmake_minimum_required(VERSION 3.23)
 project(tktokenswap CXX)
 
+find_package(tklog CONFIG REQUIRED)
+find_package(tkassert CONFIG REQUIRED)
+find_package(tkrng CONFIG REQUIRED)
+find_package(Boost CONFIG REQUIRED)
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -27,47 +32,7 @@ if(WIN32)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS yes)
 endif()
 
-if(APPLE)
-    # set correct install_name
-    set(CMAKE_INSTALL_NAME_DIR "@loader_path")
-    set(CMAKE_BUILD_WITH_INSTALL_NAME_DIR ON)
-endif()
-
-add_library(tktokenswap
-    BestFullTsa.cpp
-    CyclesCandidateManager.cpp
-    CyclesGrowthManager.cpp
-    CyclesPartialTsa.cpp
-    CyclicShiftCostEstimate.cpp
-    DistancesInterface.cpp
-    DynamicTokenTracker.cpp
-    HybridTsa.cpp
-    NeighboursInterface.cpp
-    PartialTsaInterface.cpp
-    RiverFlowPathFinder.cpp
-    SwapListOptimiser.cpp
-    TrivialTSA.cpp
-    VectorListHybridSkeleton.cpp
-    TSAUtils/DistanceFunctions.cpp
-    TSAUtils/SwapFunctions.cpp
-    TSAUtils/VertexMappingFunctions.cpp
-    TSAUtils/VertexSwapResult.cpp
-    TableLookup/CanonicalRelabelling.cpp
-    TableLookup/ExactMappingLookup.cpp
-    TableLookup/FilteredSwapSequences.cpp
-    TableLookup/PartialMappingLookup.cpp
-    TableLookup/SwapConversion.cpp
-    TableLookup/SwapListSegmentOptimiser.cpp
-    TableLookup/SwapListTableOptimiser.cpp
-    TableLookup/SwapSequenceTable.cpp
-    TableLookup/VertexMapResizing.cpp
-    )
-target_include_directories(tktokenswap PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include)
-target_include_directories(tktokenswap PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/tktokenswap)
-target_include_directories(tktokenswap INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
-
-target_link_libraries(tktokenswap PRIVATE
-    ${CONAN_LIBS_TKLOG} ${CONAN_LIBS_TKASSERT} ${CONAN_LIBS_TKRNG})
+add_library(tktokenswap)
 
 if(MSVC)
   target_compile_options(tktokenswap PRIVATE /W4 /WX /wd4267)
@@ -86,3 +51,73 @@ IF (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         ENDIF()
     ENDIF()
 ENDIF()
+
+target_include_directories(tktokenswap PUBLIC include/tktokenswap)
+target_link_libraries(tktokenswap PRIVATE tklog::tklog)
+target_link_libraries(tktokenswap PRIVATE tkassert::tkassert)
+target_link_libraries(tktokenswap PRIVATE tkrng::tkrng)
+target_link_libraries(tktokenswap PRIVATE boost::boost)
+
+target_sources(tktokenswap
+    PRIVATE
+        src/BestFullTsa.cpp
+        src/CyclesCandidateManager.cpp
+        src/CyclesGrowthManager.cpp
+        src/CyclesPartialTsa.cpp
+        src/CyclicShiftCostEstimate.cpp
+        src/DistancesInterface.cpp
+        src/DynamicTokenTracker.cpp
+        src/HybridTsa.cpp
+        src/NeighboursInterface.cpp
+        src/PartialTsaInterface.cpp
+        src/RiverFlowPathFinder.cpp
+        src/SwapListOptimiser.cpp
+        src/TrivialTSA.cpp
+        src/VectorListHybridSkeleton.cpp
+        src/TSAUtils/DistanceFunctions.cpp
+        src/TSAUtils/SwapFunctions.cpp
+        src/TSAUtils/VertexMappingFunctions.cpp
+        src/TSAUtils/VertexSwapResult.cpp
+        src/TableLookup/CanonicalRelabelling.cpp
+        src/TableLookup/ExactMappingLookup.cpp
+        src/TableLookup/FilteredSwapSequences.cpp
+        src/TableLookup/PartialMappingLookup.cpp
+        src/TableLookup/SwapConversion.cpp
+        src/TableLookup/SwapListSegmentOptimiser.cpp
+        src/TableLookup/SwapListTableOptimiser.cpp
+        src/TableLookup/SwapSequenceTable.cpp
+        src/TableLookup/VertexMapResizing.cpp
+    PUBLIC FILE_SET HEADERS
+    BASE_DIRS ${PROJECT_SOURCE_DIR}/include
+    FILES
+        include/tktokenswap/BestFullTsa.hpp
+        include/tktokenswap/CanonicalRelabelling.hpp
+        include/tktokenswap/CyclesCandidateManager.hpp
+        include/tktokenswap/CyclesGrowthManager.hpp
+        include/tktokenswap/CyclesPartialTsa.hpp
+        include/tktokenswap/DistanceFunctions.hpp
+        include/tktokenswap/DistancesInterface.hpp
+        include/tktokenswap/DynamicTokenTracker.hpp
+        include/tktokenswap/ExactMappingLookup.hpp
+        include/tktokenswap/FilteredSwapSequences.hpp
+        include/tktokenswap/GeneralFunctions.hpp
+        include/tktokenswap/HybridTsa.hpp
+        include/tktokenswap/NeighboursInterface.hpp
+        include/tktokenswap/PartialMappingLookup.hpp
+        include/tktokenswap/PartialTsaInterface.hpp
+        include/tktokenswap/RiverFlowPathFinder.hpp
+        include/tktokenswap/SwapConversion.hpp
+        include/tktokenswap/SwapFunctions.hpp
+        include/tktokenswap/SwapListOptimiser.hpp
+        include/tktokenswap/SwapListSegmentOptimiser.hpp
+        include/tktokenswap/SwapListTableOptimiser.hpp
+        include/tktokenswap/SwapSequenceTable.hpp
+        include/tktokenswap/TrivialTSA.hpp
+        include/tktokenswap/VectorListHybrid.hpp
+        include/tktokenswap/VectorListHybridSkeleton.hpp
+        include/tktokenswap/VertexMappingFunctions.hpp
+        include/tktokenswap/VertexMapResizing.hpp
+        include/tktokenswap/VertexSwapResult.hpp
+        )
+
+install(TARGETS tktokenswap FILE_SET HEADERS)
