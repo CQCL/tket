@@ -15,8 +15,10 @@
 cmake_minimum_required(VERSION 3.23)
 project(PackageTest CXX)
 
+find_package(tklog CONFIG REQUIRED)
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_executable(example example.cpp)
-target_link_libraries(example ${CONAN_LIBS})
+add_executable(example src/example.cpp)
+target_link_libraries(example tklog::tklog)

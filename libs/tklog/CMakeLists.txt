@@ -27,16 +27,7 @@ if(WIN32)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS yes)
 endif()
 
-if(APPLE)
-    # set correct install_name
-    set(CMAKE_INSTALL_NAME_DIR "@loader_path")
-    set(CMAKE_BUILD_WITH_INSTALL_NAME_DIR ON)
-endif()
-
-add_library(tklog TketLog.cpp)
-target_include_directories(tklog PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/tklog)
-target_include_directories(tklog INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
-
+add_library(tklog)
 
 if(MSVC)
   target_compile_options(tklog PRIVATE /W4 /WX)
@@ -55,3 +46,13 @@ IF (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         ENDIF()
     ENDIF()
 ENDIF()
+
+target_include_directories(tklog PUBLIC include/tklog)
+
+target_sources(tklog
+    PRIVATE src/TketLog.cpp
+    PUBLIC FILE_SET HEADERS
+    BASE_DIRS ${PROJECT_SOURCE_DIR}/include
+    FILES include/tklog/TketLog.hpp)
+
+install(TARGETS tklog FILE_SET HEADERS)
