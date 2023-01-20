@@ -123,4 +123,13 @@ const PassPtr &CnXPairwiseDecomposition();
  */
 const PassPtr &RemoveImplicitQubitPermutation();
 
+template<typename Error>
+const PassPtr &WrapError(const PassPtr pass, const std::string& error_msg) {
+  static const PassPtr pp([pass, error_msg]() {
+    return std::make_shared<ErrorWrapPass<Error>>(pass, error_msg);
+  }());
+  return pp;
+}
+
+
 }  // namespace tket

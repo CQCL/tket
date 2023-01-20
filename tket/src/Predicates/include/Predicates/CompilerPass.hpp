@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include <exception>
 #include "CompilationUnit.hpp"
 #include "Predicates.hpp"
 #include "Utils/Json.hpp"
@@ -275,6 +276,45 @@ class RepeatUntilSatisfiedPass : public BasePass {
  private:
   PassPtr pass_;
   PredicatePtr pred_;
+};
+
+/* Runs a sequence of Passes */
+template<class Error>
+class ErrorWrapPass : public BasePass {
+ public:
+  ErrorWrapPass(const PassPtr& pass, const std::string& error_message)
+      : BasePass(pass->get_conditions().first, pass->get_conditions().second),
+        pass_(pass),
+        error_message_(error_message) {};
+  bool apply(
+      CompilationUnit& c_unit, SafetyMode safe_mode = SafetyMode::Default,
+      const PassCallback& before_apply = trivial_callback,
+      const PassCallback& after_apply = trivial_callback) const override {
+    before_apply(c_unit, this->get_config());
+    bool success = false;
+    try {
+      success = this->pass_->apply(c_unit, safe_mode, before_apply, after_apply);
+    } catch (const Error& e) {
+      std::throw_with_nested(Error(this->error_message_));
+    }
+    after_apply(c_unit, this->get_config());
+    return success;
+  }
+  std::string to_string() const override {
+    return "ErrorWrapPass(" + this->pass_->to_string() + ")";
+  };
+  nlohmann::json get_config() const override {
+    return this->pass_->get_config();
+  }
+  PassPtr get_pass() const { return pass_; }
+
+  friend PassPtr operator>>(const PassPtr& lhs, const PassPtr& rhs) {
+    return std::make_shared<SequencePass>(std::vector<PassPtr>{lhs, rhs});
+  }
+
+ private:
+  PassPtr pass_;
+  std::string error_message_;
 };
 
 // TODO: Repeat with a metric, repeat until a Predicate is satisfied...

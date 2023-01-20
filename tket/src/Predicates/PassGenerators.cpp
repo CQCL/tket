@@ -266,7 +266,10 @@ PassPtr gen_cx_mapping_pass(
       gen_rebase_pass(gate_set, CircPool::CX(), CircPool::tk1_to_tk1);
   PassPtr return_pass =
       rebase_pass >> gen_full_mapping_pass(arc, placement_ptr, config);
-  if (delay_measures) return_pass = return_pass >> DelayMeasures();
+  if (delay_measures) {
+    PassPtr delay_meas = WrapError<CircuitInvalidity>(DelayMeasures(), "The circuit contains measurements that cannot be delayed.");
+    return_pass = return_pass >> delay_meas;
+  }
   return_pass = return_pass >> rebase_pass >>
                 gen_decompose_routing_gates_to_cxs_pass(arc, directed_cx);
   return return_pass;
