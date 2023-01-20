@@ -93,6 +93,10 @@ build-proptests: ## build proptests binary
 .PHONY: build
 build: build-tests build-proptests ## build all
 
+.PHONY: clean
+clean: ## clean all
+	cmake --build $(cmake_build_dir) --target clean -j $(n_cpus)
+
 test_args="~[latex]"
 .PHONY: test
 test: build-tests ## build and run tket tests, override arguments to test binary using test_args variable, e.g., `make test_args='-r compact "[long]"' test`
