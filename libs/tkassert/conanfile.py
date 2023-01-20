@@ -65,4 +65,4 @@ class TkassertConan(ConanFile):
         self.cpp_info.libs = ["tkassert"]
 
     def requirements(self):
-        self.requires("tklog/0.1.2@tket/stable")
+        self.requires("tklog/0.1.2@tket/stable", transitive_headers=True)

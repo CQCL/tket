@@ -66,6 +66,6 @@ class TktokenswapConan(ConanFile):
 
     def requirements(self):
         self.requires("tklog/0.1.2@tket/stable")
-        self.requires("tkassert/0.1.1@tket/stable")
+        self.requires("tkassert/0.1.1@tket/stable", transitive_headers=True)
         self.requires("tkrng/0.1.2@tket/stable")
         self.requires("boost/1.81.0")
