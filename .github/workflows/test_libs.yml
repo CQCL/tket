@@ -53,8 +53,7 @@ jobs:
           echo "LIBS_TO_TEST=${{ toJSON(needs.changes.outputs.libs) }}" >> $GITHUB_ENV
       - name: Set libs matrix
         id: set-matrix
-        run: |
-          echo "::set-output name=matrix::$LIBS_TO_TEST"
+        run: echo "matrix=${LIBS_TO_TEST}" >> $GITHUB_OUTPUT
   test_libraries:
     name: test library
     needs: set_libs_matrix
