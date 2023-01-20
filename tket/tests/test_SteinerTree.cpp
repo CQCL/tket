@@ -41,17 +41,6 @@ SCENARIO("Build some basic trees") {
     unsigned u0 = 0;
     REQUIRE_THROWS(st = aas::SteinerTree(handler, nodes_to_add, u0));
   }
-  /*GIVEN("check error in add_path_to_tree") {
-    MatrixXb connectivity(2, 2);
-    connectivity << 0, 1, 1, 0;
-    aas::PathHandler handler(connectivity);
-    std::list<unsigned> nodes_to_add{0};
-    unsigned u0 = 0;
-    aas::SteinerTree st(handler, nodes_to_add, u0);
-    unsigned u1 = 0;
-    unsigned u2 = 2;
-    REQUIRE_THROWS(st.add_path_to_tree(handler, u1, u2));
-  }*/
   GIVEN("2-vertex tree in 2-vertex graph") {
     MatrixXb connectivity(2, 2);
     connectivity << 0, 1, 1, 0;
