@@ -152,5 +152,18 @@ SCENARIO("generating circ with wasm") {
   }
 }
 
+SCENARIO("test wasm uid") {
+  GIVEN("wasm uid") { WASMUID wuid = WASMUID(); }
+  GIVEN("wasm uid - compare") {
+    WASMUID wuid = WASMUID();
+    WASMUID wuid_2 = WASMUID();
+    REQUIRE(wuid == wuid_2);
+  }
+  GIVEN("wasm uid - create bit from wasm") {
+    WASMUID wuid = WASMUID();
+    REQUIRE_THROWS(Bit(wuid));
+  }
+}
+
 }  // namespace test_Boxes
 }  // namespace tket

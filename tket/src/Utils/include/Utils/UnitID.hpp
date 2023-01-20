@@ -214,9 +214,6 @@ class Bit : public UnitID {
       : UnitID(name, index, UnitType::Bit) {}
 
   explicit Bit(const UnitID &other) : UnitID(other) {
-    if (other.type() == UnitType::WASMUIDT) {
-      std::cout << "try to convert wasmuid to bit\n";
-    }
     if (other.type() != UnitType::Bit) {
       throw InvalidUnitConversion(other.repr(), "Bit");
     }
@@ -265,7 +262,7 @@ class Node : public Qubit {
 
 JSON_DECL(Node)
 
-/** Architectural qubit location */
+/** WASM UID */
 class WasmNode : public WASMUID {
  public:
   WasmNode() : WASMUID() {}

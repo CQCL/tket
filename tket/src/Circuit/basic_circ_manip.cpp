@@ -220,9 +220,11 @@ Vertex Circuit::add_assertion(
     const std::optional<std::string>& name) {
   auto circ_ptr = assertion_box.to_circuit();
   unsigned log2_dim = log2(assertion_box.get_matrix().rows());
+
   if (circ_ptr->n_qubits() > log2_dim && ancilla == std::nullopt) {
-    throw CircuitInvalidity("This assertion requires an ancilla");
+    throw CircuitInvalidity("This assertion requires an ancilla");  // unused
   }
+
   if (qubits.size() != log2_dim) {
     throw CircuitInvalidity(
         std::to_string(qubits.size()) +
@@ -233,7 +235,7 @@ Vertex Circuit::add_assertion(
   unit_vector_t args;
   args.insert(args.end(), qubits.begin(), qubits.end());
   if (circ_ptr->n_qubits() > log2_dim) {
-    args.push_back(*ancilla);
+    args.push_back(*ancilla);  // unused
   }
   append_debug_bits(*this, args, assertion_box.get_expected_readouts(), name);
   return add_op<UnitID>(
@@ -246,7 +248,7 @@ Vertex Circuit::add_assertion(
     const std::optional<std::string>& name) {
   auto circ_ptr = assertion_box.to_circuit();
   unsigned pauli_len = assertion_box.get_stabilisers()[0].string.size();
-  if (qubits.size() != pauli_len) {
+  if (qubits.size() != pauli_len) {  // unused
     throw CircuitInvalidity(
         std::to_string(qubits.size()) +
         " target qubits provided, but the stabilisers requires " +
@@ -284,9 +286,9 @@ Edge Circuit::add_edge(
   std::pair<Edge, bool> edge_pairy =
       boost::add_edge(source.first, target.first, this->dag);
 
-  if (edge_pairy.second == false) {
-    throw MissingVertex("Cannot create edge between vertices");
-  }
+  // Cannot create edge between vertices
+  TKET_ASSERT(edge_pairy.second);
+
   Edge new_E = edge_pairy.first;
   dag[new_E].ports.first = source.second;
   dag[new_E].ports.second = target.second;
@@ -333,8 +335,8 @@ void Circuit::remove_vertex(
 
   boost::clear_vertex(deadvert, this->dag);
   if (vertex_deletion == VertexDeletion::Yes) {
-    if (detect_boundary_Op(deadvert))
-      throw CircuitInvalidity("Cannot remove a boundary vertex");
+    // Cannot remove a boundary vertex
+    TKET_ASSERT(!detect_boundary_Op(deadvert));
     boost::remove_vertex(deadvert, this->dag);
   }
 }
@@ -383,9 +385,9 @@ unit_map_t Circuit::flatten_registers() {
 
 // this automatically updates the circuit boundaries
 void Circuit::add_blank_wires(unsigned n) {
-  if (!default_regs_ok())
-    throw CircuitInvalidity(
-        "Incompatible registers exist with the default names");  // unused
+  // Incompatible registers exist with the default names
+  TKET_ASSERT(default_regs_ok());
+
   unsigned index = 0;
   for (unsigned i = 0; i < n; i++) {
     Vertex in = add_vertex(OpType::Input);
@@ -417,10 +419,10 @@ void Circuit::add_qubit(const Qubit& id, bool reject_dups) {
   }
   opt_reg_info_t reg_info = get_reg_info(id.reg_name());
   register_info_t correct_info = {UnitType::Qubit, id.reg_dim()};
-  if (reg_info && !(reg_info.value() == correct_info))
-    throw CircuitInvalidity(
-        "Cannot add qubit with ID \"" + id.repr() +
-        "\" as register is not compatible");
+
+  // Cannot add qubit with ID id.repr() ss register is not compatible
+  TKET_ASSERT(!reg_info || (reg_info.value() == correct_info));
+
   Vertex in = add_vertex(OpType::Input);
   Vertex out = add_vertex(OpType::Output);
   add_edge({in, 0}, {out, 0}, EdgeType::Quantum);
@@ -440,10 +442,10 @@ void Circuit::add_bit(const Bit& id, bool reject_dups) {
   }
   opt_reg_info_t reg_info = get_reg_info(id.reg_name());
   register_info_t correct_info = {UnitType::Bit, id.reg_dim()};
-  if (reg_info && !(reg_info.value() == correct_info))
-    throw CircuitInvalidity(
-        "Cannot add bit with ID \"" + id.repr() +
-        "\" as register is not compatible");
+
+  // Cannot add qubit with ID id.repr() ss register is not compatible
+  TKET_ASSERT(!reg_info || (reg_info.value() == correct_info));
+
   Vertex in = add_vertex(OpType::ClInput);
   Vertex out = add_vertex(OpType::ClOutput);
   add_edge({in, 0}, {out, 0}, EdgeType::Classical);

@@ -210,6 +210,17 @@ SCENARIO("Testing stabiliser based assertion") {
     CompilationUnit cu(circ);
     REQUIRE(DecomposeBoxes()->apply(cu));
   }
+  GIVEN("Random stabilisers II") {
+    Circuit circ(3);
+    circ.add_op<unsigned>(OpType::Rz, 1.5, {0});
+    circ.add_op<unsigned>(OpType::CX, {1, 0});
+    PauliStabiliser pauli1 = {{Pauli::X}, true};
+    PauliStabiliser pauli2 = {{Pauli::Z}, true};
+    PauliStabiliserList stabilisers = {pauli1, pauli2};
+    StabiliserAssertionBox box(stabilisers);
+    REQUIRE_THROWS(circ.add_assertion(
+        box, {Qubit(0), Qubit(2)}, Qubit(1), "random stabiliser"));
+  }
 
   GIVEN("Invalid input") {
     WHEN("Empty input") {
