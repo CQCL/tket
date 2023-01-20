@@ -51,7 +51,7 @@ jobs:
         pip install conan~=1.53
         tket_ver=$(conan inspect --raw version recipes/tket/conanfile.py)
         echo "::set-output name=tket_ver::${tket_ver}"
-    - name: See if version exists on remote
+    - name: See if the version exists on the remote
       id: test_package_exists
       run: |
         conan remote clean
