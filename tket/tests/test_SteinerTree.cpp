@@ -32,6 +32,22 @@ SCENARIO("Build some basic trees") {
     correct_neighbours << 0, 0, 0, 0;
     REQUIRE(nodes_to_add.size() == 0);
   }
+  GIVEN("check empty initial list") {
+    MatrixXb connectivity(2, 2);
+    connectivity << 0, 1, 1, 0;
+    aas::PathHandler handler(connectivity);
+    std::list<unsigned> nodes_to_add{};
+    aas::SteinerTree st;
+    REQUIRE_THROWS(st = aas::SteinerTree(handler, nodes_to_add, 0));
+  }
+  GIVEN("check error in add_path_to_tree") {
+    MatrixXb connectivity(2, 2);
+    connectivity << 0, 1, 1, 0;
+    aas::PathHandler handler(connectivity);
+    std::list<unsigned> nodes_to_add{0};
+    aas::SteinerTree st(handler, nodes_to_add, 0);
+    REQUIRE_THROWS(st.add_path_to_tree(handler, 0, 2));
+  }
   GIVEN("2-vertex tree in 2-vertex graph") {
     MatrixXb connectivity(2, 2);
     connectivity << 0, 1, 1, 0;
