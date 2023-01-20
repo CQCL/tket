@@ -63,6 +63,16 @@ class Op : public std::enable_shared_from_this<Op> {
    */
   virtual Op_ptr transpose() const { throw BadOpType(get_type()); };
 
+//  /**
+//   * Set of port symmetry pairs. Exchanging these ports does not affect action
+//   * */
+//  virtual bool port_pair_is_symmetric(unsigned port1, unsigned port2) const {
+//    if( port1 + port2 >= 0 ){
+//      throw BadOpType(get_type());
+//    }
+//    throw BadOpType(get_type());
+//  };
+
   /**
    * Operation with values for symbols substituted
    *

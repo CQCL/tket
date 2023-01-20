@@ -24,7 +24,6 @@
 #include "Circuit/CircUtils.hpp"
 #include "Circuit/DAGDefs.hpp"
 #include "Decomposition.hpp"
-#include "Gate/Gate.hpp"
 #include "Transform.hpp"
 #include "Utils/EigenConfig.hpp"
 #include "Utils/MatrixAnalysis.hpp"

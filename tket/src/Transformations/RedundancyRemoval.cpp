@@ -77,7 +77,7 @@ bool vertex_is_a_measurement(const Circuit &circuit, Vertex const &vertex) {
 static bool
 vertex_is_succeeded_only_by_z_basis_measurements_with_which_it_commutes(
     const Circuit &circuit, const Vertex &vertex) {
-  // If vertex has no classical out edges, no need to continue
+  // If vertex has classical out edges, no need to continue
   if (circuit.n_out_edges_of_type(vertex, EdgeType::Classical) != 0)
     return false;
   auto successors = circuit.get_successors(vertex);
@@ -113,16 +113,21 @@ bool preliminary_vertex_successor_checks_pass(Circuit &circuit, const Vertex &ve
   auto successor = successors[0];
   if (circuit.get_predecessors(successor).size() != 1) return false;
 
-  // check that the ports match up between vertices
-  for (const Edge &in : circuit.get_in_edges(successor)) {
-    if (circuit.get_source_port(in) != circuit.get_target_port(in)){
-      return false;
-    }
-  }
-
-  // check that the classical edges match up correctly
+  // check that successor has adjoint
   if (circuit.get_Op_ptr_from_Vertex(successor)->get_desc().is_oneway()){
     return false;
+  }
+
+  const Op_ptr vertex_op = circuit.get_Op_ptr_from_Vertex(vertex);
+  auto vertex_gate = std::dynamic_pointer_cast<const Gate>(vertex_op);
+
+  // check that the ports respect the (a)symmetry between vertices
+  for (const Edge &in : circuit.get_in_edges(successor)) {
+    auto source_port = circuit.get_source_port(in);
+    auto target_port = circuit.get_target_port(in);
+    if (not vertex_gate->port_pair_is_symmetric(source_port, target_port)){
+      return false;
+    }
   }
 
   return true;

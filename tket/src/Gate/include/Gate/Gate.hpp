@@ -13,7 +13,6 @@
 // limitations under the License.
 
 #pragma once
-
 #include "Ops/Op.hpp"
 #include "Utils/Json.hpp"
 
@@ -32,6 +31,9 @@ class Gate : public Op {
 
   // return transpose
   Op_ptr transpose() const override;
+
+  // return set of port symmetry pairs. Exchanging these ports does not affect gate action
+  bool port_pair_is_symmetric(unsigned port1, unsigned port2) const;
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &sub_map) const override;
