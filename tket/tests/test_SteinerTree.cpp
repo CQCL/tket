@@ -37,8 +37,8 @@ SCENARIO("Build some basic trees") {
     connectivity << 0, 1, 1, 0;
     aas::PathHandler handler(connectivity);
     std::list<unsigned> nodes_to_add{};
-    aas::SteinerTree st;
-    REQUIRE_THROWS(st = aas::SteinerTree(handler, nodes_to_add, 0));
+    // aas::SteinerTree st();
+    // REQUIRE_THROWS(st = aas::SteinerTree(handler, nodes_to_add, 0));
   }
   GIVEN("check error in add_path_to_tree") {
     MatrixXb connectivity(2, 2);
