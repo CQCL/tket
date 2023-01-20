@@ -70,17 +70,12 @@ SteinerForest::SteinerForest(
         unsigned qubit_id = UINT_MAX;
         for (SteinerNodeType q : tree_expr.first.node_types) {
           if (q == SteinerNodeType::Leaf) {
-            if (qubit_id != UINT_MAX) {
-              throw std::logic_error("Two nodes found to add the Rz");
-            } else {
-              qubit_id = tree_expr.first.root;
-            }
+            TKET_ASSERT(qubit_id == UINT_MAX);  // Two nodes found to add the Rz
+            qubit_id = tree_expr.first.root;
           }
         }
 
-        if (qubit_id == UINT_MAX) {
-          throw std::logic_error("No node found to add the Rz");
-        }
+        TKET_ASSERT(qubit_id != UINT_MAX);  // No node found to add the Rz
 
         std::vector<unsigned> qubit{qubit_id};
 
@@ -102,8 +97,8 @@ SteinerForest::SteinerForest(
 }
 
 void SteinerForest::add_row_globally(unsigned i, unsigned j) {
-  /* CNOT with control j and target i. Which way round the indices are is a wee
-   * bit fiddly. */
+  /* CNOT with control j and target i. Which way round the indices are is a
+   * wee bit fiddly. */
   std::vector<unsigned> qbs = {j, i};
   synth_circuit.add_op(OpType::CX, qbs);
   linear_function.col_add(
@@ -196,9 +191,7 @@ CostedOperations best_operations_lookahead(
   OperationList operations_available =
       forest.operations_available_at_min_costs(path);
 
-  if (operations_available.empty()) {
-    throw std::logic_error("Cannot find any operations");
-  }
+  TKET_ASSERT(!operations_available.empty());  // Cannot find any operations
 
   // set up base case
   OperationList ops{operations_available.front()};
@@ -440,11 +433,11 @@ class PhasePolySynthesizer {
     // define new phase poly box
     Circuit circuit_ppb(*placed_ppb.to_circuit());
     // the aas code is implemented under the assumption that all qubits in the
-    // circuit are named from 0 to n. The same assumption was made for the nodes
-    // of the architecture. To make sure that this condition is fulfilled the
-    // qubits in the circuit and the architecture are renamed. The new names are
-    // reverted at the end of the aas procedure. The qubits and the nodes have
-    // the same name in the input.
+    // circuit are named from 0 to n. The same assumption was made for the
+    // nodes of the architecture. To make sure that this condition is
+    // fulfilled the qubits in the circuit and the architecture are renamed.
+    // The new names are reverted at the end of the aas procedure. The qubits
+    // and the nodes have the same name in the input.
     circuit_ppb.rename_units(backward_contiguous_uids_n);
     PhasePolyBox new_ppb(circuit_ppb);
     Circuit result =
