@@ -100,6 +100,24 @@ static std::optional<VertexDetachmentInfo> try_detach_zbasis_commuting_vertex(
   return std::nullopt;
 }
 
+bool port_ordering_is_compatible(Circuit &circuit, const Vertex &vertex, const Vertex & successor){
+  const Op_ptr vertex_op = circuit.get_Op_ptr_from_Vertex(vertex);
+  // Vertex port must be symmetrically equivalent to successor port for any edge between them
+  // Examples:
+  //  CX[0,1]==CX[0,1] passes test because ports line up
+  //  CX[0,1]==CX[1,0] fails test because ports don't line up and CX is not invariant with respect to exchange of qubits
+  //  CZ[0,1]==CZ[1,0] passes test because CZ is invariant with respect to exchange of qubits
+  for (const Edge &in : circuit.get_in_edges(successor)) {
+    auto source_port = circuit.get_source_port(in);
+    auto target_port = circuit.get_target_port(in);
+    if (not vertex_op->test_exchange_invariance_of_ports(
+        source_port, target_port)){
+      return false;
+    }
+  }
+  return true;
+}
+
 bool preliminary_vertex_successor_checks_pass(Circuit &circuit, const Vertex &vertex){
 
   // check that the classical edges match up correctly
@@ -118,19 +136,7 @@ bool preliminary_vertex_successor_checks_pass(Circuit &circuit, const Vertex &ve
     return false;
   }
 
-  const Op_ptr vertex_op = circuit.get_Op_ptr_from_Vertex(vertex);
-  auto vertex_gate = std::dynamic_pointer_cast<const Gate>(vertex_op);
-
-  // check that the ports respect the (a)symmetry between vertices
-  for (const Edge &in : circuit.get_in_edges(successor)) {
-    auto source_port = circuit.get_source_port(in);
-    auto target_port = circuit.get_target_port(in);
-    if (not vertex_gate->port_pair_is_symmetric(source_port, target_port)){
-      return false;
-    }
-  }
-
-  return true;
+  return port_ordering_is_compatible(circuit, vertex, successor);
 }
 
 std::optional<VertexDetachmentInfo>
@@ -139,7 +145,6 @@ try_detach_both_because_successor_is_adjoint(
 
   const Op_ptr successor_op = circuit.get_Op_ptr_from_Vertex(successor);
   const Op_ptr vertex_op = circuit.get_Op_ptr_from_Vertex(vertex);
-
   if (*vertex_op == *successor_op->dagger())
     return std::make_optional(
         detach_vertex_and_successor(circuit, vertex, successor));

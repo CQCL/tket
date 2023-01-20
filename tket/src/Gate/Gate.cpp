@@ -257,122 +257,6 @@ Op_ptr Gate::transpose() const {
   }
 }
 
-bool Gate::port_pair_is_symmetric(unsigned port1, unsigned port2) const {
-  if(port1 == port2){
-    // exchanging with self is always symmetric
-    return true;
-  }
-  OpType optype = get_type();
-  switch (optype) {
-    // zero qubit gates
-    case OpType::Phase:
-    // one qubit gates
-    case OpType::H:
-    case OpType::X:
-    case OpType::Y:
-    case OpType::Z:
-    case OpType::Rz:
-    case OpType::Ry:
-    case OpType::Rx:
-    case OpType::S:
-    case OpType::Sdg:
-    case OpType::T:
-    case OpType::Tdg:
-    case OpType::V:
-    case OpType::Vdg:
-    case OpType::SX:
-    case OpType::SXdg:
-    case OpType::U1:
-    case OpType::U2:
-    case OpType::U3:
-    case OpType::TK1:
-    case OpType::PhasedX:
-    case OpType::noop: {
-      return true;
-    }
-    // two qubit gates
-    // a two qubit gate G2 is symmetric
-    // if and only if its matrix form (g2_{ij}), i,j in 0,1,2,3, satisfies
-    // g2_01 == a02, g2_10 == g2_20, g2_13 == g2_23, g2_31 == g2_32,
-    // g2_11 == g2_22, and g2_12 == g2_2. (Follows from stipulation SWAP G2 SWAP == G2)
-    // If G2 is a controlled one-qubit gate, G2 = CG1. Then G1 must satisfy
-    // g1_00 == 1, g1_01 == g1_10 == 0
-    case OpType::CH:
-    case OpType::CX:
-    case OpType::CY:
-    case OpType::ECR:
-    case OpType::CV:
-    case OpType::CVdg:
-    case OpType::CSX:
-    case OpType::CSXdg:
-    case OpType::CRz:
-    case OpType::CRx:
-    case OpType::CRy: {
-      // not symmetric
-      return false;
-    }
-    case OpType::SWAP:
-    case OpType::ISWAP:
-    case OpType::ESWAP:
-    case OpType::PhasedISWAP:
-    case OpType::ISWAPMax:
-    case OpType::CZ:
-    case OpType::XXPhase:
-    case OpType::YYPhase:
-    case OpType::ZZPhase:
-    case OpType::ZZMax:
-    case OpType::FSim:
-    case OpType::Sycamore:
-    case OpType::TK2:
-    case OpType::CU1: {
-      // symmetric
-      return true;
-    }
-    case OpType::CU3:{
-      // symmetric if first param theta == 0
-      const auto theta = get_params()[0];
-      return equiv_0(theta);
-    }
-    // three qubit gates
-    case OpType::CCX: {
-      // 0 <-> 1 symmetry
-      return port1 + port2 == 1;  // will be 2 or 3 for non-symmetric cases
-    }
-    case OpType::CSWAP: {
-      // 1 <-> 2 symmetry
-      return port1 + port2 == 3; // will be 1 or 2 for non-symmetric cases
-    }
-    case OpType::BRIDGE: {
-      // no symmetry
-      return false;
-    }
-    case OpType::XXPhase3: {
-      // completely symmetric
-      return true;
-    }
-    // n (+1) qubit gates
-    case OpType::CnX:
-    case OpType::CnY:
-    case OpType::CnRy: {
-      // symmetry on first n ports not on n+1
-      auto last_port = n_qubits_ - 1;
-      if ( port1 == last_port || port2 == last_port){
-        return false;
-      }
-      return true;
-    }
-    case OpType::CnZ:
-    case OpType::PhaseGadget:
-    case OpType::NPhasedX: {
-      // symmetry on all n (+1) ports
-      return true;
-    }
-    default: {
-      throw BadOpType("Port symmetry not defined", optype);
-    }
-  }
-}
-
 static bool params_contain_nan(const std::vector<Expr>& params) {
   static const std::regex nan_regex("\\bnan\\b");
   for (const Expr& e : params) {
@@ -575,6 +459,96 @@ bool Gate::is_clifford() const {
       return false;
   }
 }
+
+bool Gate::test_exchange_invariance_of_ports(unsigned port1, unsigned port2) const {
+  if(port1 == port2){
+    // exchanging with self is always symmetric
+    return true;
+  }
+  OpType optype = get_type();
+  switch (optype) {
+      // a two qubit gate G2 is symmetric
+      // if and only if its matrix form (g2_{ij}), i,j in 0,1,2,3, satisfies
+      // g2_01 == a02, g2_10 == g2_20, g2_13 == g2_23, g2_31 == g2_32,
+      // g2_11 == g2_22, and g2_12 == g2_21. (Follows from stipulation SWAP G2 SWAP == G2)
+      // If G2 is a controlled one-qubit gate, G2 = CG1. Then G1 must satisfy
+      // g1_00 == 1, g1_01 == g1_10 == 0
+    case OpType::CH:
+    case OpType::CX:
+    case OpType::CY:
+    case OpType::ECR:
+    case OpType::CV:
+    case OpType::CVdg:
+    case OpType::CSX:
+    case OpType::CSXdg:
+    case OpType::CRz:
+    case OpType::CRx:
+    case OpType::CRy: {
+      // not symmetric
+      return false;
+    }
+    case OpType::SWAP:
+    case OpType::ISWAP:
+    case OpType::ESWAP:
+    case OpType::PhasedISWAP:
+    case OpType::ISWAPMax:
+    case OpType::CZ:
+    case OpType::XXPhase:
+    case OpType::YYPhase:
+    case OpType::ZZPhase:
+    case OpType::ZZMax:
+    case OpType::FSim:
+    case OpType::Sycamore:
+    case OpType::TK2:
+    case OpType::CU1: {
+      // symmetric
+      return true;
+    }
+    case OpType::CU3:{
+      // symmetric if first param theta == 0
+      const auto theta = get_params()[0];
+      return equiv_0(theta);
+    }
+      // three qubit gates
+    case OpType::CCX: {
+      // 0 <-> 1 symmetry
+      return port1 + port2 == 1;  // will be 2 or 3 for non-symmetric cases
+    }
+    case OpType::CSWAP: {
+      // 1 <-> 2 symmetry
+      return port1 + port2 == 3; // will be 1 or 2 for non-symmetric cases
+    }
+    case OpType::BRIDGE: {
+      // no symmetry
+      return false;
+    }
+    case OpType::XXPhase3: {
+      // completely symmetric
+      return true;
+    }
+      // n (+1) qubit gates
+    case OpType::CnX:
+    case OpType::CnY:
+    case OpType::CnRy: {
+      // symmetry on first n ports not on n+1
+      auto last_port = n_qubits_ - 1;
+      if ( port1 == last_port || port2 == last_port){
+        return false;
+      }
+      return true;
+    }
+    case OpType::CnZ:
+    case OpType::PhaseGadget:
+    case OpType::NPhasedX: {
+      // symmetry on all n (+1) ports
+      return true;
+    }
+    default: {
+      return false;
+    }
+  }
+}
+
 
 std::string Gate::get_name(bool latex) const {
   OpDesc desc = get_desc();

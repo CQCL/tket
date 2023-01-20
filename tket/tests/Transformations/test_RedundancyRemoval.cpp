@@ -44,7 +44,7 @@ SCENARIO("Transforms::remove_redundancies removes redundant CU1") {
   Circuit test_circuit(original_circuit);
   GIVEN("two consecutive identical swaps are added") {
     test_circuit.add_op<unsigned>(OpType::CU1, 0.5, {0, 1});
-    test_circuit.add_op<unsigned>(OpType::CU1, -0.5, {1, 0});
+    test_circuit.add_op<unsigned>(OpType::CU1, -0.5, {0, 1});
     WHEN("calling Transforms::remove_redundancies on circuit") {
       Transforms::remove_redundancies().apply(test_circuit);
       THEN("added gates should be removed") {

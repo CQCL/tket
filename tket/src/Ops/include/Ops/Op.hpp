@@ -63,16 +63,6 @@ class Op : public std::enable_shared_from_this<Op> {
    */
   virtual Op_ptr transpose() const { throw BadOpType(get_type()); };
 
-//  /**
-//   * Set of port symmetry pairs. Exchanging these ports does not affect action
-//   * */
-//  virtual bool port_pair_is_symmetric(unsigned port1, unsigned port2) const {
-//    if( port1 + port2 >= 0 ){
-//      throw BadOpType(get_type());
-//    }
-//    throw BadOpType(get_type());
-//  };
-
   /**
    * Operation with values for symbols substituted
    *
@@ -164,6 +154,19 @@ class Op : public std::enable_shared_from_this<Op> {
    * @retval true operation is in the Clifford group
    */
   virtual bool is_clifford() const { return false; }
+
+  /**
+   * Checks for symmetry of port pairs
+   *
+   * A return value of true means that exchanging these
+   * ports does not change effect of operation
+   *
+   * @retval true operator is invariant under exchange of ports
+   *
+   * */
+  virtual bool test_exchange_invariance_of_ports(unsigned port1, unsigned port2) const {
+    return port1 == port2;
+  };
 
   /**
    * If meaningful and implemented, return the numerical unitary matrix
