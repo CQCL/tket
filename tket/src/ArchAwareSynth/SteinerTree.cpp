@@ -311,6 +311,7 @@ int SteinerTree::cost_of_operation(unsigned i, unsigned j) const {
       TKET_ASSERT(!"[AAS]: Invalid cost, wrong SteinerNodeType");
     }
   }
+  return 0;
 }
 
 OperationList SteinerTree::operations_available(
