@@ -20,6 +20,7 @@ from conan.errors import ConanInvalidConfiguration
 class TktokenswapConan(ConanFile):
     name = "tktokenswap"
     version = "0.1.2"
+    package_type = "library"
     license = "Apache 2"
     url = "https://github.com/CQCL/tket"
     description = "Token swapping algorithms library"

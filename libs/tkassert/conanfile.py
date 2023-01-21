@@ -20,6 +20,7 @@ from conan.errors import ConanInvalidConfiguration
 class TkassertConan(ConanFile):
     name = "tkassert"
     version = "0.1.1"
+    package_type = "library"
     license = "Apache 2"
     url = "https://github.com/CQCL/tket"
     description = "Assertions"
