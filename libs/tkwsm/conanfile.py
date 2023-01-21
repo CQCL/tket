@@ -20,6 +20,7 @@ from conan.errors import ConanInvalidConfiguration
 class TkwsmConan(ConanFile):
     name = "tkwsm"
     version = "0.2.1"
+    package_type = "library"
     license = "Apache 2"
     url = "https://github.com/CQCL/tket"
     description = "Weighted-subgraph-monomorphism algorithms library"
