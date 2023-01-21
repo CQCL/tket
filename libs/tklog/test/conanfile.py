@@ -19,6 +19,7 @@ import platform
 class TestTklogConan(ConanFile):
     name = "test-tklog"
     version = "0.1.2"
+    package_type = "application"
     license = "Apache 2"
     url = "https://github.com/CQCL/tket"
     description = "Unit tests for tklog"

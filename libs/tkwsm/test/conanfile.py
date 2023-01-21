@@ -19,6 +19,7 @@ import platform
 class TestTkwsmConan(ConanFile):
     name = "test-tkwsm"
     version = "0.2.1"
+    package_type = "application"
     license = "Apache 2"
     url = "https://github.com/CQCL/tket"
     description = "Unit tests for tkwsm"
