@@ -52,11 +52,11 @@ jobs:
       # Conan's revision hash is composed of hashes all the exported files, so
       # we must normalize the line endings in these.
       run: |
-        $conanfile ='libs/${{ matrix.lib }}/conanfile.py'
-        $normalized_file = [IO.File]::ReadAllText($conanfile) -replace "`r`n", "`n"
-        [IO.File]::WriteAllText($conanfile, $normalized_file)
+        $conanfile = 'libs/${{ matrix.lib }}/conanfile.py'
+        $cmakelists = 'libs/${{ matrix.lib }}/CMakeLists.py'
         $src_files = Get-ChildItem "libs/${{ matrix.lib }}/src" -File -Recurse
-        foreach ($f in $src_files) {
+        $include_files = Get-ChildItem "libs/${{ matrix.lib }}/include" -File -Recurse
+        foreach ($f in @($conanfile) + @($cmakelists) + $src_files + $include_files) {
           $normalized_file = [IO.File]::ReadAllText($f) -replace "`r`n", "`n"
           [IO.File]::WriteAllText($f, $normalized_file)
         }
