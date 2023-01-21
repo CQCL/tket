@@ -19,6 +19,7 @@ import platform
 class TestTkrngConan(ConanFile):
     name = "test-tkrng"
     version = "0.1.2"
+    package_type = "application"
     license = "Apache 2"
     url = "https://github.com/CQCL/tket"
     description = "Unit tests for tkrng"
