@@ -12,13 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from conans import ConanFile, CMake
-import platform
+from conan import ConanFile
+from conan.tools.cmake import CMakeToolchain, CMake, cmake_layout, CMakeDeps
+from conan.errors import ConanInvalidConfiguration
 
 
-class TestTkwsmConan(ConanFile):
+class test_tkwsmRecipe(ConanFile):
     name = "test-tkwsm"
-    version = "0.2.1"
+    version = "0.1.2"
     package_type = "application"
     license = "Apache 2"
     url = "https://github.com/CQCL/tket"
@@ -26,18 +27,21 @@ class TestTkwsmConan(ConanFile):
     settings = "os", "compiler", "build_type", "arch"
     options = {"with_coverage": [True, False]}
     default_options = {"with_coverage": False}
-    generators = "cmake"
-    exports_sources = "*"
-    requires = ["tkwsm/0.2.1", "catch2/3.3.0"]
+    exports_sources = "CMakeLists.txt", "src/*"
 
-    _cmake = None
+    def configure(self):
+        if self.options.with_coverage:
+            self.options["tkwsm"].profile_coverage = True
 
-    def _configure_cmake(self):
-        if self._cmake is None:
-            self._cmake = CMake(self)
-            self._cmake.definitions["WITH_COVERAGE"] = self.options.with_coverage
-            self._cmake.configure()
-        return self._cmake
+    def layout(self):
+        cmake_layout(self)
+
+    def generate(self):
+        deps = CMakeDeps(self)
+        deps.generate()
+        tc = CMakeToolchain(self)
+        tc.variables["WITH_COVERAGE"] = self.options.with_coverage
+        tc.generate()
 
     def validate(self):
         if self.options.with_coverage and self.settings.compiler != "gcc":
@@ -45,16 +49,17 @@ class TestTkwsmConan(ConanFile):
                 "`with_coverage` option only available with gcc"
             )
 
-    def configure(self):
-        if self.options.with_coverage:
-            self.options["tkwsm"].profile_coverage = True
-
     def build(self):
-        cmake = self._configure_cmake()
+        cmake = CMake(self)
+        cmake.configure()
         cmake.build()
 
     def package(self):
-        executable_filename = "bin/test-tkwsm"
-        if platform.system() == "Windows":
-            executable_filename = executable_filename + ".exe"
-        self.copy(executable_filename)
+        cmake = CMake(self)
+        cmake.install()
+
+    def requirements(self):
+        self.requires("tkwsm/0.2.2")
+        self.requires("tkassert/0.1.2@tket/stable")
+        self.requires("tkrng/0.1.3@tket/stable")
+        self.requires("catch2/3.3.0")

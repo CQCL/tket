@@ -87,12 +87,11 @@ jobs:
       run: conan create --profile=tket libs/${{ matrix.lib }} --build=missing
     - name: build ${{ matrix.lib }} tests
       run: |
-        conan install libs/${{ matrix.lib }}/test --install-folder=build/test-${{ matrix.lib }} --profile=tket
+        conan install libs/${{ matrix.lib }}/test --install-folder=build/test-${{ matrix.lib }} --output-folder=build/test-${{ matrix.lib }} --profile=tket
         conan build libs/${{ matrix.lib }}/test --configure --build-folder=build/test-${{ matrix.lib }} --source-folder=libs/${{ matrix.lib }}/test
         conan build libs/${{ matrix.lib }}/test --build --build-folder=build/test-${{ matrix.lib }}
-        conan package libs/${{ matrix.lib }}/test --build-folder=build/test-${{ matrix.lib }} --package-folder build/test-${{ matrix.lib }}/package --source-folder=libs/${{ matrix.lib }}/test
     - name: run ${{ matrix.lib }} tests
-      working-directory: ./build/test-${{ matrix.lib }}/package/bin
+      working-directory: ./build/test-${{ matrix.lib }}/build/Release
       run: ./test-${{ matrix.lib }}
   macos-m1:
     name: test library (macos-m1)
@@ -119,12 +118,11 @@ jobs:
       run: conan create --profile=tket libs/${{ matrix.lib }} --build=missing
     - name: build ${{ matrix.lib }} tests
       run: |
-        conan install libs/${{ matrix.lib }}/test --install-folder=build/test-${{ matrix.lib }} --profile=tket
+        conan install libs/${{ matrix.lib }}/test --install-folder=build/test-${{ matrix.lib }} --output-folder=build/test-${{ matrix.lib }} --profile=tket
         conan build libs/${{ matrix.lib }}/test --configure --build-folder=build/test-${{ matrix.lib }} --source-folder=libs/${{ matrix.lib }}/test
         conan build libs/${{ matrix.lib }}/test --build --build-folder=build/test-${{ matrix.lib }}
-        conan package libs/${{ matrix.lib }}/test --build-folder=build/test-${{ matrix.lib }} --package-folder build/test-${{ matrix.lib }}/package --source-folder=libs/${{ matrix.lib }}/test
     - name: run ${{ matrix.lib }} tests
-      working-directory: ./build/test-${{ matrix.lib }}/package/bin
+      working-directory: ./build/test-${{ matrix.lib }}/build/Release
       run: ./test-${{ matrix.lib }}
   generate_coverage:
     name: Generate coverage report
@@ -156,25 +154,24 @@ jobs:
       run: conan profile update settings.build_type=Debug tket
     - name: build ${{ matrix.lib }}
       run: |
-        conan install libs/${{ matrix.lib }} --install-folder=build/${{ matrix.lib }} --profile=tket -o ${{ matrix.lib }}:profile_coverage=True
-        conan build libs/${{ matrix.lib }} --configure --build-folder=build/${{ matrix.lib }} --source-folder=libs/${{ matrix.lib }}
-        conan build libs/${{ matrix.lib }} --build --build-folder=build/${{ matrix.lib }}
-        conan export-pkg libs/${{ matrix.lib }} -f --build-folder=build/${{ matrix.lib }} --source-folder=libs/${{ matrix.lib }}
+        conan create libs/${{ matrix.lib }} --profile=tket -o ${{ matrix.lib }}:profile_coverage=True --test-folder=None --build=missing
     - name: build ${{ matrix.lib }} tests
       run: |
-        conan install libs/${{ matrix.lib }}/test --install-folder=build/${{ matrix.lib }}-tests --profile=tket -o test-${{ matrix.lib }}:with_coverage=True
+        conan install libs/${{ matrix.lib }}/test --install-folder=build/${{ matrix.lib }}-tests --output-folder=build/${{ matrix.lib }}-tests --profile=tket -o test-${{ matrix.lib }}:with_coverage=True
         conan build libs/${{ matrix.lib }}/test --configure --build-folder=build/${{ matrix.lib }}-tests --source-folder=libs/${{ matrix.lib }}/test
         conan build libs/${{ matrix.lib }}/test --build --build-folder=build/${{ matrix.lib }}-tests
-        conan package libs/${{ matrix.lib }}/test --build-folder=build/${{ matrix.lib }}-tests --package-folder build/${{ matrix.lib }}-tests/package --source-folder=libs/${{ matrix.lib }}/test
     - name: run ${{ matrix.lib }} tests
-      working-directory: ./build/${{ matrix.lib }}-tests/package/bin
+      working-directory: ./build/${{ matrix.lib }}-tests/build/Debug
       run: ./test-${{ matrix.lib }}
     - name: install gcovr
       run: pip install gcovr~=5.1
     - name: build coverage report
       run: |
         mkdir ${{ matrix.lib }}-coverage
-        gcovr --print-summary --html --html-details -r ./libs/${{ matrix.lib }}/src/ --exclude-lines-by-pattern '.*\bTKET_ASSERT\(.*\);' --object-directory ${PWD}/build/${{ matrix.lib }}/ -o ${{ matrix.lib }}-coverage/index.html --decisions > ${{ matrix.lib }}-coverage/summary.txt
+        conan info --paths -n build_folder --profile=tket libs/${{ matrix.lib }}/test -o ${{ matrix.lib }}:profile_coverage=True --json libinfo.json
+        build_folder=`./.github/workflows/get_lib_build_folder ${{ matrix.lib }}`
+        rm libinfo.json
+        gcovr --print-summary --html --html-details -r ${build_folder}/src --exclude-lines-by-pattern '.*\bTKET_ASSERT\(.*\);' --object-directory ${build_folder}/build/Debug/CMakeFiles/${{ matrix.lib }}.dir/src -o ${{ matrix.lib }}-coverage/index.html --decisions > ${{ matrix.lib }}-coverage/summary.txt
     - name: upload artefact
       uses: actions/upload-artifact@v3
       with:
