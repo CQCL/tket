@@ -53,7 +53,7 @@ jobs:
       # we must normalize the line endings in these.
       run: |
         $conanfile = 'libs/${{ matrix.lib }}/conanfile.py'
-        $cmakelists = 'libs/${{ matrix.lib }}/CMakeLists.py'
+        $cmakelists = 'libs/${{ matrix.lib }}/CMakeLists.txt'
         $src_files = Get-ChildItem "libs/${{ matrix.lib }}/src" -File -Recurse
         $include_files = Get-ChildItem "libs/${{ matrix.lib }}/include" -File -Recurse
         foreach ($f in @($conanfile) + @($cmakelists) + $src_files + $include_files) {

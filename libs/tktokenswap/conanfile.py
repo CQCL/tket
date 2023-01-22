@@ -37,6 +37,9 @@ class TktokenswapConan(ConanFile):
         if self.settings.os == "Windows":
             del self.options.fPIC
 
+    def configure(self):
+        self.options["boost"].header_only = True
+
     def layout(self):
         cmake_layout(self)
 
