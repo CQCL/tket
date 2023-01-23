@@ -13,15 +13,11 @@
 // limitations under the License.
 
 #include <optional>
-#include <tkassert/Assert.hpp>
 
 #include "BasicOptimisation.hpp"
-#include "Characterisation/ErrorTypes.hpp"
 #include "Circuit/DAGDefs.hpp"
 #include "Gate/Gate.hpp"
 #include "Transform.hpp"
-#include "Utils/EigenConfig.hpp"
-#include "Utils/MatrixAnalysis.hpp"
 
 namespace tket::Transforms {
 

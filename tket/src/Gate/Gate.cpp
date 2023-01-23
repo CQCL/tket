@@ -18,7 +18,6 @@
 #include <stdexcept>
 #include <tkrng/RNG.hpp>
 #include <vector>
-#include <unordered_set>
 
 #include "GateUnitaryMatrix.hpp"
 #include "GateUnitaryMatrixError.hpp"

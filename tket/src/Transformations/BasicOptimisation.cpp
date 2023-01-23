@@ -16,7 +16,6 @@
 
 #include <optional>
 #include <tkassert/Assert.hpp>
-#include <utility>
 
 #include "Characterisation/DeviceCharacterisation.hpp"
 #include "Characterisation/ErrorTypes.hpp"
