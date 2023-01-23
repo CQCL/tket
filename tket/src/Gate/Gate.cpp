@@ -459,8 +459,9 @@ bool Gate::is_clifford() const {
   }
 }
 
-bool Gate::test_exchange_invariance_of_ports(unsigned port1, unsigned port2) const {
-  if(port1 == port2){
+bool Gate::test_exchange_invariance_of_ports(
+    unsigned port1, unsigned port2) const {
+  if (port1 == port2) {
     // exchanging with self is always symmetric
     return true;
   }
@@ -469,9 +470,9 @@ bool Gate::test_exchange_invariance_of_ports(unsigned port1, unsigned port2) con
       // a two qubit gate G2 is symmetric
       // if and only if its matrix form (g2_{ij}), i,j in 0,1,2,3, satisfies
       // g2_01 == a02, g2_10 == g2_20, g2_13 == g2_23, g2_31 == g2_32,
-      // g2_11 == g2_22, and g2_12 == g2_21. (Follows from stipulation SWAP G2 SWAP == G2)
-      // If G2 is a controlled one-qubit gate, G2 = CG1. Then G1 must satisfy
-      // g1_00 == 1, g1_01 == g1_10 == 0
+      // g2_11 == g2_22, and g2_12 == g2_21. (Follows from stipulation SWAP G2
+      // SWAP == G2) If G2 is a controlled one-qubit gate, G2 = CG1. Then G1
+      // must satisfy g1_00 == 1, g1_01 == g1_10 == 0
     case OpType::CH:
     case OpType::CX:
     case OpType::CY:
@@ -503,7 +504,7 @@ bool Gate::test_exchange_invariance_of_ports(unsigned port1, unsigned port2) con
       // symmetric
       return true;
     }
-    case OpType::CU3:{
+    case OpType::CU3: {
       // symmetric if first param theta == 0
       const auto theta = get_params()[0];
       return equiv_0(theta);
@@ -515,7 +516,7 @@ bool Gate::test_exchange_invariance_of_ports(unsigned port1, unsigned port2) con
     }
     case OpType::CSWAP: {
       // 1 <-> 2 symmetry
-      return port1 + port2 == 3; // will be 1 or 2 for non-symmetric cases
+      return port1 + port2 == 3;  // will be 1 or 2 for non-symmetric cases
     }
     case OpType::BRIDGE: {
       // no symmetry
@@ -531,7 +532,7 @@ bool Gate::test_exchange_invariance_of_ports(unsigned port1, unsigned port2) con
     case OpType::CnRy: {
       // symmetry on first n ports not on n+1
       auto last_port = n_qubits_ - 1;
-      if ( port1 == last_port || port2 == last_port){
+      if (port1 == last_port || port2 == last_port) {
         return false;
       }
       return true;
@@ -547,7 +548,6 @@ bool Gate::test_exchange_invariance_of_ports(unsigned port1, unsigned port2) con
     }
   }
 }
-
 
 std::string Gate::get_name(bool latex) const {
   OpDesc desc = get_desc();

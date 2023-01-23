@@ -90,35 +90,36 @@ vertex_is_succeeded_only_by_z_basis_measurements_with_which_it_commutes(
 static std::optional<VertexDetachmentInfo> try_detach_zbasis_commuting_vertex(
     Circuit &circuit, const Vertex &vertex) {
   if (vertex_is_succeeded_only_by_z_basis_measurements_with_which_it_commutes(
-      circuit, vertex)) {
+          circuit, vertex)) {
     return std::make_optional(detach_vertex(circuit, vertex));
   }
   return std::nullopt;
 }
 
-bool port_ordering_is_compatible(Circuit &circuit, const Vertex &vertex, const Vertex & successor){
+bool port_ordering_is_compatible(
+    Circuit &circuit, const Vertex &vertex, const Vertex &successor) {
   const Op_ptr vertex_op = circuit.get_Op_ptr_from_Vertex(vertex);
-  // Vertex port must be symmetrically equivalent to successor port for any edge between them
-  // Examples:
+  // Vertex port must be symmetrically equivalent to successor port for any edge
+  // between them Examples:
   //  CX[0,1]==CX[0,1] passes test because ports line up
-  //  CX[0,1]==CX[1,0] fails test because ports don't line up and CX is not invariant with respect to exchange of qubits
-  //  CZ[0,1]==CZ[1,0] passes test because CZ is invariant with respect to exchange of qubits
+  //  CX[0,1]==CX[1,0] fails test because ports don't line up and CX is not
+  //  invariant with respect to exchange of qubits CZ[0,1]==CZ[1,0] passes test
+  //  because CZ is invariant with respect to exchange of qubits
   for (const Edge &in : circuit.get_in_edges(successor)) {
     auto source_port = circuit.get_source_port(in);
     auto target_port = circuit.get_target_port(in);
     if (not vertex_op->test_exchange_invariance_of_ports(
-        source_port, target_port)){
+            source_port, target_port)) {
       return false;
     }
   }
   return true;
 }
 
-bool preliminary_vertex_successor_checks_pass(Circuit &circuit, const Vertex &vertex){
-
+bool preliminary_vertex_successor_checks_pass(
+    Circuit &circuit, const Vertex &vertex) {
   // check that the classical edges match up correctly
-  if (circuit.n_in_edges_of_type(vertex, EdgeType::Boolean) != 0)
-    return false;
+  if (circuit.n_in_edges_of_type(vertex, EdgeType::Boolean) != 0) return false;
 
   // check that both the vertex and its successor have each other and only each
   // other
@@ -128,7 +129,7 @@ bool preliminary_vertex_successor_checks_pass(Circuit &circuit, const Vertex &ve
   if (circuit.get_predecessors(successor).size() != 1) return false;
 
   // check that successor has adjoint
-  if (circuit.get_Op_ptr_from_Vertex(successor)->get_desc().is_oneway()){
+  if (circuit.get_Op_ptr_from_Vertex(successor)->get_desc().is_oneway()) {
     return false;
   }
 
@@ -138,7 +139,6 @@ bool preliminary_vertex_successor_checks_pass(Circuit &circuit, const Vertex &ve
 std::optional<VertexDetachmentInfo>
 try_detach_both_because_successor_is_adjoint(
     Circuit &circuit, Vertex const &vertex, Vertex const &successor) {
-
   const Op_ptr successor_op = circuit.get_Op_ptr_from_Vertex(successor);
   const Op_ptr vertex_op = circuit.get_Op_ptr_from_Vertex(vertex);
   if (*vertex_op == *successor_op->dagger())
@@ -150,7 +150,6 @@ try_detach_both_because_successor_is_adjoint(
 
 std::optional<VertexDetachmentInfo> try_join_rotations_and_detach_successor(
     Circuit &circuit, Vertex const &vertex, Vertex const &successor) {
-
   const Op_ptr successor_op = circuit.get_Op_ptr_from_Vertex(successor);
   const OpDesc successor_op_descriptor = successor_op->get_desc();
   const Op_ptr vertex_op = circuit.get_Op_ptr_from_Vertex(vertex);
@@ -185,13 +184,15 @@ static std::optional<VertexDetachmentInfo> try_detach_single_vertex(
 
 static std::optional<VertexDetachmentInfo> try_detach_vertex_and_successor(
     Circuit &circuit, const Vertex &vertex) {
-
-  if(not preliminary_vertex_successor_checks_pass(circuit, vertex)) return std::nullopt;
+  if (not preliminary_vertex_successor_checks_pass(circuit, vertex))
+    return std::nullopt;
   auto successor = circuit.get_successors(vertex)[0];
-  if(auto detachmentInfo = try_detach_both_because_successor_is_adjoint(circuit, vertex, successor)){
+  if (auto detachmentInfo = try_detach_both_because_successor_is_adjoint(
+          circuit, vertex, successor)) {
     return detachmentInfo;
   }
-  if(auto detachmentInfo = try_join_rotations_and_detach_successor(circuit, vertex, successor)){
+  if (auto detachmentInfo =
+          try_join_rotations_and_detach_successor(circuit, vertex, successor)) {
     return detachmentInfo;
   }
   return std::nullopt;
@@ -203,7 +204,7 @@ bool is_apriori_not_detachable(const Circuit &circuit, Vertex const &vertex) {
 
   return (not op_descriptor.is_gate()) or  // not a gate
          circuit.n_out_edges(vertex) ==
-         0 or  // vertex is boundary or already detached
+             0 or  // vertex is boundary or already detached
          circuit.n_in_edges(vertex) == 0;  // vertex is boundary
 }
 

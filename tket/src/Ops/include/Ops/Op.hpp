@@ -164,7 +164,8 @@ class Op : public std::enable_shared_from_this<Op> {
    * @retval true operator is invariant under exchange of ports
    *
    * */
-  virtual bool test_exchange_invariance_of_ports(unsigned port1, unsigned port2) const {
+  virtual bool test_exchange_invariance_of_ports(
+      unsigned port1, unsigned port2) const {
     return port1 == port2;
   };
 
