@@ -46,7 +46,7 @@ jobs:
     - name: apt update
       run: sudo apt update
     - name: Install conan
-      uses: turtlebrowser/get-conan@v1.1
+      uses: turtlebrowser/get-conan@v1.2
       with:
         version: '1.56.0'
     - name: Set up conan

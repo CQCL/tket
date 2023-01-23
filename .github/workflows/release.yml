@@ -50,7 +50,7 @@ jobs:
       with:
         python-version: '3.9'
     - name: Install conan
-      uses: turtlebrowser/get-conan@v1.1
+      uses: turtlebrowser/get-conan@v1.2
       with:
         version: '1.56.0'
     - name: Set up conan
@@ -120,7 +120,7 @@ jobs:
         fetch-depth: '0'
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     - name: Install conan
-      uses: turtlebrowser/get-conan@v1.1
+      uses: turtlebrowser/get-conan@v1.2
       with:
         version: '1.56.0'
     - name: Set up conan
