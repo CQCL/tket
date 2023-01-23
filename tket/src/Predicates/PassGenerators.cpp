@@ -267,7 +267,10 @@ PassPtr gen_cx_mapping_pass(
   PassPtr return_pass =
       rebase_pass >> gen_full_mapping_pass(arc, placement_ptr, config);
   if (delay_measures) {
-    PassPtr delay_meas = WrapError<CircuitInvalidity>(DelayMeasures(), "The circuit contains measurements that cannot be delayed.");
+    PassPtr delay_meas = WrapError<CircuitInvalidity>(
+        DelayMeasures(),
+        "`delay_measures` is set, but the circuit contains measurements that "
+        "cannot be delayed.");
     return_pass = return_pass >> delay_meas;
   }
   return_pass = return_pass >> rebase_pass >>

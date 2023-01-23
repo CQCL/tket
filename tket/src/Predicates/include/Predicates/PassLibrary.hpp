@@ -123,13 +123,23 @@ const PassPtr &CnXPairwiseDecomposition();
  */
 const PassPtr &RemoveImplicitQubitPermutation();
 
-template<typename Error>
-const PassPtr &WrapError(const PassPtr pass, const std::string& error_msg) {
+/**
+ * @brief Rewraps the internal errors of a Pass with a more suitable message.
+ * Nests the old error inside it.
+ * @param pass Compilation pass to wrap
+ * @param error_msg Message to use for the new error
+ *
+ * @tparam Error Specific error type to wrap
+ * @tparam NewError Type of the new error to throw
+ *
+ * @return compilation pass to perform this transformation
+ */
+template <typename Error, class NewError = Error>
+const PassPtr &WrapError(const PassPtr pass, const std::string &error_msg) {
   static const PassPtr pp([pass, error_msg]() {
-    return std::make_shared<ErrorWrapPass<Error>>(pass, error_msg);
+    return std::make_shared<ErrorWrapPass<Error, NewError>>(pass, error_msg);
   }());
   return pp;
 }
-
 
 }  // namespace tket

@@ -15,6 +15,7 @@
 #pragma once
 
 #include <exception>
+
 #include "CompilationUnit.hpp"
 #include "Predicates.hpp"
 #include "Utils/Json.hpp"
@@ -278,14 +279,14 @@ class RepeatUntilSatisfiedPass : public BasePass {
   PredicatePtr pred_;
 };
 
-/* Runs a sequence of Passes */
-template<class Error>
+/* Rewraps the internal errors of a Pass, nesting it inside a new error */
+template <class Error, class NewError = Error>
 class ErrorWrapPass : public BasePass {
  public:
   ErrorWrapPass(const PassPtr& pass, const std::string& error_message)
       : BasePass(pass->get_conditions().first, pass->get_conditions().second),
         pass_(pass),
-        error_message_(error_message) {};
+        error_message_(error_message){};
   bool apply(
       CompilationUnit& c_unit, SafetyMode safe_mode = SafetyMode::Default,
       const PassCallback& before_apply = trivial_callback,
@@ -293,9 +294,10 @@ class ErrorWrapPass : public BasePass {
     before_apply(c_unit, this->get_config());
     bool success = false;
     try {
-      success = this->pass_->apply(c_unit, safe_mode, before_apply, after_apply);
+      success =
+          this->pass_->apply(c_unit, safe_mode, before_apply, after_apply);
     } catch (const Error& e) {
-      std::throw_with_nested(Error(this->error_message_));
+      std::throw_with_nested(NewError(this->error_message_));
     }
     after_apply(c_unit, this->get_config());
     return success;
