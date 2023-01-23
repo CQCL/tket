@@ -25,6 +25,7 @@ from typing import Dict, Optional, Union, cast
 from jinja2 import nodes, FileSystemLoader, Environment
 from jinja2.ext import Extension
 from jinja2.utils import markupsafe
+from jinja2.parser import Parser
 
 from pytket.circuit import Circuit  # type: ignore
 
@@ -36,16 +37,19 @@ dirname = os.path.dirname(__file__)
 class IncludeRawExtension(Extension):
     tags = {"include_raw"}
 
-    def parse(self, parser):
+    def parse(self, parser: Parser) -> nodes.Output:
         lineno = parser.stream.expect("name:include_raw").lineno
         template = parser.parse_expression()
         result = self.call_method("_render", [template], lineno=lineno)
         return nodes.Output([result], lineno=lineno)
 
-    def _render(self, filename):
-        return markupsafe.Markup(
-            self.environment.loader.get_source(self.environment, filename)[0]
-        )
+    def _render(self, filename: str) -> markupsafe.Markup:
+        if self.environment.loader is not None:
+            return markupsafe.Markup(
+                self.environment.loader.get_source(self.environment, filename)[0]
+            )
+        else:
+            return markupsafe.Markup("")
 
 
 loader = FileSystemLoader(searchpath=dirname)
