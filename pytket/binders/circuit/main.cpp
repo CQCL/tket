@@ -470,6 +470,16 @@ PYBIND11_MODULE(circuit, m) {
       .value(
           "ClassicalExpBox", OpType::ClassicalExpBox,
           "A box for holding compound classical operations on Bits.")
+      .value(
+          "MultiplexorBox", OpType::MultiplexorBox,
+          "A multiplexor (i.e. uniformly controlled operations)")
+      .value(
+          "MultiplexedRotationBox", OpType::MultiplexedRotationBox,
+          "A multiplexed rotation gate (i.e. "
+          "uniformly controlled single-axis rotations)")
+      .value(
+          "MultiplexedU2Box", OpType::MultiplexedU2Box,
+          "A multiplexed U2 gate (i.e. uniformly controlled U2 gate)")
       .def_static(
           "from_name", [](const json &j) { return j.get<OpType>(); },
           "Construct from name");

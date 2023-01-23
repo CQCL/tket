@@ -50,14 +50,14 @@ jobs:
       run: |
         pip install conan~=1.53
         tket_ver=$(conan inspect --raw version recipes/tket/conanfile.py)
-        echo "::set-output name=tket_ver::${tket_ver}"
+        echo "tket_ver=${tket_ver}" >> $GITHUB_OUTPUT
     - name: See if version exists on remote
       id: test_package_exists
       run: |
         conan remote clean
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
         tket_package_exists=`conan search -r tket-libs "tket/${{ steps.tket_ver.outputs.tket_ver }}@tket/stable" > /dev/null 2>&1 && echo true || echo false`
-        echo "::set-output name=tket_package_exists::${tket_package_exists}"
+        echo "tket_package_exists=${tket_package_exists}" >> $GITHUB_OUTPUT
     - name: Check tket version bump
       if: github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'develop' && steps.filter.outputs.tket == 'true' && steps.test_package_exists.outputs.tket_package_exists == 'true'
       run: exit 1
@@ -101,12 +101,12 @@ jobs:
         sudo apt install -y doxygen graphviz
         cd tket && doxygen
     - name: Select Python 3.10
-      # otherwise turtlebrowser/get-conan@v1.1 fails on macos-12
+      # otherwise turtlebrowser/get-conan@v1.2 fails on macos-12
       uses: actions/setup-python@v4
       with:
         python-version: '3.10'
     - name: Install conan
-      uses: turtlebrowser/get-conan@v1.1
+      uses: turtlebrowser/get-conan@v1.2
       with:
         version: '1.56.0'
     - name: Set up conan
@@ -176,12 +176,12 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Select Python 3.10
-      # otherwise turtlebrowser/get-conan@v1.1 fails on macos-12
+      # otherwise turtlebrowser/get-conan@v1.2 fails on macos-12
       uses: actions/setup-python@v4
       with:
         python-version: '3.10'
     - name: Install conan
-      uses: turtlebrowser/get-conan@v1.1
+      uses: turtlebrowser/get-conan@v1.2
       with:
         version: '1.56.0'
     - name: Set up conan

@@ -83,3 +83,12 @@ pytket.circuit
 .. autoclass:: pytket._tket.circuit.WASMOp
     :special-members:
     :members:
+.. autoclass:: pytket._tket.circuit.MultiplexorBox
+    :special-members:
+    :members:
+.. autoclass:: pytket._tket.circuit.MultiplexedRotationBox
+    :special-members:
+    :members:
+.. autoclass:: pytket._tket.circuit.MultiplexedU2Box
+    :special-members:
+    :members:

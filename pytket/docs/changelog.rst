@@ -1,8 +1,15 @@
 Changelog
 =========
 
-Unreleased
-----------
+1.11.1 (January 2023)
+---------------------
+
+General:
+
+* Support for MacOS >= 11.0 on both x86_64 and arm64.
+
+1.11.0 (January 2023)
+---------------------
 
 Major new features:
 
@@ -22,6 +29,7 @@ Minor new features:
 Fixes:
 
 * ``MultiGateReorderRoutingMethod`` raising unknown edge missing error.
+* ``LexiRouteLabellingMethod`` hitting assertion during dynamic qubit allocation.
 * ``PauliSimp`` pass preserves circuit name.
 
 1.10.0 (December 2022)
