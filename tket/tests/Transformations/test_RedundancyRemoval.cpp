@@ -22,140 +22,6 @@
 
 namespace tket {
 namespace test_RedundancyRemoval {
-/*
-case OpType::H:
-case OpType::X:
-case OpType::Y:
-case OpType::Z:
-case OpType::SWAP:
-case OpType::CH:
-case OpType::CX:
-case OpType::CY:
-case OpType::CZ:
-case OpType::CCX:
-case OpType::noop:
-case OpType::CSWAP:
-case OpType::ECR:
-case OpType::BRIDGE: {
-return get_op_ptr(optype);
-}
-case OpType::CnX:
-case OpType::CnZ:
-case OpType::CnY: {
-return get_op_ptr(optype, std::vector<Expr>(), n_qubits_);
-}
-case OpType::S: {
-return get_op_ptr(OpType::Sdg);
-}
-case OpType::Sdg: {
-return get_op_ptr(OpType::S);
-}
-case OpType::T: {
-return get_op_ptr(OpType::Tdg);
-}
-case OpType::Tdg: {
-return get_op_ptr(OpType::T);
-}
-case OpType::V: {
-return get_op_ptr(OpType::Vdg);
-}
-case OpType::Vdg: {
-return get_op_ptr(OpType::V);
-}
-case OpType::CV: {
-return get_op_ptr(OpType::CVdg);
-}
-case OpType::CVdg: {
-return get_op_ptr(OpType::CV);
-}
-case OpType::SX: {
-return get_op_ptr(OpType::SXdg);
-}
-case OpType::SXdg: {
-return get_op_ptr(OpType::SX);
-}
-case OpType::CSX: {
-return get_op_ptr(OpType::CSXdg);
-}
-case OpType::CSXdg: {
-return get_op_ptr(OpType::CSX);
-}
-case OpType::Phase:
-case OpType::CRz:
-case OpType::CRx:
-case OpType::CRy:
-case OpType::CU1:
-case OpType::U1:
-case OpType::Rz:
-case OpType::Ry:
-case OpType::Rx:
-case OpType::PhaseGadget:
-case OpType::CnRy:
-case OpType::XXPhase:
-case OpType::YYPhase:
-case OpType::ZZPhase:
-case OpType::XXPhase3:
-case OpType::ISWAP:
-case OpType::ESWAP: {
-return get_op_ptr(optype, minus_times(params_[0]), n_qubits_);
-}
-case OpType::ZZMax: {
-// ZZMax.dagger = ZZPhase(-0.5)
-return get_op_ptr(OpType::ZZPhase, -0.5);
-}
-case OpType::FSim: {
-// FSim(a,b).dagger() == FSim(-a,-b)
-return get_op_ptr(
-    OpType::FSim, {minus_times(params_[0]), minus_times(params_[1])});
-}
-case OpType::Sycamore: {
-return get_op_ptr(OpType::FSim, {-0.5, -1. / 6.});
-}
-case OpType::ISWAPMax: {
-return get_op_ptr(OpType::ISWAP, 3.);
-}
-case OpType::U2: {
-// U2(a,b).dagger() == U3(-pi/2,-b,-a)
-return get_op_ptr(
-    OpType::U3, {-0.5, minus_times(params_[1]), minus_times(params_[0])});
-}
-case OpType::U3:
-case OpType::CU3:
-// U3(a,b,c).dagger() == U3(-a,-c.-b)
-{
-return get_op_ptr(
-    optype, {minus_times(params_[0]), minus_times(params_[2]),
-    minus_times(params_[1])});
-}
-case OpType::TK1:
-// TK1(a,b,c).dagger() == TK1(-c,-b,-a)
-{
-return get_op_ptr(
-    OpType::TK1, {minus_times(params_[2]), minus_times(params_[1]),
-    minus_times(params_[0])});
-}
-case OpType::TK2:
-return get_op_ptr(
-    OpType::TK2, {minus_times(params_[0]), minus_times(params_[1]),
-    minus_times(params_[2])});
-case OpType::PhasedX:
-case OpType::NPhasedX:
-// PhasedX(a,b).dagger() == PhasedX(-a,b)
-{
-return get_op_ptr(
-    optype, {minus_times(params_[0]), params_[1]}, n_qubits_);
-}
-case OpType::PhasedISWAP:
-// PhasedISWAP(a,b).dagger() == PhasedISWAP(a,-b)
-{
-return get_op_ptr(
-    OpType::PhasedISWAP, {params_[0], minus_times(params_[1])});
-}
-default: {
-throw BadOpType("Cannot compute dagger", optype);
-}
-}
-*/
 
 struct TestGate {
   OpType opType;
@@ -170,14 +36,6 @@ struct TestCase {
   TestGate gate1;
   TestGate gate2;
   bool gatesShouldCancel;
-
-//  static TestCase two_qubit_self_dagger(std::string _name, OpType op1, bool symmetric, bool swap){
-//    return TestCase{
-//      _name,
-//      TestGate{op1, {0}},
-//      TestGate{op1, {0}},
-//    }
-//  }
 };
 
 
@@ -587,6 +445,33 @@ SCENARIO(
   }
 }
 
+SCENARIO(
+    "Transforms::remove_redundancies removes nested redundancies") {
+  Circuit original_circuit(5);
+  Circuit test_circuit(original_circuit);
+  GIVEN("A circuit with nested redundancies") {
+    test_circuit.add_op<unsigned>(OpType::H, {0});
+    test_circuit.add_op<unsigned>(OpType::CnZ, {0,1,2,3,4});
+    test_circuit.add_op<unsigned>(OpType::CU3, {0.0, 0.4, 0.2}, {2,3});
+    test_circuit.add_op<unsigned>(OpType::noop, {4});
+    test_circuit.add_op<unsigned>(OpType::ISWAP, 0.5, {1,4});
+    test_circuit.add_op<unsigned>(OpType::ISWAP, -0.5, {1,4});
+    test_circuit.add_op<unsigned>(OpType::ISWAP, 0.5, {2,3});
+    test_circuit.add_op<unsigned>(OpType::ISWAP, -0.5, {3,2});
+    test_circuit.add_op<unsigned>(OpType::CU3, {0.0, -0.2, -0.4}, {3,2});
+    test_circuit.add_op<unsigned>(OpType::CnX, {0,1,2,3,4});
+    test_circuit.add_op<unsigned>(OpType::CnX, {0,3,2,1,4});
+    test_circuit.add_op<unsigned>(OpType::CnZ, {0,1,4,2,3});
+    test_circuit.add_op<unsigned>(OpType::H, {0});
+    Circuit untransformed_circuit(test_circuit);
+    WHEN("calling Transforms::remove_redundancies on circuit") {
+      Transforms::remove_redundancies().apply(test_circuit);
+      THEN("all gates should be removed") {
+        REQUIRE(test_circuit.circuit_equality(original_circuit));
+      }
+    }
+  }
+}
 
 }  // namespace test_BasicOptimisation
 }  // namespace tket
