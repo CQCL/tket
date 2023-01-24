@@ -1,5 +1,5 @@
 include pytket/circuit/display/circuit.html
 
-prune pytket/_display
-graft pytket/_display/dist
+graft pytket/_display
+prune pytket/_display/node_modules
 

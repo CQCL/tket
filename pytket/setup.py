@@ -300,6 +300,13 @@ setup(
         "Topic :: Scientific/Engineering",
     ],
     include_package_data=True,
+    exclude_package_data={
+        "pytket": [
+            "_display/src/index.js",
+            "_display/*.json",
+            "_display/webpack.config.js",
+        ]
+    },
     package_data={"pytket": ["py.typed"]},
     zip_safe=False,
     use_scm_version={
