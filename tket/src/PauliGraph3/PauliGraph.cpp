@@ -350,6 +350,9 @@ bit_vector_t PGConditional::write_bits() const { return inner_->write_bits(); }
 
 const QubitPauliTensor& PGStabilizer::get_stab() const { return stab_; }
 
+PGStabilizer::PGStabilizer(const QubitPauliTensor& stab)
+    : PGOp(PGOpType::Stabilizer), stab_(stab) {}
+
 SymSet PGStabilizer::free_symbols() const { return {}; }
 
 PGOp_ptr PGStabilizer::symbol_substitution(
@@ -380,83 +383,117 @@ QubitPauliTensor& PGStabilizer::port(unsigned p) {
 }
 
 /**
- * PGInputRow Implementation
+ * PGInputTableau Implementation
  */
 
-const QubitPauliTensor& PGInputRow::get_tensor() const { return tensor_; }
-
-const QubitPauliTensor& PGInputRow::get_input_tensor() const {
-  return input_tensor_;
+const ChoiMixTableau::row_tensor_t& PGInputTableau::get_full_row(
+    unsigned p) const {
+  if (p >= rows_.size())
+    throw PGError(
+        "Cannot dereference row on PGInputTableau: " + std::to_string(p));
+  return rows_.at(p);
 }
 
-SymSet PGInputRow::free_symbols() const { return {}; }
+PGInputTableau::PGInputTableau(const ChoiMixTableau& tableau)
+    : PGOp(PGOpType::InputTableau), rows_() {
+  for (unsigned i = 0; i < tableau.get_n_rows(); ++i)
+    rows_.push_back(tableau.get_row(i));
+}
 
-PGOp_ptr PGInputRow::symbol_substitution(
+SymSet PGInputTableau::free_symbols() const { return {}; }
+
+PGOp_ptr PGInputTableau::symbol_substitution(
     const SymEngine::map_basic_basic&) const {
   return PGOp_ptr();
 }
 
-std::string PGInputRow::get_name(bool) const {
+std::string PGInputTableau::get_name(bool) const {
   std::stringstream str;
-  str << "Input(" << input_tensor_.to_str() << " -> " << tensor_.to_str()
-      << ")";
+  str << "Input(\n";
+  for (const ChoiMixTableau::row_tensor_t& row : rows_)
+    str << "\t" << row.first.to_str() << "\t->\t" << row.second.to_str()
+        << "\n";
+  str << "\n)";
   return str.str();
 }
 
-bool PGInputRow::is_equal(const PGOp& op_other) const {
-  const PGInputRow& other = dynamic_cast<const PGInputRow&>(op_other);
-  return (input_tensor_ == other.input_tensor_) && (tensor_ == other.tensor_);
+bool PGInputTableau::is_equal(const PGOp& op_other) const {
+  const PGInputTableau& other = dynamic_cast<const PGInputTableau&>(op_other);
+  return (rows_ == other.rows_);
 }
 
-std::vector<QubitPauliTensor> PGInputRow::active_paulis() const {
-  return {tensor_};
+unsigned PGInputTableau::n_paulis() const { return rows_.size(); }
+
+std::vector<QubitPauliTensor> PGInputTableau::active_paulis() const {
+  std::vector<QubitPauliTensor> paulis;
+  for (unsigned i = 0; i < rows_.size(); ++i) {
+    paulis.push_back(rows_.at(i).second);
+  }
+  return paulis;
 }
 
-QubitPauliTensor& PGInputRow::port(unsigned p) {
-  if (p != 0)
+QubitPauliTensor& PGInputTableau::port(unsigned p) {
+  if (p >= rows_.size())
     throw PGError(
-        "Cannot dereference port on PGInputRow: " + std::to_string(p));
-  return tensor_;
+        "Cannot dereference port on PGInputTableau: " + std::to_string(p));
+  return rows_.at(p).second;
 }
 
 /**
- * PGOutputRow Implementation
+ * PGOutputTableau Implementation
  */
 
-const QubitPauliTensor& PGOutputRow::get_tensor() const { return tensor_; }
-
-const QubitPauliTensor& PGOutputRow::get_output_tensor() const {
-  return output_tensor_;
+const ChoiMixTableau::row_tensor_t& PGOutputTableau::get_full_row(
+    unsigned p) const {
+  if (p >= rows_.size())
+    throw PGError(
+        "Cannot dereference row on PGOutputTableau: " + std::to_string(p));
+  return rows_.at(p);
 }
 
-SymSet PGOutputRow::free_symbols() const { return {}; }
+PGOutputTableau::PGOutputTableau(const ChoiMixTableau& tableau)
+    : PGOp(PGOpType::OutputTableau), rows_() {
+  for (unsigned i = 0; i < tableau.get_n_rows(); ++i)
+    rows_.push_back(tableau.get_row(i));
+}
 
-PGOp_ptr PGOutputRow::symbol_substitution(
+SymSet PGOutputTableau::free_symbols() const { return {}; }
+
+PGOp_ptr PGOutputTableau::symbol_substitution(
     const SymEngine::map_basic_basic&) const {
   return PGOp_ptr();
 }
 
-std::string PGOutputRow::get_name(bool) const {
+std::string PGOutputTableau::get_name(bool) const {
   std::stringstream str;
-  str << "Output(" << tensor_.to_str() << " -> " << output_tensor_.to_str()
-      << ")";
+  str << "Output(\n";
+  for (const ChoiMixTableau::row_tensor_t& row : rows_)
+    str << "\t" << row.first.to_str() << "\t->\t" << row.second.to_str()
+        << "\n";
+  str << "\n)";
   return str.str();
 }
 
-bool PGOutputRow::is_equal(const PGOp& op_other) const {
-  const PGOutputRow& other = dynamic_cast<const PGOutputRow&>(op_other);
-  return (output_tensor_ == other.output_tensor_) && (tensor_ == other.tensor_);
+bool PGOutputTableau::is_equal(const PGOp& op_other) const {
+  const PGOutputTableau& other = dynamic_cast<const PGOutputTableau&>(op_other);
+  return (rows_ == other.rows_);
 }
 
-std::vector<QubitPauliTensor> PGOutputRow::active_paulis() const {
-  return {tensor_};
+unsigned PGOutputTableau::n_paulis() const { return rows_.size(); }
+
+std::vector<QubitPauliTensor> PGOutputTableau::active_paulis() const {
+  std::vector<QubitPauliTensor> paulis;
+  for (unsigned i = 0; i < rows_.size(); ++i) {
+    paulis.push_back(rows_.at(i).first);
+  }
+  return paulis;
 }
 
-QubitPauliTensor& PGOutputRow::port(unsigned p) {
-  if (p != 0)
+QubitPauliTensor& PGOutputTableau::port(unsigned p) {
+  if (p >= rows_.size())
     throw PGError(
-        "Cannot dereference port on PGOutputRow: " + std::to_string(p));
-  return tensor_;
+        "Cannot dereference port on PGOutputTableau: " + std::to_string(p));
+  return rows_.at(p).first;
 }
 
 /**
@@ -470,7 +507,9 @@ PauliGraph::PauliGraph()
       qubits_(),
       bits_(),
       last_writes_(),
-      last_reads_() {}
+      last_reads_(),
+      initial_tableau_(std::nullopt),
+      final_tableau_(std::nullopt) {}
 
 void PauliGraph::to_graphviz(std::ostream& out) const {
   out << "digraph G {\ncompound = true;\n";
@@ -526,63 +565,27 @@ PGVert PauliGraph::add_vertex_at_end(PGOp_ptr op) {
     for (const std::pair<const Qubit, Pauli>& qp : op->port(i).string.map)
       qubits_.insert(qp.first);
   }
+  if (op->get_type() == PGOpType::InputTableau) {
+    if (boost::num_vertices(c_graph_) != 1)
+      throw PGError(
+          "Cannot insert InputTableau into PauliGraph - other operations "
+          "already exist");
+    initial_tableau_ = v;
+  } else if (final_tableau_) {
+    throw PGError(
+        "Cannot insert additional operations to the end of the PauliGraph "
+        "after the final tableau");
+  } else if (op->get_type() == PGOpType::OutputTableau) {
+    final_tableau_ = v;
+  }
   // Find ancestors in the anticommutation matrix
-  if (op->get_type() == PGOpType::InputRow) {
-    const PGInputRow& in = dynamic_cast<const PGInputRow&>(*op);
-    QubitPauliTensor tensor = in.get_tensor();
-    QubitPauliTensor input_tensor = in.get_input_tensor();
+  std::vector<QubitPauliTensor> active = op->active_paulis();
+  for (unsigned i = 0; i < active.size(); ++i) {
     for (const PGPauli& prev_pauli : pauli_index_.get<TagID>()) {
       PGOp_ptr other_op = c_graph_[prev_pauli.vert];
-      if (other_op->get_type() == PGOpType::InputRow) {
-        const PGInputRow& other_in = dynamic_cast<const PGInputRow&>(*other_op);
-        if (tensor.commutes_with(other_in.get_tensor()) ^
-            input_tensor.commutes_with(other_in.get_input_tensor()))
-          throw PGError(
-              "Cannot insert InputRow into PauliGraph - does not commute with "
-              "existing InputRow");
-      } else if (!tensor.commutes_with(other_op->port(prev_pauli.port)))
-        throw PGError(
-            "Cannot insert InputRow into PauliGraph - does not commute with "
-            "existing operations");
-      pauli_ac_(mat_offset, prev_pauli.index) = false;
-    }
-  } else if (op->get_type() == PGOpType::OutputRow) {
-    const PGOutputRow& out = dynamic_cast<const PGOutputRow&>(*op);
-    QubitPauliTensor tensor = out.get_tensor();
-    QubitPauliTensor output_tensor = out.get_output_tensor();
-    for (const PGPauli& prev_pauli : pauli_index_.get<TagID>()) {
-      PGOp_ptr other_op = c_graph_[prev_pauli.vert];
-      if (other_op->get_type() == PGOpType::OutputRow) {
-        const PGOutputRow& other_out =
-            dynamic_cast<const PGOutputRow&>(*other_op);
-        if (tensor.commutes_with(other_out.get_tensor()) ^
-            output_tensor.commutes_with(other_out.get_output_tensor()))
-          throw PGError(
-              "Cannot insert OutputRow into PauliGraph - does not commute with "
-              "existing OutputRow");
-        pauli_ac_(mat_offset, prev_pauli.index) = false;
-      } else {
-        pauli_ac_(mat_offset, prev_pauli.index) =
-            !tensor.commutes_with(other_op->port(prev_pauli.port));
-      }
-    }
-  } else {
-    std::vector<QubitPauliTensor> active = op->active_paulis();
-    for (unsigned i = 0; i < active.size(); ++i) {
-      for (const PGPauli& prev_pauli : pauli_index_.get<TagID>()) {
-        PGOp_ptr other_op = c_graph_[prev_pauli.vert];
-        QubitPauliTensor other_pauli = other_op->port(prev_pauli.port);
-        if (other_op->get_type() == PGOpType::OutputRow) {
-          if (active.at(i).commutes_with(other_pauli))
-            throw PGError(
-                "Cannot insert operation into PauliGraph - does not commute "
-                "with existing OutputRow");
-          pauli_ac_(mat_offset + i, prev_pauli.index) = false;
-        } else {
-          pauli_ac_(mat_offset + i, prev_pauli.index) =
-              !active.at(i).commutes_with(other_pauli);
-        }
-      }
+      QubitPauliTensor other_pauli = other_op->port(prev_pauli.port);
+      pauli_ac_(mat_offset + i, prev_pauli.index) =
+          !active.at(i).commutes_with(other_pauli);
     }
   }
   // Find classical predecessors
@@ -634,8 +637,6 @@ void PauliGraph::verify() const {
   std::unordered_set<PGVert> consumed;
   std::map<Bit, PGVert> previous_write;
   std::map<Bit, std::unordered_set<PGVert>> previous_reads;
-  std::list<PGOp_ptr> inputs;
-  std::list<PGOp_ptr> outputs;
   bool found_more = true;
   while (found_more) {
     found_more = false;
@@ -725,67 +726,65 @@ void PauliGraph::verify() const {
             throw PGError(
                 "PGOp interacts with unregistered qubit: " + op->get_name());
         }
-        if (op->get_type() == PGOpType::InputRow) {
+        for (const PGPauli& c_pauli : pauli_index_.get<TagID>()) {
+          if ((consumed.find(c_pauli.vert) != consumed.end()) &&
+              (pauli_ac_(it->index, c_pauli.index) == (it->vert != v) &&
+               tensor.commutes_with(
+                   c_graph_[c_pauli.vert]->port(c_pauli.port))))
+            throw PGError(
+                "PauliGraph anticommutation matrix is missing a link "
+                "between " +
+                c_graph_[c_pauli.vert]->get_name() + " and " + op->get_name());
+        }
+      }
+
+      // Tableau conditions
+      if (op->get_type() == PGOpType::InputTableau) {
+        if (initial_tableau_ != v)
+          throw PGError("PauliGraph contains an untracked InputTableau");
+        // No predecessors
+        for (auto it = range.first; it != range.second; ++it) {
           for (unsigned c = 0; c < pauli_ac_.cols(); ++c) {
             if (pauli_ac_(it->index, c))
               throw PGError(
-                  "PauliGraph input row has predecessors in anticommutation "
-                  "matrix: " +
-                  op->get_name());
+                  "PauliGraph InputTableau has predecessors in anticommutation "
+                  "matrix");
           }
-          const PGInputRow& in = dynamic_cast<const PGInputRow&>(*op);
-          for (const PGOp_ptr& other : inputs) {
-            const PGInputRow& other_in =
-                dynamic_cast<const PGInputRow&>(*other);
-            if (in.get_tensor().commutes_with(other_in.get_tensor()) !=
-                in.get_input_tensor().commutes_with(
-                    other_in.get_input_tensor()))
+        }
+        // Commuting rows
+        const PGInputTableau& tab = dynamic_cast<const PGInputTableau&>(*op);
+        for (unsigned i = 0; i < tab.n_paulis(); ++i) {
+          for (unsigned j = i + 1; j < tab.n_paulis(); ++j) {
+            if (tab.get_full_row(i).first.commutes_with(
+                    tab.get_full_row(j).first) !=
+                tab.get_full_row(i).second.commutes_with(
+                    tab.get_full_row(j).second))
               throw PGError(
-                  "PauliGraph contains anticommuting input rows: " +
-                  op->get_name() + " and " + other->get_name());
+                  "InputTableau of PauliGraph does not have commuting rows");
           }
-          inputs.push_back(op);
-        } else if (op->get_type() == PGOpType::OutputRow) {
-          for (const PGPauli& c_pauli : pauli_index_.get<TagID>()) {
-            if ((consumed.find(c_pauli.vert) != consumed.end()) &&
-                (pauli_ac_(it->index, c_pauli.index) !=
-                 (c_graph_[it->vert]->get_type() != PGOpType::OutputRow &&
-                  !tensor.commutes_with(c_graph_[it->vert]->port(it->port)))))
-              throw PGError(
-                  "PauliGraph anticommutation matrix is missing a link "
-                  "between " +
-                  c_graph_[it->vert]->get_name() + " and " + op->get_name());
-          }
+        }
+      } else if (op->get_type() == PGOpType::OutputTableau) {
+        if (final_tableau_ != v)
+          throw PGError("PauliGraph contains an untracked OutputTableau");
+        // No successors
+        for (auto it = range.first; it != range.second; ++it) {
           for (unsigned r = 0; r < pauli_ac_.rows(); ++r) {
             if (pauli_ac_(r, it->index))
               throw PGError(
-                  "PauliGraph output row has successors in anticommutation "
-                  "matrix: " +
-                  op->get_name());
+                  "PauliGraph OutputTableau has successors in anticommutation "
+                  "matrix");
           }
-          const PGOutputRow& out = dynamic_cast<const PGOutputRow&>(*op);
-          for (const PGOp_ptr& other : outputs) {
-            const PGOutputRow& other_out =
-                dynamic_cast<const PGOutputRow&>(*other);
-            if (out.get_tensor().commutes_with(other_out.get_tensor()) !=
-                out.get_output_tensor().commutes_with(
-                    other_out.get_output_tensor()))
+        }
+        // Commuting rows
+        const PGOutputTableau& tab = dynamic_cast<const PGOutputTableau&>(*op);
+        for (unsigned i = 0; i < tab.n_paulis(); ++i) {
+          for (unsigned j = i + 1; j < tab.n_paulis(); ++j) {
+            if (tab.get_full_row(i).first.commutes_with(
+                    tab.get_full_row(j).first) !=
+                tab.get_full_row(i).second.commutes_with(
+                    tab.get_full_row(j).second))
               throw PGError(
-                  "PauliGraph contains anticommuting output rows: " +
-                  op->get_name() + " and " + other->get_name());
-          }
-          outputs.push_back(op);
-        } else {
-          for (const PGPauli& c_pauli : pauli_index_.get<TagID>()) {
-            if ((consumed.find(c_pauli.vert) != consumed.end()) &&
-                (pauli_ac_(it->index, c_pauli.index) ==
-                 tensor.commutes_with(
-                     c_graph_[c_pauli.vert]->port(c_pauli.port))))
-              throw PGError(
-                  "PauliGraph anticommutation matrix is missing a link "
-                  "between " +
-                  c_graph_[c_pauli.vert]->get_name() + " and " +
-                  op->get_name());
+                  "OutputTableau of PauliGraph does not have commuting rows");
           }
         }
       }

@@ -75,21 +75,15 @@ enum class PGOpType {
   // postselection
   Stabilizer,
 
-  // A row from the initial tableau
-  // The active QubitPauliTensor is from the output segment of the tableau, i.e.
-  // the segment that connects to the interior of the Pauli Graph
-  // The Op also contains a QubitPauliTensor for the input segment which may be
-  // identity to indicate a stabilizer (can be converted to/from the Stabilizer
-  // type)
-  InputRow,
+  // The initial tableau
+  // The active QubitPauliTensors are from the output segment of the tableau,
+  // i.e. the segment that connects to the interior of the Pauli Graph
+  InputTableau,
 
-  // A row from the terminal tableau
-  // The active QubitPauliTensor is from the input segment of the tableau, i.e.
-  // the segment that connects to the interior of the Pauli Graph
-  // The Op also contains a QubitPauliTensor for the output segment which may be
-  // identity to indicate a postselection (can be converted to/from the
-  // Stabilizer type)
-  OutputRow,
+  // The final tableau
+  // The active QubitPauliTensors are from the input segment of the tableau,
+  // i.e. the segment that connects to the interior of the Pauli Graph
+  OutputTableau,
 };
 
 /**
@@ -295,13 +289,13 @@ class PGStabilizer : public PGOp {
   QubitPauliTensor stab_;
 };
 
-class PGInputRow : public PGOp {
+class PGInputTableau : public PGOp {
  public:
-  const QubitPauliTensor& get_tensor() const;
-  const QubitPauliTensor& get_input_tensor() const;
+  // Returns the row tensor as from the tableau; first component is for the
+  // input segment, second for the output component (the active paulis)
+  const ChoiMixTableau::row_tensor_t& get_full_row(unsigned p) const;
 
-  PGInputRow(
-      const QubitPauliTensor& tensor, const QubitPauliTensor& input_tensor);
+  PGInputTableau(const ChoiMixTableau& tableau);
 
   // Overrides from PGOp
   virtual SymSet free_symbols() const override;
@@ -309,21 +303,24 @@ class PGInputRow : public PGOp {
       const SymEngine::map_basic_basic& sub_map) const override;
   virtual std::string get_name(bool latex = false) const override;
   virtual bool is_equal(const PGOp& other) const override;
+  virtual unsigned n_paulis() const override;
   virtual std::vector<QubitPauliTensor> active_paulis() const override;
   virtual QubitPauliTensor& port(unsigned p) override;
 
  protected:
-  QubitPauliTensor tensor_;
-  QubitPauliTensor input_tensor_;
+  // Store the rows as QubitPauliTensors rather than an actual tableau object
+  // for easier modification of individual rows in the same way as for rewriting
+  // on other PGOps
+  std::vector<ChoiMixTableau::row_tensor_t> rows_;
 };
 
-class PGOutputRow : public PGOp {
+class PGOutputTableau : public PGOp {
  public:
-  const QubitPauliTensor& get_tensor() const;
-  const QubitPauliTensor& get_output_tensor() const;
+  // Returns the row tensor as from the tableau; first component is for the
+  // input segment (the active paulis), second for the output component
+  const ChoiMixTableau::row_tensor_t& get_full_row(unsigned p) const;
 
-  PGOutputRow(
-      const QubitPauliTensor& tensor, const QubitPauliTensor& output_tensor);
+  PGOutputTableau(const ChoiMixTableau& tableau);
 
   // Overrides from PGOp
   virtual SymSet free_symbols() const override;
@@ -331,12 +328,15 @@ class PGOutputRow : public PGOp {
       const SymEngine::map_basic_basic& sub_map) const override;
   virtual std::string get_name(bool latex = false) const override;
   virtual bool is_equal(const PGOp& other) const override;
+  virtual unsigned n_paulis() const override;
   virtual std::vector<QubitPauliTensor> active_paulis() const override;
   virtual QubitPauliTensor& port(unsigned p) override;
 
  protected:
-  QubitPauliTensor tensor_;
-  QubitPauliTensor output_tensor_;
+  // Store the rows as QubitPauliTensors rather than an actual tableau object
+  // for easier modification of individual rows in the same way as for rewriting
+  // on other PGOps
+  std::vector<ChoiMixTableau::row_tensor_t> rows_;
 };
 
 /**
@@ -431,12 +431,10 @@ class PGOutputRow : public PGOp {
  * and interior or over the interior and outputs. However, we only care about
  * the interior Pauli strings in the anticommutation matrix.
  *
- * When a vertex may contain multiple ports, or in the case of InputRows and
- * OutputRows, we view the actions on the ports as happening simultaneously, so
- * the anticommutation matrix will read false in the corresponding entries even
- * if the Pauli strings anticommute. However, the InputRows/OutputRows should
- * all commute as rows of a ChoiMixedTableau (i.e. between any two rows, either
- * both the interior and input/output strings commute or they both anticommute).
+ * When a vertex may contain multiple ports, such as InputTableau and
+ * OutputTableau, we view the actions on the ports as happening simultaneously,
+ * so the anticommutation matrix will read false in the corresponding entries
+ * even if the Pauli strings anticommute.
  */
 
 typedef boost::adjacency_list<
@@ -487,6 +485,9 @@ class PauliGraph {
 
   std::map<Bit, PGVert> last_writes_;
   std::map<Bit, std::unordered_set<PGVert>> last_reads_;
+
+  std::optional<PGVert> initial_tableau_;
+  std::optional<PGVert> final_tableau_;
 
   // Replaces the QubitPauliString of row target_r with coeff * source * target
   // and updates pauli_ac_ accordingly
