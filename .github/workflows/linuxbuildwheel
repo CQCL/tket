@@ -34,6 +34,16 @@ ${CONAN_CMD} remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/
 ${CONAN_CMD} create --profile=tket --test-folder=None recipes/tket tket/stable --build=missing --build=tket
 ${CONAN_CMD} create --profile=tket --test-folder=None recipes/pybind11
 
+# Install node and npm
+ENV NODE_VERSION=18
+RUN apt install -y curl
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+ENV NVM_DIR=/root/.nvm
+RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}
+ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
+RUN node --version
+RUN npm --version
+
 cd /tket/pytket
 mkdir wheelhouse
 mkdir audited
