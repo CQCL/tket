@@ -1,8 +1,5 @@
 include pytket/circuit/display/circuit.html
-include pytket/circuit/display/dist/main.js
 
-exclude pytket/circuit/display/src
-exclude pytket/circuit/display/package.json
-exclude pytket/circuit/display/package-lock.json
-exclude pytket/circuit/display/webpack.config.js
+prune pytket/_display
+graft pytket/_display/dist
 

@@ -22,7 +22,7 @@ import uuid
 import webbrowser
 from typing import Dict, Optional, Union, cast
 
-from jinja2 import nodes, FileSystemLoader, Environment
+from jinja2 import nodes, FileSystemLoader, ChoiceLoader, Environment
 from jinja2.ext import Extension
 from jinja2.utils import markupsafe
 from jinja2.parser import Parser
@@ -31,6 +31,7 @@ from pytket.circuit import Circuit  # type: ignore
 
 # Set up jinja to access our templates
 dirname = os.path.dirname(__file__)
+display_dirname = os.path.join(dirname, "../../_display/dist")
 
 
 # js scripts to be loaded must not be parsed as template files.
@@ -52,8 +53,9 @@ class IncludeRawExtension(Extension):
             return markupsafe.Markup("")
 
 
-loader = FileSystemLoader(searchpath=dirname)
-env = Environment(loader=loader, extensions=[IncludeRawExtension])
+local_loader = FileSystemLoader(searchpath=dirname)
+dist_loader = FileSystemLoader(searchpath=display_dirname)
+env = Environment(loader=ChoiceLoader([local_loader, dist_loader]), extensions=[IncludeRawExtension])
 
 RenderCircuit = Union[Dict[str, Union[str, float, dict]], Circuit]
 
