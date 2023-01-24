@@ -604,4 +604,177 @@ void from_json(const nlohmann::json& j, UnitaryTableau& tab) {
   }
 }
 
+UnitaryRevTableau::UnitaryRevTableau(unsigned n) : tab_(n) {}
+
+UnitaryRevTableau::UnitaryRevTableau(const qubit_vector_t& qbs) : tab_(qbs) {}
+
+QubitPauliTensor UnitaryRevTableau::get_xrow(const Qubit& qb) const {
+  QubitPauliTensor row = tab_.get_xrow(qb);
+  row.transpose();
+  return row;
+}
+
+QubitPauliTensor UnitaryRevTableau::get_zrow(const Qubit& qb) const {
+  QubitPauliTensor row = tab_.get_zrow(qb);
+  row.transpose();
+  return row;
+}
+
+QubitPauliTensor UnitaryRevTableau::get_row_product(
+    const QubitPauliTensor& qpt) const {
+  QubitPauliTensor tp = qpt;
+  tp.transpose();
+  QubitPauliTensor prod = tab_.get_row_product(tp);
+  prod.transpose();
+  return prod;
+}
+
+std::set<Qubit> UnitaryRevTableau::get_qubits() const {
+  return tab_.get_qubits();
+}
+
+void UnitaryRevTableau::apply_S_at_front(const Qubit& qb) {
+  tab_.apply_S_at_end(qb);
+}
+
+void UnitaryRevTableau::apply_S_at_end(const Qubit& qb) {
+  tab_.apply_S_at_front(qb);
+}
+
+void UnitaryRevTableau::apply_V_at_front(const Qubit& qb) {
+  tab_.apply_V_at_end(qb);
+}
+
+void UnitaryRevTableau::apply_V_at_end(const Qubit& qb) {
+  tab_.apply_V_at_front(qb);
+}
+
+void UnitaryRevTableau::apply_CX_at_front(
+    const Qubit& control, const Qubit& target) {
+  tab_.apply_CX_at_end(control, target);
+}
+
+void UnitaryRevTableau::apply_CX_at_end(
+    const Qubit& control, const Qubit& target) {
+  tab_.apply_CX_at_front(control, target);
+}
+
+void UnitaryRevTableau::apply_gate_at_front(
+    OpType type, const qubit_vector_t& qbs) {
+  switch (type) {
+    case OpType::Y: {
+      tab_.apply_V_at_end(qbs.at(0));
+      tab_.apply_V_at_end(qbs.at(0));
+      tab_.apply_S_at_end(qbs.at(0));
+      tab_.apply_S_at_end(qbs.at(0));
+      break;
+    }
+    case OpType::CY: {
+      tab_.apply_S_at_end(qbs.at(1));
+      tab_.apply_S_at_end(qbs.at(1));
+      tab_.apply_S_at_end(qbs.at(1));
+      tab_.apply_CX_at_end(qbs.at(0), qbs.at(1));
+      tab_.apply_S_at_end(qbs.at(1));
+      break;
+    }
+    default: {
+      tab_.apply_gate_at_end(type, qbs);
+    }
+  }
+}
+
+void UnitaryRevTableau::apply_gate_at_end(
+    OpType type, const qubit_vector_t& qbs) {
+  switch (type) {
+    case OpType::Y: {
+      tab_.apply_V_at_front(qbs.at(0));
+      tab_.apply_V_at_front(qbs.at(0));
+      tab_.apply_S_at_front(qbs.at(0));
+      tab_.apply_S_at_front(qbs.at(0));
+      break;
+    }
+    case OpType::CY: {
+      tab_.apply_S_at_front(qbs.at(1));
+      tab_.apply_S_at_front(qbs.at(1));
+      tab_.apply_S_at_front(qbs.at(1));
+      tab_.apply_CX_at_front(qbs.at(0), qbs.at(1));
+      tab_.apply_S_at_front(qbs.at(1));
+      break;
+    }
+    default: {
+      tab_.apply_gate_at_front(type, qbs);
+    }
+  }
+}
+
+void UnitaryRevTableau::apply_pauli_at_front(
+    const QubitPauliTensor& pauli, unsigned half_pis) {
+  QubitPauliTensor tp = pauli;
+  tp.transpose();
+  tab_.apply_pauli_at_end(tp, half_pis);
+}
+
+void UnitaryRevTableau::apply_pauli_at_end(
+    const QubitPauliTensor& pauli, unsigned half_pis) {
+  QubitPauliTensor tp = pauli;
+  tp.transpose();
+  tab_.apply_pauli_at_front(tp, half_pis);
+}
+
+UnitaryRevTableau UnitaryRevTableau::compose(
+    const UnitaryRevTableau& first, const UnitaryRevTableau& second) {
+  UnitaryRevTableau result(0);
+  result.tab_ = UnitaryTableau::compose(second.tab_, first.tab_);
+  return result;
+}
+
+UnitaryRevTableau UnitaryRevTableau::dagger() const {
+  UnitaryRevTableau result(0);
+  result.tab_ = tab_.dagger();
+  return result;
+}
+
+UnitaryRevTableau UnitaryRevTableau::transpose() const {
+  UnitaryRevTableau result(0);
+  result.tab_ = tab_.transpose();
+  return result;
+}
+
+UnitaryRevTableau UnitaryRevTableau::conjugate() const {
+  UnitaryRevTableau result(0);
+  result.tab_ = tab_.conjugate();
+  return result;
+}
+
+std::ostream& operator<<(std::ostream& os, const UnitaryRevTableau& tab) {
+  unsigned nqs = tab.tab_.qubits_.size();
+  for (unsigned i = 0; i < nqs; ++i) {
+    Qubit qi = tab.tab_.qubits_.right.at(i);
+    os << tab.tab_.tab_.xmat_.row(i) << "   " << tab.tab_.tab_.zmat_.row(i)
+       << "   " << tab.tab_.tab_.phase_(i) << "\t->\t"
+       << "X@" << qi.repr() << std::endl;
+  }
+  os << "--" << std::endl;
+  for (unsigned i = 0; i < nqs; ++i) {
+    Qubit qi = tab.tab_.qubits_.right.at(i);
+    os << tab.tab_.tab_.xmat_.row(i + nqs) << "   "
+       << tab.tab_.tab_.zmat_.row(i + nqs) << "   "
+       << tab.tab_.tab_.phase_(i + nqs) << "\t->\t"
+       << "Z@" << qi.repr() << std::endl;
+  }
+  return os;
+}
+
+bool UnitaryRevTableau::operator==(const UnitaryRevTableau& other) const {
+  return (tab_ == other.tab_);
+}
+
+void to_json(nlohmann::json& j, const UnitaryRevTableau& tab) {
+  j["tab"] = tab.tab_;
+}
+
+void from_json(const nlohmann::json& j, UnitaryRevTableau& tab) {
+  j.at("tab").get_to(tab.tab_);
+}
+
 }  // namespace tket

@@ -255,4 +255,14 @@ Circuit unitary_tableau_to_circuit(const UnitaryTableau& tab) {
   return c.transpose();
 }
 
+UnitaryRevTableau circuit_to_unitary_rev_tableau(const Circuit& circ) {
+  UnitaryRevTableau result(0);
+  result.tab_ = circuit_to_unitary_tableau(circ).transpose();
+  return result;
+}
+
+Circuit unitary_rev_tableau_to_circuit(const UnitaryRevTableau& tab) {
+  return unitary_tableau_to_circuit(tab.tab_.transpose());
+}
+
 }  // namespace tket

@@ -29,6 +29,7 @@ namespace tket {
  */
 CliffTableau circuit_to_tableau(const Circuit &circ);
 UnitaryTableau circuit_to_unitary_tableau(const Circuit &circ);
+UnitaryRevTableau circuit_to_unitary_rev_tableau(const Circuit &circ);
 
 /**
  * Constructs a circuit producing the same effect as the tableau.
@@ -38,6 +39,7 @@ UnitaryTableau circuit_to_unitary_tableau(const Circuit &circ);
  */
 Circuit tableau_to_circuit(const CliffTableau &tab);
 Circuit unitary_tableau_to_circuit(const UnitaryTableau &tab);
+Circuit unitary_rev_tableau_to_circuit(const UnitaryRevTableau &tab);
 
 /**
  * Construct a ChoiMixTableau for a given circuit.
