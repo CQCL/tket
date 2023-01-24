@@ -18,6 +18,7 @@
 #include "Mapping/Verification.hpp"
 #include "OpType/OpTypeFunctions.hpp"
 #include "Placement/Placement.hpp"
+#include "Transformations/MeasurePass.hpp"
 #include "Utils/MatrixAnalysis.hpp"
 #include "Utils/UnitID.hpp"
 
@@ -65,6 +66,7 @@ const std::string& predicate_name(std::type_index idx) {
       SET_PRED_NAME(NoClassicalBitsPredicate),
       SET_PRED_NAME(NoClassicalControlPredicate),
       SET_PRED_NAME(NoFastFeedforwardPredicate),
+      SET_PRED_NAME(CommutableMeasuresPredicate),
       SET_PRED_NAME(NoMidMeasurePredicate),
       SET_PRED_NAME(NoSymbolsPredicate),
       SET_PRED_NAME(GlobalPhasedXPredicate),
@@ -546,6 +548,25 @@ PredicatePtr NoBarriersPredicate::meet(const Predicate& other) const {
 
 std::string NoBarriersPredicate::to_string() const { return auto_name(*this); }
 
+bool CommutableMeasuresPredicate::verify(const Circuit& circ) const {
+  if (circ.n_bits() == 0) return true;
+  // run_delay_measures_ will not modify the circuit when dry_run is true
+  Circuit& mutable_circ = const_cast<Circuit&>(circ);
+  return Transforms::run_delay_measures_(mutable_circ, true).second;
+}
+
+bool CommutableMeasuresPredicate::implies(const Predicate& other) const {
+  return auto_implication(*this, other);
+}
+
+PredicatePtr CommutableMeasuresPredicate::meet(const Predicate& other) const {
+  return auto_meet(*this, other);
+}
+
+std::string CommutableMeasuresPredicate::to_string() const {
+  return auto_name(*this);
+}
+
 static bool mid_measure_helper(const Command& com, unit_set_t& measured_units) {
   // Rejects gates acting on measured_units
   // Encountering a measurement adds the qubit and bit to measured_units
@@ -754,6 +775,10 @@ void to_json(nlohmann::json& j, const PredicatePtr& pred_ptr) {
           std::dynamic_pointer_cast<NoBarriersPredicate>(pred_ptr)) {
     j["type"] = "NoBarriersPredicate";
   } else if (
+      std::shared_ptr<CommutableMeasuresPredicate> cast_pred =
+          std::dynamic_pointer_cast<CommutableMeasuresPredicate>(pred_ptr)) {
+    j["type"] = "CommutableMeasuresPredicate";
+  } else if (
       std::shared_ptr<NoMidMeasurePredicate> cast_pred =
           std::dynamic_pointer_cast<NoMidMeasurePredicate>(pred_ptr)) {
     j["type"] = "NoMidMeasurePredicate";
@@ -809,6 +834,8 @@ void from_json(const nlohmann::json& j, PredicatePtr& pred_ptr) {
     pred_ptr = std::make_shared<MaxNQubitsPredicate>(n_qubits);
   } else if (classname == "NoBarriersPredicate") {
     pred_ptr = std::make_shared<NoBarriersPredicate>();
+  } else if (classname == "CommutableMeasuresPredicate") {
+    pred_ptr = std::make_shared<CommutableMeasuresPredicate>();
   } else if (classname == "NoMidMeasurePredicate") {
     pred_ptr = std::make_shared<NoMidMeasurePredicate>();
   } else if (classname == "NoSymbolsPredicate") {

@@ -26,6 +26,18 @@ namespace Transforms {
  */
 Transform delay_measures();
 
+/** Commute all measurement gates to the end of the circuit.
+ * @param circ The circuit to delay measurements in.
+ * @param dry_run If true, do not modify the circuit, just check if it is
+ * possible to delay.
+ * @throws CircuitInvalidity if it is not possible to delay and dry_run is
+ * false.
+ * @return A pair of booleans. The first indicates whether the circuit was
+ * changed, and the second indicates whether it was possible to delay (i.e.
+ * there where no errors).
+ **/
+std::pair<bool, bool> run_delay_measures_(Circuit& circ, bool dry_run = false);
+
 }  // namespace Transforms
 
 }  // namespace tket

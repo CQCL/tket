@@ -434,6 +434,57 @@ SCENARIO("Test ConnectivityPredicate") {
   REQUIRE(conn->verify(c1));
 }
 
+SCENARIO(
+    "Verifying whether the mid-circuit measurements can be commuted to the "
+    "end") {
+  PredicatePtr com_meas_pred = std::make_shared<CommutableMeasuresPredicate>();
+  GIVEN("No measurements") {
+    Circuit c(2, 2);
+    c.add_op<unsigned>(OpType::Z, {0});
+    c.add_op<unsigned>(OpType::CX, {1, 0});
+    c.add_op<unsigned>(OpType::Rx, 0.3, {1});
+    REQUIRE(com_meas_pred->verify(c));
+  }
+  GIVEN("Some commutable mid-measurements") {
+    Circuit c(2, 2);
+    c.add_op<unsigned>(OpType::Z, {0});
+    c.add_op<unsigned>(OpType::Measure, {0, 0});
+    c.add_op<unsigned>(OpType::X, {0});
+    c.add_op<unsigned>(OpType::Rx, 0.3, {1});
+    c.add_op<unsigned>(OpType::Measure, {1, 1});
+    REQUIRE(com_meas_pred->verify(c));
+  }
+  GIVEN("Measures by output with feedforward") {
+    Circuit c(2, 2);
+    c.add_op<unsigned>(OpType::CZ, {0, 1});
+    c.add_op<unsigned>(OpType::Measure, {0, 0});
+    c.add_conditional_gate<unsigned>(OpType::Z, {}, {1}, {0}, 1);
+    REQUIRE_FALSE(com_meas_pred->verify(c));
+  }
+  GIVEN("Measures at end on same bit") {
+    Circuit c(2, 2);
+    c.add_op<unsigned>(OpType::Z, {0});
+    c.add_op<unsigned>(OpType::CX, {1, 0});
+    c.add_op<unsigned>(OpType::Rx, 0.3, {1});
+    c.add_op<unsigned>(OpType::Measure, {0, 0});
+    c.add_op<unsigned>(OpType::Measure, {1, 0});
+    REQUIRE_FALSE(com_meas_pred->verify(c));
+  }
+  GIVEN("Measure in CircBox") {
+    Circuit inner(1, 1);
+    inner.add_op<unsigned>(OpType::X, {0});
+    inner.add_op<unsigned>(OpType::Measure, {0, 0});
+    CircBox cbox(inner);
+    Circuit c(2, 2);
+    c.add_box(cbox, {0, 0});
+    c.add_op<unsigned>(OpType::Measure, {1, 1});
+    // TODO Support measures at the end of a CircBox
+    // REQUIRE(com_meas_pred->verify(c));
+    c.add_op<unsigned>(OpType::Z, {0});
+    REQUIRE_FALSE(com_meas_pred->verify(c));
+  }
+}
+
 SCENARIO("Verifying whether or not circuits have mid-circuit measurements") {
   PredicatePtr mid_meas_pred = std::make_shared<NoMidMeasurePredicate>();
   GIVEN("No measurements") {

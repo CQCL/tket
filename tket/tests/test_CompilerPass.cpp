@@ -1244,7 +1244,7 @@ SCENARIO("Commute measurements to the end of a circuit") {
     c.add_op<unsigned>(OpType::Measure, {0, 0});
     c.add_op<unsigned>(OpType::Rx, 0.3, {0});
     CompilationUnit cu(c);
-    REQUIRE_THROWS_AS(delay_pass->apply(cu), CircuitInvalidity);
+    REQUIRE_THROWS_AS(delay_pass->apply(cu), UnsatisfiedPredicate);
   }
   GIVEN("Measure blocked by classical operation") {
     Circuit c(2, 1);
@@ -1252,7 +1252,7 @@ SCENARIO("Commute measurements to the end of a circuit") {
     c.add_op<unsigned>(OpType::Measure, {0, 0});
     c.add_op<unsigned>(OpType::Measure, {1, 0});
     CompilationUnit cu(c);
-    REQUIRE_THROWS_AS(delay_pass->apply(cu), CircuitInvalidity);
+    REQUIRE_THROWS_AS(delay_pass->apply(cu), UnsatisfiedPredicate);
   }
   GIVEN("Measure blocked by conditional operation") {
     Circuit c(2, 2);
@@ -1260,7 +1260,7 @@ SCENARIO("Commute measurements to the end of a circuit") {
     c.add_op<unsigned>(OpType::Measure, {0, 0});
     c.add_conditional_gate<unsigned>(OpType::Z, {}, {1}, {0}, 1);
     CompilationUnit cu(c);
-    REQUIRE_THROWS_AS(delay_pass->apply(cu), CircuitInvalidity);
+    REQUIRE_THROWS_AS(delay_pass->apply(cu), UnsatisfiedPredicate);
   }
   GIVEN("Combined with routing") {
     Circuit test(3, 1);
@@ -1435,6 +1435,24 @@ SCENARIO("CX mapping pass") {
     cu.get_circ_ref().get_commands();
     // Therefore this REQUIRE confirms that is not happening
     REQUIRE(true);
+  }
+  GIVEN("A circuit with a barrier and internal measurements.") {
+    Circuit circ(2);
+    Bit id(0);
+    circ.add_bit(id, false);
+    circ.add_measure(Qubit(0), id);
+    circ.add_barrier({0, 1});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    std::vector<std::pair<unsigned, unsigned>> edges = {{0, 1}};
+    Architecture arc(edges);
+    Placement::Ptr plptr = std::make_shared<Placement>(arc);
+    CompilationUnit cu(circ);
+    std::vector<RoutingMethodPtr> config = {
+        std::make_shared<LexiRouteRoutingMethod>()};
+    THEN("Mapping with delay_measurements fails on the predicate.") {
+      PassPtr pass = gen_cx_mapping_pass(arc, plptr, config, false, true);
+      REQUIRE_THROWS_AS(pass->apply(cu), UnsatisfiedPredicate);
+    }
   }
 }
 
