@@ -532,10 +532,7 @@ bool Gate::test_exchange_invariance_of_ports(
     case OpType::CnRy: {
       // symmetry on first n ports not on n+1
       auto last_port = n_qubits_ - 1;
-      if (port1 == last_port || port2 == last_port) {
-        return false;
-      }
-      return true;
+      return not(port1 == last_port || port2 == last_port);
     }
     case OpType::CnZ:
     case OpType::PhaseGadget:
