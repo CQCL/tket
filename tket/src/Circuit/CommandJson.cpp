@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <tkassert/Assert.hpp>
+
 #include "Command.hpp"
 #include "Utils/Json.hpp"
 
@@ -30,12 +32,24 @@ void to_json(nlohmann::json& j, const Command& com) {
 
   nlohmann::json j_args;
   for (size_t i = 0; i < sig.size(); i++) {
-    if (sig[i] == EdgeType::Quantum) {
-      const Qubit& qb = static_cast<const Qubit&>(args[i]);
-      j_args.push_back(qb);
-    } else {
-      const Bit& cb = static_cast<const Bit&>(args[i]);
-      j_args.push_back(cb);
+    switch (sig[i]) {
+      case EdgeType::WASM: {
+        continue;
+      }
+      case EdgeType::Quantum: {
+        const Qubit& qb = static_cast<const Qubit&>(args[i]);
+        j_args.push_back(qb);
+        break;
+      }
+      case EdgeType::Classical:
+      case EdgeType::Boolean: {
+        const Bit& cb = static_cast<const Bit&>(args[i]);
+        j_args.push_back(cb);
+        break;
+      }
+      default: {
+        TKET_ASSERT(!"command to json found invalid edge type in signature");
+      }
     }
   }
 
@@ -55,10 +69,22 @@ void from_json(const nlohmann::json& j, Command& com) {
   }
   unit_vector_t args;
   for (size_t i = 0; i < sig.size(); i++) {
-    if (sig[i] == EdgeType::Quantum) {
-      args.push_back(j_args[i].get<Qubit>());
-    } else {
-      args.push_back(j_args[i].get<Bit>());
+    switch (sig[i]) {
+      case EdgeType::WASM: {
+        break;
+      }
+      case EdgeType::Quantum: {
+        args.push_back(j_args[i].get<Qubit>());
+        break;
+      }
+      case EdgeType::Classical:
+      case EdgeType::Boolean: {
+        args.push_back(j_args[i].get<Bit>());
+        break;
+      }
+      default: {
+        TKET_ASSERT(!"command from json found invalid edge type in signature");
+      }
     }
   }
 

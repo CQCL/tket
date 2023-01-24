@@ -402,6 +402,76 @@ SCENARIO("check error in steiner Forest") {
         aas::best_operations_lookahead(ph, sf, 1), std::logic_error);
   }
 }
+SCENARIO("Synthesise a phase polynomial for a given architecture - short") {
+  GIVEN("phase_poly_synthesis 1") {
+    const Architecture archi(
+        {{Node(0), Node(1)}, {Node(1), Node(2)}, {Node(2), Node(3)}});
+
+    aas::PathHandler pathhand(archi);
+
+    Circuit circ(4);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::CX, {1, 2});
+    circ.add_op<unsigned>(OpType::CX, {2, 3});
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {3});
+    PhasePolyBox ppbox(circ);
+    Circuit result = aas::phase_poly_synthesis(archi, ppbox, 2);
+    REQUIRE(result.n_gates() == 8);
+    REQUIRE(result.count_gates(OpType::CX) == 7);
+  }
+  GIVEN("phase_poly_synthesis 1 - swap") {
+    const Architecture archi(
+        {{Node(0), Node(1)}, {Node(1), Node(2)}, {Node(2), Node(3)}});
+
+    aas::PathHandler pathhand(archi);
+
+    Circuit circ(4);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::CX, {1, 2});
+    circ.add_op<unsigned>(OpType::CX, {2, 3});
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {3});
+    PhasePolyBox ppbox(circ);
+    Circuit result =
+        aas::phase_poly_synthesis(archi, ppbox, 2, aas::CNotSynthType::SWAP);
+    REQUIRE(result.n_gates() == 8);
+    REQUIRE(result.count_gates(OpType::CX) == 7);
+  }
+  GIVEN("phase_poly_synthesis 1 - hampath") {
+    const Architecture archi(
+        {{Node(0), Node(1)}, {Node(1), Node(2)}, {Node(2), Node(3)}});
+
+    aas::PathHandler pathhand(archi);
+
+    Circuit circ(4);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::CX, {1, 2});
+    circ.add_op<unsigned>(OpType::CX, {2, 3});
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {3});
+    PhasePolyBox ppbox(circ);
+    Circuit result =
+        phase_poly_synthesis(archi, ppbox, 2, aas::CNotSynthType::HamPath);
+    REQUIRE(result.n_gates() == 6);
+    REQUIRE(result.count_gates(OpType::CX) == 5);
+  }
+  GIVEN("phase_poly_synthesis 1 - rec") {
+    const Architecture archi(
+        {{Node(0), Node(1)}, {Node(1), Node(2)}, {Node(2), Node(3)}});
+
+    aas::PathHandler pathhand(archi);
+
+    Circuit circ(4);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::CX, {1, 2});
+    circ.add_op<unsigned>(OpType::CX, {2, 3});
+    circ.add_op<unsigned>(OpType::Rz, 0.3, {3});
+    PhasePolyBox ppbox(circ);
+    Circuit result =
+        aas::phase_poly_synthesis(archi, ppbox, 2, aas::CNotSynthType::Rec);
+    REQUIRE(result.n_gates() == 8);
+    REQUIRE(result.count_gates(OpType::CX) == 7);
+  }
+}
+
 SCENARIO("Synthesise a phase polynomial for a given architecture", "[.long]") {
   GIVEN("phase_poly_synthesis 1") {
     const Architecture archi(

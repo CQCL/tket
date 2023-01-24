@@ -116,6 +116,19 @@ SCENARIO(
     CompilationUnit cu(circ);
     REQUIRE(DecomposeBoxes()->apply(cu));
   }
+  GIVEN("A 2q projector - check error message") {
+    Circuit circ(2);
+    Eigen::MatrixXcd bell(4, 4);
+    bell << 0.5, 0, 0, 0.5, 0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0, 0, 0.5;
+    ProjectorAssertionBox box(bell);
+    circ.add_assertion(
+        box, {Qubit(0), Qubit(1)}, std::nullopt, "bell projector");
+    circ.add_assertion(
+        box, {Qubit(1), Qubit(0)}, std::nullopt, "bell projector");
+    circ.add_assertion(box, {Qubit(0), Qubit(1)});
+    circ.add_assertion(box, {Qubit(1), Qubit(0)});
+    REQUIRE_THROWS(circ.add_assertion(box, {Qubit(0)}));
+  }
   GIVEN("A 3q projector") {
     Circuit circ(3);
     circ.add_op<unsigned>(OpType::Rz, 1.5, {0});
@@ -196,6 +209,17 @@ SCENARIO("Testing stabiliser based assertion") {
         std::nullopt);
     CompilationUnit cu(circ);
     REQUIRE(DecomposeBoxes()->apply(cu));
+  }
+  GIVEN("Random stabilisers II") {
+    Circuit circ(3);
+    circ.add_op<unsigned>(OpType::Rz, 1.5, {0});
+    circ.add_op<unsigned>(OpType::CX, {1, 0});
+    PauliStabiliser pauli1 = {{Pauli::X}, true};
+    PauliStabiliser pauli2 = {{Pauli::Z}, true};
+    PauliStabiliserList stabilisers = {pauli1, pauli2};
+    StabiliserAssertionBox box(stabilisers);
+    REQUIRE_THROWS(circ.add_assertion(
+        box, {Qubit(0), Qubit(2)}, Qubit(1), "random stabiliser"));
   }
 
   GIVEN("Invalid input") {

@@ -42,7 +42,13 @@ enum class EdgeType {
    * port of one op to a classical input port of another, not corresponding to
    * any allocated @ref Bit.
    */
-  Boolean
+  Boolean,
+
+  /**
+   * A wire to connect the wasm ops in the order they should be executed in.
+   * Corresponding to some allocated @ref WASMUID.
+   */
+  WASM
 };
 
 NLOHMANN_JSON_SERIALIZE_ENUM(
@@ -50,6 +56,7 @@ NLOHMANN_JSON_SERIALIZE_ENUM(
                   {EdgeType::Quantum, "Q"},
                   {EdgeType::Classical, "C"},
                   {EdgeType::Boolean, "B"},
+                  {EdgeType::WASM, "W"},
               });
 
 typedef std::vector<EdgeType> op_signature_t;

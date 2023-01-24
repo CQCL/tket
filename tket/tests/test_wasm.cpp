@@ -107,6 +107,62 @@ SCENARIO("generating circ with wasm") {
 
     REQUIRE(wop_ptr->is_extern());
   }
+  GIVEN("wasmop add circuit") {
+    const std::shared_ptr<WASMOp> wop_ptr =
+        std::make_shared<WASMOp>(4, uv, uv_2, wasm_func, wasm_file);
+
+    REQUIRE(wop_ptr->is_extern());
+  }
+  GIVEN("wasmop add circuit II") {
+    const std::shared_ptr<WASMOp> wop_ptr =
+        std::make_shared<WASMOp>(4, uv, uv_2, wasm_func, wasm_file);
+
+    REQUIRE(wop_ptr->is_extern());
+  }
+  GIVEN("wasmop add circuit III") {
+    Circuit u(1, 1);
+
+    const std::shared_ptr<WASMOp> wop_ptr =
+        std::make_shared<WASMOp>(2, uv_2, uv_2, wasm_func, wasm_file);
+
+    const std::shared_ptr<WASMOp> wop_ptr_2 =
+        std::make_shared<WASMOp>(1, uv_2, uv_3, wasm_func, wasm_file);
+
+    u.add_op<unsigned>(wop_ptr, {0, 0});
+    u.add_op<unsigned>(wop_ptr_2, {0});
+
+    u.assert_valid();
+
+    REQUIRE(u.depth() == 2);
+  }
+  GIVEN("wasmop add circuit IV") {
+    Circuit u(1, 1);
+
+    const std::shared_ptr<WASMOp> wop_ptr =
+        std::make_shared<WASMOp>(2, uv_2, uv_2, wasm_func, wasm_file);
+
+    const std::shared_ptr<WASMOp> wop_ptr_2 =
+        std::make_shared<WASMOp>(1, uv_2, uv_3, wasm_func, wasm_file);
+
+    REQUIRE_THROWS(u.add_op<unsigned>(wop_ptr, {0}));
+    REQUIRE_THROWS(u.add_op<unsigned>(wop_ptr_2, {0, 0, 0}));
+
+    u.assert_valid();
+    REQUIRE(u.depth() == 0);
+  }
+}
+
+SCENARIO("test wasm uid") {
+  GIVEN("wasm uid") { WASMUID wuid = WASMUID(); }
+  GIVEN("wasm uid - compare") {
+    WASMUID wuid = WASMUID();
+    WASMUID wuid_2 = WASMUID();
+    REQUIRE(wuid == wuid_2);
+  }
+  GIVEN("wasm uid - create bit from wasm") {
+    WASMUID wuid = WASMUID();
+    REQUIRE_THROWS(Bit(wuid));
+  }
 }
 
 }  // namespace test_Boxes

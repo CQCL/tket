@@ -30,6 +30,7 @@
 #include "Mapping/RoutingMethod.hpp"
 #include "MeasurementSetup/MeasurementSetup.hpp"
 #include "OpType/OpType.hpp"
+#include "Ops/ClassicalOps.hpp"
 #include "Ops/OpPtr.hpp"
 #include "Predicates/PassGenerators.hpp"
 #include "Predicates/PassLibrary.hpp"
@@ -65,9 +66,10 @@ bool check_circuit(const Circuit& c) {
 
 SCENARIO("Test Op serialization") {
   GIVEN("OpType") {
-    const OpTypeSet metaops = {
-        OpType::Input, OpType::Output, OpType::ClInput, OpType::ClOutput,
-        OpType::Barrier};
+    const OpTypeSet metaops = {OpType::Input,     OpType::Output,
+                               OpType::ClInput,   OpType::ClOutput,
+                               OpType::WASMInput, OpType::WASMOutput,
+                               OpType::Barrier};
     const OpTypeSet boxes = {
         OpType::CircBox,      OpType::Unitary1qBox, OpType::Unitary2qBox,
         OpType::Unitary3qBox, OpType::ExpBox,       OpType::PauliExpBox,
@@ -123,6 +125,58 @@ SCENARIO("Test Command serialization") {
     c.add_op<UnitID>(OpType::CnRy, 0.1, {q[0], a, q[1]});
     c.add_barrier({q[0], a});
 
+    check_cases(c.get_commands());
+  }
+  GIVEN("check classical operations") {
+    Circuit c(3, 3);
+    c.add_op<unsigned>(OpType::X, {0});
+    c.add_op<unsigned>(OpType::H, {1});
+    c.add_op<unsigned>(OpType::H, {2});
+    c.add_op<unsigned>(OpType::CY, {1, 2});
+    c.add_op<unsigned>(OpType::Measure, {0, 0});
+    c.add_op<unsigned>(OpType::Measure, {1, 1});
+    c.add_op<unsigned>(OpType::Measure, {2, 2});
+    // Without any Create or Discard ...
+    CompilationUnit cu0(c);
+    PassPtr pp = gen_contextual_pass();
+    REQUIRE(!pp->apply(cu0));
+    // With Create and Discard ...
+    c.qubit_create_all();
+    c.qubit_discard_all();
+    CompilationUnit cu1(c);
+    REQUIRE(pp->apply(cu1));
+    const Circuit& c1 = cu1.get_circ_ref();
+    REQUIRE(c1.count_gates(OpType::X) == 0);
+    REQUIRE(c1.count_gates(OpType::H) == 2);
+    REQUIRE(c1.count_gates(OpType::CY) == 0);
+    REQUIRE(c1.count_gates(OpType::Measure) == 2);
+    REQUIRE(c1.count_gates(OpType::SetBits) == 1);
+    REQUIRE(c1.count_gates(OpType::ClassicalTransform) == 2);
+
+    check_cases(c1.get_commands());
+  }
+  GIVEN("check wasm operations") {
+    std::string wasm_file = "string/with/path/to/wasm/file";
+    std::string wasm_func = "stringNameOfWASMFunc";
+
+    std::vector<unsigned> uv = {2, 1};
+
+    std::vector<unsigned> uv_2 = {1};
+
+    std::vector<unsigned> uv_3 = {};
+
+    const std::shared_ptr<WASMOp> wop_ptr =
+        std::make_shared<WASMOp>(6, uv, uv, wasm_func, wasm_file);
+
+    Circuit c(7, 7);
+    c.add_op<unsigned>(OpType::X, {0});
+    c.add_op<unsigned>(OpType::H, {1});
+    c.add_op<unsigned>(OpType::H, {2});
+    c.add_op<unsigned>(OpType::CY, {1, 2});
+    c.add_op<unsigned>(wop_ptr, {0, 1, 2, 3, 4, 5});
+    c.add_op<unsigned>(OpType::Measure, {0, 0});
+    c.add_op<unsigned>(OpType::Measure, {1, 1});
+    c.add_op<unsigned>(OpType::Measure, {2, 2});
     check_cases(c.get_commands());
   }
 }

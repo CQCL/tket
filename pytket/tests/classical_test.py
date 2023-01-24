@@ -159,7 +159,7 @@ def test_wasm() -> None:
     c._add_wasm("funcname", "wasmfileuid", [2, 1], [3], [0, 1, 2, 3, 4, 5])
 
     # the boxes with no output are not counted
-    assert c.depth() == 4
+    assert c.depth() == 6
 
 
 def test_wasm_2() -> None:
@@ -374,7 +374,7 @@ def test_add_wasm_to_reg() -> None:
     c.add_wasm_to_reg("no_return", w, [c2], [])
     c.add_wasm_to_reg("no_parameters", w, [], [c2])
 
-    assert c.depth() == 3
+    assert c.depth() == 4
 
 
 def test_wasmfilehandler_repr() -> None:
@@ -1096,3 +1096,7 @@ def test_renaming() -> None:
         circ.rename_units(bmap)
     err_msg = f"Can't rename bits in {a.__repr__()}"
     assert err_msg in str(e.value)
+
+
+if __name__ == "__main__":
+    test_wasm()
