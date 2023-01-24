@@ -389,8 +389,7 @@ static std::shared_ptr<b_frontier_t> get_next_b_frontier(
         break;
       }
       default: {
-        TKET_ASSERT(
-            !"get_next_b_frontier found invalid edge type in signature");
+        TKET_ASSERT(!"get_next_b_frontier found invalid edge type in sig");
       }
     }
   }
@@ -484,7 +483,6 @@ CutFrontier Circuit::next_cut(
       edge_lookup.insert(e);
     }
   }
-
   // advance through skippable
   bool can_skip;
   do {
@@ -772,7 +770,6 @@ std::map<Edge, UnitID> Circuit::edge_unit_map() const {
 Circuit::SliceIterator::SliceIterator(const Circuit& circ)
     : cut_(), circ_(&circ) {
   cut_.init();
-
   // add qubits to u_frontier
   for (const Qubit& q : circ.all_qubits()) {
     Vertex in = circ.get_in(q);
@@ -817,7 +814,6 @@ Circuit::SliceIterator::SliceIterator(
     const Circuit& circ, const std::function<bool(Op_ptr)>& skip_func)
     : cut_(), circ_(&circ) {
   cut_.init();
-
   // add qubits to u_frontier
   for (const Qubit& q : circ.all_qubits()) {
     Vertex in = circ.get_in(q);
@@ -993,9 +989,8 @@ Command Circuit::command_from_vertex(
     const Vertex& vert, std::shared_ptr<const unit_frontier_t> u_frontier,
     std::shared_ptr<const b_frontier_t> prev_b_frontier) const {
   unit_vector_t args = args_from_frontier(vert, u_frontier, prev_b_frontier);
-  Command com = Command(
+  return Command(
       get_Op_ptr_from_Vertex(vert), args, get_opgroup_from_Vertex(vert), vert);
-  return com;
 }
 
 }  // namespace tket

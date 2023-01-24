@@ -433,11 +433,11 @@ class PhasePolySynthesizer {
     // define new phase poly box
     Circuit circuit_ppb(*placed_ppb.to_circuit());
     // the aas code is implemented under the assumption that all qubits in the
-    // circuit are named from 0 to n. The same assumption was made for the
-    // nodes of the architecture. To make sure that this condition is
-    // fulfilled the qubits in the circuit and the architecture are renamed.
-    // The new names are reverted at the end of the aas procedure. The qubits
-    // and the nodes have the same name in the input.
+    // circuit are named from 0 to n. The same assumption was made for the nodes
+    // of the architecture. To make sure that this condition is fulfilled the
+    // qubits in the circuit and the architecture are renamed. The new names are
+    // reverted at the end of the aas procedure. The qubits and the nodes have
+    // the same name in the input.
     circuit_ppb.rename_units(backward_contiguous_uids_n);
     PhasePolyBox new_ppb(circuit_ppb);
     Circuit result =

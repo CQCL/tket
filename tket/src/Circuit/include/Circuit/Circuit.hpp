@@ -1711,8 +1711,6 @@ template <class ID>
 Vertex Circuit::add_op(
     const Op_ptr &op, const std::vector<ID> &args,
     std::optional<std::string> opgroup) {
-  // debug
-
   static_assert(std::is_base_of<UnitID, ID>::value);
   op_signature_t sig = op->get_signature();
 

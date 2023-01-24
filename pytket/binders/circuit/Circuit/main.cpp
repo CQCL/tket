@@ -118,9 +118,7 @@ void init_circuit(py::module &m) {
           "get_commands",
           [](const Circuit &circ) {
             std::vector<Command> out;
-            for (Command c : circ) {
-              out.push_back(c);
-            };
+            for (Command c : circ) out.push_back(c);
             return out;
           },
           ":return: a list of all the Commands in the circuit")

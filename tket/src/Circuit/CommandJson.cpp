@@ -28,7 +28,6 @@ void to_json(nlohmann::json& j, const Command& com) {
   }
 
   const op_signature_t& sig = op->get_signature();
-
   const unit_vector_t& args = com.get_args();
 
   nlohmann::json j_args;

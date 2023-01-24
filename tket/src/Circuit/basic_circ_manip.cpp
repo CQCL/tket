@@ -170,7 +170,7 @@ std::string Circuit::get_next_c_reg_name(const std::string& reg_name) {
     if (!get_reg_info(incremented_reg_name)) {
       return incremented_reg_name;
     }
-    post_fix++;  // unused
+    post_fix++;
   }
 }
 
@@ -222,7 +222,7 @@ Vertex Circuit::add_assertion(
   unsigned log2_dim = log2(assertion_box.get_matrix().rows());
 
   if (circ_ptr->n_qubits() > log2_dim && ancilla == std::nullopt) {
-    throw CircuitInvalidity("This assertion requires an ancilla");  // unused
+    throw CircuitInvalidity("This assertion requires an ancilla");
   }
 
   if (qubits.size() != log2_dim) {
@@ -235,7 +235,7 @@ Vertex Circuit::add_assertion(
   unit_vector_t args;
   args.insert(args.end(), qubits.begin(), qubits.end());
   if (circ_ptr->n_qubits() > log2_dim) {
-    args.push_back(*ancilla);  // unused
+    args.push_back(*ancilla);
   }
   append_debug_bits(*this, args, assertion_box.get_expected_readouts(), name);
   return add_op<UnitID>(
@@ -248,7 +248,7 @@ Vertex Circuit::add_assertion(
     const std::optional<std::string>& name) {
   auto circ_ptr = assertion_box.to_circuit();
   unsigned pauli_len = assertion_box.get_stabilisers()[0].string.size();
-  if (qubits.size() != pauli_len) {  // unused
+  if (qubits.size() != pauli_len) {
     throw CircuitInvalidity(
         std::to_string(qubits.size()) +
         " target qubits provided, but the stabilisers requires " +
@@ -286,8 +286,7 @@ Edge Circuit::add_edge(
   std::pair<Edge, bool> edge_pairy =
       boost::add_edge(source.first, target.first, this->dag);
 
-  // Cannot create edge between vertices
-  TKET_ASSERT(edge_pairy.second);
+  TKET_ASSERT(edge_pairy.second);  // Cannot create edge between vertices
 
   Edge new_E = edge_pairy.first;
   dag[new_E].ports.first = source.second;
@@ -385,8 +384,8 @@ unit_map_t Circuit::flatten_registers() {
 
 // this automatically updates the circuit boundaries
 void Circuit::add_blank_wires(unsigned n) {
-  // Incompatible registers exist with the default names
-  TKET_ASSERT(default_regs_ok());
+  TKET_ASSERT(default_regs_ok());  // Incompatible registers exist with the
+                                   // default names
 
   unsigned index = 0;
   for (unsigned i = 0; i < n; i++) {
@@ -538,8 +537,7 @@ void Circuit::rewire(
 
       add_edge({old_v1, port1}, {new_vert, i}, insert_type);
     } else {
-      // Cannot rewire; changing type of edge
-      TKET_ASSERT(insert_type == replace_type);
+      TKET_ASSERT(insert_type == replace_type);  // Cannot rewire; type of edge
 
       add_edge({old_v1, port1}, {new_vert, i}, insert_type);
       add_edge({new_vert, i}, {old_v2, port2}, insert_type);
