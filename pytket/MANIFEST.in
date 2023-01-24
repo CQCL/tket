@@ -1,2 +1,8 @@
 include pytket/circuit/display/circuit.html
 include pytket/circuit/display/dist/main.js
+
+remove pytket/circuit/display/src
+remove pytket/circuit/display/package.json
+remove pytket/circuit/display/package-lock.json
+remove pytket/circuit/display/webpack.config.js
+

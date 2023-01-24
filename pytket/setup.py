@@ -234,21 +234,6 @@ class bdist_wheel(_bdist_wheel):
 
 
 class NPMBuild(build_py):
-    def get_source_files(self):
-        base_files = build_py.get_source_files(self)
-        base_files += [
-            "pytket/circuit/display/src/index.js",
-            "pytket/circuit/display/webpack.config.js",
-            "pytket/circuit/display/package.json",
-            "pytket/circuit/display/package-lock.json",
-        ]
-        return base_files
-
-    def get_outputs(self, include_bytecode: int = ...):
-        base_outputs = build_py.get_outputs(self)
-        base_outputs += [f"{self.build_lib}/circuit/display/dist/main.js"]
-        return base_outputs
-
     def run(self):
         # Build the circuit renderer app for (offline) inclusion within pytket.
         try:
