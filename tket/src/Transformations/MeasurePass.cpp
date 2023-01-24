@@ -29,18 +29,24 @@ Transform delay_measures() {
       [](Circuit& circ) { return run_delay_measures_(circ, false).first; });
 }
 
-/** Commute all measurement gates to the end of the circuit.
- * @param circ The circuit to delay measurements in.
- * @param dry_run If true, do not modify the circuit, just check if it is
- * possible to delay.
- *
- * @throws CircuitInvalidity if it is not possible to delay and dry_run is
- * false.
- *
- * @return A pair of booleans. The first indicates whether the circuit was
- * changed, and the second indicates whether it was possible to delay (i.e.
- * there where no errors).
- **/
+bool no_internal_measurements(const Op_ptr op) {
+  OpType optype = op->get_type();
+  if (optype == OpType::Measure) {
+    return false;
+  } else if (optype == OpType::Conditional) {
+    const Conditional& cond = static_cast<const Conditional&>(*op);
+    return no_internal_measurements(cond.get_op());
+  } else if (optype == OpType::CircBox || optype == OpType::CustomGate) {
+    const Box& box = static_cast<const Box&>(*op);
+    for (const Command& c : *box.to_circuit()) {
+      if (!no_internal_measurements(c.get_op_ptr())) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
 std::pair<bool, bool> run_delay_measures_(Circuit& circ, bool dry_run) {
   bool modified = false;
   BGL_FORALL_VERTICES(v, circ.dag, DAG) {
@@ -100,19 +106,18 @@ std::pair<bool, bool> run_delay_measures_(Circuit& circ, bool dry_run) {
       circ.add_edge({v, 0}, {current_vertex, 0}, EdgeType::Quantum);
       circ.remove_edge(current_edge);
       modified = true;
-    } else if (optype == OpType::CircBox || optype == OpType::CustomGate) {
-      // Raise an error if there are any boxes with internal measures.
+    } else if (!no_internal_measurements(circ.get_Op_ptr_from_Vertex(v))) {
+      // Raise an error if there are any boxes or conditionals with internal
+      // measures.
       //
-      // TODO We could (recursively) check if the measures are done at the
+      // TODO We could instead check if the measures are done at the
       // end of the internal circuits and not altered after that point, as
-      // done in the NoMidMeasurePredicate. It should also check any
-      // Conditionals.
-      const Box& box = static_cast<const Box&>(*circ.get_Op_ptr_from_Vertex(v));
-      for (const Command& c : *box.to_circuit()) {
-        if (c.get_op_ptr()->get_type() == OpType::Measure) {
-          if (dry_run) return {modified, false};
-          throw CircuitInvalidity("Cannot delay measures inside a circuit box");
-        }
+      // done in the NoMidMeasurePredicate.
+      if (dry_run) return {modified, false};
+      if (optype == OpType::Conditional) {
+        throw CircuitInvalidity("Cannot delay measures inside a conditional");
+      } else {
+        throw CircuitInvalidity("Cannot delay measures inside a circuit box");
       }
     }
   }

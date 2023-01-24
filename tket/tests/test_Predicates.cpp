@@ -449,9 +449,9 @@ SCENARIO(
     Circuit c(2, 2);
     c.add_op<unsigned>(OpType::Z, {0});
     c.add_op<unsigned>(OpType::Measure, {0, 0});
-    c.add_op<unsigned>(OpType::X, {0});
-    c.add_op<unsigned>(OpType::Rx, 0.3, {1});
-    c.add_op<unsigned>(OpType::Measure, {1, 1});
+    c.add_op<unsigned>(OpType::SWAP, {0, 1});
+    c.add_op<unsigned>(OpType::Rz, 0.3, {1});
+    c.add_op<unsigned>(OpType::Measure, {0, 1});
     REQUIRE(com_meas_pred->verify(c));
   }
   GIVEN("Measures by output with feedforward") {
@@ -478,9 +478,15 @@ SCENARIO(
     Circuit c(2, 2);
     c.add_box(cbox, {0, 0});
     c.add_op<unsigned>(OpType::Measure, {1, 1});
-    // TODO Support measures at the end of a CircBox
-    // REQUIRE(com_meas_pred->verify(c));
     c.add_op<unsigned>(OpType::Z, {0});
+    REQUIRE_FALSE(com_meas_pred->verify(c));
+  }
+  GIVEN("Measure in nested CircBoxes and Conditionals") {
+    Circuit inner(1, 2);
+    inner.add_conditional_gate<unsigned>(OpType::Measure, {}, {0, 0}, {1}, 1);
+    CircBox cbox(inner);
+    Circuit c(1, 2);
+    c.add_box(cbox, {0, 0, 1});
     REQUIRE_FALSE(com_meas_pred->verify(c));
   }
 }
