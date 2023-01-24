@@ -165,7 +165,7 @@ jobs:
         conan install libs/${{ matrix.lib }}/test --install-folder=build/${{ matrix.lib }}-tests --profile=tket -o test-${{ matrix.lib }}:with_coverage=True
         conan build libs/${{ matrix.lib }}/test --configure --build-folder=build/${{ matrix.lib }}-tests --source-folder=libs/${{ matrix.lib }}/test
         conan build libs/${{ matrix.lib }}/test --build --build-folder=build/${{ matrix.lib }}-tests
-        conan package libs/${{ matrix.lib }}/test --build-folder=build/${{ matrix.lib }}-tests --package-folder build/${{ matrix.lib }}-tests/package --source-folder=libs/${lib}/test
+        conan package libs/${{ matrix.lib }}/test --build-folder=build/${{ matrix.lib }}-tests --package-folder build/${{ matrix.lib }}-tests/package --source-folder=libs/${{ matrix.lib }}/test
     - name: run ${{ matrix.lib }} tests
       working-directory: ./build/${{ matrix.lib }}-tests/package/bin
       run: ./test-${{ matrix.lib }}
