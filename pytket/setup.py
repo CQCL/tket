@@ -243,9 +243,7 @@ class NPMBuild(build_py):
         except OSError:
             raise RuntimeError("NPM must be installed to build the circuit renderer.")
 
-        circuit_display_dir = os.path.join(
-            os.path.dirname(__file__), "pytket/_display"
-        )
+        circuit_display_dir = os.path.join(os.path.dirname(__file__), "pytket/_display")
         subprocess.run("npm ci", cwd=circuit_display_dir, check=True, shell=True)
         subprocess.run("npm run build", cwd=circuit_display_dir, check=True, shell=True)
 

@@ -55,7 +55,9 @@ class IncludeRawExtension(Extension):
 
 local_loader = FileSystemLoader(searchpath=dirname)
 dist_loader = FileSystemLoader(searchpath=display_dirname)
-env = Environment(loader=ChoiceLoader([local_loader, dist_loader]), extensions=[IncludeRawExtension])
+env = Environment(
+    loader=ChoiceLoader([local_loader, dist_loader]), extensions=[IncludeRawExtension]
+)
 
 RenderCircuit = Union[Dict[str, Union[str, float, dict]], Circuit]
 
