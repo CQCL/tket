@@ -213,7 +213,7 @@ bool is_valid(const DAG &G) {
       CHECK(q_out_empty);
       CHECK(c_in_deg == 0 && c_out_deg == 1);
     } else if (!c_in_empty && c_out_empty) {
-      // classical out vertex, can have bool out edges
+      // classical out vertex, can't have bool out edges
       CHECK(b_out_empty);
       CHECK(w_in_empty);
       CHECK(w_out_empty);
@@ -235,6 +235,12 @@ bool is_valid(const DAG &G) {
       CHECK(
           q_in.size() == 1 && q_out.size() == 1 && c_in.size() == 1 &&
           c_out.size() == 1);
+    } else if (q_in_empty && q_out_empty && c_in_empty && c_out_empty) {
+      // unconected vertex, can't have bool in and out edges
+      CHECK(w_in_empty);
+      CHECK(w_out_empty);
+      CHECK(b_in_empty);
+      CHECK(b_out_empty);
     } else {
       TKET_ASSERT(!"Found invalid circuit");
     }
