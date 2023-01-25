@@ -140,6 +140,11 @@ bool is_final_q_type(OpType optype) {
   return optype == OpType::Output || optype == OpType::Discard;
 }
 
+bool is_boundary_type(OpType optype) {
+  return is_boundary_q_type(optype) || is_boundary_c_type(optype) ||
+         is_boundary_w_type(optype);
+}
+
 bool is_boundary_q_type(OpType optype) {
   return is_initial_q_type(optype) || is_final_q_type(optype);
 }
