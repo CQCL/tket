@@ -22,6 +22,7 @@
 #include "Gate/Rotation.hpp"
 #include "Ops/OpJsonFactory.hpp"
 #include "Utils/Constants.hpp"
+#include "Utils/HelperFunctions.hpp"
 #include "Utils/Json.hpp"
 
 namespace tket {
@@ -58,23 +59,6 @@ static Circuit multiplexor_sequential_decomp(
     }
   }
   return c;
-}
-
-/**
- * @brief Convert an unsigned to its binary representation
- * e.g. 4 -> [1, 0, 0]
- *
- * @param dec
- * @param width used to pad zeros
- * @return std::vector<bool>
- */
-static std::vector<bool> dec_to_bin(unsigned dec, unsigned width) {
-  auto bs = std::bitset<MAX_N_CONTROLS>(dec);
-  std::vector<bool> bits(width);
-  for (unsigned i = 0; i < width; i++) {
-    bits[width - i - 1] = bs[i];
-  }
-  return bits;
 }
 
 /**

@@ -21,6 +21,7 @@
 #include "Circuit/Circuit.hpp"
 #include "Circuit/Multiplexor.hpp"
 #include "Converters/PhasePoly.hpp"
+#include "Utils/HelperFunctions.hpp"
 #include "Utils/Json.hpp"
 #include "binder_json.hpp"
 #include "binder_utils.hpp"
@@ -393,11 +394,7 @@ void init_boxes(py::module &m) {
             ctrl_op_map_t op_map;
             for (unsigned i = 0; i < angles.size(); i++) {
               if (std::abs(angles[i]) > EPS) {
-                auto bs = std::bitset<32>(i);
-                std::vector<bool> bits(bitstring_width);
-                for (unsigned i = 0; i < bitstring_width; i++) {
-                  bits[bitstring_width - i - 1] = bs[i];
-                }
+                std::vector<bool> bits = dec_to_bin(i, bitstring_width);
                 op_map.insert({bits, get_op_ptr(axis, angles[i])});
               }
             }
