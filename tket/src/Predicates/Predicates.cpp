@@ -552,7 +552,7 @@ bool CommutableMeasuresPredicate::verify(const Circuit& circ) const {
   if (circ.n_bits() == 0) return true;
   // run_delay_measures_ will not modify the circuit when dry_run is true
   Circuit& mutable_circ = const_cast<Circuit&>(circ);
-  return Transforms::run_delay_measures_(mutable_circ, true).second;
+  return Transforms::DelayMeasures::run_delay_measures(mutable_circ, true).second;
 }
 
 bool CommutableMeasuresPredicate::implies(const Predicate& other) const {
