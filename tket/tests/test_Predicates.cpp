@@ -470,10 +470,10 @@ SCENARIO(
     c.add_op<unsigned>(OpType::Measure, {1, 0});
     REQUIRE_FALSE(com_meas_pred->verify(c));
   }
-  GIVEN("Measure in CircBox") {
+  GIVEN("Mid-Measure in CircBox") {
     Circuit inner(1, 1);
-    inner.add_op<unsigned>(OpType::X, {0});
     inner.add_op<unsigned>(OpType::Measure, {0, 0});
+    inner.add_op<unsigned>(OpType::X, {0});
     CircBox cbox(inner);
     Circuit c(2, 2);
     c.add_box(cbox, {0, 0});
@@ -481,13 +481,59 @@ SCENARIO(
     c.add_op<unsigned>(OpType::Z, {0});
     REQUIRE_FALSE(com_meas_pred->verify(c));
   }
+  GIVEN("End-Measure in CircBox") {
+    Circuit inner(1, 1);
+    inner.add_op<unsigned>(OpType::X, {0});
+    inner.add_op<unsigned>(OpType::Measure, {0, 0});
+    CircBox cbox(inner);
+    Circuit c(2, 2);
+    c.add_box(cbox, {0, 0});
+    REQUIRE(com_meas_pred->verify(c));
+  }
+  GIVEN("End-Measure in CircBox, followed by non commutable gate") {
+    Circuit inner(1, 1);
+    inner.add_op<unsigned>(OpType::X, {0});
+    inner.add_op<unsigned>(OpType::Measure, {0, 0});
+    CircBox cbox(inner);
+    Circuit c(2, 2);
+    c.add_box(cbox, {0, 0});
+    c.add_op<unsigned>(OpType::Z, {0});
+    REQUIRE_FALSE(com_meas_pred->verify(c));
+  }
+  GIVEN("End-Measure in CircBox, followed by commutable box") {
+    Circuit inner1(1, 1);
+    inner1.add_op<unsigned>(OpType::X, {0});
+    inner1.add_op<unsigned>(OpType::Measure, {0, 0});
+    CircBox cbox1(inner1);
+
+    Circuit inner2(2, 0);
+    inner2.add_op<unsigned>(OpType::Z, {1});
+    CircBox cbox2(inner2);
+
+    Circuit c(2, 1);
+    c.add_box(cbox1, {0, 0});
+    c.add_box(cbox2, {0, 1});
+    REQUIRE(com_meas_pred->verify(c));
+  }
+  GIVEN("Commute through CircBox with a swap") {
+    Circuit inner(2, 0);
+    inner.add_op<unsigned>(OpType::SWAP, {0, 1});
+    CircBox cbox(inner);
+
+    Circuit c(2, 1);
+    c.add_op<unsigned>(OpType::Measure, {0, 0});
+    c.add_box(cbox, {0, 1});
+    c.add_op<unsigned>(OpType::X, {0});
+    c.add_op<unsigned>(OpType::Z, {1});
+    REQUIRE(com_meas_pred->verify(c));
+  }
   GIVEN("Measure in nested CircBoxes and Conditionals") {
     Circuit inner(1, 2);
     inner.add_conditional_gate<unsigned>(OpType::Measure, {}, {0, 0}, {1}, 1);
     CircBox cbox(inner);
     Circuit c(1, 2);
     c.add_box(cbox, {0, 0, 1});
-    REQUIRE_FALSE(com_meas_pred->verify(c));
+    REQUIRE(com_meas_pred->verify(c));
   }
 }
 

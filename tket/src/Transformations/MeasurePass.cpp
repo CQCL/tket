@@ -224,12 +224,12 @@ std::pair<bool, bool> run_delay_measures(Circuit& circ, bool dry_run) {
       // at the end of the full circuit. We can't delay the measures inside
       // boxes and conditionals.
       for (const auto& unit : mesured_units) {
+        if (unit.type() == UnitType::Bit) continue;
         auto args = com.get_args();
         port_t out_port = std::distance(
             args.begin(), std::find(args.begin(), args.end(), unit));
         Edge current_edge = circ.get_nth_out_edge(v, out_port);
-        // Follow the edge through swaps and boxes, but not through-commuting
-        // gates
+        // Follow the edge through boxes
         current_edge = follow_until_noncommuting(circ, current_edge, true);
         Vertex current_vertex = circ.target(current_edge);
         optype = circ.get_OpType_from_Vertex(current_vertex);
