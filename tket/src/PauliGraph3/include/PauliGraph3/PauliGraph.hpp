@@ -34,9 +34,6 @@ typedef std::shared_ptr<const Op> Op_ptr;
 pg::PauliGraph circuit_to_pauli_graph3(const Circuit& circ);
 Circuit pauli_graph3_to_circuit_individual(
     const pg::PauliGraph& pg, CXConfigType cx_config);
-std::vector<pg::PGOp_ptr> op_to_pgops(
-    const Op_ptr& op, const unit_vector_t& args, pg::PauliGraph& pg,
-    bool allow_tableau);
 
 namespace pg {
 
@@ -465,6 +462,8 @@ typedef boost::multi_index::multi_index_container<
 class PauliGraph {
  public:
   explicit PauliGraph();
+  explicit PauliGraph(
+      const std::set<Qubit>& qubits, const std::set<Bit>& bits = {});
   void to_graphviz(std::ostream& out) const;
 
   PGVert add_vertex_at_end(PGOp_ptr op);

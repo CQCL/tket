@@ -67,6 +67,7 @@ class TketConan(ConanFile):
         "ZX",
         "Converters",
         # "Converters2",
+        "Converters3",
         "Placement",
         "ArchAwareSynth",
         "Mapping",

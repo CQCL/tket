@@ -511,6 +511,17 @@ PauliGraph::PauliGraph()
       initial_tableau_(std::nullopt),
       final_tableau_(std::nullopt) {}
 
+PauliGraph::PauliGraph(const std::set<Qubit>& qubits, const std::set<Bit>& bits)
+    : pauli_ac_(0, 0),
+      pauli_index_(),
+      c_graph_(),
+      qubits_(qubits),
+      bits_(bits),
+      last_writes_(),
+      last_reads_(),
+      initial_tableau_(std::nullopt),
+      final_tableau_(std::nullopt) {}
+
 void PauliGraph::to_graphviz(std::ostream& out) const {
   out << "digraph G {\ncompound = true;\n";
 

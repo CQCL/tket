@@ -81,6 +81,7 @@ list(APPEND TKET_COMPS
     ZX
     Converters
     # Converters2
+    Converters3
     Placement
     ArchAwareSynth
     Mapping    
