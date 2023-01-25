@@ -35,10 +35,7 @@ SCENARIO("Test bloch sphere coordinates") {
     test_states.push_back({std::sqrt(0.5), std::sqrt(0.5)});
     test_states.push_back({std::sqrt(0.5), -std::sqrt(0.5)});
     for (unsigned i = 0; i < 10; i++) {
-      Eigen::Matrix2cd U = random_unitary(2, i);
-      Eigen::Vector2cd state = {1, 0};
-      state = U * state;
-      test_states.push_back(state);
+      test_states.push_back(random_state(2, i));
     }
     for (auto state : test_states) {
       Complex a = state[0];
@@ -62,5 +59,6 @@ SCENARIO("Test bloch sphere coordinates") {
         MessageContains("unnormalised"));
   }
 }
+
 }  // namespace test_StatePreparation
 }  // namespace tket
