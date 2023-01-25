@@ -158,7 +158,6 @@ def test_wasm() -> None:
     c._add_wasm("funcname", "wasmfileuid", [1], [1, 2], [0, 1, 2, 3])
     c._add_wasm("funcname", "wasmfileuid", [2, 1], [3], [0, 1, 2, 3, 4, 5])
 
-    # the boxes with no output are not counted
     assert c.depth() == 6
 
 
@@ -170,7 +169,6 @@ def test_wasm_2() -> None:
 
     c._add_wasm("funcname", "wasmfileuid", [c0, c1], [c2])
 
-    # the boxes with no output are not counted
     assert c.depth() == 1
 
 
