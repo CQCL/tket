@@ -459,7 +459,7 @@ bool Gate::is_clifford() const {
   }
 }
 
-bool Gate::test_exchange_invariance_of_ports(
+bool Gate::has_symmetry(
     unsigned port1, unsigned port2) const {
   if (port1 == port2) {
     // exchanging with self is always symmetric

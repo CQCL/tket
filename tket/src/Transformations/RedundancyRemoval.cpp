@@ -108,8 +108,7 @@ bool port_ordering_is_compatible(
   for (const Edge &in : circuit.get_in_edges(successor)) {
     auto source_port = circuit.get_source_port(in);
     auto target_port = circuit.get_target_port(in);
-    if (not vertex_op->test_exchange_invariance_of_ports(
-            source_port, target_port)) {
+    if (not vertex_op->has_symmetry(source_port, target_port)) {
       return false;
     }
   }
