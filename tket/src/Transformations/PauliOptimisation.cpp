@@ -34,8 +34,7 @@ Transform pairwise_pauli_gadgets(CXConfigType cx_config) {
     BGL_FORALL_VERTICES(v, circ.dag, DAG) {
       Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
       OpType optype = op->get_type();
-      if (is_boundary_c_type(optype)) continue;
-      if (is_boundary_w_type(optype)) continue;
+      if (is_boundary_type(optype) && !is_boundary_q_type(optype)) continue;
       if (optype == OpType::Conditional)
         throw CircuitInvalidity(
             "Cannot currently do `pauli_gadgets` optimisation on a "

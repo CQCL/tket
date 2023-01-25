@@ -937,7 +937,7 @@ SCENARIO("Check iteration order construciton") {
     REQUIRE(node_order.size() == 4);
     REQUIRE(edgelist.size() == 3);
   }
-  GIVEN("iteration order - unconected architecture") {
+  GIVEN("iteration order - unconnected architecture") {
     Architecture arch({{Node(0), Node(1)}, {Node(2), Node(3)}});
 
     aas::IterationOrder iter_order;

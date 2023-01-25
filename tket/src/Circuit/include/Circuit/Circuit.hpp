@@ -1736,7 +1736,7 @@ Vertex Circuit::add_op(
     throw CircuitInvalidity(
         std::to_string(args.size()) + " args provided, but " + op->get_name() +
         " requires " + std::to_string(sig.size()) +
-        ". The sig cotaines one wasm edge, which should not be given");
+        ". The sig contains one wasm edge, which should not be given");
   }
 
   if (opgroup) {

@@ -103,7 +103,7 @@ Vertex Circuit::add_op<unsigned>(
     throw CircuitInvalidity(
         std::to_string(args.size()) + " args provided, but " +
         gate->get_name() + " requires " + std::to_string(sig.size()) +
-        ". The sig cotaines one wasm edge, which should not be given");
+        ". The sig contains one wasm edge, which should not be given");
   }
   OpType optype = gate->get_type();
   unit_vector_t arg_ids;
@@ -419,7 +419,7 @@ void Circuit::add_qubit(const Qubit& id, bool reject_dups) {
   opt_reg_info_t reg_info = get_reg_info(id.reg_name());
   register_info_t correct_info = {UnitType::Qubit, id.reg_dim()};
 
-  // Cannot add qubit with ID id.repr() ss register is not compatible
+  // Cannot add qubit with this ID as register is not compatible
   TKET_ASSERT(!reg_info || (reg_info.value() == correct_info));
 
   Vertex in = add_vertex(OpType::Input);
@@ -442,7 +442,7 @@ void Circuit::add_bit(const Bit& id, bool reject_dups) {
   opt_reg_info_t reg_info = get_reg_info(id.reg_name());
   register_info_t correct_info = {UnitType::Bit, id.reg_dim()};
 
-  // Cannot add qubit with ID id.repr() ss register is not compatible
+  // Cannot add qubit with this ID as register is not compatible
   TKET_ASSERT(!reg_info || (reg_info.value() == correct_info));
 
   Vertex in = add_vertex(OpType::ClInput);

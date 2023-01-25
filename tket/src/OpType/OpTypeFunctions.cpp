@@ -14,7 +14,6 @@
 
 #include "OpTypeFunctions.hpp"
 
-#include <iostream>
 #include <memory>
 
 #include "OpType.hpp"

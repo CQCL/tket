@@ -205,7 +205,7 @@ bool is_valid(const DAG &G) {
       CHECK(c_in_ports == c_out_ports);  // bijection between in and out ports
       CHECK(w_in_ports == w_out_ports);  // bijection between in and out ports
     } else if (c_in_empty && !c_out_empty) {
-      // claccical in vertex, can have bool out edges
+      // classical in vertex, can have bool out edges
       CHECK(b_in_empty);
       CHECK(w_in_empty);
       CHECK(w_out_empty);
@@ -213,7 +213,7 @@ bool is_valid(const DAG &G) {
       CHECK(q_out_empty);
       CHECK(c_in_deg == 0 && c_out_deg == 1);
     } else if (!c_in_empty && c_out_empty) {
-      // claccical out vertex, can have bool in edges
+      // classical out vertex, can have bool out edges
       CHECK(b_out_empty);
       CHECK(w_in_empty);
       CHECK(w_out_empty);
@@ -221,7 +221,7 @@ bool is_valid(const DAG &G) {
       CHECK(q_out_empty);
       CHECK(c_in_deg == 1 && c_out_deg == 0);
     } else if (q_in_empty && q_out_empty && !c_in_empty && !c_out_empty) {
-      // claccical vertex, can have bool in and out edges
+      // classical vertex, can have bool in and out edges
       CHECK(w_in_empty);
       CHECK(w_out_empty);
       CHECK(c_in_ports == c_out_ports);  // bijection between in and out ports
@@ -231,7 +231,7 @@ bool is_valid(const DAG &G) {
       CHECK(w_out_empty);
       CHECK(c_in_ports == c_out_ports);  // bijection between in and out ports
       CHECK(q_in_ports == q_out_ports);  // bijection between in and out ports
-      // this case should only happen for measur circuits
+      // this case should only happen for measure ops
       CHECK(
           q_in.size() == 1 && q_out.size() == 1 && c_in.size() == 1 &&
           c_out.size() == 1);

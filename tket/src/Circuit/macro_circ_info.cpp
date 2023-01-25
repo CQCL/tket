@@ -831,10 +831,7 @@ Circuit::SliceIterator::SliceIterator(
   if (circ.wasm_added) {
     Vertex in = circ.get_in(circ.wasmwire);
     cut_.u_frontier->insert({circ.wasmwire, circ.get_nth_out_edge(in, 0)});
-    // throw std::logic_error("added wasm to u frontier");
   }
-
-  // why are lowners not added here?
 
   prev_b_frontier_ = cut_.b_frontier;
   cut_ = circ.next_cut(cut_.u_frontier, cut_.b_frontier, skip_func);
@@ -953,7 +950,7 @@ unit_vector_t Circuit::args_from_frontier(
         }
         if (!found)
           throw CircuitInvalidity(
-              "Vertex edges not found in CRead frontier. Edge: " +
+              "Vertex edges not found in Boolean frontier. Edge: " +
               get_Op_ptr_from_Vertex(source(ins[p]))->get_name() + " -> " +
               get_Op_ptr_from_Vertex(target(ins[p]))->get_name());
 
