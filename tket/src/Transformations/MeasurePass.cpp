@@ -209,10 +209,10 @@ std::pair<bool, bool> run_delay_measures(Circuit& circ, bool dry_run) {
       if (current_edge == out_edge) continue;
       to_delay.push_back({v, current_edge});
     } else {
-      unit_set_t mesured_units;
+      unit_set_t measured_units;
       // Raise an error if there are any boxes or conditionals with internal
       // measures.
-      if (!check_only_end_measures(com, mesured_units)) {
+      if (!check_only_end_measures(com, measured_units)) {
         if (dry_run) return {false, false};
         if (optype == OpType::Conditional) {
           throw CircuitInvalidity("Cannot delay measures inside a conditional");
@@ -223,7 +223,7 @@ std::pair<bool, bool> run_delay_measures(Circuit& circ, bool dry_run) {
       // If the command has internal end measurements we allow them if they are
       // at the end of the full circuit. We can't delay the measures inside
       // boxes and conditionals.
-      for (const auto& unit : mesured_units) {
+      for (const auto& unit : measured_units) {
         if (unit.type() == UnitType::Bit) continue;
         auto args = com.get_args();
         port_t out_port = std::distance(
