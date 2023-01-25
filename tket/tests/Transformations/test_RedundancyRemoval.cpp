@@ -260,13 +260,15 @@ SCENARIO("Transforms::remove_redundancies removes typical redundancies") {
     }
     Circuit untransformed_circuit(test_circuit);
     WHEN("calling Transforms::remove_redundancies on circuit") {
-      Transforms::remove_redundancies().apply(test_circuit);
+      auto circuit_has_changed = Transforms::remove_redundancies().apply(test_circuit);
       if (test_case.gatesShouldCancel) {
         THEN("gates should be removed") {
+          CHECK(circuit_has_changed);
           REQUIRE(test_circuit.circuit_equality(original_circuit));
         }
       } else {
         THEN("circuit should not change") {
+          CHECK_FALSE(circuit_has_changed);
           REQUIRE(test_circuit.circuit_equality(untransformed_circuit));
         }
       }
@@ -291,11 +293,35 @@ SCENARIO("Transforms::remove_redundancies removes nested redundancies") {
     test_circuit.add_op<unsigned>(OpType::CnX, {0, 3, 2, 1, 4});
     test_circuit.add_op<unsigned>(OpType::CnZ, {0, 1, 4, 2, 3});
     test_circuit.add_op<unsigned>(OpType::H, {0});
-    Circuit untransformed_circuit(test_circuit);
     WHEN("calling Transforms::remove_redundancies on circuit") {
       Transforms::remove_redundancies().apply(test_circuit);
       THEN("all gates should be removed") {
         REQUIRE(test_circuit.circuit_equality(original_circuit));
+      }
+    }
+  }
+}
+
+SCENARIO("Transforms::remove_redundancies reduces gate depth if some gates are redundant") {
+  Circuit original_circuit(3);
+  Circuit test_circuit(original_circuit);
+  GIVEN("A circuit with nested redundancies") {
+    test_circuit.add_op<unsigned>(OpType::CZ, {0, 1});
+    test_circuit.add_op<unsigned>(OpType::H, {0});
+    test_circuit.add_op<unsigned>(OpType::CZ, {1, 2});
+    test_circuit.add_op<unsigned>(OpType::H, {2});
+    test_circuit.add_op<unsigned>(OpType::H, {2});
+    test_circuit.add_op<unsigned>(OpType::CZ, {2, 1});
+    test_circuit.add_op<unsigned>(OpType::CU3, {0.0, 0.4, 0.2}, {0, 1});
+    test_circuit.add_op<unsigned>(OpType::CU3, {0.0, -0.2, -0.4}, {1, 0});
+    test_circuit.add_op<unsigned>(OpType::CCX, {0, 1, 2});
+    test_circuit.add_op<unsigned>(OpType::CnX, {1, 0, 2});
+    test_circuit.add_op<unsigned>(OpType::H, {0});
+    test_circuit.add_op<unsigned>(OpType::CY, {0, 2});
+    WHEN("calling Transforms::remove_redundancies on circuit") {
+      Transforms::remove_redundancies().apply(test_circuit);
+      THEN("all gates should be removed") {
+        REQUIRE(test_circuit.depth() <= 6);
       }
     }
   }
