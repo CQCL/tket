@@ -528,11 +528,16 @@ SCENARIO(
     REQUIRE(com_meas_pred->verify(c));
   }
   GIVEN("Measure in nested CircBoxes and Conditionals") {
-    Circuit inner(1, 2);
-    inner.add_conditional_gate<unsigned>(OpType::Measure, {}, {0, 0}, {1}, 1);
-    CircBox cbox(inner);
+    Circuit inner1(1, 2);
+    inner1.add_conditional_gate<unsigned>(OpType::Measure, {}, {0, 0}, {1}, 1);
+    CircBox cbox1(inner1);
+
+    Circuit inner2(1, 2);
+    inner2.add_box(cbox1, {0, 0, 1});
+    CircBox cbox2(inner2);
+
     Circuit c(1, 2);
-    c.add_box(cbox, {0, 0, 1});
+    c.add_box(cbox2, {0, 0, 1});
     REQUIRE(com_meas_pred->verify(c));
   }
 }

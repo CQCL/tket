@@ -214,11 +214,9 @@ std::pair<bool, bool> run_delay_measures(Circuit& circ, bool dry_run) {
       // measures.
       if (!check_only_end_measures(com, measured_units)) {
         if (dry_run) return {false, false};
-        if (optype == OpType::Conditional) {
-          throw CircuitInvalidity("Cannot delay measures inside a conditional");
-        } else {
-          throw CircuitInvalidity("Cannot delay measures inside a circuit box");
-        }
+        throw optype == OpType::Conditional
+            ? CircuitInvalidity("Cannot delay measures inside a conditional")
+            : CircuitInvalidity("Cannot delay measures inside a circuit box");
       }
       // If the command has internal end measurements we allow them if they are
       // at the end of the full circuit. We can't delay the measures inside
@@ -235,13 +233,9 @@ std::pair<bool, bool> run_delay_measures(Circuit& circ, bool dry_run) {
         optype = circ.get_OpType_from_Vertex(current_vertex);
         if (!is_final_q_type(optype)) {
           if (dry_run) return {false, false};
-          if (optype == OpType::Conditional) {
-            throw CircuitInvalidity(
-                "Cannot delay measures inside a conditional");
-          } else {
-            throw CircuitInvalidity(
-                "Cannot delay measures inside a circuit box");
-          }
+          throw optype == OpType::Conditional
+              ? CircuitInvalidity("Cannot delay measures inside a conditional")
+              : CircuitInvalidity("Cannot delay measures inside a circuit box");
         }
       }
     }

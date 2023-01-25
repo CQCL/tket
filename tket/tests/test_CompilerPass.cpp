@@ -33,6 +33,7 @@
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
 #include "Transformations/ContextualReduction.hpp"
+#include "Transformations/MeasurePass.hpp"
 #include "Transformations/OptimisationPass.hpp"
 #include "Transformations/PauliOptimisation.hpp"
 #include "Transformations/Rebase.hpp"
@@ -1262,6 +1263,28 @@ SCENARIO("Commute measurements to the end of a circuit") {
     CompilationUnit cu(c);
     REQUIRE_THROWS_AS(delay_pass->apply(cu), UnsatisfiedPredicate);
   }
+  GIVEN("Call on invalid circuit without checking the predicate throws") {
+    Circuit c(2, 2);
+    c.add_op<unsigned>(OpType::CZ, {0, 1});
+    c.add_op<unsigned>(OpType::Measure, {0, 0});
+    c.add_conditional_gate<unsigned>(OpType::Z, {}, {1}, {0}, 1);
+    REQUIRE_THROWS_AS(Transforms::delay_measures().apply(c), CircuitInvalidity);
+  }
+  GIVEN(
+      "Call on invalid nested circuit without checking the predicate throws") {
+    Circuit inner1(1, 2);
+    inner1.add_conditional_gate<unsigned>(OpType::Measure, {}, {0, 0}, {1}, 1);
+    CircBox cbox1(inner1);
+
+    Circuit inner2(1, 2);
+    inner2.add_box(cbox1, {0, 0, 1});
+    CircBox cbox2(inner2);
+
+    Circuit c(1, 2);
+    c.add_box(cbox2, {0, 0, 1});
+    c.add_op<unsigned>(OpType::X, {0});
+    REQUIRE_THROWS_AS(Transforms::delay_measures().apply(c), CircuitInvalidity);
+  }
   GIVEN("Combined with routing") {
     Circuit test(3, 1);
     add_2qb_gates(test, OpType::CX, {{0, 1}, {1, 2}});
@@ -1446,10 +1469,34 @@ SCENARIO("CX mapping pass") {
     std::vector<std::pair<unsigned, unsigned>> edges = {{0, 1}};
     Architecture arc(edges);
     Placement::Ptr plptr = std::make_shared<Placement>(arc);
-    CompilationUnit cu(circ);
     std::vector<RoutingMethodPtr> config = {
         std::make_shared<LexiRouteRoutingMethod>()};
     THEN("Mapping with delay_measurements fails on the predicate.") {
+      CompilationUnit cu(circ);
+      PassPtr pass = gen_cx_mapping_pass(arc, plptr, config, false, true);
+      REQUIRE_THROWS_AS(pass->apply(cu), UnsatisfiedPredicate);
+    }
+  }
+  GIVEN("A circuit with measurements inside boxes.") {
+    Circuit inner1(1, 2);
+    inner1.add_conditional_gate<unsigned>(OpType::Measure, {}, {0, 0}, {1}, 1);
+    CircBox cbox1(inner1);
+
+    Circuit inner2(1, 2);
+    inner2.add_box(cbox1, {0, 0, 1});
+    CircBox cbox2(inner2);
+
+    Circuit circ(1, 2);
+    circ.add_box(cbox2, {0, 0, 1});
+    circ.add_op<unsigned>(OpType::X, {0});
+
+    std::vector<std::pair<unsigned, unsigned>> edges = {};
+    Architecture arc(edges);
+    Placement::Ptr plptr = std::make_shared<Placement>(arc);
+    std::vector<RoutingMethodPtr> config = {
+        std::make_shared<LexiRouteRoutingMethod>()};
+    THEN("Mapping with delay_measurements fails on the predicate.") {
+      CompilationUnit cu(circ);
       PassPtr pass = gen_cx_mapping_pass(arc, plptr, config, false, true);
       REQUIRE_THROWS_AS(pass->apply(cu), UnsatisfiedPredicate);
     }
