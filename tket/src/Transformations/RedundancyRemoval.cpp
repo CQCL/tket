@@ -24,49 +24,49 @@ namespace tket::Transforms {
 // A helper struct for holding which vertices have been detached (a.k.a bin)
 // the predecessors of those vertices
 struct VertexDetachmentInfo {
-  VertexList detachedVertices;
-  VertexList detachedVertexPredecessors;
-
-  // Merge vertices from temporary VertexDetachmentInfo object to this one
-  void append(VertexDetachmentInfo &&detachmentInfoToAppend) {
-    detachedVertices.merge(detachmentInfoToAppend.detachedVertices);
-    detachedVertexPredecessors.merge(
-        detachmentInfoToAppend.detachedVertexPredecessors);
-  }
-  // Returns VertexDetachmentInfo object with empty lists
-  static VertexDetachmentInfo Empty() { return {}; }
+  VertexVec detachedVertices;
+  VertexVec detachedVertexPredecessors;
 };
 
-static VertexDetachmentInfo detach_vertex(
-    Circuit &circuit, const Vertex &vertex) {
-  auto detachInfo =
-      VertexDetachmentInfo{{vertex}, circuit.get_predecessors_list(vertex)};
+static void detach_vertex(
+    Circuit &circuit, const Vertex &vertex,
+    VertexDetachmentInfo &detachmentInfo) {
+  detachmentInfo.detachedVertices.emplace_back(vertex);
+  auto &vertexPredecessors = detachmentInfo.detachedVertexPredecessors;
+  const auto &newVertexPredecessors = circuit.get_predecessors(vertex);
+  vertexPredecessors.insert(
+      vertexPredecessors.cend(), newVertexPredecessors.cbegin(),
+      newVertexPredecessors.cend());
   circuit.remove_vertex(
       vertex, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
-  return detachInfo;
 }
 
-static VertexDetachmentInfo detach_vertex_and_successor(
-    Circuit &circuit, const Vertex &vertex, const Vertex &successor) {
-  auto detachInfo = VertexDetachmentInfo{
-      {vertex, successor}, circuit.get_predecessors_list(vertex)};
+static void detach_vertex_and_successor(
+    Circuit &circuit, const Vertex &vertex, const Vertex &successor, VertexDetachmentInfo &detachmentInfo) {
+  detachmentInfo.detachedVertices.emplace_back(vertex);
+  detachmentInfo.detachedVertices.emplace_back(successor);
+  auto &vertexPredecessors = detachmentInfo.detachedVertexPredecessors;
+  const auto &newVertexPredecessors = circuit.get_predecessors(vertex);
+  vertexPredecessors.insert(
+      vertexPredecessors.cend(), newVertexPredecessors.cbegin(),
+      newVertexPredecessors.cend());
   circuit.remove_vertices(
       VertexList{vertex, successor}, Circuit::GraphRewiring::Yes,
       Circuit::VertexDeletion::No);
-  return detachInfo;
 }
 
-static std::optional<VertexDetachmentInfo> try_detach_identity(
-    Circuit &circuit, const Vertex &vertex) {
+static bool try_detach_identity(
+    Circuit &circuit, const Vertex &vertex, VertexDetachmentInfo &detachmentInfo) {
   auto vertex_operator = circuit.get_Op_ptr_from_Vertex(vertex);
   if (auto phase = vertex_operator->is_identity()) {
     circuit.add_phase(phase.value());
-    return std::make_optional(detach_vertex(circuit, vertex));
+    detach_vertex(circuit,vertex,detachmentInfo);
+    return true;
   }
-  return std::nullopt;
+  return false;
 }
 
-bool vertex_is_a_measurement(const Circuit &circuit, Vertex const &vertex) {
+static bool vertex_is_a_measurement(const Circuit &circuit, Vertex const &vertex) {
   return circuit.get_OpType_from_Vertex(vertex) == OpType::Measure;
 }
 
@@ -87,16 +87,17 @@ vertex_is_succeeded_only_by_z_basis_measurements_with_which_it_commutes(
   });
 }
 
-static std::optional<VertexDetachmentInfo> try_detach_zbasis_commuting_vertex(
-    Circuit &circuit, const Vertex &vertex) {
+static bool try_detach_zbasis_commuting_vertex(
+    Circuit &circuit, const Vertex &vertex, VertexDetachmentInfo &detachmentInfo) {
   if (vertex_is_succeeded_only_by_z_basis_measurements_with_which_it_commutes(
           circuit, vertex)) {
-    return std::make_optional(detach_vertex(circuit, vertex));
+    detach_vertex(circuit, vertex, detachmentInfo);
+    return true;
   }
-  return std::nullopt;
+  return false;
 }
 
-bool port_ordering_is_compatible(
+static bool port_ordering_is_compatible(
     Circuit &circuit, const Vertex &vertex, const Vertex &successor) {
   const Op_ptr vertex_op = circuit.get_Op_ptr_from_Vertex(vertex);
   // Vertex port must be symmetrically equivalent to successor port for any edge
@@ -115,7 +116,7 @@ bool port_ordering_is_compatible(
   return true;
 }
 
-bool preliminary_vertex_successor_checks_pass(
+static bool preliminary_vertex_successor_checks_pass(
     Circuit &circuit, const Vertex &vertex) {
   // check that the classical edges match up correctly
   if (circuit.n_in_edges_of_type(vertex, EdgeType::Boolean) != 0) return false;
@@ -135,20 +136,19 @@ bool preliminary_vertex_successor_checks_pass(
   return port_ordering_is_compatible(circuit, vertex, successor);
 }
 
-std::optional<VertexDetachmentInfo>
-try_detach_both_because_successor_is_adjoint(
-    Circuit &circuit, Vertex const &vertex, Vertex const &successor) {
+static bool try_detach_both_because_successor_is_adjoint(
+    Circuit &circuit, Vertex const &vertex, Vertex const &successor, VertexDetachmentInfo &detachmentInfo) {
   const Op_ptr successor_op = circuit.get_Op_ptr_from_Vertex(successor);
   const Op_ptr vertex_op = circuit.get_Op_ptr_from_Vertex(vertex);
-  if (*vertex_op == *successor_op->dagger())
-    return std::make_optional(
-        detach_vertex_and_successor(circuit, vertex, successor));
-
-  return std::nullopt;
+  if (*vertex_op == *successor_op->dagger()){
+    detach_vertex_and_successor(circuit, vertex, successor,detachmentInfo);
+    return true;
+  }
+  return false;
 }
 
-std::optional<VertexDetachmentInfo> try_join_rotations_and_detach_successor(
-    Circuit &circuit, Vertex const &vertex, Vertex const &successor) {
+static bool try_join_rotations_and_detach_successor(
+    Circuit &circuit, Vertex const &vertex, Vertex const &successor, VertexDetachmentInfo &detachmentInfo) {
   const Op_ptr successor_op = circuit.get_Op_ptr_from_Vertex(successor);
   const OpDesc successor_op_descriptor = successor_op->get_desc();
   const Op_ptr vertex_op = circuit.get_Op_ptr_from_Vertex(vertex);
@@ -156,8 +156,9 @@ std::optional<VertexDetachmentInfo> try_join_rotations_and_detach_successor(
 
   // check vertex and successor are same rotation type
   if (not(vertex_op_descriptor.is_rotation() &&
-          vertex_op_descriptor.type() == successor_op_descriptor.type()))
-    return std::nullopt;
+          vertex_op_descriptor.type() == successor_op_descriptor.type())){
+    return false;
+  }
 
   // replace vertex with combined rotation
   auto expr1 = vertex_op->get_params()[0];
@@ -169,35 +170,37 @@ std::optional<VertexDetachmentInfo> try_join_rotations_and_detach_successor(
 
   // detach successor only (this adds vertex to list of vertices to check again,
   // so will be removed later if is identity)
-  return std::make_optional(detach_vertex(circuit, successor));
+  detach_vertex(circuit, successor, detachmentInfo);
+  return true;
 }
 
-static std::optional<VertexDetachmentInfo> try_detach_single_vertex(
-    Circuit &circuit, const Vertex &vertex) {
-  if (auto detachmentInfo = try_detach_identity(circuit, vertex))
-    return detachmentInfo;
-  if (auto detachmentInfo = try_detach_zbasis_commuting_vertex(circuit, vertex))
-    return detachmentInfo;
-  return std::nullopt;
+static bool try_detach_single_vertex(
+    Circuit &circuit, const Vertex &vertex, VertexDetachmentInfo &detachmentInfo) {
+  if (try_detach_identity(circuit, vertex, detachmentInfo)){
+    return true;
+  }
+  if (try_detach_zbasis_commuting_vertex(circuit, vertex, detachmentInfo)){
+    return true;
+  }
+  return false;
 }
 
-static std::optional<VertexDetachmentInfo> try_detach_vertex_and_successor(
-    Circuit &circuit, const Vertex &vertex) {
+static bool try_detach_vertex_and_successor(
+    Circuit &circuit, const Vertex &vertex, VertexDetachmentInfo &detachmentInfo) {
   if (not preliminary_vertex_successor_checks_pass(circuit, vertex))
-    return std::nullopt;
+    return false;
   auto successor = circuit.get_successors(vertex)[0];
-  if (auto detachmentInfo = try_detach_both_because_successor_is_adjoint(
-          circuit, vertex, successor)) {
-    return detachmentInfo;
+  if (try_detach_both_because_successor_is_adjoint(
+          circuit, vertex, successor, detachmentInfo)) {
+    return true;
   }
-  if (auto detachmentInfo =
-          try_join_rotations_and_detach_successor(circuit, vertex, successor)) {
-    return detachmentInfo;
+  if (try_join_rotations_and_detach_successor(circuit, vertex, successor,detachmentInfo)) {
+    return true;
   }
-  return std::nullopt;
+  return false;
 }
 
-bool is_apriori_not_detachable(const Circuit &circuit, Vertex const &vertex) {
+static bool is_apriori_not_detachable(const Circuit &circuit, Vertex const &vertex) {
   const OpDesc op_descriptor =
       circuit.get_Op_ptr_from_Vertex(vertex)->get_desc();
 
@@ -207,34 +210,36 @@ bool is_apriori_not_detachable(const Circuit &circuit, Vertex const &vertex) {
          circuit.n_in_edges(vertex) == 0;  // vertex is boundary
 }
 
-static VertexDetachmentInfo try_detach_vertex(
-    Circuit &circuit, const Vertex &vertex) {
-  if (is_apriori_not_detachable(circuit, vertex))
-    return VertexDetachmentInfo::Empty();
-  if (auto detachmentInfo = try_detach_single_vertex(circuit, vertex))
-    return detachmentInfo.value();
-  if (auto detachmentInfo = try_detach_vertex_and_successor(circuit, vertex))
-    return detachmentInfo.value();
-
-  return VertexDetachmentInfo::Empty();
+static bool try_detach_vertex(
+    Circuit &circuit, const Vertex &vertex, VertexDetachmentInfo &detachmentInfo) {
+  if (is_apriori_not_detachable(circuit, vertex)){
+    return false;
+  }
+  if (try_detach_single_vertex(circuit, vertex, detachmentInfo)){
+    return true;
+  }
+  if (try_detach_vertex_and_successor(circuit, vertex, detachmentInfo)){
+    return true;
+  }
+  return false;
 }
 
-static VertexDetachmentInfo try_detach_vertices(
-    Circuit &circuit, const VertexList &vertices) {
+static VertexDetachmentInfo detach_vertices_if_redundant(
+    Circuit &circuit, const VertexVec &vertices) {
   VertexDetachmentInfo detachmentInfo;
   for (const auto &vertex : vertices) {
-    detachmentInfo.append(try_detach_vertex(circuit, vertex));
+    try_detach_vertex(circuit, vertex, detachmentInfo);
   }
   return detachmentInfo;
 }
 
-static VertexList detach_redundant_vertices(Circuit &circuit) {
-  VertexList bin;
-  VertexList verticesToCheckForRemoval = circuit.vertices_list_in_order();
+static VertexSet detach_any_redundant_vertices(Circuit &circuit) {
+  VertexSet bin;
+  VertexVec verticesToCheckForRemoval = circuit.vertices_in_order();
   while (!verticesToCheckForRemoval.empty()) {
     auto detachmentInfo =
-        try_detach_vertices(circuit, verticesToCheckForRemoval);
-    bin.merge(detachmentInfo.detachedVertices);
+        detach_vertices_if_redundant(circuit, verticesToCheckForRemoval);
+    bin.insert(detachmentInfo.detachedVertices.cbegin(),detachmentInfo.detachedVertices.cend());
     std::swap(
         verticesToCheckForRemoval, detachmentInfo.detachedVertexPredecessors);
   }
@@ -246,7 +251,7 @@ static VertexList detach_redundant_vertices(Circuit &circuit) {
 // also removes redundant non-classically controlled Z basis gates before a z
 // basis measurement so that eg. -H-X-X-H- always annihilates to -----
 bool redundancy_removal(Circuit &circuit) {
-  VertexList bin = detach_redundant_vertices(circuit);
+  VertexSet bin = detach_any_redundant_vertices(circuit);
   circuit.remove_vertices(
       bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
   return !bin.empty();
