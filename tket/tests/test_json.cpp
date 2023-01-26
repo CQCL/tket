@@ -413,7 +413,7 @@ SCENARIO("Test Circuit serialization") {
   }
 
   GIVEN("StatePreparationBox") {
-    Eigen::VectorXcd state;
+    Eigen::VectorXcd state(8);
     state << std::sqrt(0.125), -std::sqrt(0.125), std::sqrt(0.125),
         -std::sqrt(0.125), std::sqrt(0.125), -std::sqrt(0.125),
         std::sqrt(0.125), -std::sqrt(0.125);

@@ -104,7 +104,7 @@ SCENARIO("Test state preparation") {
         MessageContains("not normalised"));
   }
   GIVEN("vectors with wrong size") {
-    Eigen::VectorXcd state;
+    Eigen::VectorXcd state(1);
     state << 1;
     REQUIRE_THROWS_MATCHES(
         StatePreparationBox(state), std::invalid_argument,
