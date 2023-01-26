@@ -154,7 +154,7 @@ jobs:
       run: conan profile update settings.build_type=Debug tket
     - name: build ${{ matrix.lib }}
       run: |
-        conan create libs/${{ matrix.lib }} --profile=tket -o ${{ matrix.lib }}:profile_coverage=True --test-folder=None
+        conan create libs/${{ matrix.lib }} --profile=tket -o ${{ matrix.lib }}:profile_coverage=True --test-folder=None --build=missing
     - name: build ${{ matrix.lib }} tests
       run: |
         conan install libs/${{ matrix.lib }}/test --install-folder=build/${{ matrix.lib }}-tests --output-folder=build/${{ matrix.lib }}-tests --profile=tket -o test-${{ matrix.lib }}:with_coverage=True
