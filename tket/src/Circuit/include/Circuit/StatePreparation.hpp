@@ -60,6 +60,10 @@ class StatePreparationBox : public Box {
 
   op_signature_t get_signature() const override;
 
+  static Op_ptr from_json(const nlohmann::json &j);
+
+  static nlohmann::json to_json(const Op_ptr &op);
+
   Eigen::VectorXcd get_statevector() const;
 
   bool is_inverse() const;

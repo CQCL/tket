@@ -19,7 +19,10 @@
 #include "Circuit/Circuit.hpp"
 #include "Circuit/Multiplexor.hpp"
 #include "Gate/Rotation.hpp"
+#include "Ops/OpJsonFactory.hpp"
 #include "Utils/HelperFunctions.hpp"
+#include "Utils/Json.hpp"
+
 namespace tket {
 
 StatePreparationBox::StatePreparationBox(
@@ -168,5 +171,24 @@ static Circuit state_prep_circ(
 void StatePreparationBox::generate_circuit() const {
   circ_ = std::make_shared<Circuit>(state_prep_circ(statevector_, is_inverse_));
 }
+
+nlohmann::json StatePreparationBox::to_json(const Op_ptr &op) {
+  const auto &box = static_cast<const StatePreparationBox &>(*op);
+  nlohmann::json j = core_box_json(box);
+  j["statevector"] = box.get_statevector();
+  j["is_inverse"] = box.is_inverse();
+  return j;
+}
+
+Op_ptr StatePreparationBox::from_json(const nlohmann::json &j) {
+  StatePreparationBox box = StatePreparationBox(
+      j.at("statevector").get<Eigen::VectorXcd>(),
+      j.at("is_inverse").get<bool>());
+  return set_box_id(
+      box,
+      boost::lexical_cast<boost::uuids::uuid>(j.at("id").get<std::string>()));
+}
+
+REGISTER_OPFACTORY(StatePreparationBox, StatePreparationBox)
 
 }  // namespace tket

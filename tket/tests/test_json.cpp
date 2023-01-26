@@ -22,6 +22,7 @@
 #include "Circuit/Circuit.hpp"
 #include "Circuit/Command.hpp"
 #include "Circuit/Multiplexor.hpp"
+#include "Circuit/StatePreparation.hpp"
 #include "CircuitsForTesting.hpp"
 #include "Converters/PhasePoly.hpp"
 #include "Gate/SymTable.hpp"
@@ -409,6 +410,22 @@ SCENARIO("Test Circuit serialization") {
       REQUIRE(*it->second == *new_it->second);
     }
     REQUIRE(multiplexor.get_impl_diag() == qc_b.get_impl_diag());
+  }
+
+  GIVEN("StatePreparationBox") {
+    Eigen::VectorXcd state;
+    state << std::sqrt(0.125), -std::sqrt(0.125), std::sqrt(0.125),
+        -std::sqrt(0.125), std::sqrt(0.125), -std::sqrt(0.125),
+        std::sqrt(0.125), -std::sqrt(0.125);
+    StatePreparationBox prep(state, true);
+    Circuit c(3);
+    c.add_box(prep, {0, 1, 2});
+    nlohmann::json j_box = c;
+    const Circuit new_c = j_box.get<Circuit>();
+    const auto& box = static_cast<const StatePreparationBox&>(
+        *new_c.get_commands()[0].get_op_ptr());
+    REQUIRE((state - box.get_statevector()).cwiseAbs().sum() < ERR_EPS);
+    REQUIRE(box.is_inverse() == true);
   }
 
   GIVEN("PhasePolyBox") {
