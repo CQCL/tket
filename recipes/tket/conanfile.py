@@ -20,7 +20,7 @@ import shutil
 
 class TketConan(ConanFile):
     name = "tket"
-    version = "1.0.49"
+    version = "1.0.50"
     license = "CQC Proprietary"
     homepage = "https://github.com/CQCL/tket"
     url = "https://github.com/conan-io/conan-center-index"
@@ -41,11 +41,11 @@ class TketConan(ConanFile):
         "symengine/0.9.0",
         "eigen/3.4.0",
         "nlohmann_json/3.11.2",
-        "tklog/0.1.2@tket/stable",
-        "tkassert/0.1.1@tket/stable",
-        "tkrng/0.1.2@tket/stable",
-        "tktokenswap/0.1.2@tket/stable",
-        "tkwsm/0.2.1@tket/stable",
+        "tklog/0.1.3@tket/stable",
+        "tkassert/0.1.2@tket/stable",
+        "tkrng/0.1.3@tket/stable",
+        "tktokenswap/0.1.3@tket/stable",
+        "tkwsm/0.2.2@tket/stable",
     )
 
     # List of components in a topological sort according to dependencies:
