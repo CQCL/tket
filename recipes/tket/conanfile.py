@@ -90,6 +90,8 @@ class TketConan(ConanFile):
     def configure(self):
         # Disable features that are still under the LGPL.
         self.options["eigen"].MPL2_only = True
+        # Only need header libraries from boost.
+        self.options["boost"].header_only = True
 
     def build(self):
         cmake = self._configure_cmake()
