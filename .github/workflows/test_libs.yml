@@ -169,7 +169,7 @@ jobs:
       run: |
         mkdir ${{ matrix.lib }}-coverage
         conan info --paths -n build_folder --profile=tket libs/${{ matrix.lib }}/test -o ${{ matrix.lib }}:profile_coverage=True --json libinfo.json
-        build_folder=`./get_lib_build_folder ${{ matrix.lib }}`
+        build_folder=`./.github/workflows/get_lib_build_folder ${{ matrix.lib }}`
         rm libinfo.json
         gcovr --print-summary --html --html-details -r ${build_folder}/src --exclude-lines-by-pattern '.*\bTKET_ASSERT\(.*\);' --object-directory ${build_folder}/build/Debug/CMakeFiles/${{ matrix.lib }},dir/src -o ${{ matrix.lib }}-coverage/index.html --decisions > ${{ matrix.lib }}-coverage/summary.txt
     - name: upload artefact
