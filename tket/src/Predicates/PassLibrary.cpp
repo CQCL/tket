@@ -359,15 +359,19 @@ const PassPtr &RemoveBarriers() {
 const PassPtr &DelayMeasures() {
   static const PassPtr pp([]() {
     Transform t = Transforms::delay_measures();
+
+    PredicatePtr delaymeaspred =
+        std::make_shared<CommutableMeasuresPredicate>();
+    PredicatePtrMap precon = {CompilationUnit::make_type_pair(delaymeaspred)};
+
     PredicatePtr midmeaspred = std::make_shared<NoMidMeasurePredicate>();
     PredicatePtrMap spec_postcons = {
         CompilationUnit::make_type_pair(midmeaspred)};
     PostConditions postcon = {spec_postcons, {}, Guarantee::Preserve};
-    PredicatePtrMap precons;
-    // record pass config
+
     nlohmann::json j;
     j["name"] = "DelayMeasures";
-    return std::make_shared<StandardPass>(precons, t, postcon, j);
+    return std::make_shared<StandardPass>(precon, t, postcon, j);
   }());
   return pp;
 }
