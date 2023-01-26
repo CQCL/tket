@@ -461,6 +461,10 @@ bool Gate::is_clifford() const {
 
 bool Gate::has_symmetry(
     unsigned port1, unsigned port2) const {
+  const auto n_q = n_qubits();
+  if (port1 >= n_q || port2 >= n_q) {
+    throw std::out_of_range("port ids must be less than n_qubits");
+  }
   if (port1 == port2) {
     // exchanging with self is always symmetric
     return true;
@@ -531,7 +535,7 @@ bool Gate::has_symmetry(
     case OpType::CnY:
     case OpType::CnRy: {
       // symmetry on first n ports not on n+1
-      auto last_port = n_qubits_ - 1;
+      auto last_port = n_q - 1;
       return not(port1 == last_port || port2 == last_port);
     }
     case OpType::CnZ:
