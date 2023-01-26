@@ -130,6 +130,7 @@ NONPARAM_PREDICATES = [
     "CliffordCircuitPredicate",
     "DefaultRegisterPredicate",
     "NoBarriersPredicate",
+    "CommutableMeasuresPredicate",
     "NoMidMeasurePredicate",
     "NoSymbolsPredicate",
     "GlobalPhasedXPredicate",
