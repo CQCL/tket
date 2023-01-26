@@ -34,12 +34,11 @@ jobs:
       run: conan create --profile=tket libs/${{ matrix.lib }} --build=missing
     - name: build ${{ matrix.lib }} tests
       run: |
-        conan install libs/${{ matrix.lib }}/test --install-folder=build/test-${{ matrix.lib }} --profile=tket
+        conan install libs/${{ matrix.lib }}/test --install-folder=build/test-${{ matrix.lib }} --output-folder=build/test-${{ matrix.lib }} --profile=tket
         conan build libs/${{ matrix.lib }}/test --configure --build-folder=build/test-${{ matrix.lib }} --source-folder=libs/${{ matrix.lib }}/test
         conan build libs/${{ matrix.lib }}/test --build --build-folder=build/test-${{ matrix.lib }}
-        conan package libs/${{ matrix.lib }}/test --build-folder=build/test-${{ matrix.lib }} --package-folder build/test-${{ matrix.lib }}/package --source-folder=libs/${{ matrix.lib }}/test
     - name: run ${{ matrix.lib }} tests
-      working-directory: ./build/test-${{ matrix.lib }}/package/bin
+      working-directory: ./build/test-${{ matrix.lib }}/build/Release
       run: ./test-${{ matrix.lib }}
   macos-m1:
     name: test library (macos-m1)
@@ -63,10 +62,9 @@ jobs:
       run: conan create --profile=tket libs/${{ matrix.lib }} --build=missing
     - name: build ${{ matrix.lib }} tests
       run: |
-        conan install libs/${{ matrix.lib }}/test --install-folder=build/test-${{ matrix.lib }} --profile=tket
+        conan install libs/${{ matrix.lib }}/test --install-folder=build/test-${{ matrix.lib }} --output-folder=build/test-${{ matrix.lib }} --profile=tket
         conan build libs/${{ matrix.lib }}/test --configure --build-folder=build/test-${{ matrix.lib }} --source-folder=libs/${{ matrix.lib }}/test
         conan build libs/${{ matrix.lib }}/test --build --build-folder=build/test-${{ matrix.lib }}
-        conan package libs/${{ matrix.lib }}/test --build-folder=build/test-${{ matrix.lib }} --package-folder build/test-${{ matrix.lib }}/package --source-folder=libs/${{ matrix.lib }}/test
     - name: run ${{ matrix.lib }} tests
-      working-directory: ./build/test-${{ matrix.lib }}/package/bin
+      working-directory: ./build/test-${{ matrix.lib }}/build/Release
       run: ./test-${{ matrix.lib }}
