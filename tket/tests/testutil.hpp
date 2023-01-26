@@ -133,7 +133,7 @@ Eigen::MatrixXcd random_unitary(unsigned n, int seed);
 
 /**
  * @brief Generate a random statevector by applying a random unitary to the
- * computational basis zero state.
+ * computational-basis zero state.
  *
  * @param n vector length
  * @param seed RNG seed

@@ -20,7 +20,7 @@
 
 namespace tket {
 /**
- * Box to synthesis a statevector
+ * Box to synthesise a statevector
  */
 class StatePreparationBox : public Box {
  public:
