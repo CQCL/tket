@@ -27,7 +27,7 @@ class TestTkrngConan(ConanFile):
     default_options = {"with_coverage": False}
     generators = "cmake"
     exports_sources = "*"
-    requires = ["tkrng/0.1.2", "catch2/3.2.1"]
+    requires = ["tkrng/0.1.2", "catch2/3.3.0"]
 
     _cmake = None
 
