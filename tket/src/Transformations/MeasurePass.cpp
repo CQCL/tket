@@ -169,7 +169,7 @@ static Edge follow_until_noncommuting(
     } else {
       break;
     }
-    // Update to successor
+    // Proceed to successor
     current_edge = circ.get_nth_out_edge(current_vertex, current_port);
     current_vertex = circ.target(current_edge);
     current_port = circ.get_target_port(current_edge);
@@ -179,8 +179,8 @@ static Edge follow_until_noncommuting(
 }
 
 std::pair<bool, bool> run_delay_measures(Circuit& circ, bool dry_run) {
-  // Collect the vertices to swap to the end of the circuit, and the target
-  // edges
+  // Collect the vertices to swap to the end of the circuit, along with their
+  // target edges
   std::vector<std::pair<Vertex, Edge>> to_delay;
   for (const Command& com : circ) {
     Vertex v = com.get_vertex();
@@ -197,7 +197,7 @@ std::pair<bool, bool> run_delay_measures(Circuit& circ, bool dry_run) {
       Edge out_edge = circ.get_nth_out_edge(v, 0);
       Edge current_edge = follow_until_noncommuting(circ, out_edge, false);
       Vertex current_vertex = circ.target(current_edge);
-      // If we haven't moved it to an output, we can't continue
+      // If we haven't reached an output, we can't continue
       if (!is_final_q_type(circ.get_OpType_from_Vertex(current_vertex))) {
         if (dry_run) return {false, false};
         throw CircuitInvalidity(
@@ -205,7 +205,7 @@ std::pair<bool, bool> run_delay_measures(Circuit& circ, bool dry_run) {
             "circuit");
       }
       if (dry_run) continue;
-      // If the measure was already at an output, nothing to do
+      // If the measure was already at the output, nothing to do
       if (current_edge == out_edge) continue;
       to_delay.push_back({v, current_edge});
     } else {

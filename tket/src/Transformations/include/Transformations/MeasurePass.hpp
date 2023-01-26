@@ -34,9 +34,9 @@ namespace DelayMeasures {
  * possible to delay.
  * @throws CircuitInvalidity if it is not possible to delay and dry_run is
  * false.
- * @return A pair of booleans. The first indicates whether the circuit was
- * changed, and the second indicates whether it was possible to delay (i.e.
- * there where no errors).
+ * @return A pair of booleans. The first indicates when the circuit was changed,
+ * and the second indicates if there where no undelayable gates (i.e. there
+ * where no errors).
  **/
 std::pair<bool, bool> run_delay_measures(Circuit& circ, bool dry_run = false);
 
