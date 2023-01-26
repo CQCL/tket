@@ -260,7 +260,8 @@ SCENARIO("Transforms::remove_redundancies removes typical redundancies") {
     }
     Circuit untransformed_circuit(test_circuit);
     WHEN("calling Transforms::remove_redundancies on circuit") {
-      auto circuit_has_changed = Transforms::remove_redundancies().apply(test_circuit);
+      auto circuit_has_changed =
+          Transforms::remove_redundancies().apply(test_circuit);
       if (test_case.gatesShouldCancel) {
         THEN("gates should be removed") {
           CHECK(circuit_has_changed);
@@ -302,7 +303,9 @@ SCENARIO("Transforms::remove_redundancies removes nested redundancies") {
   }
 }
 
-SCENARIO("Transforms::remove_redundancies reduces gate depth if some gates are redundant") {
+SCENARIO(
+    "Transforms::remove_redundancies reduces gate depth if some gates are "
+    "redundant") {
   Circuit original_circuit(3);
   Circuit test_circuit(original_circuit);
   GIVEN("A circuit with nested redundancies") {

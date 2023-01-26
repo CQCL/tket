@@ -459,8 +459,7 @@ bool Gate::is_clifford() const {
   }
 }
 
-bool Gate::has_symmetry(
-    unsigned port1, unsigned port2) const {
+bool Gate::has_symmetry(unsigned port1, unsigned port2) const {
   const auto n_q = n_qubits();
   if (port1 >= n_q || port2 >= n_q) {
     throw std::out_of_range("port ids must be less than n_qubits");

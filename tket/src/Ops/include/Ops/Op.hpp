@@ -164,8 +164,7 @@ class Op : public std::enable_shared_from_this<Op> {
    * @retval true operator is invariant under exchange of ports
    *
    * */
-  virtual bool has_symmetry(
-      unsigned port1, unsigned port2) const {
+  virtual bool has_symmetry(unsigned port1, unsigned port2) const {
     return port1 == port2;
   };
 
