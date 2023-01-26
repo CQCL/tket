@@ -239,6 +239,18 @@ class NoBarriersPredicate : public Predicate {
 };
 
 /**
+ * Asserts that any internal measurements can be commuted to the end of the
+ * circuit
+ */
+class CommutableMeasuresPredicate : public Predicate {
+ public:
+  bool verify(const Circuit& circ) const override;
+  bool implies(const Predicate& other) const override;
+  PredicatePtr meet(const Predicate& other) const override;
+  std::string to_string() const override;
+};
+
+/**
  * Asserts that any measurements occur at the end of the circuit
  */
 class NoMidMeasurePredicate : public Predicate {

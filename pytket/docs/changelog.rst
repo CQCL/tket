@@ -1,6 +1,19 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Minor new features:
+
+* New ``CommutableMeasuresPredicate`` predicate, added as precondition to the
+  ``DelayMeasures`` pass.
+
+Fixes:
+
+* ``DelayMeasures`` pass now correctly handles circuits with ``CircBox``es.
+
+
 1.11.1 (January 2023)
 ---------------------
 
