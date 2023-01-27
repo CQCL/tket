@@ -1279,7 +1279,9 @@ SCENARIO("Commute measurements to the end of a circuit") {
     CompilationUnit cu(c);
     REQUIRE_THROWS_AS(delay_pass->apply(cu), UnsatisfiedPredicate);
   }
-  GIVEN("Measure partially blocked by conditional operation, using a partial delay pass") {
+  GIVEN(
+      "Measure partially blocked by conditional operation, using a partial "
+      "delay pass") {
     Circuit c(2, 2);
     c.add_op<unsigned>(OpType::CZ, {0, 1});
     c.add_op<unsigned>(OpType::Measure, {0, 0});

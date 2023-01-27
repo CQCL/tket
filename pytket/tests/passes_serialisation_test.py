@@ -639,7 +639,7 @@ def test_pass_deserialisation_only() -> None:
     np_pass = dm_pass.get_sequence()[0].get_sequence()[2]
     d_pass = dm_pass.get_sequence()[1]
     assert d_pass.to_dict()["StandardPass"]["name"] == "DelayMeasures"
-    assert d_pass.to_dict()["StandardPass"]["allow_partial"] == "False"
+    assert d_pass.to_dict()["StandardPass"]["allow_partial"] == False
     assert p_pass.to_dict()["StandardPass"]["name"] == "PlacementPass"
     assert np_pass.to_dict()["StandardPass"]["name"] == "NaivePlacementPass"
     assert r_pass.to_dict()["StandardPass"]["name"] == "RoutingPass"
@@ -689,7 +689,7 @@ def test_pass_deserialisation_only() -> None:
     p001 = p00.get_sequence()[1]
     assert p000.to_dict()["pass_class"] == "SequencePass"
     assert p001.to_dict()["StandardPass"]["name"] == "DelayMeasures"
-    assert p001.to_dict()["StandardPass"]["allow_partial"] == "False"
+    assert p001.to_dict()["StandardPass"]["allow_partial"] == False
     p0000 = p000.get_sequence()[0]
     p0001 = p000.get_sequence()[1]
     assert p0000.to_dict()["StandardPass"]["name"] == "RebaseCustom"

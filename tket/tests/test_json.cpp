@@ -669,7 +669,7 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(SquashRzPhasedX, SquashRzPhasedX())
   COMPPASSJSONTEST(FlattenRegisters, FlattenRegisters())
   COMPPASSJSONTEST(DelayMeasures, DelayMeasures())
-  COMPPASSJSONTEST(DelayMeasures(true), DelayMeasures(true))
+  COMPPASSJSONTEST(TryDelayMeasures, DelayMeasures(true))
   COMPPASSJSONTEST(RemoveDiscarded, RemoveDiscarded())
   COMPPASSJSONTEST(SimplifyMeasured, SimplifyMeasured())
   COMPPASSJSONTEST(ZZPhaseToRz, ZZPhaseToRz())

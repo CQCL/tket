@@ -67,7 +67,7 @@ const PassPtr &RemoveBarriers();
  * the end, and delay them as much as possible instead. If false, the pass
  * includes a @ref CommutableMeasuresPredicate precondition.
  */
-const PassPtr &DelayMeasures(bool allow_partial=false);
+const PassPtr &DelayMeasures(bool allow_partial = false);
 
 /**
  * Remove all operations that have no @ref OpType::Output or
