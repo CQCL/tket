@@ -68,6 +68,8 @@ class Gate : public Op {
 
   std::optional<double> is_identity() const override;
   bool is_clifford() const override;
+  bool has_symmetry(unsigned port1, unsigned port2) const override;
+
   Eigen::MatrixXcd get_unitary() const override;
 
   ~Gate() override {}

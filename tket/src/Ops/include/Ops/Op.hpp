@@ -156,6 +156,19 @@ class Op : public std::enable_shared_from_this<Op> {
   virtual bool is_clifford() const { return false; }
 
   /**
+   * Checks for symmetry of port pairs
+   *
+   * A return value of true means that exchanging these
+   * ports does not change effect of operation
+   *
+   * @retval true operator is invariant under exchange of ports
+   *
+   * */
+  virtual bool has_symmetry(unsigned port1, unsigned port2) const {
+    return port1 == port2;
+  };
+
+  /**
    * If meaningful and implemented, return the numerical unitary matrix
    * (in ILO-BE convention) which this Op represents.
    *

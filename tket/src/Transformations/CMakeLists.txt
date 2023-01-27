@@ -22,6 +22,7 @@ add_library(tket-${COMP}
     Combinator.cpp
     Rebase.cpp
     BasicOptimisation.cpp
+    RedundancyRemoval.cpp
     PauliOptimisation.cpp
     CliffordOptimisation.cpp
     CliffordReductionPass.cpp
