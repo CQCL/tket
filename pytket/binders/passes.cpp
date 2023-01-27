@@ -510,7 +510,8 @@ PYBIND11_MODULE(passes, m) {
       "Commutes Measure operations to the end of the circuit. Throws an "
       "exception when this is not possible because of gates following the "
       "measure which are dependent on either the resulting quantum state "
-      "or classical values.");
+      "or classical values.",
+      py::arg("allow_partial") = true);
   m.def(
       "RemoveDiscarded", &RemoveDiscarded,
       "A pass to remove all operations that have no ``OpType.Output`` or "
