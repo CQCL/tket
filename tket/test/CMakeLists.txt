@@ -41,8 +41,6 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "(Apple)?Clang")
     # remove -Wno-deprecated-declarations once https://github.com/boostorg/boost/issues/688 is resolved
 endif()
 
-add_definitions(-DTEST_CIRCUITS_DIR="${CMAKE_CURRENT_SOURCE_DIR}/test_circuits")
-
 add_executable(test-tket
     # test utils:
     src/tests_main.cpp
@@ -168,6 +166,11 @@ IF (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         target_link_options(test-tket PUBLIC --coverage)
     ENDIF()
 ENDIF()
+
+install(FILES
+            src/test_circuits/lexiroute_circuit.json
+            src/test_circuits/lexiroute_circuit_relabel_to_ancilla.json
+        DESTINATION bin)
 
 install(TARGETS test-tket DESTINATION "."
         RUNTIME DESTINATION bin

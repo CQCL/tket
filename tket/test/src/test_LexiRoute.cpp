@@ -13,7 +13,6 @@
 // limitations under the License.
 
 #include <catch2/catch_test_macros.hpp>
-#include <filesystem>
 #include <fstream>
 
 #include "Mapping/LexiLabelling.hpp"
@@ -1610,9 +1609,7 @@ SCENARIO("Lexi relabel with partially mapped circuit") {
 }
 
 SCENARIO("Test failing case") {
-  auto lexiroute_circuit_path =
-      std::filesystem::path(TEST_CIRCUITS_DIR).append("lexiroute_circuit.json");
-  std::ifstream circuit_file(lexiroute_circuit_path);
+  std::ifstream circuit_file("lexiroute_circuit.json");
   nlohmann::json j = nlohmann::json::parse(circuit_file);
   auto c = j.get<Circuit>();
   Architecture arc({{0, 1},   {1, 2},   {2, 3},   {3, 5},   {4, 1},   {4, 7},
@@ -2137,10 +2134,7 @@ SCENARIO(
         {5, 6},  {5, 9},   {6, 8},   {7, 8},  {9, 8},  {9, 10},
         {11, 3}, {11, 10}, {11, 12}, {12, 2}, {13, 1}, {13, 12}};
     Architecture architecture(coupling_map);
-    auto lexiroute_circuit_path =
-        std::filesystem::path(TEST_CIRCUITS_DIR)
-            .append("lexiroute_circuit_relabel_to_ancilla.json");
-    std::ifstream circuit_file(lexiroute_circuit_path);
+    std::ifstream circuit_file("lexiroute_circuit_relabel_to_ancilla.json");
     nlohmann::json j = nlohmann::json::parse(circuit_file);
     auto c = j.get<Circuit>();
     std::map<Qubit, Node> p_map = {
