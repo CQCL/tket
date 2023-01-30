@@ -511,7 +511,8 @@ PYBIND11_MODULE(passes, m) {
       "exception when this is not possible because of gates following the "
       "measure which are dependent on either the resulting quantum state "
       "or classical values."
-      "\n\n:param allow_partial: Whether to allow measurements that cannot be commuted to "
+      "\n\n:param allow_partial: Whether to allow measurements that cannot be "
+      "commuted to "
       "the end, and delay them as much as possible instead. If false, the pass "
       "includes a :py:class:`CommutableMeasuresPredicate` precondition.",
       py::arg("allow_partial") = true);
