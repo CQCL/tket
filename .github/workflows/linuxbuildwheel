@@ -36,7 +36,6 @@ ${CONAN_CMD} create --profile=tket --test-folder=None recipes/pybind11
 
 # Install node and npm
 export NODE_VERSION=18
-apt install -y curl
 curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
 export NVM_DIR=/root/.nvm
 . "${NVM_DIR}/nvm.sh" && nvm install ${NODE_VERSION}
