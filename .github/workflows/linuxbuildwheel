@@ -35,14 +35,14 @@ ${CONAN_CMD} create --profile=tket --test-folder=None recipes/tket tket/stable -
 ${CONAN_CMD} create --profile=tket --test-folder=None recipes/pybind11
 
 # Install node and npm
-ENV NODE_VERSION=18
-RUN apt install -y curl
-RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
-ENV NVM_DIR=/root/.nvm
-RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}
-ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
-RUN node --version
-RUN npm --version
+export NODE_VERSION=18
+apt install -y curl
+curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.3/install.sh | bash
+export NVM_DIR=/root/.nvm
+. "${NVM_DIR}/nvm.sh" && nvm install ${NODE_VERSION}
+export PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"
+node --version
+npm --version
 
 cd /tket/pytket
 mkdir wheelhouse
