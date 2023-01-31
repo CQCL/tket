@@ -468,6 +468,10 @@ class PauliGraph {
 
   PGVert add_vertex_at_end(PGOp_ptr op);
 
+  // Verification of validity of the data structure
+  // Expensive so intended for use in debugging and tests, but not live code
+  void verify() const;
+
   friend PauliGraph tket::circuit_to_pauli_graph3(const tket::Circuit& circ);
   friend tket::Circuit tket::pauli_graph3_to_circuit_individual(
       const PauliGraph& pg, CXConfigType cx_config);
@@ -492,10 +496,6 @@ class PauliGraph {
   // and updates pauli_ac_ accordingly
   void multiply_strings(
       unsigned source_r, unsigned target_r, Complex coeff = 1.);
-
-  // Verification of validity of the data structure
-  // Expensive so intended for use in debugging and tests, but not live code
-  void verify() const;
 };
 
 }  // namespace pg

@@ -530,12 +530,13 @@ void PauliGraph::to_graphviz(std::ostream& out) const {
   BGL_FORALL_VERTICES(v, c_graph_, PGClassicalGraph) {
     v_map.insert({v, i});
     PGOp_ptr op = c_graph_[v];
-    out << "subgraph v" << i << "{\nlabel = \"" << op->get_name() << "\";\n";
+    out << "subgraph cluster" << i << "{\nlabel = \"" << op->get_name()
+        << "\";\n";
     if (op->n_paulis() == 0) {
-      out << i << "_0;\n";
+      out << "p" << i << "_0;\n";
     } else {
       for (unsigned j = 0; j < op->n_paulis(); ++j) {
-        out << i << "_" << j << ";\n";
+        out << "p" << i << "_" << j << ";\n";
       }
     }
     out << "}\n";
@@ -547,14 +548,14 @@ void PauliGraph::to_graphviz(std::ostream& out) const {
     PGVert vt = boost::target(e, c_graph_);
     unsigned vsi = v_map.at(vs);
     unsigned vti = v_map.at(vt);
-    out << vsi << "_0 -> " << vti << "_0 [ltail=v" << vsi << ",lhead=v" << vti
-        << "];\n";
+    out << "p" << vsi << "_0 -> p" << vti << "_0 [ltail=cluster" << vsi
+        << ",lhead=cluster" << vti << "];\n";
   }
 
   for (const PGPauli& r_pauli : pauli_index_.get<TagID>()) {
     for (const PGPauli& c_pauli : pauli_index_.get<TagID>()) {
       if (pauli_ac_(r_pauli.index, c_pauli.index)) {
-        out << v_map.at(c_pauli.vert) << "_" << c_pauli.port << " -> "
+        out << "p" << v_map.at(c_pauli.vert) << "_" << c_pauli.port << " -> p"
             << v_map.at(r_pauli.vert) << "_" << r_pauli.port << ";\n";
       }
     }
@@ -576,6 +577,8 @@ PGVert PauliGraph::add_vertex_at_end(PGOp_ptr op) {
     for (const std::pair<const Qubit, Pauli>& qp : op->port(i).string.map)
       qubits_.insert(qp.first);
   }
+  for (const Bit& b : op->read_bits()) bits_.insert(b);
+  for (const Bit& b : op->write_bits()) bits_.insert(b);
   if (op->get_type() == PGOpType::InputTableau) {
     if (boost::num_vertices(c_graph_) != 1)
       throw PGError(
@@ -593,6 +596,7 @@ PGVert PauliGraph::add_vertex_at_end(PGOp_ptr op) {
   std::vector<QubitPauliTensor> active = op->active_paulis();
   for (unsigned i = 0; i < active.size(); ++i) {
     for (const PGPauli& prev_pauli : pauli_index_.get<TagID>()) {
+      if (prev_pauli.vert == v) continue;
       PGOp_ptr other_op = c_graph_[prev_pauli.vert];
       QubitPauliTensor other_pauli = other_op->port(prev_pauli.port);
       pauli_ac_(mat_offset + i, prev_pauli.index) =
@@ -680,9 +684,9 @@ void PauliGraph::verify() const {
       // classical bits and all active bits are registered
       PGOp_ptr op = c_graph_[v];
       std::unordered_set<PGVert> justified_preds;
-      for (const Bit& b : op->write_bits()) {
+      for (const Bit& b : op->read_bits()) {
         if (bits_.find(b) == bits_.end())
-          throw PGError("PGOp writes to unregistered bit: " + op->get_name());
+          throw PGError("PGOp reads from unregistered bit: " + op->get_name());
         auto w_found = previous_write.find(b);
         if (w_found != previous_write.end()) {
           if (!boost::edge(w_found->second, v, c_graph_).second)
@@ -709,6 +713,7 @@ void PauliGraph::verify() const {
         auto r_found = previous_reads.find(b);
         if (r_found != previous_reads.end()) {
           for (const PGVert& u : r_found->second) {
+            if (u == v) continue;
             if (!boost::edge(u, v, c_graph_).second)
               throw PGError(
                   "No edge in PGClassicalGraph for WAR dependency on bit " +
@@ -738,12 +743,19 @@ void PauliGraph::verify() const {
                 "PGOp interacts with unregistered qubit: " + op->get_name());
         }
         for (const PGPauli& c_pauli : pauli_index_.get<TagID>()) {
-          if ((consumed.find(c_pauli.vert) != consumed.end()) &&
-              (pauli_ac_(it->index, c_pauli.index) == (it->vert != v) &&
-               tensor.commutes_with(
-                   c_graph_[c_pauli.vert]->port(c_pauli.port))))
+          if (consumed.find(c_pauli.vert) == consumed.end()) continue;
+          if ((c_pauli.vert != v) &&
+              !tensor.commutes_with(
+                  c_graph_[c_pauli.vert]->port(c_pauli.port))) {
+            if (!pauli_ac_(it->index, c_pauli.index))
+              throw PGError(
+                  "PauliGraph anticommutation matrix is missing a link "
+                  "between " +
+                  c_graph_[c_pauli.vert]->get_name() + " and " +
+                  op->get_name());
+          } else if (pauli_ac_(it->index, c_pauli.index))
             throw PGError(
-                "PauliGraph anticommutation matrix is missing a link "
+                "PauliGraph anticommutation matrix contains an invalid link "
                 "between " +
                 c_graph_[c_pauli.vert]->get_name() + " and " + op->get_name());
         }
@@ -801,6 +813,8 @@ void PauliGraph::verify() const {
       }
     }
   }
+  if (consumed.size() != boost::num_vertices(c_graph_))
+    throw PGError("Cannot obtain a topological ordering of PauliGraph");
 }
 
 }  // namespace pg
