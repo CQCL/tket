@@ -469,8 +469,9 @@ std::tuple<double, double, double> get_bloch_coordinate_from_state(
                 b.real() * b.real() + b.imag() * b.imag();
   if (std::abs(norm - 1) > EPS) {
     throw std::invalid_argument(
-        "Attempt to find the block sphere coordinates for an unnormalised "
-        "state.");
+        "Attempt to find the Bloch sphere coordinate for an unnormalised "
+        "state. Only unit length vectors have coordinates on the Bloch "
+        "sphere.");
   }
   double r_a = std::abs(a);
   double theta_a = std::arg(a) / PI;
