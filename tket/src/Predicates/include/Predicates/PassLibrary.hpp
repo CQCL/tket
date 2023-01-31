@@ -62,8 +62,12 @@ const PassPtr &FlattenRegisters();
 /** Remove all& \ref OpType::Barrier from the circuit. */
 const PassPtr &RemoveBarriers();
 
-/** Commutes measurements to the end of the circuit. */
-const PassPtr &DelayMeasures();
+/** Commutes measurements to the end of the circuit.
+ * @param allow_partial Whether to allow measurements that cannot be commuted to
+ * the end, and delay them as much as possible instead. If false, the pass
+ * includes a @ref CommutableMeasuresPredicate precondition.
+ */
+const PassPtr &DelayMeasures(bool allow_partial = false);
 
 /**
  * Remove all operations that have no @ref OpType::Output or

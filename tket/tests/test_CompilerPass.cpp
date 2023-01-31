@@ -1208,6 +1208,7 @@ SCENARIO("Compose Pauli Graph synthesis Passes") {
 
 SCENARIO("Commute measurements to the end of a circuit") {
   PassPtr delay_pass = DelayMeasures();
+  PassPtr try_delay_pass = DelayMeasures(true);
   PredicatePtr mid_meas_pred = std::make_shared<NoMidMeasurePredicate>();
   GIVEN("Measurements already at end") {
     Circuit c(2, 2);
@@ -1247,6 +1248,13 @@ SCENARIO("Commute measurements to the end of a circuit") {
     CompilationUnit cu(c);
     REQUIRE_THROWS_AS(delay_pass->apply(cu), UnsatisfiedPredicate);
   }
+  GIVEN("Measure blocked by quantum gate, using a partial delay pass") {
+    Circuit c(1, 1);
+    c.add_op<unsigned>(OpType::Measure, {0, 0});
+    c.add_op<unsigned>(OpType::Rx, 0.3, {0});
+    CompilationUnit cu(c);
+    REQUIRE_FALSE(try_delay_pass->apply(cu));
+  }
   GIVEN("Measure blocked by classical operation") {
     Circuit c(2, 1);
     add_2qb_gates(c, OpType::Measure, {{0, 0}, {1, 0}});
@@ -1255,6 +1263,14 @@ SCENARIO("Commute measurements to the end of a circuit") {
     CompilationUnit cu(c);
     REQUIRE_THROWS_AS(delay_pass->apply(cu), UnsatisfiedPredicate);
   }
+  GIVEN("Measure blocked by classical operation, using a partial delay pass") {
+    Circuit c(2, 1);
+    add_2qb_gates(c, OpType::Measure, {{0, 0}, {1, 0}});
+    c.add_op<unsigned>(OpType::Measure, {0, 0});
+    c.add_op<unsigned>(OpType::Measure, {1, 0});
+    CompilationUnit cu(c);
+    REQUIRE_FALSE(try_delay_pass->apply(cu));
+  }
   GIVEN("Measure blocked by conditional operation") {
     Circuit c(2, 2);
     c.add_op<unsigned>(OpType::CZ, {0, 1});
@@ -1262,6 +1278,17 @@ SCENARIO("Commute measurements to the end of a circuit") {
     c.add_conditional_gate<unsigned>(OpType::Z, {}, {1}, {0}, 1);
     CompilationUnit cu(c);
     REQUIRE_THROWS_AS(delay_pass->apply(cu), UnsatisfiedPredicate);
+  }
+  GIVEN(
+      "Measure partially blocked by conditional operation, using a partial "
+      "delay pass") {
+    Circuit c(2, 2);
+    c.add_op<unsigned>(OpType::CZ, {0, 1});
+    c.add_op<unsigned>(OpType::Measure, {0, 0});
+    c.add_op<unsigned>(OpType::Z, {0});
+    c.add_conditional_gate<unsigned>(OpType::Z, {}, {1}, {0}, 1);
+    CompilationUnit cu(c);
+    REQUIRE(try_delay_pass->apply(cu));
   }
   GIVEN("Call on invalid circuit without checking the predicate throws") {
     Circuit c(2, 2);

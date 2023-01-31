@@ -356,24 +356,32 @@ const PassPtr &RemoveBarriers() {
   return pp;
 }
 
-const PassPtr &DelayMeasures() {
-  static const PassPtr pp([]() {
-    Transform t = Transforms::delay_measures();
+const PassPtr &DelayMeasures(const bool allow_partial) {
+  auto f = [](bool allow_partial) {
+    Transform t = Transforms::delay_measures(allow_partial);
 
-    PredicatePtr delaymeaspred =
-        std::make_shared<CommutableMeasuresPredicate>();
-    PredicatePtrMap precon = {CompilationUnit::make_type_pair(delaymeaspred)};
+    PredicatePtrMap precon;
+    PostConditions postcon;
 
-    PredicatePtr midmeaspred = std::make_shared<NoMidMeasurePredicate>();
-    PredicatePtrMap spec_postcons = {
-        CompilationUnit::make_type_pair(midmeaspred)};
-    PostConditions postcon = {spec_postcons, {}, Guarantee::Preserve};
+    if (!allow_partial) {
+      PredicatePtr delaymeaspred =
+          std::make_shared<CommutableMeasuresPredicate>();
+      precon = {CompilationUnit::make_type_pair(delaymeaspred)};
+
+      PredicatePtr midmeaspred = std::make_shared<NoMidMeasurePredicate>();
+      PredicatePtrMap spec_postcons = {
+          CompilationUnit::make_type_pair(midmeaspred)};
+      postcon = {spec_postcons, {}, Guarantee::Preserve};
+    }
 
     nlohmann::json j;
     j["name"] = "DelayMeasures";
+    j["allow_partial"] = allow_partial;
     return std::make_shared<StandardPass>(precon, t, postcon, j);
-  }());
-  return pp;
+  };
+  static const PassPtr delay(f(false));
+  static const PassPtr try_delay(f(true));
+  return allow_partial ? try_delay : delay;
 }
 
 const PassPtr &RemoveDiscarded() {
