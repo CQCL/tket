@@ -12,6 +12,7 @@ Minor new features:
 
 * New ``CommutableMeasuresPredicate`` predicate, added as precondition to the
   ``DelayMeasures`` pass.
+* Update to ``pytket-circuit-renderer`` 0.5.
 
 Fixes:
 
