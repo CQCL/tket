@@ -352,6 +352,71 @@ SCENARIO("Test focussed set identificaiton") {
   }
 }
 
+SCENARIO("Test example sent by Korbinian Staudacher") {
+  ZXDiagram diag(4, 4, 0, 0);
+  ZXVertVec ins = diag.get_boundary(ZXType::Input);
+  ZXVertVec outs = diag.get_boundary(ZXType::Output);
+  ZXVert v0 = diag.add_vertex(ZXType::XY, 1.25);
+  ZXVert v1 = diag.add_clifford_vertex(ZXType::PX, false);
+  ZXVert v2 = diag.add_vertex(ZXType::XY, 1.25);
+  ZXVert v3 = diag.add_vertex(ZXType::XY, 1.75);
+  ZXVert v4 = diag.add_clifford_vertex(ZXType::PY, false);
+  ZXVert v5 = diag.add_clifford_vertex(ZXType::PY, true);
+  ZXVert v6 = diag.add_clifford_vertex(ZXType::PX, true);
+  ZXVert v7 = diag.add_clifford_vertex(ZXType::PY, true);
+  ZXVert v8 = diag.add_vertex(ZXType::XY, 0.75);
+  ZXVert v9 = diag.add_clifford_vertex(ZXType::PX, false);
+  ZXVert v10 = diag.add_vertex(ZXType::XY, 0.75);
+  ZXVert v11 = diag.add_clifford_vertex(ZXType::PY, true);
+  ZXVert v12 = diag.add_clifford_vertex(ZXType::PX, false);
+  ZXVert v13 = diag.add_clifford_vertex(ZXType::PX, false);
+  ZXVert v14 = diag.add_clifford_vertex(ZXType::PX, false);
+  ZXVert v15 = diag.add_clifford_vertex(ZXType::PX, false);
+  ZXVert v16 = diag.add_clifford_vertex(ZXType::PX, false);
+
+  std::map<ZXVert, unsigned> vmap{
+      {v0, 0},   {v1, 1},   {v2, 2},   {v3, 3},   {v4, 4},   {v5, 5},
+      {v6, 6},   {v7, 7},   {v8, 8},   {v9, 9},   {v10, 10}, {v11, 11},
+      {v12, 12}, {v13, 13}, {v14, 14}, {v15, 15}, {v16, 16},
+  };
+
+  diag.add_wire(ins[0], v1);
+  diag.add_wire(ins[1], v2);
+  diag.add_wire(ins[2], v3);
+  diag.add_wire(ins[3], v0);
+  diag.add_wire(v13, outs[0]);
+  diag.add_wire(v16, outs[1]);
+  diag.add_wire(v15, outs[2]);
+  diag.add_wire(v14, outs[3]);
+
+  diag.add_wire(v0, v5, ZXWireType::H);
+  diag.add_wire(v1, v2, ZXWireType::H);
+  diag.add_wire(v1, v6, ZXWireType::H);
+  diag.add_wire(v2, v4, ZXWireType::H);
+  diag.add_wire(v3, v6, ZXWireType::H);
+  diag.add_wire(v3, v9, ZXWireType::H);
+  diag.add_wire(v3, v12, ZXWireType::H);
+  diag.add_wire(v4, v7, ZXWireType::H);
+  diag.add_wire(v5, v6, ZXWireType::H);
+  diag.add_wire(v5, v8, ZXWireType::H);
+  diag.add_wire(v6, v12, ZXWireType::H);
+  diag.add_wire(v7, v9, ZXWireType::H);
+  diag.add_wire(v7, v10, ZXWireType::H);
+  diag.add_wire(v7, v12, ZXWireType::H);
+  diag.add_wire(v7, v16, ZXWireType::H);
+  diag.add_wire(v8, v11, ZXWireType::H);
+  diag.add_wire(v9, v10, ZXWireType::H);
+  diag.add_wire(v10, v15, ZXWireType::H);
+  diag.add_wire(v11, v14, ZXWireType::H);
+  diag.add_wire(v12, v13, ZXWireType::H);
+
+  Flow f = Flow::identify_pauli_flow(diag);
+
+  REQUIRE_NOTHROW(f.verify(diag));
+  REQUIRE_NOTHROW(f.focus(diag));
+  REQUIRE_NOTHROW(f.verify(diag));
+}
+
 }  // namespace test_flow
 
 }  // namespace zx

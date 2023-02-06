@@ -96,7 +96,7 @@ Rewrite Rewrite::remove_interior_cliffords() {
 
 static void add_phase_to_vertices(
     ZXDiagram& diag, const ZXVertSeqSet& verts, const Expr& phase) {
-  for (const ZXVert& v : verts) {
+  for (const ZXVert& v : verts.get<TagSeq>()) {
     const PhasedGen& old_spid = diag.get_vertex_ZXGen<PhasedGen>(v);
     ZXGen_ptr new_spid = std::make_shared<const PhasedGen>(
         ZXType::ZSpider, old_spid.get_param() + phase, *old_spid.get_qtype());
@@ -158,17 +158,18 @@ bool Rewrite::remove_interior_paulis_fun(ZXDiagram& diag) {
     // Found a valid pair
     // Identify the three sets from the neighbourhoods of `u` and `v`
     ZXVertSeqSet excl_v{v_ns.begin(), v_ns.end()};
-    excl_v.erase(u);
+    excl_v.erase(excl_v.find(u));
     ZXVertSeqSet excl_u, joint;
     auto& lookup_v = excl_v.get<TagKey>();
     for (const ZXVert& nu : u_ns) {
-      if (lookup_v.find(nu) != lookup_v.end())
+      if (lookup_v.find(nu) != lookup_v.end()) {
         joint.insert(nu);
-      else
+        excl_v.erase(excl_v.find(nu));
+      } else {
         excl_u.insert(nu);
+      }
     }
-    excl_u.erase(v);
-    excl_v.erase(joint.begin(), joint.end());
+    excl_u.erase(excl_u.find(v));
     const PhasedGen& v_spid = diag.get_vertex_ZXGen<PhasedGen>(v);
     const PhasedGen& u_spid = diag.get_vertex_ZXGen<PhasedGen>(u);
 
@@ -185,7 +186,7 @@ bool Rewrite::remove_interior_paulis_fun(ZXDiagram& diag) {
 
     diag.remove_vertex(u);
     diag.remove_vertex(v);
-    candidates.erase(u);
+    candidates.erase(candidates.find(u));
     success = true;
   }
   return success;
