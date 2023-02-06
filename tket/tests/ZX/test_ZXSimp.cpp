@@ -14,6 +14,8 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include "Converters/Converters.hpp"
+#include "Transformations/Rebase.hpp"
 #include "ZX/Rewrite.hpp"
 
 namespace tket {
@@ -107,8 +109,42 @@ SCENARIO("Testing graph state simplification") {
       diag1));  // If remove_interior_cliffords is exhaustive, this should not
                 // need to be applied
   CHECK(Rewrite::remove_interior_paulis().apply(diag1));
+  // This example will have no gadgets to gadgetise
+  CHECK_FALSE(Rewrite::gadgetise_interior_paulis().apply(diag1));
 
   CHECK_FALSE(Rewrite::parallel_h_removal().apply(diag1));
+}
+
+SCENARIO("Simplification of a paper example") {
+  /**
+   * This circuit is taken from Figure 1 of:
+   *  \ref https://arxiv.org/pdf/1903.10477.pdf
+   **/
+  Circuit circ(5);
+  circ.add_op<unsigned>(OpType::CCX, {0, 1, 4});
+  circ.add_op<unsigned>(OpType::CCX, {2, 4, 3});
+  circ.add_op<unsigned>(OpType::CCX, {0, 1, 4});
+  Transforms::rebase_quil().apply(circ);
+  ZXDiagram diag;
+  boost::bimap<ZXVert, Vertex> bmap;
+  std::tie(diag, bmap) = circuit_to_zx(circ);
+
+  REQUIRE_NOTHROW(diag.check_validity());
+
+  /** Obtain a graph-like form **/
+  Rewrite::red_to_green().apply(diag);
+  Rewrite::spider_fusion().apply(diag);
+  Rewrite::parallel_h_removal().apply(diag);
+  Rewrite::io_extension().apply(diag);
+  Rewrite::separate_boundaries().apply(diag);
+
+  /** Graph simplification via Pauli & Clifford removal **/
+  CHECK(Rewrite::remove_interior_cliffords().apply(diag));
+  CHECK(Rewrite::extend_at_boundary_paulis().apply(diag));
+  CHECK(Rewrite::remove_interior_paulis().apply(diag));
+  CHECK(Rewrite::gadgetise_interior_paulis().apply(diag));
+
+  CHECK_FALSE(Rewrite::parallel_h_removal().apply(diag));
 }
 
 }  // namespace test_ZXSimp

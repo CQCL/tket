@@ -155,6 +155,13 @@ class Rewrite {
   static Rewrite remove_interior_paulis();
 
   /**
+   * Identifies interior Paulis (spiders where the phase is an integer multiple
+   * of pi) with all neighbours having non-Pauli phase and degree > 1. Pivots
+   * about an incident edge to yield a gadget node.
+   */
+  static Rewrite gadgetise_interior_paulis();
+
+  /**
    * Identifies adjacent Pauli spiders where one is adjacent to a boundary.
    * This rule applies I/O extensions to push the match into the interior from
    * which it can be handled by `remove_interior_paulis`.
@@ -176,6 +183,7 @@ class Rewrite {
   static bool io_extension_fun(ZXDiagram& diag);
   static bool remove_interior_cliffords_fun(ZXDiagram& diag);
   static bool remove_interior_paulis_fun(ZXDiagram& diag);
+  static bool gadgetise_interior_paulis_fun(ZXDiagram& diag);
   static bool extend_at_boundary_paulis_fun(ZXDiagram& diag);
 };
 

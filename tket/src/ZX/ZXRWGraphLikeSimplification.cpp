@@ -196,6 +196,92 @@ Rewrite Rewrite::remove_interior_paulis() {
   return Rewrite(remove_interior_paulis_fun);
 }
 
+bool Rewrite::gadgetise_interior_paulis_fun(ZXDiagram& diag) {
+  if (!diag.is_graphlike()) return false;
+  bool success = false;
+  ZXVertVec candidates;  // Need an indirect iterator as BGL_FORALL_VERTICES
+                         // breaks when removing the current vertex
+  BGL_FORALL_VERTICES(v, *diag.graph, ZXGraph) { candidates.push_back(v); }
+  for (const ZXVert& v : candidates) {
+    // Check `v` is an interior Pauli
+    if (!diag.is_pauli_spider(v)) continue;
+    ZXVertVec v_ns = diag.neighbours(v);
+    QuantumType vqtype = *diag.get_qtype(v);
+    if (!can_complement_neighbourhood(diag, vqtype, v_ns)) continue;
+    // Check it isn't already the axis of a gadget
+    bool is_axis = false;
+    for (const ZXVert& n : v_ns) {
+      if (diag.degree(n) == 1) {
+        is_axis = true;
+        break;
+      }
+    }
+    if (is_axis) continue;
+    // Pick a neighbour for pivoting
+    bool pair_found = false;
+    ZXVert u;
+    ZXVertVec u_ns;
+    for (const ZXVert& n : v_ns) {
+      ZXVertVec n_ns = diag.neighbours(n);
+      QuantumType nqtype = *diag.get_qtype(n);
+      if (can_complement_neighbourhood(diag, nqtype, n_ns)) {
+        pair_found = true;
+        u = n;
+        u_ns = n_ns;
+        break;
+      }
+    }
+    if (!pair_found) continue;
+    // Found a valid pair
+    // Identify the three sets from the neighbourhoods of `u` and `v`
+    ZXVertSeqSet excl_v{v_ns.begin(), v_ns.end()};
+    excl_v.erase(excl_v.find(u));
+    ZXVertSeqSet excl_u, joint;
+    auto& lookup_v = excl_v.get<TagKey>();
+    for (const ZXVert& nu : u_ns) {
+      auto found_nu = lookup_v.find(nu);
+      if (found_nu != lookup_v.end()) {
+        joint.insert(nu);
+        lookup_v.erase(found_nu);
+      } else {
+        excl_u.insert(nu);
+      }
+    }
+    excl_u.erase(excl_u.find(v));
+    const PhasedGen& v_spid = diag.get_vertex_ZXGen<PhasedGen>(v);
+    const PhasedGen& u_spid = diag.get_vertex_ZXGen<PhasedGen>(u);
+
+    add_phase_to_vertices(diag, joint, v_spid.get_param() + 1.);
+    add_phase_to_vertices(diag, excl_u, v_spid.get_param());
+    std::optional<unsigned> pi2_mult = equiv_Clifford(v_spid.get_param());
+    Expr new_phase = ((*pi2_mult % 4 == 0) ? 1. : -1.) * u_spid.get_param();
+    diag.set_vertex_ZXGen_ptr(
+        u, std::make_shared<PhasedGen>(ZXType::ZSpider, new_phase, vqtype));
+    diag.set_vertex_ZXGen_ptr(
+        v, std::make_shared<PhasedGen>(ZXType::ZSpider, 0., vqtype));
+
+    // Because `can_complement_neighbourhood` checks all neighbours,
+    // v and u have the same QuantumType
+    bipartite_complementation(diag, joint, excl_u, vqtype);
+    bipartite_complementation(diag, joint, excl_v, vqtype);
+    bipartite_complementation(diag, excl_u, excl_v, vqtype);
+
+    Wire uv = *diag.wire_between(u, v);
+    WireProperties uv_prop = diag.get_wire_info(uv);
+    boost::clear_vertex(u, *diag.graph);
+    diag.add_wire(u, v, uv_prop);
+
+    // No need to erase from candidates since it should not be a Pauli vertex,
+    // otherwise remove_interior_paulis should have removed the pair
+    success = true;
+  }
+  return success;
+}
+
+Rewrite Rewrite::gadgetise_interior_paulis() {
+  return Rewrite(gadgetise_interior_paulis_fun);
+}
+
 bool Rewrite::extend_at_boundary_paulis_fun(ZXDiagram& diag) {
   if (!diag.is_graphlike()) return false;
   bool success = false;
