@@ -38,6 +38,7 @@ try:
         unitary_from_quantum_diagram,
         fix_inputs_to_binary_state,
         tensor_from_quantum_diagram,
+        tensor_from_mixed_diagram,
         unitary_from_classical_diagram,
         density_matrix_from_cptp_diagram,
     )
@@ -819,6 +820,64 @@ def test_XY_YZ_extraction() -> None:
     assert compare_unitaries(diag_u, circ_u)
 
 
+@pytest.mark.skipif(not have_quimb, reason="quimb not installed")
+def test_ZX_rebase() -> None:
+    diag = ZXDiagram(2, 1, 0, 1)
+    ins = diag.get_boundary(ZXType.Input)
+    outs = diag.get_boundary(ZXType.Output)
+    h0 = diag.add_vertex(ZXType.Hbox)
+    h1 = diag.add_vertex(ZXType.Hbox, -3.7, QuantumType.Classical)
+    xy = diag.add_vertex(ZXType.XY, 0.4)
+    xz = diag.add_vertex(ZXType.XZ, 0.7, QuantumType.Classical)
+    yz = diag.add_vertex(ZXType.YZ, 1.2)
+    px = diag.add_vertex(ZXType.PX, False, QuantumType.Classical)
+    py = diag.add_vertex(ZXType.PY, True, QuantumType.Classical)
+    pz = diag.add_vertex(ZXType.PZ, True)
+    zspid = diag.add_vertex(ZXType.ZSpider, 0.9)
+    xspid = diag.add_vertex(ZXType.XSpider, 1.8, QuantumType.Classical)
+    diag.add_wire(ins[0], h0)
+    diag.add_wire(h0, xy)
+    diag.add_wire(xy, yz)
+    diag.add_wire(pz, outs[0])
+    diag.add_wire(yz, zspid)
+    diag.add_wire(ins[1], xspid)
+    diag.add_wire(xspid, xz, ZXWireType.Basic, QuantumType.Classical)
+    diag.add_wire(xz, px, ZXWireType.Basic, QuantumType.Classical)
+    diag.add_wire(xz, py, ZXWireType.Basic, QuantumType.Classical)
+    diag.add_wire(py, h1, ZXWireType.Basic, QuantumType.Classical)
+    diag.add_wire(h1, h1)
+    diag.add_wire(h1, outs[1], ZXWireType.Basic, QuantumType.Classical)
+    diag.check_validity()
+
+    # Rebasing to ZX
+    Rewrite.rebase_to_zx().apply(diag)
+    diag.check_validity()
+    assert diag.count_vertices(ZXType.Hbox) == 0
+    assert diag.count_vertices(ZXType.XY) == 0
+    assert diag.count_vertices(ZXType.XZ) == 0
+    assert diag.count_vertices(ZXType.YZ) == 0
+    assert diag.count_vertices(ZXType.PX) == 0
+    assert diag.count_vertices(ZXType.PY) == 0
+    assert diag.count_vertices(ZXType.PZ) == 0
+    assert diag.count_vertices(ZXType.Triangle) == 0
+    assert diag.count_vertices(ZXType.ZXBox) == 0
+    tensor = tensor_from_mixed_diagram(diag)
+
+    # Rebasing to MBQC
+    Rewrite.rebase_to_mbqc().apply(diag)
+    diag.check_validity()
+    assert diag.count_vertices(ZXType.Hbox) == 0
+    assert diag.count_vertices(ZXType.ZSpider) == 0
+    assert diag.count_vertices(ZXType.XSpider) == 0
+    assert diag.count_vertices(ZXType.Triangle) == 0
+    assert diag.count_vertices(ZXType.ZXBox) == 0
+
+    Rewrite.rebase_to_zx().apply(diag)
+    t2 = tensor_from_mixed_diagram(diag)
+    t2 = t2 * (tensor[-1, -1] / t2[-1, -1])
+    assert np.allclose(tensor, t2)
+
+
 if __name__ == "__main__":
     test_generator_creation()
     test_diagram_creation()
@@ -831,3 +890,4 @@ if __name__ == "__main__":
     test_constructors()
     test_XY_extraction()
     test_XY_YZ_extraction()
+    test_ZX_rebase()

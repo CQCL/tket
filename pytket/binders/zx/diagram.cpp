@@ -371,6 +371,20 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           py::arg("type"), py::arg("qtype") = QuantumType::Quantum)
       .def(
           "add_vertex",
+          [](ZXDiagram& diag, ZXType type, bool param, QuantumType qtype) {
+            return ZXVertWrapper(diag.add_clifford_vertex(type, param, qtype));
+          },
+          "Adds a new vertex to the diagram for a Boolean-parameterised, "
+          "doubleable generator type.\n\n"
+          ":param type: The :py:class:`ZXType` for the new vertex.\n"
+          ":param param: The parameter for the new vertex.\n"
+          ":param qtype: The :py:class:`QuantumType` for the new vertex. "
+          "Defaults to Quantum.\n"
+          ":return: The handle to the new vertex.",
+          py::arg("type"), py::arg("param"),
+          py::arg("qtype") = QuantumType::Quantum)
+      .def(
+          "add_vertex",
           [](ZXDiagram& diag, ZXType type, const Expr& param,
              QuantumType qtype) {
             return ZXVertWrapper(diag.add_vertex(type, param, qtype));
