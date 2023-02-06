@@ -28,9 +28,9 @@ namespace tket {
 
 namespace Transforms {
 
-Transform delay_measures() {
-  return Transform([](Circuit& circ) {
-    return DelayMeasures::run_delay_measures(circ, false).first;
+Transform delay_measures(bool allow_partial) {
+  return Transform([allow_partial](Circuit& circ) {
+    return DelayMeasures::run_delay_measures(circ, allow_partial, false).first;
   });
 }
 
@@ -178,7 +178,12 @@ static Edge follow_until_noncommuting(
   return current_edge;
 }
 
-std::pair<bool, bool> run_delay_measures(Circuit& circ, bool dry_run) {
+std::pair<bool, bool> run_delay_measures(
+    Circuit& circ, bool allow_partial, bool dry_run) {
+  if (allow_partial && dry_run) {
+    // All circuits are valid in a partial run
+    return {false, true};
+  }
   // Collect the vertices to swap to the end of the circuit, along with their
   // target edges
   std::vector<std::pair<Vertex, Edge>> to_delay;
@@ -186,19 +191,22 @@ std::pair<bool, bool> run_delay_measures(Circuit& circ, bool dry_run) {
     Vertex v = com.get_vertex();
     OpType optype = com.get_op_ptr()->get_type();
     if (optype == OpType::Measure) {
-      Edge c_out_edge = circ.get_nth_out_edge(v, 1);
-      if (!circ.detect_final_Op(circ.target(c_out_edge)) ||
-          circ.n_out_edges_of_type(v, EdgeType::Boolean) != 0) {
-        if (dry_run) return {false, false};
-        throw CircuitInvalidity(
-            "Cannot commute Measure through classical operations to the end "
-            "of the circuit");
+      if (!allow_partial) {
+        Edge c_out_edge = circ.get_nth_out_edge(v, 1);
+        if (!circ.detect_final_Op(circ.target(c_out_edge)) ||
+            circ.n_out_edges_of_type(v, EdgeType::Boolean) != 0) {
+          if (dry_run) return {false, false};
+          throw CircuitInvalidity(
+              "Cannot commute Measure through classical operations to the end "
+              "of the circuit");
+        }
       }
       Edge out_edge = circ.get_nth_out_edge(v, 0);
       Edge current_edge = follow_until_noncommuting(circ, out_edge, false);
       Vertex current_vertex = circ.target(current_edge);
       // If we haven't reached an output, we can't continue
-      if (!is_final_q_type(circ.get_OpType_from_Vertex(current_vertex))) {
+      if (!allow_partial &&
+          !is_final_q_type(circ.get_OpType_from_Vertex(current_vertex))) {
         if (dry_run) return {false, false};
         throw CircuitInvalidity(
             "Cannot commute Measure through quantum gates to the end of the "
@@ -209,17 +217,20 @@ std::pair<bool, bool> run_delay_measures(Circuit& circ, bool dry_run) {
       if (current_edge == out_edge) continue;
       to_delay.push_back({v, current_edge});
     } else {
-      unit_set_t measured_units;
+      // Measurements inside boxes are never modified, so there is no need to
+      // check them during a partial run.
+      if (allow_partial) continue;
       // Raise an error if there are any boxes or conditionals with internal
-      // measures.
+      // mid-measures.
+      unit_set_t measured_units;
       if (!check_only_end_measures(com, measured_units)) {
         if (dry_run) return {false, false};
         throw optype == OpType::Conditional
             ? CircuitInvalidity("Cannot delay measures inside a conditional")
             : CircuitInvalidity("Cannot delay measures inside a circuit box");
       }
-      // If the command has internal end measurements we allow them if they are
-      // at the end of the full circuit. We can't delay the measures inside
+      // If the command has internal end measurements we allow them only if they
+      // are at the end of the full circuit. We can't delay the measures inside
       // boxes and conditionals.
       for (const auto& unit : measured_units) {
         if (unit.type() == UnitType::Bit) continue;

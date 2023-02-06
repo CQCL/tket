@@ -12,6 +12,9 @@ Minor new features:
 
 * New ``CommutableMeasuresPredicate`` predicate, added as precondition to the
   ``DelayMeasures`` pass.
+* Added an ``allow_partial`` parameter to the ``DelayMeasures`` pass to delay
+  the measurements as much as possible when they cannot be fully delayed to the
+  end.
 * Update to ``pytket-circuit-renderer`` 0.5.
 
 Fixes:
