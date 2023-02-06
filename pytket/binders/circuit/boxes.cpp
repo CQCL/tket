@@ -434,6 +434,9 @@ void init_boxes(py::module &m) {
           [](MultiplexedU2Box &box) { return *box.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the box")
       .def(
+          "decomp", &MultiplexedU2Box::decomp,
+          ":return: decompose the box into two parts")
+      .def(
           "get_op_map", &MultiplexedU2Box::get_op_map,
           ":return: the underlying op map")
       .def(

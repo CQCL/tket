@@ -209,6 +209,8 @@ class MultiplexedU2Box : public Box {
 
   static nlohmann::json to_json(const Op_ptr &op);
 
+  std::pair<Circuit, Circuit> decomp() const;
+
  protected:
   /**
    * @brief Implement multiplexed U2 gate

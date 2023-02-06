@@ -615,6 +615,65 @@ Op_ptr MultiplexedU2Box::from_json(const nlohmann::json &j) {
       boost::lexical_cast<boost::uuids::uuid>(j.at("id").get<std::string>()));
 }
 
+std::pair<Circuit, Circuit> MultiplexedU2Box::decomp() const {
+  Circuit circ(n_controls_ + 1);
+  Circuit diag(n_controls_ + 1);
+  if (n_controls_ == 0) {
+    auto it = op_map_.begin();
+    circ.add_op<unsigned>(it->second, {0});
+    circ_ = std::make_shared<Circuit>(circ);
+    return {circ, diag};
+  }
+  unsigned n_unitaries = 1 << n_controls_;
+  std::vector<Eigen::Matrix2cd> unitaries(n_unitaries);
+  // convert op_map to a vector of 2^n_controls_ unitaries
+  for (unsigned i = 0; i < n_unitaries; i++) {
+    auto it = op_map_.find(dec_to_bin(i, n_controls_));
+    if (it == op_map_.end()) {
+      unitaries[i] = Eigen::Matrix2cd::Identity();
+    } else {
+      if (it->second->get_type() == OpType::Unitary1qBox) {
+        std::shared_ptr<const Unitary1qBox> u1box =
+            std::dynamic_pointer_cast<const Unitary1qBox>(it->second);
+        unitaries[i] = u1box->get_matrix();
+      } else {
+        if (!it->second->free_symbols().empty()) {
+          throw Unsupported("Can't decompose symbolic MultiplexedU2Box.");
+        }
+        unitaries[i] = GateUnitaryMatrix::get_unitary(*as_gate_ptr(it->second));
+      }
+    }
+  }
+  // initialise the ucrz list
+  std::vector<std::vector<double>> ucrzs(n_controls_);
+  for (unsigned i = 0; i < n_controls_; i++) {
+    ucrzs[i] = std::vector<double>(1 << (i + 1), 0.0);
+  }
+  recursive_demultiplex_u2(
+      unitaries, n_controls_ + 1, circ, ucrzs, Eigen::Matrix2cd::Identity(),
+      Eigen::Matrix2cd::Identity());
+
+  // add the final ucrzs
+  for (unsigned i = 0; i < n_controls_; i++) {
+    // ith ucrzs acts on i+2 qubits
+    // get the args for the UCRz gate
+    std::vector<unsigned> args(i + 2);
+    std::iota(std::begin(args), std::end(args), n_controls_ - i - 1);
+    // swap the first and the last args
+    std::swap(args[0], args[i + 1]);
+    // create MultiplexedRotationBox
+    ctrl_op_map_t rz_map;
+    for (unsigned k = 0; k < ucrzs[i].size(); k++) {
+      if (std::abs(ucrzs[i][k]) > EPS) {
+        rz_map.insert(
+            {dec_to_bin(k, i + 1), get_op_ptr(OpType::Rz, ucrzs[i][k])});
+      }
+    }
+    diag.add_box(MultiplexedRotationBox(rz_map), args);
+  }
+  return {circ, diag};
+}
+
 void MultiplexedU2Box::generate_circuit() const {
   Circuit circ(n_controls_ + 1);
   if (n_controls_ == 0) {
