@@ -36,7 +36,8 @@ add_library(tket-${COMP}
     OpJson.cpp
     Conditional.cpp
     ControlledGates.cpp
-    Multiplexor.cpp)
+    Multiplexor.cpp
+    StatePreparation.cpp)
 
 list(APPEND DEPS_${COMP}
     Gate

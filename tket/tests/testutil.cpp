@@ -107,6 +107,13 @@ Eigen::MatrixXcd random_unitary(unsigned n, int seed) {
   return (i_ * H).exp();
 }
 
+Eigen::VectorXcd random_state(unsigned n, int seed) {
+  Eigen::MatrixXcd U = random_unitary(n, seed);
+  Eigen::VectorXcd state = Eigen::VectorXcd::Zero(n);
+  state[0] = 1;
+  return U * state;
+}
+
 bool ExceptionMessageContainsMatcher::match(std::exception const& ex) const {
   return std::string(ex.what()).find(substring) != std::string::npos;
 }

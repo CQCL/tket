@@ -30,6 +30,7 @@ from pytket.circuit import (  # type: ignore
     MultiplexorBox,
     MultiplexedRotationBox,
     MultiplexedU2Box,
+    StatePreparationBox,
     ExpBox,
     PauliExpBox,
     QControlBox,
@@ -485,6 +486,16 @@ def test_boxes() -> None:
     assert np.allclose(unitary, comparison)
     d.add_multiplexedrotation(multiplexor, [Qubit(0), Qubit(1), Qubit(2)])
     assert d.n_gates == 12
+    # StatePreparationBox
+    state = np.array([np.sqrt(0.125)] * 8)
+    prep_box = StatePreparationBox(state)
+    prep_state = prep_box.get_circuit().get_statevector()
+    assert np.allclose(state, prep_state)
+    prep_box = StatePreparationBox(state, True)
+    prep_u = prep_box.get_circuit().get_unitary()
+    zero_state = np.zeros(8)
+    zero_state[0] = 1
+    assert np.allclose(prep_u.dot(state), zero_state)
 
 
 def test_u1q_stability() -> None:
