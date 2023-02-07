@@ -41,6 +41,8 @@ PathHandler::PathHandler(const MatrixXb &connectivity) {
 
   // Floyd-Warshall with path reconstruction, see:
   // https://en.wikipedia.org/wiki/Floyd–Warshall_algorithm#Pseudocode_[11]
+
+#pragma omp parallel for schedule(runtime)
   for (unsigned i = 0; i != n; ++i) {
     distance_matrix_(i, i) = 0;
     path_matrix_(i, i) = i;

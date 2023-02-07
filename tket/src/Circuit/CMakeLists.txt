@@ -63,3 +63,5 @@ if (WIN32)
     # For boost::uuid:
     target_link_libraries(tket-${COMP} PRIVATE bcrypt)
 endif()
+
+target_link_libraries(tket-${COMP} PRIVATE OpenMP::OpenMP_CXX)
