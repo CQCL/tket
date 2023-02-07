@@ -23,7 +23,7 @@ if(CCACHE_PROGRAM)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
 endif()
 
-find_package(OpenMP REQUIRED)
+find_package(OpenMP)
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
