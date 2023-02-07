@@ -43,6 +43,6 @@ target_include_directories(tket-${COMP}
 
 target_link_libraries(tket-${COMP} PRIVATE ${CONAN_LIBS})
 
-if(OpenMP_CXX_FOUND and NOT WIN32)
+if(OpenMP_CXX_FOUND and (NOT WIN32))
     target_link_libraries(tket-${COMP} PRIVATE OpenMP::OpenMP_CXX)
 endif()
