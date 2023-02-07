@@ -4,6 +4,10 @@ Changelog
 Unreleased
 ----------
 
+Major new features:
+
+* New ``StatePreparationBox`` to prepare arbitrary quantum states.
+
 Minor new features:
 
 * New ``CommutableMeasuresPredicate`` predicate, added as precondition to the
