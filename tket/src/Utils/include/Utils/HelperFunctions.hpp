@@ -81,4 +81,11 @@ bimap_to_map(MapT& bm) {
  */
 uint32_t reverse_bits(uint32_t v, unsigned w);
 
+/**
+ * @brief
+ * convert an unsigned to its binary representation
+ * big-endian
+ */
+std::vector<bool> dec_to_bin(unsigned dec, unsigned width);
+
 }  // namespace tket

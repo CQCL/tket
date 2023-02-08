@@ -20,7 +20,9 @@
 
 #include "Circuit/Circuit.hpp"
 #include "Circuit/Multiplexor.hpp"
+#include "Circuit/StatePreparation.hpp"
 #include "Converters/PhasePoly.hpp"
+#include "Utils/HelperFunctions.hpp"
 #include "Utils/Json.hpp"
 #include "binder_json.hpp"
 #include "binder_utils.hpp"
@@ -393,11 +395,7 @@ void init_boxes(py::module &m) {
             ctrl_op_map_t op_map;
             for (unsigned i = 0; i < angles.size(); i++) {
               if (std::abs(angles[i]) > EPS) {
-                auto bs = std::bitset<32>(i);
-                std::vector<bool> bits(bitstring_width);
-                for (unsigned i = 0; i < bitstring_width; i++) {
-                  bits[bitstring_width - i - 1] = bs[i];
-                }
+                std::vector<bool> bits = dec_to_bin(i, bitstring_width);
                 op_map.insert({bits, get_op_ptr(axis, angles[i])});
               }
             }
@@ -451,5 +449,27 @@ void init_boxes(py::module &m) {
           "get_impl_diag", &MultiplexedU2Box::get_impl_diag,
           ":return: flag indicating whether to implement the final diagonal "
           "gate.");
+  py::class_<StatePreparationBox, std::shared_ptr<StatePreparationBox>, Op>(
+      m, "StatePreparationBox",
+      "A box for preparing quantum states using multiplexed-Ry and "
+      "multiplexed-Rz gates")
+      .def(
+          py::init<const Eigen::VectorXcd &, bool>(),
+          "Construct from a statevector\n\n"
+          ":param statevector: normalised statevector\n",
+          ":param is_inverse: whether to implement the dagger of the state "
+          "preparation circuit, default to false",
+          py::arg("statevector"), py::arg("is_inverse") = false)
+      .def(
+          "get_circuit",
+          [](StatePreparationBox &box) { return *box.to_circuit(); },
+          ":return: the :py:class:`Circuit` described by the box")
+      .def(
+          "get_statevector", &StatePreparationBox::get_statevector,
+          ":return: the statevector")
+      .def(
+          "is_inverse", &StatePreparationBox::is_inverse,
+          ":return: flag indicating whether to implement the dagger of the "
+          "state preparation circuit");
 }
 }  // namespace tket
