@@ -413,7 +413,15 @@ void init_boxes(py::module &m) {
           [](MultiplexedRotationBox &box) { return *box.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the box")
       .def(
-          "get_op_map", &MultiplexedRotationBox::get_op_map,
+          "get_op_map",
+          [](MultiplexedRotationBox &box) {
+            const ctrl_op_map_t &map = box.get_op_map();
+            std::map<py::tuple, Op_ptr> outmap;
+            for (const auto &pair : map) {
+              outmap.insert({py::tuple(py::cast(pair.first)), pair.second});
+            }
+            return outmap;
+          },
           ":return: the underlying op map");
   py::class_<MultiplexedU2Box, std::shared_ptr<MultiplexedU2Box>, Op>(
       m, "MultiplexedU2Box",
