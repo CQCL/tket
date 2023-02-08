@@ -482,12 +482,15 @@ Flow Flow::identify_pauli_flow(const ZXDiagram& diag) {
 
     n_solved = new_corrections.size();
 
-    for (const std::pair<const ZXVert, ZXVertSeqSet>& nc : new_corrections) {
-      fl.c_.insert(nc);
-      fl.d_.insert({nc.first, depth});
-      solved.insert(nc.first);
-      if (inputs.find(nc.first) == inputs.end())
-        correctors.insert({nc.first, (unsigned)correctors.size()});
+    for (const ZXVert& v : to_solve) {
+      auto nc = new_corrections.find(v);
+      if (nc != new_corrections.end()) {
+        fl.c_.insert(*nc);
+        fl.d_.insert({nc->first, depth});
+        solved.insert(nc->first);
+        if (inputs.find(nc->first) == inputs.end())
+          correctors.insert({nc->first, (unsigned)correctors.size()});
+      }
     }
 
     ++depth;

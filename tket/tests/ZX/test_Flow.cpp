@@ -275,6 +275,32 @@ SCENARIO("Testing Pauli flow identification and focussing") {
 
   Flow f = Flow::identify_pauli_flow(diag);
 
+  // Check exact sets for deterministic output
+  CHECK(f.d(ga) == 3);
+  CHECK(f.d(gb) == 1);
+  CHECK(f.d(gc) == 3);
+  CHECK(f.d(gd) == 2);
+  CHECK(f.d(o0) == 0);
+  CHECK(f.d(pi) == 1);
+  CHECK(f.d(pa) == 1);
+  CHECK(f.d(pb) == 1);
+  CHECK(f.d(pc) == 1);
+  CHECK(f.d(pd) == 1);
+  CHECK(f.d(o1) == 0);
+  CHECK(f.d(o2) == 0);
+  CHECK(f.c(ga).get<TagSeq>() == ZXVertSeqSet{gb, pi}.get<TagSeq>());
+  CHECK(f.c(gb).get<TagSeq>() == ZXVertSeqSet{o0}.get<TagSeq>());
+  CHECK(f.c(gc).get<TagSeq>() == ZXVertSeqSet{pi, gc}.get<TagSeq>());
+  CHECK(f.c(gd).get<TagSeq>() == ZXVertSeqSet{pi, gd}.get<TagSeq>());
+  CHECK(f.c(o0).get<TagSeq>() == ZXVertSeqSet{}.get<TagSeq>());
+  CHECK(f.c(pi).get<TagSeq>() == ZXVertSeqSet{pb, o2}.get<TagSeq>());
+  CHECK(f.c(pa).get<TagSeq>() == ZXVertSeqSet{pd, pa}.get<TagSeq>());
+  CHECK(f.c(pb).get<TagSeq>() == ZXVertSeqSet{pd, o1, o2}.get<TagSeq>());
+  CHECK(f.c(pc).get<TagSeq>() == ZXVertSeqSet{o1}.get<TagSeq>());
+  CHECK(f.c(pd).get<TagSeq>() == ZXVertSeqSet{o2}.get<TagSeq>());
+  CHECK(f.c(o1).get<TagSeq>() == ZXVertSeqSet{}.get<TagSeq>());
+  CHECK(f.c(o2).get<TagSeq>() == ZXVertSeqSet{}.get<TagSeq>());
+
   REQUIRE_NOTHROW(f.verify(diag));
   REQUIRE_NOTHROW(f.focus(diag));
   REQUIRE_NOTHROW(f.verify(diag));
@@ -411,6 +437,42 @@ SCENARIO("Test example sent by Korbinian Staudacher") {
   diag.add_wire(v12, v13, ZXWireType::H);
 
   Flow f = Flow::identify_pauli_flow(diag);
+
+  // Check exact sets for deterministic output
+  CHECK(f.d(v0) == 2);
+  CHECK(f.d(v1) == 2);
+  CHECK(f.d(v2) == 2);
+  CHECK(f.d(v3) == 1);
+  CHECK(f.d(v4) == 2);
+  CHECK(f.d(v5) == 2);
+  CHECK(f.d(v6) == 1);
+  CHECK(f.d(v7) == 1);
+  CHECK(f.d(v8) == 1);
+  CHECK(f.d(v9) == 2);
+  CHECK(f.d(v10) == 1);
+  CHECK(f.d(v11) == 1);
+  CHECK(f.d(v12) == 1);
+  CHECK(f.d(v13) == 0);
+  CHECK(f.d(v14) == 0);
+  CHECK(f.d(v15) == 0);
+  CHECK(f.d(v16) == 0);
+  CHECK(f.c(v0).get<TagSeq>() == ZXVertSeqSet{v5, v8}.get<TagSeq>());
+  CHECK(f.c(v1).get<TagSeq>() == ZXVertSeqSet{v6, v8}.get<TagSeq>());
+  CHECK(f.c(v2).get<TagSeq>() == ZXVertSeqSet{v4, v7, v10}.get<TagSeq>());
+  CHECK(f.c(v3).get<TagSeq>() == ZXVertSeqSet{v9, v15, v16}.get<TagSeq>());
+  CHECK(f.c(v4).get<TagSeq>() == ZXVertSeqSet{v7, v10}.get<TagSeq>());
+  CHECK(f.c(v5).get<TagSeq>() == ZXVertSeqSet{v8}.get<TagSeq>());
+  CHECK(f.c(v6).get<TagSeq>() == ZXVertSeqSet{v9, v12, v15}.get<TagSeq>());
+  CHECK(f.c(v7).get<TagSeq>() == ZXVertSeqSet{v16}.get<TagSeq>());
+  CHECK(f.c(v8).get<TagSeq>() == ZXVertSeqSet{v11, v14}.get<TagSeq>());
+  CHECK(f.c(v9).get<TagSeq>() == ZXVertSeqSet{v10}.get<TagSeq>());
+  CHECK(f.c(v10).get<TagSeq>() == ZXVertSeqSet{v15}.get<TagSeq>());
+  CHECK(f.c(v11).get<TagSeq>() == ZXVertSeqSet{v14}.get<TagSeq>());
+  CHECK(f.c(v12).get<TagSeq>() == ZXVertSeqSet{v13}.get<TagSeq>());
+  CHECK(f.c(v13).get<TagSeq>() == ZXVertSeqSet{}.get<TagSeq>());
+  CHECK(f.c(v14).get<TagSeq>() == ZXVertSeqSet{}.get<TagSeq>());
+  CHECK(f.c(v15).get<TagSeq>() == ZXVertSeqSet{}.get<TagSeq>());
+  CHECK(f.c(v16).get<TagSeq>() == ZXVertSeqSet{}.get<TagSeq>());
 
   REQUIRE_NOTHROW(f.verify(diag));
   REQUIRE_NOTHROW(f.focus(diag));
