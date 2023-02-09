@@ -41,6 +41,8 @@ PathHandler::PathHandler(const MatrixXb &connectivity) {
 
   // Floyd-Warshall with path reconstruction, see:
   // https://en.wikipedia.org/wiki/Floyd–Warshall_algorithm#Pseudocode_[11]
+
+#pragma omp parallel for schedule(runtime)
   for (unsigned i = 0; i != n; ++i) {
     distance_matrix_(i, i) = 0;
     path_matrix_(i, i) = i;
@@ -70,15 +72,16 @@ PathHandler PathHandler::construct_acyclic_handler() const {
   unsigned n = distance_matrix_.rows();
   MatrixXb acyclic_connectivity(n, n);
   std::vector<unsigned> num_neighbours(n, 0);
-
+#pragma omp parallel for schedule(runtime)
   for (unsigned i = 0; i != n; ++i) {
     for (unsigned j = 0; j != n; ++j) {
       if (connectivity_matrix_(i, j)) ++num_neighbours[i];
     }
   }
-
+  unsigned j;
+#pragma omp parallel for private(j) collapse(2) schedule(runtime)
   for (unsigned i = 0; i != n; ++i) {
-    for (unsigned j = 0; j != n; ++j) {
+    for (j = 0; j != n; ++j) {
       acyclic_connectivity(i, j) = 0;
     }
   }

@@ -34,8 +34,10 @@ SteinerTree::SteinerTree(
 
 unsigned SteinerTree::calculate_cost() const {
   unsigned cost = 0;
-  for (SteinerNodeType nt : node_types) {
-    switch (nt) {
+
+#pragma omp parallel for reduction(+ : cost) schedule(runtime)
+  for (unsigned i = 0; i < node_types.size(); ++i) {
+    switch (node_types[i]) {
       case SteinerNodeType::ZeroInTree: {
         cost += 2;
         break;
@@ -321,20 +323,34 @@ int SteinerTree::cost_of_operation(unsigned i, unsigned j) const {
 OperationList SteinerTree::operations_available(
     const PathHandler& pathhandler) const {
   OperationList operations;
-  for (unsigned i = 0; i != node_types.size(); ++i) {
-    for (unsigned j = 0; j != node_types.size(); ++j) {
-      if (i == j) continue;
-      if (!pathhandler.get_connectivity_matrix()(i, j)) continue;
 
-      if (node_types[i] == SteinerNodeType::OneInTree ||
-          node_types[i] == SteinerNodeType::Leaf) {
-        if (node_types[j] == SteinerNodeType::ZeroInTree ||
-            node_types[j] == SteinerNodeType::Leaf) {
-          operations.push_back({i, j});
+#pragma omp parallel
+  {
+    OperationList private_operations;
+
+#pragma omp for
+    for (unsigned i = 0; i != node_types.size(); ++i) {
+      for (unsigned j = 0; j != node_types.size(); ++j) {
+        if (i == j) continue;
+        if (!pathhandler.get_connectivity_matrix()(i, j)) continue;
+
+        if (node_types[i] == SteinerNodeType::OneInTree ||
+            node_types[i] == SteinerNodeType::Leaf) {
+          if (node_types[j] == SteinerNodeType::ZeroInTree ||
+              node_types[j] == SteinerNodeType::Leaf) {
+            private_operations.push_back({i, j});
+          }
         }
       }
     }
+#pragma omp critical
+    {
+      operations.insert(
+          operations.end(), private_operations.begin(),
+          private_operations.end());
+    }
   }
+
   return operations;
 }
 
@@ -444,8 +460,10 @@ static std::pair<unsigned, std::vector<unsigned>> steiner_reduce(
 
   if (upper) {
     MatrixXb directed_connectivity = paths.get_connectivity_matrix();
+    unsigned j;
+#pragma omp parallel for private(j) collapse(2) schedule(runtime)
     for (unsigned i = 0; i < directed_connectivity.rows(); ++i) {
-      for (unsigned j = 0; j < directed_connectivity.cols(); ++j) {
+      for (j = 0; j < directed_connectivity.cols(); ++j) {
         if (i < root) directed_connectivity(i, j) = 0;
         if (j < root) directed_connectivity(i, j) = 0;
       }
@@ -455,8 +473,10 @@ static std::pair<unsigned, std::vector<unsigned>> steiner_reduce(
   } else {
     MatrixXb directed_connectivity = paths.get_connectivity_matrix();
     if (cnottype == CNotSynthType::HamPath) {
+      unsigned j;
+#pragma omp parallel for private(j) collapse(2) schedule(runtime)
       for (unsigned i = 0; i < directed_connectivity.rows(); ++i) {
-        for (unsigned j = 0; j < directed_connectivity.cols(); ++j) {
+        for (j = 0; j < directed_connectivity.cols(); ++j) {
           if (j > i) directed_connectivity(i, j) = 0;
           if ((j + 1 != i) && (j != i + 1)) directed_connectivity(i, j) = 0;
         }
@@ -591,8 +611,8 @@ void aas_cnot_synth_rec(
     DiagMatrix& CNOT_matrix, const PathHandler& paths,
     std::vector<unsigned>& pivot_cols, Circuit& cnot_circuit,
     std::vector<unsigned> usablenodes = {}) {
-  // order usable nodes from highest to lowest element, the list should already
-  // be close to the opposite of this order anyway.
+  // order usable nodes from highest to lowest element, the list should
+  // already be close to the opposite of this order anyway.
   std::sort(usablenodes.begin(), usablenodes.end());
   std::reverse(usablenodes.begin(), usablenodes.end());
   for (unsigned current_row : usablenodes) {
@@ -622,8 +642,8 @@ void aas_cnot_synth_rec(
   }
 }
 
-// see https://arxiv.org/abs/2004.06052 and https://github.com/Quantomatic/pyzx
-// for more information.
+// see https://arxiv.org/abs/2004.06052 and
+// https://github.com/Quantomatic/pyzx for more information.
 Circuit aas_CNOT_synth(
     DiagMatrix& CNOT_matrix, const PathHandler& paths, CNotSynthType cnottype) {
   unsigned pivot = 0;
@@ -751,7 +771,9 @@ CNotSwapSynth::CNotSwapSynth(
 
     if (!CNOT_matrix._matrix(current_row, current_row)) {
       throw std::logic_error(
-          "The given matrix is not invertible, the input was not created by a "
+          "The given matrix is not invertible, the input was not created "
+          "by "
+          "a "
           "cnot circuit");
     }
 

@@ -97,6 +97,7 @@ CmplxSpMat QubitPauliString::to_sparse_matrix() const {
 
 CmplxSpMat QubitPauliString::to_sparse_matrix(const unsigned n_qubits) const {
   qubit_vector_t qubits(n_qubits);
+#pragma omp parallel for schedule(runtime)
   for (unsigned i = 0; i < n_qubits; ++i) {
     qubits[i] = Qubit(i);
   }
@@ -135,6 +136,7 @@ CmplxSpMat QubitPauliString::to_sparse_matrix(
 CmplxSpMat operator_tensor(
     const OperatorSum &total_operator, unsigned n_qubits) {
   qubit_vector_t qubits(n_qubits);
+#pragma omp parallel for schedule(runtime)
   for (unsigned i = 0; i < n_qubits; ++i) {
     qubits[i] = Qubit(i);
   }
@@ -145,6 +147,7 @@ CmplxSpMat operator_tensor(
     const OperatorSum &total_operator, const qubit_vector_t &qubits) {
   CmplxSpMat sum = total_operator[0].second *
                    total_operator[0].first.to_sparse_matrix(qubits);
+
   for (unsigned j = 1; j < total_operator.size(); j++) {
     sum += total_operator[j].second *
            total_operator[j].first.to_sparse_matrix(qubits);

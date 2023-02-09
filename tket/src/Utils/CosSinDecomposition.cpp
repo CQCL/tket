@@ -77,6 +77,7 @@ csd_t CS_decomp(const Eigen::MatrixXcd &u) {
     tket_log()->info(
         "Eigen surprisingly returned a non-real diagonal R in QR "
         "decomposition; adjusting Q and R to make it real.");
+#pragma omp parallel for schedule(runtime)
     for (unsigned j = 0; j < n; j++) {
       std::complex<double> z = S(j, j);
       double r = std::abs(z);

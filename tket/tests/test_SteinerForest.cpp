@@ -329,13 +329,18 @@ SCENARIO("Build a steiner Forest") {
 
     aas::OperationList oplist = sf.operations_available_at_index(pathhand, 3);
     aas::OperationList oplist2 = {std::pair(1, 0), std::pair(2, 3)};
-    REQUIRE(oplist == oplist2);
+    aas::OperationList oplist3 = {std::pair(2, 3), std::pair(1, 0)};
+    bool check = (oplist == oplist2) || (oplist == oplist3);
+    REQUIRE(check);
 
     aas::CostedOperations cosop =
         recursive_operation_search(pathhand, sf, 2, oplist);
 
     aas::CostedOperations expectedResult = std::pair(2, oplist2);
-    REQUIRE(cosop == expectedResult);
+    aas::CostedOperations expectedResult2 = std::pair(2, oplist3);
+
+    bool check2 = (cosop == expectedResult) || (cosop == expectedResult2);
+    REQUIRE(check2);
   }
   GIVEN("operations_available_at_index") {
     const Architecture archi(
@@ -361,8 +366,9 @@ SCENARIO("Build a steiner Forest") {
 
     aas::OperationList oplist = sf.operations_available_at_index(pathhand, 3);
     aas::OperationList oplist2 = {std::pair(1, 0), std::pair(2, 3)};
-
-    REQUIRE(oplist == oplist2);
+    aas::OperationList oplist3 = {std::pair(2, 3), std::pair(1, 0)};
+    bool check = (oplist == oplist2) || (oplist == oplist3);
+    REQUIRE(check);
   }
 }
 SCENARIO("check error in steiner Forest") {

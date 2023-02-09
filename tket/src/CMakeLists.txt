@@ -23,6 +23,10 @@ if(CCACHE_PROGRAM)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
 endif()
 
+if(NOT WIN32)
+    find_package(OpenMP)
+endif()
+
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 find_file(CONANBUILDINFO_FILE_TKET conanbuildinfo.cmake HINTS ${CMAKE_CURRENT_BINARY_DIR})

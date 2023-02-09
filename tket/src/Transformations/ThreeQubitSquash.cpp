@@ -81,6 +81,7 @@ class QInteraction {
     unsigned n = v_ins.size();
     TKET_ASSERT(n == v_outs.size());
     TKET_ASSERT(n <= n_wires_);
+#pragma omp parallel for schedule(runtime)
     for (unsigned i = 0; i < n; i++) {
       Edge e_new_0 = v_ins[i];
       Edge e_new_1 = v_outs[i];

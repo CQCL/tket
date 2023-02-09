@@ -137,6 +137,8 @@ ZXDiagram ZXDiagram::to_doubled_diagram() const {
       const ZXBox& box = static_cast<const ZXBox&>(*sgen);
       std::vector<QuantumType> sig = box.get_signature();
       unsigned p = 0;
+
+#pragma omp parallel for reduction(+ : p) schedule(runtime)
       for (unsigned i = 0; i < *wp.source_port; ++i) {
         if (sig.at(i) == QuantumType::Quantum)
           p += 2;
@@ -154,6 +156,7 @@ ZXDiagram ZXDiagram::to_doubled_diagram() const {
       const ZXBox& box = static_cast<const ZXBox&>(*tgen);
       std::vector<QuantumType> sig = box.get_signature();
       unsigned p = 0;
+#pragma omp parallel for reduction(+ : p) schedule(runtime)
       for (unsigned i = 0; i < *wp.target_port; ++i) {
         if (sig.at(i) == QuantumType::Quantum)
           p += 2;
