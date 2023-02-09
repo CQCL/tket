@@ -31,9 +31,13 @@ class TketTestsConan(ConanFile):
         "full": [True, False],
         "long": [True, False],
         "verylong": [True, False],
-
     }
-    default_options = {"with_coverage": False, "full": False, "long": False, "verylong": False}
+    default_options = {
+        "with_coverage": False,
+        "full": False,
+        "long": False,
+        "verylong": False,
+    }
     generators = "cmake"
     exports_sources = "../../tket/tests/*"
     requires = ("tket/1.0.64@tket/stable", "catch2/3.3.0")
