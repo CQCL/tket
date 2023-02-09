@@ -328,6 +328,38 @@ Rewrite Rewrite::extend_at_boundary_paulis() {
   return Rewrite(extend_at_boundary_paulis_fun);
 }
 
+bool Rewrite::merge_gadgets_fun(ZXDiagram& diag) {
+  std::map<std::set<ZXVert>, ZXVert> neighbour_lookup;
+  std::list<ZXVert> to_remove;
+  BGL_FORALL_VERTICES(v, *diag.graph, ZXGraph) {
+    if (diag.degree(v) == 1 && diag.get_zxtype(v) == ZXType::ZSpider) {
+      ZXVert axis = diag.neighbours(v).front();
+      if (diag.get_zxtype(axis) != ZXType::ZSpider ||
+          !equiv_expr(diag.get_vertex_ZXGen<PhasedGen>(axis).get_param(), 0.))
+        continue;
+      std::set<ZXVert> neighbours;
+      for (const ZXVert& n : diag.neighbours(axis)) neighbours.insert(n);
+      neighbours.erase(neighbours.find(v));
+      auto inserted = neighbour_lookup.insert({neighbours, v});
+      if (!inserted.second) {
+        ZXVert other_gadget = inserted.first->second;
+        Expr other_param =
+            diag.get_vertex_ZXGen<PhasedGen>(other_gadget).get_param();
+        Expr this_param = diag.get_vertex_ZXGen<PhasedGen>(v).get_param();
+        diag.set_vertex_ZXGen_ptr(
+            other_gadget, std::make_shared<PhasedGen>(
+                              ZXType::ZSpider, other_param + this_param));
+        to_remove.push_back(v);
+        to_remove.push_back(axis);
+      }
+    }
+  }
+  for (const ZXVert& v : to_remove) diag.remove_vertex(v);
+  return !to_remove.empty();
+}
+
+Rewrite Rewrite::merge_gadgets() { return Rewrite(merge_gadgets_fun); }
+
 }  // namespace zx
 
 }  // namespace tket

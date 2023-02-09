@@ -26,11 +26,13 @@ Rewrite Rewrite::to_graphlike_form() {
 }
 
 Rewrite Rewrite::reduce_graphlike_form() {
-  return Rewrite::sequence(
+  Rewrite reduce = Rewrite::sequence(
       {Rewrite::repeat(Rewrite::remove_interior_cliffords()),
        Rewrite::extend_at_boundary_paulis(),
        Rewrite::repeat(Rewrite::remove_interior_paulis()),
        Rewrite::gadgetise_interior_paulis()});
+  return Rewrite::sequence(
+      {reduce, Rewrite::repeat_while(Rewrite::merge_gadgets(), reduce)});
 }
 
 Rewrite Rewrite::to_MBQC_diag() {

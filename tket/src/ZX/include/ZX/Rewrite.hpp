@@ -162,6 +162,12 @@ class Rewrite {
   static Rewrite gadgetise_interior_paulis();
 
   /**
+   * Identifies pairs of phase gadgets over the same sets of qubits and merges
+   * them.
+   */
+  static Rewrite merge_gadgets();
+
+  /**
    * Identifies adjacent Pauli spiders where one is adjacent to a boundary.
    * This rule applies I/O extensions to push the match into the interior from
    * which it can be handled by `remove_interior_paulis`.
@@ -228,6 +234,7 @@ class Rewrite {
   static bool remove_interior_cliffords_fun(ZXDiagram& diag);
   static bool remove_interior_paulis_fun(ZXDiagram& diag);
   static bool gadgetise_interior_paulis_fun(ZXDiagram& diag);
+  static bool merge_gadgets_fun(ZXDiagram& diag);
   static bool extend_at_boundary_paulis_fun(ZXDiagram& diag);
   static bool extend_for_PX_outputs_fun(ZXDiagram& diag);
   static bool internalise_gadgets_fun(ZXDiagram& diag);
