@@ -750,7 +750,9 @@ SCENARIO("Check graph construction is correct") {
     REQUIRE(handi.get_path_matrix() == correct_path_matrix_2);
   }
 }
-SCENARIO("Check Hamiltonian path construction is correct - verylong", "[.verylong]") {
+SCENARIO(
+    "Check Hamiltonian path construction is correct - verylong",
+    "[.verylong]") {
   GIVEN("acyclic path generation X - omp") {
     const Architecture archi(
         {{Node(0), Node(1)},      {Node(0), Node(2)},
