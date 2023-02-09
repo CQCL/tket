@@ -52,22 +52,54 @@ bool Rewrite::internalise_gadgets_fun(ZXDiagram& diag) {
   BGL_FORALL_VERTICES(v, *diag.graph, ZXGraph) {
     if (diag.degree(v) == 1 && is_MBQC_type(diag.get_zxtype(v))) {
       ZXVert axis = diag.neighbours(v).front();
-      if (diag.get_zxtype(axis) != ZXType::PX ||
-          out_vs.find(axis) != out_vs.end())
-        continue;
-      bool axis_param = diag.get_vertex_ZXGen<CliffordGen>(axis).get_param();
+      if (out_vs.find(axis) != out_vs.end()) continue;
+      std::optional<unsigned> axis_clifford = std::nullopt;
+      Expr axis_XY_angle;
+      switch (diag.get_zxtype(axis)) {
+        case ZXType::XY: {
+          axis_XY_angle = diag.get_vertex_ZXGen<PhasedGen>(axis).get_param();
+          axis_clifford = equiv_Clifford(axis_XY_angle);
+          break;
+        }
+        case ZXType::PX: {
+          bool axis_param =
+              diag.get_vertex_ZXGen<CliffordGen>(axis).get_param();
+          axis_clifford = axis_param ? 2 : 0;
+          axis_XY_angle = axis_param ? 1. : 0.;
+          break;
+        }
+        case ZXType::PY: {
+          bool axis_param =
+              diag.get_vertex_ZXGen<CliffordGen>(axis).get_param();
+          axis_clifford = axis_param ? 3 : 1;
+          axis_XY_angle = axis_param ? 1.5 : 0.5;
+          break;
+        }
+        default:
+          continue;
+      }
       switch (diag.get_zxtype(v)) {
         case ZXType::XY: {
           Expr current_param = diag.get_vertex_ZXGen<PhasedGen>(v).get_param();
-          Expr new_param = axis_param ? current_param : -current_param;
-          diag.set_vertex_ZXGen_ptr(
-              axis, std::make_shared<PhasedGen>(ZXType::YZ, new_param));
+          if (!axis_clifford)
+            continue;
+          else if (*axis_clifford % 2 == 0) {
+            Expr new_param =
+                (*axis_clifford == 0) ? -current_param : current_param;
+            diag.set_vertex_ZXGen_ptr(
+                axis, std::make_shared<PhasedGen>(ZXType::YZ, new_param));
+          } else {
+            Expr new_param =
+                (*axis_clifford == 1) ? current_param : -current_param;
+            diag.set_vertex_ZXGen_ptr(
+                axis, std::make_shared<PhasedGen>(ZXType::XZ, new_param));
+          }
           to_remove.push_back(v);
           break;
         }
         case ZXType::YZ: {
           Expr current_param = diag.get_vertex_ZXGen<PhasedGen>(v).get_param();
-          Expr new_param = axis_param ? -current_param + 1. : -current_param;
+          Expr new_param = axis_XY_angle - current_param;
           diag.set_vertex_ZXGen_ptr(
               axis, std::make_shared<PhasedGen>(ZXType::XY, new_param));
           to_remove.push_back(v);
@@ -75,10 +107,19 @@ bool Rewrite::internalise_gadgets_fun(ZXDiagram& diag) {
         }
         case ZXType::XZ: {
           Expr current_param = diag.get_vertex_ZXGen<PhasedGen>(v).get_param();
-          Expr new_param =
-              axis_param ? current_param - 0.5 : 0.5 - current_param;
-          diag.set_vertex_ZXGen_ptr(
-              axis, std::make_shared<PhasedGen>(ZXType::XZ, new_param));
+          if (!axis_clifford)
+            continue;
+          else if (*axis_clifford % 2 == 0) {
+            Expr new_param = (*axis_clifford == 0) ? 0.5 - current_param
+                                                   : current_param - 0.5;
+            diag.set_vertex_ZXGen_ptr(
+                axis, std::make_shared<PhasedGen>(ZXType::XZ, new_param));
+          } else {
+            Expr new_param = (*axis_clifford == 1) ? 0.5 - current_param
+                                                   : current_param - 0.5;
+            diag.set_vertex_ZXGen_ptr(
+                axis, std::make_shared<PhasedGen>(ZXType::YZ, new_param));
+          }
           to_remove.push_back(v);
           break;
         }
@@ -93,18 +134,36 @@ bool Rewrite::internalise_gadgets_fun(ZXDiagram& diag) {
         case ZXType::PY: {
           bool current_param =
               diag.get_vertex_ZXGen<CliffordGen>(v).get_param();
-          diag.set_vertex_ZXGen_ptr(
-              axis, std::make_shared<CliffordGen>(
-                        ZXType::PY, !current_param ^ axis_param));
+          if (!axis_clifford)
+            continue;
+          else if (*axis_clifford % 2 == 0) {
+            diag.set_vertex_ZXGen_ptr(
+                axis, std::make_shared<CliffordGen>(
+                          ZXType::PY, current_param ^ (*axis_clifford == 0)));
+          } else {
+            diag.set_vertex_ZXGen_ptr(
+                axis, std::make_shared<CliffordGen>(
+                          ZXType::PX, !current_param ^ (*axis_clifford == 1)));
+          }
           to_remove.push_back(v);
           break;
         }
         case ZXType::PZ: {
           bool current_param =
               diag.get_vertex_ZXGen<CliffordGen>(v).get_param();
-          diag.set_vertex_ZXGen_ptr(
-              axis, std::make_shared<CliffordGen>(
-                        ZXType::PX, current_param ^ axis_param));
+          if (!axis_clifford) {
+            Expr new_param = current_param ? axis_XY_angle + 1. : axis_XY_angle;
+            diag.set_vertex_ZXGen_ptr(
+                axis, std::make_shared<PhasedGen>(ZXType::XY, new_param));
+          } else if (*axis_clifford % 2 == 0) {
+            diag.set_vertex_ZXGen_ptr(
+                axis, std::make_shared<CliffordGen>(
+                          ZXType::PX, !current_param ^ (*axis_clifford == 0)));
+          } else {
+            diag.set_vertex_ZXGen_ptr(
+                axis, std::make_shared<CliffordGen>(
+                          ZXType::PY, !current_param ^ (*axis_clifford == 1)));
+          }
           to_remove.push_back(v);
           break;
         }
