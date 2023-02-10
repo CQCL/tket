@@ -878,6 +878,62 @@ def test_ZX_rebase() -> None:
     assert np.allclose(tensor, t2)
 
 
+def joint_normalise(a, b):
+    max_i = 0
+    max_val = 0
+    for i in range(a.shape[1]):
+        if abs(a[0, i]) > max_val:
+            max_i = i
+            max_val = abs(a[0, i])
+    return (a * (1 / a[0, max_i]), b * (1 / b[0, max_i]))
+
+
+@pytest.mark.skipif(not have_quimb, reason="quimb not installed")
+def test_internalise_gadgets() -> None:
+    for (axis_basis, axis_angle) in [
+        (ZXType.XY, 0.25),
+        (ZXType.PX, False),
+        (ZXType.PX, True),
+        (ZXType.PY, False),
+        (ZXType.PY, True),
+    ]:
+        for (gadget_basis, gadget_angle) in [
+            (ZXType.XY, 0.25),
+            (ZXType.XZ, 0.25),
+            (ZXType.YZ, 0.25),
+            (ZXType.PX, False),
+            (ZXType.PX, True),
+            (ZXType.PY, False),
+            (ZXType.PY, True),
+            (ZXType.PZ, False),
+            (ZXType.PZ, True),
+        ]:
+            diag = ZXDiagram(1, 1, 0, 0)
+            ins = diag.get_boundary(ZXType.Input)
+            outs = diag.get_boundary(ZXType.Output)
+            in_v = diag.add_vertex(ZXType.PX, False)
+            out_v = diag.add_vertex(ZXType.PX, False)
+            axis = diag.add_vertex(axis_basis, axis_angle)
+            gadget = diag.add_vertex(gadget_basis, gadget_angle)
+            diag.add_wire(ins[0], in_v)
+            diag.add_wire(in_v, axis, ZXWireType.H)
+            diag.add_wire(axis, out_v, ZXWireType.H)
+            diag.add_wire(out_v, outs[0])
+            diag.add_wire(axis, gadget, ZXWireType.H)
+            test_diag = ZXDiagram(diag)
+            Rewrite.rebase_to_zx().apply(test_diag)
+            t = tensor_from_quantum_diagram(test_diag)
+            Rewrite.internalise_gadgets().apply(diag)
+            if (axis_basis == ZXType.XY) and (gadget_basis in [ZXType.XY, ZXType.XZ]):
+                assert diag.n_vertices == 6
+            else:
+                assert diag.n_vertices == 5
+            Rewrite.rebase_to_zx().apply(diag)
+            t2 = tensor_from_quantum_diagram(diag)
+            (t, t2) = joint_normalise(t, t2)
+            assert np.allclose(t, t2)
+
+
 if __name__ == "__main__":
     test_generator_creation()
     test_diagram_creation()
@@ -891,3 +947,4 @@ if __name__ == "__main__":
     test_XY_extraction()
     test_XY_YZ_extraction()
     test_ZX_rebase()
+    test_internalise_gadgets()

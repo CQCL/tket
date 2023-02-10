@@ -134,9 +134,12 @@ bool Rewrite::internalise_gadgets_fun(ZXDiagram& diag) {
         case ZXType::PY: {
           bool current_param =
               diag.get_vertex_ZXGen<CliffordGen>(v).get_param();
-          if (!axis_clifford)
-            continue;
-          else if (*axis_clifford % 2 == 0) {
+          if (!axis_clifford) {
+            Expr new_param =
+                current_param ? axis_XY_angle + 0.5 : axis_XY_angle - 0.5;
+            diag.set_vertex_ZXGen_ptr(
+                axis, std::make_shared<PhasedGen>(ZXType::XY, new_param));
+          } else if (*axis_clifford % 2 == 0) {
             diag.set_vertex_ZXGen_ptr(
                 axis, std::make_shared<CliffordGen>(
                           ZXType::PY, current_param ^ (*axis_clifford == 0)));
