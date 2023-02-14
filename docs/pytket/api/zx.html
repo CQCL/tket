@@ -1,0 +1,1223 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>pytket.zx &#8212; pytket 1.11.1 documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pytket.utils" href="utils.html" />
+    <link rel="prev" title="pytket.tailoring" href="tailoring.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="_static/Quantinuum_logo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">pytket 1.11.1 documentation</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction:
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="getting_started.html">
+   Getting Started
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="changelog.html">
+   Changelog
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="install.html">
+   Installation Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="opensource.html">
+   Open Source Attribution
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  More Documentation:
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference external" href="https://cqcl.github.io/pytket/manual/index.html">
+   Manual
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference external" href="https://cqcl.github.io/pytket-extensions/api/index.html">
+   Extensions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference external" href="https://github.com/CQCL/pytket/tree/main/examples">
+   Example notebooks
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  API Reference:
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="backends.html">
+   pytket.backends
+  </a>
+ </li>
+ <li class="toctree-l1 has-children">
+  <a class="reference internal" href="circuit.html">
+   pytket.circuit
+  </a>
+  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul>
+   <li class="toctree-l2">
+    <a class="reference internal" href="circuit_class.html">
+     pytket.circuit.Circuit
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="optype.html">
+     pytket.circuit.OpType
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="classical.html">
+     pytket.circuit.logic_exp
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="display.html">
+     pytket.circuit.display
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="pauli.html">
+   pytket.pauli
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="passes.html">
+   pytket.passes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="predicates.html">
+   pytket.predicates
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="partition.html">
+   pytket.partition
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="qasm.html">
+   pytket.qasm
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="quipper.html">
+   pytket.quipper
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="architecture.html">
+   pytket.architecture
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="placement.html">
+   pytket.placement
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="mapping.html">
+   pytket.mapping
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="tableau.html">
+   pytket.tableau
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="transform.html">
+   pytket.transform
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="tailoring.html">
+   pytket.tailoring
+  </a>
+ </li>
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
+   pytket.zx
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="utils.html">
+   pytket.utils
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="logging.html">
+   pytket.logging
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="config.html">
+   pytket.config
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/CQCL/tket"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/CQCL/tket/issues/new?title=Issue%20on%20page%20%2Fzx.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="_sources/zx.rst.txt"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.rst</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>pytket.zx</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section id="module-pytket.zx">
+<span id="pytket-zx"></span><h1>pytket.zx<a class="headerlink" href="#module-pytket.zx" title="Permalink to this headline">#</a></h1>
+<dl class="py class">
+<dt class="sig sig-object py" id="pytket.zx.CliffordGen">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pytket.zx.</span></span><span class="sig-name descname"><span class="pre">CliffordGen</span></span><a class="headerlink" href="#pytket.zx.CliffordGen" title="Permalink to this definition">#</a></dt>
+<dd><p>Specialisation of <a class="reference internal" href="#pytket.zx.ZXGen" title="pytket.zx.ZXGen"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXGen</span></code></a> for arbitrary-arity, symmetric Clifford generators with a single boolean parameter.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.CliffordGen.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.CliffordGen" title="pytket.zx.CliffordGen"><span class="pre">pytket.zx.CliffordGen</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">zxtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXType" title="pytket.zx.ZXType"><span class="pre">pytket.zx.ZXType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">qtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.QuantumType" title="pytket.zx.QuantumType"><span class="pre">pytket.zx.QuantumType</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#pytket.zx.CliffordGen.__init__" title="Permalink to this definition">#</a></dt>
+<dd><p>Construct from a ZX type, parameter and quantum type.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pytket.zx.CliffordGen.param">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">param</span></span><a class="headerlink" href="#pytket.zx.CliffordGen.param" title="Permalink to this definition">#</a></dt>
+<dd><p>The parameter of the generator.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pytket.zx.DirectedGen">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pytket.zx.</span></span><span class="sig-name descname"><span class="pre">DirectedGen</span></span><a class="headerlink" href="#pytket.zx.DirectedGen" title="Permalink to this definition">#</a></dt>
+<dd><p>Specialisation of <a class="reference internal" href="#pytket.zx.ZXGen" title="pytket.zx.ZXGen"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXGen</span></code></a> for asymmetric ZX generators which can be doubled to form a Quantum variant. Asymmetric effects handled by ports to distinguish operands.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.DirectedGen.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.DirectedGen" title="pytket.zx.DirectedGen"><span class="pre">pytket.zx.DirectedGen</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">zxtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXType" title="pytket.zx.ZXType"><span class="pre">pytket.zx.ZXType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">qtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.QuantumType" title="pytket.zx.QuantumType"><span class="pre">pytket.zx.QuantumType</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#pytket.zx.DirectedGen.__init__" title="Permalink to this definition">#</a></dt>
+<dd><p>Construct from a ZX type and quantum type.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pytket.zx.DirectedGen.n_ports">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_ports</span></span><a class="headerlink" href="#pytket.zx.DirectedGen.n_ports" title="Permalink to this definition">#</a></dt>
+<dd><p>The number of ports on the generator.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pytket.zx.DirectedGen.signature">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">signature</span></span><a class="headerlink" href="#pytket.zx.DirectedGen.signature" title="Permalink to this definition">#</a></dt>
+<dd><p>A list of <a class="reference internal" href="#pytket.zx.QuantumType" title="pytket.zx.QuantumType"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumType</span></code></a> s indicating the expected <a class="reference internal" href="#pytket.zx.QuantumType" title="pytket.zx.QuantumType"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumType</span></code></a> at each port.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pytket.zx.PhasedGen">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pytket.zx.</span></span><span class="sig-name descname"><span class="pre">PhasedGen</span></span><a class="headerlink" href="#pytket.zx.PhasedGen" title="Permalink to this definition">#</a></dt>
+<dd><p>Specialisation of <a class="reference internal" href="#pytket.zx.ZXGen" title="pytket.zx.ZXGen"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXGen</span></code></a> for arbitrary-arity, symmetric generators with a single continuous parameter.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.PhasedGen.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.PhasedGen" title="pytket.zx.PhasedGen"><span class="pre">pytket.zx.PhasedGen</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">zxtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXType" title="pytket.zx.ZXType"><span class="pre">pytket.zx.ZXType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Expression</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.QuantumType" title="pytket.zx.QuantumType"><span class="pre">pytket.zx.QuantumType</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#pytket.zx.PhasedGen.__init__" title="Permalink to this definition">#</a></dt>
+<dd><p>Construct from a ZX type, parameter and quantum type.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pytket.zx.PhasedGen.param">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">param</span></span><a class="headerlink" href="#pytket.zx.PhasedGen.param" title="Permalink to this definition">#</a></dt>
+<dd><p>The parameter of the generator.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pytket.zx.QuantumType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pytket.zx.</span></span><span class="sig-name descname"><span class="pre">QuantumType</span></span><a class="headerlink" href="#pytket.zx.QuantumType" title="Permalink to this definition">#</a></dt>
+<dd><p>Enum for specifying quantumness of vertices, ports, and wires in <a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXDiagram</span></code></a> s for mixed quantum-classical processes.</p>
+<p>Members:</p>
+<blockquote>
+<div><p>Quantum : Quantum components of diagrams, represented in the framework of completely-positive maps by two parallel copies of a system related by conjugation.</p>
+<p>Classical : Classical components of diagrams, represented in the framework of completely-positive maps by a single self-conjugate system.</p>
+</div></blockquote>
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.QuantumType.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.QuantumType" title="pytket.zx.QuantumType"><span class="pre">pytket.zx.QuantumType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#pytket.zx.QuantumType.__init__" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pytket.zx.QuantumType.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#pytket.zx.QuantumType.name" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pytket.zx.Rewrite">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pytket.zx.</span></span><span class="sig-name descname"><span class="pre">Rewrite</span></span><a class="headerlink" href="#pytket.zx.Rewrite" title="Permalink to this definition">#</a></dt>
+<dd><p>An in-place transformation of a ZXDiagram.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.Rewrite.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.zx.Rewrite.__init__" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.Rewrite.apply">
+<span class="sig-name descname"><span class="pre">apply</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><span class="pre">pytket.zx.Rewrite</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">diag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#pytket.zx.Rewrite.apply" title="Permalink to this definition">#</a></dt>
+<dd><p>Performs the transformation on the diagram in place.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>diag</strong> – The diagram to be transformed.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>True if any changes were made, else False.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.Rewrite.basic_wires">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">basic_wires</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><span class="pre">pytket.zx.Rewrite</span></a></span></span><a class="headerlink" href="#pytket.zx.Rewrite.basic_wires" title="Permalink to this definition">#</a></dt>
+<dd><p>Replaces every Hadamard wire by an explicit Hbox node.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.Rewrite.decompose_boxes">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">decompose_boxes</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><span class="pre">pytket.zx.Rewrite</span></a></span></span><a class="headerlink" href="#pytket.zx.Rewrite.decompose_boxes" title="Permalink to this definition">#</a></dt>
+<dd><p>Replaces every <a class="reference internal" href="#pytket.zx.ZXBox" title="pytket.zx.ZXBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXBox</span></code></a> by its internal diagram recursively until no <a class="reference internal" href="#pytket.zx.ZXBox" title="pytket.zx.ZXBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXBox</span></code></a> es remain.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.Rewrite.extend_at_boundary_paulis">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">extend_at_boundary_paulis</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><span class="pre">pytket.zx.Rewrite</span></a></span></span><a class="headerlink" href="#pytket.zx.Rewrite.extend_at_boundary_paulis" title="Permalink to this definition">#</a></dt>
+<dd><p>Identifies adjacent Pauli spiders where one is adjacent to a boundary. This rule applies I/O extensions to push the match into the interior from which it can be handled by <a class="reference internal" href="#pytket.zx.Rewrite.remove_interior_paulis" title="pytket.zx.Rewrite.remove_interior_paulis"><code class="xref py py-meth docutils literal notranslate"><span class="pre">remove_interior_paulis()</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.Rewrite.io_extension">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">io_extension</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><span class="pre">pytket.zx.Rewrite</span></a></span></span><a class="headerlink" href="#pytket.zx.Rewrite.io_extension" title="Permalink to this definition">#</a></dt>
+<dd><p>Guarantees that the edge on each boundary vertex is Basic. If a boundary has a Hadamard, then we add a ZSpider identity as in I/O extensions in MBQC.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.Rewrite.parallel_h_removal">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">parallel_h_removal</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><span class="pre">pytket.zx.Rewrite</span></a></span></span><a class="headerlink" href="#pytket.zx.Rewrite.parallel_h_removal" title="Permalink to this definition">#</a></dt>
+<dd><p>Remove parallel edges between ZX spiders (a.k.a. the Hopf rule). Matches either pairs of H edges between spiders of the same colour or Basic edges between spiders of different colour. This applies to Quantum edges between a pair of Classical spiders.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.Rewrite.rebase_to_mbqc">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rebase_to_mbqc</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><span class="pre">pytket.zx.Rewrite</span></a></span></span><a class="headerlink" href="#pytket.zx.Rewrite.rebase_to_mbqc" title="Permalink to this definition">#</a></dt>
+<dd><p>Expands every generator into MBQC vertices.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.Rewrite.rebase_to_zx">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">rebase_to_zx</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><span class="pre">pytket.zx.Rewrite</span></a></span></span><a class="headerlink" href="#pytket.zx.Rewrite.rebase_to_zx" title="Permalink to this definition">#</a></dt>
+<dd><p>Expands every generator into ZSpiders, XSpiders, and a combination of Basic and Hadamard edges.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.Rewrite.red_to_green">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">red_to_green</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><span class="pre">pytket.zx.Rewrite</span></a></span></span><a class="headerlink" href="#pytket.zx.Rewrite.red_to_green" title="Permalink to this definition">#</a></dt>
+<dd><p>Converts all red spiders (XSpider) to green (ZSpider) with Hadamards around them. The Hadamards are applied by flipping the wire type of incident edges between Basic and H.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.Rewrite.remove_interior_cliffords">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">remove_interior_cliffords</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><span class="pre">pytket.zx.Rewrite</span></a></span></span><a class="headerlink" href="#pytket.zx.Rewrite.remove_interior_cliffords" title="Permalink to this definition">#</a></dt>
+<dd><p>Removes interior proper Cliffords (spiders where the phase is an odd multiple of pi/2 radians or 0.5 half-turns). Performs local complementation about the vertex and removes it.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.Rewrite.remove_interior_paulis">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">remove_interior_paulis</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><span class="pre">pytket.zx.Rewrite</span></a></span></span><a class="headerlink" href="#pytket.zx.Rewrite.remove_interior_paulis" title="Permalink to this definition">#</a></dt>
+<dd><p>Removes adjacent interior Paulis (spiders where the phase is an integer multiple of pi radians or integer half-turns). Pivots about the edge connecting the vertices and removes them.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.Rewrite.repeat">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">repeat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">rewrite</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><span class="pre">pytket.zx.Rewrite</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><span class="pre">pytket.zx.Rewrite</span></a></span></span><a class="headerlink" href="#pytket.zx.Rewrite.repeat" title="Permalink to this definition">#</a></dt>
+<dd><p>Applies a given <a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rewrite</span></code></a> repeatedly to a diagram until no further changes are made (i.e. it no longer returns True). apply will return True if at least one run returned True.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>rewrite</strong> – The <a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rewrite</span></code></a> to be applied repeatedly.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A new <a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rewrite</span></code></a> representing the iteration.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.Rewrite.self_loop_removal">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">self_loop_removal</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><span class="pre">pytket.zx.Rewrite</span></a></span></span><a class="headerlink" href="#pytket.zx.Rewrite.self_loop_removal" title="Permalink to this definition">#</a></dt>
+<dd><p>Removes both H and Basic self loop edges around ZX spiders. Basic edges can simply be removed. Removing H loops introduces an extra pi phase on the spider.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.Rewrite.separate_boundaries">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">separate_boundaries</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><span class="pre">pytket.zx.Rewrite</span></a></span></span><a class="headerlink" href="#pytket.zx.Rewrite.separate_boundaries" title="Permalink to this definition">#</a></dt>
+<dd><p>Guarantees that each boundary vertex is adjacent to a unique ZSpider. This adds identity chains when two boundaries are either directly connected or are adjacent to the same spider.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.Rewrite.sequence">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sequence</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><span class="pre">pytket.zx.Rewrite</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><span class="pre">pytket.zx.Rewrite</span></a></span></span><a class="headerlink" href="#pytket.zx.Rewrite.sequence" title="Permalink to this definition">#</a></dt>
+<dd><p>Composes a list of <a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rewrite</span></code></a> s together in sequence. The apply method will return True if ANY of the individual Rewrites returned True.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>sequence</strong> – The list of <a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rewrite</span></code></a> s to be composed.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The combined <a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rewrite</span></code></a>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.Rewrite.spider_fusion">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">spider_fusion</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><span class="pre">pytket.zx.Rewrite</span></a></span></span><a class="headerlink" href="#pytket.zx.Rewrite.spider_fusion" title="Permalink to this definition">#</a></dt>
+<dd><p>Merges two adjacent ZX spiders (XSpider, ZSpider) of the same colour connected by a Basic wire into a single spider. Also merges two adjacent spiders of different colour connected by a H edge.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pytket.zx.ZXBox">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pytket.zx.</span></span><span class="sig-name descname"><span class="pre">ZXBox</span></span><a class="headerlink" href="#pytket.zx.ZXBox" title="Permalink to this definition">#</a></dt>
+<dd><p>Specialisation of <a class="reference internal" href="#pytket.zx.ZXGen" title="pytket.zx.ZXGen"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXGen</span></code></a> for encapsulations of some other ZX diagrams. In general, arbitrary diagrams may be asymmetric tensors with both Quantum and Classical boundaries, so ports are used to distinguish each boundary.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXBox.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXBox" title="pytket.zx.ZXBox"><span class="pre">pytket.zx.ZXBox</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">zxdiag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#pytket.zx.ZXBox.__init__" title="Permalink to this definition">#</a></dt>
+<dd><p>Construct from a ZX diagram.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pytket.zx.ZXBox.diagram">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">diagram</span></span><a class="headerlink" href="#pytket.zx.ZXBox.diagram" title="Permalink to this definition">#</a></dt>
+<dd><p>The internal diagram represented by the box.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pytket.zx.ZXBox.n_ports">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_ports</span></span><a class="headerlink" href="#pytket.zx.ZXBox.n_ports" title="Permalink to this definition">#</a></dt>
+<dd><p>The number of ports on the generator.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pytket.zx.ZXBox.signature">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">signature</span></span><a class="headerlink" href="#pytket.zx.ZXBox.signature" title="Permalink to this definition">#</a></dt>
+<dd><p>A list of <a class="reference internal" href="#pytket.zx.QuantumType" title="pytket.zx.QuantumType"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumType</span></code></a> s indicating the expected <a class="reference internal" href="#pytket.zx.QuantumType" title="pytket.zx.QuantumType"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumType</span></code></a> at each port.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pytket.zx.</span></span><span class="sig-name descname"><span class="pre">ZXDiagram</span></span><a class="headerlink" href="#pytket.zx.ZXDiagram" title="Permalink to this definition">#</a></dt>
+<dd><p>Undirected graphs for mixed process ZX diagrams. The boundary is an ordered list which may mix inputs, outputs, and “open” vertices (not specified to be inputs or outputs). Directed vertices (e.g. Boxes, Triangles, etc.) have numbered ports to distinguish different incident edges. The content of each vertex is given by a <a class="reference internal" href="#pytket.zx.ZXGen" title="pytket.zx.ZXGen"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXGen</span></code></a> generator, describing the <a class="reference internal" href="#pytket.zx.ZXType" title="pytket.zx.ZXType"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXType</span></code></a> (e.g. XSpider, Input, Triangle), the QuantumType for single/doubled versions of typical generators, and any parameters such as phase. Wires are undirected and have a <a class="reference internal" href="#pytket.zx.ZXWireType" title="pytket.zx.ZXWireType"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXWireType</span></code></a> (e.g. Basic, Hadamard) and <a class="reference internal" href="#pytket.zx.QuantumType" title="pytket.zx.QuantumType"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumType</span></code></a> (a single wire or a doubled pair for a quantum system).</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.zx.ZXDiagram.__init__" title="Permalink to this definition">#</a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic simple">
+<li><p>__init__(self: pytket.zx.ZXDiagram) -&gt; None</p></li>
+</ol>
+<p>Constructs an empty ZX diagram.</p>
+<ol class="arabic simple" start="2">
+<li><p>__init__(self: pytket.zx.ZXDiagram, inputs: int, outputs: int, classical_inputs: int, classical_outputs: int) -&gt; None</p></li>
+</ol>
+<p>Constructs an empty ZX diagram with a given number of unconnected boundary vertices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>in</strong> – Number of quantum inputs.</p></li>
+<li><p><strong>out</strong> – Number of quantum outputs.</p></li>
+<li><p><strong>classical_in</strong> – Number of classical inputs.</p></li>
+<li><p><strong>classical_out</strong> – Number of classical outputs.</p></li>
+</ul>
+</dd>
+</dl>
+<ol class="arabic simple" start="3">
+<li><p>__init__(self: pytket.zx.ZXDiagram, other: pytket.zx.ZXDiagram) -&gt; None</p></li>
+</ol>
+<p>Constructs a copy of an existing ZX diagram.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>other</strong> – ZX diagram to copy.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.add_vertex">
+<span class="sig-name descname"><span class="pre">add_vertex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.zx.ZXDiagram.add_vertex" title="Permalink to this definition">#</a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic simple">
+<li><p>add_vertex(self: pytket.zx.ZXDiagram, gen: pytket.zx.ZXGen) -&gt; pytket.zx.ZXVert</p></li>
+</ol>
+<p>Adds a new vertex to the diagram for an arbitrary <a class="reference internal" href="#pytket.zx.ZXGen" title="pytket.zx.ZXGen"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXGen</span></code></a>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>gen</strong> – The <a class="reference internal" href="#pytket.zx.ZXGen" title="pytket.zx.ZXGen"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXGen</span></code></a> for the new vertex.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The handle to the new vertex.</p>
+</dd>
+</dl>
+<ol class="arabic simple" start="2">
+<li><p>add_vertex(self: pytket.zx.ZXDiagram, type: pytket.zx.ZXType, qtype: pytket.zx.QuantumType = &lt;QuantumType.Quantum: 0&gt;) -&gt; pytket.zx.ZXVert</p></li>
+</ol>
+<p>Adds a new vertex to the diagram for an unparameterised, doubleable generator type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> – The <a class="reference internal" href="#pytket.zx.ZXType" title="pytket.zx.ZXType"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXType</span></code></a> for the new vertex.</p></li>
+<li><p><strong>qtype</strong> – The <a class="reference internal" href="#pytket.zx.QuantumType" title="pytket.zx.QuantumType"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumType</span></code></a> for the new vertex. Defaults to Quantum.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The handle to the new vertex.</p>
+</dd>
+</dl>
+<ol class="arabic simple" start="3">
+<li><p>add_vertex(self: pytket.zx.ZXDiagram, type: pytket.zx.ZXType, param: Expression, qtype: pytket.zx.QuantumType = &lt;QuantumType.Quantum: 0&gt;) -&gt; pytket.zx.ZXVert</p></li>
+</ol>
+<p>Adds a new vertex to the diagram for a parameterised, doubleable generator type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> – The <a class="reference internal" href="#pytket.zx.ZXType" title="pytket.zx.ZXType"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXType</span></code></a> for the new vertex.</p></li>
+<li><p><strong>param</strong> – The parameter for the new vertex.</p></li>
+<li><p><strong>qtype</strong> – The <a class="reference internal" href="#pytket.zx.QuantumType" title="pytket.zx.QuantumType"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumType</span></code></a> for the new vertex. Defaults to Quantum.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The handle to the new vertex.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.add_wire">
+<span class="sig-name descname"><span class="pre">add_wire</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">u</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXVert" title="pytket.zx.ZXVert"><span class="pre">pytket.zx.ZXVert</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXVert" title="pytket.zx.ZXVert"><span class="pre">pytket.zx.ZXVert</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXWireType" title="pytket.zx.ZXWireType"><span class="pre">pytket.zx.ZXWireType</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">ZXWireType.Basic</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.QuantumType" title="pytket.zx.QuantumType"><span class="pre">pytket.zx.QuantumType</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">QuantumType.Quantum</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">v_port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.ZXWire" title="pytket.zx.ZXWire"><span class="pre">pytket.zx.ZXWire</span></a></span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.add_wire" title="Permalink to this definition">#</a></dt>
+<dd><p>Adds a new wire to the diagram between the given vertices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>u</strong> – Handle to the first vertex.</p></li>
+<li><p><strong>v</strong> – Handle to the other vertex.</p></li>
+<li><p><strong>type</strong> – <a class="reference internal" href="#pytket.zx.ZXWireType" title="pytket.zx.ZXWireType"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXWireType</span></code></a> for the wire. Defaults to Basic.</p></li>
+<li><p><strong>qtype</strong> – <a class="reference internal" href="#pytket.zx.QuantumType" title="pytket.zx.QuantumType"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumType</span></code></a> for the wire. Defaults to Quantum.</p></li>
+<li><p><strong>u_port</strong> – Port on vertex u to connect to. Defaults to None.</p></li>
+<li><p><strong>v_port</strong> – Port on vertex v to connect to. Defaults to None.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The handle to the new wire.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.add_zxbox">
+<span class="sig-name descname"><span class="pre">add_zxbox</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">inner</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.ZXVert" title="pytket.zx.ZXVert"><span class="pre">pytket.zx.ZXVert</span></a></span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.add_zxbox" title="Permalink to this definition">#</a></dt>
+<dd><p>Adds a new vertex to the diagram for a box with some inner implementation.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>inner</strong> – The <a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXDiagram</span></code></a> to internalise inside the box. The current state is copied by value.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The handle to the new vertex.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.adj_wires">
+<span class="sig-name descname"><span class="pre">adj_wires</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXVert" title="pytket.zx.ZXVert"><span class="pre">pytket.zx.ZXVert</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pytket.zx.ZXWire" title="pytket.zx.ZXWire"><span class="pre">pytket.zx.ZXWire</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.adj_wires" title="Permalink to this definition">#</a></dt>
+<dd><p>Given a vertex, returns a list of all incident wires. Self-loops will only appear once in the list. The order of the wire list may not be semantically relevant.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.check_validity">
+<span class="sig-name descname"><span class="pre">check_validity</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.check_validity" title="Permalink to this definition">#</a></dt>
+<dd><p>Performs a check for the internal validity of the <a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXDiagram</span></code></a> and raises an exception if it is invalid.
+- Inputs/Outputs must have degree 1 and all exist within the boundary.
+- Undirected vertices (those without ports) have no ports on incident edges.
+- Directed vertices (those with ports) have exactly one incident edge at each port.
+- <a class="reference internal" href="#pytket.zx.QuantumType" title="pytket.zx.QuantumType"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumType</span></code></a> of wires are compatible with the <a class="reference internal" href="#pytket.zx.QuantumType" title="pytket.zx.QuantumType"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumType</span></code></a> s of the ports they attach to.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.count_vertices">
+<span class="sig-name descname"><span class="pre">count_vertices</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXType" title="pytket.zx.ZXType"><span class="pre">pytket.zx.ZXType</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.count_vertices" title="Permalink to this definition">#</a></dt>
+<dd><p>Counts the number of vertices of a given <a class="reference internal" href="#pytket.zx.ZXType" title="pytket.zx.ZXType"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXType</span></code></a> in the diagram.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.count_wires">
+<span class="sig-name descname"><span class="pre">count_wires</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXWireType" title="pytket.zx.ZXWireType"><span class="pre">pytket.zx.ZXWireType</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.count_wires" title="Permalink to this definition">#</a></dt>
+<dd><p>Counts the number of wired of a given <a class="reference internal" href="#pytket.zx.ZXWireType" title="pytket.zx.ZXWireType"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXWireType</span></code></a> in the diagram.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.degree">
+<span class="sig-name descname"><span class="pre">degree</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXVert" title="pytket.zx.ZXVert"><span class="pre">pytket.zx.ZXVert</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.degree" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the degree of the given vertex.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.free_symbols">
+<span class="sig-name descname"><span class="pre">free_symbols</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">Symbol</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.free_symbols" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the set of symbolic parameters in the diagram.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.get_boundary">
+<span class="sig-name descname"><span class="pre">get_boundary</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pytket.zx.ZXType" title="pytket.zx.ZXType"><span class="pre">pytket.zx.ZXType</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pytket.zx.QuantumType" title="pytket.zx.QuantumType"><span class="pre">pytket.zx.QuantumType</span></a><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pytket.zx.ZXVert" title="pytket.zx.ZXVert"><span class="pre">pytket.zx.ZXVert</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.get_boundary" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns handles to boundary vertices in order. Optionally filter by type of boundary vertex.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>type</strong> – <a class="reference internal" href="#pytket.zx.ZXType" title="pytket.zx.ZXType"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXType</span></code></a> to filter by, from {<code class="xref py py-meth docutils literal notranslate"><span class="pre">ZXType.Input()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">ZXType.Output()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">ZXType.Open()</span></code>, None}. Defaults to None.:param qtype: <a class="reference internal" href="#pytket.zx.QuantumType" title="pytket.zx.QuantumType"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumType</span></code></a> to filter by, from {<code class="xref py py-meth docutils literal notranslate"><span class="pre">QuantumType.Quantum()</span></code>, <code class="xref py py-meth docutils literal notranslate"><span class="pre">QuantumType.Classical()</span></code>, None}. Defaults to None.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.get_name">
+<span class="sig-name descname"><span class="pre">get_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXVert" title="pytket.zx.ZXVert"><span class="pre">pytket.zx.ZXVert</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.get_name" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the readable string description of a given vertex</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.get_qtype">
+<span class="sig-name descname"><span class="pre">get_qtype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXVert" title="pytket.zx.ZXVert"><span class="pre">pytket.zx.ZXVert</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pytket.zx.QuantumType" title="pytket.zx.QuantumType"><span class="pre">pytket.zx.QuantumType</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.get_qtype" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the <a class="reference internal" href="#pytket.zx.QuantumType" title="pytket.zx.QuantumType"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumType</span></code></a> of the given vertex if defined, None otherwise.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.get_vertex_ZXGen">
+<span class="sig-name descname"><span class="pre">get_vertex_ZXGen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXVert" title="pytket.zx.ZXVert"><span class="pre">pytket.zx.ZXVert</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.ZXGen" title="pytket.zx.ZXGen"><span class="pre">pytket.zx.ZXGen</span></a></span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.get_vertex_ZXGen" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the content of a given vertex as a <a class="reference internal" href="#pytket.zx.ZXGen" title="pytket.zx.ZXGen"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXGen</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.get_wire_ends">
+<span class="sig-name descname"><span class="pre">get_wire_ends</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXWire" title="pytket.zx.ZXWire"><span class="pre">pytket.zx.ZXWire</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pytket.zx.ZXVert" title="pytket.zx.ZXVert"><span class="pre">pytket.zx.ZXVert</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pytket.zx.ZXVert" title="pytket.zx.ZXVert"><span class="pre">pytket.zx.ZXVert</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.get_wire_ends" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns a tuple ((vertex0, port0), (vertex1, port1)) describing the two ends of the wire.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.get_wire_qtype">
+<span class="sig-name descname"><span class="pre">get_wire_qtype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXWire" title="pytket.zx.ZXWire"><span class="pre">pytket.zx.ZXWire</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.QuantumType" title="pytket.zx.QuantumType"><span class="pre">pytket.zx.QuantumType</span></a></span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.get_wire_qtype" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the <a class="reference internal" href="#pytket.zx.QuantumType" title="pytket.zx.QuantumType"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumType</span></code></a> of the given wire.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.get_wire_type">
+<span class="sig-name descname"><span class="pre">get_wire_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXWire" title="pytket.zx.ZXWire"><span class="pre">pytket.zx.ZXWire</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.ZXWireType" title="pytket.zx.ZXWireType"><span class="pre">pytket.zx.ZXWireType</span></a></span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.get_wire_type" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the <a class="reference internal" href="#pytket.zx.ZXWireType" title="pytket.zx.ZXWireType"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXWireType</span></code></a> of the given wire.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.get_zxtype">
+<span class="sig-name descname"><span class="pre">get_zxtype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXVert" title="pytket.zx.ZXVert"><span class="pre">pytket.zx.ZXVert</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.ZXType" title="pytket.zx.ZXType"><span class="pre">pytket.zx.ZXType</span></a></span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.get_zxtype" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the <a class="reference internal" href="#pytket.zx.ZXType" title="pytket.zx.ZXType"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXType</span></code></a> of the given vertex.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.is_symbolic">
+<span class="sig-name descname"><span class="pre">is_symbolic</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.is_symbolic" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns True if the diagram contains any free symbols, False otherwise.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.multiply_scalar">
+<span class="sig-name descname"><span class="pre">multiply_scalar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">scalar</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Expression</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.multiply_scalar" title="Permalink to this definition">#</a></dt>
+<dd><p>Multiplies the global scalar by a numerical (possibly symbolic) constant.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.neighbours">
+<span class="sig-name descname"><span class="pre">neighbours</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXVert" title="pytket.zx.ZXVert"><span class="pre">pytket.zx.ZXVert</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pytket.zx.ZXVert" title="pytket.zx.ZXVert"><span class="pre">pytket.zx.ZXVert</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.neighbours" title="Permalink to this definition">#</a></dt>
+<dd><p>Given a vertex, returns a list of all vertices neighbouring it. Each neighbour will only appear in the list once regardless of how many shared edges there are. The order of the neighbour list may not be semantically relevant.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.other_end">
+<span class="sig-name descname"><span class="pre">other_end</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXWire" title="pytket.zx.ZXWire"><span class="pre">pytket.zx.ZXWire</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXVert" title="pytket.zx.ZXVert"><span class="pre">pytket.zx.ZXVert</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.ZXVert" title="pytket.zx.ZXVert"><span class="pre">pytket.zx.ZXVert</span></a></span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.other_end" title="Permalink to this definition">#</a></dt>
+<dd><p>Given a wire and a vertex at one end of the wire, gives the vertex at the other end of the wire. This can be used to traverse the undirected edges of the graph.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.remove_vertex">
+<span class="sig-name descname"><span class="pre">remove_vertex</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXVert" title="pytket.zx.ZXVert"><span class="pre">pytket.zx.ZXVert</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.remove_vertex" title="Permalink to this definition">#</a></dt>
+<dd><p>Removes the given vertex and all incident wires from the diagram. If the vertex is in the boundary, it is removed from the boundary.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.remove_wire">
+<span class="sig-name descname"><span class="pre">remove_wire</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXWire" title="pytket.zx.ZXWire"><span class="pre">pytket.zx.ZXWire</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.remove_wire" title="Permalink to this definition">#</a></dt>
+<dd><p>Removes the given wire from the diagram.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.set_vertex_ZXGen">
+<span class="sig-name descname"><span class="pre">set_vertex_ZXGen</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXVert" title="pytket.zx.ZXVert"><span class="pre">pytket.zx.ZXVert</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">gen</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXGen" title="pytket.zx.ZXGen"><span class="pre">pytket.zx.ZXGen</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.set_vertex_ZXGen" title="Permalink to this definition">#</a></dt>
+<dd><p>Updates the content of a given vertex to a particular <a class="reference internal" href="#pytket.zx.ZXGen" title="pytket.zx.ZXGen"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXGen</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.set_wire_qtype">
+<span class="sig-name descname"><span class="pre">set_wire_qtype</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXWire" title="pytket.zx.ZXWire"><span class="pre">pytket.zx.ZXWire</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">qtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.QuantumType" title="pytket.zx.QuantumType"><span class="pre">pytket.zx.QuantumType</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.set_wire_qtype" title="Permalink to this definition">#</a></dt>
+<dd><p>Updates the <a class="reference internal" href="#pytket.zx.QuantumType" title="pytket.zx.QuantumType"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumType</span></code></a> of the given wire.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.set_wire_type">
+<span class="sig-name descname"><span class="pre">set_wire_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">w</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXWire" title="pytket.zx.ZXWire"><span class="pre">pytket.zx.ZXWire</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">type</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXWireType" title="pytket.zx.ZXWireType"><span class="pre">pytket.zx.ZXWireType</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.set_wire_type" title="Permalink to this definition">#</a></dt>
+<dd><p>Updates the <a class="reference internal" href="#pytket.zx.ZXWireType" title="pytket.zx.ZXWireType"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXWireType</span></code></a> of the given wire.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.symbol_substitution">
+<span class="sig-name descname"><span class="pre">symbol_substitution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.zx.ZXDiagram.symbol_substitution" title="Permalink to this definition">#</a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic simple">
+<li><p>symbol_substitution(self: pytket.zx.ZXDiagram, symbol_map: Dict[Symbol, Expression]) -&gt; None</p></li>
+</ol>
+<p>In-place substitution for symbolic expressions; iterated through each parameterised vertex and performs the substitution. This will not affect any symbols captured within boxed operations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>symbol_map</strong> – A map from SymPy symbols to SymPy expressions.</p>
+</dd>
+</dl>
+<ol class="arabic simple" start="2">
+<li><p>symbol_substitution(self: pytket.zx.ZXDiagram, symbol_map: Dict[Symbol, float]) -&gt; None</p></li>
+</ol>
+<p>In-place substitution for symbolic expressions; iterated through each parameterised vertex and performs the substitution. This will not affect any symbols captured within boxed operations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>symbol_map</strong> – A map from SymPy symbols to floating-point values.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.to_circuit">
+<span class="sig-name descname"><span class="pre">to_circuit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="circuit_class.html#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><span class="pre">pytket.circuit.Circuit</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pytket.zx.ZXVert" title="pytket.zx.ZXVert"><span class="pre">pytket.zx.ZXVert</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="circuit.html#pytket.circuit.UnitID" title="pytket.circuit.UnitID"><span class="pre">pytket.circuit.UnitID</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.to_circuit" title="Permalink to this definition">#</a></dt>
+<dd><p>Extracts a unitary diagram in MBQC form as a Circuit following the routine by Backens et al. (“There and back again: A circuit extraction tale”).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns</dt>
+<dd class="field-odd"><p>A pair of the generated <code class="xref py py-class docutils literal notranslate"><span class="pre">Circuit</span></code>, and a map from each boundary vertex in the <a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXDiagram</span></code></a> to its corresponding <code class="xref py py-class docutils literal notranslate"><span class="pre">UnitID</span></code> in the <code class="xref py py-class docutils literal notranslate"><span class="pre">Circuit</span></code>.</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.to_doubled_diagram">
+<span class="sig-name descname"><span class="pre">to_doubled_diagram</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.to_doubled_diagram" title="Permalink to this definition">#</a></dt>
+<dd><ul class="simple">
+<li><p>classical boundaries only have the unconjugated version</p></li>
+</ul>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.to_graphviz_str">
+<span class="sig-name descname"><span class="pre">to_graphviz_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.to_graphviz_str" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns a graphviz source string</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.wire_at_port">
+<span class="sig-name descname"><span class="pre">wire_at_port</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXVert" title="pytket.zx.ZXVert"><span class="pre">pytket.zx.ZXVert</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">port</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.ZXWire" title="pytket.zx.ZXWire"><span class="pre">pytket.zx.ZXWire</span></a></span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.wire_at_port" title="Permalink to this definition">#</a></dt>
+<dd><p>Given a vertex, returns the unique wire at the given port number. Raises an exception if multiple wires are found at the given port.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.wire_between">
+<span class="sig-name descname"><span class="pre">wire_between</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">u</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXVert" title="pytket.zx.ZXVert"><span class="pre">pytket.zx.ZXVert</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXVert" title="pytket.zx.ZXVert"><span class="pre">pytket.zx.ZXVert</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Optional</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pytket.zx.ZXWire" title="pytket.zx.ZXWire"><span class="pre">pytket.zx.ZXWire</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.wire_between" title="Permalink to this definition">#</a></dt>
+<dd><p>Given two vertices, returns either an arbitrary edge between them if one exists or None if they are not adjacent.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.wires_between">
+<span class="sig-name descname"><span class="pre">wires_between</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">u</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXVert" title="pytket.zx.ZXVert"><span class="pre">pytket.zx.ZXVert</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXVert" title="pytket.zx.ZXVert"><span class="pre">pytket.zx.ZXVert</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pytket.zx.ZXWire" title="pytket.zx.ZXWire"><span class="pre">pytket.zx.ZXWire</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.wires_between" title="Permalink to this definition">#</a></dt>
+<dd><p>Given two vertices, returns a list of all wires between them. The order of the wire list may not be semantically relevant.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.n_vertices">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_vertices</span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.n_vertices" title="Permalink to this definition">#</a></dt>
+<dd><p>Counts the number of vertices in the diagram. Includes boundary vertices and disconnected vertices.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.n_wires">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">n_wires</span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.n_wires" title="Permalink to this definition">#</a></dt>
+<dd><p>Counts the number of edges in the diagram.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.scalar">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">scalar</span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.scalar" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the global scalar stored numerically. This may be a symbolic expression.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.vertices">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">vertices</span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.vertices" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns a list of handles to all vertices in the diagram. The order of vertices may not be semantically relevant.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pytket.zx.ZXDiagram.wires">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">wires</span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.wires" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns a list of handles to all wires in the diagram. The order of wires may not be semantically relevant.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pytket.zx.ZXGen">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pytket.zx.</span></span><span class="sig-name descname"><span class="pre">ZXGen</span></span><a class="headerlink" href="#pytket.zx.ZXGen" title="Permalink to this definition">#</a></dt>
+<dd><p>Encapsulates the information about the generator depicted by a given vertex in a <a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXDiagram</span></code></a>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXGen.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.zx.ZXGen.__init__" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXGen.create">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">create</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.zx.ZXGen.create" title="Permalink to this definition">#</a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic simple">
+<li><p>create(type: pytket.zx.ZXType, qtype: pytket.zx.QuantumType = &lt;QuantumType.Quantum: 0&gt;) -&gt; pytket.zx.ZXGen</p></li>
+</ol>
+<p>Create a boundary type generator.</p>
+<ol class="arabic simple" start="2">
+<li><p>create(type: pytket.zx.ZXType, param: Expression, qtype: pytket.zx.QuantumType = &lt;QuantumType.Quantum: 0&gt;) -&gt; pytket.zx.ZXGen</p></li>
+</ol>
+<p>Create a boundary type generator.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pytket.zx.ZXGen.qtype">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">qtype</span></span><a class="headerlink" href="#pytket.zx.ZXGen.qtype" title="Permalink to this definition">#</a></dt>
+<dd><p>The <a class="reference internal" href="#pytket.zx.QuantumType" title="pytket.zx.QuantumType"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumType</span></code></a> of the generator (if applicable).</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pytket.zx.ZXGen.type">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">type</span></span><a class="headerlink" href="#pytket.zx.ZXGen.type" title="Permalink to this definition">#</a></dt>
+<dd><p>The type of generator.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pytket.zx.ZXType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pytket.zx.</span></span><span class="sig-name descname"><span class="pre">ZXType</span></span><a class="headerlink" href="#pytket.zx.ZXType" title="Permalink to this definition">#</a></dt>
+<dd><p>Enum for available types of generators in <a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXDiagram</span></code></a> s.</p>
+<p>Members:</p>
+<blockquote>
+<div><p>Input : An input boundary vertex. Can either be Quantum or Classical. Must have degree 1. No ports.</p>
+<p>Output : An output boundary vertex. Can either be Quantum or Classical. Must have degree 1. No ports.</p>
+<p>Open : A boundary vertex that has not yet been specified as input or output. Can either be Quantum or Classical. Must have degree 1. No ports.</p>
+<p>ZSpider : A Z (green) spider. Parameterised by a single phase in half-turns. Can either be Quantum or Classical - Quantum spiders can only have Quantum wires, Quantum wires on Classical spiders act as two wires. Can have arbitrary degree. No ports.</p>
+<p>XSpider : An X (red) spider. Parameterised by a single phase in half-turns. Can either be Quantum or Classical - Quantum spiders can only have Quantum wires, Quantum wires on Classical spiders act as two wires. Can have arbitrary degree. No ports.</p>
+<p>Hbox : A Hadamard box for ZH diagrams. Parameterised by a single complex value. Can either be Quantum or Classical - Quantum spiders can only have Quantum wires, Quantum wires on Classical spiders act as two wires. Can have arbitrary degree. No ports.</p>
+<p>XY : A (postselected) XY qubit in MBQC. Corresponds to a Z spider with negative phase.</p>
+<p>XZ : A (postselected) XZ qubit in MBQC. Corresponds to a 0.5-phase (n+1)-ary Z spider connected to a phaseful 1-ary X spider.</p>
+<p>YZ : A (postselected) YZ qubit in MBQC. Corresponds to a 0-phase (n+1)-ary Z spider connected to a phaseful 1-ary X spider.</p>
+<p>PX : A (postselected) Pauli X qubit in MBQC. Corresponds to a Z spider with phase either 0 (param=False) or 1 (param=True).</p>
+<p>PY : A (postselected) Pauli Y qubit in MBQC. Corresponds to a Z spider with phase either -0.5 (param=False) or +0.5 (param=True).</p>
+<p>PZ : A (postselected) Pauli Z qubit in MBQC. Corresponds to a 0-phase (n+1)-ary Z spider connected to a 1-ary X spider with phase either 0 (param=False) or 1 (param=True).</p>
+<p>Triangle : A Triangle operator, [[1, 1], [0, 1]]. Can either be Quantum or Classical, only admitting wires of the same type. Port 0 for the base of the triangle (input), port 1 for the tip (output).</p>
+<p>ZXBox : A box encapsulating another <a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXDiagram</span></code></a>. Inherits ports from the boundary of the internal diagram, with port numbers matching the boundary order and <a class="reference internal" href="#pytket.zx.QuantumType" title="pytket.zx.QuantumType"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumType</span></code></a> admitted at each port matching that of the boundary vertex.</p>
+</div></blockquote>
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXType.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXType" title="pytket.zx.ZXType"><span class="pre">pytket.zx.ZXType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#pytket.zx.ZXType.__init__" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pytket.zx.ZXType.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#pytket.zx.ZXType.name" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pytket.zx.ZXVert">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pytket.zx.</span></span><span class="sig-name descname"><span class="pre">ZXVert</span></span><a class="headerlink" href="#pytket.zx.ZXVert" title="Permalink to this definition">#</a></dt>
+<dd><p>A handle to a vertex in a <a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXDiagram</span></code></a>. Each instance is specific to a given <a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXDiagram</span></code></a> instance and can be invalidated by rewrites. Exceptions or errors may occur if calling functions on a <a class="reference internal" href="#pytket.zx.ZXVert" title="pytket.zx.ZXVert"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXVert</span></code></a> that is not present in the given <a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXDiagram</span></code></a>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXVert.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.zx.ZXVert.__init__" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pytket.zx.ZXWire">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pytket.zx.</span></span><span class="sig-name descname"><span class="pre">ZXWire</span></span><a class="headerlink" href="#pytket.zx.ZXWire" title="Permalink to this definition">#</a></dt>
+<dd><p>A handle to a wire in a <a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXDiagram</span></code></a>. Each instance is specific to a given <a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXDiagram</span></code></a> instance and can be invalidated by rewrites. Exceptions or errors may occur if calling functions on a <a class="reference internal" href="#pytket.zx.ZXWire" title="pytket.zx.ZXWire"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXWire</span></code></a> that is not present in the given <a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXDiagram</span></code></a>.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXWire.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.zx.ZXWire.__init__" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pytket.zx.ZXWireType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pytket.zx.</span></span><span class="sig-name descname"><span class="pre">ZXWireType</span></span><a class="headerlink" href="#pytket.zx.ZXWireType" title="Permalink to this definition">#</a></dt>
+<dd><p>Enum for available types of wires in <a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXDiagram</span></code></a> s.</p>
+<p>Members:</p>
+<blockquote>
+<div><p>Basic : A basic identity wire.</p>
+<p>H : A Hadamard edge.</p>
+</div></blockquote>
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.ZXWireType.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXWireType" title="pytket.zx.ZXWireType"><span class="pre">pytket.zx.ZXWireType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">value</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#pytket.zx.ZXWireType.__init__" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pytket.zx.ZXWireType.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#pytket.zx.ZXWireType.name" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pytket.zx.circuit_to_zx">
+<span class="sig-prename descclassname"><span class="pre">pytket.zx.</span></span><span class="sig-name descname"><span class="pre">circuit_to_zx</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="circuit_class.html#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><span class="pre">pytket.circuit.Circuit</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="circuit.html#pytket.circuit.UnitID" title="pytket.circuit.UnitID"><span class="pre">pytket.circuit.UnitID</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Tuple</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pytket.zx.ZXVert" title="pytket.zx.ZXVert"><span class="pre">pytket.zx.ZXVert</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#pytket.zx.ZXVert" title="pytket.zx.ZXVert"><span class="pre">pytket.zx.ZXVert</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pytket.zx.circuit_to_zx" title="Permalink to this definition">#</a></dt>
+<dd><p>Construct a ZX diagram from a circuit. Return the ZX diagram and a map Between the ZX boundary vertices and the resource UIDs of the circuit.</p>
+</dd></dl>
+
+</section>
+
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="tailoring.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">pytket.tailoring</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="utils.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">pytket.utils</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Cambridge Quantum Computing Ltd<br/>
+  
+      &copy; Copyright 2023, Cambridge Quantum Computing Ltd.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

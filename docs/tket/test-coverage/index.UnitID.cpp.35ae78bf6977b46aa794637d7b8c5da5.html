@@ -1,0 +1,1544 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+    <title>GCC Code Coverage Report</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <link rel="stylesheet" href="index.css">
+  </head>
+
+  <body>
+    <header>
+      <h1>GCC Code Coverage Report</h1>
+
+      <hr/>
+
+      <div class="summary">
+<div>
+  <table class="legend">
+    <tr>
+      <th scope="row">Directory:</th>
+      <td>./</td>
+    </tr>
+    <tr>
+      <th scope="row">File:</th>
+      <td>Utils/UnitID.cpp</td>
+    </tr>
+    <tr>
+      <th scope="row">Date:</th>
+      <td>2022-10-15 05:10:18</td>
+    </tr>
+    <tr>
+      <th scrope="row">Warnings:</th>
+      <td class="warning_text">1 unchecked decisions!</td>
+    </tr>
+  </table>
+</div>
+<div>
+  <table class="coverage">
+    <tr>
+      <th></th>
+      <th scope="col">Exec</th>
+      <th scope="col">Total</th>
+      <th scope="col">Coverage</th>
+    </tr>
+    <tr>
+      <th scope="row">Lines:</th>
+      <td>48</td>
+      <td>48</td>
+      <td class="coverage-high">100.0%</td>
+    </tr>
+    <tr>
+      <th scope="row">Functions:</th>
+      <td>15</td>
+      <td>15</td>
+      <td class="coverage-high">100.0%</td>
+    </tr>
+    <tr>
+      <th scope="row">Branches:</th>
+      <td>52</td>
+      <td>96</td>
+      <td class="coverage-low">54.2%</td>
+    </tr>
+    <tr>
+      <th scope="row">Decisions:</th>
+      <td>6</td>
+      <td>8</td>
+      <td class="coverage-medium">75.0%</td>
+    </tr>
+  </table>
+</div>
+      </div>
+
+      <hr/>
+    </header>
+
+    <nav>
+<details>
+  <summary>List of functions</summary>
+  <table class="listOfFunctions">
+    <tr>
+      <th>Function</th>
+      <th>Line</th>
+      <th>Call count</th>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l23">tket::UnitID::repr[abi:cxx11]() const</a>
+      </td>
+      <td>
+        <a href="#l23">23</a>
+      </td>
+      <td>
+        <a href="#l23"> called 1821 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l97">tket::c_debug_default_name[abi:cxx11]()</a>
+      </td>
+      <td>
+        <a href="#l97">97</a>
+      </td>
+      <td>
+        <a href="#l97"> called 20 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l91">tket::c_debug_one_prefix[abi:cxx11]()</a>
+      </td>
+      <td>
+        <a href="#l91">91</a>
+      </td>
+      <td>
+        <a href="#l91"> called 17 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l85">tket::c_debug_zero_prefix[abi:cxx11]()</a>
+      </td>
+      <td>
+        <a href="#l85">85</a>
+      </td>
+      <td>
+        <a href="#l85"> called 25 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l73">tket::c_default_reg[abi:cxx11]()</a>
+      </td>
+      <td>
+        <a href="#l73">73</a>
+      </td>
+      <td>
+        <a href="#l73"> called 227010 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l53">tket::from_json(nlohmann::json_abi_v3_11_2::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::json_abi_v3_11_2::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt; const&amp;, std::map&lt;tket::Qubit, tket::Qubit, std::less&lt;tket::Qubit&gt;, std::allocator&lt;std::pair&lt;tket::Qubit const, tket::Qubit&gt; &gt; &gt;&amp;)</a>
+      </td>
+      <td>
+        <a href="#l53">53</a>
+      </td>
+      <td>
+        <a href="#l53"> called 24 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l40">tket::from_json(nlohmann::json_abi_v3_11_2::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::json_abi_v3_11_2::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt; const&amp;, tket::Bit&amp;)</a>
+      </td>
+      <td>
+        <a href="#l40">40</a>
+      </td>
+      <td>
+        <a href="#l40"> called 38 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l43">tket::from_json(nlohmann::json_abi_v3_11_2::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::json_abi_v3_11_2::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt; const&amp;, tket::Node&amp;)</a>
+      </td>
+      <td>
+        <a href="#l43">43</a>
+      </td>
+      <td>
+        <a href="#l43"> called 866 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l37">tket::from_json(nlohmann::json_abi_v3_11_2::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::json_abi_v3_11_2::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt; const&amp;, tket::Qubit&amp;)</a>
+      </td>
+      <td>
+        <a href="#l37">37</a>
+      </td>
+      <td>
+        <a href="#l37"> called 3356 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l79">tket::node_default_reg[abi:cxx11]()</a>
+      </td>
+      <td>
+        <a href="#l79">79</a>
+      </td>
+      <td>
+        <a href="#l79"> called 315530 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l67">tket::q_default_reg[abi:cxx11]()</a>
+      </td>
+      <td>
+        <a href="#l67">67</a>
+      </td>
+      <td>
+        <a href="#l67"> called 2088000 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l45">tket::to_json(nlohmann::json_abi_v3_11_2::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::json_abi_v3_11_2::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt;&amp;, std::map&lt;tket::Qubit, tket::Qubit, std::less&lt;tket::Qubit&gt;, std::allocator&lt;std::pair&lt;tket::Qubit const, tket::Qubit&gt; &gt; &gt; const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l45">45</a>
+      </td>
+      <td>
+        <a href="#l45"> called 42 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l39">tket::to_json(nlohmann::json_abi_v3_11_2::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::json_abi_v3_11_2::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt;&amp;, tket::Bit const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l39">39</a>
+      </td>
+      <td>
+        <a href="#l39"> called 54 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l42">tket::to_json(nlohmann::json_abi_v3_11_2::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::json_abi_v3_11_2::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt;&amp;, tket::Node const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l42">42</a>
+      </td>
+      <td>
+        <a href="#l42"> called 6660 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l36">tket::to_json(nlohmann::json_abi_v3_11_2::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::json_abi_v3_11_2::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt;&amp;, tket::Qubit const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l36">36</a>
+      </td>
+      <td>
+        <a href="#l36"> called 435 times</a>
+      </td>
+    </tr>
+  </table>
+</details>
+    </nav>
+
+    <main>
+<div class="file-source">
+  <table>
+    <tr>
+      <th align="right">Line</th>
+      <th align="right">Branch</th>
+      <th align="right">Decision</th>
+      <th align="right">Exec</th>
+      <th align="left">Source</th>
+    </tr>
+
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l1" href="#l1">1</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="c1">// Copyright 2019-2022 Cambridge Quantum Computing</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l2" href="#l2">2</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="c1">//</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l3" href="#l3">3</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="c1">// Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l4" href="#l4">4</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="c1">// you may not use this file except in compliance with the License.</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l5" href="#l5">5</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="c1">// You may obtain a copy of the License at</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l6" href="#l6">6</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="c1">//</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l7" href="#l7">7</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="c1">//     http://www.apache.org/licenses/LICENSE-2.0</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l8" href="#l8">8</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="c1">//</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l9" href="#l9">9</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="c1">// Unless required by applicable law or agreed to in writing, software</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l10" href="#l10">10</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="c1">// distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l11" href="#l11">11</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="c1">// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l12" href="#l12">12</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="c1">// See the License for the specific language governing permissions and</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l13" href="#l13">13</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="c1">// limitations under the License.</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l14" href="#l14">14</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l15" href="#l15">15</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;UnitID.hpp&quot;</span><span class="cp"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l16" href="#l16">16</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l17" href="#l17">17</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;sstream&gt;</span><span class="cp"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l18" href="#l18">18</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l19" href="#l19">19</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;Json.hpp&quot;</span><span class="cp"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l20" href="#l20">20</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l21" href="#l21">21</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="k">namespace</span><span class="w"> </span><span class="nn">tket</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l22" href="#l22">22</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l23" href="#l23">23</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">1821</td>
+      <td class="src coveredLine"><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="nf">UnitID::repr</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l24" href="#l24">24</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">1/2</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 1 taken 1821 times.</div>
+          <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">1821</td>
+      <td class="src coveredLine"><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">stringstream</span><span class="w"> </span><span class="n">str</span><span class="p">;</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l25" href="#l25">25</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">1/2</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 2 taken 1821 times.</div>
+          <div class="notTakenBranch">&cross; Branch 3 not taken.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">1821</td>
+      <td class="src coveredLine"><span class="w">  </span><span class="n">str</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">data_</span><span class="o">-&gt;</span><span class="n">name_</span><span class="p">;</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l26" href="#l26">26</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">2/2</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 2 taken 1820 times.</div>
+          <div class="takenBranch">&check; Branch 3 taken 1 times.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linedecision">
+        <details class="linedecisionDetails">
+          <summary class="linedecisionSummary">2/2</summary>
+          <div class="linedecisionContents">
+            <div class="takenDecision">&check; Decision 'true' taken 1820 times.</div>
+            <div class="takenDecision">&check; Decision 'false' taken 1 times.</div>
+          </div>
+        </details>
+      </td>
+      <td class="linecount coveredLine">1821</td>
+      <td class="src coveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">data_</span><span class="o">-&gt;</span><span class="n">index_</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l27" href="#l27">27</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">3/6</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 1 taken 1820 times.</div>
+          <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
+          <div class="takenBranch">&check; Branch 6 taken 1820 times.</div>
+          <div class="notTakenBranch">&cross; Branch 7 not taken.</div>
+          <div class="takenBranch">&check; Branch 9 taken 1820 times.</div>
+          <div class="notTakenBranch">&cross; Branch 10 not taken.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">1820</td>
+      <td class="src coveredLine"><span class="w">    </span><span class="n">str</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;[&quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">data_</span><span class="o">-&gt;</span><span class="n">index_</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l28" href="#l28">28</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">2/2</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 2 taken 97 times.</div>
+          <div class="takenBranch">&check; Branch 3 taken 1820 times.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linedecision">
+        <details class="linedecisionDetails">
+          <summary class="linedecisionSummary">2/2</summary>
+          <div class="linedecisionContents">
+            <div class="takenDecision">&check; Decision 'true' taken 97 times.</div>
+            <div class="takenDecision">&check; Decision 'false' taken 1820 times.</div>
+          </div>
+        </details>
+      </td>
+      <td class="linecount coveredLine">1917</td>
+      <td class="src coveredLine"><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">data_</span><span class="o">-&gt;</span><span class="n">index_</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l29" href="#l29">29</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">3/6</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 1 taken 97 times.</div>
+          <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
+          <div class="takenBranch">&check; Branch 6 taken 97 times.</div>
+          <div class="notTakenBranch">&cross; Branch 7 not taken.</div>
+          <div class="takenBranch">&check; Branch 9 taken 97 times.</div>
+          <div class="notTakenBranch">&cross; Branch 10 not taken.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">97</td>
+      <td class="src coveredLine"><span class="w">      </span><span class="n">str</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;, &quot;</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">to_string</span><span class="p">(</span><span class="n">data_</span><span class="o">-&gt;</span><span class="n">index_</span><span class="p">[</span><span class="n">i</span><span class="p">]);</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l30" href="#l30">30</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="w">    </span><span class="p">}</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l31" href="#l31">31</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">1/2</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 1 taken 1820 times.</div>
+          <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">1820</td>
+      <td class="src coveredLine"><span class="w">    </span><span class="n">str</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="s">&quot;]&quot;</span><span class="p">;</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l32" href="#l32">32</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l33" href="#l33">33</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">1/2</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 1 taken 1821 times.</div>
+          <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">3642</td>
+      <td class="src coveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">str</span><span class="p">.</span><span class="n">str</span><span class="p">();</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l34" href="#l34">34</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">1821</td>
+      <td class="src coveredLine"><span class="p">}</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l35" href="#l35">35</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l36" href="#l36">36</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">435</td>
+      <td class="src coveredLine"><span class="kt">void</span><span class="w"> </span><span class="nf">to_json</span><span class="p">(</span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="o">&amp;</span><span class="w"> </span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Qubit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qb</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">unitid_to_json</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">qb</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l37" href="#l37">37</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">3356</td>
+      <td class="src coveredLine"><span class="kt">void</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="o">&amp;</span><span class="w"> </span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">Qubit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qb</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">json_to_unitid</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">qb</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l38" href="#l38">38</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l39" href="#l39">39</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">54</td>
+      <td class="src coveredLine"><span class="kt">void</span><span class="w"> </span><span class="nf">to_json</span><span class="p">(</span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="o">&amp;</span><span class="w"> </span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Bit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">cb</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">unitid_to_json</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">cb</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l40" href="#l40">40</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">38</td>
+      <td class="src coveredLine"><span class="kt">void</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="o">&amp;</span><span class="w"> </span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">Bit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">cb</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">json_to_unitid</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">cb</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l41" href="#l41">41</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l42" href="#l42">42</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">6660</td>
+      <td class="src coveredLine"><span class="kt">void</span><span class="w"> </span><span class="nf">to_json</span><span class="p">(</span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="o">&amp;</span><span class="w"> </span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Node</span><span class="o">&amp;</span><span class="w"> </span><span class="n">node</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">unitid_to_json</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">node</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l43" href="#l43">43</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">866</td>
+      <td class="src coveredLine"><span class="kt">void</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="o">&amp;</span><span class="w"> </span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">Node</span><span class="o">&amp;</span><span class="w"> </span><span class="n">node</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="n">json_to_unitid</span><span class="p">(</span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">node</span><span class="p">);</span><span class="w"> </span><span class="p">}</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l44" href="#l44">44</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l45" href="#l45">45</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">42</td>
+      <td class="src coveredLine"><span class="kt">void</span><span class="w"> </span><span class="nf">to_json</span><span class="p">(</span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="o">&amp;</span><span class="w"> </span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">qubit_map_t</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qm</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l46" href="#l46">46</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">2/2</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 5 taken 92 times.</div>
+          <div class="takenBranch">&check; Branch 6 taken 42 times.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linedecision">
+        <details class="linedecisionDetails">
+          <summary class="linedecisionSummary">2/2</summary>
+          <div class="linedecisionContents">
+            <div class="takenDecision">&check; Decision 'true' taken 92 times.</div>
+            <div class="takenDecision">&check; Decision 'false' taken 42 times.</div>
+          </div>
+        </details>
+      </td>
+      <td class="linecount coveredLine">134</td>
+      <td class="src coveredLine"><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">pair</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">qm</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l47" href="#l47">47</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">92</td>
+      <td class="src coveredLine"><span class="w">    </span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="w"> </span><span class="n">qm_j</span><span class="p">;</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l48" href="#l48">48</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">2/4</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 1 taken 92 times.</div>
+          <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
+          <div class="takenBranch">&check; Branch 4 taken 92 times.</div>
+          <div class="notTakenBranch">&cross; Branch 5 not taken.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">92</td>
+      <td class="src coveredLine"><span class="w">    </span><span class="n">qm_j</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">pair</span><span class="p">.</span><span class="n">first</span><span class="p">);</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l49" href="#l49">49</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">2/4</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 1 taken 92 times.</div>
+          <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
+          <div class="takenBranch">&check; Branch 4 taken 92 times.</div>
+          <div class="notTakenBranch">&cross; Branch 5 not taken.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">92</td>
+      <td class="src coveredLine"><span class="w">    </span><span class="n">qm_j</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">pair</span><span class="p">.</span><span class="n">second</span><span class="p">);</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l50" href="#l50">50</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">1/2</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 1 taken 92 times.</div>
+          <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">92</td>
+      <td class="src coveredLine"><span class="w">    </span><span class="n">j</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">qm_j</span><span class="p">);</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l51" href="#l51">51</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">92</td>
+      <td class="src coveredLine"><span class="w">  </span><span class="p">}</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l52" href="#l52">52</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">42</td>
+      <td class="src coveredLine"><span class="p">}</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l53" href="#l53">53</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">24</td>
+      <td class="src coveredLine"><span class="kt">void</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="o">&amp;</span><span class="w"> </span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">qubit_map_t</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qm</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l54" href="#l54">54</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">5/8</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 3 taken 73 times.</div>
+          <div class="notTakenBranch">&cross; Branch 4 not taken.</div>
+          <div class="takenBranch">&check; Branch 6 taken 73 times.</div>
+          <div class="notTakenBranch">&cross; Branch 7 not taken.</div>
+          <div class="takenBranch">&check; Branch 9 taken 97 times.</div>
+          <div class="notTakenBranch">&cross; Branch 10 not taken.</div>
+          <div class="takenBranch">&check; Branch 11 taken 73 times.</div>
+          <div class="takenBranch">&check; Branch 12 taken 24 times.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linedecision">
+        <details class="linedecisionDetails">
+          <summary class="linedecisionSummary">0/1</summary>
+          <div class="linedecisionContents">
+            <div class="uncheckedDecision">? Decision couldn't be analyzed.</div>
+          </div>
+        </details>
+      </td>
+      <td class="linecount coveredLine">97</td>
+      <td class="src coveredLine"><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="o">&amp;</span><span class="w"> </span><span class="n">j_pair</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">j</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l55" href="#l55">55</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">1/2</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 1 taken 73 times.</div>
+          <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">73</td>
+      <td class="src coveredLine"><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qb_pair</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">j_pair</span><span class="p">.</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">Qubit</span><span class="p">,</span><span class="w"> </span><span class="n">Qubit</span><span class="o">&gt;&gt;</span><span class="p">();</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l56" href="#l56">56</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">1/2</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 1 taken 73 times.</div>
+          <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">73</td>
+      <td class="src coveredLine"><span class="w">    </span><span class="n">qm</span><span class="p">.</span><span class="n">insert</span><span class="p">(</span><span class="n">qb_pair</span><span class="p">);</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l57" href="#l57">57</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">73</td>
+      <td class="src coveredLine"><span class="w">  </span><span class="p">}</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l58" href="#l58">58</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">24</td>
+      <td class="src coveredLine"><span class="p">}</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l59" href="#l59">59</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l60" href="#l60">60</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm">/* The functions below use the &quot;construct on first use&quot; idiom to return &quot;global&quot;</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l61" href="#l61">61</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm"> * objects. They use pointers to ensure that the objects returned last</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l62" href="#l62">62</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm"> * throughout static initialization and deinitialization. There is no memory</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l63" href="#l63">63</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm"> * leak since the objects are only constructed once and the memory is reclaimed</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l64" href="#l64">64</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm"> * on program termination.</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l65" href="#l65">65</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm"> */</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l66" href="#l66">66</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l67" href="#l67">67</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">2088000</td>
+      <td class="src coveredLine"><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="nf">q_default_reg</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l68" href="#l68">68</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">regname</span><span class="w"> </span><span class="o">=</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l69" href="#l69">69</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">4/8</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 0 taken 1 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 2087999 times.</div>
+          <div class="takenBranch">&check; Branch 3 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 4 not taken.</div>
+          <div class="takenBranch">&check; Branch 6 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 7 not taken.</div>
+          <div class="notTakenBranch">&cross; Branch 10 not taken.</div>
+          <div class="notTakenBranch">&cross; Branch 11 not taken.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">2088000</td>
+      <td class="src coveredLine"><span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;q&quot;</span><span class="p">);</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l70" href="#l70">70</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">2088000</td>
+      <td class="src coveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="o">*</span><span class="n">regname</span><span class="p">;</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l71" href="#l71">71</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="p">}</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l72" href="#l72">72</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l73" href="#l73">73</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">227010</td>
+      <td class="src coveredLine"><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="nf">c_default_reg</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l74" href="#l74">74</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">regname</span><span class="w"> </span><span class="o">=</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l75" href="#l75">75</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">4/8</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 0 taken 1 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 227009 times.</div>
+          <div class="takenBranch">&check; Branch 3 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 4 not taken.</div>
+          <div class="takenBranch">&check; Branch 6 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 7 not taken.</div>
+          <div class="notTakenBranch">&cross; Branch 10 not taken.</div>
+          <div class="notTakenBranch">&cross; Branch 11 not taken.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">227010</td>
+      <td class="src coveredLine"><span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;c&quot;</span><span class="p">);</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l76" href="#l76">76</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">227010</td>
+      <td class="src coveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="o">*</span><span class="n">regname</span><span class="p">;</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l77" href="#l77">77</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="p">}</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l78" href="#l78">78</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l79" href="#l79">79</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">315530</td>
+      <td class="src coveredLine"><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="nf">node_default_reg</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l80" href="#l80">80</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">regname</span><span class="w"> </span><span class="o">=</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l81" href="#l81">81</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">4/8</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 0 taken 1 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 315529 times.</div>
+          <div class="takenBranch">&check; Branch 3 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 4 not taken.</div>
+          <div class="takenBranch">&check; Branch 6 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 7 not taken.</div>
+          <div class="notTakenBranch">&cross; Branch 10 not taken.</div>
+          <div class="notTakenBranch">&cross; Branch 11 not taken.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">315530</td>
+      <td class="src coveredLine"><span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;node&quot;</span><span class="p">);</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l82" href="#l82">82</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">315530</td>
+      <td class="src coveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="o">*</span><span class="n">regname</span><span class="p">;</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l83" href="#l83">83</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="p">}</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l84" href="#l84">84</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l85" href="#l85">85</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">25</td>
+      <td class="src coveredLine"><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="nf">c_debug_zero_prefix</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l86" href="#l86">86</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">regname</span><span class="w"> </span><span class="o">=</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l87" href="#l87">87</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">4/8</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 0 taken 1 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 24 times.</div>
+          <div class="takenBranch">&check; Branch 3 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 4 not taken.</div>
+          <div class="takenBranch">&check; Branch 6 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 7 not taken.</div>
+          <div class="notTakenBranch">&cross; Branch 10 not taken.</div>
+          <div class="notTakenBranch">&cross; Branch 11 not taken.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">25</td>
+      <td class="src coveredLine"><span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;tk_DEBUG_ZERO_REG&quot;</span><span class="p">);</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l88" href="#l88">88</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">25</td>
+      <td class="src coveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="o">*</span><span class="n">regname</span><span class="p">;</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l89" href="#l89">89</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="p">}</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l90" href="#l90">90</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l91" href="#l91">91</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">17</td>
+      <td class="src coveredLine"><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="nf">c_debug_one_prefix</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l92" href="#l92">92</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">regname</span><span class="w"> </span><span class="o">=</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l93" href="#l93">93</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">4/8</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 0 taken 1 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 16 times.</div>
+          <div class="takenBranch">&check; Branch 3 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 4 not taken.</div>
+          <div class="takenBranch">&check; Branch 6 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 7 not taken.</div>
+          <div class="notTakenBranch">&cross; Branch 10 not taken.</div>
+          <div class="notTakenBranch">&cross; Branch 11 not taken.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">17</td>
+      <td class="src coveredLine"><span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;tk_DEBUG_ONE_REG&quot;</span><span class="p">);</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l94" href="#l94">94</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">17</td>
+      <td class="src coveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="o">*</span><span class="n">regname</span><span class="p">;</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l95" href="#l95">95</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="p">}</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l96" href="#l96">96</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l97" href="#l97">97</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">20</td>
+      <td class="src coveredLine"><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&amp;</span><span class="w"> </span><span class="nf">c_debug_default_name</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l98" href="#l98">98</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="w"> </span><span class="n">regname</span><span class="w"> </span><span class="o">=</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l99" href="#l99">99</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">4/8</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 0 taken 1 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 19 times.</div>
+          <div class="takenBranch">&check; Branch 3 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 4 not taken.</div>
+          <div class="takenBranch">&check; Branch 6 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 7 not taken.</div>
+          <div class="notTakenBranch">&cross; Branch 10 not taken.</div>
+          <div class="notTakenBranch">&cross; Branch 11 not taken.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">20</td>
+      <td class="src coveredLine"><span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">make_unique</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">(</span><span class="s">&quot;tket_assert&quot;</span><span class="p">);</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l100" href="#l100">100</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">20</td>
+      <td class="src coveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="o">*</span><span class="n">regname</span><span class="p">;</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l101" href="#l101">101</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="p">}</span><span class="w"></span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l102" href="#l102">102</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l103" href="#l103">103</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="p">}</span><span class="w">  </span><span class="c1">// namespace tket</span></td>
+    </tr>
+
+    <tr class="source-line">
+      <td class="lineno"><a id="l104" href="#l104">104</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+
+  </table>
+</div>
+      <hr/>
+    </main>
+
+    <footer>
+      Generated by: <a href="http://gcovr.com">GCOVR (Version 5.2)</a>
+    </footer>
+  </body>
+</html>

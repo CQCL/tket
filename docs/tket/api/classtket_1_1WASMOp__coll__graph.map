@@ -1,0 +1,10 @@
+<map id="tket::WASMOp" name="tket::WASMOp">
+<area shape="rect" id="node1" title="Op containing a classical wasm function call." alt="" coords="247,275,362,301"/>
+<area shape="rect" id="node2" href="$classtket_1_1ClassicalOp.html" title="A purely classical operation." alt="" coords="239,199,370,225"/>
+<area shape="rect" id="node3" href="$classtket_1_1Op.html" title="Abstract class representing an operation type." alt="" coords="116,109,189,136"/>
+<area shape="rect" id="node4" title=" " alt="" coords="5,5,151,47"/>
+<area shape="rect" id="node5" href="$classtket_1_1OpDesc.html" title="Operation descriptor." alt="" coords="175,13,280,39"/>
+<area shape="rect" id="node6" title=" " alt="" coords="213,109,396,136"/>
+<area shape="rect" id="node7" title=" " alt="" coords="420,109,507,136"/>
+<area shape="rect" id="node8" title=" " alt="" coords="394,5,533,47"/>
+</map>

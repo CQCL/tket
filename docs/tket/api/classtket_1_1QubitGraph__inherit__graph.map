@@ -1,0 +1,6 @@
+<map id="tket::QubitGraph" name="tket::QubitGraph">
+<area shape="rect" id="node1" title="Instance of DirectedGraph to hold dependencies between Qubit UnitID objects as given from some Circui..." alt="" coords="60,259,189,285"/>
+<area shape="rect" id="node2" href="$classtket_1_1graphs_1_1DirectedGraph.html" title=" " alt="" coords="24,169,225,211"/>
+<area shape="rect" id="node3" href="$classtket_1_1graphs_1_1DirectedGraphBase.html" title=" " alt="" coords="24,80,225,121"/>
+<area shape="rect" id="node4" href="$classtket_1_1graphs_1_1AbstractGraph.html" title="Abstract class for representing graphs." alt="" coords="5,5,244,32"/>
+</map>

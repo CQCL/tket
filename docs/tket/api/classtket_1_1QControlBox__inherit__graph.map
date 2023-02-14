@@ -1,0 +1,6 @@
+<map id="tket::QControlBox" name="tket::QControlBox">
+<area shape="rect" id="node1" title="Wraps another quantum op, adding control qubits." alt="" coords="9,244,147,271"/>
+<area shape="rect" id="node2" href="$classtket_1_1Box.html" title="Abstract class for an operation from which a circuit can be extracted." alt="" coords="38,169,118,196"/>
+<area shape="rect" id="node3" href="$classtket_1_1Op.html" title="Abstract class representing an operation type." alt="" coords="41,95,115,121"/>
+<area shape="rect" id="node4" title=" " alt="" coords="5,5,151,47"/>
+</map>

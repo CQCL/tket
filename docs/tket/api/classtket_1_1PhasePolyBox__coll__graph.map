@@ -1,0 +1,9 @@
+<map id="tket::PhasePolyBox" name="tket::PhasePolyBox">
+<area shape="rect" id="node1" title="A PhasePolyBox is capable of representing arbitrary Circuits made up of CNOT and RZ,..." alt="" coords="231,289,378,316"/>
+<area shape="rect" id="node2" href="$classtket_1_1Box.html" title="Abstract class for an operation from which a circuit can be extracted." alt="" coords="265,213,345,240"/>
+<area shape="rect" id="node3" href="$classtket_1_1Op.html" title="Abstract class representing an operation type." alt="" coords="116,117,189,143"/>
+<area shape="rect" id="node4" title=" " alt="" coords="5,5,151,47"/>
+<area shape="rect" id="node5" href="$classtket_1_1OpDesc.html" title="Operation descriptor." alt="" coords="175,13,280,39"/>
+<area shape="rect" id="node6" title=" " alt="" coords="213,117,396,143"/>
+<area shape="rect" id="node7" title=" " alt="" coords="420,109,579,151"/>
+</map>

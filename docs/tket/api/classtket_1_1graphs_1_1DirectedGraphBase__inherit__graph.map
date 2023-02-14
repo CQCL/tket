@@ -1,0 +1,11 @@
+<map id="tket::graphs::DirectedGraphBase&lt; T &gt;" name="tket::graphs::DirectedGraphBase&lt; T &gt;">
+<area shape="rect" id="node1" title=" " alt="" coords="127,80,328,121"/>
+<area shape="rect" id="node3" href="$classtket_1_1graphs_1_1DirectedGraph.html" title=" " alt="" coords="5,169,207,211"/>
+<area shape="rect" id="node5" href="$classtket_1_1graphs_1_1DirectedGraph.html" title="DirectedGraph instances are loop&#45;free directed graphs." alt="" coords="231,177,469,203"/>
+<area shape="rect" id="node2" href="$classtket_1_1graphs_1_1AbstractGraph.html" title="Abstract class for representing graphs." alt="" coords="108,5,347,32"/>
+<area shape="rect" id="node4" href="$classtket_1_1QubitGraph.html" title="Instance of DirectedGraph to hold dependencies between Qubit UnitID objects as given from some Circui..." alt="" coords="41,273,171,300"/>
+<area shape="rect" id="node6" href="$classtket_1_1ArchitectureBase.html" title=" " alt="" coords="259,259,441,315"/>
+<area shape="rect" id="node7" href="$classtket_1_1Architecture.html" title=" " alt="" coords="283,363,417,389"/>
+<area shape="rect" id="node8" href="$classtket_1_1RingArch.html" title=" " alt="" coords="221,437,335,464"/>
+<area shape="rect" id="node9" href="$classtket_1_1SquareGrid.html" title=" " alt="" coords="359,437,485,464"/>
+</map>

@@ -1,0 +1,6 @@
+<map id="tket::StabiliserAssertionBox" name="tket::StabiliserAssertionBox">
+<area shape="rect" id="node1" title=" " alt="" coords="5,244,208,271"/>
+<area shape="rect" id="node2" href="$classtket_1_1Box.html" title="Abstract class for an operation from which a circuit can be extracted." alt="" coords="67,169,147,196"/>
+<area shape="rect" id="node3" href="$classtket_1_1Op.html" title="Abstract class representing an operation type." alt="" coords="70,95,143,121"/>
+<area shape="rect" id="node4" title=" " alt="" coords="34,5,179,47"/>
+</map>

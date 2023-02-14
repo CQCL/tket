@@ -1,0 +1,10 @@
+<map id="tket::GraphPlacement::Frontier" name="tket::GraphPlacement::Frontier">
+<area shape="rect" id="node1" title="Holds information for slice wise iteration of Circuit." alt="" coords="995,149,1157,190"/>
+<area shape="rect" id="node2" title=" " alt="" coords="24,54,167,95"/>
+<area shape="rect" id="node6" href="$classtket_1_1Circuit_1_1SliceIterator.html" title=" " alt="" coords="526,68,710,95"/>
+<area shape="rect" id="node7" href="$structtket_1_1CutFrontier.html" title=" " alt="" coords="301,129,428,156"/>
+<area shape="rect" id="node3" title=" " alt="" coords="16,162,175,203"/>
+<area shape="rect" id="node4" title=" " alt="" coords="5,237,185,264"/>
+<area shape="rect" id="node5" href="$classtket_1_1Circuit.html" title="A circuit." alt="" coords="821,109,919,136"/>
+<area shape="rect" id="node8" href="$classtket_1_1Circuit_1_1CommandIterator.html" title=" " alt="" coords="508,119,728,145"/>
+</map>

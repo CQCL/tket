@@ -1,0 +1,6 @@
+<map id="tket::FullyConnected" name="tket::FullyConnected">
+<area shape="rect" id="node1" title=" " alt="" coords="51,259,206,285"/>
+<area shape="rect" id="node2" href="$classtket_1_1ArchitectureBase.html" title=" " alt="" coords="33,155,224,211"/>
+<area shape="rect" id="node3" href="$classtket_1_1graphs_1_1CompleteGraph.html" title=" " alt="" coords="5,80,252,107"/>
+<area shape="rect" id="node4" href="$classtket_1_1graphs_1_1AbstractGraph.html" title="Abstract class for representing graphs." alt="" coords="9,5,248,32"/>
+</map>

@@ -1,0 +1,5 @@
+<map id="tket::zx::CliffordGen" name="tket::zx::CliffordGen">
+<area shape="rect" id="node1" title="Implementation of BasicGen for Clifford generators." alt="" coords="5,155,156,181"/>
+<area shape="rect" id="node2" href="$classtket_1_1zx_1_1BasicGen.html" title="Virtual subclass of ZXGen for undirected (commutative) generators." alt="" coords="11,80,150,107"/>
+<area shape="rect" id="node3" href="$classtket_1_1zx_1_1ZXGen.html" title="Abstract class for a ZX generator." alt="" coords="19,5,142,32"/>
+</map>

@@ -1,0 +1,9 @@
+<map id="tket::Architecture" name="tket::Architecture">
+<area shape="rect" id="node1" title=" " alt="" coords="67,348,201,375"/>
+<area shape="rect" id="node6" href="$classtket_1_1RingArch.html" title=" " alt="" coords="5,423,119,449"/>
+<area shape="rect" id="node7" href="$classtket_1_1SquareGrid.html" title=" " alt="" coords="143,423,269,449"/>
+<area shape="rect" id="node2" href="$classtket_1_1ArchitectureBase.html" title=" " alt="" coords="43,244,225,300"/>
+<area shape="rect" id="node3" href="$classtket_1_1graphs_1_1DirectedGraph.html" title="DirectedGraph instances are loop&#45;free directed graphs." alt="" coords="15,169,253,196"/>
+<area shape="rect" id="node4" href="$classtket_1_1graphs_1_1DirectedGraphBase.html" title=" " alt="" coords="33,80,235,121"/>
+<area shape="rect" id="node5" href="$classtket_1_1graphs_1_1AbstractGraph.html" title="Abstract class for representing graphs." alt="" coords="15,5,253,32"/>
+</map>

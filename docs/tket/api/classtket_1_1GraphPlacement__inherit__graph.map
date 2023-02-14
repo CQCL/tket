@@ -1,0 +1,6 @@
+<map id="tket::GraphPlacement" name="tket::GraphPlacement">
+<area shape="rect" id="node1" title=" " alt="" coords="99,80,262,107"/>
+<area shape="rect" id="node3" href="$classtket_1_1LinePlacement.html" title=" " alt="" coords="5,155,156,181"/>
+<area shape="rect" id="node4" href="$classtket_1_1NoiseAwarePlacement.html" title=" " alt="" coords="181,155,383,181"/>
+<area shape="rect" id="node2" href="$classtket_1_1Placement.html" title=" " alt="" coords="119,5,243,32"/>
+</map>

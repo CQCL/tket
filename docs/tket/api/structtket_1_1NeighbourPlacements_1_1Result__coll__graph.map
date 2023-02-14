@@ -1,0 +1,8 @@
+<map id="tket::NeighbourPlacements::Result" name="tket::NeighbourPlacements::Result">
+<area shape="rect" id="node1" title=" " alt="" coords="91,351,289,392"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,247,172,288"/>
+<area shape="rect" id="node3" href="$classtket_1_1Qubit.html" title="Location holding a qubit." alt="" coords="38,81,129,108"/>
+<area shape="rect" id="node5" href="$classtket_1_1Node.html" title="Architectural qubit location." alt="" coords="127,157,216,184"/>
+<area shape="rect" id="node4" href="$classtket_1_1UnitID.html" title="Location holding a bit or qubit of information." alt="" coords="35,5,131,32"/>
+<area shape="rect" id="node6" title=" " alt="" coords="196,254,387,281"/>
+</map>

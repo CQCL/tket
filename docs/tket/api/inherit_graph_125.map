@@ -1,0 +1,6 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$classtket_1_1UnitID.html" title="Location holding a bit or qubit of information." alt="" coords="5,31,101,57"/>
+<area shape="rect" id="node2" href="$classtket_1_1Bit.html" title="Location holding a bit." alt="" coords="158,5,231,32"/>
+<area shape="rect" id="node3" href="$classtket_1_1Qubit.html" title="Location holding a qubit." alt="" coords="149,56,240,83"/>
+<area shape="rect" id="node4" href="$classtket_1_1Node.html" title="Architectural qubit location." alt="" coords="288,56,377,83"/>
+</map>

@@ -1,0 +1,4 @@
+<map id="tket::zx::ZXDirected" name="tket::zx::ZXDirected">
+<area shape="rect" id="node1" title="Virtual subclass of ZXGen for directed (non&#45;commutative) generators." alt="" coords="5,80,156,107"/>
+<area shape="rect" id="node2" href="$classtket_1_1zx_1_1ZXGen.html" title="Abstract class for a ZX generator." alt="" coords="19,5,142,32"/>
+</map>

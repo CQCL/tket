@@ -1,0 +1,5 @@
+<map id="tket::Transforms::StandardSquasher" name="tket::Transforms::StandardSquasher">
+<area shape="rect" id="node1" title="Implements the AbstractSquasher interface for SingleQubitSquash." alt="" coords="5,80,199,121"/>
+<area shape="rect" id="node3" title=" " alt="" coords="11,169,193,211"/>
+<area shape="rect" id="node2" href="$classtket_1_1AbstractSquasher.html" title="Abstract Squasher interface." alt="" coords="17,5,187,32"/>
+</map>

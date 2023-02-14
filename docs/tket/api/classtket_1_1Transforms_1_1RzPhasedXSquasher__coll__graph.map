@@ -1,0 +1,5 @@
+<map id="tket::Transforms::RzPhasedXSquasher" name="tket::Transforms::RzPhasedXSquasher">
+<area shape="rect" id="node1" title="Squash Rx, Rz gates into PhasedX and Rz gates." alt="" coords="17,155,215,196"/>
+<area shape="rect" id="node2" href="$classtket_1_1Transforms_1_1PQPSquasher.html" title="Implements the AbstractSquasher interface for SingleQubitSquash." alt="" coords="5,80,227,107"/>
+<area shape="rect" id="node3" href="$classtket_1_1AbstractSquasher.html" title="Abstract Squasher interface." alt="" coords="31,5,201,32"/>
+</map>

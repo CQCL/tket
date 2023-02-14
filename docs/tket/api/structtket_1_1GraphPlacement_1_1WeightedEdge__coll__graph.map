@@ -1,0 +1,4 @@
+<map id="tket::GraphPlacement::WeightedEdge" name="tket::GraphPlacement::WeightedEdge">
+<area shape="rect" id="node1" title="Holds information for constructing a weighted edge in a QubitGraph." alt="" coords="5,109,168,151"/>
+<area shape="rect" id="node2" href="$classtket_1_1UnitID.html" title="Location holding a bit or qubit of information." alt="" coords="39,5,135,32"/>
+</map>

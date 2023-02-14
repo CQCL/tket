@@ -1,0 +1,6 @@
+<map id="tket::Conditional" name="tket::Conditional">
+<area shape="rect" id="node1" title="Decorates another op, adding a QASM&#45;style classical condition." alt="" coords="88,185,217,212"/>
+<area shape="rect" id="node2" href="$classtket_1_1Op.html" title="Abstract class representing an operation type." alt="" coords="116,109,189,136"/>
+<area shape="rect" id="node3" title=" " alt="" coords="5,5,151,47"/>
+<area shape="rect" id="node4" href="$classtket_1_1OpDesc.html" title="Operation descriptor." alt="" coords="175,13,280,39"/>
+</map>

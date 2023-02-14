@@ -1,0 +1,8 @@
+<map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
+<area shape="rect" id="node1" href="$classtket_1_1BasePass.html" title=" " alt="" coords="5,107,121,133"/>
+<area shape="rect" id="node2" href="$classtket_1_1RepeatPass.html" title=" " alt="" coords="213,5,343,32"/>
+<area shape="rect" id="node3" href="$classtket_1_1RepeatUntilSatisfiedPass.html" title=" " alt="" coords="169,56,387,83"/>
+<area shape="rect" id="node4" href="$classtket_1_1RepeatWithMetricPass.html" title=" " alt="" coords="177,107,379,133"/>
+<area shape="rect" id="node5" href="$classtket_1_1SequencePass.html" title=" " alt="" coords="205,157,351,184"/>
+<area shape="rect" id="node6" href="$classtket_1_1StandardPass.html" title=" " alt="" coords="207,208,349,235"/>
+</map>

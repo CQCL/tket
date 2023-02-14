@@ -1,0 +1,7 @@
+<map id="tket::ClassicalTransformOp" name="tket::ClassicalTransformOp">
+<area shape="rect" id="node1" title="A general classical operation where all inputs are also outputs." alt="" coords="5,319,201,345"/>
+<area shape="rect" id="node2" href="$classtket_1_1ClassicalEvalOp.html" title=" " alt="" coords="24,244,183,271"/>
+<area shape="rect" id="node3" href="$classtket_1_1ClassicalOp.html" title="A purely classical operation." alt="" coords="38,169,169,196"/>
+<area shape="rect" id="node4" href="$classtket_1_1Op.html" title="Abstract class representing an operation type." alt="" coords="67,95,140,121"/>
+<area shape="rect" id="node5" title=" " alt="" coords="31,5,176,47"/>
+</map>

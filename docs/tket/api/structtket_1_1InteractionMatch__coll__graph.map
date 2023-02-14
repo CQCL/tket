@@ -1,0 +1,5 @@
+<map id="tket::InteractionMatch" name="tket::InteractionMatch">
+<area shape="rect" id="node1" title="Represents a position to which two 2q Clifford gadgets could be commuted to Assumes:" alt="" coords="111,109,277,136"/>
+<area shape="rect" id="node2" href="$structtket_1_1RevInteractionPoint.html" title="Represents a position that one port of a 2qb Clifford gadget could be commuted to (towards the start ..." alt="" coords="5,5,188,32"/>
+<area shape="rect" id="node3" href="$structtket_1_1InteractionPoint.html" title="Represents a position that one port of a 2qb Clifford gadget could be commuted to (towards the end of..." alt="" coords="212,5,371,32"/>
+</map>

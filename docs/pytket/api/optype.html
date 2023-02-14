@@ -1,0 +1,607 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+
+    <title>pytket.circuit.OpType &#8212; pytket 1.11.1 documentation</title>
+    
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+
+    
+  <link rel="stylesheet"
+    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
+  <link rel="preload" as="font" type="font/woff2" crossorigin
+    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/custom.css" />
+    
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+
+    <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+    <script src="_static/jquery.js"></script>
+    <script src="_static/underscore.js"></script>
+    <script src="_static/doctools.js"></script>
+    <script src="_static/clipboard.min.js"></script>
+    <script src="_static/copybutton.js"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="pytket.circuit.logic_exp" href="classical.html" />
+    <link rel="prev" title="pytket.circuit.Circuit" href="circuit_class.html" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="docsearch:language" content="en">
+    
+
+    <!-- Google Analytics -->
+    
+  </head>
+  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
+<!-- Checkboxes to toggle the left sidebar -->
+<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
+<label class="overlay overlay-navbar" for="__navigation">
+    <div class="visually-hidden">Toggle navigation sidebar</div>
+</label>
+<!-- Checkboxes to toggle the in-page toc -->
+<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
+<label class="overlay overlay-pagetoc" for="__page-toc">
+    <div class="visually-hidden">Toggle in-page Table of Contents</div>
+</label>
+<!-- Headers at the top -->
+<div class="announcement header-item noprint"></div>
+<div class="header header-item noprint"></div>
+
+    
+    <div class="container-fluid" id="banner"></div>
+
+    
+
+    <div class="container-xl">
+      <div class="row">
+          
+<!-- Sidebar -->
+<div class="bd-sidebar noprint" id="site-navigation">
+    <div class="bd-sidebar__content">
+        <div class="bd-sidebar__top"><div class="navbar-brand-box">
+    <a class="navbar-brand text-wrap" href="index.html">
+      
+        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+        
+      
+      
+      <img src="_static/Quantinuum_logo.png" class="logo" alt="logo">
+      
+      
+      <h1 class="site-logo" id="site-title">pytket 1.11.1 documentation</h1>
+      
+    </a>
+</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
+  <i class="icon fas fa-search"></i>
+  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
+</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item active">
+        <p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  Introduction:
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="getting_started.html">
+   Getting Started
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="changelog.html">
+   Changelog
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="install.html">
+   Installation Troubleshooting
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="opensource.html">
+   Open Source Attribution
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  More Documentation:
+ </span>
+</p>
+<ul class="nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference external" href="https://cqcl.github.io/pytket/manual/index.html">
+   Manual
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference external" href="https://cqcl.github.io/pytket-extensions/api/index.html">
+   Extensions
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference external" href="https://github.com/CQCL/pytket/tree/main/examples">
+   Example notebooks
+  </a>
+ </li>
+</ul>
+<p aria-level="2" class="caption" role="heading">
+ <span class="caption-text">
+  API Reference:
+ </span>
+</p>
+<ul class="current nav bd-sidenav">
+ <li class="toctree-l1">
+  <a class="reference internal" href="backends.html">
+   pytket.backends
+  </a>
+ </li>
+ <li class="toctree-l1 current active has-children">
+  <a class="reference internal" href="circuit.html">
+   pytket.circuit
+  </a>
+  <input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
+  <label for="toctree-checkbox-1">
+   <i class="fas fa-chevron-down">
+   </i>
+  </label>
+  <ul class="current">
+   <li class="toctree-l2">
+    <a class="reference internal" href="circuit_class.html">
+     pytket.circuit.Circuit
+    </a>
+   </li>
+   <li class="toctree-l2 current active">
+    <a class="current reference internal" href="#">
+     pytket.circuit.OpType
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="classical.html">
+     pytket.circuit.logic_exp
+    </a>
+   </li>
+   <li class="toctree-l2">
+    <a class="reference internal" href="display.html">
+     pytket.circuit.display
+    </a>
+   </li>
+  </ul>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="pauli.html">
+   pytket.pauli
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="passes.html">
+   pytket.passes
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="predicates.html">
+   pytket.predicates
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="partition.html">
+   pytket.partition
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="qasm.html">
+   pytket.qasm
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="quipper.html">
+   pytket.quipper
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="architecture.html">
+   pytket.architecture
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="placement.html">
+   pytket.placement
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="mapping.html">
+   pytket.mapping
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="tableau.html">
+   pytket.tableau
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="transform.html">
+   pytket.transform
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="tailoring.html">
+   pytket.tailoring
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="zx.html">
+   pytket.zx
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="utils.html">
+   pytket.utils
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="logging.html">
+   pytket.logging
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="config.html">
+   pytket.config
+  </a>
+ </li>
+</ul>
+
+    </div>
+</nav></div>
+        <div class="bd-sidebar__bottom">
+             <!-- To handle the deprecated key -->
+            
+            <div class="navbar_extra_footer">
+            Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
+            </div>
+            
+        </div>
+    </div>
+    <div id="rtd-footer-container"></div>
+</div>
+
+
+          
+
+
+          
+<!-- A tiny helper pixel to detect if we've scrolled -->
+<div class="sbt-scroll-pixel-helper"></div>
+<!-- Main content -->
+<div class="col py-0 content-container">
+    
+    <div class="header-article row sticky-top noprint">
+        
+
+
+
+<div class="col py-1 d-flex header-article-main">
+    <div class="header-article__left">
+        
+        <label for="__navigation"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="right"
+title="Toggle navigation"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-bars"></i>
+  </span>
+
+</label>
+
+        
+    </div>
+    <div class="header-article__right">
+<button onclick="toggleFullScreen()"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="bottom"
+title="Fullscreen mode"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+<div class="menu-dropdown menu-dropdown-repository-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Source repositories">
+      <i class="fab fa-github"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="https://github.com/CQCL/tket"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Source repository"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="headerbtn__text-container">repository</span>
+</a>
+
+      </li>
+      
+      <li>
+        <a href="https://github.com/CQCL/tket/issues/new?title=Issue%20on%20page%20%2Foptype.html&body=Your%20issue%20content%20here."
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Open an issue"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="headerbtn__text-container">open issue</span>
+</a>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+<div class="menu-dropdown menu-dropdown-download-buttons">
+  <button class="headerbtn menu-dropdown__trigger"
+      aria-label="Download this page">
+      <i class="fas fa-download"></i>
+  </button>
+  <div class="menu-dropdown__content">
+    <ul>
+      <li>
+        <a href="_sources/optype.rst.txt"
+   class="headerbtn"
+   data-toggle="tooltip"
+data-placement="left"
+title="Download source file"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="headerbtn__text-container">.rst</span>
+</a>
+
+      </li>
+      
+      <li>
+        
+<button onclick="printPdf(this)"
+  class="headerbtn"
+  data-toggle="tooltip"
+data-placement="left"
+title="Print to PDF"
+>
+  
+
+<span class="headerbtn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="headerbtn__text-container">.pdf</span>
+</button>
+
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+    </div>
+</div>
+
+<!-- Table of contents -->
+<div class="col-md-3 bd-toc show noprint">
+</div>
+    </div>
+    <div class="article row">
+        <div class="col pl-md-3 pl-lg-5 content-container">
+            <!-- Table of contents that is only displayed when printing the page -->
+            <div id="jb-print-docs-body" class="onlyprint">
+                <h1>pytket.circuit.OpType</h1>
+                <!-- Table of contents -->
+                <div id="print-main-content">
+                    <div id="jb-print-toc">
+                        
+                    </div>
+                </div>
+            </div>
+            <main id="main-content" role="main">
+                
+              <div>
+                
+  <section id="pytket-circuit-optype">
+<h1>pytket.circuit.OpType<a class="headerlink" href="#pytket-circuit-optype" title="Permalink to this headline">#</a></h1>
+<p>Enum for available operations compatible with the tket <code class="xref py py-class docutils literal notranslate"><span class="pre">Circuit</span></code> class.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>All parametrised OpTypes which take angles (e.g. Rz, CPhase, FSim) expect parameters in multiples of pi (half-turns).
+This may differ from other quantum programming tools you have used, which have specified angles in radians, or perhaps even degrees.
+Therefore, for instance <cite>circuit.add_gate(OpType.Rx, 1, [0])</cite> is equivalent in terms of the unitary to <cite>circuit.add_gate(OpType.X, [0])</cite></p>
+</div>
+<dl class="py class">
+<dt class="sig sig-object py" id="pytket.circuit.OpType">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pytket.circuit.</span></span><span class="sig-name descname"><span class="pre">OpType</span></span><a class="headerlink" href="#pytket.circuit.OpType" title="Permalink to this definition">#</a></dt>
+<dd><p>Enum for available operations compatible with tket <a class="reference internal" href="circuit_class.html#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">Circuit</span></code></a> s.</p>
+<p>Members:</p>
+<blockquote>
+<div><p>Phase : Global phase: <span class="math notranslate nohighlight">\((\alpha) \mapsto \left[ \begin{array}{c} e^{i\pi\alpha} \end{array} \right]\)</span></p>
+<p>Z : Pauli Z: <span class="math notranslate nohighlight">\(\left[ \begin{array}{cc} 1 &amp; 0 \\ 0 &amp; -1 \end{array} \right]\)</span></p>
+<p>X : Pauli X: <span class="math notranslate nohighlight">\(\left[ \begin{array}{cc} 0 &amp; 1 \\ 1 &amp; 0 \end{array} \right]\)</span></p>
+<p>Y : Pauli Y: <span class="math notranslate nohighlight">\(\left[ \begin{array}{cc} 0 &amp; -i \\ i &amp; 0 \end{array} \right]\)</span></p>
+<p>S : <span class="math notranslate nohighlight">\(\left[ \begin{array}{cc} 1 &amp; 0 \\ 0 &amp; i \end{array} \right] = \mathrm{U1}(\frac12)\)</span></p>
+<p>Sdg : <span class="math notranslate nohighlight">\(\mathrm{S}^{\dagger} = \left[ \begin{array}{cc} 1 &amp; 0 \\ 0 &amp; -i \end{array} \right] = \mathrm{U1}(-\frac12)\)</span></p>
+<p>T : <span class="math notranslate nohighlight">\(\left[ \begin{array}{cc} 1 &amp; 0 \\ 0 &amp; e^{i\pi/4} \end{array} \right] = \mathrm{U1}(\frac14)\)</span></p>
+<p>Tdg : <span class="math notranslate nohighlight">\(\mathrm{T}^{\dagger} = \left[ \begin{array}{cc} 1 &amp; 0 \\ 0 &amp; e^{-i\pi/4} \end{array} \right] = \mathrm{U1}(-\frac14)\)</span></p>
+<p>V : <span class="math notranslate nohighlight">\(\frac{1}{\sqrt 2} \left[ \begin{array}{cc} 1 &amp; -i \\ -i &amp; 1 \end{array} \right] = \mathrm{Rx}(\frac12)\)</span></p>
+<p>Vdg : <span class="math notranslate nohighlight">\(\mathrm{V}^{\dagger} = \frac{1}{\sqrt 2} \left[ \begin{array}{cc} 1 &amp; i \\ i &amp; 1 \end{array} \right] = \mathrm{Rx}(-\frac12)\)</span></p>
+<p>SX : <span class="math notranslate nohighlight">\(\frac{1}{2} \left[ \begin{array}{cc} 1 + i &amp; 1 - i \\ 1 - i &amp; 1 + i \end{array} \right] = e^{\frac{i\pi}{4}}\mathrm{Rx}(\frac12)\)</span></p>
+<p>SXdg : <span class="math notranslate nohighlight">\(\mathrm{SX}^{\dagger} = \frac{1}{2} \left[ \begin{array}{cc} 1 - i &amp; 1 + i \\ 1 + i &amp; 1 - i \end{array} \right] = e^{\frac{-i\pi}{4}}\mathrm{Rx}(-\frac12)\)</span></p>
+<p>H : Hadamard gate: <span class="math notranslate nohighlight">\(\frac{1}{\sqrt 2} \left[ \begin{array}{cc} 1 &amp; 1 \\ 1 &amp; -1 \end{array} \right]\)</span></p>
+<p>Rx : <span class="math notranslate nohighlight">\((\alpha) \mapsto e^{-\frac12 i \pi \alpha \mathrm{X}} = \left[ \begin{array}{cc} \cos\frac{\pi\alpha}{2} &amp; -i\sin\frac{\pi\alpha}{2} \\ -i\sin\frac{\pi\alpha}{2} &amp; \cos\frac{\pi\alpha}{2} \end{array} \right]\)</span></p>
+<p>Ry : <span class="math notranslate nohighlight">\((\alpha) \mapsto e^{-\frac12 i \pi \alpha \mathrm{Y}} = \left[ \begin{array}{cc} \cos\frac{\pi\alpha}{2} &amp; -\sin\frac{\pi\alpha}{2} \\ \sin\frac{\pi\alpha}{2} &amp; \cos\frac{\pi\alpha}{2} \end{array} \right]\)</span></p>
+<p>Rz : <span class="math notranslate nohighlight">\((\alpha) \mapsto e^{-\frac12 i \pi \alpha \mathrm{Z}} = \left[ \begin{array}{cc} e^{-\frac12 i \pi\alpha} &amp; 0 \\ 0 &amp; e^{\frac12 i \pi\alpha} \end{array} \right]\)</span></p>
+<p>U1 : <span class="math notranslate nohighlight">\((\lambda) \mapsto \mathrm{U3}(0, 0, \lambda) = e^{\frac12 i\pi\lambda} \mathrm{Rz}(\lambda)\)</span>. U-gates are used by IBM. See <a class="reference external" href="https://qiskit.org/documentation/tutorials/circuits/3_summary_of_quantum_operations.html">https://qiskit.org/documentation/tutorials/circuits/3_summary_of_quantum_operations.html</a> for more information on U-gates.</p>
+<p>U2 : <span class="math notranslate nohighlight">\((\phi, \lambda) \mapsto \mathrm{U3}(\frac12, \phi, \lambda) = e^{\frac12 i\pi(\lambda+\phi)} \mathrm{Rz}(\phi) \mathrm{Ry}(\frac12) \mathrm{Rz}(\lambda)\)</span>, defined by matrix multiplication</p>
+<p>U3 : <span class="math notranslate nohighlight">\((\theta, \phi, \lambda) \mapsto  \left[ \begin{array}{cc} \cos\frac{\pi\theta}{2} &amp; -e^{i\pi\lambda} \sin\frac{\pi\theta}{2} \\ e^{i\pi\phi} \sin\frac{\pi\theta}{2} &amp; e^{i\pi(\lambda+\phi)} \cos\frac{\pi\theta}{2} \end{array} \right] = e^{\frac12 i\pi(\lambda+\phi)} \mathrm{Rz}(\phi) \mathrm{Ry}(\theta) \mathrm{Rz}(\lambda)\)</span></p>
+<p>TK1 : <span class="math notranslate nohighlight">\((\alpha, \beta, \gamma) \mapsto \mathrm{Rz}(\alpha) \mathrm{Rx}(\beta) \mathrm{Rz}(\gamma)\)</span></p>
+<p>TK2 : <span class="math notranslate nohighlight">\((\alpha, \beta, \gamma) \mapsto \mathrm{XXPhase}(\alpha) \mathrm{YYPhase}(\beta) \mathrm{ZZPhase}(\gamma)\)</span></p>
+<p>CX : Controlled <span class="math notranslate nohighlight">\(\mathrm{X}\)</span> gate</p>
+<p>CY : Controlled <span class="math notranslate nohighlight">\(\mathrm{Y}\)</span> gate</p>
+<p>CZ : Controlled <span class="math notranslate nohighlight">\(\mathrm{Z}\)</span> gate</p>
+<p>CH : Controlled <span class="math notranslate nohighlight">\(\mathrm{H}\)</span> gate</p>
+<p>CV : Controlled <span class="math notranslate nohighlight">\(\mathrm{V}\)</span> gate</p>
+<p>CVdg : Controlled <span class="math notranslate nohighlight">\(\mathrm{V}^{\dagger}\)</span> gate</p>
+<p>CSX : Controlled <span class="math notranslate nohighlight">\(\mathrm{SX}\)</span> gate</p>
+<p>CSXdg : Controlled <span class="math notranslate nohighlight">\(\mathrm{SX}^{\dagger}\)</span> gate</p>
+<p>CRz : <span class="math notranslate nohighlight">\((\alpha) \mapsto\)</span> Controlled <span class="math notranslate nohighlight">\(\mathrm{Rz}(\alpha)\)</span> gate</p>
+<p>CRx : <span class="math notranslate nohighlight">\((\alpha) \mapsto\)</span> Controlled <span class="math notranslate nohighlight">\(\mathrm{Rx}(\alpha)\)</span> gate</p>
+<p>CRy : <span class="math notranslate nohighlight">\((\alpha) \mapsto\)</span> Controlled <span class="math notranslate nohighlight">\(\mathrm{Ry}(\alpha)\)</span> gate</p>
+<p>CU1 : <span class="math notranslate nohighlight">\((\lambda) \mapsto\)</span> Controlled <span class="math notranslate nohighlight">\(\mathrm{U1}(\lambda)\)</span> gate. Note that this is not equivalent to a <span class="math notranslate nohighlight">\(\mathrm{CRz}(\lambda)\)</span> up to global phase, differing by an extra <span class="math notranslate nohighlight">\(\mathrm{Rz}(\frac{\lambda}{2})\)</span> on the control qubit.</p>
+<p>CU3 : <span class="math notranslate nohighlight">\((\theta, \phi, \lambda) \mapsto\)</span> Controlled <span class="math notranslate nohighlight">\(\mathrm{U3}(\theta, \phi, \lambda)\)</span> gate. Similar rules apply.</p>
+<p>CCX : Toffoli gate</p>
+<p>ECR : <span class="math notranslate nohighlight">\(\frac{1}{\sqrt 2} \left[ \begin{array}{cccc} 0 &amp; 0 &amp; 1 &amp; i \\0 &amp; 0 &amp; i &amp; 1 \\1 &amp; -i &amp; 0 &amp; 0 \\-i &amp; 1 &amp; 0 &amp; 0 \end{array} \right]\)</span></p>
+<p>SWAP : Swap gate</p>
+<p>CSWAP : Controlled swap gate</p>
+<p>noop : Identity gate. These gates are not permanent and are automatically stripped by the compiler</p>
+<p>Barrier : Meta-operation preventing compilation through it. Not automatically stripped by the compiler</p>
+<p>Label : Label for control flow jumps. Does not appear within a circuit</p>
+<p>Branch : A control flow jump to a label dependent on the value of a given Bit. Does not appear within a circuit</p>
+<p>Goto : An unconditional control flow jump to a Label. Does not appear within a circuit.</p>
+<p>Stop : Halts execution immediately. Used to terminate a program. Does not appear within a circuit.</p>
+<p>BRIDGE : A CX Bridge over 3 qubits. Used to apply a logical CX between the first and third qubits when they are not adjacent on the device, but both neighbour the second qubit. Acts as the identity on the second qubit</p>
+<p>Measure : Z-basis projective measurement, storing the measurement outcome in a specified bit</p>
+<p>Reset : Resets the qubit to <span class="math notranslate nohighlight">\(\left|0\right&gt;\)</span></p>
+<p>CircBox : Represents an arbitrary subcircuit</p>
+<p>PhasePolyBox : An operation representing arbitrary circuits made up of CX and Rz gates, represented as a phase polynomial together with a boolean matrix representing an additional linear transformation.</p>
+<p>Unitary1qBox : Represents an arbitrary one-qubit unitary operation by its matrix</p>
+<p>Unitary2qBox : Represents an arbitrary two-qubit unitary operation by its matrix</p>
+<p>Unitary3qBox : Represents an arbitrary three-qubit unitary operation by its matrix</p>
+<p>ExpBox : A two-qubit operation corresponding to a unitary matrix defined as the exponential <span class="math notranslate nohighlight">\(e^{itA}\)</span> of an arbitrary 4x4 hermitian matrix <span class="math notranslate nohighlight">\(A\)</span>.</p>
+<p>PauliExpBox : An operation defined as the exponential <span class="math notranslate nohighlight">\(e^{-\frac{i\pi\alpha}{2} P}\)</span> of a tensor <span class="math notranslate nohighlight">\(P\)</span> of Pauli operations.</p>
+<p>QControlBox : An arbitrary n-controlled operation</p>
+<p>ToffoliBox : A permutation of classical basis states</p>
+<p>CustomGate : <span class="math notranslate nohighlight">\((\alpha, \beta, \ldots) \mapsto\)</span> A user-defined operation, based on a <a class="reference internal" href="circuit_class.html#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">Circuit</span></code></a> <span class="math notranslate nohighlight">\(C\)</span> with parameters <span class="math notranslate nohighlight">\(\alpha, \beta, \ldots\)</span> substituted in place of bound symbolic variables in <span class="math notranslate nohighlight">\(C\)</span>, as defined by the <a class="reference internal" href="circuit.html#pytket.circuit.CustomGateDef" title="pytket.circuit.CustomGateDef"><code class="xref py py-class docutils literal notranslate"><span class="pre">CustomGateDef</span></code></a>.</p>
+<p>Conditional : An operation to be applied conditionally on the value of some classical register</p>
+<p>ISWAP : <span class="math notranslate nohighlight">\((\alpha) \mapsto e^{\frac14 i \pi\alpha (\mathrm{X} \otimes \mathrm{X} + \mathrm{Y} \otimes \mathrm{Y})} = \left[ \begin{array}{cccc} 1 &amp; 0 &amp; 0 &amp; 0 \\ 0 &amp; \cos\frac{\pi\alpha}{2} &amp; i\sin\frac{\pi\alpha}{2} &amp; 0 \\ 0 &amp; i\sin\frac{\pi\alpha}{2} &amp; \cos\frac{\pi\alpha}{2} &amp; 0 \\ 0 &amp; 0 &amp; 0 &amp; 1 \end{array} \right]\)</span></p>
+<p>PhasedISWAP : <span class="math notranslate nohighlight">\((p, t) \mapsto \left[ \begin{array}{cccc} 1 &amp; 0 &amp; 0 &amp; 0 \\ 0 &amp; \cos\frac{\pi t}{2} &amp; i\sin\frac{\pi t}{2}e^{2i\pi p} &amp; 0 \\ 0 &amp; i\sin\frac{\pi t}{2}e^{-2i\pi p} &amp; \cos\frac{\pi t}{2} &amp; 0 \\ 0 &amp; 0 &amp; 0 &amp; 1 \end{array} \right]\)</span> (equivalent to: Rz(p)[0]; Rz(-p)[1]; ISWAP(t); Rz(-p)[0]; Rz(p)[1])</p>
+<p>XXPhase : <span class="math notranslate nohighlight">\((\alpha) \mapsto e^{-\frac12 i \pi\alpha (\mathrm{X} \otimes \mathrm{X})} = \left[ \begin{array}{cccc} \cos\frac{\pi\alpha}{2} &amp; 0 &amp; 0 &amp; -i\sin\frac{\pi\alpha}{2} \\ 0 &amp; \cos\frac{\pi\alpha}{2} &amp; -i\sin\frac{\pi\alpha}{2} &amp; 0 \\ 0 &amp; -i\sin\frac{\pi\alpha}{2} &amp; \cos\frac{\pi\alpha}{2} &amp; 0 \\ -i\sin\frac{\pi\alpha}{2} &amp; 0 &amp; 0 &amp; \cos\frac{\pi\alpha}{2} \end{array} \right]\)</span></p>
+<p>YYPhase : <span class="math notranslate nohighlight">\((\alpha) \mapsto e^{-\frac12 i \pi\alpha (\mathrm{Y} \otimes \mathrm{Y})} = \left[ \begin{array}{cccc} \cos\frac{\pi\alpha}{2} &amp; 0 &amp; 0 &amp; i\sin\frac{\pi\alpha}{2} \\ 0 &amp; \cos\frac{\pi\alpha}{2} &amp; -i\sin\frac{\pi\alpha}{2} &amp; 0 \\ 0 &amp; -i\sin\frac{\pi\alpha}{2} &amp; \cos\frac{\pi\alpha}{2} &amp; 0 \\ i\sin\frac{\pi\alpha}{2} &amp; 0 &amp; 0 &amp; \cos\frac{\pi\alpha}{2} \end{array} \right]\)</span></p>
+<p>ZZPhase : <span class="math notranslate nohighlight">\((\alpha) \mapsto e^{-\frac12 i \pi\alpha (\mathrm{Z} \otimes \mathrm{Z})} = \left[ \begin{array}{cccc} e^{-\frac12 i \pi\alpha} &amp; 0 &amp; 0 &amp; 0 \\ 0 &amp; e^{\frac12 i \pi\alpha} &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; e^{\frac12 i \pi\alpha} &amp; 0 \\ 0 &amp; 0 &amp; 0 &amp; e^{-\frac12 i \pi\alpha} \end{array} \right]\)</span></p>
+<p>XXPhase3 : A 3-qubit gate XXPhase3(α) consists of pairwise 2-qubit XXPhase(α) interactions. Equivalent to XXPhase(α)[0, 1] XXPhase(α)[1, 2] XXPhase(α)[0, 2].</p>
+<p>PhasedX : <span class="math notranslate nohighlight">\((\alpha,\beta) \mapsto \mathrm{Rz}(\beta)\mathrm{Rx}(\alpha)\mathrm{Rz}(-\beta)\)</span> (matrix-multiplication order)</p>
+<p>NPhasedX : <span class="math notranslate nohighlight">\((\alpha, \beta) \mapsto \mathrm{PhasedX}(\alpha, \beta)^{\otimes n}\)</span> (n-qubit gate composed of identical PhasedX in parallel.</p>
+<p>CnRy : <span class="math notranslate nohighlight">\((\alpha)\)</span> := n-controlled <span class="math notranslate nohighlight">\(\mathrm{Ry}(\alpha)\)</span> gate.</p>
+<p>CnX : n-controlled X gate.</p>
+<p>CnY : n-controlled Y gate.</p>
+<p>CnZ : n-controlled Z gate.</p>
+<p>ZZMax : <span class="math notranslate nohighlight">\(e^{-\frac{i\pi}{4}(\mathrm{Z} \otimes \mathrm{Z})}\)</span>, a maximally entangling ZZPhase</p>
+<p>ESWAP : <span class="math notranslate nohighlight">\(\alpha \mapsto e^{-\frac12 i\pi\alpha \cdot \mathrm{SWAP}} = \left[ \begin{array}{cccc} e^{-\frac12 i \pi\alpha} &amp; 0 &amp; 0 &amp; 0 \\ 0 &amp; \cos\frac{\pi\alpha}{2} &amp; -i\sin\frac{\pi\alpha}{2} &amp; 0 \\ 0 &amp; -i\sin\frac{\pi\alpha}{2} &amp; \cos\frac{\pi\alpha}{2} &amp; 0 \\ 0 &amp; 0 &amp; 0 &amp; e^{-\frac12 i \pi\alpha} \end{array} \right]\)</span></p>
+<p>FSim : <span class="math notranslate nohighlight">\((\alpha, \beta) \mapsto \left[ \begin{array}{cccc} 1 &amp; 0 &amp; 0 &amp; 0 \\ 0 &amp; \cos \pi\alpha &amp; -i\sin \pi\alpha &amp; 0 \\ 0 &amp; -i\sin \pi\alpha &amp; \cos \pi\alpha &amp; 0 \\ 0 &amp; 0 &amp; 0 &amp; e^{-i\pi\beta} \end{array} \right]\)</span></p>
+<p>Sycamore : <span class="math notranslate nohighlight">\(\mathrm{FSim}(\frac12, \frac16)\)</span></p>
+<p>ISWAPMax : <span class="math notranslate nohighlight">\(\mathrm{ISWAP}(1) = \left[ \begin{array}{cccc} 1 &amp; 0 &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; i &amp; 0 \\ 0 &amp; i &amp; 0 &amp; 0 \\ 0 &amp; 0 &amp; 0 &amp; 1 \end{array} \right]\)</span></p>
+<p>ClassicalTransform : A general classical operation where all inputs are also outputs</p>
+<p>WASM : Op containing a classical wasm function call</p>
+<p>SetBits : An operation to set some bits to specified values</p>
+<p>CopyBits : An operation to copy some bit values</p>
+<p>RangePredicate : A classical predicate defined by a range of values in binary encoding</p>
+<p>ExplicitPredicate : A classical predicate defined by a truth table</p>
+<p>ExplicitModifier : An operation defined by a truth table that modifies one bit</p>
+<p>MultiBit : A classical operation applied to multiple bits simultaneously</p>
+<p>ClassicalExpBox : A box for holding compound classical operations on Bits.</p>
+</div></blockquote>
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.circuit.OpType.from_name">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_name</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">json</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.circuit.OpType" title="pytket.circuit.OpType"><span class="pre">pytket.circuit.OpType</span></a></span></span><a class="headerlink" href="#pytket.circuit.OpType.from_name" title="Permalink to this definition">#</a></dt>
+<dd><p>Construct from name</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pytket.circuit.OpType.name">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#pytket.circuit.OpType.name" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+</dd></dl>
+
+</section>
+
+
+              </div>
+              
+            </main>
+            <footer class="footer-article noprint">
+                
+    <!-- Previous / next buttons -->
+<div class='prev-next-area'>
+    <a class='left-prev' id="prev-link" href="circuit_class.html" title="previous page">
+        <i class="fas fa-angle-left"></i>
+        <div class="prev-next-info">
+            <p class="prev-next-subtitle">previous</p>
+            <p class="prev-next-title">pytket.circuit.Circuit</p>
+        </div>
+    </a>
+    <a class='right-next' id="next-link" href="classical.html" title="next page">
+    <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">pytket.circuit.logic_exp</p>
+    </div>
+    <i class="fas fa-angle-right"></i>
+    </a>
+</div>
+            </footer>
+        </div>
+    </div>
+    <div class="footer-content row">
+        <footer class="col footer"><p>
+  
+    By Cambridge Quantum Computing Ltd<br/>
+  
+      &copy; Copyright 2023, Cambridge Quantum Computing Ltd.<br/>
+</p>
+        </footer>
+    </div>
+    
+</div>
+
+
+      </div>
+    </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+
+
+  </body>
+</html>

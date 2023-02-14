@@ -1,0 +1,4 @@
+<map id="tket::BoolPauli" name="tket::BoolPauli">
+<area shape="rect" id="node1" title="Boolean encoding of Pauli &lt;x, z&gt; = &lt;false, false&gt; ==&gt; I &lt;x, z&gt; = &lt;false, true&gt; ==&gt; Z &lt;x,..." alt="" coords="339,27,453,54"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,5,232,76"/>
+</map>

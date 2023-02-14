@@ -1,0 +1,5 @@
+<map id="tket::Node" name="tket::Node">
+<area shape="rect" id="node1" title="Architectural qubit location." alt="" coords="9,155,98,181"/>
+<area shape="rect" id="node2" href="$classtket_1_1Qubit.html" title="Location holding a qubit." alt="" coords="8,80,99,107"/>
+<area shape="rect" id="node3" href="$classtket_1_1UnitID.html" title="Location holding a bit or qubit of information." alt="" coords="5,5,101,32"/>
+</map>

@@ -1,0 +1,8 @@
+<map id="tket::ExplicitModifierOp" name="tket::ExplicitModifierOp">
+<area shape="rect" id="node1" title="A modifying operation defined explicitly by a truth table." alt="" coords="5,393,180,420"/>
+<area shape="rect" id="node2" href="$classtket_1_1ModifyingOp.html" title="A classical operation with one output bit which is also an input bit." alt="" coords="24,319,161,345"/>
+<area shape="rect" id="node3" href="$classtket_1_1ClassicalEvalOp.html" title=" " alt="" coords="13,244,172,271"/>
+<area shape="rect" id="node4" href="$classtket_1_1ClassicalOp.html" title="A purely classical operation." alt="" coords="27,169,158,196"/>
+<area shape="rect" id="node5" href="$classtket_1_1Op.html" title="Abstract class representing an operation type." alt="" coords="56,95,129,121"/>
+<area shape="rect" id="node6" title=" " alt="" coords="20,5,165,47"/>
+</map>

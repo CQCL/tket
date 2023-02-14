@@ -1,0 +1,7 @@
+<map id="tket::SetBitsOp" name="tket::SetBitsOp">
+<area shape="rect" id="node1" title="An operation to set some bits to specified values." alt="" coords="25,319,144,345"/>
+<area shape="rect" id="node2" href="$classtket_1_1ClassicalEvalOp.html" title=" " alt="" coords="5,244,164,271"/>
+<area shape="rect" id="node3" href="$classtket_1_1ClassicalOp.html" title="A purely classical operation." alt="" coords="19,169,150,196"/>
+<area shape="rect" id="node4" href="$classtket_1_1Op.html" title="Abstract class representing an operation type." alt="" coords="48,95,121,121"/>
+<area shape="rect" id="node5" title=" " alt="" coords="12,5,157,47"/>
+</map>

@@ -1,0 +1,16 @@
+<map id="tket::ClassicalOp" name="tket::ClassicalOp">
+<area shape="rect" id="node1" title="A purely classical operation." alt="" coords="320,157,451,184"/>
+<area shape="rect" id="node4" href="$classtket_1_1ClassicalEvalOp.html" title=" " alt="" coords="499,132,657,159"/>
+<area shape="rect" id="node14" href="$classtket_1_1WASMOp.html" title="Op containing a classical wasm function call." alt="" coords="521,183,635,209"/>
+<area shape="rect" id="node2" href="$classtket_1_1Op.html" title="Abstract class representing an operation type." alt="" coords="199,157,272,184"/>
+<area shape="rect" id="node3" title=" " alt="" coords="5,150,151,191"/>
+<area shape="rect" id="node5" href="$classtket_1_1ClassicalTransformOp.html" title="A general classical operation where all inputs are also outputs." alt="" coords="705,5,901,32"/>
+<area shape="rect" id="node6" href="$classtket_1_1CopyBitsOp.html" title="An operation to copy some bit values." alt="" coords="738,56,869,83"/>
+<area shape="rect" id="node7" href="$classtket_1_1ModifyingOp.html" title="A classical operation with one output bit which is also an input bit." alt="" coords="735,107,872,133"/>
+<area shape="rect" id="node9" href="$classtket_1_1MultiBitOp.html" title="A classical operation applied simultaneously to multiple bits." alt="" coords="741,157,865,184"/>
+<area shape="rect" id="node10" href="$classtket_1_1PredicateOp.html" title="A classical operation with single output bit." alt="" coords="736,208,871,235"/>
+<area shape="rect" id="node13" href="$classtket_1_1SetBitsOp.html" title="An operation to set some bits to specified values." alt="" coords="744,259,863,285"/>
+<area shape="rect" id="node8" href="$classtket_1_1ExplicitModifierOp.html" title="A modifying operation defined explicitly by a truth table." alt="" coords="953,107,1128,133"/>
+<area shape="rect" id="node11" href="$classtket_1_1ExplicitPredicateOp.html" title="A predicate defined explicitly by a truth table." alt="" coords="949,183,1132,209"/>
+<area shape="rect" id="node12" href="$classtket_1_1RangePredicateOp.html" title="A predicate defined by a range of values in binary encoding." alt="" coords="953,233,1128,260"/>
+</map>

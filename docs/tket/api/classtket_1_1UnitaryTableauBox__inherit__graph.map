@@ -1,0 +1,6 @@
+<map id="tket::UnitaryTableauBox" name="tket::UnitaryTableauBox">
+<area shape="rect" id="node1" title="Encapsulation of a unitary stabilizer tableau as a Box to use within a circuit." alt="" coords="5,244,184,271"/>
+<area shape="rect" id="node2" href="$classtket_1_1Box.html" title="Abstract class for an operation from which a circuit can be extracted." alt="" coords="55,169,135,196"/>
+<area shape="rect" id="node3" href="$classtket_1_1Op.html" title="Abstract class representing an operation type." alt="" coords="58,95,131,121"/>
+<area shape="rect" id="node4" title=" " alt="" coords="22,5,167,47"/>
+</map>

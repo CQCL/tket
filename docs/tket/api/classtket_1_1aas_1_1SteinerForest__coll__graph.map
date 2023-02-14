@@ -1,0 +1,14 @@
+<map id="tket::aas::SteinerForest" name="tket::aas::SteinerForest">
+<area shape="rect" id="node1" title="Represents a series of sequential operations on an architecture, each of which are represented by Ste..." alt="" coords="987,81,1159,108"/>
+<area shape="rect" id="node2" title=" " alt="" coords="632,5,832,32"/>
+<area shape="rect" id="node3" title=" " alt="" coords="310,21,502,77"/>
+<area shape="rect" id="node4" title=" " alt="" coords="5,29,183,70"/>
+<area shape="rect" id="node5" href="$classtket_1_1DiagMatrix.html" title=" " alt="" coords="669,119,795,145"/>
+<area shape="rect" id="node6" href="$classtket_1_1Circuit.html" title="A circuit." alt="" coords="683,196,781,223"/>
+<area shape="rect" id="node7" href="$classtket_1_1Circuit_1_1SliceIterator.html" title=" " alt="" coords="981,263,1165,289"/>
+<area shape="rect" id="node8" title=" " alt="" coords="335,285,477,326"/>
+<area shape="rect" id="node9" href="$structtket_1_1CutFrontier.html" title=" " alt="" coords="669,356,795,383"/>
+<area shape="rect" id="node10" title=" " alt="" coords="327,358,485,399"/>
+<area shape="rect" id="node11" title=" " alt="" coords="316,424,496,451"/>
+<area shape="rect" id="node12" href="$classtket_1_1Circuit_1_1CommandIterator.html" title=" " alt="" coords="296,196,516,223"/>
+</map>

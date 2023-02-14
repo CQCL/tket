@@ -1,0 +1,10 @@
+<map id="tket::CXMaker" name="tket::CXMaker">
+<area shape="rect" id="node1" title=" " alt="" coords="423,199,536,225"/>
+<area shape="rect" id="node2" href="$classtket_1_1Circuit.html" title="A circuit." alt="" coords="397,109,495,136"/>
+<area shape="rect" id="node3" href="$classtket_1_1Circuit_1_1SliceIterator.html" title=" " alt="" coords="199,199,383,225"/>
+<area shape="rect" id="node4" title=" " alt="" coords="5,5,148,47"/>
+<area shape="rect" id="node5" href="$structtket_1_1CutFrontier.html" title=" " alt="" coords="212,109,339,136"/>
+<area shape="rect" id="node6" title=" " alt="" coords="172,5,331,47"/>
+<area shape="rect" id="node7" title=" " alt="" coords="355,13,535,39"/>
+<area shape="rect" id="node8" href="$classtket_1_1Circuit_1_1CommandIterator.html" title=" " alt="" coords="559,13,779,39"/>
+</map>

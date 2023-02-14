@@ -1,0 +1,6 @@
+<map id="tket::aas::SteinerTree" name="tket::aas::SteinerTree">
+<area shape="rect" id="node1" title="This clas is creating a steiner tree, which is a mst including all the nodes of a given phase gadget ..." alt="" coords="199,109,357,136"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,13,164,39"/>
+<area shape="rect" id="node3" title=" " alt="" coords="188,13,368,39"/>
+<area shape="rect" id="node4" title=" " alt="" coords="393,5,579,47"/>
+</map>
