@@ -245,7 +245,7 @@ def test_hqs_conditional() -> None:
     assert circuit_to_qasm_str(c, header="hqslib1")
     with pytest.raises(Exception) as errorinfo:
         circuit_to_qasm_str(c)
-        assert "Complex classical gates only supported with hqslib1" in str(
+        assert "Complex classical gates not supported with qelib1" in str(
             errorinfo.value
         )
 

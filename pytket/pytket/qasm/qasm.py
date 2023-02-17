@@ -1089,7 +1089,8 @@ def circuit_to_qasm_io(
         )
     ) and (not hqs_header(header)):
         raise QASMUnsupportedError(
-            "Complex classical gates only supported with hqslib1."
+            "Complex classical gates not supported with qelib1: try converting with "
+            "`header=hqslib1`"
         )
     include_module_gates = {"measure", "reset", "barrier"}
     include_module_gates.update(_load_include_module(header, False, True).keys())
