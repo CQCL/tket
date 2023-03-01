@@ -172,14 +172,20 @@ class Backend(ABC):
         ...
 
     def get_compiled_circuit(
-        self, circuit: Circuit, optimisation_level: int = 2
+        self, circuit: Circuit, optimisation_level: int = 2, check_predicates: bool = False
     ) -> Circuit:
         """
         Return a single circuit compiled with :py:meth:`default_compilation_pass`. See
         :py:meth:`Backend.get_compiled_circuits`.
+
+        Optional boolean flag to check that all :py:class:`Backend` predicates are satisfied (default=False).
         """
         return_circuit = circuit.copy()
         self.default_compilation_pass(optimisation_level).apply(return_circuit)
+        
+        if check_predicates:
+            assert self.valid_circuit(return_circuit)
+
         return return_circuit
 
     def get_compiled_circuits(
