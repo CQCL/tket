@@ -181,7 +181,8 @@ class Backend(ABC):
         Return a single circuit compiled with :py:meth:`default_compilation_pass`. See
         :py:meth:`Backend.get_compiled_circuits`.
 
-        Optional boolean flag to check that all :py:class:`Backend` predicates are satisfied (default=False).
+        Optional boolean flag to check that all :py:class:`Backend` predicates
+        are satisfied (default=False).
         """
         return_circuit = circuit.copy()
         self.default_compilation_pass(optimisation_level).apply(return_circuit)
