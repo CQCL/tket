@@ -10,7 +10,7 @@ Notebook tutorials on pytket backends
 3. `Qiskit integration <https://github.com/CQCL/pytket/blob/main/examples/qiskit_integration.ipynb>`_ - Covers compiling to IBM backends as well as using the `TketBackend <https://cqcl.github.io/pytket-qiskit/api/api.html#pytket.extensions.qiskit.tket_backend.TketBackend>`_ to run qiskit circuits.
 4. `Creating Backends <https://github.com/CQCL/pytket/blob/main/examples/creating_backends.ipynb>`_ - Tutoial showing how to define your own pytket :py:class:`Backend`. This could be used as a guide for developing new pytket extensions. 
 
-
+See also the `Running on backends <https://cqcl.github.io/pytket/manual/manual_backend.html>`_ section of the pytket user manual.
 .. automodule:: pytket.backends
     :members: backend
 
