@@ -144,6 +144,7 @@ Licensed under the `Apache 2 License <http://www.apache.org/licenses/LICENSE-2.0
     tableau.rst
     transform.rst
     tailoring.rst
+    wasm.rst
     zx.rst
     utils.rst
     logging.rst
