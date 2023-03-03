@@ -606,6 +606,49 @@
           "if": {
             "properties": {
               "type": {
+                "const": "MultiplexorBox"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "op_map"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "MultiplexedRotationBox"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "op_map"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "MultiplexedU2Box"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "op_map",
+              "impl_diag"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
                 "const": "PhasePolyBox"
               }
             }
