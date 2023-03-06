@@ -526,6 +526,10 @@
               }
             ]
           }
+        },
+        "impl_diag": {
+          "type": "boolean",
+          "description": "Indicate whether to implement the digonal operator from MultiplexedU2 decomposition."
         }
       },
       "required": [
