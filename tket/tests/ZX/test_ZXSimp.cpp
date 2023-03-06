@@ -147,6 +147,39 @@ SCENARIO("Simplification of a paper example") {
   CHECK_FALSE(Rewrite::parallel_h_removal().apply(diag));
 }
 
+SCENARIO("Testing cases for internalising gadgets in MBQC") {
+  // Semantic preservation tested in pytket (zx_diagram_test.py
+  // test_internalise_gadgets)
+  std::list<ZXType> axis_types = {ZXType::XY, ZXType::PX, ZXType::PY};
+  std::list<ZXType> gadget_types = {ZXType::XY, ZXType::XZ, ZXType::YZ,
+                                    ZXType::PX, ZXType::PY, ZXType::PZ};
+  for (const ZXType& axis_basis : axis_types) {
+    for (const ZXType& gadget_basis : gadget_types) {
+      ZXDiagram diag(1, 1, 0, 0);
+      ZXVert in = diag.get_boundary(ZXType::Input).at(0);
+      ZXVert out = diag.get_boundary(ZXType::Output).at(0);
+      ZXVert in_v = diag.add_clifford_vertex(ZXType::PX, false);
+      ZXVert out_v = diag.add_clifford_vertex(ZXType::PX, false);
+      ZXVert axis = is_Clifford_gen_type(axis_basis)
+                        ? diag.add_clifford_vertex(axis_basis, false)
+                        : diag.add_vertex(axis_basis, 0.25);
+      ZXVert gadget = is_Clifford_gen_type(gadget_basis)
+                          ? diag.add_clifford_vertex(gadget_basis, false)
+                          : diag.add_vertex(gadget_basis, 0.25);
+      diag.add_wire(in, in_v);
+      diag.add_wire(in_v, axis, ZXWireType::H);
+      diag.add_wire(axis, out_v, ZXWireType::H);
+      diag.add_wire(out_v, out);
+      diag.add_wire(axis, gadget, ZXWireType::H);
+      bool changed = Rewrite::internalise_gadgets().apply(diag);
+      CHECK(
+          (axis_basis == ZXType::XY &&
+           (gadget_basis == ZXType::XY || gadget_basis == ZXType::XZ)) ^
+          changed);
+    }
+  }
+}
+
 }  // namespace test_ZXSimp
 }  // namespace zx
 }  // namespace tket
