@@ -33,6 +33,18 @@ using json = nlohmann::json;
 
 namespace tket {
 
+// Cast the std::vector keys in a map to py::tuple, since vector is not hashable
+// in python
+template <class T1, class T2>
+std::map<py::tuple, T2> cast_keys_to_tuples(
+    const std::map<std::vector<T1>, T2> &map) {
+  std::map<py::tuple, T2> outmap;
+  for (const auto &pair : map) {
+    outmap.insert({py::tuple(py::cast(pair.first)), pair.second});
+  }
+  return outmap;
+}
+
 void init_boxes(py::module &m) {
   py::class_<CircBox, std::shared_ptr<CircBox>, Op>(
       m, "CircBox",
@@ -246,11 +258,7 @@ void init_boxes(py::module &m) {
           "phase_polynomial",
           [](PhasePolyBox &ppoly) {
             const PhasePolynomial &phase_pol = ppoly.get_phase_polynomial();
-            std::map<py::tuple, Expr> outmap;
-            for (const auto &pair : phase_pol) {
-              outmap.insert({py::tuple(py::cast(pair.first)), pair.second});
-            }
-            return outmap;
+            return cast_keys_to_tuples(phase_pol);
           },
           "Map from bitstring (basis state) to phase.")
       .def_property_readonly(
@@ -362,7 +370,10 @@ void init_boxes(py::module &m) {
           "get_circuit", [](MultiplexorBox &box) { return *box.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the box")
       .def(
-          "get_op_map", &MultiplexorBox::get_op_map,
+          "get_op_map",
+          [](MultiplexorBox &box) {
+            return cast_keys_to_tuples(box.get_op_map());
+          },
           ":return: the underlying op map");
   py::class_<
       MultiplexedRotationBox, std::shared_ptr<MultiplexedRotationBox>, Op>(
@@ -411,7 +422,10 @@ void init_boxes(py::module &m) {
           [](MultiplexedRotationBox &box) { return *box.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the box")
       .def(
-          "get_op_map", &MultiplexedRotationBox::get_op_map,
+          "get_op_map",
+          [](MultiplexedRotationBox &box) {
+            return cast_keys_to_tuples(box.get_op_map());
+          },
           ":return: the underlying op map");
   py::class_<MultiplexedU2Box, std::shared_ptr<MultiplexedU2Box>, Op>(
       m, "MultiplexedU2Box",
@@ -432,7 +446,10 @@ void init_boxes(py::module &m) {
           [](MultiplexedU2Box &box) { return *box.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the box")
       .def(
-          "get_op_map", &MultiplexedU2Box::get_op_map,
+          "get_op_map",
+          [](MultiplexedU2Box &box) {
+            return cast_keys_to_tuples(box.get_op_map());
+          },
           ":return: the underlying op map")
       .def(
           "get_impl_diag", &MultiplexedU2Box::get_impl_diag,

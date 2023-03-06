@@ -446,10 +446,14 @@ def test_boxes() -> None:
     d.add_toffolibox(tb, [0, 1])
     assert d.n_gates == 8
 
-    # MultiplexedU2Box, MultiplexedU2Box
+    # MultiplexorBox, MultiplexedU2Box
     op_map = {(0, 0): Op.create(OpType.Rz, 0.3), (1, 1): Op.create(OpType.H)}
     multiplexor = MultiplexorBox(op_map)
+    out_op_map = multiplexor.get_op_map()
+    assert all(op_map[key] == out_op_map[key] for key in op_map)
     ucu2_box = MultiplexedU2Box(op_map)
+    out_op_map = ucu2_box.get_op_map()
+    assert all(op_map[key] == out_op_map[key] for key in op_map)
     c0 = multiplexor.get_circuit()
     DecomposeBoxes().apply(c0)
     unitary0 = c0.get_unitary()
@@ -470,6 +474,8 @@ def test_boxes() -> None:
     # MultiplexedRotationBox
     op_map = {(0, 0): Op.create(OpType.Rz, 0.3), (1, 1): Op.create(OpType.Rz, 1.7)}
     multiplexor = MultiplexedRotationBox(op_map)
+    out_op_map = multiplexor.get_op_map()
+    assert all(op_map[key] == out_op_map[key] for key in op_map)
     c0 = multiplexor.get_circuit()
     unitary = c0.get_unitary()
     comparison = block_diag(
