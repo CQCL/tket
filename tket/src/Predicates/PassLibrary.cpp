@@ -509,7 +509,6 @@ const PassPtr &RemoveImplicitQubitPermutation() {
 const PassPtr &ZXGraphlikeOptimisation() {
   static const PassPtr pp([]() {
     Transform t = Transform([](Circuit &circ) {
-      Transforms::rebase_quil().apply(circ);
       zx::ZXDiagram diag = circuit_to_zx(circ).first;
       zx::Rewrite::to_graphlike_form().apply(diag);
       zx::Rewrite::reduce_graphlike_form().apply(diag);
@@ -524,8 +523,15 @@ const PassPtr &ZXGraphlikeOptimisation() {
       circ = c;
       return true;
     });
-    PredicatePtrMap precons = {CompilationUnit::make_type_pair(
-        std::make_shared<NoClassicalBitsPredicate>())};
+    OpTypeSet in_optypes = {OpType::Input, OpType::Output, OpType::noop,
+                            OpType::SWAP,  OpType::H,      OpType::Rz,
+                            OpType::Rx,    OpType::X,      OpType::Z,
+                            OpType::CX,    OpType::CZ};
+    PredicatePtrMap precons = {
+        CompilationUnit::make_type_pair(
+            std::make_shared<GateSetPredicate>(in_optypes)),
+        CompilationUnit::make_type_pair(
+            std::make_shared<NoClassicalBitsPredicate>())};
     PredicatePtrMap specific_postcons;
     Guarantee default_postcon = Guarantee::Preserve;
     PredicateClassGuarantees generic_postcons = {
