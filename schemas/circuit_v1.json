@@ -508,6 +508,24 @@
         },
         "tab": {
           "$ref": "#/definitions/unitary_tableau"
+        },
+        "op_map": {
+          "type": "array",
+          "description": "Operation map for multiplexors.",
+          "items": {
+            "type": "array",
+            "items": [
+              {
+                "type": "array",
+                "items": {
+                  "type": "boolean"
+                }
+              },
+              {
+                "$ref": "#/definitions/operation"
+              }
+            ]
+          }
         }
       },
       "required": [
