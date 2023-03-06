@@ -502,6 +502,8 @@ def test_boxes() -> None:
     zero_state = np.zeros(8)
     zero_state[0] = 1
     assert np.allclose(prep_u.dot(state), zero_state)
+    d.add_state_preparation_box(prep_box, [Qubit(0), Qubit(1), Qubit(2)])
+    assert d.n_gates == 13
     assert json_validate(d)
 
 

@@ -530,6 +530,14 @@
         "impl_diag": {
           "type": "boolean",
           "description": "Indicate whether to implement the digonal operator from MultiplexedU2 decomposition."
+        },
+        "statevector": {
+          "$ref": "#/definitions/matrix",
+          "description": "Statevector represented by StatePreparationBox."
+        },
+        "is_inverse": {
+          "type": "boolean",
+          "description": "Indicate whether to implement the dagger of a StatePreparationBox."
         }
       },
       "required": [
@@ -664,6 +672,21 @@
             "required": [
               "op_map",
               "impl_diag"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "StatePreparationBox"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "statevector",
+              "is_inverse"
             ]
           }
         },
