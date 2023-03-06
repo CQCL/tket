@@ -80,13 +80,11 @@ jobs:
         brew install clang-format@15
         git ls-files "*.cpp" "*.hpp" | xargs clang-format -style=file --dry-run --Werror
     - name: Get current time
-      uses: josStorer/get-current-time@v2.0.2
+      uses: josStorer/get-current-time@v2.1.0
       id: current_time
       with:
         format: YYYYMMDDHHmmss
     - name: Use ccache
-      # Skip for macos-12: issue with macOS-12/20221215.1
-      if: matrix.os != 'macos-12'
       uses: hendrikmuhs/ccache-action@v1.2.8
       with:
         key: ${{ github.job }}-${{ runner.os }}-ccache-${{ steps.current_time.outputs.formattedTime }}
