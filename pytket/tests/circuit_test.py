@@ -69,7 +69,7 @@ with open(curr_file_path.parent.parent / "schemas/circuit_v1.json", "r") as f:
     schema = json.load(f)
 
 
-def json_validate(circ: Circuit) -> bool:
+def json_validate(circ: Circuit) -> bool:  # type: ignore
     serializable_form = circ.to_dict()
     validate(instance=serializable_form, schema=schema)
     return circ == Circuit.from_dict(serializable_form)
