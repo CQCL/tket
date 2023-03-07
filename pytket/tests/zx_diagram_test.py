@@ -31,6 +31,7 @@ from pytket.zx import (  # type: ignore
     DirectedGen,
     ZXBox,
 )
+from typing import Tuple
 
 have_quimb: bool = True
 try:
@@ -878,7 +879,7 @@ def test_ZX_rebase() -> None:
     assert np.allclose(tensor, t2)
 
 
-def joint_normalise(a, b):
+def joint_normalise(a: np.ndarray, b: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
     max_i = 0
     max_val = 0
     for i in range(a.shape[1]):
