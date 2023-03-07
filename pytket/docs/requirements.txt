@@ -1,5 +1,5 @@
 sphinx >= 4.5
 sphinx_autodoc_annotation >= 1.0
-sphinx_book_theme == 0.3.3
+sphinx_book_theme ~= 0.3.3
 sphinx-copybutton
 jupyter-sphinx
