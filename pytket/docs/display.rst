@@ -3,7 +3,11 @@ pytket.circuit.display
 
 Contains several functions for rendering interactive circuit diagrams.
 
-.. note:: Rendering circuits in jupyter notebooks with ``pytket.circuit.display`` requires an internet connection as the source code is in a `remote github repository <https://github.com/CQCL/pytket-circuit-renderer>`_ and is not installed with the pytket python package. Using the circuit renderer offline can be done by installing the `pytket-offline_display extension <https://github.com/CQCL/pytket-offline-renderer>`_. 
+.. note:: Rendering circuits with ``pytket.circuit.display`` requires an internet connection. Using the pytket circuit renderer offline can be done by installing the `pytket-offline_display extension <https://github.com/CQCL/pytket-offline-renderer>`_.
+
+    ::
+
+        pip install pytket-offline_display 
 
 .. automodule:: pytket.circuit.display
     :members: render_circuit_jupyter, render_circuit_as_html, view_browser
