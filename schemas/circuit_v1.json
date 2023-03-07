@@ -508,6 +508,36 @@
         },
         "tab": {
           "$ref": "#/definitions/unitary_tableau"
+        },
+        "op_map": {
+          "type": "array",
+          "description": "Operation map for multiplexors.",
+          "items": {
+            "type": "array",
+            "items": [
+              {
+                "type": "array",
+                "items": {
+                  "type": "boolean"
+                }
+              },
+              {
+                "$ref": "#/definitions/operation"
+              }
+            ]
+          }
+        },
+        "impl_diag": {
+          "type": "boolean",
+          "description": "Indicate whether to implement the digonal operator from MultiplexedU2 decomposition."
+        },
+        "statevector": {
+          "$ref": "#/definitions/matrix",
+          "description": "Statevector represented by StatePreparationBox."
+        },
+        "is_inverse": {
+          "type": "boolean",
+          "description": "Indicate whether to implement the dagger of a StatePreparationBox."
         }
       },
       "required": [
@@ -599,6 +629,64 @@
             "required": [
               "cycles",
               "n_qubits"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "MultiplexorBox"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "op_map"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "MultiplexedRotationBox"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "op_map"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "MultiplexedU2Box"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "op_map",
+              "impl_diag"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "StatePreparationBox"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "statevector",
+              "is_inverse"
             ]
           }
         },
