@@ -15,7 +15,7 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any, ClassVar, Dict, Optional, Type, TypeVar
-from dataclasses import asdict
+from dataclasses import asdict, dataclass
 import json
 import os
 
@@ -90,6 +90,7 @@ def write_config_file(config: PytketConfig) -> None:
 T_ext = TypeVar("T_ext", bound="PytketExtConfig")
 
 
+@dataclass
 class PytketExtConfig(ABC):
     """Abstract base class for pytket extension config classes."""
 
