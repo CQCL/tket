@@ -496,6 +496,10 @@ PYBIND11_MODULE(circuit, m) {
       .value(
           "MultiplexedU2Box", OpType::MultiplexedU2Box,
           "A multiplexed U2 gate (i.e. uniformly controlled U2 gate)")
+      .value(
+          "StatePreparationBox", OpType::StatePreparationBox,
+          "A box for preparing quantum states using multiplexed-Ry and "
+          "multiplexed-Rz gates")
       .def_static(
           "from_name", [](const json &j) { return j.get<OpType>(); },
           "Construct from name");

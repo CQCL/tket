@@ -18,6 +18,7 @@
 #include "Mapping/Verification.hpp"
 #include "OpType/OpTypeFunctions.hpp"
 #include "Placement/Placement.hpp"
+#include "Transformations/MeasurePass.hpp"
 #include "Utils/MatrixAnalysis.hpp"
 #include "Utils/UnitID.hpp"
 
@@ -65,6 +66,7 @@ const std::string& predicate_name(std::type_index idx) {
       SET_PRED_NAME(NoClassicalBitsPredicate),
       SET_PRED_NAME(NoClassicalControlPredicate),
       SET_PRED_NAME(NoFastFeedforwardPredicate),
+      SET_PRED_NAME(CommutableMeasuresPredicate),
       SET_PRED_NAME(NoMidMeasurePredicate),
       SET_PRED_NAME(NoSymbolsPredicate),
       SET_PRED_NAME(GlobalPhasedXPredicate),
@@ -546,66 +548,34 @@ PredicatePtr NoBarriersPredicate::meet(const Predicate& other) const {
 
 std::string NoBarriersPredicate::to_string() const { return auto_name(*this); }
 
-static bool mid_measure_helper(const Command& com, unit_set_t& measured_units) {
-  // Rejects gates acting on measured_units
-  // Encountering a measurement adds the qubit and bit to measured_units
-  // Returns whether or not a mid-circuit measurement is found
-  // Applies recursively for CircBoxes
-  if (com.get_op_ptr()->get_type() == OpType::Conditional) {
-    unit_vector_t all_args = com.get_args();
-    const Conditional& cond =
-        static_cast<const Conditional&>(*com.get_op_ptr());
-    unit_vector_t::iterator arg_it = all_args.begin();
-    for (unsigned i = 0; i < cond.get_width(); ++i) {
-      if (measured_units.find(*arg_it) != measured_units.end()) return false;
-      ++arg_it;
-    }
-    unit_vector_t new_args = {arg_it, all_args.end()};
-    Command new_com = {cond.get_op(), new_args};
-    return mid_measure_helper(new_com, measured_units);
-  } else if (
-      com.get_op_ptr()->get_type() == OpType::CircBox ||
-      com.get_op_ptr()->get_type() == OpType::CustomGate) {
-    const Box& box = static_cast<const Box&>(*com.get_op_ptr());
-    unit_map_t interface;
-    unit_set_t inner_set;
-    unsigned q_count = 0;
-    unsigned b_count = 0;
-    for (const UnitID& u : com.get_args()) {
-      UnitID inner_unit = (u.type() == UnitType::Qubit)
-                              ? static_cast<UnitID>(Qubit(q_count++))
-                              : static_cast<UnitID>(Bit(b_count++));
-      interface.insert({inner_unit, u});
-      if (measured_units.find(u) != measured_units.end()) {
-        inner_set.insert(inner_unit);
-      }
-    }
-    for (const Command& c : *box.to_circuit()) {
-      if (!mid_measure_helper(c, inner_set)) return false;
-    }
-    for (const UnitID& u : inner_set) {
-      measured_units.insert(interface.at(u));
-    }
-    return true;
-  } else if (com.get_op_ptr()->get_type() == OpType::Measure) {
-    std::pair<unit_set_t::iterator, bool> q_inserted =
-        measured_units.insert(com.get_args().at(0));
-    std::pair<unit_set_t::iterator, bool> c_inserted =
-        measured_units.insert(com.get_args().at(1));
-    return q_inserted.second && c_inserted.second;
-  } else {
-    for (const UnitID& a : com.get_args()) {
-      if (measured_units.find(a) != measured_units.end()) return false;
-    }
-    return true;
-  }
+bool CommutableMeasuresPredicate::verify(const Circuit& circ) const {
+  if (circ.n_bits() == 0) return true;
+  // run_delay_measures_ will not modify the circuit when dry_run is true
+  Circuit& mutable_circ = const_cast<Circuit&>(circ);
+  return Transforms::DelayMeasures::run_delay_measures(
+             mutable_circ, false, true)
+      .second;
+}
+
+bool CommutableMeasuresPredicate::implies(const Predicate& other) const {
+  return auto_implication(*this, other);
+}
+
+PredicatePtr CommutableMeasuresPredicate::meet(const Predicate& other) const {
+  return auto_meet(*this, other);
+}
+
+std::string CommutableMeasuresPredicate::to_string() const {
+  return auto_name(*this);
 }
 
 bool NoMidMeasurePredicate::verify(const Circuit& circ) const {
   if (circ.n_bits() == 0) return true;
   unit_set_t measured_units;
   for (const Command& com : circ) {
-    if (!mid_measure_helper(com, measured_units)) return false;
+    if (!Transforms::DelayMeasures::check_only_end_measures(
+            com, measured_units))
+      return false;
   }
   return true;
 }
@@ -754,6 +724,10 @@ void to_json(nlohmann::json& j, const PredicatePtr& pred_ptr) {
           std::dynamic_pointer_cast<NoBarriersPredicate>(pred_ptr)) {
     j["type"] = "NoBarriersPredicate";
   } else if (
+      std::shared_ptr<CommutableMeasuresPredicate> cast_pred =
+          std::dynamic_pointer_cast<CommutableMeasuresPredicate>(pred_ptr)) {
+    j["type"] = "CommutableMeasuresPredicate";
+  } else if (
       std::shared_ptr<NoMidMeasurePredicate> cast_pred =
           std::dynamic_pointer_cast<NoMidMeasurePredicate>(pred_ptr)) {
     j["type"] = "NoMidMeasurePredicate";
@@ -809,6 +783,8 @@ void from_json(const nlohmann::json& j, PredicatePtr& pred_ptr) {
     pred_ptr = std::make_shared<MaxNQubitsPredicate>(n_qubits);
   } else if (classname == "NoBarriersPredicate") {
     pred_ptr = std::make_shared<NoBarriersPredicate>();
+  } else if (classname == "CommutableMeasuresPredicate") {
+    pred_ptr = std::make_shared<CommutableMeasuresPredicate>();
   } else if (classname == "NoMidMeasurePredicate") {
     pred_ptr = std::make_shared<NoMidMeasurePredicate>();
   } else if (classname == "NoSymbolsPredicate") {

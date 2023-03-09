@@ -1,0 +1,36 @@
+
+
+{% macro show_circuit_page(display_options, circuit_json, uid) %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    {% include "html/head_imports.html" %}
+</head>
+<body>
+    <div id="circuit-display-vue-container-{{uid}}" class="pytket-circuit-display-container">
+        <div style="display: none">
+            <div id="circuit-json-to-display">{{ circuit_json }}</div>
+        </div>
+        <circuit-display-container :circuit-element-str="'#circuit-json-to-display'"></circuit-display-container>
+    </div>
+    <script type="application/javascript">
+      const circuitRendererUid = "{{ uid }}";
+
+      {% include_raw "js/main.js" %}
+    </script>
+</body>
+</html>
+{% endmacro %}
+
+{% if jupyter %}
+
+<iframe srcdoc="{{ show_circuit_page(display_options, circuit_json, uid)|escape }}"
+        width="100%" height="200px"
+        style="border: none; outline: none; resize: vertical; overflow: auto"></iframe>
+
+{% else %}
+
+{{ show_circuit_page(display_options, circuit_json, uid) }}
+
+{% endif %}

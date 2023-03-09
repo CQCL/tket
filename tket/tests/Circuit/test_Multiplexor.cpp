@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -23,19 +23,10 @@
 #include "Eigen/src/Core/Matrix.h"
 #include "Gate/SymTable.hpp"
 #include "Simulation/CircuitSimulator.hpp"
+#include "Utils/HelperFunctions.hpp"
 
 namespace tket {
 namespace test_Multiplexor {
-
-static std::vector<bool> dec_to_bin(unsigned dec, unsigned width) {
-  // TODO 32 should be specified somewhere
-  auto bs = std::bitset<32>(dec);
-  std::vector<bool> bits(width);
-  for (unsigned i = 0; i < width; i++) {
-    bits[width - i - 1] = bs[i];
-  }
-  return bits;
-}
 
 static bool check_multiplexor(
     const ctrl_op_map_t &op_map, const Circuit &circ) {

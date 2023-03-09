@@ -206,6 +206,13 @@ PYBIND11_MODULE(predicates, m) {
       "Predicate asserting that a circuit contains no Barrier operations.")
       .def(py::init<>(), "Constructor.");
   py::class_<
+      CommutableMeasuresPredicate, std::shared_ptr<CommutableMeasuresPredicate>,
+      Predicate>(
+      m, "CommutableMeasuresPredicate",
+      "Predicate asserting that all measurements can be delayed to the end of "
+      "the circuit.")
+      .def(py::init<>(), "Constructor.");
+  py::class_<
       NoMidMeasurePredicate, std::shared_ptr<NoMidMeasurePredicate>, Predicate>(
       m, "NoMidMeasurePredicate",
       "Predicate asserting that all measurements occur at the end of the "

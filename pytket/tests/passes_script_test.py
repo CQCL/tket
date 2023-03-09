@@ -20,6 +20,7 @@ from pytket.passes import (  # type: ignore
     CliffordSimp,
     ContextSimp,
     DecomposeBoxes,
+    DelayMeasures,
     EulerAngleReduction,
     FullPeepholeOptimise,
     OptimisePhaseGadgets,
@@ -110,6 +111,10 @@ def test_grammar() -> None:
         (
             "FullPeepholeOptimiseNoSwaps",
             FullPeepholeOptimise(allow_swaps=False),
+        ),
+        (
+            "TryDelayMeasures",
+            DelayMeasures(allow_partial=True),
         ),
     ],
 )

@@ -22,86 +22,131 @@ import uuid
 import webbrowser
 from typing import Dict, Optional, Union, cast
 
-import jinja2
+from jinja2 import Environment, PrefixLoader, FileSystemLoader, nodes
+from jinja2.ext import Extension
+from jinja2.utils import markupsafe
+from jinja2.parser import Parser
 
 from pytket.circuit import Circuit  # type: ignore
+
+
+# js scripts to be loaded must not be parsed as template files.
+class IncludeRawExtension(Extension):
+    tags = {"include_raw"}
+
+    def parse(self, parser: Parser) -> nodes.Output:
+        lineno = parser.stream.expect("name:include_raw").lineno
+        template = parser.parse_expression()
+        result = self.call_method("_render", [template], lineno=lineno)
+        return nodes.Output([result], lineno=lineno)
+
+    def _render(self, filename: str) -> markupsafe.Markup:
+        if self.environment.loader is not None:
+            return markupsafe.Markup(
+                self.environment.loader.get_source(self.environment, filename)[0]
+            )
+        else:
+            return markupsafe.Markup("")
+
 
 # Set up jinja to access our templates
 dirname = os.path.dirname(__file__)
 
-loader = jinja2.FileSystemLoader(searchpath=dirname)
-env = jinja2.Environment(loader=loader)
+# Define the base loaders.
+html_loader = FileSystemLoader(searchpath=os.path.join(dirname, "static"))
+js_loader = FileSystemLoader(searchpath=os.path.join(dirname, "js"))
+
+loader = PrefixLoader(
+    {
+        "html": html_loader,
+        "js": js_loader,
+    }
+)
+
+jinja_env = Environment(loader=loader, extensions=[IncludeRawExtension])
 
 RenderCircuit = Union[Dict[str, Union[str, float, dict]], Circuit]
 
 
-def render_circuit_as_html(
-    circuit: RenderCircuit,
-    jupyter: bool = False,
-) -> Optional[str]:
-    """
-    Render a circuit as HTML for inline display.
+class CircuitRenderer:
+    """Class to manage circuit rendering within a given jinja2 environment."""
 
-    :param circuit: the circuit to render.
-    :param jupyter: set to true to render generated HTML in cell output.
-    """
-    if not isinstance(circuit, Circuit):
-        circuit = Circuit.from_dict(circuit)
+    def __init__(self, env: Environment):
+        self.env = env
 
-    uid = uuid.uuid4()
-    html_template = env.get_template("circuit.html")
-    html = html_template.render(
-        {
-            "circuit_json": json.dumps(circuit.to_dict()),
-            "uid": uid,
-            "jupyter": jupyter,
-        }
-    )
-    if jupyter:
-        # If we are in a notebook, we can tell jupyter to display the html.
-        # We don't import at the top in case we are not in a notebook environment.
-        from IPython.display import (  # type: ignore
-            HTML,
-            display,
-        )  # pylint: disable=C0415
+    def render_circuit_as_html(
+        self, circuit: RenderCircuit, jupyter: bool = False
+    ) -> Optional[str]:
+        """
+        Render a circuit as HTML for inline display.
 
-        display(HTML(html))
-        return None
+        :param circuit: the circuit to render.
+        :param jupyter: set to true to render generated HTML in cell output.
+        """
 
-    return html
+        if not isinstance(circuit, Circuit):
+            circuit = Circuit.from_dict(circuit)
+
+        uid = uuid.uuid4()
+        html_template = self.env.get_template("html/circuit.html")
+        html = html_template.render(
+            {
+                "circuit_json": json.dumps(circuit.to_dict()),
+                "uid": uid,
+                "jupyter": jupyter,
+            }
+        )
+        if jupyter:
+            # If we are in a notebook, we can tell jupyter to display the html.
+            # We don't import at the top in case we are not in a notebook environment.
+            from IPython.display import (  # type: ignore
+                HTML,
+                display,
+            )  # pylint: disable=C0415
+
+            display(HTML(html))
+            return None
+
+        return html
+
+    def render_circuit_jupyter(self, circuit: RenderCircuit) -> None:
+        """Render a circuit as jupyter cell output.
+
+        :param circuit: the circuit to render.
+        """
+        self.render_circuit_as_html(circuit, True)
+
+    def view_browser(
+        self, circuit: RenderCircuit, browser_new: int = 2, sleep: int = 5
+    ) -> None:
+        """Write circuit render html to a tempfile and open in browser.
+
+        Waits for some time for browser to load then deletes tempfile.
+
+        :param circuit: the Circuit or serialized Circuit to render.
+        :param browser_new: ``new`` parameter to ``webbrowser.open``, default 2.
+        :param sleep: Number of seconds to sleep before deleting file, default 5.
+
+        """
+
+        fp = tempfile.NamedTemporaryFile(
+            mode="w", suffix=".html", delete=False, dir=os.getcwd()
+        )
+        try:
+            fp.write(cast(str, self.render_circuit_as_html(circuit)))
+            fp.close()
+
+            webbrowser.open("file://" + os.path.realpath(fp.name), new=browser_new)
+
+            # give browser enough time to open before deleting file
+            time.sleep(sleep)
+        finally:
+            os.remove(fp.name)
 
 
-def render_circuit_jupyter(
-    circuit: RenderCircuit,
-) -> None:
-    """Render a circuit as jupyter cell output.
+# Export the render functions scoped to the default jinja environment.
+circuit_renderer = CircuitRenderer(jinja_env)
 
-    :param circuit: the circuit to render.
-    """
-    render_circuit_as_html(circuit, True)
-
-
-def view_browser(circuit: RenderCircuit, browser_new: int = 2, sleep: int = 5) -> None:
-    """Write circuit render html to a tempfile and open in browser.
-
-    Waits for some time for browser to load then deletes tempfile.
-
-    :param circuit: the Circuit or serialized Circuit to render.
-    :param browser_new: ``new`` parameter to ``webbrowser.open``, default 2.
-    :param sleep: Number of seconds to sleep before deleting file, default 5.
-
-    """
-
-    fp = tempfile.NamedTemporaryFile(
-        mode="w", suffix=".html", delete=False, dir=os.getcwd()
-    )
-    try:
-        fp.write(cast(str, render_circuit_as_html(circuit)))
-        fp.close()
-
-        webbrowser.open("file://" + os.path.realpath(fp.name), new=browser_new)
-
-        # give browser enough time to open before deleting file
-        time.sleep(sleep)
-    finally:
-        os.remove(fp.name)
+render_circuit_as_html = circuit_renderer.render_circuit_as_html
+render_circuit_jupyter = circuit_renderer.render_circuit_jupyter
+view_browser = circuit_renderer.view_browser

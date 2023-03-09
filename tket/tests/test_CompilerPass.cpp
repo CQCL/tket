@@ -33,6 +33,7 @@
 #include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
 #include "Transformations/ContextualReduction.hpp"
+#include "Transformations/MeasurePass.hpp"
 #include "Transformations/OptimisationPass.hpp"
 #include "Transformations/PauliOptimisation.hpp"
 #include "Transformations/Rebase.hpp"
@@ -1207,6 +1208,7 @@ SCENARIO("Compose Pauli Graph synthesis Passes") {
 
 SCENARIO("Commute measurements to the end of a circuit") {
   PassPtr delay_pass = DelayMeasures();
+  PassPtr try_delay_pass = DelayMeasures(true);
   PredicatePtr mid_meas_pred = std::make_shared<NoMidMeasurePredicate>();
   GIVEN("Measurements already at end") {
     Circuit c(2, 2);
@@ -1244,7 +1246,14 @@ SCENARIO("Commute measurements to the end of a circuit") {
     c.add_op<unsigned>(OpType::Measure, {0, 0});
     c.add_op<unsigned>(OpType::Rx, 0.3, {0});
     CompilationUnit cu(c);
-    REQUIRE_THROWS_AS(delay_pass->apply(cu), CircuitInvalidity);
+    REQUIRE_THROWS_AS(delay_pass->apply(cu), UnsatisfiedPredicate);
+  }
+  GIVEN("Measure blocked by quantum gate, using a partial delay pass") {
+    Circuit c(1, 1);
+    c.add_op<unsigned>(OpType::Measure, {0, 0});
+    c.add_op<unsigned>(OpType::Rx, 0.3, {0});
+    CompilationUnit cu(c);
+    REQUIRE_FALSE(try_delay_pass->apply(cu));
   }
   GIVEN("Measure blocked by classical operation") {
     Circuit c(2, 1);
@@ -1252,7 +1261,15 @@ SCENARIO("Commute measurements to the end of a circuit") {
     c.add_op<unsigned>(OpType::Measure, {0, 0});
     c.add_op<unsigned>(OpType::Measure, {1, 0});
     CompilationUnit cu(c);
-    REQUIRE_THROWS_AS(delay_pass->apply(cu), CircuitInvalidity);
+    REQUIRE_THROWS_AS(delay_pass->apply(cu), UnsatisfiedPredicate);
+  }
+  GIVEN("Measure blocked by classical operation, using a partial delay pass") {
+    Circuit c(2, 1);
+    add_2qb_gates(c, OpType::Measure, {{0, 0}, {1, 0}});
+    c.add_op<unsigned>(OpType::Measure, {0, 0});
+    c.add_op<unsigned>(OpType::Measure, {1, 0});
+    CompilationUnit cu(c);
+    REQUIRE_FALSE(try_delay_pass->apply(cu));
   }
   GIVEN("Measure blocked by conditional operation") {
     Circuit c(2, 2);
@@ -1260,7 +1277,40 @@ SCENARIO("Commute measurements to the end of a circuit") {
     c.add_op<unsigned>(OpType::Measure, {0, 0});
     c.add_conditional_gate<unsigned>(OpType::Z, {}, {1}, {0}, 1);
     CompilationUnit cu(c);
-    REQUIRE_THROWS_AS(delay_pass->apply(cu), CircuitInvalidity);
+    REQUIRE_THROWS_AS(delay_pass->apply(cu), UnsatisfiedPredicate);
+  }
+  GIVEN(
+      "Measure partially blocked by conditional operation, using a partial "
+      "delay pass") {
+    Circuit c(2, 2);
+    c.add_op<unsigned>(OpType::CZ, {0, 1});
+    c.add_op<unsigned>(OpType::Measure, {0, 0});
+    c.add_op<unsigned>(OpType::Z, {0});
+    c.add_conditional_gate<unsigned>(OpType::Z, {}, {1}, {0}, 1);
+    CompilationUnit cu(c);
+    REQUIRE(try_delay_pass->apply(cu));
+  }
+  GIVEN("Call on invalid circuit without checking the predicate throws") {
+    Circuit c(2, 2);
+    c.add_op<unsigned>(OpType::CZ, {0, 1});
+    c.add_op<unsigned>(OpType::Measure, {0, 0});
+    c.add_conditional_gate<unsigned>(OpType::Z, {}, {1}, {0}, 1);
+    REQUIRE_THROWS_AS(Transforms::delay_measures().apply(c), CircuitInvalidity);
+  }
+  GIVEN(
+      "Call on invalid nested circuit without checking the predicate throws") {
+    Circuit inner1(1, 2);
+    inner1.add_conditional_gate<unsigned>(OpType::Measure, {}, {0, 0}, {1}, 1);
+    CircBox cbox1(inner1);
+
+    Circuit inner2(1, 2);
+    inner2.add_box(cbox1, {0, 0, 1});
+    CircBox cbox2(inner2);
+
+    Circuit c(1, 2);
+    c.add_box(cbox2, {0, 0, 1});
+    c.add_op<unsigned>(OpType::X, {0});
+    REQUIRE_THROWS_AS(Transforms::delay_measures().apply(c), CircuitInvalidity);
   }
   GIVEN("Combined with routing") {
     Circuit test(3, 1);
@@ -1435,6 +1485,48 @@ SCENARIO("CX mapping pass") {
     cu.get_circ_ref().get_commands();
     // Therefore this REQUIRE confirms that is not happening
     REQUIRE(true);
+  }
+  GIVEN("A circuit with a barrier and internal measurements.") {
+    Circuit circ(2);
+    Bit id(0);
+    circ.add_bit(id, false);
+    circ.add_measure(Qubit(0), id);
+    circ.add_barrier({0, 1});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    std::vector<std::pair<unsigned, unsigned>> edges = {{0, 1}};
+    Architecture arc(edges);
+    Placement::Ptr plptr = std::make_shared<Placement>(arc);
+    std::vector<RoutingMethodPtr> config = {
+        std::make_shared<LexiRouteRoutingMethod>()};
+    THEN("Mapping with delay_measurements fails on the predicate.") {
+      CompilationUnit cu(circ);
+      PassPtr pass = gen_cx_mapping_pass(arc, plptr, config, false, true);
+      REQUIRE_THROWS_AS(pass->apply(cu), UnsatisfiedPredicate);
+    }
+  }
+  GIVEN("A circuit with measurements inside boxes.") {
+    Circuit inner1(1, 2);
+    inner1.add_conditional_gate<unsigned>(OpType::Measure, {}, {0, 0}, {1}, 1);
+    CircBox cbox1(inner1);
+
+    Circuit inner2(1, 2);
+    inner2.add_box(cbox1, {0, 0, 1});
+    CircBox cbox2(inner2);
+
+    Circuit circ(1, 2);
+    circ.add_box(cbox2, {0, 0, 1});
+    circ.add_op<unsigned>(OpType::X, {0});
+
+    std::vector<std::pair<unsigned, unsigned>> edges = {};
+    Architecture arc(edges);
+    Placement::Ptr plptr = std::make_shared<Placement>(arc);
+    std::vector<RoutingMethodPtr> config = {
+        std::make_shared<LexiRouteRoutingMethod>()};
+    THEN("Mapping with delay_measurements fails on the predicate.") {
+      CompilationUnit cu(circ);
+      PassPtr pass = gen_cx_mapping_pass(arc, plptr, config, false, true);
+      REQUIRE_THROWS_AS(pass->apply(cu), UnsatisfiedPredicate);
+    }
   }
 }
 
