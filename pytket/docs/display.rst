@@ -7,7 +7,7 @@ Contains several functions for rendering interactive circuit diagrams.
 
     ::
 
-        pip install pytket-offline_display 
+        pip install pytket-offline-renderer
 
 .. automodule:: pytket.circuit.display
     :members: render_circuit_jupyter, render_circuit_as_html, view_browser
