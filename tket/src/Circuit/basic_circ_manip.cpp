@@ -81,30 +81,12 @@ Vertex Circuit::add_op<unsigned>(
     std::optional<std::string> opgroup) {
   op_signature_t sig = gate->get_signature();
 
-  // check if there is wasm in the signature
-  bool sig_contains_wasm = false;
-  for (EdgeType e : sig) {
-    if (e == EdgeType::WASM) {
-      sig_contains_wasm = true;
-      break;
-    }
-  }
-
-  // sig without wasm
-  if (sig.size() != args.size() && !sig_contains_wasm) {
+  if (sig.size() != args.size()) {
     throw CircuitInvalidity(
         std::to_string(args.size()) + " args provided, but " +
         gate->get_name() + " requires " + std::to_string(sig.size()));
   }
 
-  // sig with wasm
-  // there is only one or none wasm edge allowed in each signature
-  if (sig.size() != (args.size() + 1) && sig_contains_wasm) {
-    throw CircuitInvalidity(
-        std::to_string(args.size()) + " args provided, but " +
-        gate->get_name() + " requires " + std::to_string(sig.size()) +
-        ". The sig contains one wasm edge, which should not be given");
-  }
   OpType optype = gate->get_type();
   unit_vector_t arg_ids;
   for (unsigned i = 0; i < args.size(); ++i) {
@@ -483,15 +465,15 @@ register_t Circuit::add_c_register(std::string reg_name, unsigned size) {
   return ids;
 }
 
-void Circuit::add_wasm_register() {
-  if (!wasm_added) {
+void Circuit::add_wasm_register(std::size_t number_of_wasm_wire_) {
+  while (number_of_wasm_wire_ > _number_of_wasm_wire) {
     Vertex in = add_vertex(OpType::WASMInput);
     Vertex out = add_vertex(OpType::WASMOutput);
     add_edge({in, 0}, {out, 0}, EdgeType::WASM);
-    WASMUID wuid = WASMUID();
-    wasmwire = wuid;
-    boundary.insert({wasmwire, in, out});
-    wasm_added = true;
+    WasmWireUID wuid = WasmWireUID(_number_of_wasm_wire);
+    wasmwire.push_back(wuid);
+    boundary.insert({wuid, in, out});
+    ++_number_of_wasm_wire;
   }
 }
 
@@ -537,6 +519,7 @@ void Circuit::rewire(
 
       add_edge({old_v1, port1}, {new_vert, i}, insert_type);
     } else {
+      // this will be hit
       TKET_ASSERT(insert_type == replace_type);  // Cannot rewire; type of edge
 
       add_edge({old_v1, port1}, {new_vert, i}, insert_type);

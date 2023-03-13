@@ -419,9 +419,11 @@ class Circuit {
   VertexVec all_inputs() const;
   VertexVec q_inputs() const;
   VertexVec c_inputs() const;
+  VertexVec w_inputs() const;
   VertexVec all_outputs() const;
   VertexVec q_outputs() const;
   VertexVec c_outputs() const;
+  VertexVec w_outputs() const;
 
   qubit_vector_t all_qubits() const;
   qubit_vector_t created_qubits() const;
@@ -978,7 +980,7 @@ class Circuit {
   void add_bit(const Bit &id, bool reject_dups = true);
   register_t add_q_register(std::string reg_name, unsigned size);
   register_t add_c_register(std::string reg_name, unsigned size);
-  void add_wasm_register();
+  void add_wasm_register(std::size_t numer_of_wasm_wire = 1);
 
   /**
    * Create the given qubit in the zero state at the beginning of the circuit.
@@ -1619,8 +1621,8 @@ class Circuit {
   // currently public (no bueno)
   DAG dag; /** Representation as directed graph */
   boundary_t boundary;
-  bool wasm_added = false;
-  WASMUID wasmwire;
+  std::vector<WasmWireUID> wasmwire;
+  std::size_t _number_of_wasm_wire = 0;
 
  private:
   std::optional<std::string>
@@ -1707,6 +1709,7 @@ template <>
 Vertex Circuit::add_op<unsigned>(
     const Op_ptr &op, const std::vector<unsigned> &args,
     std::optional<std::string> opgroup);
+
 template <class ID>
 Vertex Circuit::add_op(
     const Op_ptr &op, const std::vector<ID> &args,
@@ -1715,28 +1718,16 @@ Vertex Circuit::add_op(
   op_signature_t sig = op->get_signature();
 
   // check if there is wasm in the signature
-  bool sig_contains_wasm = false;
+  unsigned count_wasm_sig = 0;
   for (EdgeType e : sig) {
     if (e == EdgeType::WASM) {
-      sig_contains_wasm = true;
-      break;
+      ++count_wasm_sig;
     }
   }
-
-  // sig without wasm
-  if (sig.size() != args.size() && !sig_contains_wasm) {
+  if (sig.size() != args.size()) {
     throw CircuitInvalidity(
         std::to_string(args.size()) + " args provided, but " + op->get_name() +
         " requires " + std::to_string(sig.size()));
-  }
-
-  // sig with wasm
-  // there is only one or none wasm edge allowed in each signature
-  if (sig.size() != (args.size() + 1) && sig_contains_wasm) {
-    throw CircuitInvalidity(
-        std::to_string(args.size()) + " args provided, but " + op->get_name() +
-        " requires " + std::to_string(sig.size()) +
-        ". The sig contains one wasm edge, which should not be given");
   }
 
   if (opgroup) {
@@ -1749,6 +1740,8 @@ Vertex Circuit::add_op(
       opgroupsigs[opgroup.value()] = sig;
     }
   }
+
+  add_wasm_register(count_wasm_sig);
 
   Vertex new_v = add_vertex(op, opgroup);
   unit_set_t write_arg_set;
@@ -1765,19 +1758,7 @@ Vertex Circuit::add_op(
     Edge pred_out_e = get_nth_in_edge(out_vert, 0);
     preds.push_back(pred_out_e);
   }
-  if (sig_contains_wasm) {
-    if (!wasm_added) {
-      add_wasm_register();
-    }
-    if (sig[args.size()] == EdgeType::WASM) {
-      Vertex out_vert = get_out(wasmwire);
-      Edge pred_out_e = get_nth_in_edge(out_vert, 0);
-      preds.push_back(pred_out_e);
-    } else {
-      throw CircuitInvalidity(
-          "The last element of the signature should be wasm for OpType::WASM");
-    }
-  }
+
   rewire(new_v, preds, sig);
   return new_v;
 }

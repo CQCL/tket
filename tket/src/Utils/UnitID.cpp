@@ -39,15 +39,11 @@ void from_json(const nlohmann::json& j, Qubit& qb) { json_to_unitid(j, qb); }
 void to_json(nlohmann::json& j, const Bit& cb) { unitid_to_json(j, cb); }
 void from_json(const nlohmann::json& j, Bit& cb) { json_to_unitid(j, cb); }
 
+void to_json(nlohmann::json& j, const WasmWireUID& wb) { unitid_to_json(j, wb); }
+void from_json(const nlohmann::json& j, WasmWireUID& wb) { json_to_unitid(j, wb); }
+
 void to_json(nlohmann::json& j, const Node& node) { unitid_to_json(j, node); }
 void from_json(const nlohmann::json& j, Node& node) { json_to_unitid(j, node); }
-
-void to_json(nlohmann::json&, const WASMUID&) {
-  throw std::logic_error("wasm to json conversion");
-}
-void from_json(const nlohmann::json&, WASMUID&) {
-  throw std::logic_error("json to wasm conversion");
-}
 
 void to_json(nlohmann::json& j, const qubit_map_t& qm) {
   for (const auto& pair : qm) {
@@ -80,6 +76,12 @@ const std::string& q_default_reg() {
 const std::string& c_default_reg() {
   static std::unique_ptr<const std::string> regname =
       std::make_unique<const std::string>("c");
+  return *regname;
+}
+
+const std::string& w_default_reg() {
+  static std::unique_ptr<const std::string> regname =
+      std::make_unique<const std::string>("_wasm_wire");
   return *regname;
 }
 

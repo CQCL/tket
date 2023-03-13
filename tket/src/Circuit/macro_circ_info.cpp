@@ -381,7 +381,7 @@ static std::shared_ptr<b_frontier_t> get_next_b_frontier(
         if (next_slice_lookup.find(next_v) == next_slice_lookup.end()) continue;
         if (next_b_frontier->get<TagKey>().find(Bit(pair.first)) !=
             next_b_frontier->end()) {
-          throw CircuitInvalidity("RAW hazard created in slicing");
+          TKET_ASSERT(!"RAW hazard created in slicing");
         }
         port_t p = circ.get_target_port(pair.second);
         EdgeVec reads = circ.get_nth_b_out_bundle(next_v, p);
@@ -404,11 +404,7 @@ CutFrontier Circuit::next_cut(
   VertexSet bad_vertices;
   std::list<Edge> all_edges;
   EdgeSet edge_lookup;
-  bool found_wasm = false;
   for (const std::pair<UnitID, Edge>& pair : u_frontier->get<TagKey>()) {
-    if (pair.first.type() == UnitType::WASMUIDT) {
-      found_wasm = true;
-    }
     if (pair.first.type() == UnitType::Bit) {
       Vertex targ = target(pair.second);
       b_frontier_t::const_iterator found =
@@ -427,9 +423,6 @@ CutFrontier Circuit::next_cut(
     all_edges.push_back(pair.second);
     edge_lookup.insert(pair.second);
   }
-
-  if (!found_wasm && wasm_added)
-    throw std::logic_error("PROBLEM - NO found wasm uid in circuit");
 
   for (const std::pair<Bit, EdgeVec>& pair : b_frontier->get<TagKey>()) {
     for (const Edge& e : pair.second) {
@@ -785,12 +778,11 @@ Circuit::SliceIterator::SliceIterator(const Circuit& circ)
     cut_.u_frontier->insert({b, circ.get_nth_out_edge(in, 0)});
   }
 
-  // add wasmuid to u_frontier
-  if (circ.wasm_added) {
-    Vertex in = circ.get_in(circ.wasmwire);
-    cut_.slice->push_back(in);  // why?
-    cut_.u_frontier->insert({circ.wasmwire, circ.get_nth_out_edge(in, 0)});
-    // throw std::logic_error("added wasm to u frontier - no skip");
+  // add wasmwireuid to u_frontier
+  for (unsigned i = 0; i < circ._number_of_wasm_wire; ++i) {
+    Vertex in = circ.get_in(circ.wasmwire[i]);
+    cut_.slice->push_back(in);
+    cut_.u_frontier->insert({circ.wasmwire[i], circ.get_nth_out_edge(in, 0)});
   }
 
   prev_b_frontier_ = cut_.b_frontier;
@@ -827,10 +819,11 @@ Circuit::SliceIterator::SliceIterator(
     cut_.u_frontier->insert({b, circ.get_nth_out_edge(in, 0)});
   }
 
-  // add wasmuid to u_frontier
-  if (circ.wasm_added) {
-    Vertex in = circ.get_in(circ.wasmwire);
-    cut_.u_frontier->insert({circ.wasmwire, circ.get_nth_out_edge(in, 0)});
+  // add wasmwireuid to u_frontier
+  for (unsigned i = 0; i < circ._number_of_wasm_wire; ++i) {
+    Vertex in = circ.get_in(circ.wasmwire[i]);
+    cut_.slice->push_back(in);
+    cut_.u_frontier->insert({circ.wasmwire[i], circ.get_nth_out_edge(in, 0)});
   }
 
   prev_b_frontier_ = cut_.b_frontier;
@@ -914,7 +907,7 @@ Circuit::CommandIterator& Circuit::CommandIterator::operator++() {
     ++current_index_;
   }
   if (current_index_ == (*current_slice_iterator_).size()) {
-    throw std::logic_error("slice is empty");
+    TKET_ASSERT(!"slice is empty");
   }
   current_vertex_ = (*current_slice_iterator_)[current_index_];
   current_command_ = circ_->command_from_vertex(
@@ -931,7 +924,17 @@ unit_vector_t Circuit::args_from_frontier(
   for (port_t p = 0; p < ins.size(); ++p) {
     switch (get_edgetype(ins[p])) {
       case EdgeType::WASM: {
-        continue;
+        Edge out = get_next_edge(vert, ins[p]);
+        bool found = false;
+        for (const std::pair<UnitID, Edge>& pair : u_frontier->get<TagKey>()) {
+          if (pair.second == out) {
+            args.push_back(pair.first);
+            found = true;
+            break;
+          }
+        }
+        TKET_ASSERT(found);  // Vertex edges not found in frontier.
+        break;
       }
       case EdgeType::Boolean: {
         bool found = false;
@@ -948,12 +951,7 @@ unit_vector_t Circuit::args_from_frontier(
             break;
           }
         }
-        if (!found)
-          throw CircuitInvalidity(
-              "Vertex edges not found in Boolean frontier. Edge: " +
-              get_Op_ptr_from_Vertex(source(ins[p]))->get_name() + " -> " +
-              get_Op_ptr_from_Vertex(target(ins[p]))->get_name());
-
+        TKET_ASSERT(found);  // Vertex edges not found in Boolean frontier.
         break;
       }
       case EdgeType::Classical:

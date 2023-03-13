@@ -35,9 +35,7 @@ std::string Op::get_command_str(const unit_vector_t& args) const {
   if (!args.empty()) {
     out << " " << args[0].repr();
     for (unsigned i = 1; i < args.size(); i++) {
-      if (args[i].type() != UnitType::WASMUIDT) {
-        out << ", " << args[i].repr();
-      }
+      out << ", " << args[i].repr();
     }
   }
   out << ";";

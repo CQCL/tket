@@ -49,9 +49,7 @@ Circuit::Circuit(const Circuit &circ) : Circuit() {
   copy_graph(circ);
   phase = circ.get_phase();
   name = circ.name;
-  if (circ.wasm_added) {
-    add_wasm_register();
-  }
+  add_wasm_register(circ._number_of_wasm_wire);
 }
 
 // copy assignment. Moves boundary pointers.
@@ -62,7 +60,7 @@ Circuit &Circuit::operator=(const Circuit &other)  // (1)
   copy_graph(other);
   phase = other.get_phase();
   name = other.name;
-  if (other.wasm_added) add_wasm_register();
+  add_wasm_register(other._number_of_wasm_wire);
 
   return *this;
 }
@@ -96,6 +94,15 @@ VertexVec Circuit::c_inputs() const {
   return ins;
 }
 
+VertexVec Circuit::w_inputs() const {
+  VertexVec ins;
+  for (auto [it, end] = boundary.get<TagType>().equal_range(UnitType::WasmWireUID);
+       it != end; it++) {
+    ins.push_back(it->in_);
+  }
+  return ins;
+}
+
 VertexVec Circuit::all_outputs() const {
   VertexVec outs = q_outputs();
   VertexVec c_outs = c_outputs();
@@ -115,6 +122,15 @@ VertexVec Circuit::q_outputs() const {
 VertexVec Circuit::c_outputs() const {
   VertexVec outs;
   for (auto [it, end] = boundary.get<TagType>().equal_range(UnitType::Bit);
+       it != end; it++) {
+    outs.push_back(it->out_);
+  }
+  return outs;
+}
+
+VertexVec Circuit::w_outputs() const {
+  VertexVec outs;
+  for (auto [it, end] = boundary.get<TagType>().equal_range(UnitType::WasmWireUID);
        it != end; it++) {
     outs.push_back(it->out_);
   }

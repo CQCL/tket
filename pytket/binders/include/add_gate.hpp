@@ -72,6 +72,10 @@ static Circuit *add_gate_method(
           new_args.push_back(Qubit(args[i]));
           break;
         }
+        case EdgeType::WASM: {
+          new_args.push_back(WasmWireUID(args[i]));
+          break;
+        }
         case EdgeType::Classical:
         case EdgeType::Boolean: {
           new_args.push_back(Bit(args[i]));

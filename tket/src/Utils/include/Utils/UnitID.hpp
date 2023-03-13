@@ -35,7 +35,7 @@
 namespace tket {
 
 /** Type of information held */
-enum class UnitType { Qubit, Bit, WASMUIDT };
+enum class UnitType { Qubit, Bit, WasmWireUID };
 
 /** The type and dimension of a register */
 typedef std::pair<UnitType, unsigned> register_info_t;
@@ -44,6 +44,7 @@ typedef std::optional<register_info_t> opt_reg_info_t;
 
 const std::string &q_default_reg();
 const std::string &c_default_reg();
+const std::string &w_default_reg();
 const std::string &node_default_reg();
 const std::string &c_debug_zero_prefix();
 const std::string &c_debug_one_prefix();
@@ -220,19 +221,46 @@ class Bit : public UnitID {
   }
 };
 
-/** Location holding a wasm UID */
-class WASMUID : public UnitID {
- public:
-  WASMUID() : UnitID("_wasm_wire", {}, UnitType::WASMUIDT) {}
+JSON_DECL(Bit)
 
-  std::string wasm_givestring() {
-    throw std::logic_error(
-        "try to print wasm string, that should not happen\n");
-    return UnitID::repr();
+/** Location holding a wasm UID */
+class WasmWireUID : public UnitID {
+ public:
+
+  WasmWireUID() : UnitID(w_default_reg(), {}, UnitType::WasmWireUID) {}
+
+  /** Bit in default register */
+  explicit WasmWireUID(unsigned index)
+      : UnitID(w_default_reg(), {index}, UnitType::WasmWireUID) {}
+
+  /** Named register with no index */
+  explicit WasmWireUID(const std::string &name)
+      : UnitID(name, {}, UnitType::WasmWireUID) {}
+
+  /** Named register with a one-dimensional index */
+  WasmWireUID(const std::string &name, unsigned index)
+      : UnitID(name, {index}, UnitType::WasmWireUID) {}
+
+  /** Named register with a two-dimensional index */
+  WasmWireUID(const std::string &name, unsigned row, unsigned col)
+      : UnitID(name, {row, col}, UnitType::WasmWireUID) {}
+
+  /** Named register with a three-dimensional index */
+  WasmWireUID(const std::string &name, unsigned row, unsigned col, unsigned layer)
+      : UnitID(name, {row, col, layer}, UnitType::WasmWireUID) {}
+
+  /** Named register with a multi-dimensional index */
+  WasmWireUID(const std::string &name, std::vector<unsigned> index)
+      : UnitID(name, index, UnitType::WasmWireUID) {}
+
+  explicit WasmWireUID(const UnitID &other) : UnitID(other) {
+    if (other.type() != UnitType::WasmWireUID) {
+      throw InvalidUnitConversion(other.repr(), "WasmWireUID");
+    }
   }
 };
 
-JSON_DECL(Bit)
+JSON_DECL(WasmWireUID)
 
 /** Architectural qubit location */
 class Node : public Qubit {
@@ -263,9 +291,9 @@ class Node : public Qubit {
 JSON_DECL(Node)
 
 /** WASM UID */
-class WasmNode : public WASMUID {
+class WasmNode : public WasmWireUID {
  public:
-  WasmNode() : WASMUID() {}
+  WasmNode() : WasmWireUID() {}
 };
 
 JSON_DECL(WasmNode)

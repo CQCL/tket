@@ -46,7 +46,7 @@ enum class EdgeType {
 
   /**
    * A wire to connect the wasm ops in the order they should be executed in.
-   * Corresponding to some allocated @ref WASMUID.
+   * Corresponding to some allocated @ref WasmWireUID.
    */
   WASM
 };

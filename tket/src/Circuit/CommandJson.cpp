@@ -30,11 +30,18 @@ void to_json(nlohmann::json& j, const Command& com) {
   const op_signature_t& sig = op->get_signature();
   const unit_vector_t& args = com.get_args();
 
+  if (sig.size() != args.size()) {
+    JsonError("Number of args does not match signature of op.");
+  }
+
   nlohmann::json j_args;
+
   for (size_t i = 0; i < sig.size(); i++) {
     switch (sig[i]) {
       case EdgeType::WASM: {
-        continue;
+        const WasmWireUID& wb = static_cast<const WasmWireUID&>(args[i]);
+        j_args.push_back(wb);
+        break;
       }
       case EdgeType::Quantum: {
         const Qubit& qb = static_cast<const Qubit&>(args[i]);
@@ -71,6 +78,7 @@ void from_json(const nlohmann::json& j, Command& com) {
   for (size_t i = 0; i < sig.size(); i++) {
     switch (sig[i]) {
       case EdgeType::WASM: {
+        args.push_back(j_args[i].get<WasmWireUID>());
         break;
       }
       case EdgeType::Quantum: {
@@ -87,7 +95,6 @@ void from_json(const nlohmann::json& j, Command& com) {
       }
     }
   }
-
   com = Command(op, args, opgroup);
 }
 

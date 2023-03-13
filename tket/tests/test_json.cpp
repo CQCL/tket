@@ -157,28 +157,27 @@ SCENARIO("Test Command serialization") {
     check_cases(c1.get_commands());
   }
   GIVEN("check wasm operations") {
+    // current issue
     std::string wasm_file = "string/with/path/to/wasm/file";
     std::string wasm_func = "stringNameOfWASMFunc";
 
     std::vector<unsigned> uv = {2, 1};
 
-    std::vector<unsigned> uv_2 = {1};
-
-    std::vector<unsigned> uv_3 = {};
-
     const std::shared_ptr<WASMOp> wop_ptr =
-        std::make_shared<WASMOp>(6, uv, uv, wasm_func, wasm_file);
+        std::make_shared<WASMOp>(6, 1, uv, uv, wasm_func, wasm_file);
 
     Circuit c(7, 7);
     c.add_op<unsigned>(OpType::X, {0});
     c.add_op<unsigned>(OpType::H, {1});
     c.add_op<unsigned>(OpType::H, {2});
     c.add_op<unsigned>(OpType::CY, {1, 2});
-    c.add_op<unsigned>(wop_ptr, {0, 1, 2, 3, 4, 5});
+    c.add_op<UnitID>(
+        wop_ptr, {Bit(0), Bit(1), Bit(2), Bit(3), Bit(4), Bit(5), WasmWireUID(0)});
     c.add_op<unsigned>(OpType::Measure, {0, 0});
     c.add_op<unsigned>(OpType::Measure, {1, 1});
     c.add_op<unsigned>(OpType::Measure, {2, 2});
     check_cases(c.get_commands());
+    CHECK(serialize_deserialize(c));
   }
 }
 

@@ -158,13 +158,16 @@ class WASMOp : public ClassicalOp {
    * output with the call to which function of the wasm file
    *
    * @param _n total number bits it is interacting with
-   * @param _ni_vec vector of bits for each input i32
-   * @param _no_vec vector of bits for each output i32
+   * @param _ww_n total number bits it is interacting with
+   * @param _width_i_parameter vector of bits for each input i32
+   * @param _width_o_parameter vector of bits for each output i32
    * @param _func_name name of the function
    * @param _wasm_uid uid of the wasm file to be called
    */
   WASMOp(
-      unsigned _n, std::vector<unsigned> _ni_vec, std::vector<unsigned> _no_vec,
+      unsigned _n, unsigned _ww_n,
+      std::vector<unsigned> _width_i_parameter,
+      std::vector<unsigned> _width_o_parameter,
       const std::string &_func_name, const std::string &_wasm_uid);
 
   /**
@@ -193,6 +196,11 @@ class WASMOp : public ClassicalOp {
   unsigned get_n() const { return n_; }
 
   /**
+   * returns the number of wasm wire in the op
+   */
+  unsigned get_ww_n() const { return ww_n_; }
+
+  /**
    * returns the number of i32 the function is acting on
    */
   unsigned get_n_i32() const { return n_i32_; }
@@ -201,13 +209,17 @@ class WASMOp : public ClassicalOp {
    * returns the vector of number of bit used for each of the input i32
    * variables
    */
-  std::vector<unsigned> get_ni_vec() const { return ni_vec_; }
+  std::vector<unsigned> get_width_i_parameter() const {
+    return width_i_parameter_;
+  }
 
   /**
    * returns the vector of number of bit used for each of the output i32
    * variables
    */
-  std::vector<unsigned> get_no_vec() const { return no_vec_; }
+  std::vector<unsigned> get_width_o_parameter() const {
+    return width_o_parameter_;
+  }
 
   /**
    * returns the name of the function the wasm op is using
@@ -218,13 +230,18 @@ class WASMOp : public ClassicalOp {
    * returns the uid of the wasm file the op is using, the file is stored on the
    * python layer
    */
-  std::string get_wasm_uid() const { return wasm_uid_; }
+  std::string get_wasm_file_uid() const { return wasm_file_uid_; }
 
  private:
   /**
    * total number of classical bits the op is interacting with
    */
   const unsigned n_;
+
+  /**
+   * total number of classical bits the op is interacting with
+   */
+  const unsigned ww_n_;
 
   /**
    * total number of i32 inut and output variables
@@ -234,12 +251,12 @@ class WASMOp : public ClassicalOp {
   /**
    * vector of bits for each input i32
    */
-  const std::vector<unsigned> ni_vec_;
+  const std::vector<unsigned> width_i_parameter_;
 
   /**
    * vector of bits for each output i32
    */
-  const std::vector<unsigned> no_vec_;
+  const std::vector<unsigned> width_o_parameter_;
 
   /**
    * name of the called function
@@ -249,7 +266,7 @@ class WASMOp : public ClassicalOp {
   /**
    * uid of the wasm file the op is using
    */
-  const std::string wasm_uid_;
+  const std::string wasm_file_uid_;
 };
 
 /**

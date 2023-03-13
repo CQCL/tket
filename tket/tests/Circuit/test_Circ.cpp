@@ -217,14 +217,15 @@ SCENARIO("Creating gates via Qubits and Registers") {
     Circuit circ;
 
     std::string funcname = "wasm_func_name";
-    std::string wasm_uid = "wasm_file_hash";
-    std::vector<unsigned> i32list_i = {1};
-    std::vector<unsigned> i32list_o = {1};
+    std::string wasm_file_uid = "wasm_file_hash";
+    std::vector<unsigned> width_i_parameter = {1};
+    std::vector<unsigned> width_o_parameter = {1};
     std::vector<unsigned> args = {0, 1};
 
     unsigned n_args = args.size();
     const std::shared_ptr<WASMOp> op = std::make_shared<WASMOp>(
-        n_args, i32list_i, i32list_o, funcname, wasm_uid);
+        n_args, 1, width_i_parameter, width_o_parameter, funcname,
+        wasm_file_uid);
   }
 }
 
