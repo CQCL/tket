@@ -241,8 +241,8 @@ std::vector<bool> ClassicalTransformOp::eval(const std::vector<bool> &x) const {
 
 WASMOp::WASMOp(
     unsigned _n, unsigned _ww_n, std::vector<unsigned> _width_i_parameter,
-    std::vector<unsigned> _width_o_parameter,
-    const std::string &_func_name, const std::string &_wasm_file_uid)
+    std::vector<unsigned> _width_o_parameter, const std::string &_func_name,
+    const std::string &_wasm_file_uid)
     : ClassicalOp(
           OpType::WASM,
           std::accumulate(
@@ -250,14 +250,12 @@ WASMOp::WASMOp(
               decltype(_width_i_parameter)::value_type(0)),
           0,
           std::accumulate(
-              _width_o_parameter.begin(),
-              _width_o_parameter.end(),
+              _width_o_parameter.begin(), _width_o_parameter.end(),
               decltype(_width_o_parameter)::value_type(0)),
           "WASM"),
       n_(_n),
       ww_n_(_ww_n),
-      n_i32_(
-          _width_i_parameter.size() + _width_o_parameter.size()),
+      n_i32_(_width_i_parameter.size() + _width_o_parameter.size()),
       width_i_parameter_(_width_i_parameter),
       width_o_parameter_(_width_o_parameter),
       func_name_(_func_name),
@@ -286,10 +284,8 @@ bool WASMOp::is_equal(const Op &other) const {
   const WASMOp &other_wasm = dynamic_cast<const WASMOp &>(other);
   if (other_wasm.get_n() != n_) return false;
   if (other_wasm.get_n_i32() != n_i32_) return false;
-  if (other_wasm.get_width_i_parameter() != width_i_parameter_)
-    return false;
-  if (other_wasm.get_width_o_parameter() != width_o_parameter_)
-    return false;
+  if (other_wasm.get_width_i_parameter() != width_i_parameter_) return false;
+  if (other_wasm.get_width_o_parameter() != width_o_parameter_) return false;
   if (other_wasm.get_func_name() != func_name_) return false;
   if (other_wasm.get_wasm_file_uid() != wasm_file_uid_) return false;
   return true;

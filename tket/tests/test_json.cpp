@@ -172,7 +172,8 @@ SCENARIO("Test Command serialization") {
     c.add_op<unsigned>(OpType::H, {2});
     c.add_op<unsigned>(OpType::CY, {1, 2});
     c.add_op<UnitID>(
-        wop_ptr, {Bit(0), Bit(1), Bit(2), Bit(3), Bit(4), Bit(5), WasmWireUID(0)});
+        wop_ptr,
+        {Bit(0), Bit(1), Bit(2), Bit(3), Bit(4), Bit(5), WasmWireUID(0)});
     c.add_op<unsigned>(OpType::Measure, {0, 0});
     c.add_op<unsigned>(OpType::Measure, {1, 1});
     c.add_op<unsigned>(OpType::Measure, {2, 2});

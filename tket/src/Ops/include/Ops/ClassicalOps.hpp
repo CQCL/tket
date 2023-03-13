@@ -165,10 +165,9 @@ class WASMOp : public ClassicalOp {
    * @param _wasm_uid uid of the wasm file to be called
    */
   WASMOp(
-      unsigned _n, unsigned _ww_n,
-      std::vector<unsigned> _width_i_parameter,
-      std::vector<unsigned> _width_o_parameter,
-      const std::string &_func_name, const std::string &_wasm_uid);
+      unsigned _n, unsigned _ww_n, std::vector<unsigned> _width_i_parameter,
+      std::vector<unsigned> _width_o_parameter, const std::string &_func_name,
+      const std::string &_wasm_uid);
 
   /**
    * return if the op is external

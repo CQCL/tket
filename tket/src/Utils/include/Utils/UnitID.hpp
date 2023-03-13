@@ -226,7 +226,6 @@ JSON_DECL(Bit)
 /** Location holding a wasm UID */
 class WasmWireUID : public UnitID {
  public:
-
   WasmWireUID() : UnitID(w_default_reg(), {}, UnitType::WasmWireUID) {}
 
   /** Bit in default register */
@@ -246,7 +245,8 @@ class WasmWireUID : public UnitID {
       : UnitID(name, {row, col}, UnitType::WasmWireUID) {}
 
   /** Named register with a three-dimensional index */
-  WasmWireUID(const std::string &name, unsigned row, unsigned col, unsigned layer)
+  WasmWireUID(
+      const std::string &name, unsigned row, unsigned col, unsigned layer)
       : UnitID(name, {row, col, layer}, UnitType::WasmWireUID) {}
 
   /** Named register with a multi-dimensional index */
