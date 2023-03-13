@@ -2631,7 +2631,7 @@ template&lt;typename T &gt; </div>
 <p>Two-qubit operations can always be expressed in a minimal form of maximum three CXs, or as a single TK2 gate (a result also known as the KAK or Cartan decomposition).</p>
 <p>It is in general recommended to squash to TK2 gates, and to then use the <code>DecomposeTK2</code> pass for noise-aware decompositions to other gatesets. For backward compatibility, decompositions to CX are also supported. In this case, <code>cx_fidelity</code> can be provided to perform approximate decompositions to CX.</p>
 <p>When decomposing to TK2 gates, any sequence of two or more two-qubit gates on the same set of qubits are replaced by a single TK2 gate. When decomposing to CX, the substitution is only performed if it results in a reduction of the number of CX gates, or if at least one of the two-qubit gates is not a CX.</p>
-<p>Using the <code>allow_swaps=true</code> (default) option, qubits will be swapped when convenient to further reduce the two-qubit gate count (only applicable when decomposing to CX gates).</p>
+<p>Using the <code>allow_swaps=true</code> (default) option, qubits may be swapped when convenient to further reduce the two-qubit gate count.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">target_2qb_gate</td><td>OpType to decompose to. Either TK2 or CX. </td></tr>

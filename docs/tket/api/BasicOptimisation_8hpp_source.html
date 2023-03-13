@@ -125,44 +125,44 @@ $(function() {
 <div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;<span class="comment">// Expects: CX and any single qubit gates</span></div>
 <div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;<span class="comment">// Produces: CX and single TK1 qubit gates</span></div>
 <div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;Transform <a class="code" href="namespacetket_1_1Transforms.html#aa0883b0a9a6626492212506e41278569">two_qubit_squash</a>(</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a> target_2qb_gate = <a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a833e36d1a5a93dedb10c85f50ced9ce7">OpType::CX</a>, <span class="keywordtype">double</span> cx_fidelity = 1.,</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <span class="keywordtype">bool</span> allow_swaps = <span class="keyword">true</span>);</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;Transform <a class="code" href="namespacetket_1_1Transforms.html#aa0883b0a9a6626492212506e41278569">two_qubit_squash</a>(<span class="keywordtype">bool</span> allow_swaps);</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160; </div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="comment">// 1qb squashing into -Rz-Rx-Rz- or -Rx-Rz-Rx- form</span></div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="comment">// Expects: Rx, Rz, and any multi-qubit gates</span></div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;<span class="comment">// Produces: Rx, Rz, and any multi-qubit gates</span></div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;Transform <a class="code" href="namespacetket_1_1Transforms.html#ae91568283839286bec6d70ff1b013695">reduce_XZ_chains</a>();</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160; </div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;Transform <a class="code" href="namespacetket_1_1Transforms.html#a8d602ed5ee73002e620a6bdd0f39b754">squash_1qb_to_pqp</a>(</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    <span class="keyword">const</span> <a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a>&amp; q, <span class="keyword">const</span> <a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a>&amp; p, <span class="keywordtype">bool</span> strict = <span class="keyword">false</span>);</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; </div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;<span class="comment">// identifies single-qubit chains and squashes them in the target gate set</span></div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;<span class="comment">// Expects: any gates</span></div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;<span class="comment">// Produces: singleqs and any multi-qubit gates</span></div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;Transform <a class="code" href="namespacetket_1_1Transforms.html#a329feecb64d1ae61974ede6b2257b849">squash_factory</a>(</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    <span class="keyword">const</span> <a class="code" href="namespacetket.html#a165b1d270a350af87f1c7a63d68f9276">OpTypeSet</a>&amp; singleqs,</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    <span class="keyword">const</span> std::function&lt;Circuit(<span class="keyword">const</span> <a class="code" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a>&amp;, <span class="keyword">const</span> <a class="code" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a>&amp;, <span class="keyword">const</span> <a class="code" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a>&amp;)&gt;&amp;</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;        tk1_replacement);</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160; </div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;<span class="comment">// commutes single qubit gates through SWAP gates, leaving them on the</span></div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;<span class="comment">// PhysicalQubit with best fidelity for the given OP Expects: any single qubit</span></div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="comment">// gates, SWAP gates Produces: any single qubit gates, SWAP gates</span></div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;Transform <a class="code" href="namespacetket_1_1Transforms.html#abc5ed5a372aa369b67d538eb51075ee5">commute_SQ_gates_through_SWAPS</a>(<span class="keyword">const</span> <a class="code" href="namespacetket.html#ace85b9f029c1ae44a76289ebea0ee42a">avg_node_errors_t</a>&amp; node_errors);</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;Transform <a class="code" href="namespacetket_1_1Transforms.html#abc5ed5a372aa369b67d538eb51075ee5">commute_SQ_gates_through_SWAPS</a>(<span class="keyword">const</span> <a class="code" href="namespacetket.html#a898c434c90155261b12c45ebb3a944d2">op_node_errors_t</a>&amp; node_errors);</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160; </div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;Transform <a class="code" href="namespacetket_1_1Transforms.html#adee710165c3b4aaac9e4521e9d74fbfa">absorb_Rz_NPhasedX</a>();</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160; </div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;Transform <a class="code" href="namespacetket_1_1Transforms.html#a4c85817ac5250d6d3d816cc50c6f4a0d">ZZPhase_to_Rz</a>();</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160; </div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;Transform <a class="code" href="namespacetket_1_1Transforms.html#af27a84ae14a0ac564832ac765e7599ac">normalise_TK2</a>();</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160; </div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;Transform <a class="code" href="namespacetket_1_1Transforms.html#a69d0a33ab14018f00d76b7bcea8ff987">squash_1qb_to_Rz_PhasedX</a>();</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160; </div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;}  <span class="comment">// namespace Transforms</span></div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160; </div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;}  <span class="comment">// namespace tket</span></div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;Transform <a class="code" href="namespacetket_1_1Transforms.html#aa0883b0a9a6626492212506e41278569">two_qubit_squash</a>(</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    <a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a> target_2qb_gate = <a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a833e36d1a5a93dedb10c85f50ced9ce7">OpType::CX</a>, <span class="keywordtype">double</span> cx_fidelity = 1.,</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="keywordtype">bool</span> allow_swaps = <span class="keyword">true</span>);</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;Transform <a class="code" href="namespacetket_1_1Transforms.html#aa0883b0a9a6626492212506e41278569">two_qubit_squash</a>(<span class="keywordtype">bool</span> allow_swaps);</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="comment">// 1qb squashing into -Rz-Rx-Rz- or -Rx-Rz-Rx- form</span></div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="comment">// Expects: Rx, Rz, and any multi-qubit gates</span></div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;<span class="comment">// Produces: Rx, Rz, and any multi-qubit gates</span></div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;Transform <a class="code" href="namespacetket_1_1Transforms.html#ae91568283839286bec6d70ff1b013695">reduce_XZ_chains</a>();</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;Transform <a class="code" href="namespacetket_1_1Transforms.html#a8d602ed5ee73002e620a6bdd0f39b754">squash_1qb_to_pqp</a>(</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="keyword">const</span> <a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a>&amp; q, <span class="keyword">const</span> <a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a>&amp; p, <span class="keywordtype">bool</span> strict = <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;<span class="comment">// identifies single-qubit chains and squashes them in the target gate set</span></div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;<span class="comment">// Expects: any gates</span></div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;<span class="comment">// Produces: singleqs and any multi-qubit gates</span></div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;Transform <a class="code" href="namespacetket_1_1Transforms.html#a329feecb64d1ae61974ede6b2257b849">squash_factory</a>(</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <span class="keyword">const</span> <a class="code" href="namespacetket.html#a165b1d270a350af87f1c7a63d68f9276">OpTypeSet</a>&amp; singleqs,</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    <span class="keyword">const</span> std::function&lt;Circuit(<span class="keyword">const</span> <a class="code" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a>&amp;, <span class="keyword">const</span> <a class="code" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a>&amp;, <span class="keyword">const</span> <a class="code" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a>&amp;)&gt;&amp;</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;        tk1_replacement);</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; </div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;<span class="comment">// commutes single qubit gates through SWAP gates, leaving them on the</span></div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;<span class="comment">// PhysicalQubit with best fidelity for the given OP Expects: any single qubit</span></div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;<span class="comment">// gates, SWAP gates Produces: any single qubit gates, SWAP gates</span></div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;Transform <a class="code" href="namespacetket_1_1Transforms.html#abc5ed5a372aa369b67d538eb51075ee5">commute_SQ_gates_through_SWAPS</a>(<span class="keyword">const</span> <a class="code" href="namespacetket.html#ace85b9f029c1ae44a76289ebea0ee42a">avg_node_errors_t</a>&amp; node_errors);</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;Transform <a class="code" href="namespacetket_1_1Transforms.html#abc5ed5a372aa369b67d538eb51075ee5">commute_SQ_gates_through_SWAPS</a>(<span class="keyword">const</span> <a class="code" href="namespacetket.html#a898c434c90155261b12c45ebb3a944d2">op_node_errors_t</a>&amp; node_errors);</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160; </div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;Transform <a class="code" href="namespacetket_1_1Transforms.html#adee710165c3b4aaac9e4521e9d74fbfa">absorb_Rz_NPhasedX</a>();</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;Transform <a class="code" href="namespacetket_1_1Transforms.html#a4c85817ac5250d6d3d816cc50c6f4a0d">ZZPhase_to_Rz</a>();</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160; </div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;Transform <a class="code" href="namespacetket_1_1Transforms.html#af27a84ae14a0ac564832ac765e7599ac">normalise_TK2</a>();</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160; </div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;Transform <a class="code" href="namespacetket_1_1Transforms.html#a69d0a33ab14018f00d76b7bcea8ff987">squash_1qb_to_Rz_PhasedX</a>();</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160; </div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;}  <span class="comment">// namespace Transforms</span></div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160; </div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;}  <span class="comment">// namespace tket</span></div>
 <div class="ttc" id="aErrorTypes_8hpp_html"><div class="ttname"><a href="ErrorTypes_8hpp.html">ErrorTypes.hpp</a></div></div>
 <div class="ttc" id="aTransform_8hpp_html"><div class="ttname"><a href="Transform_8hpp.html">Transform.hpp</a></div></div>
 <div class="ttc" id="anamespacetket_1_1Transforms_html_a24c7fb6f008a3cf65c553b858e8ace47"><div class="ttname"><a href="namespacetket_1_1Transforms.html#a24c7fb6f008a3cf65c553b858e8ace47">tket::Transforms::remove_redundancies</a></div><div class="ttdeci">Transform remove_redundancies()</div><div class="ttdef"><b>Definition:</b> <a href="RedundancyRemoval_8cpp_source.html#l00273">RedundancyRemoval.cpp:273</a></div></div>
