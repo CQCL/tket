@@ -104,10 +104,11 @@ class CircuitRenderer:
                 HTML,
                 display,
             )  # pylint: disable=C0415
+
             fp = tempfile.NamedTemporaryFile(
                 mode="w", suffix=".html", delete=False, dir=os.getcwd()
             )
-            fp.write(cast(str, html))
+            fp.write(html)
             fp.close()
             try:
                 with warnings.catch_warnings(record=True):  # supress iframe suggestion
