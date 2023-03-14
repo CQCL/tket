@@ -25,9 +25,11 @@
 
 {% if jupyter %}
 
-<iframe srcdoc="{{ show_circuit_page(display_options, circuit_json, uid)|escape }}"
-        width="100%" height="200px"
-        style="border: none; outline: none; resize: vertical; overflow: auto"></iframe>
+<div style="resize: vertical; overflow: auto; height: 200px; display: block">
+    <iframe srcdoc="{{ show_circuit_page(display_options, circuit_json, uid)|escape }}"
+            width="100%" height="100%"
+            style="border: none; outline: none; overflow: auto"></iframe>
+</div>
 
 {% else %}
 
