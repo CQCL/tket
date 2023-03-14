@@ -417,9 +417,9 @@ Flow Flow::identify_pauli_flow(const ZXDiagram& diag) {
     ZXVert ni = diag.neighbours(i).at(0);
     inputs.insert(ni);
     ZXType nt = diag.get_zxtype(ni);
-    if (nt == ZXType::XZ || nt == ZXType::YZ || nt == ZXType::PY)
+    if (nt == ZXType::XZ || nt == ZXType::YZ || nt == ZXType::PZ)
       throw ZXError(
-          "Inputs measured in XZ, YZ, or Y cannot be corrected with Pauli "
+          "Inputs measured in XZ, YZ, or Z cannot be corrected with Pauli "
           "flow");
   }
 
@@ -482,12 +482,15 @@ Flow Flow::identify_pauli_flow(const ZXDiagram& diag) {
 
     n_solved = new_corrections.size();
 
-    for (const std::pair<const ZXVert, ZXVertSeqSet>& nc : new_corrections) {
-      fl.c_.insert(nc);
-      fl.d_.insert({nc.first, depth});
-      solved.insert(nc.first);
-      if (inputs.find(nc.first) == inputs.end())
-        correctors.insert({nc.first, (unsigned)correctors.size()});
+    for (const ZXVert& v : to_solve) {
+      auto nc = new_corrections.find(v);
+      if (nc != new_corrections.end()) {
+        fl.c_.insert(*nc);
+        fl.d_.insert({nc->first, depth});
+        solved.insert(nc->first);
+        if (inputs.find(nc->first) == inputs.end())
+          correctors.insert({nc->first, (unsigned)correctors.size()});
+      }
     }
 
     ++depth;

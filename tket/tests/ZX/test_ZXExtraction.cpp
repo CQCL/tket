@@ -14,8 +14,12 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include "../testutil.hpp"
 #include "Converters/Converters.hpp"
+#include "Simulation/CircuitSimulator.hpp"
+#include "Transformations/Rebase.hpp"
 #include "ZX/Flow.hpp"
+#include "ZX/Rewrite.hpp"
 
 namespace tket::zx::test_ZXExtraction {
 
@@ -159,6 +163,120 @@ SCENARIO("Extracting a circuit from XY/YZ diagram with gflow") {
   Circuit c = zx_to_circuit(diag);
   REQUIRE_NOTHROW(c.assert_valid());
   CHECK(c.n_qubits() == 5);
+}
+
+SCENARIO("Round-trip Circuit-ZXDiagram-Circuit") {
+  GIVEN("A single CS") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::CRz, 0.5, {0, 1});
+    Transforms::rebase_quil().apply(circ);
+    ZXDiagram diag, diag2;
+    boost::bimap<ZXVert, Vertex> bmap;
+    std::tie(diag, bmap) = circuit_to_zx(circ);
+    REQUIRE_NOTHROW(diag.check_validity());
+    CHECK(Rewrite::to_graphlike_form().apply(diag));
+    CHECK(Rewrite::reduce_graphlike_form().apply(diag));
+    CHECK(Rewrite::to_MBQC_diag().apply(diag));
+    REQUIRE_NOTHROW(diag.check_validity());
+
+    Circuit c = zx_to_circuit(diag);
+    Transforms::rebase_quil().apply(c);
+
+    CHECK(test_unitary_comparison(circ, c));
+
+    std::tie(diag2, bmap) = circuit_to_zx(c);
+    REQUIRE_NOTHROW(diag2.check_validity());
+    CHECK(Rewrite::to_graphlike_form().apply(diag2));
+    CHECK(Rewrite::reduce_graphlike_form().apply(diag2));
+    CHECK(Rewrite::to_MBQC_diag().apply(diag2));
+    REQUIRE_NOTHROW(diag2.check_validity());
+    Circuit c2 = zx_to_circuit(diag2);
+    Transforms::rebase_quil().apply(c2);
+    REQUIRE(c == c2);
+  }
+  GIVEN("A single CV") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::CV, {0, 1});
+    Transforms::rebase_quil().apply(circ);
+    ZXDiagram diag, diag2;
+    boost::bimap<ZXVert, Vertex> bmap;
+    std::tie(diag, bmap) = circuit_to_zx(circ);
+    REQUIRE_NOTHROW(diag.check_validity());
+    CHECK(Rewrite::to_graphlike_form().apply(diag));
+    CHECK(Rewrite::reduce_graphlike_form().apply(diag));
+    CHECK(Rewrite::to_MBQC_diag().apply(diag));
+    REQUIRE_NOTHROW(diag.check_validity());
+
+    Circuit c = zx_to_circuit(diag);
+    Transforms::rebase_quil().apply(c);
+
+    CHECK(test_unitary_comparison(circ, c));
+  }
+  GIVEN("A single CCX") {
+    Circuit circ(3);
+    circ.add_op<unsigned>(OpType::CCX, {0, 1, 2});
+    Transforms::rebase_quil().apply(circ);
+    ZXDiagram diag, diag2;
+    boost::bimap<ZXVert, Vertex> bmap;
+    std::tie(diag, bmap) = circuit_to_zx(circ);
+    REQUIRE_NOTHROW(diag.check_validity());
+    CHECK(Rewrite::to_graphlike_form().apply(diag));
+    CHECK(Rewrite::reduce_graphlike_form().apply(diag));
+    CHECK(Rewrite::to_MBQC_diag().apply(diag));
+    REQUIRE_NOTHROW(diag.check_validity());
+
+    Circuit c = zx_to_circuit(diag);
+    Transforms::rebase_quil().apply(c);
+
+    CHECK(test_unitary_comparison(circ, c));
+
+    std::tie(diag2, bmap) = circuit_to_zx(c);
+    REQUIRE_NOTHROW(diag2.check_validity());
+    CHECK(Rewrite::to_graphlike_form().apply(diag2));
+    CHECK(Rewrite::reduce_graphlike_form().apply(diag2));
+    CHECK(Rewrite::to_MBQC_diag().apply(diag2));
+    REQUIRE_NOTHROW(diag2.check_validity());
+
+    Circuit c2 = zx_to_circuit(diag2);
+    Transforms::rebase_quil().apply(c2);
+    CHECK(test_unitary_comparison(circ, c2));
+    REQUIRE(c == c2);
+  }
+  GIVEN("Modular arithmetic") {
+    /**
+     * This circuit is taken from Figure 1 of:
+     *  \ref https://arxiv.org/pdf/1903.10477.pdf
+     **/
+    Circuit circ(5);
+    circ.add_op<unsigned>(OpType::CCX, {0, 1, 4});
+    circ.add_op<unsigned>(OpType::CCX, {2, 4, 3});
+    circ.add_op<unsigned>(OpType::CCX, {0, 1, 4});
+    Transforms::rebase_quil().apply(circ);
+    ZXDiagram diag, diag2;
+    boost::bimap<ZXVert, Vertex> bmap;
+    std::tie(diag, bmap) = circuit_to_zx(circ);
+    REQUIRE_NOTHROW(diag.check_validity());
+    CHECK(Rewrite::to_graphlike_form().apply(diag));
+    CHECK(Rewrite::reduce_graphlike_form().apply(diag));
+    CHECK(Rewrite::to_MBQC_diag().apply(diag));
+    REQUIRE_NOTHROW(diag.check_validity());
+
+    Circuit c = zx_to_circuit(diag);
+    Transforms::rebase_quil().apply(c);
+
+    CHECK(test_unitary_comparison(circ, c));
+
+    std::tie(diag2, bmap) = circuit_to_zx(c);
+    REQUIRE_NOTHROW(diag2.check_validity());
+    CHECK(Rewrite::to_graphlike_form().apply(diag2));
+    CHECK(Rewrite::reduce_graphlike_form().apply(diag2));
+    CHECK(Rewrite::to_MBQC_diag().apply(diag2));
+    REQUIRE_NOTHROW(diag2.check_validity());
+    Circuit c2 = zx_to_circuit(diag2);
+    Transforms::rebase_quil().apply(c2);
+    CHECK(test_unitary_comparison(circ, c2));
+    CHECK(test_unitary_comparison(c, c2));
+  }
 }
 
 }  // namespace tket::zx::test_ZXExtraction

@@ -31,6 +31,8 @@ add_library(tket-${COMP}
     ZXRWDecompositions.cpp
     ZXRWGraphLikeForm.cpp
     ZXRWGraphLikeSimplification.cpp
+    MBQCRewrites.cpp
+    ZXRWSequences.cpp
     Flow.cpp)
 
 list(APPEND DEPS_${COMP}

@@ -127,4 +127,18 @@ const PassPtr &CnXPairwiseDecomposition();
  */
 const PassPtr &RemoveImplicitQubitPermutation();
 
+/**
+ * Attempt to optimise the circuit by simplifying in ZX calculus and extracting
+ * a circuit back out.
+ *
+ * Due to limitations in extraction, will not work if the circuit contains
+ * created or discarded qubits.
+ *
+ * As a resynthesis pass, this will ignore almost all optimisations achieved
+ * beforehand and may increase the cost of the circuit.
+ *
+ * @return compilation pass to perform this transformation
+ */
+const PassPtr &ZXGraphlikeOptimisation();
+
 }  // namespace tket

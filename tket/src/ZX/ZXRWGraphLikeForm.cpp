@@ -42,8 +42,13 @@ bool Rewrite::separate_boundaries_fun(ZXDiagram& diag) {
     ZXGen_ptr id = std::make_shared<const PhasedGen>(ZXType::ZSpider, 0., wq);
     ZXVert z_at_b = diag.add_vertex(id);
     diag.add_wire(b, z_at_b, ZXWireType::Basic, wq);
-    ZXVert z_at_o = diag.add_vertex(id);
-    diag.add_wire(o, z_at_o, ZXWireType::Basic, wq);
+    ZXVert z_at_o;
+    if (diag.get_zxtype(o) == ZXType::ZSpider) {
+      z_at_o = o;
+    } else {
+      z_at_o = diag.add_vertex(id);
+      diag.add_wire(o, z_at_o, ZXWireType::Basic, wq);
+    }
     if (diag.get_wire_type(w) == ZXWireType::Basic) {
       // Basic requires two Hadamard edges
       ZXVert middle = diag.add_vertex(id);
