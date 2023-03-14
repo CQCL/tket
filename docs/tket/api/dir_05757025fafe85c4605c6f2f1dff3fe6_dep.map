@@ -1,7 +1,7 @@
 <map id="src/Converters" name="src/Converters">
 <area shape="rect" id="node1" href="dir_20f5b45d4775e5c08a69b04af73221b6.html" title="ZX" alt="" coords="27,255,99,303"/>
 <area shape="rect" id="node8" href="dir_a7363e98f9e0bdd87618633653859815.html" title="Utils" alt="" coords="219,639,291,687"/>
-<area shape="rect" id="edge23-headlabel" href="dir_000058_000055.html" title="15" alt="" coords="192,643,210,657"/>
+<area shape="rect" id="edge23-headlabel" href="dir_000058_000055.html" title="16" alt="" coords="192,643,210,657"/>
 <area shape="rect" id="node2" href="dir_48e1b963d2c489582f249a65a7be0348.html" title="OpType" alt="" coords="219,543,291,591"/>
 <area shape="rect" id="edge7-headlabel" href="dir_000037_000055.html" title="2" alt="" coords="258,613,268,628"/>
 <area shape="rect" id="node3" href="dir_5e786c02a24d83e5297c99fc69782a73.html" title="PauliGraph" alt="" coords="177,255,269,303"/>

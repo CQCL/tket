@@ -219,6 +219,8 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a2c242c2ef4c8aa721165f78f2bc4e742"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a87a66f442b68045ca7142c06aa2d8695"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket_1_1zx.html#a88a1c6316f25d021c01e4bb266cda567">ZXVert</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1zx_1_1ZXDiagram.html#a87a66f442b68045ca7142c06aa2d8695">add_vertex</a> (<a class="el" href="namespacetket_1_1zx.html#ab1dacff6605c3bc8caa5f7fa6e3f5646">ZXType</a> type, const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;param, <a class="el" href="namespacetket_1_1zx.html#ae5c1261d41bb456a2457d06f3c52b9ff">QuantumType</a> qtype=<a class="el" href="namespacetket_1_1zx.html#ae5c1261d41bb456a2457d06f3c52b9ffa033b1e7914d380b381c8b7f9f131328d">QuantumType::Quantum</a>)</td></tr>
 <tr class="separator:a87a66f442b68045ca7142c06aa2d8695"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a52e4d6db20cb69c0f8541294f67851e8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket_1_1zx.html#a88a1c6316f25d021c01e4bb266cda567">ZXVert</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1zx_1_1ZXDiagram.html#a52e4d6db20cb69c0f8541294f67851e8">add_clifford_vertex</a> (<a class="el" href="namespacetket_1_1zx.html#ab1dacff6605c3bc8caa5f7fa6e3f5646">ZXType</a> type, bool param, <a class="el" href="namespacetket_1_1zx.html#ae5c1261d41bb456a2457d06f3c52b9ff">QuantumType</a> qtype=<a class="el" href="namespacetket_1_1zx.html#ae5c1261d41bb456a2457d06f3c52b9ffa033b1e7914d380b381c8b7f9f131328d">QuantumType::Quantum</a>)</td></tr>
+<tr class="separator:a52e4d6db20cb69c0f8541294f67851e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a5de80b2c0e4eb01a2236379b30142c59"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket_1_1zx.html#a4ff48ca2f041c0efcc6ef34a5e1348d2">Wire</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1zx_1_1ZXDiagram.html#a5de80b2c0e4eb01a2236379b30142c59">add_wire</a> (const <a class="el" href="namespacetket_1_1zx.html#a88a1c6316f25d021c01e4bb266cda567">ZXVert</a> &amp;va, const <a class="el" href="namespacetket_1_1zx.html#a88a1c6316f25d021c01e4bb266cda567">ZXVert</a> &amp;vb, const <a class="el" href="structtket_1_1zx_1_1WireProperties.html">WireProperties</a> &amp;prop)</td></tr>
 <tr class="memdesc:a5de80b2c0e4eb01a2236379b30142c59"><td class="mdescLeft">&#160;</td><td class="mdescRight">Adds a wire between <code>va</code> and <code>vb</code> by a <code><a class="el" href="structtket_1_1zx_1_1WireProperties.html" title="Wire properties: type: ZXWireType::Basic or H, whether the wire is an identity / Hadamard qtype: Quan...">WireProperties</a></code> object.  <a href="classtket_1_1zx_1_1ZXDiagram.html#a5de80b2c0e4eb01a2236379b30142c59">More...</a><br /></td></tr>
 <tr class="separator:a5de80b2c0e4eb01a2236379b30142c59"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -417,6 +419,42 @@ Public Attributes</h2></td></tr>
 
 </div>
 </div>
+<a id="a52e4d6db20cb69c0f8541294f67851e8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a52e4d6db20cb69c0f8541294f67851e8">&#9670;&nbsp;</a></span>add_clifford_vertex()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacetket_1_1zx.html#a88a1c6316f25d021c01e4bb266cda567">ZXVert</a> tket::zx::ZXDiagram::add_clifford_vertex </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacetket_1_1zx.html#ab1dacff6605c3bc8caa5f7fa6e3f5646">ZXType</a>&#160;</td>
+          <td class="paramname"><em>type</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>param</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetket_1_1zx.html#ae5c1261d41bb456a2457d06f3c52b9ff">QuantumType</a>&#160;</td>
+          <td class="paramname"><em>qtype</em> = <code><a class="el" href="namespacetket_1_1zx.html#ae5c1261d41bb456a2457d06f3c52b9ffa033b1e7914d380b381c8b7f9f131328d">QuantumType::Quantum</a></code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="ZXDManipulation_8cpp_source.html#l00040">40</a> of file <a class="el" href="ZXDManipulation_8cpp_source.html">ZXDManipulation.cpp</a>.</p>
+
+</div>
+</div>
 <a id="a72426440732f5e94148fb94120afd252"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a72426440732f5e94148fb94120afd252">&#9670;&nbsp;</a></span>add_vertex() <span class="overload">[1/3]</span></h2>
 
@@ -541,7 +579,7 @@ Public Attributes</h2></td></tr>
 <p>Adds a wire between <code>va</code> and <code>vb</code> by a <code><a class="el" href="structtket_1_1zx_1_1WireProperties.html" title="Wire properties: type: ZXWireType::Basic or H, whether the wire is an identity / Hadamard qtype: Quan...">WireProperties</a></code> object. </p>
 <p>Uses <code>va</code> as the source and <code>vb</code> as the target in the underlying directed graph structure. </p>
 
-<p class="definition">Definition at line <a class="el" href="ZXDManipulation_8cpp_source.html#l00040">40</a> of file <a class="el" href="ZXDManipulation_8cpp_source.html">ZXDManipulation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ZXDManipulation_8cpp_source.html#l00046">46</a> of file <a class="el" href="ZXDManipulation_8cpp_source.html">ZXDManipulation.cpp</a>.</p>
 
 </div>
 </div>
@@ -599,7 +637,7 @@ Public Attributes</h2></td></tr>
 <p><code>va_port</code>, <code>vb_port</code> are used by <code>DirectedZXGenerator</code> objects to specify which port on <code>va</code>, <code>vb</code> (respectively) the wire plugs into.</p>
 <p>See <code><a class="el" href="ZXGenerator_8hpp.html">ZXGenerator.hpp</a></code> --&gt; <code>DirectedZXGenerator</code> for more information, including the definition of the port numbers. Returns: The successfully added <code>Wire</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="ZXDManipulation_8cpp_source.html#l00049">49</a> of file <a class="el" href="ZXDManipulation_8cpp_source.html">ZXDManipulation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ZXDManipulation_8cpp_source.html#l00055">55</a> of file <a class="el" href="ZXDManipulation_8cpp_source.html">ZXDManipulation.cpp</a>.</p>
 
 </div>
 </div>
@@ -646,7 +684,7 @@ Public Attributes</h2></td></tr>
 <li>All incident edges to vertex have a QuantumType compatible with that port. Throws an exception if one of the checks fail. Time complexity: O(V + E), for a graph with bounded degrees. </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="ZXDManipulation_8cpp_source.html#l00145">145</a> of file <a class="el" href="ZXDManipulation_8cpp_source.html">ZXDManipulation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ZXDManipulation_8cpp_source.html#l00151">151</a> of file <a class="el" href="ZXDManipulation_8cpp_source.html">ZXDManipulation.cpp</a>.</p>
 
 </div>
 </div>
@@ -785,7 +823,7 @@ Public Attributes</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ZXDManipulation_8cpp_source.html#l00117">117</a> of file <a class="el" href="ZXDManipulation_8cpp_source.html">ZXDManipulation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ZXDManipulation_8cpp_source.html#l00123">123</a> of file <a class="el" href="ZXDManipulation_8cpp_source.html">ZXDManipulation.cpp</a>.</p>
 
 </div>
 </div>
@@ -937,7 +975,7 @@ template&lt;typename T , typename &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ZXDiagram_8hpp_source.html#l00347">347</a> of file <a class="el" href="ZXDiagram_8hpp_source.html">ZXDiagram.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ZXDiagram_8hpp_source.html#l00349">349</a> of file <a class="el" href="ZXDiagram_8hpp_source.html">ZXDiagram.hpp</a>.</p>
 
 </div>
 </div>
@@ -1116,7 +1154,7 @@ template&lt;typename T , typename &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ZXDManipulation_8cpp_source.html#l00126">126</a> of file <a class="el" href="ZXDManipulation_8cpp_source.html">ZXDManipulation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ZXDManipulation_8cpp_source.html#l00132">132</a> of file <a class="el" href="ZXDManipulation_8cpp_source.html">ZXDManipulation.cpp</a>.</p>
 
 </div>
 </div>
@@ -1287,7 +1325,7 @@ template&lt;typename T , typename &gt; </div>
 <p>Removes the vertex <code>v</code>, along with all wires connected to it. </p>
 <p>Boundary updated if vertex is in the <code>boundary</code>. </p>
 
-<p class="definition">Definition at line <a class="el" href="ZXDManipulation_8cpp_source.html#l00055">55</a> of file <a class="el" href="ZXDManipulation_8cpp_source.html">ZXDManipulation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ZXDManipulation_8cpp_source.html#l00061">61</a> of file <a class="el" href="ZXDManipulation_8cpp_source.html">ZXDManipulation.cpp</a>.</p>
 
 </div>
 </div>
@@ -1307,7 +1345,7 @@ template&lt;typename T , typename &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ZXDManipulation_8cpp_source.html#l00066">66</a> of file <a class="el" href="ZXDManipulation_8cpp_source.html">ZXDManipulation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ZXDManipulation_8cpp_source.html#l00072">72</a> of file <a class="el" href="ZXDManipulation_8cpp_source.html">ZXDManipulation.cpp</a>.</p>
 
 </div>
 </div>
@@ -1352,7 +1390,7 @@ template&lt;typename T , typename &gt; </div>
 <p>Removes exactly 1 wire that has property <code>prop</code> from vertex <code>va</code> -&gt; <code>vb</code>. </p>
 <p>If there exist multiple edges matching the property, they are indistinguishable, so we just remove one arbitrarily. In this case, the only difference is the edge descriptor. If the user cares about preserving particular edge descriptors, <a class="el" href="classtket_1_1zx_1_1ZXDiagram.html#ab69fe6d78c315b7c901ced643c1c0028">remove_wire(const Wire&amp;)</a> should be used. Inputs: va, vb: (ordered) vertices to remove possible wire from prop: properties to look for in the wires between the two vertices directed: whether to try also with <code>vb</code> -&gt; <code>va</code> (i.e. when we are trying to remove edges of unknown direction) Return value indicates whether an edge was removed. </p>
 
-<p class="definition">Definition at line <a class="el" href="ZXDManipulation_8cpp_source.html#l00068">68</a> of file <a class="el" href="ZXDManipulation_8cpp_source.html">ZXDManipulation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ZXDManipulation_8cpp_source.html#l00074">74</a> of file <a class="el" href="ZXDManipulation_8cpp_source.html">ZXDManipulation.cpp</a>.</p>
 
 </div>
 </div>
@@ -1562,7 +1600,7 @@ template&lt;typename T , typename &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ZXDManipulation_8cpp_source.html#l00098">98</a> of file <a class="el" href="ZXDManipulation_8cpp_source.html">ZXDManipulation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ZXDManipulation_8cpp_source.html#l00104">104</a> of file <a class="el" href="ZXDManipulation_8cpp_source.html">ZXDManipulation.cpp</a>.</p>
 
 </div>
 </div>
@@ -1584,7 +1622,7 @@ template&lt;typename T , typename &gt; </div>
 
 <p>Symbolic manipulation. </p>
 
-<p class="definition">Definition at line <a class="el" href="ZXDManipulation_8cpp_source.html#l00088">88</a> of file <a class="el" href="ZXDManipulation_8cpp_source.html">ZXDManipulation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ZXDManipulation_8cpp_source.html#l00094">94</a> of file <a class="el" href="ZXDManipulation_8cpp_source.html">ZXDManipulation.cpp</a>.</p>
 
 </div>
 </div>
@@ -1604,7 +1642,7 @@ template&lt;typename T , typename &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ZXDManipulation_8cpp_source.html#l00109">109</a> of file <a class="el" href="ZXDManipulation_8cpp_source.html">ZXDManipulation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ZXDManipulation_8cpp_source.html#l00115">115</a> of file <a class="el" href="ZXDManipulation_8cpp_source.html">ZXDManipulation.cpp</a>.</p>
 
 </div>
 </div>
@@ -1865,7 +1903,7 @@ template&lt;typename T , typename &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ZXDiagram_8hpp_source.html#l00323">323</a> of file <a class="el" href="ZXDiagram_8hpp_source.html">ZXDiagram.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ZXDiagram_8hpp_source.html#l00325">325</a> of file <a class="el" href="ZXDiagram_8hpp_source.html">ZXDiagram.hpp</a>.</p>
 
 </div>
 </div>
@@ -1881,7 +1919,7 @@ template&lt;typename T , typename &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ZXDiagram_8hpp_source.html#l00321">321</a> of file <a class="el" href="ZXDiagram_8hpp_source.html">ZXDiagram.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ZXDiagram_8hpp_source.html#l00323">323</a> of file <a class="el" href="ZXDiagram_8hpp_source.html">ZXDiagram.hpp</a>.</p>
 
 </div>
 </div>
@@ -1897,7 +1935,7 @@ template&lt;typename T , typename &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ZXDiagram_8hpp_source.html#l00322">322</a> of file <a class="el" href="ZXDiagram_8hpp_source.html">ZXDiagram.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ZXDiagram_8hpp_source.html#l00324">324</a> of file <a class="el" href="ZXDiagram_8hpp_source.html">ZXDiagram.hpp</a>.</p>
 
 </div>
 </div>
