@@ -16,6 +16,8 @@ Minor new features:
   the measurements as much as possible when they cannot be fully delayed to the
   end.
 * Update to ``pytket-circuit-renderer`` 0.5.
+* Support ``allow_swaps`` parameter for ``FullPeepholeOptimise`` even when
+  targeting ``OpType.TK2``.
 
 Fixes:
 
