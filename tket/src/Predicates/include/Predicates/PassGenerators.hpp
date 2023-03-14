@@ -242,8 +242,6 @@ PassPtr ThreeQubitSquash(bool allow_swaps = true);
  * sequences, and converts to a circuit containing a given 2-qubit gate and TK1
  * gates.
  *
- * The allow_swaps parameter has no effect when the target gate is TK2.
- *
  * @param target_2qb_gate target 2-qubit gate (CX or TK2)
  * @param allow_swaps whether to allow introduction of implicit swaps
  */

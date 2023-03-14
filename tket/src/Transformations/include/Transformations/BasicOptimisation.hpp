@@ -71,9 +71,8 @@ Transform commute_and_combine_HQS2();
  * to CX, the substitution is only performed if it results in a reduction of the
  * number of CX gates, or if at least one of the two-qubit gates is not a CX.
  *
- * Using the `allow_swaps=true` (default) option, qubits will be swapped when
- * convenient to further reduce the two-qubit gate count (only applicable
- * when decomposing to CX gates).
+ * Using the `allow_swaps=true` (default) option, qubits may be swapped when
+ * convenient to further reduce the two-qubit gate count.
  *
  * @param target_2qb_gate OpType to decompose to. Either TK2 or CX.
  * @param cx_fidelity Estimated CX gate fidelity, used when target_2qb_gate=CX.
