@@ -201,6 +201,8 @@ class ZXDiagram {
   ZXVert add_vertex(ZXType type, QuantumType qtype = QuantumType::Quantum);
   ZXVert add_vertex(
       ZXType type, const Expr& param, QuantumType qtype = QuantumType::Quantum);
+  ZXVert add_clifford_vertex(
+      ZXType type, bool param, QuantumType qtype = QuantumType::Quantum);
 
   /**
    * Adds a wire between `va` and `vb` by a `WireProperties` object.

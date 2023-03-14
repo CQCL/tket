@@ -312,16 +312,36 @@ bool Rewrite::rebase_to_mbqc_fun(ZXDiagram& diag) {
       case ZXType::ZSpider: {
         ZXGen_ptr vgen = diag.get_vertex_ZXGen_ptr(v);
         const PhasedGen& vg = static_cast<const PhasedGen&>(*vgen);
-        ZXGen_ptr new_gen =
-            ZXGen::create_gen(ZXType::XY, -vg.get_param(), *vg.get_qtype());
+        std::optional<unsigned> pi2_mult = equiv_Clifford(vg.get_param());
+        ZXGen_ptr new_gen;
+        if (pi2_mult) {
+          if (*pi2_mult % 2 == 0)
+            new_gen = ZXGen::create_gen(
+                ZXType::PX, (*pi2_mult % 4 == 2), *vg.get_qtype());
+          else
+            new_gen = ZXGen::create_gen(
+                ZXType::PY, (*pi2_mult % 4 == 1), *vg.get_qtype());
+        } else
+          new_gen =
+              ZXGen::create_gen(ZXType::XY, -vg.get_param(), *vg.get_qtype());
         diag.set_vertex_ZXGen_ptr(v, new_gen);
         break;
       }
       case ZXType::XSpider: {
         ZXGen_ptr vgen = diag.get_vertex_ZXGen_ptr(v);
         const PhasedGen& vg = static_cast<const PhasedGen&>(*vgen);
-        ZXGen_ptr new_gen =
-            ZXGen::create_gen(ZXType::XY, -vg.get_param(), *vg.get_qtype());
+        std::optional<unsigned> pi2_mult = equiv_Clifford(vg.get_param());
+        ZXGen_ptr new_gen;
+        if (pi2_mult) {
+          if (*pi2_mult % 2 == 0)
+            new_gen = ZXGen::create_gen(
+                ZXType::PX, (*pi2_mult % 4 == 2), *vg.get_qtype());
+          else
+            new_gen = ZXGen::create_gen(
+                ZXType::PY, (*pi2_mult % 4 == 1), *vg.get_qtype());
+        } else
+          new_gen =
+              ZXGen::create_gen(ZXType::XY, -vg.get_param(), *vg.get_qtype());
         diag.set_vertex_ZXGen_ptr(v, new_gen);
         for (const Wire& w : diag.adj_wires(v)) {
           ZXWireType wt = diag.get_wire_type(w);

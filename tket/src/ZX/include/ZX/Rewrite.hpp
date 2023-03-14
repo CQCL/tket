@@ -50,18 +50,18 @@ class Rewrite {
    */
   const RewriteFun apply;
 
-  ///////////////
-  // Combinators//
-  ///////////////
+  /////////////////
+  // Combinators //
+  /////////////////
 
   static Rewrite sequence(const std::vector<Rewrite>& rvec);
   static Rewrite repeat(const Rewrite& rw);
   static Rewrite repeat_with_metric(const Rewrite& rw, const Metric& eval);
   static Rewrite repeat_while(const Rewrite& cond, const Rewrite& body);
 
-  //////////////////
-  // Decompositions//
-  //////////////////
+  ////////////////////
+  // Decompositions //
+  ////////////////////
 
   /**
    * Replaces every ZXBox by its internal diagram recursively until no ZXBoxes
@@ -85,9 +85,9 @@ class Rewrite {
    */
   static Rewrite rebase_to_mbqc();
 
-  //////////
-  // Axioms//
-  //////////
+  ////////////
+  // Axioms //
+  ////////////
 
   /**
    * Converts all red spiders (XSpider) to green (ZSpider) with Hadamards around
@@ -118,9 +118,9 @@ class Rewrite {
    */
   static Rewrite parallel_h_removal();
 
-  /////////////////
-  // GraphLikeForm//
-  /////////////////
+  ///////////////////
+  // GraphLikeForm //
+  ///////////////////
 
   /**
    * Guarantees that each boundary vertex is adjacent to a unique ZSpider.
@@ -136,9 +136,9 @@ class Rewrite {
    */
   static Rewrite io_extension();
 
-  ///////////////////////////
-  // GraphLikeSimplification//
-  ///////////////////////////
+  /////////////////////////////
+  // GraphLikeSimplification //
+  /////////////////////////////
 
   /**
    * Removes interior proper Cliffords (spiders where the phase is an odd
@@ -155,11 +155,68 @@ class Rewrite {
   static Rewrite remove_interior_paulis();
 
   /**
+   * Identifies interior Paulis (spiders where the phase is an integer multiple
+   * of pi) with all neighbours having non-Pauli phase and degree > 1. Pivots
+   * about an incident edge to yield a gadget node.
+   */
+  static Rewrite gadgetise_interior_paulis();
+
+  /**
+   * Identifies pairs of phase gadgets over the same sets of qubits and merges
+   * them.
+   */
+  static Rewrite merge_gadgets();
+
+  /**
    * Identifies adjacent Pauli spiders where one is adjacent to a boundary.
    * This rule applies I/O extensions to push the match into the interior from
    * which it can be handled by `remove_interior_paulis`.
    */
   static Rewrite extend_at_boundary_paulis();
+
+  //////////////////
+  // MBQCRewrites //
+  //////////////////
+
+  /**
+   * Identifies output vertices in MBQC form that are given a measurement basis
+   * (i.e. are not PX(0)). This rule applies I/O extensions to make the phased
+   * qubits non-outputs. This is required before flow identification can be run.
+   */
+  static Rewrite extend_for_PX_outputs();
+
+  /**
+   * Identifies Degree-1 XY vertices next to a PX vertex, e.g. as the result of
+   * rebasing a phase gadget. Replaces matches by a single YZ vertex.
+   */
+  static Rewrite internalise_gadgets();
+
+  ///////////////
+  // Sequences //
+  ///////////////
+
+  /**
+   * Given a diagram with ZX generators, yields a diagram with only ZSpiders,
+   * connected by at most one Hadamard edge, with boundaries connected via Basic
+   * edges.
+   */
+  static Rewrite to_graphlike_form();
+
+  /**
+   * Given a diagram in graphlike form, applies local complementations and
+   * pivoting to remove as many interior Clifford-angled vertices as possible.
+   * The only remaining Clifford-angled vertices will be either the axis of a
+   * phase-gadget or near a boundary.
+   */
+  static Rewrite reduce_graphlike_form();
+
+  /**
+   * Given a diagram in graphlike form, will rebase to MBQC generators, ensure
+   * that output qubits are PX(0) (i.e. they match unmeasured qubits) and
+   * degree-1 vertices are absorbed into a PX neighbour, i.e. reducing
+   * phase-gadgets to single vertices in a different measurement plane.
+   */
+  static Rewrite to_MBQC_diag();
 
  private:
   Rewrite(const RewriteFun& fun);
@@ -176,7 +233,11 @@ class Rewrite {
   static bool io_extension_fun(ZXDiagram& diag);
   static bool remove_interior_cliffords_fun(ZXDiagram& diag);
   static bool remove_interior_paulis_fun(ZXDiagram& diag);
+  static bool gadgetise_interior_paulis_fun(ZXDiagram& diag);
+  static bool merge_gadgets_fun(ZXDiagram& diag);
   static bool extend_at_boundary_paulis_fun(ZXDiagram& diag);
+  static bool extend_for_PX_outputs_fun(ZXDiagram& diag);
+  static bool internalise_gadgets_fun(ZXDiagram& diag);
 };
 
 }  // namespace zx

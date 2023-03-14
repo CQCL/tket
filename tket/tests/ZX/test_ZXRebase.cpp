@@ -99,4 +99,32 @@ SCENARIO("Take a generic diagram and apply each rebase to it") {
   }
 }
 
+SCENARIO("Clifford MBQC identification") {
+  ZXDiagram diag(1, 1, 0, 0);
+  ZXVertVec ins = diag.get_boundary(ZXType::Input);
+  ZXVertVec outs = diag.get_boundary(ZXType::Output);
+  ZXVert z0 = diag.add_vertex(ZXType::ZSpider, 0.);
+  ZXVert z1 = diag.add_vertex(ZXType::ZSpider, 0.5);
+  ZXVert z2 = diag.add_vertex(ZXType::ZSpider, 0.2);
+  ZXVert x0 = diag.add_vertex(ZXType::XSpider, 1.);
+  ZXVert x1 = diag.add_vertex(ZXType::XSpider, 1.5);
+  ZXVert x2 = diag.add_vertex(ZXType::XSpider, 0.2);
+  diag.add_wire(ins.at(0), z0);
+  diag.add_wire(z0, x0);
+  diag.add_wire(x0, z1);
+  diag.add_wire(z1, x1);
+  diag.add_wire(x1, z2);
+  diag.add_wire(z2, x2);
+  diag.add_wire(x2, outs.at(0));
+  REQUIRE_NOTHROW(diag.check_validity());
+
+  Rewrite::rebase_to_mbqc().apply(diag);
+  REQUIRE_NOTHROW(diag.check_validity());
+  CHECK(diag.count_vertices(ZXType::ZSpider) == 0);
+  CHECK(diag.count_vertices(ZXType::XSpider) == 0);
+  CHECK(diag.count_vertices(ZXType::XY) == 2);
+  CHECK(diag.count_vertices(ZXType::PX) == 2);
+  CHECK(diag.count_vertices(ZXType::PY) == 2);
+}
+
 }  // namespace tket::zx::test_ZXRebase
