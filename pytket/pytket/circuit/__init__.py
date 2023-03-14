@@ -102,7 +102,8 @@ def overload_add_wasm(  # type: ignore
             raise ValueError("only functions with i32 type are allowed")
 
     if filehandler.check_function(funcname, len(list_i), len(list_o)):
-        self._add_w_register(max(args_wasm) + 1)
+        if (len(args_wasm)) > 0:
+            self._add_w_register(max(args_wasm) + 1)
         return self._add_wasm(
             funcname, str(filehandler), list_i, list_o, args, args_wasm, **kwargs
         )
@@ -139,7 +140,8 @@ def overload_add_wasm_to_reg(  # type: ignore
         args_wasm = [0]
 
     if filehandler.check_function(funcname, len(list_i), len(list_o)):
-        self._add_w_register(max(args_wasm) + 1)
+        if (len(args_wasm)) > 0:
+            self._add_w_register(max(args_wasm) + 1)
         return self._add_wasm(
             funcname, str(filehandler), list_i, list_o, args_wasm, **kwargs
         )
