@@ -49,7 +49,7 @@ Circuit::Circuit(const Circuit &circ) : Circuit() {
   copy_graph(circ);
   phase = circ.get_phase();
   name = circ.name;
-  add_wasm_register(circ._number_of_ws);
+  add_wasm_register(circ._number_of_wasm_wires);
 }
 
 // copy assignment. Moves boundary pointers.
@@ -60,7 +60,7 @@ Circuit &Circuit::operator=(const Circuit &other)  // (1)
   copy_graph(other);
   phase = other.get_phase();
   name = other.name;
-  add_wasm_register(other._number_of_ws);
+  add_wasm_register(other._number_of_wasm_wires);
 
   return *this;
 }

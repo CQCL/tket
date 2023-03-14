@@ -1622,7 +1622,7 @@ class Circuit {
   DAG dag; /** Representation as directed graph */
   boundary_t boundary;
   std::vector<WasmWireUID> wasmwire;
-  std::size_t _number_of_ws = 0;
+  std::size_t _number_of_wasm_wires = 0;
 
  private:
   std::optional<std::string>

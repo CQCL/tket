@@ -25,8 +25,8 @@ void to_json(nlohmann::json& j, const Circuit& circ) {
   j["phase"] = circ.get_phase();
   j["qubits"] = circ.all_qubits();
   j["bits"] = circ.all_bits();
-  if (circ._number_of_ws > 0) {
-    j["number_of_ws"] = circ._number_of_ws;
+  if (circ._number_of_wasm_wires > 0) {
+    j["number_of_ws"] = circ._number_of_wasm_wires;
   }
 
   const auto impl = circ.implicit_qubit_permutation();
