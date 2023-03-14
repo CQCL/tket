@@ -155,8 +155,8 @@ void init_circuit_add_classical_op(
 
             std::vector<UnitID> new_args;
 
-            for (auto i : args) {
-              new_args.push_back(Bit(i));
+            for (auto b : args) {
+              new_args.push_back(b);
             }
 
             for (auto i : wasm_wire_args) {
@@ -229,8 +229,8 @@ void init_circuit_add_classical_op(
 
             std::vector<UnitID> new_args;
 
-            for (auto i : args) {
-              new_args.push_back(Bit(i));
+            for (auto b : args) {
+              new_args.push_back(b);
             }
 
             for (auto i : wasm_wire_args) {

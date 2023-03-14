@@ -85,7 +85,7 @@ const std::string& c_default_reg() {
 
 const std::string& w_default_reg() {
   static std::unique_ptr<const std::string> regname =
-      std::make_unique<const std::string>("_wasm_wire");
+      std::make_unique<const std::string>("_w");
   return *regname;
 }
 

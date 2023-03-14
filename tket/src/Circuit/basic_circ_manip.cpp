@@ -465,15 +465,15 @@ register_t Circuit::add_c_register(std::string reg_name, unsigned size) {
   return ids;
 }
 
-void Circuit::add_wasm_register(std::size_t number_of_wasm_wire_) {
-  while (number_of_wasm_wire_ > _number_of_wasm_wire) {
+void Circuit::add_wasm_register(std::size_t number_of_w_) {
+  while (number_of_w_ > _number_of_ws) {
     Vertex in = add_vertex(OpType::WASMInput);
     Vertex out = add_vertex(OpType::WASMOutput);
     add_edge({in, 0}, {out, 0}, EdgeType::WASM);
-    WasmWireUID wuid = WasmWireUID(_number_of_wasm_wire);
+    WasmWireUID wuid = WasmWireUID(_number_of_ws);
     wasmwire.push_back(wuid);
     boundary.insert({wuid, in, out});
-    ++_number_of_wasm_wire;
+    ++_number_of_ws;
   }
 }
 

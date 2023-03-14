@@ -60,7 +60,7 @@ class WasmFileHandler:
 
         self._wasm_file_encoded = base64.b64encode(self._wasm_file)
 
-        self._wasmfileuid = hashlib.md5(self._wasm_file_encoded).hexdigest()
+        self._wasmfileuid = hashlib.sha256(self._wasm_file_encoded).hexdigest()
 
         self._check_file = check_file
 

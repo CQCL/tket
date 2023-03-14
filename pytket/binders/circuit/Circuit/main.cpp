@@ -194,7 +194,7 @@ void init_circuit(py::module &m) {
           "Creates given number of wasm bits in the circuit. If "
           "there are already wasm bits in circuit only the "
           "additional wasm bits will be added. "
-          "\n\n:param size: Number of wasmbit that "
+          "\n\n:param size: Number of wasm bits that "
           "should be added to the circuit",
           py::arg("size"))
       .def(

@@ -704,7 +704,7 @@ class CircuitTransformer(Transformer):
             com = next(exp_tree)
             com["args"].pop()
             com["args"] += chained_uids
-            com["args"].append(["_wasm_wire", [0]])
+            com["args"].append(["_w", [0]])
             com["op"]["wasm"]["n"] += len(chained_uids)
             com["op"]["wasm"]["width_o_parameter"] = [
                 self.c_registers[reg] for reg in out_args
@@ -780,7 +780,7 @@ class CircuitTransformer(Transformer):
 
         wasm_args = list(chain.from_iterable(self.unroll_all_args(params)))
 
-        wasm_args.append(["_wasm_wire", [0]])
+        wasm_args.append(["_w", [0]])
 
         yield {
             "args": wasm_args,

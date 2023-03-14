@@ -375,8 +375,7 @@ static std::shared_ptr<b_frontier_t> get_next_b_frontier(
       case EdgeType::WASM: {
         break;
       }
-      case EdgeType::Classical:
-      case EdgeType::Boolean: {
+      case EdgeType::Classical: {
         Vertex next_v = circ.target(pair.second);
         if (next_slice_lookup.find(next_v) == next_slice_lookup.end()) continue;
         if (next_b_frontier->get<TagKey>().find(Bit(pair.first)) !=
@@ -387,6 +386,9 @@ static std::shared_ptr<b_frontier_t> get_next_b_frontier(
         EdgeVec reads = circ.get_nth_b_out_bundle(next_v, p);
         if (!reads.empty()) next_b_frontier->insert({Bit(pair.first), reads});
         break;
+      }
+      case EdgeType::Boolean: {
+        throw CircuitInvalidity("Boolen edge not allowed in b_frontier_t");
       }
       default: {
         TKET_ASSERT(!"get_next_b_frontier found invalid edge type in sig");
@@ -779,7 +781,7 @@ Circuit::SliceIterator::SliceIterator(const Circuit& circ)
   }
 
   // add wasmwireuid to u_frontier
-  for (unsigned i = 0; i < circ._number_of_wasm_wire; ++i) {
+  for (unsigned i = 0; i < circ._number_of_ws; ++i) {
     Vertex in = circ.get_in(circ.wasmwire[i]);
     cut_.slice->push_back(in);
     cut_.u_frontier->insert({circ.wasmwire[i], circ.get_nth_out_edge(in, 0)});
@@ -820,7 +822,7 @@ Circuit::SliceIterator::SliceIterator(
   }
 
   // add wasmwireuid to u_frontier
-  for (unsigned i = 0; i < circ._number_of_wasm_wire; ++i) {
+  for (unsigned i = 0; i < circ._number_of_ws; ++i) {
     Vertex in = circ.get_in(circ.wasmwire[i]);
     cut_.slice->push_back(in);
     cut_.u_frontier->insert({circ.wasmwire[i], circ.get_nth_out_edge(in, 0)});

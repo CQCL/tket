@@ -413,7 +413,7 @@ def test_wasmfilehandler_repr() -> None:
     w = wasm.WasmFileHandler("testfile.wasm")
     assert (
         repr(w)
-        == """Functions in wasm file with the uid 332940d7bf36f2a17ef59ddf13a042ce:
+        == """Functions in wasm file with the uid 014b9da8153093a6564896dbc35ff786fe9877f8382adc5059337fdc44267e72:
 function 'add_one' with 1 i32 parameter(s) and 1 i32 return value(s)
 function 'multi' with 2 i32 parameter(s) and 1 i32 return value(s)
 function 'add_two' with 1 i32 parameter(s) and 1 i32 return value(s)
@@ -1027,10 +1027,7 @@ def test_conditional_wasm() -> None:
     )
 
     assert c.depth() == 1
-    assert (
-        str(c.get_commands()[0])
-        == "IF ([b[0]] == 1) THEN WASM c[0], c[1], _wasm_wire[0];"
-    )
+    assert str(c.get_commands()[0]) == "IF ([b[0]] == 1) THEN WASM c[0], c[1], _w[0];"
 
 
 def test_conditional_wasm_ii() -> None:
@@ -1039,10 +1036,7 @@ def test_conditional_wasm_ii() -> None:
     c._add_wasm("funcname", "wasmfileuid", [b], [], [0], condition=b[0])
 
     assert c.depth() == 1
-    assert (
-        str(c.get_commands()[0])
-        == "IF ([b[0]] == 1) THEN WASM b[0], b[1], _wasm_wire[0];"
-    )
+    assert str(c.get_commands()[0]) == "IF ([b[0]] == 1) THEN WASM b[0], b[1], _w[0];"
 
 
 def test_conditional_wasm_iii() -> None:
@@ -1061,11 +1055,11 @@ def test_conditional_wasm_iii() -> None:
     assert c.depth() == 2
     assert (
         str(c.get_commands()[0])
-        == "IF ([b[0]] == 1) THEN WASM c0[0], c0[1], c0[2], c1[0], c1[1], c1[2], c1[3], c2[0], c2[1], c2[2], c2[3], c2[4], _wasm_wire[0];"
+        == "IF ([b[0]] == 1) THEN WASM c0[0], c0[1], c0[2], c1[0], c1[1], c1[2], c1[3], c2[0], c2[1], c2[2], c2[3], c2[4], _w[0];"
     )
     assert (
         str(c.get_commands()[1])
-        == "IF ([b[1]] == 1) THEN WASM c2[0], c2[1], c2[2], c2[3], c2[4], c2[0], c2[1], c2[2], c2[3], c2[4], _wasm_wire[0];"
+        == "IF ([b[1]] == 1) THEN WASM c2[0], c2[1], c2[2], c2[3], c2[4], c2[0], c2[1], c2[2], c2[3], c2[4], _w[0];"
     )
 
 
@@ -1078,7 +1072,7 @@ def test_conditional_wasm_iv() -> None:
     assert c.depth() == 1
     assert (
         str(c.get_commands()[0])
-        == "IF ([controlreg[0]] == 1) THEN WASM c[0], c[1], _wasm_wire[0];"
+        == "IF ([controlreg[0]] == 1) THEN WASM c[0], c[1], _w[0];"
     )
 
 

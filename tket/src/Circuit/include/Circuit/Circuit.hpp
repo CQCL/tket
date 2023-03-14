@@ -980,7 +980,7 @@ class Circuit {
   void add_bit(const Bit &id, bool reject_dups = true);
   register_t add_q_register(std::string reg_name, unsigned size);
   register_t add_c_register(std::string reg_name, unsigned size);
-  void add_wasm_register(std::size_t numer_of_wasm_wire = 1);
+  void add_wasm_register(std::size_t numer_of_w = 1);
 
   /**
    * Create the given qubit in the zero state at the beginning of the circuit.
@@ -1622,7 +1622,7 @@ class Circuit {
   DAG dag; /** Representation as directed graph */
   boundary_t boundary;
   std::vector<WasmWireUID> wasmwire;
-  std::size_t _number_of_wasm_wire = 0;
+  std::size_t _number_of_ws = 0;
 
  private:
   std::optional<std::string>

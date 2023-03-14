@@ -158,12 +158,12 @@ void init_classical(py::module& m) {
               const std::string&, const std::string&>(),
           "Construct from number of bits, bitwidths of inputs and outputs, "
           "function name and module id.",
-          py::arg("num_bits"), py::arg("num_wasm_wire"), py::arg("n_inputs"),
+          py::arg("num_bits"), py::arg("num_w"), py::arg("n_inputs"),
           py::arg("n_outputs"), py::arg("func_name"), py::arg("wasm_uid"))
       .def_property_readonly(
           "wasm_uid", &WASMOp::get_wasm_file_uid, "Wasm module id.")
       .def_property_readonly(
-          "num_wasm_wire", &WASMOp::get_ww_n, "Number of wasm wire in the op")
+          "num_w", &WASMOp::get_ww_n, "Number of wasm wire in the op")
       .def_property_readonly(
           "func_name", &WASMOp::get_func_name, "Name of function.")
       .def_property_readonly(
