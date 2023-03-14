@@ -99,14 +99,24 @@ class CircuitRenderer:
         if jupyter:
             # If we are in a notebook, we can tell jupyter to display the html.
             # We don't import at the top in case we are not in a notebook environment.
+            import warnings
             from IPython.display import (  # type: ignore
                 HTML,
                 display,
             )  # pylint: disable=C0415
-
-            display(HTML(html))
-            return None
-
+            fp = tempfile.NamedTemporaryFile(
+                mode="w", suffix=".html", delete=False, dir=os.getcwd()
+            )
+            fp.write(cast(str, html))
+            fp.close()
+            try:
+                with warnings.catch_warnings(record=True):  # supress iframe suggestion
+                    display(HTML(html))
+                return None
+            finally:
+                # Wait to make sure the file has time to be loaded first.
+                time.sleep(5)
+                os.remove(fp.name)
         return html
 
     def render_circuit_jupyter(self, circuit: RenderCircuit) -> None:
