@@ -27,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2023-03-14 14:06:55</td>
+      <td>2023-03-15 13:50:58</td>
     </tr>
     <tr>
       <th scrope="row">Warnings:</th>
@@ -57,9 +57,9 @@
     </tr>
     <tr>
       <th scope="row">Branches:</th>
-      <td>195</td>
-      <td>347</td>
-      <td class="coverage-low">56.2%</td>
+      <td>200</td>
+      <td>353</td>
+      <td class="coverage-low">56.7%</td>
     </tr>
     <tr>
       <th scope="row">Decisions:</th>
@@ -556,12 +556,18 @@
       <td class="lineno"><a id="l37" href="#l37">37</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
-        <summary class="linebranchSummary">3/4</summary>
+        <summary class="linebranchSummary">8/10</summary>
         <div class="linebranchContents">
           <div class="takenBranch">&check; Branch 1 taken 256 times.</div>
           <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
-          <div class="takenBranch">&check; Branch 3 taken 6 times.</div>
-          <div class="takenBranch">&check; Branch 4 taken 250 times.</div>
+          <div class="takenBranch">&check; Branch 3 taken 80 times.</div>
+          <div class="takenBranch">&check; Branch 4 taken 176 times.</div>
+          <div class="takenBranch">&check; Branch 6 taken 80 times.</div>
+          <div class="notTakenBranch">&cross; Branch 7 not taken.</div>
+          <div class="takenBranch">&check; Branch 8 taken 6 times.</div>
+          <div class="takenBranch">&check; Branch 9 taken 74 times.</div>
+          <div class="takenBranch">&check; Branch 10 taken 6 times.</div>
+          <div class="takenBranch">&check; Branch 11 taken 250 times.</div>
         </div>
         </details>
       </td>
@@ -575,7 +581,7 @@
         </details>
       </td>
       <td class="linecount coveredLine">256</td>
-      <td class="src coveredLine"><span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">is_boundary_c_type</span><span class="p">(</span><span class="n">optype</span><span class="p">))</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">is_boundary_type</span><span class="p">(</span><span class="n">optype</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="o">!</span><span class="n">is_boundary_q_type</span><span class="p">(</span><span class="n">optype</span><span class="p">))</span><span class="w"> </span><span class="k">continue</span><span class="p">;</span><span class="w"></span></td>
     </tr>
 
     <tr class="source-line">
