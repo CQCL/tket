@@ -65,7 +65,7 @@ SCENARIO("generating circ with wasm") {
 
     new_args.push_back(Bit(0));
 
-    WasmWireUID wuid = WasmWireUID(0);
+    WasmState wuid = WasmState(0);
 
     new_args.push_back(wuid);
 
@@ -82,7 +82,7 @@ SCENARIO("generating circ with wasm") {
          Bit(3),            //
          Bit(4),            //
          Bit(5),            //
-         WasmWireUID(0)});  // needs 6 bits + wasmwireuid
+         WasmState(0)});  // needs 6 bits + WasmState
   }
   GIVEN("compare wasmop") {
     WASMOp wop = WASMOp(4, 1, uv, uv_2, wasm_func, wasm_file);
@@ -146,8 +146,8 @@ SCENARIO("generating circ with wasm") {
     const std::shared_ptr<WASMOp> wop_ptr_2 =
         std::make_shared<WASMOp>(1, 1, uv_2, uv_3, wasm_func, wasm_file);
 
-    u.add_op<UnitID>(wop_ptr, {Bit(0), Bit(0), WasmWireUID(0)});
-    u.add_op<UnitID>(wop_ptr_2, {Bit(0), WasmWireUID(0)});
+    u.add_op<UnitID>(wop_ptr, {Bit(0), Bit(0), WasmState(0)});
+    u.add_op<UnitID>(wop_ptr_2, {Bit(0), WasmState(0)});
 
     u.assert_valid();
 
@@ -177,9 +177,9 @@ SCENARIO("generating circ with wasm") {
     const std::shared_ptr<WASMOp> wop_ptr_2 =
         std::make_shared<WASMOp>(1, 3, uv_2, uv_3, wasm_func, wasm_file);
 
-    u.add_op<UnitID>(wop_ptr, {Bit(0), Bit(0), WasmWireUID(0)});
+    u.add_op<UnitID>(wop_ptr, {Bit(0), Bit(0), WasmState(0)});
     u.add_op<UnitID>(
-        wop_ptr_2, {Bit(0), WasmWireUID(0), WasmWireUID(1), WasmWireUID(2)});
+        wop_ptr_2, {Bit(0), WasmState(0), WasmState(1), WasmState(2)});
 
     u.assert_valid();
     REQUIRE(u.depth() == 2);
@@ -189,23 +189,23 @@ SCENARIO("generating circ with wasm") {
 }
 
 SCENARIO("test wasm uid") {
-  GIVEN("wasm uid") { WasmWireUID wuid = WasmWireUID(); }
+  GIVEN("wasm uid") { WasmState wuid = WasmState(); }
   GIVEN("wasm uid - compare") {
-    WasmWireUID wuid = WasmWireUID();
-    WasmWireUID wuid_2 = WasmWireUID();
+    WasmState wuid = WasmState();
+    WasmState wuid_2 = WasmState();
     REQUIRE(wuid == wuid_2);
   }
   GIVEN("wasm uid - compare 2") {
-    WasmWireUID wuid = WasmWireUID(1);
-    WasmWireUID wuid_2 = WasmWireUID(3);
-    WasmWireUID wuid_3 = WasmWireUID(3);
+    WasmState wuid = WasmState(1);
+    WasmState wuid_2 = WasmState(3);
+    WasmState wuid_3 = WasmState(3);
 
     REQUIRE(wuid != wuid_2);
     REQUIRE(wuid_3 == wuid_2);
     REQUIRE(wuid != wuid_3);
   }
   GIVEN("wasm uid - create bit from wasm") {
-    WasmWireUID wuid = WasmWireUID();
+    WasmState wuid = WasmState();
     REQUIRE_THROWS(Bit(wuid));
   }
 }

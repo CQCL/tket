@@ -470,7 +470,7 @@ void Circuit::add_wasm_register(std::size_t number_of_w_) {
     Vertex in = add_vertex(OpType::WASMInput);
     Vertex out = add_vertex(OpType::WASMOutput);
     add_edge({in, 0}, {out, 0}, EdgeType::WASM);
-    WasmWireUID wuid = WasmWireUID(_number_of_wasm_wires);
+    WasmState wuid = WasmState(_number_of_wasm_wires);
     wasmwire.push_back(wuid);
     boundary.insert({wuid, in, out});
     ++_number_of_wasm_wires;

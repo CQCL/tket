@@ -1621,7 +1621,7 @@ class Circuit {
   // currently public (no bueno)
   DAG dag; /** Representation as directed graph */
   boundary_t boundary;
-  std::vector<WasmWireUID> wasmwire;
+  std::vector<WasmState> wasmwire;
   std::size_t _number_of_wasm_wires = 0;
 
  private:

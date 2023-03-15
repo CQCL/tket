@@ -780,7 +780,7 @@ Circuit::SliceIterator::SliceIterator(const Circuit& circ)
     cut_.u_frontier->insert({b, circ.get_nth_out_edge(in, 0)});
   }
 
-  // add wasmwireuid to u_frontier
+  // add WasmState to u_frontier
   for (unsigned i = 0; i < circ._number_of_wasm_wires; ++i) {
     Vertex in = circ.get_in(circ.wasmwire[i]);
     cut_.slice->push_back(in);
@@ -821,7 +821,7 @@ Circuit::SliceIterator::SliceIterator(
     cut_.u_frontier->insert({b, circ.get_nth_out_edge(in, 0)});
   }
 
-  // add wasmwireuid to u_frontier
+  // add WasmState to u_frontier
   for (unsigned i = 0; i < circ._number_of_wasm_wires; ++i) {
     Vertex in = circ.get_in(circ.wasmwire[i]);
     cut_.slice->push_back(in);

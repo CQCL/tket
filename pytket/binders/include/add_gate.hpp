@@ -73,7 +73,7 @@ static Circuit *add_gate_method(
           break;
         }
         case EdgeType::WASM: {
-          new_args.push_back(WasmWireUID(args[i]));
+          new_args.push_back(WasmState(args[i]));
           break;
         }
         case EdgeType::Classical:

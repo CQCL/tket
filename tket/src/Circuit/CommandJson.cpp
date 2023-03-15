@@ -39,7 +39,7 @@ void to_json(nlohmann::json& j, const Command& com) {
   for (size_t i = 0; i < sig.size(); i++) {
     switch (sig[i]) {
       case EdgeType::WASM: {
-        const WasmWireUID& wb = static_cast<const WasmWireUID&>(args[i]);
+        const WasmState& wb = static_cast<const WasmState&>(args[i]);
         j_args.push_back(wb);
         break;
       }
@@ -78,7 +78,7 @@ void from_json(const nlohmann::json& j, Command& com) {
   for (size_t i = 0; i < sig.size(); i++) {
     switch (sig[i]) {
       case EdgeType::WASM: {
-        args.push_back(j_args[i].get<WasmWireUID>());
+        args.push_back(j_args[i].get<WasmState>());
         break;
       }
       case EdgeType::Quantum: {

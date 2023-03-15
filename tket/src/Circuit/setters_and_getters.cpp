@@ -97,7 +97,7 @@ VertexVec Circuit::c_inputs() const {
 VertexVec Circuit::w_inputs() const {
   VertexVec ins;
   for (auto [it, end] =
-           boundary.get<TagType>().equal_range(UnitType::WasmWireUID);
+           boundary.get<TagType>().equal_range(UnitType::WasmState);
        it != end; it++) {
     ins.push_back(it->in_);
   }
@@ -132,7 +132,7 @@ VertexVec Circuit::c_outputs() const {
 VertexVec Circuit::w_outputs() const {
   VertexVec outs;
   for (auto [it, end] =
-           boundary.get<TagType>().equal_range(UnitType::WasmWireUID);
+           boundary.get<TagType>().equal_range(UnitType::WasmState);
        it != end; it++) {
     outs.push_back(it->out_);
   }

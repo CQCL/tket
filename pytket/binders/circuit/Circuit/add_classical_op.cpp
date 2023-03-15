@@ -117,7 +117,7 @@ void init_circuit_add_classical_op(
             }
 
             for (auto i : wasm_wire_args) {
-              new_args.push_back(WasmWireUID(i));
+              new_args.push_back(WasmState(i));
             }
 
             return add_gate_method<UnitID>(&circ, op, new_args, kwargs);
@@ -160,7 +160,7 @@ void init_circuit_add_classical_op(
             }
 
             for (auto i : wasm_wire_args) {
-              new_args.push_back(WasmWireUID(i));
+              new_args.push_back(WasmState(i));
             }
 
             return add_gate_method<UnitID>(&circ, op, new_args, kwargs);
@@ -234,7 +234,7 @@ void init_circuit_add_classical_op(
             }
 
             for (auto i : wasm_wire_args) {
-              new_args.push_back(WasmWireUID(i));
+              new_args.push_back(WasmState(i));
             }                 
 
             return add_gate_method<UnitID>(&circ, op, new_args, kwargs);

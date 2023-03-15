@@ -39,10 +39,10 @@ void from_json(const nlohmann::json& j, Qubit& qb) { json_to_unitid(j, qb); }
 void to_json(nlohmann::json& j, const Bit& cb) { unitid_to_json(j, cb); }
 void from_json(const nlohmann::json& j, Bit& cb) { json_to_unitid(j, cb); }
 
-void to_json(nlohmann::json& j, const WasmWireUID& wb) {
+void to_json(nlohmann::json& j, const WasmState& wb) {
   unitid_to_json(j, wb);
 }
-void from_json(const nlohmann::json& j, WasmWireUID& wb) {
+void from_json(const nlohmann::json& j, WasmState& wb) {
   json_to_unitid(j, wb);
 }
 
