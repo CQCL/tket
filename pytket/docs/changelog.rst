@@ -23,6 +23,7 @@ Minor new features:
 Fixes:
 
 * ``DelayMeasures`` pass now correctly handles circuits with ``CircBox``es.
+* ``get_op_map`` in multiplexor boxes return unhashable python dictionaries.
 
 
 1.11.1 (January 2023)
