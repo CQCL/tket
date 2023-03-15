@@ -130,6 +130,7 @@ const std::map<OpType, OpTypeInfo>& optypeinfo() {
        {"MultiplexedU2Box", "MultiplexedU2Box", {}, std::nullopt}},
       {OpType::StatePreparationBox,
        {"StatePreparationBox", "StatePreparationBox", {}, std::nullopt}},
+      {OpType::DiagonalBox, {"DiagonalBox", "DiagonalBox", {}, std::nullopt}},
       {OpType::Conditional, {"Conditional", "If", {}, std::nullopt}},
       {OpType::ProjectorAssertionBox,
        {"ProjectorAssertionBox", "ProjectorAssertionBox", {}, std::nullopt}},
