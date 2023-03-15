@@ -569,8 +569,14 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Bit.html">Bit</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Location holding a bit.  <a href="classtket_1_1Bit.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1WasmState.html">WasmState</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Location holding a wasm UID.  <a href="classtket_1_1WasmState.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Node.html">Node</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Architectural qubit location.  <a href="classtket_1_1Node.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1WasmNode.html">WasmNode</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">WASM UID.  <a href="classtket_1_1WasmNode.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtket_1_1unit__bimaps__t.html">unit_bimaps_t</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A pair of ("initial" and "final") correspondences between unit IDs.  <a href="structtket_1_1unit__bimaps__t.html#details">More...</a><br /></td></tr>
@@ -877,6 +883,7 @@ Enumerations</h2></td></tr>
 <tr class="memitem:a4c73a949b027dea7f23b1d5a1bdd526e"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a4c73a949b027dea7f23b1d5a1bdd526e">EdgeType</a> { <a class="el" href="namespacetket.html#a4c73a949b027dea7f23b1d5a1bdd526ea033b1e7914d380b381c8b7f9f131328d">Quantum</a>
 , <a class="el" href="namespacetket.html#a4c73a949b027dea7f23b1d5a1bdd526ea2091523979dbedcad728958414922c72">Classical</a>
 , <a class="el" href="namespacetket.html#a4c73a949b027dea7f23b1d5a1bdd526ea27226c864bac7454a8504f8edb15d95b">Boolean</a>
+, <a class="el" href="namespacetket.html#a4c73a949b027dea7f23b1d5a1bdd526eac7dbeb10b3299406a04231654cf6defd">WASM</a>
  }</td></tr>
 <tr class="memdesc:a4c73a949b027dea7f23b1d5a1bdd526e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of a wire in a circuit or input to an op.  <a href="namespacetket.html#a4c73a949b027dea7f23b1d5a1bdd526e">More...</a><br /></td></tr>
 <tr class="separator:a4c73a949b027dea7f23b1d5a1bdd526e"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -888,122 +895,125 @@ Enumerations</h2></td></tr>
 , <br />
 &#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a850c23cfb47574b5e27c4c768a7008b2">ClInput</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a6c4e5627d56328e52b12a2aeb0164d0d">ClOutput</a>
-, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a48656da7a6e48c6887d94f4c69c731b6">Barrier</a>
+, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ae2c898c464e3dbfcd8e2f94b0df4b8dc">WASMInput</a>
+, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a725ed3ba68b55217ae7457fe12fad64c">WASMOutput</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a48656da7a6e48c6887d94f4c69c731b6">Barrier</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ab021df6aac4654c454f46c77646e745f">Label</a>
-, <br />
-&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3adacdb83ade6c4e8878717e206175dfd8">Branch</a>
+, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3adacdb83ade6c4e8878717e206175dfd8">Branch</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aae8fae3d74fdc80ef40995c3c6ca152e">Goto</a>
-, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a11a755d598c0c417f9a36758c3da7481">Stop</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a11a755d598c0c417f9a36758c3da7481">Stop</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5d588264bfb80d9b94a293d436849215">ClassicalTransform</a>
-, <br />
-&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ac7dbeb10b3299406a04231654cf6defd">WASM</a>
+, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ac7dbeb10b3299406a04231654cf6defd">WASM</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5c843771bd2e2c4fd09e6082b6873c08">SetBits</a>
-, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ac0975fd4a69996fa54a4a3e49aae0613">CopyBits</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ac0975fd4a69996fa54a4a3e49aae0613">CopyBits</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a4dab62adc87d203efeb78923a1a5be0c">RangePredicate</a>
-, <br />
-&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aaa4c169104256e1f2a4fde444ca552a1">ExplicitPredicate</a>
+, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aaa4c169104256e1f2a4fde444ca552a1">ExplicitPredicate</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a3b1525d905b26764cc9fa020e5827dcc">ExplicitModifier</a>
-, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a1a267ae20c0b76a944af1589009da8df">MultiBit</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a1a267ae20c0b76a944af1589009da8df">MultiBit</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5e35d7fff7b903516cba242ff68fc6d3">Phase</a>
-, <br />
-&#160;&#160;<a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66aa21c2e59531c8710156d34a3c30ac81d5">Z</a>
+, <a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66aa21c2e59531c8710156d34a3c30ac81d5">Z</a>
 , <a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66aa02129bb861061d1a052c592e2dc6b383">X</a>
-, <a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66aa57cec4137b614c87cb4e24a3d003a3e0">Y</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66aa57cec4137b614c87cb4e24a3d003a3e0">Y</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5dbc98dcc983a70728bd082d1a47546e">S</a>
-, <br />
-&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a045a4026bb27931de3a4ad5e8c368659">Sdg</a>
+, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a045a4026bb27931de3a4ad5e8c368659">Sdg</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ab9ece18c950afbfa6b0fdbfa4ff731d3">T</a>
-, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a9827db27d53fd083b867fdf13593809f">Tdg</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a9827db27d53fd083b867fdf13593809f">Tdg</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5206560a306a2e085a437fd258eb57ce">V</a>
-, <br />
-&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a81465dfe73bb1986ad9e50af49e1f983">Vdg</a>
+, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a81465dfe73bb1986ad9e50af49e1f983">Vdg</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ac5c6b36796a5cfb3b845cd7881e3fee4">SX</a>
-, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ac332d91d28127102474faa4c74e67044">SXdg</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ac332d91d28127102474faa4c74e67044">SXdg</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ac1d9f50f86825a1a2302ec2449c17196">H</a>
-, <br />
-&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ac8600a0cc45fe853cb446a96bb8eae35">Rx</a>
+, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ac8600a0cc45fe853cb446a96bb8eae35">Rx</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3af3f71e9d5ed499d8d691e49ac0d81171">Ry</a>
-, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aca877e9e6cc89dfdd87b1797169c9a9e">Rz</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aca877e9e6cc89dfdd87b1797169c9a9e">Rz</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ac960375866797bcd97f4f6c22c94b2aa">U3</a>
-, <br />
-&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a4684821448f0ae2437312daece9d1cd9">U2</a>
+, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a4684821448f0ae2437312daece9d1cd9">U2</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3af89412c11bdc0ab44f99f92d5e9a3c5e">U1</a>
-, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a461e9cbc1ae4c0b4e456c027bfb805ec">TK1</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a461e9cbc1ae4c0b4e456c027bfb805ec">TK1</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a605943552629c6e31b20ee3733694927">TK2</a>
-, <br />
-&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a833e36d1a5a93dedb10c85f50ced9ce7">CX</a>
+, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a833e36d1a5a93dedb10c85f50ced9ce7">CX</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a9025a1ae8c64158622b7428028f0d2bd">CY</a>
-, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a928568b84963ceb76aaaa2cae9afdbfa">CZ</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a928568b84963ceb76aaaa2cae9afdbfa">CZ</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a1ee0bf89c5d1032317d13a2e022793c8">CH</a>
-, <br />
-&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aa5c8c3544bc49ebacde4ffe04bf34de0">CV</a>
+, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aa5c8c3544bc49ebacde4ffe04bf34de0">CV</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a0d992e25a3f319f4011ff52a6143a7d3">CVdg</a>
-, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3acae83baca0a98e3debad1fd2a636df88">CSX</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3acae83baca0a98e3debad1fd2a636df88">CSX</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a360491a482e329423dbf01217091c0dd">CSXdg</a>
-, <br />
-&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a16600c82174c58690dc718335a81683e">CRz</a>
+, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a16600c82174c58690dc718335a81683e">CRz</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5d4369573a67272ed096dfe722d2bde7">CRx</a>
-, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3acae6add01e6fcc54ab4c500f534a5b80">CRy</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3acae6add01e6fcc54ab4c500f534a5b80">CRy</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a2ae463c89afc1951b7fb2919ab8fa25a">CU1</a>
-, <br />
-&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ae353d6c359c7d57857fe65be7d6465e8">CU3</a>
+, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ae353d6c359c7d57857fe65be7d6465e8">CU3</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aa4be2ca477e4ec3bd42910620e67ae85">PhaseGadget</a>
-, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5f36659cd231606e67248c8a6476b0b6">CCX</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5f36659cd231606e67248c8a6476b0b6">CCX</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a46fc23bc4e4d57e5469a39658a6dd3e8">SWAP</a>
-, <br />
-&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5da1165c4fc7303c06fad0030e475a28">CSWAP</a>
+, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5da1165c4fc7303c06fad0030e475a28">CSWAP</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aa75a1789547188e39e2e344c286d2b62">BRIDGE</a>
-, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5483bf26dec486ec0175e2a3ca816a0a">noop</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5483bf26dec486ec0175e2a3ca816a0a">noop</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a0cbbe0321e0c40dfa77a159ef6bfad6b">Measure</a>
-, <br />
-&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a2b31634e3cfef1bfdd7d0d2cdfdc3f9d">Collapse</a>
+, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a2b31634e3cfef1bfdd7d0d2cdfdc3f9d">Collapse</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a526d688f37a86d3c3f27d0c5016eb71d">Reset</a>
-, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ac5e87e33f6f3cf99c1d9d0891d375df1">ECR</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ac5e87e33f6f3cf99c1d9d0891d375df1">ECR</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aa4bc541b95fc1ece06e92143710c337a">ISWAP</a>
-, <br />
-&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a667abdbcc77f7dead35f32f2efeebd3b">PhasedX</a>
+, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a667abdbcc77f7dead35f32f2efeebd3b">PhasedX</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a29d19ccd6cb57e5bd1006d9130efbcfc">NPhasedX</a>
-, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aab307d474acdc6d93c072fab66ac07d6">ZZMax</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aab307d474acdc6d93c072fab66ac07d6">ZZMax</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a464c865608c43e719808fdfada936330">XXPhase</a>
-, <br />
-&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a6d5eeefd873119001f3a4289b5985230">YYPhase</a>
+, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a6d5eeefd873119001f3a4289b5985230">YYPhase</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a3093b0af32d5a67378a948d9e90ac005">ZZPhase</a>
-, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aa74b5165b09b6b760a36c69c5465b527">XXPhase3</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aa74b5165b09b6b760a36c69c5465b527">XXPhase3</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ad75e939460d13226bf4ce9eb21dcd1d2">ESWAP</a>
-, <br />
-&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aeda876352a64ead092be83fa73367cd8">FSim</a>
+, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aeda876352a64ead092be83fa73367cd8">FSim</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a34dffbaaba6a753e65c4fdfe2b5e08c3">Sycamore</a>
-, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a8ae9a60f268fb2c9d6111af9392df6bf">ISWAPMax</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a8ae9a60f268fb2c9d6111af9392df6bf">ISWAPMax</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ae9803ce0546b458ef0384bdb380d6fec">PhasedISWAP</a>
-, <br />
-&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3abcad60565e4aa606e492a188e1587f0b">CnRy</a>
+, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3abcad60565e4aa606e492a188e1587f0b">CnRy</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3adc867e204704e592db6fb6738ceab9ee">CnX</a>
-, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a7c6ef42ae9f1c29a4b3af0f23800b3fc">CnZ</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a7c6ef42ae9f1c29a4b3af0f23800b3fc">CnZ</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ac2dc8b44a9dbec8a045894965f7df103">CnY</a>
-, <br />
-&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a2e7c6b58cca98f2fe44f8548645ba6ad">CircBox</a>
+, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a2e7c6b58cca98f2fe44f8548645ba6ad">CircBox</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a3540179d9ced51d6d9a7a748cf410189">Unitary1qBox</a>
-, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ac59cd8b7da8177b5fa306c9a1abbc0d6">Unitary2qBox</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ac59cd8b7da8177b5fa306c9a1abbc0d6">Unitary2qBox</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3afee26642d6cfd5068f8d24bcf4cd3410">Unitary3qBox</a>
-, <br />
-&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a8033def635b0488ce1437a093df3bbd8">ExpBox</a>
+, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a8033def635b0488ce1437a093df3bbd8">ExpBox</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aaa7c55748f3e91d01205fe879c9fcbda">PauliExpBox</a>
-, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ac69faa9b11814ac9630106a403214413">CliffBox</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ac69faa9b11814ac9630106a403214413">CliffBox</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a4b783b48edba0b5e9bdfe69464914c8f">CustomGate</a>
-, <br />
-&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a242d5bcfd960527a3f152c6dfe220c67">PhasePolyBox</a>
+, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a242d5bcfd960527a3f152c6dfe220c67">PhasePolyBox</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a0bdf2d4fd224397ee888ae5ed535ed6c">QControlBox</a>
-, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5468c5fca8c024e9122b78635614697a">MultiplexorBox</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5468c5fca8c024e9122b78635614697a">MultiplexorBox</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a4a9b2379c074f3efea93a09109c5f50a">MultiplexedRotationBox</a>
-, <br />
-&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a58bb13ca790adbe8e7436ef2652e62e0">MultiplexedU2Box</a>
+, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a58bb13ca790adbe8e7436ef2652e62e0">MultiplexedU2Box</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a36eb2fc691327e9917ffb76ca90dcece">StatePreparationBox</a>
-, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a81e83c562bbc4b3d830391b008dece4e">ClassicalExpBox</a>
-, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a9d3afea73e90192d96dda8d38c87a4fe">Conditional</a>
 , <br />
-&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a927eb314e7755edbf2f295363eb70989">ProjectorAssertionBox</a>
+&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a81e83c562bbc4b3d830391b008dece4e">ClassicalExpBox</a>
+, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a9d3afea73e90192d96dda8d38c87a4fe">Conditional</a>
+, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a927eb314e7755edbf2f295363eb70989">ProjectorAssertionBox</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5873bfa21082d8011557e19ef525e2dd">StabiliserAssertionBox</a>
-, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a07bcde47c17d44eebfa6c59aa6942d1c">ToffoliBox</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a07bcde47c17d44eebfa6c59aa6942d1c">ToffoliBox</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a875cbe7ba0f4486177a06d7f5847ff24">UnitaryTableauBox</a>
 <br />
  }</td></tr>
@@ -1045,6 +1055,7 @@ Enumerations</h2></td></tr>
 <tr class="separator:a372ac8e74a26d74ac66c0a2233f532c7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab638aca8b1f14267ebf40f93686b7ac9"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9">UnitType</a> { <a class="el" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a>
 , <a class="el" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9aed98fd4f2d1aeadad43670b2d07d5b40">Bit</a>
+, <a class="el" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9aa177140416d55f0ce12892a005f0398a">WasmState</a>
  }</td></tr>
 <tr class="memdesc:ab638aca8b1f14267ebf40f93686b7ac9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of information held.  <a href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9">More...</a><br /></td></tr>
 <tr class="separator:ab638aca8b1f14267ebf40f93686b7ac9"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1373,8 +1384,8 @@ Functions</h2></td></tr>
 <tr class="separator:ad27b4cb623c251bec5428b5ae7ad2183"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7abfb8c99b6073b5bc9b759ed22983fc"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a7abfb8c99b6073b5bc9b759ed22983fc">to_json</a> (nlohmann::json &amp;j, const <a class="el" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a> &amp;op)</td></tr>
 <tr class="separator:a7abfb8c99b6073b5bc9b759ed22983fc"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a59e3aaaf5c90d85da65f8abd18a73670"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a59e3aaaf5c90d85da65f8abd18a73670">NLOHMANN_JSON_SERIALIZE_ENUM</a> (<a class="el" href="namespacetket.html#a4c73a949b027dea7f23b1d5a1bdd526e">EdgeType</a>, { {<a class="el" href="namespacetket.html#a4c73a949b027dea7f23b1d5a1bdd526ea033b1e7914d380b381c8b7f9f131328d">EdgeType::Quantum</a>, &quot;Q&quot;}, {EdgeType::Classical, &quot;C&quot;}, {EdgeType::Boolean, &quot;B&quot;}, })</td></tr>
-<tr class="separator:a59e3aaaf5c90d85da65f8abd18a73670"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae879465fada4fcd0884a92ef43a5ed6c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#ae879465fada4fcd0884a92ef43a5ed6c">NLOHMANN_JSON_SERIALIZE_ENUM</a> (<a class="el" href="namespacetket.html#a4c73a949b027dea7f23b1d5a1bdd526e">EdgeType</a>, { {<a class="el" href="namespacetket.html#a4c73a949b027dea7f23b1d5a1bdd526ea033b1e7914d380b381c8b7f9f131328d">EdgeType::Quantum</a>, &quot;Q&quot;}, {EdgeType::Classical, &quot;C&quot;}, {EdgeType::Boolean, &quot;B&quot;}, {EdgeType::WASM, &quot;W&quot;}, })</td></tr>
+<tr class="separator:ae879465fada4fcd0884a92ef43a5ed6c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a58cfa7b63277a3124e19fe6bb098fc06"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespacetket.html#a165b1d270a350af87f1c7a63d68f9276">OpTypeSet</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a58cfa7b63277a3124e19fe6bb098fc06">all_gate_types</a> ()</td></tr>
 <tr class="memdesc:a58cfa7b63277a3124e19fe6bb098fc06"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set of all elementary gates.  <a href="namespacetket.html#a58cfa7b63277a3124e19fe6bb098fc06">More...</a><br /></td></tr>
 <tr class="separator:a58cfa7b63277a3124e19fe6bb098fc06"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1405,12 +1416,18 @@ Functions</h2></td></tr>
 <tr class="memitem:ae986b8610c4205b3a06903f80b7db76c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#ae986b8610c4205b3a06903f80b7db76c">is_final_q_type</a> (<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a> optype)</td></tr>
 <tr class="memdesc:ae986b8610c4205b3a06903f80b7db76c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test for output or discard quantum "ops".  <a href="namespacetket.html#ae986b8610c4205b3a06903f80b7db76c">More...</a><br /></td></tr>
 <tr class="separator:ae986b8610c4205b3a06903f80b7db76c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7acf1addf8f21d1f133c14b127c94311"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a7acf1addf8f21d1f133c14b127c94311">is_boundary_type</a> (<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a> optype)</td></tr>
+<tr class="memdesc:a7acf1addf8f21d1f133c14b127c94311"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test for input, creation, output or discard "ops".  <a href="namespacetket.html#a7acf1addf8f21d1f133c14b127c94311">More...</a><br /></td></tr>
+<tr class="separator:a7acf1addf8f21d1f133c14b127c94311"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:add2765a012a45d467f217ca45cab4a28"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#add2765a012a45d467f217ca45cab4a28">is_boundary_q_type</a> (<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a> optype)</td></tr>
 <tr class="memdesc:add2765a012a45d467f217ca45cab4a28"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test for input, creation, output or discard quantum "ops".  <a href="namespacetket.html#add2765a012a45d467f217ca45cab4a28">More...</a><br /></td></tr>
 <tr class="separator:add2765a012a45d467f217ca45cab4a28"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aead7d1c9917e734713b8a7b4ea55ef7d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#aead7d1c9917e734713b8a7b4ea55ef7d">is_boundary_c_type</a> (<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a> optype)</td></tr>
 <tr class="memdesc:aead7d1c9917e734713b8a7b4ea55ef7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test for input or output for classical "ops".  <a href="namespacetket.html#aead7d1c9917e734713b8a7b4ea55ef7d">More...</a><br /></td></tr>
 <tr class="separator:aead7d1c9917e734713b8a7b4ea55ef7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a55e9f99009c074c33610b7a684df20f8"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a55e9f99009c074c33610b7a684df20f8">is_boundary_w_type</a> (<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a> optype)</td></tr>
+<tr class="memdesc:a55e9f99009c074c33610b7a684df20f8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test for input or output for wasm "ops".  <a href="namespacetket.html#a55e9f99009c074c33610b7a684df20f8">More...</a><br /></td></tr>
+<tr class="separator:a55e9f99009c074c33610b7a684df20f8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4ee484bb09d2c6384e4beea84ac0b8bc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a4ee484bb09d2c6384e4beea84ac0b8bc">is_gate_type</a> (<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a> optype)</td></tr>
 <tr class="memdesc:a4ee484bb09d2c6384e4beea84ac0b8bc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test for elementary gates.  <a href="namespacetket.html#a4ee484bb09d2c6384e4beea84ac0b8bc">More...</a><br /></td></tr>
 <tr class="separator:a4ee484bb09d2c6384e4beea84ac0b8bc"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1804,6 +1821,8 @@ Functions</h2></td></tr>
 <tr class="separator:a392f41338f191768e8b7ac91b19bc8ce"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a15b37bcb17a543d2716a481f41482b8e"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a15b37bcb17a543d2716a481f41482b8e">c_default_reg</a> ()</td></tr>
 <tr class="separator:a15b37bcb17a543d2716a481f41482b8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7ea5fd5fa5527d487e1704565ba7fcdf"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a7ea5fd5fa5527d487e1704565ba7fcdf">w_default_reg</a> ()</td></tr>
+<tr class="separator:a7ea5fd5fa5527d487e1704565ba7fcdf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a38cf6ebc750836b73e4d409c38f238a8"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a38cf6ebc750836b73e4d409c38f238a8">node_default_reg</a> ()</td></tr>
 <tr class="separator:a38cf6ebc750836b73e4d409c38f238a8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a424ce0db972dbf33c03ce0dd9580d642"><td class="memItemLeft" align="right" valign="top">const std::string &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a424ce0db972dbf33c03ce0dd9580d642">c_debug_zero_prefix</a> ()</td></tr>
@@ -1846,6 +1865,10 @@ Functions</h2></td></tr>
 <tr class="separator:ac805d7e6f93710cccba66bac03f62402"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa288b45e0dc758918b68eec30c5a757d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#aa288b45e0dc758918b68eec30c5a757d">from_json</a> (const nlohmann::json &amp;j, <a class="el" href="classtket_1_1Bit.html">Bit</a> &amp;cb)</td></tr>
 <tr class="separator:aa288b45e0dc758918b68eec30c5a757d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaf01ad7a007f8dccd2f60b4b0cb2355b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#aaf01ad7a007f8dccd2f60b4b0cb2355b">to_json</a> (nlohmann::json &amp;j, const <a class="el" href="classtket_1_1WasmState.html">WasmState</a> &amp;wb)</td></tr>
+<tr class="separator:aaf01ad7a007f8dccd2f60b4b0cb2355b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a066f4dd18f9f112c10e95e8fd51776be"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a066f4dd18f9f112c10e95e8fd51776be">from_json</a> (const nlohmann::json &amp;j, <a class="el" href="classtket_1_1WasmState.html">WasmState</a> &amp;wb)</td></tr>
+<tr class="separator:a066f4dd18f9f112c10e95e8fd51776be"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae0a3a70e84db9e4a2f8d15febf11d135"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#ae0a3a70e84db9e4a2f8d15febf11d135">to_json</a> (nlohmann::json &amp;j, const <a class="el" href="classtket_1_1Node.html">Node</a> &amp;node)</td></tr>
 <tr class="separator:ae0a3a70e84db9e4a2f8d15febf11d135"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa39733fdaf85545358ea465b019deab0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#aa39733fdaf85545358ea465b019deab0">from_json</a> (const nlohmann::json &amp;j, <a class="el" href="classtket_1_1Node.html">Node</a> &amp;node)</td></tr>
@@ -1989,7 +2012,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="UnitID_8hpp_source.html#l00271">271</a> of file <a class="el" href="UnitID_8hpp_source.html">UnitID.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitID_8hpp_source.html#l00318">318</a> of file <a class="el" href="UnitID_8hpp_source.html">UnitID.hpp</a>.</p>
 
 </div>
 </div>
@@ -2005,7 +2028,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="UnitID_8hpp_source.html#l00270">270</a> of file <a class="el" href="UnitID_8hpp_source.html">UnitID.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitID_8hpp_source.html#l00317">317</a> of file <a class="el" href="UnitID_8hpp_source.html">UnitID.hpp</a>.</p>
 
 </div>
 </div>
@@ -2568,7 +2591,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="UnitID_8hpp_source.html#l00273">273</a> of file <a class="el" href="UnitID_8hpp_source.html">UnitID.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitID_8hpp_source.html#l00320">320</a> of file <a class="el" href="UnitID_8hpp_source.html">UnitID.hpp</a>.</p>
 
 </div>
 </div>
@@ -2584,7 +2607,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="UnitID_8hpp_source.html#l00274">274</a> of file <a class="el" href="UnitID_8hpp_source.html">UnitID.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitID_8hpp_source.html#l00321">321</a> of file <a class="el" href="UnitID_8hpp_source.html">UnitID.hpp</a>.</p>
 
 </div>
 </div>
@@ -2664,7 +2687,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="EdgeType_8hpp_source.html#l00055">55</a> of file <a class="el" href="EdgeType_8hpp_source.html">EdgeType.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="EdgeType_8hpp_source.html#l00062">62</a> of file <a class="el" href="EdgeType_8hpp_source.html">EdgeType.hpp</a>.</p>
 
 </div>
 </div>
@@ -3109,7 +3132,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="UnitID_8hpp_source.html#l00267">267</a> of file <a class="el" href="UnitID_8hpp_source.html">UnitID.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitID_8hpp_source.html#l00314">314</a> of file <a class="el" href="UnitID_8hpp_source.html">UnitID.hpp</a>.</p>
 
 </div>
 </div>
@@ -3125,7 +3148,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="UnitID_8hpp_source.html#l00266">266</a> of file <a class="el" href="UnitID_8hpp_source.html">UnitID.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitID_8hpp_source.html#l00313">313</a> of file <a class="el" href="UnitID_8hpp_source.html">UnitID.hpp</a>.</p>
 
 </div>
 </div>
@@ -3211,7 +3234,7 @@ Variables</h2></td></tr>
 
 <p>A register of locations sharing the same name. </p>
 
-<p class="definition">Definition at line <a class="el" href="UnitID_8hpp_source.html#l00277">277</a> of file <a class="el" href="UnitID_8hpp_source.html">UnitID.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitID_8hpp_source.html#l00324">324</a> of file <a class="el" href="UnitID_8hpp_source.html">UnitID.hpp</a>.</p>
 
 </div>
 </div>
@@ -3529,7 +3552,7 @@ template&lt;typename A , typename B &gt; </div>
 
 <p>A correspondence between two sets of unit IDs. </p>
 
-<p class="definition">Definition at line <a class="el" href="UnitID_8hpp_source.html#l00254">254</a> of file <a class="el" href="UnitID_8hpp_source.html">UnitID.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitID_8hpp_source.html#l00301">301</a> of file <a class="el" href="UnitID_8hpp_source.html">UnitID.hpp</a>.</p>
 
 </div>
 </div>
@@ -3561,7 +3584,7 @@ template&lt;typename A , typename B &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="UnitID_8hpp_source.html#l00263">263</a> of file <a class="el" href="UnitID_8hpp_source.html">UnitID.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitID_8hpp_source.html#l00310">310</a> of file <a class="el" href="UnitID_8hpp_source.html">UnitID.hpp</a>.</p>
 
 </div>
 </div>
@@ -3577,7 +3600,7 @@ template&lt;typename A , typename B &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="UnitID_8hpp_source.html#l00264">264</a> of file <a class="el" href="UnitID_8hpp_source.html">UnitID.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitID_8hpp_source.html#l00311">311</a> of file <a class="el" href="UnitID_8hpp_source.html">UnitID.hpp</a>.</p>
 
 </div>
 </div>
@@ -3593,7 +3616,7 @@ template&lt;typename A , typename B &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="UnitID_8hpp_source.html#l00262">262</a> of file <a class="el" href="UnitID_8hpp_source.html">UnitID.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitID_8hpp_source.html#l00309">309</a> of file <a class="el" href="UnitID_8hpp_source.html">UnitID.hpp</a>.</p>
 
 </div>
 </div>
@@ -3905,6 +3928,9 @@ template&lt;typename A , typename B &gt; </div>
 </td></tr>
 <tr><td class="fieldname"><a id="a4c73a949b027dea7f23b1d5a1bdd526ea27226c864bac7454a8504f8edb15d95b"></a>Boolean&#160;</td><td class="fielddoc"><p>A wire carrying a bit of classical information from a classical output port of one op to a classical input port of another, not corresponding to any allocated <a class="el" href="classtket_1_1Bit.html">Bit</a>. </p>
 </td></tr>
+<tr><td class="fieldname"><a id="a4c73a949b027dea7f23b1d5a1bdd526eac7dbeb10b3299406a04231654cf6defd"></a>WASM&#160;</td><td class="fielddoc"><p>A wire to connect the wasm ops in the order they should be executed in. </p>
+<p>Corresponding to some allocated <a class="el" href="classtket_1_1WasmState.html">WasmState</a>. </p>
+</td></tr>
 </table>
 
 <p class="definition">Definition at line <a class="el" href="EdgeType_8hpp_source.html#l00024">24</a> of file <a class="el" href="EdgeType_8hpp_source.html">EdgeType.hpp</a>.</p>
@@ -4009,6 +4035,10 @@ template&lt;typename A , typename B &gt; </div>
 <tr><td class="fieldname"><a id="a13e81344da4794f2648eb9a7b286fcf3a850c23cfb47574b5e27c4c768a7008b2"></a>ClInput&#160;</td><td class="fielddoc"><p>Classical input node of the circuit. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="a13e81344da4794f2648eb9a7b286fcf3a6c4e5627d56328e52b12a2aeb0164d0d"></a>ClOutput&#160;</td><td class="fielddoc"><p>Classical output node of the circuit. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a13e81344da4794f2648eb9a7b286fcf3ae2c898c464e3dbfcd8e2f94b0df4b8dc"></a>WASMInput&#160;</td><td class="fielddoc"><p>WASM input node of the circuit. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a13e81344da4794f2648eb9a7b286fcf3a725ed3ba68b55217ae7457fe12fad64c"></a>WASMOutput&#160;</td><td class="fielddoc"><p>WASM output node of the circuit. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="a13e81344da4794f2648eb9a7b286fcf3a48656da7a6e48c6887d94f4c69c731b6"></a>Barrier&#160;</td><td class="fielddoc"><p>No-op that must be preserved by compilation. </p>
 </td></tr>
@@ -4416,6 +4446,7 @@ template&lt;typename A , typename B &gt; </div>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3"></a>Qubit&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="ab638aca8b1f14267ebf40f93686b7ac9aed98fd4f2d1aeadad43670b2d07d5b40"></a>Bit&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="ab638aca8b1f14267ebf40f93686b7ac9aa177140416d55f0ce12892a005f0398a"></a>WasmState&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
 <p class="definition">Definition at line <a class="el" href="UnitID_8hpp_source.html#l00038">38</a> of file <a class="el" href="UnitID_8hpp_source.html">UnitID.hpp</a>.</p>
@@ -4447,7 +4478,7 @@ template&lt;typename A , typename B &gt; </div>
 <tr><td class="fieldname"><a id="a5339172fa072164a0c7baa91f2e5b536a0cbbe0321e0c40dfa77a159ef6bfad6b"></a>Measure&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="DAGProperties_8cpp_source.html#l00036">36</a> of file <a class="el" href="DAGProperties_8cpp_source.html">DAGProperties.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DAGProperties_8cpp_source.html#l00037">37</a> of file <a class="el" href="DAGProperties_8cpp_source.html">DAGProperties.cpp</a>.</p>
 
 </div>
 </div>
@@ -4865,7 +4896,7 @@ template&lt;typename A , typename B &gt; </div>
 
 <p>Binary AND operator. </p>
 
-<p class="definition">Definition at line <a class="el" href="ClassicalOps_8cpp_source.html#l00433">433</a> of file <a class="el" href="ClassicalOps_8cpp_source.html">ClassicalOps.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ClassicalOps_8cpp_source.html#l00439">439</a> of file <a class="el" href="ClassicalOps_8cpp_source.html">ClassicalOps.cpp</a>.</p>
 
 </div>
 </div>
@@ -4886,7 +4917,7 @@ template&lt;typename A , typename B &gt; </div>
 
 <p>In-place AND with another input. </p>
 
-<p class="definition">Definition at line <a class="el" href="ClassicalOps_8cpp_source.html#l00454">454</a> of file <a class="el" href="ClassicalOps_8cpp_source.html">ClassicalOps.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ClassicalOps_8cpp_source.html#l00460">460</a> of file <a class="el" href="ClassicalOps_8cpp_source.html">ClassicalOps.cpp</a>.</p>
 
 </div>
 </div>
@@ -5291,7 +5322,7 @@ template&lt;typename A , typename B &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="UnitID_8cpp_source.html#l00097">97</a> of file <a class="el" href="UnitID_8cpp_source.html">UnitID.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitID_8cpp_source.html#l00108">108</a> of file <a class="el" href="UnitID_8cpp_source.html">UnitID.cpp</a>.</p>
 
 </div>
 </div>
@@ -5310,7 +5341,7 @@ template&lt;typename A , typename B &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="UnitID_8cpp_source.html#l00091">91</a> of file <a class="el" href="UnitID_8cpp_source.html">UnitID.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitID_8cpp_source.html#l00102">102</a> of file <a class="el" href="UnitID_8cpp_source.html">UnitID.cpp</a>.</p>
 
 </div>
 </div>
@@ -5329,7 +5360,7 @@ template&lt;typename A , typename B &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="UnitID_8cpp_source.html#l00085">85</a> of file <a class="el" href="UnitID_8cpp_source.html">UnitID.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitID_8cpp_source.html#l00096">96</a> of file <a class="el" href="UnitID_8cpp_source.html">UnitID.cpp</a>.</p>
 
 </div>
 </div>
@@ -5348,7 +5379,7 @@ template&lt;typename A , typename B &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="UnitID_8cpp_source.html#l00073">73</a> of file <a class="el" href="UnitID_8cpp_source.html">UnitID.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitID_8cpp_source.html#l00078">78</a> of file <a class="el" href="UnitID_8cpp_source.html">UnitID.cpp</a>.</p>
 
 </div>
 </div>
@@ -5624,7 +5655,7 @@ template&lt;typename T &gt; </div>
 
 <p>Classical CNOT transform. </p>
 
-<p class="definition">Definition at line <a class="el" href="ClassicalOps_8cpp_source.html#l00419">419</a> of file <a class="el" href="ClassicalOps_8cpp_source.html">ClassicalOps.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ClassicalOps_8cpp_source.html#l00425">425</a> of file <a class="el" href="ClassicalOps_8cpp_source.html">ClassicalOps.cpp</a>.</p>
 
 </div>
 </div>
@@ -5645,7 +5676,7 @@ template&lt;typename T &gt; </div>
 
 <p>Classical NOT transform. </p>
 
-<p class="definition">Definition at line <a class="el" href="ClassicalOps_8cpp_source.html#l00412">412</a> of file <a class="el" href="ClassicalOps_8cpp_source.html">ClassicalOps.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ClassicalOps_8cpp_source.html#l00418">418</a> of file <a class="el" href="ClassicalOps_8cpp_source.html">ClassicalOps.cpp</a>.</p>
 
 </div>
 </div>
@@ -7065,7 +7096,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a91d0b4b066c67030bd53dee413fce050"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a91d0b4b066c67030bd53dee413fce050">&#9670;&nbsp;</a></span>from_json() <span class="overload">[1/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a91d0b4b066c67030bd53dee413fce050">&#9670;&nbsp;</a></span>from_json() <span class="overload">[1/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7095,7 +7126,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a8480f9e4486eeb5f6b4df09347b29cd7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8480f9e4486eeb5f6b4df09347b29cd7">&#9670;&nbsp;</a></span>from_json() <span class="overload">[2/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a8480f9e4486eeb5f6b4df09347b29cd7">&#9670;&nbsp;</a></span>from_json() <span class="overload">[2/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7125,7 +7156,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="ab465389a1775c7abac371775b9c3a938"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab465389a1775c7abac371775b9c3a938">&#9670;&nbsp;</a></span>from_json() <span class="overload">[3/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ab465389a1775c7abac371775b9c3a938">&#9670;&nbsp;</a></span>from_json() <span class="overload">[3/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7155,7 +7186,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="aa288b45e0dc758918b68eec30c5a757d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa288b45e0dc758918b68eec30c5a757d">&#9670;&nbsp;</a></span>from_json() <span class="overload">[4/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aa288b45e0dc758918b68eec30c5a757d">&#9670;&nbsp;</a></span>from_json() <span class="overload">[4/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7185,7 +7216,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a1fff349fb67b823c404240549490fe4e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1fff349fb67b823c404240549490fe4e">&#9670;&nbsp;</a></span>from_json() <span class="overload">[5/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a1fff349fb67b823c404240549490fe4e">&#9670;&nbsp;</a></span>from_json() <span class="overload">[5/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7215,7 +7246,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a0477c69ca34d1cd29afb9820a51f32db"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0477c69ca34d1cd29afb9820a51f32db">&#9670;&nbsp;</a></span>from_json() <span class="overload">[6/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a0477c69ca34d1cd29afb9820a51f32db">&#9670;&nbsp;</a></span>from_json() <span class="overload">[6/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7245,7 +7276,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a366cedf47a3be4f0b69f9d91c9be3b80"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a366cedf47a3be4f0b69f9d91c9be3b80">&#9670;&nbsp;</a></span>from_json() <span class="overload">[7/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a366cedf47a3be4f0b69f9d91c9be3b80">&#9670;&nbsp;</a></span>from_json() <span class="overload">[7/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7270,12 +7301,12 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="CircuitJson_8cpp_source.html#l00043">43</a> of file <a class="el" href="CircuitJson_8cpp_source.html">CircuitJson.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CircuitJson_8cpp_source.html#l00047">47</a> of file <a class="el" href="CircuitJson_8cpp_source.html">CircuitJson.cpp</a>.</p>
 
 </div>
 </div>
 <a id="a7ec709945767bd70fb640a0838d63b0f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7ec709945767bd70fb640a0838d63b0f">&#9670;&nbsp;</a></span>from_json() <span class="overload">[8/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a7ec709945767bd70fb640a0838d63b0f">&#9670;&nbsp;</a></span>from_json() <span class="overload">[8/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7300,12 +7331,12 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="CommandJson_8cpp_source.html#l00044">44</a> of file <a class="el" href="CommandJson_8cpp_source.html">CommandJson.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CommandJson_8cpp_source.html#l00065">65</a> of file <a class="el" href="CommandJson_8cpp_source.html">CommandJson.cpp</a>.</p>
 
 </div>
 </div>
 <a id="a8ca885e368fdafd84fe074a22facbd83"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8ca885e368fdafd84fe074a22facbd83">&#9670;&nbsp;</a></span>from_json() <span class="overload">[9/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a8ca885e368fdafd84fe074a22facbd83">&#9670;&nbsp;</a></span>from_json() <span class="overload">[9/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7335,7 +7366,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a564b6d2d0f09d0437ef1e4dd1af3159e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a564b6d2d0f09d0437ef1e4dd1af3159e">&#9670;&nbsp;</a></span>from_json() <span class="overload">[10/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a564b6d2d0f09d0437ef1e4dd1af3159e">&#9670;&nbsp;</a></span>from_json() <span class="overload">[10/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7365,7 +7396,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="ab5c1262e82e286a32972346c15cd7ea5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab5c1262e82e286a32972346c15cd7ea5">&#9670;&nbsp;</a></span>from_json() <span class="overload">[11/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ab5c1262e82e286a32972346c15cd7ea5">&#9670;&nbsp;</a></span>from_json() <span class="overload">[11/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7395,7 +7426,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="adb7b8ddda56ada4703b3898e62e1028d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adb7b8ddda56ada4703b3898e62e1028d">&#9670;&nbsp;</a></span>from_json() <span class="overload">[12/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#adb7b8ddda56ada4703b3898e62e1028d">&#9670;&nbsp;</a></span>from_json() <span class="overload">[12/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7425,7 +7456,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a5b3606a7dffd698e3b65ea61eab49f29"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5b3606a7dffd698e3b65ea61eab49f29">&#9670;&nbsp;</a></span>from_json() <span class="overload">[13/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a5b3606a7dffd698e3b65ea61eab49f29">&#9670;&nbsp;</a></span>from_json() <span class="overload">[13/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7455,7 +7486,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="aa39733fdaf85545358ea465b019deab0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa39733fdaf85545358ea465b019deab0">&#9670;&nbsp;</a></span>from_json() <span class="overload">[14/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aa39733fdaf85545358ea465b019deab0">&#9670;&nbsp;</a></span>from_json() <span class="overload">[14/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7480,12 +7511,12 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="UnitID_8cpp_source.html#l00043">43</a> of file <a class="el" href="UnitID_8cpp_source.html">UnitID.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitID_8cpp_source.html#l00048">48</a> of file <a class="el" href="UnitID_8cpp_source.html">UnitID.cpp</a>.</p>
 
 </div>
 </div>
 <a id="ab5cfd76224bd2a945c23f62bb1ed1fc7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab5cfd76224bd2a945c23f62bb1ed1fc7">&#9670;&nbsp;</a></span>from_json() <span class="overload">[15/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ab5cfd76224bd2a945c23f62bb1ed1fc7">&#9670;&nbsp;</a></span>from_json() <span class="overload">[15/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7515,7 +7546,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a33a17099630ebcf742229a7d831bcec0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a33a17099630ebcf742229a7d831bcec0">&#9670;&nbsp;</a></span>from_json() <span class="overload">[16/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a33a17099630ebcf742229a7d831bcec0">&#9670;&nbsp;</a></span>from_json() <span class="overload">[16/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7545,7 +7576,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="adeb3ed1c99658d1ea42126bcb712bb9a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adeb3ed1c99658d1ea42126bcb712bb9a">&#9670;&nbsp;</a></span>from_json() <span class="overload">[17/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#adeb3ed1c99658d1ea42126bcb712bb9a">&#9670;&nbsp;</a></span>from_json() <span class="overload">[17/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7575,7 +7606,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a581d9c405547974363fb647e7f494db6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a581d9c405547974363fb647e7f494db6">&#9670;&nbsp;</a></span>from_json() <span class="overload">[18/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a581d9c405547974363fb647e7f494db6">&#9670;&nbsp;</a></span>from_json() <span class="overload">[18/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7605,7 +7636,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="ac6795404ed25f327b323309ef33e1d85"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac6795404ed25f327b323309ef33e1d85">&#9670;&nbsp;</a></span>from_json() <span class="overload">[19/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ac6795404ed25f327b323309ef33e1d85">&#9670;&nbsp;</a></span>from_json() <span class="overload">[19/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7635,7 +7666,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a25325849fbb3b1fdf28c402257dd63e9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a25325849fbb3b1fdf28c402257dd63e9">&#9670;&nbsp;</a></span>from_json() <span class="overload">[20/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a25325849fbb3b1fdf28c402257dd63e9">&#9670;&nbsp;</a></span>from_json() <span class="overload">[20/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7665,7 +7696,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a53429249cb60afd24b0e046ae65b467b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a53429249cb60afd24b0e046ae65b467b">&#9670;&nbsp;</a></span>from_json() <span class="overload">[21/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a53429249cb60afd24b0e046ae65b467b">&#9670;&nbsp;</a></span>from_json() <span class="overload">[21/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7695,7 +7726,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a68933b29c20e6356e20a1852a018bf6c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a68933b29c20e6356e20a1852a018bf6c">&#9670;&nbsp;</a></span>from_json() <span class="overload">[22/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a68933b29c20e6356e20a1852a018bf6c">&#9670;&nbsp;</a></span>from_json() <span class="overload">[22/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7720,12 +7751,12 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="UnitID_8cpp_source.html#l00053">53</a> of file <a class="el" href="UnitID_8cpp_source.html">UnitID.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitID_8cpp_source.html#l00058">58</a> of file <a class="el" href="UnitID_8cpp_source.html">UnitID.cpp</a>.</p>
 
 </div>
 </div>
 <a id="a68687314e2c481e984ee323aab4a7495"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a68687314e2c481e984ee323aab4a7495">&#9670;&nbsp;</a></span>from_json() <span class="overload">[23/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a68687314e2c481e984ee323aab4a7495">&#9670;&nbsp;</a></span>from_json() <span class="overload">[23/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7755,7 +7786,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="ae97a0010d3076d0b508937e756ef364f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae97a0010d3076d0b508937e756ef364f">&#9670;&nbsp;</a></span>from_json() <span class="overload">[24/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ae97a0010d3076d0b508937e756ef364f">&#9670;&nbsp;</a></span>from_json() <span class="overload">[24/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7785,7 +7816,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a2cf840b2fd4a49f60d559bdf328ad73c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2cf840b2fd4a49f60d559bdf328ad73c">&#9670;&nbsp;</a></span>from_json() <span class="overload">[25/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a2cf840b2fd4a49f60d559bdf328ad73c">&#9670;&nbsp;</a></span>from_json() <span class="overload">[25/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7815,7 +7846,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a06b460c582581f8c159d245411828117"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a06b460c582581f8c159d245411828117">&#9670;&nbsp;</a></span>from_json() <span class="overload">[26/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a06b460c582581f8c159d245411828117">&#9670;&nbsp;</a></span>from_json() <span class="overload">[26/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7841,6 +7872,36 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="UnitaryTableau_8cpp_source.html#l00581">581</a> of file <a class="el" href="UnitaryTableau_8cpp_source.html">UnitaryTableau.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a066f4dd18f9f112c10e95e8fd51776be"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a066f4dd18f9f112c10e95e8fd51776be">&#9670;&nbsp;</a></span>from_json() <span class="overload">[27/27]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tket::from_json </td>
+          <td>(</td>
+          <td class="paramtype">const nlohmann::json &amp;&#160;</td>
+          <td class="paramname"><em>j</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classtket_1_1WasmState.html">WasmState</a> &amp;&#160;</td>
+          <td class="paramname"><em>wb</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="UnitID_8cpp_source.html#l00043">43</a> of file <a class="el" href="UnitID_8cpp_source.html">UnitID.cpp</a>.</p>
 
 </div>
 </div>
@@ -9779,7 +9840,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for input or output for classical "ops". </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00146">146</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00152">152</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -9801,7 +9862,51 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for input, creation, output or discard quantum "ops". </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00142">142</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00148">148</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a7acf1addf8f21d1f133c14b127c94311"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7acf1addf8f21d1f133c14b127c94311">&#9670;&nbsp;</a></span>is_boundary_type()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool tket::is_boundary_type </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a>&#160;</td>
+          <td class="paramname"><em>optype</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Test for input, creation, output or discard "ops". </p>
+
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00143">143</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a55e9f99009c074c33610b7a684df20f8"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a55e9f99009c074c33610b7a684df20f8">&#9670;&nbsp;</a></span>is_boundary_w_type()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool tket::is_boundary_w_type </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a>&#160;</td>
+          <td class="paramname"><em>optype</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Test for input or output for wasm "ops". </p>
+
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00156">156</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -9823,7 +9928,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for boxes (complex packaged operations) </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00154">154</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00164">164</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -9845,7 +9950,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for purely classical gates derived from <a class="el" href="classtket_1_1ClassicalOp.html" title="A purely classical operation.">ClassicalOp</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00239">239</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00249">249</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -9867,7 +9972,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for Clifford operations. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00224">224</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00234">234</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -9889,7 +9994,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for controlled gates. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00243">243</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00253">253</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -9911,7 +10016,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for output or discard quantum "ops". </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00138">138</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00139">139</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -9933,7 +10038,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for flowops (just for high-level control flow) </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00178">178</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00188">188</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -9955,7 +10060,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for elementary gates. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00150">150</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00160">160</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -9977,7 +10082,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for input or creation quantum "ops". </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00134">134</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00135">135</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10021,7 +10126,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for gates over more than one qubit. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00199">199</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00209">209</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10043,7 +10148,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for non-invertible operations. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00212">212</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00222">222</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10065,7 +10170,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for rotations around Pauli axes. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00193">193</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00203">203</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10087,7 +10192,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for measurement and reset gates. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00235">235</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00245">245</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10139,7 +10244,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for rotations (including controlled rotations) </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00184">184</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00194">194</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10161,7 +10266,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for gates over a single qubit. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00203">203</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00213">213</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10183,7 +10288,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for single-qubit gates that can be expressed as TK1. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00208">208</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00218">218</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10297,7 +10402,7 @@ circuit has no symbolic parameters</dd></dl>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>whether the DAG has the required properties </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DAGProperties_8cpp_source.html#l00038">38</a> of file <a class="el" href="DAGProperties_8cpp_source.html">DAGProperties.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DAGProperties_8cpp_source.html#l00039">39</a> of file <a class="el" href="DAGProperties_8cpp_source.html">DAGProperties.cpp</a>.</p>
 
 </div>
 </div>
@@ -10449,7 +10554,7 @@ template&lt;class T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="UnitID_8hpp_source.html#l00146">146</a> of file <a class="el" href="UnitID_8hpp_source.html">UnitID.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitID_8hpp_source.html#l00147">147</a> of file <a class="el" href="UnitID_8hpp_source.html">UnitID.hpp</a>.</p>
 
 </div>
 </div>
@@ -10862,8 +10967,8 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a59e3aaaf5c90d85da65f8abd18a73670"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a59e3aaaf5c90d85da65f8abd18a73670">&#9670;&nbsp;</a></span>NLOHMANN_JSON_SERIALIZE_ENUM() <span class="overload">[2/3]</span></h2>
+<a id="ae879465fada4fcd0884a92ef43a5ed6c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ae879465fada4fcd0884a92ef43a5ed6c">&#9670;&nbsp;</a></span>NLOHMANN_JSON_SERIALIZE_ENUM() <span class="overload">[2/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -10877,7 +10982,7 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">{ {<a class="el" href="namespacetket.html#a4c73a949b027dea7f23b1d5a1bdd526ea033b1e7914d380b381c8b7f9f131328d">EdgeType::Quantum</a>, &quot;Q&quot;}, {EdgeType::Classical, &quot;C&quot;}, {EdgeType::Boolean, &quot;B&quot;}, }&#160;</td>
+          <td class="paramtype">{ {<a class="el" href="namespacetket.html#a4c73a949b027dea7f23b1d5a1bdd526ea033b1e7914d380b381c8b7f9f131328d">EdgeType::Quantum</a>, &quot;Q&quot;}, {EdgeType::Classical, &quot;C&quot;}, {EdgeType::Boolean, &quot;B&quot;}, {EdgeType::WASM, &quot;W&quot;}, }&#160;</td>
           <td class="paramname">&#160;</td>
         </tr>
         <tr>
@@ -10933,7 +11038,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="UnitID_8cpp_source.html#l00079">79</a> of file <a class="el" href="UnitID_8cpp_source.html">UnitID.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitID_8cpp_source.html#l00090">90</a> of file <a class="el" href="UnitID_8cpp_source.html">UnitID.cpp</a>.</p>
 
 </div>
 </div>
@@ -11031,7 +11136,7 @@ template&lt;typename T &gt; </div>
 
 <p>Unary NOT operator. </p>
 
-<p class="definition">Definition at line <a class="el" href="ClassicalOps_8cpp_source.html#l00426">426</a> of file <a class="el" href="ClassicalOps_8cpp_source.html">ClassicalOps.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ClassicalOps_8cpp_source.html#l00432">432</a> of file <a class="el" href="ClassicalOps_8cpp_source.html">ClassicalOps.cpp</a>.</p>
 
 </div>
 </div>
@@ -11690,7 +11795,7 @@ template&lt;typename T &gt; </div>
 
 <p>Binary OR operator. </p>
 
-<p class="definition">Definition at line <a class="el" href="ClassicalOps_8cpp_source.html#l00440">440</a> of file <a class="el" href="ClassicalOps_8cpp_source.html">ClassicalOps.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ClassicalOps_8cpp_source.html#l00446">446</a> of file <a class="el" href="ClassicalOps_8cpp_source.html">ClassicalOps.cpp</a>.</p>
 
 </div>
 </div>
@@ -11711,7 +11816,7 @@ template&lt;typename T &gt; </div>
 
 <p>In-place OR with another input. </p>
 
-<p class="definition">Definition at line <a class="el" href="ClassicalOps_8cpp_source.html#l00461">461</a> of file <a class="el" href="ClassicalOps_8cpp_source.html">ClassicalOps.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ClassicalOps_8cpp_source.html#l00467">467</a> of file <a class="el" href="ClassicalOps_8cpp_source.html">ClassicalOps.cpp</a>.</p>
 
 </div>
 </div>
@@ -12041,7 +12146,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="UnitID_8cpp_source.html#l00067">67</a> of file <a class="el" href="UnitID_8cpp_source.html">UnitID.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitID_8cpp_source.html#l00072">72</a> of file <a class="el" href="UnitID_8cpp_source.html">UnitID.cpp</a>.</p>
 
 </div>
 </div>
@@ -12868,7 +12973,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a1a18993f52b6212e59c69c072e94ebc0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1a18993f52b6212e59c69c072e94ebc0">&#9670;&nbsp;</a></span>to_json() <span class="overload">[1/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a18993f52b6212e59c69c072e94ebc0">&#9670;&nbsp;</a></span>to_json() <span class="overload">[1/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -12898,7 +13003,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="ad4ffe8a33fb155115f7cc9b02740797d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad4ffe8a33fb155115f7cc9b02740797d">&#9670;&nbsp;</a></span>to_json() <span class="overload">[2/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ad4ffe8a33fb155115f7cc9b02740797d">&#9670;&nbsp;</a></span>to_json() <span class="overload">[2/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -12928,7 +13033,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="ac805d7e6f93710cccba66bac03f62402"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac805d7e6f93710cccba66bac03f62402">&#9670;&nbsp;</a></span>to_json() <span class="overload">[3/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ac805d7e6f93710cccba66bac03f62402">&#9670;&nbsp;</a></span>to_json() <span class="overload">[3/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -12958,7 +13063,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="acc20e3ff7e32977074a45a083058a67a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acc20e3ff7e32977074a45a083058a67a">&#9670;&nbsp;</a></span>to_json() <span class="overload">[4/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#acc20e3ff7e32977074a45a083058a67a">&#9670;&nbsp;</a></span>to_json() <span class="overload">[4/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -12988,7 +13093,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="ab4421124b62da1b876a3b76e6e5e7072"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab4421124b62da1b876a3b76e6e5e7072">&#9670;&nbsp;</a></span>to_json() <span class="overload">[5/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ab4421124b62da1b876a3b76e6e5e7072">&#9670;&nbsp;</a></span>to_json() <span class="overload">[5/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13018,7 +13123,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="aa8ac411c8fdf32607b7fb7801531d367"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa8ac411c8fdf32607b7fb7801531d367">&#9670;&nbsp;</a></span>to_json() <span class="overload">[6/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aa8ac411c8fdf32607b7fb7801531d367">&#9670;&nbsp;</a></span>to_json() <span class="overload">[6/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13048,7 +13153,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a5282c55bc6f6450eca5dc48555e8a6ab"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5282c55bc6f6450eca5dc48555e8a6ab">&#9670;&nbsp;</a></span>to_json() <span class="overload">[7/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a5282c55bc6f6450eca5dc48555e8a6ab">&#9670;&nbsp;</a></span>to_json() <span class="overload">[7/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13073,12 +13178,12 @@ template&lt;typename BoxT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="CommandJson_8cpp_source.html#l00020">20</a> of file <a class="el" href="CommandJson_8cpp_source.html">CommandJson.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CommandJson_8cpp_source.html#l00022">22</a> of file <a class="el" href="CommandJson_8cpp_source.html">CommandJson.cpp</a>.</p>
 
 </div>
 </div>
 <a id="a8f3c55b5848ce021bac9642afa763d6c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8f3c55b5848ce021bac9642afa763d6c">&#9670;&nbsp;</a></span>to_json() <span class="overload">[8/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a8f3c55b5848ce021bac9642afa763d6c">&#9670;&nbsp;</a></span>to_json() <span class="overload">[8/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13108,7 +13213,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a67ec50cfd6cd6d5d491775c810004980"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a67ec50cfd6cd6d5d491775c810004980">&#9670;&nbsp;</a></span>to_json() <span class="overload">[9/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a67ec50cfd6cd6d5d491775c810004980">&#9670;&nbsp;</a></span>to_json() <span class="overload">[9/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13138,7 +13243,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a6fab6f7f7d336b2382cef1df753cae52"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6fab6f7f7d336b2382cef1df753cae52">&#9670;&nbsp;</a></span>to_json() <span class="overload">[10/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a6fab6f7f7d336b2382cef1df753cae52">&#9670;&nbsp;</a></span>to_json() <span class="overload">[10/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13168,7 +13273,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a440f224006d397b83ed0946575a1d737"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a440f224006d397b83ed0946575a1d737">&#9670;&nbsp;</a></span>to_json() <span class="overload">[11/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a440f224006d397b83ed0946575a1d737">&#9670;&nbsp;</a></span>to_json() <span class="overload">[11/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13198,7 +13303,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a89f114a1adda4cd0d4e8bbd35556412c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a89f114a1adda4cd0d4e8bbd35556412c">&#9670;&nbsp;</a></span>to_json() <span class="overload">[12/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a89f114a1adda4cd0d4e8bbd35556412c">&#9670;&nbsp;</a></span>to_json() <span class="overload">[12/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13228,7 +13333,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="ae0a3a70e84db9e4a2f8d15febf11d135"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae0a3a70e84db9e4a2f8d15febf11d135">&#9670;&nbsp;</a></span>to_json() <span class="overload">[13/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ae0a3a70e84db9e4a2f8d15febf11d135">&#9670;&nbsp;</a></span>to_json() <span class="overload">[13/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13253,12 +13358,12 @@ template&lt;typename BoxT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="UnitID_8cpp_source.html#l00042">42</a> of file <a class="el" href="UnitID_8cpp_source.html">UnitID.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitID_8cpp_source.html#l00047">47</a> of file <a class="el" href="UnitID_8cpp_source.html">UnitID.cpp</a>.</p>
 
 </div>
 </div>
 <a id="a7abfb8c99b6073b5bc9b759ed22983fc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7abfb8c99b6073b5bc9b759ed22983fc">&#9670;&nbsp;</a></span>to_json() <span class="overload">[14/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a7abfb8c99b6073b5bc9b759ed22983fc">&#9670;&nbsp;</a></span>to_json() <span class="overload">[14/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13288,7 +13393,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a3e93ea21b541ed8dee95f8dbace142ca"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3e93ea21b541ed8dee95f8dbace142ca">&#9670;&nbsp;</a></span>to_json() <span class="overload">[15/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a3e93ea21b541ed8dee95f8dbace142ca">&#9670;&nbsp;</a></span>to_json() <span class="overload">[15/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13318,7 +13423,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="ae44e46df7513c3ed26bb1b5469931b2f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae44e46df7513c3ed26bb1b5469931b2f">&#9670;&nbsp;</a></span>to_json() <span class="overload">[16/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ae44e46df7513c3ed26bb1b5469931b2f">&#9670;&nbsp;</a></span>to_json() <span class="overload">[16/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13348,7 +13453,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a930f453f5886d252c3fb7a45ea0bc4fa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a930f453f5886d252c3fb7a45ea0bc4fa">&#9670;&nbsp;</a></span>to_json() <span class="overload">[17/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a930f453f5886d252c3fb7a45ea0bc4fa">&#9670;&nbsp;</a></span>to_json() <span class="overload">[17/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13378,7 +13483,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a94cb91a5870263547f714e479978083b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a94cb91a5870263547f714e479978083b">&#9670;&nbsp;</a></span>to_json() <span class="overload">[18/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a94cb91a5870263547f714e479978083b">&#9670;&nbsp;</a></span>to_json() <span class="overload">[18/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13408,7 +13513,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a903d0e05c58620dc0d082c414c078911"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a903d0e05c58620dc0d082c414c078911">&#9670;&nbsp;</a></span>to_json() <span class="overload">[19/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a903d0e05c58620dc0d082c414c078911">&#9670;&nbsp;</a></span>to_json() <span class="overload">[19/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13438,7 +13543,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="aad92ba0223225b2432b3754047387b5e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aad92ba0223225b2432b3754047387b5e">&#9670;&nbsp;</a></span>to_json() <span class="overload">[20/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aad92ba0223225b2432b3754047387b5e">&#9670;&nbsp;</a></span>to_json() <span class="overload">[20/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13468,7 +13573,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="ac759ed39e053a1136881124ac753b6bf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac759ed39e053a1136881124ac753b6bf">&#9670;&nbsp;</a></span>to_json() <span class="overload">[21/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ac759ed39e053a1136881124ac753b6bf">&#9670;&nbsp;</a></span>to_json() <span class="overload">[21/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13493,12 +13598,12 @@ template&lt;typename BoxT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="UnitID_8cpp_source.html#l00045">45</a> of file <a class="el" href="UnitID_8cpp_source.html">UnitID.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitID_8cpp_source.html#l00050">50</a> of file <a class="el" href="UnitID_8cpp_source.html">UnitID.cpp</a>.</p>
 
 </div>
 </div>
 <a id="a3eb5506cf530f09a7158760012b494f3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3eb5506cf530f09a7158760012b494f3">&#9670;&nbsp;</a></span>to_json() <span class="overload">[22/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a3eb5506cf530f09a7158760012b494f3">&#9670;&nbsp;</a></span>to_json() <span class="overload">[22/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13528,7 +13633,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a4dd94aad84eb507a42a4813914cc88f9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4dd94aad84eb507a42a4813914cc88f9">&#9670;&nbsp;</a></span>to_json() <span class="overload">[23/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a4dd94aad84eb507a42a4813914cc88f9">&#9670;&nbsp;</a></span>to_json() <span class="overload">[23/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13558,7 +13663,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a8a14a478bed045c6dd02963883dc597e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8a14a478bed045c6dd02963883dc597e">&#9670;&nbsp;</a></span>to_json() <span class="overload">[24/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a14a478bed045c6dd02963883dc597e">&#9670;&nbsp;</a></span>to_json() <span class="overload">[24/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13588,7 +13693,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a52597b988342641e65c81c1e39cc626a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a52597b988342641e65c81c1e39cc626a">&#9670;&nbsp;</a></span>to_json() <span class="overload">[25/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a52597b988342641e65c81c1e39cc626a">&#9670;&nbsp;</a></span>to_json() <span class="overload">[25/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13618,7 +13723,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a3f7d62bf33d0168c3728124e63282db6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3f7d62bf33d0168c3728124e63282db6">&#9670;&nbsp;</a></span>to_json() <span class="overload">[26/26]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a3f7d62bf33d0168c3728124e63282db6">&#9670;&nbsp;</a></span>to_json() <span class="overload">[26/27]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13644,6 +13749,36 @@ template&lt;typename BoxT &gt; </div>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="UnitaryTableau_8cpp_source.html#l00572">572</a> of file <a class="el" href="UnitaryTableau_8cpp_source.html">UnitaryTableau.cpp</a>.</p>
+
+</div>
+</div>
+<a id="aaf01ad7a007f8dccd2f60b4b0cb2355b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaf01ad7a007f8dccd2f60b4b0cb2355b">&#9670;&nbsp;</a></span>to_json() <span class="overload">[27/27]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tket::to_json </td>
+          <td>(</td>
+          <td class="paramtype">nlohmann::json &amp;&#160;</td>
+          <td class="paramname"><em>j</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classtket_1_1WasmState.html">WasmState</a> &amp;&#160;</td>
+          <td class="paramname"><em>wb</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="UnitID_8cpp_source.html#l00042">42</a> of file <a class="el" href="UnitID_8cpp_source.html">UnitID.cpp</a>.</p>
 
 </div>
 </div>
@@ -13881,7 +14016,7 @@ template&lt;class Unit_T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="UnitID_8hpp_source.html#l00139">139</a> of file <a class="el" href="UnitID_8hpp_source.html">UnitID.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitID_8hpp_source.html#l00140">140</a> of file <a class="el" href="UnitID_8hpp_source.html">UnitID.hpp</a>.</p>
 
 </div>
 </div>
@@ -13938,7 +14073,26 @@ template&lt;typename UnitA , typename UnitB &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>whether any changes were made to the maps </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="UnitID_8hpp_source.html#l00312">312</a> of file <a class="el" href="UnitID_8hpp_source.html">UnitID.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitID_8hpp_source.html#l00359">359</a> of file <a class="el" href="UnitID_8hpp_source.html">UnitID.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a7ea5fd5fa5527d487e1704565ba7fcdf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7ea5fd5fa5527d487e1704565ba7fcdf">&#9670;&nbsp;</a></span>w_default_reg()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">const std::string &amp; tket::w_default_reg </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="UnitID_8cpp_source.html#l00084">84</a> of file <a class="el" href="UnitID_8cpp_source.html">UnitID.cpp</a>.</p>
 
 </div>
 </div>
@@ -14063,7 +14217,7 @@ template&lt;typename UnitA , typename UnitB &gt; </div>
 
 <p>Binary XOR operator. </p>
 
-<p class="definition">Definition at line <a class="el" href="ClassicalOps_8cpp_source.html#l00447">447</a> of file <a class="el" href="ClassicalOps_8cpp_source.html">ClassicalOps.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ClassicalOps_8cpp_source.html#l00453">453</a> of file <a class="el" href="ClassicalOps_8cpp_source.html">ClassicalOps.cpp</a>.</p>
 
 </div>
 </div>
@@ -14084,7 +14238,7 @@ template&lt;typename UnitA , typename UnitB &gt; </div>
 
 <p>In-place XOR with another input. </p>
 
-<p class="definition">Definition at line <a class="el" href="ClassicalOps_8cpp_source.html#l00468">468</a> of file <a class="el" href="ClassicalOps_8cpp_source.html">ClassicalOps.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ClassicalOps_8cpp_source.html#l00474">474</a> of file <a class="el" href="ClassicalOps_8cpp_source.html">ClassicalOps.cpp</a>.</p>
 
 </div>
 </div>

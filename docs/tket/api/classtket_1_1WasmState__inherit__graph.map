@@ -1,0 +1,5 @@
+<map id="tket::WasmState" name="tket::WasmState">
+<area shape="rect" id="node1" title="Location holding a wasm UID." alt="" coords="5,80,135,107"/>
+<area shape="rect" id="node3" href="$classtket_1_1WasmNode.html" title="WASM UID." alt="" coords="5,155,135,181"/>
+<area shape="rect" id="node2" href="$classtket_1_1UnitID.html" title="Location holding a bit or qubit of information." alt="" coords="22,5,118,32"/>
+</map>

@@ -90,75 +90,112 @@ $(function() {
 <div class="line"><a name="l00012"></a><span class="lineno">   12</span>&#160;<span class="comment">// See the License for the specific language governing permissions and</span></div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160;<span class="comment">// limitations under the License.</span></div>
 <div class="line"><a name="l00014"></a><span class="lineno">   14</span>&#160; </div>
-<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="Command_8hpp.html">Command.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="Json_8hpp.html">Utils/Json.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
-<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacetket.html">tket</a> {</div>
+<div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="preprocessor">#include &lt;tkassert/Assert.hpp&gt;</span></div>
+<div class="line"><a name="l00016"></a><span class="lineno">   16</span>&#160; </div>
+<div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="Command_8hpp.html">Command.hpp</a>&quot;</span></div>
+<div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="Json_8hpp.html">Utils/Json.hpp</a>&quot;</span></div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
-<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="namespacetket.html#a5282c55bc6f6450eca5dc48555e8a6ab">   20</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespacetket.html#ad4ffe8a33fb155115f7cc9b02740797d">to_json</a>(nlohmann::json&amp; j, <span class="keyword">const</span> <a class="code" href="classtket_1_1Command.html">Command</a>&amp; com) {</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;  <span class="keyword">const</span> <a class="code" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a> op = com.<a class="code" href="classtket_1_1Command.html#aa69a6ba4e9de3741950f9e920b03236c">get_op_ptr</a>();</div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;  <span class="keyword">const</span> std::optional&lt;std::string&gt; opgroup = com.<a class="code" href="classtket_1_1Command.html#a06a9d59dd41e57165389bc50f45a2a1f">get_opgroup</a>();</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;  j[<span class="stringliteral">&quot;op&quot;</span>] = op;</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;  <span class="keywordflow">if</span> (opgroup) {</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    j[<span class="stringliteral">&quot;opgroup&quot;</span>] = opgroup.value();</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;  }</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160; </div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;  <span class="keyword">const</span> <a class="code" href="namespacetket.html#ac9cc41e0b406b456fabc9ae1e4517ebd">op_signature_t</a>&amp; sig = op-&gt;get_signature();</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;  <span class="keyword">const</span> <a class="code" href="namespacetket.html#ab5d7d59fd0591d97f8e298235db6ee27">unit_vector_t</a>&amp; args = com.<a class="code" href="classtket_1_1Command.html#a429bb0fced1e858c2c65d1de38dcf141">get_args</a>();</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;  nlohmann::json j_args;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; sig.size(); i++) {</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keywordflow">if</span> (sig[i] == <a class="code" href="namespacetket.html#a4c73a949b027dea7f23b1d5a1bdd526ea033b1e7914d380b381c8b7f9f131328d">EdgeType::Quantum</a>) {</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;      <span class="keyword">const</span> <a class="code" href="classtket_1_1Qubit.html">Qubit</a>&amp; qb = <span class="keyword">static_cast&lt;</span><span class="keyword">const </span><a class="code" href="classtket_1_1Qubit.html">Qubit</a>&amp;<span class="keyword">&gt;</span>(args[i]);</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;      j_args.push_back(qb);</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;      <span class="keyword">const</span> <a class="code" href="classtket_1_1Bit.html">Bit</a>&amp; cb = <span class="keyword">static_cast&lt;</span><span class="keyword">const </span><a class="code" href="classtket_1_1Bit.html">Bit</a>&amp;<span class="keyword">&gt;</span>(args[i]);</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;      j_args.push_back(cb);</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    }</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  }</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  j[<span class="stringliteral">&quot;args&quot;</span>] = j_args;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;}</div>
-<div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="namespacetket.html#a7ec709945767bd70fb640a0838d63b0f">   44</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespacetket.html#ab465389a1775c7abac371775b9c3a938">from_json</a>(<span class="keyword">const</span> nlohmann::json&amp; j, <a class="code" href="classtket_1_1Command.html">Command</a>&amp; com) {</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;  <span class="keyword">const</span> <span class="keyword">auto</span> op = j.at(<span class="stringliteral">&quot;op&quot;</span>).get&lt;<a class="code" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a>&gt;();</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;  std::optional&lt;std::string&gt; opgroup;</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;  <span class="keywordflow">if</span> (j.contains(<span class="stringliteral">&quot;opgroup&quot;</span>)) {</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    opgroup = j.at(<span class="stringliteral">&quot;opgroup&quot;</span>).get&lt;std::string&gt;();</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;  }</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;  <span class="keyword">const</span> <a class="code" href="namespacetket.html#ac9cc41e0b406b456fabc9ae1e4517ebd">op_signature_t</a>&amp; sig = op-&gt;get_signature();</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160; </div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  <span class="keyword">const</span> nlohmann::json&amp; j_args = j.at(<span class="stringliteral">&quot;args&quot;</span>);</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  <span class="keywordflow">if</span> (sig.size() != j_args.size()) {</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;    <a class="code" href="classtket_1_1JsonError.html">JsonError</a>(<span class="stringliteral">&quot;Number of args does not match signature of op.&quot;</span>);</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;  }</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  <a class="code" href="namespacetket.html#ab5d7d59fd0591d97f8e298235db6ee27">unit_vector_t</a> args;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; sig.size(); i++) {</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keywordflow">if</span> (sig[i] == <a class="code" href="namespacetket.html#a4c73a949b027dea7f23b1d5a1bdd526ea033b1e7914d380b381c8b7f9f131328d">EdgeType::Quantum</a>) {</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;      args.push_back(j_args[i].get&lt;Qubit&gt;());</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;      args.push_back(j_args[i].get&lt;Bit&gt;());</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    }</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;  }</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;  com = <a class="code" href="classtket_1_1Command.html">Command</a>(op, args, opgroup);</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;}</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160; </div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;}  <span class="comment">// namespace tket</span></div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacetket.html">tket</a> {</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
+<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="namespacetket.html#a5282c55bc6f6450eca5dc48555e8a6ab">   22</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespacetket.html#ad4ffe8a33fb155115f7cc9b02740797d">to_json</a>(nlohmann::json&amp; j, <span class="keyword">const</span> <a class="code" href="classtket_1_1Command.html">Command</a>&amp; com) {</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;  <span class="keyword">const</span> <a class="code" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a> op = com.<a class="code" href="classtket_1_1Command.html#aa69a6ba4e9de3741950f9e920b03236c">get_op_ptr</a>();</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;  <span class="keyword">const</span> std::optional&lt;std::string&gt; opgroup = com.<a class="code" href="classtket_1_1Command.html#a06a9d59dd41e57165389bc50f45a2a1f">get_opgroup</a>();</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;  j[<span class="stringliteral">&quot;op&quot;</span>] = op;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;  <span class="keywordflow">if</span> (opgroup) {</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    j[<span class="stringliteral">&quot;opgroup&quot;</span>] = opgroup.value();</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;  }</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;  <span class="keyword">const</span> <a class="code" href="namespacetket.html#ac9cc41e0b406b456fabc9ae1e4517ebd">op_signature_t</a>&amp; sig = op-&gt;get_signature();</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;  <span class="keyword">const</span> <a class="code" href="namespacetket.html#ab5d7d59fd0591d97f8e298235db6ee27">unit_vector_t</a>&amp; args = com.<a class="code" href="classtket_1_1Command.html#a429bb0fced1e858c2c65d1de38dcf141">get_args</a>();</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;  <span class="keywordflow">if</span> (sig.size() != args.size()) {</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <a class="code" href="classtket_1_1JsonError.html">JsonError</a>(<span class="stringliteral">&quot;Number of args does not match signature of op.&quot;</span>);</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;  }</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;  nlohmann::json j_args;</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160; </div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; sig.size(); i++) {</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keywordflow">switch</span> (sig[i]) {</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;      <span class="keywordflow">case</span> <a class="code" href="namespacetket.html#a4c73a949b027dea7f23b1d5a1bdd526eac7dbeb10b3299406a04231654cf6defd">EdgeType::WASM</a>: {</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;        <span class="keyword">const</span> <a class="code" href="classtket_1_1WasmState.html">WasmState</a>&amp; wb = <span class="keyword">static_cast&lt;</span><span class="keyword">const </span><a class="code" href="classtket_1_1WasmState.html">WasmState</a>&amp;<span class="keyword">&gt;</span>(args[i]);</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;        j_args.push_back(wb);</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;        <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;      }</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;      <span class="keywordflow">case</span> <a class="code" href="namespacetket.html#a4c73a949b027dea7f23b1d5a1bdd526ea033b1e7914d380b381c8b7f9f131328d">EdgeType::Quantum</a>: {</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;        <span class="keyword">const</span> <a class="code" href="classtket_1_1Qubit.html">Qubit</a>&amp; qb = <span class="keyword">static_cast&lt;</span><span class="keyword">const </span><a class="code" href="classtket_1_1Qubit.html">Qubit</a>&amp;<span class="keyword">&gt;</span>(args[i]);</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;        j_args.push_back(qb);</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;        <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;      }</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;      <span class="keywordflow">case</span> <a class="code" href="namespacetket.html#a4c73a949b027dea7f23b1d5a1bdd526ea2091523979dbedcad728958414922c72">EdgeType::Classical</a>:</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;      <span class="keywordflow">case</span> <a class="code" href="namespacetket.html#a4c73a949b027dea7f23b1d5a1bdd526ea27226c864bac7454a8504f8edb15d95b">EdgeType::Boolean</a>: {</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="keyword">const</span> <a class="code" href="classtket_1_1Bit.html">Bit</a>&amp; cb = <span class="keyword">static_cast&lt;</span><span class="keyword">const </span><a class="code" href="classtket_1_1Bit.html">Bit</a>&amp;<span class="keyword">&gt;</span>(args[i]);</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        j_args.push_back(cb);</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;      }</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;      <span class="keywordflow">default</span>: {</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;        TKET_ASSERT(!<span class="stringliteral">&quot;command to json found invalid edge type in signature&quot;</span>);</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;      }</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    }</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;  }</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;  j[<span class="stringliteral">&quot;args&quot;</span>] = j_args;</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;}</div>
+<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="namespacetket.html#a7ec709945767bd70fb640a0838d63b0f">   65</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespacetket.html#ab465389a1775c7abac371775b9c3a938">from_json</a>(<span class="keyword">const</span> nlohmann::json&amp; j, <a class="code" href="classtket_1_1Command.html">Command</a>&amp; com) {</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;  <span class="keyword">const</span> <span class="keyword">auto</span> op = j.at(<span class="stringliteral">&quot;op&quot;</span>).get&lt;<a class="code" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a>&gt;();</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;  std::optional&lt;std::string&gt; opgroup;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;  <span class="keywordflow">if</span> (j.contains(<span class="stringliteral">&quot;opgroup&quot;</span>)) {</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    opgroup = j.at(<span class="stringliteral">&quot;opgroup&quot;</span>).get&lt;std::string&gt;();</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;  }</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;  <span class="keyword">const</span> <a class="code" href="namespacetket.html#ac9cc41e0b406b456fabc9ae1e4517ebd">op_signature_t</a>&amp; sig = op-&gt;get_signature();</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160; </div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;  <span class="keyword">const</span> nlohmann::json&amp; j_args = j.at(<span class="stringliteral">&quot;args&quot;</span>);</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;  <span class="keywordflow">if</span> (sig.size() != j_args.size()) {</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <a class="code" href="classtket_1_1JsonError.html">JsonError</a>(<span class="stringliteral">&quot;Number of args does not match signature of op.&quot;</span>);</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;  }</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;  <a class="code" href="namespacetket.html#ab5d7d59fd0591d97f8e298235db6ee27">unit_vector_t</a> args;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; sig.size(); i++) {</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    <span class="keywordflow">switch</span> (sig[i]) {</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;      <span class="keywordflow">case</span> <a class="code" href="namespacetket.html#a4c73a949b027dea7f23b1d5a1bdd526eac7dbeb10b3299406a04231654cf6defd">EdgeType::WASM</a>: {</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;        args.push_back(j_args[i].get&lt;WasmState&gt;());</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;        <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;      }</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;      <span class="keywordflow">case</span> <a class="code" href="namespacetket.html#a4c73a949b027dea7f23b1d5a1bdd526ea033b1e7914d380b381c8b7f9f131328d">EdgeType::Quantum</a>: {</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;        args.push_back(j_args[i].get&lt;Qubit&gt;());</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;        <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;      }</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;      <span class="keywordflow">case</span> <a class="code" href="namespacetket.html#a4c73a949b027dea7f23b1d5a1bdd526ea2091523979dbedcad728958414922c72">EdgeType::Classical</a>:</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;      <span class="keywordflow">case</span> <a class="code" href="namespacetket.html#a4c73a949b027dea7f23b1d5a1bdd526ea27226c864bac7454a8504f8edb15d95b">EdgeType::Boolean</a>: {</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;        args.push_back(j_args[i].get&lt;Bit&gt;());</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;        <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;      }</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;      <span class="keywordflow">default</span>: {</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;        TKET_ASSERT(!<span class="stringliteral">&quot;command from json found invalid edge type in signature&quot;</span>);</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;      }</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    }</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;  }</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;  com = <a class="code" href="classtket_1_1Command.html">Command</a>(op, args, opgroup);</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;}</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160; </div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;}  <span class="comment">// namespace tket</span></div>
 <div class="ttc" id="aCommand_8hpp_html"><div class="ttname"><a href="Command_8hpp.html">Command.hpp</a></div></div>
 <div class="ttc" id="aJson_8hpp_html"><div class="ttname"><a href="Json_8hpp.html">Json.hpp</a></div></div>
-<div class="ttc" id="aclasstket_1_1Bit_html"><div class="ttname"><a href="classtket_1_1Bit.html">tket::Bit</a></div><div class="ttdoc">Location holding a bit.</div><div class="ttdef"><b>Definition:</b> <a href="UnitID_8hpp_source.html#l00189">UnitID.hpp:189</a></div></div>
+<div class="ttc" id="aclasstket_1_1Bit_html"><div class="ttname"><a href="classtket_1_1Bit.html">tket::Bit</a></div><div class="ttdoc">Location holding a bit.</div><div class="ttdef"><b>Definition:</b> <a href="UnitID_8hpp_source.html#l00190">UnitID.hpp:190</a></div></div>
 <div class="ttc" id="aclasstket_1_1Command_html"><div class="ttname"><a href="classtket_1_1Command.html">tket::Command</a></div><div class="ttdef"><b>Definition:</b> <a href="Command_8hpp_source.html#l00034">Command.hpp:34</a></div></div>
 <div class="ttc" id="aclasstket_1_1Command_html_a06a9d59dd41e57165389bc50f45a2a1f"><div class="ttname"><a href="classtket_1_1Command.html#a06a9d59dd41e57165389bc50f45a2a1f">tket::Command::get_opgroup</a></div><div class="ttdeci">std::optional&lt; std::string &gt; get_opgroup() const</div><div class="ttdef"><b>Definition:</b> <a href="Command_8hpp_source.html#l00049">Command.hpp:49</a></div></div>
 <div class="ttc" id="aclasstket_1_1Command_html_a429bb0fced1e858c2c65d1de38dcf141"><div class="ttname"><a href="classtket_1_1Command.html#a429bb0fced1e858c2c65d1de38dcf141">tket::Command::get_args</a></div><div class="ttdeci">unit_vector_t get_args() const</div><div class="ttdef"><b>Definition:</b> <a href="Command_8hpp_source.html#l00050">Command.hpp:50</a></div></div>
 <div class="ttc" id="aclasstket_1_1Command_html_aa69a6ba4e9de3741950f9e920b03236c"><div class="ttname"><a href="classtket_1_1Command.html#aa69a6ba4e9de3741950f9e920b03236c">tket::Command::get_op_ptr</a></div><div class="ttdeci">Op_ptr get_op_ptr() const</div><div class="ttdef"><b>Definition:</b> <a href="Command_8hpp_source.html#l00048">Command.hpp:48</a></div></div>
 <div class="ttc" id="aclasstket_1_1JsonError_html"><div class="ttname"><a href="classtket_1_1JsonError.html">tket::JsonError</a></div><div class="ttdef"><b>Definition:</b> <a href="Json_8hpp_source.html#l00033">Json.hpp:33</a></div></div>
-<div class="ttc" id="aclasstket_1_1Qubit_html"><div class="ttname"><a href="classtket_1_1Qubit.html">tket::Qubit</a></div><div class="ttdoc">Location holding a qubit.</div><div class="ttdef"><b>Definition:</b> <a href="UnitID_8hpp_source.html#l00151">UnitID.hpp:151</a></div></div>
+<div class="ttc" id="aclasstket_1_1Qubit_html"><div class="ttname"><a href="classtket_1_1Qubit.html">tket::Qubit</a></div><div class="ttdoc">Location holding a qubit.</div><div class="ttdef"><b>Definition:</b> <a href="UnitID_8hpp_source.html#l00152">UnitID.hpp:152</a></div></div>
+<div class="ttc" id="aclasstket_1_1WasmState_html"><div class="ttname"><a href="classtket_1_1WasmState.html">tket::WasmState</a></div><div class="ttdoc">Location holding a wasm UID.</div><div class="ttdef"><b>Definition:</b> <a href="UnitID_8hpp_source.html#l00227">UnitID.hpp:227</a></div></div>
 <div class="ttc" id="anamespacetket_html"><div class="ttname"><a href="namespacetket.html">tket</a></div><div class="ttdoc">Defines tket::DeviceCharacterisation, used in NoiseAwarePlacement and in commute_SQ_gates_through_SWA...</div><div class="ttdef"><b>Definition:</b> <a href="Path_8hpp_source.html#l00020">Path.hpp:20</a></div></div>
 <div class="ttc" id="anamespacetket_html_a4c73a949b027dea7f23b1d5a1bdd526ea033b1e7914d380b381c8b7f9f131328d"><div class="ttname"><a href="namespacetket.html#a4c73a949b027dea7f23b1d5a1bdd526ea033b1e7914d380b381c8b7f9f131328d">tket::EdgeType::Quantum</a></div><div class="ttdeci">@ Quantum</div><div class="ttdoc">A wire carrying quantum information, corresponding to some allocated Qubit.</div></div>
+<div class="ttc" id="anamespacetket_html_a4c73a949b027dea7f23b1d5a1bdd526ea2091523979dbedcad728958414922c72"><div class="ttname"><a href="namespacetket.html#a4c73a949b027dea7f23b1d5a1bdd526ea2091523979dbedcad728958414922c72">tket::EdgeType::Classical</a></div><div class="ttdeci">@ Classical</div><div class="ttdoc">A wire carrying classical information, corresponding to some allocated Bit.</div></div>
+<div class="ttc" id="anamespacetket_html_a4c73a949b027dea7f23b1d5a1bdd526ea27226c864bac7454a8504f8edb15d95b"><div class="ttname"><a href="namespacetket.html#a4c73a949b027dea7f23b1d5a1bdd526ea27226c864bac7454a8504f8edb15d95b">tket::EdgeType::Boolean</a></div><div class="ttdeci">@ Boolean</div><div class="ttdoc">A wire carrying a bit of classical information from a classical output port of one op to a classical ...</div></div>
+<div class="ttc" id="anamespacetket_html_a4c73a949b027dea7f23b1d5a1bdd526eac7dbeb10b3299406a04231654cf6defd"><div class="ttname"><a href="namespacetket.html#a4c73a949b027dea7f23b1d5a1bdd526eac7dbeb10b3299406a04231654cf6defd">tket::EdgeType::WASM</a></div><div class="ttdeci">@ WASM</div><div class="ttdoc">A wire to connect the wasm ops in the order they should be executed in.</div></div>
 <div class="ttc" id="anamespacetket_html_a75405147f5ffd3ff1ff1118fba63bcd0"><div class="ttname"><a href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">tket::Op_ptr</a></div><div class="ttdeci">std::shared_ptr&lt; const Op &gt; Op_ptr</div><div class="ttdef"><b>Definition:</b> <a href="OpPtr_8hpp_source.html#l00024">OpPtr.hpp:23</a></div></div>
 <div class="ttc" id="anamespacetket_html_ab465389a1775c7abac371775b9c3a938"><div class="ttname"><a href="namespacetket.html#ab465389a1775c7abac371775b9c3a938">tket::from_json</a></div><div class="ttdeci">void from_json(const nlohmann::json &amp;j, Architecture::Connection &amp;link)</div><div class="ttdef"><b>Definition:</b> <a href="Architecture_8cpp_source.html#l00207">Architecture.cpp:207</a></div></div>
-<div class="ttc" id="anamespacetket_html_ab5d7d59fd0591d97f8e298235db6ee27"><div class="ttname"><a href="namespacetket.html#ab5d7d59fd0591d97f8e298235db6ee27">tket::unit_vector_t</a></div><div class="ttdeci">std::vector&lt; UnitID &gt; unit_vector_t</div><div class="ttdef"><b>Definition:</b> <a href="UnitID_8hpp_source.html#l00262">UnitID.hpp:262</a></div></div>
-<div class="ttc" id="anamespacetket_html_ac9cc41e0b406b456fabc9ae1e4517ebd"><div class="ttname"><a href="namespacetket.html#ac9cc41e0b406b456fabc9ae1e4517ebd">tket::op_signature_t</a></div><div class="ttdeci">std::vector&lt; EdgeType &gt; op_signature_t</div><div class="ttdef"><b>Definition:</b> <a href="EdgeType_8hpp_source.html#l00055">EdgeType.hpp:55</a></div></div>
+<div class="ttc" id="anamespacetket_html_ab5d7d59fd0591d97f8e298235db6ee27"><div class="ttname"><a href="namespacetket.html#ab5d7d59fd0591d97f8e298235db6ee27">tket::unit_vector_t</a></div><div class="ttdeci">std::vector&lt; UnitID &gt; unit_vector_t</div><div class="ttdef"><b>Definition:</b> <a href="UnitID_8hpp_source.html#l00309">UnitID.hpp:309</a></div></div>
+<div class="ttc" id="anamespacetket_html_ac9cc41e0b406b456fabc9ae1e4517ebd"><div class="ttname"><a href="namespacetket.html#ac9cc41e0b406b456fabc9ae1e4517ebd">tket::op_signature_t</a></div><div class="ttdeci">std::vector&lt; EdgeType &gt; op_signature_t</div><div class="ttdef"><b>Definition:</b> <a href="EdgeType_8hpp_source.html#l00062">EdgeType.hpp:62</a></div></div>
 <div class="ttc" id="anamespacetket_html_ad4ffe8a33fb155115f7cc9b02740797d"><div class="ttname"><a href="namespacetket.html#ad4ffe8a33fb155115f7cc9b02740797d">tket::to_json</a></div><div class="ttdeci">void to_json(nlohmann::json &amp;j, const Architecture::Connection &amp;link)</div><div class="ttdef"><b>Definition:</b> <a href="Architecture_8cpp_source.html#l00202">Architecture.cpp:202</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
