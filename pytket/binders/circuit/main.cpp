@@ -484,6 +484,7 @@ PYBIND11_MODULE(circuit, m) {
           "StatePreparationBox", OpType::StatePreparationBox,
           "A box for preparing quantum states using multiplexed-Ry and "
           "multiplexed-Rz gates")
+      .value("DiagonalBox", OpType::DiagonalBox, "A diagonal operator")
       .def_static(
           "from_name", [](const json &j) { return j.get<OpType>(); },
           "Construct from name");

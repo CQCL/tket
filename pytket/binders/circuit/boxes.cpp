@@ -19,6 +19,7 @@
 #include <pybind11/stl.h>
 
 #include "Circuit/Circuit.hpp"
+#include "Circuit/DiagonalBox.hpp"
 #include "Circuit/Multiplexor.hpp"
 #include "Circuit/StatePreparation.hpp"
 #include "Converters/PhasePoly.hpp"
@@ -460,5 +461,18 @@ void init_boxes(py::module &m) {
           "is_inverse", &StatePreparationBox::is_inverse,
           ":return: flag indicating whether to implement the dagger of the "
           "state preparation circuit");
+  py::class_<DiagonalBox, std::shared_ptr<DiagonalBox>, Op>(
+      m, "DiagonalBox", "A user defined diagonal operator.")
+      .def(
+          py::init<const Eigen::VectorXcd &>(),
+          "Construct from the diagonal entries of the operator\n\n"
+          ":param diagonal: diagonal entries",
+          py::arg("diagonal"))
+      .def(
+          "get_circuit", [](DiagonalBox &box) { return *box.to_circuit(); },
+          ":return: the :py:class:`Circuit` described by the box")
+      .def(
+          "get_diagonal", &DiagonalBox::get_diagonal,
+          ":return: the statevector");
 }
 }  // namespace tket

@@ -535,6 +535,10 @@
           "$ref": "#/definitions/matrix",
           "description": "Statevector represented by StatePreparationBox."
         },
+        "diagonal": {
+          "$ref": "#/definitions/matrix",
+          "description": "Diagonal matrix represented by DiagonalBox."
+        },
         "is_inverse": {
           "type": "boolean",
           "description": "Indicate whether to implement the dagger of a StatePreparationBox."
@@ -687,6 +691,20 @@
             "required": [
               "statevector",
               "is_inverse"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "DiagonalBox"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "diagonal"
             ]
           }
         },
