@@ -76,12 +76,12 @@ SCENARIO("generating circ with wasm") {
 
     u.add_op<UnitID>(
         wop_ptr_2,
-        {Bit(0),            //
-         Bit(1),            //
-         Bit(2),            //
-         Bit(3),            //
-         Bit(4),            //
-         Bit(5),            //
+        {Bit(0),          //
+         Bit(1),          //
+         Bit(2),          //
+         Bit(3),          //
+         Bit(4),          //
+         Bit(5),          //
          WasmState(0)});  // needs 6 bits + WasmState
   }
   GIVEN("compare wasmop") {

@@ -245,8 +245,7 @@ class WasmState : public UnitID {
       : UnitID(name, {row, col}, UnitType::WasmState) {}
 
   /** Named register with a three-dimensional index */
-  WasmState(
-      const std::string &name, unsigned row, unsigned col, unsigned layer)
+  WasmState(const std::string &name, unsigned row, unsigned col, unsigned layer)
       : UnitID(name, {row, col, layer}, UnitType::WasmState) {}
 
   /** Named register with a multi-dimensional index */
