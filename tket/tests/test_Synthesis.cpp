@@ -1842,12 +1842,13 @@ SCENARIO("Test TK1 gate decomp for some gates") {
       0.3, 0.7, 0.8};  // no ops required >3 params currently
   std::set<OpType> cant_do = {
       OpType::Input,        OpType::Output,       OpType::ClInput,
-      OpType::ClOutput,     OpType::noop,         OpType::Reset,
-      OpType::BRIDGE,       OpType::Unitary1qBox, OpType::Unitary2qBox,
-      OpType::Unitary3qBox, OpType::ExpBox,       OpType::PauliExpBox,
-      OpType::CustomGate,   OpType::Collapse,     OpType::Measure,
-      OpType::Label,        OpType::Branch,       OpType::Goto,
-      OpType::Stop,         OpType::Create,       OpType::Discard};
+      OpType::ClOutput,     OpType::WASMInput,    OpType::WASMOutput,
+      OpType::noop,         OpType::Reset,        OpType::BRIDGE,
+      OpType::Unitary1qBox, OpType::Unitary2qBox, OpType::Unitary3qBox,
+      OpType::ExpBox,       OpType::PauliExpBox,  OpType::CustomGate,
+      OpType::Collapse,     OpType::Measure,      OpType::Label,
+      OpType::Branch,       OpType::Goto,         OpType::Stop,
+      OpType::Create,       OpType::Discard};
   for (const std::pair<const OpType, OpTypeInfo> &map_pair : optypeinfo()) {
     OpTypeInfo oti = map_pair.second;
     if (!oti.signature) continue;

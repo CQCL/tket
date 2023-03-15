@@ -60,7 +60,7 @@ class WasmFileHandler:
 
         self._wasm_file_encoded = base64.b64encode(self._wasm_file)
 
-        self._wasmuid = hashlib.md5(self._wasm_file_encoded).hexdigest()
+        self._wasmfileuid = hashlib.sha256(self._wasm_file_encoded).hexdigest()
 
         self._check_file = check_file
 
@@ -141,11 +141,11 @@ class WasmFileHandler:
 
     def __str__(self) -> str:
         """str representation of the wasm file"""
-        return self._wasmuid
+        return self._wasmfileuid
 
     def __repr__(self) -> str:
         """str representation of the containment of the wasm file"""
-        result = f"Functions in wasm file with the uid {self._wasmuid}:\n"
+        result = f"Functions in wasm file with the uid {self._wasmfileuid}:\n"
         for x in self._functions:
             result += f"function '{x}' with {self._functions[x][0]} i32 parameter(s)"
             result += f" and {self._functions[x][1]} i32 return value(s)\n"

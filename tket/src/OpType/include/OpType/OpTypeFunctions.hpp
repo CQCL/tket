@@ -57,11 +57,17 @@ bool is_initial_q_type(OpType optype);
 /** Test for output or discard quantum "ops" */
 bool is_final_q_type(OpType optype);
 
+/** Test for input, creation, output or discard "ops" */
+bool is_boundary_type(OpType optype);
+
 /** Test for input, creation, output or discard quantum "ops" */
 bool is_boundary_q_type(OpType optype);
 
 /** Test for input or output for classical "ops" */
 bool is_boundary_c_type(OpType optype);
+
+/** Test for input or output for wasm "ops" */
+bool is_boundary_w_type(OpType optype);
 
 /** Test for elementary gates */
 bool is_gate_type(OpType optype);

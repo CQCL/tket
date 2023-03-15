@@ -7,6 +7,7 @@ Unreleased
 Major new features:
 
 * New ``StatePreparationBox`` to prepare arbitrary quantum states.
+* New WasmWire interface to keep all wasm operation in the initial order
 
 Minor new features:
 
