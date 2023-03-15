@@ -21,6 +21,7 @@
 #include "Circuit/CircUtils.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Circuit/Command.hpp"
+#include "Circuit/DiagonalBox.hpp"
 #include "Circuit/Multiplexor.hpp"
 #include "Circuit/StatePreparation.hpp"
 #include "CircuitsForTesting.hpp"
@@ -426,6 +427,19 @@ SCENARIO("Test Circuit serialization") {
         *new_c.get_commands()[0].get_op_ptr());
     REQUIRE((state - box.get_statevector()).cwiseAbs().sum() < ERR_EPS);
     REQUIRE(box.is_inverse() == true);
+  }
+
+  GIVEN("DiagonalBox") {
+    Eigen::VectorXcd diag(8);
+    diag << i_, i_, i_, -i_, 1, -i_, 1, -i_;
+    DiagonalBox diagbox(diag);
+    Circuit c(3);
+    c.add_box(diagbox, {0, 1, 2});
+    nlohmann::json j_box = c;
+    const Circuit new_c = j_box.get<Circuit>();
+    const auto& box =
+        static_cast<const DiagonalBox&>(*new_c.get_commands()[0].get_op_ptr());
+    REQUIRE((diag - box.get_diagonal()).cwiseAbs().sum() < ERR_EPS);
   }
 
   GIVEN("PhasePolyBox") {

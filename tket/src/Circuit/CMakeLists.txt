@@ -37,7 +37,8 @@ add_library(tket-${COMP}
     Conditional.cpp
     ControlledGates.cpp
     Multiplexor.cpp
-    StatePreparation.cpp)
+    StatePreparation.cpp
+    DiagonalBox.cpp)
 
 list(APPEND DEPS_${COMP}
     Gate
