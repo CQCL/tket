@@ -246,12 +246,10 @@ WASMOp::WASMOp(
     : ClassicalOp(
           OpType::WASM,
           std::accumulate(
-              _width_i_parameter.begin(), _width_i_parameter.end(),
-              (unsigned)0),
+              _width_i_parameter.begin(), _width_i_parameter.end(), 0),
           0,
           std::accumulate(
-              _width_o_parameter.begin(), _width_o_parameter.end(),
-              (unsigned)0),
+              _width_o_parameter.begin(), _width_o_parameter.end(), 0),
           "WASM"),
       n_(_n),
       ww_n_(_ww_n),
@@ -261,10 +259,8 @@ WASMOp::WASMOp(
       func_name_(_func_name),
       wasm_file_uid_(_wasm_file_uid) {
   unsigned sum_of_i32 =
-      std::accumulate(
-          width_i_parameter_.begin(), width_i_parameter_.end(), (unsigned)0) +
-      std::accumulate(
-          width_o_parameter_.begin(), width_o_parameter_.end(), (unsigned)0);
+      std::accumulate(width_i_parameter_.begin(), width_i_parameter_.end(), 0) +
+      std::accumulate(width_o_parameter_.begin(), width_o_parameter_.end(), 0);
 
   TKET_ASSERT(sum_of_i32 == n_);
 
