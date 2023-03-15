@@ -702,7 +702,7 @@ class CircuitTransformer(Transformer):
             # assume to be extern (wasm) call
             chained_uids = list(chain.from_iterable(args_uids))
             com = next(exp_tree)
-            com["args"].pop()
+            com["args"].pop() # remove the wasmstate from the args
             com["args"] += chained_uids
             com["args"].append(["_w", [0]])
             com["op"]["wasm"]["n"] += len(chained_uids)
@@ -791,7 +791,7 @@ class CircuitTransformer(Transformer):
                     "ww_n": 1,
                     "n": sum(n_i_vec),
                     "width_i_parameter": n_i_vec,
-                    "width_o_parameter": [],  # this will be set somewhere else
+                    "width_o_parameter": [],  # this will be set in the assign function
                     "wasm_file_uid": str(self.wasm),
                 },
             },
