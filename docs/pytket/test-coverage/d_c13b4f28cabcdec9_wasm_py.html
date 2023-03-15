@@ -67,7 +67,7 @@
             <a id="nextFileLink" class="nav" href="d_6bff7b6476abf104___init___py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.2.1">coverage.py v7.2.1</a>,
-            created at 2023-03-15 10:44 +0000
+            created at 2023-03-15 14:26 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"/>
@@ -144,7 +144,7 @@
     <p class="pln"><span class="n"><a id="t60" href="#t60">60</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t61" href="#t61">61</a></span><span class="t">        <span class="nam">self</span><span class="op">.</span><span class="nam">_wasm_file_encoded</span> <span class="op">=</span> <span class="nam">base64</span><span class="op">.</span><span class="nam">b64encode</span><span class="op">(</span><span class="nam">self</span><span class="op">.</span><span class="nam">_wasm_file</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t62" href="#t62">62</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t63" href="#t63">63</a></span><span class="t">        <span class="nam">self</span><span class="op">.</span><span class="nam">_wasmuid</span> <span class="op">=</span> <span class="nam">hashlib</span><span class="op">.</span><span class="nam">md5</span><span class="op">(</span><span class="nam">self</span><span class="op">.</span><span class="nam">_wasm_file_encoded</span><span class="op">)</span><span class="op">.</span><span class="nam">hexdigest</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t63" href="#t63">63</a></span><span class="t">        <span class="nam">self</span><span class="op">.</span><span class="nam">_wasmfileuid</span> <span class="op">=</span> <span class="nam">hashlib</span><span class="op">.</span><span class="nam">sha256</span><span class="op">(</span><span class="nam">self</span><span class="op">.</span><span class="nam">_wasm_file_encoded</span><span class="op">)</span><span class="op">.</span><span class="nam">hexdigest</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t64" href="#t64">64</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t65" href="#t65">65</a></span><span class="t">        <span class="nam">self</span><span class="op">.</span><span class="nam">_check_file</span> <span class="op">=</span> <span class="nam">check_file</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t66" href="#t66">66</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
@@ -225,11 +225,11 @@
     <p class="pln"><span class="n"><a id="t141" href="#t141">141</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t142" href="#t142">142</a></span><span class="t">    <span class="key">def</span> <span class="nam">__str__</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span> <span class="op">-></span> <span class="nam">str</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t143" href="#t143">143</a></span><span class="t">        <span class="str">"""str representation of the wasm file"""</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t144" href="#t144">144</a></span><span class="t">        <span class="key">return</span> <span class="nam">self</span><span class="op">.</span><span class="nam">_wasmuid</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t144" href="#t144">144</a></span><span class="t">        <span class="key">return</span> <span class="nam">self</span><span class="op">.</span><span class="nam">_wasmfileuid</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t145" href="#t145">145</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t146" href="#t146">146</a></span><span class="t">    <span class="key">def</span> <span class="nam">__repr__</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span> <span class="op">-></span> <span class="nam">str</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t147" href="#t147">147</a></span><span class="t">        <span class="str">"""str representation of the containment of the wasm file"""</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t148" href="#t148">148</a></span><span class="t">        <span class="nam">result</span> <span class="op">=</span> <span class="str">f"Functions in wasm file with the uid {self._wasmuid}:\n"</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t148" href="#t148">148</a></span><span class="t">        <span class="nam">result</span> <span class="op">=</span> <span class="str">f"Functions in wasm file with the uid {self._wasmfileuid}:\n"</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t149" href="#t149">149</a></span><span class="t">        <span class="key">for</span> <span class="nam">x</span> <span class="key">in</span> <span class="nam">self</span><span class="op">.</span><span class="nam">_functions</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t150" href="#t150">150</a></span><span class="t">            <span class="nam">result</span> <span class="op">+=</span> <span class="str">f"function '{x}' with {self._functions[x][0]} i32 parameter(s)"</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t151" href="#t151">151</a></span><span class="t">            <span class="nam">result</span> <span class="op">+=</span> <span class="str">f" and {self._functions[x][1]} i32 return value(s)\n"</span>&nbsp;</span><span class="r"></span></p>
@@ -267,7 +267,7 @@
             <a id="nextFileLink" class="nav" href="d_6bff7b6476abf104___init___py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.2.1">coverage.py v7.2.1</a>,
-            created at 2023-03-15 10:44 +0000
+            created at 2023-03-15 14:26 +0000
         </p>
     </div>
 </footer>
