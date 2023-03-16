@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>pytket.circuit.display &#8212; pytket 1.11.1 documentation</title>
+    <title>pytket.circuit.display &#8212; pytket 1.13.0 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -23,6 +23,8 @@
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="_static/thebelab.css" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css" />
     
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -34,7 +36,10 @@
     <script src="_static/doctools.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
+    <script src="_static/thebelab-helper.js"></script>
     <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pytket.pauli" href="pauli.html" />
@@ -82,7 +87,7 @@
       <img src="_static/Quantinuum_logo.png" class="logo" alt="logo">
       
       
-      <h1 class="site-logo" id="site-title">pytket 1.11.1 documentation</h1>
+      <h1 class="site-logo" id="site-title">pytket 1.13.0 documentation</h1>
       
     </a>
 </div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
@@ -240,6 +245,11 @@
  <li class="toctree-l1">
   <a class="reference internal" href="tailoring.html">
    pytket.tailoring
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="wasm.html">
+   pytket.wasm
   </a>
  </li>
  <li class="toctree-l1">
@@ -441,9 +451,17 @@ title="Print to PDF"
                 
               <div>
                 
-  <section id="module-pytket.circuit.display">
-<span id="pytket-circuit-display"></span><h1>pytket.circuit.display<a class="headerlink" href="#module-pytket.circuit.display" title="Permalink to this headline">#</a></h1>
-<p>Display a circuit as html.</p>
+  <section id="pytket-circuit-display">
+<h1>pytket.circuit.display<a class="headerlink" href="#pytket-circuit-display" title="Permalink to this headline">#</a></h1>
+<p>Contains several functions for rendering interactive circuit diagrams.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Rendering circuits with <code class="docutils literal notranslate"><span class="pre">pytket.circuit.display</span></code> requires an internet connection. Using the pytket circuit renderer offline can be done by installing the <a class="reference external" href="https://github.com/CQCL/pytket-offline-renderer">pytket-offline-renderer extension</a>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">pytket</span><span class="o">-</span><span class="n">offline</span><span class="o">-</span><span class="n">renderer</span>
+</pre></div>
+</div>
+</div>
+<span class="target" id="module-pytket.circuit.display"></span><p>Display a circuit as html.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pytket.circuit.display.render_circuit_as_html">
 <span class="sig-prename descclassname"><span class="pre">pytket.circuit.display.</span></span><span class="sig-name descname"><span class="pre">render_circuit_as_html</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circuit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="circuit_class.html#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><span class="pre">pytket.circuit.Circuit</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">jupyter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Optional" title="(in Python v3.11)"><span class="pre">Optional</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pytket.circuit.display.render_circuit_as_html" title="Permalink to this definition">#</a></dt>
@@ -469,6 +487,94 @@ title="Print to PDF"
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="pytket.circuit.display.view_browser">
+<span class="sig-prename descclassname"><span class="pre">pytket.circuit.display.</span></span><span class="sig-name descname"><span class="pre">view_browser</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circuit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Dict" title="(in Python v3.11)"><span class="pre">Dict</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#float" title="(in Python v3.11)"><span class="pre">float</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#dict" title="(in Python v3.11)"><span class="pre">dict</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="circuit_class.html#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><span class="pre">pytket.circuit.Circuit</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">browser_new</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">2</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">sleep</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">5</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#pytket.circuit.display.view_browser" title="Permalink to this definition">#</a></dt>
+<dd><p>Write circuit render html to a tempfile and open in browser.</p>
+<p>Waits for some time for browser to load then deletes tempfile.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>circuit</strong> – the Circuit or serialized Circuit to render.</p></li>
+<li><p><strong>browser_new</strong> – <code class="docutils literal notranslate"><span class="pre">new</span></code> parameter to <code class="docutils literal notranslate"><span class="pre">webbrowser.open</span></code>, default 2.</p></li>
+<li><p><strong>sleep</strong> – Number of seconds to sleep before deleting file, default 5.</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<div class="jupyter_cell jupyter_container docutils container">
+<div class="cell_input code_cell docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pytket</span> <span class="kn">import</span> <span class="n">Circuit</span>
+<span class="kn">from</span> <span class="nn">pytket.circuit.display</span> <span class="kn">import</span> <span class="n">render_circuit_jupyter</span>
+
+<span class="n">circ</span> <span class="o">=</span> <span class="n">Circuit</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># Define Circuit</span>
+<span class="n">circ</span><span class="o">.</span><span class="n">H</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">H</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">CX</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">Rz</span><span class="p">(</span><span class="mf">0.4</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">CX</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">H</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">H</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">render_circuit_jupyter</span><span class="p">(</span><span class="n">circ</span><span class="p">)</span> <span class="c1"># Render interactive display</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html">
+
+
+
+
+
+<iframe srcdoc="
+&lt;!DOCTYPE html&gt;
+&lt;html lang=&#34;en&#34;&gt;
+&lt;head&gt;
+    &lt;meta charset=&#34;UTF-8&#34;&gt;
+    &lt;!-- Download Vue 3--&gt;
+&lt;script type=&#34;application/javascript&#34; src=&#34;https://cdn.jsdelivr.net/npm/vue@3&#34;&gt;&lt;/script&gt;
+&lt;!-- Download Circuit Renderer with styles --&gt;
+&lt;script type=&#34;application/javascript&#34; src=&#34;https://unpkg.com/pytket-circuit-renderer@0.5/dist/pytket-circuit-renderer.umd.js&#34;&gt;&lt;/script&gt;
+&lt;link rel=&#34;stylesheet&#34; href=&#34;https://unpkg.com/pytket-circuit-renderer@0.5/dist/pytket-circuit-renderer.css&#34;&gt;
+&lt;/head&gt;
+&lt;body&gt;
+    &lt;div id=&#34;circuit-display-vue-container-9461cc8c-9723-41da-a903-7578d8e3f407&#34; class=&#34;pytket-circuit-display-container&#34;&gt;
+        &lt;div style=&#34;display: none&#34;&gt;
+            &lt;div id=&#34;circuit-json-to-display&#34;&gt;{&#34;bits&#34;: [], &#34;commands&#34;: [{&#34;args&#34;: [[&#34;q&#34;, [0]]], &#34;op&#34;: {&#34;type&#34;: &#34;H&#34;}}, {&#34;args&#34;: [[&#34;q&#34;, [1]]], &#34;op&#34;: {&#34;type&#34;: &#34;H&#34;}}, {&#34;args&#34;: [[&#34;q&#34;, [0]], [&#34;q&#34;, [1]]], &#34;op&#34;: {&#34;type&#34;: &#34;CX&#34;}}, {&#34;args&#34;: [[&#34;q&#34;, [1]]], &#34;op&#34;: {&#34;params&#34;: [&#34;0.4&#34;], &#34;type&#34;: &#34;Rz&#34;}}, {&#34;args&#34;: [[&#34;q&#34;, [0]], [&#34;q&#34;, [1]]], &#34;op&#34;: {&#34;type&#34;: &#34;CX&#34;}}, {&#34;args&#34;: [[&#34;q&#34;, [0]]], &#34;op&#34;: {&#34;type&#34;: &#34;H&#34;}}, {&#34;args&#34;: [[&#34;q&#34;, [1]]], &#34;op&#34;: {&#34;type&#34;: &#34;H&#34;}}], &#34;created_qubits&#34;: [], &#34;discarded_qubits&#34;: [], &#34;implicit_permutation&#34;: [[[&#34;q&#34;, [0]], [&#34;q&#34;, [0]]], [[&#34;q&#34;, [1]], [&#34;q&#34;, [1]]]], &#34;phase&#34;: &#34;0.0&#34;, &#34;qubits&#34;: [[&#34;q&#34;, [0]], [&#34;q&#34;, [1]]]}&lt;/div&gt;
+        &lt;/div&gt;
+        &lt;circuit-display-container :circuit-element-str=&#34;&#39;#circuit-json-to-display&#39;&#34;&gt;&lt;/circuit-display-container&gt;
+    &lt;/div&gt;
+    &lt;script type=&#34;application/javascript&#34;&gt;
+      const circuitRendererUid = &#34;9461cc8c-9723-41da-a903-7578d8e3f407&#34;;
+
+      // Script to initialise the circuit renderer app
+
+const { createApp } = Vue;
+const circuitDisplayContainer = window[&#34;pytket-circuit-renderer&#34;].default;
+// Init variables to be shared between circuit display instances
+if (typeof window.pytketCircuitDisplays === &#34;undefined&#34;) {
+    window.pytketCircuitDisplays = {};
+}
+// Create the root Vue component
+const app = createApp({
+    delimiters: [&#39;[[#&#39;, &#39;#]]&#39;],
+    components: { circuitDisplayContainer },
+})
+app.config.unwrapInjectedRef = true;
+app.mount(&#34;#circuit-display-vue-container-&#34;+circuitRendererUid);
+window.pytketCircuitDisplays[circuitRendererUid] = app;
+    &lt;/script&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+"
+        width="100%" height="200px"
+        style="border: none; outline: none; resize: vertical; overflow: auto"></iframe>
+
+</div></div>
+</div>
+<p>This same diagram can be rendered with the offline renderer as follows</p>
+<blockquote>
+<div><div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pytket.extensions.offline_display</span> <span class="kn">import</span> <span class="n">render_circuit_jupyter</span>
+
+<span class="n">render_circuit_jupyter</span><span class="p">(</span><span class="n">circ</span><span class="p">)</span> <span class="c1"># Render display as above</span>
+</pre></div>
+</div>
+</div></blockquote>
 </section>
 
 

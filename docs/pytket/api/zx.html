@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>pytket.zx &#8212; pytket 1.11.1 documentation</title>
+    <title>pytket.zx &#8212; pytket 1.13.0 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -23,6 +23,8 @@
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="_static/thebelab.css" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css" />
     
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -34,11 +36,14 @@
     <script src="_static/doctools.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
+    <script src="_static/thebelab-helper.js"></script>
     <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pytket.utils" href="utils.html" />
-    <link rel="prev" title="pytket.tailoring" href="tailoring.html" />
+    <link rel="prev" title="pytket.wasm" href="wasm.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -82,7 +87,7 @@
       <img src="_static/Quantinuum_logo.png" class="logo" alt="logo">
       
       
-      <h1 class="site-logo" id="site-title">pytket 1.11.1 documentation</h1>
+      <h1 class="site-logo" id="site-title">pytket 1.13.0 documentation</h1>
       
     </a>
 </div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
@@ -240,6 +245,11 @@
  <li class="toctree-l1">
   <a class="reference internal" href="tailoring.html">
    pytket.tailoring
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="wasm.html">
+   pytket.wasm
   </a>
  </li>
  <li class="toctree-l1 current active">
@@ -566,9 +576,33 @@ title="Print to PDF"
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.Rewrite.extend_for_PX_outputs">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">extend_for_PX_outputs</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><span class="pre">pytket.zx.Rewrite</span></a></span></span><a class="headerlink" href="#pytket.zx.Rewrite.extend_for_PX_outputs" title="Permalink to this definition">#</a></dt>
+<dd><p>Identifies output vertices in MBQC form that are given a measurement basis (i.e. are not PX(0)). This rule applies I/O extensions to make the phased qubits non-outputs. This is required before flow identification can be run.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.Rewrite.gadgetise_interior_paulis">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">gadgetise_interior_paulis</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><span class="pre">pytket.zx.Rewrite</span></a></span></span><a class="headerlink" href="#pytket.zx.Rewrite.gadgetise_interior_paulis" title="Permalink to this definition">#</a></dt>
+<dd><p>Identifies interior Paulis (spiders where the phase is an integer multiple of pi) with all neighbours having non-Pauli phase and degree &gt; 1. Pivots about an incident edge to yield a gadget node.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.Rewrite.internalise_gadgets">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">internalise_gadgets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><span class="pre">pytket.zx.Rewrite</span></a></span></span><a class="headerlink" href="#pytket.zx.Rewrite.internalise_gadgets" title="Permalink to this definition">#</a></dt>
+<dd><p>Identifies Degree-1 XY vertices next to a PX vertex, e.g. as the result of rebasing a phase gadget. Replaces matches by a single YZ vertex.</p>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pytket.zx.Rewrite.io_extension">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">io_extension</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><span class="pre">pytket.zx.Rewrite</span></a></span></span><a class="headerlink" href="#pytket.zx.Rewrite.io_extension" title="Permalink to this definition">#</a></dt>
 <dd><p>Guarantees that the edge on each boundary vertex is Basic. If a boundary has a Hadamard, then we add a ZSpider identity as in I/O extensions in MBQC.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.Rewrite.merge_gadgets">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">merge_gadgets</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><span class="pre">pytket.zx.Rewrite</span></a></span></span><a class="headerlink" href="#pytket.zx.Rewrite.merge_gadgets" title="Permalink to this definition">#</a></dt>
+<dd><p>Identifies pairs of phase gadgets over the same sets of qubits and merges them.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -593,6 +627,12 @@ title="Print to PDF"
 <dt class="sig sig-object py" id="pytket.zx.Rewrite.red_to_green">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">red_to_green</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><span class="pre">pytket.zx.Rewrite</span></a></span></span><a class="headerlink" href="#pytket.zx.Rewrite.red_to_green" title="Permalink to this definition">#</a></dt>
 <dd><p>Converts all red spiders (XSpider) to green (ZSpider) with Hadamards around them. The Hadamards are applied by flipping the wire type of incident edges between Basic and H.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.Rewrite.reduce_graphlike_form">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">reduce_graphlike_form</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><span class="pre">pytket.zx.Rewrite</span></a></span></span><a class="headerlink" href="#pytket.zx.Rewrite.reduce_graphlike_form" title="Permalink to this definition">#</a></dt>
+<dd><p>Given a diagram in graphlike form, applies local complementations and pivoting to remove as many interior Clifford-angled vertices as possible. The only remaining Clifford-angled vertices will be either the axis of a phase-gadget or near a boundary.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -651,6 +691,18 @@ title="Print to PDF"
 <dt class="sig sig-object py" id="pytket.zx.Rewrite.spider_fusion">
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">spider_fusion</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><span class="pre">pytket.zx.Rewrite</span></a></span></span><a class="headerlink" href="#pytket.zx.Rewrite.spider_fusion" title="Permalink to this definition">#</a></dt>
 <dd><p>Merges two adjacent ZX spiders (XSpider, ZSpider) of the same colour connected by a Basic wire into a single spider. Also merges two adjacent spiders of different colour connected by a H edge.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.Rewrite.to_MBQC_diag">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_MBQC_diag</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><span class="pre">pytket.zx.Rewrite</span></a></span></span><a class="headerlink" href="#pytket.zx.Rewrite.to_MBQC_diag" title="Permalink to this definition">#</a></dt>
+<dd><p>Given a diagram in graphlike form, will rebase to MBQC generators, ensure that output qubits are PX(0) (i.e. they match unmeasured qubits) and degree-1 vertices are absorbed into a PX neighbour, i.e. reducing phase-gadgets to single vertices in a different measurement plane.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.Rewrite.to_graphlike_form">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">to_graphlike_form</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><span class="pre">pytket.zx.Rewrite</span></a></span></span><a class="headerlink" href="#pytket.zx.Rewrite.to_graphlike_form" title="Permalink to this definition">#</a></dt>
+<dd><p>Given a diagram with ZX generators, yields a diagram with only ZSpiders, connected by at most one Hadamard edge, with boundaries connected via Basic edges.</p>
 </dd></dl>
 
 </dd></dl>
@@ -754,6 +806,22 @@ title="Print to PDF"
 </dd>
 </dl>
 <ol class="arabic simple" start="3">
+<li><p>add_vertex(self: pytket.zx.ZXDiagram, type: pytket.zx.ZXType, param: bool, qtype: pytket.zx.QuantumType = &lt;QuantumType.Quantum: 0&gt;) -&gt; pytket.zx.ZXVert</p></li>
+</ol>
+<p>Adds a new vertex to the diagram for a Boolean-parameterised, doubleable generator type.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>type</strong> – The <a class="reference internal" href="#pytket.zx.ZXType" title="pytket.zx.ZXType"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXType</span></code></a> for the new vertex.</p></li>
+<li><p><strong>param</strong> – The parameter for the new vertex.</p></li>
+<li><p><strong>qtype</strong> – The <a class="reference internal" href="#pytket.zx.QuantumType" title="pytket.zx.QuantumType"><code class="xref py py-class docutils literal notranslate"><span class="pre">QuantumType</span></code></a> for the new vertex. Defaults to Quantum.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>The handle to the new vertex.</p>
+</dd>
+</dl>
+<ol class="arabic simple" start="4">
 <li><p>add_vertex(self: pytket.zx.ZXDiagram, type: pytket.zx.ZXType, param: Expression, qtype: pytket.zx.QuantumType = &lt;QuantumType.Quantum: 0&gt;) -&gt; pytket.zx.ZXVert</p></li>
 </ol>
 <p>Adds a new vertex to the diagram for a parameterised, doubleable generator type.</p>
@@ -1181,11 +1249,11 @@ title="Print to PDF"
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="tailoring.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="wasm.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">pytket.tailoring</p>
+            <p class="prev-next-title">pytket.wasm</p>
         </div>
     </a>
     <a class='right-next' id="next-link" href="utils.html" title="next page">

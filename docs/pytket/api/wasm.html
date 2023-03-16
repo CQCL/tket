@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>pytket.logging &#8212; pytket 1.13.0 documentation</title>
+    <title>pytket.wasm &#8212; pytket 1.13.0 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -42,8 +42,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="pytket.config" href="config.html" />
-    <link rel="prev" title="pytket.utils" href="utils.html" />
+    <link rel="next" title="pytket.zx" href="zx.html" />
+    <link rel="prev" title="pytket.tailoring" href="tailoring.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="docsearch:language" content="en">
     
@@ -247,8 +247,8 @@
    pytket.tailoring
   </a>
  </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="wasm.html">
+ <li class="toctree-l1 current active">
+  <a class="current reference internal" href="#">
    pytket.wasm
   </a>
  </li>
@@ -262,8 +262,8 @@
    pytket.utils
   </a>
  </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
+ <li class="toctree-l1">
+  <a class="reference internal" href="logging.html">
    pytket.logging
   </a>
  </li>
@@ -362,7 +362,7 @@ title="Source repository"
       </li>
       
       <li>
-        <a href="https://github.com/CQCL/tket/issues/new?title=Issue%20on%20page%20%2Flogging.html&body=Your%20issue%20content%20here."
+        <a href="https://github.com/CQCL/tket/issues/new?title=Issue%20on%20page%20%2Fwasm.html&body=Your%20issue%20content%20here."
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -390,7 +390,7 @@ title="Open an issue"
   <div class="menu-dropdown__content">
     <ul>
       <li>
-        <a href="_sources/logging.rst.txt"
+        <a href="_sources/wasm.rst.txt"
    class="headerbtn"
    data-toggle="tooltip"
 data-placement="left"
@@ -439,7 +439,7 @@ title="Print to PDF"
         <div class="col pl-md-3 pl-lg-5 content-container">
             <!-- Table of contents that is only displayed when printing the page -->
             <div id="jb-print-docs-body" class="onlyprint">
-                <h1>pytket.logging</h1>
+                <h1>pytket.wasm</h1>
                 <!-- Table of contents -->
                 <div id="print-main-content">
                     <div id="jb-print-toc">
@@ -451,35 +451,48 @@ title="Print to PDF"
                 
               <div>
                 
-  <section id="module-pytket.logging">
-<span id="pytket-logging"></span><h1>pytket.logging<a class="headerlink" href="#module-pytket.logging" title="Permalink to this headline">#</a></h1>
+  <section id="module-pytket.wasm">
+<span id="pytket-wasm"></span><h1>pytket.wasm<a class="headerlink" href="#module-pytket.wasm" title="Permalink to this headline">#</a></h1>
+<p>Handler for wasm files in pytket</p>
 <dl class="py class">
-<dt class="sig sig-object py" id="pytket.logging.level">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pytket.logging.</span></span><span class="sig-name descname"><span class="pre">level</span></span><a class="headerlink" href="#pytket.logging.level" title="Permalink to this definition">#</a></dt>
-<dd><p>Members:</p>
-<p>trace : all logs</p>
-<p>debug : debug logs and above</p>
-<p>info : informational logs and above</p>
-<p>warn : warnings and above</p>
-<p>err : error and critical logs only (default)</p>
-<p>critical : critical logs only</p>
-<p>off : no logs</p>
-<dl class="py property">
-<dt class="sig sig-object py" id="pytket.logging.level.name">
-<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">name</span></span><a class="headerlink" href="#pytket.logging.level.name" title="Permalink to this definition">#</a></dt>
-<dd></dd></dl>
-
+<dt class="sig sig-object py" id="pytket.wasm.WasmFileHandler">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pytket.wasm.</span></span><span class="sig-name descname"><span class="pre">WasmFileHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.wasm.WasmFileHandler" title="Permalink to this definition">#</a></dt>
+<dd><p>Add a wasm file to your workflow, stores a copy of the file and
+checks the function signatures of the file. Offers function to add
+a wasm op to a circuit</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.wasm.WasmFileHandler.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.wasm.WasmFileHandler.__init__" title="Permalink to this definition">#</a></dt>
+<dd><p>construct a wasm file handler
+:param filepath: path to the wasm file
+:type filepath: str</p>
 </dd></dl>
 
-<dl class="py function">
-<dt class="sig sig-object py" id="pytket.logging.set_level">
-<span class="sig-prename descclassname"><span class="pre">pytket.logging.</span></span><span class="sig-name descname"><span class="pre">set_level</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.logging.level" title="pytket.logging.level"><span class="pre">pytket.logging.level</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#pytket.logging.set_level" title="Permalink to this definition">#</a></dt>
-<dd><p>Set the global logging level.</p>
-<dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>level</strong> – Desired logging level</p>
-</dd>
-</dl>
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.wasm.WasmFileHandler.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#pytket.wasm.WasmFileHandler.__repr__" title="Permalink to this definition">#</a></dt>
+<dd><p>str representation of the containment of the wasm file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.wasm.WasmFileHandler.__str__">
+<span class="sig-name descname"><span class="pre">__str__</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></span><a class="headerlink" href="#pytket.wasm.WasmFileHandler.__str__" title="Permalink to this definition">#</a></dt>
+<dd><p>str representation of the wasm file</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.wasm.WasmFileHandler.check_function">
+<span class="sig-name descname"><span class="pre">check_function</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">function_name</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">number_of_parameters</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">number_of_returns</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#pytket.wasm.WasmFileHandler.check_function" title="Permalink to this definition">#</a></dt>
+<dd><p>checks a given function name and signature if it is included
+:param function_name: name of the function that is checked
+:type function_name: str
+:param number_of_parameters: number of i32 parameters of the function
+:type number_of_parameters: int
+:param number_of_returns: number of i32 return values of the function
+:type number_of_returns: int
+:return: true if the signature and the name of the function is correct</p>
+</dd></dl>
+
 </dd></dl>
 
 </section>
@@ -492,17 +505,17 @@ title="Print to PDF"
                 
     <!-- Previous / next buttons -->
 <div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="utils.html" title="previous page">
+    <a class='left-prev' id="prev-link" href="tailoring.html" title="previous page">
         <i class="fas fa-angle-left"></i>
         <div class="prev-next-info">
             <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">pytket.utils</p>
+            <p class="prev-next-title">pytket.tailoring</p>
         </div>
     </a>
-    <a class='right-next' id="next-link" href="config.html" title="next page">
+    <a class='right-next' id="next-link" href="zx.html" title="next page">
     <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">pytket.config</p>
+        <p class="prev-next-title">pytket.zx</p>
     </div>
     <i class="fas fa-angle-right"></i>
     </a>

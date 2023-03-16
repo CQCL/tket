@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>pytket &#8212; pytket 1.11.1 documentation</title>
+    <title>pytket &#8212; pytket 1.13.0 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -23,6 +23,8 @@
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="_static/thebelab.css" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css" />
     
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -34,7 +36,10 @@
     <script src="_static/doctools.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
+    <script src="_static/thebelab-helper.js"></script>
     <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="Getting Started" href="getting_started.html" />
@@ -81,7 +86,7 @@
       <img src="_static/Quantinuum_logo.png" class="logo" alt="logo">
       
       
-      <h1 class="site-logo" id="site-title">pytket 1.11.1 documentation</h1>
+      <h1 class="site-logo" id="site-title">pytket 1.13.0 documentation</h1>
       
     </a>
 </div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
@@ -239,6 +244,11 @@
  <li class="toctree-l1">
   <a class="reference internal" href="tailoring.html">
    pytket.tailoring
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="wasm.html">
+   pytket.wasm
   </a>
  </li>
  <li class="toctree-l1">
@@ -538,7 +548,7 @@ title="Print to PDF"
   <section id="pytket">
 <h1>pytket<a class="headerlink" href="#pytket" title="Permalink to this headline">#</a></h1>
 <p><code class="docutils literal notranslate"><span class="pre">pytket</span></code> is a python module for interfacing with tket, a quantum computing toolkit and optimising compiler developed by <a class="reference external" href="https://www.quantinuum.com/">Quantinuum</a>. We currently support circuits and device architectures from
-<a class="reference external" href="https://github.com/CQCL/pytket-extensions">numerous providers</a>, allowing the
+<a class="reference external" href="https://cqcl.github.io/pytket-extensions/api/index.html">numerous providers</a>, allowing the
 tket tools to be used in conjunction with projects on their platforms.</p>
 <p><code class="docutils literal notranslate"><span class="pre">pytket</span></code> is available for Python 3.9, 3.10 and 3.11, on Linux, MacOS and
 Windows. To install, run</p>
@@ -572,7 +582,7 @@ because of an issue installing <code class="docutils literal notranslate"><span 
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pytket.extensions.qiskit</span> <span class="kn">import</span> <span class="n">AerBackend</span>
 
 <span class="n">backend</span> <span class="o">=</span> <span class="n">AerBackend</span><span class="p">()</span>                                 <span class="c1"># connect to the backend</span>
-<span class="n">compiled_circ</span> <span class="o">=</span> <span class="n">b</span><span class="o">.</span><span class="n">get_compiled_circuit</span><span class="p">(</span><span class="n">circ</span><span class="p">)</span>           <span class="c1"># compile the circuit to satisfy the backend&#39;s requirements</span>
+<span class="n">compiled_circ</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">get_compiled_circuit</span><span class="p">(</span><span class="n">circ</span><span class="p">)</span>           <span class="c1"># compile the circuit to satisfy the backend&#39;s requirements</span>
 <span class="n">handle</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">process_circuit</span><span class="p">(</span><span class="n">compiled_circ</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>   <span class="c1"># submit the job to run the circuit 100 times</span>
 <span class="n">counts</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">get_result</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span><span class="o">.</span><span class="n">get_counts</span><span class="p">()</span>       <span class="c1"># retrieve and summarise the results</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
@@ -674,6 +684,7 @@ representations, or some new backends to submit circuits to within <code class="
 <li class="toctree-l1"><a class="reference internal" href="tableau.html">pytket.tableau</a></li>
 <li class="toctree-l1"><a class="reference internal" href="transform.html">pytket.transform</a></li>
 <li class="toctree-l1"><a class="reference internal" href="tailoring.html">pytket.tailoring</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wasm.html">pytket.wasm</a></li>
 <li class="toctree-l1"><a class="reference internal" href="zx.html">pytket.zx</a></li>
 <li class="toctree-l1"><a class="reference internal" href="utils.html">pytket.utils</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="utils.html#pytket-utils-distribution">pytket.utils.distribution</a></li>

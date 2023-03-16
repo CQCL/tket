@@ -5,7 +5,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Index &#8212; pytket 1.11.1 documentation</title>
+    <title>Index &#8212; pytket 1.13.0 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -22,6 +22,8 @@
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="_static/thebelab.css" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css" />
     
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -33,7 +35,10 @@
     <script src="_static/doctools.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
+    <script src="_static/thebelab-helper.js"></script>
     <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <link rel="index" title="Index" href="#" />
     <link rel="search" title="Search" href="search.html" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -79,7 +84,7 @@
       <img src="_static/Quantinuum_logo.png" class="logo" alt="logo">
       
       
-      <h1 class="site-logo" id="site-title">pytket 1.11.1 documentation</h1>
+      <h1 class="site-logo" id="site-title">pytket 1.13.0 documentation</h1>
       
     </a>
 </div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
@@ -237,6 +242,11 @@
  <li class="toctree-l1">
   <a class="reference internal" href="tailoring.html">
    pytket.tailoring
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="wasm.html">
+   pytket.wasm
   </a>
  </li>
  <li class="toctree-l1">
@@ -468,6 +478,12 @@ title="Open an issue"
 </li>
         <li><a href="circuit.html#pytket.circuit.ExpBox.__init__">(pytket.circuit.ExpBox method)</a>
 </li>
+        <li><a href="circuit.html#pytket.circuit.MultiplexedRotationBox.__init__">(pytket.circuit.MultiplexedRotationBox method)</a>
+</li>
+        <li><a href="circuit.html#pytket.circuit.MultiplexedU2Box.__init__">(pytket.circuit.MultiplexedU2Box method)</a>
+</li>
+        <li><a href="circuit.html#pytket.circuit.MultiplexorBox.__init__">(pytket.circuit.MultiplexorBox method)</a>
+</li>
         <li><a href="circuit.html#pytket.circuit.Node.__init__">(pytket.circuit.Node method)</a>
 </li>
         <li><a href="circuit.html#pytket.circuit.PauliExpBox.__init__">(pytket.circuit.PauliExpBox method)</a>
@@ -483,6 +499,8 @@ title="Open an issue"
         <li><a href="circuit.html#pytket.circuit.QubitRegister.__init__">(pytket.circuit.QubitRegister method)</a>
 </li>
         <li><a href="circuit.html#pytket.circuit.StabiliserAssertionBox.__init__">(pytket.circuit.StabiliserAssertionBox method)</a>
+</li>
+        <li><a href="circuit.html#pytket.circuit.StatePreparationBox.__init__">(pytket.circuit.StatePreparationBox method)</a>
 </li>
         <li><a href="circuit.html#pytket.circuit.ToffoliBox.__init__">(pytket.circuit.ToffoliBox method)</a>
 </li>
@@ -549,6 +567,8 @@ title="Open an issue"
         <li><a href="placement.html#pytket.placement.Placement.__init__">(pytket.placement.Placement method)</a>
 </li>
         <li><a href="predicates.html#pytket.predicates.CliffordCircuitPredicate.__init__">(pytket.predicates.CliffordCircuitPredicate method)</a>
+</li>
+        <li><a href="predicates.html#pytket.predicates.CommutableMeasuresPredicate.__init__">(pytket.predicates.CommutableMeasuresPredicate method)</a>
 </li>
         <li><a href="predicates.html#pytket.predicates.CompilationUnit.__init__">(pytket.predicates.CompilationUnit method)</a>
 </li>
@@ -630,11 +650,15 @@ title="Open an issue"
 </li>
         <li><a href="config.html#pytket.config.pytket_config.PytketConfig.__init__">(pytket.config.pytket_config.PytketConfig method)</a>
 </li>
+        <li><a href="config.html#pytket.config.pytket_config.PytketExtConfig.__init__">(pytket.config.pytket_config.PytketExtConfig method)</a>
+</li>
         <li><a href="utils.html#pytket.utils.Graph.__init__">(pytket.utils.Graph method)</a>
 </li>
         <li><a href="utils.html#pytket.utils.QubitPauliOperator.__init__">(pytket.utils.QubitPauliOperator method)</a>
 </li>
         <li><a href="utils.html#pytket.utils.spam.SpamCorrecter.__init__">(pytket.utils.spam.SpamCorrecter method)</a>
+</li>
+        <li><a href="wasm.html#pytket.wasm.WasmFileHandler.__init__">(pytket.wasm.WasmFileHandler method)</a>
 </li>
       </ul></li>
   </ul></td>
@@ -644,13 +668,21 @@ title="Open an issue"
       <li><a href="circuit_class.html#pytket.circuit.Circuit.__mul__">__mul__() (pytket.circuit.Circuit method)</a>
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.__repr__">__repr__() (pytket.circuit.Circuit method)</a>
+
+      <ul>
+        <li><a href="wasm.html#pytket.wasm.WasmFileHandler.__repr__">(pytket.wasm.WasmFileHandler method)</a>
 </li>
+      </ul></li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.__rshift__">__rshift__() (pytket.circuit.Circuit method)</a>
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.__setstate__">__setstate__() (pytket.circuit.Circuit method)</a>
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.__str__">__str__() (pytket.circuit.Circuit method)</a>
+
+      <ul>
+        <li><a href="wasm.html#pytket.wasm.WasmFileHandler.__str__">(pytket.wasm.WasmFileHandler method)</a>
 </li>
+      </ul></li>
   </ul></td>
 </tr></table>
 
@@ -731,10 +763,10 @@ title="Open an issue"
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.add_pauliexpbox">add_pauliexpbox() (pytket.circuit.Circuit method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.add_phase">add_phase() (pytket.circuit.Circuit method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.add_phasepolybox">add_phasepolybox() (pytket.circuit.Circuit method)</a>
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.add_q_register">add_q_register() (pytket.circuit.Circuit method)</a>
@@ -744,6 +776,8 @@ title="Open an issue"
       <li><a href="circuit_class.html#pytket.circuit.Circuit.add_qubit">add_qubit() (pytket.circuit.Circuit method)</a>
 </li>
       <li><a href="partition.html#pytket.partition.MeasurementSetup.add_result_for_term">add_result_for_term() (pytket.partition.MeasurementSetup method)</a>
+</li>
+      <li><a href="circuit_class.html#pytket.circuit.Circuit.add_state_preparation_box">add_state_preparation_box() (pytket.circuit.Circuit method)</a>
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.add_toffolibox">add_toffolibox() (pytket.circuit.Circuit method)</a>
 </li>
@@ -891,6 +925,8 @@ title="Open an issue"
 </li>
       <li><a href="predicates.html#pytket.predicates.CompilationUnit.check_all_predicates">check_all_predicates() (pytket.predicates.CompilationUnit method)</a>
 </li>
+      <li><a href="wasm.html#pytket.wasm.WasmFileHandler.check_function">check_function() (pytket.wasm.WasmFileHandler method)</a>
+</li>
       <li><a href="zx.html#pytket.zx.ZXDiagram.check_validity">check_validity() (pytket.zx.ZXDiagram method)</a>
 </li>
       <li><a href="utils.html#pytket.utils.OutcomeArray.choose_indices">choose_indices() (pytket.utils.OutcomeArray method)</a>
@@ -955,6 +991,8 @@ title="Open an issue"
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.commands_of_type">commands_of_type() (pytket.circuit.Circuit method)</a>
 </li>
+      <li><a href="predicates.html#pytket.predicates.CommutableMeasuresPredicate">CommutableMeasuresPredicate (class in pytket.predicates)</a>
+</li>
       <li><a href="pauli.html#pytket.pauli.QubitPauliString.commutes_with">commutes_with() (pytket.pauli.QubitPauliString method)</a>
 </li>
       <li><a href="transform.html#pytket.transform.Transform.CommuteSQThroughSWAP">CommuteSQThroughSWAP() (pytket.transform.Transform static method)</a>
@@ -969,10 +1007,10 @@ title="Open an issue"
 </li>
       <li><a href="utils.html#pytket.utils.compare_unitaries">compare_unitaries() (in module pytket.utils)</a>
 </li>
-      <li><a href="passes.html#pytket.passes.script.compilation_pass_from_script">compilation_pass_from_script() (in module pytket.passes.script)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="passes.html#pytket.passes.script.compilation_pass_from_script">compilation_pass_from_script() (in module pytket.passes.script)</a>
+</li>
       <li><a href="passes.html#pytket.passes.script.compilation_pass_grammar">compilation_pass_grammar() (in module pytket.passes.script)</a>
 </li>
       <li><a href="predicates.html#pytket.predicates.CompilationUnit">CompilationUnit (class in pytket.predicates)</a>
@@ -1183,8 +1221,6 @@ title="Open an issue"
 </li>
       <li><a href="passes.html#pytket.passes.EulerAngleReduction">EulerAngleReduction() (in module pytket.passes)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="classical.html#pytket.circuit.logic_exp.And.eval_vals">eval_vals() (pytket.circuit.logic_exp.And method)</a>
 
       <ul>
@@ -1193,6 +1229,8 @@ title="Open an issue"
         <li><a href="classical.html#pytket.circuit.logic_exp.LogicExp.eval_vals">(pytket.circuit.logic_exp.LogicExp method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="circuit.html#pytket.circuit.ExpBox">ExpBox (class in pytket.circuit)</a>
 </li>
       <li><a href="utils.html#pytket.utils.distribution.ProbabilityDistribution.expectation">expectation() (pytket.utils.distribution.ProbabilityDistribution method)</a>
@@ -1204,6 +1242,8 @@ title="Open an issue"
       <li><a href="utils.html#pytket.utils.expectation_from_shots">expectation_from_shots() (in module pytket.utils)</a>
 </li>
       <li><a href="zx.html#pytket.zx.Rewrite.extend_at_boundary_paulis">extend_at_boundary_paulis() (pytket.zx.Rewrite static method)</a>
+</li>
+      <li><a href="zx.html#pytket.zx.Rewrite.extend_for_PX_outputs">extend_for_PX_outputs() (pytket.zx.Rewrite static method)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1313,6 +1353,8 @@ title="Open an issue"
 <h2 id="G">G</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="zx.html#pytket.zx.Rewrite.gadgetise_interior_paulis">gadgetise_interior_paulis() (pytket.zx.Rewrite static method)</a>
+</li>
       <li><a href="circuit.html#pytket.circuit.CustomGate.gate">gate (pytket.circuit.CustomGate property)</a>
 </li>
       <li><a href="predicates.html#pytket.predicates.GateSetPredicate">GateSetPredicate (class in pytket.predicates)</a>
@@ -1342,6 +1384,12 @@ title="Open an issue"
 </li>
         <li><a href="circuit.html#pytket.circuit.ExpBox.get_circuit">(pytket.circuit.ExpBox method)</a>
 </li>
+        <li><a href="circuit.html#pytket.circuit.MultiplexedRotationBox.get_circuit">(pytket.circuit.MultiplexedRotationBox method)</a>
+</li>
+        <li><a href="circuit.html#pytket.circuit.MultiplexedU2Box.get_circuit">(pytket.circuit.MultiplexedU2Box method)</a>
+</li>
+        <li><a href="circuit.html#pytket.circuit.MultiplexorBox.get_circuit">(pytket.circuit.MultiplexorBox method)</a>
+</li>
         <li><a href="circuit.html#pytket.circuit.PauliExpBox.get_circuit">(pytket.circuit.PauliExpBox method)</a>
 </li>
         <li><a href="circuit.html#pytket.circuit.PhasePolyBox.get_circuit">(pytket.circuit.PhasePolyBox method)</a>
@@ -1351,6 +1399,8 @@ title="Open an issue"
         <li><a href="circuit.html#pytket.circuit.QControlBox.get_circuit">(pytket.circuit.QControlBox method)</a>
 </li>
         <li><a href="circuit.html#pytket.circuit.StabiliserAssertionBox.get_circuit">(pytket.circuit.StabiliserAssertionBox method)</a>
+</li>
+        <li><a href="circuit.html#pytket.circuit.StatePreparationBox.get_circuit">(pytket.circuit.StatePreparationBox method)</a>
 </li>
         <li><a href="circuit.html#pytket.circuit.ToffoliBox.get_circuit">(pytket.circuit.ToffoliBox method)</a>
 </li>
@@ -1389,6 +1439,8 @@ title="Open an issue"
 </li>
       <li><a href="utils.html#pytket.utils.symbolic.SymGateRegister.get_func">get_func() (pytket.utils.symbolic.SymGateRegister class method)</a>
 </li>
+      <li><a href="circuit.html#pytket.circuit.MultiplexedU2Box.get_impl_diag">get_impl_diag() (pytket.circuit.MultiplexedU2Box method)</a>
+</li>
       <li><a href="circuit.html#pytket.circuit.ProjectorAssertionBox.get_matrix">get_matrix() (pytket.circuit.ProjectorAssertionBox method)</a>
 
       <ul>
@@ -1409,10 +1461,10 @@ title="Open an issue"
 </li>
       <li><a href="circuit.html#pytket.circuit.ClassicalExpBox.get_n_io">get_n_io() (pytket.circuit.ClassicalExpBox method)</a>
 </li>
-      <li><a href="circuit.html#pytket.circuit.ClassicalExpBox.get_n_o">get_n_o() (pytket.circuit.ClassicalExpBox method)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="circuit.html#pytket.circuit.ClassicalExpBox.get_n_o">get_n_o() (pytket.circuit.ClassicalExpBox method)</a>
+</li>
       <li><a href="circuit.html#pytket.circuit.Op.get_name">get_name() (pytket.circuit.Op method)</a>
 
       <ul>
@@ -1421,6 +1473,14 @@ title="Open an issue"
       </ul></li>
       <li><a href="circuit.html#pytket.circuit.QControlBox.get_op">get_op() (pytket.circuit.QControlBox method)</a>
 </li>
+      <li><a href="circuit.html#pytket.circuit.MultiplexedRotationBox.get_op_map">get_op_map() (pytket.circuit.MultiplexedRotationBox method)</a>
+
+      <ul>
+        <li><a href="circuit.html#pytket.circuit.MultiplexedU2Box.get_op_map">(pytket.circuit.MultiplexedU2Box method)</a>
+</li>
+        <li><a href="circuit.html#pytket.circuit.MultiplexorBox.get_op_map">(pytket.circuit.MultiplexorBox method)</a>
+</li>
+      </ul></li>
       <li><a href="utils.html#pytket.utils.get_operator_expectation_value">get_operator_expectation_value() (in module pytket.utils)</a>
 </li>
       <li><a href="utils.html#pytket.utils.spam.SpamCorrecter.get_parallel_measure">get_parallel_measure() (pytket.utils.spam.SpamCorrecter method)</a>
@@ -1474,7 +1534,11 @@ title="Open an issue"
       <li><a href="backends.html#pytket.backends.backendresult.BackendResult.get_state">get_state() (pytket.backends.backendresult.BackendResult method)</a>
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.get_statevector">get_statevector() (pytket.circuit.Circuit method)</a>
+
+      <ul>
+        <li><a href="circuit.html#pytket.circuit.StatePreparationBox.get_statevector">(pytket.circuit.StatePreparationBox method)</a>
 </li>
+      </ul></li>
       <li><a href="tableau.html#pytket.tableau.UnitaryTableauBox.get_tableau">get_tableau() (pytket.tableau.UnitaryTableauBox method)</a>
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.get_unitary">get_unitary() (pytket.circuit.Circuit method)</a>
@@ -1543,6 +1607,8 @@ title="Open an issue"
 </li>
       <li><a href="circuit.html#pytket.circuit.WASMOp.input_widths">input_widths (pytket.circuit.WASMOp property)</a>
 </li>
+      <li><a href="zx.html#pytket.zx.Rewrite.internalise_gadgets">internalise_gadgets() (pytket.zx.Rewrite static method)</a>
+</li>
       <li><a href="partition.html#pytket.partition.MeasurementBitMap.invert">invert (pytket.partition.MeasurementBitMap property)</a>
 </li>
   </ul></td>
@@ -1552,6 +1618,8 @@ title="Open an issue"
       <li><a href="circuit.html#pytket.circuit.Op.is_clifford_type">is_clifford_type() (pytket.circuit.Op method)</a>
 </li>
       <li><a href="circuit.html#pytket.circuit.Op.is_gate">is_gate() (pytket.circuit.Op method)</a>
+</li>
+      <li><a href="circuit.html#pytket.circuit.StatePreparationBox.is_inverse">is_inverse() (pytket.circuit.StatePreparationBox method)</a>
 </li>
       <li><a href="utils.html#pytket.utils.symbolic.SymGateRegister.is_registered">is_registered() (pytket.utils.symbolic.SymGateRegister class method)</a>
 </li>
@@ -1635,6 +1703,8 @@ title="Open an issue"
 </li>
       <li><a href="partition.html#pytket.partition.MeasurementSetup">MeasurementSetup (class in pytket.partition)</a>
 </li>
+      <li><a href="zx.html#pytket.zx.Rewrite.merge_gadgets">merge_gadgets() (pytket.zx.Rewrite static method)</a>
+</li>
       <li><a href="backends.html#pytket.backends.status.CircuitStatus.message">message (pytket.backends.status.CircuitStatus attribute)</a>
 </li>
       <li><a href="placement.html#pytket.placement.GraphPlacement.modify_config">modify_config() (pytket.placement.GraphPlacement method)</a>
@@ -1705,10 +1775,18 @@ title="Open an issue"
 </li>
         <li><a href="utils.html#module-pytket.utils.symbolic">pytket.utils.symbolic</a>
 </li>
+        <li><a href="wasm.html#module-pytket.wasm">pytket.wasm</a>
+</li>
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="mapping.html#pytket.mapping.MultiGateReorderRoutingMethod">MultiGateReorderRoutingMethod (class in pytket.mapping)</a>
+</li>
+      <li><a href="circuit.html#pytket.circuit.MultiplexedRotationBox">MultiplexedRotationBox (class in pytket.circuit)</a>
+</li>
+      <li><a href="circuit.html#pytket.circuit.MultiplexedU2Box">MultiplexedU2Box (class in pytket.circuit)</a>
+</li>
+      <li><a href="circuit.html#pytket.circuit.MultiplexorBox">MultiplexorBox (class in pytket.circuit)</a>
 </li>
       <li><a href="zx.html#pytket.zx.ZXDiagram.multiply_scalar">multiply_scalar() (pytket.zx.ZXDiagram method)</a>
 </li>
@@ -1835,6 +1913,8 @@ title="Open an issue"
       <li><a href="predicates.html#pytket.predicates.NoWireSwapsPredicate">NoWireSwapsPredicate (class in pytket.predicates)</a>
 </li>
       <li><a href="circuit.html#pytket.circuit.WASMOp.num_bits">num_bits (pytket.circuit.WASMOp property)</a>
+</li>
+      <li><a href="circuit.html#pytket.circuit.WASMOp.num_w">num_w (pytket.circuit.WASMOp property)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -2010,8 +2090,6 @@ title="Open an issue"
         <li><a href="mapping.html#module-pytket.mapping">module</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     pytket.partition
 
@@ -2019,6 +2097,8 @@ title="Open an issue"
         <li><a href="partition.html#module-pytket.partition">module</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li>
     pytket.passes
 
@@ -2187,6 +2267,13 @@ title="Open an issue"
         <li><a href="utils.html#module-pytket.utils.symbolic">module</a>
 </li>
       </ul></li>
+      <li>
+    pytket.wasm
+
+      <ul>
+        <li><a href="wasm.html#module-pytket.wasm">module</a>
+</li>
+      </ul></li>
       <li><a href="config.html#pytket.config.pytket_config.PytketConfig">PytketConfig (class in pytket.config.pytket_config)</a>
 </li>
       <li><a href="config.html#pytket.config.pytket_config.PytketExtConfig">PytketExtConfig (class in pytket.config.pytket_config)</a>
@@ -2280,6 +2367,8 @@ title="Open an issue"
       <li><a href="transform.html#pytket.transform.Transform.RebaseToTket">RebaseToTket() (pytket.transform.Transform static method)</a>
 </li>
       <li><a href="zx.html#pytket.zx.Rewrite.red_to_green">red_to_green() (pytket.zx.Rewrite static method)</a>
+</li>
+      <li><a href="zx.html#pytket.zx.Rewrite.reduce_graphlike_form">reduce_graphlike_form() (pytket.zx.Rewrite static method)</a>
 </li>
       <li><a href="transform.html#pytket.transform.Transform.ReduceSingles">ReduceSingles() (pytket.transform.Transform static method)</a>
 </li>
@@ -2501,10 +2590,10 @@ title="Open an issue"
 </li>
       <li><a href="passes.html#pytket.passes.SquashRzPhasedX">SquashRzPhasedX() (in module pytket.passes)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="passes.html#pytket.passes.SquashTK1">SquashTK1() (in module pytket.passes)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="architecture.html#pytket.architecture.SquareGrid.squind_to_qind">squind_to_qind() (pytket.architecture.SquareGrid method)</a>
 </li>
       <li><a href="circuit.html#pytket.circuit.StabiliserAssertionBox">StabiliserAssertionBox (class in pytket.circuit)</a>
@@ -2517,6 +2606,8 @@ title="Open an issue"
         <li><a href="utils.html#pytket.utils.QubitPauliOperator.state_expectation">(pytket.utils.QubitPauliOperator method)</a>
 </li>
       </ul></li>
+      <li><a href="circuit.html#pytket.circuit.StatePreparationBox">StatePreparationBox (class in pytket.circuit)</a>
+</li>
       <li><a href="backends.html#pytket.backends.status.CircuitStatus.status">status (pytket.backends.status.CircuitStatus attribute)</a>
 </li>
       <li><a href="backends.html#pytket.backends.status.StatusEnum">StatusEnum (class in pytket.backends.status)</a>
@@ -2641,6 +2732,8 @@ title="Open an issue"
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="zx.html#pytket.zx.ZXDiagram.to_doubled_diagram">to_doubled_diagram() (pytket.zx.ZXDiagram method)</a>
 </li>
+      <li><a href="zx.html#pytket.zx.Rewrite.to_graphlike_form">to_graphlike_form() (pytket.zx.Rewrite static method)</a>
+</li>
       <li><a href="zx.html#pytket.zx.ZXDiagram.to_graphviz_str">to_graphviz_str() (pytket.zx.ZXDiagram method)</a>
 </li>
       <li><a href="utils.html#pytket.utils.OutcomeArray.to_intlist">to_intlist() (pytket.utils.OutcomeArray method)</a>
@@ -2659,6 +2752,8 @@ title="Open an issue"
         <li><a href="utils.html#pytket.utils.QubitPauliOperator.to_list">(pytket.utils.QubitPauliOperator method)</a>
 </li>
       </ul></li>
+      <li><a href="zx.html#pytket.zx.Rewrite.to_MBQC_diag">to_MBQC_diag() (pytket.zx.Rewrite static method)</a>
+</li>
       <li><a href="utils.html#pytket.utils.OutcomeArray.to_readout">to_readout() (pytket.utils.OutcomeArray method)</a>
 </li>
       <li><a href="utils.html#pytket.utils.OutcomeArray.to_readouts">to_readouts() (pytket.utils.OutcomeArray method)</a>
@@ -2759,6 +2854,8 @@ title="Open an issue"
       </ul></li>
       <li><a href="zx.html#pytket.zx.ZXDiagram.vertices">vertices (pytket.zx.ZXDiagram property)</a>
 </li>
+      <li><a href="display.html#pytket.circuit.display.view_browser">view_browser() (in module pytket.circuit.display)</a>
+</li>
       <li><a href="utils.html#pytket.utils.Graph.view_DAG">view_DAG() (pytket.utils.Graph method)</a>
 </li>
       <li><a href="utils.html#pytket.utils.Graph.view_qubit_graph">view_qubit_graph() (pytket.utils.Graph method)</a>
@@ -2770,6 +2867,8 @@ title="Open an issue"
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="circuit.html#pytket.circuit.WASMOp.wasm_uid">wasm_uid (pytket.circuit.WASMOp property)</a>
+</li>
+      <li><a href="wasm.html#pytket.wasm.WasmFileHandler">WasmFileHandler (class in pytket.wasm)</a>
 </li>
       <li><a href="circuit.html#pytket.circuit.WASMOp">WASMOp (class in pytket.circuit)</a>
 </li>
@@ -2837,12 +2936,14 @@ title="Open an issue"
 </li>
       <li><a href="zx.html#pytket.zx.ZXGen">ZXGen (class in pytket.zx)</a>
 </li>
-      <li><a href="zx.html#pytket.zx.ZXType">ZXType (class in pytket.zx)</a>
+      <li><a href="passes.html#pytket.passes.ZXGraphlikeOptimisation">ZXGraphlikeOptimisation() (in module pytket.passes)</a>
 </li>
-      <li><a href="zx.html#pytket.zx.ZXVert">ZXVert (class in pytket.zx)</a>
+      <li><a href="zx.html#pytket.zx.ZXType">ZXType (class in pytket.zx)</a>
 </li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="zx.html#pytket.zx.ZXVert">ZXVert (class in pytket.zx)</a>
+</li>
       <li><a href="zx.html#pytket.zx.ZXWire">ZXWire (class in pytket.zx)</a>
 </li>
       <li><a href="zx.html#pytket.zx.ZXWireType">ZXWireType (class in pytket.zx)</a>

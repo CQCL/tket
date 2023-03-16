@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>pytket.passes &#8212; pytket 1.11.1 documentation</title>
+    <title>pytket.passes &#8212; pytket 1.13.0 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -23,6 +23,8 @@
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
     <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="_static/thebelab.css" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css" />
     
   <!-- Pre-loaded scripts that we'll load fully later -->
@@ -34,7 +36,10 @@
     <script src="_static/doctools.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
+    <script src="_static/thebelab-helper.js"></script>
     <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
@@ -83,7 +88,7 @@
       <img src="_static/Quantinuum_logo.png" class="logo" alt="logo">
       
       
-      <h1 class="site-logo" id="site-title">pytket 1.11.1 documentation</h1>
+      <h1 class="site-logo" id="site-title">pytket 1.13.0 documentation</h1>
       
     </a>
 </div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
@@ -241,6 +246,11 @@
  <li class="toctree-l1">
   <a class="reference internal" href="tailoring.html">
    pytket.tailoring
+  </a>
+ </li>
+ <li class="toctree-l1">
+  <a class="reference internal" href="wasm.html">
+   pytket.wasm
   </a>
  </li>
  <li class="toctree-l1">
@@ -489,9 +499,14 @@ title="Print to PDF"
                 
               <div>
                 
-  <section id="module-pytket.passes">
-<span id="pytket-passes"></span><h1>pytket.passes<a class="headerlink" href="#module-pytket.passes" title="Permalink to this headline">#</a></h1>
-<dl class="py class">
+  <section id="pytket-passes">
+<h1>pytket.passes<a class="headerlink" href="#pytket-passes" title="Permalink to this headline">#</a></h1>
+<p>In pytket, compilation passes perform in-place transformations of circuits. From a user’s point of view, passes are similar to <a class="reference external" href="https://cqcl.github.io/tket/pytket/api/transform.html#">transforms</a>; however passes allow for additional predicate checking and compositionality.</p>
+<p>There are passes such as <a class="reference external" href="https://cqcl.github.io/tket/pytket/api/passes.html#pytket.passes.FullPeepholeOptimise">FullPeepholeOptimise</a> and  <a class="reference external" href="https://cqcl.github.io/tket/pytket/api/passes.html#pytket.passes.KAKDecomposition">KAKDecomposition</a> which are designed for general purpose circuit optimisation.</p>
+<p>Also there are special purpose passes such as <a class="reference external" href="https://cqcl.github.io/tket/pytket/api/passes.html#pytket.passes.OptimisePhaseGadgets">OptimisePhaseGadgets</a> and <a class="reference external" href="https://cqcl.github.io/tket/pytket/api/passes.html#pytket.passes.PauliSimp">PauliSimp</a> which perform optimisation by targeting phase gadget and Pauli gadget structures within circuits. For more on these optimisation techniques see the <a class="reference external" href="https://arxiv.org/abs/1906.01734">corresponding publication</a>.</p>
+<p>Rebase passes can be used to convert a circuit to a desired gateset. See <a class="reference external" href="https://cqcl.github.io/tket/pytket/api/passes.html#pytket.passes.RebaseCustom">RebaseCustom</a> and <a class="reference external" href="https://cqcl.github.io/tket/pytket/api/passes.html#module-pytket.passes.auto_rebase">auto_rebase_pass</a>.</p>
+<p>For more on pytket passes see the <a class="reference external" href="https://cqcl.github.io/pytket/manual/manual_compiler.html">compilation</a> section of the user manual or the <a class="reference external" href="https://github.com/CQCL/pytket/tree/main/examples#pytket-examples">notebook tutorials</a></p>
+<span class="target" id="module-pytket.passes"></span><dl class="py class">
 <dt class="sig sig-object py" id="pytket.passes.BasePass">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">BasePass</span></span><a class="headerlink" href="#pytket.passes.BasePass" title="Permalink to this definition">#</a></dt>
 <dd><p>Base class for passes.</p>
@@ -928,8 +943,13 @@ title="Print to PDF"
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pytket.passes.DelayMeasures">
-<span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">DelayMeasures</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.DelayMeasures" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">DelayMeasures</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">allow_partial</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.DelayMeasures" title="Permalink to this definition">#</a></dt>
 <dd><p>Commutes Measure operations to the end of the circuit. Throws an exception when this is not possible because of gates following the measure which are dependent on either the resulting quantum state or classical values.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>allow_partial</strong> – Whether to allow measurements that cannot be commuted to the end, and delay them as much as possible instead. If false, the pass includes a <code class="xref py py-class docutils literal notranslate"><span class="pre">CommutableMeasuresPredicate</span></code> precondition.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -978,7 +998,6 @@ title="Print to PDF"
 <dt class="sig sig-object py" id="pytket.passes.FullPeepholeOptimise">
 <span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">FullPeepholeOptimise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">allow_swaps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_2qb_gate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="optype.html#pytket.circuit.OpType" title="pytket.circuit.OpType"><span class="pre">pytket.circuit.OpType</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">OpType.CX</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.FullPeepholeOptimise" title="Permalink to this definition">#</a></dt>
 <dd><p>Performs peephole optimisation including resynthesis of 2- and 3-qubit gate sequences, and converts to a circuit containing only the given 2-qubit gate (which may be CX or TK2) and TK1 gates.</p>
-<p>The <cite>allow_swaps</cite> parameter has no effect when the target gate is TK2.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
 <dd class="field-odd"><p><strong>allow_swaps</strong> – whether to allow implicit wire swaps</p>
@@ -1022,7 +1041,7 @@ title="Print to PDF"
 <span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">KAKDecomposition</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.passes.KAKDecomposition" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>KAKDecomposition(target_2qb_gate: pytket.circuit.OpType = &lt;OpType.CX: 40&gt;, cx_fidelity: float = 1.0, allow_swaps: bool = True) -&gt; pytket.passes.BasePass</p></li>
+<li><p>KAKDecomposition(target_2qb_gate: pytket.circuit.OpType = &lt;OpType.CX: 42&gt;, cx_fidelity: float = 1.0, allow_swaps: bool = True) -&gt; pytket.passes.BasePass</p></li>
 </ol>
 <p>Squash sequences of two-qubit operations into minimal form.</p>
 <p>Pass to squash together sequences of single- and two-qubit gates into minimal form. Can decompose to TK2 or CX gates.</p>
@@ -1329,6 +1348,12 @@ title="Print to PDF"
 <dd class="field-odd"><p><strong>allow_swaps</strong> – whether to allow implicit wire swaps</p>
 </dd>
 </dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pytket.passes.ZXGraphlikeOptimisation">
+<span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">ZXGraphlikeOptimisation</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.ZXGraphlikeOptimisation" title="Permalink to this definition">#</a></dt>
+<dd><p>Attempt to optimise the circuit by simplifying in ZX calculus and extracting a circuit back out. Due to limitations in extraction, may not work if the circuit contains created or discarded qubits. As a resynthesis pass, this will ignore almost all optimisations achieved beforehand and may increase the cost of the circuit.</p>
 </dd></dl>
 
 <dl class="py function">
