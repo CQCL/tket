@@ -409,17 +409,24 @@ def test_add_wasm_to_reg() -> None:
     assert c.depth() == 4
 
 
+def test_wasmfilehandler_without_init() -> None:
+    with pytest.raises(ValueError):
+        w = wasm.WasmFileHandler("testfile-without-init.wasm")
+
+
 def test_wasmfilehandler_repr() -> None:
     w = wasm.WasmFileHandler("testfile.wasm")
     assert (
         repr(w)
-        == """Functions in wasm file with the uid 014b9da8153093a6564896dbc35ff786fe9877f8382adc5059337fdc44267e72:
+        == """Functions in wasm file with the uid 6a0a29e235cd5c60353254bc2b459e631d381cdd0bded7ae6cb44afb784bd2de:
+function 'init' with 0 i32 parameter(s) and 0 i32 return value(s)
 function 'add_one' with 1 i32 parameter(s) and 1 i32 return value(s)
 function 'multi' with 2 i32 parameter(s) and 1 i32 return value(s)
 function 'add_two' with 1 i32 parameter(s) and 1 i32 return value(s)
 function 'add_eleven' with 1 i32 parameter(s) and 1 i32 return value(s)
 function 'no_return' with 1 i32 parameter(s) and 0 i32 return value(s)
 function 'no_parameters' with 0 i32 parameter(s) and 1 i32 return value(s)
+function 'new_function' with 0 i32 parameter(s) and 1 i32 return value(s)
 unsupported function with unvalid parameter or result type: 'add_something' 
 """
     )
