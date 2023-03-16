@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import copy
-from hypothesis import given
+from hypothesis import given, settings
 import json
 import pickle
 import pytest  # type: ignore
