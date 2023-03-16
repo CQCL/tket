@@ -139,6 +139,15 @@ class WasmFileHandler:
             if not supported_function:
                 self._unsupported_function.append(x)
 
+        if "init" not in self._functions:
+            raise ValueError("wasm file needs to contain a function named 'init'")
+
+        if self._functions["init"][0] != 0:
+            raise ValueError("init function should not have any parameter")
+
+        if self._functions["init"][1] != 0:
+            raise ValueError("init function should not have any results")
+
     def __str__(self) -> str:
         """str representation of the wasm file"""
         return self._wasmfileuid
