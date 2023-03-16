@@ -20,3 +20,11 @@ Contains several functions for rendering interactive circuit diagrams.
     circ = Circuit(2) # Define Circuit
     circ.H(0).H(1).CX(0, 1).Rz(0.4, 1).CX(0, 1).H(0).H(1)
     render_circuit_jupyter(circ) # Render interactive display
+    
+ This same diagram can be rendered with the offline renderer as follows
+ 
+    ::
+        
+        from pytket.extensions.offline_display import render_circuit_jupyter
+        
+        render_circuit_jupyter(circ) # Render display as above
