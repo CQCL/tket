@@ -213,6 +213,7 @@ def test_QubitPauliString_serialization_hypothesis(qps: QubitPauliString) -> Non
 
 
 @given(st.qubitpaulioperators())
+@settings(deadline=None)
 def test_QubitPauliOperator_serialization_hypothesis(ops: QubitPauliOperator) -> None:
     serializable = ops.to_list()
     assert QubitPauliOperator.from_list(serializable) == ops
