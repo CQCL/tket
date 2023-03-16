@@ -702,9 +702,14 @@ class CircuitTransformer(Transformer):
             # assume to be extern (wasm) call
             chained_uids = list(chain.from_iterable(args_uids))
             com = next(exp_tree)
+            com["args"].pop()  # remove the wasmstate from the args
             com["args"] += chained_uids
+            com["args"].append(["_w", [0]])
             com["op"]["wasm"]["n"] += len(chained_uids)
-            com["op"]["wasm"]["no_vec"] = [self.c_registers[reg] for reg in out_args]
+            com["op"]["wasm"]["width_o_parameter"] = [
+                self.c_registers[reg] for reg in out_args
+            ]
+
             yield com
             return
         else:
@@ -773,16 +778,21 @@ class CircuitTransformer(Transformer):
             )
         n_i_vec = [self.c_registers[reg] for reg in params]
 
+        wasm_args = list(chain.from_iterable(self.unroll_all_args(params)))
+
+        wasm_args.append(["_w", [0]])
+
         yield {
-            "args": list(chain.from_iterable(self.unroll_all_args(params))),
+            "args": wasm_args,
             "op": {
                 "type": "WASM",
                 "wasm": {
                     "func_name": nam,
+                    "ww_n": 1,
                     "n": sum(n_i_vec),
-                    "ni_vec": n_i_vec,
-                    "no_vec": [],
-                    "wasm_uid": str(self.wasm),
+                    "width_i_parameter": n_i_vec,
+                    "width_o_parameter": [],  # this will be set in the assign function
+                    "wasm_file_uid": str(self.wasm),
                 },
             },
         }
@@ -1089,7 +1099,8 @@ def circuit_to_qasm_io(
         )
     ) and (not hqs_header(header)):
         raise QASMUnsupportedError(
-            "Complex classical gates only supported with hqslib1."
+            "Complex classical gates not supported with qelib1: try converting with "
+            "`header=hqslib1`"
         )
     include_module_gates = {"measure", "reset", "barrier"}
     include_module_gates.update(_load_include_module(header, False, True).keys())

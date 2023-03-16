@@ -24,9 +24,11 @@
 #include "Circuit/Circuit.hpp"
 #include "Circuit/DAGDefs.hpp"
 #include "Gate/GatePtr.hpp"
+#include "Gate/OpPtrFunctions.hpp"
 #include "OpType/EdgeType.hpp"
 #include "OpType/OpType.hpp"
 #include "OpType/OpTypeFunctions.hpp"
+#include "Ops/ClassicalOps.hpp"
 #include "Ops/Op.hpp"
 #include "Ops/OpPtr.hpp"
 #include "Simulation/CircuitSimulator.hpp"
@@ -62,7 +64,22 @@ SCENARIO("Check that a Circuit cannot have 2 registers with the same name") {
   GIVEN("Duplication") {
     Circuit circ;
     circ.add_q_register("duplicate", 4);
+    REQUIRE_THROWS_AS(circ.add_q_register("duplicate", 4), CircuitInvalidity);
+  }
+  GIVEN("Duplication - classic") {
+    Circuit circ;
+    circ.add_c_register("duplicate", 4);
     REQUIRE_THROWS_AS(circ.add_c_register("duplicate", 4), CircuitInvalidity);
+  }
+  GIVEN("Duplication - q - c") {
+    Circuit circ;
+    circ.add_q_register("duplicate", 4);
+    REQUIRE_THROWS_AS(circ.add_c_register("duplicate", 4), CircuitInvalidity);
+  }
+  GIVEN("Duplication - c - q") {
+    Circuit circ;
+    circ.add_c_register("duplicate", 4);
+    REQUIRE_THROWS_AS(circ.add_q_register("duplicate", 4), CircuitInvalidity);
   }
   GIVEN("Check default registers do nothing weird") {
     Circuit circ(1);
@@ -109,6 +126,11 @@ SCENARIO(
     Circuit circ(2);
     REQUIRE_THROWS(circ.add_op<unsigned>(OpType::H, {}));
     REQUIRE_THROWS(circ.add_op<unsigned>(OpType::H, {0, 1}));
+  }
+  GIVEN("A badly-formed vertex - wasm") {
+    Circuit circ(2);
+    REQUIRE_THROWS(circ.add_op<unsigned>(OpType::WASM, {}));
+    REQUIRE_THROWS(circ.add_op<unsigned>(OpType::WASM, {0, 1}));
   }
 }
 
@@ -189,6 +211,21 @@ SCENARIO("Creating gates via Qubits and Registers") {
     REQUIRE(
         circ.n_in_edges_of_type(circ.get_out(creg[0]), EdgeType::Classical) ==
         1);
+  }
+
+  GIVEN("A new circuit - wasm") {
+    Circuit circ;
+
+    std::string funcname = "wasm_func_name";
+    std::string wasm_file_uid = "wasm_file_hash";
+    std::vector<unsigned> width_i_parameter = {1};
+    std::vector<unsigned> width_o_parameter = {1};
+    std::vector<unsigned> args = {0, 1};
+
+    unsigned n_args = args.size();
+    const std::shared_ptr<WASMOp> op = std::make_shared<WASMOp>(
+        n_args, 1, width_i_parameter, width_o_parameter, funcname,
+        wasm_file_uid);
   }
 }
 
@@ -1088,8 +1125,12 @@ SCENARIO("circuit equality ", "[equality]") {
     test1.add_qubit(Qubit(3));
 
     REQUIRE(test1 == test2);
-  }
 
+    REQUIRE_THROWS(test1.add_qubit(Qubit(3), true));
+    test1.add_qubit(Qubit(3), false);
+    REQUIRE_THROWS(test1.add_bit(Bit(0), true));
+    test1.add_bit(Bit(0), false);
+  }
   GIVEN("Circuits with mismatched created qubits") {
     Circuit test1(2);
     Circuit test2(2);

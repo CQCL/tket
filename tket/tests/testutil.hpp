@@ -131,6 +131,16 @@ bool matrices_are_equal(const Matr1& mat1, const Matr2& mat2) {
  */
 Eigen::MatrixXcd random_unitary(unsigned n, int seed);
 
+/**
+ * @brief Generate a random statevector by applying a random unitary to the
+ * computational-basis zero state.
+ *
+ * @param n vector length
+ * @param seed RNG seed
+ * @return statevector generated from the seed
+ */
+Eigen::VectorXcd random_state(unsigned n, int seed);
+
 class ExceptionMessageContainsMatcher
     : public Catch::Matchers::MatcherBase<std::exception> {
   std::string substring;

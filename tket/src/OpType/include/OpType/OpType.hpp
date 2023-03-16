@@ -59,6 +59,20 @@ enum class OpType {
   ClOutput,
 
   /**
+   * WASM input node of the circuit
+   */
+  WASMInput,
+
+  /**
+   * WASM output node of the circuit
+   */
+  WASMOutput,
+
+  // when adding more in and out optypes make sure to add them in the exclusion
+  // of the python test in
+  // def optypes(draw: Callable[[SearchStrategy[Any]], Any]) -> OpType:
+
+  /**
    * No-op that must be preserved by compilation
    */
   Barrier,
@@ -620,6 +634,11 @@ enum class OpType {
    * See \ref MultiplexedU2Box
    */
   MultiplexedU2Box,
+
+  /**
+   * See \ref StatePreparationBox
+   */
+  StatePreparationBox,
 
   /**
    * See \ref ClassicalExpBox

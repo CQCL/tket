@@ -449,6 +449,22 @@ PYBIND11_MODULE(circuit, m) {
           "A general classical operation where all inputs are also outputs")
       .value(
           "WASM", OpType::WASM, "Op containing a classical wasm function call")
+      /* this optypes are intentionally not in python avilable at the moment
+      .value("_WASMInput", OpType::WASMInput, "WASM wire input node")
+      .value("_WASMOutput", OpType::WASMOutput, "WASM wire output node")
+      .value("_Input", OpType::Input, "Quantum input node of the circuit")
+      .value("_Output", OpType::Output, "Quantum output node of the circuit")
+      .value(
+          "_Create", OpType::Create,
+          "Quantum node with no predecessors, implicitly in zero state.")
+      .value(
+          "_Discard", OpType::Discard,
+          "Quantum node with no successors, not composable with input nodes of "
+          "other circuits.")
+      .value("_ClInput", OpType::ClInput, "Classical input node of the circuit")
+      .value(
+          "_ClOutput", OpType::ClOutput, "Classical output node of the
+      circuit")*/
       .value(
           "SetBits", OpType::SetBits,
           "An operation to set some bits to specified values")
@@ -470,6 +486,20 @@ PYBIND11_MODULE(circuit, m) {
       .value(
           "ClassicalExpBox", OpType::ClassicalExpBox,
           "A box for holding compound classical operations on Bits.")
+      .value(
+          "MultiplexorBox", OpType::MultiplexorBox,
+          "A multiplexor (i.e. uniformly controlled operations)")
+      .value(
+          "MultiplexedRotationBox", OpType::MultiplexedRotationBox,
+          "A multiplexed rotation gate (i.e. "
+          "uniformly controlled single-axis rotations)")
+      .value(
+          "MultiplexedU2Box", OpType::MultiplexedU2Box,
+          "A multiplexed U2 gate (i.e. uniformly controlled U2 gate)")
+      .value(
+          "StatePreparationBox", OpType::StatePreparationBox,
+          "A box for preparing quantum states using multiplexed-Ry and "
+          "multiplexed-Rz gates")
       .def_static(
           "from_name", [](const json &j) { return j.get<OpType>(); },
           "Construct from name");

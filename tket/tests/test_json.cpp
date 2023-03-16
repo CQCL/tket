@@ -22,6 +22,7 @@
 #include "Circuit/Circuit.hpp"
 #include "Circuit/Command.hpp"
 #include "Circuit/Multiplexor.hpp"
+#include "Circuit/StatePreparation.hpp"
 #include "CircuitsForTesting.hpp"
 #include "Converters/PhasePoly.hpp"
 #include "Gate/SymTable.hpp"
@@ -30,6 +31,7 @@
 #include "Mapping/RoutingMethod.hpp"
 #include "MeasurementSetup/MeasurementSetup.hpp"
 #include "OpType/OpType.hpp"
+#include "Ops/ClassicalOps.hpp"
 #include "Ops/OpPtr.hpp"
 #include "Predicates/PassGenerators.hpp"
 #include "Predicates/PassLibrary.hpp"
@@ -65,9 +67,10 @@ bool check_circuit(const Circuit& c) {
 
 SCENARIO("Test Op serialization") {
   GIVEN("OpType") {
-    const OpTypeSet metaops = {
-        OpType::Input, OpType::Output, OpType::ClInput, OpType::ClOutput,
-        OpType::Barrier};
+    const OpTypeSet metaops = {OpType::Input,     OpType::Output,
+                               OpType::ClInput,   OpType::ClOutput,
+                               OpType::WASMInput, OpType::WASMOutput,
+                               OpType::Barrier};
     const OpTypeSet boxes = {
         OpType::CircBox,      OpType::Unitary1qBox, OpType::Unitary2qBox,
         OpType::Unitary3qBox, OpType::ExpBox,       OpType::PauliExpBox,
@@ -124,6 +127,58 @@ SCENARIO("Test Command serialization") {
     c.add_barrier({q[0], a});
 
     check_cases(c.get_commands());
+  }
+  GIVEN("check classical operations") {
+    Circuit c(3, 3);
+    c.add_op<unsigned>(OpType::X, {0});
+    c.add_op<unsigned>(OpType::H, {1});
+    c.add_op<unsigned>(OpType::H, {2});
+    c.add_op<unsigned>(OpType::CY, {1, 2});
+    c.add_op<unsigned>(OpType::Measure, {0, 0});
+    c.add_op<unsigned>(OpType::Measure, {1, 1});
+    c.add_op<unsigned>(OpType::Measure, {2, 2});
+    // Without any Create or Discard ...
+    CompilationUnit cu0(c);
+    PassPtr pp = gen_contextual_pass();
+    REQUIRE(!pp->apply(cu0));
+    // With Create and Discard ...
+    c.qubit_create_all();
+    c.qubit_discard_all();
+    CompilationUnit cu1(c);
+    REQUIRE(pp->apply(cu1));
+    const Circuit& c1 = cu1.get_circ_ref();
+    REQUIRE(c1.count_gates(OpType::X) == 0);
+    REQUIRE(c1.count_gates(OpType::H) == 2);
+    REQUIRE(c1.count_gates(OpType::CY) == 0);
+    REQUIRE(c1.count_gates(OpType::Measure) == 2);
+    REQUIRE(c1.count_gates(OpType::SetBits) == 1);
+    REQUIRE(c1.count_gates(OpType::ClassicalTransform) == 2);
+
+    check_cases(c1.get_commands());
+  }
+  GIVEN("check wasm operations") {
+    // current issue
+    std::string wasm_file = "string/with/path/to/wasm/file";
+    std::string wasm_func = "stringNameOfWASMFunc";
+
+    std::vector<unsigned> uv = {2, 1};
+
+    const std::shared_ptr<WASMOp> wop_ptr =
+        std::make_shared<WASMOp>(6, 1, uv, uv, wasm_func, wasm_file);
+
+    Circuit c(7, 7);
+    c.add_op<unsigned>(OpType::X, {0});
+    c.add_op<unsigned>(OpType::H, {1});
+    c.add_op<unsigned>(OpType::H, {2});
+    c.add_op<unsigned>(OpType::CY, {1, 2});
+    c.add_op<UnitID>(
+        wop_ptr,
+        {Bit(0), Bit(1), Bit(2), Bit(3), Bit(4), Bit(5), WasmState(0)});
+    c.add_op<unsigned>(OpType::Measure, {0, 0});
+    c.add_op<unsigned>(OpType::Measure, {1, 1});
+    c.add_op<unsigned>(OpType::Measure, {2, 2});
+    check_cases(c.get_commands());
+    CHECK(serialize_deserialize(c));
   }
 }
 
@@ -411,6 +466,22 @@ SCENARIO("Test Circuit serialization") {
     REQUIRE(multiplexor.get_impl_diag() == qc_b.get_impl_diag());
   }
 
+  GIVEN("StatePreparationBox") {
+    Eigen::VectorXcd state(8);
+    state << std::sqrt(0.125), -std::sqrt(0.125), std::sqrt(0.125),
+        -std::sqrt(0.125), std::sqrt(0.125), -std::sqrt(0.125),
+        std::sqrt(0.125), -std::sqrt(0.125);
+    StatePreparationBox prep(state, true);
+    Circuit c(3);
+    c.add_box(prep, {0, 1, 2});
+    nlohmann::json j_box = c;
+    const Circuit new_c = j_box.get<Circuit>();
+    const auto& box = static_cast<const StatePreparationBox&>(
+        *new_c.get_commands()[0].get_op_ptr());
+    REQUIRE((state - box.get_statevector()).cwiseAbs().sum() < ERR_EPS);
+    REQUIRE(box.is_inverse() == true);
+  }
+
   GIVEN("PhasePolyBox") {
     Circuit circ(2);
     circ.add_op<unsigned>(OpType::CX, {0, 1});
@@ -669,6 +740,7 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(SquashRzPhasedX, SquashRzPhasedX())
   COMPPASSJSONTEST(FlattenRegisters, FlattenRegisters())
   COMPPASSJSONTEST(DelayMeasures, DelayMeasures())
+  COMPPASSJSONTEST(TryDelayMeasures, DelayMeasures(true))
   COMPPASSJSONTEST(RemoveDiscarded, RemoveDiscarded())
   COMPPASSJSONTEST(SimplifyMeasured, SimplifyMeasured())
   COMPPASSJSONTEST(ZZPhaseToRz, ZZPhaseToRz())

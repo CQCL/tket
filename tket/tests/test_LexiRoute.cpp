@@ -2137,7 +2137,10 @@ SCENARIO(
         {5, 6},  {5, 9},   {6, 8},   {7, 8},  {9, 8},  {9, 10},
         {11, 3}, {11, 10}, {11, 12}, {12, 2}, {13, 1}, {13, 12}};
     Architecture architecture(coupling_map);
-    std::ifstream circuit_file("lexiroute_circuit_relabel_to_ancilla.json");
+    auto lexiroute_circuit_path =
+        std::filesystem::path(TEST_CIRCUITS_DIR)
+            .append("lexiroute_circuit_relabel_to_ancilla.json");
+    std::ifstream circuit_file(lexiroute_circuit_path);
     nlohmann::json j = nlohmann::json::parse(circuit_file);
     auto c = j.get<Circuit>();
     std::map<Qubit, Node> p_map = {

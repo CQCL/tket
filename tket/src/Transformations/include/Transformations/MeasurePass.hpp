@@ -22,9 +22,42 @@ namespace Transforms {
 
 /**
  * Commute all measurement gates to the end of the circuit.
- * Throws a CircuitInvalidity exception if it is not possible to delay.
+ * @param allow_partial Whether to allow measurements that cannot be commuted to
+ * the end, and delay them as much as possible instead.
+ * @throws CircuitInvalidity if it is not possible to delay a measurement, and
+ * \p allow_partial is false.
  */
-Transform delay_measures();
+Transform delay_measures(bool allow_partial = false);
+
+namespace DelayMeasures {
+
+/** Commute all measurement gates to the end of the circuit.
+ * @param circ The circuit to delay measurements in.
+ * @param allow_partial Whether to allow measurements that cannot be commuted to
+ * the end, and delay them as much as possible instead.
+ * @param dry_run If true, do not modify the circuit, just check if it is
+ * possible to delay.
+ * @throws CircuitInvalidity if it is not possible to delay and both \p
+ * allow_partial and \p dry_run are false.
+ * @return A pair of booleans. The first indicates when the circuit was changed,
+ * and the second indicates if the run found no errors (i.e. it was possible to
+ * delay all measures to the end, or \p allow_partial was true).
+ **/
+std::pair<bool, bool> run_delay_measures(
+    Circuit& circ, bool allow_partial = false, bool dry_run = false);
+
+/**
+ * Gathers all end-measurements, and adds the measured units to the list.
+ * Rejects gates acting on measured_units, and terminates early.
+ * Applies recursively for CircBoxes and Conditionals.
+ * @param com The command to check.
+ * @param measured_units The list of measured units to add to, initialy
+ * populated with previously-measured units.
+ * @return Whether there are no mid-circuit measurements.
+ **/
+bool check_only_end_measures(const Command& com, unit_set_t& measured_units);
+
+}  // namespace DelayMeasures
 
 }  // namespace Transforms
 

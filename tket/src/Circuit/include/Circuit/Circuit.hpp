@@ -419,9 +419,11 @@ class Circuit {
   VertexVec all_inputs() const;
   VertexVec q_inputs() const;
   VertexVec c_inputs() const;
+  VertexVec w_inputs() const;
   VertexVec all_outputs() const;
   VertexVec q_outputs() const;
   VertexVec c_outputs() const;
+  VertexVec w_outputs() const;
 
   qubit_vector_t all_qubits() const;
   qubit_vector_t created_qubits() const;
@@ -978,6 +980,7 @@ class Circuit {
   void add_bit(const Bit &id, bool reject_dups = true);
   register_t add_q_register(std::string reg_name, unsigned size);
   register_t add_c_register(std::string reg_name, unsigned size);
+  void add_wasm_register(std::size_t numer_of_w = 1);
 
   /**
    * Create the given qubit in the zero state at the beginning of the circuit.
@@ -1618,6 +1621,8 @@ class Circuit {
   // currently public (no bueno)
   DAG dag; /** Representation as directed graph */
   boundary_t boundary;
+  std::vector<WasmState> wasmwire;
+  std::size_t _number_of_wasm_wires = 0;
 
  private:
   std::optional<std::string>
@@ -1704,17 +1709,27 @@ template <>
 Vertex Circuit::add_op<unsigned>(
     const Op_ptr &op, const std::vector<unsigned> &args,
     std::optional<std::string> opgroup);
+
 template <class ID>
 Vertex Circuit::add_op(
     const Op_ptr &op, const std::vector<ID> &args,
     std::optional<std::string> opgroup) {
   static_assert(std::is_base_of<UnitID, ID>::value);
   op_signature_t sig = op->get_signature();
+
+  // check if there is wasm in the signature
+  unsigned count_wasm_sig = 0;
+  for (EdgeType e : sig) {
+    if (e == EdgeType::WASM) {
+      ++count_wasm_sig;
+    }
+  }
   if (sig.size() != args.size()) {
     throw CircuitInvalidity(
         std::to_string(args.size()) + " args provided, but " + op->get_name() +
         " requires " + std::to_string(sig.size()));
   }
+
   if (opgroup) {
     auto opgroupsig = opgroupsigs.find(opgroup.value());
     if (opgroupsig != opgroupsigs.end()) {
@@ -1725,6 +1740,8 @@ Vertex Circuit::add_op(
       opgroupsigs[opgroup.value()] = sig;
     }
   }
+
+  add_wasm_register(count_wasm_sig);
 
   Vertex new_v = add_vertex(op, opgroup);
   unit_set_t write_arg_set;
@@ -1741,6 +1758,7 @@ Vertex Circuit::add_op(
     Edge pred_out_e = get_nth_in_edge(out_vert, 0);
     preds.push_back(pred_out_e);
   }
+
   rewire(new_v, preds, sig);
   return new_v;
 }

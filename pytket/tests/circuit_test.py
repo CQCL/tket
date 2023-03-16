@@ -30,6 +30,7 @@ from pytket.circuit import (  # type: ignore
     MultiplexorBox,
     MultiplexedRotationBox,
     MultiplexedU2Box,
+    StatePreparationBox,
     ExpBox,
     PauliExpBox,
     QControlBox,
@@ -66,6 +67,12 @@ curr_file_path = Path(__file__).resolve().parent
 
 with open(curr_file_path.parent.parent / "schemas/circuit_v1.json", "r") as f:
     schema = json.load(f)
+
+
+def json_validate(circ: Circuit) -> bool:
+    serializable_form = circ.to_dict()
+    validate(instance=serializable_form, schema=schema)
+    return circ == Circuit.from_dict(serializable_form)  # type: ignore
 
 
 def test_op_free_symbols() -> None:
@@ -445,10 +452,14 @@ def test_boxes() -> None:
     d.add_toffolibox(tb, [0, 1])
     assert d.n_gates == 8
 
-    # MultiplexedU2Box, MultiplexedU2Box
+    # MultiplexorBox, MultiplexedU2Box
     op_map = {(0, 0): Op.create(OpType.Rz, 0.3), (1, 1): Op.create(OpType.H)}
     multiplexor = MultiplexorBox(op_map)
+    out_op_map = multiplexor.get_op_map()
+    assert all(op_map[key] == out_op_map[key] for key in op_map)
     ucu2_box = MultiplexedU2Box(op_map)
+    out_op_map = ucu2_box.get_op_map()
+    assert all(op_map[key] == out_op_map[key] for key in op_map)
     c0 = multiplexor.get_circuit()
     DecomposeBoxes().apply(c0)
     unitary0 = c0.get_unitary()
@@ -469,6 +480,8 @@ def test_boxes() -> None:
     # MultiplexedRotationBox
     op_map = {(0, 0): Op.create(OpType.Rz, 0.3), (1, 1): Op.create(OpType.Rz, 1.7)}
     multiplexor = MultiplexedRotationBox(op_map)
+    out_op_map = multiplexor.get_op_map()
+    assert all(op_map[key] == out_op_map[key] for key in op_map)
     c0 = multiplexor.get_circuit()
     unitary = c0.get_unitary()
     comparison = block_diag(
@@ -485,6 +498,19 @@ def test_boxes() -> None:
     assert np.allclose(unitary, comparison)
     d.add_multiplexedrotation(multiplexor, [Qubit(0), Qubit(1), Qubit(2)])
     assert d.n_gates == 12
+    # StatePreparationBox
+    state = np.array([np.sqrt(0.125)] * 8)
+    prep_box = StatePreparationBox(state)
+    prep_state = prep_box.get_circuit().get_statevector()
+    assert np.allclose(state, prep_state)
+    prep_box = StatePreparationBox(state, True)
+    prep_u = prep_box.get_circuit().get_unitary()
+    zero_state = np.zeros(8)
+    zero_state[0] = 1
+    assert np.allclose(prep_u.dot(state), zero_state)
+    d.add_state_preparation_box(prep_box, [Qubit(0), Qubit(1), Qubit(2)])
+    assert d.n_gates == 13
+    assert json_validate(d)
 
 
 def test_u1q_stability() -> None:
@@ -652,9 +678,7 @@ def test_circuit_pickle_roundtrip(circuit: Circuit) -> None:
 @given(st.circuits())
 @settings(deadline=None)
 def test_circuit_from_to_serializable(circuit: Circuit) -> None:
-    serializable_form = circuit.to_dict()
-    validate(instance=serializable_form, schema=schema)
-    assert circuit == Circuit.from_dict(serializable_form)
+    assert json_validate(circuit)
 
 
 @given(st.circuits())

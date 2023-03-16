@@ -371,6 +371,8 @@ SCENARIO("Non-unitary op types cause not implemented exceptions") {
       OpType::Output,
       OpType::ClInput,
       OpType::ClOutput,
+      OpType::WASMInput,
+      OpType::WASMOutput,
       OpType::Barrier,
       OpType::Label,
       OpType::Branch,

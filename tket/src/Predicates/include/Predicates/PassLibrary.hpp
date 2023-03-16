@@ -62,8 +62,12 @@ const PassPtr &FlattenRegisters();
 /** Remove all& \ref OpType::Barrier from the circuit. */
 const PassPtr &RemoveBarriers();
 
-/** Commutes measurements to the end of the circuit. */
-const PassPtr &DelayMeasures();
+/** Commutes measurements to the end of the circuit.
+ * @param allow_partial Whether to allow measurements that cannot be commuted to
+ * the end, and delay them as much as possible instead. If false, the pass
+ * includes a @ref CommutableMeasuresPredicate precondition.
+ */
+const PassPtr &DelayMeasures(bool allow_partial = false);
 
 /**
  * Remove all operations that have no @ref OpType::Output or
@@ -122,5 +126,19 @@ const PassPtr &CnXPairwiseDecomposition();
  * @return compilation pass to perform this transformation
  */
 const PassPtr &RemoveImplicitQubitPermutation();
+
+/**
+ * Attempt to optimise the circuit by simplifying in ZX calculus and extracting
+ * a circuit back out.
+ *
+ * Due to limitations in extraction, will not work if the circuit contains
+ * created or discarded qubits.
+ *
+ * As a resynthesis pass, this will ignore almost all optimisations achieved
+ * beforehand and may increase the cost of the circuit.
+ *
+ * @return compilation pass to perform this transformation
+ */
+const PassPtr &ZXGraphlikeOptimisation();
 
 }  // namespace tket

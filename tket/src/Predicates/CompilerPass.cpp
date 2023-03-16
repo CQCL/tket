@@ -416,7 +416,8 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
     } else if (passname == "SquashCustom") {
       throw PassNotSerializable(passname);
     } else if (passname == "DelayMeasures") {
-      pp = DelayMeasures();
+      bool allow_partial = content.at("allow_partial").get<bool>();
+      pp = DelayMeasures(allow_partial);
     } else if (passname == "ZZPhaseToRz") {
       pp = ZZPhaseToRz();
     } else if (passname == "RemoveDiscarded") {

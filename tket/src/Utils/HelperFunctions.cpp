@@ -14,6 +14,8 @@
 
 #include "HelperFunctions.hpp"
 
+#include <boost/dynamic_bitset.hpp>
+
 namespace tket {
 
 GrayCode gen_graycode(unsigned m_controls) {
@@ -42,6 +44,15 @@ uint32_t reverse_bits(uint32_t v, unsigned w) {
     v >>= 1;
   }
   return r;
+}
+
+std::vector<bool> dec_to_bin(unsigned dec, unsigned width) {
+  auto bs = boost::dynamic_bitset<>(width, dec);
+  std::vector<bool> bits(width);
+  for (unsigned i = 0; i < width; i++) {
+    bits[width - i - 1] = bs[i];
+  }
+  return bits;
 }
 
 }  // namespace tket

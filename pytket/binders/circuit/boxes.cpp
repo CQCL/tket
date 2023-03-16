@@ -20,7 +20,9 @@
 
 #include "Circuit/Circuit.hpp"
 #include "Circuit/Multiplexor.hpp"
+#include "Circuit/StatePreparation.hpp"
 #include "Converters/PhasePoly.hpp"
+#include "Utils/HelperFunctions.hpp"
 #include "Utils/Json.hpp"
 #include "binder_json.hpp"
 #include "binder_utils.hpp"
@@ -30,6 +32,18 @@ namespace py = pybind11;
 using json = nlohmann::json;
 
 namespace tket {
+
+// Cast the std::vector keys in a map to py::tuple, since vector is not hashable
+// in python
+template <class T1, class T2>
+std::map<py::tuple, T2> cast_keys_to_tuples(
+    const std::map<std::vector<T1>, T2> &map) {
+  std::map<py::tuple, T2> outmap;
+  for (const auto &pair : map) {
+    outmap.insert({py::tuple(py::cast(pair.first)), pair.second});
+  }
+  return outmap;
+}
 
 void init_boxes(py::module &m) {
   py::class_<CircBox, std::shared_ptr<CircBox>, Op>(
@@ -244,11 +258,7 @@ void init_boxes(py::module &m) {
           "phase_polynomial",
           [](PhasePolyBox &ppoly) {
             const PhasePolynomial &phase_pol = ppoly.get_phase_polynomial();
-            std::map<py::tuple, Expr> outmap;
-            for (const auto &pair : phase_pol) {
-              outmap.insert({py::tuple(py::cast(pair.first)), pair.second});
-            }
-            return outmap;
+            return cast_keys_to_tuples(phase_pol);
           },
           "Map from bitstring (basis state) to phase.")
       .def_property_readonly(
@@ -360,7 +370,10 @@ void init_boxes(py::module &m) {
           "get_circuit", [](MultiplexorBox &box) { return *box.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the box")
       .def(
-          "get_op_map", &MultiplexorBox::get_op_map,
+          "get_op_map",
+          [](MultiplexorBox &box) {
+            return cast_keys_to_tuples(box.get_op_map());
+          },
           ":return: the underlying op map");
   py::class_<
       MultiplexedRotationBox, std::shared_ptr<MultiplexedRotationBox>, Op>(
@@ -393,11 +406,7 @@ void init_boxes(py::module &m) {
             ctrl_op_map_t op_map;
             for (unsigned i = 0; i < angles.size(); i++) {
               if (std::abs(angles[i]) > EPS) {
-                auto bs = std::bitset<32>(i);
-                std::vector<bool> bits(bitstring_width);
-                for (unsigned i = 0; i < bitstring_width; i++) {
-                  bits[bitstring_width - i - 1] = bs[i];
-                }
+                std::vector<bool> bits = dec_to_bin(i, bitstring_width);
                 op_map.insert({bits, get_op_ptr(axis, angles[i])});
               }
             }
@@ -413,7 +422,10 @@ void init_boxes(py::module &m) {
           [](MultiplexedRotationBox &box) { return *box.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the box")
       .def(
-          "get_op_map", &MultiplexedRotationBox::get_op_map,
+          "get_op_map",
+          [](MultiplexedRotationBox &box) {
+            return cast_keys_to_tuples(box.get_op_map());
+          },
           ":return: the underlying op map");
   py::class_<MultiplexedU2Box, std::shared_ptr<MultiplexedU2Box>, Op>(
       m, "MultiplexedU2Box",
@@ -434,11 +446,36 @@ void init_boxes(py::module &m) {
           [](MultiplexedU2Box &box) { return *box.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the box")
       .def(
-          "get_op_map", &MultiplexedU2Box::get_op_map,
+          "get_op_map",
+          [](MultiplexedU2Box &box) {
+            return cast_keys_to_tuples(box.get_op_map());
+          },
           ":return: the underlying op map")
       .def(
           "get_impl_diag", &MultiplexedU2Box::get_impl_diag,
           ":return: flag indicating whether to implement the final diagonal "
           "gate.");
+  py::class_<StatePreparationBox, std::shared_ptr<StatePreparationBox>, Op>(
+      m, "StatePreparationBox",
+      "A box for preparing quantum states using multiplexed-Ry and "
+      "multiplexed-Rz gates")
+      .def(
+          py::init<const Eigen::VectorXcd &, bool>(),
+          "Construct from a statevector\n\n"
+          ":param statevector: normalised statevector\n",
+          ":param is_inverse: whether to implement the dagger of the state "
+          "preparation circuit, default to false",
+          py::arg("statevector"), py::arg("is_inverse") = false)
+      .def(
+          "get_circuit",
+          [](StatePreparationBox &box) { return *box.to_circuit(); },
+          ":return: the :py:class:`Circuit` described by the box")
+      .def(
+          "get_statevector", &StatePreparationBox::get_statevector,
+          ":return: the statevector")
+      .def(
+          "is_inverse", &StatePreparationBox::is_inverse,
+          ":return: flag indicating whether to implement the dagger of the "
+          "state preparation circuit");
 }
 }  // namespace tket

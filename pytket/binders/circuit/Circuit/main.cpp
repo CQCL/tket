@@ -187,6 +187,17 @@ void init_circuit(py::module &m) {
           "\n\n:param register: QubitRegister ",
           py::arg("register"))
       .def(
+          "_add_w_register",
+          [](Circuit &circ, const std::size_t &size) {
+            return circ.add_wasm_register(size);
+          },
+          "Creates given number of wasm bits in the circuit. If "
+          "there are already wasm bits in circuit only the "
+          "additional wasm bits will be added. "
+          "\n\n:param size: Number of wasm bits that "
+          "should be added to the circuit",
+          py::arg("size"))
+      .def(
           "add_c_register",
           [](Circuit &circ, const std::string &name, const std::size_t &size) {
             circ.add_c_register(name, size);
@@ -820,6 +831,12 @@ void init_circuit(py::module &m) {
               c_inputs.insert(im[v]);
             }
 
+            // subset of wasm input nodes
+            std::set<unsigned> w_inputs;
+            for (const Vertex &v : circ.w_inputs()) {
+              w_inputs.insert(im[v]);
+            }
+
             // subset of quantum output nodes
             std::set<unsigned> q_outputs;
             for (const Vertex &v : circ.q_outputs()) {
@@ -830,6 +847,12 @@ void init_circuit(py::module &m) {
             std::set<unsigned> c_outputs;
             for (const Vertex &v : circ.c_outputs()) {
               c_outputs.insert(im[v]);
+            }
+
+            // subset of wasm output nodes
+            std::set<unsigned> w_outputs;
+            for (const Vertex &v : circ.w_outputs()) {
+              w_outputs.insert(im[v]);
             }
 
             // maps from input and output nodes to unit names
@@ -860,17 +883,18 @@ void init_circuit(py::module &m) {
               // behaviour with pybind11 conversions being
               // overwritten. TODO Do this properly.
               EdgeType etype = circ.dag[e].type;
-              unsigned edge_type = (etype == EdgeType::Quantum)   ? 0
-                                   : (etype == EdgeType::Boolean) ? 1
-                                                                  : 2;
+              unsigned edge_type = (etype == EdgeType::Quantum)     ? 0
+                                   : (etype == EdgeType::Boolean)   ? 1
+                                   : (etype == EdgeType::Classical) ? 2
+                                                                    : 3;
               edge_data.insert(
                   {v_s, v_t, circ.get_source_port(e), circ.get_target_port(e),
                    edge_type});
             }
 
             return std::make_tuple(
-                q_inputs, c_inputs, q_outputs, c_outputs, input_names,
-                output_names, node_data, edge_data);
+                q_inputs, c_inputs, w_inputs, q_outputs, c_outputs, w_outputs,
+                input_names, output_names, node_data, edge_data);
           },
           "DAG data for circuit");
 }

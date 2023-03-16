@@ -126,8 +126,9 @@ const OpTypeSet& all_controlled_gate_types() {
 
 bool is_metaop_type(OpType optype) {
   static const OpTypeSet metaops = {
-      OpType::Input,   OpType::Output, OpType::ClInput, OpType::ClOutput,
-      OpType::Barrier, OpType::Create, OpType::Discard};
+      OpType::Input,    OpType::Output,    OpType::ClInput,
+      OpType::ClOutput, OpType::WASMInput, OpType::WASMOutput,
+      OpType::Barrier,  OpType::Create,    OpType::Discard};
   return find_in_set(optype, metaops);
 }
 
@@ -139,12 +140,21 @@ bool is_final_q_type(OpType optype) {
   return optype == OpType::Output || optype == OpType::Discard;
 }
 
+bool is_boundary_type(OpType optype) {
+  return is_boundary_q_type(optype) || is_boundary_c_type(optype) ||
+         is_boundary_w_type(optype);
+}
+
 bool is_boundary_q_type(OpType optype) {
   return is_initial_q_type(optype) || is_final_q_type(optype);
 }
 
 bool is_boundary_c_type(OpType optype) {
   return optype == OpType::ClInput || optype == OpType::ClOutput;
+}
+
+bool is_boundary_w_type(OpType optype) {
+  return optype == OpType::WASMInput || optype == OpType::WASMOutput;
 }
 
 bool is_gate_type(OpType optype) {
@@ -166,6 +176,7 @@ bool is_box_type(OpType optype) {
       OpType::MultiplexorBox,
       OpType::MultiplexedRotationBox,
       OpType::MultiplexedU2Box,
+      OpType::StatePreparationBox,
       OpType::ClassicalExpBox,
       OpType::ProjectorAssertionBox,
       OpType::StabiliserAssertionBox,

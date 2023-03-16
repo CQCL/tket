@@ -110,4 +110,17 @@ std::vector<double> tk1_angles_from_unitary(const Eigen::Matrix2cd& U);
  */
 Eigen::Matrix2cd get_matrix_from_tk1_angles(std::vector<Expr> params);
 
+/**
+ * @brief Get the bloch sphere coordinate of a 1-qubit state
+ *
+ * |psi> = a|0> + b|1>
+ *       = e^(i phase pi)(cos(theta pi/2)|0> + e^(i phi pi)sin(theta pi/2)|1>)
+ *
+ * @param a
+ * @param b
+ * @return [theta, phi, phase]
+ */
+std::tuple<double, double, double> get_bloch_coordinate_from_state(
+    const Complex& a, const Complex& b);
+
 }  // namespace tket
