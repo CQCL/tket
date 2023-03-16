@@ -35,7 +35,7 @@
 namespace tket {
 
 /** Type of information held */
-enum class UnitType { Qubit, Bit };
+enum class UnitType { Qubit, Bit, WasmState };
 
 /** The type and dimension of a register */
 typedef std::pair<UnitType, unsigned> register_info_t;
@@ -44,6 +44,7 @@ typedef std::optional<register_info_t> opt_reg_info_t;
 
 const std::string &q_default_reg();
 const std::string &c_default_reg();
+const std::string &w_default_reg();
 const std::string &node_default_reg();
 const std::string &c_debug_zero_prefix();
 const std::string &c_debug_one_prefix();
@@ -222,6 +223,44 @@ class Bit : public UnitID {
 
 JSON_DECL(Bit)
 
+/** Location holding a wasm UID */
+class WasmState : public UnitID {
+ public:
+  WasmState() : UnitID(w_default_reg(), {}, UnitType::WasmState) {}
+
+  /** Bit in default register */
+  explicit WasmState(unsigned index)
+      : UnitID(w_default_reg(), {index}, UnitType::WasmState) {}
+
+  /** Named register with no index */
+  explicit WasmState(const std::string &name)
+      : UnitID(name, {}, UnitType::WasmState) {}
+
+  /** Named register with a one-dimensional index */
+  WasmState(const std::string &name, unsigned index)
+      : UnitID(name, {index}, UnitType::WasmState) {}
+
+  /** Named register with a two-dimensional index */
+  WasmState(const std::string &name, unsigned row, unsigned col)
+      : UnitID(name, {row, col}, UnitType::WasmState) {}
+
+  /** Named register with a three-dimensional index */
+  WasmState(const std::string &name, unsigned row, unsigned col, unsigned layer)
+      : UnitID(name, {row, col, layer}, UnitType::WasmState) {}
+
+  /** Named register with a multi-dimensional index */
+  WasmState(const std::string &name, std::vector<unsigned> index)
+      : UnitID(name, index, UnitType::WasmState) {}
+
+  explicit WasmState(const UnitID &other) : UnitID(other) {
+    if (other.type() != UnitType::WasmState) {
+      throw InvalidUnitConversion(other.repr(), "WasmState");
+    }
+  }
+};
+
+JSON_DECL(WasmState)
+
 /** Architectural qubit location */
 class Node : public Qubit {
  public:
@@ -249,6 +288,14 @@ class Node : public Qubit {
 };
 
 JSON_DECL(Node)
+
+/** WASM UID */
+class WasmNode : public WasmState {
+ public:
+  WasmNode() : WasmState() {}
+};
+
+JSON_DECL(WasmNode)
 
 /** A correspondence between two sets of unit IDs */
 typedef boost::bimap<UnitID, UnitID> unit_bimap_t;

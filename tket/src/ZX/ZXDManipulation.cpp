@@ -37,6 +37,12 @@ ZXVert ZXDiagram::add_vertex(
   return add_vertex(op);
 }
 
+ZXVert ZXDiagram::add_clifford_vertex(
+    ZXType type, bool param, QuantumType qtype) {
+  ZXGen_ptr op = ZXGen::create_gen(type, param, qtype);
+  return add_vertex(op);
+}
+
 Wire ZXDiagram::add_wire(
     const ZXVert& va, const ZXVert& vb, const WireProperties& prop) {
   auto [wire, added] = boost::add_edge(va, vb, prop, *graph);

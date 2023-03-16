@@ -454,8 +454,7 @@ PYBIND11_MODULE(passes, m) {
       "FullPeepholeOptimise", &FullPeepholeOptimise,
       "Performs peephole optimisation including resynthesis of 2- and 3-qubit "
       "gate sequences, and converts to a circuit containing only the given "
-      "2-qubit gate (which may be CX or TK2) and TK1 gates.\n\n"
-      "The `allow_swaps` parameter has no effect when the target gate is TK2."
+      "2-qubit gate (which may be CX or TK2) and TK1 gates."
       "\n\n:param allow_swaps: whether to allow implicit wire swaps",
       py::arg("allow_swaps") = true, py::arg("target_2qb_gate") = OpType::CX);
   m.def("RebaseTket", &RebaseTket, "Converts all gates to CX, TK1 and Phase.");
@@ -531,6 +530,13 @@ PYBIND11_MODULE(passes, m) {
   m.def(
       "RemoveBarriers", &RemoveBarriers,
       "A pass to remove all barrier instructions from the circuit.");
+  m.def(
+      "ZXGraphlikeOptimisation", &ZXGraphlikeOptimisation,
+      "Attempt to optimise the circuit by simplifying in ZX calculus and "
+      "extracting a circuit back out. Due to limitations in extraction, may "
+      "not work if the circuit contains created or discarded qubits. As a "
+      "resynthesis pass, this will ignore almost all optimisations achieved "
+      "beforehand and may increase the cost of the circuit.");
 
   /* Pass generators */
 

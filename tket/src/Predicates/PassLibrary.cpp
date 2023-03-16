@@ -18,6 +18,7 @@
 
 #include "Circuit/CircPool.hpp"
 #include "CompilationUnit.hpp"
+#include "Converters/Converters.hpp"
 #include "PassGenerators.hpp"
 #include "Predicates.hpp"
 #include "Predicates/CompilerPass.hpp"
@@ -28,6 +29,7 @@
 #include "Transformations/Rebase.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/Json.hpp"
+#include "ZX/Rewrite.hpp"
 
 namespace tket {
 
@@ -499,6 +501,47 @@ const PassPtr &RemoveImplicitQubitPermutation() {
         {typeid(NoMidMeasurePredicate), Guarantee::Clear}};
     nlohmann::json j;
     j["name"] = "RemoveImplicitQubitPermutation";
+    return std::make_shared<StandardPass>(precons, t, postcons, j);
+  }());
+  return pp;
+}
+
+const PassPtr &ZXGraphlikeOptimisation() {
+  static const PassPtr pp([]() {
+    Transform t = Transform([](Circuit &circ) {
+      zx::ZXDiagram diag = circuit_to_zx(circ).first;
+      zx::Rewrite::to_graphlike_form().apply(diag);
+      zx::Rewrite::reduce_graphlike_form().apply(diag);
+      zx::Rewrite::to_MBQC_diag().apply(diag);
+      Circuit c = zx_to_circuit(diag);
+      qubit_vector_t orig_qs = circ.all_qubits();
+      qubit_vector_t c_qs = c.all_qubits();
+      qubit_map_t qmap;
+      for (unsigned i = 0; i < orig_qs.size(); ++i)
+        qmap.insert({c_qs.at(i), orig_qs.at(i)});
+      c.rename_units<Qubit, Qubit>(qmap);
+      circ = c;
+      return true;
+    });
+    OpTypeSet in_optypes = {OpType::Input, OpType::Output, OpType::noop,
+                            OpType::SWAP,  OpType::H,      OpType::Rz,
+                            OpType::Rx,    OpType::X,      OpType::Z,
+                            OpType::CX,    OpType::CZ};
+    PredicatePtrMap precons = {
+        CompilationUnit::make_type_pair(
+            std::make_shared<GateSetPredicate>(in_optypes)),
+        CompilationUnit::make_type_pair(
+            std::make_shared<NoClassicalBitsPredicate>())};
+    PredicatePtrMap specific_postcons;
+    Guarantee default_postcon = Guarantee::Preserve;
+    PredicateClassGuarantees generic_postcons = {
+        {typeid(GateSetPredicate), Guarantee::Clear},
+        {typeid(ConnectivityPredicate), Guarantee::Clear},
+        {typeid(NoWireSwapsPredicate), Guarantee::Clear}};
+    PostConditions postcons{
+        specific_postcons, generic_postcons, default_postcon};
+    nlohmann::json j;
+    j["name"] = "ZXGraphlikeOptimisation";
     return std::make_shared<StandardPass>(precons, t, postcons, j);
   }());
   return pp;

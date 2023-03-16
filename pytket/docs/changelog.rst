@@ -7,6 +7,7 @@ Unreleased
 Major new features:
 
 * New ``StatePreparationBox`` to prepare arbitrary quantum states.
+* New WasmWire interface to keep all wasm operation in the initial order
 
 Minor new features:
 
@@ -16,10 +17,13 @@ Minor new features:
   the measurements as much as possible when they cannot be fully delayed to the
   end.
 * Update to ``pytket-circuit-renderer`` 0.5.
+* Support ``allow_swaps`` parameter for ``FullPeepholeOptimise`` even when
+  targeting ``OpType.TK2``.
 
 Fixes:
 
 * ``DelayMeasures`` pass now correctly handles circuits with ``CircBox``es.
+* ``get_op_map`` in multiplexor boxes return unhashable python dictionaries.
 
 
 1.11.1 (January 2023)
