@@ -1,6 +1,10 @@
 // src/lib.rs
 
 #[no_mangle]
+pub extern "C" fn init() {    
+}
+
+#[no_mangle]
 pub extern "C" fn add_one(x: i32) -> i32 {
     x + 1
 }
@@ -35,5 +39,10 @@ pub extern "C" fn no_return(x: i32) {
 #[no_mangle]
 pub extern "C" fn no_parameters() -> i32 {
     11
+}
+
+#[no_mangle]
+pub extern "C" fn new_function() -> i32 {
+    13
 }
 
