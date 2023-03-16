@@ -21,7 +21,7 @@ Contains several functions for rendering interactive circuit diagrams.
     circ.H(0).H(1).CX(0, 1).Rz(0.4, 1).CX(0, 1).H(0).H(1)
     render_circuit_jupyter(circ) # Render interactive display
     
- This same diagram can be rendered with the offline renderer as follows
+This same diagram can be rendered with the offline renderer as follows
  
     ::
         
