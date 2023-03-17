@@ -15,6 +15,8 @@ Major new features:
 
 * New ``StatePreparationBox`` to prepare arbitrary quantum states.
 * New WasmWire interface to keep all wasm operation in the initial order
+* New ``ZXGraphlikeOptimisation`` compilation pass for optimising the circuit by
+  simplifying in ZX calculus and extracting back out
 
 Minor new features:
 
