@@ -85,6 +85,7 @@ def overload_add_wasm(  # type: ignore
     \n:param list_i: list of the number of bits in the input variables
     \n:param list_o: list of the number of bits in the output variables
     \n:param args: vector of circuit bits the wasm op should be added to
+    \n:param args_wasm: vector of wasmstates the wasm op should be added to
     \n:param kwargs: additional arguments passed to `add_gate_method` .
      Allowed parameters are `opgroup`,  `condition` , `condition_bits`,
      `condition_value`
@@ -130,7 +131,7 @@ def overload_add_wasm_to_reg(  # type: ignore
      the input variables of the function call
     \n:param list_o: list of the classical registers assigned to
      the output variables of the function call
-    \n:param args: vector of circuit bits the wasm op should be added to
+    \n:param args_wasm: vector of wasmstates the wasm op should be added to
     \n:param kwargs: additional arguments passed to `add_gate_method` .
      Allowed parameters are `opgroup`,  `condition` , `condition_bits`,
      `condition_value`

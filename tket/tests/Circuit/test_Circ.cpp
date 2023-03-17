@@ -1140,6 +1140,17 @@ SCENARIO("circuit equality ", "[equality]") {
         test1.circuit_equality(test2), CircuitInequality,
         MessageContains("Circuit created qubits do not match."));
   }
+  GIVEN("Circuit with duplicate qubit/bit register names") {
+    Circuit circ;
+    Qubit qa0("a", 0);
+    Bit bb0("b", 0);
+    Qubit qb1("b", 1);
+    Bit ba1("a", 1);
+    circ.add_qubit(qa0);
+    circ.add_bit(bb0);
+    REQUIRE_THROWS(circ.add_qubit(qb1));
+    REQUIRE_THROWS(circ.add_bit(ba1));
+  }
   GIVEN("Circuits with mismatched discarded qubits") {
     Circuit test1(2);
     Circuit test2(2);
