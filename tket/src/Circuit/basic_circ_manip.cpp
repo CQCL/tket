@@ -401,8 +401,11 @@ void Circuit::add_qubit(const Qubit& id, bool reject_dups) {
   opt_reg_info_t reg_info = get_reg_info(id.reg_name());
   register_info_t correct_info = {UnitType::Qubit, id.reg_dim()};
 
-  // Cannot add qubit with this ID as register is not compatible
-  TKET_ASSERT(!reg_info || (reg_info.value() == correct_info));
+  if (reg_info && !(reg_info.value() == correct_info)) {
+    throw CircuitInvalidity(
+        "Cannot add qubit with ID \"" + id.repr() +
+        "\" as register is not compatible");
+  }
 
   Vertex in = add_vertex(OpType::Input);
   Vertex out = add_vertex(OpType::Output);
@@ -424,8 +427,11 @@ void Circuit::add_bit(const Bit& id, bool reject_dups) {
   opt_reg_info_t reg_info = get_reg_info(id.reg_name());
   register_info_t correct_info = {UnitType::Bit, id.reg_dim()};
 
-  // Cannot add qubit with this ID as register is not compatible
-  TKET_ASSERT(!reg_info || (reg_info.value() == correct_info));
+  if (reg_info && !(reg_info.value() == correct_info)) {
+    throw CircuitInvalidity(
+        "Cannot add bit with ID \"" + id.repr() +
+        "\" as register is not compatible");
+  }
 
   Vertex in = add_vertex(OpType::ClInput);
   Vertex out = add_vertex(OpType::ClOutput);
