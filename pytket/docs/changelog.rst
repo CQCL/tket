@@ -1,6 +1,13 @@
 Changelog
 =========
 
+1.13.1 (unreleased)
+-------------------
+
+Fixes:
+
+* Throw error rather than abort when trying to add qubit or bit with existing name.
+
 1.13.0 (March 2023)
 -------------------
 
