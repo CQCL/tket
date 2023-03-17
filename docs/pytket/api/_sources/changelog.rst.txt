@@ -1,6 +1,13 @@
 Changelog
 =========
 
+1.13.1 (March 2023)
+-------------------
+
+Fixes:
+
+* Throw error rather than abort when trying to add qubit or bit with existing name.
+
 1.13.0 (March 2023)
 -------------------
 
@@ -8,6 +15,8 @@ Major new features:
 
 * New ``StatePreparationBox`` to prepare arbitrary quantum states.
 * New WasmWire interface to keep all wasm operation in the initial order
+* New ``ZXGraphlikeOptimisation`` compilation pass for optimising the circuit by
+  simplifying in ZX calculus and extracting back out
 
 Minor new features:
 

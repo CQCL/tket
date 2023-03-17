@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>pytket.circuit.Circuit &#8212; pytket 1.13.0 documentation</title>
+    <title>pytket.circuit.Circuit &#8212; pytket 1.13.1 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -88,7 +88,7 @@
       <img src="_static/Quantinuum_logo.png" class="logo" alt="logo">
       
       
-      <h1 class="site-logo" id="site-title">pytket 1.13.0 documentation</h1>
+      <h1 class="site-logo" id="site-title">pytket 1.13.1 documentation</h1>
       
     </a>
 </div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
@@ -2983,6 +2983,7 @@ condition on a specified set of bit values.)</p>
 <li><p><strong>list_i</strong> – list of the number of bits in the input variables</p></li>
 <li><p><strong>list_o</strong> – list of the number of bits in the output variables</p></li>
 <li><p><strong>args</strong> – vector of circuit bits the wasm op should be added to</p></li>
+<li><p><strong>args_wasm</strong> – vector of wasmstates the wasm op should be added to</p></li>
 <li><p><strong>kwargs</strong> – additional arguments passed to <cite>add_gate_method</cite> .
 Allowed parameters are <cite>opgroup</cite>,  <cite>condition</cite> , <cite>condition_bits</cite>,
 <cite>condition_value</cite></p></li>
@@ -3007,7 +3008,7 @@ Allowed parameters are <cite>opgroup</cite>,  <cite>condition</cite> , <cite>con
 the input variables of the function call</p></li>
 <li><p><strong>list_o</strong> – list of the classical registers assigned to
 the output variables of the function call</p></li>
-<li><p><strong>args</strong> – vector of circuit bits the wasm op should be added to</p></li>
+<li><p><strong>args_wasm</strong> – vector of wasmstates the wasm op should be added to</p></li>
 <li><p><strong>kwargs</strong> – additional arguments passed to <cite>add_gate_method</cite> .
 Allowed parameters are <cite>opgroup</cite>,  <cite>condition</cite> , <cite>condition_bits</cite>,
 <cite>condition_value</cite></p></li>
