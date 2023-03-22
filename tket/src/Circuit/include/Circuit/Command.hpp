@@ -86,7 +86,7 @@ class Command {
   Op_ptr op_ptr;
   unit_vector_t args;  // indexed by port numbering
   std::optional<std::string> opgroup;
-  Vertex vert;  // vertex in the DAG
+  Vertex vert;         // vertex in the DAG
 };
 
 JSON_DECL(Command)
