@@ -566,7 +566,7 @@ $(function() {
 <div class="line"><a name="l00645"></a><span class="lineno">  645</span>&#160;  <span class="keyword">auto</span> it = this-&gt;interacting_uids_.find(swap.first);</div>
 <div class="line"><a name="l00646"></a><span class="lineno">  646</span>&#160;  <span class="keywordflow">if</span> (it != this-&gt;interacting_uids_.end()) {  <span class="comment">// =&gt; in interaction</span></div>
 <div class="line"><a name="l00647"></a><span class="lineno">  647</span>&#160;    <span class="keywordflow">if</span> (this-&gt;architecture_-&gt;get_distance(swap.first, Node(it-&gt;second)) ==</div>
-<div class="line"><a name="l00648"></a><span class="lineno">  648</span>&#160;        2) {  <span class="comment">// =&gt; could be bridge</span></div>
+<div class="line"><a name="l00648"></a><span class="lineno">  648</span>&#160;        2) {                                  <span class="comment">// =&gt; could be bridge</span></div>
 <div class="line"><a name="l00649"></a><span class="lineno">  649</span>&#160;      <span class="comment">// below should always return correct object given prior checks</span></div>
 <div class="line"><a name="l00650"></a><span class="lineno">  650</span>&#160;      <a class="code" href="namespacetket.html#a5d011cbb0539a2b400d1bb186190dad0">VertPort</a> vp =</div>
 <div class="line"><a name="l00651"></a><span class="lineno">  651</span>&#160;          (*this-&gt;mapping_frontier_-&gt;linear_boundary-&gt;find(swap.first)).second;</div>
