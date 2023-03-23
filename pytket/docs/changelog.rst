@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Minor new features:
+
+* Update to networkx 3.
+
 1.13.1 (March 2023)
 -------------------
 
