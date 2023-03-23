@@ -50,6 +50,8 @@ SCENARIO("Testing FullyConnected") {
       }
     }
   }
+  FullyConnected arch_named(2, "test_fc");
+  REQUIRE(arch_named.get_all_nodes_vec()[0].reg_name() == "test_fc");
 }
 
 SCENARIO("Testing RingArch") {
@@ -74,7 +76,7 @@ SCENARIO("Testing RingArch") {
   }
 
   RingArch arch_named(2, "test_ring");
-  REQUIRE(arch.get_all_nodes_vec()[0].reg_name() == "test_ring");
+  REQUIRE(arch_named.get_all_nodes_vec()[0].reg_name() == "test_ring");
 }
 
 SCENARIO("Testing SquareGrid") {
@@ -107,7 +109,7 @@ SCENARIO("Testing SquareGrid") {
   }
 
   SquareGrid arch_named(2, 1, 1, "test_square_grid");
-  REQUIRE(arch.get_all_nodes_vec()[0].reg_name() == "test_square_grid");
+  REQUIRE(arch_named.get_all_nodes_vec()[0].reg_name() == "test_square_grid");
 }
 
 SCENARIO("Diameters") {
