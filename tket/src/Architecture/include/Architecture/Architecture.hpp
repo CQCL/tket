@@ -148,9 +148,9 @@ class FullyConnected : public ArchitectureBase<graphs::CompleteGraph<Node>> {
    *
    * @param n number of nodes
    */
-  explicit FullyConnected(unsigned n) {
+  explicit FullyConnected(unsigned n, const std::string &label = "fcNode") {
     for (unsigned i = 0; i < n; i++) {
-      nodes_.insert(Node("fcNode", i));
+      nodes_.insert(Node(label, i));
     }
   }
 };
@@ -161,7 +161,7 @@ JSON_DECL(FullyConnected)
 // architecture
 class RingArch : public Architecture {
  public:
-  explicit RingArch(unsigned numberOfNodes);
+  explicit RingArch(
   // nodes() does not guarantee to return nodes in any order
   // this returns the canonical ordering of nodes
 
@@ -196,10 +196,12 @@ class SquareGrid : public Architecture {
   // dim_c equiv 'x', dim_r equiv 'y'
   SquareGrid(
       const unsigned dim_r, const unsigned dim_c, const unsigned _layers = 1);
+      const std::string &label = "gridNode");
 
  private:
   static std::vector<Connection> get_edges(
-      const unsigned dim_r, const unsigned dim_c, const unsigned layers = 1);
+      const unsigned dim_r, const unsigned dim_c, const unsigned layers = 1,
+      const std::string &label = "gridNode");
 
   unsigned dimension_r;
   unsigned dimension_c;

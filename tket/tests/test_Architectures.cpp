@@ -72,6 +72,9 @@ SCENARIO("Testing RingArch") {
     Node n2("ringNode", (i + 1) % n_nodes);
     REQUIRE(arch.edge_exists(n1, n2));
   }
+  
+  RingArch arch_named(2, "test_ring");
+  REQUIRE(arch.get_all_nodes_vec()[0].reg_name() == "test_ring");
 }
 
 SCENARIO("Testing SquareGrid") {
@@ -102,6 +105,9 @@ SCENARIO("Testing SquareGrid") {
           1);
     }
   }
+
+  SquareGrid arch_named(2, 1, 1, "test_square_grid");
+  REQUIRE(arch.get_all_nodes_vec()[0].reg_name() == "test_square_grid");
 }
 
 SCENARIO("Diameters") {
