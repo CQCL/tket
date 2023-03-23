@@ -657,6 +657,11 @@ enum class OpType {
   ToffoliBox,
 
   /**
+   * See \ref StatePermutationBox
+   */
+  StatePermutationBox,
+
+  /**
    * See \ref UnitaryTableauBox
    */
   UnitaryTableauBox
