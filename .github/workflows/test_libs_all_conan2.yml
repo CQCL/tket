@@ -1,0 +1,68 @@
+name: test all libraries (conan 2)
+on:
+  schedule:
+    # 04:00 every Wednesday morning
+    - cron: '0 4 * * 3'
+jobs:
+  test_libraries:
+    name: test library
+    strategy:
+      matrix:
+        os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
+        lib: ['tklog', 'tkassert', 'tkrng', 'tktokenswap', 'tkwsm']
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    - name: Install conan
+      uses: turtlebrowser/get-conan@v1.2
+      with:
+        version: '2.0.2'
+    - name: create profile
+      run: conan profile detect
+    - name: add remote
+      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+    - name: build ${{ matrix.lib }}
+      run: conan create libs/${{ matrix.lib }} --build=missing
+    - name: build ${{ matrix.lib }} tests
+      run: conan create libs/${{ matrix.lib }}/test --build=missing --format json > test-${{ matrix.lib }}.json
+    - name: run ${{ matrix.lib }} tests
+      shell: bash
+      run: |
+        PKGPATH=`./rootpath test-${{ matrix.lib }}.json test-${{ matrix.lib }}`
+        cd ${PKGPATH}/bin
+        ./test-${{ matrix.lib }}
+  macos-m1:
+    name: test library (macos-m1)
+    runs-on: ['self-hosted', 'macOS', 'ARM64']
+    strategy:
+      matrix:
+        lib: ['tklog', 'tkassert', 'tkrng', 'tktokenswap', 'tkwsm']
+    steps:
+    - uses: actions/checkout@v3
+    - name: Install conan
+      uses: turtlebrowser/get-conan@v1.2
+      with:
+        version: '2.0.2'
+    - name: create profile
+      shell: bash
+      run: conan profile detect --force
+    - name: add remote
+      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
+    - name: build ${{ matrix.lib }}
+      run: conan create libs/${{ matrix.lib }} --build=missing
+    - name: build ${{ matrix.lib }} tests
+      run: conan create libs/${{ matrix.lib }}/test --build=missing --format json > test-${{ matrix.lib }}.json
+    - name: run ${{ matrix.lib }} tests
+      run: |
+        PKGPATH=`./rootpath test-${{ matrix.lib }}.json test-${{ matrix.lib }}`
+        cd ${PKGPATH}/bin
+        ./test-${{ matrix.lib }}
+    - name: restore conan 1
+      if: always()
+      uses: turtlebrowser/get-conan@v1.2
+      with:
+        version: '1.59.0'
