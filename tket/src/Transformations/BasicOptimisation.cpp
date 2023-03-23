@@ -699,4 +699,18 @@ Transform normalise_TK2() {
   });
 }
 
+Transform flatten_registers(const std::string& label) {
+  return Transform([&label](Circuit& circ){
+    unsigned n_qubits = circ.n_qubits;
+    circ.remove_blank_wires();
+    // std::map<Qubit, Qubit> rename_map;
+    // std::vector<Qubit> all_qubits = circ.all_qubits();
+    // for(unsigned i=0; i<all_qubits.size();i++){
+    //   rename_map.insert({all_qubits[i], Qubit(label, i)});
+    // }
+    // circ.rename_units(rename_map)
+    return circ.n_qubits == n_qubits;
+  });
+}
+
 }  // namespace tket::Transforms
