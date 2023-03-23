@@ -71,4 +71,4 @@ class TkwsmConan(ConanFile):
     def requirements(self):
         self.requires("tkassert/0.1.2@tket/stable")
         self.requires("tkrng/0.1.3@tket/stable")
-        self.requires("boost/1.81.0")
+        self.requires("boost/1.81.0", transitive_headers=True, transitive_libs=False)
