@@ -162,11 +162,13 @@ JSON_DECL(FullyConnected)
 class RingArch : public Architecture {
  public:
   explicit RingArch(
+      unsigned numberOfNodes, const std::string &label = "ringNode");
   // nodes() does not guarantee to return nodes in any order
   // this returns the canonical ordering of nodes
 
  private:
-  static std::vector<Connection> get_edges(unsigned numberOfNodes);
+  static std::vector<Connection> get_edges(
+      unsigned numberOfNodes, const std::string &label = "ringNode");
 };
 
 // Subclass, constructor generates adjacency matrix corresponding to a
@@ -195,7 +197,7 @@ class SquareGrid : public Architecture {
   // SquareGrid constructor
   // dim_c equiv 'x', dim_r equiv 'y'
   SquareGrid(
-      const unsigned dim_r, const unsigned dim_c, const unsigned _layers = 1);
+      const unsigned dim_r, const unsigned dim_c, const unsigned _layers = 1,
       const std::string &label = "gridNode");
 
  private:

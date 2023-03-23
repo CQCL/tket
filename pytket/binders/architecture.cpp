@@ -103,20 +103,28 @@ PYBIND11_MODULE(architecture, m) {
       "values increasing first along rows then along columns i.e. for a "
       "3 x 3 grid:\n\n 0 1 2\n\n 3 4 5\n\n 6 7 8")
       .def(
-          py::init<const unsigned, const unsigned>(),
+          py::init([](const unsigned &x, const unsigned &y,
+                      const std::string &label) {
+            return SquareGrid(x, y, 1, label);
+          }),
           "The constructor for a Square Grid architecture with some "
           "undirected connectivity between qubits.\n\n:param n_rows: "
           "The number of rows in the grid\n:param n_columns: The number "
-          "of columns in the grid",
-          py::arg("n_rows"), py::arg("n_columns"))
+          "of columns in the grid\n:param label: Name for Node in SquareGrid "
+          "Architecture",
+          py::arg("n_rows"), py::arg("n_columns"), py::arg("label"))
       .def(
-          py::init<const unsigned, const unsigned, const unsigned>(),
+          py::init<
+              const unsigned, const unsigned, const unsigned,
+              const std::string>(),
           "The constructor for  a Square Grid architecture with some "
           "undirected connectivity between qubits.\n\n:param n_rows: "
           "The number of rows in the grid\n:param n_columns: The number "
           "of columns in the grid\n:param n_layers: The number of "
-          "layers of grids",
-          py::arg("n_rows"), py::arg("n_columns"), py::arg("n_layers"))
+          "layers of grids\n:param label: Name for Node in SquareGrid "
+          "Architecture",
+          py::arg("n_rows"), py::arg("n_columns"), py::arg("n_layers") = 1,
+          py::arg("label") = "gridNode")
       .def(
           "squind_to_qind",
           [](const SquareGrid &self, const unsigned row, const unsigned col) {
@@ -149,10 +157,11 @@ PYBIND11_MODULE(architecture, m) {
       m, "RingArch",
       "Inherited Architecture class for number of qubits arranged in a ring.")
       .def(
-          py::init<const unsigned>(),
+          py::init<const unsigned, const std::string>(),
           "The constructor for a RingArchitecture with some undirected "
-          "connectivity between qubits.\n\n:param number of qubits",
-          py::arg("nodes"))
+          "connectivity between qubits.\n\n:param number of qubits\n:param "
+          "label:Name for Node in RingArch Architecture",
+          py::arg("nodes"), py::arg("label") = "ringNode")
       .def(
           "__deepcopy__",
           [](const RingArch &arc, py::dict = py::dict()) { return arc; })
@@ -165,10 +174,11 @@ PYBIND11_MODULE(architecture, m) {
       "all qubits connected. "
       "Not compatible with Routing or Placement methods.")
       .def(
-          py::init<unsigned>(),
+          py::init<unsigned, const std::string>(),
           "Construct a fully-connected architecture."
-          "\n\n:param n: number of qubits",
-          py::arg("n"))
+          "\n\n:param n: number of qubits\n:param label: Name for Node in "
+          "FullyConnected Architecture",
+          py::arg("n"), py::arg("label") = "fcNode")
       .def(
           "__deepcopy__",
           [](const FullyConnected &arc, py::dict = py::dict()) { return arc; })
