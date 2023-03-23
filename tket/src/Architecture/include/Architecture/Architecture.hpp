@@ -147,6 +147,7 @@ class FullyConnected : public ArchitectureBase<graphs::CompleteGraph<Node>> {
    * The nodes are labelled "fcNode" (indexed from 0 to n-1).
    *
    * @param n number of nodes
+   * @param label register name of nodes
    */
   explicit FullyConnected(unsigned n, const std::string &label = "fcNode") {
     for (unsigned i = 0; i < n; i++) {
