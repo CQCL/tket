@@ -38,9 +38,9 @@ copyright = "2023, Cambridge Quantum Computing Ltd"
 author = "Cambridge Quantum Computing Ltd"
 
 # The short X.Y version
-version = "1.11"
+version = "1.13"
 # The full version, including alpha/beta/rc tags
-release = "1.11.1"
+release = "1.13.1"
 
 
 # -- General configuration ---------------------------------------------------
@@ -58,6 +58,7 @@ extensions = [
     "sphinx.ext.intersphinx",
     "sphinx.ext.mathjax",
     "sphinx_copybutton",
+    "jupyter_sphinx",
 ]
 
 # Add any paths that contain templates here, relative to this directory.

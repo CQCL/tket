@@ -212,7 +212,7 @@ SCENARIO("Testing two-qubit canonical forms") {
         6. + 7. * i_, 7. + 8. * i_, 8. + 9. * i_, 9. + 1. * i_, 1. + 2. * i_,
         2. + 3. * i_, 3. + 4. * i_, 4. + 5. * i_, 5. + 6. * i_, 6. + 7. * i_,
         7. + 8. * i_;
-    Eigen::Matrix4cd A = B + B.adjoint();  // hermitian
+    Eigen::Matrix4cd A = B + B.adjoint();                        // hermitian
     Eigen::Matrix4cd I = Eigen::Matrix4cd::Identity();
     Eigen::Matrix4cd U = (I - i_ * A).inverse() * (I + i_ * A);  // unitary
 
@@ -272,7 +272,7 @@ SCENARIO("Testing two-qubit canonical forms") {
         6. + 7. * i_, 7. + 8. * i_, 8. + 9. * i_, 9. + 1. * i_, 1. + 2. * i_,
         2. + 3. * i_, 3. + 4. * i_, 4. + 5. * i_, 5. + 6. * i_, 6. + 7. * i_,
         7. + 8. * i_;
-    Eigen::Matrix4cd A = B + B.adjoint();  // hermitian
+    Eigen::Matrix4cd A = B + B.adjoint();                        // hermitian
     Eigen::Matrix4cd I = Eigen::Matrix4cd::Identity();
     Eigen::Matrix4cd U = (I - i_ * A).inverse() * (I + i_ * A);  // unitary
     Circuit result = two_qubit_canonical(U);
@@ -443,7 +443,7 @@ SCENARIO("Testing two qubit decomposition with fidelity tradeoff") {
         6. + 7. * i_, 7. + 8. * i_, 8. + 9. * i_, 9. + 1. * i_, 1. + 2. * i_,
         2. + 3. * i_, 3. + 4. * i_, 4. + 5. * i_, 5. + 6. * i_, 6. + 7. * i_,
         7. + 8. * i_;
-    Eigen::Matrix4cd A = B + B.adjoint();  // hermitian
+    Eigen::Matrix4cd A = B + B.adjoint();                        // hermitian
     Eigen::Matrix4cd I = Eigen::Matrix4cd::Identity();
     Eigen::Matrix4cd U = (I - i_ * A).inverse() * (I + i_ * A);  // unitary
     auto get_fid = [&U](const Eigen::Matrix4cd &Up) {

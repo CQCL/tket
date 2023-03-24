@@ -67,10 +67,23 @@ static Circuit *add_gate_method(
     op_signature_t sig = op->get_signature();
 
     for (unsigned i = 0; i < args.size(); ++i) {
-      if (sig.at(i) == EdgeType::Quantum) {
-        new_args.push_back(Qubit(args[i]));
-      } else {
-        new_args.push_back(Bit(args[i]));
+      switch (sig.at(i)) {
+        case EdgeType::Quantum: {
+          new_args.push_back(Qubit(args[i]));
+          break;
+        }
+        case EdgeType::WASM: {
+          new_args.push_back(WasmState(args[i]));
+          break;
+        }
+        case EdgeType::Classical:
+        case EdgeType::Boolean: {
+          new_args.push_back(Bit(args[i]));
+          break;
+        }
+        default: {
+          TKET_ASSERT(!"add_gate_method found invalid edge type in signature");
+        }
       }
     }
     circ->add_op(cond, new_args, opgroup);

@@ -4,9 +4,30 @@ Changelog
 Unreleased
 ----------
 
+Minor new features:
+
+* Update to networkx 3.
+  
+Fixes:
+
+* Multiply symbolic parameters in auto-generated gate definitions by "/pi" in ``circuit_to_qasm_io``
+
+1.13.1 (March 2023)
+-------------------
+
+Fixes:
+
+* Throw error rather than abort when trying to add qubit or bit with existing name.
+
+1.13.0 (March 2023)
+-------------------
+
 Major new features:
 
 * New ``StatePreparationBox`` to prepare arbitrary quantum states.
+* New WasmWire interface to keep all wasm operation in the initial order
+* New ``ZXGraphlikeOptimisation`` compilation pass for optimising the circuit by
+  simplifying in ZX calculus and extracting back out
 
 Minor new features:
 
@@ -22,6 +43,7 @@ Minor new features:
 Fixes:
 
 * ``DelayMeasures`` pass now correctly handles circuits with ``CircBox``es.
+* ``get_op_map`` in multiplexor boxes return unhashable python dictionaries.
 
 
 1.11.1 (January 2023)

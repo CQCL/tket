@@ -235,7 +235,7 @@ SCENARIO("Test switch statement") {
     WHEN("Vertex with 1 edge") {
       circ.add_blank_wires(1);
       circ.add_op<unsigned>(
-          OpType::CnRy, p, {0});  // automatically converted to Ry
+          OpType::CnRy, p, {0});        // automatically converted to Ry
       REQUIRE(!Transforms::decomp_controlled_Rys().apply(circ));
       REQUIRE(circ.n_vertices() == 3);  // 1 in, 1 out, 1 Ry
       REQUIRE(circ.n_gates() == 1);
@@ -415,7 +415,7 @@ SCENARIO("Test incrementer using 1 borrowed qubit") {
       if (i != 0)
         bot_qbs[2 * i + 1] =
             i + k -
-            1;  // 3,5...n //other qbs we are actually trying to increment
+            1;       // 3,5...n //other qbs we are actually trying to increment
     }
     bot_qbs[1] = n;  // incremented qubit 0 in incrementer is bottom one
     inc.append_qubits(bottom_incrementer, bot_qbs);
@@ -822,6 +822,20 @@ SCENARIO("Test cnx_pairwise_decomposition") {
     auto v = tket_sim::get_unitary(circ);
     REQUIRE((u - v).cwiseAbs().sum() < ERR_EPS);
     REQUIRE(circ.count_gates(OpType::CnX) == 0);
+  }
+
+  GIVEN("test adding C1Z") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::CnZ, {0});
+    circ.add_op<unsigned>(OpType::CnZ, {0, 1});
+    REQUIRE(circ.count_gates(OpType::CnZ) == 1);
+  }
+
+  GIVEN("test adding C1Y") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::CnY, {0});
+    circ.add_op<unsigned>(OpType::CnY, {0, 1});
+    REQUIRE(circ.count_gates(OpType::CnY) == 1);
   }
 
   GIVEN("Circuit with a pair of CCX") {

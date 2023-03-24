@@ -55,11 +55,11 @@ Architecture Architecture::create_subarch(
 std::vector<node_vector_t> Architecture::get_lines(
     std::vector<unsigned> required_lengths) const {
   // check total length doesn't exceed number of nodes
-  if (std::accumulate(required_lengths.begin(), required_lengths.end(), 0u) >
-      n_nodes()) {
-    throw ArchitectureInvalidity(
-        "Not enough nodes to satisfy required lengths.");
-  }
+  bool not_enough_nodes =
+      std::accumulate(required_lengths.begin(), required_lengths.end(), 0u) >
+      n_nodes();
+  TKET_ASSERT(!not_enough_nodes);  // Not enough nodes for required lengths.
+
   std::sort(
       required_lengths.begin(), required_lengths.end(),
       std::greater<unsigned>());

@@ -49,6 +49,7 @@ Circuit::Circuit(const Circuit &circ) : Circuit() {
   copy_graph(circ);
   phase = circ.get_phase();
   name = circ.name;
+  add_wasm_register(circ._number_of_wasm_wires);
 }
 
 // copy assignment. Moves boundary pointers.
@@ -59,6 +60,8 @@ Circuit &Circuit::operator=(const Circuit &other)  // (1)
   copy_graph(other);
   phase = other.get_phase();
   name = other.name;
+  add_wasm_register(other._number_of_wasm_wires);
+
   return *this;
 }
 
@@ -91,6 +94,16 @@ VertexVec Circuit::c_inputs() const {
   return ins;
 }
 
+VertexVec Circuit::w_inputs() const {
+  VertexVec ins;
+  for (auto [it, end] =
+           boundary.get<TagType>().equal_range(UnitType::WasmState);
+       it != end; it++) {
+    ins.push_back(it->in_);
+  }
+  return ins;
+}
+
 VertexVec Circuit::all_outputs() const {
   VertexVec outs = q_outputs();
   VertexVec c_outs = c_outputs();
@@ -110,6 +123,16 @@ VertexVec Circuit::q_outputs() const {
 VertexVec Circuit::c_outputs() const {
   VertexVec outs;
   for (auto [it, end] = boundary.get<TagType>().equal_range(UnitType::Bit);
+       it != end; it++) {
+    outs.push_back(it->out_);
+  }
+  return outs;
+}
+
+VertexVec Circuit::w_outputs() const {
+  VertexVec outs;
+  for (auto [it, end] =
+           boundary.get<TagType>().equal_range(UnitType::WasmState);
        it != end; it++) {
     outs.push_back(it->out_);
   }
@@ -683,17 +706,20 @@ std::pair<Vertex, Edge> Circuit::get_prev_pair(
 
 bool Circuit::detect_initial_Op(const Vertex &vertex) const {
   OpType type = get_OpType_from_Vertex(vertex);
-  return is_initial_q_type(type) || type == OpType::ClInput;
+  return is_initial_q_type(type) || type == OpType::ClInput ||
+         type == OpType::WASMInput;
 }
 
 bool Circuit::detect_final_Op(const Vertex &vertex) const {
   OpType type = get_OpType_from_Vertex(vertex);
-  return is_final_q_type(type) || type == OpType::ClOutput;
+  return is_final_q_type(type) || type == OpType::ClOutput ||
+         type == OpType::WASMOutput;
 }
 
 bool Circuit::detect_boundary_Op(const Vertex &vertex) const {
   OpType type = get_OpType_from_Vertex(vertex);
-  return is_boundary_q_type(type) || is_boundary_c_type(type);
+  return is_boundary_q_type(type) || is_boundary_c_type(type) ||
+         is_boundary_w_type(type);
 }
 
 bool Circuit::detect_singleq_unitary_op(const Vertex &vert) const {

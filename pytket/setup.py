@@ -236,7 +236,7 @@ setup(
     name="pytket",
     author="TKET development team",
     author_email="tket-support@cambridgequantum.com",
-    python_requires=">=3.8",
+    python_requires=">=3.9",
     project_urls={
         "Documentation": "https://cqcl.github.io/tket/pytket/api/index.html",
         "Source": "https://github.com/CQCL/tket",
@@ -253,7 +253,7 @@ setup(
         "numpy >=1.21.4, <2.0",
         "lark-parser ~=0.7",
         "scipy >=1.7.2, <2.0",
-        "networkx ~= 2.4",
+        "networkx ~= 3.0",
         "graphviz ~= 0.14",
         "jinja2 ~= 3.0",
         "types-pkg_resources",
