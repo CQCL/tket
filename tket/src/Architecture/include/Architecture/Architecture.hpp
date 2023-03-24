@@ -147,10 +147,11 @@ class FullyConnected : public ArchitectureBase<graphs::CompleteGraph<Node>> {
    * The nodes are labelled "fcNode" (indexed from 0 to n-1).
    *
    * @param n number of nodes
+   * @param label register name of nodes
    */
-  explicit FullyConnected(unsigned n) {
+  explicit FullyConnected(unsigned n, const std::string &label = "fcNode") {
     for (unsigned i = 0; i < n; i++) {
-      nodes_.insert(Node("fcNode", i));
+      nodes_.insert(Node(label, i));
     }
   }
 };
@@ -161,12 +162,14 @@ JSON_DECL(FullyConnected)
 // architecture
 class RingArch : public Architecture {
  public:
-  explicit RingArch(unsigned numberOfNodes);
+  explicit RingArch(
+      unsigned numberOfNodes, const std::string &label = "ringNode");
   // nodes() does not guarantee to return nodes in any order
   // this returns the canonical ordering of nodes
 
  private:
-  static std::vector<Connection> get_edges(unsigned numberOfNodes);
+  static std::vector<Connection> get_edges(
+      unsigned numberOfNodes, const std::string &label = "ringNode");
 };
 
 // Subclass, constructor generates adjacency matrix corresponding to a
@@ -195,11 +198,13 @@ class SquareGrid : public Architecture {
   // SquareGrid constructor
   // dim_c equiv 'x', dim_r equiv 'y'
   SquareGrid(
-      const unsigned dim_r, const unsigned dim_c, const unsigned _layers = 1);
+      const unsigned dim_r, const unsigned dim_c, const unsigned _layers = 1,
+      const std::string &label = "gridNode");
 
  private:
   static std::vector<Connection> get_edges(
-      const unsigned dim_r, const unsigned dim_c, const unsigned layers = 1);
+      const unsigned dim_r, const unsigned dim_c, const unsigned layers = 1,
+      const std::string &label = "gridNode");
 
   unsigned dimension_r;
   unsigned dimension_c;
