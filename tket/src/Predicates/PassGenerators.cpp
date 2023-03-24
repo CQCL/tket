@@ -158,6 +158,26 @@ PassPtr gen_clifford_simp_pass(bool allow_swaps) {
   return std::make_shared<StandardPass>(precons, t, postcon, j);
 }
 
+PassPtr gen_flatten_relabel_registers_pass(const std::string& label) {
+  Transform t =
+      Transform([=](Circuit& circuit, std::shared_ptr<unit_bimaps_t> maps) {
+        unsigned n_qubits = circ.n_qubits;
+        circ.remove_blank_wires();
+        std::map<Qubit, Qubit> relabelling_map;
+        std::vector<Qubit> all_qubits = circ.all_qubits();
+        for (unsigned i = 0; i < all_qubits.size(); i++) {
+          relabelling_map.insert({all_qubits[i], Qubit(label, i)});
+        }
+        circ.rename_units(relabelling_map);
+        changed |= update_maps(maps, relabelling_map, relabelling_map);
+      });
+
+  nlohmann::json j;
+  j["name"] = "FlattenRelabelRegistersPass";
+  j["label"] = label;
+  return std::make_shared<StandardPass>({}, t, {}, j);
+}
+
 PassPtr gen_rename_qubits_pass(const std::map<Qubit, Qubit>& qm) {
   Transform t =
       Transform([=](Circuit& circ, std::shared_ptr<unit_bimaps_t> maps) {

@@ -9,6 +9,8 @@ Minor new features:
 * Update to networkx 3.
 * Add "label" argument to ``SquareGrid``, ``RingArch`` and ``FullyConnected`` 
   ``Architecture`` classes to give custom name to constructed ``Node``.
+* Add ``FlattenRegisters`` compilation pass that removes empty quantum wires from a 
+  Circuit, renaming qubits if 
 
 1.13.1 (March 2023)
 -------------------
