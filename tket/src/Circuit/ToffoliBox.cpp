@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Circuit/StatePermutation.hpp"
+#include "Circuit/ToffoliBox.hpp"
 
 #include <boost/graph/max_cardinality_matching.hpp>
 
@@ -26,9 +26,9 @@
 
 namespace tket {
 
-StatePermutationBox::StatePermutationBox(
+ToffoliBox::ToffoliBox(
     const state_perm_t &permutation, const OpType &rotation_axis)
-    : Box(OpType::StatePermutationBox),
+    : Box(OpType::ToffoliBox),
       permutation_(permutation),
       rotation_axis_(rotation_axis) {
   // we need to check every element has the same size, and every bitstrings
@@ -59,32 +59,32 @@ StatePermutationBox::StatePermutationBox(
   }
 }
 
-StatePermutationBox::StatePermutationBox(const StatePermutationBox &other)
+ToffoliBox::ToffoliBox(const ToffoliBox &other)
     : Box(other),
       permutation_(other.permutation_),
       rotation_axis_(other.rotation_axis_) {}
 
-Op_ptr StatePermutationBox::dagger() const {
+Op_ptr ToffoliBox::dagger() const {
   state_perm_t reverse_perm;
   for (auto it = permutation_.begin(); it != permutation_.end(); it++) {
     reverse_perm.insert({it->second, it->first});
   }
-  return std::make_shared<StatePermutationBox>(reverse_perm, rotation_axis_);
+  return std::make_shared<ToffoliBox>(reverse_perm, rotation_axis_);
 }
 
-Op_ptr StatePermutationBox::transpose() const { return dagger(); }
+Op_ptr ToffoliBox::transpose() const { return dagger(); }
 
-op_signature_t StatePermutationBox::get_signature() const {
+op_signature_t ToffoliBox::get_signature() const {
   op_signature_t qubits(
       (unsigned)permutation_.begin()->first.size(), EdgeType::Quantum);
   return qubits;
 }
 
-state_perm_t StatePermutationBox::get_permutation() const {
+state_perm_t ToffoliBox::get_permutation() const {
   return permutation_;
 }
 
-OpType StatePermutationBox::get_rotation_axis() const { return rotation_axis_; }
+OpType ToffoliBox::get_rotation_axis() const { return rotation_axis_; }
 
 typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS>
     cube_graph_t;
@@ -284,7 +284,7 @@ static Circuit permute(
   return circ;
 }
 
-void StatePermutationBox::generate_circuit() const {
+void ToffoliBox::generate_circuit() const {
   unsigned n_qubits = (unsigned)permutation_.begin()->first.size();
   state_perm_t perm(permutation_);
   // fill the permutation with identities
@@ -300,16 +300,16 @@ void StatePermutationBox::generate_circuit() const {
   circ_ = std::make_shared<Circuit>(circ);
 }
 
-nlohmann::json StatePermutationBox::to_json(const Op_ptr &op) {
-  const auto &box = static_cast<const StatePermutationBox &>(*op);
+nlohmann::json ToffoliBox::to_json(const Op_ptr &op) {
+  const auto &box = static_cast<const ToffoliBox &>(*op);
   nlohmann::json j = core_box_json(box);
   j["permutation"] = box.get_permutation();
   j["rotation_axis"] = box.get_rotation_axis();
   return j;
 }
 
-Op_ptr StatePermutationBox::from_json(const nlohmann::json &j) {
-  StatePermutationBox box = StatePermutationBox(
+Op_ptr ToffoliBox::from_json(const nlohmann::json &j) {
+  ToffoliBox box = ToffoliBox(
       j.at("permutation").get<state_perm_t>(),
       j.at("rotation_axis").get<OpType>());
   return set_box_id(
@@ -317,6 +317,6 @@ Op_ptr StatePermutationBox::from_json(const nlohmann::json &j) {
       boost::lexical_cast<boost::uuids::uuid>(j.at("id").get<std::string>()));
 }
 
-REGISTER_OPFACTORY(StatePermutationBox, StatePermutationBox)
+REGISTER_OPFACTORY(ToffoliBox, ToffoliBox)
 
 }  // namespace tket

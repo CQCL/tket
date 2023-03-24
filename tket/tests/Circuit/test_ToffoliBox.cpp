@@ -22,14 +22,14 @@
 #include "Circuit/Boxes.hpp"
 #include "Circuit/CircUtils.hpp"
 #include "Circuit/Circuit.hpp"
-#include "Circuit/StatePermutation.hpp"
+#include "Circuit/ToffoliBox.hpp"
 #include "Eigen/src/Core/Matrix.h"
 #include "Gate/Rotation.hpp"
 #include "Simulation/CircuitSimulator.hpp"
 #include "Utils/HelperFunctions.hpp"
 
 namespace tket {
-namespace test_StatePermutationBox {
+namespace test_ToffoliBox {
 
 state_perm_t random_permutation(unsigned n_qubits, unsigned seed) {
   std::mt19937_64 rng(seed);
@@ -58,7 +58,7 @@ Eigen::MatrixXcd permutation_matrix(const state_perm_t &perm) {
   return u;
 }
 
-SCENARIO("Test StatePermutationBox") {
+SCENARIO("Test ToffoliBox") {
   state_perm_t perm;
   OpType axis;
   GIVEN("1-q permutation") {
@@ -94,25 +94,25 @@ SCENARIO("Test StatePermutationBox") {
     axis = OpType::Ry;
     perm = random_permutation(6, 1);
   }
-  StatePermutationBox box(perm, axis);
+  ToffoliBox box(perm, axis);
   Circuit circ = *box.to_circuit();
   const auto matrix = tket_sim::get_unitary(circ);
   const auto perm_matrix = permutation_matrix(perm);
   REQUIRE((matrix - perm_matrix).cwiseAbs().sum() < ERR_EPS);
 }
 
-SCENARIO("Test StatePermutationBox Exceptions") {
+SCENARIO("Test ToffoliBox Exceptions") {
   GIVEN("Invalid permutation") {
     state_perm_t perm;
     perm[{0, 1}] = {1, 0};
     REQUIRE_THROWS_MATCHES(
-        StatePermutationBox(perm), std::invalid_argument,
+        ToffoliBox(perm), std::invalid_argument,
         MessageContains("invalid"));
   }
   GIVEN("Empty permutation") {
     state_perm_t perm;
     REQUIRE_THROWS_MATCHES(
-        StatePermutationBox(perm), std::invalid_argument,
+        ToffoliBox(perm), std::invalid_argument,
         MessageContains("empty"));
   }
   GIVEN("Wrong axis") {
@@ -120,14 +120,14 @@ SCENARIO("Test StatePermutationBox Exceptions") {
     perm[{0}] = {1};
     perm[{1}] = {0};
     REQUIRE_THROWS_MATCHES(
-        StatePermutationBox(perm, OpType::Rz), std::invalid_argument,
+        ToffoliBox(perm, OpType::Rz), std::invalid_argument,
         MessageContains("axis must be Rx or Ry"));
   }
   GIVEN("Invalid entries") {
     state_perm_t perm;
     perm[{0}] = {1, 0};
     REQUIRE_THROWS_MATCHES(
-        StatePermutationBox(perm), std::invalid_argument,
+        ToffoliBox(perm), std::invalid_argument,
         MessageContains("don't have the same size"));
   }
   GIVEN("Too long") {
@@ -135,7 +135,7 @@ SCENARIO("Test StatePermutationBox Exceptions") {
     std::vector<bool> b(33, 0);
     perm[b] = b;
     REQUIRE_THROWS_MATCHES(
-        StatePermutationBox(perm), std::invalid_argument,
+        ToffoliBox(perm), std::invalid_argument,
         MessageContains("up to 32 bits"));
   }
 }
@@ -146,19 +146,19 @@ SCENARIO("Test constructors & transformations") {
   perm[{1, 0}] = {0, 1};
   perm[{1, 1}] = {1, 0};
   GIVEN("copy constructor") {
-    StatePermutationBox box(perm, OpType::Rx);
+    ToffoliBox box(perm, OpType::Rx);
     REQUIRE(box.get_rotation_axis() == OpType::Rx);
-    StatePermutationBox box_copy(box);
+    ToffoliBox box_copy(box);
     REQUIRE(box.get_rotation_axis() == OpType::Rx);
     REQUIRE(box_copy.get_rotation_axis() == OpType::Rx);
     REQUIRE(box_copy.get_permutation() == perm);
   }
   GIVEN("Dagger") {
-    StatePermutationBox box(perm);
+    ToffoliBox box(perm);
     Circuit circ1 = *box.to_circuit();
     Circuit circ1_dag = circ1.dagger();
-    const StatePermutationBox box_dag =
-        static_cast<const StatePermutationBox &>(*box.dagger());
+    const ToffoliBox box_dag =
+        static_cast<const ToffoliBox &>(*box.dagger());
     Circuit circ2 = *box_dag.to_circuit();
     REQUIRE(
         (tket_sim::get_unitary(circ1_dag) - tket_sim::get_unitary(circ2))
@@ -166,15 +166,15 @@ SCENARIO("Test constructors & transformations") {
             .sum() < ERR_EPS);
   }
   GIVEN("Transpose") {
-    StatePermutationBox box(perm);
+    ToffoliBox box(perm);
     Circuit circ1 = *box.to_circuit();
-    const StatePermutationBox box_transpose =
-        static_cast<const StatePermutationBox &>(*box.transpose());
+    const ToffoliBox box_transpose =
+        static_cast<const ToffoliBox &>(*box.transpose());
     Circuit circ2 = *box_transpose.to_circuit();
     auto matrix1 = tket_sim::get_unitary(circ1);
     auto matrix2 = tket_sim::get_unitary(circ2);
     REQUIRE((matrix1.transpose() - matrix2).cwiseAbs().sum() < ERR_EPS);
   }
 }
-}  // namespace test_StatePermutationBox
+}  // namespace test_ToffoliBox
 }  // namespace tket

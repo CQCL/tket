@@ -24,6 +24,7 @@
 #include "Circuit/DiagonalBox.hpp"
 #include "Circuit/Multiplexor.hpp"
 #include "Circuit/StatePreparation.hpp"
+#include "Circuit/ToffoliBox.hpp"
 #include "CircuitsForTesting.hpp"
 #include "Converters/PhasePoly.hpp"
 #include "Gate/SymTable.hpp"
@@ -277,7 +278,7 @@ SCENARIO("Test Circuit serialization") {
     std::map<std::vector<bool>, std::vector<bool>> permutation;
     permutation[{0, 0}] = {1, 1};
     permutation[{1, 1}] = {0, 0};
-    ToffoliBox tbox(2, permutation);
+    ToffoliBox tbox(permutation);
     c.add_box(tbox, {0, 1});
     nlohmann::json j_tbox = c;
     const Circuit new_c = j_tbox.get<Circuit>();
@@ -285,8 +286,8 @@ SCENARIO("Test Circuit serialization") {
     const auto& t_b =
         static_cast<const ToffoliBox&>(*new_c.get_commands()[0].get_op_ptr());
 
-    REQUIRE(t_b.get_cycles() == tbox.get_cycles());
-    REQUIRE(t_b.get_n_qubits() == tbox.get_n_qubits());
+    REQUIRE(t_b.get_permutation() == tbox.get_permutation());
+    REQUIRE(t_b.get_rotation_axis() == tbox.get_rotation_axis());
     REQUIRE(t_b == tbox);
   }
 

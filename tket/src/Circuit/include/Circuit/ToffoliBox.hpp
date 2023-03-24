@@ -29,7 +29,7 @@ typedef std::map<std::vector<bool>, std::vector<bool>> state_perm_t;
 /**
  * Box to synthesise a state permutation
  */
-class StatePermutationBox : public Box {
+class ToffoliBox : public Box {
  public:
   /**
    * Construct a circuit that synthesise the given state permutation
@@ -37,15 +37,15 @@ class StatePermutationBox : public Box {
    * @param permutation map between basis states
    */
   // TODO consider let the user to choose between Ry/Rx
-  explicit StatePermutationBox(
+  explicit ToffoliBox(
       const state_perm_t &permutation,
       const OpType &rotation_axis = OpType::Ry);
 
   /**
    * Copy constructor
    */
-  StatePermutationBox(const StatePermutationBox &other);
-  ~StatePermutationBox() override {}
+  ToffoliBox(const ToffoliBox &other);
+  ~ToffoliBox() override {}
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &) const override {
@@ -55,11 +55,11 @@ class StatePermutationBox : public Box {
   SymSet free_symbols() const override { return {}; }
 
   /**
-   * Equality check between two StatePermutationBox instances
+   * Equality check between two ToffoliBox instances
    */
   bool is_equal(const Op &op_other) const override {
-    const StatePermutationBox &other =
-        dynamic_cast<const StatePermutationBox &>(op_other);
+    const ToffoliBox &other =
+        dynamic_cast<const ToffoliBox &>(op_other);
     return id_ == other.get_id();
   }
 
@@ -83,8 +83,8 @@ class StatePermutationBox : public Box {
    */
   void generate_circuit() const override;
 
-  StatePermutationBox()
-      : Box(OpType::StatePermutationBox),
+  ToffoliBox()
+      : Box(OpType::ToffoliBox),
         permutation_(),
         rotation_axis_(OpType::Ry) {}
 

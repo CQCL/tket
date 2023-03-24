@@ -39,7 +39,7 @@ add_library(tket-${COMP}
     Multiplexor.cpp
     StatePreparation.cpp
     DiagonalBox.cpp
-    StatePermutation.cpp)
+    ToffoliBox.cpp)
 
 list(APPEND DEPS_${COMP}
     Gate

@@ -172,8 +172,7 @@ bool is_box_type(OpType optype) {
       OpType::ProjectorAssertionBox,
       OpType::StabiliserAssertionBox,
       OpType::UnitaryTableauBox,
-      OpType::ToffoliBox,
-      OpType::StatePermutationBox};
+      OpType::ToffoliBox};
   return find_in_set(optype, boxes);
 }
 
