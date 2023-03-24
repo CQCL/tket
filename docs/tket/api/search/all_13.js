@@ -74,7 +74,7 @@ var searchData=
   ['special_5fucc_5fsynthesis_1894',['special_UCC_synthesis',['../namespacetket_1_1Transforms.html#a0d7447cad44345bd15f52e502c00bc04',1,'tket::Transforms']]],
   ['specific_5fpostcons_5f_1895',['specific_postcons_',['../structtket_1_1PostConditions.html#a764f6b3773ade3d1d9192362a5ddc107',1,'tket::PostConditions']]],
   ['spider_5ffusion_1896',['spider_fusion',['../classtket_1_1zx_1_1Rewrite.html#a198589be55771871841b9d2ba6fcabfa',1,'tket::zx::Rewrite']]],
-  ['squaregrid_1897',['SquareGrid',['../classtket_1_1SquareGrid.html#a853050d9684576b9bbdf2be9b9de93ce',1,'tket::SquareGrid::SquareGrid()'],['../classtket_1_1SquareGrid.html',1,'tket::SquareGrid']]],
+  ['squaregrid_1897',['SquareGrid',['../classtket_1_1SquareGrid.html#a3c45792cee75766421b7b9e062559cda',1,'tket::SquareGrid::SquareGrid()'],['../classtket_1_1SquareGrid.html',1,'tket::SquareGrid']]],
   ['squash_1898',['squash',['../classtket_1_1SingleQubitSquash.html#a4b047244a4c5ed04dd34665149216a06',1,'tket::SingleQubitSquash']]],
   ['squash_5f1qb_5fto_5fpqp_1899',['squash_1qb_to_pqp',['../namespacetket_1_1Transforms.html#a8d602ed5ee73002e620a6bdd0f39b754',1,'tket::Transforms']]],
   ['squash_5f1qb_5fto_5frz_5fphasedx_1900',['squash_1qb_to_Rz_PhasedX',['../namespacetket_1_1Transforms.html#a69d0a33ab14018f00d76b7bcea8ff987',1,'tket::Transforms']]],

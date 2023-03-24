@@ -74,7 +74,7 @@ var searchData=
   ['reverse_5fbits_4055',['reverse_bits',['../namespacetket.html#a1a6f95ad0af21ec94f0f438ca69abf4c',1,'tket']]],
   ['reverse_5findexing_4056',['reverse_indexing',['../namespacetket.html#ac750e377a184bf7a76b875691c07892f',1,'tket::reverse_indexing(const Eigen::Matrix4cd &amp;m)'],['../namespacetket.html#a35dcbd88fada095a61a52b20decbcd41',1,'tket::reverse_indexing(const Matrix8cd &amp;m)'],['../namespacetket.html#a241a6b680ec3430817d3beca10178c11',1,'tket::reverse_indexing(const Eigen::MatrixXcd &amp;m)'],['../namespacetket.html#a0fe0ef6db7f0eed227ff46a946de6dc4',1,'tket::reverse_indexing(const Eigen::VectorXcd &amp;v)']]],
   ['rewire_4057',['rewire',['../classtket_1_1Circuit.html#abf00d3034dae106bbedcaa13969486aa',1,'tket::Circuit']]],
-  ['ringarch_4058',['RingArch',['../classtket_1_1RingArch.html#a77f9ed7b3d5a948f5766268643884f9b',1,'tket::RingArch']]],
+  ['ringarch_4058',['RingArch',['../classtket_1_1RingArch.html#a60294b1d0b46955506cea5b1b0fc8b67',1,'tket::RingArch']]],
   ['rotation_4059',['Rotation',['../classtket_1_1Rotation.html#ac9c20d13a7e5bfbf4d993fe1dbbea8b5',1,'tket::Rotation::Rotation(OpType optype, Expr a)'],['../classtket_1_1Rotation.html#abaaa32057aa0a248b084018e7c837fc9',1,'tket::Rotation::Rotation()']]],
   ['route_5fcircuit_4060',['route_circuit',['../classtket_1_1MappingManager.html#a7beea064594ff185c6fc72bfa3c99ac5',1,'tket::MappingManager']]],
   ['route_5fcircuit_5fwith_5fmaps_4061',['route_circuit_with_maps',['../classtket_1_1MappingManager.html#a7cdb8460fdf4d61790d3054277be600d',1,'tket::MappingManager']]],

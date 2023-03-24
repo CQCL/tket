@@ -330,53 +330,55 @@ $(function() {
 <div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160; </div>
 <div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;<span class="comment">//      Architecture subclasses     //</span></div>
 <div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;<span class="comment"></span> </div>
-<div class="line"><a name="l00257"></a><span class="lineno"><a class="line" href="classtket_1_1RingArch.html#a77f9ed7b3d5a948f5766268643884f9b">  257</a></span>&#160;<a class="code" href="classtket_1_1RingArch.html#a77f9ed7b3d5a948f5766268643884f9b">RingArch::RingArch</a>(<span class="keywordtype">unsigned</span> numberOfNodes)</div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;    : <a class="code" href="classtket_1_1Architecture.html">Architecture</a>(get_edges(numberOfNodes)) {}</div>
+<div class="line"><a name="l00257"></a><span class="lineno"><a class="line" href="classtket_1_1RingArch.html#a60294b1d0b46955506cea5b1b0fc8b67">  257</a></span>&#160;<a class="code" href="classtket_1_1RingArch.html#a60294b1d0b46955506cea5b1b0fc8b67">RingArch::RingArch</a>(<span class="keywordtype">unsigned</span> numberOfNodes, <span class="keyword">const</span> std::string&amp; label)</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;    : <a class="code" href="classtket_1_1Architecture.html">Architecture</a>(get_edges(numberOfNodes, label)) {}</div>
 <div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160; </div>
 <div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;std::vector&lt;Architecture::Connection&gt; RingArch::get_edges(</div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;    <span class="keywordtype">unsigned</span> numberOfNodes) {</div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;    <span class="keywordtype">unsigned</span> numberOfNodes, <span class="keyword">const</span> std::string&amp; label) {</div>
 <div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;  std::vector&lt;Connection&gt; <a class="code" href="classtket_1_1graphs_1_1DirectedGraphBase.html#a08571e4215517a795c13c1a58ac7751b">edges</a>;</div>
 <div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; numberOfNodes; i++) {</div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;    <a class="code" href="classtket_1_1Node.html">Node</a> n1(<span class="stringliteral">&quot;ringNode&quot;</span>, i);</div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;    <a class="code" href="classtket_1_1Node.html">Node</a> n2(<span class="stringliteral">&quot;ringNode&quot;</span>, (i + 1) % numberOfNodes);</div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;    <a class="code" href="classtket_1_1Node.html">Node</a> n1(label, i);</div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;    <a class="code" href="classtket_1_1Node.html">Node</a> n2(label, (i + 1) % numberOfNodes);</div>
 <div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;    <a class="code" href="classtket_1_1graphs_1_1DirectedGraphBase.html#a08571e4215517a795c13c1a58ac7751b">edges</a>.push_back({n1, n2});</div>
 <div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;  }</div>
 <div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;  <span class="keywordflow">return</span> <a class="code" href="classtket_1_1graphs_1_1DirectedGraphBase.html#a08571e4215517a795c13c1a58ac7751b">edges</a>;</div>
 <div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;}</div>
 <div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160; </div>
-<div class="line"><a name="l00271"></a><span class="lineno"><a class="line" href="classtket_1_1SquareGrid.html#a853050d9684576b9bbdf2be9b9de93ce">  271</a></span>&#160;<a class="code" href="classtket_1_1SquareGrid.html#a853050d9684576b9bbdf2be9b9de93ce">SquareGrid::SquareGrid</a>(</div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">unsigned</span> dim_r, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> dim_c, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> _layers)</div>
-<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;    : <a class="code" href="classtket_1_1Architecture.html">Architecture</a>(get_edges(dim_r, dim_c, _layers)),</div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;      dimension_r{dim_r},</div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;      dimension_c{dim_c},</div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;      layers{_layers} {}</div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160; </div>
-<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;std::vector&lt;Architecture::Connection&gt; SquareGrid::get_edges(</div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">unsigned</span> dim_r, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> dim_c, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> layers) {</div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;  std::vector&lt;Connection&gt; <a class="code" href="classtket_1_1graphs_1_1DirectedGraphBase.html#a08571e4215517a795c13c1a58ac7751b">edges</a>;</div>
-<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> l = 0; l &lt; layers; l++) {</div>
-<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> ver = 0; ver &lt; dim_r; ver++) {</div>
-<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;      <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> hor = 0; hor &lt; dim_c; hor++) {</div>
-<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;        <a class="code" href="classtket_1_1Node.html">Node</a> n(<span class="stringliteral">&quot;gridNode&quot;</span>, ver, hor, l);</div>
-<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;        <span class="keywordflow">if</span> (hor != dim_c - 1) {</div>
-<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;          <a class="code" href="classtket_1_1Node.html">Node</a> h_neighbour(<span class="stringliteral">&quot;gridNode&quot;</span>, ver, hor + 1, l);</div>
-<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;          <a class="code" href="classtket_1_1graphs_1_1DirectedGraphBase.html#a08571e4215517a795c13c1a58ac7751b">edges</a>.push_back({n, h_neighbour});</div>
-<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;        }</div>
-<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;        <span class="keywordflow">if</span> (ver != dim_r - 1) {</div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;          Node v_neighbour(<span class="stringliteral">&quot;gridNode&quot;</span>, ver + 1, hor, l);</div>
-<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;          <a class="code" href="classtket_1_1graphs_1_1DirectedGraphBase.html#a08571e4215517a795c13c1a58ac7751b">edges</a>.push_back({n, v_neighbour});</div>
-<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;        }</div>
-<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;        <span class="keywordflow">if</span> (l != layers - 1) {</div>
-<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;          Node l_neighbour(<span class="stringliteral">&quot;gridNode&quot;</span>, ver, hor, l + 1);</div>
-<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;          <a class="code" href="classtket_1_1graphs_1_1DirectedGraphBase.html#a08571e4215517a795c13c1a58ac7751b">edges</a>.push_back({n, l_neighbour});</div>
-<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;        }</div>
-<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;      }</div>
-<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;    }</div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;  }</div>
-<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;  <span class="keywordflow">return</span> <a class="code" href="classtket_1_1graphs_1_1DirectedGraphBase.html#a08571e4215517a795c13c1a58ac7751b">edges</a>;</div>
-<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;}</div>
-<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160; </div>
-<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;}  <span class="comment">// namespace tket</span></div>
+<div class="line"><a name="l00271"></a><span class="lineno"><a class="line" href="classtket_1_1SquareGrid.html#a3c45792cee75766421b7b9e062559cda">  271</a></span>&#160;<a class="code" href="classtket_1_1SquareGrid.html#a3c45792cee75766421b7b9e062559cda">SquareGrid::SquareGrid</a>(</div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">unsigned</span> dim_r, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> dim_c, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> _layers,</div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;    <span class="keyword">const</span> std::string&amp; label)</div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;    : <a class="code" href="classtket_1_1Architecture.html">Architecture</a>(get_edges(dim_r, dim_c, _layers, label)),</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;      dimension_r{dim_r},</div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;      dimension_c{dim_c},</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;      layers{_layers} {}</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160; </div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;std::vector&lt;Architecture::Connection&gt; SquareGrid::get_edges(</div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;    <span class="keyword">const</span> <span class="keywordtype">unsigned</span> dim_r, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> dim_c, <span class="keyword">const</span> <span class="keywordtype">unsigned</span> layers,</div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;    <span class="keyword">const</span> std::string&amp; label) {</div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;  std::vector&lt;Connection&gt; <a class="code" href="classtket_1_1graphs_1_1DirectedGraphBase.html#a08571e4215517a795c13c1a58ac7751b">edges</a>;</div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> l = 0; l &lt; layers; l++) {</div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> ver = 0; ver &lt; dim_r; ver++) {</div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;      <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> hor = 0; hor &lt; dim_c; hor++) {</div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;        <a class="code" href="classtket_1_1Node.html">Node</a> n(label, ver, hor, l);</div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;        <span class="keywordflow">if</span> (hor != dim_c - 1) {</div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;          <a class="code" href="classtket_1_1Node.html">Node</a> h_neighbour(label, ver, hor + 1, l);</div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;          <a class="code" href="classtket_1_1graphs_1_1DirectedGraphBase.html#a08571e4215517a795c13c1a58ac7751b">edges</a>.push_back({n, h_neighbour});</div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;        }</div>
+<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;        <span class="keywordflow">if</span> (ver != dim_r - 1) {</div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;          Node v_neighbour(label, ver + 1, hor, l);</div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;          <a class="code" href="classtket_1_1graphs_1_1DirectedGraphBase.html#a08571e4215517a795c13c1a58ac7751b">edges</a>.push_back({n, v_neighbour});</div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;        }</div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;        <span class="keywordflow">if</span> (l != layers - 1) {</div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;          Node l_neighbour(label, ver, hor, l + 1);</div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;          <a class="code" href="classtket_1_1graphs_1_1DirectedGraphBase.html#a08571e4215517a795c13c1a58ac7751b">edges</a>.push_back({n, l_neighbour});</div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;        }</div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;      }</div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;    }</div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;  }</div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;  <span class="keywordflow">return</span> <a class="code" href="classtket_1_1graphs_1_1DirectedGraphBase.html#a08571e4215517a795c13c1a58ac7751b">edges</a>;</div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;}</div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160; </div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;}  <span class="comment">// namespace tket</span></div>
 <div class="ttc" id="aArchitecture_8hpp_html"><div class="ttname"><a href="Architecture_8hpp.html">Architecture.hpp</a></div></div>
 <div class="ttc" id="aArticulationPoints_8hpp_html"><div class="ttname"><a href="ArticulationPoints_8hpp.html">ArticulationPoints.hpp</a></div></div>
 <div class="ttc" id="aJson_8hpp_html"><div class="ttname"><a href="Json_8hpp.html">Json.hpp</a></div></div>
@@ -391,8 +393,8 @@ $(function() {
 <div class="ttc" id="aclasstket_1_1Architecture_html_ae211c51740b12baa9fe9f1476a97a3b7"><div class="ttname"><a href="classtket_1_1Architecture.html#ae211c51740b12baa9fe9f1476a97a3b7">tket::Architecture::remove_worst_nodes</a></div><div class="ttdeci">node_set_t remove_worst_nodes(unsigned num)</div><div class="ttdoc">Remove a number of nodes according to a heuristic measure of connectivity.</div><div class="ttdef"><b>Definition:</b> <a href="Architecture_8cpp_source.html#l00158">Architecture.cpp:158</a></div></div>
 <div class="ttc" id="aclasstket_1_1FullyConnected_html"><div class="ttname"><a href="classtket_1_1FullyConnected.html">tket::FullyConnected</a></div><div class="ttdef"><b>Definition:</b> <a href="Architecture_8hpp_source.html#l00140">Architecture.hpp:140</a></div></div>
 <div class="ttc" id="aclasstket_1_1Node_html"><div class="ttname"><a href="classtket_1_1Node.html">tket::Node</a></div><div class="ttdoc">Architectural qubit location.</div><div class="ttdef"><b>Definition:</b> <a href="UnitID_8hpp_source.html#l00265">UnitID.hpp:265</a></div></div>
-<div class="ttc" id="aclasstket_1_1RingArch_html_a77f9ed7b3d5a948f5766268643884f9b"><div class="ttname"><a href="classtket_1_1RingArch.html#a77f9ed7b3d5a948f5766268643884f9b">tket::RingArch::RingArch</a></div><div class="ttdeci">RingArch(unsigned numberOfNodes)</div><div class="ttdef"><b>Definition:</b> <a href="Architecture_8cpp_source.html#l00257">Architecture.cpp:257</a></div></div>
-<div class="ttc" id="aclasstket_1_1SquareGrid_html_a853050d9684576b9bbdf2be9b9de93ce"><div class="ttname"><a href="classtket_1_1SquareGrid.html#a853050d9684576b9bbdf2be9b9de93ce">tket::SquareGrid::SquareGrid</a></div><div class="ttdeci">SquareGrid(const unsigned dim_r, const unsigned dim_c, const unsigned _layers=1)</div><div class="ttdef"><b>Definition:</b> <a href="Architecture_8cpp_source.html#l00271">Architecture.cpp:271</a></div></div>
+<div class="ttc" id="aclasstket_1_1RingArch_html_a60294b1d0b46955506cea5b1b0fc8b67"><div class="ttname"><a href="classtket_1_1RingArch.html#a60294b1d0b46955506cea5b1b0fc8b67">tket::RingArch::RingArch</a></div><div class="ttdeci">RingArch(unsigned numberOfNodes, const std::string &amp;label=&quot;ringNode&quot;)</div><div class="ttdef"><b>Definition:</b> <a href="Architecture_8cpp_source.html#l00257">Architecture.cpp:257</a></div></div>
+<div class="ttc" id="aclasstket_1_1SquareGrid_html_a3c45792cee75766421b7b9e062559cda"><div class="ttname"><a href="classtket_1_1SquareGrid.html#a3c45792cee75766421b7b9e062559cda">tket::SquareGrid::SquareGrid</a></div><div class="ttdeci">SquareGrid(const unsigned dim_r, const unsigned dim_c, const unsigned _layers=1, const std::string &amp;label=&quot;gridNode&quot;)</div><div class="ttdef"><b>Definition:</b> <a href="Architecture_8cpp_source.html#l00271">Architecture.cpp:271</a></div></div>
 <div class="ttc" id="aclasstket_1_1graphs_1_1AbstractGraph_html_a1dd52e51660aae6f70754eb64167e8f7"><div class="ttname"><a href="classtket_1_1graphs_1_1AbstractGraph.html#a1dd52e51660aae6f70754eb64167e8f7">tket::graphs::AbstractGraph::n_nodes</a></div><div class="ttdeci">unsigned n_nodes() const</div><div class="ttdoc">Number of nodes.</div><div class="ttdef"><b>Definition:</b> <a href="AbstractGraph_8hpp_source.html#l00075">AbstractGraph.hpp:75</a></div></div>
 <div class="ttc" id="aclasstket_1_1graphs_1_1AbstractGraph_html_a9a9ac744aa2763fc45132a16b8f376f4"><div class="ttname"><a href="classtket_1_1graphs_1_1AbstractGraph.html#a9a9ac744aa2763fc45132a16b8f376f4">tket::graphs::AbstractGraph::nodes</a></div><div class="ttdeci">const std::set&lt; T &gt; &amp; nodes() const</div><div class="ttdoc">Reference to the underlying node set.</div><div class="ttdef"><b>Definition:</b> <a href="AbstractGraph_8hpp_source.html#l00067">AbstractGraph.hpp:67</a></div></div>
 <div class="ttc" id="aclasstket_1_1graphs_1_1AbstractGraph_html_ac76d6e2555455487441603e255b6251c"><div class="ttname"><a href="classtket_1_1graphs_1_1AbstractGraph.html#ac76d6e2555455487441603e255b6251c">tket::graphs::AbstractGraph::node_exists</a></div><div class="ttdeci">bool node_exists(const T &amp;node) const</div><div class="ttdoc">Check if a node exists.</div><div class="ttdef"><b>Definition:</b> <a href="AbstractGraph_8hpp_source.html#l00064">AbstractGraph.hpp:64</a></div></div>

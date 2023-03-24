@@ -103,7 +103,7 @@ var searchData=
   ['rewritefun_1789',['RewriteFun',['../classtket_1_1zx_1_1Rewrite.html#adedcb5889dbcfc2998420781689d87bc',1,'tket::zx::Rewrite']]],
   ['right_1790',['Right',['../namespacetket.html#a75732ecf6e963fb7b73ca798e8d12671a92b09c7c48c520c3c55e497875da437c',1,'tket']]],
   ['right_5fmap_1791',['right_map',['../classtket_1_1graphs_1_1DirectedGraphBase.html#a7d953086d831f7b2093e72ad7161429a',1,'tket::graphs::DirectedGraphBase']]],
-  ['ringarch_1792',['RingArch',['../classtket_1_1RingArch.html#a77f9ed7b3d5a948f5766268643884f9b',1,'tket::RingArch::RingArch()'],['../classtket_1_1RingArch.html',1,'tket::RingArch']]],
+  ['ringarch_1792',['RingArch',['../classtket_1_1RingArch.html#a60294b1d0b46955506cea5b1b0fc8b67',1,'tket::RingArch::RingArch()'],['../classtket_1_1RingArch.html',1,'tket::RingArch']]],
   ['root_1793',['Root',['../namespacetket.html#a75732ecf6e963fb7b73ca798e8d12671afa03eb688ad8aa1db593d33dabd89bad',1,'tket']]],
   ['root_1794',['root',['../classtket_1_1aas_1_1SteinerTree.html#a64f6bc3eb475ea9de520ff57a947b3c7',1,'tket::aas::SteinerTree::root()'],['../classtket_1_1graphs_1_1detail_1_1TreeSearchBase.html#ad2ce511a0a7d235ff828c7f834d2c0cd',1,'tket::graphs::detail::TreeSearchBase::root()']]],
   ['rotation_1795',['Rotation',['../classtket_1_1Rotation.html#abaaa32057aa0a248b084018e7c837fc9',1,'tket::Rotation::Rotation()'],['../classtket_1_1Rotation.html#ac9c20d13a7e5bfbf4d993fe1dbbea8b5',1,'tket::Rotation::Rotation(OpType optype, Expr a)'],['../classtket_1_1Rotation.html',1,'tket::Rotation']]],

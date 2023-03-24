@@ -27,5 +27,5 @@ var searchData=
   ['full_5fpeephole_5foptimise_3364',['full_peephole_optimise',['../namespacetket_1_1Transforms.html#a4efaf3df279d0c9dadfef959896f4b84',1,'tket::Transforms']]],
   ['fullpeepholeoptimise_3365',['FullPeepholeOptimise',['../namespacetket.html#a12e03da4c412428c09dee4eb579a4823',1,'tket']]],
   ['fully_5freduced_3366',['fully_reduced',['../classtket_1_1aas_1_1SteinerTree.html#a3e1ed3ee75b468867954ade8e2e01c4d',1,'tket::aas::SteinerTree']]],
-  ['fullyconnected_3367',['FullyConnected',['../classtket_1_1FullyConnected.html#afc964efdd3799d74f07ba38f6ff0133d',1,'tket::FullyConnected::FullyConnected()'],['../classtket_1_1FullyConnected.html#a220fdd2a18e9c0457ba634a0088aa2ac',1,'tket::FullyConnected::FullyConnected(unsigned n)']]]
+  ['fullyconnected_3367',['FullyConnected',['../classtket_1_1FullyConnected.html#afc964efdd3799d74f07ba38f6ff0133d',1,'tket::FullyConnected::FullyConnected()'],['../classtket_1_1FullyConnected.html#ae105c6593f33fbbc23e12bc33f9ad2ea',1,'tket::FullyConnected::FullyConnected(unsigned n, const std::string &amp;label=&quot;fcNode&quot;)']]]
 ];
