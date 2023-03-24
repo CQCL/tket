@@ -847,20 +847,14 @@ class CircuitTransformer(Transformer):
                 ],
             )
             # checks that each command has same string
-            existing_op = (
-                len(
-                    set(
-                        [
-                            (str(g) == str(c)) == True
-                            for g, c in zip(
-                                gate_circ.get_commands(), comparison_circ.get_commands()
-                            )
-                        ]
+            existing_op = set(
+                [
+                    str(g) == str(c)
+                    for g, c in zip(
+                        gate_circ.get_commands(), comparison_circ.get_commands()
                     )
-                )
-                == 1
-            )
-
+                ]
+            ) == {True}
         if not existing_op:
             gate_circ.symbol_substitution(symbol_map)
             gate_circ.rename_units(rename_map)
