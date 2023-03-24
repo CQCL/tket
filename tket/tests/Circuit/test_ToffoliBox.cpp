@@ -106,14 +106,12 @@ SCENARIO("Test ToffoliBox Exceptions") {
     state_perm_t perm;
     perm[{0, 1}] = {1, 0};
     REQUIRE_THROWS_MATCHES(
-        ToffoliBox(perm), std::invalid_argument,
-        MessageContains("invalid"));
+        ToffoliBox(perm), std::invalid_argument, MessageContains("invalid"));
   }
   GIVEN("Empty permutation") {
     state_perm_t perm;
     REQUIRE_THROWS_MATCHES(
-        ToffoliBox(perm), std::invalid_argument,
-        MessageContains("empty"));
+        ToffoliBox(perm), std::invalid_argument, MessageContains("empty"));
   }
   GIVEN("Wrong axis") {
     state_perm_t perm;
@@ -157,8 +155,7 @@ SCENARIO("Test constructors & transformations") {
     ToffoliBox box(perm);
     Circuit circ1 = *box.to_circuit();
     Circuit circ1_dag = circ1.dagger();
-    const ToffoliBox box_dag =
-        static_cast<const ToffoliBox &>(*box.dagger());
+    const ToffoliBox box_dag = static_cast<const ToffoliBox &>(*box.dagger());
     Circuit circ2 = *box_dag.to_circuit();
     REQUIRE(
         (tket_sim::get_unitary(circ1_dag) - tket_sim::get_unitary(circ2))

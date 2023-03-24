@@ -58,8 +58,7 @@ class ToffoliBox : public Box {
    * Equality check between two ToffoliBox instances
    */
   bool is_equal(const Op &op_other) const override {
-    const ToffoliBox &other =
-        dynamic_cast<const ToffoliBox &>(op_other);
+    const ToffoliBox &other = dynamic_cast<const ToffoliBox &>(op_other);
     return id_ == other.get_id();
   }
 
@@ -84,9 +83,7 @@ class ToffoliBox : public Box {
   void generate_circuit() const override;
 
   ToffoliBox()
-      : Box(OpType::ToffoliBox),
-        permutation_(),
-        rotation_axis_(OpType::Ry) {}
+      : Box(OpType::ToffoliBox), permutation_(), rotation_axis_(OpType::Ry) {}
 
  private:
   const state_perm_t permutation_;

@@ -80,9 +80,7 @@ op_signature_t ToffoliBox::get_signature() const {
   return qubits;
 }
 
-state_perm_t ToffoliBox::get_permutation() const {
-  return permutation_;
-}
+state_perm_t ToffoliBox::get_permutation() const { return permutation_; }
 
 OpType ToffoliBox::get_rotation_axis() const { return rotation_axis_; }
 
