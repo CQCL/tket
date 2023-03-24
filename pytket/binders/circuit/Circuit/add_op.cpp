@@ -26,6 +26,7 @@
 #include "Circuit/DiagonalBox.hpp"
 #include "Circuit/Multiplexor.hpp"
 #include "Circuit/StatePreparation.hpp"
+#include "Circuit/ToffoliBox.hpp"
 #include "Converters/PhasePoly.hpp"
 #include "Gate/OpPtrFunctions.hpp"
 #include "Ops/Op.hpp"

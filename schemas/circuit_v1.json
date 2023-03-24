@@ -542,6 +542,31 @@
         "is_inverse": {
           "type": "boolean",
           "description": "Indicate whether to implement the dagger of a StatePreparationBox."
+        },
+        "permutation": {
+          "type": "array",
+          "description": "Map of computational basis states",
+          "items": {
+            "type": "array",
+            "items": [
+              {
+                "type": "array",
+                "items": {
+                  "type": "boolean"
+                }
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "boolean"
+                }
+              }
+            ]
+          } 
+        },
+        "rotation_axis": {
+          "type": "string",
+          "description": "A string corresponding to the tket OpType of the rotation axis."
         }
       },
       "required": [
@@ -631,8 +656,8 @@
           },
           "then": {
             "required": [
-              "cycles",
-              "n_qubits"
+              "permutation",
+              "rotation_axis"
             ]
           }
         },

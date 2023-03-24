@@ -24,6 +24,7 @@
 #include "Circuit/Boxes.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Circuit/Command.hpp"
+#include "Circuit/ToffoliBox.hpp"
 #include "Gate/OpPtrFunctions.hpp"
 #include "Gate/SymTable.hpp"
 #include "Mapping/Verification.hpp"
