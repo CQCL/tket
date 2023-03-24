@@ -709,6 +709,16 @@ def test_conditional_expressions() -> None:
         circuit_to_qasm_str(c0132, header="hqslib1")
 
 
+def test_tk2_definition():
+    c = Circuit(2).TK2(0.2, 0.2, 0.2, 0, 1)
+    qs = circuit_to_qasm_str(c)
+    assert "gate tk2 (param0, param1, param2) tk2q0,tk2q1 {" in qs
+    assert "u3(3.5*pi,(param0/pi + 3.0)*pi,0.5*pi) tk2q0;" in qs
+    assert "u3(1.0*pi,0.0*pi,(param1/pi + 1.0)*pi) tk2q1;" in qs
+    assert "u3(0.0*pi,1.5*pi,(param2/pi + 0.5)*pi) tk2q1;" in qs
+    assert "tk2(0.2*pi,0.2*pi,0.2*pi) q[0],q[1];" in qs
+
+
 if __name__ == "__main__":
     test_qasm_correct()
     test_qasm_qubit()
@@ -741,3 +751,4 @@ if __name__ == "__main__":
     test_decomposable_extended()
     test_alternate_encoding()
     test_header_stops_gate_definition()
+    test_tk2_definition()
