@@ -37,7 +37,9 @@ class StatePermutationBox : public Box {
    * @param permutation map between basis states
    */
   // TODO consider let the user to choose between Ry/Rx
-  explicit StatePermutationBox(const state_perm_t &permutation);
+  explicit StatePermutationBox(
+      const state_perm_t &permutation,
+      const OpType &rotation_axis = OpType::Ry);
 
   /**
    * Copy constructor
@@ -71,18 +73,23 @@ class StatePermutationBox : public Box {
   static nlohmann::json to_json(const Op_ptr &op);
 
   state_perm_t get_permutation() const;
+  OpType get_rotation_axis() const;
 
  protected:
   /**
    * @brief Generate the decomposed circuit using
-   * a sequence of multiplexed-Rx gates and a diagonal box
+   * a sequence of multiplexed-Rx/Ry gates and a diagonal box
    *
    */
   void generate_circuit() const override;
 
-  StatePermutationBox() : Box(OpType::StatePermutationBox), permutation_() {}
+  StatePermutationBox()
+      : Box(OpType::StatePermutationBox),
+        permutation_(),
+        rotation_axis_(OpType::Ry) {}
 
  private:
   const state_perm_t permutation_;
+  const OpType rotation_axis_;
 };
 }  // namespace tket
