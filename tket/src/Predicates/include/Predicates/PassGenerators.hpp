@@ -56,6 +56,12 @@ PassPtr gen_euler_pass(const OpType& q, const OpType& p, bool strict = false);
 PassPtr gen_clifford_simp_pass(bool allow_swaps = true);
 
 /**
+ * Pass to remove empty Quantum edges from a Circuit and then relabel
+ * all Qubit to some new register defined by a passed label.
+ * Qubits removed the Circuit are removed from bimaps.
+ */
+PassPtr gen_flatten_relabel_registers_pass(const std::string& label);
+/**
  * Pass to rename some or all qubits according to the given map.
  *
  * Qubits in the map that do not occur in the circuit are ignored.
