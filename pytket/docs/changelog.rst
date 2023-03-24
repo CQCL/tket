@@ -7,6 +7,10 @@ Unreleased
 Minor new features:
 
 * Update to networkx 3.
+  
+Fixes:
+
+* Multiply symbolic parameters in auto-generated gate definitions by "/pi" in ``circuit_to_qasm_io``
 
 1.13.1 (March 2023)
 -------------------
