@@ -843,11 +843,23 @@ class CircuitTransformer(Transformer):
                 PARAM_EXTRA_COMMANDS[gate],
                 qubit_args,
                 [
-                    Symbol("param" + str(index)) for index in range(len(symbols))  # type: ignore
+                    Symbol("param" + str(index) + "/pi") for index in range(len(symbols))  # type: ignore
                 ],
             )
-            if circuit_to_qasm_str(comparison_circ) == circuit_to_qasm_str(gate_circ):
-                existing_op = True
+            # checks that each command has same string
+            existing_op = (
+                len(
+                    set(
+                        [
+                            (str(g) == str(c)) == True
+                            for g, c in zip(
+                                gate_circ.get_commands(), comparison_circ.get_commands()
+                            )
+                        ]
+                    )
+                )
+                == 1
+            )
 
         if not existing_op:
             gate_circ.symbol_substitution(symbol_map)
@@ -1055,10 +1067,12 @@ def _write_gate_definition(
     if params:
         # need to add parameters to gate definition
         buffer.write("(")
-        symbols = [Symbol("param" + str(index)) for index in range(len(params))]  # type: ignore
-        for symbol in symbols[:-1]:
+        symbols = [Symbol("param" + str(index) + "/pi") for index in range(len(params))]  # type: ignore
+        symbols_header = [Symbol("param" + str(index)) for index in range(len(params))]  # type: ignore
+        for symbol in symbols_header[:-1]:
             buffer.write(symbol.name + ", ")
-        buffer.write(symbols[-1].name + ") ")
+        buffer.write(symbols_header[-1].name + ") ")
+
     # add qubits to gate definition
     qubit_args = [Qubit(opstr + "q" + str(index)) for index in list(range(n_qubits))]
     for qb in qubit_args[:-1]:
