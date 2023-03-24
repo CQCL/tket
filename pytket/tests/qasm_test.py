@@ -709,7 +709,7 @@ def test_conditional_expressions() -> None:
         circuit_to_qasm_str(c0132, header="hqslib1")
 
 
-def test_tk2_definition():
+def test_tk2_definition() -> None:
     c = Circuit(2).TK2(0.2, 0.2, 0.2, 0, 1)
     qs = circuit_to_qasm_str(c)
     assert "gate tk2 (param0, param1, param2) tk2q0,tk2q1 {" in qs
