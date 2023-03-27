@@ -166,7 +166,7 @@ class Backend(ABC):
             - Level 2 (the default) adds more computationally intensive optimisations
               that should give the best results from execution.
 
-        :param timeout: The time in milliseconds spent searching for new qubit placements.
+        :param timeout: The time in milliseconds spent searching for new qubit placements (defaults to 1000).
 
         :type optimisation_level: int, optional
         :type timeout: int, optional
