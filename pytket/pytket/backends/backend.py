@@ -188,13 +188,13 @@ class Backend(ABC):
         """
         return_circuit = circuit.copy()
 
+        self.default_compilation_pass(optimisation_level, timeout).apply(return_circuit)
+
         if check_predicates:
             for i, predicate in enumerate(self.required_predicates):
                 compilation_error = CircuitNotValidError(i, repr(predicate))
                 if not predicate.verify(return_circuit):
                     raise compilation_error
-
-        self.default_compilation_pass(optimisation_level, timeout).apply(return_circuit)
 
         return return_circuit
 
