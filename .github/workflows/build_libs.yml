@@ -13,6 +13,8 @@ jobs:
       tklog: ${{ steps.filter.outputs.tklog }}
       tkassert: ${{ steps.filter.outputs.tkassert }}
       tkrng: ${{ steps.filter.outputs.tkrng }}
+      tktokenswap: ${{ steps.filter.outputs.tktokenswap }}
+      tkwsm: ${{ steps.filter.outputs.tkwsm }}
       libs: ${{ steps.filter.outputs.changes }}
     steps:
     - uses: actions/checkout@v3
