@@ -32,11 +32,13 @@ typedef std::map<std::vector<bool>, std::vector<bool>> state_perm_t;
 class ToffoliBox : public Box {
  public:
   /**
-   * Construct a circuit that synthesise the given state permutation
+   * @brief Construct a circuit that synthesise the given state permutation
    *
    * @param permutation map between basis states
+   * @param rotation_axis the rotation axis of the multiplexors used in the
+   * decomposition. Can be either Rx or Ry.
+   *
    */
-  // TODO consider let the user to choose between Ry/Rx
   explicit ToffoliBox(
       const state_perm_t &permutation,
       const OpType &rotation_axis = OpType::Ry);
