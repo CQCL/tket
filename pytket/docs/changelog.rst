@@ -9,6 +9,7 @@ Minor new features:
 * Update to networkx 3.
 * Add "label" argument to ``SquareGrid``, ``RingArch`` and ``FullyConnected`` 
   ``Architecture`` classes to give custom name to constructed ``Node``.
+* Update ``ToffoliBox`` with a more efficient implementation.
   
 Fixes:
 
