@@ -187,9 +187,9 @@ class Backend(ABC):
         self.default_compilation_pass(optimisation_level).apply(return_circuit)
 
         if check_predicates:
-            for predicate in self.required_predicates:
-                if not predicate.verify(circuit)
-                    compilation_error = CircuitNotValidError(failed_pred=predicate)
+            for i, predicate in enumerate(self.required_predicates):
+                compilation_error = CircuitNotValidError(i, repr(predicate))
+                if not predicate.verify(return_circuit):
                     raise compilation_error
 
         return return_circuit
