@@ -21,7 +21,7 @@ from typing import Any, List
 
 import numpy as np
 
-from pytket.circuit import Circuit, OpType, BasisOrder, Qubit, Bit, Node  # type: ignore
+from pytket.circuit import Circuit, OpType, BasisOrder, Qubit, Bit, Node, if_bit  # type: ignore
 from pytket.predicates import CompilationUnit  # type: ignore
 from pytket.passes import PauliSimp, CliffordSimp, ContextSimp  # type: ignore
 from pytket.mapping import MappingManager, LexiRouteRoutingMethod, LexiLabellingMethod  # type: ignore
@@ -589,6 +589,18 @@ def test_postprocess_4() -> None:
     assert all(readout[0] == 1 for readout in counts.keys())
 
 
+def test_predicate_check() -> None:
+    backend = TketSimShotBackend()
+    circ = Circuit()
+    q_reg = circ.add_q_register("qr", 2)
+    c_reg = circ.add_c_register("cr", 2)
+    circ.X(q_reg[0])
+    circ.CX(q_reg[0], q_reg[1])
+    circ.Measure(q_reg[1], c_reg[1])
+    circ.X(q_reg[0], condition=if_bit(c_reg[1]))
+    compiled_circ = backend.get_compiled_circuit(circ, check_predicates=True)
+
+
 if __name__ == "__main__":
     # test_resulthandle()
     # test_bell()
@@ -597,5 +609,6 @@ if __name__ == "__main__":
     # test_swaps_basisorder()
     # test_outcomearray()
     test_backendresult()
+    test_predicate_check()
     # test_outcomearray_serialization()
     # test_backendresult_serialization()
