@@ -1655,7 +1655,7 @@ SCENARIO("CustomPass") {
   }
 }
 
-SCENARIO("Flatten and relabel registres") {
+SCENARIO("Flatten and relabel registers") {
   GIVEN("No empty wires, qubits from same register.") {
     Circuit c(3);
     c.add_op<unsigned>(OpType::H, {0});
