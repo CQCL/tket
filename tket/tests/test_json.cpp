@@ -756,6 +756,8 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(
       EulerAngleReduction, gen_euler_pass(OpType::Rx, OpType::Ry, false))
   COMPPASSJSONTEST(RenameQubitsPass, gen_rename_qubits_pass(qmap))
+  COMPPASSJSONTEST(
+      FlattenRelabelRegistersPass, gen_flatten_relabel_registers_pass("test"))
   COMPPASSJSONTEST(CliffordSimp, gen_clifford_simp_pass(true))
   COMPPASSJSONTEST(
       DecomposeSwapsToCXs, gen_decompose_routing_gates_to_cxs_pass(arc, false))
