@@ -112,7 +112,8 @@ PYBIND11_MODULE(architecture, m) {
           "The number of rows in the grid\n:param n_columns: The number "
           "of columns in the grid\n:param label: Name for Node in SquareGrid "
           "Architecture",
-          py::arg("n_rows"), py::arg("n_columns"), py::arg("label"))
+          py::arg("n_rows"), py::arg("n_columns"),
+          py::arg("label") = "gridNode")
       .def(
           py::init<
               const unsigned, const unsigned, const unsigned,
