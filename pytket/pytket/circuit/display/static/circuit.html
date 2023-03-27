@@ -8,6 +8,12 @@
     {% include "html/head_imports.html" %}
 </head>
 <body>
+
+{% if not jupyter %}
+<div style="position:absolute;top:0;bottom:0;left:0;right:0;margin:auto;resize:both;display:block;overflow:hidden;
+width:min(500px, 100%);height:min(300px,100%);max-width:100%;max-height:100%;">
+{% endif %}
+
     <div id="circuit-display-vue-container-{{uid}}" class="pytket-circuit-display-container">
         <div style="display: none">
             <div id="circuit-json-to-display">{{ circuit_json }}</div>
@@ -19,6 +25,11 @@
 
       {% include_raw "js/main.js" %}
     </script>
+
+{% if not jupyter %}
+</div>
+{% endif %}
+
 </body>
 </html>
 {% endmacro %}
