@@ -107,7 +107,6 @@ class Backend(ABC):
     def _check_all_circuits(
         self, circuits: Iterable[Circuit], nomeasure_warn: Optional[bool] = None
     ) -> bool:
-
         if nomeasure_warn is None:
             nomeasure_warn = not (
                 self._supports_state
@@ -188,7 +187,10 @@ class Backend(ABC):
         self.default_compilation_pass(optimisation_level).apply(return_circuit)
 
         if check_predicates:
-            assert self.valid_circuit(return_circuit)
+            for predicate in self.required_predicates:
+                if not predicate.verify(circuit)
+                    compilation_error = CircuitNotValidError(failed_pred=predicate)
+                    raise compilation_error
 
         return return_circuit
 
@@ -275,7 +277,6 @@ class Backend(ABC):
         valid_check: bool = True,
         **kwargs: KwargTypes,
     ) -> List[ResultHandle]:
-
         """
         Submit circuits to the backend for running. The results will be stored
         in the backend's result cache to be retrieved by the corresponding
