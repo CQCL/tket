@@ -166,7 +166,10 @@ class Backend(ABC):
             - Level 2 (the default) adds more computationally intensive optimisations
               that should give the best results from execution.
 
+        :param timeout: The time in milliseconds spent searching for new qubit placements.
+
         :type optimisation_level: int, optional
+        :type timeout: int, optional
         :return: Compilation pass guaranteeing required predicates.
         :rtype: BasePass
         """
@@ -182,9 +185,6 @@ class Backend(ABC):
         """
         Return a single circuit compiled with :py:meth:`default_compilation_pass`. See
         :py:meth:`Backend.get_compiled_circuits`.
-
-        Optional boolean flag to check that all :py:class:`Backend` predicates
-        are satisfied (default=False).
         """
         return_circuit = circuit.copy()
 
@@ -199,7 +199,11 @@ class Backend(ABC):
         return return_circuit
 
     def get_compiled_circuits(
-        self, circuits: Sequence[Circuit], optimisation_level: int = 2
+        self,
+        circuits: Sequence[Circuit],
+        optimisation_level: int = 2,
+        timeout: int = 1000,
+        check_predicates: bool = False,
     ) -> List[Circuit]:
         """Compile a sequence of circuits with :py:meth:`default_compilation_pass`
         and return the list of compiled circuits (does not act in place).
@@ -225,11 +229,18 @@ class Backend(ABC):
         :param optimisation_level: The level of optimisation to perform during
             compilation. See :py:meth:`default_compilation_pass` for a description of
             the different levels (0, 1 or 2). Defaults to 2.
+        :param timeout: The time in milliseconds spent searching for new qubit placements (defaults to 1000).
+        :param check_predicates: Whether or not to check that all backend predicates are satisfied after compilation (defaults to False)
         :type optimisation_level: int, optional
+        :type timeout: int, optional
+        :type check_predicates: bool, optional
         :return: Compiled circuits.
         :rtype: List[Circuit]
         """
-        return [self.get_compiled_circuit(c, optimisation_level) for c in circuits]
+        return [
+            self.get_compiled_circuit(c, optimisation_level, timeout, check_predicates)
+            for c in circuits
+        ]
 
     @property
     @abstractmethod
