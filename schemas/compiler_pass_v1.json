@@ -509,6 +509,21 @@
           "if": {
             "properties": {
               "name": {
+                "const": "FlattenRelabelRegistersPass"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "label"
+            ],
+            "maxProperties": 2
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "name": {
                 "const": "RenameQubitsPass"
               }
             }
