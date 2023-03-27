@@ -144,7 +144,7 @@ class Backend(ABC):
 
     @abstractmethod
     def default_compilation_pass(
-        self, optimisation_level: int = 2, timeout=1000
+        self, optimisation_level: int = 2, timeout: int = 1000
     ) -> BasePass:
         """
         A suggested compilation pass that will will, if possible, produce an equivalent
