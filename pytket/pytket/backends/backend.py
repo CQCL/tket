@@ -166,10 +166,11 @@ class Backend(ABC):
             - Level 2 (the default) adds more computationally intensive optimisations
               that should give the best results from execution.
 
+        :type optimisation_level: int, optional
+
         :param timeout: The time in milliseconds spent searching for
                     new qubit placements (defaults to 1000).
 
-        :type optimisation_level: int, optional
         :type timeout: int, optional
         :return: Compilation pass guaranteeing required predicates.
         :rtype: BasePass
@@ -230,12 +231,12 @@ class Backend(ABC):
         :param optimisation_level: The level of optimisation to perform during
             compilation. See :py:meth:`default_compilation_pass` for a description of
             the different levels (0, 1 or 2). Defaults to 2.
+        :type optimisation_level: int, optional
         :param timeout: The time in milliseconds spent searching for
           new qubit placements (defaults to 1000).
-        :param check_predicates: Whether or not to check that all :py:class:`Backend`
-          predicates are satisfied after compilation (defaults to False).
-        :type optimisation_level: int, optional
         :type timeout: int, optional
+        :param check_predicates:  Whether or not to check that all :py:class:`Backend`
+          predicates are satisfied after compilation (defaults to False).
         :type check_predicates: bool, optional
         :return: Compiled circuits.
         :rtype: List[Circuit]
