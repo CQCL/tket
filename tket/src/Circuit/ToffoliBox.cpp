@@ -286,7 +286,7 @@ void ToffoliBox::generate_circuit() const {
   unsigned n_qubits = (unsigned)permutation_.begin()->first.size();
   state_perm_t perm(permutation_);
   // fill the permutation with identities
-  if ((unsigned)perm.size() != (1 << n_qubits)) {
+  if ((unsigned)perm.size() != (unsigned)(1 << n_qubits)) {
     for (unsigned i = 0; i < (unsigned)(1 << n_qubits); i++) {
       std::vector<bool> state = dec_to_bin(i, n_qubits);
       if (perm.find(state) == perm.end()) {
