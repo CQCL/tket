@@ -10,6 +10,7 @@ Minor new features:
 * Add "label" argument to ``SquareGrid``, ``RingArch`` and ``FullyConnected`` 
   ``Architecture`` classes to give custom name to constructed ``Node``.
 * Update ``ToffoliBox`` with a more efficient implementation.
+* Add new ``DiagonalBox``.
   
 Fixes:
 
