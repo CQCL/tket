@@ -105,7 +105,7 @@ static std::vector<std::vector<bool>> rearrange_along_col(
   // indices. First half of the vertices represents the row entries the second
   // half represents the row indices
   cube_graph_t g(1 << (n_right_columns + 1));
-  for (unsigned postfix_dec = 0; postfix_dec < (1 << n_right_columns);
+  for (unsigned postfix_dec = 0; postfix_dec < (unsigned)(1 << n_right_columns);
        postfix_dec++) {
     std::vector<bool> postfix = dec_to_bin(postfix_dec, n_right_columns);
     // row0 = prefix+0+postfix
@@ -135,7 +135,7 @@ static std::vector<std::vector<bool>> rearrange_along_col(
   std::vector<perm_vert_t> match(1 << (n_right_columns + 1));
   edmonds_maximum_cardinality_matching(g, &match[0]);
   std::vector<std::vector<bool>> swap_pairs;
-  for (unsigned postfix_dec = 0; postfix_dec < (1 << n_right_columns);
+  for (unsigned postfix_dec = 0; postfix_dec < (unsigned)(1 << n_right_columns);
        postfix_dec++) {
     std::vector<bool> postfix = dec_to_bin(postfix_dec, n_right_columns);
     std::vector<bool> row0(prefix);
@@ -238,7 +238,7 @@ static Circuit permute(
   // step 1
   for (unsigned col_idx = 0; col_idx < n_qubits - 1; col_idx++) {
     ctrl_op_map_t op_map;
-    for (unsigned prefix = 0; prefix < (1 << col_idx); prefix++) {
+    for (unsigned prefix = 0; prefix < (unsigned)(1 << col_idx); prefix++) {
       std::vector<bool> prefix_bin;
       if (col_idx != 0) {
         prefix_bin = dec_to_bin(prefix, col_idx);
@@ -258,7 +258,7 @@ static Circuit permute(
   // step 2
   for (unsigned col_idx = n_qubits; col_idx-- > 0;) {
     ctrl_op_map_t op_map;
-    for (unsigned row = 0; row < (1 << (n_qubits - 1)); row++) {
+    for (unsigned row = 0; row < (unsigned)(1 << (n_qubits - 1)); row++) {
       std::vector<bool> pair = dec_to_bin(row, n_qubits - 1);
       pair.insert(pair.begin() + col_idx, 0);
       if (perm[pair][col_idx] != 0) {
@@ -287,7 +287,7 @@ void ToffoliBox::generate_circuit() const {
   state_perm_t perm(permutation_);
   // fill the permutation with identities
   if ((unsigned)perm.size() != (1 << n_qubits)) {
-    for (unsigned i = 0; i < (1 << n_qubits); i++) {
+    for (unsigned i = 0; i < (unsigned)(1 << n_qubits); i++) {
       std::vector<bool> state = dec_to_bin(i, n_qubits);
       if (perm.find(state) == perm.end()) {
         perm.insert({state, state});

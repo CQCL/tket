@@ -47,7 +47,7 @@ Eigen::MatrixXcd permutation_matrix(const state_perm_t &perm) {
   // use xcd for comparison to circuit unitary
   unsigned n_qubits = perm.begin()->first.size();
   Eigen::MatrixXcd u = Eigen::MatrixXcd::Zero(1 << n_qubits, 1 << n_qubits);
-  for (unsigned i = 0; i < (1 << n_qubits); i++) {
+  for (unsigned i = 0; i < (unsigned)(1 << n_qubits); i++) {
     auto it = perm.find(dec_to_bin(i, n_qubits));
     if (it == perm.end()) {
       u(i, i) = 1;
