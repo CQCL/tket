@@ -173,7 +173,16 @@ void init_boxes(py::module &m) {
           "get_circuit", [](ToffoliBox &tbox) { return *tbox.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the box")
       .def(
-          "get_permutation", &ToffoliBox::get_permutation,
+          "get_permutation",
+          [](ToffoliBox &box) {
+            std::map<py::tuple, py::tuple> outmap;
+            for (const auto &pair : box.get_permutation()) {
+              outmap.insert(
+                  {py::tuple(py::cast(pair.first)),
+                   py::tuple(py::cast(pair.second))});
+            }
+            return outmap;
+          },
           ":return: the permutation")
       .def(
           "get_rotation_axis", &ToffoliBox::get_rotation_axis,
