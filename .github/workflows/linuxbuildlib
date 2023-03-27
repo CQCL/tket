@@ -30,7 +30,7 @@ ${CONAN_CMD} remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/
 
 ${CONAN_CMD} remote login -p ${JFROG_ARTIFACTORY_TOKEN_2} tket-libs ${JFROG_ARTIFACTORY_USER_2}
 
-${CONAN_CMD} create ${TKLIB} --build=missing --user=tket --channel=stable --format json > ${TKLIB}.json
+${CONAN_CMD} create ${TKLIB} -o boost/*:header_only=True --build=missing --user=tket --channel=stable --format json > ${TKLIB}.json
 
 LIB_LABEL=$(${PYBIN}/python ./libver ${TKLIB}.json ${TKLIB})
 
