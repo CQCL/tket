@@ -143,7 +143,9 @@ class Backend(ABC):
         ...
 
     @abstractmethod
-    def default_compilation_pass(self, optimisation_level: int = 2) -> BasePass:
+    def default_compilation_pass(
+        self, optimisation_level: int = 2, timeout=1000
+    ) -> BasePass:
         """
         A suggested compilation pass that will will, if possible, produce an equivalent
         circuit suitable for running on this backend.
@@ -174,6 +176,7 @@ class Backend(ABC):
         self,
         circuit: Circuit,
         optimisation_level: int = 2,
+        timeout: int = 1000,
         check_predicates: bool = False,
     ) -> Circuit:
         """
@@ -191,7 +194,7 @@ class Backend(ABC):
                 if not predicate.verify(return_circuit):
                     raise compilation_error
 
-        self.default_compilation_pass(optimisation_level).apply(return_circuit)
+        self.default_compilation_pass(optimisation_level, timeout).apply(return_circuit)
 
         return return_circuit
 
