@@ -470,6 +470,23 @@ def test_dag_implicit_perm() -> None:
     assert dag.name == "Circuit"
 
 
+def test_all_qubits() -> None:
+    operator = QubitPauliOperator()
+    qps_0 = QubitPauliString({Qubit(0): Pauli.Z})
+    qps_1 = QubitPauliString({Qubit(1): Pauli.Z})
+    qps_2 = QubitPauliString({Qubit(2): Pauli.Z})
+    qpo_1 = QubitPauliOperator({qps_1: 1.0})
+    qpo_2 = QubitPauliOperator({qps_2: 1.0})
+
+    assert operator.all_qubits == set()
+    operator[qps_0] = 1.0
+    assert operator.all_qubits == {Qubit(0)}
+    operator += qpo_1
+    assert operator.all_qubits == {Qubit(0), Qubit(1)}
+    operator *= qpo_2
+    assert operator.all_qubits == {Qubit(0), Qubit(1), Qubit(2)}
+
+
 @strategies.composite
 def unitary_circuits(draw: Callable[[SearchStrategy[Any]], Any]) -> Circuit:
     # generate example symbolic unitary circuits
