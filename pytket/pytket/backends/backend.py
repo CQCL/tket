@@ -181,8 +181,8 @@ class Backend(ABC):
         self,
         circuit: Circuit,
         optimisation_level: int = 2,
-        timeout: int = 1000,
-        check_predicates: bool = False,
+        timeout: int = 1000
+        # check_predicates: bool = False
     ) -> Circuit:
         """
         Return a single circuit compiled with :py:meth:`default_compilation_pass`. See
@@ -192,11 +192,11 @@ class Backend(ABC):
 
         self.default_compilation_pass(optimisation_level, timeout).apply(return_circuit)
 
-        if check_predicates:
-            for i, predicate in enumerate(self.required_predicates):
-                compilation_error = CircuitNotValidError(i, repr(predicate))
-                if not predicate.verify(return_circuit):
-                    raise compilation_error
+        # if check_predicates:
+        #    for i, predicate in enumerate(self.required_predicates):
+        #        compilation_error = CircuitNotValidError(i, repr(predicate))
+        #        if not predicate.verify(return_circuit):
+        #            raise compilation_error
 
         return return_circuit
 
@@ -204,8 +204,8 @@ class Backend(ABC):
         self,
         circuits: Sequence[Circuit],
         optimisation_level: int = 2,
-        timeout: int = 1000,
-        check_predicates: bool = False,
+        timeout: int = 1000
+        # check_predicates: bool = False,
     ) -> List[Circuit]:
         """Compile a sequence of circuits with :py:meth:`default_compilation_pass`
         and return the list of compiled circuits (does not act in place).
@@ -242,8 +242,7 @@ class Backend(ABC):
         :rtype: List[Circuit]
         """
         return [
-            self.get_compiled_circuit(c, optimisation_level, timeout, check_predicates)
-            for c in circuits
+            self.get_compiled_circuit(c, optimisation_level, timeout) for c in circuits
         ]
 
     @property
