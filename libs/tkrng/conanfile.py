@@ -19,7 +19,7 @@ from conan.errors import ConanInvalidConfiguration
 
 class TkrngConan(ConanFile):
     name = "tkrng"
-    version = "0.1.3"
+    version = "0.3.0"
     package_type = "library"
     license = "Apache 2"
     url = "https://github.com/CQCL/tket"
