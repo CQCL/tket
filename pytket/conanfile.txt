@@ -1,5 +1,5 @@
 [requires]
-tket/1.0.59@tket/stable
+tket/2.0.0@tket/stable
 tklog/0.3.0@tket/stable
 pybind11/2.10.3
 nlohmann_json/3.11.2
