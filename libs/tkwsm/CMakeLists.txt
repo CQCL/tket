@@ -31,6 +31,11 @@ if(WIN32)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS yes)
 endif()
 
+if(APPLE)
+    set(CMAKE_INSTALL_NAME_DIR "@loader_path")
+    set(CMAKE_BUILD_WITH_INSTALL_NAME_DIR ON)
+endif()
+
 add_library(tkwsm)
 
 if(MSVC)
