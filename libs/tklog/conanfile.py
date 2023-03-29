@@ -19,7 +19,7 @@ from conan.errors import ConanInvalidConfiguration
 
 class TklogConan(ConanFile):
     name = "tklog"
-    version = "0.3.0"
+    version = "0.3.1"
     package_type = "library"
     license = "Apache 2"
     url = "https://github.com/CQCL/tket"

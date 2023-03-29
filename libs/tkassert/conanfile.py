@@ -19,7 +19,7 @@ from conan.errors import ConanInvalidConfiguration
 
 class TkassertConan(ConanFile):
     name = "tkassert"
-    version = "0.3.0"
+    version = "0.3.1"
     package_type = "library"
     license = "Apache 2"
     url = "https://github.com/CQCL/tket"
@@ -66,4 +66,4 @@ class TkassertConan(ConanFile):
         self.cpp_info.libs = ["tkassert"]
 
     def requirements(self):
-        self.requires("tklog/0.3.0@tket/stable", transitive_headers=True)
+        self.requires("tklog/0.3.1@tket/stable", transitive_headers=True)
