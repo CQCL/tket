@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>pytket.passes &#8212; pytket 1.13.1 documentation</title>
+    <title>pytket.passes &#8212; pytket 1.13.2 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -88,7 +88,7 @@
       <img src="_static/Quantinuum_logo.png" class="logo" alt="logo">
       
       
-      <h1 class="site-logo" id="site-title">pytket 1.13.1 documentation</h1>
+      <h1 class="site-logo" id="site-title">pytket 1.13.2 documentation</h1>
       
     </a>
 </div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
@@ -974,6 +974,20 @@ title="Print to PDF"
 <dt class="sig sig-object py" id="pytket.passes.FlattenRegisters">
 <span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">FlattenRegisters</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.FlattenRegisters" title="Permalink to this definition">#</a></dt>
 <dd><p>Merges all quantum and classical registers into their respective default registers with contiguous indexing.</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pytket.passes.FlattenRelabelRegistersPass">
+<span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">FlattenRelabelRegistersPass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.FlattenRelabelRegistersPass" title="Permalink to this definition">#</a></dt>
+<dd><p>Removes empty Quantum wires from the Circuit and relabels all Qubit to a register from passed name.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters</dt>
+<dd class="field-odd"><p><strong>label</strong> – Name to relabel remaining Qubit to, default ‘q’.</p>
+</dd>
+<dt class="field-even">Returns</dt>
+<dd class="field-even"><p>A pass that removes empty wires and relabels.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">

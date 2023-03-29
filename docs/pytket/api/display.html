@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>pytket.circuit.display &#8212; pytket 1.13.1 documentation</title>
+    <title>pytket.circuit.display &#8212; pytket 1.13.2 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -87,7 +87,7 @@
       <img src="_static/Quantinuum_logo.png" class="logo" alt="logo">
       
       
-      <h1 class="site-logo" id="site-title">pytket 1.13.1 documentation</h1>
+      <h1 class="site-logo" id="site-title">pytket 1.13.2 documentation</h1>
       
     </a>
 </div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
@@ -456,8 +456,8 @@ title="Print to PDF"
 <p>Contains several functions for rendering interactive circuit diagrams.</p>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Rendering circuits with <code class="docutils literal notranslate"><span class="pre">pytket.circuit.display</span></code> requires an internet connection. Using the pytket circuit renderer offline can be done by installing the <a class="reference external" href="https://github.com/CQCL/pytket-offline-renderer">pytket-offline-renderer extension</a>.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">pytket</span><span class="o">-</span><span class="n">offline</span><span class="o">-</span><span class="n">renderer</span>
+<p>Rendering circuits with <code class="docutils literal notranslate"><span class="pre">pytket.circuit.display</span></code> requires an internet connection. Using the pytket circuit renderer offline can be done by installing the <a class="reference external" href="https://github.com/CQCL/pytket-offline-renderer">pytket-offline-display extension</a>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">pytket</span><span class="o">-</span><span class="n">offline</span><span class="o">-</span><span class="n">display</span>
 </pre></div>
 </div>
 </div>
@@ -521,7 +521,8 @@ title="Print to PDF"
 
 
 
-<iframe srcdoc="
+<div style="resize: vertical; overflow: auto; height: 200px; display: block">
+    <iframe srcdoc="
 &lt;!DOCTYPE html&gt;
 &lt;html lang=&#34;en&#34;&gt;
 &lt;head&gt;
@@ -529,18 +530,21 @@ title="Print to PDF"
     &lt;!-- Download Vue 3--&gt;
 &lt;script type=&#34;application/javascript&#34; src=&#34;https://cdn.jsdelivr.net/npm/vue@3&#34;&gt;&lt;/script&gt;
 &lt;!-- Download Circuit Renderer with styles --&gt;
-&lt;script type=&#34;application/javascript&#34; src=&#34;https://unpkg.com/pytket-circuit-renderer@0.5/dist/pytket-circuit-renderer.umd.js&#34;&gt;&lt;/script&gt;
-&lt;link rel=&#34;stylesheet&#34; href=&#34;https://unpkg.com/pytket-circuit-renderer@0.5/dist/pytket-circuit-renderer.css&#34;&gt;
+&lt;script type=&#34;application/javascript&#34; src=&#34;https://unpkg.com/pytket-circuit-renderer@0.6/dist/pytket-circuit-renderer.umd.js&#34;&gt;&lt;/script&gt;
+&lt;link rel=&#34;stylesheet&#34; href=&#34;https://unpkg.com/pytket-circuit-renderer@0.6/dist/pytket-circuit-renderer.css&#34;&gt;
 &lt;/head&gt;
 &lt;body&gt;
-    &lt;div id=&#34;circuit-display-vue-container-d30b6541-7add-43af-8cca-6643d57adde9&#34; class=&#34;pytket-circuit-display-container&#34;&gt;
+
+
+
+    &lt;div id=&#34;circuit-display-vue-container-35a30f10-1c2a-41eb-a333-a2bd1711aa32&#34; class=&#34;pytket-circuit-display-container&#34;&gt;
         &lt;div style=&#34;display: none&#34;&gt;
             &lt;div id=&#34;circuit-json-to-display&#34;&gt;{&#34;bits&#34;: [], &#34;commands&#34;: [{&#34;args&#34;: [[&#34;q&#34;, [0]]], &#34;op&#34;: {&#34;type&#34;: &#34;H&#34;}}, {&#34;args&#34;: [[&#34;q&#34;, [1]]], &#34;op&#34;: {&#34;type&#34;: &#34;H&#34;}}, {&#34;args&#34;: [[&#34;q&#34;, [0]], [&#34;q&#34;, [1]]], &#34;op&#34;: {&#34;type&#34;: &#34;CX&#34;}}, {&#34;args&#34;: [[&#34;q&#34;, [1]]], &#34;op&#34;: {&#34;params&#34;: [&#34;0.4&#34;], &#34;type&#34;: &#34;Rz&#34;}}, {&#34;args&#34;: [[&#34;q&#34;, [0]], [&#34;q&#34;, [1]]], &#34;op&#34;: {&#34;type&#34;: &#34;CX&#34;}}, {&#34;args&#34;: [[&#34;q&#34;, [0]]], &#34;op&#34;: {&#34;type&#34;: &#34;H&#34;}}, {&#34;args&#34;: [[&#34;q&#34;, [1]]], &#34;op&#34;: {&#34;type&#34;: &#34;H&#34;}}], &#34;created_qubits&#34;: [], &#34;discarded_qubits&#34;: [], &#34;implicit_permutation&#34;: [[[&#34;q&#34;, [0]], [&#34;q&#34;, [0]]], [[&#34;q&#34;, [1]], [&#34;q&#34;, [1]]]], &#34;phase&#34;: &#34;0.0&#34;, &#34;qubits&#34;: [[&#34;q&#34;, [0]], [&#34;q&#34;, [1]]]}&lt;/div&gt;
         &lt;/div&gt;
         &lt;circuit-display-container :circuit-element-str=&#34;&#39;#circuit-json-to-display&#39;&#34;&gt;&lt;/circuit-display-container&gt;
     &lt;/div&gt;
     &lt;script type=&#34;application/javascript&#34;&gt;
-      const circuitRendererUid = &#34;d30b6541-7add-43af-8cca-6643d57adde9&#34;;
+      const circuitRendererUid = &#34;35a30f10-1c2a-41eb-a333-a2bd1711aa32&#34;;
 
       // Script to initialise the circuit renderer app
 
@@ -559,11 +563,15 @@ app.config.unwrapInjectedRef = true;
 app.mount(&#34;#circuit-display-vue-container-&#34;+circuitRendererUid);
 window.pytketCircuitDisplays[circuitRendererUid] = app;
     &lt;/script&gt;
+
+
+
 &lt;/body&gt;
 &lt;/html&gt;
 "
-        width="100%" height="200px"
-        style="border: none; outline: none; resize: vertical; overflow: auto"></iframe>
+            width="100%" height="100%"
+            style="border: none; outline: none; overflow: auto"></iframe>
+</div>
 
 </div></div>
 </div>

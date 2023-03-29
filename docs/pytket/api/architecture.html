@@ -6,7 +6,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
 
-    <title>pytket.architecture &#8212; pytket 1.13.1 documentation</title>
+    <title>pytket.architecture &#8212; pytket 1.13.2 documentation</title>
     
   <!-- Loaded before other Sphinx assets -->
   <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
@@ -87,7 +87,7 @@
       <img src="_static/Quantinuum_logo.png" class="logo" alt="logo">
       
       
-      <h1 class="site-logo" id="site-title">pytket 1.13.1 documentation</h1>
+      <h1 class="site-logo" id="site-title">pytket 1.13.2 documentation</h1>
       
     </a>
 </div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
@@ -537,11 +537,14 @@ title="Print to PDF"
 <dd><p>A specialised non-Architecture object emulating an architecture with all qubits connected. Not compatible with Routing or Placement methods.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pytket.architecture.FullyConnected.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.architecture.FullyConnected" title="pytket.architecture.FullyConnected"><span class="pre">pytket.architecture.FullyConnected</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#pytket.architecture.FullyConnected.__init__" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.architecture.FullyConnected" title="pytket.architecture.FullyConnected"><span class="pre">pytket.architecture.FullyConnected</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'fcNode'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#pytket.architecture.FullyConnected.__init__" title="Permalink to this definition">#</a></dt>
 <dd><p>Construct a fully-connected architecture.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters</dt>
-<dd class="field-odd"><p><strong>n</strong> – number of qubits</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> – number of qubits</p></li>
+<li><p><strong>label</strong> – Name for Node in FullyConnected Architecture</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -577,9 +580,10 @@ title="Print to PDF"
 <dd><p>Inherited Architecture class for number of qubits arranged in a ring.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pytket.architecture.RingArch.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.architecture.RingArch" title="pytket.architecture.RingArch"><span class="pre">pytket.architecture.RingArch</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#pytket.architecture.RingArch.__init__" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.architecture.RingArch" title="pytket.architecture.RingArch"><span class="pre">pytket.architecture.RingArch</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'ringNode'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#pytket.architecture.RingArch.__init__" title="Permalink to this definition">#</a></dt>
 <dd><p>The constructor for a RingArchitecture with some undirected connectivity between qubits.</p>
-<p>:param number of qubits</p>
+<p>:param number of qubits
+:param label: Name for Node in RingArch Architecture</p>
 </dd></dl>
 
 </dd></dl>
@@ -596,7 +600,7 @@ title="Print to PDF"
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.architecture.SquareGrid.__init__" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>__init__(self: pytket.architecture.SquareGrid, n_rows: int, n_columns: int) -&gt; None</p></li>
+<li><p>__init__(self: pytket.architecture.SquareGrid, n_rows: int, n_columns: int, label: str = ‘gridNode’) -&gt; None</p></li>
 </ol>
 <p>The constructor for a Square Grid architecture with some undirected connectivity between qubits.</p>
 <dl class="field-list simple">
@@ -604,11 +608,12 @@ title="Print to PDF"
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>n_rows</strong> – The number of rows in the grid</p></li>
 <li><p><strong>n_columns</strong> – The number of columns in the grid</p></li>
+<li><p><strong>label</strong> – Name for Node in SquareGrid Architecture</p></li>
 </ul>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>__init__(self: pytket.architecture.SquareGrid, n_rows: int, n_columns: int, n_layers: int) -&gt; None</p></li>
+<li><p>__init__(self: pytket.architecture.SquareGrid, n_rows: int, n_columns: int, n_layers: int = 1, label: str = ‘gridNode’) -&gt; None</p></li>
 </ol>
 <p>The constructor for  a Square Grid architecture with some undirected connectivity between qubits.</p>
 <dl class="field-list simple">
@@ -617,6 +622,7 @@ title="Print to PDF"
 <li><p><strong>n_rows</strong> – The number of rows in the grid</p></li>
 <li><p><strong>n_columns</strong> – The number of columns in the grid</p></li>
 <li><p><strong>n_layers</strong> – The number of layers of grids</p></li>
+<li><p><strong>label</strong> – Name for Node in SquareGrid Architecture</p></li>
 </ul>
 </dd>
 </dl>
