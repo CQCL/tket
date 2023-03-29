@@ -435,6 +435,9 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       OpType q = content.at("euler_q").get<OpType>();
       bool s = content.at("euler_strict").get<bool>();
       pp = gen_euler_pass(q, p, s);
+    } else if (passname == "FlattenRelabelRegistersPass") {
+      pp = gen_flatten_relabel_registers_pass(
+          content.at("label").get<std::string>());
     } else if (passname == "RoutingPass") {
       Architecture arc = content.at("architecture").get<Architecture>();
       std::vector<RoutingMethodPtr> con = content.at("routing_config");

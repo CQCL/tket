@@ -81,6 +81,7 @@ class QubitPauliOperator:
         :type value: Union[int, float, complex, Expr]
         """
         self._dict[key] = sympify(value)  # type: ignore
+        self._all_qubits.update(key.map.keys())
 
     def __getstate__(self) -> dict:
         return self._dict
