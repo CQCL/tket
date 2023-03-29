@@ -32,11 +32,6 @@ a:visited,
 .sig-param,
 .std.std-ref,
 
-
-a {
-    color: #544d4d;
-}
-
 html[data-theme=light] {
     --pst-color-inline-code: rgb(199, 37, 78) !important;
 }
