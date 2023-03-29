@@ -31,12 +31,14 @@ a:visited,
 .span.pre,
 .sig-param,
 .std.std-ref,
+
+
 a {
     color: #544d4d;
 }
 
-:root {
-    --pst-color-inline-code: 199, 37, 78 !important;
+html[data-theme=light] {
+    --pst-color-inline-code: rgb(199, 37, 78) !important;
 }
 
 .sig-name {
