@@ -168,7 +168,7 @@ class MultiplexedU2Box : public Box {
    * or Unitary1QBox.
    *
    * @param op_map
-   * @param impl_diag whether to implement the final MultiplexedRotationBox,
+   * @param impl_diag whether to implement the final DiagonalBox,
    * default to true
    */
   explicit MultiplexedU2Box(const ctrl_op_map_t &op_map, bool impl_diag = true);
@@ -209,12 +209,20 @@ class MultiplexedU2Box : public Box {
 
   static nlohmann::json to_json(const Op_ptr &op);
 
+  /**
+   * @brief Decompose the multiplexor into a sequence of interleaving CX and
+   * single qubit gates followed by a diagonal matrix
+   *
+   * @return std::pair<Circuit, Eigen::VectorXcd>
+   */
+  std::pair<Circuit, Eigen::VectorXcd> decompose() const;
+
  protected:
   /**
    * @brief Implement multiplexed U2 gate
    * (i.e. uniformly controlled U2 gate (UCU2))
    * with 2^ctrl_qubits SQ gates, 2^ctrl_qubits CXs, and a
-   * MultiplexedRotationBox at the end
+   * DiagonalBox at the end
    *
    * https://arxiv.org/abs/quant-ph/0410066
    */

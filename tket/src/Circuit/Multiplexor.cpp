@@ -17,6 +17,7 @@
 #include <complex>
 
 #include "Circuit/Circuit.hpp"
+#include "Circuit/DiagonalBox.hpp"
 #include "Gate/GatePtr.hpp"
 #include "Gate/GateUnitaryMatrix.hpp"
 #include "Gate/Rotation.hpp"
@@ -599,13 +600,12 @@ Op_ptr MultiplexedU2Box::from_json(const nlohmann::json &j) {
       boost::lexical_cast<boost::uuids::uuid>(j.at("id").get<std::string>()));
 }
 
-void MultiplexedU2Box::generate_circuit() const {
+std::pair<Circuit, Eigen::VectorXcd> MultiplexedU2Box::decompose() const {
   Circuit circ(n_controls_ + 1);
   if (n_controls_ == 0) {
     auto it = op_map_.begin();
     circ.add_op<unsigned>(it->second, {0});
-    circ_ = std::make_shared<Circuit>(circ);
-    return;
+    return std::make_pair(circ, Eigen::VectorXcd::Constant(2, 1));
   }
   unsigned n_unitaries = 1 << n_controls_;
   std::vector<Eigen::Matrix2cd> unitaries(n_unitaries);
@@ -635,25 +635,39 @@ void MultiplexedU2Box::generate_circuit() const {
   recursive_demultiplex_u2(
       unitaries, n_controls_ + 1, circ, ucrzs, Eigen::Matrix2cd::Identity(),
       Eigen::Matrix2cd::Identity());
-  if (impl_diag_) {
-    // add the final ucrzs
-    for (unsigned i = 0; i < n_controls_; i++) {
-      // ith ucrzs acts on i+2 qubits
-      // get the args for the UCRz gate
-      std::vector<unsigned> args(i + 2);
-      std::iota(std::begin(args), std::end(args), n_controls_ - i - 1);
-      // swap the first and the last args
-      std::swap(args[0], args[i + 1]);
-      // create MultiplexedRotationBox
-      ctrl_op_map_t rz_map;
-      for (unsigned k = 0; k < ucrzs[i].size(); k++) {
-        if (std::abs(ucrzs[i][k]) > EPS) {
-          rz_map.insert(
-              {dec_to_bin(k, i + 1), get_op_ptr(OpType::Rz, ucrzs[i][k])});
-        }
+  // convert the ucrzs to a diagonal matrix
+  Eigen::VectorXcd diag = Eigen::VectorXcd::Constant(1 << (n_controls_ + 1), 1);
+  for (unsigned i = 0; i < n_controls_; i++) {
+    // ith ucrzs acts on i+2 qubits
+    // which has n_controls_ + 1 - (i+2) identities its the tensor product
+    // therefore (n_controls_ + 1 - (i+2))^2 copies in the diagonal
+    for (unsigned offset = 0; offset < (1 << (n_controls_ + 1 - (i + 2)));
+         offset++) {
+      for (unsigned j = 0; j < (1 << (i + 1)); j++) {
+        // the bitstrings in a ucrz are mapped to qubits not in the standard
+        // order
+        unsigned diag_idx = (j >= (1 << i)) ? (j - (1 << i)) * 2 + 1 : j * 2;
+        diag[diag_idx + offset * (1 << (i + 2))] *=
+            std::exp(-0.5 * i_ * PI * ucrzs[i][j]);
+        diag[diag_idx + offset * (1 << (i + 2)) + (1 << (i + 1))] *=
+            std::exp(0.5 * i_ * PI * ucrzs[i][j]);
       }
-      circ.add_box(MultiplexedRotationBox(rz_map), args);
     }
+  }
+  return std::make_pair(circ, diag);
+}
+
+void MultiplexedU2Box::generate_circuit() const {
+  Circuit circ;
+  Eigen::VectorXcd diag_vec;
+  std::tie(circ, diag_vec) = decompose();
+  if (impl_diag_ &&
+      (diag_vec - Eigen::VectorXcd::Constant(1 << circ.n_qubits(), 1))
+              .cwiseAbs()
+              .sum() > EPS) {
+    std::vector<unsigned> args(circ.n_qubits());
+    std::iota(std::begin(args), std::end(args), 0);
+    circ.add_box(DiagonalBox(diag_vec), args);
   }
   circ_ = std::make_shared<Circuit>(circ);
 }

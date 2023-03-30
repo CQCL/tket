@@ -214,7 +214,7 @@ SCENARIO("MultiplexedU2Box decomposition", "[boxes]") {
       REQUIRE(
           (cmd.get_op_ptr()->get_type() == OpType::Unitary1qBox ||
            cmd.get_op_ptr()->get_type() == OpType::CX ||
-           cmd.get_op_ptr()->get_type() == OpType::MultiplexedRotationBox));
+           cmd.get_op_ptr()->get_type() == OpType::DiagonalBox));
     }
     REQUIRE(check_multiplexor(op_map, *c));
   }
@@ -231,12 +231,12 @@ SCENARIO("MultiplexedU2Box decomposition", "[boxes]") {
     MultiplexedU2Box multiplexor(op_map);
     std::shared_ptr<Circuit> c = multiplexor.to_circuit();
     std::vector<Command> cmds = c->get_commands();
-    REQUIRE(cmds.size() == 7 + 2);
+    REQUIRE(cmds.size() == 7 + 1);
     for (auto cmd : cmds) {
       REQUIRE(
           (cmd.get_op_ptr()->get_type() == OpType::Unitary1qBox ||
            cmd.get_op_ptr()->get_type() == OpType::CX ||
-           cmd.get_op_ptr()->get_type() == OpType::MultiplexedRotationBox));
+           cmd.get_op_ptr()->get_type() == OpType::DiagonalBox));
     }
     REQUIRE(check_multiplexor(op_map, *c));
   }
@@ -252,12 +252,31 @@ SCENARIO("MultiplexedU2Box decomposition", "[boxes]") {
     MultiplexedU2Box multiplexor(op_map);
     std::shared_ptr<Circuit> c = multiplexor.to_circuit();
     std::vector<Command> cmds = c->get_commands();
-    REQUIRE(cmds.size() == 63 + 5);
+    REQUIRE(cmds.size() == 63 + 1);
     for (auto cmd : cmds) {
       REQUIRE(
           (cmd.get_op_ptr()->get_type() == OpType::Unitary1qBox ||
            cmd.get_op_ptr()->get_type() == OpType::CX ||
-           cmd.get_op_ptr()->get_type() == OpType::MultiplexedRotationBox));
+           cmd.get_op_ptr()->get_type() == OpType::DiagonalBox));
+    }
+    REQUIRE(check_multiplexor(op_map, *c));
+  }
+  GIVEN("Random MultiplexedU2Box") {
+    ctrl_op_map_t op_map;
+    for (unsigned i = 0; i < (1 << 5); i++) {
+      Unitary1qBox m(random_unitary(2, i));
+      Op_ptr mbox_op = std::make_shared<Unitary1qBox>(m);
+      op_map.insert({dec_to_bin(i, 5), mbox_op});
+    }
+    MultiplexedU2Box multiplexor(op_map);
+    std::shared_ptr<Circuit> c = multiplexor.to_circuit();
+    std::vector<Command> cmds = c->get_commands();
+    REQUIRE(cmds.size() == 63 + 1);
+    for (auto cmd : cmds) {
+      REQUIRE(
+          (cmd.get_op_ptr()->get_type() == OpType::Unitary1qBox ||
+           cmd.get_op_ptr()->get_type() == OpType::CX ||
+           cmd.get_op_ptr()->get_type() == OpType::DiagonalBox));
     }
     REQUIRE(check_multiplexor(op_map, *c));
   }
