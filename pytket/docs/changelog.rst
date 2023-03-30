@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Major new features:
+
+* Support for ARM Linux platforms.
+
 1.13.2 (March 2023)
 -------------------
 
