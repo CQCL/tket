@@ -60,4 +60,8 @@ target_sources(tklog
     BASE_DIRS ${PROJECT_SOURCE_DIR}/include
     FILES include/tklog/TketLog.hpp)
 
-install(TARGETS tklog FILE_SET HEADERS)
+install(TARGETS tklog
+    FILE_SET HEADERS
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib)

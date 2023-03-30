@@ -148,4 +148,8 @@ target_sources(tkwsm
         include/tkwsm/WeightPruning/WeightNogoodDetectorManager.hpp
         )
 
-install(TARGETS tkwsm FILE_SET HEADERS)
+install(TARGETS tkwsm
+    FILE_SET HEADERS
+    RUNTIME DESTINATION bin
+    ARCHIVE DESTINATION lib
+    LIBRARY DESTINATION lib)
