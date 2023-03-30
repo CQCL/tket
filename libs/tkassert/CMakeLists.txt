@@ -63,8 +63,12 @@ target_sources(tkassert
     BASE_DIRS ${PROJECT_SOURCE_DIR}/include
     FILES include/tkassert/Assert.hpp include/tkassert/AssertMessage.hpp)
 
-install(TARGETS tkassert
-    FILE_SET HEADERS
-    RUNTIME DESTINATION bin
-    ARCHIVE DESTINATION lib
-    LIBRARY DESTINATION lib)
+install(TARGETS tkassert FILE_SET HEADERS)
+
+if(MSVC)
+    install(TARGETS tkassert
+        RUNTIME DESTINATION bin
+        RUNTIME DESTINATION lib
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib)
+endif()

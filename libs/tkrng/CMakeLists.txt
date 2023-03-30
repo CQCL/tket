@@ -60,8 +60,12 @@ target_sources(tkrng
     BASE_DIRS ${PROJECT_SOURCE_DIR}/include
     FILES include/tkrng/RNG.hpp)
 
-install(TARGETS tkrng
-    FILE_SET HEADERS
-    RUNTIME DESTINATION bin
-    ARCHIVE DESTINATION lib
-    LIBRARY DESTINATION lib)
+install(TARGETS tkrng FILE_SET HEADERS)
+
+if(MSVC)
+    install(TARGETS tkrng
+        RUNTIME DESTINATION bin
+        RUNTIME DESTINATION lib
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib)
+endif()

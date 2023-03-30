@@ -125,8 +125,12 @@ target_sources(tktokenswap
         include/tktokenswap/VertexSwapResult.hpp
         )
 
-install(TARGETS tktokenswap
-    FILE_SET HEADERS
-    RUNTIME DESTINATION bin
-    ARCHIVE DESTINATION lib
-    LIBRARY DESTINATION lib)
+install(TARGETS tktokenswap FILE_SET HEADERS)
+
+if(MSVC)
+    install(TARGETS tktokenswap
+        RUNTIME DESTINATION bin
+        RUNTIME DESTINATION lib
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib)
+endif()
