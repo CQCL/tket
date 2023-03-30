@@ -14,6 +14,9 @@ downward line means "is required by"):
 
 # Building
 
+We recommend building with conan 2, and only conan 2 builds are used on the CI.
+However, the libraries may be built using either conan 1 or conan 2.
+
 ## conan 1
 
 To build the library `tkxxx`:
