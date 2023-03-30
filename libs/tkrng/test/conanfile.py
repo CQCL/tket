@@ -19,7 +19,7 @@ from conan.errors import ConanInvalidConfiguration
 
 class test_tkrngRecipe(ConanFile):
     name = "test-tkrng"
-    version = "0.3.1"
+    version = "0.3.2"
     package_type = "application"
     license = "Apache 2"
     url = "https://github.com/CQCL/tket"
@@ -59,5 +59,5 @@ class test_tkrngRecipe(ConanFile):
         cmake.install()
 
     def requirements(self):
-        self.requires("tkrng/0.3.1")
+        self.requires("tkrng/0.3.2")
         self.requires("catch2/3.3.0")
