@@ -672,8 +672,178 @@ void MultiplexedU2Box::generate_circuit() const {
   circ_ = std::make_shared<Circuit>(circ);
 }
 
+MultiplexedTensoredU2Box::MultiplexedTensoredU2Box(
+    const ctrl_tensored_op_map_t &op_map, bool impl_diag)
+    : Box(OpType::MultiplexedTensoredU2Box),
+      op_map_(op_map),
+      impl_diag_(impl_diag) {
+  auto it = op_map.begin();
+  if (it == op_map.end()) {
+    throw std::invalid_argument("No Ops provided.");
+  }
+  n_controls_ = (unsigned)it->first.size();
+  n_targets_ = (unsigned)it->second.size();
+  if (n_controls_ > MAX_N_CONTROLS) {
+    throw std::invalid_argument(
+        "Bitstrings longer than " + std::to_string(MAX_N_CONTROLS) +
+        " are not supported.");
+  }
+  for (; it != op_map.end(); it++) {
+    if (it->first.size() != n_controls_) {
+      throw std::invalid_argument("Bitstrings must have the same width.");
+    }
+    if (it->second.size() != n_targets_) {
+      throw std::invalid_argument(
+          "Each tensor must have the same number of U2 components");
+    }
+    for (auto op : it->second) {
+      OpType optype = op->get_type();
+      if (!is_single_qubit_unitary_type(optype) &&
+          optype != OpType::Unitary1qBox) {
+        throw BadOpType(
+            "Ops must be single-qubit unitary gate types or Unitary1qBox.",
+            optype);
+      }
+    }
+  }
+}
+
+MultiplexedTensoredU2Box::MultiplexedTensoredU2Box(
+    const MultiplexedTensoredU2Box &other)
+    : Box(other),
+      n_controls_(other.n_controls_),
+      n_targets_(other.n_targets_),
+      op_map_(other.op_map_),
+      impl_diag_(other.impl_diag_) {}
+
+Op_ptr MultiplexedTensoredU2Box::symbol_substitution(
+    const SymEngine::map_basic_basic &sub_map) const {
+  ctrl_tensored_op_map_t new_op_map;
+  for (auto it = op_map_.begin(); it != op_map_.end(); it++) {
+    std::vector<Op_ptr> ops;
+    for (auto op : it->second) {
+      ops.push_back(op->symbol_substitution(sub_map));
+    }
+    new_op_map.insert({it->first, ops});
+  }
+  return std::make_shared<MultiplexedTensoredU2Box>(new_op_map, impl_diag_);
+}
+
+SymSet MultiplexedTensoredU2Box::free_symbols() const {
+  SymSet all_symbols;
+  for (auto it = op_map_.begin(); it != op_map_.end(); it++) {
+    for (auto op : it->second) {
+      SymSet op_symbols = op->free_symbols();
+      all_symbols.insert(op_symbols.begin(), op_symbols.end());
+    }
+  }
+  return all_symbols;
+}
+
+Op_ptr MultiplexedTensoredU2Box::dagger() const {
+  ctrl_tensored_op_map_t new_op_map;
+  for (auto it = op_map_.begin(); it != op_map_.end(); it++) {
+    std::vector<Op_ptr> ops;
+    for (auto op : it->second) {
+      ops.push_back(op->dagger());
+    }
+    new_op_map.insert({it->first, ops});
+  }
+  return std::make_shared<MultiplexedTensoredU2Box>(new_op_map, impl_diag_);
+}
+
+Op_ptr MultiplexedTensoredU2Box::transpose() const {
+  ctrl_tensored_op_map_t new_op_map;
+  for (auto it = op_map_.begin(); it != op_map_.end(); it++) {
+    std::vector<Op_ptr> ops;
+    for (auto op : it->second) {
+      ops.push_back(op->transpose());
+    }
+    new_op_map.insert({it->first, ops});
+  }
+  return std::make_shared<MultiplexedTensoredU2Box>(new_op_map, impl_diag_);
+}
+
+op_signature_t MultiplexedTensoredU2Box::get_signature() const {
+  op_signature_t qubits(n_controls_ + n_targets_, EdgeType::Quantum);
+  return qubits;
+}
+
+nlohmann::json MultiplexedTensoredU2Box::to_json(const Op_ptr &op) {
+  const auto &box = static_cast<const MultiplexedTensoredU2Box &>(*op);
+  nlohmann::json j = core_box_json(box);
+  j["op_map"] = box.get_op_map();
+  j["impl_diag"] = box.get_impl_diag();
+  return j;
+}
+
+Op_ptr MultiplexedTensoredU2Box::from_json(const nlohmann::json &j) {
+  MultiplexedTensoredU2Box box = MultiplexedTensoredU2Box(
+      j.at("op_map").get<ctrl_tensored_op_map_t>(),
+      j.at("impl_diag").get<bool>());
+  return set_box_id(
+      box,
+      boost::lexical_cast<boost::uuids::uuid>(j.at("id").get<std::string>()));
+}
+
+void MultiplexedTensoredU2Box::generate_circuit() const {
+  Circuit circ(n_controls_ + n_targets_);
+  // contains the multiplexed-Rz gates
+  Circuit diag_circ(n_controls_ + n_targets_);
+  // the final diagonal on the control qubits
+  Eigen::VectorXcd diag_vec = Eigen::VectorXcd::Constant(1 << n_controls_, 1);
+  for (unsigned i = 0; i < n_targets_; i++) {
+    ctrl_op_map_t u2_op_map;
+    for (auto it = op_map_.begin(); it != op_map_.end(); it++) {
+      u2_op_map.insert({it->first, it->second[i]});
+    }
+    MultiplexedU2Box mbox(u2_op_map);
+    Circuit inner_circ;
+    Eigen::VectorXcd inner_diag_vec;
+    std::tie(inner_circ, inner_diag_vec) = mbox.decompose();
+    std::vector<unsigned> args(n_controls_);
+    std::iota(std::begin(args), std::end(args), 0);
+    args.push_back(i + n_controls_);
+    // append the first part of the decomposition
+    circ.append_qubits(inner_circ, args);
+    // disentangle one qubit from the diagonal
+    // results in a multiplexed-Rz targeting the target j
+    ctrl_op_map_t multip_rz;
+    for (unsigned j = 0; j < (1 << n_controls_); j++) {
+      Complex a = inner_diag_vec[2 * j];
+      Complex b = inner_diag_vec[2 * j + 1];
+      // convert diag[a,b] into a p*Rz(alpha)
+      double a_phase = std::arg(a);
+      double b_phase = std::arg(b);
+      double alpha = (b_phase - a_phase) / PI;
+      Complex p = std::exp((b_phase + a_phase) * 0.5 * i_);
+      std::vector<bool> bitstr = dec_to_bin(j, n_controls_);
+      if (std::abs(alpha) > EPS) {
+        multip_rz.insert({bitstr, get_op_ptr(OpType::Rz, alpha)});
+      }
+      // update the diagonal on the control qubits
+      diag_vec[j] *= p;
+    }
+    if (!multip_rz.empty()) {
+      diag_circ.add_box(MultiplexedRotationBox(multip_rz), args);
+    }
+  }
+  if (impl_diag_) {
+    circ.append(diag_circ);
+    if ((diag_vec - Eigen::VectorXcd::Constant(1 << n_controls_, 1))
+            .cwiseAbs()
+            .sum() > EPS) {
+      std::vector<unsigned> args(n_controls_);
+      std::iota(std::begin(args), std::end(args), 0);
+      circ.add_box(DiagonalBox(diag_vec), args);
+    }
+  }
+  circ_ = std::make_shared<Circuit>(circ);
+}
+
 REGISTER_OPFACTORY(MultiplexorBox, MultiplexorBox)
 REGISTER_OPFACTORY(MultiplexedRotationBox, MultiplexedRotationBox)
 REGISTER_OPFACTORY(MultiplexedU2Box, MultiplexedU2Box)
+REGISTER_OPFACTORY(MultiplexedTensoredU2Box, MultiplexedTensoredU2Box)
 
 }  // namespace tket
