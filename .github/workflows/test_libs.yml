@@ -149,7 +149,7 @@ jobs:
         conan export-pkg libs/${{ matrix.lib }} -s build_type=Debug -of build/${{ matrix.lib }} -tf ""
     - name: build ${{ matrix.lib }} tests
       run: |
-        conan install libs/${{ matrix.lib }}/test -s build_type=Debug -of build/${{ matrix.lib }}-tests
+        conan install libs/${{ matrix.lib }}/test -s build_type=Debug --build=missing -of build/${{ matrix.lib }}-tests
         conan build libs/${{ matrix.lib }}/test -s build_type=Debug -o test-${{ matrix.lib }}/*:with_coverage=True -of build/${{ matrix.lib }}-tests
     - name: run ${{ matrix.lib }} tests
       working-directory: ./build/${{ matrix.lib }}-tests/build/Debug
