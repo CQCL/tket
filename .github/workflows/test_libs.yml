@@ -81,7 +81,7 @@ jobs:
     - name: build ${{ matrix.lib }}
       run: conan create libs/${{ matrix.lib }} --build=missing
     - name: build ${{ matrix.lib }} tests
-      run: conan create libs/${{ matrix.lib }}/test --build=missing --format json > test-${{ matrix.lib }}.json
+      run: conan create -o boost/*:header_only=True libs/${{ matrix.lib }}/test --build=missing --format json > test-${{ matrix.lib }}.json
     - name: run ${{ matrix.lib }} tests
       shell: bash
       run: |
@@ -106,10 +106,12 @@ jobs:
     - name: create profile
       shell: bash
       run: conan profile detect --force
-    - name: add remote
-      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
+    - name: set remotes
+      run: |
+        rm `conan config home`/remotes.json
+        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: build ${{ matrix.lib }}
-      run: conan create libs/${{ matrix.lib }} --build=missing
+      run: conan create -o boost/*:header_only=True libs/${{ matrix.lib }} --build=missing
     - name: build ${{ matrix.lib }} tests
       run: conan create libs/${{ matrix.lib }}/test --build=missing --format json > test-${{ matrix.lib }}.json
     - name: run ${{ matrix.lib }} tests
@@ -130,46 +132,32 @@ jobs:
       matrix:
         lib: ${{ fromJson(needs.set_libs_matrix.outputs.libs) }}
     runs-on: 'ubuntu-22.04'
-    env:
-      CONAN_REVISIONS_ENABLED: 1
     steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v4
+     uses: actions/checkout@v3
+    - name: Install conan
+      uses: turtlebrowser/get-conan@v1.2
       with:
-        python-version: '3.10'
-    - name: install conan
-      run: pip install conan~=1.53
+        version: '2.0.2'
     - name: create profile
-      run: conan profile new tket --detect
-    - name: set libcxx
-      run: conan profile update settings.compiler.libcxx=libstdc++11 tket
+      run: conan profile detect
     - name: add remote
-      run: |
-        conan remote clean
-        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
-    - name: set Debug in profile
-      run: conan profile update settings.build_type=Debug tket
+      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: build ${{ matrix.lib }}
       run: |
-        conan create libs/${{ matrix.lib }} --profile=tket -o ${{ matrix.lib }}:profile_coverage=True --test-folder=None --build=missing
+        conan install libs/${{ matrix.lib }} -s build_type=Debug --build=missing -of build/${{ matrix.lib }}
+        conan build libs/${{ matrix.lib }} -s build_type=Debug -o ${{ matrix.lib }}/*:profile_coverage=True -of build/${{ matrix.lib }}
+        conan export-pkg libs/${{ matrix.lib }} -s build_type=Debug -of build/${{ matrix.lib }} -tf ""
     - name: build ${{ matrix.lib }} tests
       run: |
-        conan install libs/${{ matrix.lib }}/test --install-folder=build/${{ matrix.lib }}-tests --output-folder=build/${{ matrix.lib }}-tests --profile=tket -o test-${{ matrix.lib }}:with_coverage=True
-        conan build libs/${{ matrix.lib }}/test --configure --build-folder=build/${{ matrix.lib }}-tests --source-folder=libs/${{ matrix.lib }}/test
-        conan build libs/${{ matrix.lib }}/test --build --build-folder=build/${{ matrix.lib }}-tests
+        conan install libs/${{ matrix.lib }}/test -s build_type=Debug -of build/${{ matrix.lib }}-tests
+        conan build libs/${{ matrix.lib }}/test -s build_type=Debug -o test-${{ matrix.lib }}/*:with_coverage=True -of build/${{ matrix.lib }}-tests
     - name: run ${{ matrix.lib }} tests
       working-directory: ./build/${{ matrix.lib }}-tests/build/Debug
       run: ./test-${{ matrix.lib }}
     - name: install gcovr
-      run: pip install gcovr~=5.1
+      run: pip install gcovr~=6.0
     - name: build coverage report
-      run: |
-        mkdir ${{ matrix.lib }}-coverage
-        conan info --paths -n build_folder --profile=tket libs/${{ matrix.lib }}/test -o ${{ matrix.lib }}:profile_coverage=True --json libinfo.json
-        build_folder=`./.github/workflows/get_lib_build_folder ${{ matrix.lib }}`
-        rm libinfo.json
-        gcovr --print-summary --html --html-details -r ${build_folder}/src --exclude-lines-by-pattern '.*\bTKET_ASSERT\(.*\);' --object-directory ${build_folder}/build/Debug/CMakeFiles/${{ matrix.lib }}.dir/src -o ${{ matrix.lib }}-coverage/index.html --decisions > ${{ matrix.lib }}-coverage/summary.txt
+      run: gcovr --print-summary --html --html-details -r ${$GITHUB_WORKSPACE}/libs/${{ matrix.lib }}/src --exclude-lines-by-pattern '.*\bTKET_ASSERT\(.*\);' --object-directory ${GITHUB_WORKSPACE}/build/${{ matrix.lib }}/Debug/CMakeFiles/${{ matrix.lib }}.dir/src -o ${{ matrix.lib }}-coverage/index.html --decisions > ${{ matrix.lib }}-coverage/summary.txt
     - name: upload artefact
       uses: actions/upload-artifact@v3
       with:
@@ -183,6 +171,11 @@ jobs:
         if [[ -f summary.txt ]] ; then
           ./.github/workflows/compare-coverage summary.txt ${{ matrix.lib }}-coverage/summary.txt
         fi
+    - name: restore conan 1
+      if: always()
+      uses: turtlebrowser/get-conan@v1.2
+      with:
+        version: '1.59.0'
   publish_coverage:
     name: Publish coverage
     needs: [set_libs_matrix, generate_coverage]
