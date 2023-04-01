@@ -79,7 +79,7 @@ jobs:
     - name: add remote
       run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: build ${{ matrix.lib }}
-      run: conan create libs/${{ matrix.lib }} --build=missing
+      run: conan create libs/${{ matrix.lib }} -o boost/*:header_only=True --build=missing
     - name: build ${{ matrix.lib }} tests
       run: conan create -o boost/*:header_only=True libs/${{ matrix.lib }}/test --build=missing --format json > test-${{ matrix.lib }}.json
     - name: run ${{ matrix.lib }} tests
