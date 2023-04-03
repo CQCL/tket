@@ -9,8 +9,10 @@ Minor new features:
 * Update to networkx 3.
 * Add "label" argument to ``SquareGrid``, ``RingArch`` and ``FullyConnected`` 
   ``Architecture`` classes to give custom name to constructed ``Node``.
-* Update ``ToffoliBox`` with a more efficient implementation.
-* Add new ``DiagonalBox``.
+* Updated implementation of ``ToffoliBox`` utilising multiplexors
+  for improved decomposition.
+* Add new ``DiagonalBox`` that synthesises a diagonal unitary matrix
+  into a sequence of multiplexed-Rz gates.
   
 Fixes:
 
