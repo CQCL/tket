@@ -12,24 +12,17 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cmake_minimum_required(VERSION 3.16.0)
+cmake_minimum_required(VERSION 3.23)
+project(PackageTest CXX)
+
+find_package(tket CONFIG REQUIRED)
 
 set (CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
-
-cmake_minimum_required(VERSION 3.16.0)
-
-project(PackageTest CXX)
-
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()
 
 IF (WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc")
 ENDIF()
 
-include_directories(${CONAN_INCLUDE_DIRS_TKET})
-
-add_executable(test test.cpp)
-
-target_link_libraries(test PRIVATE ${CONAN_LIBS})
+add_executable(test src/test.cpp)
+target_link_libraries(test tket::tket)
