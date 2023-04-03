@@ -1,0 +1,16 @@
+#!/usr/bin/env python
+
+# Parse a file named 'libinfo.json' for the build folder of a library, and print it.
+# The file must exist and the library name is passed as the only argument.
+
+import json
+import sys
+
+lib = sys.argv[1]
+
+with open("libinfo.json") as f:
+    info = json.load(f)
+
+libcomps = [comp for comp in info if comp["reference"].startswith(f"{lib}/")]
+assert len(libcomps) == 1
+print(libcomps[0]["build_folder"])

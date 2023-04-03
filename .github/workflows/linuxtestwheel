@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -12,13 +14,19 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cmake_minimum_required(VERSION 3.23)
-project(PackageTest CXX)
+set -evu
 
-find_package(tkrng CONFIG REQUIRED)
+for pyX in $PY_VERS
+do
+    export PYEX=/opt/python/${pyX}/bin/python
+    export PYVER=`${PYEX} -c 'import sys; print(".".join(map(str, sys.version_info[:3])))'`
+    for whl in `ls /tket/wheelhouse/${PYVER}`
+    do
+        ${PYEX} -m pip install /tket/wheelhouse/${PYVER}/${whl}
+    done
+    cd /tket/pytket/tests
+    ${PYEX} -m pip install -r requirements.txt
+    /opt/python/${pyX}/bin/pytest --ignore=simulator/
+done
 
-set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_EXTENSIONS OFF)
-
-add_executable(example src/example.cpp)
-target_link_libraries(example tkrng::tkrng)
+rm -rf /tket/wheelhouse

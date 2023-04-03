@@ -51,6 +51,7 @@ from pytket.passes import (  # type: ignore
     ZZPhaseToRz,
     CnXPairwiseDecomposition,
     RemoveImplicitQubitPermutation,
+    FlattenRelabelRegistersPass,
 )
 from pytket.predicates import (  # type: ignore
     GateSetPredicate,
@@ -831,6 +832,25 @@ def test_conditional_phase() -> None:
     assert any(cond_cmd.op.op.type not in target_gateset for cond_cmd in cond_cmds)
 
 
+def test_flatten_relabel_pass() -> None:
+    c = Circuit(3)
+    c.H(1).H(2)
+    rename_map = dict()
+    rename_map[Qubit(0)] = Qubit("a", 4)
+    rename_map[Qubit(1)] = Qubit("b", 7)
+    rename_map[Qubit(2)] = Qubit("a", 2)
+    c.rename_units(rename_map)
+
+    cu = CompilationUnit(c)
+    FlattenRelabelRegistersPass("a").apply(cu)
+
+    assert cu.initial_map == cu.final_map
+    assert cu.initial_map[Qubit("a", 2)] == Qubit("a", 0)
+    assert cu.initial_map[Qubit("a", 4)] == Qubit("a", 4)
+    assert cu.initial_map[Qubit("b", 7)] == Qubit("a", 1)
+    assert cu.circuit.qubits == [Qubit("a", 0), Qubit("a", 1)]
+
+
 if __name__ == "__main__":
     test_predicate_generation()
     test_compilation_unit_generation()
@@ -847,3 +867,4 @@ if __name__ == "__main__":
     test_remove_barriers()
     test_RebaseOQC_and_SynthesiseOQC()
     test_ZZPhaseToRz()
+    test_flatten_relabel_pass()

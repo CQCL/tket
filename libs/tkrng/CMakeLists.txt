@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cmake_minimum_required(VERSION 3.16.0)
+cmake_minimum_required(VERSION 3.23)
 project(tkrng CXX)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -23,23 +23,16 @@ if(CCACHE_PROGRAM)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
 endif()
 
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()
-
 if(WIN32)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS yes)
 endif()
 
 if(APPLE)
-    # set correct install_name
     set(CMAKE_INSTALL_NAME_DIR "@loader_path")
     set(CMAKE_BUILD_WITH_INSTALL_NAME_DIR ON)
 endif()
 
-add_library(tkrng RNG.cpp)
-target_include_directories(tkrng PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/tkrng)
-target_include_directories(tkrng INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
-
+add_library(tkrng)
 
 if(MSVC)
   target_compile_options(tkrng PRIVATE /W4 /WX)
@@ -58,3 +51,21 @@ IF (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         ENDIF()
     ENDIF()
 ENDIF()
+
+target_include_directories(tkrng PUBLIC include/tkrng)
+
+target_sources(tkrng
+    PRIVATE src/RNG.cpp
+    PUBLIC FILE_SET HEADERS
+    BASE_DIRS ${PROJECT_SOURCE_DIR}/include
+    FILES include/tkrng/RNG.hpp)
+
+install(TARGETS tkrng FILE_SET HEADERS)
+
+if(MSVC)
+    install(TARGETS tkrng
+        RUNTIME DESTINATION bin
+        RUNTIME DESTINATION lib
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib)
+endif()

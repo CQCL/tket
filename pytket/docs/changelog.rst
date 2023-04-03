@@ -4,16 +4,24 @@ Changelog
 Unreleased
 ----------
 
+Major new features:
+
+* Support for ARM Linux platforms.
+
+1.13.2 (March 2023)
+-------------------
+
 Minor new features:
 
 * Update to networkx 3.
 * Add "label" argument to ``SquareGrid``, ``RingArch`` and ``FullyConnected`` 
   ``Architecture`` classes to give custom name to constructed ``Node``.
+* Add ``FlattenRelabelRegistersPass`` to remove empty quantum wires and relabel all
+  qubits to a default register named after a passed label.
 * Updated implementation of ``ToffoliBox`` utilising multiplexors
   for improved decomposition.
 * Add new ``DiagonalBox`` that synthesises a diagonal unitary matrix
   into a sequence of multiplexed-Rz gates.
-  
 Fixes:
 
 * Multiply symbolic parameters in auto-generated gate definitions by "/pi" in ``circuit_to_qasm_io``

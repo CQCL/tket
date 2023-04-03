@@ -20,7 +20,7 @@ import shutil
 
 class TketConan(ConanFile):
     name = "tket"
-    version = "1.0.59"
+    version = "1.1.1"
     license = "CQC Proprietary"
     homepage = "https://github.com/CQCL/tket"
     url = "https://github.com/conan-io/conan-center-index"
@@ -41,11 +41,11 @@ class TketConan(ConanFile):
         "symengine/0.9.0",
         "eigen/3.4.0",
         "nlohmann_json/3.11.2",
-        "tklog/0.1.2@tket/stable",
-        "tkassert/0.1.1@tket/stable",
-        "tkrng/0.1.2@tket/stable",
-        "tktokenswap/0.1.2@tket/stable",
-        "tkwsm/0.2.1@tket/stable",
+        "tklog/0.3.3@tket/stable",
+        "tkassert/0.3.3@tket/stable",
+        "tkrng/0.3.3@tket/stable",
+        "tktokenswap/0.3.3@tket/stable",
+        "tkwsm/0.3.3@tket/stable",
     )
 
     # List of components in a topological sort according to dependencies:
@@ -90,6 +90,8 @@ class TketConan(ConanFile):
     def configure(self):
         # Disable features that are still under the LGPL.
         self.options["eigen"].MPL2_only = True
+        # Use header-only boost libraries.
+        self.options["boost"].header_only = True
 
     def build(self):
         cmake = self._configure_cmake()
