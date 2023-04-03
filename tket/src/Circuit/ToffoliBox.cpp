@@ -107,7 +107,7 @@ static std::vector<std::vector<bool>> rearrange_along_col(
   // We only need to do the matching for the rows starting with prefix+0
   // the solution will also take care of the rows starting with prefix+1
 
-  // Construct the bipartie graph with 2*2^n_right_columns vertices
+  // Construct the bipartite graph with 2*2^n_right_columns vertices
   // that connects the postfix in the row entires and the postfix in the row
   // indices. First half of the vertices represents the row entries the second
   // half represents the row indices
