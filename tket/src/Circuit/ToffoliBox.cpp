@@ -34,28 +34,35 @@ ToffoliBox::ToffoliBox(
   // we need to check every element has the same size, and every bitstrings
   // appears twice
   if (permutation.size() == 0) {
-    throw std::invalid_argument("The permutation is empty.");
+    throw std::invalid_argument(
+        "The permutation argument passed to ToffoliBox is empty.");
   }
   if (rotation_axis != OpType::Rx && rotation_axis != OpType::Ry) {
-    throw std::invalid_argument("The rotation axis must be Rx or Ry.");
+    throw std::invalid_argument(
+        "The rotation_axis argument passed to ToffoliBox must be Rx or Ry.");
   }
   // verify the permutation is valid
   auto it = permutation.begin();
   if (it->first.size() > 32) {
-    throw std::invalid_argument("Only support permutation up to 32 bits.");
+    throw std::invalid_argument(
+        "ToffoliBox only supports permutation up to 32 bits.");
   }
   unsigned n_qubits = (unsigned)it->first.size();
-  std::set<std::vector<bool>> rhs_sates;
-  std::set<std::vector<bool>> lhs_sates;
+  std::set<std::vector<bool>> rhs_states;
+  std::set<std::vector<bool>> lhs_states;
   for (; it != permutation.end(); ++it) {
     if (it->first.size() != n_qubits || it->second.size() != n_qubits) {
-      throw std::invalid_argument("Bitstrings don't have the same size.");
+      throw std::invalid_argument(
+          "The permutation argument passed to ToffoliBox contains bitstrings "
+          "with different sizes.");
     }
-    lhs_sates.insert(it->first);
-    rhs_sates.insert(it->second);
+    lhs_states.insert(it->first);
+    rhs_states.insert(it->second);
   }
-  if (lhs_sates != rhs_sates) {
-    throw std::invalid_argument("The permutation is invalid.");
+  if (lhs_states != rhs_states) {
+    throw std::invalid_argument(
+        "The permutation argument passed to ToffoliBox is not complete because "
+        "some states aren't mapped.");
   }
 }
 

@@ -30,12 +30,14 @@ DiagonalBox::DiagonalBox(const Eigen::VectorXcd &diagonal, bool upper_triangle)
   size_t length = diagonal.size();
   if (length < 2 || (length & (length - 1)) != 0) {
     throw std::invalid_argument(
-        "The size of the diagonal operator is not a power of 2.");
+        "The size of the diagonal operator passed to DiagonalBox is not a "
+        "power of 2.");
   }
   // check the operator is unitary
   for (unsigned i = 0; i < diagonal.size(); i++) {
     if (std::abs(1 - std::abs(diagonal[i])) > EPS) {
-      throw std::invalid_argument("The input diagonal is not unitary.");
+      throw std::invalid_argument(
+          "The input diagonal passed to DiagonalBox is not unitary.");
     }
   }
 }
