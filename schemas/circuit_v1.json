@@ -539,6 +539,10 @@
           "$ref": "#/definitions/matrix",
           "description": "Diagonal matrix represented by DiagonalBox."
         },
+        "upper_triangle": {
+          "type": "boolean",
+          "description": "Indicate whether to implement multiplexors in the DiagonalBox decomposition as an upper triangle."
+        },
         "is_inverse": {
           "type": "boolean",
           "description": "Indicate whether to implement the dagger of a StatePreparationBox."
@@ -729,7 +733,8 @@
           },
           "then": {
             "required": [
-              "diagonal"
+              "diagonal",
+              "upper_triangle"
             ]
           }
         },
