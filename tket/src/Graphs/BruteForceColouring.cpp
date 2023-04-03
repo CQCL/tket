@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Graphs/BruteForceColouring.hpp"
+#include "BruteForceColouring.hpp"
 
 #include <set>
 #include <sstream>
 #include <stdexcept>
 #include <tkassert/Assert.hpp>
 
-#include "Graphs/ColouringPriority.hpp"
+#include "ColouringPriority.hpp"
 
 using std::map;
 using std::set;

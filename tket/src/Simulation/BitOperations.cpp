@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Simulation/BitOperations.hpp"
+#include "BitOperations.hpp"
 
 #include <stdexcept>
 #include <tkassert/Assert.hpp>

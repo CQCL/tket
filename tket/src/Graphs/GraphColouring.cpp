@@ -21,9 +21,9 @@
 #include <stdexcept>
 #include <tkassert/Assert.hpp>
 
+#include "BruteForceColouring.hpp"
+#include "ColouringPriority.hpp"
 #include "Graphs/AdjacencyData.hpp"
-#include "Graphs/BruteForceColouring.hpp"
-#include "Graphs/ColouringPriority.hpp"
 #include "Graphs/GraphRoutines.hpp"
 #include "Graphs/LargeCliquesResult.hpp"
 

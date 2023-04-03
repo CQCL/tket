@@ -14,8 +14,8 @@
 
 #include <tkwsm/EndToEndWrappers/MainSolver.hpp>
 
+#include "RelabelledGraphWSM.hpp"
 #include "Placement/Placement.hpp"
-#include "Placement/RelabelledGraphWSM.hpp"
 
 namespace tket {
 

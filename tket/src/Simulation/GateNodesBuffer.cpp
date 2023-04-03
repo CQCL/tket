@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Simulation/GateNodesBuffer.hpp"
+#include "GateNodesBuffer.hpp"
 
 #include <stdexcept>
 #include <tkassert/Assert.hpp>

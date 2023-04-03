@@ -17,9 +17,9 @@
 #include <sstream>
 
 #include "Circuit/Circuit.hpp"
-#include "Simulation/DecomposeCircuit.hpp"
+#include "DecomposeCircuit.hpp"
+#include "GateNodesBuffer.hpp"
 #include "Gate/GateUnitaryMatrixError.hpp"
-#include "Simulation/GateNodesBuffer.hpp"
 #include "Utils/Expression.hpp"
 
 namespace tket {

@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Simulation/DecomposeCircuit.hpp"
+#include "DecomposeCircuit.hpp"
 
 #include <sstream>
 #include <tkassert/Assert.hpp>
 
 #include "Circuit/Boxes.hpp"
 #include "Circuit/Circuit.hpp"
+#include "GateNodesBuffer.hpp"
 #include "Gate/Gate.hpp"
 #include "Gate/GateUnitaryMatrix.hpp"
 #include "Gate/GateUnitaryMatrixError.hpp"
-#include "Simulation/GateNodesBuffer.hpp"
 #include "Simulation/PauliExpBoxUnitaryCalculator.hpp"
 
 namespace tket {

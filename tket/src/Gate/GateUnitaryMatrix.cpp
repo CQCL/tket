@@ -18,12 +18,12 @@
 #include <sstream>
 #include <tkassert/Assert.hpp>
 
+#include "GateUnitaryMatrixVariableQubits.hpp"
+#include "GateUnitarySparseMatrix.hpp"
 #include "Gate/Gate.hpp"
 #include "Gate/GateUnitaryMatrixError.hpp"
 #include "Gate/GateUnitaryMatrixImplementations.hpp"
 #include "Gate/GateUnitaryMatrixUtils.hpp"
-#include "Gate/GateUnitaryMatrixVariableQubits.hpp"
-#include "Gate/GateUnitarySparseMatrix.hpp"
 #include "OpType/OpTypeInfo.hpp"
 
 // This is just for the main Gate -> matrix function, so the only part
