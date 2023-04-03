@@ -445,7 +445,7 @@ def test_boxes() -> None:
     assert all(isinstance(box, Op) for box in boxes)
 
     permutation = {(0, 0): (1, 1), (1, 1): (0, 0)}
-    tb = ToffoliBox(2, permutation)
+    tb = ToffoliBox(permutation)
     assert tb.type == OpType.ToffoliBox
     unitary = tb.get_circuit().get_unitary()
     comparison = np.asarray([[0, 0, 0, 1], [0, 1, 0, 0], [0, 0, 1, 0], [1, 0, 0, 0]])

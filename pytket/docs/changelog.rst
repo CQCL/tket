@@ -22,6 +22,7 @@ Minor new features:
   for improved decomposition.
 * Add new ``DiagonalBox`` that synthesises a diagonal unitary matrix
   into a sequence of multiplexed-Rz gates.
+
 Fixes:
 
 * Multiply symbolic parameters in auto-generated gate definitions by "/pi" in ``circuit_to_qasm_io``
