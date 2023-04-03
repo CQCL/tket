@@ -29,7 +29,7 @@ pip install conan~=1.59
 Create a new profile called `tket`:
 
 ```
-conan profile detect --name tket
+conan profile new tket --detect
 ```
 
 (On Linux, a warning will be shown about the `libcxx` configuration. Follow the
