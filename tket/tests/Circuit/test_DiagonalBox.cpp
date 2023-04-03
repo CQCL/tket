@@ -69,6 +69,25 @@ SCENARIO("Test DiagonalBox") {
       REQUIRE((U - M).cwiseAbs().sum() < ERR_EPS);
     }
   }
+  GIVEN("diagonal implemented as a lower triangle") {
+    Eigen::VectorXcd d = random_diagonal(32, 0);
+    DiagonalBox diag(d, false);
+    std::shared_ptr<Circuit> c = diag.to_circuit();
+    const Eigen::MatrixXcd U = tket_sim::get_unitary(*c);
+    Eigen::DiagonalMatrix<Complex, Eigen::Dynamic> D(d);
+    Eigen::MatrixXcd M = D.derived();
+    REQUIRE((U - M).cwiseAbs().sum() < ERR_EPS);
+    std::vector<Command> cmds = c->get_commands();
+    REQUIRE(cmds.size() == 5);
+    for (unsigned i = 0; i < 5; i++) {
+      unit_vector_t args;
+      for (unsigned j = i + 1; j < 5; j++) {
+        args.push_back(Qubit(j));
+      }
+      args.push_back(Qubit(i));
+      REQUIRE(cmds[i].get_args() == args);
+    }
+  }
   GIVEN("Non-unitary diagonal") {
     Eigen::Vector2cd diag(2. * i_, 1);
     REQUIRE_THROWS_MATCHES(
@@ -100,9 +119,10 @@ SCENARIO("Test DiagonalBox") {
   }
   GIVEN("copy constructor") {
     Eigen::Vector2cd diag(i_, -1);
-    DiagonalBox diagbox(diag);
+    DiagonalBox diagbox(diag, false);
     DiagonalBox diagbox2(diagbox);
     REQUIRE((diag - diagbox2.get_diagonal()).cwiseAbs().sum() < ERR_EPS);
+    REQUIRE(!diagbox2.is_upper_triangle());
   }
 }
 

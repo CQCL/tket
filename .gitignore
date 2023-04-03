@@ -12,6 +12,7 @@
 .venv
 CMakeCache.txt
 CMakeFiles
+CMakeUserPresets.json
 __pycache__
 build
 cmake-build*

@@ -27,9 +27,14 @@ class DiagonalBox : public Box {
   /**
    * Construct a circuit that synthesise the given unitary diagonal operator
    *
-   * @param diagonal the digonal entries of the operator
+   * @param diagonal the diagonal entries of the operator
+   * @param upper_triangle the diagonal operator will be decomposed as a
+   * sequence of multiplexed-Rz gates. This argument decides whether the
+   * multiplexed-Rz gates take the shape of an upper triangle or a lower
+   * triangle.
    */
-  explicit DiagonalBox(const Eigen::VectorXcd &diagonal);
+  explicit DiagonalBox(
+      const Eigen::VectorXcd &diagonal, bool upper_triangle = true);
 
   /**
    * Copy constructor
@@ -62,6 +67,7 @@ class DiagonalBox : public Box {
   static nlohmann::json to_json(const Op_ptr &op);
 
   Eigen::VectorXcd get_diagonal() const;
+  bool is_upper_triangle() const;
 
  protected:
   /**
@@ -71,9 +77,11 @@ class DiagonalBox : public Box {
    */
   void generate_circuit() const override;
 
-  DiagonalBox() : Box(OpType::DiagonalBox), diagonal_() {}
+  DiagonalBox()
+      : Box(OpType::DiagonalBox), diagonal_(), upper_triangle_(true) {}
 
  private:
   const Eigen::VectorXcd diagonal_;
+  const bool upper_triangle_;
 };
 }  // namespace tket

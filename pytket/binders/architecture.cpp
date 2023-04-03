@@ -161,7 +161,7 @@ PYBIND11_MODULE(architecture, m) {
           py::init<const unsigned, const std::string>(),
           "The constructor for a RingArchitecture with some undirected "
           "connectivity between qubits.\n\n:param number of qubits\n:param "
-          "label:Name for Node in RingArch Architecture",
+          "label: Name for Node in RingArch Architecture",
           py::arg("nodes"), py::arg("label") = "ringNode")
       .def(
           "__deepcopy__",

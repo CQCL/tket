@@ -12,8 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cmake_minimum_required(VERSION 3.16.0)
+cmake_minimum_required(VERSION 3.23)
 project(tkassert CXX)
+
+find_package(tklog CONFIG REQUIRED)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -23,23 +25,16 @@ if(CCACHE_PROGRAM)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
 endif()
 
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()
-
 if(WIN32)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS yes)
 endif()
 
 if(APPLE)
-    # set correct install_name
     set(CMAKE_INSTALL_NAME_DIR "@loader_path")
     set(CMAKE_BUILD_WITH_INSTALL_NAME_DIR ON)
 endif()
 
-add_library(tkassert AssertMessage.cpp)
-target_include_directories(tkassert PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/include/tkassert)
-target_include_directories(tkassert INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}/include)
-
+add_library(tkassert)
 
 if(MSVC)
   target_compile_options(tkassert PRIVATE /W4 /WX)
@@ -58,3 +53,22 @@ IF (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         ENDIF()
     ENDIF()
 ENDIF()
+
+target_include_directories(tkassert PUBLIC include/tkassert)
+target_link_libraries(tkassert PRIVATE tklog::tklog)
+
+target_sources(tkassert
+    PRIVATE src/AssertMessage.cpp
+    PUBLIC FILE_SET HEADERS
+    BASE_DIRS ${PROJECT_SOURCE_DIR}/include
+    FILES include/tkassert/Assert.hpp include/tkassert/AssertMessage.hpp)
+
+install(TARGETS tkassert FILE_SET HEADERS)
+
+if(MSVC)
+    install(TARGETS tkassert
+        RUNTIME DESTINATION bin
+        RUNTIME DESTINATION lib
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib)
+endif()

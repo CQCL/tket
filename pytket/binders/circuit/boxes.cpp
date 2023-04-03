@@ -510,17 +510,26 @@ void init_boxes(py::module &m) {
           ":return: flag indicating whether to implement the dagger of the "
           "state preparation circuit");
   py::class_<DiagonalBox, std::shared_ptr<DiagonalBox>, Op>(
-      m, "DiagonalBox", "A user defined diagonal operator.")
+      m, "DiagonalBox",
+      "A box for synthesising a diagonal unitary matrix into a sequence of "
+      "multiplexed-Rz gates.")
       .def(
-          py::init<const Eigen::VectorXcd &>(),
-          "Construct from the diagonal entries of the operator\n\n"
-          ":param diagonal: diagonal entries",
-          py::arg("diagonal"))
+          py::init<const Eigen::VectorXcd &, bool>(),
+          "Construct from the diagonal entries of the unitary operator. The "
+          "size of the vector must be 2^n where n is a positive integer.\n\n"
+          ":param diagonal: diagonal entries\n"
+          ":param upper_triangle: indicates whether the multiplexed-Rz gates "
+          "take the shape of an upper triangle or a lower triangle. Default to "
+          "true.",
+          py::arg("diagonal"), py::arg("upper_triangle") = true)
       .def(
           "get_circuit", [](DiagonalBox &box) { return *box.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the box")
       .def(
           "get_diagonal", &DiagonalBox::get_diagonal,
-          ":return: the statevector");
+          ":return: the statevector")
+      .def(
+          "is_upper_triangle", &DiagonalBox::is_upper_triangle,
+          ":return: the upper_triangle flag");
 }
 }  // namespace tket

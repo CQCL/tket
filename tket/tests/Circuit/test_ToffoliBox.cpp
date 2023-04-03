@@ -72,6 +72,25 @@ SCENARIO("Test ToffoliBox") {
     perm[{1, 0}] = {0, 1};
     perm[{1, 1}] = {1, 0};
   }
+  GIVEN("2-q permutation (2)") {
+    axis = OpType::Rx;
+    perm[{0, 0}] = {1, 1};
+    perm[{1, 1}] = {0, 0};
+  }
+  GIVEN("2-q permutation (3)") {
+    axis = OpType::Rx;
+    perm[{0, 0}] = {1, 1};
+    perm[{1, 1}] = {0, 0};
+    perm[{0, 1}] = {1, 0};
+    perm[{1, 0}] = {0, 1};
+  }
+  GIVEN("2-q permutation (4)") {
+    axis = OpType::Rx;
+    perm[{0, 0}] = {1, 1};
+    perm[{1, 1}] = {0, 1};
+    perm[{0, 1}] = {1, 0};
+    perm[{1, 0}] = {0, 0};
+  }
   GIVEN("3-q permutation") {
     axis = OpType::Ry;
     perm[{0, 0, 0}] = {1, 0, 0};
@@ -81,6 +100,24 @@ SCENARIO("Test ToffoliBox") {
     perm[{1, 0, 1}] = {0, 1, 1};
     perm[{1, 1, 0}] = {1, 1, 1};
     perm[{1, 1, 1}] = {1, 1, 0};
+  }
+  GIVEN("3-q permutation (2)") {
+    axis = OpType::Ry;
+    perm[{0, 0, 1}] = {1, 1, 0};
+    perm[{1, 1, 0}] = {0, 1, 0};
+    perm[{0, 1, 0}] = {1, 0, 1};
+    perm[{1, 0, 1}] = {0, 0, 1};
+  }
+  GIVEN("4-q permutation") {
+    axis = OpType::Ry;
+    perm[{0, 0, 0, 0}] = {1, 1, 0, 0};
+    perm[{1, 1, 0, 0}] = {1, 1, 0, 1};
+    perm[{1, 1, 0, 1}] = {0, 0, 0, 1};
+    perm[{0, 0, 0, 1}] = {1, 1, 1, 0};
+    perm[{1, 1, 1, 0}] = {0, 0, 1, 1};
+    perm[{0, 0, 1, 1}] = {1, 0, 0, 1};
+    perm[{1, 0, 0, 1}] = {1, 0, 1, 0};
+    perm[{1, 0, 1, 0}] = {0, 0, 0, 0};
   }
   GIVEN("Random 4-q permutation") {
     axis = OpType::Rx;
@@ -106,7 +143,8 @@ SCENARIO("Test ToffoliBox Exceptions") {
     state_perm_t perm;
     perm[{0, 1}] = {1, 0};
     REQUIRE_THROWS_MATCHES(
-        ToffoliBox(perm), std::invalid_argument, MessageContains("invalid"));
+        ToffoliBox(perm), std::invalid_argument,
+        MessageContains("is not complete"));
   }
   GIVEN("Empty permutation") {
     state_perm_t perm;
@@ -119,14 +157,14 @@ SCENARIO("Test ToffoliBox Exceptions") {
     perm[{1}] = {0};
     REQUIRE_THROWS_MATCHES(
         ToffoliBox(perm, OpType::Rz), std::invalid_argument,
-        MessageContains("axis must be Rx or Ry"));
+        MessageContains("must be Rx or Ry"));
   }
   GIVEN("Invalid entries") {
     state_perm_t perm;
     perm[{0}] = {1, 0};
     REQUIRE_THROWS_MATCHES(
         ToffoliBox(perm), std::invalid_argument,
-        MessageContains("don't have the same size"));
+        MessageContains("with different sizes"));
   }
   GIVEN("Too long") {
     state_perm_t perm;

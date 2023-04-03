@@ -12,14 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cmake_minimum_required(VERSION 3.1)
+cmake_minimum_required(VERSION 3.23)
 project(PackageTest CXX)
 
-include(${CMAKE_BINARY_DIR}/conanbuildinfo.cmake)
-conan_basic_setup()
+find_package(tklog CONFIG REQUIRED)
+find_package(tkassert CONFIG REQUIRED)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
-add_executable(example example.cpp)
-target_link_libraries(example ${CONAN_LIBS})
+add_executable(example src/example.cpp)
+target_link_libraries(example tkassert::tkassert)

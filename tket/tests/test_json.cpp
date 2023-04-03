@@ -519,7 +519,7 @@ SCENARIO("Test Circuit serialization") {
   GIVEN("DiagonalBox") {
     Eigen::VectorXcd diag(8);
     diag << i_, i_, i_, -i_, 1, -i_, 1, -i_;
-    DiagonalBox diagbox(diag);
+    DiagonalBox diagbox(diag, false);
     Circuit c(3);
     c.add_box(diagbox, {0, 1, 2});
     nlohmann::json j_box = c;
@@ -527,6 +527,7 @@ SCENARIO("Test Circuit serialization") {
     const auto& box =
         static_cast<const DiagonalBox&>(*new_c.get_commands()[0].get_op_ptr());
     REQUIRE((diag - box.get_diagonal()).cwiseAbs().sum() < ERR_EPS);
+    REQUIRE(!box.is_upper_triangle());
   }
 
   GIVEN("PhasePolyBox") {
@@ -803,6 +804,8 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(
       EulerAngleReduction, gen_euler_pass(OpType::Rx, OpType::Ry, false))
   COMPPASSJSONTEST(RenameQubitsPass, gen_rename_qubits_pass(qmap))
+  COMPPASSJSONTEST(
+      FlattenRelabelRegistersPass, gen_flatten_relabel_registers_pass("test"))
   COMPPASSJSONTEST(CliffordSimp, gen_clifford_simp_pass(true))
   COMPPASSJSONTEST(
       DecomposeSwapsToCXs, gen_decompose_routing_gates_to_cxs_pass(arc, false))

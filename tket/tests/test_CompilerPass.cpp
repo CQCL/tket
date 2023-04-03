@@ -1655,5 +1655,60 @@ SCENARIO("CustomPass") {
   }
 }
 
+SCENARIO("Flatten and relabel registers") {
+  GIVEN("No empty wires, qubits from same register.") {
+    Circuit c(3);
+    c.add_op<unsigned>(OpType::H, {0});
+    c.add_op<unsigned>(OpType::X, {1});
+    c.add_op<unsigned>(OpType::Z, {2});
+    CompilationUnit cu(c);
+
+    PassPtr pp = gen_flatten_relabel_registers_pass("a");
+    REQUIRE(pp->apply(cu));
+
+    unit_bimap_t cu_initial = cu.get_initial_map_ref();
+    unit_bimap_t cu_final = cu.get_final_map_ref();
+
+    REQUIRE(cu_initial.left.find(Qubit(0))->second == Qubit("a", 0));
+    REQUIRE(cu_initial.left.find(Qubit(1))->second == Qubit("a", 1));
+    REQUIRE(cu_final.left.find(Qubit(0))->second == Qubit("a", 0));
+    REQUIRE(cu_final.left.find(Qubit(1))->second == Qubit("a", 1));
+  }
+  GIVEN("Two empty wires, qubits from different registers.") {
+    Circuit c(5);
+    c.add_op<unsigned>(OpType::H, {0});
+    c.add_op<unsigned>(OpType::X, {1});
+    c.add_op<unsigned>(OpType::Z, {4});
+
+    std::map<Qubit, Qubit> rename_map = {
+        {Qubit(0), Qubit("a", 1)},
+        {Qubit(1), Qubit("c", 0)},
+        {Qubit(2), Qubit("e", 1)},
+        {Qubit(3), Qubit("a", 5)},
+        {Qubit(4), Qubit("s", 7)}};
+    c.rename_units(rename_map);
+
+    CompilationUnit cu(c);
+
+    PassPtr pp = gen_flatten_relabel_registers_pass("a");
+    REQUIRE(pp->apply(cu));
+
+    unit_bimap_t cu_initial = cu.get_initial_map_ref();
+    unit_bimap_t cu_final = cu.get_final_map_ref();
+
+    REQUIRE(cu_initial.left.find(Qubit("a", 1))->second == Qubit("a", 0));
+    REQUIRE(cu_initial.left.find(Qubit("c", 0))->second == Qubit("a", 1));
+    REQUIRE(cu_initial.left.find(Qubit("e", 1))->second == Qubit("e", 1));
+    REQUIRE(cu_initial.left.find(Qubit("a", 5))->second == Qubit("a", 5));
+    REQUIRE(cu_initial.left.find(Qubit("s", 7))->second == Qubit("a", 2));
+
+    REQUIRE(cu_final.left.find(Qubit("a", 1))->second == Qubit("a", 0));
+    REQUIRE(cu_final.left.find(Qubit("c", 0))->second == Qubit("a", 1));
+    REQUIRE(cu_final.left.find(Qubit("e", 1))->second == Qubit("e", 1));
+    REQUIRE(cu_final.left.find(Qubit("a", 5))->second == Qubit("a", 5));
+    REQUIRE(cu_final.left.find(Qubit("s", 7))->second == Qubit("a", 2));
+  }
+}
+
 }  // namespace test_CompilerPass
 }  // namespace tket
