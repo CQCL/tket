@@ -140,6 +140,10 @@ static std::vector<std::vector<bool>> rearrange_along_col(
   }
   // find a matching
   std::vector<perm_vert_t> match(1 << (n_right_columns + 1));
+  // O(|V|*|E|*alpha(|V|, |E|)), alpha is a slow growing function
+  // that never exceeds 4 for any realistic input.
+  // TODO: use a specialised algo for bipartite matching
+  // e.g. Hopcroft-Karp for O(|E| sqrt(|V|))
   edmonds_maximum_cardinality_matching(g, &match[0]);
   std::vector<std::vector<bool>> swap_pairs;
   for (unsigned postfix_dec = 0; postfix_dec < (unsigned)(1 << n_right_columns);
@@ -176,16 +180,26 @@ static void swap_rows(
   // phases is a vector, convert rows to decimal to track phases
   unsigned row0_dec = bin_to_dec(row0);
   unsigned row1_dec = bin_to_dec(row1);
+  // we currently only support Rx(pi) and Ry(pi) for permuting states
+  // we might introduce Rx(-pi) or Ry(-pi) in the future. Also, dynamically
+  // choosing between these 4 might give possible phase cancellation
+  // opportunities
   if (zflip_op->get_type() == OpType::Rx &&
       equiv_val(zflip_op->get_params()[0], 1., 4)) {
+    // check the Rx angle is (1 mod 4)
     phases[row0_dec] *= -i_;
     phases[row1_dec] *= -i_;
   } else if (
       zflip_op->get_type() == OpType::Ry &&
       equiv_val(zflip_op->get_params()[0], 1., 4)) {
+    // check the Ry angle is (1 mod 4)
     phases[row1_dec] *= -1;
   } else {
-    throw std::invalid_argument("Unsupported rotation.");
+    // shouldn't happen since we assume the zflip_op must satisfy one of the
+    // above conditions. Still throw an error in case something goes wrong.
+    throw std::logic_error(
+        "Attempt to perform state permutation in ToffoliBox with unsupported "
+        "rotations.");
   }
   std::swap(phases[row0_dec], phases[row1_dec]);
   op_map.insert({pair, zflip_op});
@@ -248,11 +262,16 @@ static Circuit permute(
     for (unsigned prefix = 0; prefix < (unsigned)(1 << col_idx); prefix++) {
       std::vector<bool> prefix_bin;
       if (col_idx != 0) {
+        // if col_idx == 0, the prefix is empty, otherwise convert the decimal
+        // prefix to its binary representation
         prefix_bin = dec_to_bin(prefix, col_idx);
       }
       std::vector<std::vector<bool>> swap_pairs =
           rearrange_along_col(prefix_bin, n_qubits, col_idx, perm);
-      for (auto pair : swap_pairs) {
+      for (const std::vector<bool> &pair : swap_pairs) {
+        // swap_rows mutates the perm (current permutation), phases (phases
+        // accumulated by using SU2 gates) and also updates the op_map to
+        // indicate which pairs of rows to swap
         swap_rows(pair, col_idx, perm, op_map, phases, zflip_op);
       }
     }
@@ -301,8 +320,8 @@ void ToffoliBox::generate_circuit() const {
       }
     }
   }
-  Circuit circ = permute(perm, n_qubits, get_op_ptr(rotation_axis_, 1));
-  circ_ = std::make_shared<Circuit>(circ);
+  circ_ = std::make_shared<Circuit>(
+      permute(perm, n_qubits, get_op_ptr(rotation_axis_, 1)));
 }
 
 nlohmann::json ToffoliBox::to_json(const Op_ptr &op) {
