@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "ThreeQubitConversion.hpp"
+#include "Circuit/ThreeQubitConversion.hpp"
 
 #include <array>
 #include <cmath>
@@ -21,9 +21,9 @@
 #include <stdexcept>
 #include <tkassert/Assert.hpp>
 
-#include "CircPool.hpp"
-#include "CircUtils.hpp"
-#include "Circuit.hpp"
+#include "Circuit/CircPool.hpp"
+#include "Circuit/CircUtils.hpp"
+#include "Circuit/Circuit.hpp"
 #include "Circuit/Command.hpp"
 #include "Gate/GatePtr.hpp"
 #include "Gate/Rotation.hpp"

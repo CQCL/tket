@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "GateUnitaryMatrixVariableQubits.hpp"
+#include "Gate/GateUnitaryMatrixVariableQubits.hpp"
 
 #include <tkassert/Assert.hpp>
 
-#include "GateUnitaryMatrixImplementations.hpp"
+#include "Gate/GateUnitaryMatrixImplementations.hpp"
 
 namespace tket {
 namespace internal {

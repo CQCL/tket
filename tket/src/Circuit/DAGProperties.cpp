@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "DAGProperties.hpp"
+#include "Circuit/DAGProperties.hpp"
 
 #include <algorithm>
 #include <tklog/TketLog.hpp>
 
-#include "Circuit.hpp"
+#include "Circuit/Circuit.hpp"
 #include "OpType/EdgeType.hpp"
 #include "Utils/GraphHeaders.hpp"
 

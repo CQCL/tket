@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Expression.hpp"
+#include "Utils/Expression.hpp"
 
 #include <optional>
 
-#include "Constants.hpp"
-#include "Symbols.hpp"
+#include "Utils/Constants.hpp"
+#include "Utils/Symbols.hpp"
 #include "symengine/symengine_exception.h"
 
 namespace tket {

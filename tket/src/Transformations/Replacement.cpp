@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Replacement.hpp"
+#include "Transformations/Replacement.hpp"
 
 #include "Circuit/CircPool.hpp"
 #include "Circuit/CircUtils.hpp"
 #include "Circuit/Circuit.hpp"
-#include "Decomposition.hpp"
+#include "Transformations/Decomposition.hpp"
 #include "Gate/GatePtr.hpp"
 #include "Gate/GateUnitaryMatrix.hpp"
 #include "OpType/OpType.hpp"
 #include "OpType/OpTypeInfo.hpp"
-#include "Transform.hpp"
+#include "Transformations/Transform.hpp"
 
 namespace tket {
 

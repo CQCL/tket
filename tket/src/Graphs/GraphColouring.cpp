@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "GraphColouring.hpp"
+#include "Graphs/GraphColouring.hpp"
 
 #include <algorithm>
 #include <limits>
@@ -21,11 +21,11 @@
 #include <stdexcept>
 #include <tkassert/Assert.hpp>
 
-#include "AdjacencyData.hpp"
-#include "BruteForceColouring.hpp"
-#include "ColouringPriority.hpp"
-#include "GraphRoutines.hpp"
-#include "LargeCliquesResult.hpp"
+#include "Graphs/AdjacencyData.hpp"
+#include "Graphs/BruteForceColouring.hpp"
+#include "Graphs/ColouringPriority.hpp"
+#include "Graphs/GraphRoutines.hpp"
+#include "Graphs/LargeCliquesResult.hpp"
 
 using std::exception;
 using std::map;

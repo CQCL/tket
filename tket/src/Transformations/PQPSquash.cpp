@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "PQPSquash.hpp"
+#include "Transformations/PQPSquash.hpp"
 
 #include <memory>
 
-#include "BasicOptimisation.hpp"
+#include "Transformations/BasicOptimisation.hpp"
 #include "Circuit/DAGDefs.hpp"
-#include "Decomposition.hpp"
+#include "Transformations/Decomposition.hpp"
 #include "Gate/Rotation.hpp"
 #include "OpType/OpTypeInfo.hpp"
-#include "Transform.hpp"
+#include "Transformations/Transform.hpp"
 #include "Utils/Expression.hpp"
 
 namespace tket::Transforms {

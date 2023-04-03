@@ -12,18 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "GateUnitaryMatrix.hpp"
+#include "Gate/GateUnitaryMatrix.hpp"
 
 #include <cmath>
 #include <sstream>
 #include <tkassert/Assert.hpp>
 
 #include "Gate/Gate.hpp"
-#include "GateUnitaryMatrixError.hpp"
-#include "GateUnitaryMatrixImplementations.hpp"
-#include "GateUnitaryMatrixUtils.hpp"
-#include "GateUnitaryMatrixVariableQubits.hpp"
-#include "GateUnitarySparseMatrix.hpp"
+#include "Gate/GateUnitaryMatrixError.hpp"
+#include "Gate/GateUnitaryMatrixImplementations.hpp"
+#include "Gate/GateUnitaryMatrixUtils.hpp"
+#include "Gate/GateUnitaryMatrixVariableQubits.hpp"
+#include "Gate/GateUnitarySparseMatrix.hpp"
 #include "OpType/OpTypeInfo.hpp"
 
 // This is just for the main Gate -> matrix function, so the only part

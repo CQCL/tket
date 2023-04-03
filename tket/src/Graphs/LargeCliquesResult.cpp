@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "LargeCliquesResult.hpp"
+#include "Graphs/LargeCliquesResult.hpp"
 
-#include "AdjacencyData.hpp"
+#include "Graphs/AdjacencyData.hpp"
 
 using std::set;
 using std::size_t;

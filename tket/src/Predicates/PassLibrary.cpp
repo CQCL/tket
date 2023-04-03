@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "PassLibrary.hpp"
+#include "Predicates/PassLibrary.hpp"
 
 #include <memory>
 
 #include "Circuit/CircPool.hpp"
-#include "CompilationUnit.hpp"
+#include "Predicates/CompilationUnit.hpp"
 #include "Converters/Converters.hpp"
-#include "PassGenerators.hpp"
-#include "Predicates.hpp"
+#include "Predicates/PassGenerators.hpp"
+#include "Predicates/Predicates.hpp"
 #include "Predicates/CompilerPass.hpp"
 #include "Transformations/BasicOptimisation.hpp"
 #include "Transformations/Decomposition.hpp"

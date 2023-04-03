@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "AdjacencyData.hpp"
+#include "Graphs/AdjacencyData.hpp"
 
 #include <algorithm>
 #include <set>

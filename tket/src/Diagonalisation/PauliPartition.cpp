@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "PauliPartition.hpp"
+#include "Diagonalisation/PauliPartition.hpp"
 
 #include <numeric>
 #include <tkassert/Assert.hpp>

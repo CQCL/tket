@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "ColouringPriority.hpp"
+#include "Graphs/ColouringPriority.hpp"
 
 #include <sstream>
 #include <stdexcept>
 #include <tkassert/Assert.hpp>
 
-#include "AdjacencyData.hpp"
+#include "Graphs/AdjacencyData.hpp"
 
 using std::map;
 using std::set;

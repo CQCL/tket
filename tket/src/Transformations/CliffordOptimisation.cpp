@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "CliffordOptimisation.hpp"
+#include "Transformations/CliffordOptimisation.hpp"
 
 #include <vector>
 
-#include "BasicOptimisation.hpp"
+#include "Transformations/BasicOptimisation.hpp"
 #include "Circuit/CircPool.hpp"
 #include "Circuit/DAGDefs.hpp"
-#include "Decomposition.hpp"
-#include "Transform.hpp"
+#include "Transformations/Decomposition.hpp"
+#include "Transformations/Transform.hpp"
 
 namespace tket {
 

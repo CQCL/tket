@@ -14,10 +14,10 @@
 
 #include <optional>
 
-#include "BasicOptimisation.hpp"
+#include "Transformations/BasicOptimisation.hpp"
 #include "Circuit/DAGDefs.hpp"
 #include "Gate/Gate.hpp"
-#include "Transform.hpp"
+#include "Transformations/Transform.hpp"
 
 namespace tket::Transforms {
 

@@ -22,8 +22,8 @@
 #include <string>
 #include <vector>
 
-#include "Boxes.hpp"
-#include "Circuit.hpp"
+#include "Circuit/Boxes.hpp"
+#include "Circuit/Circuit.hpp"
 #include "Ops/MetaOp.hpp"
 
 namespace tket {

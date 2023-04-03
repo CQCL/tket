@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "StandardSquash.hpp"
+#include "Transformations/StandardSquash.hpp"
 
 #include <memory>
 
-#include "BasicOptimisation.hpp"
+#include "Transformations/BasicOptimisation.hpp"
 #include "Circuit/DAGDefs.hpp"
 #include "Gate/Rotation.hpp"
 #include "OpType/OpTypeInfo.hpp"
-#include "SingleQubitSquash.hpp"
+#include "Transformations/SingleQubitSquash.hpp"
 #include "Utils/Expression.hpp"
 
 namespace tket {

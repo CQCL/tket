@@ -12,23 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "OptimisationPass.hpp"
+#include "Transformations/OptimisationPass.hpp"
 
 #include <stdexcept>
 
-#include "BasicOptimisation.hpp"
+#include "Transformations/BasicOptimisation.hpp"
 #include "Circuit/CircPool.hpp"
 #include "Circuit/CircUtils.hpp"
-#include "CliffordOptimisation.hpp"
-#include "CliffordReductionPass.hpp"
-#include "Combinator.hpp"
-#include "Decomposition.hpp"
+#include "Transformations/CliffordOptimisation.hpp"
+#include "Transformations/CliffordReductionPass.hpp"
+#include "Transformations/Combinator.hpp"
+#include "Transformations/Decomposition.hpp"
 #include "Gate/GatePtr.hpp"
 #include "OpType/OpType.hpp"
-#include "PhaseOptimisation.hpp"
-#include "Rebase.hpp"
-#include "ThreeQubitSquash.hpp"
-#include "Transform.hpp"
+#include "Transformations/PhaseOptimisation.hpp"
+#include "Transformations/Rebase.hpp"
+#include "Transformations/ThreeQubitSquash.hpp"
+#include "Transformations/Transform.hpp"
 
 namespace tket {
 

@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "CircuitSimulator.hpp"
+#include "Simulation/CircuitSimulator.hpp"
 
 #include <sstream>
 
 #include "Circuit/Circuit.hpp"
-#include "DecomposeCircuit.hpp"
+#include "Simulation/DecomposeCircuit.hpp"
 #include "Gate/GateUnitaryMatrixError.hpp"
-#include "GateNodesBuffer.hpp"
+#include "Simulation/GateNodesBuffer.hpp"
 #include "Utils/Expression.hpp"
 
 namespace tket {

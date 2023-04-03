@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "GateUnitarySparseMatrix.hpp"
+#include "Gate/GateUnitarySparseMatrix.hpp"
 
 #include <tkassert/Assert.hpp>
 
 #include "Gate/Gate.hpp"
-#include "GateUnitaryMatrix.hpp"
-#include "GateUnitaryMatrixError.hpp"
-#include "GateUnitaryMatrixImplementations.hpp"
-#include "GateUnitaryMatrixUtils.hpp"
+#include "Gate/GateUnitaryMatrix.hpp"
+#include "Gate/GateUnitaryMatrixError.hpp"
+#include "Gate/GateUnitaryMatrixImplementations.hpp"
+#include "Gate/GateUnitaryMatrixUtils.hpp"
 
 namespace tket {
 namespace internal {

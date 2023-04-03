@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "GateNode.hpp"
+#include "Simulation/GateNode.hpp"
 
 #include <tkassert/Assert.hpp>
 
-#include "BitOperations.hpp"
+#include "Simulation/BitOperations.hpp"
 
 /*
 The following is intended to be helpful, but there are no guarantees

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Decomposition.hpp"
+#include "Transformations/Decomposition.hpp"
 
 #include <functional>
 #include <optional>
@@ -21,7 +21,7 @@
 #include <stdexcept>
 
 #include "Architecture/Architecture.hpp"
-#include "BasicOptimisation.hpp"
+#include "Transformations/BasicOptimisation.hpp"
 #include "Circuit/CircPool.hpp"
 #include "Converters/PhasePoly.hpp"
 #include "Gate/GatePtr.hpp"
@@ -29,11 +29,11 @@
 #include "OpType/OpTypeFunctions.hpp"
 #include "OpType/OpTypeInfo.hpp"
 #include "Ops/OpPtr.hpp"
-#include "OptimisationPass.hpp"
-#include "PhasedXFrontier.hpp"
-#include "Rebase.hpp"
-#include "Replacement.hpp"
-#include "Transform.hpp"
+#include "Transformations/OptimisationPass.hpp"
+#include "Transformations/PhasedXFrontier.hpp"
+#include "Transformations/Rebase.hpp"
+#include "Transformations/Replacement.hpp"
+#include "Transformations/Transform.hpp"
 #include "Utils/Constants.hpp"
 #include "Utils/Expression.hpp"
 #include "Utils/MatrixAnalysis.hpp"

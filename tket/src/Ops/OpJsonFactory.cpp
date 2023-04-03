@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "OpJsonFactory.hpp"
+#include "Ops/OpJsonFactory.hpp"
 
 #include "OpType/OpTypeInfo.hpp"
 #include "Ops/Op.hpp"

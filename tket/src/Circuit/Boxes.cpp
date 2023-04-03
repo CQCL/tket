@@ -12,20 +12,20 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Boxes.hpp"
+#include "Circuit/Boxes.hpp"
 
 #include <memory>
 #include <numeric>
 #include <tkassert/Assert.hpp>
 
-#include "CircUtils.hpp"
+#include "Circuit/CircUtils.hpp"
 #include "Circuit/AssertionSynthesis.hpp"
-#include "Command.hpp"
+#include "Circuit/Command.hpp"
 #include "Gate/Rotation.hpp"
 #include "OpType/OpTypeInfo.hpp"
 #include "Ops/OpJsonFactory.hpp"
 #include "Ops/OpPtr.hpp"
-#include "ThreeQubitConversion.hpp"
+#include "Circuit/ThreeQubitConversion.hpp"
 #include "Utils/EigenConfig.hpp"
 #include "Utils/Expression.hpp"
 #include "Utils/Json.hpp"

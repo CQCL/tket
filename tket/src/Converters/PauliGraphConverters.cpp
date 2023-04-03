@@ -13,11 +13,11 @@
 // limitations under the License.
 
 #include "Circuit/Boxes.hpp"
-#include "Converters.hpp"
+#include "Converters/Converters.hpp"
 #include "Converters/PhasePoly.hpp"
 #include "Diagonalisation/Diagonalisation.hpp"
 #include "Gate/Gate.hpp"
-#include "PauliGadget.hpp"
+#include "Converters/PauliGadget.hpp"
 
 namespace tket {
 
