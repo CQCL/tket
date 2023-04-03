@@ -23,7 +23,7 @@
     </tr>
     <tr>
       <th scope="row">File:</th>
-      <td>include/tkwsm/Common/ReusableStorage.hpp</td>
+      <td>src/Reducing/DistancesReducer.cpp</td>
     </tr>
     <tr>
       <th scope="row">Date:</th>
@@ -41,26 +41,26 @@
     </tr>
     <tr>
       <th scope="row">Lines:</th>
-      <td>16</td>
-      <td>16</td>
+      <td>31</td>
+      <td>31</td>
       <td class="coverage-high">100.0%</td>
     </tr>
     <tr>
       <th scope="row">Functions:</th>
-      <td>5</td>
-      <td>5</td>
+      <td>3</td>
+      <td>3</td>
       <td class="coverage-high">100.0%</td>
     </tr>
     <tr>
       <th scope="row">Branches:</th>
-      <td>3</td>
-      <td>4</td>
-      <td class="coverage-medium">75.0%</td>
+      <td>5</td>
+      <td>6</td>
+      <td class="coverage-medium">83.3%</td>
     </tr>
     <tr>
       <th scope="row">Decisions:</th>
-      <td>2</td>
-      <td>2</td>
+      <td>3</td>
+      <td>3</td>
       <td class="coverage-high">100.0%</td>
     </tr>
   </table>
@@ -81,57 +81,35 @@
     </tr>
     <tr>
       <td>
-        <a href="#l64">tket::WeightedSubgraphMonomorphism::ReusableStorage&lt;tket::WeightedSubgraphMonomorphism::HallSetReduction::Partition&gt;::get_new_id()</a>
+        <a href="#l28">tket::WeightedSubgraphMonomorphism::DistancesReducer::DistancesReducer(tket::WeightedSubgraphMonomorphism::NearNeighboursData&amp;, tket::WeightedSubgraphMonomorphism::NearNeighboursData&amp;, unsigned int)</a>
       </td>
       <td>
-        <a href="#l64">64</a>
+        <a href="#l28">28</a>
       </td>
       <td>
-        <a href="#l64"> called 1253979 times</a>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <a href="#l87">tket::WeightedSubgraphMonomorphism::ReusableStorage&lt;tket::WeightedSubgraphMonomorphism::HallSetReduction::Partition&gt;::get_nonconst_object(tket::WeightedSubgraphMonomorphism::ReusableStorageId)</a>
-      </td>
-      <td>
-        <a href="#l87">87</a>
-      </td>
-      <td>
-        <a href="#l87"> called 2401622 times</a>
+        <a href="#l28"> called 10572 times</a>
       </td>
     </tr>
     <tr>
       <td>
-        <a href="#l82">tket::WeightedSubgraphMonomorphism::ReusableStorage&lt;tket::WeightedSubgraphMonomorphism::HallSetReduction::Partition&gt;::get_object(tket::WeightedSubgraphMonomorphism::ReusableStorageId) const</a>
+        <a href="#l37">tket::WeightedSubgraphMonomorphism::DistancesReducer::check(std::pair&lt;unsigned long, unsigned long&gt;)</a>
       </td>
       <td>
-        <a href="#l82">82</a>
+        <a href="#l37">37</a>
       </td>
       <td>
-        <a href="#l82"> called 81224 times</a>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <a href="#l77">tket::WeightedSubgraphMonomorphism::ReusableStorage&lt;tket::WeightedSubgraphMonomorphism::HallSetReduction::Partition&gt;::release(tket::WeightedSubgraphMonomorphism::ReusableStorageId)</a>
-      </td>
-      <td>
-        <a href="#l77">77</a>
-      </td>
-      <td>
-        <a href="#l77"> called 1253399 times</a>
+        <a href="#l37"> called 18435524 times</a>
       </td>
     </tr>
     <tr>
       <td>
-        <a href="#l26">tket::WeightedSubgraphMonomorphism::ReusableStorageId::operator&lt;(tket::WeightedSubgraphMonomorphism::ReusableStorageId const&amp;) const</a>
+        <a href="#l45">tket::WeightedSubgraphMonomorphism::DistancesReducer::reduce(std::pair&lt;unsigned long, unsigned long&gt;, tket::WeightedSubgraphMonomorphism::DomainsAccessor&amp;, boost::dynamic_bitset&lt;unsigned long, std::allocator&lt;unsigned long&gt; &gt;&amp;)</a>
       </td>
       <td>
-        <a href="#l26">26</a>
+        <a href="#l45">45</a>
       </td>
       <td>
-        <a href="#l26"> called 193780 times</a>
+        <a href="#l45"> called 6222629 times</a>
       </td>
     </tr>
   </table>
@@ -282,7 +260,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#pragma once</span></td>
+      <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;tkwsm/Reducing/DistancesReducer.hpp&quot;</span><span class="cp"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l16" href="#l16">16</a></td>
@@ -291,7 +269,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;cstdint&gt;</span><span class="cp"></span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l17" href="#l17">17</a></td>
@@ -300,7 +278,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;vector&gt;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;tkassert/Assert.hpp&gt;</span><span class="cp"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l18" href="#l18">18</a></td>
@@ -318,7 +296,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="k">namespace</span><span class="w"> </span><span class="nn">tket</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;tkwsm/Common/GeneralUtils.hpp&quot;</span><span class="cp"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l20" href="#l20">20</a></td>
@@ -327,7 +305,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="k">namespace</span><span class="w"> </span><span class="nn">WeightedSubgraphMonomorphism</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;tkwsm/GraphTheoretic/FilterUtils.hpp&quot;</span><span class="cp"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l21" href="#l21">21</a></td>
@@ -336,7 +314,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;tkwsm/GraphTheoretic/NearNeighboursData.hpp&quot;</span><span class="cp"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l22" href="#l22">22</a></td>
@@ -345,7 +323,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="k">struct</span><span class="w"> </span><span class="nc">ReusableStorageId</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;tkwsm/GraphTheoretic/NeighboursData.hpp&quot;</span><span class="cp"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l23" href="#l23">23</a></td>
@@ -354,7 +332,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="kt">size_t</span><span class="w"> </span><span class="n">index</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;tkwsm/Searching/DomainsAccessor.hpp&quot;</span><span class="cp"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l24" href="#l24">24</a></td>
@@ -372,7 +350,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="cm">/** Necessary to allow storing IDs in a std::set. */</span><span class="w"></span></td>
+      <td class="src "><span class="k">namespace</span><span class="w"> </span><span class="nn">tket</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l26" href="#l26">26</a></td>
@@ -380,38 +358,11 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount coveredLine">193780</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="k">operator</span><span class="o">&lt;</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">ReusableStorageId</span><span class="o">&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="linecount "></td>
+      <td class="src "><span class="k">namespace</span><span class="w"> </span><span class="nn">WeightedSubgraphMonomorphism</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l27" href="#l27">27</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">193780</td>
-      <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">index</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">other</span><span class="p">.</span><span class="n">index</span><span class="p">;</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l28" href="#l28">28</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l29" href="#l29">29</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="p">};</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l30" href="#l30">30</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -420,13 +371,40 @@
       <td class="src "></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l31" href="#l31">31</a></td>
+      <td class="lineno"><a id="l28" href="#l28">28</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">10572</td>
+      <td class="src coveredLine"><span class="n">DistancesReducer</span><span class="o">::</span><span class="n">DistancesReducer</span><span class="p">(</span><span class="w"></span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l29" href="#l29">29</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">/** For storing objects of type T, which can be reused.</span></td>
+      <td class="src "><span class="w">    </span><span class="n">NearNeighboursData</span><span class="o">&amp;</span><span class="w"> </span><span class="n">pattern_near_ndata</span><span class="p">,</span><span class="w"></span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l30" href="#l30">30</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">10572</td>
+      <td class="src coveredLine"><span class="w">    </span><span class="n">NearNeighboursData</span><span class="o">&amp;</span><span class="w"> </span><span class="n">target_near_ndata</span><span class="p">,</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="n">distance</span><span class="p">)</span><span class="w"></span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l31" href="#l31">31</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">10572</td>
+      <td class="src coveredLine"><span class="w">    </span><span class="o">:</span><span class="w"> </span><span class="n">m_pattern_near_ndata</span><span class="p">(</span><span class="n">pattern_near_ndata</span><span class="p">),</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l32" href="#l32">32</a></td>
@@ -434,8 +412,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="cm"> * Objects are &quot;released&quot;, i.e. marked as ready for reuse - like garbage</span></td>
+      <td class="linecount coveredLine">10572</td>
+      <td class="src coveredLine"><span class="w">      </span><span class="n">m_target_near_ndata</span><span class="p">(</span><span class="n">target_near_ndata</span><span class="p">),</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l33" href="#l33">33</a></td>
@@ -443,8 +421,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="cm"> * collection - rather than being erased, but the caller is responsible</span></td>
+      <td class="linecount coveredLine">10572</td>
+      <td class="src coveredLine"><span class="w">      </span><span class="n">m_distance</span><span class="p">(</span><span class="n">distance</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l34" href="#l34">34</a></td>
@@ -452,8 +430,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="cm"> * for clearing such T objects when making use of them again.</span></td>
+      <td class="linecount excludedLine">&minus;</td>
+      <td class="src excludedLine"><span class="w">  </span><span class="n">TKET_ASSERT</span><span class="p">(</span><span class="n">m_distance</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">0</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l35" href="#l35">35</a></td>
@@ -461,8 +439,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="cm"> *</span></td>
+      <td class="linecount coveredLine">10572</td>
+      <td class="src coveredLine"><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l36" href="#l36">36</a></td>
@@ -471,7 +449,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> * Access the objects by a size_t ID, in time O(1).</span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l37" href="#l37">37</a></td>
@@ -479,8 +457,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="cm"> * The IDs are allowed to be reused, and references are allowed to be</span></td>
+      <td class="linecount coveredLine">18435524</td>
+      <td class="src coveredLine"><span class="kt">bool</span><span class="w"> </span><span class="n">DistancesReducer</span><span class="o">::</span><span class="n">check</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">VertexWSM</span><span class="p">,</span><span class="w"> </span><span class="n">VertexWSM</span><span class="o">&gt;</span><span class="w"> </span><span class="n">assignment</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l38" href="#l38">38</a></td>
@@ -488,8 +466,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="cm"> * invalidated if other elements are added or &quot;erased&quot; (released).</span></td>
+      <td class="linecount coveredLine">18435524</td>
+      <td class="src coveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">FilterUtils</span><span class="o">::</span><span class="n">compatible_sorted_degree_counts</span><span class="p">(</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l39" href="#l39">39</a></td>
@@ -497,8 +475,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="cm"> * An ID remains valid (unlike a reference) even as others are added</span></td>
+      <td class="linecount coveredLine">18435524</td>
+      <td class="src coveredLine"><span class="w">      </span><span class="n">m_pattern_near_ndata</span><span class="p">.</span><span class="n">get_degree_counts_at_exact_distance</span><span class="p">(</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l40" href="#l40">40</a></td>
@@ -506,8 +484,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="cm"> * or released, until the object with that ID is released.</span></td>
+      <td class="linecount coveredLine">18435524</td>
+      <td class="src coveredLine"><span class="w">          </span><span class="n">assignment</span><span class="p">.</span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="n">m_distance</span><span class="p">),</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l41" href="#l41">41</a></td>
@@ -515,8 +493,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="cm"> *</span></td>
+      <td class="linecount coveredLine">18435524</td>
+      <td class="src coveredLine"><span class="w">      </span><span class="n">m_target_near_ndata</span><span class="p">.</span><span class="n">get_degree_counts_up_to_distance</span><span class="p">(</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l42" href="#l42">42</a></td>
@@ -524,8 +502,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="cm"> * So, this is useful if we frequently need objects like std::vector</span></td>
+      <td class="linecount coveredLine">36871048</td>
+      <td class="src coveredLine"><span class="w">          </span><span class="n">assignment</span><span class="p">.</span><span class="n">second</span><span class="p">,</span><span class="w"> </span><span class="n">m_distance</span><span class="p">));</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l43" href="#l43">43</a></td>
@@ -534,7 +512,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> * which are much cheaper to clear and reuse than to construct afresh.</span></td>
+      <td class="src "><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l44" href="#l44">44</a></td>
@@ -543,7 +521,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> */</span><span class="w"></span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l45" href="#l45">45</a></td>
@@ -551,8 +529,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">class</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span><span class="w"></span></td>
+      <td class="linecount coveredLine">6222629</td>
+      <td class="src coveredLine"><span class="n">ReductionResult</span><span class="w"> </span><span class="n">DistancesReducer</span><span class="o">::</span><span class="n">reduce</span><span class="p">(</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l46" href="#l46">46</a></td>
@@ -561,7 +539,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="k">class</span><span class="w"> </span><span class="nc">ReusableStorage</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src "><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">VertexWSM</span><span class="p">,</span><span class="w"> </span><span class="n">VertexWSM</span><span class="o">&gt;</span><span class="w"> </span><span class="n">assignment</span><span class="p">,</span><span class="w"> </span><span class="n">DomainsAccessor</span><span class="o">&amp;</span><span class="w"> </span><span class="n">accessor</span><span class="p">,</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l47" href="#l47">47</a></td>
@@ -570,7 +548,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w"> </span><span class="k">public</span><span class="o">:</span><span class="w"></span></td>
+      <td class="src "><span class="w">    </span><span class="n">boost</span><span class="o">::</span><span class="n">dynamic_bitset</span><span class="o">&lt;&gt;&amp;</span><span class="w"> </span><span class="n">work_bitset</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l48" href="#l48">48</a></td>
@@ -578,8 +556,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">ReusableStorageId</span><span class="w"> </span><span class="n">get_new_id</span><span class="p">();</span><span class="w"></span></td>
+      <td class="linecount coveredLine">6222629</td>
+      <td class="src coveredLine"><span class="w">  </span><span class="k">auto</span><span class="w"> </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ReductionResult</span><span class="o">::</span><span class="n">SUCCESS</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l49" href="#l49">49</a></td>
@@ -597,7 +575,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">release</span><span class="p">(</span><span class="n">ReusableStorageId</span><span class="w"> </span><span class="n">id</span><span class="p">);</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">boost</span><span class="o">::</span><span class="n">dynamic_bitset</span><span class="o">&lt;&gt;&amp;</span><span class="w"> </span><span class="n">pv_at_distance_d</span><span class="w"> </span><span class="o">=</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l51" href="#l51">51</a></td>
@@ -605,8 +583,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="linecount coveredLine">12445258</td>
+      <td class="src coveredLine"><span class="w">      </span><span class="n">m_pattern_near_ndata</span><span class="p">.</span><span class="n">get_vertices_at_exact_distance</span><span class="p">(</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l52" href="#l52">52</a></td>
@@ -614,8 +592,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="nf">get_object</span><span class="p">(</span><span class="n">ReusableStorageId</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span></td>
+      <td class="linecount coveredLine">6222629</td>
+      <td class="src coveredLine"><span class="w">          </span><span class="n">assignment</span><span class="p">.</span><span class="n">first</span><span class="p">,</span><span class="w"> </span><span class="n">m_distance</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l53" href="#l53">53</a></td>
@@ -632,17 +610,24 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="nf">get_nonconst_object</span><span class="p">(</span><span class="n">ReusableStorageId</span><span class="w"> </span><span class="n">id</span><span class="p">);</span><span class="w"></span></td>
+      <td class="linecount coveredLine">6222629</td>
+      <td class="src coveredLine"><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">auto</span><span class="w"> </span><span class="n">new_pv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pv_at_distance_d</span><span class="p">.</span><span class="n">find_first</span><span class="p">();</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l55" href="#l55">55</a></td>
       <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">2/2</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 1 taken 15541716 times.</div>
+          <div class="takenBranch">&check; Branch 2 taken 6109208 times.</div>
+        </div>
+        </details>
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="linecount coveredLine">21650924</td>
+      <td class="src coveredLine"><span class="w">       </span><span class="n">new_pv</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">pv_at_distance_d</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l56" href="#l56">56</a></td>
@@ -650,8 +635,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="w"> </span><span class="k">private</span><span class="o">:</span><span class="w"></span></td>
+      <td class="linecount coveredLine">15428295</td>
+      <td class="src coveredLine"><span class="w">       </span><span class="n">new_pv</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pv_at_distance_d</span><span class="p">.</span><span class="n">find_next</span><span class="p">(</span><span class="n">new_pv</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l57" href="#l57">57</a></td>
@@ -659,8 +644,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_data</span><span class="p">;</span><span class="w"></span></td>
+      <td class="linecount coveredLine">15541716</td>
+      <td class="src coveredLine"><span class="w">    </span><span class="n">work_bitset</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_target_near_ndata</span><span class="p">.</span><span class="n">get_vertices_up_to_distance</span><span class="p">(</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l58" href="#l58">58</a></td>
@@ -668,8 +653,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">size_t</span><span class="o">&gt;</span><span class="w"> </span><span class="n">m_released_indices</span><span class="p">;</span><span class="w"></span></td>
+      <td class="linecount coveredLine">15541716</td>
+      <td class="src coveredLine"><span class="w">        </span><span class="n">assignment</span><span class="p">.</span><span class="n">second</span><span class="p">,</span><span class="w"> </span><span class="n">m_distance</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l59" href="#l59">59</a></td>
@@ -678,7 +663,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="p">};</span><span class="w"></span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l60" href="#l60">60</a></td>
@@ -686,26 +671,41 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="linecount coveredLine">15541716</td>
+      <td class="src coveredLine"><span class="w">    </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">accessor</span><span class="p">.</span><span class="n">intersect_domain_with_swap</span><span class="p">(</span><span class="n">new_pv</span><span class="p">,</span><span class="w"> </span><span class="n">work_bitset</span><span class="p">)</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l61" href="#l61">61</a></td>
       <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">3/4</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 0 taken 530557 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 113421 times.</div>
+          <div class="takenBranch">&check; Branch 2 taken 14897738 times.</div>
+          <div class="notTakenBranch">&cross; Branch 3 not taken.</div>
+        </div>
+        </details>
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="c1">// Implementations</span></td>
+      <td class="linecount coveredLine">15541716</td>
+      <td class="src coveredLine"><span class="w">                </span><span class="p">.</span><span class="n">reduction_result</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l62" href="#l62">62</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
+        <details class="linedecisionDetails">
+          <summary class="linedecisionSummary">1/1</summary>
+          <div class="linedecisionContents">
+            <div class="takenDecision">&check; Decision 'true' taken 530557 times.</div>
+          </div>
+        </details>
       </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="linecount coveredLine">530557</td>
+      <td class="src coveredLine"><span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="n">ReductionResult</span><span class="o">::</span><span class="n">NEW_ASSIGNMENTS</span><span class="o">:</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l63" href="#l63">63</a></td>
@@ -714,7 +714,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">class</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span><span class="w"></span></td>
+      <td class="src "><span class="w">        </span><span class="c1">// Normally we would return now,</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l64" href="#l64">64</a></td>
@@ -722,8 +722,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount coveredLine">1253979</td>
-      <td class="src coveredLine"><span class="n">ReusableStorageId</span><span class="w"> </span><span class="n">ReusableStorage</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;::</span><span class="n">get_new_id</span><span class="p">()</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="linecount "></td>
+      <td class="src "><span class="w">        </span><span class="c1">// BUT the assignment PV-&gt;TV hasn&#39;t been fully processed</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l65" href="#l65">65</a></td>
@@ -732,30 +732,16 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">ReusableStorageId</span><span class="w"> </span><span class="n">id</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="w">        </span><span class="c1">// until ALL PV&#39; with  dist(PV, PV&#39;)=d  have been considered.</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l66" href="#l66">66</a></td>
       <td class="linebranch">
-        <details class="linebranchDetails">
-        <summary class="linebranchSummary">2/2</summary>
-        <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 1 taken 2245 times.</div>
-          <div class="takenBranch">&check; Branch 2 taken 1251734 times.</div>
-        </div>
-        </details>
       </td>
       <td class="linedecision">
-        <details class="linedecisionDetails">
-          <summary class="linedecisionSummary">2/2</summary>
-          <div class="linedecisionContents">
-            <div class="takenDecision">&check; Decision 'true' taken 2245 times.</div>
-            <div class="takenDecision">&check; Decision 'false' taken 1251734 times.</div>
-          </div>
-        </details>
       </td>
-      <td class="linecount coveredLine">1253979</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">m_released_indices</span><span class="p">.</span><span class="n">empty</span><span class="p">())</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="linecount "></td>
+      <td class="src "><span class="w">        </span><span class="c1">// Thus, continue, to finish off this assignment,</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l67" href="#l67">67</a></td>
@@ -763,24 +749,17 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount coveredLine">2245</td>
-      <td class="src coveredLine"><span class="w">    </span><span class="n">id</span><span class="p">.</span><span class="n">index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_data</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"></span></td>
+      <td class="linecount "></td>
+      <td class="src "><span class="w">        </span><span class="c1">// rather than trying to store partial data</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l68" href="#l68">68</a></td>
       <td class="linebranch">
-        <details class="linebranchDetails">
-        <summary class="linebranchSummary">1/2</summary>
-        <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 1 taken 2245 times.</div>
-          <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
-        </div>
-        </details>
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount coveredLine">2245</td>
-      <td class="src coveredLine"><span class="w">    </span><span class="n">m_data</span><span class="p">.</span><span class="n">resize</span><span class="p">(</span><span class="n">id</span><span class="p">.</span><span class="n">index</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w"></span></td>
+      <td class="linecount "></td>
+      <td class="src "><span class="w">        </span><span class="c1">// and resuming later.</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l69" href="#l69">69</a></td>
@@ -788,8 +767,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="linecount coveredLine">530557</td>
+      <td class="src coveredLine"><span class="w">        </span><span class="n">result</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">ReductionResult</span><span class="o">::</span><span class="n">NEW_ASSIGNMENTS</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l70" href="#l70">70</a></td>
@@ -797,17 +776,23 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount coveredLine">1251734</td>
-      <td class="src coveredLine"><span class="w">    </span><span class="n">id</span><span class="p">.</span><span class="n">index</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">m_released_indices</span><span class="p">.</span><span class="n">back</span><span class="p">();</span><span class="w"></span></td>
+      <td class="linecount coveredLine">530557</td>
+      <td class="src coveredLine"><span class="w">        </span><span class="k">break</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l71" href="#l71">71</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
+        <details class="linedecisionDetails">
+          <summary class="linedecisionSummary">1/1</summary>
+          <div class="linedecisionContents">
+            <div class="takenDecision">&check; Decision 'true' taken 113421 times.</div>
+          </div>
+        </details>
       </td>
-      <td class="linecount coveredLine">1251734</td>
-      <td class="src coveredLine"><span class="w">    </span><span class="n">m_released_indices</span><span class="p">.</span><span class="n">pop_back</span><span class="p">();</span><span class="w"></span></td>
+      <td class="linecount coveredLine">113421</td>
+      <td class="src coveredLine"><span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="n">ReductionResult</span><span class="o">::</span><span class="n">NOGOOD</span><span class="o">:</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l72" href="#l72">72</a></td>
@@ -815,17 +800,23 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"></span></td>
+      <td class="linecount coveredLine">113421</td>
+      <td class="src coveredLine"><span class="w">        </span><span class="k">return</span><span class="w"> </span><span class="n">ReductionResult</span><span class="o">::</span><span class="n">NOGOOD</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l73" href="#l73">73</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
+        <details class="linedecisionDetails">
+          <summary class="linedecisionSummary">1/1</summary>
+          <div class="linedecisionContents">
+            <div class="takenDecision">&check; Decision 'true' taken 14897738 times.</div>
+          </div>
+        </details>
       </td>
-      <td class="linecount coveredLine">1253979</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">id</span><span class="p">;</span><span class="w"></span></td>
+      <td class="linecount coveredLine">14897738</td>
+      <td class="src coveredLine"><span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="n">ReductionResult</span><span class="o">::</span><span class="n">SUCCESS</span><span class="o">:</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l74" href="#l74">74</a></td>
@@ -833,8 +824,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="p">}</span><span class="w"></span></td>
+      <td class="linecount coveredLine">14897738</td>
+      <td class="src coveredLine"><span class="w">        </span><span class="k">break</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l75" href="#l75">75</a></td>
@@ -843,7 +834,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="w">    </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l76" href="#l76">76</a></td>
@@ -852,7 +843,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">class</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l77" href="#l77">77</a></td>
@@ -860,8 +851,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount coveredLine">1253399</td>
-      <td class="src coveredLine"><span class="kt">void</span><span class="w"> </span><span class="n">ReusableStorage</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;::</span><span class="n">release</span><span class="p">(</span><span class="n">ReusableStorageId</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="linecount coveredLine">6109208</td>
+      <td class="src coveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">result</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l78" href="#l78">78</a></td>
@@ -869,8 +860,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount coveredLine">1253399</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="n">m_released_indices</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">id</span><span class="p">.</span><span class="n">index</span><span class="p">);</span><span class="w"></span></td>
+      <td class="linecount "></td>
+      <td class="src "><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l79" href="#l79">79</a></td>
@@ -878,8 +869,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount coveredLine">1253399</td>
-      <td class="src coveredLine"><span class="p">}</span><span class="w"></span></td>
+      <td class="linecount "></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l80" href="#l80">80</a></td>
@@ -888,7 +879,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="p">}</span><span class="w">  </span><span class="c1">// namespace WeightedSubgraphMonomorphism</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l81" href="#l81">81</a></td>
@@ -897,109 +888,10 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">class</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l82" href="#l82">82</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">81224</td>
-      <td class="src coveredLine"><span class="k">const</span><span class="w"> </span><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">ReusableStorage</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;::</span><span class="n">get_object</span><span class="p">(</span><span class="n">ReusableStorageId</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l83" href="#l83">83</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">81224</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">m_data</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">id</span><span class="p">.</span><span class="n">index</span><span class="p">);</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l84" href="#l84">84</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="p">}</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l85" href="#l85">85</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l86" href="#l86">86</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="k">template</span><span class="w"> </span><span class="o">&lt;</span><span class="k">class</span><span class="w"> </span><span class="nc">T</span><span class="o">&gt;</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l87" href="#l87">87</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">2401622</td>
-      <td class="src coveredLine"><span class="n">T</span><span class="o">&amp;</span><span class="w"> </span><span class="n">ReusableStorage</span><span class="o">&lt;</span><span class="n">T</span><span class="o">&gt;::</span><span class="n">get_nonconst_object</span><span class="p">(</span><span class="n">ReusableStorageId</span><span class="w"> </span><span class="n">id</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l88" href="#l88">88</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">2401622</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">m_data</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="n">id</span><span class="p">.</span><span class="n">index</span><span class="p">);</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l89" href="#l89">89</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="p">}</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l90" href="#l90">90</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l91" href="#l91">91</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="p">}</span><span class="w">  </span><span class="c1">// namespace WeightedSubgraphMonomorphism</span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l92" href="#l92">92</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
       <td class="src "><span class="p">}</span><span class="w">  </span><span class="c1">// namespace tket</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l93" href="#l93">93</a></td>
+      <td class="lineno"><a id="l82" href="#l82">82</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
