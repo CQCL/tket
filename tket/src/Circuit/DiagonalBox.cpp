@@ -73,10 +73,10 @@ static Circuit diagonal_circ(
   unsigned n_qubits = (unsigned)log2(diagonal.size());
   Circuit circ(n_qubits);
   Eigen::VectorXcd d(diagonal);
+  unsigned n_ctrl_qubits = n_qubits - 1;
   while (d.size() != 1) {
     ctrl_op_map_t multip_rz;
     Eigen::VectorXcd new_d(d.size() / 2);
-    unsigned n_ctrl_qubits = (unsigned)log2(new_d.size());
     for (unsigned i = 0; i < new_d.size(); i++) {
       Complex a;
       Complex b;
@@ -110,6 +110,7 @@ static Circuit diagonal_circ(
       circ.add_box(MultiplexedRotationBox(multip_rz), args);
     }
     d = new_d;
+    n_ctrl_qubits--;
   }
   circ.add_phase(std::arg(d[0]) / PI);
   return circ;
