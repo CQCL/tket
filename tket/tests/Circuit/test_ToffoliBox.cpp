@@ -72,6 +72,25 @@ SCENARIO("Test ToffoliBox") {
     perm[{1, 0}] = {0, 1};
     perm[{1, 1}] = {1, 0};
   }
+  GIVEN("2-q permutation (2)") {
+    axis = OpType::Rx;
+    perm[{0, 0}] = {1, 1};
+    perm[{1, 1}] = {0, 0};
+  }
+  GIVEN("2-q permutation (3)") {
+    axis = OpType::Rx;
+    perm[{0, 0}] = {1, 1};
+    perm[{1, 1}] = {0, 0};
+    perm[{0, 1}] = {1, 0};
+    perm[{1, 0}] = {0, 1};
+  }
+  GIVEN("2-q permutation (4)") {
+    axis = OpType::Rx;
+    perm[{0, 0}] = {1, 1};
+    perm[{1, 1}] = {0, 1};
+    perm[{0, 1}] = {1, 0};
+    perm[{1, 0}] = {0, 0};
+  }
   GIVEN("3-q permutation") {
     axis = OpType::Ry;
     perm[{0, 0, 0}] = {1, 0, 0};
@@ -81,6 +100,24 @@ SCENARIO("Test ToffoliBox") {
     perm[{1, 0, 1}] = {0, 1, 1};
     perm[{1, 1, 0}] = {1, 1, 1};
     perm[{1, 1, 1}] = {1, 1, 0};
+  }
+  GIVEN("3-q permutation (2)") {
+    axis = OpType::Ry;
+    perm[{0, 0, 1}] = {1, 1, 0};
+    perm[{1, 1, 0}] = {0, 1, 0};
+    perm[{0, 1, 0}] = {1, 0, 1};
+    perm[{1, 0, 1}] = {0, 0, 1};
+  }
+  GIVEN("4-q permutation") {
+    axis = OpType::Ry;
+    perm[{0, 0, 0, 0}] = {1, 1, 0, 0};
+    perm[{1, 1, 0, 0}] = {1, 1, 0, 1};
+    perm[{1, 1, 0, 1}] = {0, 0, 0, 1};
+    perm[{0, 0, 0, 1}] = {1, 1, 1, 0};
+    perm[{1, 1, 1, 0}] = {0, 0, 1, 1};
+    perm[{0, 0, 1, 1}] = {1, 0, 0, 1};
+    perm[{1, 0, 0, 1}] = {1, 0, 1, 0};
+    perm[{1, 0, 1, 0}] = {0, 0, 0, 0};
   }
   GIVEN("Random 4-q permutation") {
     axis = OpType::Rx;
