@@ -69,13 +69,13 @@ jobs:
         ${CONAN_CMD} remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: Build tket
       run: |
-        ${CONAN_CMD} install recipes/tket tket/stable --install-folder=build/tket --profile=tket -o tket:profile_coverage=True
+        ${CONAN_CMD} install recipes/tket tket/stable --install-folder=build/tket --profile=tket -o tket:profile_coverage=True --build=missing
         ${CONAN_CMD} build recipes/tket --configure --build-folder=build/tket --source-folder=tket/src
         ${CONAN_CMD} build recipes/tket --build --build-folder=build/tket
         ${CONAN_CMD} export-pkg recipes/tket tket/stable -f --build-folder=build/tket --source-folder=tket/src
     - name: Build tket tests
       run: |
-        ${CONAN_CMD} install recipes/tket-tests --install-folder=build/tket-tests --profile=tket -o tket-tests:with_coverage=True
+        ${CONAN_CMD} install recipes/tket-tests --install-folder=build/tket-tests --profile=tket -o tket-tests:with_coverage=True --build=missing
         ${CONAN_CMD} build recipes/tket-tests --configure --build-folder=build/tket-tests --source-folder=tket/tests
         ${CONAN_CMD} build recipes/tket-tests --build --build-folder=build/tket-tests
         ${CONAN_CMD} package recipes/tket-tests/ --build-folder=build/tket-tests --package-folder build/tket-tests/package --source-folder=tket/tests
