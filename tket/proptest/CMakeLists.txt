@@ -12,11 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cmake_minimum_required(VERSION 3.16.0)
-project(tket-proptests)
+cmake_minimum_required(VERSION 3.23)
+project(proptest-tket CXX)
+
+find_package(tket CONFIG REQUIRED)
+find_package(rapidcheck CONFIG REQUIRED)
 
 set(CMAKE_CXX_STANDARD 20)
-
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 find_program(CCACHE_PROGRAM ccache)
@@ -26,24 +28,27 @@ endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
-find_file(CONANBUILDINFO_FILE_TKET_PROPTESTS conanbuildinfo.cmake HINTS ${CMAKE_CURRENT_BINARY_DIR})
-include(${CONANBUILDINFO_FILE_TKET_PROPTESTS})
-conan_basic_setup()
-
-if(CMAKE_CXX_COMPILER_ID MATCHES "(Apple)?Clang")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations")
-    # remove -Wno-deprecated-declarations once https://github.com/boostorg/boost/issues/688 is resolved
-endif()
-
 IF (WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /WX /EHsc")
 ELSE()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -Wunreachable-code -Wunused")
 ENDIF()
 
-add_executable(proptest
-    ComparisonFunctions.cpp
-    proptest.cpp
+if(CMAKE_CXX_COMPILER_ID MATCHES "(Apple)?Clang")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-declarations")
+    # remove -Wno-deprecated-declarations once https://github.com/boostorg/boost/issues/688 is resolved
+endif()
+
+add_executable(proptest-tket
+    src/ComparisonFunctions.cpp
+    src/proptest.cpp
 )
 
-target_link_libraries(proptest PRIVATE ${CONAN_LIBS})
+target_link_libraries(proptest-tket PRIVATE tket::tket)
+target_link_libraries(proptest-tket PRIVATE rapidcheck::rapidcheck)
+
+install(TARGETS proptest-tket DESTINATION "."
+        RUNTIME DESTINATION bin
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib
+        )

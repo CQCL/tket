@@ -12,37 +12,40 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from conans import ConanFile, CMake
-import platform
+from conan import ConanFile
+from conan.tools.cmake import CMakeToolchain, CMake, cmake_layout, CMakeDeps
 
 
-class TketProptestsConan(ConanFile):
-    name = "tket-proptests"
+class proptest_tketRecipe(ConanFile):
+    name = "proptest-tket"
     version = "0.6.3"
-    license = "CQC Proprietary"
+    package_type = "application"
+    license = "Apache 2"
     author = "Alec Edgington <alec.edgington@cambridgequantum.com>"
     url = "https://github.com/CQCL/tket"
     description = "Property tests for tket"
     topics = ("quantum", "computation", "compiler")
     settings = "os", "compiler", "build_type", "arch"
-    generators = "cmake"
-    exports_sources = "../../tket/proptests/*"
-    requires = (
-        "tket/1.1.2@tket/stable",
-        "rapidcheck/cci.20220514",
-    )
+    exports_sources = "CMakeLists.txt", "src/*"
+
+    def layout(self):
+        cmake_layout(self)
+
+    def generate(self):
+        deps = CMakeDeps(self)
+        deps.generate()
+        tc = CMakeToolchain(self)
+        tc.generate()
 
     def build(self):
         cmake = CMake(self)
         cmake.configure()
         cmake.build()
 
-    def imports(self):
-        self.copy("*.dll", dst="bin", src="bin")
-        self.copy("*.dylib*", dst="bin", src="lib")
-
     def package(self):
-        executable_filename = "bin/proptest"
-        if platform.system() == "Windows":
-            executable_filename = executable_filename + ".exe"
-        self.copy(executable_filename)
+        cmake = CMake(self)
+        cmake.install()
+
+    def requirements(self):
+        self.requires("tket/1.1.2@tket/stable")
+        self.requires("rapidcheck/cci.20220514")
