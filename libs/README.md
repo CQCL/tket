@@ -17,7 +17,7 @@ downward line means "is required by"):
 We recommend building with conan 2, and only conan 2 builds are used on the CI.
 However, the libraries may be built using either conan 1 or conan 2.
 
-The build requires `cmake` version 3.26 or above.
+The build requires `cmake` version 3.23 or above.
 
 
 ## conan 1
