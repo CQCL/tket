@@ -24,6 +24,7 @@ jobs:
         filters: |
           tket:
             - 'tket/**'
+            - '.github/workflows/valgrind.yml'
   check:
     runs-on: ubuntu-22.04
     needs: changes
