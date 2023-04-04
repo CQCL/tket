@@ -187,8 +187,6 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1StabiliserAssertionBox.html">StabiliserAssertionBox</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1ToffoliBox.html">ToffoliBox</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtket_1_1BoundaryElement.html">BoundaryElement</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtket_1_1TagID.html">TagID</a></td></tr>
@@ -241,6 +239,9 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtket_1_1EdgeProperties.html">EdgeProperties</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Description of an edge in a circuit, representing a directional wire.  <a href="structtket_1_1EdgeProperties.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1DiagonalBox.html">DiagonalBox</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classtket_1_1Box.html" title="Abstract class for an operation from which a circuit can be extracted.">Box</a> to synthesise a diagonal operator.  <a href="classtket_1_1DiagonalBox.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1MultiplexorBox.html">MultiplexorBox</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Multiplexed ops.  <a href="classtket_1_1MultiplexorBox.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -252,6 +253,9 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1StatePreparationBox.html">StatePreparationBox</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classtket_1_1Box.html" title="Abstract class for an operation from which a circuit can be extracted.">Box</a> to synthesise a statevector.  <a href="classtket_1_1StatePreparationBox.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1ToffoliBox.html">ToffoliBox</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classtket_1_1Box.html" title="Abstract class for an operation from which a circuit can be extracted.">Box</a> to synthesise a state permutation.  <a href="classtket_1_1ToffoliBox.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1ChoiMixTableau.html">ChoiMixTableau</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -670,6 +674,13 @@ Typedefs</h2></td></tr>
 <tr class="memitem:afe3cf754e2a93ccc16abc505e88ec2a6"><td class="memItemLeft" align="right" valign="top">typedef std::map&lt; std::vector&lt; bool &gt;, <a class="el" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#afe3cf754e2a93ccc16abc505e88ec2a6">ctrl_op_map_t</a></td></tr>
 <tr class="memdesc:afe3cf754e2a93ccc16abc505e88ec2a6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Map bitstrings to Ops.  <a href="namespacetket.html#afe3cf754e2a93ccc16abc505e88ec2a6">More...</a><br /></td></tr>
 <tr class="separator:afe3cf754e2a93ccc16abc505e88ec2a6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a22d054aa057003b70a0b4a699cb37fe7"><td class="memItemLeft" align="right" valign="top">typedef std::map&lt; std::vector&lt; bool &gt;, std::vector&lt; bool &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a22d054aa057003b70a0b4a699cb37fe7">state_perm_t</a></td></tr>
+<tr class="memdesc:a22d054aa057003b70a0b4a699cb37fe7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Map bitstrings to bitstrings.  <a href="namespacetket.html#a22d054aa057003b70a0b4a699cb37fe7">More...</a><br /></td></tr>
+<tr class="separator:a22d054aa057003b70a0b4a699cb37fe7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac5d305ae438820b8a07589696036e8bb"><td class="memItemLeft" align="right" valign="top">typedef boost::adjacency_list&lt; boost::vecS, boost::vecS, boost::undirectedS &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#ac5d305ae438820b8a07589696036e8bb">cube_graph_t</a></td></tr>
+<tr class="separator:ac5d305ae438820b8a07589696036e8bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a02a58b4b8be5a1385e897facba15dbf5"><td class="memItemLeft" align="right" valign="top">typedef boost::graph_traits&lt; <a class="el" href="namespacetket.html#ac5d305ae438820b8a07589696036e8bb">cube_graph_t</a> &gt;::vertex_descriptor&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a02a58b4b8be5a1385e897facba15dbf5">perm_vert_t</a></td></tr>
+<tr class="separator:a02a58b4b8be5a1385e897facba15dbf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a005151c7c78f899e89270fb204278ba3"><td class="memItemLeft" align="right" valign="top">typedef std::map&lt; std::vector&lt; bool &gt;, <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a005151c7c78f899e89270fb204278ba3">PhasePolynomial</a></td></tr>
 <tr class="memdesc:a005151c7c78f899e89270fb204278ba3"><td class="mdescLeft">&#160;</td><td class="mdescRight">PhasePolynomial is just a sequence of parities: that is, terms of the form \( e^{\alpha \bigotimes Z} \), where Z is a Pauli Z.  <a href="namespacetket.html#a005151c7c78f899e89270fb204278ba3">More...</a><br /></td></tr>
 <tr class="separator:a005151c7c78f899e89270fb204278ba3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1008,12 +1019,13 @@ Enumerations</h2></td></tr>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a58bb13ca790adbe8e7436ef2652e62e0">MultiplexedU2Box</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a36eb2fc691327e9917ffb76ca90dcece">StatePreparationBox</a>
 , <br />
-&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a81e83c562bbc4b3d830391b008dece4e">ClassicalExpBox</a>
+&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a8afab1972f0d75adf02050866a070296">DiagonalBox</a>
+, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a81e83c562bbc4b3d830391b008dece4e">ClassicalExpBox</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a9d3afea73e90192d96dda8d38c87a4fe">Conditional</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a927eb314e7755edbf2f295363eb70989">ProjectorAssertionBox</a>
-, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5873bfa21082d8011557e19ef525e2dd">StabiliserAssertionBox</a>
 , <br />
-&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a07bcde47c17d44eebfa6c59aa6942d1c">ToffoliBox</a>
+&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5873bfa21082d8011557e19ef525e2dd">StabiliserAssertionBox</a>
+, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a07bcde47c17d44eebfa6c59aa6942d1c">ToffoliBox</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a875cbe7ba0f4486177a06d7f5847ff24">UnitaryTableauBox</a>
 <br />
  }</td></tr>
@@ -1100,8 +1112,6 @@ Functions</h2></td></tr>
 <tr class="separator:a9f12fcbc18947fc410d0a351fc9161b5"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9c7f70e98f182817af5732db436bd09c"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a9c7f70e98f182817af5732db436bd09c">operator&lt;&lt;</a> (std::ostream &amp;out, const <a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ)</td></tr>
 <tr class="separator:a9c7f70e98f182817af5732db436bd09c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6286f18b2e5e195dbdc73fc1b97d775e"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a6286f18b2e5e195dbdc73fc1b97d775e">get_hamming_distance</a> (const std::vector&lt; bool &gt; &amp;a, const std::vector&lt; bool &gt; &amp;b)</td></tr>
-<tr class="separator:a6286f18b2e5e195dbdc73fc1b97d775e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afc51a5ed2a964755b2a2252ec0fa57b6"><td class="memItemLeft" align="right" valign="top">nlohmann::json&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#afc51a5ed2a964755b2a2252ec0fa57b6">core_box_json</a> (const <a class="el" href="classtket_1_1Box.html">Box</a> &amp;box)</td></tr>
 <tr class="separator:afc51a5ed2a964755b2a2252ec0fa57b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8f3c55b5848ce021bac9642afa763d6c"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a8f3c55b5848ce021bac9642afa763d6c">to_json</a> (nlohmann::json &amp;j, const <a class="el" href="namespacetket.html#af75542439fd2b810fa80c3fcea30c236">composite_def_ptr_t</a> &amp;cdef)</td></tr>
@@ -1735,6 +1745,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a6b713ad82795b9e896a104764871070c"><td class="memItemLeft" align="right" valign="top">std::vector&lt; bool &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a6b713ad82795b9e896a104764871070c">dec_to_bin</a> (unsigned dec, unsigned width)</td></tr>
 <tr class="memdesc:a6b713ad82795b9e896a104764871070c"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert an unsigned to its binary representation big-endian  <a href="namespacetket.html#a6b713ad82795b9e896a104764871070c">More...</a><br /></td></tr>
 <tr class="separator:a6b713ad82795b9e896a104764871070c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8527c432e230e6e77d7fc9e9290a2784"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a8527c432e230e6e77d7fc9e9290a2784">bin_to_dec</a> (const std::vector&lt; bool &gt; &amp;bin)</td></tr>
+<tr class="memdesc:a8527c432e230e6e77d7fc9e9290a2784"><td class="mdescLeft">&#160;</td><td class="mdescRight">convert an bit vector to its decimal representation big-endian  <a href="namespacetket.html#a8527c432e230e6e77d7fc9e9290a2784">More...</a><br /></td></tr>
+<tr class="separator:a8527c432e230e6e77d7fc9e9290a2784"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4789ee8e9c894506ddeeb3c0653bc021"><td class="memItemLeft" align="right" valign="top">constexpr <a class="el" href="namespacetket.html#a68999408b52ab2f0f191f814ec93f4de">Complex</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a4789ee8e9c894506ddeeb3c0653bc021">i_</a> (0, 1)</td></tr>
 <tr class="memdesc:a4789ee8e9c894506ddeeb3c0653bc021"><td class="mdescLeft">&#160;</td><td class="mdescRight">A fixed square root of -1.  <a href="namespacetket.html#a4789ee8e9c894506ddeeb3c0653bc021">More...</a><br /></td></tr>
 <tr class="separator:a4789ee8e9c894506ddeeb3c0653bc021"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -2183,6 +2196,22 @@ Variables</h2></td></tr>
 <p>Map bitstrings to Ops. </p>
 
 <p class="definition">Definition at line <a class="el" href="Multiplexor_8hpp_source.html#l00027">27</a> of file <a class="el" href="Multiplexor_8hpp_source.html">Multiplexor.hpp</a>.</p>
+
+</div>
+</div>
+<a id="ac5d305ae438820b8a07589696036e8bb"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac5d305ae438820b8a07589696036e8bb">&#9670;&nbsp;</a></span>cube_graph_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::undirectedS&gt; <a class="el" href="namespacetket.html#ac5d305ae438820b8a07589696036e8bb">tket::cube_graph_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="ToffoliBox_8cpp_source.html#l00095">95</a> of file <a class="el" href="ToffoliBox_8cpp_source.html">ToffoliBox.cpp</a>.</p>
 
 </div>
 </div>
@@ -2974,6 +3003,22 @@ Variables</h2></td></tr>
 
 </div>
 </div>
+<a id="a02a58b4b8be5a1385e897facba15dbf5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a02a58b4b8be5a1385e897facba15dbf5">&#9670;&nbsp;</a></span>perm_vert_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef boost::graph_traits&lt;<a class="el" href="namespacetket.html#ac5d305ae438820b8a07589696036e8bb">cube_graph_t</a>&gt;::vertex_descriptor <a class="el" href="namespacetket.html#a02a58b4b8be5a1385e897facba15dbf5">tket::perm_vert_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="ToffoliBox_8cpp_source.html#l00096">96</a> of file <a class="el" href="ToffoliBox_8cpp_source.html">ToffoliBox.cpp</a>.</p>
+
+</div>
+</div>
 <a id="a720e4604980f5d33b43ec549c38ed872"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a720e4604980f5d33b43ec549c38ed872">&#9670;&nbsp;</a></span>permutation_t</h2>
 
@@ -3388,6 +3433,24 @@ template&lt;typename A , typename B &gt; </div>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8hpp_source.html#l00120">120</a> of file <a class="el" href="MatrixAnalysis_8hpp_source.html">MatrixAnalysis.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a22d054aa057003b70a0b4a699cb37fe7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a22d054aa057003b70a0b4a699cb37fe7">&#9670;&nbsp;</a></span>state_perm_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef std::map&lt;std::vector&lt;bool&gt;, std::vector&lt;bool&gt; &gt; <a class="el" href="namespacetket.html#a22d054aa057003b70a0b4a699cb37fe7">tket::state_perm_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Map bitstrings to bitstrings. </p>
+
+<p class="definition">Definition at line <a class="el" href="ToffoliBox_8hpp_source.html#l00027">27</a> of file <a class="el" href="ToffoliBox_8hpp_source.html">ToffoliBox.hpp</a>.</p>
 
 </div>
 </div>
@@ -4234,6 +4297,8 @@ template&lt;typename A , typename B &gt; </div>
 <tr><td class="fieldname"><a id="a13e81344da4794f2648eb9a7b286fcf3a58bb13ca790adbe8e7436ef2652e62e0"></a>MultiplexedU2Box&#160;</td><td class="fielddoc"><p>See <a class="el" href="classtket_1_1MultiplexedU2Box.html">MultiplexedU2Box</a>. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="a13e81344da4794f2648eb9a7b286fcf3a36eb2fc691327e9917ffb76ca90dcece"></a>StatePreparationBox&#160;</td><td class="fielddoc"><p>See <a class="el" href="classtket_1_1StatePreparationBox.html">StatePreparationBox</a>. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a13e81344da4794f2648eb9a7b286fcf3a8afab1972f0d75adf02050866a070296"></a>DiagonalBox&#160;</td><td class="fielddoc"><p>See <a class="el" href="classtket_1_1DiagonalBox.html">DiagonalBox</a>. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="a13e81344da4794f2648eb9a7b286fcf3a81e83c562bbc4b3d830391b008dece4e"></a>ClassicalExpBox&#160;</td><td class="fielddoc"><p>See <a class="el" href="classtket_1_1ClassicalExpBox.html">ClassicalExpBox</a>. </p>
 </td></tr>
@@ -5260,6 +5325,28 @@ template&lt;typename A , typename B &gt; </div>
 
 </div>
 </div>
+<a id="a8527c432e230e6e77d7fc9e9290a2784"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8527c432e230e6e77d7fc9e9290a2784">&#9670;&nbsp;</a></span>bin_to_dec()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned tket::bin_to_dec </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; bool &gt; &amp;&#160;</td>
+          <td class="paramname"><em>bin</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>convert an bit vector to its decimal representation big-endian </p>
+
+<p class="definition">Definition at line <a class="el" href="HelperFunctions_8cpp_source.html#l00059">59</a> of file <a class="el" href="HelperFunctions_8cpp_source.html">HelperFunctions.cpp</a>.</p>
+
+</div>
+</div>
 <a id="a7975b7e1e2c7c442e69858f391a757f9"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7975b7e1e2c7c442e69858f391a757f9">&#9670;&nbsp;</a></span>binary_LLT_decomposition()</h2>
 
@@ -6109,7 +6196,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Boxes_8cpp_source.html#l00798">798</a> of file <a class="el" href="Boxes_8cpp_source.html">Boxes.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Boxes_8cpp_source.html#l00497">497</a> of file <a class="el" href="Boxes_8cpp_source.html">Boxes.cpp</a>.</p>
 
 </div>
 </div>
@@ -7364,7 +7451,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Boxes_8cpp_source.html#l00916">916</a> of file <a class="el" href="Boxes_8cpp_source.html">Boxes.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Boxes_8cpp_source.html#l00598">598</a> of file <a class="el" href="Boxes_8cpp_source.html">Boxes.cpp</a>.</p>
 
 </div>
 </div>
@@ -9020,36 +9107,6 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a6286f18b2e5e195dbdc73fc1b97d775e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6286f18b2e5e195dbdc73fc1b97d775e">&#9670;&nbsp;</a></span>get_hamming_distance()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">unsigned tket::get_hamming_distance </td>
-          <td>(</td>
-          <td class="paramtype">const std::vector&lt; bool &gt; &amp;&#160;</td>
-          <td class="paramname"><em>a</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const std::vector&lt; bool &gt; &amp;&#160;</td>
-          <td class="paramname"><em>b</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="Boxes_8cpp_source.html#l00537">537</a> of file <a class="el" href="Boxes_8cpp_source.html">Boxes.cpp</a>.</p>
-
-</div>
-</div>
 <a id="a97f9e55888d8ee8a41098ddc20e89cf4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a97f9e55888d8ee8a41098ddc20e89cf4">&#9670;&nbsp;</a></span>get_information_content()</h2>
 
@@ -9976,7 +10033,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for purely classical gates derived from <a class="el" href="classtket_1_1ClassicalOp.html" title="A purely classical operation.">ClassicalOp</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00249">249</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00250">250</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -9998,7 +10055,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for Clifford operations. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00234">234</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00235">235</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10020,7 +10077,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for controlled gates. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00253">253</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00254">254</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10064,7 +10121,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for flowops (just for high-level control flow) </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00188">188</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00189">189</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10152,7 +10209,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for gates over more than one qubit. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00209">209</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00210">210</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10174,7 +10231,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for non-invertible operations. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00222">222</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00223">223</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10196,7 +10253,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for rotations around Pauli axes. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00203">203</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00204">204</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10218,7 +10275,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for measurement and reset gates. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00245">245</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00246">246</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10270,7 +10327,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for rotations (including controlled rotations) </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00194">194</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00195">195</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10292,7 +10349,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for gates over a single qubit. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00213">213</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00214">214</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10314,7 +10371,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for single-qubit gates that can be expressed as TK1. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00218">218</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00219">219</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -13234,7 +13291,7 @@ template&lt;typename BoxT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Boxes_8cpp_source.html#l00910">910</a> of file <a class="el" href="Boxes_8cpp_source.html">Boxes.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Boxes_8cpp_source.html#l00592">592</a> of file <a class="el" href="Boxes_8cpp_source.html">Boxes.cpp</a>.</p>
 
 </div>
 </div>

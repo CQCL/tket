@@ -223,13 +223,12 @@ $(function() {
 <div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;<span class="comment">// and adjust the direction of their decomposition (i.e. CnX = CnX.dagger)</span></div>
 <div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;<span class="comment">// to improve the chance of gate cancellation. This method will not improve</span></div>
 <div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;<span class="comment">// the decomposition when the CnX gates are scattered; but it works the best</span></div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;<span class="comment">// when CnX gates are very close to each other, such as the circuit produced by</span></div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;<span class="comment">// a ToffoliBox.</span></div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;Transform <a class="code" href="namespacetket_1_1Transforms.html#ad77803001c3ed2fa876774decf8244aa">cnx_pairwise_decomposition</a>();</div>
-<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160; </div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;}  <span class="comment">// namespace Transforms</span></div>
-<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160; </div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;}  <span class="comment">// namespace tket</span></div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;<span class="comment">// when CnX gates are very close to each other.</span></div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;Transform <a class="code" href="namespacetket_1_1Transforms.html#ad77803001c3ed2fa876774decf8244aa">cnx_pairwise_decomposition</a>();</div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160; </div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;}  <span class="comment">// namespace Transforms</span></div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160; </div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;}  <span class="comment">// namespace tket</span></div>
 <div class="ttc" id="aArchitecture_8hpp_html"><div class="ttname"><a href="Architecture_8hpp.html">Architecture.hpp</a></div></div>
 <div class="ttc" id="aTransform_8hpp_html"><div class="ttname"><a href="Transform_8hpp.html">Transform.hpp</a></div></div>
 <div class="ttc" id="anamespacetket_1_1Transforms_html_a0822ee75b1d687db1fbf6546dcd705c8"><div class="ttname"><a href="namespacetket_1_1Transforms.html#a0822ee75b1d687db1fbf6546dcd705c8">tket::Transforms::compose_phase_poly_boxes</a></div><div class="ttdeci">Transform compose_phase_poly_boxes(const unsigned min_size)</div><div class="ttdoc">Replaces all CX+Rz sub circuits by PhasePolyBox Expects: only CX + Rz + H (and measure + reset + coll...</div><div class="ttdef"><b>Definition:</b> <a href="Decomposition_8cpp_source.html#l01305">Decomposition.cpp:1305</a></div></div>

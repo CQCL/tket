@@ -101,6 +101,7 @@ $(function() {
 , <a class="el" href="classtket_1_1CircBox.html#ae01d8561eaf28ae2bcfc35ff1e28db5f">tket::CircBox</a>
 , <a class="el" href="classtket_1_1ClassicalExpBox.html#afa4899274b9ae7741788035aa8c0fc3b">tket::ClassicalExpBox&lt; T &gt;</a>
 , <a class="el" href="classtket_1_1CustomGate.html#a141d7769dfbc6b97090662c87842e72c">tket::CustomGate</a>
+, <a class="el" href="classtket_1_1DiagonalBox.html#a321f040f2139f2148d534d8ce06e9f48">tket::DiagonalBox</a>
 , <a class="el" href="classtket_1_1ExpBox.html#ad19a5a117270ea9b9d66d1cad90d2882">tket::ExpBox</a>
 , <a class="el" href="classtket_1_1MultiplexedRotationBox.html#a64b04b3d884091927c01d2770b1ac68d">tket::MultiplexedRotationBox</a>
 , <a class="el" href="classtket_1_1MultiplexedU2Box.html#a8d46262f9891438f12029d896189b70c">tket::MultiplexedU2Box</a>
@@ -287,7 +288,6 @@ $(function() {
 : <a class="el" href="classtket_1_1CycleFinder.html#a9a031272425dfe33e66a62f03e06b93b">tket::CycleFinder</a>
 , <a class="el" href="classtket_1_1FrameRandomisation.html#a3d2d9327796ee39e60ecb6679b15f708">tket::FrameRandomisation</a>
 , <a class="el" href="classtket_1_1FrameRandomisationTester.html#a4b94744571e1f8121f035f4854c4d563">tket::FrameRandomisationTester</a>
-, <a class="el" href="classtket_1_1ToffoliBox.html#a376818fdcf6d5b06c404b5e951ee2fa0">tket::ToffoliBox</a>
 </li>
 <li>get_data()
 : <a class="el" href="classtket_1_1MetaOp.html#a3737ae23fd325eec49e56e78a359cafa">tket::MetaOp</a>
@@ -309,6 +309,9 @@ $(function() {
 </li>
 <li>get_desc()
 : <a class="el" href="classtket_1_1Op.html#a8346d53dede46e8c0414b79910d8815b">tket::Op</a>
+</li>
+<li>get_diagonal()
+: <a class="el" href="classtket_1_1DiagonalBox.html#af1423f0371433dead454211da2189ca8">tket::DiagonalBox</a>
 </li>
 <li>get_diagram()
 : <a class="el" href="classtket_1_1zx_1_1ZXBox.html#a5e6f2905bfc9df4b42d375cb69c17e9b">tket::zx::ZXBox</a>
@@ -522,7 +525,6 @@ $(function() {
 : <a class="el" href="classtket_1_1MaxNQubitsPredicate.html#a1078f11a7a7e1b5e7d314779e114e7f9">tket::MaxNQubitsPredicate</a>
 , <a class="el" href="classtket_1_1PhasePolyBox.html#ae2d95a9f06c29b94a0fa980283d78115">tket::PhasePolyBox</a>
 , <a class="el" href="classtket_1_1SymplecticTableau.html#ac2eab7cbb6e7d2ced279ea7e80a9c4a3">tket::SymplecticTableau</a>
-, <a class="el" href="classtket_1_1ToffoliBox.html#a286a64cf6e46d71a0cad1964506ae5b7">tket::ToffoliBox</a>
 </li>
 <li>get_n_rows()
 : <a class="el" href="classtket_1_1ChoiMixTableau.html#a788a52f314335bf139e7537c478a79fc">tket::ChoiMixTableau</a>
@@ -677,6 +679,9 @@ $(function() {
 <li>get_paulis()
 : <a class="el" href="classtket_1_1PauliExpBox.html#adb1941d953cd65a12cd2cd9a85d14cdc">tket::PauliExpBox</a>
 </li>
+<li>get_permutation()
+: <a class="el" href="classtket_1_1ToffoliBox.html#a357bed1c3965b083ce3f1e5b67152de6">tket::ToffoliBox</a>
+</li>
 <li>get_phase()
 : <a class="el" href="classtket_1_1Circuit.html#acbe448bcbe244f1b2f2316a40e28df6c">tket::Circuit</a>
 , <a class="el" href="classtket_1_1PauliExpBox.html#a3adbef764967bda7d889b629311841bb">tket::PauliExpBox</a>
@@ -751,6 +756,9 @@ $(function() {
 <li>get_reverse_slices()
 : <a class="el" href="classtket_1_1Circuit.html#a714456a69ae83e09d7c25beb32e37d21">tket::Circuit</a>
 </li>
+<li>get_rotation_axis()
+: <a class="el" href="classtket_1_1ToffoliBox.html#ab883caba8f98e248a53b93e6e8f14ade">tket::ToffoliBox</a>
+</li>
 <li>get_row()
 : <a class="el" href="classtket_1_1ChoiMixTableau.html#a04b2f0a46ec27a0eeee1b7a08a3ebd9f">tket::ChoiMixTableau</a>
 </li>
@@ -775,6 +783,7 @@ $(function() {
 , <a class="el" href="classtket_1_1ClassicalExpBox.html#ac52995bb8395a40fd54f7bddba46b274">tket::ClassicalExpBox&lt; T &gt;</a>
 , <a class="el" href="classtket_1_1ClassicalOp.html#a71faf980e447d50f0703d4a2739393cc">tket::ClassicalOp</a>
 , <a class="el" href="classtket_1_1Conditional.html#a44473636270063a3608869cb557f5f97">tket::Conditional</a>
+, <a class="el" href="classtket_1_1DiagonalBox.html#a9ee1ad825cae399d370de763027be23f">tket::DiagonalBox</a>
 , <a class="el" href="classtket_1_1FlowOp.html#afc79108828c883918f3dee6e125b1712">tket::FlowOp</a>
 , <a class="el" href="classtket_1_1Gate.html#a412791dac3435aa74a22b1e286a6f4a8">tket::Gate</a>
 , <a class="el" href="classtket_1_1MetaOp.html#a20df7381d08d6f95efbf6100ef75f576">tket::MetaOp</a>
