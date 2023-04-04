@@ -1,3 +1,3 @@
-lines: 88.8% (25902 out of 29154)
-functions: 78.0% (2340 out of 3000)
-branches: 51.4% (33320 out of 64882)
+lines: 88.9% (25994 out of 29243)
+functions: 78.0% (2354 out of 3019)
+branches: 51.4% (33391 out of 64982)
