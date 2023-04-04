@@ -132,7 +132,7 @@ jobs:
       run: conan create --profile=tket recipes/tket tket/stable --build=missing --build=tket
     - name: Install tket
       if: needs.check_changes.outputs.tket_changed != 'true'
-      run: conan install --profile=tket tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable
+      run: conan install --profile=tket tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable --build=missing
     - name: check that version is consistent
       if: matrix.os == 'ubuntu-22.04' && github.event_name == 'pull_request'
       run: |
