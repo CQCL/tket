@@ -12,8 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cmake_minimum_required(VERSION 3.16.0)
-project(tket-tests)
+cmake_minimum_required(VERSION 3.23)
+project(test-tket CXX)
+
+find_package(tket CONFIG REQUIRED)
+find_package(tkrng CONFIG REQUIRED)
+find_package(tktokenswap CONFIG REQUIRED)
+find_package(Catch2 CONFIG REQUIRED)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -24,10 +29,6 @@ if(CCACHE_PROGRAM)
 endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-
-find_file(CONANBUILDINFO_FILE_TKET_TESTS conanbuildinfo.cmake HINTS ${CMAKE_CURRENT_BINARY_DIR})
-include(${CONANBUILDINFO_FILE_TKET_TESTS})
-conan_basic_setup()
 
 IF (WIN32)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /WX /EHsc")
@@ -40,19 +41,136 @@ if(CMAKE_CXX_COMPILER_ID MATCHES "(Apple)?Clang")
     # remove -Wno-deprecated-declarations once https://github.com/boostorg/boost/issues/688 is resolved
 endif()
 
-IF (WIN32)
-    set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS yes)
-ENDIF()
-
-add_definitions(-DALL_LOGS)
-
-set(TKET_TESTS_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-
 add_definitions(-DTEST_CIRCUITS_DIR="${CMAKE_CURRENT_SOURCE_DIR}/test_circuits")
 
-include(tkettestutilsfiles.cmake)
-include(tkettestsfiles.cmake)
+add_executable(test-tket
+    # test utils:
+    src/tests_main.cpp
+    src/testutil.cpp
+    src/CircuitsForTesting.cpp
+    src/Graphs/EdgeSequence.cpp
+    src/Graphs/EdgeSequenceColouringParameters.cpp
+    src/Graphs/GraphTestingRoutines.cpp
+    src/Graphs/RandomGraphGeneration.cpp
+    src/Graphs/RandomPlanarGraphs.cpp
+    src/TokenSwapping/Data/FixedCompleteSolutions.cpp
+    src/TokenSwapping/Data/FixedSwapSequences.cpp
+    src/TokenSwapping/TestUtils/ArchitectureEdgesReimplementation.cpp
+    src/TokenSwapping/TestUtils/BestTsaTester.cpp
+    src/TokenSwapping/TestUtils/DebugFunctions.cpp
+    src/TokenSwapping/TestUtils/DecodedProblemData.cpp
+    src/TokenSwapping/TestUtils/FullTsaTesting.cpp
+    src/TokenSwapping/TestUtils/GetRandomSet.cpp
+    src/TokenSwapping/TestUtils/PartialTsaTesting.cpp
+    src/TokenSwapping/TestUtils/ProblemGeneration.cpp
+    src/TokenSwapping/TestUtils/TestStatsStructs.cpp
+    src/Gate/GatesData.cpp
+    src/Simulation/ComparisonFunctions.cpp
+    # test sources:
+    src/Utils/test_CosSinDecomposition.cpp
+    src/Utils/test_HelperFunctions.cpp
+    src/Utils/test_MatrixAnalysis.cpp
+    src/Graphs/test_GraphColouring.cpp
+    src/Graphs/test_GraphFindComponents.cpp
+    src/Graphs/test_GraphFindMaxClique.cpp
+    src/Graphs/test_GraphUtils.cpp
+    src/Graphs/test_DirectedGraph.cpp
+    src/Graphs/test_ArticulationPoints.cpp
+    src/Graphs/test_TreeSearch.cpp
+    src/TokenSwapping/test_ArchitectureMappingEndToEnd.cpp
+    src/TokenSwapping/test_BestTsaFixedSwapSequences.cpp
+    src/TokenSwapping/test_DistancesFromArchitecture.cpp
+    src/TokenSwapping/test_FullTsa.cpp
+    src/TokenSwapping/test_RiverFlowPathFinder.cpp
+    src/TokenSwapping/test_SwapsFromQubitMapping.cpp
+    src/TokenSwapping/test_VariousPartialTsa.cpp
+    src/Architecture/test_SubgraphMonomorphisms.cpp
+    src/test_PauliString.cpp
+    src/Ops/test_ClassicalOps.cpp
+    src/Ops/test_Expression.cpp
+    src/Ops/test_Ops.cpp
+    src/OpType/test_OpTypeFunctions.cpp
+    src/Passes/test_SynthesiseTK.cpp
+    src/Passes/test_SynthesiseTket.cpp
+    src/Gate/test_GateUnitaryMatrix.cpp
+    src/Simulation/test_CircuitSimulator.cpp
+    src/Simulation/test_PauliExpBoxUnitaryCalculator.cpp
+    src/Circuit/test_Boxes.cpp
+    src/Circuit/test_Circ.cpp
+    src/Circuit/test_CircPool.cpp
+    src/Circuit/test_Symbolic.cpp
+    src/Circuit/test_ThreeQubitConversion.cpp
+    src/Circuit/test_Multiplexor.cpp
+    src/Circuit/test_StatePreparation.cpp
+    src/Circuit/test_DiagonalBox.cpp
+    src/Circuit/test_ToffoliBox.cpp
+    src/test_CliffTableau.cpp
+    src/test_UnitaryTableau.cpp
+    src/test_ChoiMixTableau.cpp
+    src/test_PhasePolynomials.cpp
+    src/test_PauliGraph.cpp
+    src/test_Architectures.cpp
+    src/test_ArchitectureAwareSynthesis.cpp
+    src/Placement/test_GraphPlacement.cpp
+    src/Placement/test_LinePlacement.cpp
+    src/Placement/test_NoiseAwarePlacement.cpp
+    src/Placement/test_Placement.cpp
+    src/Placement/test_NeighbourPlacements.cpp
+    src/Transformations/test_RedundancyRemoval.cpp
+    src/test_MappingVerification.cpp
+    src/test_MappingFrontier.cpp
+    src/test_RoutingMethod.cpp
+    src/test_MappingManager.cpp
+    src/test_LexicographicalComparison.cpp
+    src/test_LexiRoute.cpp
+    src/test_AASRoute.cpp
+    src/test_MultiGateReorder.cpp
+    src/test_BoxDecompRoutingMethod.cpp
+    src/test_RoutingPasses.cpp
+    src/test_DeviceCharacterisation.cpp
+    src/test_Clifford.cpp
+    src/test_MeasurementSetup.cpp
+    src/test_Partition.cpp
+    src/test_MeasurementReduction.cpp
+    src/test_PhaseGadget.cpp
+    src/test_Rebase.cpp
+    src/test_PhasedXFrontier.cpp
+    src/test_GlobalisePhasedX.cpp
+    src/test_Synthesis.cpp
+    src/test_TwoQubitCanonical.cpp
+    src/test_ControlDecomp.cpp
+    src/test_Combinators.cpp
+    src/test_Predicates.cpp
+    src/test_CompilerPass.cpp
+    src/test_ContextOpt.cpp
+    src/test_FrameRandomisation.cpp
+    src/test_Assertion.cpp
+    src/test_json.cpp
+    src/test_Path.cpp
+    src/test_SteinerTree.cpp
+    src/test_SteinerForest.cpp
+    src/test_wasm.cpp
+    src/ZX/test_ZXDiagram.cpp
+    src/ZX/test_ZXAxioms.cpp
+    src/ZX/test_ZXSimp.cpp
+    src/ZX/test_ZXRebase.cpp
+    src/ZX/test_Flow.cpp
+    src/ZX/test_ZXConverters.cpp
+    src/ZX/test_ZXExtraction.cpp
+    )
 
-add_executable(test_tket ${TESTUTILS_SOURCES} ${TEST_SOURCES})
+target_link_libraries(test-tket PRIVATE tket::tket)
+target_link_libraries(test-tket PRIVATE Catch2::Catch2WithMain)
 
-target_link_libraries(test_tket PRIVATE ${CONAN_LIBS})
+set(WITH_COVERAGE no CACHE BOOL "Link library with profiling for test coverage")
+IF (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
+    IF (WITH_COVERAGE)
+        target_link_options(test-tket PUBLIC --coverage)
+    ENDIF()
+ENDIF()
+
+install(TARGETS test-tket DESTINATION "."
+        RUNTIME DESTINATION bin
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib
+        )

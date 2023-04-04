@@ -12,31 +12,37 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from conans import ConanFile, CMake, tools
-from conans.errors import ConanInvalidConfiguration
-import os, platform
+from conan import ConanFile
+from conan.tools.cmake import CMakeToolchain, CMake, cmake_layout, CMakeDeps
+from conan.errors import ConanInvalidConfiguration
 
 
-class TketTestsConan(ConanFile):
-    name = "tket-tests"
-    version = "0.6.2"
-    license = "CQC Proprietary"
-    author = "Alec Edgington <alec.edgington@cambridgequantum.com>"
+class test_tketRecipe(ConanFile):
+    name = "test-tket"
+    version = "0.6.3"
+    package_type = "application"
+    license = "Apache 2"
     url = "https://github.com/CQCL/tket"
     description = "Unit tests for tket"
     topics = ("quantum", "computation", "compiler")
     settings = "os", "compiler", "build_type", "arch"
-    options = {
-        "with_coverage": [True, False],
-        "full": [True, False],
-        "long": [True, False],
-    }
-    default_options = {"with_coverage": False, "full": False, "long": False}
-    generators = "cmake"
-    exports_sources = "../../tket/tests/*"
-    requires = ("tket/1.1.2@tket/stable", "catch2/3.3.0")
+    options = {"with_coverage": [True, False]}
+    default_options = {"with_coverage": False}
+    exports_sources = "CMakeLists.txt", "src/*"
 
-    _cmake = None
+    def configure(self):
+        if self.options.with_coverage:
+            self.options["tket"].profile_coverage = True
+
+    def layout(self):
+        cmake_layout(self)
+
+    def generate(self):
+        deps = CMakeDeps(self)
+        deps.generate()
+        tc = CMakeToolchain(self)
+        tc.variables["WITH_COVERAGE"] = self.options.with_coverage
+        tc.generate()
 
     def validate(self):
         if self.options.with_coverage and self.settings.compiler != "gcc":
@@ -44,36 +50,17 @@ class TketTestsConan(ConanFile):
                 "`with_coverage` option only available with gcc"
             )
 
-    def _configure_cmake(self):
-        if self._cmake is None:
-            self._cmake = CMake(self)
-            self._cmake.configure()
-        return self._cmake
-
-    def configure(self):
-        if self.options.with_coverage:
-            self.options["tket"].profile_coverage = True
-
     def build(self):
-        cmake = self._configure_cmake()
+        cmake = CMake(self)
+        cmake.configure()
         cmake.build()
 
-    def imports(self):
-        self.copy("*.dll", dst="bin", src="bin")
-        self.copy("*.dylib*", dst="bin", src="lib")
-
     def package(self):
-        executable_filename = "bin/test_tket"
-        if platform.system() == "Windows":
-            executable_filename = executable_filename + ".exe"
-        self.copy(executable_filename)
-        self.copy(
-            os.path.join("test_circuits", "lexiroute_circuit.json"),
-            dst="bin",
-            keep_path=False,
-        )
-        self.copy(
-            os.path.join("test_circuits", "lexiroute_circuit_relabel_to_ancilla.json"),
-            dst="bin",
-            keep_path=False,
-        )
+        cmake = CMake(self)
+        cmake.install()
+
+    def requirements(self):
+        self.requires("tket/1.1.2@tket/stable")
+        self.requires("tkrng/0.3.3@tket/stable")
+        self.requires("tktokenswap/0.3.3@tket/stable")
+        self.requires("catch2/3.3.0")
