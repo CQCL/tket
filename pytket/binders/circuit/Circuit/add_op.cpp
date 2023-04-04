@@ -643,6 +643,18 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n:return: the new :py:class:`Circuit`",
           py::arg("box"), py::arg("args"))
       .def(
+          "add_multiplexed_tensored_u2",
+          [](Circuit *circ, const MultiplexedTensoredU2Box &box,
+             const unit_vector_t &args, const py::kwargs &kwargs) {
+            return add_box_method(
+                circ, std::make_shared<MultiplexedTensoredU2Box>(box), args, kwargs);
+          },
+          "Append a :py:class:`MultiplexedTensoredU2Box` to the circuit.\n\n"
+          ":param box: The box to append\n"
+          ":param args: The qubits to append the box to"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("box"), py::arg("args"))
+      .def(
           "add_state_preparation_box",
           [](Circuit *circ, const StatePreparationBox &box,
              const unit_vector_t &args, const py::kwargs &kwargs) {
