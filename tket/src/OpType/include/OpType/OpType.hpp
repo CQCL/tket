@@ -641,6 +641,11 @@ enum class OpType {
   StatePreparationBox,
 
   /**
+   * See \ref DiagonalBox
+   */
+  DiagonalBox,
+
+  /**
    * See \ref ClassicalExpBox
    */
   ClassicalExpBox,

@@ -21,8 +21,10 @@
 #include "Circuit/CircUtils.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Circuit/Command.hpp"
+#include "Circuit/DiagonalBox.hpp"
 #include "Circuit/Multiplexor.hpp"
 #include "Circuit/StatePreparation.hpp"
+#include "Circuit/ToffoliBox.hpp"
 #include "CircuitsForTesting.hpp"
 #include "Converters/PhasePoly.hpp"
 #include "Gate/SymTable.hpp"
@@ -330,7 +332,7 @@ SCENARIO("Test Circuit serialization") {
     std::map<std::vector<bool>, std::vector<bool>> permutation;
     permutation[{0, 0}] = {1, 1};
     permutation[{1, 1}] = {0, 0};
-    ToffoliBox tbox(2, permutation);
+    ToffoliBox tbox(permutation);
     c.add_box(tbox, {0, 1});
     nlohmann::json j_tbox = c;
     const Circuit new_c = j_tbox.get<Circuit>();
@@ -338,8 +340,8 @@ SCENARIO("Test Circuit serialization") {
     const auto& t_b =
         static_cast<const ToffoliBox&>(*new_c.get_commands()[0].get_op_ptr());
 
-    REQUIRE(t_b.get_cycles() == tbox.get_cycles());
-    REQUIRE(t_b.get_n_qubits() == tbox.get_n_qubits());
+    REQUIRE(t_b.get_permutation() == tbox.get_permutation());
+    REQUIRE(t_b.get_rotation_axis() == tbox.get_rotation_axis());
     REQUIRE(t_b == tbox);
   }
 
@@ -480,6 +482,20 @@ SCENARIO("Test Circuit serialization") {
         *new_c.get_commands()[0].get_op_ptr());
     REQUIRE((state - box.get_statevector()).cwiseAbs().sum() < ERR_EPS);
     REQUIRE(box.is_inverse() == true);
+  }
+
+  GIVEN("DiagonalBox") {
+    Eigen::VectorXcd diag(8);
+    diag << i_, i_, i_, -i_, 1, -i_, 1, -i_;
+    DiagonalBox diagbox(diag, false);
+    Circuit c(3);
+    c.add_box(diagbox, {0, 1, 2});
+    nlohmann::json j_box = c;
+    const Circuit new_c = j_box.get<Circuit>();
+    const auto& box =
+        static_cast<const DiagonalBox&>(*new_c.get_commands()[0].get_op_ptr());
+    REQUIRE((diag - box.get_diagonal()).cwiseAbs().sum() < ERR_EPS);
+    REQUIRE(!box.is_upper_triangle());
   }
 
   GIVEN("PhasePolyBox") {

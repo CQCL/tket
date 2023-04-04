@@ -23,8 +23,10 @@
 #include "Circuit/Boxes.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Circuit/ClassicalExpBox.hpp"
+#include "Circuit/DiagonalBox.hpp"
 #include "Circuit/Multiplexor.hpp"
 #include "Circuit/StatePreparation.hpp"
+#include "Circuit/ToffoliBox.hpp"
 #include "Converters/PhasePoly.hpp"
 #include "Gate/OpPtrFunctions.hpp"
 #include "Ops/Op.hpp"
@@ -648,6 +650,18 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
                 circ, std::make_shared<StatePreparationBox>(box), args, kwargs);
           },
           "Append a :py:class:`StatePreparationBox` to the circuit.\n\n"
+          ":param box: The box to append\n"
+          ":param args: The qubits to append the box to"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("box"), py::arg("args"))
+      .def(
+          "add_diagonal_box",
+          [](Circuit *circ, const DiagonalBox &box, const unit_vector_t &args,
+             const py::kwargs &kwargs) {
+            return add_box_method(
+                circ, std::make_shared<DiagonalBox>(box), args, kwargs);
+          },
+          "Append a :py:class:`DiagonalBox` to the circuit.\n\n"
           ":param box: The box to append\n"
           ":param args: The qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",

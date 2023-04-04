@@ -95,3 +95,6 @@ pytket.circuit
 .. autoclass:: pytket._tket.circuit.StatePreparationBox
     :special-members:
     :members:
+.. autoclass:: pytket._tket.circuit.DiagonalBox
+    :special-members:
+    :members:

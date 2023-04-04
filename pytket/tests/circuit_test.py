@@ -31,6 +31,7 @@ from pytket.circuit import (  # type: ignore
     MultiplexedRotationBox,
     MultiplexedU2Box,
     StatePreparationBox,
+    DiagonalBox,
     ExpBox,
     PauliExpBox,
     QControlBox,
@@ -444,7 +445,7 @@ def test_boxes() -> None:
     assert all(isinstance(box, Op) for box in boxes)
 
     permutation = {(0, 0): (1, 1), (1, 1): (0, 0)}
-    tb = ToffoliBox(2, permutation)
+    tb = ToffoliBox(permutation)
     assert tb.type == OpType.ToffoliBox
     unitary = tb.get_circuit().get_unitary()
     comparison = np.asarray([[0, 0, 0, 1], [0, 1, 0, 0], [0, 0, 1, 0], [1, 0, 0, 0]])
@@ -510,6 +511,13 @@ def test_boxes() -> None:
     assert np.allclose(prep_u.dot(state), zero_state)
     d.add_state_preparation_box(prep_box, [Qubit(0), Qubit(1), Qubit(2)])
     assert d.n_gates == 13
+    # DiagonalBox
+    diag_vect = np.array([1j] * 8)
+    diag_box = DiagonalBox(diag_vect)
+    u = diag_box.get_circuit().get_unitary()
+    assert np.allclose(np.diag(diag_vect), u)
+    d.add_diagonal_box(diag_box, [Qubit(0), Qubit(1), Qubit(2)])
+    assert d.n_gates == 14
     assert json_validate(d)
 
 

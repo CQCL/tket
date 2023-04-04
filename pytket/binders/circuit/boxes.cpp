@@ -19,8 +19,10 @@
 #include <pybind11/stl.h>
 
 #include "Circuit/Circuit.hpp"
+#include "Circuit/DiagonalBox.hpp"
 #include "Circuit/Multiplexor.hpp"
 #include "Circuit/StatePreparation.hpp"
+#include "Circuit/ToffoliBox.hpp"
 #include "Converters/PhasePoly.hpp"
 #include "Utils/HelperFunctions.hpp"
 #include "Utils/Json.hpp"
@@ -148,13 +150,43 @@ void init_boxes(py::module &m) {
       "An operation that constructs a circuit to implement the specified "
       "permutation of classical basis states.")
       .def(
-          py::init<
-              unsigned, std::map<std::vector<bool>, std::vector<bool>> &>(),
-          "Construct from a permutation of basis states.", py::arg("n_qubits"),
-          py::arg("permutation"))
+          py::init<state_perm_t, OpType>(),
+          "Construct from a permutation of basis states, and the prefered "
+          "rotation axis of the multiplexors used in the decomposition. The "
+          "axis can be either Ry or Rx, default to Ry.",
+          py::arg("permutation"), py::arg("rotation_axis") = OpType::Ry)
+      .def(
+          py::init([](unsigned n_qubits, const state_perm_t &perm,
+                      const OpType &rotation_axis) {
+            (void)n_qubits;
+            PyErr_WarnEx(
+                PyExc_DeprecationWarning,
+                "The argument n_qubits is no longer needed. "
+                "Please create ToffoliBoxes without n_qubits.",
+                1);
+            return ToffoliBox(perm, rotation_axis);
+          }),
+          "Constructor for backward compatibility. Subject to deprecation.",
+          py::arg("n_qubits"), py::arg("permutation"),
+          py::arg("rotation_axis") = OpType::Ry)
       .def(
           "get_circuit", [](ToffoliBox &tbox) { return *tbox.to_circuit(); },
-          ":return: the :py:class:`Circuit` described by the box");
+          ":return: the :py:class:`Circuit` described by the box")
+      .def(
+          "get_permutation",
+          [](ToffoliBox &box) {
+            std::map<py::tuple, py::tuple> outmap;
+            for (const auto &pair : box.get_permutation()) {
+              outmap.insert(
+                  {py::tuple(py::cast(pair.first)),
+                   py::tuple(py::cast(pair.second))});
+            }
+            return outmap;
+          },
+          ":return: the permutation")
+      .def(
+          "get_rotation_axis", &ToffoliBox::get_rotation_axis,
+          ":return: the rotation axis");
   py::class_<QControlBox, std::shared_ptr<QControlBox>, Op>(
       m, "QControlBox",
       "A user-defined controlled operation specified by an "
@@ -477,5 +509,27 @@ void init_boxes(py::module &m) {
           "is_inverse", &StatePreparationBox::is_inverse,
           ":return: flag indicating whether to implement the dagger of the "
           "state preparation circuit");
+  py::class_<DiagonalBox, std::shared_ptr<DiagonalBox>, Op>(
+      m, "DiagonalBox",
+      "A box for synthesising a diagonal unitary matrix into a sequence of "
+      "multiplexed-Rz gates.")
+      .def(
+          py::init<const Eigen::VectorXcd &, bool>(),
+          "Construct from the diagonal entries of the unitary operator. The "
+          "size of the vector must be 2^n where n is a positive integer.\n\n"
+          ":param diagonal: diagonal entries\n"
+          ":param upper_triangle: indicates whether the multiplexed-Rz gates "
+          "take the shape of an upper triangle or a lower triangle. Default to "
+          "true.",
+          py::arg("diagonal"), py::arg("upper_triangle") = true)
+      .def(
+          "get_circuit", [](DiagonalBox &box) { return *box.to_circuit(); },
+          ":return: the :py:class:`Circuit` described by the box")
+      .def(
+          "get_diagonal", &DiagonalBox::get_diagonal,
+          ":return: the statevector")
+      .def(
+          "is_upper_triangle", &DiagonalBox::is_upper_triangle,
+          ":return: the upper_triangle flag");
 }
 }  // namespace tket
