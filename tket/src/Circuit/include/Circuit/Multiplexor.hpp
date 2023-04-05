@@ -250,8 +250,8 @@ class MultiplexedTensoredU2Box : public Box {
    * or Unitary1QBox.
    *
    * @param op_map
-   * @param impl_diag whether to implement the final MultiplexedRotationBox,
-   * default to true
+   * @param impl_diag whether to implement the final MultiplexedRotationBoxes
+   * and DiagonalBox, default to true
    */
   explicit MultiplexedTensoredU2Box(
       const ctrl_tensored_op_map_t &op_map, bool impl_diag = true);
@@ -294,7 +294,8 @@ class MultiplexedTensoredU2Box : public Box {
 
  protected:
   /**
-   * @brief Implement multiplexed-tensored-U2 gate
+   * @brief Implement multiplexed-tensored-U2 gate by decomposing a sequence of
+   * MultiplexedU2 gate and moving the diagonal operators to the end.
    */
   void generate_circuit() const override;
 

@@ -490,11 +490,12 @@ void init_boxes(py::module &m) {
   py::class_<
       MultiplexedTensoredU2Box, std::shared_ptr<MultiplexedTensoredU2Box>, Op>(
       m, "MultiplexedTensoredU2Box",
-      "A user-defined multiplexed tensored-U2 gate specified by a map from "
-      "bitstrings to lists of :py:class:`Op`s")
+      "A user-defined multiplexed tensor product of U2 gates specified by a "
+      "map from bitstrings to lists of :py:class:`Op`s")
       .def(
           py::init<const ctrl_tensored_op_map_t &, bool>(),
-          "Construct from a map from bitstrings to lists of :py:class:`Op`s."
+          "Construct from a map from bitstrings to equal-sized lists of "
+          ":py:class:`Op`s. "
           "Only supports single qubit unitary gate types and "
           ":py:class:`Unitary1qBox`.\n\n"
           ":param op_map: Map from bitstrings to lists of :py:class:`Op`s\n"

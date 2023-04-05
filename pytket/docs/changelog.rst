@@ -22,6 +22,7 @@ Minor new features:
   for improved decomposition.
 * Add new ``DiagonalBox`` that synthesises a diagonal unitary matrix
   into a sequence of multiplexed-Rz gates.
+* Add new ``MultiplexedTensoredU2Box`` that synthesises multiplexed tensor product of U2 gates.
 
 Fixes:
 
