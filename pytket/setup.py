@@ -81,31 +81,7 @@ class CMakeBuild(build_ext):
                 _future = list(pool.map(self.build_extension, self.extensions))
 
         # Hack to put required shared libraries alongside the extension libraries
-        needed_libs = {
-            "tklog": ["tklog"],
-            "tket": [
-                "tket-Utils",
-                "tket-ZX",
-                "tket-OpType",
-                "tket-Clifford",
-                "tket-Ops",
-                "tket-Graphs",
-                "tket-Gate",
-                "tket-PauliGraph",
-                "tket-Circuit",
-                "tket-Architecture",
-                "tket-Simulation",
-                "tket-Diagonalisation",
-                "tket-Characterisation",
-                "tket-Converters",
-                "tket-Placement",
-                "tket-Mapping",
-                "tket-MeasurementSetup",
-                "tket-Transformations",
-                "tket-ArchAwareSynth",
-                "tket-Predicates",
-            ],
-        }
+        needed_libs = {"tklog": ["tklog"], "tket": ["tket"]}
 
         conan_tket_profile = os.getenv("CONAN_TKET_PROFILE", default="tket")
         jsondump = "conaninfo.json"
