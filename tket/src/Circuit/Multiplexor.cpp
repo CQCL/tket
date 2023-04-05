@@ -659,8 +659,9 @@ std::pair<Circuit, Eigen::VectorXcd> MultiplexedU2Box::decompose() const {
       for (unsigned j = 0; j < (unsigned)(1 << (i + 1)); j++) {
         // the bitstrings in a ucrz are mapped to qubits not in the standard
         // order
-        unsigned diag_idx =
-            (unsigned)(j >= (1 << i)) ? (j - (1 << i)) * 2 + 1 : j * 2;
+        unsigned diag_idx = (j >= (unsigned)(1 << i))
+                                ? (j - (unsigned)(1 << i)) * 2 + 1
+                                : j * 2;
         diag[diag_idx + offset * (1 << (i + 2))] *=
             std::exp(-0.5 * i_ * PI * ucrzs[i][j]);
         diag[diag_idx + offset * (1 << (i + 2)) + (1 << (i + 1))] *=
