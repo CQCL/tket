@@ -329,7 +329,8 @@ SCENARIO("Exception handling", "[boxes]") {
     ctrl_op_map_t op_map;
     REQUIRE_THROWS_MATCHES(
         MultiplexorBox(op_map), std::invalid_argument,
-        MessageContains("No Ops provided"));
+        MessageContains(
+            "The op_map argument passed to MultiplexorBox cannot be empty."));
   }
   GIVEN("Classical wire") {
     Circuit c0(2, 1);
@@ -342,49 +343,52 @@ SCENARIO("Exception handling", "[boxes]") {
         {{1, 0}, get_op_ptr(OpType::TK2, std::vector<Expr>{0.2, 0.4, 0.4})}};
     REQUIRE_THROWS_MATCHES(
         MultiplexorBox(op_map), BadOpType,
-        MessageContains("Quantum control of classical wires not supported"));
+        MessageContains("Multiplexed operations cannot have classical wires"));
   }
   GIVEN("Bitstrings are too long") {
     std::vector<bool> bits(33);
     ctrl_op_map_t op_map = {{bits, get_op_ptr(OpType::Rx, 1.4)}};
     REQUIRE_THROWS_MATCHES(
         MultiplexedRotationBox(op_map), std::invalid_argument,
-        MessageContains("Bitstrings longer than 32 are not supported"));
+        MessageContains("supports bitstrings up to 32 bits"));
   }
   GIVEN("Unmatched bitstrings") {
     ctrl_op_map_t op_map = {
         {{0, 1}, get_op_ptr(OpType::H)}, {{1}, get_op_ptr(OpType::X)}};
     REQUIRE_THROWS_MATCHES(
         MultiplexorBox(op_map), std::invalid_argument,
-        MessageContains("Bitstrings must have the same width"));
+        MessageContains(
+            "bitstrings passed to the multiplexor must have the same width"));
   }
   GIVEN("Unmatched op sizes") {
     ctrl_op_map_t op_map = {
         {{0, 1}, get_op_ptr(OpType::H)}, {{1, 0}, get_op_ptr(OpType::CX)}};
     REQUIRE_THROWS_MATCHES(
         MultiplexorBox(op_map), std::invalid_argument,
-        MessageContains("Ops must have the same width"));
+        MessageContains("Multiplexed operations must have the same width"));
   }
   GIVEN("Mixed rotation axis") {
     ctrl_op_map_t op_map = {
         {{1}, get_op_ptr(OpType::Rz, 0.3)}, {{0}, get_op_ptr(OpType::Rx, 1.4)}};
     REQUIRE_THROWS_MATCHES(
         MultiplexedRotationBox(op_map), std::invalid_argument,
-        MessageContains("Ops must have the same rotation type"));
+        MessageContains("Ops passed to MultiplexedRotationBox must have the "
+                        "same rotation type"));
   }
   GIVEN("Non-rotation type") {
     ctrl_op_map_t op_map = {{{1}, get_op_ptr(OpType::H)}};
     REQUIRE_THROWS_MATCHES(
         MultiplexedRotationBox(op_map), BadOpType,
-        MessageContains("Ops must be either Rx, Ry, or Rz"));
+        MessageContains("Ops passed to MultiplexedRotationBox must be either "
+                        "Rx, Ry, or Rz"));
   }
   GIVEN("MultiplexedU2Box unsupported gate") {
     ctrl_op_map_t op_map = {
         {{0, 1}, get_op_ptr(OpType::H)}, {{1, 0}, get_op_ptr(OpType::CX)}};
     REQUIRE_THROWS_MATCHES(
         MultiplexedU2Box(op_map), BadOpType,
-        MessageContains(
-            "Ops must be single-qubit unitary gate types or Unitary1qBox"));
+        MessageContains("Ops passed to MultiplexedU2Box must be single-qubit "
+                        "unitary gate types or Unitary1qBox"));
   }
   GIVEN("Decompose symbolic MultiplexedU2Box") {
     Sym a = SymTable::fresh_symbol("a");
@@ -584,21 +588,25 @@ SCENARIO("Test MultiplexedTensoredU2Box exceptions", "[boxes]") {
     ctrl_tensored_op_map_t op_map;
     REQUIRE_THROWS_MATCHES(
         MultiplexedTensoredU2Box(op_map), std::invalid_argument,
-        MessageContains("No Ops provided"));
+        MessageContains(
+            "The op_map argument passed to MultiplexedTensoredU2Box cannot be "
+            "empty."));
   }
   GIVEN("Bitstrings are too long") {
     std::vector<bool> bits(33);
     ctrl_tensored_op_map_t op_map = {{bits, {get_op_ptr(OpType::Rx, 1.4)}}};
     REQUIRE_THROWS_MATCHES(
         MultiplexedTensoredU2Box(op_map), std::invalid_argument,
-        MessageContains("Bitstrings longer than 32 are not supported"));
+        MessageContains(
+            "MultiplexedTensoredU2Box only supports bitstrings up to 32 bits"));
   }
   GIVEN("Unmatched bitstrings") {
     ctrl_tensored_op_map_t op_map = {
         {{0, 1}, {get_op_ptr(OpType::H)}}, {{1}, {get_op_ptr(OpType::X)}}};
     REQUIRE_THROWS_MATCHES(
         MultiplexedTensoredU2Box(op_map), std::invalid_argument,
-        MessageContains("Bitstrings must have the same width"));
+        MessageContains("The bitstrings passed to MultiplexedTensoredU2Box "
+                        "must have the same width."));
   }
   GIVEN("Unmatched op sizes") {
     ctrl_tensored_op_map_t op_map = {
@@ -606,23 +614,17 @@ SCENARIO("Test MultiplexedTensoredU2Box exceptions", "[boxes]") {
         {{1, 0}, {get_op_ptr(OpType::X), get_op_ptr(OpType::X)}}};
     REQUIRE_THROWS_MATCHES(
         MultiplexedTensoredU2Box(op_map), std::invalid_argument,
-        MessageContains("must have the same number of U2 components"));
-  }
-  GIVEN("Unmatched op sizes") {
-    ctrl_tensored_op_map_t op_map = {
-        {{0, 1}, {get_op_ptr(OpType::H)}},
-        {{1, 0}, {get_op_ptr(OpType::X), get_op_ptr(OpType::X)}}};
-    REQUIRE_THROWS_MATCHES(
-        MultiplexedTensoredU2Box(op_map), std::invalid_argument,
-        MessageContains("must have the same number of U2 components"));
+        MessageContains(
+            "Each tensored operation passed to MultiplexedTensoredU2Box must "
+            "have the same number of U2 components"));
   }
   GIVEN("Unsupported gate") {
     ctrl_tensored_op_map_t op_map = {
         {{0, 1}, {get_op_ptr(OpType::H)}}, {{1, 0}, {get_op_ptr(OpType::CX)}}};
     REQUIRE_THROWS_MATCHES(
         MultiplexedTensoredU2Box(op_map), BadOpType,
-        MessageContains(
-            "Ops must be single-qubit unitary gate types or Unitary1qBox"));
+        MessageContains("Ops passed to MultiplexedTensoredU2Box must be "
+                        "single-qubit unitary gate types or Unitary1qBox"));
   }
 }
 }  // namespace test_Multiplexor

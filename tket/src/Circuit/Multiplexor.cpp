@@ -316,7 +316,7 @@ static void op_map_validate(const ctrl_op_map_t &op_map) {
     if ((unsigned long)std::count(
             op_sig.begin(), op_sig.end(), EdgeType::Quantum) != op_sig.size()) {
       throw BadOpType(
-          "Quantum control of classical wires not supported",
+          "Multiplexed operations cannot have classical wires.",
           it->second->get_type());
     }
     if (it == op_map.begin()) {
@@ -324,10 +324,13 @@ static void op_map_validate(const ctrl_op_map_t &op_map) {
       n_targets = (unsigned)op_sig.size();
     } else {
       if (it->first.size() != n_controls) {
-        throw std::invalid_argument("Bitstrings must have the same width.");
+        throw std::invalid_argument(
+            "The bitstrings passed to the multiplexor must have the same "
+            "width.");
       }
       if (op_sig.size() != n_targets) {
-        throw std::invalid_argument("Ops must have the same width.");
+        throw std::invalid_argument(
+            "Multiplexed operations must have the same width.");
       }
     }
   }
@@ -371,7 +374,8 @@ MultiplexorBox::MultiplexorBox(const ctrl_op_map_t &op_map)
     : Box(OpType::MultiplexorBox), op_map_(op_map) {
   auto it = op_map.begin();
   if (it == op_map.end()) {
-    throw std::invalid_argument("No Ops provided.");
+    throw std::invalid_argument(
+        "The op_map argument passed to MultiplexorBox cannot be empty.");
   }
   n_controls_ = (unsigned)it->first.size();
   n_targets_ = it->second->n_qubits();
@@ -430,23 +434,30 @@ MultiplexedRotationBox::MultiplexedRotationBox(const ctrl_op_map_t &op_map)
     : Box(OpType::MultiplexedRotationBox), op_map_(op_map) {
   auto it = op_map.begin();
   if (it == op_map.end()) {
-    throw std::invalid_argument("No Ops provided.");
+    throw std::invalid_argument(
+        "The op_map argument passed to MultiplexedRotationBox cannot be "
+        "empty.");
   }
   for (; it != op_map.end(); it++) {
     if (it == op_map.begin()) {
       n_controls_ = (unsigned)it->first.size();
       if (n_controls_ > MAX_N_CONTROLS) {
         throw std::invalid_argument(
-            "Bitstrings longer than " + std::to_string(MAX_N_CONTROLS) +
-            " are not supported.");
+            "MultiplexedRotationBox only supports bitstrings up to " +
+            std::to_string(MAX_N_CONTROLS) + " bits.");
       }
       axis_ = it->second->get_type();
       if (axis_ != OpType::Rx && axis_ != OpType::Ry && axis_ != OpType::Rz) {
-        throw BadOpType("Ops must be either Rx, Ry, or Rz.", axis_);
+        throw BadOpType(
+            "Ops passed to MultiplexedRotationBox must be either Rx, Ry, or "
+            "Rz.",
+            axis_);
       }
     } else {
       if (it->second->get_type() != axis_) {
-        throw std::invalid_argument("Ops must have the same rotation type.");
+        throw std::invalid_argument(
+            "Ops passed to MultiplexedRotationBox must have the same rotation "
+            "type.");
       }
     }
   }
@@ -534,20 +545,22 @@ MultiplexedU2Box::MultiplexedU2Box(const ctrl_op_map_t &op_map, bool impl_diag)
     : Box(OpType::MultiplexedU2Box), op_map_(op_map), impl_diag_(impl_diag) {
   auto it = op_map.begin();
   if (it == op_map.end()) {
-    throw std::invalid_argument("No Ops provided.");
+    throw std::invalid_argument(
+        "The op_map argument passed to MultiplexedU2Box cannot be empty.");
   }
   n_controls_ = (unsigned)it->first.size();
   if (n_controls_ > MAX_N_CONTROLS) {
     throw std::invalid_argument(
-        "Bitstrings longer than " + std::to_string(MAX_N_CONTROLS) +
-        " are not supported.");
+        "MultiplexedU2Box only supports bitstrings up to " +
+        std::to_string(MAX_N_CONTROLS) + " bits.");
   }
   for (; it != op_map.end(); it++) {
     OpType optype = it->second->get_type();
     if (!is_single_qubit_unitary_type(optype) &&
         optype != OpType::Unitary1qBox) {
       throw BadOpType(
-          "Ops must be single-qubit unitary gate types or Unitary1qBox.",
+          "Ops passed to MultiplexedU2Box must be single-qubit unitary gate "
+          "types or Unitary1qBox.",
           optype);
     }
   }
@@ -679,29 +692,36 @@ MultiplexedTensoredU2Box::MultiplexedTensoredU2Box(
       impl_diag_(impl_diag) {
   auto it = op_map.begin();
   if (it == op_map.end()) {
-    throw std::invalid_argument("No Ops provided.");
+    throw std::invalid_argument(
+        "The op_map argument passed to MultiplexedTensoredU2Box cannot be "
+        "empty.");
   }
   n_controls_ = (unsigned)it->first.size();
   n_targets_ = (unsigned)it->second.size();
   if (n_controls_ > MAX_N_CONTROLS) {
     throw std::invalid_argument(
-        "Bitstrings longer than " + std::to_string(MAX_N_CONTROLS) +
-        " are not supported.");
+        "MultiplexedTensoredU2Box only supports bitstrings up to " +
+        std::to_string(MAX_N_CONTROLS) + " bits.");
   }
   for (; it != op_map.end(); it++) {
     if (it->first.size() != n_controls_) {
-      throw std::invalid_argument("Bitstrings must have the same width.");
+      throw std::invalid_argument(
+          "The bitstrings passed to MultiplexedTensoredU2Box must have the "
+          "same width.");
+      ;
     }
     if (it->second.size() != n_targets_) {
       throw std::invalid_argument(
-          "Each tensor must have the same number of U2 components");
+          "Each tensored operation passed to MultiplexedTensoredU2Box must "
+          "have the same number of U2 components");
     }
     for (auto op : it->second) {
       OpType optype = op->get_type();
       if (!is_single_qubit_unitary_type(optype) &&
           optype != OpType::Unitary1qBox) {
         throw BadOpType(
-            "Ops must be single-qubit unitary gate types or Unitary1qBox.",
+            "Ops passed to MultiplexedTensoredU2Box must be single-qubit "
+            "unitary gate types or Unitary1qBox.",
             optype);
       }
     }
