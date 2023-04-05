@@ -174,7 +174,17 @@ bool is_valid(const DAG &G) {
       CHECK(w_in_empty);
       CHECK(w_out_empty);
       CHECK(q_in_deg == 1 && q_out_deg == 0);
-    } else if (c_in_empty && c_out_empty && !q_in_empty && !q_out_empty) {
+    } else if (
+        c_in_empty && c_out_empty && !q_in_empty && !q_out_empty &&
+        !b_in_empty) {
+      // conditional quantum vertex, can have bool edges
+      CHECK(b_out_empty);
+      CHECK(w_in_empty);
+      CHECK(w_out_empty);
+      CHECK(q_in_ports == q_out_ports);  // bijection between in and out ports
+    } else if (
+        c_in_empty && c_out_empty && !q_in_empty && !q_out_empty &&
+        b_in_empty) {
       // quantum vertex
       CHECK(b_out_empty);
       CHECK(w_in_empty);
@@ -231,10 +241,7 @@ bool is_valid(const DAG &G) {
       CHECK(w_out_empty);
       CHECK(c_in_ports == c_out_ports);  // bijection between in and out ports
       CHECK(q_in_ports == q_out_ports);  // bijection between in and out ports
-      // this case should only happen for measure ops
-      CHECK(
-          q_in.size() == 1 && q_out.size() == 1 && c_in.size() == 1 &&
-          c_out.size() == 1);
+      CHECK(q_in.size() == q_out.size() && c_in.size() == c_out.size());
     } else if (q_in_empty && q_out_empty && c_in_empty && c_out_empty) {
       // unconected vertex, can't have bool in and out edges
       CHECK(w_in_empty);
