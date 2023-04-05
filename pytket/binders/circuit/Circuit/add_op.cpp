@@ -647,7 +647,8 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           [](Circuit *circ, const MultiplexedTensoredU2Box &box,
              const unit_vector_t &args, const py::kwargs &kwargs) {
             return add_box_method(
-                circ, std::make_shared<MultiplexedTensoredU2Box>(box), args, kwargs);
+                circ, std::make_shared<MultiplexedTensoredU2Box>(box), args,
+                kwargs);
           },
           "Append a :py:class:`MultiplexedTensoredU2Box` to the circuit.\n\n"
           ":param box: The box to append\n"
