@@ -224,6 +224,7 @@ jobs:
         pip install -r pytket/docs/requirements.txt
         ./.github/workflows/build-docs
     - name: Upload artefact
+      if: matrix.os == 'ubuntu-22.04' && matrix.pyver == '3.10' && github.event_name == 'pull_request'
       uses: actions/upload-artifact@v3
       with:
         name: pytket_docs
