@@ -654,12 +654,13 @@ std::pair<Circuit, Eigen::VectorXcd> MultiplexedU2Box::decompose() const {
     // ith ucrzs acts on i+2 qubits
     // which has n_controls_ + 1 - (i+2) identities its the tensor product
     // therefore (n_controls_ + 1 - (i+2))^2 copies in the diagonal
-    for (unsigned offset = 0; offset < (1 << (n_controls_ + 1 - (i + 2)));
-         offset++) {
-      for (unsigned j = 0; j < (1 << (i + 1)); j++) {
+    for (unsigned offset = 0;
+         offset < (unsigned)(1 << (n_controls_ + 1 - (i + 2))); offset++) {
+      for (unsigned j = 0; j < (unsigned)(1 << (i + 1)); j++) {
         // the bitstrings in a ucrz are mapped to qubits not in the standard
         // order
-        unsigned diag_idx = (j >= (1 << i)) ? (j - (1 << i)) * 2 + 1 : j * 2;
+        unsigned diag_idx =
+            (unsigned)(j >= (1 << i)) ? (j - (1 << i)) * 2 + 1 : j * 2;
         diag[diag_idx + offset * (1 << (i + 2))] *=
             std::exp(-0.5 * i_ * PI * ucrzs[i][j]);
         diag[diag_idx + offset * (1 << (i + 2)) + (1 << (i + 1))] *=
@@ -829,7 +830,7 @@ void MultiplexedTensoredU2Box::generate_circuit() const {
     // disentangle one qubit from the diagonal
     // results in a multiplexed-Rz targeting the target j
     ctrl_op_map_t multip_rz;
-    for (unsigned j = 0; j < (1 << n_controls_); j++) {
+    for (unsigned j = 0; j < (unsigned)(1 << n_controls_); j++) {
       Complex a = inner_diag_vec[2 * j];
       Complex b = inner_diag_vec[2 * j + 1];
       // convert diag[a,b] into a p*Rz(alpha)
