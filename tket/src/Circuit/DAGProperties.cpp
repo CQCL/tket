@@ -241,7 +241,6 @@ bool is_valid(const DAG &G) {
       CHECK(w_out_empty);
       CHECK(c_in_ports == c_out_ports);  // bijection between in and out ports
       CHECK(q_in_ports == q_out_ports);  // bijection between in and out ports
-      CHECK(q_in.size() == q_out.size() && c_in.size() == c_out.size());
     } else if (q_in_empty && q_out_empty && c_in_empty && c_out_empty) {
       // unconected vertex, can't have bool in and out edges
       CHECK(w_in_empty);
