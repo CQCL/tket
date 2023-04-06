@@ -703,7 +703,7 @@ Circuit CnU_gray_code_decomp(unsigned n, const Eigen::Matrix2cd& u) {
     return CU_to_CU3(u);
   }
 
-  Eigen::Matrix2cd v_matrix = nth_root(u, 1 << (n - 1));
+  Eigen::Matrix2cd v_matrix = nth_root(u, 1ULL << (n - 1));
   Eigen::Matrix2cd v_matrix_dag = v_matrix.adjoint();
   Circuit v_rep = CU_to_CU3(v_matrix);
   Circuit v_dg_rep = CU_to_CU3(v_matrix_dag);
@@ -744,7 +744,7 @@ Circuit CnU_gray_code_decomp(unsigned n, const Gate_ptr& gate) {
   else
     param = angle;
 
-  param = param / (1 << (n - 1));
+  param = param / (1ULL << (n - 1));
   Circuit v_rep(2);
   Circuit v_dg_rep(2);
   v_rep.add_op<unsigned>(cu_type, param, {0, 1});
@@ -849,9 +849,8 @@ static void add_pn(Circuit& circ, unsigned n, bool inverse) {
   TKET_ASSERT(n > 1);
   // pn is self commute
   for (unsigned i = 2; i < n + 1; i++) {
-    int d = 1 << (n - i + 1);
-    d = inverse ? -1 * d : d;
-    circ.add_op<unsigned>(OpType::CRx, (double)1 / d, {i - 1, n});
+    unsigned long long d = 1ULL << (n - i + 1);
+    circ.add_op<unsigned>(OpType::CRx, (inverse ? -1. : 1.) / d, {i - 1, n});
   }
 }
 
@@ -861,7 +860,7 @@ static void add_pn_unitary(
   TKET_ASSERT(n > 1);
   // pn_(u) is self commute
   for (unsigned i = 2; i < n + 1; i++) {
-    Eigen::Matrix2cd m = nth_root(u, 1 << (n - i + 1));
+    Eigen::Matrix2cd m = nth_root(u, 1ULL << (n - i + 1));
     if (inverse) m.adjointInPlace();
     add_cu_using_cu3(i - 1, n, circ, m);
   }
@@ -872,7 +871,7 @@ static void add_pn_unitary(
 static void add_qn(Circuit& circ, unsigned n) {
   TKET_ASSERT(n > 1);
   for (unsigned i = n - 1; i > 1; i--) {
-    int d = 1 << (i - 1);
+    unsigned long long d = 1ULL << (i - 1);
     add_pn(circ, i, false);
     circ.add_op<unsigned>(OpType::CRx, (double)1 / d, {0, i});
   }
@@ -924,7 +923,7 @@ Circuit CnU_linear_depth_decomp(unsigned n, const Eigen::Matrix2cd& u) {
   // Add pn(u) to qubits {1,...,n}
   add_pn_unitary(circ, u, n, false);
   // Add CU to {0, n}
-  Eigen::Matrix2cd m = nth_root(u, 1 << (n - 1));
+  Eigen::Matrix2cd m = nth_root(u, 1ULL << (n - 1));
   add_cu_using_cu3(0, n, circ, m);
   // Add incrementer (without toggling q0) to {0,...,n-1}
   Circuit qn = incrementer_linear_depth(n, false);
