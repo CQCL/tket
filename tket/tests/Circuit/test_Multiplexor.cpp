@@ -34,14 +34,14 @@ static bool check_multiplexor(
   // Also assumes op_map is not empty
   auto first_op = op_map.begin();
   unsigned n_ctrl_bits = (unsigned)first_op->first.size();
-  unsigned total_ops = 1 << n_ctrl_bits;
+  unsigned long long total_ops = 1ULL << n_ctrl_bits;
   unsigned n_targets = first_op->second->n_qubits();
   std::vector<unsigned> target_qubits(n_targets);
   std::iota(std::begin(target_qubits), std::end(target_qubits), 0);
-  unsigned block_size = 1 << n_targets;
+  unsigned long long block_size = 1ULL << n_targets;
   Eigen::MatrixXcd correct_u = Eigen::MatrixXcd::Identity(
       total_ops * block_size, total_ops * block_size);
-  for (unsigned i = 0; i < total_ops; i++) {
+  for (unsigned long long i = 0; i < total_ops; i++) {
     // Find the binary rep for i
     std::vector<bool> bin = dec_to_bin(i, n_ctrl_bits);
     auto it = op_map.find(bin);
@@ -68,13 +68,13 @@ static bool check_multiplexor(
   auto first_op = op_map.begin();
   unsigned n_ctrl_bits = (unsigned)first_op->first.size();
   unsigned n_targets = (unsigned)first_op->second.size();
-  unsigned total_ops = 1 << n_ctrl_bits;
+  unsigned long long total_ops = 1ULL << n_ctrl_bits;
   std::vector<unsigned> target_qubits(n_targets);
   std::iota(std::begin(target_qubits), std::end(target_qubits), 0);
-  unsigned block_size = 1 << n_targets;
+  unsigned long long block_size = 1ULL << n_targets;
   Eigen::MatrixXcd correct_u = Eigen::MatrixXcd::Identity(
       total_ops * block_size, total_ops * block_size);
-  for (unsigned i = 0; i < total_ops; i++) {
+  for (unsigned long long i = 0; i < total_ops; i++) {
     // Find the binary rep for i
     std::vector<bool> bin = dec_to_bin(i, n_ctrl_bits);
     auto it = op_map.find(bin);
@@ -507,7 +507,7 @@ SCENARIO("Random MultiplexedTensoredU2Box decomposition", "[boxes]") {
   }
   ctrl_tensored_op_map_t op_map;
   unsigned seed = 0;
-  for (unsigned i = 0; i < (1 << n_controls); i++) {
+  for (unsigned long long i = 0; i < (1ULL << n_controls); i++) {
     std::vector<Op_ptr> ops;
     for (unsigned j = 0; j < n_targets; j++) {
       Unitary1qBox m(random_unitary(2, seed++));
@@ -520,7 +520,8 @@ SCENARIO("Random MultiplexedTensoredU2Box decomposition", "[boxes]") {
   std::shared_ptr<Circuit> c = multiplexor.to_circuit();
   std::vector<Command> cmds = c->get_commands();
   REQUIRE(
-      cmds.size() == ((1 << (n_controls + 1)) - 1) * n_targets + n_targets + 1);
+      cmds.size() ==
+      ((1ULL << (n_controls + 1)) - 1) * n_targets + n_targets + 1);
   for (auto cmd : cmds) {
     REQUIRE(
         (cmd.get_op_ptr()->get_type() == OpType::Unitary1qBox ||

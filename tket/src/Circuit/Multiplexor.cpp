@@ -517,10 +517,10 @@ void MultiplexedRotationBox::generate_circuit() const {
     circ_ = std::make_shared<Circuit>(circ);
     return;
   }
-  unsigned n_rotations = 1 << n_controls_;
+  unsigned long long n_rotations = 1ULL << n_controls_;
   std::vector<Expr> rotations(n_rotations);
   // convert op_map to a vector of 2^n_controls_ angles
-  for (unsigned i = 0; i < n_rotations; i++) {
+  for (unsigned long long i = 0; i < n_rotations; i++) {
     auto it = op_map_.find(dec_to_bin(i, n_controls_));
     if (it == op_map_.end()) {
       rotations[i] = 0;
@@ -620,10 +620,10 @@ std::pair<Circuit, Eigen::VectorXcd> MultiplexedU2Box::decompose() const {
     circ.add_op<unsigned>(it->second, {0});
     return std::make_pair(circ, Eigen::VectorXcd::Constant(2, 1));
   }
-  unsigned n_unitaries = 1 << n_controls_;
+  unsigned long long n_unitaries = 1ULL << n_controls_;
   std::vector<Eigen::Matrix2cd> unitaries(n_unitaries);
   // convert op_map to a vector of 2^n_controls_ unitaries
-  for (unsigned i = 0; i < n_unitaries; i++) {
+  for (unsigned long long i = 0; i < n_unitaries; i++) {
     auto it = op_map_.find(dec_to_bin(i, n_controls_));
     if (it == op_map_.end()) {
       unitaries[i] = Eigen::Matrix2cd::Identity();
@@ -643,28 +643,28 @@ std::pair<Circuit, Eigen::VectorXcd> MultiplexedU2Box::decompose() const {
   // initialise the ucrz list
   std::vector<std::vector<double>> ucrzs(n_controls_);
   for (unsigned i = 0; i < n_controls_; i++) {
-    ucrzs[i] = std::vector<double>(1 << (i + 1), 0.0);
+    ucrzs[i] = std::vector<double>(1ULL << (i + 1), 0.0);
   }
   recursive_demultiplex_u2(
       unitaries, n_controls_ + 1, circ, ucrzs, Eigen::Matrix2cd::Identity(),
       Eigen::Matrix2cd::Identity());
   // convert the ucrzs to a diagonal matrix
-  Eigen::VectorXcd diag = Eigen::VectorXcd::Constant(1 << (n_controls_ + 1), 1);
+  Eigen::VectorXcd diag =
+      Eigen::VectorXcd::Constant(1ULL << (n_controls_ + 1), 1);
   for (unsigned i = 0; i < n_controls_; i++) {
     // ith ucrzs acts on i+2 qubits
     // which has n_controls_ + 1 - (i+2) identities its the tensor product
     // therefore (n_controls_ + 1 - (i+2))^2 copies in the diagonal
-    for (unsigned offset = 0;
-         offset < (unsigned)(1 << (n_controls_ + 1 - (i + 2))); offset++) {
-      for (unsigned j = 0; j < (unsigned)(1 << (i + 1)); j++) {
+    for (unsigned long long offset = 0;
+         offset < (1ULL << (n_controls_ + 1 - (i + 2))); offset++) {
+      for (unsigned long long j = 0; j < (1ULL << (i + 1)); j++) {
         // the bitstrings in a ucrz are mapped to qubits not in the standard
         // order
-        unsigned diag_idx = (j >= (unsigned)(1 << i))
-                                ? (j - (unsigned)(1 << i)) * 2 + 1
-                                : j * 2;
-        diag[diag_idx + offset * (1 << (i + 2))] *=
+        unsigned long long diag_idx =
+            (j >= (1ULL << i)) ? (j - (1ULL << i)) * 2 + 1 : j * 2;
+        diag[diag_idx + offset * (1ULL << (i + 2))] *=
             std::exp(-0.5 * i_ * PI * ucrzs[i][j]);
-        diag[diag_idx + offset * (1 << (i + 2)) + (1 << (i + 1))] *=
+        diag[diag_idx + offset * (1ULL << (i + 2)) + (1ULL << (i + 1))] *=
             std::exp(0.5 * i_ * PI * ucrzs[i][j]);
       }
     }
@@ -677,7 +677,7 @@ void MultiplexedU2Box::generate_circuit() const {
   Eigen::VectorXcd diag_vec;
   std::tie(circ, diag_vec) = decompose();
   if (impl_diag_ &&
-      (diag_vec - Eigen::VectorXcd::Constant(1 << circ.n_qubits(), 1))
+      (diag_vec - Eigen::VectorXcd::Constant(1ULL << circ.n_qubits(), 1))
               .cwiseAbs()
               .sum() > EPS) {
     std::vector<unsigned> args(circ.n_qubits());
@@ -813,7 +813,8 @@ void MultiplexedTensoredU2Box::generate_circuit() const {
   // contains the multiplexed-Rz gates
   Circuit diag_circ(n_controls_ + n_targets_);
   // the final diagonal on the control qubits
-  Eigen::VectorXcd diag_vec = Eigen::VectorXcd::Constant(1 << n_controls_, 1);
+  Eigen::VectorXcd diag_vec =
+      Eigen::VectorXcd::Constant(1ULL << n_controls_, 1);
   for (unsigned i = 0; i < n_targets_; i++) {
     ctrl_op_map_t u2_op_map;
     for (auto it = op_map_.begin(); it != op_map_.end(); it++) {
@@ -831,7 +832,7 @@ void MultiplexedTensoredU2Box::generate_circuit() const {
     // disentangle one qubit from the diagonal
     // results in a multiplexed-Rz targeting the target j
     ctrl_op_map_t multip_rz;
-    for (unsigned j = 0; j < (unsigned)(1 << n_controls_); j++) {
+    for (unsigned long long j = 0; j < (1ULL << n_controls_); j++) {
       Complex a = inner_diag_vec[2 * j];
       Complex b = inner_diag_vec[2 * j + 1];
       // convert diag[a,b] into a p*Rz(alpha)
@@ -852,7 +853,7 @@ void MultiplexedTensoredU2Box::generate_circuit() const {
   }
   if (impl_diag_) {
     circ.append(diag_circ);
-    if ((diag_vec - Eigen::VectorXcd::Constant(1 << n_controls_, 1))
+    if ((diag_vec - Eigen::VectorXcd::Constant(1ULL << n_controls_, 1))
             .cwiseAbs()
             .sum() > EPS) {
       std::vector<unsigned> args(n_controls_);

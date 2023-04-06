@@ -46,21 +46,21 @@ uint32_t reverse_bits(uint32_t v, unsigned w) {
   return r;
 }
 
-std::vector<bool> dec_to_bin(unsigned dec, unsigned width) {
+std::vector<bool> dec_to_bin(unsigned long long dec, unsigned width) {
   auto bs = boost::dynamic_bitset<>(width, dec);
   std::vector<bool> bits(width);
-  for (unsigned i = 0; i < width; i++) {
+  for (unsigned long long i = 0; i < width; i++) {
     bits[width - i - 1] = bs[i];
   }
   return bits;
 }
 
 // big endian
-unsigned bin_to_dec(const std::vector<bool> &bin) {
-  unsigned res = 0;
-  for (unsigned i = 0; i < bin.size(); i++) {
+unsigned long long bin_to_dec(const std::vector<bool> &bin) {
+  unsigned long long res = 0;
+  for (unsigned long long i = 0; i < bin.size(); i++) {
     if (bin[i]) {
-      res = res + (1 << (bin.size() - 1 - i));
+      res = res + (1ULL << (bin.size() - 1 - i));
     }
   }
   return res;
