@@ -43,6 +43,41 @@ SCENARIO("Check that classical bundles work as expected") {
         circ.get_nth_b_out_bundle(circ.c_inputs()[0], 0) ==
         out_c_edges.front());
   }
+  GIVEN("check circ box is valid") {
+    Circuit inner(1, 2);
+    inner.add_op<unsigned>(OpType::X, {0});
+    inner.add_measure(0, 0);
+    CircBox cbox(inner);
+
+    Circuit c(1, 2);
+    c.add_box(cbox, {0, 0, 1});
+    c.add_op<unsigned>(OpType::X, {0});
+    c.assert_valid();
+  }
+  GIVEN("check conditional circ box is valid") {
+    Circuit inner(1, 2);
+    inner.add_conditional_gate<unsigned>(OpType::Measure, {}, {0, 0}, {1}, 1);
+    CircBox cbox(inner);
+
+    Circuit c(1, 2);
+    c.add_box(cbox, {0, 0, 1});
+    c.add_op<unsigned>(OpType::X, {0});
+    c.assert_valid();
+  }
+  GIVEN("check double circ box is valid") {
+    Circuit inner1(1, 2);
+    inner1.add_conditional_gate<unsigned>(OpType::Measure, {}, {0, 0}, {1}, 1);
+    CircBox cbox1(inner1);
+
+    Circuit inner2(1, 2);
+    inner2.add_box(cbox1, {0, 0, 1});
+    CircBox cbox2(inner2);
+
+    Circuit c(1, 2);
+    c.add_box(cbox2, {0, 0, 1});
+    c.add_op<unsigned>(OpType::X, {0});
+    c.assert_valid();
+  }
   GIVEN("In bundles on a trivial circuit") {
     Circuit circ(2, 3);
     Vertex cx =
