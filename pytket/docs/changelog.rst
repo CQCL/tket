@@ -8,6 +8,10 @@ Major new features:
 
 * Support for ARM Linux platforms.
 
+Minor new features:
+
+* Allow barriers in ``QControlBoxes``. Barriers are left in place.
+
 1.13.2 (March 2023)
 -------------------
 
