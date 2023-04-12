@@ -19,10 +19,10 @@
 
 #include "Circuit/Boxes.hpp"
 #include "Circuit/Circuit.hpp"
-#include "GateNodesBuffer.hpp"
 #include "Gate/Gate.hpp"
 #include "Gate/GateUnitaryMatrix.hpp"
 #include "Gate/GateUnitaryMatrixError.hpp"
+#include "GateNodesBuffer.hpp"
 #include "Simulation/PauliExpBoxUnitaryCalculator.hpp"
 
 namespace tket {

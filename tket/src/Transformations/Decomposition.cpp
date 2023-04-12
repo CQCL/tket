@@ -21,7 +21,6 @@
 #include <stdexcept>
 
 #include "Architecture/Architecture.hpp"
-#include "Transformations/BasicOptimisation.hpp"
 #include "Circuit/CircPool.hpp"
 #include "Converters/PhasePoly.hpp"
 #include "Gate/GatePtr.hpp"
@@ -29,6 +28,7 @@
 #include "OpType/OpTypeFunctions.hpp"
 #include "OpType/OpTypeInfo.hpp"
 #include "Ops/OpPtr.hpp"
+#include "Transformations/BasicOptimisation.hpp"
 #include "Transformations/OptimisationPass.hpp"
 #include "Transformations/PhasedXFrontier.hpp"
 #include "Transformations/Rebase.hpp"

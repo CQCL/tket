@@ -16,9 +16,9 @@
 
 #include <vector>
 
-#include "Transformations/BasicOptimisation.hpp"
 #include "Circuit/CircPool.hpp"
 #include "Circuit/DAGDefs.hpp"
+#include "Transformations/BasicOptimisation.hpp"
 #include "Transformations/Decomposition.hpp"
 #include "Transformations/Transform.hpp"
 

@@ -16,12 +16,12 @@
 
 #include "Converters/Converters.hpp"
 #include "Converters/PauliGadget.hpp"
-#include "Transformations/Decomposition.hpp"
 #include "OpType/OpType.hpp"
 #include "OpType/OpTypeInfo.hpp"
 #include "Ops/Op.hpp"
-#include "Transformations/OptimisationPass.hpp"
 #include "PauliGraph/PauliGraph.hpp"
+#include "Transformations/Decomposition.hpp"
+#include "Transformations/OptimisationPass.hpp"
 #include "Transformations/Transform.hpp"
 
 namespace tket {

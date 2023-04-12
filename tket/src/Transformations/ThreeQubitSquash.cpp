@@ -24,14 +24,14 @@
 #include <string>
 #include <tkassert/Assert.hpp>
 
-#include "Transformations/BasicOptimisation.hpp"
 #include "Circuit/CircUtils.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Circuit/DAGDefs.hpp"
 #include "Circuit/ThreeQubitConversion.hpp"
-#include "Transformations/Decomposition.hpp"
 #include "OpType/EdgeType.hpp"
 #include "OpType/OpType.hpp"
+#include "Transformations/BasicOptimisation.hpp"
+#include "Transformations/Decomposition.hpp"
 #include "Transformations/OptimisationPass.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/GraphHeaders.hpp"

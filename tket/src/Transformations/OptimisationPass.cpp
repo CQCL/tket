@@ -16,15 +16,15 @@
 
 #include <stdexcept>
 
-#include "Transformations/BasicOptimisation.hpp"
 #include "Circuit/CircPool.hpp"
 #include "Circuit/CircUtils.hpp"
+#include "Gate/GatePtr.hpp"
+#include "OpType/OpType.hpp"
+#include "Transformations/BasicOptimisation.hpp"
 #include "Transformations/CliffordOptimisation.hpp"
 #include "Transformations/CliffordReductionPass.hpp"
 #include "Transformations/Combinator.hpp"
 #include "Transformations/Decomposition.hpp"
-#include "Gate/GatePtr.hpp"
-#include "OpType/OpType.hpp"
 #include "Transformations/PhaseOptimisation.hpp"
 #include "Transformations/Rebase.hpp"
 #include "Transformations/ThreeQubitSquash.hpp"

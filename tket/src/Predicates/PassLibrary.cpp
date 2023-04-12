@@ -17,11 +17,11 @@
 #include <memory>
 
 #include "Circuit/CircPool.hpp"
-#include "Predicates/CompilationUnit.hpp"
 #include "Converters/Converters.hpp"
+#include "Predicates/CompilationUnit.hpp"
+#include "Predicates/CompilerPass.hpp"
 #include "Predicates/PassGenerators.hpp"
 #include "Predicates/Predicates.hpp"
-#include "Predicates/CompilerPass.hpp"
 #include "Transformations/BasicOptimisation.hpp"
 #include "Transformations/Decomposition.hpp"
 #include "Transformations/MeasurePass.hpp"

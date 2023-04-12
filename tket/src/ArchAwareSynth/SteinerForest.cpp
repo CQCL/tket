@@ -17,8 +17,8 @@
 #include <algorithm>
 #include <vector>
 
-#include "Architecture/Architecture.hpp"
 #include "ArchAwareSynth/SteinerTree.hpp"
+#include "Architecture/Architecture.hpp"
 
 namespace tket {
 namespace aas {

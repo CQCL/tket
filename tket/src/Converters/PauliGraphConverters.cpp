@@ -14,10 +14,10 @@
 
 #include "Circuit/Boxes.hpp"
 #include "Converters/Converters.hpp"
+#include "Converters/PauliGadget.hpp"
 #include "Converters/PhasePoly.hpp"
 #include "Diagonalisation/Diagonalisation.hpp"
 #include "Gate/Gate.hpp"
-#include "Converters/PauliGadget.hpp"
 
 namespace tket {
 

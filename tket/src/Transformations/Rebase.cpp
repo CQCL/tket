@@ -17,7 +17,6 @@
 #include <tkassert/Assert.hpp>
 #include <tklog/TketLog.hpp>
 
-#include "Transformations/BasicOptimisation.hpp"
 #include "Circuit/CircPool.hpp"
 #include "Circuit/CircUtils.hpp"
 #include "Circuit/Circuit.hpp"
@@ -25,6 +24,7 @@
 #include "OpType/OpType.hpp"
 #include "OpType/OpTypeFunctions.hpp"
 #include "Ops/Op.hpp"
+#include "Transformations/BasicOptimisation.hpp"
 #include "Transformations/Replacement.hpp"
 #include "Transformations/Transform.hpp"
 

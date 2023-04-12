@@ -14,9 +14,9 @@
 
 #include <optional>
 
-#include "Transformations/BasicOptimisation.hpp"
 #include "Circuit/DAGDefs.hpp"
 #include "Gate/Gate.hpp"
+#include "Transformations/BasicOptimisation.hpp"
 #include "Transformations/Transform.hpp"
 
 namespace tket::Transforms {

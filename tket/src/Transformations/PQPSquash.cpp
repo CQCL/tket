@@ -16,11 +16,11 @@
 
 #include <memory>
 
-#include "Transformations/BasicOptimisation.hpp"
 #include "Circuit/DAGDefs.hpp"
-#include "Transformations/Decomposition.hpp"
 #include "Gate/Rotation.hpp"
 #include "OpType/OpTypeInfo.hpp"
+#include "Transformations/BasicOptimisation.hpp"
+#include "Transformations/Decomposition.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/Expression.hpp"
 

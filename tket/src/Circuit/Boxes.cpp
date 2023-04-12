@@ -18,14 +18,14 @@
 #include <numeric>
 #include <tkassert/Assert.hpp>
 
-#include "Circuit/CircUtils.hpp"
 #include "Circuit/AssertionSynthesis.hpp"
+#include "Circuit/CircUtils.hpp"
 #include "Circuit/Command.hpp"
+#include "Circuit/ThreeQubitConversion.hpp"
 #include "Gate/Rotation.hpp"
 #include "OpType/OpTypeInfo.hpp"
 #include "Ops/OpJsonFactory.hpp"
 #include "Ops/OpPtr.hpp"
-#include "Circuit/ThreeQubitConversion.hpp"
 #include "Utils/EigenConfig.hpp"
 #include "Utils/Expression.hpp"
 #include "Utils/Json.hpp"

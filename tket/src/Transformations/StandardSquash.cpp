@@ -16,10 +16,10 @@
 
 #include <memory>
 
-#include "Transformations/BasicOptimisation.hpp"
 #include "Circuit/DAGDefs.hpp"
 #include "Gate/Rotation.hpp"
 #include "OpType/OpTypeInfo.hpp"
+#include "Transformations/BasicOptimisation.hpp"
 #include "Transformations/SingleQubitSquash.hpp"
 #include "Utils/Expression.hpp"
 

@@ -18,8 +18,8 @@
 
 #include "Circuit/Circuit.hpp"
 #include "DecomposeCircuit.hpp"
-#include "GateNodesBuffer.hpp"
 #include "Gate/GateUnitaryMatrixError.hpp"
+#include "GateNodesBuffer.hpp"
 #include "Utils/Expression.hpp"
 
 namespace tket {

@@ -15,8 +15,8 @@
 #include "Gate/OpPtrFunctions.hpp"
 
 #include "Gate/Gate.hpp"
-#include "Ops/MetaOp.hpp"
 #include "Gate/SymTable.hpp"
+#include "Ops/MetaOp.hpp"
 
 namespace tket {
 
