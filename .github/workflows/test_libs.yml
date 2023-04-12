@@ -142,7 +142,7 @@ jobs:
     - name: build ${{ matrix.lib }} tests
       run: |
         conan install libs/${{ matrix.lib }}/test -s build_type=Debug --build=missing -o boost/*:header_only=True -of build/${{ matrix.lib }}-tests
-        conan build libs/${{ matrix.lib }}/test -s build_type=Debug -o boost/*:header_only=True -o test-${{ matrix.lib }}/*:with_coverage=True -of build/${{ matrix.lib }}-tests
+        conan build libs/${{ matrix.lib }}/test -s build_type=Debug --build=missing -o boost/*:header_only=True -o test-${{ matrix.lib }}/*:with_coverage=True -of build/${{ matrix.lib }}-tests
     - name: run ${{ matrix.lib }} tests
       working-directory: ./build/${{ matrix.lib }}-tests/build/Debug
       run: ./test-${{ matrix.lib }}
