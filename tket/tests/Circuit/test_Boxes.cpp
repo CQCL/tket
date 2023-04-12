@@ -958,6 +958,26 @@ SCENARIO("QControlBox", "[boxes]") {
     V(3, 3) = std::exp(i_ * PI);
     REQUIRE(U.isApprox(V));
   }
+
+  GIVEN("symbolic circuit with barriers") {
+    Sym s = SymEngine::symbol("a");
+    Expr a = Expr(s);
+    Circuit inner_c(1);
+    inner_c.add_op<unsigned>(OpType::X, {0});
+    inner_c.add_barrier({0});
+    inner_c.add_op<unsigned>(OpType::Ry, a, {0});
+    CircBox cbox(inner_c);
+    Op_ptr cbox_op = std::make_shared<CircBox>(cbox);
+    QControlBox qcbox(cbox_op, 2);
+    std::shared_ptr<Circuit> c = qcbox.to_circuit();
+    auto cmds = c->get_commands();
+    REQUIRE(cmds.size() == 3);
+    REQUIRE(cmds[0].get_op_ptr()->get_type() == OpType::CCX);
+    REQUIRE(cmds[1].get_op_ptr()->get_type() == OpType::Barrier);
+    unit_vector_t barrier_args{Qubit(2)};
+    REQUIRE(cmds[1].get_args() == barrier_args);
+    REQUIRE(cmds[2].get_op_ptr()->get_type() == OpType::CnRy);
+  }
 }
 
 SCENARIO("Unitary3qBox", "[boxes]") {

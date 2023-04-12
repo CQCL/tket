@@ -682,6 +682,11 @@ static Circuit with_controls_symbolic(const Circuit &c, unsigned n_controls) {
       new_args[n_controls + i] = Qubit(n_controls + args[i].index()[0]);
     }
     OpType optype = op->get_type();
+    if (optype == OpType::Barrier) {
+      new_args.erase(new_args.begin(), new_args.begin() + n_controls);
+      c2.add_op(op, new_args);
+      continue;
+    }
     std::vector<Expr> params = op->get_params();
     switch (optype) {
       case OpType::noop:
