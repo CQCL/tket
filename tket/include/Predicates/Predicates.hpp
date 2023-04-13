@@ -232,7 +232,7 @@ class MaxNQubitsPredicate : public Predicate {
  */
 class MaxNClRegPredicate : public Predicate {
  public:
-  explicit MaxNClRegPredicate(unsigned n_cl_reg_) : n_cl_reg_(n_cl_reg_) {}
+  explicit MaxNClRegPredicate(unsigned _n_cl_reg) : n_cl_reg_(_n_cl_reg) {}
   bool verify(const Circuit& circ) const override;
   bool implies(const Predicate& other) const override;
   PredicatePtr meet(const Predicate& other) const override;

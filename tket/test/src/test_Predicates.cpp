@@ -376,12 +376,12 @@ SCENARIO("Test max classical register predicate") {
     circ.add_c_register("creg1", 1);
     circ.add_c_register("creg2", 1);
 
-    PredicatePtr con0 = std::make_shared<MaxNClRegPredicate>(0);
+    MaxNClRegPredicate con0 = MaxNClRegPredicate(0);
     PredicatePtr con3 = std::make_shared<MaxNClRegPredicate>(3);
     PredicatePtr con4 = std::make_shared<MaxNClRegPredicate>(4);
     PredicatePtr con5 = std::make_shared<MaxNClRegPredicate>(5);
 
-    REQUIRE_FALSE(con0->verify(circ));
+    REQUIRE_FALSE(con0.verify(circ));
     REQUIRE_FALSE(con3->verify(circ));
     REQUIRE(con4->verify(circ));
     REQUIRE(con5->verify(circ));
