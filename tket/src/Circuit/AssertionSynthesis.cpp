@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "AssertionSynthesis.hpp"
+#include "Circuit/AssertionSynthesis.hpp"
 
 #include <array>
 #include <cmath>
@@ -21,8 +21,8 @@
 #include <stdexcept>
 #include <tkassert/Assert.hpp>
 
-#include "CircUtils.hpp"
-#include "Circuit.hpp"
+#include "Circuit/CircUtils.hpp"
+#include "Circuit/Circuit.hpp"
 #include "OpType/OpType.hpp"
 #include "Utils/Constants.hpp"
 #include "Utils/CosSinDecomposition.hpp"

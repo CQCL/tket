@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "CircUtils.hpp"
+#include "Circuit/CircUtils.hpp"
 
 #include <cmath>
 #include <complex>
 #include <sstream>
 #include <vector>
 
-#include "CircPool.hpp"
+#include "Circuit/CircPool.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Gate/GatePtr.hpp"
 #include "Gate/GateUnitaryMatrixImplementations.hpp"

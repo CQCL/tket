@@ -12,12 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Rebase.hpp"
+#include "Transformations/Rebase.hpp"
 
 #include <tkassert/Assert.hpp>
 #include <tklog/TketLog.hpp>
 
-#include "BasicOptimisation.hpp"
 #include "Circuit/CircPool.hpp"
 #include "Circuit/CircUtils.hpp"
 #include "Circuit/Circuit.hpp"
@@ -25,8 +24,9 @@
 #include "OpType/OpType.hpp"
 #include "OpType/OpTypeFunctions.hpp"
 #include "Ops/Op.hpp"
-#include "Replacement.hpp"
-#include "Transform.hpp"
+#include "Transformations/BasicOptimisation.hpp"
+#include "Transformations/Replacement.hpp"
+#include "Transformations/Transform.hpp"
 
 namespace tket {
 

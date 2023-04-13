@@ -19,7 +19,7 @@
 #include <memory>
 #include <tklog/TketLog.hpp>
 
-#include "Circuit.hpp"
+#include "Circuit/Circuit.hpp"
 #include "Gate/Gate.hpp"
 #include "Gate/OpPtrFunctions.hpp"
 #include "Ops/ClassicalOps.hpp"

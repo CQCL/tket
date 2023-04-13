@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Predicates.hpp"
+#include "Predicates/Predicates.hpp"
 
 #include "Gate/Gate.hpp"
 #include "Mapping/Verification.hpp"
