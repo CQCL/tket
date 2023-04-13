@@ -1,6 +1,6 @@
-<map id="src/Diagonalisation/include/Diagonalisation/PauliPartition.hpp" name="src/Diagonalisation/include/Diagonalisation/PauliPartition.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="91,5,269,61"/>
-<area shape="rect" id="node2" href="$PauliPartition_8cpp.html" title=" " alt="" coords="5,117,152,158"/>
-<area shape="rect" id="node3" href="$MeasurementReduction_8hpp.html" title=" " alt="" coords="177,109,386,165"/>
-<area shape="rect" id="node4" href="$MeasurementReduction_8cpp.html" title=" " alt="" coords="177,213,385,255"/>
+<map id="include/Diagonalisation/PauliPartition.hpp" name="include/Diagonalisation/PauliPartition.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="93,5,267,47"/>
+<area shape="rect" id="node2" href="$PauliPartition_8cpp.html" title=" " alt="" coords="5,95,152,136"/>
+<area shape="rect" id="node3" href="$MeasurementReduction_8hpp.html" title=" " alt="" coords="177,95,386,136"/>
+<area shape="rect" id="node4" href="$MeasurementReduction_8cpp.html" title=" " alt="" coords="177,184,385,225"/>
 </map>

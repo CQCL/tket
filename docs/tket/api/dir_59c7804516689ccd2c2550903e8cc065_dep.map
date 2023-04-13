@@ -1,19 +1,6 @@
 <map id="src/Mapping" name="src/Mapping">
-<area shape="rect" id="node1" href="dir_16d69da79348e688002bc840f68d0635.html" title="Architecture" alt="" coords="27,351,128,399"/>
-<area shape="rect" id="node4" href="dir_a7363e98f9e0bdd87618633653859815.html" title="Utils" alt="" coords="148,447,220,495"/>
-<area shape="rect" id="edge6-headlabel" href="dir_000004_000055.html" title="8" alt="" coords="145,421,155,436"/>
-<area shape="rect" id="node2" href="dir_5fab44f0255b2476d55a1240e392def0.html" title="ArchAwareSynth" alt="" coords="91,255,221,303"/>
-<area shape="rect" id="edge3-headlabel" href="dir_000001_000004.html" title="2" alt="" coords="110,335,119,349"/>
-<area shape="rect" id="node3" href="dir_a39b5a8c0295e64a3c442c197fbd4463.html" title="Circuit" alt="" coords="179,351,251,399"/>
-<area shape="rect" id="edge5-headlabel" href="dir_000001_000010.html" title="1" alt="" coords="193,323,203,338"/>
-<area shape="rect" id="edge4-headlabel" href="dir_000001_000055.html" title="4" alt="" coords="176,420,186,434"/>
-<area shape="rect" id="edge2-headlabel" href="dir_000010_000055.html" title="66" alt="" coords="197,425,214,439"/>
-<area shape="rect" id="node6" href="dir_9cc2db189799590981ffc74cf01d91e0.html" title="include" alt="" coords="156,159,228,207"/>
-<area shape="rect" id="edge1-headlabel" href="dir_000028_000029.html" title="17" alt="" coords="192,133,209,148"/>
-<area shape="rect" id="edge8-headlabel" href="dir_000029_000004.html" title="4" alt="" coords="73,324,82,338"/>
-<area shape="rect" id="edge7-headlabel" href="dir_000029_000001.html" title="1" alt="" coords="175,233,184,248"/>
-<area shape="rect" id="edge10-headlabel" href="dir_000029_000010.html" title="3" alt="" coords="233,328,242,343"/>
-<area shape="rect" id="edge9-headlabel" href="dir_000029_000055.html" title="7" alt="" coords="235,435,244,450"/>
-<area shape="rect" id="clust2" href="dir_59c7804516689ccd2c2550903e8cc065.html" alt="" coords="141,52,243,217"/>
-<area shape="rect" id="clust1" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html" title="src" alt="" coords="16,16,288,505"/>
+<area shape="rect" id="node1" href="dir_59c7804516689ccd2c2550903e8cc065.html" title="Mapping" alt="" coords="27,52,106,100"/>
+<area shape="rect" id="node2" href="dir_d44c64559bbebec7f509842c48db8b23.html" title="include" alt="" coords="31,148,103,196"/>
+<area shape="rect" id="edge1-headlabel" href="dir_000031_000000.html" title="22" alt="" coords="66,122,84,137"/>
+<area shape="rect" id="clust1" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html" title="src" alt="" coords="16,16,117,111"/>
 </map>

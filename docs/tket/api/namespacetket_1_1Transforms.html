@@ -109,6 +109,8 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
+<tr class="memitem:ac6251ce322a4f0abd10d2aad864781ac"><td class="memItemLeft" align="right" valign="top">typedef std::unique_ptr&lt; QInteraction &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#ac6251ce322a4f0abd10d2aad864781ac">iptr</a></td></tr>
+<tr class="separator:ac6251ce322a4f0abd10d2aad864781ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1a5e9c920e62f66cdb88ed77d975917f"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#a1a5e9c920e62f66cdb88ed77d975917f">OptVertex</a> = std::optional&lt; <a class="el" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> &gt;</td></tr>
 <tr class="separator:a1a5e9c920e62f66cdb88ed77d975917f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a983092bd8e2ff2858f6b1c5e35198dd9"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#a983092bd8e2ff2858f6b1c5e35198dd9">OptVertexVec</a> = std::vector&lt; <a class="el" href="namespacetket_1_1Transforms.html#a1a5e9c920e62f66cdb88ed77d975917f">OptVertex</a> &gt;</td></tr>
@@ -117,8 +119,6 @@ Typedefs</h2></td></tr>
 <tr class="separator:abfa948bcacd981491932fe5b41b28c6f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aab02ee66813d90e5e8d8f15f88b4a550"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#aab02ee66813d90e5e8d8f15f88b4a550">OptEdgeVec</a> = std::vector&lt; <a class="el" href="namespacetket_1_1Transforms.html#abfa948bcacd981491932fe5b41b28c6f">OptEdge</a> &gt;</td></tr>
 <tr class="separator:aab02ee66813d90e5e8d8f15f88b4a550"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac6251ce322a4f0abd10d2aad864781ac"><td class="memItemLeft" align="right" valign="top">typedef std::unique_ptr&lt; QInteraction &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#ac6251ce322a4f0abd10d2aad864781ac">iptr</a></td></tr>
-<tr class="separator:ac6251ce322a4f0abd10d2aad864781ac"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="enum-members"></a>
 Enumerations</h2></td></tr>
@@ -269,23 +269,6 @@ Functions</h2></td></tr>
 <tr class="separator:a6e2baa7e0e771b7c012c0bda1c921965"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ad77803001c3ed2fa876774decf8244aa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#ad77803001c3ed2fa876774decf8244aa">cnx_pairwise_decomposition</a> ()</td></tr>
 <tr class="separator:ad77803001c3ed2fa876774decf8244aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa8c11bf9ca03ea8c77172db128308b44"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#aa8c11bf9ca03ea8c77172db128308b44">redundancy_removal</a> (<a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;circuit)</td></tr>
-<tr class="separator:aa8c11bf9ca03ea8c77172db128308b44"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a24c7fb6f008a3cf65c553b858e8ace47"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#a24c7fb6f008a3cf65c553b858e8ace47">remove_redundancies</a> ()</td></tr>
-<tr class="separator:a24c7fb6f008a3cf65c553b858e8ace47"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af45f1a2172f52f2bea73d710a2ed9ca6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#af45f1a2172f52f2bea73d710a2ed9ca6">squash_1qb_to_tk1</a> ()</td></tr>
-<tr class="memdesc:af45f1a2172f52f2bea73d710a2ed9ca6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Squash all single-qubit gates to TK1.  <a href="namespacetket_1_1Transforms.html#af45f1a2172f52f2bea73d710a2ed9ca6">More...</a><br /></td></tr>
-<tr class="separator:af45f1a2172f52f2bea73d710a2ed9ca6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae91568283839286bec6d70ff1b013695"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#ae91568283839286bec6d70ff1b013695">reduce_XZ_chains</a> ()</td></tr>
-<tr class="separator:ae91568283839286bec6d70ff1b013695"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8d602ed5ee73002e620a6bdd0f39b754"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#a8d602ed5ee73002e620a6bdd0f39b754">squash_1qb_to_pqp</a> (const <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a> &amp;q, const <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a> &amp;p, bool strict=false)</td></tr>
-<tr class="memdesc:a8d602ed5ee73002e620a6bdd0f39b754"><td class="mdescLeft">&#160;</td><td class="mdescRight">general u_squash by converting any chains of p, q gates (p, q in {Rx,Ry,Rz}) to triples -p-q-p- or -q-p-q-  <a href="namespacetket_1_1Transforms.html#a8d602ed5ee73002e620a6bdd0f39b754">More...</a><br /></td></tr>
-<tr class="separator:a8d602ed5ee73002e620a6bdd0f39b754"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a329feecb64d1ae61974ede6b2257b849"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#a329feecb64d1ae61974ede6b2257b849">squash_factory</a> (const <a class="el" href="namespacetket.html#a165b1d270a350af87f1c7a63d68f9276">OpTypeSet</a> &amp;singleqs, const std::function&lt; <a class="el" href="classtket_1_1Circuit.html">Circuit</a>(const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;, const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;, const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;)&gt; &amp;tk1_replacement)</td></tr>
-<tr class="separator:a329feecb64d1ae61974ede6b2257b849"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a69d0a33ab14018f00d76b7bcea8ff987"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#a69d0a33ab14018f00d76b7bcea8ff987">squash_1qb_to_Rz_PhasedX</a> ()</td></tr>
-<tr class="memdesc:a69d0a33ab14018f00d76b7bcea8ff987"><td class="mdescLeft">&#160;</td><td class="mdescRight">Squash single qubit gates into PhasedX and Rz gates.  <a href="namespacetket_1_1Transforms.html#a69d0a33ab14018f00d76b7bcea8ff987">More...</a><br /></td></tr>
-<tr class="separator:a69d0a33ab14018f00d76b7bcea8ff987"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a77325b57808ff791e8be3ffe9811e153"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#a77325b57808ff791e8be3ffe9811e153">delay_measures</a> (bool allow_partial=false)</td></tr>
 <tr class="memdesc:a77325b57808ff791e8be3ffe9811e153"><td class="mdescLeft">&#160;</td><td class="mdescRight">Commute all measurement gates to the end of the circuit.  <a href="namespacetket_1_1Transforms.html#a77325b57808ff791e8be3ffe9811e153">More...</a><br /></td></tr>
 <tr class="separator:a77325b57808ff791e8be3ffe9811e153"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -298,31 +281,29 @@ Functions</h2></td></tr>
 <tr class="separator:a4ce8719a9448ea6928f60749fca6c2ca"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a52148ae6b71d9f22bf042ce36c1870ba"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#a52148ae6b71d9f22bf042ce36c1870ba">hyper_clifford_squash</a> ()</td></tr>
 <tr class="separator:a52148ae6b71d9f22bf042ce36c1870ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a2d801201cebd0dd5f0f99b0784f07900"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#a2d801201cebd0dd5f0f99b0784f07900">clifford_simp</a> (bool allow_swaps=true)</td></tr>
-<tr class="separator:a2d801201cebd0dd5f0f99b0784f07900"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aae32b1ace7bd5fa785802f521158560f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#aae32b1ace7bd5fa785802f521158560f">clifford_simp</a> (bool allow_swaps)</td></tr>
+<tr class="separator:aae32b1ace7bd5fa785802f521158560f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a95c6a28672afa26e7ea836a37007f544"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#a95c6a28672afa26e7ea836a37007f544">synthesise_tk</a> ()</td></tr>
 <tr class="memdesc:a95c6a28672afa26e7ea836a37007f544"><td class="mdescLeft">&#160;</td><td class="mdescRight">Synthesise a circuit consisting of TK2 and TK1 gates only.  <a href="namespacetket_1_1Transforms.html#a95c6a28672afa26e7ea836a37007f544">More...</a><br /></td></tr>
 <tr class="separator:a95c6a28672afa26e7ea836a37007f544"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7a108b4acec5e396c24213d413646d06"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#a7a108b4acec5e396c24213d413646d06">synthesise_tket</a> ()</td></tr>
 <tr class="memdesc:a7a108b4acec5e396c24213d413646d06"><td class="mdescLeft">&#160;</td><td class="mdescRight">Synthesise a circuit consisting of CX and TK1 gates only.  <a href="namespacetket_1_1Transforms.html#a7a108b4acec5e396c24213d413646d06">More...</a><br /></td></tr>
 <tr class="separator:a7a108b4acec5e396c24213d413646d06"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae7c10a1186c19594e2ae43fef95183f2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#ae7c10a1186c19594e2ae43fef95183f2">optimise_via_PhaseGadget</a> (<a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config=<a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a>)</td></tr>
+<tr class="memdesc:ae7c10a1186c19594e2ae43fef95183f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Depth-saving resynthesis of phase gadgets with alignment.  <a href="namespacetket_1_1Transforms.html#ae7c10a1186c19594e2ae43fef95183f2">More...</a><br /></td></tr>
+<tr class="separator:ae7c10a1186c19594e2ae43fef95183f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeccb29133f92d28f96ca1ffe74dd5213"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#aeccb29133f92d28f96ca1ffe74dd5213">synthesise_OQC</a> ()</td></tr>
 <tr class="separator:aeccb29133f92d28f96ca1ffe74dd5213"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaa2b9b13451726d765f3a5000e8a7bb0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#aaa2b9b13451726d765f3a5000e8a7bb0">synthesise_HQS</a> ()</td></tr>
 <tr class="separator:aaa2b9b13451726d765f3a5000e8a7bb0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8777f6fc2b64b1ff4fd79710f7f68e17"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#a8777f6fc2b64b1ff4fd79710f7f68e17">synthesise_UMD</a> ()</td></tr>
 <tr class="separator:a8777f6fc2b64b1ff4fd79710f7f68e17"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae7c10a1186c19594e2ae43fef95183f2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#ae7c10a1186c19594e2ae43fef95183f2">optimise_via_PhaseGadget</a> (<a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config=<a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a>)</td></tr>
-<tr class="memdesc:ae7c10a1186c19594e2ae43fef95183f2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Depth-saving resynthesis of phase gadgets with alignment.  <a href="namespacetket_1_1Transforms.html#ae7c10a1186c19594e2ae43fef95183f2">More...</a><br /></td></tr>
-<tr class="separator:ae7c10a1186c19594e2ae43fef95183f2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8b31d2bf0b2017b58d3679209238f2bf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#a8b31d2bf0b2017b58d3679209238f2bf">NLOHMANN_JSON_SERIALIZE_ENUM</a> (<a class="el" href="namespacetket_1_1Transforms.html#af9aeecd429f293a2082ec31a14284028">PauliSynthStrat</a>, {{<a class="el" href="namespacetket_1_1Transforms.html#af9aeecd429f293a2082ec31a14284028a2dd4472245a696bc0b4b944db2a8b519">PauliSynthStrat::Individual</a>, &quot;Individual&quot;}, {PauliSynthStrat::Pairwise, &quot;Pairwise&quot;}, {PauliSynthStrat::Sets, &quot;Sets&quot;}})</td></tr>
-<tr class="separator:a8b31d2bf0b2017b58d3679209238f2bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a9466463da7c88536eb5b801463efed26"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#a9466463da7c88536eb5b801463efed26">pairwise_pauli_gadgets</a> (<a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config=<a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a>)</td></tr>
-<tr class="separator:a9466463da7c88536eb5b801463efed26"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ace67056ab8c23ffb1f247beb236bc5e4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#ace67056ab8c23ffb1f247beb236bc5e4">synthesise_pauli_graph</a> (<a class="el" href="namespacetket_1_1Transforms.html#af9aeecd429f293a2082ec31a14284028">PauliSynthStrat</a> strat=<a class="el" href="namespacetket_1_1Transforms.html#af9aeecd429f293a2082ec31a14284028a86f5baf708c6c250204451eb89736947">PauliSynthStrat::Sets</a>, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config=<a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a>)</td></tr>
-<tr class="separator:ace67056ab8c23ffb1f247beb236bc5e4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0d7447cad44345bd15f52e502c00bc04"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#a0d7447cad44345bd15f52e502c00bc04">special_UCC_synthesis</a> (<a class="el" href="namespacetket_1_1Transforms.html#af9aeecd429f293a2082ec31a14284028">PauliSynthStrat</a> strat=<a class="el" href="namespacetket_1_1Transforms.html#af9aeecd429f293a2082ec31a14284028a86f5baf708c6c250204451eb89736947">PauliSynthStrat::Sets</a>, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config=<a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a>)</td></tr>
-<tr class="separator:a0d7447cad44345bd15f52e502c00bc04"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acd05602ac2d336beb3376ab48aad2ee1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#acd05602ac2d336beb3376ab48aad2ee1">pairwise_pauli_gadgets</a> (<a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config)</td></tr>
+<tr class="separator:acd05602ac2d336beb3376ab48aad2ee1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab3f4b0cd4227b2261f110db09c29923f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#ab3f4b0cd4227b2261f110db09c29923f">synthesise_pauli_graph</a> (<a class="el" href="namespacetket_1_1Transforms.html#af9aeecd429f293a2082ec31a14284028">PauliSynthStrat</a> strat, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config)</td></tr>
+<tr class="separator:ab3f4b0cd4227b2261f110db09c29923f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a91db90f9f54d874169f619bb3510510d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#a91db90f9f54d874169f619bb3510510d">special_UCC_synthesis</a> (<a class="el" href="namespacetket_1_1Transforms.html#af9aeecd429f293a2082ec31a14284028">PauliSynthStrat</a> strat, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config)</td></tr>
+<tr class="separator:a91db90f9f54d874169f619bb3510510d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a408c6af4a5804e3c5047d944a8cf5082"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#a408c6af4a5804e3c5047d944a8cf5082">all_nullopt</a> (const <a class="el" href="namespacetket_1_1Transforms.html#a983092bd8e2ff2858f6b1c5e35198dd9">OptVertexVec</a> &amp;vec)</td></tr>
 <tr class="memdesc:a408c6af4a5804e3c5047d944a8cf5082"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether all elements of <code>vec</code> are std::nullopt.  <a href="namespacetket_1_1Transforms.html#a408c6af4a5804e3c5047d944a8cf5082">More...</a><br /></td></tr>
 <tr class="separator:a408c6af4a5804e3c5047d944a8cf5082"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -330,6 +311,14 @@ Functions</h2></td></tr>
 <tr class="separator:a963e4120777b9ac22dc0b9d3f02c9c5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af0b70fde74e9a8bbd8b038b519325db7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#af0b70fde74e9a8bbd8b038b519325db7">align_PhaseGadgets</a> ()</td></tr>
 <tr class="separator:af0b70fde74e9a8bbd8b038b519325db7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ae91568283839286bec6d70ff1b013695"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#ae91568283839286bec6d70ff1b013695">reduce_XZ_chains</a> ()</td></tr>
+<tr class="separator:ae91568283839286bec6d70ff1b013695"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8d602ed5ee73002e620a6bdd0f39b754"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#a8d602ed5ee73002e620a6bdd0f39b754">squash_1qb_to_pqp</a> (const <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a> &amp;q, const <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a> &amp;p, bool strict=false)</td></tr>
+<tr class="memdesc:a8d602ed5ee73002e620a6bdd0f39b754"><td class="mdescLeft">&#160;</td><td class="mdescRight">general u_squash by converting any chains of p, q gates (p, q in {Rx,Ry,Rz}) to triples -p-q-p- or -q-p-q-  <a href="namespacetket_1_1Transforms.html#a8d602ed5ee73002e620a6bdd0f39b754">More...</a><br /></td></tr>
+<tr class="separator:a8d602ed5ee73002e620a6bdd0f39b754"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af45f1a2172f52f2bea73d710a2ed9ca6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#af45f1a2172f52f2bea73d710a2ed9ca6">squash_1qb_to_tk1</a> ()</td></tr>
+<tr class="memdesc:af45f1a2172f52f2bea73d710a2ed9ca6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Squash all single-qubit gates to TK1.  <a href="namespacetket_1_1Transforms.html#af45f1a2172f52f2bea73d710a2ed9ca6">More...</a><br /></td></tr>
+<tr class="separator:af45f1a2172f52f2bea73d710a2ed9ca6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1ba677344960523d7af5fd3fd30559a0"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#a1ba677344960523d7af5fd3fd30559a0">rebase_factory</a> (const <a class="el" href="namespacetket.html#a165b1d270a350af87f1c7a63d68f9276">OpTypeSet</a> &amp;allowed_gates, const <a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;cx_replacement, const std::function&lt; <a class="el" href="classtket_1_1Circuit.html">Circuit</a>(const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;, const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;, const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;)&gt; &amp;tk1_replacement)</td></tr>
 <tr class="separator:a1ba677344960523d7af5fd3fd30559a0"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a72e353bf33e3cae46d91e98f865ffcfe"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#a72e353bf33e3cae46d91e98f865ffcfe">rebase_factory_via_tk2</a> (const <a class="el" href="namespacetket.html#a165b1d270a350af87f1c7a63d68f9276">OpTypeSet</a> &amp;allowed_gates, const std::function&lt; <a class="el" href="classtket_1_1Circuit.html">Circuit</a>(const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;, const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;, const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;)&gt; &amp;tk1_replacement, const std::function&lt; <a class="el" href="classtket_1_1Circuit.html">Circuit</a>(const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;, const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;, const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;)&gt; &amp;tk2_replacement)</td></tr>
@@ -354,9 +343,20 @@ Functions</h2></td></tr>
 <tr class="separator:a31d26403d122ce12ddad25fd131b32ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af5175209c5427ac82a7ad75d9ddcf4dc"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#af5175209c5427ac82a7ad75d9ddcf4dc">rebase_UMD</a> ()</td></tr>
 <tr class="separator:af5175209c5427ac82a7ad75d9ddcf4dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa8c11bf9ca03ea8c77172db128308b44"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#aa8c11bf9ca03ea8c77172db128308b44">redundancy_removal</a> (<a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;circuit)</td></tr>
+<tr class="separator:aa8c11bf9ca03ea8c77172db128308b44"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a24c7fb6f008a3cf65c553b858e8ace47"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#a24c7fb6f008a3cf65c553b858e8ace47">remove_redundancies</a> ()</td></tr>
+<tr class="separator:a24c7fb6f008a3cf65c553b858e8ace47"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a69d0a33ab14018f00d76b7bcea8ff987"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#a69d0a33ab14018f00d76b7bcea8ff987">squash_1qb_to_Rz_PhasedX</a> ()</td></tr>
+<tr class="memdesc:a69d0a33ab14018f00d76b7bcea8ff987"><td class="mdescLeft">&#160;</td><td class="mdescRight">Squash single qubit gates into PhasedX and Rz gates.  <a href="namespacetket_1_1Transforms.html#a69d0a33ab14018f00d76b7bcea8ff987">More...</a><br /></td></tr>
+<tr class="separator:a69d0a33ab14018f00d76b7bcea8ff987"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a329feecb64d1ae61974ede6b2257b849"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#a329feecb64d1ae61974ede6b2257b849">squash_factory</a> (const <a class="el" href="namespacetket.html#a165b1d270a350af87f1c7a63d68f9276">OpTypeSet</a> &amp;singleqs, const std::function&lt; <a class="el" href="classtket_1_1Circuit.html">Circuit</a>(const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;, const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;, const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;)&gt; &amp;tk1_replacement)</td></tr>
+<tr class="separator:a329feecb64d1ae61974ede6b2257b849"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7c4379973e3cfb56ce6e8b33c0225912"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#a7c4379973e3cfb56ce6e8b33c0225912">three_qubit_squash</a> (<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a> target_2qb_gate=<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a833e36d1a5a93dedb10c85f50ced9ce7">OpType::CX</a>)</td></tr>
 <tr class="memdesc:a7c4379973e3cfb56ce6e8b33c0225912"><td class="mdescLeft">&#160;</td><td class="mdescRight">Squash sequences of 3-qubit instructions into a canonical form.  <a href="namespacetket_1_1Transforms.html#a7c4379973e3cfb56ce6e8b33c0225912">More...</a><br /></td></tr>
 <tr class="separator:a7c4379973e3cfb56ce6e8b33c0225912"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8b31d2bf0b2017b58d3679209238f2bf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#a8b31d2bf0b2017b58d3679209238f2bf">NLOHMANN_JSON_SERIALIZE_ENUM</a> (<a class="el" href="namespacetket_1_1Transforms.html#af9aeecd429f293a2082ec31a14284028">PauliSynthStrat</a>, {{<a class="el" href="namespacetket_1_1Transforms.html#af9aeecd429f293a2082ec31a14284028a2dd4472245a696bc0b4b944db2a8b519">PauliSynthStrat::Individual</a>, &quot;Individual&quot;}, {PauliSynthStrat::Pairwise, &quot;Pairwise&quot;}, {PauliSynthStrat::Sets, &quot;Sets&quot;}})</td></tr>
+<tr class="separator:a8b31d2bf0b2017b58d3679209238f2bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="var-members"></a>
 Variables</h2></td></tr>
@@ -680,8 +680,8 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a2d801201cebd0dd5f0f99b0784f07900"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2d801201cebd0dd5f0f99b0784f07900">&#9670;&nbsp;</a></span>clifford_simp()</h2>
+<a id="aae32b1ace7bd5fa785802f521158560f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aae32b1ace7bd5fa785802f521158560f">&#9670;&nbsp;</a></span>clifford_simp()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -690,7 +690,7 @@ template&lt;typename T &gt; </div>
           <td class="memname"><a class="el" href="classtket_1_1Transform.html">Transform</a> tket::Transforms::clifford_simp </td>
           <td>(</td>
           <td class="paramtype">bool&#160;</td>
-          <td class="paramname"><em>allow_swaps</em> = <code>true</code></td><td>)</td>
+          <td class="paramname"><em>allow_swaps</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -1650,8 +1650,8 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a9466463da7c88536eb5b801463efed26"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a9466463da7c88536eb5b801463efed26">&#9670;&nbsp;</a></span>pairwise_pauli_gadgets()</h2>
+<a id="acd05602ac2d336beb3376ab48aad2ee1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acd05602ac2d336beb3376ab48aad2ee1">&#9670;&nbsp;</a></span>pairwise_pauli_gadgets()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -1660,7 +1660,7 @@ template&lt;typename T &gt; </div>
           <td class="memname"><a class="el" href="classtket_1_1Transform.html">Transform</a> tket::Transforms::pairwise_pauli_gadgets </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a>&#160;</td>
-          <td class="paramname"><em>cx_config</em> = <code><a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a></code></td><td>)</td>
+          <td class="paramname"><em>cx_config</em></td><td>)</td>
           <td></td>
         </tr>
       </table>
@@ -2272,8 +2272,8 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a0d7447cad44345bd15f52e502c00bc04"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0d7447cad44345bd15f52e502c00bc04">&#9670;&nbsp;</a></span>special_UCC_synthesis()</h2>
+<a id="a91db90f9f54d874169f619bb3510510d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a91db90f9f54d874169f619bb3510510d">&#9670;&nbsp;</a></span>special_UCC_synthesis()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2282,13 +2282,13 @@ template&lt;typename T &gt; </div>
           <td class="memname"><a class="el" href="classtket_1_1Transform.html">Transform</a> tket::Transforms::special_UCC_synthesis </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="namespacetket_1_1Transforms.html#af9aeecd429f293a2082ec31a14284028">PauliSynthStrat</a>&#160;</td>
-          <td class="paramname"><em>strat</em> = <code><a class="el" href="namespacetket_1_1Transforms.html#af9aeecd429f293a2082ec31a14284028a86f5baf708c6c250204451eb89736947">PauliSynthStrat::Sets</a></code>, </td>
+          <td class="paramname"><em>strat</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a>&#160;</td>
-          <td class="paramname"><em>cx_config</em> = <code><a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a></code>&#160;</td>
+          <td class="paramname"><em>cx_config</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -2453,8 +2453,8 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="ace67056ab8c23ffb1f247beb236bc5e4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ace67056ab8c23ffb1f247beb236bc5e4">&#9670;&nbsp;</a></span>synthesise_pauli_graph()</h2>
+<a id="ab3f4b0cd4227b2261f110db09c29923f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ab3f4b0cd4227b2261f110db09c29923f">&#9670;&nbsp;</a></span>synthesise_pauli_graph()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2463,13 +2463,13 @@ template&lt;typename T &gt; </div>
           <td class="memname"><a class="el" href="classtket_1_1Transform.html">Transform</a> tket::Transforms::synthesise_pauli_graph </td>
           <td>(</td>
           <td class="paramtype"><a class="el" href="namespacetket_1_1Transforms.html#af9aeecd429f293a2082ec31a14284028">PauliSynthStrat</a>&#160;</td>
-          <td class="paramname"><em>strat</em> = <code><a class="el" href="namespacetket_1_1Transforms.html#af9aeecd429f293a2082ec31a14284028a86f5baf708c6c250204451eb89736947">PauliSynthStrat::Sets</a></code>, </td>
+          <td class="paramname"><em>strat</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a>&#160;</td>
-          <td class="paramname"><em>cx_config</em> = <code><a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a></code>&#160;</td>
+          <td class="paramname"><em>cx_config</em>&#160;</td>
         </tr>
         <tr>
           <td></td>

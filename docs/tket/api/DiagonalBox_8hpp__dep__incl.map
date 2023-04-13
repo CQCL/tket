@@ -1,5 +1,5 @@
-<map id="src/Circuit/include/Circuit/DiagonalBox.hpp" name="src/Circuit/include/Circuit/DiagonalBox.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="123,5,305,47"/>
+<map id="include/Circuit/DiagonalBox.hpp" name="include/Circuit/DiagonalBox.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="125,5,303,47"/>
 <area shape="rect" id="node2" href="$DiagonalBox_8cpp.html" title=" " alt="" coords="5,95,207,121"/>
 <area shape="rect" id="node3" href="$ToffoliBox_8cpp.html" title=" " alt="" coords="231,95,413,121"/>
 </map>

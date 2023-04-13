@@ -1,8 +1,8 @@
 <map id="src/Converters/UnitaryTableauConverters.cpp" name="src/Converters/UnitaryTableauConverters.cpp">
 <area shape="rect" id="node1" title=" " alt="" coords="19,5,237,47"/>
 <area shape="rect" id="node2" title=" " alt="" coords="94,475,181,502"/>
-<area shape="rect" id="node3" href="$Converters_8hpp.html" title=" " alt="" coords="247,95,369,121"/>
-<area shape="rect" id="node4" href="$Circuit_8hpp.html" title=" " alt="" coords="3331,169,3469,196"/>
+<area shape="rect" id="node3" href="$Converters_8hpp.html" title=" " alt="" coords="210,95,406,121"/>
+<area shape="rect" id="node4" href="$Circuit_8hpp.html" title=" " alt="" coords="3321,169,3460,196"/>
 <area shape="rect" id="node53" href="$ChoiMixTableau_8hpp.html" title=" " alt="" coords="431,169,635,196"/>
 <area shape="rect" id="node55" href="$CliffTableau_8hpp.html" title=" " alt="" coords="345,393,522,420"/>
 <area shape="rect" id="node56" href="$UnitaryTableau_8hpp.html" title=" " alt="" coords="209,169,407,196"/>
@@ -45,7 +45,7 @@
 <area shape="rect" id="node39" href="$MatrixAnalysis_8hpp.html" title=" " alt="" coords="629,475,811,502"/>
 <area shape="rect" id="node26" href="$EdgeType_8hpp.html" title=" " alt="" coords="1523,557,1635,584"/>
 <area shape="rect" id="node29" href="$OpType_8hpp.html" title=" " alt="" coords="960,557,1059,584"/>
-<area shape="rect" id="node28" title=" " alt="" coords="923,707,1002,733"/>
+<area shape="rect" id="node28" title=" " alt="" coords="898,707,977,733"/>
 <area shape="rect" id="node31" href="$OpPtr_8hpp.html" title=" " alt="" coords="1912,557,1997,584"/>
 <area shape="rect" id="node33" href="$Expression_8hpp.html" title="Functions related to (possibly symbolic) phase values." alt="" coords="781,557,936,584"/>
 <area shape="rect" id="node35" href="$PauliStrings_8hpp.html" title=" " alt="" coords="1523,475,1683,502"/>

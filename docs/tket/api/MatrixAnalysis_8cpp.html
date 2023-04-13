@@ -79,7 +79,7 @@ $(function() {
 <div class="title">MatrixAnalysis.cpp File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="MatrixAnalysis_8hpp_source.html">MatrixAnalysis.hpp</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="MatrixAnalysis_8hpp_source.html">Utils/MatrixAnalysis.hpp</a>&quot;</code><br />
 <code>#include &lt;fstream&gt;</code><br />
 <code>#include &lt;iostream&gt;</code><br />
 <code>#include &lt;limits&gt;</code><br />
@@ -96,7 +96,7 @@ Include dependency graph for MatrixAnalysis.cpp:</div>
 <div class="center"><img src="MatrixAnalysis_8cpp__incl.png" border="0" usemap="#asrc_2Utils_2MatrixAnalysis_8cpp" alt=""/></div>
 <map name="asrc_2Utils_2MatrixAnalysis_8cpp" id="asrc_2Utils_2MatrixAnalysis_8cpp">
 <area shape="rect" title=" " alt="" coords="1959,5,2161,32"/>
-<area shape="rect" href="MatrixAnalysis_8hpp.html" title=" " alt="" coords="683,80,829,107"/>
+<area shape="rect" href="MatrixAnalysis_8hpp.html" title=" " alt="" coords="665,80,847,107"/>
 <area shape="rect" title=" " alt="" coords="318,237,381,263"/>
 <area shape="rect" href="EigenConfig_8hpp.html" title="Include this file rather than including the Eigen headers directly." alt="" coords="2047,155,2174,181"/>
 <area shape="rect" title=" " alt="" coords="1620,319,1695,345"/>
@@ -149,14 +149,14 @@ Functions</h2></td></tr>
 <tr class="memitem:a85a557b9186a43dd79f284d4ac6d5bff"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a85a557b9186a43dd79f284d4ac6d5bff">tket::is_unitary</a> (const Eigen::MatrixXcd &amp;U, double tol=EPS)</td></tr>
 <tr class="memdesc:a85a557b9186a43dd79f284d4ac6d5bff"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test matrix for unitarity.  <a href="namespacetket.html#a85a557b9186a43dd79f284d4ac6d5bff">More...</a><br /></td></tr>
 <tr class="separator:a85a557b9186a43dd79f284d4ac6d5bff"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aeff7b1db4efc7ea4209d2c890346294c"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#aeff7b1db4efc7ea4209d2c890346294c">tket::is_projector</a> (const Eigen::MatrixXcd &amp;P, double tol=EPS)</td></tr>
-<tr class="separator:aeff7b1db4efc7ea4209d2c890346294c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a631dbefe077ecb1e6313b3055f558e43"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a631dbefe077ecb1e6313b3055f558e43">tket::is_projector</a> (const Eigen::MatrixXcd &amp;P, double tol)</td></tr>
+<tr class="separator:a631dbefe077ecb1e6313b3055f558e43"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7975b7e1e2c7c442e69858f391a757f9"><td class="memItemLeft" align="right" valign="top">std::pair&lt; MatrixXb, MatrixXb &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a7975b7e1e2c7c442e69858f391a757f9">tket::binary_LLT_decomposition</a> (const MatrixXb &amp;a)</td></tr>
 <tr class="separator:a7975b7e1e2c7c442e69858f391a757f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0cbda9525a2b3ca649ee06cc18569e2a"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::pair&lt; unsigned, unsigned &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a0cbda9525a2b3ca649ee06cc18569e2a">tket::gaussian_elimination_col_ops</a> (const MatrixXb &amp;a, unsigned blocksize=6)</td></tr>
-<tr class="separator:a0cbda9525a2b3ca649ee06cc18569e2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab4c0b6da2bfd9031d4cb48361d89f319"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::pair&lt; unsigned, unsigned &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#ab4c0b6da2bfd9031d4cb48361d89f319">tket::gaussian_elimination_row_ops</a> (const MatrixXb &amp;a, unsigned blocksize=6)</td></tr>
-<tr class="separator:ab4c0b6da2bfd9031d4cb48361d89f319"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad494a0b329d933e883058ad9bdf34a48"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::pair&lt; unsigned, unsigned &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#ad494a0b329d933e883058ad9bdf34a48">tket::gaussian_elimination_col_ops</a> (const MatrixXb &amp;a, unsigned blocksize)</td></tr>
+<tr class="separator:ad494a0b329d933e883058ad9bdf34a48"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af8c225a8ea66be8b88f6b7ef09e9c93c"><td class="memItemLeft" align="right" valign="top">std::vector&lt; std::pair&lt; unsigned, unsigned &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#af8c225a8ea66be8b88f6b7ef09e9c93c">tket::gaussian_elimination_row_ops</a> (const MatrixXb &amp;a, unsigned blocksize)</td></tr>
+<tr class="separator:af8c225a8ea66be8b88f6b7ef09e9c93c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a46b9aa11f0d4e2e1f4cfe82a7813e9f3"><td class="memItemLeft" align="right" valign="top">Eigen::PermutationMatrix&lt; Eigen::Dynamic &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a46b9aa11f0d4e2e1f4cfe82a7813e9f3">tket::lift_perm</a> (const std::map&lt; unsigned, unsigned &gt; &amp;p)</td></tr>
 <tr class="memdesc:a46b9aa11f0d4e2e1f4cfe82a7813e9f3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Lift a permutation of \( [0,n) \) to a permutation of \( [0,2^n) \) as a matrix.  <a href="namespacetket.html#a46b9aa11f0d4e2e1f4cfe82a7813e9f3">More...</a><br /></td></tr>
 <tr class="separator:a46b9aa11f0d4e2e1f4cfe82a7813e9f3"><td class="memSeparator" colspan="2">&#160;</td></tr>

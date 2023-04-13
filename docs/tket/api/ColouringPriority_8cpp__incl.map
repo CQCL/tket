@@ -1,10 +1,10 @@
 <map id="src/Graphs/ColouringPriority.cpp" name="src/Graphs/ColouringPriority.cpp">
-<area shape="rect" id="node1" title=" " alt="" coords="321,5,550,32"/>
+<area shape="rect" id="node1" title=" " alt="" coords="370,5,599,32"/>
 <area shape="rect" id="node2" href="$ColouringPriority_8hpp.html" title=" " alt="" coords="43,80,201,107"/>
-<area shape="rect" id="node7" title=" " alt="" coords="398,80,473,107"/>
-<area shape="rect" id="node8" title=" " alt="" coords="497,80,584,107"/>
-<area shape="rect" id="node9" title=" " alt="" coords="609,80,755,107"/>
-<area shape="rect" id="node10" href="$AdjacencyData_8hpp.html" title=" " alt="" coords="225,80,373,107"/>
+<area shape="rect" id="node7" title=" " alt="" coords="447,80,522,107"/>
+<area shape="rect" id="node8" title=" " alt="" coords="547,80,633,107"/>
+<area shape="rect" id="node9" title=" " alt="" coords="658,80,805,107"/>
+<area shape="rect" id="node10" href="$AdjacencyData_8hpp.html" title=" " alt="" coords="225,80,424,107"/>
 <area shape="rect" id="node3" title=" " alt="" coords="5,155,76,181"/>
 <area shape="rect" id="node4" title=" " alt="" coords="101,155,143,181"/>
 <area shape="rect" id="node5" title=" " alt="" coords="167,155,226,181"/>

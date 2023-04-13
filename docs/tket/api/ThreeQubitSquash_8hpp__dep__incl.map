@@ -1,6 +1,6 @@
-<map id="src/Transformations/include/Transformations/ThreeQubitSquash.hpp" name="src/Transformations/include/Transformations/ThreeQubitSquash.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="267,5,450,61"/>
-<area shape="rect" id="node2" href="$PassGenerators_8cpp.html" title=" " alt="" coords="5,117,251,143"/>
-<area shape="rect" id="node3" href="$OptimisationPass_8cpp.html" title=" " alt="" coords="275,109,442,151"/>
-<area shape="rect" id="node4" href="$ThreeQubitSquash_8cpp.html" title=" " alt="" coords="466,109,638,151"/>
+<map id="include/Transformations/ThreeQubitSquash.hpp" name="include/Transformations/ThreeQubitSquash.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="269,5,448,47"/>
+<area shape="rect" id="node2" href="$PassGenerators_8cpp.html" title=" " alt="" coords="5,102,251,129"/>
+<area shape="rect" id="node3" href="$OptimisationPass_8cpp.html" title=" " alt="" coords="275,95,442,136"/>
+<area shape="rect" id="node4" href="$ThreeQubitSquash_8cpp.html" title=" " alt="" coords="466,95,638,136"/>
 </map>

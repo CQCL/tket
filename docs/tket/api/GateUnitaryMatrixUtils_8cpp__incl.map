@@ -1,9 +1,9 @@
 <map id="src/Gate/GateUnitaryMatrixUtils.cpp" name="src/Gate/GateUnitaryMatrixUtils.cpp">
-<area shape="rect" id="node1" title=" " alt="" coords="3303,5,3505,47"/>
-<area shape="rect" id="node2" href="$GateUnitaryMatrixUtils_8hpp.html" title=" " alt="" coords="2686,169,2887,196"/>
+<area shape="rect" id="node1" title=" " alt="" coords="3313,5,3514,47"/>
+<area shape="rect" id="node2" href="$GateUnitaryMatrixUtils_8hpp.html" title=" " alt="" coords="2661,169,2897,196"/>
 <area shape="rect" id="node24" title=" " alt="" coords="3741,401,3816,427"/>
-<area shape="rect" id="node36" href="$Gate_8hpp.html" title=" " alt="" coords="2902,95,3018,121"/>
-<area shape="rect" id="node48" href="$GateUnitaryMatrixError_8hpp.html" title=" " alt="" coords="3425,169,3626,196"/>
+<area shape="rect" id="node36" href="$Gate_8hpp.html" title=" " alt="" coords="2911,95,3027,121"/>
+<area shape="rect" id="node48" href="$GateUnitaryMatrixError_8hpp.html" title=" " alt="" coords="3407,169,3643,196"/>
 <area shape="rect" id="node3" title=" " alt="" coords="3317,401,3376,427"/>
 <area shape="rect" id="node4" href="$OpType_8hpp.html" title=" " alt="" coords="2734,401,2885,427"/>
 <area shape="rect" id="node10" href="$MatrixAnalysis_8hpp.html" title=" " alt="" coords="1667,244,1848,271"/>
@@ -36,7 +36,7 @@
 <area shape="rect" id="node33" title=" " alt="" coords="211,483,381,509"/>
 <area shape="rect" id="node34" title=" " alt="" coords="405,483,560,509"/>
 <area shape="rect" id="node35" title=" " alt="" coords="585,483,735,509"/>
-<area shape="rect" id="node37" href="$Op_8hpp.html" title="Operations." alt="" coords="2911,169,3009,196"/>
+<area shape="rect" id="node37" href="$Op_8hpp.html" title="Operations." alt="" coords="2921,169,3018,196"/>
 <area shape="rect" id="node38" title=" " alt="" coords="2977,244,3053,271"/>
 <area shape="rect" id="node39" title=" " alt="" coords="3482,244,3569,271"/>
 <area shape="rect" id="node40" title=" " alt="" coords="2711,319,2771,345"/>
@@ -44,7 +44,7 @@
 <area shape="rect" id="node42" href="$OpDesc_8hpp.html" title=" " alt="" coords="3077,244,3229,271"/>
 <area shape="rect" id="node43" href="$OpTypeInfo_8hpp.html" title=" " alt="" coords="2897,319,3020,345"/>
 <area shape="rect" id="node45" href="$OpTypeFunctions_8hpp.html" title=" " alt="" coords="3405,319,3617,345"/>
-<area shape="rect" id="node47" href="$PauliStrings_8hpp.html" title=" " alt="" coords="2347,244,2507,271"/>
+<area shape="rect" id="node47" href="$PauliStrings_8hpp.html" title=" " alt="" coords="2380,244,2540,271"/>
 <area shape="rect" id="node44" href="$EdgeType_8hpp.html" title=" " alt="" coords="2909,401,3021,427"/>
 <area shape="rect" id="node46" title=" " alt="" coords="3501,401,3616,427"/>
 </map>
