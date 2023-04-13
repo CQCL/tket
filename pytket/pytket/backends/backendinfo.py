@@ -278,9 +278,6 @@ class BackendInfo:
         """
         args = dict(**d)
         arch = args["architecture"]
-        # n_cl_reg = None
-        # if "n_cl_reg" in args:
-        #     n_cl_reg = args["n_cl_reg"]
         if "links" in arch:
             args["architecture"] = Architecture.from_dict(args["architecture"])
         else:
