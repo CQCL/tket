@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "RzPhasedXSquash.hpp"
+#include "Transformations/RzPhasedXSquash.hpp"
 
 #include <memory>
 
-#include "BasicOptimisation.hpp"
-#include "Decomposition.hpp"
-#include "PQPSquash.hpp"
-#include "Transform.hpp"
+#include "Transformations/BasicOptimisation.hpp"
+#include "Transformations/Decomposition.hpp"
+#include "Transformations/PQPSquash.hpp"
+#include "Transformations/Transform.hpp"
 #include "Utils/Expression.hpp"
 
 namespace tket {

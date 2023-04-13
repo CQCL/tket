@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "OpTypeFunctions.hpp"
+#include "OpType/OpTypeFunctions.hpp"
 
 #include <memory>
 
-#include "OpType.hpp"
+#include "OpType/OpType.hpp"
 
 namespace tket {
 

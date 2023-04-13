@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "BasicOptimisation.hpp"
+#include "Transformations/BasicOptimisation.hpp"
 
 #include <optional>
 #include <tkassert/Assert.hpp>
@@ -22,8 +22,8 @@
 #include "Circuit/CircPool.hpp"
 #include "Circuit/CircUtils.hpp"
 #include "Circuit/DAGDefs.hpp"
-#include "Decomposition.hpp"
-#include "Transform.hpp"
+#include "Transformations/Decomposition.hpp"
+#include "Transformations/Transform.hpp"
 #include "Utils/EigenConfig.hpp"
 #include "Utils/MatrixAnalysis.hpp"
 

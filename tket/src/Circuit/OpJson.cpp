@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Boxes.hpp"
-#include "Conditional.hpp"
+#include "Circuit/Boxes.hpp"
+#include "Circuit/Conditional.hpp"
 #include "Gate/Gate.hpp"
 #include "OpType/OpType.hpp"
 #include "OpType/OpTypeFunctions.hpp"

@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "GateUnitaryMatrixImplementations.hpp"
-#include "GateUnitaryMatrixUtils.hpp"
+#include "Gate/GateUnitaryMatrixImplementations.hpp"
+#include "Gate/GateUnitaryMatrixUtils.hpp"
 #include "Utils/Constants.hpp"
 
 namespace tket {

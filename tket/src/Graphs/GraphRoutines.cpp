@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "GraphRoutines.hpp"
+#include "Graphs/GraphRoutines.hpp"
 
 #include <stack>
 
-#include "AdjacencyData.hpp"
+#include "Graphs/AdjacencyData.hpp"
 
 using std::map;
 using std::set;

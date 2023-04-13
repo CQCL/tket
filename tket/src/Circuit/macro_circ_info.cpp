@@ -18,8 +18,8 @@
 
 #include <tklog/TketLog.hpp>
 
-#include "Circuit.hpp"
-#include "DAGDefs.hpp"
+#include "Circuit/Circuit.hpp"
+#include "Circuit/DAGDefs.hpp"
 #include "OpType/EdgeType.hpp"
 #include "OpType/OpType.hpp"
 #include "Ops/OpPtr.hpp"

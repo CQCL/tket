@@ -14,7 +14,7 @@
 
 #include <unsupported/Eigen/KroneckerProduct>
 
-#include "GateUnitaryMatrixImplementations.hpp"
+#include "Gate/GateUnitaryMatrixImplementations.hpp"
 #include "Utils/Constants.hpp"
 
 // This file is for gates with unitary matrices which serve as

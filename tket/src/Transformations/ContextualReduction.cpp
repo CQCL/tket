@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "ContextualReduction.hpp"
+#include "Transformations/ContextualReduction.hpp"
 
 #include <algorithm>
 #include <optional>
@@ -28,7 +28,7 @@
 #include "OpType/OpTypeInfo.hpp"
 #include "Ops/ClassicalOps.hpp"
 #include "Ops/OpPtr.hpp"
-#include "Transform.hpp"
+#include "Transformations/Transform.hpp"
 #include "Utils/HelperFunctions.hpp"
 #include "Utils/UnitID.hpp"
 
