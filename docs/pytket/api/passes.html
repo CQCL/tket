@@ -1,506 +1,492 @@
 
+
 <!DOCTYPE html>
 
-<html lang="en">
+
+<html lang="en" >
+
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>pytket.passes &#8212; pytket 1.13.2 documentation</title>
-    
+    <title>pytket.passes &#8212; pytket 1.14.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
-<link href="_static/styles/pydata-sphinx-theme.css?digest=1999514e3f237ded88cf" rel="stylesheet">
+  <link href="_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
 
-    
-  <link rel="stylesheet"
-    href="_static/vendor/fontawesome/5.13.0/css/all.min.css">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-solid-900.woff2">
-  <link rel="preload" as="font" type="font/woff2" crossorigin
-    href="_static/vendor/fontawesome/5.13.0/webfonts/fa-brands-400.woff2">
+  
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
 
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
-    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=5115cc725059bd94278eecd172e13a965bf8f5a9" type="text/css" />
+    <link rel="stylesheet" href="_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css" />
     <link rel="stylesheet" type="text/css" href="_static/jupyter-sphinx.css" />
     <link rel="stylesheet" type="text/css" href="_static/thebelab.css" />
     <link rel="stylesheet" type="text/css" href="_static/custom.css" />
-    
+  
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf">
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script src="_static/clipboard.min.js"></script>
     <script src="_static/copybutton.js"></script>
     <script src="_static/thebelab-helper.js"></script>
-    <script src="_static/scripts/sphinx-book-theme.js?digest=9c920249402e914e316237a7dbc6769907cce411"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
     <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'passes';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pytket.predicates" href="predicates.html" />
     <link rel="prev" title="pytket.pauli" href="pauli.html" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="docsearch:language" content="en">
-    
-
-    <!-- Google Analytics -->
-    
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
   </head>
-  <body data-spy="scroll" data-target="#bd-toc-nav" data-offset="60">
-<!-- Checkboxes to toggle the left sidebar -->
-<input type="checkbox" class="sidebar-toggle" name="__navigation" id="__navigation" aria-label="Toggle navigation sidebar">
-<label class="overlay overlay-navbar" for="__navigation">
-    <div class="visually-hidden">Toggle navigation sidebar</div>
-</label>
-<!-- Checkboxes to toggle the in-page toc -->
-<input type="checkbox" class="sidebar-toggle" name="__page-toc" id="__page-toc" aria-label="Toggle in-page Table of Contents">
-<label class="overlay overlay-pagetoc" for="__page-toc">
-    <div class="visually-hidden">Toggle in-page Table of Contents</div>
-</label>
-<!-- Headers at the top -->
-<div class="announcement header-item noprint"></div>
-<div class="header header-item noprint"></div>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
 
-    
-    <div class="container-fluid" id="banner"></div>
-
-    
-
-    <div class="container-xl">
-      <div class="row">
-          
-<!-- Sidebar -->
-<div class="bd-sidebar noprint" id="site-navigation">
-    <div class="bd-sidebar__content">
-        <div class="bd-sidebar__top"><div class="navbar-brand-box">
-    <a class="navbar-brand text-wrap" href="index.html">
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
       
-        <!-- `logo` is deprecated in Sphinx 4.0, so remove this when we stop supporting 3 -->
+      <div class="bd-sidebar-primary bd-sidebar">
         
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="index.html">
+  
+  
+  
+  
+    
+    
       
-      
-      <img src="_static/Quantinuum_logo.png" class="logo" alt="logo">
-      
-      
-      <h1 class="site-logo" id="site-title">pytket 1.13.2 documentation</h1>
-      
-    </a>
-</div><form class="bd-search d-flex align-items-center" action="search.html" method="get">
-  <i class="icon fas fa-search"></i>
-  <input type="search" class="form-control" name="q" id="search-input" placeholder="Search the docs ..." aria-label="Search the docs ..." autocomplete="off" >
-</form><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
-    <div class="bd-toc-item active">
-        <p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  Introduction:
- </span>
-</p>
+    
+    
+    <img src="_static/Quantinuum_logo_black.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="_static/Quantinuum_logo_white.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction:</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="getting_started.html">
-   Getting Started
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="changelog.html">
-   Changelog
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="install.html">
-   Installation Troubleshooting
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="opensource.html">
-   Open Source Attribution
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="opensource.html">Open Source Attribution</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  More Documentation:
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">More Documentation:</span></p>
 <ul class="nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference external" href="https://cqcl.github.io/pytket/manual/index.html">
-   Manual
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference external" href="https://cqcl.github.io/pytket-extensions/api/index.html">
-   Extensions
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference external" href="https://github.com/CQCL/pytket/tree/main/examples">
-   Example notebooks
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket/manual/index.html">Manual</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket-extensions/api/index.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/CQCL/pytket/tree/main/examples">Example notebooks</a></li>
 </ul>
-<p aria-level="2" class="caption" role="heading">
- <span class="caption-text">
-  API Reference:
- </span>
-</p>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
 <ul class="current nav bd-sidenav">
- <li class="toctree-l1">
-  <a class="reference internal" href="backends.html">
-   pytket.backends
-  </a>
- </li>
- <li class="toctree-l1 has-children">
-  <a class="reference internal" href="circuit.html">
-   pytket.circuit
-  </a>
-  <input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/>
-  <label for="toctree-checkbox-1">
-   <i class="fas fa-chevron-down">
-   </i>
-  </label>
-  <ul>
-   <li class="toctree-l2">
-    <a class="reference internal" href="circuit_class.html">
-     pytket.circuit.Circuit
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="optype.html">
-     pytket.circuit.OpType
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="classical.html">
-     pytket.circuit.logic_exp
-    </a>
-   </li>
-   <li class="toctree-l2">
-    <a class="reference internal" href="display.html">
-     pytket.circuit.display
-    </a>
-   </li>
-  </ul>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="pauli.html">
-   pytket.pauli
-  </a>
- </li>
- <li class="toctree-l1 current active">
-  <a class="current reference internal" href="#">
-   pytket.passes
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="predicates.html">
-   pytket.predicates
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="partition.html">
-   pytket.partition
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="qasm.html">
-   pytket.qasm
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="quipper.html">
-   pytket.quipper
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="architecture.html">
-   pytket.architecture
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="placement.html">
-   pytket.placement
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="mapping.html">
-   pytket.mapping
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="tableau.html">
-   pytket.tableau
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="transform.html">
-   pytket.transform
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="tailoring.html">
-   pytket.tailoring
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="wasm.html">
-   pytket.wasm
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="zx.html">
-   pytket.zx
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="utils.html">
-   pytket.utils
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="logging.html">
-   pytket.logging
-  </a>
- </li>
- <li class="toctree-l1">
-  <a class="reference internal" href="config.html">
-   pytket.config
-  </a>
- </li>
+<li class="toctree-l1"><a class="reference internal" href="backends.html">pytket.backends</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="circuit.html">pytket.circuit</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="circuit_class.html">pytket.circuit.Circuit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="optype.html">pytket.circuit.OpType</a></li>
+<li class="toctree-l2"><a class="reference internal" href="classical.html">pytket.circuit.logic_exp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="display.html">pytket.circuit.display</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="pauli.html">pytket.pauli</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">pytket.passes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="predicates.html">pytket.predicates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="partition.html">pytket.partition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="qasm.html">pytket.qasm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="quipper.html">pytket.quipper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">pytket.architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="placement.html">pytket.placement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="mapping.html">pytket.mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tableau.html">pytket.tableau</a></li>
+<li class="toctree-l1"><a class="reference internal" href="transform.html">pytket.transform</a></li>
+<li class="toctree-l1"><a class="reference internal" href="tailoring.html">pytket.tailoring</a></li>
+<li class="toctree-l1"><a class="reference internal" href="wasm.html">pytket.wasm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="zx.html">pytket.zx</a></li>
+<li class="toctree-l1"><a class="reference internal" href="utils.html">pytket.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="logging.html">pytket.logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="config.html">pytket.config</a></li>
 </ul>
 
     </div>
 </nav></div>
-        <div class="bd-sidebar__bottom">
-             <!-- To handle the deprecated key -->
-            
-            <div class="navbar_extra_footer">
-            Theme by the <a href="https://ebp.jupyterbook.org">Executable Book Project</a>
-            </div>
-            
-        </div>
     </div>
-    <div id="rtd-footer-container"></div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/CQCL/tket" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/CQCL/tket/issues/new?title=Issue%20on%20page%20%2Fpasses.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
 </div>
 
 
-          
-
-
-          
-<!-- A tiny helper pixel to detect if we've scrolled -->
-<div class="sbt-scroll-pixel-helper"></div>
-<!-- Main content -->
-<div class="col py-0 content-container">
-    
-    <div class="header-article row sticky-top noprint">
-        
 
 
 
-<div class="col py-1 d-flex header-article-main">
-    <div class="header-article__left">
-        
-        <label for="__navigation"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="right"
-title="Toggle navigation"
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/passes.rst" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
-  <i class="fas fa-bars"></i>
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
   </span>
-
-</label>
-
-        
-    </div>
-    <div class="header-article__right">
-<button onclick="toggleFullScreen()"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="bottom"
-title="Fullscreen mode"
+<span class="btn__text-container">.rst</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
 >
   
 
-<span class="headerbtn__icon-container">
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
   <i class="fas fa-expand"></i>
   </span>
 
 </button>
 
-<div class="menu-dropdown menu-dropdown-repository-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Source repositories">
-      <i class="fab fa-github"></i>
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
   </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="https://github.com/CQCL/tket"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Source repository"
->
-  
+`);
+</script>
 
-<span class="headerbtn__icon-container">
-  <i class="fab fa-github"></i>
-  </span>
-<span class="headerbtn__text-container">repository</span>
-</a>
-
-      </li>
-      
-      <li>
-        <a href="https://github.com/CQCL/tket/issues/new?title=Issue%20on%20page%20%2Fpasses.html&body=Your%20issue%20content%20here."
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Open an issue"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-lightbulb"></i>
-  </span>
-<span class="headerbtn__text-container">open issue</span>
-</a>
-
-      </li>
-      
-    </ul>
-  </div>
-</div>
-
-<div class="menu-dropdown menu-dropdown-download-buttons">
-  <button class="headerbtn menu-dropdown__trigger"
-      aria-label="Download this page">
-      <i class="fas fa-download"></i>
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
   </button>
-  <div class="menu-dropdown__content">
-    <ul>
-      <li>
-        <a href="_sources/passes.rst.txt"
-   class="headerbtn"
-   data-toggle="tooltip"
-data-placement="left"
-title="Download source file"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-file"></i>
-  </span>
-<span class="headerbtn__text-container">.rst</span>
-</a>
-
-      </li>
-      
-      <li>
-        
-<button onclick="printPdf(this)"
-  class="headerbtn"
-  data-toggle="tooltip"
-data-placement="left"
-title="Print to PDF"
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-file-pdf"></i>
-  </span>
-<span class="headerbtn__text-container">.pdf</span>
-</button>
-
-      </li>
-      
-    </ul>
-  </div>
-</div>
-<label for="__page-toc"
-  class="headerbtn headerbtn-page-toc"
-  
->
-  
-
-<span class="headerbtn__icon-container">
-  <i class="fas fa-list"></i>
-  </span>
-
+`);
+</script>
+<label class="sidebar-toggle secondary-toggle btn btn-sm" for="__secondary"title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
 </label>
-
+</div></div>
+      
     </div>
+  
 </div>
-
-<!-- Table of contents -->
-<div class="col-md-3 bd-toc show noprint">
-    <div class="tocsection onthispage pt-5 pb-3">
-        <i class="fas fa-list"></i> Contents
-    </div>
-    <nav id="bd-toc-nav" aria-label="Page">
-        <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-pytket.passes.script">
-   pytket.passes.script
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-pytket.passes.auto_rebase">
-   pytket.passes.auto_rebase
-  </a>
- </li>
-</ul>
-
-    </nav>
 </div>
-    </div>
-    <div class="article row">
-        <div class="col pl-md-3 pl-lg-5 content-container">
-            <!-- Table of contents that is only displayed when printing the page -->
-            <div id="jb-print-docs-body" class="onlyprint">
-                <h1>pytket.passes</h1>
-                <!-- Table of contents -->
-                <div id="print-main-content">
-                    <div id="jb-print-toc">
-                        
-                        <div>
-                            <h2> Contents </h2>
-                        </div>
-                        <nav aria-label="Page">
-                            <ul class="visible nav section-nav flex-column">
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-pytket.passes.script">
-   pytket.passes.script
-  </a>
- </li>
- <li class="toc-h2 nav-item toc-entry">
-  <a class="reference internal nav-link" href="#module-pytket.passes.auto_rebase">
-   pytket.passes.auto_rebase
-  </a>
- </li>
-</ul>
+              
+              
 
-                        </nav>
-                    </div>
-                </div>
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>pytket.passes</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
             </div>
-            <main id="main-content" role="main">
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.BasePass"><code class="docutils literal notranslate"><span class="pre">BasePass</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.BasePass.__init__"><code class="docutils literal notranslate"><span class="pre">BasePass.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.BasePass.apply"><code class="docutils literal notranslate"><span class="pre">BasePass.apply()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.BasePass.from_dict"><code class="docutils literal notranslate"><span class="pre">BasePass.from_dict()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.BasePass.to_dict"><code class="docutils literal notranslate"><span class="pre">BasePass.to_dict()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.CNotSynthType"><code class="docutils literal notranslate"><span class="pre">CNotSynthType</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.CNotSynthType.__init__"><code class="docutils literal notranslate"><span class="pre">CNotSynthType.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.CNotSynthType.name"><code class="docutils literal notranslate"><span class="pre">CNotSynthType.name</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RepeatPass"><code class="docutils literal notranslate"><span class="pre">RepeatPass</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RepeatPass.__init__"><code class="docutils literal notranslate"><span class="pre">RepeatPass.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RepeatPass.get_pass"><code class="docutils literal notranslate"><span class="pre">RepeatPass.get_pass()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RepeatUntilSatisfiedPass"><code class="docutils literal notranslate"><span class="pre">RepeatUntilSatisfiedPass</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RepeatUntilSatisfiedPass.__init__"><code class="docutils literal notranslate"><span class="pre">RepeatUntilSatisfiedPass.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RepeatUntilSatisfiedPass.get_pass"><code class="docutils literal notranslate"><span class="pre">RepeatUntilSatisfiedPass.get_pass()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RepeatUntilSatisfiedPass.get_predicate"><code class="docutils literal notranslate"><span class="pre">RepeatUntilSatisfiedPass.get_predicate()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RepeatWithMetricPass"><code class="docutils literal notranslate"><span class="pre">RepeatWithMetricPass</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RepeatWithMetricPass.__init__"><code class="docutils literal notranslate"><span class="pre">RepeatWithMetricPass.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RepeatWithMetricPass.get_metric"><code class="docutils literal notranslate"><span class="pre">RepeatWithMetricPass.get_metric()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RepeatWithMetricPass.get_pass"><code class="docutils literal notranslate"><span class="pre">RepeatWithMetricPass.get_pass()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.SafetyMode"><code class="docutils literal notranslate"><span class="pre">SafetyMode</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.SafetyMode.__init__"><code class="docutils literal notranslate"><span class="pre">SafetyMode.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.SafetyMode.name"><code class="docutils literal notranslate"><span class="pre">SafetyMode.name</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.SequencePass"><code class="docutils literal notranslate"><span class="pre">SequencePass</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.SequencePass.__init__"><code class="docutils literal notranslate"><span class="pre">SequencePass.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.SequencePass.get_sequence"><code class="docutils literal notranslate"><span class="pre">SequencePass.get_sequence()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.AASRouting"><code class="docutils literal notranslate"><span class="pre">AASRouting()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.CXMappingPass"><code class="docutils literal notranslate"><span class="pre">CXMappingPass()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.CliffordSimp"><code class="docutils literal notranslate"><span class="pre">CliffordSimp()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.CnXPairwiseDecomposition"><code class="docutils literal notranslate"><span class="pre">CnXPairwiseDecomposition()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.CommuteThroughMultis"><code class="docutils literal notranslate"><span class="pre">CommuteThroughMultis()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.ComposePhasePolyBoxes"><code class="docutils literal notranslate"><span class="pre">ComposePhasePolyBoxes()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.ContextSimp"><code class="docutils literal notranslate"><span class="pre">ContextSimp()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.CustomPass"><code class="docutils literal notranslate"><span class="pre">CustomPass()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.CustomRoutingPass"><code class="docutils literal notranslate"><span class="pre">CustomRoutingPass()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.DecomposeArbitrarilyControlledGates"><code class="docutils literal notranslate"><span class="pre">DecomposeArbitrarilyControlledGates()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.DecomposeBoxes"><code class="docutils literal notranslate"><span class="pre">DecomposeBoxes()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.DecomposeClassicalExp"><code class="docutils literal notranslate"><span class="pre">DecomposeClassicalExp()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.DecomposeMultiQubitsCX"><code class="docutils literal notranslate"><span class="pre">DecomposeMultiQubitsCX()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.DecomposeSingleQubitsTK1"><code class="docutils literal notranslate"><span class="pre">DecomposeSingleQubitsTK1()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.DecomposeSwapsToCXs"><code class="docutils literal notranslate"><span class="pre">DecomposeSwapsToCXs()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.DecomposeSwapsToCircuit"><code class="docutils literal notranslate"><span class="pre">DecomposeSwapsToCircuit()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.DecomposeTK2"><code class="docutils literal notranslate"><span class="pre">DecomposeTK2()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.DefaultMappingPass"><code class="docutils literal notranslate"><span class="pre">DefaultMappingPass()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.DelayMeasures"><code class="docutils literal notranslate"><span class="pre">DelayMeasures()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.EulerAngleReduction"><code class="docutils literal notranslate"><span class="pre">EulerAngleReduction()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.FlattenRegisters"><code class="docutils literal notranslate"><span class="pre">FlattenRegisters()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.FlattenRelabelRegistersPass"><code class="docutils literal notranslate"><span class="pre">FlattenRelabelRegistersPass()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.FullMappingPass"><code class="docutils literal notranslate"><span class="pre">FullMappingPass()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.FullPeepholeOptimise"><code class="docutils literal notranslate"><span class="pre">FullPeepholeOptimise()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.GlobalisePhasedX"><code class="docutils literal notranslate"><span class="pre">GlobalisePhasedX()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.GuidedPauliSimp"><code class="docutils literal notranslate"><span class="pre">GuidedPauliSimp()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.KAKDecomposition"><code class="docutils literal notranslate"><span class="pre">KAKDecomposition()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.NaivePlacementPass"><code class="docutils literal notranslate"><span class="pre">NaivePlacementPass()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.NormaliseTK2"><code class="docutils literal notranslate"><span class="pre">NormaliseTK2()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.OptimisePhaseGadgets"><code class="docutils literal notranslate"><span class="pre">OptimisePhaseGadgets()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.PauliSimp"><code class="docutils literal notranslate"><span class="pre">PauliSimp()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.PauliSquash"><code class="docutils literal notranslate"><span class="pre">PauliSquash()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.PeepholeOptimise2Q"><code class="docutils literal notranslate"><span class="pre">PeepholeOptimise2Q()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.PlacementPass"><code class="docutils literal notranslate"><span class="pre">PlacementPass()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RebaseCustom"><code class="docutils literal notranslate"><span class="pre">RebaseCustom()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RebaseTket"><code class="docutils literal notranslate"><span class="pre">RebaseTket()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RemoveBarriers"><code class="docutils literal notranslate"><span class="pre">RemoveBarriers()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RemoveDiscarded"><code class="docutils literal notranslate"><span class="pre">RemoveDiscarded()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RemoveImplicitQubitPermutation"><code class="docutils literal notranslate"><span class="pre">RemoveImplicitQubitPermutation()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RemoveRedundancies"><code class="docutils literal notranslate"><span class="pre">RemoveRedundancies()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RenameQubitsPass"><code class="docutils literal notranslate"><span class="pre">RenameQubitsPass()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RoutingPass"><code class="docutils literal notranslate"><span class="pre">RoutingPass()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.SimplifyInitial"><code class="docutils literal notranslate"><span class="pre">SimplifyInitial()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.SimplifyMeasured"><code class="docutils literal notranslate"><span class="pre">SimplifyMeasured()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.SquashCustom"><code class="docutils literal notranslate"><span class="pre">SquashCustom()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.SquashRzPhasedX"><code class="docutils literal notranslate"><span class="pre">SquashRzPhasedX()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.SquashTK1"><code class="docutils literal notranslate"><span class="pre">SquashTK1()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.SynthesiseHQS"><code class="docutils literal notranslate"><span class="pre">SynthesiseHQS()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.SynthesiseOQC"><code class="docutils literal notranslate"><span class="pre">SynthesiseOQC()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.SynthesiseTK"><code class="docutils literal notranslate"><span class="pre">SynthesiseTK()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.SynthesiseTket"><code class="docutils literal notranslate"><span class="pre">SynthesiseTket()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.SynthesiseUMD"><code class="docutils literal notranslate"><span class="pre">SynthesiseUMD()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.ThreeQubitSquash"><code class="docutils literal notranslate"><span class="pre">ThreeQubitSquash()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.ZXGraphlikeOptimisation"><code class="docutils literal notranslate"><span class="pre">ZXGraphlikeOptimisation()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.ZZPhaseToRz"><code class="docutils literal notranslate"><span class="pre">ZZPhaseToRz()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-pytket.passes.script">pytket.passes.script</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.script.compilation_pass_from_script"><code class="docutils literal notranslate"><span class="pre">compilation_pass_from_script()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.script.compilation_pass_grammar"><code class="docutils literal notranslate"><span class="pre">compilation_pass_grammar()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-pytket.passes.auto_rebase">pytket.passes.auto_rebase</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.auto_rebase.auto_rebase_pass"><code class="docutils literal notranslate"><span class="pre">auto_rebase_pass()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.auto_rebase.auto_squash_pass"><code class="docutils literal notranslate"><span class="pre">auto_squash_pass()</span></code></a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
                 
-              <div>
-                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
   <section id="pytket-passes">
-<h1>pytket.passes<a class="headerlink" href="#pytket-passes" title="Permalink to this headline">#</a></h1>
+<h1>pytket.passes<a class="headerlink" href="#pytket-passes" title="Permalink to this heading">#</a></h1>
 <p>In pytket, compilation passes perform in-place transformations of circuits. From a user’s point of view, passes are similar to <a class="reference external" href="https://cqcl.github.io/tket/pytket/api/transform.html#">transforms</a>; however passes allow for additional predicate checking and compositionality.</p>
 <p>There are passes such as <a class="reference external" href="https://cqcl.github.io/tket/pytket/api/passes.html#pytket.passes.FullPeepholeOptimise">FullPeepholeOptimise</a> and  <a class="reference external" href="https://cqcl.github.io/tket/pytket/api/passes.html#pytket.passes.KAKDecomposition">KAKDecomposition</a> which are designed for general purpose circuit optimisation.</p>
 <p>Also there are special purpose passes such as <a class="reference external" href="https://cqcl.github.io/tket/pytket/api/passes.html#pytket.passes.OptimisePhaseGadgets">OptimisePhaseGadgets</a> and <a class="reference external" href="https://cqcl.github.io/tket/pytket/api/passes.html#pytket.passes.PauliSimp">PauliSimp</a> which perform optimisation by targeting phase gadget and Pauli gadget structures within circuits. For more on these optimisation techniques see the <a class="reference external" href="https://arxiv.org/abs/1906.01734">corresponding publication</a>.</p>
@@ -524,7 +510,7 @@ title="Print to PDF"
 </ol>
 <p>Apply to a <code class="xref py py-class docutils literal notranslate"><span class="pre">CompilationUnit</span></code>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>True if pass modified the circuit, else False</p>
 </dd>
 </dl>
@@ -533,7 +519,7 @@ title="Print to PDF"
 </ol>
 <p>Apply to a <code class="xref py py-class docutils literal notranslate"><span class="pre">Circuit</span></code> in-place.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>True if pass modified the circuit, else False</p>
 </dd>
 </dl>
@@ -542,13 +528,13 @@ title="Print to PDF"
 </ol>
 <p>Apply to a <code class="xref py py-class docutils literal notranslate"><span class="pre">Circuit</span></code> in-place and invoke callbacks for all nested passes.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>before_apply</strong> – Invoked before a pass is applied. The CompilationUnit and a summary of the pass configuration are passed into the callback.</p></li>
 <li><p><strong>after_apply</strong> – Invoked after a pass is applied. The CompilationUnit and a summary of the pass configuration are passed into the callback.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>True if pass modified the circuit, else False</p>
 </dd>
 </dl>
@@ -564,7 +550,7 @@ title="Print to PDF"
 <dt class="sig sig-object py" id="pytket.passes.BasePass.to_dict">
 <span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">json</span></span></span><a class="headerlink" href="#pytket.passes.BasePass.to_dict" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>A JSON serializable dictionary representation of the Pass.</p>
 </dd>
 </dl>
@@ -605,7 +591,7 @@ title="Print to PDF"
 <dt class="sig sig-object py" id="pytket.passes.RepeatPass.get_pass">
 <span class="sig-name descname"><span class="pre">get_pass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.passes.RepeatPass" title="pytket.passes.RepeatPass"><span class="pre">pytket.passes.RepeatPass</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.RepeatPass.get_pass" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The underlying compilation pass.</p>
 </dd>
 </dl>
@@ -635,7 +621,7 @@ title="Print to PDF"
 <dt class="sig sig-object py" id="pytket.passes.RepeatUntilSatisfiedPass.get_pass">
 <span class="sig-name descname"><span class="pre">get_pass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.passes.RepeatUntilSatisfiedPass" title="pytket.passes.RepeatUntilSatisfiedPass"><span class="pre">pytket.passes.RepeatUntilSatisfiedPass</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.RepeatUntilSatisfiedPass.get_pass" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The underlying compilation pass.</p>
 </dd>
 </dl>
@@ -645,7 +631,7 @@ title="Print to PDF"
 <dt class="sig sig-object py" id="pytket.passes.RepeatUntilSatisfiedPass.get_predicate">
 <span class="sig-name descname"><span class="pre">get_predicate</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.passes.RepeatUntilSatisfiedPass" title="pytket.passes.RepeatUntilSatisfiedPass"><span class="pre">pytket.passes.RepeatUntilSatisfiedPass</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="predicates.html#pytket.predicates.Predicate" title="pytket.predicates.Predicate"><span class="pre">pytket.predicates.Predicate</span></a></span></span><a class="headerlink" href="#pytket.passes.RepeatUntilSatisfiedPass.get_predicate" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The underlying predicate.</p>
 </dd>
 </dl>
@@ -667,7 +653,7 @@ title="Print to PDF"
 <dt class="sig sig-object py" id="pytket.passes.RepeatWithMetricPass.get_metric">
 <span class="sig-name descname"><span class="pre">get_metric</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.passes.RepeatWithMetricPass" title="pytket.passes.RepeatWithMetricPass"><span class="pre">pytket.passes.RepeatWithMetricPass</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="circuit_class.html#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><span class="pre">pytket.circuit.Circuit</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pytket.passes.RepeatWithMetricPass.get_metric" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The underlying metric.</p>
 </dd>
 </dl>
@@ -677,7 +663,7 @@ title="Print to PDF"
 <dt class="sig sig-object py" id="pytket.passes.RepeatWithMetricPass.get_pass">
 <span class="sig-name descname"><span class="pre">get_pass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.passes.RepeatWithMetricPass" title="pytket.passes.RepeatWithMetricPass"><span class="pre">pytket.passes.RepeatWithMetricPass</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.RepeatWithMetricPass.get_pass" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The underlying compilation pass.</p>
 </dd>
 </dl>
@@ -717,7 +703,7 @@ title="Print to PDF"
 <dt class="sig sig-object py" id="pytket.passes.SequencePass.get_sequence">
 <span class="sig-name descname"><span class="pre">get_sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.passes.SequencePass" title="pytket.passes.SequencePass"><span class="pre">pytket.passes.SequencePass</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pytket.passes.SequencePass.get_sequence" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>The underlying sequence of passes.</p>
 </dd>
 </dl>
@@ -735,13 +721,13 @@ title="Print to PDF"
 </ul>
 <p>NB: The circuit needs to have at most as many qubits as the architecture has nodes. The resulting circuit will always have the same number of qubits as the architecture has nodes, even if the input circuit had fewer.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>arc</strong> – target architecture</p></li>
 <li><p><strong>**kwargs</strong> – parameters for routing (described above)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a pass to perform the remapping</p>
 </dd>
 </dl>
@@ -752,14 +738,14 @@ title="Print to PDF"
 <span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">CXMappingPass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="architecture.html#pytket.architecture.Architecture" title="pytket.architecture.Architecture"><span class="pre">pytket.architecture.Architecture</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">placer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="placement.html#pytket.placement.Placement" title="pytket.placement.Placement"><span class="pre">pytket.placement.Placement</span></a></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.CXMappingPass" title="Permalink to this definition">#</a></dt>
 <dd><p>Construct a pass to convert all gates to CX, relabel <code class="xref py py-class docutils literal notranslate"><span class="pre">Circuit</span></code> Qubits to :py:class’Architecture’ Nodes, route to the connectivty graph of a <code class="xref py py-class docutils literal notranslate"><span class="pre">Architecture</span></code> and decompose additional routing gates (SWAP and BRIDGE) to CX gates.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>arc</strong> – The Architecture used for connectivity information.</p></li>
 <li><p><strong>placer</strong> – The placement used for relabelling.</p></li>
 <li><p><strong>**kwargs</strong> – Parameters for routing: (bool)directed_cx=false, (bool)delay_measures=true</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a pass to perform the remapping</p>
 </dd>
 </dl>
@@ -770,10 +756,10 @@ title="Print to PDF"
 <span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">CliffordSimp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">allow_swaps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.CliffordSimp" title="Permalink to this definition">#</a></dt>
 <dd><p>An optimisation pass that performs a number of rewrite rules for simplifying Clifford gate sequences, similar to Duncan &amp; Fagan (<a class="reference external" href="https://arxiv.org/abs/1901.10114">https://arxiv.org/abs/1901.10114</a>). Given a circuit with CXs and any single-qubit gates, produces a circuit with TK1, CX gates.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>allow_swaps</strong> – dictates whether the rewriting will disregard CX placement or orientation and introduce wire swaps.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a pass to perform the rewriting</p>
 </dd>
 </dl>
@@ -799,10 +785,10 @@ title="Print to PDF"
 <li><p>(unsigned) min_size=0: minimal number of CX gates in each phase polynominal box: groups with a smaller number of CX gates are not affected by this transformation</p></li>
 </ul>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>**kwargs</strong> – parameters for composition (described above)</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a pass to perform the composition</p>
 </dd>
 </dl>
@@ -813,13 +799,13 @@ title="Print to PDF"
 <span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">ContextSimp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">allow_classical</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xcirc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="circuit_class.html#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><span class="pre">pytket.circuit.Circuit</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.ContextSimp" title="Permalink to this definition">#</a></dt>
 <dd><p>Applies simplifications enabled by knowledge of qubit state and discarded qubits.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>allow_classical</strong> – allow replacement of measurements on known state with classical set-bit operations</p></li>
 <li><p><strong>xcirc</strong> – 1-qubit circuit implementing an X gate in the transformed circuit (if omitted, an X gate is used)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a pass to perform the simplification</p>
 </dd>
 </dl>
@@ -831,10 +817,10 @@ title="Print to PDF"
 <dd><p>Generate a custom pass from a user-provided circuit transfomation function.</p>
 <p>It is the caller’s responsibility to provide a valid transform.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>transform</strong> – function taking a <code class="xref py py-class docutils literal notranslate"><span class="pre">Circuit</span></code> as an argument and returning a new transformed circuit:param label: optional label for the pass</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a pass to perform the transformation</p>
 </dd>
 </dl>
@@ -882,13 +868,13 @@ title="Print to PDF"
 <span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">DecomposeSwapsToCXs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="architecture.html#pytket.architecture.Architecture" title="pytket.architecture.Architecture"><span class="pre">pytket.architecture.Architecture</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">respect_direction</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.DecomposeSwapsToCXs" title="Permalink to this definition">#</a></dt>
 <dd><p>Construct a pass to decompose SWAP and BRIDGE gates to CX gates, constraining connectivity to an <code class="xref py py-class docutils literal notranslate"><span class="pre">Architecture</span></code>, optionally taking the directedness of the connectivity graph into account.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>arc</strong> – The architecture to use for connectivity information.</p></li>
 <li><p><strong>respect_direction</strong> – Optionally takes the directedness of the connectivity graph into account.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a pass to perform the decomposition</p>
 </dd>
 </dl>
@@ -898,10 +884,10 @@ title="Print to PDF"
 <dt class="sig sig-object py" id="pytket.passes.DecomposeSwapsToCircuit">
 <span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">DecomposeSwapsToCircuit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">replacement_circuit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="circuit_class.html#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><span class="pre">pytket.circuit.Circuit</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.DecomposeSwapsToCircuit" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>replacement_circuit</strong> – An equivalent circuit to replace a SWAP gate with in the desired basis.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a pass to replace all SWAP gates with the given circuit</p>
 </dd>
 </dl>
@@ -918,7 +904,7 @@ title="Print to PDF"
 <p>Using the <cite>allow_swaps=True</cite> (default) option, qubits will be swapped when convenient to reduce the two-qubit gate count of the decomposed TK2.</p>
 <p>If the TK2 angles are symbolic values, the decomposition will be exact (i.e. not noise-aware). It is not possible in general to obtain optimal decompositions for arbitrary symbolic parameters, so consider substituting for concrete values if possible.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>allow_swaps</strong> – Whether to allow implicit wire swaps.</p>
 </dd>
 </dl>
@@ -929,13 +915,13 @@ title="Print to PDF"
 <span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">DefaultMappingPass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="architecture.html#pytket.architecture.Architecture" title="pytket.architecture.Architecture"><span class="pre">pytket.architecture.Architecture</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">delay_measures</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.DefaultMappingPass" title="Permalink to this definition">#</a></dt>
 <dd><p>Construct a pass to relabel <code class="xref py py-class docutils literal notranslate"><span class="pre">Circuit</span></code> Qubits to <code class="xref py py-class docutils literal notranslate"><span class="pre">Architecture</span></code> Nodes, and then route to the connectivity graph of the given :py:class: ‘Architecture’. Edge direction is ignored. Placement used is GraphPlacement.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>arc</strong> – The Architecture used for connectivity information.</p></li>
 <li><p><strong>delay_measures</strong> – Whether to commute measurements to the end of the circuit, defaulting to true.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a pass to perform the remapping</p>
 </dd>
 </dl>
@@ -946,7 +932,7 @@ title="Print to PDF"
 <span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">DelayMeasures</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">allow_partial</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.DelayMeasures" title="Permalink to this definition">#</a></dt>
 <dd><p>Commutes Measure operations to the end of the circuit. Throws an exception when this is not possible because of gates following the measure which are dependent on either the resulting quantum state or classical values.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>allow_partial</strong> – Whether to allow measurements that cannot be commuted to the end, and delay them as much as possible instead. If false, the pass includes a <code class="xref py py-class docutils literal notranslate"><span class="pre">CommutableMeasuresPredicate</span></code> precondition.</p>
 </dd>
 </dl>
@@ -957,14 +943,14 @@ title="Print to PDF"
 <span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">EulerAngleReduction</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="optype.html#pytket.circuit.OpType" title="pytket.circuit.OpType"><span class="pre">pytket.circuit.OpType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">p</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="optype.html#pytket.circuit.OpType" title="pytket.circuit.OpType"><span class="pre">pytket.circuit.OpType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">strict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.EulerAngleReduction" title="Permalink to this definition">#</a></dt>
 <dd><p>Uses Euler angle decompositions to squash all chains of P and Q rotations, where P,Q ∈ {Rx,Ry,Rz}. By default (<cite>strict=False</cite>), this pass will try to decompose the chains into pairs of -P-Q- or -Q-P- rotations, commuting any third rotation past multi-qubit gates. If <cite>strict=True</cite>, all chains will be decomposed to P-Q-P triples and no further optimisation is performed.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>q</strong> – The type of the Q rotation (Q ∈ {Rx,Ry,Rz}).</p></li>
 <li><p><strong>p</strong> – The type of the P rotation (P ∈ {Rx,Ry,Rz}, P ≠ Q).</p></li>
 <li><p><strong>strict</strong> – Optionally performs strict P-Q-P Euler decomposition</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a pass that squashes chains of P and Q rotations</p>
 </dd>
 </dl>
@@ -981,10 +967,10 @@ title="Print to PDF"
 <span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">FlattenRelabelRegistersPass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.FlattenRelabelRegistersPass" title="Permalink to this definition">#</a></dt>
 <dd><p>Removes empty Quantum wires from the Circuit and relabels all Qubit to a register from passed name.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>label</strong> – Name to relabel remaining Qubit to, default ‘q’.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>A pass that removes empty wires and relabels.</p>
 </dd>
 </dl>
@@ -995,14 +981,14 @@ title="Print to PDF"
 <span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">FullMappingPass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="architecture.html#pytket.architecture.Architecture" title="pytket.architecture.Architecture"><span class="pre">pytket.architecture.Architecture</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">placer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="placement.html#pytket.placement.Placement" title="pytket.placement.Placement"><span class="pre">pytket.placement.Placement</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="mapping.html#pytket.mapping.RoutingMethod" title="pytket.mapping.RoutingMethod"><span class="pre">pytket.mapping.RoutingMethod</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.FullMappingPass" title="Permalink to this definition">#</a></dt>
 <dd><p>Construct a pass to relabel <code class="xref py py-class docutils literal notranslate"><span class="pre">Circuit</span></code> Qubits to <code class="xref py py-class docutils literal notranslate"><span class="pre">Architecture</span></code> Nodes, and then route to the connectivity graph of an <code class="xref py py-class docutils literal notranslate"><span class="pre">Architecture</span></code>. Edge direction is ignored.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>arc</strong> – The architecture to use for connectivity information.</p></li>
 <li><p><strong>placer</strong> – The Placement used for relabelling.</p></li>
 <li><p><strong>config</strong> – Parameters for routing, a list of RoutingMethod, each method is checked and run if applicable in turn.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a pass to perform the remapping</p>
 </dd>
 </dl>
@@ -1013,7 +999,7 @@ title="Print to PDF"
 <span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">FullPeepholeOptimise</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">allow_swaps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">target_2qb_gate</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="optype.html#pytket.circuit.OpType" title="pytket.circuit.OpType"><span class="pre">pytket.circuit.OpType</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">OpType.CX</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.FullPeepholeOptimise" title="Permalink to this definition">#</a></dt>
 <dd><p>Performs peephole optimisation including resynthesis of 2- and 3-qubit gate sequences, and converts to a circuit containing only the given 2-qubit gate (which may be CX or TK2) and TK1 gates.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>allow_swaps</strong> – whether to allow implicit wire swaps</p>
 </dd>
 </dl>
@@ -1025,7 +1011,7 @@ title="Print to PDF"
 <dd><p>Turns all PhasedX and NPhasedX gates into global gates</p>
 <p>Replaces any PhasedX gates with global NPhasedX gates. By default, this transform will squash all single-qubit gates to PhasedX and Rz gates before proceeding further. Existing non-global NPhasedX will not be preserved. This is the recommended setting for best performance. If squashing is disabled, each non-global PhasedX gate will be replaced with two global NPhasedX, but any other gates will be left untouched.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>squash</strong> – Whether to squash the circuit in pre-processing (default: true).</p>
 </dd>
 </dl>
@@ -1038,13 +1024,13 @@ title="Print to PDF"
 <span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">GuidedPauliSimp</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="transform.html#pytket.transform.PauliSynthStrat" title="pytket.transform.PauliSynthStrat"><span class="pre">pytket.transform.PauliSynthStrat</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">PauliSynthStrat.Sets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cx_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="transform.html#pytket.transform.CXConfigType" title="pytket.transform.CXConfigType"><span class="pre">pytket.transform.CXConfigType</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">CXConfigType.Snake</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.GuidedPauliSimp" title="Permalink to this definition">#</a></dt>
 <dd><p>Applies the <code class="docutils literal notranslate"><span class="pre">PauliSimp</span></code> optimisation pass to any region of the circuit contained within a <code class="xref py py-class docutils literal notranslate"><span class="pre">CircBox</span></code>. This can be useful to focus the synthesis to target specific sets of commuting operations, rather than the default greedy approach.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>strat</strong> – A synthesis strategy for the Pauli graph.</p></li>
 <li><p><strong>cx_config</strong> – A configuration of CXs to convert Pauli gadgets into.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a pass to perform the simplification</p>
 </dd>
 </dl>
@@ -1064,7 +1050,7 @@ title="Print to PDF"
 <p>When decomposing to TK2 gates, any sequence of two or more two-qubit gates on the same set of qubits are replaced by a single TK2 gate. When decomposing to CX, the substitution is only performed if it results in a reduction of the number of CX gates, or if at least one of the two-qubit gates is not a CX.</p>
 <p>Using the <cite>allow_swaps=True</cite> (default) option, qubits will be swapped when convenient to further reduce the two-qubit gate count (only applicable when decomposing to CX gates).</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>target_2qb_gate</strong> – OpType to decompose to. Either TK2 or CX.</p></li>
 <li><p><strong>cx_fidelity</strong> – Estimated CX gate fidelity, used when target_2qb_gate=CX.</p></li>
@@ -1081,10 +1067,10 @@ title="Print to PDF"
 <dt class="sig sig-object py" id="pytket.passes.NaivePlacementPass">
 <span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">NaivePlacementPass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="architecture.html#pytket.architecture.Architecture" title="pytket.architecture.Architecture"><span class="pre">pytket.architecture.Architecture</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.NaivePlacementPass" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>architecture</strong> – The Architecture used for relabelling.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a pass to relabel <code class="xref py py-class docutils literal notranslate"><span class="pre">Circuit</span></code> Qubits to <code class="xref py py-class docutils literal notranslate"><span class="pre">Architecture</span></code> Nodes</p>
 </dd>
 </dl>
@@ -1110,10 +1096,10 @@ title="Print to PDF"
 <span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">OptimisePhaseGadgets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">cx_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="transform.html#pytket.transform.CXConfigType" title="pytket.transform.CXConfigType"><span class="pre">pytket.transform.CXConfigType</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">CXConfigType.Snake</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.OptimisePhaseGadgets" title="Permalink to this definition">#</a></dt>
 <dd><p>Construct a pass that synthesises phase gadgets and converts to a circuit containing only CX, TK1 and Phase gates.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>cx_config</strong> – A configuration of CXs to convert phase gadgets into.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a pass to perform the synthesis</p>
 </dd>
 </dl>
@@ -1125,13 +1111,13 @@ title="Print to PDF"
 <dd><p>Construct a pass that converts a circuit into a graph of Pauli gadgets to account for commutation and phase folding, and resynthesises them as either individual gagdets, pairwise constructions, or by diagonalising sets of commuting gadgets.</p>
 <p>This pass will not preserve the global phase of the circuit.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>strat</strong> – A synthesis strategy for the Pauli graph.</p></li>
 <li><p><strong>cx_config</strong> – A configuration of CXs to convert Pauli gadgets into.</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a pass to perform the simplification</p>
 </dd>
 </dl>
@@ -1142,13 +1128,13 @@ title="Print to PDF"
 <span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">PauliSquash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">strat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="transform.html#pytket.transform.PauliSynthStrat" title="pytket.transform.PauliSynthStrat"><span class="pre">pytket.transform.PauliSynthStrat</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">PauliSynthStrat.Sets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">cx_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="transform.html#pytket.transform.CXConfigType" title="pytket.transform.CXConfigType"><span class="pre">pytket.transform.CXConfigType</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">CXConfigType.Snake</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.PauliSquash" title="Permalink to this definition">#</a></dt>
 <dd><p>Applies <a class="reference internal" href="#pytket.passes.PauliSimp" title="pytket.passes.PauliSimp"><code class="xref py py-meth docutils literal notranslate"><span class="pre">PauliSimp()</span></code></a> followed by <a class="reference internal" href="#pytket.passes.FullPeepholeOptimise" title="pytket.passes.FullPeepholeOptimise"><code class="xref py py-meth docutils literal notranslate"><span class="pre">FullPeepholeOptimise()</span></code></a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>strat</strong> – a synthesis strategy for the Pauli graph</p></li>
 <li><p><strong>cx_config</strong> – a configuration of CXs to convert Pauli gadgets into</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a pass to perform the simplification</p>
 </dd>
 </dl>
@@ -1164,10 +1150,10 @@ title="Print to PDF"
 <dt class="sig sig-object py" id="pytket.passes.PlacementPass">
 <span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">PlacementPass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">placer</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="placement.html#pytket.placement.Placement" title="pytket.placement.Placement"><span class="pre">pytket.placement.Placement</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.PlacementPass" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>placer</strong> – The Placement used for relabelling.</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a pass to relabel <code class="xref py py-class docutils literal notranslate"><span class="pre">Circuit</span></code> Qubits to <code class="xref py py-class docutils literal notranslate"><span class="pre">Architecture</span></code> Nodes</p>
 </dd>
 </dl>
@@ -1188,14 +1174,14 @@ title="Print to PDF"
 <li><p>applies the <cite>tk1_replacement</cite> function to each of these triples <span class="math notranslate nohighlight">\((a,b,c)\)</span> to generate replacement circuits.</p></li>
 </ol>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>gateset</strong> – the allowed operations in the rebased circuit</p></li>
 <li><p><strong>cx_replacement</strong> – the equivalent circuit to replace a CX gate using two qubit gates from the desired basis (can use any single qubit OpTypes)</p></li>
 <li><p><strong>tk1_replacement</strong> – a function which, given the parameters of an Rz(a)Rx(b)Rz(c) triple, returns an equivalent circuit in the desired basis</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a pass that rebases to the given gate set (possibly including conditional and phase operations)</p>
 </dd>
 </dl>
@@ -1210,14 +1196,14 @@ title="Print to PDF"
 <li><p>if TK2 is not in <cite>gateset</cite>. applies the <cite>tk1_replacement</cite> function to each TK1(a,b,c).</p></li>
 </ol>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>gateset</strong> – the allowed operations in the rebased circuit</p></li>
 <li><p><strong>tk2_replacement</strong> – a function which, given the parameters (a,b,c) of an XXPhase(a)YYPhase(b)ZZPhase(c) triple, returns an equivalent circuit in the desired basis</p></li>
 <li><p><strong>tk1_replacement</strong> – a function which, given the parameters (a,b,c) of an Rz(a)Rx(b)Rz(c) triple, returns an equivalent circuit in the desired basis</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a pass that rebases to the given gate set (possibly including conditional and phase operations)</p>
 </dd>
 </dl>
@@ -1259,7 +1245,7 @@ title="Print to PDF"
 <dt class="sig sig-object py" id="pytket.passes.RenameQubitsPass">
 <span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">RenameQubitsPass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qubit_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="circuit.html#pytket.circuit.Qubit" title="pytket.circuit.Qubit"><span class="pre">pytket.circuit.Qubit</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="circuit.html#pytket.circuit.Qubit" title="pytket.circuit.Qubit"><span class="pre">pytket.circuit.Qubit</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.RenameQubitsPass" title="Permalink to this definition">#</a></dt>
 <dd><dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>qubit_map</strong> – map from old to new qubit names</p>
 </dd>
 </dl>
@@ -1277,7 +1263,7 @@ title="Print to PDF"
 <span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">SimplifyInitial</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">allow_classical</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">create_all_qubits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">remove_redundancies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">xcirc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="circuit_class.html#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><span class="pre">pytket.circuit.Circuit</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.SimplifyInitial" title="Permalink to this definition">#</a></dt>
 <dd><p>Simplify the circuit using knowledge of qubit state.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>allow_classical</strong> – allow replacement of measurements on known state with classical set-bit operations</p></li>
 <li><p><strong>create_all_qubits</strong> – automatically annotate all qubits as initialized to the zero state</p></li>
@@ -1285,7 +1271,7 @@ title="Print to PDF"
 <li><p><strong>xcirc</strong> – 1-qubit circuit implementing an X gate in the transformed circuit (if omitted, an X gate is used)</p></li>
 </ul>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a pass to perform the simplification</p>
 </dd>
 </dl>
@@ -1302,7 +1288,7 @@ title="Print to PDF"
 <span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">SquashCustom</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">singleqs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="optype.html#pytket.circuit.OpType" title="pytket.circuit.OpType"><span class="pre">pytket.circuit.OpType</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">tk1_replacement</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Callable</span><span class="p"><span class="pre">[</span></span><span class="p"><span class="pre">[</span></span><span class="pre">Expression</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Expression</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Expression</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="circuit_class.html#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><span class="pre">pytket.circuit.Circuit</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.SquashCustom" title="Permalink to this definition">#</a></dt>
 <dd><p>Squash sequences of single qubit gates from the target gate set into an optimal form given by <cite>tk1_replacement</cite>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>singleqs</strong> – The types of single qubit gates in the target gate set. This pass will only affect sequences of gates that are already in this set.</p></li>
 <li><p><strong>tk1_replacement</strong> – A function which, given the parameters of an Rz(a)Rx(b)Rz(c) triple, returns an equivalent circuit in the desired basis.</p></li>
@@ -1358,7 +1344,7 @@ title="Print to PDF"
 <span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">ThreeQubitSquash</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">allow_swaps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.ThreeQubitSquash" title="Permalink to this definition">#</a></dt>
 <dd><p>Squash three-qubit subcircuits into subcircuits having fewer CX gates, when possible, and apply Clifford simplification.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>allow_swaps</strong> – whether to allow implicit wire swaps</p>
 </dd>
 </dl>
@@ -1378,10 +1364,10 @@ title="Print to PDF"
 </dd></dl>
 
 <section id="module-pytket.passes.script">
-<span id="pytket-passes-script"></span><h2>pytket.passes.script<a class="headerlink" href="#module-pytket.passes.script" title="Permalink to this headline">#</a></h2>
+<span id="pytket-passes-script"></span><h2>pytket.passes.script<a class="headerlink" href="#module-pytket.passes.script" title="Permalink to this heading">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="pytket.passes.script.compilation_pass_from_script">
-<span class="sig-prename descclassname"><span class="pre">pytket.passes.script.</span></span><span class="sig-name descname"><span class="pre">compilation_pass_from_script</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">script</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.script.compilation_pass_from_script" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pytket.passes.script.</span></span><span class="sig-name descname"><span class="pre">compilation_pass_from_script</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">script</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/stdtypes.html#str" title="(in Python v3.11)"><span class="pre">str</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.script.compilation_pass_from_script" title="Permalink to this definition">#</a></dt>
 <dd><p>Generate a compilation pass from a specification.</p>
 <p>The specification must conform to a simple grammar. For example, the following are
 valid specifications:</p>
@@ -1410,7 +1396,7 @@ follows:</p>
 lambdas or circuits.</p>
 <p>The full formal grammar can be inspected using <a class="reference internal" href="#pytket.passes.script.compilation_pass_grammar" title="pytket.passes.script.compilation_pass_grammar"><code class="xref py py-meth docutils literal notranslate"><span class="pre">compilation_pass_grammar()</span></code></a>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>script</strong> – specification of pass</p>
 </dd>
 </dl>
@@ -1422,7 +1408,7 @@ lambdas or circuits.</p>
 <dd><p>Formal grammar for specifying compilation passes.</p>
 <p>This is the grammar assumed by <code class="xref py py-meth docutils literal notranslate"><span class="pre">complilation_pass_from_script()</span></code>.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>grammar in extended Backus–Naur form</p>
 </dd>
 </dl>
@@ -1430,10 +1416,10 @@ lambdas or circuits.</p>
 
 </section>
 <section id="module-pytket.passes.auto_rebase">
-<span id="pytket-passes-auto-rebase"></span><h2>pytket.passes.auto_rebase<a class="headerlink" href="#module-pytket.passes.auto_rebase" title="Permalink to this headline">#</a></h2>
+<span id="pytket-passes-auto-rebase"></span><h2>pytket.passes.auto_rebase<a class="headerlink" href="#module-pytket.passes.auto_rebase" title="Permalink to this heading">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="pytket.passes.auto_rebase.auto_rebase_pass">
-<span class="sig-prename descclassname"><span class="pre">pytket.passes.auto_rebase.</span></span><span class="sig-name descname"><span class="pre">auto_rebase_pass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gateset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Set" title="(in Python v3.11)"><span class="pre">Set</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="optype.html#pytket.circuit.OpType" title="pytket.circuit.OpType"><span class="pre">pytket.circuit.OpType</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pytket.passes.PyCapsule.RebaseCustom</span></span></span><a class="headerlink" href="#pytket.passes.auto_rebase.auto_rebase_pass" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pytket.passes.auto_rebase.</span></span><span class="sig-name descname"><span class="pre">auto_rebase_pass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gateset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Set" title="(in Python v3.11)"><span class="pre">Set</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="optype.html#pytket.circuit.OpType" title="pytket.circuit.OpType"><span class="pre">OpType</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">RebaseCustom</span></span></span><a class="headerlink" href="#pytket.passes.auto_rebase.auto_rebase_pass" title="Permalink to this definition">#</a></dt>
 <dd><p>Attempt to generate a rebase pass automatically for the given target
 gateset.</p>
 <p>Checks if there are known existing decompositions
@@ -1442,16 +1428,16 @@ custom rebase.
 Raises an error if no known decompositions can be found, in which case try
 using RebaseCustom with your own decompositions.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>gateset</strong> (<em>FrozenSet</em><em>[</em><a class="reference internal" href="optype.html#pytket.circuit.OpType" title="pytket.circuit.OpType"><em>OpType</em></a><em>]</em>) – Set of supported OpTypes, target gate set.</p>
 </dd>
-<dt class="field-even">Raises</dt>
+<dt class="field-even">Raises<span class="colon">:</span></dt>
 <dd class="field-even"><p><strong>NoAutoRebase</strong> – No suitable decomposition found.</p>
 </dd>
-<dt class="field-odd">Returns</dt>
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>Rebase pass.</p>
 </dd>
-<dt class="field-even">Return type</dt>
+<dt class="field-even">Return type<span class="colon">:</span></dt>
 <dd class="field-even"><p>RebaseCustom</p>
 </dd>
 </dl>
@@ -1459,17 +1445,17 @@ using RebaseCustom with your own decompositions.</p>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pytket.passes.auto_rebase.auto_squash_pass">
-<span class="sig-prename descclassname"><span class="pre">pytket.passes.auto_rebase.</span></span><span class="sig-name descname"><span class="pre">auto_squash_pass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gateset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Set" title="(in Python v3.11)"><span class="pre">Set</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="optype.html#pytket.circuit.OpType" title="pytket.circuit.OpType"><span class="pre">pytket.circuit.OpType</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Union" title="(in Python v3.11)"><span class="pre">Union</span></a><span class="p"><span class="pre">[</span></span><span class="pre">pytket.passes.PyCapsule.SquashCustom</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">pytket.passes.PyCapsule.SquashRzPhasedX</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pytket.passes.auto_rebase.auto_squash_pass" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pytket.passes.auto_rebase.</span></span><span class="sig-name descname"><span class="pre">auto_squash_pass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gateset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Set" title="(in Python v3.11)"><span class="pre">Set</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="optype.html#pytket.circuit.OpType" title="pytket.circuit.OpType"><span class="pre">OpType</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">SquashCustom</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">SquashRzPhasedX</span></span></span><a class="headerlink" href="#pytket.passes.auto_rebase.auto_squash_pass" title="Permalink to this definition">#</a></dt>
 <dd><p>Attempt to generate a squash pass automatically for the given target
 single qubit gateset.</p>
 <dl class="field-list simple">
-<dt class="field-odd">Parameters</dt>
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>gateset</strong> (<em>Set</em><em>[</em><a class="reference internal" href="optype.html#pytket.circuit.OpType" title="pytket.circuit.OpType"><em>OpType</em></a><em>]</em>) – Available single qubit gateset</p>
 </dd>
-<dt class="field-even">Returns</dt>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>Squash to target gateset</p>
 </dd>
-<dt class="field-odd">Return type</dt>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
 <dd class="field-odd"><p>SquashCustom</p>
 </dd>
 </dl>
@@ -1479,50 +1465,208 @@ single qubit gateset.</p>
 </section>
 
 
-              </div>
+                </article>
               
-            </main>
-            <footer class="footer-article noprint">
-                
-    <!-- Previous / next buttons -->
-<div class='prev-next-area'>
-    <a class='left-prev' id="prev-link" href="pauli.html" title="previous page">
-        <i class="fas fa-angle-left"></i>
-        <div class="prev-next-info">
-            <p class="prev-next-subtitle">previous</p>
-            <p class="prev-next-title">pytket.pauli</p>
-        </div>
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="pauli.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">pytket.pauli</p>
+      </div>
     </a>
-    <a class='right-next' id="next-link" href="predicates.html" title="next page">
-    <div class="prev-next-info">
+    <a class="right-next"
+       href="predicates.html"
+       title="next page">
+      <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
         <p class="prev-next-title">pytket.predicates</p>
-    </div>
-    <i class="fas fa-angle-right"></i>
-    </a>
-</div>
-            </footer>
-        </div>
-    </div>
-    <div class="footer-content row">
-        <footer class="col footer"><p>
-  
-    By Cambridge Quantum Computing Ltd<br/>
-  
-      &copy; Copyright 2023, Cambridge Quantum Computing Ltd.<br/>
-</p>
-        </footer>
-    </div>
-    
-</div>
-
-
       </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.BasePass"><code class="docutils literal notranslate"><span class="pre">BasePass</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.BasePass.__init__"><code class="docutils literal notranslate"><span class="pre">BasePass.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.BasePass.apply"><code class="docutils literal notranslate"><span class="pre">BasePass.apply()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.BasePass.from_dict"><code class="docutils literal notranslate"><span class="pre">BasePass.from_dict()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.BasePass.to_dict"><code class="docutils literal notranslate"><span class="pre">BasePass.to_dict()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.CNotSynthType"><code class="docutils literal notranslate"><span class="pre">CNotSynthType</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.CNotSynthType.__init__"><code class="docutils literal notranslate"><span class="pre">CNotSynthType.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.CNotSynthType.name"><code class="docutils literal notranslate"><span class="pre">CNotSynthType.name</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RepeatPass"><code class="docutils literal notranslate"><span class="pre">RepeatPass</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RepeatPass.__init__"><code class="docutils literal notranslate"><span class="pre">RepeatPass.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RepeatPass.get_pass"><code class="docutils literal notranslate"><span class="pre">RepeatPass.get_pass()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RepeatUntilSatisfiedPass"><code class="docutils literal notranslate"><span class="pre">RepeatUntilSatisfiedPass</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RepeatUntilSatisfiedPass.__init__"><code class="docutils literal notranslate"><span class="pre">RepeatUntilSatisfiedPass.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RepeatUntilSatisfiedPass.get_pass"><code class="docutils literal notranslate"><span class="pre">RepeatUntilSatisfiedPass.get_pass()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RepeatUntilSatisfiedPass.get_predicate"><code class="docutils literal notranslate"><span class="pre">RepeatUntilSatisfiedPass.get_predicate()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RepeatWithMetricPass"><code class="docutils literal notranslate"><span class="pre">RepeatWithMetricPass</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RepeatWithMetricPass.__init__"><code class="docutils literal notranslate"><span class="pre">RepeatWithMetricPass.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RepeatWithMetricPass.get_metric"><code class="docutils literal notranslate"><span class="pre">RepeatWithMetricPass.get_metric()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RepeatWithMetricPass.get_pass"><code class="docutils literal notranslate"><span class="pre">RepeatWithMetricPass.get_pass()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.SafetyMode"><code class="docutils literal notranslate"><span class="pre">SafetyMode</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.SafetyMode.__init__"><code class="docutils literal notranslate"><span class="pre">SafetyMode.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.SafetyMode.name"><code class="docutils literal notranslate"><span class="pre">SafetyMode.name</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.SequencePass"><code class="docutils literal notranslate"><span class="pre">SequencePass</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.SequencePass.__init__"><code class="docutils literal notranslate"><span class="pre">SequencePass.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.SequencePass.get_sequence"><code class="docutils literal notranslate"><span class="pre">SequencePass.get_sequence()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.AASRouting"><code class="docutils literal notranslate"><span class="pre">AASRouting()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.CXMappingPass"><code class="docutils literal notranslate"><span class="pre">CXMappingPass()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.CliffordSimp"><code class="docutils literal notranslate"><span class="pre">CliffordSimp()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.CnXPairwiseDecomposition"><code class="docutils literal notranslate"><span class="pre">CnXPairwiseDecomposition()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.CommuteThroughMultis"><code class="docutils literal notranslate"><span class="pre">CommuteThroughMultis()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.ComposePhasePolyBoxes"><code class="docutils literal notranslate"><span class="pre">ComposePhasePolyBoxes()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.ContextSimp"><code class="docutils literal notranslate"><span class="pre">ContextSimp()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.CustomPass"><code class="docutils literal notranslate"><span class="pre">CustomPass()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.CustomRoutingPass"><code class="docutils literal notranslate"><span class="pre">CustomRoutingPass()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.DecomposeArbitrarilyControlledGates"><code class="docutils literal notranslate"><span class="pre">DecomposeArbitrarilyControlledGates()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.DecomposeBoxes"><code class="docutils literal notranslate"><span class="pre">DecomposeBoxes()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.DecomposeClassicalExp"><code class="docutils literal notranslate"><span class="pre">DecomposeClassicalExp()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.DecomposeMultiQubitsCX"><code class="docutils literal notranslate"><span class="pre">DecomposeMultiQubitsCX()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.DecomposeSingleQubitsTK1"><code class="docutils literal notranslate"><span class="pre">DecomposeSingleQubitsTK1()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.DecomposeSwapsToCXs"><code class="docutils literal notranslate"><span class="pre">DecomposeSwapsToCXs()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.DecomposeSwapsToCircuit"><code class="docutils literal notranslate"><span class="pre">DecomposeSwapsToCircuit()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.DecomposeTK2"><code class="docutils literal notranslate"><span class="pre">DecomposeTK2()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.DefaultMappingPass"><code class="docutils literal notranslate"><span class="pre">DefaultMappingPass()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.DelayMeasures"><code class="docutils literal notranslate"><span class="pre">DelayMeasures()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.EulerAngleReduction"><code class="docutils literal notranslate"><span class="pre">EulerAngleReduction()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.FlattenRegisters"><code class="docutils literal notranslate"><span class="pre">FlattenRegisters()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.FlattenRelabelRegistersPass"><code class="docutils literal notranslate"><span class="pre">FlattenRelabelRegistersPass()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.FullMappingPass"><code class="docutils literal notranslate"><span class="pre">FullMappingPass()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.FullPeepholeOptimise"><code class="docutils literal notranslate"><span class="pre">FullPeepholeOptimise()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.GlobalisePhasedX"><code class="docutils literal notranslate"><span class="pre">GlobalisePhasedX()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.GuidedPauliSimp"><code class="docutils literal notranslate"><span class="pre">GuidedPauliSimp()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.KAKDecomposition"><code class="docutils literal notranslate"><span class="pre">KAKDecomposition()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.NaivePlacementPass"><code class="docutils literal notranslate"><span class="pre">NaivePlacementPass()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.NormaliseTK2"><code class="docutils literal notranslate"><span class="pre">NormaliseTK2()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.OptimisePhaseGadgets"><code class="docutils literal notranslate"><span class="pre">OptimisePhaseGadgets()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.PauliSimp"><code class="docutils literal notranslate"><span class="pre">PauliSimp()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.PauliSquash"><code class="docutils literal notranslate"><span class="pre">PauliSquash()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.PeepholeOptimise2Q"><code class="docutils literal notranslate"><span class="pre">PeepholeOptimise2Q()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.PlacementPass"><code class="docutils literal notranslate"><span class="pre">PlacementPass()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RebaseCustom"><code class="docutils literal notranslate"><span class="pre">RebaseCustom()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RebaseTket"><code class="docutils literal notranslate"><span class="pre">RebaseTket()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RemoveBarriers"><code class="docutils literal notranslate"><span class="pre">RemoveBarriers()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RemoveDiscarded"><code class="docutils literal notranslate"><span class="pre">RemoveDiscarded()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RemoveImplicitQubitPermutation"><code class="docutils literal notranslate"><span class="pre">RemoveImplicitQubitPermutation()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RemoveRedundancies"><code class="docutils literal notranslate"><span class="pre">RemoveRedundancies()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RenameQubitsPass"><code class="docutils literal notranslate"><span class="pre">RenameQubitsPass()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RoutingPass"><code class="docutils literal notranslate"><span class="pre">RoutingPass()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.SimplifyInitial"><code class="docutils literal notranslate"><span class="pre">SimplifyInitial()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.SimplifyMeasured"><code class="docutils literal notranslate"><span class="pre">SimplifyMeasured()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.SquashCustom"><code class="docutils literal notranslate"><span class="pre">SquashCustom()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.SquashRzPhasedX"><code class="docutils literal notranslate"><span class="pre">SquashRzPhasedX()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.SquashTK1"><code class="docutils literal notranslate"><span class="pre">SquashTK1()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.SynthesiseHQS"><code class="docutils literal notranslate"><span class="pre">SynthesiseHQS()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.SynthesiseOQC"><code class="docutils literal notranslate"><span class="pre">SynthesiseOQC()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.SynthesiseTK"><code class="docutils literal notranslate"><span class="pre">SynthesiseTK()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.SynthesiseTket"><code class="docutils literal notranslate"><span class="pre">SynthesiseTket()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.SynthesiseUMD"><code class="docutils literal notranslate"><span class="pre">SynthesiseUMD()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.ThreeQubitSquash"><code class="docutils literal notranslate"><span class="pre">ThreeQubitSquash()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.ZXGraphlikeOptimisation"><code class="docutils literal notranslate"><span class="pre">ZXGraphlikeOptimisation()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.ZZPhaseToRz"><code class="docutils literal notranslate"><span class="pre">ZZPhaseToRz()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-pytket.passes.script">pytket.passes.script</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.script.compilation_pass_from_script"><code class="docutils literal notranslate"><span class="pre">compilation_pass_from_script()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.script.compilation_pass_grammar"><code class="docutils literal notranslate"><span class="pre">compilation_pass_grammar()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-pytket.passes.auto_rebase">pytket.passes.auto_rebase</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.auto_rebase.auto_rebase_pass"><code class="docutils literal notranslate"><span class="pre">auto_rebase_pass()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.auto_rebase.auto_squash_pass"><code class="docutils literal notranslate"><span class="pre">auto_squash_pass()</span></code></a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Cambridge Quantum Computing Ltd
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2023, Cambridge Quantum Computing Ltd.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
     </div>
+  </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/pydata-sphinx-theme.js?digest=1999514e3f237ded88cf"></script>
+  <script src="_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
 
-
+  <footer class="bd-footer">
+  </footer>
   </body>
 </html>
