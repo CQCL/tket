@@ -964,7 +964,7 @@ SCENARIO("QControlBox", "[boxes]") {
     Expr a = Expr(s);
     Circuit inner_c(1);
     inner_c.add_op<unsigned>(OpType::X, {0});
-    inner_c.add_barrier({0});
+    inner_c.add_barrier(std::vector<unsigned>{0});
     inner_c.add_op<unsigned>(OpType::Ry, a, {0});
     CircBox cbox(inner_c);
     Op_ptr cbox_op = std::make_shared<CircBox>(cbox);
@@ -984,7 +984,7 @@ SCENARIO("QControlBox", "[boxes]") {
     inner_c.add_op<unsigned>(OpType::X, {0});
     inner_c.add_barrier({0, 1});
     inner_c.add_op<unsigned>(OpType::Y, {0});
-    inner_c.add_barrier({1});
+    inner_c.add_barrier(std::vector<unsigned>{1});
     inner_c.add_op<unsigned>(OpType::Z, {0});
 
     CircBox cbox(inner_c);
