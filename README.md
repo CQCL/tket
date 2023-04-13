@@ -158,11 +158,7 @@ in them. The main build of TKET will download a pre-built package for each of
 them.
 
 If you are using an unsupported configuration, or want to make changes to these
-libraries, you will need to build them locally. For example:
-
-```shell
-conan create --profile=tket libs/tkrng tket/stable
-```
+libraries, you will need to build them locally. See the [README](libs/README.md) in that directory for instructions.
 
 If you make a change to one of these libraries, please increase the version
 number and make a PR with that change only: the component will then be tested on
@@ -176,6 +172,10 @@ locally: the right version should be downloaded automatically from the conan
 repo.
 
 ### Building tket
+
+Note: we are in the course of migrating from conan 1 to conan 2. See the
+[README](tket/README.md) in the `tket` directory for instructions on building
+the TKET library and unit tests (but not pytket) using conan 2.
 
 #### Method 1
 

@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include "DAGDefs.hpp"
+#include "Circuit/DAGDefs.hpp"
 
 namespace tket {
 

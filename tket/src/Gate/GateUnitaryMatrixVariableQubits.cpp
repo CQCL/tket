@@ -16,7 +16,7 @@
 
 #include <tkassert/Assert.hpp>
 
-#include "GateUnitaryMatrixImplementations.hpp"
+#include "Gate/GateUnitaryMatrixImplementations.hpp"
 
 namespace tket {
 namespace internal {

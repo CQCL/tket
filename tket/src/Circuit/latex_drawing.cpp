@@ -14,8 +14,8 @@
 
 #include <limits>
 
-#include "Boxes.hpp"
-#include "Circuit.hpp"
+#include "Circuit/Boxes.hpp"
+#include "Circuit/Circuit.hpp"
 #include "OpType/OpType.hpp"
 namespace tket {
 

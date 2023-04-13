@@ -1,6 +1,13 @@
 Changelog
 =========
 
+1.14.0 (April 2023)
+-------------------
+
+Major new features:
+
+* Support for ARM Linux platforms.
+
 1.13.2 (March 2023)
 -------------------
 
@@ -11,6 +18,10 @@ Minor new features:
   ``Architecture`` classes to give custom name to constructed ``Node``.
 * Add ``FlattenRelabelRegistersPass`` to remove empty quantum wires and relabel all
   qubits to a default register named after a passed label.
+* Updated implementation of ``ToffoliBox`` utilising multiplexors
+  for improved decomposition.
+* Add new ``DiagonalBox`` that synthesises a diagonal unitary matrix
+  into a sequence of multiplexed-Rz gates.
 
 Fixes:
 

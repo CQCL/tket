@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "OpTypeInfo.hpp"
+#include "OpType/OpTypeInfo.hpp"
 
 #include <memory>
 
-#include "OpType.hpp"
+#include "OpType/OpType.hpp"
 
 namespace tket {
 const std::map<OpType, OpTypeInfo>& optypeinfo() {
@@ -134,6 +134,7 @@ const std::map<OpType, OpTypeInfo>& optypeinfo() {
        {"MultiplexedU2Box", "MultiplexedU2Box", {}, std::nullopt}},
       {OpType::StatePreparationBox,
        {"StatePreparationBox", "StatePreparationBox", {}, std::nullopt}},
+      {OpType::DiagonalBox, {"DiagonalBox", "DiagonalBox", {}, std::nullopt}},
       {OpType::Conditional, {"Conditional", "If", {}, std::nullopt}},
       {OpType::ProjectorAssertionBox,
        {"ProjectorAssertionBox", "ProjectorAssertionBox", {}, std::nullopt}},

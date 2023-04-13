@@ -38,9 +38,9 @@ copyright = "2023, Cambridge Quantum Computing Ltd"
 author = "Cambridge Quantum Computing Ltd"
 
 # The short X.Y version
-version = "1.13"
+version = "1.14"
 # The full version, including alpha/beta/rc tags
-release = "1.13.2"
+release = "1.14.0"
 
 
 # -- General configuration ---------------------------------------------------
@@ -104,6 +104,10 @@ html_theme_options = {
     "repository_url": "https://github.com/CQCL/tket",
     "use_repository_button": True,
     "use_issues_button": True,
+    "logo": {
+        "image_light": "_static/Quantinuum_logo_black.png",
+        "image_dark": "_static/Quantinuum_logo_white.png",
+    },
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
@@ -126,7 +130,6 @@ html_css_files = ["custom.css"]
 
 # -- Options for HTMLHelp output ---------------------------------------------
 
-html_logo = "_static/Quantinuum_logo.png"
 # Output file base name for HTML help builder.
 htmlhelp_basename = "pytketdoc"
 

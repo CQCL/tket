@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "BestTsaWithArch.hpp"
+#include "Architecture/BestTsaWithArch.hpp"
 
 #include <tkassert/Assert.hpp>
 #include <tkrng/RNG.hpp>
 #include <tktokenswap/BestFullTsa.hpp>
 
-#include "DistancesFromArchitecture.hpp"
-#include "NeighboursFromArchitecture.hpp"
+#include "Architecture/DistancesFromArchitecture.hpp"
+#include "Architecture/NeighboursFromArchitecture.hpp"
 
 namespace tket {
 

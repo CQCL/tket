@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Combinator.hpp"
+#include "Transformations/Combinator.hpp"
 
 #include <memory>
 
-#include "Transform.hpp"
+#include "Transformations/Transform.hpp"
 
 namespace tket {
 

@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "HelperFunctions.hpp"
+#include "Utils/HelperFunctions.hpp"
 
 #include <boost/dynamic_bitset.hpp>
 
@@ -53,6 +53,17 @@ std::vector<bool> dec_to_bin(unsigned dec, unsigned width) {
     bits[width - i - 1] = bs[i];
   }
   return bits;
+}
+
+// big endian
+unsigned bin_to_dec(const std::vector<bool> &bin) {
+  unsigned res = 0;
+  for (unsigned i = 0; i < bin.size(); i++) {
+    if (bin[i]) {
+      res = res + (1 << (bin.size() - 1 - i));
+    }
+  }
+  return res;
 }
 
 }  // namespace tket
