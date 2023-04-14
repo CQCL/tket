@@ -104,6 +104,7 @@ To build `tket`:
 ```shell
 conan create tket --user=tket --channel=stable --build=missing -o boost/*:header_only=True
 ```
+(When using `zsh` shell, consider adding quotes around `boost/*`.)
 
 To build the unit tests:
 
