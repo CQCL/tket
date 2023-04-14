@@ -528,13 +528,11 @@ std::string MaxNQubitsPredicate::to_string() const {
 
 bool MaxNClRegPredicate::verify(const Circuit& circ) const {
   bit_vector_t all_bits = circ.all_bits();
-  std::map<std::string, unsigned> bits_map;
+  std::set<std::string> bits_set;
   for (Bit bit : all_bits) {
-    auto it = bits_map.find(bit.reg_name());
-    if (it == bits_map.end()) {
-      bits_map.insert({bit.reg_name(), 1});
-    } else {
-      it->second++;
+    auto it = bits_set.find(bit.reg_name());
+    if (it == bits_set.end()) {
+      bits_set.insert(bit.reg_name());
     }
   }
   return bits_map.size() <= n_cl_reg_;

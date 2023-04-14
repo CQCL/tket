@@ -368,7 +368,7 @@ SCENARIO("Test max classical register predicate") {
     REQUIRE(con1->verify(circ));
     REQUIRE(con5->verify(circ));
   }
-  GIVEN("no classical reg") {
+  GIVEN("4 classical reg") {
     Circuit circ(3, 1);
     circ.add_op<unsigned>(OpType::CX, {0, 1});
     circ.add_op<unsigned>(OpType::CX, {1, 2});
@@ -402,7 +402,7 @@ SCENARIO("Test max classical register predicate") {
     REQUIRE(con3b->implies(*con5));
     PredicatePtr con3c = con5b.meet(*con3);
     REQUIRE(con3b->implies(*con5));
-    con0.to_string();
+    REQUIRE(con0.to_string() == "MaxNClRegPredicate(0)");
   }
 }
 

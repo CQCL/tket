@@ -146,6 +146,7 @@ class BackendInfo:
     :param version: Pytket-extension version installed when creating object.
     :param architecture: Device connectivity.
     :param gate_set: Set of supported gate types.
+    :param n_cl_reg: number of classical registers supported.
     :param supports_fast_feedforward: Flag for hardware support of fast feedforward.
     :param supports_reset: Flag for hardware support of reset operation
     :param supports_midcircuit_meas: Flag for hardware support of midcircuit
@@ -323,5 +324,5 @@ def fully_connected_backendinfo(  # type: ignore
     :param \\**kwargs: All further arguments are passed to the BackendInfo constructor.
     """
     return BackendInfo(
-        name, device_name, version, FullyConnected(n_nodes), gate_set, None, **kwargs
+        name, device_name, version, FullyConnected(n_nodes), gate_set, **kwargs
     )
