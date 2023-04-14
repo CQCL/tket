@@ -530,10 +530,7 @@ bool MaxNClRegPredicate::verify(const Circuit& circ) const {
   bit_vector_t all_bits = circ.all_bits();
   std::set<std::string> bits_set;
   for (Bit bit : all_bits) {
-    auto it = bits_set.find(bit.reg_name());
-    if (it == bits_set.end()) {
-      bits_set.insert(bit.reg_name());
-    }
+    bits_set.insert(bit.reg_name());
   }
   return bits_set.size() <= n_cl_reg_;
 }
