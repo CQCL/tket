@@ -396,8 +396,11 @@ SCENARIO("Test max classical register predicate") {
     MaxNClRegPredicate con0 = MaxNClRegPredicate(0);
     PredicatePtr con3 = std::make_shared<MaxNClRegPredicate>(3);
     PredicatePtr con5 = std::make_shared<MaxNClRegPredicate>(5);
+    MaxNClRegPredicate con5b = MaxNClRegPredicate(5);
     REQUIRE(con0.implies(*con5));
     PredicatePtr con3b = con5->meet(*con3);
+    REQUIRE(con3b->implies(*con5));
+    PredicatePtr con3c = con5b.meet(*con3);
     REQUIRE(con3b->implies(*con5));
     con0.to_string();
   }
