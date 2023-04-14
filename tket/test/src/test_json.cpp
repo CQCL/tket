@@ -702,6 +702,16 @@ SCENARIO("Test predicate serializations") {
     nlohmann::json j_loaded_max = loaded_max;
     REQUIRE(j_max == j_loaded_max);
   }
+  GIVEN("MaxNClRegPredicate") {
+    PredicatePtr max = std::make_shared<MaxNClRegPredicate>(12);
+    nlohmann::json j_max = max;
+    PredicatePtr loaded_max = j_max.get<PredicatePtr>();
+    REQUIRE(
+        dynamic_cast<const MaxNClRegPredicate&>(*loaded_max).get_n_cl_reg() ==
+        12);
+    nlohmann::json j_loaded_max = loaded_max;
+    REQUIRE(j_max == j_loaded_max);
+  }
   GIVEN("UserDefinedPredicate") {
     std::function<bool(const Circuit&)> func = [](const Circuit&) {
       return false;

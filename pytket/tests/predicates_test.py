@@ -59,6 +59,7 @@ from pytket.predicates import (  # type: ignore
     DirectednessPredicate,
     NoBarriersPredicate,
     CompilationUnit,
+    MaxNClRegPredicate,
 )
 from pytket.mapping import (  # type: ignore
     LexiLabellingMethod,
@@ -454,6 +455,18 @@ def test_no_barriers_pred() -> None:
     c = Circuit(1).H(0)
     assert pred.verify(c)
     c.add_barrier([0]).H(0)
+    assert not pred.verify(c)
+
+
+def test_MaxNClRegPredicate_pred() -> None:
+    pred = MaxNClRegPredicate(3)
+    c = Circuit(1).H(0)
+    c.add_c_register("name", 2)
+    c.add_c_register("name2", 1)
+    c.add_c_register("name3", 1)
+    assert pred.verify(c)
+    c.add_barrier([0]).H(0)
+    c.add_c_register("name4", 1)
     assert not pred.verify(c)
 
 

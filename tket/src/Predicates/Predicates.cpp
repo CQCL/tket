@@ -61,6 +61,7 @@ const std::string& predicate_name(std::type_index idx) {
       SET_PRED_NAME(DirectednessPredicate),
       SET_PRED_NAME(GateSetPredicate),
       SET_PRED_NAME(MaxNQubitsPredicate),
+      SET_PRED_NAME(MaxNClRegPredicate),
       SET_PRED_NAME(MaxTwoQubitGatesPredicate),
       SET_PRED_NAME(NoBarriersPredicate),
       SET_PRED_NAME(NoClassicalBitsPredicate),
@@ -525,6 +526,42 @@ std::string MaxNQubitsPredicate::to_string() const {
   return auto_name(*this) + "(" + std::to_string(n_qubits_) + ")";
 }
 
+bool MaxNClRegPredicate::verify(const Circuit& circ) const {
+  bit_vector_t all_bits = circ.all_bits();
+  std::set<std::string> bits_set;
+  for (Bit bit : all_bits) {
+    bits_set.insert(bit.reg_name());
+  }
+  return bits_set.size() <= n_cl_reg_;
+}
+
+bool MaxNClRegPredicate::implies(const Predicate& other) const {
+  try {
+    const MaxNClRegPredicate& other_p =
+        dynamic_cast<const MaxNClRegPredicate&>(other);
+    return n_cl_reg_ <= other_p.n_cl_reg_;
+  } catch (const std::bad_cast&) {
+    throw IncorrectPredicate(
+        "Cannot compare predicates of different subclasses");
+  }
+}
+
+PredicatePtr MaxNClRegPredicate::meet(const Predicate& other) const {
+  try {
+    const MaxNClRegPredicate& other_p =
+        dynamic_cast<const MaxNClRegPredicate&>(other);
+    return std::make_shared<MaxNClRegPredicate>(
+        std::min(n_cl_reg_, other_p.n_cl_reg_));
+  } catch (const std::bad_cast&) {
+    throw IncorrectPredicate(
+        "Cannot compare predicates of different subclasses");
+  }
+}
+
+std::string MaxNClRegPredicate::to_string() const {
+  return auto_name(*this) + "(" + std::to_string(n_cl_reg_) + ")";
+}
+
 bool NoBarriersPredicate::verify(const Circuit& circ) const {
   BGL_FORALL_VERTICES(v, circ.dag, DAG) {
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
@@ -720,6 +757,11 @@ void to_json(nlohmann::json& j, const PredicatePtr& pred_ptr) {
     j["type"] = "MaxNQubitsPredicate";
     j["n_qubits"] = cast_pred->get_n_qubits();
   } else if (
+      std::shared_ptr<MaxNClRegPredicate> cast_pred =
+          std::dynamic_pointer_cast<MaxNClRegPredicate>(pred_ptr)) {
+    j["type"] = "MaxNClRegPredicate";
+    j["n_cl_reg"] = cast_pred->get_n_cl_reg();
+  } else if (
       std::shared_ptr<NoBarriersPredicate> cast_pred =
           std::dynamic_pointer_cast<NoBarriersPredicate>(pred_ptr)) {
     j["type"] = "NoBarriersPredicate";
@@ -781,6 +823,9 @@ void from_json(const nlohmann::json& j, PredicatePtr& pred_ptr) {
   } else if (classname == "MaxNQubitsPredicate") {
     unsigned n_qubits = j.at("n_qubits").get<unsigned>();
     pred_ptr = std::make_shared<MaxNQubitsPredicate>(n_qubits);
+  } else if (classname == "MaxNClRegPredicate") {
+    unsigned n_cl_reg = j.at("n_cl_reg").get<unsigned>();
+    pred_ptr = std::make_shared<MaxNClRegPredicate>(n_cl_reg);
   } else if (classname == "NoBarriersPredicate") {
     pred_ptr = std::make_shared<NoBarriersPredicate>();
   } else if (classname == "CommutableMeasuresPredicate") {
