@@ -393,12 +393,13 @@ SCENARIO("Test max classical register predicate") {
     REQUIRE(con5.get_n_cl_reg() == 5);
   }
   GIVEN("check additional functions II") {
-    PredicatePtr con0 = std::make_shared<MaxNClRegPredicate>(0);
+    MaxNClRegPredicate con0 = MaxNClRegPredicate(0);
     PredicatePtr con3 = std::make_shared<MaxNClRegPredicate>(3);
     PredicatePtr con5 = std::make_shared<MaxNClRegPredicate>(5);
-    REQUIRE(con0->implies(*con5));
+    REQUIRE(con0.implies(*con5));
     PredicatePtr con3b = con5->meet(*con3);
     REQUIRE(con3b->implies(*con5));
+    con0.to_string();
   }
 }
 
