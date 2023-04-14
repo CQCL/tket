@@ -27,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2023-04-13 10:14:30</td>
+      <td>2023-04-14 10:56:45</td>
     </tr>
   </table>
 </div>
@@ -42,14 +42,14 @@
     <tr>
       <th scope="row">Lines:</th>
       <td>7</td>
-      <td>21</td>
-      <td class="coverage-low">33.3%</td>
+      <td>23</td>
+      <td class="coverage-low">30.4%</td>
     </tr>
     <tr>
       <th scope="row">Functions:</th>
       <td>3</td>
-      <td>15</td>
-      <td class="coverage-low">20.0%</td>
+      <td>17</td>
+      <td class="coverage-low">17.6%</td>
     </tr>
     <tr>
       <th scope="row">Branches:</th>
@@ -154,6 +154,28 @@
       </td>
       <td>
         <a href="#l31"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l235">tket::MaxNClRegPredicate::MaxNClRegPredicate(unsigned int)</a>
+      </td>
+      <td>
+        <a href="#l235">235</a>
+      </td>
+      <td>
+        <a href="#l235"> not called</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l240">tket::MaxNClRegPredicate::get_n_cl_reg() const</a>
+      </td>
+      <td>
+        <a href="#l240">240</a>
+      </td>
+      <td>
+        <a href="#l240"> not called</a>
       </td>
     </tr>
     <tr>
@@ -2350,7 +2372,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> * Asserts that the circuit contains no \ref OpType::Barrier</span></td>
+      <td class="src "><span class="cm"> * Asserts that the circuit only contains N classical registers or less</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l232" href="#l232">232</a></td>
@@ -2368,7 +2390,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="k">class</span><span class="w"> </span><span class="nc">NoBarriersPredicate</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">Predicate</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src "><span class="k">class</span><span class="w"> </span><span class="nc">MaxNClRegPredicate</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">Predicate</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l234" href="#l234">234</a></td>
@@ -2385,8 +2407,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">verify</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Circuit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">circ</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">  </span><span class="k">explicit</span><span class="w"> </span><span class="n">MaxNClRegPredicate</span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="n">_n_cl_reg</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">n_cl_reg_</span><span class="p">(</span><span class="n">_n_cl_reg</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l236" href="#l236">236</a></td>
@@ -2395,7 +2417,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">implies</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Predicate</span><span class="o">&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">verify</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Circuit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">circ</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l237" href="#l237">237</a></td>
@@ -2404,7 +2426,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">PredicatePtr</span><span class="w"> </span><span class="nf">meet</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Predicate</span><span class="o">&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">implies</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Predicate</span><span class="o">&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l238" href="#l238">238</a></td>
@@ -2413,7 +2435,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="nf">to_string</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="n">PredicatePtr</span><span class="w"> </span><span class="nf">meet</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Predicate</span><span class="o">&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l239" href="#l239">239</a></td>
@@ -2422,7 +2444,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="p">};</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="nf">to_string</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l240" href="#l240">240</a></td>
@@ -2430,8 +2452,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">  </span><span class="kt">unsigned</span><span class="w"> </span><span class="nf">get_n_cl_reg</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">n_cl_reg_</span><span class="p">;</span><span class="w"> </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l241" href="#l241">241</a></td>
@@ -2440,7 +2462,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">/**</span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l242" href="#l242">242</a></td>
@@ -2449,7 +2471,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> * Asserts that any internal measurements can be commuted to the end of the</span></td>
+      <td class="src "><span class="w"> </span><span class="k">private</span><span class="o">:</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l243" href="#l243">243</a></td>
@@ -2458,7 +2480,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> * circuit</span></td>
+      <td class="src "><span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="n">n_cl_reg_</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l244" href="#l244">244</a></td>
@@ -2467,7 +2489,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> */</span><span class="w"></span></td>
+      <td class="src "><span class="p">};</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l245" href="#l245">245</a></td>
@@ -2476,7 +2498,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="k">class</span><span class="w"> </span><span class="nc">CommutableMeasuresPredicate</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">Predicate</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l246" href="#l246">246</a></td>
@@ -2485,7 +2507,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w"> </span><span class="k">public</span><span class="o">:</span><span class="w"></span></td>
+      <td class="src "><span class="cm">/**</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l247" href="#l247">247</a></td>
@@ -2494,7 +2516,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">verify</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Circuit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">circ</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="cm"> * Asserts that the circuit contains no \ref OpType::Barrier</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l248" href="#l248">248</a></td>
@@ -2503,7 +2525,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">implies</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Predicate</span><span class="o">&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="cm"> */</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l249" href="#l249">249</a></td>
@@ -2512,7 +2534,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">PredicatePtr</span><span class="w"> </span><span class="nf">meet</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Predicate</span><span class="o">&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="k">class</span><span class="w"> </span><span class="nc">NoBarriersPredicate</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">Predicate</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l250" href="#l250">250</a></td>
@@ -2521,7 +2543,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="nf">to_string</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="w"> </span><span class="k">public</span><span class="o">:</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l251" href="#l251">251</a></td>
@@ -2530,7 +2552,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="p">};</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">verify</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Circuit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">circ</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l252" href="#l252">252</a></td>
@@ -2539,7 +2561,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">implies</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Predicate</span><span class="o">&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l253" href="#l253">253</a></td>
@@ -2548,7 +2570,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">/**</span></td>
+      <td class="src "><span class="w">  </span><span class="n">PredicatePtr</span><span class="w"> </span><span class="nf">meet</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Predicate</span><span class="o">&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l254" href="#l254">254</a></td>
@@ -2557,7 +2579,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> * Asserts that any measurements occur at the end of the circuit</span></td>
+      <td class="src "><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="nf">to_string</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l255" href="#l255">255</a></td>
@@ -2566,7 +2588,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> */</span><span class="w"></span></td>
+      <td class="src "><span class="p">};</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l256" href="#l256">256</a></td>
@@ -2575,7 +2597,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="k">class</span><span class="w"> </span><span class="nc">NoMidMeasurePredicate</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">Predicate</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l257" href="#l257">257</a></td>
@@ -2584,7 +2606,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w"> </span><span class="k">public</span><span class="o">:</span><span class="w"></span></td>
+      <td class="src "><span class="cm">/**</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l258" href="#l258">258</a></td>
@@ -2593,7 +2615,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">verify</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Circuit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">circ</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="cm"> * Asserts that any internal measurements can be commuted to the end of the</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l259" href="#l259">259</a></td>
@@ -2602,7 +2624,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">implies</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Predicate</span><span class="o">&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="cm"> * circuit</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l260" href="#l260">260</a></td>
@@ -2611,7 +2633,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">PredicatePtr</span><span class="w"> </span><span class="nf">meet</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Predicate</span><span class="o">&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="cm"> */</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l261" href="#l261">261</a></td>
@@ -2620,7 +2642,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="nf">to_string</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="k">class</span><span class="w"> </span><span class="nc">CommutableMeasuresPredicate</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">Predicate</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l262" href="#l262">262</a></td>
@@ -2629,7 +2651,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="p">};</span><span class="w"></span></td>
+      <td class="src "><span class="w"> </span><span class="k">public</span><span class="o">:</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l263" href="#l263">263</a></td>
@@ -2638,7 +2660,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">verify</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Circuit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">circ</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l264" href="#l264">264</a></td>
@@ -2647,7 +2669,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">/**</span></td>
+      <td class="src "><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">implies</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Predicate</span><span class="o">&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l265" href="#l265">265</a></td>
@@ -2656,7 +2678,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> * Asserts that no gates in the circuit have symbolic parameters</span></td>
+      <td class="src "><span class="w">  </span><span class="n">PredicatePtr</span><span class="w"> </span><span class="nf">meet</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Predicate</span><span class="o">&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l266" href="#l266">266</a></td>
@@ -2665,7 +2687,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> */</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="nf">to_string</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l267" href="#l267">267</a></td>
@@ -2674,7 +2696,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="k">class</span><span class="w"> </span><span class="nc">NoSymbolsPredicate</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">Predicate</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src "><span class="p">};</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l268" href="#l268">268</a></td>
@@ -2683,7 +2705,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w"> </span><span class="k">public</span><span class="o">:</span><span class="w"></span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l269" href="#l269">269</a></td>
@@ -2692,7 +2714,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">verify</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Circuit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">circ</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="cm">/**</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l270" href="#l270">270</a></td>
@@ -2701,7 +2723,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">implies</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Predicate</span><span class="o">&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="cm"> * Asserts that any measurements occur at the end of the circuit</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l271" href="#l271">271</a></td>
@@ -2710,7 +2732,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">PredicatePtr</span><span class="w"> </span><span class="nf">meet</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Predicate</span><span class="o">&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="cm"> */</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l272" href="#l272">272</a></td>
@@ -2719,7 +2741,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="nf">to_string</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="k">class</span><span class="w"> </span><span class="nc">NoMidMeasurePredicate</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">Predicate</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l273" href="#l273">273</a></td>
@@ -2728,7 +2750,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="p">};</span><span class="w"></span></td>
+      <td class="src "><span class="w"> </span><span class="k">public</span><span class="o">:</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l274" href="#l274">274</a></td>
@@ -2737,7 +2759,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">verify</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Circuit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">circ</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l275" href="#l275">275</a></td>
@@ -2746,7 +2768,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">/**</span></td>
+      <td class="src "><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">implies</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Predicate</span><span class="o">&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l276" href="#l276">276</a></td>
@@ -2755,7 +2777,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> * Asserts that all NPhasedX gates act on all qubits</span></td>
+      <td class="src "><span class="w">  </span><span class="n">PredicatePtr</span><span class="w"> </span><span class="nf">meet</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Predicate</span><span class="o">&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l277" href="#l277">277</a></td>
@@ -2764,7 +2786,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> * In the future, it might be useful to have a generic GlobalGatePredicate</span></td>
+      <td class="src "><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="nf">to_string</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l278" href="#l278">278</a></td>
@@ -2773,7 +2795,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> * for other global gates, or flag some gates as global</span></td>
+      <td class="src "><span class="p">};</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l279" href="#l279">279</a></td>
@@ -2782,7 +2804,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> */</span><span class="w"></span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l280" href="#l280">280</a></td>
@@ -2791,7 +2813,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="k">class</span><span class="w"> </span><span class="nc">GlobalPhasedXPredicate</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">Predicate</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src "><span class="cm">/**</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l281" href="#l281">281</a></td>
@@ -2800,7 +2822,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w"> </span><span class="k">public</span><span class="o">:</span><span class="w"></span></td>
+      <td class="src "><span class="cm"> * Asserts that no gates in the circuit have symbolic parameters</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l282" href="#l282">282</a></td>
@@ -2809,7 +2831,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">verify</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Circuit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">circ</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="cm"> */</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l283" href="#l283">283</a></td>
@@ -2818,7 +2840,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">implies</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Predicate</span><span class="o">&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="k">class</span><span class="w"> </span><span class="nc">NoSymbolsPredicate</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">Predicate</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l284" href="#l284">284</a></td>
@@ -2827,7 +2849,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">PredicatePtr</span><span class="w"> </span><span class="nf">meet</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Predicate</span><span class="o">&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="w"> </span><span class="k">public</span><span class="o">:</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l285" href="#l285">285</a></td>
@@ -2836,7 +2858,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="nf">to_string</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">verify</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Circuit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">circ</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l286" href="#l286">286</a></td>
@@ -2845,7 +2867,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="p">};</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">implies</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Predicate</span><span class="o">&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l287" href="#l287">287</a></td>
@@ -2854,7 +2876,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="w">  </span><span class="n">PredicatePtr</span><span class="w"> </span><span class="nf">meet</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Predicate</span><span class="o">&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l288" href="#l288">288</a></td>
@@ -2863,7 +2885,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">/**</span></td>
+      <td class="src "><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="nf">to_string</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l289" href="#l289">289</a></td>
@@ -2872,7 +2894,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> * Asserts that all TK2 gates are normalised</span></td>
+      <td class="src "><span class="p">};</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l290" href="#l290">290</a></td>
@@ -2881,7 +2903,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> *</span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l291" href="#l291">291</a></td>
@@ -2890,7 +2912,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> * A gate TK2(a, b, c) is considered normalised if</span></td>
+      <td class="src "><span class="cm">/**</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l292" href="#l292">292</a></td>
@@ -2899,7 +2921,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> *</span></td>
+      <td class="src "><span class="cm"> * Asserts that all NPhasedX gates act on all qubits</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l293" href="#l293">293</a></td>
@@ -2908,7 +2930,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> *  - If all expressions are non symbolic, then it must hold</span></td>
+      <td class="src "><span class="cm"> * In the future, it might be useful to have a generic GlobalGatePredicate</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l294" href="#l294">294</a></td>
@@ -2917,7 +2939,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> *    `0.5 ≥ a ≥ b ≥ |c|`.</span></td>
+      <td class="src "><span class="cm"> * for other global gates, or flag some gates as global</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l295" href="#l295">295</a></td>
@@ -2926,7 +2948,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> *  - In the ordering (a, b, c), any symbolic expression must appear before</span></td>
+      <td class="src "><span class="cm"> */</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l296" href="#l296">296</a></td>
@@ -2935,7 +2957,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> *    non-symbolic ones. The remaining non-symbolic expressions must still be</span></td>
+      <td class="src "><span class="k">class</span><span class="w"> </span><span class="nc">GlobalPhasedXPredicate</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">Predicate</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l297" href="#l297">297</a></td>
@@ -2944,7 +2966,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> *    ordered in non-increasing order and must be in the interval [0, 1/2],</span></td>
+      <td class="src "><span class="w"> </span><span class="k">public</span><span class="o">:</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l298" href="#l298">298</a></td>
@@ -2953,7 +2975,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> *    with the exception of the last one that may be in [-1/2, 1/2].</span></td>
+      <td class="src "><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">verify</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Circuit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">circ</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l299" href="#l299">299</a></td>
@@ -2962,7 +2984,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm"> */</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">implies</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Predicate</span><span class="o">&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l300" href="#l300">300</a></td>
@@ -2971,7 +2993,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="k">class</span><span class="w"> </span><span class="nc">NormalisedTK2Predicate</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">Predicate</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="n">PredicatePtr</span><span class="w"> </span><span class="nf">meet</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Predicate</span><span class="o">&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l301" href="#l301">301</a></td>
@@ -2980,7 +3002,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w"> </span><span class="k">public</span><span class="o">:</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="nf">to_string</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l302" href="#l302">302</a></td>
@@ -2989,7 +3011,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">verify</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Circuit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">circ</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="p">};</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l303" href="#l303">303</a></td>
@@ -2998,7 +3020,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">implies</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Predicate</span><span class="o">&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l304" href="#l304">304</a></td>
@@ -3007,7 +3029,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">PredicatePtr</span><span class="w"> </span><span class="nf">meet</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Predicate</span><span class="o">&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="cm">/**</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l305" href="#l305">305</a></td>
@@ -3016,7 +3038,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="nf">to_string</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="cm"> * Asserts that all TK2 gates are normalised</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l306" href="#l306">306</a></td>
@@ -3025,7 +3047,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="p">};</span><span class="w"></span></td>
+      <td class="src "><span class="cm"> *</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l307" href="#l307">307</a></td>
@@ -3034,7 +3056,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="cm"> * A gate TK2(a, b, c) is considered normalised if</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l308" href="#l308">308</a></td>
@@ -3043,10 +3065,154 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="p">}</span><span class="w">  </span><span class="c1">// namespace tket</span></td>
+      <td class="src "><span class="cm"> *</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l309" href="#l309">309</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm"> *  - If all expressions are non symbolic, then it must hold</span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l310" href="#l310">310</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm"> *    `0.5 ≥ a ≥ b ≥ |c|`.</span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l311" href="#l311">311</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm"> *  - In the ordering (a, b, c), any symbolic expression must appear before</span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l312" href="#l312">312</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm"> *    non-symbolic ones. The remaining non-symbolic expressions must still be</span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l313" href="#l313">313</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm"> *    ordered in non-increasing order and must be in the interval [0, 1/2],</span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l314" href="#l314">314</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm"> *    with the exception of the last one that may be in [-1/2, 1/2].</span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l315" href="#l315">315</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="cm"> */</span><span class="w"></span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l316" href="#l316">316</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="k">class</span><span class="w"> </span><span class="nc">NormalisedTK2Predicate</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">Predicate</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l317" href="#l317">317</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="w"> </span><span class="k">public</span><span class="o">:</span><span class="w"></span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l318" href="#l318">318</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="n">verify</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Circuit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">circ</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l319" href="#l319">319</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="w">  </span><span class="kt">bool</span><span class="w"> </span><span class="nf">implies</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Predicate</span><span class="o">&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l320" href="#l320">320</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="w">  </span><span class="n">PredicatePtr</span><span class="w"> </span><span class="nf">meet</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Predicate</span><span class="o">&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l321" href="#l321">321</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="nf">to_string</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l322" href="#l322">322</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="p">};</span><span class="w"></span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l323" href="#l323">323</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l324" href="#l324">324</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="p">}</span><span class="w">  </span><span class="c1">// namespace tket</span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l325" href="#l325">325</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
