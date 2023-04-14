@@ -91,13 +91,13 @@ conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/t
 To build the library `tkxxx`:
 
 ```shell
-conan create libs/tkxxx --build=missing -o boost/*:header_only=True
+conan create libs/tkxxx --build=missing -o "boost/*":header_only=True
 ```
 
 To build the unit tests:
 
 ```shell
-conan create libs/tkxxx/test --build=missing -o boost/*:header_only=True --format json > test-tkxxx.json
+conan create libs/tkxxx/test --build=missing -o "boost/*":header_only=True --format json > test-tkxxx.json
 ```
 
 To extract the root package path to environment variable:
@@ -114,5 +114,5 @@ cd ${PKGPATH}/bin
 cd -
 ```
 
-To build the shared library, use the option `-o tkxxx/*:shared=True` in the
+To build the shared library, use the option `-o "tkxxx/*":shared=True` in the
 `conan create` command.
