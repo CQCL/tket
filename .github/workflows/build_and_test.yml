@@ -124,10 +124,10 @@ jobs:
         }
     - name: Build tket
       if: needs.check_changes.outputs.tket_changed == 'true'
-      run: conan create tket --user=tket --channel=stable --build=missing -o boost/*:header_only=True
+      run: conan create tket --user=tket --channel=stable --build=missing -o "boost/*":header_only=True
     - name: Install tket
       if: needs.check_changes.outputs.tket_changed != 'true'
-      run: conan install tket --version ${{ needs.check_changes.outputs.tket_ver }} --user tket --channel stable --build=missing -o boost/*:header_only=True
+      run: conan install tket --version ${{ needs.check_changes.outputs.tket_ver }} --user tket --channel stable --build=missing -o "boost/*":header_only=True
     - name: check that version is consistent
       if: matrix.os == 'ubuntu-22.04' && github.event_name == 'pull_request'
       run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
@@ -141,14 +141,14 @@ jobs:
       if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_tests_changed == 'true'
       shell: bash
       run: |
-        conan create tket/test --build=missing -o boost/*:header_only=True --format json > test-tket.json
+        conan create tket/test --build=missing -o "boost/*":header_only=True --format json > test-tket.json
         PKGPATH=`./rootpath test-tket.json test-tket`
         cd ${PKGPATH}/bin && ./test-tket `./github/workflows/test-args ${{ matrix.os }} ${{ github.event_name }}`
     - name: Build and run tket proptests
       if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_proptests_changed == 'true'
       shell: bash
       run: |
-        conan create tket/proptest --build=missing  -o boost/*:header_only=True --format json > proptest-tket.json
+        conan create tket/proptest --build=missing  -o "boost/*":header_only=True --format json > proptest-tket.json
         PKGPATH=`./rootpath proptest-tket.json proptest-tket`
         cd ${PKGPATH}/bin && ./proptest-tket
     - name: Upload package
@@ -173,20 +173,20 @@ jobs:
         conan cache clean
     - name: Build tket
       if: needs.check_changes.outputs.tket_changed == 'true'
-      run: conan create tket --user=tket --channel=stable --build=missing -o boost/*:header_only=True
+      run: conan create tket --user=tket --channel=stable --build=missing -o "boost/*":header_only=True
     - name: Install tket
       if: needs.check_changes.outputs.tket_changed != 'true'
-      run: conan install tket --version ${{ needs.check_changes.outputs.tket_ver }} --user tket --channel stable --build=missing -o boost/*:header_only=True
+      run: conan install tket --version ${{ needs.check_changes.outputs.tket_ver }} --user tket --channel stable --build=missing -o "boost/*":header_only=True
     - name: Build and run tket tests
       if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_tests_changed == 'true'
       run: |
-        conan create tket/test --build=missing -o boost/*:header_only=True --format json > test-tket.json
+        conan create tket/test --build=missing -o "boost/*":header_only=True --format json > test-tket.json
         PKGPATH=`./rootpath test-tket.json test-tket`
         cd ${PKGPATH}/bin && ./test-tket `./github/workflows/test-args ${{ matrix.os }} ${{ github.event_name }}`
     - name: Build and run tket proptests
       if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_proptests_changed == 'true'
       run: |
-        conan create tket/proptest --build=missing  -o boost/*:header_only=True --format json > proptest-tket.json
+        conan create tket/proptest --build=missing  -o "boost/*":header_only=True --format json > proptest-tket.json
         PKGPATH=`./rootpath proptest-tket.json proptest-tket`
         cd ${PKGPATH}/bin && ./proptest-tket
     - name: Upload package

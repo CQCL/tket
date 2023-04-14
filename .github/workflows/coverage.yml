@@ -58,13 +58,13 @@ jobs:
       run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: Build tket
       run: |
-        conan install tket --user=tket --channel=stable -s build_type=Debug --build=missing -o boost/*:header_only=True -o tket/*:profile_coverage=True -of build/tket
-        conan build tket --user=tket --channel=stable -s build_type=Debug -o boost/*:header_only=True -o tket/*:profile_coverage=True -of build/tket
-        conan export-pkg tket --user=tket --channel=stable -s build_type=Debug -o boost/*:header_only=True -o tket/*:profile_coverage=True -of build/tket -tf ""
+        conan install tket --user=tket --channel=stable -s build_type=Debug --build=missing -o "boost/*":header_only=True -o tket/*:profile_coverage=True -of build/tket
+        conan build tket --user=tket --channel=stable -s build_type=Debug -o "boost/*":header_only=True -o tket/*:profile_coverage=True -of build/tket
+        conan export-pkg tket --user=tket --channel=stable -s build_type=Debug -o "boost/*":header_only=True -o tket/*:profile_coverage=True -of build/tket -tf ""
     - name: Build tket tests
       run: |
-        conan install tket/test -s build_type=Debug --build=missing -o boost/*:header_only=True -o test-tket/*:with_coverage=True -of build/tket-tests
-        conan build tket/test -s build_type=Debug --build=missing -o boost/*:header_only=True -o test-tket/*:with_coverage=True -of build/tket-tests
+        conan install tket/test -s build_type=Debug --build=missing -o "boost/*":header_only=True -o test-tket/*:with_coverage=True -of build/tket-tests
+        conan build tket/test -s build_type=Debug --build=missing -o "boost/*":header_only=True -o test-tket/*:with_coverage=True -of build/tket-tests
         # Copy json files (`conan create` would do this properly, but would
         # also delete the object files we need ... perhaps there is a better
         # way):
