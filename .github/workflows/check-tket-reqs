@@ -18,7 +18,7 @@ version = sys.argv[1]
 paths = [
     os.path.join(".", "tket", "test", "conanfile.py"),
     os.path.join(".", "tket", "proptest", "conanfile.py"),
-    os.path.join(".", "pytket", "conanfile.txt"),
+    os.path.join(".", "pytket", "conanfile.py"),
 ]
 
 conan_ver = conan.conan_version.major.value
