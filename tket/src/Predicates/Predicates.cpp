@@ -535,7 +535,7 @@ bool MaxNClRegPredicate::verify(const Circuit& circ) const {
       bits_set.insert(bit.reg_name());
     }
   }
-  return bits_map.size() <= n_cl_reg_;
+  return bits_set.size() <= n_cl_reg_;
 }
 
 bool MaxNClRegPredicate::implies(const Predicate& other) const {
