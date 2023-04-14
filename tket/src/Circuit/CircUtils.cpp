@@ -1036,6 +1036,7 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
         new_args.push_back(Qubit(i + n_controls));
       }
       new_args.push_back(Qubit(b.target_qubit + n_controls));
+      TKET_ASSERT(b.ops.size() == 1);
       c2.add_op(b.ops[0], new_args);
       continue;
     }
