@@ -173,6 +173,7 @@ class BackendInfo:
     # hardware constraints
     architecture: Union[Architecture, FullyConnected]
     gate_set: Set[OpType]
+    n_cl_reg: Optional[int] = None
     # additional feature support
     supports_fast_feedforward: bool = False
     supports_reset: bool = False
@@ -322,5 +323,5 @@ def fully_connected_backendinfo(  # type: ignore
     :param \\**kwargs: All further arguments are passed to the BackendInfo constructor.
     """
     return BackendInfo(
-        name, device_name, version, FullyConnected(n_nodes), gate_set, **kwargs
+        name, device_name, version, FullyConnected(n_nodes), gate_set, None, **kwargs
     )

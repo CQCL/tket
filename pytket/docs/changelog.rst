@@ -1,6 +1,14 @@
 Changelog
 =========
 
+1.15.0 (unreleased)
+-------------------
+
+Minor new features:
+
+* Add new ``MaxNClRegPredicate`` that checks that there are at max n classical
+  registers in the circuit.
+
 1.14.0 (April 2023)
 -------------------
 
