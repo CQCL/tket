@@ -102,13 +102,13 @@ conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/t
 To build `tket`:
 
 ```shell
-conan create tket --user=tket --channel=stable --build=missing -o "boost/*":header_only=True
+conan create tket --user=tket --channel=stable --build=missing -o boost/*:header_only=True
 ```
 
 To build the unit tests:
 
 ```shell
-conan create tket/test --build=missing  -o "boost/*":header_only=True --format json > test-tket.json
+conan create tket/test --build=missing  -o boost/*:header_only=True --format json > test-tket.json
 ```
 
 To extract the root package path to environment variable:
@@ -128,7 +128,7 @@ cd -
 To build the property tests:
 
 ```shell
-conan create tket/proptest --build=missing  -o "boost/*":header_only=True --format json > proptest-tket.json
+conan create tket/proptest --build=missing  -o boost/*:header_only=True --format json > proptest-tket.json
 ```
 
 To extract the root package path to environment variable:
