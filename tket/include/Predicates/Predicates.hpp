@@ -228,6 +228,22 @@ class MaxNQubitsPredicate : public Predicate {
 };
 
 /**
+ * Asserts that the circuit only contains N classical registers or less
+ */
+class MaxNClRegPredicate : public Predicate {
+ public:
+  explicit MaxNClRegPredicate(unsigned _n_cl_reg) : n_cl_reg_(_n_cl_reg) {}
+  bool verify(const Circuit& circ) const override;
+  bool implies(const Predicate& other) const override;
+  PredicatePtr meet(const Predicate& other) const override;
+  std::string to_string() const override;
+  unsigned get_n_cl_reg() const { return n_cl_reg_; }
+
+ private:
+  const unsigned n_cl_reg_;
+};
+
+/**
  * Asserts that the circuit contains no \ref OpType::Barrier
  */
 class NoBarriersPredicate : public Predicate {

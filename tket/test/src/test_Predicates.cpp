@@ -354,6 +354,58 @@ SCENARIO("Test routing-related predicates' meet and implication") {
   }
 }
 
+SCENARIO("Test max classical register predicate") {
+  GIVEN("no classical reg") {
+    Circuit circ(3);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::CX, {1, 2});
+
+    PredicatePtr con0 = std::make_shared<MaxNClRegPredicate>(0);
+    PredicatePtr con1 = std::make_shared<MaxNClRegPredicate>(1);
+    PredicatePtr con5 = std::make_shared<MaxNClRegPredicate>(5);
+
+    REQUIRE(con0->verify(circ));
+    REQUIRE(con1->verify(circ));
+    REQUIRE(con5->verify(circ));
+  }
+  GIVEN("4 classical reg") {
+    Circuit circ(3, 1);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::CX, {1, 2});
+    circ.add_c_register("creg0", 1);
+    circ.add_c_register("creg1", 1);
+    circ.add_c_register("creg2", 1);
+
+    MaxNClRegPredicate con0 = MaxNClRegPredicate(0);
+    PredicatePtr con3 = std::make_shared<MaxNClRegPredicate>(3);
+    PredicatePtr con4 = std::make_shared<MaxNClRegPredicate>(4);
+    PredicatePtr con5 = std::make_shared<MaxNClRegPredicate>(5);
+
+    REQUIRE_FALSE(con0.verify(circ));
+    REQUIRE_FALSE(con3->verify(circ));
+    REQUIRE(con4->verify(circ));
+    REQUIRE(con5->verify(circ));
+  }
+  GIVEN("check additional functions") {
+    MaxNClRegPredicate con0 = MaxNClRegPredicate(0);
+    MaxNClRegPredicate con5 = MaxNClRegPredicate(5);
+    REQUIRE(con0.get_n_cl_reg() == 0);
+    REQUIRE(con5.get_n_cl_reg() == 5);
+  }
+  GIVEN("check additional functions II") {
+    MaxNClRegPredicate con0 = MaxNClRegPredicate(0);
+    PredicatePtr con3 = std::make_shared<MaxNClRegPredicate>(3);
+    PredicatePtr con5 = std::make_shared<MaxNClRegPredicate>(5);
+    MaxNClRegPredicate con5b = MaxNClRegPredicate(5);
+    REQUIRE(con0.implies(*con5));
+    PredicatePtr con3b = con5->meet(*con3);
+    REQUIRE(con3b->implies(*con5));
+    PredicatePtr con3c = con5b.meet(*con3);
+    REQUIRE(con3b->implies(*con5));
+    REQUIRE(con0.to_string() == "MaxNClRegPredicate(0)");
+  }
+}
+
 SCENARIO("Test basic functionality of CompilationUnit") {
   GIVEN("A satisfied/unsatisfied predicate in a CompilationUnit") {
     OpTypeSet ots = {OpType::CX};

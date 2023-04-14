@@ -1,11 +1,13 @@
 Changelog
 =========
 
-Unreleased
-----------
+1.15.0 (unreleased)
+-------------------
 
 Minor new features:
 
+* Add new ``MaxNClRegPredicate`` that checks that there are at most n classical
+  registers in the circuit.
 * Allow barriers in ``QControlBoxes``. Barriers are left in place.
 
 1.14.0 (April 2023)
