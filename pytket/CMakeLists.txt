@@ -17,7 +17,7 @@ project(pytket CXX)
 
 find_package(tket CONFIG REQUIRED)
 find_package(pybind11_json CONFIG REQUIRED)
-find_package(pybind11 CONFIG REQUIRED)
+find_package(pybind11 CONFIG REQUIRED COMPONENTS headers)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -62,7 +62,7 @@ pybind11_add_module(circuit
     binders/circuit/Circuit/add_classical_op.cpp)
 target_include_directories(circuit PRIVATE binders/include)
 target_link_libraries(circuit PRIVATE
-    tket::tket pybind11_json::pybind11_json)
+    tket::tket pybind11::headers pybind11_json::pybind11_json)
 if (WIN32)
     # For boost::uuid:
     target_link_libraries(circuit PRIVATE bcrypt)
@@ -71,12 +71,12 @@ endif()
 pybind11_add_module(mapping binders/mapping.cpp)
 target_include_directories(mapping PRIVATE binders/include)
 target_link_libraries(mapping PRIVATE
-    tket::tket)
+    tket::tket pybind11::headers)
 
 pybind11_add_module(transform binders/transform.cpp)
 target_include_directories(transform PRIVATE binders/include)
 target_link_libraries(transform PRIVATE
-    tket::tket)
+    tket::tket pybind11::headers)
 if (WIN32)
     # For boost::uuid:
     target_link_libraries(transform PRIVATE bcrypt)
@@ -85,7 +85,7 @@ endif()
 pybind11_add_module(predicates binders/predicates.cpp)
 target_include_directories(predicates PRIVATE binders/include)
 target_link_libraries(predicates PRIVATE
-    tket::tket pybind11_json::pybind11_json)
+    tket::tket pybind11::headers pybind11_json::pybind11_json)
 if (WIN32)
     # For boost::uuid:
     target_link_libraries(predicates PRIVATE bcrypt)
@@ -94,7 +94,7 @@ endif()
 pybind11_add_module(passes binders/passes.cpp)
 target_include_directories(passes PRIVATE binders/include)
 target_link_libraries(passes PRIVATE
-    tket::tket pybind11_json::pybind11_json)
+    tket::tket pybind11::headers pybind11_json::pybind11_json)
 if (WIN32)
     # For boost::uuid:
     target_link_libraries(passes PRIVATE bcrypt)
@@ -103,12 +103,12 @@ endif()
 pybind11_add_module(architecture binders/architecture.cpp)
 target_include_directories(architecture PRIVATE binders/include)
 target_link_libraries(architecture PRIVATE
-    tket::tket pybind11_json::pybind11_json)
+    tket::tket pybind11::headers pybind11_json::pybind11_json)
 
 pybind11_add_module(placement binders/placement.cpp)
 target_include_directories(placement PRIVATE binders/include)
 target_link_libraries(placement PRIVATE
-    tket::tket pybind11_json::pybind11_json)
+    tket::tket pybind11::headers pybind11_json::pybind11_json)
 
 pybind11_add_module(partition binders/partition.cpp)
 target_include_directories(partition PRIVATE binders/include)
@@ -122,22 +122,22 @@ endif()
 pybind11_add_module(pauli binders/pauli.cpp)
 target_include_directories(pauli PRIVATE binders/include)
 target_link_libraries(pauli PRIVATE
-    tket::tket pybind11_json::pybind11_json)
+    tket::tket pybind11::headers pybind11_json::pybind11_json)
 
 pybind11_add_module(logging binders/logging.cpp)
 target_include_directories(logging PRIVATE binders/include)
 target_link_libraries(logging PRIVATE
-    tket::tket)
+    tket::tket pybind11::headers)
 
 pybind11_add_module(utils_serialization binders/utils_serialization.cpp)
 target_include_directories(utils_serialization PRIVATE binders/include)
 target_link_libraries(utils_serialization PRIVATE
-    tket::tket pybind11_json::pybind11_json)
+    tket::tket pybind11::headers pybind11_json::pybind11_json)
 
 pybind11_add_module(tailoring binders/tailoring.cpp)
 target_include_directories(tailoring PRIVATE binders/include)
 target_link_libraries(tailoring PRIVATE
-    tket::tket)
+    tket::tket pybind11::headers)
 if (WIN32)
     # For boost::uuid:
     target_link_libraries(tailoring PRIVATE bcrypt)
@@ -146,7 +146,7 @@ endif()
 pybind11_add_module(tableau binders/tableau.cpp)
 target_include_directories(tableau PRIVATE binders/include)
 target_link_libraries(tableau PRIVATE
-    tket::tket)
+    tket::tket pybind11::headers)
 if (WIN32)
     # For boost::uuid:
     target_link_libraries(tableau PRIVATE bcrypt)
@@ -157,7 +157,7 @@ pybind11_add_module(zx
     binders/zx/rewrite.cpp)
 target_include_directories(zx PRIVATE binders/include)
 target_link_libraries(zx PRIVATE
-    tket::tket)
+    tket::tket pybind11::headers)
 
 install(TARGETS
     logging
