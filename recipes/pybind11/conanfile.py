@@ -90,6 +90,32 @@ class PyBind11Conan(ConanFile):
             "add_library(",
             "# add_library(",
         )
+        replace_in_file(
+            self,
+            os.path.join(
+                self.package_folder, "lib", "cmake", "pybind11", "pybind11Common.cmake"
+            ),
+            """add_library(pybind11::embed IMPORTED INTERFACE ${optional_global})
+set_property(
+  TARGET pybind11::embed
+  APPEND
+  PROPERTY INTERFACE_LINK_LIBRARIES pybind11::pybind11)""",
+            """# add_library(pybind11::embed IMPORTED INTERFACE ${optional_global})
+# set_property(
+#   TARGET pybind11::embed
+#   APPEND
+#   PROPERTY INTERFACE_LINK_LIBRARIES pybind11::pybind11)""",
+        )
+        replace_in_file(
+            self,
+            os.path.join(
+                self.package_folder, "lib", "cmake", "pybind11", "pybind11Tools.cmake"
+            ),
+            """  target_link_libraries(pybind11::embed INTERFACE pybind11::pybind11
+                                                  pybind11::_ClassicPythonLibraries)""",
+            """  # target_link_libraries(pybind11::embed INTERFACE pybind11::pybind11
+                 #                                  pybind11::_ClassicPythonLibraries)""",
+        )
 
     def package_id(self):
         self.info.clear()
@@ -113,7 +139,7 @@ class PyBind11Conan(ConanFile):
             self.cpp_info.components["pybind11_"].build_modules[generator].append(
                 cmake_file
             )
-        self.cpp_info.components["embed"].requires = ["pybind11_"]
+        # self.cpp_info.components["embed"].requires = ["pybind11_"]
         self.cpp_info.components["module"].requires = ["pybind11_"]
         self.cpp_info.components["python_link_helper"].requires = ["pybind11_"]
         self.cpp_info.components["windows_extras"].requires = ["pybind11_"]
