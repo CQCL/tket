@@ -93,6 +93,7 @@ To build the library `tkxxx`:
 ```shell
 conan create libs/tkxxx --build=missing -o boost/*:header_only=True
 ```
+(When using `zsh` shell, consider adding quotes around `boost/*`.)
 
 To build the unit tests:
 
