@@ -16,6 +16,10 @@ cmake_minimum_required(VERSION 3.23)
 project(pytket CXX)
 
 find_package(tket CONFIG REQUIRED)
+find_package(tklog CONFIG REQUIRED)
+find_package(tkassert CONFIG REQUIRED)
+find_package(symengine CONFIG REQUIRED)
+find_package(gmp CONFIG REQUIRED)
 find_package(pybind11_json CONFIG REQUIRED)
 find_package(pybind11 CONFIG REQUIRED COMPONENTS headers)
 
@@ -32,7 +36,7 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_BINARY_DIR}")
 set(Boost_NO_BOOST_CMAKE ON)
 
 if (WIN32)
-	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc /WX")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /EHsc /WX")
 else()
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Werror -Wunreachable-code -Wunused")
 endif()
@@ -64,6 +68,8 @@ target_include_directories(circuit PRIVATE binders/include)
 target_link_libraries(circuit PRIVATE
     tket::tket pybind11::headers pybind11_json::pybind11_json)
 if (WIN32)
+    target_link_libraries(circuit PRIVATE
+        symengine gmp::gmpxx gmp::gmp tkassert::tkassert)
     # For boost::uuid:
     target_link_libraries(circuit PRIVATE bcrypt)
 endif()
@@ -96,6 +102,8 @@ target_include_directories(passes PRIVATE binders/include)
 target_link_libraries(passes PRIVATE
     tket::tket pybind11::headers pybind11_json::pybind11_json)
 if (WIN32)
+    target_link_libraries(passes PRIVATE
+        symengine gmp::gmpxx gmp::gmp)
     # For boost::uuid:
     target_link_libraries(passes PRIVATE bcrypt)
 endif()
@@ -139,6 +147,8 @@ target_include_directories(tailoring PRIVATE binders/include)
 target_link_libraries(tailoring PRIVATE
     tket::tket pybind11::headers)
 if (WIN32)
+    target_link_libraries(tailoring PRIVATE
+        symengine gmp::gmpxx gmp::gmp)
     # For boost::uuid:
     target_link_libraries(tailoring PRIVATE bcrypt)
 endif()
@@ -158,6 +168,10 @@ pybind11_add_module(zx
 target_include_directories(zx PRIVATE binders/include)
 target_link_libraries(zx PRIVATE
     tket::tket pybind11::headers)
+if (WIN32)
+    target_link_libraries(zx PRIVATE
+        symengine gmp::gmpxx gmp::gmp)
+endif()
 
 install(TARGETS
     logging
