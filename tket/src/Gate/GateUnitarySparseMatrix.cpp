@@ -17,10 +17,10 @@
 #include <tkassert/Assert.hpp>
 
 #include "Gate/Gate.hpp"
-#include "GateUnitaryMatrix.hpp"
-#include "GateUnitaryMatrixError.hpp"
-#include "GateUnitaryMatrixImplementations.hpp"
-#include "GateUnitaryMatrixUtils.hpp"
+#include "Gate/GateUnitaryMatrix.hpp"
+#include "Gate/GateUnitaryMatrixError.hpp"
+#include "Gate/GateUnitaryMatrixImplementations.hpp"
+#include "Gate/GateUnitaryMatrixUtils.hpp"
 
 namespace tket {
 namespace internal {

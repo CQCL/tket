@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #include "Circuit/CircPool.hpp"
-#include "Converters.hpp"
+#include "Converters/Converters.hpp"
 #include "ZX/Flow.hpp"
 #include "ZX/ZXDiagram.hpp"
 

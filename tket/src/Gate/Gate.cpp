@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Gate.hpp"
+#include "Gate/Gate.hpp"
 
 #include <algorithm>
 #include <stdexcept>
 #include <tkrng/RNG.hpp>
 #include <vector>
 
-#include "GateUnitaryMatrix.hpp"
-#include "GateUnitaryMatrixError.hpp"
-#include "OpPtrFunctions.hpp"
+#include "Gate/GateUnitaryMatrix.hpp"
+#include "Gate/GateUnitaryMatrixError.hpp"
+#include "Gate/OpPtrFunctions.hpp"
 #include "OpType/OpType.hpp"
 #include "OpType/OpTypeFunctions.hpp"
 #include "OpType/OpTypeInfo.hpp"

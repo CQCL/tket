@@ -72,8 +72,6 @@ jobs:
         python-version: '3.10'
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
-      with:
-        version: '2.0.2'
     - name: create profile
       run: conan profile detect
     - name: add remote
@@ -101,15 +99,11 @@ jobs:
     - uses: actions/checkout@v3
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
-      with:
-        version: '2.0.2'
     - name: create profile
       shell: bash
       run: conan profile detect --force
     - name: set remotes
-      run: |
-        rm `conan config home`/remotes.json
-        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+      run: conan remote add --force tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: build ${{ matrix.lib }}
       run: conan create -o boost/*:header_only=True libs/${{ matrix.lib }} --build=missing
     - name: build ${{ matrix.lib }} tests
@@ -136,21 +130,19 @@ jobs:
     - uses: actions/checkout@v3
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
-      with:
-        version: '2.0.2'
     - name: create profile
       run: conan profile detect
     - name: add remote
       run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: build ${{ matrix.lib }}
       run: |
-        conan install libs/${{ matrix.lib }} -s build_type=Debug --build=missing -o boost/*:header_only=True -of build/${{ matrix.lib }}
+        conan install libs/${{ matrix.lib }} -s build_type=Debug --build=missing -o boost/*:header_only=True -o ${{ matrix.lib }}/*:profile_coverage=True -of build/${{ matrix.lib }}
         conan build libs/${{ matrix.lib }} -s build_type=Debug -o boost/*:header_only=True -o ${{ matrix.lib }}/*:profile_coverage=True -of build/${{ matrix.lib }}
-        conan export-pkg libs/${{ matrix.lib }} -s build_type=Debug -o boost/*:header_only=True -of build/${{ matrix.lib }} -tf ""
+        conan export-pkg libs/${{ matrix.lib }} -s build_type=Debug -o boost/*:header_only=True -o ${{ matrix.lib }}/*:profile_coverage=True -of build/${{ matrix.lib }} -tf ""
     - name: build ${{ matrix.lib }} tests
       run: |
-        conan install libs/${{ matrix.lib }}/test -s build_type=Debug --build=missing -o boost/*:header_only=True -of build/${{ matrix.lib }}-tests
-        conan build libs/${{ matrix.lib }}/test -s build_type=Debug -o boost/*:header_only=True -o test-${{ matrix.lib }}/*:with_coverage=True -of build/${{ matrix.lib }}-tests
+        conan install libs/${{ matrix.lib }}/test -s build_type=Debug --build=missing -o boost/*:header_only=True -o test-${{ matrix.lib }}/*:with_coverage=True -of build/${{ matrix.lib }}-tests
+        conan build libs/${{ matrix.lib }}/test -s build_type=Debug --build=missing -o boost/*:header_only=True -o test-${{ matrix.lib }}/*:with_coverage=True -of build/${{ matrix.lib }}-tests
     - name: run ${{ matrix.lib }} tests
       working-directory: ./build/${{ matrix.lib }}-tests/build/Debug
       run: ./test-${{ matrix.lib }}

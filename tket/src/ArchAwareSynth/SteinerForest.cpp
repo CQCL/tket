@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "SteinerForest.hpp"
+#include "ArchAwareSynth/SteinerForest.hpp"
 
 #include <algorithm>
 #include <vector>
 
+#include "ArchAwareSynth/SteinerTree.hpp"
 #include "Architecture/Architecture.hpp"
-#include "SteinerTree.hpp"
 
 namespace tket {
 namespace aas {

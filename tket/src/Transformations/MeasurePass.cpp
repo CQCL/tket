@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "MeasurePass.hpp"
+#include "Transformations/MeasurePass.hpp"
 
 #include <optional>
 #include <tuple>
@@ -22,7 +22,7 @@
 #include "OpType/OpTypeFunctions.hpp"
 #include "Ops/Op.hpp"
 #include "Ops/OpPtr.hpp"
-#include "Transform.hpp"
+#include "Transformations/Transform.hpp"
 
 namespace tket {
 

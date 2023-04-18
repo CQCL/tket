@@ -14,7 +14,7 @@
 
 #include "Utils/GraphHeaders.hpp"
 #include "ZX/Rewrite.hpp"
-#include "ZXDiagramImpl.hpp"
+#include "ZX/ZXDiagramImpl.hpp"
 
 namespace tket {
 

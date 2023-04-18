@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "CompilerPass.hpp"
+#include "Predicates/CompilerPass.hpp"
 
 #include <memory>
 #include <tklog/TketLog.hpp>
 
 #include "Mapping/RoutingMethodJson.hpp"
-#include "PassGenerators.hpp"
-#include "PassLibrary.hpp"
+#include "Predicates/PassGenerators.hpp"
+#include "Predicates/PassLibrary.hpp"
 #include "Transformations/ContextualReduction.hpp"
 #include "Transformations/PauliOptimisation.hpp"
 #include "Utils/Json.hpp"

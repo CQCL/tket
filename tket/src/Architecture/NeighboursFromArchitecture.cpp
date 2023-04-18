@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "NeighboursFromArchitecture.hpp"
+#include "Architecture/NeighboursFromArchitecture.hpp"
 
 #include <algorithm>
 #include <sstream>

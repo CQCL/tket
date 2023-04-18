@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Rotation.hpp"
+#include "Gate/Rotation.hpp"
 
 #include "OpType/OpDesc.hpp"
 #include "OpType/OpType.hpp"

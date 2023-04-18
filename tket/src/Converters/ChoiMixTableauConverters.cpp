@@ -15,7 +15,7 @@
 #include <boost/foreach.hpp>
 #include <stdexcept>
 
-#include "Converters.hpp"
+#include "Converters/Converters.hpp"
 #include "Diagonalisation/Diagonalisation.hpp"
 
 namespace tket {

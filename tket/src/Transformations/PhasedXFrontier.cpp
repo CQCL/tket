@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "PhasedXFrontier.hpp"
+#include "Transformations/PhasedXFrontier.hpp"
 
 #include <string>
 
@@ -21,7 +21,7 @@
 #include "Circuit/Circuit.hpp"
 #include "OpType/OpType.hpp"
 #include "OpType/OpTypeInfo.hpp"
-#include "StandardSquash.hpp"
+#include "Transformations/StandardSquash.hpp"
 #include "Utils/Expression.hpp"
 
 namespace tket {

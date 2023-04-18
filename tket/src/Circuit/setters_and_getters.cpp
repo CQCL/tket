@@ -20,8 +20,8 @@
 #include <tkassert/Assert.hpp>
 #include <tklog/TketLog.hpp>
 
-#include "Circuit.hpp"
-#include "DAGDefs.hpp"
+#include "Circuit/Circuit.hpp"
+#include "Circuit/DAGDefs.hpp"
 #include "DAGProperties.hpp"
 #include "OpType/OpDesc.hpp"
 #include "OpType/OpType.hpp"
