@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "OpTypeInfo.hpp"
+#include "OpType/OpTypeInfo.hpp"
 
 #include <memory>
 
-#include "OpType.hpp"
+#include "OpType/OpType.hpp"
 
 namespace tket {
 const std::map<OpType, OpTypeInfo>& optypeinfo() {

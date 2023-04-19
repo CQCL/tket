@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "SingleQubitSquash.hpp"
+#include "Transformations/SingleQubitSquash.hpp"
 
 #include "Circuit/Circuit.hpp"
 #include "Circuit/DAGDefs.hpp"

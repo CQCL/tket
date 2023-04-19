@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Circuit.hpp"
+#include "Circuit/Circuit.hpp"
 
 #include <fstream>
 #include <numeric>

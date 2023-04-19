@@ -23,7 +23,7 @@
 #include "Gate/GateUnitaryMatrix.hpp"
 #include "Gate/GateUnitaryMatrixError.hpp"
 #include "GateNodesBuffer.hpp"
-#include "PauliExpBoxUnitaryCalculator.hpp"
+#include "Simulation/PauliExpBoxUnitaryCalculator.hpp"
 
 namespace tket {
 namespace tket_sim {

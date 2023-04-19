@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "HelperFunctions.hpp"
+#include "Utils/HelperFunctions.hpp"
 
 #include <boost/dynamic_bitset.hpp>
 
