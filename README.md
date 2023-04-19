@@ -53,8 +53,10 @@ You should also have Python (3.9, 3.10 or 3.11) and `pip` installed. We use
 with `pip`:
 
 ```shell
-pip install cmake conan~=1.53
+pip install cmake conan
 ```
+
+You will need at least cmake version 3.26, and conan version 2.
 
 It is recommended that you also install `ninja` and `ccache` to speed up the
 build process. For example on Debian/Ubuntu:
@@ -65,53 +67,17 @@ sudo apt install ninja-build ccache
 
 #### Set up `conan` profile
 
-Generate a profile that matches your current machine. This profile does not have
-to be called `tket`, but if you give it another name you will have to set
-`CONAN_TKET_PROFILE` to its name in your environment when you build the Python
-module.
+Generate a profile that matches your current machine, and add the required
+remote where some dependencies are stored:
 
 ```shell
-conan profile new tket --detect
-```
-
-If this prints a warning about `gcc` ABI compatibility (as it probably will on
-Linux), adjust the profile compiler settings with the following command, as
-recommended in the warning message:
-
-```shell
-conan profile update settings.compiler.libcxx=libstdc++11 tket
-```
-
-Set the `tket-libs` repository as your remote. (Note that the following commands
-affect your conan configuration across all projects, so if you are working on
-other projects with conan you will want to revert them afterwards. A simple way
-is to back up the file `~/.conan/remotes.json`. You can view your current
-remotes list with `conan remote list`.)
-
-```shell
-conan remote clean
+conan profile detect
 conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
 ```
 
-Enable revisions:
-
-```shell
-conan config set general.revisions_enabled=1
-```
-
-We want to build tket and tklog as shared rather than static libraries, so set
-this in the profile:
-
-```shell
-conan profile update options.tket:shared=True tket
-conan profile update options.tklog:shared=True tket
-```
-
-If you wish you can set your profile to Debug mode:
-
-```shell
-conan profile update settings.build_type=Debug tket
-```
+(Adding the remote will save time when building for tket for the first time,
+but it is possible to build everything locally by first building the recipes
+in the [`libs` directory](libs/README).
 
 #### Test dependencies
 
@@ -132,18 +98,23 @@ The Python tests require a few more packages. These can be installed with:
 pip install -r pytket/tests/requirements.txt
 ```
 
-### Adding local `pybind11`
+### Adding local `pybind11` and `pybind11_json`
 
 There is a known [issue](https://github.com/conan-io/conan-center-index/issues/6605) with using `pybind11`
 from the `conan-center` that can lead to a Python crash when importing `pytket`. To remedy this, 
 `pybind11` must be installed from the local recipe:
 
 ```shell
-conan remove -f "pybind11/*"
-conan create --profile=tket recipes/pybind11
+conan remove -c "pybind11/*"
+conan create recipes/pybind11
 ```
 
-where the first line serves to remove any version already installed.
+It is also currently necessary to use the local `pybind11_json` recipe, since
+the recipe on the `conan-center` is not yet compatible with conan 2:
+
+```shell
+conan create recipes/pybind11_json/all --version 0.2.13
+```
 
 ### TKET libraries and conan packages
 
@@ -152,134 +123,37 @@ as a way to modularize and reduce average build times. These are in
 subdirectories of the `libs` directory. We anticipate that their number will
 increase as we work towards greater modularization.
 
-If you are using a supported conan configuration (see above under "Build
-tools"), you do not need to worry about these, unless you are modifying the code
-in them. The main build of TKET will download a pre-built package for each of
-them.
+Recipes and some binaries for these are stored in the `tket-libs` repository;
+they can also be built locally. See the [README](libs/README.md) in the `libs`
+directory for instructions.
 
-If you are using an unsupported configuration, or want to make changes to these
-libraries, you will need to build them locally. See the [README](libs/README.md) in that directory for instructions.
+### Building and testing tket
 
-If you make a change to one of these libraries, please increase the version
-number and make a PR with that change only: the component will then be tested on
-the CI, and on merge to `develop` the new version will be uploaded. Then it will
-be possible to update conan requirements to use the new version.
+See the [README](tket/README.md) in the `tket` directory for instructions on
+building the TKET library and unit tests (but not pytket) using conan.
 
-A new version of TKET is uploaded to our conan repo with each push to `develop`
-that changes the core library. This process is managed by CI workflows. If you
-are making changes only to TKET tests or pytket, you do not need to build TKET
-locally: the right version should be downloaded automatically from the conan
-repo.
-
-### Building tket
-
-Note: we are in the course of migrating from conan 1 to conan 2. See the
-[README](tket/README.md) in the `tket` directory for instructions on building
-the TKET library and unit tests (but not pytket) using conan 2.
-
-#### Method 1
-
-At this point you can run:
+The tests with a running time >=1 second (on a regular modern laptop) are marked
+as hidden, tagged with `"[long]"`, and are not run by default. To run the long
+tests use the `"[long]"` tag as an argument:
 
 ```shell
-conan create --profile=tket recipes/tket tket/stable
-```
-
-to build the tket library.
-
-To build and run the tket tests:
-
-```shell
-conan create --profile=tket recipes/tket-tests
-```
-
-The tests with a running time >=1 second (on a regular modern laptop) are marked as hidden,
-tagged with `"[long]"`, and are not run by default. To run the full suite of tests,
-add `-o tket-tests:full=True` to the above `conan create` command (or to the tket profile).
-The option `-o tket-tests:long=True` can also be used to run only the long tests.
-
-If you want to build the tests without running them, pass `--test-folder None` to the
-`conan` command. Then, you can manually run the binary.
-If no arguments are provided only the default (short) tests are run.
-To run the long tests use the `"[long]"` tag as an argument:
-
-```shell
-<package_folder>/bin/test_tket "[long]"
+<package_folder>/bin/test-tket "[long]"
 ```
 
 To run the full suite manually you need to include also the short tests, like:
 
 ```shell
-<package_folder>/bin/test_tket "[long],~[long]"
+<package_folder>/bin/test-tket "[long],~[long]"
 ```
 
 A smaller selection of the compiled tests can also be run by passing a filter of the test file name:
 
 ```shell
-<package_folder>/bin/test_tket -# "[#test_name]"
+<package_folder>/bin/test-tket -# "[#test_name]"
 ```
 
-There is also a small set of property-based tests which you can build and run
-with:
-
-```shell
-conan create --profile=tket recipes/tket-proptests
-```
-
-Now to build pytket, first install the `pybind11` headers:
-
-```shell
-conan create --profile=tket recipes/pybind11
-```
-
-Then build the pytket module:
-
-```shell
-cd pytket
-pip install -e .
-```
-
-And then to run the Python tests:
-
-```shell
-cd tests
-pytest
-```
-
-#### Method 2
-
-In a development cycle, it may save time to break down the `conan create`
-command from above into separate build and export commands.
-
-First create a `build` folder in the project root. Then proceed as follows.
-
-1. To install dependencies:
-
-   ```shell
-   conan install recipes/tket --install-folder=build --profile=tket --build=missing
-   ```
-2. To configure the build:
-
-   ```shell
-   conan build recipes/tket --configure --build-folder=build --source-folder=tket/src
-   ```
-3. To build:
-
-   ```shell
-   conan build recipes/tket --build --build-folder=build
-   ```
-4. To export to `conan` cache (necessary to build pytket):
-
-   ```shell
-   conan export-pkg recipes/tket tket/${VERSION}@tket/stable -f --build-folder=build --source-folder=tket/src
-   ```
-   where `${VERSION}` is the tket library version, e.g. `1.0.3`.
- 
-#### Method 3: Makefile
-
-An alternative build setup and development process is offered through a Makefile in the [`dev-tools`](dev-tools) directory.
-This setup can also simplify integration with an IDE supporting `cmake` builds.
-See the file [`dev-tools/README.md`](dev-tools/README.md) for instructions and more information.
+See the [README](pytket/README.md) in the `pytket` directory for instructions on
+how to build pytket.
 
 ## Test coverage
 
