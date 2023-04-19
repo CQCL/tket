@@ -250,11 +250,8 @@ class MultiplexedTensoredU2Box : public Box {
    * or Unitary1QBox.
    *
    * @param op_map
-   * @param impl_diag whether to implement the final MultiplexedRotationBoxes
-   * and DiagonalBox, default to true
    */
-  explicit MultiplexedTensoredU2Box(
-      const ctrl_tensored_op_map_t &op_map, bool impl_diag = true);
+  explicit MultiplexedTensoredU2Box(const ctrl_tensored_op_map_t &op_map);
   /**
    * Copy constructor
    */
@@ -286,8 +283,6 @@ class MultiplexedTensoredU2Box : public Box {
 
   ctrl_tensored_op_map_t get_op_map() const { return op_map_; }
 
-  bool get_impl_diag() const { return impl_diag_; }
-
   static Op_ptr from_json(const nlohmann::json &j);
 
   static nlohmann::json to_json(const Op_ptr &op);
@@ -303,6 +298,5 @@ class MultiplexedTensoredU2Box : public Box {
   unsigned n_controls_;
   unsigned n_targets_;
   ctrl_tensored_op_map_t op_map_;
-  bool impl_diag_;
 };
 }  // namespace tket

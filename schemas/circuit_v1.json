@@ -726,8 +726,7 @@
           },
           "then": {
             "required": [
-              "op_map",
-              "impl_diag"
+              "op_map"
             ]
           }
         },

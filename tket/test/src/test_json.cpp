@@ -480,7 +480,7 @@ SCENARIO("Test Circuit serialization") {
         {{1, 0},
          {get_op_ptr(OpType::TK1, std::vector<Expr>{0.3, 1.8, 3.4}),
           get_op_ptr(OpType::X)}}};
-    MultiplexedTensoredU2Box multiplexor(op_map, false);
+    MultiplexedTensoredU2Box multiplexor(op_map);
     Circuit c(4);
     c.add_box(multiplexor, {0, 1, 2, 3});
     nlohmann::json j_box = c;
@@ -497,7 +497,6 @@ SCENARIO("Test Circuit serialization") {
         REQUIRE(*it->second[i] == *new_it->second[i]);
       }
     }
-    REQUIRE(multiplexor.get_impl_diag() == qc_b.get_impl_diag());
   }
 
   GIVEN("StatePreparationBox") {

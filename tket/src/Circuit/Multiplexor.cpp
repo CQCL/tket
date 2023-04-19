@@ -688,10 +688,8 @@ void MultiplexedU2Box::generate_circuit() const {
 }
 
 MultiplexedTensoredU2Box::MultiplexedTensoredU2Box(
-    const ctrl_tensored_op_map_t &op_map, bool impl_diag)
-    : Box(OpType::MultiplexedTensoredU2Box),
-      op_map_(op_map),
-      impl_diag_(impl_diag) {
+    const ctrl_tensored_op_map_t &op_map)
+    : Box(OpType::MultiplexedTensoredU2Box), op_map_(op_map) {
   auto it = op_map.begin();
   if (it == op_map.end()) {
     throw std::invalid_argument(
@@ -735,8 +733,7 @@ MultiplexedTensoredU2Box::MultiplexedTensoredU2Box(
     : Box(other),
       n_controls_(other.n_controls_),
       n_targets_(other.n_targets_),
-      op_map_(other.op_map_),
-      impl_diag_(other.impl_diag_) {}
+      op_map_(other.op_map_) {}
 
 Op_ptr MultiplexedTensoredU2Box::symbol_substitution(
     const SymEngine::map_basic_basic &sub_map) const {
@@ -748,7 +745,7 @@ Op_ptr MultiplexedTensoredU2Box::symbol_substitution(
     }
     new_op_map.insert({it->first, ops});
   }
-  return std::make_shared<MultiplexedTensoredU2Box>(new_op_map, impl_diag_);
+  return std::make_shared<MultiplexedTensoredU2Box>(new_op_map);
 }
 
 SymSet MultiplexedTensoredU2Box::free_symbols() const {
@@ -771,7 +768,7 @@ Op_ptr MultiplexedTensoredU2Box::dagger() const {
     }
     new_op_map.insert({it->first, ops});
   }
-  return std::make_shared<MultiplexedTensoredU2Box>(new_op_map, impl_diag_);
+  return std::make_shared<MultiplexedTensoredU2Box>(new_op_map);
 }
 
 Op_ptr MultiplexedTensoredU2Box::transpose() const {
@@ -783,7 +780,7 @@ Op_ptr MultiplexedTensoredU2Box::transpose() const {
     }
     new_op_map.insert({it->first, ops});
   }
-  return std::make_shared<MultiplexedTensoredU2Box>(new_op_map, impl_diag_);
+  return std::make_shared<MultiplexedTensoredU2Box>(new_op_map);
 }
 
 op_signature_t MultiplexedTensoredU2Box::get_signature() const {
@@ -795,14 +792,12 @@ nlohmann::json MultiplexedTensoredU2Box::to_json(const Op_ptr &op) {
   const auto &box = static_cast<const MultiplexedTensoredU2Box &>(*op);
   nlohmann::json j = core_box_json(box);
   j["op_map"] = box.get_op_map();
-  j["impl_diag"] = box.get_impl_diag();
   return j;
 }
 
 Op_ptr MultiplexedTensoredU2Box::from_json(const nlohmann::json &j) {
-  MultiplexedTensoredU2Box box = MultiplexedTensoredU2Box(
-      j.at("op_map").get<ctrl_tensored_op_map_t>(),
-      j.at("impl_diag").get<bool>());
+  MultiplexedTensoredU2Box box =
+      MultiplexedTensoredU2Box(j.at("op_map").get<ctrl_tensored_op_map_t>());
   return set_box_id(
       box,
       boost::lexical_cast<boost::uuids::uuid>(j.at("id").get<std::string>()));
@@ -851,16 +846,16 @@ void MultiplexedTensoredU2Box::generate_circuit() const {
       diag_circ.add_box(MultiplexedRotationBox(multip_rz), args);
     }
   }
-  if (impl_diag_) {
-    circ.append(diag_circ);
-    if ((diag_vec - Eigen::VectorXcd::Constant(1ULL << n_controls_, 1))
-            .cwiseAbs()
-            .sum() > EPS) {
-      std::vector<unsigned> args(n_controls_);
-      std::iota(std::begin(args), std::end(args), 0);
-      circ.add_box(DiagonalBox(diag_vec), args);
-    }
+
+  circ.append(diag_circ);
+  if ((diag_vec - Eigen::VectorXcd::Constant(1ULL << n_controls_, 1))
+          .cwiseAbs()
+          .sum() > EPS) {
+    std::vector<unsigned> args(n_controls_);
+    std::iota(std::begin(args), std::end(args), 0);
+    circ.add_box(DiagonalBox(diag_vec), args);
   }
+
   circ_ = std::make_shared<Circuit>(circ);
 }
 

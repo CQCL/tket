@@ -498,10 +498,8 @@ void init_boxes(py::module &m) {
           ":py:class:`Op`s. "
           "Only supports single qubit unitary gate types and "
           ":py:class:`Unitary1qBox`.\n\n"
-          ":param op_map: Map from bitstrings to lists of :py:class:`Op`s\n"
-          ":param impl_diag: Whether to implement the final diagonal gate, "
-          "default to True.",
-          py::arg("op_map"), py::arg("impl_diag") = true)
+          ":param op_map: Map from bitstrings to lists of :py:class:`Op`s",
+          py::arg("op_map"))
       .def(
           "get_circuit",
           [](MultiplexedTensoredU2Box &box) { return *box.to_circuit(); },
@@ -511,11 +509,7 @@ void init_boxes(py::module &m) {
           [](MultiplexedTensoredU2Box &box) {
             return cast_keys_to_tuples(box.get_op_map());
           },
-          ":return: the underlying op map")
-      .def(
-          "get_impl_diag", &MultiplexedTensoredU2Box::get_impl_diag,
-          ":return: flag indicating whether to implement the final diagonal "
-          "gate.");
+          ":return: the underlying op map");
   py::class_<StatePreparationBox, std::shared_ptr<StatePreparationBox>, Op>(
       m, "StatePreparationBox",
       "A box for preparing quantum states using multiplexed-Ry and "
