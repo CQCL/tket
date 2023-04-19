@@ -4,6 +4,10 @@ Changelog
 1.15.0 (unreleased)
 -------------------
 
+Major new features:
+
+* Add new ``MultiplexedTensoredU2Box`` that synthesises multiplexed tensor product of U2 gates.
+
 Minor new features:
 
 * Add new ``MaxNClRegPredicate`` that checks that there are at most n classical
@@ -16,14 +20,10 @@ Minor new features:
 Major new features:
 
 * Support for ARM Linux platforms.
-
-Minor new features:
-
 * Updated implementation of ``ToffoliBox`` utilising multiplexors
   for improved decomposition.
 * Add new ``DiagonalBox`` that synthesises a diagonal unitary matrix
   into a sequence of multiplexed-Rz gates.
-* Add new ``MultiplexedTensoredU2Box`` that synthesises multiplexed tensor product of U2 gates.
 
 1.13.2 (March 2023)
 -------------------
