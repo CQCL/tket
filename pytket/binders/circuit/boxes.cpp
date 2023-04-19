@@ -493,7 +493,7 @@ void init_boxes(py::module &m) {
       "A user-defined multiplexed tensor product of U2 gates specified by a "
       "map from bitstrings to lists of :py:class:`Op`s")
       .def(
-          py::init<const ctrl_tensored_op_map_t &, bool>(),
+          py::init<const ctrl_tensored_op_map_t &>(),
           "Construct from a map from bitstrings to equal-sized lists of "
           ":py:class:`Op`s. "
           "Only supports single qubit unitary gate types and "
