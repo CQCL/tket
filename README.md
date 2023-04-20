@@ -77,7 +77,7 @@ conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/t
 
 ### Building and testing the utility libraries
 
-See the [README](libs/README) in the `libs` directory for instructions on
+See the [README](libs/README.md) in the `libs` directory for instructions on
 building and testing the utility libraries used by tket (for logging,
 random-number generation and so on). This is not necessary if you just want to
 build tket or pytket since the recipes or binaries will be automatically
@@ -85,12 +85,12 @@ downloaded from the above conan remote.
 
 ### Building and testing the tket library
 
-See the [README](tket/README) in the `tket` directory for instructions on
+See the [README](tket/README.md) in the `tket` directory for instructions on
 building and testing tket as a standalone C++ library.
 
 ### Building and testing pytket
 
-See the [README](pytket/README) in the `pytket` directory for instructions on
+See the [README](pytket/README.md) in the `pytket` directory for instructions on
 building and testing pytket.
 
 ## API documentation
