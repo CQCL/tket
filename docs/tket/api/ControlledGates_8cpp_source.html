@@ -117,7 +117,7 @@ $(function() {
 <div class="line"><a name="l00039"></a><span class="lineno"><a class="line" href="namespacetket_1_1CircPool.html#a4425f934fb2f9a58238e289021c017d2">   39</a></span>&#160;    <a class="code" href="namespacetket_1_1CircPool.html#a4425f934fb2f9a58238e289021c017d2">candidate_t</a>;  <span class="comment">// each CnX candidate to decompose needs a spare wire to put</span></div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;                  <span class="comment">// some extra controls on</span></div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keyword">static</span> <a class="code" href="classtket_1_1Circuit.html">Circuit</a> lemma72(<span class="keywordtype">unsigned</span> control_m);                <span class="comment">// rule lemma 7.2</span></div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keyword">static</span> <a class="code" href="classtket_1_1Circuit.html">Circuit</a> lemma72(<span class="keywordtype">unsigned</span> control_m);  <span class="comment">// rule lemma 7.2</span></div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> lemma73(</div>
 <div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <a class="code" href="classtket_1_1Circuit.html">Circuit</a>&amp; circ, <span class="keyword">const</span> std::pair&lt;Edge, Vertex&gt;&amp; pairy);  <span class="comment">// rule lemma 7.3</span></div>
 <div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
@@ -165,9 +165,9 @@ $(function() {
 <div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    cnx_top = <a class="code" href="namespacetket_1_1CircPool.html#a4212326d4d6aa4602cf1af9cdf158742">C4X_normal_decomp</a>();</div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    cnx1_qbs = {0, 1, 2, 3, n};</div>
 <div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;  } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    cnx_top = lemma72(k);   <span class="comment">// k controls on cnx</span></div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    cnx_top = lemma72(k);  <span class="comment">// k controls on cnx</span></div>
 <div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    cnx1_qbs.resize(</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        2 * k - 2);         <span class="comment">// size of replacement using borrowed qbs = 2*k-1</span></div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;        2 * k - 2);  <span class="comment">// size of replacement using borrowed qbs = 2*k-1</span></div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    std::iota(cnx1_qbs.begin(), cnx1_qbs.end(), 0);</div>
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    cnx1_qbs.push_back(n);  <span class="comment">// target is last qubit</span></div>
 <div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;  }</div>
@@ -182,11 +182,11 @@ $(function() {
 <div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;      <span class="keywordflow">if</span> (i != 0)</div>
 <div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;        bot_qbs[2 * i + 1] =</div>
 <div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;            i + j -</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;            1;       <span class="comment">// 3,5...n //other qbs we are actually trying to increment</span></div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;            1;  <span class="comment">// 3,5...n //other qbs we are actually trying to increment</span></div>
 <div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    }</div>
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    bot_qbs[1] = n;  <span class="comment">// incremented qubit 0 in incrementer is bottom one</span></div>
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;  } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <span class="keywordflow">if</span> (j == 4) {    <span class="comment">// code is unreachable if j&lt;4</span></div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    <span class="keywordflow">if</span> (j == 4) {  <span class="comment">// code is unreachable if j&lt;4</span></div>
 <div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;      bottom_incrementer.<a class="code" href="classtket_1_1Circuit.html#a99d92660262156f8a739a3b1fea2bdce">add_blank_wires</a>(4);</div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;      bottom_incrementer.<a class="code" href="classtket_1_1Circuit.html#ae2b5a1a2ac608e97840bbd613d7951eb">append_qubits</a>(<a class="code" href="namespacetket_1_1CircPool.html#a82a90478439a222670ce453483f7b6eb">C3X_normal_decomp</a>(), {0, 1, 2, 3});</div>
 <div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;      bottom_incrementer.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<span class="keywordtype">unsigned</span>&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5f36659cd231606e67248c8a6476b0b6">OpType::CCX</a>, {0, 1, 2});</div>
@@ -606,9 +606,9 @@ $(function() {
 <div class="line"><a name="l00528"></a><span class="lineno">  528</span>&#160;  <a class="code" href="namespacetket.html#a814cee1be1a70fcc4a804f93212b5013">EdgeVec</a> cut2(b_qubits);</div>
 <div class="line"><a name="l00529"></a><span class="lineno">  529</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = N - m2 - 1; i &lt; N - 1; ++i)</div>
 <div class="line"><a name="l00530"></a><span class="lineno">  530</span>&#160;    cut2[i - (N - m2 - 1)] =</div>
-<div class="line"><a name="l00531"></a><span class="lineno">  531</span>&#160;        frontier[i];             <span class="comment">// N-1 - (N-m2-1) = m2 (all the controls)</span></div>
+<div class="line"><a name="l00531"></a><span class="lineno">  531</span>&#160;        frontier[i];  <span class="comment">// N-1 - (N-m2-1) = m2 (all the controls)</span></div>
 <div class="line"><a name="l00532"></a><span class="lineno">  532</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; b_qubits - (m2 + 1); ++i)</div>
-<div class="line"><a name="l00533"></a><span class="lineno">  533</span>&#160;    cut2[i + m2] = frontier[i];  <span class="comment">// empty wires</span></div>
+<div class="line"><a name="l00533"></a><span class="lineno">  533</span>&#160;    cut2[i + m2] = frontier[i];          <span class="comment">// empty wires</span></div>
 <div class="line"><a name="l00534"></a><span class="lineno">  534</span>&#160;  cut2[b_qubits - 1] = frontier[N - 1];  <span class="comment">// target</span></div>
 <div class="line"><a name="l00535"></a><span class="lineno">  535</span>&#160; </div>
 <div class="line"><a name="l00536"></a><span class="lineno">  536</span>&#160;  new_circ.cut_insert(b_replacement, cut2);</div>
@@ -648,9 +648,9 @@ $(function() {
 <div class="line"><a name="l00570"></a><span class="lineno">  570</span>&#160;  <a class="code" href="namespacetket.html#a814cee1be1a70fcc4a804f93212b5013">EdgeVec</a> cut4(b_qubits);</div>
 <div class="line"><a name="l00571"></a><span class="lineno">  571</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = N - m2 - 1; i &lt; N - 1; ++i)</div>
 <div class="line"><a name="l00572"></a><span class="lineno">  572</span>&#160;    cut4[i - (N - m2 - 1)] =</div>
-<div class="line"><a name="l00573"></a><span class="lineno">  573</span>&#160;        frontier[i];             <span class="comment">// N-1 - (N-m2-1) = m2 (all the controls)</span></div>
+<div class="line"><a name="l00573"></a><span class="lineno">  573</span>&#160;        frontier[i];  <span class="comment">// N-1 - (N-m2-1) = m2 (all the controls)</span></div>
 <div class="line"><a name="l00574"></a><span class="lineno">  574</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; b_qubits - (m2 + 1); ++i)</div>
-<div class="line"><a name="l00575"></a><span class="lineno">  575</span>&#160;    cut4[i + m2] = frontier[i];  <span class="comment">// empty wires</span></div>
+<div class="line"><a name="l00575"></a><span class="lineno">  575</span>&#160;    cut4[i + m2] = frontier[i];          <span class="comment">// empty wires</span></div>
 <div class="line"><a name="l00576"></a><span class="lineno">  576</span>&#160;  cut4[b_qubits - 1] = frontier[N - 1];  <span class="comment">// target</span></div>
 <div class="line"><a name="l00577"></a><span class="lineno">  577</span>&#160; </div>
 <div class="line"><a name="l00578"></a><span class="lineno">  578</span>&#160;  new_circ.cut_insert(b_replacement, cut4);</div>
