@@ -260,7 +260,7 @@ jobs:
         pip install pytest
         pytest --doctest-modules pytket
     - name: Test pytket with coverage
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request' || github.event_name == 'push'
       run: |
         cd pytket/tests
         pip install -r requirements.txt
