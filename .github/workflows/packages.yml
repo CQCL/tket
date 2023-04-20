@@ -69,12 +69,6 @@ jobs:
     - name: unauthenticate
       run: conan remote logout tket-libs
 
-    - name: Revert to conan 1
-      if: always()
-      uses: turtlebrowser/get-conan@v1.2
-      with:
-        version: '1.59.0'
-
   build_manylinux_x86_64:
     name: Build on manylinux (x86_64)
     runs-on: 'ubuntu-22.04'

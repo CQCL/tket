@@ -143,7 +143,6 @@ jobs:
         rm -rf dist
         python -m build
         delocate-wheel -v -w "$GITHUB_WORKSPACE/wheelhouse/" "dist/pytket-"*".whl"
-        python -m pip install conan~=1.59
     - uses: actions/upload-artifact@v3
       with:
         name: MacOS_M1_${{ matrix.python-version }}_wheel
