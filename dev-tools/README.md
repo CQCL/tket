@@ -1,5 +1,8 @@
 # Development Tools
 
+*NB* The notes and scripts in this directory are obsolete since the migration
+from conan 1 to conan 2. They should be either removed or updated.
+
 This directory contains a [Makefile](Makefile) and helper scripts to bundle some common development tasks.
 It currently supports building and running the projects tket-tests, tket-proptests. Building and testing
 `pytket` is not (yet) supported.

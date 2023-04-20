@@ -58,7 +58,7 @@ class CompilationUnit {
   void empty_cache() const;
   void initialize_cache() const;
   void initialize_maps();
-  Circuit circ_;     // modified continuously
+  Circuit circ_;  // modified continuously
   PredicatePtrMap
       target_preds;  // these are the predicates you WANT your circuit to
                      // satisfy by the end of your Compiler Passes
