@@ -946,6 +946,7 @@ void MappingFrontier::merge_ancilla(
   this->bimaps_->final.left.erase(merge_q);
   // Find ancilla_q
   auto final_it = this->bimaps_->final.right.find(ancilla);
+  TKET_ASSERT(final_it != this->bimaps_->final.right.end());
   UnitID ancilla_q = final_it->second;
   // Replace in final map
   this->bimaps_->final.right.erase(final_it);
