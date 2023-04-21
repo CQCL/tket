@@ -167,7 +167,7 @@ def get_operator_expectation_value(
     else:
         energy = 0
     if not partition_strat:
-        coeffs = [complex(c) for p, c in operator._dict.items() if (p != id_string)]
+        coeffs = [complex(c) for c in operator._dict.values()]
         pauli_circuits = list(_all_pauli_measurements(operator, state_circuit))
 
         handles = backend.process_circuits(
