@@ -10,6 +10,11 @@ Minor new features:
   registers in the circuit.
 * Allow barriers in ``QControlBoxes``. Barriers are left in place.
 
+Fixes:
+
+* Fix bug in `get_operator_expectation_value()` computation when operator
+  includes `Pauli.I` terms.
+
 1.14.0 (April 2023)
 -------------------
 
