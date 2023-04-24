@@ -95,7 +95,7 @@ class CircuitRenderer:
     def __init__(self, env: Environment):
         self.env = env
 
-    def set_render_options(self, **kwargs: Dict[str, Union[bool, str]]) -> None:
+    def set_render_options(self, **kwargs: Union[bool, str]) -> None:
         """
         Set rendering defaults.
 
@@ -110,9 +110,9 @@ class CircuitRenderer:
         :param crop_params: bool, shorten parameter expressions for display.
         """
         for key, val in kwargs.items():
-            if key in self._ALLOWED_RENDER_OPTIONS:
+            if key in self._ALLOWED_RENDER_OPTIONS and (isinstance(val, bool) or val is None):
                 self.__setattr__(key, val)
-            elif key in self._ALLOWED_CONFIG_OPTIONS and val is not None:
+            elif key in self._ALLOWED_CONFIG_OPTIONS and isinstance(val, str):
                 self.__setattr__(key, val)
 
     def get_render_options(
