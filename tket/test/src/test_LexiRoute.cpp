@@ -2287,4 +2287,52 @@ SCENARIO(
     REQUIRE(final_map.left.find(Qubit(19))->second == Node(12));
   }
 }
+SCENARIO("Lexi route produces incorrect bimaps") {
+  // segfault Github #777
+  std::ifstream arch_file("ibm_montreal.json");
+  nlohmann::json j_arch = nlohmann::json::parse(arch_file);
+  auto arch = j_arch.get<Architecture>();
+  std::ifstream circ_file("bug777_circuit.json");
+  nlohmann::json j_circ = nlohmann::json::parse(circ_file);
+  auto circ = j_circ.get<Circuit>();
+  std::map<Qubit, Node> p_map = {
+      {Node(0), Node(5)},
+      {Node(1), Node(8)},
+      {Node(2), Node("unplaced", 0)},
+      {Node(3), Node(16)},
+      {Node(4), Node(3)},
+      {Node(5), Node("unplaced", 1)},
+      {Node(6), Node("unplaced", 2)},
+      {Node(7), Node("unplaced", 3)},
+      {Node(8), Node("unplaced", 4)},
+      {Node(9), Node("unplaced", 5)},
+      {Node(10), Node("unplaced", 6)},
+      {Node(11), Node(25)},
+      {Node(12), Node("unplaced", 7)},
+      {Node(13), Node(14)},
+      {Node(14), Node("unplaced", 8)},
+      {Node(15), Node(19)},
+      {Node(16), Node(24)},
+      {Node(17), Node("unplaced", 9)},
+      {Node(18), Node("unplaced", 10)},
+      {Node(19), Node(2)},
+      {Node(20), Node(1)},
+      {Node(21), Node(22)},
+      {Node(22), Node(11)},
+      {Node(23), Node("unplaced", 11)},
+      {Node(24), Node("unplaced", 12)},
+      {Node(25), Node("unplaced", 13)},
+      {Node(26), Node("unplaced", 14)}};
+  MappingManager mm(std::make_shared<Architecture>(arch));
+  std::shared_ptr<unit_bimaps_t> maps = std::make_shared<unit_bimaps_t>();
+  for (auto it : p_map) {
+    maps->initial.insert({it.first, it.second});
+    maps->final.insert({it.first, it.second});
+  }
+  std::vector<RoutingMethodPtr> config = {
+      std::make_shared<LexiLabellingMethod>(),
+      std::make_shared<LexiRouteRoutingMethod>()};
+  REQUIRE(mm.route_circuit_with_maps(circ, config, maps));
+  REQUIRE(check_permutation(circ, maps));
+}
 }  // namespace tket
