@@ -7,6 +7,10 @@ Changelog
 Major new features:
 
 * Add new ``MultiplexedTensoredU2Box`` that synthesises multiplexed tensor product of U2 gates.
+* Updated implementation of ``ToffoliBox`` utilising multiplexors
+  for improved decomposition.
+* Add new ``DiagonalBox`` that synthesises a diagonal unitary matrix
+  into a sequence of multiplexed-Rz gates.
 
 Minor new features:
 
@@ -20,10 +24,6 @@ Minor new features:
 Major new features:
 
 * Support for ARM Linux platforms.
-* Updated implementation of ``ToffoliBox`` utilising multiplexors
-  for improved decomposition.
-* Add new ``DiagonalBox`` that synthesises a diagonal unitary matrix
-  into a sequence of multiplexed-Rz gates.
 
 1.13.2 (March 2023)
 -------------------
