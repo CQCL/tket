@@ -201,6 +201,8 @@ struct MappingFrontier {
    */
   void update_bimaps(UnitID qubit, UnitID node);
 
+  void verify_maps();
+
   /**
    * Get the qubit in the initial map given it's mapped uid.
    * @param uid UnitID in the circuit

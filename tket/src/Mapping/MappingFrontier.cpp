@@ -19,6 +19,50 @@
 
 namespace tket {
 
+// check if the maps are valid such that two maps should have the same set of
+// keys (logical qubits), the the values (physical qubits) of two maps should be
+// the same up to a permutation.
+void MappingFrontier::verify_maps() {
+  std::set<UnitID> init_logicals;
+  std::set<UnitID> final_logicals;
+  std::set<UnitID> init_physicals;
+  std::set<UnitID> final_physicals;
+  for (auto pair : bimaps_->initial.left) {
+    init_logicals.insert(pair.first);
+    init_physicals.insert(pair.second);
+  }
+  for (auto pair : bimaps_->final.left) {
+    final_logicals.insert(pair.first);
+    final_physicals.insert(pair.second);
+  }
+  auto print_maps = [this]() {
+    std::cout << "\nIncorrect maps\nInitial:\n";
+    for (auto pair : bimaps_->initial.left) {
+      std::cout << pair.first.repr() << ": " << pair.second.repr() << "\n";
+    }
+    std::cout << "Final:\n";
+    for (auto pair : bimaps_->final.left) {
+      std::cout << pair.first.repr() << ": " << pair.second.repr() << "\n";
+    }
+  };
+  for (const Qubit& q : circuit_.all_qubits()) {
+    if (bimaps_->initial.right.find(q) == bimaps_->initial.right.end()) {
+      print_maps();
+      throw MappingFrontierError(
+          "Uid " + q.repr() + " not found in initial map.");
+    }
+    if (bimaps_->final.right.find(q) == bimaps_->final.right.end()) {
+      print_maps();
+      throw MappingFrontierError(
+          "Uid " + q.repr() + " not found in final map.");
+    }
+  }
+  if (init_logicals != final_logicals || init_physicals != final_physicals) {
+    print_maps();
+    throw MappingFrontierError("Bimaps are not valid.");
+  }
+}
+
 /**
  * unit_vertport_frontier_t is <UnitID, VertPort>, helper function returns
  * UnitID corresponding to given VertPort
@@ -612,6 +656,7 @@ void MappingFrontier::set_linear_boundary(
  * reflect new edges
  */
 bool MappingFrontier::add_swap(const UnitID& uid_0, const UnitID& uid_1) {
+  verify_maps();
   // get iterators to linear_boundary uids
   auto uid0_in_it = this->linear_boundary->find(uid_0);
   auto uid1_in_it = this->linear_boundary->find(uid_1);
@@ -624,7 +669,8 @@ bool MappingFrontier::add_swap(const UnitID& uid_0, const UnitID& uid_1) {
     this->add_ancilla(uid_1);
     uid1_in_it = this->linear_boundary->find(uid_1);
   }
-
+  // BUG: maps become invalid
+  verify_maps();
   this->reassignable_nodes_.erase(Node(uid_0));
   this->reassignable_nodes_.erase(Node(uid_1));
 
