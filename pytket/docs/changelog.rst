@@ -18,6 +18,7 @@ Minor new features:
   registers in the circuit.
 * Allow barriers in ``QControlBoxes``. Barriers are left in place.
 * Add ``Circuit.TK1`` and ``Circuit.TK2`` methods that take ``Qubit`` arguments.
+* Expose ``CircuitRenderer`` instance so users can set their own default options.
 
 Fixes:
 
