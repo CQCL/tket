@@ -113,11 +113,6 @@ jobs:
         PKGPATH=`./rootpath test-${{ matrix.lib }}.json test-${{ matrix.lib }}`
         cd ${PKGPATH}/bin
         ./test-${{ matrix.lib }}
-    - name: restore conan 1
-      if: always()
-      uses: turtlebrowser/get-conan@v1.2
-      with:
-        version: '1.59.0'
   generate_coverage:
     name: Generate coverage report
     needs: set_libs_matrix
@@ -166,11 +161,6 @@ jobs:
         if [[ -f summary.txt ]] ; then
           ./.github/workflows/compare-coverage summary.txt ${{ matrix.lib }}-coverage/summary.txt
         fi
-    - name: restore conan 1
-      if: always()
-      uses: turtlebrowser/get-conan@v1.2
-      with:
-        version: '1.59.0'
   publish_coverage:
     name: Publish coverage
     needs: [set_libs_matrix, generate_coverage]

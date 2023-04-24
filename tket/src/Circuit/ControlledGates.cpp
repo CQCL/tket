@@ -39,7 +39,7 @@ typedef std::vector<std::pair<Edge, Vertex>>
     candidate_t;  // each CnX candidate to decompose needs a spare wire to put
                   // some extra controls on
 
-static Circuit lemma72(unsigned control_m);                // rule lemma 7.2
+static Circuit lemma72(unsigned control_m);  // rule lemma 7.2
 static void lemma73(
     Circuit& circ, const std::pair<Edge, Vertex>& pairy);  // rule lemma 7.3
 
@@ -87,9 +87,9 @@ Circuit incrementer_borrow_1_qubit(unsigned n) {
     cnx_top = C4X_normal_decomp();
     cnx1_qbs = {0, 1, 2, 3, n};
   } else {
-    cnx_top = lemma72(k);   // k controls on cnx
+    cnx_top = lemma72(k);  // k controls on cnx
     cnx1_qbs.resize(
-        2 * k - 2);         // size of replacement using borrowed qbs = 2*k-1
+        2 * k - 2);  // size of replacement using borrowed qbs = 2*k-1
     std::iota(cnx1_qbs.begin(), cnx1_qbs.end(), 0);
     cnx1_qbs.push_back(n);  // target is last qubit
   }
@@ -104,11 +104,11 @@ Circuit incrementer_borrow_1_qubit(unsigned n) {
       if (i != 0)
         bot_qbs[2 * i + 1] =
             i + j -
-            1;       // 3,5...n //other qbs we are actually trying to increment
+            1;  // 3,5...n //other qbs we are actually trying to increment
     }
     bot_qbs[1] = n;  // incremented qubit 0 in incrementer is bottom one
   } else {
-    if (j == 4) {    // code is unreachable if j<4
+    if (j == 4) {  // code is unreachable if j<4
       bottom_incrementer.add_blank_wires(4);
       bottom_incrementer.append_qubits(C3X_normal_decomp(), {0, 1, 2, 3});
       bottom_incrementer.add_op<unsigned>(OpType::CCX, {0, 1, 2});
@@ -528,9 +528,9 @@ static void lemma73(Circuit& circ, const std::pair<Edge, Vertex>& pairy) {
   EdgeVec cut2(b_qubits);
   for (unsigned i = N - m2 - 1; i < N - 1; ++i)
     cut2[i - (N - m2 - 1)] =
-        frontier[i];             // N-1 - (N-m2-1) = m2 (all the controls)
+        frontier[i];  // N-1 - (N-m2-1) = m2 (all the controls)
   for (unsigned i = 0; i < b_qubits - (m2 + 1); ++i)
-    cut2[i + m2] = frontier[i];  // empty wires
+    cut2[i + m2] = frontier[i];          // empty wires
   cut2[b_qubits - 1] = frontier[N - 1];  // target
 
   new_circ.cut_insert(b_replacement, cut2);
@@ -570,9 +570,9 @@ static void lemma73(Circuit& circ, const std::pair<Edge, Vertex>& pairy) {
   EdgeVec cut4(b_qubits);
   for (unsigned i = N - m2 - 1; i < N - 1; ++i)
     cut4[i - (N - m2 - 1)] =
-        frontier[i];             // N-1 - (N-m2-1) = m2 (all the controls)
+        frontier[i];  // N-1 - (N-m2-1) = m2 (all the controls)
   for (unsigned i = 0; i < b_qubits - (m2 + 1); ++i)
-    cut4[i + m2] = frontier[i];  // empty wires
+    cut4[i + m2] = frontier[i];          // empty wires
   cut4[b_qubits - 1] = frontier[N - 1];  // target
 
   new_circ.cut_insert(b_replacement, cut4);
