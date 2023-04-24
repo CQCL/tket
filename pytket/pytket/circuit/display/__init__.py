@@ -110,7 +110,9 @@ class CircuitRenderer:
         :param crop_params: bool, shorten parameter expressions for display.
         """
         for key, val in kwargs.items():
-            if key in self._ALLOWED_RENDER_OPTIONS and (isinstance(val, bool) or val is None):
+            if key in self._ALLOWED_RENDER_OPTIONS and (
+                isinstance(val, bool) or val is None
+            ):
                 self.__setattr__(key, val)
             elif key in self._ALLOWED_CONFIG_OPTIONS and isinstance(val, str):
                 self.__setattr__(key, val)
