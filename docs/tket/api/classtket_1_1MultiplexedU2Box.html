@@ -146,6 +146,9 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:acbc9ac31753346cc291e6f3458b78474"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2326a4371f1b005fffa495db7d468a89"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1MultiplexedU2Box.html#a2326a4371f1b005fffa495db7d468a89">get_impl_diag</a> () const</td></tr>
 <tr class="separator:a2326a4371f1b005fffa495db7d468a89"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2409bb1d97dd919d9d1fca17df610468"><td class="memItemLeft" align="right" valign="top">std::pair&lt; <a class="el" href="classtket_1_1Circuit.html">Circuit</a>, Eigen::VectorXcd &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1MultiplexedU2Box.html#a2409bb1d97dd919d9d1fca17df610468">decompose</a> () const</td></tr>
+<tr class="memdesc:a2409bb1d97dd919d9d1fca17df610468"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decompose the multiplexor into a sequence of interleaving CX and single qubit gates followed by a diagonal matrix.  <a href="classtket_1_1MultiplexedU2Box.html#a2409bb1d97dd919d9d1fca17df610468">More...</a><br /></td></tr>
+<tr class="separator:a2409bb1d97dd919d9d1fca17df610468"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classtket_1_1Box"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classtket_1_1Box')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classtket_1_1Box.html">tket::Box</a></td></tr>
 <tr class="memitem:a7ec0162e55e93eadf254fbffa8754dfa inherit pub_methods_classtket_1_1Box"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Box.html#a7ec0162e55e93eadf254fbffa8754dfa">Box</a> (const <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a> &amp;type, const <a class="el" href="namespacetket.html#ac9cc41e0b406b456fabc9ae1e4517ebd">op_signature_t</a> &amp;signature={})</td></tr>
 <tr class="separator:a7ec0162e55e93eadf254fbffa8754dfa inherit pub_methods_classtket_1_1Box"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -255,7 +258,7 @@ Additional Inherited Members</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Multiplexed U2 gate. </p>
 
-<p class="definition">Definition at line <a class="el" href="Multiplexor_8hpp_source.html#l00164">164</a> of file <a class="el" href="Multiplexor_8hpp_source.html">Multiplexor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Multiplexor_8hpp_source.html#l00170">170</a> of file <a class="el" href="Multiplexor_8hpp_source.html">Multiplexor.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="ade0b92301ca629c87483204b4f80d96d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ade0b92301ca629c87483204b4f80d96d">&#9670;&nbsp;</a></span>MultiplexedU2Box() <span class="overload">[1/2]</span></h2>
@@ -296,12 +299,12 @@ Additional Inherited Members</h2></td></tr>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">op_map</td><td></td></tr>
-    <tr><td class="paramname">impl_diag</td><td>whether to implement the final <a class="el" href="classtket_1_1MultiplexedRotationBox.html" title="Multiplexed single-axis rotations.">MultiplexedRotationBox</a>, default to true </td></tr>
+    <tr><td class="paramname">impl_diag</td><td>whether to implement the final <a class="el" href="classtket_1_1DiagonalBox.html" title="Box to synthesise a diagonal operator.">DiagonalBox</a>, default to true </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="Multiplexor_8cpp_source.html#l00532">532</a> of file <a class="el" href="Multiplexor_8cpp_source.html">Multiplexor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Multiplexor_8cpp_source.html#l00544">544</a> of file <a class="el" href="Multiplexor_8cpp_source.html">Multiplexor.cpp</a>.</p>
 
 </div>
 </div>
@@ -323,7 +326,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Copy constructor. </p>
 
-<p class="definition">Definition at line <a class="el" href="Multiplexor_8cpp_source.html#l00556">556</a> of file <a class="el" href="Multiplexor_8cpp_source.html">Multiplexor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Multiplexor_8cpp_source.html#l00570">570</a> of file <a class="el" href="Multiplexor_8cpp_source.html">Multiplexor.cpp</a>.</p>
 
 </div>
 </div>
@@ -350,7 +353,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Multiplexor_8hpp_source.html#l00180">180</a> of file <a class="el" href="Multiplexor_8hpp_source.html">Multiplexor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Multiplexor_8hpp_source.html#l00186">186</a> of file <a class="el" href="Multiplexor_8hpp_source.html">Multiplexor.hpp</a>.</p>
 
 </div>
 </div>
@@ -388,7 +391,29 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classtket_1_1Op.html#a0184322dc89669726f8ddae2f5b8c005">tket::Op</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="Multiplexor_8cpp_source.html#l00572">572</a> of file <a class="el" href="Multiplexor_8cpp_source.html">Multiplexor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Multiplexor_8cpp_source.html#l00586">586</a> of file <a class="el" href="Multiplexor_8cpp_source.html">Multiplexor.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a2409bb1d97dd919d9d1fca17df610468"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2409bb1d97dd919d9d1fca17df610468">&#9670;&nbsp;</a></span>decompose()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::pair&lt; <a class="el" href="classtket_1_1Circuit.html">Circuit</a>, Eigen::VectorXcd &gt; tket::MultiplexedU2Box::decompose </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Decompose the multiplexor into a sequence of interleaving CX and single qubit gates followed by a diagonal matrix. </p>
+<dl class="section return"><dt>Returns</dt><dd>std::pair&lt;Circuit, Eigen::VectorXcd&gt; </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="Multiplexor_8cpp_source.html#l00616">616</a> of file <a class="el" href="Multiplexor_8cpp_source.html">Multiplexor.cpp</a>.</p>
 
 </div>
 </div>
@@ -419,7 +444,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implements <a class="el" href="classtket_1_1Op.html#aaf39768595adfe922e0278dfed20ecf6">tket::Op</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="Multiplexor_8cpp_source.html#l00568">568</a> of file <a class="el" href="Multiplexor_8cpp_source.html">Multiplexor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Multiplexor_8cpp_source.html#l00582">582</a> of file <a class="el" href="Multiplexor_8cpp_source.html">Multiplexor.cpp</a>.</p>
 
 </div>
 </div>
@@ -447,7 +472,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Multiplexor_8cpp_source.html#l00594">594</a> of file <a class="el" href="Multiplexor_8cpp_source.html">Multiplexor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Multiplexor_8cpp_source.html#l00608">608</a> of file <a class="el" href="Multiplexor_8cpp_source.html">Multiplexor.cpp</a>.</p>
 
 </div>
 </div>
@@ -475,12 +500,12 @@ Additional Inherited Members</h2></td></tr>
 </div><div class="memdoc">
 
 <p>Implement multiplexed U2 gate (i.e. </p>
-<p>uniformly controlled U2 gate (UCU2)) with 2^ctrl_qubits SQ gates, 2^ctrl_qubits CXs, and a <a class="el" href="classtket_1_1MultiplexedRotationBox.html" title="Multiplexed single-axis rotations.">MultiplexedRotationBox</a> at the end</p>
+<p>uniformly controlled U2 gate (UCU2)) with 2^ctrl_qubits SQ gates, 2^ctrl_qubits CXs, and a <a class="el" href="classtket_1_1DiagonalBox.html" title="Box to synthesise a diagonal operator.">DiagonalBox</a> at the end</p>
 <p><a href="https://arxiv.org/abs/quant-ph/0410066">https://arxiv.org/abs/quant-ph/0410066</a> </p>
 
 <p>Implements <a class="el" href="classtket_1_1Box.html#afa60507ad9bb7463edc3775ca8e908a1">tket::Box</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="Multiplexor_8cpp_source.html#l00602">602</a> of file <a class="el" href="Multiplexor_8cpp_source.html">Multiplexor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Multiplexor_8cpp_source.html#l00675">675</a> of file <a class="el" href="Multiplexor_8cpp_source.html">Multiplexor.cpp</a>.</p>
 
 </div>
 </div>
@@ -507,7 +532,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Multiplexor_8hpp_source.html#l00206">206</a> of file <a class="el" href="Multiplexor_8hpp_source.html">Multiplexor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Multiplexor_8hpp_source.html#l00212">212</a> of file <a class="el" href="Multiplexor_8hpp_source.html">Multiplexor.hpp</a>.</p>
 
 </div>
 </div>
@@ -534,7 +559,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Multiplexor_8hpp_source.html#l00204">204</a> of file <a class="el" href="Multiplexor_8hpp_source.html">Multiplexor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Multiplexor_8hpp_source.html#l00210">210</a> of file <a class="el" href="Multiplexor_8hpp_source.html">Multiplexor.hpp</a>.</p>
 
 </div>
 </div>
@@ -561,7 +586,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Multiplexor_8hpp_source.html#l00187">187</a> of file <a class="el" href="Multiplexor_8hpp_source.html">Multiplexor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Multiplexor_8hpp_source.html#l00193">193</a> of file <a class="el" href="Multiplexor_8hpp_source.html">Multiplexor.hpp</a>.</p>
 
 </div>
 </div>
@@ -592,7 +617,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classtket_1_1Box.html#a27907b60521d873de703af37e1f682c9">tket::Box</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="Multiplexor_8cpp_source.html#l00581">581</a> of file <a class="el" href="Multiplexor_8cpp_source.html">Multiplexor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Multiplexor_8cpp_source.html#l00595">595</a> of file <a class="el" href="Multiplexor_8cpp_source.html">Multiplexor.cpp</a>.</p>
 
 </div>
 </div>
@@ -624,7 +649,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classtket_1_1Op.html#a1267ba5bf1c744782e6ff73cb7032da6">tket::Op</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="Multiplexor_8hpp_source.html#l00192">192</a> of file <a class="el" href="Multiplexor_8hpp_source.html">Multiplexor.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Multiplexor_8hpp_source.html#l00198">198</a> of file <a class="el" href="Multiplexor_8hpp_source.html">Multiplexor.hpp</a>.</p>
 
 </div>
 </div>
@@ -663,7 +688,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implements <a class="el" href="classtket_1_1Op.html#a1e06f818450f001dd255c902dd06c172">tket::Op</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="Multiplexor_8cpp_source.html#l00562">562</a> of file <a class="el" href="Multiplexor_8cpp_source.html">Multiplexor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Multiplexor_8cpp_source.html#l00576">576</a> of file <a class="el" href="Multiplexor_8cpp_source.html">Multiplexor.cpp</a>.</p>
 
 </div>
 </div>
@@ -691,7 +716,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Multiplexor_8cpp_source.html#l00586">586</a> of file <a class="el" href="Multiplexor_8cpp_source.html">Multiplexor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Multiplexor_8cpp_source.html#l00600">600</a> of file <a class="el" href="Multiplexor_8cpp_source.html">Multiplexor.cpp</a>.</p>
 
 </div>
 </div>
@@ -722,7 +747,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classtket_1_1Op.html#ac1f550854b098bff3ebdb090c5687ab1">tket::Op</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="Multiplexor_8cpp_source.html#l00576">576</a> of file <a class="el" href="Multiplexor_8cpp_source.html">Multiplexor.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Multiplexor_8cpp_source.html#l00590">590</a> of file <a class="el" href="Multiplexor_8cpp_source.html">Multiplexor.cpp</a>.</p>
 
 </div>
 </div>

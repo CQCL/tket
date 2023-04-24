@@ -781,7 +781,7 @@ $(function() {
 <div class="line"><a name="l00703"></a><span class="lineno">  703</span>&#160;    <span class="keywordflow">return</span> CU_to_CU3(u);</div>
 <div class="line"><a name="l00704"></a><span class="lineno">  704</span>&#160;  }</div>
 <div class="line"><a name="l00705"></a><span class="lineno">  705</span>&#160; </div>
-<div class="line"><a name="l00706"></a><span class="lineno">  706</span>&#160;  Eigen::Matrix2cd v_matrix = <a class="code" href="namespacetket.html#a3ac751466c976caf533f2165dba9420a">nth_root</a>(u, 1 &lt;&lt; (n - 1));</div>
+<div class="line"><a name="l00706"></a><span class="lineno">  706</span>&#160;  Eigen::Matrix2cd v_matrix = <a class="code" href="namespacetket.html#af1c0b12ede96d595d64e0eca46ce3096">nth_root</a>(u, 1ULL &lt;&lt; (n - 1));</div>
 <div class="line"><a name="l00707"></a><span class="lineno">  707</span>&#160;  Eigen::Matrix2cd v_matrix_dag = v_matrix.adjoint();</div>
 <div class="line"><a name="l00708"></a><span class="lineno">  708</span>&#160;  <a class="code" href="classtket_1_1Circuit.html">Circuit</a> v_rep = CU_to_CU3(v_matrix);</div>
 <div class="line"><a name="l00709"></a><span class="lineno">  709</span>&#160;  <a class="code" href="classtket_1_1Circuit.html">Circuit</a> v_dg_rep = CU_to_CU3(v_matrix_dag);</div>
@@ -822,7 +822,7 @@ $(function() {
 <div class="line"><a name="l00744"></a><span class="lineno">  744</span>&#160;  <span class="keywordflow">else</span></div>
 <div class="line"><a name="l00745"></a><span class="lineno">  745</span>&#160;    param = angle;</div>
 <div class="line"><a name="l00746"></a><span class="lineno">  746</span>&#160; </div>
-<div class="line"><a name="l00747"></a><span class="lineno">  747</span>&#160;  param = param / (1 &lt;&lt; (n - 1));</div>
+<div class="line"><a name="l00747"></a><span class="lineno">  747</span>&#160;  param = param / (1ULL &lt;&lt; (n - 1));</div>
 <div class="line"><a name="l00748"></a><span class="lineno">  748</span>&#160;  <a class="code" href="classtket_1_1Circuit.html">Circuit</a> v_rep(2);</div>
 <div class="line"><a name="l00749"></a><span class="lineno">  749</span>&#160;  <a class="code" href="classtket_1_1Circuit.html">Circuit</a> v_dg_rep(2);</div>
 <div class="line"><a name="l00750"></a><span class="lineno">  750</span>&#160;  v_rep.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<span class="keywordtype">unsigned</span>&gt;(cu_type, param, {0, 1});</div>
@@ -927,208 +927,207 @@ $(function() {
 <div class="line"><a name="l00849"></a><span class="lineno">  849</span>&#160;  TKET_ASSERT(n &gt; 1);</div>
 <div class="line"><a name="l00850"></a><span class="lineno">  850</span>&#160;  <span class="comment">// pn is self commute</span></div>
 <div class="line"><a name="l00851"></a><span class="lineno">  851</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 2; i &lt; n + 1; i++) {</div>
-<div class="line"><a name="l00852"></a><span class="lineno">  852</span>&#160;    <span class="keywordtype">int</span> d = 1 &lt;&lt; (n - i + 1);</div>
-<div class="line"><a name="l00853"></a><span class="lineno">  853</span>&#160;    d = inverse ? -1 * d : d;</div>
-<div class="line"><a name="l00854"></a><span class="lineno">  854</span>&#160;    circ.add_op&lt;<span class="keywordtype">unsigned</span>&gt;(OpType::CRx, (double)1 / d, {i - 1, n});</div>
-<div class="line"><a name="l00855"></a><span class="lineno">  855</span>&#160;  }</div>
-<div class="line"><a name="l00856"></a><span class="lineno">  856</span>&#160;}</div>
-<div class="line"><a name="l00857"></a><span class="lineno">  857</span>&#160; </div>
-<div class="line"><a name="l00858"></a><span class="lineno">  858</span>&#160;<span class="comment">// Add pn(u) to qubits {1,...,n}, assume n &gt; 1</span></div>
-<div class="line"><a name="l00859"></a><span class="lineno">  859</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> add_pn_unitary(</div>
-<div class="line"><a name="l00860"></a><span class="lineno">  860</span>&#160;    Circuit&amp; circ, <span class="keyword">const</span> Eigen::Matrix2cd&amp; u, <span class="keywordtype">unsigned</span> n, <span class="keywordtype">bool</span> inverse) {</div>
-<div class="line"><a name="l00861"></a><span class="lineno">  861</span>&#160;  TKET_ASSERT(n &gt; 1);</div>
-<div class="line"><a name="l00862"></a><span class="lineno">  862</span>&#160;  <span class="comment">// pn_(u) is self commute</span></div>
-<div class="line"><a name="l00863"></a><span class="lineno">  863</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 2; i &lt; n + 1; i++) {</div>
-<div class="line"><a name="l00864"></a><span class="lineno">  864</span>&#160;    Eigen::Matrix2cd m = <a class="code" href="namespacetket.html#a3ac751466c976caf533f2165dba9420a">nth_root</a>(u, 1 &lt;&lt; (n - i + 1));</div>
-<div class="line"><a name="l00865"></a><span class="lineno">  865</span>&#160;    <span class="keywordflow">if</span> (inverse) m.adjointInPlace();</div>
-<div class="line"><a name="l00866"></a><span class="lineno">  866</span>&#160;    add_cu_using_cu3(i - 1, n, circ, m);</div>
-<div class="line"><a name="l00867"></a><span class="lineno">  867</span>&#160;  }</div>
-<div class="line"><a name="l00868"></a><span class="lineno">  868</span>&#160;}</div>
-<div class="line"><a name="l00869"></a><span class="lineno">  869</span>&#160; </div>
-<div class="line"><a name="l00870"></a><span class="lineno">  870</span>&#160;<span class="comment">// Add an incrementer without toggling the least significant bit</span></div>
-<div class="line"><a name="l00871"></a><span class="lineno">  871</span>&#160;<span class="comment">// Apply to qubits {0,...,n-1}, assume n &gt; 1</span></div>
-<div class="line"><a name="l00872"></a><span class="lineno">  872</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> add_qn(Circuit&amp; circ, <span class="keywordtype">unsigned</span> n) {</div>
-<div class="line"><a name="l00873"></a><span class="lineno">  873</span>&#160;  TKET_ASSERT(n &gt; 1);</div>
-<div class="line"><a name="l00874"></a><span class="lineno">  874</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = n - 1; i &gt; 1; i--) {</div>
-<div class="line"><a name="l00875"></a><span class="lineno">  875</span>&#160;    <span class="keywordtype">int</span> d = 1 &lt;&lt; (i - 1);</div>
-<div class="line"><a name="l00876"></a><span class="lineno">  876</span>&#160;    add_pn(circ, i, <span class="keyword">false</span>);</div>
-<div class="line"><a name="l00877"></a><span class="lineno">  877</span>&#160;    circ.add_op&lt;<span class="keywordtype">unsigned</span>&gt;(OpType::CRx, (double)1 / d, {0, i});</div>
-<div class="line"><a name="l00878"></a><span class="lineno">  878</span>&#160;  }</div>
-<div class="line"><a name="l00879"></a><span class="lineno">  879</span>&#160;  circ.add_op&lt;<span class="keywordtype">unsigned</span>&gt;(OpType::CRx, 1, {0, 1});</div>
-<div class="line"><a name="l00880"></a><span class="lineno">  880</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 2; i &lt; n; i++) {</div>
-<div class="line"><a name="l00881"></a><span class="lineno">  881</span>&#160;    add_pn(circ, i, <span class="keyword">true</span>);</div>
-<div class="line"><a name="l00882"></a><span class="lineno">  882</span>&#160;  }</div>
-<div class="line"><a name="l00883"></a><span class="lineno">  883</span>&#160;}</div>
-<div class="line"><a name="l00884"></a><span class="lineno">  884</span>&#160; </div>
-<div class="line"><a name="l00885"></a><span class="lineno">  885</span>&#160;<span class="comment">// https://arxiv.org/abs/2203.11882 Equation 5</span></div>
-<div class="line"><a name="l00886"></a><span class="lineno"><a class="line" href="namespacetket_1_1CircPool.html#adde59ccc922be9d9c857ae94fc8c9aa0">  886</a></span>&#160;<a class="code" href="classtket_1_1Circuit.html">Circuit</a> <a class="code" href="namespacetket_1_1CircPool.html#adde59ccc922be9d9c857ae94fc8c9aa0">incrementer_linear_depth</a>(<span class="keywordtype">unsigned</span> n, <span class="keywordtype">bool</span> lsb) {</div>
-<div class="line"><a name="l00887"></a><span class="lineno">  887</span>&#160;  <span class="keywordflow">if</span> (n == 0) {</div>
-<div class="line"><a name="l00888"></a><span class="lineno">  888</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classtket_1_1Circuit.html">Circuit</a>();</div>
-<div class="line"><a name="l00889"></a><span class="lineno">  889</span>&#160;  }</div>
-<div class="line"><a name="l00890"></a><span class="lineno">  890</span>&#160;  <a class="code" href="classtket_1_1Circuit.html">Circuit</a> circ(n);</div>
-<div class="line"><a name="l00891"></a><span class="lineno">  891</span>&#160;  <span class="keywordflow">if</span> (n &gt; 1) {</div>
-<div class="line"><a name="l00892"></a><span class="lineno">  892</span>&#160;    add_qn(circ, n);</div>
-<div class="line"><a name="l00893"></a><span class="lineno">  893</span>&#160;  }</div>
-<div class="line"><a name="l00894"></a><span class="lineno">  894</span>&#160;  <span class="keywordflow">if</span> (lsb) {</div>
-<div class="line"><a name="l00895"></a><span class="lineno">  895</span>&#160;    <span class="comment">// Some optimisations might have better handlings for X gates</span></div>
-<div class="line"><a name="l00896"></a><span class="lineno">  896</span>&#160;    <span class="comment">// so use X instead of Rx(1)</span></div>
-<div class="line"><a name="l00897"></a><span class="lineno">  897</span>&#160;    circ.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<span class="keywordtype">unsigned</span>&gt;(<a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#a6c515798b8a4da2f27042009ea8dd3f9">OpType::X</a>, {0});</div>
-<div class="line"><a name="l00898"></a><span class="lineno">  898</span>&#160;    circ.<a class="code" href="classtket_1_1Circuit.html#ab6affc6187cf87686404f578a4bbcaed">add_phase</a>(-0.5);</div>
-<div class="line"><a name="l00899"></a><span class="lineno">  899</span>&#160;  }</div>
-<div class="line"><a name="l00900"></a><span class="lineno">  900</span>&#160;  <span class="keywordflow">return</span> circ;</div>
-<div class="line"><a name="l00901"></a><span class="lineno">  901</span>&#160;}</div>
-<div class="line"><a name="l00902"></a><span class="lineno">  902</span>&#160; </div>
-<div class="line"><a name="l00903"></a><span class="lineno">  903</span>&#160;<span class="comment">// https://arxiv.org/abs/2203.11882 Equation 3</span></div>
-<div class="line"><a name="l00904"></a><span class="lineno"><a class="line" href="namespacetket_1_1CircPool.html#ad5dea527d94d8ce6a8e9c62b7de89c80">  904</a></span>&#160;<a class="code" href="classtket_1_1Circuit.html">Circuit</a> <a class="code" href="namespacetket_1_1CircPool.html#ad5dea527d94d8ce6a8e9c62b7de89c80">CnU_linear_depth_decomp</a>(<span class="keywordtype">unsigned</span> n, <span class="keyword">const</span> Eigen::Matrix2cd&amp; u) {</div>
-<div class="line"><a name="l00905"></a><span class="lineno">  905</span>&#160;  <span class="keywordflow">if</span> (!<a class="code" href="namespacetket.html#a85a557b9186a43dd79f284d4ac6d5bff">is_unitary</a>(u)) {</div>
-<div class="line"><a name="l00906"></a><span class="lineno">  906</span>&#160;    <span class="keywordflow">throw</span> <a class="code" href="classtket_1_1CircuitInvalidity.html">CircuitInvalidity</a>(</div>
-<div class="line"><a name="l00907"></a><span class="lineno">  907</span>&#160;        <span class="stringliteral">&quot;Matrix for the controlled operation must be unitary&quot;</span>);</div>
-<div class="line"><a name="l00908"></a><span class="lineno">  908</span>&#160;  }</div>
-<div class="line"><a name="l00909"></a><span class="lineno">  909</span>&#160;  <a class="code" href="classtket_1_1Circuit.html">Circuit</a> circ(n + 1);</div>
-<div class="line"><a name="l00910"></a><span class="lineno">  910</span>&#160; </div>
-<div class="line"><a name="l00911"></a><span class="lineno">  911</span>&#160;  <span class="keywordflow">if</span> (n == 0) {</div>
-<div class="line"><a name="l00912"></a><span class="lineno">  912</span>&#160;    <span class="comment">// Synthesis U using tk1 and phase</span></div>
-<div class="line"><a name="l00913"></a><span class="lineno">  913</span>&#160;    std::vector&lt;double&gt; tk1_angles = <a class="code" href="namespacetket.html#a37dcfa730319c0af923800c927c60e4a">tk1_angles_from_unitary</a>(u);</div>
-<div class="line"><a name="l00914"></a><span class="lineno">  914</span>&#160;    circ.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<span class="keywordtype">unsigned</span>&gt;(</div>
-<div class="line"><a name="l00915"></a><span class="lineno">  915</span>&#160;        OpType::TK1, {tk1_angles[0], tk1_angles[1], tk1_angles[2]}, {0});</div>
-<div class="line"><a name="l00916"></a><span class="lineno">  916</span>&#160;    circ.<a class="code" href="classtket_1_1Circuit.html#ab6affc6187cf87686404f578a4bbcaed">add_phase</a>(tk1_angles[3]);</div>
-<div class="line"><a name="l00917"></a><span class="lineno">  917</span>&#160;    <span class="keywordflow">return</span> circ;</div>
-<div class="line"><a name="l00918"></a><span class="lineno">  918</span>&#160;  }</div>
-<div class="line"><a name="l00919"></a><span class="lineno">  919</span>&#160;  <span class="keywordflow">if</span> (n == 1) {</div>
-<div class="line"><a name="l00920"></a><span class="lineno">  920</span>&#160;    add_cu_using_cu3(0, 1, circ, u);</div>
-<div class="line"><a name="l00921"></a><span class="lineno">  921</span>&#160;    <span class="keywordflow">return</span> circ;</div>
-<div class="line"><a name="l00922"></a><span class="lineno">  922</span>&#160;  }</div>
-<div class="line"><a name="l00923"></a><span class="lineno">  923</span>&#160; </div>
-<div class="line"><a name="l00924"></a><span class="lineno">  924</span>&#160;  <span class="comment">// Add pn(u) to qubits {1,...,n}</span></div>
-<div class="line"><a name="l00925"></a><span class="lineno">  925</span>&#160;  add_pn_unitary(circ, u, n, <span class="keyword">false</span>);</div>
-<div class="line"><a name="l00926"></a><span class="lineno">  926</span>&#160;  <span class="comment">// Add CU to {0, n}</span></div>
-<div class="line"><a name="l00927"></a><span class="lineno">  927</span>&#160;  Eigen::Matrix2cd m = <a class="code" href="namespacetket.html#a3ac751466c976caf533f2165dba9420a">nth_root</a>(u, 1 &lt;&lt; (n - 1));</div>
-<div class="line"><a name="l00928"></a><span class="lineno">  928</span>&#160;  add_cu_using_cu3(0, n, circ, m);</div>
-<div class="line"><a name="l00929"></a><span class="lineno">  929</span>&#160;  <span class="comment">// Add incrementer (without toggling q0) to {0,...,n-1}</span></div>
-<div class="line"><a name="l00930"></a><span class="lineno">  930</span>&#160;  <a class="code" href="classtket_1_1Circuit.html">Circuit</a> qn = <a class="code" href="namespacetket_1_1CircPool.html#adde59ccc922be9d9c857ae94fc8c9aa0">incrementer_linear_depth</a>(n, <span class="keyword">false</span>);</div>
-<div class="line"><a name="l00931"></a><span class="lineno">  931</span>&#160;  <a class="code" href="classtket_1_1Circuit.html">Circuit</a> qn_dag = qn.<a class="code" href="classtket_1_1Circuit.html#af2b0b0398ec8fb83914f0793a560d1ce">dagger</a>();</div>
-<div class="line"><a name="l00932"></a><span class="lineno">  932</span>&#160;  circ.<a class="code" href="classtket_1_1Circuit.html#a75c909a90d5c191b6f5ab2738fb896c4">append</a>(qn);</div>
-<div class="line"><a name="l00933"></a><span class="lineno">  933</span>&#160; </div>
-<div class="line"><a name="l00934"></a><span class="lineno">  934</span>&#160;  <span class="comment">// Add pn(u).dagger to qubits {1,...,n}</span></div>
-<div class="line"><a name="l00935"></a><span class="lineno">  935</span>&#160;  add_pn_unitary(circ, u, n, <span class="keyword">true</span>);</div>
-<div class="line"><a name="l00936"></a><span class="lineno">  936</span>&#160; </div>
-<div class="line"><a name="l00937"></a><span class="lineno">  937</span>&#160;  <span class="comment">// Add incrementer inverse (without toggling q0) to {0,...,n-1}</span></div>
-<div class="line"><a name="l00938"></a><span class="lineno">  938</span>&#160;  circ.<a class="code" href="classtket_1_1Circuit.html#a75c909a90d5c191b6f5ab2738fb896c4">append</a>(qn_dag);</div>
-<div class="line"><a name="l00939"></a><span class="lineno">  939</span>&#160; </div>
-<div class="line"><a name="l00940"></a><span class="lineno">  940</span>&#160;  <span class="keywordflow">return</span> circ;</div>
-<div class="line"><a name="l00941"></a><span class="lineno">  941</span>&#160;}</div>
-<div class="line"><a name="l00942"></a><span class="lineno">  942</span>&#160; </div>
-<div class="line"><a name="l00943"></a><span class="lineno"><a class="line" href="namespacetket_1_1CircPool.html#ad60bd9f9ab966e646cebf45f1b9fa3b5">  943</a></span>&#160;<a class="code" href="classtket_1_1Circuit.html">Circuit</a> <a class="code" href="namespacetket_1_1CircPool.html#ad60bd9f9ab966e646cebf45f1b9fa3b5">CnSU2_linear_decomp</a>(</div>
-<div class="line"><a name="l00944"></a><span class="lineno">  944</span>&#160;    <span class="keywordtype">unsigned</span> n, <span class="keyword">const</span> <a class="code" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a>&amp; alpha, <span class="keyword">const</span> <a class="code" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a>&amp; theta, <span class="keyword">const</span> <a class="code" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a>&amp; beta) {</div>
-<div class="line"><a name="l00945"></a><span class="lineno">  945</span>&#160;  <span class="comment">// W == I iff one of the following two conditions is met</span></div>
-<div class="line"><a name="l00946"></a><span class="lineno">  946</span>&#160;  <span class="comment">// 1. t/2 is even, and (a + b)/2 is even</span></div>
-<div class="line"><a name="l00947"></a><span class="lineno">  947</span>&#160;  <span class="comment">// 2. t/2 is odd, and (a + b)/2 is odd</span></div>
-<div class="line"><a name="l00948"></a><span class="lineno">  948</span>&#160;  <span class="comment">// check if SU(2) is identity</span></div>
-<div class="line"><a name="l00949"></a><span class="lineno">  949</span>&#160;  <span class="keywordflow">if</span> ((<a class="code" href="namespacetket.html#a17dbb37da0ac61471c32f75a2c7697a3">equiv_0</a>(theta / 2., 2) &amp;&amp; <a class="code" href="namespacetket.html#a17dbb37da0ac61471c32f75a2c7697a3">equiv_0</a>((alpha + beta) / 2., 2)) ||</div>
-<div class="line"><a name="l00950"></a><span class="lineno">  950</span>&#160;      (<a class="code" href="namespacetket.html#afd7ad53a965e38be8a92751a361fe0a6">equiv_val</a>(theta / 2., 1., 2) &amp;&amp; <a class="code" href="namespacetket.html#afd7ad53a965e38be8a92751a361fe0a6">equiv_val</a>((alpha + beta) / 2., 1., 2))) {</div>
-<div class="line"><a name="l00951"></a><span class="lineno">  951</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classtket_1_1Circuit.html">Circuit</a>(n + 1);</div>
-<div class="line"><a name="l00952"></a><span class="lineno">  952</span>&#160;  }</div>
-<div class="line"><a name="l00953"></a><span class="lineno">  953</span>&#160; </div>
-<div class="line"><a name="l00954"></a><span class="lineno">  954</span>&#160;  <a class="code" href="classtket_1_1Circuit.html">Circuit</a> circ;</div>
-<div class="line"><a name="l00955"></a><span class="lineno">  955</span>&#160; </div>
-<div class="line"><a name="l00956"></a><span class="lineno">  956</span>&#160;  <span class="keywordflow">if</span> (n == 0) {</div>
-<div class="line"><a name="l00957"></a><span class="lineno">  957</span>&#160;    <span class="comment">// add tk1</span></div>
-<div class="line"><a name="l00958"></a><span class="lineno">  958</span>&#160;    circ.<a class="code" href="classtket_1_1Circuit.html#a99d92660262156f8a739a3b1fea2bdce">add_blank_wires</a>(1);</div>
-<div class="line"><a name="l00959"></a><span class="lineno">  959</span>&#160;    circ.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<span class="keywordtype">unsigned</span>&gt;(OpType::TK1, {alpha + 0.5, theta, beta - 0.5}, {0});</div>
-<div class="line"><a name="l00960"></a><span class="lineno">  960</span>&#160;    <span class="keywordflow">return</span> circ;</div>
-<div class="line"><a name="l00961"></a><span class="lineno">  961</span>&#160;  }</div>
-<div class="line"><a name="l00962"></a><span class="lineno">  962</span>&#160; </div>
-<div class="line"><a name="l00963"></a><span class="lineno">  963</span>&#160;  <span class="comment">// SU(2) matrix W expressed as Rz(a)Ry(t)Rz(b)</span></div>
-<div class="line"><a name="l00964"></a><span class="lineno">  964</span>&#160;  <a class="code" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> a = alpha;</div>
-<div class="line"><a name="l00965"></a><span class="lineno">  965</span>&#160;  <a class="code" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> b = beta;</div>
-<div class="line"><a name="l00966"></a><span class="lineno">  966</span>&#160;  <a class="code" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> t = theta;</div>
-<div class="line"><a name="l00967"></a><span class="lineno">  967</span>&#160; </div>
-<div class="line"><a name="l00968"></a><span class="lineno">  968</span>&#160;  <span class="comment">// Lemma 4.3: W = A*X*B*X*C</span></div>
-<div class="line"><a name="l00969"></a><span class="lineno">  969</span>&#160;  <span class="comment">// By lemma 5.4, C is identity iff W can be expressed as Rz(a&#39;)Ry(t&#39;)Rz(a&#39;)</span></div>
-<div class="line"><a name="l00970"></a><span class="lineno">  970</span>&#160;  <span class="comment">// We handle the following two cases</span></div>
-<div class="line"><a name="l00971"></a><span class="lineno">  971</span>&#160;  <span class="comment">// if (a-b)/2 is even, a&#39; = (a + b)/2, t&#39; = t</span></div>
-<div class="line"><a name="l00972"></a><span class="lineno">  972</span>&#160;  <span class="comment">// if (a-b)/2 is odd, a&#39; = (a + b)/2, t&#39; = - t</span></div>
-<div class="line"><a name="l00973"></a><span class="lineno">  973</span>&#160;  <span class="keywordflow">if</span> (<a class="code" href="namespacetket.html#a17dbb37da0ac61471c32f75a2c7697a3">equiv_0</a>((a - b) / 2., 2)) {</div>
-<div class="line"><a name="l00974"></a><span class="lineno">  974</span>&#160;    a = (a + b) / 2.;</div>
-<div class="line"><a name="l00975"></a><span class="lineno">  975</span>&#160;    b = a;</div>
-<div class="line"><a name="l00976"></a><span class="lineno">  976</span>&#160;  } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="namespacetket.html#afd7ad53a965e38be8a92751a361fe0a6">equiv_val</a>((a - b) / 2., 1., 2)) {</div>
-<div class="line"><a name="l00977"></a><span class="lineno">  977</span>&#160;    a = (a + b) / 2.;</div>
-<div class="line"><a name="l00978"></a><span class="lineno">  978</span>&#160;    b = a;</div>
-<div class="line"><a name="l00979"></a><span class="lineno">  979</span>&#160;    t = -t;</div>
-<div class="line"><a name="l00980"></a><span class="lineno">  980</span>&#160;  }</div>
-<div class="line"><a name="l00981"></a><span class="lineno">  981</span>&#160; </div>
-<div class="line"><a name="l00982"></a><span class="lineno">  982</span>&#160;  <span class="comment">// We test whether W can be expressed as a single Ry(t&#39;&#39;)</span></div>
-<div class="line"><a name="l00983"></a><span class="lineno">  983</span>&#160;  <span class="keywordflow">if</span> (<a class="code" href="namespacetket.html#a17dbb37da0ac61471c32f75a2c7697a3">equiv_0</a>((a - b) / 2., 2)) {</div>
-<div class="line"><a name="l00984"></a><span class="lineno">  984</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="namespacetket.html#afd7ad53a965e38be8a92751a361fe0a6">equiv_val</a>((a + b) / 2., 1., 2)) {</div>
-<div class="line"><a name="l00985"></a><span class="lineno">  985</span>&#160;      <span class="comment">// if (a-b)/2 is even, and (a+b)/2 is odd, t&#39;&#39; = 2-t</span></div>
-<div class="line"><a name="l00986"></a><span class="lineno">  986</span>&#160;      a = 0.;</div>
-<div class="line"><a name="l00987"></a><span class="lineno">  987</span>&#160;      b = 0.;</div>
-<div class="line"><a name="l00988"></a><span class="lineno">  988</span>&#160;      t = 2. - t;</div>
-<div class="line"><a name="l00989"></a><span class="lineno">  989</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="namespacetket.html#a17dbb37da0ac61471c32f75a2c7697a3">equiv_0</a>((a + b) / 2., 2)) {</div>
-<div class="line"><a name="l00990"></a><span class="lineno">  990</span>&#160;      <span class="comment">// if (a-b)/2 is even, and (a+b)/2 is even, t&#39;&#39; = t</span></div>
-<div class="line"><a name="l00991"></a><span class="lineno">  991</span>&#160;      a = 0.;</div>
-<div class="line"><a name="l00992"></a><span class="lineno">  992</span>&#160;      b = 0.;</div>
-<div class="line"><a name="l00993"></a><span class="lineno">  993</span>&#160;    }</div>
-<div class="line"><a name="l00994"></a><span class="lineno">  994</span>&#160;  } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="namespacetket.html#afd7ad53a965e38be8a92751a361fe0a6">equiv_val</a>((a - b) / 2., 1., 2)) {</div>
-<div class="line"><a name="l00995"></a><span class="lineno">  995</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="namespacetket.html#afd7ad53a965e38be8a92751a361fe0a6">equiv_val</a>((a + b) / 2., 1., 2)) {</div>
-<div class="line"><a name="l00996"></a><span class="lineno">  996</span>&#160;      <span class="comment">// if (a-b)/2 is odd, and (a+b)/2 is odd, t&#39;&#39; = 2-t</span></div>
-<div class="line"><a name="l00997"></a><span class="lineno">  997</span>&#160;      a = 0.;</div>
-<div class="line"><a name="l00998"></a><span class="lineno">  998</span>&#160;      b = 0.;</div>
-<div class="line"><a name="l00999"></a><span class="lineno">  999</span>&#160;      t = 2. + t;</div>
-<div class="line"><a name="l01000"></a><span class="lineno"> 1000</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="namespacetket.html#a17dbb37da0ac61471c32f75a2c7697a3">equiv_0</a>((a + b) / 2., 2)) {</div>
-<div class="line"><a name="l01001"></a><span class="lineno"> 1001</span>&#160;      <span class="comment">// if (a-b)/2 is odd, and (a+b)/2 is even, t&#39;&#39; = -t</span></div>
-<div class="line"><a name="l01002"></a><span class="lineno"> 1002</span>&#160;      a = 0.;</div>
-<div class="line"><a name="l01003"></a><span class="lineno"> 1003</span>&#160;      b = 0.;</div>
-<div class="line"><a name="l01004"></a><span class="lineno"> 1004</span>&#160;      t = -t;</div>
-<div class="line"><a name="l01005"></a><span class="lineno"> 1005</span>&#160;    }</div>
-<div class="line"><a name="l01006"></a><span class="lineno"> 1006</span>&#160;  }</div>
-<div class="line"><a name="l01007"></a><span class="lineno"> 1007</span>&#160;  <span class="keywordflow">if</span> (n == 1) {</div>
-<div class="line"><a name="l01008"></a><span class="lineno"> 1008</span>&#160;    circ.<a class="code" href="classtket_1_1Circuit.html#a99d92660262156f8a739a3b1fea2bdce">add_blank_wires</a>(2);</div>
-<div class="line"><a name="l01009"></a><span class="lineno"> 1009</span>&#160;    <span class="keywordflow">if</span> (!<a class="code" href="namespacetket.html#a17dbb37da0ac61471c32f75a2c7697a3">equiv_0</a>(b - a, 8)) {</div>
-<div class="line"><a name="l01010"></a><span class="lineno"> 1010</span>&#160;      circ.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<span class="keywordtype">unsigned</span>&gt;(<a class="code" href="namespacestd__clifford__decomp.html#a75e6e1c29a9f1151411709607774a963">OpType::Rz</a>, {(b - a) / 2.}, {1});</div>
-<div class="line"><a name="l01011"></a><span class="lineno"> 1011</span>&#160;    }</div>
-<div class="line"><a name="l01012"></a><span class="lineno"> 1012</span>&#160;    circ.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<span class="keywordtype">unsigned</span>&gt;(<a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#aa41e2ab2be0126b26cc7a3a7f5e29fe8">OpType::CX</a>, {0, 1});</div>
-<div class="line"><a name="l01013"></a><span class="lineno"> 1013</span>&#160;    <span class="keywordflow">if</span> (!<a class="code" href="namespacetket.html#a17dbb37da0ac61471c32f75a2c7697a3">equiv_0</a>(a + b, 8)) {</div>
-<div class="line"><a name="l01014"></a><span class="lineno"> 1014</span>&#160;      circ.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<span class="keywordtype">unsigned</span>&gt;(<a class="code" href="namespacestd__clifford__decomp.html#a75e6e1c29a9f1151411709607774a963">OpType::Rz</a>, {(-a - b) / 2.}, {1});</div>
-<div class="line"><a name="l01015"></a><span class="lineno"> 1015</span>&#160;    }</div>
-<div class="line"><a name="l01016"></a><span class="lineno"> 1016</span>&#160;    <span class="keywordflow">if</span> (!<a class="code" href="namespacetket.html#a17dbb37da0ac61471c32f75a2c7697a3">equiv_0</a>(t, 8)) {</div>
-<div class="line"><a name="l01017"></a><span class="lineno"> 1017</span>&#160;      circ.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<span class="keywordtype">unsigned</span>&gt;(OpType::Ry, {-t / 2.}, {1});</div>
-<div class="line"><a name="l01018"></a><span class="lineno"> 1018</span>&#160;    }</div>
-<div class="line"><a name="l01019"></a><span class="lineno"> 1019</span>&#160;    circ.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<span class="keywordtype">unsigned</span>&gt;(<a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#aa41e2ab2be0126b26cc7a3a7f5e29fe8">OpType::CX</a>, {0, 1});</div>
-<div class="line"><a name="l01020"></a><span class="lineno"> 1020</span>&#160;    <span class="keywordflow">if</span> (!<a class="code" href="namespacetket.html#a17dbb37da0ac61471c32f75a2c7697a3">equiv_0</a>(t, 8)) {</div>
-<div class="line"><a name="l01021"></a><span class="lineno"> 1021</span>&#160;      circ.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<span class="keywordtype">unsigned</span>&gt;(OpType::Ry, {t / 2.}, {1});</div>
-<div class="line"><a name="l01022"></a><span class="lineno"> 1022</span>&#160;    }</div>
-<div class="line"><a name="l01023"></a><span class="lineno"> 1023</span>&#160;    <span class="keywordflow">if</span> (!<a class="code" href="namespacetket.html#a17dbb37da0ac61471c32f75a2c7697a3">equiv_0</a>(a, 4)) {</div>
-<div class="line"><a name="l01024"></a><span class="lineno"> 1024</span>&#160;      circ.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<span class="keywordtype">unsigned</span>&gt;(<a class="code" href="namespacestd__clifford__decomp.html#a75e6e1c29a9f1151411709607774a963">OpType::Rz</a>, {a}, {1});</div>
-<div class="line"><a name="l01025"></a><span class="lineno"> 1025</span>&#160;    }</div>
-<div class="line"><a name="l01026"></a><span class="lineno"> 1026</span>&#160;    <span class="keywordflow">return</span> circ;</div>
-<div class="line"><a name="l01027"></a><span class="lineno"> 1027</span>&#160;  }</div>
-<div class="line"><a name="l01028"></a><span class="lineno"> 1028</span>&#160;  <span class="comment">// Using lemma 7.9 for n &gt;= 2</span></div>
-<div class="line"><a name="l01029"></a><span class="lineno"> 1029</span>&#160;  <a class="code" href="namespacetket_1_1CircPool.html#a4425f934fb2f9a58238e289021c017d2">candidate_t</a> ct;</div>
-<div class="line"><a name="l01030"></a><span class="lineno"> 1030</span>&#160;  lemma79(circ, n + 1, a, t, b, ct);</div>
-<div class="line"><a name="l01031"></a><span class="lineno"> 1031</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> std::pair&lt;Edge, Vertex&gt;&amp; pairy : ct) {</div>
-<div class="line"><a name="l01032"></a><span class="lineno"> 1032</span>&#160;    <a class="code" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> original_cnx = pairy.second;</div>
-<div class="line"><a name="l01033"></a><span class="lineno"> 1033</span>&#160;    <span class="keywordtype">unsigned</span> cnx_arity = circ.<a class="code" href="classtket_1_1Circuit.html#af6a8144d6795e3048349a8384cc5bcd4">n_in_edges</a>(original_cnx);</div>
-<div class="line"><a name="l01034"></a><span class="lineno"> 1034</span>&#160;    <span class="keywordflow">switch</span> (cnx_arity) {</div>
-<div class="line"><a name="l01035"></a><span class="lineno"> 1035</span>&#160;      <span class="keywordflow">case</span> 2: {</div>
-<div class="line"><a name="l01036"></a><span class="lineno"> 1036</span>&#160;        circ.<a class="code" href="classtket_1_1Circuit.html#aa2661c079a17a04f213ec8221718efc1">dag</a>[original_cnx] = {<a class="code" href="namespacetket.html#a218e50abe75d86161d9b5ef3e556877f">get_op_ptr</a>(<a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#aa41e2ab2be0126b26cc7a3a7f5e29fe8">OpType::CX</a>)};</div>
-<div class="line"><a name="l01037"></a><span class="lineno"> 1037</span>&#160;        <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l01038"></a><span class="lineno"> 1038</span>&#160;      }</div>
-<div class="line"><a name="l01039"></a><span class="lineno"> 1039</span>&#160;      <span class="keywordflow">case</span> 3: {</div>
-<div class="line"><a name="l01040"></a><span class="lineno"> 1040</span>&#160;        circ.<a class="code" href="classtket_1_1Circuit.html#aa2661c079a17a04f213ec8221718efc1">dag</a>[original_cnx] = {<a class="code" href="namespacetket.html#a218e50abe75d86161d9b5ef3e556877f">get_op_ptr</a>(<a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#a82b9034d6d55ac41d9da05caf311aac3">OpType::CCX</a>)};</div>
-<div class="line"><a name="l01041"></a><span class="lineno"> 1041</span>&#160;        <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l01042"></a><span class="lineno"> 1042</span>&#160;      }</div>
-<div class="line"><a name="l01043"></a><span class="lineno"> 1043</span>&#160;      <span class="keywordflow">default</span>: {</div>
-<div class="line"><a name="l01044"></a><span class="lineno"> 1044</span>&#160;        lemma73(circ, pairy);</div>
-<div class="line"><a name="l01045"></a><span class="lineno"> 1045</span>&#160;      }</div>
-<div class="line"><a name="l01046"></a><span class="lineno"> 1046</span>&#160;    }</div>
-<div class="line"><a name="l01047"></a><span class="lineno"> 1047</span>&#160;  }</div>
-<div class="line"><a name="l01048"></a><span class="lineno"> 1048</span>&#160;  <span class="keywordflow">return</span> circ;</div>
-<div class="line"><a name="l01049"></a><span class="lineno"> 1049</span>&#160;}</div>
-<div class="line"><a name="l01050"></a><span class="lineno"> 1050</span>&#160; </div>
-<div class="line"><a name="l01051"></a><span class="lineno"> 1051</span>&#160;}  <span class="comment">// namespace CircPool</span></div>
-<div class="line"><a name="l01052"></a><span class="lineno"> 1052</span>&#160; </div>
-<div class="line"><a name="l01053"></a><span class="lineno"> 1053</span>&#160;}  <span class="comment">// namespace tket</span></div>
+<div class="line"><a name="l00852"></a><span class="lineno">  852</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> d = 1ULL &lt;&lt; (n - i + 1);</div>
+<div class="line"><a name="l00853"></a><span class="lineno">  853</span>&#160;    circ.add_op&lt;<span class="keywordtype">unsigned</span>&gt;(OpType::CRx, (inverse ? -1. : 1.) / d, {i - 1, n});</div>
+<div class="line"><a name="l00854"></a><span class="lineno">  854</span>&#160;  }</div>
+<div class="line"><a name="l00855"></a><span class="lineno">  855</span>&#160;}</div>
+<div class="line"><a name="l00856"></a><span class="lineno">  856</span>&#160; </div>
+<div class="line"><a name="l00857"></a><span class="lineno">  857</span>&#160;<span class="comment">// Add pn(u) to qubits {1,...,n}, assume n &gt; 1</span></div>
+<div class="line"><a name="l00858"></a><span class="lineno">  858</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> add_pn_unitary(</div>
+<div class="line"><a name="l00859"></a><span class="lineno">  859</span>&#160;    Circuit&amp; circ, <span class="keyword">const</span> Eigen::Matrix2cd&amp; u, <span class="keywordtype">unsigned</span> n, <span class="keywordtype">bool</span> inverse) {</div>
+<div class="line"><a name="l00860"></a><span class="lineno">  860</span>&#160;  TKET_ASSERT(n &gt; 1);</div>
+<div class="line"><a name="l00861"></a><span class="lineno">  861</span>&#160;  <span class="comment">// pn_(u) is self commute</span></div>
+<div class="line"><a name="l00862"></a><span class="lineno">  862</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 2; i &lt; n + 1; i++) {</div>
+<div class="line"><a name="l00863"></a><span class="lineno">  863</span>&#160;    Eigen::Matrix2cd m = <a class="code" href="namespacetket.html#af1c0b12ede96d595d64e0eca46ce3096">nth_root</a>(u, 1ULL &lt;&lt; (n - i + 1));</div>
+<div class="line"><a name="l00864"></a><span class="lineno">  864</span>&#160;    <span class="keywordflow">if</span> (inverse) m.adjointInPlace();</div>
+<div class="line"><a name="l00865"></a><span class="lineno">  865</span>&#160;    add_cu_using_cu3(i - 1, n, circ, m);</div>
+<div class="line"><a name="l00866"></a><span class="lineno">  866</span>&#160;  }</div>
+<div class="line"><a name="l00867"></a><span class="lineno">  867</span>&#160;}</div>
+<div class="line"><a name="l00868"></a><span class="lineno">  868</span>&#160; </div>
+<div class="line"><a name="l00869"></a><span class="lineno">  869</span>&#160;<span class="comment">// Add an incrementer without toggling the least significant bit</span></div>
+<div class="line"><a name="l00870"></a><span class="lineno">  870</span>&#160;<span class="comment">// Apply to qubits {0,...,n-1}, assume n &gt; 1</span></div>
+<div class="line"><a name="l00871"></a><span class="lineno">  871</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> add_qn(Circuit&amp; circ, <span class="keywordtype">unsigned</span> n) {</div>
+<div class="line"><a name="l00872"></a><span class="lineno">  872</span>&#160;  TKET_ASSERT(n &gt; 1);</div>
+<div class="line"><a name="l00873"></a><span class="lineno">  873</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = n - 1; i &gt; 1; i--) {</div>
+<div class="line"><a name="l00874"></a><span class="lineno">  874</span>&#160;    <span class="keywordtype">unsigned</span> <span class="keywordtype">long</span> <span class="keywordtype">long</span> d = 1ULL &lt;&lt; (i - 1);</div>
+<div class="line"><a name="l00875"></a><span class="lineno">  875</span>&#160;    add_pn(circ, i, <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00876"></a><span class="lineno">  876</span>&#160;    circ.add_op&lt;<span class="keywordtype">unsigned</span>&gt;(OpType::CRx, (double)1 / d, {0, i});</div>
+<div class="line"><a name="l00877"></a><span class="lineno">  877</span>&#160;  }</div>
+<div class="line"><a name="l00878"></a><span class="lineno">  878</span>&#160;  circ.add_op&lt;<span class="keywordtype">unsigned</span>&gt;(OpType::CRx, 1, {0, 1});</div>
+<div class="line"><a name="l00879"></a><span class="lineno">  879</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 2; i &lt; n; i++) {</div>
+<div class="line"><a name="l00880"></a><span class="lineno">  880</span>&#160;    add_pn(circ, i, <span class="keyword">true</span>);</div>
+<div class="line"><a name="l00881"></a><span class="lineno">  881</span>&#160;  }</div>
+<div class="line"><a name="l00882"></a><span class="lineno">  882</span>&#160;}</div>
+<div class="line"><a name="l00883"></a><span class="lineno">  883</span>&#160; </div>
+<div class="line"><a name="l00884"></a><span class="lineno">  884</span>&#160;<span class="comment">// https://arxiv.org/abs/2203.11882 Equation 5</span></div>
+<div class="line"><a name="l00885"></a><span class="lineno"><a class="line" href="namespacetket_1_1CircPool.html#adde59ccc922be9d9c857ae94fc8c9aa0">  885</a></span>&#160;<a class="code" href="classtket_1_1Circuit.html">Circuit</a> <a class="code" href="namespacetket_1_1CircPool.html#adde59ccc922be9d9c857ae94fc8c9aa0">incrementer_linear_depth</a>(<span class="keywordtype">unsigned</span> n, <span class="keywordtype">bool</span> lsb) {</div>
+<div class="line"><a name="l00886"></a><span class="lineno">  886</span>&#160;  <span class="keywordflow">if</span> (n == 0) {</div>
+<div class="line"><a name="l00887"></a><span class="lineno">  887</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classtket_1_1Circuit.html">Circuit</a>();</div>
+<div class="line"><a name="l00888"></a><span class="lineno">  888</span>&#160;  }</div>
+<div class="line"><a name="l00889"></a><span class="lineno">  889</span>&#160;  <a class="code" href="classtket_1_1Circuit.html">Circuit</a> circ(n);</div>
+<div class="line"><a name="l00890"></a><span class="lineno">  890</span>&#160;  <span class="keywordflow">if</span> (n &gt; 1) {</div>
+<div class="line"><a name="l00891"></a><span class="lineno">  891</span>&#160;    add_qn(circ, n);</div>
+<div class="line"><a name="l00892"></a><span class="lineno">  892</span>&#160;  }</div>
+<div class="line"><a name="l00893"></a><span class="lineno">  893</span>&#160;  <span class="keywordflow">if</span> (lsb) {</div>
+<div class="line"><a name="l00894"></a><span class="lineno">  894</span>&#160;    <span class="comment">// Some optimisations might have better handlings for X gates</span></div>
+<div class="line"><a name="l00895"></a><span class="lineno">  895</span>&#160;    <span class="comment">// so use X instead of Rx(1)</span></div>
+<div class="line"><a name="l00896"></a><span class="lineno">  896</span>&#160;    circ.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<span class="keywordtype">unsigned</span>&gt;(<a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#a6c515798b8a4da2f27042009ea8dd3f9">OpType::X</a>, {0});</div>
+<div class="line"><a name="l00897"></a><span class="lineno">  897</span>&#160;    circ.<a class="code" href="classtket_1_1Circuit.html#ab6affc6187cf87686404f578a4bbcaed">add_phase</a>(-0.5);</div>
+<div class="line"><a name="l00898"></a><span class="lineno">  898</span>&#160;  }</div>
+<div class="line"><a name="l00899"></a><span class="lineno">  899</span>&#160;  <span class="keywordflow">return</span> circ;</div>
+<div class="line"><a name="l00900"></a><span class="lineno">  900</span>&#160;}</div>
+<div class="line"><a name="l00901"></a><span class="lineno">  901</span>&#160; </div>
+<div class="line"><a name="l00902"></a><span class="lineno">  902</span>&#160;<span class="comment">// https://arxiv.org/abs/2203.11882 Equation 3</span></div>
+<div class="line"><a name="l00903"></a><span class="lineno"><a class="line" href="namespacetket_1_1CircPool.html#ad5dea527d94d8ce6a8e9c62b7de89c80">  903</a></span>&#160;<a class="code" href="classtket_1_1Circuit.html">Circuit</a> <a class="code" href="namespacetket_1_1CircPool.html#ad5dea527d94d8ce6a8e9c62b7de89c80">CnU_linear_depth_decomp</a>(<span class="keywordtype">unsigned</span> n, <span class="keyword">const</span> Eigen::Matrix2cd&amp; u) {</div>
+<div class="line"><a name="l00904"></a><span class="lineno">  904</span>&#160;  <span class="keywordflow">if</span> (!<a class="code" href="namespacetket.html#a85a557b9186a43dd79f284d4ac6d5bff">is_unitary</a>(u)) {</div>
+<div class="line"><a name="l00905"></a><span class="lineno">  905</span>&#160;    <span class="keywordflow">throw</span> <a class="code" href="classtket_1_1CircuitInvalidity.html">CircuitInvalidity</a>(</div>
+<div class="line"><a name="l00906"></a><span class="lineno">  906</span>&#160;        <span class="stringliteral">&quot;Matrix for the controlled operation must be unitary&quot;</span>);</div>
+<div class="line"><a name="l00907"></a><span class="lineno">  907</span>&#160;  }</div>
+<div class="line"><a name="l00908"></a><span class="lineno">  908</span>&#160;  <a class="code" href="classtket_1_1Circuit.html">Circuit</a> circ(n + 1);</div>
+<div class="line"><a name="l00909"></a><span class="lineno">  909</span>&#160; </div>
+<div class="line"><a name="l00910"></a><span class="lineno">  910</span>&#160;  <span class="keywordflow">if</span> (n == 0) {</div>
+<div class="line"><a name="l00911"></a><span class="lineno">  911</span>&#160;    <span class="comment">// Synthesis U using tk1 and phase</span></div>
+<div class="line"><a name="l00912"></a><span class="lineno">  912</span>&#160;    std::vector&lt;double&gt; tk1_angles = <a class="code" href="namespacetket.html#a37dcfa730319c0af923800c927c60e4a">tk1_angles_from_unitary</a>(u);</div>
+<div class="line"><a name="l00913"></a><span class="lineno">  913</span>&#160;    circ.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<span class="keywordtype">unsigned</span>&gt;(</div>
+<div class="line"><a name="l00914"></a><span class="lineno">  914</span>&#160;        OpType::TK1, {tk1_angles[0], tk1_angles[1], tk1_angles[2]}, {0});</div>
+<div class="line"><a name="l00915"></a><span class="lineno">  915</span>&#160;    circ.<a class="code" href="classtket_1_1Circuit.html#ab6affc6187cf87686404f578a4bbcaed">add_phase</a>(tk1_angles[3]);</div>
+<div class="line"><a name="l00916"></a><span class="lineno">  916</span>&#160;    <span class="keywordflow">return</span> circ;</div>
+<div class="line"><a name="l00917"></a><span class="lineno">  917</span>&#160;  }</div>
+<div class="line"><a name="l00918"></a><span class="lineno">  918</span>&#160;  <span class="keywordflow">if</span> (n == 1) {</div>
+<div class="line"><a name="l00919"></a><span class="lineno">  919</span>&#160;    add_cu_using_cu3(0, 1, circ, u);</div>
+<div class="line"><a name="l00920"></a><span class="lineno">  920</span>&#160;    <span class="keywordflow">return</span> circ;</div>
+<div class="line"><a name="l00921"></a><span class="lineno">  921</span>&#160;  }</div>
+<div class="line"><a name="l00922"></a><span class="lineno">  922</span>&#160; </div>
+<div class="line"><a name="l00923"></a><span class="lineno">  923</span>&#160;  <span class="comment">// Add pn(u) to qubits {1,...,n}</span></div>
+<div class="line"><a name="l00924"></a><span class="lineno">  924</span>&#160;  add_pn_unitary(circ, u, n, <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00925"></a><span class="lineno">  925</span>&#160;  <span class="comment">// Add CU to {0, n}</span></div>
+<div class="line"><a name="l00926"></a><span class="lineno">  926</span>&#160;  Eigen::Matrix2cd m = <a class="code" href="namespacetket.html#af1c0b12ede96d595d64e0eca46ce3096">nth_root</a>(u, 1ULL &lt;&lt; (n - 1));</div>
+<div class="line"><a name="l00927"></a><span class="lineno">  927</span>&#160;  add_cu_using_cu3(0, n, circ, m);</div>
+<div class="line"><a name="l00928"></a><span class="lineno">  928</span>&#160;  <span class="comment">// Add incrementer (without toggling q0) to {0,...,n-1}</span></div>
+<div class="line"><a name="l00929"></a><span class="lineno">  929</span>&#160;  <a class="code" href="classtket_1_1Circuit.html">Circuit</a> qn = <a class="code" href="namespacetket_1_1CircPool.html#adde59ccc922be9d9c857ae94fc8c9aa0">incrementer_linear_depth</a>(n, <span class="keyword">false</span>);</div>
+<div class="line"><a name="l00930"></a><span class="lineno">  930</span>&#160;  <a class="code" href="classtket_1_1Circuit.html">Circuit</a> qn_dag = qn.<a class="code" href="classtket_1_1Circuit.html#af2b0b0398ec8fb83914f0793a560d1ce">dagger</a>();</div>
+<div class="line"><a name="l00931"></a><span class="lineno">  931</span>&#160;  circ.<a class="code" href="classtket_1_1Circuit.html#a75c909a90d5c191b6f5ab2738fb896c4">append</a>(qn);</div>
+<div class="line"><a name="l00932"></a><span class="lineno">  932</span>&#160; </div>
+<div class="line"><a name="l00933"></a><span class="lineno">  933</span>&#160;  <span class="comment">// Add pn(u).dagger to qubits {1,...,n}</span></div>
+<div class="line"><a name="l00934"></a><span class="lineno">  934</span>&#160;  add_pn_unitary(circ, u, n, <span class="keyword">true</span>);</div>
+<div class="line"><a name="l00935"></a><span class="lineno">  935</span>&#160; </div>
+<div class="line"><a name="l00936"></a><span class="lineno">  936</span>&#160;  <span class="comment">// Add incrementer inverse (without toggling q0) to {0,...,n-1}</span></div>
+<div class="line"><a name="l00937"></a><span class="lineno">  937</span>&#160;  circ.<a class="code" href="classtket_1_1Circuit.html#a75c909a90d5c191b6f5ab2738fb896c4">append</a>(qn_dag);</div>
+<div class="line"><a name="l00938"></a><span class="lineno">  938</span>&#160; </div>
+<div class="line"><a name="l00939"></a><span class="lineno">  939</span>&#160;  <span class="keywordflow">return</span> circ;</div>
+<div class="line"><a name="l00940"></a><span class="lineno">  940</span>&#160;}</div>
+<div class="line"><a name="l00941"></a><span class="lineno">  941</span>&#160; </div>
+<div class="line"><a name="l00942"></a><span class="lineno"><a class="line" href="namespacetket_1_1CircPool.html#ad60bd9f9ab966e646cebf45f1b9fa3b5">  942</a></span>&#160;<a class="code" href="classtket_1_1Circuit.html">Circuit</a> <a class="code" href="namespacetket_1_1CircPool.html#ad60bd9f9ab966e646cebf45f1b9fa3b5">CnSU2_linear_decomp</a>(</div>
+<div class="line"><a name="l00943"></a><span class="lineno">  943</span>&#160;    <span class="keywordtype">unsigned</span> n, <span class="keyword">const</span> <a class="code" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a>&amp; alpha, <span class="keyword">const</span> <a class="code" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a>&amp; theta, <span class="keyword">const</span> <a class="code" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a>&amp; beta) {</div>
+<div class="line"><a name="l00944"></a><span class="lineno">  944</span>&#160;  <span class="comment">// W == I iff one of the following two conditions is met</span></div>
+<div class="line"><a name="l00945"></a><span class="lineno">  945</span>&#160;  <span class="comment">// 1. t/2 is even, and (a + b)/2 is even</span></div>
+<div class="line"><a name="l00946"></a><span class="lineno">  946</span>&#160;  <span class="comment">// 2. t/2 is odd, and (a + b)/2 is odd</span></div>
+<div class="line"><a name="l00947"></a><span class="lineno">  947</span>&#160;  <span class="comment">// check if SU(2) is identity</span></div>
+<div class="line"><a name="l00948"></a><span class="lineno">  948</span>&#160;  <span class="keywordflow">if</span> ((<a class="code" href="namespacetket.html#a17dbb37da0ac61471c32f75a2c7697a3">equiv_0</a>(theta / 2., 2) &amp;&amp; <a class="code" href="namespacetket.html#a17dbb37da0ac61471c32f75a2c7697a3">equiv_0</a>((alpha + beta) / 2., 2)) ||</div>
+<div class="line"><a name="l00949"></a><span class="lineno">  949</span>&#160;      (<a class="code" href="namespacetket.html#afd7ad53a965e38be8a92751a361fe0a6">equiv_val</a>(theta / 2., 1., 2) &amp;&amp; <a class="code" href="namespacetket.html#afd7ad53a965e38be8a92751a361fe0a6">equiv_val</a>((alpha + beta) / 2., 1., 2))) {</div>
+<div class="line"><a name="l00950"></a><span class="lineno">  950</span>&#160;    <span class="keywordflow">return</span> <a class="code" href="classtket_1_1Circuit.html">Circuit</a>(n + 1);</div>
+<div class="line"><a name="l00951"></a><span class="lineno">  951</span>&#160;  }</div>
+<div class="line"><a name="l00952"></a><span class="lineno">  952</span>&#160; </div>
+<div class="line"><a name="l00953"></a><span class="lineno">  953</span>&#160;  <a class="code" href="classtket_1_1Circuit.html">Circuit</a> circ;</div>
+<div class="line"><a name="l00954"></a><span class="lineno">  954</span>&#160; </div>
+<div class="line"><a name="l00955"></a><span class="lineno">  955</span>&#160;  <span class="keywordflow">if</span> (n == 0) {</div>
+<div class="line"><a name="l00956"></a><span class="lineno">  956</span>&#160;    <span class="comment">// add tk1</span></div>
+<div class="line"><a name="l00957"></a><span class="lineno">  957</span>&#160;    circ.<a class="code" href="classtket_1_1Circuit.html#a99d92660262156f8a739a3b1fea2bdce">add_blank_wires</a>(1);</div>
+<div class="line"><a name="l00958"></a><span class="lineno">  958</span>&#160;    circ.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<span class="keywordtype">unsigned</span>&gt;(OpType::TK1, {alpha + 0.5, theta, beta - 0.5}, {0});</div>
+<div class="line"><a name="l00959"></a><span class="lineno">  959</span>&#160;    <span class="keywordflow">return</span> circ;</div>
+<div class="line"><a name="l00960"></a><span class="lineno">  960</span>&#160;  }</div>
+<div class="line"><a name="l00961"></a><span class="lineno">  961</span>&#160; </div>
+<div class="line"><a name="l00962"></a><span class="lineno">  962</span>&#160;  <span class="comment">// SU(2) matrix W expressed as Rz(a)Ry(t)Rz(b)</span></div>
+<div class="line"><a name="l00963"></a><span class="lineno">  963</span>&#160;  <a class="code" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> a = alpha;</div>
+<div class="line"><a name="l00964"></a><span class="lineno">  964</span>&#160;  <a class="code" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> b = beta;</div>
+<div class="line"><a name="l00965"></a><span class="lineno">  965</span>&#160;  <a class="code" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> t = theta;</div>
+<div class="line"><a name="l00966"></a><span class="lineno">  966</span>&#160; </div>
+<div class="line"><a name="l00967"></a><span class="lineno">  967</span>&#160;  <span class="comment">// Lemma 4.3: W = A*X*B*X*C</span></div>
+<div class="line"><a name="l00968"></a><span class="lineno">  968</span>&#160;  <span class="comment">// By lemma 5.4, C is identity iff W can be expressed as Rz(a&#39;)Ry(t&#39;)Rz(a&#39;)</span></div>
+<div class="line"><a name="l00969"></a><span class="lineno">  969</span>&#160;  <span class="comment">// We handle the following two cases</span></div>
+<div class="line"><a name="l00970"></a><span class="lineno">  970</span>&#160;  <span class="comment">// if (a-b)/2 is even, a&#39; = (a + b)/2, t&#39; = t</span></div>
+<div class="line"><a name="l00971"></a><span class="lineno">  971</span>&#160;  <span class="comment">// if (a-b)/2 is odd, a&#39; = (a + b)/2, t&#39; = - t</span></div>
+<div class="line"><a name="l00972"></a><span class="lineno">  972</span>&#160;  <span class="keywordflow">if</span> (<a class="code" href="namespacetket.html#a17dbb37da0ac61471c32f75a2c7697a3">equiv_0</a>((a - b) / 2., 2)) {</div>
+<div class="line"><a name="l00973"></a><span class="lineno">  973</span>&#160;    a = (a + b) / 2.;</div>
+<div class="line"><a name="l00974"></a><span class="lineno">  974</span>&#160;    b = a;</div>
+<div class="line"><a name="l00975"></a><span class="lineno">  975</span>&#160;  } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="namespacetket.html#afd7ad53a965e38be8a92751a361fe0a6">equiv_val</a>((a - b) / 2., 1., 2)) {</div>
+<div class="line"><a name="l00976"></a><span class="lineno">  976</span>&#160;    a = (a + b) / 2.;</div>
+<div class="line"><a name="l00977"></a><span class="lineno">  977</span>&#160;    b = a;</div>
+<div class="line"><a name="l00978"></a><span class="lineno">  978</span>&#160;    t = -t;</div>
+<div class="line"><a name="l00979"></a><span class="lineno">  979</span>&#160;  }</div>
+<div class="line"><a name="l00980"></a><span class="lineno">  980</span>&#160; </div>
+<div class="line"><a name="l00981"></a><span class="lineno">  981</span>&#160;  <span class="comment">// We test whether W can be expressed as a single Ry(t&#39;&#39;)</span></div>
+<div class="line"><a name="l00982"></a><span class="lineno">  982</span>&#160;  <span class="keywordflow">if</span> (<a class="code" href="namespacetket.html#a17dbb37da0ac61471c32f75a2c7697a3">equiv_0</a>((a - b) / 2., 2)) {</div>
+<div class="line"><a name="l00983"></a><span class="lineno">  983</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="namespacetket.html#afd7ad53a965e38be8a92751a361fe0a6">equiv_val</a>((a + b) / 2., 1., 2)) {</div>
+<div class="line"><a name="l00984"></a><span class="lineno">  984</span>&#160;      <span class="comment">// if (a-b)/2 is even, and (a+b)/2 is odd, t&#39;&#39; = 2-t</span></div>
+<div class="line"><a name="l00985"></a><span class="lineno">  985</span>&#160;      a = 0.;</div>
+<div class="line"><a name="l00986"></a><span class="lineno">  986</span>&#160;      b = 0.;</div>
+<div class="line"><a name="l00987"></a><span class="lineno">  987</span>&#160;      t = 2. - t;</div>
+<div class="line"><a name="l00988"></a><span class="lineno">  988</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="namespacetket.html#a17dbb37da0ac61471c32f75a2c7697a3">equiv_0</a>((a + b) / 2., 2)) {</div>
+<div class="line"><a name="l00989"></a><span class="lineno">  989</span>&#160;      <span class="comment">// if (a-b)/2 is even, and (a+b)/2 is even, t&#39;&#39; = t</span></div>
+<div class="line"><a name="l00990"></a><span class="lineno">  990</span>&#160;      a = 0.;</div>
+<div class="line"><a name="l00991"></a><span class="lineno">  991</span>&#160;      b = 0.;</div>
+<div class="line"><a name="l00992"></a><span class="lineno">  992</span>&#160;    }</div>
+<div class="line"><a name="l00993"></a><span class="lineno">  993</span>&#160;  } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="namespacetket.html#afd7ad53a965e38be8a92751a361fe0a6">equiv_val</a>((a - b) / 2., 1., 2)) {</div>
+<div class="line"><a name="l00994"></a><span class="lineno">  994</span>&#160;    <span class="keywordflow">if</span> (<a class="code" href="namespacetket.html#afd7ad53a965e38be8a92751a361fe0a6">equiv_val</a>((a + b) / 2., 1., 2)) {</div>
+<div class="line"><a name="l00995"></a><span class="lineno">  995</span>&#160;      <span class="comment">// if (a-b)/2 is odd, and (a+b)/2 is odd, t&#39;&#39; = 2-t</span></div>
+<div class="line"><a name="l00996"></a><span class="lineno">  996</span>&#160;      a = 0.;</div>
+<div class="line"><a name="l00997"></a><span class="lineno">  997</span>&#160;      b = 0.;</div>
+<div class="line"><a name="l00998"></a><span class="lineno">  998</span>&#160;      t = 2. + t;</div>
+<div class="line"><a name="l00999"></a><span class="lineno">  999</span>&#160;    } <span class="keywordflow">else</span> <span class="keywordflow">if</span> (<a class="code" href="namespacetket.html#a17dbb37da0ac61471c32f75a2c7697a3">equiv_0</a>((a + b) / 2., 2)) {</div>
+<div class="line"><a name="l01000"></a><span class="lineno"> 1000</span>&#160;      <span class="comment">// if (a-b)/2 is odd, and (a+b)/2 is even, t&#39;&#39; = -t</span></div>
+<div class="line"><a name="l01001"></a><span class="lineno"> 1001</span>&#160;      a = 0.;</div>
+<div class="line"><a name="l01002"></a><span class="lineno"> 1002</span>&#160;      b = 0.;</div>
+<div class="line"><a name="l01003"></a><span class="lineno"> 1003</span>&#160;      t = -t;</div>
+<div class="line"><a name="l01004"></a><span class="lineno"> 1004</span>&#160;    }</div>
+<div class="line"><a name="l01005"></a><span class="lineno"> 1005</span>&#160;  }</div>
+<div class="line"><a name="l01006"></a><span class="lineno"> 1006</span>&#160;  <span class="keywordflow">if</span> (n == 1) {</div>
+<div class="line"><a name="l01007"></a><span class="lineno"> 1007</span>&#160;    circ.<a class="code" href="classtket_1_1Circuit.html#a99d92660262156f8a739a3b1fea2bdce">add_blank_wires</a>(2);</div>
+<div class="line"><a name="l01008"></a><span class="lineno"> 1008</span>&#160;    <span class="keywordflow">if</span> (!<a class="code" href="namespacetket.html#a17dbb37da0ac61471c32f75a2c7697a3">equiv_0</a>(b - a, 8)) {</div>
+<div class="line"><a name="l01009"></a><span class="lineno"> 1009</span>&#160;      circ.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<span class="keywordtype">unsigned</span>&gt;(<a class="code" href="namespacestd__clifford__decomp.html#a75e6e1c29a9f1151411709607774a963">OpType::Rz</a>, {(b - a) / 2.}, {1});</div>
+<div class="line"><a name="l01010"></a><span class="lineno"> 1010</span>&#160;    }</div>
+<div class="line"><a name="l01011"></a><span class="lineno"> 1011</span>&#160;    circ.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<span class="keywordtype">unsigned</span>&gt;(<a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#aa41e2ab2be0126b26cc7a3a7f5e29fe8">OpType::CX</a>, {0, 1});</div>
+<div class="line"><a name="l01012"></a><span class="lineno"> 1012</span>&#160;    <span class="keywordflow">if</span> (!<a class="code" href="namespacetket.html#a17dbb37da0ac61471c32f75a2c7697a3">equiv_0</a>(a + b, 8)) {</div>
+<div class="line"><a name="l01013"></a><span class="lineno"> 1013</span>&#160;      circ.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<span class="keywordtype">unsigned</span>&gt;(<a class="code" href="namespacestd__clifford__decomp.html#a75e6e1c29a9f1151411709607774a963">OpType::Rz</a>, {(-a - b) / 2.}, {1});</div>
+<div class="line"><a name="l01014"></a><span class="lineno"> 1014</span>&#160;    }</div>
+<div class="line"><a name="l01015"></a><span class="lineno"> 1015</span>&#160;    <span class="keywordflow">if</span> (!<a class="code" href="namespacetket.html#a17dbb37da0ac61471c32f75a2c7697a3">equiv_0</a>(t, 8)) {</div>
+<div class="line"><a name="l01016"></a><span class="lineno"> 1016</span>&#160;      circ.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<span class="keywordtype">unsigned</span>&gt;(OpType::Ry, {-t / 2.}, {1});</div>
+<div class="line"><a name="l01017"></a><span class="lineno"> 1017</span>&#160;    }</div>
+<div class="line"><a name="l01018"></a><span class="lineno"> 1018</span>&#160;    circ.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<span class="keywordtype">unsigned</span>&gt;(<a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#aa41e2ab2be0126b26cc7a3a7f5e29fe8">OpType::CX</a>, {0, 1});</div>
+<div class="line"><a name="l01019"></a><span class="lineno"> 1019</span>&#160;    <span class="keywordflow">if</span> (!<a class="code" href="namespacetket.html#a17dbb37da0ac61471c32f75a2c7697a3">equiv_0</a>(t, 8)) {</div>
+<div class="line"><a name="l01020"></a><span class="lineno"> 1020</span>&#160;      circ.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<span class="keywordtype">unsigned</span>&gt;(OpType::Ry, {t / 2.}, {1});</div>
+<div class="line"><a name="l01021"></a><span class="lineno"> 1021</span>&#160;    }</div>
+<div class="line"><a name="l01022"></a><span class="lineno"> 1022</span>&#160;    <span class="keywordflow">if</span> (!<a class="code" href="namespacetket.html#a17dbb37da0ac61471c32f75a2c7697a3">equiv_0</a>(a, 4)) {</div>
+<div class="line"><a name="l01023"></a><span class="lineno"> 1023</span>&#160;      circ.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<span class="keywordtype">unsigned</span>&gt;(<a class="code" href="namespacestd__clifford__decomp.html#a75e6e1c29a9f1151411709607774a963">OpType::Rz</a>, {a}, {1});</div>
+<div class="line"><a name="l01024"></a><span class="lineno"> 1024</span>&#160;    }</div>
+<div class="line"><a name="l01025"></a><span class="lineno"> 1025</span>&#160;    <span class="keywordflow">return</span> circ;</div>
+<div class="line"><a name="l01026"></a><span class="lineno"> 1026</span>&#160;  }</div>
+<div class="line"><a name="l01027"></a><span class="lineno"> 1027</span>&#160;  <span class="comment">// Using lemma 7.9 for n &gt;= 2</span></div>
+<div class="line"><a name="l01028"></a><span class="lineno"> 1028</span>&#160;  <a class="code" href="namespacetket_1_1CircPool.html#a4425f934fb2f9a58238e289021c017d2">candidate_t</a> ct;</div>
+<div class="line"><a name="l01029"></a><span class="lineno"> 1029</span>&#160;  lemma79(circ, n + 1, a, t, b, ct);</div>
+<div class="line"><a name="l01030"></a><span class="lineno"> 1030</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> std::pair&lt;Edge, Vertex&gt;&amp; pairy : ct) {</div>
+<div class="line"><a name="l01031"></a><span class="lineno"> 1031</span>&#160;    <a class="code" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> original_cnx = pairy.second;</div>
+<div class="line"><a name="l01032"></a><span class="lineno"> 1032</span>&#160;    <span class="keywordtype">unsigned</span> cnx_arity = circ.<a class="code" href="classtket_1_1Circuit.html#af6a8144d6795e3048349a8384cc5bcd4">n_in_edges</a>(original_cnx);</div>
+<div class="line"><a name="l01033"></a><span class="lineno"> 1033</span>&#160;    <span class="keywordflow">switch</span> (cnx_arity) {</div>
+<div class="line"><a name="l01034"></a><span class="lineno"> 1034</span>&#160;      <span class="keywordflow">case</span> 2: {</div>
+<div class="line"><a name="l01035"></a><span class="lineno"> 1035</span>&#160;        circ.<a class="code" href="classtket_1_1Circuit.html#aa2661c079a17a04f213ec8221718efc1">dag</a>[original_cnx] = {<a class="code" href="namespacetket.html#a218e50abe75d86161d9b5ef3e556877f">get_op_ptr</a>(<a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#aa41e2ab2be0126b26cc7a3a7f5e29fe8">OpType::CX</a>)};</div>
+<div class="line"><a name="l01036"></a><span class="lineno"> 1036</span>&#160;        <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l01037"></a><span class="lineno"> 1037</span>&#160;      }</div>
+<div class="line"><a name="l01038"></a><span class="lineno"> 1038</span>&#160;      <span class="keywordflow">case</span> 3: {</div>
+<div class="line"><a name="l01039"></a><span class="lineno"> 1039</span>&#160;        circ.<a class="code" href="classtket_1_1Circuit.html#aa2661c079a17a04f213ec8221718efc1">dag</a>[original_cnx] = {<a class="code" href="namespacetket.html#a218e50abe75d86161d9b5ef3e556877f">get_op_ptr</a>(<a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#a82b9034d6d55ac41d9da05caf311aac3">OpType::CCX</a>)};</div>
+<div class="line"><a name="l01040"></a><span class="lineno"> 1040</span>&#160;        <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l01041"></a><span class="lineno"> 1041</span>&#160;      }</div>
+<div class="line"><a name="l01042"></a><span class="lineno"> 1042</span>&#160;      <span class="keywordflow">default</span>: {</div>
+<div class="line"><a name="l01043"></a><span class="lineno"> 1043</span>&#160;        lemma73(circ, pairy);</div>
+<div class="line"><a name="l01044"></a><span class="lineno"> 1044</span>&#160;      }</div>
+<div class="line"><a name="l01045"></a><span class="lineno"> 1045</span>&#160;    }</div>
+<div class="line"><a name="l01046"></a><span class="lineno"> 1046</span>&#160;  }</div>
+<div class="line"><a name="l01047"></a><span class="lineno"> 1047</span>&#160;  <span class="keywordflow">return</span> circ;</div>
+<div class="line"><a name="l01048"></a><span class="lineno"> 1048</span>&#160;}</div>
+<div class="line"><a name="l01049"></a><span class="lineno"> 1049</span>&#160; </div>
+<div class="line"><a name="l01050"></a><span class="lineno"> 1050</span>&#160;}  <span class="comment">// namespace CircPool</span></div>
+<div class="line"><a name="l01051"></a><span class="lineno"> 1051</span>&#160; </div>
+<div class="line"><a name="l01052"></a><span class="lineno"> 1052</span>&#160;}  <span class="comment">// namespace tket</span></div>
 <div class="ttc" id="aCircPool_8hpp_html"><div class="ttname"><a href="CircPool_8hpp.html">CircPool.hpp</a></div></div>
 <div class="ttc" id="aCircUtils_8hpp_html"><div class="ttname"><a href="CircUtils_8hpp.html">CircUtils.hpp</a></div></div>
 <div class="ttc" id="aDAGDefs_8hpp_html"><div class="ttname"><a href="DAGDefs_8hpp.html">DAGDefs.hpp</a></div></div>
@@ -1180,9 +1179,9 @@ $(function() {
 <div class="ttc" id="anamespacetket_1_1CircPool_html_a9b9e1a3b3ee4bd61f31f1a6c2c8f7e5b"><div class="ttname"><a href="namespacetket_1_1CircPool.html#a9b9e1a3b3ee4bd61f31f1a6c2c8f7e5b">tket::CircPool::CnU_gray_code_decomp</a></div><div class="ttdeci">Circuit CnU_gray_code_decomp(unsigned n, const Gate_ptr &amp;gate)</div><div class="ttdoc">Given a gate and the number of control qubits n, return the n-qubit controlled version of that gate u...</div><div class="ttdef"><b>Definition:</b> <a href="ControlledGates_8cpp_source.html#l00713">ControlledGates.cpp:713</a></div></div>
 <div class="ttc" id="anamespacetket_1_1CircPool_html_ab7c657fe9b04058ad1f85190b0dde4a7"><div class="ttname"><a href="namespacetket_1_1CircPool.html#ab7c657fe9b04058ad1f85190b0dde4a7">tket::CircPool::ladder_down_2</a></div><div class="ttdeci">const Circuit &amp; ladder_down_2()</div><div class="ttdoc">CX[0,1]; X[0]; X[2]; CCX[0,1,2].</div><div class="ttdef"><b>Definition:</b> <a href="CircPool_8cpp_source.html#l00457">CircPool.cpp:457</a></div></div>
 <div class="ttc" id="anamespacetket_1_1CircPool_html_ad5072cb91fb0cd4ae19525ecd3306b30"><div class="ttname"><a href="namespacetket_1_1CircPool.html#ad5072cb91fb0cd4ae19525ecd3306b30">tket::CircPool::ladder_up</a></div><div class="ttdeci">const Circuit &amp; ladder_up()</div><div class="ttdoc">CCX[0,1,2]; CX[2,0]; CX[2,1].</div><div class="ttdef"><b>Definition:</b> <a href="CircPool_8cpp_source.html#l00469">CircPool.cpp:469</a></div></div>
-<div class="ttc" id="anamespacetket_1_1CircPool_html_ad5dea527d94d8ce6a8e9c62b7de89c80"><div class="ttname"><a href="namespacetket_1_1CircPool.html#ad5dea527d94d8ce6a8e9c62b7de89c80">tket::CircPool::CnU_linear_depth_decomp</a></div><div class="ttdeci">Circuit CnU_linear_depth_decomp(unsigned n, const Eigen::Matrix2cd &amp;u)</div><div class="ttdoc">Implement CnU gate with linear depth and O(n^2) gate count.</div><div class="ttdef"><b>Definition:</b> <a href="ControlledGates_8cpp_source.html#l00904">ControlledGates.cpp:904</a></div></div>
-<div class="ttc" id="anamespacetket_1_1CircPool_html_ad60bd9f9ab966e646cebf45f1b9fa3b5"><div class="ttname"><a href="namespacetket_1_1CircPool.html#ad60bd9f9ab966e646cebf45f1b9fa3b5">tket::CircPool::CnSU2_linear_decomp</a></div><div class="ttdeci">Circuit CnSU2_linear_decomp(unsigned n, const Expr &amp;alpha, const Expr &amp;theta, const Expr &amp;beta)</div><div class="ttdoc">Linear decomposition method for n-qubit controlled SU(2) gate expressed as Rz(alpha)Ry(theta)Rz(beta)...</div><div class="ttdef"><b>Definition:</b> <a href="ControlledGates_8cpp_source.html#l00943">ControlledGates.cpp:943</a></div></div>
-<div class="ttc" id="anamespacetket_1_1CircPool_html_adde59ccc922be9d9c857ae94fc8c9aa0"><div class="ttname"><a href="namespacetket_1_1CircPool.html#adde59ccc922be9d9c857ae94fc8c9aa0">tket::CircPool::incrementer_linear_depth</a></div><div class="ttdeci">Circuit incrementer_linear_depth(unsigned n, bool lsb)</div><div class="ttdoc">Get an n-qubit incrementer circuit with linear depth and O(n^2) gate count.</div><div class="ttdef"><b>Definition:</b> <a href="ControlledGates_8cpp_source.html#l00886">ControlledGates.cpp:886</a></div></div>
+<div class="ttc" id="anamespacetket_1_1CircPool_html_ad5dea527d94d8ce6a8e9c62b7de89c80"><div class="ttname"><a href="namespacetket_1_1CircPool.html#ad5dea527d94d8ce6a8e9c62b7de89c80">tket::CircPool::CnU_linear_depth_decomp</a></div><div class="ttdeci">Circuit CnU_linear_depth_decomp(unsigned n, const Eigen::Matrix2cd &amp;u)</div><div class="ttdoc">Implement CnU gate with linear depth and O(n^2) gate count.</div><div class="ttdef"><b>Definition:</b> <a href="ControlledGates_8cpp_source.html#l00903">ControlledGates.cpp:903</a></div></div>
+<div class="ttc" id="anamespacetket_1_1CircPool_html_ad60bd9f9ab966e646cebf45f1b9fa3b5"><div class="ttname"><a href="namespacetket_1_1CircPool.html#ad60bd9f9ab966e646cebf45f1b9fa3b5">tket::CircPool::CnSU2_linear_decomp</a></div><div class="ttdeci">Circuit CnSU2_linear_decomp(unsigned n, const Expr &amp;alpha, const Expr &amp;theta, const Expr &amp;beta)</div><div class="ttdoc">Linear decomposition method for n-qubit controlled SU(2) gate expressed as Rz(alpha)Ry(theta)Rz(beta)...</div><div class="ttdef"><b>Definition:</b> <a href="ControlledGates_8cpp_source.html#l00942">ControlledGates.cpp:942</a></div></div>
+<div class="ttc" id="anamespacetket_1_1CircPool_html_adde59ccc922be9d9c857ae94fc8c9aa0"><div class="ttname"><a href="namespacetket_1_1CircPool.html#adde59ccc922be9d9c857ae94fc8c9aa0">tket::CircPool::incrementer_linear_depth</a></div><div class="ttdeci">Circuit incrementer_linear_depth(unsigned n, bool lsb)</div><div class="ttdoc">Get an n-qubit incrementer circuit with linear depth and O(n^2) gate count.</div><div class="ttdef"><b>Definition:</b> <a href="ControlledGates_8cpp_source.html#l00885">ControlledGates.cpp:885</a></div></div>
 <div class="ttc" id="anamespacetket_1_1CircPool_html_ae122782f5c802f4d1df95e2efe4f05f2"><div class="ttname"><a href="namespacetket_1_1CircPool.html#ae122782f5c802f4d1df95e2efe4f05f2">tket::CircPool::CCX_normal_decomp</a></div><div class="ttdeci">const Circuit &amp; CCX_normal_decomp()</div><div class="ttdoc">Equivalent to CCX, using 6 CX.</div><div class="ttdef"><b>Definition:</b> <a href="CircPool_8cpp_source.html#l00300">CircPool.cpp:300</a></div></div>
 <div class="ttc" id="anamespacetket_1_1CircPool_html_aff71159982634517feca42329a2b3eeb"><div class="ttname"><a href="namespacetket_1_1CircPool.html#aff71159982634517feca42329a2b3eeb">tket::CircPool::ladder_down</a></div><div class="ttdeci">const Circuit &amp; ladder_down()</div><div class="ttdoc">CX[0,1]; CX[2,0]; CCX[0,1,2].</div><div class="ttdef"><b>Definition:</b> <a href="CircPool_8cpp_source.html#l00446">CircPool.cpp:446</a></div></div>
 <div class="ttc" id="anamespacetket_html"><div class="ttname"><a href="namespacetket.html">tket</a></div><div class="ttdoc">Defines tket::DeviceCharacterisation, used in NoiseAwarePlacement and in commute_SQ_gates_through_SWA...</div><div class="ttdef"><b>Definition:</b> <a href="Path_8cpp_source.html#l00019">Path.cpp:19</a></div></div>
@@ -1197,7 +1196,6 @@ $(function() {
 <div class="ttc" id="anamespacetket_html_a2993d101c682c3d8e566a19ac49b5285"><div class="ttname"><a href="namespacetket.html#a2993d101c682c3d8e566a19ac49b5285">tket::VertexSet</a></div><div class="ttdeci">std::unordered_set&lt; Vertex &gt; VertexSet</div><div class="ttdef"><b>Definition:</b> <a href="DAGDefs_8hpp_source.html#l00074">DAGDefs.hpp:74</a></div></div>
 <div class="ttc" id="anamespacetket_html_a342a289d54f4f5f5a405373c07aca66aa02129bb861061d1a052c592e2dc6b383"><div class="ttname"><a href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66aa02129bb861061d1a052c592e2dc6b383">tket::X</a></div><div class="ttdeci">@ X</div></div>
 <div class="ttc" id="anamespacetket_html_a37dcfa730319c0af923800c927c60e4a"><div class="ttname"><a href="namespacetket.html#a37dcfa730319c0af923800c927c60e4a">tket::tk1_angles_from_unitary</a></div><div class="ttdeci">std::vector&lt; double &gt; tk1_angles_from_unitary(const Eigen::Matrix2cd &amp;U)</div><div class="ttdoc">Construct TK1 angles and phase from matrix.</div><div class="ttdef"><b>Definition:</b> <a href="Rotation_8cpp_source.html#l00366">Rotation.cpp:366</a></div></div>
-<div class="ttc" id="anamespacetket_html_a3ac751466c976caf533f2165dba9420a"><div class="ttname"><a href="namespacetket.html#a3ac751466c976caf533f2165dba9420a">tket::nth_root</a></div><div class="ttdeci">Eigen::Matrix2cd nth_root(const Eigen::Matrix2cd &amp;u, unsigned n)</div><div class="ttdoc">Get an nth root of a 2x2 unitary matrix.</div><div class="ttdef"><b>Definition:</b> <a href="MatrixAnalysis_8cpp_source.html#l00531">MatrixAnalysis.cpp:531</a></div></div>
 <div class="ttc" id="anamespacetket_html_a49767defb75a93024ab7b7e7f8f6cc1d"><div class="ttname"><a href="namespacetket.html#a49767defb75a93024ab7b7e7f8f6cc1d">tket::is_initial_q_type</a></div><div class="ttdeci">bool is_initial_q_type(OpType optype)</div><div class="ttdoc">Test for input or creation quantum &quot;ops&quot;.</div><div class="ttdef"><b>Definition:</b> <a href="OpTypeFunctions_8cpp_source.html#l00135">OpTypeFunctions.cpp:135</a></div></div>
 <div class="ttc" id="anamespacetket_html_a5ab9799f95de83b6e55f91ffd1d82087"><div class="ttname"><a href="namespacetket.html#a5ab9799f95de83b6e55f91ffd1d82087">tket::GrayCode</a></div><div class="ttdeci">std::vector&lt; std::deque&lt; bool &gt; &gt; GrayCode</div><div class="ttdef"><b>Definition:</b> <a href="HelperFunctions_8hpp_source.html#l00025">HelperFunctions.hpp:25</a></div></div>
 <div class="ttc" id="anamespacetket_html_a6817cd1c8a5630b406c86a59173edd21"><div class="ttname"><a href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">tket::Expr</a></div><div class="ttdeci">SymEngine::Expression Expr</div><div class="ttdoc">Representation of a phase as a multiple of .</div><div class="ttdef"><b>Definition:</b> <a href="Expression_8hpp_source.html#l00034">Expression.hpp:34</a></div></div>
@@ -1207,11 +1205,12 @@ $(function() {
 <div class="ttc" id="anamespacetket_html_a85a557b9186a43dd79f284d4ac6d5bff"><div class="ttname"><a href="namespacetket.html#a85a557b9186a43dd79f284d4ac6d5bff">tket::is_unitary</a></div><div class="ttdeci">bool is_unitary(const Eigen::MatrixXcd &amp;U, double tol)</div><div class="ttdoc">Test matrix for unitarity.</div><div class="ttdef"><b>Definition:</b> <a href="MatrixAnalysis_8cpp_source.html#l00031">MatrixAnalysis.cpp:31</a></div></div>
 <div class="ttc" id="anamespacetket_html_aa08fc2d553413efa43b68fa1269fba77"><div class="ttname"><a href="namespacetket.html#aa08fc2d553413efa43b68fa1269fba77">tket::unit_map_t</a></div><div class="ttdeci">std::map&lt; UnitID, UnitID &gt; unit_map_t</div><div class="ttdef"><b>Definition:</b> <a href="UnitID_8hpp_source.html#l00310">UnitID.hpp:310</a></div></div>
 <div class="ttc" id="anamespacetket_html_aaf5bed29c38ac3decc55325da71ec018"><div class="ttname"><a href="namespacetket.html#aaf5bed29c38ac3decc55325da71ec018">tket::gen_graycode</a></div><div class="ttdeci">GrayCode gen_graycode(unsigned m_controls)</div><div class="ttdoc">Construct a GrayCode over n bits.</div><div class="ttdef"><b>Definition:</b> <a href="HelperFunctions_8cpp_source.html#l00021">HelperFunctions.cpp:21</a></div></div>
-<div class="ttc" id="anamespacetket_html_ab4004a34c93eac4f35241fb0d106718b"><div class="ttname"><a href="namespacetket.html#ab4004a34c93eac4f35241fb0d106718b">tket::is_multi_qubit_type</a></div><div class="ttdeci">bool is_multi_qubit_type(OpType optype)</div><div class="ttdoc">Test for gates over more than one qubit.</div><div class="ttdef"><b>Definition:</b> <a href="OpTypeFunctions_8cpp_source.html#l00210">OpTypeFunctions.cpp:210</a></div></div>
+<div class="ttc" id="anamespacetket_html_ab4004a34c93eac4f35241fb0d106718b"><div class="ttname"><a href="namespacetket.html#ab4004a34c93eac4f35241fb0d106718b">tket::is_multi_qubit_type</a></div><div class="ttdeci">bool is_multi_qubit_type(OpType optype)</div><div class="ttdoc">Test for gates over more than one qubit.</div><div class="ttdef"><b>Definition:</b> <a href="OpTypeFunctions_8cpp_source.html#l00211">OpTypeFunctions.cpp:211</a></div></div>
 <div class="ttc" id="anamespacetket_html_ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3"><div class="ttname"><a href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">tket::UnitType::Qubit</a></div><div class="ttdeci">@ Qubit</div></div>
 <div class="ttc" id="anamespacetket_html_ae9f9aa5cee9cf61bba2c5ca5bd4b0dea"><div class="ttname"><a href="namespacetket.html#ae9f9aa5cee9cf61bba2c5ca5bd4b0dea">tket::eval_expr_mod</a></div><div class="ttdeci">std::optional&lt; double &gt; eval_expr_mod(const Expr &amp;e, unsigned n)</div><div class="ttdoc">Evaluate an expression modulo n.</div><div class="ttdef"><b>Definition:</b> <a href="Expression_8cpp_source.html#l00079">Expression.cpp:79</a></div></div>
 <div class="ttc" id="anamespacetket_html_aecaec372664e1c2f33ff81d9a5c58ce2"><div class="ttname"><a href="namespacetket.html#aecaec372664e1c2f33ff81d9a5c58ce2">tket::VertexVec</a></div><div class="ttdeci">std::vector&lt; Vertex &gt; VertexVec</div><div class="ttdef"><b>Definition:</b> <a href="DAGDefs_8hpp_source.html#l00075">DAGDefs.hpp:75</a></div></div>
 <div class="ttc" id="anamespacetket_html_af023b52239dfd2b3028bb00cb66dc474"><div class="ttname"><a href="namespacetket.html#af023b52239dfd2b3028bb00cb66dc474">tket::with_CX</a></div><div class="ttdeci">Circuit with_CX(Gate_ptr op)</div><div class="ttdoc">Express a gate as a circuit using CX as the only multi-qubit gate.</div><div class="ttdef"><b>Definition:</b> <a href="CircUtils_8cpp_source.html#l00513">CircUtils.cpp:513</a></div></div>
+<div class="ttc" id="anamespacetket_html_af1c0b12ede96d595d64e0eca46ce3096"><div class="ttname"><a href="namespacetket.html#af1c0b12ede96d595d64e0eca46ce3096">tket::nth_root</a></div><div class="ttdeci">Eigen::Matrix2cd nth_root(const Eigen::Matrix2cd &amp;u, unsigned long long n)</div><div class="ttdoc">Get an nth root of a 2x2 unitary matrix.</div><div class="ttdef"><b>Definition:</b> <a href="MatrixAnalysis_8cpp_source.html#l00531">MatrixAnalysis.cpp:531</a></div></div>
 <div class="ttc" id="anamespacetket_html_afd7ad53a965e38be8a92751a361fe0a6"><div class="ttname"><a href="namespacetket.html#afd7ad53a965e38be8a92751a361fe0a6">tket::equiv_val</a></div><div class="ttdeci">bool equiv_val(const Expr &amp;e, double x, unsigned n, double tol)</div><div class="ttdoc">Test approximate value of an expression modulo n.</div><div class="ttdef"><b>Definition:</b> <a href="Expression_8cpp_source.html#l00137">Expression.cpp:137</a></div></div>
 <div class="ttc" id="astructtket_1_1Subcircuit_html"><div class="ttname"><a href="structtket_1_1Subcircuit.html">tket::Subcircuit</a></div><div class="ttdoc">Structure to describe a convex region of the interaction graph.</div><div class="ttdef"><b>Definition:</b> <a href="Circuit_8hpp_source.html#l00136">Circuit.hpp:136</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
