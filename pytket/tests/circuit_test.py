@@ -45,7 +45,7 @@ from pytket.circuit import (  # type: ignore
     BitRegister,
     QubitRegister,
 )
-from pytket.circuit.display import render_circuit_as_html
+from pytket.circuit.display import get_circuit_renderer, render_circuit_as_html
 
 from pytket.pauli import Pauli  # type: ignore
 from pytket.passes import PauliSimp, CliffordSimp, SynthesiseTket, DecomposeBoxes, RemoveRedundancies  # type: ignore
@@ -714,6 +714,19 @@ def test_circuit_from_to_serializable(circuit: Circuit) -> None:
 def test_circuit_display(circuit: Circuit) -> None:
     html_str_circ = render_circuit_as_html(circuit, jupyter=False)
     html_str_dict = render_circuit_as_html(circuit.to_dict(), jupyter=False)
+    assert isinstance(html_str_circ, str)
+    assert isinstance(html_str_dict, str)
+
+
+@given(st.circuits())
+@settings(deadline=None)
+def test_circuit_display_with_options(circuit: Circuit) -> None:
+    circuit_renderer = get_circuit_renderer()
+    circuit_renderer.set_render_options(zx_style=False)
+    html_str_circ = circuit_renderer.render_circuit_as_html(circuit, jupyter=False)
+    html_str_dict = circuit_renderer.render_circuit_as_html(
+        circuit.to_dict(), jupyter=False
+    )
     assert isinstance(html_str_circ, str)
     assert isinstance(html_str_dict, str)
 
