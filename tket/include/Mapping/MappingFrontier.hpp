@@ -201,7 +201,11 @@ struct MappingFrontier {
    */
   void update_bimaps(UnitID qubit, UnitID node);
 
-  void verify_maps();
+  /**
+   * @brief Sanity check that the maps are valid.
+   * abort if fail
+   */
+  void assert_valid_maps();
 
   /**
    * Get the qubit in the initial map given it's mapped uid.

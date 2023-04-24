@@ -20,46 +20,27 @@
 namespace tket {
 
 // check if the maps are valid such that two maps should have the same set of
-// keys (logical qubits), the the values (physical qubits) of two maps should be
-// the same up to a permutation.
-void MappingFrontier::verify_maps() {
-  std::set<UnitID> init_logicals;
-  std::set<UnitID> final_logicals;
-  std::set<UnitID> init_physicals;
-  std::set<UnitID> final_physicals;
-  for (auto pair : bimaps_->initial.left) {
-    init_logicals.insert(pair.first);
-    init_physicals.insert(pair.second);
+// keys (logical qubits), and the values (physical qubits) of two maps should be
+// the same up to a permutation. All qubits in the circuit should also appear in
+// the maps as physical qubits.
+void MappingFrontier::assert_valid_maps() {
+  TKET_ASSERT(bimaps_->initial.size() == bimaps_->final.size());
+  auto left_it_1 = bimaps_->initial.left.begin();
+  auto left_it_2 = bimaps_->final.left.begin();
+  while (left_it_1 != bimaps_->initial.left.end()) {
+    TKET_ASSERT(left_it_1->first == left_it_2->first);
+    left_it_1++;
+    left_it_2++;
   }
-  for (auto pair : bimaps_->final.left) {
-    final_logicals.insert(pair.first);
-    final_physicals.insert(pair.second);
+  auto right_it_1 = bimaps_->initial.right.begin();
+  auto right_it_2 = bimaps_->final.right.begin();
+  while (right_it_1 != bimaps_->initial.right.end()) {
+    TKET_ASSERT(right_it_1->first == right_it_2->first);
+    right_it_1++;
+    right_it_2++;
   }
-  auto print_maps = [this]() {
-    std::cout << "\nIncorrect maps\nInitial:\n";
-    for (auto pair : bimaps_->initial.left) {
-      std::cout << pair.first.repr() << ": " << pair.second.repr() << "\n";
-    }
-    std::cout << "Final:\n";
-    for (auto pair : bimaps_->final.left) {
-      std::cout << pair.first.repr() << ": " << pair.second.repr() << "\n";
-    }
-  };
   for (const Qubit& q : circuit_.all_qubits()) {
-    if (bimaps_->initial.right.find(q) == bimaps_->initial.right.end()) {
-      print_maps();
-      throw MappingFrontierError(
-          "Uid " + q.repr() + " not found in initial map.");
-    }
-    if (bimaps_->final.right.find(q) == bimaps_->final.right.end()) {
-      print_maps();
-      throw MappingFrontierError(
-          "Uid " + q.repr() + " not found in final map.");
-    }
-  }
-  if (init_logicals != final_logicals || init_physicals != final_physicals) {
-    print_maps();
-    throw MappingFrontierError("Bimaps are not valid.");
+    TKET_ASSERT(bimaps_->initial.right.find(q) != bimaps_->initial.right.end());
   }
 }
 
@@ -656,7 +637,6 @@ void MappingFrontier::set_linear_boundary(
  * reflect new edges
  */
 bool MappingFrontier::add_swap(const UnitID& uid_0, const UnitID& uid_1) {
-  verify_maps();
   // get iterators to linear_boundary uids
   auto uid0_in_it = this->linear_boundary->find(uid_0);
   auto uid1_in_it = this->linear_boundary->find(uid_1);
@@ -669,8 +649,6 @@ bool MappingFrontier::add_swap(const UnitID& uid_0, const UnitID& uid_1) {
     this->add_ancilla(uid_1);
     uid1_in_it = this->linear_boundary->find(uid_1);
   }
-  // BUG: maps become invalid
-  verify_maps();
   this->reassignable_nodes_.erase(Node(uid_0));
   this->reassignable_nodes_.erase(Node(uid_1));
 
@@ -761,6 +739,7 @@ bool MappingFrontier::add_swap(const UnitID& uid_0, const UnitID& uid_1) {
 
   std::map<Node, Node> final_map = {{n0, n1}, {n1, n0}};
   update_maps(this->bimaps_, {}, final_map);
+  assert_valid_maps();
   return true;
 }
 
@@ -809,6 +788,7 @@ void MappingFrontier::add_bridge(
   // remove old cx vertex
   this->circuit_.remove_vertex(
       cx_v, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::Yes);
+  assert_valid_maps();
 }
 
 void MappingFrontier::add_ancilla(const UnitID& ancilla) {
@@ -1024,7 +1004,7 @@ void MappingFrontier::merge_ancilla(
    */
   this->ancilla_nodes_.erase(Node(ancilla));
   this->reassignable_nodes_.erase(Node(ancilla));
-
+  assert_valid_maps();
   return;
 }
 
