@@ -812,19 +812,35 @@ void MappingFrontier::add_bridge(
 }
 
 void MappingFrontier::add_ancilla(const UnitID& ancilla) {
-  Qubit qb(ancilla);
-  this->circuit_.add_qubit(qb);
-  this->linear_boundary->insert({qb, {this->circuit_.get_in(qb), 0}});
+  // Given the ancilla node, we 1. add ancilla to the circuit.
+  // 2. map ancilla to a logical qubit placeholder_q,
+  // this will be a default register qubit that is not present anywhere in the
+  // frontier. Add {placeholder_q, ancilla} to the bimaps.
+  register_t default_reg = this->circuit_.get_reg(q_default_reg());
+  unsigned largest_q_idx = 0;
+  auto it = default_reg.rbegin();
+  if (it != default_reg.rend()) {
+    largest_q_idx = it->first;
+  }
+  for (auto const& it : this->bimaps_->initial.left) {
+    if (it.first.reg_name() == q_default_reg() &&
+        it.first.index()[0] > largest_q_idx) {
+      largest_q_idx = it.first.index()[0];
+    }
+    if (it.second.reg_name() == q_default_reg() &&
+        it.second.index()[0] > largest_q_idx) {
+      largest_q_idx = it.second.index()[0];
+    }
+  }
+  Qubit placeholder_q(++largest_q_idx);
+  Qubit ancilla_q(ancilla);
+  this->circuit_.add_qubit(ancilla_q);
+  this->linear_boundary->insert(
+      {ancilla_q, {this->circuit_.get_in(ancilla_q), 0}});
 
-  this->bimaps_->initial.insert({qb, qb});
-  this->bimaps_->final.insert({qb, qb});
+  this->bimaps_->initial.insert({placeholder_q, ancilla});
+  this->bimaps_->final.insert({placeholder_q, ancilla});
   this->ancilla_nodes_.insert(Node(ancilla));
-  UnitID uid_ancilla(ancilla);
-
-  unit_map_t update_map;
-  update_map.insert({uid_ancilla, uid_ancilla});
-
-  update_maps(this->bimaps_, update_map, update_map);
 }
 
 void MappingFrontier::merge_ancilla(
