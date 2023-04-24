@@ -425,6 +425,29 @@ def test_inversion_pauli_partition_expectation() -> None:
     assert np.isclose(energy2, [0.04248, 0.04248, 0.08612], atol=0.01).all()
 
 
+def test_expectation_with_pauli_i() -> None:
+    c = Circuit(1).H(0)
+    qps1 = QubitPauliString(qubits=[Qubit(0)], paulis=[Pauli.I])
+    qps2 = QubitPauliString(qubits=[Qubit(0)], paulis=[Pauli.Z])
+    backend = TketSimShotBackend(ignore_measures=True)
+    n_shots = 10000
+    strats = [
+        None,
+        PauliPartitionStrat.NonConflictingSets,
+        PauliPartitionStrat.CommutingSets,
+    ]
+    for strat in strats:
+        energy = complex(
+            get_operator_expectation_value(c, QubitPauliOperator({qps1: 0.0, qps2: 1.0}), backend, n_shots, strat, seed=4)  # type: ignore
+        )
+        assert np.isclose(energy, 0.0, atol=0.01)
+    for strat in strats:
+        energy = complex(
+            get_operator_expectation_value(c, QubitPauliOperator({qps1: 1.0}), backend, n_shots, strat, seed=4)  # type: ignore
+        )
+        assert np.isclose(energy, 1.0, atol=0.01)
+
+
 def test_compare_statevectors() -> None:
     test_vec = np.array([1 + 2 * 1j, 3 + 4 * 1j, 5 + 6 * 1j, 7 + 8 * 1j])
     other_vec = test_vec + (2 - 1.2 * 1j)
