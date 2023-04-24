@@ -4,6 +4,14 @@ Changelog
 1.15.0 (unreleased)
 -------------------
 
+Major new features:
+
+* Add new ``MultiplexedTensoredU2Box`` that synthesises multiplexed tensor product of U2 gates.
+* Updated implementation of ``ToffoliBox`` utilising multiplexors
+  for improved decomposition.
+* Add new ``DiagonalBox`` that synthesises a diagonal unitary matrix
+  into a sequence of multiplexed-Rz gates.
+
 Minor new features:
 
 * Add new ``MaxNClRegPredicate`` that checks that there are at most n classical
@@ -27,10 +35,6 @@ Minor new features:
   ``Architecture`` classes to give custom name to constructed ``Node``.
 * Add ``FlattenRelabelRegistersPass`` to remove empty quantum wires and relabel all
   qubits to a default register named after a passed label.
-* Updated implementation of ``ToffoliBox`` utilising multiplexors
-  for improved decomposition.
-* Add new ``DiagonalBox`` that synthesises a diagonal unitary matrix
-  into a sequence of multiplexed-Rz gates.
 
 Fixes:
 

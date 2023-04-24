@@ -17,6 +17,7 @@
 #include <complex>
 
 #include "Circuit/Circuit.hpp"
+#include "Circuit/DiagonalBox.hpp"
 #include "Gate/GatePtr.hpp"
 #include "Gate/GateUnitaryMatrix.hpp"
 #include "Gate/Rotation.hpp"
@@ -315,7 +316,7 @@ static void op_map_validate(const ctrl_op_map_t &op_map) {
     if ((unsigned long)std::count(
             op_sig.begin(), op_sig.end(), EdgeType::Quantum) != op_sig.size()) {
       throw BadOpType(
-          "Quantum control of classical wires not supported",
+          "Multiplexed operations cannot have classical wires.",
           it->second->get_type());
     }
     if (it == op_map.begin()) {
@@ -323,10 +324,13 @@ static void op_map_validate(const ctrl_op_map_t &op_map) {
       n_targets = (unsigned)op_sig.size();
     } else {
       if (it->first.size() != n_controls) {
-        throw std::invalid_argument("Bitstrings must have the same width.");
+        throw std::invalid_argument(
+            "The bitstrings passed to the multiplexor must have the same "
+            "width.");
       }
       if (op_sig.size() != n_targets) {
-        throw std::invalid_argument("Ops must have the same width.");
+        throw std::invalid_argument(
+            "Multiplexed operations must have the same width.");
       }
     }
   }
@@ -370,7 +374,8 @@ MultiplexorBox::MultiplexorBox(const ctrl_op_map_t &op_map)
     : Box(OpType::MultiplexorBox), op_map_(op_map) {
   auto it = op_map.begin();
   if (it == op_map.end()) {
-    throw std::invalid_argument("No Ops provided.");
+    throw std::invalid_argument(
+        "The op_map argument passed to MultiplexorBox cannot be empty.");
   }
   n_controls_ = (unsigned)it->first.size();
   n_targets_ = it->second->n_qubits();
@@ -429,23 +434,30 @@ MultiplexedRotationBox::MultiplexedRotationBox(const ctrl_op_map_t &op_map)
     : Box(OpType::MultiplexedRotationBox), op_map_(op_map) {
   auto it = op_map.begin();
   if (it == op_map.end()) {
-    throw std::invalid_argument("No Ops provided.");
+    throw std::invalid_argument(
+        "The op_map argument passed to MultiplexedRotationBox cannot be "
+        "empty.");
   }
   for (; it != op_map.end(); it++) {
     if (it == op_map.begin()) {
       n_controls_ = (unsigned)it->first.size();
       if (n_controls_ > MAX_N_CONTROLS) {
         throw std::invalid_argument(
-            "Bitstrings longer than " + std::to_string(MAX_N_CONTROLS) +
-            " are not supported.");
+            "MultiplexedRotationBox only supports bitstrings up to " +
+            std::to_string(MAX_N_CONTROLS) + " bits.");
       }
       axis_ = it->second->get_type();
       if (axis_ != OpType::Rx && axis_ != OpType::Ry && axis_ != OpType::Rz) {
-        throw BadOpType("Ops must be either Rx, Ry, or Rz.", axis_);
+        throw BadOpType(
+            "Ops passed to MultiplexedRotationBox must be either Rx, Ry, or "
+            "Rz.",
+            axis_);
       }
     } else {
       if (it->second->get_type() != axis_) {
-        throw std::invalid_argument("Ops must have the same rotation type.");
+        throw std::invalid_argument(
+            "Ops passed to MultiplexedRotationBox must have the same rotation "
+            "type.");
       }
     }
   }
@@ -505,10 +517,10 @@ void MultiplexedRotationBox::generate_circuit() const {
     circ_ = std::make_shared<Circuit>(circ);
     return;
   }
-  unsigned n_rotations = 1 << n_controls_;
+  unsigned long long n_rotations = 1ULL << n_controls_;
   std::vector<Expr> rotations(n_rotations);
   // convert op_map to a vector of 2^n_controls_ angles
-  for (unsigned i = 0; i < n_rotations; i++) {
+  for (unsigned long long i = 0; i < n_rotations; i++) {
     auto it = op_map_.find(dec_to_bin(i, n_controls_));
     if (it == op_map_.end()) {
       rotations[i] = 0;
@@ -533,20 +545,22 @@ MultiplexedU2Box::MultiplexedU2Box(const ctrl_op_map_t &op_map, bool impl_diag)
     : Box(OpType::MultiplexedU2Box), op_map_(op_map), impl_diag_(impl_diag) {
   auto it = op_map.begin();
   if (it == op_map.end()) {
-    throw std::invalid_argument("No Ops provided.");
+    throw std::invalid_argument(
+        "The op_map argument passed to MultiplexedU2Box cannot be empty.");
   }
   n_controls_ = (unsigned)it->first.size();
   if (n_controls_ > MAX_N_CONTROLS) {
     throw std::invalid_argument(
-        "Bitstrings longer than " + std::to_string(MAX_N_CONTROLS) +
-        " are not supported.");
+        "MultiplexedU2Box only supports bitstrings up to " +
+        std::to_string(MAX_N_CONTROLS) + " bits.");
   }
   for (; it != op_map.end(); it++) {
     OpType optype = it->second->get_type();
     if (!is_single_qubit_unitary_type(optype) &&
         optype != OpType::Unitary1qBox) {
       throw BadOpType(
-          "Ops must be single-qubit unitary gate types or Unitary1qBox.",
+          "Ops passed to MultiplexedU2Box must be single-qubit unitary gate "
+          "types or Unitary1qBox.",
           optype);
     }
   }
@@ -599,18 +613,17 @@ Op_ptr MultiplexedU2Box::from_json(const nlohmann::json &j) {
       boost::lexical_cast<boost::uuids::uuid>(j.at("id").get<std::string>()));
 }
 
-void MultiplexedU2Box::generate_circuit() const {
+std::pair<Circuit, Eigen::VectorXcd> MultiplexedU2Box::decompose() const {
   Circuit circ(n_controls_ + 1);
   if (n_controls_ == 0) {
     auto it = op_map_.begin();
     circ.add_op<unsigned>(it->second, {0});
-    circ_ = std::make_shared<Circuit>(circ);
-    return;
+    return std::make_pair(circ, Eigen::VectorXcd::Constant(2, 1));
   }
-  unsigned n_unitaries = 1 << n_controls_;
+  unsigned long long n_unitaries = 1ULL << n_controls_;
   std::vector<Eigen::Matrix2cd> unitaries(n_unitaries);
   // convert op_map to a vector of 2^n_controls_ unitaries
-  for (unsigned i = 0; i < n_unitaries; i++) {
+  for (unsigned long long i = 0; i < n_unitaries; i++) {
     auto it = op_map_.find(dec_to_bin(i, n_controls_));
     if (it == op_map_.end()) {
       unitaries[i] = Eigen::Matrix2cd::Identity();
@@ -630,36 +643,225 @@ void MultiplexedU2Box::generate_circuit() const {
   // initialise the ucrz list
   std::vector<std::vector<double>> ucrzs(n_controls_);
   for (unsigned i = 0; i < n_controls_; i++) {
-    ucrzs[i] = std::vector<double>(1 << (i + 1), 0.0);
+    ucrzs[i] = std::vector<double>(1ULL << (i + 1), 0.0);
   }
   recursive_demultiplex_u2(
       unitaries, n_controls_ + 1, circ, ucrzs, Eigen::Matrix2cd::Identity(),
       Eigen::Matrix2cd::Identity());
-  if (impl_diag_) {
-    // add the final ucrzs
-    for (unsigned i = 0; i < n_controls_; i++) {
-      // ith ucrzs acts on i+2 qubits
-      // get the args for the UCRz gate
-      std::vector<unsigned> args(i + 2);
-      std::iota(std::begin(args), std::end(args), n_controls_ - i - 1);
-      // swap the first and the last args
-      std::swap(args[0], args[i + 1]);
-      // create MultiplexedRotationBox
-      ctrl_op_map_t rz_map;
-      for (unsigned k = 0; k < ucrzs[i].size(); k++) {
-        if (std::abs(ucrzs[i][k]) > EPS) {
-          rz_map.insert(
-              {dec_to_bin(k, i + 1), get_op_ptr(OpType::Rz, ucrzs[i][k])});
-        }
+  // convert the ucrzs to a diagonal matrix
+  Eigen::VectorXcd diag =
+      Eigen::VectorXcd::Constant(1ULL << (n_controls_ + 1), 1);
+  for (unsigned i = 0; i < n_controls_; i++) {
+    // ith ucrzs acts on i+2 qubits
+    // which has n_controls_ + 1 - (i+2) identities its the tensor product
+    // therefore (n_controls_ + 1 - (i+2))^2 copies in the diagonal
+    for (unsigned long long offset = 0;
+         offset < (1ULL << (n_controls_ + 1 - (i + 2))); offset++) {
+      for (unsigned long long j = 0; j < (1ULL << (i + 1)); j++) {
+        // the bitstrings in a ucrz are mapped to qubits not in the standard
+        // order
+        unsigned long long diag_idx =
+            (j >= (1ULL << i)) ? (j - (1ULL << i)) * 2 + 1 : j * 2;
+        diag[diag_idx + offset * (1ULL << (i + 2))] *=
+            std::exp(-0.5 * i_ * PI * ucrzs[i][j]);
+        diag[diag_idx + offset * (1ULL << (i + 2)) + (1ULL << (i + 1))] *=
+            std::exp(0.5 * i_ * PI * ucrzs[i][j]);
       }
-      circ.add_box(MultiplexedRotationBox(rz_map), args);
     }
   }
+  return std::make_pair(circ, diag);
+}
+
+void MultiplexedU2Box::generate_circuit() const {
+  Circuit circ;
+  Eigen::VectorXcd diag_vec;
+  std::tie(circ, diag_vec) = decompose();
+  if (impl_diag_ &&
+      (diag_vec - Eigen::VectorXcd::Constant(1ULL << circ.n_qubits(), 1))
+              .cwiseAbs()
+              .sum() > EPS) {
+    std::vector<unsigned> args(circ.n_qubits());
+    std::iota(std::begin(args), std::end(args), 0);
+    circ.add_box(DiagonalBox(diag_vec), args);
+  }
+  circ_ = std::make_shared<Circuit>(circ);
+}
+
+MultiplexedTensoredU2Box::MultiplexedTensoredU2Box(
+    const ctrl_tensored_op_map_t &op_map)
+    : Box(OpType::MultiplexedTensoredU2Box), op_map_(op_map) {
+  auto it = op_map.begin();
+  if (it == op_map.end()) {
+    throw std::invalid_argument(
+        "The op_map argument passed to MultiplexedTensoredU2Box cannot be "
+        "empty.");
+  }
+  n_controls_ = (unsigned)it->first.size();
+  n_targets_ = (unsigned)it->second.size();
+  if (n_controls_ > MAX_N_CONTROLS) {
+    throw std::invalid_argument(
+        "MultiplexedTensoredU2Box only supports bitstrings up to " +
+        std::to_string(MAX_N_CONTROLS) + " bits.");
+  }
+  for (; it != op_map.end(); it++) {
+    if (it->first.size() != n_controls_) {
+      throw std::invalid_argument(
+          "The bitstrings passed to MultiplexedTensoredU2Box must have the "
+          "same width.");
+      ;
+    }
+    if (it->second.size() != n_targets_) {
+      throw std::invalid_argument(
+          "Each tensored operation passed to MultiplexedTensoredU2Box must "
+          "have the same number of U2 components");
+    }
+    for (auto op : it->second) {
+      OpType optype = op->get_type();
+      if (!is_single_qubit_unitary_type(optype) &&
+          optype != OpType::Unitary1qBox) {
+        throw BadOpType(
+            "Ops passed to MultiplexedTensoredU2Box must be single-qubit "
+            "unitary gate types or Unitary1qBox.",
+            optype);
+      }
+    }
+  }
+}
+
+MultiplexedTensoredU2Box::MultiplexedTensoredU2Box(
+    const MultiplexedTensoredU2Box &other)
+    : Box(other),
+      n_controls_(other.n_controls_),
+      n_targets_(other.n_targets_),
+      op_map_(other.op_map_) {}
+
+Op_ptr MultiplexedTensoredU2Box::symbol_substitution(
+    const SymEngine::map_basic_basic &sub_map) const {
+  ctrl_tensored_op_map_t new_op_map;
+  for (auto it = op_map_.begin(); it != op_map_.end(); it++) {
+    std::vector<Op_ptr> ops;
+    for (auto op : it->second) {
+      ops.push_back(op->symbol_substitution(sub_map));
+    }
+    new_op_map.insert({it->first, ops});
+  }
+  return std::make_shared<MultiplexedTensoredU2Box>(new_op_map);
+}
+
+SymSet MultiplexedTensoredU2Box::free_symbols() const {
+  SymSet all_symbols;
+  for (auto it = op_map_.begin(); it != op_map_.end(); it++) {
+    for (auto op : it->second) {
+      SymSet op_symbols = op->free_symbols();
+      all_symbols.insert(op_symbols.begin(), op_symbols.end());
+    }
+  }
+  return all_symbols;
+}
+
+Op_ptr MultiplexedTensoredU2Box::dagger() const {
+  ctrl_tensored_op_map_t new_op_map;
+  for (auto it = op_map_.begin(); it != op_map_.end(); it++) {
+    std::vector<Op_ptr> ops;
+    for (auto op : it->second) {
+      ops.push_back(op->dagger());
+    }
+    new_op_map.insert({it->first, ops});
+  }
+  return std::make_shared<MultiplexedTensoredU2Box>(new_op_map);
+}
+
+Op_ptr MultiplexedTensoredU2Box::transpose() const {
+  ctrl_tensored_op_map_t new_op_map;
+  for (auto it = op_map_.begin(); it != op_map_.end(); it++) {
+    std::vector<Op_ptr> ops;
+    for (auto op : it->second) {
+      ops.push_back(op->transpose());
+    }
+    new_op_map.insert({it->first, ops});
+  }
+  return std::make_shared<MultiplexedTensoredU2Box>(new_op_map);
+}
+
+op_signature_t MultiplexedTensoredU2Box::get_signature() const {
+  op_signature_t qubits(n_controls_ + n_targets_, EdgeType::Quantum);
+  return qubits;
+}
+
+nlohmann::json MultiplexedTensoredU2Box::to_json(const Op_ptr &op) {
+  const auto &box = static_cast<const MultiplexedTensoredU2Box &>(*op);
+  nlohmann::json j = core_box_json(box);
+  j["op_map"] = box.get_op_map();
+  return j;
+}
+
+Op_ptr MultiplexedTensoredU2Box::from_json(const nlohmann::json &j) {
+  MultiplexedTensoredU2Box box =
+      MultiplexedTensoredU2Box(j.at("op_map").get<ctrl_tensored_op_map_t>());
+  return set_box_id(
+      box,
+      boost::lexical_cast<boost::uuids::uuid>(j.at("id").get<std::string>()));
+}
+
+void MultiplexedTensoredU2Box::generate_circuit() const {
+  Circuit circ(n_controls_ + n_targets_);
+  // contains the multiplexed-Rz gates
+  Circuit diag_circ(n_controls_ + n_targets_);
+  // the final diagonal on the control qubits
+  Eigen::VectorXcd diag_vec =
+      Eigen::VectorXcd::Constant(1ULL << n_controls_, 1);
+  for (unsigned i = 0; i < n_targets_; i++) {
+    ctrl_op_map_t u2_op_map;
+    for (auto it = op_map_.begin(); it != op_map_.end(); it++) {
+      u2_op_map.insert({it->first, it->second[i]});
+    }
+    MultiplexedU2Box mbox(u2_op_map);
+    Circuit inner_circ;
+    Eigen::VectorXcd inner_diag_vec;
+    std::tie(inner_circ, inner_diag_vec) = mbox.decompose();
+    std::vector<unsigned> args(n_controls_);
+    std::iota(std::begin(args), std::end(args), 0);
+    args.push_back(i + n_controls_);
+    // append the first part of the decomposition
+    circ.append_qubits(inner_circ, args);
+    // disentangle one qubit from the diagonal
+    // results in a multiplexed-Rz targeting the target j
+    ctrl_op_map_t multip_rz;
+    for (unsigned long long j = 0; j < (1ULL << n_controls_); j++) {
+      Complex a = inner_diag_vec[2 * j];
+      Complex b = inner_diag_vec[2 * j + 1];
+      // convert diag[a,b] into a p*Rz(alpha)
+      double a_phase = std::arg(a);
+      double b_phase = std::arg(b);
+      double alpha = (b_phase - a_phase) / PI;
+      Complex p = std::exp((b_phase + a_phase) * 0.5 * i_);
+      std::vector<bool> bitstr = dec_to_bin(j, n_controls_);
+      if (std::abs(alpha) > EPS) {
+        multip_rz.insert({bitstr, get_op_ptr(OpType::Rz, alpha)});
+      }
+      // update the diagonal on the control qubits
+      diag_vec[j] *= p;
+    }
+    if (!multip_rz.empty()) {
+      diag_circ.add_box(MultiplexedRotationBox(multip_rz), args);
+    }
+  }
+
+  circ.append(diag_circ);
+  if ((diag_vec - Eigen::VectorXcd::Constant(1ULL << n_controls_, 1))
+          .cwiseAbs()
+          .sum() > EPS) {
+    std::vector<unsigned> args(n_controls_);
+    std::iota(std::begin(args), std::end(args), 0);
+    circ.add_box(DiagonalBox(diag_vec), args);
+  }
+
   circ_ = std::make_shared<Circuit>(circ);
 }
 
 REGISTER_OPFACTORY(MultiplexorBox, MultiplexorBox)
 REGISTER_OPFACTORY(MultiplexedRotationBox, MultiplexedRotationBox)
 REGISTER_OPFACTORY(MultiplexedU2Box, MultiplexedU2Box)
+REGISTER_OPFACTORY(MultiplexedTensoredU2Box, MultiplexedTensoredU2Box)
 
 }  // namespace tket

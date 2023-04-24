@@ -86,12 +86,12 @@ uint32_t reverse_bits(uint32_t v, unsigned w);
  * convert an unsigned to its binary representation
  * big-endian
  */
-std::vector<bool> dec_to_bin(unsigned dec, unsigned width);
+std::vector<bool> dec_to_bin(unsigned long long dec, unsigned width);
 
 /**
  * @brief
  * convert an bit vector to its decimal representation
  * big-endian
  */
-unsigned bin_to_dec(const std::vector<bool>& bin);
+unsigned long long bin_to_dec(const std::vector<bool>& bin);
 }  // namespace tket
