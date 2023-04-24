@@ -27,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2023-04-20 11:25:53</td>
+      <td>2023-04-24 14:52:05</td>
     </tr>
     <tr>
       <th scrope="row">Warnings:</th>
@@ -45,8 +45,8 @@
     </tr>
     <tr>
       <th scope="row">Lines:</th>
-      <td>547</td>
-      <td>683</td>
+      <td>546</td>
+      <td>682</td>
       <td class="coverage-medium">80.1%</td>
     </tr>
     <tr>
@@ -107,13 +107,13 @@
     </tr>
     <tr>
       <td>
-        <a href="#l943">tket::CircPool::CnSU2_linear_decomp(unsigned int, SymEngine::Expression const&amp;, SymEngine::Expression const&amp;, SymEngine::Expression const&amp;)</a>
+        <a href="#l942">tket::CircPool::CnSU2_linear_decomp(unsigned int, SymEngine::Expression const&amp;, SymEngine::Expression const&amp;, SymEngine::Expression const&amp;)</a>
       </td>
       <td>
-        <a href="#l943">943</a>
+        <a href="#l942">942</a>
       </td>
       <td>
-        <a href="#l943"> called 130 times</a>
+        <a href="#l942"> called 130 times</a>
       </td>
     </tr>
     <tr>
@@ -140,13 +140,13 @@
     </tr>
     <tr>
       <td>
-        <a href="#l904">tket::CircPool::CnU_linear_depth_decomp(unsigned int, Eigen::Matrix&lt;std::complex&lt;double&gt;, 2, 2, 0, 2, 2&gt; const&amp;)</a>
+        <a href="#l903">tket::CircPool::CnU_linear_depth_decomp(unsigned int, Eigen::Matrix&lt;std::complex&lt;double&gt;, 2, 2, 0, 2, 2&gt; const&amp;)</a>
       </td>
       <td>
-        <a href="#l904">904</a>
+        <a href="#l903">903</a>
       </td>
       <td>
-        <a href="#l904"> called 578 times</a>
+        <a href="#l903"> called 578 times</a>
       </td>
     </tr>
     <tr>
@@ -195,24 +195,24 @@
     </tr>
     <tr>
       <td>
-        <a href="#l859">tket::CircPool::add_pn_unitary(tket::Circuit&amp;, Eigen::Matrix&lt;std::complex&lt;double&gt;, 2, 2, 0, 2, 2&gt; const&amp;, unsigned int, bool)</a>
+        <a href="#l858">tket::CircPool::add_pn_unitary(tket::Circuit&amp;, Eigen::Matrix&lt;std::complex&lt;double&gt;, 2, 2, 0, 2, 2&gt; const&amp;, unsigned int, bool)</a>
       </td>
       <td>
-        <a href="#l859">859</a>
+        <a href="#l858">858</a>
       </td>
       <td>
-        <a href="#l859"> called 686 times</a>
+        <a href="#l858"> called 686 times</a>
       </td>
     </tr>
     <tr>
       <td>
-        <a href="#l872">tket::CircPool::add_qn(tket::Circuit&amp;, unsigned int)</a>
+        <a href="#l871">tket::CircPool::add_qn(tket::Circuit&amp;, unsigned int)</a>
       </td>
       <td>
-        <a href="#l872">872</a>
+        <a href="#l871">871</a>
       </td>
       <td>
-        <a href="#l872"> called 363 times</a>
+        <a href="#l871"> called 363 times</a>
       </td>
     </tr>
     <tr>
@@ -250,13 +250,13 @@
     </tr>
     <tr>
       <td>
-        <a href="#l886">tket::CircPool::incrementer_linear_depth(unsigned int, bool)</a>
+        <a href="#l885">tket::CircPool::incrementer_linear_depth(unsigned int, bool)</a>
       </td>
       <td>
-        <a href="#l886">886</a>
+        <a href="#l885">885</a>
       </td>
       <td>
-        <a href="#l886"> called 366 times</a>
+        <a href="#l885"> called 366 times</a>
       </td>
     </tr>
     <tr>
@@ -9580,7 +9580,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">  </span><span class="n">Eigen</span><span class="o">::</span><span class="n">Matrix2cd</span><span class="w"> </span><span class="n">v_matrix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nth_root</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">));</span><span class="w"></span></td>
+      <td class="src uncoveredLine"><span class="w">  </span><span class="n">Eigen</span><span class="o">::</span><span class="n">Matrix2cd</span><span class="w"> </span><span class="n">v_matrix</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nth_root</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="mi">1ULL</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">));</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l707" href="#l707">707</a></td>
@@ -10096,7 +10096,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">12</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="n">param</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">param</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">));</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">  </span><span class="n">param</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">param</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="p">(</span><span class="mi">1ULL</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">));</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l748" href="#l748">748</a></td>
@@ -11371,46 +11371,32 @@
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">1874</td>
-      <td class="src coveredLine"><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1ULL</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l853" href="#l853">853</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
-        <summary class="linebranchSummary">2/2</summary>
-        <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 0 taken 937 times.</div>
-          <div class="takenBranch">&check; Branch 1 taken 937 times.</div>
-        </div>
-        </details>
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">1874</td>
-      <td class="src coveredLine"><span class="w">    </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">inverse</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mi">-1</span><span class="w"> </span><span class="o">*</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">d</span><span class="p">;</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l854" href="#l854">854</a></td>
-      <td class="linebranch">
-        <details class="linebranchDetails">
-        <summary class="linebranchSummary">3/6</summary>
+        <summary class="linebranchSummary">5/8</summary>
         <div class="linebranchContents">
           <div class="takenBranch">&check; Branch 3 taken 1874 times.</div>
           <div class="notTakenBranch">&cross; Branch 4 not taken.</div>
-          <div class="takenBranch">&check; Branch 6 taken 1874 times.</div>
-          <div class="notTakenBranch">&cross; Branch 7 not taken.</div>
-          <div class="takenBranch">&check; Branch 9 taken 1874 times.</div>
-          <div class="notTakenBranch">&cross; Branch 10 not taken.</div>
+          <div class="takenBranch">&check; Branch 5 taken 937 times.</div>
+          <div class="takenBranch">&check; Branch 6 taken 937 times.</div>
+          <div class="takenBranch">&check; Branch 8 taken 1874 times.</div>
+          <div class="notTakenBranch">&cross; Branch 9 not taken.</div>
+          <div class="takenBranch">&check; Branch 11 taken 1874 times.</div>
+          <div class="notTakenBranch">&cross; Branch 12 not taken.</div>
         </div>
         </details>
       </td>
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">1874</td>
-      <td class="src coveredLine"><span class="w">    </span><span class="n">circ</span><span class="p">.</span><span class="n">add_op</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;</span><span class="p">(</span><span class="n">OpType</span><span class="o">::</span><span class="n">CRx</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">double</span><span class="p">)</span><span class="mi">1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">d</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="n">i</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">});</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">    </span><span class="n">circ</span><span class="p">.</span><span class="n">add_op</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;</span><span class="p">(</span><span class="n">OpType</span><span class="o">::</span><span class="n">CRx</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="n">inverse</span><span class="w"> </span><span class="o">?</span><span class="w"> </span><span class="mf">-1.</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="mf">1.</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">d</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="n">i</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">});</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l855" href="#l855">855</a></td>
+      <td class="lineno"><a id="l854" href="#l854">854</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -11419,7 +11405,7 @@
       <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l856" href="#l856">856</a></td>
+      <td class="lineno"><a id="l855" href="#l855">855</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -11428,7 +11414,7 @@
       <td class="src coveredLine"><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l857" href="#l857">857</a></td>
+      <td class="lineno"><a id="l856" href="#l856">856</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -11437,7 +11423,7 @@
       <td class="src "></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l858" href="#l858">858</a></td>
+      <td class="lineno"><a id="l857" href="#l857">857</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -11446,7 +11432,7 @@
       <td class="src "><span class="c1">// Add pn(u) to qubits {1,...,n}, assume n &gt; 1</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l859" href="#l859">859</a></td>
+      <td class="lineno"><a id="l858" href="#l858">858</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -11455,7 +11441,7 @@
       <td class="src coveredLine"><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">add_pn_unitary</span><span class="p">(</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l860" href="#l860">860</a></td>
+      <td class="lineno"><a id="l859" href="#l859">859</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -11464,7 +11450,7 @@
       <td class="src "><span class="w">    </span><span class="n">Circuit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">circ</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Eigen</span><span class="o">::</span><span class="n">Matrix2cd</span><span class="o">&amp;</span><span class="w"> </span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">inverse</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l861" href="#l861">861</a></td>
+      <td class="lineno"><a id="l860" href="#l860">860</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -11473,7 +11459,7 @@
       <td class="src excludedLine"><span class="w">  </span><span class="n">TKET_ASSERT</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l862" href="#l862">862</a></td>
+      <td class="lineno"><a id="l861" href="#l861">861</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -11482,7 +11468,7 @@
       <td class="src "><span class="w">  </span><span class="c1">// pn_(u) is self commute</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l863" href="#l863">863</a></td>
+      <td class="lineno"><a id="l862" href="#l862">862</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/2</summary>
@@ -11505,7 +11491,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l864" href="#l864">864</a></td>
+      <td class="lineno"><a id="l863" href="#l863">863</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -11518,10 +11504,10 @@
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">1578</td>
-      <td class="src coveredLine"><span class="w">    </span><span class="n">Eigen</span><span class="o">::</span><span class="n">Matrix2cd</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nth_root</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">));</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">    </span><span class="n">Eigen</span><span class="o">::</span><span class="n">Matrix2cd</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nth_root</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="mi">1ULL</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">));</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l865" href="#l865">865</a></td>
+      <td class="lineno"><a id="l864" href="#l864">864</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">3/4</summary>
@@ -11546,7 +11532,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">inverse</span><span class="p">)</span><span class="w"> </span><span class="n">m</span><span class="p">.</span><span class="n">adjointInPlace</span><span class="p">();</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l866" href="#l866">866</a></td>
+      <td class="lineno"><a id="l865" href="#l865">865</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -11562,7 +11548,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="n">add_cu_using_cu3</span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">circ</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l867" href="#l867">867</a></td>
+      <td class="lineno"><a id="l866" href="#l866">866</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -11571,7 +11557,7 @@
       <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l868" href="#l868">868</a></td>
+      <td class="lineno"><a id="l867" href="#l867">867</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -11580,7 +11566,7 @@
       <td class="src coveredLine"><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l869" href="#l869">869</a></td>
+      <td class="lineno"><a id="l868" href="#l868">868</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -11589,7 +11575,7 @@
       <td class="src "></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l870" href="#l870">870</a></td>
+      <td class="lineno"><a id="l869" href="#l869">869</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -11598,7 +11584,7 @@
       <td class="src "><span class="c1">// Add an incrementer without toggling the least significant bit</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l871" href="#l871">871</a></td>
+      <td class="lineno"><a id="l870" href="#l870">870</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -11607,7 +11593,7 @@
       <td class="src "><span class="c1">// Apply to qubits {0,...,n-1}, assume n &gt; 1</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l872" href="#l872">872</a></td>
+      <td class="lineno"><a id="l871" href="#l871">871</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -11616,7 +11602,7 @@
       <td class="src coveredLine"><span class="k">static</span><span class="w"> </span><span class="kt">void</span><span class="w"> </span><span class="nf">add_qn</span><span class="p">(</span><span class="n">Circuit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">circ</span><span class="p">,</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l873" href="#l873">873</a></td>
+      <td class="lineno"><a id="l872" href="#l872">872</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -11625,7 +11611,7 @@
       <td class="src excludedLine"><span class="w">  </span><span class="n">TKET_ASSERT</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l874" href="#l874">874</a></td>
+      <td class="lineno"><a id="l873" href="#l873">873</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/2</summary>
@@ -11648,16 +11634,16 @@
       <td class="src coveredLine"><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">--</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l875" href="#l875">875</a></td>
+      <td class="lineno"><a id="l874" href="#l874">874</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">494</td>
-      <td class="src coveredLine"><span class="w">    </span><span class="kt">int</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="kt">long</span><span class="w"> </span><span class="n">d</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">1ULL</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="n">i</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l876" href="#l876">876</a></td>
+      <td class="lineno"><a id="l875" href="#l875">875</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -11666,7 +11652,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="n">add_pn</span><span class="p">(</span><span class="n">circ</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l877" href="#l877">877</a></td>
+      <td class="lineno"><a id="l876" href="#l876">876</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">3/6</summary>
@@ -11686,7 +11672,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="n">circ</span><span class="p">.</span><span class="n">add_op</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;</span><span class="p">(</span><span class="n">OpType</span><span class="o">::</span><span class="n">CRx</span><span class="p">,</span><span class="w"> </span><span class="p">(</span><span class="kt">double</span><span class="p">)</span><span class="mi">1</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="n">d</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">});</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l878" href="#l878">878</a></td>
+      <td class="lineno"><a id="l877" href="#l877">877</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -11695,7 +11681,7 @@
       <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l879" href="#l879">879</a></td>
+      <td class="lineno"><a id="l878" href="#l878">878</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">3/6</summary>
@@ -11715,7 +11701,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="n">circ</span><span class="p">.</span><span class="n">add_op</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;</span><span class="p">(</span><span class="n">OpType</span><span class="o">::</span><span class="n">CRx</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">});</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l880" href="#l880">880</a></td>
+      <td class="lineno"><a id="l879" href="#l879">879</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/2</summary>
@@ -11738,7 +11724,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">2</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">n</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l881" href="#l881">881</a></td>
+      <td class="lineno"><a id="l880" href="#l880">880</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -11747,7 +11733,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="n">add_pn</span><span class="p">(</span><span class="n">circ</span><span class="p">,</span><span class="w"> </span><span class="n">i</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l882" href="#l882">882</a></td>
+      <td class="lineno"><a id="l881" href="#l881">881</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -11756,7 +11742,7 @@
       <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l883" href="#l883">883</a></td>
+      <td class="lineno"><a id="l882" href="#l882">882</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -11765,7 +11751,7 @@
       <td class="src coveredLine"><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l884" href="#l884">884</a></td>
+      <td class="lineno"><a id="l883" href="#l883">883</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -11774,7 +11760,7 @@
       <td class="src "></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l885" href="#l885">885</a></td>
+      <td class="lineno"><a id="l884" href="#l884">884</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -11783,7 +11769,7 @@
       <td class="src "><span class="c1">// https://arxiv.org/abs/2203.11882 Equation 5</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l886" href="#l886">886</a></td>
+      <td class="lineno"><a id="l885" href="#l885">885</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -11792,7 +11778,7 @@
       <td class="src coveredLine"><span class="n">Circuit</span><span class="w"> </span><span class="nf">incrementer_linear_depth</span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">lsb</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l887" href="#l887">887</a></td>
+      <td class="lineno"><a id="l886" href="#l886">886</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/2</summary>
@@ -11815,7 +11801,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l888" href="#l888">888</a></td>
+      <td class="lineno"><a id="l887" href="#l887">887</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -11831,7 +11817,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Circuit</span><span class="p">();</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l889" href="#l889">889</a></td>
+      <td class="lineno"><a id="l888" href="#l888">888</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -11840,7 +11826,7 @@
       <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l890" href="#l890">890</a></td>
+      <td class="lineno"><a id="l889" href="#l889">889</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -11856,7 +11842,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="n">Circuit</span><span class="w"> </span><span class="n">circ</span><span class="p">(</span><span class="n">n</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l891" href="#l891">891</a></td>
+      <td class="lineno"><a id="l890" href="#l890">890</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/2</summary>
@@ -11879,7 +11865,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l892" href="#l892">892</a></td>
+      <td class="lineno"><a id="l891" href="#l891">891</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -11895,7 +11881,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="n">add_qn</span><span class="p">(</span><span class="n">circ</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l893" href="#l893">893</a></td>
+      <td class="lineno"><a id="l892" href="#l892">892</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -11904,7 +11890,7 @@
       <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l894" href="#l894">894</a></td>
+      <td class="lineno"><a id="l893" href="#l893">893</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/2</summary>
@@ -11927,7 +11913,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">lsb</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l895" href="#l895">895</a></td>
+      <td class="lineno"><a id="l894" href="#l894">894</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -11936,7 +11922,7 @@
       <td class="src "><span class="w">    </span><span class="c1">// Some optimisations might have better handlings for X gates</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l896" href="#l896">896</a></td>
+      <td class="lineno"><a id="l895" href="#l895">895</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -11945,7 +11931,7 @@
       <td class="src "><span class="w">    </span><span class="c1">// so use X instead of Rx(1)</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l897" href="#l897">897</a></td>
+      <td class="lineno"><a id="l896" href="#l896">896</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/4</summary>
@@ -11963,7 +11949,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="n">circ</span><span class="p">.</span><span class="n">add_op</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;</span><span class="p">(</span><span class="n">OpType</span><span class="o">::</span><span class="n">X</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">});</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l898" href="#l898">898</a></td>
+      <td class="lineno"><a id="l897" href="#l897">897</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/4</summary>
@@ -11981,7 +11967,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="n">circ</span><span class="p">.</span><span class="n">add_phase</span><span class="p">(</span><span class="mf">-0.5</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l899" href="#l899">899</a></td>
+      <td class="lineno"><a id="l898" href="#l898">898</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -11990,7 +11976,7 @@
       <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l900" href="#l900">900</a></td>
+      <td class="lineno"><a id="l899" href="#l899">899</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -12006,7 +11992,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">circ</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l901" href="#l901">901</a></td>
+      <td class="lineno"><a id="l900" href="#l900">900</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12015,7 +12001,7 @@
       <td class="src coveredLine"><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l902" href="#l902">902</a></td>
+      <td class="lineno"><a id="l901" href="#l901">901</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12024,7 +12010,7 @@
       <td class="src "></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l903" href="#l903">903</a></td>
+      <td class="lineno"><a id="l902" href="#l902">902</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12033,7 +12019,7 @@
       <td class="src "><span class="c1">// https://arxiv.org/abs/2203.11882 Equation 3</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l904" href="#l904">904</a></td>
+      <td class="lineno"><a id="l903" href="#l903">903</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12042,7 +12028,7 @@
       <td class="src coveredLine"><span class="n">Circuit</span><span class="w"> </span><span class="nf">CnU_linear_depth_decomp</span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Eigen</span><span class="o">::</span><span class="n">Matrix2cd</span><span class="o">&amp;</span><span class="w"> </span><span class="n">u</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l905" href="#l905">905</a></td>
+      <td class="lineno"><a id="l904" href="#l904">904</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">3/6</summary>
@@ -12069,7 +12055,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">is_unitary</span><span class="p">(</span><span class="n">u</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l906" href="#l906">906</a></td>
+      <td class="lineno"><a id="l905" href="#l905">905</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12078,7 +12064,7 @@
       <td class="src uncoveredLine"><span class="w">    </span><span class="k">throw</span><span class="w"> </span><span class="n">CircuitInvalidity</span><span class="p">(</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l907" href="#l907">907</a></td>
+      <td class="lineno"><a id="l906" href="#l906">906</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12087,7 +12073,7 @@
       <td class="src uncoveredLine"><span class="w">        </span><span class="s">&quot;Matrix for the controlled operation must be unitary&quot;</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l908" href="#l908">908</a></td>
+      <td class="lineno"><a id="l907" href="#l907">907</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12096,7 +12082,7 @@
       <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l909" href="#l909">909</a></td>
+      <td class="lineno"><a id="l908" href="#l908">908</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -12112,7 +12098,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="n">Circuit</span><span class="w"> </span><span class="n">circ</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l910" href="#l910">910</a></td>
+      <td class="lineno"><a id="l909" href="#l909">909</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12121,7 +12107,7 @@
       <td class="src "></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l911" href="#l911">911</a></td>
+      <td class="lineno"><a id="l910" href="#l910">910</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/2</summary>
@@ -12144,7 +12130,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l912" href="#l912">912</a></td>
+      <td class="lineno"><a id="l911" href="#l911">911</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12153,7 +12139,7 @@
       <td class="src "><span class="w">    </span><span class="c1">// Synthesis U using tk1 and phase</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l913" href="#l913">913</a></td>
+      <td class="lineno"><a id="l912" href="#l912">912</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -12169,7 +12155,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">double</span><span class="o">&gt;</span><span class="w"> </span><span class="n">tk1_angles</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">tk1_angles_from_unitary</span><span class="p">(</span><span class="n">u</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l914" href="#l914">914</a></td>
+      <td class="lineno"><a id="l913" href="#l913">913</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">8/16</summary>
@@ -12199,7 +12185,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="n">circ</span><span class="p">.</span><span class="n">add_op</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;</span><span class="p">(</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l915" href="#l915">915</a></td>
+      <td class="lineno"><a id="l914" href="#l914">914</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12208,7 +12194,7 @@
       <td class="src coveredLine"><span class="w">        </span><span class="n">OpType</span><span class="o">::</span><span class="n">TK1</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="n">tk1_angles</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="w"> </span><span class="n">tk1_angles</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="w"> </span><span class="n">tk1_angles</span><span class="p">[</span><span class="mi">2</span><span class="p">]},</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">});</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l916" href="#l916">916</a></td>
+      <td class="lineno"><a id="l915" href="#l915">915</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/4</summary>
@@ -12226,7 +12212,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="n">circ</span><span class="p">.</span><span class="n">add_phase</span><span class="p">(</span><span class="n">tk1_angles</span><span class="p">[</span><span class="mi">3</span><span class="p">]);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l917" href="#l917">917</a></td>
+      <td class="lineno"><a id="l916" href="#l916">916</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12235,7 +12221,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">circ</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l918" href="#l918">918</a></td>
+      <td class="lineno"><a id="l917" href="#l917">917</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12244,7 +12230,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l919" href="#l919">919</a></td>
+      <td class="lineno"><a id="l918" href="#l918">918</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/2</summary>
@@ -12267,7 +12253,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l920" href="#l920">920</a></td>
+      <td class="lineno"><a id="l919" href="#l919">919</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -12283,7 +12269,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="n">add_cu_using_cu3</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">circ</span><span class="p">,</span><span class="w"> </span><span class="n">u</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l921" href="#l921">921</a></td>
+      <td class="lineno"><a id="l920" href="#l920">920</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12292,7 +12278,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">circ</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l922" href="#l922">922</a></td>
+      <td class="lineno"><a id="l921" href="#l921">921</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12301,7 +12287,7 @@
       <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l923" href="#l923">923</a></td>
+      <td class="lineno"><a id="l922" href="#l922">922</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12310,7 +12296,7 @@
       <td class="src "></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l924" href="#l924">924</a></td>
+      <td class="lineno"><a id="l923" href="#l923">923</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12319,7 +12305,7 @@
       <td class="src "><span class="w">  </span><span class="c1">// Add pn(u) to qubits {1,...,n}</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l925" href="#l925">925</a></td>
+      <td class="lineno"><a id="l924" href="#l924">924</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -12335,13 +12321,29 @@
       <td class="src coveredLine"><span class="w">  </span><span class="n">add_pn_unitary</span><span class="p">(</span><span class="n">circ</span><span class="p">,</span><span class="w"> </span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l926" href="#l926">926</a></td>
+      <td class="lineno"><a id="l925" href="#l925">925</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
       <td class="src "><span class="w">  </span><span class="c1">// Add CU to {0, n}</span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l926" href="#l926">926</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">1/2</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 1 taken 343 times.</div>
+          <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">343</td>
+      <td class="src coveredLine"><span class="w">  </span><span class="n">Eigen</span><span class="o">::</span><span class="n">Matrix2cd</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nth_root</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="mi">1ULL</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">));</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l927" href="#l927">927</a></td>
@@ -12357,26 +12359,10 @@
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">343</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="n">Eigen</span><span class="o">::</span><span class="n">Matrix2cd</span><span class="w"> </span><span class="n">m</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">nth_root</span><span class="p">(</span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="w"> </span><span class="o">&lt;&lt;</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">));</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l928" href="#l928">928</a></td>
-      <td class="linebranch">
-        <details class="linebranchDetails">
-        <summary class="linebranchSummary">1/2</summary>
-        <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 1 taken 343 times.</div>
-          <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
-        </div>
-        </details>
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">343</td>
       <td class="src coveredLine"><span class="w">  </span><span class="n">add_cu_using_cu3</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="n">circ</span><span class="p">,</span><span class="w"> </span><span class="n">m</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l929" href="#l929">929</a></td>
+      <td class="lineno"><a id="l928" href="#l928">928</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12385,7 +12371,7 @@
       <td class="src "><span class="w">  </span><span class="c1">// Add incrementer (without toggling q0) to {0,...,n-1}</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l930" href="#l930">930</a></td>
+      <td class="lineno"><a id="l929" href="#l929">929</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -12401,7 +12387,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="n">Circuit</span><span class="w"> </span><span class="n">qn</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">incrementer_linear_depth</span><span class="p">(</span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="nb">false</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l931" href="#l931">931</a></td>
+      <td class="lineno"><a id="l930" href="#l930">930</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -12417,7 +12403,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="n">Circuit</span><span class="w"> </span><span class="n">qn_dag</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">qn</span><span class="p">.</span><span class="n">dagger</span><span class="p">();</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l932" href="#l932">932</a></td>
+      <td class="lineno"><a id="l931" href="#l931">931</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -12433,7 +12419,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="n">circ</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">qn</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l933" href="#l933">933</a></td>
+      <td class="lineno"><a id="l932" href="#l932">932</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12442,7 +12428,7 @@
       <td class="src "></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l934" href="#l934">934</a></td>
+      <td class="lineno"><a id="l933" href="#l933">933</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12451,7 +12437,7 @@
       <td class="src "><span class="w">  </span><span class="c1">// Add pn(u).dagger to qubits {1,...,n}</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l935" href="#l935">935</a></td>
+      <td class="lineno"><a id="l934" href="#l934">934</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -12467,7 +12453,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="n">add_pn_unitary</span><span class="p">(</span><span class="n">circ</span><span class="p">,</span><span class="w"> </span><span class="n">u</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="nb">true</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l936" href="#l936">936</a></td>
+      <td class="lineno"><a id="l935" href="#l935">935</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12476,7 +12462,7 @@
       <td class="src "></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l937" href="#l937">937</a></td>
+      <td class="lineno"><a id="l936" href="#l936">936</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12485,7 +12471,7 @@
       <td class="src "><span class="w">  </span><span class="c1">// Add incrementer inverse (without toggling q0) to {0,...,n-1}</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l938" href="#l938">938</a></td>
+      <td class="lineno"><a id="l937" href="#l937">937</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -12501,7 +12487,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="n">circ</span><span class="p">.</span><span class="n">append</span><span class="p">(</span><span class="n">qn_dag</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l939" href="#l939">939</a></td>
+      <td class="lineno"><a id="l938" href="#l938">938</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12510,7 +12496,7 @@
       <td class="src "></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l940" href="#l940">940</a></td>
+      <td class="lineno"><a id="l939" href="#l939">939</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12519,7 +12505,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">circ</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l941" href="#l941">941</a></td>
+      <td class="lineno"><a id="l940" href="#l940">940</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12528,7 +12514,7 @@
       <td class="src coveredLine"><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l942" href="#l942">942</a></td>
+      <td class="lineno"><a id="l941" href="#l941">941</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12537,7 +12523,7 @@
       <td class="src "></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l943" href="#l943">943</a></td>
+      <td class="lineno"><a id="l942" href="#l942">942</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12546,7 +12532,7 @@
       <td class="src coveredLine"><span class="n">Circuit</span><span class="w"> </span><span class="nf">CnSU2_linear_decomp</span><span class="p">(</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l944" href="#l944">944</a></td>
+      <td class="lineno"><a id="l943" href="#l943">943</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12555,7 +12541,7 @@
       <td class="src "><span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="n">n</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Expr</span><span class="o">&amp;</span><span class="w"> </span><span class="n">alpha</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Expr</span><span class="o">&amp;</span><span class="w"> </span><span class="n">theta</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">Expr</span><span class="o">&amp;</span><span class="w"> </span><span class="n">beta</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l945" href="#l945">945</a></td>
+      <td class="lineno"><a id="l944" href="#l944">944</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12564,7 +12550,7 @@
       <td class="src "><span class="w">  </span><span class="c1">// W == I iff one of the following two conditions is met</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l946" href="#l946">946</a></td>
+      <td class="lineno"><a id="l945" href="#l945">945</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12573,7 +12559,7 @@
       <td class="src "><span class="w">  </span><span class="c1">// 1. t/2 is even, and (a + b)/2 is even</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l947" href="#l947">947</a></td>
+      <td class="lineno"><a id="l946" href="#l946">946</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12582,7 +12568,7 @@
       <td class="src "><span class="w">  </span><span class="c1">// 2. t/2 is odd, and (a + b)/2 is odd</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l948" href="#l948">948</a></td>
+      <td class="lineno"><a id="l947" href="#l947">947</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12591,7 +12577,7 @@
       <td class="src "><span class="w">  </span><span class="c1">// check if SU(2) is identity</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l949" href="#l949">949</a></td>
+      <td class="lineno"><a id="l948" href="#l948">948</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">19/38</summary>
@@ -12650,7 +12636,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">((</span><span class="n">equiv_0</span><span class="p">(</span><span class="n">theta</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">equiv_0</span><span class="p">((</span><span class="n">alpha</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">beta</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">))</span><span class="w"> </span><span class="o">||</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l950" href="#l950">950</a></td>
+      <td class="lineno"><a id="l949" href="#l949">949</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">22/40</summary>
@@ -12704,7 +12690,7 @@
       <td class="src coveredLine"><span class="w">      </span><span class="p">(</span><span class="n">equiv_val</span><span class="p">(</span><span class="n">theta</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.</span><span class="p">,</span><span class="w"> </span><span class="mf">1.</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">equiv_val</span><span class="p">((</span><span class="n">alpha</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">beta</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.</span><span class="p">,</span><span class="w"> </span><span class="mf">1.</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">)))</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l951" href="#l951">951</a></td>
+      <td class="lineno"><a id="l950" href="#l950">950</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -12720,7 +12706,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">Circuit</span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l952" href="#l952">952</a></td>
+      <td class="lineno"><a id="l951" href="#l951">951</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12729,7 +12715,7 @@
       <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l953" href="#l953">953</a></td>
+      <td class="lineno"><a id="l952" href="#l952">952</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12738,7 +12724,7 @@
       <td class="src "></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l954" href="#l954">954</a></td>
+      <td class="lineno"><a id="l953" href="#l953">953</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -12754,7 +12740,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="n">Circuit</span><span class="w"> </span><span class="n">circ</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l955" href="#l955">955</a></td>
+      <td class="lineno"><a id="l954" href="#l954">954</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12763,7 +12749,7 @@
       <td class="src "></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l956" href="#l956">956</a></td>
+      <td class="lineno"><a id="l955" href="#l955">955</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/2</summary>
@@ -12786,7 +12772,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l957" href="#l957">957</a></td>
+      <td class="lineno"><a id="l956" href="#l956">956</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12795,7 +12781,7 @@
       <td class="src "><span class="w">    </span><span class="c1">// add tk1</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l958" href="#l958">958</a></td>
+      <td class="lineno"><a id="l957" href="#l957">957</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -12811,7 +12797,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="n">circ</span><span class="p">.</span><span class="n">add_blank_wires</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l959" href="#l959">959</a></td>
+      <td class="lineno"><a id="l958" href="#l958">958</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">10/20</summary>
@@ -12845,7 +12831,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="n">circ</span><span class="p">.</span><span class="n">add_op</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;</span><span class="p">(</span><span class="n">OpType</span><span class="o">::</span><span class="n">TK1</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="n">alpha</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mf">0.5</span><span class="p">,</span><span class="w"> </span><span class="n">theta</span><span class="p">,</span><span class="w"> </span><span class="n">beta</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mf">0.5</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">});</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l960" href="#l960">960</a></td>
+      <td class="lineno"><a id="l959" href="#l959">959</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -12861,7 +12847,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">circ</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l961" href="#l961">961</a></td>
+      <td class="lineno"><a id="l960" href="#l960">960</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12870,7 +12856,7 @@
       <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l962" href="#l962">962</a></td>
+      <td class="lineno"><a id="l961" href="#l961">961</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12879,7 +12865,7 @@
       <td class="src "></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l963" href="#l963">963</a></td>
+      <td class="lineno"><a id="l962" href="#l962">962</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12888,7 +12874,7 @@
       <td class="src "><span class="w">  </span><span class="c1">// SU(2) matrix W expressed as Rz(a)Ry(t)Rz(b)</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l964" href="#l964">964</a></td>
+      <td class="lineno"><a id="l963" href="#l963">963</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -12904,7 +12890,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="n">Expr</span><span class="w"> </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">alpha</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l965" href="#l965">965</a></td>
+      <td class="lineno"><a id="l964" href="#l964">964</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -12920,7 +12906,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="n">Expr</span><span class="w"> </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">beta</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l966" href="#l966">966</a></td>
+      <td class="lineno"><a id="l965" href="#l965">965</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -12936,7 +12922,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="n">Expr</span><span class="w"> </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">theta</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l967" href="#l967">967</a></td>
+      <td class="lineno"><a id="l966" href="#l966">966</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12945,7 +12931,7 @@
       <td class="src "></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l968" href="#l968">968</a></td>
+      <td class="lineno"><a id="l967" href="#l967">967</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12954,7 +12940,7 @@
       <td class="src "><span class="w">  </span><span class="c1">// Lemma 4.3: W = A*X*B*X*C</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l969" href="#l969">969</a></td>
+      <td class="lineno"><a id="l968" href="#l968">968</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12963,7 +12949,7 @@
       <td class="src "><span class="w">  </span><span class="c1">// By lemma 5.4, C is identity iff W can be expressed as Rz(a&#39;)Ry(t&#39;)Rz(a&#39;)</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l970" href="#l970">970</a></td>
+      <td class="lineno"><a id="l969" href="#l969">969</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12972,7 +12958,7 @@
       <td class="src "><span class="w">  </span><span class="c1">// We handle the following two cases</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l971" href="#l971">971</a></td>
+      <td class="lineno"><a id="l970" href="#l970">970</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12981,7 +12967,7 @@
       <td class="src "><span class="w">  </span><span class="c1">// if (a-b)/2 is even, a&#39; = (a + b)/2, t&#39; = t</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l972" href="#l972">972</a></td>
+      <td class="lineno"><a id="l971" href="#l971">971</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -12990,7 +12976,7 @@
       <td class="src "><span class="w">  </span><span class="c1">// if (a-b)/2 is odd, a&#39; = (a + b)/2, t&#39; = - t</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l973" href="#l973">973</a></td>
+      <td class="lineno"><a id="l972" href="#l972">972</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">6/10</summary>
@@ -13021,7 +13007,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">equiv_0</span><span class="p">((</span><span class="n">a</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l974" href="#l974">974</a></td>
+      <td class="lineno"><a id="l973" href="#l973">973</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">3/6</summary>
@@ -13041,7 +13027,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l975" href="#l975">975</a></td>
+      <td class="lineno"><a id="l974" href="#l974">974</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -13057,7 +13043,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l976" href="#l976">976</a></td>
+      <td class="lineno"><a id="l975" href="#l975">975</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">6/10</summary>
@@ -13088,7 +13074,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">equiv_val</span><span class="p">((</span><span class="n">a</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.</span><span class="p">,</span><span class="w"> </span><span class="mf">1.</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l977" href="#l977">977</a></td>
+      <td class="lineno"><a id="l976" href="#l976">976</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">3/6</summary>
@@ -13108,7 +13094,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l978" href="#l978">978</a></td>
+      <td class="lineno"><a id="l977" href="#l977">977</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -13124,7 +13110,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">a</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l979" href="#l979">979</a></td>
+      <td class="lineno"><a id="l978" href="#l978">978</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -13140,7 +13126,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="n">t</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l980" href="#l980">980</a></td>
+      <td class="lineno"><a id="l979" href="#l979">979</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -13149,7 +13135,7 @@
       <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l981" href="#l981">981</a></td>
+      <td class="lineno"><a id="l980" href="#l980">980</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -13158,7 +13144,7 @@
       <td class="src "></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l982" href="#l982">982</a></td>
+      <td class="lineno"><a id="l981" href="#l981">981</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -13167,7 +13153,7 @@
       <td class="src "><span class="w">  </span><span class="c1">// We test whether W can be expressed as a single Ry(t&#39;&#39;)</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l983" href="#l983">983</a></td>
+      <td class="lineno"><a id="l982" href="#l982">982</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">6/10</summary>
@@ -13198,7 +13184,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">equiv_0</span><span class="p">((</span><span class="n">a</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l984" href="#l984">984</a></td>
+      <td class="lineno"><a id="l983" href="#l983">983</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">6/10</summary>
@@ -13229,7 +13215,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">equiv_val</span><span class="p">((</span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.</span><span class="p">,</span><span class="w"> </span><span class="mf">1.</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l985" href="#l985">985</a></td>
+      <td class="lineno"><a id="l984" href="#l984">984</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -13238,7 +13224,7 @@
       <td class="src "><span class="w">      </span><span class="c1">// if (a-b)/2 is even, and (a+b)/2 is odd, t&#39;&#39; = 2-t</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l986" href="#l986">986</a></td>
+      <td class="lineno"><a id="l985" href="#l985">985</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -13254,7 +13240,7 @@
       <td class="src coveredLine"><span class="w">      </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l987" href="#l987">987</a></td>
+      <td class="lineno"><a id="l986" href="#l986">986</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -13270,7 +13256,7 @@
       <td class="src coveredLine"><span class="w">      </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l988" href="#l988">988</a></td>
+      <td class="lineno"><a id="l987" href="#l987">987</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/4</summary>
@@ -13288,7 +13274,7 @@
       <td class="src coveredLine"><span class="w">      </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">t</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l989" href="#l989">989</a></td>
+      <td class="lineno"><a id="l988" href="#l988">988</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">6/10</summary>
@@ -13319,7 +13305,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">equiv_0</span><span class="p">((</span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l990" href="#l990">990</a></td>
+      <td class="lineno"><a id="l989" href="#l989">989</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -13328,7 +13314,7 @@
       <td class="src "><span class="w">      </span><span class="c1">// if (a-b)/2 is even, and (a+b)/2 is even, t&#39;&#39; = t</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l991" href="#l991">991</a></td>
+      <td class="lineno"><a id="l990" href="#l990">990</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -13344,7 +13330,7 @@
       <td class="src coveredLine"><span class="w">      </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l992" href="#l992">992</a></td>
+      <td class="lineno"><a id="l991" href="#l991">991</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -13360,7 +13346,7 @@
       <td class="src coveredLine"><span class="w">      </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l993" href="#l993">993</a></td>
+      <td class="lineno"><a id="l992" href="#l992">992</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -13369,7 +13355,7 @@
       <td class="src "><span class="w">    </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l994" href="#l994">994</a></td>
+      <td class="lineno"><a id="l993" href="#l993">993</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">5/10</summary>
@@ -13400,7 +13386,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">equiv_val</span><span class="p">((</span><span class="n">a</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.</span><span class="p">,</span><span class="w"> </span><span class="mf">1.</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l995" href="#l995">995</a></td>
+      <td class="lineno"><a id="l994" href="#l994">994</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -13416,7 +13402,7 @@
       <td class="src uncoveredLine"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">equiv_val</span><span class="p">((</span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.</span><span class="p">,</span><span class="w"> </span><span class="mf">1.</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l996" href="#l996">996</a></td>
+      <td class="lineno"><a id="l995" href="#l995">995</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -13425,7 +13411,7 @@
       <td class="src "><span class="w">      </span><span class="c1">// if (a-b)/2 is odd, and (a+b)/2 is odd, t&#39;&#39; = 2-t</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l997" href="#l997">997</a></td>
+      <td class="lineno"><a id="l996" href="#l996">996</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -13434,7 +13420,7 @@
       <td class="src uncoveredLine"><span class="w">      </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l998" href="#l998">998</a></td>
+      <td class="lineno"><a id="l997" href="#l997">997</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -13443,7 +13429,7 @@
       <td class="src uncoveredLine"><span class="w">      </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l999" href="#l999">999</a></td>
+      <td class="lineno"><a id="l998" href="#l998">998</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -13452,7 +13438,7 @@
       <td class="src uncoveredLine"><span class="w">      </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">2.</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">t</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1000" href="#l1000">1000</a></td>
+      <td class="lineno"><a id="l999" href="#l999">999</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -13468,7 +13454,7 @@
       <td class="src uncoveredLine"><span class="w">    </span><span class="p">}</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">equiv_0</span><span class="p">((</span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.</span><span class="p">,</span><span class="w"> </span><span class="mi">2</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1001" href="#l1001">1001</a></td>
+      <td class="lineno"><a id="l1000" href="#l1000">1000</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -13477,7 +13463,7 @@
       <td class="src "><span class="w">      </span><span class="c1">// if (a-b)/2 is odd, and (a+b)/2 is even, t&#39;&#39; = -t</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1002" href="#l1002">1002</a></td>
+      <td class="lineno"><a id="l1001" href="#l1001">1001</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -13486,7 +13472,7 @@
       <td class="src uncoveredLine"><span class="w">      </span><span class="n">a</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1003" href="#l1003">1003</a></td>
+      <td class="lineno"><a id="l1002" href="#l1002">1002</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -13495,7 +13481,7 @@
       <td class="src uncoveredLine"><span class="w">      </span><span class="n">b</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mf">0.</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1004" href="#l1004">1004</a></td>
+      <td class="lineno"><a id="l1003" href="#l1003">1003</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -13504,7 +13490,7 @@
       <td class="src uncoveredLine"><span class="w">      </span><span class="n">t</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">-</span><span class="n">t</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1005" href="#l1005">1005</a></td>
+      <td class="lineno"><a id="l1004" href="#l1004">1004</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -13513,7 +13499,7 @@
       <td class="src "><span class="w">    </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1006" href="#l1006">1006</a></td>
+      <td class="lineno"><a id="l1005" href="#l1005">1005</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -13522,7 +13508,7 @@
       <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1007" href="#l1007">1007</a></td>
+      <td class="lineno"><a id="l1006" href="#l1006">1006</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/2</summary>
@@ -13545,7 +13531,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">n</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="mi">1</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1008" href="#l1008">1008</a></td>
+      <td class="lineno"><a id="l1007" href="#l1007">1007</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -13561,7 +13547,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="n">circ</span><span class="p">.</span><span class="n">add_blank_wires</span><span class="p">(</span><span class="mi">2</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1009" href="#l1009">1009</a></td>
+      <td class="lineno"><a id="l1008" href="#l1008">1008</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">4/6</summary>
@@ -13588,7 +13574,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">equiv_0</span><span class="p">(</span><span class="n">b</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1010" href="#l1010">1010</a></td>
+      <td class="lineno"><a id="l1009" href="#l1009">1009</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">5/10</summary>
@@ -13612,7 +13598,7 @@
       <td class="src coveredLine"><span class="w">      </span><span class="n">circ</span><span class="p">.</span><span class="n">add_op</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;</span><span class="p">(</span><span class="n">OpType</span><span class="o">::</span><span class="n">Rz</span><span class="p">,</span><span class="w"> </span><span class="p">{(</span><span class="n">b</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">a</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">});</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1011" href="#l1011">1011</a></td>
+      <td class="lineno"><a id="l1010" href="#l1010">1010</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -13621,7 +13607,7 @@
       <td class="src "><span class="w">    </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1012" href="#l1012">1012</a></td>
+      <td class="lineno"><a id="l1011" href="#l1011">1011</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/4</summary>
@@ -13639,7 +13625,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="n">circ</span><span class="p">.</span><span class="n">add_op</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;</span><span class="p">(</span><span class="n">OpType</span><span class="o">::</span><span class="n">CX</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">});</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1013" href="#l1013">1013</a></td>
+      <td class="lineno"><a id="l1012" href="#l1012">1012</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">4/6</summary>
@@ -13666,7 +13652,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">equiv_0</span><span class="p">(</span><span class="n">a</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1014" href="#l1014">1014</a></td>
+      <td class="lineno"><a id="l1013" href="#l1013">1013</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">6/12</summary>
@@ -13692,7 +13678,7 @@
       <td class="src coveredLine"><span class="w">      </span><span class="n">circ</span><span class="p">.</span><span class="n">add_op</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;</span><span class="p">(</span><span class="n">OpType</span><span class="o">::</span><span class="n">Rz</span><span class="p">,</span><span class="w"> </span><span class="p">{(</span><span class="o">-</span><span class="n">a</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">b</span><span class="p">)</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">});</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1015" href="#l1015">1015</a></td>
+      <td class="lineno"><a id="l1014" href="#l1014">1014</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -13701,7 +13687,7 @@
       <td class="src "><span class="w">    </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1016" href="#l1016">1016</a></td>
+      <td class="lineno"><a id="l1015" href="#l1015">1015</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">3/4</summary>
@@ -13726,7 +13712,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">equiv_0</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1017" href="#l1017">1017</a></td>
+      <td class="lineno"><a id="l1016" href="#l1016">1016</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">5/10</summary>
@@ -13750,7 +13736,7 @@
       <td class="src coveredLine"><span class="w">      </span><span class="n">circ</span><span class="p">.</span><span class="n">add_op</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;</span><span class="p">(</span><span class="n">OpType</span><span class="o">::</span><span class="n">Ry</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="o">-</span><span class="n">t</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">});</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1018" href="#l1018">1018</a></td>
+      <td class="lineno"><a id="l1017" href="#l1017">1017</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -13759,7 +13745,7 @@
       <td class="src "><span class="w">    </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1019" href="#l1019">1019</a></td>
+      <td class="lineno"><a id="l1018" href="#l1018">1018</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/4</summary>
@@ -13777,7 +13763,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="n">circ</span><span class="p">.</span><span class="n">add_op</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;</span><span class="p">(</span><span class="n">OpType</span><span class="o">::</span><span class="n">CX</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="mi">0</span><span class="p">,</span><span class="w"> </span><span class="mi">1</span><span class="p">});</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1020" href="#l1020">1020</a></td>
+      <td class="lineno"><a id="l1019" href="#l1019">1019</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">3/4</summary>
@@ -13802,7 +13788,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">equiv_0</span><span class="p">(</span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="mi">8</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1021" href="#l1021">1021</a></td>
+      <td class="lineno"><a id="l1020" href="#l1020">1020</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">4/8</summary>
@@ -13824,7 +13810,7 @@
       <td class="src coveredLine"><span class="w">      </span><span class="n">circ</span><span class="p">.</span><span class="n">add_op</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;</span><span class="p">(</span><span class="n">OpType</span><span class="o">::</span><span class="n">Ry</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="n">t</span><span class="w"> </span><span class="o">/</span><span class="w"> </span><span class="mf">2.</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">});</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1022" href="#l1022">1022</a></td>
+      <td class="lineno"><a id="l1021" href="#l1021">1021</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -13833,7 +13819,7 @@
       <td class="src "><span class="w">    </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1023" href="#l1023">1023</a></td>
+      <td class="lineno"><a id="l1022" href="#l1022">1022</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">3/4</summary>
@@ -13858,7 +13844,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">equiv_0</span><span class="p">(</span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="mi">4</span><span class="p">))</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1024" href="#l1024">1024</a></td>
+      <td class="lineno"><a id="l1023" href="#l1023">1023</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/4</summary>
@@ -13876,7 +13862,7 @@
       <td class="src coveredLine"><span class="w">      </span><span class="n">circ</span><span class="p">.</span><span class="n">add_op</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;</span><span class="p">(</span><span class="n">OpType</span><span class="o">::</span><span class="n">Rz</span><span class="p">,</span><span class="w"> </span><span class="p">{</span><span class="n">a</span><span class="p">},</span><span class="w"> </span><span class="p">{</span><span class="mi">1</span><span class="p">});</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1025" href="#l1025">1025</a></td>
+      <td class="lineno"><a id="l1024" href="#l1024">1024</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -13885,7 +13871,7 @@
       <td class="src "><span class="w">    </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1026" href="#l1026">1026</a></td>
+      <td class="lineno"><a id="l1025" href="#l1025">1025</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -13901,7 +13887,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">circ</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1027" href="#l1027">1027</a></td>
+      <td class="lineno"><a id="l1026" href="#l1026">1026</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -13910,7 +13896,7 @@
       <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1028" href="#l1028">1028</a></td>
+      <td class="lineno"><a id="l1027" href="#l1027">1027</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -13919,7 +13905,7 @@
       <td class="src "><span class="w">  </span><span class="c1">// Using lemma 7.9 for n &gt;= 2</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1029" href="#l1029">1029</a></td>
+      <td class="lineno"><a id="l1028" href="#l1028">1028</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -13928,7 +13914,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="n">candidate_t</span><span class="w"> </span><span class="n">ct</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1030" href="#l1030">1030</a></td>
+      <td class="lineno"><a id="l1029" href="#l1029">1029</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -13944,7 +13930,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="n">lemma79</span><span class="p">(</span><span class="n">circ</span><span class="p">,</span><span class="w"> </span><span class="n">n</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="p">,</span><span class="w"> </span><span class="n">a</span><span class="p">,</span><span class="w"> </span><span class="n">t</span><span class="p">,</span><span class="w"> </span><span class="n">b</span><span class="p">,</span><span class="w"> </span><span class="n">ct</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1031" href="#l1031">1031</a></td>
+      <td class="lineno"><a id="l1030" href="#l1030">1030</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/2</summary>
@@ -13967,7 +13953,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="n">Edge</span><span class="p">,</span><span class="w"> </span><span class="n">Vertex</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">pairy</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">ct</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1032" href="#l1032">1032</a></td>
+      <td class="lineno"><a id="l1031" href="#l1031">1031</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -13976,7 +13962,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="n">Vertex</span><span class="w"> </span><span class="n">original_cnx</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">pairy</span><span class="p">.</span><span class="n">second</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1033" href="#l1033">1033</a></td>
+      <td class="lineno"><a id="l1032" href="#l1032">1032</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -13992,7 +13978,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="kt">unsigned</span><span class="w"> </span><span class="n">cnx_arity</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">circ</span><span class="p">.</span><span class="n">n_in_edges</span><span class="p">(</span><span class="n">original_cnx</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1034" href="#l1034">1034</a></td>
+      <td class="lineno"><a id="l1033" href="#l1033">1033</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">3/3</summary>
@@ -14009,7 +13995,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">cnx_arity</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1035" href="#l1035">1035</a></td>
+      <td class="lineno"><a id="l1034" href="#l1034">1034</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -14024,7 +14010,7 @@
       <td class="src coveredLine"><span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="mi">2</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1036" href="#l1036">1036</a></td>
+      <td class="lineno"><a id="l1035" href="#l1035">1035</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">3/6</summary>
@@ -14044,7 +14030,7 @@
       <td class="src coveredLine"><span class="w">        </span><span class="n">circ</span><span class="p">.</span><span class="n">dag</span><span class="p">[</span><span class="n">original_cnx</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">get_op_ptr</span><span class="p">(</span><span class="n">OpType</span><span class="o">::</span><span class="n">CX</span><span class="p">)};</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1037" href="#l1037">1037</a></td>
+      <td class="lineno"><a id="l1036" href="#l1036">1036</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -14053,7 +14039,7 @@
       <td class="src coveredLine"><span class="w">        </span><span class="k">break</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1038" href="#l1038">1038</a></td>
+      <td class="lineno"><a id="l1037" href="#l1037">1037</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -14062,7 +14048,7 @@
       <td class="src "><span class="w">      </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1039" href="#l1039">1039</a></td>
+      <td class="lineno"><a id="l1038" href="#l1038">1038</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -14077,7 +14063,7 @@
       <td class="src coveredLine"><span class="w">      </span><span class="k">case</span><span class="w"> </span><span class="mi">3</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1040" href="#l1040">1040</a></td>
+      <td class="lineno"><a id="l1039" href="#l1039">1039</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">3/6</summary>
@@ -14097,7 +14083,7 @@
       <td class="src coveredLine"><span class="w">        </span><span class="n">circ</span><span class="p">.</span><span class="n">dag</span><span class="p">[</span><span class="n">original_cnx</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">{</span><span class="n">get_op_ptr</span><span class="p">(</span><span class="n">OpType</span><span class="o">::</span><span class="n">CCX</span><span class="p">)};</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1041" href="#l1041">1041</a></td>
+      <td class="lineno"><a id="l1040" href="#l1040">1040</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -14106,7 +14092,7 @@
       <td class="src coveredLine"><span class="w">        </span><span class="k">break</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1042" href="#l1042">1042</a></td>
+      <td class="lineno"><a id="l1041" href="#l1041">1041</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -14115,7 +14101,7 @@
       <td class="src "><span class="w">      </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1043" href="#l1043">1043</a></td>
+      <td class="lineno"><a id="l1042" href="#l1042">1042</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -14130,7 +14116,7 @@
       <td class="src coveredLine"><span class="w">      </span><span class="k">default</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1044" href="#l1044">1044</a></td>
+      <td class="lineno"><a id="l1043" href="#l1043">1043</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -14146,7 +14132,7 @@
       <td class="src coveredLine"><span class="w">        </span><span class="n">lemma73</span><span class="p">(</span><span class="n">circ</span><span class="p">,</span><span class="w"> </span><span class="n">pairy</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1045" href="#l1045">1045</a></td>
+      <td class="lineno"><a id="l1044" href="#l1044">1044</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -14155,7 +14141,7 @@
       <td class="src "><span class="w">      </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1046" href="#l1046">1046</a></td>
+      <td class="lineno"><a id="l1045" href="#l1045">1045</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -14164,7 +14150,7 @@
       <td class="src "><span class="w">    </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1047" href="#l1047">1047</a></td>
+      <td class="lineno"><a id="l1046" href="#l1046">1046</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -14173,7 +14159,7 @@
       <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1048" href="#l1048">1048</a></td>
+      <td class="lineno"><a id="l1047" href="#l1047">1047</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -14189,7 +14175,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">circ</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1049" href="#l1049">1049</a></td>
+      <td class="lineno"><a id="l1048" href="#l1048">1048</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -14198,7 +14184,7 @@
       <td class="src coveredLine"><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1050" href="#l1050">1050</a></td>
+      <td class="lineno"><a id="l1049" href="#l1049">1049</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -14207,7 +14193,7 @@
       <td class="src "></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1051" href="#l1051">1051</a></td>
+      <td class="lineno"><a id="l1050" href="#l1050">1050</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -14216,7 +14202,7 @@
       <td class="src "><span class="p">}</span><span class="w">  </span><span class="c1">// namespace CircPool</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1052" href="#l1052">1052</a></td>
+      <td class="lineno"><a id="l1051" href="#l1051">1051</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -14225,7 +14211,7 @@
       <td class="src "></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1053" href="#l1053">1053</a></td>
+      <td class="lineno"><a id="l1052" href="#l1052">1052</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -14234,7 +14220,7 @@
       <td class="src "><span class="p">}</span><span class="w">  </span><span class="c1">// namespace tket</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l1054" href="#l1054">1054</a></td>
+      <td class="lineno"><a id="l1053" href="#l1053">1053</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
