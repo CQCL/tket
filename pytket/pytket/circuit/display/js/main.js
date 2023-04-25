@@ -10,6 +10,11 @@ if (typeof window.pytketCircuitDisplays === "undefined") {
 const app = createApp({
     delimiters: ['[[#', '#]]'],
     components: { circuitDisplayContainer },
+    data () {
+      return {
+        initRenderOptions: displayOptions,
+      }
+    }
 })
 app.config.unwrapInjectedRef = true;
 app.mount("#circuit-display-vue-container-"+circuitRendererUid);
