@@ -23,6 +23,8 @@ Fixes:
 
 * Fix bug in `get_operator_expectation_value()` computation when operator
   includes `Pauli.I` terms.
+* Fix bug in routing when the circuit contains empty qubit wires and some of its qubits
+  are labelled with physical nodes.
 
 1.14.0 (April 2023)
 -------------------
