@@ -95,6 +95,7 @@ conan export-pkg tket --user=tket --channel=stable -s build_type=Debug -o boost/
 conan install tket/test -s build_type=Debug --build=missing -o boost/*:header_only=True -o test-tket/*:with_coverage=True -of build/tket-tests
 conan build tket/test -s build_type=Debug --build=missing -o boost/*:header_only=True -o test-tket/*:with_coverage=True -of build/tket-tests
 cp tket/test/src/test_circuits/*.json ./build/tket-tests/build/Debug
+cp tket/test/src/test_architectures/*.json ./build/tket-tests/build/Debug
 
 cd ./build/tket-tests/build/Debug
 ./test-tket
