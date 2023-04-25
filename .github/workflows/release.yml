@@ -375,7 +375,7 @@ jobs:
     - name: Download wheels
       uses: actions/download-artifact@v3
       with:
-        name: Linux_wheels
+        name: Linux_3.10_wheel
         path: wheelhouse/
     - name: Install pip, wheel
       run: pip install -U pip wheel
