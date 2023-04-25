@@ -793,26 +793,26 @@ void MappingFrontier::add_bridge(
 
 void MappingFrontier::add_ancilla(const UnitID& ancilla) {
   // Given the ancilla node, we 1. add ancilla to the circuit.
-  // 2. map ancilla to a logical qubit placeholder_q,
-  // this will be a default register qubit that is not present anywhere in the
-  // frontier. Add {placeholder_q, ancilla} to the bimaps.
-  register_t default_reg = this->circuit_.get_reg(q_default_reg());
-  unsigned largest_q_idx = 0;
-  auto it = default_reg.rbegin();
-  if (it != default_reg.rend()) {
-    largest_q_idx = it->first;
+  // 2. map ancilla to placeholder_q, which will be a qubit from the routing
+  // ancilla register that is not present anywhere in the circuit and bimaps.
+  // Add {placeholder_q, ancilla} to the bimaps.
+  register_t ancilla_reg = this->circuit_.get_reg(q_routing_ancilla_reg());
+  unsigned available_ancilla_idx = 0;
+  auto it = ancilla_reg.rbegin();
+  if (it != ancilla_reg.rend()) {
+    available_ancilla_idx = it->first + 1;
   }
   for (auto const& it : this->bimaps_->initial.left) {
-    if (it.first.reg_name() == q_default_reg() &&
-        it.first.index()[0] > largest_q_idx) {
-      largest_q_idx = it.first.index()[0];
+    if (it.first.reg_name() == q_routing_ancilla_reg() &&
+        it.first.index()[0] >= available_ancilla_idx) {
+      available_ancilla_idx = it.first.index()[0] + 1;
     }
-    if (it.second.reg_name() == q_default_reg() &&
-        it.second.index()[0] > largest_q_idx) {
-      largest_q_idx = it.second.index()[0];
+    if (it.second.reg_name() == q_routing_ancilla_reg() &&
+        it.second.index()[0] >= available_ancilla_idx) {
+      available_ancilla_idx = it.second.index()[0] + 1;
     }
   }
-  Qubit placeholder_q(++largest_q_idx);
+  Qubit placeholder_q(q_routing_ancilla_reg(), available_ancilla_idx);
   Qubit ancilla_q(ancilla);
   this->circuit_.add_qubit(ancilla_q);
   this->linear_boundary->insert(

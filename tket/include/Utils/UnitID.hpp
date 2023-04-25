@@ -43,6 +43,7 @@ typedef std::pair<UnitType, unsigned> register_info_t;
 typedef std::optional<register_info_t> opt_reg_info_t;
 
 const std::string &q_default_reg();
+const std::string &q_routing_ancilla_reg();
 const std::string &c_default_reg();
 const std::string &w_default_reg();
 const std::string &node_default_reg();

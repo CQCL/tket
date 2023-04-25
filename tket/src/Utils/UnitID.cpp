@@ -75,6 +75,12 @@ const std::string& q_default_reg() {
   return *regname;
 }
 
+const std::string& q_routing_ancilla_reg() {
+  static std::unique_ptr<const std::string> regname =
+      std::make_unique<const std::string>("tk_ROUTING_ANCILLA_REG");
+  return *regname;
+}
+
 const std::string& c_default_reg() {
   static std::unique_ptr<const std::string> regname =
       std::make_unique<const std::string>("c");
