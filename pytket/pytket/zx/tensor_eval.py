@@ -19,7 +19,12 @@ from math import floor, pi, sqrt
 import sympy  # type: ignore
 import numpy as np
 from pytket.zx import ZXDiagram, ZXType, ZXVert, PhasedGen, QuantumType, Rewrite  # type: ignore
-import quimb.tensor as qtn  # type: ignore
+
+try:
+    import quimb.tensor as qtn  # type: ignore
+except ModuleNotFoundError as err:
+    err.msg = 'Missing package for tensor evaluation of ZX diagrams. Run "pip install quimb" and try again.'
+    raise err
 
 
 def _spider_to_tensor(gen: PhasedGen, rank: int) -> np.ndarray:
@@ -202,7 +207,7 @@ def fix_boundaries_to_binary_states(
 ) -> ZXDiagram:
     new_diag = ZXDiagram(diag)
     b_lookup = dict(zip(diag.get_boundary(), new_diag.get_boundary()))
-    for (b, val) in vals.items():
+    for b, val in vals.items():
         if diag.get_zxtype(b) not in _boundary_types:
             raise ValueError("Can only set states of boundary vertices")
         if val not in [0, 1]:
