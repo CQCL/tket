@@ -15,6 +15,8 @@ Minor new features:
 * Allow barriers in ``QControlBoxes``. Barriers are left in place.
 * Add ``Circuit.TK1`` and ``Circuit.TK2`` methods that take ``Qubit`` arguments.
 * Expose ``CircuitRenderer`` instance so users can set their own default options.
+* QASM to circuit converters now recognise ``Rxxyyzz`` as ``OpType.TK2``. Circuit
+  to QASM converters with the "hqslib1" header now map ``OpType.TK2`` to ``Rxxyyzz``.
 
 Fixes:
 

@@ -150,6 +150,7 @@ PARAM_COMMANDS = {
     "cry": OpType.CRy,
     "cu1": OpType.CU1,
     "cu3": OpType.CU3,
+    "Rxxyyzz": OpType.TK2,
 }
 
 NOPARAM_EXTRA_COMMANDS = {
