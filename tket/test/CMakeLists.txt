@@ -170,6 +170,8 @@ ENDIF()
 install(FILES
             src/test_circuits/lexiroute_circuit.json
             src/test_circuits/lexiroute_circuit_relabel_to_ancilla.json
+            src/test_circuits/bug777_circuit.json
+            src/test_architectures/ibm_montreal.json
         DESTINATION bin)
 
 install(TARGETS test-tket DESTINATION "."
