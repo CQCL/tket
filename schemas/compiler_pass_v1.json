@@ -316,7 +316,7 @@
         "only_zeros": {
           "type": "boolean",
           "description": "Whether to restrict \"RoundAngles\" to rounding to zero."
-        },
+        }
       },
       "required": [
         "name"
