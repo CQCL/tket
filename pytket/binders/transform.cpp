@@ -424,7 +424,15 @@ PYBIND11_MODULE(transform, m) {
           "CnXPairwiseDecomposition", &Transforms::cnx_pairwise_decomposition,
           "Decompose CnX gates to 2-qubit gates and single qubit gates. "
           "For every two CnX gates, reorder their control qubits to improve "
-          "the chance of gate cancellation.");
+          "the chance of gate cancellation.")
+      .def_static(
+          "round_angles", &Transforms::round_angles,
+          "Rounds angles to the nearest :math:`\\pi / 2^n`."
+          "\n\n:param n: precision parameter, must be >= 0 and < 32",
+          "\n\n:param only_zeros: if True, only round angles less than "
+          ":math:`\\pi / 2^{n+1}` to zero, leave other angles alone (default "
+          "False)",
+          py::arg("n"), py::arg("only_zeros") = false);
   m.def(
       "separate_classical", &Transforms::separate_classical,
       "Separate the input circuit into a 'main' circuit and a classical "
