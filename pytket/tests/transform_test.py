@@ -1067,6 +1067,15 @@ def test_auto_rebase() -> None:
     rebase = auto_rebase_pass({OpType.ZZPhase, OpType.TK1})
     assert rebase.apply(circ)
 
+    circ = get_test_circuit()
+    rebase = auto_rebase_pass({OpType.PhasedX, OpType.Rz, OpType.TK2})
+    assert rebase.apply(circ)
+    assert circ.n_gates_of_type(OpType.TK2) == circ.n_2qb_gates()
+    assert (
+        circ.n_gates_of_type(OpType.Rz) + circ.n_gates_of_type(OpType.PhasedX)
+        == circ.n_1qb_gates()
+    )
+
     with pytest.raises(NoAutoRebase) as cx_err:
         _ = auto_rebase_pass({OpType.CX, OpType.H, OpType.T})
     assert "TK1" in str(cx_err.value)
