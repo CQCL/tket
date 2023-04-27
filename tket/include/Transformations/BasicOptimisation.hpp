@@ -143,6 +143,18 @@ Transform normalise_TK2();
  */
 Transform squash_1qb_to_Rz_PhasedX();
 
+/**
+ * Generate a transform that rounds all angles to the nearest \f$ \pi / 2^n \f$.
+ *
+ * @param n precision to retain in angles
+ * @param only_zeros only set angles smaller than \f$ \pi / 2^{n+1} \f$ to zero
+ *
+ * @pre n < 32
+ *
+ * @return Transform to perform rounding
+ */
+Transform round_angles(unsigned n, bool only_zeros = false);
+
 }  // namespace Transforms
 
 }  // namespace tket

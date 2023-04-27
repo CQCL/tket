@@ -339,6 +339,21 @@ PassPtr PauliSquash(Transforms::PauliSynthStrat strat, CXConfigType cx_config);
 PassPtr GlobalisePhasedX(bool squash = true);
 
 /**
+ * Generate a pass that rounds all angles to the nearest \f$ \pi / 2^n \f$.
+ *
+ * In particular, angles smaller than \f$ \pi / 2^{n+1} \f$ are set to zero;
+ * if a gate is turned into the identity by this operation it is removed.
+ *
+ * @param n precision to retain in angles
+ * @param only_zeros only set angles smaller than \f$ \pi / 2^{n+1} \f$ to zero
+ *
+ * @ pre n < 32
+ *
+ * @return compilation pass that performs rounding
+ */
+PassPtr RoundAngles(unsigned n, bool only_zeros = false);
+
+/**
  * Generate a custom pass
  *
  * @param transform circuit transformation function

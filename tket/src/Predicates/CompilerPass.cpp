@@ -531,6 +531,10 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
           allow_classical ? Transforms::AllowClassical::Yes
                           : Transforms::AllowClassical::No,
           xcirc);
+    } else if (passname == "RoundAngles") {
+      unsigned n = content.at("n").get<unsigned>();
+      bool only_zeros = content.at("only_zeros").get<bool>();
+      pp = RoundAngles(n, only_zeros);
     } else {
       throw JsonError("Cannot load StandardPass of unknown type");
     }
