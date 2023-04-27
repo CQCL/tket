@@ -751,7 +751,7 @@
             ],
             "maxProperties": 3
           }
-        }
+        },
         {
           "if": {
             "properties": {
