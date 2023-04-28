@@ -226,14 +226,13 @@ static void check_correctness(const Circuit &c0, const CompilationUnit &cu) {
   TKET_ASSERT(c0_idx.size() <= c1_idx.size());
   Circuit c0_copy(c0);
   for (const auto &pair : initial_map.left) {
+    TKET_ASSERT(c1_idx.find(pair.second) != c1_idx.end());
     auto it = c0_idx.find(pair.first);
     // qubit not in original circuit => ancilla added
     if (it == c0_idx.end()) {
-      TKET_ASSERT(c1_idx.find(pair.first) != c1_idx.end());
       c0_idx.insert({pair.first, unsigned(c0_idx.size())});
       c0_copy.add_qubit(Qubit(pair.first));
     }
-    TKET_ASSERT(c1_idx.find(pair.second) != c1_idx.end());
     ini.insert({c0_idx[pair.first], c1_idx[pair.second]});
   }
   // all qubits should have been tracked from initial map

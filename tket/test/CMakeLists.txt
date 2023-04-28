@@ -148,6 +148,7 @@ add_executable(test-tket
     src/test_SteinerTree.cpp
     src/test_SteinerForest.cpp
     src/test_wasm.cpp
+    src/test_RoundAngles.cpp
     src/ZX/test_ZXDiagram.cpp
     src/ZX/test_ZXAxioms.cpp
     src/ZX/test_ZXSimp.cpp
@@ -170,6 +171,8 @@ ENDIF()
 install(FILES
             src/test_circuits/lexiroute_circuit.json
             src/test_circuits/lexiroute_circuit_relabel_to_ancilla.json
+            src/test_circuits/bug777_circuit.json
+            src/test_architectures/ibm_montreal.json
         DESTINATION bin)
 
 install(TARGETS test-tket DESTINATION "."

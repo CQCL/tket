@@ -15,11 +15,18 @@ Minor new features:
 * Allow barriers in ``QControlBoxes``. Barriers are left in place.
 * Add ``Circuit.TK1`` and ``Circuit.TK2`` methods that take ``Qubit`` arguments.
 * Expose ``CircuitRenderer`` instance so users can set their own default options.
+* QASM to circuit converters now recognise ``Rxxyyzz`` as ``OpType.TK2``. Circuit
+  to QASM converters with the "hqslib1" header now map ``OpType.TK2`` to ``Rxxyyzz``.
+* Add new transform ``round_angles`` and pass ``RoundAngles`` to remove angles
+  below a threshold and/or round angles to a dyadic fraction of pi throughout a
+  circuit.
 
 Fixes:
 
 * Fix bug in `get_operator_expectation_value()` computation when operator
   includes `Pauli.I` terms.
+* Fix bug in routing code occurring in ``Circuits`` with qubit wires with no operations
+  and some (other or same) qubits pre-labelled as "Node" from the ``Architecture`` being routed to.
 
 1.14.0 (April 2023)
 -------------------

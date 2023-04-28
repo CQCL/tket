@@ -37,6 +37,7 @@ from pytket.passes import (  # type: ignore
     DefaultMappingPass,
     AASRouting,
     SquashCustom,
+    RoundAngles,
 )
 from pytket.mapping import (  # type: ignore
     LexiLabellingMethod,
@@ -267,6 +268,9 @@ TWO_WAY_PARAM_PASSES = {
             "name": "DelayMeasures",
             "allow_partial": False,
         }
+    ),
+    "RoundAngles": standard_pass_dict(
+        {"name": "RoundAngles", "n": 6, "only_zeros": False}
     ),
 }
 
