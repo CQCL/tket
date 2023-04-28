@@ -843,6 +843,7 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(NaivePlacementPass, gen_naive_placement_pass(arc))
   COMPPASSJSONTEST(LinePlacement, gen_placement_pass(la_place))
   COMPPASSJSONTEST(GraphPlacement, gen_placement_pass(ga_place))
+  COMPPASSJSONTEST(RoundAngles, RoundAngles(8, true))
 #undef COMPPASSJSONTEST
   GIVEN("RoutingPass") {
     // Can only be applied to placed circuits

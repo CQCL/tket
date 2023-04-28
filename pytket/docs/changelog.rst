@@ -17,6 +17,9 @@ Minor new features:
 * Expose ``CircuitRenderer`` instance so users can set their own default options.
 * QASM to circuit converters now recognise ``Rxxyyzz`` as ``OpType.TK2``. Circuit
   to QASM converters with the "hqslib1" header now map ``OpType.TK2`` to ``Rxxyyzz``.
+* Add new transform ``round_angles`` and pass ``RoundAngles`` to remove angles
+  below a threshold and/or round angles to a dyadic fraction of pi throughout a
+  circuit.
 
 Fixes:
 

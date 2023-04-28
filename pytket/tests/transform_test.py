@@ -1199,6 +1199,13 @@ def test_KAK_with_ClassicalExpBox() -> None:
     assert not kak.apply(circ)
 
 
+def test_round_angles() -> None:
+    circ0 = Circuit(3).H(0).CRz(0.001, 0, 1).TK2(0.5, 0.499, 0.501, 1, 2)
+    circ1 = Circuit(3).H(0).TK2(0.5, 0.5, 0.5, 1, 2)
+    assert Transform.round_angles(8).apply(circ0)
+    assert circ0 == circ1
+
+
 if __name__ == "__main__":
     test_remove_redundancies()
     test_reduce_singles()

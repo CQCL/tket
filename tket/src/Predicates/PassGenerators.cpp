@@ -822,6 +822,17 @@ PassPtr GlobalisePhasedX(bool squash) {
   return std::make_shared<StandardPass>(precons, t, postcon, j);
 }
 
+PassPtr RoundAngles(unsigned n, bool only_zeros) {
+  Transform t = Transforms::round_angles(n, only_zeros);
+  PredicatePtrMap precons;
+  PostConditions postcons = {{}, {}, Guarantee::Preserve};
+  nlohmann::json j;
+  j["name"] = "RoundAngles";
+  j["n"] = n;
+  j["only_zeros"] = only_zeros;
+  return std::make_shared<StandardPass>(precons, t, postcons, j);
+}
+
 PassPtr CustomPass(
     std::function<Circuit(const Circuit&)> transform,
     const std::string& label) {
