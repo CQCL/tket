@@ -1587,6 +1587,9 @@ Functions</h2></td></tr>
 <tr class="memitem:aeefc21d2bb61add1f89468ef9e61ee3a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#aeefc21d2bb61add1f89468ef9e61ee3a">GlobalisePhasedX</a> (bool squash=true)</td></tr>
 <tr class="memdesc:aeefc21d2bb61add1f89468ef9e61ee3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Turns all PhasedX and NPhasedX gates into global gates.  <a href="namespacetket.html#aeefc21d2bb61add1f89468ef9e61ee3a">More...</a><br /></td></tr>
 <tr class="separator:aeefc21d2bb61add1f89468ef9e61ee3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4bce667f18b0deb5f677969c2b25a080"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a4bce667f18b0deb5f677969c2b25a080">RoundAngles</a> (unsigned n, bool only_zeros=false)</td></tr>
+<tr class="memdesc:a4bce667f18b0deb5f677969c2b25a080"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate a pass that rounds all angles to the nearest \( \pi / 2^n \).  <a href="namespacetket.html#a4bce667f18b0deb5f677969c2b25a080">More...</a><br /></td></tr>
+<tr class="separator:a4bce667f18b0deb5f677969c2b25a080"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af8e20177c8223324c56f7208530f10cd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#af8e20177c8223324c56f7208530f10cd">CustomPass</a> (std::function&lt; <a class="el" href="classtket_1_1Circuit.html">Circuit</a>(const <a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;)&gt; transform, const std::string &amp;label=&quot;&quot;)</td></tr>
 <tr class="memdesc:af8e20177c8223324c56f7208530f10cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generate a custom pass.  <a href="namespacetket.html#af8e20177c8223324c56f7208530f10cd">More...</a><br /></td></tr>
 <tr class="separator:af8e20177c8223324c56f7208530f10cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -6319,7 +6322,7 @@ template&lt;typename T &gt; </div>
 <p>It is the caller's responsibility to provide a valid transform: there are no checks on this.</p>
 <dl class="section return"><dt>Returns</dt><dd>compilation pass that applies the supplied transform </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00825">825</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00836">836</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
@@ -12627,6 +12630,48 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00264">264</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a4bce667f18b0deb5f677969c2b25a080"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4bce667f18b0deb5f677969c2b25a080">&#9670;&nbsp;</a></span>RoundAngles()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a> tket::RoundAngles </td>
+          <td>(</td>
+          <td class="paramtype">unsigned&#160;</td>
+          <td class="paramname"><em>n</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>only_zeros</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Generate a pass that rounds all angles to the nearest \( \pi / 2^n \). </p>
+<p>In particular, angles smaller than \( \pi / 2^{n+1} \) are set to zero; if a gate is turned into the identity by this operation it is removed.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">n</td><td>precision to retain in angles </td></tr>
+    <tr><td class="paramname">only_zeros</td><td>only set angles smaller than \( \pi / 2^{n+1} \) to zero</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>@ pre n &lt; 32</p>
+<dl class="section return"><dt>Returns</dt><dd>compilation pass that performs rounding </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00825">825</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
