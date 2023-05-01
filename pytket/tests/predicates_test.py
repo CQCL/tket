@@ -52,6 +52,7 @@ from pytket.passes import (  # type: ignore
     CnXPairwiseDecomposition,
     RemoveImplicitQubitPermutation,
     FlattenRelabelRegistersPass,
+    RoundAngles,
 )
 from pytket.predicates import (  # type: ignore
     GateSetPredicate,
@@ -862,6 +863,13 @@ def test_flatten_relabel_pass() -> None:
     assert cu.initial_map[Qubit("a", 4)] == Qubit("a", 4)
     assert cu.initial_map[Qubit("b", 7)] == Qubit("a", 1)
     assert cu.circuit.qubits == [Qubit("a", 0), Qubit("a", 1)]
+
+
+def test_round_angles_pass() -> None:
+    c0 = Circuit(2).H(0).TK2(0.001, -0.001, 0.001, 0, 1).Rz(0.50001, 0)
+    c1 = Circuit(2).H(0).Rz(0.50001, 0)
+    assert RoundAngles(8, only_zeros=True).apply(c0)
+    assert c0 == c1
 
 
 if __name__ == "__main__":

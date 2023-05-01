@@ -852,6 +852,15 @@ PYBIND11_MODULE(passes, m) {
       "the chance of gate cancellation");
 
   m.def(
+      "RoundAngles", &RoundAngles,
+      "Round angles to the nearest :math:`\\pi / 2^n`."
+      "\n\n:param n: precision parameter, must be >= 0 and < 32",
+      "\n\n:param only_zeros: if True, only round angles less than "
+      ":math:`\\pi / 2^{n+1}` to zero, leave other angles alone (default "
+      "False)",
+      py::arg("n"), py::arg("only_zeros") = false);
+
+  m.def(
       "RemoveImplicitQubitPermutation", &RemoveImplicitQubitPermutation,
       "Remove any implicit qubit permutation by appending SWAP gates."
       "\n\n"

@@ -162,7 +162,8 @@
             "ContextSimp",
             "DecomposeTK2",
             "CnXPairwiseDecomposition",
-            "RemoveImplicitQubitPermutation"
+            "RemoveImplicitQubitPermutation",
+            "RoundAngles"
           ],
           "description": "The name of the compiler pass. Matches the name of the pytket method used to generate it. List all the passes as enum."
         },
@@ -307,6 +308,14 @@
               "maximum": 1
             }
           }
+        },
+        "n": {
+          "type": "integer",
+          "description": "Level of precision applied in \"RoundAngles\"."
+        },
+        "only_zeros": {
+          "type": "boolean",
+          "description": "Whether to restrict \"RoundAngles\" to rounding to zero."
         }
       },
       "required": [
@@ -725,6 +734,22 @@
               "allow_partial"
             ],
             "maxProperties": 2
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "name": {
+                "const": "RoundAngles"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "n",
+              "only_zeros"
+            ],
+            "maxProperties": 3
           }
         },
         {

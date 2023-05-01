@@ -1306,8 +1306,9 @@ SCENARIO("Initial map should contain all data qubits") {
          std::make_shared<LexiRouteRoutingMethod>()},
         maps);
     for (auto q : circ.all_qubits()) {
-      REQUIRE(maps->initial.left.find(q) != maps->initial.left.end());
-      REQUIRE(maps->final.left.find(q) != maps->final.left.end());
+      // circuit is labeled with physical nodes
+      REQUIRE(maps->initial.right.find(q) != maps->initial.right.end());
+      REQUIRE(maps->final.right.find(q) != maps->final.right.end());
     }
     REQUIRE(check_permutation(circ, maps));
   }
@@ -1347,8 +1348,8 @@ SCENARIO("Initial map should contain all data qubits") {
          std::make_shared<LexiRouteRoutingMethod>()},
         maps);
     for (auto q : circ.all_qubits()) {
-      REQUIRE(maps->initial.left.find(q) != maps->initial.left.end());
-      REQUIRE(maps->final.left.find(q) != maps->final.left.end());
+      REQUIRE(maps->initial.right.find(q) != maps->initial.right.end());
+      REQUIRE(maps->final.right.find(q) != maps->final.right.end());
     }
     REQUIRE(check_permutation(circ, maps));
 
@@ -1413,8 +1414,8 @@ SCENARIO("Initial map should contain all data qubits") {
          std::make_shared<LexiRouteRoutingMethod>()},
         maps);
     for (auto q : circ.all_qubits()) {
-      REQUIRE(maps->initial.left.find(q) != maps->initial.left.end());
-      REQUIRE(maps->final.left.find(q) != maps->final.left.end());
+      REQUIRE(maps->initial.right.find(q) != maps->initial.right.end());
+      REQUIRE(maps->final.right.find(q) != maps->final.right.end());
     }
     REQUIRE(check_permutation(circ, maps));
 
@@ -1503,8 +1504,8 @@ SCENARIO("Initial map should contain all data qubits") {
         maps);
 
     for (auto q : circ.all_qubits()) {
-      REQUIRE(maps->initial.left.find(q) != maps->initial.left.end());
-      REQUIRE(maps->final.left.find(q) != maps->final.left.end());
+      REQUIRE(maps->initial.right.find(q) != maps->initial.right.end());
+      REQUIRE(maps->final.right.find(q) != maps->final.right.end());
     }
     REQUIRE(check_permutation(circ, maps));
 
@@ -1880,8 +1881,8 @@ SCENARIO(
 
     auto init_map = cu.get_initial_map_ref();
     auto final_map = cu.get_final_map_ref();
+
     REQUIRE(init_map.left.find(Node(6))->second == Node(6));
-    REQUIRE(init_map.left.find(Node(18))->second == Node(18));
     REQUIRE(init_map.left.find(Node(19))->second == Node(19));
     REQUIRE(init_map.left.find(Qubit(2))->second == Node(5));
     REQUIRE(init_map.left.find(Qubit(3))->second == Node(4));
@@ -1901,9 +1902,11 @@ SCENARIO(
     REQUIRE(init_map.left.find(Qubit(17))->second == Node(13));
     REQUIRE(init_map.left.find(Qubit(18))->second == Node(14));
     REQUIRE(init_map.left.find(Qubit(19))->second == Node(20));
+    REQUIRE(
+        init_map.left.find(Qubit(q_routing_ancilla_reg(), 0))->second ==
+        Node(18));
 
     REQUIRE(final_map.left.find(Node(6))->second == Node(7));
-    REQUIRE(final_map.left.find(Node(18))->second == Node(19));
     REQUIRE(final_map.left.find(Node(19))->second == Node(6));
     REQUIRE(final_map.left.find(Qubit(2))->second == Node(4));
     REQUIRE(final_map.left.find(Qubit(3))->second == Node(5));
@@ -1923,6 +1926,12 @@ SCENARIO(
     REQUIRE(final_map.left.find(Qubit(17))->second == Node(14));
     REQUIRE(final_map.left.find(Qubit(18))->second == Node(15));
     REQUIRE(final_map.left.find(Qubit(19))->second == Node(20));
+    REQUIRE(
+        final_map.left.find(Qubit(q_routing_ancilla_reg(), 0))->second ==
+        Node(19));
+    unit_bimaps_t maps = {init_map, final_map};
+    REQUIRE(check_permutation(
+        cu.get_circ_ref(), std::make_shared<unit_bimaps_t>(maps)));
   }
   GIVEN("Line Architecture, two reassignments, more gates.") {
     unsigned n_nodes = 30;
@@ -1972,7 +1981,6 @@ SCENARIO(
     auto final_map = cu.get_final_map_ref();
 
     REQUIRE(init_map.left.find(Node(14))->second == Node(14));
-    REQUIRE(init_map.left.find(Node(28))->second == Node(28));
     REQUIRE(init_map.left.find(Node(29))->second == Node(29));
     REQUIRE(init_map.left.find(Qubit(0))->second == Node(0));
     REQUIRE(init_map.left.find(Qubit(1))->second == Node(1));
@@ -2002,9 +2010,11 @@ SCENARIO(
     REQUIRE(init_map.left.find(Qubit(27))->second == Node(23));
     REQUIRE(init_map.left.find(Qubit(28))->second == Node(24));
     REQUIRE(init_map.left.find(Qubit(29))->second == Node(30));
+    REQUIRE(
+        init_map.left.find(Qubit(q_routing_ancilla_reg(), 0))->second ==
+        Node(28));
 
     REQUIRE(final_map.left.find(Node(14))->second == Node(15));
-    REQUIRE(final_map.left.find(Node(28))->second == Node(29));
     REQUIRE(final_map.left.find(Node(29))->second == Node(14));
     REQUIRE(final_map.left.find(Qubit(0))->second == Node(0));
     REQUIRE(final_map.left.find(Qubit(1))->second == Node(1));
@@ -2034,6 +2044,12 @@ SCENARIO(
     REQUIRE(final_map.left.find(Qubit(27))->second == Node(24));
     REQUIRE(final_map.left.find(Qubit(28))->second == Node(25));
     REQUIRE(final_map.left.find(Qubit(29))->second == Node(30));
+    REQUIRE(
+        final_map.left.find(Qubit(q_routing_ancilla_reg(), 0))->second ==
+        Node(29));
+    unit_bimaps_t maps = {init_map, final_map};
+    REQUIRE(check_permutation(
+        cu.get_circ_ref(), std::make_shared<unit_bimaps_t>(maps)));
   }
 
   GIVEN(
@@ -2095,7 +2111,6 @@ SCENARIO(
     auto final_map = cu.get_final_map_ref();
 
     REQUIRE(init_map.left.find(Node(1))->second == Node(1));
-    REQUIRE(init_map.left.find(Node(6))->second == Node(6));
     REQUIRE(init_map.left.find(Node(7))->second == Node(7));
     REQUIRE(init_map.left.find(Node(8))->second == Node(8));
     REQUIRE(init_map.left.find(Node(10))->second == Node(10));
@@ -2110,9 +2125,11 @@ SCENARIO(
     REQUIRE(init_map.left.find(Qubit(12))->second == Node(11));
     REQUIRE(init_map.left.find(Qubit(13))->second == Node(12));
     REQUIRE(init_map.left.find(Qubit(14))->second == Node(14));
+    REQUIRE(
+        init_map.left.find(Qubit(q_routing_ancilla_reg(), 2))->second ==
+        Node(6));
 
     REQUIRE(final_map.left.find(Node(1))->second == Node(5));
-    REQUIRE(final_map.left.find(Node(6))->second == Node(3));
     REQUIRE(final_map.left.find(Node(7))->second == Node(7));
     REQUIRE(final_map.left.find(Node(8))->second == Node(10));
     REQUIRE(final_map.left.find(Node(10))->second == Node(9));
@@ -2127,6 +2144,12 @@ SCENARIO(
     REQUIRE(final_map.left.find(Qubit(12))->second == Node(13));
     REQUIRE(final_map.left.find(Qubit(13))->second == Node(14));
     REQUIRE(final_map.left.find(Qubit(14))->second == Node(15));
+    REQUIRE(
+        final_map.left.find(Qubit(q_routing_ancilla_reg(), 2))->second ==
+        Node(3));
+    unit_bimaps_t maps = {init_map, final_map};
+    REQUIRE(check_permutation(
+        cu.get_circ_ref(), std::make_shared<unit_bimaps_t>(maps)));
   }
   GIVEN("Known failing case from json file, 14 qubit architecture.") {
     std::vector<std::pair<unsigned, unsigned>> coupling_map = {
@@ -2197,6 +2220,9 @@ SCENARIO(
     REQUIRE(final_map.left.find(Node("unplaced", 7))->second == Node(4));
     REQUIRE(final_map.left.find(Node("unplaced", 8))->second == Node(5));
     REQUIRE(final_map.left.find(Node("unplaced", 9))->second == Node(13));
+    unit_bimaps_t maps = {init_map, final_map};
+    REQUIRE(check_permutation(
+        cu.get_circ_ref(), std::make_shared<unit_bimaps_t>(maps)));
   }
   GIVEN("Twenty qubit Circuit, Twenty Seven Qubit architecture.") {
     Circuit circuit(20);
@@ -2285,6 +2311,57 @@ SCENARIO(
     REQUIRE(final_map.left.find(Qubit(17))->second == Node(10));
     REQUIRE(final_map.left.find(Qubit(18))->second == Node(7));
     REQUIRE(final_map.left.find(Qubit(19))->second == Node(12));
+    unit_bimaps_t maps = {init_map, final_map};
+    REQUIRE(check_permutation(
+        cu.get_circ_ref(), std::make_shared<unit_bimaps_t>(maps)));
   }
+}
+SCENARIO("Lexi route produces incorrect bimaps") {
+  // segfault Github #777
+  std::ifstream arch_file("ibm_montreal.json");
+  nlohmann::json j_arch = nlohmann::json::parse(arch_file);
+  auto arch = j_arch.get<Architecture>();
+  std::ifstream circ_file("bug777_circuit.json");
+  nlohmann::json j_circ = nlohmann::json::parse(circ_file);
+  auto circ = j_circ.get<Circuit>();
+  std::map<Qubit, Node> p_map = {
+      {Node(0), Node(5)},
+      {Node(1), Node(8)},
+      {Node(2), Node("unplaced", 0)},
+      {Node(3), Node(16)},
+      {Node(4), Node(3)},
+      {Node(5), Node("unplaced", 1)},
+      {Node(6), Node("unplaced", 2)},
+      {Node(7), Node("unplaced", 3)},
+      {Node(8), Node("unplaced", 4)},
+      {Node(9), Node("unplaced", 5)},
+      {Node(10), Node("unplaced", 6)},
+      {Node(11), Node(25)},
+      {Node(12), Node("unplaced", 7)},
+      {Node(13), Node(14)},
+      {Node(14), Node("unplaced", 8)},
+      {Node(15), Node(19)},
+      {Node(16), Node(24)},
+      {Node(17), Node("unplaced", 9)},
+      {Node(18), Node("unplaced", 10)},
+      {Node(19), Node(2)},
+      {Node(20), Node(1)},
+      {Node(21), Node(22)},
+      {Node(22), Node(11)},
+      {Node(23), Node("unplaced", 11)},
+      {Node(24), Node("unplaced", 12)},
+      {Node(25), Node("unplaced", 13)},
+      {Node(26), Node("unplaced", 14)}};
+  MappingManager mm(std::make_shared<Architecture>(arch));
+  std::shared_ptr<unit_bimaps_t> maps = std::make_shared<unit_bimaps_t>();
+  for (auto it : p_map) {
+    maps->initial.insert({it.first, it.second});
+    maps->final.insert({it.first, it.second});
+  }
+  std::vector<RoutingMethodPtr> config = {
+      std::make_shared<LexiLabellingMethod>(),
+      std::make_shared<LexiRouteRoutingMethod>()};
+  REQUIRE(mm.route_circuit_with_maps(circ, config, maps));
+  REQUIRE(check_permutation(circ, maps));
 }
 }  // namespace tket
