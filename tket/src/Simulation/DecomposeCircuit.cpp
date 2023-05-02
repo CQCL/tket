@@ -19,6 +19,7 @@
 
 #include "Circuit/Boxes.hpp"
 #include "Circuit/Circuit.hpp"
+#include "Circuit/PauliExpBoxes.hpp"
 #include "Gate/Gate.hpp"
 #include "Gate/GateUnitaryMatrix.hpp"
 #include "Gate/GateUnitaryMatrixError.hpp"

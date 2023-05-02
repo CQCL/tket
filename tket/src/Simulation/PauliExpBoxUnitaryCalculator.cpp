@@ -17,7 +17,7 @@
 #include <algorithm>
 #include <tkassert/Assert.hpp>
 
-#include "Circuit/Boxes.hpp"
+#include "Circuit/PauliExpBoxes.hpp"
 #include "Utils/PauliStrings.hpp"
 
 namespace tket {

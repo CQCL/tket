@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "Circuit/Boxes.hpp"
+#include "Circuit/PauliExpBoxes.hpp"
 #include "Converters/Converters.hpp"
 #include "Converters/PauliGadget.hpp"
 #include "Converters/PhasePoly.hpp"
