@@ -15,16 +15,27 @@
 """Collection of methods to evaluate a ZXDiagram to a tensor. This uses the
 numpy tensor features, in particular the einsum evaluation and optimisations."""
 from typing import Dict, List, Any
-from math import floor, pi, sqrt
+from math import floor, pi, sqrt, cos, sin
 import sympy  # type: ignore
 import numpy as np
-from pytket.zx import ZXDiagram, ZXType, ZXVert, PhasedGen, QuantumType, Rewrite  # type: ignore
+from pytket.zx import ZXDiagram, ZXType, ZXVert, ZXGen, PhasedGen, CliffordGen, DirectedGen, QuantumType, Rewrite  # type: ignore
 
 try:
     import quimb.tensor as qtn  # type: ignore
 except ModuleNotFoundError as err:
     err.msg = 'Missing package for tensor evaluation of ZX diagrams. Run "pip install quimb" and try again.'
     raise err
+
+
+def _gen_to_tensor(gen: ZXGen, rank: int) -> np.ndarray:
+    if isinstance(gen, PhasedGen):
+        return _spider_to_tensor(gen, rank)
+    elif isinstance(gen, CliffordGen):
+        return _clifford_to_tensor(gen, rank)
+    elif isinstance(gen, DirectedGen):
+        return _dir_gen_to_tensor(gen)
+    else:
+        raise ValueError(f"Cannot convert generator of type {gen.type} to a tensor")
 
 
 def _spider_to_tensor(gen: PhasedGen, rank: int) -> np.ndarray:
@@ -59,10 +70,66 @@ def _spider_to_tensor(gen: PhasedGen, rank: int) -> np.ndarray:
     elif gen.type == ZXType.Hbox:
         t = np.full(size, 1.0, dtype=complex)
         t[size - 1] = param_c
+    elif gen.type == ZXType.XY:
+        x = param / 2.0
+        modval = 2.0 * (x - floor(x))
+        phase = np.exp(-1j * modval * pi)
+        t = np.zeros(size, dtype=complex)
+        t[0] = sqrt(0.5)
+        t[size - 1] = sqrt(0.5) * phase
+    elif gen.type == ZXType.XZ:
+        x = param / 2.0
+        modval = x - floor(x)
+        t = np.zeros(size, dtype=complex)
+        t[0] = cos(modval * pi)
+        t[size - 1] = sin(modval * pi)
+    elif gen.type == ZXType.YZ:
+        x = param / 2.0
+        modval = x - floor(x)
+        t = np.zeros(size, dtype=complex)
+        t[0] = cos(modval * pi)
+        t[size - 1] = -1j * sin(modval * pi)
     else:
-        raise ValueError(f"Cannot convert generator of type {gen.type} to a tensor")
+        raise ValueError(
+            f"Cannot convert phased generator of type {gen.type} to a tensor"
+        )
     t = t.reshape(tuple([2] * rank))
     return t
+
+
+def _clifford_to_tensor(gen: CliffordGen, rank: int) -> np.ndarray:
+    size = pow(2, rank)
+    t = np.zeros(size, dtype=complex)
+    if gen.type == ZXType.PX:
+        t[0] = sqrt(0.5)
+        t[size - 1] = -sqrt(0.5) if gen.param else sqrt(0.5)
+    elif gen.type == ZXType.PY:
+        t[0] = sqrt(0.5)
+        t[size - 1] = 1j * sqrt(0.5) if gen.param else -1j * sqrt(0.5)
+    elif gen.type == ZXType.PZ:
+        if gen.param:
+            t[size - 1] = 1.0
+        else:
+            t[0] = 1.0
+    else:
+        raise ValueError(
+            f"Cannot convert Clifford generator of type {gen.type} to a tensor"
+        )
+    t = t.reshape(tuple([2] * rank))
+    return t
+
+
+def _dir_gen_to_tensor(gen: DirectedGen) -> np.ndarray:
+    if gen.type == ZXType.Triangle:
+        t = np.ones((2, 2), dtype=complex)
+        t[1, 0] = 0.0
+        return t
+    elif gen.type == ZXType.ZXBox:
+        return _tensor_from_basic_diagram(gen.diagram)
+    else:
+        raise ValueError(
+            f"Cannot convert directed generator of type {gen.type} to a tensor"
+        )
 
 
 _id_tensor = np.asarray([[1, 0], [0, 1]], dtype=complex)
@@ -112,7 +179,7 @@ def _tensor_from_basic_diagram(diag: ZXDiagram) -> np.ndarray:
             v_ind.append(indices[w])
             if diag.other_end(w, v) == v:
                 v_ind.append(indices[w])
-        t = _spider_to_tensor(gen, len(v_ind))
+        t = _gen_to_tensor(gen, len(v_ind))
         qt = qtn.Tensor(data=t, inds=v_ind)
         tensor_list.append(qt)
     net = qtn.TensorNetwork(tensor_list)

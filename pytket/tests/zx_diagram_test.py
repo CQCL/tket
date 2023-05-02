@@ -686,6 +686,20 @@ def test_constructors() -> None:
     assert zx_box.diagram.scalar == diag.scalar
 
 
+def joint_normalise_tensor(
+    a: np.ndarray, b: np.ndarray
+) -> Tuple[np.ndarray, np.ndarray]:
+    a_linear = a.reshape((a.size))
+    b_linear = b.reshape((b.size))
+    max_i = 0
+    max_val = 0
+    for i in range(a.size):
+        if abs(a_linear[i]) > max_val:
+            max_i = i
+            max_val = abs(a_linear[i])
+    return (a * (1 / a_linear[max_i]), b * (1 / b_linear[max_i]))
+
+
 @pytest.mark.skipif(not have_quimb, reason="quimb not installed")
 def test_XY_extraction() -> None:
     # Identical to the diagram in test_ZXExtraction.cpp
@@ -721,10 +735,9 @@ def test_XY_extraction() -> None:
     diag.add_wire(o0, outs[0])
     diag.add_wire(o1, outs[1])
     diag.add_wire(o2, outs[2])
+    diag.check_validity()
     circ, _ = diag.to_circuit()
     assert circ.n_qubits == 3
-    Rewrite.rebase_to_zx().apply(diag)
-    diag.check_validity()
     diag_u = unitary_from_quantum_diagram(diag)
     circ_u = circ.get_unitary()
     assert compare_unitaries(diag_u, circ_u)
@@ -812,10 +825,9 @@ def test_XY_YZ_extraction() -> None:
     diag.add_wire(o2ext, outs[2])
     diag.add_wire(o3, outs[3])
     diag.add_wire(o4ext, outs[4])
+    diag.check_validity()
     circ, _ = diag.to_circuit()
     assert circ.n_qubits == 5
-    Rewrite.rebase_to_zx().apply(diag)
-    diag.check_validity()
     diag_u = unitary_from_quantum_diagram(diag)
     circ_u = circ.get_unitary()
     assert compare_unitaries(diag_u, circ_u)
@@ -849,6 +861,7 @@ def test_ZX_rebase() -> None:
     diag.add_wire(h1, h1)
     diag.add_wire(h1, outs[1], ZXWireType.Basic, QuantumType.Classical)
     diag.check_validity()
+    t0 = tensor_from_mixed_diagram(diag)
 
     # Rebasing to ZX
     Rewrite.rebase_to_zx().apply(diag)
@@ -862,7 +875,9 @@ def test_ZX_rebase() -> None:
     assert diag.count_vertices(ZXType.PZ) == 0
     assert diag.count_vertices(ZXType.Triangle) == 0
     assert diag.count_vertices(ZXType.ZXBox) == 0
-    tensor = tensor_from_mixed_diagram(diag)
+    t1 = tensor_from_mixed_diagram(diag)
+    (t0, t1) = joint_normalise_tensor(t0, t1)
+    assert np.allclose(t0, t1)
 
     # Rebasing to MBQC
     Rewrite.rebase_to_mbqc().apply(diag)
@@ -872,33 +887,21 @@ def test_ZX_rebase() -> None:
     assert diag.count_vertices(ZXType.XSpider) == 0
     assert diag.count_vertices(ZXType.Triangle) == 0
     assert diag.count_vertices(ZXType.ZXBox) == 0
-
-    Rewrite.rebase_to_zx().apply(diag)
     t2 = tensor_from_mixed_diagram(diag)
-    t2 = t2 * (tensor[-1, -1] / t2[-1, -1])
-    assert np.allclose(tensor, t2)
-
-
-def joint_normalise(a: np.ndarray, b: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
-    max_i = 0
-    max_val = 0
-    for i in range(a.shape[1]):
-        if abs(a[0, i]) > max_val:
-            max_i = i
-            max_val = abs(a[0, i])
-    return (a * (1 / a[0, max_i]), b * (1 / b[0, max_i]))
+    (t0, t2) = joint_normalise_tensor(t0, t2)
+    assert np.allclose(t0, t2)
 
 
 @pytest.mark.skipif(not have_quimb, reason="quimb not installed")
 def test_internalise_gadgets() -> None:
-    for (axis_basis, axis_angle) in [
+    for axis_basis, axis_angle in [
         (ZXType.XY, 0.25),
         (ZXType.PX, False),
         (ZXType.PX, True),
         (ZXType.PY, False),
         (ZXType.PY, True),
     ]:
-        for (gadget_basis, gadget_angle) in [
+        for gadget_basis, gadget_angle in [
             (ZXType.XY, 0.25),
             (ZXType.XZ, 0.25),
             (ZXType.YZ, 0.25),
@@ -921,17 +924,14 @@ def test_internalise_gadgets() -> None:
             diag.add_wire(axis, out_v, ZXWireType.H)
             diag.add_wire(out_v, outs[0])
             diag.add_wire(axis, gadget, ZXWireType.H)
-            test_diag = ZXDiagram(diag)
-            Rewrite.rebase_to_zx().apply(test_diag)
-            t = tensor_from_quantum_diagram(test_diag)
+            t = tensor_from_quantum_diagram(diag)
             Rewrite.internalise_gadgets().apply(diag)
             if (axis_basis == ZXType.XY) and (gadget_basis in [ZXType.XY, ZXType.XZ]):
                 assert diag.n_vertices == 6
             else:
                 assert diag.n_vertices == 5
-            Rewrite.rebase_to_zx().apply(diag)
             t2 = tensor_from_quantum_diagram(diag)
-            (t, t2) = joint_normalise(t, t2)
+            (t, t2) = joint_normalise_tensor(t, t2)
             assert np.allclose(t, t2)
 
 
