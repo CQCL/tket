@@ -79,12 +79,13 @@ class Flow {
 
   friend Circuit tket::zx_to_circuit(const zx::ZXDiagram& diag);
 
- private:
+  // Internal state is public so binders can expose maps for easy iteration
   // Correction sets
   std::map<ZXVert, ZXVertSeqSet> c_;
   // Approximate the partial order by recording the depth from outputs
   std::map<ZXVert, unsigned> d_;
 
+ private:
   // Solve for corrections using Gaussian elimination and back substitution
   // Used within identify_pauli_flow
   // correctors are those vertices which may be included in the correction sets
