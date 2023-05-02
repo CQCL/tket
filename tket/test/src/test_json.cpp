@@ -19,6 +19,7 @@
 #include "Architecture/Architecture.hpp"
 #include "Circuit/CircPool.hpp"
 #include "Circuit/CircUtils.hpp"
+#include "Circuit/PauliExpBoxes.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Circuit/Command.hpp"
 #include "Circuit/DiagonalBox.hpp"

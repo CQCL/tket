@@ -17,6 +17,7 @@
 
 #include "../testutil.hpp"
 #include "Circuit/Boxes.hpp"
+#include "Circuit/PauliExpBoxes.hpp"
 #include "Circuit/CircUtils.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Converters/PhasePoly.hpp"

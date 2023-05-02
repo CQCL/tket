@@ -15,6 +15,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "Circuit/Boxes.hpp"
+#include "Circuit/PauliExpBoxes.hpp"
 #include "CircuitsForTesting.hpp"
 #include "Converters/Converters.hpp"
 #include "Converters/PauliGadget.hpp"

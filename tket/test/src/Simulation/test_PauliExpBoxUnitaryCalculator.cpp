@@ -16,6 +16,7 @@
 #include <stack>
 
 #include "Circuit/Boxes.hpp"
+#include "Circuit/PauliExpBoxes.hpp"
 #include "Gate/GateUnitaryMatrix.hpp"
 #include "Simulation/PauliExpBoxUnitaryCalculator.hpp"
 

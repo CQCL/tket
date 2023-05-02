@@ -20,6 +20,7 @@
 #include "Circuit/CircPool.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Circuit/Command.hpp"
+#include "Circuit/PauliExpBoxes.hpp"
 #include "Mapping/LexiLabelling.hpp"
 #include "Mapping/LexiRoute.hpp"
 #include "OpType/OpType.hpp"
