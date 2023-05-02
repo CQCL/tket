@@ -18,7 +18,7 @@ from typing import Dict, List, Any
 from math import floor, pi, sqrt, cos, sin
 import sympy  # type: ignore
 import numpy as np
-from pytket.zx import ZXDiagram, ZXType, ZXVert, ZXGen, PhasedGen, CliffordGen, DirectedGen, QuantumType, Rewrite  # type: ignore
+from pytket.zx import ZXDiagram, ZXType, ZXVert, ZXGen, PhasedGen, CliffordGen, DirectedGen, ZXBox, QuantumType, Rewrite  # type: ignore
 
 try:
     import quimb.tensor as qtn  # type: ignore
@@ -34,6 +34,8 @@ def _gen_to_tensor(gen: ZXGen, rank: int) -> np.ndarray:
         return _clifford_to_tensor(gen, rank)
     elif isinstance(gen, DirectedGen):
         return _dir_gen_to_tensor(gen)
+    elif isinstance(gen, ZXBox):
+        return _tensor_from_basic_diagram(gen.diagram)
     else:
         raise ValueError(f"Cannot convert generator of type {gen.type} to a tensor")
 
@@ -124,8 +126,6 @@ def _dir_gen_to_tensor(gen: DirectedGen) -> np.ndarray:
         t = np.ones((2, 2), dtype=complex)
         t[1, 0] = 0.0
         return t
-    elif gen.type == ZXType.ZXBox:
-        return _tensor_from_basic_diagram(gen.diagram)
     else:
         raise ValueError(
             f"Cannot convert directed generator of type {gen.type} to a tensor"
