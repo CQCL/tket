@@ -15,6 +15,8 @@
 cmake_minimum_required(VERSION 3.23)
 project(tkassert CXX)
 
+list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake)
+
 find_package(tklog CONFIG REQUIRED)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -54,7 +56,9 @@ IF (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     ENDIF()
 ENDIF()
 
-target_include_directories(tkassert PUBLIC include/tkassert)
+target_include_directories(tkassert PUBLIC
+    $<INSTALL_INTERFACE:include/tkassert>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tkassert>)
 target_link_libraries(tkassert PRIVATE tklog::tklog)
 
 target_sources(tkassert
@@ -63,7 +67,12 @@ target_sources(tkassert
     BASE_DIRS ${PROJECT_SOURCE_DIR}/include
     FILES include/tkassert/Assert.hpp include/tkassert/AssertMessage.hpp)
 
-install(TARGETS tkassert FILE_SET HEADERS)
+include(GNUInstallDirs)
+set(INSTALL_CONFIGDIR ${CMAKE_INSTALL_LIBDIR}/cmake/tkassert)
+
+install(TARGETS tkassert
+    EXPORT tkassert-targets
+    FILE_SET HEADERS)
 
 if(MSVC)
     install(TARGETS tkassert
@@ -72,3 +81,27 @@ if(MSVC)
         ARCHIVE DESTINATION lib
         LIBRARY DESTINATION lib)
 endif()
+
+install(EXPORT tkassert-targets
+    FILE tkassertTargets.cmake
+    NAMESPACE tkassert::
+    DESTINATION ${INSTALL_CONFIGDIR}
+)
+
+include(CMakePackageConfigHelpers)
+
+configure_package_config_file(${CMAKE_CURRENT_LIST_DIR}/cmake/tkassertConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/tkassertConfig.cmake
+    INSTALL_DESTINATION ${INSTALL_CONFIGDIR}
+)
+
+install(FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/tkassertConfig.cmake
+    DESTINATION ${INSTALL_CONFIGDIR}
+)
+
+export(EXPORT tkassert-targets
+    FILE ${CMAKE_CURRENT_BINARY_DIR}/tkassertTargets.cmake
+    NAMESPACE tkassert::)
+
+export(PACKAGE tkassert)

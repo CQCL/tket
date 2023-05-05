@@ -15,6 +15,8 @@
 cmake_minimum_required(VERSION 3.23)
 project(tkrng CXX)
 
+list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake)
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -52,7 +54,9 @@ IF (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     ENDIF()
 ENDIF()
 
-target_include_directories(tkrng PUBLIC include/tkrng)
+target_include_directories(tkrng PUBLIC
+    $<INSTALL_INTERFACE:include/tkrng>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tkrng>)
 
 target_sources(tkrng
     PRIVATE src/RNG.cpp
@@ -60,7 +64,12 @@ target_sources(tkrng
     BASE_DIRS ${PROJECT_SOURCE_DIR}/include
     FILES include/tkrng/RNG.hpp)
 
-install(TARGETS tkrng FILE_SET HEADERS)
+include(GNUInstallDirs)
+set(INSTALL_CONFIGDIR ${CMAKE_INSTALL_LIBDIR}/cmake/tkrng)
+
+install(TARGETS tkrng
+    EXPORT tkrng-targets
+    FILE_SET HEADERS)
 
 if(MSVC)
     install(TARGETS tkrng
@@ -69,3 +78,27 @@ if(MSVC)
         ARCHIVE DESTINATION lib
         LIBRARY DESTINATION lib)
 endif()
+
+install(EXPORT tkrng-targets
+    FILE tkrngTargets.cmake
+    NAMESPACE tkrng::
+    DESTINATION ${INSTALL_CONFIGDIR}
+)
+
+include(CMakePackageConfigHelpers)
+
+configure_package_config_file(${CMAKE_CURRENT_LIST_DIR}/cmake/tkrngConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/tkrngConfig.cmake
+    INSTALL_DESTINATION ${INSTALL_CONFIGDIR}
+)
+
+install(FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/tkrngConfig.cmake
+    DESTINATION ${INSTALL_CONFIGDIR}
+)
+
+export(EXPORT tkrng-targets
+    FILE ${CMAKE_CURRENT_BINARY_DIR}/tkrngTargets.cmake
+    NAMESPACE tkrng::)
+
+export(PACKAGE tkrng)

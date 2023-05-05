@@ -31,7 +31,7 @@ class TkrngConan(ConanFile):
         "profile_coverage": [True, False],
     }
     default_options = {"shared": False, "fPIC": True, "profile_coverage": False}
-    exports_sources = "CMakeLists.txt", "src/*", "include/*"
+    exports_sources = "CMakeLists.txt", "cmake/*", "src/*", "include/*"
 
     def config_options(self):
         if self.settings.os == "Windows":
