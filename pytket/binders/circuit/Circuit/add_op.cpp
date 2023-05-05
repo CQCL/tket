@@ -618,6 +618,18 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n:return: the new :py:class:`Circuit`",
           py::arg("box"), py::arg("args"))
       .def(
+          "add_multiplexor",
+          [](Circuit *circ, const MultiplexorBox &box,
+             const std::vector<unsigned> &args, const py::kwargs &kwargs) {
+            return add_box_method(
+                circ, std::make_shared<MultiplexorBox>(box), args, kwargs);
+          },
+          "Append a :py:class:`MultiplexorBox` to the circuit.\n\n"
+          ":param box: The box to append\n"
+          ":param args: Indices of the qubits to append the box to"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("box"), py::arg("args"))
+      .def(
           "add_multiplexedrotation",
           [](Circuit *circ, const MultiplexedRotationBox &box,
              const unit_vector_t &args, const py::kwargs &kwargs) {
@@ -631,6 +643,19 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n:return: the new :py:class:`Circuit`",
           py::arg("box"), py::arg("args"))
       .def(
+          "add_multiplexedrotation",
+          [](Circuit *circ, const MultiplexedRotationBox &box,
+             const std::vector<unsigned> &args, const py::kwargs &kwargs) {
+            return add_box_method(
+                circ, std::make_shared<MultiplexedRotationBox>(box), args,
+                kwargs);
+          },
+          "Append a :py:class:`MultiplexedRotationBox` to the circuit.\n\n"
+          ":param box: The box to append\n"
+          ":param args: Indices of the qubits to append the box to"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("box"), py::arg("args"))
+      .def(
           "add_multiplexedu2",
           [](Circuit *circ, const MultiplexedU2Box &box,
              const unit_vector_t &args, const py::kwargs &kwargs) {
@@ -640,6 +665,18 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "Append a :py:class:`MultiplexedU2Box` to the circuit.\n\n"
           ":param box: The box to append\n"
           ":param args: The qubits to append the box to"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("box"), py::arg("args"))
+      .def(
+          "add_multiplexedu2",
+          [](Circuit *circ, const MultiplexedU2Box &box,
+             const std::vector<unsigned> &args, const py::kwargs &kwargs) {
+            return add_box_method(
+                circ, std::make_shared<MultiplexedU2Box>(box), args, kwargs);
+          },
+          "Append a :py:class:`MultiplexedU2Box` to the circuit.\n\n"
+          ":param box: The box to append\n"
+          ":param args: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
           py::arg("box"), py::arg("args"))
       .def(
@@ -656,6 +693,19 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n:return: the new :py:class:`Circuit`",
           py::arg("box"), py::arg("args"))
       .def(
+          "add_multiplexed_tensored_u2",
+          [](Circuit *circ, const MultiplexedTensoredU2Box &box,
+             const std::vector<unsigned> &args, const py::kwargs &kwargs) {
+            return add_box_method(
+                circ, std::make_shared<MultiplexedTensoredU2Box>(box), args,
+                kwargs);
+          },
+          "Append a :py:class:`MultiplexedTensoredU2Box` to the circuit.\n\n"
+          ":param box: The box to append\n"
+          ":param args: Indices of the qubits to append the box to"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("box"), py::arg("args"))
+      .def(
           "add_state_preparation_box",
           [](Circuit *circ, const StatePreparationBox &box,
              const unit_vector_t &args, const py::kwargs &kwargs) {
@@ -668,6 +718,18 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n:return: the new :py:class:`Circuit`",
           py::arg("box"), py::arg("args"))
       .def(
+          "add_state_preparation_box",
+          [](Circuit *circ, const StatePreparationBox &box,
+             const std::vector<unsigned> &args, const py::kwargs &kwargs) {
+            return add_box_method(
+                circ, std::make_shared<StatePreparationBox>(box), args, kwargs);
+          },
+          "Append a :py:class:`StatePreparationBox` to the circuit.\n\n"
+          ":param box: The box to append\n"
+          ":param args: Indices of the qubits to append the box to"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("box"), py::arg("args"))
+      .def(
           "add_diagonal_box",
           [](Circuit *circ, const DiagonalBox &box, const unit_vector_t &args,
              const py::kwargs &kwargs) {
@@ -677,6 +739,18 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "Append a :py:class:`DiagonalBox` to the circuit.\n\n"
           ":param box: The box to append\n"
           ":param args: The qubits to append the box to"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("box"), py::arg("args"))
+      .def(
+          "add_diagonal_box",
+          [](Circuit *circ, const DiagonalBox &box,
+             const std::vector<unsigned> &args, const py::kwargs &kwargs) {
+            return add_box_method(
+                circ, std::make_shared<DiagonalBox>(box), args, kwargs);
+          },
+          "Append a :py:class:`DiagonalBox` to the circuit.\n\n"
+          ":param box: The box to append\n"
+          ":param args: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
           py::arg("box"), py::arg("args"))
       .def(

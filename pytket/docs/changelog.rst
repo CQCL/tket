@@ -27,6 +27,7 @@ Fixes:
   includes `Pauli.I` terms.
 * Fix bug in routing code occurring in ``Circuits`` with qubit wires with no operations
   and some (other or same) qubits pre-labelled as "Node" from the ``Architecture`` being routed to.
+* Add missing add box methods that accept qubit indices as arguments.
 
 1.14.0 (April 2023)
 -------------------
