@@ -72,7 +72,7 @@ class OutcomeArray(np.ndarray):
         """Number of outcomes stored."""
         return self.shape[0]
 
-    def __hash__(self) -> int:
+    def __hash__(self) -> int:  # type: ignore
         return hash((self.tobytes(), self.width))
 
     def __eq__(self, other: "OutcomeArray") -> bool:  # type: ignore
