@@ -15,8 +15,10 @@
 cmake_minimum_required(VERSION 3.23)
 project(tket CXX)
 
+list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake)
+
 find_package(Boost CONFIG REQUIRED)
-find_package(symengine CONFIG REQUIRED)
+find_package(SymEngine CONFIG REQUIRED)
 find_package(Eigen3 CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 find_package(tklog CONFIG REQUIRED)
@@ -67,8 +69,14 @@ IF (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     ENDIF()
 ENDIF()
 
-target_include_directories(tket PUBLIC include/tket)
-target_link_libraries(tket PRIVATE boost::boost)
+if (NOT TARGET symengine::symengine)
+    add_library(symengine::symengine ALIAS symengine)
+endif()
+
+target_include_directories(tket PUBLIC
+    $<INSTALL_INTERFACE:include/tket>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tket>)
+target_link_libraries(tket PRIVATE Boost::headers)
 target_link_libraries(tket PRIVATE symengine::symengine)
 target_link_libraries(tket PRIVATE Eigen3::Eigen)
 target_link_libraries(tket PRIVATE nlohmann_json::nlohmann_json)
@@ -378,7 +386,12 @@ target_sources(tket
         include/Predicates/Predicates.hpp
     )
 
-install(TARGETS tket FILE_SET HEADERS)
+include(GNUInstallDirs)
+set(INSTALL_CONFIGDIR ${CMAKE_INSTALL_LIBDIR}/cmake/tket)
+
+install(TARGETS tket
+    EXPORT tket-targets
+    FILE_SET HEADERS)
 
 if(MSVC)
     install(TARGETS tket
@@ -387,3 +400,27 @@ if(MSVC)
         ARCHIVE DESTINATION lib
         LIBRARY DESTINATION lib)
 endif()
+
+install(EXPORT tket-targets
+    FILE tketTargets.cmake
+    NAMESPACE tket::
+    DESTINATION ${INSTALL_CONFIGDIR}
+)
+
+include(CMakePackageConfigHelpers)
+
+configure_package_config_file(${CMAKE_CURRENT_LIST_DIR}/cmake/tketConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/tketConfig.cmake
+    INSTALL_DESTINATION ${INSTALL_CONFIGDIR}
+)
+
+install(FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/tketConfig.cmake
+    DESTINATION ${INSTALL_CONFIGDIR}
+)
+
+export(EXPORT tket-targets
+    FILE ${CMAKE_CURRENT_BINARY_DIR}/tketTargets.cmake
+    NAMESPACE tket::)
+
+export(PACKAGE tket)
