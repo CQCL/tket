@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <Circuit/Circuit.hpp>
-#include <Transformations/OptimisationPass.hpp>
+#include <tket/Circuit/Circuit.hpp>
+#include <tket/Transformations/OptimisationPass.hpp>
 #include <iostream>
 #include <tkassert/Assert.hpp>
 
