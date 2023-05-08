@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "Converters/PauliGadget.hpp"
+#include "Circuit/PauliExpBoxes.hpp"
 
 #include "Circuit/CircUtils.hpp"
 
@@ -36,6 +37,23 @@ void append_single_pauli_gadget(
   }
   Circuit gadget = pauli_gadget(string, angle, cx_config);
   circ.append_with_map(gadget, mapping);
+}
+
+void append_single_pauli_gadget_as_pauli_exp_box(
+    Circuit &circ, const QubitPauliTensor &pauli, Expr angle) {
+  if (pauli.coeff == -1.) {
+    angle *= -1;
+  } else if (pauli.coeff != 1.) {
+    throw CircuitInvalidity("Pauli coefficient must be +/- 1");
+  }
+  std::vector<Pauli> string;
+  std::vector<Qubit> mapping;
+  for (const std::pair<const Qubit, Pauli> &term : pauli.string.map) {
+    string.push_back(term.second);
+    mapping.push_back(term.first);
+  }
+  PauliExpBox box(string, angle);
+  circ.add_box(box, mapping);
 }
 
 static void reduce_shared_qs_by_CX_snake(

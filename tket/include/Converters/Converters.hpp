@@ -67,6 +67,15 @@ Circuit pauli_graph_to_circuit_individually(
     const PauliGraph &pg, CXConfigType cx_config = CXConfigType::Snake);
 
 /**
+ * Synthesises a circuit equivalent to the PauliGraph by adding each
+ * pauli gadget to the circuit as a PauliExpBox individually
+ * in the order given by TopSortIterator.
+ * The tableau is then synthesised at the end.
+ */
+Circuit pauli_graph_to_pauli_exp_box_circuit(
+    const PauliGraph &pg);
+
+/**
  * Synthesises a circuit equivalent to the PauliGraph by building pairs of
  * pauli gadgets simultaneously using the method detailed in Cowtan et al.
  * Phase Gadget Synthesis for Shallow Circuits, Lemma 4.9.

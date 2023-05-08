@@ -41,6 +41,19 @@ void append_single_pauli_gadget(
     CXConfigType cx_config = CXConfigType::Snake);
 
 /**
+ * Append a Pauli gadget to the end of a given circuit as a
+ * PauliExpBox.
+ * Automatically uses Snake CX configuration
+ *
+ * @param circ circuit to append to
+ * @param pauli Pauli operators and their respective qubits
+ * @param angle angle in half-turns
+ * @param cx_config which type of CX configuration to decompose into
+ */
+void append_single_pauli_gadget_as_pauli_exp_box(
+    Circuit& circ, const QubitPauliTensor& pauli, Expr angle);
+
+/**
  * Append a pair of Pauli gadgets to the end of a given circuit.
  * (shallow) Uses an adapted arrangement of CX that gives balanced trees
  * over the matching qubits to improve depth. Better performance
