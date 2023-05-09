@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include "Architecture/Architecture.hpp"
-#include "Circuit/Circuit.hpp"
+#include "tket/Architecture/Architecture.hpp"
+#include "tket/Circuit/Circuit.hpp"
 
 namespace tket {
 /**

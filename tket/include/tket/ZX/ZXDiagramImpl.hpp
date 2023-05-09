@@ -17,8 +17,8 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/graph_traits.hpp>
 
-#include "Utils/SequencedContainers.hpp"
-#include "ZX/ZXGenerator.hpp"
+#include "tket/Utils/SequencedContainers.hpp"
+#include "tket/ZX/ZXGenerator.hpp"
 
 /**
  * This header contains the implementation-specific type definitions for the

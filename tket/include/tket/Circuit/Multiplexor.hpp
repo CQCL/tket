@@ -16,7 +16,7 @@
 
 #include "Boxes.hpp"
 #include "Circuit.hpp"
-#include "Utils/Json.hpp"
+#include "tket/Utils/Json.hpp"
 
 namespace tket {
 

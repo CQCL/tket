@@ -17,11 +17,11 @@
 #include <fstream>
 #include <stdexcept>
 
-#include "Clifford/CliffTableau.hpp"
-#include "Utils/Expression.hpp"
-#include "Utils/GraphHeaders.hpp"
-#include "Utils/PauliStrings.hpp"
-#include "Utils/SequencedContainers.hpp"
+#include "tket/Clifford/CliffTableau.hpp"
+#include "tket/Utils/Expression.hpp"
+#include "tket/Utils/GraphHeaders.hpp"
+#include "tket/Utils/PauliStrings.hpp"
+#include "tket/Utils/SequencedContainers.hpp"
 
 namespace tket {
 class Gate;

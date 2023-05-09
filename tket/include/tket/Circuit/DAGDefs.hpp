@@ -23,9 +23,9 @@
 #include <utility>
 #include <vector>
 
-#include "OpType/EdgeType.hpp"
-#include "Ops/Op.hpp"
-#include "Utils/GraphHeaders.hpp"
+#include "tket/OpType/EdgeType.hpp"
+#include "tket/Ops/Op.hpp"
+#include "tket/Utils/GraphHeaders.hpp"
 
 namespace tket {
 

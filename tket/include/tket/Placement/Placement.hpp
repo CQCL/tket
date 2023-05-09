@@ -14,10 +14,10 @@
 
 #pragma once
 
-#include "Architecture/Architecture.hpp"
-#include "Characterisation/DeviceCharacterisation.hpp"
-#include "Circuit/Circuit.hpp"
-#include "Placement/QubitGraph.hpp"
+#include "tket/Architecture/Architecture.hpp"
+#include "tket/Characterisation/DeviceCharacterisation.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Placement/QubitGraph.hpp"
 
 namespace tket {
 

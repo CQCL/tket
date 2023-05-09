@@ -14,10 +14,10 @@
 
 #pragma once
 
-#include "Mapping/LexicographicalComparison.hpp"
-#include "Mapping/MappingFrontier.hpp"
-#include "Mapping/RoutingMethod.hpp"
-#include "Mapping/RoutingMethodJson.hpp"
+#include "tket/Mapping/LexicographicalComparison.hpp"
+#include "tket/Mapping/MappingFrontier.hpp"
+#include "tket/Mapping/RoutingMethod.hpp"
+#include "tket/Mapping/RoutingMethodJson.hpp"
 
 namespace tket {
 

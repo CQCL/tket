@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include "Mapping/MappingFrontier.hpp"
-#include "Utils/Json.hpp"
+#include "tket/Mapping/MappingFrontier.hpp"
+#include "tket/Utils/Json.hpp"
 
 namespace tket {
 

@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include "PauliGraph/PauliGraph.hpp"
+#include "tket/PauliGraph/PauliGraph.hpp"
 
 namespace tket {
 

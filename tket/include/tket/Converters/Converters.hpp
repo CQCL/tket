@@ -14,12 +14,12 @@
 
 #pragma once
 
-#include "Circuit/Circuit.hpp"
-#include "Clifford/ChoiMixTableau.hpp"
-#include "Clifford/CliffTableau.hpp"
-#include "Clifford/UnitaryTableau.hpp"
-#include "PauliGraph/PauliGraph.hpp"
-#include "ZX/ZXDiagram.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Clifford/ChoiMixTableau.hpp"
+#include "tket/Clifford/CliffTableau.hpp"
+#include "tket/Clifford/UnitaryTableau.hpp"
+#include "tket/PauliGraph/PauliGraph.hpp"
+#include "tket/ZX/ZXDiagram.hpp"
 
 namespace tket {
 

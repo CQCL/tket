@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "PauliGraph/ConjugatePauliFunctions.hpp"
+#include "tket/PauliGraph/ConjugatePauliFunctions.hpp"
 
 #include <tkassert/Assert.hpp>
 
-#include "OpType/OpTypeInfo.hpp"
-#include "PauliGraph/PauliGraph.hpp"
+#include "tket/OpType/OpTypeInfo.hpp"
+#include "tket/PauliGraph/PauliGraph.hpp"
 
 namespace tket {
 

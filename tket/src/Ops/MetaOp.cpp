@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Ops/MetaOp.hpp"
+#include "tket/Ops/MetaOp.hpp"
 
 #include <typeinfo>
 
-#include "OpType/EdgeType.hpp"
-#include "OpType/OpType.hpp"
-#include "Utils/Json.hpp"
+#include "tket/OpType/EdgeType.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/Utils/Json.hpp"
 
 namespace tket {
 

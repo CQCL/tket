@@ -13,12 +13,12 @@
 // limitations under the License.
 
 #pragma once
-#include "Circuit/Boxes.hpp"
-#include "Circuit/CircUtils.hpp"
-#include "Circuit/Circuit.hpp"
-#include "Utils/HelperFunctions.hpp"
-#include "Utils/Json.hpp"
-#include "Utils/MatrixAnalysis.hpp"
+#include "tket/Circuit/Boxes.hpp"
+#include "tket/Circuit/CircUtils.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Utils/HelperFunctions.hpp"
+#include "tket/Utils/Json.hpp"
+#include "tket/Utils/MatrixAnalysis.hpp"
 namespace tket {
 
 /**

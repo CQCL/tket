@@ -16,9 +16,9 @@
 
 #include "Circuit.hpp"
 #include "DAGDefs.hpp"
-#include "Gate/GatePtr.hpp"
-#include "Utils/EigenConfig.hpp"
-#include "Utils/PauliStrings.hpp"
+#include "tket/Gate/GatePtr.hpp"
+#include "tket/Utils/EigenConfig.hpp"
+#include "tket/Utils/PauliStrings.hpp"
 
 namespace tket {
 

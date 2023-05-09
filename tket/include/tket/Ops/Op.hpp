@@ -28,14 +28,14 @@
 #include <vector>
 
 #include "OpPtr.hpp"
-#include "OpType/OpDesc.hpp"
-#include "OpType/OpTypeFunctions.hpp"
-#include "OpType/OpTypeInfo.hpp"
-#include "Utils/Constants.hpp"
-#include "Utils/Expression.hpp"
-#include "Utils/Json.hpp"
-#include "Utils/PauliStrings.hpp"
-#include "Utils/UnitID.hpp"
+#include "tket/OpType/OpDesc.hpp"
+#include "tket/OpType/OpTypeFunctions.hpp"
+#include "tket/OpType/OpTypeInfo.hpp"
+#include "tket/Utils/Constants.hpp"
+#include "tket/Utils/Expression.hpp"
+#include "tket/Utils/Json.hpp"
+#include "tket/Utils/PauliStrings.hpp"
+#include "tket/Utils/UnitID.hpp"
 
 namespace tket {
 

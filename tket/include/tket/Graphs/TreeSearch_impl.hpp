@@ -25,7 +25,7 @@
 #include <utility>
 #include <vector>
 
-#include "Graphs/Utils.hpp"
+#include "tket/Graphs/Utils.hpp"
 
 // implementation details of `TreeSearch.hpp`
 

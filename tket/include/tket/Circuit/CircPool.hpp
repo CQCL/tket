@@ -15,8 +15,8 @@
 #pragma once
 
 #include "Circuit.hpp"
-#include "Gate/GatePtr.hpp"
-#include "Utils/Expression.hpp"
+#include "tket/Gate/GatePtr.hpp"
+#include "tket/Utils/Expression.hpp"
 
 namespace tket {
 

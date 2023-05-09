@@ -14,14 +14,14 @@
 
 #pragma once
 
-#include "ArchAwareSynth/SteinerForest.hpp"
-#include "Circuit/Circuit.hpp"
+#include "tket/ArchAwareSynth/SteinerForest.hpp"
+#include "tket/Circuit/Circuit.hpp"
 #include "CompilerPass.hpp"
-#include "Mapping/LexiRoute.hpp"
-#include "Mapping/RoutingMethod.hpp"
-#include "Transformations/ContextualReduction.hpp"
-#include "Transformations/Decomposition.hpp"
-#include "Transformations/PauliOptimisation.hpp"
+#include "tket/Mapping/LexiRoute.hpp"
+#include "tket/Mapping/RoutingMethod.hpp"
+#include "tket/Transformations/ContextualReduction.hpp"
+#include "tket/Transformations/Decomposition.hpp"
+#include "tket/Transformations/PauliOptimisation.hpp"
 
 namespace tket {
 

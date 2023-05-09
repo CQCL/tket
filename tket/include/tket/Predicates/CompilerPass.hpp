@@ -16,7 +16,7 @@
 
 #include "CompilationUnit.hpp"
 #include "Predicates.hpp"
-#include "Utils/Json.hpp"
+#include "tket/Utils/Json.hpp"
 
 namespace tket {
 

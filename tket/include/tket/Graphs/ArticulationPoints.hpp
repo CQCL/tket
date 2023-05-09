@@ -17,7 +17,7 @@
 #include <boost/graph/biconnected_components.hpp>
 #include <set>
 
-#include "Graphs/ArticulationPoints_impl.hpp"
+#include "tket/Graphs/ArticulationPoints_impl.hpp"
 
 /**
  * Computation of Articulation Points (APs) on undirected graphs

@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Transformations/PhasedXFrontier.hpp"
+#include "tket/Transformations/PhasedXFrontier.hpp"
 
 #include <string>
 
-#include "Circuit/CircPool.hpp"
-#include "Circuit/CircUtils.hpp"
-#include "Circuit/Circuit.hpp"
-#include "OpType/OpType.hpp"
-#include "OpType/OpTypeInfo.hpp"
-#include "Transformations/StandardSquash.hpp"
-#include "Utils/Expression.hpp"
+#include "tket/Circuit/CircPool.hpp"
+#include "tket/Circuit/CircUtils.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/OpType/OpTypeInfo.hpp"
+#include "tket/Transformations/StandardSquash.hpp"
+#include "tket/Utils/Expression.hpp"
 
 namespace tket {
 

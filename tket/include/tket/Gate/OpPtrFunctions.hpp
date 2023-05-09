@@ -14,9 +14,9 @@
 
 #pragma once
 
-#include "OpType/OpType.hpp"
-#include "Ops/OpPtr.hpp"
-#include "Utils/Expression.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/Ops/OpPtr.hpp"
+#include "tket/Utils/Expression.hpp"
 
 namespace tket {
 

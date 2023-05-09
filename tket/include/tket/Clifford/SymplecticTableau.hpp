@@ -14,9 +14,9 @@
 
 #pragma once
 
-#include "OpType/OpType.hpp"
-#include "Utils/MatrixAnalysis.hpp"
-#include "Utils/PauliStrings.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/Utils/MatrixAnalysis.hpp"
+#include "tket/Utils/PauliStrings.hpp"
 
 namespace tket {
 

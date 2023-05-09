@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include "Characterisation/Cycles.hpp"
-#include "Circuit/Circuit.hpp"
+#include "tket/Characterisation/Cycles.hpp"
+#include "tket/Circuit/Circuit.hpp"
 
 namespace tket {
 

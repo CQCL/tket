@@ -20,13 +20,13 @@
 #include <tkassert/Assert.hpp>
 #include <tklog/TketLog.hpp>
 
-#include "Circuit/Circuit.hpp"
-#include "Circuit/DAGDefs.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/DAGDefs.hpp"
 #include "DAGProperties.hpp"
-#include "OpType/OpDesc.hpp"
-#include "OpType/OpType.hpp"
-#include "Ops/OpPtr.hpp"
-#include "Utils/GraphHeaders.hpp"
+#include "tket/OpType/OpDesc.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/Ops/OpPtr.hpp"
+#include "tket/Utils/GraphHeaders.hpp"
 
 namespace tket {
 

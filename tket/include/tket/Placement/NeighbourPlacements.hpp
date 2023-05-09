@@ -19,7 +19,7 @@
 #include <tktokenswap/SwapFunctions.hpp>
 
 #include "Placement.hpp"
-#include "Utils/BiMapHeaders.hpp"
+#include "tket/Utils/BiMapHeaders.hpp"
 
 namespace tket {
 

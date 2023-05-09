@@ -19,8 +19,8 @@
 
 #include "EigenConfig.hpp"
 #include "UnitID.hpp"
-#include "Utils/Constants.hpp"
-#include "Utils/Expression.hpp"
+#include "tket/Utils/Constants.hpp"
+#include "tket/Utils/Expression.hpp"
 
 namespace tket {
 

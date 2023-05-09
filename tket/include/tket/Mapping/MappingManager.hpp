@@ -14,10 +14,10 @@
 
 #pragma once
 
-#include "Architecture/Architecture.hpp"
-#include "Circuit/Circuit.hpp"
-#include "Mapping/RoutingMethod.hpp"
-#include "Utils/UnitID.hpp"
+#include "tket/Architecture/Architecture.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Mapping/RoutingMethod.hpp"
+#include "tket/Utils/UnitID.hpp"
 
 namespace tket {
 

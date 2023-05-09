@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Circuit/CircPool.hpp"
+#include "tket/Circuit/CircPool.hpp"
 
 #include <tkassert/Assert.hpp>
 
-#include "Circuit/CircUtils.hpp"
-#include "Circuit/Circuit.hpp"
-#include "Gate/Rotation.hpp"
-#include "OpType/OpType.hpp"
-#include "Utils/Expression.hpp"
-#include "Utils/MatrixAnalysis.hpp"
+#include "tket/Circuit/CircUtils.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Gate/Rotation.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/Utils/Expression.hpp"
+#include "tket/Utils/MatrixAnalysis.hpp"
 
 namespace tket {
 

@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include "Utils/BiMapHeaders.hpp"
-#include "ZX/ZXDiagram.hpp"
+#include "tket/Utils/BiMapHeaders.hpp"
+#include "tket/ZX/ZXDiagram.hpp"
 
 namespace tket {
 

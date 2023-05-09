@@ -14,14 +14,14 @@
 
 #pragma once
 
-#include "Mapping/AASLabelling.hpp"
-#include "Mapping/AASRoute.hpp"
-#include "Mapping/BoxDecomposition.hpp"
-#include "Mapping/LexiLabelling.hpp"
-#include "Mapping/LexiRouteRoutingMethod.hpp"
-#include "Mapping/MultiGateReorder.hpp"
-#include "Mapping/RoutingMethod.hpp"
-#include "Utils/Json.hpp"
+#include "tket/Mapping/AASLabelling.hpp"
+#include "tket/Mapping/AASRoute.hpp"
+#include "tket/Mapping/BoxDecomposition.hpp"
+#include "tket/Mapping/LexiLabelling.hpp"
+#include "tket/Mapping/LexiRouteRoutingMethod.hpp"
+#include "tket/Mapping/MultiGateReorder.hpp"
+#include "tket/Mapping/RoutingMethod.hpp"
+#include "tket/Utils/Json.hpp"
 
 namespace tket {
 

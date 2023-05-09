@@ -17,8 +17,8 @@
 #include <optional>
 #include <unordered_set>
 
-#include "Utils/Expression.hpp"
-#include "ZX/Types.hpp"
+#include "tket/Utils/Expression.hpp"
+#include "tket/ZX/Types.hpp"
 
 namespace tket {
 

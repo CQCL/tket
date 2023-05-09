@@ -19,7 +19,7 @@
  * @brief Holding box for abstract expressions on Bits
  */
 
-#include "Circuit/Boxes.hpp"
+#include "tket/Circuit/Boxes.hpp"
 
 namespace tket {
 

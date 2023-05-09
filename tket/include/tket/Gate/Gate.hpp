@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include "Ops/Op.hpp"
-#include "Utils/Json.hpp"
+#include "tket/Ops/Op.hpp"
+#include "tket/Utils/Json.hpp"
 
 namespace tket {
 

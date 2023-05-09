@@ -17,8 +17,8 @@
 // This file is in the Circuit component because Conditonal::deserialize() may
 // require deserialization of a Box.
 
-#include "Ops/Op.hpp"
-#include "Utils/Json.hpp"
+#include "tket/Ops/Op.hpp"
+#include "tket/Utils/Json.hpp"
 
 namespace tket {
 

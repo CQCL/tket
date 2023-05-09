@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Transformations/ContextualReduction.hpp"
+#include "tket/Transformations/ContextualReduction.hpp"
 
 #include <algorithm>
 #include <optional>
@@ -21,16 +21,16 @@
 #include <tkassert/Assert.hpp>
 #include <tklog/TketLog.hpp>
 
-#include "Circuit/Circuit.hpp"
-#include "Circuit/DAGDefs.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/DAGDefs.hpp"
 #include "Eigen/src/Core/Matrix.h"
-#include "OpType/OpType.hpp"
-#include "OpType/OpTypeInfo.hpp"
-#include "Ops/ClassicalOps.hpp"
-#include "Ops/OpPtr.hpp"
-#include "Transformations/Transform.hpp"
-#include "Utils/HelperFunctions.hpp"
-#include "Utils/UnitID.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/OpType/OpTypeInfo.hpp"
+#include "tket/Ops/ClassicalOps.hpp"
+#include "tket/Ops/OpPtr.hpp"
+#include "tket/Transformations/Transform.hpp"
+#include "tket/Utils/HelperFunctions.hpp"
+#include "tket/Utils/UnitID.hpp"
 
 namespace tket {
 

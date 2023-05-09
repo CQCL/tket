@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include "Mapping/RoutingMethod.hpp"
+#include "tket/Mapping/RoutingMethod.hpp"
 
 namespace tket {
 

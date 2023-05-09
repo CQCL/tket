@@ -17,8 +17,8 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/pending/property.hpp>
 
-#include "Graphs/DirectedGraph.hpp"
-#include "Utils/UnitID.hpp"
+#include "tket/Graphs/DirectedGraph.hpp"
+#include "tket/Utils/UnitID.hpp"
 
 namespace tket::graphs {
 

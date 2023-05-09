@@ -17,8 +17,8 @@
 #include <utility>
 #include <vector>
 
-#include "Graphs/TreeSearch_impl.hpp"
-#include "Graphs/Utils.hpp"
+#include "tket/Graphs/TreeSearch_impl.hpp"
+#include "tket/Graphs/Utils.hpp"
 
 /* A wrapper around the BFS and DFS implementation of boost graph. The hope is
  * that this is less awkward (albeit less flexible) to use than the direct boost

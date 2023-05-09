@@ -16,8 +16,8 @@
 
 #include <stdexcept>
 
-#include "Circuit/Circuit.hpp"
-#include "Utils/PauliStrings.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Utils/PauliStrings.hpp"
 
 namespace tket {
 

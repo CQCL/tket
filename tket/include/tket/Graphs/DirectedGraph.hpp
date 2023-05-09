@@ -25,10 +25,10 @@
 #include <stdexcept>
 #include <type_traits>
 
-#include "Graphs/AbstractGraph.hpp"
-#include "Graphs/TreeSearch.hpp"
-#include "Graphs/Utils.hpp"
-#include "Utils/GraphHeaders.hpp"
+#include "tket/Graphs/AbstractGraph.hpp"
+#include "tket/Graphs/TreeSearch.hpp"
+#include "tket/Graphs/Utils.hpp"
+#include "tket/Utils/GraphHeaders.hpp"
 
 namespace tket::graphs {
 

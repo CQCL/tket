@@ -20,9 +20,9 @@
 #include <tklog/TketLog.hpp>
 
 #include "DAGDefs.hpp"
-#include "Ops/OpPtr.hpp"
-#include "Utils/Json.hpp"
-#include "Utils/UnitID.hpp"
+#include "tket/Ops/OpPtr.hpp"
+#include "tket/Utils/Json.hpp"
+#include "tket/Utils/UnitID.hpp"
 
 namespace tket {
 

@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include "OpType/OpType.hpp"
+#include "tket/OpType/OpType.hpp"
 #include "Transform.hpp"
 
 namespace tket {

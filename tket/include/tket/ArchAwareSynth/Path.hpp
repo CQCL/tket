@@ -13,10 +13,10 @@
 // limitations under the License.
 
 #pragma once
-#include "Architecture/Architecture.hpp"
-#include "Placement/Placement.hpp"
-#include "Utils/MatrixAnalysis.hpp"
-#include "Utils/UnitID.hpp"
+#include "tket/Architecture/Architecture.hpp"
+#include "tket/Placement/Placement.hpp"
+#include "tket/Utils/MatrixAnalysis.hpp"
+#include "tket/Utils/UnitID.hpp"
 namespace tket {
 namespace aas {
 

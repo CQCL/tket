@@ -14,9 +14,9 @@
 
 #pragma once
 
-#include "Circuit/Circuit.hpp"
+#include "tket/Circuit/Circuit.hpp"
 #include "Transform.hpp"
-#include "Utils/UnitID.hpp"
+#include "tket/Utils/UnitID.hpp"
 
 namespace tket {
 

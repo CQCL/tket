@@ -16,8 +16,8 @@
 #include <string>
 #include <typeindex>
 
-#include "Architecture/Architecture.hpp"
-#include "Transformations/Transform.hpp"
+#include "tket/Architecture/Architecture.hpp"
+#include "tket/Transformations/Transform.hpp"
 
 namespace tket {
 class Predicate;

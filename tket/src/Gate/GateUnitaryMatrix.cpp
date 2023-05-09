@@ -12,19 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Gate/GateUnitaryMatrix.hpp"
+#include "tket/Gate/GateUnitaryMatrix.hpp"
 
 #include <cmath>
 #include <sstream>
 #include <tkassert/Assert.hpp>
 
-#include "Gate/Gate.hpp"
-#include "Gate/GateUnitaryMatrixError.hpp"
-#include "Gate/GateUnitaryMatrixImplementations.hpp"
-#include "Gate/GateUnitaryMatrixUtils.hpp"
+#include "tket/Gate/Gate.hpp"
+#include "tket/Gate/GateUnitaryMatrixError.hpp"
+#include "tket/Gate/GateUnitaryMatrixImplementations.hpp"
+#include "tket/Gate/GateUnitaryMatrixUtils.hpp"
 #include "GateUnitaryMatrixVariableQubits.hpp"
 #include "GateUnitarySparseMatrix.hpp"
-#include "OpType/OpTypeInfo.hpp"
+#include "tket/OpType/OpTypeInfo.hpp"
 
 // This is just for the main Gate -> matrix function, so the only part
 // which actually uses the rest of tket. This is nothing but a wrapper around

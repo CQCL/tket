@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Gate/OpPtrFunctions.hpp"
+#include "tket/Gate/OpPtrFunctions.hpp"
 
-#include "Gate/Gate.hpp"
-#include "Gate/SymTable.hpp"
-#include "Ops/MetaOp.hpp"
+#include "tket/Gate/Gate.hpp"
+#include "tket/Gate/SymTable.hpp"
+#include "tket/Ops/MetaOp.hpp"
 
 namespace tket {
 

@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include "Utils/GraphHeaders.hpp"
+#include "tket/Utils/GraphHeaders.hpp"
 
 namespace tket {
 

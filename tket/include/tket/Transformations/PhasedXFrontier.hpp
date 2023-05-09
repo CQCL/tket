@@ -17,8 +17,8 @@
 #include <cmath>
 #include <set>
 
-#include "Circuit/Circuit.hpp"
-#include "Ops/OpPtr.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Ops/OpPtr.hpp"
 #include "SingleQubitSquash.hpp"
 
 namespace tket {

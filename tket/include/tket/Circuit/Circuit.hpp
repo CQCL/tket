@@ -46,12 +46,12 @@
 #include "Command.hpp"
 #include "Conditional.hpp"
 #include "DAGDefs.hpp"
-#include "Gate/OpPtrFunctions.hpp"
-#include "Utils/Constants.hpp"
-#include "Utils/GraphHeaders.hpp"
-#include "Utils/Json.hpp"
-#include "Utils/SequencedContainers.hpp"
-#include "Utils/UnitID.hpp"
+#include "tket/Gate/OpPtrFunctions.hpp"
+#include "tket/Utils/Constants.hpp"
+#include "tket/Utils/GraphHeaders.hpp"
+#include "tket/Utils/Json.hpp"
+#include "tket/Utils/SequencedContainers.hpp"
+#include "tket/Utils/UnitID.hpp"
 
 namespace tket {
 

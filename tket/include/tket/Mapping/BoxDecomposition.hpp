@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include "Mapping/MappingFrontier.hpp"
-#include "Mapping/RoutingMethod.hpp"
+#include "tket/Mapping/MappingFrontier.hpp"
+#include "tket/Mapping/RoutingMethod.hpp"
 
 namespace tket {
 

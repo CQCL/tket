@@ -14,9 +14,9 @@
 
 #pragma once
 
-#include "Circuit/Circuit.hpp"
-#include "Utils/Json.hpp"
-#include "Utils/PauliStrings.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Utils/Json.hpp"
+#include "tket/Utils/PauliStrings.hpp"
 
 namespace tket {
 

@@ -17,10 +17,10 @@
 #include <map>
 #include <nlohmann/json.hpp>
 
-#include "Architecture/Architecture.hpp"
+#include "tket/Architecture/Architecture.hpp"
 #include "ErrorTypes.hpp"
-#include "OpType/OpType.hpp"
-#include "Utils/UnitID.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/Utils/UnitID.hpp"
 
 /**
  * Defines tket::DeviceCharacterisation, used in NoiseAwarePlacement and in

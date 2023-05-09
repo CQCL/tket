@@ -14,9 +14,9 @@
 
 #pragma once
 
-#include "OpType/OpType.hpp"
-#include "Ops/OpPtr.hpp"
-#include "Utils/Json.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/Ops/OpPtr.hpp"
+#include "tket/Utils/Json.hpp"
 
 /**
  * When an OpType needs custom JSON conversion methods (as is the case for box

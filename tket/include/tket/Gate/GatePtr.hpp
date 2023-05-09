@@ -17,7 +17,7 @@
 #include <memory>
 
 #include "Gate.hpp"
-#include "Ops/OpPtr.hpp"
+#include "tket/Ops/OpPtr.hpp"
 
 namespace tket {
 

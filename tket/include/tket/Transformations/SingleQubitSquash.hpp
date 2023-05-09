@@ -17,8 +17,8 @@
 #include <memory>
 #include <optional>
 
-#include "Circuit/Circuit.hpp"
-#include "Gate/GatePtr.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Gate/GatePtr.hpp"
 
 namespace tket {
 

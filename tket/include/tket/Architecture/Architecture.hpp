@@ -22,13 +22,13 @@
 #include <utility>
 #include <vector>
 
-#include "Graphs/CompleteGraph.hpp"
-#include "Graphs/DirectedGraph.hpp"
-#include "Utils/BiMapHeaders.hpp"
-#include "Utils/EigenConfig.hpp"
-#include "Utils/Json.hpp"
-#include "Utils/MatrixAnalysis.hpp"
-#include "Utils/UnitID.hpp"
+#include "tket/Graphs/CompleteGraph.hpp"
+#include "tket/Graphs/DirectedGraph.hpp"
+#include "tket/Utils/BiMapHeaders.hpp"
+#include "tket/Utils/EigenConfig.hpp"
+#include "tket/Utils/Json.hpp"
+#include "tket/Utils/MatrixAnalysis.hpp"
+#include "tket/Utils/UnitID.hpp"
 
 namespace tket {
 

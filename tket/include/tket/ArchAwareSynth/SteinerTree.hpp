@@ -13,7 +13,7 @@
 // limitations under the License.
 
 #pragma once
-#include "Converters/Gauss.hpp"
+#include "tket/Converters/Gauss.hpp"
 #include "Path.hpp"
 
 namespace tket {

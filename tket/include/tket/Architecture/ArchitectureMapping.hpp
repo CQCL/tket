@@ -16,7 +16,7 @@
 
 #include <tktokenswap/SwapFunctions.hpp>
 
-#include "Architecture/Architecture.hpp"
+#include "tket/Architecture/Architecture.hpp"
 
 namespace tket {
 

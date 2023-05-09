@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include "OpType/OpType.hpp"
-#include "Utils/UnitID.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/Utils/UnitID.hpp"
 
 namespace tket {
 

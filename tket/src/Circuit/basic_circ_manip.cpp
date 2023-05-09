@@ -22,9 +22,9 @@
 #include <string>
 #include <vector>
 
-#include "Circuit/Boxes.hpp"
-#include "Circuit/Circuit.hpp"
-#include "Ops/MetaOp.hpp"
+#include "tket/Circuit/Boxes.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Ops/MetaOp.hpp"
 
 namespace tket {
 

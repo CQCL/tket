@@ -15,7 +15,7 @@
 #pragma once
 
 #include "Circuit.hpp"
-#include "Utils/EigenConfig.hpp"
+#include "tket/Utils/EigenConfig.hpp"
 
 namespace tket {
 

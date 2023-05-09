@@ -16,11 +16,11 @@
 
 #include <memory>
 
-#include "Gate/GatePtr.hpp"
-#include "Gate/Rotation.hpp"
-#include "OpType/OpTypeFunctions.hpp"
+#include "tket/Gate/GatePtr.hpp"
+#include "tket/Gate/Rotation.hpp"
+#include "tket/OpType/OpTypeFunctions.hpp"
 #include "SingleQubitSquash.hpp"
-#include "Utils/Expression.hpp"
+#include "tket/Utils/Expression.hpp"
 
 namespace tket {
 
