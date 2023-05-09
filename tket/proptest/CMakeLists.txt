@@ -15,7 +15,6 @@
 cmake_minimum_required(VERSION 3.23)
 project(proptest-tket CXX)
 
-find_package(tket CONFIG REQUIRED)
 find_package(rapidcheck CONFIG REQUIRED)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -44,7 +43,7 @@ add_executable(proptest-tket
     src/proptest.cpp
 )
 
-target_link_libraries(proptest-tket PRIVATE tket::tket)
+target_link_libraries(proptest-tket PRIVATE tket)
 target_link_libraries(proptest-tket PRIVATE rapidcheck::rapidcheck)
 
 install(TARGETS proptest-tket DESTINATION "."

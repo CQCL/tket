@@ -12,9 +12,13 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
 from conan import ConanFile
 from conan.tools.cmake import CMakeToolchain, CMake, cmake_layout, CMakeDeps
+from conan.tools.files import copy
 from conan.errors import ConanInvalidConfiguration
+
+
 
 
 class TketConan(ConanFile):
@@ -33,7 +37,7 @@ class TketConan(ConanFile):
         "profile_coverage": [True, False],
     }
     default_options = {"shared": False, "fPIC": True, "profile_coverage": False}
-    exports_sources = "CMakeLists.txt", "src/*", "include/*"
+    exports_sources = "CMakeLists.txt", "src/*", "include/*", "test/*", "proptest/*"
 
     def config_options(self):
         if self.settings.os == "Windows":
@@ -54,6 +58,9 @@ class TketConan(ConanFile):
         tc = CMakeToolchain(self)
         tc.variables["PROFILE_COVERAGE"] = self.options.profile_coverage
         tc.generate()
+        if self.include_tests():
+            copy(self, "*.json", os.path.join(self.source_folder, "test/src/test_architectures"), self.build_folder)
+            copy(self, "*.json", os.path.join(self.source_folder, "test/src/test_circuits"), self.build_folder)
 
     def validate(self):
         if self.options.profile_coverage and self.settings.compiler != "gcc":
@@ -65,6 +72,9 @@ class TketConan(ConanFile):
         cmake = CMake(self)
         cmake.configure()
         cmake.build()
+        if self.include_tests():
+            self.run(os.path.join(self.test_folder(), "test-tket"))
+            self.run(os.path.join(self.proptest_folder(), "proptest-tket"))
 
     def package(self):
         cmake = CMake(self)
@@ -85,3 +95,19 @@ class TketConan(ConanFile):
         self.requires("tkrng/0.3.3@tket/stable")
         self.requires("tktokenswap/0.3.3@tket/stable")
         self.requires("tkwsm/0.3.3@tket/stable")
+        if self.include_tests():
+            self.test_requires("catch2/3.3.2")
+            self.test_requires("rapidcheck/cci.20220514")
+
+    def include_tests(self):
+        return not self.conf.get("tools.build:skip_test", default=True)
+
+    def test_folder(self):
+        if self.settings.os == "Windows":
+            return os.path.join("test", str(self.settings.build_type))
+        return os.path.join("test")
+
+    def proptest_folder(self):
+        if self.settings.os == "Windows":
+            return os.path.join("proptest", str(self.settings.build_type))
+        return os.path.join("proptest")

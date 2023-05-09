@@ -25,6 +25,11 @@ find_package(tkrng CONFIG REQUIRED)
 find_package(tktokenswap CONFIG REQUIRED)
 find_package(tkwsm CONFIG REQUIRED)
 
+if (NOT BUILD_TESTING STREQUAL OFF)
+    add_subdirectory(test)
+    add_subdirectory(proptest)
+endif()
+
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
@@ -68,15 +73,15 @@ IF (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
 ENDIF()
 
 target_include_directories(tket PUBLIC include/tket)
-target_link_libraries(tket PRIVATE boost::boost)
-target_link_libraries(tket PRIVATE symengine::symengine)
-target_link_libraries(tket PRIVATE Eigen3::Eigen)
-target_link_libraries(tket PRIVATE nlohmann_json::nlohmann_json)
-target_link_libraries(tket PRIVATE tklog::tklog)
-target_link_libraries(tket PRIVATE tkassert::tkassert)
-target_link_libraries(tket PRIVATE tkrng::tkrng)
-target_link_libraries(tket PRIVATE tktokenswap::tktokenswap)
-target_link_libraries(tket PRIVATE tkwsm::tkwsm)
+target_link_libraries(tket PUBLIC boost::boost)
+target_link_libraries(tket PUBLIC symengine::symengine)
+target_link_libraries(tket PUBLIC Eigen3::Eigen)
+target_link_libraries(tket PUBLIC nlohmann_json::nlohmann_json)
+target_link_libraries(tket PUBLIC tklog::tklog)
+target_link_libraries(tket PUBLIC tkassert::tkassert)
+target_link_libraries(tket PUBLIC tkrng::tkrng)
+target_link_libraries(tket PUBLIC tktokenswap::tktokenswap)
+target_link_libraries(tket PUBLIC tkwsm::tkwsm)
 
 target_sources(tket
     PRIVATE

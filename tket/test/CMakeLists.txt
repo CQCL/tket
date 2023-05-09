@@ -15,7 +15,6 @@
 cmake_minimum_required(VERSION 3.23)
 project(test-tket CXX)
 
-find_package(tket CONFIG REQUIRED)
 find_package(tkrng CONFIG REQUIRED)
 find_package(tktokenswap CONFIG REQUIRED)
 find_package(Catch2 CONFIG REQUIRED)
@@ -158,7 +157,10 @@ add_executable(test-tket
     src/ZX/test_ZXExtraction.cpp
     )
 
-target_link_libraries(test-tket PRIVATE tket::tket)
+target_link_libraries(test-tket PRIVATE tket)
+target_link_libraries(test-tket PRIVATE tkrng::tkrng)
+target_link_libraries(test-tket PRIVATE tkassert::tkassert)
+target_link_libraries(test-tket PRIVATE tktokenswap::tktokenswap)
 target_link_libraries(test-tket PRIVATE Catch2::Catch2WithMain)
 
 set(WITH_COVERAGE no CACHE BOOL "Link library with profiling for test coverage")
