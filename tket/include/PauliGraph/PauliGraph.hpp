@@ -108,7 +108,7 @@ class PauliGraph {
   friend Circuit pauli_graph_to_circuit_individually(
       const PauliGraph &pg, CXConfigType cx_config);
   friend Circuit pauli_graph_to_pauli_exp_box_circuit(
-      const PauliGraph &pg);
+      const PauliGraph &pg, CXConfigType cx_config);
   friend Circuit pauli_graph_to_circuit_pairwise(
       const PauliGraph &pg, CXConfigType cx_config);
   friend Circuit pauli_graph_to_circuit_sets(

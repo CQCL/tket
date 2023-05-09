@@ -194,7 +194,7 @@ Transform synthesise_pauli_graph(
     switch (strat) {
       case PauliSynthStrat::Individual: {
         //circ = pauli_graph_to_circuit_individually(pg, cx_config);
-        circ = pauli_graph_to_pauli_exp_box_circuit(pg);
+        circ = pauli_graph_to_pauli_exp_box_circuit(pg, cx_config);
         break;
       }
       case PauliSynthStrat::Pairwise: {

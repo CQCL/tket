@@ -28,7 +28,7 @@ class PauliExpBox : public Box {
    * \f$ e^{-\frac12 i \pi t \sigma_0 \otimes \sigma_1 \otimes \cdots} \f$
    * where \f$ \sigma_i \in \{I,X,Y,Z\} \f$ are the Pauli operators.
    */
-  PauliExpBox(const std::vector<Pauli> &paulis, const Expr &t);
+  PauliExpBox(const std::vector<Pauli> &paulis, const Expr &t, CXConfigType cx_config_type = CXConfigType::Tree);
 
   /**
    * Construct from the empty vector
@@ -60,6 +60,9 @@ class PauliExpBox : public Box {
   /** Get the phase parameter */
   Expr get_phase() const { return t_; }
 
+  /** Get the cx_config parameter (affects box decomposition) */
+  CXConfigType get_cx_config() const { return cx_config_; }
+
   Op_ptr dagger() const override;
 
   Op_ptr transpose() const override;
@@ -77,6 +80,7 @@ class PauliExpBox : public Box {
  private:
   std::vector<Pauli> paulis_;
   Expr t_;
+  CXConfigType cx_config_;
 };
 
 // class PairwisePauliExpBox : public Box {

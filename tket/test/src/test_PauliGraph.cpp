@@ -28,6 +28,7 @@
 #include "Transformations/PauliOptimisation.hpp"
 #include "Transformations/Rebase.hpp"
 #include "Transformations/Transform.hpp"
+#include "Transformations/Decomposition.hpp"
 #include "testutil.hpp"
 
 namespace tket {
@@ -515,6 +516,7 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
       Transforms::synthesise_pauli_graph(
           Transforms::PauliSynthStrat::Individual, CXConfigType::MultiQGate)
           .apply(circ);
+      Transforms::decomp_boxes().apply(circ);
       REQUIRE(circ.count_gates(OpType::XXPhase3) == 6);
       REQUIRE(test_statevector_comparison(test1, circ));
     }

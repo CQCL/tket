@@ -315,7 +315,7 @@ SCENARIO("Test Circuit serialization") {
   }
   GIVEN("Pauli ExpBoxes") {
     Circuit c(4, 2, "paulibox");
-    PauliExpBox pbox({Pauli::X, Pauli::Y, Pauli::I, Pauli::Z}, -0.72521);
+    PauliExpBox pbox({Pauli::X, Pauli::Y, Pauli::I, Pauli::Z}, -0.72521, CXConfigType::MultiQGate);
     c.add_box(pbox, {0, 1, 2, 3});
     nlohmann::json j_pbox = c;
     const Circuit new_c = j_pbox.get<Circuit>();
@@ -325,6 +325,7 @@ SCENARIO("Test Circuit serialization") {
 
     REQUIRE(p_b.get_paulis() == pbox.get_paulis());
     REQUIRE(p_b.get_phase() == pbox.get_phase());
+    REQUIRE(p_b.get_cx_config() == pbox.get_cx_config());
     REQUIRE(p_b == pbox);
   }
 

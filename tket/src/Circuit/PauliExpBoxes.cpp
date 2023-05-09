@@ -16,17 +16,18 @@
 
 #include "Circuit/CircUtils.hpp"
 #include "Ops/OpJsonFactory.hpp"
+#include <iostream>
 
 namespace tket {
 
-PauliExpBox::PauliExpBox(const std::vector<Pauli> &paulis, const Expr &t)
+PauliExpBox::PauliExpBox(const std::vector<Pauli> &paulis, const Expr &t, CXConfigType cx_config_type)
     : Box(OpType::PauliExpBox,
           op_signature_t(paulis.size(), EdgeType::Quantum)),
       paulis_(paulis),
-      t_(t) {}
+      t_(t), cx_config_(cx_config_type) {}
 
 PauliExpBox::PauliExpBox(const PauliExpBox &other)
-    : Box(other), paulis_(other.paulis_), t_(other.t_) {}
+    : Box(other), paulis_(other.paulis_), t_(other.t_), cx_config_(other.cx_config_) {}
 
 PauliExpBox::PauliExpBox() : PauliExpBox({}, 0.) {}
 
@@ -37,7 +38,7 @@ bool PauliExpBox::is_clifford() const {
 SymSet PauliExpBox::free_symbols() const { return expr_free_symbols(t_); }
 
 Op_ptr PauliExpBox::dagger() const {
-  return std::make_shared<PauliExpBox>(paulis_, -t_);
+  return std::make_shared<PauliExpBox>(paulis_, -t_, cx_config_);
 }
 
 Op_ptr PauliExpBox::transpose() const {
@@ -46,19 +47,19 @@ Op_ptr PauliExpBox::transpose() const {
 
   // Negate the parameter if odd
   if (y_pauli_counter % 2 == 0) {
-    return std::make_shared<PauliExpBox>(paulis_, t_);
+    return std::make_shared<PauliExpBox>(paulis_, t_, cx_config_);
   } else {
-    return std::make_shared<PauliExpBox>(paulis_, -t_);
+    return std::make_shared<PauliExpBox>(paulis_, -t_, cx_config_);
   };
 }
 
 Op_ptr PauliExpBox::symbol_substitution(
     const SymEngine::map_basic_basic &sub_map) const {
-  return std::make_shared<PauliExpBox>(this->paulis_, this->t_.subs(sub_map));
+  return std::make_shared<PauliExpBox>(this->paulis_, this->t_.subs(sub_map), this->cx_config_);
 }
 
 void PauliExpBox::generate_circuit() const {
-  Circuit circ = pauli_gadget(paulis_, t_);
+  Circuit circ = pauli_gadget(paulis_, t_, cx_config_);
   circ_ = std::make_shared<Circuit>(circ);
 }
 
@@ -67,12 +68,15 @@ nlohmann::json PauliExpBox::to_json(const Op_ptr &op) {
   nlohmann::json j = core_box_json(box);
   j["paulis"] = box.get_paulis();
   j["phase"] = box.get_phase();
+  j["cx_config"] = box.get_cx_config();
   return j;
 }
 
 Op_ptr PauliExpBox::from_json(const nlohmann::json &j) {
   PauliExpBox box = PauliExpBox(
-      j.at("paulis").get<std::vector<Pauli>>(), j.at("phase").get<Expr>());
+      j.at("paulis").get<std::vector<Pauli>>(),
+      j.at("phase").get<Expr>(),
+      j.at("cx_config").get<CXConfigType>());
   return set_box_id(
       box,
       boost::lexical_cast<boost::uuids::uuid>(j.at("id").get<std::string>()));

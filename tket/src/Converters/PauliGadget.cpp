@@ -40,7 +40,7 @@ void append_single_pauli_gadget(
 }
 
 void append_single_pauli_gadget_as_pauli_exp_box(
-    Circuit &circ, const QubitPauliTensor &pauli, Expr angle) {
+    Circuit &circ, const QubitPauliTensor &pauli, Expr angle, CXConfigType cx_config) {
   if (pauli.coeff == -1.) {
     angle *= -1;
   } else if (pauli.coeff != 1.) {
@@ -52,7 +52,7 @@ void append_single_pauli_gadget_as_pauli_exp_box(
     string.push_back(term.second);
     mapping.push_back(term.first);
   }
-  PauliExpBox box(string, angle);
+  PauliExpBox box(string, angle, cx_config);
   circ.add_box(box, mapping);
 }
 

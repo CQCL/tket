@@ -90,7 +90,7 @@ Circuit pauli_graph_to_circuit_individually(
 }
 
 Circuit pauli_graph_to_pauli_exp_box_circuit(
-    const PauliGraph &pg) {
+    const PauliGraph &pg, CXConfigType cx_config) {
   Circuit circ;
   for (const Qubit &qb : pg.cliff_.get_qubits()) {
     circ.add_qubit(qb);
@@ -101,7 +101,7 @@ Circuit pauli_graph_to_pauli_exp_box_circuit(
   for (const PauliVert &vert : pg.vertices_in_order()) {
     const QubitPauliTensor &pauli = pg.graph_[vert].tensor_;
     const Expr &angle = pg.graph_[vert].angle_;
-    append_single_pauli_gadget_as_pauli_exp_box(circ, pauli, angle);
+    append_single_pauli_gadget_as_pauli_exp_box(circ, pauli, angle, cx_config);
   }
   Circuit cliff_circuit = tableau_to_circuit(pg.cliff_);
   circ.append(cliff_circuit);
