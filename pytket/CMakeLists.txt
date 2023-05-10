@@ -15,13 +15,23 @@
 cmake_minimum_required(VERSION 3.23)
 project(pytket CXX)
 
+find_package(Boost CONFIG REQUIRED)
+find_package(Eigen3 CONFIG REQUIRED)
 find_package(tket CONFIG REQUIRED)
 find_package(tklog CONFIG REQUIRED)
 find_package(tkassert CONFIG REQUIRED)
-find_package(symengine CONFIG REQUIRED)
-find_package(gmp CONFIG REQUIRED)
+find_package(tkrng CONFIG REQUIRED)
+find_package(tktokenswap CONFIG REQUIRED)
+find_package(tkwsm CONFIG REQUIRED)
+find_package(tkassert CONFIG REQUIRED)
+find_package(gmp CONFIG)
+if (NOT gmp_FOUND)
+    find_package(PkgConfig REQUIRED)
+    pkg_search_module(gmp REQUIRED IMPORTED_TARGET gmp)
+endif()
+find_package(SymEngine CONFIG REQUIRED)
+find_package(pybind11 CONFIG REQUIRED)
 find_package(pybind11_json CONFIG REQUIRED)
-find_package(pybind11 CONFIG REQUIRED COMPONENTS headers)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -55,6 +65,29 @@ if (UNIX)
     set(CMAKE_INSTALL_RPATH "\${ORIGIN}")
 endif()
 
+if (NOT TARGET pybind11_json::pybind11_json)
+    add_library(pybind11_json::pybind11_json ALIAS pybind11_json)
+endif()
+if (NOT TARGET gmp::gmp)
+    add_library(gmp::gmp ALIAS PkgConfig::gmp)
+endif()
+if (NOT TARGET symengine::symengine)
+    add_library(symengine::symengine ALIAS symengine)
+endif()
+
+list(APPEND lib_deps
+    tket::tket
+    tklog::tklog
+    tkassert::tkassert
+    pybind11::headers
+    pybind11_json::pybind11_json
+    Eigen3::Eigen
+    gmp::gmp
+    symengine::symengine)
+if (WIN32)
+    list(APPEND lib_deps bcrypt) # For boost::uuid
+endif()
+
 pybind11_add_module(circuit
     binders/circuit/main.cpp
     binders/circuit/unitid.cpp
@@ -65,113 +98,61 @@ pybind11_add_module(circuit
     binders/circuit/Circuit/add_op.cpp
     binders/circuit/Circuit/add_classical_op.cpp)
 target_include_directories(circuit PRIVATE binders/include)
-target_link_libraries(circuit PRIVATE
-    tket::tket pybind11::headers pybind11_json::pybind11_json)
-if (WIN32)
-    target_link_libraries(circuit PRIVATE
-        symengine gmp::gmpxx gmp::gmp tkassert::tkassert)
-    # For boost::uuid:
-    target_link_libraries(circuit PRIVATE bcrypt)
-endif()
+target_link_libraries(circuit PRIVATE ${lib_deps})
 
 pybind11_add_module(mapping binders/mapping.cpp)
 target_include_directories(mapping PRIVATE binders/include)
-target_link_libraries(mapping PRIVATE
-    tket::tket pybind11::headers)
+target_link_libraries(mapping PRIVATE ${lib_deps})
 
 pybind11_add_module(transform binders/transform.cpp)
 target_include_directories(transform PRIVATE binders/include)
-target_link_libraries(transform PRIVATE
-    tket::tket pybind11::headers)
-if (WIN32)
-    # For boost::uuid:
-    target_link_libraries(transform PRIVATE bcrypt)
-endif()
+target_link_libraries(transform PRIVATE ${lib_deps})
 
 pybind11_add_module(predicates binders/predicates.cpp)
 target_include_directories(predicates PRIVATE binders/include)
-target_link_libraries(predicates PRIVATE
-    tket::tket pybind11::headers pybind11_json::pybind11_json)
-if (WIN32)
-    # For boost::uuid:
-    target_link_libraries(predicates PRIVATE bcrypt)
-endif()
+target_link_libraries(predicates PRIVATE ${lib_deps})
 
 pybind11_add_module(passes binders/passes.cpp)
 target_include_directories(passes PRIVATE binders/include)
-target_link_libraries(passes PRIVATE
-    tket::tket pybind11::headers pybind11_json::pybind11_json)
-if (WIN32)
-    target_link_libraries(passes PRIVATE
-        symengine gmp::gmpxx gmp::gmp)
-    # For boost::uuid:
-    target_link_libraries(passes PRIVATE bcrypt)
-endif()
+target_link_libraries(passes PRIVATE ${lib_deps})
 
 pybind11_add_module(architecture binders/architecture.cpp)
 target_include_directories(architecture PRIVATE binders/include)
-target_link_libraries(architecture PRIVATE
-    tket::tket pybind11::headers pybind11_json::pybind11_json)
+target_link_libraries(architecture PRIVATE ${lib_deps})
 
 pybind11_add_module(placement binders/placement.cpp)
 target_include_directories(placement PRIVATE binders/include)
-target_link_libraries(placement PRIVATE
-    tket::tket pybind11::headers pybind11_json::pybind11_json)
+target_link_libraries(placement PRIVATE ${lib_deps})
 
 pybind11_add_module(partition binders/partition.cpp)
 target_include_directories(partition PRIVATE binders/include)
-target_link_libraries(partition PRIVATE
-    tket::tket pybind11_json::pybind11_json)
-if (WIN32)
-    # For boost::uuid:
-    target_link_libraries(partition PRIVATE bcrypt)
-endif()
+target_link_libraries(partition PRIVATE ${lib_deps})
 
 pybind11_add_module(pauli binders/pauli.cpp)
 target_include_directories(pauli PRIVATE binders/include)
-target_link_libraries(pauli PRIVATE
-    tket::tket pybind11::headers pybind11_json::pybind11_json)
+target_link_libraries(pauli PRIVATE ${lib_deps})
 
 pybind11_add_module(logging binders/logging.cpp)
 target_include_directories(logging PRIVATE binders/include)
-target_link_libraries(logging PRIVATE
-    tket::tket pybind11::headers)
+target_link_libraries(logging PRIVATE ${lib_deps})
 
 pybind11_add_module(utils_serialization binders/utils_serialization.cpp)
 target_include_directories(utils_serialization PRIVATE binders/include)
-target_link_libraries(utils_serialization PRIVATE
-    tket::tket pybind11::headers pybind11_json::pybind11_json)
+target_link_libraries(utils_serialization PRIVATE ${lib_deps})
 
 pybind11_add_module(tailoring binders/tailoring.cpp)
 target_include_directories(tailoring PRIVATE binders/include)
-target_link_libraries(tailoring PRIVATE
-    tket::tket pybind11::headers)
-if (WIN32)
-    target_link_libraries(tailoring PRIVATE
-        symengine gmp::gmpxx gmp::gmp)
-    # For boost::uuid:
-    target_link_libraries(tailoring PRIVATE bcrypt)
-endif()
+target_link_libraries(tailoring PRIVATE ${lib_deps})
 
 pybind11_add_module(tableau binders/tableau.cpp)
 target_include_directories(tableau PRIVATE binders/include)
-target_link_libraries(tableau PRIVATE
-    tket::tket pybind11::headers)
-if (WIN32)
-    # For boost::uuid:
-    target_link_libraries(tableau PRIVATE bcrypt)
-endif()
+target_link_libraries(tableau PRIVATE ${lib_deps})
 
 pybind11_add_module(zx
     binders/zx/diagram.cpp
     binders/zx/rewrite.cpp)
 target_include_directories(zx PRIVATE binders/include)
-target_link_libraries(zx PRIVATE
-    tket::tket pybind11::headers)
-if (WIN32)
-    target_link_libraries(zx PRIVATE
-        symengine gmp::gmpxx gmp::gmp)
-endif()
+target_link_libraries(zx PRIVATE ${lib_deps})
 
 install(TARGETS
     logging
