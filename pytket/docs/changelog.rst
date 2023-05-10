@@ -1,8 +1,8 @@
 Changelog
 =========
 
-1.15.0 (unreleased)
--------------------
+1.15.0 (May 2023)
+-----------------
 
 Major new features:
 
