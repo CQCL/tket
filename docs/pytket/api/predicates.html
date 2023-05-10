@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>pytket.predicates &#8212; pytket 1.14.0 documentation</title>
+    <title>pytket.predicates &#8212; pytket 1.15.0 documentation</title>
   
   
   
@@ -401,6 +401,10 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.predicates.GateSetPredicate.__init__"><code class="docutils literal notranslate"><span class="pre">GateSetPredicate.__init__()</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.predicates.MaxNClRegPredicate"><code class="docutils literal notranslate"><span class="pre">MaxNClRegPredicate</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.predicates.MaxNClRegPredicate.__init__"><code class="docutils literal notranslate"><span class="pre">MaxNClRegPredicate.__init__()</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.predicates.MaxNQubitsPredicate"><code class="docutils literal notranslate"><span class="pre">MaxNQubitsPredicate</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.predicates.MaxNQubitsPredicate.__init__"><code class="docutils literal notranslate"><span class="pre">MaxNQubitsPredicate.__init__()</span></code></a></li>
 </ul>
@@ -594,6 +598,18 @@ document.write(`
 <dt class="sig sig-object py" id="pytket.predicates.GateSetPredicate.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.predicates.GateSetPredicate" title="pytket.predicates.GateSetPredicate"><span class="pre">pytket.predicates.GateSetPredicate</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">allowed_types</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="optype.html#pytket.circuit.OpType" title="pytket.circuit.OpType"><span class="pre">pytket.circuit.OpType</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#pytket.predicates.GateSetPredicate.__init__" title="Permalink to this definition">#</a></dt>
 <dd><p>Construct from a set of gate types.</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pytket.predicates.MaxNClRegPredicate">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pytket.predicates.</span></span><span class="sig-name descname"><span class="pre">MaxNClRegPredicate</span></span><a class="headerlink" href="#pytket.predicates.MaxNClRegPredicate" title="Permalink to this definition">#</a></dt>
+<dd><p>Predicate asserting that a circuit has at most n classical registers.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.predicates.MaxNClRegPredicate.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.predicates.MaxNClRegPredicate" title="pytket.predicates.MaxNClRegPredicate"><span class="pre">pytket.predicates.MaxNClRegPredicate</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#pytket.predicates.MaxNClRegPredicate.__init__" title="Permalink to this definition">#</a></dt>
+<dd><p>Constructor.</p>
 </dd></dl>
 
 </dd></dl>
@@ -885,6 +901,10 @@ document.write(`
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.predicates.GateSetPredicate"><code class="docutils literal notranslate"><span class="pre">GateSetPredicate</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.predicates.GateSetPredicate.__init__"><code class="docutils literal notranslate"><span class="pre">GateSetPredicate.__init__()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.predicates.MaxNClRegPredicate"><code class="docutils literal notranslate"><span class="pre">MaxNClRegPredicate</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.predicates.MaxNClRegPredicate.__init__"><code class="docutils literal notranslate"><span class="pre">MaxNClRegPredicate.__init__()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.predicates.MaxNQubitsPredicate"><code class="docutils literal notranslate"><span class="pre">MaxNQubitsPredicate</span></code></a><ul class="nav section-nav flex-column">

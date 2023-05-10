@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Changelog &#8212; pytket 1.14.0 documentation</title>
+    <title>Changelog &#8212; pytket 1.15.0 documentation</title>
   
   
   
@@ -370,6 +370,7 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#may-2023">1.15.0 (May 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#april-2023">1.14.0 (April 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#march-2023">1.13.2 (March 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">1.13.1 (March 2023)</a></li>
@@ -447,11 +448,42 @@ document.write(`
                   
   <section id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this heading">#</a></h1>
+<section id="may-2023">
+<h2>1.15.0 (May 2023)<a class="headerlink" href="#may-2023" title="Permalink to this heading">#</a></h2>
+<p>Major new features:</p>
+<ul class="simple">
+<li><p>Add new <code class="docutils literal notranslate"><span class="pre">MultiplexedTensoredU2Box</span></code> that synthesises multiplexed tensor product of U2 gates.</p></li>
+</ul>
+<p>Minor new features:</p>
+<ul class="simple">
+<li><p>Add new <code class="docutils literal notranslate"><span class="pre">MaxNClRegPredicate</span></code> that checks that there are at most n classical
+registers in the circuit.</p></li>
+<li><p>Allow barriers in <code class="docutils literal notranslate"><span class="pre">QControlBoxes</span></code>. Barriers are left in place.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">Circuit.TK1</span></code> and <code class="docutils literal notranslate"><span class="pre">Circuit.TK2</span></code> methods that take <code class="docutils literal notranslate"><span class="pre">Qubit</span></code> arguments.</p></li>
+<li><p>Expose <code class="docutils literal notranslate"><span class="pre">CircuitRenderer</span></code> instance so users can set their own default options.</p></li>
+<li><p>QASM to circuit converters now recognise <code class="docutils literal notranslate"><span class="pre">Rxxyyzz</span></code> as <code class="docutils literal notranslate"><span class="pre">OpType.TK2</span></code>. Circuit
+to QASM converters with the “hqslib1” header now map <code class="docutils literal notranslate"><span class="pre">OpType.TK2</span></code> to <code class="docutils literal notranslate"><span class="pre">Rxxyyzz</span></code>.</p></li>
+<li><p>Add new transform <code class="docutils literal notranslate"><span class="pre">round_angles</span></code> and pass <code class="docutils literal notranslate"><span class="pre">RoundAngles</span></code> to remove angles
+below a threshold and/or round angles to a dyadic fraction of pi throughout a
+circuit.</p></li>
+</ul>
+<p>Fixes:</p>
+<ul class="simple">
+<li><p>Fix bug in <cite>get_operator_expectation_value()</cite> computation when operator
+includes <cite>Pauli.I</cite> terms.</p></li>
+<li><p>Fix bug in routing code occurring in <code class="docutils literal notranslate"><span class="pre">Circuits</span></code> with qubit wires with no operations
+and some (other or same) qubits pre-labelled as “Node” from the <code class="docutils literal notranslate"><span class="pre">Architecture</span></code> being routed to.</p></li>
+</ul>
+</section>
 <section id="april-2023">
 <h2>1.14.0 (April 2023)<a class="headerlink" href="#april-2023" title="Permalink to this heading">#</a></h2>
 <p>Major new features:</p>
 <ul class="simple">
 <li><p>Support for ARM Linux platforms.</p></li>
+<li><p>Updated implementation of <code class="docutils literal notranslate"><span class="pre">ToffoliBox</span></code> utilising multiplexors
+for improved decomposition.</p></li>
+<li><p>Add new <code class="docutils literal notranslate"><span class="pre">DiagonalBox</span></code> that synthesises a diagonal unitary matrix
+into a sequence of multiplexed-Rz gates.</p></li>
 </ul>
 </section>
 <section id="march-2023">
@@ -463,10 +495,6 @@ document.write(`
 <code class="docutils literal notranslate"><span class="pre">Architecture</span></code> classes to give custom name to constructed <code class="docutils literal notranslate"><span class="pre">Node</span></code>.</p></li>
 <li><p>Add <code class="docutils literal notranslate"><span class="pre">FlattenRelabelRegistersPass</span></code> to remove empty quantum wires and relabel all
 qubits to a default register named after a passed label.</p></li>
-<li><p>Updated implementation of <code class="docutils literal notranslate"><span class="pre">ToffoliBox</span></code> utilising multiplexors
-for improved decomposition.</p></li>
-<li><p>Add new <code class="docutils literal notranslate"><span class="pre">DiagonalBox</span></code> that synthesises a diagonal unitary matrix
-into a sequence of multiplexed-Rz gates.</p></li>
 </ul>
 <p>Fixes:</p>
 <ul class="simple">
@@ -1638,6 +1666,7 @@ circumstances.</p></li>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#may-2023">1.15.0 (May 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#april-2023">1.14.0 (April 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#march-2023">1.13.2 (March 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">1.13.1 (March 2023)</a></li>

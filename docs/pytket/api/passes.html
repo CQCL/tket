@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>pytket.passes &#8212; pytket 1.14.0 documentation</title>
+    <title>pytket.passes &#8212; pytket 1.15.0 documentation</title>
   
   
   
@@ -450,6 +450,7 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RemoveImplicitQubitPermutation"><code class="docutils literal notranslate"><span class="pre">RemoveImplicitQubitPermutation()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RemoveRedundancies"><code class="docutils literal notranslate"><span class="pre">RemoveRedundancies()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RenameQubitsPass"><code class="docutils literal notranslate"><span class="pre">RenameQubitsPass()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RoundAngles"><code class="docutils literal notranslate"><span class="pre">RoundAngles()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RoutingPass"><code class="docutils literal notranslate"><span class="pre">RoutingPass()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.SimplifyInitial"><code class="docutils literal notranslate"><span class="pre">SimplifyInitial()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.SimplifyMeasured"><code class="docutils literal notranslate"><span class="pre">SimplifyMeasured()</span></code></a></li>
@@ -1252,6 +1253,16 @@ document.write(`
 </dd></dl>
 
 <dl class="py function">
+<dt class="sig sig-object py" id="pytket.passes.RoundAngles">
+<span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">RoundAngles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_zeros</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.RoundAngles" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>only_zeros</strong> – if True, only round angles less than <span class="math notranslate nohighlight">\(\pi / 2^{n+1}\)</span> to zero, leave other angles alone (default False)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
 <dt class="sig sig-object py" id="pytket.passes.RoutingPass">
 <span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">RoutingPass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="architecture.html#pytket.architecture.Architecture" title="pytket.architecture.Architecture"><span class="pre">pytket.architecture.Architecture</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.RoutingPass" title="Permalink to this definition">#</a></dt>
 <dd><p>Construct a pass to route to the connectivity graph of an <code class="xref py py-class docutils literal notranslate"><span class="pre">Architecture</span></code>. Edge direction is ignored. Uses <code class="xref py py-class docutils literal notranslate"><span class="pre">LexiLabellingMethod</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">LexiRouteRoutingMethod</span></code>.
@@ -1592,6 +1603,7 @@ single qubit gateset.</p>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RemoveImplicitQubitPermutation"><code class="docutils literal notranslate"><span class="pre">RemoveImplicitQubitPermutation()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RemoveRedundancies"><code class="docutils literal notranslate"><span class="pre">RemoveRedundancies()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RenameQubitsPass"><code class="docutils literal notranslate"><span class="pre">RenameQubitsPass()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RoundAngles"><code class="docutils literal notranslate"><span class="pre">RoundAngles()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.RoutingPass"><code class="docutils literal notranslate"><span class="pre">RoutingPass()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.SimplifyInitial"><code class="docutils literal notranslate"><span class="pre">SimplifyInitial()</span></code></a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.passes.SimplifyMeasured"><code class="docutils literal notranslate"><span class="pre">SimplifyMeasured()</span></code></a></li>

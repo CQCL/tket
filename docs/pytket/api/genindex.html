@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Index &#8212; pytket 1.14.0 documentation</title>
+    <title>Index &#8212; pytket 1.15.0 documentation</title>
   
   
   
@@ -394,11 +394,21 @@ document.write(`
 </li>
         <li><a href="circuit_class.html#pytket.circuit.Circuit.__init__">(pytket.circuit.Circuit method)</a>
 </li>
+        <li><a href="circuit.html#pytket.circuit.ClassicalEvalOp.__init__">(pytket.circuit.ClassicalEvalOp method)</a>
+</li>
+        <li><a href="circuit.html#pytket.circuit.ClassicalOp.__init__">(pytket.circuit.ClassicalOp method)</a>
+</li>
+        <li><a href="circuit.html#pytket.circuit.CopyBitsOp.__init__">(pytket.circuit.CopyBitsOp method)</a>
+</li>
         <li><a href="circuit.html#pytket.circuit.DiagonalBox.__init__">(pytket.circuit.DiagonalBox method)</a>
 </li>
         <li><a href="circuit.html#pytket.circuit.ExpBox.__init__">(pytket.circuit.ExpBox method)</a>
 </li>
+        <li><a href="circuit.html#pytket.circuit.MultiBitOp.__init__">(pytket.circuit.MultiBitOp method)</a>
+</li>
         <li><a href="circuit.html#pytket.circuit.MultiplexedRotationBox.__init__">(pytket.circuit.MultiplexedRotationBox method)</a>
+</li>
+        <li><a href="circuit.html#pytket.circuit.MultiplexedTensoredU2Box.__init__">(pytket.circuit.MultiplexedTensoredU2Box method)</a>
 </li>
         <li><a href="circuit.html#pytket.circuit.MultiplexedU2Box.__init__">(pytket.circuit.MultiplexedU2Box method)</a>
 </li>
@@ -417,6 +427,10 @@ document.write(`
         <li><a href="circuit.html#pytket.circuit.Qubit.__init__">(pytket.circuit.Qubit method)</a>
 </li>
         <li><a href="circuit.html#pytket.circuit.QubitRegister.__init__">(pytket.circuit.QubitRegister method)</a>
+</li>
+        <li><a href="circuit.html#pytket.circuit.RangePredicateOp.__init__">(pytket.circuit.RangePredicateOp method)</a>
+</li>
+        <li><a href="circuit.html#pytket.circuit.SetBitsOp.__init__">(pytket.circuit.SetBitsOp method)</a>
 </li>
         <li><a href="circuit.html#pytket.circuit.StabiliserAssertionBox.__init__">(pytket.circuit.StabiliserAssertionBox method)</a>
 </li>
@@ -499,6 +513,8 @@ document.write(`
         <li><a href="predicates.html#pytket.predicates.DirectednessPredicate.__init__">(pytket.predicates.DirectednessPredicate method)</a>
 </li>
         <li><a href="predicates.html#pytket.predicates.GateSetPredicate.__init__">(pytket.predicates.GateSetPredicate method)</a>
+</li>
+        <li><a href="predicates.html#pytket.predicates.MaxNClRegPredicate.__init__">(pytket.predicates.MaxNClRegPredicate method)</a>
 </li>
         <li><a href="predicates.html#pytket.predicates.MaxNQubitsPredicate.__init__">(pytket.predicates.MaxNQubitsPredicate method)</a>
 </li>
@@ -677,6 +693,8 @@ document.write(`
 </li>
       <li><a href="backends.html#pytket.backends.backendinfo.BackendInfo.add_misc">add_misc() (pytket.backends.backendinfo.BackendInfo method)</a>
 </li>
+      <li><a href="circuit_class.html#pytket.circuit.Circuit.add_multiplexed_tensored_u2">add_multiplexed_tensored_u2() (pytket.circuit.Circuit method)</a>
+</li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.add_multiplexedrotation">add_multiplexedrotation() (pytket.circuit.Circuit method)</a>
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.add_multiplexedu2">add_multiplexedu2() (pytket.circuit.Circuit method)</a>
@@ -785,6 +803,8 @@ document.write(`
 </li>
       <li><a href="passes.html#pytket.passes.BasePass">BasePass (class in pytket.passes)</a>
 </li>
+      <li><a href="circuit.html#pytket.circuit.MultiBitOp.basic_op">basic_op (pytket.circuit.MultiBitOp property)</a>
+</li>
       <li><a href="zx.html#pytket.zx.Rewrite.basic_wires">basic_wires() (pytket.zx.Rewrite static method)</a>
 </li>
       <li><a href="circuit.html#pytket.circuit.BasisOrder">BasisOrder (class in pytket.circuit)</a>
@@ -889,9 +909,15 @@ document.write(`
 </li>
       <li><a href="zx.html#pytket.zx.circuit_to_zx">circuit_to_zx() (in module pytket.zx)</a>
 </li>
+      <li><a href="display.html#pytket.circuit.display.CircuitRenderer">CircuitRenderer (class in pytket.circuit.display)</a>
+</li>
       <li><a href="backends.html#pytket.backends.status.CircuitStatus">CircuitStatus (class in pytket.backends.status)</a>
 </li>
+      <li><a href="circuit.html#pytket.circuit.ClassicalEvalOp">ClassicalEvalOp (class in pytket.circuit)</a>
+</li>
       <li><a href="circuit.html#pytket.circuit.ClassicalExpBox">ClassicalExpBox (class in pytket.circuit)</a>
+</li>
+      <li><a href="circuit.html#pytket.circuit.ClassicalOp">ClassicalOp (class in pytket.circuit)</a>
 </li>
       <li><a href="predicates.html#pytket.predicates.CliffordCircuitPredicate">CliffordCircuitPredicate (class in pytket.predicates)</a>
 </li>
@@ -927,10 +953,10 @@ document.write(`
       </ul></li>
       <li><a href="utils.html#pytket.utils.compare_statevectors">compare_statevectors() (in module pytket.utils)</a>
 </li>
-      <li><a href="utils.html#pytket.utils.compare_unitaries">compare_unitaries() (in module pytket.utils)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="utils.html#pytket.utils.compare_unitaries">compare_unitaries() (in module pytket.utils)</a>
+</li>
       <li><a href="passes.html#pytket.passes.script.compilation_pass_from_script">compilation_pass_from_script() (in module pytket.passes.script)</a>
 </li>
       <li><a href="passes.html#pytket.passes.script.compilation_pass_grammar">compilation_pass_grammar() (in module pytket.passes.script)</a>
@@ -972,6 +998,8 @@ document.write(`
       <li><a href="utils.html#pytket.utils.distribution.convex_combination">convex_combination() (in module pytket.utils.distribution)</a>
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.copy">copy() (pytket.circuit.Circuit method)</a>
+</li>
+      <li><a href="circuit.html#pytket.circuit.CopyBitsOp">CopyBitsOp (class in pytket.circuit)</a>
 </li>
       <li><a href="utils.html#pytket.utils.spam.SpamCorrecter.correct_counts">correct_counts() (pytket.utils.spam.SpamCorrecter method)</a>
 </li>
@@ -1314,6 +1342,8 @@ document.write(`
 </li>
         <li><a href="circuit.html#pytket.circuit.MultiplexedRotationBox.get_circuit">(pytket.circuit.MultiplexedRotationBox method)</a>
 </li>
+        <li><a href="circuit.html#pytket.circuit.MultiplexedTensoredU2Box.get_circuit">(pytket.circuit.MultiplexedTensoredU2Box method)</a>
+</li>
         <li><a href="circuit.html#pytket.circuit.MultiplexedU2Box.get_circuit">(pytket.circuit.MultiplexedU2Box method)</a>
 </li>
         <li><a href="circuit.html#pytket.circuit.MultiplexorBox.get_circuit">(pytket.circuit.MultiplexorBox method)</a>
@@ -1341,6 +1371,8 @@ document.write(`
         <li><a href="tableau.html#pytket.tableau.UnitaryTableauBox.get_circuit">(pytket.tableau.UnitaryTableauBox method)</a>
 </li>
       </ul></li>
+      <li><a href="display.html#pytket.circuit.display.get_circuit_renderer">get_circuit_renderer() (in module pytket.circuit.display)</a>
+</li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.get_commands">get_commands() (pytket.circuit.Circuit method)</a>
 </li>
       <li><a href="backends.html#pytket.backends.Backend.get_compiled_circuit">get_compiled_circuit() (pytket.backends.Backend method)</a>
@@ -1406,6 +1438,8 @@ document.write(`
       <li><a href="circuit.html#pytket.circuit.MultiplexedRotationBox.get_op_map">get_op_map() (pytket.circuit.MultiplexedRotationBox method)</a>
 
       <ul>
+        <li><a href="circuit.html#pytket.circuit.MultiplexedTensoredU2Box.get_op_map">(pytket.circuit.MultiplexedTensoredU2Box method)</a>
+</li>
         <li><a href="circuit.html#pytket.circuit.MultiplexedU2Box.get_op_map">(pytket.circuit.MultiplexedU2Box method)</a>
 </li>
         <li><a href="circuit.html#pytket.circuit.MultiplexorBox.get_op_map">(pytket.circuit.MultiplexorBox method)</a>
@@ -1446,6 +1480,8 @@ document.write(`
       <li><a href="zx.html#pytket.zx.ZXDiagram.get_qtype">get_qtype() (pytket.zx.ZXDiagram method)</a>
 </li>
       <li><a href="utils.html#pytket.utils.Graph.get_qubit_graph">get_qubit_graph() (pytket.utils.Graph method)</a>
+</li>
+      <li><a href="display.html#pytket.circuit.display.CircuitRenderer.get_render_options">get_render_options() (pytket.circuit.display.CircuitRenderer method)</a>
 </li>
       <li><a href="backends.html#pytket.backends.Backend.get_result">get_result() (pytket.backends.Backend method)</a>
 
@@ -1595,15 +1631,17 @@ document.write(`
 </li>
       <li><a href="mapping.html#pytket.mapping.LexiRouteRoutingMethod">LexiRouteRoutingMethod (class in pytket.mapping)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="circuit.html#pytket.circuit.PhasePolyBox.linear_transformation">linear_transformation (pytket.circuit.PhasePolyBox property)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="placement.html#pytket.placement.LinePlacement">LinePlacement (class in pytket.placement)</a>
 </li>
       <li><a href="config.html#pytket.config.load_config_file">load_config_file() (in module pytket.config)</a>
 </li>
       <li><a href="classical.html#pytket.circuit.logic_exp.LogicExp">LogicExp (class in pytket.circuit.logic_exp)</a>
+</li>
+      <li><a href="circuit.html#pytket.circuit.RangePredicateOp.lower">lower (pytket.circuit.RangePredicateOp property)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1620,6 +1658,8 @@ document.write(`
 </li>
       </ul></li>
       <li><a href="mapping.html#pytket.mapping.MappingManager">MappingManager (class in pytket.mapping)</a>
+</li>
+      <li><a href="predicates.html#pytket.predicates.MaxNClRegPredicate">MaxNClRegPredicate (class in pytket.predicates)</a>
 </li>
       <li><a href="predicates.html#pytket.predicates.MaxNQubitsPredicate">MaxNQubitsPredicate (class in pytket.predicates)</a>
 </li>
@@ -1716,9 +1756,13 @@ document.write(`
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="circuit.html#pytket.circuit.MultiBitOp">MultiBitOp (class in pytket.circuit)</a>
+</li>
       <li><a href="mapping.html#pytket.mapping.MultiGateReorderRoutingMethod">MultiGateReorderRoutingMethod (class in pytket.mapping)</a>
 </li>
       <li><a href="circuit.html#pytket.circuit.MultiplexedRotationBox">MultiplexedRotationBox (class in pytket.circuit)</a>
+</li>
+      <li><a href="circuit.html#pytket.circuit.MultiplexedTensoredU2Box">MultiplexedTensoredU2Box (class in pytket.circuit)</a>
 </li>
       <li><a href="circuit.html#pytket.circuit.MultiplexedU2Box">MultiplexedU2Box (class in pytket.circuit)</a>
 </li>
@@ -1744,11 +1788,17 @@ document.write(`
 </li>
       <li><a href="circuit.html#pytket.circuit.WASMOp.n_i32">n_i32 (pytket.circuit.WASMOp property)</a>
 </li>
+      <li><a href="circuit.html#pytket.circuit.ClassicalOp.n_input_outputs">n_input_outputs (pytket.circuit.ClassicalOp property)</a>
+</li>
+      <li><a href="circuit.html#pytket.circuit.ClassicalOp.n_inputs">n_inputs (pytket.circuit.ClassicalOp property)</a>
+</li>
       <li><a href="backends.html#pytket.backends.backendinfo.BackendInfo.n_nodes">n_nodes (pytket.backends.backendinfo.BackendInfo property)</a>
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.n_nqb_gates">n_nqb_gates() (pytket.circuit.Circuit method)</a>
 </li>
       <li><a href="utils.html#pytket.utils.OutcomeArray.n_outcomes">n_outcomes (pytket.utils.OutcomeArray property)</a>
+</li>
+      <li><a href="circuit.html#pytket.circuit.ClassicalOp.n_outputs">n_outputs (pytket.circuit.ClassicalOp property)</a>
 </li>
       <li><a href="zx.html#pytket.zx.DirectedGen.n_ports">n_ports (pytket.zx.DirectedGen property)</a>
 
@@ -2274,6 +2324,8 @@ document.write(`
 <h2 id="R">R</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="circuit.html#pytket.circuit.RangePredicateOp">RangePredicateOp (class in pytket.circuit)</a>
+</li>
       <li><a href="config.html#pytket.config.pytket_config.PytketConfig.read_file">read_file() (pytket.config.pytket_config.PytketConfig class method)</a>
 </li>
       <li><a href="utils.html#pytket.utils.readout_counts">readout_counts() (in module pytket.utils)</a>
@@ -2394,9 +2446,9 @@ document.write(`
 </li>
       <li><a href="passes.html#pytket.passes.RenameQubitsPass">RenameQubitsPass() (in module pytket.passes)</a>
 </li>
-      <li><a href="display.html#pytket.circuit.display.render_circuit_as_html">render_circuit_as_html() (in module pytket.circuit.display)</a>
+      <li><a href="display.html#pytket.circuit.display.CircuitRenderer.render_circuit_as_html">render_circuit_as_html() (pytket.circuit.display.CircuitRenderer method)</a>
 </li>
-      <li><a href="display.html#pytket.circuit.display.render_circuit_jupyter">render_circuit_jupyter() (in module pytket.circuit.display)</a>
+      <li><a href="display.html#pytket.circuit.display.CircuitRenderer.render_circuit_jupyter">render_circuit_jupyter() (pytket.circuit.display.CircuitRenderer method)</a>
 </li>
       <li><a href="transform.html#pytket.transform.Transform.repeat">repeat() (pytket.transform.Transform static method)</a>
 
@@ -2423,6 +2475,10 @@ document.write(`
       <li><a href="zx.html#pytket.zx.Rewrite">Rewrite (class in pytket.zx)</a>
 </li>
       <li><a href="architecture.html#pytket.architecture.RingArch">RingArch (class in pytket.architecture)</a>
+</li>
+      <li><a href="transform.html#pytket.transform.Transform.round_angles">round_angles() (pytket.transform.Transform static method)</a>
+</li>
+      <li><a href="passes.html#pytket.passes.RoundAngles">RoundAngles() (in module pytket.passes)</a>
 </li>
       <li><a href="mapping.html#pytket.mapping.MappingManager.route_circuit">route_circuit() (pytket.mapping.MappingManager method)</a>
 </li>
@@ -2490,6 +2546,8 @@ document.write(`
 </li>
       <li><a href="logging.html#pytket.logging.set_level">set_level() (in module pytket.logging)</a>
 </li>
+      <li><a href="display.html#pytket.circuit.display.CircuitRenderer.set_render_options">set_render_options() (pytket.circuit.display.CircuitRenderer method)</a>
+</li>
       <li><a href="classical.html#pytket.circuit.logic_exp.LogicExp.set_value">set_value() (pytket.circuit.logic_exp.LogicExp method)</a>
 </li>
       <li><a href="zx.html#pytket.zx.ZXDiagram.set_vertex_ZXGen">set_vertex_ZXGen() (pytket.zx.ZXDiagram method)</a>
@@ -2497,6 +2555,8 @@ document.write(`
       <li><a href="zx.html#pytket.zx.ZXDiagram.set_wire_qtype">set_wire_qtype() (pytket.zx.ZXDiagram method)</a>
 </li>
       <li><a href="zx.html#pytket.zx.ZXDiagram.set_wire_type">set_wire_type() (pytket.zx.ZXDiagram method)</a>
+</li>
+      <li><a href="circuit.html#pytket.circuit.SetBitsOp">SetBitsOp (class in pytket.circuit)</a>
 </li>
       <li><a href="backends.html#pytket.backends.backendresult.StoredResult.shots">shots (pytket.backends.backendresult.StoredResult attribute)</a>
 </li>
@@ -2526,10 +2586,10 @@ document.write(`
 </li>
       <li><a href="passes.html#pytket.passes.SquashRzPhasedX">SquashRzPhasedX() (in module pytket.passes)</a>
 </li>
-      <li><a href="passes.html#pytket.passes.SquashTK1">SquashTK1() (in module pytket.passes)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="passes.html#pytket.passes.SquashTK1">SquashTK1() (in module pytket.passes)</a>
+</li>
       <li><a href="architecture.html#pytket.architecture.SquareGrid.squind_to_qind">squind_to_qind() (pytket.architecture.SquareGrid method)</a>
 </li>
       <li><a href="circuit.html#pytket.circuit.StabiliserAssertionBox">StabiliserAssertionBox (class in pytket.circuit)</a>
@@ -2740,10 +2800,10 @@ document.write(`
 </li>
       <li><a href="circuit.html#pytket.circuit.Unitary2qBox">Unitary2qBox (class in pytket.circuit)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="circuit.html#pytket.circuit.Unitary3qBox">Unitary3qBox (class in pytket.circuit)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="tableau.html#pytket.tableau.UnitaryTableau">UnitaryTableau (class in pytket.tableau)</a>
 </li>
       <li><a href="tableau.html#pytket.tableau.UnitaryTableauBox">UnitaryTableauBox (class in pytket.tableau)</a>
@@ -2757,6 +2817,8 @@ document.write(`
       <li><a href="config.html#pytket.config.pytket_config.PytketExtConfig.update_default_config_file">update_default_config_file() (pytket.config.pytket_config.PytketExtConfig method)</a>
 </li>
       <li><a href="config.html#pytket.config.pytket_config.PytketExtConfig.update_pytket_config">update_pytket_config() (pytket.config.pytket_config.PytketExtConfig method)</a>
+</li>
+      <li><a href="circuit.html#pytket.circuit.RangePredicateOp.upper">upper (pytket.circuit.RangePredicateOp property)</a>
 </li>
       <li><a href="predicates.html#pytket.predicates.UserDefinedPredicate">UserDefinedPredicate (class in pytket.predicates)</a>
 </li>
@@ -2776,6 +2838,8 @@ document.write(`
 </li>
       <li><a href="circuit.html#pytket.circuit.Conditional.value">value (pytket.circuit.Conditional property)</a>
 </li>
+      <li><a href="circuit.html#pytket.circuit.SetBitsOp.values">values (pytket.circuit.SetBitsOp property)</a>
+</li>
       <li><a href="utils.html#pytket.utils.distribution.ProbabilityDistribution.variance">variance() (pytket.utils.distribution.ProbabilityDistribution method)</a>
 </li>
   </ul></td>
@@ -2790,7 +2854,7 @@ document.write(`
       </ul></li>
       <li><a href="zx.html#pytket.zx.ZXDiagram.vertices">vertices (pytket.zx.ZXDiagram property)</a>
 </li>
-      <li><a href="display.html#pytket.circuit.display.view_browser">view_browser() (in module pytket.circuit.display)</a>
+      <li><a href="display.html#pytket.circuit.display.CircuitRenderer.view_browser">view_browser() (pytket.circuit.display.CircuitRenderer method)</a>
 </li>
       <li><a href="utils.html#pytket.utils.Graph.view_DAG">view_DAG() (pytket.utils.Graph method)</a>
 </li>

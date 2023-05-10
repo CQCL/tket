@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>pytket &#8212; pytket 1.14.0 documentation</title>
+    <title>pytket &#8212; pytket 1.15.0 documentation</title>
   
   
   
@@ -538,9 +538,16 @@ representations, or some new backends to submit circuits to within <code class="
 <li class="toctree-l2"><a class="reference internal" href="circuit.html#pytket.circuit.ProjectorAssertionBox"><code class="docutils literal notranslate"><span class="pre">ProjectorAssertionBox</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="circuit.html#pytket.circuit.StabiliserAssertionBox"><code class="docutils literal notranslate"><span class="pre">StabiliserAssertionBox</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="circuit.html#pytket.circuit.WASMOp"><code class="docutils literal notranslate"><span class="pre">WASMOp</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="circuit.html#pytket.circuit.MultiBitOp"><code class="docutils literal notranslate"><span class="pre">MultiBitOp</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="circuit.html#pytket.circuit.SetBitsOp"><code class="docutils literal notranslate"><span class="pre">SetBitsOp</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="circuit.html#pytket.circuit.ClassicalEvalOp"><code class="docutils literal notranslate"><span class="pre">ClassicalEvalOp</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="circuit.html#pytket.circuit.ClassicalOp"><code class="docutils literal notranslate"><span class="pre">ClassicalOp</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="circuit.html#pytket.circuit.CopyBitsOp"><code class="docutils literal notranslate"><span class="pre">CopyBitsOp</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="circuit.html#pytket.circuit.RangePredicateOp"><code class="docutils literal notranslate"><span class="pre">RangePredicateOp</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="circuit.html#pytket.circuit.MultiplexorBox"><code class="docutils literal notranslate"><span class="pre">MultiplexorBox</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="circuit.html#pytket.circuit.MultiplexedRotationBox"><code class="docutils literal notranslate"><span class="pre">MultiplexedRotationBox</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="circuit.html#pytket.circuit.MultiplexedU2Box"><code class="docutils literal notranslate"><span class="pre">MultiplexedU2Box</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="circuit.html#pytket.circuit.MultiplexedTensoredU2Box"><code class="docutils literal notranslate"><span class="pre">MultiplexedTensoredU2Box</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="circuit.html#pytket.circuit.StatePreparationBox"><code class="docutils literal notranslate"><span class="pre">StatePreparationBox</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="circuit.html#pytket.circuit.DiagonalBox"><code class="docutils literal notranslate"><span class="pre">DiagonalBox</span></code></a></li>
 </ul>
@@ -601,6 +608,7 @@ representations, or some new backends to submit circuits to within <code class="
 <li class="toctree-l2"><a class="reference internal" href="passes.html#pytket.passes.RemoveImplicitQubitPermutation"><code class="docutils literal notranslate"><span class="pre">RemoveImplicitQubitPermutation()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="passes.html#pytket.passes.RemoveRedundancies"><code class="docutils literal notranslate"><span class="pre">RemoveRedundancies()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="passes.html#pytket.passes.RenameQubitsPass"><code class="docutils literal notranslate"><span class="pre">RenameQubitsPass()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="passes.html#pytket.passes.RoundAngles"><code class="docutils literal notranslate"><span class="pre">RoundAngles()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="passes.html#pytket.passes.RoutingPass"><code class="docutils literal notranslate"><span class="pre">RoutingPass()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="passes.html#pytket.passes.SimplifyInitial"><code class="docutils literal notranslate"><span class="pre">SimplifyInitial()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="passes.html#pytket.passes.SimplifyMeasured"><code class="docutils literal notranslate"><span class="pre">SimplifyMeasured()</span></code></a></li>
@@ -627,6 +635,7 @@ representations, or some new backends to submit circuits to within <code class="
 <li class="toctree-l2"><a class="reference internal" href="predicates.html#pytket.predicates.DefaultRegisterPredicate"><code class="docutils literal notranslate"><span class="pre">DefaultRegisterPredicate</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="predicates.html#pytket.predicates.DirectednessPredicate"><code class="docutils literal notranslate"><span class="pre">DirectednessPredicate</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="predicates.html#pytket.predicates.GateSetPredicate"><code class="docutils literal notranslate"><span class="pre">GateSetPredicate</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="predicates.html#pytket.predicates.MaxNClRegPredicate"><code class="docutils literal notranslate"><span class="pre">MaxNClRegPredicate</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="predicates.html#pytket.predicates.MaxNQubitsPredicate"><code class="docutils literal notranslate"><span class="pre">MaxNQubitsPredicate</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="predicates.html#pytket.predicates.MaxTwoQubitGatesPredicate"><code class="docutils literal notranslate"><span class="pre">MaxTwoQubitGatesPredicate</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="predicates.html#pytket.predicates.NoBarriersPredicate"><code class="docutils literal notranslate"><span class="pre">NoBarriersPredicate</span></code></a></li>
