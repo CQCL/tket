@@ -100,7 +100,7 @@ class TketConan(ConanFile):
             self.test_requires("rapidcheck/cci.20220514")
 
     def include_tests(self):
-        return not self.conf.get("tools.build:skip_test", default=True)
+        return not self.conf.get("tools.build:skip_test", default=False)
 
     def test_folder(self):
         if self.settings.os == "Windows":
