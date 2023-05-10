@@ -12,6 +12,7 @@
         "ConnectivityPredicate",
         "DirectednessPredicate",
         "MaxNQubitsPredicate",
+        "MaxNClRegPredicate",
         "NoClassicalControlPredicate",
         "NoFastFeedforwardPredicate",
         "NoClassicalBitsPredicate",
@@ -135,6 +136,21 @@
         "maxProperties": 2
       }
     },
+    {
+      "if": {
+        "properties": {
+          "type": {
+            "const": "MaxNClRegPredicate"
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "n_cl_reg"
+        ],
+        "maxProperties": 2
+      }
+    },    
     {
       "if": {
         "properties": {

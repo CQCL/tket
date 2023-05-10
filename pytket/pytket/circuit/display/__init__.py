@@ -71,8 +71,67 @@ RenderCircuit = Union[Dict[str, Union[str, float, dict]], Circuit]
 class CircuitRenderer:
     """Class to manage circuit rendering within a given jinja2 environment."""
 
+    _ALLOWED_RENDER_OPTIONS = {
+        "zx_style": "zxStyle",
+        "condense_c_bits": "condenseCBits",
+        "recursive": "recursive",
+        "condensed": "condensed",
+        "dark_theme": "darkTheme",
+        "transparent_bg": "transparentBg",
+        "crop_params": "cropParams",
+    }
+    zx_style: Optional[bool] = None
+    condense_c_bits: Optional[bool] = None
+    recursive: Optional[bool] = None
+    condensed: Optional[bool] = None
+    dark_theme: Optional[bool] = None
+    transparent_bg: Optional[bool] = None
+    crop_params: Optional[bool] = None
+
+    _ALLOWED_CONFIG_OPTIONS = ["min_height", "min_width"]
+    min_height: str = "400px"
+    min_width: str = "500px"
+
     def __init__(self, env: Environment):
         self.env = env
+
+    def set_render_options(self, **kwargs: Union[bool, str]) -> None:
+        """
+        Set rendering defaults.
+
+        :param min_height: str, initial height of circuit display.
+        :param min_width: str, initial width of circuit display.
+        :param zx_style: bool, display zx style gates where possible.
+        :param condense_c_bits: bool, collapse classical bits into a single wire.
+        :param recursive: bool, display nested circuits inline.
+        :param condensed: bool, display circuit on one line only.
+        :param dark_theme: bool, use dark mode.
+        :param transparent_bg: bool, remove the circuit background.
+        :param crop_params: bool, shorten parameter expressions for display.
+        """
+        for key, val in kwargs.items():
+            if key in self._ALLOWED_RENDER_OPTIONS and (
+                isinstance(val, bool) or val is None
+            ):
+                self.__setattr__(key, val)
+            elif key in self._ALLOWED_CONFIG_OPTIONS and isinstance(val, str):
+                self.__setattr__(key, val)
+
+    def get_render_options(
+        self, full: bool = False, _for_js: bool = False
+    ) -> Dict[str, bool]:
+        """
+        Get a dict of the current render options.
+
+        :param full: whether to list all available options, even if not set.
+        :param _for_js: Whether to convert options to js-compatible format,
+            for internal use only.
+        """
+        return {
+            (js_key if _for_js else key): self.__getattribute__(key)
+            for key, js_key in self._ALLOWED_RENDER_OPTIONS.items()
+            if full or self.__getattribute__(key) is not None
+        }
 
     def render_circuit_as_html(
         self, circuit: RenderCircuit, jupyter: bool = False
@@ -94,6 +153,9 @@ class CircuitRenderer:
                 "circuit_json": json.dumps(circuit.to_dict()),
                 "uid": uid,
                 "jupyter": jupyter,
+                "display_options": json.dumps(self.get_render_options(_for_js=True)),
+                "min_height": self.min_height,
+                "min_width": self.min_width,
             }
         )
         if jupyter:
@@ -112,7 +174,7 @@ class CircuitRenderer:
             fp.close()
             try:
                 with warnings.catch_warnings(record=True):  # supress iframe suggestion
-                    display(HTML(html))
+                    display(HTML(html))  # type: ignore
                 return None
             finally:
                 # Wait to make sure the file has time to be loaded first.
@@ -155,9 +217,13 @@ class CircuitRenderer:
             os.remove(fp.name)
 
 
-# Export the render functions scoped to the default jinja environment.
-circuit_renderer = CircuitRenderer(jinja_env)
+def get_circuit_renderer() -> CircuitRenderer:
+    """Get a configurable instance of the circuit renderer."""
+    return CircuitRenderer(jinja_env)
 
-render_circuit_as_html = circuit_renderer.render_circuit_as_html
-render_circuit_jupyter = circuit_renderer.render_circuit_jupyter
-view_browser = circuit_renderer.view_browser
+
+# Export the render functions scoped to the default jinja environment.
+_default_circuit_renderer = get_circuit_renderer()
+render_circuit_as_html = _default_circuit_renderer.render_circuit_as_html
+render_circuit_jupyter = _default_circuit_renderer.render_circuit_jupyter
+view_browser = _default_circuit_renderer.view_browser

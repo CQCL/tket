@@ -14,8 +14,10 @@
 
 #include "Transformations/BasicOptimisation.hpp"
 
+#include <cmath>
 #include <optional>
 #include <tkassert/Assert.hpp>
+#include <vector>
 
 #include "Characterisation/DeviceCharacterisation.hpp"
 #include "Characterisation/ErrorTypes.hpp"
@@ -25,7 +27,9 @@
 #include "Transformations/Decomposition.hpp"
 #include "Transformations/Transform.hpp"
 #include "Utils/EigenConfig.hpp"
+#include "Utils/Expression.hpp"
 #include "Utils/MatrixAnalysis.hpp"
+#include "Utils/UnitID.hpp"
 
 namespace tket::Transforms {
 
@@ -107,9 +111,9 @@ static bool commute_singles_to_front(Circuit &circ) {
 // helper class subcircuits representing 2qb interactions
 struct Interaction {
   Interaction(const Qubit &_q0, const Qubit &_q1) : q0(_q0), q1(_q1) {}
-  Qubit q0;            // Qubit numbers
+  Qubit q0;  // Qubit numbers
   Qubit q1;
-  Edge e0;             // In edges starting interaction
+  Edge e0;  // In edges starting interaction
   Edge e1;
   unsigned count;      // Number of two qubit gates in interaction
   VertexSet vertices;  // Vertices in interaction subcircuit
@@ -696,6 +700,70 @@ Transform normalise_TK2() {
         bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
 
     return success;
+  });
+}
+
+Transform round_angles(unsigned n, bool only_zeros) {
+  if (n >= 32) {
+    throw std::invalid_argument("Precision parameter must be less than 32.");
+  }
+  return Transform([n, only_zeros](Circuit &circ) {
+    bool changed = false;
+    VertexSet bin;
+    const unsigned pow2n = 1 << n;
+    BGL_FORALL_VERTICES(v, circ.dag, DAG) {
+      Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+      bool conditional = op->get_type() == OpType::Conditional;
+      if (conditional) {
+        const Conditional &cond = static_cast<const Conditional &>(*op);
+        op = cond.get_op();
+      }
+      if (op->get_desc().is_gate()) {
+        std::vector<Expr> params = op->get_params();
+        if (!params.empty()) {
+          std::vector<Expr> new_params;
+          for (const Expr &e : params) {
+            std::optional<double> eval = eval_expr(e);
+            if (eval) {
+              if (only_zeros) {
+                new_params.push_back(
+                    pow2n * std::abs(eval.value()) < 0.5 ? 0. : e);
+              } else {
+                new_params.push_back(nearbyint(pow2n * eval.value()) / pow2n);
+              }
+            } else {
+              new_params.push_back(e);
+            }
+          }
+          if (params != new_params) {
+            unsigned n_qb = op->n_qubits();
+            Circuit replacement(n_qb);
+            if (std::any_of(
+                    new_params.begin(), new_params.end(),
+                    [](const Expr &e) { return (e != 0.); })) {
+              std::vector<Qubit> args;
+              for (unsigned i = 0; i < n_qb; i++) {
+                args.push_back(Qubit(i));
+              }
+              replacement.add_op(op->get_type(), new_params, args);
+            }
+            if (conditional) {
+              circ.substitute_conditional(
+                  replacement, v, Circuit::VertexDeletion::No);
+            } else {
+              circ.substitute(replacement, v, Circuit::VertexDeletion::No);
+            }
+            bin.insert(v);
+            changed = true;
+          }
+        }
+      }
+    }
+
+    circ.remove_vertices(
+        bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
+
+    return changed;
   });
 }
 

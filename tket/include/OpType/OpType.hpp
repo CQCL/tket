@@ -636,6 +636,11 @@ enum class OpType {
   MultiplexedU2Box,
 
   /**
+   * See \ref MultiplexedTensoredU2Box
+   */
+  MultiplexedTensoredU2Box,
+
+  /**
    * See \ref StatePreparationBox
    */
   StatePreparationBox,

@@ -19,7 +19,7 @@ from conan.errors import ConanInvalidConfiguration
 
 class TketConan(ConanFile):
     name = "tket"
-    version = "1.2.0"
+    version = "1.2.7"
     package_type = "library"
     license = "Apache 2"
     homepage = "https://github.com/CQCL/tket"
@@ -77,7 +77,7 @@ class TketConan(ConanFile):
         # libraries installed from remote:
         # https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
         self.requires("boost/1.81.0", transitive_headers=True)
-        self.requires("symengine/0.9.0", transitive_headers=True)
+        self.requires("symengine/0.10.1", transitive_headers=True)
         self.requires("eigen/3.4.0", transitive_headers=True)
         self.requires("nlohmann_json/3.11.2", transitive_headers=True)
         self.requires("tklog/0.3.3@tket/stable")

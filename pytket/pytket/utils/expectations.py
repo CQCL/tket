@@ -167,8 +167,13 @@ def get_operator_expectation_value(
     else:
         energy = 0
     if not partition_strat:
-        coeffs = [complex(c) for p, c in operator._dict.items() if (p != id_string)]
-        pauli_circuits = list(_all_pauli_measurements(operator, state_circuit))
+        operator_without_id = QubitPauliOperator(
+            {p: c for p, c in operator._dict.items() if (p != id_string)}
+        )
+        coeffs = [complex(c) for c in operator_without_id._dict.values()]
+        pauli_circuits = list(
+            _all_pauli_measurements(operator_without_id, state_circuit)
+        )
 
         handles = backend.process_circuits(
             backend.get_compiled_circuits(pauli_circuits),

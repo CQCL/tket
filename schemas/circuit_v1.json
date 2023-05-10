@@ -522,7 +522,15 @@
                 }
               },
               {
-                "$ref": "#/definitions/operation"
+                "anyOf": [
+                  {"$ref": "#/definitions/operation"},
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/operation"
+                    }
+                  }
+                ]
               }
             ]
           }
@@ -705,6 +713,20 @@
             "required": [
               "op_map",
               "impl_diag"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "MultiplexedTensoredU2Box"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "op_map"
             ]
           }
         },

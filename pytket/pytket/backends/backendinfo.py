@@ -146,6 +146,7 @@ class BackendInfo:
     :param version: Pytket-extension version installed when creating object.
     :param architecture: Device connectivity.
     :param gate_set: Set of supported gate types.
+    :param n_cl_reg: number of classical registers supported.
     :param supports_fast_feedforward: Flag for hardware support of fast feedforward.
     :param supports_reset: Flag for hardware support of reset operation
     :param supports_midcircuit_meas: Flag for hardware support of midcircuit
@@ -173,6 +174,7 @@ class BackendInfo:
     # hardware constraints
     architecture: Union[Architecture, FullyConnected]
     gate_set: Set[OpType]
+    n_cl_reg: Optional[int] = None
     # additional feature support
     supports_fast_feedforward: bool = False
     supports_reset: bool = False

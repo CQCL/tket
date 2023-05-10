@@ -671,8 +671,17 @@ static Circuit with_controls_symbolic(const Circuit &c, unsigned n_controls) {
   Circuit c2(n_controls + c_n_qubits);
   for (Circuit::CommandIterator cit = c1.begin(); cit != c1.end(); ++cit) {
     Op_ptr op = cit->get_op_ptr();
+    OpType optype = op->get_type();
     unit_vector_t args = cit->get_args();
     unsigned n_args = args.size();
+    if (optype == OpType::Barrier) {
+      qubit_vector_t barrier_args(n_args);
+      for (unsigned i = 0; i < n_args; i++) {
+        barrier_args[i] = Qubit(n_controls + args[i].index()[0]);
+      }
+      c2.add_op(op, barrier_args);
+      continue;
+    }
     unsigned n_new_args = n_controls + n_args;
     qubit_vector_t new_args(n_new_args);
     for (unsigned i = 0; i < n_controls; i++) {
@@ -681,7 +690,6 @@ static Circuit with_controls_symbolic(const Circuit &c, unsigned n_controls) {
     for (unsigned i = 0; i < n_args; i++) {
       new_args[n_controls + i] = Qubit(n_controls + args[i].index()[0]);
     }
-    OpType optype = op->get_type();
     std::vector<Expr> params = op->get_params();
     switch (optype) {
       case OpType::noop:
@@ -787,6 +795,7 @@ static Eigen::Matrix2cd get_target_op_matrix(const Op_ptr &op) {
 }
 
 // A gate block containing Cn* gates that can be merged as a single CnU gate
+// a block can also contain a single Barrier, which will be left in place
 struct CnGateBlock {
   enum class MergeMode { append, prepend };
   CnGateBlock(const Command &command) {
@@ -799,10 +808,12 @@ struct CnGateBlock {
       control_qubits.insert(args[i].index()[0]);
     }
     target_qubit = args.back().index()[0];
+    is_barrier = (op->get_type() == OpType::Barrier);
     is_symmetric =
         (op->get_type() == OpType::CZ || op->get_type() == OpType::CnZ ||
          op->get_type() == OpType::CU1);
-    color = as_gate_ptr(op)->commuting_basis(args.size() - 1);
+    color = is_barrier ? std::nullopt
+                       : as_gate_ptr(op)->commuting_basis(args.size() - 1);
     if (color == Pauli::I) {
       throw std::invalid_argument(
           "CnGateBlock doesn't accept multi-controlled identity gate.");
@@ -811,6 +822,18 @@ struct CnGateBlock {
 
   // Check whether commute with another CnGateBlock
   bool commutes_with(const CnGateBlock &other) {
+    if (is_barrier || other.is_barrier) {
+      // they commute only if they have no args in common
+      std::set<unsigned> common_args;
+      std::set<unsigned> args = control_qubits;
+      args.insert(target_qubit);
+      std::set<unsigned> other_args = other.control_qubits;
+      other_args.insert(other.target_qubit);
+      std::set_intersection(
+          args.begin(), args.end(), other_args.begin(), other_args.end(),
+          std::inserter(common_args, common_args.begin()));
+      return common_args.empty();
+    }
     if (target_qubit == other.target_qubit) {
       return (color == other.color && color != std::nullopt);
     }
@@ -826,6 +849,9 @@ struct CnGateBlock {
 
   // Check whether can be merged with another CnGateBlock
   bool is_mergeable_with(const CnGateBlock &other) {
+    if (is_barrier || other.is_barrier) {
+      return false;
+    }
     // check if sizes match
     if (control_qubits.size() != other.control_qubits.size()) {
       return false;
@@ -877,6 +903,8 @@ struct CnGateBlock {
   unsigned target_qubit;
   // control indices
   std::set<unsigned> control_qubits;
+  // whether the block is used as a barrier
+  bool is_barrier;
   // whether the target can act on any of its qubits
   bool is_symmetric;
   // color of the target qubit
@@ -916,7 +944,9 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
       Circuit replacement = with_CX(as_gate_ptr(op));
       c1.substitute(replacement, v, Circuit::VertexDeletion::No);
       bin.push_back(v);
-    } else if (optype != OpType::Input && optype != OpType::Output) {
+    } else if (
+        optype != OpType::Input && optype != OpType::Output &&
+        optype != OpType::Barrier) {
       throw CircuitInvalidity(
           "Cannot construct the controlled version of " + op->get_name());
     }
@@ -933,7 +963,10 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
 
   for (const Command &cmd : commands) {
     // if the gate is an identity up to a phase, add it as a controlled phase
-    std::optional<double> phase = cmd.get_op_ptr()->is_identity();
+    std::optional<double> phase = std::nullopt;
+    if (cmd.get_op_ptr()->get_type() != OpType::Barrier) {
+      phase = cmd.get_op_ptr()->is_identity();
+    }
     if (phase != std::nullopt) {
       controlled_phase += phase.value();
     } else {
@@ -985,7 +1018,8 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
       }
     }
   }
-  // 3. Add each block to c2 either as a CnX, CnZ, CnY or a CnU decomposition
+  // 3. Add each block to c2 either as a CnX, CnZ, CnY, CnU decomposition
+  // or an in-place Barrier
   Circuit c2(n_controls + c1.n_qubits());
   const static Eigen::Matrix2cd X = Gate(OpType::X, {}, 1).get_unitary();
   const static Eigen::Matrix2cd Y = Gate(OpType::Y, {}, 1).get_unitary();
@@ -993,6 +1027,17 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
 
   for (const CnGateBlock &b : blocks) {
     if (b.ops.empty()) {
+      continue;
+    }
+    // Barriers are left in place
+    if (b.is_barrier) {
+      qubit_vector_t new_args;
+      for (const unsigned i : b.control_qubits) {
+        new_args.push_back(Qubit(i + n_controls));
+      }
+      new_args.push_back(Qubit(b.target_qubit + n_controls));
+      TKET_ASSERT(b.ops.size() == 1);
+      c2.add_op(b.ops[0], new_args);
       continue;
     }
     // Computes the target unitary

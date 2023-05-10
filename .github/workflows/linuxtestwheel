@@ -16,17 +16,11 @@
 
 set -evu
 
-for pyX in $PY_VERS
+export PYEX=/opt/python/${PY_TAG}/bin/python
+for whl in `ls /tket/wheelhouse/`
 do
-    export PYEX=/opt/python/${pyX}/bin/python
-    export PYVER=`${PYEX} -c 'import sys; print(".".join(map(str, sys.version_info[:3])))'`
-    for whl in `ls /tket/wheelhouse/${PYVER}`
-    do
-        ${PYEX} -m pip install /tket/wheelhouse/${PYVER}/${whl}
-    done
-    cd /tket/pytket/tests
-    ${PYEX} -m pip install -r requirements.txt
-    /opt/python/${pyX}/bin/pytest --ignore=simulator/
+    ${PYEX} -m pip install /tket/wheelhouse/${whl}
 done
-
-rm -rf /tket/wheelhouse
+cd /tket/pytket/tests
+${PYEX} -m pip install -r requirements.txt
+/opt/python/${PY_TAG}/bin/pytest --ignore=simulator/

@@ -27,6 +27,12 @@ namespace tket {
 typedef std::map<std::vector<bool>, Op_ptr> ctrl_op_map_t;
 
 /**
+ * @brief Map bitstrings to tensored Ops
+ *
+ */
+typedef std::map<std::vector<bool>, std::vector<Op_ptr>> ctrl_tensored_op_map_t;
+
+/**
  * Multiplexed ops
  */
 class MultiplexorBox : public Box {
@@ -168,7 +174,7 @@ class MultiplexedU2Box : public Box {
    * or Unitary1QBox.
    *
    * @param op_map
-   * @param impl_diag whether to implement the final MultiplexedRotationBox,
+   * @param impl_diag whether to implement the final DiagonalBox,
    * default to true
    */
   explicit MultiplexedU2Box(const ctrl_op_map_t &op_map, bool impl_diag = true);
@@ -209,12 +215,20 @@ class MultiplexedU2Box : public Box {
 
   static nlohmann::json to_json(const Op_ptr &op);
 
+  /**
+   * @brief Decompose the multiplexor into a sequence of interleaving CX and
+   * single qubit gates followed by a diagonal matrix
+   *
+   * @return std::pair<Circuit, Eigen::VectorXcd>
+   */
+  std::pair<Circuit, Eigen::VectorXcd> decompose() const;
+
  protected:
   /**
    * @brief Implement multiplexed U2 gate
    * (i.e. uniformly controlled U2 gate (UCU2))
    * with 2^ctrl_qubits SQ gates, 2^ctrl_qubits CXs, and a
-   * MultiplexedRotationBox at the end
+   * DiagonalBox at the end
    *
    * https://arxiv.org/abs/quant-ph/0410066
    */
@@ -224,5 +238,65 @@ class MultiplexedU2Box : public Box {
   unsigned n_controls_;
   ctrl_op_map_t op_map_;
   bool impl_diag_;
+};
+
+/**
+ * Multiplexed-Tensored-U2 gate
+ */
+class MultiplexedTensoredU2Box : public Box {
+ public:
+  /**
+   * @brief Construct from a op_map. Ops must be single-qubit unitary gate types
+   * or Unitary1QBox.
+   *
+   * @param op_map
+   */
+  explicit MultiplexedTensoredU2Box(const ctrl_tensored_op_map_t &op_map);
+  /**
+   * Copy constructor
+   */
+  MultiplexedTensoredU2Box(const MultiplexedTensoredU2Box &other);
+
+  ~MultiplexedTensoredU2Box() override {}
+
+  Op_ptr symbol_substitution(
+      const SymEngine::map_basic_basic &sub_map) const override;
+
+  SymSet free_symbols() const override;
+
+  ctrl_tensored_op_map_t get_ops() const { return op_map_; }
+
+  /**
+   * Equality check between two MultiplexedTensoredU2Box instances
+   */
+  bool is_equal(const Op &op_other) const override {
+    const MultiplexedTensoredU2Box &other =
+        dynamic_cast<const MultiplexedTensoredU2Box &>(op_other);
+    return id_ == other.get_id();
+  }
+
+  Op_ptr dagger() const override;
+
+  Op_ptr transpose() const override;
+
+  op_signature_t get_signature() const override;
+
+  ctrl_tensored_op_map_t get_op_map() const { return op_map_; }
+
+  static Op_ptr from_json(const nlohmann::json &j);
+
+  static nlohmann::json to_json(const Op_ptr &op);
+
+ protected:
+  /**
+   * @brief Implement multiplexed-tensored-U2 gate by decomposing a sequence of
+   * MultiplexedU2 gate and moving the diagonal operators to the end.
+   */
+  void generate_circuit() const override;
+
+ private:
+  unsigned n_controls_;
+  unsigned n_targets_;
+  ctrl_tensored_op_map_t op_map_;
 };
 }  // namespace tket

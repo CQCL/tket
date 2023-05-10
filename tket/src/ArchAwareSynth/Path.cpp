@@ -102,7 +102,7 @@ PathHandler PathHandler::construct_acyclic_handler() const {
   std::list<unsigned> current_layer_vertices{centre_node};
   std::list<unsigned> next_layer_vertices;
   std::vector<std::pair<unsigned, unsigned>> parents_neighbours(
-      n);     // pair(num_neighbours, parent vertex)
+      n);  // pair(num_neighbours, parent vertex)
   std::vector<bool> vertices_in_tree(
       n, 0);  // track which vertices are in the acyclic graph
   vertices_in_tree[centre_node] = 1;

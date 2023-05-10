@@ -30,6 +30,7 @@ from pytket.circuit import (  # type: ignore
     MultiplexorBox,
     MultiplexedRotationBox,
     MultiplexedU2Box,
+    MultiplexedTensoredU2Box,
     StatePreparationBox,
     DiagonalBox,
     ExpBox,
@@ -44,7 +45,7 @@ from pytket.circuit import (  # type: ignore
     BitRegister,
     QubitRegister,
 )
-from pytket.circuit.display import render_circuit_as_html
+from pytket.circuit.display import get_circuit_renderer, render_circuit_as_html
 
 from pytket.pauli import Pauli  # type: ignore
 from pytket.passes import PauliSimp, CliffordSimp, SynthesiseTket, DecomposeBoxes, RemoveRedundancies  # type: ignore
@@ -518,6 +519,25 @@ def test_boxes() -> None:
     assert np.allclose(np.diag(diag_vect), u)
     d.add_diagonal_box(diag_box, [Qubit(0), Qubit(1), Qubit(2)])
     assert d.n_gates == 14
+    # MultiplexedTensoredU2Box
+    rz_op = Op.create(OpType.Rz, 0.3)
+    pauli_x_op = Op.create(OpType.X)
+    pauli_z_op = Op.create(OpType.Z)
+    op_map = {(0, 0): [rz_op, pauli_x_op], (1, 1): [pauli_x_op, pauli_z_op]}
+    multiplexor = MultiplexedTensoredU2Box(op_map)
+    out_op_map = multiplexor.get_op_map()
+    assert all(op_map[key] == out_op_map[key] for key in op_map)
+    c0 = multiplexor.get_circuit()
+    unitary = c0.get_unitary()
+    comparison = block_diag(
+        np.kron(rz_op.get_unitary(), pauli_x_op.get_unitary()),
+        np.eye(4),
+        np.eye(4),
+        np.kron(pauli_x_op.get_unitary(), pauli_z_op.get_unitary()),
+    )
+    d.add_multiplexed_tensored_u2(multiplexor, [Qubit(0), Qubit(1), Qubit(2), Qubit(3)])
+    assert np.allclose(unitary, comparison)
+    assert d.n_gates == 15
     assert json_validate(d)
 
 
@@ -694,6 +714,19 @@ def test_circuit_from_to_serializable(circuit: Circuit) -> None:
 def test_circuit_display(circuit: Circuit) -> None:
     html_str_circ = render_circuit_as_html(circuit, jupyter=False)
     html_str_dict = render_circuit_as_html(circuit.to_dict(), jupyter=False)
+    assert isinstance(html_str_circ, str)
+    assert isinstance(html_str_dict, str)
+
+
+@given(st.circuits())
+@settings(deadline=None)
+def test_circuit_display_with_options(circuit: Circuit) -> None:
+    circuit_renderer = get_circuit_renderer()
+    circuit_renderer.set_render_options(zx_style=False)
+    html_str_circ = circuit_renderer.render_circuit_as_html(circuit, jupyter=False)
+    html_str_dict = circuit_renderer.render_circuit_as_html(
+        circuit.to_dict(), jupyter=False
+    )
     assert isinstance(html_str_circ, str)
     assert isinstance(html_str_dict, str)
 

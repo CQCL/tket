@@ -52,6 +52,7 @@ from pytket.passes import (  # type: ignore
     CnXPairwiseDecomposition,
     RemoveImplicitQubitPermutation,
     FlattenRelabelRegistersPass,
+    RoundAngles,
 )
 from pytket.predicates import (  # type: ignore
     GateSetPredicate,
@@ -59,6 +60,7 @@ from pytket.predicates import (  # type: ignore
     DirectednessPredicate,
     NoBarriersPredicate,
     CompilationUnit,
+    MaxNClRegPredicate,
 )
 from pytket.mapping import (  # type: ignore
     LexiLabellingMethod,
@@ -457,6 +459,18 @@ def test_no_barriers_pred() -> None:
     assert not pred.verify(c)
 
 
+def test_MaxNClRegPredicate_pred() -> None:
+    pred = MaxNClRegPredicate(3)
+    c = Circuit(1).H(0)
+    c.add_c_register("name", 2)
+    c.add_c_register("name2", 1)
+    c.add_c_register("name3", 1)
+    assert pred.verify(c)
+    c.add_barrier([0]).H(0)
+    c.add_c_register("name4", 1)
+    assert not pred.verify(c)
+
+
 def test_decompose_routing_gates_to_cxs() -> None:
     circ = Circuit(4)
     circ.CX(1, 0)
@@ -849,6 +863,13 @@ def test_flatten_relabel_pass() -> None:
     assert cu.initial_map[Qubit("a", 4)] == Qubit("a", 4)
     assert cu.initial_map[Qubit("b", 7)] == Qubit("a", 1)
     assert cu.circuit.qubits == [Qubit("a", 0), Qubit("a", 1)]
+
+
+def test_round_angles_pass() -> None:
+    c0 = Circuit(2).H(0).TK2(0.001, -0.001, 0.001, 0, 1).Rz(0.50001, 0)
+    c1 = Circuit(2).H(0).Rz(0.50001, 0)
+    assert RoundAngles(8, only_zeros=True).apply(c0)
+    assert c0 == c1
 
 
 if __name__ == "__main__":

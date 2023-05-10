@@ -719,6 +719,28 @@ def test_tk2_definition() -> None:
     assert "tk2(0.2*pi,0.2*pi,0.2*pi) q[0],q[1];" in qs
 
 
+def test_rxxyyzz_conversion() -> None:
+    c = circuit_from_qasm_str(
+        """
+    OPENQASM 2.0;
+    include "hqslib1.inc";
+
+    qreg q[2];
+    Rxxyyzz(0.3*pi, 0.4*pi, 0.5*pi) q[0],q[1];
+    """
+    )
+    c1 = Circuit(2).TK2(0.3, 0.4, 0.5, 0, 1)
+    assert c == c1
+
+    qelib_qs = circuit_to_qasm_str(c, header="qelib1")
+    assert "gate tk2 (param0, param1, param2) tk2q0,tk2q1 {" in qelib_qs
+    assert "tk2(0.3*pi,0.4*pi,0.5*pi) q[0],q[1];" in qelib_qs
+
+    hqslib_qs = circuit_to_qasm_str(c, header="hqslib1")
+    correct_qasm = """OPENQASM 2.0;\ninclude "hqslib1.inc";\n\nqreg q[2];\nRxxyyzz(0.3*pi,0.4*pi,0.5*pi) q[0],q[1];\n"""
+    assert hqslib_qs == correct_qasm
+
+
 if __name__ == "__main__":
     test_qasm_correct()
     test_qasm_qubit()
@@ -752,3 +774,4 @@ if __name__ == "__main__":
     test_alternate_encoding()
     test_header_stops_gate_definition()
     test_tk2_definition()
+    test_rxxyyzz_conversion()

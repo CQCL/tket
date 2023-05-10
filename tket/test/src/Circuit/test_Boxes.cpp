@@ -201,7 +201,7 @@ SCENARIO("Using Boxes", "[boxes]") {
     c.add_box(ebox, {0, 1});
     Eigen::Matrix4cd U = (+0.5 * i_ * A).exp();  // should be the inverse
     Unitary2qBox ubox(U);
-    c.add_box(ubox, {0, 1});                     // should act as the identity
+    c.add_box(ubox, {0, 1});  // should act as the identity
     Eigen::MatrixXcd uc = tket_sim::get_unitary(c);
     REQUIRE((uc - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
   }
@@ -957,6 +957,55 @@ SCENARIO("QControlBox", "[boxes]") {
     V(2, 2) = std::exp(i_ * PI);
     V(3, 3) = std::exp(i_ * PI);
     REQUIRE(U.isApprox(V));
+  }
+
+  GIVEN("symbolic circuit with barriers") {
+    Sym s = SymEngine::symbol("a");
+    Expr a = Expr(s);
+    Circuit inner_c(1);
+    inner_c.add_op<unsigned>(OpType::X, {0});
+    inner_c.add_barrier(std::vector<unsigned>{0});
+    inner_c.add_op<unsigned>(OpType::Ry, a, {0});
+    CircBox cbox(inner_c);
+    Op_ptr cbox_op = std::make_shared<CircBox>(cbox);
+    QControlBox qcbox(cbox_op, 2);
+    std::shared_ptr<Circuit> c = qcbox.to_circuit();
+    auto cmds = c->get_commands();
+    REQUIRE(cmds.size() == 3);
+    REQUIRE(cmds[0].get_op_ptr()->get_type() == OpType::CCX);
+    REQUIRE(cmds[1].get_op_ptr()->get_type() == OpType::Barrier);
+    unit_vector_t barrier_args{Qubit(2)};
+    REQUIRE(cmds[1].get_args() == barrier_args);
+    REQUIRE(cmds[2].get_op_ptr()->get_type() == OpType::CnRy);
+  }
+
+  GIVEN("numerical circuit with barriers") {
+    Circuit inner_c(2);
+    inner_c.add_op<unsigned>(OpType::X, {0});
+    inner_c.add_barrier({0, 1});
+    inner_c.add_op<unsigned>(OpType::Y, {0});
+    inner_c.add_barrier(std::vector<unsigned>{1});
+    inner_c.add_op<unsigned>(OpType::Z, {0});
+
+    CircBox cbox(inner_c);
+    Op_ptr cbox_op = std::make_shared<CircBox>(cbox);
+    QControlBox qcbox(cbox_op, 2);
+    std::shared_ptr<Circuit> c = qcbox.to_circuit();
+    auto cmds = c->get_commands();
+    // the circuit should contain a ccx
+    // a barrier at {q[2], q[3]}, a barrier at q[3]
+    // merged CC(Z*Y) decomposed (6 gates)
+    REQUIRE(cmds.size() == 9);
+    REQUIRE(cmds[0].get_op_ptr()->get_type() == OpType::CCX);
+    REQUIRE(cmds[1].get_op_ptr()->get_type() == OpType::Barrier);
+    unit_vector_t barrier_args{Qubit(2), Qubit(3)};
+    REQUIRE(cmds[1].get_args() == barrier_args);
+    auto barrier_cmds = c->get_commands_of_type(OpType::Barrier);
+    REQUIRE(barrier_cmds.size() == 2);
+    auto it = barrier_cmds.begin();
+    it++;
+    unit_vector_t barrier_args2{Qubit(3)};
+    REQUIRE(it->get_args() == barrier_args2);
   }
 }
 

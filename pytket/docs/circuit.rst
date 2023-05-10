@@ -83,6 +83,24 @@ pytket.circuit
 .. autoclass:: pytket._tket.circuit.WASMOp
     :special-members:
     :members:
+.. autoclass:: pytket._tket.circuit.MultiBitOp
+    :special-members:
+    :members:
+.. autoclass:: pytket._tket.circuit.SetBitsOp
+    :special-members:
+    :members:
+.. autoclass:: pytket._tket.circuit.ClassicalEvalOp
+    :special-members:
+    :members:
+.. autoclass:: pytket._tket.circuit.ClassicalOp
+    :special-members:
+    :members:
+.. autoclass:: pytket._tket.circuit.CopyBitsOp
+    :special-members:
+    :members:
+.. autoclass:: pytket._tket.circuit.RangePredicateOp
+    :special-members:
+    :members:
 .. autoclass:: pytket._tket.circuit.MultiplexorBox
     :special-members:
     :members:
@@ -90,6 +108,9 @@ pytket.circuit
     :special-members:
     :members:
 .. autoclass:: pytket._tket.circuit.MultiplexedU2Box
+    :special-members:
+    :members:
+.. autoclass:: pytket._tket.circuit.MultiplexedTensoredU2Box
     :special-members:
     :members:
 .. autoclass:: pytket._tket.circuit.StatePreparationBox

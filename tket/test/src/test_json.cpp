@@ -468,6 +468,37 @@ SCENARIO("Test Circuit serialization") {
     REQUIRE(multiplexor.get_impl_diag() == qc_b.get_impl_diag());
   }
 
+  GIVEN("MultiplexedTensoredU2Box") {
+    Circuit c0(1);
+    c0.add_op<unsigned>(OpType::TK1, {0.2374, 1.0353, 0.5372}, {0});
+    Eigen::Matrix2cd m = tket_sim::get_unitary(c0);
+    Unitary1qBox mbox(m);
+    Op_ptr mbox_op = std::make_shared<Unitary1qBox>(mbox);
+    ctrl_tensored_op_map_t op_map = {
+        {{1, 1}, {mbox_op, get_op_ptr(OpType::X)}},
+        {{0, 1}, {get_op_ptr(OpType::X), get_op_ptr(OpType::H)}},
+        {{1, 0},
+         {get_op_ptr(OpType::TK1, std::vector<Expr>{0.3, 1.8, 3.4}),
+          get_op_ptr(OpType::X)}}};
+    MultiplexedTensoredU2Box multiplexor(op_map);
+    Circuit c(4);
+    c.add_box(multiplexor, {0, 1, 2, 3});
+    nlohmann::json j_box = c;
+    const Circuit new_c = j_box.get<Circuit>();
+    const auto& qc_b = static_cast<const MultiplexedTensoredU2Box&>(
+        *new_c.get_commands()[0].get_op_ptr());
+    ctrl_tensored_op_map_t new_op_map = qc_b.get_op_map();
+    REQUIRE(new_op_map.size() == op_map.size());
+    for (auto it = op_map.begin(); it != op_map.end(); it++) {
+      auto new_it = new_op_map.find(it->first);
+      REQUIRE(new_it != new_op_map.end());
+      REQUIRE(it->second.size() == new_it->second.size());
+      for (unsigned i = 0; i < it->second.size(); i++) {
+        REQUIRE(*it->second[i] == *new_it->second[i]);
+      }
+    }
+  }
+
   GIVEN("StatePreparationBox") {
     Eigen::VectorXcd state(8);
     state << std::sqrt(0.125), -std::sqrt(0.125), std::sqrt(0.125),
@@ -702,6 +733,16 @@ SCENARIO("Test predicate serializations") {
     nlohmann::json j_loaded_max = loaded_max;
     REQUIRE(j_max == j_loaded_max);
   }
+  GIVEN("MaxNClRegPredicate") {
+    PredicatePtr max = std::make_shared<MaxNClRegPredicate>(12);
+    nlohmann::json j_max = max;
+    PredicatePtr loaded_max = j_max.get<PredicatePtr>();
+    REQUIRE(
+        dynamic_cast<const MaxNClRegPredicate&>(*loaded_max).get_n_cl_reg() ==
+        12);
+    nlohmann::json j_loaded_max = loaded_max;
+    REQUIRE(j_max == j_loaded_max);
+  }
   GIVEN("UserDefinedPredicate") {
     std::function<bool(const Circuit&)> func = [](const Circuit&) {
       return false;
@@ -802,6 +843,7 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(NaivePlacementPass, gen_naive_placement_pass(arc))
   COMPPASSJSONTEST(LinePlacement, gen_placement_pass(la_place))
   COMPPASSJSONTEST(GraphPlacement, gen_placement_pass(ga_place))
+  COMPPASSJSONTEST(RoundAngles, RoundAngles(8, true))
 #undef COMPPASSJSONTEST
   GIVEN("RoutingPass") {
     // Can only be applied to placed circuits

@@ -19,6 +19,31 @@
 
 namespace tket {
 
+// check if the maps are valid such that two maps should have the same set of
+// keys (logical qubits), and the values (physical qubits) of two maps should be
+// the same up to a permutation. All qubits in the circuit should also appear in
+// the maps as physical qubits.
+void MappingFrontier::assert_valid_maps() {
+  TKET_ASSERT(bimaps_->initial.size() == bimaps_->final.size());
+  auto left_it_1 = bimaps_->initial.left.begin();
+  auto left_it_2 = bimaps_->final.left.begin();
+  while (left_it_1 != bimaps_->initial.left.end()) {
+    TKET_ASSERT(left_it_1->first == left_it_2->first);
+    left_it_1++;
+    left_it_2++;
+  }
+  auto right_it_1 = bimaps_->initial.right.begin();
+  auto right_it_2 = bimaps_->final.right.begin();
+  while (right_it_1 != bimaps_->initial.right.end()) {
+    TKET_ASSERT(right_it_1->first == right_it_2->first);
+    right_it_1++;
+    right_it_2++;
+  }
+  for (const Qubit& q : circuit_.all_qubits()) {
+    TKET_ASSERT(bimaps_->initial.right.find(q) != bimaps_->initial.right.end());
+  }
+}
+
 /**
  * unit_vertport_frontier_t is <UnitID, VertPort>, helper function returns
  * UnitID corresponding to given VertPort
@@ -624,7 +649,6 @@ bool MappingFrontier::add_swap(const UnitID& uid_0, const UnitID& uid_1) {
     this->add_ancilla(uid_1);
     uid1_in_it = this->linear_boundary->find(uid_1);
   }
-
   this->reassignable_nodes_.erase(Node(uid_0));
   this->reassignable_nodes_.erase(Node(uid_1));
 
@@ -715,6 +739,7 @@ bool MappingFrontier::add_swap(const UnitID& uid_0, const UnitID& uid_1) {
 
   std::map<Node, Node> final_map = {{n0, n1}, {n1, n0}};
   update_maps(this->bimaps_, {}, final_map);
+  assert_valid_maps();
   return true;
 }
 
@@ -763,22 +788,39 @@ void MappingFrontier::add_bridge(
   // remove old cx vertex
   this->circuit_.remove_vertex(
       cx_v, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::Yes);
+  assert_valid_maps();
 }
 
 void MappingFrontier::add_ancilla(const UnitID& ancilla) {
-  Qubit qb(ancilla);
-  this->circuit_.add_qubit(qb);
-  this->linear_boundary->insert({qb, {this->circuit_.get_in(qb), 0}});
+  // Given the ancilla node, we 1. add ancilla to the circuit.
+  // 2. map ancilla to placeholder_q, which will be a qubit from the routing
+  // ancilla register that is not present anywhere in the circuit and bimaps.
+  // Add {placeholder_q, ancilla} to the bimaps.
+  register_t ancilla_reg = this->circuit_.get_reg(q_routing_ancilla_reg());
+  unsigned available_ancilla_idx = 0;
+  auto it = ancilla_reg.rbegin();
+  if (it != ancilla_reg.rend()) {
+    available_ancilla_idx = it->first + 1;
+  }
+  for (auto const& it : this->bimaps_->initial.left) {
+    if (it.first.reg_name() == q_routing_ancilla_reg() &&
+        it.first.index()[0] >= available_ancilla_idx) {
+      available_ancilla_idx = it.first.index()[0] + 1;
+    }
+    if (it.second.reg_name() == q_routing_ancilla_reg() &&
+        it.second.index()[0] >= available_ancilla_idx) {
+      available_ancilla_idx = it.second.index()[0] + 1;
+    }
+  }
+  Qubit placeholder_q(q_routing_ancilla_reg(), available_ancilla_idx);
+  Qubit ancilla_q(ancilla);
+  this->circuit_.add_qubit(ancilla_q);
+  this->linear_boundary->insert(
+      {ancilla_q, {this->circuit_.get_in(ancilla_q), 0}});
 
-  this->bimaps_->initial.insert({qb, qb});
-  this->bimaps_->final.insert({qb, qb});
+  this->bimaps_->initial.insert({placeholder_q, ancilla});
+  this->bimaps_->final.insert({placeholder_q, ancilla});
   this->ancilla_nodes_.insert(Node(ancilla));
-  UnitID uid_ancilla(ancilla);
-
-  unit_map_t update_map;
-  update_map.insert({uid_ancilla, uid_ancilla});
-
-  update_maps(this->bimaps_, update_map, update_map);
 }
 
 void MappingFrontier::merge_ancilla(
@@ -946,6 +988,7 @@ void MappingFrontier::merge_ancilla(
   this->bimaps_->final.left.erase(merge_q);
   // Find ancilla_q
   auto final_it = this->bimaps_->final.right.find(ancilla);
+  TKET_ASSERT(final_it != this->bimaps_->final.right.end());
   UnitID ancilla_q = final_it->second;
   // Replace in final map
   this->bimaps_->final.right.erase(final_it);
@@ -961,7 +1004,7 @@ void MappingFrontier::merge_ancilla(
    */
   this->ancilla_nodes_.erase(Node(ancilla));
   this->reassignable_nodes_.erase(Node(ancilla));
-
+  assert_valid_maps();
   return;
 }
 

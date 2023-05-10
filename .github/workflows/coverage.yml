@@ -39,17 +39,6 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v3
-    - name: Get current time
-      uses: josStorer/get-current-time@v2.1.1
-      id: current_time
-      with:
-        format: YYYYMMDDHHmmss
-    - name: Use ccache
-      uses: hendrikmuhs/ccache-action@v1.2.8
-      with:
-        key: ${{ github.job }}-${{ runner.os }}-ccache-${{ steps.current_time.outputs.formattedTime }}
-        restore-keys: |
-          ${{ github.job }}-${{ runner.os }}-ccache-
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
     - name: create profile
@@ -69,6 +58,7 @@ jobs:
         # also delete the object files we need ... perhaps there is a better
         # way):
         cp tket/test/src/test_circuits/*.json ./build/tket-tests/build/Debug
+        cp tket/test/src/test_architectures/*.json ./build/tket-tests/build/Debug
     - name: Install runtime test requirements
       if: github.event_name == 'schedule'
       run: |

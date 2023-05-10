@@ -189,6 +189,11 @@ PYBIND11_MODULE(predicates, m) {
       "Predicate asserting that a circuit has at most n qubits.")
       .def(py::init<unsigned>(), "Constructor.");
   py::class_<
+      MaxNClRegPredicate, std::shared_ptr<MaxNClRegPredicate>, Predicate>(
+      m, "MaxNClRegPredicate",
+      "Predicate asserting that a circuit has at most n classical registers.")
+      .def(py::init<unsigned>(), "Constructor.");
+  py::class_<
       PlacementPredicate, std::shared_ptr<PlacementPredicate>, Predicate>(
       m, "PlacementPredicate",
       "Predicate asserting that a circuit has been acted on by some "

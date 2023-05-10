@@ -57,8 +57,3 @@ jobs:
         PKGPATH=`./rootpath test-${{ matrix.lib }}.json test-${{ matrix.lib }}`
         cd ${PKGPATH}/bin
         ./test-${{ matrix.lib }}
-    - name: restore conan 1
-      if: always()
-      uses: turtlebrowser/get-conan@v1.2
-      with:
-        version: '1.59.0'

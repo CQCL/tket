@@ -111,9 +111,9 @@ static std::vector<std::vector<bool>> rearrange_along_col(
   // that connects the postfix in the row entires and the postfix in the row
   // indices. First half of the vertices represents the row entries the second
   // half represents the row indices
-  cube_graph_t g(1 << (n_right_columns + 1));
-  for (unsigned postfix_dec = 0; postfix_dec < (unsigned)(1 << n_right_columns);
-       postfix_dec++) {
+  cube_graph_t g(1ULL << (n_right_columns + 1));
+  for (unsigned long long postfix_dec = 0;
+       postfix_dec < (1ULL << n_right_columns); postfix_dec++) {
     std::vector<bool> postfix = dec_to_bin(postfix_dec, n_right_columns);
     // row0 = prefix+0+postfix
     // row1 = prefix+1+postfix
@@ -131,29 +131,29 @@ static std::vector<std::vector<bool>> rearrange_along_col(
         perm[row1].begin() + prefix.size() + 1, perm[row1].end());
     // row0 can stay where it is
     boost::add_edge(
-        postfix_dec, bin_to_dec(idx0_postfix) + (1 << n_right_columns), g);
+        postfix_dec, bin_to_dec(idx0_postfix) + (1ULL << n_right_columns), g);
     if (idx0_postfix != idx1_postfix) {
       // row0 can also move to row1's index by a swap
       boost::add_edge(
-          postfix_dec, bin_to_dec(idx1_postfix) + (1 << n_right_columns), g);
+          postfix_dec, bin_to_dec(idx1_postfix) + (1ULL << n_right_columns), g);
     }
   }
   // find a matching
-  std::vector<perm_vert_t> match(1 << (n_right_columns + 1));
+  std::vector<perm_vert_t> match(1ULL << (n_right_columns + 1));
   // O(|V|*|E|*alpha(|V|, |E|)), alpha is a slow growing function
   // that never exceeds 4 for any realistic input.
   // TODO: use a specialised algo for bipartite matching
   // e.g. Hopcroft-Karp for O(|E| sqrt(|V|))
   edmonds_maximum_cardinality_matching(g, &match[0]);
   std::vector<std::vector<bool>> swap_pairs;
-  for (unsigned postfix_dec = 0; postfix_dec < (unsigned)(1 << n_right_columns);
-       postfix_dec++) {
+  for (unsigned long long postfix_dec = 0;
+       postfix_dec < (1ULL << n_right_columns); postfix_dec++) {
     std::vector<bool> postfix = dec_to_bin(postfix_dec, n_right_columns);
     std::vector<bool> row0(prefix);
     row0.push_back(0);
     row0.insert(row0.end(), postfix.begin(), postfix.end());
     std::vector<bool> mapped_idx = dec_to_bin(
-        match[postfix_dec] - (1 << n_right_columns), n_right_columns);
+        match[postfix_dec] - (1ULL << n_right_columns), n_right_columns);
     if (!std::equal(
             perm[row0].begin() + prefix.size() + 1, perm[row0].end(),
             mapped_idx.begin())) {
@@ -255,11 +255,11 @@ static Circuit permute(
     return circ;
   }
   // track relative phases caused by using pi rotations
-  std::vector<Complex> phases(1 << n_qubits, 1.);
+  std::vector<Complex> phases(1ULL << n_qubits, 1.);
   // step 1
   for (unsigned col_idx = 0; col_idx < n_qubits - 1; col_idx++) {
     ctrl_op_map_t op_map;
-    for (unsigned prefix = 0; prefix < (unsigned)(1 << col_idx); prefix++) {
+    for (unsigned long long prefix = 0; prefix < (1ULL << col_idx); prefix++) {
       std::vector<bool> prefix_bin;
       if (col_idx != 0) {
         // if col_idx == 0, the prefix is empty, otherwise convert the decimal
@@ -284,7 +284,7 @@ static Circuit permute(
   // step 2
   for (unsigned col_idx = n_qubits; col_idx-- > 0;) {
     ctrl_op_map_t op_map;
-    for (unsigned row = 0; row < (unsigned)(1 << (n_qubits - 1)); row++) {
+    for (unsigned long long row = 0; row < (1ULL << (n_qubits - 1)); row++) {
       std::vector<bool> pair = dec_to_bin(row, n_qubits - 1);
       pair.insert(pair.begin() + col_idx, 0);
       if (perm[pair][col_idx] != 0) {
@@ -299,7 +299,7 @@ static Circuit permute(
     }
   }
   // correct the phases with a diagonal operator
-  Eigen::VectorXcd corrections(1 << n_qubits);
+  Eigen::VectorXcd corrections(1ULL << n_qubits);
   for (unsigned i = 0; i < phases.size(); i++) {
     corrections[i] = 1. / phases[i];
   }
@@ -312,8 +312,8 @@ void ToffoliBox::generate_circuit() const {
   unsigned n_qubits = (unsigned)permutation_.begin()->first.size();
   state_perm_t perm(permutation_);
   // fill the permutation with identities
-  if ((unsigned)perm.size() != (unsigned)(1 << n_qubits)) {
-    for (unsigned i = 0; i < (unsigned)(1 << n_qubits); i++) {
+  if (perm.size() != (1ULL << n_qubits)) {
+    for (unsigned long long i = 0; i < (1ULL << n_qubits); i++) {
       std::vector<bool> state = dec_to_bin(i, n_qubits);
       if (perm.find(state) == perm.end()) {
         perm.insert({state, state});

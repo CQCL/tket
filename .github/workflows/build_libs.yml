@@ -112,11 +112,6 @@ jobs:
     - name: unauthenticate
       if: always()
       run: conan remote logout tket-libs
-    - name: restore conan 1
-      if: always()
-      uses: turtlebrowser/get-conan@v1.2
-      with:
-        version: '1.59.0'
   manylinux:
     name: build library (manylinux)
     needs: changes

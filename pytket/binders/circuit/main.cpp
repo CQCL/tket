@@ -497,6 +497,9 @@ PYBIND11_MODULE(circuit, m) {
           "MultiplexedU2Box", OpType::MultiplexedU2Box,
           "A multiplexed U2 gate (i.e. uniformly controlled U2 gate)")
       .value(
+          "MultiplexedTensoredU2Box", OpType::MultiplexedTensoredU2Box,
+          "A multiplexed tensored-U2 gate")
+      .value(
           "StatePreparationBox", OpType::StatePreparationBox,
           "A box for preparing quantum states using multiplexed-Ry and "
           "multiplexed-Rz gates")

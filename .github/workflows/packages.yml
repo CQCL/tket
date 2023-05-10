@@ -17,10 +17,8 @@ jobs:
     name: Build
     strategy:
       matrix:
-        os: ['ubuntu-22.04', 'macos-11', 'macos-12', 'windows-2022']
+        os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
     runs-on: ${{ matrix.os }}
-    env:
-      CONAN_REVISIONS_ENABLED: 1
     steps:
 
     - uses: actions/checkout@v3
@@ -33,15 +31,14 @@ jobs:
 
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
-      with:
-        version: '1.56.0'
 
     - name: Set up conan
-      shell: bash
-      run: ./.github/workflows/conan-setup
+      run: |
+        conan profile detect
+        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
 
     - name: authenticate to repository
-      run: conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} -r tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
+      run: conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
 
     - name: Install and upload packages
       shell: bash
@@ -50,31 +47,30 @@ jobs:
   build_macos_arm64:
     name: Build on MacOS ARM64
     runs-on: ['self-hosted', 'macOS', 'ARM64']
-    env:
-      CONAN_REVISIONS_ENABLED: 1
     steps:
 
     - uses: actions/checkout@v3
 
+    - name: Install conan
+      uses: turtlebrowser/get-conan@v1.2
+
     - name: Set up conan
-      shell: bash
-      run: ./.github/workflows/conan-setup
+      run: |
+        conan profile detect --force
+        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
 
     - name: authenticate to repository
-      run: conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} -r tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
+      run: conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
 
     - name: Install and upload packages
       shell: bash
       run: ./.github/workflows/build-external-packages
 
     - name: unauthenticate
-      run: conan user -c
+      run: conan remote logout tket-libs
 
-  build_manylinux:
-    name: Build on manylinux
-    strategy:
-      matrix:
-        manylinux: ['manylinux2014_x86_64', 'manylinux_2_28_x86_64']
+  build_manylinux_x86_64:
+    name: Build on manylinux (x86_64)
     runs-on: 'ubuntu-22.04'
     steps:
 
@@ -82,10 +78,36 @@ jobs:
 
     - name: Set up container
       run: |
-        docker create --name linux_build -i -v /:/host quay.io/pypa/${{ matrix.manylinux }}:latest /bin/bash
+        docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux2014_x86_64:latest /bin/bash
         docker cp . linux_build:/tket/
 
     - name: Install and upload packages
       run: |
         docker start linux_build
         docker exec -e JFROG_ARTIFACTORY_TOKEN_2="${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }}" -e JFROG_ARTIFACTORY_USER_2="${{ secrets.JFROG_ARTIFACTORY_USER_2 }}" linux_build /bin/bash -c "/tket/.github/workflows/linuxbuildpackages"
+
+  build_manylinux_aarch64:
+    name: Build on manylinux (aarch64)
+    runs-on: ['self-hosted', 'macOS', 'ARM64']
+    steps:
+
+    - uses: actions/checkout@v3
+
+    - name: Set up container
+      run: |
+        export DOCKER_HOST=unix://${HOME}/.docker/run/docker.sock
+        docker rm --force -v linux_build
+        docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux2014_aarch64:latest /bin/bash
+        docker cp . linux_build:/tket/
+
+    - name: Install and upload packages
+      run: |
+        export DOCKER_HOST=unix://${HOME}/.docker/run/docker.sock
+        docker start linux_build
+        docker exec -e JFROG_ARTIFACTORY_TOKEN_2="${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }}" -e JFROG_ARTIFACTORY_USER_2="${{ secrets.JFROG_ARTIFACTORY_USER_2 }}" linux_build /bin/bash -c "/tket/.github/workflows/linuxbuildpackages"
+
+    - name: Remove container
+      if: always()
+      run: |
+        export DOCKER_HOST=unix://${HOME}/.docker/run/docker.sock
+        docker rm --force -v linux_build
