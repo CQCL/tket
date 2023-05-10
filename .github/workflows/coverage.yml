@@ -56,14 +56,10 @@ jobs:
       run: |
         conan install tket --user=tket --channel=stable -s build_type=Debug --build=missing -o boost/*:header_only=True -o tket/*:profile_coverage=True -o test-tket/*:with_coverage=True -of build/tket
         conan build tket --user=tket --channel=stable -s build_type=Debug -o boost/*:header_only=True -o tket/*:profile_coverage=True -o test-tket/*:with_coverage=True -of build/tket
-    - name: Run tket tests
-      if: github.event_name == 'pull_request' || github.event_name == 'push'
-      working-directory: ./build/tket-tests/build/Debug
-      run: ./test-tket
     - name: Run full tket tests
       if: github.event_name == 'schedule'
-      working-directory: ./build/tket-tests/build/Debug
-      run: ./test-tket "[long],~[long]"
+      working-directory: ./build/tket/build/Debug
+      run: ./test/test-tket "[long],~[long]"
     - name: Install gcovr
       run: pip install gcovr~=6.0
     - name: Build coverage report

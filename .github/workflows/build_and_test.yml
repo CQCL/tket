@@ -119,7 +119,7 @@ jobs:
       if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_tests_changed == 'true'
       run: |
          conan install tket --user=tket --build=missing -o boost/*:header_only=True
-         conan build tket
+         conan build tket --user=tket -o boost/*:header_only=True
     - name: check that version is consistent
       if: matrix.os == 'ubuntu-22.04' && github.event_name == 'pull_request'
       run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
@@ -149,7 +149,7 @@ jobs:
       run: |
         rm -r tket/build
         conan install tket --user=tket --build=missing -o boost/*:header_only=True
-        conan build tket
+        conan build tket --user=tket -o boost/*:header_only=True
     - name: Upload package
       if: github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_changed == 'true'
       run: |
