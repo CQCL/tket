@@ -174,7 +174,7 @@ class CircuitRenderer:
             fp.close()
             try:
                 with warnings.catch_warnings(record=True):  # supress iframe suggestion
-                    display(HTML(html))
+                    display(HTML(html))  # type: ignore
                 return None
             finally:
                 # Wait to make sure the file has time to be loaded first.
