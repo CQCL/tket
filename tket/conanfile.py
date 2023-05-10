@@ -19,8 +19,6 @@ from conan.tools.files import copy
 from conan.errors import ConanInvalidConfiguration
 
 
-
-
 class TketConan(ConanFile):
     name = "tket"
     version = "1.2.8"
@@ -59,8 +57,18 @@ class TketConan(ConanFile):
         tc.variables["PROFILE_COVERAGE"] = self.options.profile_coverage
         tc.generate()
         if self.include_tests():
-            copy(self, "*.json", os.path.join(self.source_folder, "test/src/test_architectures"), self.build_folder)
-            copy(self, "*.json", os.path.join(self.source_folder, "test/src/test_circuits"), self.build_folder)
+            copy(
+                self,
+                "*.json",
+                os.path.join(self.source_folder, "test/src/test_architectures"),
+                self.build_folder,
+            )
+            copy(
+                self,
+                "*.json",
+                os.path.join(self.source_folder, "test/src/test_circuits"),
+                self.build_folder,
+            )
 
     def validate(self):
         if self.options.profile_coverage and self.settings.compiler != "gcc":
