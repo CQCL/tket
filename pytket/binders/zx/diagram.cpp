@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Circuit/Circuit.hpp"
-#include "Converters/Converters.hpp"
-#include "Utils/GraphHeaders.hpp"
-#include "ZX/ZXDiagram.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Converters/Converters.hpp"
+#include "tket/Utils/GraphHeaders.hpp"
+#include "tket/ZX/ZXDiagram.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;

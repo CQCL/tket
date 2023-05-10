@@ -17,7 +17,7 @@
 
 #include <complex>
 
-#include "Utils/Json.hpp"
+#include "tket/Utils/Json.hpp"
 #include "binder_json.hpp"
 
 namespace py = pybind11;

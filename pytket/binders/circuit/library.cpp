@@ -14,7 +14,7 @@
 
 #include <pybind11/pybind11.h>
 
-#include "Circuit/CircPool.hpp"
+#include "tket/Circuit/CircPool.hpp"
 #include "binder_utils.hpp"
 #include "typecast.hpp"
 

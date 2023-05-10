@@ -15,7 +15,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
-#include "MeasurementSetup/MeasurementReduction.hpp"
+#include "tket/MeasurementSetup/MeasurementReduction.hpp"
 #include "binder_json.hpp"
 #include "binder_utils.hpp"
 #include "typecast.hpp"

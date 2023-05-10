@@ -17,12 +17,12 @@
 
 #include <boost/lexical_cast.hpp>
 
-#include "Circuit/ClassicalExpBox.hpp"
-#include "Circuit/Conditional.hpp"
-#include "Ops/ClassicalOps.hpp"
-#include "Ops/OpJsonFactory.hpp"
+#include "tket/Circuit/ClassicalExpBox.hpp"
+#include "tket/Circuit/Conditional.hpp"
+#include "tket/Ops/ClassicalOps.hpp"
+#include "tket/Ops/OpJsonFactory.hpp"
 #include "UnitRegister.hpp"
-#include "Utils/Json.hpp"
+#include "tket/Utils/Json.hpp"
 #include "binder_json.hpp"
 
 namespace py = pybind11;

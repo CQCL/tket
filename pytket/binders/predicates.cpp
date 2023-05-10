@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Predicates/Predicates.hpp"
+#include "tket/Predicates/Predicates.hpp"
 
-#include "Predicates/CompilationUnit.hpp"
-#include "Utils/UnitID.hpp"
+#include "tket/Predicates/CompilationUnit.hpp"
+#include "tket/Utils/UnitID.hpp"
 #include "binder_json.hpp"
 #include "typecast.hpp"
 

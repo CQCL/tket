@@ -17,9 +17,9 @@
 #include <pybind11/stl.h>
 #include <pybind11/stl_bind.h>
 
-#include "Characterisation/FrameRandomisation.hpp"
-#include "Clifford/CliffTableau.hpp"
-#include "Converters/Converters.hpp"
+#include "tket/Characterisation/FrameRandomisation.hpp"
+#include "tket/Clifford/CliffTableau.hpp"
+#include "tket/Converters/Converters.hpp"
 #include "binder_utils.hpp"
 
 namespace py = pybind11;

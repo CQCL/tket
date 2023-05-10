@@ -17,7 +17,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
-#include "Utils/PauliStrings.hpp"
+#include "tket/Utils/PauliStrings.hpp"
 #include "binder_json.hpp"
 #include "typecast.hpp"
 
