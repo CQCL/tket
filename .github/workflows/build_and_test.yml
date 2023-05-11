@@ -96,18 +96,6 @@ jobs:
     - name: create conan lockfile for caching
       run: |
         conan lock create tket --user=tket
-    - name: Cache conan cache
-      id: cache-conan
-      uses: actions/cache@v3
-      with:
-        path: ~/.conan2
-        key: ${{ runner.os }}-conan-cache-${{ hashFiles('tket/conan.lock') }}
-    - name: Cache conan local build
-      id: cache-conan-local-test-build
-      uses: actions/cache@v3
-      with:
-        path: tket/build
-        key: ${{ runner.os }}-conan-local-${{ hashFiles('tket/conanfile.py') }}
     - name: normalize line endings in conanfile and src directory
       if: matrix.os == 'windows-2022'
       # This is necessary to ensure consistent revisions across platforms.
