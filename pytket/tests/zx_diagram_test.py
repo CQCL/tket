@@ -16,6 +16,7 @@ from math import pow, isclose
 import numpy as np
 import pytest  # type: ignore
 from pytket import Qubit, Circuit, OpType
+from pytket.passes import auto_rebase_pass
 from pytket.pauli import Pauli, QubitPauliString  # type: ignore
 from pytket.utils.results import compare_unitaries
 from pytket.zx import (  # type: ignore
@@ -935,6 +936,24 @@ def test_internalise_gadgets() -> None:
             assert np.allclose(t, t2)
 
 
+def test_round_trip() -> None:
+    circ = Circuit(5)
+    circ.CCX(0, 1, 4)
+    circ.CCX(2, 4, 3)
+    circ.CCX(0, 1, 4)
+    auto_rebase_pass(
+        {OpType.Rx, OpType.Rz, OpType.X, OpType.Z, OpType.H, OpType.CX, OpType.CZ}
+    ).apply(circ)
+    diag, _ = circuit_to_zx(circ)
+
+    Rewrite.to_graphlike_form().apply(diag)
+    Rewrite.reduce_graphlike_form().apply(diag)
+    Rewrite.to_MBQC_diag().apply(diag)
+
+    c, _ = diag.to_circuit()
+    assert compare_unitaries(circ.get_unitary(), c.get_unitary())
+
+
 if __name__ == "__main__":
     test_generator_creation()
     test_diagram_creation()
@@ -949,3 +968,4 @@ if __name__ == "__main__":
     test_XY_YZ_extraction()
     test_ZX_rebase()
     test_internalise_gadgets()
+    test_round_trip()

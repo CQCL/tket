@@ -20,9 +20,9 @@ namespace zx {
 
 Rewrite Rewrite::to_graphlike_form() {
   return Rewrite::sequence(
-      {Rewrite::red_to_green(), Rewrite::spider_fusion(),
-       Rewrite::parallel_h_removal(), Rewrite::io_extension(),
-       Rewrite::separate_boundaries()});
+      {Rewrite::rebase_to_zx(), Rewrite::red_to_green(),
+       Rewrite::spider_fusion(), Rewrite::parallel_h_removal(),
+       Rewrite::io_extension(), Rewrite::separate_boundaries()});
 }
 
 Rewrite Rewrite::reduce_graphlike_form() {
