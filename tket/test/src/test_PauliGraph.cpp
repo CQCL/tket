@@ -24,11 +24,11 @@
 #include "PauliGraph/ConjugatePauliFunctions.hpp"
 #include "PauliGraph/PauliGraph.hpp"
 #include "Simulation/CircuitSimulator.hpp"
+#include "Transformations/Decomposition.hpp"
 #include "Transformations/OptimisationPass.hpp"
 #include "Transformations/PauliOptimisation.hpp"
 #include "Transformations/Rebase.hpp"
 #include "Transformations/Transform.hpp"
-#include "Transformations/Decomposition.hpp"
 #include "testutil.hpp"
 
 namespace tket {

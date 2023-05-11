@@ -92,6 +92,8 @@ const std::map<OpType, OpTypeInfo>& optypeinfo() {
       {OpType::Unitary3qBox, {"Unitary3qBox", "Unitary3qBox", {}, tripleq}},
       {OpType::ExpBox, {"ExpBox", "ExpBox", {}, doubleq}},
       {OpType::PauliExpBox, {"PauliExpBox", "PauliExpBox", {}, std::nullopt}},
+      {OpType::PauliExpPairBox,
+       {"PauliExpPairBox", "PauliExpPairBox", {}, std::nullopt}},
       {OpType::CustomGate, {"CustomGate", "CustomGate", {}, std::nullopt}},
       {OpType::Barrier, {"Barrier", "Barrier", {}, std::nullopt}},
       {OpType::Measure,

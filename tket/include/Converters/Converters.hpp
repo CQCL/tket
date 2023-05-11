@@ -72,8 +72,7 @@ Circuit pauli_graph_to_circuit_individually(
  * in the order given by TopSortIterator.
  * The tableau is then synthesised at the end.
  */
-Circuit pauli_graph_to_pauli_exp_box_circuit(
-    const PauliGraph &pg);
+Circuit pauli_graph_to_pauli_exp_box_circuit(const PauliGraph &pg);
 
 /**
  * Synthesises a circuit equivalent to the PauliGraph by building pairs of

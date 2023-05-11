@@ -19,11 +19,11 @@
 #include "Architecture/Architecture.hpp"
 #include "Circuit/CircPool.hpp"
 #include "Circuit/CircUtils.hpp"
-#include "Circuit/PauliExpBoxes.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Circuit/Command.hpp"
 #include "Circuit/DiagonalBox.hpp"
 #include "Circuit/Multiplexor.hpp"
+#include "Circuit/PauliExpBoxes.hpp"
 #include "Circuit/StatePreparation.hpp"
 #include "Circuit/ToffoliBox.hpp"
 #include "CircuitsForTesting.hpp"
@@ -315,7 +315,9 @@ SCENARIO("Test Circuit serialization") {
   }
   GIVEN("Pauli ExpBoxes") {
     Circuit c(4, 2, "paulibox");
-    PauliExpBox pbox({Pauli::X, Pauli::Y, Pauli::I, Pauli::Z}, -0.72521, CXConfigType::MultiQGate);
+    PauliExpBox pbox(
+        {Pauli::X, Pauli::Y, Pauli::I, Pauli::Z}, -0.72521,
+        CXConfigType::MultiQGate);
     c.add_box(pbox, {0, 1, 2, 3});
     nlohmann::json j_pbox = c;
     const Circuit new_c = j_pbox.get<Circuit>();

@@ -145,6 +145,42 @@ Circuit pauli_graph_to_circuit_pairwise(
   return circ;
 }
 
+Circuit pauli_graph_to_poly_exp_box_circuit_pairwise(
+    const PauliGraph &pg, CXConfigType cx_config) {
+  Circuit circ;
+  for (const Qubit &qb : pg.cliff_.get_qubits()) {
+    circ.add_qubit(qb);
+  }
+  for (const Bit &b : pg.bits_) {
+    circ.add_bit(b);
+  }
+  std::vector<PauliVert> vertices = pg.vertices_in_order();
+  auto it = vertices.begin();
+  while (it != vertices.end()) {
+    PauliVert vert0 = *it;
+    const QubitPauliTensor &pauli0 = pg.graph_[vert0].tensor_;
+    const Expr &angle0 = pg.graph_[vert0].angle_;
+    ++it;
+    if (it == vertices.end()) {
+      // append_single_pauli_gadget(circ, pauli0, angle0, cx_config);
+      append_single_pauli_gadget_as_pauli_exp_box(
+          circ, pauli0, angle0, cx_config);
+    } else {
+      PauliVert vert1 = *it;
+      const QubitPauliTensor &pauli1 = pg.graph_[vert1].tensor_;
+      const Expr &angle1 = pg.graph_[vert1].angle_;
+      ++it;
+      append_pauli_gadget_pair(circ, pauli0, angle0, pauli1, angle1, cx_config);
+    }
+  }
+  Circuit cliff_circuit = tableau_to_circuit(pg.cliff_);
+  circ.append(cliff_circuit);
+  for (auto it = pg.measures_.begin(); it != pg.measures_.end(); ++it) {
+    circ.add_measure(it->left, it->right);
+  }
+  return circ;
+}
+
 /* Currently follows a greedy set-building method */
 Circuit pauli_graph_to_circuit_sets(
     const PauliGraph &pg, CXConfigType cx_config) {

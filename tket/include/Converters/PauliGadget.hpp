@@ -51,7 +51,8 @@ void append_single_pauli_gadget(
  * @param cx_config which type of CX configuration to decompose into
  */
 void append_single_pauli_gadget_as_pauli_exp_box(
-    Circuit& circ, const QubitPauliTensor& pauli, Expr angle, CXConfigType cx_config);
+    Circuit& circ, const QubitPauliTensor& pauli, Expr angle,
+    CXConfigType cx_config);
 
 /**
  * Append a pair of Pauli gadgets to the end of a given circuit.

@@ -169,6 +169,7 @@ bool is_box_type(OpType optype) {
       OpType::Unitary3qBox,
       OpType::ExpBox,
       OpType::PauliExpBox,
+      OpType::PauliExpPairBox,
       OpType::CustomGate,
       OpType::CliffBox,
       OpType::PhasePolyBox,
