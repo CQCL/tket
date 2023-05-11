@@ -28,7 +28,7 @@ ${CONAN_CMD} profile detect
 ${CONAN_CMD} remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
 
 # Build tket
-${CONAN_CMD} create tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
+${CONAN_CMD} create tket --user tket --channel stable --build=missing -c tools.build:skip_test=True -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
 
 # Work around https://github.com/pypa/manylinux/issues/1309
 git config --global --add safe.directory "*"

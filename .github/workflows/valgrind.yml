@@ -41,16 +41,16 @@ jobs:
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: install valgrind
       run: sudo apt install valgrind
-    - name: build tket
-      run: conan create tket --user=tket --channel=stable --build=missing -o boost/*:header_only=True
     - name: Install runtime test requirements
       if: github.event_name == 'schedule'
       run: |
         sudo apt install texlive texlive-latex-extra latexmk
         mkdir -p ~/texmf/tex/latex
         wget http://mirrors.ctan.org/graphics/pgf/contrib/quantikz/tikzlibraryquantikz.code.tex -P ~/texmf/tex/latex
-    - name: Build and run tests under valgrind
+    - name: build tket
       run: |
-        conan create tket/test --build=missing -o boost/*:header_only=True --format json > test-tket.json
-        PKGPATH=`./rootpath test-tket.json test-tket`
-        cd ${PKGPATH}/bin && valgrind --error-exitcode=1 ./test-tket `./github/workflows/test-args ${{ matrix.os }} ${{ github.event_name }}`
+        conan install tket --user=tket --build=missing -o boost/*:header_only=True
+        conan build tket --user=tket -o boost/*:header_only=True
+    - name: Run tests under valgrind
+      working-directory: ./build/tket/build/Release
+      run: valgrind --error-exitcode=1 ./test/test-tket `./github/workflows/test-args ${{ matrix.os }} ${{ github.event_name }}`
