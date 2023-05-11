@@ -14,7 +14,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include "Diagonalisation/PauliPartition.hpp"
+#include "tket/Diagonalisation/PauliPartition.hpp"
 #include "testutil.hpp"
 
 namespace tket {

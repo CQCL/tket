@@ -17,7 +17,7 @@
 #include <sstream>
 #include <stdexcept>
 
-#include "Architecture/DistancesFromArchitecture.hpp"
+#include "tket/Architecture/DistancesFromArchitecture.hpp"
 
 using Catch::Matchers::ContainsSubstring;
 using std::vector;

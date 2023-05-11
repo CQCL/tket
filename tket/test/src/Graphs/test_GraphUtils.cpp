@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <Graphs/Utils.hpp>
+#include <tket/Graphs/Utils.hpp>
 #include <algorithm>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/range/iterator_range_core.hpp>

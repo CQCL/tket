@@ -17,7 +17,7 @@
 #include <tkrng/RNG.hpp>
 #include <tktokenswap/PartialTsaInterface.hpp>
 
-#include "Architecture/ArchitectureMapping.hpp"
+#include "tket/Architecture/ArchitectureMapping.hpp"
 
 namespace tket {
 namespace tsa_internal {

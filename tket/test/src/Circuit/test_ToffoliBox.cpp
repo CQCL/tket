@@ -19,14 +19,14 @@
 #include <random>
 
 #include "../testutil.hpp"
-#include "Circuit/Boxes.hpp"
-#include "Circuit/CircUtils.hpp"
-#include "Circuit/Circuit.hpp"
-#include "Circuit/ToffoliBox.hpp"
+#include "tket/Circuit/Boxes.hpp"
+#include "tket/Circuit/CircUtils.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/ToffoliBox.hpp"
 #include "Eigen/src/Core/Matrix.h"
-#include "Gate/Rotation.hpp"
-#include "Simulation/CircuitSimulator.hpp"
-#include "Utils/HelperFunctions.hpp"
+#include "tket/Gate/Rotation.hpp"
+#include "tket/Simulation/CircuitSimulator.hpp"
+#include "tket/Utils/HelperFunctions.hpp"
 
 namespace tket {
 namespace test_ToffoliBox {

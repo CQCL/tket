@@ -15,18 +15,18 @@
 #include <catch2/catch_test_macros.hpp>
 #include <set>
 
-#include "Circuit/CircUtils.hpp"
+#include "tket/Circuit/CircUtils.hpp"
 #include "CircuitsForTesting.hpp"
-#include "Ops/ClassicalOps.hpp"
-#include "Simulation/CircuitSimulator.hpp"
+#include "tket/Ops/ClassicalOps.hpp"
+#include "tket/Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
-#include "Transformations/CliffordOptimisation.hpp"
-#include "Transformations/CliffordReductionPass.hpp"
-#include "Transformations/Decomposition.hpp"
-#include "Transformations/OptimisationPass.hpp"
-#include "Transformations/Rebase.hpp"
-#include "Transformations/Transform.hpp"
-#include "Utils/PauliStrings.hpp"
+#include "tket/Transformations/CliffordOptimisation.hpp"
+#include "tket/Transformations/CliffordReductionPass.hpp"
+#include "tket/Transformations/Decomposition.hpp"
+#include "tket/Transformations/OptimisationPass.hpp"
+#include "tket/Transformations/Rebase.hpp"
+#include "tket/Transformations/Transform.hpp"
+#include "tket/Utils/PauliStrings.hpp"
 #include "testutil.hpp"
 
 namespace tket {

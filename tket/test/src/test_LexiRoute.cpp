@@ -15,18 +15,18 @@
 #include <catch2/catch_test_macros.hpp>
 #include <fstream>
 
-#include "Mapping/LexiLabelling.hpp"
-#include "Mapping/LexiRoute.hpp"
-#include "Mapping/MappingManager.hpp"
-#include "Mapping/Verification.hpp"
-#include "Ops/ClassicalOps.hpp"
-#include "Placement/Placement.hpp"
-#include "Predicates/CompilationUnit.hpp"
-#include "Predicates/CompilerPass.hpp"
-#include "Predicates/PassGenerators.hpp"
-#include "Predicates/PassLibrary.hpp"
-#include "Transformations/Decomposition.hpp"
-#include "Utils/Json.hpp"
+#include "tket/Mapping/LexiLabelling.hpp"
+#include "tket/Mapping/LexiRoute.hpp"
+#include "tket/Mapping/MappingManager.hpp"
+#include "tket/Mapping/Verification.hpp"
+#include "tket/Ops/ClassicalOps.hpp"
+#include "tket/Placement/Placement.hpp"
+#include "tket/Predicates/CompilationUnit.hpp"
+#include "tket/Predicates/CompilerPass.hpp"
+#include "tket/Predicates/PassGenerators.hpp"
+#include "tket/Predicates/PassLibrary.hpp"
+#include "tket/Transformations/Decomposition.hpp"
+#include "tket/Utils/Json.hpp"
 #include "testutil.hpp"
 
 namespace tket {

@@ -14,19 +14,19 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include "Circuit/Boxes.hpp"
+#include "tket/Circuit/Boxes.hpp"
 #include "CircuitsForTesting.hpp"
-#include "Converters/Converters.hpp"
-#include "Converters/PauliGadget.hpp"
-#include "Diagonalisation/Diagonalisation.hpp"
-#include "Gate/SymTable.hpp"
-#include "PauliGraph/ConjugatePauliFunctions.hpp"
-#include "PauliGraph/PauliGraph.hpp"
-#include "Simulation/CircuitSimulator.hpp"
-#include "Transformations/OptimisationPass.hpp"
-#include "Transformations/PauliOptimisation.hpp"
-#include "Transformations/Rebase.hpp"
-#include "Transformations/Transform.hpp"
+#include "tket/Converters/Converters.hpp"
+#include "tket/Converters/PauliGadget.hpp"
+#include "tket/Diagonalisation/Diagonalisation.hpp"
+#include "tket/Gate/SymTable.hpp"
+#include "tket/PauliGraph/ConjugatePauliFunctions.hpp"
+#include "tket/PauliGraph/PauliGraph.hpp"
+#include "tket/Simulation/CircuitSimulator.hpp"
+#include "tket/Transformations/OptimisationPass.hpp"
+#include "tket/Transformations/PauliOptimisation.hpp"
+#include "tket/Transformations/Rebase.hpp"
+#include "tket/Transformations/Transform.hpp"
 #include "testutil.hpp"
 
 namespace tket {

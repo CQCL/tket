@@ -15,9 +15,9 @@
 #include <catch2/catch_test_macros.hpp>
 #include <sstream>
 
-#include "Clifford/UnitaryTableau.hpp"
-#include "Converters/Converters.hpp"
-#include "Converters/UnitaryTableauBox.hpp"
+#include "tket/Clifford/UnitaryTableau.hpp"
+#include "tket/Converters/Converters.hpp"
+#include "tket/Converters/UnitaryTableauBox.hpp"
 #include "testutil.hpp"
 
 namespace tket::test_UnitaryTableau {

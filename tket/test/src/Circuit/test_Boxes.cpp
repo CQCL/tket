@@ -16,13 +16,13 @@
 #include <catch2/matchers/catch_matchers_string.hpp>
 
 #include "../testutil.hpp"
-#include "Circuit/Boxes.hpp"
-#include "Circuit/CircUtils.hpp"
-#include "Circuit/Circuit.hpp"
-#include "Converters/PhasePoly.hpp"
+#include "tket/Circuit/Boxes.hpp"
+#include "tket/Circuit/CircUtils.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Converters/PhasePoly.hpp"
 #include "Eigen/src/Core/Matrix.h"
-#include "Gate/SymTable.hpp"
-#include "Simulation/CircuitSimulator.hpp"
+#include "tket/Gate/SymTable.hpp"
+#include "tket/Simulation/CircuitSimulator.hpp"
 
 using Catch::Matchers::StartsWith;
 

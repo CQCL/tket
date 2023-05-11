@@ -14,9 +14,9 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include "Characterisation/FrameRandomisation.hpp"
-#include "Transformations/Rebase.hpp"
-#include "Transformations/Transform.hpp"
+#include "tket/Characterisation/FrameRandomisation.hpp"
+#include "tket/Transformations/Rebase.hpp"
+#include "tket/Transformations/Transform.hpp"
 #include "testutil.hpp"
 
 namespace tket {

@@ -16,11 +16,11 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include "Circuit/Circuit.hpp"
-#include "Simulation/CircuitSimulator.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
-#include "Utils/EigenConfig.hpp"
-#include "Utils/MatrixAnalysis.hpp"
+#include "tket/Utils/EigenConfig.hpp"
+#include "tket/Utils/MatrixAnalysis.hpp"
 
 namespace tket {
 

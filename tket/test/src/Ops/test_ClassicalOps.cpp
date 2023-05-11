@@ -15,13 +15,13 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "../testutil.hpp"
-#include "Circuit/Circuit.hpp"
-#include "Ops/ClassicalOps.hpp"
-#include "Transformations/BasicOptimisation.hpp"
-#include "Transformations/CliffordOptimisation.hpp"
-#include "Transformations/PauliOptimisation.hpp"
-#include "Transformations/PhaseOptimisation.hpp"
-#include "Transformations/Transform.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Ops/ClassicalOps.hpp"
+#include "tket/Transformations/BasicOptimisation.hpp"
+#include "tket/Transformations/CliffordOptimisation.hpp"
+#include "tket/Transformations/PauliOptimisation.hpp"
+#include "tket/Transformations/PhaseOptimisation.hpp"
+#include "tket/Transformations/Transform.hpp"
 
 namespace tket {
 namespace test_ClassicalOps {

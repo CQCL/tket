@@ -16,16 +16,16 @@
 #include <catch2/catch_test_macros.hpp>
 #include <numeric>
 
-#include "Circuit/CircPool.hpp"
-#include "Gate/GateUnitaryMatrix.hpp"
-#include "Gate/SymTable.hpp"
-#include "Simulation/CircuitSimulator.hpp"
+#include "tket/Circuit/CircPool.hpp"
+#include "tket/Gate/GateUnitaryMatrix.hpp"
+#include "tket/Gate/SymTable.hpp"
+#include "tket/Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
-#include "Transformations/CliffordReductionPass.hpp"
-#include "Transformations/Decomposition.hpp"
-#include "Transformations/OptimisationPass.hpp"
-#include "Transformations/Replacement.hpp"
-#include "Transformations/Transform.hpp"
+#include "tket/Transformations/CliffordReductionPass.hpp"
+#include "tket/Transformations/Decomposition.hpp"
+#include "tket/Transformations/OptimisationPass.hpp"
+#include "tket/Transformations/Replacement.hpp"
+#include "tket/Transformations/Transform.hpp"
 #include "testutil.hpp"
 
 namespace tket {

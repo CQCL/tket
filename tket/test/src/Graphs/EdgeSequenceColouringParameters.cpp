@@ -18,8 +18,8 @@
 
 #include "EdgeSequence.hpp"
 #include "GraphTestingRoutines.hpp"
-#include "Graphs/AdjacencyData.hpp"
-#include "Graphs/GraphColouring.hpp"
+#include "tket/Graphs/AdjacencyData.hpp"
+#include "tket/Graphs/GraphColouring.hpp"
 #include "RandomGraphGeneration.hpp"
 
 using std::size_t;

@@ -18,13 +18,13 @@
 #include <random>
 
 #include "../testutil.hpp"
-#include "Circuit/Boxes.hpp"
-#include "Circuit/CircUtils.hpp"
-#include "Circuit/Circuit.hpp"
-#include "Circuit/DiagonalBox.hpp"
+#include "tket/Circuit/Boxes.hpp"
+#include "tket/Circuit/CircUtils.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/DiagonalBox.hpp"
 #include "Eigen/src/Core/Matrix.h"
-#include "Gate/Rotation.hpp"
-#include "Simulation/CircuitSimulator.hpp"
+#include "tket/Gate/Rotation.hpp"
+#include "tket/Simulation/CircuitSimulator.hpp"
 
 namespace tket {
 namespace test_DiagonalBox {

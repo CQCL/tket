@@ -14,7 +14,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include "ZX/Rewrite.hpp"
+#include "tket/ZX/Rewrite.hpp"
 
 namespace tket {
 namespace zx {

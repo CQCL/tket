@@ -14,15 +14,15 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include "Circuit/Circuit.hpp"
-#include "Predicates/CompilationUnit.hpp"
-#include "Predicates/CompilerPass.hpp"
-#include "Predicates/PassGenerators.hpp"
-#include "Simulation/CircuitSimulator.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Predicates/CompilationUnit.hpp"
+#include "tket/Predicates/CompilerPass.hpp"
+#include "tket/Predicates/PassGenerators.hpp"
+#include "tket/Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
-#include "Transformations/ContextualReduction.hpp"
-#include "Transformations/Transform.hpp"
-#include "Utils/EigenConfig.hpp"
+#include "tket/Transformations/ContextualReduction.hpp"
+#include "tket/Transformations/Transform.hpp"
+#include "tket/Utils/EigenConfig.hpp"
 
 namespace tket {
 namespace test_ContextOpt {

@@ -14,7 +14,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include "Utils/HelperFunctions.hpp"
+#include "tket/Utils/HelperFunctions.hpp"
 
 namespace tket {
 namespace test_Utils {
