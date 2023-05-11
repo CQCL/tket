@@ -77,17 +77,6 @@ jobs:
         brew update
         brew install clang-format@16
         git ls-files "*.cpp" "*.hpp" | xargs clang-format -style=file --dry-run --Werror
-    - name: Get current time
-      uses: josStorer/get-current-time@v2.1.1
-      id: current_time
-      with:
-        format: YYYYMMDDHHmmss
-    - name: Use ccache
-      uses: hendrikmuhs/ccache-action@v1.2.9
-      with:
-        key: ${{ github.job }}-${{ runner.os }}-ccache-${{ steps.current_time.outputs.formattedTime }}
-        restore-keys: |
-          ${{ github.job }}-${{ runner.os }}-ccache-
     - name: apt update
       if: matrix.os == 'ubuntu-22.04'
       run: sudo apt update
@@ -200,17 +189,6 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v3
-    - name: Get current time
-      uses: josStorer/get-current-time@v2.1.1
-      id: current_time
-      with:
-        format: YYYYMMDDHHmmss
-    - name: Use ccache
-      uses: hendrikmuhs/ccache-action@v1.2.9
-      with:
-        key: ${{ github.job }}-${{ runner.os }}-ccache-${{ steps.current_time.outputs.formattedTime }}
-        restore-keys: |
-          ${{ github.job }}-${{ runner.os }}-ccache-
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
     - name: Set up conan
@@ -296,17 +274,6 @@ jobs:
     runs-on: macos-12
     steps:
     - uses: actions/checkout@v3
-    - name: Get current time
-      uses: josStorer/get-current-time@v2.1.1
-      id: current_time
-      with:
-        format: YYYYMMDDHHmmss
-    - name: Use ccache
-      uses: hendrikmuhs/ccache-action@v1.2.9
-      with:
-        key: ${{ github.job }}-${{ runner.os }}-ccache-${{ steps.current_time.outputs.formattedTime }}
-        restore-keys: |
-          ${{ github.job }}-${{ runner.os }}-ccache-
     - name: Select Python 3.10
       # otherwise turtlebrowser/get-conan@v1.2 fails on macos-12
       uses: actions/setup-python@v4
@@ -375,17 +342,6 @@ jobs:
     runs-on: windows-2022
     steps:
     - uses: actions/checkout@v3
-    - name: Get current time
-      uses: josStorer/get-current-time@v2.1.1
-      id: current_time
-      with:
-        format: YYYYMMDDHHmmss
-    - name: Use ccache
-      uses: hendrikmuhs/ccache-action@v1.2.9
-      with:
-        key: ${{ github.job }}-${{ runner.os }}-ccache-${{ steps.current_time.outputs.formattedTime }}
-        restore-keys: |
-          ${{ github.job }}-${{ runner.os }}-ccache-
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
     - name: Set up conan
