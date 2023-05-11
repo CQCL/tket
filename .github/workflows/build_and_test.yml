@@ -163,7 +163,6 @@ jobs:
     - name: Build and test tket
       if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_tests_changed == 'true'
       run: |
-        rm -r tket/build
         conan install tket --user=tket --build=missing -o boost/*:header_only=True
         conan build tket --user=tket -o boost/*:header_only=True
     - name: Upload package
