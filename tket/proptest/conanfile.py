@@ -47,5 +47,5 @@ class proptest_tketRecipe(ConanFile):
         cmake.install()
 
     def requirements(self):
-        self.requires("tket/1.2.8@tket/stable")
+        self.requires("tket/1.2.9@tket/stable")
         self.requires("rapidcheck/cci.20220514")
