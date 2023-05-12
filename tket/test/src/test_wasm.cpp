@@ -14,7 +14,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include "Eigen/src/Core/Matrix.h"
+#include <Eigen/Core>
 #include "testutil.hpp"
 #include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/Circuit.hpp"

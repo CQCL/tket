@@ -16,7 +16,7 @@
 #include <catch2/matchers/catch_matchers_string.hpp>
 
 #include "../testutil.hpp"
-#include "Eigen/src/Core/Matrix.h"
+#include <Eigen/Core>
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/Circuit.hpp"
