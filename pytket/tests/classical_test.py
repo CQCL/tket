@@ -68,7 +68,7 @@ from pytket.circuit.logic_exp import (
     if_not_bit,
 )
 
-from pytket.passes import DecomposeClassicalExp  # type: ignore
+from pytket.passes import DecomposeClassicalExp, FlattenRegisters  # type: ignore
 
 from strategies import reg_name_regex, binary_digits, uint32  # type: ignore
 
@@ -1140,6 +1140,31 @@ def test_renaming() -> None:
         circ.rename_units(bmap)
     err_msg = f"Can't rename bits in {a.__repr__()}"
     assert err_msg in str(e.value)
+
+
+def test_flatten_registers_with_classical_exps() -> None:
+    # circuit with register-wise expressions
+    circ = Circuit(3)
+    a = circ.add_c_register("a", 5)
+    b = circ.add_c_register("b", 5)
+    c = circ.add_c_register("c", 5)
+    circ.add_classicalexpbox_register(a | b, c)
+    with pytest.raises(RuntimeError) as e:
+        FlattenRegisters().apply(circ)
+    err_msg = "Unable to flatten registers"
+    assert err_msg in str(e.value)
+    # circuit with bit-wise expressions
+    circ = Circuit(3)
+    a = circ.add_c_register("a", 5)
+    b = circ.add_c_register("b", 5)
+    c = circ.add_c_register("c", 5)
+    circ.add_classicalexpbox_bit((a[2] & b[3]), [c[0]])
+    circ.add_classicalexpbox_bit((a[4] | b[4] ^ a[1]), [c[2]])
+    assert FlattenRegisters().apply(circ)
+    assert all(bit.reg_name == "c" for bit in circ.bits)
+    commands = circ.get_commands()
+    assert str(commands[0].op.get_exp()) == "(c[2] & c[8])"
+    assert str(commands[1].op.get_exp()) == "(c[4] | (c[9] ^ c[1]))"
 
 
 if __name__ == "__main__":
