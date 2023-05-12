@@ -864,6 +864,12 @@ def test_flatten_relabel_pass() -> None:
     assert cu.initial_map[Qubit("b", 7)] == Qubit("a", 1)
     assert cu.circuit.qubits == [Qubit("a", 0), Qubit("a", 1)]
 
+    # test default argument
+    c = Circuit()
+    c.add_q_register("p", 4)
+    FlattenRelabelRegistersPass().apply(c)
+    assert all(q.reg_name == "q" for q in c.qubits)
+
 
 def test_round_angles_pass() -> None:
     c0 = Circuit(2).H(0).TK2(0.001, -0.001, 0.001, 0, 1).Rz(0.50001, 0)
