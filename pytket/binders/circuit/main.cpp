@@ -18,6 +18,8 @@
 
 #include <sstream>
 
+#include "binder_json.hpp"
+#include "binder_utils.hpp"
 #include "tket/Circuit/Command.hpp"
 #include "tket/Gate/Gate.hpp"
 #include "tket/Gate/OpPtrFunctions.hpp"
@@ -27,8 +29,6 @@
 #include "tket/Ops/Op.hpp"
 #include "tket/Utils/Constants.hpp"
 #include "tket/Utils/Symbols.hpp"
-#include "binder_json.hpp"
-#include "binder_utils.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;

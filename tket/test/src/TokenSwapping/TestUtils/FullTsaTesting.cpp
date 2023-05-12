@@ -19,10 +19,10 @@
 #include <tktokenswap/RiverFlowPathFinder.hpp>
 #include <tktokenswap/VertexSwapResult.hpp>
 
+#include "DebugFunctions.hpp"
 #include "tket/Architecture/ArchitectureMapping.hpp"
 #include "tket/Architecture/DistancesFromArchitecture.hpp"
 #include "tket/Architecture/NeighboursFromArchitecture.hpp"
-#include "DebugFunctions.hpp"
 
 using std::vector;
 

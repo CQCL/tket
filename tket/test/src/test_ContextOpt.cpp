@@ -14,12 +14,12 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include "Simulation/ComparisonFunctions.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Predicates/CompilationUnit.hpp"
 #include "tket/Predicates/CompilerPass.hpp"
 #include "tket/Predicates/PassGenerators.hpp"
 #include "tket/Simulation/CircuitSimulator.hpp"
-#include "Simulation/ComparisonFunctions.hpp"
 #include "tket/Transformations/ContextualReduction.hpp"
 #include "tket/Transformations/Transform.hpp"
 #include "tket/Utils/EigenConfig.hpp"

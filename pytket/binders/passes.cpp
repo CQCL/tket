@@ -14,6 +14,7 @@
 
 #include <pybind11/functional.h>
 
+#include "binder_json.hpp"
 #include "tket/ArchAwareSynth/SteinerForest.hpp"
 #include "tket/Mapping/LexiLabelling.hpp"
 #include "tket/Mapping/LexiRoute.hpp"
@@ -26,7 +27,6 @@
 #include "tket/Transformations/PauliOptimisation.hpp"
 #include "tket/Transformations/Transform.hpp"
 #include "tket/Utils/Json.hpp"
-#include "binder_json.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;

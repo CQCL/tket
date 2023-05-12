@@ -14,9 +14,9 @@
 
 #pragma once
 
+#include "MeasurementSetup.hpp"
 #include "tket/Diagonalisation/Diagonalisation.hpp"
 #include "tket/Diagonalisation/PauliPartition.hpp"
-#include "MeasurementSetup.hpp"
 
 namespace tket {
 

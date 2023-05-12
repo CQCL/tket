@@ -18,6 +18,7 @@
 #include <pybind11/stl.h>
 #include <pybind11/stl_bind.h>
 
+#include "binder_utils.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Mapping/AASLabelling.hpp"
 #include "tket/Mapping/AASRoute.hpp"
@@ -27,7 +28,6 @@
 #include "tket/Mapping/MappingManager.hpp"
 #include "tket/Mapping/MultiGateReorder.hpp"
 #include "tket/Mapping/RoutingMethodCircuit.hpp"
-#include "binder_utils.hpp"
 
 namespace py = pybind11;
 

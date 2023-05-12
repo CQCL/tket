@@ -17,8 +17,8 @@
 #include <map>
 #include <nlohmann/json.hpp>
 
-#include "tket/Architecture/Architecture.hpp"
 #include "ErrorTypes.hpp"
+#include "tket/Architecture/Architecture.hpp"
 #include "tket/OpType/OpType.hpp"
 #include "tket/Utils/UnitID.hpp"
 

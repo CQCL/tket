@@ -17,11 +17,11 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "../testutil.hpp"
+#include "Eigen/src/Core/Matrix.h"
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/StatePreparation.hpp"
-#include "Eigen/src/Core/Matrix.h"
 #include "tket/Gate/Rotation.hpp"
 #include "tket/Simulation/CircuitSimulator.hpp"
 

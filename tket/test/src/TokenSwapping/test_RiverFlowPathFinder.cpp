@@ -17,10 +17,10 @@
 #include <tkrng/RNG.hpp>
 #include <tktokenswap/RiverFlowPathFinder.hpp>
 
+#include "TestUtils/ArchitectureEdgesReimplementation.hpp"
 #include "tket/Architecture/ArchitectureMapping.hpp"
 #include "tket/Architecture/DistancesFromArchitecture.hpp"
 #include "tket/Architecture/NeighboursFromArchitecture.hpp"
-#include "TestUtils/ArchitectureEdgesReimplementation.hpp"
 
 using std::vector;
 

@@ -14,13 +14,13 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include "Eigen/src/Core/Matrix.h"
+#include "testutil.hpp"
 #include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Converters/PhasePoly.hpp"
-#include "Eigen/src/Core/Matrix.h"
 #include "tket/Ops/ClassicalOps.hpp"
 #include "tket/Simulation/CircuitSimulator.hpp"
-#include "testutil.hpp"
 
 namespace tket {
 namespace test_Boxes {

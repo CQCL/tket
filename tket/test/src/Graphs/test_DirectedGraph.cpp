@@ -17,9 +17,9 @@
 #include <iostream>
 #include <vector>
 
+#include "boost/range/iterator_range_core.hpp"
 #include "tket/Graphs/DirectedGraph.hpp"
 #include "tket/Utils/UnitID.hpp"
-#include "boost/range/iterator_range_core.hpp"
 
 namespace tket {
 namespace graphs {

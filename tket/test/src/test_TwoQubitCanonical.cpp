@@ -14,6 +14,8 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include "Simulation/ComparisonFunctions.hpp"
+#include "testutil.hpp"
 #include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/Command.hpp"
 #include "tket/Gate/Rotation.hpp"
@@ -21,13 +23,11 @@
 #include "tket/Predicates/CompilationUnit.hpp"
 #include "tket/Predicates/PassGenerators.hpp"
 #include "tket/Simulation/CircuitSimulator.hpp"
-#include "Simulation/ComparisonFunctions.hpp"
 #include "tket/Transformations/BasicOptimisation.hpp"
 #include "tket/Transformations/Decomposition.hpp"
 #include "tket/Transformations/Transform.hpp"
 #include "tket/Utils/EigenConfig.hpp"
 #include "tket/Utils/MatrixAnalysis.hpp"
-#include "testutil.hpp"
 
 namespace tket {
 namespace test_TwoQubitCanonical {

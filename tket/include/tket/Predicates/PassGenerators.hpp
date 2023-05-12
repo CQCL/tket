@@ -14,9 +14,9 @@
 
 #pragma once
 
+#include "CompilerPass.hpp"
 #include "tket/ArchAwareSynth/SteinerForest.hpp"
 #include "tket/Circuit/Circuit.hpp"
-#include "CompilerPass.hpp"
 #include "tket/Mapping/LexiRoute.hpp"
 #include "tket/Mapping/RoutingMethod.hpp"
 #include "tket/Transformations/ContextualReduction.hpp"

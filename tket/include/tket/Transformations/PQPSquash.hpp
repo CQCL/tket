@@ -14,9 +14,9 @@
 
 #pragma once
 
+#include "SingleQubitSquash.hpp"
 #include "tket/Gate/GatePtr.hpp"
 #include "tket/OpType/OpType.hpp"
-#include "SingleQubitSquash.hpp"
 
 namespace tket {
 

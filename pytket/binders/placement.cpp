@@ -19,9 +19,9 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
-#include "tket/Utils/Json.hpp"
 #include "binder_json.hpp"
 #include "binder_utils.hpp"
+#include "tket/Utils/Json.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;

@@ -14,11 +14,11 @@
 
 #include "tket/Gate/Rotation.hpp"
 
+#include "symengine/constants.h"
 #include "tket/OpType/OpDesc.hpp"
 #include "tket/OpType/OpType.hpp"
 #include "tket/Utils/Expression.hpp"
 #include "tket/Utils/Symbols.hpp"
-#include "symengine/constants.h"
 
 namespace tket {
 

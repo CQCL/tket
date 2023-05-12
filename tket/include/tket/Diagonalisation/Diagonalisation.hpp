@@ -14,9 +14,9 @@
 
 #pragma once
 
+#include "DiagUtils.hpp"
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/Circuit.hpp"
-#include "DiagUtils.hpp"
 
 namespace tket {
 

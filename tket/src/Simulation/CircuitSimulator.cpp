@@ -16,10 +16,10 @@
 
 #include <sstream>
 
-#include "tket/Circuit/Circuit.hpp"
 #include "DecomposeCircuit.hpp"
-#include "tket/Gate/GateUnitaryMatrixError.hpp"
 #include "GateNodesBuffer.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Gate/GateUnitaryMatrixError.hpp"
 #include "tket/Utils/Expression.hpp"
 
 namespace tket {

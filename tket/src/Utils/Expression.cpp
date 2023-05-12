@@ -16,9 +16,9 @@
 
 #include <optional>
 
+#include "symengine/symengine_exception.h"
 #include "tket/Utils/Constants.hpp"
 #include "tket/Utils/Symbols.hpp"
-#include "symengine/symengine_exception.h"
 
 namespace tket {
 

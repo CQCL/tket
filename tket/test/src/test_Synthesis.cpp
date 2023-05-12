@@ -17,9 +17,11 @@
 #include <optional>
 #include <stdexcept>
 
+#include "CircuitsForTesting.hpp"
+#include "Simulation/ComparisonFunctions.hpp"
+#include "testutil.hpp"
 #include "tket/Circuit/CircPool.hpp"
 #include "tket/Circuit/CircUtils.hpp"
-#include "CircuitsForTesting.hpp"
 #include "tket/Gate/Rotation.hpp"
 #include "tket/OpType/OpType.hpp"
 #include "tket/OpType/OpTypeFunctions.hpp"
@@ -29,7 +31,6 @@
 #include "tket/Predicates/PassLibrary.hpp"
 #include "tket/Predicates/Predicates.hpp"
 #include "tket/Simulation/CircuitSimulator.hpp"
-#include "Simulation/ComparisonFunctions.hpp"
 #include "tket/Transformations/BasicOptimisation.hpp"
 #include "tket/Transformations/CliffordOptimisation.hpp"
 #include "tket/Transformations/Combinator.hpp"
@@ -41,7 +42,6 @@
 #include "tket/Transformations/RzPhasedXSquash.hpp"
 #include "tket/Transformations/Transform.hpp"
 #include "tket/Utils/Expression.hpp"
-#include "testutil.hpp"
 
 /* This test file covers decomposition, basic optimisation and synthesis passes.
 It does not cover Rebasing, Clifford optimisation, Phase Gadgets,

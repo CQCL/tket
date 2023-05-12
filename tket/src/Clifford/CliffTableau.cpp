@@ -16,10 +16,10 @@
 
 #include <stdexcept>
 
+#include "tkassert/Assert.hpp"
 #include "tket/OpType/OpType.hpp"
 #include "tket/OpType/OpTypeInfo.hpp"
 #include "tket/Utils/MatrixAnalysis.hpp"
-#include "tkassert/Assert.hpp"
 
 namespace tket {
 

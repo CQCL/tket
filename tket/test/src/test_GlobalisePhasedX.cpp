@@ -14,10 +14,10 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include "testutil.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Simulation/CircuitSimulator.hpp"
 #include "tket/Transformations/Decomposition.hpp"
-#include "testutil.hpp"
 
 namespace tket {
 namespace test_GlobalisePhasedX {

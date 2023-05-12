@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <tket/Circuit/Circuit.hpp>
-#include <tket/Transformations/OptimisationPass.hpp>
 #include <iostream>
 #include <tkassert/Assert.hpp>
+#include <tket/Circuit/Circuit.hpp>
+#include <tket/Transformations/OptimisationPass.hpp>
 
 using namespace tket;
 

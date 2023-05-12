@@ -16,8 +16,8 @@
 
 #include <stdexcept>
 
-#include "tket/OpType/OpTypeInfo.hpp"
 #include "tkassert/Assert.hpp"
+#include "tket/OpType/OpTypeInfo.hpp"
 
 namespace tket {
 

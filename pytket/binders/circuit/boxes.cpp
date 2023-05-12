@@ -18,6 +18,8 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
+#include "binder_json.hpp"
+#include "binder_utils.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/DiagonalBox.hpp"
 #include "tket/Circuit/Multiplexor.hpp"
@@ -26,8 +28,6 @@
 #include "tket/Converters/PhasePoly.hpp"
 #include "tket/Utils/HelperFunctions.hpp"
 #include "tket/Utils/Json.hpp"
-#include "binder_json.hpp"
-#include "binder_utils.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;

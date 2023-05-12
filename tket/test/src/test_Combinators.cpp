@@ -15,9 +15,9 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "CircuitsForTesting.hpp"
+#include "Simulation/ComparisonFunctions.hpp"
 #include "tket/Predicates/PassGenerators.hpp"
 #include "tket/Simulation/CircuitSimulator.hpp"
-#include "Simulation/ComparisonFunctions.hpp"
 #include "tket/Transformations/Combinator.hpp"
 #include "tket/Transformations/OptimisationPass.hpp"
 #include "tket/Transformations/Rebase.hpp"

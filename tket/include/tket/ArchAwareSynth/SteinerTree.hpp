@@ -13,8 +13,8 @@
 // limitations under the License.
 
 #pragma once
-#include "tket/Converters/Gauss.hpp"
 #include "Path.hpp"
+#include "tket/Converters/Gauss.hpp"
 
 namespace tket {
 namespace aas {

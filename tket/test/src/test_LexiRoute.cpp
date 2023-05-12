@@ -15,6 +15,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <fstream>
 
+#include "testutil.hpp"
 #include "tket/Mapping/LexiLabelling.hpp"
 #include "tket/Mapping/LexiRoute.hpp"
 #include "tket/Mapping/MappingManager.hpp"
@@ -27,7 +28,6 @@
 #include "tket/Predicates/PassLibrary.hpp"
 #include "tket/Transformations/Decomposition.hpp"
 #include "tket/Utils/Json.hpp"
-#include "testutil.hpp"
 
 namespace tket {
 

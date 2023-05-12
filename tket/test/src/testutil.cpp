@@ -16,9 +16,9 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include "Simulation/ComparisonFunctions.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Simulation/CircuitSimulator.hpp"
-#include "Simulation/ComparisonFunctions.hpp"
 #include "tket/Utils/EigenConfig.hpp"
 #include "tket/Utils/MatrixAnalysis.hpp"
 

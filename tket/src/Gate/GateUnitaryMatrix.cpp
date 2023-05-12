@@ -18,12 +18,12 @@
 #include <sstream>
 #include <tkassert/Assert.hpp>
 
+#include "GateUnitaryMatrixVariableQubits.hpp"
+#include "GateUnitarySparseMatrix.hpp"
 #include "tket/Gate/Gate.hpp"
 #include "tket/Gate/GateUnitaryMatrixError.hpp"
 #include "tket/Gate/GateUnitaryMatrixImplementations.hpp"
 #include "tket/Gate/GateUnitaryMatrixUtils.hpp"
-#include "GateUnitaryMatrixVariableQubits.hpp"
-#include "GateUnitarySparseMatrix.hpp"
 #include "tket/OpType/OpTypeInfo.hpp"
 
 // This is just for the main Gate -> matrix function, so the only part

@@ -21,9 +21,9 @@
 
 #include "../Gate/GatesData.hpp"
 #include "../testutil.hpp"
+#include "ComparisonFunctions.hpp"
 #include "tket/Circuit/CircPool.hpp"
 #include "tket/Circuit/CircUtils.hpp"
-#include "ComparisonFunctions.hpp"
 #include "tket/Gate/GateUnitaryMatrix.hpp"
 #include "tket/Gate/GateUnitaryMatrixUtils.hpp"
 #include "tket/Simulation/CircuitSimulator.hpp"

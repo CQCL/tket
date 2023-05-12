@@ -18,11 +18,11 @@
 #include <random>
 
 #include "../testutil.hpp"
+#include "Eigen/src/Core/Matrix.h"
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/DiagonalBox.hpp"
-#include "Eigen/src/Core/Matrix.h"
 #include "tket/Gate/Rotation.hpp"
 #include "tket/Simulation/CircuitSimulator.hpp"
 

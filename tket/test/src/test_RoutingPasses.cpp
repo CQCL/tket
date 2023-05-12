@@ -16,6 +16,8 @@
 #include <numeric>
 #include <optional>
 
+#include "Simulation/ComparisonFunctions.hpp"
+#include "testutil.hpp"
 #include "tket/Characterisation/DeviceCharacterisation.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Mapping/LexiLabelling.hpp"
@@ -27,14 +29,12 @@
 #include "tket/Predicates/PassGenerators.hpp"
 #include "tket/Predicates/Predicates.hpp"
 #include "tket/Simulation/CircuitSimulator.hpp"
-#include "Simulation/ComparisonFunctions.hpp"
 #include "tket/Transformations/BasicOptimisation.hpp"
 #include "tket/Transformations/Decomposition.hpp"
 #include "tket/Transformations/OptimisationPass.hpp"
 #include "tket/Transformations/Rebase.hpp"
 #include "tket/Transformations/Transform.hpp"
 #include "tket/Utils/HelperFunctions.hpp"
-#include "testutil.hpp"
 
 namespace tket {
 

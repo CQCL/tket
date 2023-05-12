@@ -15,6 +15,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <memory>
 
+#include "testutil.hpp"
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Gate/SymTable.hpp"
 #include "tket/Placement/Placement.hpp"
@@ -23,7 +24,6 @@
 #include "tket/Predicates/PassLibrary.hpp"
 #include "tket/Predicates/Predicates.hpp"
 #include "tket/Simulation/CircuitSimulator.hpp"
-#include "testutil.hpp"
 
 namespace tket {
 namespace test_Predicates {

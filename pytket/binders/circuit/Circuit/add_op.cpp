@@ -20,6 +20,9 @@
 
 #include <optional>
 
+#include "UnitRegister.hpp"
+#include "add_gate.hpp"
+#include "binder_utils.hpp"
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/ClassicalExpBox.hpp"
@@ -30,9 +33,6 @@
 #include "tket/Converters/PhasePoly.hpp"
 #include "tket/Gate/OpPtrFunctions.hpp"
 #include "tket/Ops/Op.hpp"
-#include "UnitRegister.hpp"
-#include "add_gate.hpp"
-#include "binder_utils.hpp"
 #include "typecast.hpp"
 namespace py = pybind11;
 

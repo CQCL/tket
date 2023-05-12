@@ -14,8 +14,9 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include "tket/Circuit/Boxes.hpp"
 #include "CircuitsForTesting.hpp"
+#include "testutil.hpp"
+#include "tket/Circuit/Boxes.hpp"
 #include "tket/Converters/Converters.hpp"
 #include "tket/Converters/PauliGadget.hpp"
 #include "tket/Diagonalisation/Diagonalisation.hpp"
@@ -27,7 +28,6 @@
 #include "tket/Transformations/PauliOptimisation.hpp"
 #include "tket/Transformations/Rebase.hpp"
 #include "tket/Transformations/Transform.hpp"
-#include "testutil.hpp"
 
 namespace tket {
 namespace test_PauliGraph {

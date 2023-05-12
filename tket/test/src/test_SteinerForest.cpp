@@ -14,8 +14,8 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include "tket/ArchAwareSynth/SteinerForest.hpp"
 #include "testutil.hpp"
+#include "tket/ArchAwareSynth/SteinerForest.hpp"
 namespace tket {
 SCENARIO("Synthesise a CNOT-only steiner Forest") {
   GIVEN("Empty circuit") {

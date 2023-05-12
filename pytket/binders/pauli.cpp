@@ -17,8 +17,8 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
-#include "tket/Utils/PauliStrings.hpp"
 #include "binder_json.hpp"
+#include "tket/Utils/PauliStrings.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;

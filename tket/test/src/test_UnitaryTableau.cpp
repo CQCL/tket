@@ -15,10 +15,10 @@
 #include <catch2/catch_test_macros.hpp>
 #include <sstream>
 
+#include "testutil.hpp"
 #include "tket/Clifford/UnitaryTableau.hpp"
 #include "tket/Converters/Converters.hpp"
 #include "tket/Converters/UnitaryTableauBox.hpp"
-#include "testutil.hpp"
 
 namespace tket::test_UnitaryTableau {
 

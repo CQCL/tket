@@ -16,17 +16,17 @@
 #include <catch2/catch_test_macros.hpp>
 #include <numeric>
 
+#include "Simulation/ComparisonFunctions.hpp"
+#include "testutil.hpp"
 #include "tket/Circuit/CircPool.hpp"
 #include "tket/Gate/GateUnitaryMatrix.hpp"
 #include "tket/Gate/SymTable.hpp"
 #include "tket/Simulation/CircuitSimulator.hpp"
-#include "Simulation/ComparisonFunctions.hpp"
 #include "tket/Transformations/CliffordReductionPass.hpp"
 #include "tket/Transformations/Decomposition.hpp"
 #include "tket/Transformations/OptimisationPass.hpp"
 #include "tket/Transformations/Replacement.hpp"
 #include "tket/Transformations/Transform.hpp"
-#include "testutil.hpp"
 
 namespace tket {
 namespace test_ControlDecomp {

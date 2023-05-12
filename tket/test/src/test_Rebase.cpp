@@ -15,17 +15,17 @@
 #include <catch2/catch_test_macros.hpp>
 #include <numeric>
 
+#include "CircuitsForTesting.hpp"
+#include "Simulation/ComparisonFunctions.hpp"
+#include "testutil.hpp"
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/CircPool.hpp"
-#include "CircuitsForTesting.hpp"
 #include "tket/Simulation/CircuitSimulator.hpp"
-#include "Simulation/ComparisonFunctions.hpp"
 #include "tket/Transformations/BasicOptimisation.hpp"
 #include "tket/Transformations/Decomposition.hpp"
 #include "tket/Transformations/Rebase.hpp"
 #include "tket/Transformations/Transform.hpp"
 #include "tket/Utils/MatrixAnalysis.hpp"
-#include "testutil.hpp"
 
 namespace tket {
 namespace test_Rebase {

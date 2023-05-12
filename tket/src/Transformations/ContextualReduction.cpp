@@ -21,9 +21,9 @@
 #include <tkassert/Assert.hpp>
 #include <tklog/TketLog.hpp>
 
+#include "Eigen/src/Core/Matrix.h"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/DAGDefs.hpp"
-#include "Eigen/src/Core/Matrix.h"
 #include "tket/OpType/OpType.hpp"
 #include "tket/OpType/OpTypeInfo.hpp"
 #include "tket/Ops/ClassicalOps.hpp"

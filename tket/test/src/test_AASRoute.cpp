@@ -1,6 +1,8 @@
 #include <algorithm>
 #include <catch2/catch_test_macros.hpp>
 
+#include "Simulation/ComparisonFunctions.hpp"
+#include "testutil.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Mapping/AASLabelling.hpp"
 #include "tket/Mapping/AASRoute.hpp"
@@ -14,9 +16,7 @@
 #include "tket/Predicates/PassGenerators.hpp"
 #include "tket/Predicates/PassLibrary.hpp"
 #include "tket/Simulation/CircuitSimulator.hpp"
-#include "Simulation/ComparisonFunctions.hpp"
 #include "tket/Transformations/ContextualReduction.hpp"
-#include "testutil.hpp"
 
 namespace tket {
 SCENARIO("Test aas route in RV3") {

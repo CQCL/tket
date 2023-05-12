@@ -17,8 +17,8 @@
 
 #include <complex>
 
-#include "tket/Utils/Json.hpp"
 #include "binder_json.hpp"
+#include "tket/Utils/Json.hpp"
 
 namespace py = pybind11;
 using json = nlohmann::json;

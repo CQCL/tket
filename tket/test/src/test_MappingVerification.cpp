@@ -14,11 +14,11 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include "testutil.hpp"
 #include "tket/Mapping/LexiRoute.hpp"
 #include "tket/Mapping/MappingManager.hpp"
 #include "tket/Mapping/Verification.hpp"
 #include "tket/Placement/Placement.hpp"
-#include "testutil.hpp"
 
 namespace tket {
 SCENARIO(

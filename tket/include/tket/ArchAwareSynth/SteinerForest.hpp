@@ -13,11 +13,11 @@
 // limitations under the License.
 
 #pragma once
+#include "SteinerTree.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Converters/PhasePoly.hpp"
 #include "tket/Graphs/DirectedGraph.hpp"
 #include "tket/Graphs/Utils.hpp"
-#include "SteinerTree.hpp"
 #include "tket/Utils/GraphHeaders.hpp"
 #include "tket/Utils/UnitID.hpp"
 

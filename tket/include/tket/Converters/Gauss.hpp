@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include "tket/Circuit/Circuit.hpp"
 #include "Converters.hpp"
+#include "tket/Circuit/Circuit.hpp"
 
 namespace tket {
 

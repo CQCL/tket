@@ -14,8 +14,8 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include "tket/MeasurementSetup/MeasurementSetup.hpp"
 #include "testutil.hpp"
+#include "tket/MeasurementSetup/MeasurementSetup.hpp"
 
 namespace tket {
 namespace test_MeasurementSetup {

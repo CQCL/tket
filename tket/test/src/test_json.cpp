@@ -16,6 +16,8 @@
 #include <catch2/catch_test_macros.hpp>
 #include <iostream>
 
+#include "CircuitsForTesting.hpp"
+#include "testutil.hpp"
 #include "tket/Architecture/Architecture.hpp"
 #include "tket/Circuit/CircPool.hpp"
 #include "tket/Circuit/CircUtils.hpp"
@@ -25,7 +27,6 @@
 #include "tket/Circuit/Multiplexor.hpp"
 #include "tket/Circuit/StatePreparation.hpp"
 #include "tket/Circuit/ToffoliBox.hpp"
-#include "CircuitsForTesting.hpp"
 #include "tket/Converters/PhasePoly.hpp"
 #include "tket/Gate/SymTable.hpp"
 #include "tket/Mapping/LexiLabelling.hpp"
@@ -42,7 +43,6 @@
 #include "tket/Transformations/PauliOptimisation.hpp"
 #include "tket/Transformations/Transform.hpp"
 #include "tket/Utils/Json.hpp"
-#include "testutil.hpp"
 
 namespace tket {
 namespace test_json {

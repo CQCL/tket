@@ -12,7 +12,6 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <tket/Graphs/Utils.hpp>
 #include <algorithm>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/range/iterator_range_core.hpp>
@@ -20,6 +19,7 @@
 #include <map>
 #include <set>
 #include <string>
+#include <tket/Graphs/Utils.hpp>
 #include <vector>
 
 namespace tket {

@@ -14,10 +14,10 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include "testutil.hpp"
 #include "tket/Characterisation/FrameRandomisation.hpp"
 #include "tket/Transformations/Rebase.hpp"
 #include "tket/Transformations/Transform.hpp"
-#include "testutil.hpp"
 
 namespace tket {
 

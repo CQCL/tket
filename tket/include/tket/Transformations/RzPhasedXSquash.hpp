@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include "tket/Gate/GatePtr.hpp"
 #include "PQPSquash.hpp"
+#include "tket/Gate/GatePtr.hpp"
 
 namespace tket {
 

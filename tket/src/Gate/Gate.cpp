@@ -19,6 +19,7 @@
 #include <tkrng/RNG.hpp>
 #include <vector>
 
+#include "symengine/eval_double.h"
 #include "tket/Gate/GateUnitaryMatrix.hpp"
 #include "tket/Gate/GateUnitaryMatrixError.hpp"
 #include "tket/Gate/OpPtrFunctions.hpp"
@@ -28,7 +29,6 @@
 #include "tket/Ops/Op.hpp"
 #include "tket/Utils/Expression.hpp"
 #include "tket/Utils/PauliStrings.hpp"
-#include "symengine/eval_double.h"
 
 namespace tket {
 using std::stringstream;
