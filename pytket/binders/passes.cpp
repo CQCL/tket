@@ -641,7 +641,8 @@ PYBIND11_MODULE(passes, m) {
       "Removes empty Quantum wires from the Circuit and relabels all Qubit to "
       "a register from passed name. \n\n:param label: Name to relabel "
       "remaining Qubit to, default 'q'.\n:return: A pass that removes empty "
-      "wires and relabels.");
+      "wires and relabels.",
+      py::arg("label") = q_default_reg());
 
   m.def(
       "RenameQubitsPass", &gen_rename_qubits_pass, "Rename some or all qubits.",
