@@ -53,9 +53,12 @@ Transform full_peephole_optimise(
 // forms, Clifford Expects: Any gates Produces: CX, TK1
 Transform canonical_hyper_clifford_squash();
 
-// runs clifford_simp
-// Expects: Any gates
-// Produces: CX, TK1
+/**
+ * runs clifford_simp
+ * @param allow_swaps whether to allow introduction of implicit wire swaps
+ * Expects: Any gates
+ * Produces: CX, TK1
+ */
 Transform hyper_clifford_squash(bool allow_swaps = true);
 
 // simplifies a circuit using Clifford rules
