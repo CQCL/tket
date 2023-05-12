@@ -26,11 +26,15 @@ namespace Transforms {
 
 /*these Transform passes do not preserve connectivity*/
 
-// only peephole optimisation, so no higher structure abstraction.
-// Two qubit Cartan, Clifford, synthesis
-// Expects: Any gates
-// Produces: CX, TK1
-Transform peephole_optimise_2q();
+/**
+ * only peephole optimisation, so no higher structure abstraction.
+ * Two qubit Cartan, Clifford, synthesis
+ * @param allow_swaps whether to allow introduction of implicit wire swaps
+ * Expects: Any gates
+ * Produces: CX, TK1
+ *
+ */
+Transform peephole_optimise_2q(bool allow_swaps = true);
 
 /**
  * Peephole optimisation including resynthesis of three-qubit gate sequences.
@@ -52,7 +56,7 @@ Transform canonical_hyper_clifford_squash();
 // runs clifford_simp
 // Expects: Any gates
 // Produces: CX, TK1
-Transform hyper_clifford_squash();
+Transform hyper_clifford_squash(bool allow_swaps = true);
 
 // simplifies a circuit using Clifford rules
 // Expects: CX and any single-qubit gates

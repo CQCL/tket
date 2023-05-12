@@ -449,7 +449,9 @@ PYBIND11_MODULE(passes, m) {
       "PeepholeOptimise2Q", &PeepholeOptimise2Q,
       "Performs peephole optimisation including resynthesis of 2-qubit "
       "gate sequences, and converts to a circuit containing only CX and TK1 "
-      "gates.");
+      "gates."
+      "\n\n:param allow_swaps: whether to allow implicit wire swaps",
+      py::arg("allow_swaps") = true);
   m.def(
       "FullPeepholeOptimise", &FullPeepholeOptimise,
       "Performs peephole optimisation including resynthesis of 2- and 3-qubit "
