@@ -91,7 +91,7 @@ cmake --install .
 
 ```
 cd ${TMP_DIR}
-whet https://github.com/catchorg/Catch2/archive/refs/tags/v3.3.2.tar.gz
+wget https://github.com/catchorg/Catch2/archive/refs/tags/v3.3.2.tar.gz
 tar xzvf v3.3.2.tar.gz
 cd Catch2-3.3.2/
 mkdir build
@@ -109,6 +109,8 @@ wget https://github.com/emil-e/rapidcheck/archive/8fafda42e732164db58003e542196e
 unzip 8fafda42e732164db58003e542196e94a28481f9.zip
 cd rapidcheck-8fafda42e732164db58003e542196e94a28481f9/
 mkdir build
+cd build
+cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} ..
 cmake --build .
 cmake --install .
 ```
@@ -171,7 +173,7 @@ cmake --install .
 cd ${TKET_DIR}/libs/tkrng/
 mkdir build
 cd build
-cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} ..
+cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} -DCMAKE_POSITION_INDEPENDENT_CODE=ON ..
 cmake --build .
 cmake --install .
 ```
@@ -182,7 +184,7 @@ cmake --install .
 cd ${TKET_DIR}/libs/tkassert/
 mkdir build
 cd build
-cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} ..
+cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} -DCMAKE_POSITION_INDEPENDENT_CODE=ON ..
 cmake --build .
 cmake --install .
 ```
@@ -193,7 +195,7 @@ cmake --install .
 cd ${TKET_DIR}/libs/tkwsm/
 mkdir build
 cd build
-cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} ..
+cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} -DCMAKE_POSITION_INDEPENDENT_CODE=ON ..
 cmake --build .
 cmake --install .
 ```
@@ -204,7 +206,7 @@ cmake --install .
 cd ${TKET_DIR}/libs/tktokenswap/
 mkdir build
 cd build
-cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} ..
+cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} -DCMAKE_POSITION_INDEPENDENT_CODE=ON ..
 cmake --build .
 cmake --install .
 ```
