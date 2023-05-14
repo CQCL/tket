@@ -59,7 +59,7 @@ class CMakeBuild(build_ext):
         )
         extsource = self.extensions[0].sourcedir
         build_dir = os.path.join(extsource, "build")
-        shutil.rmtree(build_dir)
+        shutil.rmtree(build_dir, ignore_errors=True)
         os.mkdir(build_dir)
         install_dir = os.getenv("INSTALL_DIR")
         subprocess.run(
