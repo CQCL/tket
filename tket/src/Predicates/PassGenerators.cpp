@@ -12,34 +12,34 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Predicates/PassGenerators.hpp"
+#include "tket/Predicates/PassGenerators.hpp"
 
 #include <memory>
 #include <sstream>
 #include <string>
 
-#include "ArchAwareSynth/SteinerForest.hpp"
-#include "Circuit/CircPool.hpp"
-#include "Circuit/Circuit.hpp"
-#include "Converters/PhasePoly.hpp"
-#include "Mapping/LexiLabelling.hpp"
-#include "Mapping/LexiRoute.hpp"
-#include "Mapping/MappingManager.hpp"
-#include "OpType/OpType.hpp"
-#include "Placement/Placement.hpp"
-#include "Predicates/CompilationUnit.hpp"
-#include "Predicates/CompilerPass.hpp"
-#include "Predicates/PassLibrary.hpp"
-#include "Predicates/Predicates.hpp"
-#include "Transformations/BasicOptimisation.hpp"
-#include "Transformations/ContextualReduction.hpp"
-#include "Transformations/Decomposition.hpp"
-#include "Transformations/OptimisationPass.hpp"
-#include "Transformations/PauliOptimisation.hpp"
-#include "Transformations/Rebase.hpp"
-#include "Transformations/ThreeQubitSquash.hpp"
-#include "Transformations/Transform.hpp"
-#include "Utils/Json.hpp"
+#include "tket/ArchAwareSynth/SteinerForest.hpp"
+#include "tket/Circuit/CircPool.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Converters/PhasePoly.hpp"
+#include "tket/Mapping/LexiLabelling.hpp"
+#include "tket/Mapping/LexiRoute.hpp"
+#include "tket/Mapping/MappingManager.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/Placement/Placement.hpp"
+#include "tket/Predicates/CompilationUnit.hpp"
+#include "tket/Predicates/CompilerPass.hpp"
+#include "tket/Predicates/PassLibrary.hpp"
+#include "tket/Predicates/Predicates.hpp"
+#include "tket/Transformations/BasicOptimisation.hpp"
+#include "tket/Transformations/ContextualReduction.hpp"
+#include "tket/Transformations/Decomposition.hpp"
+#include "tket/Transformations/OptimisationPass.hpp"
+#include "tket/Transformations/PauliOptimisation.hpp"
+#include "tket/Transformations/Rebase.hpp"
+#include "tket/Transformations/ThreeQubitSquash.hpp"
+#include "tket/Transformations/Transform.hpp"
+#include "tket/Utils/Json.hpp"
 
 namespace tket {
 

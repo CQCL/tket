@@ -14,9 +14,9 @@
 
 #include <limits>
 
-#include "Circuit/Boxes.hpp"
-#include "Circuit/Circuit.hpp"
-#include "OpType/OpType.hpp"
+#include "tket/Circuit/Boxes.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/OpType/OpType.hpp"
 namespace tket {
 
 struct LineBufferInfo {

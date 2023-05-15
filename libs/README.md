@@ -72,3 +72,8 @@ cd -
 mkdir tkxxx-coverage
 gcovr --print-summary --html --html-details -r ./libs/tkxxx --exclude-lines-by-pattern '.*\bTKET_ASSERT\(.*\);' --object-directory ${PWD}/build/tkxxx/build/Debug/CMakeFiles/tkxxx.dir/src -o tkxxx-coverage/index.html --decisions
 ```
+
+## Building without conan
+
+It is possible to build the libraries without using conan at all: see
+[here](../build-without-conan.md) for instructions.

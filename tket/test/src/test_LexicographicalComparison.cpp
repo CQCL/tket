@@ -17,7 +17,7 @@
 #include <fstream>
 #include <iostream>
 
-#include "Mapping/LexicographicalComparison.hpp"
+#include "tket/Mapping/LexicographicalComparison.hpp"
 
 namespace tket {
 

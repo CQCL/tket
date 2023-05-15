@@ -12,18 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <Eigen/Core>
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/catch_test_macros.hpp>
 
 #include "../testutil.hpp"
-#include "Circuit/Boxes.hpp"
-#include "Circuit/CircUtils.hpp"
-#include "Circuit/Circuit.hpp"
-#include "Circuit/Multiplexor.hpp"
-#include "Eigen/src/Core/Matrix.h"
-#include "Gate/SymTable.hpp"
-#include "Simulation/CircuitSimulator.hpp"
-#include "Utils/HelperFunctions.hpp"
+#include "tket/Circuit/Boxes.hpp"
+#include "tket/Circuit/CircUtils.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/Multiplexor.hpp"
+#include "tket/Gate/SymTable.hpp"
+#include "tket/Simulation/CircuitSimulator.hpp"
+#include "tket/Utils/HelperFunctions.hpp"
 
 namespace tket {
 namespace test_Multiplexor {

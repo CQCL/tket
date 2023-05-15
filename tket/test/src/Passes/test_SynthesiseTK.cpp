@@ -15,11 +15,11 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "../testutil.hpp"
-#include "Circuit/Circuit.hpp"
-#include "OpType/OpType.hpp"
-#include "Predicates/CompilationUnit.hpp"
-#include "Predicates/PassLibrary.hpp"
-#include "Utils/Expression.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/Predicates/CompilationUnit.hpp"
+#include "tket/Predicates/PassLibrary.hpp"
+#include "tket/Utils/Expression.hpp"
 
 namespace tket {
 namespace test_SynthesiseTK {

@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "ZX/ZXGenerator.hpp"
+#include "tket/ZX/ZXGenerator.hpp"
 
 #include <sstream>
 #include <tkassert/Assert.hpp>
 
-#include "ZX/ZXDiagram.hpp"
+#include "tket/ZX/ZXDiagram.hpp"
 
 namespace tket {
 

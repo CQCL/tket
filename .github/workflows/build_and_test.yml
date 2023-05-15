@@ -38,7 +38,7 @@ jobs:
         base: ${{ github.ref }}
         filters: |
           tket:
-            - '{tket/src/**,tket/include/**,tket/conanfile.py,tket/CMakeLists.txt}'
+            - '{tket/src/**,tket/include/**,tket/conanfile.py,tket/CMakeLists.txt,tket/cmake/**}'
           tket_tests:
             - '{tket/test/**}'
           tket_proptests:

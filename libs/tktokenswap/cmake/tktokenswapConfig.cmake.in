@@ -1,0 +1,8 @@
+get_filename_component(TKTOKENSWAP_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+include(CMakeFindDependencyMacro)
+
+if(NOT TARGET tktokenswap::tktokenswap)
+    include("${TKTOKENSWAP_CMAKE_DIR}/tktokenswapTargets.cmake")
+endif()
+
+set(TKTOKENSWAP_lIBRARIES tktokenswap::tktokenswap)

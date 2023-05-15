@@ -21,15 +21,15 @@
 
 #include "../Gate/GatesData.hpp"
 #include "../testutil.hpp"
-#include "Circuit/CircPool.hpp"
-#include "Circuit/CircUtils.hpp"
 #include "ComparisonFunctions.hpp"
-#include "Gate/GateUnitaryMatrix.hpp"
-#include "Gate/GateUnitaryMatrixUtils.hpp"
-#include "Simulation/CircuitSimulator.hpp"
-#include "Transformations/OptimisationPass.hpp"
-#include "Transformations/Transform.hpp"
-#include "Utils/MatrixAnalysis.hpp"
+#include "tket/Circuit/CircPool.hpp"
+#include "tket/Circuit/CircUtils.hpp"
+#include "tket/Gate/GateUnitaryMatrix.hpp"
+#include "tket/Gate/GateUnitaryMatrixUtils.hpp"
+#include "tket/Simulation/CircuitSimulator.hpp"
+#include "tket/Transformations/OptimisationPass.hpp"
+#include "tket/Transformations/Transform.hpp"
+#include "tket/Utils/MatrixAnalysis.hpp"
 
 namespace tket {
 namespace test_CircuitSimulator {

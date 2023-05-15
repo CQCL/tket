@@ -16,7 +16,7 @@
 
 #include <limits>
 
-#include "Graphs/GraphColouring.hpp"
+#include "tket/Graphs/GraphColouring.hpp"
 
 namespace tket {
 namespace graphs {

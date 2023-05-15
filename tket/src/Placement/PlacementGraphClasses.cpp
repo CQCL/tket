@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Graphs/DirectedGraph.hpp"
-#include "Utils/UnitID.hpp"
+#include "tket/Graphs/DirectedGraph.hpp"
+#include "tket/Utils/UnitID.hpp"
 
 namespace tket {
 

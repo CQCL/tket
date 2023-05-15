@@ -15,15 +15,15 @@
 #include <catch2/catch_test_macros.hpp>
 #include <memory>
 
-#include "Circuit/Boxes.hpp"
-#include "Gate/SymTable.hpp"
-#include "Placement/Placement.hpp"
-#include "Predicates/CompilationUnit.hpp"
-#include "Predicates/PassGenerators.hpp"
-#include "Predicates/PassLibrary.hpp"
-#include "Predicates/Predicates.hpp"
-#include "Simulation/CircuitSimulator.hpp"
 #include "testutil.hpp"
+#include "tket/Circuit/Boxes.hpp"
+#include "tket/Gate/SymTable.hpp"
+#include "tket/Placement/Placement.hpp"
+#include "tket/Predicates/CompilationUnit.hpp"
+#include "tket/Predicates/PassGenerators.hpp"
+#include "tket/Predicates/PassLibrary.hpp"
+#include "tket/Predicates/Predicates.hpp"
+#include "tket/Simulation/CircuitSimulator.hpp"
 
 namespace tket {
 namespace test_Predicates {

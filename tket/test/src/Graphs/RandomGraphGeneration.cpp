@@ -19,7 +19,7 @@
 #include <tkrng/RNG.hpp>
 
 #include "EdgeSequence.hpp"
-#include "Graphs/AdjacencyData.hpp"
+#include "tket/Graphs/AdjacencyData.hpp"
 
 using std::vector;
 

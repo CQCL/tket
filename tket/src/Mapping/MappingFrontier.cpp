@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Mapping/MappingFrontier.hpp"
+#include "tket/Mapping/MappingFrontier.hpp"
 
-#include "Circuit/Circuit.hpp"
-#include "Utils/UnitID.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Utils/UnitID.hpp"
 
 namespace tket {
 

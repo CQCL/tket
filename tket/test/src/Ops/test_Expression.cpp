@@ -15,7 +15,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "../testutil.hpp"
-#include "Utils/Expression.hpp"
+#include "tket/Utils/Expression.hpp"
 
 namespace tket {
 namespace test_Expression {

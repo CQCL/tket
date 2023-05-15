@@ -14,7 +14,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include "MeasurementSetup/MeasurementReduction.hpp"
+#include "tket/MeasurementSetup/MeasurementReduction.hpp"
 
 namespace tket {
 namespace test_MeasurementReduction {

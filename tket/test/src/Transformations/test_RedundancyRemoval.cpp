@@ -16,9 +16,9 @@
 #include <catch2/generators/catch_generators.hpp>
 #include <iostream>
 
-#include "Circuit/Circuit.hpp"
-#include "Transformations/BasicOptimisation.hpp"
-#include "Transformations/PQPSquash.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Transformations/BasicOptimisation.hpp"
+#include "tket/Transformations/PQPSquash.hpp"
 
 namespace tket {
 namespace test_RedundancyRemoval {

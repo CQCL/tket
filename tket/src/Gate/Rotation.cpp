@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Gate/Rotation.hpp"
+#include "tket/Gate/Rotation.hpp"
 
-#include "OpType/OpDesc.hpp"
-#include "OpType/OpType.hpp"
-#include "Utils/Expression.hpp"
-#include "Utils/Symbols.hpp"
 #include "symengine/constants.h"
+#include "tket/OpType/OpDesc.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/Utils/Expression.hpp"
+#include "tket/Utils/Symbols.hpp"
 
 namespace tket {
 

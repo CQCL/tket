@@ -34,7 +34,10 @@ class pytketRecipe(ConanFile):
     def requirements(self):
         self.requires("tket/1.2.10@tket/stable")
         self.requires("tklog/0.3.3@tket/stable")
+        self.requires("tkrng/0.3.3@tket/stable")
         self.requires("tkassert/0.3.3@tket/stable")
+        self.requires("tkwsm/0.3.3@tket/stable")
+        self.requires("tktokenswap/0.3.3@tket/stable")
         self.requires("symengine/0.10.1")
         self.requires("gmp/6.2.1")
         self.requires("pybind11/2.10.4")

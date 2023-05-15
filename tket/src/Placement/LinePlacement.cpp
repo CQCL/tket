@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Placement/Placement.hpp"
-#include "Utils/HelperFunctions.hpp"
+#include "tket/Placement/Placement.hpp"
+#include "tket/Utils/HelperFunctions.hpp"
 
 namespace tket {
 

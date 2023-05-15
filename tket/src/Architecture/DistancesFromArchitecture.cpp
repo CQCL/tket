@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Architecture/DistancesFromArchitecture.hpp"
+#include "tket/Architecture/DistancesFromArchitecture.hpp"
 
 #include <sstream>
 #include <stdexcept>

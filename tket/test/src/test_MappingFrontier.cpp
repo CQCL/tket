@@ -17,8 +17,8 @@
 #include <fstream>
 #include <iostream>
 
-#include "Circuit/ClassicalExpBox.hpp"
-#include "Mapping/MappingManager.hpp"
+#include "tket/Circuit/ClassicalExpBox.hpp"
+#include "tket/Mapping/MappingManager.hpp"
 
 namespace tket {
 

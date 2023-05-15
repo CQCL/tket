@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Transformations/ThreeQubitSquash.hpp"
+#include "tket/Transformations/ThreeQubitSquash.hpp"
 
 #include <algorithm>
 #include <array>
@@ -24,17 +24,17 @@
 #include <string>
 #include <tkassert/Assert.hpp>
 
-#include "Circuit/CircUtils.hpp"
-#include "Circuit/Circuit.hpp"
-#include "Circuit/DAGDefs.hpp"
-#include "Circuit/ThreeQubitConversion.hpp"
-#include "OpType/EdgeType.hpp"
-#include "OpType/OpType.hpp"
-#include "Transformations/BasicOptimisation.hpp"
-#include "Transformations/Decomposition.hpp"
-#include "Transformations/OptimisationPass.hpp"
-#include "Transformations/Transform.hpp"
-#include "Utils/GraphHeaders.hpp"
+#include "tket/Circuit/CircUtils.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/DAGDefs.hpp"
+#include "tket/Circuit/ThreeQubitConversion.hpp"
+#include "tket/OpType/EdgeType.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/Transformations/BasicOptimisation.hpp"
+#include "tket/Transformations/Decomposition.hpp"
+#include "tket/Transformations/OptimisationPass.hpp"
+#include "tket/Transformations/Transform.hpp"
+#include "tket/Utils/GraphHeaders.hpp"
 
 namespace tket {
 

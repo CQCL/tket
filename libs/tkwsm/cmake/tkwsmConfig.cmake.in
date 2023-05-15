@@ -1,0 +1,8 @@
+get_filename_component(TKWSM_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+include(CMakeFindDependencyMacro)
+
+if(NOT TARGET tkwsm::tkwsm)
+    include("${TKWSM_CMAKE_DIR}/tkwsmTargets.cmake")
+endif()
+
+set(TKWSM_lIBRARIES tkwsm::tkwsm)

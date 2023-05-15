@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "ArchAwareSynth/Path.hpp"
+#include "tket/ArchAwareSynth/Path.hpp"
 
 #include <stdexcept>
 

@@ -14,7 +14,7 @@
 
 #pragma once
 
-#include "Utils/MatrixAnalysis.hpp"
+#include "tket/Utils/MatrixAnalysis.hpp"
 
 // NOTE: an identical copy also exists in proptests. This is deliberate.
 // Please ensure you update BOTH if you update either one of them!

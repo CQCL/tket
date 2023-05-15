@@ -14,8 +14,8 @@
 
 #include <chrono>
 
-#include "Placement/Placement.hpp"
-#include "Utils/HelperFunctions.hpp"
+#include "tket/Placement/Placement.hpp"
+#include "tket/Utils/HelperFunctions.hpp"
 
 typedef std::chrono::steady_clock Clock;
 

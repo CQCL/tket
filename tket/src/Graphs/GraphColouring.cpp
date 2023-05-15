@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Graphs/GraphColouring.hpp"
+#include "tket/Graphs/GraphColouring.hpp"
 
 #include <algorithm>
 #include <limits>
@@ -23,9 +23,9 @@
 
 #include "BruteForceColouring.hpp"
 #include "ColouringPriority.hpp"
-#include "Graphs/AdjacencyData.hpp"
-#include "Graphs/GraphRoutines.hpp"
-#include "Graphs/LargeCliquesResult.hpp"
+#include "tket/Graphs/AdjacencyData.hpp"
+#include "tket/Graphs/GraphRoutines.hpp"
+#include "tket/Graphs/LargeCliquesResult.hpp"
 
 using std::exception;
 using std::map;

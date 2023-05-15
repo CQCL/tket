@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Transformations/PauliOptimisation.hpp"
+#include "tket/Transformations/PauliOptimisation.hpp"
 
-#include "Converters/Converters.hpp"
-#include "Converters/PauliGadget.hpp"
-#include "OpType/OpType.hpp"
-#include "OpType/OpTypeInfo.hpp"
-#include "Ops/Op.hpp"
-#include "PauliGraph/PauliGraph.hpp"
-#include "Transformations/Decomposition.hpp"
-#include "Transformations/OptimisationPass.hpp"
-#include "Transformations/Transform.hpp"
+#include "tket/Converters/Converters.hpp"
+#include "tket/Converters/PauliGadget.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/OpType/OpTypeInfo.hpp"
+#include "tket/Ops/Op.hpp"
+#include "tket/PauliGraph/PauliGraph.hpp"
+#include "tket/Transformations/Decomposition.hpp"
+#include "tket/Transformations/OptimisationPass.hpp"
+#include "tket/Transformations/Transform.hpp"
 
 namespace tket {
 

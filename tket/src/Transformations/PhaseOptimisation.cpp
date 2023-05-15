@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Transformations/PhaseOptimisation.hpp"
+#include "tket/Transformations/PhaseOptimisation.hpp"
 
-#include "Transformations/Transform.hpp"
+#include "tket/Transformations/Transform.hpp"
 
 namespace tket {
 
