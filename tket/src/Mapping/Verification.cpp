@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Mapping/Verification.hpp"
+#include "tket/Mapping/Verification.hpp"
 
 namespace tket {
 bool respects_connectivity_constraints(

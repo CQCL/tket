@@ -14,8 +14,8 @@
 
 #include <pybind11/pybind11.h>
 
-#include "Circuit/CircPool.hpp"
 #include "binder_utils.hpp"
+#include "tket/Circuit/CircPool.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;

@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Gate/GatePtr.hpp"
+#include "tket/Gate/GatePtr.hpp"
 
 #include <memory>
 
-#include "Gate/Gate.hpp"
-#include "OpType/OpTypeInfo.hpp"
-#include "Ops/OpPtr.hpp"
+#include "tket/Gate/Gate.hpp"
+#include "tket/OpType/OpTypeInfo.hpp"
+#include "tket/Ops/OpPtr.hpp"
 
 namespace tket {
 

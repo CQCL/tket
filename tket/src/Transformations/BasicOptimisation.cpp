@@ -12,24 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Transformations/BasicOptimisation.hpp"
+#include "tket/Transformations/BasicOptimisation.hpp"
 
 #include <cmath>
 #include <optional>
 #include <tkassert/Assert.hpp>
 #include <vector>
 
-#include "Characterisation/DeviceCharacterisation.hpp"
-#include "Characterisation/ErrorTypes.hpp"
-#include "Circuit/CircPool.hpp"
-#include "Circuit/CircUtils.hpp"
-#include "Circuit/DAGDefs.hpp"
-#include "Transformations/Decomposition.hpp"
-#include "Transformations/Transform.hpp"
-#include "Utils/EigenConfig.hpp"
-#include "Utils/Expression.hpp"
-#include "Utils/MatrixAnalysis.hpp"
-#include "Utils/UnitID.hpp"
+#include "tket/Characterisation/DeviceCharacterisation.hpp"
+#include "tket/Characterisation/ErrorTypes.hpp"
+#include "tket/Circuit/CircPool.hpp"
+#include "tket/Circuit/CircUtils.hpp"
+#include "tket/Circuit/DAGDefs.hpp"
+#include "tket/Transformations/Decomposition.hpp"
+#include "tket/Transformations/Transform.hpp"
+#include "tket/Utils/EigenConfig.hpp"
+#include "tket/Utils/Expression.hpp"
+#include "tket/Utils/MatrixAnalysis.hpp"
+#include "tket/Utils/UnitID.hpp"
 
 namespace tket::Transforms {
 

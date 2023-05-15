@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Clifford/SymplecticTableau.hpp"
+#include "tket/Clifford/SymplecticTableau.hpp"
 
 #include <stdexcept>
 
-#include "OpType/OpTypeInfo.hpp"
-#include "Utils/EigenConfig.hpp"
+#include "tket/OpType/OpTypeInfo.hpp"
+#include "tket/Utils/EigenConfig.hpp"
 
 namespace tket {
 

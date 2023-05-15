@@ -17,18 +17,18 @@
 #include <cmath>
 
 #include "../Simulation/ComparisonFunctions.hpp"
-#include "Circuit/Boxes.hpp"
-#include "Circuit/Circuit.hpp"
-#include "Circuit/Command.hpp"
-#include "Circuit/ThreeQubitConversion.hpp"
-#include "OpType/OpType.hpp"
-#include "Simulation/CircuitSimulator.hpp"
-#include "Transformations/Decomposition.hpp"
-#include "Transformations/ThreeQubitSquash.hpp"
-#include "Transformations/Transform.hpp"
-#include "Utils/Constants.hpp"
-#include "Utils/EigenConfig.hpp"
-#include "Utils/UnitID.hpp"
+#include "tket/Circuit/Boxes.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/Command.hpp"
+#include "tket/Circuit/ThreeQubitConversion.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/Simulation/CircuitSimulator.hpp"
+#include "tket/Transformations/Decomposition.hpp"
+#include "tket/Transformations/ThreeQubitSquash.hpp"
+#include "tket/Transformations/Transform.hpp"
+#include "tket/Utils/Constants.hpp"
+#include "tket/Utils/EigenConfig.hpp"
+#include "tket/Utils/UnitID.hpp"
 
 namespace tket {
 namespace test_ThreeQubitConversion {

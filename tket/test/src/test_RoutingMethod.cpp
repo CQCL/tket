@@ -3,9 +3,9 @@
 #include <fstream>
 #include <iostream>
 
-#include "Mapping/MappingFrontier.hpp"
-#include "Mapping/RoutingMethodCircuit.hpp"
-#include "Placement/Placement.hpp"
+#include "tket/Mapping/MappingFrontier.hpp"
+#include "tket/Mapping/RoutingMethodCircuit.hpp"
+#include "tket/Placement/Placement.hpp"
 
 namespace tket {
 

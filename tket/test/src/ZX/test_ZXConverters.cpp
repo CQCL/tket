@@ -16,8 +16,8 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "../testutil.hpp"
-#include "Converters/Converters.hpp"
-#include "Gate/SymTable.hpp"
+#include "tket/Converters/Converters.hpp"
+#include "tket/Gate/SymTable.hpp"
 namespace tket {
 namespace zx {
 namespace test_ZXConverters {

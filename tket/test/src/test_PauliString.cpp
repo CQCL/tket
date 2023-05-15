@@ -16,10 +16,10 @@
 #include <iostream>
 
 #include "CircuitsForTesting.hpp"
-#include "Converters/PauliGadget.hpp"
-#include "PauliGraph/ConjugatePauliFunctions.hpp"
-#include "Utils/PauliStrings.hpp"
 #include "testutil.hpp"
+#include "tket/Converters/PauliGadget.hpp"
+#include "tket/PauliGraph/ConjugatePauliFunctions.hpp"
+#include "tket/Utils/PauliStrings.hpp"
 
 namespace tket {
 namespace test_PauliString {

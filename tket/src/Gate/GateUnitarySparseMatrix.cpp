@@ -16,11 +16,11 @@
 
 #include <tkassert/Assert.hpp>
 
-#include "Gate/Gate.hpp"
-#include "Gate/GateUnitaryMatrix.hpp"
-#include "Gate/GateUnitaryMatrixError.hpp"
-#include "Gate/GateUnitaryMatrixImplementations.hpp"
-#include "Gate/GateUnitaryMatrixUtils.hpp"
+#include "tket/Gate/Gate.hpp"
+#include "tket/Gate/GateUnitaryMatrix.hpp"
+#include "tket/Gate/GateUnitaryMatrixError.hpp"
+#include "tket/Gate/GateUnitaryMatrixImplementations.hpp"
+#include "tket/Gate/GateUnitaryMatrixUtils.hpp"
 
 namespace tket {
 namespace internal {

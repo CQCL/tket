@@ -17,7 +17,7 @@
 #include <vector>
 
 #include "../testutil.hpp"
-#include "Utils/MatrixAnalysis.hpp"
+#include "tket/Utils/MatrixAnalysis.hpp"
 
 // Element[n] = 2^n
 static std::vector<unsigned> get_powers_of_two() {

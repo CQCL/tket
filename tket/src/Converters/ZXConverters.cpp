@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Circuit/CircPool.hpp"
-#include "Converters/Converters.hpp"
-#include "ZX/Flow.hpp"
-#include "ZX/ZXDiagram.hpp"
+#include "tket/Circuit/CircPool.hpp"
+#include "tket/Converters/Converters.hpp"
+#include "tket/ZX/Flow.hpp"
+#include "tket/ZX/ZXDiagram.hpp"
 
 namespace tket {
 

@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <Circuit/Circuit.hpp>
-#include <Transformations/BasicOptimisation.hpp>
-#include <Transformations/CliffordOptimisation.hpp>
-#include <Transformations/OptimisationPass.hpp>
-#include <Transformations/Transform.hpp>
 #include <catch2/catch_test_macros.hpp>
+#include <tket/Circuit/Circuit.hpp>
+#include <tket/Transformations/BasicOptimisation.hpp>
+#include <tket/Transformations/CliffordOptimisation.hpp>
+#include <tket/Transformations/OptimisationPass.hpp>
+#include <tket/Transformations/Transform.hpp>
 #include <vector>
 
-#include "OpType/OpType.hpp"
-#include "Simulation/CircuitSimulator.hpp"
 #include "symengine/eval_double.h"
+#include "tket/OpType/OpType.hpp"
+#include "tket/Simulation/CircuitSimulator.hpp"
 
 namespace tket {
 namespace test_Symbolic {

@@ -18,10 +18,10 @@
 #include "EdgeSequence.hpp"
 #include "EdgeSequenceColouringParameters.hpp"
 #include "GraphTestingRoutines.hpp"
-#include "Graphs/AdjacencyData.hpp"
-#include "Graphs/GraphColouring.hpp"
 #include "RandomGraphGeneration.hpp"
 #include "RandomPlanarGraphs.hpp"
+#include "tket/Graphs/AdjacencyData.hpp"
+#include "tket/Graphs/GraphColouring.hpp"
 
 using std::map;
 using std::vector;

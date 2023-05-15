@@ -17,7 +17,7 @@
 #include <fstream>
 #include <iostream>
 
-#include "Mapping/MappingManager.hpp"
+#include "tket/Mapping/MappingManager.hpp"
 
 namespace tket {
 
