@@ -7,12 +7,12 @@ Changelog
 Minor new features:
 
 * Support ``allow_swaps`` parameter for ``PeepholeOptimise2Q``.
+* Add missing add box methods that accept qubit indices as arguments.
 
 Fixes:
 
 * Fix ``FlattenRegisters`` not updating ``ClassicalExpBox``.
 * Fix missing default argument value to ``FlattenRelabelRegistersPass``.
-* Add missing add box methods that accept qubit indices as arguments.
 
 1.15.0 (May 2023)
 -----------------
