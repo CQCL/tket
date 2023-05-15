@@ -32,7 +32,7 @@ from pytket.zx import (  # type: ignore
     DirectedGen,
     ZXBox,
 )
-from sympy import sympify
+from sympy import sympify  # type: ignore
 from typing import Tuple
 
 have_quimb: bool = True
