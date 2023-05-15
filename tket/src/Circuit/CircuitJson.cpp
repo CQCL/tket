@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Circuit/Circuit.hpp"
-#include "Utils/Json.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Utils/Json.hpp"
 
 namespace tket {
 

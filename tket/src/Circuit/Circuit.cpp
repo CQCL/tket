@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Circuit/Circuit.hpp"
+#include "tket/Circuit/Circuit.hpp"
 
 #include <fstream>
 #include <numeric>
@@ -22,9 +22,9 @@
 #include <tklog/TketLog.hpp>
 #include <utility>
 
-#include "Utils/Expression.hpp"
-#include "Utils/GraphHeaders.hpp"
-#include "Utils/HelperFunctions.hpp"
+#include "tket/Utils/Expression.hpp"
+#include "tket/Utils/GraphHeaders.hpp"
+#include "tket/Utils/HelperFunctions.hpp"
 
 namespace tket {
 

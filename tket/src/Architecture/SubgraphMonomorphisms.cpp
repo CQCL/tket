@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Architecture/SubgraphMonomorphisms.hpp"
+#include "tket/Architecture/SubgraphMonomorphisms.hpp"
 
 #include <set>
 #include <tkassert/Assert.hpp>

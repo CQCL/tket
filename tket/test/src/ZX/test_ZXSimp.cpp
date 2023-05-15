@@ -14,9 +14,9 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include "Converters/Converters.hpp"
-#include "Transformations/Rebase.hpp"
-#include "ZX/Rewrite.hpp"
+#include "tket/Converters/Converters.hpp"
+#include "tket/Transformations/Rebase.hpp"
+#include "tket/ZX/Rewrite.hpp"
 
 namespace tket {
 namespace zx {

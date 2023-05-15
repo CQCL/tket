@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Ops/Op.hpp"
+#include "tket/Ops/Op.hpp"
 
 #include <sstream>
 
-#include "Ops/OpPtr.hpp"
-#include "Utils/Json.hpp"
+#include "tket/Ops/OpPtr.hpp"
+#include "tket/Utils/Json.hpp"
 
 namespace tket {
 

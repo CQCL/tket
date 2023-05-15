@@ -51,3 +51,8 @@ To generate a test coverage report:
 ```shell
 pytest --hypothesis-seed=1 --cov=../pytket --cov-branch --cov-report=html --cov-report=xml:htmlcov/cov.xml
 ```
+
+## Building without conan
+
+It is possible to build pytket without using conan at all: see
+[here](../build-without-conan.md) for instructions.

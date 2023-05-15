@@ -15,12 +15,19 @@
 cmake_minimum_required(VERSION 3.23)
 project(tkwsm CXX)
 
+list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake)
+
+find_package(tklog CONFIG REQUIRED)
 find_package(tkassert CONFIG REQUIRED)
 find_package(tkrng CONFIG REQUIRED)
 find_package(Boost CONFIG REQUIRED)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
+
+if(NOT CMAKE_BUILD_TYPE)
+  set(CMAKE_BUILD_TYPE Release)
+endif()
 
 find_program(CCACHE_PROGRAM ccache)
 if(CCACHE_PROGRAM)
@@ -56,10 +63,12 @@ IF (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     ENDIF()
 ENDIF()
 
-target_include_directories(tkwsm PUBLIC include/tkwsm)
+target_include_directories(tkwsm PUBLIC
+    $<INSTALL_INTERFACE:include/tkwsm>
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tkwsm>)
 target_link_libraries(tkwsm PRIVATE tkassert::tkassert)
 target_link_libraries(tkwsm PRIVATE tkrng::tkrng)
-target_link_libraries(tkwsm PRIVATE boost::boost)
+target_link_libraries(tkwsm PRIVATE Boost::headers)
 
 target_sources(tkwsm
     PRIVATE
@@ -148,7 +157,12 @@ target_sources(tkwsm
         include/tkwsm/WeightPruning/WeightNogoodDetectorManager.hpp
         )
 
-install(TARGETS tkwsm FILE_SET HEADERS)
+include(GNUInstallDirs)
+set(INSTALL_CONFIGDIR ${CMAKE_INSTALL_LIBDIR}/cmake/tkwsm)
+
+install(TARGETS tkwsm
+    EXPORT tkwsm-targets
+    FILE_SET HEADERS)
 
 if(MSVC)
     install(TARGETS tkwsm
@@ -157,3 +171,27 @@ if(MSVC)
         ARCHIVE DESTINATION lib
         LIBRARY DESTINATION lib)
 endif()
+
+install(EXPORT tkwsm-targets
+    FILE tkwsmTargets.cmake
+    NAMESPACE tkwsm::
+    DESTINATION ${INSTALL_CONFIGDIR}
+)
+
+include(CMakePackageConfigHelpers)
+
+configure_package_config_file(${CMAKE_CURRENT_LIST_DIR}/cmake/tkwsmConfig.cmake.in
+    ${CMAKE_CURRENT_BINARY_DIR}/tkwsmConfig.cmake
+    INSTALL_DESTINATION ${INSTALL_CONFIGDIR}
+)
+
+install(FILES
+    ${CMAKE_CURRENT_BINARY_DIR}/tkwsmConfig.cmake
+    DESTINATION ${INSTALL_CONFIGDIR}
+)
+
+export(EXPORT tkwsm-targets
+    FILE ${CMAKE_CURRENT_BINARY_DIR}/tkwsmTargets.cmake
+    NAMESPACE tkwsm::)
+
+export(PACKAGE tkwsm)

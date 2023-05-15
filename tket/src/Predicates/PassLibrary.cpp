@@ -12,24 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Predicates/PassLibrary.hpp"
+#include "tket/Predicates/PassLibrary.hpp"
 
 #include <memory>
 
-#include "Circuit/CircPool.hpp"
-#include "Converters/Converters.hpp"
-#include "Predicates/CompilationUnit.hpp"
-#include "Predicates/CompilerPass.hpp"
-#include "Predicates/PassGenerators.hpp"
-#include "Predicates/Predicates.hpp"
-#include "Transformations/BasicOptimisation.hpp"
-#include "Transformations/Decomposition.hpp"
-#include "Transformations/MeasurePass.hpp"
-#include "Transformations/OptimisationPass.hpp"
-#include "Transformations/Rebase.hpp"
-#include "Transformations/Transform.hpp"
-#include "Utils/Json.hpp"
-#include "ZX/Rewrite.hpp"
+#include "tket/Circuit/CircPool.hpp"
+#include "tket/Converters/Converters.hpp"
+#include "tket/Predicates/CompilationUnit.hpp"
+#include "tket/Predicates/CompilerPass.hpp"
+#include "tket/Predicates/PassGenerators.hpp"
+#include "tket/Predicates/Predicates.hpp"
+#include "tket/Transformations/BasicOptimisation.hpp"
+#include "tket/Transformations/Decomposition.hpp"
+#include "tket/Transformations/MeasurePass.hpp"
+#include "tket/Transformations/OptimisationPass.hpp"
+#include "tket/Transformations/Rebase.hpp"
+#include "tket/Transformations/Transform.hpp"
+#include "tket/Utils/Json.hpp"
+#include "tket/ZX/Rewrite.hpp"
 
 namespace tket {
 

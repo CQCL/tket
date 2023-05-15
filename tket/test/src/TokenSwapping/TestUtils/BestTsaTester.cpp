@@ -19,7 +19,7 @@
 #include <tktokenswap/VertexMappingFunctions.hpp>
 #include <tktokenswap/VertexSwapResult.hpp>
 
-#include "Architecture/BestTsaWithArch.hpp"
+#include "tket/Architecture/BestTsaWithArch.hpp"
 
 using std::vector;
 

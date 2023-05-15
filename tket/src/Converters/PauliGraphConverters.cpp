@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Circuit/Boxes.hpp"
-#include "Converters/Converters.hpp"
-#include "Converters/PauliGadget.hpp"
-#include "Converters/PhasePoly.hpp"
-#include "Diagonalisation/Diagonalisation.hpp"
-#include "Gate/Gate.hpp"
+#include "tket/Circuit/Boxes.hpp"
+#include "tket/Converters/Converters.hpp"
+#include "tket/Converters/PauliGadget.hpp"
+#include "tket/Converters/PhasePoly.hpp"
+#include "tket/Diagonalisation/Diagonalisation.hpp"
+#include "tket/Gate/Gate.hpp"
 
 namespace tket {
 

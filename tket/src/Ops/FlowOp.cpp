@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Ops/FlowOp.hpp"
+#include "tket/Ops/FlowOp.hpp"
 
-#include "OpType/OpTypeInfo.hpp"
+#include "tket/OpType/OpTypeInfo.hpp"
 
 namespace tket {
 

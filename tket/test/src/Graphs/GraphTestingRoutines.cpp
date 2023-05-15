@@ -19,8 +19,8 @@
 #include <sstream>
 #include <stdexcept>
 
-#include "Graphs/AdjacencyData.hpp"
-#include "Graphs/GraphColouring.hpp"
+#include "tket/Graphs/AdjacencyData.hpp"
+#include "tket/Graphs/GraphColouring.hpp"
 
 using std::exception;
 using std::runtime_error;

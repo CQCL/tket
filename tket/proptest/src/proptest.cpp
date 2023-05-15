@@ -14,16 +14,16 @@
 
 #include <cmath>
 
-#include "Architecture/Architecture.hpp"
-#include "Circuit/Circuit.hpp"
 #include "ComparisonFunctions.hpp"
-#include "Predicates/PassGenerators.hpp"
-#include "Predicates/PassLibrary.hpp"
-#include "Predicates/Predicates.hpp"
-#include "Simulation/CircuitSimulator.hpp"
-#include "Transformations/ContextualReduction.hpp"
-#include "Transformations/Transform.hpp"
 #include "rapidcheck.h"
+#include "tket/Architecture/Architecture.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Predicates/PassGenerators.hpp"
+#include "tket/Predicates/PassLibrary.hpp"
+#include "tket/Predicates/Predicates.hpp"
+#include "tket/Simulation/CircuitSimulator.hpp"
+#include "tket/Transformations/ContextualReduction.hpp"
+#include "tket/Transformations/Transform.hpp"
 
 using namespace tket;
 

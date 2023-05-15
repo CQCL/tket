@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Utils/MatrixAnalysis.hpp"
+#include "tket/Utils/MatrixAnalysis.hpp"
 
 #include <fstream>
 #include <iostream>
@@ -24,7 +24,7 @@
 #include <utility>
 #include <vector>
 
-#include "Utils/EigenConfig.hpp"
+#include "tket/Utils/EigenConfig.hpp"
 
 namespace tket {
 

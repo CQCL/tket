@@ -17,14 +17,14 @@
 #include <numeric>
 #include <optional>
 
-#include "Circuit/CircPool.hpp"
-#include "Circuit/CircUtils.hpp"
-#include "Circuit/DAGDefs.hpp"
-#include "Gate/GatePtr.hpp"
-#include "Gate/Rotation.hpp"
-#include "OpType/OpType.hpp"
-#include "Utils/EigenConfig.hpp"
-#include "Utils/HelperFunctions.hpp"
+#include "tket/Circuit/CircPool.hpp"
+#include "tket/Circuit/CircUtils.hpp"
+#include "tket/Circuit/DAGDefs.hpp"
+#include "tket/Gate/GatePtr.hpp"
+#include "tket/Gate/Rotation.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/Utils/EigenConfig.hpp"
+#include "tket/Utils/HelperFunctions.hpp"
 
 namespace tket {
 
