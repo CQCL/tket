@@ -70,7 +70,10 @@ class ConanBuild(build_ext):
             compnode = compnodes[0]
             lib_folder = os.path.join(compnode["package_folder"], "lib")
             for lib in os.listdir(lib_folder):
-                shutil.copy(os.path.join(lib_folder, lib), extdir)
+                libpath = os.path.join(lib_folder, lib)
+                # Don't copy the `cmake` directory.
+                if not os.path.isdir(libpath):
+                    shutil.copy(libpath, extdir)
 
 
 binders = [

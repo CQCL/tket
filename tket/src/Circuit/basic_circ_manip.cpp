@@ -344,24 +344,24 @@ void Circuit::remove_edge(const Edge& edge) {
 }
 
 unit_map_t Circuit::flatten_registers() {
+  unit_map_t rename_map;
   unsigned q_index = 0;
   unsigned c_index = 0;
-  boundary_t new_map;
-  unit_map_t qmap;
   for (const BoundaryElement& el : boundary.get<TagID>()) {
-    BoundaryElement new_el = el;
     if (el.type() == UnitType::Qubit) {
-      new_el.id_ = Qubit(q_default_reg(), q_index);
-      q_index++;
+      rename_map.insert({el.id_, Qubit(q_index++)});
     } else {
-      new_el.id_ = Bit(c_default_reg(), c_index);
-      c_index++;
+      rename_map.insert({el.id_, Bit(c_index++)});
     }
-    qmap.insert({el.id_, new_el.id_});
-    new_map.insert(new_el);
   }
-  boundary = new_map;
-  return qmap;
+  try {
+    rename_units(rename_map);
+  } catch (const std::exception& e) {
+    std::stringstream ss;
+    ss << "Unable to flatten registers: " << e.what();
+    throw std::runtime_error(ss.str());
+  }
+  return rename_map;
 }
 
 // this automatically updates the circuit boundaries

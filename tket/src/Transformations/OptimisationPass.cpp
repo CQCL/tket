@@ -34,10 +34,10 @@ namespace tket {
 
 namespace Transforms {
 
-Transform peephole_optimise_2q() {
+Transform peephole_optimise_2q(bool allow_swaps) {
   return (
-      synthesise_tket() >> two_qubit_squash() >> hyper_clifford_squash() >>
-      synthesise_tket());
+      synthesise_tket() >> two_qubit_squash(allow_swaps) >>
+      hyper_clifford_squash(allow_swaps) >> synthesise_tket());
 }
 
 Transform full_peephole_optimise(bool allow_swaps, OpType target_2qb_gate) {
@@ -65,8 +65,8 @@ Transform canonical_hyper_clifford_squash() {
          hyper_clifford_squash();
 }
 
-Transform hyper_clifford_squash() {
-  return decompose_multi_qubits_CX() >> clifford_simp();
+Transform hyper_clifford_squash(bool allow_swaps) {
+  return decompose_multi_qubits_CX() >> clifford_simp(allow_swaps);
 }
 
 Transform clifford_simp(bool allow_swaps) {

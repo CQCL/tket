@@ -757,8 +757,8 @@ SCENARIO("Check Hamiltonian path construction is correct") {
     std::vector<Node> ham = aas::find_hampath(arch);
     std::vector<Node> correct_ham1{Node(0), Node(1)};
     std::vector<Node> correct_ham2{Node(1), Node(0)};
-    auto ham_is_correct = (ham == correct_ham1) || (ham == correct_ham2);
-    REQUIRE(ham_is_correct);
+    bool ham_ok = (ham == correct_ham1) || (ham == correct_ham2);
+    REQUIRE(ham_ok);
   }
   GIVEN("2 edge Architecture") {
     Architecture arch({{Node(0), Node(1)}, {Node(1), Node(2)}});
@@ -766,8 +766,8 @@ SCENARIO("Check Hamiltonian path construction is correct") {
     REQUIRE(ham.size() == 3);
     std::vector<Node> correct_ham1{Node(0), Node(1), Node(2)};
     std::vector<Node> correct_ham2{Node(2), Node(1), Node(0)};
-    auto ham_is_correct = (ham == correct_ham1) || (ham == correct_ham2);
-    REQUIRE(ham_is_correct);
+    bool ham_ok = (ham == correct_ham1) || (ham == correct_ham2);
+    REQUIRE(ham_ok);
   }
   GIVEN("3 edge line Architecture") {
     Architecture arch(
@@ -776,8 +776,8 @@ SCENARIO("Check Hamiltonian path construction is correct") {
     REQUIRE(ham.size() == 4);
     std::vector<Node> correct_ham1{Node(0), Node(1), Node(2), Node(3)};
     std::vector<Node> correct_ham2{Node(3), Node(2), Node(1), Node(0)};
-    auto ham_is_correct = (ham == correct_ham1) || (ham == correct_ham2);
-    REQUIRE(ham_is_correct);
+    bool ham_ok = (ham == correct_ham1) || (ham == correct_ham2);
+    REQUIRE(ham_ok);
   }
   GIVEN("3 edge star Architecture") {
     Architecture arch(

@@ -386,7 +386,8 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       bool allow_swaps = content.at("allow_swaps").get<bool>();
       pp = DecomposeTK2(fid, allow_swaps);
     } else if (passname == "PeepholeOptimise2Q") {
-      pp = PeepholeOptimise2Q();
+      bool allow_swaps = content.at("allow_swaps").get<bool>();
+      pp = PeepholeOptimise2Q(allow_swaps);
     } else if (passname == "FullPeepholeOptimise") {
       OpType target_2qb_gate = content.at("target_2qb_gate").get<OpType>();
       bool allow_swaps = content.at("allow_swaps").get<bool>();

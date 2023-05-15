@@ -449,7 +449,9 @@ PYBIND11_MODULE(passes, m) {
       "PeepholeOptimise2Q", &PeepholeOptimise2Q,
       "Performs peephole optimisation including resynthesis of 2-qubit "
       "gate sequences, and converts to a circuit containing only CX and TK1 "
-      "gates.");
+      "gates."
+      "\n\n:param allow_swaps: whether to allow implicit wire swaps",
+      py::arg("allow_swaps") = true);
   m.def(
       "FullPeepholeOptimise", &FullPeepholeOptimise,
       "Performs peephole optimisation including resynthesis of 2- and 3-qubit "
@@ -641,7 +643,8 @@ PYBIND11_MODULE(passes, m) {
       "Removes empty Quantum wires from the Circuit and relabels all Qubit to "
       "a register from passed name. \n\n:param label: Name to relabel "
       "remaining Qubit to, default 'q'.\n:return: A pass that removes empty "
-      "wires and relabels.");
+      "wires and relabels.",
+      py::arg("label") = q_default_reg());
 
   m.def(
       "RenameQubitsPass", &gen_rename_qubits_pass, "Rename some or all qubits.",
