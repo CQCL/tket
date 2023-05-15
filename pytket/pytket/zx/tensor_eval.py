@@ -23,7 +23,10 @@ from pytket.zx import ZXDiagram, ZXType, ZXVert, ZXGen, PhasedGen, CliffordGen, 
 try:
     import quimb.tensor as qtn  # type: ignore
 except ModuleNotFoundError as err:
-    err.msg = 'Missing package for tensor evaluation of ZX diagrams. Run "pip install quimb" and try again.'
+    err.msg = (
+        'Missing package for tensor evaluation of ZX diagrams. Run "pip '
+        'install quimb" and try again.'
+    )
     raise err
 
 
