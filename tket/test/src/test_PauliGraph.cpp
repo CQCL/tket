@@ -462,6 +462,7 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
       Transforms::synthesise_pauli_graph(
           Transforms::PauliSynthStrat::Pairwise, CXConfigType::Star)
           .apply(circ);
+      Transforms::decomp_boxes().apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Different strategies and configs") {
@@ -480,6 +481,7 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
       Transforms::synthesise_pauli_graph(
           Transforms::PauliSynthStrat::Pairwise, CXConfigType::Snake)
           .apply(circ);
+          Transforms::decomp_boxes().apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Different strategies and configs") {
@@ -498,12 +500,14 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
       Transforms::synthesise_pauli_graph(
           Transforms::PauliSynthStrat::Pairwise, CXConfigType::Tree)
           .apply(circ);
+          Transforms::decomp_boxes().apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Pairwise strategy with CXConfigType::MultiQGate") {
       Transforms::synthesise_pauli_graph(
           Transforms::PauliSynthStrat::Pairwise, CXConfigType::MultiQGate)
           .apply(circ);
+          Transforms::decomp_boxes().apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Sets strategy with CXConfigType::MultiQGate") {

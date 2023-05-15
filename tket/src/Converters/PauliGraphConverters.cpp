@@ -170,7 +170,8 @@ Circuit pauli_graph_to_poly_exp_box_circuit_pairwise(
       const QubitPauliTensor &pauli1 = pg.graph_[vert1].tensor_;
       const Expr &angle1 = pg.graph_[vert1].angle_;
       ++it;
-      append_pauli_gadget_pair(circ, pauli0, angle0, pauli1, angle1, cx_config);
+      append_pauli_gadget_pair_as_box(circ, pauli0, angle0, pauli1, angle1, cx_config);
+      //append_pauli_gadget_pair(circ, pauli0, angle0, pauli1, angle1, cx_config);
     }
   }
   Circuit cliff_circuit = tableau_to_circuit(pg.cliff_);

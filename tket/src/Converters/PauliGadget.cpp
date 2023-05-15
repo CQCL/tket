@@ -64,28 +64,19 @@ void append_single_pauli_gadget_as_pauli_exp_box(
 void append_pauli_gadget_pair_as_box(
     Circuit &circ, const QubitPauliTensor &pauli0, Expr angle0,
     const QubitPauliTensor &pauli1, Expr angle1, CXConfigType cx_config) {
-  pauli_angle_convert_or_throw(pauli0.coeff, angle0);
-  pauli_angle_convert_or_throw(pauli1.coeff, angle1);
 
-  std::vector<std::pair<Pauli, unsigned>> string0;
-  std::vector<std::pair<Pauli, unsigned>> string1;
+  std::set<Qubit> qubitSet;
   std::vector<Qubit> mapping;
-  std::map<Qubit, unsigned> reverse_map;
   for (const std::pair<const Qubit, Pauli> &term : pauli0.string.map) {
-    string0.push_back(std::make_pair(term.second, mapping.size()));
-    reverse_map.emplace(term.first, mapping.size());
+    qubitSet.insert(term.first);
     mapping.push_back(term.first);
   }
   for (const std::pair<const Qubit, Pauli> &term : pauli1.string.map) {
-    if (reverse_map.contains(term.first)) {
-      string1.push_back(
-          std::make_pair(term.second, reverse_map.at(term.first)));
-    } else {
-      string1.push_back(std::make_pair(term.second, mapping.size()));
-      mapping.push_back(term.first);
-    }
+    if (qubitSet.contains(term.first)) continue;
+    mapping.push_back(term.first);
+    qubitSet.insert(term.first);
   }
-  PauliExpPairBox box(string0, string1, angle0, angle1, cx_config);
+  PauliExpPairBox box(qubitSet.size(), pauli0, angle0, pauli1, angle1, cx_config);
   circ.add_box(box, mapping);
 }
 

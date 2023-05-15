@@ -74,4 +74,9 @@ void append_pauli_gadget_pair(
     QubitPauliTensor pauli1, Expr angle1,
     CXConfigType cx_config = CXConfigType::Snake);
 
+
+void append_pauli_gadget_pair_as_box(
+    Circuit &circ, const QubitPauliTensor &pauli0, Expr angle0,
+    const QubitPauliTensor &pauli1, Expr angle1, CXConfigType cx_config);
+
 }  // namespace tket

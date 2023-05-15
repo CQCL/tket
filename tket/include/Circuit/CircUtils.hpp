@@ -135,12 +135,6 @@ Circuit pauli_gadget(
     const std::vector<Pauli>& paulis, const Expr& t,
     CXConfigType cx_config = CXConfigType::Snake);
 
-Circuit pauli_gadget_pair(
-    const unsigned n,
-    const std::vector<std::pair<Pauli,unsigned>> &paulis0, const Expr &t0,
-    const std::vector<std::pair<Pauli,unsigned>> &paulis1, const Expr &t1,
-    CXConfigType cx_config = CXConfigType::Snake);
-
 /**
  * Utility function to replace all CX gates with TK2 and single-qubit gates.
  *

@@ -198,7 +198,8 @@ Transform synthesise_pauli_graph(
         break;
       }
       case PauliSynthStrat::Pairwise: {
-        circ = pauli_graph_to_circuit_pairwise(pg, cx_config);
+        //circ = pauli_graph_to_circuit_pairwise(pg, cx_config);
+        circ = pauli_graph_to_poly_exp_box_circuit_pairwise(pg, cx_config);
         break;
       }
       case PauliSynthStrat::Sets: {

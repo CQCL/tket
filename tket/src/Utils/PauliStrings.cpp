@@ -550,4 +550,14 @@ void from_json(const nlohmann::json &j, PauliStabiliser &pauli_stabiliser) {
   pauli_stabiliser = PauliStabiliser(
       j.at("string").get<std::vector<Pauli>>(), j.at("coeff").get<bool>());
 }
+
+void to_json(nlohmann::json &j, const QubitPauliTensor &qubitPauliTensor) {
+  j["string"] = qubitPauliTensor.string;
+  j["coeff"] = qubitPauliTensor.coeff;
+}
+
+void from_json(const nlohmann::json &j, QubitPauliTensor &qubitPauliTensor) {
+  qubitPauliTensor = QubitPauliTensor(
+      j.at("string").get<QubitPauliString>(), j.at("coeff").get<Complex>());
+}
 }  // namespace tket

@@ -518,6 +518,8 @@ class QubitPauliTensor {
   friend std::size_t hash_value(const QubitPauliTensor &qpt);
 };
 
+JSON_DECL(QubitPauliTensor);
+
 /**
  * Multiply coefficient by a scalar
  *
