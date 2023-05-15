@@ -17,9 +17,9 @@
 #include <algorithm>
 #include <tklog/TketLog.hpp>
 
-#include "Circuit/Circuit.hpp"
-#include "OpType/EdgeType.hpp"
-#include "Utils/GraphHeaders.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/OpType/EdgeType.hpp"
+#include "tket/Utils/GraphHeaders.hpp"
 
 namespace tket {
 

@@ -19,9 +19,9 @@
 #include <tktokenswap/RiverFlowPathFinder.hpp>
 #include <tktokenswap/VertexSwapResult.hpp>
 
-#include "Architecture/DistancesFromArchitecture.hpp"
-#include "Architecture/NeighboursFromArchitecture.hpp"
 #include "TestStatsStructs.hpp"
+#include "tket/Architecture/DistancesFromArchitecture.hpp"
+#include "tket/Architecture/NeighboursFromArchitecture.hpp"
 
 using std::vector;
 

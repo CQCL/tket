@@ -1,8 +1,8 @@
 #include <catch2/catch_test_macros.hpp>
 
-#include "Gate/GatePtr.hpp"
-#include "OpType/OpTypeFunctions.hpp"
-#include "OpType/OpTypeInfo.hpp"
+#include "tket/Gate/GatePtr.hpp"
+#include "tket/OpType/OpTypeFunctions.hpp"
+#include "tket/OpType/OpTypeInfo.hpp"
 
 namespace tket {
 namespace test_OpTypeFunctions {

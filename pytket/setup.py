@@ -23,6 +23,7 @@ from distutils.version import LooseVersion
 import setuptools  # type: ignore
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext  # type: ignore
+from sysconfig import get_config_var
 from wheel.bdist_wheel import bdist_wheel as _bdist_wheel
 
 
@@ -30,6 +31,52 @@ class CMakeExtension(Extension):
     def __init__(self, name, sourcedir=""):
         Extension.__init__(self, name, sources=[])
         self.sourcedir = os.path.abspath(sourcedir)
+
+
+binders = [
+    "logging",
+    "utils_serialization",
+    "circuit",
+    "passes",
+    "predicates",
+    "partition",
+    "pauli",
+    "mapping",
+    "transform",
+    "tailoring",
+    "tableau",
+    "zx",
+    "placement",
+    "architecture",
+]
+
+
+class CMakeBuild(build_ext):
+    def run(self):
+        self.check_extensions_list(self.extensions)
+        extdir = os.path.abspath(
+            os.path.dirname(self.get_ext_fullpath(self.extensions[0].name))
+        )
+        extsource = self.extensions[0].sourcedir
+        build_dir = os.path.join(extsource, "build")
+        shutil.rmtree(build_dir, ignore_errors=True)
+        os.mkdir(build_dir)
+        install_dir = os.getenv("INSTALL_DIR")
+        subprocess.run(
+            ["cmake", f"-DCMAKE_INSTALL_PREFIX={install_dir}", os.pardir], cwd=build_dir
+        )
+        subprocess.run(["cmake", "--build", os.curdir], cwd=build_dir)
+        subprocess.run(["cmake", "--install", os.curdir], cwd=build_dir)
+        lib_folder = os.path.join(install_dir, "lib")
+        lib_names = ["libtklog.so", "libtket.so"]
+        ext_suffix = get_config_var("EXT_SUFFIX")
+        lib_names.extend(f"{binder}{ext_suffix}" for binder in binders)
+        # TODO make the above generic
+        if os.path.exists(extdir):
+            shutil.rmtree(extdir)
+        os.makedirs(extdir)
+        for lib_name in lib_names:
+            shutil.copy(os.path.join(lib_folder, lib_name), extdir)
 
 
 class ConanBuild(build_ext):
@@ -76,23 +123,6 @@ class ConanBuild(build_ext):
                     shutil.copy(libpath, extdir)
 
 
-binders = [
-    "logging",
-    "utils_serialization",
-    "circuit",
-    "passes",
-    "predicates",
-    "partition",
-    "pauli",
-    "mapping",
-    "transform",
-    "tailoring",
-    "tableau",
-    "zx",
-    "placement",
-    "architecture",
-]
-
 setup_dir = os.path.abspath(os.path.dirname(__file__))
 plat_name = os.getenv("WHEEL_PLAT_NAME")
 
@@ -137,7 +167,10 @@ setup(
     ext_modules=[
         CMakeExtension("pytket._tket.{}".format(binder)) for binder in binders
     ],
-    cmdclass={"build_ext": ConanBuild, "bdist_wheel": bdist_wheel},
+    cmdclass={
+        "build_ext": CMakeBuild if os.getenv("NO_CONAN") else ConanBuild,
+        "bdist_wheel": bdist_wheel,
+    },
     classifiers=[
         "Environment :: Console",
         "Programming Language :: Python :: 3.9",

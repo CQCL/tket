@@ -12,23 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Gate/Gate.hpp"
+#include "tket/Gate/Gate.hpp"
 
 #include <algorithm>
 #include <stdexcept>
 #include <tkrng/RNG.hpp>
 #include <vector>
 
-#include "Gate/GateUnitaryMatrix.hpp"
-#include "Gate/GateUnitaryMatrixError.hpp"
-#include "Gate/OpPtrFunctions.hpp"
-#include "OpType/OpType.hpp"
-#include "OpType/OpTypeFunctions.hpp"
-#include "OpType/OpTypeInfo.hpp"
-#include "Ops/Op.hpp"
-#include "Utils/Expression.hpp"
-#include "Utils/PauliStrings.hpp"
 #include "symengine/eval_double.h"
+#include "tket/Gate/GateUnitaryMatrix.hpp"
+#include "tket/Gate/GateUnitaryMatrixError.hpp"
+#include "tket/Gate/OpPtrFunctions.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/OpType/OpTypeFunctions.hpp"
+#include "tket/OpType/OpTypeInfo.hpp"
+#include "tket/Ops/Op.hpp"
+#include "tket/Utils/Expression.hpp"
+#include "tket/Utils/PauliStrings.hpp"
 
 namespace tket {
 using std::stringstream;

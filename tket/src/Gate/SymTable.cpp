@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Gate/SymTable.hpp"
+#include "tket/Gate/SymTable.hpp"
 
 namespace tket {
 

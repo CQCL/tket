@@ -18,7 +18,7 @@
 #include <tktokenswap/PartialTsaInterface.hpp>
 #include <tktokenswap/SwapListOptimiser.hpp>
 
-#include "Architecture/ArchitectureMapping.hpp"
+#include "tket/Architecture/ArchitectureMapping.hpp"
 
 namespace tket {
 namespace tsa_internal {

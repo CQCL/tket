@@ -18,7 +18,7 @@
 
 #include <sstream>
 
-#include "Converters/UnitaryTableauBox.hpp"
+#include "tket/Converters/UnitaryTableauBox.hpp"
 
 namespace py = pybind11;
 namespace tket {

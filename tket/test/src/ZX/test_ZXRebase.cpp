@@ -14,8 +14,8 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include "ZX/Rewrite.hpp"
-#include "ZX/ZXDiagram.hpp"
+#include "tket/ZX/Rewrite.hpp"
+#include "tket/ZX/ZXDiagram.hpp"
 
 namespace tket::zx::test_ZXRebase {
 

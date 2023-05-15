@@ -16,7 +16,7 @@
 #include <sstream>
 #include <tkrng/RNG.hpp>
 
-#include "Architecture/BestTsaWithArch.hpp"
+#include "tket/Architecture/BestTsaWithArch.hpp"
 
 using std::vector;
 

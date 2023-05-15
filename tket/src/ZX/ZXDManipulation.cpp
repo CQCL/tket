@@ -14,8 +14,8 @@
 
 #include <tkassert/Assert.hpp>
 
-#include "Utils/GraphHeaders.hpp"
-#include "ZX/ZXDiagram.hpp"
+#include "tket/Utils/GraphHeaders.hpp"
+#include "tket/ZX/ZXDiagram.hpp"
 
 namespace tket {
 

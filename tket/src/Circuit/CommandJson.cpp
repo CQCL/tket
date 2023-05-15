@@ -14,8 +14,8 @@
 
 #include <tkassert/Assert.hpp>
 
-#include "Circuit/Command.hpp"
-#include "Utils/Json.hpp"
+#include "tket/Circuit/Command.hpp"
+#include "tket/Utils/Json.hpp"
 
 namespace tket {
 

@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Predicates/Predicates.hpp"
+#include "tket/Predicates/Predicates.hpp"
 
-#include "Gate/Gate.hpp"
-#include "Mapping/Verification.hpp"
-#include "OpType/OpTypeFunctions.hpp"
-#include "Placement/Placement.hpp"
-#include "Transformations/MeasurePass.hpp"
-#include "Utils/MatrixAnalysis.hpp"
-#include "Utils/UnitID.hpp"
+#include "tket/Gate/Gate.hpp"
+#include "tket/Mapping/Verification.hpp"
+#include "tket/OpType/OpTypeFunctions.hpp"
+#include "tket/Placement/Placement.hpp"
+#include "tket/Transformations/MeasurePass.hpp"
+#include "tket/Utils/MatrixAnalysis.hpp"
+#include "tket/Utils/UnitID.hpp"
 
 namespace tket {
 

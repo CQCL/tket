@@ -15,9 +15,9 @@
 #include <catch2/catch_test_macros.hpp>
 #include <stack>
 
-#include "Circuit/Boxes.hpp"
-#include "Gate/GateUnitaryMatrix.hpp"
-#include "Simulation/PauliExpBoxUnitaryCalculator.hpp"
+#include "tket/Circuit/Boxes.hpp"
+#include "tket/Gate/GateUnitaryMatrix.hpp"
+#include "tket/Simulation/PauliExpBoxUnitaryCalculator.hpp"
 
 // This is for testing PauliExpBoxUnitaryCalculator, an internal
 // component of the Simulation code.

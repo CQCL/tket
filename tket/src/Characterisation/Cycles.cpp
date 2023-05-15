@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Characterisation/Cycles.hpp"
+#include "tket/Characterisation/Cycles.hpp"
 
 #include <numeric>
 

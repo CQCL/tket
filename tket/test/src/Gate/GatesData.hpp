@@ -17,7 +17,7 @@
 #include <map>
 #include <vector>
 
-#include "OpType/OpType.hpp"
+#include "tket/OpType/OpType.hpp"
 
 namespace tket {
 namespace internal {

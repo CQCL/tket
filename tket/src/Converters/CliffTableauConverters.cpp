@@ -14,7 +14,7 @@
 
 #include <stdexcept>
 
-#include "Converters/Converters.hpp"
+#include "tket/Converters/Converters.hpp"
 
 namespace tket {
 

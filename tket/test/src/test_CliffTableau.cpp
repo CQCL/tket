@@ -14,8 +14,8 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include "Clifford/CliffTableau.hpp"
-#include "Converters/Converters.hpp"
+#include "tket/Clifford/CliffTableau.hpp"
+#include "tket/Converters/Converters.hpp"
 
 namespace tket {
 namespace test_CliffTableau {

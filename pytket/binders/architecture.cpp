@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Architecture/Architecture.hpp"
+#include "tket/Architecture/Architecture.hpp"
 
 #include <pybind11/eigen.h>
 #include <pybind11/operators.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
-#include "Circuit/Circuit.hpp"
-#include "Utils/Json.hpp"
 #include "binder_json.hpp"
 #include "binder_utils.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Utils/Json.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;

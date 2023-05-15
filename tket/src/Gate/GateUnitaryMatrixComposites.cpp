@@ -14,9 +14,9 @@
 
 #include <utility>
 
-#include "Gate/GateUnitaryMatrixImplementations.hpp"
-#include "Gate/GateUnitaryMatrixUtils.hpp"
-#include "Utils/Constants.hpp"
+#include "tket/Gate/GateUnitaryMatrixImplementations.hpp"
+#include "tket/Gate/GateUnitaryMatrixUtils.hpp"
+#include "tket/Utils/Constants.hpp"
 
 // This file is for gates with unitary matrices
 // computed using other ("primitive") gates.

@@ -15,9 +15,9 @@
 #include <catch2/catch_test_macros.hpp>
 #include <sstream>
 
-#include "Architecture/ArchitectureMapping.hpp"
-#include "Architecture/DistancesFromArchitecture.hpp"
-#include "Architecture/NeighboursFromArchitecture.hpp"
+#include "tket/Architecture/ArchitectureMapping.hpp"
+#include "tket/Architecture/DistancesFromArchitecture.hpp"
+#include "tket/Architecture/NeighboursFromArchitecture.hpp"
 
 using std::vector;
 

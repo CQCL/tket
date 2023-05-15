@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Utils/Constants.hpp"
-#include "Utils/GraphHeaders.hpp"
-#include "ZX/Rewrite.hpp"
+#include "tket/Utils/Constants.hpp"
+#include "tket/Utils/GraphHeaders.hpp"
+#include "tket/ZX/Rewrite.hpp"
 
 namespace tket {
 
