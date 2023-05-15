@@ -100,11 +100,6 @@ bool Rewrite::rebase_to_zx_fun(ZXDiagram& diag) {
         ZXDiagram rep(0, 0, 0, 0);
         double r = std::abs(*opt_ph - 1.);
         double ph = std::arg(*opt_ph - 1.) / PI;
-        // Reduce r to the range [0, 2]
-        if (r < 0.) {
-          r *= -1.;
-          ph += 1.;
-        }
         // Core is an algebraic Zbox surrounded by triangles
         ZXVert zph = rep.add_vertex(ZXType::ZSpider, Expr(ph), qt);
         // Not every will may have the same QuantumType in general
@@ -150,8 +145,9 @@ bool Rewrite::rebase_to_zx_fun(ZXDiagram& diag) {
           break;
         }
         // Using the algebraic fusion rule, can break off 2-boxes (0-phase
-        // ZSpider and a triangle)
-        for (; r > 2.; r -= 1) {
+        // ZSpider and a triangle) to half the coefficient.
+        // r is always positive as it is the result of an abs
+        for (; r > 2.; r *= 0.5) {
           ZXVert tri = rep.add_vertex(ZXType::Triangle, qt);
           ZXVert one = rep.add_vertex(ZXType::ZSpider, qt);
           rep.add_wire(zph, tri, ZXWireType::Basic, qt, std::nullopt, 0);
@@ -159,7 +155,7 @@ bool Rewrite::rebase_to_zx_fun(ZXDiagram& diag) {
         }
         // Identify alpha s.t. r = e^{i*pi*alpha} + e^{-i*pi*alpha} =
         // 2*cos(alpha) and implement the algebraic Zbox
-        double alpha = std::acos(r / 2.);
+        double alpha = std::acos(r / 2.) / PI;
         ZXVert tri = rep.add_vertex(ZXType::Triangle, qt);
         ZXVert negal = rep.add_vertex(ZXType::ZSpider, Expr(-alpha), qt);
         ZXVert xmerge = rep.add_vertex(ZXType::XSpider, qt);
