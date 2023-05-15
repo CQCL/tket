@@ -53,6 +53,7 @@ from pytket.passes import (  # type: ignore
     RemoveImplicitQubitPermutation,
     FlattenRelabelRegistersPass,
     RoundAngles,
+    PeepholeOptimise2Q,
 )
 from pytket.predicates import (  # type: ignore
     GateSetPredicate,
@@ -876,6 +877,17 @@ def test_round_angles_pass() -> None:
     c1 = Circuit(2).H(0).Rz(0.50001, 0)
     assert RoundAngles(8, only_zeros=True).apply(c0)
     assert c0 == c1
+
+
+def test_PeepholeOptimise2Q() -> None:
+    c = Circuit(2).CX(0, 1).CX(1, 0)
+    assert PeepholeOptimise2Q().apply(c)
+    perm = c.implicit_qubit_permutation()
+    assert any(k != v for k, v in perm.items())
+    c = Circuit(2).CX(0, 1).CX(1, 0)
+    assert PeepholeOptimise2Q(allow_swaps=False).apply(c) == False
+    perm = c.implicit_qubit_permutation()
+    assert all(k == v for k, v in perm.items())
 
 
 if __name__ == "__main__":

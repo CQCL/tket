@@ -245,6 +245,16 @@ PassPtr DecomposeTK2(bool allow_swaps = true);
 PassPtr ThreeQubitSquash(bool allow_swaps = true);
 
 /**
+ * Performs peephole optimisation including resynthesis of 2-qubit gate
+ * sequences, and converts to a circuit containing CX and TK1 gates.
+ * @param allow_swaps whether to allow introduction of implicit wire swaps
+ * Expects: Any gates
+ * Produces: CX, TK1
+ *
+ */
+PassPtr PeepholeOptimise2Q(bool allow_swaps = true);
+
+/**
  * Performs peephole optimisation including resynthesis of 2- and 3-qubit gate
  * sequences, and converts to a circuit containing a given 2-qubit gate and TK1
  * gates.
