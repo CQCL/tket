@@ -1,8 +1,8 @@
 var searchData=
 [
-  ['wasmnode_2638',['WasmNode',['../classtket_1_1WasmNode.html',1,'tket']]],
-  ['wasmop_2639',['WASMOp',['../classtket_1_1WASMOp.html',1,'tket']]],
-  ['wasmstate_2640',['WasmState',['../classtket_1_1WasmState.html',1,'tket']]],
-  ['weightededge_2641',['WeightedEdge',['../structtket_1_1GraphPlacement_1_1WeightedEdge.html',1,'tket::GraphPlacement::WeightedEdge'],['../structtket_1_1graphs_1_1WeightedEdge.html',1,'tket::graphs::WeightedEdge']]],
-  ['wireproperties_2642',['WireProperties',['../structtket_1_1zx_1_1WireProperties.html',1,'tket::zx']]]
+  ['wasmnode_2640',['WasmNode',['../classtket_1_1WasmNode.html',1,'tket']]],
+  ['wasmop_2641',['WASMOp',['../classtket_1_1WASMOp.html',1,'tket']]],
+  ['wasmstate_2642',['WasmState',['../classtket_1_1WasmState.html',1,'tket']]],
+  ['weightededge_2643',['WeightedEdge',['../structtket_1_1GraphPlacement_1_1WeightedEdge.html',1,'tket::GraphPlacement::WeightedEdge'],['../structtket_1_1graphs_1_1WeightedEdge.html',1,'tket::graphs::WeightedEdge']]],
+  ['wireproperties_2644',['WireProperties',['../structtket_1_1zx_1_1WireProperties.html',1,'tket::zx']]]
 ];
