@@ -9,4 +9,4 @@ docker
 jsonschema
 quimb;python_version<"3.11"
 opt_einsum
-autoray
+autoray>=0.6.3
