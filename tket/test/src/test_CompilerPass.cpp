@@ -721,6 +721,17 @@ SCENARIO("PeepholeOptimise2Q and FullPeepholeOptimise") {
     CompilationUnit cu1(circ1);
     REQUIRE(FullPeepholeOptimise()->apply(cu1));
   }
+  GIVEN("A circuit with two CXs.") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::CX, {1, 0});
+    CompilationUnit cu(circ);
+    REQUIRE(!PeepholeOptimise2Q(false)->apply(cu));
+    qubit_map_t perm = cu.get_circ_ref().implicit_qubit_permutation();
+    for (const std::pair<const Qubit, Qubit>& pair : perm) {
+      REQUIRE(pair.first == pair.second);
+    }
+  }
   GIVEN("A circuit with classical operations.") {
     Circuit circ(2, 1);
     circ.add_op<unsigned>(OpType::ZZMax, {1, 0});
