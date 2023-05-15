@@ -132,7 +132,7 @@ setup(
         "qwasm ~= 1.0",
     ],
     extras_require={
-        "ZX": ["quimb ~= 1.5; python_version < '3.11'"],
+        "ZX": ["quimb ~= 1.5"],
     },
     ext_modules=[
         CMakeExtension("pytket._tket.{}".format(binder)) for binder in binders
