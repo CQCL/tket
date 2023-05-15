@@ -36,7 +36,7 @@ cd boost_1_81_0/
 cd ${TMP_DIR}
 wget https://gmplib.org/download/gmp/gmp-6.2.1.tar.bz2
 bzip2 -dk gmp-6.2.1.tar.bz2
-tar xvf bzip2 -dk gmp-6.2.1.tar
+tar xvf gmp-6.2.1.tar
 cd gmp-6.2.1/
 ./configure --prefix=${INSTALL_DIR} --enable-cxx=yes
 make
