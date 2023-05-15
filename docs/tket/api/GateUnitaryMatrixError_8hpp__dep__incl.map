@@ -1,5 +1,5 @@
-<map id="include/Gate/GateUnitaryMatrixError.hpp" name="include/Gate/GateUnitaryMatrixError.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="653,5,840,47"/>
+<map id="include/tket/Gate/GateUnitaryMatrixError.hpp" name="include/tket/Gate/GateUnitaryMatrixError.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="639,5,855,47"/>
 <area shape="rect" id="node2" href="$Gate_8cpp.html" title=" " alt="" coords="5,102,144,129"/>
 <area shape="rect" id="node3" href="$GateUnitaryMatrix_8cpp.html" title=" " alt="" coords="169,102,397,129"/>
 <area shape="rect" id="node4" href="$GateUnitaryMatrixError_8cpp.html" title=" " alt="" coords="421,95,622,136"/>

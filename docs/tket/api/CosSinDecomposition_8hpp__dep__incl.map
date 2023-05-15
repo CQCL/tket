@@ -1,6 +1,6 @@
-<map id="include/Utils/CosSinDecomposition.hpp" name="include/Utils/CosSinDecomposition.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="265,5,543,32"/>
-<area shape="rect" id="node2" href="$AssertionSynthesis_8cpp.html" title=" " alt="" coords="5,80,248,107"/>
-<area shape="rect" id="node3" href="$ThreeQubitConversion_8cpp.html" title=" " alt="" coords="273,80,535,107"/>
-<area shape="rect" id="node4" href="$CosSinDecomposition_8cpp.html" title=" " alt="" coords="560,80,808,107"/>
+<map id="include/tket/Utils/CosSinDecomposition.hpp" name="include/tket/Utils/CosSinDecomposition.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="306,5,502,47"/>
+<area shape="rect" id="node2" href="$AssertionSynthesis_8cpp.html" title=" " alt="" coords="5,95,248,121"/>
+<area shape="rect" id="node3" href="$ThreeQubitConversion_8cpp.html" title=" " alt="" coords="273,95,535,121"/>
+<area shape="rect" id="node4" href="$CosSinDecomposition_8cpp.html" title=" " alt="" coords="560,95,808,121"/>
 </map>

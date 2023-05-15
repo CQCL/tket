@@ -1,6 +1,6 @@
-<map id="include/Gate/SymTable.hpp" name="include/Gate/SymTable.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="209,5,407,32"/>
-<area shape="rect" id="node2" href="$Expression_8hpp.html" title="Functions related to (possibly symbolic) phase values." alt="" coords="231,80,385,107"/>
+<map id="include/tket/Gate/SymTable.hpp" name="include/tket/Gate/SymTable.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="194,5,422,32"/>
+<area shape="rect" id="node2" href="$Expression_8hpp.html" title="Functions related to (possibly symbolic) phase values." alt="" coords="216,80,400,107"/>
 <area shape="rect" id="node3" title=" " alt="" coords="5,155,56,181"/>
 <area shape="rect" id="node4" title=" " alt="" coords="49,229,124,256"/>
 <area shape="rect" id="node5" title=" " alt="" coords="371,155,413,181"/>

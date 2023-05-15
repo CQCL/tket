@@ -1,5 +1,5 @@
-<map id="include/Gate/GateUnitaryMatrixImplementations.hpp" name="include/Gate/GateUnitaryMatrixImplementations.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="680,5,883,47"/>
+<map id="include/tket/Gate/GateUnitaryMatrixImplementations.hpp" name="include/tket/Gate/GateUnitaryMatrixImplementations.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="673,5,889,47"/>
 <area shape="rect" id="node2" href="$CircUtils_8cpp.html" title=" " alt="" coords="5,102,179,129"/>
 <area shape="rect" id="node3" href="$GateUnitaryMatrix_8cpp.html" title=" " alt="" coords="203,102,431,129"/>
 <area shape="rect" id="node4" href="$GateUnitaryMatrixComposites_8cpp.html" title=" " alt="" coords="455,95,657,136"/>

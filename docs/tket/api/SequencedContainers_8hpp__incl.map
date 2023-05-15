@@ -1,8 +1,8 @@
-<map id="include/Utils/SequencedContainers.hpp" name="include/Utils/SequencedContainers.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="415,5,691,32"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,80,183,121"/>
-<area shape="rect" id="node3" title=" " alt="" coords="207,87,432,114"/>
-<area shape="rect" id="node4" title=" " alt="" coords="456,80,649,121"/>
-<area shape="rect" id="node5" title=" " alt="" coords="674,80,887,121"/>
-<area shape="rect" id="node6" title=" " alt="" coords="911,87,1146,114"/>
+<map id="include/tket/Utils/SequencedContainers.hpp" name="include/tket/Utils/SequencedContainers.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="455,5,650,47"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,95,183,136"/>
+<area shape="rect" id="node3" title=" " alt="" coords="207,102,432,129"/>
+<area shape="rect" id="node4" title=" " alt="" coords="456,95,649,136"/>
+<area shape="rect" id="node5" title=" " alt="" coords="674,95,887,136"/>
+<area shape="rect" id="node6" title=" " alt="" coords="911,102,1146,129"/>
 </map>

@@ -79,86 +79,86 @@ $(function() {
 <div class="title">AssertionSynthesis.cpp File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="AssertionSynthesis_8hpp_source.html">Circuit/AssertionSynthesis.hpp</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="AssertionSynthesis_8hpp_source.html">tket/Circuit/AssertionSynthesis.hpp</a>&quot;</code><br />
 <code>#include &lt;array&gt;</code><br />
 <code>#include &lt;cmath&gt;</code><br />
 <code>#include &lt;complex&gt;</code><br />
 <code>#include &lt;optional&gt;</code><br />
 <code>#include &lt;stdexcept&gt;</code><br />
 <code>#include &lt;tkassert/Assert.hpp&gt;</code><br />
-<code>#include &quot;<a class="el" href="CircUtils_8hpp_source.html">Circuit/CircUtils.hpp</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Circuit_8hpp_source.html">Circuit/Circuit.hpp</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="OpType_8hpp_source.html">OpType/OpType.hpp</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Constants_8hpp_source.html">Utils/Constants.hpp</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="CosSinDecomposition_8hpp_source.html">Utils/CosSinDecomposition.hpp</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="EigenConfig_8hpp_source.html">Utils/EigenConfig.hpp</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="MatrixAnalysis_8hpp_source.html">Utils/MatrixAnalysis.hpp</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="UnitID_8hpp_source.html">Utils/UnitID.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="CircUtils_8hpp_source.html">tket/Circuit/CircUtils.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Circuit_8hpp_source.html">tket/Circuit/Circuit.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="OpType_8hpp_source.html">tket/OpType/OpType.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Constants_8hpp_source.html">tket/Utils/Constants.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="CosSinDecomposition_8hpp_source.html">tket/Utils/CosSinDecomposition.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="EigenConfig_8hpp_source.html">tket/Utils/EigenConfig.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="MatrixAnalysis_8hpp_source.html">tket/Utils/MatrixAnalysis.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="UnitID_8hpp_source.html">tket/Utils/UnitID.hpp</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for AssertionSynthesis.cpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="AssertionSynthesis_8cpp__incl.png" border="0" usemap="#asrc_2Circuit_2AssertionSynthesis_8cpp" alt=""/></div>
 <map name="asrc_2Circuit_2AssertionSynthesis_8cpp" id="asrc_2Circuit_2AssertionSynthesis_8cpp">
-<area shape="rect" title=" " alt="" coords="3513,5,3756,32"/>
-<area shape="rect" href="AssertionSynthesis_8hpp.html" title=" " alt="" coords="3525,80,3745,107"/>
-<area shape="rect" href="Circuit_8hpp.html" title=" " alt="" coords="1555,155,1647,181"/>
-<area shape="rect" title=" " alt="" coords="1440,707,1515,733"/>
-<area shape="rect" title=" " alt="" coords="3252,229,3399,256"/>
-<area shape="rect" title=" " alt="" coords="3470,707,3549,733"/>
-<area shape="rect" href="OpType_8hpp.html" title=" " alt="" coords="3092,543,3191,569"/>
-<area shape="rect" title=" " alt="" coords="2829,461,2915,487"/>
-<area shape="rect" href="Constants_8hpp.html" title="Generally useful typedefs and constants." alt="" coords="3524,543,3673,569"/>
-<area shape="rect" href="EigenConfig_8hpp.html" title="Include this file rather than including the Eigen headers directly." alt="" coords="3805,543,3966,569"/>
-<area shape="rect" href="UnitID_8hpp.html" title="Named registers of arrays of (quantum or classical) nodes." alt="" coords="1273,543,1399,569"/>
-<area shape="rect" href="MatrixAnalysis_8hpp.html" title=" " alt="" coords="3524,379,3705,405"/>
-<area shape="rect" title=" " alt="" coords="3697,461,3753,487"/>
-<area shape="rect" title=" " alt="" coords="4034,80,4097,107"/>
-<area shape="rect" href="CircUtils_8hpp.html" title=" " alt="" coords="2383,80,2534,107"/>
-<area shape="rect" href="CosSinDecomposition_8hpp.html" title=" " alt="" coords="4033,155,4260,181"/>
-<area shape="rect" title=" " alt="" coords="2297,229,2383,256"/>
-<area shape="rect" title=" " alt="" coords="667,707,754,733"/>
-<area shape="rect" title=" " alt="" coords="1131,229,1218,256"/>
-<area shape="rect" title=" " alt="" coords="701,379,744,405"/>
-<area shape="rect" title=" " alt="" coords="2217,625,2268,651"/>
-<area shape="rect" title=" " alt="" coords="1663,625,1740,651"/>
-<area shape="rect" title=" " alt="" coords="1575,461,1651,487"/>
+<area shape="rect" title=" " alt="" coords="3636,5,3879,32"/>
+<area shape="rect" href="AssertionSynthesis_8hpp.html" title=" " alt="" coords="3633,80,3882,107"/>
+<area shape="rect" href="Circuit_8hpp.html" title=" " alt="" coords="1585,155,1677,181"/>
+<area shape="rect" title=" " alt="" coords="1456,707,1531,733"/>
+<area shape="rect" title=" " alt="" coords="3361,229,3508,256"/>
+<area shape="rect" title=" " alt="" coords="3626,707,3705,733"/>
+<area shape="rect" href="OpType_8hpp.html" title=" " alt="" coords="3172,543,3271,569"/>
+<area shape="rect" title=" " alt="" coords="2909,461,2995,487"/>
+<area shape="rect" href="Constants_8hpp.html" title="Generally useful typedefs and constants." alt="" coords="3633,543,3812,569"/>
+<area shape="rect" href="EigenConfig_8hpp.html" title="Include this file rather than including the Eigen headers directly." alt="" coords="3938,543,4129,569"/>
+<area shape="rect" href="UnitID_8hpp.html" title="Named registers of arrays of (quantum or classical) nodes." alt="" coords="1265,543,1420,569"/>
+<area shape="rect" href="MatrixAnalysis_8hpp.html" title=" " alt="" coords="3633,379,3844,405"/>
+<area shape="rect" title=" " alt="" coords="3827,461,3883,487"/>
+<area shape="rect" title=" " alt="" coords="4173,80,4235,107"/>
+<area shape="rect" href="CircUtils_8hpp.html" title=" " alt="" coords="2433,80,2613,107"/>
+<area shape="rect" href="CosSinDecomposition_8hpp.html" title=" " alt="" coords="4173,155,4427,181"/>
+<area shape="rect" title=" " alt="" coords="2357,229,2443,256"/>
+<area shape="rect" title=" " alt="" coords="687,707,774,733"/>
+<area shape="rect" title=" " alt="" coords="1161,229,1247,256"/>
+<area shape="rect" title=" " alt="" coords="731,379,773,405"/>
+<area shape="rect" title=" " alt="" coords="2272,625,2323,651"/>
+<area shape="rect" title=" " alt="" coords="1704,625,1781,651"/>
+<area shape="rect" title=" " alt="" coords="1597,461,1673,487"/>
 <area shape="rect" title=" " alt="" coords="171,625,245,651"/>
-<area shape="rect" title=" " alt="" coords="1083,625,1141,651"/>
-<area shape="rect" title=" " alt="" coords="549,625,688,651"/>
-<area shape="rect" title=" " alt="" coords="1294,229,1386,256"/>
-<area shape="rect" title=" " alt="" coords="1262,379,1386,405"/>
-<area shape="rect" title=" " alt="" coords="1121,543,1181,569"/>
-<area shape="rect" title=" " alt="" coords="2130,625,2193,651"/>
-<area shape="rect" href="Boxes_8hpp.html" title=" " alt="" coords="2361,304,2450,331"/>
-<area shape="rect" href="Json_8hpp.html" title=" " alt="" coords="2857,625,2967,651"/>
-<area shape="rect" href="ClassicalExpBox_8hpp.html" title="Holding box for abstract expressions on Bits." alt="" coords="1816,229,1973,256"/>
-<area shape="rect" href="Command_8hpp.html" title=" " alt="" coords="939,229,1056,256"/>
-<area shape="rect" href="DAGDefs_8hpp.html" title=" " alt="" coords="955,304,1064,331"/>
-<area shape="rect" href="GraphHeaders_8hpp.html" title=" " alt="" coords="246,379,423,405"/>
-<area shape="rect" href="Conditional_8hpp.html" title=" " alt="" coords="2118,304,2242,331"/>
-<area shape="rect" href="OpPtrFunctions_8hpp.html" title=" " alt="" coords="3114,379,3297,405"/>
-<area shape="rect" href="SequencedContainers_8hpp.html" title=" " alt="" coords="2047,229,2273,256"/>
-<area shape="rect" title=" " alt="" coords="2887,379,3038,405"/>
-<area shape="rect" title=" " alt="" coords="2443,379,2669,405"/>
-<area shape="rect" title=" " alt="" coords="2694,379,2863,405"/>
-<area shape="rect" href="OpTypeInfo_8hpp.html" title=" " alt="" coords="2527,461,2702,487"/>
-<area shape="rect" href="Op_8hpp.html" title="Operations." alt="" coords="2067,379,2165,405"/>
-<area shape="rect" href="BiMapHeaders_8hpp.html" title=" " alt="" coords="1862,625,2007,651"/>
-<area shape="rect" href="EdgeType_8hpp.html" title=" " alt="" coords="2417,543,2529,569"/>
-<area shape="rect" href="OpPtr_8hpp.html" title=" " alt="" coords="2316,461,2401,487"/>
-<area shape="rect" href="Expression_8hpp.html" title="Functions related to (possibly symbolic) phase values." alt="" coords="2991,461,3145,487"/>
-<area shape="rect" href="PauliStrings_8hpp.html" title=" " alt="" coords="2031,461,2191,487"/>
-<area shape="rect" title=" " alt="" coords="1541,625,1584,651"/>
-<area shape="rect" title=" " alt="" coords="3997,625,4099,651"/>
-<area shape="rect" title=" " alt="" coords="4124,625,4260,651"/>
-<area shape="rect" title=" " alt="" coords="3546,617,3758,659"/>
-<area shape="rect" title=" " alt="" coords="3783,617,3972,659"/>
-<area shape="rect" title=" " alt="" coords="1249,625,1439,651"/>
-<area shape="rect" title=" " alt="" coords="1165,625,1224,651"/>
-<area shape="rect" title=" " alt="" coords="869,379,984,405"/>
-<area shape="rect" title=" " alt="" coords="250,453,419,495"/>
-<area shape="rect" href="GatePtr_8hpp.html" title=" " alt="" coords="2457,229,2591,256"/>
-<area shape="rect" href="Gate_8hpp.html" title=" " alt="" coords="2483,304,2565,331"/>
+<area shape="rect" title=" " alt="" coords="1099,625,1157,651"/>
+<area shape="rect" title=" " alt="" coords="579,625,717,651"/>
+<area shape="rect" title=" " alt="" coords="1323,229,1415,256"/>
+<area shape="rect" title=" " alt="" coords="1291,379,1415,405"/>
+<area shape="rect" title=" " alt="" coords="1127,543,1187,569"/>
+<area shape="rect" title=" " alt="" coords="2185,625,2247,651"/>
+<area shape="rect" href="Boxes_8hpp.html" title=" " alt="" coords="2443,304,2533,331"/>
+<area shape="rect" href="Json_8hpp.html" title=" " alt="" coords="2907,625,3047,651"/>
+<area shape="rect" href="ClassicalExpBox_8hpp.html" title="Holding box for abstract expressions on Bits." alt="" coords="1845,229,2003,256"/>
+<area shape="rect" href="Command_8hpp.html" title=" " alt="" coords="968,229,1085,256"/>
+<area shape="rect" href="DAGDefs_8hpp.html" title=" " alt="" coords="984,304,1093,331"/>
+<area shape="rect" href="GraphHeaders_8hpp.html" title=" " alt="" coords="246,379,453,405"/>
+<area shape="rect" href="Conditional_8hpp.html" title=" " alt="" coords="2171,304,2295,331"/>
+<area shape="rect" href="OpPtrFunctions_8hpp.html" title=" " alt="" coords="3195,379,3407,405"/>
+<area shape="rect" href="SequencedContainers_8hpp.html" title=" " alt="" coords="2078,229,2333,256"/>
+<area shape="rect" title=" " alt="" coords="2970,379,3121,405"/>
+<area shape="rect" title=" " alt="" coords="2525,379,2752,405"/>
+<area shape="rect" title=" " alt="" coords="2777,379,2946,405"/>
+<area shape="rect" href="OpTypeInfo_8hpp.html" title=" " alt="" coords="2578,461,2782,487"/>
+<area shape="rect" href="Op_8hpp.html" title="Operations." alt="" coords="2121,379,2247,405"/>
+<area shape="rect" href="BiMapHeaders_8hpp.html" title=" " alt="" coords="1853,625,1998,651"/>
+<area shape="rect" href="EdgeType_8hpp.html" title=" " alt="" coords="2475,543,2587,569"/>
+<area shape="rect" href="OpPtr_8hpp.html" title=" " alt="" coords="2367,461,2452,487"/>
+<area shape="rect" href="Expression_8hpp.html" title="Functions related to (possibly symbolic) phase values." alt="" coords="3071,461,3255,487"/>
+<area shape="rect" href="PauliStrings_8hpp.html" title=" " alt="" coords="2052,461,2241,487"/>
+<area shape="rect" title=" " alt="" coords="1567,625,1609,651"/>
+<area shape="rect" title=" " alt="" coords="4153,625,4255,651"/>
+<area shape="rect" title=" " alt="" coords="4280,625,4416,651"/>
+<area shape="rect" title=" " alt="" coords="3702,617,3914,659"/>
+<area shape="rect" title=" " alt="" coords="3939,617,4128,659"/>
+<area shape="rect" title=" " alt="" coords="1265,625,1455,651"/>
+<area shape="rect" title=" " alt="" coords="1181,625,1240,651"/>
+<area shape="rect" title=" " alt="" coords="899,379,1013,405"/>
+<area shape="rect" title=" " alt="" coords="265,453,434,495"/>
+<area shape="rect" href="GatePtr_8hpp.html" title=" " alt="" coords="2517,229,2680,256"/>
+<area shape="rect" href="Gate_8hpp.html" title=" " alt="" coords="2558,304,2639,331"/>
 </map>
 </div>
 </div>

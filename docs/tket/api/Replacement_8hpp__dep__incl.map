@@ -1,5 +1,5 @@
-<map id="include/Transformations/Replacement.hpp" name="include/Transformations/Replacement.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="166,5,345,47"/>
+<map id="include/tket/Transformations/Replacement.hpp" name="include/tket/Transformations/Replacement.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="152,5,359,47"/>
 <area shape="rect" id="node2" href="$Decomposition_8cpp.html" title=" " alt="" coords="5,95,156,136"/>
 <area shape="rect" id="node3" href="$Rebase_8cpp.html" title=" " alt="" coords="180,95,331,136"/>
 <area shape="rect" id="node4" href="$Replacement_8cpp.html" title=" " alt="" coords="355,95,505,136"/>

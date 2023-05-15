@@ -1,13 +1,13 @@
-<map id="include/Transformations/SingleQubitSquash.hpp" name="include/Transformations/SingleQubitSquash.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="255,5,434,47"/>
+<map id="include/tket/Transformations/SingleQubitSquash.hpp" name="include/tket/Transformations/SingleQubitSquash.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="256,5,463,47"/>
 <area shape="rect" id="node2" href="$SingleQubitSquash_8cpp.html" title=" " alt="" coords="5,95,180,136"/>
-<area shape="rect" id="node3" href="$StandardSquash_8cpp.html" title=" " alt="" coords="137,184,296,225"/>
-<area shape="rect" id="node4" href="$PhasedXFrontier_8hpp.html" title=" " alt="" coords="458,95,637,136"/>
-<area shape="rect" id="node7" href="$PQPSquash_8hpp.html" title=" " alt="" coords="719,95,898,136"/>
-<area shape="rect" id="node11" href="$StandardSquash_8hpp.html" title=" " alt="" coords="255,95,434,136"/>
-<area shape="rect" id="node5" href="$Decomposition_8cpp.html" title=" " alt="" coords="503,184,653,225"/>
-<area shape="rect" id="node6" href="$PhasedXFrontier_8cpp.html" title=" " alt="" coords="320,184,479,225"/>
-<area shape="rect" id="node8" href="$PQPSquash_8cpp.html" title=" " alt="" coords="677,184,828,225"/>
-<area shape="rect" id="node9" href="$RzPhasedXSquash_8cpp.html" title=" " alt="" coords="843,273,1015,315"/>
-<area shape="rect" id="node10" href="$RzPhasedXSquash_8hpp.html" title=" " alt="" coords="903,184,1082,225"/>
+<area shape="rect" id="node3" href="$StandardSquash_8cpp.html" title=" " alt="" coords="144,184,303,225"/>
+<area shape="rect" id="node4" href="$PhasedXFrontier_8hpp.html" title=" " alt="" coords="487,95,693,136"/>
+<area shape="rect" id="node7" href="$PQPSquash_8hpp.html" title=" " alt="" coords="745,95,952,136"/>
+<area shape="rect" id="node11" href="$StandardSquash_8hpp.html" title=" " alt="" coords="256,95,463,136"/>
+<area shape="rect" id="node5" href="$Decomposition_8cpp.html" title=" " alt="" coords="513,184,664,225"/>
+<area shape="rect" id="node6" href="$PhasedXFrontier_8cpp.html" title=" " alt="" coords="329,184,488,225"/>
+<area shape="rect" id="node8" href="$PQPSquash_8cpp.html" title=" " alt="" coords="688,184,839,225"/>
+<area shape="rect" id="node9" href="$RzPhasedXSquash_8cpp.html" title=" " alt="" coords="861,273,1033,315"/>
+<area shape="rect" id="node10" href="$RzPhasedXSquash_8hpp.html" title=" " alt="" coords="915,184,1121,225"/>
 </map>

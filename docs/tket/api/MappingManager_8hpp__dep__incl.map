@@ -1,5 +1,5 @@
-<map id="include/Mapping/MappingManager.hpp" name="include/Mapping/MappingManager.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="125,5,399,32"/>
-<area shape="rect" id="node2" href="$MappingManager_8cpp.html" title=" " alt="" coords="5,80,249,107"/>
-<area shape="rect" id="node3" href="$PassGenerators_8cpp.html" title=" " alt="" coords="274,80,519,107"/>
+<map id="include/tket/Mapping/MappingManager.hpp" name="include/tket/Mapping/MappingManager.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="179,5,345,47"/>
+<area shape="rect" id="node2" href="$MappingManager_8cpp.html" title=" " alt="" coords="5,95,249,121"/>
+<area shape="rect" id="node3" href="$PassGenerators_8cpp.html" title=" " alt="" coords="274,95,519,121"/>
 </map>

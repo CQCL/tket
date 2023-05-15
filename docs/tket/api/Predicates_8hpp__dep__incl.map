@@ -1,12 +1,12 @@
-<map id="include/Predicates/Predicates.hpp" name="include/Predicates/Predicates.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="475,5,616,47"/>
+<map id="include/tket/Predicates/Predicates.hpp" name="include/tket/Predicates/Predicates.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="469,5,640,47"/>
 <area shape="rect" id="node2" href="$PassGenerators_8cpp.html" title=" " alt="" coords="5,363,251,389"/>
-<area shape="rect" id="node3" href="$PassLibrary_8cpp.html" title=" " alt="" coords="531,363,747,389"/>
-<area shape="rect" id="node4" href="$Predicates_8cpp.html" title=" " alt="" coords="762,102,974,129"/>
-<area shape="rect" id="node5" href="$CompilationUnit_8hpp.html" title=" " alt="" coords="348,95,508,136"/>
-<area shape="rect" id="node7" href="$CompilerPass_8hpp.html" title=" " alt="" coords="415,184,558,225"/>
-<area shape="rect" id="node6" href="$CompilationUnit_8cpp.html" title=" " alt="" coords="195,184,391,225"/>
+<area shape="rect" id="node3" href="$PassLibrary_8cpp.html" title=" " alt="" coords="545,363,761,389"/>
+<area shape="rect" id="node4" href="$Predicates_8cpp.html" title=" " alt="" coords="791,102,1003,129"/>
+<area shape="rect" id="node5" href="$CompilationUnit_8hpp.html" title=" " alt="" coords="347,95,517,136"/>
+<area shape="rect" id="node7" href="$CompilerPass_8hpp.html" title=" " alt="" coords="408,184,579,225"/>
+<area shape="rect" id="node6" href="$CompilationUnit_8cpp.html" title=" " alt="" coords="187,184,383,225"/>
 <area shape="rect" id="node8" href="$CompilerPass_8cpp.html" title=" " alt="" coords="275,363,507,389"/>
-<area shape="rect" id="node9" href="$PassGenerators_8hpp.html" title=" " alt="" coords="267,273,421,315"/>
-<area shape="rect" id="node10" href="$PassLibrary_8hpp.html" title=" " alt="" coords="445,273,587,315"/>
+<area shape="rect" id="node9" href="$PassGenerators_8hpp.html" title=" " alt="" coords="251,273,421,315"/>
+<area shape="rect" id="node10" href="$PassLibrary_8hpp.html" title=" " alt="" coords="445,273,616,315"/>
 </map>

@@ -1,10 +1,10 @@
-<map id="include/Architecture/ArchitectureMapping.hpp" name="include/Architecture/ArchitectureMapping.hpp">
+<map id="include/tket/Architecture/ArchitectureMapping.hpp" name="include/tket/Architecture/ArchitectureMapping.hpp">
 <area shape="rect" id="node1" title=" " alt="" coords="517,5,706,47"/>
 <area shape="rect" id="node2" href="$ArchitectureMapping_8cpp.html" title=" " alt="" coords="5,95,212,136"/>
-<area shape="rect" id="node3" href="$BestTsaWithArch_8hpp.html" title=" " alt="" coords="755,95,918,136"/>
+<area shape="rect" id="node3" href="$BestTsaWithArch_8hpp.html" title=" " alt="" coords="755,95,937,136"/>
 <area shape="rect" id="node6" href="$DistancesFromArchitecture_8hpp.html" title=" " alt="" coords="236,95,467,136"/>
 <area shape="rect" id="node8" href="$NeighboursFromArchitecture_8hpp.html" title=" " alt="" coords="491,95,731,136"/>
-<area shape="rect" id="node10" href="$SubgraphMonomorphisms_8hpp.html" title=" " alt="" coords="959,95,1183,136"/>
+<area shape="rect" id="node10" href="$SubgraphMonomorphisms_8hpp.html" title=" " alt="" coords="969,95,1193,136"/>
 <area shape="rect" id="node4" href="$BestTsaWithArch_8cpp.html" title=" " alt="" coords="522,184,701,225"/>
 <area shape="rect" id="node5" href="$MappingManager_8cpp.html" title=" " alt="" coords="725,191,969,218"/>
 <area shape="rect" id="node7" href="$DistancesFromArchitecture_8cpp.html" title=" " alt="" coords="79,184,271,225"/>

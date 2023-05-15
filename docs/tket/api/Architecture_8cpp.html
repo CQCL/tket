@@ -79,79 +79,79 @@ $(function() {
 <div class="title">Architecture.cpp File Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
-<div class="textblock"><code>#include &quot;<a class="el" href="Architecture_8hpp_source.html">Architecture/Architecture.hpp</a>&quot;</code><br />
+<div class="textblock"><code>#include &quot;<a class="el" href="Architecture_8hpp_source.html">tket/Architecture/Architecture.hpp</a>&quot;</code><br />
 <code>#include &lt;boost/graph/biconnected_components.hpp&gt;</code><br />
 <code>#include &lt;tkassert/Assert.hpp&gt;</code><br />
 <code>#include &lt;unordered_set&gt;</code><br />
 <code>#include &lt;vector&gt;</code><br />
-<code>#include &quot;<a class="el" href="ArticulationPoints_8hpp_source.html">Graphs/ArticulationPoints.hpp</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="Json_8hpp_source.html">Utils/Json.hpp</a>&quot;</code><br />
-<code>#include &quot;<a class="el" href="UnitID_8hpp_source.html">Utils/UnitID.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="ArticulationPoints_8hpp_source.html">tket/Graphs/ArticulationPoints.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="Json_8hpp_source.html">tket/Utils/Json.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="UnitID_8hpp_source.html">tket/Utils/UnitID.hpp</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for Architecture.cpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="Architecture_8cpp__incl.png" border="0" usemap="#asrc_2Architecture_2Architecture_8cpp" alt=""/></div>
 <map name="asrc_2Architecture_2Architecture_8cpp" id="asrc_2Architecture_2Architecture_8cpp">
-<area shape="rect" title=" " alt="" coords="2728,5,2963,32"/>
-<area shape="rect" href="Architecture_8hpp.html" title=" " alt="" coords="1763,162,1975,189"/>
-<area shape="rect" title=" " alt="" coords="2633,497,2695,524"/>
-<area shape="rect" href="Json_8hpp.html" title=" " alt="" coords="779,415,890,442"/>
-<area shape="rect" href="UnitID_8hpp.html" title="Named registers of arrays of (quantum or classical) nodes." alt="" coords="1824,326,1915,353"/>
-<area shape="rect" title=" " alt="" coords="3094,155,3277,196"/>
-<area shape="rect" title=" " alt="" coords="3101,80,3248,107"/>
-<area shape="rect" title=" " alt="" coords="3272,80,3387,107"/>
-<area shape="rect" href="ArticulationPoints_8hpp.html" title=" " alt="" coords="2811,80,3026,107"/>
-<area shape="rect" title=" " alt="" coords="2912,326,2992,353"/>
-<area shape="rect" title=" " alt="" coords="3045,497,3120,524"/>
-<area shape="rect" title=" " alt="" coords="2563,654,2605,681"/>
-<area shape="rect" title=" " alt="" coords="1371,415,1429,442"/>
-<area shape="rect" title=" " alt="" coords="1453,415,1592,442"/>
-<area shape="rect" title=" " alt="" coords="3079,654,3139,681"/>
-<area shape="rect" href="CompleteGraph_8hpp.html" title=" " alt="" coords="2533,326,2736,353"/>
-<area shape="rect" href="DirectedGraph_8hpp.html" title=" " alt="" coords="3212,244,3407,271"/>
-<area shape="rect" href="BiMapHeaders_8hpp.html" title=" " alt="" coords="1924,654,2103,681"/>
-<area shape="rect" href="EigenConfig_8hpp.html" title="Include this file rather than including the Eigen headers directly." alt="" coords="377,326,538,353"/>
-<area shape="rect" href="MatrixAnalysis_8hpp.html" title=" " alt="" coords="1320,244,1501,271"/>
-<area shape="rect" href="AbstractGraph_8hpp.html" title=" " alt="" coords="2723,415,2866,442"/>
-<area shape="rect" title=" " alt="" coords="1819,497,1893,524"/>
-<area shape="rect" title=" " alt="" coords="2833,497,2919,524"/>
-<area shape="rect" title=" " alt="" coords="3565,654,3651,681"/>
-<area shape="rect" title=" " alt="" coords="3118,319,3271,360"/>
-<area shape="rect" title=" " alt="" coords="3929,647,4079,688"/>
-<area shape="rect" title=" " alt="" coords="3643,326,3730,353"/>
-<area shape="rect" title=" " alt="" coords="2713,654,2764,681"/>
-<area shape="rect" title=" " alt="" coords="2317,415,2395,442"/>
-<area shape="rect" title=" " alt="" coords="3449,654,3541,681"/>
-<area shape="rect" href="TreeSearch_8hpp.html" title=" " alt="" coords="3397,326,3568,353"/>
-<area shape="rect" href="Utils_8hpp.html" title=" " alt="" coords="3399,497,3529,524"/>
-<area shape="rect" href="GraphHeaders_8hpp.html" title=" " alt="" coords="3675,654,3853,681"/>
-<area shape="rect" href="TreeSearch__impl_8hpp.html" title=" " alt="" coords="3361,415,3567,442"/>
-<area shape="rect" title=" " alt="" coords="3881,743,4079,770"/>
-<area shape="rect" title=" " alt="" coords="3197,572,3357,599"/>
-<area shape="rect" href="Utils__impl_8hpp.html" title=" " alt="" coords="3382,572,3549,599"/>
-<area shape="rect" title=" " alt="" coords="1948,743,2079,770"/>
-<area shape="rect" title=" " alt="" coords="4103,736,4273,777"/>
-<area shape="rect" title=" " alt="" coords="3437,743,3646,770"/>
-<area shape="rect" title=" " alt="" coords="3671,743,3857,770"/>
-<area shape="rect" title=" " alt="" coords="2859,736,3018,777"/>
-<area shape="rect" title=" " alt="" coords="3043,736,3213,777"/>
-<area shape="rect" title=" " alt="" coords="3238,736,3413,777"/>
-<area shape="rect" title=" " alt="" coords="41,415,143,442"/>
-<area shape="rect" title=" " alt="" coords="168,415,304,442"/>
-<area shape="rect" title=" " alt="" coords="329,408,541,449"/>
-<area shape="rect" title=" " alt="" coords="565,408,755,449"/>
-<area shape="rect" title=" " alt="" coords="811,497,890,524"/>
-<area shape="rect" title=" " alt="" coords="701,497,787,524"/>
-<area shape="rect" title=" " alt="" coords="529,497,676,524"/>
-<area shape="rect" title=" " alt="" coords="1383,326,1439,353"/>
-<area shape="rect" href="Constants_8hpp.html" title="Generally useful typedefs and constants." alt="" coords="965,415,1115,442"/>
-<area shape="rect" href="Expression_8hpp.html" title="Functions related to (possibly symbolic) phase values." alt="" coords="1191,326,1345,353"/>
-<area shape="rect" title=" " alt="" coords="1969,415,2159,442"/>
-<area shape="rect" title=" " alt="" coords="2184,415,2243,442"/>
-<area shape="rect" title=" " alt="" coords="1869,415,1944,442"/>
-<area shape="rect" href="Symbols_8hpp.html" title=" " alt="" coords="1189,415,1296,442"/>
-<area shape="rect" href="ArticulationPoints__impl_8hpp.html" title=" " alt="" coords="2883,155,3069,196"/>
-<area shape="rect" title=" " alt="" coords="3431,244,3630,271"/>
+<area shape="rect" title=" " alt="" coords="2745,5,2980,32"/>
+<area shape="rect" href="Architecture_8hpp.html" title=" " alt="" coords="1807,177,2049,203"/>
+<area shape="rect" title=" " alt="" coords="2691,512,2754,539"/>
+<area shape="rect" href="Json_8hpp.html" title=" " alt="" coords="779,430,919,457"/>
+<area shape="rect" href="UnitID_8hpp.html" title="Named registers of arrays of (quantum or classical) nodes." alt="" coords="1883,341,1973,367"/>
+<area shape="rect" title=" " alt="" coords="3115,169,3298,211"/>
+<area shape="rect" title=" " alt="" coords="3088,87,3235,114"/>
+<area shape="rect" title=" " alt="" coords="3259,87,3373,114"/>
+<area shape="rect" href="ArticulationPoints_8hpp.html" title=" " alt="" coords="2837,80,3013,121"/>
+<area shape="rect" title=" " alt="" coords="2939,341,3019,367"/>
+<area shape="rect" title=" " alt="" coords="3104,512,3179,539"/>
+<area shape="rect" title=" " alt="" coords="2621,669,2664,695"/>
+<area shape="rect" title=" " alt="" coords="1429,430,1488,457"/>
+<area shape="rect" title=" " alt="" coords="1512,430,1651,457"/>
+<area shape="rect" title=" " alt="" coords="3138,669,3198,695"/>
+<area shape="rect" href="CompleteGraph_8hpp.html" title=" " alt="" coords="2531,341,2762,367"/>
+<area shape="rect" href="DirectedGraph_8hpp.html" title=" " alt="" coords="3225,259,3447,285"/>
+<area shape="rect" href="BiMapHeaders_8hpp.html" title=" " alt="" coords="1961,669,2169,695"/>
+<area shape="rect" href="EigenConfig_8hpp.html" title="Include this file rather than including the Eigen headers directly." alt="" coords="379,341,570,367"/>
+<area shape="rect" href="MatrixAnalysis_8hpp.html" title=" " alt="" coords="1424,259,1635,285"/>
+<area shape="rect" href="AbstractGraph_8hpp.html" title=" " alt="" coords="2782,430,2925,457"/>
+<area shape="rect" title=" " alt="" coords="1877,512,1952,539"/>
+<area shape="rect" title=" " alt="" coords="2891,512,2978,539"/>
+<area shape="rect" title=" " alt="" coords="3621,669,3707,695"/>
+<area shape="rect" title=" " alt="" coords="3145,333,3298,375"/>
+<area shape="rect" title=" " alt="" coords="4014,661,4165,703"/>
+<area shape="rect" title=" " alt="" coords="3699,341,3786,367"/>
+<area shape="rect" title=" " alt="" coords="2772,669,2823,695"/>
+<area shape="rect" title=" " alt="" coords="2376,430,2453,457"/>
+<area shape="rect" title=" " alt="" coords="3505,669,3597,695"/>
+<area shape="rect" href="TreeSearch_8hpp.html" title=" " alt="" coords="3424,341,3624,367"/>
+<area shape="rect" href="Utils_8hpp.html" title=" " alt="" coords="3458,512,3617,539"/>
+<area shape="rect" href="GraphHeaders_8hpp.html" title=" " alt="" coords="3731,669,3938,695"/>
+<area shape="rect" href="TreeSearch__impl_8hpp.html" title=" " alt="" coords="3451,423,3623,464"/>
+<area shape="rect" title=" " alt="" coords="3952,758,4149,785"/>
+<area shape="rect" title=" " alt="" coords="3256,587,3416,613"/>
+<area shape="rect" href="Utils__impl_8hpp.html" title=" " alt="" coords="3440,587,3635,613"/>
+<area shape="rect" title=" " alt="" coords="2000,758,2131,785"/>
+<area shape="rect" title=" " alt="" coords="4174,751,4343,792"/>
+<area shape="rect" title=" " alt="" coords="3507,758,3717,785"/>
+<area shape="rect" title=" " alt="" coords="3741,758,3928,785"/>
+<area shape="rect" title=" " alt="" coords="2930,751,3089,792"/>
+<area shape="rect" title=" " alt="" coords="3113,751,3284,792"/>
+<area shape="rect" title=" " alt="" coords="3309,751,3483,792"/>
+<area shape="rect" title=" " alt="" coords="41,430,143,457"/>
+<area shape="rect" title=" " alt="" coords="168,430,304,457"/>
+<area shape="rect" title=" " alt="" coords="329,423,541,464"/>
+<area shape="rect" title=" " alt="" coords="565,423,755,464"/>
+<area shape="rect" title=" " alt="" coords="841,512,919,539"/>
+<area shape="rect" title=" " alt="" coords="730,512,817,539"/>
+<area shape="rect" title=" " alt="" coords="559,512,705,539"/>
+<area shape="rect" title=" " alt="" coords="1501,341,1557,367"/>
+<area shape="rect" href="Constants_8hpp.html" title="Generally useful typedefs and constants." alt="" coords="995,430,1173,457"/>
+<area shape="rect" href="Expression_8hpp.html" title="Functions related to (possibly symbolic) phase values." alt="" coords="1255,341,1439,367"/>
+<area shape="rect" title=" " alt="" coords="2027,430,2218,457"/>
+<area shape="rect" title=" " alt="" coords="2243,430,2301,457"/>
+<area shape="rect" title=" " alt="" coords="1928,430,2003,457"/>
+<area shape="rect" href="Symbols_8hpp.html" title=" " alt="" coords="1248,430,1355,457"/>
+<area shape="rect" href="ArticulationPoints__impl_8hpp.html" title=" " alt="" coords="2915,169,3091,211"/>
+<area shape="rect" title=" " alt="" coords="3471,259,3670,285"/>
 </map>
 </div>
 </div>

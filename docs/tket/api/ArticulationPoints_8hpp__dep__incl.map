@@ -1,5 +1,5 @@
-<map id="include/Graphs/ArticulationPoints.hpp" name="include/Graphs/ArticulationPoints.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="153,5,351,47"/>
+<map id="include/tket/Graphs/ArticulationPoints.hpp" name="include/tket/Graphs/ArticulationPoints.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="167,5,337,47"/>
 <area shape="rect" id="node2" href="$Architecture_8cpp.html" title=" " alt="" coords="5,95,240,121"/>
 <area shape="rect" id="node3" href="$ArticulationPoints_8cpp.html" title=" " alt="" coords="264,95,501,121"/>
 </map>

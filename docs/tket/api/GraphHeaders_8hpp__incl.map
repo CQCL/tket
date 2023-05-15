@@ -1,10 +1,10 @@
-<map id="include/Utils/GraphHeaders.hpp" name="include/Utils/GraphHeaders.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="609,5,837,32"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,80,175,121"/>
-<area shape="rect" id="node3" title=" " alt="" coords="199,87,408,114"/>
-<area shape="rect" id="node4" title=" " alt="" coords="433,87,619,114"/>
-<area shape="rect" id="node5" title=" " alt="" coords="644,80,803,121"/>
-<area shape="rect" id="node6" title=" " alt="" coords="827,87,1025,114"/>
-<area shape="rect" id="node7" title=" " alt="" coords="1049,80,1219,121"/>
-<area shape="rect" id="node8" title=" " alt="" coords="1244,80,1419,121"/>
+<map id="include/tket/Utils/GraphHeaders.hpp" name="include/tket/Utils/GraphHeaders.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="650,5,797,47"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,95,175,136"/>
+<area shape="rect" id="node3" title=" " alt="" coords="199,102,408,129"/>
+<area shape="rect" id="node4" title=" " alt="" coords="433,102,619,129"/>
+<area shape="rect" id="node5" title=" " alt="" coords="644,95,803,136"/>
+<area shape="rect" id="node6" title=" " alt="" coords="827,102,1025,129"/>
+<area shape="rect" id="node7" title=" " alt="" coords="1049,95,1219,136"/>
+<area shape="rect" id="node8" title=" " alt="" coords="1244,95,1419,136"/>
 </map>

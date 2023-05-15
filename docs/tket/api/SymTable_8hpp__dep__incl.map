@@ -1,5 +1,5 @@
-<map id="include/Gate/SymTable.hpp" name="include/Gate/SymTable.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="114,5,313,32"/>
+<map id="include/tket/Gate/SymTable.hpp" name="include/tket/Gate/SymTable.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="99,5,327,32"/>
 <area shape="rect" id="node2" href="$OpPtrFunctions_8cpp.html" title=" " alt="" coords="5,80,211,107"/>
 <area shape="rect" id="node3" href="$SymTable_8cpp.html" title=" " alt="" coords="235,80,405,107"/>
 </map>

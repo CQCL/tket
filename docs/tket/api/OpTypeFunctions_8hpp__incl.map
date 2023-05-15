@@ -1,11 +1,11 @@
-<map id="include/OpType/OpTypeFunctions.hpp" name="include/OpType/OpTypeFunctions.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="45,5,307,32"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,80,120,107"/>
-<area shape="rect" id="node3" title=" " alt="" coords="145,80,207,107"/>
-<area shape="rect" id="node4" href="$OpType_8hpp.html" title=" " alt="" coords="232,80,331,107"/>
-<area shape="rect" id="node5" href="$Json_8hpp.html" title=" " alt="" coords="226,155,337,181"/>
-<area shape="rect" id="node6" title=" " alt="" coords="83,229,162,256"/>
-<area shape="rect" id="node7" title=" " alt="" coords="186,229,273,256"/>
-<area shape="rect" id="node8" title=" " alt="" coords="297,229,372,256"/>
-<area shape="rect" id="node9" title=" " alt="" coords="396,229,543,256"/>
+<map id="include/tket/OpType/OpTypeFunctions.hpp" name="include/tket/OpType/OpTypeFunctions.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="94,5,258,47"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,95,120,121"/>
+<area shape="rect" id="node3" title=" " alt="" coords="145,95,207,121"/>
+<area shape="rect" id="node4" href="$OpType_8hpp.html" title=" " alt="" coords="232,95,331,121"/>
+<area shape="rect" id="node5" href="$Json_8hpp.html" title=" " alt="" coords="211,169,351,196"/>
+<area shape="rect" id="node6" title=" " alt="" coords="83,244,162,271"/>
+<area shape="rect" id="node7" title=" " alt="" coords="186,244,273,271"/>
+<area shape="rect" id="node8" title=" " alt="" coords="297,244,372,271"/>
+<area shape="rect" id="node9" title=" " alt="" coords="396,244,543,271"/>
 </map>

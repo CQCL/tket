@@ -1,8 +1,8 @@
-<map id="include/Utils/Symbols.hpp" name="include/Utils/Symbols.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="363,5,554,32"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,80,144,107"/>
-<area shape="rect" id="node3" title=" " alt="" coords="168,80,349,107"/>
-<area shape="rect" id="node4" title=" " alt="" coords="373,80,544,107"/>
-<area shape="rect" id="node5" title=" " alt="" coords="568,80,723,107"/>
-<area shape="rect" id="node6" title=" " alt="" coords="747,80,898,107"/>
+<map id="include/tket/Utils/Symbols.hpp" name="include/tket/Utils/Symbols.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="393,5,525,47"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,95,144,121"/>
+<area shape="rect" id="node3" title=" " alt="" coords="168,95,349,121"/>
+<area shape="rect" id="node4" title=" " alt="" coords="373,95,544,121"/>
+<area shape="rect" id="node5" title=" " alt="" coords="568,95,723,121"/>
+<area shape="rect" id="node6" title=" " alt="" coords="747,95,898,121"/>
 </map>

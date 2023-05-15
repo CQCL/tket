@@ -1,8 +1,8 @@
-<map id="include/Graphs/AbstractGraph.hpp" name="include/Graphs/AbstractGraph.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="93,5,337,32"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,80,80,107"/>
-<area shape="rect" id="node3" title=" " alt="" coords="104,80,147,107"/>
-<area shape="rect" id="node4" title=" " alt="" coords="171,80,258,107"/>
-<area shape="rect" id="node5" title=" " alt="" coords="282,80,342,107"/>
-<area shape="rect" id="node6" title=" " alt="" coords="366,80,429,107"/>
+<map id="include/tket/Graphs/AbstractGraph.hpp" name="include/tket/Graphs/AbstractGraph.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="141,5,289,47"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,95,80,121"/>
+<area shape="rect" id="node3" title=" " alt="" coords="104,95,147,121"/>
+<area shape="rect" id="node4" title=" " alt="" coords="171,95,258,121"/>
+<area shape="rect" id="node5" title=" " alt="" coords="282,95,342,121"/>
+<area shape="rect" id="node6" title=" " alt="" coords="366,95,429,121"/>
 </map>

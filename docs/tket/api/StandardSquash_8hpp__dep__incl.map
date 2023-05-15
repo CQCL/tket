@@ -1,5 +1,5 @@
-<map id="include/Transformations/StandardSquash.hpp" name="include/Transformations/StandardSquash.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="86,5,265,47"/>
+<map id="include/tket/Transformations/StandardSquash.hpp" name="include/tket/Transformations/StandardSquash.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="72,5,279,47"/>
 <area shape="rect" id="node2" href="$PhasedXFrontier_8cpp.html" title=" " alt="" coords="5,95,164,136"/>
 <area shape="rect" id="node3" href="$StandardSquash_8cpp.html" title=" " alt="" coords="188,95,347,136"/>
 </map>

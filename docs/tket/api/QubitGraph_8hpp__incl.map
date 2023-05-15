@@ -1,11 +1,11 @@
-<map id="include/Placement/QubitGraph.hpp" name="include/Placement/QubitGraph.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="599,5,847,32"/>
-<area shape="rect" id="node2" href="$GraphHeaders_8hpp.html" title=" " alt="" coords="635,80,812,107"/>
-<area shape="rect" id="node3" title=" " alt="" coords="5,155,175,196"/>
-<area shape="rect" id="node4" title=" " alt="" coords="199,162,408,189"/>
-<area shape="rect" id="node5" title=" " alt="" coords="433,162,619,189"/>
-<area shape="rect" id="node6" title=" " alt="" coords="644,155,803,196"/>
-<area shape="rect" id="node7" title=" " alt="" coords="827,162,1025,189"/>
-<area shape="rect" id="node8" title=" " alt="" coords="1049,155,1219,196"/>
-<area shape="rect" id="node9" title=" " alt="" coords="1244,155,1419,196"/>
+<map id="include/tket/Placement/QubitGraph.hpp" name="include/tket/Placement/QubitGraph.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="638,5,809,47"/>
+<area shape="rect" id="node2" href="$GraphHeaders_8hpp.html" title=" " alt="" coords="620,95,827,121"/>
+<area shape="rect" id="node3" title=" " alt="" coords="5,169,175,211"/>
+<area shape="rect" id="node4" title=" " alt="" coords="199,177,408,203"/>
+<area shape="rect" id="node5" title=" " alt="" coords="433,177,619,203"/>
+<area shape="rect" id="node6" title=" " alt="" coords="644,169,803,211"/>
+<area shape="rect" id="node7" title=" " alt="" coords="827,177,1025,203"/>
+<area shape="rect" id="node8" title=" " alt="" coords="1049,169,1219,211"/>
+<area shape="rect" id="node9" title=" " alt="" coords="1244,169,1419,211"/>
 </map>

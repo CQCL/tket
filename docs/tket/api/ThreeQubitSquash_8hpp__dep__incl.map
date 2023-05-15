@@ -1,5 +1,5 @@
-<map id="include/Transformations/ThreeQubitSquash.hpp" name="include/Transformations/ThreeQubitSquash.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="269,5,448,47"/>
+<map id="include/tket/Transformations/ThreeQubitSquash.hpp" name="include/tket/Transformations/ThreeQubitSquash.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="255,5,462,47"/>
 <area shape="rect" id="node2" href="$PassGenerators_8cpp.html" title=" " alt="" coords="5,102,251,129"/>
 <area shape="rect" id="node3" href="$OptimisationPass_8cpp.html" title=" " alt="" coords="275,95,442,136"/>
 <area shape="rect" id="node4" href="$ThreeQubitSquash_8cpp.html" title=" " alt="" coords="466,95,638,136"/>

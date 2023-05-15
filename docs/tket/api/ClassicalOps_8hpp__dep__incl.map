@@ -1,7 +1,7 @@
-<map id="include/Ops/ClassicalOps.hpp" name="include/Ops/ClassicalOps.hpp">
-<area shape="rect" id="node1" title="Classical operations." alt="" coords="355,5,569,32"/>
-<area shape="rect" id="node2" href="$macro__manipulation_8cpp.html" title=" " alt="" coords="5,87,257,114"/>
-<area shape="rect" id="node3" href="$OpJson_8cpp.html" title=" " alt="" coords="282,87,445,114"/>
-<area shape="rect" id="node4" href="$ClassicalOps_8cpp.html" title=" " alt="" coords="469,87,653,114"/>
-<area shape="rect" id="node5" href="$ContextualReduction_8cpp.html" title=" " alt="" coords="677,80,866,121"/>
+<map id="include/tket/Ops/ClassicalOps.hpp" name="include/tket/Ops/ClassicalOps.hpp">
+<area shape="rect" id="node1" title="Classical operations." alt="" coords="367,5,557,47"/>
+<area shape="rect" id="node2" href="$macro__manipulation_8cpp.html" title=" " alt="" coords="5,102,257,129"/>
+<area shape="rect" id="node3" href="$OpJson_8cpp.html" title=" " alt="" coords="282,102,445,129"/>
+<area shape="rect" id="node4" href="$ClassicalOps_8cpp.html" title=" " alt="" coords="469,102,653,129"/>
+<area shape="rect" id="node5" href="$ContextualReduction_8cpp.html" title=" " alt="" coords="677,95,866,136"/>
 </map>

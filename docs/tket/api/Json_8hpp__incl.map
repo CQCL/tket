@@ -1,7 +1,7 @@
-<map id="include/Utils/Json.hpp" name="include/Utils/Json.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="122,5,285,32"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,80,84,107"/>
-<area shape="rect" id="node3" title=" " alt="" coords="108,80,195,107"/>
-<area shape="rect" id="node4" title=" " alt="" coords="219,80,294,107"/>
-<area shape="rect" id="node5" title=" " alt="" coords="318,80,465,107"/>
+<map id="include/tket/Utils/Json.hpp" name="include/tket/Utils/Json.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="137,5,269,47"/>
+<area shape="rect" id="node2" title=" " alt="" coords="5,95,84,121"/>
+<area shape="rect" id="node3" title=" " alt="" coords="108,95,195,121"/>
+<area shape="rect" id="node4" title=" " alt="" coords="219,95,294,121"/>
+<area shape="rect" id="node5" title=" " alt="" coords="318,95,465,121"/>
 </map>

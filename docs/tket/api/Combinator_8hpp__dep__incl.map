@@ -1,5 +1,5 @@
-<map id="include/Transformations/Combinator.hpp" name="include/Transformations/Combinator.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="82,5,261,47"/>
+<map id="include/tket/Transformations/Combinator.hpp" name="include/tket/Transformations/Combinator.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="68,5,275,47"/>
 <area shape="rect" id="node2" href="$Combinator_8cpp.html" title=" " alt="" coords="5,95,156,136"/>
 <area shape="rect" id="node3" href="$OptimisationPass_8cpp.html" title=" " alt="" coords="180,95,347,136"/>
 </map>

@@ -1,13 +1,13 @@
-<map id="include/Utils/CosSinDecomposition.hpp" name="include/Utils/CosSinDecomposition.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="339,5,617,32"/>
-<area shape="rect" id="node2" href="$EigenConfig_8hpp.html" title="Include this file rather than including the Eigen headers directly." alt="" coords="415,80,541,107"/>
-<area shape="rect" id="node3" href="$Json_8hpp.html" title=" " alt="" coords="148,162,259,189"/>
-<area shape="rect" id="node8" title=" " alt="" coords="283,162,385,189"/>
-<area shape="rect" id="node9" title=" " alt="" coords="410,162,546,189"/>
-<area shape="rect" id="node10" title=" " alt="" coords="571,155,783,196"/>
-<area shape="rect" id="node11" title=" " alt="" coords="807,155,997,196"/>
-<area shape="rect" id="node4" title=" " alt="" coords="5,244,84,271"/>
-<area shape="rect" id="node5" title=" " alt="" coords="108,244,195,271"/>
-<area shape="rect" id="node6" title=" " alt="" coords="219,244,294,271"/>
-<area shape="rect" id="node7" title=" " alt="" coords="318,244,465,271"/>
+<map id="include/tket/Utils/CosSinDecomposition.hpp" name="include/tket/Utils/CosSinDecomposition.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="395,5,591,47"/>
+<area shape="rect" id="node2" href="$EigenConfig_8hpp.html" title="Include this file rather than including the Eigen headers directly." alt="" coords="429,95,556,121"/>
+<area shape="rect" id="node3" href="$Json_8hpp.html" title=" " alt="" coords="133,177,273,203"/>
+<area shape="rect" id="node8" title=" " alt="" coords="297,177,400,203"/>
+<area shape="rect" id="node9" title=" " alt="" coords="425,177,561,203"/>
+<area shape="rect" id="node10" title=" " alt="" coords="585,169,797,211"/>
+<area shape="rect" id="node11" title=" " alt="" coords="822,169,1011,211"/>
+<area shape="rect" id="node4" title=" " alt="" coords="5,259,84,285"/>
+<area shape="rect" id="node5" title=" " alt="" coords="108,259,195,285"/>
+<area shape="rect" id="node6" title=" " alt="" coords="219,259,294,285"/>
+<area shape="rect" id="node7" title=" " alt="" coords="318,259,465,285"/>
 </map>

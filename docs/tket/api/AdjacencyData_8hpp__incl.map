@@ -1,5 +1,5 @@
-<map id="include/Graphs/AdjacencyData.hpp" name="include/Graphs/AdjacencyData.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="107,5,298,47"/>
+<map id="include/tket/Graphs/AdjacencyData.hpp" name="include/tket/Graphs/AdjacencyData.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="127,5,279,47"/>
 <area shape="rect" id="node2" title=" " alt="" coords="5,95,56,121"/>
 <area shape="rect" id="node3" title=" " alt="" coords="80,95,157,121"/>
 <area shape="rect" id="node4" title=" " alt="" coords="181,95,224,121"/>

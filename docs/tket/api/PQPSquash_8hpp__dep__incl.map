@@ -1,6 +1,6 @@
-<map id="include/Transformations/PQPSquash.hpp" name="include/Transformations/PQPSquash.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="105,5,283,47"/>
+<map id="include/tket/Transformations/PQPSquash.hpp" name="include/tket/Transformations/PQPSquash.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="91,5,297,47"/>
 <area shape="rect" id="node2" href="$PQPSquash_8cpp.html" title=" " alt="" coords="5,95,156,136"/>
-<area shape="rect" id="node3" href="$RzPhasedXSquash_8cpp.html" title=" " alt="" coords="171,184,343,225"/>
-<area shape="rect" id="node4" href="$RzPhasedXSquash_8hpp.html" title=" " alt="" coords="231,95,410,136"/>
+<area shape="rect" id="node3" href="$RzPhasedXSquash_8cpp.html" title=" " alt="" coords="179,184,351,225"/>
+<area shape="rect" id="node4" href="$RzPhasedXSquash_8hpp.html" title=" " alt="" coords="232,95,439,136"/>
 </map>

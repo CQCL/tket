@@ -1,6 +1,6 @@
-<map id="include/Graphs/ArticulationPoints_impl.hpp" name="include/Graphs/ArticulationPoints_impl.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="153,5,351,47"/>
-<area shape="rect" id="node2" href="$ArticulationPoints_8hpp.html" title=" " alt="" coords="153,95,351,136"/>
-<area shape="rect" id="node3" href="$Architecture_8cpp.html" title=" " alt="" coords="5,184,240,211"/>
-<area shape="rect" id="node4" href="$ArticulationPoints_8cpp.html" title=" " alt="" coords="264,184,501,211"/>
+<map id="include/tket/Graphs/ArticulationPoints_impl.hpp" name="include/tket/Graphs/ArticulationPoints_impl.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="178,5,326,61"/>
+<area shape="rect" id="node2" href="$ArticulationPoints_8hpp.html" title=" " alt="" coords="167,109,337,151"/>
+<area shape="rect" id="node3" href="$Architecture_8cpp.html" title=" " alt="" coords="5,199,240,225"/>
+<area shape="rect" id="node4" href="$ArticulationPoints_8cpp.html" title=" " alt="" coords="264,199,501,225"/>
 </map>

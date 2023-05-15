@@ -1,7 +1,7 @@
-<map id="include/Circuit/Multiplexor.hpp" name="include/Circuit/Multiplexor.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="333,5,551,32"/>
-<area shape="rect" id="node2" href="$DiagonalBox_8cpp.html" title=" " alt="" coords="5,80,207,107"/>
-<area shape="rect" id="node3" href="$Multiplexor_8cpp.html" title=" " alt="" coords="231,80,421,107"/>
-<area shape="rect" id="node4" href="$StatePreparation_8cpp.html" title=" " alt="" coords="446,80,673,107"/>
-<area shape="rect" id="node5" href="$ToffoliBox_8cpp.html" title=" " alt="" coords="697,80,880,107"/>
+<map id="include/tket/Circuit/Multiplexor.hpp" name="include/tket/Circuit/Multiplexor.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="370,5,514,47"/>
+<area shape="rect" id="node2" href="$DiagonalBox_8cpp.html" title=" " alt="" coords="5,95,207,121"/>
+<area shape="rect" id="node3" href="$Multiplexor_8cpp.html" title=" " alt="" coords="231,95,421,121"/>
+<area shape="rect" id="node4" href="$StatePreparation_8cpp.html" title=" " alt="" coords="446,95,673,121"/>
+<area shape="rect" id="node5" href="$ToffoliBox_8cpp.html" title=" " alt="" coords="697,95,880,121"/>
 </map>

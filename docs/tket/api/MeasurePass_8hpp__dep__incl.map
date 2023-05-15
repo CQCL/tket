@@ -1,5 +1,5 @@
-<map id="include/Transformations/MeasurePass.hpp" name="include/Transformations/MeasurePass.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="263,5,441,47"/>
+<map id="include/tket/Transformations/MeasurePass.hpp" name="include/tket/Transformations/MeasurePass.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="249,5,455,47"/>
 <area shape="rect" id="node2" href="$PassLibrary_8cpp.html" title=" " alt="" coords="5,102,221,129"/>
 <area shape="rect" id="node3" href="$Predicates_8cpp.html" title=" " alt="" coords="246,102,458,129"/>
 <area shape="rect" id="node4" href="$MeasurePass_8cpp.html" title=" " alt="" coords="482,95,633,136"/>

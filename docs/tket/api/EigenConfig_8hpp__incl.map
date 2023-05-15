@@ -1,12 +1,12 @@
-<map id="include/Utils/EigenConfig.hpp" name="include/Utils/EigenConfig.hpp">
-<area shape="rect" id="node1" title="Include this file rather than including the Eigen headers directly." alt="" coords="372,5,584,32"/>
-<area shape="rect" id="node2" href="$Json_8hpp.html" title=" " alt="" coords="148,87,259,114"/>
-<area shape="rect" id="node7" title=" " alt="" coords="283,87,385,114"/>
-<area shape="rect" id="node8" title=" " alt="" coords="410,87,546,114"/>
-<area shape="rect" id="node9" title=" " alt="" coords="571,80,783,121"/>
-<area shape="rect" id="node10" title=" " alt="" coords="807,80,997,121"/>
-<area shape="rect" id="node3" title=" " alt="" coords="5,169,84,196"/>
-<area shape="rect" id="node4" title=" " alt="" coords="108,169,195,196"/>
-<area shape="rect" id="node5" title=" " alt="" coords="219,169,294,196"/>
-<area shape="rect" id="node6" title=" " alt="" coords="318,169,465,196"/>
+<map id="include/tket/Utils/EigenConfig.hpp" name="include/tket/Utils/EigenConfig.hpp">
+<area shape="rect" id="node1" title="Include this file rather than including the Eigen headers directly." alt="" coords="427,5,559,47"/>
+<area shape="rect" id="node2" href="$Json_8hpp.html" title=" " alt="" coords="133,102,273,129"/>
+<area shape="rect" id="node7" title=" " alt="" coords="297,102,400,129"/>
+<area shape="rect" id="node8" title=" " alt="" coords="425,102,561,129"/>
+<area shape="rect" id="node9" title=" " alt="" coords="585,95,797,136"/>
+<area shape="rect" id="node10" title=" " alt="" coords="822,95,1011,136"/>
+<area shape="rect" id="node3" title=" " alt="" coords="5,184,84,211"/>
+<area shape="rect" id="node4" title=" " alt="" coords="108,184,195,211"/>
+<area shape="rect" id="node5" title=" " alt="" coords="219,184,294,211"/>
+<area shape="rect" id="node6" title=" " alt="" coords="318,184,465,211"/>
 </map>

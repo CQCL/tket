@@ -1,5 +1,5 @@
-<map id="include/ZX/Rewrite.hpp" name="include/ZX/Rewrite.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="815,5,988,32"/>
+<map id="include/tket/ZX/Rewrite.hpp" name="include/tket/ZX/Rewrite.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="800,5,1003,32"/>
 <area shape="rect" id="node2" href="$PassLibrary_8cpp.html" title=" " alt="" coords="5,80,221,107"/>
 <area shape="rect" id="node3" href="$MBQCRewrites_8cpp.html" title=" " alt="" coords="246,80,437,107"/>
 <area shape="rect" id="node4" href="$ZXRWAxioms_8cpp.html" title=" " alt="" coords="461,80,643,107"/>

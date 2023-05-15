@@ -1,11 +1,11 @@
 <map id="src/Graphs/LargeCliquesResult.cpp" name="src/Graphs/LargeCliquesResult.cpp">
-<area shape="rect" id="node1" title=" " alt="" coords="112,5,359,32"/>
-<area shape="rect" id="node2" href="$LargeCliquesResult_8hpp.html" title=" " alt="" coords="5,80,231,107"/>
-<area shape="rect" id="node6" href="$AdjacencyData_8hpp.html" title=" " alt="" coords="255,80,453,107"/>
-<area shape="rect" id="node3" title=" " alt="" coords="40,155,111,181"/>
-<area shape="rect" id="node4" title=" " alt="" coords="135,155,178,181"/>
-<area shape="rect" id="node5" title=" " alt="" coords="203,155,265,181"/>
-<area shape="rect" id="node7" title=" " alt="" coords="290,155,341,181"/>
-<area shape="rect" id="node8" title=" " alt="" coords="365,155,442,181"/>
-<area shape="rect" id="node9" title=" " alt="" coords="466,155,525,181"/>
+<area shape="rect" id="node1" title=" " alt="" coords="89,5,336,32"/>
+<area shape="rect" id="node2" href="$LargeCliquesResult_8hpp.html" title=" " alt="" coords="5,80,191,121"/>
+<area shape="rect" id="node6" href="$AdjacencyData_8hpp.html" title=" " alt="" coords="215,87,442,114"/>
+<area shape="rect" id="node3" title=" " alt="" coords="17,169,88,196"/>
+<area shape="rect" id="node4" title=" " alt="" coords="113,169,155,196"/>
+<area shape="rect" id="node5" title=" " alt="" coords="180,169,243,196"/>
+<area shape="rect" id="node7" title=" " alt="" coords="267,169,318,196"/>
+<area shape="rect" id="node8" title=" " alt="" coords="342,169,419,196"/>
+<area shape="rect" id="node9" title=" " alt="" coords="443,169,502,196"/>
 </map>
