@@ -613,7 +613,8 @@ PYBIND11_MODULE(zx, m) {
       .def(
           py::init<ZXType, const Expr&, QuantumType>(),
           "Construct from a ZX type, parameter and quantum type.",
-          py::arg("zxtype"), py::arg("param"), py::arg("qtype"))
+          py::arg("zxtype"), py::arg("param") = 0.,
+          py::arg("qtype") = QuantumType::Quantum)
       .def_property_readonly(
           "param", &PhasedGen::get_param, "The parameter of the generator.");
   py::class_<CliffordGen, std::shared_ptr<CliffordGen>, ZXGen>(
@@ -623,7 +624,8 @@ PYBIND11_MODULE(zx, m) {
       .def(
           py::init<ZXType, bool, QuantumType>(),
           "Construct from a ZX type, parameter and quantum type.",
-          py::arg("zxtype"), py::arg("param"), py::arg("qtype"))
+          py::arg("zxtype"), py::arg("param") = false,
+          py::arg("qtype") = QuantumType::Quantum)
       .def_property_readonly(
           "param", &CliffordGen::get_param, "The parameter of the generator.");
   py::class_<DirectedGen, std::shared_ptr<DirectedGen>, ZXGen>(
