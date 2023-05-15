@@ -164,6 +164,12 @@ TWO_WAY_PARAM_PASSES = {
             "target_2qb_gate": "CX",
         }
     ),
+    "PeepholeOptimise2Q": standard_pass_dict(
+        {
+            "name": "PeepholeOptimise2Q",
+            "allow_swaps": True,
+        }
+    ),
     "ComposePhasePolyBoxes": standard_pass_dict(
         {
             "name": "ComposePhasePolyBoxes",
@@ -281,7 +287,6 @@ TWO_WAY_NONPARAM_PASSES = [
     "DecomposeBoxes",
     "DecomposeMultiQubitsCX",
     "DecomposeSingleQubitsTK1",
-    "PeepholeOptimise2Q",
     "RebaseTket",
     "RebaseUFR",
     "RemoveRedundancies",

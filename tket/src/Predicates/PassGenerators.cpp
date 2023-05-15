@@ -645,6 +645,34 @@ PassPtr ThreeQubitSquash(bool allow_swaps) {
   return std::make_shared<StandardPass>(precons, t, postcon, j);
 }
 
+PassPtr PeepholeOptimise2Q(bool allow_swaps) {
+  OpTypeSet after_set = {
+      OpType::TK1, OpType::CX, OpType::Measure, OpType::Collapse,
+      OpType::Reset};
+  PredicatePtrMap precons = {};
+  PredicatePtr out_gateset = std::make_shared<GateSetPredicate>(after_set);
+  PredicatePtr max2qb = std::make_shared<MaxTwoQubitGatesPredicate>();
+  PredicatePtrMap postcon_spec = {
+      CompilationUnit::make_type_pair(out_gateset),
+      CompilationUnit::make_type_pair(max2qb)};
+  PredicateClassGuarantees g_postcons;
+  if (allow_swaps) {
+    g_postcons = {
+        {typeid(ConnectivityPredicate), Guarantee::Clear},
+        {typeid(NoWireSwapsPredicate), Guarantee::Clear},
+    };
+  }
+  g_postcons.insert({typeid(DirectednessPredicate), Guarantee::Clear});
+  g_postcons.insert({typeid(CliffordCircuitPredicate), Guarantee::Clear});
+  PostConditions postcon{postcon_spec, g_postcons, Guarantee::Preserve};
+  // record pass config
+  nlohmann::json j;
+  j["name"] = "PeepholeOptimise2Q";
+  j["allow_swaps"] = allow_swaps;
+  return std::make_shared<StandardPass>(
+      precons, Transforms::peephole_optimise_2q(allow_swaps), postcon, j);
+}
+
 PassPtr FullPeepholeOptimise(bool allow_swaps, OpType target_2qb_gate) {
   OpTypeSet after_set = {
       OpType::TK1, OpType::Measure, OpType::Collapse, OpType::Reset};
