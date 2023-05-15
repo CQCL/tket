@@ -135,7 +135,10 @@ setup(
         "qwasm ~= 1.0",
     ],
     extras_require={
-        "ZX": ["quimb ~= 1.5"],
+        "ZX": [
+            "quimb ~= 1.5",
+            "autoray >= 0.6.1",
+        ],
     },
     ext_modules=[
         CMakeExtension("pytket._tket.{}".format(binder)) for binder in binders
