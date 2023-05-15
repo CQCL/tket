@@ -226,7 +226,7 @@ jobs:
     - name: Build pytket
       run: |
         cd pytket
-        pip install -e . -v
+        pip install -e .[ZX] -v
     - name: Run doctests
       run: |
         cd pytket
@@ -313,7 +313,7 @@ jobs:
     - name: Build pytket
       run: |
         cd pytket
-        pip install -e . -v
+        pip install -e .[ZX] -v
     - name: Run doctests
       run: |
         cd pytket
@@ -389,7 +389,7 @@ jobs:
     - name: Build pytket
       run: |
         cd pytket
-        pip install -e . -v
+        pip install -e .[ZX] -v
     - name: Run doctests
       run: |
         cd pytket
@@ -439,7 +439,7 @@ jobs:
         conan create recipes/pybind11_json/all --version 0.2.13
         cd pytket
         pip uninstall -y pytket
-        pip install -e . -v
+        pip install -e .[ZX] -v
         pytest --doctest-modules pytket
         cd tests
         pip install -r requirements.txt
@@ -457,7 +457,7 @@ jobs:
         conan create recipes/pybind11_json/all --version 0.2.13
         cd pytket
         pip uninstall -y pytket
-        pip install -e . -v
+        pip install -e .[ZX] -v
         pytest --doctest-modules pytket
         cd tests
         pip install -r requirements.txt
@@ -475,7 +475,7 @@ jobs:
         conan create recipes/pybind11_json/all --version 0.2.13
         cd pytket
         pip uninstall -y pytket
-        pip install -e . -v
+        pip install -e .[ZX] -v
         pytest --doctest-modules pytket
         cd tests
         pip install -r requirements.txt

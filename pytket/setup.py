@@ -131,6 +131,9 @@ setup(
         "typing-extensions ~= 4.2",
         "qwasm ~= 1.0",
     ],
+    extras_require={
+        "ZX": ["quimb ~= 1.5; python_version < '3.11'"],
+    },
     ext_modules=[
         CMakeExtension("pytket._tket.{}".format(binder)) for binder in binders
     ],
