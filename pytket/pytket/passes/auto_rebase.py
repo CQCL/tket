@@ -126,6 +126,11 @@ def auto_rebase_pass(gateset: Set[OpType]) -> RebaseCustom:
     :rtype: RebaseCustom
     """
     tk1 = get_TK1_decomposition_function(gateset)
+
+    # if the gateset has CX but not TK2, rebase via CX
+    if OpType.CX in gateset and OpType.TK2 not in gateset:
+        return RebaseCustom(gateset, _library._CX(), tk1)
+    # in other cases, try to rebase via TK2 first
     try:
         return RebaseCustom(gateset, get_tk2_decomposition(gateset), tk1)
     except NoAutoRebase:
