@@ -14,5 +14,5 @@ var searchData=
   ['helperfunctions_2ecpp_1091',['HelperFunctions.cpp',['../HelperFunctions_8cpp.html',1,'']]],
   ['helperfunctions_2ehpp_1092',['HelperFunctions.hpp',['../HelperFunctions_8hpp.html',1,'']]],
   ['history_1093',['history',['../structtket_1_1CycleHistory.html#a71c0cabe832a7dfa8ecbbaf7920ae4e3',1,'tket::CycleHistory']]],
-  ['hyper_5fclifford_5fsquash_1094',['hyper_clifford_squash',['../namespacetket_1_1Transforms.html#a52148ae6b71d9f22bf042ce36c1870ba',1,'tket::Transforms']]]
+  ['hyper_5fclifford_5fsquash_1094',['hyper_clifford_squash',['../namespacetket_1_1Transforms.html#a5107ad8ab9b99fa98a0d2ad1d4ed1a12',1,'tket::Transforms']]]
 ];
