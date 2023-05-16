@@ -19,20 +19,20 @@
 
 namespace tket {
 
-void pauli_angle_convert_or_throw(Complex pauliCoeff, Expr &angle) {
+Expr pauli_angle_convert_or_throw(Complex pauliCoeff, const Expr &angle) {
   if (pauliCoeff == -1.) {
-    angle *= -1;
-    return;
+    return -1*angle;
   }
   if (pauliCoeff != 1.) {
     throw CircuitInvalidity("Pauli coefficient must be +/- 1");
   }
+  return angle;
 }
 
 void append_single_pauli_gadget(
     Circuit &circ, const QubitPauliTensor &pauli, Expr angle,
     CXConfigType cx_config) {
-  pauli_angle_convert_or_throw(pauli.coeff, angle);
+  auto converted_angle = pauli_angle_convert_or_throw(pauli.coeff, angle);
 
   std::vector<Pauli> string;
   unit_map_t mapping;
@@ -42,14 +42,14 @@ void append_single_pauli_gadget(
     mapping.insert({Qubit(q_default_reg(), i), term.first});
     i++;
   }
-  Circuit gadget = pauli_gadget(string, angle, cx_config);
+  Circuit gadget = pauli_gadget(string, converted_angle, cx_config);
   circ.append_with_map(gadget, mapping);
 }
 
 void append_single_pauli_gadget_as_pauli_exp_box(
     Circuit &circ, const QubitPauliTensor &pauli, Expr angle,
     CXConfigType cx_config) {
-  pauli_angle_convert_or_throw(pauli.coeff, angle);
+  auto converted_angle = pauli_angle_convert_or_throw(pauli.coeff, angle);
 
   std::vector<Pauli> string;
   std::vector<Qubit> mapping;
@@ -57,7 +57,7 @@ void append_single_pauli_gadget_as_pauli_exp_box(
     string.push_back(term.second);
     mapping.push_back(term.first);
   }
-  PauliExpBox box(string, angle, cx_config);
+  PauliExpBox box(string, converted_angle, cx_config);
   circ.add_box(box, mapping);
 }
 
@@ -65,18 +65,19 @@ void append_pauli_gadget_pair_as_box(
     Circuit &circ, const QubitPauliTensor &pauli0, Expr angle0,
     const QubitPauliTensor &pauli1, Expr angle1, CXConfigType cx_config) {
 
-  std::set<Qubit> qubitSet;
+  std::map<Qubit, Qubit> qubit_to_simple_mapping;
   std::vector<Qubit> mapping;
   for (const std::pair<const Qubit, Pauli> &term : pauli0.string.map) {
-    qubitSet.insert(term.first);
+    qubit_to_simple_mapping.emplace(term.first, Qubit(mapping.size()));
     mapping.push_back(term.first);
   }
   for (const std::pair<const Qubit, Pauli> &term : pauli1.string.map) {
-    if (qubitSet.contains(term.first)) continue;
+    if (qubit_to_simple_mapping.contains(term.first)) continue;
+    qubit_to_simple_mapping.emplace(term.first, Qubit(mapping.size()));
     mapping.push_back(term.first);
-    qubitSet.insert(term.first);
   }
-  PauliExpPairBox box(qubitSet.size(), pauli0, angle0, pauli1, angle1, cx_config);
+  PauliExpPairBox box(
+      qubit_to_simple_mapping, pauli0, angle0, pauli1, angle1, cx_config);
   circ.add_box(box, mapping);
 }
 

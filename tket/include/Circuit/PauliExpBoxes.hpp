@@ -88,7 +88,7 @@ class PauliExpBox : public Box {
 class PauliExpPairBox : public Box {
  public:
   PauliExpPairBox(
-      unsigned n_qubits, const QubitPauliTensor pauli0, Expr t0,
+      std::map<Qubit, Qubit> qubit_mapping, const QubitPauliTensor pauli0, Expr t0,
       const QubitPauliTensor &pauli1, Expr t1,
       CXConfigType cx_config_type = CXConfigType::Tree);
 
@@ -116,8 +116,8 @@ class PauliExpPairBox : public Box {
     return id_ == other.get_id();
   }
 
-  /** Get the total box size */
-  unsigned get_n_qubits() const { return n_qubits_; }
+  /** Get the qubit mapping */
+  std::map<Qubit, Qubit> get_qubit_mapping() const { return qubit_mapping_; }
 
   /** Get the Pauli 0 string */
   QubitPauliTensor get_pauli0() const {
@@ -149,7 +149,7 @@ class PauliExpPairBox : public Box {
   void generate_circuit() const override;
 
  private:
-  unsigned n_qubits_;
+  std::map<Qubit, Qubit> qubit_mapping_;
   QubitPauliTensor pauli0_;
   Expr t0_;
   QubitPauliTensor pauli1_;
