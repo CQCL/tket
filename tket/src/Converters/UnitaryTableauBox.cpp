@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Converters/UnitaryTableauBox.hpp"
+#include "tket/Converters/UnitaryTableauBox.hpp"
 
-#include "Ops/OpJsonFactory.hpp"
+#include "tket/Ops/OpJsonFactory.hpp"
 
 namespace tket {
 

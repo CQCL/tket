@@ -14,8 +14,8 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include "Converters/Converters.hpp"
 #include "testutil.hpp"
+#include "tket/Converters/Converters.hpp"
 
 namespace tket {
 namespace test_ChoiMixTableau {

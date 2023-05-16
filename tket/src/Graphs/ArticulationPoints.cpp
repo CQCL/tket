@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Graphs/ArticulationPoints.hpp"
+#include "tket/Graphs/ArticulationPoints.hpp"
 
 #include <boost/property_map/property_map.hpp>
 #include <boost/range/adaptor/transformed.hpp>
@@ -22,8 +22,8 @@
 #include <utility>
 #include <vector>
 
-#include "Graphs/Utils.hpp"
-#include "Utils/GraphHeaders.hpp"
+#include "tket/Graphs/Utils.hpp"
+#include "tket/Utils/GraphHeaders.hpp"
 
 namespace tket::graphs {
 

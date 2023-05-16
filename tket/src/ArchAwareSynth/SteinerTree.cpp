@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "ArchAwareSynth/SteinerTree.hpp"
+#include "tket/ArchAwareSynth/SteinerTree.hpp"
 
 namespace tket {
 namespace aas {

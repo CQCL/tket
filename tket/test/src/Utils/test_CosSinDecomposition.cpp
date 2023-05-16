@@ -16,9 +16,9 @@
 #include <cstdlib>
 
 #include "../testutil.hpp"
-#include "Utils/Constants.hpp"
-#include "Utils/CosSinDecomposition.hpp"
-#include "Utils/MatrixAnalysis.hpp"
+#include "tket/Utils/Constants.hpp"
+#include "tket/Utils/CosSinDecomposition.hpp"
+#include "tket/Utils/MatrixAnalysis.hpp"
 
 namespace tket {
 namespace test_CosSinDecomposition {

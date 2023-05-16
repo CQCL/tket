@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Circuit/Boxes.hpp"
-#include "Circuit/Conditional.hpp"
-#include "Gate/Gate.hpp"
-#include "OpType/OpType.hpp"
-#include "OpType/OpTypeFunctions.hpp"
-#include "Ops/ClassicalOps.hpp"
-#include "Ops/MetaOp.hpp"
-#include "Ops/OpPtr.hpp"
-#include "Utils/Json.hpp"
+#include "tket/Circuit/Boxes.hpp"
+#include "tket/Circuit/Conditional.hpp"
+#include "tket/Gate/Gate.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/OpType/OpTypeFunctions.hpp"
+#include "tket/Ops/ClassicalOps.hpp"
+#include "tket/Ops/MetaOp.hpp"
+#include "tket/Ops/OpPtr.hpp"
+#include "tket/Utils/Json.hpp"
 
 namespace tket {
 

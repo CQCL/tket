@@ -12,22 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Circuit/Boxes.hpp"
+#include "tket/Circuit/Boxes.hpp"
 
 #include <pybind11/eigen.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
-#include "Circuit/Circuit.hpp"
-#include "Circuit/DiagonalBox.hpp"
-#include "Circuit/Multiplexor.hpp"
-#include "Circuit/StatePreparation.hpp"
-#include "Circuit/ToffoliBox.hpp"
-#include "Converters/PhasePoly.hpp"
-#include "Utils/HelperFunctions.hpp"
-#include "Utils/Json.hpp"
 #include "binder_json.hpp"
 #include "binder_utils.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/DiagonalBox.hpp"
+#include "tket/Circuit/Multiplexor.hpp"
+#include "tket/Circuit/StatePreparation.hpp"
+#include "tket/Circuit/ToffoliBox.hpp"
+#include "tket/Converters/PhasePoly.hpp"
+#include "tket/Utils/HelperFunctions.hpp"
+#include "tket/Utils/Json.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;

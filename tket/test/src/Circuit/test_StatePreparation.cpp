@@ -12,18 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <Eigen/Core>
 #include <boost/dynamic_bitset.hpp>
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/catch_test_macros.hpp>
 
 #include "../testutil.hpp"
-#include "Circuit/Boxes.hpp"
-#include "Circuit/CircUtils.hpp"
-#include "Circuit/Circuit.hpp"
-#include "Circuit/StatePreparation.hpp"
-#include "Eigen/src/Core/Matrix.h"
-#include "Gate/Rotation.hpp"
-#include "Simulation/CircuitSimulator.hpp"
+#include "tket/Circuit/Boxes.hpp"
+#include "tket/Circuit/CircUtils.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/StatePreparation.hpp"
+#include "tket/Gate/Rotation.hpp"
+#include "tket/Simulation/CircuitSimulator.hpp"
 
 namespace tket {
 namespace test_StatePreparation {

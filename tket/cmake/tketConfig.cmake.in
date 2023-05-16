@@ -1,0 +1,8 @@
+get_filename_component(TKET_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+include(CMakeFindDependencyMacro)
+
+if(NOT TARGET tket::tket)
+    include("${TKET_CMAKE_DIR}/tketTargets.cmake")
+endif()
+
+set(TKET_lIBRARIES tket::tket)

@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Mapping/MultiGateReorder.hpp"
+#include "tket/Mapping/MultiGateReorder.hpp"
 
-#include "Circuit/DAGDefs.hpp"
-#include "Mapping/MappingFrontier.hpp"
+#include "tket/Circuit/DAGDefs.hpp"
+#include "tket/Mapping/MappingFrontier.hpp"
 
 namespace tket {
 

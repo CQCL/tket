@@ -22,8 +22,8 @@
 #include <catch2/matchers/catch_matchers.hpp>
 #include <cstdlib>
 
-#include "Circuit/Circuit.hpp"
-#include "Utils/EigenConfig.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Utils/EigenConfig.hpp"
 
 namespace tket {
 

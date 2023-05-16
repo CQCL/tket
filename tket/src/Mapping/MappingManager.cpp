@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Mapping/MappingManager.hpp"
+#include "tket/Mapping/MappingManager.hpp"
 
-#include "Architecture/BestTsaWithArch.hpp"
+#include "tket/Architecture/BestTsaWithArch.hpp"
 
 namespace tket {
 

@@ -19,7 +19,7 @@ from conan.errors import ConanInvalidConfiguration
 
 class TketConan(ConanFile):
     name = "tket"
-    version = "1.2.9"
+    version = "1.2.11"
     package_type = "library"
     license = "Apache 2"
     homepage = "https://github.com/CQCL/tket"
@@ -33,7 +33,7 @@ class TketConan(ConanFile):
         "profile_coverage": [True, False],
     }
     default_options = {"shared": False, "fPIC": True, "profile_coverage": False}
-    exports_sources = "CMakeLists.txt", "src/*", "include/*"
+    exports_sources = "CMakeLists.txt", "cmake/*", "src/*", "include/*"
 
     def config_options(self):
         if self.settings.os == "Windows":

@@ -20,8 +20,8 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
-#include "Utils/Expression.hpp"
-#include "Utils/Symbols.hpp"
+#include "tket/Utils/Expression.hpp"
+#include "tket/Utils/Symbols.hpp"
 #include "unit_downcast.hpp"
 
 namespace pybind11 {

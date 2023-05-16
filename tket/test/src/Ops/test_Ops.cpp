@@ -18,19 +18,19 @@
 #include <unsupported/Eigen/MatrixFunctions>
 
 #include "../testutil.hpp"
-#include "Circuit/Boxes.hpp"
-#include "Circuit/CircUtils.hpp"
-#include "Circuit/Circuit.hpp"
-#include "Gate/GatePtr.hpp"
-#include "Gate/SymTable.hpp"
-#include "OpType/OpType.hpp"
-#include "Ops/OpPtr.hpp"
-#include "Predicates/CompilerPass.hpp"
-#include "Predicates/PassLibrary.hpp"
-#include "Simulation/CircuitSimulator.hpp"
-#include "Transformations/OptimisationPass.hpp"
-#include "Utils/Constants.hpp"
-#include "Utils/Expression.hpp"
+#include "tket/Circuit/Boxes.hpp"
+#include "tket/Circuit/CircUtils.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Gate/GatePtr.hpp"
+#include "tket/Gate/SymTable.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/Ops/OpPtr.hpp"
+#include "tket/Predicates/CompilerPass.hpp"
+#include "tket/Predicates/PassLibrary.hpp"
+#include "tket/Simulation/CircuitSimulator.hpp"
+#include "tket/Transformations/OptimisationPass.hpp"
+#include "tket/Utils/Constants.hpp"
+#include "tket/Utils/Expression.hpp"
 
 namespace tket {
 namespace test_Ops {

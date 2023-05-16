@@ -14,17 +14,17 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include "Circuit/Boxes.hpp"
-#include "Circuit/CircUtils.hpp"
 #include "CircuitsForTesting.hpp"
-#include "Converters/PhasePoly.hpp"
-#include "Predicates/CompilerPass.hpp"
-#include "Transformations/Decomposition.hpp"
-#include "Transformations/Rebase.hpp"
-#include "Transformations/Transform.hpp"
-#include "Utils/HelperFunctions.hpp"
-#include "Utils/MatrixAnalysis.hpp"
 #include "testutil.hpp"
+#include "tket/Circuit/Boxes.hpp"
+#include "tket/Circuit/CircUtils.hpp"
+#include "tket/Converters/PhasePoly.hpp"
+#include "tket/Predicates/CompilerPass.hpp"
+#include "tket/Transformations/Decomposition.hpp"
+#include "tket/Transformations/Rebase.hpp"
+#include "tket/Transformations/Transform.hpp"
+#include "tket/Utils/HelperFunctions.hpp"
+#include "tket/Utils/MatrixAnalysis.hpp"
 
 namespace tket {
 namespace test_PhasePolynomials {

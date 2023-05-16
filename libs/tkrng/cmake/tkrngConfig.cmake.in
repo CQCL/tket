@@ -1,0 +1,8 @@
+get_filename_component(TKRNG_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+include(CMakeFindDependencyMacro)
+
+if(NOT TARGET tkrng::tkrng)
+    include("${TKRNG_CMAKE_DIR}/tkrngTargets.cmake")
+endif()
+
+set(TKRNG_lIBRARIES tkrng::tkrng)

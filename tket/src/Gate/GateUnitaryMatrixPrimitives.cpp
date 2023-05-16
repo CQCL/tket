@@ -14,8 +14,8 @@
 
 #include <unsupported/Eigen/KroneckerProduct>
 
-#include "Gate/GateUnitaryMatrixImplementations.hpp"
-#include "Utils/Constants.hpp"
+#include "tket/Gate/GateUnitaryMatrixImplementations.hpp"
+#include "tket/Utils/Constants.hpp"
 
 // This file is for gates with unitary matrices which serve as
 // building blocks for others ("composite gates").

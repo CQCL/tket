@@ -17,13 +17,13 @@
 
 #include <boost/lexical_cast.hpp>
 
-#include "Circuit/ClassicalExpBox.hpp"
-#include "Circuit/Conditional.hpp"
-#include "Ops/ClassicalOps.hpp"
-#include "Ops/OpJsonFactory.hpp"
 #include "UnitRegister.hpp"
-#include "Utils/Json.hpp"
 #include "binder_json.hpp"
+#include "tket/Circuit/ClassicalExpBox.hpp"
+#include "tket/Circuit/Conditional.hpp"
+#include "tket/Ops/ClassicalOps.hpp"
+#include "tket/Ops/OpJsonFactory.hpp"
+#include "tket/Utils/Json.hpp"
 
 namespace py = pybind11;
 using json = nlohmann::json;
