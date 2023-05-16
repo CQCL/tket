@@ -55,8 +55,8 @@
             </div>
         </aside>
         <h2>
-            <span class="text">40 statements &nbsp;</span>
-            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">39<span class="text"> run</span></button>
+            <span class="text">42 statements &nbsp;</span>
+            <button type="button" class="run button_toggle_run" value="run" data-shortcut="r" title="Toggle lines run">41<span class="text"> run</span></button>
             <button type="button" class="mis show_mis button_toggle_mis" value="mis" data-shortcut="m" title="Toggle lines missing">1<span class="text"> missing</span></button>
             <button type="button" class="exc show_exc button_toggle_exc" value="exc" data-shortcut="x" title="Toggle lines excluded">0<span class="text"> excluded</span></button>
             <button type="button" class="par run show_par button_toggle_par" value="par" data-shortcut="p" title="Toggle lines partially run">0<span class="text"> partial</span></button>
@@ -67,7 +67,7 @@
             <a id="nextFileLink" class="nav" href="d_9230bfd0e4e6043c_script_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.2.5">coverage.py v7.2.5</a>,
-            created at 2023-05-15 16:52 +0000
+            created at 2023-05-16 08:28 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"/>
@@ -210,31 +210,36 @@
     <p class="pln"><span class="n"><a id="t126" href="#t126">126</a></span><span class="t"><span class="str">    :rtype: RebaseCustom</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t127" href="#t127">127</a></span><span class="t"><span class="str">    """</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t128" href="#t128">128</a></span><span class="t">    <span class="nam">tk1</span> <span class="op">=</span> <span class="nam">get_TK1_decomposition_function</span><span class="op">(</span><span class="nam">gateset</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t129" href="#t129">129</a></span><span class="t">    <span class="key">try</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t130" href="#t130">130</a></span><span class="t">        <span class="key">return</span> <span class="nam">RebaseCustom</span><span class="op">(</span><span class="nam">gateset</span><span class="op">,</span> <span class="nam">get_tk2_decomposition</span><span class="op">(</span><span class="nam">gateset</span><span class="op">)</span><span class="op">,</span> <span class="nam">tk1</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t131" href="#t131">131</a></span><span class="t">    <span class="key">except</span> <span class="nam">NoAutoRebase</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t132" href="#t132">132</a></span><span class="t">        <span class="key">pass</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t133" href="#t133">133</a></span><span class="t">    <span class="key">try</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t134" href="#t134">134</a></span><span class="t">        <span class="key">return</span> <span class="nam">RebaseCustom</span><span class="op">(</span><span class="nam">gateset</span><span class="op">,</span> <span class="nam">get_cx_decomposition</span><span class="op">(</span><span class="nam">gateset</span><span class="op">)</span><span class="op">,</span> <span class="nam">tk1</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t135" href="#t135">135</a></span><span class="t">    <span class="key">except</span> <span class="nam">NoAutoRebase</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t136" href="#t136">136</a></span><span class="t">        <span class="key">raise</span> <span class="nam">NoAutoRebase</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t137" href="#t137">137</a></span><span class="t">            <span class="str">"No known decomposition from CX or TK2 to available gateset."</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t138" href="#t138">138</a></span><span class="t">        <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t139" href="#t139">139</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t140" href="#t140">140</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t141" href="#t141">141</a></span><span class="t"><span class="key">def</span> <span class="nam">auto_squash_pass</span><span class="op">(</span><span class="nam">gateset</span><span class="op">:</span> <span class="nam">Set</span><span class="op">[</span><span class="nam">OpType</span><span class="op">]</span><span class="op">)</span> <span class="op">-></span> <span class="nam">Union</span><span class="op">[</span><span class="nam">SquashCustom</span><span class="op">,</span> <span class="nam">SquashRzPhasedX</span><span class="op">]</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t142" href="#t142">142</a></span><span class="t">    <span class="str">"""Attempt to generate a squash pass automatically for the given target</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t143" href="#t143">143</a></span><span class="t"><span class="str">    single qubit gateset.</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t129" href="#t129">129</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t130" href="#t130">130</a></span><span class="t">    <span class="com"># if the gateset has CX but not TK2, rebase via CX</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t131" href="#t131">131</a></span><span class="t">    <span class="key">if</span> <span class="nam">OpType</span><span class="op">.</span><span class="nam">CX</span> <span class="key">in</span> <span class="nam">gateset</span> <span class="key">and</span> <span class="nam">OpType</span><span class="op">.</span><span class="nam">TK2</span> <span class="key">not</span> <span class="key">in</span> <span class="nam">gateset</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t132" href="#t132">132</a></span><span class="t">        <span class="key">return</span> <span class="nam">RebaseCustom</span><span class="op">(</span><span class="nam">gateset</span><span class="op">,</span> <span class="nam">_library</span><span class="op">.</span><span class="nam">_CX</span><span class="op">(</span><span class="op">)</span><span class="op">,</span> <span class="nam">tk1</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t133" href="#t133">133</a></span><span class="t">    <span class="com"># in other cases, try to rebase via TK2 first</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t134" href="#t134">134</a></span><span class="t">    <span class="key">try</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t135" href="#t135">135</a></span><span class="t">        <span class="key">return</span> <span class="nam">RebaseCustom</span><span class="op">(</span><span class="nam">gateset</span><span class="op">,</span> <span class="nam">get_tk2_decomposition</span><span class="op">(</span><span class="nam">gateset</span><span class="op">)</span><span class="op">,</span> <span class="nam">tk1</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t136" href="#t136">136</a></span><span class="t">    <span class="key">except</span> <span class="nam">NoAutoRebase</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t137" href="#t137">137</a></span><span class="t">        <span class="key">pass</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t138" href="#t138">138</a></span><span class="t">    <span class="key">try</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t139" href="#t139">139</a></span><span class="t">        <span class="key">return</span> <span class="nam">RebaseCustom</span><span class="op">(</span><span class="nam">gateset</span><span class="op">,</span> <span class="nam">get_cx_decomposition</span><span class="op">(</span><span class="nam">gateset</span><span class="op">)</span><span class="op">,</span> <span class="nam">tk1</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t140" href="#t140">140</a></span><span class="t">    <span class="key">except</span> <span class="nam">NoAutoRebase</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t141" href="#t141">141</a></span><span class="t">        <span class="key">raise</span> <span class="nam">NoAutoRebase</span><span class="op">(</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t142" href="#t142">142</a></span><span class="t">            <span class="str">"No known decomposition from CX or TK2 to available gateset."</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t143" href="#t143">143</a></span><span class="t">        <span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t144" href="#t144">144</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t145" href="#t145">145</a></span><span class="t"><span class="str">    :param gateset: Available single qubit gateset</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t146" href="#t146">146</a></span><span class="t"><span class="str">    :type gateset: Set[OpType]</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t147" href="#t147">147</a></span><span class="t"><span class="str">    :return: Squash to target gateset</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t148" href="#t148">148</a></span><span class="t"><span class="str">    :rtype: SquashCustom</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t149" href="#t149">149</a></span><span class="t"><span class="str">    """</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t150" href="#t150">150</a></span><span class="t">    <span class="key">if</span> <span class="op">{</span><span class="nam">OpType</span><span class="op">.</span><span class="nam">Rz</span><span class="op">,</span> <span class="nam">OpType</span><span class="op">.</span><span class="nam">PhasedX</span><span class="op">}</span> <span class="op">&lt;=</span> <span class="nam">gateset</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t151" href="#t151">151</a></span><span class="t">        <span class="key">return</span> <span class="nam">SquashRzPhasedX</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="pln"><span class="n"><a id="t152" href="#t152">152</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t153" href="#t153">153</a></span><span class="t">    <span class="key">return</span> <span class="nam">SquashCustom</span><span class="op">(</span><span class="nam">gateset</span><span class="op">,</span> <span class="nam">get_TK1_decomposition_function</span><span class="op">(</span><span class="nam">gateset</span><span class="op">)</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t145" href="#t145">145</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t146" href="#t146">146</a></span><span class="t"><span class="key">def</span> <span class="nam">auto_squash_pass</span><span class="op">(</span><span class="nam">gateset</span><span class="op">:</span> <span class="nam">Set</span><span class="op">[</span><span class="nam">OpType</span><span class="op">]</span><span class="op">)</span> <span class="op">-></span> <span class="nam">Union</span><span class="op">[</span><span class="nam">SquashCustom</span><span class="op">,</span> <span class="nam">SquashRzPhasedX</span><span class="op">]</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t147" href="#t147">147</a></span><span class="t">    <span class="str">"""Attempt to generate a squash pass automatically for the given target</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t148" href="#t148">148</a></span><span class="t"><span class="str">    single qubit gateset.</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t149" href="#t149">149</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t150" href="#t150">150</a></span><span class="t"><span class="str">    :param gateset: Available single qubit gateset</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t151" href="#t151">151</a></span><span class="t"><span class="str">    :type gateset: Set[OpType]</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t152" href="#t152">152</a></span><span class="t"><span class="str">    :return: Squash to target gateset</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t153" href="#t153">153</a></span><span class="t"><span class="str">    :rtype: SquashCustom</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t154" href="#t154">154</a></span><span class="t"><span class="str">    """</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t155" href="#t155">155</a></span><span class="t">    <span class="key">if</span> <span class="op">{</span><span class="nam">OpType</span><span class="op">.</span><span class="nam">Rz</span><span class="op">,</span> <span class="nam">OpType</span><span class="op">.</span><span class="nam">PhasedX</span><span class="op">}</span> <span class="op">&lt;=</span> <span class="nam">gateset</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t156" href="#t156">156</a></span><span class="t">        <span class="key">return</span> <span class="nam">SquashRzPhasedX</span><span class="op">(</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="pln"><span class="n"><a id="t157" href="#t157">157</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t158" href="#t158">158</a></span><span class="t">    <span class="key">return</span> <span class="nam">SquashCustom</span><span class="op">(</span><span class="nam">gateset</span><span class="op">,</span> <span class="nam">get_TK1_decomposition_function</span><span class="op">(</span><span class="nam">gateset</span><span class="op">)</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
 </main>
 <footer>
     <div class="content">
@@ -244,7 +249,7 @@
             <a id="nextFileLink" class="nav" href="d_9230bfd0e4e6043c_script_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.2.5">coverage.py v7.2.5</a>,
-            created at 2023-05-15 16:52 +0000
+            created at 2023-05-16 08:28 +0000
         </p>
     </div>
 </footer>
