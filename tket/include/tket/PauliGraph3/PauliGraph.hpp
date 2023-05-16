@@ -14,9 +14,9 @@
 
 #pragma once
 
-#include "Clifford/ChoiMixTableau.hpp"
-#include "Utils/GraphHeaders.hpp"
-#include "Utils/PauliStrings.hpp"
+#include "tket/Clifford/ChoiMixTableau.hpp"
+#include "tket/Utils/GraphHeaders.hpp"
+#include "tket/Utils/PauliStrings.hpp"
 
 namespace tket {
 

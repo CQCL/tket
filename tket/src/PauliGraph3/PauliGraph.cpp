@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "PauliGraph.hpp"
+#include "tket/PauliGraph3/PauliGraph.hpp"
 
 namespace tket {
 namespace pg {

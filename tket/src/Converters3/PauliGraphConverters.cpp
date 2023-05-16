@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Circuit/Boxes.hpp"
-#include "Clifford/ChoiMixTableau.hpp"
-#include "Clifford/UnitaryTableau.hpp"
-#include "Converters.hpp"
-#include "Gate/Gate.hpp"
+#include "tket/Circuit/Boxes.hpp"
+#include "tket/Clifford/ChoiMixTableau.hpp"
+#include "tket/Clifford/UnitaryTableau.hpp"
+#include "tket/Converters3/Converters.hpp"
+#include "tket/Gate/Gate.hpp"
 
 namespace tket {
 

@@ -15,8 +15,8 @@
 #include <catch2/catch_test_macros.hpp>
 #include <fstream>
 
-#include "Converters3/Converters.hpp"
-#include "PauliGraph3/PauliGraph.hpp"
+#include "tket/Converters3/Converters.hpp"
+#include "tket/PauliGraph3/PauliGraph.hpp"
 #include "testutil.hpp"
 
 namespace tket {
