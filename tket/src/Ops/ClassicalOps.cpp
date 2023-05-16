@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "ClassicalOps.hpp"
+#include "tket/Ops/ClassicalOps.hpp"
 
 #include <tkassert/Assert.hpp>
 
-#include "OpType/OpType.hpp"
-#include "Utils/Json.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/Utils/Json.hpp"
 
 namespace tket {
 
@@ -132,20 +132,21 @@ static nlohmann::json wasm_to_json(const Op_ptr &op) {
   nlohmann::json j_class;
   const auto &wasm = static_cast<const WASMOp &>(*op);
   j_class["n"] = wasm.get_n();
-  j_class["ni_vec"] = wasm.get_ni_vec();
-  j_class["no_vec"] = wasm.get_no_vec();
+  j_class["ww_n"] = wasm.get_ww_n();
+  j_class["width_i_parameter"] = wasm.get_width_i_parameter();
+  j_class["width_o_parameter"] = wasm.get_width_o_parameter();
   j_class["func_name"] = wasm.get_func_name();
-  j_class["wasm_uid"] = wasm.get_wasm_uid();
+  j_class["wasm_file_uid"] = wasm.get_wasm_file_uid();
   return j_class;
 }
 
 static std::shared_ptr<WASMOp> wasm_from_json(const nlohmann::json &j_class) {
   return std::make_shared<WASMOp>(
-      j_class.at("n").get<unsigned>(),
-      j_class.at("ni_vec").get<std::vector<unsigned>>(),
-      j_class.at("no_vec").get<std::vector<unsigned>>(),
+      j_class.at("n").get<unsigned>(), j_class.at("ww_n").get<unsigned>(),
+      j_class.at("width_i_parameter").get<std::vector<unsigned>>(),
+      j_class.at("width_o_parameter").get<std::vector<unsigned>>(),
       j_class.at("func_name").get<std::string>(),
-      j_class.at("wasm_uid").get<std::string>());
+      j_class.at("wasm_file_uid").get<std::string>());
 }
 
 ClassicalOp::ClassicalOp(
@@ -239,29 +240,34 @@ std::vector<bool> ClassicalTransformOp::eval(const std::vector<bool> &x) const {
 }
 
 WASMOp::WASMOp(
-    unsigned _n, std::vector<unsigned> _ni_vec, std::vector<unsigned> _no_vec,
-    const std::string &_func_name, const std::string &_wasm_uid)
+    unsigned _n, unsigned _ww_n, std::vector<unsigned> _width_i_parameter,
+    std::vector<unsigned> _width_o_parameter, const std::string &_func_name,
+    const std::string &_wasm_file_uid)
     : ClassicalOp(
           OpType::WASM,
           std::accumulate(
-              _ni_vec.begin(), _ni_vec.end(), decltype(_ni_vec)::value_type(0)),
+              _width_i_parameter.begin(), _width_i_parameter.end(), 0),
           0,
           std::accumulate(
-              _no_vec.begin(), _no_vec.end(), decltype(_no_vec)::value_type(0)),
+              _width_o_parameter.begin(), _width_o_parameter.end(), 0),
           "WASM"),
       n_(_n),
-      n_i32_(_ni_vec.size() + _no_vec.size()),
-      ni_vec_(_ni_vec),
-      no_vec_(_no_vec),
+      ww_n_(_ww_n),
+      n_i32_(_width_i_parameter.size() + _width_o_parameter.size()),
+      width_i_parameter_(_width_i_parameter),
+      width_o_parameter_(_width_o_parameter),
       func_name_(_func_name),
-      wasm_uid_(_wasm_uid) {
+      wasm_file_uid_(_wasm_file_uid) {
   unsigned sum_of_i32 =
-      std::accumulate(
-          ni_vec_.begin(), ni_vec_.end(), decltype(ni_vec_)::value_type(0)) +
-      std::accumulate(
-          no_vec_.begin(), no_vec_.end(), decltype(no_vec_)::value_type(0));
+      std::accumulate(width_i_parameter_.begin(), width_i_parameter_.end(), 0) +
+      std::accumulate(width_o_parameter_.begin(), width_o_parameter_.end(), 0);
 
   TKET_ASSERT(sum_of_i32 == n_);
+
+  // add wasm edge to signature of this op.
+  for (unsigned i = 0; i < ww_n_; ++i) {
+    sig_.push_back(EdgeType::WASM);
+  }
 }
 
 bool WASMOp::is_equal(const Op &other) const {
@@ -272,10 +278,10 @@ bool WASMOp::is_equal(const Op &other) const {
   const WASMOp &other_wasm = dynamic_cast<const WASMOp &>(other);
   if (other_wasm.get_n() != n_) return false;
   if (other_wasm.get_n_i32() != n_i32_) return false;
-  if (other_wasm.get_ni_vec() != ni_vec_) return false;
-  if (other_wasm.get_no_vec() != no_vec_) return false;
+  if (other_wasm.get_width_i_parameter() != width_i_parameter_) return false;
+  if (other_wasm.get_width_o_parameter() != width_o_parameter_) return false;
   if (other_wasm.get_func_name() != func_name_) return false;
-  if (other_wasm.get_wasm_uid() != wasm_uid_) return false;
+  if (other_wasm.get_wasm_file_uid() != wasm_file_uid_) return false;
   return true;
 }
 

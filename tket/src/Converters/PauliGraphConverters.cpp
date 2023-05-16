@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Circuit/Boxes.hpp"
-#include "Converters.hpp"
-#include "Converters/PhasePoly.hpp"
-#include "Diagonalisation/Diagonalisation.hpp"
-#include "Gate/Gate.hpp"
-#include "PauliGadget.hpp"
+#include "tket/Circuit/Boxes.hpp"
+#include "tket/Converters/Converters.hpp"
+#include "tket/Converters/PauliGadget.hpp"
+#include "tket/Converters/PhasePoly.hpp"
+#include "tket/Diagonalisation/Diagonalisation.hpp"
+#include "tket/Gate/Gate.hpp"
 
 namespace tket {
 
@@ -25,14 +25,6 @@ PauliGraph circuit_to_pauli_graph(const Circuit &circ);
 Circuit pauli_graph_to_circuit(const PauliGraph &pg);
 
 PauliGraph circuit_to_pauli_graph(const Circuit &circ) {
-  for (const std::pair<const Qubit, Qubit> &pair :
-       circ.implicit_qubit_permutation()) {
-    if (pair.first != pair.second) {
-      throw ImplicitPermutationNotAllowed(
-          "Cannot build a PauliGraph from circuits with implicit "
-          "permutations");
-    }
-  }
   PauliGraph pg(circ.all_qubits(), circ.all_bits());
   for (const Command &com : circ) {
     const Op &op = *com.get_op_ptr();

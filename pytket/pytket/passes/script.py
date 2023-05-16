@@ -1,4 +1,4 @@
-# Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -64,6 +64,7 @@ basic_pass:
     | decompose_multi_qubits_cx
     | decompose_single_qubits_tk1
     | delay_measures
+    | delay_measures_try
     | euler_angle_reduction
     | flatten_registers
     | full_peephole_optimise
@@ -105,6 +106,7 @@ decompose_classical_exp: "DecomposeClassicalExp"
 decompose_multi_qubits_cx: "DecomposeMultiQubitsCX"
 decompose_single_qubits_tk1: "DecomposeSingleQubitsTK1"
 delay_measures: "DelayMeasures"
+delay_measures_try: "TryDelayMeasures"
 euler_angle_reduction: "EulerAngleReduction" "(" op_type "," op_type ")"
 flatten_registers: "FlattenRegisters"
 full_peephole_optimise: "FullPeepholeOptimise"
@@ -212,7 +214,10 @@ class PassTransformer(Transformer):
         return DecomposeSingleQubitsTK1()
 
     def delay_measures(self, t: List) -> BasePass:
-        return DelayMeasures()
+        return DelayMeasures(False)
+
+    def delay_measures_try(self, t: List) -> BasePass:
+        return DelayMeasures(True)
 
     def euler_angle_reduction(self, t: List) -> BasePass:
         return EulerAngleReduction(t[0], t[1])

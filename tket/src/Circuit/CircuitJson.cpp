@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,8 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Circuit.hpp"
-#include "Utils/Json.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Utils/Json.hpp"
 
 namespace tket {
 
@@ -25,6 +25,10 @@ void to_json(nlohmann::json& j, const Circuit& circ) {
   j["phase"] = circ.get_phase();
   j["qubits"] = circ.all_qubits();
   j["bits"] = circ.all_bits();
+  if (circ._number_of_wasm_wires > 0) {
+    j["number_of_ws"] = circ._number_of_wasm_wires;
+  }
+
   const auto impl = circ.implicit_qubit_permutation();
   // empty maps are mapped to null instead of empty array
   if (impl.empty()) {
@@ -54,6 +58,9 @@ void from_json(const nlohmann::json& j, Circuit& circ) {
   const auto& bits = j.at("bits").get<bit_vector_t>();
   for (const auto& b : bits) {
     circ.add_bit(b);
+  }
+  if (j.contains("number_of_ws")) {
+    circ.add_wasm_register(j.at("number_of_ws").get<unsigned>());
   }
 
   for (const auto& j_com : j.at("commands")) {

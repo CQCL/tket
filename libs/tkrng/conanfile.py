@@ -1,4 +1,4 @@
-# Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,13 +12,15 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from conans import ConanFile, CMake
-from conans.errors import ConanInvalidConfiguration
+from conan import ConanFile
+from conan.tools.cmake import CMakeToolchain, CMake, cmake_layout, CMakeDeps
+from conan.errors import ConanInvalidConfiguration
 
 
 class TkrngConan(ConanFile):
     name = "tkrng"
-    version = "0.1.2"
+    version = "0.3.3"
+    package_type = "library"
     license = "Apache 2"
     url = "https://github.com/CQCL/tket"
     description = "Deterministic cross-platform PRNG"
@@ -29,12 +31,21 @@ class TkrngConan(ConanFile):
         "profile_coverage": [True, False],
     }
     default_options = {"shared": False, "fPIC": True, "profile_coverage": False}
-    generators = "cmake"
-    exports_sources = "src/*"
+    exports_sources = "CMakeLists.txt", "cmake/*", "src/*", "include/*"
 
     def config_options(self):
         if self.settings.os == "Windows":
             del self.options.fPIC
+
+    def layout(self):
+        cmake_layout(self)
+
+    def generate(self):
+        deps = CMakeDeps(self)
+        deps.generate()
+        tc = CMakeToolchain(self)
+        tc.variables["PROFILE_COVERAGE"] = self.options.profile_coverage
+        tc.generate()
 
     def validate(self):
         if self.options.profile_coverage and self.settings.compiler != "gcc":
@@ -44,18 +55,12 @@ class TkrngConan(ConanFile):
 
     def build(self):
         cmake = CMake(self)
-        cmake.definitions["PROFILE_COVERAGE"] = self.options.profile_coverage
-        cmake.configure(source_folder="src")
+        cmake.configure()
         cmake.build()
 
     def package(self):
-        self.copy("include/*.hpp", dst="include/tkrng", src="src", keep_path=False)
-        self.copy("*.lib", dst="lib", keep_path=False)
-        self.copy("*.dll", dst="bin", keep_path=False)
-        self.copy("*.dll", dst="lib", keep_path=False)
-        self.copy("*.dylib*", dst="lib", keep_path=False)
-        self.copy("*.so", dst="lib", keep_path=False)
-        self.copy("*.a", dst="lib", keep_path=False)
+        cmake = CMake(self)
+        cmake.install()
 
     def package_info(self):
         self.cpp_info.libs = ["tkrng"]

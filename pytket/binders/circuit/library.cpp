@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,8 +14,8 @@
 
 #include <pybind11/pybind11.h>
 
-#include "Circuit/CircPool.hpp"
 #include "binder_utils.hpp"
+#include "tket/Circuit/CircPool.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;

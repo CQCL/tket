@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "GraphColouring.hpp"
+#include "tket/Graphs/GraphColouring.hpp"
 
 #include <algorithm>
 #include <limits>
@@ -21,11 +21,11 @@
 #include <stdexcept>
 #include <tkassert/Assert.hpp>
 
-#include "AdjacencyData.hpp"
 #include "BruteForceColouring.hpp"
 #include "ColouringPriority.hpp"
-#include "GraphRoutines.hpp"
-#include "LargeCliquesResult.hpp"
+#include "tket/Graphs/AdjacencyData.hpp"
+#include "tket/Graphs/GraphRoutines.hpp"
+#include "tket/Graphs/LargeCliquesResult.hpp"
 
 using std::exception;
 using std::map;

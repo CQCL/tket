@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "OpTypeInfo.hpp"
+#include "tket/OpType/OpTypeInfo.hpp"
 
 #include <memory>
 
-#include "OpType.hpp"
+#include "tket/OpType/OpType.hpp"
 
 namespace tket {
 const std::map<OpType, OpTypeInfo>& optypeinfo() {
@@ -76,6 +76,10 @@ const std::map<OpType, OpTypeInfo>& optypeinfo() {
        {"ClInput", "C IN", {}, op_signature_t({EdgeType::Classical})}},
       {OpType::ClOutput,
        {"ClOutput", "C OUT", {}, op_signature_t({EdgeType::Classical})}},
+      {OpType::WASMInput,
+       {"WASMInput", "WASMIN", {}, op_signature_t({EdgeType::WASM})}},
+      {OpType::WASMOutput,
+       {"WASMOutput", "WASMOUT", {}, op_signature_t({EdgeType::WASM})}},
       {OpType::Label, {"Label", "Label", {}, noargs}},
       {OpType::Branch,
        {"Branch", "Branch", {}, op_signature_t({EdgeType::Boolean})}},
@@ -122,6 +126,20 @@ const std::map<OpType, OpTypeInfo>& optypeinfo() {
       {OpType::PhasePolyBox,
        {"PhasePolyBox", "PhasePolyBox", {}, std::nullopt}},
       {OpType::QControlBox, {"QControlBox", "Ctrl", {}, std::nullopt}},
+      {OpType::MultiplexorBox,
+       {"MultiplexorBox", "MultiplexorBox", {}, std::nullopt}},
+      {OpType::MultiplexedRotationBox,
+       {"MultiplexedRotationBox", "MultiplexedRotationBox", {}, std::nullopt}},
+      {OpType::MultiplexedU2Box,
+       {"MultiplexedU2Box", "MultiplexedU2Box", {}, std::nullopt}},
+      {OpType::MultiplexedTensoredU2Box,
+       {"MultiplexedTensoredU2Box",
+        "MultiplexedTensoredU2Box",
+        {},
+        std::nullopt}},
+      {OpType::StatePreparationBox,
+       {"StatePreparationBox", "StatePreparationBox", {}, std::nullopt}},
+      {OpType::DiagonalBox, {"DiagonalBox", "DiagonalBox", {}, std::nullopt}},
       {OpType::Conditional, {"Conditional", "If", {}, std::nullopt}},
       {OpType::ProjectorAssertionBox,
        {"ProjectorAssertionBox", "ProjectorAssertionBox", {}, std::nullopt}},

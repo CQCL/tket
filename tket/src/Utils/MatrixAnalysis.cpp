@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "MatrixAnalysis.hpp"
+#include "tket/Utils/MatrixAnalysis.hpp"
 
 #include <fstream>
 #include <iostream>
@@ -24,7 +24,7 @@
 #include <utility>
 #include <vector>
 
-#include "Utils/EigenConfig.hpp"
+#include "tket/Utils/EigenConfig.hpp"
 
 namespace tket {
 
@@ -528,7 +528,7 @@ bool in_weyl_chamber(const std::array<Expr, 3> &k) {
   return true;
 }
 
-Eigen::Matrix2cd nth_root(const Eigen::Matrix2cd &u, unsigned n) {
+Eigen::Matrix2cd nth_root(const Eigen::Matrix2cd &u, unsigned long long n) {
   if (u.isApprox(Eigen::Matrix2cd::Identity(), EPS)) {
     return Eigen::Matrix2cd::Identity();
   } else if (n == 0) {

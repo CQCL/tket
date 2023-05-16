@@ -1,6 +1,137 @@
 Changelog
 =========
 
+1.16.0 (unreleased)
+-------------------
+
+Minor new features:
+
+* Support ``allow_swaps`` parameter for ``PeepholeOptimise2Q``.
+
+Fixes:
+
+* Fix ``FlattenRegisters`` not updating ``ClassicalExpBox``.
+* Fix missing default argument value to ``FlattenRelabelRegistersPass``.
+* Fix ``auto_rebase_pass`` rebasing via TK2 even if CX is the only target 2q gate.
+
+1.15.0 (May 2023)
+-----------------
+
+Major new features:
+
+* Add new ``MultiplexedTensoredU2Box`` that synthesises multiplexed tensor product of U2 gates.
+
+Minor new features:
+
+* Add new ``MaxNClRegPredicate`` that checks that there are at most n classical
+  registers in the circuit.
+* Allow barriers in ``QControlBoxes``. Barriers are left in place.
+* Add ``Circuit.TK1`` and ``Circuit.TK2`` methods that take ``Qubit`` arguments.
+* Expose ``CircuitRenderer`` instance so users can set their own default options.
+* QASM to circuit converters now recognise ``Rxxyyzz`` as ``OpType.TK2``. Circuit
+  to QASM converters with the "hqslib1" header now map ``OpType.TK2`` to ``Rxxyyzz``.
+* Add new transform ``round_angles`` and pass ``RoundAngles`` to remove angles
+  below a threshold and/or round angles to a dyadic fraction of pi throughout a
+  circuit.
+
+Fixes:
+
+* Fix bug in `get_operator_expectation_value()` computation when operator
+  includes `Pauli.I` terms.
+* Fix bug in routing code occurring in ``Circuits`` with qubit wires with no operations
+  and some (other or same) qubits pre-labelled as "Node" from the ``Architecture`` being routed to.
+
+1.14.0 (April 2023)
+-------------------
+
+Major new features:
+
+* Support for ARM Linux platforms.
+* Updated implementation of ``ToffoliBox`` utilising multiplexors
+  for improved decomposition.
+* Add new ``DiagonalBox`` that synthesises a diagonal unitary matrix
+  into a sequence of multiplexed-Rz gates.
+
+1.13.2 (March 2023)
+-------------------
+
+Minor new features:
+
+* Update to networkx 3.
+* Add "label" argument to ``SquareGrid``, ``RingArch`` and ``FullyConnected`` 
+  ``Architecture`` classes to give custom name to constructed ``Node``.
+* Add ``FlattenRelabelRegistersPass`` to remove empty quantum wires and relabel all
+  qubits to a default register named after a passed label.
+
+Fixes:
+
+* Multiply symbolic parameters in auto-generated gate definitions by "/pi" in ``circuit_to_qasm_io``
+
+1.13.1 (March 2023)
+-------------------
+
+Fixes:
+
+* Throw error rather than abort when trying to add qubit or bit with existing name.
+
+1.13.0 (March 2023)
+-------------------
+
+Major new features:
+
+* New ``StatePreparationBox`` to prepare arbitrary quantum states.
+* New WasmWire interface to keep all wasm operation in the initial order
+* New ``ZXGraphlikeOptimisation`` compilation pass for optimising the circuit by
+  simplifying in ZX calculus and extracting back out
+
+Minor new features:
+
+* New ``CommutableMeasuresPredicate`` predicate, added as precondition to the
+  ``DelayMeasures`` pass.
+* Added an ``allow_partial`` parameter to the ``DelayMeasures`` pass to delay
+  the measurements as much as possible when they cannot be fully delayed to the
+  end.
+* Update to ``pytket-circuit-renderer`` 0.5.
+* Support ``allow_swaps`` parameter for ``FullPeepholeOptimise`` even when
+  targeting ``OpType.TK2``.
+
+Fixes:
+
+* ``DelayMeasures`` pass now correctly handles circuits with ``CircBox``es.
+* ``get_op_map`` in multiplexor boxes return unhashable python dictionaries.
+
+
+1.11.1 (January 2023)
+---------------------
+
+General:
+
+* Support for MacOS >= 11.0 on both x86_64 and arm64.
+
+1.11.0 (January 2023)
+---------------------
+
+Major new features:
+
+* New boxes to implement multiplexor gates (i.e. uniformly controlled operations):
+  ``MultiplexorBox``, ``MultiplexedRotationBox`` and ``MultiplexedU2Box``.
+
+General:
+
+* Python 3.11 support added; 3.8 dropped.
+
+Minor new features:
+
+* Circuit methods ``qubit_readout`` and ``qubit_to_bit_map`` now ignore barriers.
+* New pass ``RemoveImplicitQubitPermutation``.
+* ``PauliSimp`` pass accepts circuits containing implicit wire swaps.
+
+Fixes:
+
+* ``MultiGateReorderRoutingMethod`` raising unknown edge missing error.
+* ``LexiRouteLabellingMethod`` hitting assertion during dynamic qubit allocation.
+* ``PauliSimp`` pass preserves circuit name.
+
 1.10.0 (December 2022)
 ----------------------
 

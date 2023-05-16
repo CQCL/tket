@@ -1,4 +1,4 @@
-# Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@ from math import pow, isclose
 import numpy as np
 import pytest  # type: ignore
 from pytket import Qubit, Circuit, OpType
+from pytket.passes import auto_rebase_pass
 from pytket.pauli import Pauli, QubitPauliString  # type: ignore
 from pytket.utils.results import compare_unitaries
 from pytket.zx import (  # type: ignore
@@ -31,13 +32,23 @@ from pytket.zx import (  # type: ignore
     DirectedGen,
     ZXBox,
 )
-from zx_tensor import (  # type: ignore
-    unitary_from_quantum_diagram,
-    fix_inputs_to_binary_state,
-    tensor_from_quantum_diagram,
-    unitary_from_classical_diagram,
-    density_matrix_from_cptp_diagram,
-)
+from sympy import sympify  # type: ignore
+from typing import Tuple
+
+have_quimb: bool = True
+try:
+    from pytket.zx.tensor_eval import (  # type: ignore
+        unitary_from_quantum_diagram,
+        fix_boundaries_to_binary_states,
+        fix_inputs_to_binary_state,
+        fix_outputs_to_binary_state,
+        tensor_from_quantum_diagram,
+        tensor_from_mixed_diagram,
+        unitary_from_classical_diagram,
+        density_matrix_from_cptp_diagram,
+    )
+except ModuleNotFoundError:
+    have_quimb = False
 
 
 def test_generator_creation() -> None:
@@ -130,6 +141,7 @@ def test_diagram_creation() -> None:
     diag.check_validity()
 
 
+@pytest.mark.skipif(not have_quimb, reason="quimb not installed")
 def test_known_tensors() -> None:
     # A single basic edge
     diag = ZXDiagram(1, 1, 0, 0)
@@ -142,6 +154,16 @@ def test_known_tensors() -> None:
     diag.set_wire_type(w, ZXWireType.H)
     diag.multiply_scalar(0.5)
     correct = np.asarray([[1, 1], [1, -1]]) * np.sqrt(0.5)
+    evaluated = unitary_from_quantum_diagram(diag)
+    assert np.allclose(evaluated, correct)
+
+    # A triangle
+    diag.remove_wire(w)
+    diag.multiply_scalar(2.0)
+    tri = diag.add_vertex(ZXType.Triangle)
+    diag.add_wire(u=diag.get_boundary()[0], v=tri, v_port=0)
+    diag.add_wire(u=diag.get_boundary()[1], v=tri, v_port=1)
+    correct = np.asarray([[1, 0], [1, 1]], dtype=complex)
     evaluated = unitary_from_quantum_diagram(diag)
     assert np.allclose(evaluated, correct)
 
@@ -279,6 +301,21 @@ def test_known_tensors() -> None:
     evaluated = evaluated * pow(2.0, 0.5)
     assert np.allclose(evaluated, correct)
 
+    # A ZXBox containing a CX gate
+    diag2 = ZXDiagram(2, 2, 0, 0)
+    ins = diag2.get_boundary(ZXType.Input)
+    outs = diag2.get_boundary(ZXType.Output)
+    b = diag2.add_zxbox(diag)
+    diag2.add_wire(u=ins[0], v=b, v_port=0)
+    diag2.add_wire(u=ins[1], v=b, v_port=1)
+    diag2.add_wire(u=outs[0], v=b, v_port=2)
+    diag2.add_wire(u=outs[1], v=b, v_port=3)
+    evaluated = tensor_from_mixed_diagram(diag2)
+    evaluated *= 2.0
+    correct = correct.reshape((2, 2, 2, 2))
+    correct = np.kron(correct, correct).reshape((2, 2, 2, 2, 2, 2, 2, 2))
+    assert np.allclose(evaluated, correct)
+
     # A Pauli gadget
     diag = ZXDiagram(4, 4, 0, 0)
     ins = diag.get_boundary(ZXType.Input)
@@ -318,6 +355,10 @@ def test_known_tensors() -> None:
     simulated = unitary_from_quantum_diagram(initialised)
     simulated = simulated * np.exp(-1j * 0.15 * np.pi)
     assert np.allclose(simulated, correct[:, 5])
+    postselected = fix_outputs_to_binary_state(diag, [1, 1, 0, 0])
+    postsimulated = unitary_from_quantum_diagram(postselected)
+    postsimulated = postsimulated * np.exp(-1j * 0.15 * np.pi)
+    assert np.allclose(postsimulated, correct[12, :])
 
     # A scalar
     diag = ZXDiagram(0, 0, 0, 0)
@@ -333,6 +374,7 @@ def test_known_tensors() -> None:
     assert np.allclose(evaluated, np.exp(1j * 0.3 * np.pi))
 
 
+@pytest.mark.skipif(not have_quimb, reason="quimb not installed")
 def test_classical_and_cptp() -> None:
     # A single classical spider in a classical diagram
     diag = ZXDiagram(0, 0, 1, 2)
@@ -439,6 +481,65 @@ def test_classical_and_cptp() -> None:
     assert np.allclose(simulated, np.asarray([[0, 0], [0, 1]]))
 
 
+@pytest.mark.skipif(not have_quimb, reason="quimb not installed")
+def test_tensor_errors() -> None:
+    # A symbolic generator
+    diag = ZXDiagram(0, 1, 0, 0)
+    v = diag.add_vertex(ZXType.XSpider, sympify("2*a"))  # type: ignore
+    diag.add_wire(v, diag.get_boundary()[0])
+    with pytest.raises(ValueError) as exc_info:
+        tensor_from_quantum_diagram(diag)
+    assert "symbolic expression" in exc_info.value.args[0]
+
+    # A symbolic scalar
+    diag.set_vertex_ZXGen(v, PhasedGen(ZXType.XSpider, 0.5))
+    diag.multiply_scalar(sympify("2*a"))  # type: ignore
+    with pytest.raises(ValueError) as exc_info:
+        tensor_from_quantum_diagram(diag)
+    assert "symbolic scalar" in exc_info.value.args[0]
+
+    # Non-quantum components in tensor_from_quantum_diagram
+    diag = ZXDiagram(0, 1, 0, 0)
+    v = diag.add_vertex(ZXType.XSpider, 0.3, QuantumType.Classical)
+    diag.add_wire(v, diag.get_boundary()[0], qtype=QuantumType.Classical)
+    with pytest.raises(ValueError) as exc_info:
+        tensor_from_quantum_diagram(diag)
+    assert "Non-quantum vertex" in exc_info.value.args[0]
+    diag.set_vertex_ZXGen(v, PhasedGen(ZXType.XSpider, 0.3))
+    with pytest.raises(ValueError) as exc_info:
+        tensor_from_quantum_diagram(diag)
+    assert "Non-quantum wire" in exc_info.value.args[0]
+
+    # Mixed boundaries when expecting just one qtype
+    diag = ZXDiagram(0, 1, 0, 1)
+    v = diag.add_vertex(ZXType.XSpider, 0.0, QuantumType.Classical)
+    diag.add_wire(v, diag.get_boundary()[0])
+    diag.add_wire(v, diag.get_boundary()[1], qtype=QuantumType.Classical)
+    with pytest.raises(ValueError) as exc_info:
+        unitary_from_classical_diagram(diag)
+    assert "Non-classical boundary vertex" in exc_info.value.args[0]
+    with pytest.raises(ValueError) as exc_info:
+        density_matrix_from_cptp_diagram(diag)
+    assert "Non-quantum boundary vertex" in exc_info.value.args[0]
+
+    # Errors in fixing boundaries
+    with pytest.raises(ValueError) as exc_info:
+        fix_boundaries_to_binary_states(diag, {v: 0})
+    assert "boundary vertices" in exc_info.value.args[0]
+    with pytest.raises(ValueError) as exc_info:
+        fix_boundaries_to_binary_states(diag, {diag.get_boundary()[0]: 2})
+    assert "|0> and |1>" in exc_info.value.args[0]
+
+    # Wrong length of vector to fix inputs/outputs
+    with pytest.raises(ValueError) as exc_info:
+        fix_inputs_to_binary_state(diag, [0, 1, 0])
+    assert "3 values for 0 inputs" in exc_info.value.args[0]
+    with pytest.raises(ValueError) as exc_info:
+        fix_outputs_to_binary_state(diag, [])
+    assert "0 values for 2 outputs" in exc_info.value.args[0]
+
+
+@pytest.mark.skipif(not have_quimb, reason="quimb not installed")
 def test_graph_like_reduction() -> None:
     # Diagram on https://arxiv.org/pdf/1902.03178.pdf, Figure 2
     # We have added an extra input/output pair for testing purposes
@@ -500,6 +601,7 @@ def test_graph_like_reduction() -> None:
     assert np.allclose(original, final)
 
 
+@pytest.mark.skipif(not have_quimb, reason="quimb not installed")
 def test_spider_fusion() -> None:
     diag = ZXDiagram(2, 1, 0, 0)
     ins = diag.get_boundary(ZXType.Input)
@@ -560,6 +662,9 @@ def test_spider_fusion() -> None:
     diag.check_validity()
 
 
+@pytest.mark.skipif(not have_quimb, reason="quimb not installed")(
+    not have_quimb, reason="quimb not installed"
+)
 def test_simplification() -> None:
     # This diagram follows from section A of https://arxiv.org/pdf/1902.03178.pdf
     diag = ZXDiagram(4, 4, 0, 0)
@@ -639,6 +744,7 @@ def test_simplification() -> None:
     assert np.allclose(original, final)
 
 
+@pytest.mark.skipif(not have_quimb, reason="quimb not installed")
 def test_converting_from_circuit() -> None:
     c = Circuit(4)
     c.CZ(0, 1)
@@ -671,6 +777,21 @@ def test_constructors() -> None:
     assert zx_box.diagram.scalar == diag.scalar
 
 
+def joint_normalise_tensor(
+    a: np.ndarray, b: np.ndarray
+) -> Tuple[np.ndarray, np.ndarray]:
+    a_linear = a.reshape((a.size))
+    b_linear = b.reshape((b.size))
+    max_i = 0
+    max_val = 0
+    for i in range(a.size):
+        if abs(a_linear[i]) > max_val:
+            max_i = i
+            max_val = abs(a_linear[i])
+    return (a * (1 / a_linear[max_i]), b * (1 / b_linear[max_i]))
+
+
+@pytest.mark.skipif(not have_quimb, reason="quimb not installed")
 def test_XY_extraction() -> None:
     # Identical to the diagram in test_ZXExtraction.cpp
     diag = ZXDiagram(3, 3, 0, 0)
@@ -705,15 +826,15 @@ def test_XY_extraction() -> None:
     diag.add_wire(o0, outs[0])
     diag.add_wire(o1, outs[1])
     diag.add_wire(o2, outs[2])
+    diag.check_validity()
     circ, _ = diag.to_circuit()
     assert circ.n_qubits == 3
-    Rewrite.rebase_to_zx().apply(diag)
-    diag.check_validity()
     diag_u = unitary_from_quantum_diagram(diag)
     circ_u = circ.get_unitary()
     assert compare_unitaries(diag_u, circ_u)
 
 
+@pytest.mark.skipif(not have_quimb, reason="quimb not installed")
 def test_XY_YZ_extraction() -> None:
     # Almost identical to the diagram in test_ZXExtraction.cpp
     # Gadgets g3 and g8 removed as they made tensor evaluation real slow
@@ -795,13 +916,132 @@ def test_XY_YZ_extraction() -> None:
     diag.add_wire(o2ext, outs[2])
     diag.add_wire(o3, outs[3])
     diag.add_wire(o4ext, outs[4])
+    diag.check_validity()
     circ, _ = diag.to_circuit()
     assert circ.n_qubits == 5
-    Rewrite.rebase_to_zx().apply(diag)
-    diag.check_validity()
     diag_u = unitary_from_quantum_diagram(diag)
     circ_u = circ.get_unitary()
     assert compare_unitaries(diag_u, circ_u)
+
+
+@pytest.mark.skipif(not have_quimb, reason="quimb not installed")
+def test_ZX_rebase() -> None:
+    diag = ZXDiagram(2, 1, 0, 1)
+    ins = diag.get_boundary(ZXType.Input)
+    outs = diag.get_boundary(ZXType.Output)
+    h0 = diag.add_vertex(ZXType.Hbox)
+    h1 = diag.add_vertex(ZXType.Hbox, -3.7, QuantumType.Classical)
+    xy = diag.add_vertex(ZXType.XY, 0.4)
+    xz = diag.add_vertex(ZXType.XZ, 0.7, QuantumType.Classical)
+    yz = diag.add_vertex(ZXType.YZ, 1.2)
+    px = diag.add_vertex(ZXType.PX, False, QuantumType.Classical)
+    py = diag.add_vertex(ZXType.PY, True, QuantumType.Classical)
+    pz = diag.add_vertex(ZXType.PZ, True)
+    zspid = diag.add_vertex(ZXType.ZSpider, 0.9)
+    xspid = diag.add_vertex(ZXType.XSpider, 1.8, QuantumType.Classical)
+    diag.add_wire(ins[0], h0)
+    diag.add_wire(h0, xy)
+    diag.add_wire(xy, yz)
+    diag.add_wire(pz, outs[0])
+    diag.add_wire(yz, zspid)
+    diag.add_wire(ins[1], xspid)
+    diag.add_wire(xspid, xz, ZXWireType.Basic, QuantumType.Classical)
+    diag.add_wire(xz, px, ZXWireType.Basic, QuantumType.Classical)
+    diag.add_wire(xz, py, ZXWireType.Basic, QuantumType.Classical)
+    diag.add_wire(py, h1, ZXWireType.Basic, QuantumType.Classical)
+    diag.add_wire(h1, h1)
+    diag.add_wire(h1, outs[1], ZXWireType.Basic, QuantumType.Classical)
+    diag.check_validity()
+    t0 = tensor_from_mixed_diagram(diag)
+
+    # Rebasing to ZX
+    Rewrite.rebase_to_zx().apply(diag)
+    diag.check_validity()
+    assert diag.count_vertices(ZXType.Hbox) == 0
+    assert diag.count_vertices(ZXType.XY) == 0
+    assert diag.count_vertices(ZXType.XZ) == 0
+    assert diag.count_vertices(ZXType.YZ) == 0
+    assert diag.count_vertices(ZXType.PX) == 0
+    assert diag.count_vertices(ZXType.PY) == 0
+    assert diag.count_vertices(ZXType.PZ) == 0
+    assert diag.count_vertices(ZXType.Triangle) == 0
+    assert diag.count_vertices(ZXType.ZXBox) == 0
+    t1 = tensor_from_mixed_diagram(diag)
+    (t0, t1) = joint_normalise_tensor(t0, t1)
+    assert np.allclose(t0, t1)
+
+    # Rebasing to MBQC
+    Rewrite.rebase_to_mbqc().apply(diag)
+    diag.check_validity()
+    assert diag.count_vertices(ZXType.Hbox) == 0
+    assert diag.count_vertices(ZXType.ZSpider) == 0
+    assert diag.count_vertices(ZXType.XSpider) == 0
+    assert diag.count_vertices(ZXType.Triangle) == 0
+    assert diag.count_vertices(ZXType.ZXBox) == 0
+    t2 = tensor_from_mixed_diagram(diag)
+    (t0, t2) = joint_normalise_tensor(t0, t2)
+    assert np.allclose(t0, t2)
+
+
+@pytest.mark.skipif(not have_quimb, reason="quimb not installed")
+def test_internalise_gadgets() -> None:
+    for axis_basis, axis_angle in [
+        (ZXType.XY, 0.25),
+        (ZXType.PX, False),
+        (ZXType.PX, True),
+        (ZXType.PY, False),
+        (ZXType.PY, True),
+    ]:
+        for gadget_basis, gadget_angle in [
+            (ZXType.XY, 0.25),
+            (ZXType.XZ, 0.25),
+            (ZXType.YZ, 0.25),
+            (ZXType.PX, False),
+            (ZXType.PX, True),
+            (ZXType.PY, False),
+            (ZXType.PY, True),
+            (ZXType.PZ, False),
+            (ZXType.PZ, True),
+        ]:
+            diag = ZXDiagram(1, 1, 0, 0)
+            ins = diag.get_boundary(ZXType.Input)
+            outs = diag.get_boundary(ZXType.Output)
+            in_v = diag.add_vertex(ZXType.PX, False)
+            out_v = diag.add_vertex(ZXType.PX, False)
+            axis = diag.add_vertex(axis_basis, axis_angle)
+            gadget = diag.add_vertex(gadget_basis, gadget_angle)
+            diag.add_wire(ins[0], in_v)
+            diag.add_wire(in_v, axis, ZXWireType.H)
+            diag.add_wire(axis, out_v, ZXWireType.H)
+            diag.add_wire(out_v, outs[0])
+            diag.add_wire(axis, gadget, ZXWireType.H)
+            t = tensor_from_quantum_diagram(diag)
+            Rewrite.internalise_gadgets().apply(diag)
+            if (axis_basis == ZXType.XY) and (gadget_basis in [ZXType.XY, ZXType.XZ]):
+                assert diag.n_vertices == 6
+            else:
+                assert diag.n_vertices == 5
+            t2 = tensor_from_quantum_diagram(diag)
+            (t, t2) = joint_normalise_tensor(t, t2)
+            assert np.allclose(t, t2)
+
+
+def test_round_trip() -> None:
+    circ = Circuit(5)
+    circ.CCX(0, 1, 4)
+    circ.CCX(2, 4, 3)
+    circ.CCX(0, 1, 4)
+    auto_rebase_pass(
+        {OpType.Rx, OpType.Rz, OpType.X, OpType.Z, OpType.H, OpType.CX, OpType.CZ}
+    ).apply(circ)
+    diag, _ = circuit_to_zx(circ)
+
+    Rewrite.to_graphlike_form().apply(diag)
+    Rewrite.reduce_graphlike_form().apply(diag)
+    Rewrite.to_MBQC_diag().apply(diag)
+
+    c, _ = diag.to_circuit()
+    assert compare_unitaries(circ.get_unitary(), c.get_unitary())
 
 
 if __name__ == "__main__":
@@ -809,6 +1049,7 @@ if __name__ == "__main__":
     test_diagram_creation()
     test_known_tensors()
     test_classical_and_cptp()
+    test_tensor_errors()
     test_graph_like_reduction()
     test_spider_fusion()
     test_simplification()
@@ -816,3 +1057,6 @@ if __name__ == "__main__":
     test_constructors()
     test_XY_extraction()
     test_XY_YZ_extraction()
+    test_ZX_rebase()
+    test_internalise_gadgets()
+    test_round_trip()

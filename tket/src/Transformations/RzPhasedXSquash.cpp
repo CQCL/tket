@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "RzPhasedXSquash.hpp"
+#include "tket/Transformations/RzPhasedXSquash.hpp"
 
 #include <memory>
 
-#include "BasicOptimisation.hpp"
-#include "Decomposition.hpp"
-#include "PQPSquash.hpp"
-#include "Transform.hpp"
-#include "Utils/Expression.hpp"
+#include "tket/Transformations/BasicOptimisation.hpp"
+#include "tket/Transformations/Decomposition.hpp"
+#include "tket/Transformations/PQPSquash.hpp"
+#include "tket/Transformations/Transform.hpp"
+#include "tket/Utils/Expression.hpp"
 
 namespace tket {
 

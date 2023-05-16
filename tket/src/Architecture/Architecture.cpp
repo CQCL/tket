@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Architecture/Architecture.hpp"
+#include "tket/Architecture/Architecture.hpp"
 
 #include <boost/graph/biconnected_components.hpp>
 #include <tkassert/Assert.hpp>
 #include <unordered_set>
 #include <vector>
 
-#include "Graphs/ArticulationPoints.hpp"
-#include "Utils/Json.hpp"
-#include "Utils/UnitID.hpp"
+#include "tket/Graphs/ArticulationPoints.hpp"
+#include "tket/Utils/Json.hpp"
+#include "tket/Utils/UnitID.hpp"
 
 namespace tket {
 
@@ -55,11 +55,11 @@ Architecture Architecture::create_subarch(
 std::vector<node_vector_t> Architecture::get_lines(
     std::vector<unsigned> required_lengths) const {
   // check total length doesn't exceed number of nodes
-  if (std::accumulate(required_lengths.begin(), required_lengths.end(), 0u) >
-      n_nodes()) {
-    throw ArchitectureInvalidity(
-        "Not enough nodes to satisfy required lengths.");
-  }
+  bool not_enough_nodes =
+      std::accumulate(required_lengths.begin(), required_lengths.end(), 0u) >
+      n_nodes();
+  TKET_ASSERT(!not_enough_nodes);  // Not enough nodes for required lengths.
+
   std::sort(
       required_lengths.begin(), required_lengths.end(),
       std::greater<unsigned>());
@@ -254,44 +254,46 @@ void from_json(const nlohmann::json& j, FullyConnected& ar) {
 //      Architecture subclasses     //
 //////////////////////////////////////
 
-RingArch::RingArch(unsigned numberOfNodes)
-    : Architecture(get_edges(numberOfNodes)) {}
+RingArch::RingArch(unsigned numberOfNodes, const std::string& label)
+    : Architecture(get_edges(numberOfNodes, label)) {}
 
 std::vector<Architecture::Connection> RingArch::get_edges(
-    unsigned numberOfNodes) {
+    unsigned numberOfNodes, const std::string& label) {
   std::vector<Connection> edges;
   for (unsigned i = 0; i < numberOfNodes; i++) {
-    Node n1("ringNode", i);
-    Node n2("ringNode", (i + 1) % numberOfNodes);
+    Node n1(label, i);
+    Node n2(label, (i + 1) % numberOfNodes);
     edges.push_back({n1, n2});
   }
   return edges;
 }
 
 SquareGrid::SquareGrid(
-    const unsigned dim_r, const unsigned dim_c, const unsigned _layers)
-    : Architecture(get_edges(dim_r, dim_c, _layers)),
+    const unsigned dim_r, const unsigned dim_c, const unsigned _layers,
+    const std::string& label)
+    : Architecture(get_edges(dim_r, dim_c, _layers, label)),
       dimension_r{dim_r},
       dimension_c{dim_c},
       layers{_layers} {}
 
 std::vector<Architecture::Connection> SquareGrid::get_edges(
-    const unsigned dim_r, const unsigned dim_c, const unsigned layers) {
+    const unsigned dim_r, const unsigned dim_c, const unsigned layers,
+    const std::string& label) {
   std::vector<Connection> edges;
   for (unsigned l = 0; l < layers; l++) {
     for (unsigned ver = 0; ver < dim_r; ver++) {
       for (unsigned hor = 0; hor < dim_c; hor++) {
-        Node n("gridNode", ver, hor, l);
+        Node n(label, ver, hor, l);
         if (hor != dim_c - 1) {
-          Node h_neighbour("gridNode", ver, hor + 1, l);
+          Node h_neighbour(label, ver, hor + 1, l);
           edges.push_back({n, h_neighbour});
         }
         if (ver != dim_r - 1) {
-          Node v_neighbour("gridNode", ver + 1, hor, l);
+          Node v_neighbour(label, ver + 1, hor, l);
           edges.push_back({n, v_neighbour});
         }
         if (l != layers - 1) {
-          Node l_neighbour("gridNode", ver, hor, l + 1);
+          Node l_neighbour(label, ver, hor, l + 1);
           edges.push_back({n, l_neighbour});
         }
       }

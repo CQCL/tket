@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,20 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "PassLibrary.hpp"
+#include "tket/Predicates/PassLibrary.hpp"
 
 #include <memory>
 
-#include "Circuit/CircPool.hpp"
-#include "PassGenerators.hpp"
-#include "Predicates/CompilerPass.hpp"
-#include "Transformations/BasicOptimisation.hpp"
-#include "Transformations/Decomposition.hpp"
-#include "Transformations/MeasurePass.hpp"
-#include "Transformations/OptimisationPass.hpp"
-#include "Transformations/Rebase.hpp"
-#include "Transformations/Transform.hpp"
-#include "Utils/Json.hpp"
+#include "tket/Circuit/CircPool.hpp"
+#include "tket/Converters/Converters.hpp"
+#include "tket/Predicates/CompilationUnit.hpp"
+#include "tket/Predicates/CompilerPass.hpp"
+#include "tket/Predicates/PassGenerators.hpp"
+#include "tket/Predicates/Predicates.hpp"
+#include "tket/Transformations/BasicOptimisation.hpp"
+#include "tket/Transformations/Decomposition.hpp"
+#include "tket/Transformations/MeasurePass.hpp"
+#include "tket/Transformations/OptimisationPass.hpp"
+#include "tket/Transformations/Rebase.hpp"
+#include "tket/Transformations/Transform.hpp"
+#include "tket/Utils/Json.hpp"
+#include "tket/ZX/Rewrite.hpp"
 
 namespace tket {
 
@@ -96,28 +100,6 @@ const PassPtr &RebaseUFR() {
   static const PassPtr pp(gate_translation_pass(
       Transforms::rebase_UFR(), {OpType::CX, OpType::Rz, OpType::H}, true,
       "RebaseUFR"));
-  return pp;
-}
-
-const PassPtr &PeepholeOptimise2Q() {
-  OpTypeSet after_set = {
-      OpType::TK1, OpType::CX, OpType::Measure, OpType::Collapse,
-      OpType::Reset};
-  PredicatePtrMap precons = {};
-  std::type_index ti = typeid(ConnectivityPredicate);
-  PredicatePtr out_gateset = std::make_shared<GateSetPredicate>(after_set);
-  PredicatePtr max2qb = std::make_shared<MaxTwoQubitGatesPredicate>();
-  PredicatePtrMap postcon_spec = {
-      CompilationUnit::make_type_pair(out_gateset),
-      CompilationUnit::make_type_pair(max2qb)};
-  PredicateClassGuarantees g_postcons;
-  g_postcons.insert({ti, Guarantee::Clear});
-  PostConditions postcon{postcon_spec, g_postcons, Guarantee::Preserve};
-  // record pass config
-  nlohmann::json j;
-  j["name"] = "PeepholeOptimise2Q";
-  static const PassPtr pp(std::make_shared<StandardPass>(
-      precons, Transforms::peephole_optimise_2q(), postcon, j));
   return pp;
 }
 
@@ -354,20 +336,32 @@ const PassPtr &RemoveBarriers() {
   return pp;
 }
 
-const PassPtr &DelayMeasures() {
-  static const PassPtr pp([]() {
-    Transform t = Transforms::delay_measures();
-    PredicatePtr midmeaspred = std::make_shared<NoMidMeasurePredicate>();
-    PredicatePtrMap spec_postcons = {
-        CompilationUnit::make_type_pair(midmeaspred)};
-    PostConditions postcon = {spec_postcons, {}, Guarantee::Preserve};
-    PredicatePtrMap precons;
-    // record pass config
+const PassPtr &DelayMeasures(const bool allow_partial) {
+  auto f = [](bool allow_partial) {
+    Transform t = Transforms::delay_measures(allow_partial);
+
+    PredicatePtrMap precon;
+    PostConditions postcon;
+
+    if (!allow_partial) {
+      PredicatePtr delaymeaspred =
+          std::make_shared<CommutableMeasuresPredicate>();
+      precon = {CompilationUnit::make_type_pair(delaymeaspred)};
+
+      PredicatePtr midmeaspred = std::make_shared<NoMidMeasurePredicate>();
+      PredicatePtrMap spec_postcons = {
+          CompilationUnit::make_type_pair(midmeaspred)};
+      postcon = {spec_postcons, {}, Guarantee::Preserve};
+    }
+
     nlohmann::json j;
     j["name"] = "DelayMeasures";
-    return std::make_shared<StandardPass>(precons, t, postcon, j);
-  }());
-  return pp;
+    j["allow_partial"] = allow_partial;
+    return std::make_shared<StandardPass>(precon, t, postcon, j);
+  };
+  static const PassPtr delay(f(false));
+  static const PassPtr try_delay(f(true));
+  return allow_partial ? try_delay : delay;
 }
 
 const PassPtr &RemoveDiscarded() {
@@ -461,6 +455,72 @@ const PassPtr &CnXPairwiseDecomposition() {
     nlohmann::json j;
     j["name"] = "CnXPairwiseDecomposition";
     return std::make_shared<StandardPass>(s_ps, t, postcon, j);
+  }());
+  return pp;
+}
+
+const PassPtr &RemoveImplicitQubitPermutation() {
+  static const PassPtr pp([]() {
+    Transform t = Transform([](Circuit &circ) {
+      bool has_implicit_wire_swaps = circ.has_implicit_wireswaps();
+      circ.replace_all_implicit_wire_swaps();
+      return has_implicit_wire_swaps;
+    });
+    PredicatePtrMap precons;
+    PredicatePtr no_wire_swap = std::make_shared<NoWireSwapsPredicate>();
+    PredicatePtrMap specific_postcons = {
+        CompilationUnit::make_type_pair(no_wire_swap)};
+    PredicateClassGuarantees generic_postcons;
+    Guarantee default_postcon = Guarantee::Preserve;
+    PostConditions postcons{
+        specific_postcons, generic_postcons, default_postcon};
+    PredicateClassGuarantees g_postcons = {
+        {typeid(GateSetPredicate), Guarantee::Clear},
+        {typeid(NoMidMeasurePredicate), Guarantee::Clear}};
+    nlohmann::json j;
+    j["name"] = "RemoveImplicitQubitPermutation";
+    return std::make_shared<StandardPass>(precons, t, postcons, j);
+  }());
+  return pp;
+}
+
+const PassPtr &ZXGraphlikeOptimisation() {
+  static const PassPtr pp([]() {
+    Transform t = Transform([](Circuit &circ) {
+      zx::ZXDiagram diag = circuit_to_zx(circ).first;
+      zx::Rewrite::to_graphlike_form().apply(diag);
+      zx::Rewrite::reduce_graphlike_form().apply(diag);
+      zx::Rewrite::to_MBQC_diag().apply(diag);
+      Circuit c = zx_to_circuit(diag);
+      qubit_vector_t orig_qs = circ.all_qubits();
+      qubit_vector_t c_qs = c.all_qubits();
+      qubit_map_t qmap;
+      for (unsigned i = 0; i < orig_qs.size(); ++i)
+        qmap.insert({c_qs.at(i), orig_qs.at(i)});
+      c.rename_units<Qubit, Qubit>(qmap);
+      circ = c;
+      return true;
+    });
+    OpTypeSet in_optypes = {OpType::Input, OpType::Output, OpType::noop,
+                            OpType::SWAP,  OpType::H,      OpType::Rz,
+                            OpType::Rx,    OpType::X,      OpType::Z,
+                            OpType::CX,    OpType::CZ};
+    PredicatePtrMap precons = {
+        CompilationUnit::make_type_pair(
+            std::make_shared<GateSetPredicate>(in_optypes)),
+        CompilationUnit::make_type_pair(
+            std::make_shared<NoClassicalBitsPredicate>())};
+    PredicatePtrMap specific_postcons;
+    Guarantee default_postcon = Guarantee::Preserve;
+    PredicateClassGuarantees generic_postcons = {
+        {typeid(GateSetPredicate), Guarantee::Clear},
+        {typeid(ConnectivityPredicate), Guarantee::Clear},
+        {typeid(NoWireSwapsPredicate), Guarantee::Clear}};
+    PostConditions postcons{
+        specific_postcons, generic_postcons, default_postcon};
+    nlohmann::json j;
+    j["name"] = "ZXGraphlikeOptimisation";
+    return std::make_shared<StandardPass>(precons, t, postcons, j);
   }());
   return pp;
 }

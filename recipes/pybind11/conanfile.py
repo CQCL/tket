@@ -1,4 +1,4 @@
-# Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,86 +12,138 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from conans import ConanFile, tools, CMake
+from conan import ConanFile
+from conan.tools.cmake import CMake, CMakeToolchain
+from conan.tools.layout import basic_layout
+from conan.tools.files import get, copy, replace_in_file, rm, rmdir
 import os
-import sys
 
 
 class PyBind11Conan(ConanFile):
     name = "pybind11"
-    version = "2.10.2"
+    version = "2.10.4"
     description = "Seamless operability between C++11 and Python"
-    topics = "conan", "pybind11", "python", "binding"
+    topics = "pybind11", "python", "binding"
     homepage = "https://github.com/pybind/pybind11"
     license = "BSD-3-Clause"
-    exports_sources = "CMakeLists.txt"
     settings = "os", "arch", "compiler", "build_type"
-    generators = "cmake"
     no_copy_source = True
 
-    _source_subfolder = "source_subfolder"
-
-    _cmake = None
+    def layout(self):
+        basic_layout(self, src_folder="src")
 
     def source(self):
-        tools.get(
-            f"https://github.com/pybind/pybind11/archive/refs/tags/v{self.version}.tar.gz"
+        get(
+            self,
+            f"https://github.com/pybind/pybind11/archive/refs/tags/v{self.version}.tar.gz",
+            destination=self.source_folder,
+            strip_root=True,
         )
-        os.rename("{}-{}".format(self.name, self.version), self._source_subfolder)
 
-    def _configure_cmake(self):
-        if self._cmake:
-            return self._cmake
-        self._cmake = CMake(self)
-        self._cmake.definitions["PYBIND11_INSTALL"] = True
-        self._cmake.definitions["PYBIND11_TEST"] = False
-        self._cmake.definitions[
-            "PYBIND11_CMAKECONFIG_INSTALL_DIR"
-        ] = "lib/cmake/pybind11"
-
-        # Use pybind11's CMakeLists.txt directly. Otherwise,
-        # PYBIND11_MASTER_PROJECT is set to FALSE and the installation does not
-        # generate pybind11Targets.cmake. Without that the generated package
-        # config cannot be used successfully. We want to use the generated
-        # package config as this starting in version 2.6.0 onwards defines the
-        # pybind11::headers target that is required to make full use of all
-        # installed cmake files.
-        self._cmake.configure(
-            source_dir=os.path.join(self.source_folder, self._source_subfolder),
-            defs={"PYTHON_EXECUTABLE": sys.executable},
-        )
-        return self._cmake
+    def generate(self):
+        tc = CMakeToolchain(self)
+        tc.variables["PYBIND11_INSTALL"] = True
+        tc.variables["PYBIND11_TEST"] = False
+        tc.variables["PYBIND11_CMAKECONFIG_INSTALL_DIR"] = "lib/cmake/pybind11"
+        tc.generate()
 
     def build(self):
-        cmake = self._configure_cmake()
+        cmake = CMake(self)
+        cmake.configure()
         cmake.build()
 
     def package(self):
-        self.copy("LICENSE", src=self._source_subfolder, dst="licenses")
-        cmake = self._configure_cmake()
-        cmake.install()
-        lib_folder = os.path.join(self.package_folder, "lib", "cmake", "pybind11")
-        os.rename(
-            os.path.join(lib_folder, "pybind11Config.cmake"),
-            os.path.join(lib_folder, "pybind11Install.cmake"),
+        copy(
+            self,
+            "LICENSE",
+            src=self.source_folder,
+            dst=os.path.join(self.package_folder, "licenses"),
         )
-        os.unlink(os.path.join(lib_folder, "pybind11ConfigVersion.cmake"))
+        cmake = CMake(self)
+        cmake.install()
+        for filename in [
+            "pybind11Targets.cmake",
+            "pybind11Config.cmake",
+            "pybind11ConfigVersion.cmake",
+        ]:
+            rm(
+                self,
+                filename,
+                os.path.join(self.package_folder, "lib", "cmake", "pybind11"),
+            )
+
+        rmdir(self, os.path.join(self.package_folder, "share"))
+
+        replace_in_file(
+            self,
+            os.path.join(
+                self.package_folder, "lib", "cmake", "pybind11", "pybind11Common.cmake"
+            ),
+            "if(TARGET pybind11::lto)",
+            "if(FALSE)",
+        )
+        replace_in_file(
+            self,
+            os.path.join(
+                self.package_folder, "lib", "cmake", "pybind11", "pybind11Common.cmake"
+            ),
+            "add_library(",
+            "# add_library(",
+        )
+        replace_in_file(
+            self,
+            os.path.join(
+                self.package_folder, "lib", "cmake", "pybind11", "pybind11Common.cmake"
+            ),
+            """add_library(pybind11::embed IMPORTED INTERFACE ${optional_global})
+set_property(
+  TARGET pybind11::embed
+  APPEND
+  PROPERTY INTERFACE_LINK_LIBRARIES pybind11::pybind11)""",
+            """# add_library(pybind11::embed IMPORTED INTERFACE ${optional_global})
+# set_property(
+#   TARGET pybind11::embed
+#   APPEND
+#   PROPERTY INTERFACE_LINK_LIBRARIES pybind11::pybind11)""",
+        )
+        replace_in_file(
+            self,
+            os.path.join(
+                self.package_folder, "lib", "cmake", "pybind11", "pybind11Tools.cmake"
+            ),
+            """  target_link_libraries(pybind11::embed INTERFACE pybind11::pybind11
+                                                  pybind11::_ClassicPythonLibraries)""",
+            """  # target_link_libraries(pybind11::embed INTERFACE pybind11::pybind11
+                 #                                  pybind11::_ClassicPythonLibraries)""",
+        )
 
     def package_id(self):
-        self.info.header_only()
+        self.info.clear()
 
     def package_info(self):
-        self.cpp_info.includedirs.append(
-            os.path.join(self.package_folder, "include", "pybind11")
-        )
-
         cmake_base_path = os.path.join("lib", "cmake", "pybind11")
-        self.cpp_info.builddirs = [cmake_base_path]
-
-        def get_path(filename):
-            return os.path.join(cmake_base_path, filename)
-
-        self.cpp_info.build_modules = [
-            get_path("FindPythonLibsNew.cmake"),
-            get_path("pybind11Install.cmake"),
-        ]
+        self.cpp_info.set_property("cmake_target_name", "pybind11_all_do_not_use")
+        self.cpp_info.components["headers"].includedirs = ["include"]
+        self.cpp_info.components["pybind11_"].set_property(
+            "cmake_target_name", "pybind11::pybind11"
+        )
+        self.cpp_info.components["pybind11_"].set_property(
+            "cmake_module_file_name", "pybind11"
+        )
+        self.cpp_info.components["pybind11_"].names["cmake_find_package"] = "pybind11"
+        self.cpp_info.components["pybind11_"].builddirs = [cmake_base_path]
+        self.cpp_info.components["pybind11_"].requires = ["headers"]
+        cmake_file = os.path.join(cmake_base_path, "pybind11Common.cmake")
+        self.cpp_info.set_property("cmake_build_modules", [cmake_file])
+        for generator in ["cmake_find_package", "cmake_find_package_multi"]:
+            self.cpp_info.components["pybind11_"].build_modules[generator].append(
+                cmake_file
+            )
+        # self.cpp_info.components["embed"].requires = ["pybind11_"]
+        self.cpp_info.components["module"].requires = ["pybind11_"]
+        self.cpp_info.components["python_link_helper"].requires = ["pybind11_"]
+        self.cpp_info.components["windows_extras"].requires = ["pybind11_"]
+        self.cpp_info.components["lto"].requires = ["pybind11_"]
+        self.cpp_info.components["thin_lto"].requires = ["pybind11_"]
+        self.cpp_info.components["opt_size"].requires = ["pybind11_"]
+        self.cpp_info.components["python2_no_register"].requires = ["pybind11_"]

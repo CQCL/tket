@@ -1,4 +1,4 @@
-# Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -150,6 +150,7 @@ PARAM_COMMANDS = {
     "cry": OpType.CRy,
     "cu1": OpType.CU1,
     "cu3": OpType.CU3,
+    "Rxxyyzz": OpType.TK2,
 }
 
 NOPARAM_EXTRA_COMMANDS = {
@@ -702,9 +703,14 @@ class CircuitTransformer(Transformer):
             # assume to be extern (wasm) call
             chained_uids = list(chain.from_iterable(args_uids))
             com = next(exp_tree)
+            com["args"].pop()  # remove the wasmstate from the args
             com["args"] += chained_uids
+            com["args"].append(["_w", [0]])
             com["op"]["wasm"]["n"] += len(chained_uids)
-            com["op"]["wasm"]["no_vec"] = [self.c_registers[reg] for reg in out_args]
+            com["op"]["wasm"]["width_o_parameter"] = [
+                self.c_registers[reg] for reg in out_args
+            ]
+
             yield com
             return
         else:
@@ -773,16 +779,21 @@ class CircuitTransformer(Transformer):
             )
         n_i_vec = [self.c_registers[reg] for reg in params]
 
+        wasm_args = list(chain.from_iterable(self.unroll_all_args(params)))
+
+        wasm_args.append(["_w", [0]])
+
         yield {
-            "args": list(chain.from_iterable(self.unroll_all_args(params))),
+            "args": wasm_args,
             "op": {
                 "type": "WASM",
                 "wasm": {
                     "func_name": nam,
+                    "ww_n": 1,
                     "n": sum(n_i_vec),
-                    "ni_vec": n_i_vec,
-                    "no_vec": [],
-                    "wasm_uid": str(self.wasm),
+                    "width_i_parameter": n_i_vec,
+                    "width_o_parameter": [],  # this will be set in the assign function
+                    "wasm_file_uid": str(self.wasm),
                 },
             },
         }
@@ -833,12 +844,16 @@ class CircuitTransformer(Transformer):
                 PARAM_EXTRA_COMMANDS[gate],
                 qubit_args,
                 [
-                    Symbol("param" + str(index)) for index in range(len(symbols))  # type: ignore
+                    Symbol("param" + str(index) + "/pi") for index in range(len(symbols))  # type: ignore
                 ],
             )
-            if circuit_to_qasm_str(comparison_circ) == circuit_to_qasm_str(gate_circ):
-                existing_op = True
-
+            # checks that each command has same string
+            existing_op = all(
+                str(g) == str(c)
+                for g, c in zip(
+                    gate_circ.get_commands(), comparison_circ.get_commands()
+                )
+            )
         if not existing_op:
             gate_circ.symbol_substitution(symbol_map)
             gate_circ.rename_units(rename_map)
@@ -930,7 +945,8 @@ def circuit_from_qasm_wasm(
 
 
 def circuit_to_qasm(circ: Circuit, output_file: str, header: str = "qelib1") -> None:
-    """A method to generate a qasm file from a tket Circuit"""
+    """A method to generate a qasm file from a tket Circuit.
+    Note that this will not account for implicit qubit permutations in the Circuit."""
     with open(output_file, "w") as out:
         circuit_to_qasm_io(circ, out, header=header)
 
@@ -960,7 +976,8 @@ def _filtered_qasm_str(qasm: str) -> str:
 
 
 def circuit_to_qasm_str(circ: Circuit, header: str = "qelib1") -> str:
-    """A method to generate a qasm str from a tket Circuit"""
+    """A method to generate a qasm str from a tket Circuit.
+    Note that this will not account for implicit qubit permutations in the Circuit."""
     buffer = io.StringIO()
     circuit_to_qasm_io(circ, buffer, header=header)
     return buffer.getvalue()
@@ -1043,10 +1060,12 @@ def _write_gate_definition(
     if params:
         # need to add parameters to gate definition
         buffer.write("(")
-        symbols = [Symbol("param" + str(index)) for index in range(len(params))]  # type: ignore
-        for symbol in symbols[:-1]:
+        symbols = [Symbol("param" + str(index) + "/pi") for index in range(len(params))]  # type: ignore
+        symbols_header = [Symbol("param" + str(index)) for index in range(len(params))]  # type: ignore
+        for symbol in symbols_header[:-1]:
             buffer.write(symbol.name + ", ")
-        buffer.write(symbols[-1].name + ") ")
+        buffer.write(symbols_header[-1].name + ") ")
+
     # add qubits to gate definition
     qubit_args = [Qubit(opstr + "q" + str(index)) for index in list(range(n_qubits))]
     for qb in qubit_args[:-1]:
@@ -1069,7 +1088,8 @@ def circuit_to_qasm_io(
     header: str = "qelib1",
     include_gate_defs: Optional[Set[str]] = None,
 ) -> None:
-    """A method to generate a qasm text stream from a tket Circuit"""
+    """A method to generate a qasm text stream from a tket Circuit.
+    Note that this will not account for implicit qubit permutations in the Circuit."""
     # Write to a buffer since the output qasm might need additional filtering.
     # e.g. remove unused tket scratch bits.
     buffer = io.StringIO()
@@ -1086,7 +1106,8 @@ def circuit_to_qasm_io(
         )
     ) and (not hqs_header(header)):
         raise QASMUnsupportedError(
-            "Complex classical gates only supported with hqslib1."
+            "Complex classical gates not supported with qelib1: try converting with "
+            "`header=hqslib1`"
         )
     include_module_gates = {"measure", "reset", "barrier"}
     include_module_gates.update(_load_include_module(header, False, True).keys())

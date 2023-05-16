@@ -1,4 +1,4 @@
-# Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,7 +15,7 @@
 from abc import ABC, abstractmethod
 from pathlib import Path
 from typing import Any, ClassVar, Dict, Optional, Type, TypeVar
-from dataclasses import asdict
+from dataclasses import asdict, dataclass
 import json
 import os
 
@@ -90,6 +90,7 @@ def write_config_file(config: PytketConfig) -> None:
 T_ext = TypeVar("T_ext", bound="PytketExtConfig")
 
 
+@dataclass
 class PytketExtConfig(ABC):
     """Abstract base class for pytket extension config classes."""
 

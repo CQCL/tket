@@ -37,48 +37,28 @@ jobs:
     needs: changes
     if: needs.changes.outputs.tket == 'true' || github.event_name == 'schedule'
     runs-on: ubuntu-22.04
-    env:
-      CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v3
-    - name: Get current time
-      uses: josStorer/get-current-time@v2.0.2
-      id: current_time
-      with:
-        format: YYYYMMDDHHmmss
-    - name: Use ccache
-      uses: hendrikmuhs/ccache-action@v1.2.5
-      with:
-        key: ${{ github.job }}-${{ runner.os }}-ccache-${{ steps.current_time.outputs.formattedTime }}
-        restore-keys: |
-          ${{ github.job }}-${{ runner.os }}-ccache-
     - name: Install conan
-      id: conan
-      run: |
-        pip install conan~=1.53
-        conan_cmd=/home/runner/.local/bin/conan
-        ${conan_cmd} profile new tket --detect
-        ${conan_cmd} profile update settings.compiler.libcxx=libstdc++11 tket
-        ${conan_cmd} profile update options.tklog:shared=True tket
-        ${conan_cmd} profile update options.tket:shared=True tket
-        ${conan_cmd} profile update settings.build_type=Debug tket
-        echo "CONAN_CMD=${conan_cmd}" >> $GITHUB_ENV
+      uses: turtlebrowser/get-conan@v1.2
+    - name: create profile
+      run: conan profile detect
     - name: add remote
-      run: |
-        ${CONAN_CMD} remote clean
-        ${CONAN_CMD} remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: Build tket
       run: |
-        ${CONAN_CMD} install recipes/tket tket/stable --install-folder=build/tket --profile=tket -o tket:profile_coverage=True
-        ${CONAN_CMD} build recipes/tket --configure --build-folder=build/tket --source-folder=tket/src
-        ${CONAN_CMD} build recipes/tket --build --build-folder=build/tket
-        ${CONAN_CMD} export-pkg recipes/tket tket/stable -f --build-folder=build/tket --source-folder=tket/src
+        conan install tket --user=tket --channel=stable -s build_type=Debug --build=missing -o boost/*:header_only=True -o tket/*:profile_coverage=True -of build/tket
+        conan build tket --user=tket --channel=stable -s build_type=Debug -o boost/*:header_only=True -o tket/*:profile_coverage=True -of build/tket
+        conan export-pkg tket --user=tket --channel=stable -s build_type=Debug -o boost/*:header_only=True -o tket/*:profile_coverage=True -of build/tket -tf ""
     - name: Build tket tests
       run: |
-        ${CONAN_CMD} install recipes/tket-tests --install-folder=build/tket-tests --profile=tket -o tket-tests:with_coverage=True
-        ${CONAN_CMD} build recipes/tket-tests --configure --build-folder=build/tket-tests --source-folder=tket/tests
-        ${CONAN_CMD} build recipes/tket-tests --build --build-folder=build/tket-tests
-        ${CONAN_CMD} package recipes/tket-tests/ --build-folder=build/tket-tests --package-folder build/tket-tests/package --source-folder=tket/tests
+        conan install tket/test -s build_type=Debug --build=missing -o boost/*:header_only=True -o test-tket/*:with_coverage=True -of build/tket-tests
+        conan build tket/test -s build_type=Debug --build=missing -o boost/*:header_only=True -o test-tket/*:with_coverage=True -of build/tket-tests
+        # Copy json files (`conan create` would do this properly, but would
+        # also delete the object files we need ... perhaps there is a better
+        # way):
+        cp tket/test/src/test_circuits/*.json ./build/tket-tests/build/Debug
+        cp tket/test/src/test_architectures/*.json ./build/tket-tests/build/Debug
     - name: Install runtime test requirements
       if: github.event_name == 'schedule'
       run: |
@@ -88,18 +68,18 @@ jobs:
         wget http://mirrors.ctan.org/graphics/pgf/contrib/quantikz/tikzlibraryquantikz.code.tex -P ~/texmf/tex/latex
     - name: Run tket tests
       if: github.event_name == 'pull_request' || github.event_name == 'push'
-      working-directory: ./build/tket-tests/package/bin
-      run: ./test_tket
+      working-directory: ./build/tket-tests/build/Debug
+      run: ./test-tket
     - name: Run full tket tests
       if: github.event_name == 'schedule'
-      working-directory: ./build/tket-tests/package/bin
-      run: ./test_tket "[long],~[long]"
+      working-directory: ./build/tket-tests/build/Debug
+      run: ./test-tket "[long],~[long]"
     - name: Install gcovr
-      run: pip install gcovr~=5.2
+      run: pip install gcovr~=6.0
     - name: Build coverage report
       run: |
         mkdir test-coverage
-        gcovr --print-summary --html --html-details -r ./tket/src/ --exclude-lines-by-pattern '.*\bTKET_ASSERT\(.*\);' --object-directory ${PWD}/build/tket/ -o test-coverage/index.html --decisions > test-coverage/summary.txt
+        gcovr --print-summary --html --html-details -r ./tket --exclude-lines-by-pattern '.*\bTKET_ASSERT\(.*\);' --object-directory ${PWD}/build/tket/build/Debug/CMakeFiles/tket.dir/src -o test-coverage/index.html --decisions > test-coverage/summary.txt
         cat test-coverage/summary.txt
     - name: Upload artefact
       uses: actions/upload-artifact@v3

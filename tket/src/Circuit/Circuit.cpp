@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Circuit.hpp"
+#include "tket/Circuit/Circuit.hpp"
 
 #include <fstream>
 #include <numeric>
@@ -22,9 +22,9 @@
 #include <tklog/TketLog.hpp>
 #include <utility>
 
-#include "Utils/Expression.hpp"
-#include "Utils/GraphHeaders.hpp"
-#include "Utils/HelperFunctions.hpp"
+#include "tket/Utils/Expression.hpp"
+#include "tket/Utils/GraphHeaders.hpp"
+#include "tket/Utils/HelperFunctions.hpp"
 
 namespace tket {
 

@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Utils/Constants.hpp"
-#include "Utils/GraphHeaders.hpp"
-#include "ZX/Rewrite.hpp"
+#include "tket/Utils/Constants.hpp"
+#include "tket/Utils/GraphHeaders.hpp"
+#include "tket/ZX/Rewrite.hpp"
 
 namespace tket {
 
@@ -100,11 +100,6 @@ bool Rewrite::rebase_to_zx_fun(ZXDiagram& diag) {
         ZXDiagram rep(0, 0, 0, 0);
         double r = std::abs(*opt_ph - 1.);
         double ph = std::arg(*opt_ph - 1.) / PI;
-        // Reduce r to the range [0, 2]
-        if (r < 0.) {
-          r *= -1.;
-          ph += 1.;
-        }
         // Core is an algebraic Zbox surrounded by triangles
         ZXVert zph = rep.add_vertex(ZXType::ZSpider, Expr(ph), qt);
         // Not every will may have the same QuantumType in general
@@ -150,8 +145,9 @@ bool Rewrite::rebase_to_zx_fun(ZXDiagram& diag) {
           break;
         }
         // Using the algebraic fusion rule, can break off 2-boxes (0-phase
-        // ZSpider and a triangle)
-        for (; r > 2.; r -= 1) {
+        // ZSpider and a triangle) to half the coefficient.
+        // r is always positive as it is the result of an abs
+        for (; r > 2.; r *= 0.5) {
           ZXVert tri = rep.add_vertex(ZXType::Triangle, qt);
           ZXVert one = rep.add_vertex(ZXType::ZSpider, qt);
           rep.add_wire(zph, tri, ZXWireType::Basic, qt, std::nullopt, 0);
@@ -159,7 +155,7 @@ bool Rewrite::rebase_to_zx_fun(ZXDiagram& diag) {
         }
         // Identify alpha s.t. r = e^{i*pi*alpha} + e^{-i*pi*alpha} =
         // 2*cos(alpha) and implement the algebraic Zbox
-        double alpha = std::acos(r / 2.);
+        double alpha = std::acos(r / 2.) / PI;
         ZXVert tri = rep.add_vertex(ZXType::Triangle, qt);
         ZXVert negal = rep.add_vertex(ZXType::ZSpider, Expr(-alpha), qt);
         ZXVert xmerge = rep.add_vertex(ZXType::XSpider, qt);
@@ -312,16 +308,36 @@ bool Rewrite::rebase_to_mbqc_fun(ZXDiagram& diag) {
       case ZXType::ZSpider: {
         ZXGen_ptr vgen = diag.get_vertex_ZXGen_ptr(v);
         const PhasedGen& vg = static_cast<const PhasedGen&>(*vgen);
-        ZXGen_ptr new_gen =
-            ZXGen::create_gen(ZXType::XY, -vg.get_param(), *vg.get_qtype());
+        std::optional<unsigned> pi2_mult = equiv_Clifford(vg.get_param());
+        ZXGen_ptr new_gen;
+        if (pi2_mult) {
+          if (*pi2_mult % 2 == 0)
+            new_gen = ZXGen::create_gen(
+                ZXType::PX, (*pi2_mult % 4 == 2), *vg.get_qtype());
+          else
+            new_gen = ZXGen::create_gen(
+                ZXType::PY, (*pi2_mult % 4 == 1), *vg.get_qtype());
+        } else
+          new_gen =
+              ZXGen::create_gen(ZXType::XY, -vg.get_param(), *vg.get_qtype());
         diag.set_vertex_ZXGen_ptr(v, new_gen);
         break;
       }
       case ZXType::XSpider: {
         ZXGen_ptr vgen = diag.get_vertex_ZXGen_ptr(v);
         const PhasedGen& vg = static_cast<const PhasedGen&>(*vgen);
-        ZXGen_ptr new_gen =
-            ZXGen::create_gen(ZXType::XY, -vg.get_param(), *vg.get_qtype());
+        std::optional<unsigned> pi2_mult = equiv_Clifford(vg.get_param());
+        ZXGen_ptr new_gen;
+        if (pi2_mult) {
+          if (*pi2_mult % 2 == 0)
+            new_gen = ZXGen::create_gen(
+                ZXType::PX, (*pi2_mult % 4 == 2), *vg.get_qtype());
+          else
+            new_gen = ZXGen::create_gen(
+                ZXType::PY, (*pi2_mult % 4 == 1), *vg.get_qtype());
+        } else
+          new_gen =
+              ZXGen::create_gen(ZXType::XY, -vg.get_param(), *vg.get_qtype());
         diag.set_vertex_ZXGen_ptr(v, new_gen);
         for (const Wire& w : diag.adj_wires(v)) {
           ZXWireType wt = diag.get_wire_type(w);

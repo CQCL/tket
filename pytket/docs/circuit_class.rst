@@ -2,9 +2,10 @@ pytket.circuit.Circuit
 ==================================
 :py:class:`Circuit` objects provide an abstraction of quantum circuits. They consist of a set of qubits/quantum wires and a collection of operations applied to them in a given order. These wires have open inputs and outputs, rather than assuming any fixed input state.
 
-See the
-`Pytket User Manual <https://cqcl.github.io/pytket/manual/index.html>`_
-for a step-by-step tutorial on constructing circuits.
+See the `Pytket User Manual <https://cqcl.github.io/pytket/manual/manual_circuit.html>`_ for a step-by-step tutorial on constructing circuits.
+
+See also the notebook tutorials on `circuit generation <https://github.com/CQCL/pytket/blob/main/examples/circuit_generation_example.ipynb>`_ and `circuit analysis <https://github.com/CQCL/pytket/blob/main/examples/circuit_analysis_example.ipynb>`_.
+
 
 Many of the :py:class:`Circuit` methods described below append a gate or box to
 the end of the circuit. Where ``kwargs`` are indicated in these methods, the

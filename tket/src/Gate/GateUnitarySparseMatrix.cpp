@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -16,11 +16,11 @@
 
 #include <tkassert/Assert.hpp>
 
-#include "Gate/Gate.hpp"
-#include "GateUnitaryMatrix.hpp"
-#include "GateUnitaryMatrixError.hpp"
-#include "GateUnitaryMatrixImplementations.hpp"
-#include "GateUnitaryMatrixUtils.hpp"
+#include "tket/Gate/Gate.hpp"
+#include "tket/Gate/GateUnitaryMatrix.hpp"
+#include "tket/Gate/GateUnitaryMatrixError.hpp"
+#include "tket/Gate/GateUnitaryMatrixImplementations.hpp"
+#include "tket/Gate/GateUnitaryMatrixUtils.hpp"
 
 namespace tket {
 namespace internal {

@@ -1,4 +1,4 @@
-# Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,9 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-cmake_minimum_required(VERSION 3.16.0)
+cmake_minimum_required(VERSION 3.23)
+project(test-tkrng CXX)
 
-project(test-tkrng)
+find_package(tkrng CONFIG REQUIRED)
+find_package(Catch2 CONFIG REQUIRED)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
@@ -24,17 +26,10 @@ if(CCACHE_PROGRAM)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
 endif()
 
-find_file(CONANBUILDINFO_FILE conanbuildinfo.cmake HINTS ${CMAKE_BINARY_DIR})
-include(${CONANBUILDINFO_FILE})
-conan_basic_setup()
+add_executable(test-tkrng src/test_RNG.cpp)
 
-add_definitions(-DALL_LOGS)
-
-add_executable(test-tkrng test_RNG.cpp)
-
-target_include_directories(test-tkrng PRIVATE )
-
-target_link_libraries(test-tkrng PRIVATE tkrng ${CONAN_LIBS_CATCH2})
+target_link_libraries(test-tkrng PRIVATE tkrng::tkrng)
+target_link_libraries(test-tkrng PRIVATE Catch2::Catch2WithMain)
 
 set(WITH_COVERAGE no CACHE BOOL "Link library with profiling for test coverage")
 IF (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
@@ -42,3 +37,9 @@ IF (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
         target_link_options(test-tkrng PUBLIC --coverage)
     ENDIF()
 ENDIF()
+
+install(TARGETS test-tkrng DESTINATION "."
+        RUNTIME DESTINATION bin
+        ARCHIVE DESTINATION lib
+        LIBRARY DESTINATION lib
+        )

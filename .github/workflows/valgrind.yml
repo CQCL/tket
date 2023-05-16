@@ -24,51 +24,33 @@ jobs:
         filters: |
           tket:
             - 'tket/**'
+            - '.github/workflows/valgrind.yml'
   check:
     runs-on: ubuntu-22.04
     needs: changes
     if: needs.changes.outputs.tket == 'true'
-    env:
-      CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v3
-    - name: Get current time
-      uses: josStorer/get-current-time@v2.0.2
-      id: current_time
-      with:
-        format: YYYYMMDDHHmmss
-    - name: Use ccache
-      uses: hendrikmuhs/ccache-action@v1.2.5
-      with:
-        key: ${{ github.job }}-${{ runner.os }}-ccache-${{ steps.current_time.outputs.formattedTime }}
-        restore-keys: |
-          ${{ github.job }}-${{ runner.os }}-ccache-
     - name: apt update
       run: sudo apt update
     - name: Install conan
-      uses: turtlebrowser/get-conan@v1.1
-      with:
-        version: '1.56.0'
+      uses: turtlebrowser/get-conan@v1.2
     - name: Set up conan
-      shell: bash
-      run: ./.github/workflows/conan-setup
-    - name: set option to run full test suite
-      if: github.event_name == 'schedule'
-      run: conan profile update options.tket-tests:full=True tket
+      run: |
+        conan profile detect
+        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: install valgrind
       run: sudo apt install valgrind
     - name: build tket
+      run: conan create tket --user=tket --channel=stable --build=missing -o boost/*:header_only=True
+    - name: Install runtime test requirements
+      if: github.event_name == 'schedule'
       run: |
-        conan install recipes/tket tket/stable --install-folder=build/tket --profile=tket
-        conan build recipes/tket --configure --build-folder=build/tket --source-folder=tket/src
-        conan build recipes/tket --build --build-folder=build/tket
-        conan export-pkg recipes/tket tket/stable -f --build-folder=build/tket --source-folder=tket/src
-    - name: build tket tests
+        sudo apt install texlive texlive-latex-extra latexmk
+        mkdir -p ~/texmf/tex/latex
+        wget http://mirrors.ctan.org/graphics/pgf/contrib/quantikz/tikzlibraryquantikz.code.tex -P ~/texmf/tex/latex
+    - name: Build and run tests under valgrind
       run: |
-        conan install recipes/tket-tests --install-folder=build/tket-tests --profile=tket
-        conan build recipes/tket-tests --configure --build-folder=build/tket-tests --source-folder=tket/tests
-        conan build recipes/tket-tests --build --build-folder=build/tket-tests
-        conan package recipes/tket-tests/ --build-folder=build/tket-tests --package-folder build/tket-tests/package --source-folder=tket/tests
-    - name: run tests under valgrind
-      working-directory: ./build/tket-tests/package/bin
-      run: valgrind --error-exitcode=1 ./test_tket
+        conan create tket/test --build=missing -o boost/*:header_only=True --format json > test-tket.json
+        PKGPATH=`./rootpath test-tket.json test-tket`
+        cd ${PKGPATH}/bin && valgrind --error-exitcode=1 ./test-tket `./github/workflows/test-args ${{ matrix.os }} ${{ github.event_name }}`

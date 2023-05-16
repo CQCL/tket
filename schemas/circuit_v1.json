@@ -508,6 +508,77 @@
         },
         "tab": {
           "$ref": "#/definitions/unitary_tableau"
+        },
+        "op_map": {
+          "type": "array",
+          "description": "Operation map for multiplexors.",
+          "items": {
+            "type": "array",
+            "items": [
+              {
+                "type": "array",
+                "items": {
+                  "type": "boolean"
+                }
+              },
+              {
+                "anyOf": [
+                  {"$ref": "#/definitions/operation"},
+                  {
+                    "type": "array",
+                    "items": {
+                      "$ref": "#/definitions/operation"
+                    }
+                  }
+                ]
+              }
+            ]
+          }
+        },
+        "impl_diag": {
+          "type": "boolean",
+          "description": "Indicate whether to implement the digonal operator from MultiplexedU2 decomposition."
+        },
+        "statevector": {
+          "$ref": "#/definitions/matrix",
+          "description": "Statevector represented by StatePreparationBox."
+        },
+        "diagonal": {
+          "$ref": "#/definitions/matrix",
+          "description": "Diagonal matrix represented by DiagonalBox."
+        },
+        "upper_triangle": {
+          "type": "boolean",
+          "description": "Indicate whether to implement multiplexors in the DiagonalBox decomposition as an upper triangle."
+        },
+        "is_inverse": {
+          "type": "boolean",
+          "description": "Indicate whether to implement the dagger of a StatePreparationBox."
+        },
+        "permutation": {
+          "type": "array",
+          "description": "Map of computational basis states",
+          "items": {
+            "type": "array",
+            "items": [
+              {
+                "type": "array",
+                "items": {
+                  "type": "boolean"
+                }
+              },
+              {
+                "type": "array",
+                "items": {
+                  "type": "boolean"
+                }
+              }
+            ]
+          } 
+        },
+        "rotation_axis": {
+          "type": "string",
+          "description": "A string corresponding to the tket OpType of the rotation axis."
         }
       },
       "required": [
@@ -597,8 +668,95 @@
           },
           "then": {
             "required": [
-              "cycles",
-              "n_qubits"
+              "permutation",
+              "rotation_axis"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "MultiplexorBox"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "op_map"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "MultiplexedRotationBox"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "op_map"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "MultiplexedU2Box"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "op_map",
+              "impl_diag"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "MultiplexedTensoredU2Box"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "op_map"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "StatePreparationBox"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "statevector",
+              "is_inverse"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "DiagonalBox"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "diagonal",
+              "upper_triangle"
             ]
           }
         },

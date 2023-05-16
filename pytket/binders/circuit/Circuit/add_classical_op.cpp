@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -22,13 +22,13 @@
 
 #include <bitset>
 
-#include "Circuit/Circuit.hpp"
-#include "Gate/OpPtrFunctions.hpp"
-#include "Ops/ClassicalOps.hpp"
-#include "Ops/Op.hpp"
 #include "UnitRegister.hpp"
 #include "add_gate.hpp"
 #include "binder_utils.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Gate/OpPtrFunctions.hpp"
+#include "tket/Ops/ClassicalOps.hpp"
+#include "tket/Ops/Op.hpp"
 
 namespace py = pybind11;
 
@@ -98,66 +98,98 @@ void init_circuit_add_classical_op(
           "_add_wasm",
           [](Circuit &circ, const std::string &funcname,
              const std::string &wasm_uid,
-             const std::vector<unsigned> &i32list_i,
-             const std::vector<unsigned> &i32list_o,
+             const std::vector<unsigned> &width_i_parameter,
+             const std::vector<unsigned> &width_o_parameter,
              const std::vector<unsigned> &args,
+             const std::vector<unsigned> &wasm_wire_args,
              const py::kwargs &kwargs) -> Circuit * {
-            unsigned n_args = args.size();
-            std::shared_ptr<WASMOp> op = std::make_shared<WASMOp>(
-                n_args, i32list_i, i32list_o, funcname, wasm_uid);
 
-            return add_gate_method<unsigned>(&circ, op, args, kwargs);
+            unsigned n_args = args.size();
+            unsigned ww_n = wasm_wire_args.size();
+
+            std::shared_ptr<WASMOp> op = std::make_shared<WASMOp>(
+                n_args, ww_n, width_i_parameter, width_o_parameter, funcname, wasm_uid);
+
+            std::vector<UnitID> new_args;
+
+            for (auto i : args) {
+              new_args.push_back(Bit(i));
+            }
+
+            for (auto i : wasm_wire_args) {
+              new_args.push_back(WasmState(i));
+            }
+
+            return add_gate_method<UnitID>(&circ, op, new_args, kwargs);
           },
           "Add a classical function call from a wasm file to the circuit. "
           "\n\n:param funcname: name of the function that is called"
           "\n:param wasm_uid: unit id to identify the wasm file"
-          "\n:param i32list_i: list of the number of bits in the input "
+          "\n:param width_i_parameter: list of the number of bits in the input "
           "variables"
-          "\n:param i32list_o: list of the number of bits in the output "
+          "\n:param width_o_parameter: list of the number of bits in the output "
           "variables"
           "\n:param args: vector of circuit bits the wasm op should be added to"
+          "\n:param wasm_wire_args: vector of circuit wasmwires the wasm op should be added to"
           "\n:param kwargs: additional arguments passed to `add_gate_method` ."
           " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
           " `condition_value`"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("funcname"), py::arg("wasm_uid"), py::arg("i32list_i"),
-          py::arg("i32list_o"), py::arg("args"))
+          py::arg("funcname"), py::arg("wasm_uid"), py::arg("width_i_parameter"),
+          py::arg("width_o_parameter"), py::arg("args"), py::arg("wasm_wire_args"))
       .def(
           "_add_wasm",
           [](Circuit &circ, const std::string &funcname,
              const std::string &wasm_uid,
-             const std::vector<unsigned> &i32list_i,
-             const std::vector<unsigned> &i32list_o,
+             const std::vector<unsigned> &width_i_parameter,
+             const std::vector<unsigned> &width_o_parameter,
              const std::vector<Bit> &args,
+             const std::vector<unsigned> &wasm_wire_args,
              const py::kwargs &kwargs) -> Circuit * {
-            unsigned n_args = args.size();
-            std::shared_ptr<WASMOp> op = std::make_shared<WASMOp>(
-                n_args, i32list_i, i32list_o, funcname, wasm_uid);
 
-            return add_gate_method<Bit>(&circ, op, args, kwargs);
+            unsigned n_args = args.size();
+            unsigned ww_n = wasm_wire_args.size();
+
+            std::shared_ptr<WASMOp> op = std::make_shared<WASMOp>(
+                n_args, ww_n, width_i_parameter, width_o_parameter, funcname, wasm_uid);
+
+            std::vector<UnitID> new_args;
+
+            for (auto b : args) {
+              new_args.push_back(b);
+            }
+
+            for (auto i : wasm_wire_args) {
+              new_args.push_back(WasmState(i));
+            }
+
+            return add_gate_method<UnitID>(&circ, op, new_args, kwargs);
           },
           "Add a classical function call from a wasm file to the circuit. "
           "\n\n:param funcname: name of the function that is called"
           "\n:param wasm_uid: unit id to identify the wasm file"
-          "\n:param i32list_i: list of the number of bits in the input "
+          "\n:param width_i_parameter: list of the number of bits in the input "
           "variables"
-          "\n:param i32list_o: list of the number of bits in the output "
+          "\n:param width_o_parameter: list of the number of bits in the output "
           "variables"
           "\n:param args: vector of circuit bits the wasm op should be added to"
           "\n:param kwargs: additional arguments passed to `add_gate_method` ."
           " Allowed parameters are `opgroup`,  `condition` , `condition_bits`,"
           " `condition_value`"
           "\n:return: the new :py:class:`Circuit`",
-          py::arg("funcname"), py::arg("wasm_uid"), py::arg("i32list_i"),
-          py::arg("i32list_o"), py::arg("args"))
+          py::arg("funcname"), py::arg("wasm_uid"), py::arg("width_i_parameter"),
+          py::arg("width_o_parameter"), py::arg("args"), py::arg("wasm_wire_args"))
       .def(
           "_add_wasm",
           [](Circuit &circ, const std::string &funcname,
              const std::string &wasm_uid,
              const std::vector<BitRegister> &list_reg_in,
              const std::vector<BitRegister> &list_reg_out,
+             const std::vector<unsigned> &wasm_wire_args,
              const py::kwargs &kwargs) -> Circuit * {
             unsigned n_args = 0;
+
+            unsigned ww_n = wasm_wire_args.size();
 
             for (auto r : list_reg_in) {
               n_args += r.size();
@@ -168,13 +200,13 @@ void init_circuit_add_classical_op(
             }
 
             std::vector<Bit> args(n_args);
-            std::vector<unsigned> i32list_i(list_reg_in.size());
-            std::vector<unsigned> i32list_o(list_reg_out.size());
+            std::vector<unsigned> width_i_parameter(list_reg_in.size());
+            std::vector<unsigned> width_o_parameter(list_reg_out.size());
 
             unsigned i = 0;
             unsigned j = 0;
             for (auto r : list_reg_in) {
-              i32list_i[i] = r.size();
+              width_i_parameter[i] = r.size();
               for (unsigned k = 0; k < r.size(); ++k) {
                 args[j] = r[k];
                 ++j;
@@ -184,7 +216,7 @@ void init_circuit_add_classical_op(
 
             i = 0;
             for (auto r : list_reg_out) {
-              i32list_o[i] = r.size();
+              width_o_parameter[i] = r.size();
               for (unsigned k = 0; k < r.size(); ++k) {
                 args[j] = r[k];
                 ++j;
@@ -193,9 +225,19 @@ void init_circuit_add_classical_op(
             }
 
             std::shared_ptr<WASMOp> op = std::make_shared<WASMOp>(
-                n_args, i32list_i, i32list_o, funcname, wasm_uid);
+                n_args, ww_n, width_i_parameter, width_o_parameter, funcname, wasm_uid);
 
-            return add_gate_method<Bit>(&circ, op, args, kwargs);
+            std::vector<UnitID> new_args;
+
+            for (auto b : args) {
+              new_args.push_back(b);
+            }
+
+            for (auto i : wasm_wire_args) {
+              new_args.push_back(WasmState(i));
+            }                 
+
+            return add_gate_method<UnitID>(&circ, op, new_args, kwargs);
           },
           "Add a classical function call from a wasm file to the circuit. "
           "\n\n:param funcname: name of the function that is called"
@@ -209,7 +251,7 @@ void init_circuit_add_classical_op(
           " `condition_value`"
           "\n:return: the new :py:class:`Circuit`",
           py::arg("funcname"), py::arg("wasm_uid"), py::arg("list_reg_in"),
-          py::arg("list_reg_out"))
+          py::arg("list_reg_out"), py::arg("wasm_wire_args"))
       .def(
           "add_c_setbits",
           [](Circuit &circ, const std::vector<bool> &values,

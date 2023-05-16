@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,32 +12,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "OptimisationPass.hpp"
+#include "tket/Transformations/OptimisationPass.hpp"
 
 #include <stdexcept>
 
-#include "BasicOptimisation.hpp"
-#include "Circuit/CircPool.hpp"
-#include "Circuit/CircUtils.hpp"
-#include "CliffordOptimisation.hpp"
-#include "CliffordReductionPass.hpp"
-#include "Combinator.hpp"
-#include "Decomposition.hpp"
-#include "Gate/GatePtr.hpp"
-#include "OpType/OpType.hpp"
-#include "PhaseOptimisation.hpp"
-#include "Rebase.hpp"
-#include "ThreeQubitSquash.hpp"
-#include "Transform.hpp"
+#include "tket/Circuit/CircPool.hpp"
+#include "tket/Circuit/CircUtils.hpp"
+#include "tket/Gate/GatePtr.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/Transformations/BasicOptimisation.hpp"
+#include "tket/Transformations/CliffordOptimisation.hpp"
+#include "tket/Transformations/CliffordReductionPass.hpp"
+#include "tket/Transformations/Combinator.hpp"
+#include "tket/Transformations/Decomposition.hpp"
+#include "tket/Transformations/PhaseOptimisation.hpp"
+#include "tket/Transformations/Rebase.hpp"
+#include "tket/Transformations/ThreeQubitSquash.hpp"
+#include "tket/Transformations/Transform.hpp"
 
 namespace tket {
 
 namespace Transforms {
 
-Transform peephole_optimise_2q() {
+Transform peephole_optimise_2q(bool allow_swaps) {
   return (
-      synthesise_tket() >> two_qubit_squash() >> hyper_clifford_squash() >>
-      synthesise_tket());
+      synthesise_tket() >> two_qubit_squash(allow_swaps) >>
+      hyper_clifford_squash(allow_swaps) >> synthesise_tket());
 }
 
 Transform full_peephole_optimise(bool allow_swaps, OpType target_2qb_gate) {
@@ -50,11 +50,11 @@ Transform full_peephole_optimise(bool allow_swaps, OpType target_2qb_gate) {
           clifford_simp(allow_swaps) >> synthesise_tket());
     case OpType::TK2:
       return (
-          synthesise_tk() >> two_qubit_squash(OpType::TK2) >>
-          clifford_simp(false) >> two_qubit_squash(OpType::TK2) >>
-          synthesise_tk() >> three_qubit_squash(OpType::TK2) >>
-          clifford_simp(false) >> two_qubit_squash(OpType::TK2) >>
-          synthesise_tk());
+          synthesise_tk() >> two_qubit_squash(OpType::TK2, 1., allow_swaps) >>
+          clifford_simp(allow_swaps) >>
+          two_qubit_squash(OpType::TK2, 1., allow_swaps) >> synthesise_tk() >>
+          three_qubit_squash(OpType::TK2) >> clifford_simp(allow_swaps) >>
+          two_qubit_squash(OpType::TK2, 1., allow_swaps) >> synthesise_tk());
     default:
       throw std::invalid_argument("Invalid target 2-qubit gate");
   }
@@ -65,8 +65,8 @@ Transform canonical_hyper_clifford_squash() {
          hyper_clifford_squash();
 }
 
-Transform hyper_clifford_squash() {
-  return decompose_multi_qubits_CX() >> clifford_simp();
+Transform hyper_clifford_squash(bool allow_swaps) {
+  return decompose_multi_qubits_CX() >> clifford_simp(allow_swaps);
 }
 
 Transform clifford_simp(bool allow_swaps) {

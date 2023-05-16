@@ -1,4 +1,4 @@
-# Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -27,6 +27,12 @@ from pytket.circuit import (  # type: ignore
     Unitary1qBox,
     Unitary2qBox,
     Unitary3qBox,
+    MultiplexorBox,
+    MultiplexedRotationBox,
+    MultiplexedU2Box,
+    MultiplexedTensoredU2Box,
+    StatePreparationBox,
+    DiagonalBox,
     ExpBox,
     PauliExpBox,
     QControlBox,
@@ -39,7 +45,7 @@ from pytket.circuit import (  # type: ignore
     BitRegister,
     QubitRegister,
 )
-from pytket.circuit.display import render_circuit_as_html
+from pytket.circuit.display import get_circuit_renderer, render_circuit_as_html
 
 from pytket.pauli import Pauli  # type: ignore
 from pytket.passes import PauliSimp, CliffordSimp, SynthesiseTket, DecomposeBoxes, RemoveRedundancies  # type: ignore
@@ -47,6 +53,7 @@ from pytket.predicates import CompilationUnit  # type: ignore
 from pytket.transform import Transform, PauliSynthStrat  # type: ignore
 
 import numpy as np
+from scipy.linalg import block_diag  # type: ignore
 import sympy  # type: ignore
 from sympy import Symbol, pi, sympify, functions  # type: ignore
 from math import sqrt
@@ -62,6 +69,12 @@ curr_file_path = Path(__file__).resolve().parent
 
 with open(curr_file_path.parent.parent / "schemas/circuit_v1.json", "r") as f:
     schema = json.load(f)
+
+
+def json_validate(circ: Circuit) -> bool:
+    serializable_form = circ.to_dict()
+    validate(instance=serializable_form, schema=schema)
+    return circ == Circuit.from_dict(serializable_form)  # type: ignore
 
 
 def test_op_free_symbols() -> None:
@@ -433,13 +446,99 @@ def test_boxes() -> None:
     assert all(isinstance(box, Op) for box in boxes)
 
     permutation = {(0, 0): (1, 1), (1, 1): (0, 0)}
-    tb = ToffoliBox(2, permutation)
+    tb = ToffoliBox(permutation)
     assert tb.type == OpType.ToffoliBox
     unitary = tb.get_circuit().get_unitary()
     comparison = np.asarray([[0, 0, 0, 1], [0, 1, 0, 0], [0, 0, 1, 0], [1, 0, 0, 0]])
     assert np.allclose(unitary, comparison)
     d.add_toffolibox(tb, [0, 1])
     assert d.n_gates == 8
+
+    # MultiplexorBox, MultiplexedU2Box
+    op_map = {(0, 0): Op.create(OpType.Rz, 0.3), (1, 1): Op.create(OpType.H)}
+    multiplexor = MultiplexorBox(op_map)
+    out_op_map = multiplexor.get_op_map()
+    assert all(op_map[key] == out_op_map[key] for key in op_map)
+    ucu2_box = MultiplexedU2Box(op_map)
+    out_op_map = ucu2_box.get_op_map()
+    assert all(op_map[key] == out_op_map[key] for key in op_map)
+    c0 = multiplexor.get_circuit()
+    DecomposeBoxes().apply(c0)
+    unitary0 = c0.get_unitary()
+    c1 = ucu2_box.get_circuit()
+    DecomposeBoxes().apply(c1)
+    unitary1 = c1.get_unitary()
+    comparison = block_diag(
+        Circuit(1).Rz(0.3, 0).get_unitary(),
+        np.eye(2),
+        np.eye(2),
+        Circuit(1).H(0).get_unitary(),
+    )
+    assert np.allclose(unitary0, comparison)
+    assert np.allclose(unitary1, comparison)
+    d.add_multiplexor(multiplexor, [Qubit(0), Qubit(1), Qubit(2)])
+    d.add_multiplexedu2(ucu2_box, [Qubit(0), Qubit(1), Qubit(2)])
+    assert d.n_gates == 10
+    # MultiplexedRotationBox
+    op_map = {(0, 0): Op.create(OpType.Rz, 0.3), (1, 1): Op.create(OpType.Rz, 1.7)}
+    multiplexor = MultiplexedRotationBox(op_map)
+    out_op_map = multiplexor.get_op_map()
+    assert all(op_map[key] == out_op_map[key] for key in op_map)
+    c0 = multiplexor.get_circuit()
+    unitary = c0.get_unitary()
+    comparison = block_diag(
+        Circuit(1).Rz(0.3, 0).get_unitary(),
+        np.eye(2),
+        np.eye(2),
+        Circuit(1).Rz(1.7, 0).get_unitary(),
+    )
+    assert np.allclose(unitary, comparison)
+    d.add_multiplexedrotation(multiplexor, [Qubit(0), Qubit(1), Qubit(2)])
+    assert d.n_gates == 11
+    multiplexor = MultiplexedRotationBox([0.3, 0, 0, 1.7], OpType.Rz)
+    unitary = multiplexor.get_circuit().get_unitary()
+    assert np.allclose(unitary, comparison)
+    d.add_multiplexedrotation(multiplexor, [Qubit(0), Qubit(1), Qubit(2)])
+    assert d.n_gates == 12
+    # StatePreparationBox
+    state = np.array([np.sqrt(0.125)] * 8)
+    prep_box = StatePreparationBox(state)
+    prep_state = prep_box.get_circuit().get_statevector()
+    assert np.allclose(state, prep_state)
+    prep_box = StatePreparationBox(state, True)
+    prep_u = prep_box.get_circuit().get_unitary()
+    zero_state = np.zeros(8)
+    zero_state[0] = 1
+    assert np.allclose(prep_u.dot(state), zero_state)
+    d.add_state_preparation_box(prep_box, [Qubit(0), Qubit(1), Qubit(2)])
+    assert d.n_gates == 13
+    # DiagonalBox
+    diag_vect = np.array([1j] * 8)
+    diag_box = DiagonalBox(diag_vect)
+    u = diag_box.get_circuit().get_unitary()
+    assert np.allclose(np.diag(diag_vect), u)
+    d.add_diagonal_box(diag_box, [Qubit(0), Qubit(1), Qubit(2)])
+    assert d.n_gates == 14
+    # MultiplexedTensoredU2Box
+    rz_op = Op.create(OpType.Rz, 0.3)
+    pauli_x_op = Op.create(OpType.X)
+    pauli_z_op = Op.create(OpType.Z)
+    op_map = {(0, 0): [rz_op, pauli_x_op], (1, 1): [pauli_x_op, pauli_z_op]}
+    multiplexor = MultiplexedTensoredU2Box(op_map)
+    out_op_map = multiplexor.get_op_map()
+    assert all(op_map[key] == out_op_map[key] for key in op_map)
+    c0 = multiplexor.get_circuit()
+    unitary = c0.get_unitary()
+    comparison = block_diag(
+        np.kron(rz_op.get_unitary(), pauli_x_op.get_unitary()),
+        np.eye(4),
+        np.eye(4),
+        np.kron(pauli_x_op.get_unitary(), pauli_z_op.get_unitary()),
+    )
+    d.add_multiplexed_tensored_u2(multiplexor, [Qubit(0), Qubit(1), Qubit(2), Qubit(3)])
+    assert np.allclose(unitary, comparison)
+    assert d.n_gates == 15
+    assert json_validate(d)
 
 
 def test_u1q_stability() -> None:
@@ -607,9 +706,7 @@ def test_circuit_pickle_roundtrip(circuit: Circuit) -> None:
 @given(st.circuits())
 @settings(deadline=None)
 def test_circuit_from_to_serializable(circuit: Circuit) -> None:
-    serializable_form = circuit.to_dict()
-    validate(instance=serializable_form, schema=schema)
-    assert circuit == Circuit.from_dict(serializable_form)
+    assert json_validate(circuit)
 
 
 @given(st.circuits())
@@ -617,6 +714,19 @@ def test_circuit_from_to_serializable(circuit: Circuit) -> None:
 def test_circuit_display(circuit: Circuit) -> None:
     html_str_circ = render_circuit_as_html(circuit, jupyter=False)
     html_str_dict = render_circuit_as_html(circuit.to_dict(), jupyter=False)
+    assert isinstance(html_str_circ, str)
+    assert isinstance(html_str_dict, str)
+
+
+@given(st.circuits())
+@settings(deadline=None)
+def test_circuit_display_with_options(circuit: Circuit) -> None:
+    circuit_renderer = get_circuit_renderer()
+    circuit_renderer.set_render_options(zx_style=False)
+    html_str_circ = circuit_renderer.render_circuit_as_html(circuit, jupyter=False)
+    html_str_dict = circuit_renderer.render_circuit_as_html(
+        circuit.to_dict(), jupyter=False
+    )
     assert isinstance(html_str_circ, str)
     assert isinstance(html_str_dict, str)
 

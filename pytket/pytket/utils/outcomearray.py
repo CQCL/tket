@@ -1,4 +1,4 @@
-# Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -72,7 +72,9 @@ class OutcomeArray(np.ndarray):
         """Number of outcomes stored."""
         return self.shape[0]
 
-    def __hash__(self) -> int:
+    # A numpy ndarray is explicitly unhashable (its __hash__ has type None). But as we
+    # are dealing with integral arrays only it makes sense to define a hash.
+    def __hash__(self):  # type: ignore
         return hash((self.tobytes(), self.width))
 
     def __eq__(self, other: "OutcomeArray") -> bool:  # type: ignore

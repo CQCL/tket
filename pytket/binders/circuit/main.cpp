@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,17 +18,17 @@
 
 #include <sstream>
 
-#include "Circuit/Command.hpp"
-#include "Gate/Gate.hpp"
-#include "Gate/OpPtrFunctions.hpp"
-#include "Gate/SymTable.hpp"
-#include "Ops/ClassicalOps.hpp"
-#include "Ops/MetaOp.hpp"
-#include "Ops/Op.hpp"
-#include "Utils/Constants.hpp"
-#include "Utils/Symbols.hpp"
 #include "binder_json.hpp"
 #include "binder_utils.hpp"
+#include "tket/Circuit/Command.hpp"
+#include "tket/Gate/Gate.hpp"
+#include "tket/Gate/OpPtrFunctions.hpp"
+#include "tket/Gate/SymTable.hpp"
+#include "tket/Ops/ClassicalOps.hpp"
+#include "tket/Ops/MetaOp.hpp"
+#include "tket/Ops/Op.hpp"
+#include "tket/Utils/Constants.hpp"
+#include "tket/Utils/Symbols.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;
@@ -449,6 +449,22 @@ PYBIND11_MODULE(circuit, m) {
           "A general classical operation where all inputs are also outputs")
       .value(
           "WASM", OpType::WASM, "Op containing a classical wasm function call")
+      /* this optypes are intentionally not in python avilable at the moment
+      .value("_WASMInput", OpType::WASMInput, "WASM wire input node")
+      .value("_WASMOutput", OpType::WASMOutput, "WASM wire output node")
+      .value("_Input", OpType::Input, "Quantum input node of the circuit")
+      .value("_Output", OpType::Output, "Quantum output node of the circuit")
+      .value(
+          "_Create", OpType::Create,
+          "Quantum node with no predecessors, implicitly in zero state.")
+      .value(
+          "_Discard", OpType::Discard,
+          "Quantum node with no successors, not composable with input nodes of "
+          "other circuits.")
+      .value("_ClInput", OpType::ClInput, "Classical input node of the circuit")
+      .value(
+          "_ClOutput", OpType::ClOutput, "Classical output node of the
+      circuit")*/
       .value(
           "SetBits", OpType::SetBits,
           "An operation to set some bits to specified values")
@@ -470,6 +486,27 @@ PYBIND11_MODULE(circuit, m) {
       .value(
           "ClassicalExpBox", OpType::ClassicalExpBox,
           "A box for holding compound classical operations on Bits.")
+      .value(
+          "MultiplexorBox", OpType::MultiplexorBox,
+          "A multiplexor (i.e. uniformly controlled operations)")
+      .value(
+          "MultiplexedRotationBox", OpType::MultiplexedRotationBox,
+          "A multiplexed rotation gate (i.e. "
+          "uniformly controlled single-axis rotations)")
+      .value(
+          "MultiplexedU2Box", OpType::MultiplexedU2Box,
+          "A multiplexed U2 gate (i.e. uniformly controlled U2 gate)")
+      .value(
+          "MultiplexedTensoredU2Box", OpType::MultiplexedTensoredU2Box,
+          "A multiplexed tensored-U2 gate")
+      .value(
+          "StatePreparationBox", OpType::StatePreparationBox,
+          "A box for preparing quantum states using multiplexed-Ry and "
+          "multiplexed-Rz gates")
+      .value(
+          "DiagonalBox", OpType::DiagonalBox,
+          "A box for synthesising a diagonal unitary matrix into a sequence of "
+          "multiplexed-Rz gates")
       .def_static(
           "from_name", [](const json &j) { return j.get<OpType>(); },
           "Construct from name");

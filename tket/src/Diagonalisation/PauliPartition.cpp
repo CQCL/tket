@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "PauliPartition.hpp"
+#include "tket/Diagonalisation/PauliPartition.hpp"
 
 #include <numeric>
 #include <tkassert/Assert.hpp>
 
-#include "Graphs/AdjacencyData.hpp"
-#include "Graphs/GraphColouring.hpp"
-#include "Utils/GraphHeaders.hpp"
+#include "tket/Graphs/AdjacencyData.hpp"
+#include "tket/Graphs/GraphColouring.hpp"
+#include "tket/Utils/GraphHeaders.hpp"
 
 namespace tket {
 

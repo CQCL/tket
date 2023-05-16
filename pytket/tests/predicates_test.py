@@ -1,4 +1,4 @@
-# Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -50,6 +50,10 @@ from pytket.passes import (  # type: ignore
     auto_rebase_pass,
     ZZPhaseToRz,
     CnXPairwiseDecomposition,
+    RemoveImplicitQubitPermutation,
+    FlattenRelabelRegistersPass,
+    RoundAngles,
+    PeepholeOptimise2Q,
 )
 from pytket.predicates import (  # type: ignore
     GateSetPredicate,
@@ -57,6 +61,7 @@ from pytket.predicates import (  # type: ignore
     DirectednessPredicate,
     NoBarriersPredicate,
     CompilationUnit,
+    MaxNClRegPredicate,
 )
 from pytket.mapping import (  # type: ignore
     LexiLabellingMethod,
@@ -455,6 +460,18 @@ def test_no_barriers_pred() -> None:
     assert not pred.verify(c)
 
 
+def test_MaxNClRegPredicate_pred() -> None:
+    pred = MaxNClRegPredicate(3)
+    c = Circuit(1).H(0)
+    c.add_c_register("name", 2)
+    c.add_c_register("name2", 1)
+    c.add_c_register("name3", 1)
+    assert pred.verify(c)
+    c.add_barrier([0]).H(0)
+    c.add_c_register("name4", 1)
+    assert not pred.verify(c)
+
+
 def test_decompose_routing_gates_to_cxs() -> None:
     circ = Circuit(4)
     circ.CX(1, 0)
@@ -513,7 +530,7 @@ def test_user_defined_swap_decomp() -> None:
 
 
 def test_pauligraph_synth() -> None:
-    circ = Circuit(4, 4)
+    circ = Circuit(4, 4, name="test")
     pg = PauliExpBox([Pauli.X, Pauli.Z, Pauli.Y, Pauli.I], 0.3)
     circ.add_pauliexpbox(pg, [0, 1, 2, 3])
     circ.measure_all()
@@ -523,6 +540,7 @@ def test_pauligraph_synth() -> None:
     assert pss.apply(cu)
     circ1 = cu.circuit
     assert circ1.depth_by_type(OpType.CX) == 4
+    assert circ1.name == "test"
 
 
 def test_squash_chains() -> None:
@@ -778,6 +796,24 @@ def test_cnx_pairwise_decomp() -> None:
     assert c.n_gates_of_type(OpType.CX) < 217
 
 
+def test_remove_implicit_qubit_permutation() -> None:
+    c = Circuit(3).X(0).SWAP(0, 1).SWAP(1, 2)
+    c.replace_SWAPs()
+    assert c.n_gates_of_type(OpType.SWAP) == 0
+    assert c.implicit_qubit_permutation() == {
+        Qubit(0): Qubit(2),
+        Qubit(1): Qubit(0),
+        Qubit(2): Qubit(1),
+    }
+    assert RemoveImplicitQubitPermutation().apply(c)
+    assert c.n_gates_of_type(OpType.SWAP) == 2
+    assert c.implicit_qubit_permutation() == {
+        Qubit(0): Qubit(0),
+        Qubit(1): Qubit(1),
+        Qubit(2): Qubit(2),
+    }
+
+
 def test_rz_phasedX_squash() -> None:
     c = Circuit(2)
     c.Rz(0.3, 0)
@@ -811,6 +847,49 @@ def test_conditional_phase() -> None:
     assert any(cond_cmd.op.op.type not in target_gateset for cond_cmd in cond_cmds)
 
 
+def test_flatten_relabel_pass() -> None:
+    c = Circuit(3)
+    c.H(1).H(2)
+    rename_map = dict()
+    rename_map[Qubit(0)] = Qubit("a", 4)
+    rename_map[Qubit(1)] = Qubit("b", 7)
+    rename_map[Qubit(2)] = Qubit("a", 2)
+    c.rename_units(rename_map)
+
+    cu = CompilationUnit(c)
+    FlattenRelabelRegistersPass("a").apply(cu)
+
+    assert cu.initial_map == cu.final_map
+    assert cu.initial_map[Qubit("a", 2)] == Qubit("a", 0)
+    assert cu.initial_map[Qubit("a", 4)] == Qubit("a", 4)
+    assert cu.initial_map[Qubit("b", 7)] == Qubit("a", 1)
+    assert cu.circuit.qubits == [Qubit("a", 0), Qubit("a", 1)]
+
+    # test default argument
+    c = Circuit()
+    c.add_q_register("p", 4)
+    FlattenRelabelRegistersPass().apply(c)
+    assert all(q.reg_name == "q" for q in c.qubits)
+
+
+def test_round_angles_pass() -> None:
+    c0 = Circuit(2).H(0).TK2(0.001, -0.001, 0.001, 0, 1).Rz(0.50001, 0)
+    c1 = Circuit(2).H(0).Rz(0.50001, 0)
+    assert RoundAngles(8, only_zeros=True).apply(c0)
+    assert c0 == c1
+
+
+def test_PeepholeOptimise2Q() -> None:
+    c = Circuit(2).CX(0, 1).CX(1, 0)
+    assert PeepholeOptimise2Q().apply(c)
+    perm = c.implicit_qubit_permutation()
+    assert any(k != v for k, v in perm.items())
+    c = Circuit(2).CX(0, 1).CX(1, 0)
+    assert PeepholeOptimise2Q(allow_swaps=False).apply(c) == False
+    perm = c.implicit_qubit_permutation()
+    assert all(k == v for k, v in perm.items())
+
+
 if __name__ == "__main__":
     test_predicate_generation()
     test_compilation_unit_generation()
@@ -827,3 +906,4 @@ if __name__ == "__main__":
     test_remove_barriers()
     test_RebaseOQC_and_SynthesiseOQC()
     test_ZZPhaseToRz()
+    test_flatten_relabel_pass()

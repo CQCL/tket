@@ -1,4 +1,4 @@
-# Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -68,7 +68,7 @@ from pytket.circuit.logic_exp import (
     if_not_bit,
 )
 
-from pytket.passes import DecomposeClassicalExp  # type: ignore
+from pytket.passes import DecomposeClassicalExp, FlattenRegisters  # type: ignore
 
 from strategies import reg_name_regex, binary_digits, uint32  # type: ignore
 
@@ -151,15 +151,14 @@ def test_add_c_setreg_raises_runtime_error() -> None:
 
 def test_wasm() -> None:
     c = Circuit(0, 6)
-    c._add_wasm("funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(1)])
-    c._add_wasm("funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(2)])
-    c._add_wasm("funcname", "wasmfileuid", [1, 1], [2], [0, 1, 2, 3])
-    c._add_wasm("funcname", "wasmfileuid", [1, 1], [2], [0, 1, 2, 4])
-    c._add_wasm("funcname", "wasmfileuid", [1], [1, 2], [0, 1, 2, 3])
-    c._add_wasm("funcname", "wasmfileuid", [2, 1], [3], [0, 1, 2, 3, 4, 5])
+    c._add_wasm("funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(1)], [0])
+    c._add_wasm("funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(2)], [0])
+    c._add_wasm("funcname", "wasmfileuid", [1, 1], [2], [0, 1, 2, 3], [0])
+    c._add_wasm("funcname", "wasmfileuid", [1, 1], [2], [0, 1, 2, 4], [0])
+    c._add_wasm("funcname", "wasmfileuid", [1], [1, 2], [0, 1, 2, 3], [0])
+    c._add_wasm("funcname", "wasmfileuid", [2, 1], [3], [0, 1, 2, 3, 4, 5], [0])
 
-    # the boxes with no output are not counted
-    assert c.depth() == 4
+    assert c.depth() == 6
 
 
 def test_wasm_2() -> None:
@@ -168,9 +167,8 @@ def test_wasm_2() -> None:
     c1 = c.add_c_register("c1", 4)
     c2 = c.add_c_register("c2", 5)
 
-    c._add_wasm("funcname", "wasmfileuid", [c0, c1], [c2])
+    c._add_wasm("funcname", "wasmfileuid", [c0, c1], [c2], [0])
 
-    # the boxes with no output are not counted
     assert c.depth() == 1
 
 
@@ -303,6 +301,40 @@ def test_wasm_7() -> None:
         )
 
 
+def test_wasm_8() -> None:
+    w = wasm.WasmFileHandler("testfile.wasm")
+    c = Circuit(0, 6)
+    c.add_wasm("add_one", w, [1], [1], [Bit(0), Bit(1)], [0])
+    assert c.depth() == 1
+
+
+def test_wasm_9() -> None:
+    w = wasm.WasmFileHandler("testfile.wasm")
+    c = Circuit(0, 6)
+    c.add_wasm("add_one", w, [1], [1], [Bit(0), Bit(1)], [0, 1])
+    assert c.depth() == 1
+
+
+def test_wasm_10() -> None:
+    w = wasm.WasmFileHandler("testfile.wasm")
+    c = Circuit(0, 6)
+    c.add_wasm("add_one", w, [1], [1], [Bit(0), Bit(1)], [1])
+
+
+def test_wasm_11() -> None:
+    w = wasm.WasmFileHandler("testfile.wasm")
+    c = Circuit(0, 6)
+    c.add_wasm("add_one", w, [1], [1], [Bit(0), Bit(1)], [1])
+    assert c.depth() == 1
+
+
+def test_wasm_12() -> None:
+    w = wasm.WasmFileHandler("testfile.wasm")
+    c = Circuit(0, 6)
+    c.add_wasm("add_one", w, [1], [1], [Bit(0), Bit(1)], [1, 4])
+    assert c.depth() == 1
+
+
 def test_wasm_handler() -> None:
     w = wasm.WasmFileHandler("testfile.wasm")
 
@@ -374,20 +406,27 @@ def test_add_wasm_to_reg() -> None:
     c.add_wasm_to_reg("no_return", w, [c2], [])
     c.add_wasm_to_reg("no_parameters", w, [], [c2])
 
-    assert c.depth() == 3
+    assert c.depth() == 4
+
+
+def test_wasmfilehandler_without_init() -> None:
+    with pytest.raises(ValueError):
+        w = wasm.WasmFileHandler("testfile-without-init.wasm")
 
 
 def test_wasmfilehandler_repr() -> None:
     w = wasm.WasmFileHandler("testfile.wasm")
     assert (
         repr(w)
-        == """Functions in wasm file with the uid 332940d7bf36f2a17ef59ddf13a042ce:
+        == """Functions in wasm file with the uid 6a0a29e235cd5c60353254bc2b459e631d381cdd0bded7ae6cb44afb784bd2de:
+function 'init' with 0 i32 parameter(s) and 0 i32 return value(s)
 function 'add_one' with 1 i32 parameter(s) and 1 i32 return value(s)
 function 'multi' with 2 i32 parameter(s) and 1 i32 return value(s)
 function 'add_two' with 1 i32 parameter(s) and 1 i32 return value(s)
 function 'add_eleven' with 1 i32 parameter(s) and 1 i32 return value(s)
 function 'no_return' with 1 i32 parameter(s) and 0 i32 return value(s)
 function 'no_parameters' with 0 i32 parameter(s) and 1 i32 return value(s)
+function 'new_function' with 0 i32 parameter(s) and 1 i32 return value(s)
 unsupported function with unvalid parameter or result type: 'add_something' 
 """
     )
@@ -990,19 +1029,21 @@ def test_conditional_classicals() -> None:
 def test_conditional_wasm() -> None:
     c = Circuit(0, 6)
     b = c.add_c_register("b", 2)
-    c._add_wasm("funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(1)], condition=b[0])
+    c._add_wasm(
+        "funcname", "wasmfileuid", [1, 1], [], [Bit(0), Bit(1)], [0], condition=b[0]
+    )
 
     assert c.depth() == 1
-    assert str(c.get_commands()[0]) == "IF ([b[0]] == 1) THEN WASM c[0], c[1];"
+    assert str(c.get_commands()[0]) == "IF ([b[0]] == 1) THEN WASM c[0], c[1], _w[0];"
 
 
 def test_conditional_wasm_ii() -> None:
     c = Circuit(0, 6)
     b = c.add_c_register("b", 2)
-    c._add_wasm("funcname", "wasmfileuid", [b], [], condition=b[0])
+    c._add_wasm("funcname", "wasmfileuid", [b], [], [0], condition=b[0])
 
     assert c.depth() == 1
-    assert str(c.get_commands()[0]) == "IF ([b[0]] == 1) THEN WASM b[0], b[1];"
+    assert str(c.get_commands()[0]) == "IF ([b[0]] == 1) THEN WASM b[0], b[1], _w[0];"
 
 
 def test_conditional_wasm_iii() -> None:
@@ -1021,11 +1062,11 @@ def test_conditional_wasm_iii() -> None:
     assert c.depth() == 2
     assert (
         str(c.get_commands()[0])
-        == "IF ([b[0]] == 1) THEN WASM c0[0], c0[1], c0[2], c1[0], c1[1], c1[2], c1[3], c2[0], c2[1], c2[2], c2[3], c2[4];"
+        == "IF ([b[0]] == 1) THEN WASM c0[0], c0[1], c0[2], c1[0], c1[1], c1[2], c1[3], c2[0], c2[1], c2[2], c2[3], c2[4], _w[0];"
     )
     assert (
         str(c.get_commands()[1])
-        == "IF ([b[1]] == 1) THEN WASM c2[0], c2[1], c2[2], c2[3], c2[4], c2[0], c2[1], c2[2], c2[3], c2[4];"
+        == "IF ([b[1]] == 1) THEN WASM c2[0], c2[1], c2[2], c2[3], c2[4], c2[0], c2[1], c2[2], c2[3], c2[4], _w[0];"
     )
 
 
@@ -1036,7 +1077,10 @@ def test_conditional_wasm_iv() -> None:
     c.add_wasm("add_two", w, [1], [1], [Bit(0), Bit(1)], condition=b[0])
 
     assert c.depth() == 1
-    assert str(c.get_commands()[0]) == "IF ([controlreg[0]] == 1) THEN WASM c[0], c[1];"
+    assert (
+        str(c.get_commands()[0])
+        == "IF ([controlreg[0]] == 1) THEN WASM c[0], c[1], _w[0];"
+    )
 
 
 def test_arithmetic_ops() -> None:
@@ -1096,3 +1140,32 @@ def test_renaming() -> None:
         circ.rename_units(bmap)
     err_msg = f"Can't rename bits in {a.__repr__()}"
     assert err_msg in str(e.value)
+
+
+def test_flatten_registers_with_classical_exps() -> None:
+    # circuit with register-wise expressions
+    circ = Circuit(3)
+    a = circ.add_c_register("a", 5)
+    b = circ.add_c_register("b", 5)
+    c = circ.add_c_register("c", 5)
+    circ.add_classicalexpbox_register(a | b, c)
+    with pytest.raises(RuntimeError) as e:
+        FlattenRegisters().apply(circ)
+    err_msg = "Unable to flatten registers"
+    assert err_msg in str(e.value)
+    # circuit with bit-wise expressions
+    circ = Circuit(3)
+    a = circ.add_c_register("a", 5)
+    b = circ.add_c_register("b", 5)
+    c = circ.add_c_register("c", 5)
+    circ.add_classicalexpbox_bit((a[2] & b[3]), [c[0]])
+    circ.add_classicalexpbox_bit((a[4] | b[4] ^ a[1]), [c[2]])
+    assert FlattenRegisters().apply(circ)
+    assert all(bit.reg_name == "c" for bit in circ.bits)
+    commands = circ.get_commands()
+    assert str(commands[0].op.get_exp()) == "(c[2] & c[8])"
+    assert str(commands[1].op.get_exp()) == "(c[4] | (c[9] ^ c[1]))"
+
+
+if __name__ == "__main__":
+    test_wasm()

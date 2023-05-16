@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "ZX/Rewrite.hpp"
+#include "tket/ZX/Rewrite.hpp"
 
 #include "typecast.hpp"
 
@@ -105,11 +105,49 @@ void init_rewrite(py::module &m) {
           "integer multiple of pi radians or integer half-turns). Pivots about "
           "the edge connecting the vertices and removes them.")
       .def_static(
+          "gadgetise_interior_paulis", &Rewrite::gadgetise_interior_paulis,
+          "Identifies interior Paulis (spiders where the phase is an integer "
+          "multiple of pi) with all neighbours having non-Pauli phase and "
+          "degree > 1. Pivots about an incident edge to yield a gadget node.")
+      .def_static(
+          "merge_gadgets", &Rewrite::merge_gadgets,
+          "Identifies pairs of phase gadgets over the same sets of qubits and "
+          "merges them.")
+      .def_static(
           "extend_at_boundary_paulis", &Rewrite::extend_at_boundary_paulis,
           "Identifies adjacent Pauli spiders where one is adjacent to a "
           "boundary. This rule applies I/O extensions to push the match into "
           "the interior from which it can be handled by "
-          ":py:meth:`remove_interior_paulis`.");
+          ":py:meth:`remove_interior_paulis`.")
+      .def_static(
+          "extend_for_PX_outputs", &Rewrite::extend_for_PX_outputs,
+          "Identifies output vertices in MBQC form that are given a "
+          "measurement basis (i.e. are not PX(0)). This rule applies I/O "
+          "extensions to make the phased qubits non-outputs. This is required "
+          "before flow identification can be run.")
+      .def_static(
+          "internalise_gadgets", &Rewrite::internalise_gadgets,
+          "Identifies Degree-1 XY vertices next to a PX vertex, e.g. as the "
+          "result of rebasing a phase gadget. Replaces matches by a single YZ "
+          "vertex.")
+      .def_static(
+          "to_graphlike_form", &Rewrite::to_graphlike_form,
+          "Given a diagram with ZX generators, yields a diagram with only "
+          "ZSpiders, connected by at most one Hadamard edge, with boundaries "
+          "connected via Basic edges.")
+      .def_static(
+          "reduce_graphlike_form", &Rewrite::reduce_graphlike_form,
+          "Given a diagram in graphlike form, applies local complementations "
+          "and pivoting to remove as many interior Clifford-angled vertices as "
+          "possible. The only remaining Clifford-angled vertices will be "
+          "either the axis of a phase-gadget or near a boundary.")
+      .def_static(
+          "to_MBQC_diag", &Rewrite::to_MBQC_diag,
+          "Given a diagram in graphlike form, will rebase to MBQC generators, "
+          "ensure that output qubits are PX(0) (i.e. they match unmeasured "
+          "qubits) and degree-1 vertices are absorbed into a PX neighbour, "
+          "i.e. reducing phase-gadgets to single vertices in a different "
+          "measurement plane.");
 }
 
 }  // namespace zx

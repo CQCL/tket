@@ -11,21 +11,27 @@ import json
 import os
 import subprocess
 import sys
+import conan
 
 version = sys.argv[1]
 
+paths = [
+    os.path.join(".", "tket", "test", "conanfile.py"),
+    os.path.join(".", "tket", "proptest", "conanfile.py"),
+    os.path.join(".", "pytket", "conanfile.py"),
+]
+
+conan_ver = conan.conan_version.major.value
+
 jsondump = "conaninfo.json"
-for path in [
-    os.path.join(".", "recipes", "tket-tests", "conanfile.py"),
-    os.path.join(".", "recipes", "tket-proptests", "conanfile.py"),
-    os.path.join(".", "pytket", "conanfile.txt"),
-]:
-    subprocess.run(["conan", "info", "--path", "--json", jsondump, path])
+
+assert conan_ver == 2
+for path in paths:
+    with open(jsondump, "w") as f:
+        subprocess.call(["conan", "graph", "info", path, "--format", "json"], stdout=f)
     with open(jsondump) as f:
         info = json.load(f)
     os.remove(jsondump)
     assert any(
-        comp["reference"].startswith("conanfile")
-        and f"tket/{version}@tket/stable" in comp["requires"]
-        for comp in info
+        node["ref"].startswith(f"tket/{version}@tket/stable") for node in info["nodes"]
     )

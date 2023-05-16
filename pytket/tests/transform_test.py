@@ -1,4 +1,4 @@
-# Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -1067,6 +1067,15 @@ def test_auto_rebase() -> None:
     rebase = auto_rebase_pass({OpType.ZZPhase, OpType.TK1})
     assert rebase.apply(circ)
 
+    circ = get_test_circuit()
+    rebase = auto_rebase_pass({OpType.PhasedX, OpType.Rz, OpType.TK2})
+    assert rebase.apply(circ)
+    assert circ.n_gates_of_type(OpType.TK2) == circ.n_2qb_gates()
+    assert (
+        circ.n_gates_of_type(OpType.Rz) + circ.n_gates_of_type(OpType.PhasedX)
+        == circ.n_1qb_gates()
+    )
+
     with pytest.raises(NoAutoRebase) as cx_err:
         _ = auto_rebase_pass({OpType.CX, OpType.H, OpType.T})
     assert "TK1" in str(cx_err.value)
@@ -1074,6 +1083,14 @@ def test_auto_rebase() -> None:
     with pytest.raises(NoAutoRebase) as err:
         _ = auto_rebase_pass({OpType.CY, OpType.TK1})
     assert "No known decomposition" in str(err.value)
+
+    # if CX is the only 2-q gate in the gateset, rebase via CX
+    gateset = {OpType.TK1, OpType.H, OpType.T, OpType.Tdg, OpType.CX}
+    rebase = auto_rebase_pass(gateset)
+    circ = Circuit(3).CCX(0, 1, 2)
+    rebase.apply(circ)
+    assert circ.n_1qb_gates() <= 9
+    assert circ.n_gates_of_type(OpType.CX) == circ.n_2qb_gates()
 
 
 def test_auto_squash() -> None:
@@ -1188,6 +1205,13 @@ def test_KAK_with_ClassicalExpBox() -> None:
         allow_swaps=True, cx_fidelity=1, target_2qb_gate=OpType.TK2
     )
     assert not kak.apply(circ)
+
+
+def test_round_angles() -> None:
+    circ0 = Circuit(3).H(0).CRz(0.001, 0, 1).TK2(0.5, 0.499, 0.501, 1, 2)
+    circ1 = Circuit(3).H(0).TK2(0.5, 0.5, 0.5, 1, 2)
+    assert Transform.round_angles(8).apply(circ0)
+    assert circ0 == circ1
 
 
 if __name__ == "__main__":

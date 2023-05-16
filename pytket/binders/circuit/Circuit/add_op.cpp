@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,15 +20,19 @@
 
 #include <optional>
 
-#include "Circuit/Boxes.hpp"
-#include "Circuit/Circuit.hpp"
-#include "Circuit/ClassicalExpBox.hpp"
-#include "Converters/PhasePoly.hpp"
-#include "Gate/OpPtrFunctions.hpp"
-#include "Ops/Op.hpp"
 #include "UnitRegister.hpp"
 #include "add_gate.hpp"
 #include "binder_utils.hpp"
+#include "tket/Circuit/Boxes.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/ClassicalExpBox.hpp"
+#include "tket/Circuit/DiagonalBox.hpp"
+#include "tket/Circuit/Multiplexor.hpp"
+#include "tket/Circuit/StatePreparation.hpp"
+#include "tket/Circuit/ToffoliBox.hpp"
+#include "tket/Converters/PhasePoly.hpp"
+#include "tket/Gate/OpPtrFunctions.hpp"
+#include "tket/Ops/Op.hpp"
 #include "typecast.hpp"
 namespace py = pybind11;
 
@@ -601,6 +605,80 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n:return: the new :py:class:`Circuit`",
           py::arg("box"), py::arg("qubits"), py::arg("ancilla"),
           py::arg("name") = std::nullopt)
+      .def(
+          "add_multiplexor",
+          [](Circuit *circ, const MultiplexorBox &box,
+             const unit_vector_t &args, const py::kwargs &kwargs) {
+            return add_box_method(
+                circ, std::make_shared<MultiplexorBox>(box), args, kwargs);
+          },
+          "Append a :py:class:`MultiplexorBox` to the circuit.\n\n"
+          ":param box: The box to append\n"
+          ":param args: The qubits to append the box to"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("box"), py::arg("args"))
+      .def(
+          "add_multiplexedrotation",
+          [](Circuit *circ, const MultiplexedRotationBox &box,
+             const unit_vector_t &args, const py::kwargs &kwargs) {
+            return add_box_method(
+                circ, std::make_shared<MultiplexedRotationBox>(box), args,
+                kwargs);
+          },
+          "Append a :py:class:`MultiplexedRotationBox` to the circuit.\n\n"
+          ":param box: The box to append\n"
+          ":param args: The qubits to append the box to"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("box"), py::arg("args"))
+      .def(
+          "add_multiplexedu2",
+          [](Circuit *circ, const MultiplexedU2Box &box,
+             const unit_vector_t &args, const py::kwargs &kwargs) {
+            return add_box_method(
+                circ, std::make_shared<MultiplexedU2Box>(box), args, kwargs);
+          },
+          "Append a :py:class:`MultiplexedU2Box` to the circuit.\n\n"
+          ":param box: The box to append\n"
+          ":param args: The qubits to append the box to"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("box"), py::arg("args"))
+      .def(
+          "add_multiplexed_tensored_u2",
+          [](Circuit *circ, const MultiplexedTensoredU2Box &box,
+             const unit_vector_t &args, const py::kwargs &kwargs) {
+            return add_box_method(
+                circ, std::make_shared<MultiplexedTensoredU2Box>(box), args,
+                kwargs);
+          },
+          "Append a :py:class:`MultiplexedTensoredU2Box` to the circuit.\n\n"
+          ":param box: The box to append\n"
+          ":param args: The qubits to append the box to"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("box"), py::arg("args"))
+      .def(
+          "add_state_preparation_box",
+          [](Circuit *circ, const StatePreparationBox &box,
+             const unit_vector_t &args, const py::kwargs &kwargs) {
+            return add_box_method(
+                circ, std::make_shared<StatePreparationBox>(box), args, kwargs);
+          },
+          "Append a :py:class:`StatePreparationBox` to the circuit.\n\n"
+          ":param box: The box to append\n"
+          ":param args: The qubits to append the box to"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("box"), py::arg("args"))
+      .def(
+          "add_diagonal_box",
+          [](Circuit *circ, const DiagonalBox &box, const unit_vector_t &args,
+             const py::kwargs &kwargs) {
+            return add_box_method(
+                circ, std::make_shared<DiagonalBox>(box), args, kwargs);
+          },
+          "Append a :py:class:`DiagonalBox` to the circuit.\n\n"
+          ":param box: The box to append\n"
+          ":param args: The qubits to append the box to"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("box"), py::arg("args"))
       .def(
           "H",
           [](Circuit *circ, unsigned qb, const py::kwargs &kwargs) {
@@ -1376,6 +1454,32 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n\n:return: the new :py:class:`Circuit`",
           py::arg("angle0"), py::arg("angle1"), py::arg("angle2"),
           py::arg("qubit"))
+      .def(
+          "TK1",
+          [](Circuit *circ, const Expr &angle0, const Expr &angle1,
+             const Expr &angle2, const Qubit &qb, const py::kwargs &kwargs) {
+            return add_gate_method_manyparams<UnitID>(
+                circ, OpType::TK1, {angle0, angle1, angle2}, {qb}, kwargs);
+          },
+          "Appends a TK1 gate with possibly symbolic angles "
+          "(specified in half-turns)."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("angle0"), py::arg("angle1"), py::arg("angle2"),
+          py::arg("qubit"))
+      .def(
+          "TK2",
+          [](Circuit *circ, const Expr &angle0, const Expr &angle1,
+             const Expr &angle2, const Qubit &qb0, const Qubit &qb1,
+             const py::kwargs &kwargs) {
+            return add_gate_method_manyparams<UnitID>(
+                circ, OpType::TK2, {angle0, angle1, angle2}, {qb0, qb1},
+                kwargs);
+          },
+          "Appends a TK2 gate with possibly symbolic angles "
+          "(specified in half-turns)."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("angle0"), py::arg("angle1"), py::arg("angle2"),
+          py::arg("qubit0"), py::arg("qubit1"))
       .def(
           "CX",
           [](Circuit *circ, const Qubit &ctrl, const Qubit &trgt,

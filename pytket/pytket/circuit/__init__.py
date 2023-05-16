@@ -1,4 +1,4 @@
-# Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -15,7 +15,17 @@
 """The circuit module provides an API to interact with the
  tket :py:class:`Circuit` data structure.
   This module is provided in binary form during the PyPI installation."""
-from typing import TYPE_CHECKING, Any, Tuple, Type, Union, cast, Callable, List
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Tuple,
+    Type,
+    Union,
+    cast,
+    Callable,
+    List,
+    Optional,
+)
 
 from pytket._tket.circuit import *  # type: ignore
 from pytket._tket.circuit import Bit, BitRegister, Circuit
@@ -66,6 +76,7 @@ def overload_add_wasm(  # type: ignore
     list_i: List[int],
     list_o: List[int],
     args: Union[List[int], List[Bit]],
+    args_wasm: Optional[List[int]] = None,
     **kwargs,
 ) -> Circuit:
     """Add a classical function call from a wasm file to the circuit.
@@ -74,10 +85,14 @@ def overload_add_wasm(  # type: ignore
     \n:param list_i: list of the number of bits in the input variables
     \n:param list_o: list of the number of bits in the output variables
     \n:param args: vector of circuit bits the wasm op should be added to
+    \n:param args_wasm: vector of wasmstates the wasm op should be added to
     \n:param kwargs: additional arguments passed to `add_gate_method` .
      Allowed parameters are `opgroup`,  `condition` , `condition_bits`,
      `condition_value`
     \n:return: the new :py:class:`Circuit`"""
+
+    if args_wasm is None:
+        args_wasm = [0]
 
     for x in list_i:
         if x > 32:
@@ -88,8 +103,10 @@ def overload_add_wasm(  # type: ignore
             raise ValueError("only functions with i32 type are allowed")
 
     if filehandler.check_function(funcname, len(list_i), len(list_o)):
+        if (len(args_wasm)) > 0:
+            self._add_w_register(max(args_wasm) + 1)
         return self._add_wasm(
-            funcname, str(filehandler), list_i, list_o, args, **kwargs
+            funcname, str(filehandler), list_i, list_o, args, args_wasm, **kwargs
         )
 
     raise ValueError(f"{funcname} not found, check {repr(filehandler)}")
@@ -104,6 +121,7 @@ def overload_add_wasm_to_reg(  # type: ignore
     filehandler: wasm.WasmFileHandler,
     list_i: List[BitRegister],
     list_o: List[BitRegister],
+    args_wasm: Optional[List[int]] = None,
     **kwargs,
 ) -> Circuit:
     """Add a classical function call from a wasm file to the circuit.
@@ -113,14 +131,21 @@ def overload_add_wasm_to_reg(  # type: ignore
      the input variables of the function call
     \n:param list_o: list of the classical registers assigned to
      the output variables of the function call
-    \n:param args: vector of circuit bits the wasm op should be added to
+    \n:param args_wasm: vector of wasmstates the wasm op should be added to
     \n:param kwargs: additional arguments passed to `add_gate_method` .
      Allowed parameters are `opgroup`,  `condition` , `condition_bits`,
      `condition_value`
     \n:return: the new :py:class:`Circuit`"""
 
+    if args_wasm is None:
+        args_wasm = [0]
+
     if filehandler.check_function(funcname, len(list_i), len(list_o)):
-        return self._add_wasm(funcname, str(filehandler), list_i, list_o, **kwargs)
+        if (len(args_wasm)) > 0:
+            self._add_w_register(max(args_wasm) + 1)
+        return self._add_wasm(
+            funcname, str(filehandler), list_i, list_o, args_wasm, **kwargs
+        )
 
     raise ValueError(f"{funcname} not found, check {repr(filehandler)}")
 

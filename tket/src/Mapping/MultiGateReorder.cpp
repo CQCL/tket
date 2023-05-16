@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Mapping/MultiGateReorder.hpp"
+#include "tket/Mapping/MultiGateReorder.hpp"
 
-#include "Circuit/DAGDefs.hpp"
-#include "Mapping/MappingFrontier.hpp"
+#include "tket/Circuit/DAGDefs.hpp"
+#include "tket/Mapping/MappingFrontier.hpp"
 
 namespace tket {
 
@@ -60,18 +60,9 @@ static bool is_multiq_quantum_gate(const Circuit &circ, const Vertex &vert) {
           circ.n_out_edges(vert));
 }
 
-static bool is_physically_permitted(
-    const MappingFrontier_ptr &frontier, const ArchitecturePtr &arc_ptr,
-    const Vertex &vert) {
-  std::vector<Node> nodes;
-  for (port_t port = 0; port < frontier->circuit_.n_ports(vert); ++port) {
-    nodes.push_back(Node(get_unitid_from_vertex_port(frontier, {vert, port})));
-  }
-  return frontier->valid_boundary_operation(
-      arc_ptr, frontier->circuit_.get_Op_ptr_from_Vertex(vert), nodes);
-}
-
 // This method will try to commute a vertex to the quantum frontier
+// If successful, returns the current in-edges and the target in-edges to
+// rewire the vertex
 static std::optional<std::pair<EdgeVec, EdgeVec>> try_find_commute_edges(
     const Circuit &circ, const EdgeVec &frontier_edges, const Vertex &vert) {
   // Initialize to be the in_edges for the given vertex
@@ -189,7 +180,7 @@ static void partial_rewire(
 bool MultiGateReorder::solve(unsigned max_depth, unsigned max_size) {
   // Assume the frontier has been advanced
 
-  // store a copy of the original this->mapping_frontier_->quantum_boundray
+  // store a copy of the original this->mapping_frontier_->linear_boundary
   // this object will be updated and reset throughout the procedure
   // so need to return it to original setting at end.
   unit_vertport_frontier_t copy;
@@ -197,21 +188,82 @@ bool MultiGateReorder::solve(unsigned max_depth, unsigned max_size) {
        this->mapping_frontier_->linear_boundary->get<TagKey>()) {
     copy.insert({pair.first, pair.second});
   }
-  // Get a subcircuit only for iterating vertices
-  Subcircuit circ =
-      this->mapping_frontier_->get_frontier_subcircuit(max_depth, max_size);
+  // get subcircuit vertices in topological order
+  CutFrontier current_cut = this->mapping_frontier_->circuit_.next_cut(
+      frontier_convert_vertport_to_edge(
+          this->mapping_frontier_->circuit_,
+          this->mapping_frontier_->linear_boundary),
+      this->mapping_frontier_->boolean_boundary);
+  unsigned subcircuit_depth = 1;
+  std::vector<Vertex> subcircuit_vertices(
+      current_cut.slice->begin(), current_cut.slice->end());
+  // add cuts of vertices to subcircuit_vertices until constraints met, or end
+  // of circuit reached
+  while (subcircuit_depth < max_depth &&
+         unsigned(subcircuit_vertices.size()) < max_size &&
+         current_cut.slice->size() > 0) {
+    current_cut = this->mapping_frontier_->circuit_.next_cut(
+        current_cut.u_frontier, current_cut.b_frontier);
+    subcircuit_depth++;
+    subcircuit_vertices.insert(
+        subcircuit_vertices.end(), current_cut.slice->begin(),
+        current_cut.slice->end());
+  }
+  // For each of the multi-q vertices in the subcircuit, find its unitids
+  std::vector<std::pair<Vertex, std::vector<Node>>> vertex_nodes;
+  for (const Vertex &vert : subcircuit_vertices) {
+    if (!is_multiq_quantum_gate(this->mapping_frontier_->circuit_, vert)) {
+      continue;
+    }
+    std::vector<Node> nodes;
+    for (port_t port = 0;
+         port < this->mapping_frontier_->circuit_.n_ports(vert); ++port) {
+      nodes.push_back(Node(
+          get_unitid_from_vertex_port(this->mapping_frontier_, {vert, port})));
+    }
+    vertex_nodes.push_back({vert, nodes});
+  }
 
-  // for return value
   bool modification_made = false;
-  // since we assume that the frontier has been advanced
-  // we are certain that any multi-q vert lies after the frontier
-  for (const Vertex &vert : circ.verts) {
-    // Check if the vertex is:
-    //  1. physically permitted
-    //  2. is a multi qubit quantum operation without classical controls
-    if (is_multiq_quantum_gate(this->mapping_frontier_->circuit_, vert) &&
-        is_physically_permitted(
-            this->mapping_frontier_, this->architecture_, vert)) {
+  for (auto it = vertex_nodes.begin(); it != vertex_nodes.end(); it++) {
+    const Vertex &vert = it->first;
+    const std::vector<Node> &nodes = it->second;
+    // determine whether a vertex has been advanced by the
+    // advance_frontier_boundary call in this loop by traversing to the right by
+    // max_depth steps to see if it hits a frontier vertex.
+    // checking one port is enough
+    bool advanced = false;
+    VertPort current_vert_port(vert, 0);
+    for (unsigned i = 0; i < max_depth; i++) {
+      if (this->mapping_frontier_->linear_boundary->get<TagValue>().find(
+              current_vert_port) !=
+          this->mapping_frontier_->linear_boundary->get<TagValue>().end()) {
+        advanced = true;
+        break;
+      }
+      if (this->mapping_frontier_->circuit_.detect_boundary_Op(
+              current_vert_port.first)) {
+        break;
+      }
+      Edge current_in_edge = this->mapping_frontier_->circuit_.get_nth_in_edge(
+          current_vert_port.first, current_vert_port.second);
+      Vertex next_vert;
+      Edge next_e;
+      std::tie(next_vert, next_e) =
+          this->mapping_frontier_->circuit_.get_next_pair(
+              current_vert_port.first, current_in_edge);
+      current_vert_port = {
+          next_vert, this->mapping_frontier_->circuit_.get_target_port(next_e)};
+    }
+    if (advanced) {
+      continue;
+    }
+
+    // try to commute a vertex to the frontier if it's physically permitted
+    if (this->mapping_frontier_->valid_boundary_operation(
+            this->architecture_,
+            this->mapping_frontier_->circuit_.get_Op_ptr_from_Vertex(vert),
+            nodes)) {
       std::optional<std::pair<EdgeVec, EdgeVec>> commute_pairs =
           try_find_commute_edges(
               this->mapping_frontier_->circuit_, this->u_frontier_edges_, vert);

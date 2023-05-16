@@ -1,4 +1,4 @@
-# Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -60,7 +60,7 @@ class WasmFileHandler:
 
         self._wasm_file_encoded = base64.b64encode(self._wasm_file)
 
-        self._wasmuid = hashlib.md5(self._wasm_file_encoded).hexdigest()
+        self._wasmfileuid = hashlib.sha256(self._wasm_file_encoded).hexdigest()
 
         self._check_file = check_file
 
@@ -139,13 +139,22 @@ class WasmFileHandler:
             if not supported_function:
                 self._unsupported_function.append(x)
 
+        if "init" not in self._functions:
+            raise ValueError("wasm file needs to contain a function named 'init'")
+
+        if self._functions["init"][0] != 0:
+            raise ValueError("init function should not have any parameter")
+
+        if self._functions["init"][1] != 0:
+            raise ValueError("init function should not have any results")
+
     def __str__(self) -> str:
         """str representation of the wasm file"""
-        return self._wasmuid
+        return self._wasmfileuid
 
     def __repr__(self) -> str:
         """str representation of the containment of the wasm file"""
-        result = f"Functions in wasm file with the uid {self._wasmuid}:\n"
+        result = f"Functions in wasm file with the uid {self._wasmfileuid}:\n"
         for x in self._functions:
             result += f"function '{x}' with {self._functions[x][0]} i32 parameter(s)"
             result += f" and {self._functions[x][1]} i32 return value(s)\n"

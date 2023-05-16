@@ -1,4 +1,4 @@
-# Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -34,13 +34,13 @@
 # -- Project information -----------------------------------------------------
 
 project = "pytket"
-copyright = "2022, Cambridge Quantum Computing Ltd"
+copyright = "2023, Cambridge Quantum Computing Ltd"
 author = "Cambridge Quantum Computing Ltd"
 
 # The short X.Y version
-version = "1.10"
+version = "1.15"
 # The full version, including alpha/beta/rc tags
-release = "1.10.0"
+release = "1.15.0"
 
 
 # -- General configuration ---------------------------------------------------
@@ -57,6 +57,8 @@ extensions = [
     "sphinx.ext.autosummary",
     "sphinx.ext.intersphinx",
     "sphinx.ext.mathjax",
+    "sphinx_copybutton",
+    "jupyter_sphinx",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -84,7 +86,7 @@ language = "en"
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
 # The name of the Pygments (syntax highlighting) style to use.
-pygments_style = "pastie"
+pygments_style = "borland"
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -102,6 +104,10 @@ html_theme_options = {
     "repository_url": "https://github.com/CQCL/tket",
     "use_repository_button": True,
     "use_issues_button": True,
+    "logo": {
+        "image_light": "_static/Quantinuum_logo_black.png",
+        "image_dark": "_static/Quantinuum_logo_white.png",
+    },
 }
 
 # Add any paths that contain custom static files (such as style sheets) here,
@@ -124,7 +130,6 @@ html_css_files = ["custom.css"]
 
 # -- Options for HTMLHelp output ---------------------------------------------
 
-html_logo = "_static/Quantinuum_logo2.png"
 # Output file base name for HTML help builder.
 htmlhelp_basename = "pytketdoc"
 

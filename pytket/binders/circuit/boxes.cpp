@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,23 +12,40 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Circuit/Boxes.hpp"
+#include "tket/Circuit/Boxes.hpp"
 
 #include <pybind11/eigen.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
-#include "Circuit/Circuit.hpp"
-#include "Converters/PhasePoly.hpp"
-#include "Utils/Json.hpp"
 #include "binder_json.hpp"
 #include "binder_utils.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/DiagonalBox.hpp"
+#include "tket/Circuit/Multiplexor.hpp"
+#include "tket/Circuit/StatePreparation.hpp"
+#include "tket/Circuit/ToffoliBox.hpp"
+#include "tket/Converters/PhasePoly.hpp"
+#include "tket/Utils/HelperFunctions.hpp"
+#include "tket/Utils/Json.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;
 using json = nlohmann::json;
 
 namespace tket {
+
+// Cast the std::vector keys in a map to py::tuple, since vector is not hashable
+// in python
+template <class T1, class T2>
+std::map<py::tuple, T2> cast_keys_to_tuples(
+    const std::map<std::vector<T1>, T2> &map) {
+  std::map<py::tuple, T2> outmap;
+  for (const auto &pair : map) {
+    outmap.insert({py::tuple(py::cast(pair.first)), pair.second});
+  }
+  return outmap;
+}
 
 void init_boxes(py::module &m) {
   py::class_<CircBox, std::shared_ptr<CircBox>, Op>(
@@ -133,13 +150,43 @@ void init_boxes(py::module &m) {
       "An operation that constructs a circuit to implement the specified "
       "permutation of classical basis states.")
       .def(
-          py::init<
-              unsigned, std::map<std::vector<bool>, std::vector<bool>> &>(),
-          "Construct from a permutation of basis states.", py::arg("n_qubits"),
-          py::arg("permutation"))
+          py::init<state_perm_t, OpType>(),
+          "Construct from a permutation of basis states, and the prefered "
+          "rotation axis of the multiplexors used in the decomposition. The "
+          "axis can be either Ry or Rx, default to Ry.",
+          py::arg("permutation"), py::arg("rotation_axis") = OpType::Ry)
+      .def(
+          py::init([](unsigned n_qubits, const state_perm_t &perm,
+                      const OpType &rotation_axis) {
+            (void)n_qubits;
+            PyErr_WarnEx(
+                PyExc_DeprecationWarning,
+                "The argument n_qubits is no longer needed. "
+                "Please create ToffoliBoxes without n_qubits.",
+                1);
+            return ToffoliBox(perm, rotation_axis);
+          }),
+          "Constructor for backward compatibility. Subject to deprecation.",
+          py::arg("n_qubits"), py::arg("permutation"),
+          py::arg("rotation_axis") = OpType::Ry)
       .def(
           "get_circuit", [](ToffoliBox &tbox) { return *tbox.to_circuit(); },
-          ":return: the :py:class:`Circuit` described by the box");
+          ":return: the :py:class:`Circuit` described by the box")
+      .def(
+          "get_permutation",
+          [](ToffoliBox &box) {
+            std::map<py::tuple, py::tuple> outmap;
+            for (const auto &pair : box.get_permutation()) {
+              outmap.insert(
+                  {py::tuple(py::cast(pair.first)),
+                   py::tuple(py::cast(pair.second))});
+            }
+            return outmap;
+          },
+          ":return: the permutation")
+      .def(
+          "get_rotation_axis", &ToffoliBox::get_rotation_axis,
+          ":return: the rotation axis");
   py::class_<QControlBox, std::shared_ptr<QControlBox>, Op>(
       m, "QControlBox",
       "A user-defined controlled operation specified by an "
@@ -243,11 +290,7 @@ void init_boxes(py::module &m) {
           "phase_polynomial",
           [](PhasePolyBox &ppoly) {
             const PhasePolynomial &phase_pol = ppoly.get_phase_polynomial();
-            std::map<py::tuple, Expr> outmap;
-            for (const auto &pair : phase_pol) {
-              outmap.insert({py::tuple(py::cast(pair.first)), pair.second});
-            }
-            return outmap;
+            return cast_keys_to_tuples(phase_pol);
           },
           "Map from bitstring (basis state) to phase.")
       .def_property_readonly(
@@ -345,5 +388,171 @@ void init_boxes(py::module &m) {
       .def(
           "get_stabilisers", &StabiliserAssertionBox::get_stabilisers,
           ":return: the list of pauli stabilisers");
+  py::class_<MultiplexorBox, std::shared_ptr<MultiplexorBox>, Op>(
+      m, "MultiplexorBox",
+      "A user-defined multiplexor (i.e. uniformly controlled operations) "
+      "specified by a "
+      "map from bitstrings to :py:class:`Op`s")
+      .def(
+          py::init<const ctrl_op_map_t &>(),
+          "Construct from a map from bitstrings to :py:class:`Op`s\n\n"
+          ":param op_map: Map from bitstrings to :py:class:`Op`s\n",
+          py::arg("op_map"))
+      .def(
+          "get_circuit", [](MultiplexorBox &box) { return *box.to_circuit(); },
+          ":return: the :py:class:`Circuit` described by the box")
+      .def(
+          "get_op_map",
+          [](MultiplexorBox &box) {
+            return cast_keys_to_tuples(box.get_op_map());
+          },
+          ":return: the underlying op map");
+  py::class_<
+      MultiplexedRotationBox, std::shared_ptr<MultiplexedRotationBox>, Op>(
+      m, "MultiplexedRotationBox",
+      "A user-defined multiplexed rotation gate (i.e. "
+      "uniformly controlled single-axis rotations) specified by "
+      "a map from bitstrings to :py:class:`Op`s")
+      .def(
+          py::init<const ctrl_op_map_t &>(),
+          "Construct from a map from bitstrings to :py:class:`Op`s."
+          "All :py:class:`Op`s must share the same single-qubit rotation type: "
+          "Rx, Ry, or Rz.\n\n"
+          ":param op_map: Map from bitstrings to :py:class:`Op`s\n",
+          py::arg("op_map"))
+      .def(
+          py::init([](const std::vector<double> &angles, const OpType &axis) {
+            if (angles.size() == 0) {
+              throw std::invalid_argument("Angles are empty.");
+            }
+            if (angles.size() & (angles.size() - 1)) {
+              throw std::invalid_argument(
+                  "The size of the angles is not power of 2.");
+            }
+            if (axis != OpType::Rx && axis != OpType::Ry &&
+                axis != OpType::Rz) {
+              throw std::invalid_argument(
+                  "The axis must be either Rx, Ry, or Rz.");
+            }
+            unsigned bitstring_width = (unsigned)log2(angles.size());
+            ctrl_op_map_t op_map;
+            for (unsigned i = 0; i < angles.size(); i++) {
+              if (std::abs(angles[i]) > EPS) {
+                std::vector<bool> bits = dec_to_bin(i, bitstring_width);
+                op_map.insert({bits, get_op_ptr(axis, angles[i])});
+              }
+            }
+            return MultiplexedRotationBox(op_map);
+          }),
+          "Construct from a list of angles and the rotation axis.\n\n"
+          ":param angles: List of rotation angles in half-turns. angles[i] is "
+          "the angle activated by the binary representation of i\n"
+          ":param axis: ``OpType.Rx``, ``OpType.Ry`` or ``OpType.Rz``\n",
+          py::arg("angles"), py::arg("axis"))
+      .def(
+          "get_circuit",
+          [](MultiplexedRotationBox &box) { return *box.to_circuit(); },
+          ":return: the :py:class:`Circuit` described by the box")
+      .def(
+          "get_op_map",
+          [](MultiplexedRotationBox &box) {
+            return cast_keys_to_tuples(box.get_op_map());
+          },
+          ":return: the underlying op map");
+  py::class_<MultiplexedU2Box, std::shared_ptr<MultiplexedU2Box>, Op>(
+      m, "MultiplexedU2Box",
+      "A user-defined multiplexed U2 gate (i.e. uniformly controlled U2 "
+      "gate) specified by a "
+      "map from bitstrings to :py:class:`Op`s")
+      .def(
+          py::init<const ctrl_op_map_t &, bool>(),
+          "Construct from a map from bitstrings to :py:class:`Op`s."
+          "Only supports single qubit unitary gate types and "
+          ":py:class:`Unitary1qBox`.\n\n"
+          ":param op_map: Map from bitstrings to :py:class:`Op`s\n"
+          ":param impl_diag: Whether to implement the final diagonal gate, "
+          "default to True.",
+          py::arg("op_map"), py::arg("impl_diag") = true)
+      .def(
+          "get_circuit",
+          [](MultiplexedU2Box &box) { return *box.to_circuit(); },
+          ":return: the :py:class:`Circuit` described by the box")
+      .def(
+          "get_op_map",
+          [](MultiplexedU2Box &box) {
+            return cast_keys_to_tuples(box.get_op_map());
+          },
+          ":return: the underlying op map")
+      .def(
+          "get_impl_diag", &MultiplexedU2Box::get_impl_diag,
+          ":return: flag indicating whether to implement the final diagonal "
+          "gate.");
+  py::class_<
+      MultiplexedTensoredU2Box, std::shared_ptr<MultiplexedTensoredU2Box>, Op>(
+      m, "MultiplexedTensoredU2Box",
+      "A user-defined multiplexed tensor product of U2 gates specified by a "
+      "map from bitstrings to lists of :py:class:`Op`s")
+      .def(
+          py::init<const ctrl_tensored_op_map_t &>(),
+          "Construct from a map from bitstrings to equal-sized lists of "
+          ":py:class:`Op`s. "
+          "Only supports single qubit unitary gate types and "
+          ":py:class:`Unitary1qBox`.\n\n"
+          ":param op_map: Map from bitstrings to lists of :py:class:`Op`s",
+          py::arg("op_map"))
+      .def(
+          "get_circuit",
+          [](MultiplexedTensoredU2Box &box) { return *box.to_circuit(); },
+          ":return: the :py:class:`Circuit` described by the box")
+      .def(
+          "get_op_map",
+          [](MultiplexedTensoredU2Box &box) {
+            return cast_keys_to_tuples(box.get_op_map());
+          },
+          ":return: the underlying op map");
+  py::class_<StatePreparationBox, std::shared_ptr<StatePreparationBox>, Op>(
+      m, "StatePreparationBox",
+      "A box for preparing quantum states using multiplexed-Ry and "
+      "multiplexed-Rz gates")
+      .def(
+          py::init<const Eigen::VectorXcd &, bool>(),
+          "Construct from a statevector\n\n"
+          ":param statevector: normalised statevector\n",
+          ":param is_inverse: whether to implement the dagger of the state "
+          "preparation circuit, default to false",
+          py::arg("statevector"), py::arg("is_inverse") = false)
+      .def(
+          "get_circuit",
+          [](StatePreparationBox &box) { return *box.to_circuit(); },
+          ":return: the :py:class:`Circuit` described by the box")
+      .def(
+          "get_statevector", &StatePreparationBox::get_statevector,
+          ":return: the statevector")
+      .def(
+          "is_inverse", &StatePreparationBox::is_inverse,
+          ":return: flag indicating whether to implement the dagger of the "
+          "state preparation circuit");
+  py::class_<DiagonalBox, std::shared_ptr<DiagonalBox>, Op>(
+      m, "DiagonalBox",
+      "A box for synthesising a diagonal unitary matrix into a sequence of "
+      "multiplexed-Rz gates.")
+      .def(
+          py::init<const Eigen::VectorXcd &, bool>(),
+          "Construct from the diagonal entries of the unitary operator. The "
+          "size of the vector must be 2^n where n is a positive integer.\n\n"
+          ":param diagonal: diagonal entries\n"
+          ":param upper_triangle: indicates whether the multiplexed-Rz gates "
+          "take the shape of an upper triangle or a lower triangle. Default to "
+          "true.",
+          py::arg("diagonal"), py::arg("upper_triangle") = true)
+      .def(
+          "get_circuit", [](DiagonalBox &box) { return *box.to_circuit(); },
+          ":return: the :py:class:`Circuit` described by the box")
+      .def(
+          "get_diagonal", &DiagonalBox::get_diagonal,
+          ":return: the statevector")
+      .def(
+          "is_upper_triangle", &DiagonalBox::is_upper_triangle,
+          ":return: the upper_triangle flag");
 }
 }  // namespace tket

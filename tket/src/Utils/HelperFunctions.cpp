@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "HelperFunctions.hpp"
+#include "tket/Utils/HelperFunctions.hpp"
+
+#include <boost/dynamic_bitset.hpp>
 
 namespace tket {
 
@@ -42,6 +44,26 @@ uint32_t reverse_bits(uint32_t v, unsigned w) {
     v >>= 1;
   }
   return r;
+}
+
+std::vector<bool> dec_to_bin(unsigned long long dec, unsigned width) {
+  auto bs = boost::dynamic_bitset<>(width, dec);
+  std::vector<bool> bits(width);
+  for (unsigned long long i = 0; i < width; i++) {
+    bits[width - i - 1] = bs[i];
+  }
+  return bits;
+}
+
+// big endian
+unsigned long long bin_to_dec(const std::vector<bool> &bin) {
+  unsigned long long res = 0;
+  for (unsigned long long i = 0; i < bin.size(); i++) {
+    if (bin[i]) {
+      res = res + (1ULL << (bin.size() - 1 - i));
+    }
+  }
+  return res;
 }
 
 }  // namespace tket

@@ -1,1 +1,1 @@
-include pytket/circuit/display/circuit.html
+graft pytket/circuit/display

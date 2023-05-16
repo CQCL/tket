@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,34 +12,34 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "PassGenerators.hpp"
+#include "tket/Predicates/PassGenerators.hpp"
 
 #include <memory>
 #include <sstream>
 #include <string>
 
-#include "ArchAwareSynth/SteinerForest.hpp"
-#include "Circuit/CircPool.hpp"
-#include "Circuit/Circuit.hpp"
-#include "Converters/PhasePoly.hpp"
-#include "Mapping/LexiLabelling.hpp"
-#include "Mapping/LexiRoute.hpp"
-#include "Mapping/MappingManager.hpp"
-#include "OpType/OpType.hpp"
-#include "Placement/Placement.hpp"
-#include "Predicates/CompilationUnit.hpp"
-#include "Predicates/CompilerPass.hpp"
-#include "Predicates/PassLibrary.hpp"
-#include "Predicates/Predicates.hpp"
-#include "Transformations/BasicOptimisation.hpp"
-#include "Transformations/ContextualReduction.hpp"
-#include "Transformations/Decomposition.hpp"
-#include "Transformations/OptimisationPass.hpp"
-#include "Transformations/PauliOptimisation.hpp"
-#include "Transformations/Rebase.hpp"
-#include "Transformations/ThreeQubitSquash.hpp"
-#include "Transformations/Transform.hpp"
-#include "Utils/Json.hpp"
+#include "tket/ArchAwareSynth/SteinerForest.hpp"
+#include "tket/Circuit/CircPool.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Converters/PhasePoly.hpp"
+#include "tket/Mapping/LexiLabelling.hpp"
+#include "tket/Mapping/LexiRoute.hpp"
+#include "tket/Mapping/MappingManager.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/Placement/Placement.hpp"
+#include "tket/Predicates/CompilationUnit.hpp"
+#include "tket/Predicates/CompilerPass.hpp"
+#include "tket/Predicates/PassLibrary.hpp"
+#include "tket/Predicates/Predicates.hpp"
+#include "tket/Transformations/BasicOptimisation.hpp"
+#include "tket/Transformations/ContextualReduction.hpp"
+#include "tket/Transformations/Decomposition.hpp"
+#include "tket/Transformations/OptimisationPass.hpp"
+#include "tket/Transformations/PauliOptimisation.hpp"
+#include "tket/Transformations/Rebase.hpp"
+#include "tket/Transformations/ThreeQubitSquash.hpp"
+#include "tket/Transformations/Transform.hpp"
+#include "tket/Utils/Json.hpp"
 
 namespace tket {
 
@@ -156,6 +156,31 @@ PassPtr gen_clifford_simp_pass(bool allow_swaps) {
   j["allow_swaps"] = allow_swaps;
 
   return std::make_shared<StandardPass>(precons, t, postcon, j);
+}
+
+PassPtr gen_flatten_relabel_registers_pass(const std::string& label) {
+  Transform t =
+      Transform([=](Circuit& circuit, std::shared_ptr<unit_bimaps_t> maps) {
+        unsigned n_qubits = circuit.n_qubits();
+        circuit.remove_blank_wires();
+        bool changed = circuit.n_qubits() < n_qubits;
+        std::map<Qubit, Qubit> relabelling_map;
+        std::vector<Qubit> all_qubits = circuit.all_qubits();
+        for (unsigned i = 0; i < all_qubits.size(); i++) {
+          relabelling_map.insert({all_qubits[i], Qubit(label, i)});
+        }
+
+        circuit.rename_units(relabelling_map);
+        changed |= update_maps(maps, relabelling_map, relabelling_map);
+        return changed;
+      });
+  PredicatePtrMap precons = {};
+  PostConditions postcons = {};
+
+  nlohmann::json j;
+  j["name"] = "FlattenRelabelRegistersPass";
+  j["label"] = label;
+  return std::make_shared<StandardPass>(precons, t, postcons, j);
 }
 
 PassPtr gen_rename_qubits_pass(const std::map<Qubit, Qubit>& qm) {
@@ -620,6 +645,34 @@ PassPtr ThreeQubitSquash(bool allow_swaps) {
   return std::make_shared<StandardPass>(precons, t, postcon, j);
 }
 
+PassPtr PeepholeOptimise2Q(bool allow_swaps) {
+  OpTypeSet after_set = {
+      OpType::TK1, OpType::CX, OpType::Measure, OpType::Collapse,
+      OpType::Reset};
+  PredicatePtrMap precons = {};
+  PredicatePtr out_gateset = std::make_shared<GateSetPredicate>(after_set);
+  PredicatePtr max2qb = std::make_shared<MaxTwoQubitGatesPredicate>();
+  PredicatePtrMap postcon_spec = {
+      CompilationUnit::make_type_pair(out_gateset),
+      CompilationUnit::make_type_pair(max2qb)};
+  PredicateClassGuarantees g_postcons;
+  if (allow_swaps) {
+    g_postcons = {
+        {typeid(ConnectivityPredicate), Guarantee::Clear},
+        {typeid(NoWireSwapsPredicate), Guarantee::Clear},
+    };
+  }
+  g_postcons.insert({typeid(DirectednessPredicate), Guarantee::Clear});
+  g_postcons.insert({typeid(CliffordCircuitPredicate), Guarantee::Clear});
+  PostConditions postcon{postcon_spec, g_postcons, Guarantee::Preserve};
+  // record pass config
+  nlohmann::json j;
+  j["name"] = "PeepholeOptimise2Q";
+  j["allow_swaps"] = allow_swaps;
+  return std::make_shared<StandardPass>(
+      precons, Transforms::peephole_optimise_2q(allow_swaps), postcon, j);
+}
+
 PassPtr FullPeepholeOptimise(bool allow_swaps, OpType target_2qb_gate) {
   OpTypeSet after_set = {
       OpType::TK1, OpType::Measure, OpType::Collapse, OpType::Reset};
@@ -694,7 +747,6 @@ PassPtr gen_synthesise_pauli_graph(
   Transform t = Transforms::synthesise_pauli_graph(strat, cx_config);
   PredicatePtr ccontrol_pred = std::make_shared<NoClassicalControlPredicate>();
   PredicatePtr mid_pred = std::make_shared<NoMidMeasurePredicate>();
-  PredicatePtr wire_pred = std::make_shared<NoWireSwapsPredicate>();
   OpTypeSet ins = {OpType::Z,       OpType::X,           OpType::Y,
                    OpType::S,       OpType::Sdg,         OpType::V,
                    OpType::Vdg,     OpType::H,           OpType::CX,
@@ -708,7 +760,6 @@ PassPtr gen_synthesise_pauli_graph(
   PredicatePtrMap precons{
       CompilationUnit::make_type_pair(ccontrol_pred),
       CompilationUnit::make_type_pair(mid_pred),
-      CompilationUnit::make_type_pair(wire_pred),
       CompilationUnit::make_type_pair(in_gates)};
   PredicateClassGuarantees g_postcons = {
       {typeid(ConnectivityPredicate), Guarantee::Clear},
@@ -797,6 +848,17 @@ PassPtr GlobalisePhasedX(bool squash) {
   j["name"] = "GlobalisePhasedX";
   j["squash"] = squash;
   return std::make_shared<StandardPass>(precons, t, postcon, j);
+}
+
+PassPtr RoundAngles(unsigned n, bool only_zeros) {
+  Transform t = Transforms::round_angles(n, only_zeros);
+  PredicatePtrMap precons;
+  PostConditions postcons = {{}, {}, Guarantee::Preserve};
+  nlohmann::json j;
+  j["name"] = "RoundAngles";
+  j["n"] = n;
+  j["only_zeros"] = only_zeros;
+  return std::make_shared<StandardPass>(precons, t, postcons, j);
 }
 
 PassPtr CustomPass(

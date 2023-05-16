@@ -161,7 +161,9 @@
             "PauliSquash",
             "ContextSimp",
             "DecomposeTK2",
-            "CnXPairwiseDecomposition"
+            "CnXPairwiseDecomposition",
+            "RemoveImplicitQubitPermutation",
+            "RoundAngles"
           ],
           "description": "The name of the compiler pass. Matches the name of the pytket method used to generate it. List all the passes as enum."
         },
@@ -273,6 +275,10 @@
           "type": "boolean",
           "description": "Whether to include a \"DelayMeasures\" pass in a \"CXMappingPass\"."
         },
+        "allow_partial": {
+          "type": "boolean",
+          "description": "Whether to allow partial delays in \"DelayMeasures\" when the circuit has non-commutable operations after the measure."
+        },
         "target_2qb_gate": {
           "type": "string",
           "enum": [
@@ -302,6 +308,14 @@
               "maximum": 1
             }
           }
+        },
+        "n": {
+          "type": "integer",
+          "description": "Level of precision applied in \"RoundAngles\"."
+        },
+        "only_zeros": {
+          "type": "boolean",
+          "description": "Whether to restrict \"RoundAngles\" to rounding to zero."
         }
       },
       "required": [
@@ -389,6 +403,21 @@
               "target_2qb_gate"
             ],
             "maxProperties": 3
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "name": {
+                "const": "PeepholeOptimise2Q"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "allow_swaps"
+            ],
+            "maxProperties": 2
           }
         },
         {
@@ -498,6 +527,21 @@
             ],
             "$comment": "TODO We need to make sure that the optional parameter must be x_circuit",
             "maxProperties": 4
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "name": {
+                "const": "FlattenRelabelRegistersPass"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "label"
+            ],
+            "maxProperties": 2
           }
         },
         {
@@ -696,6 +740,37 @@
           "if": {
             "properties": {
               "name": {
+                "const": "DelayMeasures"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "allow_partial"
+            ],
+            "maxProperties": 2
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "name": {
+                "const": "RoundAngles"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "n",
+              "only_zeros"
+            ],
+            "maxProperties": 3
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "name": {
                 "$comment": "List all non-parametrized passes",
                 "enum": [
                   "CommuteThroughMultis",
@@ -703,7 +778,6 @@
                   "DecomposeBoxes",
                   "DecomposeMultiQubitsCX",
                   "DecomposeSingleQubitsTK1",
-                  "PeepholeOptimise2Q",
                   "RebaseTket",
                   "RebaseUFR",
                   "RemoveRedundancies",
@@ -715,7 +789,6 @@
                   "SquashTK1",
                   "SquashRzPhasedX",
                   "FlattenRegisters",
-                  "DelayMeasures",
                   "ZZPhaseToRz",
                   "RemoveDiscarded",
                   "SimplifyMeasured",

@@ -1,4 +1,4 @@
-# Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,13 +19,11 @@ import subprocess
 import sys
 import json
 import shutil
-from multiprocessing import cpu_count
 from distutils.version import LooseVersion
-from concurrent.futures import ThreadPoolExecutor as Pool
-from shutil import which
 import setuptools  # type: ignore
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext  # type: ignore
+from sysconfig import get_config_var
 from wheel.bdist_wheel import bdist_wheel as _bdist_wheel
 
 
@@ -33,173 +31,6 @@ class CMakeExtension(Extension):
     def __init__(self, name, sourcedir=""):
         Extension.__init__(self, name, sources=[])
         self.sourcedir = os.path.abspath(sourcedir)
-
-
-def libfile(name):
-    sysname = platform.system()
-    if sysname == "Linux":
-        return "lib" + name + ".so"
-    elif sysname == "Darwin":
-        return "lib" + name + ".dylib"
-    elif sysname == "Windows":
-        return name + ".dll"
-    else:
-        return None
-
-
-class CMakeBuild(build_ext):
-    def run(self):
-        try:
-            out = subprocess.check_output(["cmake", "--version"])
-        except OSError:
-            raise RuntimeError(
-                "CMake must be installed to build the following extensions: "
-                + ", ".join(e.name for e in self.extensions)
-            )
-
-        if platform.system() == "Windows":
-            cmake_version = LooseVersion(
-                re.search(r"version\s*([\d.]+)", out.decode()).group(1)
-            )
-            if cmake_version < "3.1.0":
-                raise RuntimeError("CMake >= 3.1.0 is required on Windows")
-
-        self.cfg = "Release"
-        self.check_extensions_list(self.extensions)
-        extdir = os.path.abspath(
-            os.path.dirname(self.get_ext_fullpath(self.extensions[0].name))
-        )
-        extsource = self.extensions[0].sourcedir
-        self.cmake_config(extdir, extsource)
-
-        if platform.system() == "Windows":
-            for ext in self.extensions:
-                self.build_extension(ext)
-        else:
-            num_jobs = int(os.environ.get("MAKE_N_THREADS", default=cpu_count()))
-            with Pool(num_jobs) as pool:
-                _future = list(pool.map(self.build_extension, self.extensions))
-
-        # Hack to put required shared libraries alongside the extension libraries
-        needed_libs = {
-            "tklog": ["tklog"],
-            "tket": [
-                "tket-Utils",
-                "tket-ZX",
-                "tket-OpType",
-                "tket-Clifford",
-                "tket-Ops",
-                "tket-Graphs",
-                "tket-Gate",
-                "tket-PauliGraph",
-                "tket-Circuit",
-                "tket-Architecture",
-                "tket-Simulation",
-                "tket-Diagonalisation",
-                "tket-Characterisation",
-                "tket-Converters",
-                "tket-Placement",
-                "tket-Mapping",
-                "tket-MeasurementSetup",
-                "tket-Transformations",
-                "tket-ArchAwareSynth",
-                "tket-Predicates",
-            ],
-        }
-
-        conan_tket_profile = os.getenv("CONAN_TKET_PROFILE", default="tket")
-        jsondump = "conaninfo.json"
-        subprocess.run(
-            [
-                "conan",
-                "info",
-                "--profile",
-                conan_tket_profile,
-                "--path",
-                "--json",
-                jsondump,
-                ".",
-            ],
-            cwd=extsource,
-        )
-        with open(jsondump) as f:
-            conaninfo = dict([(comp["reference"], comp) for comp in json.load(f)])
-        os.remove(jsondump)
-        reqinfo = conaninfo["conanfile.txt"]["requires"]
-
-        for comp, libs in needed_libs.items():
-            reqs = [req for req in reqinfo if req.startswith(comp + "/")]
-            assert len(reqs) == 1
-            req = reqs[0]
-            directory = conaninfo[req]["package_folder"]
-            for lib in libs:
-                shutil.copy(os.path.join(directory, "lib", libfile(lib)), extdir)
-
-    def cmake_config(self, extdir, extsource):
-
-        env = os.environ.copy()
-
-        cmake_args = [
-            "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY=" + extdir,
-            "-DPYTHON_EXECUTABLE=" + sys.executable,
-        ]
-
-        tket_lib_dir = os.environ.get("TKET_LIB_FILES", default=None)
-        if tket_lib_dir:
-            cmake_args.append("-DTKET_LIB_FILES=" + tket_lib_dir)
-
-        if platform.system() == "Windows":
-            cmake_args += [
-                "-DCMAKE_LIBRARY_OUTPUT_DIRECTORY_{}={}".format(
-                    self.cfg.upper(), extdir
-                )
-            ]
-        else:
-            cmake_args += ["-DCMAKE_BUILD_TYPE=" + self.cfg]
-            if which("ninja") is not None:
-                cmake_args += ["-G", "Ninja"]
-
-        env["CXXFLAGS"] = '{} -DVERSION_INFO=\\"{}\\"'.format(
-            env.get("CXXFLAGS", ""), self.distribution.get_version()
-        )
-        if not os.path.exists(self.build_temp):
-            os.makedirs(self.build_temp)
-        conan_cmd = os.getenv("CONAN_CMD", default="conan")
-        conan_tket_profile = os.getenv("CONAN_TKET_PROFILE", default="tket")
-        install_cmd = [
-            conan_cmd,
-            "install",
-            "--profile=" + conan_tket_profile,
-            "--build=missing",
-            "-o",
-            "tket:shared=True",
-            extsource,
-        ]
-        if platform.system() == "Darwin" and platform.processor() == "arm":
-            install_cmd.extend(
-                [
-                    "-o",
-                    "boost:without_fiber=True",
-                    "-o",
-                    "boost:without_json=True",
-                    "-o",
-                    "boost:without_nowide=True",
-                ]
-            )
-        subprocess.check_call(install_cmd, cwd=self.build_temp, env=env)
-
-        subprocess.check_call(
-            ["cmake", extsource] + cmake_args, cwd=self.build_temp, env=env
-        )
-
-    def build_extension(self, ext):
-        build_args = ["--config", self.cfg]
-        if platform.system() == "Windows":
-            build_args += ["--", "/m"]
-        subprocess.check_call(
-            ["cmake", "--build", ".", "--target", ext.name.split(".")[2]] + build_args,
-            cwd=self.build_temp,
-        )
 
 
 binders = [
@@ -219,6 +50,79 @@ binders = [
     "architecture",
 ]
 
+
+class CMakeBuild(build_ext):
+    def run(self):
+        self.check_extensions_list(self.extensions)
+        extdir = os.path.abspath(
+            os.path.dirname(self.get_ext_fullpath(self.extensions[0].name))
+        )
+        extsource = self.extensions[0].sourcedir
+        build_dir = os.path.join(extsource, "build")
+        shutil.rmtree(build_dir, ignore_errors=True)
+        os.mkdir(build_dir)
+        install_dir = os.getenv("INSTALL_DIR")
+        subprocess.run(
+            ["cmake", f"-DCMAKE_INSTALL_PREFIX={install_dir}", os.pardir], cwd=build_dir
+        )
+        subprocess.run(["cmake", "--build", os.curdir], cwd=build_dir)
+        subprocess.run(["cmake", "--install", os.curdir], cwd=build_dir)
+        lib_folder = os.path.join(install_dir, "lib")
+        lib_names = ["libtklog.so", "libtket.so"]
+        ext_suffix = get_config_var("EXT_SUFFIX")
+        lib_names.extend(f"{binder}{ext_suffix}" for binder in binders)
+        # TODO make the above generic
+        if os.path.exists(extdir):
+            shutil.rmtree(extdir)
+        os.makedirs(extdir)
+        for lib_name in lib_names:
+            shutil.copy(os.path.join(lib_folder, lib_name), extdir)
+
+
+class ConanBuild(build_ext):
+    def run(self):
+        self.check_extensions_list(self.extensions)
+        extdir = os.path.abspath(
+            os.path.dirname(self.get_ext_fullpath(self.extensions[0].name))
+        )
+        extsource = self.extensions[0].sourcedir
+
+        jsonstr = subprocess.check_output(
+            [
+                "conan",
+                "create",
+                ".",
+                "--build=missing",
+                "-o",
+                "boost/*:header_only=True",
+                "-o",
+                "tket/*:shared=True",
+                "-o",
+                "tklog/*:shared=True",
+                "--format",
+                "json",
+            ],
+            cwd=extsource,
+        )
+
+        # Collect the paths to the libraries to package together
+        conaninfo = json.loads(jsonstr)
+        nodes = conaninfo["graph"]["nodes"]
+        if os.path.exists(extdir):
+            shutil.rmtree(extdir)
+        os.makedirs(extdir)
+        for comp in ["tklog", "tket", "pytket"]:
+            compnodes = [node for node in nodes if node["ref"].startswith(comp + "/")]
+            assert len(compnodes) == 1
+            compnode = compnodes[0]
+            lib_folder = os.path.join(compnode["package_folder"], "lib")
+            for lib in os.listdir(lib_folder):
+                libpath = os.path.join(lib_folder, lib)
+                # Don't copy the `cmake` directory.
+                if not os.path.isdir(libpath):
+                    shutil.copy(libpath, extdir)
+
+
 setup_dir = os.path.abspath(os.path.dirname(__file__))
 plat_name = os.getenv("WHEEL_PLAT_NAME")
 
@@ -236,7 +140,7 @@ setup(
     name="pytket",
     author="TKET development team",
     author_email="tket-support@cambridgequantum.com",
-    python_requires=">=3.8",
+    python_requires=">=3.9",
     project_urls={
         "Documentation": "https://cqcl.github.io/tket/pytket/api/index.html",
         "Source": "https://github.com/CQCL/tket",
@@ -253,22 +157,31 @@ setup(
         "numpy >=1.21.4, <2.0",
         "lark-parser ~=0.7",
         "scipy >=1.7.2, <2.0",
-        "networkx ~= 2.4",
+        "networkx ~= 3.0",
         "graphviz ~= 0.14",
         "jinja2 ~= 3.0",
         "types-pkg_resources",
         "typing-extensions ~= 4.2",
         "qwasm ~= 1.0",
     ],
+    extras_require={
+        "ZX": [
+            "quimb ~= 1.5",
+            "autoray >= 0.6.1",
+        ],
+    },
     ext_modules=[
         CMakeExtension("pytket._tket.{}".format(binder)) for binder in binders
     ],
-    cmdclass={"build_ext": CMakeBuild, "bdist_wheel": bdist_wheel},
+    cmdclass={
+        "build_ext": CMakeBuild if os.getenv("NO_CONAN") else ConanBuild,
+        "bdist_wheel": bdist_wheel,
+    },
     classifiers=[
         "Environment :: Console",
-        "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
         "Programming Language :: Python :: 3.10",
+        "Programming Language :: Python :: 3.11",
         "License :: OSI Approved :: Apache Software License",
         "Operating System :: MacOS :: MacOS X",
         "Operating System :: POSIX :: Linux",

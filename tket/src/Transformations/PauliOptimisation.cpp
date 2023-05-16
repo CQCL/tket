@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "PauliOptimisation.hpp"
+#include "tket/Transformations/PauliOptimisation.hpp"
 
-#include "Converters/Converters.hpp"
-#include "Converters/PauliGadget.hpp"
-#include "Decomposition.hpp"
-#include "OpType/OpType.hpp"
-#include "OpType/OpTypeInfo.hpp"
-#include "Ops/Op.hpp"
-#include "OptimisationPass.hpp"
-#include "PauliGraph/PauliGraph.hpp"
-#include "Transform.hpp"
+#include "tket/Converters/Converters.hpp"
+#include "tket/Converters/PauliGadget.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/OpType/OpTypeInfo.hpp"
+#include "tket/Ops/Op.hpp"
+#include "tket/PauliGraph/PauliGraph.hpp"
+#include "tket/Transformations/Decomposition.hpp"
+#include "tket/Transformations/OptimisationPass.hpp"
+#include "tket/Transformations/Transform.hpp"
 
 namespace tket {
 
@@ -34,7 +34,7 @@ Transform pairwise_pauli_gadgets(CXConfigType cx_config) {
     BGL_FORALL_VERTICES(v, circ.dag, DAG) {
       Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
       OpType optype = op->get_type();
-      if (is_boundary_c_type(optype)) continue;
+      if (is_boundary_type(optype) && !is_boundary_q_type(optype)) continue;
       if (optype == OpType::Conditional)
         throw CircuitInvalidity(
             "Cannot currently do `pauli_gadgets` optimisation on a "
@@ -188,6 +188,8 @@ Transform synthesise_pauli_graph(
     PauliSynthStrat strat, CXConfigType cx_config) {
   return Transform([=](Circuit &circ) {
     Expr t = circ.get_phase();
+    std::optional<std::string> name = circ.get_name();
+    circ.replace_all_implicit_wire_swaps();
     PauliGraph pg = circuit_to_pauli_graph(circ);
     switch (strat) {
       case PauliSynthStrat::Individual: {
@@ -206,6 +208,9 @@ Transform synthesise_pauli_graph(
         TKET_ASSERT(!"Unknown Pauli Synthesis Strategy");
     }
     circ.add_phase(t);
+    if (name) {
+      circ.set_name(*name);
+    }
     // always turn circuit into PauliGraph and back, so always return true
     return true;
   });

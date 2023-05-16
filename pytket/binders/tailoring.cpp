@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,10 +17,10 @@
 #include <pybind11/stl.h>
 #include <pybind11/stl_bind.h>
 
-#include "Characterisation/FrameRandomisation.hpp"
-#include "Clifford/CliffTableau.hpp"
-#include "Converters/Converters.hpp"
 #include "binder_utils.hpp"
+#include "tket/Characterisation/FrameRandomisation.hpp"
+#include "tket/Clifford/CliffTableau.hpp"
+#include "tket/Converters/Converters.hpp"
 
 namespace py = pybind11;
 

@@ -1,4 +1,4 @@
-# Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -36,8 +36,10 @@ class Graph:
         (
             q_inputs,
             c_inputs,
+            w_inputs,
             q_outputs,
             c_outputs,
+            w_outputs,
             input_names,
             output_names,
             node_data,
@@ -45,8 +47,10 @@ class Graph:
         ) = c._dag_data
         self.q_inputs = q_inputs
         self.c_inputs = c_inputs
+        self.w_inputs = w_inputs
         self.q_outputs = q_outputs
         self.c_outputs = c_outputs
+        self.w_outputs = w_outputs
         self.input_names = input_names
         self.output_names = output_names
         self.node_data = node_data
@@ -105,12 +109,11 @@ class Graph:
 
         # Remove unnecessary port attributes to avoid clutter:
         for node in Gnx.nodes:
-            if Gnx.out_degree(node) == 1:
-                for edge in Gnx.out_edges(node, keys=True):
-                    nx.set_edge_attributes(Gnx, {edge: {"src_port": None}})
             if Gnx.in_degree(node) == 1:
                 for edge in Gnx.in_edges(node, keys=True):
                     nx.set_edge_attributes(Gnx, {edge: {"tgt_port": None}})
+                for edge in Gnx.out_edges(node, keys=True):
+                    nx.set_edge_attributes(Gnx, {edge: {"src_port": None}})
 
         self.Gnx = Gnx
         return Gnx
@@ -132,6 +135,7 @@ class Graph:
         q_color = "blue"
         c_color = "slategray"
         b_color = "gray"
+        w_color = "green"
         gate_color = "lightblue"
         boundary_cluster_attr = {
             "style": "rounded, filled",
@@ -153,6 +157,13 @@ class Graph:
                 c.node(
                     str((node, 0)), xlabel=self.input_names[node], **boundary_node_attr
                 )
+        with G.subgraph(name="cluster_w_inputs") as c:
+            c.attr(rank="source", **boundary_cluster_attr)
+            c.node_attr.update(shape="point", color=w_color)
+            for node in self.w_inputs:
+                c.node(
+                    str((node, 0)), xlabel=self.input_names[node], **boundary_node_attr
+                )
         with G.subgraph(name="cluster_q_outputs") as c:
             c.attr(rank="sink", **boundary_cluster_attr)
             c.node_attr.update(shape="point", color=q_color)
@@ -167,7 +178,21 @@ class Graph:
                 c.node(
                     str((node, 0)), xlabel=self.output_names[node], **boundary_node_attr
                 )
-        boundary_nodes = self.q_inputs | self.c_inputs | self.q_outputs | self.c_outputs
+        with G.subgraph(name="cluster_w_outputs") as c:
+            c.attr(rank="sink", **boundary_cluster_attr)
+            c.node_attr.update(shape="point", color=w_color)
+            for node in self.w_outputs:
+                c.node(
+                    str((node, 0)), xlabel=self.output_names[node], **boundary_node_attr
+                )
+        boundary_nodes = (
+            self.q_inputs
+            | self.c_inputs
+            | self.w_inputs
+            | self.q_outputs
+            | self.c_outputs
+            | self.w_outputs
+        )
         Gnx = self.as_nx()
         node_cluster_attr = {
             "style": "rounded, filled",
@@ -197,6 +222,7 @@ class Graph:
             0: q_color,  # Quantum
             1: b_color,  # Boolean
             2: c_color,  # Classical
+            3: w_color,  # WASM (and other)
         }
         edge_attr = {
             "weight": "2",

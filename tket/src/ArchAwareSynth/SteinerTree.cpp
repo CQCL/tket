@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "SteinerTree.hpp"
+#include "tket/ArchAwareSynth/SteinerTree.hpp"
 
 namespace tket {
 namespace aas {
@@ -260,8 +260,7 @@ int SteinerTree::cost_of_operation(unsigned i, unsigned j) const {
           return 0;
         }
         default: {
-          throw InvalidCostCalculation(
-              "[AAS]: Invalid cost calculation, wrong SteinerNodeType");
+          TKET_ASSERT(!"[AAS]: Invalid cost, wrong SteinerNodeType");
         }
       }
     }
@@ -276,8 +275,7 @@ int SteinerTree::cost_of_operation(unsigned i, unsigned j) const {
           return 1;
         }
         default: {
-          throw InvalidCostCalculation(
-              "[AAS]: Invalid cost calculation, wrong SteinerNodeType");
+          TKET_ASSERT(!"[AAS]: Invalid cost, wrong SteinerNodeType");
         }
       }
     }
@@ -292,8 +290,7 @@ int SteinerTree::cost_of_operation(unsigned i, unsigned j) const {
           return 1;
         }
         default: {
-          throw InvalidCostCalculation(
-              "[AAS]: Invalid cost calculation, wrong SteinerNodeType");
+          TKET_ASSERT(!"[AAS]: Invalid cost, wrong SteinerNodeType");
         }
       }
     }
@@ -306,16 +303,15 @@ int SteinerTree::cost_of_operation(unsigned i, unsigned j) const {
           return 0;
         }
         default: {
-          throw InvalidCostCalculation(
-              "[AAS]: Invalid cost calculation, wrong SteinerNodeType");
+          TKET_ASSERT(!"[AAS]: Invalid cost, wrong SteinerNodeType");
         }
       }
     }
     default: {
-      throw InvalidCostCalculation(
-          "[AAS]: Invalid cost calculation, wrong SteinerNodeType");
+      TKET_ASSERT(!"[AAS]: Invalid cost, wrong SteinerNodeType");
     }
   }
+  return 0;
 }
 
 OperationList SteinerTree::operations_available(
@@ -380,9 +376,7 @@ void SteinerTree::add_row(unsigned i, unsigned j) {
           break;
         }
         default: {
-          throw InvalidRowOperation(
-              "[AAS]: Invalid row operation, invalid combination "
-              "SteinerNodeType in add_row");
+          TKET_ASSERT(!"[AAS]: Invalid row op, wrong SteinerNodeType");
         }
       }
       break;

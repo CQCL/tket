@@ -1,4 +1,4 @@
-# Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -425,6 +425,29 @@ def test_inversion_pauli_partition_expectation() -> None:
     assert np.isclose(energy2, [0.04248, 0.04248, 0.08612], atol=0.01).all()
 
 
+def test_expectation_with_pauli_i() -> None:
+    c = Circuit(1).H(0)
+    qps1 = QubitPauliString(qubits=[Qubit(0)], paulis=[Pauli.I])
+    qps2 = QubitPauliString(qubits=[Qubit(0)], paulis=[Pauli.Z])
+    backend = TketSimShotBackend(ignore_measures=True)
+    n_shots = 10000
+    strats = [
+        None,
+        PauliPartitionStrat.NonConflictingSets,
+        PauliPartitionStrat.CommutingSets,
+    ]
+    for strat in strats:
+        energy = complex(
+            get_operator_expectation_value(c, QubitPauliOperator({qps1: 0.0, qps2: 1.0}), backend, n_shots, strat, seed=4)  # type: ignore
+        )
+        assert np.isclose(energy, 0.0, atol=0.01)
+    for strat in strats:
+        energy = complex(
+            get_operator_expectation_value(c, QubitPauliOperator({qps1: 1.0}), backend, n_shots, strat, seed=4)  # type: ignore
+        )
+        assert np.isclose(energy, 1.0, atol=0.01)
+
+
 def test_compare_statevectors() -> None:
     test_vec = np.array([1 + 2 * 1j, 3 + 4 * 1j, 5 + 6 * 1j, 7 + 8 * 1j])
     other_vec = test_vec + (2 - 1.2 * 1j)
@@ -468,6 +491,23 @@ def test_dag_implicit_perm() -> None:
     G = Graph(c)
     dag = G.get_DAG()
     assert dag.name == "Circuit"
+
+
+def test_all_qubits() -> None:
+    operator = QubitPauliOperator()
+    qps_0 = QubitPauliString({Qubit(0): Pauli.Z})
+    qps_1 = QubitPauliString({Qubit(1): Pauli.Z})
+    qps_2 = QubitPauliString({Qubit(2): Pauli.Z})
+    qpo_1 = QubitPauliOperator({qps_1: 1.0})
+    qpo_2 = QubitPauliOperator({qps_2: 1.0})
+
+    assert operator.all_qubits == set()
+    operator[qps_0] = 1.0
+    assert operator.all_qubits == {Qubit(0)}
+    operator += qpo_1
+    assert operator.all_qubits == {Qubit(0), Qubit(1)}
+    operator *= qpo_2
+    assert operator.all_qubits == {Qubit(0), Qubit(1), Qubit(2)}
 
 
 @strategies.composite

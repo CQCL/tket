@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "PhasePoly.hpp"
+#include "tket/Converters/PhasePoly.hpp"
 
 #include <algorithm>
 #include <stdexcept>
@@ -20,15 +20,15 @@
 #include <tklog/TketLog.hpp>
 #include <vector>
 
-#include "Circuit/Boxes.hpp"
-#include "Circuit/Circuit.hpp"
-#include "Converters/Gauss.hpp"
-#include "OpType/OpType.hpp"
-#include "Ops/MetaOp.hpp"
-#include "Ops/OpJsonFactory.hpp"
-#include "Ops/OpPtr.hpp"
-#include "Utils/GraphHeaders.hpp"
-#include "Utils/Json.hpp"
+#include "tket/Circuit/Boxes.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Converters/Gauss.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/Ops/MetaOp.hpp"
+#include "tket/Ops/OpJsonFactory.hpp"
+#include "tket/Ops/OpPtr.hpp"
+#include "tket/Utils/GraphHeaders.hpp"
+#include "tket/Utils/Json.hpp"
 
 namespace tket {
 

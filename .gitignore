@@ -9,10 +9,13 @@
 .hypothesis
 .ipynb_checkpoints
 .mypy_cache
+.venv
 CMakeCache.txt
 CMakeFiles
+CMakeUserPresets.json
 __pycache__
 build
+cmake-build*
 depgraph.png
 dist
 doc
@@ -23,3 +26,7 @@ pytket/tests/qasm_test_files/testout3.qasm
 pytket/tests/qasm_test_files/testout4.qasm
 pytket/tests/qasm_test_files/testout5.qasm
 pytket/tests/qasm_test_files/testout6.qasm
+
+# IDEs
+.idea
+.vscode

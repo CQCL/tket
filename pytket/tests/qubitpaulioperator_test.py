@@ -1,4 +1,4 @@
-# Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import copy
-from hypothesis import given
+from hypothesis import given, settings
 import json
 import pickle
 import pytest  # type: ignore
@@ -213,6 +213,7 @@ def test_QubitPauliString_serialization_hypothesis(qps: QubitPauliString) -> Non
 
 
 @given(st.qubitpaulioperators())
+@settings(deadline=None)
 def test_QubitPauliOperator_serialization_hypothesis(ops: QubitPauliOperator) -> None:
     serializable = ops.to_list()
     assert QubitPauliOperator.from_list(serializable) == ops

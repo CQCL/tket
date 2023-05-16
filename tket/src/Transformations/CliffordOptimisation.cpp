@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "CliffordOptimisation.hpp"
+#include "tket/Transformations/CliffordOptimisation.hpp"
 
 #include <vector>
 
-#include "BasicOptimisation.hpp"
-#include "Circuit/CircPool.hpp"
-#include "Circuit/DAGDefs.hpp"
-#include "Decomposition.hpp"
-#include "Transform.hpp"
+#include "tket/Circuit/CircPool.hpp"
+#include "tket/Circuit/DAGDefs.hpp"
+#include "tket/Transformations/BasicOptimisation.hpp"
+#include "tket/Transformations/Decomposition.hpp"
+#include "tket/Transformations/Transform.hpp"
 
 namespace tket {
 

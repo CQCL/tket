@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Decomposition.hpp"
+#include "tket/Transformations/Decomposition.hpp"
 
 #include <functional>
 #include <optional>
@@ -20,23 +20,23 @@
 #include <boost/range/adaptor/filtered.hpp>
 #include <stdexcept>
 
-#include "Architecture/Architecture.hpp"
-#include "BasicOptimisation.hpp"
-#include "Circuit/CircPool.hpp"
-#include "Converters/PhasePoly.hpp"
-#include "Gate/GatePtr.hpp"
-#include "OpType/OpType.hpp"
-#include "OpType/OpTypeFunctions.hpp"
-#include "OpType/OpTypeInfo.hpp"
-#include "Ops/OpPtr.hpp"
-#include "OptimisationPass.hpp"
-#include "PhasedXFrontier.hpp"
-#include "Rebase.hpp"
-#include "Replacement.hpp"
-#include "Transform.hpp"
-#include "Utils/Constants.hpp"
-#include "Utils/Expression.hpp"
-#include "Utils/MatrixAnalysis.hpp"
+#include "tket/Architecture/Architecture.hpp"
+#include "tket/Circuit/CircPool.hpp"
+#include "tket/Converters/PhasePoly.hpp"
+#include "tket/Gate/GatePtr.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/OpType/OpTypeFunctions.hpp"
+#include "tket/OpType/OpTypeInfo.hpp"
+#include "tket/Ops/OpPtr.hpp"
+#include "tket/Transformations/BasicOptimisation.hpp"
+#include "tket/Transformations/OptimisationPass.hpp"
+#include "tket/Transformations/PhasedXFrontier.hpp"
+#include "tket/Transformations/Rebase.hpp"
+#include "tket/Transformations/Replacement.hpp"
+#include "tket/Transformations/Transform.hpp"
+#include "tket/Utils/Constants.hpp"
+#include "tket/Utils/Expression.hpp"
+#include "tket/Utils/MatrixAnalysis.hpp"
 
 namespace tket {
 

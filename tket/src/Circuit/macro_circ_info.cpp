@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,12 +18,12 @@
 
 #include <tklog/TketLog.hpp>
 
-#include "Circuit.hpp"
-#include "DAGDefs.hpp"
-#include "OpType/EdgeType.hpp"
-#include "OpType/OpType.hpp"
-#include "Ops/OpPtr.hpp"
-#include "Utils/GraphHeaders.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/DAGDefs.hpp"
+#include "tket/OpType/EdgeType.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/Ops/OpPtr.hpp"
+#include "tket/Utils/GraphHeaders.hpp"
 
 namespace tket {
 
@@ -370,16 +370,30 @@ static std::shared_ptr<b_frontier_t> get_next_b_frontier(
   }
   // Add any new bits introduced in this slice
   for (const std::pair<UnitID, Edge>& pair : u_frontier->get<TagKey>()) {
-    if (circ.get_edgetype(pair.second) == EdgeType::Quantum) continue;
-    Vertex next_v = circ.target(pair.second);
-    if (next_slice_lookup.find(next_v) == next_slice_lookup.end()) continue;
-    if (next_b_frontier->get<TagKey>().find(Bit(pair.first)) !=
-        next_b_frontier->end()) {
-      throw CircuitInvalidity("RAW hazard created in slicing");
+    switch (circ.get_edgetype(pair.second)) {
+      case EdgeType::Quantum:
+      case EdgeType::WASM: {
+        break;
+      }
+      case EdgeType::Classical: {
+        Vertex next_v = circ.target(pair.second);
+        if (next_slice_lookup.find(next_v) == next_slice_lookup.end()) continue;
+        if (next_b_frontier->get<TagKey>().find(Bit(pair.first)) !=
+            next_b_frontier->end()) {
+          TKET_ASSERT(!"RAW hazard created in slicing");
+        }
+        port_t p = circ.get_target_port(pair.second);
+        EdgeVec reads = circ.get_nth_b_out_bundle(next_v, p);
+        if (!reads.empty()) next_b_frontier->insert({Bit(pair.first), reads});
+        break;
+      }
+      case EdgeType::Boolean: {
+        throw CircuitInvalidity("Boolen edge not allowed in b_frontier_t");
+      }
+      default: {
+        TKET_ASSERT(!"get_next_b_frontier found invalid edge type in sig");
+      }
     }
-    port_t p = circ.get_target_port(pair.second);
-    EdgeVec reads = circ.get_nth_b_out_bundle(next_v, p);
-    if (!reads.empty()) next_b_frontier->insert({Bit(pair.first), reads});
   }
   return next_b_frontier;
 }
@@ -411,6 +425,7 @@ CutFrontier Circuit::next_cut(
     all_edges.push_back(pair.second);
     edge_lookup.insert(pair.second);
   }
+
   for (const std::pair<Bit, EdgeVec>& pair : b_frontier->get<TagKey>()) {
     for (const Edge& e : pair.second) {
       all_edges.push_back(e);
@@ -562,7 +577,8 @@ CutFrontier Circuit::next_q_cut(
     if (!good_vertex) continue;
     EdgeVec ins = get_in_edges(try_v);
     for (const Edge& in : ins) {
-      if (!edge_lookup.contains(in) && get_edgetype(in) == EdgeType::Quantum) {
+      if (!edge_lookup.contains(in) && (get_edgetype(in) == EdgeType::Quantum ||
+                                        get_edgetype(in) == EdgeType::WASM)) {
         good_vertex = false;
         bad_vertices.insert(try_v);
         break;
@@ -604,9 +620,11 @@ SliceVec Circuit::get_reverse_slices() const {
       case OpType::Input:
       case OpType::Create:
       case OpType::Output:
-      case OpType::Discard:
       case OpType::ClInput:
-      case OpType::ClOutput: {
+      case OpType::ClOutput:
+      case OpType::Discard:
+      case OpType::WASMInput:
+      case OpType::WASMOutput: {
         break;
       }
       default: {
@@ -747,17 +765,28 @@ std::map<Edge, UnitID> Circuit::edge_unit_map() const {
 Circuit::SliceIterator::SliceIterator(const Circuit& circ)
     : cut_(), circ_(&circ) {
   cut_.init();
+  // add qubits to u_frontier
   for (const Qubit& q : circ.all_qubits()) {
     Vertex in = circ.get_in(q);
     cut_.slice->push_back(in);
     cut_.u_frontier->insert({q, circ.get_nth_out_edge(in, 0)});
   }
+
+  // add bits to u_frontier and b_frontier
   for (const Bit& b : circ.all_bits()) {
     Vertex in = circ.get_in(b);
     cut_.slice->push_back(in);
     cut_.b_frontier->insert({b, circ.get_nth_b_out_bundle(in, 0)});
     cut_.u_frontier->insert({b, circ.get_nth_out_edge(in, 0)});
   }
+
+  // add WasmState to u_frontier
+  for (unsigned i = 0; i < circ._number_of_wasm_wires; ++i) {
+    Vertex in = circ.get_in(circ.wasmwire[i]);
+    cut_.slice->push_back(in);
+    cut_.u_frontier->insert({circ.wasmwire[i], circ.get_nth_out_edge(in, 0)});
+  }
+
   prev_b_frontier_ = cut_.b_frontier;
   cut_ = circ.next_cut(cut_.u_frontier, cut_.b_frontier);
 
@@ -767,7 +796,8 @@ Circuit::SliceIterator::SliceIterator(const Circuit& circ)
   BGL_FORALL_VERTICES(v, circ.dag, DAG) {
     if (circ.n_in_edges(v) == 0 &&
         circ.n_out_edges_of_type(v, EdgeType::Quantum) == 0 &&
-        circ.n_out_edges_of_type(v, EdgeType::Classical) == 0) {
+        circ.n_out_edges_of_type(v, EdgeType::Classical) == 0 &&
+        circ.n_out_edges_of_type(v, EdgeType::WASM) == 0) {
       loners.insert(v);
     }
   }
@@ -778,15 +808,26 @@ Circuit::SliceIterator::SliceIterator(
     const Circuit& circ, const std::function<bool(Op_ptr)>& skip_func)
     : cut_(), circ_(&circ) {
   cut_.init();
+  // add qubits to u_frontier
   for (const Qubit& q : circ.all_qubits()) {
     Vertex in = circ.get_in(q);
     cut_.u_frontier->insert({q, circ.get_nth_out_edge(in, 0)});
   }
+
+  // add bits to u_frontier and b_frontier
   for (const Bit& b : circ.all_bits()) {
     Vertex in = circ.get_in(b);
     cut_.b_frontier->insert({b, circ.get_nth_b_out_bundle(in, 0)});
     cut_.u_frontier->insert({b, circ.get_nth_out_edge(in, 0)});
   }
+
+  // add WasmState to u_frontier
+  for (unsigned i = 0; i < circ._number_of_wasm_wires; ++i) {
+    Vertex in = circ.get_in(circ.wasmwire[i]);
+    cut_.slice->push_back(in);
+    cut_.u_frontier->insert({circ.wasmwire[i], circ.get_nth_out_edge(in, 0)});
+  }
+
   prev_b_frontier_ = cut_.b_frontier;
   cut_ = circ.next_cut(cut_.u_frontier, cut_.b_frontier, skip_func);
 }
@@ -830,9 +871,9 @@ Circuit::CommandIterator::CommandIterator(const Circuit& circ)
     : current_slice_iterator_(circ.slice_begin()),
       current_index_(0),
       circ_(&circ) {
-  if ((*current_slice_iterator_).size() == 0)
+  if ((*current_slice_iterator_).size() == 0) {
     *this = circ.end();
-  else {
+  } else {
     current_vertex_ = (*current_slice_iterator_)[0];
     current_command_ = circ.command_from_vertex(
         current_vertex_, current_slice_iterator_.get_u_frontier(),
@@ -864,8 +905,12 @@ Circuit::CommandIterator& Circuit::CommandIterator::operator++() {
     }
     ++current_slice_iterator_;
     current_index_ = 0;
-  } else
+  } else {
     ++current_index_;
+  }
+  if (current_index_ == (*current_slice_iterator_).size()) {
+    TKET_ASSERT(!"slice is empty");
+  }
   current_vertex_ = (*current_slice_iterator_)[current_index_];
   current_command_ = circ_->command_from_vertex(
       current_vertex_, current_slice_iterator_.get_u_frontier(),
@@ -879,39 +924,59 @@ unit_vector_t Circuit::args_from_frontier(
   EdgeVec ins = get_in_edges(vert);
   unit_vector_t args;
   for (port_t p = 0; p < ins.size(); ++p) {
-    if (get_edgetype(ins[p]) == EdgeType::Boolean) {
-      bool found = false;
-      for (const std::pair<Bit, EdgeVec>& pair :
-           prev_b_frontier->get<TagKey>()) {
-        for (const Edge& edge : pair.second) {
-          if (edge == ins[p]) {
+    switch (get_edgetype(ins[p])) {
+      case EdgeType::WASM: {
+        Edge out = get_next_edge(vert, ins[p]);
+        bool found = false;
+        for (const std::pair<UnitID, Edge>& pair : u_frontier->get<TagKey>()) {
+          if (pair.second == out) {
             args.push_back(pair.first);
             found = true;
             break;
           }
         }
-        if (found) break;
+        TKET_ASSERT(found);  // Vertex edges not found in frontier.
+        break;
       }
-      if (!found)
-        throw CircuitInvalidity(
-            "Vertex edges not found in CRead frontier. Edge: " +
-            get_Op_ptr_from_Vertex(source(ins[p]))->get_name() + " -> " +
-            get_Op_ptr_from_Vertex(target(ins[p]))->get_name());
-    } else {
-      Edge out = get_next_edge(vert, ins[p]);
-      bool found = false;
-      for (const std::pair<UnitID, Edge>& pair : u_frontier->get<TagKey>()) {
-        if (pair.second == out) {
-          args.push_back(pair.first);
-          found = true;
-          break;
+      case EdgeType::Boolean: {
+        bool found = false;
+        for (const std::pair<Bit, EdgeVec>& pair :
+             prev_b_frontier->get<TagKey>()) {
+          for (const Edge& edge : pair.second) {
+            if (edge == ins[p]) {
+              args.push_back(pair.first);
+              found = true;
+              break;
+            }
+          }
+          if (found) {
+            break;
+          }
         }
+        TKET_ASSERT(found);  // Vertex edges not found in Boolean frontier.
+        break;
       }
-      if (!found)
-        throw CircuitInvalidity(
-            "Vertex edges not found in frontier. Edge: " +
-            get_Op_ptr_from_Vertex(source(out))->get_name() + " -> " +
-            get_Op_ptr_from_Vertex(target(out))->get_name());
+      case EdgeType::Classical:
+      case EdgeType::Quantum: {
+        Edge out = get_next_edge(vert, ins[p]);
+        bool found = false;
+        for (const std::pair<UnitID, Edge>& pair : u_frontier->get<TagKey>()) {
+          if (pair.second == out) {
+            args.push_back(pair.first);
+            found = true;
+            break;
+          }
+        }
+        if (!found)
+          throw CircuitInvalidity(
+              "Vertex edges not found in frontier. Edge: " +
+              get_Op_ptr_from_Vertex(source(out))->get_name() + " -> " +
+              get_Op_ptr_from_Vertex(target(out))->get_name());
+        break;
+      }
+      default: {
+        TKET_ASSERT(!"args_from_frontier found invalid edge type in signature");
+      }
     }
   }
   return args;

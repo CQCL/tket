@@ -1,0 +1,8 @@
+get_filename_component(TKASSERT_CMAKE_DIR "${CMAKE_CURRENT_LIST_FILE}" PATH)
+include(CMakeFindDependencyMacro)
+
+if(NOT TARGET tkassert::tkassert)
+    include("${TKASSERT_CMAKE_DIR}/tkassertTargets.cmake")
+endif()
+
+set(TKASSERT_lIBRARIES tkassert::tkassert)

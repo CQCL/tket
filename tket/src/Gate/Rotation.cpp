@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Rotation.hpp"
+#include "tket/Gate/Rotation.hpp"
 
-#include "OpType/OpDesc.hpp"
-#include "OpType/OpType.hpp"
-#include "Utils/Expression.hpp"
-#include "Utils/Symbols.hpp"
 #include "symengine/constants.h"
+#include "tket/OpType/OpDesc.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/Utils/Expression.hpp"
+#include "tket/Utils/Symbols.hpp"
 
 namespace tket {
 
@@ -460,6 +460,26 @@ std::vector<double> tk1_angles_from_unitary(const Eigen::Matrix2cd &U) {
   }
 
   return {a, b, c, p};
+}
+
+std::tuple<double, double, double> get_bloch_coordinate_from_state(
+    const Complex &a, const Complex &b) {
+  // We require the state to be normalised
+  double norm = a.real() * a.real() + a.imag() * a.imag() +
+                b.real() * b.real() + b.imag() * b.imag();
+  if (std::abs(norm - 1) > EPS) {
+    throw std::invalid_argument(
+        "Attempt to find the Bloch sphere coordinate for an unnormalised "
+        "state. Only unit length vectors have coordinates on the Bloch "
+        "sphere.");
+  }
+  double r_a = std::abs(a);
+  double theta_a = std::arg(a) / PI;
+  double theta_b = std::arg(b) / PI;
+  double theta = (std::acos(r_a) * 2) / PI;
+  double phi = theta_b - theta_a;
+  double phase = theta_a;
+  return {theta, phi, phase};
 }
 
 Eigen::Matrix2cd get_matrix_from_tk1_angles(std::vector<Expr> params) {

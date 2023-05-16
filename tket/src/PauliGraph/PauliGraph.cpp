@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "PauliGraph.hpp"
+#include "tket/PauliGraph/PauliGraph.hpp"
 
 #include <tkassert/Assert.hpp>
 
-#include "Gate/Gate.hpp"
-#include "OpType/OpType.hpp"
-#include "Utils/GraphHeaders.hpp"
-#include "Utils/PauliStrings.hpp"
+#include "tket/Gate/Gate.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/Utils/GraphHeaders.hpp"
+#include "tket/Utils/PauliStrings.hpp"
 
 namespace tket {
 

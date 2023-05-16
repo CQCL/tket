@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,9 +14,9 @@
 
 #include <utility>
 
-#include "GateUnitaryMatrixImplementations.hpp"
-#include "GateUnitaryMatrixUtils.hpp"
-#include "Utils/Constants.hpp"
+#include "tket/Gate/GateUnitaryMatrixImplementations.hpp"
+#include "tket/Gate/GateUnitaryMatrixUtils.hpp"
+#include "tket/Utils/Constants.hpp"
 
 // This file is for gates with unitary matrices
 // computed using other ("primitive") gates.

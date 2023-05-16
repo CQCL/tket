@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,10 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Circuit/Circuit.hpp"
-#include "Converters/Converters.hpp"
-#include "Utils/GraphHeaders.hpp"
-#include "ZX/ZXDiagram.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Converters/Converters.hpp"
+#include "tket/Utils/GraphHeaders.hpp"
+#include "tket/ZX/Flow.hpp"
+#include "tket/ZX/ZXDiagram.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;
@@ -371,6 +372,20 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           py::arg("type"), py::arg("qtype") = QuantumType::Quantum)
       .def(
           "add_vertex",
+          [](ZXDiagram& diag, ZXType type, bool param, QuantumType qtype) {
+            return ZXVertWrapper(diag.add_clifford_vertex(type, param, qtype));
+          },
+          "Adds a new vertex to the diagram for a Boolean-parameterised, "
+          "doubleable generator type.\n\n"
+          ":param type: The :py:class:`ZXType` for the new vertex.\n"
+          ":param param: The parameter for the new vertex.\n"
+          ":param qtype: The :py:class:`QuantumType` for the new vertex. "
+          "Defaults to Quantum.\n"
+          ":return: The handle to the new vertex.",
+          py::arg("type"), py::arg("param"),
+          py::arg("qtype") = QuantumType::Quantum)
+      .def(
+          "add_vertex",
           [](ZXDiagram& diag, ZXType type, const Expr& param,
              QuantumType qtype) {
             return ZXVertWrapper(diag.add_vertex(type, param, qtype));
@@ -598,7 +613,8 @@ PYBIND11_MODULE(zx, m) {
       .def(
           py::init<ZXType, const Expr&, QuantumType>(),
           "Construct from a ZX type, parameter and quantum type.",
-          py::arg("zxtype"), py::arg("param"), py::arg("qtype"))
+          py::arg("zxtype"), py::arg("param") = 0.,
+          py::arg("qtype") = QuantumType::Quantum)
       .def_property_readonly(
           "param", &PhasedGen::get_param, "The parameter of the generator.");
   py::class_<CliffordGen, std::shared_ptr<CliffordGen>, ZXGen>(
@@ -608,7 +624,8 @@ PYBIND11_MODULE(zx, m) {
       .def(
           py::init<ZXType, bool, QuantumType>(),
           "Construct from a ZX type, parameter and quantum type.",
-          py::arg("zxtype"), py::arg("param"), py::arg("qtype"))
+          py::arg("zxtype"), py::arg("param") = false,
+          py::arg("qtype") = QuantumType::Quantum)
       .def_property_readonly(
           "param", &CliffordGen::get_param, "The parameter of the generator.");
   py::class_<DirectedGen, std::shared_ptr<DirectedGen>, ZXGen>(
@@ -646,6 +663,74 @@ PYBIND11_MODULE(zx, m) {
       .def_property_readonly(
           "diagram", &ZXBox::get_diagram,
           "The internal diagram represented by the box.");
+  py::class_<Flow>(
+      m, "Flow",
+      "Data structure for describing the Flow in a given MBQC-form "
+      ":py:class:`ZXDiagram` object. Constructors are identification methods "
+      "for different classes of Flow.")
+      .def(
+          "c",
+          [](const Flow& fl, const ZXVertWrapper& v) {
+            std::list<ZXVertWrapper> clist;
+            ZXVertSeqSet cv = fl.c(v);
+            for (const ZXVert& c : cv.get<TagSeq>())
+              clist.push_back(ZXVertWrapper(c));
+            return clist;
+          },
+          "The correction set for the given :py:class:`ZXVert`.", py::arg("v"))
+      .def_property_readonly(
+          "cmap",
+          [](const Flow& fl) {
+            std::map<ZXVertWrapper, std::list<ZXVertWrapper>> cmap;
+            for (const std::pair<const ZXVert, ZXVertSeqSet>& vs : fl.c_) {
+              std::list<ZXVertWrapper> cs;
+              for (const ZXVert& c : vs.second.get<TagSeq>())
+                cs.push_back(ZXVertWrapper(c));
+              cmap.insert({ZXVertWrapper(vs.first), cs});
+            }
+            return cmap;
+          },
+          "The map from a vertex to its correction set")
+      .def(
+          "odd",
+          [](const Flow& fl, const ZXVertWrapper& v, const ZXDiagram& diag) {
+            std::list<ZXVertWrapper> olist;
+            ZXVertSeqSet ov = fl.odd(v, diag);
+            for (const ZXVert& o : ov.get<TagSeq>())
+              olist.push_back(ZXVertWrapper(o));
+            return olist;
+          },
+          "The odd neighbourhood of the correction set for the given "
+          ":py:class:`ZXVert`.",
+          py::arg("v"), py::arg("diag"))
+      .def(
+          "d", [](const Flow& fl, const ZXVertWrapper& v) { return fl.d(v); },
+          "The depth of the given :py:class:`ZXVert` from the outputs in the "
+          "ordering of the flow, e.g. an output vertex will have depth 0, the "
+          "last measured vertex has depth 1.")
+      .def_property_readonly(
+          "dmap",
+          [](const Flow& fl) {
+            std::map<ZXVertWrapper, unsigned> dmap;
+            for (const std::pair<const ZXVert, unsigned>& vs : fl.d_) {
+              dmap.insert({ZXVertWrapper(vs.first), vs.second});
+            }
+            return dmap;
+          },
+          "The map from a vertex to its depth")
+      .def("focus", &Flow::focus, "Focusses a flow.", py::arg("diag"))
+      .def_static(
+          "identify_causal_flow", &Flow::identify_causal_flow,
+          "Attempts to identify a causal flow for a diagram.", py::arg("diag"))
+      .def_static(
+          "identify_pauli_flow", &Flow::identify_pauli_flow,
+          "Attempts to identify a Pauli flow for a diagram.", py::arg("diag"))
+      .def_static(
+          "identify_focussed_sets", &Flow::identify_focussed_sets,
+          "Attempts to identify the sets of vertices which are focussed over "
+          "all vertices, i.e. the remaining stabilisers not generated by "
+          "correction sets within a flow.",
+          py::arg("diag"));
   init_rewrite(m);
   m.def(
       "circuit_to_zx", &wrapped_circuit_to_zx,

@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Circuit/CircPool.hpp"
-#include "Converters.hpp"
-#include "ZX/Flow.hpp"
-#include "ZX/ZXDiagram.hpp"
+#include "tket/Circuit/CircPool.hpp"
+#include "tket/Converters/Converters.hpp"
+#include "tket/ZX/Flow.hpp"
+#include "tket/ZX/ZXDiagram.hpp"
 
 namespace tket {
 
@@ -733,10 +733,10 @@ bool remove_all_gadgets(
           extend_if_input(diag, n, input_qubits);
           excl_f.insert(n);
         }
-        excl_f.get<TagKey>().erase(n);
-        excl_f.get<TagKey>().erase(o);
-        ZXVertSeqSet excl_n, joint;
         auto& lookup_f = excl_f.get<TagKey>();
+        lookup_f.erase(lookup_f.find(n));
+        lookup_f.erase(lookup_f.find(o));
+        ZXVertSeqSet excl_n, joint;
         for (const ZXVert& nn : diag.neighbours(n)) {
           extend_if_input(diag, nn, input_qubits);
           if (lookup_f.find(nn) != lookup_f.end())
@@ -744,16 +744,19 @@ bool remove_all_gadgets(
           else
             excl_n.insert(nn);
         }
-        excl_n.get<TagKey>().erase(f);
-        for (const ZXVert& nn : joint.get<TagSeq>())
-          excl_f.get<TagKey>().erase(nn);
+        auto& lookup_n = excl_n.get<TagKey>();
+        lookup_n.erase(lookup_n.find(f));
+        for (const ZXVert& nn : joint.get<TagSeq>()) {
+          auto found = lookup_f.find(nn);
+          if (found != lookup_f.end()) lookup_f.erase(found);
+        }
         // The is_MBQC check in zx_to_circuit guarantees QuantumType::Quantum
         bipartite_complementation(diag, joint, excl_n);
         bipartite_complementation(diag, joint, excl_f);
         bipartite_complementation(diag, excl_n, excl_f);
         // In place of switching vertices f and n, we invert their
         // connectivities
-        excl_n.insert(excl_f.begin(), excl_f.end());
+        for (const ZXVert& v : excl_f.get<TagSeq>()) excl_n.insert(v);
         bipartite_complementation(diag, {f}, excl_n);
         bipartite_complementation(diag, {n}, excl_n);
         Wire ow = *diag.wire_between(f, o);
@@ -817,6 +820,17 @@ Circuit zx_to_circuit(const ZXDiagram& d) {
   if (ins.size() != outs.size())
     throw ZXError("Can only extract a circuit from a unitary ZX diagram");
 
+  BGL_FORALL_VERTICES(v, *diag.get_graph(), ZXGraph) {
+    ZXGen_ptr vgen = diag.get_vertex_ZXGen_ptr(v);
+    if (vgen->get_type() == ZXType::PY) {
+      const CliffordGen& cgen = dynamic_cast<const CliffordGen&>(*vgen);
+      diag.set_vertex_ZXGen_ptr(
+          v, ZXGen::create_gen(
+                 ZXType::XY, cgen.get_param() ? Expr(-0.5) : Expr(0.5),
+                 *cgen.get_qtype()));
+    }
+  }
+
   Circuit circ(ins.size());
 
   ZXVertVec frontier;
@@ -847,8 +861,7 @@ Circuit zx_to_circuit(const ZXDiagram& d) {
     }
     for (const ZXVert& n : neighbours.get<TagSeq>()) {
       ZXType n_type = diag.get_zxtype(n);
-      if (n_type == ZXType::XY || n_type == ZXType::PX ||
-          n_type == ZXType::PY) {
+      if (n_type == ZXType::XY || n_type == ZXType::PX) {
         preserve.insert({n, (unsigned)preserve.size()});
         to_solve.push_back(n);
       }
@@ -863,17 +876,18 @@ Circuit zx_to_circuit(const ZXDiagram& d) {
 
     unsigned min = UINT_MAX;
     ZXVert best;
-    for (const std::pair<const ZXVert, ZXVertSeqSet>& p : candidates) {
-      if (p.second.size() < min) {
-        min = p.second.size();
-        best = p.first;
+    for (const ZXVert& v : to_solve) {
+      auto found = candidates.find(v);
+      if (found != candidates.end() && found->second.size() < min) {
+        min = found->second.size();
+        best = v;
       }
     }
     ZXVertSeqSet g_best = candidates.at(best);
 
     ZXVert f_to_isolate = g_best.get<TagSeq>().front();
     unsigned f_q = qubit_map.at(f_to_isolate);
-    for (const ZXVert& f : g_best) {
+    for (const ZXVert& f : g_best.get<TagSeq>()) {
       if (f != f_to_isolate) {
         circ.add_op<unsigned>(OpType::CX, {f_q, qubit_map.at(f)});
       }

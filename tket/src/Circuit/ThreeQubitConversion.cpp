@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "ThreeQubitConversion.hpp"
+#include "tket/Circuit/ThreeQubitConversion.hpp"
 
 #include <array>
 #include <cmath>
@@ -21,18 +21,18 @@
 #include <stdexcept>
 #include <tkassert/Assert.hpp>
 
-#include "CircPool.hpp"
-#include "CircUtils.hpp"
-#include "Circuit.hpp"
-#include "Circuit/Command.hpp"
-#include "Gate/GatePtr.hpp"
-#include "Gate/Rotation.hpp"
-#include "OpType/OpType.hpp"
-#include "Utils/Constants.hpp"
-#include "Utils/CosSinDecomposition.hpp"
-#include "Utils/EigenConfig.hpp"
-#include "Utils/MatrixAnalysis.hpp"
-#include "Utils/UnitID.hpp"
+#include "tket/Circuit/CircPool.hpp"
+#include "tket/Circuit/CircUtils.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/Command.hpp"
+#include "tket/Gate/GatePtr.hpp"
+#include "tket/Gate/Rotation.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/Utils/Constants.hpp"
+#include "tket/Utils/CosSinDecomposition.hpp"
+#include "tket/Utils/EigenConfig.hpp"
+#include "tket/Utils/MatrixAnalysis.hpp"
+#include "tket/Utils/UnitID.hpp"
 
 namespace tket {
 

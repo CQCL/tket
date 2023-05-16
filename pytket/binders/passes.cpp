@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,19 +14,19 @@
 
 #include <pybind11/functional.h>
 
-#include "ArchAwareSynth/SteinerForest.hpp"
-#include "Mapping/LexiLabelling.hpp"
-#include "Mapping/LexiRoute.hpp"
-#include "Mapping/RoutingMethod.hpp"
-#include "Predicates/CompilerPass.hpp"
-#include "Predicates/PassGenerators.hpp"
-#include "Predicates/PassLibrary.hpp"
-#include "Transformations/ContextualReduction.hpp"
-#include "Transformations/Decomposition.hpp"
-#include "Transformations/PauliOptimisation.hpp"
-#include "Transformations/Transform.hpp"
-#include "Utils/Json.hpp"
 #include "binder_json.hpp"
+#include "tket/ArchAwareSynth/SteinerForest.hpp"
+#include "tket/Mapping/LexiLabelling.hpp"
+#include "tket/Mapping/LexiRoute.hpp"
+#include "tket/Mapping/RoutingMethod.hpp"
+#include "tket/Predicates/CompilerPass.hpp"
+#include "tket/Predicates/PassGenerators.hpp"
+#include "tket/Predicates/PassLibrary.hpp"
+#include "tket/Transformations/ContextualReduction.hpp"
+#include "tket/Transformations/Decomposition.hpp"
+#include "tket/Transformations/PauliOptimisation.hpp"
+#include "tket/Transformations/Transform.hpp"
+#include "tket/Utils/Json.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;
@@ -449,13 +449,14 @@ PYBIND11_MODULE(passes, m) {
       "PeepholeOptimise2Q", &PeepholeOptimise2Q,
       "Performs peephole optimisation including resynthesis of 2-qubit "
       "gate sequences, and converts to a circuit containing only CX and TK1 "
-      "gates.");
+      "gates."
+      "\n\n:param allow_swaps: whether to allow implicit wire swaps",
+      py::arg("allow_swaps") = true);
   m.def(
       "FullPeepholeOptimise", &FullPeepholeOptimise,
       "Performs peephole optimisation including resynthesis of 2- and 3-qubit "
       "gate sequences, and converts to a circuit containing only the given "
-      "2-qubit gate (which may be CX or TK2) and TK1 gates.\n\n"
-      "The `allow_swaps` parameter has no effect when the target gate is TK2."
+      "2-qubit gate (which may be CX or TK2) and TK1 gates."
       "\n\n:param allow_swaps: whether to allow implicit wire swaps",
       py::arg("allow_swaps") = true, py::arg("target_2qb_gate") = OpType::CX);
   m.def("RebaseTket", &RebaseTket, "Converts all gates to CX, TK1 and Phase.");
@@ -510,7 +511,12 @@ PYBIND11_MODULE(passes, m) {
       "Commutes Measure operations to the end of the circuit. Throws an "
       "exception when this is not possible because of gates following the "
       "measure which are dependent on either the resulting quantum state "
-      "or classical values.");
+      "or classical values."
+      "\n\n:param allow_partial: Whether to allow measurements that cannot be "
+      "commuted to "
+      "the end, and delay them as much as possible instead. If false, the pass "
+      "includes a :py:class:`CommutableMeasuresPredicate` precondition.",
+      py::arg("allow_partial") = true);
   m.def(
       "RemoveDiscarded", &RemoveDiscarded,
       "A pass to remove all operations that have no ``OpType.Output`` or "
@@ -526,6 +532,13 @@ PYBIND11_MODULE(passes, m) {
   m.def(
       "RemoveBarriers", &RemoveBarriers,
       "A pass to remove all barrier instructions from the circuit.");
+  m.def(
+      "ZXGraphlikeOptimisation", &ZXGraphlikeOptimisation,
+      "Attempt to optimise the circuit by simplifying in ZX calculus and "
+      "extracting a circuit back out. Due to limitations in extraction, may "
+      "not work if the circuit contains created or discarded qubits. As a "
+      "resynthesis pass, this will ignore almost all optimisations achieved "
+      "beforehand and may increase the cost of the circuit.");
 
   /* Pass generators */
 
@@ -624,6 +637,14 @@ PYBIND11_MODULE(passes, m) {
       "\n:return: a pass to relabel :py:class:`Circuit` Qubits to "
       ":py:class:`Architecture` Nodes",
       py::arg("arc"));
+
+  m.def(
+      "FlattenRelabelRegistersPass", &gen_flatten_relabel_registers_pass,
+      "Removes empty Quantum wires from the Circuit and relabels all Qubit to "
+      "a register from passed name. \n\n:param label: Name to relabel "
+      "remaining Qubit to, default 'q'.\n:return: A pass that removes empty "
+      "wires and relabels.",
+      py::arg("label") = q_default_reg());
 
   m.def(
       "RenameQubitsPass", &gen_rename_qubits_pass, "Rename some or all qubits.",
@@ -832,6 +853,22 @@ PYBIND11_MODULE(passes, m) {
       "Decompose CnX gates to 2-qubit gates and single qubit gates. "
       "For every two CnX gates, reorder their control qubits to improve "
       "the chance of gate cancellation");
+
+  m.def(
+      "RoundAngles", &RoundAngles,
+      "Round angles to the nearest :math:`\\pi / 2^n`."
+      "\n\n:param n: precision parameter, must be >= 0 and < 32",
+      "\n\n:param only_zeros: if True, only round angles less than "
+      ":math:`\\pi / 2^{n+1}` to zero, leave other angles alone (default "
+      "False)",
+      py::arg("n"), py::arg("only_zeros") = false);
+
+  m.def(
+      "RemoveImplicitQubitPermutation", &RemoveImplicitQubitPermutation,
+      "Remove any implicit qubit permutation by appending SWAP gates."
+      "\n\n"
+      "Note that if the circuit contains measurements, they may become "
+      "mid-circuit measurements in the transformed circuit.");
 
   m.def(
       "CustomPass", &CustomPass,

@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -20,8 +20,8 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
-#include "Utils/Expression.hpp"
-#include "Utils/Symbols.hpp"
+#include "tket/Utils/Expression.hpp"
+#include "tket/Utils/Symbols.hpp"
 #include "unit_downcast.hpp"
 
 namespace pybind11 {

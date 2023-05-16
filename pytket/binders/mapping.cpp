@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -18,16 +18,16 @@
 #include <pybind11/stl.h>
 #include <pybind11/stl_bind.h>
 
-#include "Circuit/Circuit.hpp"
-#include "Mapping/AASLabelling.hpp"
-#include "Mapping/AASRoute.hpp"
-#include "Mapping/BoxDecomposition.hpp"
-#include "Mapping/LexiLabelling.hpp"
-#include "Mapping/LexiRoute.hpp"
-#include "Mapping/MappingManager.hpp"
-#include "Mapping/MultiGateReorder.hpp"
-#include "Mapping/RoutingMethodCircuit.hpp"
 #include "binder_utils.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Mapping/AASLabelling.hpp"
+#include "tket/Mapping/AASRoute.hpp"
+#include "tket/Mapping/BoxDecomposition.hpp"
+#include "tket/Mapping/LexiLabelling.hpp"
+#include "tket/Mapping/LexiRoute.hpp"
+#include "tket/Mapping/MappingManager.hpp"
+#include "tket/Mapping/MultiGateReorder.hpp"
+#include "tket/Mapping/RoutingMethodCircuit.hpp"
 
 namespace py = pybind11;
 

@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "UnitID.hpp"
+#include "tket/Utils/UnitID.hpp"
 
 #include <sstream>
 
-#include "Json.hpp"
+#include "tket/Utils/Json.hpp"
 
 namespace tket {
 
@@ -38,6 +38,11 @@ void from_json(const nlohmann::json& j, Qubit& qb) { json_to_unitid(j, qb); }
 
 void to_json(nlohmann::json& j, const Bit& cb) { unitid_to_json(j, cb); }
 void from_json(const nlohmann::json& j, Bit& cb) { json_to_unitid(j, cb); }
+
+void to_json(nlohmann::json& j, const WasmState& wb) { unitid_to_json(j, wb); }
+void from_json(const nlohmann::json& j, WasmState& wb) {
+  json_to_unitid(j, wb);
+}
 
 void to_json(nlohmann::json& j, const Node& node) { unitid_to_json(j, node); }
 void from_json(const nlohmann::json& j, Node& node) { json_to_unitid(j, node); }
@@ -70,9 +75,21 @@ const std::string& q_default_reg() {
   return *regname;
 }
 
+const std::string& q_routing_ancilla_reg() {
+  static std::unique_ptr<const std::string> regname =
+      std::make_unique<const std::string>("tk_ROUTING_ANCILLA_REG");
+  return *regname;
+}
+
 const std::string& c_default_reg() {
   static std::unique_ptr<const std::string> regname =
       std::make_unique<const std::string>("c");
+  return *regname;
+}
+
+const std::string& w_default_reg() {
+  static std::unique_ptr<const std::string> regname =
+      std::make_unique<const std::string>("_w");
   return *regname;
 }
 

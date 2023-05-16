@@ -1,4 +1,4 @@
-# Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from pytket.circuit import Node, Op, OpType, Circuit, Qubit, PhasePolyBox  # type: ignore
-from pytket.architecture import Architecture, SquareGrid, FullyConnected  # type: ignore
+from pytket.architecture import Architecture, SquareGrid, FullyConnected, RingArch  # type: ignore
 import numpy as np
 
 
@@ -74,9 +74,24 @@ def test_arch_types() -> None:
     arch = Architecture([(0, 1)])
     assert isinstance(arch, Architecture)
     fc = FullyConnected(2)
+    assert fc.nodes[0].reg_name == "fcNode"
     assert isinstance(fc, FullyConnected)
     sg = SquareGrid(2, 2, 2)
+    assert sg.nodes[0].reg_name == "gridNode"
     assert isinstance(sg, SquareGrid)
+    ra = RingArch(2)
+    assert ra.nodes[0].reg_name == "ringNode"
+
+
+def test_arch_names() -> None:
+    fc = FullyConnected(2, "fc_test")
+    assert fc.nodes[0].reg_name == "fc_test"
+    sg = SquareGrid(2, 2, "sg_test")
+    assert sg.nodes[0].reg_name == "sg_test"
+    sg = SquareGrid(2, 2, 1, "sg_test")
+    assert sg.nodes[0].reg_name == "sg_test"
+    ra = RingArch(2, "ring_test")
+    assert ra.nodes[0].reg_name == "ring_test"
 
 
 def test_valid_operation() -> None:
@@ -101,3 +116,4 @@ if __name__ == "__main__":
     test_fully_connected()
     test_arch_types()
     test_valid_operation()
+    test_arch_names()

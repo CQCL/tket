@@ -1,4 +1,4 @@
-# Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -81,6 +81,7 @@ class QubitPauliOperator:
         :type value: Union[int, float, complex, Expr]
         """
         self._dict[key] = sympify(value)  # type: ignore
+        self._all_qubits.update(key.map.keys())
 
     def __getstate__(self) -> dict:
         return self._dict

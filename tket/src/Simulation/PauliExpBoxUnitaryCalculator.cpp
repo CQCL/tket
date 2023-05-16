@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "PauliExpBoxUnitaryCalculator.hpp"
+#include "tket/Simulation/PauliExpBoxUnitaryCalculator.hpp"
 
 #include <algorithm>
 #include <tkassert/Assert.hpp>
 
-#include "Circuit/Boxes.hpp"
-#include "Utils/PauliStrings.hpp"
+#include "tket/Circuit/Boxes.hpp"
+#include "tket/Utils/PauliStrings.hpp"
 
 namespace tket {
 namespace tket_sim {

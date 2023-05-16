@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,14 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Predicates.hpp"
+#include "tket/Predicates/Predicates.hpp"
 
-#include "Gate/Gate.hpp"
-#include "Mapping/Verification.hpp"
-#include "OpType/OpTypeFunctions.hpp"
-#include "Placement/Placement.hpp"
-#include "Utils/MatrixAnalysis.hpp"
-#include "Utils/UnitID.hpp"
+#include "tket/Gate/Gate.hpp"
+#include "tket/Mapping/Verification.hpp"
+#include "tket/OpType/OpTypeFunctions.hpp"
+#include "tket/Placement/Placement.hpp"
+#include "tket/Transformations/MeasurePass.hpp"
+#include "tket/Utils/MatrixAnalysis.hpp"
+#include "tket/Utils/UnitID.hpp"
 
 namespace tket {
 
@@ -60,11 +61,13 @@ const std::string& predicate_name(std::type_index idx) {
       SET_PRED_NAME(DirectednessPredicate),
       SET_PRED_NAME(GateSetPredicate),
       SET_PRED_NAME(MaxNQubitsPredicate),
+      SET_PRED_NAME(MaxNClRegPredicate),
       SET_PRED_NAME(MaxTwoQubitGatesPredicate),
       SET_PRED_NAME(NoBarriersPredicate),
       SET_PRED_NAME(NoClassicalBitsPredicate),
       SET_PRED_NAME(NoClassicalControlPredicate),
       SET_PRED_NAME(NoFastFeedforwardPredicate),
+      SET_PRED_NAME(CommutableMeasuresPredicate),
       SET_PRED_NAME(NoMidMeasurePredicate),
       SET_PRED_NAME(NoSymbolsPredicate),
       SET_PRED_NAME(GlobalPhasedXPredicate),
@@ -523,6 +526,42 @@ std::string MaxNQubitsPredicate::to_string() const {
   return auto_name(*this) + "(" + std::to_string(n_qubits_) + ")";
 }
 
+bool MaxNClRegPredicate::verify(const Circuit& circ) const {
+  bit_vector_t all_bits = circ.all_bits();
+  std::set<std::string> bits_set;
+  for (Bit bit : all_bits) {
+    bits_set.insert(bit.reg_name());
+  }
+  return bits_set.size() <= n_cl_reg_;
+}
+
+bool MaxNClRegPredicate::implies(const Predicate& other) const {
+  try {
+    const MaxNClRegPredicate& other_p =
+        dynamic_cast<const MaxNClRegPredicate&>(other);
+    return n_cl_reg_ <= other_p.n_cl_reg_;
+  } catch (const std::bad_cast&) {
+    throw IncorrectPredicate(
+        "Cannot compare predicates of different subclasses");
+  }
+}
+
+PredicatePtr MaxNClRegPredicate::meet(const Predicate& other) const {
+  try {
+    const MaxNClRegPredicate& other_p =
+        dynamic_cast<const MaxNClRegPredicate&>(other);
+    return std::make_shared<MaxNClRegPredicate>(
+        std::min(n_cl_reg_, other_p.n_cl_reg_));
+  } catch (const std::bad_cast&) {
+    throw IncorrectPredicate(
+        "Cannot compare predicates of different subclasses");
+  }
+}
+
+std::string MaxNClRegPredicate::to_string() const {
+  return auto_name(*this) + "(" + std::to_string(n_cl_reg_) + ")";
+}
+
 bool NoBarriersPredicate::verify(const Circuit& circ) const {
   BGL_FORALL_VERTICES(v, circ.dag, DAG) {
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
@@ -546,66 +585,34 @@ PredicatePtr NoBarriersPredicate::meet(const Predicate& other) const {
 
 std::string NoBarriersPredicate::to_string() const { return auto_name(*this); }
 
-static bool mid_measure_helper(const Command& com, unit_set_t& measured_units) {
-  // Rejects gates acting on measured_units
-  // Encountering a measurement adds the qubit and bit to measured_units
-  // Returns whether or not a mid-circuit measurement is found
-  // Applies recursively for CircBoxes
-  if (com.get_op_ptr()->get_type() == OpType::Conditional) {
-    unit_vector_t all_args = com.get_args();
-    const Conditional& cond =
-        static_cast<const Conditional&>(*com.get_op_ptr());
-    unit_vector_t::iterator arg_it = all_args.begin();
-    for (unsigned i = 0; i < cond.get_width(); ++i) {
-      if (measured_units.find(*arg_it) != measured_units.end()) return false;
-      ++arg_it;
-    }
-    unit_vector_t new_args = {arg_it, all_args.end()};
-    Command new_com = {cond.get_op(), new_args};
-    return mid_measure_helper(new_com, measured_units);
-  } else if (
-      com.get_op_ptr()->get_type() == OpType::CircBox ||
-      com.get_op_ptr()->get_type() == OpType::CustomGate) {
-    const Box& box = static_cast<const Box&>(*com.get_op_ptr());
-    unit_map_t interface;
-    unit_set_t inner_set;
-    unsigned q_count = 0;
-    unsigned b_count = 0;
-    for (const UnitID& u : com.get_args()) {
-      UnitID inner_unit = (u.type() == UnitType::Qubit)
-                              ? static_cast<UnitID>(Qubit(q_count++))
-                              : static_cast<UnitID>(Bit(b_count++));
-      interface.insert({inner_unit, u});
-      if (measured_units.find(u) != measured_units.end()) {
-        inner_set.insert(inner_unit);
-      }
-    }
-    for (const Command& c : *box.to_circuit()) {
-      if (!mid_measure_helper(c, inner_set)) return false;
-    }
-    for (const UnitID& u : inner_set) {
-      measured_units.insert(interface.at(u));
-    }
-    return true;
-  } else if (com.get_op_ptr()->get_type() == OpType::Measure) {
-    std::pair<unit_set_t::iterator, bool> q_inserted =
-        measured_units.insert(com.get_args().at(0));
-    std::pair<unit_set_t::iterator, bool> c_inserted =
-        measured_units.insert(com.get_args().at(1));
-    return q_inserted.second && c_inserted.second;
-  } else {
-    for (const UnitID& a : com.get_args()) {
-      if (measured_units.find(a) != measured_units.end()) return false;
-    }
-    return true;
-  }
+bool CommutableMeasuresPredicate::verify(const Circuit& circ) const {
+  if (circ.n_bits() == 0) return true;
+  // run_delay_measures_ will not modify the circuit when dry_run is true
+  Circuit& mutable_circ = const_cast<Circuit&>(circ);
+  return Transforms::DelayMeasures::run_delay_measures(
+             mutable_circ, false, true)
+      .second;
+}
+
+bool CommutableMeasuresPredicate::implies(const Predicate& other) const {
+  return auto_implication(*this, other);
+}
+
+PredicatePtr CommutableMeasuresPredicate::meet(const Predicate& other) const {
+  return auto_meet(*this, other);
+}
+
+std::string CommutableMeasuresPredicate::to_string() const {
+  return auto_name(*this);
 }
 
 bool NoMidMeasurePredicate::verify(const Circuit& circ) const {
   if (circ.n_bits() == 0) return true;
   unit_set_t measured_units;
   for (const Command& com : circ) {
-    if (!mid_measure_helper(com, measured_units)) return false;
+    if (!Transforms::DelayMeasures::check_only_end_measures(
+            com, measured_units))
+      return false;
   }
   return true;
 }
@@ -750,9 +757,18 @@ void to_json(nlohmann::json& j, const PredicatePtr& pred_ptr) {
     j["type"] = "MaxNQubitsPredicate";
     j["n_qubits"] = cast_pred->get_n_qubits();
   } else if (
+      std::shared_ptr<MaxNClRegPredicate> cast_pred =
+          std::dynamic_pointer_cast<MaxNClRegPredicate>(pred_ptr)) {
+    j["type"] = "MaxNClRegPredicate";
+    j["n_cl_reg"] = cast_pred->get_n_cl_reg();
+  } else if (
       std::shared_ptr<NoBarriersPredicate> cast_pred =
           std::dynamic_pointer_cast<NoBarriersPredicate>(pred_ptr)) {
     j["type"] = "NoBarriersPredicate";
+  } else if (
+      std::shared_ptr<CommutableMeasuresPredicate> cast_pred =
+          std::dynamic_pointer_cast<CommutableMeasuresPredicate>(pred_ptr)) {
+    j["type"] = "CommutableMeasuresPredicate";
   } else if (
       std::shared_ptr<NoMidMeasurePredicate> cast_pred =
           std::dynamic_pointer_cast<NoMidMeasurePredicate>(pred_ptr)) {
@@ -807,8 +823,13 @@ void from_json(const nlohmann::json& j, PredicatePtr& pred_ptr) {
   } else if (classname == "MaxNQubitsPredicate") {
     unsigned n_qubits = j.at("n_qubits").get<unsigned>();
     pred_ptr = std::make_shared<MaxNQubitsPredicate>(n_qubits);
+  } else if (classname == "MaxNClRegPredicate") {
+    unsigned n_cl_reg = j.at("n_cl_reg").get<unsigned>();
+    pred_ptr = std::make_shared<MaxNClRegPredicate>(n_cl_reg);
   } else if (classname == "NoBarriersPredicate") {
     pred_ptr = std::make_shared<NoBarriersPredicate>();
+  } else if (classname == "CommutableMeasuresPredicate") {
+    pred_ptr = std::make_shared<CommutableMeasuresPredicate>();
   } else if (classname == "NoMidMeasurePredicate") {
     pred_ptr = std::make_shared<NoMidMeasurePredicate>();
   } else if (classname == "NoSymbolsPredicate") {

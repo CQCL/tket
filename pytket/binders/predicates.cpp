@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Predicates/Predicates.hpp"
+#include "tket/Predicates/Predicates.hpp"
 
-#include "Predicates/CompilationUnit.hpp"
-#include "Utils/UnitID.hpp"
 #include "binder_json.hpp"
+#include "tket/Predicates/CompilationUnit.hpp"
+#include "tket/Utils/UnitID.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;
@@ -189,6 +189,11 @@ PYBIND11_MODULE(predicates, m) {
       "Predicate asserting that a circuit has at most n qubits.")
       .def(py::init<unsigned>(), "Constructor.");
   py::class_<
+      MaxNClRegPredicate, std::shared_ptr<MaxNClRegPredicate>, Predicate>(
+      m, "MaxNClRegPredicate",
+      "Predicate asserting that a circuit has at most n classical registers.")
+      .def(py::init<unsigned>(), "Constructor.");
+  py::class_<
       PlacementPredicate, std::shared_ptr<PlacementPredicate>, Predicate>(
       m, "PlacementPredicate",
       "Predicate asserting that a circuit has been acted on by some "
@@ -204,6 +209,13 @@ PYBIND11_MODULE(predicates, m) {
       NoBarriersPredicate, std::shared_ptr<NoBarriersPredicate>, Predicate>(
       m, "NoBarriersPredicate",
       "Predicate asserting that a circuit contains no Barrier operations.")
+      .def(py::init<>(), "Constructor.");
+  py::class_<
+      CommutableMeasuresPredicate, std::shared_ptr<CommutableMeasuresPredicate>,
+      Predicate>(
+      m, "CommutableMeasuresPredicate",
+      "Predicate asserting that all measurements can be delayed to the end of "
+      "the circuit.")
       .def(py::init<>(), "Constructor.");
   py::class_<
       NoMidMeasurePredicate, std::shared_ptr<NoMidMeasurePredicate>, Predicate>(

@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -19,13 +19,13 @@
 #include <memory>
 #include <tklog/TketLog.hpp>
 
-#include "Circuit.hpp"
-#include "Gate/Gate.hpp"
-#include "Gate/OpPtrFunctions.hpp"
-#include "Ops/ClassicalOps.hpp"
-#include "Ops/OpPtr.hpp"
-#include "Utils/Expression.hpp"
-#include "Utils/UnitID.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Gate/Gate.hpp"
+#include "tket/Gate/OpPtrFunctions.hpp"
+#include "tket/Ops/ClassicalOps.hpp"
+#include "tket/Ops/OpPtr.hpp"
+#include "tket/Utils/Expression.hpp"
+#include "tket/Utils/UnitID.hpp"
 namespace tket {
 
 vertex_map_t Circuit::copy_graph(

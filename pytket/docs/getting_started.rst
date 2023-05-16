@@ -7,8 +7,8 @@ NISQ (noisy intermediate-scale quantum) devices. The pytket package provides an
 API for interacting with tket and transpiling to and from other popular quantum
 circuit specifications.
 
-Pytket is compatible with 64-bit Python 3.8, 3.9 and 3.10, on Linux, MacOS
-(10.14 or later) and Windows. Install pytket from PyPI using:
+Pytket is compatible with 64-bit Python 3.9, 3.10 and 3.11, on Linux, MacOS
+(11.0 or later) and Windows. Install pytket from PyPI using:
 
 ::
 

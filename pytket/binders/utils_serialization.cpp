@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,8 +17,8 @@
 
 #include <complex>
 
-#include "Utils/Json.hpp"
 #include "binder_json.hpp"
+#include "tket/Utils/Json.hpp"
 
 namespace py = pybind11;
 using json = nlohmann::json;

@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,23 +12,23 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Gate.hpp"
+#include "tket/Gate/Gate.hpp"
 
 #include <algorithm>
 #include <stdexcept>
 #include <tkrng/RNG.hpp>
 #include <vector>
 
-#include "GateUnitaryMatrix.hpp"
-#include "GateUnitaryMatrixError.hpp"
-#include "OpPtrFunctions.hpp"
-#include "OpType/OpType.hpp"
-#include "OpType/OpTypeFunctions.hpp"
-#include "OpType/OpTypeInfo.hpp"
-#include "Ops/Op.hpp"
-#include "Utils/Expression.hpp"
-#include "Utils/PauliStrings.hpp"
 #include "symengine/eval_double.h"
+#include "tket/Gate/GateUnitaryMatrix.hpp"
+#include "tket/Gate/GateUnitaryMatrixError.hpp"
+#include "tket/Gate/OpPtrFunctions.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/OpType/OpTypeFunctions.hpp"
+#include "tket/OpType/OpTypeInfo.hpp"
+#include "tket/Ops/Op.hpp"
+#include "tket/Utils/Expression.hpp"
+#include "tket/Utils/PauliStrings.hpp"
 
 namespace tket {
 using std::stringstream;
@@ -456,6 +456,96 @@ bool Gate::is_clifford() const {
       return equiv_0(4 * params_.at(0)) && equiv_0(2 * params_.at(1));
     default:
       return false;
+  }
+}
+
+bool Gate::has_symmetry(unsigned port1, unsigned port2) const {
+  const auto n_q = n_qubits();
+  if (port1 >= n_q || port2 >= n_q) {
+    throw std::out_of_range("port ids must be less than n_qubits");
+  }
+  if (port1 == port2) {
+    // exchanging with self is always symmetric
+    return true;
+  }
+  OpType optype = get_type();
+  switch (optype) {
+      // a two qubit gate G2 is symmetric
+      // if and only if its matrix form (g2_{ij}), i,j in 0,1,2,3, satisfies
+      // g2_01 == a02, g2_10 == g2_20, g2_13 == g2_23, g2_31 == g2_32,
+      // g2_11 == g2_22, and g2_12 == g2_21. (Follows from stipulation SWAP G2
+      // SWAP == G2) If G2 is a controlled one-qubit gate, G2 = CG1. Then G1
+      // must satisfy g1_00 == 1, g1_01 == g1_10 == 0
+    case OpType::CH:
+    case OpType::CX:
+    case OpType::CY:
+    case OpType::ECR:
+    case OpType::CV:
+    case OpType::CVdg:
+    case OpType::CSX:
+    case OpType::CSXdg:
+    case OpType::CRz:
+    case OpType::CRx:
+    case OpType::CRy: {
+      // not symmetric
+      return false;
+    }
+    case OpType::SWAP:
+    case OpType::ISWAP:
+    case OpType::ESWAP:
+    case OpType::PhasedISWAP:
+    case OpType::ISWAPMax:
+    case OpType::CZ:
+    case OpType::XXPhase:
+    case OpType::YYPhase:
+    case OpType::ZZPhase:
+    case OpType::ZZMax:
+    case OpType::FSim:
+    case OpType::Sycamore:
+    case OpType::TK2:
+    case OpType::CU1: {
+      // symmetric
+      return true;
+    }
+    case OpType::CU3: {
+      // symmetric if first param theta == 0
+      const auto theta = get_params()[0];
+      return equiv_0(theta);
+    }
+      // three qubit gates
+    case OpType::CCX: {
+      // 0 <-> 1 symmetry
+      return port1 + port2 == 1;  // will be 2 or 3 for non-symmetric cases
+    }
+    case OpType::CSWAP: {
+      // 1 <-> 2 symmetry
+      return port1 + port2 == 3;  // will be 1 or 2 for non-symmetric cases
+    }
+    case OpType::BRIDGE: {
+      // no symmetry
+      return false;
+    }
+    case OpType::XXPhase3: {
+      // completely symmetric
+      return true;
+    }
+      // n (+1) qubit gates
+    case OpType::CnX:
+    case OpType::CnY:
+    case OpType::CnRy: {
+      // symmetry on first n ports not on n+1
+      auto last_port = n_q - 1;
+      return not(port1 == last_port || port2 == last_port);
+    }
+    case OpType::CnZ:
+    case OpType::PhaseGadget:
+    case OpType::NPhasedX: {
+      // symmetry on all n (+1) ports
+      return true;
+    }
+    default: {
+      return false;
+    }
   }
 }
 

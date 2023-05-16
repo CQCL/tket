@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -19,28 +19,22 @@ set -evu
 # Choose a Python to install conan
 export PYBIN=/opt/python/cp39-cp39/bin
 
-export CONAN_REVISIONS_ENABLED=1
-
 ${PYBIN}/pip install --upgrade pip
-${PYBIN}/pip install conan~=1.53
+${PYBIN}/pip install conan~=2.0
 
 export CONAN_CMD=${PYBIN}/conan
 
-${CONAN_CMD} profile new tket --detect
+${CONAN_CMD} profile detect
 
-${CONAN_CMD} remote clean
 ${CONAN_CMD} remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
 
-${CONAN_CMD} user -p ${JFROG_ARTIFACTORY_TOKEN_2} -r tket-libs ${JFROG_ARTIFACTORY_USER_2}
+${CONAN_CMD} remote login -p ${JFROG_ARTIFACTORY_TOKEN_2} tket-libs ${JFROG_ARTIFACTORY_USER_2}
 
-LIB_VER=$(${CONAN_CMD} inspect --raw version ${TKLIB})
+${CONAN_CMD} create ${TKLIB} -o boost/*:header_only=True --build=missing --user=tket --channel=stable --format json > ${TKLIB}.json
 
-${CONAN_CMD} create --profile=tket -o ${TKLIB}:shared=False ${TKLIB} tket/stable
-${CONAN_CMD} create --profile=tket -o ${TKLIB}:shared=True ${TKLIB} tket/stable
+LIB_LABEL=$(${PYBIN}/python ./libver ${TKLIB}.json ${TKLIB})
 
 if [ ${UPLOAD_PACKAGE} == "YES" ]
 then
-    ${CONAN_CMD} upload ${TKLIB}/${LIB_VER}@tket/stable --all -r=tket-libs
-else
-    ${CONAN_CMD} upload ${TKLIB}/${LIB_VER}@tket/stable --all -r=tket-libs --skip-upload
+    ${CONAN_CMD} upload ${LIB_LABEL} -r=tket-libs
 fi

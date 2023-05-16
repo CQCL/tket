@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,181 +12,31 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "BasicOptimisation.hpp"
+#include "tket/Transformations/BasicOptimisation.hpp"
 
+#include <cmath>
 #include <optional>
 #include <tkassert/Assert.hpp>
+#include <vector>
 
-#include "Characterisation/DeviceCharacterisation.hpp"
-#include "Characterisation/ErrorTypes.hpp"
-#include "Circuit/CircPool.hpp"
-#include "Circuit/CircUtils.hpp"
-#include "Circuit/Command.hpp"
-#include "Circuit/DAGDefs.hpp"
-#include "Decomposition.hpp"
-#include "Gate/Gate.hpp"
-#include "Gate/GatePtr.hpp"
-#include "Gate/Rotation.hpp"
-#include "Transform.hpp"
-#include "Utils/EigenConfig.hpp"
-#include "Utils/MatrixAnalysis.hpp"
+#include "tket/Characterisation/DeviceCharacterisation.hpp"
+#include "tket/Characterisation/ErrorTypes.hpp"
+#include "tket/Circuit/CircPool.hpp"
+#include "tket/Circuit/CircUtils.hpp"
+#include "tket/Circuit/DAGDefs.hpp"
+#include "tket/Transformations/Decomposition.hpp"
+#include "tket/Transformations/Transform.hpp"
+#include "tket/Utils/EigenConfig.hpp"
+#include "tket/Utils/Expression.hpp"
+#include "tket/Utils/MatrixAnalysis.hpp"
+#include "tket/Utils/UnitID.hpp"
 
-namespace tket {
+namespace tket::Transforms {
 
-namespace Transforms {
-
-static bool redundancy_removal(Circuit &circ);
-static bool remove_redundancy(
-    Circuit &circ, const Vertex &vert, VertexSet &bin,
-    std::set<IVertex> &new_affected_verts, IndexMap &im);
 static bool commute_singles_to_front(Circuit &circ);
-
-Transform remove_redundancies() { return Transform(redundancy_removal); }
-
-// this method annihilates all primitives next to each other (accounting for
-// previous annihilations)
-// also removes redundant non-classically controlled Z basis gates before a z
-// basis measurement so that eg. -H-X-X-H- always annihilates to -----
-static bool redundancy_removal(Circuit &circ) {
-  bool success = false;
-  bool found_redundancy = true;
-  IndexMap im = circ.index_map();
-  std::set<IVertex> old_affected_verts;
-  BGL_FORALL_VERTICES(v, circ.dag, DAG) {
-    old_affected_verts.insert({im.at(v), v});
-  }
-  VertexSet bin;
-  while (found_redundancy) {
-    std::set<IVertex> new_affected_verts;
-    bool removed = false;
-    for (const IVertex &p : old_affected_verts) {
-      removed |= remove_redundancy(circ, p.second, bin, new_affected_verts, im);
-    }
-    found_redundancy = removed;
-    success |= removed;
-    old_affected_verts = new_affected_verts;
-  }
-  circ.remove_vertices(
-      bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
-  return success;
-}
 
 // called by the previous method. This should generally not be called
 // independently
-static bool remove_redundancy(
-    Circuit &circ, const Vertex &vert, VertexSet &bin,
-    std::set<IVertex> &new_affected_verts, IndexMap &im) {
-  const Op_ptr op = circ.get_Op_ptr_from_Vertex(vert);
-  const OpDesc desc = op->get_desc();
-  if (!desc.is_gate()) return false;
-
-  if (bin.contains(vert)) {
-    return false;  // we have already removed it
-  }
-
-  auto remove_single_vertex = [&bin, &circ, &new_affected_verts,
-                               &im](const Vertex &v_remove) {
-    bin.insert(v_remove);
-    for (const Vertex &l : circ.get_predecessors(v_remove)) {
-      new_affected_verts.insert({im.at(l), l});
-    }
-    circ.remove_vertex(
-        v_remove, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
-  };
-  // remove identities from circuit
-  std::optional<double> a = op->is_identity();
-  if (a) {
-    remove_single_vertex(vert);
-    circ.add_phase(a.value());
-    return true;
-  }
-  VertexVec kids = circ.get_successors(vert);
-
-  // if op is immediately followed by a z basis measurement on all qubits,
-  // remove
-  if (circ.n_out_edges_of_type(vert, EdgeType::Classical) == 0) {
-    bool z_followed_by_measures = true;
-    for (port_t port = 0; port < kids.size() && z_followed_by_measures;
-         port++) {
-      if (circ.get_OpType_from_Vertex(kids[port]) == OpType::Measure) {
-        z_followed_by_measures &=
-            circ.commutes_with_basis(vert, Pauli::Z, PortType::Source, port);
-      } else {
-        z_followed_by_measures = false;
-      }
-    }
-    if (z_followed_by_measures) {
-      remove_single_vertex(vert);
-      return true;
-    }
-  }
-
-  // check that both the vertex and its successor have each other and only each
-  // other
-  if ((kids.size() == 1) && (circ.get_predecessors(kids[0]).size() == 1)) {
-    // check that the ports match up between vertices
-    Vertex b = kids[0];
-    EdgeVec ins = circ.get_in_edges(b);
-    for (const Edge &in : ins) {
-      if (circ.get_source_port(in) != circ.get_target_port(in)) return false;
-    }
-
-    // check that the classical edges match up correctly
-    if (circ.n_in_edges_of_type(vert, EdgeType::Boolean) != 0) return false;
-
-    const Op_ptr b_op = circ.get_Op_ptr_from_Vertex(b);
-    const OpDesc b_desc = b_op->get_desc();
-
-    if (!b_desc.is_oneway()) {
-      // if A = B.dagger(), AB = I
-      // This method cannot detect matches between rotation gates.
-      // Rotation gates are covered by the rotation gate combiner, everything
-      // else in this.
-      if (*b_op->dagger() == *op) {
-        bin.insert(vert);
-        bin.insert(b);
-        VertexVec last_verts = circ.get_predecessors(vert);
-        for (const Vertex &l : last_verts) {
-          new_affected_verts.insert({im.at(l), l});
-        }
-        VertexList to_detach{vert, b};
-        // detached from circuit but not removed from graph
-        circ.remove_vertices(
-            to_detach, Circuit::GraphRewiring::Yes,
-            Circuit::VertexDeletion::No);
-        return true;
-      } else if (desc.is_rotation()) {
-        // combine two rotation gates together, then if the combined
-        // operation is the identity up to phase, remove from circuit
-        if (b_desc.type() == desc.type()) {
-          Expr expr1 = op->get_params()[0];
-          Expr expr2 = b_op->get_params()[0];
-          VertexVec last_verts = circ.get_predecessors(vert);
-          for (const Vertex &l : last_verts) {
-            new_affected_verts.insert({im.at(l), l});
-          }
-          circ.remove_vertex(
-              b, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
-          bin.insert(b);
-          std::vector<Expr> params_new = {expr1 + expr2};
-          Op_ptr op_new = get_op_ptr(desc.type(), params_new, ins.size());
-          std::optional<double> a = op_new->is_identity();
-          if (a) {
-            bin.insert(vert);
-            circ.remove_vertex(
-                vert, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::No);
-            circ.add_phase(a.value());
-          } else {
-            new_affected_verts.insert({im[vert], vert});
-            circ.dag[vert].op = op_new;
-          }
-          return true;
-        }
-      }
-    }
-  }
-  return false;
-}
 
 Transform commute_through_multis() {
   return Transform(commute_singles_to_front);
@@ -853,6 +703,68 @@ Transform normalise_TK2() {
   });
 }
 
-}  // namespace Transforms
+Transform round_angles(unsigned n, bool only_zeros) {
+  if (n >= 32) {
+    throw std::invalid_argument("Precision parameter must be less than 32.");
+  }
+  return Transform([n, only_zeros](Circuit &circ) {
+    bool changed = false;
+    VertexSet bin;
+    const unsigned pow2n = 1 << n;
+    BGL_FORALL_VERTICES(v, circ.dag, DAG) {
+      Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+      bool conditional = op->get_type() == OpType::Conditional;
+      if (conditional) {
+        const Conditional &cond = static_cast<const Conditional &>(*op);
+        op = cond.get_op();
+      }
+      if (op->get_desc().is_gate()) {
+        std::vector<Expr> params = op->get_params();
+        if (!params.empty()) {
+          std::vector<Expr> new_params;
+          for (const Expr &e : params) {
+            std::optional<double> eval = eval_expr(e);
+            if (eval) {
+              if (only_zeros) {
+                new_params.push_back(
+                    pow2n * std::abs(eval.value()) < 0.5 ? 0. : e);
+              } else {
+                new_params.push_back(nearbyint(pow2n * eval.value()) / pow2n);
+              }
+            } else {
+              new_params.push_back(e);
+            }
+          }
+          if (params != new_params) {
+            unsigned n_qb = op->n_qubits();
+            Circuit replacement(n_qb);
+            if (std::any_of(
+                    new_params.begin(), new_params.end(),
+                    [](const Expr &e) { return (e != 0.); })) {
+              std::vector<Qubit> args;
+              for (unsigned i = 0; i < n_qb; i++) {
+                args.push_back(Qubit(i));
+              }
+              replacement.add_op(op->get_type(), new_params, args);
+            }
+            if (conditional) {
+              circ.substitute_conditional(
+                  replacement, v, Circuit::VertexDeletion::No);
+            } else {
+              circ.substitute(replacement, v, Circuit::VertexDeletion::No);
+            }
+            bin.insert(v);
+            changed = true;
+          }
+        }
+      }
+    }
 
-}  // namespace tket
+    circ.remove_vertices(
+        bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
+
+    return changed;
+  });
+}
+
+}  // namespace tket::Transforms

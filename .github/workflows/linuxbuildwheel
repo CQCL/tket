@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -16,37 +16,31 @@
 
 set -evu
 
-# Choose a Python to install conan
-export PYBIN=/opt/python/cp39-cp39/bin
-
-${PYBIN}/pip install conan~=1.53
-
-export CONAN_CMD=${PYBIN}/conan
-export CONAN_REVISIONS_ENABLED=1
-
 cd /tket
 
-${CONAN_CMD} profile new tket --detect
-${CONAN_CMD} profile update options.tklog:shared=True tket
-${CONAN_CMD} profile update options.tket:shared=True tket
-${CONAN_CMD} remote clean
+export PYBIN=/opt/python/${PY_TAG}/bin
+export PYEX=${PYBIN}/python
+${PYEX} -m venv env
+. env/bin/activate
+${PYEX} -m pip install -U pip build conan
+CONAN_CMD=${PYBIN}/conan
+${CONAN_CMD} profile detect
 ${CONAN_CMD} remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
-${CONAN_CMD} create --profile=tket --test-folder=None recipes/tket tket/stable --build=missing --build=tket
-${CONAN_CMD} create --profile=tket --test-folder=None recipes/pybind11
 
-cd /tket/pytket
-mkdir wheelhouse
-mkdir audited
+# Build tket
+${CONAN_CMD} create tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
 
 # Work around https://github.com/pypa/manylinux/issues/1309
 git config --global --add safe.directory "*"
 
-for pyX in $PY_VERS
-do
-    cd /tket/pytket
-    export PYEX=/opt/python/${pyX}/bin/python
-    export PYVER=`${PYEX} -c 'import sys; print(".".join(map(str, sys.version_info[:3])))'`
-    ${PYEX} -m pip install -U pip build
-    ${PYEX} -m build --outdir "tmpwheel_${PYVER}"
-    LD_LIBRARY_PATH=./pytket/_tket auditwheel repair "tmpwheel_${PYVER}/pytket-"*".whl" -w "audited/${PYVER}/"
-done
+mkdir /tket/pytket/wheelhouse
+mkdir /tket/pytket/audited
+
+# Install pybind11 and pybind11_json
+${CONAN_CMD} create recipes/pybind11
+${CONAN_CMD} create recipes/pybind11_json/all --version 0.2.13
+
+# build pytket
+cd pytket
+${PYEX} -m build
+LD_LIBRARY_PATH=./pytket/_tket auditwheel repair "dist/pytket-"*".whl" -w "audited/"

@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,18 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "CompilerPass.hpp"
+#include "tket/Predicates/CompilerPass.hpp"
 
 #include <memory>
 #include <tklog/TketLog.hpp>
 
-#include "Mapping/RoutingMethodJson.hpp"
-#include "PassGenerators.hpp"
-#include "PassLibrary.hpp"
-#include "Transformations/ContextualReduction.hpp"
-#include "Transformations/PauliOptimisation.hpp"
-#include "Utils/Json.hpp"
-#include "Utils/UnitID.hpp"
+#include "tket/Mapping/RoutingMethodJson.hpp"
+#include "tket/Predicates/PassGenerators.hpp"
+#include "tket/Predicates/PassLibrary.hpp"
+#include "tket/Transformations/ContextualReduction.hpp"
+#include "tket/Transformations/PauliOptimisation.hpp"
+#include "tket/Utils/Json.hpp"
+#include "tket/Utils/UnitID.hpp"
 
 namespace tket {
 
@@ -386,7 +386,8 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       bool allow_swaps = content.at("allow_swaps").get<bool>();
       pp = DecomposeTK2(fid, allow_swaps);
     } else if (passname == "PeepholeOptimise2Q") {
-      pp = PeepholeOptimise2Q();
+      bool allow_swaps = content.at("allow_swaps").get<bool>();
+      pp = PeepholeOptimise2Q(allow_swaps);
     } else if (passname == "FullPeepholeOptimise") {
       OpType target_2qb_gate = content.at("target_2qb_gate").get<OpType>();
       bool allow_swaps = content.at("allow_swaps").get<bool>();
@@ -416,7 +417,8 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
     } else if (passname == "SquashCustom") {
       throw PassNotSerializable(passname);
     } else if (passname == "DelayMeasures") {
-      pp = DelayMeasures();
+      bool allow_partial = content.at("allow_partial").get<bool>();
+      pp = DelayMeasures(allow_partial);
     } else if (passname == "ZZPhaseToRz") {
       pp = ZZPhaseToRz();
     } else if (passname == "RemoveDiscarded") {
@@ -434,6 +436,9 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       OpType q = content.at("euler_q").get<OpType>();
       bool s = content.at("euler_strict").get<bool>();
       pp = gen_euler_pass(q, p, s);
+    } else if (passname == "FlattenRelabelRegistersPass") {
+      pp = gen_flatten_relabel_registers_pass(
+          content.at("label").get<std::string>());
     } else if (passname == "RoutingPass") {
       Architecture arc = content.at("architecture").get<Architecture>();
       std::vector<RoutingMethodPtr> con = content.at("routing_config");
@@ -460,6 +465,8 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       pp = DecomposeBridges();
     } else if (passname == "CnXPairwiseDecomposition") {
       pp = CnXPairwiseDecomposition();
+    } else if (passname == "RemoveImplicitQubitPermutation") {
+      pp = RemoveImplicitQubitPermutation();
     } else if (passname == "OptimisePhaseGadgets") {
       pp = gen_optimise_phase_gadgets(
           content.at("cx_config").get<CXConfigType>());
@@ -525,6 +532,10 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
           allow_classical ? Transforms::AllowClassical::Yes
                           : Transforms::AllowClassical::No,
           xcirc);
+    } else if (passname == "RoundAngles") {
+      unsigned n = content.at("n").get<unsigned>();
+      bool only_zeros = content.at("only_zeros").get<bool>();
+      pp = RoundAngles(n, only_zeros);
     } else {
       throw JsonError("Cannot load StandardPass of unknown type");
     }

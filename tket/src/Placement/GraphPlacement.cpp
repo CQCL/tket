@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,8 +14,8 @@
 
 #include <chrono>
 
-#include "Placement/Placement.hpp"
-#include "Utils/HelperFunctions.hpp"
+#include "tket/Placement/Placement.hpp"
+#include "tket/Utils/HelperFunctions.hpp"
 
 typedef std::chrono::steady_clock Clock;
 

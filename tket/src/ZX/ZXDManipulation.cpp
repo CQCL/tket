@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,8 +14,8 @@
 
 #include <tkassert/Assert.hpp>
 
-#include "Utils/GraphHeaders.hpp"
-#include "ZX/ZXDiagram.hpp"
+#include "tket/Utils/GraphHeaders.hpp"
+#include "tket/ZX/ZXDiagram.hpp"
 
 namespace tket {
 
@@ -33,6 +33,12 @@ ZXVert ZXDiagram::add_vertex(ZXType type, QuantumType qtype) {
 
 ZXVert ZXDiagram::add_vertex(
     ZXType type, const Expr& param, QuantumType qtype) {
+  ZXGen_ptr op = ZXGen::create_gen(type, param, qtype);
+  return add_vertex(op);
+}
+
+ZXVert ZXDiagram::add_clifford_vertex(
+    ZXType type, bool param, QuantumType qtype) {
   ZXGen_ptr op = ZXGen::create_gen(type, param, qtype);
   return add_vertex(op);
 }

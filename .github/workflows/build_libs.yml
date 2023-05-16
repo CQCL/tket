@@ -13,6 +13,8 @@ jobs:
       tklog: ${{ steps.filter.outputs.tklog }}
       tkassert: ${{ steps.filter.outputs.tkassert }}
       tkrng: ${{ steps.filter.outputs.tkrng }}
+      tktokenswap: ${{ steps.filter.outputs.tktokenswap }}
+      tkwsm: ${{ steps.filter.outputs.tkwsm }}
       libs: ${{ steps.filter.outputs.changes }}
     steps:
     - uses: actions/checkout@v3
@@ -40,10 +42,7 @@ jobs:
         os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
         lib: ${{ fromJson(needs.changes.outputs.libs) }}
         build_type: ['Release', 'Debug']
-        shared: ['True', 'False']
     runs-on: ${{ matrix.os }}
-    env:
-      CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v3
     - name: normalize line endings in conanfile and src directory
@@ -52,49 +51,36 @@ jobs:
       # Conan's revision hash is composed of hashes all the exported files, so
       # we must normalize the line endings in these.
       run: |
-        $conanfile ='libs/${{ matrix.lib }}/conanfile.py'
-        $normalized_file = [IO.File]::ReadAllText($conanfile) -replace "`r`n", "`n"
-        [IO.File]::WriteAllText($conanfile, $normalized_file)
+        $conanfile = 'libs/${{ matrix.lib }}/conanfile.py'
+        $cmakelists = 'libs/${{ matrix.lib }}/CMakeLists.txt'
         $src_files = Get-ChildItem "libs/${{ matrix.lib }}/src" -File -Recurse
-        foreach ($f in $src_files) {
+        $include_files = Get-ChildItem "libs/${{ matrix.lib }}/include" -File -Recurse
+        foreach ($f in @($conanfile) + @($cmakelists) + $src_files + $include_files) {
           $normalized_file = [IO.File]::ReadAllText($f) -replace "`r`n", "`n"
           [IO.File]::WriteAllText($f, $normalized_file)
         }
-    - name: Set up Python 3.9
+    - name: Set up Python 3.10
       uses: actions/setup-python@v4
       with:
-        python-version: '3.9'
-    - name: install conan
-      run: pip install conan~=1.53
+        python-version: '3.10'
+    - name: Install conan
+      uses: turtlebrowser/get-conan@v1.2
     - name: create profile
-      run: conan profile new tket --detect
-    - name: set libcxx
-      if: matrix.os == 'ubuntu-22.04'
-      run: conan profile update settings.compiler.libcxx=libstdc++11 tket
+      run: conan profile detect
     - name: add remote
-      run: |
-        conan remote clean
-        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: build ${{ matrix.lib }}
-      run: conan create --profile=tket -s build_type=${{ matrix.build_type }} -o ${{ matrix.lib }}:shared=${{ matrix.shared }} libs/${{ matrix.lib }} tket/stable --build=missing
+      run: conan create -s build_type=${{ matrix.build_type }} -o boost/*:header_only=True libs/${{ matrix.lib }} --build=missing --user=tket --channel=stable --format json > ${{ matrix.lib }}.json
     - name: authenticate to repository
-      run: conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} -r tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
+      run: conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
     - name: get version
-      if: matrix.os != 'windows-2022'
+      shell: bash
       run: |
-        lib_ver=$(conan inspect --raw version libs/${{ matrix.lib }}/conanfile.py)
-        echo "LIB_VER=${lib_ver}" >> $GITHUB_ENV
-    - name: get version
-      if: matrix.os == 'windows-2022'
-      run: |
-        $${{ matrix.lib }}_ver = conan inspect --raw version libs/${{ matrix.lib }}/conanfile.py
-        echo "LIB_VER=${${{ matrix.lib }}_ver}" >> $env:GITHUB_ENV
-    - name: upload package (dry run)
-      if: github.event_name == 'pull_request'
-      run: conan upload ${{ matrix.lib }}/${{ env.LIB_VER }}@tket/stable --all -r=tket-libs --skip-upload
+        lib_label=`./libver ${{ matrix.lib }}.json ${{ matrix.lib }}`
+        echo "LIB_LABEL=${lib_label}" >> $GITHUB_ENV
     - name: upload package
       if: github.event_name == 'push'
-      run: conan upload ${{ matrix.lib }}/${{ env.LIB_VER }}@tket/stable --all -r=tket-libs
+      run: conan upload ${{ env.LIB_LABEL }} -r=tket-libs
   macos-m1:
     name: build library (macos-m1)
     needs: changes
@@ -104,35 +90,28 @@ jobs:
       matrix:
         lib: ${{ fromJson(needs.changes.outputs.libs) }}
         build_type: ['Release', 'Debug']
-        shared: ['True', 'False']
-    env:
-      CONAN_REVISIONS_ENABLED: 1
     steps:
     - uses: actions/checkout@v3
-    - name: install conan
-      run: pip install conan~=1.53
+    - name: Install conan
+      uses: turtlebrowser/get-conan@v1.2
     - name: create profile
-      run: conan profile new tket --detect --force
-    - name: add remote
-      run: |
-        conan remote clean
-        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+      run: conan profile detect --force
+    - name: set remotes
+      run: conan remote add --force tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: build ${{ matrix.lib }}
-      run: conan create --profile=tket -s build_type=${{ matrix.build_type }} -o ${{ matrix.lib }}:shared=${{ matrix.shared }} libs/${{ matrix.lib }} tket/stable --build=missing
+      run: conan create -s build_type=${{ matrix.build_type }} -o boost/*:header_only=True libs/${{ matrix.lib }} --build=missing --user=tket --channel=stable --format json > ${{ matrix.lib }}.json
     - name: authenticate to repository
-      run: conan user -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} -r tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
+      run: conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
     - name: get version
       run: |
-        lib_ver=$(conan inspect --raw version libs/${{ matrix.lib }}/conanfile.py)
-        echo "LIB_VER=${lib_ver}" >> $GITHUB_ENV
-    - name: upload package (dry run)
-      if: github.event_name == 'pull_request'
-      run: conan upload ${{ matrix.lib }}/${LIB_VER}@tket/stable --all -r=tket-libs --skip-upload
+        lib_label=`./libver ${{ matrix.lib }}.json ${{ matrix.lib }}`
+        echo "LIB_LABEL=${lib_label}" >> $GITHUB_ENV
     - name: upload package
       if: github.event_name == 'push'
-      run: conan upload ${{ matrix.lib }}/${LIB_VER}@tket/stable --all -r=tket-libs
+      run: conan upload ${{ env.LIB_LABEL }} -r=tket-libs
     - name: unauthenticate
-      run: conan user -c
+      if: always()
+      run: conan remote logout tket-libs
   manylinux:
     name: build library (manylinux)
     needs: changes
@@ -149,6 +128,7 @@ jobs:
       run: |
         docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux2014_x86_64:latest /bin/bash
         docker cp ./libs/${{ matrix.lib }} linux_build:/
+        docker cp ./libver linux_build:/
         docker cp ./.github/workflows/linuxbuildlib linux_build:/
     - name: determine whether to upload package
       if: github.event_name == 'push'

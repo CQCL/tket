@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,24 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Boxes.hpp"
+#include "tket/Circuit/Boxes.hpp"
 
 #include <memory>
 #include <numeric>
 #include <tkassert/Assert.hpp>
 
-#include "CircUtils.hpp"
-#include "Circuit/AssertionSynthesis.hpp"
-#include "Command.hpp"
-#include "Gate/Rotation.hpp"
-#include "OpType/OpTypeInfo.hpp"
-#include "Ops/OpJsonFactory.hpp"
-#include "Ops/OpPtr.hpp"
-#include "ThreeQubitConversion.hpp"
-#include "Utils/EigenConfig.hpp"
-#include "Utils/Expression.hpp"
-#include "Utils/Json.hpp"
-#include "Utils/PauliStrings.hpp"
+#include "tket/Circuit/AssertionSynthesis.hpp"
+#include "tket/Circuit/CircUtils.hpp"
+#include "tket/Circuit/Command.hpp"
+#include "tket/Circuit/ThreeQubitConversion.hpp"
+#include "tket/Gate/Rotation.hpp"
+#include "tket/OpType/OpTypeInfo.hpp"
+#include "tket/Ops/OpJsonFactory.hpp"
+#include "tket/Ops/OpPtr.hpp"
+#include "tket/Utils/EigenConfig.hpp"
+#include "tket/Utils/Expression.hpp"
+#include "tket/Utils/Json.hpp"
+#include "tket/Utils/PauliStrings.hpp"
 
 namespace tket {
 
@@ -494,307 +494,6 @@ op_signature_t StabiliserAssertionBox::get_signature() const {
   return qubs;
 }
 
-ToffoliBox::ToffoliBox(
-    unsigned _n_qubits,
-    std::map<std::vector<bool>, std::vector<bool>> _permutation)
-    : Box(OpType::ToffoliBox), n_qubits_(_n_qubits) {
-  // Convert passed permutation to cycles
-  while (!_permutation.empty()) {
-    auto it = _permutation.begin();
-    cycle_permutation_t cycle = {it->first};
-    if (it->first.size() != this->n_qubits_) {
-      throw std::invalid_argument(
-          "Size of bitstring does not match number of qubits.");
-    }
-    it = _permutation.find(it->second);
-    while (it->first != cycle[0]) {
-      if (it->first.size() != this->n_qubits_) {
-        throw std::invalid_argument(
-            "Size of bitstring does not match number of qubits.");
-      }
-      cycle.push_back(it->first);
-      it = _permutation.find(it->second);
-      if (it == _permutation.end()) {
-        throw std::invalid_argument("Permutation is not complete.");
-      }
-    }
-    if (cycle.size() > 1) {
-      this->cycles_.insert(cycle);
-    }
-    for (const std::vector<bool> &bitstring : cycle) {
-      _permutation.erase(bitstring);
-    }
-  }
-}
-
-ToffoliBox::ToffoliBox(const ToffoliBox &other)
-    : Box(other), n_qubits_(other.n_qubits_), cycles_(other.cycles_) {}
-
-ToffoliBox::ToffoliBox(
-    unsigned _n_qubits, const std::set<cycle_permutation_t> &_cycles)
-    : Box(OpType::ToffoliBox), n_qubits_(_n_qubits), cycles_(_cycles) {}
-
-unsigned get_hamming_distance(
-    const std::vector<bool> &a, const std::vector<bool> &b) {
-  if (a.size() != b.size()) {
-    throw std::invalid_argument("Bitstrings must have identical size.");
-  }
-  unsigned counter = 0;
-  for (unsigned i = 0; i < a.size(); i++) {
-    if (a[i] != b[i]) {
-      ++counter;
-    }
-  }
-  return counter;
-}
-
-ToffoliBox::cycle_transposition_t ToffoliBox::cycle_to_transposition(
-    cycle_permutation_t cycle) const {
-  /**
-   * A cycle can start at any element
-   * A transposition for a cycle can always be constructed by pairing the
-   * starting element with the others in cycle order
-   * This also gives opportunities to produce gray codes with matching elements
-   * that can be cancelled
-   *
-   * For each element in a cycle, produce a sequence of transpositions and
-   * compare total Hamming distance Return the transposition with smallest
-   * Hamming distance
-   *
-   */
-  cycle_transposition_t best_transposition;
-  unsigned best_hamming_distance = 0;
-
-  for (unsigned i = 0; i < cycle.size(); i++) {
-    unsigned accumulated_hamming_distance = 0;
-    cycle_transposition_t transposition;
-    for (unsigned j = 1; j < cycle.size(); j++) {
-      transposition.push_back({cycle[0], cycle[j], cycle[0]});
-      accumulated_hamming_distance += get_hamming_distance(cycle[0], cycle[j]);
-    }
-    if (best_transposition.empty() ||
-        accumulated_hamming_distance < best_hamming_distance) {
-      best_transposition = transposition;
-      best_hamming_distance = accumulated_hamming_distance;
-    }
-    std::rotate(cycle.begin(), cycle.begin() + 1, cycle.end());
-  }
-  return best_transposition;
-}
-
-std::vector<ToffoliBox::cycle_transposition_t> ToffoliBox::get_transpositions()
-    const {
-  std::vector<ToffoliBox::cycle_transposition_t> transpositions;
-  for (const cycle_permutation_t &cycle : this->cycles_) {
-    // each cycle is costed via the Hamming distance to reduce the number of
-    // operations
-    transpositions.push_back(this->cycle_to_transposition(cycle));
-  }
-  return transpositions;
-}
-
-Circuit ToffoliBox::get_bitstring_circuit(
-    const std::vector<bool> &bitstring, const unsigned &target) const {
-  // flip qubits that need to be state 0
-  Circuit x_circuit(this->n_qubits_);
-  std::vector<unsigned> cnx_args;
-  for (unsigned i = 0; i < this->n_qubits_; i++) {
-    if (i != target) {
-      if (!bitstring[i]) {
-        x_circuit.add_op<unsigned>(OpType::X, {i});
-      }
-      cnx_args.push_back(i);
-    }
-  }
-  cnx_args.push_back(target);
-  TKET_ASSERT(cnx_args.size() == this->n_qubits_);
-
-  Circuit return_circuit(this->n_qubits_);
-  return_circuit.append(x_circuit);
-  return_circuit.add_op<unsigned>(OpType::CnX, cnx_args);
-  return_circuit.append(x_circuit);
-  return return_circuit;
-}
-
-ToffoliBox::gray_code_t ToffoliBox::transposition_to_gray_code(
-    const ToffoliBox::transposition_t &transposition) const {
-  unsigned first_middle_hamming_distance =
-      get_hamming_distance(transposition.first, transposition.middle);
-  unsigned middle_last_hamming_distance =
-      get_hamming_distance(transposition.middle, transposition.last);
-  ToffoliBox::gray_code_t all_gray_code_entries;
-  // => that some optimisation is done to middle_last, so must go via
-  // transposition.last bitstring to allow proper cancellation
-  // At some point transposition.first == transposition.last
-  // If transposition.last != transposition.first & the hamming distance
-  // between transposition.last and transposition.middle is smaller than
-  // transposition.first and transposition.middle,
-  // then we need to make sure that the gray code between transposition.first
-  // and transposition.middle goes via transposition.last, such that the
-  // eventual gray code between transposition.middle and transposition.last
-  // uncomputes this we can assume that the remaining
-  // transposition.last->transposition.first gray code would be cancelled out if
-  // added
-  std::vector<bool> initial = transposition.first;
-  if (middle_last_hamming_distance < first_middle_hamming_distance) {
-    // get bitstrings for first -> last
-    for (unsigned i = 0; i < transposition.first.size(); i++) {
-      if (transposition.first[i] != transposition.last[i]) {
-        initial[i] = !initial[i];
-        all_gray_code_entries.push_back({initial, i});
-      }
-    }
-  }
-  // with the right middle bitstring now guaranteed, go from this bitstring to
-  // middle
-  std::vector<bool> bitstring = initial;
-  for (unsigned i = 0; i < transposition.first.size(); i++) {
-    if (initial[i] != transposition.middle[i]) {
-      bitstring[i] = !bitstring[i];
-      all_gray_code_entries.push_back({bitstring, i});
-    }
-  }
-  // now do the last->middle in reverse to guarantee right
-  // gray code path is taken
-  initial = transposition.last;
-  ToffoliBox::gray_code_t reverse_gray_code_entries;
-  // as before, implies some optimisation has been completed on
-  // first one
-  // thus make sure that gray code goes via transposition.first
-  // to make applied permutation right
-  if (first_middle_hamming_distance < middle_last_hamming_distance) {
-    // get bitstrings for first -> last
-    for (unsigned i = 0; i < transposition.first.size(); i++) {
-      if (initial[i] != transposition.first[i]) {
-        initial[i] = !initial[i];
-        reverse_gray_code_entries.push_back({initial, i});
-      }
-    }
-  }
-  // and then go from bitstring to middle
-  bitstring = initial;
-  for (unsigned i = 0; i < transposition.middle.size(); i++) {
-    if (transposition.middle[i] != initial[i]) {
-      bitstring[i] = !bitstring[i];
-      reverse_gray_code_entries.push_back({bitstring, i});
-    }
-  }
-  // don't want to add transformation for reaching final -> so pop_back
-  if (!reverse_gray_code_entries.empty()) {
-    reverse_gray_code_entries.pop_back();
-  }
-  all_gray_code_entries.insert(
-      all_gray_code_entries.end(), reverse_gray_code_entries.rbegin(),
-      reverse_gray_code_entries.rend());
-  return all_gray_code_entries;
-}
-
-ToffoliBox::cycle_transposition_t ToffoliBox::merge_cycles(
-    std::vector<ToffoliBox::cycle_transposition_t> &cycle_transpositions)
-    const {
-  ToffoliBox::cycle_transposition_t return_transposition;
-  for (unsigned k = 0; k < cycle_transpositions.size(); k++) {
-    ToffoliBox::cycle_transposition_t cycle = cycle_transpositions[k];
-    unsigned i = 0, j = 1;
-    while (j < cycle.size()) {
-      ToffoliBox::transposition_t transposition_i = cycle[i];
-      ToffoliBox::transposition_t transposition_j = cycle[j];
-
-      std::vector<bool> transposition_j_first = transposition_j.first;
-      std::vector<bool> transposition_i_last = transposition_i.last;
-      std::vector<bool> transposition_i_first = transposition_i.first;
-
-      TKET_ASSERT(transposition_i_last == transposition_j.first);
-      std::vector<bool> i_middle = transposition_i.middle;
-      std::vector<bool> j_middle = transposition_j.middle;
-
-      TKET_ASSERT(i_middle.size() == transposition_i.last.size());
-      TKET_ASSERT(j_middle.size() == transposition_i.last.size());
-      // if a transposition has already been reduced, still need to make sure we
-      // uncompute it
-      if (transposition_i_first != transposition_i_last) {
-        unsigned middle_last_distance =
-            get_hamming_distance(i_middle, transposition_i_last);
-        unsigned middle_first_distance =
-            get_hamming_distance(i_middle, transposition_i_first);
-        // this => the reduced transposition is on a good gray code between the
-        // new "first" and target
-        if (middle_first_distance < middle_last_distance &&
-            middle_first_distance > 1) {
-          transposition_i_last = transposition_i_first;
-          std::vector<bool> starting_point = transposition_i_last;
-          for (unsigned k = 0; k < i_middle.size(); k++) {
-            if (i_middle[k] == j_middle[k] &&
-                get_hamming_distance(starting_point, i_middle) > 1) {
-              starting_point[k] = i_middle[k];
-            }
-          }
-
-          cycle_transpositions[k][i].last = starting_point;
-          cycle_transpositions[k][j].first = starting_point;
-        }
-      } else {  // else in this case just find any good transposition
-        std::vector<bool> starting_point = transposition_i_last;
-        for (unsigned k = 0; k < i_middle.size(); k++) {
-          if (i_middle[k] == j_middle[k] &&
-              get_hamming_distance(starting_point, i_middle) > 1) {
-            starting_point[k] = i_middle[k];
-          }
-        }
-
-        cycle[i].last = starting_point;
-        cycle[j].first = starting_point;
-      }
-
-      ++i;
-      ++j;
-    }
-
-    return_transposition.insert(
-        return_transposition.end(), cycle.begin(), cycle.end());
-  }
-
-  return return_transposition;
-}
-
-op_signature_t ToffoliBox::get_signature() const {
-  op_signature_t qubs(this->n_qubits_, EdgeType::Quantum);
-  return qubs;
-}
-
-void ToffoliBox::generate_circuit() const {
-  // This decomposition is as described on page 191, section 4.5.2 "Single
-  // qubit and CNOT gates are universal" of Nielsen & Chuang
-  std::vector<ToffoliBox::cycle_transposition_t> cycle_transpositions =
-      this->get_transpositions();
-
-  // optionally, order the transpositions and cycles to allow gate
-  // cancellation
-  cycle_transposition_t ordered_transpositions;
-  ordered_transpositions = merge_cycles(cycle_transpositions);
-
-  if (ordered_transpositions.empty()) {
-    this->circ_ = std::make_shared<Circuit>(this->n_qubits_);
-    return;
-  }
-
-  // Now we have ordered transpositions, produced front->middle and
-  // middle->back gray codes for each transposition and add to circuit
-  this->circ_ = std::make_shared<Circuit>(this->n_qubits_);
-  for (const transposition_t &transposition : ordered_transpositions) {
-    TKET_ASSERT(transposition.first.size() == this->n_qubits_);
-    TKET_ASSERT(transposition.middle.size() == this->n_qubits_);
-    TKET_ASSERT(transposition.last.size() == this->n_qubits_);
-    ToffoliBox::gray_code_t all_gray_code_entries =
-        transposition_to_gray_code(transposition);
-    for (const std::pair<std::vector<bool>, unsigned> &entry :
-         all_gray_code_entries) {
-      this->circ_->append(
-          this->get_bitstring_circuit(entry.first, entry.second));
-    }
-  }
-}
-
 nlohmann::json core_box_json(const Box &box) {
   nlohmann::json j;
   j["type"] = box.get_type();
@@ -890,23 +589,6 @@ Op_ptr PauliExpBox::from_json(const nlohmann::json &j) {
       boost::lexical_cast<boost::uuids::uuid>(j.at("id").get<std::string>()));
 }
 
-nlohmann::json ToffoliBox::to_json(const Op_ptr &op) {
-  const auto &box = static_cast<const ToffoliBox &>(*op);
-  nlohmann::json j = core_box_json(box);
-  j["cycles"] = box.get_cycles();
-  j["n_qubits"] = box.get_n_qubits();
-  return j;
-}
-
-Op_ptr ToffoliBox::from_json(const nlohmann::json &j) {
-  ToffoliBox box = ToffoliBox(
-      j.at("n_qubits").get<unsigned>(),
-      j.at("cycles").get<std::set<ToffoliBox::cycle_permutation_t>>());
-  return set_box_id(
-      box,
-      boost::lexical_cast<boost::uuids::uuid>(j.at("id").get<std::string>()));
-}
-
 void to_json(nlohmann::json &j, const composite_def_ptr_t &cdef) {
   j["name"] = cdef->get_name();
   j["definition"] = *cdef->get_def();
@@ -993,5 +675,4 @@ REGISTER_OPFACTORY(CustomGate, CustomGate)
 REGISTER_OPFACTORY(QControlBox, QControlBox)
 REGISTER_OPFACTORY(ProjectorAssertionBox, ProjectorAssertionBox)
 REGISTER_OPFACTORY(StabiliserAssertionBox, StabiliserAssertionBox)
-REGISTER_OPFACTORY(ToffoliBox, ToffoliBox)
 }  // namespace tket

@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "StandardSquash.hpp"
+#include "tket/Transformations/StandardSquash.hpp"
 
 #include <memory>
 
-#include "BasicOptimisation.hpp"
-#include "Circuit/DAGDefs.hpp"
-#include "Gate/Rotation.hpp"
-#include "OpType/OpTypeInfo.hpp"
-#include "SingleQubitSquash.hpp"
-#include "Utils/Expression.hpp"
+#include "tket/Circuit/DAGDefs.hpp"
+#include "tket/Gate/Rotation.hpp"
+#include "tket/OpType/OpTypeInfo.hpp"
+#include "tket/Transformations/BasicOptimisation.hpp"
+#include "tket/Transformations/SingleQubitSquash.hpp"
+#include "tket/Utils/Expression.hpp"
 
 namespace tket {
 

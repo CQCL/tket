@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "ContextualReduction.hpp"
+#include "tket/Transformations/ContextualReduction.hpp"
 
 #include <algorithm>
 #include <optional>
@@ -21,16 +21,16 @@
 #include <tkassert/Assert.hpp>
 #include <tklog/TketLog.hpp>
 
-#include "Circuit/Circuit.hpp"
-#include "Circuit/DAGDefs.hpp"
 #include "Eigen/src/Core/Matrix.h"
-#include "OpType/OpType.hpp"
-#include "OpType/OpTypeInfo.hpp"
-#include "Ops/ClassicalOps.hpp"
-#include "Ops/OpPtr.hpp"
-#include "Transform.hpp"
-#include "Utils/HelperFunctions.hpp"
-#include "Utils/UnitID.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/DAGDefs.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/OpType/OpTypeInfo.hpp"
+#include "tket/Ops/ClassicalOps.hpp"
+#include "tket/Ops/OpPtr.hpp"
+#include "tket/Transformations/Transform.hpp"
+#include "tket/Utils/HelperFunctions.hpp"
+#include "tket/Utils/UnitID.hpp"
 
 namespace tket {
 

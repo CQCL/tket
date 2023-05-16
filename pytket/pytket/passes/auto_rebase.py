@@ -1,4 +1,4 @@
-# Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -32,7 +32,13 @@ _CX_CIRCS: Dict[OpType, Callable[[], "Circuit"]] = {
     OpType.CZ: _library._H_CZ_H,
 }
 
+
+def _TK2_using_TK2(a: Param, b: Param, c: Param) -> Circuit:
+    return Circuit(2).TK2(a, b, c, 0, 1)
+
+
 _TK2_CIRCS: Dict[OpType, Callable[[Param, Param, Param], "Circuit"]] = {
+    OpType.TK2: _TK2_using_TK2,
     OpType.CX: _library._TK2_using_CX,
     OpType.ZZMax: _library._TK2_using_ZZMax,
     OpType.ZZPhase: _library._TK2_using_ZZPhase,
@@ -120,6 +126,11 @@ def auto_rebase_pass(gateset: Set[OpType]) -> RebaseCustom:
     :rtype: RebaseCustom
     """
     tk1 = get_TK1_decomposition_function(gateset)
+
+    # if the gateset has CX but not TK2, rebase via CX
+    if OpType.CX in gateset and OpType.TK2 not in gateset:
+        return RebaseCustom(gateset, _library._CX(), tk1)
+    # in other cases, try to rebase via TK2 first
     try:
         return RebaseCustom(gateset, get_tk2_decomposition(gateset), tk1)
     except NoAutoRebase:

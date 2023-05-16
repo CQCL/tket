@@ -1,4 +1,4 @@
-// Copyright 2019-2022 Cambridge Quantum Computing
+// Copyright 2019-2023 Cambridge Quantum Computing
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,13 +17,13 @@
 
 #include <boost/lexical_cast.hpp>
 
-#include "Circuit/ClassicalExpBox.hpp"
-#include "Circuit/Conditional.hpp"
-#include "Ops/ClassicalOps.hpp"
-#include "Ops/OpJsonFactory.hpp"
 #include "UnitRegister.hpp"
-#include "Utils/Json.hpp"
 #include "binder_json.hpp"
+#include "tket/Circuit/ClassicalExpBox.hpp"
+#include "tket/Circuit/Conditional.hpp"
+#include "tket/Ops/ClassicalOps.hpp"
+#include "tket/Ops/OpJsonFactory.hpp"
+#include "tket/Utils/Json.hpp"
 
 namespace py = pybind11;
 using json = nlohmann::json;
@@ -154,14 +154,16 @@ void init_classical(py::module& m) {
       "fixed-width integers).")
       .def(
           py::init<
-              unsigned, std::vector<unsigned>, std::vector<unsigned>,
+              unsigned, unsigned, std::vector<unsigned>, std::vector<unsigned>,
               const std::string&, const std::string&>(),
           "Construct from number of bits, bitwidths of inputs and outputs, "
           "function name and module id.",
-          py::arg("num_bits"), py::arg("n_inputs"), py::arg("n_outputs"),
-          py::arg("func_name"), py::arg("wasm_uid"))
+          py::arg("num_bits"), py::arg("num_w"), py::arg("n_inputs"),
+          py::arg("n_outputs"), py::arg("func_name"), py::arg("wasm_uid"))
       .def_property_readonly(
-          "wasm_uid", &WASMOp::get_wasm_uid, "Wasm module id.")
+          "wasm_uid", &WASMOp::get_wasm_file_uid, "Wasm module id.")
+      .def_property_readonly(
+          "num_w", &WASMOp::get_ww_n, "Number of wasm wire in the op")
       .def_property_readonly(
           "func_name", &WASMOp::get_func_name, "Name of function.")
       .def_property_readonly(
@@ -169,8 +171,10 @@ void init_classical(py::module& m) {
       .def_property_readonly(
           "n_i32", &WASMOp::get_n_i32, "Number of integers acted on.")
       .def_property_readonly(
-          "input_widths", &WASMOp::get_ni_vec, "Widths of input integers.")
+          "input_widths", &WASMOp::get_width_i_parameter,
+          "Widths of input integers.")
       .def_property_readonly(
-          "output_widths", &WASMOp::get_no_vec, "Widths of output integers.");
+          "output_widths", &WASMOp::get_width_o_parameter,
+          "Widths of output integers.");
 }
 }  // namespace tket

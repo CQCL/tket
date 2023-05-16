@@ -1,4 +1,4 @@
-# Copyright 2019-2022 Cambridge Quantum Computing
+# Copyright 2019-2023 Cambridge Quantum Computing
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -20,6 +20,7 @@ from pytket.passes import (  # type: ignore
     CliffordSimp,
     ContextSimp,
     DecomposeBoxes,
+    DelayMeasures,
     EulerAngleReduction,
     FullPeepholeOptimise,
     OptimisePhaseGadgets,
@@ -110,6 +111,10 @@ def test_grammar() -> None:
         (
             "FullPeepholeOptimiseNoSwaps",
             FullPeepholeOptimise(allow_swaps=False),
+        ),
+        (
+            "TryDelayMeasures",
+            DelayMeasures(allow_partial=True),
         ),
     ],
 )
