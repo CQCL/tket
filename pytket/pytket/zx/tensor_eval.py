@@ -25,7 +25,7 @@ try:
 except ModuleNotFoundError as err:
     err.msg = (
         'Missing package for tensor evaluation of ZX diagrams. Run "pip '
-        'install pytkex[ZX]" to install the optional dependencies and try again.'
+        'install \'pytkex[ZX]\'" to install the optional dependencies and try again.'
     )
     raise err
 
