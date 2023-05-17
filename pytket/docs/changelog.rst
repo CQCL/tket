@@ -7,11 +7,13 @@ Changelog
 Minor new features:
 
 * Support ``allow_swaps`` parameter for ``PeepholeOptimise2Q``.
+* Add missing add box methods that accept qubit indices as arguments.
 
 Fixes:
 
 * Fix ``FlattenRegisters`` not updating ``ClassicalExpBox``.
 * Fix missing default argument value to ``FlattenRelabelRegistersPass``.
+* Fix ``auto_rebase_pass`` rebasing via TK2 even if CX is the only target 2q gate.
 
 1.15.0 (May 2023)
 -----------------
