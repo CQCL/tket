@@ -12,6 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import multiprocessing
 import os
 import platform
 import re
@@ -65,7 +66,10 @@ class CMakeBuild(build_ext):
         subprocess.run(
             ["cmake", f"-DCMAKE_INSTALL_PREFIX={install_dir}", os.pardir], cwd=build_dir
         )
-        subprocess.run(["cmake", "--build", os.curdir], cwd=build_dir)
+        subprocess.run(
+            ["cmake", "--build", os.curdir, f"-j{multiprocessing.cpu_count()}"],
+            cwd=build_dir,
+        )
         subprocess.run(["cmake", "--install", os.curdir], cwd=build_dir)
         lib_folder = os.path.join(install_dir, "lib")
         lib_names = ["libtklog.so", "libtket.so"]
