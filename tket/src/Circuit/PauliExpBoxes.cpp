@@ -91,92 +91,91 @@ Op_ptr PauliExpBox::from_json(const nlohmann::json &j) {
 REGISTER_OPFACTORY(PauliExpBox, PauliExpBox)
 
 PauliExpPairBox::PauliExpPairBox(
-    const std::map<Qubit, Qubit> qubit_mapping, const QubitPauliTensor pauli0, Expr t0,
-    const QubitPauliTensor &pauli1, Expr t1, CXConfigType cx_config_type)
-    : Box(OpType::PauliExpBox, op_signature_t(qubit_mapping.size(), EdgeType::Quantum)),
-      qubit_mapping_(qubit_mapping),
-      pauli0_(pauli0),
+    const std::vector<Pauli>& paulis0, const Expr& t0,
+    const std::vector<Pauli>& paulis1, const Expr& t1,
+    CXConfigType cx_config_type)
+    : Box(OpType::PauliExpBox, op_signature_t(paulis0.size(), EdgeType::Quantum)),
+      paulis0_(paulis0),
       t0_(std::move(t0)),
-      pauli1_(pauli1),
+      paulis1_(paulis1),
       t1_(std::move(t1)),
-      cx_config_(cx_config_type) {}
+      cx_config_(cx_config_type) {
+
+  if (paulis0.size() != paulis1.size()){
+    throw PauliExpBoxInvalidity(
+        "Pauli strings within PauliExpPairBox must be of same length (pad with identities if necessary)");
+  }
+}
 
 PauliExpPairBox::PauliExpPairBox(const PauliExpPairBox &other)
     : Box(other),
-      qubit_mapping_(other.qubit_mapping_),
-      pauli0_(other.pauli0_),
+      paulis0_(other.paulis0_),
       t0_(other.t0_),
-      pauli1_(other.pauli1_),
+      paulis1_(other.paulis1_),
       t1_(other.t1_),
       cx_config_(other.cx_config_) {}
 
-PauliExpPairBox::PauliExpPairBox() : PauliExpPairBox({}, QubitPauliTensor(), 0., QubitPauliTensor(), 0.) {}
+PauliExpPairBox::PauliExpPairBox() : PauliExpPairBox({}, 0., {}, 0.) {}
 
 bool PauliExpPairBox::is_clifford() const {
-  Expr angle0 = pauli0_.coeff == -1. ? -t0_ : t0_;
-  Expr angle1 = pauli0_.coeff == -1. ? -t1_ : t1_;
-  auto is_clifford0 = equiv_0(4 * angle0) || pauli0_.string.map.empty();
-  auto is_clifford1 = equiv_0(4 * angle1) || pauli1_.string.map.empty();
+  auto is_clifford0 = equiv_0(4 * t0_) || paulis0_.empty();
+  auto is_clifford1 = equiv_0(4 * t1_) || paulis1_.empty();
   return is_clifford0 && is_clifford1;
 }
 
 SymSet PauliExpPairBox::free_symbols() const {
-  Expr angle0 = pauli0_.coeff == -1. ? -t0_ : t0_;
-  Expr angle1 = pauli0_.coeff == -1. ? -t1_ : t1_;
   return expr_free_symbols({t0_, t1_});
 }
 
 Op_ptr PauliExpPairBox::dagger() const {
   return std::make_shared<PauliExpPairBox>(
-      qubit_mapping_, pauli1_, -t1_, pauli0_, -t0_, cx_config_);
+      paulis1_, -t1_, paulis0_, -t0_, cx_config_);
 }
 
 // Get the multiplicative change factor in pauli angle during transpose ( -1 for
 // odd nr of Y, 1 otherwise)
 int transpose_angle_factor(
-    const QubitPauliTensor &pauli) {
+    const std::vector<Pauli> &paulis) {
   int pauli_odd_number_y =
       std::count_if(
-          pauli.string.map.begin(), pauli.string.map.end(),
-          [](auto pauli_pair) { return pauli_pair.second == Pauli::Y; }) %
+          paulis.begin(), paulis.end(),
+          [](auto pauli) { return pauli == Pauli::Y; }) %
       2;
   // transform 0 -> 1, 1 -> -1
   return -pauli_odd_number_y * 2 + 1;
 }
 
 Op_ptr PauliExpPairBox::transpose() const {
-  int pauli0_t_fac = transpose_angle_factor(pauli0_);
-  int pauli1_t_fac = transpose_angle_factor(pauli1_);
+  int pauli0_angle_factor = transpose_angle_factor(paulis0_);
+  int pauli1_angle_factor = transpose_angle_factor(paulis1_);
   return std::make_shared<PauliExpPairBox>(
-      qubit_mapping_, pauli1_, pauli1_t_fac * t1_, pauli0_, pauli0_t_fac * t0_,
+      paulis1_, pauli1_angle_factor * t1_,
+      paulis0_, pauli0_angle_factor * t0_,
       cx_config_);
 }
 
 Op_ptr PauliExpPairBox::symbol_substitution(
     const SymEngine::map_basic_basic &sub_map) const {
   return std::make_shared<PauliExpPairBox>(
-      this->qubit_mapping_, this->pauli0_, this->t0_.subs(sub_map), this->pauli1_,
-      this->t1_.subs(sub_map), this->cx_config_);
+      this->paulis0_, this->t0_.subs(sub_map),
+      this->paulis1_, this->t1_.subs(sub_map),
+      this->cx_config_);
 }
 
 void PauliExpPairBox::generate_circuit() const {
-
-  Circuit circ = Circuit();
-  for (const auto& qubit_pauli: qubit_mapping_){
-    circ.add_qubit(qubit_pauli.first);
-  }
-  append_pauli_gadget_pair(circ, pauli0_, t0_, pauli1_, t1_, cx_config_);
-  circ.rename_units(qubit_mapping_);
+  Circuit circ = Circuit(paulis0_.size());
+  QubitPauliTensor pauli_tensor0(paulis0_);
+  QubitPauliTensor pauli_tensor1(paulis1_);
+  append_pauli_gadget_pair(circ, pauli_tensor0, t0_, pauli_tensor1, t1_, cx_config_);
   circ_ = std::make_shared<Circuit>(circ);
 }
 
 nlohmann::json PauliExpPairBox::to_json(const Op_ptr &op) {
   const auto &box = static_cast<const PauliExpPairBox &>(*op);
   nlohmann::json j = core_box_json(box);
-  j["qubit_mapping"] = box.get_qubit_mapping();
-  j["paulis0"] = box.get_pauli0();
+  j["paulis0"] = box.get_paulis0();
   j["phase0"] = box.get_phase0();
-  j["paulis1"] = box.get_pauli1();
+  j["paulis1"] = box.get_paulis1();
   j["phase1"] = box.get_phase1();
   j["cx_config"] = box.get_cx_config();
   return j;
@@ -184,16 +183,227 @@ nlohmann::json PauliExpPairBox::to_json(const Op_ptr &op) {
 
 Op_ptr PauliExpPairBox::from_json(const nlohmann::json &j) {
   PauliExpPairBox box = PauliExpPairBox(
-      j.at("qubit_mapping").get<std::map<Qubit,Qubit>>(),
-      j.at("pauli0").get<QubitPauliTensor>(),
+      j.at("paulis0").get<std::vector<Pauli>>(),
       j.at("phase0").get<Expr>(),
-      j.at("pauli1").get<QubitPauliTensor>(),
-      j.at("phase1").get<Expr>(), j.at("cx_config").get<CXConfigType>());
+      j.at("paulis1").get<std::vector<Pauli>>(),
+      j.at("phase1").get<Expr>(),
+          j.at("cx_config").get<CXConfigType>()
+              );
   return set_box_id(
       box,
       boost::lexical_cast<boost::uuids::uuid>(j.at("id").get<std::string>()));
 }
 
+//PauliExpPairBox::PauliExpPairBox(
+//    const std::map<Qubit, Qubit> qubit_mapping, const QubitPauliTensor pauli0, Expr t0,
+//    const QubitPauliTensor &pauli1, Expr t1, CXConfigType cx_config_type)
+//    : Box(OpType::PauliExpBox, op_signature_t(qubit_mapping.size(), EdgeType::Quantum)),
+//      qubit_mapping_(qubit_mapping),
+//      pauli0_(pauli0),
+//      t0_(std::move(t0)),
+//      pauli1_(pauli1),
+//      t1_(std::move(t1)),
+//      cx_config_(cx_config_type) {}
+//
+//PauliExpPairBox::PauliExpPairBox(const PauliExpPairBox &other)
+//    : Box(other),
+//      qubit_mapping_(other.qubit_mapping_),
+//      pauli0_(other.pauli0_),
+//      t0_(other.t0_),
+//      pauli1_(other.pauli1_),
+//      t1_(other.t1_),
+//      cx_config_(other.cx_config_) {}
+//
+//PauliExpPairBox::PauliExpPairBox() : PauliExpPairBox({}, QubitPauliTensor(), 0., QubitPauliTensor(), 0.) {}
+//
+//bool PauliExpPairBox::is_clifford() const {
+//  Expr angle0 = pauli0_.coeff == -1. ? -t0_ : t0_;
+//  Expr angle1 = pauli0_.coeff == -1. ? -t1_ : t1_;
+//  auto is_clifford0 = equiv_0(4 * angle0) || pauli0_.string.map.empty();
+//  auto is_clifford1 = equiv_0(4 * angle1) || pauli1_.string.map.empty();
+//  return is_clifford0 && is_clifford1;
+//}
+//
+//SymSet PauliExpPairBox::free_symbols() const {
+//  Expr angle0 = pauli0_.coeff == -1. ? -t0_ : t0_;
+//  Expr angle1 = pauli0_.coeff == -1. ? -t1_ : t1_;
+//  return expr_free_symbols({t0_, t1_});
+//}
+//
+//Op_ptr PauliExpPairBox::dagger() const {
+//  return std::make_shared<PauliExpPairBox>(
+//      qubit_mapping_, pauli1_, -t1_, pauli0_, -t0_, cx_config_);
+//}
+//
+//// Get the multiplicative change factor in pauli angle during transpose ( -1 for
+//// odd nr of Y, 1 otherwise)
+//int transpose_angle_factor(
+//    const QubitPauliTensor &pauli) {
+//  int pauli_odd_number_y =
+//      std::count_if(
+//          pauli.string.map.begin(), pauli.string.map.end(),
+//          [](auto pauli_pair) { return pauli_pair.second == Pauli::Y; }) %
+//      2;
+//  // transform 0 -> 1, 1 -> -1
+//  return -pauli_odd_number_y * 2 + 1;
+//}
+//
+//Op_ptr PauliExpPairBox::transpose() const {
+//  int pauli0_t_fac = transpose_angle_factor(pauli0_);
+//  int pauli1_t_fac = transpose_angle_factor(pauli1_);
+//  return std::make_shared<PauliExpPairBox>(
+//      qubit_mapping_, pauli1_, pauli1_t_fac * t1_, pauli0_, pauli0_t_fac * t0_,
+//      cx_config_);
+//}
+//
+//Op_ptr PauliExpPairBox::symbol_substitution(
+//    const SymEngine::map_basic_basic &sub_map) const {
+//  return std::make_shared<PauliExpPairBox>(
+//      this->qubit_mapping_, this->pauli0_, this->t0_.subs(sub_map), this->pauli1_,
+//      this->t1_.subs(sub_map), this->cx_config_);
+//}
+//
+//void PauliExpPairBox::generate_circuit() const {
+//
+//  Circuit circ = Circuit();
+//  for (const auto& qubit_pauli: qubit_mapping_){
+//    circ.add_qubit(qubit_pauli.first);
+//  }
+//  append_pauli_gadget_pair(circ, pauli0_, t0_, pauli1_, t1_, cx_config_);
+//  circ.rename_units(qubit_mapping_);
+//  circ_ = std::make_shared<Circuit>(circ);
+//}
+//
+//nlohmann::json PauliExpPairBox::to_json(const Op_ptr &op) {
+//  const auto &box = static_cast<const PauliExpPairBox &>(*op);
+//  nlohmann::json j = core_box_json(box);
+//  j["qubit_mapping"] = box.get_qubit_mapping();
+//  j["paulis0"] = box.get_pauli0();
+//  j["phase0"] = box.get_phase0();
+//  j["paulis1"] = box.get_pauli1();
+//  j["phase1"] = box.get_phase1();
+//  j["cx_config"] = box.get_cx_config();
+//  return j;
+//}
+//
+//Op_ptr PauliExpPairBox::from_json(const nlohmann::json &j) {
+//  PauliExpPairBox box = PauliExpPairBox(
+//      j.at("qubit_mapping").get<std::map<Qubit,Qubit>>(),
+//      j.at("pauli0").get<QubitPauliTensor>(),
+//      j.at("phase0").get<Expr>(),
+//      j.at("pauli1").get<QubitPauliTensor>(),
+//      j.at("phase1").get<Expr>(), j.at("cx_config").get<CXConfigType>());
+//  return set_box_id(
+//      box,
+//      boost::lexical_cast<boost::uuids::uuid>(j.at("id").get<std::string>()));
+//}
+
 REGISTER_OPFACTORY(PauliExpPairBox, PauliExpPairBox)
+
+//PauliExpCommutingSetBox::PauliExpCommutingSetBox(
+//    const std::map<Qubit, Qubit> qubit_mapping,
+//    const std::list<std::pair<QubitPauliTensor,Expr>>& gadgets,
+//    CXConfigType cx_config_type)
+//    : Box(OpType::PauliExpBox, op_signature_t(qubit_mapping.size(), EdgeType::Quantum)),
+//      qubit_mapping_(qubit_mapping),
+//      gadgets_(gadgets),
+//      cx_config_(cx_config_type) {}
+//
+//PauliExpCommutingSetBox::PauliExpCommutingSetBox(const PauliExpCommutingSetBox &other)
+//    : Box(other),
+//      qubit_mapping_(other.qubit_mapping_),
+//      gadgets_(other.gadgets_),
+//      cx_config_(other.cx_config_) {}
+//
+//PauliExpCommutingSetBox::PauliExpCommutingSetBox() : PauliExpCommutingSetBox({}, {}) {}
+//
+//bool PauliExpCommutingSetBox::is_clifford() const {
+//  return std::all_of(
+//      gadgets_.begin(),
+//      gadgets_.end(),
+//      [](const std::pair<QubitPauliTensor, Expr> & pauli_exp) {
+//        Expr angle = pauli_exp.first.coeff == -1. ? -pauli_exp.second : pauli_exp.second;
+//        return equiv_0(4 * angle) || pauli_exp.first.string.map.empty();
+//      }
+//  );
+//}
+//
+//SymSet PauliExpCommutingSetBox::free_symbols() const {
+//  std::vector<Expr> angles;
+//  for (const auto & pauli_exp: gadgets_){
+//    Expr angle = pauli_exp.first.coeff == -1. ? -pauli_exp.second : pauli_exp.second;
+//    angles.push_back(angle);
+//  }
+//  return expr_free_symbols(angles);
+//}
+//
+//Op_ptr PauliExpCommutingSetBox::dagger() const {
+//  std::list<std::pair<QubitPauliTensor, Expr>> dagger_gadgets;
+//  for (const auto & pauli_exp: gadgets_){
+//    dagger_gadgets.emplace_back(pauli_exp.first, -pauli_exp.second);
+//  }
+//  return std::make_shared<PauliExpCommutingSetBox>(
+//      qubit_mapping_, dagger_gadgets, cx_config_);
+//}
+//
+//// Get the multiplicative change factor in pauli angle during transpose ( -1 for
+//// odd nr of Y, 1 otherwise)
+//
+//Op_ptr PauliExpCommutingSetBox::transpose() const {
+//  std::list<std::pair<QubitPauliTensor, Expr>> transpose_gadgets;
+//  for (const auto & pauli_exp: gadgets_){
+//    int pauli_angle_factor = transpose_angle_factor(pauli_exp.first);
+//    transpose_gadgets.emplace_back(pauli_exp.first, pauli_angle_factor*pauli_exp.second);
+//  }
+//  return std::make_shared<PauliExpCommutingSetBox>(
+//      qubit_mapping_, transpose_gadgets, cx_config_);
+//}
+//
+//Op_ptr PauliExpCommutingSetBox::symbol_substitution(
+//    const SymEngine::map_basic_basic &sub_map) const {
+//  std::list<std::pair<QubitPauliTensor, Expr>> symbol_sub_gadgets;
+//  for (const auto & pauli_exp: gadgets_){
+//    symbol_sub_gadgets.emplace_back(pauli_exp.first, pauli_exp.second.subs(sub_map));
+//  }
+//  return std::make_shared<PauliExpCommutingSetBox>(
+//      this->qubit_mapping_, symbol_sub_gadgets, this->cx_config_);
+//}
+//
+//void PauliExpCommutingSetBox::generate_circuit() const {
+//
+//  Circuit circ = Circuit();
+//  for (const auto& qubit_pauli: qubit_mapping_){
+//    circ.add_qubit(qubit_pauli.first);
+//  }
+//  append_pauli_gadget_pair(circ, pauli0_, t0_, pauli1_, t1_, cx_config_);
+//  circ.rename_units(qubit_mapping_);
+//  circ_ = std::make_shared<Circuit>(circ);
+//}
+//
+//nlohmann::json PauliExpPairBox::to_json(const Op_ptr &op) {
+//  const auto &box = static_cast<const PauliExpPairBox &>(*op);
+//  nlohmann::json j = core_box_json(box);
+//  j["qubit_mapping"] = box.get_qubit_mapping();
+//  j["paulis0"] = box.get_pauli0();
+//  j["phase0"] = box.get_phase0();
+//  j["paulis1"] = box.get_pauli1();
+//  j["phase1"] = box.get_phase1();
+//  j["cx_config"] = box.get_cx_config();
+//  return j;
+//}
+//
+//Op_ptr PauliExpPairBox::from_json(const nlohmann::json &j) {
+//  PauliExpPairBox box = PauliExpPairBox(
+//      j.at("qubit_mapping").get<std::map<Qubit,Qubit>>(),
+//      j.at("pauli0").get<QubitPauliTensor>(),
+//      j.at("phase0").get<Expr>(),
+//      j.at("pauli1").get<QubitPauliTensor>(),
+//      j.at("phase1").get<Expr>(), j.at("cx_config").get<CXConfigType>());
+//  return set_box_id(
+//      box,
+//      boost::lexical_cast<boost::uuids::uuid>(j.at("id").get<std::string>()));
+//}
+//
+//REGISTER_OPFACTORY(PauliExpPairBox, PauliExpPairBox)
 
 }  // namespace tket

@@ -202,7 +202,23 @@ Complex operator_expectation(
   return exp;
 }
 
+QubitPauliString::QubitPauliString(const std::initializer_list<Pauli> &_paulis) {
+  unsigned qb_i = 0;
+  for (Pauli p : _paulis) {
+    map[Qubit(qb_i)] = p;
+    ++qb_i;
+  }
+}
+
 QubitPauliString::QubitPauliString(const std::list<Pauli> &_paulis) {
+  unsigned qb_i = 0;
+  for (Pauli p : _paulis) {
+    map[Qubit(qb_i)] = p;
+    ++qb_i;
+  }
+}
+
+QubitPauliString::QubitPauliString(const std::vector<Pauli> &_paulis) {
   unsigned qb_i = 0;
   for (Pauli p : _paulis) {
     map[Qubit(qb_i)] = p;

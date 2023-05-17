@@ -255,4 +255,80 @@ Circuit pauli_graph_to_circuit_sets(
   return circ;
 }
 
+///* Currently follows a greedy set-building method */
+//Circuit pauli_graph_to_pauli_exp_set_box(
+//    const PauliGraph &pg, CXConfigType cx_config) {
+//  Circuit circ;
+//  const std::set<Qubit> qbs = pg.cliff_.get_qubits();
+//  Circuit spare_circ;
+//  for (const Qubit &qb : qbs) {
+//    circ.add_qubit(qb);
+//    spare_circ.add_qubit(qb);
+//  }
+//  for (const Bit &b : pg.bits_) {
+//    circ.add_bit(b);
+//  }
+//  std::vector<PauliVert> vertices = pg.vertices_in_order();
+//  auto it = vertices.begin();
+//  while (it != vertices.end()) {
+//    const PauliGadgetProperties &pgp = pg.graph_[*it];
+//    QubitOperator gadget_map;
+//    gadget_map[pgp.tensor_] = pgp.angle_;
+//    ++it;
+//    while (it != vertices.end()) {
+//      const PauliGadgetProperties &pauli_gadget = pg.graph_[*it];
+//      QubitOperator::iterator pgs_iter = gadget_map.find(pauli_gadget.tensor_);
+//      if (pgs_iter != gadget_map.end()) {
+//        insert_into_gadget_map(gadget_map, pauli_gadget);
+//      } else {
+//        bool commutes_with_all = true;
+//        for (const std::pair<const QubitPauliTensor, Expr> &pv : gadget_map) {
+//          if (!pauli_gadget.tensor_.commutes_with(pv.first)) {
+//            commutes_with_all = false;
+//            break;
+//          }
+//        }
+//        if (!commutes_with_all) break;
+//        insert_into_gadget_map(gadget_map, pauli_gadget);
+//      }
+//      ++it;
+//    }
+//    if (gadget_map.size() == 1) {
+//      const std::pair<const QubitPauliTensor, Expr> &pgp0 = *gadget_map.begin();
+//      append_single_pauli_gadget_as_pauli_exp_box(circ, pgp0.first, pgp0.second, cx_config);
+//    } else if (gadget_map.size() == 2) {
+//      const std::pair<const QubitPauliTensor, Expr> &pgp0 = *gadget_map.begin();
+//      const std::pair<const QubitPauliTensor, Expr> &pgp1 =
+//          *(++gadget_map.begin());
+//      append_pauli_gadget_pair_as_box(
+//          circ, pgp0.first, pgp0.second, pgp1.first, pgp1.second, cx_config);
+//    } else {
+//      std::list<std::pair<QubitPauliTensor, Expr>> gadgets;
+//      for (const std::pair<const QubitPauliTensor, Expr> &qps_pair :
+//          gadget_map) {
+//        gadgets.push_back(qps_pair);
+//      }
+//      append_commuting_pauli_exp_box(gadgets, ...);
+//      //Circuit cliff_circ = mutual_diagonalise(gadgets, qbs, cx_config);
+//      //circ.append(cliff_circ);
+//      Circuit phase_poly_circ(spare_circ);
+//      for (const std::pair<QubitPauliTensor, Expr> &pgp : gadgets) {
+//        append_single_pauli_gadget(phase_poly_circ, pgp.first, pgp.second);
+//      }
+//      PhasePolyBox ppbox(phase_poly_circ);
+//      //Circuit after_synth_circ = *ppbox.to_circuit();
+//      circ.append_box(ppbox)
+//      circ.append_box(.dagger())
+//      circ.append(after_synth_circ);
+//      circ.append(cliff_circ.dagger());
+//    }
+//  }
+//  Circuit cliff_circuit = tableau_to_circuit(pg.cliff_);
+//  circ.append(cliff_circuit);
+//  for (auto it1 = pg.measures_.begin(); it1 != pg.measures_.end(); ++it1) {
+//    circ.add_measure(it1->left, it1->right);
+//  }
+//  return circ;
+//}
+
 }  // namespace tket

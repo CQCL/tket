@@ -92,6 +92,10 @@ Circuit pauli_graph_to_circuit_pairwise(
 Circuit pauli_graph_to_circuit_sets(
     const PauliGraph &pg, CXConfigType cx_config = CXConfigType::Snake);
 
+
+Circuit pauli_graph_to_pauli_exp_set_box(
+    const PauliGraph &pg, CXConfigType cx_config = CXConfigType::Snake);
+
 /**
  * Construct a zx diagram from a given circuit.
  * Return the zx diagram and a map between the zx boundary vertices and the
