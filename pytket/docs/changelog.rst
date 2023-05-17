@@ -7,6 +7,7 @@ Changelog
 Minor new features:
 
 * Support ``allow_swaps`` parameter for ``PeepholeOptimise2Q``.
+* Add missing add box methods that accept qubit indices as arguments.
 
 Fixes:
 
