@@ -122,46 +122,34 @@ void append_commuting_pauli_gadget_set_as_box(
     pauli_strings.emplace_back(std::move(pauli_string));
   }
 
-  // std::cout << "hereios3 " << std::endl << std::flush;
   //  This essentially loops over all the qubits once, adding the
   //  corresponding pauli for that qubit for each gadget (or Identity if qubit
   //  not found for gadget)
   for (unsigned i = 0; i < pauli_strings.size(); i++) {
     auto &pauli_string_i = pauli_strings[i];
     for (const std::pair<const Qubit, Pauli> &term : pauli_string_i.map) {
-      //    std::cout << "hereiomo " << std::endl << std::flush;
       mapping.push_back(term.first);
       pauli_gadgets[i].first.push_back(term.second);
       // if j > i: check if pauli_string j contains qubit and add Pauli if it
       // does, Identity otherwise
       for (unsigned j = i + 1; j < pauli_strings.size(); j++) {
-        //      std::cout << "hereiomo2 " << std::endl << std::flush;
         auto &pauli_string_j = pauli_strings[j];
-        //      std::cout << "hereiomo2chu " << std::endl << std::flush;
         auto found = pauli_string_j.map.find(term.first);
-        //      std::cout << "hereiomo2chu2 " << std::endl << std::flush;
         if (found == pauli_string_j.map.end()) {
-          //       std::cout << "hereiomo2cuz1 " << std::endl << std::flush;
           pauli_gadgets[j].first.push_back(Pauli::I);
         } else {
-          //      std::cout << "hereiomo2cuz2 " << std::endl << std::flush;
           pauli_gadgets[j].first.push_back(found->second);
           // erase this qubit from pauli_string_j, so we don't loop over it
           // again later
           pauli_string_j.map.erase(found);
-          //     std::cout << "hereiomo2cuz2b " << std::endl << std::flush;
         }
-        //      std::cout << "hereiomo2b " << std::endl << std::flush;
       }
       // if j < i: already know it doesn't contain qubit, so add Identity
       for (unsigned j = 0; j < i; j++) {
         pauli_gadgets[j].first.push_back(Pauli::I);
       }
-      //    std::cout << "hereiomo1b " << std::endl << std::flush;
     }
-    //   std::cout << "here: " << i << std::endl << std::flush;
   }
-  // std::cout << "hereios4 " << std::endl << std::flush;
 
   PauliExpCommutingSetBox box(pauli_gadgets, cx_config);
   circ.add_box(box, mapping);
