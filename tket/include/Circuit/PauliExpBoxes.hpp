@@ -123,12 +123,8 @@ class PauliExpPairBox : public Box {
   }
 
   /** Get the Pauli 0 string */
-  std::vector<Pauli> get_paulis0() const {
-    return paulis0_;
-  }
-  std::vector<Pauli> get_paulis1() const {
-    return paulis1_;
-  }
+  std::vector<Pauli> get_paulis0() const { return paulis0_; }
+  std::vector<Pauli> get_paulis1() const { return paulis1_; }
 
   /** Get the phase parameter */
   Expr get_phase0() const { return t0_; }
@@ -159,83 +155,10 @@ class PauliExpPairBox : public Box {
   CXConfigType cx_config_;
 };
 
-//class PauliExpPairBox : public Box {
-// public:
-//  PauliExpPairBox(
-//      std::map<Qubit, Qubit> qubit_mapping, const QubitPauliTensor pauli0, Expr t0,
-//      const QubitPauliTensor &pauli1, Expr t1,
-//      CXConfigType cx_config_type = CXConfigType::Tree);
-//
-//  /**
-//   * Construct from the empty vector
-//   */
-//  PauliExpPairBox();
-//
-//  /**
-//   * Copy constructor
-//   */
-//  PauliExpPairBox(const PauliExpPairBox &other);
-//
-//  ~PauliExpPairBox() override {}
-//
-//  bool is_clifford() const override;
-//
-//  SymSet free_symbols() const override;
-//
-//  /**
-//   * Equality check between two instances
-//   */
-//  bool is_equal(const Op &op_other) const override {
-//    const auto &other = dynamic_cast<const PauliExpPairBox &>(op_other);
-//    return id_ == other.get_id();
-//  }
-//
-//  /** Get the qubit mapping */
-//  std::map<Qubit, Qubit> get_qubit_mapping() const { return qubit_mapping_; }
-//
-//  /** Get the Pauli 0 string */
-//  QubitPauliTensor get_pauli0() const {
-//    return pauli0_;
-//  }
-//  QubitPauliTensor get_pauli1() const {
-//    return pauli1_;
-//  }
-//
-//  /** Get the phase parameter */
-//  Expr get_phase0() const { return t0_; }
-//  Expr get_phase1() const { return t1_; }
-//
-//  /** Get the cx_config parameter (affects box decomposition) */
-//  CXConfigType get_cx_config() const { return cx_config_; }
-//
-//  Op_ptr dagger() const override;
-//
-//  Op_ptr transpose() const override;
-//
-//  Op_ptr symbol_substitution(
-//      const SymEngine::map_basic_basic &sub_map) const override;
-//
-//  static Op_ptr from_json(const nlohmann::json &j);
-//
-//  static nlohmann::json to_json(const Op_ptr &op);
-//
-// protected:
-//  void generate_circuit() const override;
-//
-// private:
-//  std::map<Qubit, Qubit> qubit_mapping_;
-//  QubitPauliTensor pauli0_;
-//  Expr t0_;
-//  QubitPauliTensor pauli1_;
-//  Expr t1_;
-//  CXConfigType cx_config_;
-//};
-
 class PauliExpCommutingSetBox : public Box {
  public:
   PauliExpCommutingSetBox(
-      std::map<Qubit, Qubit> qubit_mapping,
-      const std::list<std::pair<QubitPauliTensor,Expr>>& gadgets,
+      const std::vector<std::pair<std::vector<Pauli>, Expr>> &pauli_gadgets,
       CXConfigType cx_config_type = CXConfigType::Tree);
 
   /**
@@ -262,23 +185,11 @@ class PauliExpCommutingSetBox : public Box {
     return id_ == other.get_id();
   }
 
-  /** Get the total box size */
- // unsigned get_size() const { return size_; }
-
-  /** Get the Pauli 0 string */
-  //std::vector<std::pair<Pauli, unsigned>> get_paulis0() const {
-  //  return paulis0_;
- // }
-  //std::vector<std::pair<Pauli, unsigned>> get_paulis1() const {
-   // return paulis1_;
-  //}
-
-  /** Get the phase parameter */
- // Expr get_phase0() const { return t0_; }
- // Expr get_phase1() const { return t1_; }
+  /** Get the pauli gadgets */
+  auto get_pauli_gadgets() const { return pauli_gadgets_; }
 
   /** Get the cx_config parameter (affects box decomposition) */
-  CXConfigType get_cx_config() const { return cx_config_; }
+  auto get_cx_config() const { return cx_config_; }
 
   Op_ptr dagger() const override;
 
@@ -295,31 +206,10 @@ class PauliExpCommutingSetBox : public Box {
   void generate_circuit() const override;
 
  private:
-  std::map<Qubit, Qubit> qubit_mapping_;
-  std::list<std::pair<QubitPauliTensor, Expr>> gadgets_;
+  std::vector<std::pair<std::vector<Pauli>, Expr>> pauli_gadgets_;
   CXConfigType cx_config_;
+
+  bool paulis_commute() { return true; }
 };
-//
-// class CommutingPauliExpBox : public Box {
-//  public:
-//   /**
-//    * The operation implements the unitary operator
-//    * \f$ e^{-\frac12 i \pi t \sigma_0 \otimes \sigma_1 \otimes \cdots} \f$
-//    * where \f$ \sigma_i \in \{I,X,Y,Z\} \f$ are the Pauli operators.
-//    */
-//   CommutingPauliExpBox(const std::vector<Pauli> &paulis, const Expr &t);
-//
-//   /**
-//    * Construct from the empty vector
-//    */
-//   CommutingPauliExpBox();
-//
-//   /**
-//    * Copy constructor
-//    */
-//   CommutingPauliExpBox(const CommutingPauliExpBox &other);
-//
-//   ~CommutingPauliExpBox() override {}
-// };
 
 }  // namespace tket

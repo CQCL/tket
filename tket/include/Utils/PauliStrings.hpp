@@ -408,7 +408,6 @@ class QubitPauliTensor {
   explicit QubitPauliTensor(const std::vector<Pauli> &_paulis)
       : string({_paulis}), coeff(1.) {}
 
-
   /**
    * Construct a constant multiple of a single Pauli term
    */

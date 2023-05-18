@@ -21,7 +21,7 @@ namespace tket {
 
 Expr pauli_angle_convert_or_throw(Complex pauliCoeff, const Expr &angle) {
   if (pauliCoeff == -1.) {
-    return -1*angle;
+    return -1 * angle;
   }
   if (pauliCoeff != 1.) {
     throw CircuitInvalidity("Pauli coefficient must be +/- 1");
@@ -62,11 +62,8 @@ void append_single_pauli_gadget_as_pauli_exp_box(
 }
 
 void append_pauli_gadget_pair_as_box(
-    Circuit &circ,
-    const QubitPauliTensor &pauli0, Expr angle0,
-    const QubitPauliTensor &pauli1, Expr angle1,
-    CXConfigType cx_config) {
-
+    Circuit &circ, const QubitPauliTensor &pauli0, Expr angle0,
+    const QubitPauliTensor &pauli1, Expr angle1, CXConfigType cx_config) {
   auto converted_angle0 = pauli_angle_convert_or_throw(pauli0.coeff, angle0);
   auto converted_angle1 = pauli_angle_convert_or_throw(pauli1.coeff, angle1);
 
@@ -97,29 +94,78 @@ void append_pauli_gadget_pair_as_box(
   for (const std::pair<const Qubit, Pauli> &term : pauli1_string.map) {
     mapping.push_back(term.first);
     paulis1.push_back(term.second);
-    paulis0.push_back(Pauli::I); // If pauli0_string contained qubit, would have been handled above
+    paulis0.push_back(Pauli::I);  // If pauli0_string contained qubit, would
+                                  // have been handled above
   }
-  PauliExpPairBox box( paulis0, converted_angle0, paulis1, converted_angle1, cx_config);
+  PauliExpPairBox box(
+      paulis0, converted_angle0, paulis1, converted_angle1, cx_config);
   circ.add_box(box, mapping);
 }
 
-//void append_pauli_gadget_commuting_set_as_box(
-//    Circuit &circ, const std::list<std::pair<QubitPauliTensor, Expr>> &gadgets,
-//    CXConfigType cx_config) {
-//
-//  std::map<Qubit, Qubit> qubit_to_simple_mapping;
-//  std::vector<Qubit> mapping;
-//  for (const auto &gadget : gadgets) {
-//    for (const std::pair<const Qubit, Pauli> &term : gadget.first.string.map) {
-//      if (qubit_to_simple_mapping.contains(term.first)) continue;
-//      qubit_to_simple_mapping.emplace(term.first, Qubit(mapping.size()));
-//      mapping.push_back(term.first);
-//    }
-//  }
-//  PauliExpPairBox box(
-//      qubit_to_simple_mapping, pauli0, angle0, pauli1, angle1, cx_config);
-//  circ.add_box(box, mapping);
-//}
+void append_commuting_pauli_gadget_set_as_box(
+    Circuit &circ, const std::list<std::pair<QubitPauliTensor, Expr>> &gadgets,
+    CXConfigType cx_config) {
+  std::vector<std::pair<std::vector<Pauli>, Expr>> pauli_gadgets;
+
+  // construct pauli gadgets with correct angles (but no paulis yet)
+  for (const auto &gadget : gadgets) {
+    pauli_gadgets.push_back(
+        {{}, pauli_angle_convert_or_throw(gadget.first.coeff, gadget.second)});
+  }
+
+  std::vector<Qubit> mapping;
+  std::vector<QubitPauliString> pauli_strings;
+  for (const auto &gadget : gadgets) {
+    QubitPauliString pauli_string(gadget.first.string);
+    // remove any identities in gadget pauli strings
+    pauli_string.compress();
+    pauli_strings.emplace_back(std::move(pauli_string));
+  }
+
+  // std::cout << "hereios3 " << std::endl << std::flush;
+  //  This essentially loops over all the qubits once, adding the
+  //  corresponding pauli for that qubit for each gadget (or Identity if qubit
+  //  not found for gadget)
+  for (unsigned i = 0; i < pauli_strings.size(); i++) {
+    auto &pauli_string_i = pauli_strings[i];
+    for (const std::pair<const Qubit, Pauli> &term : pauli_string_i.map) {
+      //    std::cout << "hereiomo " << std::endl << std::flush;
+      mapping.push_back(term.first);
+      pauli_gadgets[i].first.push_back(term.second);
+      // if j > i: check if pauli_string j contains qubit and add Pauli if it
+      // does, Identity otherwise
+      for (unsigned j = i + 1; j < pauli_strings.size(); j++) {
+        //      std::cout << "hereiomo2 " << std::endl << std::flush;
+        auto &pauli_string_j = pauli_strings[j];
+        //      std::cout << "hereiomo2chu " << std::endl << std::flush;
+        auto found = pauli_string_j.map.find(term.first);
+        //      std::cout << "hereiomo2chu2 " << std::endl << std::flush;
+        if (found == pauli_string_j.map.end()) {
+          //       std::cout << "hereiomo2cuz1 " << std::endl << std::flush;
+          pauli_gadgets[j].first.push_back(Pauli::I);
+        } else {
+          //      std::cout << "hereiomo2cuz2 " << std::endl << std::flush;
+          pauli_gadgets[j].first.push_back(found->second);
+          // erase this qubit from pauli_string_j, so we don't loop over it
+          // again later
+          pauli_string_j.map.erase(found);
+          //     std::cout << "hereiomo2cuz2b " << std::endl << std::flush;
+        }
+        //      std::cout << "hereiomo2b " << std::endl << std::flush;
+      }
+      // if j < i: already know it doesn't contain qubit, so add Identity
+      for (unsigned j = 0; j < i; j++) {
+        pauli_gadgets[j].first.push_back(Pauli::I);
+      }
+      //    std::cout << "hereiomo1b " << std::endl << std::flush;
+    }
+    //   std::cout << "here: " << i << std::endl << std::flush;
+  }
+  // std::cout << "hereios4 " << std::endl << std::flush;
+
+  PauliExpCommutingSetBox box(pauli_gadgets, cx_config);
+  circ.add_box(box, mapping);
+}
 
 static void reduce_shared_qs_by_CX_snake(
     Circuit &circ, std::set<Qubit> &match, QubitPauliTensor &pauli0,
