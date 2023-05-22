@@ -392,11 +392,11 @@ void init_boxes(py::module &m) {
       m, "MultiplexorBox",
       "A user-defined multiplexor (i.e. uniformly controlled operations) "
       "specified by a "
-      "map from bitstrings to :py:class:`Op`s")
+      "map from bitstrings to " CLSOBJS(Op))
       .def(
           py::init<const ctrl_op_map_t &>(),
-          "Construct from a map from bitstrings to :py:class:`Op`s\n\n"
-          ":param op_map: Map from bitstrings to :py:class:`Op`s\n",
+          "Construct from a map from bitstrings to " CLSOBJS(Op) "\n\n"
+          ":param op_map: Map from bitstrings to " CLSOBJS(Op) "\n",
           py::arg("op_map"))
       .def(
           "get_circuit", [](MultiplexorBox &box) { return *box.to_circuit(); },
@@ -412,13 +412,13 @@ void init_boxes(py::module &m) {
       m, "MultiplexedRotationBox",
       "A user-defined multiplexed rotation gate (i.e. "
       "uniformly controlled single-axis rotations) specified by "
-      "a map from bitstrings to :py:class:`Op`s")
+      "a map from bitstrings to " CLSOBJS(Op))
       .def(
           py::init<const ctrl_op_map_t &>(),
           "Construct from a map from bitstrings to :py:class:`Op`s."
-          "All :py:class:`Op`s must share the same single-qubit rotation type: "
+          "All " CLSOBJS(Op) "  must share the same single-qubit rotation type: "
           "Rx, Ry, or Rz.\n\n"
-          ":param op_map: Map from bitstrings to :py:class:`Op`s\n",
+          ":param op_map: Map from bitstrings to " CLSOBJS(Op) "\n",
           py::arg("op_map"))
       .def(
           py::init([](const std::vector<double> &angles, const OpType &axis) {
@@ -463,13 +463,13 @@ void init_boxes(py::module &m) {
       m, "MultiplexedU2Box",
       "A user-defined multiplexed U2 gate (i.e. uniformly controlled U2 "
       "gate) specified by a "
-      "map from bitstrings to :py:class:`Op`s")
+      "map from bitstrings to " CLSOBJS(Op))
       .def(
           py::init<const ctrl_op_map_t &, bool>(),
-          "Construct from a map from bitstrings to :py:class:`Op`s."
+          "Construct from a map from bitstrings to " CLSOBJS(Op) "."
           "Only supports single qubit unitary gate types and "
           ":py:class:`Unitary1qBox`.\n\n"
-          ":param op_map: Map from bitstrings to :py:class:`Op`s\n"
+          ":param op_map: Map from bitstrings to " CLSOBJS(Op) "\n"
           ":param impl_diag: Whether to implement the final diagonal gate, "
           "default to True.",
           py::arg("op_map"), py::arg("impl_diag") = true)
@@ -491,14 +491,14 @@ void init_boxes(py::module &m) {
       MultiplexedTensoredU2Box, std::shared_ptr<MultiplexedTensoredU2Box>, Op>(
       m, "MultiplexedTensoredU2Box",
       "A user-defined multiplexed tensor product of U2 gates specified by a "
-      "map from bitstrings to lists of :py:class:`Op`s")
+      "map from bitstrings to lists of " CLSOBJS(Op))
       .def(
           py::init<const ctrl_tensored_op_map_t &>(),
           "Construct from a map from bitstrings to equal-sized lists of "
-          ":py:class:`Op`s. "
+          CLSOBJS(Op) ". "
           "Only supports single qubit unitary gate types and "
           ":py:class:`Unitary1qBox`.\n\n"
-          ":param op_map: Map from bitstrings to lists of :py:class:`Op`s",
+          ":param op_map: Map from bitstrings to lists of " CLSOBJS(Op),
           py::arg("op_map"))
       .def(
           "get_circuit",
