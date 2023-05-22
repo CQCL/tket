@@ -521,7 +521,8 @@ void init_boxes(py::module &m) {
           ":param is_inverse: whether to implement the dagger of the state "
           "preparation circuit, default to false\n"
           ":param with_initial_reset: whether to explicitly set the state to "
-          "zero initially (otherwise the initial zero state is assumed)",
+          "zero initially (by default the initial zero state is assumed and no "
+          "explicit reset is applied)",
           py::arg("statevector"), py::arg("is_inverse") = false,
           py::arg("with_initial_reset") = false)
       .def(
