@@ -51,6 +51,8 @@ At a couple of points in the development of the software, we had to increase the
 
 If you received version 0.3.0 or 0.4.2, it is likely that you are using an old version of ``pip`` that cannot accept the more recent Linux builds. Try running ``pip install --upgrade pip`` to upgrade it to the most recent version and upgrade ``pytket``.
 
+As of pytket release 1.11.0 installing the latest version of pytket requires python version 3.9, 3.10 or 3.11. If you have an older version of python then you will need to upgrade it to use the latest version of pytket and the extensions.
+
 
 I've tried the recommended actions here and it still won't work! What can I do?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
