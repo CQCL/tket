@@ -147,7 +147,7 @@ void Circuit::append_with_map(const Circuit& c2, const unit_map_t& qm) {
   qubit_vector_t qbs = copy.all_qubits();
   std::set<Qubit> qbs_set(qbs.begin(), qbs.end());
   std::set<Qubit> reset_qbs;
-  for (auto qb : all_qubits()) {
+  for (const auto& qb : all_qubits()) {
     if (qbs_set.find(qb) != qbs_set.end()) {
       if (copy.is_created(qb)) {
         reset_qbs.insert(qb);
@@ -250,7 +250,7 @@ void Circuit::substitute(
   std::map<Edge, Vertex> c_out_map;
 
   std::set<Qubit> reset_qbs;
-  for (auto qb : to_insert.all_qubits()) {
+  for (const auto& qb : to_insert.all_qubits()) {
     if (to_insert.is_created(qb)) {
       reset_qbs.insert(qb);
     } else if (to_insert.is_discarded(qb)) {
