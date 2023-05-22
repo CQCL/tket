@@ -15,6 +15,7 @@
 #include "tket/Circuit/StatePreparation.hpp"
 
 #include <boost/dynamic_bitset.hpp>
+#include <stdexcept>
 
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/Multiplexor.hpp"
@@ -25,16 +26,22 @@
 
 namespace tket {
 
-StatePreparationBox::StatePreparationBox(
-    const Eigen::VectorXcd &statevector, bool is_inverse)
-    : Box(OpType::StatePreparationBox),
-      statevector_(statevector),
-      is_inverse_(is_inverse) {
-  size_t length = statevector.size();
+static unsigned compute_log2(size_t length) {
   if (length < 2 || (length & (length - 1)) != 0) {
     throw std::invalid_argument(
         "The length of the statevector is not a power of 2.");
   }
+  return (unsigned)log2(length);
+}
+
+StatePreparationBox::StatePreparationBox(
+    const Eigen::VectorXcd &statevector, bool is_inverse,
+    bool with_initial_reset)
+    : Box(OpType::StatePreparationBox),
+      statevector_(statevector),
+      is_inverse_(is_inverse),
+      with_initial_reset_(with_initial_reset),
+      n_qubits_(compute_log2(statevector.size())) {
   // check the state is normalised
   if (std::abs(statevector.norm() - 1) > EPS) {
     throw std::invalid_argument("The input statevector is not normalised.");
@@ -44,14 +51,20 @@ StatePreparationBox::StatePreparationBox(
 StatePreparationBox::StatePreparationBox(const StatePreparationBox &other)
     : Box(other),
       statevector_(other.statevector_),
-      is_inverse_(other.is_inverse_) {}
+      is_inverse_(other.is_inverse_),
+      with_initial_reset_(other.with_initial_reset_),
+      n_qubits_(other.n_qubits_) {}
 
 Op_ptr StatePreparationBox::dagger() const {
+  if (with_initial_reset_) {
+    throw std::logic_error(
+        "Cannot dagger StatePreparationBox with initial reset");
+  }
   return std::make_shared<StatePreparationBox>(statevector_, !is_inverse_);
 }
 
 op_signature_t StatePreparationBox::get_signature() const {
-  op_signature_t qubits((unsigned)log2(statevector_.size()), EdgeType::Quantum);
+  op_signature_t qubits(n_qubits_, EdgeType::Quantum);
   return qubits;
 }
 
@@ -60,6 +73,10 @@ Eigen::VectorXcd StatePreparationBox::get_statevector() const {
 }
 
 bool StatePreparationBox::is_inverse() const { return is_inverse_; }
+
+bool StatePreparationBox::with_initial_reset() const {
+  return with_initial_reset_;
+}
 
 /**
  * @brief Construct a circuit that prepares an arbitrary quantum state
@@ -72,9 +89,13 @@ bool StatePreparationBox::is_inverse() const { return is_inverse_; }
  * @return Circuit
  */
 static Circuit state_prep_circ(
-    const Eigen::VectorXcd &statevector, bool is_inverse) {
-  unsigned n_qubits = (unsigned)log2(statevector.size());
+    const Eigen::VectorXcd &statevector, bool is_inverse,
+    bool with_initial_reset) {
+  unsigned n_qubits = compute_log2(statevector.size());
   Circuit circ(n_qubits);
+  if (with_initial_reset) {
+    circ.qubit_create_all();
+  }
   std::vector<std::optional<MultiplexedRotationBox>> mutip_ry_vec, mutip_rz_vec;
   Eigen::VectorXcd psi = statevector;
   for (unsigned step = 0; step < n_qubits; step++) {
@@ -169,7 +190,8 @@ static Circuit state_prep_circ(
 };
 
 void StatePreparationBox::generate_circuit() const {
-  circ_ = std::make_shared<Circuit>(state_prep_circ(statevector_, is_inverse_));
+  circ_ = std::make_shared<Circuit>(
+      state_prep_circ(statevector_, is_inverse_, with_initial_reset_));
 }
 
 nlohmann::json StatePreparationBox::to_json(const Op_ptr &op) {
@@ -177,13 +199,14 @@ nlohmann::json StatePreparationBox::to_json(const Op_ptr &op) {
   nlohmann::json j = core_box_json(box);
   j["statevector"] = box.get_statevector();
   j["is_inverse"] = box.is_inverse();
+  j["with_initial_reset"] = box.with_initial_reset();
   return j;
 }
 
 Op_ptr StatePreparationBox::from_json(const nlohmann::json &j) {
   StatePreparationBox box = StatePreparationBox(
       j.at("statevector").get<Eigen::VectorXcd>(),
-      j.at("is_inverse").get<bool>());
+      j.at("is_inverse").get<bool>(), j.at("with_initial_reset").get<bool>());
   return set_box_id(
       box,
       boost::lexical_cast<boost::uuids::uuid>(j.at("id").get<std::string>()));

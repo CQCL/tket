@@ -515,12 +515,16 @@ void init_boxes(py::module &m) {
       "A box for preparing quantum states using multiplexed-Ry and "
       "multiplexed-Rz gates")
       .def(
-          py::init<const Eigen::VectorXcd &, bool>(),
+          py::init<const Eigen::VectorXcd &, bool, bool>(),
           "Construct from a statevector\n\n"
-          ":param statevector: normalised statevector\n",
+          ":param statevector: normalised statevector\n"
           ":param is_inverse: whether to implement the dagger of the state "
-          "preparation circuit, default to false",
-          py::arg("statevector"), py::arg("is_inverse") = false)
+          "preparation circuit, default to false\n"
+          ":param with_initial_reset: whether to explicitly set the state to "
+          "zero initially (by default the initial zero state is assumed and no "
+          "explicit reset is applied)",
+          py::arg("statevector"), py::arg("is_inverse") = false,
+          py::arg("with_initial_reset") = false)
       .def(
           "get_circuit",
           [](StatePreparationBox &box) { return *box.to_circuit(); },
@@ -531,7 +535,11 @@ void init_boxes(py::module &m) {
       .def(
           "is_inverse", &StatePreparationBox::is_inverse,
           ":return: flag indicating whether to implement the dagger of the "
-          "state preparation circuit");
+          "state preparation circuit")
+      .def(
+          "with_initial_reset", &StatePreparationBox::with_initial_reset,
+          ":return: flag indicating whether the qubits are explicitly "
+          "set to the zero state initially");
   py::class_<DiagonalBox, std::shared_ptr<DiagonalBox>, Op>(
       m, "DiagonalBox",
       "A box for synthesising a diagonal unitary matrix into a sequence of "

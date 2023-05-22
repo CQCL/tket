@@ -8,6 +8,8 @@ Minor new features:
 
 * Support ``allow_swaps`` parameter for ``PeepholeOptimise2Q``.
 * Add missing add box methods that accept qubit indices as arguments.
+* Add ``with_initial_reset`` parameter to ``StatePreparationBox`` to permit
+  state preparation starting from unknown state.
 
 Fixes:
 
