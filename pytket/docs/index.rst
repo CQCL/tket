@@ -24,9 +24,10 @@ See the `Getting Started`_ page for a basic tutorial on using
 Extensions
 ~~~~~~~~~~
 
-To use pytket in conjunction with other platforms you must download an
-additional separate module for each. Each one of these adds either some new
-methods to the ``pytket`` package to convert between the circuit
+To use pytket in conjunction with other software libraries you must install a
+separate python package for the relevant pytket extension. 
+
+Each extension adds either some new methods to the ``pytket`` package to convert between the circuit
 representations, or some new backends to submit circuits to within ``pytket``.
 
 Extensions are separate python packages can be installed using ``pip``. The installation command is ``pip install pytket-X`` where ``X`` is the name of the extension.
