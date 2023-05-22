@@ -105,48 +105,32 @@ void append_pauli_gadget_pair_as_box(
 void append_commuting_pauli_gadget_set_as_box(
     Circuit &circ, const std::list<std::pair<QubitPauliTensor, Expr>> &gadgets,
     CXConfigType cx_config) {
-  std::vector<std::pair<std::vector<Pauli>, Expr>> pauli_gadgets;
 
-  // construct pauli gadgets with correct angles (but no paulis yet)
+
+  // Translate to QubitPauliTensors to vectors of Paulis of same length
+  // Preserves ordering of qubits
+
+  std::set<Qubit> all_qubits;
   for (const auto &gadget : gadgets) {
-    pauli_gadgets.push_back(
-        {{}, pauli_angle_convert_or_throw(gadget.first.coeff, gadget.second)});
+    for (const auto &qubit_pauli: gadget.first.string.map){
+      all_qubits.insert(qubit_pauli.first);
+    }
   }
 
   std::vector<Qubit> mapping;
-  std::vector<QubitPauliString> pauli_strings;
-  for (const auto &gadget : gadgets) {
-    QubitPauliString pauli_string(gadget.first.string);
-    // remove any identities in gadget pauli strings
-    pauli_string.compress();
-    pauli_strings.emplace_back(std::move(pauli_string));
+  for (const auto &qubit : all_qubits) {
+    mapping.push_back(qubit);
   }
 
-  //  This essentially loops over all the qubits once, adding the
-  //  corresponding pauli for that qubit for each gadget (or Identity if qubit
-  //  not found for gadget)
-  for (unsigned i = 0; i < pauli_strings.size(); i++) {
-    auto &pauli_string_i = pauli_strings[i];
-    for (const std::pair<const Qubit, Pauli> &term : pauli_string_i.map) {
-      mapping.push_back(term.first);
-      pauli_gadgets[i].first.push_back(term.second);
-      // if j > i: check if pauli_string j contains qubit and add Pauli if it
-      // does, Identity otherwise
-      for (unsigned j = i + 1; j < pauli_strings.size(); j++) {
-        auto &pauli_string_j = pauli_strings[j];
-        auto found = pauli_string_j.map.find(term.first);
-        if (found == pauli_string_j.map.end()) {
-          pauli_gadgets[j].first.push_back(Pauli::I);
-        } else {
-          pauli_gadgets[j].first.push_back(found->second);
-          // erase this qubit from pauli_string_j, so we don't loop over it
-          // again later
-          pauli_string_j.map.erase(found);
-        }
-      }
-      // if j < i: already know it doesn't contain qubit, so add Identity
-      for (unsigned j = 0; j < i; j++) {
-        pauli_gadgets[j].first.push_back(Pauli::I);
+  std::vector<std::pair<std::vector<Pauli>, Expr>> pauli_gadgets;
+  for (const auto& gadget : gadgets) {
+    auto& new_gadget = pauli_gadgets.emplace_back(std::make_pair(std::vector<Pauli>(), pauli_angle_convert_or_throw(gadget.first.coeff, gadget.second)));
+    for (const auto &qubit : mapping) {
+      auto found = gadget.first.string.map.find(qubit);
+      if (found == gadget.first.string.map.end()) {
+        new_gadget.first.push_back(Pauli::I);
+      } else {
+        new_gadget.first.push_back(found->second);
       }
     }
   }

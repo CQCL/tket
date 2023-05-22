@@ -742,7 +742,7 @@ PassPtr gen_pairwise_pauli_gadgets(CXConfigType cx_config) {
   return std::make_shared<StandardPass>(precons, t, postcon, j);
 }
 
-PassPtr gen_synthesise_pauli_graph(
+PassPtr gen_pauli_exponentials(
     Transforms::PauliSynthStrat strat, CXConfigType cx_config) {
   Transform t = Transforms::synthesise_pauli_graph(strat, cx_config);
   PredicatePtr ccontrol_pred = std::make_shared<NoClassicalControlPredicate>();
@@ -768,11 +768,18 @@ PassPtr gen_synthesise_pauli_graph(
 
   // record pass config
   nlohmann::json j;
-  j["name"] = "PauliSimp";
+  j["name"] = "PauliExponentials";
   j["cx_config"] = cx_config;
   j["pauli_synth_strat"] = strat;
 
   return std::make_shared<StandardPass>(precons, t, postcon, j);
+}
+
+PassPtr gen_synthesise_pauli_graph(
+    Transforms::PauliSynthStrat strat, CXConfigType cx_config) {
+  std::vector<PassPtr> seq = {
+      gen_pauli_exponentials(strat, cx_config), DecomposeBoxes()};
+  return std::make_shared<SequencePass>(seq);
 }
 
 PassPtr gen_special_UCC_synthesis(

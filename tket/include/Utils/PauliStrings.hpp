@@ -383,7 +383,7 @@ class QubitPauliTensor {
    * tensor for a default qubit register, without explicitly
    * constructing the QubitPauliMap
    *
-   * @param _paulis vector of Pauli letters
+   * @param _paulis initializer_list of Pauli letters
    */
   explicit QubitPauliTensor(const std::initializer_list<Pauli> &_paulis)
       : string({_paulis}), coeff(1.) {}
