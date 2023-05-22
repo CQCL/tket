@@ -30,7 +30,17 @@ Frequently Asked Questions
 Is there a build of ``pytket`` for my system?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The non-commercial version of ``pytket``, and most additional modules available through PyPI, are built to work on Linux, MacOS and Windows with Python versions 3.9, 3.10, or 3.11, and ``pip`` version 20.0.0+.
+The core pytket package, as well as the separate extension modules are available on PyPi. Wheels are built to work on Linux, MacOS and Windows with Python versions 3.9, 3.10, or 3.11, and ``pip`` version 20.0.0+.
+
+.. note::
+    On M1-based Macs running in native (arm64) mode, this command may fail
+    because of an issue installing ``scipy``. To fix this:
+
+    1. Install `brew <https://brew.sh/>`_ (if you haven't already);
+    2. ``brew install openblas``;
+    3. ``pip install -U pip wheel``;
+    4. ``OPENBLAS="$(brew --prefix openblas)" pip install scipy``;
+    5. ``pip install pytket``
 
 
 Do all versions of ``pytket`` work with Windows?
@@ -56,4 +66,4 @@ As of pytket release 1.11.0 installing the latest version of pytket requires pyt
 
 I've tried the recommended actions here and it still won't work! What can I do?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Our `examples repository <http://github.com/CQCL/pytket>`_ on GitHub has an issue tracker for current issues. You might find others who have had similar problems there. If not, feel free to add an issue describing your problem and our dev team will try to diagnose it and get back to you as soon as possible.
+The tket repository <http://github.com/CQCL/tket/issues>`_ on GitHub has an issue tracker for current issues. You might find others who have had similar problems there. If not, feel free to add an issue describing your problem and our dev team will try to diagnose it and get back to you as soon as possible.
