@@ -764,6 +764,16 @@ PYBIND11_MODULE(passes, m) {
       "\n:return: a pass to perform the synthesis",
       py::arg("cx_config") = CXConfigType::Snake);
   m.def(
+      "PauliExponentials", &gen_pauli_exponentials,
+      "Construct a pass that converts a circuit into a graph of Pauli "
+      "exponential boxes, with information"
+      "\n\n:param strat: A synthesis strategy for the Pauli graph."
+      "\n:param cx_config: A configuration of CXs to convert Pauli gadgets "
+      "into."
+      "\n:return: a pass to perform the simplification",
+      py::arg("strat") = Transforms::PauliSynthStrat::Sets,
+      py::arg("cx_config") = CXConfigType::Snake);
+  m.def(
       "PauliSimp", &gen_synthesise_pauli_graph,
       "Construct a pass that converts a circuit into a graph of Pauli "
       "gadgets to account for commutation and phase folding, and "
