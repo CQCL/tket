@@ -12,12 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Circuit/Boxes.hpp"
-
 #include <pybind11/eigen.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
+#include "Circuit/Boxes.hpp"
+#include "Circuit/PauliExpBoxes.hpp"
+#include "Utils/PauliStrings.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Circuit/DiagonalBox.hpp"
 #include "Circuit/Multiplexor.hpp"
@@ -130,12 +131,12 @@ void init_boxes(py::module &m) {
       "An operation defined as the exponential of a tensor of Pauli "
       "operations and a (possibly symbolic) phase parameter.")
       .def(
-          py::init<const std::vector<Pauli> &, Expr>(),
+          py::init<const std::vector<Pauli> &, Expr, CXConfigType>(),
           "Construct :math:`e^{-\\frac12 i \\pi t \\sigma_0 \\otimes "
           "\\sigma_1 \\otimes \\cdots}` from Pauli operators "
           ":math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and a parameter "
           ":math:`t`.",
-          py::arg("paulis"), py::arg("t"))
+          py::arg("paulis"), py::arg("t"), py::arg("cx_config_type") = CXConfigType::Tree)
       .def(
           "get_circuit", [](PauliExpBox &pbox) { return *pbox.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the box")
@@ -144,7 +145,79 @@ void init_boxes(py::module &m) {
           ":return: the corresponding list of " CLSOBJS(Pauli))
       .def(
           "get_phase", &PauliExpBox::get_phase,
-          ":return: the corresponding phase parameter");
+          ":return: the corresponding phase parameter")
+      .def(
+          "get_cx_config", &PauliExpBox::get_cx_config,
+          ":return: decomposition method");
+//  py::class_<PauliExpPairBox, std::shared_ptr<PauliExpPairBox>, Op>(
+//      m, "PauliExpPairBox",
+//      "An operation defined as a pair of exponentials of a tensor of Pauli "
+//      "operations and their (possibly symbolic) phase parameters.")
+//      .def(
+//          py::init<const std::vector<Pauli> &, Expr,
+//                   const std::vector<Pauli> &, Expr,
+//                   CXConfigType>(),
+//      "Construct a pair of Pauli exponentials"
+//      " :math:`e^{-\\frac12 i \\pi t_0 \\sigma_0 \\otimes "
+//      "\\sigma_1 \\otimes \\cdots}` from Pauli operator strings "
+//      ":math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and parameters "
+//      ":math:`t0`.",
+//      py::arg("paulis0"), py::arg("t0"))
+//      .def(
+//          py::init<>(),
+//      "Construct :math:`e^{-\\frac12 i \\pi t1 \\sigma_0 \\otimes "
+//      "\\sigma_1 \\otimes \\cdots}` from Pauli operators "
+//      ":math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and a parameter "
+//      ":math:`t`.",
+//      py::arg("paulis1"), py::arg("t1"))
+//      .def(
+//      "get_circuit", [](PauliExpPairBox &pbox) { return *pbox.to_circuit(); },
+//      ":return: the :py:class:`Circuit` described by the box")
+//      .def(
+//      "get_paulis0", &PauliExpPairBox::get_paulis0,
+//      ":return: the corresponding list of " CLSOBJS(Pauli))
+//      .def(
+//      "get_paulis1", &PauliExpPairBox::get_paulis1,
+//      ":return: the corresponding list of " CLSOBJS(Pauli))
+//      .def(
+//      "get_phase", &PauliExpPairBox::get_phase0,
+//      ":return: the corresponding phase parameter");
+//      .def(
+//      "get_phase", &PauliExpPairBox::get_phase1,
+//      ":return: the corresponding phase parameter");
+//  py::class_<PauliExpCommutingSetBox, std::shared_ptr<PauliExpCommutingSetBox>, Op>(
+//      m, "PauliExpPairBox",
+//      "An operation defined as a set of commuting of exponentials of a tensor of Pauli "
+//      "operations and their (possibly symbolic) phase parameters.")
+//      .def(
+//          py::init<const std::vector<std::vector<Pauli>,Expr> & >(),
+//      "Construct :math:`e^{-\\frac12 i \\pi t0 \\sigma_0 \\otimes "
+//      "\\sigma_1 \\otimes \\cdots}` from Pauli operators "
+//      ":math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and a parameter "
+//      ":math:`t`.",
+//      py::arg("paulis0"), py::arg("t0"))
+//      .def(
+//          py::init<const std::vector<Pauli> &, Expr>(),
+//      "Construct :math:`e^{-\\frac12 i \\pi t1 \\sigma_0 \\otimes "
+//      "\\sigma_1 \\otimes \\cdots}` from Pauli operators "
+//      ":math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and a parameter "
+//      ":math:`t`.",
+//      py::arg("paulis1"), py::arg("t1"))
+//      .def(
+//      "get_circuit", [](PauliExpPairBox &pbox) { return *pbox.to_circuit(); },
+//      ":return: the :py:class:`Circuit` described by the box")
+//      .def(
+//      "get_paulis0", &PauliExpPairBox::get_paulis0,
+//      ":return: the corresponding list of " CLSOBJS(Pauli))
+//      .def(
+//      "get_paulis1", &PauliExpPairBox::get_paulis1,
+//      ":return: the corresponding list of " CLSOBJS(Pauli))
+//      .def(
+//      "get_phase", &PauliExpPairBox::get_phase0,
+//      ":return: the corresponding phase parameter");
+//      .def(
+//      "get_phase", &PauliExpPairBox::get_phase1,
+//      ":return: the corresponding phase parameter");
   py::class_<ToffoliBox, std::shared_ptr<ToffoliBox>, Op>(
       m, "ToffoliBox",
       "An operation that constructs a circuit to implement the specified "

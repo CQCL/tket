@@ -47,7 +47,8 @@ from pytket.passes import (  # type: ignore
     SynthesiseUMD,
     ThreeQubitSquash,
 )
-from pytket.transform import CXConfigType, PauliSynthStrat  # type: ignore
+from pytket.circuit import CXConfigType  # type: ignore
+from pytket.transform import PauliSynthStrat  # type: ignore
 
 pass_grammar = """
 start: comp_pass

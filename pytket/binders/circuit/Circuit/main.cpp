@@ -22,6 +22,7 @@
 #include <sstream>
 
 #include "Circuit/Boxes.hpp"
+#include "Circuit/PauliExpBoxes.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Circuit/Command.hpp"
 #include "Circuit/ToffoliBox.hpp"

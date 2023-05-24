@@ -21,6 +21,7 @@
 #include <optional>
 
 #include "Circuit/Boxes.hpp"
+#include "Circuit/PauliExpBoxes.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Circuit/ClassicalExpBox.hpp"
 #include "Circuit/DiagonalBox.hpp"

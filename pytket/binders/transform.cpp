@@ -70,25 +70,6 @@ PYBIND11_MODULE(transform, m) {
           "Sets", Transforms::PauliSynthStrat::Sets,
           "Synthesise gadgets in commuting sets");
 
-  py::enum_<CXConfigType>(
-      m, "CXConfigType",
-      "Enum for available configurations for CXs upon decompose phase "
-      "gadgets")
-      .value(
-          "Snake", CXConfigType::Snake,
-          "linear nearest neighbour CX sequence. Linear depth.")
-      .value(
-          "Star", CXConfigType::Star,
-          "Every CX has same target, linear depth, good for gate "
-          "cancellation.")
-      .value(
-          "Tree", CXConfigType::Tree,
-          "Balanced tree: logarithmic depth, harder to route.")
-      .value(
-          "MultiQGate", CXConfigType::MultiQGate,
-          "Support for multi-qubit architectures, decomposing to 3-qubit "
-          "XXPhase3 gates instead of CXs where possible.");
-
   py::class_<Transform>(
       m, "Transform", "An in-place transformation of a :py:class:`Circuit`.")
       .def(py::init<const Transform::SimpleTransformation &>())
