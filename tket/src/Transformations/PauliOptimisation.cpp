@@ -193,18 +193,15 @@ Transform synthesise_pauli_graph(
     PauliGraph pg = circuit_to_pauli_graph(circ);
     switch (strat) {
       case PauliSynthStrat::Individual: {
-        // circ = pauli_graph_to_circuit_individually(pg, cx_config);
-        circ = pauli_graph_to_pauli_exp_box_circuit(pg, cx_config);
+        circ = pauli_graph_to_pauli_exp_box_circuit_individually(pg, cx_config);
         break;
       }
       case PauliSynthStrat::Pairwise: {
-        // circ = pauli_graph_to_circuit_pairwise(pg, cx_config);
-        circ = pauli_graph_to_poly_exp_box_circuit_pairwise(pg, cx_config);
+        circ = pauli_graph_to_pauli_exp_box_circuit_pairwise(pg, cx_config);
         break;
       }
       case PauliSynthStrat::Sets: {
-        // circ = pauli_graph_to_circuit_sets(pg, cx_config);
-        circ = pauli_graph_to_pauli_exp_set_box(pg, cx_config);
+        circ = pauli_graph_to_pauli_exp_box_circuit_sets(pg, cx_config);
         break;
       }
       default:
