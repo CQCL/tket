@@ -257,6 +257,30 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n:return: the new :py:class:`Circuit`",
           py::arg("pauliexpbox"), py::arg("qubits"))
       .def(
+          "add_pauliexppairbox",
+          [](Circuit *circ, const PauliExpPairBox &box,
+             const std::vector<unsigned> &qubits, const py::kwargs &kwargs) {
+            return add_box_method<unsigned>(
+                circ, std::make_shared<PauliExpPairBox>(box), qubits, kwargs);
+          },
+          "Append a :py:class:`PauliExpPairBox` to the "
+          "circuit.\n\n:param pauliexppairbox: The box to append\n:param "
+          "qubits: Indices of the qubits to append the box to"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("pauliexppairbox"), py::arg("qubits"))
+      .def(
+          "add_pauliexpcommutingsetbox",
+          [](Circuit *circ, const PauliExpCommutingSetBox &box,
+             const std::vector<unsigned> &qubits, const py::kwargs &kwargs) {
+            return add_box_method<unsigned>(
+                circ, std::make_shared<PauliExpCommutingSetBox>(box), qubits, kwargs);
+          },
+          "Append a :py:class:`PauliExpCommutingSetBox` to the "
+          "circuit.\n\n:param pauliexpcommutingsetbox: The box to append\n:param "
+          "qubits: Indices of the qubits to append the box to"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("pauliexpcommutingsetbox"), py::arg("qubits"))
+      .def(
           "add_toffolibox",
           [](Circuit *circ, const ToffoliBox &box,
              const std::vector<unsigned> &qubits, const py::kwargs &kwargs) {
@@ -471,6 +495,32 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "qubits: The qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
           py::arg("pauliexpbox"), py::arg("qubits"))
+      .def(
+          "add_pauliexppairbox",
+          [](Circuit *circ, const PauliExpPairBox &box,
+             const qubit_vector_t &qubits, const py::kwargs &kwargs) {
+            return add_box_method<UnitID>(
+                circ, std::make_shared<PauliExpPairBox>(box),
+                {qubits.begin(), qubits.end()}, kwargs);
+          },
+          "Append a :py:class:`PauliExpPairBox` to the "
+          "circuit.\n\n:param pauliexppairbox: The box to append\n:param "
+          "qubits: The qubits to append the box to"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("pauliexppairbox"), py::arg("qubits"))
+      .def(
+          "add_pauliexpcommutingsetbox",
+          [](Circuit *circ, const PauliExpCommutingSetBox &box,
+             const qubit_vector_t &qubits, const py::kwargs &kwargs) {
+            return add_box_method<UnitID>(
+                circ, std::make_shared<PauliExpCommutingSetBox>(box),
+                {qubits.begin(), qubits.end()}, kwargs);
+          },
+          "Append a :py:class:`PauliExpCommutingSetBox` to the "
+          "circuit.\n\n:param pauliexpcommutingsetbox: The box to append\n:param "
+          "qubits: The qubits to append the box to"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("pauliexpcommutingsetbox"), py::arg("qubits"))
       .def(
           "add_toffolibox",
           [](Circuit *circ, const ToffoliBox &box, const qubit_vector_t &qubits,
