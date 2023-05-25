@@ -12,13 +12,13 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Characterisation/FrameRandomisation.hpp"
+#include "tket/Characterisation/FrameRandomisation.hpp"
 
 #include <random>
 
-#include "Ops/MetaOp.hpp"
-#include "PauliGraph/ConjugatePauliFunctions.hpp"
-#include "Utils/PauliStrings.hpp"
+#include "tket/Ops/MetaOp.hpp"
+#include "tket/PauliGraph/ConjugatePauliFunctions.hpp"
+#include "tket/Utils/PauliStrings.hpp"
 
 namespace tket {
 

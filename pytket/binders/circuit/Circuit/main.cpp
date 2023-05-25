@@ -21,21 +21,21 @@
 #include <optional>
 #include <sstream>
 
-#include "Circuit/Boxes.hpp"
-#include "Circuit/Circuit.hpp"
-#include "Circuit/Command.hpp"
-#include "Circuit/PauliExpBoxes.hpp"
-#include "Circuit/ToffoliBox.hpp"
-#include "Gate/OpPtrFunctions.hpp"
-#include "Gate/SymTable.hpp"
-#include "Mapping/Verification.hpp"
-#include "Ops/Op.hpp"
-#include "Simulation/CircuitSimulator.hpp"
 #include "UnitRegister.hpp"
-#include "Utils/Json.hpp"
 #include "binder_json.hpp"
 #include "binder_utils.hpp"
 #include "boost/graph/iteration_macros.hpp"
+#include "tket/Circuit/Boxes.hpp"
+#include "tket/Circuit/PauliExpBoxes.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/Command.hpp"
+#include "tket/Circuit/ToffoliBox.hpp"
+#include "tket/Gate/OpPtrFunctions.hpp"
+#include "tket/Gate/SymTable.hpp"
+#include "tket/Mapping/Verification.hpp"
+#include "tket/Ops/Op.hpp"
+#include "tket/Simulation/CircuitSimulator.hpp"
+#include "tket/Utils/Json.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;

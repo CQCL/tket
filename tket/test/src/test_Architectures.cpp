@@ -19,8 +19,8 @@
 #include <iostream>
 #include <vector>
 
-#include "Architecture/Architecture.hpp"
-#include "Graphs/ArticulationPoints.hpp"
+#include "tket/Architecture/Architecture.hpp"
+#include "tket/Graphs/ArticulationPoints.hpp"
 
 namespace tket {
 namespace graphs {

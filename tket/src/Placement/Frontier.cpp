@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Placement/Placement.hpp"
+#include "tket/Placement/Placement.hpp"
 
 namespace tket {
 

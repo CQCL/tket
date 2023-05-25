@@ -17,14 +17,14 @@
 #include <sstream>
 #include <tkassert/Assert.hpp>
 
-#include "Circuit/Boxes.hpp"
-#include "Circuit/Circuit.hpp"
-#include "Circuit/PauliExpBoxes.hpp"
-#include "Gate/Gate.hpp"
-#include "Gate/GateUnitaryMatrix.hpp"
-#include "Gate/GateUnitaryMatrixError.hpp"
 #include "GateNodesBuffer.hpp"
-#include "Simulation/PauliExpBoxUnitaryCalculator.hpp"
+#include "tket/Circuit/Boxes.hpp"
+#include "tket/Circuit/PauliExpBoxes.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Gate/Gate.hpp"
+#include "tket/Gate/GateUnitaryMatrix.hpp"
+#include "tket/Gate/GateUnitaryMatrixError.hpp"
+#include "tket/Simulation/PauliExpBoxUnitaryCalculator.hpp"
 
 namespace tket {
 namespace tket_sim {

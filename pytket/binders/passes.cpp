@@ -14,19 +14,19 @@
 
 #include <pybind11/functional.h>
 
-#include "ArchAwareSynth/SteinerForest.hpp"
-#include "Mapping/LexiLabelling.hpp"
-#include "Mapping/LexiRoute.hpp"
-#include "Mapping/RoutingMethod.hpp"
-#include "Predicates/CompilerPass.hpp"
-#include "Predicates/PassGenerators.hpp"
-#include "Predicates/PassLibrary.hpp"
-#include "Transformations/ContextualReduction.hpp"
-#include "Transformations/Decomposition.hpp"
-#include "Transformations/PauliOptimisation.hpp"
-#include "Transformations/Transform.hpp"
-#include "Utils/Json.hpp"
 #include "binder_json.hpp"
+#include "tket/ArchAwareSynth/SteinerForest.hpp"
+#include "tket/Mapping/LexiLabelling.hpp"
+#include "tket/Mapping/LexiRoute.hpp"
+#include "tket/Mapping/RoutingMethod.hpp"
+#include "tket/Predicates/CompilerPass.hpp"
+#include "tket/Predicates/PassGenerators.hpp"
+#include "tket/Predicates/PassLibrary.hpp"
+#include "tket/Transformations/ContextualReduction.hpp"
+#include "tket/Transformations/Decomposition.hpp"
+#include "tket/Transformations/PauliOptimisation.hpp"
+#include "tket/Transformations/Transform.hpp"
+#include "tket/Utils/Json.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;

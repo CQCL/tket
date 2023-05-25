@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Transformations/CliffordReductionPass.hpp"
+#include "tket/Transformations/CliffordReductionPass.hpp"
 
-#include "Circuit/DAGDefs.hpp"
-#include "PauliGraph/ConjugatePauliFunctions.hpp"
+#include "tket/Circuit/DAGDefs.hpp"
+#include "tket/PauliGraph/ConjugatePauliFunctions.hpp"
 
 namespace tket {
 

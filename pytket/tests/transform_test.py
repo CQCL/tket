@@ -1086,6 +1086,14 @@ def test_auto_rebase() -> None:
         _ = auto_rebase_pass({OpType.CY, OpType.TK1})
     assert "No known decomposition" in str(err.value)
 
+    # if CX is the only 2-q gate in the gateset, rebase via CX
+    gateset = {OpType.TK1, OpType.H, OpType.T, OpType.Tdg, OpType.CX}
+    rebase = auto_rebase_pass(gateset)
+    circ = Circuit(3).CCX(0, 1, 2)
+    rebase.apply(circ)
+    assert circ.n_1qb_gates() <= 9
+    assert circ.n_gates_of_type(OpType.CX) == circ.n_2qb_gates()
+
 
 def test_auto_squash() -> None:
     pass_params = [

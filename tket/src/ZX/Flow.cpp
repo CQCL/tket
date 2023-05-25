@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "ZX/Flow.hpp"
+#include "tket/ZX/Flow.hpp"
 
-#include "Utils/GraphHeaders.hpp"
-#include "Utils/MatrixAnalysis.hpp"
+#include "tket/Utils/GraphHeaders.hpp"
+#include "tket/Utils/MatrixAnalysis.hpp"
 
 namespace tket {
 

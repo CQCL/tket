@@ -15,11 +15,11 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "../testutil.hpp"
-#include "Converters/Converters.hpp"
-#include "Simulation/CircuitSimulator.hpp"
-#include "Transformations/Rebase.hpp"
-#include "ZX/Flow.hpp"
-#include "ZX/Rewrite.hpp"
+#include "tket/Converters/Converters.hpp"
+#include "tket/Simulation/CircuitSimulator.hpp"
+#include "tket/Transformations/Rebase.hpp"
+#include "tket/ZX/Flow.hpp"
+#include "tket/ZX/Rewrite.hpp"
 
 namespace tket::zx::test_ZXExtraction {
 

@@ -16,9 +16,9 @@
 #include <set>
 #include <tkrng/RNG.hpp>
 
-#include "Graphs/AdjacencyData.hpp"
-#include "Graphs/GraphRoutines.hpp"
-#include "Graphs/LargeCliquesResult.hpp"
+#include "tket/Graphs/AdjacencyData.hpp"
+#include "tket/Graphs/GraphRoutines.hpp"
+#include "tket/Graphs/LargeCliquesResult.hpp"
 
 using std::set;
 using std::vector;

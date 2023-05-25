@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Transformations/Transform.hpp"
+#include "tket/Transformations/Transform.hpp"
 
 #include <pybind11/operators.h>
 #include <pybind11/pybind11.h>
@@ -20,15 +20,15 @@
 
 #include <functional>
 
-#include "Circuit/Circuit.hpp"
-#include "Transformations/BasicOptimisation.hpp"
-#include "Transformations/Combinator.hpp"
-#include "Transformations/ContextualReduction.hpp"
-#include "Transformations/Decomposition.hpp"
-#include "Transformations/OptimisationPass.hpp"
-#include "Transformations/PauliOptimisation.hpp"
-#include "Transformations/Rebase.hpp"
-#include "Transformations/ThreeQubitSquash.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Transformations/BasicOptimisation.hpp"
+#include "tket/Transformations/Combinator.hpp"
+#include "tket/Transformations/ContextualReduction.hpp"
+#include "tket/Transformations/Decomposition.hpp"
+#include "tket/Transformations/OptimisationPass.hpp"
+#include "tket/Transformations/PauliOptimisation.hpp"
+#include "tket/Transformations/Rebase.hpp"
+#include "tket/Transformations/ThreeQubitSquash.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;

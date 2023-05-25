@@ -7,6 +7,4 @@ py
 hypothesis
 docker
 jsonschema
-quimb;python_version<"3.11"
 opt_einsum
-autoray

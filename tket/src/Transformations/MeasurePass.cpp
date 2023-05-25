@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Transformations/MeasurePass.hpp"
+#include "tket/Transformations/MeasurePass.hpp"
 
 #include <optional>
 #include <tuple>
 
-#include "Circuit/DAGDefs.hpp"
-#include "OpType/EdgeType.hpp"
-#include "OpType/OpTypeFunctions.hpp"
-#include "Ops/Op.hpp"
-#include "Ops/OpPtr.hpp"
-#include "Transformations/Transform.hpp"
+#include "tket/Circuit/DAGDefs.hpp"
+#include "tket/OpType/EdgeType.hpp"
+#include "tket/OpType/OpTypeFunctions.hpp"
+#include "tket/Ops/Op.hpp"
+#include "tket/Ops/OpPtr.hpp"
+#include "tket/Transformations/Transform.hpp"
 
 namespace tket {
 

@@ -14,12 +14,12 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include "Architecture/Architecture.hpp"
-#include "Predicates/CompilerPass.hpp"
-#include "Predicates/PassGenerators.hpp"
-#include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
 #include "testutil.hpp"
+#include "tket/Architecture/Architecture.hpp"
+#include "tket/Predicates/CompilerPass.hpp"
+#include "tket/Predicates/PassGenerators.hpp"
+#include "tket/Simulation/CircuitSimulator.hpp"
 
 namespace tket {
 using Connection = Architecture::Connection;

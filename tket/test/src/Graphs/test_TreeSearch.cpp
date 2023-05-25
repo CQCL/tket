@@ -19,8 +19,8 @@
 #include <map>
 #include <vector>
 
-#include "Graphs/TreeSearch.hpp"
-#include "Graphs/Utils.hpp"
+#include "tket/Graphs/TreeSearch.hpp"
+#include "tket/Graphs/Utils.hpp"
 
 namespace tket {
 namespace graphs {

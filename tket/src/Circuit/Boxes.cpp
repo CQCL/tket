@@ -12,24 +12,24 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Circuit/Boxes.hpp"
+#include "tket/Circuit/Boxes.hpp"
 
 #include <memory>
 #include <numeric>
 #include <tkassert/Assert.hpp>
 
-#include "Circuit/AssertionSynthesis.hpp"
-#include "Circuit/CircUtils.hpp"
-#include "Circuit/Command.hpp"
-#include "Circuit/ThreeQubitConversion.hpp"
-#include "Gate/Rotation.hpp"
-#include "OpType/OpTypeInfo.hpp"
-#include "Ops/OpJsonFactory.hpp"
-#include "Ops/OpPtr.hpp"
-#include "Utils/EigenConfig.hpp"
-#include "Utils/Expression.hpp"
-#include "Utils/Json.hpp"
-#include "Utils/PauliStrings.hpp"
+#include "tket/Circuit/AssertionSynthesis.hpp"
+#include "tket/Circuit/CircUtils.hpp"
+#include "tket/Circuit/Command.hpp"
+#include "tket/Circuit/ThreeQubitConversion.hpp"
+#include "tket/Gate/Rotation.hpp"
+#include "tket/OpType/OpTypeInfo.hpp"
+#include "tket/Ops/OpJsonFactory.hpp"
+#include "tket/Ops/OpPtr.hpp"
+#include "tket/Utils/EigenConfig.hpp"
+#include "tket/Utils/Expression.hpp"
+#include "tket/Utils/Json.hpp"
+#include "tket/Utils/PauliStrings.hpp"
 
 namespace tket {
 

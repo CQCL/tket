@@ -16,8 +16,8 @@
 #include <catch2/matchers/catch_matchers.hpp>
 #include <fstream>
 
-#include "ZX/ZXDiagram.hpp"
-#include "ZX/ZXGenerator.hpp"
+#include "tket/ZX/ZXDiagram.hpp"
+#include "tket/ZX/ZXGenerator.hpp"
 
 namespace tket {
 namespace zx {

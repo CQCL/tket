@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Utils/CosSinDecomposition.hpp"
+#include "tket/Utils/CosSinDecomposition.hpp"
 
 #include <cmath>
 #include <tklog/TketLog.hpp>
 
-#include "Utils/Constants.hpp"
-#include "Utils/EigenConfig.hpp"
-#include "Utils/MatrixAnalysis.hpp"
+#include "tket/Utils/Constants.hpp"
+#include "tket/Utils/EigenConfig.hpp"
+#include "tket/Utils/MatrixAnalysis.hpp"
 
 namespace tket {
 

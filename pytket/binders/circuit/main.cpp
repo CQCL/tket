@@ -18,18 +18,17 @@
 
 #include <sstream>
 
-#include "Circuit/Command.hpp"
-#include "Gate/Gate.hpp"
-#include "Gate/OpPtrFunctions.hpp"
-#include "Gate/SymTable.hpp"
-#include "Ops/ClassicalOps.hpp"
-#include "Ops/MetaOp.hpp"
-#include "Ops/Op.hpp"
-#include "Utils/Constants.hpp"
-#include "Utils/PauliStrings.hpp"
-#include "Utils/Symbols.hpp"
 #include "binder_json.hpp"
 #include "binder_utils.hpp"
+#include "tket/Circuit/Command.hpp"
+#include "tket/Gate/Gate.hpp"
+#include "tket/Gate/OpPtrFunctions.hpp"
+#include "tket/Gate/SymTable.hpp"
+#include "tket/Ops/ClassicalOps.hpp"
+#include "tket/Ops/MetaOp.hpp"
+#include "tket/Ops/Op.hpp"
+#include "tket/Utils/Constants.hpp"
+#include "tket/Utils/Symbols.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;

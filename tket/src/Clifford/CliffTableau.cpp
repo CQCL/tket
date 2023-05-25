@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Clifford/CliffTableau.hpp"
+#include "tket/Clifford/CliffTableau.hpp"
 
 #include <stdexcept>
 
-#include "OpType/OpType.hpp"
-#include "OpType/OpTypeInfo.hpp"
-#include "Utils/MatrixAnalysis.hpp"
 #include "tkassert/Assert.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/OpType/OpTypeInfo.hpp"
+#include "tket/Utils/MatrixAnalysis.hpp"
 
 namespace tket {
 

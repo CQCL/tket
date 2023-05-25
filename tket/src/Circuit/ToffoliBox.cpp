@@ -12,17 +12,17 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Circuit/ToffoliBox.hpp"
+#include "tket/Circuit/ToffoliBox.hpp"
 
 #include <boost/graph/max_cardinality_matching.hpp>
 
-#include "Circuit/Circuit.hpp"
-#include "Circuit/DiagonalBox.hpp"
-#include "Circuit/Multiplexor.hpp"
-#include "Gate/Rotation.hpp"
-#include "Ops/OpJsonFactory.hpp"
-#include "Utils/HelperFunctions.hpp"
-#include "Utils/Json.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/DiagonalBox.hpp"
+#include "tket/Circuit/Multiplexor.hpp"
+#include "tket/Gate/Rotation.hpp"
+#include "tket/Ops/OpJsonFactory.hpp"
+#include "tket/Utils/HelperFunctions.hpp"
+#include "tket/Utils/Json.hpp"
 
 namespace tket {
 

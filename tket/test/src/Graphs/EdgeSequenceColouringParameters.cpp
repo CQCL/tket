@@ -18,9 +18,9 @@
 
 #include "EdgeSequence.hpp"
 #include "GraphTestingRoutines.hpp"
-#include "Graphs/AdjacencyData.hpp"
-#include "Graphs/GraphColouring.hpp"
 #include "RandomGraphGeneration.hpp"
+#include "tket/Graphs/AdjacencyData.hpp"
+#include "tket/Graphs/GraphColouring.hpp"
 
 using std::size_t;
 using std::string;

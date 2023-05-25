@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Converters/PauliGadget.hpp"
+#include "tket/Converters/PauliGadget.hpp"
 
-#include "Circuit/CircUtils.hpp"
-#include "Circuit/PauliExpBoxes.hpp"
+#include "tket/Circuit/CircUtils.hpp"
+#include "tket/Circuit/PauliExpBoxes.hpp"
 
 namespace tket {
 

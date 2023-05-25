@@ -18,7 +18,7 @@
 #include <stdexcept>
 #include <tkassert/Assert.hpp>
 
-#include "Graphs/AdjacencyData.hpp"
+#include "tket/Graphs/AdjacencyData.hpp"
 
 using std::map;
 using std::set;

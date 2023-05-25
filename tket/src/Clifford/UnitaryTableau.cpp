@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Clifford/UnitaryTableau.hpp"
+#include "tket/Clifford/UnitaryTableau.hpp"
 
 #include <stdexcept>
 
-#include "OpType/OpTypeInfo.hpp"
 #include "tkassert/Assert.hpp"
+#include "tket/OpType/OpTypeInfo.hpp"
 
 namespace tket {
 

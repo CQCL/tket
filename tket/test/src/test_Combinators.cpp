@@ -15,13 +15,13 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "CircuitsForTesting.hpp"
-#include "Predicates/PassGenerators.hpp"
-#include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
-#include "Transformations/Combinator.hpp"
-#include "Transformations/OptimisationPass.hpp"
-#include "Transformations/Rebase.hpp"
-#include "Transformations/Transform.hpp"
+#include "tket/Predicates/PassGenerators.hpp"
+#include "tket/Simulation/CircuitSimulator.hpp"
+#include "tket/Transformations/Combinator.hpp"
+#include "tket/Transformations/OptimisationPass.hpp"
+#include "tket/Transformations/Rebase.hpp"
+#include "tket/Transformations/Transform.hpp"
 
 namespace tket {
 namespace test_Combinators {

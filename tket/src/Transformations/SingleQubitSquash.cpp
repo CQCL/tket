@@ -12,11 +12,11 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Transformations/SingleQubitSquash.hpp"
+#include "tket/Transformations/SingleQubitSquash.hpp"
 
-#include "Circuit/Circuit.hpp"
-#include "Circuit/DAGDefs.hpp"
-#include "Gate/Gate.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/DAGDefs.hpp"
+#include "tket/Gate/Gate.hpp"
 
 namespace tket {
 

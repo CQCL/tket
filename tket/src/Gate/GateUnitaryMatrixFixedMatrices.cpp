@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Gate/GateUnitaryMatrixImplementations.hpp"
-#include "Gate/GateUnitaryMatrixUtils.hpp"
-#include "Utils/Constants.hpp"
+#include "tket/Gate/GateUnitaryMatrixImplementations.hpp"
+#include "tket/Gate/GateUnitaryMatrixUtils.hpp"
+#include "tket/Utils/Constants.hpp"
 
 namespace tket {
 namespace internal {
