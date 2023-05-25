@@ -21,11 +21,11 @@
 #include <optional>
 
 #include "Circuit/Boxes.hpp"
-#include "Circuit/PauliExpBoxes.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Circuit/ClassicalExpBox.hpp"
 #include "Circuit/DiagonalBox.hpp"
 #include "Circuit/Multiplexor.hpp"
+#include "Circuit/PauliExpBoxes.hpp"
 #include "Circuit/StatePreparation.hpp"
 #include "Circuit/ToffoliBox.hpp"
 #include "Converters/PhasePoly.hpp"

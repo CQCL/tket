@@ -26,8 +26,8 @@
 #include "Ops/MetaOp.hpp"
 #include "Ops/Op.hpp"
 #include "Utils/Constants.hpp"
-#include "Utils/Symbols.hpp"
 #include "Utils/PauliStrings.hpp"
+#include "Utils/Symbols.hpp"
 #include "binder_json.hpp"
 #include "binder_utils.hpp"
 #include "typecast.hpp"
@@ -47,22 +47,22 @@ PYBIND11_MODULE(circuit, m) {
   init_unitid(m);
   py::enum_<CXConfigType>(
       m, "CXConfigType",
-  "Enum for available configurations for CXs upon decompose phase "
-  "gadgets")
-  .value(
-  "Snake", CXConfigType::Snake,
-  "linear nearest neighbour CX sequence. Linear depth.")
-  .value(
-  "Star", CXConfigType::Star,
-  "Every CX has same target, linear depth, good for gate "
-  "cancellation.")
-  .value(
-  "Tree", CXConfigType::Tree,
-  "Balanced tree: logarithmic depth, harder to route.")
-  .value(
-  "MultiQGate", CXConfigType::MultiQGate,
-  "Support for multi-qubit architectures, decomposing to 3-qubit "
-  "XXPhase3 gates instead of CXs where possible.");
+      "Enum for available configurations for CXs upon decompose phase "
+      "gadgets")
+      .value(
+          "Snake", CXConfigType::Snake,
+          "linear nearest neighbour CX sequence. Linear depth.")
+      .value(
+          "Star", CXConfigType::Star,
+          "Every CX has same target, linear depth, good for gate "
+          "cancellation.")
+      .value(
+          "Tree", CXConfigType::Tree,
+          "Balanced tree: logarithmic depth, harder to route.")
+      .value(
+          "MultiQGate", CXConfigType::MultiQGate,
+          "Support for multi-qubit architectures, decomposing to 3-qubit "
+          "XXPhase3 gates instead of CXs where possible.");
   py::class_<Op, std::shared_ptr<Op>>(
       m, "Op", "Encapsulates operation information")
       .def_static(

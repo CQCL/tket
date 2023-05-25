@@ -75,11 +75,13 @@ SCENARIO("Test Op serialization") {
                                OpType::WASMInput, OpType::WASMOutput,
                                OpType::Barrier};
     const OpTypeSet boxes = {
-        OpType::CircBox,      OpType::Unitary1qBox, OpType::Unitary2qBox,
-        OpType::Unitary3qBox, OpType::ExpBox,       OpType::PauliExpBox,
+        OpType::CircBox,         OpType::Unitary1qBox,
+        OpType::Unitary2qBox,    OpType::Unitary3qBox,
+        OpType::ExpBox,          OpType::PauliExpBox,
         OpType::PauliExpPairBox, OpType::PauliExpCommutingSetBox,
-        OpType::ToffoliBox,   OpType::CustomGate,   OpType::CliffBox,
-        OpType::PhasePolyBox, OpType::QControlBox};
+        OpType::ToffoliBox,      OpType::CustomGate,
+        OpType::CliffBox,        OpType::PhasePolyBox,
+        OpType::QControlBox};
 
     std::set<std::string> type_names;
     for (auto type :
@@ -342,8 +344,8 @@ SCENARIO("Test Circuit serialization") {
     nlohmann::json j_pbox = c;
     const Circuit new_c = j_pbox.get<Circuit>();
 
-    const auto& p_b =
-        static_cast<const PauliExpPairBox&>(*new_c.get_commands()[0].get_op_ptr());
+    const auto& p_b = static_cast<const PauliExpPairBox&>(
+        *new_c.get_commands()[0].get_op_ptr());
 
     REQUIRE(p_b.get_paulis0() == pbox.get_paulis0());
     REQUIRE(p_b.get_phase0() == pbox.get_phase0());
@@ -355,18 +357,17 @@ SCENARIO("Test Circuit serialization") {
 
   GIVEN("PauliExpCommutingSetBoxes") {
     Circuit c(5, 2, "paulisetbox");
-    PauliExpCommutingSetBox pbox({
-        {{Pauli::I, Pauli::X, Pauli::Z, Pauli::I, Pauli::Z}, 0.3112},
-        {{Pauli::I, Pauli::Y, Pauli::I, Pauli::Z, Pauli::Y}, 1.178},
-        {{Pauli::X, Pauli::X, Pauli::I, Pauli::Y, Pauli::I}, -0.911}},
-        CXConfigType::MultiQGate
-    );
+    PauliExpCommutingSetBox pbox(
+        {{{Pauli::I, Pauli::X, Pauli::Z, Pauli::I, Pauli::Z}, 0.3112},
+         {{Pauli::I, Pauli::Y, Pauli::I, Pauli::Z, Pauli::Y}, 1.178},
+         {{Pauli::X, Pauli::X, Pauli::I, Pauli::Y, Pauli::I}, -0.911}},
+        CXConfigType::MultiQGate);
     c.add_box(pbox, {0, 1, 2, 3, 4});
     nlohmann::json j_pbox = c;
     const Circuit new_c = j_pbox.get<Circuit>();
 
-    const auto& p_b =
-        static_cast<const PauliExpCommutingSetBox&>(*new_c.get_commands()[0].get_op_ptr());
+    const auto& p_b = static_cast<const PauliExpCommutingSetBox&>(
+        *new_c.get_commands()[0].get_op_ptr());
 
     REQUIRE(p_b.get_pauli_gadgets() == pbox.get_pauli_gadgets());
     REQUIRE(p_b.get_cx_config() == pbox.get_cx_config());
@@ -1024,8 +1025,8 @@ SCENARIO("Test compiler pass serializations") {
     Circuit circ = CircuitsForTesting::get().uccsd;
     CompilationUnit cu{circ};
     CompilationUnit copy = cu;
-    PassPtr pp =
-        gen_synthesise_pauli_graph(Transforms::PauliSynthStrat::Sets, CXConfigType::Star);
+    PassPtr pp = gen_synthesise_pauli_graph(
+        Transforms::PauliSynthStrat::Sets, CXConfigType::Star);
     nlohmann::json j_pp;
     j_pp["pass_class"] = "StandardPass";
     j_pp["StandardPass"]["name"] = "PauliSimp";

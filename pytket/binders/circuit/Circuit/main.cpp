@@ -22,9 +22,9 @@
 #include <sstream>
 
 #include "Circuit/Boxes.hpp"
-#include "Circuit/PauliExpBoxes.hpp"
 #include "Circuit/Circuit.hpp"
 #include "Circuit/Command.hpp"
+#include "Circuit/PauliExpBoxes.hpp"
 #include "Circuit/ToffoliBox.hpp"
 #include "Gate/OpPtrFunctions.hpp"
 #include "Gate/SymTable.hpp"
