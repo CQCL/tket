@@ -13,7 +13,6 @@
 // limitations under the License.
 
 #include "tket/Circuit/Boxes.hpp"
-#include "tket/Circuit/PauliExpBoxes.hpp"
 
 #include <pybind11/eigen.h>
 #include <pybind11/pybind11.h>
@@ -24,6 +23,7 @@
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/DiagonalBox.hpp"
 #include "tket/Circuit/Multiplexor.hpp"
+#include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Circuit/StatePreparation.hpp"
 #include "tket/Circuit/ToffoliBox.hpp"
 #include "tket/Converters/PhasePoly.hpp"

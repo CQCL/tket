@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include <catch2/catch_test_macros.hpp>
+#include <tket/Transformations/Decomposition.hpp>
 
 #include "CircuitsForTesting.hpp"
 #include "testutil.hpp"
@@ -25,10 +26,8 @@
 #include "tket/PauliGraph/ConjugatePauliFunctions.hpp"
 #include "tket/PauliGraph/PauliGraph.hpp"
 #include "tket/Simulation/CircuitSimulator.hpp"
-#include "tket/Transformations/OptimisationPass.hpp"
 #include "tket/Transformations/PauliOptimisation.hpp"
 #include "tket/Transformations/Rebase.hpp"
-#include "tket/Transformations/Transform.hpp"
 
 namespace tket {
 namespace test_PauliGraph {

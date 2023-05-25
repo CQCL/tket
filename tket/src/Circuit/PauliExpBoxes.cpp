@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Circuit/PauliExpBoxes.hpp"
+#include "tket/Circuit/PauliExpBoxes.hpp"
 
 #include <iostream>
 
-#include "Circuit/CircUtils.hpp"
-#include "Converters/PauliGadget.hpp"
-#include "Converters/PhasePoly.hpp"
-#include "Diagonalisation/Diagonalisation.hpp"
-#include "Ops/OpJsonFactory.hpp"
+#include "tket/Circuit/CircUtils.hpp"
+#include "tket/Converters/PauliGadget.hpp"
+#include "tket/Converters/PhasePoly.hpp"
+#include "tket/Diagonalisation/Diagonalisation.hpp"
+#include "tket/Ops/OpJsonFactory.hpp"
 
 namespace tket {
 
