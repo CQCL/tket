@@ -173,6 +173,8 @@ class PauliExpCommutingSetBox : public Box {
 
   ~PauliExpCommutingSetBox() override {}
 
+  bool paulis_commute() const;
+
   bool is_clifford() const override;
 
   SymSet free_symbols() const override;
@@ -208,8 +210,6 @@ class PauliExpCommutingSetBox : public Box {
  private:
   std::vector<std::pair<std::vector<Pauli>, Expr>> pauli_gadgets_;
   CXConfigType cx_config_;
-
-  bool paulis_commute() { return true; }
 };
 
 }  // namespace tket

@@ -238,6 +238,24 @@ bool PauliExpCommutingSetBox::is_clifford() const {
       });
 }
 
+bool PauliExpCommutingSetBox::paulis_commute() const {
+  std::vector<QubitPauliString> pauli_strings;
+  pauli_strings.reserve(pauli_gadgets_.size());
+  for (const auto &pauli_gadget : pauli_gadgets_) {
+    pauli_strings.emplace_back(pauli_gadget.first);
+  }
+  for (auto string0 = pauli_strings.begin(); string0 != pauli_strings.end();
+       string0++) {
+    for (auto string1 = string0 + 1; string1 != pauli_strings.end();
+         string1++) {
+      if (!string0->commutes_with(*string1)) {
+        return false;
+      }
+    }
+  }
+  return true;
+}
+
 SymSet PauliExpCommutingSetBox::free_symbols() const {
   std::vector<Expr> angles;
   for (const auto &pauli_exp : pauli_gadgets_) {

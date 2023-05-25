@@ -150,65 +150,68 @@ void init_boxes(py::module &m) {
       .def(
           "get_cx_config", &PauliExpBox::get_cx_config,
           ":return: decomposition method");
-    py::class_<PauliExpPairBox, std::shared_ptr<PauliExpPairBox>, Op>(
-        m, "PauliExpPairBox",
-        "An operation defined as a pair of exponentials of a tensor of Pauli "
-        "operations and their (possibly symbolic) phase parameters.")
-        .def(
-            py::init<const std::vector<Pauli> &, Expr,
-                     const std::vector<Pauli> &, Expr,
-                     CXConfigType>(),
-        "Construct a pair of Pauli exponentials of the form"
-        " :math:`e^{-\\frac12 i \\pi t_j \\sigma_0 \\otimes "
-        "\\sigma_1 \\otimes \\cdots}` from Pauli operator strings "
-        ":math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and parameters "
-        ":math:`t_j, j \\in \\{0,1\\}`.",
-        py::arg("paulis0"), py::arg("t0"),
-          py::arg("paulis1"), py::arg("t1"),
+  py::class_<PauliExpPairBox, std::shared_ptr<PauliExpPairBox>, Op>(
+      m, "PauliExpPairBox",
+      "An operation defined as a pair of exponentials of a tensor of Pauli "
+      "operations and their (possibly symbolic) phase parameters.")
+      .def(
+          py::init<
+              const std::vector<Pauli> &, Expr, const std::vector<Pauli> &,
+              Expr, CXConfigType>(),
+          "Construct a pair of Pauli exponentials of the form"
+          " :math:`e^{-\\frac12 i \\pi t_j \\sigma_0 \\otimes "
+          "\\sigma_1 \\otimes \\cdots}` from Pauli operator strings "
+          ":math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and parameters "
+          ":math:`t_j, j \\in \\{0,1\\}`.",
+          py::arg("paulis0"), py::arg("t0"), py::arg("paulis1"), py::arg("t1"),
           py::arg("cx_config_type") = CXConfigType::Tree)
-        .def(
-        "get_circuit", [](PauliExpPairBox &pbox) { return *pbox.to_circuit();
-        },
-        ":return: the :py:class:`Circuit` described by the box")
-        .def(
-        "get_paulis0", &PauliExpPairBox::get_paulis0,
-        ":return: the corresponding list of " CLSOBJS(Pauli))
-        .def(
-        "get_paulis1", &PauliExpPairBox::get_paulis1,
-        ":return: the corresponding list of " CLSOBJS(Pauli))
-        .def(
-        "get_phase", &PauliExpPairBox::get_phase0,
-        ":return: the corresponding phase parameter")
-        .def(
-        "get_phase", &PauliExpPairBox::get_phase1,
-        ":return: the corresponding phase parameter")
-        .def(
-        "get_cx_config", &PauliExpPairBox::get_cx_config,
-        ":return: decomposition method");
-    py::class_<PauliExpCommutingSetBox,
-    std::shared_ptr<PauliExpCommutingSetBox>, Op>(
-        m, "PauliExpCommutingSetBox",
-        "An operation defined as a set of commuting of exponentials of a"
-        "ensor of Pauli operations and their (possibly symbolic) phase parameters.")
-        .def(
-            py::init<const std::vector<std::pair<std::vector<Pauli>,Expr>> &, CXConfigType>(),
-        "Construct a set of necessarily commuting Pauli exponentials of the form"
-        " :math:`e^{-\\frac12 i \\pi t_j \\sigma_0 \\otimes "
-        "\\sigma_1 \\otimes \\cdots}` from Pauli operator strings "
-        ":math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and parameters "
-        ":math:`t_j, j \\in \\{0, 1, \\cdots \\}`.",
-        py::arg("pauli_gadgets"),
-        py::arg("cx_config_type") = CXConfigType::Tree)
-        .def(
-        "get_circuit", [](PauliExpPairBox &pbox) { return *pbox.to_circuit();
-        },
-        ":return: the :py:class:`Circuit` described by the box")
-        .def(
-        "get_paulis0", &PauliExpCommutingSetBox::get_pauli_gadgets,
-        ":return: the corresponding list of pauli gadgets")
-        .def(
-        "get_cx_config", &PauliExpCommutingSetBox::get_cx_config,
-        ":return: decomposition method");
+      .def(
+          "get_circuit",
+          [](PauliExpPairBox &pbox) { return *pbox.to_circuit(); },
+          ":return: the :py:class:`Circuit` described by the box")
+      .def(
+          "get_paulis0", &PauliExpPairBox::get_paulis0,
+          ":return: the corresponding list of " CLSOBJS(Pauli))
+      .def(
+          "get_paulis1", &PauliExpPairBox::get_paulis1,
+          ":return: the corresponding list of " CLSOBJS(Pauli))
+      .def(
+          "get_phase", &PauliExpPairBox::get_phase0,
+          ":return: the corresponding phase parameter")
+      .def(
+          "get_phase", &PauliExpPairBox::get_phase1,
+          ":return: the corresponding phase parameter")
+      .def(
+          "get_cx_config", &PauliExpPairBox::get_cx_config,
+          ":return: decomposition method");
+  py::class_<
+      PauliExpCommutingSetBox, std::shared_ptr<PauliExpCommutingSetBox>, Op>(
+      m, "PauliExpCommutingSetBox",
+      "An operation defined as a set of commuting of exponentials of a"
+      "ensor of Pauli operations and their (possibly symbolic) phase "
+      "parameters.")
+      .def(
+          py::init<
+              const std::vector<std::pair<std::vector<Pauli>, Expr>> &,
+              CXConfigType>(),
+          "Construct a set of necessarily commuting Pauli exponentials of the "
+          "form"
+          " :math:`e^{-\\frac12 i \\pi t_j \\sigma_0 \\otimes "
+          "\\sigma_1 \\otimes \\cdots}` from Pauli operator strings "
+          ":math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and parameters "
+          ":math:`t_j, j \\in \\{0, 1, \\cdots \\}`.",
+          py::arg("pauli_gadgets"),
+          py::arg("cx_config_type") = CXConfigType::Tree)
+      .def(
+          "get_circuit",
+          [](PauliExpPairBox &pbox) { return *pbox.to_circuit(); },
+          ":return: the :py:class:`Circuit` described by the box")
+      .def(
+          "get_paulis0", &PauliExpCommutingSetBox::get_pauli_gadgets,
+          ":return: the corresponding list of pauli gadgets")
+      .def(
+          "get_cx_config", &PauliExpCommutingSetBox::get_cx_config,
+          ":return: decomposition method");
   py::class_<ToffoliBox, std::shared_ptr<ToffoliBox>, Op>(
       m, "ToffoliBox",
       "An operation that constructs a circuit to implement the specified "
