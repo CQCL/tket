@@ -6,7 +6,6 @@ on:
       - develop
     paths:
       - 'tket/src/**'
-  workflow_dispatch:
 
 jobs:
   build_docs:

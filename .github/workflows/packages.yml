@@ -7,7 +7,6 @@ on:
   push:
     branches:
       - 'packages-upload-new/**'
-  workflow_dispatch:
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
