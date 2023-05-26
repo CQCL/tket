@@ -21,7 +21,7 @@ those using an older version of pytket, keep up to date by installing with the
 There are separate packages for managing the interoperability between pytket and
 other quantum software packages which can also be installed via PyPI. For
 details of these, see the
-`pytket-extensions <https://github.com/CQCL/pytket-extensions>`_ repo.
+`pytket-extensions <https://cqcl.github.io/pytket-extensions/api/index.html>`_ documentation.
 
 
 The quantum circuit is an abstraction of computation using quantum resources,
@@ -35,7 +35,7 @@ use them directly.
 
     from pytket import Circuit
 
-    c = Circuit(2,2) # define a circuit with 2 qubits and 2 bits
+    c = Circuit(2, 2) # define a circuit with 2 qubits and 2 bits
     c.H(0)           # add a Hadamard gate to qubit 0
     c.Rz(0.25, 0)    # add an Rz gate of angle 0.25*pi to qubit 0
     c.CX(1,0)        # add a CX gate with control qubit 1 and target qubit 0
@@ -67,6 +67,6 @@ Or, if an extension module like ``pytket-qiskit`` is installed:
     c = qiskit_to_tk(qc)
 
 See the
-`Pytket User Manual <https://cqcl.github.io/pytket/manual/index.html>`_
+`pytket user manual <https://cqcl.github.io/pytket/manual/index.html>`_
 for an extensive tutorial on pytket, providing a gentle introduction to its
 features and how to run circuits on backend devices, with worked examples.
