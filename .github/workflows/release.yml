@@ -7,7 +7,6 @@ on:
   push:
     branches:
       - 'wheel/**'
-  workflow_dispatch:
 
 jobs:
   build_Linux_wheels:
