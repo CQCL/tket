@@ -33,6 +33,7 @@ from pytket.passes import (  # type: ignore
     KAKDecomposition,
     OptimisePhaseGadgets,
     PauliSimp,
+    PauliExponentials,
     PauliSquash,
     PeepholeOptimise2Q,
     RebaseTket,

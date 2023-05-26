@@ -431,17 +431,21 @@ def test_boxes() -> None:
     d.add_pauliexpbox(pbox, [3, 2, 1])
 
     ppairbox = PauliExpPairBox(
-        [Pauli.I, Pauli.X, Pauli.Y, Pauli.Z], Symbol("alpha"),
-        [Pauli.Y, Pauli.I, Pauli.I, Pauli.X], Symbol("beta")
+        [Pauli.I, Pauli.X, Pauli.Y, Pauli.Z],
+        Symbol("alpha"),
+        [Pauli.Y, Pauli.I, Pauli.I, Pauli.X],
+        Symbol("beta"),
     )  # type: ignore
     assert ppairbox.type == OpType.PauliExpPairBox
     d.add_pauliexppairbox(ppairbox, [3, 2, 1, 0])
 
-    psetbox = PauliExpCommutingSetBox([
-        ([Pauli.X, Pauli.X, Pauli.X, Pauli.Y], Symbol("alpha")),
-        ([Pauli.X, Pauli.X, Pauli.Y, Pauli.X], Symbol("beta")),
-        ([Pauli.X, Pauli.Y, Pauli.X, Pauli.X], Symbol("gamma"))
-    ])  # type: ignore
+    psetbox = PauliExpCommutingSetBox(
+        [
+            ([Pauli.X, Pauli.X, Pauli.X, Pauli.Y], Symbol("alpha")),
+            ([Pauli.X, Pauli.X, Pauli.Y, Pauli.X], Symbol("beta")),
+            ([Pauli.X, Pauli.Y, Pauli.X, Pauli.X], Symbol("gamma")),
+        ]
+    )  # type: ignore
     assert psetbox.type == OpType.PauliExpCommutingSetBox
     d.add_pauliexpcommutingsetbox(psetbox, [0, 1, 2, 3])
 
