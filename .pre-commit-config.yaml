@@ -5,7 +5,7 @@ repos:
     rev: 19.10b0
     hooks:
       - id: black
-        language_version: python36
+        language_version: python311
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v2.4.0
     hooks:
@@ -15,4 +15,4 @@ repos:
       - id: check-added-large-files
 
 default_language_version:
-    python: python36
+    python: python311
