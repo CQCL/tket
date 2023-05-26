@@ -130,7 +130,7 @@ jobs:
       run: |
         eval "$(pyenv init -)"
         pyenv shell tket-${{ matrix.python-version }}
-        python -m pip install -U conan
+        python -m pip install conan==${{ env.conan_version }}
         conan profile detect --force
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
         conan remove -c 'tket/*'

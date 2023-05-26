@@ -450,7 +450,7 @@ jobs:
         eval "$(pyenv init -)"
         pyenv shell tket-3.9
         PKG_CONFIG_PATH="$(brew --prefix openblas)"/lib/pkgconfig pip install -U scipy
-        pip install -U conan
+        pip install conan==${{ env.conan_version }}
         conan remove -c "pybind11/*"
         conan remove -c "pytket/*"
         conan create recipes/pybind11
@@ -468,7 +468,7 @@ jobs:
         eval "$(pyenv init -)"
         pyenv shell tket-3.10
         PKG_CONFIG_PATH="$(brew --prefix openblas)"/lib/pkgconfig pip install -U scipy
-        pip install -U conan
+        pip install conan==${{ env.conan_version }}
         conan remove -c "pybind11/*"
         conan remove -c "pytket/*"
         conan create recipes/pybind11
@@ -486,7 +486,7 @@ jobs:
         eval "$(pyenv init -)"
         pyenv shell tket-3.11
         PKG_CONFIG_PATH="$(brew --prefix openblas)"/lib/pkgconfig pip install -U scipy
-        pip install -U conan
+        pip install conan==${{ env.conan_version }}
         conan remove -c "pybind11/*"
         conan remove -c "pytket/*"
         conan create recipes/pybind11
