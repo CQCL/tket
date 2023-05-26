@@ -7,6 +7,9 @@ on:
   push:
     branches:
       - 'packages-upload-new/**'
+      -
+env:
+  conan_version: 2.0.5
 
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
@@ -31,6 +34,8 @@ jobs:
 
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
+      with:
+        version: ${{ env.conan_version }}
 
     - name: Set up conan
       run: |
@@ -53,6 +58,8 @@ jobs:
 
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
+      with:
+        version: ${{ env.conan_version }}
 
     - name: Set up conan
       run: |
