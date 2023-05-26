@@ -3,7 +3,7 @@ on:
   schedule:
     # 01:00 every Monday morning
     - cron: '0 1 * * 1'
-  workflow_dispatch:
+  workflow_dispatch: {}
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true

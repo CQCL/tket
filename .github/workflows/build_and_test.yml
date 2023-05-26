@@ -11,7 +11,7 @@ on:
   schedule:
     # 03:00 every Saturday morning
     - cron: '0 3 * * 6'
-  workflow_dispatch:
+  workflow_dispatch: {}
 
 concurrency:
   group: ${{ github.head_ref || github.run_id }}
