@@ -32,7 +32,7 @@ Q: How can I convert my qiskit :py:class:`QuantumCircuit` to a pytket :py:class:
 
 A: This can be achieved using the :py:meth:`qiskit_to_tk` function from the `pytket-qiskit extension <https://cqcl.github.io/pytket-qiskit/api/index.html>`_
 
-: jupyter-execute::
+::
 
     from qiskit import QuantumCircuit
     from pytket import Circuit
