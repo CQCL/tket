@@ -1086,7 +1086,7 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
     Circuit replacement;
 
     // Check if the matrix is SU(2)
-    if (m.determinant() == 1.) {
+    if (std::abs(m.determinant() - 1.) < EPS) {
       // We have three functions that can decompose a multi-controlled SU(2).
       // The choice is based on the average number of CXs they produce for a
       // random n-controlled SU(2) gate.

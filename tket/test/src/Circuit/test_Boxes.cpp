@@ -586,6 +586,20 @@ SCENARIO("QControlBox", "[boxes]") {
     V(3, 3) = std::cos(0.5 * PI * a);
     REQUIRE(U.isApprox(V));
   }
+  GIVEN("controlled SU2") {
+    Op_ptr op = get_op_ptr(OpType::TK1, {0.92, 1.23, 3.34}, 1);
+    QControlBox qcbox(op, 10);
+    std::shared_ptr<Circuit> c = qcbox.to_circuit();
+    // Make sure the CnSU2 decomp method is used
+    unsigned n_cx = c->count_gates(OpType::CX);
+    unsigned n_cry = c->count_gates(OpType::CRy);
+    unsigned n_crz = c->count_gates(OpType::CRz);
+    unsigned n_2q = c->count_n_qubit_gates(2);
+    REQUIRE(n_2q == n_cx + n_cry + n_crz);
+    REQUIRE(n_cry <= 2);
+    REQUIRE(n_crz <= 3);
+    REQUIRE(n_2q <= 317);
+  }
   GIVEN("controlled S") {
     Op_ptr op = get_op_ptr(OpType::S);
     QControlBox qcbox(op);
