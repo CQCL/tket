@@ -65,9 +65,7 @@ import pytest  # type: ignore
 from hypothesis import given, settings
 import strategies as st  # type: ignore
 
-
 curr_file_path = Path(__file__).resolve().parent
-
 
 with open(curr_file_path.parent.parent / "schemas/circuit_v1.json", "r") as f:
     schema = json.load(f)
@@ -432,18 +430,18 @@ def test_boxes() -> None:
 
     ppairbox = PauliExpPairBox(
         [Pauli.I, Pauli.X, Pauli.Y, Pauli.Z],
-        Symbol("alpha"),
+        Symbol("alpha"),  # type: ignore
         [Pauli.Y, Pauli.I, Pauli.I, Pauli.X],
-        Symbol("beta"),
+        Symbol("beta"),  # type: ignore
     )  # type: ignore
     assert ppairbox.type == OpType.PauliExpPairBox
     d.add_pauliexppairbox(ppairbox, [3, 2, 1, 0])
 
     psetbox = PauliExpCommutingSetBox(
         [
-            ([Pauli.X, Pauli.X, Pauli.X, Pauli.Y], Symbol("alpha")),
-            ([Pauli.X, Pauli.X, Pauli.Y, Pauli.X], Symbol("beta")),
-            ([Pauli.X, Pauli.Y, Pauli.X, Pauli.X], Symbol("gamma")),
+            ([Pauli.X, Pauli.X, Pauli.X, Pauli.Y], Symbol("alpha")),  # type: ignore
+            ([Pauli.X, Pauli.X, Pauli.Y, Pauli.X], Symbol("beta")),  # type: ignore
+            ([Pauli.X, Pauli.Y, Pauli.X, Pauli.X], Symbol("gamma")),  # type: ignore
         ]
     )  # type: ignore
     assert psetbox.type == OpType.PauliExpCommutingSetBox
