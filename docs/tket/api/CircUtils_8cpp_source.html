@@ -1161,7 +1161,7 @@ $(function() {
 <div class="line"><a name="l01086"></a><span class="lineno"> 1086</span>&#160;    Circuit replacement;</div>
 <div class="line"><a name="l01087"></a><span class="lineno"> 1087</span>&#160; </div>
 <div class="line"><a name="l01088"></a><span class="lineno"> 1088</span>&#160;    <span class="comment">// Check if the matrix is SU(2)</span></div>
-<div class="line"><a name="l01089"></a><span class="lineno"> 1089</span>&#160;    <span class="keywordflow">if</span> (m.determinant() == 1.) {</div>
+<div class="line"><a name="l01089"></a><span class="lineno"> 1089</span>&#160;    <span class="keywordflow">if</span> (std::abs(m.determinant() - 1.) &lt; <a class="code" href="namespacetket.html#a9cdfe3f23ec01d10a956474db74c9fc1">EPS</a>) {</div>
 <div class="line"><a name="l01090"></a><span class="lineno"> 1090</span>&#160;      <span class="comment">// We have three functions that can decompose a multi-controlled SU(2).</span></div>
 <div class="line"><a name="l01091"></a><span class="lineno"> 1091</span>&#160;      <span class="comment">// The choice is based on the average number of CXs they produce for a</span></div>
 <div class="line"><a name="l01092"></a><span class="lineno"> 1092</span>&#160;      <span class="comment">// random n-controlled SU(2) gate.</span></div>
