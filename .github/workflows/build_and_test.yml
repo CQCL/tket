@@ -11,6 +11,10 @@ on:
   schedule:
     # 03:00 every Saturday morning
     - cron: '0 3 * * 6'
+  workflow_dispatch: {}
+
+env:
+  conan_version: 2.0.5
 
 concurrency:
   group: ${{ github.head_ref || github.run_id }}
@@ -47,6 +51,8 @@ jobs:
             - 'pytket/**'
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
+      with:
+        version: ${{ env.conan_version }}
     - name: parse version from conanfile
       id: tket_ver
       run: |
@@ -72,7 +78,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: Check C++ code formatting
-      if: matrix.os == 'macos-12' && github.event_name == 'pull_request'
+      if: matrix.os == 'macos-12' && (github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch')
       run: |
         brew update
         brew install clang-format@16
@@ -81,7 +87,7 @@ jobs:
       if: matrix.os == 'ubuntu-22.04'
       run: sudo apt update
     - name: Check doxygen
-      if: matrix.os == 'ubuntu-22.04' && github.event_name == 'pull_request'
+      if: matrix.os == 'ubuntu-22.04' && (github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch')
       run: |
         sudo apt install -y doxygen graphviz
         cd tket && doxygen
@@ -92,6 +98,8 @@ jobs:
         python-version: '3.10'
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
+      with:
+        version: ${{ env.conan_version }}
     - name: Set up conan
       run: |
         conan profile detect
@@ -117,7 +125,7 @@ jobs:
       if: needs.check_changes.outputs.tket_changed != 'true'
       run: conan install tket --version ${{ needs.check_changes.outputs.tket_ver }} --user tket --channel stable --build=missing -o boost/*:header_only=True
     - name: check that version is consistent
-      if: matrix.os == 'ubuntu-22.04' && github.event_name == 'pull_request'
+      if: matrix.os == 'ubuntu-22.04' && (github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch')
       run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
     - name: Install runtime test requirements
       if: matrix.os == 'ubuntu-22.04' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_tests_changed == 'true') && github.event_name == 'schedule'
@@ -149,11 +157,13 @@ jobs:
     name: Build and test tket (macos-arm64)
     runs-on: ['self-hosted', 'macOS', 'ARM64']
     needs: check_changes
-    if: github.event_name == 'push' || github.event_name == 'schedule' || github.event.pull_request.head.repo.full_name == github.repository
+    if: github.event_name == 'push' || github.event_name == 'schedule' || github.event.pull_request.head.repo.full_name == github.repository || github.event.workflow_dispatch.repository == github.repository
     steps:
     - uses: actions/checkout@v3
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
+      with:
+        version: ${{ env.conan_version }}
     - name: Set up conan
       run: |
         conan profile detect --force
@@ -191,6 +201,8 @@ jobs:
     - uses: actions/checkout@v3
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
+      with:
+        version: ${{ env.conan_version }}
     - name: Set up conan
       run: |
         conan profile detect
@@ -206,10 +218,10 @@ jobs:
         conan create recipes/pybind11
         conan create recipes/pybind11_json/all --version 0.2.13
     - name: check that version is consistent
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
     - name: Set up Python (pull request)
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       uses: actions/setup-python@v4
       with:
         python-version: "3.9"
@@ -233,31 +245,31 @@ jobs:
         pip install pytest
         pytest --doctest-modules pytket
     - name: Test pytket with coverage
-      if: github.event_name == 'pull_request' || github.event_name == 'push'
+      if: github.event_name == 'pull_request' || github.event_name == 'push' || github.event_name == 'workflow_dispatch'
       run: |
         cd pytket/tests
         pip install -r requirements.txt
         pytest --ignore=simulator/ --hypothesis-seed=1 --cov=../pytket --cov-branch --cov-report=html --cov-report=xml:htmlcov/cov.xml
     - name: Test pytket
-      if: github.event_name != 'pull_request'
+      if: github.event_name != 'pull_request' || github.event_name == 'workflow_dispatch'
       run: |
         cd pytket/tests
         pip install -r requirements.txt
         pytest --ignore=simulator/
     - name: Test building docs
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       timeout-minutes: 20
       run: |
         pip install -r pytket/docs/requirements.txt
         ./.github/workflows/build-docs
     - name: Upload artefact
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       uses: actions/upload-artifact@v3
       with:
         name: pytket_docs
         path: pytket/docs/build/html/
     - name: Upload pytket coverage artefact
-      if: github.event_name == 'pull_request' || github.event_name == 'push'
+      if: github.event_name == 'pull_request' || github.event_name == 'push' || github.event_name == 'workflow_dispatch'
       uses: actions/upload-artifact@v3
       with:
         name: pytket_test_coverage
@@ -281,6 +293,8 @@ jobs:
         python-version: '3.10'
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
+      with:
+        version: ${{ env.conan_version }}
     - name: Set up conan
       run: |
         conan profile detect
@@ -296,7 +310,7 @@ jobs:
         conan create recipes/pybind11
         conan create recipes/pybind11_json/all --version 0.2.13
     - name: Set up Python (pull request)
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       uses: actions/setup-python@v4
       with:
         python-version: "3.9"
@@ -325,7 +339,7 @@ jobs:
         pip install -r requirements.txt
         pytest --ignore=simulator/
     - name: Run mypy
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       run: |
         pip install -U mypy
         cd pytket
@@ -344,6 +358,8 @@ jobs:
     - uses: actions/checkout@v3
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
+      with:
+        version: ${{ env.conan_version }}
     - name: Set up conan
       run: |
         conan profile detect
@@ -372,7 +388,7 @@ jobs:
         conan create recipes/pybind11
         conan create recipes/pybind11_json/all --version 0.2.13
     - name: Set up Python (3.9)
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       uses: actions/setup-python@v4
       with:
         python-version: "3.9"
@@ -410,11 +426,13 @@ jobs:
     name: Build and test pytket (macos-arm64)
     runs-on: ['self-hosted', 'macOS', 'ARM64']
     needs: check_changes
-    if: github.event_name == 'push' || github.event_name == 'schedule' || github.event.pull_request.head.repo.full_name == github.repository
+    if: github.event_name == 'push' || github.event_name == 'schedule' || github.event.pull_request.head.repo.full_name == github.repository || github.event.workflow_dispatch.repository == github.repository
     steps:
     - uses: actions/checkout@v3
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
+      with:
+        version: ${{ env.conan_version }}
     - name: Set up conan
       run: |
         conan profile detect --force
@@ -427,12 +445,12 @@ jobs:
     - name: Uninstall conan
       run: pip3 uninstall -y conan
     - name: Build and test pytket (3.9)
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       run: |
         eval "$(pyenv init -)"
         pyenv shell tket-3.9
         PKG_CONFIG_PATH="$(brew --prefix openblas)"/lib/pkgconfig pip install -U scipy
-        pip install -U conan
+        pip install conan==${{ env.conan_version }}
         conan remove -c "pybind11/*"
         conan remove -c "pytket/*"
         conan create recipes/pybind11
@@ -450,7 +468,7 @@ jobs:
         eval "$(pyenv init -)"
         pyenv shell tket-3.10
         PKG_CONFIG_PATH="$(brew --prefix openblas)"/lib/pkgconfig pip install -U scipy
-        pip install -U conan
+        pip install conan==${{ env.conan_version }}
         conan remove -c "pybind11/*"
         conan remove -c "pytket/*"
         conan create recipes/pybind11
@@ -468,7 +486,7 @@ jobs:
         eval "$(pyenv init -)"
         pyenv shell tket-3.11
         PKG_CONFIG_PATH="$(brew --prefix openblas)"/lib/pkgconfig pip install -U scipy
-        pip install -U conan
+        pip install conan==${{ env.conan_version }}
         conan remove -c "pybind11/*"
         conan remove -c "pytket/*"
         conan create recipes/pybind11
@@ -482,6 +500,8 @@ jobs:
         pytest --ignore=simulator/
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
+      with:
+        version: ${{ env.conan_version }}
     - name: Upload package
       if: github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_changed == 'true'
       run: |
@@ -521,7 +541,7 @@ jobs:
   check_pytket_coverage:
     name: Check pytket line and branch coverage
     needs: build_test_pytket_ubuntu
-    if: github.event_name == 'pull_request'
+    if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v3
