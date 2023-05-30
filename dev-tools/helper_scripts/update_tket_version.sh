@@ -10,15 +10,15 @@ set -euo pipefail
 TKET_SRC_DIR=$1
 NEW_TKET_VERSION=$2
 
-CURRENT_TKET_VERSION=$(cat ${TKET_SRC_DIR}/recipes/tket/conanfile.py  | grep version | grep -E -o "[0-9]+\.[0-9]+\.[0-9]+")
+CURRENT_TKET_VERSION=$(cat ${TKET_SRC_DIR}/tket/conanfile.py  | grep version | grep -E -o "[0-9]+\.[0-9]+\.[0-9]+")
 
 set_local_tket_version() {
   echo "Setting local tket version to: ${NEW_TKET_VERSION}"
 
-  sed -i'' -e "s/${CURRENT_TKET_VERSION}/${NEW_TKET_VERSION}/" "${TKET_SRC_DIR}/recipes/tket/conanfile.py"
-  sed -i'' -e "s/tket\/.*\@/tket\/${NEW_TKET_VERSION}\@/" "${TKET_SRC_DIR}/recipes/tket-tests/conanfile.py"
-  sed -i'' -e "s/tket\/.*\@/tket\/${NEW_TKET_VERSION}\@/" "${TKET_SRC_DIR}/recipes/tket-proptests/conanfile.py"
-  sed -i'' -e "s/tket\/.*\@/tket\/${NEW_TKET_VERSION}\@/" "${TKET_SRC_DIR}/pytket/conanfile.txt"
+  sed -i'' -e "s/${CURRENT_TKET_VERSION}/${NEW_TKET_VERSION}/" "${TKET_SRC_DIR}/tket/conanfile.py"
+  sed -i'' -e "s/tket\/.*\@/tket\/${NEW_TKET_VERSION}\@/" "${TKET_SRC_DIR}/tket/test/conanfile.py"
+  sed -i'' -e "s/tket\/.*\@/tket\/${NEW_TKET_VERSION}\@/" "${TKET_SRC_DIR}/tket/proptest/conanfile.py"
+  sed -i'' -e "s/tket\/.*\@/tket\/${NEW_TKET_VERSION}\@/" "${TKET_SRC_DIR}/pytket/conanfile.py"
 
 }
 
