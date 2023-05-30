@@ -18,4 +18,4 @@ Exports class Transform
 """
 
 from pytket._tket.transform import *  # type: ignore
-from pytket._tket.circuit import CXConfigType
+from pytket._tket.circuit import CXConfigType  # type: ignore
