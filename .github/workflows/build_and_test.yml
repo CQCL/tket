@@ -26,8 +26,7 @@ jobs:
     runs-on: ubuntu-22.04
     outputs:
       tket_changed: ${{ steps.filter.outputs.tket }}
-      tket_tests_changed: ${{ steps.filter.outputs.tket_tests }}
-      tket_proptests_changed: ${{ steps.filter.outputs.tket_proptests }}
+      doxyfile_changed: ${{ steps.filter.outputs.doxyfile }}
       pytket_changed: ${{ steps.filter.outputs.pytket }}
       tket_ver: ${{ steps.tket_ver.outputs.tket_ver }}
       tket_package_exists: ${{ steps.tket_package_exists.outputs.tket_package_exists }}
@@ -42,11 +41,9 @@ jobs:
         base: ${{ github.ref }}
         filters: |
           tket:
-            - '{tket/src/**,tket/include/**,tket/conanfile.py,tket/CMakeLists.txt,tket/cmake/**}'
-          tket_tests:
-            - '{tket/test/**}'
-          tket_proptests:
-            - '{tket/proptest/**}'
+            - '{tket/src/**,tket/include/**,tket/conanfile.py,tket/CMakeLists.txt,tket/cmake/**,tket/test/**,tket/proptest/**}'
+          doxyfile:
+            - '{tket/Doxyfile}'
           pytket:
             - 'pytket/**'
     - name: Install conan
@@ -68,29 +65,45 @@ jobs:
       if: github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'develop' && steps.filter.outputs.tket == 'true' && steps.test_package_exists.outputs.tket_package_exists == 'true'
       run: exit 1
 
+  check_docs_tket:
+    name: Check documentation build
+    needs: check_changes
+    if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.doxyfile_changed == 'true'
+    runs-on: 'ubuntu-22.04'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Check doxygen
+        run: |
+          sudo apt install -y doxygen graphviz
+          cd tket && doxygen
+
+  check_format_tket:
+    name: Check C++ code formatting
+    needs: check_changes
+    if: needs.check_changes.outputs.tket_changed == 'true'
+    runs-on: 'macos-12'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Check C++ code formatting
+        if: matrix.os == 'macos-12'
+        run: |
+          brew update
+          brew install clang-format@16
+          git ls-files "*.cpp" "*.hpp" | xargs clang-format -style=file --dry-run --Werror
+
   build_test_tket:
     name: Build and test (tket)
     needs: check_changes
+    if: needs.check_changes.outputs.tket_changed == 'true'
     strategy:
       matrix:
         os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
-    - name: Check C++ code formatting
-      if: matrix.os == 'macos-12' && (github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch')
-      run: |
-        brew update
-        brew install clang-format@16
-        git ls-files "*.cpp" "*.hpp" | xargs clang-format -style=file --dry-run --Werror
     - name: apt update
       if: matrix.os == 'ubuntu-22.04'
       run: sudo apt update
-    - name: Check doxygen
-      if: matrix.os == 'ubuntu-22.04' && (github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch')
-      run: |
-        sudo apt install -y doxygen graphviz
-        cd tket && doxygen
     - name: Select Python 3.10
       # otherwise turtlebrowser/get-conan@v1.2 fails on macos-12
       uses: actions/setup-python@v4
@@ -114,42 +127,24 @@ jobs:
         $cmakelists = 'tket/CMakeLists.txt'
         $src_files = Get-ChildItem "tket/src" -File -Recurse
         $include_files = Get-ChildItem "tket/include" -File -Recurse
-        foreach ($f in @($conanfile) + @($cmakelists) + $src_files + $include_files) {
+        $test_files = Get-ChildItem "tket/test" -File -Recurse
+        $proptest_files = Get-ChildItem "tket/proptest" -File -Recurse
+        foreach ($f in @($conanfile) + @($cmakelists) + $src_files + $include_files + $test_files + $proptest_files) {
           $normalized_file = [IO.File]::ReadAllText($f) -replace "`r`n", "`n"
           [IO.File]::WriteAllText($f, $normalized_file)
         }
-    - name: Build tket
-      if: needs.check_changes.outputs.tket_changed == 'true'
-      run: conan create tket --user=tket --channel=stable --build=missing -o boost/*:header_only=True
-    - name: Install tket
-      if: needs.check_changes.outputs.tket_changed != 'true'
-      run: conan install tket --version ${{ needs.check_changes.outputs.tket_ver }} --user tket --channel stable --build=missing -o boost/*:header_only=True
-    - name: check that version is consistent
-      if: matrix.os == 'ubuntu-22.04' && (github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch')
-      run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
     - name: Install runtime test requirements
-      if: matrix.os == 'ubuntu-22.04' && (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_tests_changed == 'true') && github.event_name == 'schedule'
+      if: matrix.os == 'ubuntu-22.04' && github.event_name == 'schedule'
       run: |
         sudo apt install texlive texlive-latex-extra latexmk
         mkdir -p ~/texmf/tex/latex
         wget http://mirrors.ctan.org/graphics/pgf/contrib/quantikz/tikzlibraryquantikz.code.tex -P ~/texmf/tex/latex
-    - name: Build and run tket tests
-      if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_tests_changed == 'true'
-      shell: bash
-      run: |
-        conan create tket/test --build=missing -o boost/*:header_only=True --format json > test-tket.json
-        PKGPATH=`./rootpath test-tket.json test-tket`
-        cd ${PKGPATH}/bin && ./test-tket `./github/workflows/test-args ${{ matrix.os }} ${{ github.event_name }}`
-    - name: Build and run tket proptests
-      if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_proptests_changed == 'true'
-      shell: bash
-      run: |
-        conan create tket/proptest --build=missing  -o boost/*:header_only=True --format json > proptest-tket.json
-        PKGPATH=`./rootpath proptest-tket.json proptest-tket`
-        cd ${PKGPATH}/bin && ./proptest-tket
+    - name: Build tket
+      run: conan create tket --user=tket --channel=test_build --build=missing -o boost/*:header_only=True -o with_test=True -o with_proptest=True
     - name: Upload package
-      if: github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_changed == 'true'
+      if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
       run: |
+        conan create tket --user=tket --channel=stable --build=missing -o boost/*:header_only=True
         conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
         conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -r=tket-libs
 
@@ -157,7 +152,7 @@ jobs:
     name: Build and test tket (macos-arm64)
     runs-on: ['self-hosted', 'macOS', 'ARM64']
     needs: check_changes
-    if: github.event_name == 'push' || github.event_name == 'schedule' || github.event.pull_request.head.repo.full_name == github.repository || github.event.workflow_dispatch.repository == github.repository
+    if: needs.check_changes.outputs.tket_changed == 'true' && (github.event_name == 'push' || github.event_name == 'schedule' || github.event.pull_request.head.repo.full_name == github.repository || github.event.workflow_dispatch.repository == github.repository)
     steps:
     - uses: actions/checkout@v3
     - name: Install conan
@@ -170,32 +165,18 @@ jobs:
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
         conan cache clean
     - name: Build tket
-      if: needs.check_changes.outputs.tket_changed == 'true'
-      run: conan create tket --user=tket --channel=stable --build=missing -o boost/*:header_only=True
-    - name: Install tket
-      if: needs.check_changes.outputs.tket_changed != 'true'
-      run: conan install tket --version ${{ needs.check_changes.outputs.tket_ver }} --user tket --channel stable --build=missing -o boost/*:header_only=True
-    - name: Build and run tket tests
-      if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_tests_changed == 'true'
-      run: |
-        conan create tket/test --build=missing -o boost/*:header_only=True --format json > test-tket.json
-        PKGPATH=`./rootpath test-tket.json test-tket`
-        cd ${PKGPATH}/bin && ./test-tket `./github/workflows/test-args ${{ matrix.os }} ${{ github.event_name }}`
-    - name: Build and run tket proptests
-      if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.tket_proptests_changed == 'true'
-      run: |
-        conan create tket/proptest --build=missing  -o boost/*:header_only=True --format json > proptest-tket.json
-        PKGPATH=`./rootpath proptest-tket.json proptest-tket`
-        cd ${PKGPATH}/bin && ./proptest-tket
+      run: conan create tket --user=tket --channel=test_build --build=missing -o boost/*:header_only=True -o with_test=True -o with_proptest=True
     - name: Upload package
-      if: github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_changed == 'true'
+      if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
       run: |
+        conan create tket --user=tket --channel=stable --build=missing -o boost/*:header_only=True
         conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
         conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -r=tket-libs
 
   build_test_pytket_ubuntu:
     name: Build and test pytket (ubuntu)
     needs: check_changes
+    if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true'
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v3
@@ -207,6 +188,9 @@ jobs:
       run: |
         conan profile detect
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+    - name: check that version is consistent
+      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+      run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
     - name: Build tket
       if: needs.check_changes.outputs.tket_changed == 'true'
       run: conan create tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
@@ -217,9 +201,6 @@ jobs:
       run: |
         conan create recipes/pybind11
         conan create recipes/pybind11_json/all --version 0.2.13
-    - name: check that version is consistent
-      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
-      run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
     - name: Set up Python (pull request)
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       uses: actions/setup-python@v4
@@ -283,6 +264,7 @@ jobs:
   build_test_pytket_macos:
     name: Build and test pytket (macos)
     needs: check_changes
+    if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true'
     runs-on: macos-12
     steps:
     - uses: actions/checkout@v3
@@ -299,6 +281,9 @@ jobs:
       run: |
         conan profile detect
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+    - name: check that version is consistent
+      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+      run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
     - name: Build tket
       if: needs.check_changes.outputs.tket_changed == 'true'
       run: conan create tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
@@ -353,6 +338,7 @@ jobs:
   build_test_pytket_windows:
     name: Build and test pytket (windows)
     needs: check_changes
+    if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true'
     runs-on: windows-2022
     steps:
     - uses: actions/checkout@v3
@@ -364,6 +350,9 @@ jobs:
       run: |
         conan profile detect
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+    - name: check that version is consistent
+      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+      run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
     - name: normalize line endings in conanfile and src directory
       # This is necessary to ensure consistent revisions across platforms.
       # Conan's revision hash is composed of hashes of all the exported files,
@@ -373,7 +362,9 @@ jobs:
         $cmakelists = 'tket/CMakeLists.txt'
         $src_files = Get-ChildItem "tket/src" -File -Recurse
         $include_files = Get-ChildItem "tket/include" -File -Recurse
-        foreach ($f in @($conanfile) + @($cmakelists) + $src_files + $include_files) {
+        $test_files = Get-ChildItem "tket/test" -File -Recurse
+        $proptest_files = Get-ChildItem "tket/proptest" -File -Recurse
+        foreach ($f in @($conanfile) + @($cmakelists) + $src_files + $include_files + $test_files + $proptest_files) {
           $normalized_file = [IO.File]::ReadAllText($f) -replace "`r`n", "`n"
           [IO.File]::WriteAllText($f, $normalized_file)
         }
@@ -426,7 +417,7 @@ jobs:
     name: Build and test pytket (macos-arm64)
     runs-on: ['self-hosted', 'macOS', 'ARM64']
     needs: check_changes
-    if: github.event_name == 'push' || github.event_name == 'schedule' || github.event.pull_request.head.repo.full_name == github.repository || github.event.workflow_dispatch.repository == github.repository
+    if: (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true') && (github.event_name == 'push' || github.event_name == 'schedule' || github.event.pull_request.head.repo.full_name == github.repository || github.event.workflow_dispatch.repository == github.repository)
     steps:
     - uses: actions/checkout@v3
     - name: Install conan
@@ -437,6 +428,9 @@ jobs:
       run: |
         conan profile detect --force
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force
+    - name: check that version is consistent
+      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+      run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
     - name: Remove tket package from cache
       run: conan remove -c 'tket/*'
     - name: Build tket
