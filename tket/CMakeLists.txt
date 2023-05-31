@@ -390,6 +390,13 @@ target_sources(tket
         include/tket/Predicates/Predicates.hpp
     )
 
+if (BUILD_TKET_TEST)
+    add_subdirectory(test)
+endif()
+if (BUILD_TKET_PROPTEST)
+    add_subdirectory(proptest)
+endif()
+
 include(GNUInstallDirs)
 set(INSTALL_CONFIGDIR ${CMAKE_INSTALL_LIBDIR}/cmake/tket)
 
