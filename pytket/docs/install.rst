@@ -23,6 +23,14 @@ You can update your installation to the most recent version using
     
     pip install --upgrade pytket
 
+Building TKET from source
+-------------------------
+
+TKET can be built from source by compiling the C++. This is now possible on MacOS, Windows and linux (including ARM linux).
+
+For instructions on how to do this see the `tket repository README <https://github.com/CQCL/tket#how-to-build-tket-and-pytket>`_. 
+
+TKET can also be built without using the conan package manager. To do this follow `this guide <https://github.com/CQCL/tket/blob/develop/build-without-conan.md>`_ .
 
 Installation FAQs
 -----------------
