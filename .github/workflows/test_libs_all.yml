@@ -3,6 +3,11 @@ on:
   schedule:
     # 03:00 every Wednesday morning
     - cron: '0 3 * * 3'
+  workflow_dispatch: {}
+
+env:
+  conan_version: 2.0.5
+
 jobs:
   test_libraries:
     name: test library
@@ -19,6 +24,8 @@ jobs:
         python-version: '3.10'
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
+      with:
+        version: ${{ env.conan_version }}
     - name: create profile
       run: conan profile detect
     - name: add remote
@@ -43,6 +50,8 @@ jobs:
     - uses: actions/checkout@v3
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
+      with:
+        version: ${{ env.conan_version }}
     - name: create profile
       shell: bash
       run: conan profile detect --force

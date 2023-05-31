@@ -548,6 +548,16 @@ def test_boxes() -> None:
     assert json_validate(d)
 
 
+def test_state_prep_mid_circuit() -> None:
+    c = Circuit(3).H(0).H(1).H(2)
+    state = np.array([np.sqrt(0.125)] * 8)
+    prep_box = StatePreparationBox(state, with_initial_reset=True)
+    c.add_state_preparation_box(prep_box, [0, 1, 2])
+    assert c.n_gates == 4
+    Transform.DecomposeBoxes().apply(c)
+    assert c.n_gates_of_type(OpType.Reset) == 3
+
+
 def test_u1q_stability() -> None:
     # https://github.com/CQCL/tket/issues/222
     u = np.array(

@@ -266,7 +266,7 @@ enum class OpType {
   TK1,
 
   /**
-   * \f$ \mathrm{TK1}(\alpha, \beta, \gamma) = \mathrm{XXPhase}(\alpha)
+   * \f$ \mathrm{TK2}(\alpha, \beta, \gamma) = \mathrm{XXPhase}(\alpha)
    * \mathrm{YYPhase}(\beta) \mathrm{ZZPhase}(\gamma) \f$
    */
   TK2,

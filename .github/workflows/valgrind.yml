@@ -3,10 +3,15 @@ on:
   pull_request:
     branches:
       - develop
+  workflow_dispatch: {}
 
   schedule:
     # 03:00 every Monday morning
     - cron: '0 3 * * 1'
+
+env:
+  conan_version: 2.0.5
+
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -35,6 +40,8 @@ jobs:
       run: sudo apt update
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
+      with:
+        version: ${{ env.conan_version }}
     - name: Set up conan
       run: |
         conan profile detect
