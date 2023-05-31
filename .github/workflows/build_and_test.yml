@@ -139,9 +139,17 @@ jobs:
         sudo apt install texlive texlive-latex-extra latexmk
         mkdir -p ~/texmf/tex/latex
         wget http://mirrors.ctan.org/graphics/pgf/contrib/quantikz/tikzlibraryquantikz.code.tex -P ~/texmf/tex/latex
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
+    - name: install ccache
+      if: matrix.os == 'ubuntu-22.04'
+      run: |
+        sudo apt install ninja-build ccache
+        ccache --set-config cache_dir=.ccache
+    - name: Cache ccache cache
+      if: matrix.os == 'ubuntu-22.04'
+      id: cache-ccache
+      uses: actions/cache@v3
       with:
+        path: .ccache
         key: tket-build-${{ matrix.os }}
     - name: Build tket
       run: conan create tket --user=tket --channel=test_build --build=missing -o boost/*:header_only=True -o with_test=True -o with_proptest=True
