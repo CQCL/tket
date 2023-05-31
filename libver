@@ -14,7 +14,11 @@ name = sys.argv[2]
 with open(jsonfile, "r") as f:
     info = json.load(f)
 
-nodes = [node for node in info["graph"]["nodes"] if node["ref"].startswith(f"{name}/")]
+nodes = [
+    node
+    for _, node in info["graph"]["nodes"].items()
+    if node["ref"].startswith(f"{name}/")
+]
 assert len(nodes) == 1
 node = nodes[0]
 print(node["label"])
