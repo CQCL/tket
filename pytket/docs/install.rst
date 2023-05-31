@@ -30,8 +30,6 @@ TKET can be built from source by compiling the C++. This is now possible on MacO
 
 For instructions on how to do this see the `tket repository README <https://github.com/CQCL/tket#how-to-build-tket-and-pytket>`_. 
 
-TKET can also be built without using the conan package manager. To do so this follow `this guide <https://github.com/CQCL/tket/blob/develop/build-without-conan.md>`_ .
-
 Installation FAQs
 -----------------
 
@@ -49,7 +47,10 @@ The core pytket package, as well as the separate extension modules are available
     3. ``pip install -U pip wheel``;
     4. ``OPENBLAS="$(brew --prefix openblas)" pip install scipy``;
     5. ``pip install pytket``
-
+    
+Can I build TKET from source without using conan?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Yes, this is possible. To do so this follow `this guide <https://github.com/CQCL/tket/blob/develop/build-without-conan.md>`_ .
 
 Do all versions of ``pytket`` work with Windows?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
