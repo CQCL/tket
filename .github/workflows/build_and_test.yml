@@ -85,7 +85,6 @@ jobs:
     steps:
       - uses: actions/checkout@v3
       - name: Check C++ code formatting
-        if: matrix.os == 'macos-12'
         run: |
           brew update
           brew install clang-format@16
@@ -152,7 +151,7 @@ jobs:
     name: Build and test tket (macos-arm64)
     runs-on: ['self-hosted', 'macOS', 'ARM64']
     needs: check_changes
-    if: needs.check_changes.outputs.tket_changed == 'true' && (github.event_name == 'push' || github.event_name == 'schedule' || github.event.pull_request.head.repo.full_name == github.repository || github.event.workflow_dispatch.repository == github.repository)
+    if: needs.check_changes.outputs.tket_changed == 'true' && github.repository == 'CQCL/tket'
     steps:
     - uses: actions/checkout@v3
     - name: Install conan
@@ -417,7 +416,7 @@ jobs:
     name: Build and test pytket (macos-arm64)
     runs-on: ['self-hosted', 'macOS', 'ARM64']
     needs: check_changes
-    if: (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true') && (github.event_name == 'push' || github.event_name == 'schedule' || github.event.pull_request.head.repo.full_name == github.repository || github.event.workflow_dispatch.repository == github.repository)
+    if: (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true') && github.repository == 'CQCL/tket'
     steps:
     - uses: actions/checkout@v3
     - name: Install conan
