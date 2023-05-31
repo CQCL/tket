@@ -47,7 +47,7 @@ A: This can be achieved using the :py:meth:`qiskit_to_tk` function from the `pyt
 
 Conversion in the opposite direction can be accomplished using :py:meth:`tk_to_qiskit`. In the case where there is no replacement for a pytket operation in qiskit the unsupported operation will be implemented in terms of the available gates.
 
-Note here that ``pytket`` use different qubit ordering conventions so care should be taken when 
+Note here that ``pytket`` and ``qiskit`` use different qubit ordering conventions so care should be taken when 
 converting between circuit formats and interpreting results.
 
 In some cases qiskit circuits contain higher level operations which cannot be handled by the converter. 
