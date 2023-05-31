@@ -30,7 +30,7 @@ Installation FAQs
 Is there a build of ``pytket`` for my system?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The core pytket package, as well as the separate extension modules are available on PyPi. Wheels are built to work on Linux, MacOS and Windows with Python versions 3.9, 3.10, or 3.11, and ``pip`` version 20.0.0+.
+The core pytket package, as well as the separate extension modules are available on PyPI. Wheels are built to work on Linux, MacOS and Windows with Python versions 3.9, 3.10, or 3.11, and ``pip`` version 20.0.0+.
 
 .. note::
     On M1-based Macs running in native (arm64) mode, this command may fail
