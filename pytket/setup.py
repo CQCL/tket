@@ -116,7 +116,9 @@ class ConanBuild(build_ext):
             shutil.rmtree(extdir)
         os.makedirs(extdir)
         for comp in ["tklog", "tket", "pytket"]:
-            compnodes = [node for node in nodes if node["ref"].startswith(comp + "/")]
+            compnodes = [
+                node for _, node in nodes.items() if node["ref"].startswith(comp + "/")
+            ]
             assert len(compnodes) == 1
             compnode = compnodes[0]
             lib_folder = os.path.join(compnode["package_folder"], "lib")
