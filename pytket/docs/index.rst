@@ -58,7 +58,7 @@ User Support
 
 If you have problems with the use of tket or you think that you have found a bug there are several ways to contact us:
 
-- You can write an issue on `github <https://github.com/CQCL/tket/issues>`_ with details of the problem and we will pick that up. Github issues are the preferred way to report bugs with tket or request features. You can also have a look on that page so see if your problem has already been reported by someone else.
+- You can write an issue on `github <https://github.com/CQCL/tket/issues>`_ with details of the problem and we will pick that up. Github issues are the preferred way to report bugs with tket or request features. You can also have a look on that page to see if your problem has already been reported by someone else.
 - We have a slack channel for community discussion and support. You can join by following `this link <https://tketusers.slack.com/join/shared_invite/zt-18qmsamj9-UqQFVdkRzxnXCcKtcarLRA#/shared-invite/email>`_
 - Write an email to tket-support@quantinuum.com and ask for help with your problem.
 - There is also a tag on `quantum computing stack exchange <https://quantumcomputing.stackexchange.com/questions/tagged/pytket>`_ for questions relating to pytket.
