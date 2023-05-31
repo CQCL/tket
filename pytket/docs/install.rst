@@ -26,7 +26,7 @@ You can update your installation to the most recent version using
 Building TKET from source
 -------------------------
 
-TKET can be built from source by compiling the C++. This is now possible on MacOS, Windows and linux (including ARM linux).
+TKET can be built from source by compiling the C++. This is now possible on MacOS, Windows and Linux (including ARM Linux).
 
 For instructions on how to do this see the `tket repository README <https://github.com/CQCL/tket#how-to-build-tket-and-pytket>`_. 
 
