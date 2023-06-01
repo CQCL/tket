@@ -146,6 +146,7 @@ jobs:
     - name: set ccache base_dir
       run: |
         ccache --set-config base_dir=${HOME}
+        ccache --set-config compiler_check=content
         ccache -p
         ls -l $(which ccache)
     - name: Build tket
