@@ -25,7 +25,6 @@ ArchitectureMapping::ArchitectureMapping(const Architecture& arch)
   const auto uids = arch.nodes();
   m_vertex_to_node_mapping.reserve(uids.size());
   for (const UnitID& uid : uids) {
-
     m_vertex_to_node_mapping.emplace_back(Node(uid));
   }
 

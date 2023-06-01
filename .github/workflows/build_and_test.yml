@@ -147,6 +147,7 @@ jobs:
       run: |
         ccache --set-config base_dir=${HOME}
         ccache -p
+        ls -l $(which ccache)
     - name: Build tket
       run: conan create tket --user=tket --channel=test_build --build=missing -o boost/*:header_only=True # -o with_all_tests=True
     - name: Upload package
