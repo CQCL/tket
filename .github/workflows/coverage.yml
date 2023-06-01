@@ -51,6 +51,7 @@ jobs:
       uses: hendrikmuhs/ccache-action@v1.2
       with:
         key: tket-${{ matrix.os }}
+        verbose: 2
     - name: create profile
       run: conan profile detect
     - name: add remote

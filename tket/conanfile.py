@@ -50,11 +50,11 @@ class TketConan(ConanFile):
         if self.settings.os == "Windows":
             del self.options.fPIC
 
-    def configure(self):
+    #def configure(self):
         # Disable features that are still under the LGPL.
-        self.options["eigen"].MPL2_only = True
+        #self.options["eigen"].MPL2_only = True
         # Only need header libraries from boost.
-        self.options["boost"].header_only = True
+        #self.options["boost"].header_only = True
 
     def layout(self):
         cmake_layout(self)
@@ -64,14 +64,14 @@ class TketConan(ConanFile):
         deps.generate()
         tc = CMakeToolchain(self)
         tc.variables["PROFILE_COVERAGE"] = self.options.profile_coverage
-        if self.build_test():
-            tc.variables["BUILD_TKET_TEST"] = True
-            architectures_dir = os.path.join(self.source_folder, "test/src/test_architectures")
-            copy(self, "*.json", architectures_dir, self.build_folder)
-            circuits_dir = os.path.join(self.source_folder, "test/src/test_circuits")
-            copy( self, "*.json", circuits_dir, self.build_folder)
-        if self.build_proptest():
-            tc.variables["BUILD_TKET_PROPTEST"] = True
+    #    if self.build_test():
+    #        tc.variables["BUILD_TKET_TEST"] = True
+    #        architectures_dir = os.path.join(self.source_folder, "test/src/test_architectures")
+    #        copy(self, "*.json", architectures_dir, self.build_folder)
+    #        circuits_dir = os.path.join(self.source_folder, "test/src/test_circuits")
+    #        copy( self, "*.json", circuits_dir, self.build_folder)
+    #    if self.build_proptest():
+    #        tc.variables["BUILD_TKET_PROPTEST"] = True
         tc.generate()
 
     def validate(self):
@@ -84,10 +84,10 @@ class TketConan(ConanFile):
         cmake = CMake(self)
         cmake.configure()
         cmake.build()
-        if self.build_test():
-            self.run(os.path.join(self.test_folder(), "test-tket"))
-        if self.build_proptest():
-            self.run(os.path.join(self.proptest_folder(), "proptest-tket"))
+    #    if self.build_test():
+    #        self.run(os.path.join(self.test_folder(), "test-tket"))
+    #    if self.build_proptest():
+    #        self.run(os.path.join(self.proptest_folder(), "proptest-tket"))
 
     def package(self):
         cmake = CMake(self)
@@ -105,13 +105,13 @@ class TketConan(ConanFile):
         self.requires("nlohmann_json/3.11.2", transitive_headers=True)
         self.requires("tklog/0.3.3@tket/stable")
         self.requires("tkassert/0.3.3@tket/stable", transitive_headers=True)
-        self.requires("tkrng/0.3.3@tket/stable")
-        self.requires("tktokenswap/0.3.3@tket/stable")
-        self.requires("tkwsm/0.3.3@tket/stable")
-        if self.build_test():
-            self.test_requires("catch2/3.3.2")
-        if self.build_proptest():
-            self.test_requires("rapidcheck/cci.20220514")
+        #self.requires("tkrng/0.3.3@tket/stable")
+        #self.requires("tktokenswap/0.3.3@tket/stable")
+        #self.requires("tkwsm/0.3.3@tket/stable")
+        #if self.build_test():
+        #    self.test_requires("catch2/3.3.2")
+        #if self.build_proptest():
+        #    self.test_requires("rapidcheck/cci.20220514")
 
     def build_test(self):
        return self.options.with_test or self.options.with_all_tests

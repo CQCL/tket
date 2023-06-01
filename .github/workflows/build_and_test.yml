@@ -143,6 +143,7 @@ jobs:
       uses: hendrikmuhs/ccache-action@v1.2
       with:
         key: tket-ccache-${{ matrix.os }}
+        verbose: 2
     - name: set ccache base_dir
       run: |
         ccache --set-config base_dir=${HOME}
