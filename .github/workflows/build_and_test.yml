@@ -145,7 +145,7 @@ jobs:
         key: tket-ccache-${{ matrix.os }}
     - name: set ccache base_dir
       run: |
-        ccache --set-config base_dir=${{ github.workspace }}
+        ccache --set-config base_dir=${HOME}
         ccache -p
     - name: Build tket
       run: conan create tket --user=tket --channel=test_build --build=missing -o boost/*:header_only=True # -o with_all_tests=True
