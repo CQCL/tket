@@ -12,9 +12,6 @@ on:
     - cron: '0 3 * * 6'
   workflow_dispatch: {}
 
-env:
-  conan_version: 2.0.5
-
 concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: true
@@ -45,8 +42,6 @@ jobs:
     - uses: actions/checkout@v3
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
-      with:
-        version: ${{ env.conan_version }}
     - name: create profile
       run: conan profile detect
     - name: add remote
