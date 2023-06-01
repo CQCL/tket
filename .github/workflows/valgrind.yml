@@ -49,7 +49,7 @@ jobs:
     - name: install valgrind
       run: sudo apt install valgrind
     - name: build tket
-      run: conan create tket --user=tket --channel=stable --build=missing -o boost/*:header_only=True -o with_test=True
+      run: conan create tket --user=tket --channel=stable --build=missing -o boost/*:header_only=True -o with_test=True --format json > tket.json
     - name: Install runtime test requirements
       if: github.event_name == 'schedule'
       run: |
@@ -58,6 +58,5 @@ jobs:
         wget http://mirrors.ctan.org/graphics/pgf/contrib/quantikz/tikzlibraryquantikz.code.tex -P ~/texmf/tex/latex
     - name: Run tests under valgrind
       run: |
-        conan create tket/test --build=missing -o boost/*:header_only=True --format json > test-tket.json
-        PKGPATH=`./rootpath test-tket.json test-tket`
+        PKGPATH=`./rootpath tket.json tket`
         cd ${PKGPATH}/bin && valgrind --error-exitcode=1 ./test-tket `./github/workflows/test-args ${{ matrix.os }} ${{ github.event_name }}`
