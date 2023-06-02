@@ -56,12 +56,8 @@ jobs:
       # Conan's revision hash is composed of hashes all the exported files, so
       # we must normalize the line endings in these.
       run: |
-        $conanfile = 'libs/${{ matrix.lib }}/conanfile.py'
-        $cmakelists = 'libs/${{ matrix.lib }}/CMakeLists.txt'
-        $src_files = Get-ChildItem "libs/${{ matrix.lib }}/src" -File -Recurse
-        $include_files = Get-ChildItem "libs/${{ matrix.lib }}/include" -File -Recurse
-        $cmake_files = Get-ChildItem "libs/${{ matrix.lib }}/cmake" -File -Recurse
-        foreach ($f in @($conanfile) + @($cmakelists) + $src_files + $include_files + $cmake_files) {
+        $lib_files = Get-ChildItem "libs/${{ matrix.lib }}" -File -Recurse
+        foreach ($f in $lib_files) {
           $normalized_file = [IO.File]::ReadAllText($f) -replace "`r`n", "`n"
           [IO.File]::WriteAllText($f, $normalized_file)
         }
@@ -79,6 +75,9 @@ jobs:
       run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: build ${{ matrix.lib }}
       run: conan create -s build_type=${{ matrix.build_type }} -o boost/*:header_only=True libs/${{ matrix.lib }} --build=missing --user=tket --channel=stable --format json > ${{ matrix.lib }}.json
+    - name: build shared ${{ matrix.lib }}
+      if: matrix.lib == 'tklog'
+      run: conan create -s build_type=${{ matrix.build_type }} -o boost/*:header_only=True -o ${{ matrix.lib }}/*:shared=True libs/${{ matrix.lib }} --build=missing --user=tket --channel=stable
     - name: authenticate to repository
       run: conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
     - name: get version
