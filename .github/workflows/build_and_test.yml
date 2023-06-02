@@ -137,7 +137,15 @@ jobs:
       uses: hendrikmuhs/ccache-action@v1.2
       with:
         key: tket-${{ matrix.os }}
+    - name: further ccache config windows
+      if: matrix.os == 'windows-2022'
+      run: |
+        ccache --set-config cache_dir=${{ github.workspace }}\.ccache
+        ccache --set-config base_dir=%USERPROFILE%
+        ccache --set-config compiler_check=content
+        ccache -p
     - name: further ccache config
+      if: matrix.os != 'windows-2022'
       run: |
         ccache --set-config base_dir=${HOME}
         ccache --set-config compiler_check=content
