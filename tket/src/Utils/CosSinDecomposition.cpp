@@ -15,7 +15,7 @@
 #include "tket/Utils/CosSinDecomposition.hpp"
 
 #include <cmath>
-#include <tklog/TketLog.hpp>
+//#include <tklog/TketLog.hpp>
 
 #include "tket/Utils/Constants.hpp"
 #include "tket/Utils/EigenConfig.hpp"
@@ -74,9 +74,9 @@ csd_t CS_decomp(const Eigen::MatrixXcd &u) {
   // message and do the adjustment ourselves if that behaviour does change.
 
   if (!S.imag().isZero()) {
-    tket_log()->info(
-        "Eigen surprisingly returned a non-real diagonal R in QR "
-        "decomposition; adjusting Q and R to make it real.");
+    //tket_log()->info(
+    //    "Eigen surprisingly returned a non-real diagonal R in QR "
+    //    "decomposition; adjusting Q and R to make it real.");
     for (unsigned j = 0; j < n; j++) {
       std::complex<double> z = S(j, j);
       double r = std::abs(z);

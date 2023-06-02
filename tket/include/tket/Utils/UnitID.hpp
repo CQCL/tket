@@ -27,7 +27,7 @@
 #include <set>
 #include <sstream>
 #include <string>
-#include <tklog/TketLog.hpp>
+//#include <tklog/TketLog.hpp>
 
 #include "BiMapHeaders.hpp"
 #include "Json.hpp"
@@ -130,7 +130,7 @@ class UnitID {
         std::stringstream msg;
         msg << "UnitID name '" << name << "' does not match '" << id_regex_str
             << "', as required for QASM conversion.";
-        tket_log()->warn(msg.str());
+        //tket_log()->warn(msg.str());
       }
     }
   };

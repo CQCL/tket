@@ -18,7 +18,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <string>
-#include <tkassert/Assert.hpp>
+//#include <tkassert/Assert.hpp>
 #include <utility>
 #include <vector>
 
@@ -59,7 +59,7 @@ static const CmplxSpMat &pauli_sparse_mat(Pauli p) {
     case Pauli::Z:
       return Z_mat;
     default:
-      TKET_ASSERT(p == Pauli::I);
+      //TKET_ASSERT(p == Pauli::I);
       return I_mat;
   }
 }

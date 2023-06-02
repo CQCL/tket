@@ -20,7 +20,7 @@
 #include <map>
 #include <optional>
 #include <sstream>
-#include <tkassert/Assert.hpp>
+//#include <tkassert/Assert.hpp>
 #include <utility>
 #include <vector>
 
@@ -77,8 +77,8 @@ std::vector<std::pair<unsigned, unsigned>> gaussian_elimination_col_ops(
 struct MatrixXbBlockCompare {
   bool operator()(
       const MatrixXb::BlockXpr &lhs, const MatrixXb::BlockXpr &rhs) const {
-    TKET_ASSERT(lhs.rows() == rhs.rows());
-    TKET_ASSERT(lhs.cols() == rhs.cols());
+    //TKET_ASSERT(lhs.rows() == rhs.rows());
+    //TKET_ASSERT(lhs.cols() == rhs.cols());
     for (unsigned r = 0; r < lhs.rows(); ++r) {
       for (unsigned c = 0; c < lhs.cols(); ++c) {
         if (lhs(r, c) < rhs(r, c)) return true;
