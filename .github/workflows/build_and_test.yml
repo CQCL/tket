@@ -122,13 +122,8 @@ jobs:
       # Conan's revision hash is composed of hashes of all the exported files,
       # so we must normalize the line endings in these.
       run: |
-        $conanfile = 'tket/conanfile.py'
-        $cmakelists = 'tket/CMakeLists.txt'
-        $src_files = Get-ChildItem "tket/src" -File -Recurse
-        $include_files = Get-ChildItem "tket/include" -File -Recurse
-        $test_files = Get-ChildItem "tket/test" -File -Recurse
-        $proptest_files = Get-ChildItem "tket/proptest" -File -Recurse
-        foreach ($f in @($conanfile) + @($cmakelists) + $src_files + $include_files + $test_files + $proptest_files) {
+        $tket_files = Get-ChildItem "tket" -File -Recurse
+        foreach ($f in $tket_files) {
           $normalized_file = [IO.File]::ReadAllText($f) -replace "`r`n", "`n"
           [IO.File]::WriteAllText($f, $normalized_file)
         }
@@ -142,7 +137,7 @@ jobs:
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: tket-ccache-${{ matrix.os }}
+        key: tket-${{ matrix.os }}
     - name: set ccache base_dir
       run: |
         ccache --set-config base_dir=${HOME}
@@ -368,16 +363,11 @@ jobs:
 #      # Conan's revision hash is composed of hashes of all the exported files,
 #      # so we must normalize the line endings in these.
 #      run: |
-#        $conanfile = 'tket/conanfile.py'
-#        $cmakelists = 'tket/CMakeLists.txt'
-#        $src_files = Get-ChildItem "tket/src" -File -Recurse
-#        $include_files = Get-ChildItem "tket/include" -File -Recurse
-#        $test_files = Get-ChildItem "tket/test" -File -Recurse
-#        $proptest_files = Get-ChildItem "tket/proptest" -File -Recurse
-#        foreach ($f in @($conanfile) + @($cmakelists) + $src_files + $include_files + $test_files + $proptest_files) {
-#          $normalized_file = [IO.File]::ReadAllText($f) -replace "`r`n", "`n"
-#          [IO.File]::WriteAllText($f, $normalized_file)
-#        }
+#             $tket_files = Get-ChildItem "tket" -File -Recurse
+#             foreach ($f in $tket_files) {
+#             $normalized_file = [IO.File]::ReadAllText($f) -replace "`r`n", "`n"
+#             [IO.File]::WriteAllText($f, $normalized_file)
+#             }
 #    - name: Build tket
 #      if: needs.check_changes.outputs.tket_changed == 'true'
 #      run: conan create tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf `"`"
