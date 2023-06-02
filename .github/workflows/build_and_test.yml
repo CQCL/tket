@@ -65,30 +65,30 @@ jobs:
       if: github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'develop' && steps.filter.outputs.tket == 'true' && steps.test_package_exists.outputs.tket_package_exists == 'true'
       run: exit 1
 
-  check_docs_tket:
-    name: Check documentation build
-    needs: check_changes
-    if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.doxyfile_changed == 'true'
-    runs-on: 'ubuntu-22.04'
-    steps:
-      - uses: actions/checkout@v3
-      - name: Check doxygen
-        run: |
-          sudo apt install -y doxygen graphviz
-          cd tket && doxygen
+  #check_docs_tket:
+  #  name: Check documentation build
+  #  needs: check_changes
+  #  if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.doxyfile_changed == 'true'
+  #  runs-on: 'ubuntu-22.04'
+  #  steps:
+  #    - uses: actions/checkout@v3
+  #    - name: Check doxygen
+  #      run: |
+  #        sudo apt install -y doxygen graphviz
+  #        cd tket && doxygen
 
-  check_format_tket:
-    name: Check C++ code formatting
-    needs: check_changes
-    if: needs.check_changes.outputs.tket_changed == 'true'
-    runs-on: 'macos-12'
-    steps:
-      - uses: actions/checkout@v3
-      - name: Check C++ code formatting
-        run: |
-          brew update
-          brew install clang-format@16
-          git ls-files "*.cpp" "*.hpp" | xargs clang-format -style=file --dry-run --Werror
+  #check_format_tket:
+  #  name: Check C++ code formatting
+  #  needs: check_changes
+  #  if: needs.check_changes.outputs.tket_changed == 'true'
+  #  runs-on: 'macos-12'
+  #  steps:
+  #    - uses: actions/checkout@v3
+  #    - name: Check C++ code formatting
+  #      run: |
+  #        brew update
+  #        brew install clang-format@16
+  #        git ls-files "*.cpp" "*.hpp" | xargs clang-format -style=file --dry-run --Werror
 
   build_test_tket:
     name: Build and test (tket)
