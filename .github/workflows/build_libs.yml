@@ -60,7 +60,8 @@ jobs:
         $cmakelists = 'libs/${{ matrix.lib }}/CMakeLists.txt'
         $src_files = Get-ChildItem "libs/${{ matrix.lib }}/src" -File -Recurse
         $include_files = Get-ChildItem "libs/${{ matrix.lib }}/include" -File -Recurse
-        foreach ($f in @($conanfile) + @($cmakelists) + $src_files + $include_files) {
+        $cmake_files = Get-ChildItem "libs/${{ matrix.lib }}/cmake" -File -Recurse
+        foreach ($f in @($conanfile) + @($cmakelists) + $src_files + $include_files + $cmake_files) {
           $normalized_file = [IO.File]::ReadAllText($f) -replace "`r`n", "`n"
           [IO.File]::WriteAllText($f, $normalized_file)
         }
