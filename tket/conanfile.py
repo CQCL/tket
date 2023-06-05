@@ -68,6 +68,7 @@ class TketConan(ConanFile):
         status_code, version = subprocess.getstatusoutput("ninja --version")
         if status_code == 0:
             tc = CMakeToolchain(self, generator="Ninja")
+            tc.variables["CMAKE_CXX_COMPILER_LAUNCHER"] = "ccache"
             print(f"Using Ninja generator, found version {version}")
         else:
             tc = CMakeToolchain(self)
