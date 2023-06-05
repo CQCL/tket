@@ -3,6 +3,8 @@ on:
   schedule:
     # 03:00 every Wednesday morning
     - cron: '0 3 * * 3'
+  workflow_dispatch: {}
+
 jobs:
   test_libraries:
     name: test library

@@ -26,13 +26,17 @@ class StatePreparationBox : public Box {
  public:
   /**
    * Construct a circuit that prepares the given statevector
-   * from the computational-basis zero state
    *
    * @param statevector a normalised statevector
    * @param is_inverse whether to output the inverse of the preparation circuit
+   * @param with_initial_reset whether to explicitly reset the qubits to the
+   *  zero state of the computational basis before preparing the state
+   *  (by default it is assumed that the initial state is zero and no explicit
+   *  reset is applied)
    */
   explicit StatePreparationBox(
-      const Eigen::VectorXcd &statevector, bool is_inverse = false);
+      const Eigen::VectorXcd &statevector, bool is_inverse = false,
+      bool with_initial_reset = false);
 
   /**
    * Copy constructor
@@ -68,6 +72,8 @@ class StatePreparationBox : public Box {
 
   bool is_inverse() const;
 
+  bool with_initial_reset() const;
+
  protected:
   /**
    * @brief Generate the state preparation circuit using
@@ -77,10 +83,16 @@ class StatePreparationBox : public Box {
   void generate_circuit() const override;
 
   StatePreparationBox()
-      : Box(OpType::StatePreparationBox), statevector_(), is_inverse_(false) {}
+      : Box(OpType::StatePreparationBox),
+        statevector_(),
+        is_inverse_(false),
+        with_initial_reset_(false),
+        n_qubits_(0) {}
 
  private:
   const Eigen::VectorXcd statevector_;
   const bool is_inverse_;
+  const bool with_initial_reset_;
+  const unsigned n_qubits_;
 };
 }  // namespace tket

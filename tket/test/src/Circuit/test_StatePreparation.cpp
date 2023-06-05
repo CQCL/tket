@@ -16,6 +16,7 @@
 #include <boost/dynamic_bitset.hpp>
 #include <catch2/catch_template_test_macros.hpp>
 #include <catch2/catch_test_macros.hpp>
+#include <stdexcept>
 
 #include "../testutil.hpp"
 #include "tket/Circuit/Boxes.hpp"
@@ -23,6 +24,7 @@
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/StatePreparation.hpp"
 #include "tket/Gate/Rotation.hpp"
+#include "tket/OpType/OpType.hpp"
 #include "tket/Simulation/CircuitSimulator.hpp"
 
 namespace tket {
@@ -128,6 +130,21 @@ SCENARIO("Test state preparation") {
     StatePreparationBox prep2(prep);
     REQUIRE((state - prep2.get_statevector()).cwiseAbs().sum() < ERR_EPS);
     REQUIRE(prep2.is_inverse() == true);
+  }
+  GIVEN("box with initial reset") {
+    Eigen::Vector4cd state(0, 1, 0, 0);
+    StatePreparationBox prep(state, false, true);
+    REQUIRE(prep.with_initial_reset());
+    REQUIRE_THROWS_MATCHES(
+        prep.dagger(), std::logic_error, MessageContains("with initial reset"));
+    Circuit c(3);
+    c.add_op<unsigned>(OpType::H, {0});
+    c.add_op<unsigned>(OpType::H, {1});
+    c.add_op<unsigned>(OpType::H, {2});
+    c.add_box(prep, {0, 1});
+    REQUIRE(c.count_gates(OpType::Reset) == 0);
+    c.decompose_boxes();
+    REQUIRE(c.count_gates(OpType::Reset) == 2);
   }
 }
 

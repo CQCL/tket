@@ -34,8 +34,8 @@
 # -- Project information -----------------------------------------------------
 
 project = "pytket"
-copyright = "2023, Cambridge Quantum Computing Ltd"
-author = "Cambridge Quantum Computing Ltd"
+copyright = "2023 Quantinuum"
+author = "Quantinuum"
 
 # The short X.Y version
 version = "1.15"

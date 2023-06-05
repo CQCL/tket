@@ -6,6 +6,8 @@ on:
   pull_request:
     branches:
       - develop
+  workflow_dispatch: {}
+
 jobs:
   changes:
     runs-on: ubuntu-22.04
