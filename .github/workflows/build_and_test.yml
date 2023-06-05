@@ -127,22 +127,40 @@ jobs:
         mkdir -p ~/texmf/tex/latex
         wget http://mirrors.ctan.org/graphics/pgf/contrib/quantikz/tikzlibraryquantikz.code.tex -P ~/texmf/tex/latex
     - name: ccache
+      if: matrix.os != 'windows-2022'
       uses: hendrikmuhs/ccache-action@v1.2
       with:
         key: tket-${{ matrix.os }}
-    - name: further ccache config windows
-      if: matrix.os == 'windows-2022'
-      run: |
-        ccache --set-config cache_dir=${{ github.workspace }}\.ccache
-        ccache --set-config base_dir=%USERPROFILE%
-        ccache --set-config compiler_check=content
-        ccache -p
     - name: further ccache config
       if: matrix.os != 'windows-2022'
       run: |
         ccache --set-config base_dir=${HOME}
         ccache --set-config compiler_check=content
         ccache -p
+    - name: ccache on windows
+      id: ccache-setup-win
+      if: matrix.os == 'windows-2022'
+      run: |
+        $ccache_dir = ccache --get-config cache_dir
+        echo ccache_dir=$ccache_dir >> $env:GITHUB_OUTPUT
+        ccache --set-config base_dir=${HOME}
+        ccache --set-config compiler_check=content
+        ccache -p
+        ccache -z
+    - name: Get current time
+      uses: josStorer/get-current-time@v2.1.1
+      id: current_time
+      with:
+        format: YYYYMMDDHHmmss
+    - name: ccache windows
+      if: matrix.os == 'windows-2022'
+      id: ccache-windows
+      uses: actions/cache@v3
+      with:
+        path: ${{ steps.ccache-setup-win.outputs.ccache_dir }}
+        key: tket-${{ matrix.os }}-${{ steps.current_time.outputs.formattedTime }}
+        restore-keys: |
+          tket-${{ matrix.os }}-
     - name: Build tket
       run: conan create tket -s build_type=Release --user=tket --channel=stable --build=missing -o boost/*:header_only=True -o with_all_tests=True
     - name: Upload package
@@ -151,6 +169,10 @@ jobs:
         conan create tket --user=tket --channel=stable --build=missing -o boost/*:header_only=True
         conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
         conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -r=tket-libs
+    - name: ccache stats on windows
+      if: matrix.os == 'windows-2022'
+      run: |
+        ccache -s -v
 
   build_test_tket_macos_arm64:
     name: Build and test tket (macos-arm64)
