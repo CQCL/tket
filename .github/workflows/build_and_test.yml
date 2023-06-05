@@ -253,9 +253,6 @@ jobs:
       run: |
         conan profile detect
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
-    - name: check that version is consistent
-      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
-      run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
@@ -271,6 +268,9 @@ jobs:
     - name: Install tket
       if: needs.check_changes.outputs.tket_changed != 'true'
       run: conan install --requires tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
+    - name: check that version is consistent
+      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+      run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
     - name: Install pytket requirements
       run: |
         conan create recipes/pybind11
@@ -353,9 +353,6 @@ jobs:
       run: |
         conan profile detect
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
-    - name: check that version is consistent
-      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
-      run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
@@ -371,6 +368,9 @@ jobs:
     - name: Install tket
       if: needs.check_changes.outputs.tket_changed != 'true'
       run: conan install --requires tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
+    - name: check that version is consistent
+      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+      run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
     - name: Install pytket requirements
       run: |
         conan create recipes/pybind11
@@ -429,9 +429,6 @@ jobs:
       run: |
         conan profile detect
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
-    - name: check that version is consistent
-      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
-      run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
     - name: normalize line endings in conanfile and src directory
       # This is necessary to ensure consistent revisions across platforms.
       # Conan's revision hash is composed of hashes of all the exported files,
@@ -476,6 +473,9 @@ jobs:
     - name: Install tket
       if: needs.check_changes.outputs.tket_changed != 'true'
       run: conan install --requires tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
+    - name: check that version is consistent
+      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+      run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
     - name: Install pytket requirements
       run: |
         conan create recipes/pybind11
@@ -528,9 +528,6 @@ jobs:
       run: |
         conan profile detect --force
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force --index 0
-    - name: check that version is consistent
-      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
-      run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
     - name: Remove tket package from cache
       run: conan remove -c 'tket/*'
     - name: ccache
@@ -545,6 +542,9 @@ jobs:
     - name: Build tket
       if: needs.check_changes.outputs.tket_changed == 'true'
       run: conan create tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
+    - name: check that version is consistent
+      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+      run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
     - name: Uninstall conan
       run: pip3 uninstall -y conan
     - name: Build and test pytket (3.9)
