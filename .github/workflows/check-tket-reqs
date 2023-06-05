@@ -31,5 +31,6 @@ for path in paths:
         info = json.load(f)
     os.remove(jsondump)
     assert any(
-        node["ref"].startswith(f"tket/{version}@tket/stable") for node in info["nodes"]
+        node["ref"].startswith(f"tket/{version}@tket/stable")
+        for _, node in info["graph"]["nodes"].items()
     )

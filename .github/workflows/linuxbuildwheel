@@ -23,7 +23,6 @@ export PYEX=${PYBIN}/python
 ${PYEX} -m venv env
 . env/bin/activate
 ${PYEX} -m pip install -U pip build conan
-${PYEX} -m pip install conan==2.0.5
 CONAN_CMD=${PYBIN}/conan
 ${CONAN_CMD} profile detect
 ${CONAN_CMD} remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
