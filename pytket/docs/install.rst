@@ -23,15 +23,34 @@ You can update your installation to the most recent version using
     
     pip install --upgrade pytket
 
+Building TKET from source
+-------------------------
 
-Frequently Asked Questions
---------------------------
+TKET can be built from source by compiling the C++. This is now possible on MacOS, Windows and Linux (including ARM Linux).
+
+For instructions on how to do this see the `tket repository README <https://github.com/CQCL/tket#how-to-build-tket-and-pytket>`_. 
+
+Installation FAQs
+-----------------
 
 Is there a build of ``pytket`` for my system?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The non-commercial version of ``pytket``, and most additional modules available through PyPI, are built to work on Linux, MacOS and Windows with Python versions 3.9, 3.10, or 3.11, and ``pip`` version 20.0.0+.
+The core pytket package, as well as the separate extension modules are available on PyPI. Wheels are built to work on Linux, MacOS and Windows with Python versions 3.9, 3.10, or 3.11, and ``pip`` version 20.0.0+.
 
+.. note::
+    On M1-based Macs running in native (arm64) mode, this command may fail
+    because of an issue installing ``scipy``. To fix this:
+
+    1. Install `brew <https://brew.sh/>`_ (if you haven't already);
+    2. ``brew install openblas``;
+    3. ``pip install -U pip wheel``;
+    4. ``OPENBLAS="$(brew --prefix openblas)" pip install scipy``;
+    5. ``pip install pytket``
+    
+Can I build TKET from source without using conan?
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Yes, this is possible. To do so this follow `this guide <https://github.com/CQCL/tket/blob/develop/build-without-conan.md>`_ .
 
 Do all versions of ``pytket`` work with Windows?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -49,9 +68,11 @@ When I ran ``pip install pytket``, I could only get an old version. What gives?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 At a couple of points in the development of the software, we had to increase the system requirements. Obtaining an old version from PyPI is likely the result of that being the most recent version compliant with your system.
 
-If you received version 0.3.0 or 0.4.2, it is likely that you are using an old version of ``pip`` that cannot accept the more recent Linux builds. Try running ``pip install --upgrade pip`` to upgrade it to the most recent version and upgrade ``pytket``.
+One possibility is that you are using an old version of ``pip`` that cannot accept the more recent Linux builds. Try running ``pip install --upgrade pip`` to upgrade it to the most recent version and upgrade ``pytket``.
+
+As of pytket release 1.11.0 installing the latest version of pytket requires python version 3.9, 3.10 or 3.11. If you have an older version of python then you will need to upgrade it to use the latest version of pytket and the extensions.
 
 
 I've tried the recommended actions here and it still won't work! What can I do?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-Our `examples repository <http://github.com/CQCL/pytket>`_ on GitHub has an issue tracker for current issues. You might find others who have had similar problems there. If not, feel free to add an issue describing your problem and our dev team will try to diagnose it and get back to you as soon as possible.
+There is an  `issue tracker <http://github.com/CQCL/tket/issues>`_ on github for current issues. You might find others who have had similar problems there. If not, feel free to add an issue describing your problem and our development team will try to diagnose it and get back to you as soon as possible.
