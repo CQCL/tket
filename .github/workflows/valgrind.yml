@@ -28,7 +28,10 @@ jobs:
             - 'tket/**'
             - '.github/workflows/valgrind.yml'
   check:
-    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        os: ["ubuntu-22.04"]
+    runs-on: ${{ matrix.os }}
     needs: changes
     if: needs.changes.outputs.tket == 'true'
     steps:
@@ -43,6 +46,15 @@ jobs:
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: install valgrind
       run: sudo apt install valgrind
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: tket-${{ matrix.os }}
+    - name: further ccache config
+      run: |
+        ccache --set-config base_dir=${HOME}
+        ccache --set-config compiler_check=content
+        ccache -p
     - name: build tket
       run: conan create tket --user=tket --channel=stable --build=missing -o boost/*:header_only=True -o with_test=True --format json > tket.json
     - name: Install runtime test requirements

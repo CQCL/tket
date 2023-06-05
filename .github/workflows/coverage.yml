@@ -37,19 +37,27 @@ jobs:
     name: Generate coverage report
     needs: changes
     if: needs.changes.outputs.tket == 'true' || github.event_name == 'schedule'
-    runs-on: ubuntu-22.04
+    strategy:
+      matrix:
+        os: ["ubuntu-22.04"]
+    runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
-      with:
-        key: tket-${{ matrix.os }}
     - name: create profile
       run: conan profile detect
     - name: add remote
       run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: tket-${{ matrix.os }}
+    - name: further ccache config
+      run: |
+        ccache --set-config base_dir=${HOME}
+        ccache --set-config compiler_check=content
+        ccache -p
     - name: Build tket
       run: |
         conan install tket --user=tket --channel=stable -s build_type=Debug --build=missing -o boost/*:header_only=True -o tket/*:profile_coverage=True -o with_test=True -of build/tket
