@@ -36,6 +36,7 @@ endif()
 
 find_program(CCACHE_PROGRAM ccache)
 if(CCACHE_PROGRAM)
+    message("CCACHE is found")
     set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
 else(CCACHE_PROGRAM)
     message("CCACHE is NOT found")
