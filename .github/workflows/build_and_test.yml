@@ -113,6 +113,7 @@ jobs:
       with:
         version: ${{ env.conan_version }}
     - name: Set up conan
+      id: conan-setup
       run: |
         conan profile detect
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
@@ -162,7 +163,6 @@ jobs:
         format: YYYYMMDDHHmmss
     - name: ccache windows
       if: matrix.os == 'windows-2022'
-      id: ccache-windows
       uses: actions/cache@v3
       with:
         path: ${{ steps.ccache-setup-win.outputs.ccache_dir }}
@@ -170,7 +170,9 @@ jobs:
         restore-keys: |
           tket-${{ matrix.os }}-
     - name: Build tket
-      run: conan create tket -s build_type=Release --user=tket --channel=stable --build=missing -o boost/*:header_only=True -o with_all_tests=True
+      run: |
+        conan install tket -s build_type=Release --user=tket --channel=stable --build=missing -o boost/*:header_only=True -o with_all_tests=True
+        conan build tket -s build_type=Release --user=tket --channel=stable --build=missing -o boost/*:header_only=True -o with_all_tests=True
     - name: Upload package
       if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
       run: |
