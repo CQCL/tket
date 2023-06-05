@@ -51,13 +51,6 @@ class TketConan(ConanFile):
     def config_options(self):
         if self.settings.os == "Windows":
             del self.options.fPIC
-        status_code, version = subprocess.getstatusoutput("ninja --version")
-        if status_code == 0:
-            self.conf.define("tools.cmake.cmaketoolchain:generator", "Ninja")
-            print(f"Using Ninja generator, found version {version}")
-        else:
-            print(status_code, version)
-
 
 
     #def configure(self):
@@ -72,7 +65,12 @@ class TketConan(ConanFile):
     def generate(self):
         deps = CMakeDeps(self)
         deps.generate()
-        tc = CMakeToolchain(self)
+        status_code, version = subprocess.getstatusoutput("ninja --version")
+        if status_code == 0:
+            tc = CMakeToolchain(self, generator="Ninja")
+            print(f"Using Ninja generator, found version {version}")
+        else:
+            tc = CMakeToolchain(self)
         tc.variables["PROFILE_COVERAGE"] = self.options.profile_coverage
     #    if self.build_test():
     #        tc.variables["BUILD_TKET_TEST"] = True
