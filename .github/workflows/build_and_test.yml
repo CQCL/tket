@@ -172,7 +172,7 @@ jobs:
     - name: ccache stats on windows
       if: matrix.os == 'windows-2022'
       run: |
-        ccache -s -v
+        ccache -s
 
   build_test_tket_macos_arm64:
     name: Build and test tket (macos-arm64)
