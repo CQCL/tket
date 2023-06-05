@@ -2,15 +2,8 @@
 set -evx
 
 # Edit this list as required:
-PACKAGES="boost/1.81.0@ \
-          catch2/3.3.0@ \
-          gmp/6.2.1@ \
-          symengine/0.9.0@ \
-          tklog/0.3.3@tket/stable \
-          tkassert/0.3.3@tket/stable \
-          tkrng/0.3.3@tket/stable \
-          tktokenswap/0.3.3@tket/stable \
-          tkwsm/0.3.3@tket/stable"
+PACKAGES="catch2/3.3.2@ \
+          rapidcheck/cci.20220514@"
 
 for PACKAGE in ${PACKAGES}
 do
