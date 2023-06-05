@@ -55,6 +55,9 @@ class TketConan(ConanFile):
         if status_code == 0:
             self.conf.define("tools.cmake.cmaketoolchain:generator", "Ninja")
             print(f"Using Ninja generator, found version {version}")
+        else:
+            print(status_code, version)
+
 
 
     #def configure(self):
