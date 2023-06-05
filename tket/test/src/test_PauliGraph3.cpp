@@ -15,9 +15,9 @@
 #include <catch2/catch_test_macros.hpp>
 #include <fstream>
 
+#include "testutil.hpp"
 #include "tket/Converters3/Converters.hpp"
 #include "tket/PauliGraph3/PauliGraph.hpp"
-#include "testutil.hpp"
 
 namespace tket {
 namespace test_PauliGraph3 {
@@ -35,6 +35,8 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     circ.add_op<unsigned>(OpType::CX, {1, 0});
     PauliGraph pg = circuit_to_pauli_graph3(circ);
     REQUIRE_NOTHROW(pg.verify());
+    Circuit res = pauli_graph3_to_circuit_individual(pg);
+    REQUIRE(test_unitary_comparison(circ, res, true));
   }
   GIVEN("A 1qb circuit") {
     Circuit circ(1);
@@ -44,6 +46,8 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     circ.add_op<unsigned>(OpType::Rz, 0.3, {0});
     PauliGraph pg = circuit_to_pauli_graph3(circ);
     REQUIRE_NOTHROW(pg.verify());
+    Circuit res = pauli_graph3_to_circuit_individual(pg);
+    REQUIRE(test_unitary_comparison(circ, res, true));
   }
   GIVEN("A 2qb circuit with no interaction") {
     Circuit circ(2);
@@ -56,6 +60,8 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     circ.add_op<unsigned>(OpType::Rz, 1.3, {1});
     PauliGraph pg = circuit_to_pauli_graph3(circ);
     REQUIRE_NOTHROW(pg.verify());
+    Circuit res = pauli_graph3_to_circuit_individual(pg);
+    REQUIRE(test_unitary_comparison(circ, res, true));
   }
   GIVEN("A 2qb circuit with some anti-commuting interaction") {
     Circuit circ(2);
@@ -64,6 +70,8 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     circ.add_op<unsigned>(OpType::XXPhase, 1.1, {0, 1});
     PauliGraph pg = circuit_to_pauli_graph3(circ);
     REQUIRE_NOTHROW(pg.verify());
+    Circuit res = pauli_graph3_to_circuit_individual(pg);
+    REQUIRE(test_unitary_comparison(circ, res, true));
   }
   GIVEN("A 2qb circuit with some commuting interaction") {
     Circuit circ(2);
@@ -72,6 +80,8 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     circ.add_op<unsigned>(OpType::ZZPhase, 1.1, {0, 1});
     PauliGraph pg = circuit_to_pauli_graph3(circ);
     REQUIRE_NOTHROW(pg.verify());
+    Circuit res = pauli_graph3_to_circuit_individual(pg);
+    REQUIRE(test_unitary_comparison(circ, res, true));
   }
   GIVEN("A 2qb circuit a Clifford-angled ZZPhase") {
     Circuit circ(2);
@@ -80,6 +90,8 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     circ.add_op<unsigned>(OpType::ZZPhase, 0.5, {0, 1});
     PauliGraph pg = circuit_to_pauli_graph3(circ);
     REQUIRE_NOTHROW(pg.verify());
+    Circuit res = pauli_graph3_to_circuit_individual(pg);
+    REQUIRE(test_unitary_comparison(circ, res, true));
   }
   GIVEN("A 1qb circuit with stuff to merge") {
     Circuit circ(1);
@@ -90,6 +102,8 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     circ.add_op<unsigned>(OpType::Rz, 0.3, {0});
     PauliGraph pg = circuit_to_pauli_graph3(circ);
     REQUIRE_NOTHROW(pg.verify());
+    Circuit res = pauli_graph3_to_circuit_individual(pg);
+    REQUIRE(test_unitary_comparison(circ, res, true));
   }
   GIVEN("A 2qb circuit with stuff to merge") {
     Circuit circ(2);
@@ -100,6 +114,8 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     circ.add_op<unsigned>(OpType::ZZPhase, 1.6, {1, 0});
     PauliGraph pg = circuit_to_pauli_graph3(circ);
     REQUIRE_NOTHROW(pg.verify());
+    Circuit res = pauli_graph3_to_circuit_individual(pg);
+    REQUIRE(test_unitary_comparison(circ, res, true));
   }
   GIVEN("A circuit with Cliffords and non-Cliffords") {
     Circuit circ(2);
@@ -111,6 +127,8 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     circ.add_op<unsigned>(OpType::Rz, 1.8, {1});
     PauliGraph pg = circuit_to_pauli_graph3(circ);
     REQUIRE_NOTHROW(pg.verify());
+    Circuit res = pauli_graph3_to_circuit_individual(pg);
+    REQUIRE(test_unitary_comparison(circ, res, true));
   }
   GIVEN("A dense example") {
     Circuit circ(4);
@@ -135,6 +153,8 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     circ.add_op<unsigned>(OpType::Ry, 0.3, {3});
     PauliGraph pg = circuit_to_pauli_graph3(circ);
     REQUIRE_NOTHROW(pg.verify());
+    Circuit res = pauli_graph3_to_circuit_individual(pg);
+    REQUIRE(test_unitary_comparison(circ, res, true));
   }
   GIVEN("A more interesting example (tof_3)") {
     Circuit circ(5);
@@ -191,6 +211,8 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     circ.add_op<unsigned>(OpType::H, {4});
     PauliGraph pg = circuit_to_pauli_graph3(circ);
     REQUIRE_NOTHROW(pg.verify());
+    Circuit res = pauli_graph3_to_circuit_individual(pg);
+    REQUIRE(test_unitary_comparison(circ, res, true));
   }
   GIVEN("A circuit with a PauliExpBox") {
     Circuit circ(2);
@@ -207,6 +229,8 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
       dot_file.close();
       remove("pauligraph.dot");
     }
+    Circuit res = pauli_graph3_to_circuit_individual(pg);
+    REQUIRE(test_unitary_comparison(circ, res, true));
   }
   GIVEN("Teleportation") {
     Circuit circ(3, 2);

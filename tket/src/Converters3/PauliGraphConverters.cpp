@@ -15,6 +15,7 @@
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Clifford/ChoiMixTableau.hpp"
 #include "tket/Clifford/UnitaryTableau.hpp"
+#include "tket/Converters/Converters.hpp"
 #include "tket/Converters3/Converters.hpp"
 #include "tket/Gate/Gate.hpp"
 
@@ -345,8 +346,8 @@ std::vector<PGOp_ptr> op_to_pgops(
   }
 }
 
-PauliGraph circuit_to_pauli_graph3(const Circuit& circ) {
-  PauliGraph res;
+pg::PauliGraph circuit_to_pauli_graph3(const Circuit& circ) {
+  pg::PauliGraph res;
   ChoiMixTableau initial(circ.all_qubits());
   for (const Qubit& q : circ.created_qubits())
     initial.post_select(q, ChoiMixTableau::TableauSegment::Input);
@@ -360,13 +361,214 @@ PauliGraph circuit_to_pauli_graph3(const Circuit& circ) {
   }
   std::list<ChoiMixTableau::row_tensor_t> final_rows;
   for (const Qubit& q : final_u.get_qubits()) {
-    final_rows.push_back({final_u.get_zrow(q), QubitPauliTensor(q, Pauli::Z)});
-    final_rows.push_back({final_u.get_xrow(q), QubitPauliTensor(q, Pauli::X)});
+    QubitPauliTensor zrow = final_u.get_zrow(q);
+    zrow.transpose();
+    final_rows.push_back({zrow, QubitPauliTensor(q, Pauli::Z)});
+    QubitPauliTensor xrow = final_u.get_xrow(q);
+    xrow.transpose();
+    final_rows.push_back({xrow, QubitPauliTensor(q, Pauli::X)});
   }
   ChoiMixTableau final_cm(final_rows);
   for (const Qubit& q : circ.discarded_qubits()) final_cm.discard_qubit(q);
   res.add_vertex_at_end(std::make_shared<PGOutputTableau>(final_cm));
   return res;
+}
+
+std::pair<Circuit, Qubit> reduce_pauli_to_z(
+    const QubitPauliTensor& pauli, CXConfigType cx_config) {
+  Circuit circ;
+  qubit_vector_t qubits;
+  if (pauli.string.map.size() == 0)
+    throw PGError("Cannot reduce identity to Z");
+  for (const std::pair<const Qubit, Pauli>& qp : pauli.string.map) {
+    circ.add_qubit(qp.first);
+    qubits.push_back(qp.first);
+    switch (qp.second) {
+      case Pauli::X: {
+        circ.add_op<Qubit>(OpType::H, {qp.first});
+        break;
+      }
+      case Pauli::Y: {
+        circ.add_op<Qubit>(OpType::V, {qp.first});
+        break;
+      }
+      case Pauli::I: {
+        throw PGError(
+            "Uncompressed QubitPauliTensor passed to reduce_pauli_to_z");
+      }
+      case Pauli::Z: {
+        break;
+      }
+    }
+  }
+  unsigned n_qubits = qubits.size();
+  switch (cx_config) {
+    case CXConfigType::Snake: {
+      for (unsigned i = n_qubits - 1; i != 0; --i) {
+        circ.add_op<Qubit>(OpType::CX, {qubits.at(i), qubits.at(i - 1)});
+      }
+      break;
+    }
+    case CXConfigType::Star: {
+      for (unsigned i = n_qubits - 1; i != 0; --i) {
+        circ.add_op<Qubit>(OpType::CX, {qubits.at(i), qubits.front()});
+      }
+      break;
+    }
+    case CXConfigType::Tree: {
+      for (unsigned step_size = 1; step_size < n_qubits; step_size *= 2) {
+        for (unsigned i = 0; step_size + i < n_qubits; i += 2 * step_size) {
+          circ.add_op<Qubit>(
+              OpType::CX, {qubits.at(step_size + i), qubits.at(i)});
+        }
+      }
+      break;
+    }
+    case CXConfigType::MultiQGate: {
+      bool flip_phase = false;
+      for (unsigned i = n_qubits - 1; i != 0; --i) {
+        if (i == 1) {
+          circ.add_op<Qubit>(OpType::CX, {qubits.at(i), qubits.front()});
+        } else {
+          /**
+           * This is only equal to the CX decompositions above up to phase,
+           * but phase differences are cancelled out by its dagger
+           */
+          circ.add_op<Qubit>(OpType::H, {qubits.at(i)});
+          circ.add_op<Qubit>(OpType::H, {qubits.at(i - 1)});
+          circ.add_op<Qubit>(
+              OpType::XXPhase3, 0.5,
+              {qubits.at(i), qubits.at(i - 1), qubits.front()});
+          --i;
+          flip_phase = !flip_phase;
+        }
+      }
+      if (flip_phase) circ.add_op<Qubit>(OpType::X, {qubits.front()});
+      break;
+    }
+  }
+  return {circ, qubits.front()};
+}
+
+Circuit pauli_graph3_to_circuit_individual(
+    const pg::PauliGraph& pg, CXConfigType cx_config) {
+  Circuit circ(
+      qubit_vector_t{pg.qubits_.begin(), pg.qubits_.end()},
+      bit_vector_t{pg.bits_.begin(), pg.bits_.end()});
+  sequence_set_t<PGVert> remaining;
+  BGL_FORALL_VERTICES(v, pg.c_graph_, PGClassicalGraph) { remaining.insert(v); }
+  while (!remaining.empty()) {
+    std::list<PGVert> initials;
+    for (const PGVert& v : remaining.get<TagSeq>()) {
+      bool initial = true;
+      auto in_edge_range = boost::in_edges(v, pg.c_graph_);
+      for (auto it = in_edge_range.first; it != in_edge_range.second; ++it) {
+        if (remaining.find(boost::source(*it, pg.c_graph_)) !=
+            remaining.end()) {
+          initial = false;
+          break;
+        }
+      }
+      if (!initial) continue;
+      auto range = pg.pauli_index_.get<TagOp>().equal_range(v);
+      for (auto it = range.first; it != range.second; ++it) {
+        for (const PGPauli& c_pauli : pg.pauli_index_.get<pg::TagID>()) {
+          if (pg.pauli_ac_(it->index, c_pauli.index) &&
+              (remaining.find(c_pauli.vert) != remaining.end())) {
+            initial = false;
+            break;
+          }
+        }
+      }
+      if (initial) initials.push_back(v);
+    }
+    auto& lookup = remaining.get<TagKey>();
+    for (const PGVert& v : initials) {
+      lookup.erase(lookup.find(v));
+      PGOp_ptr pgop = pg.c_graph_[v];
+      switch (pgop->get_type()) {
+        case PGOpType::Rotation:
+        case PGOpType::CliffordRot:
+        case PGOpType::Measure:
+        case PGOpType::Decoherence: {
+          QubitPauliTensor pauli = pgop->active_paulis().front();
+          bool phase_flip = false;
+          if (abs(pauli.coeff + 1.) < EPS)
+            phase_flip = true;
+          else if (abs(pauli.coeff - 1.) > EPS)
+            throw PGError("Pauli coefficient in PGOp must be +/- 1");
+          pauli.compress();
+          auto [diag_circ, z_qubit] = reduce_pauli_to_z(pauli, cx_config);
+          circ.append(diag_circ);
+          switch (pgop->get_type()) {
+            case PGOpType::Rotation: {
+              PGRotation& rot = dynamic_cast<PGRotation&>(*pgop);
+              Expr angle = rot.get_angle();
+              if (phase_flip) angle = -angle;
+              circ.add_op<Qubit>(OpType::Rz, angle, {z_qubit});
+              break;
+            }
+            case PGOpType::CliffordRot: {
+              PGCliffordRot& rot = dynamic_cast<PGCliffordRot&>(*pgop);
+              Expr angle = 0.5 * rot.get_angle();
+              if (phase_flip) angle = -angle;
+              circ.add_op<Qubit>(OpType::Rz, angle, {z_qubit});
+              break;
+            }
+            case PGOpType::Measure: {
+              PGMeasure& meas = dynamic_cast<PGMeasure&>(*pgop);
+              if (phase_flip) circ.add_op<Qubit>(OpType::X, {z_qubit});
+              circ.add_op<UnitID>(
+                  OpType::Measure, {z_qubit, meas.get_target()});
+              if (phase_flip) circ.add_op<Qubit>(OpType::X, {z_qubit});
+              break;
+            }
+            case PGOpType::Decoherence: {
+              circ.add_op<Qubit>(OpType::Collapse, {z_qubit});
+              break;
+            }
+            default: {
+              break;
+            }
+          }
+          circ.append(diag_circ.dagger());
+          break;
+        }
+        case PGOpType::InputTableau:
+        case PGOpType::OutputTableau: {
+          std::list<ChoiMixTableau::row_tensor_t> rows;
+          if (pgop->get_type() == PGOpType::InputTableau) {
+            PGInputTableau& tab_op = dynamic_cast<PGInputTableau&>(*pgop);
+            for (unsigned i = 0; i < tab_op.n_paulis(); ++i) {
+              rows.push_back(tab_op.get_full_row(i));
+            }
+          } else {
+            PGOutputTableau& tab_op = dynamic_cast<PGOutputTableau&>(*pgop);
+            for (unsigned i = 0; i < tab_op.n_paulis(); ++i) {
+              rows.push_back(tab_op.get_full_row(i));
+            }
+          }
+          ChoiMixTableau tab(rows);
+          std::pair<Circuit, unit_map_t> tab_circ = cm_tableau_to_circuit(tab);
+          qubit_map_t perm;
+          for (const std::pair<const UnitID, UnitID>& p : tab_circ.second)
+            perm.insert({Qubit(p.second), Qubit(p.first)});
+          tab_circ.first.permute_boundary_output(perm);
+          circ.append(tab_circ.first);
+          break;
+        }
+        case PGOpType::Reset:
+        case PGOpType::Conditional:
+        case PGOpType::Box:
+        case PGOpType::Stabilizer:
+        default: {
+          throw PGError("Cannot synthesise unidentified PGOpType");
+        }
+      }
+    }
+  }
+
+  return circ;
 }
 
 }  // namespace tket
