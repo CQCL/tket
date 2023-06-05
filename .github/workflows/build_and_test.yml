@@ -154,7 +154,7 @@ jobs:
         id: conan-setup
         run: |
           conan profile detect
-          conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+          conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
       - name: normalize line endings in conanfile and src directory
         # This is necessary to ensure consistent revisions across platforms.
         # Conan's revision hash is composed of hashes of all the exported files,

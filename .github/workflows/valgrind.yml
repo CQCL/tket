@@ -43,7 +43,7 @@ jobs:
     - name: Set up conan
       run: |
         conan profile detect
-        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
     - name: install valgrind
       run: sudo apt install valgrind
     - name: ccache
