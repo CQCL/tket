@@ -91,7 +91,7 @@ jobs:
     if: needs.check_changes.outputs.tket_changed == 'true'
     strategy:
       matrix:
-        os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
+        os: ['ubuntu-22.04', 'macos-12']
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
@@ -109,17 +109,6 @@ jobs:
       run: |
         conan profile detect
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
-    - name: normalize line endings in conanfile and src directory
-      if: matrix.os == 'windows-2022'
-      # This is necessary to ensure consistent revisions across platforms.
-      # Conan's revision hash is composed of hashes of all the exported files,
-      # so we must normalize the line endings in these.
-      run: |
-        $tket_files = Get-ChildItem "tket" -File -Recurse
-        foreach ($f in $tket_files) {
-          $normalized_file = [IO.File]::ReadAllText($f) -replace "`r`n", "`n"
-          [IO.File]::WriteAllText($f, $normalized_file)
-        }
     - name: Install runtime test requirements
       if: matrix.os == 'ubuntu-22.04' && github.event_name == 'schedule'
       run: |
@@ -127,40 +116,14 @@ jobs:
         mkdir -p ~/texmf/tex/latex
         wget http://mirrors.ctan.org/graphics/pgf/contrib/quantikz/tikzlibraryquantikz.code.tex -P ~/texmf/tex/latex
     - name: ccache
-      if: matrix.os != 'windows-2022'
       uses: hendrikmuhs/ccache-action@v1.2
       with:
         key: tket-${{ matrix.os }}
     - name: further ccache config
-      if: matrix.os != 'windows-2022'
       run: |
         ccache --set-config base_dir=${HOME}
         ccache --set-config compiler_check=content
         ccache -p
-    - name: ccache on windows
-      id: ccache-setup-win
-      if: matrix.os == 'windows-2022'
-      run: |
-        $ccache_dir = ccache --get-config cache_dir
-        echo ccache_dir=$ccache_dir >> $env:GITHUB_OUTPUT
-        ccache --set-config base_dir=${HOME}
-        ccache --set-config compiler_check=content
-        ccache -p
-        ccache -z
-    - name: Get current time
-      uses: josStorer/get-current-time@v2.1.1
-      id: current_time
-      with:
-        format: YYYYMMDDHHmmss
-    - name: ccache windows
-      if: matrix.os == 'windows-2022'
-      id: ccache-windows
-      uses: actions/cache@v3
-      with:
-        path: ${{ steps.ccache-setup-win.outputs.ccache_dir }}
-        key: tket-${{ matrix.os }}-${{ steps.current_time.outputs.formattedTime }}
-        restore-keys: |
-          tket-${{ matrix.os }}-
     - name: Build tket
       run: conan create tket -s build_type=Release --user=tket --channel=stable --build=missing -o boost/*:header_only=True -o with_all_tests=True
     - name: Upload package
@@ -169,10 +132,81 @@ jobs:
         conan create tket --user=tket --channel=stable --build=missing -o boost/*:header_only=True
         conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
         conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -r=tket-libs
-    - name: ccache stats on windows
-      if: matrix.os == 'windows-2022'
-      run: |
-        ccache -s
+
+  build_test_tket_windows:
+    name: Build and test (tket)
+    needs: check_changes
+    if: needs.check_changes.outputs.tket_changed == 'true'
+    strategy:
+      matrix:
+        os: ['windows-2022']
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Select Python 3.10
+        # otherwise turtlebrowser/get-conan@v1.2 fails on macos-12
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+      - name: Install conan
+        uses: turtlebrowser/get-conan@v1.2
+      - name: Set up conan
+        id: conan-setup
+        run: |
+          conan profile detect
+          conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+      - name: normalize line endings in conanfile and src directory
+        # This is necessary to ensure consistent revisions across platforms.
+        # Conan's revision hash is composed of hashes of all the exported files,
+        # so we must normalize the line endings in these.
+        run: |
+          $tket_files = Get-ChildItem "tket" -File -Recurse
+          foreach ($f in $tket_files) {
+            $normalized_file = [IO.File]::ReadAllText($f) -replace "`r`n", "`n"
+            [IO.File]::WriteAllText($f, $normalized_file)
+          }
+      - name: ninja ccache setup
+        # This is what hendrikmuhs/ccache-action does, but for windows (theirs is buggy on windows)
+        id: ninja-ccache-setup
+        run: |
+          choco upgrade ccache ninja
+          $ccache_dir = ccache --get-config cache_dir
+          echo ccache_dir=$ccache_dir >> $env:GITHUB_OUTPUT
+          ccache --set-config=max_size='500M'
+          ccache --set-config=compression=true
+          ccache --set-config compiler_check=content
+          ccache -p
+      - name: Get current time
+        uses: josStorer/get-current-time@v2.1.1
+        id: current_time
+        with:
+          format: YYYYMMDDHHmmss
+      - name: ccache windows
+        uses: actions/cache@v3
+        with:
+          path: ${{ steps.ninja-ccache-setup.outputs.ccache_dir }}
+          key: tket-${{ matrix.os }}-${{ steps.current_time.outputs.formattedTime }}
+          restore-keys: |
+            tket-${{ matrix.os }}-
+      - name: Build tket
+        # On windows use install + build so build directory is consistent across runs (i.e. don't build from conan cache)
+        # Necessary because setting ccache base_dir doesn't currently work on windows
+        run: |
+          conan install tket --user=tket --channel=stable --build=missing -o boost/*:header_only=True -o with_all_tests=True
+          conan build tket --user=tket --channel=stable --build=missing -o boost/*:header_only=True -o with_all_tests=True
+          conan export-pkg tket --user=tket --channel=stable -o boost/*:header_only=True -o with_all_tests=True
+      - name: Upload package
+        if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+        run: |
+          conan install tket --user=tket --channel=stable --build=missing -o boost/*:header_only=True
+          conan build tket --user=tket --channel=stable --build=missing -o boost/*:header_only=True
+          conan export-pkg tket --user=tket --channel=stable -o boost/*:header_only=True
+          conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
+          conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -r=tket-libs
+      - name: ccache stats on windows
+        run: |
+          ccache -s  #show stats
+          ccache -z  #zero stats
 
   build_test_tket_macos_arm64:
     name: Build and test tket (macos-arm64)
@@ -408,18 +442,37 @@ jobs:
              $normalized_file = [IO.File]::ReadAllText($f) -replace "`r`n", "`n"
              [IO.File]::WriteAllText($f, $normalized_file)
              }
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
-      with:
-        key: tket-windows-2022
-    - name: further ccache config
+    - name: ninja ccache setup
+      # This is what hendrikmuhs/ccache-action does, but for windows (theirs is buggy on windows)
+      id: ninja-ccache-setup
       run: |
-        ccache --set-config base_dir=${HOME}
+        choco upgrade ccache ninja
+        $ccache_dir = ccache --get-config cache_dir
+        echo ccache_dir=$ccache_dir >> $env:GITHUB_OUTPUT
+        ccache --set-config=max_size='500M'
+        ccache --set-config=compression=true
         ccache --set-config compiler_check=content
         ccache -p
+    - name: Get current time
+      uses: josStorer/get-current-time@v2.1.1
+      id: current_time
+      with:
+        format: YYYYMMDDHHmmss
+    - name: ccache windows
+      uses: actions/cache@v3
+      with:
+        path: ${{ steps.ninja-ccache-setup.outputs.ccache_dir }}
+        key: tket-${{ matrix.os }}-${{ steps.current_time.outputs.formattedTime }}
+        restore-keys: |
+         tket-${{ matrix.os }}-
     - name: Build tket
       if: needs.check_changes.outputs.tket_changed == 'true'
-      run: conan create tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf `"`"
+      # On windows use install + build so build directory is consistent across runs (i.e. don't build from conan cache)
+      # Necessary because setting ccache base_dir doesn't currently work on windows
+      run: |
+        conan install tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
+        conan build tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
+        conan export-pkg tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf `"`"
     - name: Install tket
       if: needs.check_changes.outputs.tket_changed != 'true'
       run: conan install --requires tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
