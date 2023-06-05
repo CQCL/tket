@@ -160,7 +160,7 @@ jobs:
         cd tket
         mkdir build
         cd build
-        cmake -GNinja -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DBUILD_TKET_TEST=ON -DBUILD_TKET_TEST=ON -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} -DCMAKE_POSITION_INDEPENDENT_CODE=ON ..
+        cmake -GNinja -DCMAKE_CXX_COMPILER_LAUNCHER=ccache -DBUILD_TKET_TEST=ON -DBUILD_TKET_PROPTEST=ON -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} -DCMAKE_POSITION_INDEPENDENT_CODE=ON ..
         cmake --build . -j2
         cmake --install .
     - name: Install runtime test requirements
