@@ -148,7 +148,7 @@ jobs:
       id: ccache-setup-win
       if: matrix.os == 'windows-2022'
       run: |
-        choco install ninja
+        choco upgrade ccache ninja
         $ccache_dir = ccache --get-config cache_dir
         echo ccache_dir=$ccache_dir >> $env:GITHUB_OUTPUT
         ccache --set-config base_dir=${HOME}
