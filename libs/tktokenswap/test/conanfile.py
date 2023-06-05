@@ -59,6 +59,6 @@ class test_tktokenswapRecipe(ConanFile):
         cmake.install()
 
     def requirements(self):
-        self.requires("tktokenswap/0.3.3")
+        self.requires("tktokenswap/0.3.4")
         self.requires("tkrng/0.3.3@tket/stable")
         self.requires("catch2/3.3.2")
