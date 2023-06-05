@@ -13,6 +13,7 @@
 # limitations under the License.
 
 import os
+import subprocess
 
 from conan import ConanFile
 from conan.tools.cmake import CMake, cmake_layout
@@ -25,6 +26,12 @@ class TketTestConan(ConanFile):
 
     def requirements(self):
         self.requires(self.tested_reference_str)
+
+    def config_options(self):
+        status_code, version = subprocess.getstatusoutput("ninja --version")
+        if status_code == 0:
+            self.conf.define("tools.cmake.cmaketoolchain:generator", "Ninja")
+            print(f"Found ninja version {version}")
 
     def build(self):
         cmake = CMake(self)

@@ -170,7 +170,7 @@ jobs:
         restore-keys: |
           tket-${{ matrix.os }}-
     - name: Build tket
-      run: conan create tket -s build_type=Release --user=tket --channel=stable --build=missing -o boost/*:header_only=True -o with_all_tests=True -o "tools.cmake.cmaketoolchain/*:generator"=Ninja
+      run: conan create tket -s build_type=Release --user=tket --channel=stable --build=missing -o boost/*:header_only=True -o with_all_tests=True -o tools.cmake.cmaketoolchain/*:generator=Ninja
     - name: Upload package
       if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
       run: |

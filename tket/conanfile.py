@@ -13,6 +13,8 @@
 # limitations under the License.
 
 import os
+import subprocess
+
 from conan import ConanFile
 from conan.tools.cmake import CMakeToolchain, CMake, cmake_layout, CMakeDeps
 from conan.tools.files import copy
@@ -49,6 +51,11 @@ class TketConan(ConanFile):
     def config_options(self):
         if self.settings.os == "Windows":
             del self.options.fPIC
+        status_code, version = subprocess.getstatusoutput("ninja --version")
+        if status_code == 0:
+            self.conf.define("tools.cmake.cmaketoolchain:generator", "Ninja")
+            print(f"Using Ninja generator, found version {version}")
+
 
     #def configure(self):
         # Disable features that are still under the LGPL.
