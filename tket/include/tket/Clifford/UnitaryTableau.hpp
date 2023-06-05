@@ -181,10 +181,12 @@ class UnitaryRevTableau {
    * (phaseful) Pauli string P such that X_i C P = C, and similarly for the Z
    * rows.
    *
-   * This is maintained by storing a UnitaryTableau for the transpose unitary
-   * C^T. We need to transpose rows on reading them out since X_i C P = C
-   * implies P^T C^T X_i = C^T, and similarly when applying gates we just pass
-   * the transpose on to the inner UnitaryTableau on the other side.
+   * This is maintained by storing a UnitaryTableau for the inverse unitary
+   * C^dagger. Since each Pauli string is Hermitian, X_i C P = C is encoded as
+   * C^dagger = (X_i C P)^dagger = X_i C^dagger P, so no need to modify rows on
+   * reading them, but when applying gates this class will invert the gate (or
+   * reverse the order of gate application) before applying to the inner
+   * UnitaryTableau.
    */
  public:
   /**

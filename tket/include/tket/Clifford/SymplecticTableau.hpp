@@ -150,6 +150,13 @@ class SymplecticTableau {
   void apply_V(unsigned qb);
   void apply_CX(unsigned qc, unsigned qt);
   void apply_gate(OpType type, const std::vector<unsigned> &qbs);
+
+  /**
+   * Applies a pauli gadget (defined as e^{pauli * half_pis * -i * pi/2}).
+   * If row commutes with pauli, no change is required.
+   * If row anticommutes with pauli and half_pis % 4 == 1:
+   * e^{pauli * -i * pi/2} row = (i * row * pauli) e^{pauli * -i * pi/2}
+   */
   void apply_pauli_gadget(const PauliStabiliser &pauli, unsigned half_pis);
 
   /**
