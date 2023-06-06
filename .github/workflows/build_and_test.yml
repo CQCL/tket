@@ -195,9 +195,9 @@ jobs:
         # On windows use install + build so build directory is consistent across runs (i.e. don't build from conan cache)
         # Necessary because setting ccache base_dir doesn't currently work on windows
         run: |
-          conan install tket --user=tket --channel=stable -o boost/*:header_only=True -o with_all_tests=True
-          conan build tket --user=tket --channel=stable -o boost/*:header_only=True -o with_all_tests=True
-          conan export-pkg tket --user=tket --channel=stable -o boost/*:header_only=True -o with_all_tests=True
+          conan install tket --user=tket --channel=stable -o boost/*:header_only=True -o with_all_tests=True -c tools.cmake.cmaketoolchain:generator=Ninja
+          conan build tket --user=tket --channel=stable -o boost/*:header_only=True -o with_all_tests=True -c tools.cmake.cmaketoolchain:generator=Ninja
+          conan export-pkg tket --user=tket --channel=stable -o boost/*:header_only=True -o with_all_tests=True -c tools.cmake.cmaketoolchain:generator=Ninja
       - name: Upload package
         if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
         run: |
@@ -445,18 +445,17 @@ jobs:
              $normalized_file = [IO.File]::ReadAllText($f) -replace "`r`n", "`n"
              [IO.File]::WriteAllText($f, $normalized_file)
              }
-    - name: ninja ccache setup
+    - name: ccache setup
       # This is what hendrikmuhs/ccache-action does, but for windows (theirs is buggy on windows)
-      id: ninja-ccache-setup
+      id: ccache-setup
       run: |
-        choco upgrade ccache ninja
+        choco upgrade ccache
         $ccache_dir = ccache --get-config cache_dir
         echo ccache_dir=$ccache_dir >> $env:GITHUB_OUTPUT
         ccache --set-config=max_size='500M'
         ccache --set-config=compression=true
         ccache --set-config compiler_check=content
         ccache -p
-        choco uninstall ninja
     - name: Get current time
       uses: josStorer/get-current-time@v2.1.1
       id: current_time
@@ -465,7 +464,7 @@ jobs:
     - name: ccache windows
       uses: actions/cache@v3
       with:
-        path: ${{ steps.ninja-ccache-setup.outputs.ccache_dir }}
+        path: ${{ steps.ccache-setup.outputs.ccache_dir }}
         key: tket-dynamic-${{ matrix.os }}-${{ steps.current_time.outputs.formattedTime }}
         restore-keys: |
          tket-dynamic-${{ matrix.os }}-
@@ -521,6 +520,10 @@ jobs:
       run: |
         conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
         conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -r=tket-libs
+    - name: ccache stats on windows
+      run: |
+        ccache -s  #show stats
+        ccache -z  #zero stats
 
   build_test_pytket_macos_arm64:
     name: Build and test pytket (macos-arm64)

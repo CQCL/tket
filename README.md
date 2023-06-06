@@ -72,6 +72,12 @@ Chocolatey on Windows:
 choco install ninja ccache
 ```
 
+Ccache is used automatically if installed. To use `ninja` per default, run
+```shell
+echo "tools.cmake.cmaketoolchain:generator = Ninja" >> $(conan config home)/global.conf
+```
+
+
 #### Set up `conan` profile
 
 Generate a profile that matches your current machine, and add the required
