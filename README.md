@@ -58,6 +58,19 @@ pip install conan
 
 You will need at least cmake version 3.26, and conan version 2.
 
+
+#### Set up `conan` profile
+
+Generate a profile that matches your current machine, and add the required
+remote where some dependencies are stored:
+
+```shell
+conan profile detect
+conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
+```
+
+#### Optional: use `ninja` and `ccache`
+
 It is recommended that you also install `ninja` and `ccache` to speed up the
 build process. For example with `apt` on Debian/Ubuntu:
 ```shell
@@ -72,21 +85,12 @@ Chocolatey on Windows:
 choco install ninja ccache
 ```
 
-Ccache is used automatically if installed. To use `ninja` per default, run
+If installed, `ccache` is used automatically. `ninja` can be set as the default generator
+using the following command:
 ```shell
 echo "tools.cmake.cmaketoolchain:generator = Ninja" >> $(conan config home)/global.conf
 ```
 
-
-#### Set up `conan` profile
-
-Generate a profile that matches your current machine, and add the required
-remote where some dependencies are stored:
-
-```shell
-conan profile detect
-conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
-```
 
 ### Building and testing the utility libraries
 
