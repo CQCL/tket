@@ -62,5 +62,5 @@ class test_tketRecipe(ConanFile):
     def requirements(self):
         self.requires("tket/1.2.16@tket/stable")
         self.requires("tkrng/0.3.3@tket/stable")
-        self.requires("tktokenswap/0.3.3@tket/stable")
+        self.requires("tktokenswap/0.3.4@tket/stable")
         self.requires("catch2/3.3.2")
