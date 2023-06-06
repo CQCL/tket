@@ -118,18 +118,20 @@ jobs:
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: tket-${{ matrix.os }}
+        key: tket-static-${{ matrix.os }}
     - name: further ccache config
       run: |
         ccache --set-config base_dir=${HOME}
         ccache --set-config compiler_check=content
+        ccache --set-config namespace=WITH_TESTS
         ccache -p
     - name: Build tket
-      run: conan create tket -s build_type=Release --user=tket --channel=stable --build=missing -o boost/*:header_only=True -o with_all_tests=True
+      run: conan create tket -s build_type=Release --user=tket --channel=stable -o boost/*:header_only=True -o with_all_tests=True
     - name: Upload package
       if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
       run: |
-        conan create tket --user=tket --channel=stable --build=missing -o boost/*:header_only=True
+        ccache --set-config namespace=WITHOUT_TESTS
+        conan create tket --user=tket --channel=stable -o boost/*:header_only=True
         conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
         conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -r=tket-libs
 
@@ -175,6 +177,7 @@ jobs:
           ccache --set-config=max_size='500M'
           ccache --set-config=compression=true
           ccache --set-config compiler_check=content
+          ccache --set-config namespace=WITH_TESTS
           ccache -p
       - name: Get current time
         uses: josStorer/get-current-time@v2.1.1
@@ -185,21 +188,22 @@ jobs:
         uses: actions/cache@v3
         with:
           path: ${{ steps.ninja-ccache-setup.outputs.ccache_dir }}
-          key: tket-${{ matrix.os }}-${{ steps.current_time.outputs.formattedTime }}
+          key: tket-static-${{ matrix.os }}-${{ steps.current_time.outputs.formattedTime }}
           restore-keys: |
             tket-${{ matrix.os }}-
       - name: Build tket
         # On windows use install + build so build directory is consistent across runs (i.e. don't build from conan cache)
         # Necessary because setting ccache base_dir doesn't currently work on windows
         run: |
-          conan install tket --user=tket --channel=stable --build=missing -o boost/*:header_only=True -o with_all_tests=True
-          conan build tket --user=tket --channel=stable --build=missing -o boost/*:header_only=True -o with_all_tests=True
+          conan install tket --user=tket --channel=stable -o boost/*:header_only=True -o with_all_tests=True
+          conan build tket --user=tket --channel=stable -o boost/*:header_only=True -o with_all_tests=True
           conan export-pkg tket --user=tket --channel=stable -o boost/*:header_only=True -o with_all_tests=True
       - name: Upload package
         if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
         run: |
-          conan install tket --user=tket --channel=stable --build=missing -o boost/*:header_only=True
-          conan build tket --user=tket --channel=stable --build=missing -o boost/*:header_only=True
+          ccache --set-config namespace=WITHOUT_TESTS
+          conan install tket --user=tket --channel=stable -o boost/*:header_only=True
+          conan build tket --user=tket --channel=stable -o boost/*:header_only=True
           conan export-pkg tket --user=tket --channel=stable -o boost/*:header_only=True
           conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
           conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -r=tket-libs
@@ -225,18 +229,20 @@ jobs:
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: tket-macos-arm64
+        key: tket-static-macos-arm64
     - name: further ccache config
       run: |
         ccache --set-config base_dir=${HOME}
         ccache --set-config compiler_check=content
+        ccache --set-config namespace=WITH_TESTS
         ccache -p
     - name: Build tket
-      run: conan create tket --user=tket --channel=test_build --build=missing -o boost/*:header_only=True -o with_all_tests=True
+      run: conan create tket --user=tket --channel=test_build -o boost/*:header_only=True -o with_all_tests=True
     - name: Upload package
       if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
       run: |
-        conan create tket --user=tket --channel=stable --build=missing -o boost/*:header_only=True
+        ccache --set-config namespace=WITHOUT_TESTS
+        conan create tket --user=tket --channel=stable -o boost/*:header_only=True
         conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
         conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -r=tket-libs
 
@@ -256,7 +262,7 @@ jobs:
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: tket-ubuntu-22.04
+        key: tket-dynamic-ubuntu-22.04
     - name: further ccache config
       run: |
         ccache --set-config base_dir=${HOME}
@@ -264,10 +270,10 @@ jobs:
         ccache -p
     - name: Build tket
       if: needs.check_changes.outputs.tket_changed == 'true'
-      run: conan create tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
+      run: conan create tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
     - name: Install tket
       if: needs.check_changes.outputs.tket_changed != 'true'
-      run: conan install --requires tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
+      run: conan install --requires tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
     - name: check that version is consistent
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
@@ -356,7 +362,7 @@ jobs:
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: tket-macos-12
+        key: tket-dynamic-macos-12
     - name: further ccache config
       run: |
         ccache --set-config base_dir=${HOME}
@@ -364,10 +370,10 @@ jobs:
         ccache -p
     - name: Build tket
       if: needs.check_changes.outputs.tket_changed == 'true'
-      run: conan create tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
+      run: conan create tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
     - name: Install tket
       if: needs.check_changes.outputs.tket_changed != 'true'
-      run: conan install --requires tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
+      run: conan install --requires tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
     - name: check that version is consistent
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
@@ -450,7 +456,6 @@ jobs:
         ccache --set-config=compression=true
         ccache --set-config compiler_check=content
         ccache -p
-        choco uninstall ccache
         choco uninstall ninja
     - name: Get current time
       uses: josStorer/get-current-time@v2.1.1
@@ -461,9 +466,9 @@ jobs:
       uses: actions/cache@v3
       with:
         path: ${{ steps.ninja-ccache-setup.outputs.ccache_dir }}
-        key: tket-${{ matrix.os }}-${{ steps.current_time.outputs.formattedTime }}
+        key: tket-dynamic-${{ matrix.os }}-${{ steps.current_time.outputs.formattedTime }}
         restore-keys: |
-         tket-${{ matrix.os }}-
+         tket-dynamic-${{ matrix.os }}-
     - name: Build tket
       if: needs.check_changes.outputs.tket_changed == 'true'
       # On windows use install + build so build directory is consistent across runs (i.e. don't build from conan cache)
@@ -535,7 +540,7 @@ jobs:
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: tket-macos-arm64
+        key: tket-dynamic-macos-arm64
     - name: further ccache config
       run: |
         ccache --set-config base_dir=${HOME}
@@ -543,7 +548,7 @@ jobs:
         ccache -p
     - name: Build tket
       if: needs.check_changes.outputs.tket_changed == 'true'
-      run: conan create tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
+      run: conan create tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
     - name: check that version is consistent
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}

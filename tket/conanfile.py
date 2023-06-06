@@ -68,7 +68,10 @@ class TketConan(ConanFile):
         tc.variables["PROFILE_COVERAGE"] = self.options.profile_coverage
         # use ninja generator if available
         status_code, version = subprocess.getstatusoutput("ninja --version")
-        if status_code == 0:
+        if self.options.shared and self.settings.os == "Windows":
+            tc.generator = "NMake Makefiles"
+            print(f"{os.linesep} --> Using NMake Makefiles generator{os.linesep}")
+        elif status_code == 0:
             tc.generator = "Ninja"
             print(f"{os.linesep} --> Using Ninja generator, found version {version}{os.linesep}")
         # propagate build test options
