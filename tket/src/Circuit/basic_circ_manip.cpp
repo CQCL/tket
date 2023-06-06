@@ -525,8 +525,11 @@ void Circuit::rewire(
 
       add_edge({old_v1, port1}, {new_vert, i}, insert_type);
     } else {
-      // this will be hit
-      TKET_ASSERT(insert_type == replace_type);  // Cannot rewire; type of edge
+      // Cannot rewire; type of edge
+      if (insert_type != replace_type) {
+        throw CircuitInvalidity(
+            "Operation can not be added, found invalid parameter type.");
+      }
 
       add_edge({old_v1, port1}, {new_vert, i}, insert_type);
       add_edge({new_vert, i}, {old_v2, port2}, insert_type);
