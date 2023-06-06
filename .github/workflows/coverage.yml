@@ -55,7 +55,6 @@ jobs:
         key: tket-${{ matrix.os }}
     - name: further ccache config
       run: |
-        ccache --set-config base_dir=${HOME}
         ccache --set-config compiler_check=content
         ccache -p
     - name: Build tket
