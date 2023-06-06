@@ -467,12 +467,13 @@ jobs:
       # On windows use install + build so build directory is consistent across runs (i.e. don't build from conan cache)
       # Necessary because setting ccache base_dir doesn't currently work on windows
       run: |
-        conan install tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
-        conan build tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
+        $ErrorActionPreference = "Stop"
+        conan install tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
+        conan build tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
         conan export-pkg tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf `"`"
     - name: Install tket
       if: needs.check_changes.outputs.tket_changed != 'true'
-      run: conan install --requires tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
+      run: conan install --requires tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
     - name: check that version is consistent
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
