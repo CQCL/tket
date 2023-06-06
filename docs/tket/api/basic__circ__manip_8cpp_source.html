@@ -601,18 +601,21 @@ $(function() {
 <div class="line"><a name="l00525"></a><span class="lineno">  525</span>&#160; </div>
 <div class="line"><a name="l00526"></a><span class="lineno">  526</span>&#160;      <a class="code" href="classtket_1_1Circuit.html#adda8e3f5de51e96edfce9ebf648e0556">add_edge</a>({old_v1, port1}, {new_vert, i}, insert_type);</div>
 <div class="line"><a name="l00527"></a><span class="lineno">  527</span>&#160;    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00528"></a><span class="lineno">  528</span>&#160;      <span class="comment">// this will be hit</span></div>
-<div class="line"><a name="l00529"></a><span class="lineno">  529</span>&#160;      TKET_ASSERT(insert_type == replace_type);  <span class="comment">// Cannot rewire; type of edge</span></div>
-<div class="line"><a name="l00530"></a><span class="lineno">  530</span>&#160; </div>
-<div class="line"><a name="l00531"></a><span class="lineno">  531</span>&#160;      <a class="code" href="classtket_1_1Circuit.html#adda8e3f5de51e96edfce9ebf648e0556">add_edge</a>({old_v1, port1}, {new_vert, i}, insert_type);</div>
-<div class="line"><a name="l00532"></a><span class="lineno">  532</span>&#160;      <a class="code" href="classtket_1_1Circuit.html#adda8e3f5de51e96edfce9ebf648e0556">add_edge</a>({new_vert, i}, {old_v2, port2}, insert_type);</div>
-<div class="line"><a name="l00533"></a><span class="lineno">  533</span>&#160;      bin.push_back(preds[i]);</div>
-<div class="line"><a name="l00534"></a><span class="lineno">  534</span>&#160;    }</div>
-<div class="line"><a name="l00535"></a><span class="lineno">  535</span>&#160;  }</div>
-<div class="line"><a name="l00536"></a><span class="lineno">  536</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="namespacetket.html#a6a99d9f2b64decd8803090cc890e1e7d">Edge</a>&amp; e : bin) <a class="code" href="classtket_1_1Circuit.html#ab342e77d4ea01654b624a720e736449f">remove_edge</a>(e);</div>
-<div class="line"><a name="l00537"></a><span class="lineno">  537</span>&#160;}</div>
-<div class="line"><a name="l00538"></a><span class="lineno">  538</span>&#160; </div>
-<div class="line"><a name="l00539"></a><span class="lineno">  539</span>&#160;}  <span class="comment">// namespace tket</span></div>
+<div class="line"><a name="l00528"></a><span class="lineno">  528</span>&#160;      <span class="comment">// Cannot rewire; type of edge</span></div>
+<div class="line"><a name="l00529"></a><span class="lineno">  529</span>&#160;      <span class="keywordflow">if</span> (insert_type != replace_type) {</div>
+<div class="line"><a name="l00530"></a><span class="lineno">  530</span>&#160;        <span class="keywordflow">throw</span> <a class="code" href="classtket_1_1CircuitInvalidity.html">CircuitInvalidity</a>(</div>
+<div class="line"><a name="l00531"></a><span class="lineno">  531</span>&#160;            <span class="stringliteral">&quot;Operation can not be added, found invalid parameter type.&quot;</span>);</div>
+<div class="line"><a name="l00532"></a><span class="lineno">  532</span>&#160;      }</div>
+<div class="line"><a name="l00533"></a><span class="lineno">  533</span>&#160; </div>
+<div class="line"><a name="l00534"></a><span class="lineno">  534</span>&#160;      <a class="code" href="classtket_1_1Circuit.html#adda8e3f5de51e96edfce9ebf648e0556">add_edge</a>({old_v1, port1}, {new_vert, i}, insert_type);</div>
+<div class="line"><a name="l00535"></a><span class="lineno">  535</span>&#160;      <a class="code" href="classtket_1_1Circuit.html#adda8e3f5de51e96edfce9ebf648e0556">add_edge</a>({new_vert, i}, {old_v2, port2}, insert_type);</div>
+<div class="line"><a name="l00536"></a><span class="lineno">  536</span>&#160;      bin.push_back(preds[i]);</div>
+<div class="line"><a name="l00537"></a><span class="lineno">  537</span>&#160;    }</div>
+<div class="line"><a name="l00538"></a><span class="lineno">  538</span>&#160;  }</div>
+<div class="line"><a name="l00539"></a><span class="lineno">  539</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="namespacetket.html#a6a99d9f2b64decd8803090cc890e1e7d">Edge</a>&amp; e : bin) <a class="code" href="classtket_1_1Circuit.html#ab342e77d4ea01654b624a720e736449f">remove_edge</a>(e);</div>
+<div class="line"><a name="l00540"></a><span class="lineno">  540</span>&#160;}</div>
+<div class="line"><a name="l00541"></a><span class="lineno">  541</span>&#160; </div>
+<div class="line"><a name="l00542"></a><span class="lineno">  542</span>&#160;}  <span class="comment">// namespace tket</span></div>
 <div class="ttc" id="aBoxes_8hpp_html"><div class="ttname"><a href="Boxes_8hpp.html">Boxes.hpp</a></div></div>
 <div class="ttc" id="aCircuit_8hpp_html"><div class="ttname"><a href="Circuit_8hpp.html">Circuit.hpp</a></div></div>
 <div class="ttc" id="aGateUnitaryMatrixFixedMatrices_8cpp_html_a34803f22660cb3e7bd5ae47cc6d7a249"><div class="ttname"><a href="GateUnitaryMatrixFixedMatrices_8cpp.html#a34803f22660cb3e7bd5ae47cc6d7a249">noop</a></div><div class="ttdeci">Eigen::Matrix2cd noop</div><div class="ttdef"><b>Definition:</b> <a href="GateUnitaryMatrixFixedMatrices_8cpp_source.html#l00049">GateUnitaryMatrixFixedMatrices.cpp:49</a></div></div>
