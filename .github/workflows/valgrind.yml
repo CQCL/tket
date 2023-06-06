@@ -49,14 +49,14 @@ jobs:
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: tket-${{ matrix.os }}
+        key: tket-valgrind-${{ matrix.os }}
     - name: further ccache config
       run: |
         ccache --set-config base_dir=${HOME}
         ccache --set-config compiler_check=content
         ccache -p
     - name: build tket
-      run: conan create tket --user=tket --channel=stable --build=missing -o boost/*:header_only=True -o with_test=True --format json > tket.json
+      run: conan create tket --user=tket --channel=stable -o boost/*:header_only=True -o with_test=True --format json > tket.json
     - name: Install runtime test requirements
       if: github.event_name == 'schedule'
       run: |

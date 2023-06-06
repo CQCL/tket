@@ -69,7 +69,7 @@ class TketConan(ConanFile):
         # use ninja generator if available
         status_code, version = subprocess.getstatusoutput("ninja --version")
         if self.options.shared and self.settings.os == "Windows":
-            tc.generator = "NMake Makefiles"
+            tc.generator = "NMake Makefiles JOM"
             print(f"{os.linesep} --> Using NMake Makefiles generator{os.linesep}")
         elif status_code == 0:
             tc.generator = "Ninja"
