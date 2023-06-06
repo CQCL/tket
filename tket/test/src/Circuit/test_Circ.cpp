@@ -3053,5 +3053,35 @@ SCENARIO("Test replacing wire swaps") {
   REQUIRE(u.isApprox(w, ERR_EPS));
 }
 
+SCENARIO("check edge type in rewire function") {
+  GIVEN("valid edge type") {
+    Circuit c(2);
+    Vertex v = c.add_op<unsigned>(OpType::CX, {0, 1});
+
+    EdgeVec ins;
+    for (const Vertex& i : c.q_inputs()) {
+      ins.push_back(c.get_nth_out_edge(i, 0));
+    }
+
+    op_signature_t types = {EdgeType::Quantum, EdgeType::Quantum};
+
+    c.rewire(v, ins, types);
+  }
+
+  GIVEN("invalid edge type") {
+    Circuit c(2);
+    Vertex v = c.add_op<unsigned>(OpType::CX, {0, 1});
+
+    EdgeVec ins;
+    for (const Vertex& i : c.q_inputs()) {
+      ins.push_back(c.get_nth_out_edge(i, 0));
+    }
+
+    op_signature_t types = {EdgeType::Classical, EdgeType::Classical};
+
+    REQUIRE_THROWS_AS(c.rewire(v, ins, types), CircuitInvalidity);
+  }
+}
+
 }  // namespace test_Circ
 }  // namespace tket
