@@ -136,13 +136,13 @@ void SymplecticTableau::row_mult(unsigned ra, unsigned rw, Complex coeff) {
 void SymplecticTableau::apply_S(unsigned qb) {
   MatrixXb::ColXpr xcol = xmat_.col(qb);
   MatrixXb::ColXpr zcol = zmat_.col(qb);
-  col_mult(xcol, zcol, true, zcol, phase_);
+  col_mult(xcol, zcol, false, zcol, phase_);
 }
 
 void SymplecticTableau::apply_V(unsigned qb) {
   MatrixXb::ColXpr xcol = xmat_.col(qb);
   MatrixXb::ColXpr zcol = zmat_.col(qb);
-  col_mult(xcol, zcol, false, xcol, phase_);
+  col_mult(zcol, xcol, true, xcol, phase_);
 }
 
 void SymplecticTableau::apply_CX(unsigned qc, unsigned qt) {

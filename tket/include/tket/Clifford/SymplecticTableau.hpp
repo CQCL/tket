@@ -23,6 +23,7 @@ namespace tket {
 // Forward declare friend classes for converters
 class ChoiMixTableau;
 class UnitaryTableau;
+class UnitaryRevTableau;
 class Circuit;
 
 /**
@@ -74,10 +75,11 @@ class SymplecticTableau {
    * mutual commutativity of terms is also provided.
    *
    * This serves as a base class for:
-   * - StabTableau where each row represents a stabilizer of a given state.
    * - UnitaryTableau where there is both a Z row and an X row for each input
    * describing the Pauli string formed when pushing a Z or X on the input
    * through to the outputs.
+   * Future possible subclasses include:
+   * - StabTableau where each row represents a stabilizer of a given state.
    * - IsometryTableau is a generalisation of StabTableau and UnitaryTableau
    * that can represent Clifford isometries by a Z and X row per input and a
    * spare row per free stabilizer.
@@ -140,6 +142,13 @@ class SymplecticTableau {
   void apply_V(unsigned qb);
   void apply_CX(unsigned qc, unsigned qt);
   void apply_gate(OpType type, const std::vector<unsigned> &qbs);
+
+  /**
+   * Applies a pauli gadget (defined as e^{pauli * half_pis * -i * pi/2}).
+   * If row commutes with pauli, no change is required.
+   * If row anticommutes with pauli and half_pis % 4 == 1:
+   * e^{pauli * -i * pi/2} row = (i * row * pauli) e^{pauli * -i * pi/2}
+   */
   void apply_pauli_gadget(const PauliStabiliser &pauli, unsigned half_pis);
 
   /**
@@ -204,6 +213,8 @@ class SymplecticTableau {
   friend std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(
       const ChoiMixTableau &tab);
   friend std::ostream &operator<<(std::ostream &os, const UnitaryTableau &tab);
+  friend std::ostream &operator<<(
+      std::ostream &os, const UnitaryRevTableau &tab);
 
   friend void to_json(nlohmann::json &j, const SymplecticTableau &tab);
   friend void from_json(const nlohmann::json &j, SymplecticTableau &tab);

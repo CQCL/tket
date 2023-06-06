@@ -18,8 +18,9 @@
 
 namespace tket {
 
-// Forward declare Circuit for friend converter
+// Forward declare classes for friends
 class Circuit;
+class UnitaryRevTableau;
 
 class UnitaryTableau {
   /**
@@ -152,6 +153,8 @@ class UnitaryTableau {
   friend void from_json(const nlohmann::json& j, UnitaryTableau& tab);
 
   friend std::ostream& operator<<(std::ostream& os, const UnitaryTableau& tab);
+  friend std::ostream& operator<<(
+      std::ostream& os, const UnitaryRevTableau& tab);
   bool operator==(const UnitaryTableau& other) const;
 
  private:
@@ -168,5 +171,131 @@ class UnitaryTableau {
 JSON_DECL(UnitaryTableau)
 
 std::ostream& operator<<(std::ostream& os, const UnitaryTableau& tab);
+
+class UnitaryRevTableau {
+  /**
+   * Whereas UnitaryTableau rows are over the output segment with fixed single
+   * paulis over the input segment, UnitaryRevTableau flips this around with
+   * each row representing a Pauli string over the input segment and a fixed
+   * signel pauli over the output segment. That is, the ith X row is the
+   * (phaseful) Pauli string P such that X_i C P = C, and similarly for the Z
+   * rows.
+   *
+   * This is maintained by storing a UnitaryTableau for the inverse unitary
+   * C^dagger. Since each Pauli string is Hermitian, X_i C P = C is encoded as
+   * C^dagger = (X_i C P)^dagger = X_i C^dagger P, so no need to modify rows on
+   * reading them, but when applying gates this class will invert the gate (or
+   * reverse the order of gate application) before applying to the inner
+   * UnitaryTableau.
+   */
+ public:
+  /**
+   * Construct the tableau for the identity over n qubits (given default qubit
+   * names).
+   */
+  explicit UnitaryRevTableau(unsigned n);
+
+  /**
+   * Construct the tableau for the identity over specific qubits.
+   */
+  explicit UnitaryRevTableau(const qubit_vector_t& qbs);
+
+  /**
+   * Other required constructors
+   */
+  UnitaryRevTableau(const UnitaryRevTableau& other) = default;
+  UnitaryRevTableau(UnitaryRevTableau&& other) = default;
+  UnitaryRevTableau& operator=(const UnitaryRevTableau& other) = default;
+  UnitaryRevTableau& operator=(UnitaryRevTableau&& other) = default;
+
+  /**
+   * Read off an X row as a Pauli string
+   */
+  QubitPauliTensor get_xrow(const Qubit& qb) const;
+
+  /**
+   * Read off a Z row as a Pauli string
+   */
+  QubitPauliTensor get_zrow(const Qubit& qb) const;
+
+  /**
+   * Combine rows into a single row according to a QubitPauliTensor
+   */
+  QubitPauliTensor get_row_product(const QubitPauliTensor& qpt) const;
+
+  /**
+   * Access all IDs for the qubits used in the tableau.
+   */
+  std::set<Qubit> get_qubits() const;
+
+  /**
+   * Transform the tableau according to consuming a Clifford gate at either end
+   * of the circuit.
+   */
+  void apply_S_at_front(const Qubit& qb);
+  void apply_S_at_end(const Qubit& qb);
+  void apply_V_at_front(const Qubit& qb);
+  void apply_V_at_end(const Qubit& qb);
+  void apply_CX_at_front(const Qubit& control, const Qubit& target);
+  void apply_CX_at_end(const Qubit& control, const Qubit& target);
+  void apply_gate_at_front(OpType type, const qubit_vector_t& qbs);
+  void apply_gate_at_end(OpType type, const qubit_vector_t& qbs);
+
+  /**
+   * Transform the tableau according to consuming a Clifford-phase Pauli gadget
+   * at either end of the circuit.
+   *
+   * @param pauli The string of the Pauli gadget
+   * @param half_pis The Clifford angle: {0, 1, 2, 3} represents {0, pi/2, pi,
+   * -pi/2}
+   */
+  void apply_pauli_at_front(const QubitPauliTensor& pauli, unsigned half_pis);
+  void apply_pauli_at_end(const QubitPauliTensor& pauli, unsigned half_pis);
+
+  /**
+   * Combine two tableaux in sequence.
+   * Will throw an exception if the tableaux are not over the same set of
+   * qubits.
+   *
+   * @param first first circuit
+   * @param second second circuit
+   *
+   * @return The tableau corresponding to applying \p first, followed by \p
+   * second
+   */
+  static UnitaryRevTableau compose(
+      const UnitaryRevTableau& first, const UnitaryRevTableau& second);
+
+  /**
+   * Gives the UnitaryRevTableau corresponding to the inverse (dagger) or
+   * transpose unitary. This is distinct from simply transposing the binary
+   * matrix representation. Takes time O(N^3) for N qubits.
+   */
+  UnitaryRevTableau dagger() const;
+  UnitaryRevTableau transpose() const;
+
+  /**
+   * Gives the UnitaryRevTableau corresponding to the complex conjugate unitary.
+   * This calls conjugate() on the underlying SymplecticTableau.
+   */
+  UnitaryRevTableau conjugate() const;
+
+  friend UnitaryRevTableau circuit_to_unitary_rev_tableau(const Circuit& circ);
+  friend Circuit unitary_rev_tableau_to_circuit(const UnitaryRevTableau& tab);
+
+  friend void to_json(nlohmann::json& j, const UnitaryRevTableau& tab);
+  friend void from_json(const nlohmann::json& j, UnitaryRevTableau& tab);
+
+  friend std::ostream& operator<<(
+      std::ostream& os, const UnitaryRevTableau& tab);
+  bool operator==(const UnitaryRevTableau& other) const;
+
+ private:
+  UnitaryTableau tab_;
+};
+
+JSON_DECL(UnitaryRevTableau)
+
+std::ostream& operator<<(std::ostream& os, const UnitaryRevTableau& tab);
 
 }  // namespace tket
