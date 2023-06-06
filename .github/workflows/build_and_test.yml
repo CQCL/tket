@@ -450,6 +450,8 @@ jobs:
         ccache --set-config=compression=true
         ccache --set-config compiler_check=content
         ccache -p
+        choco uninstall ccache
+        choco uninstall ninja
     - name: Get current time
       uses: josStorer/get-current-time@v2.1.1
       id: current_time
@@ -467,7 +469,6 @@ jobs:
       # On windows use install + build so build directory is consistent across runs (i.e. don't build from conan cache)
       # Necessary because setting ccache base_dir doesn't currently work on windows
       run: |
-        $ErrorActionPreference = "Stop"
         conan install tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
         conan build tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
         conan export-pkg tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf `"`"
