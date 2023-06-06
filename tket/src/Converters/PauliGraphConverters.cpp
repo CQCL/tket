@@ -38,24 +38,10 @@ PauliGraph circuit_to_pauli_graph(const Circuit &circ) {
       Expr phase = peb.get_phase();
       if (args.size() != paulis.size())
         throw std::logic_error("Incorrect Pauli tensor size for qubit count");
-      QubitPauliTensor qpt;
-      for (unsigned i = 0; i != args.size(); ++i) {
-        switch (paulis[i]) {
-          case Pauli::I:
-            break;
-          case Pauli::X:
-            qpt = qpt * pg.cliff_.get_xpauli(Qubit(args[i]));
-            break;
-          case Pauli::Y:
-            qpt = qpt * pg.cliff_.get_xpauli(Qubit(args[i]));
-            qpt = qpt * pg.cliff_.get_zpauli(Qubit(args[i]));
-            qpt = i_ * qpt;
-            break;
-          case Pauli::Z:
-            qpt = qpt * pg.cliff_.get_zpauli(Qubit(args[i]));
-            break;
-        }
-      }
+      QubitPauliMap qpm;
+      for (unsigned i = 0; i != args.size(); ++i)
+        qpm.insert({Qubit(args[i]), paulis[i]});
+      QubitPauliTensor qpt = pg.cliff_.get_row_product(QubitPauliTensor(qpm));
       pg.apply_pauli_gadget_at_end(qpt, phase);
     } else
       throw BadOpType(
@@ -80,7 +66,7 @@ Circuit pauli_graph_to_circuit_individually(
     const Expr &angle = pg.graph_[vert].angle_;
     append_single_pauli_gadget(circ, pauli, angle, cx_config);
   }
-  Circuit cliff_circuit = tableau_to_circuit(pg.cliff_);
+  Circuit cliff_circuit = unitary_rev_tableau_to_circuit(pg.cliff_);
   circ.append(cliff_circuit);
   for (auto it = pg.measures_.begin(); it != pg.measures_.end(); ++it) {
     circ.add_measure(it->left, it->right);
@@ -114,7 +100,7 @@ Circuit pauli_graph_to_circuit_pairwise(
       append_pauli_gadget_pair(circ, pauli0, angle0, pauli1, angle1, cx_config);
     }
   }
-  Circuit cliff_circuit = tableau_to_circuit(pg.cliff_);
+  Circuit cliff_circuit = unitary_rev_tableau_to_circuit(pg.cliff_);
   circ.append(cliff_circuit);
   for (auto it = pg.measures_.begin(); it != pg.measures_.end(); ++it) {
     circ.add_measure(it->left, it->right);
@@ -187,7 +173,7 @@ Circuit pauli_graph_to_circuit_sets(
       circ.append(cliff_circ.dagger());
     }
   }
-  Circuit cliff_circuit = tableau_to_circuit(pg.cliff_);
+  Circuit cliff_circuit = unitary_rev_tableau_to_circuit(pg.cliff_);
   circ.append(cliff_circuit);
   for (auto it1 = pg.measures_.begin(); it1 != pg.measures_.end(); ++it1) {
     circ.add_measure(it1->left, it1->right);
