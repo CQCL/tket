@@ -209,7 +209,8 @@ jobs:
           conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -r=tket-libs
       - name: ccache stats on windows
         run: |
-          sccache -s  #show stats
+          ccache -s  #show stats
+          ccache -z  #show stats
 
   build_test_tket_macos_arm64:
     name: Build and test tket (macos-arm64)
