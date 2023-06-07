@@ -35,8 +35,13 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 find_program(CCACHE_PROGRAM ccache)
+find_program(SCCACHE_PROGRAM sccache)
 if(CCACHE_PROGRAM)
     set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
+    message("->Using ccache as compiler launcher")
+elseif(SCCACHE_PROGRAM)
+    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${SCCACHE_PROGRAM}")
+    message("->Using sccache as compiler launcher")
 endif()
 
 if(WIN32)
