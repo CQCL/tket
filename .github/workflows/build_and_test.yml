@@ -445,7 +445,7 @@ jobs:
              $normalized_file = [IO.File]::ReadAllText($f) -replace "`r`n", "`n"
              [IO.File]::WriteAllText($f, $normalized_file)
              }
-    - name: ninja ccache setup
+    - name: ninja sccache setup
       # This is what hendrikmuhs/ccache-action does, but for windows (theirs is buggy on windows)
       id: ninja-ccache-setup
       run: |
