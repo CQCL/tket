@@ -15,8 +15,9 @@ PACKAGES="boost/1.81.0@ \
 for PACKAGE in ${PACKAGES}
 do
     conan remove -c "${PACKAGE}"
-    echo "Installing:" ${PACKAGE} "(in two configurations) ..."
+    echo "Installing:" ${PACKAGE} "(in three configurations) ..."
     conan install --requires ${PACKAGE} --build=missing -o boost/*:header_only=True
+    conan install --requires ${PACKAGE} --build=missing -o boost/*:header_only=True -s build_type=Debug
     conan install --requires ${PACKAGE} --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
 done
 
