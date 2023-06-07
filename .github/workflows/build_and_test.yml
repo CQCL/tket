@@ -103,20 +103,6 @@ jobs:
     - name: apt update
       if: matrix.os == 'ubuntu-22.04'
       run: sudo apt update
-    - name: Select Python 3.10
-      # otherwise turtlebrowser/get-conan@v1.2 fails on macos-12
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
-    - name: Install conan
-      uses: turtlebrowser/get-conan@v1.2
-      with:
-        version: ${{ env.conan_version }}
-    - name: Set up conan
-      id: conan-setup
-      run: |
-        conan profile detect
-        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: normalize line endings in conanfile and src directory
       if: matrix.os == 'windows-2022'
       # This is necessary to ensure consistent revisions across platforms.
@@ -145,34 +131,52 @@ jobs:
         ccache --set-config base_dir=${HOME}
         ccache --set-config compiler_check=content
         ccache -p
-    - name: ccache on windows
-      id: ccache-setup-win
+    - name: sccache setup on windows
+      id: sccache-setup-win
       if: matrix.os == 'windows-2022'
       run: |
-        choco upgrade ccache ninja
-        $ccache_dir = ccache --get-config cache_dir
-        echo ccache_dir=$ccache_dir >> $env:GITHUB_OUTPUT
-        ccache --set-config base_dir=${HOME}
-        ccache --set-config compiler_check=content
-        ccache -p
-        ccache -z
+        choco upgrade ninja
+        
+        # get scoop
+        Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
+        iex "& {$(irm get.scoop.sh)} -RunAsAdmin"
+        Join-Path (Resolve-Path ~).Path "scoop\shims" >> $Env:GITHUB_PATH
+        
+        # install sccache
+        scoop install sccache
+        sccache -z
     - name: Get current time
       uses: josStorer/get-current-time@v2.1.1
       id: current_time
       with:
         format: YYYYMMDDHHmmss
-    - name: ccache windows
+    - name: restore sccache
       if: matrix.os == 'windows-2022'
       uses: actions/cache@v3
       with:
-        path: ${{ steps.ccache-setup-win.outputs.ccache_dir }}
-        key: tket-${{ matrix.os }}-${{ steps.current_time.outputs.formattedTime }}
+        path: "C:\\Users\\runneradmin\\AppData\\Local\\Mozilla\\sccache\\cache"
+        key: tket-sccache-${{ matrix.os }}-${{ steps.current_time.outputs.formattedTime }}
         restore-keys: |
-          tket-${{ matrix.os }}-
+          tket-sccache-${{ matrix.os }}-
+    - name: Select Python 3.10
+      # otherwise turtlebrowser/get-conan@v1.2 fails on macos-12
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    - name: Install conan
+      uses: turtlebrowser/get-conan@v1.2
+      with:
+        version: ${{ env.conan_version }}
+    - name: Set up conan
+      id: conan-setup
+      run: |
+        conan profile detect
+        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
     - name: Build tket
       run: |
-        conan install tket -s build_type=Release --user=tket --channel=stable --build=missing -o boost/*:header_only=True -o with_all_tests=True
-        conan build tket -s build_type=Release --user=tket --channel=stable --build=missing -o boost/*:header_only=True -o with_all_tests=True
+        sccache -s
+        conan install tket -s build_type=Release --user=tket --channel=stable --build=missing -o boost/*:header_only=True -o with_all_tests=True -c tools.cmake.cmaketoolchain:generator=Ninja
+        conan build tket -s build_type=Release --user=tket --channel=stable --build=missing -o boost/*:header_only=True -o with_all_tests=True -c tools.cmake.cmaketoolchain:generator=Ninja
     - name: Upload package
       if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
       run: |
@@ -182,7 +186,7 @@ jobs:
     - name: ccache stats on windows
       if: matrix.os == 'windows-2022'
       run: |
-        ccache -s
+        sccache --show-stats
 
 #  build_test_tket_macos_arm64:
 #    name: Build and test tket (macos-arm64)

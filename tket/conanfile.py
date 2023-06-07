@@ -65,13 +65,7 @@ class TketConan(ConanFile):
     def generate(self):
         deps = CMakeDeps(self)
         deps.generate()
-        status_code, version = subprocess.getstatusoutput("ninja --version")
-        if status_code == 0:
-            tc = CMakeToolchain(self, generator="Ninja")
-            tc.variables["CMAKE_CXX_COMPILER_LAUNCHER"] = "ccache"
-            print(f"Using Ninja generator, found version {version}")
-        else:
-            tc = CMakeToolchain(self)
+        tc = CMakeToolchain(self)
         tc.variables["PROFILE_COVERAGE"] = self.options.profile_coverage
     #    if self.build_test():
     #        tc.variables["BUILD_TKET_TEST"] = True
