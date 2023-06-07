@@ -3,9 +3,8 @@ set -evx
 
 # Edit this list as required:
 PACKAGES="\
-          catch2/3.3.0@ \
-          gmp/6.2.1@ \
-          symengine/0.9.0@ \
+          catch2/3.3.2@ \
+          symengine/0.10.1@ \
          "
 
 for PACKAGE in ${PACKAGES}
