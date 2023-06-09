@@ -10,6 +10,7 @@ Minor new features:
 * Add missing add box methods that accept qubit indices as arguments.
 * Add ``with_initial_reset`` parameter to ``StatePreparationBox`` to permit
   state preparation starting from unknown state.
+* New method ``utils.gate_counts`` to count gates of all types.
 
 Fixes:
 
