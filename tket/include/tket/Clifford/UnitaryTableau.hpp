@@ -177,13 +177,13 @@ class UnitaryRevTableau {
    * Whereas UnitaryTableau rows are over the output segment with fixed single
    * paulis over the input segment, UnitaryRevTableau flips this around with
    * each row representing a Pauli string over the input segment and a fixed
-   * signel pauli over the output segment. That is, the ith X row is the
+   * single pauli over the output segment. That is, the ith X row is the
    * (phaseful) Pauli string P such that X_i C P = C, and similarly for the Z
    * rows.
    *
    * This is maintained by storing a UnitaryTableau for the inverse unitary
    * C^dagger. Since each Pauli string is Hermitian, X_i C P = C is encoded as
-   * C^dagger = (X_i C P)^dagger = X_i C^dagger P, so no need to modify rows on
+   * C^dagger = (X_i C P)^dagger = P C^dagger X_i, so no need to modify rows on
    * reading them, but when applying gates this class will invert the gate (or
    * reverse the order of gate application) before applying to the inner
    * UnitaryTableau.
