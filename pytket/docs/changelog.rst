@@ -1,8 +1,8 @@
 Changelog
 =========
 
-1.16.0 (unreleased)
--------------------
+1.16.0 (June 2023)
+------------------
 
 Minor new features:
 
