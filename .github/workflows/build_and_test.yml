@@ -188,14 +188,14 @@ jobs:
         conan build tket -s build_type=Release --user=tket --channel=stable --build=missing -o boost/*:header_only=True -o with_all_tests=True
     - name: show compile commands
       run: |
-        ls
         cd tket
-        ls
         cd build
-        ls
         cd Release
         ls
-        cat compile_commands.json
+        echo "tket.sln"
+        cat tket.sln
+        echo "tket.vcxproj"
+        cat tket.vcxproj
       shell: bash
     - name: Upload package
       if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
