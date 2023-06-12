@@ -100,6 +100,12 @@ jobs:
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v3
+    - name: show
+      shell: bash
+      run: |
+        ls
+        cd tket
+        ls
     - name: apt update
       if: matrix.os == 'ubuntu-22.04'
       run: sudo apt update
@@ -182,7 +188,14 @@ jobs:
         conan build tket -s build_type=Release --user=tket --channel=stable --build=missing -o boost/*:header_only=True -o with_all_tests=True
     - name: show compile commands
       run: |
-        cat "tket\build\Release\compile_commands.json" || exit 0
+        ls
+        cd tket
+        ls
+        cd build
+        ls
+        cd Release
+        ls
+        cat compile_commands.json
       shell: bash
     - name: Upload package
       if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
