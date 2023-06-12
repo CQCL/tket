@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>pytket.circuit &#8212; pytket 1.15.0 documentation</title>
+    <title>pytket.circuit &#8212; pytket 1.16.0 documentation</title>
   
   
   
@@ -142,6 +142,7 @@
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faqs.html">TKET FAQs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="opensource.html">Open Source Attribution</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">More Documentation:</span></p>
@@ -177,6 +178,7 @@
 <li class="toctree-l1"><a class="reference internal" href="utils.html">pytket.utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="logging.html">pytket.logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="config.html">pytket.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faqs.html">TKET FAQs</a></li>
 </ul>
 
     </div>
@@ -614,6 +616,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.StatePreparationBox.get_circuit"><code class="docutils literal notranslate"><span class="pre">StatePreparationBox.get_circuit()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.StatePreparationBox.get_statevector"><code class="docutils literal notranslate"><span class="pre">StatePreparationBox.get_statevector()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.StatePreparationBox.is_inverse"><code class="docutils literal notranslate"><span class="pre">StatePreparationBox.is_inverse()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.StatePreparationBox.with_initial_reset"><code class="docutils literal notranslate"><span class="pre">StatePreparationBox.with_initial_reset()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.DiagonalBox"><code class="docutils literal notranslate"><span class="pre">DiagonalBox</span></code></a><ul class="nav section-nav flex-column">
@@ -2023,14 +2026,14 @@ Every backend and matrix-based box has a BasisOrder option which can toggle betw
 <dl class="py class">
 <dt class="sig sig-object py" id="pytket.circuit.MultiplexorBox">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pytket.circuit.</span></span><span class="sig-name descname"><span class="pre">MultiplexorBox</span></span><a class="headerlink" href="#pytket.circuit.MultiplexorBox" title="Permalink to this definition">#</a></dt>
-<dd><p>A user-defined multiplexor (i.e. uniformly controlled operations) specified by a map from bitstrings to :py:class:<a href="#id5"><span class="problematic" id="id6">`</span></a>Op`s</p>
+<dd><p>A user-defined multiplexor (i.e. uniformly controlled operations) specified by a map from bitstrings to <a class="reference internal" href="#pytket.circuit.Op" title="pytket.circuit.Op"><code class="xref py py-class docutils literal notranslate"><span class="pre">Op</span></code></a> s</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pytket.circuit.MultiplexorBox.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.circuit.MultiplexorBox" title="pytket.circuit.MultiplexorBox"><span class="pre">pytket.circuit.MultiplexorBox</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#pytket.circuit.Op" title="pytket.circuit.Op"><span class="pre">pytket.circuit.Op</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#pytket.circuit.MultiplexorBox.__init__" title="Permalink to this definition">#</a></dt>
-<dd><p>Construct from a map from bitstrings to :py:class:<a href="#id7"><span class="problematic" id="id8">`</span></a>Op`s</p>
+<dd><p>Construct from a map from bitstrings to <a class="reference internal" href="#pytket.circuit.Op" title="pytket.circuit.Op"><code class="xref py py-class docutils literal notranslate"><span class="pre">Op</span></code></a> s</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>op_map</strong> – Map from bitstrings to :py:class:<a href="#id9"><span class="problematic" id="id10">`</span></a>Op`s</p>
+<dd class="field-odd"><p><strong>op_map</strong> – Map from bitstrings to <a class="reference internal" href="#pytket.circuit.Op" title="pytket.circuit.Op"><code class="xref py py-class docutils literal notranslate"><span class="pre">Op</span></code></a> s</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2060,7 +2063,7 @@ Every backend and matrix-based box has a BasisOrder option which can toggle betw
 <dl class="py class">
 <dt class="sig sig-object py" id="pytket.circuit.MultiplexedRotationBox">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pytket.circuit.</span></span><span class="sig-name descname"><span class="pre">MultiplexedRotationBox</span></span><a class="headerlink" href="#pytket.circuit.MultiplexedRotationBox" title="Permalink to this definition">#</a></dt>
-<dd><p>A user-defined multiplexed rotation gate (i.e. uniformly controlled single-axis rotations) specified by a map from bitstrings to :py:class:<a href="#id11"><span class="problematic" id="id12">`</span></a>Op`s</p>
+<dd><p>A user-defined multiplexed rotation gate (i.e. uniformly controlled single-axis rotations) specified by a map from bitstrings to <a class="reference internal" href="#pytket.circuit.Op" title="pytket.circuit.Op"><code class="xref py py-class docutils literal notranslate"><span class="pre">Op</span></code></a> s</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pytket.circuit.MultiplexedRotationBox.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.MultiplexedRotationBox.__init__" title="Permalink to this definition">#</a></dt>
@@ -2068,10 +2071,10 @@ Every backend and matrix-based box has a BasisOrder option which can toggle betw
 <ol class="arabic simple">
 <li><p>__init__(self: pytket.circuit.MultiplexedRotationBox, op_map: Dict[List[bool], pytket.circuit.Op]) -&gt; None</p></li>
 </ol>
-<p>Construct from a map from bitstrings to :py:class:<a href="#id13"><span class="problematic" id="id14">`</span></a>Op`s.All :py:class:<a href="#id15"><span class="problematic" id="id16">`</span></a>Op`s must share the same single-qubit rotation type: Rx, Ry, or Rz.</p>
+<p>Construct from a map from bitstrings to <code class="xref py py-class docutils literal notranslate"><span class="pre">Op`s.All</span> <span class="pre">:py:class:`Op</span></code> s  must share the same single-qubit rotation type: Rx, Ry, or Rz.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>op_map</strong> – Map from bitstrings to :py:class:<a href="#id17"><span class="problematic" id="id18">`</span></a>Op`s</p>
+<dd class="field-odd"><p><strong>op_map</strong> – Map from bitstrings to <a class="reference internal" href="#pytket.circuit.Op" title="pytket.circuit.Op"><code class="xref py py-class docutils literal notranslate"><span class="pre">Op</span></code></a> s</p>
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
@@ -2113,15 +2116,15 @@ Every backend and matrix-based box has a BasisOrder option which can toggle betw
 <dl class="py class">
 <dt class="sig sig-object py" id="pytket.circuit.MultiplexedU2Box">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pytket.circuit.</span></span><span class="sig-name descname"><span class="pre">MultiplexedU2Box</span></span><a class="headerlink" href="#pytket.circuit.MultiplexedU2Box" title="Permalink to this definition">#</a></dt>
-<dd><p>A user-defined multiplexed U2 gate (i.e. uniformly controlled U2 gate) specified by a map from bitstrings to :py:class:<a href="#id19"><span class="problematic" id="id20">`</span></a>Op`s</p>
+<dd><p>A user-defined multiplexed U2 gate (i.e. uniformly controlled U2 gate) specified by a map from bitstrings to <a class="reference internal" href="#pytket.circuit.Op" title="pytket.circuit.Op"><code class="xref py py-class docutils literal notranslate"><span class="pre">Op</span></code></a> s</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pytket.circuit.MultiplexedU2Box.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.circuit.MultiplexedU2Box" title="pytket.circuit.MultiplexedU2Box"><span class="pre">pytket.circuit.MultiplexedU2Box</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#pytket.circuit.Op" title="pytket.circuit.Op"><span class="pre">pytket.circuit.Op</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">impl_diag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#pytket.circuit.MultiplexedU2Box.__init__" title="Permalink to this definition">#</a></dt>
-<dd><p>Construct from a map from bitstrings to <code class="xref py py-class docutils literal notranslate"><span class="pre">Op`s.Only</span> <span class="pre">supports</span> <span class="pre">single</span> <span class="pre">qubit</span> <span class="pre">unitary</span> <span class="pre">gate</span> <span class="pre">types</span> <span class="pre">and</span> <span class="pre">:py:class:`Unitary1qBox</span></code>.</p>
+<dd><p>Construct from a map from bitstrings to <a class="reference internal" href="#pytket.circuit.Op" title="pytket.circuit.Op"><code class="xref py py-class docutils literal notranslate"><span class="pre">Op</span></code></a> s.Only supports single qubit unitary gate types and <a class="reference internal" href="#pytket.circuit.Unitary1qBox" title="pytket.circuit.Unitary1qBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unitary1qBox</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
-<li><p><strong>op_map</strong> – Map from bitstrings to :py:class:<a href="#id21"><span class="problematic" id="id22">`</span></a>Op`s</p></li>
+<li><p><strong>op_map</strong> – Map from bitstrings to <a class="reference internal" href="#pytket.circuit.Op" title="pytket.circuit.Op"><code class="xref py py-class docutils literal notranslate"><span class="pre">Op</span></code></a> s</p></li>
 <li><p><strong>impl_diag</strong> – Whether to implement the final diagonal gate, default to True.</p></li>
 </ul>
 </dd>
@@ -2163,14 +2166,14 @@ Every backend and matrix-based box has a BasisOrder option which can toggle betw
 <dl class="py class">
 <dt class="sig sig-object py" id="pytket.circuit.MultiplexedTensoredU2Box">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pytket.circuit.</span></span><span class="sig-name descname"><span class="pre">MultiplexedTensoredU2Box</span></span><a class="headerlink" href="#pytket.circuit.MultiplexedTensoredU2Box" title="Permalink to this definition">#</a></dt>
-<dd><p>A user-defined multiplexed tensor product of U2 gates specified by a map from bitstrings to lists of :py:class:<a href="#id23"><span class="problematic" id="id24">`</span></a>Op`s</p>
+<dd><p>A user-defined multiplexed tensor product of U2 gates specified by a map from bitstrings to lists of <a class="reference internal" href="#pytket.circuit.Op" title="pytket.circuit.Op"><code class="xref py py-class docutils literal notranslate"><span class="pre">Op</span></code></a> s</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pytket.circuit.MultiplexedTensoredU2Box.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.circuit.MultiplexedTensoredU2Box" title="pytket.circuit.MultiplexedTensoredU2Box"><span class="pre">pytket.circuit.MultiplexedTensoredU2Box</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pytket.circuit.Op" title="pytket.circuit.Op"><span class="pre">pytket.circuit.Op</span></a><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#pytket.circuit.MultiplexedTensoredU2Box.__init__" title="Permalink to this definition">#</a></dt>
-<dd><p>Construct from a map from bitstrings to equal-sized lists of <code class="xref py py-class docutils literal notranslate"><span class="pre">Op`s.</span> <span class="pre">Only</span> <span class="pre">supports</span> <span class="pre">single</span> <span class="pre">qubit</span> <span class="pre">unitary</span> <span class="pre">gate</span> <span class="pre">types</span> <span class="pre">and</span> <span class="pre">:py:class:`Unitary1qBox</span></code>.</p>
+<dd><p>Construct from a map from bitstrings to equal-sized lists of <a class="reference internal" href="#pytket.circuit.Op" title="pytket.circuit.Op"><code class="xref py py-class docutils literal notranslate"><span class="pre">Op</span></code></a> s. Only supports single qubit unitary gate types and <a class="reference internal" href="#pytket.circuit.Unitary1qBox" title="pytket.circuit.Unitary1qBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">Unitary1qBox</span></code></a>.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>op_map</strong> – Map from bitstrings to lists of :py:class:<a href="#id25"><span class="problematic" id="id26">`</span></a>Op`s</p>
+<dd class="field-odd"><p><strong>op_map</strong> – Map from bitstrings to lists of <a class="reference internal" href="#pytket.circuit.Op" title="pytket.circuit.Op"><code class="xref py py-class docutils literal notranslate"><span class="pre">Op</span></code></a> s</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2203,10 +2206,15 @@ Every backend and matrix-based box has a BasisOrder option which can toggle betw
 <dd><p>A box for preparing quantum states using multiplexed-Ry and multiplexed-Rz gates</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pytket.circuit.StatePreparationBox.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.circuit.StatePreparationBox" title="pytket.circuit.StatePreparationBox"><span class="pre">pytket.circuit.StatePreparationBox</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">statevector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.complex128</span><span class="p"><span class="pre">[</span></span><span class="pre">m</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">1</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_inverse</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#pytket.circuit.StatePreparationBox.__init__" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.circuit.StatePreparationBox" title="pytket.circuit.StatePreparationBox"><span class="pre">pytket.circuit.StatePreparationBox</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">statevector</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">numpy.ndarray</span><span class="p"><span class="pre">[</span></span><span class="pre">numpy.complex128</span><span class="p"><span class="pre">[</span></span><span class="pre">m</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="m"><span class="pre">1</span></span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">is_inverse</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">with_initial_reset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#pytket.circuit.StatePreparationBox.__init__" title="Permalink to this definition">#</a></dt>
+<dd><p>Construct from a statevector</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>is_inverse</strong> – whether to implement the dagger of the state preparation circuit, default to false</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>statevector</strong> – normalised statevector</p></li>
+<li><p><strong>is_inverse</strong> – whether to implement the dagger of the state preparation circuit, default to false</p></li>
+<li><p><strong>with_initial_reset</strong> – whether to explicitly set the state to zero initially (by default the initial zero state is assumed and no explicit reset is applied)</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -2237,6 +2245,16 @@ Every backend and matrix-based box has a BasisOrder option which can toggle betw
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>flag indicating whether to implement the dagger of the state preparation circuit</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.circuit.StatePreparationBox.with_initial_reset">
+<span class="sig-name descname"><span class="pre">with_initial_reset</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.circuit.StatePreparationBox" title="pytket.circuit.StatePreparationBox"><span class="pre">pytket.circuit.StatePreparationBox</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></span><a class="headerlink" href="#pytket.circuit.StatePreparationBox.with_initial_reset" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>flag indicating whether the qubits are explicitly set to the zero state initially</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2587,6 +2605,7 @@ Every backend and matrix-based box has a BasisOrder option which can toggle betw
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.StatePreparationBox.get_circuit"><code class="docutils literal notranslate"><span class="pre">StatePreparationBox.get_circuit()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.StatePreparationBox.get_statevector"><code class="docutils literal notranslate"><span class="pre">StatePreparationBox.get_statevector()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.StatePreparationBox.is_inverse"><code class="docutils literal notranslate"><span class="pre">StatePreparationBox.is_inverse()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.StatePreparationBox.with_initial_reset"><code class="docutils literal notranslate"><span class="pre">StatePreparationBox.with_initial_reset()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.DiagonalBox"><code class="docutils literal notranslate"><span class="pre">DiagonalBox</span></code></a><ul class="nav section-nav flex-column">
@@ -2610,7 +2629,7 @@ Every backend and matrix-based box has a BasisOrder option which can toggle betw
   <div class="footer-item">
     
 <p class="component-author">
-By Cambridge Quantum Computing Ltd
+By Quantinuum
 </p>
 
   </div>
@@ -2619,7 +2638,7 @@ By Cambridge Quantum Computing Ltd
     
   <p class="copyright">
     
-      © Copyright 2023, Cambridge Quantum Computing Ltd.
+      © Copyright 2023 Quantinuum.
       <br/>
     
   </p>

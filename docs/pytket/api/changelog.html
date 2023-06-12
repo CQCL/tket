@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Changelog &#8212; pytket 1.15.0 documentation</title>
+    <title>Changelog &#8212; pytket 1.16.0 documentation</title>
   
   
   
@@ -142,6 +142,7 @@
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faqs.html">TKET FAQs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="opensource.html">Open Source Attribution</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">More Documentation:</span></p>
@@ -177,6 +178,7 @@
 <li class="toctree-l1"><a class="reference internal" href="utils.html">pytket.utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="logging.html">pytket.logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="config.html">pytket.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faqs.html">TKET FAQs</a></li>
 </ul>
 
     </div>
@@ -370,6 +372,7 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#june-2023">1.16.0 (June 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#may-2023">1.15.0 (May 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#april-2023">1.14.0 (April 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#march-2023">1.13.2 (March 2023)</a></li>
@@ -448,6 +451,24 @@ document.write(`
                   
   <section id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this heading">#</a></h1>
+<section id="june-2023">
+<h2>1.16.0 (June 2023)<a class="headerlink" href="#june-2023" title="Permalink to this heading">#</a></h2>
+<p>Minor new features:</p>
+<ul class="simple">
+<li><p>Support <code class="docutils literal notranslate"><span class="pre">allow_swaps</span></code> parameter for <code class="docutils literal notranslate"><span class="pre">PeepholeOptimise2Q</span></code>.</p></li>
+<li><p>Add missing add box methods that accept qubit indices as arguments.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">with_initial_reset</span></code> parameter to <code class="docutils literal notranslate"><span class="pre">StatePreparationBox</span></code> to permit
+state preparation starting from unknown state.</p></li>
+<li><p>New method <code class="docutils literal notranslate"><span class="pre">utils.stats.gate_counts</span></code> to count gates of all types.</p></li>
+</ul>
+<p>Fixes:</p>
+<ul class="simple">
+<li><p>Fix <code class="docutils literal notranslate"><span class="pre">FlattenRegisters</span></code> not updating <code class="docutils literal notranslate"><span class="pre">ClassicalExpBox</span></code>.</p></li>
+<li><p>Fix missing default argument value to <code class="docutils literal notranslate"><span class="pre">FlattenRelabelRegistersPass</span></code>.</p></li>
+<li><p>Fix <code class="docutils literal notranslate"><span class="pre">auto_rebase_pass</span></code> rebasing via TK2 even if CX is the only target 2q gate.</p></li>
+<li><p>Fix <code class="docutils literal notranslate"><span class="pre">QControlBox</span></code> not identifying SU(2) unitaries.</p></li>
+</ul>
+</section>
 <section id="may-2023">
 <h2>1.15.0 (May 2023)<a class="headerlink" href="#may-2023" title="Permalink to this heading">#</a></h2>
 <p>Major new features:</p>
@@ -1666,6 +1687,7 @@ circumstances.</p></li>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#june-2023">1.16.0 (June 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#may-2023">1.15.0 (May 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#april-2023">1.14.0 (April 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#march-2023">1.13.2 (March 2023)</a></li>
@@ -1745,7 +1767,7 @@ circumstances.</p></li>
   <div class="footer-item">
     
 <p class="component-author">
-By Cambridge Quantum Computing Ltd
+By Quantinuum
 </p>
 
   </div>
@@ -1754,7 +1776,7 @@ By Cambridge Quantum Computing Ltd
     
   <p class="copyright">
     
-      © Copyright 2023, Cambridge Quantum Computing Ltd.
+      © Copyright 2023 Quantinuum.
       <br/>
     
   </p>

@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>Getting Started &#8212; pytket 1.15.0 documentation</title>
+    <title>Getting Started &#8212; pytket 1.16.0 documentation</title>
   
   
   
@@ -141,6 +141,7 @@
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faqs.html">TKET FAQs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="opensource.html">Open Source Attribution</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">More Documentation:</span></p>
@@ -176,6 +177,7 @@
 <li class="toctree-l1"><a class="reference internal" href="utils.html">pytket.utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="logging.html">pytket.logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="config.html">pytket.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faqs.html">TKET FAQs</a></li>
 </ul>
 
     </div>
@@ -389,7 +391,7 @@ those using an older version of pytket, keep up to date by installing with the
 <p>There are separate packages for managing the interoperability between pytket and
 other quantum software packages which can also be installed via PyPI. For
 details of these, see the
-<a class="reference external" href="https://github.com/CQCL/pytket-extensions">pytket-extensions</a> repo.</p>
+<a class="reference external" href="https://cqcl.github.io/pytket-extensions/api/index.html">pytket-extensions</a> documentation.</p>
 <p>The quantum circuit is an abstraction of computation using quantum resources,
 designed by initializing a system into a fixed state, then mutating it via
 sequences of instructions (gates).</p>
@@ -397,11 +399,11 @@ sequences of instructions (gates).</p>
 use them directly.</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pytket</span> <span class="kn">import</span> <span class="n">Circuit</span>
 
-<span class="n">c</span> <span class="o">=</span> <span class="n">Circuit</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># define a circuit with 2 qubits and 2 bits</span>
-<span class="n">c</span><span class="o">.</span><span class="n">H</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>           <span class="c1"># add a Hadamard gate to qubit 0</span>
-<span class="n">c</span><span class="o">.</span><span class="n">Rz</span><span class="p">(</span><span class="mf">0.25</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>    <span class="c1"># add an Rz gate of angle 0.25*pi to qubit 0</span>
-<span class="n">c</span><span class="o">.</span><span class="n">CX</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>        <span class="c1"># add a CX gate with control qubit 1 and target qubit 0</span>
-<span class="n">c</span><span class="o">.</span><span class="n">measure_all</span><span class="p">()</span>  <span class="c1"># measure qubits 0 and 1, recording the results in bits 0 and 1</span>
+<span class="n">c</span> <span class="o">=</span> <span class="n">Circuit</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="c1"># define a circuit with 2 qubits and 2 bits</span>
+<span class="n">c</span><span class="o">.</span><span class="n">H</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>            <span class="c1"># add a Hadamard gate to qubit 0</span>
+<span class="n">c</span><span class="o">.</span><span class="n">Rz</span><span class="p">(</span><span class="mf">0.25</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>     <span class="c1"># add an Rz gate of angle 0.25*pi to qubit 0</span>
+<span class="n">c</span><span class="o">.</span><span class="n">CX</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>         <span class="c1"># add a CX gate with control qubit 1 and target qubit 0</span>
+<span class="n">c</span><span class="o">.</span><span class="n">measure_all</span><span class="p">()</span>   <span class="c1"># measure qubits 0 and 1, recording the results in bits 0 and 1</span>
 </pre></div>
 </div>
 <p>Pytket provides many handy shortcuts and higher-level components for building
@@ -425,9 +427,40 @@ OpenQASM and Quipper, or embedded python frameworks such as Qiskit and Cirq.</p>
 </pre></div>
 </div>
 <p>See the
-<a class="reference external" href="https://cqcl.github.io/pytket/manual/index.html">Pytket User Manual</a>
+<a class="reference external" href="https://cqcl.github.io/pytket/manual/index.html">pytket user manual</a>
 for an extensive tutorial on pytket, providing a gentle introduction to its
 features and how to run circuits on backend devices, with worked examples.</p>
+<p>In pytket there is also a generic <code class="xref py py-class docutils literal notranslate"><span class="pre">Backend</span></code> interface. This represents a connection to a quantum device or simulator.
+It’s possible to run circuits on platforms from different providers through the <a class="reference external" href="https://cqcl.github.io/pytket-extensions/api/index.html">extension modules</a>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pytket</span> <span class="kn">import</span> <span class="n">Circuit</span>
+<span class="kn">from</span> <span class="nn">pytket.extensions.qiskit</span> <span class="kn">import</span> <span class="n">AerBackend</span>
+
+<span class="c1"># Define Circuit</span>
+<span class="n">circ</span> <span class="o">=</span> <span class="n">Circuit</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">circ</span><span class="o">.</span><span class="n">H</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">CX</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">CX</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="c1"># Initialise Backend and execute the Circuit</span>
+<span class="n">backend</span> <span class="o">=</span> <span class="n">AerBackend</span><span class="p">()</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">run_circuit</span><span class="p">(</span><span class="n">circ</span><span class="p">,</span> <span class="n">n_shots</span><span class="o">=</span><span class="mi">1000</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">result</span><span class="o">.</span><span class="n">get_counts</span><span class="p">())</span>
+</pre></div>
+</div>
+<p>This prints out a summary of readouts (the final values of the classical bits) and their frequencies.</p>
+<p>Each pytket <code class="xref py py-class docutils literal notranslate"><span class="pre">Backend</span></code> comes with its own default compilation method. This is a recommended sequence of optimisation passes to meet the requirements of the specific <code class="xref py py-class docutils literal notranslate"><span class="pre">Backend</span></code>.</p>
+<p>The following code snippet will show how to compile a circuit to run on an IBM device. This requires setting up IBM credentials (see <cite>this page &lt;https://cqcl.github.io/pytket-qiskit/api/index.html#access-and-credentials&gt;</cite>).</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pytket.extensions.qiskit</span> <span class="kn">import</span> <span class="n">IBMQBackend</span>
+
+<span class="n">circ</span> <span class="o">=</span> <span class="n">Circuit</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">CCX</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
+<span class="n">belem_device</span> <span class="o">=</span> <span class="n">IBMQBackend</span><span class="p">(</span><span class="s1">&#39;ibmq_belem&#39;</span><span class="p">)</span>
+
+<span class="c1"># Compile Circuit to use supported gates of IBMQ Belem</span>
+<span class="n">compiled_circ</span> <span class="o">=</span> <span class="n">belem_device</span><span class="o">.</span><span class="n">get_compiled_circuit</span><span class="p">(</span><span class="n">circ</span><span class="p">)</span>
+<span class="n">result</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">run_circuit</span><span class="p">(</span><span class="n">compiled_circ</span><span class="p">,</span> <span class="n">n_shots</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Here the default compilation pass is applied by <code class="xref py py-meth docutils literal notranslate"><span class="pre">IBMQBackend.get_compiled_circuit()</span></code>. See <a class="reference external" href="https://cqcl.github.io/pytket-qiskit/api/index.html">this page</a> for more details.</p>
+<p>As an alternative, We can experiment with constructing our own circuit compilation routines in pytket. Passes from the <code class="xref py py-mod docutils literal notranslate"><span class="pre">pytket.passes</span></code> module can be applied individually or composed in sequence.
+See the section of the user manual on <a class="reference external" href="https://cqcl.github.io/pytket/manual/manual_compiler.html">circuit compilation</a> and the corresponding <a class="reference external" href="https://github.com/CQCL/pytket/blob/main/examples/compilation_example.ipynb">notebook example</a> for more.</p>
 </section>
 
 
@@ -479,7 +512,7 @@ features and how to run circuits on backend devices, with worked examples.</p>
   <div class="footer-item">
     
 <p class="component-author">
-By Cambridge Quantum Computing Ltd
+By Quantinuum
 </p>
 
   </div>
@@ -488,7 +521,7 @@ By Cambridge Quantum Computing Ltd
     
   <p class="copyright">
     
-      © Copyright 2023, Cambridge Quantum Computing Ltd.
+      © Copyright 2023 Quantinuum.
       <br/>
     
   </p>

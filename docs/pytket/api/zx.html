@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>pytket.zx &#8212; pytket 1.15.0 documentation</title>
+    <title>pytket.zx &#8212; pytket 1.16.0 documentation</title>
   
   
   
@@ -141,6 +141,7 @@
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faqs.html">TKET FAQs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="opensource.html">Open Source Attribution</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">More Documentation:</span></p>
@@ -176,6 +177,7 @@
 <li class="toctree-l1"><a class="reference internal" href="utils.html">pytket.utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="logging.html">pytket.logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="config.html">pytket.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faqs.html">TKET FAQs</a></li>
 </ul>
 
     </div>
@@ -380,6 +382,19 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.zx.DirectedGen.signature"><code class="docutils literal notranslate"><span class="pre">DirectedGen.signature</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.zx.Flow"><code class="docutils literal notranslate"><span class="pre">Flow</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.zx.Flow.__init__"><code class="docutils literal notranslate"><span class="pre">Flow.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.zx.Flow.c"><code class="docutils literal notranslate"><span class="pre">Flow.c()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.zx.Flow.d"><code class="docutils literal notranslate"><span class="pre">Flow.d()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.zx.Flow.focus"><code class="docutils literal notranslate"><span class="pre">Flow.focus()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.zx.Flow.identify_causal_flow"><code class="docutils literal notranslate"><span class="pre">Flow.identify_causal_flow()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.zx.Flow.identify_focussed_sets"><code class="docutils literal notranslate"><span class="pre">Flow.identify_focussed_sets()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.zx.Flow.identify_pauli_flow"><code class="docutils literal notranslate"><span class="pre">Flow.identify_pauli_flow()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.zx.Flow.odd"><code class="docutils literal notranslate"><span class="pre">Flow.odd()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.zx.Flow.cmap"><code class="docutils literal notranslate"><span class="pre">Flow.cmap</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.zx.Flow.dmap"><code class="docutils literal notranslate"><span class="pre">Flow.dmap</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.zx.PhasedGen"><code class="docutils literal notranslate"><span class="pre">PhasedGen</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.zx.PhasedGen.__init__"><code class="docutils literal notranslate"><span class="pre">PhasedGen.__init__()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.zx.PhasedGen.param"><code class="docutils literal notranslate"><span class="pre">PhasedGen.param</span></code></a></li>
@@ -511,7 +526,7 @@ document.write(`
 <dd><p>Specialisation of <a class="reference internal" href="#pytket.zx.ZXGen" title="pytket.zx.ZXGen"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXGen</span></code></a> for arbitrary-arity, symmetric Clifford generators with a single boolean parameter.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pytket.zx.CliffordGen.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.CliffordGen" title="pytket.zx.CliffordGen"><span class="pre">pytket.zx.CliffordGen</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">zxtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXType" title="pytket.zx.ZXType"><span class="pre">pytket.zx.ZXType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">qtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.QuantumType" title="pytket.zx.QuantumType"><span class="pre">pytket.zx.QuantumType</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#pytket.zx.CliffordGen.__init__" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.CliffordGen" title="pytket.zx.CliffordGen"><span class="pre">pytket.zx.CliffordGen</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">zxtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXType" title="pytket.zx.ZXType"><span class="pre">pytket.zx.ZXType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference external" href="https://docs.python.org/3/library/functions.html#bool" title="(in Python v3.11)"><span class="pre">bool</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.QuantumType" title="pytket.zx.QuantumType"><span class="pre">pytket.zx.QuantumType</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">QuantumType.Quantum</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#pytket.zx.CliffordGen.__init__" title="Permalink to this definition">#</a></dt>
 <dd><p>Construct from a ZX type, parameter and quantum type.</p>
 </dd></dl>
 
@@ -548,12 +563,77 @@ document.write(`
 </dd></dl>
 
 <dl class="py class">
+<dt class="sig sig-object py" id="pytket.zx.Flow">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pytket.zx.</span></span><span class="sig-name descname"><span class="pre">Flow</span></span><a class="headerlink" href="#pytket.zx.Flow" title="Permalink to this definition">#</a></dt>
+<dd><p>Data structure for describing the Flow in a given MBQC-form <a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXDiagram</span></code></a> object. Constructors are identification methods for different classes of Flow.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.Flow.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.zx.Flow.__init__" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.Flow.c">
+<span class="sig-name descname"><span class="pre">c</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.Flow" title="pytket.zx.Flow"><span class="pre">pytket.zx.Flow</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXVert" title="pytket.zx.ZXVert"><span class="pre">pytket.zx.ZXVert</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pytket.zx.ZXVert" title="pytket.zx.ZXVert"><span class="pre">pytket.zx.ZXVert</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pytket.zx.Flow.c" title="Permalink to this definition">#</a></dt>
+<dd><p>The correction set for the given <a class="reference internal" href="#pytket.zx.ZXVert" title="pytket.zx.ZXVert"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXVert</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.Flow.d">
+<span class="sig-name descname"><span class="pre">d</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.Flow" title="pytket.zx.Flow"><span class="pre">pytket.zx.Flow</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXVert" title="pytket.zx.ZXVert"><span class="pre">pytket.zx.ZXVert</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/functions.html#int" title="(in Python v3.11)"><span class="pre">int</span></a></span></span><a class="headerlink" href="#pytket.zx.Flow.d" title="Permalink to this definition">#</a></dt>
+<dd><p>The depth of the given <a class="reference internal" href="#pytket.zx.ZXVert" title="pytket.zx.ZXVert"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXVert</span></code></a> from the outputs in the ordering of the flow, e.g. an output vertex will have depth 0, the last measured vertex has depth 1.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.Flow.focus">
+<span class="sig-name descname"><span class="pre">focus</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.Flow" title="pytket.zx.Flow"><span class="pre">pytket.zx.Flow</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">diag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#pytket.zx.Flow.focus" title="Permalink to this definition">#</a></dt>
+<dd><p>Focusses a flow.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.Flow.identify_causal_flow">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">identify_causal_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.Flow" title="pytket.zx.Flow"><span class="pre">pytket.zx.Flow</span></a></span></span><a class="headerlink" href="#pytket.zx.Flow.identify_causal_flow" title="Permalink to this definition">#</a></dt>
+<dd><p>Attempts to identify a causal flow for a diagram.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.Flow.identify_focussed_sets">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">identify_focussed_sets</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Set[boost::multi_index::multi_index_container&lt;void*,</span> <span class="pre">boost::multi_index::indexed_by&lt;boost::multi_index::ordered_unique&lt;boost::multi_index::tag&lt;tket::TagKey,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na&gt;,</span> <span class="pre">boost::multi_index::identity&lt;void*&gt;,</span> <span class="pre">mpl_::na&gt;,</span> <span class="pre">boost::multi_index::sequenced&lt;boost::multi_index::tag&lt;tket::TagSeq,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na&gt;</span> <span class="pre">&gt;,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na,</span> <span class="pre">mpl_::na&gt;,</span> <span class="pre">std::allocator&lt;void*&gt;</span> <span class="pre">&gt;]</span></span></span><a class="headerlink" href="#pytket.zx.Flow.identify_focussed_sets" title="Permalink to this definition">#</a></dt>
+<dd><p>Attempts to identify the sets of vertices which are focussed over all vertices, i.e. the remaining stabilisers not generated by correction sets within a flow.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.Flow.identify_pauli_flow">
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">identify_pauli_flow</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">diag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.Flow" title="pytket.zx.Flow"><span class="pre">pytket.zx.Flow</span></a></span></span><a class="headerlink" href="#pytket.zx.Flow.identify_pauli_flow" title="Permalink to this definition">#</a></dt>
+<dd><p>Attempts to identify a Pauli flow for a diagram.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.zx.Flow.odd">
+<span class="sig-name descname"><span class="pre">odd</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.Flow" title="pytket.zx.Flow"><span class="pre">pytket.zx.Flow</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">v</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXVert" title="pytket.zx.ZXVert"><span class="pre">pytket.zx.ZXVert</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">diag</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pytket.zx.ZXVert" title="pytket.zx.ZXVert"><span class="pre">pytket.zx.ZXVert</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pytket.zx.Flow.odd" title="Permalink to this definition">#</a></dt>
+<dd><p>The odd neighbourhood of the correction set for the given <a class="reference internal" href="#pytket.zx.ZXVert" title="pytket.zx.ZXVert"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXVert</span></code></a>.</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pytket.zx.Flow.cmap">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">cmap</span></span><a class="headerlink" href="#pytket.zx.Flow.cmap" title="Permalink to this definition">#</a></dt>
+<dd><p>The map from a vertex to its correction set</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pytket.zx.Flow.dmap">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">dmap</span></span><a class="headerlink" href="#pytket.zx.Flow.dmap" title="Permalink to this definition">#</a></dt>
+<dd><p>The map from a vertex to its depth</p>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
 <dt class="sig sig-object py" id="pytket.zx.PhasedGen">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pytket.zx.</span></span><span class="sig-name descname"><span class="pre">PhasedGen</span></span><a class="headerlink" href="#pytket.zx.PhasedGen" title="Permalink to this definition">#</a></dt>
 <dd><p>Specialisation of <a class="reference internal" href="#pytket.zx.ZXGen" title="pytket.zx.ZXGen"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXGen</span></code></a> for arbitrary-arity, symmetric generators with a single continuous parameter.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pytket.zx.PhasedGen.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.PhasedGen" title="pytket.zx.PhasedGen"><span class="pre">pytket.zx.PhasedGen</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">zxtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXType" title="pytket.zx.ZXType"><span class="pre">pytket.zx.ZXType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Expression</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.QuantumType" title="pytket.zx.QuantumType"><span class="pre">pytket.zx.QuantumType</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#pytket.zx.PhasedGen.__init__" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.PhasedGen" title="pytket.zx.PhasedGen"><span class="pre">pytket.zx.PhasedGen</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">zxtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXType" title="pytket.zx.ZXType"><span class="pre">pytket.zx.ZXType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Expression</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.QuantumType" title="pytket.zx.QuantumType"><span class="pre">pytket.zx.QuantumType</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">QuantumType.Quantum</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/constants.html#None" title="(in Python v3.11)"><span class="pre">None</span></a></span></span><a class="headerlink" href="#pytket.zx.PhasedGen.__init__" title="Permalink to this definition">#</a></dt>
 <dd><p>Construct from a ZX type, parameter and quantum type.</p>
 </dd></dl>
 
@@ -1352,6 +1432,19 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.zx.DirectedGen.signature"><code class="docutils literal notranslate"><span class="pre">DirectedGen.signature</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.zx.Flow"><code class="docutils literal notranslate"><span class="pre">Flow</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.zx.Flow.__init__"><code class="docutils literal notranslate"><span class="pre">Flow.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.zx.Flow.c"><code class="docutils literal notranslate"><span class="pre">Flow.c()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.zx.Flow.d"><code class="docutils literal notranslate"><span class="pre">Flow.d()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.zx.Flow.focus"><code class="docutils literal notranslate"><span class="pre">Flow.focus()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.zx.Flow.identify_causal_flow"><code class="docutils literal notranslate"><span class="pre">Flow.identify_causal_flow()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.zx.Flow.identify_focussed_sets"><code class="docutils literal notranslate"><span class="pre">Flow.identify_focussed_sets()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.zx.Flow.identify_pauli_flow"><code class="docutils literal notranslate"><span class="pre">Flow.identify_pauli_flow()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.zx.Flow.odd"><code class="docutils literal notranslate"><span class="pre">Flow.odd()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.zx.Flow.cmap"><code class="docutils literal notranslate"><span class="pre">Flow.cmap</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.zx.Flow.dmap"><code class="docutils literal notranslate"><span class="pre">Flow.dmap</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.zx.PhasedGen"><code class="docutils literal notranslate"><span class="pre">PhasedGen</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.zx.PhasedGen.__init__"><code class="docutils literal notranslate"><span class="pre">PhasedGen.__init__()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.zx.PhasedGen.param"><code class="docutils literal notranslate"><span class="pre">PhasedGen.param</span></code></a></li>
@@ -1478,7 +1571,7 @@ document.write(`
   <div class="footer-item">
     
 <p class="component-author">
-By Cambridge Quantum Computing Ltd
+By Quantinuum
 </p>
 
   </div>
@@ -1487,7 +1580,7 @@ By Cambridge Quantum Computing Ltd
     
   <p class="copyright">
     
-      © Copyright 2023, Cambridge Quantum Computing Ltd.
+      © Copyright 2023 Quantinuum.
       <br/>
     
   </p>

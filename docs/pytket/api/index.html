@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>pytket &#8212; pytket 1.15.0 documentation</title>
+    <title>pytket &#8212; pytket 1.16.0 documentation</title>
   
   
   
@@ -140,6 +140,7 @@
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faqs.html">TKET FAQs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="opensource.html">Open Source Attribution</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">More Documentation:</span></p>
@@ -175,6 +176,7 @@
 <li class="toctree-l1"><a class="reference internal" href="utils.html">pytket.utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="logging.html">pytket.logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="config.html">pytket.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faqs.html">TKET FAQs</a></li>
 </ul>
 
     </div>
@@ -400,50 +402,15 @@ Windows. To install, run</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">pytket</span>
 </pre></div>
 </div>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>On M1-based Macs running in native (arm64) mode, this command may fail
-because of an issue installing <code class="docutils literal notranslate"><span class="pre">scipy</span></code>. To fix this:</p>
-<ol class="arabic simple">
-<li><p>Install <a class="reference external" href="https://brew.sh/">brew</a> (if you haven’t already);</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">brew</span> <span class="pre">install</span> <span class="pre">openblas</span></code>;</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-U</span> <span class="pre">pip</span> <span class="pre">wheel</span></code>;</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">OPENBLAS=&quot;$(brew</span> <span class="pre">--prefix</span> <span class="pre">openblas)&quot;</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">scipy</span></code>;</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pytket</span></code>.</p></li>
-</ol>
-</div>
 <p>If you have issues installing <code class="docutils literal notranslate"><span class="pre">pytket</span></code> please visit the <a class="reference external" href="https://cqcl.github.io/tket/pytket/api/install.html">installation troubleshooting</a> page.</p>
 <p>To use <code class="docutils literal notranslate"><span class="pre">pytket</span></code>, you can simply import the appropriate modules into your python code or in an interactive Python notebook. We can build circuits directly using the <code class="docutils literal notranslate"><span class="pre">pytket</span></code> interface by creating a blank circuit and adding gates in the order we want to apply them.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pytket</span> <span class="kn">import</span> <span class="n">Circuit</span>
-
-<span class="n">circ</span> <span class="o">=</span> <span class="n">Circuit</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># define a circuit with 2 qubits and 2 bits</span>
-<span class="n">circ</span><span class="o">.</span><span class="n">H</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>           <span class="c1"># add a Hadamard gate to qubit 0</span>
-<span class="n">circ</span><span class="o">.</span><span class="n">Rz</span><span class="p">(</span><span class="mf">0.25</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>    <span class="c1"># add an Rz gate of angle 0.25*pi to qubit 0</span>
-<span class="n">circ</span><span class="o">.</span><span class="n">CX</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>        <span class="c1"># add a CX gate with control qubit 1 and target qubit 0</span>
-<span class="n">circ</span><span class="o">.</span><span class="n">measure_all</span><span class="p">()</span>  <span class="c1"># measure qubits 0 and 1, recording the results in bits 0 and 1</span>
-</pre></div>
-</div>
-<p>Some of the extension modules define <code class="xref py py-class docutils literal notranslate"><span class="pre">Backend</span></code> s, allowing the circuits to be run on simulators or real quantum hardware. For example, <code class="docutils literal notranslate"><span class="pre">pytket-qiskit</span></code> grants access to the <code class="xref py py-class docutils literal notranslate"><span class="pre">AerBackend</span></code> simulator which can sample from measurements.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pytket.extensions.qiskit</span> <span class="kn">import</span> <span class="n">AerBackend</span>
-
-<span class="n">backend</span> <span class="o">=</span> <span class="n">AerBackend</span><span class="p">()</span>                                 <span class="c1"># connect to the backend</span>
-<span class="n">compiled_circ</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">get_compiled_circuit</span><span class="p">(</span><span class="n">circ</span><span class="p">)</span>     <span class="c1"># compile the circuit to satisfy the backend&#39;s requirements</span>
-<span class="n">handle</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">process_circuit</span><span class="p">(</span><span class="n">compiled_circ</span><span class="p">,</span> <span class="mi">100</span><span class="p">)</span>   <span class="c1"># submit the job to run the circuit 100 times</span>
-<span class="n">counts</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">get_result</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span><span class="o">.</span><span class="n">get_counts</span><span class="p">()</span>       <span class="c1"># retrieve and summarise the results</span>
-<span class="nb">print</span><span class="p">(</span><span class="n">counts</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>This prints out a summary of readouts (the final values of the classical bits) and their frequencies.</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="p">{(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span> <span class="mi">49</span><span class="p">,</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">0</span><span class="p">):</span> <span class="mi">51</span><span class="p">}</span>
-</pre></div>
-</div>
 <p>See the <a class="reference external" href="getting_started.html">Getting Started</a> page for a basic tutorial on using
 <code class="docutils literal notranslate"><span class="pre">pytket</span></code>. To get more in depth on features, see the <a class="reference external" href="https://github.com/CQCL/pytket/tree/main/examples">examples</a>. See the <a class="reference external" href="https://cqcl.github.io/pytket/manual/index.html">pytket user manual</a> for an extensive introduction to <code class="docutils literal notranslate"><span class="pre">pytket</span></code> functionality and how to use it.</p>
 <section id="extensions">
 <h2>Extensions<a class="headerlink" href="#extensions" title="Permalink to this heading">#</a></h2>
-<p>To use pytket in conjunction with other platforms you must download an
-additional separate module for each. Each one of these adds either some new
-methods to the <code class="docutils literal notranslate"><span class="pre">pytket</span></code> package to convert between the circuit
+<p>To use pytket in conjunction with other software libraries you must install a
+separate python package for the relevant pytket extension.</p>
+<p>Each extension adds either some new methods to the <code class="docutils literal notranslate"><span class="pre">pytket</span></code> package to convert between the circuit
 representations, or some new backends to submit circuits to within <code class="docutils literal notranslate"><span class="pre">pytket</span></code>.</p>
 <p>Extensions are separate python packages can be installed using <code class="docutils literal notranslate"><span class="pre">pip</span></code>. The installation command is <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pytket-X</span></code> where <code class="docutils literal notranslate"><span class="pre">X</span></code> is the name of the extension.</p>
 <p>To install the <code class="docutils literal notranslate"><span class="pre">pytket-quantinuum</span></code> package use the following command.</p>
@@ -468,10 +435,10 @@ representations, or some new backends to submit circuits to within <code class="
 <h2>User Support<a class="headerlink" href="#user-support" title="Permalink to this heading">#</a></h2>
 <p>If you have problems with the use of tket or you think that you have found a bug there are several ways to contact us:</p>
 <ul class="simple">
+<li><p>You can write an issue on <a class="reference external" href="https://github.com/CQCL/tket/issues">github</a> with details of the problem and we will pick that up. Github issues are the preferred way to report bugs with tket or request features. You can also have a look on that page to see if your problem has already been reported by someone else.</p></li>
 <li><p>We have a slack channel for community discussion and support. You can join by following <a class="reference external" href="https://tketusers.slack.com/join/shared_invite/zt-18qmsamj9-UqQFVdkRzxnXCcKtcarLRA#/shared-invite/email">this link</a></p></li>
-<li><p>You can join the <a class="reference external" href="https://list.cambridgequantum.com/cgi-bin/mailman/listinfo/tket-users">tket-users mailing list</a>. If you have questions or ideas and wishes for new features you can send an email to the list and ask for help. You can also join the list to get the newest information and get in contact with other users of tket.</p></li>
-<li><p>Write an email to <a class="reference external" href="mailto:tket-support&#37;&#52;&#48;cambridgequantum&#46;com">tket-support<span>&#64;</span>cambridgequantum<span>&#46;</span>com</a> and ask for help with your problem.</p></li>
-<li><p>You can write a bug report on <a class="reference external" href="https://github.com/CQCL/tket/issues">github</a> with details of the problem and we will pick that up. You can also have a look on that page so see if your problem has already been reported by someone else.</p></li>
+<li><p>Write an email to <a class="reference external" href="mailto:tket-support&#37;&#52;&#48;quantinuum&#46;com">tket-support<span>&#64;</span>quantinuum<span>&#46;</span>com</a> and ask for help with your problem.</p></li>
+<li><p>There is also a tag on <a class="reference external" href="https://quantumcomputing.stackexchange.com/questions/tagged/pytket">quantum computing stack exchange</a> for questions relating to pytket.</p></li>
 </ul>
 <p>We are really thankful for all help to fix bugs in tket. Usually you will get an answer from someone in the development team of tket soon.</p>
 </section>
@@ -484,6 +451,7 @@ representations, or some new backends to submit circuits to within <code class="
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faqs.html">TKET FAQs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="opensource.html">Open Source Attribution</a></li>
 </ul>
 </div>
@@ -728,6 +696,7 @@ representations, or some new backends to submit circuits to within <code class="
 <li class="toctree-l1"><a class="reference internal" href="zx.html">pytket.zx</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="zx.html#pytket.zx.CliffordGen"><code class="docutils literal notranslate"><span class="pre">CliffordGen</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="zx.html#pytket.zx.DirectedGen"><code class="docutils literal notranslate"><span class="pre">DirectedGen</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="zx.html#pytket.zx.Flow"><code class="docutils literal notranslate"><span class="pre">Flow</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="zx.html#pytket.zx.PhasedGen"><code class="docutils literal notranslate"><span class="pre">PhasedGen</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="zx.html#pytket.zx.QuantumType"><code class="docutils literal notranslate"><span class="pre">QuantumType</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="zx.html#pytket.zx.Rewrite"><code class="docutils literal notranslate"><span class="pre">Rewrite</span></code></a></li>
@@ -763,6 +732,7 @@ representations, or some new backends to submit circuits to within <code class="
 <li class="toctree-l2"><a class="reference internal" href="utils.html#pytket.utils.Graph"><code class="docutils literal notranslate"><span class="pre">Graph</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html#pytket-utils-distribution">pytket.utils.distribution</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html#module-pytket.utils.spam">pytket.utils.spam</a></li>
+<li class="toctree-l2"><a class="reference internal" href="utils.html#module-pytket.utils.stats">pytket.utils.stats</a></li>
 <li class="toctree-l2"><a class="reference internal" href="utils.html#module-pytket.utils.symbolic">pytket.utils.symbolic</a></li>
 </ul>
 </li>
@@ -777,6 +747,12 @@ representations, or some new backends to submit circuits to within <code class="
 <li class="toctree-l2"><a class="reference internal" href="config.html#pytket.config.write_config_file"><code class="docutils literal notranslate"><span class="pre">write_config_file()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="config.html#pytket.config.pytket_config.PytketConfig"><code class="docutils literal notranslate"><span class="pre">PytketConfig</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="config.html#pytket.config.pytket_config.PytketExtConfig"><code class="docutils literal notranslate"><span class="pre">PytketExtConfig</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="faqs.html">TKET FAQs</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="faqs.html#rebases">Rebases</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faqs.html#unitary-synthesis">Unitary Synthesis</a></li>
+<li class="toctree-l2"><a class="reference internal" href="faqs.html#qiskit-to-tket-conversion">Qiskit to TKET Conversion</a></li>
 </ul>
 </li>
 </ul>
@@ -856,7 +832,7 @@ representations, or some new backends to submit circuits to within <code class="
   <div class="footer-item">
     
 <p class="component-author">
-By Cambridge Quantum Computing Ltd
+By Quantinuum
 </p>
 
   </div>
@@ -865,7 +841,7 @@ By Cambridge Quantum Computing Ltd
     
   <p class="copyright">
     
-      © Copyright 2023, Cambridge Quantum Computing Ltd.
+      © Copyright 2023 Quantinuum.
       <br/>
     
   </p>

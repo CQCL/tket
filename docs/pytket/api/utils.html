@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
-    <title>pytket.utils &#8212; pytket 1.15.0 documentation</title>
+    <title>pytket.utils &#8212; pytket 1.16.0 documentation</title>
   
   
   
@@ -142,6 +142,7 @@
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faqs.html">TKET FAQs</a></li>
 <li class="toctree-l1"><a class="reference internal" href="opensource.html">Open Source Attribution</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">More Documentation:</span></p>
@@ -177,6 +178,7 @@
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">pytket.utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="logging.html">pytket.logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="config.html">pytket.config</a></li>
+<li class="toctree-l1"><a class="reference internal" href="faqs.html">TKET FAQs</a></li>
 </ul>
 
     </div>
@@ -464,6 +466,10 @@ document.write(`
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.utils.spam.SpamCorrecter.to_dict"><code class="docutils literal notranslate"><span class="pre">SpamCorrecter.to_dict()</span></code></a></li>
 </ul>
 </li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-pytket.utils.stats">pytket.utils.stats</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.utils.stats.gate_counts"><code class="docutils literal notranslate"><span class="pre">gate_counts()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-pytket.utils.symbolic">pytket.utils.symbolic</a><ul class="nav section-nav flex-column">
@@ -1692,6 +1698,23 @@ dictionary details some set of Measurement operations run in parallel.</p>
 </dd></dl>
 
 </section>
+<section id="module-pytket.utils.stats">
+<span id="pytket-utils-stats"></span><h2>pytket.utils.stats<a class="headerlink" href="#module-pytket.utils.stats" title="Permalink to this heading">#</a></h2>
+<dl class="py function">
+<dt class="sig sig-object py" id="pytket.utils.stats.gate_counts">
+<span class="sig-prename descclassname"><span class="pre">pytket.utils.stats.</span></span><span class="sig-name descname"><span class="pre">gate_counts</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circ</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="circuit_class.html#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><span class="pre">Circuit</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference external" href="https://docs.python.org/3/library/typing.html#typing.Counter" title="(in Python v3.11)"><span class="pre">Counter</span></a><span class="p"><span class="pre">[</span></span><a class="reference internal" href="optype.html#pytket.circuit.OpType" title="pytket.circuit.OpType"><span class="pre">OpType</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pytket.utils.stats.gate_counts" title="Permalink to this definition">#</a></dt>
+<dd><p>Count the number of gates of each type in a circuit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>circ</strong> – circuit</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>count of gates of each type</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
 <section id="module-pytket.utils.symbolic">
 <span id="pytket-utils-symbolic"></span><h2>pytket.utils.symbolic<a class="headerlink" href="#module-pytket.utils.symbolic" title="Permalink to this heading">#</a></h2>
 <p>Collection of methods to calculate symbolic statevectors and unitaries,
@@ -1960,6 +1983,10 @@ Statevector follows pytket default ILO BasisOrder.</p>
 </li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-pytket.utils.stats">pytket.utils.stats</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.utils.stats.gate_counts"><code class="docutils literal notranslate"><span class="pre">gate_counts()</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#module-pytket.utils.symbolic">pytket.utils.symbolic</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.utils.symbolic.SymGateRegister"><code class="docutils literal notranslate"><span class="pre">SymGateRegister</span></code></a><ul class="nav section-nav flex-column">
 <li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.utils.symbolic.SymGateRegister.get_func"><code class="docutils literal notranslate"><span class="pre">SymGateRegister.get_func()</span></code></a></li>
@@ -1987,7 +2014,7 @@ Statevector follows pytket default ILO BasisOrder.</p>
   <div class="footer-item">
     
 <p class="component-author">
-By Cambridge Quantum Computing Ltd
+By Quantinuum
 </p>
 
   </div>
@@ -1996,7 +2023,7 @@ By Cambridge Quantum Computing Ltd
     
   <p class="copyright">
     
-      © Copyright 2023, Cambridge Quantum Computing Ltd.
+      © Copyright 2023 Quantinuum.
       <br/>
     
   </p>
