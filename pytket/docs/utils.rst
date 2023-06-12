@@ -37,6 +37,10 @@ pytket.utils.spam
     :special-members: __init__
     :members:
 
+pytket.utils.stats
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+.. automodule:: pytket.utils.stats
+    :members: gate_counts
 
 pytket.utils.symbolic
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
