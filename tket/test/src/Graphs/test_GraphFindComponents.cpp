@@ -16,8 +16,8 @@
 #include <set>
 #include <tkrng/RNG.hpp>
 
-#include "Graphs/AdjacencyData.hpp"
-#include "Graphs/GraphRoutines.hpp"
+#include "tket/Graphs/AdjacencyData.hpp"
+#include "tket/Graphs/GraphRoutines.hpp"
 
 using std::map;
 using std::set;

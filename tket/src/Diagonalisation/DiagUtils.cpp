@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Diagonalisation/DiagUtils.hpp"
+#include "tket/Diagonalisation/DiagUtils.hpp"
 
 namespace tket {
 

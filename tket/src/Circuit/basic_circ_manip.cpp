@@ -22,9 +22,9 @@
 #include <string>
 #include <vector>
 
-#include "Circuit/Boxes.hpp"
-#include "Circuit/Circuit.hpp"
-#include "Ops/MetaOp.hpp"
+#include "tket/Circuit/Boxes.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Ops/MetaOp.hpp"
 
 namespace tket {
 
@@ -344,24 +344,24 @@ void Circuit::remove_edge(const Edge& edge) {
 }
 
 unit_map_t Circuit::flatten_registers() {
+  unit_map_t rename_map;
   unsigned q_index = 0;
   unsigned c_index = 0;
-  boundary_t new_map;
-  unit_map_t qmap;
   for (const BoundaryElement& el : boundary.get<TagID>()) {
-    BoundaryElement new_el = el;
     if (el.type() == UnitType::Qubit) {
-      new_el.id_ = Qubit(q_default_reg(), q_index);
-      q_index++;
+      rename_map.insert({el.id_, Qubit(q_index++)});
     } else {
-      new_el.id_ = Bit(c_default_reg(), c_index);
-      c_index++;
+      rename_map.insert({el.id_, Bit(c_index++)});
     }
-    qmap.insert({el.id_, new_el.id_});
-    new_map.insert(new_el);
   }
-  boundary = new_map;
-  return qmap;
+  try {
+    rename_units(rename_map);
+  } catch (const std::exception& e) {
+    std::stringstream ss;
+    ss << "Unable to flatten registers: " << e.what();
+    throw std::runtime_error(ss.str());
+  }
+  return rename_map;
 }
 
 // this automatically updates the circuit boundaries
@@ -525,8 +525,11 @@ void Circuit::rewire(
 
       add_edge({old_v1, port1}, {new_vert, i}, insert_type);
     } else {
-      // this will be hit
-      TKET_ASSERT(insert_type == replace_type);  // Cannot rewire; type of edge
+      // Cannot rewire; type of edge
+      if (insert_type != replace_type) {
+        throw CircuitInvalidity(
+            "Operation can not be added, found invalid parameter type.");
+      }
 
       add_edge({old_v1, port1}, {new_vert, i}, insert_type);
       add_edge({new_vert, i}, {old_v2, port2}, insert_type);

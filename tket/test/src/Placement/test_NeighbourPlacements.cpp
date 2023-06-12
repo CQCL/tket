@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <Placement/NeighbourPlacements.hpp>
 #include <catch2/catch_test_macros.hpp>
 #include <random>
+#include <tket/Placement/NeighbourPlacements.hpp>
 #include <utility>
 
 #include "../testutil.hpp"

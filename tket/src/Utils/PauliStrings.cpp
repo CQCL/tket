@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Utils/PauliStrings.hpp"
+#include "tket/Utils/PauliStrings.hpp"
 
 #include <map>
 #include <sstream>
@@ -22,9 +22,9 @@
 #include <utility>
 #include <vector>
 
-#include "Utils/Constants.hpp"
-#include "Utils/EigenConfig.hpp"
-#include "Utils/Json.hpp"
+#include "tket/Utils/Constants.hpp"
+#include "tket/Utils/EigenConfig.hpp"
+#include "tket/Utils/Json.hpp"
 
 namespace tket {
 

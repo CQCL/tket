@@ -12,10 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Mapping/LexiRoute.hpp"
+#include "tket/Mapping/LexiRoute.hpp"
 
-#include "Mapping/MappingFrontier.hpp"
-#include "Utils/Json.hpp"
+#include "tket/Mapping/MappingFrontier.hpp"
+#include "tket/Utils/Json.hpp"
 
 namespace tket {
 

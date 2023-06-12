@@ -12,32 +12,32 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Transformations/OptimisationPass.hpp"
+#include "tket/Transformations/OptimisationPass.hpp"
 
 #include <stdexcept>
 
-#include "Circuit/CircPool.hpp"
-#include "Circuit/CircUtils.hpp"
-#include "Gate/GatePtr.hpp"
-#include "OpType/OpType.hpp"
-#include "Transformations/BasicOptimisation.hpp"
-#include "Transformations/CliffordOptimisation.hpp"
-#include "Transformations/CliffordReductionPass.hpp"
-#include "Transformations/Combinator.hpp"
-#include "Transformations/Decomposition.hpp"
-#include "Transformations/PhaseOptimisation.hpp"
-#include "Transformations/Rebase.hpp"
-#include "Transformations/ThreeQubitSquash.hpp"
-#include "Transformations/Transform.hpp"
+#include "tket/Circuit/CircPool.hpp"
+#include "tket/Circuit/CircUtils.hpp"
+#include "tket/Gate/GatePtr.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/Transformations/BasicOptimisation.hpp"
+#include "tket/Transformations/CliffordOptimisation.hpp"
+#include "tket/Transformations/CliffordReductionPass.hpp"
+#include "tket/Transformations/Combinator.hpp"
+#include "tket/Transformations/Decomposition.hpp"
+#include "tket/Transformations/PhaseOptimisation.hpp"
+#include "tket/Transformations/Rebase.hpp"
+#include "tket/Transformations/ThreeQubitSquash.hpp"
+#include "tket/Transformations/Transform.hpp"
 
 namespace tket {
 
 namespace Transforms {
 
-Transform peephole_optimise_2q() {
+Transform peephole_optimise_2q(bool allow_swaps) {
   return (
-      synthesise_tket() >> two_qubit_squash() >> hyper_clifford_squash() >>
-      synthesise_tket());
+      synthesise_tket() >> two_qubit_squash(allow_swaps) >>
+      hyper_clifford_squash(allow_swaps) >> synthesise_tket());
 }
 
 Transform full_peephole_optimise(bool allow_swaps, OpType target_2qb_gate) {
@@ -65,8 +65,8 @@ Transform canonical_hyper_clifford_squash() {
          hyper_clifford_squash();
 }
 
-Transform hyper_clifford_squash() {
-  return decompose_multi_qubits_CX() >> clifford_simp();
+Transform hyper_clifford_squash(bool allow_swaps) {
+  return decompose_multi_qubits_CX() >> clifford_simp(allow_swaps);
 }
 
 Transform clifford_simp(bool allow_swaps) {

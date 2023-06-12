@@ -12,18 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Predicates/CompilerPass.hpp"
+#include "tket/Predicates/CompilerPass.hpp"
 
 #include <memory>
 #include <tklog/TketLog.hpp>
 
-#include "Mapping/RoutingMethodJson.hpp"
-#include "Predicates/PassGenerators.hpp"
-#include "Predicates/PassLibrary.hpp"
-#include "Transformations/ContextualReduction.hpp"
-#include "Transformations/PauliOptimisation.hpp"
-#include "Utils/Json.hpp"
-#include "Utils/UnitID.hpp"
+#include "tket/Mapping/RoutingMethodJson.hpp"
+#include "tket/Predicates/PassGenerators.hpp"
+#include "tket/Predicates/PassLibrary.hpp"
+#include "tket/Transformations/ContextualReduction.hpp"
+#include "tket/Transformations/PauliOptimisation.hpp"
+#include "tket/Utils/Json.hpp"
+#include "tket/Utils/UnitID.hpp"
 
 namespace tket {
 
@@ -386,7 +386,8 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
       bool allow_swaps = content.at("allow_swaps").get<bool>();
       pp = DecomposeTK2(fid, allow_swaps);
     } else if (passname == "PeepholeOptimise2Q") {
-      pp = PeepholeOptimise2Q();
+      bool allow_swaps = content.at("allow_swaps").get<bool>();
+      pp = PeepholeOptimise2Q(allow_swaps);
     } else if (passname == "FullPeepholeOptimise") {
       OpType target_2qb_gate = content.at("target_2qb_gate").get<OpType>();
       bool allow_swaps = content.at("allow_swaps").get<bool>();

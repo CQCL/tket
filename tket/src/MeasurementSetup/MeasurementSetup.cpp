@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "MeasurementSetup/MeasurementSetup.hpp"
+#include "tket/MeasurementSetup/MeasurementSetup.hpp"
 
-#include "Converters/Converters.hpp"
+#include "tket/Converters/Converters.hpp"
 
 namespace tket {
 

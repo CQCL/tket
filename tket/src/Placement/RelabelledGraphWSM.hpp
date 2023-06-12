@@ -18,7 +18,7 @@
 #include <tkwsm/Common/GeneralUtils.hpp>
 #include <tkwsm/GraphTheoretic/GeneralStructs.hpp>
 
-#include "Placement/Placement.hpp"
+#include "tket/Placement/Placement.hpp"
 
 namespace tket {
 namespace WeightedSubgraphMonomorphism {

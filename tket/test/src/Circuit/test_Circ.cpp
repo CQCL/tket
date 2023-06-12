@@ -20,24 +20,24 @@
 #include <vector>
 
 #include "../testutil.hpp"
-#include "Circuit/CircUtils.hpp"
-#include "Circuit/Circuit.hpp"
-#include "Circuit/DAGDefs.hpp"
-#include "Gate/GatePtr.hpp"
-#include "Gate/OpPtrFunctions.hpp"
-#include "OpType/EdgeType.hpp"
-#include "OpType/OpType.hpp"
-#include "OpType/OpTypeFunctions.hpp"
-#include "Ops/ClassicalOps.hpp"
-#include "Ops/Op.hpp"
-#include "Ops/OpPtr.hpp"
-#include "Simulation/CircuitSimulator.hpp"
-#include "Transformations/Decomposition.hpp"
-#include "Transformations/OptimisationPass.hpp"
-#include "Transformations/Replacement.hpp"
-#include "Transformations/Transform.hpp"
-#include "Utils/MatrixAnalysis.hpp"
-#include "Utils/PauliStrings.hpp"
+#include "tket/Circuit/CircUtils.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/DAGDefs.hpp"
+#include "tket/Gate/GatePtr.hpp"
+#include "tket/Gate/OpPtrFunctions.hpp"
+#include "tket/OpType/EdgeType.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/OpType/OpTypeFunctions.hpp"
+#include "tket/Ops/ClassicalOps.hpp"
+#include "tket/Ops/Op.hpp"
+#include "tket/Ops/OpPtr.hpp"
+#include "tket/Simulation/CircuitSimulator.hpp"
+#include "tket/Transformations/Decomposition.hpp"
+#include "tket/Transformations/OptimisationPass.hpp"
+#include "tket/Transformations/Replacement.hpp"
+#include "tket/Transformations/Transform.hpp"
+#include "tket/Utils/MatrixAnalysis.hpp"
+#include "tket/Utils/PauliStrings.hpp"
 
 namespace tket {
 namespace test_Circ {
@@ -3051,6 +3051,36 @@ SCENARIO("Test replacing wire swaps") {
   REQUIRE(circ.n_gates() == 4);
   const Eigen::MatrixXcd w = tket_sim::get_unitary(circ);
   REQUIRE(u.isApprox(w, ERR_EPS));
+}
+
+SCENARIO("check edge type in rewire function") {
+  GIVEN("valid edge type") {
+    Circuit c(2);
+    Vertex v = c.add_op<unsigned>(OpType::CX, {0, 1});
+
+    EdgeVec ins;
+    for (const Vertex& i : c.q_inputs()) {
+      ins.push_back(c.get_nth_out_edge(i, 0));
+    }
+
+    op_signature_t types = {EdgeType::Quantum, EdgeType::Quantum};
+
+    c.rewire(v, ins, types);
+  }
+
+  GIVEN("invalid edge type") {
+    Circuit c(2);
+    Vertex v = c.add_op<unsigned>(OpType::CX, {0, 1});
+
+    EdgeVec ins;
+    for (const Vertex& i : c.q_inputs()) {
+      ins.push_back(c.get_nth_out_edge(i, 0));
+    }
+
+    op_signature_t types = {EdgeType::Classical, EdgeType::Classical};
+
+    REQUIRE_THROWS_AS(c.rewire(v, ins, types), CircuitInvalidity);
+  }
 }
 
 }  // namespace test_Circ

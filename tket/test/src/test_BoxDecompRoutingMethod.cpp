@@ -13,12 +13,12 @@
 // limitations under the License.
 #include <catch2/catch_test_macros.hpp>
 
-#include "Mapping/BoxDecomposition.hpp"
-#include "Mapping/LexiRoute.hpp"
-#include "Mapping/MappingManager.hpp"
-#include "Predicates/Predicates.hpp"
-#include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
+#include "tket/Mapping/BoxDecomposition.hpp"
+#include "tket/Mapping/LexiRoute.hpp"
+#include "tket/Mapping/MappingManager.hpp"
+#include "tket/Predicates/Predicates.hpp"
+#include "tket/Simulation/CircuitSimulator.hpp"
 
 namespace tket {
 SCENARIO("Decompose boxes") {

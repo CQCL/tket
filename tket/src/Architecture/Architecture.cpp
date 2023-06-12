@@ -12,16 +12,16 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Architecture/Architecture.hpp"
+#include "tket/Architecture/Architecture.hpp"
 
 #include <boost/graph/biconnected_components.hpp>
 #include <tkassert/Assert.hpp>
 #include <unordered_set>
 #include <vector>
 
-#include "Graphs/ArticulationPoints.hpp"
-#include "Utils/Json.hpp"
-#include "Utils/UnitID.hpp"
+#include "tket/Graphs/ArticulationPoints.hpp"
+#include "tket/Utils/Json.hpp"
+#include "tket/Utils/UnitID.hpp"
 
 namespace tket {
 

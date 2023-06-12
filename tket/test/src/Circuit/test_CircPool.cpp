@@ -14,10 +14,10 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include "Circuit/CircPool.hpp"
-#include "Circuit/CircUtils.hpp"
-#include "Predicates/Predicates.hpp"
-#include "Simulation/CircuitSimulator.hpp"
+#include "tket/Circuit/CircPool.hpp"
+#include "tket/Circuit/CircUtils.hpp"
+#include "tket/Predicates/Predicates.hpp"
+#include "tket/Simulation/CircuitSimulator.hpp"
 
 namespace tket {
 namespace test_CircPool {

@@ -16,9 +16,9 @@
 #include <catch2/catch_test_macros.hpp>
 #include <vector>
 
-#include "Circuit/Circuit.hpp"
-#include "Predicates/CompilationUnit.hpp"
-#include "Predicates/PassGenerators.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Predicates/CompilationUnit.hpp"
+#include "tket/Predicates/PassGenerators.hpp"
 
 namespace tket {
 namespace test_RoundAngles {

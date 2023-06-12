@@ -15,13 +15,13 @@
 #include <catch2/catch_test_macros.hpp>
 #include <stdexcept>
 
-#include "Circuit/AssertionSynthesis.hpp"
-#include "Circuit/Circuit.hpp"
-#include "Predicates/CompilationUnit.hpp"
-#include "Predicates/PassLibrary.hpp"
-#include "Utils/MatrixAnalysis.hpp"
-#include "Utils/PauliStrings.hpp"
 #include "testutil.hpp"
+#include "tket/Circuit/AssertionSynthesis.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Predicates/CompilationUnit.hpp"
+#include "tket/Predicates/PassLibrary.hpp"
+#include "tket/Utils/MatrixAnalysis.hpp"
+#include "tket/Utils/PauliStrings.hpp"
 namespace tket {
 
 SCENARIO("Testing projector based assertion synthesis") {

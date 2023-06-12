@@ -152,6 +152,11 @@ cd tket/test/build/Release
 cd -
 ```
 
+## Building without conan
+
+It is possible to build tket without using conan at all: see
+[here](../build-without-conan.md) for instructions.
+
 ## Generating a test coverage report
 
 If using gcc and with gcovr installed (`pip install gcovr`), a test coverage

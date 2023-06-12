@@ -19,7 +19,7 @@ from conan.errors import ConanInvalidConfiguration
 
 class TkwsmConan(ConanFile):
     name = "tkwsm"
-    version = "0.3.3"
+    version = "0.3.4"
     package_type = "library"
     license = "Apache 2"
     url = "https://github.com/CQCL/tket"
@@ -31,7 +31,7 @@ class TkwsmConan(ConanFile):
         "profile_coverage": [True, False],
     }
     default_options = {"shared": False, "fPIC": True, "profile_coverage": False}
-    exports_sources = "CMakeLists.txt", "src/*", "include/*"
+    exports_sources = "CMakeLists.txt", "cmake/*", "src/*", "include/*"
 
     def config_options(self):
         if self.settings.os == "Windows":
@@ -71,4 +71,4 @@ class TkwsmConan(ConanFile):
     def requirements(self):
         self.requires("tkassert/0.3.3@tket/stable")
         self.requires("tkrng/0.3.3@tket/stable")
-        self.requires("boost/1.81.0", transitive_headers=True, transitive_libs=False)
+        self.requires("boost/1.82.0", transitive_headers=True, transitive_libs=False)

@@ -12,9 +12,9 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Mapping/RoutingMethodJson.hpp"
+#include "tket/Mapping/RoutingMethodJson.hpp"
 
-#include "Mapping/LexiLabelling.hpp"
+#include "tket/Mapping/LexiLabelling.hpp"
 
 namespace tket {
 

@@ -22,13 +22,13 @@
 
 #include <bitset>
 
-#include "Circuit/Circuit.hpp"
-#include "Gate/OpPtrFunctions.hpp"
-#include "Ops/ClassicalOps.hpp"
-#include "Ops/Op.hpp"
 #include "UnitRegister.hpp"
 #include "add_gate.hpp"
 #include "binder_utils.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Gate/OpPtrFunctions.hpp"
+#include "tket/Ops/ClassicalOps.hpp"
+#include "tket/Ops/Op.hpp"
 
 namespace py = pybind11;
 

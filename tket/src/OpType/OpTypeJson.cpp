@@ -15,8 +15,8 @@
 #include <map>
 #include <string>
 
-#include "OpType/OpType.hpp"
-#include "OpType/OpTypeInfo.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/OpType/OpTypeInfo.hpp"
 
 namespace tket {
 

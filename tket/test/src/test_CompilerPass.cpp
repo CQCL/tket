@@ -17,29 +17,29 @@
 #include <tkrng/RNG.hpp>
 #include <vector>
 
-#include "Circuit/CircPool.hpp"
-#include "Circuit/Circuit.hpp"
-#include "Circuit/Command.hpp"
-#include "Mapping/LexiLabelling.hpp"
-#include "Mapping/LexiRoute.hpp"
-#include "OpType/OpType.hpp"
-#include "OpType/OpTypeFunctions.hpp"
-#include "Ops/ClassicalOps.hpp"
-#include "Placement/Placement.hpp"
-#include "Predicates/CompilationUnit.hpp"
-#include "Predicates/CompilerPass.hpp"
-#include "Predicates/PassGenerators.hpp"
-#include "Predicates/PassLibrary.hpp"
-#include "Simulation/CircuitSimulator.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
-#include "Transformations/ContextualReduction.hpp"
-#include "Transformations/MeasurePass.hpp"
-#include "Transformations/OptimisationPass.hpp"
-#include "Transformations/PauliOptimisation.hpp"
-#include "Transformations/Rebase.hpp"
-#include "Utils/Expression.hpp"
-#include "Utils/UnitID.hpp"
 #include "testutil.hpp"
+#include "tket/Circuit/CircPool.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/Command.hpp"
+#include "tket/Mapping/LexiLabelling.hpp"
+#include "tket/Mapping/LexiRoute.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/OpType/OpTypeFunctions.hpp"
+#include "tket/Ops/ClassicalOps.hpp"
+#include "tket/Placement/Placement.hpp"
+#include "tket/Predicates/CompilationUnit.hpp"
+#include "tket/Predicates/CompilerPass.hpp"
+#include "tket/Predicates/PassGenerators.hpp"
+#include "tket/Predicates/PassLibrary.hpp"
+#include "tket/Simulation/CircuitSimulator.hpp"
+#include "tket/Transformations/ContextualReduction.hpp"
+#include "tket/Transformations/MeasurePass.hpp"
+#include "tket/Transformations/OptimisationPass.hpp"
+#include "tket/Transformations/PauliOptimisation.hpp"
+#include "tket/Transformations/Rebase.hpp"
+#include "tket/Utils/Expression.hpp"
+#include "tket/Utils/UnitID.hpp"
 namespace tket {
 namespace test_CompilerPass {
 
@@ -720,6 +720,17 @@ SCENARIO("PeepholeOptimise2Q and FullPeepholeOptimise") {
     Circuit circ1 = circ;
     CompilationUnit cu1(circ1);
     REQUIRE(FullPeepholeOptimise()->apply(cu1));
+  }
+  GIVEN("A circuit with two CXs.") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::CX, {1, 0});
+    CompilationUnit cu(circ);
+    REQUIRE(!PeepholeOptimise2Q(false)->apply(cu));
+    qubit_map_t perm = cu.get_circ_ref().implicit_qubit_permutation();
+    for (const std::pair<const Qubit, Qubit>& pair : perm) {
+      REQUIRE(pair.first == pair.second);
+    }
   }
   GIVEN("A circuit with classical operations.") {
     Circuit circ(2, 1);

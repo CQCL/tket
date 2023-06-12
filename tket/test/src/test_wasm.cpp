@@ -12,15 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <Eigen/Core>
 #include <catch2/catch_test_macros.hpp>
 
-#include "Circuit/CircUtils.hpp"
-#include "Circuit/Circuit.hpp"
-#include "Converters/PhasePoly.hpp"
-#include "Eigen/src/Core/Matrix.h"
-#include "Ops/ClassicalOps.hpp"
-#include "Simulation/CircuitSimulator.hpp"
 #include "testutil.hpp"
+#include "tket/Circuit/CircUtils.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Converters/PhasePoly.hpp"
+#include "tket/Ops/ClassicalOps.hpp"
+#include "tket/Simulation/CircuitSimulator.hpp"
 
 namespace tket {
 namespace test_Boxes {

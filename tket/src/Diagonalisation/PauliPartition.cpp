@@ -12,14 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Diagonalisation/PauliPartition.hpp"
+#include "tket/Diagonalisation/PauliPartition.hpp"
 
 #include <numeric>
 #include <tkassert/Assert.hpp>
 
-#include "Graphs/AdjacencyData.hpp"
-#include "Graphs/GraphColouring.hpp"
-#include "Utils/GraphHeaders.hpp"
+#include "tket/Graphs/AdjacencyData.hpp"
+#include "tket/Graphs/GraphColouring.hpp"
+#include "tket/Utils/GraphHeaders.hpp"
 
 namespace tket {
 

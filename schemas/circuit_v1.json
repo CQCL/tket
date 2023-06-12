@@ -555,6 +555,10 @@
           "type": "boolean",
           "description": "Indicate whether to implement the dagger of a StatePreparationBox."
         },
+        "with_initial_reset": {
+          "type": "boolean",
+          "description": "Indicate whether to explicitly reset qubits initially in a StatePreparationBox."
+        },
         "permutation": {
           "type": "array",
           "description": "Map of computational basis states",
@@ -741,7 +745,8 @@
           "then": {
             "required": [
               "statevector",
-              "is_inverse"
+              "is_inverse",
+              "with_initial_reset"
             ]
           }
         },

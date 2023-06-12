@@ -6,6 +6,8 @@ on:
   pull_request:
     branches:
       - develop
+  workflow_dispatch: {}
+
 env:
   ALL_LIBS: '["tklog", "tkassert", "tkrng", "tktokenswap", "tkwsm"]'
 jobs:
@@ -154,7 +156,7 @@ jobs:
         name: ${{ matrix.lib }}_coverage
         path: ${{ matrix.lib }}-coverage/
     - name: check coverage against latest published data from develop
-      if: github.event_name == 'pull_request'
+      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       run: |
         # File may not exist if this is the very first time, so don't error.
         wget https://cqcl.github.io/tket/${{ matrix.lib }}/test-coverage/summary.txt || true

@@ -12,19 +12,19 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "Circuit/Multiplexor.hpp"
+#include "tket/Circuit/Multiplexor.hpp"
 
 #include <complex>
 
-#include "Circuit/Circuit.hpp"
-#include "Circuit/DiagonalBox.hpp"
-#include "Gate/GatePtr.hpp"
-#include "Gate/GateUnitaryMatrix.hpp"
-#include "Gate/Rotation.hpp"
-#include "Ops/OpJsonFactory.hpp"
-#include "Utils/Constants.hpp"
-#include "Utils/HelperFunctions.hpp"
-#include "Utils/Json.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/DiagonalBox.hpp"
+#include "tket/Gate/GatePtr.hpp"
+#include "tket/Gate/GateUnitaryMatrix.hpp"
+#include "tket/Gate/Rotation.hpp"
+#include "tket/Ops/OpJsonFactory.hpp"
+#include "tket/Utils/Constants.hpp"
+#include "tket/Utils/HelperFunctions.hpp"
+#include "tket/Utils/Json.hpp"
 
 namespace tket {
 

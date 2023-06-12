@@ -17,15 +17,16 @@
 /////////////////////////////////////////////////////
 
 #include <memory>
+#include <tket/OpType/OpType.hpp>
 #include <tklog/TketLog.hpp>
 
-#include "Circuit/Circuit.hpp"
-#include "Gate/Gate.hpp"
-#include "Gate/OpPtrFunctions.hpp"
-#include "Ops/ClassicalOps.hpp"
-#include "Ops/OpPtr.hpp"
-#include "Utils/Expression.hpp"
-#include "Utils/UnitID.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Gate/Gate.hpp"
+#include "tket/Gate/OpPtrFunctions.hpp"
+#include "tket/Ops/ClassicalOps.hpp"
+#include "tket/Ops/OpPtr.hpp"
+#include "tket/Utils/Expression.hpp"
+#include "tket/Utils/UnitID.hpp"
 namespace tket {
 
 vertex_map_t Circuit::copy_graph(
@@ -146,7 +147,7 @@ void Circuit::append_with_map(const Circuit& c2, const unit_map_t& qm) {
   qubit_vector_t qbs = copy.all_qubits();
   std::set<Qubit> qbs_set(qbs.begin(), qbs.end());
   std::set<Qubit> reset_qbs;
-  for (auto qb : all_qubits()) {
+  for (const auto& qb : all_qubits()) {
     if (qbs_set.find(qb) != qbs_set.end()) {
       if (copy.is_created(qb)) {
         reset_qbs.insert(qb);
@@ -248,7 +249,17 @@ void Circuit::substitute(
                  // trivial, essentially rewiring on a cut
   std::map<Edge, Vertex> c_out_map;
 
+  std::set<Qubit> reset_qbs;
+  for (const auto& qb : to_insert.all_qubits()) {
+    if (to_insert.is_created(qb)) {
+      reset_qbs.insert(qb);
+    } else if (to_insert.is_discarded(qb)) {
+      throw CircuitInvalidity("Cannot substitute discarded qubit");
+    }
+  }
+
   const Op_ptr noop = get_op_ptr(OpType::noop);
+  const Op_ptr reset = get_op_ptr(OpType::Reset);
   for (unsigned i = 0; i < to_replace.q_in_hole.size(); i++) {
     Edge edge = to_replace.q_in_hole[i];
     Vertex pred_v = source(edge);
@@ -256,8 +267,12 @@ void Circuit::substitute(
     ebin.insert(edge);
     Vertex inp = vm[to_insert.get_in(Qubit(i))];
     add_edge({pred_v, port1}, {inp, 0}, EdgeType::Quantum);
-    dag[inp].op = noop;
-    bin.push_back(inp);
+    if (reset_qbs.contains(Qubit(i))) {
+      dag[inp].op = reset;
+    } else {
+      dag[inp].op = noop;
+      bin.push_back(inp);
+    }
   }
   for (unsigned i = 0; i < to_replace.q_out_hole.size(); i++) {
     Edge edge = to_replace.q_out_hole[i];
