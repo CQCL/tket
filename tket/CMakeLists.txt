@@ -47,10 +47,11 @@ if(CCACHE_PROGRAM)
             "UseMultiToolTask=true"
             "DebugInformationFormat=OldStyle"
             )
+    message("-> Found MSVC")
   else()
     set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
   endif()
-  message("-> Using ccache as compiler launcher for generator ${CMAKE_GENERATOR}")
+  message("-> Using ccache (${CCACHE_PROGRAM}) as compiler launcher for generator ${CMAKE_GENERATOR}")
 endif()
 
 if(WIN32)

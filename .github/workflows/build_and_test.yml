@@ -459,7 +459,7 @@ jobs:
     - name: ccache windows
       uses: actions/cache@v3
       with:
-        path: "C:\\Users\\runneradmin\\AppData\\Local\\Mozilla\\sccache\\cache"
+        path: ${{ steps.ninja-ccache-setup.outputs.ccache_dir }}
         key: tket-ccache-dynamic-${{ matrix.os }}-${{ steps.current_time.outputs.formattedTime }}
         restore-keys: |
          tket-ccache-dynamic-${{ matrix.os }}-
