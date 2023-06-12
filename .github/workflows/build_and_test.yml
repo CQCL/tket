@@ -131,33 +131,29 @@ jobs:
         ccache --set-config base_dir=${HOME}
         ccache --set-config compiler_check=content
         ccache -p
-    - name: sccache setup on windows
-      id: sccache-setup-win
-      if: matrix.os == 'windows-2022'
+    - name: ninja ccache setup
+      # This is what hendrikmuhs/ccache-action does, but for windows (theirs is buggy on windows)
+      id: ninja-ccache-setup
       run: |
-        choco upgrade ninja
-        
-        # get scoop
-        Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
-        iex "& {$(irm get.scoop.sh)} -RunAsAdmin"
-        Join-Path (Resolve-Path ~).Path "scoop\shims" >> $Env:GITHUB_PATH
-        
-        # install sccache
-        scoop install sccache
-        sccache -z
+          choco upgrade ccache
+          $ccache_dir = ccache --get-config cache_dir
+          echo ccache_dir=$ccache_dir >> $env:GITHUB_OUTPUT
+          ccache --set-config=max_size='500M'
+          ccache --set-config=compression=true
+          ccache --set-config compiler_check=content
+          ccache -p
     - name: Get current time
       uses: josStorer/get-current-time@v2.1.1
       id: current_time
       with:
         format: YYYYMMDDHHmmss
-    - name: restore sccache
-      if: matrix.os == 'windows-2022'
+    - name: ccache windows
       uses: actions/cache@v3
       with:
-        path: "C:\\Users\\runneradmin\\AppData\\Local\\Mozilla\\sccache\\cache"
-        key: tket-sccache-${{ matrix.os }}-${{ steps.current_time.outputs.formattedTime }}
+        path: ${{ steps.ninja-ccache-setup.outputs.ccache_dir }}
+        key: tket-ccache-dynamic-${{ matrix.os }}-${{ steps.current_time.outputs.formattedTime }}
         restore-keys: |
-          tket-sccache-${{ matrix.os }}-
+          tket-ccache-dynamic-${{ matrix.os }}-
     - name: Select Python 3.10
       # otherwise turtlebrowser/get-conan@v1.2 fails on macos-12
       uses: actions/setup-python@v4
@@ -171,12 +167,22 @@ jobs:
       id: conan-setup
       run: |
         conan profile detect
-        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
+        PROFILE_FILE=$(conan profile path default)
+        echo "Update profile file: $PROFILE_FILE"
+        echo "[buildenv]" >> $PROFILE_FILE 
+        echo "CC=ccache cl" >> $PROFILE_FILE
+        echo "CXX=ccache cl" >> $PROFILE_FILE
+        cat $PROFILE_FILE
+      shell: bash
     - name: Build tket
       run: |
-        sccache -s
-        conan install tket -s build_type=Release --user=tket --channel=stable --build=missing -o boost/*:header_only=True -o with_all_tests=True -c tools.cmake.cmaketoolchain:generator=Ninja
-        conan build tket -s build_type=Release --user=tket --channel=stable --build=missing -o boost/*:header_only=True -o with_all_tests=True -c tools.cmake.cmaketoolchain:generator=Ninja
+        conan install tket -s build_type=Release --user=tket --channel=stable --build=missing -o boost/*:header_only=True -o with_all_tests=True
+        conan build tket -s build_type=Release --user=tket --channel=stable --build=missing -o boost/*:header_only=True -o with_all_tests=True
+    - name: show compile commands
+      run: |
+        cat tket\build\Release\compile_commands.json
+      shell: bash
     - name: Upload package
       if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
       run: |
@@ -186,7 +192,8 @@ jobs:
     - name: ccache stats on windows
       if: matrix.os == 'windows-2022'
       run: |
-        sccache --show-stats
+        ccache -s
+        ccache -z
 
 #  build_test_tket_macos_arm64:
 #    name: Build and test tket (macos-arm64)
