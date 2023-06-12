@@ -19,7 +19,7 @@
 
 #include "binder_utils.hpp"
 #include "tket/Characterisation/FrameRandomisation.hpp"
-#include "tket/Clifford/CliffTableau.hpp"
+#include "tket/Clifford/UnitaryTableau.hpp"
 #include "tket/Converters/Converters.hpp"
 
 namespace py = pybind11;
@@ -28,24 +28,9 @@ namespace tket {
 
 QubitPauliString apply_clifford_basis_change(
     const QubitPauliString &in_pauli, const Circuit &circ) {
-  CliffTableau tab = circuit_to_tableau(circ);
-  QubitPauliTensor new_operator;
-  for (const auto &qp : in_pauli.map) {
-    switch (qp.second) {
-      case Pauli::I:
-        break;
-      case Pauli::X:
-        new_operator = new_operator * tab.get_xpauli(qp.first);
-        break;
-      case Pauli::Y:
-        new_operator =
-            new_operator * tab.get_xpauli(qp.first) * tab.get_zpauli(qp.first);
-        break;
-      case Pauli::Z:
-        new_operator = new_operator * tab.get_zpauli(qp.first);
-        break;
-    }
-  }
+  UnitaryRevTableau tab = circuit_to_unitary_rev_tableau(circ);
+  QubitPauliTensor new_operator =
+      tab.get_row_product(QubitPauliTensor(in_pauli));
   return new_operator.string;
 }
 
