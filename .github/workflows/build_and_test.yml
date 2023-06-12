@@ -451,22 +451,6 @@ jobs:
         ccache --set-config=compression=true
         ccache --set-config compiler_check=content
         ccache -p
-    - name: ninja ccache setup
-      if: false
-      # This is what hendrikmuhs/ccache-action does, but for windows (theirs is buggy on windows)
-      id: ninja-ccache-setup
-      run: |
-        choco upgrade ninja
-        choco uninstall ccache
-        
-        # get scoop package manager
-        Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
-        iex "& {$(irm get.scoop.sh)} -RunAsAdmin"
-        Join-Path (Resolve-Path ~).Path "scoop\shims" >> $Env:GITHUB_PATH
-        
-        # install sccache with scoop
-        scoop install sccache
-        sccache -z
     - name: Get current time
       uses: josStorer/get-current-time@v2.1.1
       id: current_time
