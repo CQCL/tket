@@ -430,6 +430,13 @@ jobs:
       run: |
         conan profile detect
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
+        PROFILE_FILE=$(conan profile path default)
+        echo "Update profile file: $PROFILE_FILE"
+        echo "[buildenv]" >> $PROFILE_FILE 
+        echo "CC=ccache cl" >> $PROFILE_FILE
+        echo "CXX=ccache cl" >> $PROFILE_FILE
+        cat $PROFILE_FILE
+      shell: bash
     - name: normalize line endings in conanfile and src directory
       # This is necessary to ensure consistent revisions across platforms.
       # Conan's revision hash is composed of hashes of all the exported files,
@@ -444,7 +451,7 @@ jobs:
       # This is what hendrikmuhs/ccache-action does, but for windows (theirs is buggy on windows)
       id: ninja-ccache-setup
       run: |
-        choco upgrade ccache ninja
+        choco upgrade ccache
         $ccache_dir = ccache --get-config cache_dir
         echo ccache_dir=$ccache_dir >> $env:GITHUB_OUTPUT
         ccache --set-config=max_size='500M'
@@ -468,9 +475,14 @@ jobs:
       # On windows use install + build so build directory is consistent across runs (i.e. don't build from conan cache)
       # Necessary because setting ccache base_dir doesn't currently work on windows
       run: |
+        $env:CC = "ccache cl"
+        $env:CXX = "ccache cl"
         conan install tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
         conan build tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
         conan export-pkg tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf `"`"
+    - name: ccache stats on windows (preliminary)
+      run: |
+        ccache -s  #show stats
     - name: Install tket
       if: needs.check_changes.outputs.tket_changed != 'true'
       run: conan install --requires tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True

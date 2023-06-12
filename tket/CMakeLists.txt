@@ -36,19 +36,7 @@ endif()
 
 find_program(CCACHE_PROGRAM ccache)
 if(CCACHE_PROGRAM)
-  if(MSVC)
-    file(COPY ${CCACHE_PROGRAM} DESTINATION ${CMAKE_BINARY_DIR}/cl.exe FOLLOW_SYMLINK_CHAIN)
-    set(CMAKE_VS_GLOBALS
-            "CLToolExe=cl.exe"
-            "CLToolPath=${CMAKE_BINARY_DIR}"
-            "TrackFileAccess=false"
-            "UseMultiToolTask=true"
-            "DebugInformationFormat=OldStyle"
-            )
-    message("-> Found MSVC")
-  else()
-    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
-  endif()
+  set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
   message("-> Using ccache (${CCACHE_PROGRAM}) as compiler launcher for generator ${CMAKE_GENERATOR}")
 endif()
 
