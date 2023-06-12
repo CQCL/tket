@@ -163,7 +163,7 @@ setup(
         "numpy >=1.21.4, <2.0",
         "lark-parser ~=0.7",
         "scipy >=1.7.2, <2.0",
-        "networkx ~= 3.0",
+        "networkx >= 2.8.8",
         "graphviz ~= 0.14",
         "jinja2 ~= 3.0",
         "types-pkg_resources",
