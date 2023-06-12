@@ -69,6 +69,7 @@ class UnitaryTableau {
   /**
    * Other required constructors
    */
+  UnitaryTableau();
   UnitaryTableau(const UnitaryTableau& other) = default;
   UnitaryTableau(UnitaryTableau&& other) = default;
   UnitaryTableau& operator=(const UnitaryTableau& other) = default;
@@ -203,6 +204,7 @@ class UnitaryRevTableau {
   /**
    * Other required constructors
    */
+  UnitaryRevTableau();
   UnitaryRevTableau(const UnitaryRevTableau& other) = default;
   UnitaryRevTableau(UnitaryRevTableau&& other) = default;
   UnitaryRevTableau& operator=(const UnitaryRevTableau& other) = default;
