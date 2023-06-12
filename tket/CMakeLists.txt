@@ -37,9 +37,7 @@ endif()
 find_program(CCACHE_PROGRAM ccache)
 if(CCACHE_PROGRAM)
   if(MSVC)
-    file(COPY_FILE
-            ${CCACHE_PROGRAM} ${CMAKE_BINARY_DIR}/cl.exe
-            ONLY_IF_DIFFERENT)
+    file(COPY ${CCACHE_PROGRAM} DESTINATION ${CMAKE_BINARY_DIR}/cl.exe FOLLOW_SYMLINK_CHAIN)
     set(CMAKE_VS_GLOBALS
             "CLToolExe=cl.exe"
             "CLToolPath=${CMAKE_BINARY_DIR}"
