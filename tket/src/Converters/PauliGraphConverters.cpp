@@ -21,9 +21,6 @@
 
 namespace tket {
 
-PauliGraph circuit_to_pauli_graph(const Circuit &circ);
-Circuit pauli_graph_to_circuit(const PauliGraph &pg);
-
 PauliGraph circuit_to_pauli_graph(const Circuit &circ) {
   PauliGraph pg(circ.all_qubits(), circ.all_bits());
   for (const Command &com : circ) {

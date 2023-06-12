@@ -113,8 +113,7 @@ void PauliGraph::apply_gate_at_end(
     case OpType::CY:
     case OpType::CZ:
     case OpType::SWAP:
-    case OpType::noop:
-    case OpType::Phase: {
+    case OpType::noop: {
       cliff_.apply_gate_at_end(type, qbs);
       break;
     }
