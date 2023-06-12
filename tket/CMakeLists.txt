@@ -35,13 +35,22 @@ if(NOT CMAKE_BUILD_TYPE)
 endif()
 
 find_program(CCACHE_PROGRAM ccache)
-find_program(SCCACHE_PROGRAM sccache)
-if(SCCACHE_PROGRAM)
-    #set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${SCCACHE_PROGRAM}")
-    #message("->Using sccache as compiler launcher")
-elseif(CCACHE_PROGRAM)
+if(CCACHE_PROGRAM)
+  if(MSVC)
+    file(COPY_FILE
+            ${CCACHE_PROGRAM} ${CMAKE_BINARY_DIR}/cl.exe
+            ONLY_IF_DIFFERENT)
+    set(CMAKE_VS_GLOBALS
+            "CLToolExe=cl.exe"
+            "CLToolPath=${CMAKE_BINARY_DIR}"
+            "TrackFileAccess=false"
+            "UseMultiToolTask=true"
+            "DebugInformationFormat=OldStyle"
+            )
+  else()
     set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
-    message("->Using ccache as compiler launcher")
+  endif()
+  message("-> Using ccache as compiler launcher for generator ${CMAKE_GENERATOR}")
 endif()
 
 if(WIN32)
