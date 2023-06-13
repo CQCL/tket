@@ -36,17 +36,18 @@ endif()
 
 find_program(ccache_exe ccache)
 if(ccache_exe)
-    #message("ccache_exe ${ccache_exe}")
-    #file(REAL_PATH ${ccache_exe} CCACHE_REAL_EXE)
-    #message("real ccache_exe ${CCACHE_REAL_EXE}")
-    #file(COPY_FILE
-    #        ${CCACHE_REAL_EXE} ${CMAKE_BINARY_DIR}/cl.exe
-    #        ONLY_IF_DIFFERENT)
-    file(CREATE_LINK ${ccache_exe} ${CMAKE_BINARY_DIR}/cl.exe SYMBOLIC)
+    message("ccache_exe ${ccache_exe}")
+    file(REAL_PATH ${ccache_exe} ccache_real_exe)
+    message("real ccache_exe ${ccache_real_exe}")
+    get_filename_component(ccache_dir ${ccache_real_exe})
+    message("ccache_dir ${ccache_dir}")
+    file(COPY_FILE
+            ${ccache_real_exe} ${ccache_dir}/cl.exe
+            ONLY_IF_DIFFERENT)
 
     set(CMAKE_VS_GLOBALS
             "CLToolExe=cl.exe"
-            "CLToolPath=${CMAKE_BINARY_DIR}"
+            "CLToolPath=${ccache_dir}"
             "TrackFileAccess=false"
             "UseMultiToolTask=true"
             "DebugInformationFormat=OldStyle"
