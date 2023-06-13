@@ -184,8 +184,8 @@ jobs:
     - name: Build tket
       run: |
         Get-Command ccache
-        conan install tket -s build_type=Release --user=tket --channel=stable --build=missing -o boost/*:header_only=True -o with_all_tests=True
-        conan build tket -s build_type=Release --user=tket --channel=stable --build=missing -o boost/*:header_only=True -o with_all_tests=True
+        conan install tket -s build_type=Release --user=tket --channel=stable --build=missing -o boost/*:header_only=True -o with_all_tests=True -o visual_studio_ccache_exe="C:/ProgramData/chocolatey/lib/ccache/tools/ccache-4.8.2-windows-x86_64/ccache.exe"
+        conan build tket -s build_type=Release --user=tket --channel=stable --build=missing -o boost/*:header_only=True -o with_all_tests=True -o visual_studio_ccache_exe="C:/ProgramData/chocolatey/lib/ccache/tools/ccache-4.8.2-windows-x86_64/ccache.exe"
     - name: Upload package
       if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
       run: |

@@ -38,6 +38,7 @@ class TketConan(ConanFile):
         "with_test": [True, False],
         "with_proptest": [True, False],
         "with_all_tests": [True, False],
+        "visual_studio_ccache_exe": [None, "ANY"],
     }
     default_options = {
         "shared": False,
@@ -45,7 +46,9 @@ class TketConan(ConanFile):
         "profile_coverage": False,
         "with_test": False,
         "with_proptest": False,
-        "with_all_tests": False}
+        "with_all_tests": False,
+        "visual_studio_ccache_exe": None,
+    }
     exports_sources = "CMakeLists.txt", "cmake/*", "src/*", "include/*", "test/*", "proptest/*"
 
     def config_options(self):
@@ -67,6 +70,8 @@ class TketConan(ConanFile):
         deps.generate()
         tc = CMakeToolchain(self)
         tc.variables["PROFILE_COVERAGE"] = self.options.profile_coverage
+        if self.settings.os == "Windows" and self.options.visual_studio_ccache_exe:
+            tc.variables["VISUAL_STUDIO_CCACHE_EXE"] = self.options.visual_studio_ccache_exe
     #    if self.build_test():
     #        tc.variables["BUILD_TKET_TEST"] = True
     #        architectures_dir = os.path.join(self.source_folder, "test/src/test_architectures")

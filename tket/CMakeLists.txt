@@ -34,25 +34,21 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
-find_program(ccache_exe ccache)
-if(ccache_exe)
-    message("ccache_exe ${ccache_exe}")
-    file(REAL_PATH ${ccache_exe} ccache_real_exe)
-    message("real ccache_exe ${ccache_real_exe}")
-    get_filename_component(ccache_dir ${ccache_real_exe} DIRECTORY)
-    message("ccache_dir ${ccache_dir}")
+if(VISUAL_STUDIO_CCACHE_EXE)
+    message("ccache_exe ${VISUAL_STUDIO_CCACHE_EXE}")
     file(COPY_FILE
-            ${ccache_real_exe} ${ccache_dir}/cl.exe
+            ${VISUAL_STUDIO_CCACHE_EXE} ${CMAKE_BINARY_DIR}/cl.exe
             ONLY_IF_DIFFERENT)
 
     set(CMAKE_VS_GLOBALS
             "CLToolExe=cl.exe"
-            "CLToolPath=${ccache_dir}"
+            "CLToolPath=${CMAKE_BINARY_DIR}"
             "TrackFileAccess=false"
             "UseMultiToolTask=true"
             "DebugInformationFormat=OldStyle"
             )
 endif()
+
 find_program(CCACHE_PROGRAM ccache)
 if(CCACHE_PROGRAM)
     message("CCACHE is found")
