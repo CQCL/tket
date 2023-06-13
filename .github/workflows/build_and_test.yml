@@ -202,7 +202,7 @@ jobs:
           conan export-pkg tket --user=tket --channel=stable -o boost/*:header_only=True
           conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
           conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -r=tket-libs
-      - name: ccache stats on windows
+      - name: ccache stats
         run: |
           ccache -s  #show stats
           ccache -z  #show stats
@@ -419,6 +419,12 @@ jobs:
 
   build_test_pytket_windows:
     name: Build and test pytket (windows)
+    # I could not get ccache working for this build
+    # Building tket as a dynamic library currently fails with the Ninja and Makefiles Generators and ccache is set up is more difficult with the Visual Studio generator
+    # I tried to get ccache working with the Visual Studio generator using the suggestions here: https://github.com/ccache/ccache/wiki/MS-Visual-Studio#usage-with-cmake
+    # I was able to get ccache to wrap the compiler invocations, but all files are reported as uncacheable, due to "No input file"
+    # See https://ccache.dev/manual/4.8.2.html#_cache_statistics for more info on what that means. I myself haven't fully understood.
+    # Giving up for now
     needs: check_changes
     if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true'
     runs-on: windows-2022
@@ -440,53 +446,12 @@ jobs:
              $normalized_file = [IO.File]::ReadAllText($f) -replace "`r`n", "`n"
              [IO.File]::WriteAllText($f, $normalized_file)
              }
-    - name: ninja ccache setup
-      # This is what hendrikmuhs/ccache-action does, but for windows (theirs is buggy on windows)
-      id: ninja-ccache-setup
-      run: |
-        choco upgrade ccache ninja
-        $ccache_dir = ccache --get-config cache_dir
-        echo ccache_dir=$ccache_dir >> $env:GITHUB_OUTPUT
-        ccache --set-config=max_size='500M'
-        ccache --set-config=compression=true
-        ccache --set-config compiler_check=content
-        ccache -p
-    - name: ninja ccache setup
-      if: false
-      # This is what hendrikmuhs/ccache-action does, but for windows (theirs is buggy on windows)
-      id: ninja-ccache-setup
-      run: |
-        choco upgrade ninja
-        choco uninstall ccache
-        
-        # get scoop package manager
-        Set-ExecutionPolicy RemoteSigned -Scope CurrentUser
-        iex "& {$(irm get.scoop.sh)} -RunAsAdmin"
-        Join-Path (Resolve-Path ~).Path "scoop\shims" >> $Env:GITHUB_PATH
-        
-        # install sccache with scoop
-        scoop install sccache
-        sccache -z
-    - name: Get current time
-      uses: josStorer/get-current-time@v2.1.1
-      id: current_time
-      with:
-        format: YYYYMMDDHHmmss
-    - name: ccache windows
-      uses: actions/cache@v3
-      with:
-        path: "C:\\Users\\runneradmin\\AppData\\Local\\Mozilla\\sccache\\cache"
-        key: tket-ccache-dynamic-${{ matrix.os }}-${{ steps.current_time.outputs.formattedTime }}
-        restore-keys: |
-         tket-ccache-dynamic-${{ matrix.os }}-
     - name: Build tket
       if: needs.check_changes.outputs.tket_changed == 'true'
       # On windows use install + build so build directory is consistent across runs (i.e. don't build from conan cache)
       # Necessary because setting ccache base_dir doesn't currently work on windows
       run: |
-        conan install tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
-        conan build tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
-        conan export-pkg tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf `"`"
+        conan create tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
     - name: Install tket
       if: needs.check_changes.outputs.tket_changed != 'true'
       run: conan install --requires tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
@@ -531,10 +496,6 @@ jobs:
       run: |
         conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
         conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -r=tket-libs
-    - name: ccache stats on windows
-      run: |
-        ccache -s  #show stats
-        ccache -z  #zero stats
 
   build_test_pytket_macos_arm64:
     name: Build and test pytket (macos-arm64)

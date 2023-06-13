@@ -81,7 +81,7 @@ jobs:
         lib_label=`./libver ${{ matrix.lib }}.json ${{ matrix.lib }}`
         echo "LIB_LABEL=${lib_label}" >> $GITHUB_ENV
     - name: upload package
-      #if: github.event_name == 'push'
+      if: github.event_name == 'push'
       run: conan upload ${{ env.LIB_LABEL }} -r=tket-libs
   macos-m1:
     name: build library (macos-m1)
@@ -109,7 +109,7 @@ jobs:
         lib_label=`./libver ${{ matrix.lib }}.json ${{ matrix.lib }}`
         echo "LIB_LABEL=${lib_label}" >> $GITHUB_ENV
     - name: upload package
-      #if: github.event_name == 'push'
+      if: github.event_name == 'push'
       run: conan upload ${{ env.LIB_LABEL }} -r=tket-libs
     - name: unauthenticate
       if: always()
@@ -133,7 +133,7 @@ jobs:
         docker cp ./libver linux_build:/
         docker cp ./.github/workflows/linuxbuildlib linux_build:/
     - name: determine whether to upload package
-      #if: github.event_name == 'push'
+      if: github.event_name == 'push'
       run: echo "UPLOAD_PACKAGE=YES" >> ${GITHUB_ENV}
     - name: build ${{ matrix.lib }}
       run: |

@@ -222,7 +222,7 @@ cmake --build .
 cmake --install .
 ```
 
-## `tket with tests and proptests`
+## `tket` with tests and proptests
 
 This needs the static `tklog` and `tket` libraries to be installed.
 

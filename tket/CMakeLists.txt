@@ -36,21 +36,9 @@ endif()
 
 find_program(CCACHE_PROGRAM ccache)
 if(CCACHE_PROGRAM)
-  if(MSVC)
-    file(COPY_FILE
-            ${CCACHE_PROGRAM} ${CMAKE_BINARY_DIR}/cl.exe
-            ONLY_IF_DIFFERENT)
-    set(CMAKE_VS_GLOBALS
-            "CLToolExe=cl.exe"
-            "CLToolPath=${CMAKE_BINARY_DIR}"
-            "TrackFileAccess=false"
-            "UseMultiToolTask=true"
-            "DebugInformationFormat=OldStyle"
-            )
-  else()
-    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
-  endif()
-  message("-> Using ccache as compiler launcher for generator ${CMAKE_GENERATOR}")
+  set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
+  message("-> Setting ccache (${CCACHE_PROGRAM} as compiler launcher for generator ${CMAKE_GENERATOR}")
+  message("-> This is only supported for the Ninja and Makefile generators")
 endif()
 
 if(WIN32)

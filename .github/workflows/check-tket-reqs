@@ -15,22 +15,19 @@ import conan
 
 version = sys.argv[1]
 
-paths = [
-    os.path.join(".", "pytket", "conanfile.py"),
-]
+conanfile_path = os.path.join(".", "pytket", "conanfile.py")
 
 conan_ver = conan.conan_version.major.value
 
 jsondump = "conaninfo.json"
 
 assert conan_ver == 2
-for path in paths:
-    with open(jsondump, "w") as f:
-        subprocess.call(["conan", "graph", "info", path, "--format", "json"], stdout=f)
-    with open(jsondump) as f:
-        info = json.load(f)
-    os.remove(jsondump)
-    assert any(
-        node["ref"].startswith(f"tket/{version}@tket/stable")
-        for _, node in info["graph"]["nodes"].items()
-    )
+with open(jsondump, "w") as f:
+    subprocess.call(["conan", "graph", "info", conanfile_path, "--format", "json"], stdout=f)
+with open(jsondump) as f:
+    info = json.load(f)
+os.remove(jsondump)
+assert any(
+    node["ref"].startswith(f"tket/{version}@tket/stable")
+    for _, node in info["graph"]["nodes"].items()
+)
