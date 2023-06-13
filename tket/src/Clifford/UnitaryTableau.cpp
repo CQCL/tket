@@ -79,6 +79,8 @@ UnitaryTableau::UnitaryTableau(
   }
 }
 
+UnitaryTableau::UnitaryTableau() : UnitaryTableau(0) {}
+
 QubitPauliTensor UnitaryTableau::get_xrow(const Qubit& qb) const {
   unsigned uq = qubits_.left.at(qb);
   PauliStabiliser stab = tab_.get_pauli(uq);
@@ -504,6 +506,8 @@ void from_json(const nlohmann::json& j, UnitaryTableau& tab) {
 UnitaryRevTableau::UnitaryRevTableau(unsigned n) : tab_(n) {}
 
 UnitaryRevTableau::UnitaryRevTableau(const qubit_vector_t& qbs) : tab_(qbs) {}
+
+UnitaryRevTableau::UnitaryRevTableau() : tab_() {}
 
 QubitPauliTensor UnitaryRevTableau::get_xrow(const Qubit& qb) const {
   return tab_.get_xrow(qb);

@@ -102,7 +102,6 @@ target_sources(tket
         src/OpType/OpTypeInfo.cpp
         src/OpType/OpTypeFunctions.cpp
         src/OpType/OpTypeJson.cpp
-        src/Clifford/CliffTableau.cpp
         src/Clifford/ChoiMixTableau.cpp
         src/Clifford/SymplecticTableau.cpp
         src/Clifford/UnitaryTableau.cpp
@@ -189,7 +188,6 @@ target_sources(tket
         src/ZX/Flow.cpp
         src/ZX/MBQCRewrites.cpp
         src/ZX/ZXRWSequences.cpp
-        src/Converters/CliffTableauConverters.cpp
         src/Converters/ChoiMixTableauConverters.cpp
         src/Converters/PauliGadget.cpp
         src/Converters/PauliGraphConverters.cpp
@@ -271,7 +269,6 @@ target_sources(tket
         include/tket/OpType/OpType.hpp
         include/tket/OpType/OpTypeInfo.hpp
         include/tket/Clifford/ChoiMixTableau.hpp
-        include/tket/Clifford/CliffTableau.hpp
         include/tket/Clifford/SymplecticTableau.hpp
         include/tket/Clifford/UnitaryTableau.hpp
         include/tket/Ops/ClassicalOps.hpp

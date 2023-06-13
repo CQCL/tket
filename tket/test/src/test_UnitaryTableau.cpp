@@ -447,6 +447,17 @@ SCENARIO("Correct creation of UnitaryRevTableau") {
         tab0.get_xrow(Qubit(0)) ==
         QubitPauliTensor(std::list<Pauli>({Pauli::X, Pauli::X})));
     REQUIRE(tab0 == tab1);
+    std::stringstream tabstr;
+    tabstr << tab0;
+    CHECK(
+        tabstr.str() ==
+        "1 1 0   0 0 0   0\t->\tX@q[0]\n"
+        "0 1 0   0 0 0   0\t->\tX@q[1]\n"
+        "0 0 1   0 0 0   0\t->\tX@q[2]\n"
+        "--\n"
+        "0 0 0   1 0 0   0\t->\tZ@q[0]\n"
+        "0 0 0   1 1 0   0\t->\tZ@q[1]\n"
+        "0 0 0   0 0 1   0\t->\tZ@q[2]\n");
   }
   GIVEN("A Clifford circuit") {
     Circuit circ = get_test_circ();
@@ -573,6 +584,12 @@ SCENARIO("Unitary inversions") {
       Circuit tp_circ = unitary_rev_tableau_to_circuit(tp_tab);
       REQUIRE(test_unitary_comparison(tp_circ, circ.transpose(), true));
     }
+    WHEN("Conjugate") {
+      UnitaryRevTableau con_tab = tab.conjugate();
+      Circuit con_circ = unitary_rev_tableau_to_circuit(con_tab);
+      REQUIRE(
+          test_unitary_comparison(con_circ, circ.dagger().transpose(), true));
+    }
   }
 }
 
@@ -655,6 +672,13 @@ SCENARIO("Tableau serialisation") {
     nlohmann::json j_circ = circ;
     Circuit circ2 = j_circ.get<Circuit>();
     REQUIRE(circ2 == circ);
+  }
+  GIVEN("Serialising a UnitaryRevTableau") {
+    Circuit circ = get_test_circ();
+    UnitaryRevTableau tab = circuit_to_unitary_rev_tableau(circ);
+    nlohmann::json j_tab = tab;
+    UnitaryRevTableau tab2 = j_tab.get<UnitaryRevTableau>();
+    REQUIRE(tab == tab2);
   }
 }
 

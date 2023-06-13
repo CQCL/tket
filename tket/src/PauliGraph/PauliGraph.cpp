@@ -113,13 +113,12 @@ void PauliGraph::apply_gate_at_end(
     case OpType::CY:
     case OpType::CZ:
     case OpType::SWAP:
-    case OpType::noop:
-    case OpType::Phase: {
+    case OpType::noop: {
       cliff_.apply_gate_at_end(type, qbs);
       break;
     }
     case OpType::Rz: {
-      QubitPauliTensor pauli = cliff_.get_zpauli(qbs.at(0));
+      QubitPauliTensor pauli = cliff_.get_zrow(qbs.at(0));
       Expr angle = gate.get_params().at(0);
       std::optional<unsigned> cliff_angle = equiv_Clifford(angle);
       if (cliff_angle) {
@@ -131,7 +130,7 @@ void PauliGraph::apply_gate_at_end(
       break;
     }
     case OpType::Rx: {
-      QubitPauliTensor pauli = cliff_.get_xpauli(qbs.at(0));
+      QubitPauliTensor pauli = cliff_.get_xrow(qbs.at(0));
       Expr angle = gate.get_params().at(0);
       std::optional<unsigned> cliff_angle = equiv_Clifford(angle);
       if (cliff_angle) {
@@ -154,9 +153,8 @@ void PauliGraph::apply_gate_at_end(
           cliff_.apply_gate_at_end(OpType::Vdg, qbs);
         }
       } else {
-        QubitPauliTensor zpauli = cliff_.get_zpauli(qbs.at(0));
-        QubitPauliTensor xpauli = cliff_.get_xpauli(qbs.at(0));
-        QubitPauliTensor ypauli = i_ * xpauli * zpauli;
+        QubitPauliTensor ypauli =
+            cliff_.get_row_product(QubitPauliTensor(qbs.at(0), Pauli::Y));
         apply_pauli_gadget_at_end(ypauli, angle);
       }
       break;
@@ -164,8 +162,8 @@ void PauliGraph::apply_gate_at_end(
     case OpType::PhasedX: {
       Expr alpha = gate.get_params().at(0);
       Expr beta = gate.get_params().at(1);
-      QubitPauliTensor zpauli = cliff_.get_zpauli(qbs.at(0));
-      QubitPauliTensor xpauli = cliff_.get_xpauli(qbs.at(0));
+      QubitPauliTensor zpauli = cliff_.get_zrow(qbs.at(0));
+      QubitPauliTensor xpauli = cliff_.get_xrow(qbs.at(0));
       std::optional<unsigned> cliff_alpha = equiv_Clifford(alpha);
       std::optional<unsigned> cliff_beta = equiv_Clifford(beta);
       // Rz(-b)
@@ -195,12 +193,12 @@ void PauliGraph::apply_gate_at_end(
       break;
     }
     case OpType::T: {
-      QubitPauliTensor pauli = cliff_.get_zpauli(qbs.at(0));
+      QubitPauliTensor pauli = cliff_.get_zrow(qbs.at(0));
       apply_pauli_gadget_at_end(pauli, 0.25);
       break;
     }
     case OpType::Tdg: {
-      QubitPauliTensor pauli = cliff_.get_zpauli(qbs.at(0));
+      QubitPauliTensor pauli = cliff_.get_zrow(qbs.at(0));
       apply_pauli_gadget_at_end(pauli, -0.25);
       break;
     }
@@ -232,10 +230,10 @@ void PauliGraph::apply_gate_at_end(
           }
         }
       } else {
-        QubitPauliTensor pauli;
-        for (const Qubit &qb : qbs) {
-          pauli = pauli * cliff_.get_zpauli(qb);
-        }
+        QubitPauliTensor pauli =
+            cliff_.get_row_product(QubitPauliTensor(QubitPauliString(
+                std::list<Qubit>{qbs.begin(), qbs.end()},
+                std::list<Pauli>{qbs.size(), Pauli::Z})));
         apply_pauli_gadget_at_end(pauli, angle);
       }
       break;
@@ -252,8 +250,8 @@ void PauliGraph::apply_gate_at_end(
           cliff_.apply_gate_at_end(OpType::CX, {qbs.at(1), qbs.at(0)});
         }
       } else {
-        QubitPauliTensor pauli =
-            cliff_.get_xpauli(qbs.at(0)) * cliff_.get_xpauli(qbs.at(1));
+        QubitPauliTensor pauli = cliff_.get_row_product(QubitPauliTensor(
+            QubitPauliString({qbs.at(0), qbs.at(1)}, {Pauli::X, Pauli::X})));
         apply_pauli_gadget_at_end(pauli, angle);
       }
       break;
@@ -276,9 +274,8 @@ void PauliGraph::apply_gate_at_end(
           cliff_.apply_gate_at_end(OpType::Sdg, {arg1});
         }
       } else {
-        QubitPauliTensor pauli =
-            -1. * cliff_.get_xpauli(qbs.at(0)) * cliff_.get_zpauli(qbs.at(0)) *
-            cliff_.get_xpauli(qbs.at(1)) * cliff_.get_zpauli(qbs.at(1));
+        QubitPauliTensor pauli = cliff_.get_row_product(QubitPauliTensor(
+            QubitPauliString({qbs.at(0), qbs.at(1)}, {Pauli::Y, Pauli::Y})));
         apply_pauli_gadget_at_end(pauli, angle);
       }
       break;
