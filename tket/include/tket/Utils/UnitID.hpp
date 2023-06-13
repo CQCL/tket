@@ -19,7 +19,7 @@
  * @brief Named registers of arrays of (quantum or classical) nodes
  */
 
-#include <boost/functional/hash.hpp>
+//#include <boost/functional/hash.hpp>
 #include <map>
 #include <memory>
 #include <optional>
@@ -29,7 +29,7 @@
 #include <string>
 //#include <tklog/TketLog.hpp>
 
-#include "BiMapHeaders.hpp"
+//#include "BiMapHeaders.hpp"
 #include "Json.hpp"
 
 namespace tket {
@@ -100,10 +100,11 @@ class UnitID {
   bool operator!=(const UnitID &other) const { return !(*this == other); }
 
   friend std::size_t hash_value(UnitID const &unitid) {
+    unitid.repr();
     size_t seed = 0;
-    boost::hash_combine(seed, unitid.data_->name_);
-    boost::hash_combine(seed, unitid.data_->index_);
-    boost::hash_combine(seed, unitid.data_->type_);
+    //boost::hash_combine(seed, unitid.data_->name_);
+    //boost::hash_combine(seed, unitid.data_->index_);
+    //boost::hash_combine(seed, unitid.data_->type_);
     return seed;
   }
 
@@ -299,7 +300,7 @@ class WasmNode : public WasmState {
 JSON_DECL(WasmNode)
 
 /** A correspondence between two sets of unit IDs */
-typedef boost::bimap<UnitID, UnitID> unit_bimap_t;
+typedef std::map<UnitID, UnitID> unit_bimap_t;
 
 /** A pair of ("initial" and "final") correspondences between unit IDs */
 typedef struct {
@@ -326,20 +327,21 @@ typedef std::map<unsigned, UnitID> register_t;
 
 template <typename UnitA, typename UnitB>
 static bool update_map(unit_bimap_t &m, const std::map<UnitA, UnitB> &um) {
-  unit_map_t new_m;
-  bool changed = false;
-  for (const std::pair<const UnitA, UnitB> &pair : um) {
-    const auto &it = m.right.find(pair.first);
-    if (it == m.right.end()) {
-      continue;
-    }
-    new_m.insert({it->second, pair.second});
-    changed |= (m.right.erase(pair.first) > 0);
-  }
-  for (const std::pair<const UnitID, UnitID> &pair : new_m) {
-    changed |= m.left.insert(pair).second;
-  }
-  return changed;
+  m.size();
+  um.size();
+  //bool changed = false;
+  //for (const std::pair<const UnitA, UnitB> &pair : um) {
+  //  const auto &it = m.right.find(pair.first);
+  //  if (it == m.right.end()) {
+  //    continue;
+  //  }
+  //  new_m.insert({it->second, pair.second});
+  //  changed |= (m.right.erase(pair.first) > 0);
+  //}
+  //for (const std::pair<const UnitID, UnitID> &pair : new_m) {
+  //  changed |= m.left.insert(pair).second;
+  //}
+  return true;
 }
 
 /**

@@ -17,9 +17,9 @@ project(tket CXX)
 
 list(INSERT CMAKE_MODULE_PATH 0 ${CMAKE_SOURCE_DIR}/cmake)
 
-find_package(Boost CONFIG REQUIRED)
-find_package(SymEngine CONFIG REQUIRED)
-find_package(Eigen3 CONFIG REQUIRED)
+#find_package(Boost CONFIG REQUIRED)
+#find_package(SymEngine CONFIG REQUIRED)
+#find_package(Eigen3 CONFIG REQUIRED)
 find_package(nlohmann_json CONFIG REQUIRED)
 #find_package(tklog CONFIG REQUIRED)
 #find_package(tkassert CONFIG REQUIRED)
@@ -34,12 +34,12 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
-find_program(CCACHE_PROGRAM sccache)
+find_program(CCACHE_PROGRAM ccache)
 if(CCACHE_PROGRAM)
-    message("SCCACHE is found")
+    message("CCACHE is found")
     set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
 else(CCACHE_PROGRAM)
-    message("SCCACHE is NOT found")
+    message("CCACHE is NOT found")
 endif()
 
 if(WIN32)
@@ -83,9 +83,9 @@ ENDIF()
 target_include_directories(tket PUBLIC
     $<INSTALL_INTERFACE:include/tket>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tket>)
-target_link_libraries(tket PRIVATE Boost::headers)
-target_link_libraries(tket PRIVATE symengine::symengine)
-target_link_libraries(tket PRIVATE Eigen3::Eigen)
+#target_link_libraries(tket PRIVATE Boost::headers)
+#target_link_libraries(tket PRIVATE symengine::symengine)
+#target_link_libraries(tket PRIVATE Eigen3::Eigen)
 target_link_libraries(tket PRIVATE nlohmann_json::nlohmann_json)
 #target_link_libraries(tket PRIVATE tklog::tklog)
 #target_link_libraries(tket PRIVATE tkassert::tkassert)
@@ -96,25 +96,25 @@ target_link_libraries(tket PRIVATE nlohmann_json::nlohmann_json)
 target_sources(tket
     PRIVATE
         src/Utils/UnitID.cpp
-        src/Utils/CosSinDecomposition.cpp
-        src/Utils/HelperFunctions.cpp
-        src/Utils/MatrixAnalysis.cpp
-        src/Utils/PauliStrings.cpp
+      #  src/Utils/CosSinDecomposition.cpp
+      #  src/Utils/HelperFunctions.cpp
+      #  src/Utils/MatrixAnalysis.cpp
+      #  src/Utils/PauliStrings.cpp
     PUBLIC FILE_SET HEADERS
     BASE_DIRS ${PROJECT_SOURCE_DIR}/include
     FILES
         include/tket/Utils/UnitID.hpp
-        include/tket/Utils/CosSinDecomposition.hpp
-        include/tket/Utils/HelperFunctions.hpp
-        include/tket/Utils/MatrixAnalysis.hpp
-        include/tket/Utils/PauliStrings.hpp
-        include/tket/Utils/BiMapHeaders.hpp
-        include/tket/Utils/Constants.hpp
-        include/tket/Utils/EigenConfig.hpp
-        include/tket/Utils/GraphHeaders.hpp
-        include/tket/Utils/MatrixAnalysis.hpp
-        include/tket/Utils/SequencedContainers.hpp
-        include/tket/Utils/Symbols.hpp
+      #  include/tket/Utils/CosSinDecomposition.hpp
+      #  include/tket/Utils/HelperFunctions.hpp
+      #  include/tket/Utils/MatrixAnalysis.hpp
+      #  include/tket/Utils/PauliStrings.hpp
+      #  include/tket/Utils/BiMapHeaders.hpp
+      #  include/tket/Utils/Constants.hpp
+      #  include/tket/Utils/EigenConfig.hpp
+      #  include/tket/Utils/GraphHeaders.hpp
+      #  include/tket/Utils/MatrixAnalysis.hpp
+      #  include/tket/Utils/SequencedContainers.hpp
+      #  include/tket/Utils/Symbols.hpp
         include/tket/Utils/Json.hpp
     )
 
