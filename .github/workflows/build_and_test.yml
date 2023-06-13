@@ -448,10 +448,8 @@ jobs:
              }
     - name: Build tket
       if: needs.check_changes.outputs.tket_changed == 'true'
-      # On windows use install + build so build directory is consistent across runs (i.e. don't build from conan cache)
-      # Necessary because setting ccache base_dir doesn't currently work on windows
       run: |
-        conan create tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
+        conan create tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf `"`"
     - name: Install tket
       if: needs.check_changes.outputs.tket_changed != 'true'
       run: conan install --requires tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True

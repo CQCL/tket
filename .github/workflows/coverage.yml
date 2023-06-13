@@ -56,6 +56,7 @@ jobs:
     - name: further ccache config
       run: |
         ccache --set-config compiler_check=content
+        ccache --set-config hash_dir=false # better performance for debug builds
         ccache -p
     - name: Build tket
       run: |
