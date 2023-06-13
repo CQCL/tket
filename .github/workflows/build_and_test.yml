@@ -148,6 +148,7 @@ jobs:
           ccache --set-config=compression=true
           ccache --set-config compiler_check=content
           ccache -p
+          dir "D:\a\tket\tket\tket" -recurse
     - name: Get current time
       uses: josStorer/get-current-time@v2.1.1
       id: current_time
@@ -186,7 +187,8 @@ jobs:
         Get-Command ccache
         conan install tket -s build_type=Release --user=tket --channel=stable --build=missing -o boost/*:header_only=True -o with_all_tests=True
         conan build tket -s build_type=Release --user=tket --channel=stable --build=missing -o boost/*:header_only=True -o with_all_tests=True
-        Get-Content -Path "D:\a\tket\tket\tket\build\Release\tket.sln" | Write-Host
+        dir "D:\a\tket\tket\tket\build\Release" -recurse
+        #Get-Content -Path "D:\a\tket\tket\tket\build\Release\tket.sln" | Write-Host
     - name: Upload package
       if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
       run: |
