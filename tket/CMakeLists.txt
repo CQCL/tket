@@ -39,7 +39,7 @@ if(ccache_exe)
     message("ccache_exe ${ccache_exe}")
     file(REAL_PATH ${ccache_exe} ccache_real_exe)
     message("real ccache_exe ${ccache_real_exe}")
-    get_filename_component(ccache_dir ${ccache_real_exe})
+    get_filename_component(ccache_dir ${ccache_real_exe} DIRECTORY)
     message("ccache_dir ${ccache_dir}")
     file(COPY_FILE
             ${ccache_real_exe} ${ccache_dir}/cl.exe
