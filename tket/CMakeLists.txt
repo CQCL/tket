@@ -34,10 +34,24 @@ if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
-find_program(CCACHE_PROGRAM ccache)
-if(CCACHE_PROGRAM)
-  set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
-  message("-> Using ccache (${CCACHE_PROGRAM}) as compiler launcher for generator ${CMAKE_GENERATOR}")
+if(WIN32 AND VISUAL_STUDIO_CCACHE_EXE)
+    message("-> Using ccache (${VISUAL_STUDIO_CCACHE_EXE}) as alias for visual studio cl compiler")
+    file(COPY_FILE
+            ${VISUAL_STUDIO_CCACHE_EXE} ${CMAKE_BINARY_DIR}/cl.exe
+            ONLY_IF_DIFFERENT)
+    set(CMAKE_VS_GLOBALS
+            "CLToolExe=cl.exe"
+            "CLToolPath=${CMAKE_BINARY_DIR}"
+            "TrackFileAccess=false"
+            "UseMultiToolTask=true"
+            "DebugInformationFormat=OldStyle"
+            )
+else()
+    find_program(CCACHE_PROGRAM ccache)
+    if(CCACHE_PROGRAM)
+        set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
+        message("-> Using ccache (${CCACHE_PROGRAM}) as compiler launcher for generator ${CMAKE_GENERATOR}")
+    endif()
 endif()
 
 if(WIN32)
