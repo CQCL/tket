@@ -44,6 +44,7 @@ from pytket.utils.symbolic import (
     circuit_apply_symbolic_statevector,
     circuit_to_symbolic_unitary,
 )
+from pytket.utils.stats import gate_counts
 import pytest  # type: ignore
 import types
 from sympy import symbols  # type: ignore
@@ -626,7 +627,6 @@ def unitary_from_states(circ: Circuit, back: Backend) -> np.ndarray:
     deadline=None, max_examples=20, suppress_health_check=[HealthCheck.data_too_large]
 )
 def test_symbolic_conversion(circ: Circuit) -> None:
-
     sym_state = circuit_apply_symbolic_statevector(circ)
 
     sym_unitary = circuit_to_symbolic_unitary(circ)
@@ -661,6 +661,12 @@ def test_symbolic_conversion(circ: Circuit) -> None:
 
     simulated_unitary = unitary_from_states(circ, back)
     assert np.allclose(numeric_unitary, simulated_unitary, atol=1e-10)
+
+
+def test_gate_counts() -> None:
+    circ = Circuit(2).H(0).CX(0, 1).H(1).measure_all()
+    counts = gate_counts(circ)
+    assert counts == Counter({OpType.H: 2, OpType.CX: 1, OpType.Measure: 2})
 
 
 if __name__ == "__main__":

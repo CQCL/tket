@@ -1716,7 +1716,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "Appends a ZZ gate with a symbolic angle (specified in "
           "half-turns) on the wires for the specified two qubits."
           "\n\n:return: the new :py:class:`Circuit`",
-          py::arg("qubit0"), py::arg("qubit1"), py::arg("angle"))
+          py::arg("angle"), py::arg("qubit0"), py::arg("qubit1"))
       .def(
           "ZZMax",
           [](Circuit *circ, const Qubit &qb0, const Qubit &qb1,
