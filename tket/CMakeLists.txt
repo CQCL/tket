@@ -36,8 +36,11 @@ endif()
 
 find_program(ccache_exe ccache)
 if(ccache_exe)
+    message("ccache_exe ${ccache_exe}")
+    file(REAL_PATH ${ccache_exe} CCACHE_REAL_EXE)
+    message("real ccache_exe ${CCACHE_REAL_EXE}")
     file(COPY_FILE
-            C:/ProgramData/chocolatey/lib/ccache/tools/ccache-4.8.2-windows-x86_64/ccache.exe ${CMAKE_BINARY_DIR}/cl.exe
+            ${CCACHE_REAL_EXE} ${CMAKE_BINARY_DIR}/cl.exe
             ONLY_IF_DIFFERENT)
 
     set(CMAKE_VS_GLOBALS
