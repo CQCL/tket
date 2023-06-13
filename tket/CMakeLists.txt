@@ -37,7 +37,7 @@ endif()
 find_program(ccache_exe ccache)
 if(ccache_exe)
     file(COPY_FILE
-            'C:/ProgramData/chocolatey/lib/ccache/tools/ccache-4.8.2-windows-x86_64/ccache.exe' ${CMAKE_BINARY_DIR}/cl.exe
+            C:/ProgramData/chocolatey/lib/ccache/tools/ccache-4.8.2-windows-x86_64/ccache.exe ${CMAKE_BINARY_DIR}/cl.exe
             ONLY_IF_DIFFERENT)
 
     set(CMAKE_VS_GLOBALS
