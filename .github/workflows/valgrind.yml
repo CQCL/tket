@@ -28,10 +28,7 @@ jobs:
             - 'tket/**'
             - '.github/workflows/valgrind.yml'
   check:
-    strategy:
-      matrix:
-        os: ["ubuntu-22.04"]
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-22.04
     needs: changes
     if: needs.changes.outputs.tket == 'true'
     steps:
@@ -49,7 +46,7 @@ jobs:
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
-        key: tket-valgrind-${{ matrix.os }}
+        key: tket-valgrind-build
     - name: further ccache config
       run: |
         ccache --set-config base_dir=${HOME}
