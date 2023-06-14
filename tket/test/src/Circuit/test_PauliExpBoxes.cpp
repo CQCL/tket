@@ -337,10 +337,12 @@ SCENARIO("Pauli gadget pairs", "[boxes]") {
     auto dagger_box =
         std::dynamic_pointer_cast<const PauliExpPairBox>(box.dagger());
 
-    REQUIRE(dagger_box->get_paulis0() == paulis1);
-    REQUIRE(dagger_box->get_phase0() == -Expr(0.4));
-    REQUIRE(dagger_box->get_paulis1() == paulis0);
-    REQUIRE(dagger_box->get_phase1() == -ea);
+    const auto[actual_paulis0, actual_paulis1] = dagger_box->get_paulis_pair();
+    const auto[actual_phase0, actual_phase1] = dagger_box->get_phase_pair();
+    REQUIRE(actual_paulis0 == paulis1);
+    REQUIRE(actual_phase0 == -Expr(0.4));
+    REQUIRE(actual_paulis1 == paulis0);
+    REQUIRE(actual_phase1 == -ea);
     REQUIRE(dagger_box->get_cx_config() == cx_config);
   }
   GIVEN("transpose") {
@@ -350,26 +352,33 @@ SCENARIO("Pauli gadget pairs", "[boxes]") {
     auto paulis1 =
         std::vector<Pauli>{Pauli::Y, Pauli::Y, Pauli::Z, Pauli::I, Pauli::Y};
     auto cx_config = CXConfigType::MultiQGate;
-    auto box = PauliExpPairBox(paulis0, ea, paulis1, 0.4, cx_config);
-    auto transpose_box =
-        std::dynamic_pointer_cast<const PauliExpPairBox>(box.transpose());
 
-    REQUIRE(transpose_box->get_paulis0() == paulis1);
-    REQUIRE(transpose_box->get_phase0() == -Expr(0.4));
-    REQUIRE(transpose_box->get_paulis1() == paulis0);
-    REQUIRE(transpose_box->get_phase1() == ea);
-    REQUIRE(transpose_box->get_cx_config() == cx_config);
+    WHEN( "paulis1 contains odd number of Y" ){
+      auto box = PauliExpPairBox(paulis0, ea, paulis1, 0.4, cx_config);
+      auto transpose_box =
+          std::dynamic_pointer_cast<const PauliExpPairBox>(box.transpose());
+      const auto [actual_paulis0, actual_paulis1] = transpose_box->get_paulis_pair();
+      const auto [actual_phase0, actual_phase1] = transpose_box->get_phase_pair();
+      REQUIRE(actual_paulis0 == paulis1);
+      REQUIRE(actual_phase0 == -Expr(0.4));
+      REQUIRE(actual_paulis1 == paulis0);
+      REQUIRE(actual_phase1 == ea);
+      REQUIRE(transpose_box->get_cx_config() == cx_config);
+    }
 
     std::swap(paulis0, paulis1);
-
-    auto box2 = PauliExpPairBox(paulis0, ea, paulis1, 0.4, cx_config);
-    auto transpose_box2 =
-        std::dynamic_pointer_cast<const PauliExpPairBox>(box2.transpose());
-    REQUIRE(transpose_box2->get_paulis0() == paulis1);
-    REQUIRE(transpose_box2->get_phase0() == Expr(0.4));
-    REQUIRE(transpose_box2->get_paulis1() == paulis0);
-    REQUIRE(transpose_box2->get_phase1() == -ea);
-    REQUIRE(transpose_box2->get_cx_config() == cx_config);
+    WHEN( "paulis0 contains odd number of Y" ){
+      auto box = PauliExpPairBox(paulis0, ea, paulis1, 0.4, cx_config);
+      auto transpose_box =
+          std::dynamic_pointer_cast<const PauliExpPairBox>(box.transpose());
+      const auto[actual_paulis0, actual_paulis1] = transpose_box->get_paulis_pair();
+      const auto[actual_phase0, actual_phase1] = transpose_box->get_phase_pair();
+      REQUIRE(actual_paulis0 == paulis1);
+      REQUIRE(actual_phase0 == Expr(0.4));
+      REQUIRE(actual_paulis1 == paulis0);
+      REQUIRE(actual_phase1 == -ea);
+      REQUIRE(transpose_box->get_cx_config() == cx_config);
+    }
   }
   GIVEN("symbol_substitution") {
     auto a = SymTable::fresh_symbol("a");
@@ -381,23 +390,35 @@ SCENARIO("Pauli gadget pairs", "[boxes]") {
 
     auto box = PauliExpPairBox(paulis0, ea, paulis1, eb);
 
-    SymEngine::map_basic_basic sub_map1{std::make_pair(a, Expr(0.8))};
-    auto sub_box1 = std::dynamic_pointer_cast<const PauliExpPairBox>(
-        box.symbol_substitution(sub_map1));
-    REQUIRE(sub_box1->get_phase0() == Expr(0.8));
-    REQUIRE(sub_box1->get_phase1() == eb);
+    WHEN("only first phase is substituted"){
+      SymEngine::map_basic_basic sub_map{std::make_pair(a, Expr(0.8))};
+      auto sub_box = std::dynamic_pointer_cast<const PauliExpPairBox>(
+          box.symbol_substitution(sub_map));
+      const auto[actual_phase0, actual_phase1] = sub_box->get_phase_pair();
+      REQUIRE(actual_phase0 == Expr(0.8));
+      REQUIRE(actual_phase1 == eb);
+    }
 
-    SymEngine::map_basic_basic sub_map2{std::make_pair(b, Expr(0.3))};
-    auto sub_box2 = std::dynamic_pointer_cast<const PauliExpPairBox>(
-        box.symbol_substitution(sub_map2));
-    REQUIRE(sub_box2->get_phase0() == ea);
-    REQUIRE(sub_box2->get_phase1() == Expr(0.3));
+    WHEN("only second phase is substituted") {
+      SymEngine::map_basic_basic sub_map{std::make_pair(b, Expr(0.3))};
+      auto sub_box = std::dynamic_pointer_cast<const PauliExpPairBox>(
+          box.symbol_substitution(sub_map));
+      const auto[actual_phase0, actual_phase1] = sub_box->get_phase_pair();
+      REQUIRE(actual_phase0 == ea);
+      REQUIRE(actual_phase1 == Expr(0.3));
+    }
 
-    sub_map1.merge(sub_map2);
-    auto sub_box3 = std::dynamic_pointer_cast<const PauliExpPairBox>(
-        box.symbol_substitution(sub_map1));
-    REQUIRE(sub_box3->get_phase0() == Expr(0.8));
-    REQUIRE(sub_box3->get_phase1() == Expr(0.3));
+    WHEN("both phases are substituted") {
+      SymEngine::map_basic_basic sub_map{
+          std::make_pair(a, Expr(0.8)),
+          std::make_pair(b, Expr(0.3))
+      };
+      auto sub_box = std::dynamic_pointer_cast<const PauliExpPairBox>(
+          box.symbol_substitution(sub_map));
+      const auto[actual_phase0, actual_phase1] = sub_box->get_phase_pair();
+      REQUIRE(actual_phase0 == Expr(0.8));
+      REQUIRE(actual_phase1 == Expr(0.3));
+    }
   }
 }
 

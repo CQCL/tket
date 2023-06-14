@@ -122,13 +122,11 @@ class PauliExpPairBox : public Box {
     return id_ == other.get_id();
   }
 
-  /** Get the Pauli 0 string */
-  std::vector<Pauli> get_paulis0() const { return paulis0_; }
-  std::vector<Pauli> get_paulis1() const { return paulis1_; }
+  /** Get Pauli strings for the pair */
+  std::pair<std::vector<Pauli>,std::vector<Pauli>> get_paulis_pair() const { return std::make_pair(paulis0_, paulis1_); }
 
-  /** Get the phase parameter */
-  Expr get_phase0() const { return t0_; }
-  Expr get_phase1() const { return t1_; }
+  /** Get phase parameters for the pair */
+  std::pair<Expr,Expr> get_phase_pair() const { return std::make_pair(t0_, t1_); }
 
   /** Get the cx_config parameter (affects box decomposition) */
   CXConfigType get_cx_config() const { return cx_config_; }

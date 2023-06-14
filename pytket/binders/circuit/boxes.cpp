@@ -170,17 +170,11 @@ void init_boxes(py::module &m) {
           [](PauliExpPairBox &pbox) { return *pbox.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the box")
       .def(
-          "get_paulis0", &PauliExpPairBox::get_paulis0,
-          ":return: the corresponding list of " CLSOBJS(Pauli))
+          "get_paulis_pair", &PauliExpPairBox::get_paulis_pair,
+          ":return: A tuple containing the two corresponding lists of " CLSOBJS(Pauli))
       .def(
-          "get_paulis1", &PauliExpPairBox::get_paulis1,
-          ":return: the corresponding list of " CLSOBJS(Pauli))
-      .def(
-          "get_phase", &PauliExpPairBox::get_phase0,
-          ":return: the corresponding phase parameter")
-      .def(
-          "get_phase", &PauliExpPairBox::get_phase1,
-          ":return: the corresponding phase parameter")
+          "get_phase_pair", &PauliExpPairBox::get_phase_pair,
+          ":return: A tuple containing the two phase parameters")
       .def(
           "get_cx_config", &PauliExpPairBox::get_cx_config,
           ":return: decomposition method");
@@ -204,10 +198,10 @@ void init_boxes(py::module &m) {
           py::arg("cx_config_type") = CXConfigType::Tree)
       .def(
           "get_circuit",
-          [](PauliExpPairBox &pbox) { return *pbox.to_circuit(); },
+          [](PauliExpCommutingSetBox &pbox) { return *pbox.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the box")
       .def(
-          "get_paulis0", &PauliExpCommutingSetBox::get_pauli_gadgets,
+          "get_paulis", &PauliExpCommutingSetBox::get_pauli_gadgets,
           ":return: the corresponding list of Pauli gadgets")
       .def(
           "get_cx_config", &PauliExpCommutingSetBox::get_cx_config,

@@ -173,18 +173,18 @@ void PauliExpPairBox::generate_circuit() const {
 nlohmann::json PauliExpPairBox::to_json(const Op_ptr &op) {
   const auto &box = static_cast<const PauliExpPairBox &>(*op);
   nlohmann::json j = core_box_json(box);
-  j["paulis0"] = box.get_paulis0();
-  j["phase0"] = box.get_phase0();
-  j["paulis1"] = box.get_paulis1();
-  j["phase1"] = box.get_phase1();
+  j["paulis_pair"] = box.get_paulis_pair();
+  j["phase_pair"] = box.get_phase_pair();
   j["cx_config"] = box.get_cx_config();
   return j;
 }
 
 Op_ptr PauliExpPairBox::from_json(const nlohmann::json &j) {
+  const auto[paulis0, paulis1] = j.at("paulis_pair").get<std::tuple<std::vector<Pauli>,std::vector<Pauli>>>();
+  const auto[phase0, phase1] = j.at("phase_pair").get<std::tuple<Expr,Expr>>();
   PauliExpPairBox box = PauliExpPairBox(
-      j.at("paulis0").get<std::vector<Pauli>>(), j.at("phase0").get<Expr>(),
-      j.at("paulis1").get<std::vector<Pauli>>(), j.at("phase1").get<Expr>(),
+      paulis0, phase0,
+      paulis1, phase1,
       j.at("cx_config").get<CXConfigType>());
   return set_box_id(
       box,
