@@ -1127,6 +1127,12 @@ def test_counting_n_qubit_gates() -> None:
     assert c.n_nqb_gates(5) == 1
 
 
+def test_error_wrong_parameters() -> None:
+    circ = Circuit(1, 1)
+    with pytest.raises(RuntimeError):
+        circ.add_gate(OpType.H, [Bit(0)])
+
+
 if __name__ == "__main__":
     test_circuit_gen()
     test_symbolic_ops()
