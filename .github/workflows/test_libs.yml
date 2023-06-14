@@ -77,7 +77,7 @@ jobs:
     - name: create profile
       run: conan profile detect
     - name: add remote
-      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
     - name: build ${{ matrix.lib }}
       run: conan create libs/${{ matrix.lib }} -o boost/*:header_only=True --build=missing
     - name: build ${{ matrix.lib }} tests
@@ -105,7 +105,7 @@ jobs:
       shell: bash
       run: conan profile detect --force
     - name: set remotes
-      run: conan remote add --force tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+      run: conan remote add --force tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
     - name: build ${{ matrix.lib }}
       run: conan create -o boost/*:header_only=True libs/${{ matrix.lib }} --build=missing
     - name: build ${{ matrix.lib }} tests
@@ -130,7 +130,7 @@ jobs:
     - name: create profile
       run: conan profile detect
     - name: add remote
-      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
     - name: build ${{ matrix.lib }}
       run: |
         conan install libs/${{ matrix.lib }} -s build_type=Debug --build=missing -o boost/*:header_only=True -o ${{ matrix.lib }}/*:profile_coverage=True -of build/${{ matrix.lib }}

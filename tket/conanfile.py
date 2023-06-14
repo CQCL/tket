@@ -12,14 +12,18 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import os
+import subprocess
+
 from conan import ConanFile
 from conan.tools.cmake import CMakeToolchain, CMake, cmake_layout, CMakeDeps
+from conan.tools.files import copy
 from conan.errors import ConanInvalidConfiguration
 
 
 class TketConan(ConanFile):
     name = "tket"
-    version = "1.2.16"
+    version = "1.2.17"
     package_type = "library"
     license = "Apache 2"
     homepage = "https://github.com/CQCL/tket"
@@ -31,9 +35,26 @@ class TketConan(ConanFile):
         "shared": [True, False],
         "fPIC": [True, False],
         "profile_coverage": [True, False],
+        "with_test": [True, False],
+        "with_proptest": [True, False],
+        "with_all_tests": [True, False],
     }
-    default_options = {"shared": False, "fPIC": True, "profile_coverage": False}
-    exports_sources = "CMakeLists.txt", "cmake/*", "src/*", "include/*"
+    default_options = {
+        "shared": False,
+        "fPIC": True,
+        "profile_coverage": False,
+        "with_test": False,
+        "with_proptest": False,
+        "with_all_tests": False,
+    }
+    exports_sources = (
+        "CMakeLists.txt",
+        "cmake/*",
+        "src/*",
+        "include/*",
+        "test/*",
+        "proptest/*",
+    )
 
     def config_options(self):
         if self.settings.os == "Windows":
@@ -53,6 +74,16 @@ class TketConan(ConanFile):
         deps.generate()
         tc = CMakeToolchain(self)
         tc.variables["PROFILE_COVERAGE"] = self.options.profile_coverage
+        if self.build_test():
+            tc.variables["BUILD_TKET_TEST"] = True
+            architectures_dir = os.path.join(
+                self.source_folder, "test/src/test_architectures"
+            )
+            copy(self, "*.json", architectures_dir, self.build_folder)
+            circuits_dir = os.path.join(self.source_folder, "test/src/test_circuits")
+            copy(self, "*.json", circuits_dir, self.build_folder)
+        if self.build_proptest():
+            tc.variables["BUILD_TKET_PROPTEST"] = True
         tc.generate()
 
     def validate(self):
@@ -65,6 +96,10 @@ class TketConan(ConanFile):
         cmake = CMake(self)
         cmake.configure()
         cmake.build()
+        if self.build_test():
+            self.run(os.path.join(self.test_folder(), "test-tket"))
+        if self.build_proptest():
+            self.run(os.path.join(self.proptest_folder(), "proptest-tket"))
 
     def package(self):
         cmake = CMake(self)
@@ -85,3 +120,23 @@ class TketConan(ConanFile):
         self.requires("tkrng/0.3.3@tket/stable")
         self.requires("tktokenswap/0.3.4@tket/stable")
         self.requires("tkwsm/0.3.4@tket/stable")
+        if self.build_test():
+            self.test_requires("catch2/3.3.2")
+        if self.build_proptest():
+            self.test_requires("rapidcheck/cci.20220514")
+
+    def build_test(self):
+        return self.options.with_test or self.options.with_all_tests
+
+    def build_proptest(self):
+        return self.options.with_proptest or self.options.with_all_tests
+
+    def test_folder(self):
+        if self.settings.os == "Windows":
+            return os.path.join("test", str(self.settings.build_type))
+        return os.path.join("test")
+
+    def proptest_folder(self):
+        if self.settings.os == "Windows":
+            return os.path.join("proptest", str(self.settings.build_type))
+        return os.path.join("proptest")
