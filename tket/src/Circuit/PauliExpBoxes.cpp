@@ -55,7 +55,7 @@ Op_ptr PauliExpBox::transpose() const {
   std::vector<Pauli> paulis = get_paulis();
   int number_y_pauli_mod2 =
       std::count(paulis.begin(), paulis.end(), Pauli::Y) % 2;
-  // Negate the parameter if odd nr of paulis (mult with 1 if mod2=0, -1 if
+  // Negate the parameter if odd nr of Paulis (mult with 1 if mod2=0, -1 if
   // mod2=1)
   int t_fac = -number_y_pauli_mod2 * 2 + 1;
   return std::make_shared<PauliExpBox>(paulis_, t_fac * t_, cx_config_);
@@ -135,7 +135,7 @@ Op_ptr PauliExpPairBox::dagger() const {
       paulis1_, -t1_, paulis0_, -t0_, cx_config_);
 }
 
-// Get the multiplicative change factor in pauli angle during transpose ( -1 for
+// Get the multiplicative change factor in Pauli angle during transpose ( -1 for
 // odd nr of Y, 1 otherwise)
 int transpose_angle_factor(const std::vector<Pauli> &paulis) {
   int pauli_odd_number_y = std::count_if(
@@ -202,20 +202,20 @@ PauliExpCommutingSetBox::PauliExpCommutingSetBox(
   // check at least one gadget
   if (pauli_gadgets.empty()) {
     throw PauliExpBoxInvalidity(
-        "PauliExpCommutingSetBox requires at least one pauli string");
+        "PauliExpCommutingSetBox requires at least one Pauli string");
   }
-  // check all gadgets have same pauli string length
+  // check all gadgets have same Pauli string length
   auto n_qubits = pauli_gadgets[0].first.size();
   for (const auto &gadget : pauli_gadgets) {
     if (gadget.first.size() != n_qubits) {
       throw PauliExpBoxInvalidity(
-          "the pauli strings within PauliExpCommutingSetBox must all be the "
+          "the Pauli strings within PauliExpCommutingSetBox must all be the "
           "same length");
     }
   }
   if (!this->paulis_commute()) {
     throw PauliExpBoxInvalidity(
-        "pauli strings used to define PauliExpCommutingSetBox must all "
+        "Pauli strings used to define PauliExpCommutingSetBox must all "
         "commute");
   }
   signature_ = op_signature_t(n_qubits, EdgeType::Quantum);

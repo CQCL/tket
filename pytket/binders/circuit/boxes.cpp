@@ -188,7 +188,7 @@ void init_boxes(py::module &m) {
       PauliExpCommutingSetBox, std::shared_ptr<PauliExpCommutingSetBox>, Op>(
       m, "PauliExpCommutingSetBox",
       "An operation defined as a set of commuting of exponentials of a"
-      "ensor of Pauli operations and their (possibly symbolic) phase "
+      "tensor of Pauli operations and their (possibly symbolic) phase "
       "parameters.")
       .def(
           py::init<
@@ -208,7 +208,7 @@ void init_boxes(py::module &m) {
           ":return: the :py:class:`Circuit` described by the box")
       .def(
           "get_paulis0", &PauliExpCommutingSetBox::get_pauli_gadgets,
-          ":return: the corresponding list of pauli gadgets")
+          ":return: the corresponding list of Pauli gadgets")
       .def(
           "get_cx_config", &PauliExpCommutingSetBox::get_cx_config,
           ":return: decomposition method");
@@ -401,11 +401,11 @@ void init_boxes(py::module &m) {
   py::class_<
       StabiliserAssertionBox, std::shared_ptr<StabiliserAssertionBox>, Op>(
       m, "StabiliserAssertionBox",
-      "A user-defined assertion specified by a list of pauli stabilisers.")
+      "A user-defined assertion specified by a list of Pauli stabilisers.")
       .def(
           py::init<const PauliStabiliserList>(),
-          "Construct from a list of pauli stabilisers.\n\n"
-          ":param m: The list of pauli stabilisers\n",
+          "Construct from a list of Pauli stabilisers.\n\n"
+          ":param m: The list of Pauli stabilisers\n",
           py::arg("stabilisers"))
       .def(
           py::init([](const std::vector<std::string> &pauli_strings) {
@@ -420,7 +420,7 @@ void init_boxes(py::module &m) {
                       coeff = false;
                     } else {
                       throw std::invalid_argument(
-                          "Invalid pauli string: " + raw_string);
+                          "Invalid Pauli string: " + raw_string);
                     }
                     break;
                   case 'I':
@@ -437,15 +437,15 @@ void init_boxes(py::module &m) {
                     break;
                   default:
                     throw std::invalid_argument(
-                        "Invalid pauli string: " + raw_string);
+                        "Invalid Pauli string: " + raw_string);
                 }
               }
               stabilisers.push_back(PauliStabiliser(string, coeff));
             }
             return StabiliserAssertionBox(stabilisers);
           }),
-          "Construct from a list of pauli stabilisers.\n\n"
-          ":param m: The list of pauli stabilisers expressed as Python "
+          "Construct from a list of Pauli stabilisers.\n\n"
+          ":param m: The list of Pauli stabilisers expressed as Python "
           "strings\n",
           py::arg("stabilisers"))
       .def(
@@ -454,7 +454,7 @@ void init_boxes(py::module &m) {
           ":return: the :py:class:`Circuit` described by the box")
       .def(
           "get_stabilisers", &StabiliserAssertionBox::get_stabilisers,
-          ":return: the list of pauli stabilisers");
+          ":return: the list of Pauli stabilisers");
   py::class_<MultiplexorBox, std::shared_ptr<MultiplexorBox>, Op>(
       m, "MultiplexorBox",
       "A user-defined multiplexor (i.e. uniformly controlled operations) "
