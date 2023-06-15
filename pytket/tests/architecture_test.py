@@ -12,9 +12,34 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
+from jsonschema import RefResolver, Draft7Validator  # type: ignore
+from pathlib import Path
 from pytket.circuit import Node, Op, OpType, Circuit, Qubit, PhasePolyBox  # type: ignore
 from pytket.architecture import Architecture, SquareGrid, FullyConnected, RingArch  # type: ignore
 import numpy as np
+
+curr_file_path = Path(__file__).resolve().parent
+schema_dir = curr_file_path.parent.parent / "schemas"
+with open(schema_dir / "circuit_v1.json", "r") as f:
+    circ_schema = json.load(f)
+with open(schema_dir / "architecture_v1.json", "r") as f:
+    arch_schema = json.load(f)
+
+schema_store = {
+    circ_schema["$id"]: circ_schema,
+    arch_schema["$id"]: arch_schema,
+}
+arch_validator_resolver = RefResolver.from_schema(arch_schema, store=schema_store)
+arch_validator = Draft7Validator(arch_schema, resolver=arch_validator_resolver)
+
+
+def check_arch_serialisation(arch: Architecture) -> None:
+    serialised_arch = arch.to_dict()
+    arch_validator.validate(serialised_arch)
+    new_arch = Architecture.from_dict(serialised_arch)
+    new_serialised_arch = new_arch.to_dict()
+    assert new_serialised_arch == serialised_arch
 
 
 def test_architectures() -> None:
@@ -74,6 +99,7 @@ def test_fully_connected() -> None:
 def test_arch_types() -> None:
     arch = Architecture([(0, 1)])
     assert isinstance(arch, Architecture)
+    check_arch_serialisation(arch)
     fc = FullyConnected(2)
     assert fc.nodes[0].reg_name == "fcNode"
     assert isinstance(fc, FullyConnected)
