@@ -25,13 +25,18 @@ with open(schema_dir / "circuit_v1.json", "r") as f:
     circ_schema = json.load(f)
 with open(schema_dir / "architecture_v1.json", "r") as f:
     arch_schema = json.load(f)
+with open(schema_dir / "fullyconnected_v1.json", "r") as f:
+    fc_schema = json.load(f)
 
 schema_store = {
     circ_schema["$id"]: circ_schema,
     arch_schema["$id"]: arch_schema,
+    fc_schema["$id"]: fc_schema,
 }
 arch_validator_resolver = RefResolver.from_schema(arch_schema, store=schema_store)
 arch_validator = Draft7Validator(arch_schema, resolver=arch_validator_resolver)
+fc_validator_resolver = RefResolver.from_schema(fc_schema, store=schema_store)
+fc_validator = Draft7Validator(fc_schema, resolver=fc_validator_resolver)
 
 
 def check_arch_serialisation(arch: Architecture) -> None:
@@ -40,6 +45,14 @@ def check_arch_serialisation(arch: Architecture) -> None:
     new_arch = Architecture.from_dict(serialised_arch)
     new_serialised_arch = new_arch.to_dict()
     assert new_serialised_arch == serialised_arch
+
+
+def check_fc_serialisation(fc: FullyConnected) -> None:
+    serialised_fc = fc.to_dict()
+    fc_validator.validate(serialised_fc)
+    new_fc = FullyConnected.from_dict(serialised_fc)
+    new_serialised_fc = new_fc.to_dict()
+    assert new_serialised_fc == serialised_fc
 
 
 def test_architectures() -> None:
@@ -103,10 +116,13 @@ def test_arch_types() -> None:
     fc = FullyConnected(2)
     assert fc.nodes[0].reg_name == "fcNode"
     assert isinstance(fc, FullyConnected)
+    check_fc_serialisation(fc)
     sg = SquareGrid(2, 2, 2)
     assert sg.nodes[0].reg_name == "gridNode"
     assert isinstance(sg, SquareGrid)
+    check_arch_serialisation(sg)
     ra = RingArch(2)
+    check_arch_serialisation(ra)
     assert ra.nodes[0].reg_name == "ringNode"
 
 
