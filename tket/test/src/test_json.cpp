@@ -347,10 +347,10 @@ SCENARIO("Test Circuit serialization") {
     const auto& p_b = static_cast<const PauliExpPairBox&>(
         *new_c.get_commands()[0].get_op_ptr());
 
-    const auto[actual_paulis0, actual_paulis1] = p_b.get_paulis_pair();
-    const auto[actual_phase0, actual_phase1] = p_b.get_phase_pair();
-    const auto[expected_paulis0, expected_paulis1] = pbox.get_paulis_pair();
-    const auto[expected_phase0, expected_phase1] = pbox.get_phase_pair();
+    const auto [actual_paulis0, actual_paulis1] = p_b.get_paulis_pair();
+    const auto [actual_phase0, actual_phase1] = p_b.get_phase_pair();
+    const auto [expected_paulis0, expected_paulis1] = pbox.get_paulis_pair();
+    const auto [expected_phase0, expected_phase1] = pbox.get_phase_pair();
 
     REQUIRE(actual_paulis0 == expected_paulis0);
     REQUIRE(actual_phase0 == expected_phase0);

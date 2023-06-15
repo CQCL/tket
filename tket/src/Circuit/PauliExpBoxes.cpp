@@ -180,12 +180,13 @@ nlohmann::json PauliExpPairBox::to_json(const Op_ptr &op) {
 }
 
 Op_ptr PauliExpPairBox::from_json(const nlohmann::json &j) {
-  const auto[paulis0, paulis1] = j.at("paulis_pair").get<std::tuple<std::vector<Pauli>,std::vector<Pauli>>>();
-  const auto[phase0, phase1] = j.at("phase_pair").get<std::tuple<Expr,Expr>>();
+  const auto [paulis0, paulis1] =
+      j.at("paulis_pair")
+          .get<std::tuple<std::vector<Pauli>, std::vector<Pauli>>>();
+  const auto [phase0, phase1] =
+      j.at("phase_pair").get<std::tuple<Expr, Expr>>();
   PauliExpPairBox box = PauliExpPairBox(
-      paulis0, phase0,
-      paulis1, phase1,
-      j.at("cx_config").get<CXConfigType>());
+      paulis0, phase0, paulis1, phase1, j.at("cx_config").get<CXConfigType>());
   return set_box_id(
       box,
       boost::lexical_cast<boost::uuids::uuid>(j.at("id").get<std::string>()));

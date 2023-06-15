@@ -171,7 +171,8 @@ void init_boxes(py::module &m) {
           ":return: the :py:class:`Circuit` described by the box")
       .def(
           "get_paulis_pair", &PauliExpPairBox::get_paulis_pair,
-          ":return: A tuple containing the two corresponding lists of " CLSOBJS(Pauli))
+          ":return: A tuple containing the two corresponding lists of " CLSOBJS(
+              Pauli))
       .def(
           "get_phase_pair", &PauliExpPairBox::get_phase_pair,
           ":return: A tuple containing the two phase parameters")
