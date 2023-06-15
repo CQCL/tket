@@ -66,6 +66,7 @@ def test_fully_connected() -> None:
     fc = FullyConnected(3)
     assert fc.nodes == [Node("fcNode", i) for i in range(3)]
     d = fc.to_dict()
+    assert list(d.keys()) == ["nodes"]
     fc1 = FullyConnected.from_dict(d)
     assert fc == fc1
 
