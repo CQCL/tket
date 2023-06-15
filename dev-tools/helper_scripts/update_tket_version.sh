@@ -16,8 +16,6 @@ set_local_tket_version() {
   echo "Setting local tket version to: ${NEW_TKET_VERSION}"
 
   sed -i'' -e "s/${CURRENT_TKET_VERSION}/${NEW_TKET_VERSION}/" "${TKET_SRC_DIR}/tket/conanfile.py"
-  sed -i'' -e "s/tket\/.*\@/tket\/${NEW_TKET_VERSION}\@/" "${TKET_SRC_DIR}/tket/test/conanfile.py"
-  sed -i'' -e "s/tket\/.*\@/tket\/${NEW_TKET_VERSION}\@/" "${TKET_SRC_DIR}/tket/proptest/conanfile.py"
   sed -i'' -e "s/tket\/.*\@/tket\/${NEW_TKET_VERSION}\@/" "${TKET_SRC_DIR}/pytket/conanfile.py"
 
 }
