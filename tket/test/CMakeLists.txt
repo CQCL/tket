@@ -109,6 +109,7 @@ add_executable(test-tket
     src/Simulation/test_CircuitSimulator.cpp
     src/Simulation/test_PauliExpBoxUnitaryCalculator.cpp
     src/Circuit/test_Boxes.cpp
+    src/Circuit/test_PauliExpBoxes.cpp
     src/Circuit/test_Circ.cpp
     src/Circuit/test_CircPool.cpp
     src/Circuit/test_Symbolic.cpp

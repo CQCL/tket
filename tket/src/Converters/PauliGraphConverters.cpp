@@ -13,6 +13,7 @@
 // limitations under the License.
 
 #include "tket/Circuit/Boxes.hpp"
+#include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Converters/Converters.hpp"
 #include "tket/Converters/PauliGadget.hpp"
 #include "tket/Converters/PhasePoly.hpp"
@@ -66,7 +67,7 @@ PauliGraph circuit_to_pauli_graph(const Circuit &circ) {
   return pg;
 }
 
-Circuit pauli_graph_to_circuit_individually(
+Circuit pauli_graph_to_pauli_exp_box_circuit_individually(
     const PauliGraph &pg, CXConfigType cx_config) {
   Circuit circ;
   for (const Qubit &qb : pg.cliff_.get_qubits()) {
@@ -78,7 +79,7 @@ Circuit pauli_graph_to_circuit_individually(
   for (const PauliVert &vert : pg.vertices_in_order()) {
     const QubitPauliTensor &pauli = pg.graph_[vert].tensor_;
     const Expr &angle = pg.graph_[vert].angle_;
-    append_single_pauli_gadget(circ, pauli, angle, cx_config);
+    append_single_pauli_gadget_as_pauli_exp_box(circ, pauli, angle, cx_config);
   }
   Circuit cliff_circuit = tableau_to_circuit(pg.cliff_);
   circ.append(cliff_circuit);
@@ -88,7 +89,7 @@ Circuit pauli_graph_to_circuit_individually(
   return circ;
 }
 
-Circuit pauli_graph_to_circuit_pairwise(
+Circuit pauli_graph_to_pauli_exp_box_circuit_pairwise(
     const PauliGraph &pg, CXConfigType cx_config) {
   Circuit circ;
   for (const Qubit &qb : pg.cliff_.get_qubits()) {
@@ -105,13 +106,18 @@ Circuit pauli_graph_to_circuit_pairwise(
     const Expr &angle0 = pg.graph_[vert0].angle_;
     ++it;
     if (it == vertices.end()) {
-      append_single_pauli_gadget(circ, pauli0, angle0, cx_config);
+      // append_single_pauli_gadget(circ, pauli0, angle0, cx_config);
+      append_single_pauli_gadget_as_pauli_exp_box(
+          circ, pauli0, angle0, cx_config);
     } else {
       PauliVert vert1 = *it;
       const QubitPauliTensor &pauli1 = pg.graph_[vert1].tensor_;
       const Expr &angle1 = pg.graph_[vert1].angle_;
       ++it;
-      append_pauli_gadget_pair(circ, pauli0, angle0, pauli1, angle1, cx_config);
+      append_pauli_gadget_pair_as_box(
+          circ, pauli0, angle0, pauli1, angle1, cx_config);
+      // append_pauli_gadget_pair(circ, pauli0, angle0, pauli1, angle1,
+      // cx_config);
     }
   }
   Circuit cliff_circuit = tableau_to_circuit(pg.cliff_);
@@ -122,8 +128,8 @@ Circuit pauli_graph_to_circuit_pairwise(
   return circ;
 }
 
-/* Currently follows a greedy set-building method */
-Circuit pauli_graph_to_circuit_sets(
+///* Currently follows a greedy set-building method */
+Circuit pauli_graph_to_pauli_exp_box_circuit_sets(
     const PauliGraph &pg, CXConfigType cx_config) {
   Circuit circ;
   const std::set<Qubit> qbs = pg.cliff_.get_qubits();
@@ -162,12 +168,13 @@ Circuit pauli_graph_to_circuit_sets(
     }
     if (gadget_map.size() == 1) {
       const std::pair<const QubitPauliTensor, Expr> &pgp0 = *gadget_map.begin();
-      append_single_pauli_gadget(circ, pgp0.first, pgp0.second, cx_config);
+      append_single_pauli_gadget_as_pauli_exp_box(
+          circ, pgp0.first, pgp0.second, cx_config);
     } else if (gadget_map.size() == 2) {
       const std::pair<const QubitPauliTensor, Expr> &pgp0 = *gadget_map.begin();
       const std::pair<const QubitPauliTensor, Expr> &pgp1 =
           *(++gadget_map.begin());
-      append_pauli_gadget_pair(
+      append_pauli_gadget_pair_as_box(
           circ, pgp0.first, pgp0.second, pgp1.first, pgp1.second, cx_config);
     } else {
       std::list<std::pair<QubitPauliTensor, Expr>> gadgets;
@@ -175,16 +182,7 @@ Circuit pauli_graph_to_circuit_sets(
            gadget_map) {
         gadgets.push_back(qps_pair);
       }
-      Circuit cliff_circ = mutual_diagonalise(gadgets, qbs, cx_config);
-      circ.append(cliff_circ);
-      Circuit phase_poly_circ(spare_circ);
-      for (const std::pair<QubitPauliTensor, Expr> &pgp : gadgets) {
-        append_single_pauli_gadget(phase_poly_circ, pgp.first, pgp.second);
-      }
-      PhasePolyBox ppbox(phase_poly_circ);
-      Circuit after_synth_circ = *ppbox.to_circuit();
-      circ.append(after_synth_circ);
-      circ.append(cliff_circ.dagger());
+      append_commuting_pauli_gadget_set_as_box(circ, gadgets, cx_config);
     }
   }
   Circuit cliff_circuit = tableau_to_circuit(pg.cliff_);

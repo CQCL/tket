@@ -156,6 +156,7 @@ target_sources(tket
         src/Circuit/StatePreparation.cpp
         src/Circuit/DiagonalBox.cpp
         src/Circuit/ToffoliBox.cpp
+        src/Circuit/PauliExpBoxes.cpp
         src/Architecture/Architecture.cpp
         src/Architecture/ArchitectureGraphClasses.cpp
         src/Architecture/ArchitectureMapping.cpp
@@ -318,6 +319,7 @@ target_sources(tket
         include/tket/Circuit/StatePreparation.hpp
         include/tket/Circuit/ThreeQubitConversion.hpp
         include/tket/Circuit/ToffoliBox.hpp
+        include/tket/Circuit/PauliExpBoxes.hpp
         include/tket/Architecture/Architecture.hpp
         include/tket/Architecture/ArchitectureMapping.hpp
         include/tket/Architecture/BestTsaWithArch.hpp

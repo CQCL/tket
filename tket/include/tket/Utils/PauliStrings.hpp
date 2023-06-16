@@ -104,9 +104,27 @@ class QubitPauliString {
    * string for a default qubit register, without explicitly
    * constructing the QubitPauliMap
    *
+   * @param _paulis initializer_list of Pauli letters
+   */
+  explicit QubitPauliString(const std::initializer_list<Pauli> &_paulis);
+
+  /**
+   * Construct a string of many Pauli terms. Shortcut to make a
+   * string for a default qubit register, without explicitly
+   * constructing the QubitPauliMap
+   *
    * @param _paulis list of Pauli letters
    */
   explicit QubitPauliString(const std::list<Pauli> &_paulis);
+
+  /**
+   * Construct a string of many Pauli terms. Shortcut to make a
+   * string for a default qubit register, without explicitly
+   * constructing the QubitPauliMap
+   *
+   * @param _paulis vector of Pauli letters
+   */
+  explicit QubitPauliString(const std::vector<Pauli> &_paulis);
 
   /**
    * Construct several terms from lists
@@ -365,9 +383,29 @@ class QubitPauliTensor {
    * tensor for a default qubit register, without explicitly
    * constructing the QubitPauliMap
    *
+   * @param _paulis initializer_list of Pauli letters
+   */
+  explicit QubitPauliTensor(const std::initializer_list<Pauli> &_paulis)
+      : string({_paulis}), coeff(1.) {}
+
+  /**
+   * Construct a tensor of many Pauli terms. Shortcut to make a
+   * tensor for a default qubit register, without explicitly
+   * constructing the QubitPauliMap
+   *
    * @param _paulis list of Pauli letters
    */
   explicit QubitPauliTensor(const std::list<Pauli> &_paulis)
+      : string({_paulis}), coeff(1.) {}
+
+  /**
+   * Construct a tensor of many Pauli terms. Shortcut to make a
+   * tensor for a default qubit register, without explicitly
+   * constructing the QubitPauliMap
+   *
+   * @param _paulis vector of Pauli letters
+   */
+  explicit QubitPauliTensor(const std::vector<Pauli> &_paulis)
       : string({_paulis}), coeff(1.) {}
 
   /**
@@ -517,6 +555,8 @@ class QubitPauliTensor {
    */
   friend std::size_t hash_value(const QubitPauliTensor &qpt);
 };
+
+JSON_DECL(QubitPauliTensor);
 
 /**
  * Multiply coefficient by a scalar
