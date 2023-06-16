@@ -473,7 +473,13 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
     } else if (passname == "OptimisePairwiseGadgets") {
       pp = gen_pairwise_pauli_gadgets(
           content.at("cx_config").get<CXConfigType>());
+    } else if (passname == "PauliExponentials") {
+      Transforms::PauliSynthStrat pss =
+          content.at("pauli_synth_strat").get<Transforms::PauliSynthStrat>();
+      CXConfigType cxc = content.at("cx_config").get<CXConfigType>();
+      pp = gen_pauli_exponentials(pss, cxc);
     } else if (passname == "PauliSimp") {
+      // SEQUENCE PASS - DESERIALIZABLE ONLY
       Transforms::PauliSynthStrat pss =
           content.at("pauli_synth_strat").get<Transforms::PauliSynthStrat>();
       CXConfigType cxc = content.at("cx_config").get<CXConfigType>();

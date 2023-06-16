@@ -44,6 +44,24 @@ void init_library(py::module &m);
 
 PYBIND11_MODULE(circuit, m) {
   init_unitid(m);
+  py::enum_<CXConfigType>(
+      m, "CXConfigType",
+      "Enum for available configurations for CXs upon decompose phase "
+      "gadgets")
+      .value(
+          "Snake", CXConfigType::Snake,
+          "linear nearest neighbour CX sequence. Linear depth.")
+      .value(
+          "Star", CXConfigType::Star,
+          "Every CX has same target, linear depth, good for gate "
+          "cancellation.")
+      .value(
+          "Tree", CXConfigType::Tree,
+          "Balanced tree: logarithmic depth, harder to route.")
+      .value(
+          "MultiQGate", CXConfigType::MultiQGate,
+          "Support for multi-qubit architectures, decomposing to 3-qubit "
+          "XXPhase3 gates instead of CXs where possible.");
   py::class_<Op, std::shared_ptr<Op>>(
       m, "Op", "Encapsulates operation information")
       .def_static(
@@ -322,6 +340,18 @@ PYBIND11_MODULE(circuit, m) {
       .value(
           "PauliExpBox", OpType::PauliExpBox,
           "An operation defined as the exponential "
+          ":math:`e^{-\\frac{i\\pi\\alpha}{2} P}` of a tensor "
+          ":math:`P` of Pauli operations.")
+      .value(
+          "PauliExpPairBox", OpType::PauliExpPairBox,
+          "An operation defined as a pair"
+          "of exponentials of the form "
+          ":math:`e^{-\\frac{i\\pi\\alpha}{2} P}` of a tensor "
+          ":math:`P` of Pauli operations.")
+      .value(
+          "PauliExpCommutingSetBox", OpType::PauliExpCommutingSetBox,
+          "An operation defined as a set"
+          "of commuting exponentials of the form "
           ":math:`e^{-\\frac{i\\pi\\alpha}{2} P}` of a tensor "
           ":math:`P` of Pauli operations.")
       .value(

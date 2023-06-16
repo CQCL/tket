@@ -35,6 +35,8 @@ from pytket.circuit import (  # type: ignore
     DiagonalBox,
     ExpBox,
     PauliExpBox,
+    PauliExpPairBox,
+    PauliExpCommutingSetBox,
     QControlBox,
     PhasePolyBox,
     ToffoliBox,
@@ -63,9 +65,7 @@ import pytest  # type: ignore
 from hypothesis import given, settings
 import strategies as st  # type: ignore
 
-
 curr_file_path = Path(__file__).resolve().parent
-
 
 with open(curr_file_path.parent.parent / "schemas/circuit_v1.json", "r") as f:
     schema = json.load(f)
@@ -428,13 +428,32 @@ def test_boxes() -> None:
     assert pbox.type == OpType.PauliExpBox
     d.add_pauliexpbox(pbox, [3, 2, 1])
 
+    ppairbox = PauliExpPairBox(
+        [Pauli.I, Pauli.X, Pauli.Y, Pauli.Z],
+        Symbol("alpha"),  # type: ignore
+        [Pauli.Y, Pauli.I, Pauli.I, Pauli.X],
+        Symbol("beta"),  # type: ignore
+    )  # type: ignore
+    assert ppairbox.type == OpType.PauliExpPairBox
+    d.add_pauliexppairbox(ppairbox, [3, 2, 1, 0])
+
+    psetbox = PauliExpCommutingSetBox(
+        [
+            ([Pauli.X, Pauli.X, Pauli.X, Pauli.Y], Symbol("alpha")),  # type: ignore
+            ([Pauli.X, Pauli.X, Pauli.Y, Pauli.X], Symbol("beta")),  # type: ignore
+            ([Pauli.X, Pauli.Y, Pauli.X, Pauli.X], Symbol("gamma")),  # type: ignore
+        ]
+    )  # type: ignore
+    assert psetbox.type == OpType.PauliExpCommutingSetBox
+    d.add_pauliexpcommutingsetbox(psetbox, [0, 1, 2, 3])
+
     qcbox = QControlBox(Op.create(OpType.S), 2)
     assert qcbox.type == OpType.QControlBox
     assert qcbox.get_op().type == OpType.S
     assert qcbox.get_n_controls() == 2
     d.add_qcontrolbox(qcbox, [1, 2, 3])
 
-    assert d.n_gates == 7
+    assert d.n_gates == 9
 
     pauli_exps = [cmd.op for cmd in d if cmd.op.type == OpType.PauliExpBox]
     assert len(pauli_exps) == 1
@@ -452,7 +471,7 @@ def test_boxes() -> None:
     comparison = np.asarray([[0, 0, 0, 1], [0, 1, 0, 0], [0, 0, 1, 0], [1, 0, 0, 0]])
     assert np.allclose(unitary, comparison)
     d.add_toffolibox(tb, [0, 1])
-    assert d.n_gates == 8
+    assert d.n_gates == 10
 
     # MultiplexorBox, MultiplexedU2Box
     op_map = {(0, 0): Op.create(OpType.Rz, 0.3), (1, 1): Op.create(OpType.H)}
@@ -481,7 +500,7 @@ def test_boxes() -> None:
     # constructor taking qubit indices
     d.add_multiplexor(multiplexor, [0, 1, 2])
     d.add_multiplexedu2(ucu2_box, [0, 1, 2])
-    assert d.n_gates == 12
+    assert d.n_gates == 14
     # MultiplexedRotationBox
     op_map = {(0, 0): Op.create(OpType.Rz, 0.3), (1, 1): Op.create(OpType.Rz, 1.7)}
     multiplexor = MultiplexedRotationBox(op_map)
@@ -498,12 +517,12 @@ def test_boxes() -> None:
     assert np.allclose(unitary, comparison)
     d.add_multiplexedrotation(multiplexor, [Qubit(0), Qubit(1), Qubit(2)])
     d.add_multiplexedrotation(multiplexor, [1, 2, 0])
-    assert d.n_gates == 14
+    assert d.n_gates == 16
     multiplexor = MultiplexedRotationBox([0.3, 0, 0, 1.7], OpType.Rz)
     unitary = multiplexor.get_circuit().get_unitary()
     assert np.allclose(unitary, comparison)
     d.add_multiplexedrotation(multiplexor, [Qubit(0), Qubit(1), Qubit(2)])
-    assert d.n_gates == 15
+    assert d.n_gates == 17
     # StatePreparationBox
     state = np.array([np.sqrt(0.125)] * 8)
     prep_box = StatePreparationBox(state)
@@ -516,7 +535,7 @@ def test_boxes() -> None:
     assert np.allclose(prep_u.dot(state), zero_state)
     d.add_state_preparation_box(prep_box, [Qubit(0), Qubit(1), Qubit(2)])
     d.add_state_preparation_box(prep_box, [2, 1, 0])
-    assert d.n_gates == 17
+    assert d.n_gates == 19
     # DiagonalBox
     diag_vect = np.array([1j] * 8)
     diag_box = DiagonalBox(diag_vect)
@@ -524,7 +543,7 @@ def test_boxes() -> None:
     assert np.allclose(np.diag(diag_vect), u)
     d.add_diagonal_box(diag_box, [Qubit(0), Qubit(1), Qubit(2)])
     d.add_diagonal_box(diag_box, [0, 1, 2])
-    assert d.n_gates == 19
+    assert d.n_gates == 21
     # MultiplexedTensoredU2Box
     rz_op = Op.create(OpType.Rz, 0.3)
     pauli_x_op = Op.create(OpType.X)
@@ -544,7 +563,7 @@ def test_boxes() -> None:
     d.add_multiplexed_tensored_u2(multiplexor, [Qubit(0), Qubit(1), Qubit(2), Qubit(3)])
     d.add_multiplexed_tensored_u2(multiplexor, [3, 2, 1, 0])
     assert np.allclose(unitary, comparison)
-    assert d.n_gates == 21
+    assert d.n_gates == 23
     assert json_validate(d)
 
 

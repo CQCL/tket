@@ -153,6 +153,7 @@
             "OptimisePhaseGadgets",
             "OptimisePairwiseGadgets",
             "PauliSimp",
+            "PauliExponentials",
             "GuidedPauliSimp",
             "SimplifyInitial",
             "FullMappingPass",
@@ -485,6 +486,22 @@
             "properties": {
               "name": {
                 "const": "PauliSimp"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "pauli_synth_strat",
+              "cx_config"
+            ],
+            "maxProperties": 3
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "name": {
+                "const": "PauliExponentials"
               }
             }
           },

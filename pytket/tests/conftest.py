@@ -12,10 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import math
 from pytest import fixture  # type: ignore
 import random
-import time
 from typing import Any
 
 from pytket.circuit import (  # type: ignore

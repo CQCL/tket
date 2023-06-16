@@ -22,6 +22,7 @@
 #include "tket/Circuit/CircPool.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/Command.hpp"
+#include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Mapping/LexiLabelling.hpp"
 #include "tket/Mapping/LexiRoute.hpp"
 #include "tket/OpType/OpType.hpp"

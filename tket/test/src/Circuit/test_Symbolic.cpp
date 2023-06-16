@@ -17,7 +17,6 @@
 #include <tket/Transformations/BasicOptimisation.hpp>
 #include <tket/Transformations/CliffordOptimisation.hpp>
 #include <tket/Transformations/OptimisationPass.hpp>
-#include <tket/Transformations/Transform.hpp>
 #include <vector>
 
 #include "symengine/eval_double.h"

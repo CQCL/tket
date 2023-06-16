@@ -202,7 +202,24 @@ Complex operator_expectation(
   return exp;
 }
 
+QubitPauliString::QubitPauliString(
+    const std::initializer_list<Pauli> &_paulis) {
+  unsigned qb_i = 0;
+  for (Pauli p : _paulis) {
+    map[Qubit(qb_i)] = p;
+    ++qb_i;
+  }
+}
+
 QubitPauliString::QubitPauliString(const std::list<Pauli> &_paulis) {
+  unsigned qb_i = 0;
+  for (Pauli p : _paulis) {
+    map[Qubit(qb_i)] = p;
+    ++qb_i;
+  }
+}
+
+QubitPauliString::QubitPauliString(const std::vector<Pauli> &_paulis) {
   unsigned qb_i = 0;
   for (Pauli p : _paulis) {
     map[Qubit(qb_i)] = p;
@@ -549,5 +566,15 @@ void to_json(nlohmann::json &j, const PauliStabiliser &pauli_stabiliser) {
 void from_json(const nlohmann::json &j, PauliStabiliser &pauli_stabiliser) {
   pauli_stabiliser = PauliStabiliser(
       j.at("string").get<std::vector<Pauli>>(), j.at("coeff").get<bool>());
+}
+
+void to_json(nlohmann::json &j, const QubitPauliTensor &qubitPauliTensor) {
+  j["string"] = qubitPauliTensor.string;
+  j["coeff"] = qubitPauliTensor.coeff;
+}
+
+void from_json(const nlohmann::json &j, QubitPauliTensor &qubitPauliTensor) {
+  qubitPauliTensor = QubitPauliTensor(
+      j.at("string").get<QubitPauliString>(), j.at("coeff").get<Complex>());
 }
 }  // namespace tket
