@@ -12,9 +12,47 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+import json
+from jsonschema import RefResolver, Draft7Validator  # type: ignore
+from pathlib import Path
 from pytket.circuit import Node, Op, OpType, Circuit, Qubit, PhasePolyBox  # type: ignore
 from pytket.architecture import Architecture, SquareGrid, FullyConnected, RingArch  # type: ignore
 import numpy as np
+
+curr_file_path = Path(__file__).resolve().parent
+schema_dir = curr_file_path.parent.parent / "schemas"
+with open(schema_dir / "circuit_v1.json", "r") as f:
+    circ_schema = json.load(f)
+with open(schema_dir / "architecture_v1.json", "r") as f:
+    arch_schema = json.load(f)
+with open(schema_dir / "fullyconnected_v1.json", "r") as f:
+    fc_schema = json.load(f)
+
+schema_store = {
+    circ_schema["$id"]: circ_schema,
+    arch_schema["$id"]: arch_schema,
+    fc_schema["$id"]: fc_schema,
+}
+arch_validator_resolver = RefResolver.from_schema(arch_schema, store=schema_store)
+arch_validator = Draft7Validator(arch_schema, resolver=arch_validator_resolver)
+fc_validator_resolver = RefResolver.from_schema(fc_schema, store=schema_store)
+fc_validator = Draft7Validator(fc_schema, resolver=fc_validator_resolver)
+
+
+def check_arch_serialisation(arch: Architecture) -> None:
+    serialised_arch = arch.to_dict()
+    arch_validator.validate(serialised_arch)
+    new_arch = Architecture.from_dict(serialised_arch)
+    new_serialised_arch = new_arch.to_dict()
+    assert new_serialised_arch == serialised_arch
+
+
+def check_fc_serialisation(fc: FullyConnected) -> None:
+    serialised_fc = fc.to_dict()
+    fc_validator.validate(serialised_fc)
+    new_fc = FullyConnected.from_dict(serialised_fc)
+    new_serialised_fc = new_fc.to_dict()
+    assert new_serialised_fc == serialised_fc
 
 
 def test_architectures() -> None:
@@ -66,6 +104,7 @@ def test_fully_connected() -> None:
     fc = FullyConnected(3)
     assert fc.nodes == [Node("fcNode", i) for i in range(3)]
     d = fc.to_dict()
+    assert list(d.keys()) == ["nodes"]
     fc1 = FullyConnected.from_dict(d)
     assert fc == fc1
 
@@ -73,13 +112,17 @@ def test_fully_connected() -> None:
 def test_arch_types() -> None:
     arch = Architecture([(0, 1)])
     assert isinstance(arch, Architecture)
+    check_arch_serialisation(arch)
     fc = FullyConnected(2)
     assert fc.nodes[0].reg_name == "fcNode"
     assert isinstance(fc, FullyConnected)
+    check_fc_serialisation(fc)
     sg = SquareGrid(2, 2, 2)
     assert sg.nodes[0].reg_name == "gridNode"
     assert isinstance(sg, SquareGrid)
+    check_arch_serialisation(sg)
     ra = RingArch(2)
+    check_arch_serialisation(ra)
     assert ra.nodes[0].reg_name == "ringNode"
 
 
