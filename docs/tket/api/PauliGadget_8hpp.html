@@ -155,10 +155,11 @@ This graph shows which files directly or indirectly include this file:</div>
 <div class="dyncontent">
 <div class="center"><img src="PauliGadget_8hpp__dep__incl.png" border="0" usemap="#ainclude_2tket_2Converters_2PauliGadget_8hppdep" alt=""/></div>
 <map name="ainclude_2tket_2Converters_2PauliGadget_8hppdep" id="ainclude_2tket_2Converters_2PauliGadget_8hppdep">
-<area shape="rect" title=" " alt="" coords="263,5,437,47"/>
-<area shape="rect" href="PauliGadget_8cpp.html" title=" " alt="" coords="5,102,231,129"/>
-<area shape="rect" href="PauliGraphConverters_8cpp.html" title=" " alt="" coords="255,95,445,136"/>
-<area shape="rect" href="PauliOptimisation_8cpp.html" title=" " alt="" coords="470,95,638,136"/>
+<area shape="rect" title=" " alt="" coords="383,5,557,47"/>
+<area shape="rect" href="PauliExpBoxes_8cpp.html" title=" " alt="" coords="5,102,217,129"/>
+<area shape="rect" href="PauliGadget_8cpp.html" title=" " alt="" coords="241,102,467,129"/>
+<area shape="rect" href="PauliGraphConverters_8cpp.html" title=" " alt="" coords="491,95,681,136"/>
+<area shape="rect" href="PauliOptimisation_8cpp.html" title=" " alt="" coords="706,95,874,136"/>
 </map>
 </div>
 </div>
@@ -180,9 +181,16 @@ Functions</h2></td></tr>
 <tr class="memitem:a8e72f1332998ecf4ef5d1047cfe5a95d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a8e72f1332998ecf4ef5d1047cfe5a95d">tket::append_single_pauli_gadget</a> (Circuit &amp;circ, const QubitPauliTensor &amp;pauli, Expr angle, CXConfigType cx_config=CXConfigType::Snake)</td></tr>
 <tr class="memdesc:a8e72f1332998ecf4ef5d1047cfe5a95d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append a Pauli gadget to the end of a given circuit.  <a href="namespacetket.html#a8e72f1332998ecf4ef5d1047cfe5a95d">More...</a><br /></td></tr>
 <tr class="separator:a8e72f1332998ecf4ef5d1047cfe5a95d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a49402af2e1793a0721eab83470c49ff1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a49402af2e1793a0721eab83470c49ff1">tket::append_single_pauli_gadget_as_pauli_exp_box</a> (Circuit &amp;circ, const QubitPauliTensor &amp;pauli, Expr angle, CXConfigType cx_config)</td></tr>
+<tr class="memdesc:a49402af2e1793a0721eab83470c49ff1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append a Pauli gadget to the end of a given circuit as a <a class="el" href="classtket_1_1PauliExpBox.html" title="Operation defined as the exponential of a tensor of Pauli operators.">PauliExpBox</a>.  <a href="namespacetket.html#a49402af2e1793a0721eab83470c49ff1">More...</a><br /></td></tr>
+<tr class="separator:a49402af2e1793a0721eab83470c49ff1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa4cafa843d160e028e5d01bed9bb5e1a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#aa4cafa843d160e028e5d01bed9bb5e1a">tket::append_pauli_gadget_pair</a> (Circuit &amp;circ, QubitPauliTensor pauli0, Expr angle0, QubitPauliTensor pauli1, Expr angle1, CXConfigType cx_config=CXConfigType::Snake)</td></tr>
 <tr class="memdesc:aa4cafa843d160e028e5d01bed9bb5e1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append a pair of Pauli gadgets to the end of a given circuit.  <a href="namespacetket.html#aa4cafa843d160e028e5d01bed9bb5e1a">More...</a><br /></td></tr>
 <tr class="separator:aa4cafa843d160e028e5d01bed9bb5e1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abfe5f8996f4929afa5e5ec01de4ac19b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#abfe5f8996f4929afa5e5ec01de4ac19b">tket::append_pauli_gadget_pair_as_box</a> (Circuit &amp;circ, const QubitPauliTensor &amp;pauli0, Expr angle0, const QubitPauliTensor &amp;pauli1, Expr angle1, CXConfigType cx_config)</td></tr>
+<tr class="separator:abfe5f8996f4929afa5e5ec01de4ac19b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8ec10f2f1ca4d7c09f847af4f3984f8b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a8ec10f2f1ca4d7c09f847af4f3984f8b">tket::append_commuting_pauli_gadget_set_as_box</a> (Circuit &amp;circ, const std::list&lt; std::pair&lt; QubitPauliTensor, Expr &gt;&gt; &amp;gadgets, CXConfigType cx_config)</td></tr>
+<tr class="separator:a8ec10f2f1ca4d7c09f847af4f3984f8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 </div><!-- contents -->
 <!-- start footer part -->

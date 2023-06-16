@@ -108,6 +108,8 @@ $(function() {
 , <a class="el" href="classtket_1_1MultiplexedU2Box.html#a8d46262f9891438f12029d896189b70c">tket::MultiplexedU2Box</a>
 , <a class="el" href="classtket_1_1MultiplexorBox.html#a1129dbab907c3e463f958dd4b4a8ab0b">tket::MultiplexorBox</a>
 , <a class="el" href="classtket_1_1PauliExpBox.html#a30d92158e88da0282f11b5b0861f660e">tket::PauliExpBox</a>
+, <a class="el" href="classtket_1_1PauliExpCommutingSetBox.html#ae70053ac229202f05b1e197764352475">tket::PauliExpCommutingSetBox</a>
+, <a class="el" href="classtket_1_1PauliExpPairBox.html#ad71f544f15049e486847c67396233750">tket::PauliExpPairBox</a>
 , <a class="el" href="classtket_1_1PhasePolyBox.html#a3d0775c20d900ed8b91c99b1fdb5a2f0">tket::PhasePolyBox</a>
 , <a class="el" href="classtket_1_1ProjectorAssertionBox.html#af5a74731d878146ac10f02a1c81cd4c5">tket::ProjectorAssertionBox</a>
 , <a class="el" href="classtket_1_1QControlBox.html#a10720cf234636fbb28499e738de27cb6">tket::QControlBox</a>
@@ -287,6 +289,11 @@ $(function() {
 </li>
 <li>get_cswap_columns()
 : <a class="el" href="structtket_1_1internal_1_1GateUnitaryMatrixImplementations.html#af25d08f18a203a28631dff6be499759f">tket::internal::GateUnitaryMatrixImplementations</a>
+</li>
+<li>get_cx_config()
+: <a class="el" href="classtket_1_1PauliExpBox.html#a3b88f1e5dd05fd1916920cbe7ebceb26">tket::PauliExpBox</a>
+, <a class="el" href="classtket_1_1PauliExpCommutingSetBox.html#a77b56259566e6c46d8e509f540044132">tket::PauliExpCommutingSetBox</a>
+, <a class="el" href="classtket_1_1PauliExpPairBox.html#a972ba78151b73899744f849bcf78fcda">tket::PauliExpPairBox</a>
 </li>
 <li>get_cycles()
 : <a class="el" href="classtket_1_1CycleFinder.html#a9a031272425dfe33e66a62f03e06b93b">tket::CycleFinder</a>
@@ -685,8 +692,14 @@ $(function() {
 <li>get_pauli()
 : <a class="el" href="classtket_1_1SymplecticTableau.html#a7dd5d742ae9d88128489247926d23996">tket::SymplecticTableau</a>
 </li>
+<li>get_pauli_gadgets()
+: <a class="el" href="classtket_1_1PauliExpCommutingSetBox.html#ae62ab1dfbc66036073bd126c7ef1833f">tket::PauliExpCommutingSetBox</a>
+</li>
 <li>get_paulis()
 : <a class="el" href="classtket_1_1PauliExpBox.html#adb1941d953cd65a12cd2cd9a85d14cdc">tket::PauliExpBox</a>
+</li>
+<li>get_paulis_pair()
+: <a class="el" href="classtket_1_1PauliExpPairBox.html#a4a42b0fc7bb4136fbe75084552ac02aa">tket::PauliExpPairBox</a>
 </li>
 <li>get_permutation()
 : <a class="el" href="classtket_1_1ToffoliBox.html#a357bed1c3965b083ce3f1e5b67152de6">tket::ToffoliBox</a>
@@ -694,6 +707,9 @@ $(function() {
 <li>get_phase()
 : <a class="el" href="classtket_1_1Circuit.html#acbe448bcbe244f1b2f2316a40e28df6c">tket::Circuit</a>
 , <a class="el" href="classtket_1_1PauliExpBox.html#a3adbef764967bda7d889b629311841bb">tket::PauliExpBox</a>
+</li>
+<li>get_phase_pair()
+: <a class="el" href="classtket_1_1PauliExpPairBox.html#ae4f90ce224ca0716d16698926d2df222">tket::PauliExpPairBox</a>
 </li>
 <li>get_phase_polynomial()
 : <a class="el" href="classtket_1_1PhasePolyBox.html#ae94199fa287660ea85222bf8175f799e">tket::PhasePolyBox</a>
@@ -724,7 +740,7 @@ $(function() {
 , <a class="el" href="classtket_1_1zx_1_1BoundaryGen.html#abd510b938f04ed951d0976812e1b6601">tket::zx::BoundaryGen</a>
 , <a class="el" href="classtket_1_1zx_1_1DirectedGen.html#aa8f6b3b6b9e2f579d0e91b845c8ecaa8">tket::zx::DirectedGen</a>
 , <a class="el" href="classtket_1_1zx_1_1ZXBox.html#aeda4b4856767a9a01c0d2c77ede50a19">tket::zx::ZXBox</a>
-, <a class="el" href="classtket_1_1zx_1_1ZXDiagram.html#a3301114eaae7ff5466aa55984c5f049a">tket::zx::ZXDiagram</a>
+, <a class="el" href="classtket_1_1zx_1_1ZXDiagram.html#a201482d2f76b45f2ec7e99f4dbaba5d5">tket::zx::ZXDiagram</a>
 , <a class="el" href="classtket_1_1zx_1_1ZXGen.html#a4273f220c4c3eae0d634fe20888cc54e">tket::zx::ZXGen</a>
 </li>
 <li>get_qubit_from_circuit_uid()
@@ -859,7 +875,7 @@ $(function() {
 </li>
 <li>get_unitary()
 : <a class="el" href="classtket_1_1Gate.html#ae11edd0093980d96ec12d5da3bc6cb8a">tket::Gate</a>
-, <a class="el" href="structtket_1_1GateUnitaryMatrix.html#ad21c8ce352d7cf0e00fd8a7869236eef">tket::GateUnitaryMatrix</a>
+, <a class="el" href="structtket_1_1GateUnitaryMatrix.html#adca5a15e2082784fc446a994241cdf1e">tket::GateUnitaryMatrix</a>
 , <a class="el" href="classtket_1_1Op.html#a8036a6e71f1a9c064f692aedb654ddec">tket::Op</a>
 , <a class="el" href="classtket_1_1Unitary1qBox.html#a295a4d1ddb2a19dd07a0d127baefa945">tket::Unitary1qBox</a>
 , <a class="el" href="classtket_1_1Unitary2qBox.html#a6e0a72bad7228234af78d66510bb4bfd">tket::Unitary2qBox</a>

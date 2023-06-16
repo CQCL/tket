@@ -118,9 +118,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a1479748246db4b1e1f30bc1b65992ca2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1QubitPauliTensor.html#a1479748246db4b1e1f30bc1b65992ca2">QubitPauliTensor</a> (const <a class="el" href="classtket_1_1Qubit.html">Qubit</a> &amp;qubit, <a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> p)</td></tr>
 <tr class="memdesc:a1479748246db4b1e1f30bc1b65992ca2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a single Pauli term.  <a href="classtket_1_1QubitPauliTensor.html#a1479748246db4b1e1f30bc1b65992ca2">More...</a><br /></td></tr>
 <tr class="separator:a1479748246db4b1e1f30bc1b65992ca2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6176313378e858f6ba066a39905a4d09"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1QubitPauliTensor.html#a6176313378e858f6ba066a39905a4d09">QubitPauliTensor</a> (const std::initializer_list&lt; <a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> &gt; &amp;_paulis)</td></tr>
+<tr class="memdesc:a6176313378e858f6ba066a39905a4d09"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a tensor of many Pauli terms.  <a href="classtket_1_1QubitPauliTensor.html#a6176313378e858f6ba066a39905a4d09">More...</a><br /></td></tr>
+<tr class="separator:a6176313378e858f6ba066a39905a4d09"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7394d1d131109729da06ee471a7f74f6"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1QubitPauliTensor.html#a7394d1d131109729da06ee471a7f74f6">QubitPauliTensor</a> (const std::list&lt; <a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> &gt; &amp;_paulis)</td></tr>
 <tr class="memdesc:a7394d1d131109729da06ee471a7f74f6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a tensor of many Pauli terms.  <a href="classtket_1_1QubitPauliTensor.html#a7394d1d131109729da06ee471a7f74f6">More...</a><br /></td></tr>
 <tr class="separator:a7394d1d131109729da06ee471a7f74f6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4508ce902cfab795fe8d8a6767725cc4"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1QubitPauliTensor.html#a4508ce902cfab795fe8d8a6767725cc4">QubitPauliTensor</a> (const std::vector&lt; <a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> &gt; &amp;_paulis)</td></tr>
+<tr class="memdesc:a4508ce902cfab795fe8d8a6767725cc4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a tensor of many Pauli terms.  <a href="classtket_1_1QubitPauliTensor.html#a4508ce902cfab795fe8d8a6767725cc4">More...</a><br /></td></tr>
+<tr class="separator:a4508ce902cfab795fe8d8a6767725cc4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a34cd62c34f6530b98b7a4408e040b7ec"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1QubitPauliTensor.html#a34cd62c34f6530b98b7a4408e040b7ec">QubitPauliTensor</a> (const <a class="el" href="classtket_1_1Qubit.html">Qubit</a> &amp;qubit, <a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> p, <a class="el" href="namespacetket.html#a68999408b52ab2f0f191f814ec93f4de">Complex</a> _coeff)</td></tr>
 <tr class="memdesc:a34cd62c34f6530b98b7a4408e040b7ec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a constant multiple of a single Pauli term.  <a href="classtket_1_1QubitPauliTensor.html#a34cd62c34f6530b98b7a4408e040b7ec">More...</a><br /></td></tr>
 <tr class="separator:a34cd62c34f6530b98b7a4408e040b7ec"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -192,7 +198,7 @@ Friends</h2></td></tr>
 <div class="textblock"><p>A tensor of Pauli terms \( P = i^k \sigma_1 \otimes \sigma_2 \otimes \cdots \otimes \sigma_n \). </p>
 <p>This is a <a class="el" href="classtket_1_1QubitPauliString.html" title="A string of Pauli letters from the alphabet {I, X, Y, Z}, implemented as a sparse list,...">QubitPauliString</a> but with an additional complex coefficient. </p>
 
-<p class="definition">Definition at line <a class="el" href="PauliStrings_8hpp_source.html#l00338">338</a> of file <a class="el" href="PauliStrings_8hpp_source.html">PauliStrings.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8hpp_source.html#l00356">356</a> of file <a class="el" href="PauliStrings_8hpp_source.html">PauliStrings.hpp</a>.</p>
 </div><h2 class="groupheader">Member Typedef Documentation</h2>
 <a id="a4ac252caae512ab9bbb9ef4956c34678"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4ac252caae512ab9bbb9ef4956c34678">&#9670;&nbsp;</a></span>Mult_Matrix</h2>
@@ -206,13 +212,13 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PauliStrings_8hpp_source.html#l00341">341</a> of file <a class="el" href="PauliStrings_8hpp_source.html">PauliStrings.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8hpp_source.html#l00359">359</a> of file <a class="el" href="PauliStrings_8hpp_source.html">PauliStrings.hpp</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a65813100bd2cac285b255e93361815c5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a65813100bd2cac285b255e93361815c5">&#9670;&nbsp;</a></span>QubitPauliTensor() <span class="overload">[1/9]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a65813100bd2cac285b255e93361815c5">&#9670;&nbsp;</a></span>QubitPauliTensor() <span class="overload">[1/11]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -236,12 +242,12 @@ Friends</h2></td></tr>
 
 <p>Construct an identity operator. </p>
 
-<p class="definition">Definition at line <a class="el" href="PauliStrings_8hpp_source.html#l00350">350</a> of file <a class="el" href="PauliStrings_8hpp_source.html">PauliStrings.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8hpp_source.html#l00368">368</a> of file <a class="el" href="PauliStrings_8hpp_source.html">PauliStrings.hpp</a>.</p>
 
 </div>
 </div>
 <a id="a67277efa4dfff1ee4193365217fa605b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a67277efa4dfff1ee4193365217fa605b">&#9670;&nbsp;</a></span>QubitPauliTensor() <span class="overload">[2/9]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a67277efa4dfff1ee4193365217fa605b">&#9670;&nbsp;</a></span>QubitPauliTensor() <span class="overload">[2/11]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -266,12 +272,12 @@ Friends</h2></td></tr>
 
 <p>Construct a constant multiple of the identity. </p>
 
-<p class="definition">Definition at line <a class="el" href="PauliStrings_8hpp_source.html#l00355">355</a> of file <a class="el" href="PauliStrings_8hpp_source.html">PauliStrings.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8hpp_source.html#l00373">373</a> of file <a class="el" href="PauliStrings_8hpp_source.html">PauliStrings.hpp</a>.</p>
 
 </div>
 </div>
 <a id="a1479748246db4b1e1f30bc1b65992ca2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1479748246db4b1e1f30bc1b65992ca2">&#9670;&nbsp;</a></span>QubitPauliTensor() <span class="overload">[3/9]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a1479748246db4b1e1f30bc1b65992ca2">&#9670;&nbsp;</a></span>QubitPauliTensor() <span class="overload">[3/11]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -306,12 +312,49 @@ Friends</h2></td></tr>
 
 <p>Construct a single Pauli term. </p>
 
-<p class="definition">Definition at line <a class="el" href="PauliStrings_8hpp_source.html#l00360">360</a> of file <a class="el" href="PauliStrings_8hpp_source.html">PauliStrings.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8hpp_source.html#l00378">378</a> of file <a class="el" href="PauliStrings_8hpp_source.html">PauliStrings.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a6176313378e858f6ba066a39905a4d09"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6176313378e858f6ba066a39905a4d09">&#9670;&nbsp;</a></span>QubitPauliTensor() <span class="overload">[4/11]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">tket::QubitPauliTensor::QubitPauliTensor </td>
+          <td>(</td>
+          <td class="paramtype">const std::initializer_list&lt; <a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>_paulis</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Construct a tensor of many Pauli terms. </p>
+<p>Shortcut to make a tensor for a default qubit register, without explicitly constructing the QubitPauliMap</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">_paulis</td><td>initializer_list of Pauli letters </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8hpp_source.html#l00388">388</a> of file <a class="el" href="PauliStrings_8hpp_source.html">PauliStrings.hpp</a>.</p>
 
 </div>
 </div>
 <a id="a7394d1d131109729da06ee471a7f74f6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7394d1d131109729da06ee471a7f74f6">&#9670;&nbsp;</a></span>QubitPauliTensor() <span class="overload">[4/9]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a7394d1d131109729da06ee471a7f74f6">&#9670;&nbsp;</a></span>QubitPauliTensor() <span class="overload">[5/11]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -343,12 +386,49 @@ Friends</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="PauliStrings_8hpp_source.html#l00370">370</a> of file <a class="el" href="PauliStrings_8hpp_source.html">PauliStrings.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8hpp_source.html#l00398">398</a> of file <a class="el" href="PauliStrings_8hpp_source.html">PauliStrings.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a4508ce902cfab795fe8d8a6767725cc4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4508ce902cfab795fe8d8a6767725cc4">&#9670;&nbsp;</a></span>QubitPauliTensor() <span class="overload">[6/11]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">tket::QubitPauliTensor::QubitPauliTensor </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>_paulis</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">explicit</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Construct a tensor of many Pauli terms. </p>
+<p>Shortcut to make a tensor for a default qubit register, without explicitly constructing the QubitPauliMap</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">_paulis</td><td>vector of Pauli letters </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8hpp_source.html#l00408">408</a> of file <a class="el" href="PauliStrings_8hpp_source.html">PauliStrings.hpp</a>.</p>
 
 </div>
 </div>
 <a id="a34cd62c34f6530b98b7a4408e040b7ec"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a34cd62c34f6530b98b7a4408e040b7ec">&#9670;&nbsp;</a></span>QubitPauliTensor() <span class="overload">[5/9]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a34cd62c34f6530b98b7a4408e040b7ec">&#9670;&nbsp;</a></span>QubitPauliTensor() <span class="overload">[7/11]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -389,12 +469,12 @@ Friends</h2></td></tr>
 
 <p>Construct a constant multiple of a single Pauli term. </p>
 
-<p class="definition">Definition at line <a class="el" href="PauliStrings_8hpp_source.html#l00376">376</a> of file <a class="el" href="PauliStrings_8hpp_source.html">PauliStrings.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8hpp_source.html#l00414">414</a> of file <a class="el" href="PauliStrings_8hpp_source.html">PauliStrings.hpp</a>.</p>
 
 </div>
 </div>
 <a id="a001d1b63bb94a54f174d777eb8e1972d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a001d1b63bb94a54f174d777eb8e1972d">&#9670;&nbsp;</a></span>QubitPauliTensor() <span class="overload">[6/9]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a001d1b63bb94a54f174d777eb8e1972d">&#9670;&nbsp;</a></span>QubitPauliTensor() <span class="overload">[8/11]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -425,12 +505,12 @@ Friends</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="PauliStrings_8hpp_source.html#l00384">384</a> of file <a class="el" href="PauliStrings_8hpp_source.html">PauliStrings.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8hpp_source.html#l00422">422</a> of file <a class="el" href="PauliStrings_8hpp_source.html">PauliStrings.hpp</a>.</p>
 
 </div>
 </div>
 <a id="a2ac7c0574145488dfe527baf870ddd63"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2ac7c0574145488dfe527baf870ddd63">&#9670;&nbsp;</a></span>QubitPauliTensor() <span class="overload">[7/9]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a2ac7c0574145488dfe527baf870ddd63">&#9670;&nbsp;</a></span>QubitPauliTensor() <span class="overload">[9/11]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -461,12 +541,12 @@ Friends</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="PauliStrings_8hpp_source.html#l00392">392</a> of file <a class="el" href="PauliStrings_8hpp_source.html">PauliStrings.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8hpp_source.html#l00430">430</a> of file <a class="el" href="PauliStrings_8hpp_source.html">PauliStrings.hpp</a>.</p>
 
 </div>
 </div>
 <a id="afa28d9757e4285c4ef47063596e1375f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afa28d9757e4285c4ef47063596e1375f">&#9670;&nbsp;</a></span>QubitPauliTensor() <span class="overload">[8/9]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#afa28d9757e4285c4ef47063596e1375f">&#9670;&nbsp;</a></span>QubitPauliTensor() <span class="overload">[10/11]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -508,12 +588,12 @@ Friends</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="PauliStrings_8hpp_source.html#l00401">401</a> of file <a class="el" href="PauliStrings_8hpp_source.html">PauliStrings.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8hpp_source.html#l00439">439</a> of file <a class="el" href="PauliStrings_8hpp_source.html">PauliStrings.hpp</a>.</p>
 
 </div>
 </div>
 <a id="a47d77f890aec7405b00e407137abce21"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a47d77f890aec7405b00e407137abce21">&#9670;&nbsp;</a></span>QubitPauliTensor() <span class="overload">[9/9]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a47d77f890aec7405b00e407137abce21">&#9670;&nbsp;</a></span>QubitPauliTensor() <span class="overload">[11/11]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -555,7 +635,7 @@ Friends</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="PauliStrings_8hpp_source.html#l00410">410</a> of file <a class="el" href="PauliStrings_8hpp_source.html">PauliStrings.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8hpp_source.html#l00448">448</a> of file <a class="el" href="PauliStrings_8hpp_source.html">PauliStrings.hpp</a>.</p>
 
 </div>
 </div>
@@ -586,7 +666,7 @@ Friends</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>All qubits q where this-&gt;string.map[q] == other.string.map[q] != I </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00485">485</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00502">502</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
 
 </div>
 </div>
@@ -618,7 +698,7 @@ Friends</h2></td></tr>
 <dd>
 false if <code>other</code> anti-commutes with this </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00481">481</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00498">498</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
 
 </div>
 </div>
@@ -640,7 +720,7 @@ false if <code>other</code> anti-commutes with this </dd></dl>
 <p>Removes I terms to compress the sparse representation. </p>
 <p>Wrapper method for <code><a class="el" href="classtket_1_1QubitPauliString.html" title="A string of Pauli letters from the alphabet {I, X, Y, Z}, implemented as a sparse list,...">QubitPauliString</a></code> method. </p>
 
-<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00479">479</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00496">496</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
 
 </div>
 </div>
@@ -670,7 +750,7 @@ false if <code>other</code> anti-commutes with this </dd></dl>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>All qubits q where I != this-&gt;string.map[q] != other.string.map[q] != I </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00495">495</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00512">512</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
 
 </div>
 </div>
@@ -697,7 +777,7 @@ false if <code>other</code> anti-commutes with this </dd></dl>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00403">403</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00420">420</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
 
 </div>
 </div>
@@ -726,7 +806,7 @@ false if <code>other</code> anti-commutes with this </dd></dl>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true iff *this and other represent different numerical tensors </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00466">466</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00483">483</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
 
 </div>
 </div>
@@ -755,7 +835,7 @@ false if <code>other</code> anti-commutes with this </dd></dl>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>*this x other </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00424">424</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00441">441</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
 
 </div>
 </div>
@@ -785,7 +865,7 @@ false if <code>other</code> anti-commutes with this </dd></dl>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true iff *this orders strictly before other </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00470">470</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00487">487</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
 
 </div>
 </div>
@@ -814,7 +894,7 @@ false if <code>other</code> anti-commutes with this </dd></dl>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>true iff *this and other represent the same numerical tensor </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00461">461</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00478">478</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
 
 </div>
 </div>
@@ -844,7 +924,7 @@ false if <code>other</code> anti-commutes with this </dd></dl>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>All qubits q where this-&gt;string.map[q] != I and other.string.map[q] == I </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00490">490</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00507">507</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
 
 </div>
 </div>
@@ -865,7 +945,7 @@ false if <code>other</code> anti-commutes with this </dd></dl>
 
 <p>Readable string for sparse operator. </p>
 
-<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00500">500</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00517">517</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
 
 </div>
 </div>
@@ -886,7 +966,7 @@ false if <code>other</code> anti-commutes with this </dd></dl>
 
 <p>Transpose as a tensor Since all Paulis are self-adjoint, this is the same as complex conjugate Adds a -1 phase if the string contains an odd number of Y's. </p>
 
-<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00455">455</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00472">472</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
 
 </div>
 </div>
@@ -918,7 +998,7 @@ false if <code>other</code> anti-commutes with this </dd></dl>
 <p>Hash method, required for top-level python. </p>
 <p>Does not distinguish between equivalent Strings, i.e. ignores I terms. </p>
 
-<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00511">511</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00528">528</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
 
 </div>
 </div>
@@ -935,7 +1015,7 @@ false if <code>other</code> anti-commutes with this </dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PauliStrings_8hpp_source.html#l00345">345</a> of file <a class="el" href="PauliStrings_8hpp_source.html">PauliStrings.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8hpp_source.html#l00363">363</a> of file <a class="el" href="PauliStrings_8hpp_source.html">PauliStrings.hpp</a>.</p>
 
 </div>
 </div>
@@ -951,7 +1031,7 @@ false if <code>other</code> anti-commutes with this </dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PauliStrings_8hpp_source.html#l00344">344</a> of file <a class="el" href="PauliStrings_8hpp_source.html">PauliStrings.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8hpp_source.html#l00362">362</a> of file <a class="el" href="PauliStrings_8hpp_source.html">PauliStrings.hpp</a>.</p>
 
 </div>
 </div>

@@ -81,71 +81,72 @@ $(function() {
 <div class="contents">
 <div class="textblock"><code>#include &quot;<a class="el" href="PauliGadget_8hpp_source.html">tket/Converters/PauliGadget.hpp</a>&quot;</code><br />
 <code>#include &quot;<a class="el" href="CircUtils_8hpp_source.html">tket/Circuit/CircUtils.hpp</a>&quot;</code><br />
+<code>#include &quot;<a class="el" href="PauliExpBoxes_8hpp_source.html">tket/Circuit/PauliExpBoxes.hpp</a>&quot;</code><br />
 </div><div class="textblock"><div class="dynheader">
 Include dependency graph for PauliGadget.cpp:</div>
 <div class="dyncontent">
 <div class="center"><img src="PauliGadget_8cpp__incl.png" border="0" usemap="#asrc_2Converters_2PauliGadget_8cpp" alt=""/></div>
 <map name="asrc_2Converters_2PauliGadget_8cpp" id="asrc_2Converters_2PauliGadget_8cpp">
-<area shape="rect" title=" " alt="" coords="2405,5,2630,32"/>
-<area shape="rect" href="PauliGadget_8hpp.html" title=" " alt="" coords="2287,80,2519,107"/>
-<area shape="rect" href="CircUtils_8hpp.html" title=" " alt="" coords="3102,80,3282,107"/>
-<area shape="rect" title=" " alt="" coords="2042,461,2129,487"/>
-<area shape="rect" href="Circuit_8hpp.html" title=" " alt="" coords="2019,155,2186,181"/>
-<area shape="rect" href="PauliStrings_8hpp.html" title=" " alt="" coords="2609,461,2799,487"/>
-<area shape="rect" title=" " alt="" coords="1264,229,1349,256"/>
-<area shape="rect" title=" " alt="" coords="1214,707,1301,733"/>
-<area shape="rect" title=" " alt="" coords="1577,229,1663,256"/>
-<area shape="rect" title=" " alt="" coords="1631,379,1673,405"/>
-<area shape="rect" title=" " alt="" coords="2527,625,2577,651"/>
-<area shape="rect" title=" " alt="" coords="4224,625,4301,651"/>
-<area shape="rect" title=" " alt="" coords="2425,707,2500,733"/>
-<area shape="rect" title=" " alt="" coords="3541,461,3617,487"/>
-<area shape="rect" title=" " alt="" coords="233,625,308,651"/>
-<area shape="rect" title=" " alt="" coords="1924,625,1983,651"/>
-<area shape="rect" title=" " alt="" coords="1688,229,1835,256"/>
-<area shape="rect" title=" " alt="" coords="332,625,471,651"/>
-<area shape="rect" title=" " alt="" coords="1859,229,1951,256"/>
-<area shape="rect" title=" " alt="" coords="2106,379,2230,405"/>
-<area shape="rect" title=" " alt="" coords="2373,543,2433,569"/>
-<area shape="rect" title=" " alt="" coords="2653,625,2715,651"/>
-<area shape="rect" href="Boxes_8hpp.html" title=" " alt="" coords="2955,304,3045,331"/>
-<area shape="rect" href="Json_8hpp.html" title=" " alt="" coords="3529,625,3669,651"/>
-<area shape="rect" href="Constants_8hpp.html" title="Generally useful typedefs and constants." alt="" coords="3693,625,3872,651"/>
-<area shape="rect" href="UnitID_8hpp.html" title="Named registers of arrays of (quantum or classical) nodes." alt="" coords="2041,543,2196,569"/>
-<area shape="rect" href="ClassicalExpBox_8hpp.html" title="Holding box for abstract expressions on Bits." alt="" coords="2457,229,2615,256"/>
-<area shape="rect" href="Command_8hpp.html" title=" " alt="" coords="1021,229,1139,256"/>
-<area shape="rect" href="DAGDefs_8hpp.html" title=" " alt="" coords="1656,304,1765,331"/>
-<area shape="rect" href="GraphHeaders_8hpp.html" title=" " alt="" coords="1166,379,1373,405"/>
-<area shape="rect" href="Conditional_8hpp.html" title=" " alt="" coords="3511,304,3635,331"/>
-<area shape="rect" href="OpPtrFunctions_8hpp.html" title=" " alt="" coords="3737,379,3949,405"/>
-<area shape="rect" href="SequencedContainers_8hpp.html" title=" " alt="" coords="1975,229,2230,256"/>
-<area shape="rect" title=" " alt="" coords="2711,379,2862,405"/>
-<area shape="rect" title=" " alt="" coords="2887,379,3113,405"/>
-<area shape="rect" title=" " alt="" coords="3138,379,3307,405"/>
-<area shape="rect" href="OpTypeInfo_8hpp.html" title=" " alt="" coords="2823,461,3027,487"/>
-<area shape="rect" href="Op_8hpp.html" title="Operations." alt="" coords="3383,379,3510,405"/>
-<area shape="rect" href="EigenConfig_8hpp.html" title="Include this file rather than including the Eigen headers directly." alt="" coords="3207,543,3398,569"/>
-<area shape="rect" href="BiMapHeaders_8hpp.html" title=" " alt="" coords="2026,625,2171,651"/>
-<area shape="rect" href="MatrixAnalysis_8hpp.html" title=" " alt="" coords="3103,461,3313,487"/>
-<area shape="rect" href="EdgeType_8hpp.html" title=" " alt="" coords="2761,543,2873,569"/>
-<area shape="rect" href="OpType_8hpp.html" title=" " alt="" coords="3625,543,3724,569"/>
-<area shape="rect" title=" " alt="" coords="3651,707,3730,733"/>
-<area shape="rect" href="OpPtr_8hpp.html" title=" " alt="" coords="4008,461,4093,487"/>
-<area shape="rect" href="Expression_8hpp.html" title="Functions related to (possibly symbolic) phase values." alt="" coords="2999,543,3183,569"/>
-<area shape="rect" title=" " alt="" coords="2399,625,2441,651"/>
-<area shape="rect" title=" " alt="" coords="3241,625,3343,651"/>
-<area shape="rect" title=" " alt="" coords="3368,625,3504,651"/>
-<area shape="rect" title=" " alt="" coords="2790,617,3002,659"/>
-<area shape="rect" title=" " alt="" coords="3027,617,3216,659"/>
-<area shape="rect" title=" " alt="" coords="1865,379,1980,405"/>
-<area shape="rect" title=" " alt="" coords="745,453,914,495"/>
-<area shape="rect" title=" " alt="" coords="938,461,1147,487"/>
-<area shape="rect" title=" " alt="" coords="1172,461,1359,487"/>
-<area shape="rect" title=" " alt="" coords="1383,453,1542,495"/>
-<area shape="rect" title=" " alt="" coords="1567,461,1764,487"/>
-<area shape="rect" title=" " alt="" coords="549,453,720,495"/>
-<area shape="rect" href="GatePtr_8hpp.html" title=" " alt="" coords="4231,229,4393,256"/>
-<area shape="rect" href="Gate_8hpp.html" title=" " alt="" coords="4221,304,4302,331"/>
+<area shape="rect" title=" " alt="" coords="842,5,1067,32"/>
+<area shape="rect" href="PauliGadget_8hpp.html" title=" " alt="" coords="839,80,1071,107"/>
+<area shape="rect" href="CircUtils_8hpp.html" title=" " alt="" coords="2001,80,2181,107"/>
+<area shape="rect" href="PauliExpBoxes_8hpp.html" title=" " alt="" coords="5,155,224,181"/>
+<area shape="rect" title=" " alt="" coords="951,461,1038,487"/>
+<area shape="rect" href="Circuit_8hpp.html" title=" " alt="" coords="1763,155,1930,181"/>
+<area shape="rect" href="PauliStrings_8hpp.html" title=" " alt="" coords="1804,461,1993,487"/>
+<area shape="rect" title=" " alt="" coords="1999,229,2084,256"/>
+<area shape="rect" title=" " alt="" coords="2846,707,2933,733"/>
+<area shape="rect" title=" " alt="" coords="2159,229,2246,256"/>
+<area shape="rect" title=" " alt="" coords="2824,379,2867,405"/>
+<area shape="rect" title=" " alt="" coords="2020,625,2071,651"/>
+<area shape="rect" title=" " alt="" coords="4261,625,4339,651"/>
+<area shape="rect" title=" " alt="" coords="1693,707,1768,733"/>
+<area shape="rect" title=" " alt="" coords="1114,461,1190,487"/>
+<area shape="rect" title=" " alt="" coords="149,625,224,651"/>
+<area shape="rect" title=" " alt="" coords="1420,625,1479,651"/>
+<area shape="rect" title=" " alt="" coords="992,229,1139,256"/>
+<area shape="rect" title=" " alt="" coords="299,625,437,651"/>
+<area shape="rect" title=" " alt="" coords="1163,229,1255,256"/>
+<area shape="rect" title=" " alt="" coords="1807,379,1931,405"/>
+<area shape="rect" title=" " alt="" coords="2833,543,2893,569"/>
+<area shape="rect" title=" " alt="" coords="1659,625,1722,651"/>
+<area shape="rect" href="Boxes_8hpp.html" title=" " alt="" coords="1378,304,1467,331"/>
+<area shape="rect" href="Json_8hpp.html" title=" " alt="" coords="2745,625,2885,651"/>
+<area shape="rect" href="Constants_8hpp.html" title="Generally useful typedefs and constants." alt="" coords="2532,625,2711,651"/>
+<area shape="rect" href="UnitID_8hpp.html" title="Named registers of arrays of (quantum or classical) nodes." alt="" coords="1195,543,1349,569"/>
+<area shape="rect" href="ClassicalExpBox_8hpp.html" title="Holding box for abstract expressions on Bits." alt="" coords="1436,229,1593,256"/>
+<area shape="rect" href="Command_8hpp.html" title=" " alt="" coords="633,229,751,256"/>
+<area shape="rect" href="DAGDefs_8hpp.html" title=" " alt="" coords="2199,304,2308,331"/>
+<area shape="rect" href="GraphHeaders_8hpp.html" title=" " alt="" coords="2999,379,3206,405"/>
+<area shape="rect" href="Conditional_8hpp.html" title=" " alt="" coords="2754,304,2878,331"/>
+<area shape="rect" href="OpPtrFunctions_8hpp.html" title=" " alt="" coords="3823,379,4035,405"/>
+<area shape="rect" href="SequencedContainers_8hpp.html" title=" " alt="" coords="1719,229,1974,256"/>
+<area shape="rect" title=" " alt="" coords="983,379,1134,405"/>
+<area shape="rect" title=" " alt="" coords="1159,379,1385,405"/>
+<area shape="rect" title=" " alt="" coords="1410,379,1579,405"/>
+<area shape="rect" href="OpTypeInfo_8hpp.html" title=" " alt="" coords="2018,461,2222,487"/>
+<area shape="rect" href="Op_8hpp.html" title="Operations." alt="" coords="2450,379,2577,405"/>
+<area shape="rect" href="EigenConfig_8hpp.html" title="Include this file rather than including the Eigen headers directly." alt="" coords="533,543,723,569"/>
+<area shape="rect" href="BiMapHeaders_8hpp.html" title=" " alt="" coords="1199,625,1345,651"/>
+<area shape="rect" href="MatrixAnalysis_8hpp.html" title=" " alt="" coords="1316,461,1527,487"/>
+<area shape="rect" href="EdgeType_8hpp.html" title=" " alt="" coords="2133,543,2245,569"/>
+<area shape="rect" href="OpType_8hpp.html" title=" " alt="" coords="3936,543,4035,569"/>
+<area shape="rect" title=" " alt="" coords="2701,707,2779,733"/>
+<area shape="rect" href="OpPtr_8hpp.html" title=" " alt="" coords="4101,461,4187,487"/>
+<area shape="rect" href="Expression_8hpp.html" title="Functions related to (possibly symbolic) phase values." alt="" coords="2320,543,2504,569"/>
+<area shape="rect" title=" " alt="" coords="1843,625,1885,651"/>
+<area shape="rect" title=" " alt="" coords="675,625,778,651"/>
+<area shape="rect" title=" " alt="" coords="803,625,939,651"/>
+<area shape="rect" title=" " alt="" coords="963,617,1175,659"/>
+<area shape="rect" title=" " alt="" coords="461,617,651,659"/>
+<area shape="rect" title=" " alt="" coords="2260,379,2375,405"/>
+<area shape="rect" title=" " alt="" coords="2805,453,2974,495"/>
+<area shape="rect" title=" " alt="" coords="2998,461,3207,487"/>
+<area shape="rect" title=" " alt="" coords="3232,461,3419,487"/>
+<area shape="rect" title=" " alt="" coords="3443,453,3602,495"/>
+<area shape="rect" title=" " alt="" coords="3627,461,3824,487"/>
+<area shape="rect" href="GatePtr_8hpp.html" title=" " alt="" coords="4131,229,4293,256"/>
+<area shape="rect" href="Gate_8hpp.html" title=" " alt="" coords="4211,304,4293,331"/>
 </map>
 </div>
 </div>
@@ -159,9 +160,18 @@ Namespaces</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
+<tr class="memitem:a9f68fb4ab6e021ef3cb3174094f2d194"><td class="memItemLeft" align="right" valign="top">Expr&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a9f68fb4ab6e021ef3cb3174094f2d194">tket::pauli_angle_convert_or_throw</a> (Complex pauliCoeff, const Expr &amp;angle)</td></tr>
+<tr class="separator:a9f68fb4ab6e021ef3cb3174094f2d194"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8e72f1332998ecf4ef5d1047cfe5a95d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a8e72f1332998ecf4ef5d1047cfe5a95d">tket::append_single_pauli_gadget</a> (Circuit &amp;circ, const QubitPauliTensor &amp;pauli, Expr angle, CXConfigType cx_config=CXConfigType::Snake)</td></tr>
 <tr class="memdesc:a8e72f1332998ecf4ef5d1047cfe5a95d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append a Pauli gadget to the end of a given circuit.  <a href="namespacetket.html#a8e72f1332998ecf4ef5d1047cfe5a95d">More...</a><br /></td></tr>
 <tr class="separator:a8e72f1332998ecf4ef5d1047cfe5a95d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a49402af2e1793a0721eab83470c49ff1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a49402af2e1793a0721eab83470c49ff1">tket::append_single_pauli_gadget_as_pauli_exp_box</a> (Circuit &amp;circ, const QubitPauliTensor &amp;pauli, Expr angle, CXConfigType cx_config)</td></tr>
+<tr class="memdesc:a49402af2e1793a0721eab83470c49ff1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append a Pauli gadget to the end of a given circuit as a <a class="el" href="classtket_1_1PauliExpBox.html" title="Operation defined as the exponential of a tensor of Pauli operators.">PauliExpBox</a>.  <a href="namespacetket.html#a49402af2e1793a0721eab83470c49ff1">More...</a><br /></td></tr>
+<tr class="separator:a49402af2e1793a0721eab83470c49ff1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abfe5f8996f4929afa5e5ec01de4ac19b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#abfe5f8996f4929afa5e5ec01de4ac19b">tket::append_pauli_gadget_pair_as_box</a> (Circuit &amp;circ, const QubitPauliTensor &amp;pauli0, Expr angle0, const QubitPauliTensor &amp;pauli1, Expr angle1, CXConfigType cx_config)</td></tr>
+<tr class="separator:abfe5f8996f4929afa5e5ec01de4ac19b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8ec10f2f1ca4d7c09f847af4f3984f8b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a8ec10f2f1ca4d7c09f847af4f3984f8b">tket::append_commuting_pauli_gadget_set_as_box</a> (Circuit &amp;circ, const std::list&lt; std::pair&lt; QubitPauliTensor, Expr &gt;&gt; &amp;gadgets, CXConfigType cx_config)</td></tr>
+<tr class="separator:a8ec10f2f1ca4d7c09f847af4f3984f8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa4cafa843d160e028e5d01bed9bb5e1a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#aa4cafa843d160e028e5d01bed9bb5e1a">tket::append_pauli_gadget_pair</a> (Circuit &amp;circ, QubitPauliTensor pauli0, Expr angle0, QubitPauliTensor pauli1, Expr angle1, CXConfigType cx_config=CXConfigType::Snake)</td></tr>
 <tr class="memdesc:aa4cafa843d160e028e5d01bed9bb5e1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append a pair of Pauli gadgets to the end of a given circuit.  <a href="namespacetket.html#aa4cafa843d160e028e5d01bed9bb5e1a">More...</a><br /></td></tr>
 <tr class="separator:aa4cafa843d160e028e5d01bed9bb5e1a"><td class="memSeparator" colspan="2">&#160;</td></tr>

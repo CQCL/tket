@@ -1,26 +1,28 @@
 <map id="tket::Box" name="tket::Box">
-<area shape="rect" id="node1" title="Abstract class for an operation from which a circuit can be extracted." alt="" coords="320,503,400,529"/>
-<area shape="rect" id="node4" href="$classtket_1_1CircBox.html" title="Operation defined as a circuit." alt="" coords="501,5,606,32"/>
-<area shape="rect" id="node5" href="$classtket_1_1ClassicalExpBoxBase.html" title=" " alt="" coords="456,56,651,83"/>
-<area shape="rect" id="node7" href="$classtket_1_1CustomGate.html" title=" " alt="" coords="485,107,621,133"/>
-<area shape="rect" id="node8" href="$classtket_1_1DiagonalBox.html" title="Box to synthesise a diagonal operator." alt="" coords="484,157,623,184"/>
-<area shape="rect" id="node9" href="$classtket_1_1ExpBox.html" title="Two&#45;qubit operation defined in terms of a hermitian matrix and a phase." alt="" coords="501,208,605,235"/>
-<area shape="rect" id="node10" href="$classtket_1_1MultiplexedRotationBox.html" title="Multiplexed single&#45;axis rotations." alt="" coords="448,259,659,285"/>
-<area shape="rect" id="node11" href="$classtket_1_1MultiplexedTensoredU2Box.html" title="Multiplexed&#45;Tensored&#45;U2 gate." alt="" coords="459,310,648,351"/>
-<area shape="rect" id="node12" href="$classtket_1_1MultiplexedU2Box.html" title="Multiplexed U2 gate." alt="" coords="466,376,641,403"/>
-<area shape="rect" id="node13" href="$classtket_1_1MultiplexorBox.html" title="Multiplexed ops." alt="" coords="477,427,630,453"/>
-<area shape="rect" id="node14" href="$classtket_1_1PauliExpBox.html" title="Operation defined as the exponential of a tensor of Pauli operators." alt="" coords="486,477,621,504"/>
-<area shape="rect" id="node15" href="$classtket_1_1PhasePolyBox.html" title="A PhasePolyBox is capable of representing arbitrary Circuits made up of CNOT and RZ,..." alt="" coords="480,528,627,555"/>
-<area shape="rect" id="node16" href="$classtket_1_1ProjectorAssertionBox.html" title=" " alt="" coords="454,579,653,605"/>
-<area shape="rect" id="node17" href="$classtket_1_1QControlBox.html" title="Wraps another quantum op, adding control qubits." alt="" coords="485,629,622,656"/>
-<area shape="rect" id="node18" href="$classtket_1_1StabiliserAssertionBox.html" title=" " alt="" coords="452,680,655,707"/>
-<area shape="rect" id="node19" href="$classtket_1_1StatePreparationBox.html" title="Box to synthesise a statevector." alt="" coords="459,731,648,757"/>
-<area shape="rect" id="node20" href="$classtket_1_1ToffoliBox.html" title="Box to synthesise a state permutation." alt="" coords="494,781,613,808"/>
-<area shape="rect" id="node21" href="$classtket_1_1Unitary1qBox.html" title="One&#45;qubit operation defined as a unitary matrix." alt="" coords="481,832,625,859"/>
-<area shape="rect" id="node22" href="$classtket_1_1Unitary2qBox.html" title="Two&#45;qubit operation defined as a unitary matrix (ILO&#45;BE)" alt="" coords="481,883,625,909"/>
-<area shape="rect" id="node23" href="$classtket_1_1Unitary3qBox.html" title="Three&#45;qubit operation defined as a unitary matrix (ILO&#45;BE)" alt="" coords="481,933,625,960"/>
-<area shape="rect" id="node24" href="$classtket_1_1UnitaryTableauBox.html" title="Encapsulation of a unitary stabilizer tableau as a Box to use within a circuit." alt="" coords="464,984,643,1011"/>
-<area shape="rect" id="node2" href="$classtket_1_1Op.html" title="Abstract class representing an operation type." alt="" coords="199,503,272,529"/>
-<area shape="rect" id="node3" title=" " alt="" coords="5,495,151,537"/>
-<area shape="rect" id="node6" href="$classtket_1_1ClassicalExpBox.html" title="Holding box for abstract expressions on Bits Templated by type T which holds expression." alt="" coords="707,56,907,83"/>
+<area shape="rect" id="node1" title="Abstract class for an operation from which a circuit can be extracted." alt="" coords="320,553,400,580"/>
+<area shape="rect" id="node4" href="$classtket_1_1CircBox.html" title="Operation defined as a circuit." alt="" coords="511,5,617,32"/>
+<area shape="rect" id="node5" href="$classtket_1_1ClassicalExpBoxBase.html" title=" " alt="" coords="467,56,661,83"/>
+<area shape="rect" id="node7" href="$classtket_1_1CustomGate.html" title=" " alt="" coords="496,107,632,133"/>
+<area shape="rect" id="node8" href="$classtket_1_1DiagonalBox.html" title="Box to synthesise a diagonal operator." alt="" coords="495,157,633,184"/>
+<area shape="rect" id="node9" href="$classtket_1_1ExpBox.html" title="Two&#45;qubit operation defined in terms of a hermitian matrix and a phase." alt="" coords="512,208,616,235"/>
+<area shape="rect" id="node10" href="$classtket_1_1MultiplexedRotationBox.html" title="Multiplexed single&#45;axis rotations." alt="" coords="459,259,669,285"/>
+<area shape="rect" id="node11" href="$classtket_1_1MultiplexedTensoredU2Box.html" title="Multiplexed&#45;Tensored&#45;U2 gate." alt="" coords="469,310,659,351"/>
+<area shape="rect" id="node12" href="$classtket_1_1MultiplexedU2Box.html" title="Multiplexed U2 gate." alt="" coords="477,376,651,403"/>
+<area shape="rect" id="node13" href="$classtket_1_1MultiplexorBox.html" title="Multiplexed ops." alt="" coords="487,427,641,453"/>
+<area shape="rect" id="node14" href="$classtket_1_1PauliExpBox.html" title="Operation defined as the exponential of a tensor of Pauli operators." alt="" coords="497,477,631,504"/>
+<area shape="rect" id="node15" href="$classtket_1_1PauliExpCommutingSetBox.html" title=" " alt="" coords="448,528,680,555"/>
+<area shape="rect" id="node16" href="$classtket_1_1PauliExpPairBox.html" title=" " alt="" coords="485,579,643,605"/>
+<area shape="rect" id="node17" href="$classtket_1_1PhasePolyBox.html" title="A PhasePolyBox is capable of representing arbitrary Circuits made up of CNOT and RZ,..." alt="" coords="491,629,637,656"/>
+<area shape="rect" id="node18" href="$classtket_1_1ProjectorAssertionBox.html" title=" " alt="" coords="465,680,663,707"/>
+<area shape="rect" id="node19" href="$classtket_1_1QControlBox.html" title="Wraps another quantum op, adding control qubits." alt="" coords="495,731,633,757"/>
+<area shape="rect" id="node20" href="$classtket_1_1StabiliserAssertionBox.html" title=" " alt="" coords="463,781,665,808"/>
+<area shape="rect" id="node21" href="$classtket_1_1StatePreparationBox.html" title="Box to synthesise a statevector." alt="" coords="469,832,659,859"/>
+<area shape="rect" id="node22" href="$classtket_1_1ToffoliBox.html" title="Box to synthesise a state permutation." alt="" coords="505,883,623,909"/>
+<area shape="rect" id="node23" href="$classtket_1_1Unitary1qBox.html" title="One&#45;qubit operation defined as a unitary matrix." alt="" coords="492,933,636,960"/>
+<area shape="rect" id="node24" href="$classtket_1_1Unitary2qBox.html" title="Two&#45;qubit operation defined as a unitary matrix (ILO&#45;BE)" alt="" coords="492,984,636,1011"/>
+<area shape="rect" id="node25" href="$classtket_1_1Unitary3qBox.html" title="Three&#45;qubit operation defined as a unitary matrix (ILO&#45;BE)" alt="" coords="492,1035,636,1061"/>
+<area shape="rect" id="node26" href="$classtket_1_1UnitaryTableauBox.html" title="Encapsulation of a unitary stabilizer tableau as a Box to use within a circuit." alt="" coords="475,1085,653,1112"/>
+<area shape="rect" id="node2" href="$classtket_1_1Op.html" title="Abstract class representing an operation type." alt="" coords="199,553,272,580"/>
+<area shape="rect" id="node3" title=" " alt="" coords="5,546,151,587"/>
+<area shape="rect" id="node6" href="$classtket_1_1ClassicalExpBox.html" title="Holding box for abstract expressions on Bits Templated by type T which holds expression." alt="" coords="728,56,928,83"/>
 </map>

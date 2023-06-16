@@ -117,15 +117,15 @@ Public Member Functions</h2></td></tr>
 Friends</h2></td></tr>
 <tr class="memitem:ad0af0714118fe73e6f5723674beade91"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1PauliGraph.html">PauliGraph</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1PauliGraph.html#ad0af0714118fe73e6f5723674beade91">circuit_to_pauli_graph</a> (const <a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ)</td></tr>
 <tr class="separator:ad0af0714118fe73e6f5723674beade91"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ac8090b91477391ee89550c726f423dc2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1PauliGraph.html#ac8090b91477391ee89550c726f423dc2">pauli_graph_to_circuit_individually</a> (const <a class="el" href="classtket_1_1PauliGraph.html">PauliGraph</a> &amp;pg, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config)</td></tr>
-<tr class="memdesc:ac8090b91477391ee89550c726f423dc2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Synthesises a circuit equivalent to the <a class="el" href="classtket_1_1PauliGraph.html" title="Dependency graph of a circuit wrt Pauli Gadgets.">PauliGraph</a> by building each pauli gadget individually in the order given by TopSortIterator.  <a href="classtket_1_1PauliGraph.html#ac8090b91477391ee89550c726f423dc2">More...</a><br /></td></tr>
-<tr class="separator:ac8090b91477391ee89550c726f423dc2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aadfa952aa91414033c68f02f13c1dfb6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1PauliGraph.html#aadfa952aa91414033c68f02f13c1dfb6">pauli_graph_to_circuit_pairwise</a> (const <a class="el" href="classtket_1_1PauliGraph.html">PauliGraph</a> &amp;pg, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config)</td></tr>
-<tr class="memdesc:aadfa952aa91414033c68f02f13c1dfb6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Synthesises a circuit equivalent to the <a class="el" href="classtket_1_1PauliGraph.html" title="Dependency graph of a circuit wrt Pauli Gadgets.">PauliGraph</a> by building pairs of pauli gadgets simultaneously using the method detailed in Cowtan et al.  <a href="classtket_1_1PauliGraph.html#aadfa952aa91414033c68f02f13c1dfb6">More...</a><br /></td></tr>
-<tr class="separator:aadfa952aa91414033c68f02f13c1dfb6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a858b3f021399ccfb0a183a6815ed3f3a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1PauliGraph.html#a858b3f021399ccfb0a183a6815ed3f3a">pauli_graph_to_circuit_sets</a> (const <a class="el" href="classtket_1_1PauliGraph.html">PauliGraph</a> &amp;pg, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config)</td></tr>
-<tr class="memdesc:a858b3f021399ccfb0a183a6815ed3f3a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Synthesises a circuit equivalent to the <a class="el" href="classtket_1_1PauliGraph.html" title="Dependency graph of a circuit wrt Pauli Gadgets.">PauliGraph</a> by building sets of mutually commuting pauli gadgets and simultaneously diagonalizing each gadget in a set.  <a href="classtket_1_1PauliGraph.html#a858b3f021399ccfb0a183a6815ed3f3a">More...</a><br /></td></tr>
-<tr class="separator:a858b3f021399ccfb0a183a6815ed3f3a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a097a3a43a4216622883243a0069d2ccd"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1PauliGraph.html#a097a3a43a4216622883243a0069d2ccd">pauli_graph_to_pauli_exp_box_circuit_individually</a> (const <a class="el" href="classtket_1_1PauliGraph.html">PauliGraph</a> &amp;pg, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config)</td></tr>
+<tr class="memdesc:a097a3a43a4216622883243a0069d2ccd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Synthesises a circuit equivalent to the <a class="el" href="classtket_1_1PauliGraph.html" title="Dependency graph of a circuit wrt Pauli Gadgets.">PauliGraph</a> by adding each pauli gadget to the circuit as a <a class="el" href="classtket_1_1PauliExpBox.html" title="Operation defined as the exponential of a tensor of Pauli operators.">PauliExpBox</a> individually in the order given by TopSortIterator.  <a href="classtket_1_1PauliGraph.html#a097a3a43a4216622883243a0069d2ccd">More...</a><br /></td></tr>
+<tr class="separator:a097a3a43a4216622883243a0069d2ccd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2b729c8234eab1fb6d233bef215e924b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1PauliGraph.html#a2b729c8234eab1fb6d233bef215e924b">pauli_graph_to_pauli_exp_box_circuit_pairwise</a> (const <a class="el" href="classtket_1_1PauliGraph.html">PauliGraph</a> &amp;pg, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config)</td></tr>
+<tr class="memdesc:a2b729c8234eab1fb6d233bef215e924b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Synthesises a circuit equivalent to the <a class="el" href="classtket_1_1PauliGraph.html" title="Dependency graph of a circuit wrt Pauli Gadgets.">PauliGraph</a> by inserting pairs of pauli gadgets as PauliExpPairBoxes into the circuit The tableau is then synthesised at the end.  <a href="classtket_1_1PauliGraph.html#a2b729c8234eab1fb6d233bef215e924b">More...</a><br /></td></tr>
+<tr class="separator:a2b729c8234eab1fb6d233bef215e924b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8a819ece575ef9e40e29afbf7b1428f9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1PauliGraph.html#a8a819ece575ef9e40e29afbf7b1428f9">pauli_graph_to_pauli_exp_box_circuit_sets</a> (const <a class="el" href="classtket_1_1PauliGraph.html">PauliGraph</a> &amp;pg, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config)</td></tr>
+<tr class="memdesc:a8a819ece575ef9e40e29afbf7b1428f9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Synthesises a circuit equivalent to the <a class="el" href="classtket_1_1PauliGraph.html" title="Dependency graph of a circuit wrt Pauli Gadgets.">PauliGraph</a> by building sets of mutually commuting pauli gadgets and inserting them into the circuit as PauliExpCommutingSetBoxes The tableau is then synthesised at the end.  <a href="classtket_1_1PauliGraph.html#a8a819ece575ef9e40e29afbf7b1428f9">More...</a><br /></td></tr>
+<tr class="separator:a8a819ece575ef9e40e29afbf7b1428f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Dependency graph of a circuit wrt Pauli Gadgets. </p>
@@ -402,12 +402,12 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PauliGraphConverters_8cpp_source.html#l00027">27</a> of file <a class="el" href="PauliGraphConverters_8cpp_source.html">PauliGraphConverters.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliGraphConverters_8cpp_source.html#l00028">28</a> of file <a class="el" href="PauliGraphConverters_8cpp_source.html">PauliGraphConverters.cpp</a>.</p>
 
 </div>
 </div>
-<a id="ac8090b91477391ee89550c726f423dc2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac8090b91477391ee89550c726f423dc2">&#9670;&nbsp;</a></span>pauli_graph_to_circuit_individually</h2>
+<a id="a097a3a43a4216622883243a0069d2ccd"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a097a3a43a4216622883243a0069d2ccd">&#9670;&nbsp;</a></span>pauli_graph_to_pauli_exp_box_circuit_individually</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -416,7 +416,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classtket_1_1Circuit.html">Circuit</a> pauli_graph_to_circuit_individually </td>
+          <td class="memname"><a class="el" href="classtket_1_1Circuit.html">Circuit</a> pauli_graph_to_pauli_exp_box_circuit_individually </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classtket_1_1PauliGraph.html">PauliGraph</a> &amp;&#160;</td>
           <td class="paramname"><em>pg</em>, </td>
@@ -440,15 +440,15 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Synthesises a circuit equivalent to the <a class="el" href="classtket_1_1PauliGraph.html" title="Dependency graph of a circuit wrt Pauli Gadgets.">PauliGraph</a> by building each pauli gadget individually in the order given by TopSortIterator. </p>
+<p>Synthesises a circuit equivalent to the <a class="el" href="classtket_1_1PauliGraph.html" title="Dependency graph of a circuit wrt Pauli Gadgets.">PauliGraph</a> by adding each pauli gadget to the circuit as a <a class="el" href="classtket_1_1PauliExpBox.html" title="Operation defined as the exponential of a tensor of Pauli operators.">PauliExpBox</a> individually in the order given by TopSortIterator. </p>
 <p>The tableau is then synthesised at the end. </p>
 
-<p class="definition">Definition at line <a class="el" href="PauliGraphConverters_8cpp_source.html#l00069">69</a> of file <a class="el" href="PauliGraphConverters_8cpp_source.html">PauliGraphConverters.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliGraphConverters_8cpp_source.html#l00070">70</a> of file <a class="el" href="PauliGraphConverters_8cpp_source.html">PauliGraphConverters.cpp</a>.</p>
 
 </div>
 </div>
-<a id="aadfa952aa91414033c68f02f13c1dfb6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aadfa952aa91414033c68f02f13c1dfb6">&#9670;&nbsp;</a></span>pauli_graph_to_circuit_pairwise</h2>
+<a id="a2b729c8234eab1fb6d233bef215e924b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2b729c8234eab1fb6d233bef215e924b">&#9670;&nbsp;</a></span>pauli_graph_to_pauli_exp_box_circuit_pairwise</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -457,7 +457,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classtket_1_1Circuit.html">Circuit</a> pauli_graph_to_circuit_pairwise </td>
+          <td class="memname"><a class="el" href="classtket_1_1Circuit.html">Circuit</a> pauli_graph_to_pauli_exp_box_circuit_pairwise </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classtket_1_1PauliGraph.html">PauliGraph</a> &amp;&#160;</td>
           <td class="paramname"><em>pg</em>, </td>
@@ -481,15 +481,14 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Synthesises a circuit equivalent to the <a class="el" href="classtket_1_1PauliGraph.html" title="Dependency graph of a circuit wrt Pauli Gadgets.">PauliGraph</a> by building pairs of pauli gadgets simultaneously using the method detailed in Cowtan et al. </p>
-<p>Phase Gadget Synthesis for Shallow Circuits, Lemma 4.9. The tableau is then synthesised at the end. </p>
+<p>Synthesises a circuit equivalent to the <a class="el" href="classtket_1_1PauliGraph.html" title="Dependency graph of a circuit wrt Pauli Gadgets.">PauliGraph</a> by inserting pairs of pauli gadgets as PauliExpPairBoxes into the circuit The tableau is then synthesised at the end. </p>
 
-<p class="definition">Definition at line <a class="el" href="PauliGraphConverters_8cpp_source.html#l00091">91</a> of file <a class="el" href="PauliGraphConverters_8cpp_source.html">PauliGraphConverters.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliGraphConverters_8cpp_source.html#l00092">92</a> of file <a class="el" href="PauliGraphConverters_8cpp_source.html">PauliGraphConverters.cpp</a>.</p>
 
 </div>
 </div>
-<a id="a858b3f021399ccfb0a183a6815ed3f3a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a858b3f021399ccfb0a183a6815ed3f3a">&#9670;&nbsp;</a></span>pauli_graph_to_circuit_sets</h2>
+<a id="a8a819ece575ef9e40e29afbf7b1428f9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a819ece575ef9e40e29afbf7b1428f9">&#9670;&nbsp;</a></span>pauli_graph_to_pauli_exp_box_circuit_sets</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -498,7 +497,7 @@ Friends</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classtket_1_1Circuit.html">Circuit</a> pauli_graph_to_circuit_sets </td>
+          <td class="memname"><a class="el" href="classtket_1_1Circuit.html">Circuit</a> pauli_graph_to_pauli_exp_box_circuit_sets </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classtket_1_1PauliGraph.html">PauliGraph</a> &amp;&#160;</td>
           <td class="paramname"><em>pg</em>, </td>
@@ -522,10 +521,12 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p>Synthesises a circuit equivalent to the <a class="el" href="classtket_1_1PauliGraph.html" title="Dependency graph of a circuit wrt Pauli Gadgets.">PauliGraph</a> by building sets of mutually commuting pauli gadgets and simultaneously diagonalizing each gadget in a set. </p>
-<p>The tableau is then synthesised at the end. </p>
+<p>Synthesises a circuit equivalent to the <a class="el" href="classtket_1_1PauliGraph.html" title="Dependency graph of a circuit wrt Pauli Gadgets.">PauliGraph</a> by building sets of mutually commuting pauli gadgets and inserting them into the circuit as PauliExpCommutingSetBoxes The tableau is then synthesised at the end. </p>
+<ul>
+<li>Currently follows a greedy set-building method *&zwj;/ </li>
+</ul>
 
-<p class="definition">Definition at line <a class="el" href="PauliGraphConverters_8cpp_source.html#l00126">126</a> of file <a class="el" href="PauliGraphConverters_8cpp_source.html">PauliGraphConverters.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliGraphConverters_8cpp_source.html#l00132">132</a> of file <a class="el" href="PauliGraphConverters_8cpp_source.html">PauliGraphConverters.cpp</a>.</p>
 
 </div>
 </div>

@@ -173,9 +173,6 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1ExpBox.html">ExpBox</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Two-qubit operation defined in terms of a hermitian matrix and a phase.  <a href="classtket_1_1ExpBox.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1PauliExpBox.html">PauliExpBox</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Operation defined as the exponential of a tensor of Pauli operators.  <a href="classtket_1_1PauliExpBox.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1CompositeGateDef.html">CompositeGateDef</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1CustomGate.html">CustomGate</a></td></tr>
@@ -253,6 +250,15 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1MultiplexedTensoredU2Box.html">MultiplexedTensoredU2Box</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Multiplexed-Tensored-U2 gate.  <a href="classtket_1_1MultiplexedTensoredU2Box.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1PauliExpBoxInvalidity.html">PauliExpBoxInvalidity</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1PauliExpBox.html">PauliExpBox</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Operation defined as the exponential of a tensor of Pauli operators.  <a href="classtket_1_1PauliExpBox.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1PauliExpPairBox.html">PauliExpPairBox</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1PauliExpCommutingSetBox.html">PauliExpCommutingSetBox</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1StatePreparationBox.html">StatePreparationBox</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classtket_1_1Box.html" title="Abstract class for an operation from which a circuit can be extracted.">Box</a> to synthesise a statevector.  <a href="classtket_1_1StatePreparationBox.html#details">More...</a><br /></td></tr>
@@ -1018,24 +1024,27 @@ Enumerations</h2></td></tr>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a8033def635b0488ce1437a093df3bbd8">ExpBox</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aaa7c55748f3e91d01205fe879c9fcbda">PauliExpBox</a>
 , <br />
-&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ac69faa9b11814ac9630106a403214413">CliffBox</a>
+&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3af8d174eb8f50f05d5dbd60cb347ebdf1">PauliExpPairBox</a>
+, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a7c611554bdd8b6073d46d43b3211df77">PauliExpCommutingSetBox</a>
+, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ac69faa9b11814ac9630106a403214413">CliffBox</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a4b783b48edba0b5e9bdfe69464914c8f">CustomGate</a>
-, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a242d5bcfd960527a3f152c6dfe220c67">PhasePolyBox</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a242d5bcfd960527a3f152c6dfe220c67">PhasePolyBox</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a0bdf2d4fd224397ee888ae5ed535ed6c">QControlBox</a>
-, <br />
-&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5468c5fca8c024e9122b78635614697a">MultiplexorBox</a>
+, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5468c5fca8c024e9122b78635614697a">MultiplexorBox</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a4a9b2379c074f3efea93a09109c5f50a">MultiplexedRotationBox</a>
-, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a58bb13ca790adbe8e7436ef2652e62e0">MultiplexedU2Box</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a58bb13ca790adbe8e7436ef2652e62e0">MultiplexedU2Box</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a3c9ff4cfe53157fae22249b1feae8909">MultiplexedTensoredU2Box</a>
-, <br />
-&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a36eb2fc691327e9917ffb76ca90dcece">StatePreparationBox</a>
+, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a36eb2fc691327e9917ffb76ca90dcece">StatePreparationBox</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a8afab1972f0d75adf02050866a070296">DiagonalBox</a>
-, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a81e83c562bbc4b3d830391b008dece4e">ClassicalExpBox</a>
-, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a9d3afea73e90192d96dda8d38c87a4fe">Conditional</a>
 , <br />
-&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a927eb314e7755edbf2f295363eb70989">ProjectorAssertionBox</a>
+&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a81e83c562bbc4b3d830391b008dece4e">ClassicalExpBox</a>
+, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a9d3afea73e90192d96dda8d38c87a4fe">Conditional</a>
+, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a927eb314e7755edbf2f295363eb70989">ProjectorAssertionBox</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5873bfa21082d8011557e19ef525e2dd">StabiliserAssertionBox</a>
-, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a07bcde47c17d44eebfa6c59aa6942d1c">ToffoliBox</a>
+, <br />
+&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a07bcde47c17d44eebfa6c59aa6942d1c">ToffoliBox</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a875cbe7ba0f4486177a06d7f5847ff24">UnitaryTableauBox</a>
 <br />
  }</td></tr>
@@ -1186,6 +1195,8 @@ Functions</h2></td></tr>
 <tr class="separator:a9e34ddb30dbc05b8b1fb0167e55e0587"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab5cfd76224bd2a945c23f62bb1ed1fc7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#ab5cfd76224bd2a945c23f62bb1ed1fc7">from_json</a> (const nlohmann::json &amp;j, <a class="el" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a> &amp;op)</td></tr>
 <tr class="separator:ab5cfd76224bd2a945c23f62bb1ed1fc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e747aed92bf8a2eef3d5c5d28c052f3"><td class="memItemLeft" align="right" valign="top">int&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a0e747aed92bf8a2eef3d5c5d28c052f3">transpose_angle_factor</a> (const std::vector&lt; <a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> &gt; &amp;paulis)</td></tr>
+<tr class="separator:a0e747aed92bf8a2eef3d5c5d28c052f3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4e01316d325719d3e3eab4d5e49e21d4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a4e01316d325719d3e3eab4d5e49e21d4">three_qubit_synthesis</a> (const Eigen::MatrixXcd &amp;U)</td></tr>
 <tr class="memdesc:a4e01316d325719d3e3eab4d5e49e21d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Synthesise a 3-qubit circuit from an arbitrary 8x8 unitary.  <a href="namespacetket.html#a4e01316d325719d3e3eab4d5e49e21d4">More...</a><br /></td></tr>
 <tr class="separator:a4e01316d325719d3e3eab4d5e49e21d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1233,9 +1244,18 @@ Functions</h2></td></tr>
 <tr class="separator:ab46224ff036f91009e465938cfb23177"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2ee84900c6f189caa05834c34389a824"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a2ee84900c6f189caa05834c34389a824">operator&lt;&lt;</a> (std::ostream &amp;out, const <a class="el" href="classtket_1_1DiagMatrix.html">DiagMatrix</a> &amp;diam)</td></tr>
 <tr class="separator:a2ee84900c6f189caa05834c34389a824"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a9f68fb4ab6e021ef3cb3174094f2d194"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a9f68fb4ab6e021ef3cb3174094f2d194">pauli_angle_convert_or_throw</a> (<a class="el" href="namespacetket.html#a68999408b52ab2f0f191f814ec93f4de">Complex</a> pauliCoeff, const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;angle)</td></tr>
+<tr class="separator:a9f68fb4ab6e021ef3cb3174094f2d194"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8e72f1332998ecf4ef5d1047cfe5a95d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a8e72f1332998ecf4ef5d1047cfe5a95d">append_single_pauli_gadget</a> (<a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ, const <a class="el" href="classtket_1_1QubitPauliTensor.html">QubitPauliTensor</a> &amp;pauli, <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> angle, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config=<a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a>)</td></tr>
 <tr class="memdesc:a8e72f1332998ecf4ef5d1047cfe5a95d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append a Pauli gadget to the end of a given circuit.  <a href="namespacetket.html#a8e72f1332998ecf4ef5d1047cfe5a95d">More...</a><br /></td></tr>
 <tr class="separator:a8e72f1332998ecf4ef5d1047cfe5a95d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a49402af2e1793a0721eab83470c49ff1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a49402af2e1793a0721eab83470c49ff1">append_single_pauli_gadget_as_pauli_exp_box</a> (<a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ, const <a class="el" href="classtket_1_1QubitPauliTensor.html">QubitPauliTensor</a> &amp;pauli, <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> angle, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config)</td></tr>
+<tr class="memdesc:a49402af2e1793a0721eab83470c49ff1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append a Pauli gadget to the end of a given circuit as a <a class="el" href="classtket_1_1PauliExpBox.html" title="Operation defined as the exponential of a tensor of Pauli operators.">PauliExpBox</a>.  <a href="namespacetket.html#a49402af2e1793a0721eab83470c49ff1">More...</a><br /></td></tr>
+<tr class="separator:a49402af2e1793a0721eab83470c49ff1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:abfe5f8996f4929afa5e5ec01de4ac19b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#abfe5f8996f4929afa5e5ec01de4ac19b">append_pauli_gadget_pair_as_box</a> (<a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ, const <a class="el" href="classtket_1_1QubitPauliTensor.html">QubitPauliTensor</a> &amp;pauli0, <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> angle0, const <a class="el" href="classtket_1_1QubitPauliTensor.html">QubitPauliTensor</a> &amp;pauli1, <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> angle1, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config)</td></tr>
+<tr class="separator:abfe5f8996f4929afa5e5ec01de4ac19b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8ec10f2f1ca4d7c09f847af4f3984f8b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a8ec10f2f1ca4d7c09f847af4f3984f8b">append_commuting_pauli_gadget_set_as_box</a> (<a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ, const std::list&lt; std::pair&lt; <a class="el" href="classtket_1_1QubitPauliTensor.html">QubitPauliTensor</a>, <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &gt;&gt; &amp;gadgets, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config)</td></tr>
+<tr class="separator:a8ec10f2f1ca4d7c09f847af4f3984f8b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa4cafa843d160e028e5d01bed9bb5e1a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#aa4cafa843d160e028e5d01bed9bb5e1a">append_pauli_gadget_pair</a> (<a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ, <a class="el" href="classtket_1_1QubitPauliTensor.html">QubitPauliTensor</a> pauli0, <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> angle0, <a class="el" href="classtket_1_1QubitPauliTensor.html">QubitPauliTensor</a> pauli1, <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> angle1, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config=<a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a>)</td></tr>
 <tr class="memdesc:aa4cafa843d160e028e5d01bed9bb5e1a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append a pair of Pauli gadgets to the end of a given circuit.  <a href="namespacetket.html#aa4cafa843d160e028e5d01bed9bb5e1a">More...</a><br /></td></tr>
 <tr class="separator:aa4cafa843d160e028e5d01bed9bb5e1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1243,15 +1263,15 @@ Functions</h2></td></tr>
 <tr class="separator:a572fb16dcb271724a0df5a5e5ded02cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8635d43399ecceae017954a465215061"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a8635d43399ecceae017954a465215061">pauli_graph_to_circuit</a> (const <a class="el" href="classtket_1_1PauliGraph.html">PauliGraph</a> &amp;pg)</td></tr>
 <tr class="separator:a8635d43399ecceae017954a465215061"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa266c9859f9e95807904da7a84750a31"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#aa266c9859f9e95807904da7a84750a31">pauli_graph_to_circuit_individually</a> (const <a class="el" href="classtket_1_1PauliGraph.html">PauliGraph</a> &amp;pg, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config=<a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a>)</td></tr>
-<tr class="memdesc:aa266c9859f9e95807904da7a84750a31"><td class="mdescLeft">&#160;</td><td class="mdescRight">Synthesises a circuit equivalent to the <a class="el" href="classtket_1_1PauliGraph.html" title="Dependency graph of a circuit wrt Pauli Gadgets.">PauliGraph</a> by building each pauli gadget individually in the order given by TopSortIterator.  <a href="namespacetket.html#aa266c9859f9e95807904da7a84750a31">More...</a><br /></td></tr>
-<tr class="separator:aa266c9859f9e95807904da7a84750a31"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a288dc60b532d06bb9434dd77affe85e8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a288dc60b532d06bb9434dd77affe85e8">pauli_graph_to_circuit_pairwise</a> (const <a class="el" href="classtket_1_1PauliGraph.html">PauliGraph</a> &amp;pg, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config=<a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a>)</td></tr>
-<tr class="memdesc:a288dc60b532d06bb9434dd77affe85e8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Synthesises a circuit equivalent to the <a class="el" href="classtket_1_1PauliGraph.html" title="Dependency graph of a circuit wrt Pauli Gadgets.">PauliGraph</a> by building pairs of pauli gadgets simultaneously using the method detailed in Cowtan et al.  <a href="namespacetket.html#a288dc60b532d06bb9434dd77affe85e8">More...</a><br /></td></tr>
-<tr class="separator:a288dc60b532d06bb9434dd77affe85e8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aff68530a447b753166638c4500742c05"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#aff68530a447b753166638c4500742c05">pauli_graph_to_circuit_sets</a> (const <a class="el" href="classtket_1_1PauliGraph.html">PauliGraph</a> &amp;pg, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config=<a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a>)</td></tr>
-<tr class="memdesc:aff68530a447b753166638c4500742c05"><td class="mdescLeft">&#160;</td><td class="mdescRight">Synthesises a circuit equivalent to the <a class="el" href="classtket_1_1PauliGraph.html" title="Dependency graph of a circuit wrt Pauli Gadgets.">PauliGraph</a> by building sets of mutually commuting pauli gadgets and simultaneously diagonalizing each gadget in a set.  <a href="namespacetket.html#aff68530a447b753166638c4500742c05">More...</a><br /></td></tr>
-<tr class="separator:aff68530a447b753166638c4500742c05"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:afd183bc3aae0fc1875b47f95cec11e64"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#afd183bc3aae0fc1875b47f95cec11e64">pauli_graph_to_pauli_exp_box_circuit_individually</a> (const <a class="el" href="classtket_1_1PauliGraph.html">PauliGraph</a> &amp;pg, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config=<a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a>)</td></tr>
+<tr class="memdesc:afd183bc3aae0fc1875b47f95cec11e64"><td class="mdescLeft">&#160;</td><td class="mdescRight">Synthesises a circuit equivalent to the <a class="el" href="classtket_1_1PauliGraph.html" title="Dependency graph of a circuit wrt Pauli Gadgets.">PauliGraph</a> by adding each pauli gadget to the circuit as a <a class="el" href="classtket_1_1PauliExpBox.html" title="Operation defined as the exponential of a tensor of Pauli operators.">PauliExpBox</a> individually in the order given by TopSortIterator.  <a href="namespacetket.html#afd183bc3aae0fc1875b47f95cec11e64">More...</a><br /></td></tr>
+<tr class="separator:afd183bc3aae0fc1875b47f95cec11e64"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad812f0f4ed9ebf694b10ae4cc0994832"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#ad812f0f4ed9ebf694b10ae4cc0994832">pauli_graph_to_pauli_exp_box_circuit_pairwise</a> (const <a class="el" href="classtket_1_1PauliGraph.html">PauliGraph</a> &amp;pg, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config=<a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a>)</td></tr>
+<tr class="memdesc:ad812f0f4ed9ebf694b10ae4cc0994832"><td class="mdescLeft">&#160;</td><td class="mdescRight">Synthesises a circuit equivalent to the <a class="el" href="classtket_1_1PauliGraph.html" title="Dependency graph of a circuit wrt Pauli Gadgets.">PauliGraph</a> by inserting pairs of pauli gadgets as PauliExpPairBoxes into the circuit The tableau is then synthesised at the end.  <a href="namespacetket.html#ad812f0f4ed9ebf694b10ae4cc0994832">More...</a><br /></td></tr>
+<tr class="separator:ad812f0f4ed9ebf694b10ae4cc0994832"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a33d9a6c1a35702ebd17ce2ce72ab6e6e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a33d9a6c1a35702ebd17ce2ce72ab6e6e">pauli_graph_to_pauli_exp_box_circuit_sets</a> (const <a class="el" href="classtket_1_1PauliGraph.html">PauliGraph</a> &amp;pg, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config=<a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a>)</td></tr>
+<tr class="memdesc:a33d9a6c1a35702ebd17ce2ce72ab6e6e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Synthesises a circuit equivalent to the <a class="el" href="classtket_1_1PauliGraph.html" title="Dependency graph of a circuit wrt Pauli Gadgets.">PauliGraph</a> by building sets of mutually commuting pauli gadgets and inserting them into the circuit as PauliExpCommutingSetBoxes The tableau is then synthesised at the end.  <a href="namespacetket.html#a33d9a6c1a35702ebd17ce2ce72ab6e6e">More...</a><br /></td></tr>
+<tr class="separator:a33d9a6c1a35702ebd17ce2ce72ab6e6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a932186c537c4578b1de77ccb4cc36a45"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a932186c537c4578b1de77ccb4cc36a45">gray_synth</a> (unsigned n_qubits, const std::list&lt; <a class="el" href="namespacetket.html#ac8f21c5b5b88cc7d6c575ad14cdebc7d">phase_term_t</a> &gt; &amp;parities, const <a class="el" href="namespacetket.html#afc6a69cf78c26da6848112274764acc6">MatrixXb</a> &amp;linear_transformation)</td></tr>
 <tr class="separator:a932186c537c4578b1de77ccb4cc36a45"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8676ea2e430ed41e948245bec68788bf"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
@@ -1574,6 +1594,8 @@ Functions</h2></td></tr>
 <tr class="separator:a95690781262d22df0071113af874dcb8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7b2b50dc805ddddaa8670c06b73db427"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a7b2b50dc805ddddaa8670c06b73db427">gen_pairwise_pauli_gadgets</a> (<a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config)</td></tr>
 <tr class="separator:a7b2b50dc805ddddaa8670c06b73db427"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa0b104fe4cae850abf2f636b2fa33528"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#aa0b104fe4cae850abf2f636b2fa33528">gen_pauli_exponentials</a> (<a class="el" href="namespacetket_1_1Transforms.html#af9aeecd429f293a2082ec31a14284028">Transforms::PauliSynthStrat</a> strat, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config)</td></tr>
+<tr class="separator:aa0b104fe4cae850abf2f636b2fa33528"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0a7c3b323c58d5e984e2bed65fdea2ed"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a0a7c3b323c58d5e984e2bed65fdea2ed">gen_synthesise_pauli_graph</a> (<a class="el" href="namespacetket_1_1Transforms.html#af9aeecd429f293a2082ec31a14284028">Transforms::PauliSynthStrat</a> strat, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config)</td></tr>
 <tr class="separator:a0a7c3b323c58d5e984e2bed65fdea2ed"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7e4c81947f0d1e2cce8244ca10483545"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a7e4c81947f0d1e2cce8244ca10483545">gen_special_UCC_synthesis</a> (<a class="el" href="namespacetket_1_1Transforms.html#af9aeecd429f293a2082ec31a14284028">Transforms::PauliSynthStrat</a> strat, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config)</td></tr>
@@ -1825,6 +1847,10 @@ Functions</h2></td></tr>
 <tr class="separator:a930f453f5886d252c3fb7a45ea0bc4fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a581d9c405547974363fb647e7f494db6"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a581d9c405547974363fb647e7f494db6">from_json</a> (const nlohmann::json &amp;j, <a class="el" href="structtket_1_1PauliStabiliser.html">PauliStabiliser</a> &amp;pauli_stabiliser)</td></tr>
 <tr class="separator:a581d9c405547974363fb647e7f494db6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aad3c3514a79296002baa74a437640423"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#aad3c3514a79296002baa74a437640423">to_json</a> (nlohmann::json &amp;j, const <a class="el" href="classtket_1_1QubitPauliTensor.html">QubitPauliTensor</a> &amp;qubitPauliTensor)</td></tr>
+<tr class="separator:aad3c3514a79296002baa74a437640423"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a187c878a3fe282cd618b1c5f25d098a4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a187c878a3fe282cd618b1c5f25d098a4">from_json</a> (const nlohmann::json &amp;j, <a class="el" href="classtket_1_1QubitPauliTensor.html">QubitPauliTensor</a> &amp;qubitPauliTensor)</td></tr>
+<tr class="separator:a187c878a3fe282cd618b1c5f25d098a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aad92ba0223225b2432b3754047387b5e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#aad92ba0223225b2432b3754047387b5e">to_json</a> (nlohmann::json &amp;j, const <a class="el" href="classtket_1_1Qubit.html">Qubit</a> &amp;qb)</td></tr>
 <tr class="separator:aad92ba0223225b2432b3754047387b5e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a53429249cb60afd24b0e046ae65b467b"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a53429249cb60afd24b0e046ae65b467b">from_json</a> (const nlohmann::json &amp;j, <a class="el" href="classtket_1_1Qubit.html">Qubit</a> &amp;qb)</td></tr>
@@ -1899,6 +1925,8 @@ Functions</h2></td></tr>
 <tr class="separator:a283bc95e31c391e217ac10465a88afbb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2356c8aa4b2c14f3a8f0627edfc03a4e"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a2356c8aa4b2c14f3a8f0627edfc03a4e">JSON_DECL</a> (<a class="el" href="classtket_1_1QubitPauliString.html">QubitPauliString</a>)</td></tr>
 <tr class="separator:a2356c8aa4b2c14f3a8f0627edfc03a4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1b34b7530a5c45aeb3b2b94e32b202f9"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a1b34b7530a5c45aeb3b2b94e32b202f9">JSON_DECL</a> (<a class="el" href="classtket_1_1QubitPauliTensor.html">QubitPauliTensor</a>)</td></tr>
+<tr class="separator:a1b34b7530a5c45aeb3b2b94e32b202f9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab88b6e730613b53cbc6d73cd0363f9e3"><td class="memTemplParams" colspan="2">template&lt;class Unit_T &gt; </td></tr>
 <tr class="memitem:ab88b6e730613b53cbc6d73cd0363f9e3"><td class="memTemplItemLeft" align="right" valign="top">void&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacetket.html#ab88b6e730613b53cbc6d73cd0363f9e3">unitid_to_json</a> (nlohmann::json &amp;j, const Unit_T &amp;unit)</td></tr>
 <tr class="separator:ab88b6e730613b53cbc6d73cd0363f9e3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -2158,7 +2186,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Boxes_8hpp_source.html#l00471">471</a> of file <a class="el" href="Boxes_8hpp_source.html">Boxes.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Boxes_8hpp_source.html#l00410">410</a> of file <a class="el" href="Boxes_8hpp_source.html">Boxes.hpp</a>.</p>
 
 </div>
 </div>
@@ -2769,7 +2797,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PauliStrings_8hpp_source.html#l00265">265</a> of file <a class="el" href="PauliStrings_8hpp_source.html">PauliStrings.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8hpp_source.html#l00283">283</a> of file <a class="el" href="PauliStrings_8hpp_source.html">PauliStrings.hpp</a>.</p>
 
 </div>
 </div>
@@ -2985,7 +3013,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PauliStrings_8hpp_source.html#l00302">302</a> of file <a class="el" href="PauliStrings_8hpp_source.html">PauliStrings.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8hpp_source.html#l00320">320</a> of file <a class="el" href="PauliStrings_8hpp_source.html">PauliStrings.hpp</a>.</p>
 
 </div>
 </div>
@@ -4316,6 +4344,10 @@ template&lt;typename A , typename B &gt; </div>
 </td></tr>
 <tr><td class="fieldname"><a id="a13e81344da4794f2648eb9a7b286fcf3aaa7c55748f3e91d01205fe879c9fcbda"></a>PauliExpBox&#160;</td><td class="fielddoc"><p>See <a class="el" href="classtket_1_1PauliExpBox.html">PauliExpBox</a>. </p>
 </td></tr>
+<tr><td class="fieldname"><a id="a13e81344da4794f2648eb9a7b286fcf3af8d174eb8f50f05d5dbd60cb347ebdf1"></a>PauliExpPairBox&#160;</td><td class="fielddoc"><p>See <a class="el" href="classtket_1_1PauliExpPairBox.html">PauliExpPairBox</a>. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a13e81344da4794f2648eb9a7b286fcf3a7c611554bdd8b6073d46d43b3211df77"></a>PauliExpCommutingSetBox&#160;</td><td class="fielddoc"><p>See <a class="el" href="classtket_1_1PauliExpCommutingSetBox.html">PauliExpCommutingSetBox</a>. </p>
+</td></tr>
 <tr><td class="fieldname"><a id="a13e81344da4794f2648eb9a7b286fcf3ac69faa9b11814ac9630106a403214413"></a>CliffBox&#160;</td><td class="fielddoc"><p>NYI. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="a13e81344da4794f2648eb9a7b286fcf3a4b783b48edba0b5e9bdfe69464914c8f"></a>CustomGate&#160;</td><td class="fielddoc"><p>See <a class="el" href="classtket_1_1CustomGate.html">CustomGate</a>. </p>
@@ -5025,6 +5057,42 @@ template&lt;typename A , typename B &gt; </div>
 
 </div>
 </div>
+<a id="a8ec10f2f1ca4d7c09f847af4f3984f8b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8ec10f2f1ca4d7c09f847af4f3984f8b">&#9670;&nbsp;</a></span>append_commuting_pauli_gadget_set_as_box()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tket::append_commuting_pauli_gadget_set_as_box </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;&#160;</td>
+          <td class="paramname"><em>circ</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::list&lt; std::pair&lt; <a class="el" href="classtket_1_1QubitPauliTensor.html">QubitPauliTensor</a>, <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &gt;&gt; &amp;&#160;</td>
+          <td class="paramname"><em>gadgets</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a>&#160;</td>
+          <td class="paramname"><em>cx_config</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="PauliGadget_8cpp_source.html#l00105">105</a> of file <a class="el" href="PauliGadget_8cpp_source.html">PauliGadget.cpp</a>.</p>
+
+</div>
+</div>
 <a id="aa4cafa843d160e028e5d01bed9bb5e1a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa4cafa843d160e028e5d01bed9bb5e1a">&#9670;&nbsp;</a></span>append_pauli_gadget_pair()</h2>
 
@@ -5089,7 +5157,61 @@ template&lt;typename A , typename B &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="PauliGadget_8cpp_source.html#l00134">134</a> of file <a class="el" href="PauliGadget_8cpp_source.html">PauliGadget.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliGadget_8cpp_source.html#l00235">235</a> of file <a class="el" href="PauliGadget_8cpp_source.html">PauliGadget.cpp</a>.</p>
+
+</div>
+</div>
+<a id="abfe5f8996f4929afa5e5ec01de4ac19b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#abfe5f8996f4929afa5e5ec01de4ac19b">&#9670;&nbsp;</a></span>append_pauli_gadget_pair_as_box()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tket::append_pauli_gadget_pair_as_box </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;&#160;</td>
+          <td class="paramname"><em>circ</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classtket_1_1QubitPauliTensor.html">QubitPauliTensor</a> &amp;&#160;</td>
+          <td class="paramname"><em>pauli0</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a>&#160;</td>
+          <td class="paramname"><em>angle0</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classtket_1_1QubitPauliTensor.html">QubitPauliTensor</a> &amp;&#160;</td>
+          <td class="paramname"><em>pauli1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a>&#160;</td>
+          <td class="paramname"><em>angle1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a>&#160;</td>
+          <td class="paramname"><em>cx_config</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="PauliGadget_8cpp_source.html#l00064">64</a> of file <a class="el" href="PauliGadget_8cpp_source.html">PauliGadget.cpp</a>.</p>
 
 </div>
 </div>
@@ -5143,7 +5265,61 @@ template&lt;typename A , typename B &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="PauliGadget_8cpp_source.html#l00021">21</a> of file <a class="el" href="PauliGadget_8cpp_source.html">PauliGadget.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliGadget_8cpp_source.html#l00032">32</a> of file <a class="el" href="PauliGadget_8cpp_source.html">PauliGadget.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a49402af2e1793a0721eab83470c49ff1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a49402af2e1793a0721eab83470c49ff1">&#9670;&nbsp;</a></span>append_single_pauli_gadget_as_pauli_exp_box()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tket::append_single_pauli_gadget_as_pauli_exp_box </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;&#160;</td>
+          <td class="paramname"><em>circ</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classtket_1_1QubitPauliTensor.html">QubitPauliTensor</a> &amp;&#160;</td>
+          <td class="paramname"><em>pauli</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a>&#160;</td>
+          <td class="paramname"><em>angle</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a>&#160;</td>
+          <td class="paramname"><em>cx_config</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Append a Pauli gadget to the end of a given circuit as a <a class="el" href="classtket_1_1PauliExpBox.html" title="Operation defined as the exponential of a tensor of Pauli operators.">PauliExpBox</a>. </p>
+<p>Automatically uses Snake CX configuration</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">circ</td><td>circuit to append to </td></tr>
+    <tr><td class="paramname">pauli</td><td>Pauli operators and their respective qubits </td></tr>
+    <tr><td class="paramname">angle</td><td>angle in half-turns </td></tr>
+    <tr><td class="paramname">cx_config</td><td>which type of CX configuration to decompose into </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="PauliGadget_8cpp_source.html#l00049">49</a> of file <a class="el" href="PauliGadget_8cpp_source.html">PauliGadget.cpp</a>.</p>
 
 </div>
 </div>
@@ -5658,7 +5834,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PauliGraphConverters_8cpp_source.html#l00027">27</a> of file <a class="el" href="PauliGraphConverters_8cpp_source.html">PauliGraphConverters.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliGraphConverters_8cpp_source.html#l00028">28</a> of file <a class="el" href="PauliGraphConverters_8cpp_source.html">PauliGraphConverters.cpp</a>.</p>
 
 </div>
 </div>
@@ -6229,7 +6405,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Boxes_8cpp_source.html#l00497">497</a> of file <a class="el" href="Boxes_8cpp_source.html">Boxes.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Boxes_8cpp_source.html#l00454">454</a> of file <a class="el" href="Boxes_8cpp_source.html">Boxes.cpp</a>.</p>
 
 </div>
 </div>
@@ -6323,7 +6499,7 @@ template&lt;typename T &gt; </div>
 <p>It is the caller's responsibility to provide a valid transform: there are no checks on this.</p>
 <dl class="section return"><dt>Returns</dt><dd>compilation pass that applies the supplied transform </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00864">864</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00871">871</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
@@ -7217,7 +7393,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a91d0b4b066c67030bd53dee413fce050"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a91d0b4b066c67030bd53dee413fce050">&#9670;&nbsp;</a></span>from_json() <span class="overload">[1/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a91d0b4b066c67030bd53dee413fce050">&#9670;&nbsp;</a></span>from_json() <span class="overload">[1/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7247,7 +7423,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a8480f9e4486eeb5f6b4df09347b29cd7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8480f9e4486eeb5f6b4df09347b29cd7">&#9670;&nbsp;</a></span>from_json() <span class="overload">[2/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a8480f9e4486eeb5f6b4df09347b29cd7">&#9670;&nbsp;</a></span>from_json() <span class="overload">[2/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7277,7 +7453,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="ab465389a1775c7abac371775b9c3a938"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab465389a1775c7abac371775b9c3a938">&#9670;&nbsp;</a></span>from_json() <span class="overload">[3/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ab465389a1775c7abac371775b9c3a938">&#9670;&nbsp;</a></span>from_json() <span class="overload">[3/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7307,7 +7483,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="aa288b45e0dc758918b68eec30c5a757d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa288b45e0dc758918b68eec30c5a757d">&#9670;&nbsp;</a></span>from_json() <span class="overload">[4/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aa288b45e0dc758918b68eec30c5a757d">&#9670;&nbsp;</a></span>from_json() <span class="overload">[4/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7337,7 +7513,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a1fff349fb67b823c404240549490fe4e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1fff349fb67b823c404240549490fe4e">&#9670;&nbsp;</a></span>from_json() <span class="overload">[5/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a1fff349fb67b823c404240549490fe4e">&#9670;&nbsp;</a></span>from_json() <span class="overload">[5/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7367,7 +7543,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a0477c69ca34d1cd29afb9820a51f32db"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0477c69ca34d1cd29afb9820a51f32db">&#9670;&nbsp;</a></span>from_json() <span class="overload">[6/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a0477c69ca34d1cd29afb9820a51f32db">&#9670;&nbsp;</a></span>from_json() <span class="overload">[6/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7397,7 +7573,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a366cedf47a3be4f0b69f9d91c9be3b80"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a366cedf47a3be4f0b69f9d91c9be3b80">&#9670;&nbsp;</a></span>from_json() <span class="overload">[7/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a366cedf47a3be4f0b69f9d91c9be3b80">&#9670;&nbsp;</a></span>from_json() <span class="overload">[7/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7427,7 +7603,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a7ec709945767bd70fb640a0838d63b0f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7ec709945767bd70fb640a0838d63b0f">&#9670;&nbsp;</a></span>from_json() <span class="overload">[8/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a7ec709945767bd70fb640a0838d63b0f">&#9670;&nbsp;</a></span>from_json() <span class="overload">[8/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7457,7 +7633,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a8ca885e368fdafd84fe074a22facbd83"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8ca885e368fdafd84fe074a22facbd83">&#9670;&nbsp;</a></span>from_json() <span class="overload">[9/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a8ca885e368fdafd84fe074a22facbd83">&#9670;&nbsp;</a></span>from_json() <span class="overload">[9/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7482,12 +7658,12 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Boxes_8cpp_source.html#l00598">598</a> of file <a class="el" href="Boxes_8cpp_source.html">Boxes.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Boxes_8cpp_source.html#l00539">539</a> of file <a class="el" href="Boxes_8cpp_source.html">Boxes.cpp</a>.</p>
 
 </div>
 </div>
 <a id="a564b6d2d0f09d0437ef1e4dd1af3159e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a564b6d2d0f09d0437ef1e4dd1af3159e">&#9670;&nbsp;</a></span>from_json() <span class="overload">[10/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a564b6d2d0f09d0437ef1e4dd1af3159e">&#9670;&nbsp;</a></span>from_json() <span class="overload">[10/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7517,7 +7693,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="ab5c1262e82e286a32972346c15cd7ea5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab5c1262e82e286a32972346c15cd7ea5">&#9670;&nbsp;</a></span>from_json() <span class="overload">[11/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ab5c1262e82e286a32972346c15cd7ea5">&#9670;&nbsp;</a></span>from_json() <span class="overload">[11/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7547,7 +7723,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="adb7b8ddda56ada4703b3898e62e1028d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adb7b8ddda56ada4703b3898e62e1028d">&#9670;&nbsp;</a></span>from_json() <span class="overload">[12/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#adb7b8ddda56ada4703b3898e62e1028d">&#9670;&nbsp;</a></span>from_json() <span class="overload">[12/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7577,7 +7753,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a5b3606a7dffd698e3b65ea61eab49f29"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5b3606a7dffd698e3b65ea61eab49f29">&#9670;&nbsp;</a></span>from_json() <span class="overload">[13/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a5b3606a7dffd698e3b65ea61eab49f29">&#9670;&nbsp;</a></span>from_json() <span class="overload">[13/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7607,7 +7783,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="aa39733fdaf85545358ea465b019deab0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa39733fdaf85545358ea465b019deab0">&#9670;&nbsp;</a></span>from_json() <span class="overload">[14/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aa39733fdaf85545358ea465b019deab0">&#9670;&nbsp;</a></span>from_json() <span class="overload">[14/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7637,7 +7813,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="ab5cfd76224bd2a945c23f62bb1ed1fc7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab5cfd76224bd2a945c23f62bb1ed1fc7">&#9670;&nbsp;</a></span>from_json() <span class="overload">[15/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ab5cfd76224bd2a945c23f62bb1ed1fc7">&#9670;&nbsp;</a></span>from_json() <span class="overload">[15/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7667,7 +7843,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a33a17099630ebcf742229a7d831bcec0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a33a17099630ebcf742229a7d831bcec0">&#9670;&nbsp;</a></span>from_json() <span class="overload">[16/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a33a17099630ebcf742229a7d831bcec0">&#9670;&nbsp;</a></span>from_json() <span class="overload">[16/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7697,7 +7873,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="adeb3ed1c99658d1ea42126bcb712bb9a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adeb3ed1c99658d1ea42126bcb712bb9a">&#9670;&nbsp;</a></span>from_json() <span class="overload">[17/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#adeb3ed1c99658d1ea42126bcb712bb9a">&#9670;&nbsp;</a></span>from_json() <span class="overload">[17/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7727,7 +7903,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a581d9c405547974363fb647e7f494db6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a581d9c405547974363fb647e7f494db6">&#9670;&nbsp;</a></span>from_json() <span class="overload">[18/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a581d9c405547974363fb647e7f494db6">&#9670;&nbsp;</a></span>from_json() <span class="overload">[18/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7752,12 +7928,12 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00549">549</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00566">566</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
 
 </div>
 </div>
 <a id="ac6795404ed25f327b323309ef33e1d85"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac6795404ed25f327b323309ef33e1d85">&#9670;&nbsp;</a></span>from_json() <span class="overload">[19/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ac6795404ed25f327b323309ef33e1d85">&#9670;&nbsp;</a></span>from_json() <span class="overload">[19/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7787,7 +7963,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a25325849fbb3b1fdf28c402257dd63e9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a25325849fbb3b1fdf28c402257dd63e9">&#9670;&nbsp;</a></span>from_json() <span class="overload">[20/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a25325849fbb3b1fdf28c402257dd63e9">&#9670;&nbsp;</a></span>from_json() <span class="overload">[20/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7817,7 +7993,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a53429249cb60afd24b0e046ae65b467b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a53429249cb60afd24b0e046ae65b467b">&#9670;&nbsp;</a></span>from_json() <span class="overload">[21/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a53429249cb60afd24b0e046ae65b467b">&#9670;&nbsp;</a></span>from_json() <span class="overload">[21/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7847,7 +8023,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a68933b29c20e6356e20a1852a018bf6c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a68933b29c20e6356e20a1852a018bf6c">&#9670;&nbsp;</a></span>from_json() <span class="overload">[22/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a68933b29c20e6356e20a1852a018bf6c">&#9670;&nbsp;</a></span>from_json() <span class="overload">[22/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7877,7 +8053,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a68687314e2c481e984ee323aab4a7495"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a68687314e2c481e984ee323aab4a7495">&#9670;&nbsp;</a></span>from_json() <span class="overload">[23/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a68687314e2c481e984ee323aab4a7495">&#9670;&nbsp;</a></span>from_json() <span class="overload">[23/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7902,12 +8078,42 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00397">397</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00414">414</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a187c878a3fe282cd618b1c5f25d098a4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a187c878a3fe282cd618b1c5f25d098a4">&#9670;&nbsp;</a></span>from_json() <span class="overload">[24/28]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tket::from_json </td>
+          <td>(</td>
+          <td class="paramtype">const nlohmann::json &amp;&#160;</td>
+          <td class="paramname"><em>j</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classtket_1_1QubitPauliTensor.html">QubitPauliTensor</a> &amp;&#160;</td>
+          <td class="paramname"><em>qubitPauliTensor</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00576">576</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
 
 </div>
 </div>
 <a id="ae97a0010d3076d0b508937e756ef364f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae97a0010d3076d0b508937e756ef364f">&#9670;&nbsp;</a></span>from_json() <span class="overload">[24/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ae97a0010d3076d0b508937e756ef364f">&#9670;&nbsp;</a></span>from_json() <span class="overload">[25/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7937,7 +8143,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a2cf840b2fd4a49f60d559bdf328ad73c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2cf840b2fd4a49f60d559bdf328ad73c">&#9670;&nbsp;</a></span>from_json() <span class="overload">[25/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a2cf840b2fd4a49f60d559bdf328ad73c">&#9670;&nbsp;</a></span>from_json() <span class="overload">[26/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7967,7 +8173,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a06b460c582581f8c159d245411828117"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a06b460c582581f8c159d245411828117">&#9670;&nbsp;</a></span>from_json() <span class="overload">[26/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a06b460c582581f8c159d245411828117">&#9670;&nbsp;</a></span>from_json() <span class="overload">[27/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7997,7 +8203,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a066f4dd18f9f112c10e95e8fd51776be"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a066f4dd18f9f112c10e95e8fd51776be">&#9670;&nbsp;</a></span>from_json() <span class="overload">[27/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a066f4dd18f9f112c10e95e8fd51776be">&#9670;&nbsp;</a></span>from_json() <span class="overload">[28/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -8212,7 +8418,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00821">821</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00828">828</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
@@ -8612,6 +8818,36 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
+<a id="aa0b104fe4cae850abf2f636b2fa33528"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa0b104fe4cae850abf2f636b2fa33528">&#9670;&nbsp;</a></span>gen_pauli_exponentials()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a> tket::gen_pauli_exponentials </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacetket_1_1Transforms.html#af9aeecd429f293a2082ec31a14284028">Transforms::PauliSynthStrat</a>&#160;</td>
+          <td class="paramname"><em>strat</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a>&#160;</td>
+          <td class="paramname"><em>cx_config</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00745">745</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+
+</div>
+</div>
 <a id="a060f7d998806327b079196f6104d9262"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a060f7d998806327b079196f6104d9262">&#9670;&nbsp;</a></span>gen_placement_pass()</h2>
 
@@ -8871,7 +9107,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00797">797</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00804">804</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
@@ -8901,7 +9137,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00778">778</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00785">785</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
@@ -8961,7 +9197,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00745">745</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00778">778</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
@@ -9713,7 +9949,7 @@ circuit has no symbolic parameters</dd></dl>
 <p>If squash=true (default), the <code><a class="el" href="namespacetket.html#aeefc21d2bb61add1f89468ef9e61ee3a" title="Turns all PhasedX and NPhasedX gates into global gates.">GlobalisePhasedX()</a>.apply</code> method will always return true. For squash=false, <code>apply()</code> will return true if the circuit was changed and false otherwise.</p>
 <p>It is not recommended to use this pass with symbolic expressions, as in certain cases a blow-up in symbolic expression sizes may occur. </p>
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00838">838</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00845">845</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
@@ -9820,7 +10056,7 @@ circuit has no symbolic parameters</dd></dl>
 </div><div class="memdoc">
 <p>Does not distinguish between equivalent Strings, i.e. ignores I terms. </p>
 
-<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00379">379</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00396">396</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
 
 </div>
 </div>
@@ -9841,7 +10077,7 @@ circuit has no symbolic parameters</dd></dl>
 </div><div class="memdoc">
 <p>Does not distinguish between equivalent Strings, i.e. ignores I terms. </p>
 
-<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00511">511</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00528">528</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
 
 </div>
 </div>
@@ -10064,7 +10300,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for purely classical gates derived from <a class="el" href="classtket_1_1ClassicalOp.html" title="A purely classical operation.">ClassicalOp</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00251">251</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00253">253</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10086,7 +10322,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for Clifford operations. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00236">236</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00238">238</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10108,7 +10344,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for controlled gates. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00255">255</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00257">257</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10152,7 +10388,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for flowops (just for high-level control flow) </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00190">190</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00192">192</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10240,7 +10476,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for gates over more than one qubit. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00211">211</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00213">213</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10262,7 +10498,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for non-invertible operations. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00224">224</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00226">226</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10284,7 +10520,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for rotations around Pauli axes. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00205">205</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00207">207</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10306,7 +10542,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for measurement and reset gates. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00247">247</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00249">249</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10358,7 +10594,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for rotations (including controlled rotations) </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00196">196</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00198">198</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10380,7 +10616,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for gates over a single qubit. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00215">215</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00217">217</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10402,7 +10638,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for single-qubit gates that can be expressed as TK1. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00220">220</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00222">222</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10551,7 +10787,7 @@ circuit has no symbolic parameters</dd></dl>
 </div>
 </div>
 <a id="afea94a814298f2916861f89d770c6421"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afea94a814298f2916861f89d770c6421">&#9670;&nbsp;</a></span>JSON_DECL() <span class="overload">[1/5]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#afea94a814298f2916861f89d770c6421">&#9670;&nbsp;</a></span>JSON_DECL() <span class="overload">[1/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -10569,7 +10805,7 @@ circuit has no symbolic parameters</dd></dl>
 </div>
 </div>
 <a id="af7245f813e5310d2ea410762981bd7ec"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af7245f813e5310d2ea410762981bd7ec">&#9670;&nbsp;</a></span>JSON_DECL() <span class="overload">[2/5]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#af7245f813e5310d2ea410762981bd7ec">&#9670;&nbsp;</a></span>JSON_DECL() <span class="overload">[2/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -10587,7 +10823,7 @@ circuit has no symbolic parameters</dd></dl>
 </div>
 </div>
 <a id="a2356c8aa4b2c14f3a8f0627edfc03a4e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2356c8aa4b2c14f3a8f0627edfc03a4e">&#9670;&nbsp;</a></span>JSON_DECL() <span class="overload">[3/5]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a2356c8aa4b2c14f3a8f0627edfc03a4e">&#9670;&nbsp;</a></span>JSON_DECL() <span class="overload">[3/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -10604,8 +10840,26 @@ circuit has no symbolic parameters</dd></dl>
 
 </div>
 </div>
+<a id="a1b34b7530a5c45aeb3b2b94e32b202f9"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1b34b7530a5c45aeb3b2b94e32b202f9">&#9670;&nbsp;</a></span>JSON_DECL() <span class="overload">[4/6]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">tket::JSON_DECL </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="classtket_1_1QubitPauliTensor.html">QubitPauliTensor</a>&#160;</td>
+          <td class="paramname"></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
 <a id="a12bacf012e5406a98076bc81d69170cf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a12bacf012e5406a98076bc81d69170cf">&#9670;&nbsp;</a></span>JSON_DECL() <span class="overload">[4/5]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a12bacf012e5406a98076bc81d69170cf">&#9670;&nbsp;</a></span>JSON_DECL() <span class="overload">[5/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -10623,7 +10877,7 @@ circuit has no symbolic parameters</dd></dl>
 </div>
 </div>
 <a id="a50202490885b0ca66e5da21a391ece41"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a50202490885b0ca66e5da21a391ece41">&#9670;&nbsp;</a></span>JSON_DECL() <span class="overload">[5/5]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a50202490885b0ca66e5da21a391ece41">&#9670;&nbsp;</a></span>JSON_DECL() <span class="overload">[6/6]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -11322,7 +11576,7 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>result of the scalar multiplication </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00517">517</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00534">534</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
 
 </div>
 </div>
@@ -11934,6 +12188,36 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
+<a id="a9f68fb4ab6e021ef3cb3174094f2d194"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a9f68fb4ab6e021ef3cb3174094f2d194">&#9670;&nbsp;</a></span>pauli_angle_convert_or_throw()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> tket::pauli_angle_convert_or_throw </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacetket.html#a68999408b52ab2f0f191f814ec93f4de">Complex</a>&#160;</td>
+          <td class="paramname"><em>pauliCoeff</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;&#160;</td>
+          <td class="paramname"><em>angle</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="PauliGadget_8cpp_source.html#l00022">22</a> of file <a class="el" href="PauliGadget_8cpp_source.html">PauliGadget.cpp</a>.</p>
+
+</div>
+</div>
 <a id="ab2b635e296bb273b8fa514314b1c2e8a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ab2b635e296bb273b8fa514314b1c2e8a">&#9670;&nbsp;</a></span>pauli_gadget()</h2>
 
@@ -11999,14 +12283,14 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="aa266c9859f9e95807904da7a84750a31"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa266c9859f9e95807904da7a84750a31">&#9670;&nbsp;</a></span>pauli_graph_to_circuit_individually()</h2>
+<a id="afd183bc3aae0fc1875b47f95cec11e64"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#afd183bc3aae0fc1875b47f95cec11e64">&#9670;&nbsp;</a></span>pauli_graph_to_pauli_exp_box_circuit_individually()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classtket_1_1Circuit.html">Circuit</a> tket::pauli_graph_to_circuit_individually </td>
+          <td class="memname"><a class="el" href="classtket_1_1Circuit.html">Circuit</a> tket::pauli_graph_to_pauli_exp_box_circuit_individually </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classtket_1_1PauliGraph.html">PauliGraph</a> &amp;&#160;</td>
           <td class="paramname"><em>pg</em>, </td>
@@ -12025,21 +12309,21 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Synthesises a circuit equivalent to the <a class="el" href="classtket_1_1PauliGraph.html" title="Dependency graph of a circuit wrt Pauli Gadgets.">PauliGraph</a> by building each pauli gadget individually in the order given by TopSortIterator. </p>
+<p>Synthesises a circuit equivalent to the <a class="el" href="classtket_1_1PauliGraph.html" title="Dependency graph of a circuit wrt Pauli Gadgets.">PauliGraph</a> by adding each pauli gadget to the circuit as a <a class="el" href="classtket_1_1PauliExpBox.html" title="Operation defined as the exponential of a tensor of Pauli operators.">PauliExpBox</a> individually in the order given by TopSortIterator. </p>
 <p>The tableau is then synthesised at the end. </p>
 
-<p class="definition">Definition at line <a class="el" href="PauliGraphConverters_8cpp_source.html#l00069">69</a> of file <a class="el" href="PauliGraphConverters_8cpp_source.html">PauliGraphConverters.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliGraphConverters_8cpp_source.html#l00070">70</a> of file <a class="el" href="PauliGraphConverters_8cpp_source.html">PauliGraphConverters.cpp</a>.</p>
 
 </div>
 </div>
-<a id="a288dc60b532d06bb9434dd77affe85e8"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a288dc60b532d06bb9434dd77affe85e8">&#9670;&nbsp;</a></span>pauli_graph_to_circuit_pairwise()</h2>
+<a id="ad812f0f4ed9ebf694b10ae4cc0994832"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad812f0f4ed9ebf694b10ae4cc0994832">&#9670;&nbsp;</a></span>pauli_graph_to_pauli_exp_box_circuit_pairwise()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classtket_1_1Circuit.html">Circuit</a> tket::pauli_graph_to_circuit_pairwise </td>
+          <td class="memname"><a class="el" href="classtket_1_1Circuit.html">Circuit</a> tket::pauli_graph_to_pauli_exp_box_circuit_pairwise </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classtket_1_1PauliGraph.html">PauliGraph</a> &amp;&#160;</td>
           <td class="paramname"><em>pg</em>, </td>
@@ -12048,7 +12332,7 @@ template&lt;typename T &gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a>&#160;</td>
-          <td class="paramname"><em>cx_config</em> = <code><a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a></code>&#160;</td>
+          <td class="paramname"><em>cx_config</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -12058,21 +12342,20 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Synthesises a circuit equivalent to the <a class="el" href="classtket_1_1PauliGraph.html" title="Dependency graph of a circuit wrt Pauli Gadgets.">PauliGraph</a> by building pairs of pauli gadgets simultaneously using the method detailed in Cowtan et al. </p>
-<p>Phase Gadget Synthesis for Shallow Circuits, Lemma 4.9. The tableau is then synthesised at the end. </p>
+<p>Synthesises a circuit equivalent to the <a class="el" href="classtket_1_1PauliGraph.html" title="Dependency graph of a circuit wrt Pauli Gadgets.">PauliGraph</a> by inserting pairs of pauli gadgets as PauliExpPairBoxes into the circuit The tableau is then synthesised at the end. </p>
 
-<p class="definition">Definition at line <a class="el" href="PauliGraphConverters_8cpp_source.html#l00091">91</a> of file <a class="el" href="PauliGraphConverters_8cpp_source.html">PauliGraphConverters.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliGraphConverters_8cpp_source.html#l00092">92</a> of file <a class="el" href="PauliGraphConverters_8cpp_source.html">PauliGraphConverters.cpp</a>.</p>
 
 </div>
 </div>
-<a id="aff68530a447b753166638c4500742c05"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aff68530a447b753166638c4500742c05">&#9670;&nbsp;</a></span>pauli_graph_to_circuit_sets()</h2>
+<a id="a33d9a6c1a35702ebd17ce2ce72ab6e6e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a33d9a6c1a35702ebd17ce2ce72ab6e6e">&#9670;&nbsp;</a></span>pauli_graph_to_pauli_exp_box_circuit_sets()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classtket_1_1Circuit.html">Circuit</a> tket::pauli_graph_to_circuit_sets </td>
+          <td class="memname"><a class="el" href="classtket_1_1Circuit.html">Circuit</a> tket::pauli_graph_to_pauli_exp_box_circuit_sets </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classtket_1_1PauliGraph.html">PauliGraph</a> &amp;&#160;</td>
           <td class="paramname"><em>pg</em>, </td>
@@ -12081,7 +12364,7 @@ template&lt;typename T &gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype"><a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a>&#160;</td>
-          <td class="paramname"><em>cx_config</em> = <code><a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a></code>&#160;</td>
+          <td class="paramname"><em>cx_config</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -12091,10 +12374,12 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Synthesises a circuit equivalent to the <a class="el" href="classtket_1_1PauliGraph.html" title="Dependency graph of a circuit wrt Pauli Gadgets.">PauliGraph</a> by building sets of mutually commuting pauli gadgets and simultaneously diagonalizing each gadget in a set. </p>
-<p>The tableau is then synthesised at the end. </p>
+<p>Synthesises a circuit equivalent to the <a class="el" href="classtket_1_1PauliGraph.html" title="Dependency graph of a circuit wrt Pauli Gadgets.">PauliGraph</a> by building sets of mutually commuting pauli gadgets and inserting them into the circuit as PauliExpCommutingSetBoxes The tableau is then synthesised at the end. </p>
+<ul>
+<li>Currently follows a greedy set-building method *&zwj;/ </li>
+</ul>
 
-<p class="definition">Definition at line <a class="el" href="PauliGraphConverters_8cpp_source.html#l00126">126</a> of file <a class="el" href="PauliGraphConverters_8cpp_source.html">PauliGraphConverters.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliGraphConverters_8cpp_source.html#l00132">132</a> of file <a class="el" href="PauliGraphConverters_8cpp_source.html">PauliGraphConverters.cpp</a>.</p>
 
 </div>
 </div>
@@ -12126,7 +12411,7 @@ template&lt;typename T &gt; </div>
 
 <p>Builds a sequence of PauliSimp (gen_synthesise_pauli_graph) and FullPeepholeOptimise. </p>
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00832">832</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00839">839</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
@@ -12681,7 +12966,7 @@ template&lt;typename T &gt; </div>
 <p>@ pre n &lt; 32</p>
 <dl class="section return"><dt>Returns</dt><dd>compilation pass that performs rounding </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00853">853</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassGenerators_8cpp_source.html#l00860">860</a> of file <a class="el" href="PassGenerators_8cpp_source.html">PassGenerators.cpp</a>.</p>
 
 </div>
 </div>
@@ -13157,7 +13442,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a1a18993f52b6212e59c69c072e94ebc0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1a18993f52b6212e59c69c072e94ebc0">&#9670;&nbsp;</a></span>to_json() <span class="overload">[1/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a18993f52b6212e59c69c072e94ebc0">&#9670;&nbsp;</a></span>to_json() <span class="overload">[1/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13187,7 +13472,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="ad4ffe8a33fb155115f7cc9b02740797d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad4ffe8a33fb155115f7cc9b02740797d">&#9670;&nbsp;</a></span>to_json() <span class="overload">[2/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ad4ffe8a33fb155115f7cc9b02740797d">&#9670;&nbsp;</a></span>to_json() <span class="overload">[2/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13217,7 +13502,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="ac805d7e6f93710cccba66bac03f62402"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac805d7e6f93710cccba66bac03f62402">&#9670;&nbsp;</a></span>to_json() <span class="overload">[3/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ac805d7e6f93710cccba66bac03f62402">&#9670;&nbsp;</a></span>to_json() <span class="overload">[3/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13247,7 +13532,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="acc20e3ff7e32977074a45a083058a67a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acc20e3ff7e32977074a45a083058a67a">&#9670;&nbsp;</a></span>to_json() <span class="overload">[4/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#acc20e3ff7e32977074a45a083058a67a">&#9670;&nbsp;</a></span>to_json() <span class="overload">[4/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13277,7 +13562,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="ab4421124b62da1b876a3b76e6e5e7072"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab4421124b62da1b876a3b76e6e5e7072">&#9670;&nbsp;</a></span>to_json() <span class="overload">[5/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ab4421124b62da1b876a3b76e6e5e7072">&#9670;&nbsp;</a></span>to_json() <span class="overload">[5/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13307,7 +13592,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="aa8ac411c8fdf32607b7fb7801531d367"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa8ac411c8fdf32607b7fb7801531d367">&#9670;&nbsp;</a></span>to_json() <span class="overload">[6/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aa8ac411c8fdf32607b7fb7801531d367">&#9670;&nbsp;</a></span>to_json() <span class="overload">[6/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13337,7 +13622,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a5282c55bc6f6450eca5dc48555e8a6ab"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5282c55bc6f6450eca5dc48555e8a6ab">&#9670;&nbsp;</a></span>to_json() <span class="overload">[7/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a5282c55bc6f6450eca5dc48555e8a6ab">&#9670;&nbsp;</a></span>to_json() <span class="overload">[7/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13367,7 +13652,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a8f3c55b5848ce021bac9642afa763d6c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8f3c55b5848ce021bac9642afa763d6c">&#9670;&nbsp;</a></span>to_json() <span class="overload">[8/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a8f3c55b5848ce021bac9642afa763d6c">&#9670;&nbsp;</a></span>to_json() <span class="overload">[8/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13392,12 +13677,12 @@ template&lt;typename BoxT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Boxes_8cpp_source.html#l00592">592</a> of file <a class="el" href="Boxes_8cpp_source.html">Boxes.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Boxes_8cpp_source.html#l00533">533</a> of file <a class="el" href="Boxes_8cpp_source.html">Boxes.cpp</a>.</p>
 
 </div>
 </div>
 <a id="a67ec50cfd6cd6d5d491775c810004980"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a67ec50cfd6cd6d5d491775c810004980">&#9670;&nbsp;</a></span>to_json() <span class="overload">[9/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a67ec50cfd6cd6d5d491775c810004980">&#9670;&nbsp;</a></span>to_json() <span class="overload">[9/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13427,7 +13712,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a6fab6f7f7d336b2382cef1df753cae52"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6fab6f7f7d336b2382cef1df753cae52">&#9670;&nbsp;</a></span>to_json() <span class="overload">[10/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a6fab6f7f7d336b2382cef1df753cae52">&#9670;&nbsp;</a></span>to_json() <span class="overload">[10/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13457,7 +13742,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a440f224006d397b83ed0946575a1d737"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a440f224006d397b83ed0946575a1d737">&#9670;&nbsp;</a></span>to_json() <span class="overload">[11/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a440f224006d397b83ed0946575a1d737">&#9670;&nbsp;</a></span>to_json() <span class="overload">[11/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13487,7 +13772,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a89f114a1adda4cd0d4e8bbd35556412c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a89f114a1adda4cd0d4e8bbd35556412c">&#9670;&nbsp;</a></span>to_json() <span class="overload">[12/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a89f114a1adda4cd0d4e8bbd35556412c">&#9670;&nbsp;</a></span>to_json() <span class="overload">[12/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13517,7 +13802,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="ae0a3a70e84db9e4a2f8d15febf11d135"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae0a3a70e84db9e4a2f8d15febf11d135">&#9670;&nbsp;</a></span>to_json() <span class="overload">[13/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ae0a3a70e84db9e4a2f8d15febf11d135">&#9670;&nbsp;</a></span>to_json() <span class="overload">[13/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13547,7 +13832,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a7abfb8c99b6073b5bc9b759ed22983fc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7abfb8c99b6073b5bc9b759ed22983fc">&#9670;&nbsp;</a></span>to_json() <span class="overload">[14/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a7abfb8c99b6073b5bc9b759ed22983fc">&#9670;&nbsp;</a></span>to_json() <span class="overload">[14/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13577,7 +13862,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a3e93ea21b541ed8dee95f8dbace142ca"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3e93ea21b541ed8dee95f8dbace142ca">&#9670;&nbsp;</a></span>to_json() <span class="overload">[15/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a3e93ea21b541ed8dee95f8dbace142ca">&#9670;&nbsp;</a></span>to_json() <span class="overload">[15/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13607,7 +13892,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="ae44e46df7513c3ed26bb1b5469931b2f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae44e46df7513c3ed26bb1b5469931b2f">&#9670;&nbsp;</a></span>to_json() <span class="overload">[16/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ae44e46df7513c3ed26bb1b5469931b2f">&#9670;&nbsp;</a></span>to_json() <span class="overload">[16/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13637,7 +13922,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a930f453f5886d252c3fb7a45ea0bc4fa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a930f453f5886d252c3fb7a45ea0bc4fa">&#9670;&nbsp;</a></span>to_json() <span class="overload">[17/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a930f453f5886d252c3fb7a45ea0bc4fa">&#9670;&nbsp;</a></span>to_json() <span class="overload">[17/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13662,12 +13947,12 @@ template&lt;typename BoxT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00544">544</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00561">561</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
 
 </div>
 </div>
 <a id="a94cb91a5870263547f714e479978083b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a94cb91a5870263547f714e479978083b">&#9670;&nbsp;</a></span>to_json() <span class="overload">[18/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a94cb91a5870263547f714e479978083b">&#9670;&nbsp;</a></span>to_json() <span class="overload">[18/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13697,7 +13982,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a903d0e05c58620dc0d082c414c078911"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a903d0e05c58620dc0d082c414c078911">&#9670;&nbsp;</a></span>to_json() <span class="overload">[19/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a903d0e05c58620dc0d082c414c078911">&#9670;&nbsp;</a></span>to_json() <span class="overload">[19/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13727,7 +14012,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="aad92ba0223225b2432b3754047387b5e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aad92ba0223225b2432b3754047387b5e">&#9670;&nbsp;</a></span>to_json() <span class="overload">[20/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aad92ba0223225b2432b3754047387b5e">&#9670;&nbsp;</a></span>to_json() <span class="overload">[20/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13757,7 +14042,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="ac759ed39e053a1136881124ac753b6bf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac759ed39e053a1136881124ac753b6bf">&#9670;&nbsp;</a></span>to_json() <span class="overload">[21/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ac759ed39e053a1136881124ac753b6bf">&#9670;&nbsp;</a></span>to_json() <span class="overload">[21/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13787,7 +14072,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a3eb5506cf530f09a7158760012b494f3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3eb5506cf530f09a7158760012b494f3">&#9670;&nbsp;</a></span>to_json() <span class="overload">[22/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a3eb5506cf530f09a7158760012b494f3">&#9670;&nbsp;</a></span>to_json() <span class="overload">[22/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13812,12 +14097,42 @@ template&lt;typename BoxT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00390">390</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00407">407</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
+
+</div>
+</div>
+<a id="aad3c3514a79296002baa74a437640423"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aad3c3514a79296002baa74a437640423">&#9670;&nbsp;</a></span>to_json() <span class="overload">[23/28]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tket::to_json </td>
+          <td>(</td>
+          <td class="paramtype">nlohmann::json &amp;&#160;</td>
+          <td class="paramname"><em>j</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classtket_1_1QubitPauliTensor.html">QubitPauliTensor</a> &amp;&#160;</td>
+          <td class="paramname"><em>qubitPauliTensor</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="PauliStrings_8cpp_source.html#l00571">571</a> of file <a class="el" href="PauliStrings_8cpp_source.html">PauliStrings.cpp</a>.</p>
 
 </div>
 </div>
 <a id="a4dd94aad84eb507a42a4813914cc88f9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4dd94aad84eb507a42a4813914cc88f9">&#9670;&nbsp;</a></span>to_json() <span class="overload">[23/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a4dd94aad84eb507a42a4813914cc88f9">&#9670;&nbsp;</a></span>to_json() <span class="overload">[24/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13847,7 +14162,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a8a14a478bed045c6dd02963883dc597e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8a14a478bed045c6dd02963883dc597e">&#9670;&nbsp;</a></span>to_json() <span class="overload">[24/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a14a478bed045c6dd02963883dc597e">&#9670;&nbsp;</a></span>to_json() <span class="overload">[25/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13877,7 +14192,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a52597b988342641e65c81c1e39cc626a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a52597b988342641e65c81c1e39cc626a">&#9670;&nbsp;</a></span>to_json() <span class="overload">[25/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a52597b988342641e65c81c1e39cc626a">&#9670;&nbsp;</a></span>to_json() <span class="overload">[26/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13907,7 +14222,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a3f7d62bf33d0168c3728124e63282db6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3f7d62bf33d0168c3728124e63282db6">&#9670;&nbsp;</a></span>to_json() <span class="overload">[26/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a3f7d62bf33d0168c3728124e63282db6">&#9670;&nbsp;</a></span>to_json() <span class="overload">[27/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13937,7 +14252,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="aaf01ad7a007f8dccd2f60b4b0cb2355b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaf01ad7a007f8dccd2f60b4b0cb2355b">&#9670;&nbsp;</a></span>to_json() <span class="overload">[27/27]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aaf01ad7a007f8dccd2f60b4b0cb2355b">&#9670;&nbsp;</a></span>to_json() <span class="overload">[28/28]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -14014,6 +14329,26 @@ template&lt;typename BoxT &gt; </div>
 </dl>
 
 <p class="definition">Definition at line <a class="el" href="MatrixAnalysis_8cpp_source.html#l00295">295</a> of file <a class="el" href="MatrixAnalysis_8cpp_source.html">MatrixAnalysis.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a0e747aed92bf8a2eef3d5c5d28c052f3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e747aed92bf8a2eef3d5c5d28c052f3">&#9670;&nbsp;</a></span>transpose_angle_factor()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">int tket::transpose_angle_factor </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>paulis</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="PauliExpBoxes_8cpp_source.html#l00140">140</a> of file <a class="el" href="PauliExpBoxes_8cpp_source.html">PauliExpBoxes.cpp</a>.</p>
 
 </div>
 </div>
