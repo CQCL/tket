@@ -13,10 +13,12 @@
 // limitations under the License.
 
 #include <catch2/catch_test_macros.hpp>
+#include <tket/Transformations/Decomposition.hpp>
 
 #include "CircuitsForTesting.hpp"
 #include "testutil.hpp"
 #include "tket/Circuit/Boxes.hpp"
+#include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Converters/Converters.hpp"
 #include "tket/Converters/PauliGadget.hpp"
 #include "tket/Diagonalisation/Diagonalisation.hpp"
@@ -24,10 +26,8 @@
 #include "tket/PauliGraph/ConjugatePauliFunctions.hpp"
 #include "tket/PauliGraph/PauliGraph.hpp"
 #include "tket/Simulation/CircuitSimulator.hpp"
-#include "tket/Transformations/OptimisationPass.hpp"
 #include "tket/Transformations/PauliOptimisation.hpp"
 #include "tket/Transformations/Rebase.hpp"
-#include "tket/Transformations/Transform.hpp"
 
 namespace tket {
 namespace test_PauliGraph {
@@ -247,13 +247,15 @@ SCENARIO("Synthesising PauliGraphs") {
     PauliGraph pg = circuit_to_pauli_graph(circ);
     pg.sanity_check();
     WHEN("Synthesising individually") {
-      Circuit synth = pauli_graph_to_circuit_individually(pg);
+      Circuit synth = pauli_graph_to_pauli_exp_box_circuit_individually(pg);
+      Transforms::decomp_boxes().apply(synth);
       pg.sanity_check();
       Eigen::MatrixXcd synth_unitary = tket_sim::get_unitary(synth);
       REQUIRE((synth_unitary - circ_unitary).cwiseAbs().sum() < ERR_EPS);
     }
     WHEN("Synthesising pairwise") {
-      Circuit synth = pauli_graph_to_circuit_pairwise(pg);
+      Circuit synth = pauli_graph_to_pauli_exp_box_circuit_pairwise(pg);
+      Transforms::decomp_boxes().apply(synth);
       Eigen::MatrixXcd synth_unitary = tket_sim::get_unitary(synth);
       REQUIRE((synth_unitary - circ_unitary).cwiseAbs().sum() < ERR_EPS);
     }
@@ -263,12 +265,14 @@ SCENARIO("Synthesising PauliGraphs") {
     const auto circ_unitary = tket_sim::get_unitary(circ);
     const PauliGraph pg = circuit_to_pauli_graph(circ);
     WHEN("Synthesising individually") {
-      const Circuit synth = pauli_graph_to_circuit_individually(pg);
+      Circuit synth = pauli_graph_to_pauli_exp_box_circuit_individually(pg);
+      Transforms::decomp_boxes().apply(synth);
       const auto synth_unitary = tket_sim::get_unitary(synth);
       REQUIRE((synth_unitary - circ_unitary).cwiseAbs().sum() < ERR_EPS);
     }
     WHEN("Synthesising pairwise") {
-      const Circuit synth = pauli_graph_to_circuit_pairwise(pg);
+      Circuit synth = pauli_graph_to_pauli_exp_box_circuit_pairwise(pg);
+      Transforms::decomp_boxes().apply(synth);
       const auto synth_unitary = tket_sim::get_unitary(synth);
       REQUIRE((synth_unitary - circ_unitary).cwiseAbs().sum() < ERR_EPS);
     }
@@ -295,7 +299,8 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
 
     PauliGraph pg = circuit_to_pauli_graph(circ);
     pg.sanity_check();
-    Circuit out = pauli_graph_to_circuit_sets(pg);
+    Circuit out = pauli_graph_to_pauli_exp_box_circuit_sets(pg);
+    Transforms::decomp_boxes().apply(out);
     pg.sanity_check();
     Circuit test2 = prepend >> out;
     REQUIRE(test_statevector_comparison(test1, test2));
@@ -308,7 +313,8 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
     Circuit test1 = prepend >> circ;
 
     PauliGraph pg = circuit_to_pauli_graph(circ);
-    Circuit out = pauli_graph_to_circuit_sets(pg);
+    Circuit out = pauli_graph_to_pauli_exp_box_circuit_sets(pg);
+    Transforms::decomp_boxes().apply(out);
     Circuit test2 = prepend >> out;
     REQUIRE(test_statevector_comparison(test1, test2));
   }
@@ -322,7 +328,8 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
     Circuit test1 = prepend >> circ;
 
     PauliGraph pg = circuit_to_pauli_graph(circ);
-    Circuit out = pauli_graph_to_circuit_sets(pg);
+    Circuit out = pauli_graph_to_pauli_exp_box_circuit_sets(pg);
+    Transforms::decomp_boxes().apply(out);
     Circuit test2 = prepend >> out;
     REQUIRE(test_statevector_comparison(test1, test2));
   }
@@ -348,7 +355,8 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
     test1.symbol_substitution(symbol_map);
 
     PauliGraph pg = circuit_to_pauli_graph(circ);
-    Circuit out = pauli_graph_to_circuit_sets(pg);
+    Circuit out = pauli_graph_to_pauli_exp_box_circuit_sets(pg);
+    Transforms::decomp_boxes().apply(out);
     Circuit test2 = prepend >> out;
     test2.symbol_substitution(symbol_map);
     REQUIRE(test_statevector_comparison(test1, test2));
@@ -377,7 +385,8 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
     REQUIRE(!test1.is_symbolic());
 
     PauliGraph pg = circuit_to_pauli_graph(circ);
-    Circuit out = pauli_graph_to_circuit_sets(pg);
+    Circuit out = pauli_graph_to_pauli_exp_box_circuit_sets(pg);
+    Transforms::decomp_boxes().apply(out);
     Circuit test2 = prepend >> out;
     test2.symbol_substitution(symbol_map);
     REQUIRE(test_statevector_comparison(test1, test2));
@@ -393,7 +402,8 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
     circ.add_box(peb2, {0, 1, 2});
     Circuit test1 = prepend >> circ;
     PauliGraph pg = circuit_to_pauli_graph(circ);
-    Circuit out = pauli_graph_to_circuit_sets(pg);
+    Circuit out = pauli_graph_to_pauli_exp_box_circuit_sets(pg);
+    Transforms::decomp_boxes().apply(out);
     Circuit test2 = prepend >> out;
     REQUIRE(test_statevector_comparison(test1, test2));
   }
@@ -412,14 +422,17 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
 
     WHEN("Using default CX-decomposition") {
       PauliGraph pg = circuit_to_pauli_graph(circ);
-      Circuit out = pauli_graph_to_circuit_sets(pg);
+      Circuit out = pauli_graph_to_pauli_exp_box_circuit_sets(pg);
+      Transforms::decomp_boxes().apply(out);
       Circuit test2 = prepend >> out;
       REQUIRE(test_statevector_comparison(test1, test2));
     }
 
     WHEN("Using XXPhase3-decomposition") {
       PauliGraph pg = circuit_to_pauli_graph(circ);
-      Circuit out = pauli_graph_to_circuit_sets(pg, CXConfigType::MultiQGate);
+      Circuit out = pauli_graph_to_pauli_exp_box_circuit_sets(
+          pg, CXConfigType::MultiQGate);
+      Transforms::decomp_boxes().apply(out);
       REQUIRE(out.count_gates(OpType::XXPhase3) == 2);
       Circuit test2 = prepend >> out;
       REQUIRE(test_statevector_comparison(test1, test2));
@@ -449,72 +462,84 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
       Transforms::synthesise_pauli_graph(
           Transforms::PauliSynthStrat::Sets, CXConfigType::Star)
           .apply(circ);
+      Transforms::decomp_boxes().apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Different strategies and configs") {
       Transforms::synthesise_pauli_graph(
           Transforms::PauliSynthStrat::Individual, CXConfigType::Star)
           .apply(circ);
+      Transforms::decomp_boxes().apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Different strategies and configs") {
       Transforms::synthesise_pauli_graph(
           Transforms::PauliSynthStrat::Pairwise, CXConfigType::Star)
           .apply(circ);
+      Transforms::decomp_boxes().apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Different strategies and configs") {
       Transforms::synthesise_pauli_graph(
           Transforms::PauliSynthStrat::Sets, CXConfigType::Snake)
           .apply(circ);
+      Transforms::decomp_boxes().apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Different strategies and configs") {
       Transforms::synthesise_pauli_graph(
           Transforms::PauliSynthStrat::Individual, CXConfigType::Snake)
           .apply(circ);
+      Transforms::decomp_boxes().apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Different strategies and configs") {
       Transforms::synthesise_pauli_graph(
           Transforms::PauliSynthStrat::Pairwise, CXConfigType::Snake)
           .apply(circ);
+      Transforms::decomp_boxes().apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Different strategies and configs") {
       Transforms::synthesise_pauli_graph(
           Transforms::PauliSynthStrat::Sets, CXConfigType::Tree)
           .apply(circ);
+      Transforms::decomp_boxes().apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Different strategies and configs") {
       Transforms::synthesise_pauli_graph(
           Transforms::PauliSynthStrat::Individual, CXConfigType::Tree)
           .apply(circ);
+      Transforms::decomp_boxes().apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Different strategies and configs") {
       Transforms::synthesise_pauli_graph(
           Transforms::PauliSynthStrat::Pairwise, CXConfigType::Tree)
           .apply(circ);
+      Transforms::decomp_boxes().apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Pairwise strategy with CXConfigType::MultiQGate") {
       Transforms::synthesise_pauli_graph(
           Transforms::PauliSynthStrat::Pairwise, CXConfigType::MultiQGate)
           .apply(circ);
+      Transforms::decomp_boxes().apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Sets strategy with CXConfigType::MultiQGate") {
       Transforms::synthesise_pauli_graph(
           Transforms::PauliSynthStrat::Sets, CXConfigType::MultiQGate)
           .apply(circ);
+      Transforms::decomp_boxes().apply(circ);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
     WHEN("Individual strategy with CXConfigType::MultiQGate") {
       Transforms::synthesise_pauli_graph(
           Transforms::PauliSynthStrat::Individual, CXConfigType::MultiQGate)
           .apply(circ);
+      Transforms::decomp_boxes().apply(circ);
       REQUIRE(circ.count_gates(OpType::XXPhase3) == 6);
       REQUIRE(test_statevector_comparison(test1, circ));
     }
@@ -983,16 +1008,19 @@ SCENARIO("Measure handling in PauliGraph") {
     pg.sanity_check();
     std::map<Qubit, unsigned> correct_readout = {{Qubit(0), 1}, {Qubit(1), 0}};
     WHEN("Synthesise individually") {
-      Circuit circ2 = pauli_graph_to_circuit_individually(pg);
+      Circuit circ2 = pauli_graph_to_pauli_exp_box_circuit_individually(pg);
+      Transforms::decomp_boxes().apply(circ2);
       REQUIRE(circ2.qubit_readout() == correct_readout);
     }
     WHEN("Synthesise pairwise") {
-      Circuit circ2 = pauli_graph_to_circuit_pairwise(pg);
+      Circuit circ2 = pauli_graph_to_pauli_exp_box_circuit_pairwise(pg);
+      Transforms::decomp_boxes().apply(circ2);
       pg.sanity_check();
       REQUIRE(circ2.qubit_readout() == correct_readout);
     }
     WHEN("Synthesise in sets") {
-      Circuit circ2 = pauli_graph_to_circuit_sets(pg);
+      Circuit circ2 = pauli_graph_to_pauli_exp_box_circuit_sets(pg);
+      Transforms::decomp_boxes().apply(circ2);
       REQUIRE(circ2.qubit_readout() == correct_readout);
     }
   }

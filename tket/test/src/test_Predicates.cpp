@@ -17,6 +17,7 @@
 
 #include "testutil.hpp"
 #include "tket/Circuit/Boxes.hpp"
+#include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Gate/SymTable.hpp"
 #include "tket/Placement/Placement.hpp"
 #include "tket/Predicates/CompilationUnit.hpp"

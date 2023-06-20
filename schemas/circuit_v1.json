@@ -416,6 +416,13 @@
           ],
           "description": "Phase parameters required by some box types, either expression or double."
         },
+        "phase_pair": {
+          "type": "array",
+          "description": "A pair of Phase parameters",
+          "items": {
+            "$ref": "#/definitions/box/properties/phase"
+          }
+        },
         "paulis": {
           "type": "array",
           "description": "A Pauli string, representing a tensor of Pauli operators.",
@@ -429,6 +436,32 @@
               "Z"
             ]
           }
+        },
+        "paulis_pair": {
+          "type": "array",
+          "description": "A pair of Pauli strings, both representing a tensor of Pauli operators.",
+          "items": {
+            "$ref": "#/definitions/box/properties/paulis"
+          }
+        },
+        "pauli_gadgets": {
+          "type": "array",
+          "description": "An array of Pauli gadgets, given as a Pauli string and a phase",
+          "items": {
+            "type": "array",
+            "items": [
+              {
+                "$ref": "#/definitions/box/properties/paulis"
+              },
+              {
+                "$ref": "#/definitions/box/properties/phase"
+              }
+            ]
+          }
+        },
+        "cx_config": {
+          "type": "string",
+          "description": "A configuration parameter controlling the decomposition of Pauli exponentials"
         },
         "n_qubits": {
           "type": "integer",
@@ -658,7 +691,39 @@
           "then": {
             "required": [
               "paulis",
-              "phase"
+              "phase",
+              "cx_config"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "PauliExpPairBox"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "paulis_pair",
+              "phase_pair",
+              "cx_config"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "PauliExpCommutingSetBox"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "pauli_gadgets",
+              "cx_config"
             ]
           }
         },

@@ -45,21 +45,21 @@ jobs:
     - name: create profile
       run: conan profile detect
     - name: add remote
-      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
+    - name: ccache
+      uses: hendrikmuhs/ccache-action@v1.2
+      with:
+        key: tket-coverage-build
+    - name: further ccache config
+      run: |
+        ccache --set-config compiler_check=content
+        ccache --set-config hash_dir=false # better performance for debug builds
+        ccache -p
     - name: Build tket
       run: |
-        conan install tket --user=tket --channel=stable -s build_type=Debug --build=missing -o boost/*:header_only=True -o tket/*:profile_coverage=True -of build/tket
-        conan build tket --user=tket --channel=stable -s build_type=Debug -o boost/*:header_only=True -o tket/*:profile_coverage=True -of build/tket
-        conan export-pkg tket --user=tket --channel=stable -s build_type=Debug -o boost/*:header_only=True -o tket/*:profile_coverage=True -of build/tket -tf ""
-    - name: Build tket tests
-      run: |
-        conan install tket/test -s build_type=Debug --build=missing -o boost/*:header_only=True -o test-tket/*:with_coverage=True -of build/tket-tests
-        conan build tket/test -s build_type=Debug --build=missing -o boost/*:header_only=True -o test-tket/*:with_coverage=True -of build/tket-tests
-        # Copy json files (`conan create` would do this properly, but would
-        # also delete the object files we need ... perhaps there is a better
-        # way):
-        cp tket/test/src/test_circuits/*.json ./build/tket-tests/build/Debug
-        cp tket/test/src/test_architectures/*.json ./build/tket-tests/build/Debug
+        conan install tket --user=tket --channel=stable -s build_type=Debug -o boost/*:header_only=True -o tket/*:profile_coverage=True -o with_test=True -of build/tket
+        conan build tket --user=tket --channel=stable -s build_type=Debug -o boost/*:header_only=True -o tket/*:profile_coverage=True  -o with_test=True -o test-tket/*:with_coverage=True -of build/tket
+        conan export-pkg tket --user=tket --channel=stable -s build_type=Debug -o boost/*:header_only=True -o tket/*:profile_coverage=True -o with_test=True -of build/tket -tf ""
     - name: Install runtime test requirements
       if: github.event_name == 'schedule'
       run: |
@@ -67,10 +67,6 @@ jobs:
         sudo apt-get install texlive texlive-latex-extra latexmk
         mkdir -p ~/texmf/tex/latex
         wget http://mirrors.ctan.org/graphics/pgf/contrib/quantikz/tikzlibraryquantikz.code.tex -P ~/texmf/tex/latex
-    - name: Run tket tests
-      if: github.event_name == 'pull_request' || github.event_name == 'push' || github.event_name == 'workflow_dispatch'
-      working-directory: ./build/tket-tests/build/Debug
-      run: ./test-tket
     - name: Run full tket tests
       if: github.event_name == 'schedule'
       working-directory: ./build/tket-tests/build/Debug

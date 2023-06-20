@@ -105,11 +105,11 @@ class PauliGraph {
   void sanity_check() const;
 
   friend PauliGraph circuit_to_pauli_graph(const Circuit &circ);
-  friend Circuit pauli_graph_to_circuit_individually(
+  friend Circuit pauli_graph_to_pauli_exp_box_circuit_individually(
       const PauliGraph &pg, CXConfigType cx_config);
-  friend Circuit pauli_graph_to_circuit_pairwise(
+  friend Circuit pauli_graph_to_pauli_exp_box_circuit_pairwise(
       const PauliGraph &pg, CXConfigType cx_config);
-  friend Circuit pauli_graph_to_circuit_sets(
+  friend Circuit pauli_graph_to_pauli_exp_box_circuit_sets(
       const PauliGraph &pg, CXConfigType cx_config);
 
  private:

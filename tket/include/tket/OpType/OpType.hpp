@@ -601,6 +601,16 @@ enum class OpType {
   PauliExpBox,
 
   /**
+   * See \ref PauliExpPairBox
+   */
+  PauliExpPairBox,
+
+  /**
+   * See \ref PauliExpCommutingSetBox
+   */
+  PauliExpCommutingSetBox,
+
+  /**
    * NYI
    */
   CliffBox,

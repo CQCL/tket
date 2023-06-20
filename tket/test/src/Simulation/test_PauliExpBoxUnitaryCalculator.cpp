@@ -16,6 +16,7 @@
 #include <stack>
 
 #include "tket/Circuit/Boxes.hpp"
+#include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Gate/GateUnitaryMatrix.hpp"
 #include "tket/Simulation/PauliExpBoxUnitaryCalculator.hpp"
 

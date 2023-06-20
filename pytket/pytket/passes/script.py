@@ -33,6 +33,7 @@ from pytket.passes import (  # type: ignore
     KAKDecomposition,
     OptimisePhaseGadgets,
     PauliSimp,
+    PauliExponentials,
     PauliSquash,
     PeepholeOptimise2Q,
     RebaseTket,
@@ -47,7 +48,8 @@ from pytket.passes import (  # type: ignore
     SynthesiseUMD,
     ThreeQubitSquash,
 )
-from pytket.transform import CXConfigType, PauliSynthStrat  # type: ignore
+from pytket.circuit import CXConfigType  # type: ignore
+from pytket.transform import PauliSynthStrat  # type: ignore
 
 pass_grammar = """
 start: comp_pass
@@ -116,6 +118,8 @@ guided_pauli_simp_default: "GuidedPauliSimp"
 kak_decomposition: "KAKDecomposition"
 optimise_phase_gadgets: "OptimisePhaseGadgets" "(" cx_config_type ")"
 optimise_phase_gadgets_default: "OptimisePhaseGadgets"
+pauli_exponentials: "PauliExponentials" "(" pauli_synth_strat "," cx_config_type ")"
+pauli_exponentials_default: "PauliExponentials"
 pauli_simp: "PauliSimp" "(" pauli_synth_strat "," cx_config_type ")"
 pauli_simp_default: "PauliSimp"
 pauli_squash: "PauliSquash" "(" pauli_synth_strat "," cx_config_type ")"
@@ -245,6 +249,12 @@ class PassTransformer(Transformer):
 
     def optimise_phase_gadgets_default(self, t: List) -> BasePass:
         return OptimisePhaseGadgets()
+
+    def pauli_exponentials(self, t: List) -> BasePass:
+        return PauliExponentials(strat=t[0], cx_config=t[1])
+
+    def pauli_exponentials_default(self, t: List) -> BasePass:
+        return PauliExponentials()
 
     def pauli_simp(self, t: List) -> BasePass:
         return PauliSimp(strat=t[0], cx_config=t[1])

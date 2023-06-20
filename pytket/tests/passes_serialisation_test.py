@@ -240,9 +240,9 @@ TWO_WAY_PARAM_PASSES = {
             "cx_config": "Snake",
         }
     ),
-    "PauliSimp": standard_pass_dict(
+    "PauliExponentials": standard_pass_dict(
         {
-            "name": "PauliSimp",
+            "name": "PauliExponentials",
             "pauli_synth_strat": "Sets",
             "cx_config": "Snake",
         }
@@ -351,6 +351,13 @@ ONE_WAY_PASSES = {
             "routing_config": example_routing_config,
             "directed": True,
             "delay_measures": True,
+        }
+    ),
+    "PauliSimp": standard_pass_dict(
+        {
+            "name": "PauliSimp",
+            "pauli_synth_strat": "Sets",
+            "cx_config": "Snake",
         }
     ),
     "PauliSquash": standard_pass_dict(

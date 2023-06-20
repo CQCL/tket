@@ -36,7 +36,9 @@ endif()
 
 find_program(CCACHE_PROGRAM ccache)
 if(CCACHE_PROGRAM)
-    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
+  set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
+  message("-> Setting ccache (${CCACHE_PROGRAM} as compiler launcher for generator ${CMAKE_GENERATOR}")
+  message("-> This is only supported for the Ninja and Makefile generators")
 endif()
 
 if(WIN32)
@@ -153,6 +155,7 @@ target_sources(tket
         src/Circuit/StatePreparation.cpp
         src/Circuit/DiagonalBox.cpp
         src/Circuit/ToffoliBox.cpp
+        src/Circuit/PauliExpBoxes.cpp
         src/Architecture/Architecture.cpp
         src/Architecture/ArchitectureGraphClasses.cpp
         src/Architecture/ArchitectureMapping.cpp
@@ -313,6 +316,7 @@ target_sources(tket
         include/tket/Circuit/StatePreparation.hpp
         include/tket/Circuit/ThreeQubitConversion.hpp
         include/tket/Circuit/ToffoliBox.hpp
+        include/tket/Circuit/PauliExpBoxes.hpp
         include/tket/Architecture/Architecture.hpp
         include/tket/Architecture/ArchitectureMapping.hpp
         include/tket/Architecture/BestTsaWithArch.hpp
@@ -386,6 +390,13 @@ target_sources(tket
         include/tket/Predicates/PassLibrary.hpp
         include/tket/Predicates/Predicates.hpp
     )
+
+if (BUILD_TKET_TEST)
+    add_subdirectory(test)
+endif()
+if (BUILD_TKET_PROPTEST)
+    add_subdirectory(proptest)
+endif()
 
 include(GNUInstallDirs)
 set(INSTALL_CONFIGDIR ${CMAKE_INSTALL_LIBDIR}/cmake/tket)

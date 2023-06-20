@@ -278,6 +278,12 @@ PassPtr gen_pairwise_pauli_gadgets(
     CXConfigType cx_config = CXConfigType::Snake);
 
 /* generates an optimisation pass that converts a circuit into a graph
+of PauliExpBoxes */
+PassPtr gen_pauli_exponentials(
+    Transforms::PauliSynthStrat strat = Transforms::PauliSynthStrat::Sets,
+    CXConfigType cx_config = CXConfigType::Snake);
+
+/* generates an optimisation pass that converts a circuit into a graph
 of Pauli gadgets and optimises them using strategies from <paper to come> */
 PassPtr gen_synthesise_pauli_graph(
     Transforms::PauliSynthStrat strat = Transforms::PauliSynthStrat::Sets,
