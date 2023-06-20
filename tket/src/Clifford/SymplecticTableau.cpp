@@ -235,7 +235,8 @@ void SymplecticTableau::apply_gate(
       apply_CX(qbs.at(0), qbs.at(2));
       break;
     }
-    case OpType::noop: {
+    case OpType::noop:
+    case OpType::Phase: {
       break;
     }
     default: {
