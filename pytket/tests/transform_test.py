@@ -329,6 +329,7 @@ def test_Pauli_gadget_xxphase3() -> None:
     c.H(0).H(1).H(2).H(3)
 
     Transform.SynthesisePauliGraph(cx_config=CXConfigType.MultiQGate).apply(c)
+    Transform.DecomposeBoxes().apply(c)
     assert c.n_gates_of_type(OpType.XXPhase3) == 2
 
 
@@ -430,6 +431,7 @@ def test_pauli_graph_synth() -> None:
         c.add_pauliexpbox(pbox7, [0, 1, 2, 3])
         c.add_pauliexpbox(pbox8, [0, 1, 2, 3])
         Transform.SynthesisePauliGraph(s).apply(c)
+        Transform.DecomposeBoxes().apply(c)
         num_cxs = c.n_gates_of_type(OpType.CX)
         cx_counts.append(num_cxs)
 

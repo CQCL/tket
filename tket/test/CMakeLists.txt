@@ -29,7 +29,6 @@ find_package(tkassert CONFIG REQUIRED)
 find_package(tkrng CONFIG REQUIRED)
 find_package(tktokenswap CONFIG REQUIRED)
 find_package(tkwsm CONFIG REQUIRED)
-find_package(tket CONFIG REQUIRED)
 find_package(Catch2 CONFIG REQUIRED)
 
 set(CMAKE_CXX_STANDARD 20)
@@ -110,6 +109,7 @@ add_executable(test-tket
     src/Simulation/test_CircuitSimulator.cpp
     src/Simulation/test_PauliExpBoxUnitaryCalculator.cpp
     src/Circuit/test_Boxes.cpp
+    src/Circuit/test_PauliExpBoxes.cpp
     src/Circuit/test_Circ.cpp
     src/Circuit/test_CircPool.cpp
     src/Circuit/test_Symbolic.cpp
@@ -181,12 +181,16 @@ if (NOT TARGET symengine::symengine)
     add_library(symengine::symengine ALIAS symengine)
 endif()
 
-target_link_libraries(test-tket PRIVATE tket::tket)
+target_link_libraries(test-tket PRIVATE tket)
 target_link_libraries(test-tket PRIVATE Boost::headers)
 target_link_libraries(test-tket PRIVATE gmp::gmp)
 target_link_libraries(test-tket PRIVATE symengine::symengine)
 target_link_libraries(test-tket PRIVATE Eigen3::Eigen)
 target_link_libraries(test-tket PRIVATE Catch2::Catch2WithMain)
+target_link_libraries(test-tket PRIVATE tkrng::tkrng)
+target_link_libraries(test-tket PRIVATE tkassert::tkassert)
+target_link_libraries(test-tket PRIVATE tktokenswap::tktokenswap)
+target_link_libraries(test-tket PRIVATE nlohmann_json::nlohmann_json)
 
 set(WITH_COVERAGE no CACHE BOOL "Link library with profiling for test coverage")
 IF (CMAKE_CXX_COMPILER_ID STREQUAL "GNU")

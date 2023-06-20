@@ -28,6 +28,7 @@
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/Command.hpp"
+#include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Circuit/ToffoliBox.hpp"
 #include "tket/Gate/OpPtrFunctions.hpp"
 #include "tket/Gate/SymTable.hpp"

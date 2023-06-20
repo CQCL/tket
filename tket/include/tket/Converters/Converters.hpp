@@ -58,29 +58,30 @@ std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(
 PauliGraph circuit_to_pauli_graph(const Circuit &circ);
 
 /**
- * Synthesises a circuit equivalent to the PauliGraph by building each
- * pauli gadget individually in the order given by TopSortIterator.
+ * Synthesises a circuit equivalent to the PauliGraph by adding each
+ * pauli gadget to the circuit as a PauliExpBox individually
+ * in the order given by TopSortIterator.
  * The tableau is then synthesised at the end.
  */
-Circuit pauli_graph_to_circuit_individually(
+Circuit pauli_graph_to_pauli_exp_box_circuit_individually(
     const PauliGraph &pg, CXConfigType cx_config = CXConfigType::Snake);
 
 /**
- * Synthesises a circuit equivalent to the PauliGraph by building pairs of
- * pauli gadgets simultaneously using the method detailed in Cowtan et al.
- * Phase Gadget Synthesis for Shallow Circuits, Lemma 4.9.
+ * Synthesises a circuit equivalent to the PauliGraph by inserting pairs of
+ * pauli gadgets as PauliExpPairBoxes into the circuit
  * The tableau is then synthesised at the end.
  */
-Circuit pauli_graph_to_circuit_pairwise(
+Circuit pauli_graph_to_pauli_exp_box_circuit_pairwise(
     const PauliGraph &pg, CXConfigType cx_config = CXConfigType::Snake);
 
 /**
  * Synthesises a circuit equivalent to the PauliGraph by building
- * sets of mutually commuting pauli gadgets and simultaneously
- * diagonalizing each gadget in a set.
+ * sets of mutually commuting pauli gadgets and
+ * inserting them into the circuit as PauliExpCommutingSetBoxes
  * The tableau is then synthesised at the end.
  */
-Circuit pauli_graph_to_circuit_sets(
+
+Circuit pauli_graph_to_pauli_exp_box_circuit_sets(
     const PauliGraph &pg, CXConfigType cx_config = CXConfigType::Snake);
 
 /**

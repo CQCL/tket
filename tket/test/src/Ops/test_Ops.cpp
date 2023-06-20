@@ -21,6 +21,7 @@
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Gate/GatePtr.hpp"
 #include "tket/Gate/SymTable.hpp"
 #include "tket/OpType/OpType.hpp"
