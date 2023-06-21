@@ -124,6 +124,7 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:af93335f0d3097f718622cf4d2b36aaa4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1SymplecticTableau.html#af93335f0d3097f718622cf4d2b36aaa4">apply_gate</a> (<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a> type, const std::vector&lt; unsigned &gt; &amp;qbs)</td></tr>
 <tr class="separator:af93335f0d3097f718622cf4d2b36aaa4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a95aa757b649267faf3571b6cea1dfa98"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1SymplecticTableau.html#a95aa757b649267faf3571b6cea1dfa98">apply_pauli_gadget</a> (const <a class="el" href="structtket_1_1PauliStabiliser.html">PauliStabiliser</a> &amp;pauli, unsigned half_pis)</td></tr>
+<tr class="memdesc:a95aa757b649267faf3571b6cea1dfa98"><td class="mdescLeft">&#160;</td><td class="mdescRight">Applies a pauli gadget (defined as e^{pauli * half_pis * -i * pi/2}).  <a href="classtket_1_1SymplecticTableau.html#a95aa757b649267faf3571b6cea1dfa98">More...</a><br /></td></tr>
 <tr class="separator:a95aa757b649267faf3571b6cea1dfa98"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ac07c640b140cbc14ed88d8c4a34efea7"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#afc6a69cf78c26da6848112274764acc6">MatrixXb</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1SymplecticTableau.html#ac07c640b140cbc14ed88d8c4a34efea7">anticommuting_rows</a> () const</td></tr>
 <tr class="memdesc:ac07c640b140cbc14ed88d8c4a34efea7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Generates relation of anti-commutativity between rows Matrix element (i, j) is 0 if row i and row j commute, 1 if they anti-commute.  <a href="classtket_1_1SymplecticTableau.html#ac07c640b140cbc14ed88d8c4a34efea7">More...</a><br /></td></tr>
@@ -145,12 +146,15 @@ Friends</h2></td></tr>
 <tr class="memdesc:ae4bbbf9e0ddc5cc5e10a28f5153ea00c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Format in output stream as a binary tableau Prints as "xmat zmat phase".  <a href="classtket_1_1SymplecticTableau.html#ae4bbbf9e0ddc5cc5e10a28f5153ea00c">More...</a><br /></td></tr>
 <tr class="separator:ae4bbbf9e0ddc5cc5e10a28f5153ea00c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae866f67ebd2518ad7eb442bde020dcc9"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1SymplecticTableau.html#ae866f67ebd2518ad7eb442bde020dcc9">unitary_tableau_to_circuit</a> (const <a class="el" href="classtket_1_1UnitaryTableau.html">UnitaryTableau</a> &amp;tab)</td></tr>
+<tr class="memdesc:ae866f67ebd2518ad7eb442bde020dcc9"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a circuit producing the same effect as the tableau.  <a href="classtket_1_1SymplecticTableau.html#ae866f67ebd2518ad7eb442bde020dcc9">More...</a><br /></td></tr>
 <tr class="separator:ae866f67ebd2518ad7eb442bde020dcc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a75257128046ffbb9d4b165ae339bd772"><td class="memItemLeft" align="right" valign="top">std::pair&lt; <a class="el" href="classtket_1_1Circuit.html">Circuit</a>, <a class="el" href="namespacetket.html#aa08fc2d553413efa43b68fa1269fba77">unit_map_t</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1SymplecticTableau.html#a75257128046ffbb9d4b165ae339bd772">cm_tableau_to_circuit</a> (const <a class="el" href="classtket_1_1ChoiMixTableau.html">ChoiMixTableau</a> &amp;tab)</td></tr>
 <tr class="memdesc:a75257128046ffbb9d4b165ae339bd772"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a circuit producing the same effect as a <a class="el" href="classtket_1_1ChoiMixTableau.html">ChoiMixTableau</a>.  <a href="classtket_1_1SymplecticTableau.html#a75257128046ffbb9d4b165ae339bd772">More...</a><br /></td></tr>
 <tr class="separator:a75257128046ffbb9d4b165ae339bd772"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a262b3d2b24fda82086653081b66bdd5a"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1SymplecticTableau.html#a262b3d2b24fda82086653081b66bdd5a">operator&lt;&lt;</a> (std::ostream &amp;os, const <a class="el" href="classtket_1_1UnitaryTableau.html">UnitaryTableau</a> &amp;tab)</td></tr>
 <tr class="separator:a262b3d2b24fda82086653081b66bdd5a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acc5affe312cfa8e5b9c6031a76f2488b"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1SymplecticTableau.html#acc5affe312cfa8e5b9c6031a76f2488b">operator&lt;&lt;</a> (std::ostream &amp;os, const <a class="el" href="classtket_1_1UnitaryRevTableau.html">UnitaryRevTableau</a> &amp;tab)</td></tr>
+<tr class="separator:acc5affe312cfa8e5b9c6031a76f2488b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a3ca29a72b8fff14e983166d703cb7329"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1SymplecticTableau.html#a3ca29a72b8fff14e983166d703cb7329">to_json</a> (nlohmann::json &amp;j, const <a class="el" href="classtket_1_1SymplecticTableau.html">SymplecticTableau</a> &amp;tab)</td></tr>
 <tr class="separator:a3ca29a72b8fff14e983166d703cb7329"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae8c38108a4739b97e3fd332496b0a7fa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1SymplecticTableau.html#ae8c38108a4739b97e3fd332496b0a7fa">from_json</a> (const nlohmann::json &amp;j, <a class="el" href="classtket_1_1SymplecticTableau.html">SymplecticTableau</a> &amp;tab)</td></tr>
@@ -158,7 +162,7 @@ Friends</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock">
-<p class="definition">Definition at line <a class="el" href="SymplecticTableau_8hpp_source.html#l00054">54</a> of file <a class="el" href="SymplecticTableau_8hpp_source.html">SymplecticTableau.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SymplecticTableau_8hpp_source.html#l00055">55</a> of file <a class="el" href="SymplecticTableau_8hpp_source.html">SymplecticTableau.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a11c0f4e421044c6d07842b11f81196f6"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a11c0f4e421044c6d07842b11f81196f6">&#9670;&nbsp;</a></span>SymplecticTableau() <span class="overload">[1/4]</span></h2>
@@ -211,8 +215,8 @@ Friends</h2></td></tr>
 <p>This class provides the data structure, mechanisms for row multiplication, gate application and validity checks.</p>
 <p>It is expected that all Pauli strings in a tableau should be linearly independent, so a validity check is provided. A utility for checking the mutual commutativity of terms is also provided.</p>
 <p>This serves as a base class for:</p><ul>
+<li><a class="el" href="classtket_1_1UnitaryTableau.html">UnitaryTableau</a> where there is both a Z row and an X row for each input describing the Pauli string formed when pushing a Z or X on the input through to the outputs. Future possible subclasses include:</li>
 <li>StabTableau where each row represents a stabilizer of a given state.</li>
-<li><a class="el" href="classtket_1_1UnitaryTableau.html">UnitaryTableau</a> where there is both a Z row and an X row for each input describing the Pauli string formed when pushing a Z or X on the input through to the outputs.</li>
 <li>IsometryTableau is a generalisation of StabTableau and <a class="el" href="classtket_1_1UnitaryTableau.html">UnitaryTableau</a> that can represent Clifford isometries by a Z and X row per input and a spare row per free stabilizer. Constructor to initialise the tableau into a given state. Includes checks for compatibility of sizes but will not force commutativity or linear independence. </li>
 </ul>
 
@@ -320,7 +324,7 @@ Friends</h2></td></tr>
 
 <p>Generates relation of anti-commutativity between rows Matrix element (i, j) is 0 if row i and row j commute, 1 if they anti-commute. </p>
 
-<p class="definition">Definition at line <a class="el" href="SymplecticTableau_8cpp_source.html#l00308">308</a> of file <a class="el" href="SymplecticTableau_8cpp_source.html">SymplecticTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SymplecticTableau_8cpp_source.html#l00309">309</a> of file <a class="el" href="SymplecticTableau_8cpp_source.html">SymplecticTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -410,7 +414,10 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="SymplecticTableau_8cpp_source.html#l00249">249</a> of file <a class="el" href="SymplecticTableau_8cpp_source.html">SymplecticTableau.cpp</a>.</p>
+<p>Applies a pauli gadget (defined as e^{pauli * half_pis * -i * pi/2}). </p>
+<p>If row commutes with pauli, no change is required. If row anticommutes with pauli and half_pis % 4 == 1: e^{pauli * -i * pi/2} row = (i * row * pauli) e^{pauli * -i * pi/2} </p>
+
+<p class="definition">Definition at line <a class="el" href="SymplecticTableau_8cpp_source.html#l00250">250</a> of file <a class="el" href="SymplecticTableau_8cpp_source.html">SymplecticTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -474,7 +481,7 @@ Friends</h2></td></tr>
 <p>Applies row-wise gaussian elimination over the entire tableau, in qubit order, subdivided by X first and then Z, reducing the combined boolean matrix to reduced row echelon form. </p>
 <p>Users of this class should only apply this in settings where row multiplications are free actions, e.g. ok in <a class="el" href="classtket_1_1ChoiMixTableau.html">ChoiMixTableau</a>, not ok in <a class="el" href="classtket_1_1UnitaryTableau.html">UnitaryTableau</a> </p>
 
-<p class="definition">Definition at line <a class="el" href="SymplecticTableau_8cpp_source.html#l00351">351</a> of file <a class="el" href="SymplecticTableau_8cpp_source.html">SymplecticTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SymplecticTableau_8cpp_source.html#l00352">352</a> of file <a class="el" href="SymplecticTableau_8cpp_source.html">SymplecticTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -633,7 +640,7 @@ Friends</h2></td></tr>
 
 <p>Obtains rank of tableau matrix for determining linear independence of rows. </p>
 
-<p class="definition">Definition at line <a class="el" href="SymplecticTableau_8cpp_source.html#l00324">324</a> of file <a class="el" href="SymplecticTableau_8cpp_source.html">SymplecticTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SymplecticTableau_8cpp_source.html#l00325">325</a> of file <a class="el" href="SymplecticTableau_8cpp_source.html">SymplecticTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -696,7 +703,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="SymplecticTableau_8hpp_source.html#l00202">202</a> of file <a class="el" href="SymplecticTableau_8hpp_source.html">SymplecticTableau.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SymplecticTableau_8hpp_source.html#l00211">211</a> of file <a class="el" href="SymplecticTableau_8hpp_source.html">SymplecticTableau.hpp</a>.</p>
 
 </div>
 </div>
@@ -766,12 +773,12 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="SymplecticTableau_8cpp_source.html#l00395">395</a> of file <a class="el" href="SymplecticTableau_8cpp_source.html">SymplecticTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SymplecticTableau_8cpp_source.html#l00396">396</a> of file <a class="el" href="SymplecticTableau_8cpp_source.html">SymplecticTableau.cpp</a>.</p>
 
 </div>
 </div>
 <a id="ae4bbbf9e0ddc5cc5e10a28f5153ea00c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae4bbbf9e0ddc5cc5e10a28f5153ea00c">&#9670;&nbsp;</a></span>operator&lt;&lt; <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ae4bbbf9e0ddc5cc5e10a28f5153ea00c">&#9670;&nbsp;</a></span>operator&lt;&lt; <span class="overload">[1/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -810,8 +817,46 @@ Friends</h2></td></tr>
 
 </div>
 </div>
+<a id="acc5affe312cfa8e5b9c6031a76f2488b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#acc5affe312cfa8e5b9c6031a76f2488b">&#9670;&nbsp;</a></span>operator&lt;&lt; <span class="overload">[2/3]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::ostream&amp; operator&lt;&lt; </td>
+          <td>(</td>
+          <td class="paramtype">std::ostream &amp;&#160;</td>
+          <td class="paramname"><em>os</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classtket_1_1UnitaryRevTableau.html">UnitaryRevTableau</a> &amp;&#160;</td>
+          <td class="paramname"><em>tab</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">friend</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="UnitaryTableau_8cpp_source.html#l00603">603</a> of file <a class="el" href="UnitaryTableau_8cpp_source.html">UnitaryTableau.cpp</a>.</p>
+
+</div>
+</div>
 <a id="a262b3d2b24fda82086653081b66bdd5a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a262b3d2b24fda82086653081b66bdd5a">&#9670;&nbsp;</a></span>operator&lt;&lt; <span class="overload">[2/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a262b3d2b24fda82086653081b66bdd5a">&#9670;&nbsp;</a></span>operator&lt;&lt; <span class="overload">[3/3]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -844,7 +889,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="UnitaryTableau_8cpp_source.html#l00532">532</a> of file <a class="el" href="UnitaryTableau_8cpp_source.html">UnitaryTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitaryTableau_8cpp_source.html#l00432">432</a> of file <a class="el" href="UnitaryTableau_8cpp_source.html">UnitaryTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -882,7 +927,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="SymplecticTableau_8cpp_source.html#l00387">387</a> of file <a class="el" href="SymplecticTableau_8cpp_source.html">SymplecticTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SymplecticTableau_8cpp_source.html#l00388">388</a> of file <a class="el" href="SymplecticTableau_8cpp_source.html">SymplecticTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -910,6 +955,9 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
+<p>Constructs a circuit producing the same effect as the tableau. </p>
+<p>Uses the method from Aaronson-Gottesman: Improved Simulation of Stabilizer Circuits, Theorem 8. CAUTION: GATE COUNT IS ATROCIOUS IN PRACTICE </p>
+
 <p class="definition">Definition at line <a class="el" href="UnitaryTableauConverters_8cpp_source.html#l00031">31</a> of file <a class="el" href="UnitaryTableauConverters_8cpp_source.html">UnitaryTableauConverters.cpp</a>.</p>
 
 </div>
@@ -934,7 +982,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="SymplecticTableau_8hpp_source.html#l00201">201</a> of file <a class="el" href="SymplecticTableau_8hpp_source.html">SymplecticTableau.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SymplecticTableau_8hpp_source.html#l00210">210</a> of file <a class="el" href="SymplecticTableau_8hpp_source.html">SymplecticTableau.hpp</a>.</p>
 
 </div>
 </div>

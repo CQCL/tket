@@ -1,15 +1,15 @@
 var searchData=
 [
-  ['implicitpermutationnotallowed_2496',['ImplicitPermutationNotAllowed',['../classtket_1_1ImplicitPermutationNotAllowed.html',1,'tket']]],
-  ['incompatiblecompilerpasses_2497',['IncompatibleCompilerPasses',['../classtket_1_1IncompatibleCompilerPasses.html',1,'tket']]],
-  ['incorrectpredicate_2498',['IncorrectPredicate',['../classtket_1_1IncorrectPredicate.html',1,'tket']]],
-  ['interactionmatch_2499',['InteractionMatch',['../structtket_1_1InteractionMatch.html',1,'tket']]],
-  ['interactionpoint_2500',['InteractionPoint',['../structtket_1_1InteractionPoint.html',1,'tket']]],
-  ['invalidcostcalculation_2501',['InvalidCostCalculation',['../classtket_1_1aas_1_1InvalidCostCalculation.html',1,'tket::aas']]],
-  ['invalidparametercount_2502',['InvalidParameterCount',['../classtket_1_1InvalidParameterCount.html',1,'tket']]],
-  ['invalidrowoperation_2503',['InvalidRowOperation',['../classtket_1_1aas_1_1InvalidRowOperation.html',1,'tket::aas']]],
-  ['invalidunitconversion_2504',['InvalidUnitConversion',['../classtket_1_1InvalidUnitConversion.html',1,'tket']]],
-  ['is_5fdirected_5fstruct_2505',['is_directed_struct',['../structtket_1_1graphs_1_1utils_1_1detail_1_1is__directed__struct.html',1,'tket::graphs::utils::detail']]],
-  ['is_5fdirected_5fstruct_3c_20graph_2c_20boost_3a_3aundirected_5ftag_20_3e_2506',['is_directed_struct&lt; Graph, boost::undirected_tag &gt;',['../structtket_1_1graphs_1_1utils_1_1detail_1_1is__directed__struct_3_01Graph_00_01boost_1_1undirected__tag_01_4.html',1,'tket::graphs::utils::detail']]],
-  ['iterationorder_2507',['IterationOrder',['../classtket_1_1aas_1_1IterationOrder.html',1,'tket::aas']]]
+  ['implicitpermutationnotallowed_2492',['ImplicitPermutationNotAllowed',['../classtket_1_1ImplicitPermutationNotAllowed.html',1,'tket']]],
+  ['incompatiblecompilerpasses_2493',['IncompatibleCompilerPasses',['../classtket_1_1IncompatibleCompilerPasses.html',1,'tket']]],
+  ['incorrectpredicate_2494',['IncorrectPredicate',['../classtket_1_1IncorrectPredicate.html',1,'tket']]],
+  ['interactionmatch_2495',['InteractionMatch',['../structtket_1_1InteractionMatch.html',1,'tket']]],
+  ['interactionpoint_2496',['InteractionPoint',['../structtket_1_1InteractionPoint.html',1,'tket']]],
+  ['invalidcostcalculation_2497',['InvalidCostCalculation',['../classtket_1_1aas_1_1InvalidCostCalculation.html',1,'tket::aas']]],
+  ['invalidparametercount_2498',['InvalidParameterCount',['../classtket_1_1InvalidParameterCount.html',1,'tket']]],
+  ['invalidrowoperation_2499',['InvalidRowOperation',['../classtket_1_1aas_1_1InvalidRowOperation.html',1,'tket::aas']]],
+  ['invalidunitconversion_2500',['InvalidUnitConversion',['../classtket_1_1InvalidUnitConversion.html',1,'tket']]],
+  ['is_5fdirected_5fstruct_2501',['is_directed_struct',['../structtket_1_1graphs_1_1utils_1_1detail_1_1is__directed__struct.html',1,'tket::graphs::utils::detail']]],
+  ['is_5fdirected_5fstruct_3c_20graph_2c_20boost_3a_3aundirected_5ftag_20_3e_2502',['is_directed_struct&lt; Graph, boost::undirected_tag &gt;',['../structtket_1_1graphs_1_1utils_1_1detail_1_1is__directed__struct_3_01Graph_00_01boost_1_1undirected__tag_01_4.html',1,'tket::graphs::utils::detail']]],
+  ['iterationorder_2503',['IterationOrder',['../classtket_1_1aas_1_1IterationOrder.html',1,'tket::aas']]]
 ];

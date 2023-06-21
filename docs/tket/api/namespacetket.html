@@ -268,14 +268,14 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1ChoiMixTableau.html">ChoiMixTableau</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1CliffTableau.html">CliffTableau</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtket_1_1BoolPauli.html">BoolPauli</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Boolean encoding of Pauli &lt;x, z&gt; = &lt;false, false&gt; ==&gt; I &lt;x, z&gt; = &lt;false, true&gt; ==&gt; Z &lt;x, z&gt; = &lt;true, false&gt; ==&gt; X &lt;x, z&gt; = &lt;true, true&gt; ==&gt; Y.  <a href="structtket_1_1BoolPauli.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1SymplecticTableau.html">SymplecticTableau</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1UnitaryTableau.html">UnitaryTableau</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1UnitaryRevTableau.html">UnitaryRevTableau</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1CXMaker.html">CXMaker</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1216,8 +1216,6 @@ Functions</h2></td></tr>
 <tr class="separator:acc20e3ff7e32977074a45a083058a67a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1fff349fb67b823c404240549490fe4e"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a1fff349fb67b823c404240549490fe4e">from_json</a> (const nlohmann::json &amp;j, <a class="el" href="classtket_1_1ChoiMixTableau.html">ChoiMixTableau</a> &amp;tab)</td></tr>
 <tr class="separator:a1fff349fb67b823c404240549490fe4e"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6659caa295e4d603e0a2f99153c0c8c6"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a6659caa295e4d603e0a2f99153c0c8c6">operator&lt;&lt;</a> (std::ostream &amp;os, <a class="el" href="classtket_1_1CliffTableau.html">CliffTableau</a> const &amp;tab)</td></tr>
-<tr class="separator:a6659caa295e4d603e0a2f99153c0c8c6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afbf7bf989e70c814e53a8cf807869dc9"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#afbf7bf989e70c814e53a8cf807869dc9">operator&lt;&lt;</a> (std::ostream &amp;os, const <a class="el" href="classtket_1_1SymplecticTableau.html">SymplecticTableau</a> &amp;tab)</td></tr>
 <tr class="separator:afbf7bf989e70c814e53a8cf807869dc9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a52597b988342641e65c81c1e39cc626a"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a52597b988342641e65c81c1e39cc626a">to_json</a> (nlohmann::json &amp;j, const <a class="el" href="classtket_1_1SymplecticTableau.html">SymplecticTableau</a> &amp;tab)</td></tr>
@@ -1230,18 +1228,18 @@ Functions</h2></td></tr>
 <tr class="separator:a3f7d62bf33d0168c3728124e63282db6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a06b460c582581f8c159d245411828117"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a06b460c582581f8c159d245411828117">from_json</a> (const nlohmann::json &amp;j, <a class="el" href="classtket_1_1UnitaryTableau.html">UnitaryTableau</a> &amp;tab)</td></tr>
 <tr class="separator:a06b460c582581f8c159d245411828117"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:adc978257a927336c66a7f5a52cf04f53"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#adc978257a927336c66a7f5a52cf04f53">operator&lt;&lt;</a> (std::ostream &amp;os, const <a class="el" href="classtket_1_1UnitaryRevTableau.html">UnitaryRevTableau</a> &amp;tab)</td></tr>
+<tr class="separator:adc978257a927336c66a7f5a52cf04f53"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a30ce9a4fe41a7450c28ba029bfa251d0"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a30ce9a4fe41a7450c28ba029bfa251d0">to_json</a> (nlohmann::json &amp;j, const <a class="el" href="classtket_1_1UnitaryRevTableau.html">UnitaryRevTableau</a> &amp;tab)</td></tr>
+<tr class="separator:a30ce9a4fe41a7450c28ba029bfa251d0"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a95e5de73ec10df806b8d49d4677337a4"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a95e5de73ec10df806b8d49d4677337a4">from_json</a> (const nlohmann::json &amp;j, <a class="el" href="classtket_1_1UnitaryRevTableau.html">UnitaryRevTableau</a> &amp;tab)</td></tr>
+<tr class="separator:a95e5de73ec10df806b8d49d4677337a4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6939a2a1867b041c3e8574c4ca0783fa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1ChoiMixTableau.html">ChoiMixTableau</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a6939a2a1867b041c3e8574c4ca0783fa">circuit_to_cm_tableau</a> (const <a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ)</td></tr>
 <tr class="memdesc:a6939a2a1867b041c3e8574c4ca0783fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a <a class="el" href="classtket_1_1ChoiMixTableau.html">ChoiMixTableau</a> for a given circuit.  <a href="namespacetket.html#a6939a2a1867b041c3e8574c4ca0783fa">More...</a><br /></td></tr>
 <tr class="separator:a6939a2a1867b041c3e8574c4ca0783fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab2da96adecae9dcf9259abe9a3a72ef6"><td class="memItemLeft" align="right" valign="top">std::pair&lt; <a class="el" href="classtket_1_1Circuit.html">Circuit</a>, <a class="el" href="namespacetket.html#aa08fc2d553413efa43b68fa1269fba77">unit_map_t</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#ab2da96adecae9dcf9259abe9a3a72ef6">cm_tableau_to_circuit</a> (const <a class="el" href="classtket_1_1ChoiMixTableau.html">ChoiMixTableau</a> &amp;circ)</td></tr>
 <tr class="memdesc:ab2da96adecae9dcf9259abe9a3a72ef6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a circuit producing the same effect as a <a class="el" href="classtket_1_1ChoiMixTableau.html">ChoiMixTableau</a>.  <a href="namespacetket.html#ab2da96adecae9dcf9259abe9a3a72ef6">More...</a><br /></td></tr>
 <tr class="separator:ab2da96adecae9dcf9259abe9a3a72ef6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:af07639a660737957a261e8b05e17ada6"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1CliffTableau.html">CliffTableau</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#af07639a660737957a261e8b05e17ada6">circuit_to_tableau</a> (const <a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ)</td></tr>
-<tr class="memdesc:af07639a660737957a261e8b05e17ada6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct the tableau for a given circuit.  <a href="namespacetket.html#af07639a660737957a261e8b05e17ada6">More...</a><br /></td></tr>
-<tr class="separator:af07639a660737957a261e8b05e17ada6"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab46224ff036f91009e465938cfb23177"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#ab46224ff036f91009e465938cfb23177">tableau_to_circuit</a> (const <a class="el" href="classtket_1_1CliffTableau.html">CliffTableau</a> &amp;tab)</td></tr>
-<tr class="memdesc:ab46224ff036f91009e465938cfb23177"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a circuit producing the same effect as the tableau.  <a href="namespacetket.html#ab46224ff036f91009e465938cfb23177">More...</a><br /></td></tr>
-<tr class="separator:ab46224ff036f91009e465938cfb23177"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2ee84900c6f189caa05834c34389a824"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a2ee84900c6f189caa05834c34389a824">operator&lt;&lt;</a> (std::ostream &amp;out, const <a class="el" href="classtket_1_1DiagMatrix.html">DiagMatrix</a> &amp;diam)</td></tr>
 <tr class="separator:a2ee84900c6f189caa05834c34389a824"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a9f68fb4ab6e021ef3cb3174094f2d194"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a9f68fb4ab6e021ef3cb3174094f2d194">pauli_angle_convert_or_throw</a> (<a class="el" href="namespacetket.html#a68999408b52ab2f0f191f814ec93f4de">Complex</a> pauliCoeff, const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;angle)</td></tr>
@@ -1261,8 +1259,6 @@ Functions</h2></td></tr>
 <tr class="separator:aa4cafa843d160e028e5d01bed9bb5e1a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a572fb16dcb271724a0df5a5e5ded02cf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1PauliGraph.html">PauliGraph</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a572fb16dcb271724a0df5a5e5ded02cf">circuit_to_pauli_graph</a> (const <a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ)</td></tr>
 <tr class="separator:a572fb16dcb271724a0df5a5e5ded02cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8635d43399ecceae017954a465215061"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a8635d43399ecceae017954a465215061">pauli_graph_to_circuit</a> (const <a class="el" href="classtket_1_1PauliGraph.html">PauliGraph</a> &amp;pg)</td></tr>
-<tr class="separator:a8635d43399ecceae017954a465215061"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afd183bc3aae0fc1875b47f95cec11e64"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#afd183bc3aae0fc1875b47f95cec11e64">pauli_graph_to_pauli_exp_box_circuit_individually</a> (const <a class="el" href="classtket_1_1PauliGraph.html">PauliGraph</a> &amp;pg, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config=<a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a>)</td></tr>
 <tr class="memdesc:afd183bc3aae0fc1875b47f95cec11e64"><td class="mdescLeft">&#160;</td><td class="mdescRight">Synthesises a circuit equivalent to the <a class="el" href="classtket_1_1PauliGraph.html" title="Dependency graph of a circuit wrt Pauli Gadgets.">PauliGraph</a> by adding each pauli gadget to the circuit as a <a class="el" href="classtket_1_1PauliExpBox.html" title="Operation defined as the exponential of a tensor of Pauli operators.">PauliExpBox</a> individually in the order given by TopSortIterator.  <a href="namespacetket.html#afd183bc3aae0fc1875b47f95cec11e64">More...</a><br /></td></tr>
 <tr class="separator:afd183bc3aae0fc1875b47f95cec11e64"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1278,9 +1274,15 @@ Functions</h2></td></tr>
 <tr class="memitem:a8676ea2e430ed41e948245bec68788bf"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; T, Eigen::Dynamic, Eigen::Dynamic &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacetket.html#a8676ea2e430ed41e948245bec68788bf">load_dynamic_matrix</a> (const nlohmann::json &amp;j, size_t rows, size_t cols)</td></tr>
 <tr class="separator:a8676ea2e430ed41e948245bec68788bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ace2143bc6b068ad3ab0e65bbffda8f06"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1UnitaryTableau.html">UnitaryTableau</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#ace2143bc6b068ad3ab0e65bbffda8f06">circuit_to_unitary_tableau</a> (const <a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ)</td></tr>
+<tr class="memdesc:ace2143bc6b068ad3ab0e65bbffda8f06"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct the tableau for a given circuit.  <a href="namespacetket.html#ace2143bc6b068ad3ab0e65bbffda8f06">More...</a><br /></td></tr>
 <tr class="separator:ace2143bc6b068ad3ab0e65bbffda8f06"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ae1c5437a4e8e7bb96d13513fa0619f7d"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#ae1c5437a4e8e7bb96d13513fa0619f7d">unitary_tableau_to_circuit</a> (const <a class="el" href="classtket_1_1UnitaryTableau.html">UnitaryTableau</a> &amp;tab)</td></tr>
+<tr class="memdesc:ae1c5437a4e8e7bb96d13513fa0619f7d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a circuit producing the same effect as the tableau.  <a href="namespacetket.html#ae1c5437a4e8e7bb96d13513fa0619f7d">More...</a><br /></td></tr>
 <tr class="separator:ae1c5437a4e8e7bb96d13513fa0619f7d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4a41941a04739eead752f55398f44146"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1UnitaryRevTableau.html">UnitaryRevTableau</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a4a41941a04739eead752f55398f44146">circuit_to_unitary_rev_tableau</a> (const <a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ)</td></tr>
+<tr class="separator:a4a41941a04739eead752f55398f44146"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac76e8ec05b30c43414f7cea25a8050aa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#ac76e8ec05b30c43414f7cea25a8050aa">unitary_rev_tableau_to_circuit</a> (const <a class="el" href="classtket_1_1UnitaryRevTableau.html">UnitaryRevTableau</a> &amp;tab)</td></tr>
+<tr class="separator:ac76e8ec05b30c43414f7cea25a8050aa"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a12cdd035bfbaef9fe6622113b11a28bd"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a12cdd035bfbaef9fe6622113b11a28bd">is_spiderless_optype</a> (const <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a> &amp;optype)</td></tr>
 <tr class="separator:a12cdd035bfbaef9fe6622113b11a28bd"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:adf38c7543c94d29bb65d748256143b14"><td class="memItemLeft" align="right" valign="top">std::pair&lt; <a class="el" href="namespacetket.html#a683aa757218edff02dc9f18694881d31">ZXVertPort</a>, <a class="el" href="namespacetket.html#a683aa757218edff02dc9f18694881d31">ZXVertPort</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#adf38c7543c94d29bb65d748256143b14">add_switch</a> (<a class="el" href="classtket_1_1zx_1_1ZXDiagram.html">ZXDiagram</a> &amp;zxd, const bool &amp;on_value, const <a class="el" href="namespacetket_1_1zx.html#ae5c1261d41bb456a2457d06f3c52b9ff">QuantumType</a> &amp;qtype)</td></tr>
@@ -5834,18 +5836,18 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PauliGraphConverters_8cpp_source.html#l00028">28</a> of file <a class="el" href="PauliGraphConverters_8cpp_source.html">PauliGraphConverters.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliGraphConverters_8cpp_source.html#l00025">25</a> of file <a class="el" href="PauliGraphConverters_8cpp_source.html">PauliGraphConverters.cpp</a>.</p>
 
 </div>
 </div>
-<a id="af07639a660737957a261e8b05e17ada6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#af07639a660737957a261e8b05e17ada6">&#9670;&nbsp;</a></span>circuit_to_tableau()</h2>
+<a id="a4a41941a04739eead752f55398f44146"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4a41941a04739eead752f55398f44146">&#9670;&nbsp;</a></span>circuit_to_unitary_rev_tableau()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname"><a class="el" href="classtket_1_1CliffTableau.html">CliffTableau</a> tket::circuit_to_tableau </td>
+          <td class="memname"><a class="el" href="classtket_1_1UnitaryRevTableau.html">UnitaryRevTableau</a> tket::circuit_to_unitary_rev_tableau </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;&#160;</td>
           <td class="paramname"><em>circ</em></td><td>)</td>
@@ -5854,10 +5856,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Construct the tableau for a given circuit. </p>
-<p>Will throw an exception if it contains non-Clifford gates. </p>
-
-<p class="definition">Definition at line <a class="el" href="CliffTableauConverters_8cpp_source.html#l00021">21</a> of file <a class="el" href="CliffTableauConverters_8cpp_source.html">CliffTableauConverters.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitaryTableauConverters_8cpp_source.html#l00258">258</a> of file <a class="el" href="UnitaryTableauConverters_8cpp_source.html">UnitaryTableauConverters.cpp</a>.</p>
 
 </div>
 </div>
@@ -5876,6 +5875,9 @@ template&lt;typename T &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Construct the tableau for a given circuit. </p>
+<p>Will throw an exception if it contains non-Clifford gates. </p>
 
 <p class="definition">Definition at line <a class="el" href="UnitaryTableauConverters_8cpp_source.html#l00021">21</a> of file <a class="el" href="UnitaryTableauConverters_8cpp_source.html">UnitaryTableauConverters.cpp</a>.</p>
 
@@ -7393,7 +7395,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a91d0b4b066c67030bd53dee413fce050"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a91d0b4b066c67030bd53dee413fce050">&#9670;&nbsp;</a></span>from_json() <span class="overload">[1/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a91d0b4b066c67030bd53dee413fce050">&#9670;&nbsp;</a></span>from_json() <span class="overload">[1/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7423,7 +7425,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a8480f9e4486eeb5f6b4df09347b29cd7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8480f9e4486eeb5f6b4df09347b29cd7">&#9670;&nbsp;</a></span>from_json() <span class="overload">[2/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a8480f9e4486eeb5f6b4df09347b29cd7">&#9670;&nbsp;</a></span>from_json() <span class="overload">[2/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7453,7 +7455,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="ab465389a1775c7abac371775b9c3a938"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab465389a1775c7abac371775b9c3a938">&#9670;&nbsp;</a></span>from_json() <span class="overload">[3/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ab465389a1775c7abac371775b9c3a938">&#9670;&nbsp;</a></span>from_json() <span class="overload">[3/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7483,7 +7485,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="aa288b45e0dc758918b68eec30c5a757d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa288b45e0dc758918b68eec30c5a757d">&#9670;&nbsp;</a></span>from_json() <span class="overload">[4/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aa288b45e0dc758918b68eec30c5a757d">&#9670;&nbsp;</a></span>from_json() <span class="overload">[4/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7513,7 +7515,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a1fff349fb67b823c404240549490fe4e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1fff349fb67b823c404240549490fe4e">&#9670;&nbsp;</a></span>from_json() <span class="overload">[5/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a1fff349fb67b823c404240549490fe4e">&#9670;&nbsp;</a></span>from_json() <span class="overload">[5/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7543,7 +7545,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a0477c69ca34d1cd29afb9820a51f32db"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a0477c69ca34d1cd29afb9820a51f32db">&#9670;&nbsp;</a></span>from_json() <span class="overload">[6/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a0477c69ca34d1cd29afb9820a51f32db">&#9670;&nbsp;</a></span>from_json() <span class="overload">[6/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7573,7 +7575,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a366cedf47a3be4f0b69f9d91c9be3b80"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a366cedf47a3be4f0b69f9d91c9be3b80">&#9670;&nbsp;</a></span>from_json() <span class="overload">[7/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a366cedf47a3be4f0b69f9d91c9be3b80">&#9670;&nbsp;</a></span>from_json() <span class="overload">[7/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7603,7 +7605,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a7ec709945767bd70fb640a0838d63b0f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7ec709945767bd70fb640a0838d63b0f">&#9670;&nbsp;</a></span>from_json() <span class="overload">[8/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a7ec709945767bd70fb640a0838d63b0f">&#9670;&nbsp;</a></span>from_json() <span class="overload">[8/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7633,7 +7635,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a8ca885e368fdafd84fe074a22facbd83"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8ca885e368fdafd84fe074a22facbd83">&#9670;&nbsp;</a></span>from_json() <span class="overload">[9/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a8ca885e368fdafd84fe074a22facbd83">&#9670;&nbsp;</a></span>from_json() <span class="overload">[9/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7663,7 +7665,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a564b6d2d0f09d0437ef1e4dd1af3159e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a564b6d2d0f09d0437ef1e4dd1af3159e">&#9670;&nbsp;</a></span>from_json() <span class="overload">[10/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a564b6d2d0f09d0437ef1e4dd1af3159e">&#9670;&nbsp;</a></span>from_json() <span class="overload">[10/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7693,7 +7695,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="ab5c1262e82e286a32972346c15cd7ea5"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab5c1262e82e286a32972346c15cd7ea5">&#9670;&nbsp;</a></span>from_json() <span class="overload">[11/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ab5c1262e82e286a32972346c15cd7ea5">&#9670;&nbsp;</a></span>from_json() <span class="overload">[11/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7723,7 +7725,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="adb7b8ddda56ada4703b3898e62e1028d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adb7b8ddda56ada4703b3898e62e1028d">&#9670;&nbsp;</a></span>from_json() <span class="overload">[12/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#adb7b8ddda56ada4703b3898e62e1028d">&#9670;&nbsp;</a></span>from_json() <span class="overload">[12/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7753,7 +7755,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a5b3606a7dffd698e3b65ea61eab49f29"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5b3606a7dffd698e3b65ea61eab49f29">&#9670;&nbsp;</a></span>from_json() <span class="overload">[13/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a5b3606a7dffd698e3b65ea61eab49f29">&#9670;&nbsp;</a></span>from_json() <span class="overload">[13/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7783,7 +7785,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="aa39733fdaf85545358ea465b019deab0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa39733fdaf85545358ea465b019deab0">&#9670;&nbsp;</a></span>from_json() <span class="overload">[14/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aa39733fdaf85545358ea465b019deab0">&#9670;&nbsp;</a></span>from_json() <span class="overload">[14/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7813,7 +7815,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="ab5cfd76224bd2a945c23f62bb1ed1fc7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab5cfd76224bd2a945c23f62bb1ed1fc7">&#9670;&nbsp;</a></span>from_json() <span class="overload">[15/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ab5cfd76224bd2a945c23f62bb1ed1fc7">&#9670;&nbsp;</a></span>from_json() <span class="overload">[15/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7843,7 +7845,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a33a17099630ebcf742229a7d831bcec0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a33a17099630ebcf742229a7d831bcec0">&#9670;&nbsp;</a></span>from_json() <span class="overload">[16/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a33a17099630ebcf742229a7d831bcec0">&#9670;&nbsp;</a></span>from_json() <span class="overload">[16/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7873,7 +7875,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="adeb3ed1c99658d1ea42126bcb712bb9a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#adeb3ed1c99658d1ea42126bcb712bb9a">&#9670;&nbsp;</a></span>from_json() <span class="overload">[17/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#adeb3ed1c99658d1ea42126bcb712bb9a">&#9670;&nbsp;</a></span>from_json() <span class="overload">[17/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7903,7 +7905,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a581d9c405547974363fb647e7f494db6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a581d9c405547974363fb647e7f494db6">&#9670;&nbsp;</a></span>from_json() <span class="overload">[18/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a581d9c405547974363fb647e7f494db6">&#9670;&nbsp;</a></span>from_json() <span class="overload">[18/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7933,7 +7935,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="ac6795404ed25f327b323309ef33e1d85"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac6795404ed25f327b323309ef33e1d85">&#9670;&nbsp;</a></span>from_json() <span class="overload">[19/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ac6795404ed25f327b323309ef33e1d85">&#9670;&nbsp;</a></span>from_json() <span class="overload">[19/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7963,7 +7965,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a25325849fbb3b1fdf28c402257dd63e9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a25325849fbb3b1fdf28c402257dd63e9">&#9670;&nbsp;</a></span>from_json() <span class="overload">[20/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a25325849fbb3b1fdf28c402257dd63e9">&#9670;&nbsp;</a></span>from_json() <span class="overload">[20/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -7993,7 +7995,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a53429249cb60afd24b0e046ae65b467b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a53429249cb60afd24b0e046ae65b467b">&#9670;&nbsp;</a></span>from_json() <span class="overload">[21/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a53429249cb60afd24b0e046ae65b467b">&#9670;&nbsp;</a></span>from_json() <span class="overload">[21/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -8023,7 +8025,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a68933b29c20e6356e20a1852a018bf6c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a68933b29c20e6356e20a1852a018bf6c">&#9670;&nbsp;</a></span>from_json() <span class="overload">[22/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a68933b29c20e6356e20a1852a018bf6c">&#9670;&nbsp;</a></span>from_json() <span class="overload">[22/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -8053,7 +8055,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a68687314e2c481e984ee323aab4a7495"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a68687314e2c481e984ee323aab4a7495">&#9670;&nbsp;</a></span>from_json() <span class="overload">[23/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a68687314e2c481e984ee323aab4a7495">&#9670;&nbsp;</a></span>from_json() <span class="overload">[23/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -8083,7 +8085,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a187c878a3fe282cd618b1c5f25d098a4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a187c878a3fe282cd618b1c5f25d098a4">&#9670;&nbsp;</a></span>from_json() <span class="overload">[24/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a187c878a3fe282cd618b1c5f25d098a4">&#9670;&nbsp;</a></span>from_json() <span class="overload">[24/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -8113,7 +8115,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="ae97a0010d3076d0b508937e756ef364f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae97a0010d3076d0b508937e756ef364f">&#9670;&nbsp;</a></span>from_json() <span class="overload">[25/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ae97a0010d3076d0b508937e756ef364f">&#9670;&nbsp;</a></span>from_json() <span class="overload">[25/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -8143,7 +8145,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a2cf840b2fd4a49f60d559bdf328ad73c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a2cf840b2fd4a49f60d559bdf328ad73c">&#9670;&nbsp;</a></span>from_json() <span class="overload">[26/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a2cf840b2fd4a49f60d559bdf328ad73c">&#9670;&nbsp;</a></span>from_json() <span class="overload">[26/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -8168,12 +8170,42 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="SymplecticTableau_8cpp_source.html#l00395">395</a> of file <a class="el" href="SymplecticTableau_8cpp_source.html">SymplecticTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SymplecticTableau_8cpp_source.html#l00396">396</a> of file <a class="el" href="SymplecticTableau_8cpp_source.html">SymplecticTableau.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a95e5de73ec10df806b8d49d4677337a4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a95e5de73ec10df806b8d49d4677337a4">&#9670;&nbsp;</a></span>from_json() <span class="overload">[27/29]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tket::from_json </td>
+          <td>(</td>
+          <td class="paramtype">const nlohmann::json &amp;&#160;</td>
+          <td class="paramname"><em>j</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classtket_1_1UnitaryRevTableau.html">UnitaryRevTableau</a> &amp;&#160;</td>
+          <td class="paramname"><em>tab</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="UnitaryTableau_8cpp_source.html#l00630">630</a> of file <a class="el" href="UnitaryTableau_8cpp_source.html">UnitaryTableau.cpp</a>.</p>
 
 </div>
 </div>
 <a id="a06b460c582581f8c159d245411828117"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a06b460c582581f8c159d245411828117">&#9670;&nbsp;</a></span>from_json() <span class="overload">[27/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a06b460c582581f8c159d245411828117">&#9670;&nbsp;</a></span>from_json() <span class="overload">[28/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -8198,12 +8230,12 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="UnitaryTableau_8cpp_source.html#l00581">581</a> of file <a class="el" href="UnitaryTableau_8cpp_source.html">UnitaryTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitaryTableau_8cpp_source.html#l00481">481</a> of file <a class="el" href="UnitaryTableau_8cpp_source.html">UnitaryTableau.cpp</a>.</p>
 
 </div>
 </div>
 <a id="a066f4dd18f9f112c10e95e8fd51776be"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a066f4dd18f9f112c10e95e8fd51776be">&#9670;&nbsp;</a></span>from_json() <span class="overload">[28/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a066f4dd18f9f112c10e95e8fd51776be">&#9670;&nbsp;</a></span>from_json() <span class="overload">[29/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -11640,38 +11672,8 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a6659caa295e4d603e0a2f99153c0c8c6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6659caa295e4d603e0a2f99153c0c8c6">&#9670;&nbsp;</a></span>operator&lt;&lt;() <span class="overload">[1/8]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">std::ostream &amp; tket::operator&lt;&lt; </td>
-          <td>(</td>
-          <td class="paramtype">std::ostream &amp;&#160;</td>
-          <td class="paramname"><em>os</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classtket_1_1CliffTableau.html">CliffTableau</a> const &amp;&#160;</td>
-          <td class="paramname"><em>tab</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="CliffTableau_8cpp_source.html#l00523">523</a> of file <a class="el" href="CliffTableau_8cpp_source.html">CliffTableau.cpp</a>.</p>
-
-</div>
-</div>
 <a id="a77677e51df8706784a4a4ef9e87f92b2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a77677e51df8706784a4a4ef9e87f92b2">&#9670;&nbsp;</a></span>operator&lt;&lt;() <span class="overload">[2/8]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a77677e51df8706784a4a4ef9e87f92b2">&#9670;&nbsp;</a></span>operator&lt;&lt;() <span class="overload">[1/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -11701,7 +11703,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a319e7088617e746ed10901b8ae8c1a59"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a319e7088617e746ed10901b8ae8c1a59">&#9670;&nbsp;</a></span>operator&lt;&lt;() <span class="overload">[3/8]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a319e7088617e746ed10901b8ae8c1a59">&#9670;&nbsp;</a></span>operator&lt;&lt;() <span class="overload">[2/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -11731,7 +11733,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="afbf7bf989e70c814e53a8cf807869dc9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afbf7bf989e70c814e53a8cf807869dc9">&#9670;&nbsp;</a></span>operator&lt;&lt;() <span class="overload">[4/8]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#afbf7bf989e70c814e53a8cf807869dc9">&#9670;&nbsp;</a></span>operator&lt;&lt;() <span class="overload">[3/8]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -11757,6 +11759,36 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="SymplecticTableau_8cpp_source.html#l00112">112</a> of file <a class="el" href="SymplecticTableau_8cpp_source.html">SymplecticTableau.cpp</a>.</p>
+
+</div>
+</div>
+<a id="adc978257a927336c66a7f5a52cf04f53"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#adc978257a927336c66a7f5a52cf04f53">&#9670;&nbsp;</a></span>operator&lt;&lt;() <span class="overload">[4/8]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::ostream &amp; tket::operator&lt;&lt; </td>
+          <td>(</td>
+          <td class="paramtype">std::ostream &amp;&#160;</td>
+          <td class="paramname"><em>os</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classtket_1_1UnitaryRevTableau.html">UnitaryRevTableau</a> &amp;&#160;</td>
+          <td class="paramname"><em>tab</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="UnitaryTableau_8cpp_source.html#l00603">603</a> of file <a class="el" href="UnitaryTableau_8cpp_source.html">UnitaryTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -11786,7 +11818,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="UnitaryTableau_8cpp_source.html#l00532">532</a> of file <a class="el" href="UnitaryTableau_8cpp_source.html">UnitaryTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitaryTableau_8cpp_source.html#l00432">432</a> of file <a class="el" href="UnitaryTableau_8cpp_source.html">UnitaryTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -12265,24 +12297,6 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a8635d43399ecceae017954a465215061"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8635d43399ecceae017954a465215061">&#9670;&nbsp;</a></span>pauli_graph_to_circuit()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classtket_1_1Circuit.html">Circuit</a> tket::pauli_graph_to_circuit </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="classtket_1_1PauliGraph.html">PauliGraph</a> &amp;&#160;</td>
-          <td class="paramname"><em>pg</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-</div>
-</div>
 <a id="afd183bc3aae0fc1875b47f95cec11e64"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#afd183bc3aae0fc1875b47f95cec11e64">&#9670;&nbsp;</a></span>pauli_graph_to_pauli_exp_box_circuit_individually()</h2>
 
@@ -12312,7 +12326,7 @@ template&lt;typename T &gt; </div>
 <p>Synthesises a circuit equivalent to the <a class="el" href="classtket_1_1PauliGraph.html" title="Dependency graph of a circuit wrt Pauli Gadgets.">PauliGraph</a> by adding each pauli gadget to the circuit as a <a class="el" href="classtket_1_1PauliExpBox.html" title="Operation defined as the exponential of a tensor of Pauli operators.">PauliExpBox</a> individually in the order given by TopSortIterator. </p>
 <p>The tableau is then synthesised at the end. </p>
 
-<p class="definition">Definition at line <a class="el" href="PauliGraphConverters_8cpp_source.html#l00070">70</a> of file <a class="el" href="PauliGraphConverters_8cpp_source.html">PauliGraphConverters.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliGraphConverters_8cpp_source.html#l00053">53</a> of file <a class="el" href="PauliGraphConverters_8cpp_source.html">PauliGraphConverters.cpp</a>.</p>
 
 </div>
 </div>
@@ -12344,7 +12358,7 @@ template&lt;typename T &gt; </div>
 
 <p>Synthesises a circuit equivalent to the <a class="el" href="classtket_1_1PauliGraph.html" title="Dependency graph of a circuit wrt Pauli Gadgets.">PauliGraph</a> by inserting pairs of pauli gadgets as PauliExpPairBoxes into the circuit The tableau is then synthesised at the end. </p>
 
-<p class="definition">Definition at line <a class="el" href="PauliGraphConverters_8cpp_source.html#l00092">92</a> of file <a class="el" href="PauliGraphConverters_8cpp_source.html">PauliGraphConverters.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliGraphConverters_8cpp_source.html#l00075">75</a> of file <a class="el" href="PauliGraphConverters_8cpp_source.html">PauliGraphConverters.cpp</a>.</p>
 
 </div>
 </div>
@@ -12379,7 +12393,7 @@ template&lt;typename T &gt; </div>
 <li>Currently follows a greedy set-building method *&zwj;/ </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="PauliGraphConverters_8cpp_source.html#l00132">132</a> of file <a class="el" href="PauliGraphConverters_8cpp_source.html">PauliGraphConverters.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliGraphConverters_8cpp_source.html#l00115">115</a> of file <a class="el" href="PauliGraphConverters_8cpp_source.html">PauliGraphConverters.cpp</a>.</p>
 
 </div>
 </div>
@@ -13230,29 +13244,6 @@ template&lt;typename BoxT &gt; </div>
 
 </div>
 </div>
-<a id="ab46224ff036f91009e465938cfb23177"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab46224ff036f91009e465938cfb23177">&#9670;&nbsp;</a></span>tableau_to_circuit()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="classtket_1_1Circuit.html">Circuit</a> tket::tableau_to_circuit </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="classtket_1_1CliffTableau.html">CliffTableau</a> &amp;&#160;</td>
-          <td class="paramname"><em>tab</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Constructs a circuit producing the same effect as the tableau. </p>
-<p>Uses the method from Aaronson-Gottesman: Improved Simulation of Stabilizer Circuits, Theorem 8. CAUTION: GATE COUNT IS ATROCIOUS IN PRACTICE </p>
-
-<p class="definition">Definition at line <a class="el" href="CliffTableauConverters_8cpp_source.html#l00033">33</a> of file <a class="el" href="CliffTableauConverters_8cpp_source.html">CliffTableauConverters.cpp</a>.</p>
-
-</div>
-</div>
 <a id="a0978e9c57c22fc52b7f593982ed9497a"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a0978e9c57c22fc52b7f593982ed9497a">&#9670;&nbsp;</a></span>term_sequence()</h2>
 
@@ -13442,7 +13433,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a1a18993f52b6212e59c69c072e94ebc0"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1a18993f52b6212e59c69c072e94ebc0">&#9670;&nbsp;</a></span>to_json() <span class="overload">[1/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a18993f52b6212e59c69c072e94ebc0">&#9670;&nbsp;</a></span>to_json() <span class="overload">[1/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13472,7 +13463,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="ad4ffe8a33fb155115f7cc9b02740797d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ad4ffe8a33fb155115f7cc9b02740797d">&#9670;&nbsp;</a></span>to_json() <span class="overload">[2/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ad4ffe8a33fb155115f7cc9b02740797d">&#9670;&nbsp;</a></span>to_json() <span class="overload">[2/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13502,7 +13493,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="ac805d7e6f93710cccba66bac03f62402"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac805d7e6f93710cccba66bac03f62402">&#9670;&nbsp;</a></span>to_json() <span class="overload">[3/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ac805d7e6f93710cccba66bac03f62402">&#9670;&nbsp;</a></span>to_json() <span class="overload">[3/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13532,7 +13523,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="acc20e3ff7e32977074a45a083058a67a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#acc20e3ff7e32977074a45a083058a67a">&#9670;&nbsp;</a></span>to_json() <span class="overload">[4/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#acc20e3ff7e32977074a45a083058a67a">&#9670;&nbsp;</a></span>to_json() <span class="overload">[4/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13562,7 +13553,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="ab4421124b62da1b876a3b76e6e5e7072"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab4421124b62da1b876a3b76e6e5e7072">&#9670;&nbsp;</a></span>to_json() <span class="overload">[5/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ab4421124b62da1b876a3b76e6e5e7072">&#9670;&nbsp;</a></span>to_json() <span class="overload">[5/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13592,7 +13583,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="aa8ac411c8fdf32607b7fb7801531d367"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa8ac411c8fdf32607b7fb7801531d367">&#9670;&nbsp;</a></span>to_json() <span class="overload">[6/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aa8ac411c8fdf32607b7fb7801531d367">&#9670;&nbsp;</a></span>to_json() <span class="overload">[6/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13622,7 +13613,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a5282c55bc6f6450eca5dc48555e8a6ab"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a5282c55bc6f6450eca5dc48555e8a6ab">&#9670;&nbsp;</a></span>to_json() <span class="overload">[7/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a5282c55bc6f6450eca5dc48555e8a6ab">&#9670;&nbsp;</a></span>to_json() <span class="overload">[7/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13652,7 +13643,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a8f3c55b5848ce021bac9642afa763d6c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8f3c55b5848ce021bac9642afa763d6c">&#9670;&nbsp;</a></span>to_json() <span class="overload">[8/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a8f3c55b5848ce021bac9642afa763d6c">&#9670;&nbsp;</a></span>to_json() <span class="overload">[8/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13682,7 +13673,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a67ec50cfd6cd6d5d491775c810004980"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a67ec50cfd6cd6d5d491775c810004980">&#9670;&nbsp;</a></span>to_json() <span class="overload">[9/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a67ec50cfd6cd6d5d491775c810004980">&#9670;&nbsp;</a></span>to_json() <span class="overload">[9/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13712,7 +13703,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a6fab6f7f7d336b2382cef1df753cae52"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6fab6f7f7d336b2382cef1df753cae52">&#9670;&nbsp;</a></span>to_json() <span class="overload">[10/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a6fab6f7f7d336b2382cef1df753cae52">&#9670;&nbsp;</a></span>to_json() <span class="overload">[10/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13742,7 +13733,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a440f224006d397b83ed0946575a1d737"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a440f224006d397b83ed0946575a1d737">&#9670;&nbsp;</a></span>to_json() <span class="overload">[11/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a440f224006d397b83ed0946575a1d737">&#9670;&nbsp;</a></span>to_json() <span class="overload">[11/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13772,7 +13763,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a89f114a1adda4cd0d4e8bbd35556412c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a89f114a1adda4cd0d4e8bbd35556412c">&#9670;&nbsp;</a></span>to_json() <span class="overload">[12/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a89f114a1adda4cd0d4e8bbd35556412c">&#9670;&nbsp;</a></span>to_json() <span class="overload">[12/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13802,7 +13793,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="ae0a3a70e84db9e4a2f8d15febf11d135"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae0a3a70e84db9e4a2f8d15febf11d135">&#9670;&nbsp;</a></span>to_json() <span class="overload">[13/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ae0a3a70e84db9e4a2f8d15febf11d135">&#9670;&nbsp;</a></span>to_json() <span class="overload">[13/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13832,7 +13823,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a7abfb8c99b6073b5bc9b759ed22983fc"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a7abfb8c99b6073b5bc9b759ed22983fc">&#9670;&nbsp;</a></span>to_json() <span class="overload">[14/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a7abfb8c99b6073b5bc9b759ed22983fc">&#9670;&nbsp;</a></span>to_json() <span class="overload">[14/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13862,7 +13853,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a3e93ea21b541ed8dee95f8dbace142ca"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3e93ea21b541ed8dee95f8dbace142ca">&#9670;&nbsp;</a></span>to_json() <span class="overload">[15/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a3e93ea21b541ed8dee95f8dbace142ca">&#9670;&nbsp;</a></span>to_json() <span class="overload">[15/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13892,7 +13883,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="ae44e46df7513c3ed26bb1b5469931b2f"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae44e46df7513c3ed26bb1b5469931b2f">&#9670;&nbsp;</a></span>to_json() <span class="overload">[16/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ae44e46df7513c3ed26bb1b5469931b2f">&#9670;&nbsp;</a></span>to_json() <span class="overload">[16/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13922,7 +13913,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a930f453f5886d252c3fb7a45ea0bc4fa"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a930f453f5886d252c3fb7a45ea0bc4fa">&#9670;&nbsp;</a></span>to_json() <span class="overload">[17/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a930f453f5886d252c3fb7a45ea0bc4fa">&#9670;&nbsp;</a></span>to_json() <span class="overload">[17/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13952,7 +13943,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a94cb91a5870263547f714e479978083b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a94cb91a5870263547f714e479978083b">&#9670;&nbsp;</a></span>to_json() <span class="overload">[18/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a94cb91a5870263547f714e479978083b">&#9670;&nbsp;</a></span>to_json() <span class="overload">[18/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -13982,7 +13973,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a903d0e05c58620dc0d082c414c078911"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a903d0e05c58620dc0d082c414c078911">&#9670;&nbsp;</a></span>to_json() <span class="overload">[19/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a903d0e05c58620dc0d082c414c078911">&#9670;&nbsp;</a></span>to_json() <span class="overload">[19/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -14012,7 +14003,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="aad92ba0223225b2432b3754047387b5e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aad92ba0223225b2432b3754047387b5e">&#9670;&nbsp;</a></span>to_json() <span class="overload">[20/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aad92ba0223225b2432b3754047387b5e">&#9670;&nbsp;</a></span>to_json() <span class="overload">[20/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -14042,7 +14033,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="ac759ed39e053a1136881124ac753b6bf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ac759ed39e053a1136881124ac753b6bf">&#9670;&nbsp;</a></span>to_json() <span class="overload">[21/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ac759ed39e053a1136881124ac753b6bf">&#9670;&nbsp;</a></span>to_json() <span class="overload">[21/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -14072,7 +14063,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a3eb5506cf530f09a7158760012b494f3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3eb5506cf530f09a7158760012b494f3">&#9670;&nbsp;</a></span>to_json() <span class="overload">[22/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a3eb5506cf530f09a7158760012b494f3">&#9670;&nbsp;</a></span>to_json() <span class="overload">[22/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -14102,7 +14093,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="aad3c3514a79296002baa74a437640423"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aad3c3514a79296002baa74a437640423">&#9670;&nbsp;</a></span>to_json() <span class="overload">[23/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aad3c3514a79296002baa74a437640423">&#9670;&nbsp;</a></span>to_json() <span class="overload">[23/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -14132,7 +14123,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a4dd94aad84eb507a42a4813914cc88f9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a4dd94aad84eb507a42a4813914cc88f9">&#9670;&nbsp;</a></span>to_json() <span class="overload">[24/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a4dd94aad84eb507a42a4813914cc88f9">&#9670;&nbsp;</a></span>to_json() <span class="overload">[24/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -14162,7 +14153,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a8a14a478bed045c6dd02963883dc597e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8a14a478bed045c6dd02963883dc597e">&#9670;&nbsp;</a></span>to_json() <span class="overload">[25/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a8a14a478bed045c6dd02963883dc597e">&#9670;&nbsp;</a></span>to_json() <span class="overload">[25/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -14192,7 +14183,7 @@ template&lt;typename BoxT &gt; </div>
 </div>
 </div>
 <a id="a52597b988342641e65c81c1e39cc626a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a52597b988342641e65c81c1e39cc626a">&#9670;&nbsp;</a></span>to_json() <span class="overload">[26/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a52597b988342641e65c81c1e39cc626a">&#9670;&nbsp;</a></span>to_json() <span class="overload">[26/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -14217,12 +14208,42 @@ template&lt;typename BoxT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="SymplecticTableau_8cpp_source.html#l00387">387</a> of file <a class="el" href="SymplecticTableau_8cpp_source.html">SymplecticTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SymplecticTableau_8cpp_source.html#l00388">388</a> of file <a class="el" href="SymplecticTableau_8cpp_source.html">SymplecticTableau.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a30ce9a4fe41a7450c28ba029bfa251d0"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a30ce9a4fe41a7450c28ba029bfa251d0">&#9670;&nbsp;</a></span>to_json() <span class="overload">[27/29]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tket::to_json </td>
+          <td>(</td>
+          <td class="paramtype">nlohmann::json &amp;&#160;</td>
+          <td class="paramname"><em>j</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const <a class="el" href="classtket_1_1UnitaryRevTableau.html">UnitaryRevTableau</a> &amp;&#160;</td>
+          <td class="paramname"><em>tab</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="UnitaryTableau_8cpp_source.html#l00626">626</a> of file <a class="el" href="UnitaryTableau_8cpp_source.html">UnitaryTableau.cpp</a>.</p>
 
 </div>
 </div>
 <a id="a3f7d62bf33d0168c3728124e63282db6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a3f7d62bf33d0168c3728124e63282db6">&#9670;&nbsp;</a></span>to_json() <span class="overload">[27/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a3f7d62bf33d0168c3728124e63282db6">&#9670;&nbsp;</a></span>to_json() <span class="overload">[28/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -14247,12 +14268,12 @@ template&lt;typename BoxT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="UnitaryTableau_8cpp_source.html#l00572">572</a> of file <a class="el" href="UnitaryTableau_8cpp_source.html">UnitaryTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitaryTableau_8cpp_source.html#l00472">472</a> of file <a class="el" href="UnitaryTableau_8cpp_source.html">UnitaryTableau.cpp</a>.</p>
 
 </div>
 </div>
 <a id="aaf01ad7a007f8dccd2f60b4b0cb2355b"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aaf01ad7a007f8dccd2f60b4b0cb2355b">&#9670;&nbsp;</a></span>to_json() <span class="overload">[28/28]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aaf01ad7a007f8dccd2f60b4b0cb2355b">&#9670;&nbsp;</a></span>to_json() <span class="overload">[29/29]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -14487,6 +14508,26 @@ template&lt;typename BoxT &gt; </div>
 
 </div>
 </div>
+<a id="ac76e8ec05b30c43414f7cea25a8050aa"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac76e8ec05b30c43414f7cea25a8050aa">&#9670;&nbsp;</a></span>unitary_rev_tableau_to_circuit()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtket_1_1Circuit.html">Circuit</a> tket::unitary_rev_tableau_to_circuit </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classtket_1_1UnitaryRevTableau.html">UnitaryRevTableau</a> &amp;&#160;</td>
+          <td class="paramname"><em>tab</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="UnitaryTableauConverters_8cpp_source.html#l00264">264</a> of file <a class="el" href="UnitaryTableauConverters_8cpp_source.html">UnitaryTableauConverters.cpp</a>.</p>
+
+</div>
+</div>
 <a id="ae1c5437a4e8e7bb96d13513fa0619f7d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae1c5437a4e8e7bb96d13513fa0619f7d">&#9670;&nbsp;</a></span>unitary_tableau_to_circuit()</h2>
 
@@ -14502,6 +14543,9 @@ template&lt;typename BoxT &gt; </div>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Constructs a circuit producing the same effect as the tableau. </p>
+<p>Uses the method from Aaronson-Gottesman: Improved Simulation of Stabilizer Circuits, Theorem 8. CAUTION: GATE COUNT IS ATROCIOUS IN PRACTICE </p>
 
 <p class="definition">Definition at line <a class="el" href="UnitaryTableauConverters_8cpp_source.html#l00031">31</a> of file <a class="el" href="UnitaryTableauConverters_8cpp_source.html">UnitaryTableauConverters.cpp</a>.</p>
 

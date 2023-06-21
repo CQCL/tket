@@ -1,16 +1,16 @@
 var searchData=
 [
-  ['rangepredicateop_2590',['RangePredicateOp',['../classtket_1_1RangePredicateOp.html',1,'tket']]],
-  ['relabelledgraphwsm_2591',['RelabelledGraphWSM',['../classtket_1_1WeightedSubgraphMonomorphism_1_1RelabelledGraphWSM.html',1,'tket::WeightedSubgraphMonomorphism']]],
-  ['repeatpass_2592',['RepeatPass',['../classtket_1_1RepeatPass.html',1,'tket']]],
-  ['repeatuntilsatisfiedpass_2593',['RepeatUntilSatisfiedPass',['../classtket_1_1RepeatUntilSatisfiedPass.html',1,'tket']]],
-  ['repeatwithmetricpass_2594',['RepeatWithMetricPass',['../classtket_1_1RepeatWithMetricPass.html',1,'tket']]],
-  ['result_2595',['Result',['../structtket_1_1NeighbourPlacements_1_1Result.html',1,'tket::NeighbourPlacements']]],
-  ['revinteractionpoint_2596',['RevInteractionPoint',['../structtket_1_1RevInteractionPoint.html',1,'tket']]],
-  ['rewrite_2597',['Rewrite',['../classtket_1_1zx_1_1Rewrite.html',1,'tket::zx']]],
-  ['ringarch_2598',['RingArch',['../classtket_1_1RingArch.html',1,'tket']]],
-  ['rotation_2599',['Rotation',['../classtket_1_1Rotation.html',1,'tket']]],
-  ['routingmethod_2600',['RoutingMethod',['../classtket_1_1RoutingMethod.html',1,'tket']]],
-  ['routingmethodcircuit_2601',['RoutingMethodCircuit',['../classtket_1_1RoutingMethodCircuit.html',1,'tket']]],
-  ['rzphasedxsquasher_2602',['RzPhasedXSquasher',['../classtket_1_1Transforms_1_1RzPhasedXSquasher.html',1,'tket::Transforms']]]
+  ['rangepredicateop_2586',['RangePredicateOp',['../classtket_1_1RangePredicateOp.html',1,'tket']]],
+  ['relabelledgraphwsm_2587',['RelabelledGraphWSM',['../classtket_1_1WeightedSubgraphMonomorphism_1_1RelabelledGraphWSM.html',1,'tket::WeightedSubgraphMonomorphism']]],
+  ['repeatpass_2588',['RepeatPass',['../classtket_1_1RepeatPass.html',1,'tket']]],
+  ['repeatuntilsatisfiedpass_2589',['RepeatUntilSatisfiedPass',['../classtket_1_1RepeatUntilSatisfiedPass.html',1,'tket']]],
+  ['repeatwithmetricpass_2590',['RepeatWithMetricPass',['../classtket_1_1RepeatWithMetricPass.html',1,'tket']]],
+  ['result_2591',['Result',['../structtket_1_1NeighbourPlacements_1_1Result.html',1,'tket::NeighbourPlacements']]],
+  ['revinteractionpoint_2592',['RevInteractionPoint',['../structtket_1_1RevInteractionPoint.html',1,'tket']]],
+  ['rewrite_2593',['Rewrite',['../classtket_1_1zx_1_1Rewrite.html',1,'tket::zx']]],
+  ['ringarch_2594',['RingArch',['../classtket_1_1RingArch.html',1,'tket']]],
+  ['rotation_2595',['Rotation',['../classtket_1_1Rotation.html',1,'tket']]],
+  ['routingmethod_2596',['RoutingMethod',['../classtket_1_1RoutingMethod.html',1,'tket']]],
+  ['routingmethodcircuit_2597',['RoutingMethodCircuit',['../classtket_1_1RoutingMethodCircuit.html',1,'tket']]],
+  ['rzphasedxsquasher_2598',['RzPhasedXSquasher',['../classtket_1_1Transforms_1_1RzPhasedXSquasher.html',1,'tket::Transforms']]]
 ];
