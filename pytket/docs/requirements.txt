@@ -4,3 +4,4 @@ sphinx_book_theme ~= 1.0.1
 sphinx-copybutton
 jupyter-sphinx
 ipykernel
+enum-tools[sphinx]
