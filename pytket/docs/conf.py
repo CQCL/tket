@@ -59,6 +59,7 @@ extensions = [
     "sphinx.ext.mathjax",
     "sphinx_copybutton",
     "jupyter_sphinx",
+    "enum_tools.autoenum",
 ]
 
 # Add any paths that contain templates here, relative to this directory.
