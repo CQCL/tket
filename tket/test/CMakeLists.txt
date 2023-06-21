@@ -120,6 +120,7 @@ add_executable(test-tket
     src/Circuit/test_ToffoliBox.cpp
     src/test_UnitaryTableau.cpp
     src/test_ChoiMixTableau.cpp
+    src/test_Diagonalisation.cpp
     src/test_PhasePolynomials.cpp
     src/test_PauliGraph.cpp
     src/test_PauliGraph3.cpp

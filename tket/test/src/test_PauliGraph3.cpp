@@ -16,6 +16,7 @@
 #include <fstream>
 
 #include "testutil.hpp"
+#include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Converters3/Converters.hpp"
 #include "tket/PauliGraph3/PauliGraph.hpp"
 

@@ -12,7 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "tket/Circuit/Boxes.hpp"
+#include "tket/Circuit/CircUtils.hpp"
+#include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Clifford/ChoiMixTableau.hpp"
 #include "tket/Clifford/UnitaryTableau.hpp"
 #include "tket/Converters/Converters.hpp"
@@ -372,82 +373,6 @@ pg::PauliGraph circuit_to_pauli_graph3(const Circuit& circ) {
   for (const Qubit& q : circ.discarded_qubits()) final_cm.discard_qubit(q);
   res.add_vertex_at_end(std::make_shared<PGOutputTableau>(final_cm));
   return res;
-}
-
-std::pair<Circuit, Qubit> reduce_pauli_to_z(
-    const QubitPauliTensor& pauli, CXConfigType cx_config) {
-  Circuit circ;
-  qubit_vector_t qubits;
-  if (pauli.string.map.size() == 0)
-    throw PGError("Cannot reduce identity to Z");
-  for (const std::pair<const Qubit, Pauli>& qp : pauli.string.map) {
-    circ.add_qubit(qp.first);
-    qubits.push_back(qp.first);
-    switch (qp.second) {
-      case Pauli::X: {
-        circ.add_op<Qubit>(OpType::H, {qp.first});
-        break;
-      }
-      case Pauli::Y: {
-        circ.add_op<Qubit>(OpType::V, {qp.first});
-        break;
-      }
-      case Pauli::I: {
-        throw PGError(
-            "Uncompressed QubitPauliTensor passed to reduce_pauli_to_z");
-      }
-      case Pauli::Z: {
-        break;
-      }
-    }
-  }
-  unsigned n_qubits = qubits.size();
-  switch (cx_config) {
-    case CXConfigType::Snake: {
-      for (unsigned i = n_qubits - 1; i != 0; --i) {
-        circ.add_op<Qubit>(OpType::CX, {qubits.at(i), qubits.at(i - 1)});
-      }
-      break;
-    }
-    case CXConfigType::Star: {
-      for (unsigned i = n_qubits - 1; i != 0; --i) {
-        circ.add_op<Qubit>(OpType::CX, {qubits.at(i), qubits.front()});
-      }
-      break;
-    }
-    case CXConfigType::Tree: {
-      for (unsigned step_size = 1; step_size < n_qubits; step_size *= 2) {
-        for (unsigned i = 0; step_size + i < n_qubits; i += 2 * step_size) {
-          circ.add_op<Qubit>(
-              OpType::CX, {qubits.at(step_size + i), qubits.at(i)});
-        }
-      }
-      break;
-    }
-    case CXConfigType::MultiQGate: {
-      bool flip_phase = false;
-      for (unsigned i = n_qubits - 1; i != 0; --i) {
-        if (i == 1) {
-          circ.add_op<Qubit>(OpType::CX, {qubits.at(i), qubits.front()});
-        } else {
-          /**
-           * This is only equal to the CX decompositions above up to phase,
-           * but phase differences are cancelled out by its dagger
-           */
-          circ.add_op<Qubit>(OpType::H, {qubits.at(i)});
-          circ.add_op<Qubit>(OpType::H, {qubits.at(i - 1)});
-          circ.add_op<Qubit>(
-              OpType::XXPhase3, 0.5,
-              {qubits.at(i), qubits.at(i - 1), qubits.front()});
-          --i;
-          flip_phase = !flip_phase;
-        }
-      }
-      if (flip_phase) circ.add_op<Qubit>(OpType::X, {qubits.front()});
-      break;
-    }
-  }
-  return {circ, qubits.front()};
 }
 
 Circuit pauli_graph3_to_circuit_individual(

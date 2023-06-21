@@ -107,6 +107,17 @@ std::pair<Circuit, Complex> decompose_2cx_VD(const Eigen::Matrix4cd& U);
  */
 std::pair<Circuit, Complex> decompose_2cx_DV(const Eigen::Matrix4cd& U);
 
+Expr pauli_angle_convert_or_throw(Complex pauliCoeff, const Expr& angle);
+
+std::pair<Circuit, Qubit> reduce_pauli_to_z(
+    const QubitPauliTensor& pauli, CXConfigType cx_config);
+
+std::pair<Circuit, Qubit> reduce_anticommuting_paulis_to_z_x(
+    QubitPauliTensor pauli0, QubitPauliTensor pauli1, CXConfigType cx_config);
+
+std::tuple<Circuit, Qubit, Qubit> reduce_commuting_paulis_to_zi_iz(
+    QubitPauliTensor pauli0, QubitPauliTensor pauli1, CXConfigType cx_config);
+
 /**
  * Construct a phase gadget
  *
@@ -127,12 +138,16 @@ Circuit phase_gadget(
  * \f$ e^{-\frac12 i \pi t \sigma_0 \otimes \sigma_1 \otimes \cdots} \f$
  * where \f$ \sigma_i \in \{I,X,Y,Z\} \f$ are the Pauli operators.
  *
- * @param paulis Pauli operators
+ * @param pauli Pauli operators
  * @param t angle in half-turns
  * @param cx_config CX configuration
  */
 Circuit pauli_gadget(
-    const std::vector<Pauli>& paulis, const Expr& t,
+    QubitPauliTensor pauli, Expr t,
+    CXConfigType cx_config = CXConfigType::Snake);
+
+Circuit pauli_gadget_pair(
+    QubitPauliTensor pauli0, Expr t0, QubitPauliTensor pauli1, Expr t1,
     CXConfigType cx_config = CXConfigType::Snake);
 
 /**

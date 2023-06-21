@@ -149,7 +149,7 @@ SCENARIO("Constructing Pauli gadgets") {
              1.*i_, 0., 0., 0.;
     // clang-format on
     Eigen::Matrix4cd m = (+0.5 * PI * i_ * t * a).exp();
-    Circuit circ = pauli_gadget({Pauli::X, Pauli::Y}, t);
+    Circuit circ = pauli_gadget(QubitPauliTensor({Pauli::X, Pauli::Y}), t);
     const Eigen::Matrix4cd u = tket_sim::get_unitary(circ);
     Eigen::Matrix4cd v = m * u;
     REQUIRE((v - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
@@ -286,7 +286,7 @@ SCENARIO("Decompose phase gadgets") {
     for (unsigned i = 0; i < n_qubits; ++i) {
       nZ.push_back(Pauli::Z);
     }
-    Circuit circ = pauli_gadget(nZ, 0.2);
+    Circuit circ = pauli_gadget(QubitPauliTensor(nZ), 0.2);
     return std::make_pair(circ, phase_gadget(n_qubits, 0.2, config));
   };
   GIVEN("Trivial gadget on 0 qubits") {
