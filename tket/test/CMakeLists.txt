@@ -118,7 +118,6 @@ add_executable(test-tket
     src/Circuit/test_StatePreparation.cpp
     src/Circuit/test_DiagonalBox.cpp
     src/Circuit/test_ToffoliBox.cpp
-    src/test_CliffTableau.cpp
     src/test_UnitaryTableau.cpp
     src/test_ChoiMixTableau.cpp
     src/test_PhasePolynomials.cpp

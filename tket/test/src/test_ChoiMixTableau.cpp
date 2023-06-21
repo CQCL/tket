@@ -109,10 +109,11 @@ SCENARIO("Correct creation of ChoiMixTableau") {
     REQUIRE(tab == orig);
     // Check S on identity
     tab.apply_S(Qubit(0));
+    // e^{-i Z pi/4} X id X = (-iZX) e^{-i Z pi/4} X = +Y S X
     REQUIRE(
         tab.get_row(0) == ChoiMixTableau::row_tensor_t{
                               QubitPauliTensor(Qubit(0), Pauli::X),
-                              QubitPauliTensor(Qubit(0), Pauli::Y, -1.)});
+                              QubitPauliTensor(Qubit(0), Pauli::Y)});
     REQUIRE(
         tab.get_row(1) == ChoiMixTableau::row_tensor_t{
                               QubitPauliTensor(Qubit(0), Pauli::Z),
@@ -172,28 +173,36 @@ SCENARIO("Correct creation of ChoiMixTableau") {
         tab.get_row(1) == ChoiMixTableau::row_tensor_t{
                               QubitPauliTensor(Qubit(0), Pauli::Z),
                               QubitPauliTensor(Qubit(0), Pauli::Z)});
+    // Affecting the input segment should give the same effect as for
+    // UnitaryRevTableau (since lhs is transposed, +Y is flipped to -Y, and
+    // phase is returned on rhs)
     REQUIRE(
         tab.get_row(2) ==
-        ChoiMixTableau::row_tensor_t{QubitPauliTensor(Qubit(1), Pauli::Y), {}});
+        ChoiMixTableau::row_tensor_t{
+            QubitPauliTensor(Qubit(1), Pauli::Y), QubitPauliTensor(-1.)});
+    // Affecting the output segment should give the same effect as for
+    // UnitaryTableau
     REQUIRE(
-        tab.get_row(3) ==
-        ChoiMixTableau::row_tensor_t{{}, QubitPauliTensor(Qubit(2), Pauli::Y)});
+        tab.get_row(3) == ChoiMixTableau::row_tensor_t{
+                              {}, QubitPauliTensor(Qubit(2), Pauli::Y, -1.)});
     // Check V on identity
     tab.apply_V(Qubit(0), ChoiMixTableau::TableauSegment::Output);
     REQUIRE(
         tab.get_row(0) == ChoiMixTableau::row_tensor_t{
                               QubitPauliTensor(Qubit(0), Pauli::X),
                               QubitPauliTensor(Qubit(0), Pauli::X)});
+    // e^{-i X pi/4} Z C Z = (-iXZ) e^{-i X pi/4} C Z = -Y V C Z
     REQUIRE(
         tab.get_row(1) == ChoiMixTableau::row_tensor_t{
                               QubitPauliTensor(Qubit(0), Pauli::Z),
-                              QubitPauliTensor(Qubit(0), Pauli::Y)});
+                              QubitPauliTensor(Qubit(0), Pauli::Y, -1.)});
     REQUIRE(
         tab.get_row(2) ==
-        ChoiMixTableau::row_tensor_t{QubitPauliTensor(Qubit(1), Pauli::Y), {}});
+        ChoiMixTableau::row_tensor_t{
+            QubitPauliTensor(Qubit(1), Pauli::Y), QubitPauliTensor(-1.)});
     REQUIRE(
-        tab.get_row(3) ==
-        ChoiMixTableau::row_tensor_t{{}, QubitPauliTensor(Qubit(2), Pauli::Y)});
+        tab.get_row(3) == ChoiMixTableau::row_tensor_t{
+                              {}, QubitPauliTensor(Qubit(2), Pauli::Y, -1.)});
     // Applying a V at the input end adds up to a net X
     tab.apply_V(Qubit(0), ChoiMixTableau::TableauSegment::Input);
     tab.gaussian_form();
@@ -207,10 +216,11 @@ SCENARIO("Correct creation of ChoiMixTableau") {
                               QubitPauliTensor(Qubit(0), Pauli::Z, -1.)});
     REQUIRE(
         tab.get_row(2) ==
-        ChoiMixTableau::row_tensor_t{QubitPauliTensor(Qubit(1), Pauli::Y), {}});
+        ChoiMixTableau::row_tensor_t{
+            QubitPauliTensor(Qubit(1), Pauli::Y), QubitPauliTensor(-1.)});
     REQUIRE(
-        tab.get_row(3) ==
-        ChoiMixTableau::row_tensor_t{{}, QubitPauliTensor(Qubit(2), Pauli::Y)});
+        tab.get_row(3) == ChoiMixTableau::row_tensor_t{
+                              {}, QubitPauliTensor(Qubit(2), Pauli::Y, -1.)});
   }
   GIVEN("Applying CX gates") {
     ChoiMixTableau tab(4);
@@ -292,7 +302,7 @@ SCENARIO("Correct creation of ChoiMixTableau") {
     rev_tab.gaussian_form();
     REQUIRE(tab == rev_tab);
   }
-  GIVEN("A PI/2 rotation at front") {
+  GIVEN("A PI/2 rotation at end") {
     Circuit circ = get_test_circ();
     ChoiMixTableau tab = circuit_to_cm_tableau(circ);
     QubitPauliTensor pauli{
@@ -476,6 +486,7 @@ SCENARIO("Synthesis of circuits from ChoiMixTableaus") {
       Circuit res = cm_tableau_to_circuit(tab).first;
       ChoiMixTableau res_tab = circuit_to_cm_tableau(res);
       REQUIRE(res_tab == tab);
+      REQUIRE(test_unitary_comparison(circ, res, true));
     }
   }
   GIVEN("A unitary circuit") {
@@ -484,6 +495,7 @@ SCENARIO("Synthesis of circuits from ChoiMixTableaus") {
     Circuit res = cm_tableau_to_circuit(tab).first;
     ChoiMixTableau res_tab = circuit_to_cm_tableau(res);
     REQUIRE(res_tab == tab);
+    REQUIRE(test_unitary_comparison(circ, res, true));
   }
   GIVEN("Check unitary equivalence by calculating matrix") {
     Circuit circ(4);

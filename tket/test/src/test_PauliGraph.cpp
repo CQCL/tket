@@ -41,8 +41,9 @@ SCENARIO("Correct creation of PauliGraphs") {
     circ.add_op<unsigned>(OpType::CX, {1, 2});
     circ.add_op<unsigned>(OpType::Vdg, {1});
     circ.add_op<unsigned>(OpType::CX, {1, 0});
+    circ.add_op<unsigned>(OpType::Phase, 0.8, {});
     PauliGraph pg = circuit_to_pauli_graph(circ);
-    CliffTableau correct_tab = circuit_to_tableau(circ);
+    UnitaryRevTableau correct_tab = circuit_to_unitary_rev_tableau(circ);
     REQUIRE(pg.get_clifford_ref() == correct_tab);
   }
   GIVEN("A 1qb circuit") {

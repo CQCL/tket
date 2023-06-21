@@ -16,7 +16,6 @@
 
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Clifford/ChoiMixTableau.hpp"
-#include "tket/Clifford/CliffTableau.hpp"
 #include "tket/Clifford/UnitaryTableau.hpp"
 #include "tket/PauliGraph/PauliGraph.hpp"
 #include "tket/ZX/ZXDiagram.hpp"
@@ -27,8 +26,8 @@ namespace tket {
  * Construct the tableau for a given circuit.
  * Will throw an exception if it contains non-Clifford gates.
  */
-CliffTableau circuit_to_tableau(const Circuit &circ);
 UnitaryTableau circuit_to_unitary_tableau(const Circuit &circ);
+UnitaryRevTableau circuit_to_unitary_rev_tableau(const Circuit &circ);
 
 /**
  * Constructs a circuit producing the same effect as the tableau.
@@ -36,8 +35,8 @@ UnitaryTableau circuit_to_unitary_tableau(const Circuit &circ);
  * Stabilizer Circuits, Theorem 8.
  * CAUTION: GATE COUNT IS ATROCIOUS IN PRACTICE
  */
-Circuit tableau_to_circuit(const CliffTableau &tab);
 Circuit unitary_tableau_to_circuit(const UnitaryTableau &tab);
+Circuit unitary_rev_tableau_to_circuit(const UnitaryRevTableau &tab);
 
 /**
  * Construct a ChoiMixTableau for a given circuit.
