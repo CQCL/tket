@@ -264,7 +264,8 @@ void UnitaryTableau::apply_gate_at_front(
       apply_CX_at_front(qbs.at(0), qbs.at(2));
       break;
     }
-    case OpType::noop: {
+    case OpType::noop:
+    case OpType::Phase: {
       break;
     }
     default: {
@@ -554,12 +555,14 @@ void UnitaryRevTableau::apply_CX_at_end(
 
 void UnitaryRevTableau::apply_gate_at_front(
     OpType type, const qubit_vector_t& qbs) {
-  tab_.apply_gate_at_end(get_op_ptr(type)->dagger()->get_type(), qbs);
+  if (type != OpType::Phase)
+    tab_.apply_gate_at_end(get_op_ptr(type)->dagger()->get_type(), qbs);
 }
 
 void UnitaryRevTableau::apply_gate_at_end(
     OpType type, const qubit_vector_t& qbs) {
-  tab_.apply_gate_at_front(get_op_ptr(type)->dagger()->get_type(), qbs);
+  if (type != OpType::Phase)
+    tab_.apply_gate_at_front(get_op_ptr(type)->dagger()->get_type(), qbs);
 }
 
 void UnitaryRevTableau::apply_pauli_at_front(
