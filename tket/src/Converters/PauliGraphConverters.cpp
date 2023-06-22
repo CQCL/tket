@@ -17,6 +17,7 @@
 #include "tket/Converters/Converters.hpp"
 #include "tket/Converters/PauliGadget.hpp"
 #include "tket/Converters/PhasePoly.hpp"
+#include "tket/Diagonalisation/DiagUtils.hpp"
 #include "tket/Diagonalisation/Diagonalisation.hpp"
 #include "tket/Gate/Gate.hpp"
 
@@ -111,28 +112,25 @@ Circuit pauli_graph_to_pauli_exp_box_circuit_pairwise(
   return circ;
 }
 
-///* Currently follows a greedy set-building method */
-Circuit pauli_graph_to_pauli_exp_box_circuit_sets(
-    const PauliGraph &pg, CXConfigType cx_config) {
-  Circuit circ;
-  const std::set<Qubit> qbs = pg.cliff_.get_qubits();
-  Circuit spare_circ;
-  for (const Qubit &qb : qbs) {
-    circ.add_qubit(qb);
-    spare_circ.add_qubit(qb);
-  }
-  for (const Bit &b : pg.bits_) {
-    circ.add_bit(b);
-  }
+/**
+ * @brief Greedily group gadgets into commuting sets
+ *
+ * @param pg
+ * @param graph so we don't need to make this function a friend
+ * @return std::vector<QubitOperator>
+ */
+static std::vector<QubitOperator> group_commuting_gagdets(
+    const PauliGraph &pg, const PauliDAG &graph) {
+  std::vector<QubitOperator> commuting_gagdets;
   std::vector<PauliVert> vertices = pg.vertices_in_order();
   auto it = vertices.begin();
   while (it != vertices.end()) {
-    const PauliGadgetProperties &pgp = pg.graph_[*it];
+    const PauliGadgetProperties &pgp = graph[*it];
     QubitOperator gadget_map;
     gadget_map[pgp.tensor_] = pgp.angle_;
     ++it;
     while (it != vertices.end()) {
-      const PauliGadgetProperties &pauli_gadget = pg.graph_[*it];
+      const PauliGadgetProperties &pauli_gadget = graph[*it];
       QubitOperator::iterator pgs_iter = gadget_map.find(pauli_gadget.tensor_);
       if (pgs_iter != gadget_map.end()) {
         insert_into_gadget_map(gadget_map, pauli_gadget);
@@ -149,6 +147,27 @@ Circuit pauli_graph_to_pauli_exp_box_circuit_sets(
       }
       ++it;
     }
+    commuting_gagdets.push_back(gadget_map);
+  }
+  return commuting_gagdets;
+}
+
+///* Currently follows a greedy set-building method */
+Circuit pauli_graph_to_pauli_exp_box_circuit_sets(
+    const PauliGraph &pg, CXConfigType cx_config) {
+  Circuit circ;
+  const std::set<Qubit> qbs = pg.cliff_.get_qubits();
+  Circuit spare_circ;
+  for (const Qubit &qb : qbs) {
+    circ.add_qubit(qb);
+    spare_circ.add_qubit(qb);
+  }
+  for (const Bit &b : pg.bits_) {
+    circ.add_bit(b);
+  }
+  std::vector<QubitOperator> commuting_gagdets =
+      group_commuting_gagdets(pg, pg.graph_);
+  for (const QubitOperator &gadget_map : commuting_gagdets) {
     if (gadget_map.size() == 1) {
       const std::pair<const QubitPauliTensor, Expr> &pgp0 = *gadget_map.begin();
       append_single_pauli_gadget_as_pauli_exp_box(
