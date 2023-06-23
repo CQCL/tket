@@ -85,6 +85,18 @@ Circuit pauli_graph_to_pauli_exp_box_circuit_sets(
     const PauliGraph &pg, CXConfigType cx_config = CXConfigType::Snake);
 
 /**
+ * @brief Synthesises a circuit equivalent to the PauliGraph by partially
+ * decomposing commuting Pauli exponentials and pushing all clifford residues
+ * to the end.
+ *
+ * @param pg
+ * @param cx_config
+ * @return Circuit
+ */
+Circuit pauli_graph_to_circuit_lazy_synth(
+    const PauliGraph &pg, CXConfigType cx_config = CXConfigType::Snake);
+
+/**
  * Construct a zx diagram from a given circuit.
  * Return the zx diagram and a map between the zx boundary vertices and the
  * circuit boundary vertices.

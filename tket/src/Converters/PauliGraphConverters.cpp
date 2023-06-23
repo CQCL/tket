@@ -195,4 +195,116 @@ Circuit pauli_graph_to_pauli_exp_box_circuit_sets(
   return circ;
 }
 
+/**
+ * @brief Partition a circuit into non-clifford + clifford subcircuits
+ * assume only quantum gates & wires and no wire swaps
+ * @param circ
+ * @return Circuit
+ */
+std::pair<Circuit, Circuit> clifford_partition(const Circuit &circ) {
+  std::vector<Command> cmds = circ.get_commands();
+  std::vector<Command> non_cliff_cmds;
+  std::vector<Command> cliff_cmds;
+  unit_set_t closed_qubits;
+
+  for (auto it = cmds.rbegin(); it != cmds.rend(); ++it) {
+    const Op_ptr op_ptr = it->get_op_ptr();
+    unit_vector_t args = it->get_args();
+    OpType type = op_ptr->get_type();
+    auto it1 = std::find_if(args.begin(), args.end(), [&](const UnitID &arg) {
+      return closed_qubits.find(arg) != closed_qubits.end();
+    });
+    if (it1 == args.end() && is_clifford_type(type) && is_gate_type(type)) {
+      cliff_cmds.insert(cliff_cmds.begin(), *it);
+    } else {
+      // if the gate acts on any closed qubit or the gate is non-clifford mark
+      // other args as closed as well
+      closed_qubits.insert(args.begin(), args.end());
+      non_cliff_cmds.insert(non_cliff_cmds.begin(), *it);
+      continue;
+    }
+  }
+  Circuit non_cliff_circ, cliff_circ;
+  for (const Qubit &qb : circ.all_qubits()) {
+    cliff_circ.add_qubit(qb);
+    non_cliff_circ.add_qubit(qb);
+  }
+  non_cliff_circ.add_phase(circ.get_phase());
+  for (const Command &cmd : non_cliff_cmds) {
+    non_cliff_circ.add_op<UnitID>(cmd.get_op_ptr(), cmd.get_args());
+  }
+  for (const Command &cmd : cliff_cmds) {
+    cliff_circ.add_op<UnitID>(cmd.get_op_ptr(), cmd.get_args());
+  }
+  return {non_cliff_circ, cliff_circ};
+}
+
+Circuit pauli_graph_to_circuit_lazy_synth(
+    const PauliGraph &pg, CXConfigType cx_config) {
+  Circuit circ;
+  const std::set<Qubit> qbs = pg.cliff_.get_qubits();
+  for (const Qubit &qb : qbs) circ.add_qubit(qb);
+  for (const Bit &b : pg.bits_) circ.add_bit(b);
+  std::vector<QubitOperator> commuting_gagdets =
+      group_commuting_gagdets(pg, pg.graph_);
+  // copy the tableau
+  UnitaryRevTableau final_tab = pg.cliff_;
+  for (unsigned i = 0; i < commuting_gagdets.size(); i++) {
+    // 1. implement the gadget set by construct a box and decompose it
+    // TODO: implement architecture awareness
+    Circuit gadget_circ;
+    QubitOperator &gadget_map = commuting_gagdets[i];
+    for (const Qubit &qb : qbs) gadget_circ.add_qubit(qb);
+    for (const Bit &b : pg.bits_) gadget_circ.add_bit(b);
+    if (gadget_map.size() == 1) {
+      const std::pair<const QubitPauliTensor, Expr> &pgp0 = *gadget_map.begin();
+      append_single_pauli_gadget_as_pauli_exp_box(
+          gadget_circ, pgp0.first, pgp0.second, cx_config);
+    } else if (gadget_map.size() == 2) {
+      const std::pair<const QubitPauliTensor, Expr> &pgp0 = *gadget_map.begin();
+      const std::pair<const QubitPauliTensor, Expr> &pgp1 =
+          *(++gadget_map.begin());
+      append_pauli_gadget_pair_as_box(
+          gadget_circ, pgp0.first, pgp0.second, pgp1.first, pgp1.second,
+          cx_config);
+    } else {
+      std::list<std::pair<QubitPauliTensor, Expr>> gadgets;
+      for (const std::pair<const QubitPauliTensor, Expr> &qps_pair :
+           gadget_map) {
+        gadgets.push_back(qps_pair);
+      }
+      append_commuting_pauli_gadget_set_as_box(gadget_circ, gadgets, cx_config);
+    }
+    gadget_circ.decompose_boxes_recursively();
+    gadget_circ.replace_all_implicit_wire_swaps();
+    // 2. partition the decomposed gadget into non-clifford + clifford
+    // and add the non-clifford to circuit
+    Circuit non_cliff_sub, cliff_sub;
+    std::tie(non_cliff_sub, cliff_sub) = clifford_partition(gadget_circ);
+    circ.append(non_cliff_sub);
+    // 3. construct a rev_tableau tab, for the clifford subcirc.
+    UnitaryRevTableau tab = circuit_to_unitary_rev_tableau(cliff_sub);
+    // 4. update all sets after i using tab
+    for (unsigned j = i + 1; j < commuting_gagdets.size(); j++) {
+      QubitOperator new_gadgets;
+      QubitOperator &old_gadgets = commuting_gagdets[j];
+      for (auto it = old_gadgets.begin(); it != old_gadgets.end(); it++) {
+        QubitPauliTensor new_qpt = tab.get_row_product(it->first);
+        new_gadgets.insert({new_qpt, it->second});
+      }
+      commuting_gagdets[j] = new_gadgets;
+    }
+    // 5. update the final tableau
+    final_tab = UnitaryRevTableau::compose(tab, final_tab);
+  }
+  // implement the final tableau
+  Circuit tab_circuit = unitary_rev_tableau_to_circuit(final_tab);
+  circ.append(tab_circuit);
+  // add measures
+  for (auto it = pg.measures_.begin(); it != pg.measures_.end(); ++it) {
+    circ.add_measure(it->left, it->right);
+  }
+  return circ;
+}
+
 }  // namespace tket
