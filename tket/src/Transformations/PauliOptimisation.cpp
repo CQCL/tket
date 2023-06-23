@@ -216,6 +216,22 @@ Transform synthesise_pauli_graph(
   });
 }
 
+Transform lazy_synthesise_pauli_graph(CXConfigType cx_config) {
+  return Transform([=](Circuit &circ) {
+    Expr t = circ.get_phase();
+    std::optional<std::string> name = circ.get_name();
+    circ.replace_all_implicit_wire_swaps();
+    PauliGraph pg = circuit_to_pauli_graph(circ);
+    circ = pauli_graph_to_circuit_lazy_synth(pg, cx_config);
+    circ.add_phase(t);
+    if (name) {
+      circ.set_name(*name);
+    }
+    // always turn circuit into PauliGraph and back, so always return true
+    return true;
+  });
+}
+
 Transform special_UCC_synthesis(PauliSynthStrat strat, CXConfigType cx_config) {
   return Transform([=](Circuit &circ) {
     Transform synther = synthesise_pauli_graph(strat, cx_config);

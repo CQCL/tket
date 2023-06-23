@@ -37,6 +37,7 @@ Transform synthesise_pauli_graph(
     PauliSynthStrat strat = PauliSynthStrat::Sets,
     CXConfigType cx_config = CXConfigType::Snake);
 
+Transform lazy_synthesise_pauli_graph(CXConfigType cx_config);
 // Assumes incoming circuit is composed of `CircBox`es with
 // `PauliExpBox`es inside
 Transform special_UCC_synthesis(

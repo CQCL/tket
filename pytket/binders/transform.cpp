@@ -393,6 +393,10 @@ PYBIND11_MODULE(transform, m) {
           py::arg("synth_strat") = Transforms::PauliSynthStrat::Sets,
           py::arg("cx_config") = CXConfigType::Snake)
       .def_static(
+          "LazySynthesisePauliGraph", &Transforms::lazy_synthesise_pauli_graph,
+          "Lazy synthesises Pauli Graphs.",
+          py::arg("cx_config") = CXConfigType::Snake)
+      .def_static(
           "UCCSynthesis", &Transforms::special_UCC_synthesis,
           "Synthesises UCC circuits in the form that Term Sequencing "
           "provides them.",
