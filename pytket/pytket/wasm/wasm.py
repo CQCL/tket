@@ -43,9 +43,14 @@ class WasmFileHandler:
     }
 
     def __init__(self, filepath: str, check_file: bool = True):
-        """construct a wasm file handler
+        """
+        Construct a wasm file handler
+
         :param filepath: path to the wasm file
-        :type filepath: str"""
+        :type filepath: str
+        :param check_file:
+        :type check_file: bool
+        """
 
         self._filepath = filepath
 
@@ -118,7 +123,6 @@ class WasmFileHandler:
                 self._function_types = cur_sec_data.payload.types
 
         for i, x in enumerate(function_names):
-
             # check for only i32 type in parameters and return values
             supported_function = True
             for t in function_signatures[self._function_types[i]]["parameter_types"]:
@@ -169,7 +173,9 @@ class WasmFileHandler:
     def check_function(
         self, function_name: str, number_of_parameters: int, number_of_returns: int
     ) -> bool:
-        """checks a given function name and signature if it is included
+        """
+        Checks a given function name and signature if it is included
+
         :param function_name: name of the function that is checked
         :type function_name: str
         :param number_of_parameters: number of i32 parameters of the function
