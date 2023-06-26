@@ -46,9 +46,10 @@ class WasmFileHandler:
         """
         Construct a wasm file handler
 
-        :param filepath: path to the wasm file
+        :param filepath: Path to the wasm file
         :type filepath: str
-        :param check_file:
+        :param check_file: If ``True`` checks file for compatibility with wasm
+          standards. If ``False`` checks are skipped.
         :type check_file: bool
         """
 
