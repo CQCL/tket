@@ -263,6 +263,21 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     ChoiMixTableau res_tab = circuit_to_cm_tableau(res);
     REQUIRE(circ_tab == res_tab);
   }
+  GIVEN("A conjugated Box") {
+    Circuit circ(3);
+    circ.add_op<unsigned>(OpType::H, {1});
+    circ.add_op<unsigned>(OpType::CX, {1, 2});
+    circ.add_op<unsigned>(OpType::CZ, {1, 0});
+    circ.add_op<unsigned>(OpType::Sycamore, {1, 2});
+    circ.add_op<unsigned>(OpType::CY, {0, 2});
+    circ.add_op<unsigned>(OpType::ZZMax, {1, 2});
+    circ.add_op<unsigned>(OpType::V, {1});
+    PauliGraph pg = circuit_to_pauli_graph3(circ);
+    REQUIRE_NOTHROW(pg.verify());
+    Circuit res = pauli_graph3_to_circuit_individual(pg);
+    REQUIRE(res.count_gates(OpType::Sycamore) == 1);
+    REQUIRE(test_unitary_comparison(circ, res, true));
+  }
 }
 
 }  // namespace test_PauliGraph3

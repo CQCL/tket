@@ -19,9 +19,11 @@
 
 namespace tket {
 
-// Copied from Converters/Converters.hpp to allow testing with non-unitary
-// components, e.g. reset
+// Copied from Converters/Converters.hpp to allow synthesis and testing of reset
+// and boxes
 ChoiMixTableau circuit_to_cm_tableau(const Circuit& circ);
+std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(
+    const ChoiMixTableau& circ);
 
 pg::PauliGraph circuit_to_pauli_graph3(const Circuit& circ);
 
@@ -78,6 +80,12 @@ class PGBox : public PGOp {
  protected:
   Op_ptr op_;
   unit_vector_t args_;
+  /**
+   * Semantics of paulis_:
+   * For each i in [0..op->n_qubits()-1]:
+   *   - paulis_[2*i] is the Pauli string Z_q[i] is mapped to by Clifford conj
+   *   - paulis_[2*i+1] is the Pauli string X_q[i] is mapped to by Clifford conj
+   */
   std::vector<QubitPauliTensor> paulis_;
 };
 

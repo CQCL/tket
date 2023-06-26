@@ -77,17 +77,7 @@ bool PGBox::is_equal(const PGOp& op_other) const {
 
 unsigned PGBox::n_paulis() const { return paulis_.size(); }
 
-std::vector<QubitPauliTensor> PGBox::active_paulis() const {
-  std::vector<QubitPauliTensor> active;
-  for (const UnitID& u : args_) {
-    if (u.type() == UnitType::Qubit) {
-      Qubit q(u);
-      active.push_back(QubitPauliTensor(q, Pauli::Z));
-      active.push_back(QubitPauliTensor(q, Pauli::X));
-    }
-  }
-  return active;
-}
+std::vector<QubitPauliTensor> PGBox::active_paulis() const { return paulis_; }
 
 QubitPauliTensor& PGBox::port(unsigned p) {
   if (p >= paulis_.size())
@@ -491,8 +481,43 @@ Circuit pauli_graph3_to_circuit_individual(
           circ.append(diag.first.dagger());
           break;
         }
+        case PGOpType::Box: {
+          PGBox& box_op = dynamic_cast<PGBox&>(*pgop);
+          std::list<ChoiMixTableau::row_tensor_t> tab_rows;
+          unsigned i = 0;
+          for (const UnitID& a : box_op.get_args()) {
+            if (a.type() == UnitType::Qubit) {
+              tab_rows.push_back(
+                  {box_op.port(i), QubitPauliTensor(Qubit(a), Pauli::Z)});
+              ++i;
+              tab_rows.push_back(
+                  {box_op.port(i), QubitPauliTensor(Qubit(a), Pauli::X)});
+              ++i;
+            }
+          }
+          ChoiMixTableau diag_tab{tab_rows};
+          std::pair<Circuit, unit_map_t> diag = cm_tableau_to_circuit(diag_tab);
+          Circuit& diag_circ = diag.first;
+          // Remove endpoints to obtain a unitary Circuit
+          for (const Qubit& q : diag_circ.created_qubits())
+            diag_circ.set_vertex_Op_ptr(
+                diag_circ.get_in(q), get_op_ptr(OpType::Input));
+          for (const Qubit& q : diag_circ.discarded_qubits())
+            diag_circ.set_vertex_Op_ptr(
+                diag_circ.get_out(q), get_op_ptr(OpType::Output));
+          circ.append(diag_circ);
+          unit_vector_t args;
+          for (const UnitID& a : box_op.get_args()) {
+            if (a.type() == UnitType::Qubit)
+              args.push_back(diag.second.at(a));
+            else
+              args.push_back(a);
+          }
+          circ.add_op<UnitID>(box_op.get_op(), args);
+          circ.append(diag_circ.dagger());
+          break;
+        }
         case PGOpType::Conditional:
-        case PGOpType::Box:
         case PGOpType::Stabilizer:
         default: {
           throw PGError("Cannot synthesise unidentified PGOpType");

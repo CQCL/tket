@@ -405,6 +405,98 @@ std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(const ChoiMixTableau& t) {
       }
     }
 
+    // In the case of rows like Xq[1], Zq[0]Zq[1], we want these rows to be
+    // paired up. No X row is found for q[0] but a Z row is found. In reducing
+    // the Z row, an X row is created. Check here in case an X row was created
+    if (z_row && !x_row) {
+      for (unsigned r = 0; r < tab.get_n_rows(); ++r) {
+        if (tab.tab_.xmat_(r, col)) {
+          x_row = r;
+          break;
+        }
+      }
+      if (x_row) {
+        ChoiMixTableau::row_tensor_t row_paulis = tab.get_row(*x_row);
+        // out_qb definitely already set.
+        // Reduce input string to just X_in_qb.
+        // Similarly, no need to consider different paulis on in_qb.
+        // The entangling gates in reducing the Z row are CXs so would only
+        // introduce X_in_qb if anything
+        for (const std::pair<const Qubit, Pauli>& qbp :
+             row_paulis.first.string.map) {
+          if (qbp.first == in_qb) continue;
+          // Extract an entangling gate to eliminate the qubit
+          switch (qbp.second) {
+            case Pauli::X: {
+              in_circ.add_op<Qubit>(OpType::CX, {in_qb, qbp.first});
+              tab.apply_CX(
+                  in_qb, qbp.first, ChoiMixTableau::TableauSegment::Input);
+              break;
+            }
+            case Pauli::Y: {
+              in_circ.add_op<Qubit>(OpType::CY, {in_qb, qbp.first});
+              tab.apply_gate(
+                  OpType::CY, {in_qb, qbp.first},
+                  ChoiMixTableau::TableauSegment::Input);
+              break;
+            }
+            case Pauli::Z: {
+              in_circ.add_op<Qubit>(OpType::CZ, {in_qb, qbp.first});
+              tab.apply_gate(
+                  OpType::CZ, {in_qb, qbp.first},
+                  ChoiMixTableau::TableauSegment::Input);
+              break;
+            }
+            default: {
+              break;
+            }
+          }
+        }
+
+        // And then the same for X_out_qb
+        if (row_paulis.second.string.get(*out_qb) == Pauli::Y) {
+          // If it is a Y, extract an Sdg gate so the Pauli is exactly X.
+          // We do not need to care about messing up the Z row here since it
+          // must already be Z_in_qb Z_out_qb so will commute with the S
+          out_circ_tp.add_op<Qubit>(OpType::Sdg, {*out_qb});
+          tab.apply_S(*out_qb, ChoiMixTableau::TableauSegment::Output);
+        }
+        for (const std::pair<const Qubit, Pauli>& qbp :
+             row_paulis.second.string.map) {
+          if (qbp.first == *out_qb) continue;
+          // Extract an entangling gate to eliminate the qubit
+          switch (qbp.second) {
+            case Pauli::X: {
+              out_circ_tp.add_op<Qubit>(OpType::CX, {*out_qb, qbp.first});
+              tab.apply_CX(
+                  *out_qb, qbp.first, ChoiMixTableau::TableauSegment::Output);
+              break;
+            }
+            case Pauli::Y: {
+              // CY does not have a transpose OpType defined so decompose
+              out_circ_tp.add_op<Qubit>(OpType::S, {qbp.first});
+              out_circ_tp.add_op<Qubit>(OpType::CX, {*out_qb, qbp.first});
+              out_circ_tp.add_op<Qubit>(OpType::Sdg, {qbp.first});
+              tab.apply_gate(
+                  OpType::CY, {*out_qb, qbp.first},
+                  ChoiMixTableau::TableauSegment::Output);
+              break;
+            }
+            case Pauli::Z: {
+              out_circ_tp.add_op<Qubit>(OpType::CZ, {*out_qb, qbp.first});
+              tab.apply_gate(
+                  OpType::CZ, {*out_qb, qbp.first},
+                  ChoiMixTableau::TableauSegment::Output);
+              break;
+            }
+            default: {
+              break;
+            }
+          }
+        }
+      }
+    }
+
     in_x_row.insert({in_qb, x_row});
     in_z_row.insert({in_qb, z_row});
   }
