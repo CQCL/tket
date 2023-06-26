@@ -157,7 +157,7 @@ class WasmFileHandler:
         return self._wasmfileuid
 
     def __repr__(self) -> str:
-        """str representation of the containment of the wasm file"""
+        """str representation of the contents of the wasm file"""
         result = f"Functions in wasm file with the uid {self._wasmfileuid}:\n"
         for x in self._functions:
             result += f"function '{x}' with {self._functions[x][0]} i32 parameter(s)"
