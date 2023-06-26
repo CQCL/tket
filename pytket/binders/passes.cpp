@@ -669,7 +669,7 @@ PYBIND11_MODULE(passes, m) {
       "Construct a pass to relabel :py:class:`Circuit` Qubits to "
       ":py:class:`Architecture` Nodes, and then route to the connectivity "
       "graph "
-      "of the given :py:class: 'Architecture'. Edge direction is ignored. "
+      "of the given :py:class:`Architecture`. Edge direction is ignored. "
       "Placement used "
       "is GraphPlacement."
       "\n\n:param arc: The Architecture used for connectivity information."
@@ -714,7 +714,7 @@ PYBIND11_MODULE(passes, m) {
   m.def(
       "CXMappingPass", &gen_cx_mapping_pass_kwargs,
       "Construct a pass to convert all gates to CX, relabel "
-      ":py:class:`Circuit` Qubits to :py:class'Architecture' Nodes, route to "
+      ":py:class:`Circuit` Qubits to :py:class:`Architecture` Nodes, route to "
       "the "
       "connectivty graph of a :py:class:`Architecture` and decompose "
       "additional "
