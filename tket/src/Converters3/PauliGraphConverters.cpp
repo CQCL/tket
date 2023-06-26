@@ -482,7 +482,15 @@ Circuit pauli_graph3_to_circuit_individual(
           circ.append(tab_circ.first);
           break;
         }
-        case PGOpType::Reset:
+        case PGOpType::Reset: {
+          PGReset reset_op = dynamic_cast<PGReset&>(*pgop);
+          std::pair<Circuit, Qubit> diag = reduce_anticommuting_paulis_to_z_x(
+              reset_op.get_stab(), reset_op.get_destab(), cx_config);
+          circ.append(diag.first);
+          circ.add_op<Qubit>(OpType::Reset, {diag.second});
+          circ.append(diag.first.dagger());
+          break;
+        }
         case PGOpType::Conditional:
         case PGOpType::Box:
         case PGOpType::Stabilizer:

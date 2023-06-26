@@ -19,6 +19,10 @@
 
 namespace tket {
 
+// Copied from Converters/Converters.hpp to allow testing with non-unitary
+// components, e.g. reset
+ChoiMixTableau circuit_to_cm_tableau(const Circuit& circ);
+
 pg::PauliGraph circuit_to_pauli_graph3(const Circuit& circ);
 
 /**
