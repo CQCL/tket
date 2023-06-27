@@ -350,8 +350,20 @@ bit_vector_t PGConditional::write_bits() const { return inner_->write_bits(); }
 
 const QubitPauliTensor& PGStabilizer::get_stab() const { return stab_; }
 
-PGStabilizer::PGStabilizer(const QubitPauliTensor& stab)
-    : PGOp(PGOpType::Stabilizer), stab_(stab) {}
+const QubitPauliTensor& PGStabilizer::get_anc_z() const { return anc_z_; }
+
+const QubitPauliTensor& PGStabilizer::get_anc_x() const { return anc_x_; }
+
+const Bit& PGStabilizer::get_target() const { return target_; }
+
+PGStabilizer::PGStabilizer(
+    const QubitPauliTensor& stab, const QubitPauliTensor& anc_z,
+    const QubitPauliTensor& anc_x, const Bit& target)
+    : PGOp(PGOpType::Stabilizer),
+      stab_(stab),
+      anc_z_(anc_z),
+      anc_x_(anc_x),
+      target_(target) {}
 
 SymSet PGStabilizer::free_symbols() const { return {}; }
 

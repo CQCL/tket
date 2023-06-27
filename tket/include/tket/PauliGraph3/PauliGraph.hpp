@@ -66,10 +66,11 @@ enum class PGOpType {
   // Defined in Converters module to have access to Circuit components
   Box,
 
-  // A time-symmetric view of an imposed stabilizer/projection into a subspace
-  // At synthesis, we can choose whether to impose this stabilizer by inclusion
-  // as a row of the initial tableau or explicitly via a mid- or end-of-circuit
-  // postselection
+  // An embedding of a StabiliserAssertionBox
+  // Describes an ancilla qubit state, a target measurement bit, and a Pauli
+  // string across the rest.
+  // The semantics is that the ancilla qubit is reset, then the Pauli string
+  // measured along it and recorded in the target bit.
   Stabilizer,
 
   // The initial tableau
@@ -270,8 +271,13 @@ class PGConditional : public PGOp {
 class PGStabilizer : public PGOp {
  public:
   const QubitPauliTensor& get_stab() const;
+  const QubitPauliTensor& get_anc_z() const;
+  const QubitPauliTensor& get_anc_x() const;
+  const Bit& get_target() const;
 
-  PGStabilizer(const QubitPauliTensor& stab);
+  PGStabilizer(
+      const QubitPauliTensor& stab, const QubitPauliTensor& anc_z,
+      const QubitPauliTensor& anc_x, const Bit& target);
 
   // Overrides from PGOp
   virtual SymSet free_symbols() const override;
@@ -284,6 +290,9 @@ class PGStabilizer : public PGOp {
 
  protected:
   QubitPauliTensor stab_;
+  QubitPauliTensor anc_z_;
+  QubitPauliTensor anc_x_;
+  Bit target_;
 };
 
 class PGInputTableau : public PGOp {

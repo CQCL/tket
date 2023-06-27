@@ -19,6 +19,7 @@
 #include "tket/Converters/Converters.hpp"
 #include "tket/Converters3/Converters.hpp"
 #include "tket/Gate/Gate.hpp"
+#include "tket/PauliGraph/ConjugatePauliFunctions.hpp"
 
 namespace tket {
 
@@ -307,6 +308,27 @@ std::vector<PGOp_ptr> op_to_pgops(
       return {std::make_shared<PGRotation>(
           tab.get_row_product(QubitPauliTensor(qpm)), box.get_phase())};
     }
+    case OpType::StabiliserAssertionBox: {
+      const StabiliserAssertionBox& box =
+          dynamic_cast<const StabiliserAssertionBox&>(*op);
+      PauliStabiliserList stabs = box.get_stabilisers();
+      Qubit anc(args.at(args.size() - 2));
+      Bit target(args.at(args.size() - 1));
+      QubitPauliTensor anc_z = tab.get_zrow(anc);
+      QubitPauliTensor anc_x = tab.get_xrow(anc);
+      std::vector<PGOp_ptr> ops;
+      for (const PauliStabiliser& stab : stabs) {
+        QubitPauliMap qpm;
+        for (unsigned q = 0; q < stab.string.size(); ++q) {
+          qpm.insert({Qubit(args.at(q)), stab.string.at(q)});
+        }
+        QubitPauliTensor qpt(qpm, stab.coeff ? 1. : -1.);
+        QubitPauliTensor prod = tab.get_row_product(qpt);
+        ops.push_back(
+            std::make_shared<PGStabilizer>(prod, anc_z, anc_x, target));
+      }
+      return ops;
+    }
     case OpType::Conditional: {
       const Conditional& cond = dynamic_cast<const Conditional&>(*op);
       bit_vector_t cond_bits;
@@ -517,8 +539,56 @@ Circuit pauli_graph3_to_circuit_individual(
           circ.append(diag_circ.dagger());
           break;
         }
+        case PGOpType::Stabilizer: {
+          PGStabilizer& stab_op = dynamic_cast<PGStabilizer&>(*pgop);
+          std::pair<Circuit, Qubit> diag = reduce_anticommuting_paulis_to_z_x(
+              stab_op.get_anc_z(), stab_op.get_anc_x(), cx_config);
+          QubitPauliTensor string = stab_op.get_stab();
+          for (const Command& com : diag.first) {
+            unit_vector_t args = com.get_args();
+            switch (args.size()) {
+              case 1: {
+                conjugate_PauliTensor(
+                    string, com.get_op_ptr()->get_type(), Qubit(args.at(0)),
+                    true);
+                break;
+              }
+              case 2: {
+                conjugate_PauliTensor(
+                    string, com.get_op_ptr()->get_type(), Qubit(args.at(0)),
+                    Qubit(args.at(1)));
+                break;
+              }
+              default: {
+                conjugate_PauliTensor(
+                    string, com.get_op_ptr()->get_type(), Qubit(args.at(0)),
+                    Qubit(args.at(1)), Qubit(args.at(2)));
+                break;
+              }
+            }
+          }
+          string.compress();
+          std::vector<Pauli> paulis;
+          unit_vector_t args;
+          for (const std::pair<const Qubit, Pauli>& qp : string.string.map) {
+            args.push_back(qp.first);
+            paulis.push_back(qp.second);
+          }
+          bool coeff = false;
+          if (string.coeff == 1.)
+            coeff = true;
+          else if (string.coeff != -1.)
+            throw std::logic_error("Stabilizer coeffient must be +-1");
+          args.push_back(diag.second);
+          args.push_back(stab_op.get_target());
+          circ.append(diag.first);
+          circ.add_op<UnitID>(
+              std::make_shared<StabiliserAssertionBox>(
+                  PauliStabiliserList{PauliStabiliser(paulis, coeff)}),
+              args);
+          break;
+        }
         case PGOpType::Conditional:
-        case PGOpType::Stabilizer:
         default: {
           throw PGError("Cannot synthesise unidentified PGOpType");
         }
