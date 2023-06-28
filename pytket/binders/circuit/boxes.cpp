@@ -477,7 +477,7 @@ void init_boxes(py::module &m) {
       "a map from bitstrings to " CLSOBJS(Op))
       .def(
           py::init<const ctrl_op_map_t &>(),
-          "Construct from a map from bitstrings to :py:class:`Op`s."
+          "Construct from a map from bitstrings to :py:class:`Op` s."
           "All " CLSOBJS(Op) "  must share the same single-qubit rotation type: "
           "Rx, Ry, or Rz.\n\n"
           ":param op_map: Map from bitstrings to " CLSOBJS(Op) "\n",
