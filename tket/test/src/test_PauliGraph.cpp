@@ -299,11 +299,20 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
 
     PauliGraph pg = circuit_to_pauli_graph(circ);
     pg.sanity_check();
-    Circuit out = pauli_graph_to_pauli_exp_box_circuit_sets(pg);
-    Transforms::decomp_boxes().apply(out);
-    pg.sanity_check();
-    Circuit test2 = prepend >> out;
-    REQUIRE(test_statevector_comparison(test1, test2));
+    WHEN("Without commute cliffords") {
+      Circuit out = pauli_graph_to_pauli_exp_box_circuit_sets(pg);
+      Transforms::decomp_boxes().apply(out);
+      pg.sanity_check();
+      Circuit test2 = prepend >> out;
+      REQUIRE(test_statevector_comparison(test1, test2));
+    }
+    WHEN("Commute cliffords") {
+      Circuit out = pauli_graph_to_circuit_lazy_synth(pg);
+      Transforms::decomp_boxes().apply(out);
+      pg.sanity_check();
+      Circuit test2 = prepend >> out;
+      REQUIRE(test_statevector_comparison(test1, test2, true));
+    }
   }
   GIVEN("2 qb 1 Pauli gadget circuit") {
     const auto& prepend = CircuitsForTesting::get().prepend_2qb_circuit;
@@ -313,10 +322,18 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
     Circuit test1 = prepend >> circ;
 
     PauliGraph pg = circuit_to_pauli_graph(circ);
-    Circuit out = pauli_graph_to_pauli_exp_box_circuit_sets(pg);
-    Transforms::decomp_boxes().apply(out);
-    Circuit test2 = prepend >> out;
-    REQUIRE(test_statevector_comparison(test1, test2));
+    WHEN("Without commute cliffords") {
+      Circuit out = pauli_graph_to_pauli_exp_box_circuit_sets(pg);
+      Transforms::decomp_boxes().apply(out);
+      Circuit test2 = prepend >> out;
+      REQUIRE(test_statevector_comparison(test1, test2));
+    }
+    WHEN("Commute cliffords") {
+      Circuit out = pauli_graph_to_circuit_lazy_synth(pg);
+      Transforms::decomp_boxes().apply(out);
+      Circuit test2 = prepend >> out;
+      REQUIRE(test_statevector_comparison(test1, test2, true));
+    }
   }
   GIVEN("2 qb 2 Pauli gadget circuit") {
     const auto& prepend = CircuitsForTesting::get().prepend_2qb_circuit;
@@ -328,10 +345,18 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
     Circuit test1 = prepend >> circ;
 
     PauliGraph pg = circuit_to_pauli_graph(circ);
-    Circuit out = pauli_graph_to_pauli_exp_box_circuit_sets(pg);
-    Transforms::decomp_boxes().apply(out);
-    Circuit test2 = prepend >> out;
-    REQUIRE(test_statevector_comparison(test1, test2));
+    WHEN("Without commute cliffords") {
+      Circuit out = pauli_graph_to_pauli_exp_box_circuit_sets(pg);
+      Transforms::decomp_boxes().apply(out);
+      Circuit test2 = prepend >> out;
+      REQUIRE(test_statevector_comparison(test1, test2));
+    }
+    WHEN("Commute cliffords") {
+      Circuit out = pauli_graph_to_circuit_lazy_synth(pg);
+      Transforms::decomp_boxes().apply(out);
+      Circuit test2 = prepend >> out;
+      REQUIRE(test_statevector_comparison(test1, test2, true));
+    }
   }
   GIVEN("2 qb 3 Pauli gadget circuit with symbols") {
     const auto& prepend = CircuitsForTesting::get().prepend_2qb_circuit;
@@ -355,11 +380,20 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
     test1.symbol_substitution(symbol_map);
 
     PauliGraph pg = circuit_to_pauli_graph(circ);
-    Circuit out = pauli_graph_to_pauli_exp_box_circuit_sets(pg);
-    Transforms::decomp_boxes().apply(out);
-    Circuit test2 = prepend >> out;
-    test2.symbol_substitution(symbol_map);
-    REQUIRE(test_statevector_comparison(test1, test2));
+    WHEN("Without commute cliffords") {
+      Circuit out = pauli_graph_to_pauli_exp_box_circuit_sets(pg);
+      Transforms::decomp_boxes().apply(out);
+      Circuit test2 = prepend >> out;
+      test2.symbol_substitution(symbol_map);
+      REQUIRE(test_statevector_comparison(test1, test2));
+    }
+    WHEN("Commute cliffords") {
+      Circuit out = pauli_graph_to_circuit_lazy_synth(pg);
+      Transforms::decomp_boxes().apply(out);
+      Circuit test2 = prepend >> out;
+      test2.symbol_substitution(symbol_map);
+      REQUIRE(test_statevector_comparison(test1, test2, true));
+    }
   }
   GIVEN("2 qb 3 Pauli gadget circuit with symbols and Pauli::I present") {
     const auto& prepend = CircuitsForTesting::get().prepend_2qb_circuit;
@@ -385,11 +419,20 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
     REQUIRE(!test1.is_symbolic());
 
     PauliGraph pg = circuit_to_pauli_graph(circ);
-    Circuit out = pauli_graph_to_pauli_exp_box_circuit_sets(pg);
-    Transforms::decomp_boxes().apply(out);
-    Circuit test2 = prepend >> out;
-    test2.symbol_substitution(symbol_map);
-    REQUIRE(test_statevector_comparison(test1, test2));
+    WHEN("Without commute cliffords") {
+      Circuit out = pauli_graph_to_pauli_exp_box_circuit_sets(pg);
+      Transforms::decomp_boxes().apply(out);
+      Circuit test2 = prepend >> out;
+      test2.symbol_substitution(symbol_map);
+      REQUIRE(test_statevector_comparison(test1, test2));
+    }
+    WHEN("Commute cliffords") {
+      Circuit out = pauli_graph_to_circuit_lazy_synth(pg);
+      Transforms::decomp_boxes().apply(out);
+      Circuit test2 = prepend >> out;
+      test2.symbol_substitution(symbol_map);
+      REQUIRE(test_statevector_comparison(test1, test2, true));
+    }
   }
   GIVEN("3 qb 2 Pauli Gadget circuit") {
     auto prepend = CircuitsForTesting::get_prepend_circuit(3);
@@ -402,10 +445,18 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
     circ.add_box(peb2, {0, 1, 2});
     Circuit test1 = prepend >> circ;
     PauliGraph pg = circuit_to_pauli_graph(circ);
-    Circuit out = pauli_graph_to_pauli_exp_box_circuit_sets(pg);
-    Transforms::decomp_boxes().apply(out);
-    Circuit test2 = prepend >> out;
-    REQUIRE(test_statevector_comparison(test1, test2));
+    WHEN("Without commute cliffords") {
+      Circuit out = pauli_graph_to_pauli_exp_box_circuit_sets(pg);
+      Transforms::decomp_boxes().apply(out);
+      Circuit test2 = prepend >> out;
+      REQUIRE(test_statevector_comparison(test1, test2));
+    }
+    WHEN("Commute cliffords") {
+      Circuit out = pauli_graph_to_circuit_lazy_synth(pg);
+      Transforms::decomp_boxes().apply(out);
+      Circuit test2 = prepend >> out;
+      REQUIRE(test_statevector_comparison(test1, test2, true));
+    }
   }
   GIVEN("4 qb 3 Pauli Gadget circuit") {
     auto prepend = CircuitsForTesting::get_prepend_circuit(3);
@@ -422,20 +473,38 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
 
     WHEN("Using default CX-decomposition") {
       PauliGraph pg = circuit_to_pauli_graph(circ);
-      Circuit out = pauli_graph_to_pauli_exp_box_circuit_sets(pg);
-      Transforms::decomp_boxes().apply(out);
-      Circuit test2 = prepend >> out;
-      REQUIRE(test_statevector_comparison(test1, test2));
+      WHEN("Without commute cliffords") {
+        Circuit out = pauli_graph_to_pauli_exp_box_circuit_sets(pg);
+        Transforms::decomp_boxes().apply(out);
+        Circuit test2 = prepend >> out;
+        REQUIRE(test_statevector_comparison(test1, test2));
+      }
+      WHEN("Commute cliffords") {
+        Circuit out = pauli_graph_to_circuit_lazy_synth(pg);
+        Transforms::decomp_boxes().apply(out);
+        Circuit test2 = prepend >> out;
+        REQUIRE(test_statevector_comparison(test1, test2, true));
+      }
     }
 
     WHEN("Using XXPhase3-decomposition") {
       PauliGraph pg = circuit_to_pauli_graph(circ);
-      Circuit out = pauli_graph_to_pauli_exp_box_circuit_sets(
-          pg, CXConfigType::MultiQGate);
-      Transforms::decomp_boxes().apply(out);
-      REQUIRE(out.count_gates(OpType::XXPhase3) == 2);
-      Circuit test2 = prepend >> out;
-      REQUIRE(test_statevector_comparison(test1, test2));
+      WHEN("Without commute cliffords") {
+        Circuit out = pauli_graph_to_pauli_exp_box_circuit_sets(
+            pg, CXConfigType::MultiQGate);
+        Transforms::decomp_boxes().apply(out);
+        REQUIRE(out.count_gates(OpType::XXPhase3) == 2);
+        Circuit test2 = prepend >> out;
+        REQUIRE(test_statevector_comparison(test1, test2));
+      }
+      WHEN("Commute cliffords") {
+        Circuit out =
+            pauli_graph_to_circuit_lazy_synth(pg, CXConfigType::MultiQGate);
+        Transforms::decomp_boxes().apply(out);
+        REQUIRE(out.count_gates(OpType::XXPhase3) == 2);
+        Circuit test2 = prepend >> out;
+        REQUIRE(test_statevector_comparison(test1, test2, true));
+      }
     }
   }
   GIVEN("3 qb 6 Pauli Gadget circuit for different strats and configs") {
