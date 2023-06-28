@@ -16,6 +16,7 @@
 
 #include <stdexcept>
 
+#include "tket/Architecture/Architecture.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Utils/PauliStrings.hpp"
 
@@ -81,5 +82,17 @@ void append_pauli_gadget_pair_as_box(
 void append_commuting_pauli_gadget_set_as_box(
     Circuit& circ, const std::list<std::pair<QubitPauliTensor, Expr>>& gadgets,
     CXConfigType cx_config);
+
+/**
+ * @brief AAS version of append_commuting_pauli_gadget_set_as_box
+ * however apprend a decomposed circuit
+ *
+ * @param circ
+ * @param gadgets
+ * @param arch
+ */
+void append_aased_commuting_pauli_gadget_set(
+    Circuit& circ, std::list<std::pair<QubitPauliTensor, Expr>> gadgets,
+    const Architecture& arch);
 
 }  // namespace tket

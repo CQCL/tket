@@ -459,5 +459,42 @@ Circuit phase_poly_synthesis(
   return pps.get_result();
 }
 
+Circuit get_aased_phase_poly_circ(
+    const Architecture &arch, const Circuit &circ, unsigned lookahead,
+    CNotSynthType cnottype) {
+  // map architecture nodes and circuit qubits to integers
+  unsigned idx = 0;
+  std::map<Node, Node> orig_node_to_int_node;
+  std::map<Qubit, Qubit> orig_qubit_to_int_qubit;
+  std::map<Qubit, Qubit> int_qubit_to_orig_qubit;
+  auto edges_vec = arch.get_all_edges_vec();
+  for (const Node &orig_node : arch.get_all_nodes_vec()) {
+    orig_node_to_int_node.insert({orig_node, Node(idx)});
+    orig_qubit_to_int_qubit.insert({Qubit(orig_node), Qubit(idx)});
+    int_qubit_to_orig_qubit.insert({Qubit(idx), Qubit(orig_node)});
+    idx++;
+  }
+  // assume all qubits are mapped
+  for (const Qubit &q : circ.all_qubits()) {
+    TKET_ASSERT(arch.node_exists(Node(q)));
+  }
+  // create a copy of the circuit and rename the qubits
+  Circuit circ_int(circ);
+  circ_int.rename_units(orig_qubit_to_int_qubit);
+
+  // define new arcitecture with int nodes for ppb
+  std::vector<Architecture::Connection> new_con;
+  for (auto pair : arch.get_all_edges_vec()) {
+    new_con.push_back(
+        {orig_node_to_int_node[pair.first],
+         orig_node_to_int_node[pair.second]});
+  }
+  Architecture new_int_arch = Architecture(new_con);
+  PhasePolyBox ppb(circ_int);
+  Circuit result = phase_poly_synthesis(new_int_arch, ppb, lookahead, cnottype);
+  result.rename_units(int_qubit_to_orig_qubit);
+  return result;
+}
+
 }  // namespace aas
 }  // namespace tket

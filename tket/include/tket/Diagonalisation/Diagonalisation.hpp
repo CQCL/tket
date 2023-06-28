@@ -15,6 +15,7 @@
 #pragma once
 
 #include "DiagUtils.hpp"
+#include "tket/Architecture/Architecture.hpp"
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/Circuit.hpp"
 
@@ -44,7 +45,8 @@ std::optional<std::pair<Pauli, Pauli>> check_pair_compatibility(
 void greedy_diagonalise(
     const std::list<std::pair<QubitPauliTensor, Expr>> &gadgets,
     std::set<Qubit> &qubits, Conjugations &conjugations, Circuit &circ,
-    CXConfigType cx_config);
+    CXConfigType cx_config,
+    const std::optional<Architecture> &opt_arch = std::nullopt);
 
 /**
  * Diagonalise a mutually commuting set of Pauli strings. Modifies the
@@ -54,6 +56,19 @@ void greedy_diagonalise(
 Circuit mutual_diagonalise(
     std::list<std::pair<QubitPauliTensor, Expr>> &gadgets,
     std::set<Qubit> qubits, CXConfigType cx_config);
+
+/**
+ * @brief AAS version of mutual_diagonalise
+ *
+ * @param gadgets
+ * @param qubits
+ * @param arch
+ * @return Circuit
+ */
+Circuit mutual_diagonalise_aas(
+    std::list<std::pair<QubitPauliTensor, Expr>> &gadgets,
+    std::set<Qubit> qubits, const Architecture &arch);
+
 /**
  * Applies Clifford conjugations to a QubitPauliTensor
  */

@@ -17,6 +17,7 @@
 #include <fstream>
 #include <stdexcept>
 
+#include "tket/Architecture/Architecture.hpp"
 #include "tket/Clifford/UnitaryTableau.hpp"
 #include "tket/Utils/Expression.hpp"
 #include "tket/Utils/GraphHeaders.hpp"
@@ -113,6 +114,8 @@ class PauliGraph {
       const PauliGraph &pg, CXConfigType cx_config);
   friend Circuit pauli_graph_to_circuit_lazy_synth(
       const PauliGraph &pg, CXConfigType cx_config);
+  friend Circuit pauli_graph_to_circuit_lazy_aas(
+      const PauliGraph &pg, const Architecture &arch);
 
  private:
   /**

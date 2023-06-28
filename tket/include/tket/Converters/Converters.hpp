@@ -97,6 +97,15 @@ Circuit pauli_graph_to_circuit_lazy_synth(
     const PauliGraph &pg, CXConfigType cx_config = CXConfigType::Snake);
 
 /**
+ * @brief AAS version of pauli_graph_to_circuit_lazy_synth
+ *
+ * @param pg
+ * @param arch
+ * @return Circuit
+ */
+Circuit pauli_graph_to_circuit_lazy_aas(
+    const PauliGraph &pg, const Architecture &arch);
+/**
  * Construct a zx diagram from a given circuit.
  * Return the zx diagram and a map between the zx boundary vertices and the
  * circuit boundary vertices.

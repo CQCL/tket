@@ -14,8 +14,11 @@
 
 #include "tket/Diagonalisation/Diagonalisation.hpp"
 
+#include <limits>
 #include <tkassert/Assert.hpp>
 
+#include "tket/ArchAwareSynth/SteinerForest.hpp"
+#include "tket/Architecture/Architecture.hpp"
 #include "tket/Ops/Op.hpp"
 #include "tket/PauliGraph/ConjugatePauliFunctions.hpp"
 #include "tket/Utils/UnitID.hpp"
@@ -122,7 +125,7 @@ std::optional<std::pair<Pauli, Pauli>> check_pair_compatibility(
 void greedy_diagonalise(
     const std::list<std::pair<QubitPauliTensor, Expr>> &gadgets,
     std::set<Qubit> &qubits, Conjugations &conjugations, Circuit &circ,
-    CXConfigType cx_config) {
+    CXConfigType cx_config, const std::optional<Architecture> &opt_arch) {
   unsigned total_counter = UINT_MAX;
   QubitPauliMap to_diag;
   for (std::list<std::pair<QubitPauliTensor, Expr>>::const_iterator pgp_iter =
@@ -147,6 +150,7 @@ void greedy_diagonalise(
   if (to_diag.empty()) {
     throw std::logic_error("Brute Force Diagonalise can't find a candidate!");
   }
+  // 1. Local conjugations
   for (QubitPauliMap::iterator qb_p_iter = to_diag.begin();
        qb_p_iter != to_diag.end(); ++qb_p_iter) {
     const Qubit &qb = qb_p_iter->first;
@@ -170,11 +174,31 @@ void greedy_diagonalise(
         throw UnknownPauli();
     }
   }
+
+  // 2. CX conjugation
   qubit_vector_t diag_qubits;
   for (const auto &[k, v] : to_diag) diag_qubits.push_back(k);
   unsigned n_qubits = diag_qubits.size();
+  // Is this important?
   Qubit first_qb = diag_qubits[0];
 
+  if (opt_arch != std::nullopt) {
+    const Architecture &arch = opt_arch.value();
+    Circuit cx_circ;
+    for (const Qubit &qb : circ.all_qubits()) cx_circ.add_qubit(qb);
+    for (unsigned i = n_qubits - 1; i > 0; --i) {
+      Qubit qb = diag_qubits[i], before = diag_qubits[i - 1];
+      cx_circ.add_op<Qubit>(OpType::CX, {qb, before});
+    }
+    Circuit aas_cx_circ = aas::get_aased_phase_poly_circ(arch, cx_circ, 101);
+    for (const Command &cmd : aas_cx_circ) {
+      TKET_ASSERT(cmd.get_op_ptr()->get_type() == OpType::CX);
+      conjugations.push_back({OpType::CX, cmd.get_qubits()});
+    }
+    circ.append(aas_cx_circ);
+    qubits.erase(first_qb);
+    return;
+  }
   switch (cx_config) {
     case CXConfigType::Snake: {
       for (unsigned i = n_qubits - 1; i > 0; --i) {
@@ -321,6 +345,115 @@ Circuit mutual_diagonalise(
     if (!found_match) {
       greedy_diagonalise(gadgets, qubits, conjugations, cliff_circ, cx_config);
     }
+    // Update gadgets via conjugation
+    for (std::list<std::pair<QubitPauliTensor, Expr>>::iterator iter =
+             gadgets.begin();
+         iter != gadgets.end(); ++iter) {
+      apply_conjugations(iter->first, conjugations);
+    }
+    // we may have made some easy-to-remove qubits
+    check_easy_diagonalise(gadgets, qubits, cliff_circ);
+  }
+  return cliff_circ;
+}
+
+/* Diagonalise a set of Pauli Gadgets simultaneously using Cliffords*/
+Circuit mutual_diagonalise_aas(
+    std::list<std::pair<QubitPauliTensor, Expr>> &gadgets,
+    std::set<Qubit> qubits, const Architecture &arch) {
+  Circuit cliff_circ;
+  for (const Qubit &qb : qubits) {
+    cliff_circ.add_qubit(qb);
+  }
+  // Only local 1-q gates, no need for AAS
+  check_easy_diagonalise(gadgets, qubits, cliff_circ);
+  while (!qubits.empty()) {
+    Conjugations conjugations;
+    Qubit qb_a;
+    Qubit qb_b;
+    std::pair<Pauli, Pauli> pauli_pair;
+    bool found_match = false;
+    unsigned shortest_dist = std::numeric_limits<unsigned>::max();
+    /* First, try to find some qubits we can reduce using only 1 CX */
+    // We select the pair with the smallest distance
+    bool early_exit = false;
+    for (const Qubit &qb1 : qubits) {
+      for (const Qubit &qb2 : qubits) {
+        std::optional<std::pair<Pauli, Pauli>> compatible =
+            check_pair_compatibility(qb1, qb2, gadgets);
+        unsigned dist = arch.get_distance(Node(qb1), Node(qb2));
+        if (compatible.has_value() && dist < shortest_dist) {
+          pauli_pair = *compatible;
+          qb_a = qb1;
+          qb_b = qb2;
+          found_match = true;
+          if (dist == 1) {
+            early_exit = true;
+            break;
+          }
+        }
+      }
+      if (early_exit) break;
+    }
+    if (found_match) {
+      Pauli p1 = pauli_pair.first;
+      Pauli p2 = pauli_pair.second;
+      switch (p1) {
+        case Pauli::X: {
+          conjugations.push_back({OpType::H, {qb_a}});
+          cliff_circ.add_op<Qubit>(OpType::H, {qb_a});
+          break;
+        }
+        case Pauli::Y: {
+          conjugations.push_back({OpType::Vdg, {qb_a}});
+          cliff_circ.add_op<Qubit>(OpType::V, {qb_a});
+          break;
+        }
+        case Pauli::Z: {
+          break;
+        }
+        case Pauli::I:
+        default:
+          throw UnknownPauli();
+      }
+      switch (p2) {
+        case Pauli::X: {
+          conjugations.push_back({OpType::H, {qb_b}});
+          cliff_circ.add_op<Qubit>(OpType::H, {qb_b});
+          break;
+        }
+        case Pauli::Y: {
+          conjugations.push_back({OpType::Vdg, {qb_b}});
+          cliff_circ.add_op<Qubit>(OpType::V, {qb_b});
+          break;
+        }
+        case Pauli::Z: {
+          break;
+        }
+        case Pauli::I:
+        default:
+          throw UnknownPauli();
+      }
+      Circuit cx_circ;
+      for (const Qubit &qb : qubits) cx_circ.add_qubit(qb);
+      cx_circ.add_op<Qubit>(OpType::CX, {qb_a, qb_b});
+      // TODO: lookahead parameter
+      Circuit aas_cx_circ = aas::get_aased_phase_poly_circ(arch, cx_circ, 101);
+      for (const Command &cmd : aas_cx_circ) {
+        TKET_ASSERT(cmd.get_op_ptr()->get_type() == OpType::CX);
+        conjugations.push_back({OpType::CX, cmd.get_qubits()});
+      }
+      cliff_circ.append(aas_cx_circ);
+      qubits.erase(qb_b);
+    }
+    /* If we can't, do it with `n-1` CXs, where `n` := no. of undiagonalised
+     * qubits */
+    if (!found_match) {
+      // CXConfigType is ignored
+      greedy_diagonalise(
+          gadgets, qubits, conjugations, cliff_circ, CXConfigType::Snake, arch);
+    }
+    // Update gadgets via conjugation
     for (std::list<std::pair<QubitPauliTensor, Expr>>::iterator iter =
              gadgets.begin();
          iter != gadgets.end(); ++iter) {

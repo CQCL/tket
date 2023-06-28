@@ -14,8 +14,11 @@
 
 #include "tket/Converters/PauliGadget.hpp"
 
+#include "tket/ArchAwareSynth/SteinerForest.hpp"
+#include "tket/Architecture/Architecture.hpp"
 #include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
+#include "tket/Diagonalisation/Diagonalisation.hpp"
 
 namespace tket {
 
@@ -137,6 +140,41 @@ void append_commuting_pauli_gadget_set_as_box(
 
   PauliExpCommutingSetBox box(pauli_gadgets, cx_config);
   circ.add_box(box, mapping);
+}
+
+void append_aased_commuting_pauli_gadget_set(
+    Circuit &circ, std::list<std::pair<QubitPauliTensor, Expr>> gadgets,
+    const Architecture &arch) {
+  // Translate to QubitPauliTensors to vectors of Paulis of same length
+  // Preserves ordering of qubits
+
+  std::set<Qubit> all_qubits;
+  for (const auto &gadget : gadgets) {
+    for (const auto &qubit_pauli : gadget.first.string.map) {
+      all_qubits.insert(qubit_pauli.first);
+    }
+  }
+
+  std::vector<Qubit> mapping;
+  for (const auto &qubit : all_qubits) {
+    mapping.push_back(qubit);
+  }
+
+  Circuit cliff_circ = mutual_diagonalise_aas(gadgets, all_qubits, arch);
+  // circ.append_qubits(cliff_circ, mapping);
+  // TODO: the following might not be correct
+  circ.append(cliff_circ);
+
+  // TODO might be an issue, since the circ has default qubits
+  Circuit phase_poly_circ = Circuit(circ.n_qubits());
+
+  for (const std::pair<QubitPauliTensor, Expr> &pgp : gadgets) {
+    append_single_pauli_gadget(phase_poly_circ, pgp.first, pgp.second);
+  }
+  Circuit after_synth_circ =
+      aas::get_aased_phase_poly_circ(arch, phase_poly_circ, 101);
+  circ.append(after_synth_circ);
+  circ.append(cliff_circ.dagger());
 }
 
 static void reduce_shared_qs_by_CX_snake(

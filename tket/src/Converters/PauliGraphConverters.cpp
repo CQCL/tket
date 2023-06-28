@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include "tket/Architecture/Architecture.hpp"
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Converters/Converters.hpp"
@@ -298,6 +299,62 @@ Circuit pauli_graph_to_circuit_lazy_synth(
     final_tab = UnitaryRevTableau::compose(tab, final_tab);
   }
   // implement the final tableau
+  Circuit tab_circuit = unitary_rev_tableau_to_circuit(final_tab);
+  circ.append(tab_circuit);
+  // add measures
+  for (auto it = pg.measures_.begin(); it != pg.measures_.end(); ++it) {
+    circ.add_measure(it->left, it->right);
+  }
+  return circ;
+}
+
+Circuit pauli_graph_to_circuit_lazy_aas(
+    const PauliGraph &pg, const Architecture &arch) {
+  Circuit circ;
+  const std::set<Qubit> qbs = pg.cliff_.get_qubits();
+  for (const Qubit &qb : qbs) circ.add_qubit(qb);
+  for (const Bit &b : pg.bits_) circ.add_bit(b);
+  std::vector<QubitOperator> commuting_gagdet_set =
+      group_commuting_gagdets(pg, pg.graph_);
+  // copy the tableau
+  UnitaryRevTableau final_tab = pg.cliff_;
+  for (unsigned i = 0; i < commuting_gagdet_set.size(); i++) {
+    // 1. implement the gadget set by construct a box and decompose it
+    // TODO: implement architecture awareness
+    Circuit gadget_circ;
+    QubitOperator &gadget_map = commuting_gagdet_set[i];
+    for (const Qubit &qb : qbs) gadget_circ.add_qubit(qb);
+    for (const Bit &b : pg.bits_) gadget_circ.add_bit(b);
+    // always use the commuting method
+    std::list<std::pair<QubitPauliTensor, Expr>> gadgets;
+    for (const std::pair<const QubitPauliTensor, Expr> &qps_pair : gadget_map) {
+      gadgets.push_back(qps_pair);
+    }
+    append_aased_commuting_pauli_gadget_set(gadget_circ, gadgets, arch);
+    gadget_circ.decompose_boxes_recursively();
+    gadget_circ.replace_all_implicit_wire_swaps();
+    // 2. partition the decomposed gadget into non-clifford + clifford
+    // and add the non-clifford to circuit
+    Circuit non_cliff_sub, cliff_sub;
+    std::tie(non_cliff_sub, cliff_sub) = clifford_partition(gadget_circ);
+    circ.append(non_cliff_sub);
+    // 3. construct a rev_tableau tab, for the clifford subcirc.
+    UnitaryRevTableau tab = circuit_to_unitary_rev_tableau(cliff_sub);
+    // 4. update all sets after i using tab
+    for (unsigned j = i + 1; j < commuting_gagdet_set.size(); j++) {
+      QubitOperator new_gadgets;
+      QubitOperator &old_gadgets = commuting_gagdet_set[j];
+      for (auto it = old_gadgets.begin(); it != old_gadgets.end(); it++) {
+        QubitPauliTensor new_qpt = tab.get_row_product(it->first);
+        new_gadgets.insert({new_qpt, it->second});
+      }
+      commuting_gagdet_set[j] = new_gadgets;
+    }
+    // 5. update the final tableau
+    final_tab = UnitaryRevTableau::compose(tab, final_tab);
+  }
+  // implement the final tableau
+  // TODO AAS tab synth
   Circuit tab_circuit = unitary_rev_tableau_to_circuit(final_tab);
   circ.append(tab_circuit);
   // add measures

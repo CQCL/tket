@@ -164,5 +164,17 @@ Circuit phase_poly_synthesis(
     const Architecture &arch, const PhasePolyBox &phasepolybox,
     unsigned lookahead, CNotSynthType cnottype = CNotSynthType::Rec);
 
+/**
+ * Architecture-aware synthesise a circuit containing CX and Rz gates
+ * @param arch architecture including all allowed edges for the routing
+ * @param circ circuit containing CX and Rz gates
+ * @param lookahead giving the maximum iteration depth for the cnot+rz synthesis
+ * @param cnottype type of cnot synthesis, allowing CNotSynthType::Rec,
+ * CNotSynthType::HamPath or CNotSynthType::SWAP
+ * @return routed circuit
+ */
+Circuit get_aased_phase_poly_circ(
+    const Architecture &arch, const Circuit &circ, unsigned lookahead,
+    CNotSynthType cnottype = CNotSynthType::Rec);
 }  // namespace aas
 }  // namespace tket
