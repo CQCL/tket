@@ -19,7 +19,7 @@
 
 #include "tket/ArchAwareSynth/SteinerTree.hpp"
 #include "tket/Architecture/Architecture.hpp"
-
+#include "tket/Simulation/CircuitSimulator.hpp"
 namespace tket {
 namespace aas {
 
@@ -465,13 +465,11 @@ Circuit get_aased_phase_poly_circ(
   // map architecture nodes and circuit qubits to integers
   unsigned idx = 0;
   std::map<Node, Node> orig_node_to_int_node;
-  std::map<Qubit, Qubit> orig_qubit_to_int_qubit;
-  std::map<Qubit, Qubit> int_qubit_to_orig_qubit;
+  std::map<Node, Node> int_node_to_orig_node;
   auto edges_vec = arch.get_all_edges_vec();
   for (const Node &orig_node : arch.get_all_nodes_vec()) {
     orig_node_to_int_node.insert({orig_node, Node(idx)});
-    orig_qubit_to_int_qubit.insert({Qubit(orig_node), Qubit(idx)});
-    int_qubit_to_orig_qubit.insert({Qubit(idx), Qubit(orig_node)});
+    int_node_to_orig_node.insert({Node(idx), orig_node});
     idx++;
   }
   // assume all qubits are mapped
@@ -480,8 +478,7 @@ Circuit get_aased_phase_poly_circ(
   }
   // create a copy of the circuit and rename the qubits
   Circuit circ_int(circ);
-  circ_int.rename_units(orig_qubit_to_int_qubit);
-
+  circ_int.rename_units(orig_node_to_int_node);
   // define new arcitecture with int nodes for ppb
   std::vector<Architecture::Connection> new_con;
   for (auto pair : arch.get_all_edges_vec()) {
@@ -492,7 +489,11 @@ Circuit get_aased_phase_poly_circ(
   Architecture new_int_arch = Architecture(new_con);
   PhasePolyBox ppb(circ_int);
   Circuit result = phase_poly_synthesis(new_int_arch, ppb, lookahead, cnottype);
-  result.rename_units(int_qubit_to_orig_qubit);
+  result.rename_units(int_node_to_orig_node);
+
+  // const auto u1 = tket_sim::get_unitary(circ);
+  // const auto u2 = tket_sim::get_unitary(result);
+  // TKET_ASSERT(u1.isApprox(u2));
   return result;
 }
 

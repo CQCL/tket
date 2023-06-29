@@ -311,6 +311,7 @@ Circuit pauli_graph_to_circuit_lazy_synth(
 Circuit pauli_graph_to_circuit_lazy_aas(
     const PauliGraph &pg, const Architecture &arch) {
   Circuit circ;
+  // => circ has the original qubits prior to the Pauli graphication
   const std::set<Qubit> qbs = pg.cliff_.get_qubits();
   for (const Qubit &qb : qbs) circ.add_qubit(qb);
   for (const Bit &b : pg.bits_) circ.add_bit(b);
@@ -322,6 +323,7 @@ Circuit pauli_graph_to_circuit_lazy_aas(
     // 1. implement the gadget set by construct a box and decompose it
     // TODO: implement architecture awareness
     Circuit gadget_circ;
+    // => gadget_circ also has the original qubits
     QubitOperator &gadget_map = commuting_gagdet_set[i];
     for (const Qubit &qb : qbs) gadget_circ.add_qubit(qb);
     for (const Bit &b : pg.bits_) gadget_circ.add_bit(b);
@@ -330,6 +332,7 @@ Circuit pauli_graph_to_circuit_lazy_aas(
     for (const std::pair<const QubitPauliTensor, Expr> &qps_pair : gadget_map) {
       gadgets.push_back(qps_pair);
     }
+    // => this function should know how to append to original qubits
     append_aased_commuting_pauli_gadget_set(gadget_circ, gadgets, arch);
     gadget_circ.decompose_boxes_recursively();
     gadget_circ.replace_all_implicit_wire_swaps();

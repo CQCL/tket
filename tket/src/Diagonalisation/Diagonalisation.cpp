@@ -190,7 +190,7 @@ void greedy_diagonalise(
       Qubit qb = diag_qubits[i], before = diag_qubits[i - 1];
       cx_circ.add_op<Qubit>(OpType::CX, {qb, before});
     }
-    Circuit aas_cx_circ = aas::get_aased_phase_poly_circ(arch, cx_circ, 101);
+    Circuit aas_cx_circ = aas::get_aased_phase_poly_circ(arch, cx_circ);
     for (const Command &cmd : aas_cx_circ) {
       TKET_ASSERT(cmd.get_op_ptr()->get_type() == OpType::CX);
       conjugations.push_back({OpType::CX, cmd.get_qubits()});
@@ -360,9 +360,10 @@ Circuit mutual_diagonalise(
 /* Diagonalise a set of Pauli Gadgets simultaneously using Cliffords*/
 Circuit mutual_diagonalise_aas(
     std::list<std::pair<QubitPauliTensor, Expr>> &gadgets,
-    std::set<Qubit> qubits, const Architecture &arch) {
+    std::set<Qubit> qubits, const Architecture &arch,
+    const qubit_vector_t &all_qubits) {
   Circuit cliff_circ;
-  for (const Qubit &qb : qubits) {
+  for (const Qubit &qb : all_qubits) {
     cliff_circ.add_qubit(qb);
   }
   // Only local 1-q gates, no need for AAS
@@ -435,10 +436,10 @@ Circuit mutual_diagonalise_aas(
           throw UnknownPauli();
       }
       Circuit cx_circ;
-      for (const Qubit &qb : qubits) cx_circ.add_qubit(qb);
+      for (const Qubit &qb : all_qubits) cx_circ.add_qubit(qb);
       cx_circ.add_op<Qubit>(OpType::CX, {qb_a, qb_b});
       // TODO: lookahead parameter
-      Circuit aas_cx_circ = aas::get_aased_phase_poly_circ(arch, cx_circ, 101);
+      Circuit aas_cx_circ = aas::get_aased_phase_poly_circ(arch, cx_circ);
       for (const Command &cmd : aas_cx_circ) {
         TKET_ASSERT(cmd.get_op_ptr()->get_type() == OpType::CX);
         conjugations.push_back({OpType::CX, cmd.get_qubits()});

@@ -39,6 +39,7 @@ void append_single_pauli_gadget(
 
   std::vector<Pauli> string;
   unit_map_t mapping;
+  // qm is from the units on the second (appended) circuit to the units on the
   unsigned i = 0;
   for (const std::pair<const Qubit, Pauli> &term : pauli.string.map) {
     string.push_back(term.second);
@@ -110,15 +111,17 @@ void append_commuting_pauli_gadget_set_as_box(
     CXConfigType cx_config) {
   // Translate to QubitPauliTensors to vectors of Paulis of same length
   // Preserves ordering of qubits
+  // => circ can have any qubits
 
-  std::set<Qubit> all_qubits;
+  std::set<Qubit> all_qubits;  // => I see, so we use set to get all qubits
+                               // One gadget might not have all qubits
   for (const auto &gadget : gadgets) {
     for (const auto &qubit_pauli : gadget.first.string.map) {
       all_qubits.insert(qubit_pauli.first);
     }
   }
 
-  std::vector<Qubit> mapping;
+  std::vector<Qubit> mapping;  // => odd since all_qubits has no order
   for (const auto &qubit : all_qubits) {
     mapping.push_back(qubit);
   }
@@ -131,12 +134,15 @@ void append_commuting_pauli_gadget_set_as_box(
     for (const auto &qubit : mapping) {
       auto found = gadget.first.string.map.find(qubit);
       if (found == gadget.first.string.map.end()) {
+        // => pad the Pauli strings with I
         new_gadget.first.push_back(Pauli::I);
       } else {
         new_gadget.first.push_back(found->second);
       }
     }
   }
+  // =>  this pauli_gadgets will have Pauli ordered by mapping, therefore
+  // PauliExpCommutingSetBox is ordered with pauli_gadgets
 
   PauliExpCommutingSetBox box(pauli_gadgets, cx_config);
   circ.add_box(box, mapping);
@@ -145,34 +151,36 @@ void append_commuting_pauli_gadget_set_as_box(
 void append_aased_commuting_pauli_gadget_set(
     Circuit &circ, std::list<std::pair<QubitPauliTensor, Expr>> gadgets,
     const Architecture &arch) {
+  // =>  circ has the original/custom qubits
   // Translate to QubitPauliTensors to vectors of Paulis of same length
   // Preserves ordering of qubits
 
-  std::set<Qubit> all_qubits;
+  std::set<Qubit>
+      all_interact_qubits;  //=> determine the set of qubits in the gadgets
   for (const auto &gadget : gadgets) {
     for (const auto &qubit_pauli : gadget.first.string.map) {
-      all_qubits.insert(qubit_pauli.first);
+      all_interact_qubits.insert(qubit_pauli.first);
     }
   }
-
-  std::vector<Qubit> mapping;
-  for (const auto &qubit : all_qubits) {
-    mapping.push_back(qubit);
-  }
-
-  Circuit cliff_circ = mutual_diagonalise_aas(gadgets, all_qubits, arch);
+  // => whats are the qubits in this cliff_circ? if they use the original qubits
+  // then we can just append it Yes, thats indeed the case
+  // Need to provide all qubits in the circuit as well for the AAS to work
+  Circuit cliff_circ = mutual_diagonalise_aas(
+      gadgets, all_interact_qubits, arch, circ.all_qubits());
   // circ.append_qubits(cliff_circ, mapping);
-  // TODO: the following might not be correct
   circ.append(cliff_circ);
-
-  // TODO might be an issue, since the circ has default qubits
-  Circuit phase_poly_circ = Circuit(circ.n_qubits());
+  // => should this use the original qubits? Yes, this code is originally from
+  // the box decomp which has default regs
+  Circuit phase_poly_circ;
+  for (const Qubit &qb : circ.all_qubits()) phase_poly_circ.add_qubit(qb);
 
   for (const std::pair<QubitPauliTensor, Expr> &pgp : gadgets) {
+    // => this gadget to the original qubit
     append_single_pauli_gadget(phase_poly_circ, pgp.first, pgp.second);
   }
+  // requires phase_poly_circ to be "full"
   Circuit after_synth_circ =
-      aas::get_aased_phase_poly_circ(arch, phase_poly_circ, 101);
+      aas::get_aased_phase_poly_circ(arch, phase_poly_circ);
   circ.append(after_synth_circ);
   circ.append(cliff_circ.dagger());
 }

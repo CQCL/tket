@@ -174,7 +174,7 @@ Circuit phase_poly_synthesis(
  * @return routed circuit
  */
 Circuit get_aased_phase_poly_circ(
-    const Architecture &arch, const Circuit &circ, unsigned lookahead,
+    const Architecture &arch, const Circuit &circ, unsigned lookahead = 1,
     CNotSynthType cnottype = CNotSynthType::Rec);
 }  // namespace aas
 }  // namespace tket

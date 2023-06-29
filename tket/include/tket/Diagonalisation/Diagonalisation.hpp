@@ -61,13 +61,15 @@ Circuit mutual_diagonalise(
  * @brief AAS version of mutual_diagonalise
  *
  * @param gadgets
- * @param qubits
+ * @param qubits interaction qubits
  * @param arch
+ * @param all_qubits all qubits in the architecture
  * @return Circuit
  */
 Circuit mutual_diagonalise_aas(
     std::list<std::pair<QubitPauliTensor, Expr>> &gadgets,
-    std::set<Qubit> qubits, const Architecture &arch);
+    std::set<Qubit> qubits, const Architecture &arch,
+    const qubit_vector_t &all_qubits);
 
 /**
  * Applies Clifford conjugations to a QubitPauliTensor
