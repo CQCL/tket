@@ -57,6 +57,7 @@ extensions = [
     "sphinx.ext.autosummary",
     "sphinx.ext.intersphinx",
     "sphinx.ext.mathjax",
+    "sphinx.ext.viewcode",
     "sphinx_copybutton",
     "jupyter_sphinx",
     "enum_tools.autoenum",
