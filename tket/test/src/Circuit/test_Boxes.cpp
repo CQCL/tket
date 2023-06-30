@@ -1024,6 +1024,18 @@ SCENARIO("Unitaries") {
     Eigen::MatrixXcd u1 = tket_sim::get_unitary(c);
     CHECK(u1.isApprox(u));
   }
+
+  GIVEN("CircBox") {
+    Circuit c0(2);
+    c0.add_op<unsigned>(OpType::H, {0});
+    c0.add_op<unsigned>(OpType::CX, {0, 1});
+    Eigen::MatrixXcd u = tket_sim::get_unitary(c0);
+    CircBox cbox(c0);
+    Circuit c(2);
+    c.add_box(cbox, {0, 1});
+    Eigen::MatrixXcd u1 = tket_sim::get_unitary(c);
+    CHECK(u1.isApprox(u));
+  }
 }
 
 }  // namespace test_Boxes
