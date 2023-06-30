@@ -205,6 +205,10 @@ Op_ptr ExpBox::transpose() const {
   return std::make_shared<ExpBox>(A_.transpose(), t_);
 }
 
+std::optional<Eigen::MatrixXcd> ExpBox::get_box_unitary() const {
+  return (i_ * t_ * A_).exp();
+}
+
 void ExpBox::generate_circuit() const {
   circ_ = std::make_shared<Circuit>(two_qubit_canonical((i_ * t_ * A_).exp()));
 }

@@ -1036,6 +1036,19 @@ SCENARIO("Unitaries") {
     Eigen::MatrixXcd u1 = tket_sim::get_unitary(c);
     CHECK(u1.isApprox(u));
   }
+
+  GIVEN("ExpBox") {
+    Eigen::Matrix4cd A;
+    A << 0., 1., 2., 3., 1., 2., 3. * i_, 4., 2., -3. * i_, 3, 2. - 3. * i_, 3.,
+        4., 2. + 3. * i_, 5.;
+    const double t = 0.7;
+    Eigen::MatrixXcd u = (i_ * t * A).exp();
+    ExpBox ebox(A, t);
+    Circuit c(2);
+    c.add_box(ebox, {0, 1});
+    Eigen::MatrixXcd u1 = tket_sim::get_unitary(c);
+    CHECK(u1.isApprox(u));
+  }
 }
 
 }  // namespace test_Boxes
