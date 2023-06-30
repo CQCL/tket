@@ -997,5 +997,34 @@ SCENARIO("Checking box names", "[boxes]") {
   }
 }
 
+SCENARIO("Unitaries") {
+  GIVEN("Unitary1qBox") {
+    Eigen::Matrix2cd u = random_unitary(2, 1);
+    Unitary1qBox ubox(u);
+    Circuit c(1);
+    c.add_box(ubox, {0});
+    Eigen::MatrixXcd u1 = tket_sim::get_unitary(c);
+    CHECK(u1.isApprox(u));
+  }
+
+  GIVEN("Unitary2qBox") {
+    Eigen::Matrix4cd u = random_unitary(4, 1);
+    Unitary2qBox ubox(u);
+    Circuit c(2);
+    c.add_box(ubox, {0, 1});
+    Eigen::MatrixXcd u1 = tket_sim::get_unitary(c);
+    CHECK(u1.isApprox(u));
+  }
+
+  GIVEN("Unitary3qBox") {
+    Eigen::MatrixXcd u = random_unitary(8, 1);
+    Unitary3qBox ubox(u);
+    Circuit c(3);
+    c.add_box(ubox, {0, 1, 2});
+    Eigen::MatrixXcd u1 = tket_sim::get_unitary(c);
+    CHECK(u1.isApprox(u));
+  }
+}
+
 }  // namespace test_Boxes
 }  // namespace tket
