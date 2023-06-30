@@ -18,6 +18,7 @@
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/uuid/uuid_io.hpp>
 #include <memory>
+#include <optional>
 
 #include "tket/OpType/OpTypeInfo.hpp"
 #include "tket/Ops/Op.hpp"
@@ -67,6 +68,24 @@ class Box : public Op {
     if (circ_ == nullptr) generate_circuit();
     return circ_;
   };
+
+  /**
+   * If meaningful and implemented, return the numerical unitary matrix
+   * (in ILO-BE convention) which this Box represents.
+   *
+   * @return unitary matrix (ILO-BE) which this Box represents
+   */
+  virtual std::optional<Eigen::MatrixXcd> get_box_unitary() const {
+    return std::nullopt;
+  }
+
+  Eigen::MatrixXcd get_unitary() const override {
+    std::optional<Eigen::MatrixXcd> u = get_box_unitary();
+    if (u.has_value()) {
+      return *u;
+    }
+    throw BadOpType(get_type());
+  }
 
   /** Unique identifier (preserved on copy) */
   boost::uuids::uuid get_id() const { return id_; }
@@ -199,7 +218,9 @@ class Unitary1qBox : public Box {
   /** Get the unitary matrix correspnding to this operation */
   Eigen::Matrix2cd get_matrix() const { return m_; }
 
-  Eigen::MatrixXcd get_unitary() const override { return m_; }
+  std::optional<Eigen::MatrixXcd> get_box_unitary() const override {
+    return m_;
+  }
 
   Op_ptr dagger() const override;
 
@@ -262,7 +283,9 @@ class Unitary2qBox : public Box {
   /** Get the unitary matrix correspnding to this operation */
   Eigen::Matrix4cd get_matrix() const { return m_; }
 
-  Eigen::MatrixXcd get_unitary() const override { return m_; }
+  std::optional<Eigen::MatrixXcd> get_box_unitary() const override {
+    return m_;
+  }
 
   Op_ptr dagger() const override;
 
@@ -322,7 +345,9 @@ class Unitary3qBox : public Box {
   /** Get the unitary matrix correspnding to this operation */
   Matrix8cd get_matrix() const { return m_; }
 
-  Eigen::MatrixXcd get_unitary() const override { return m_; }
+  std::optional<Eigen::MatrixXcd> get_box_unitary() const override {
+    return m_;
+  }
 
   Op_ptr dagger() const override;
 
