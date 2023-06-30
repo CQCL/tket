@@ -16,7 +16,7 @@
 
 #include "testutil.hpp"
 #include "tket/Circuit/Circuit.hpp"
-#include "tket/Simulation/CircuitSimulator.hpp"
+#include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Transformations/Decomposition.hpp"
 
 namespace tket {

@@ -14,11 +14,11 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "Simulation/ComparisonFunctions.hpp"
+#include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Mapping/BoxDecomposition.hpp"
 #include "tket/Mapping/LexiRoute.hpp"
 #include "tket/Mapping/MappingManager.hpp"
 #include "tket/Predicates/Predicates.hpp"
-#include "tket/Simulation/CircuitSimulator.hpp"
 
 namespace tket {
 SCENARIO("Decompose boxes") {

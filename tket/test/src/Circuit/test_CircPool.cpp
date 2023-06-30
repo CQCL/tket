@@ -16,8 +16,8 @@
 
 #include "tket/Circuit/CircPool.hpp"
 #include "tket/Circuit/CircUtils.hpp"
+#include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Predicates/Predicates.hpp"
-#include "tket/Simulation/CircuitSimulator.hpp"
 
 namespace tket {
 namespace test_CircPool {
