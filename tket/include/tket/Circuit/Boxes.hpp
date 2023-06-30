@@ -20,6 +20,7 @@
 #include <memory>
 #include <optional>
 
+#include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/OpType/OpTypeInfo.hpp"
 #include "tket/Ops/Op.hpp"
 #include "tket/Utils/BiMapHeaders.hpp"
@@ -84,7 +85,7 @@ class Box : public Op {
     if (u.has_value()) {
       return *u;
     }
-    throw BadOpType(get_type());
+    return tket_sim::get_unitary(*to_circuit());
   }
 
   /** Unique identifier (preserved on copy) */
