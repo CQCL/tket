@@ -54,6 +54,7 @@ binders = [
 
 class CMakeBuild(build_ext):
     def run(self):
+        print("WTAF");
         self.check_extensions_list(self.extensions)
         extdir = os.path.abspath(
             os.path.dirname(self.get_ext_fullpath(self.extensions[0].name))
@@ -128,16 +129,28 @@ class ConanBuild(build_ext):
                 if not os.path.isdir(libpath):
                     shutil.copy(libpath, extdir)
 
+class NixBuild(build_ext):
+    def run(self):
+        print("Doing nothing")
+
 
 setup_dir = os.path.abspath(os.path.dirname(__file__))
 plat_name = os.getenv("WHEEL_PLAT_NAME")
 
+def get_build_ext():
+    print("GETTING BUILD EXT")
+
+    if os.getenv("USE_NIX"):
+        return NixBuild
+    elif os.getenv("NO_CONAN"):
+        return CMakeBuild
+    else:
+        return ConanBuild
 
 class bdist_wheel(_bdist_wheel):
     def finalize_options(self):
         _bdist_wheel.finalize_options(self)
         if plat_name is not None:
-            print(f"Overriding plat_name to {plat_name}")
             self.plat_name = plat_name
             self.plat_name_supplied = True
 
@@ -180,7 +193,7 @@ setup(
         CMakeExtension("pytket._tket.{}".format(binder)) for binder in binders
     ],
     cmdclass={
-        "build_ext": CMakeBuild if os.getenv("NO_CONAN") else ConanBuild,
+        "build_ext": get_build_ext(),
         "bdist_wheel": bdist_wheel,
     },
     classifiers=[

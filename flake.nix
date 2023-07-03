@@ -10,9 +10,14 @@
         };
         libs = pkgs.callPackage ./libs { };
         tket = pkgs.callPackage ./tket { inherit libs; };
+        pytket = pkgs.callPackage ./pytket { inherit tket; };
       in
         {
           defaultPackage = tket;
+          packages = {
+            tket = tket;
+            pytket = pytket;
+          };
         }
     );
 }
