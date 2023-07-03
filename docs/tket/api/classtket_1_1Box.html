@@ -159,6 +159,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aa8189b7ff8c3c0b8fd90cbc71cf19c3f"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classtket_1_1Circuit.html">Circuit</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Box.html#aa8189b7ff8c3c0b8fd90cbc71cf19c3f">to_circuit</a> () const</td></tr>
 <tr class="memdesc:aa8189b7ff8c3c0b8fd90cbc71cf19c3f"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classtket_1_1Circuit.html" title="A circuit.">Circuit</a> represented by box.  <a href="classtket_1_1Box.html#aa8189b7ff8c3c0b8fd90cbc71cf19c3f">More...</a><br /></td></tr>
 <tr class="separator:aa8189b7ff8c3c0b8fd90cbc71cf19c3f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaea53cff30efc5bdf169973131ac986f"><td class="memItemLeft" align="right" valign="top">virtual std::optional&lt; Eigen::MatrixXcd &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Box.html#aaea53cff30efc5bdf169973131ac986f">get_box_unitary</a> () const</td></tr>
+<tr class="memdesc:aaea53cff30efc5bdf169973131ac986f"><td class="mdescLeft">&#160;</td><td class="mdescRight">If meaningful and implemented, return the numerical unitary matrix (in ILO-BE convention) which this <a class="el" href="classtket_1_1Box.html" title="Abstract class for an operation from which a circuit can be extracted.">Box</a> represents.  <a href="classtket_1_1Box.html#aaea53cff30efc5bdf169973131ac986f">More...</a><br /></td></tr>
+<tr class="separator:aaea53cff30efc5bdf169973131ac986f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0447431c9a03a28e3687285c04b3198d"><td class="memItemLeft" align="right" valign="top">Eigen::MatrixXcd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Box.html#a0447431c9a03a28e3687285c04b3198d">get_unitary</a> () const override</td></tr>
+<tr class="memdesc:a0447431c9a03a28e3687285c04b3198d"><td class="mdescLeft">&#160;</td><td class="mdescRight">If meaningful and implemented, return the numerical unitary matrix (in ILO-BE convention) which this <a class="el" href="classtket_1_1Op.html" title="Abstract class representing an operation type.">Op</a> represents.  <a href="classtket_1_1Box.html#a0447431c9a03a28e3687285c04b3198d">More...</a><br /></td></tr>
+<tr class="separator:a0447431c9a03a28e3687285c04b3198d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aaf3a1fb6a5d57482794581043b0a0b48"><td class="memItemLeft" align="right" valign="top">boost::uuids::uuid&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Box.html#aaf3a1fb6a5d57482794581043b0a0b48">get_id</a> () const</td></tr>
 <tr class="memdesc:aaf3a1fb6a5d57482794581043b0a0b48"><td class="mdescLeft">&#160;</td><td class="mdescRight">Unique identifier (preserved on copy)  <a href="classtket_1_1Box.html#aaf3a1fb6a5d57482794581043b0a0b48">More...</a><br /></td></tr>
 <tr class="separator:aaf3a1fb6a5d57482794581043b0a0b48"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -211,9 +217,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:afa2cdcc72b3bc0ca1ca6c362cee08fb0 inherit pub_methods_classtket_1_1Op"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Op.html#afa2cdcc72b3bc0ca1ca6c362cee08fb0">has_symmetry</a> (unsigned port1, unsigned port2) const</td></tr>
 <tr class="memdesc:afa2cdcc72b3bc0ca1ca6c362cee08fb0 inherit pub_methods_classtket_1_1Op"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks for symmetry of port pairs.  <a href="classtket_1_1Op.html#afa2cdcc72b3bc0ca1ca6c362cee08fb0">More...</a><br /></td></tr>
 <tr class="separator:afa2cdcc72b3bc0ca1ca6c362cee08fb0 inherit pub_methods_classtket_1_1Op"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8036a6e71f1a9c064f692aedb654ddec inherit pub_methods_classtket_1_1Op"><td class="memItemLeft" align="right" valign="top">virtual Eigen::MatrixXcd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Op.html#a8036a6e71f1a9c064f692aedb654ddec">get_unitary</a> () const</td></tr>
-<tr class="memdesc:a8036a6e71f1a9c064f692aedb654ddec inherit pub_methods_classtket_1_1Op"><td class="mdescLeft">&#160;</td><td class="mdescRight">If meaningful and implemented, return the numerical unitary matrix (in ILO-BE convention) which this <a class="el" href="classtket_1_1Op.html" title="Abstract class representing an operation type.">Op</a> represents.  <a href="classtket_1_1Op.html#a8036a6e71f1a9c064f692aedb654ddec">More...</a><br /></td></tr>
-<tr class="separator:a8036a6e71f1a9c064f692aedb654ddec inherit pub_methods_classtket_1_1Op"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a275e7d96c068388cdeadb225d5e1ff74 inherit pub_methods_classtket_1_1Op"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Op.html#a275e7d96c068388cdeadb225d5e1ff74">~Op</a> ()</td></tr>
 <tr class="separator:a275e7d96c068388cdeadb225d5e1ff74 inherit pub_methods_classtket_1_1Op"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a39cd9465081544753134817fb3959a57 inherit pub_methods_classtket_1_1Op"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Op.html#a39cd9465081544753134817fb3959a57">operator==</a> (const <a class="el" href="classtket_1_1Op.html">Op</a> &amp;other) const</td></tr>
@@ -266,7 +269,7 @@ Friends</h2></td></tr>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Abstract class for an operation from which a circuit can be extracted. </p>
 
-<p class="definition">Definition at line <a class="el" href="Boxes_8hpp_source.html#l00037">37</a> of file <a class="el" href="Boxes_8hpp_source.html">Boxes.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Boxes_8hpp_source.html#l00039">39</a> of file <a class="el" href="Boxes_8hpp_source.html">Boxes.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a7ec0162e55e93eadf254fbffa8754dfa"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a7ec0162e55e93eadf254fbffa8754dfa">&#9670;&nbsp;</a></span>Box() <span class="overload">[1/2]</span></h2>
@@ -302,7 +305,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Boxes_8hpp_source.html#l00039">39</a> of file <a class="el" href="Boxes_8hpp_source.html">Boxes.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Boxes_8hpp_source.html#l00041">41</a> of file <a class="el" href="Boxes_8hpp_source.html">Boxes.hpp</a>.</p>
 
 </div>
 </div>
@@ -330,7 +333,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Boxes_8hpp_source.html#l00044">44</a> of file <a class="el" href="Boxes_8hpp_source.html">Boxes.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Boxes_8hpp_source.html#l00046">46</a> of file <a class="el" href="Boxes_8hpp_source.html">Boxes.hpp</a>.</p>
 
 </div>
 </div>
@@ -390,6 +393,38 @@ Friends</h2></td></tr>
 
 </div>
 </div>
+<a id="aaea53cff30efc5bdf169973131ac986f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaea53cff30efc5bdf169973131ac986f">&#9670;&nbsp;</a></span>get_box_unitary()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">virtual std::optional&lt;Eigen::MatrixXcd&gt; tket::Box::get_box_unitary </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>If meaningful and implemented, return the numerical unitary matrix (in ILO-BE convention) which this <a class="el" href="classtket_1_1Box.html" title="Abstract class for an operation from which a circuit can be extracted.">Box</a> represents. </p>
+<dl class="section return"><dt>Returns</dt><dd>unitary matrix (ILO-BE) which this <a class="el" href="classtket_1_1Box.html" title="Abstract class for an operation from which a circuit can be extracted.">Box</a> represents </dd></dl>
+
+<p>Reimplemented in <a class="el" href="classtket_1_1QControlBox.html#aee840d8608a91d13715abecc45724d64">tket::QControlBox</a>, <a class="el" href="classtket_1_1ExpBox.html#aedbe3689c599a4af78807474cf947d37">tket::ExpBox</a>, <a class="el" href="classtket_1_1Unitary3qBox.html#a229e14df0d8c4f4e891e13bbae124440">tket::Unitary3qBox</a>, <a class="el" href="classtket_1_1Unitary2qBox.html#acd3b0617c15a0e3046b769c57948c69c">tket::Unitary2qBox</a>, and <a class="el" href="classtket_1_1Unitary1qBox.html#ab558bf3123ece2e341b909f23033be65">tket::Unitary1qBox</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="Boxes_8hpp_source.html#l00079">79</a> of file <a class="el" href="Boxes_8hpp_source.html">Boxes.hpp</a>.</p>
+
+</div>
+</div>
 <a id="aaf3a1fb6a5d57482794581043b0a0b48"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aaf3a1fb6a5d57482794581043b0a0b48">&#9670;&nbsp;</a></span>get_id()</h2>
 
@@ -415,7 +450,7 @@ Friends</h2></td></tr>
 
 <p>Unique identifier (preserved on copy) </p>
 
-<p class="definition">Definition at line <a class="el" href="Boxes_8hpp_source.html#l00072">72</a> of file <a class="el" href="Boxes_8hpp_source.html">Boxes.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Boxes_8hpp_source.html#l00092">92</a> of file <a class="el" href="Boxes_8hpp_source.html">Boxes.hpp</a>.</p>
 
 </div>
 </div>
@@ -452,6 +487,45 @@ Friends</h2></td></tr>
 
 </div>
 </div>
+<a id="a0447431c9a03a28e3687285c04b3198d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0447431c9a03a28e3687285c04b3198d">&#9670;&nbsp;</a></span>get_unitary()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">Eigen::MatrixXcd tket::Box::get_unitary </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>If meaningful and implemented, return the numerical unitary matrix (in ILO-BE convention) which this <a class="el" href="classtket_1_1Op.html" title="Abstract class representing an operation type.">Op</a> represents. </p>
+<dl class="section pre"><dt>Precondition</dt><dd>No symbolic parameters. </dd></dl>
+<dl class="section return"><dt>Returns</dt><dd>unitary matrix (ILO-BE) which this <a class="el" href="classtket_1_1Op.html" title="Abstract class representing an operation type.">Op</a> represents </dd></dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname"><a class="el" href="classtket_1_1BadOpType.html" title="Operation type not valid in the current context.">BadOpType</a></td><td>upon error. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p>Reimplemented from <a class="el" href="classtket_1_1Op.html#a8036a6e71f1a9c064f692aedb654ddec">tket::Op</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="Boxes_8hpp_source.html#l00083">83</a> of file <a class="el" href="Boxes_8hpp_source.html">Boxes.hpp</a>.</p>
+
+</div>
+</div>
 <a id="a4c37e06bdcd3bb4df05d500ee8d02e57"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a4c37e06bdcd3bb4df05d500ee8d02e57">&#9670;&nbsp;</a></span>idgen()</h2>
 
@@ -475,7 +549,7 @@ Friends</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Boxes_8hpp_source.html#l00078">78</a> of file <a class="el" href="Boxes_8hpp_source.html">Boxes.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Boxes_8hpp_source.html#l00098">98</a> of file <a class="el" href="Boxes_8hpp_source.html">Boxes.hpp</a>.</p>
 
 </div>
 </div>
@@ -606,7 +680,7 @@ Friends</h2></td></tr>
 
 <p><a class="el" href="classtket_1_1Circuit.html" title="A circuit.">Circuit</a> represented by box. </p>
 
-<p class="definition">Definition at line <a class="el" href="Boxes_8hpp_source.html#l00066">66</a> of file <a class="el" href="Boxes_8hpp_source.html">Boxes.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Boxes_8hpp_source.html#l00068">68</a> of file <a class="el" href="Boxes_8hpp_source.html">Boxes.hpp</a>.</p>
 
 </div>
 </div>
@@ -664,7 +738,7 @@ template&lt;typename BoxT &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>box with desired ID </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Boxes_8hpp_source.html#l00106">106</a> of file <a class="el" href="Boxes_8hpp_source.html">Boxes.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Boxes_8hpp_source.html#l00126">126</a> of file <a class="el" href="Boxes_8hpp_source.html">Boxes.hpp</a>.</p>
 
 </div>
 </div>
@@ -689,7 +763,7 @@ template&lt;typename BoxT &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Boxes_8hpp_source.html#l00084">84</a> of file <a class="el" href="Boxes_8hpp_source.html">Boxes.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Boxes_8hpp_source.html#l00104">104</a> of file <a class="el" href="Boxes_8hpp_source.html">Boxes.hpp</a>.</p>
 
 </div>
 </div>
@@ -713,7 +787,7 @@ template&lt;typename BoxT &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Boxes_8hpp_source.html#l00085">85</a> of file <a class="el" href="Boxes_8hpp_source.html">Boxes.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Boxes_8hpp_source.html#l00105">105</a> of file <a class="el" href="Boxes_8hpp_source.html">Boxes.hpp</a>.</p>
 
 </div>
 </div>
@@ -737,7 +811,7 @@ template&lt;typename BoxT &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Boxes_8hpp_source.html#l00083">83</a> of file <a class="el" href="Boxes_8hpp_source.html">Boxes.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Boxes_8hpp_source.html#l00103">103</a> of file <a class="el" href="Boxes_8hpp_source.html">Boxes.hpp</a>.</p>
 
 </div>
 </div>

@@ -1,5 +1,5 @@
-<map id="include/tket/Simulation/CircuitSimulator.hpp" name="include/tket/Simulation/CircuitSimulator.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="695,5,867,47"/>
+<map id="include/tket/Circuit/Simulation/CircuitSimulator.hpp" name="include/tket/Circuit/Simulation/CircuitSimulator.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="665,5,897,47"/>
 <area shape="rect" id="node2" href="$MatrixAnalysis_8hpp.html" title=" " alt="" coords="676,95,887,121"/>
 <area shape="rect" id="node3" title=" " alt="" coords="573,169,629,196"/>
 <area shape="rect" id="node4" title=" " alt="" coords="410,251,473,278"/>

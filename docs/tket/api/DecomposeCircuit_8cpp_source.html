@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.9.1"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>tket: src/Simulation/DecomposeCircuit.cpp Source File</title>
+<title>tket: src/Circuit/Simulation/DecomposeCircuit.cpp Source File</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -68,7 +68,7 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_c487c1b7f672be8b2885393524f3e6ab.html">Simulation</a></li>  </ul>
+<li class="navelem"><a class="el" href="dir_68267d1309a1af8e8297ef4c3efbcdba.html">src</a></li><li class="navelem"><a class="el" href="dir_a39b5a8c0295e64a3c442c197fbd4463.html">Circuit</a></li><li class="navelem"><a class="el" href="dir_93e559980e9da01298feac69a6976103.html">Simulation</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
@@ -99,10 +99,10 @@ $(function() {
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="Boxes_8hpp.html">tket/Circuit/Boxes.hpp</a>&quot;</span></div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="Circuit_8hpp.html">tket/Circuit/Circuit.hpp</a>&quot;</span></div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="PauliExpBoxes_8hpp.html">tket/Circuit/PauliExpBoxes.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="Gate_8hpp.html">tket/Gate/Gate.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="GateUnitaryMatrix_8hpp.html">tket/Gate/GateUnitaryMatrix.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="GateUnitaryMatrixError_8hpp.html">tket/Gate/GateUnitaryMatrixError.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="PauliExpBoxUnitaryCalculator_8hpp.html">tket/Simulation/PauliExpBoxUnitaryCalculator.hpp</a>&quot;</span></div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="PauliExpBoxUnitaryCalculator_8hpp.html">tket/Circuit/Simulation/PauliExpBoxUnitaryCalculator.hpp</a>&quot;</span></div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="Gate_8hpp.html">tket/Gate/Gate.hpp</a>&quot;</span></div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="GateUnitaryMatrix_8hpp.html">tket/Gate/GateUnitaryMatrix.hpp</a>&quot;</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="GateUnitaryMatrixError_8hpp.html">tket/Gate/GateUnitaryMatrixError.hpp</a>&quot;</span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacetket.html">tket</a> {</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;<span class="keyword">namespace </span>tket_sim {</div>
@@ -290,8 +290,8 @@ $(function() {
 <div class="ttc" id="aclasstket_1_1Circuit_html_a0baec82ad9c0308fd2655607d30caf3d"><div class="ttname"><a href="classtket_1_1Circuit.html#a0baec82ad9c0308fd2655607d30caf3d">tket::Circuit::n_qubits</a></div><div class="ttdeci">unsigned n_qubits() const</div><div class="ttdef"><b>Definition:</b> <a href="setters__and__getters_8cpp_source.html#l00306">setters_and_getters.cpp:306</a></div></div>
 <div class="ttc" id="aclasstket_1_1Circuit_html_a1e25972d9f6e767128fdc294a628a95b"><div class="ttname"><a href="classtket_1_1Circuit.html#a1e25972d9f6e767128fdc294a628a95b">tket::Circuit::all_qubits</a></div><div class="ttdeci">qubit_vector_t all_qubits() const</div><div class="ttdef"><b>Definition:</b> <a href="setters__and__getters_8cpp_source.html#l00142">setters_and_getters.cpp:142</a></div></div>
 <div class="ttc" id="aclasstket_1_1Qubit_html"><div class="ttname"><a href="classtket_1_1Qubit.html">tket::Qubit</a></div><div class="ttdoc">Location holding a qubit.</div><div class="ttdef"><b>Definition:</b> <a href="UnitID_8hpp_source.html#l00153">UnitID.hpp:153</a></div></div>
-<div class="ttc" id="aclasstket_1_1Unitary1qBox_html"><div class="ttname"><a href="classtket_1_1Unitary1qBox.html">tket::Unitary1qBox</a></div><div class="ttdoc">One-qubit operation defined as a unitary matrix.</div><div class="ttdef"><b>Definition:</b> <a href="Boxes_8hpp_source.html#l00163">Boxes.hpp:163</a></div></div>
-<div class="ttc" id="aclasstket_1_1Unitary2qBox_html"><div class="ttname"><a href="classtket_1_1Unitary2qBox.html">tket::Unitary2qBox</a></div><div class="ttdoc">Two-qubit operation defined as a unitary matrix (ILO-BE)</div><div class="ttdef"><b>Definition:</b> <a href="Boxes_8hpp_source.html#l00224">Boxes.hpp:224</a></div></div>
+<div class="ttc" id="aclasstket_1_1Unitary1qBox_html"><div class="ttname"><a href="classtket_1_1Unitary1qBox.html">tket::Unitary1qBox</a></div><div class="ttdoc">One-qubit operation defined as a unitary matrix.</div><div class="ttdef"><b>Definition:</b> <a href="Boxes_8hpp_source.html#l00183">Boxes.hpp:183</a></div></div>
+<div class="ttc" id="aclasstket_1_1Unitary2qBox_html"><div class="ttname"><a href="classtket_1_1Unitary2qBox.html">tket::Unitary2qBox</a></div><div class="ttdoc">Two-qubit operation defined as a unitary matrix (ILO-BE)</div><div class="ttdef"><b>Definition:</b> <a href="Boxes_8hpp_source.html#l00246">Boxes.hpp:246</a></div></div>
 <div class="ttc" id="aclasstket_1_1tket__sim_1_1internal_1_1GateNodesBuffer_html"><div class="ttname"><a href="classtket_1_1tket__sim_1_1internal_1_1GateNodesBuffer.html">tket::tket_sim::internal::GateNodesBuffer</a></div><div class="ttdoc">Pass the raw gate unitary matrix elements into this class one by one, but let this class perform any ...</div><div class="ttdef"><b>Definition:</b> <a href="GateNodesBuffer_8hpp_source.html#l00053">GateNodesBuffer.hpp:53</a></div></div>
 <div class="ttc" id="aclasstket_1_1tket__sim_1_1internal_1_1GateNodesBuffer_html_a08a40837a62e858bb4567486e8cb6fd4"><div class="ttname"><a href="classtket_1_1tket__sim_1_1internal_1_1GateNodesBuffer.html#a08a40837a62e858bb4567486e8cb6fd4">tket::tket_sim::internal::GateNodesBuffer::flush</a></div><div class="ttdeci">void flush()</div><div class="ttdoc">The buffer might be cleared and optimised regularly, but the caller must call this at the end to ensu...</div><div class="ttdef"><b>Definition:</b> <a href="GateNodesBuffer_8cpp_source.html#l00073">GateNodesBuffer.cpp:73</a></div></div>
 <div class="ttc" id="anamespacetket_1_1tket__sim_1_1internal_html_a3f9535338a2dc8deb0761abc65903d8c"><div class="ttname"><a href="namespacetket_1_1tket__sim_1_1internal.html#a3f9535338a2dc8deb0761abc65903d8c">tket::tket_sim::internal::decompose_circuit</a></div><div class="ttdeci">void decompose_circuit(const Circuit &amp;circ, GateNodesBuffer &amp;buffer, double abs_epsilon)</div><div class="ttdoc">Break up the circuit into individual gates and boxes, and pass the data for each component one-by-one...</div><div class="ttdef"><b>Definition:</b> <a href="DecomposeCircuit_8cpp_source.html#l00189">DecomposeCircuit.cpp:189</a></div></div>

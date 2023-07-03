@@ -1,5 +1,5 @@
-<map id="src/Simulation/BitOperations.hpp" name="src/Simulation/BitOperations.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="127,5,363,32"/>
-<area shape="rect" id="node2" href="$BitOperations_8cpp.html" title=" " alt="" coords="5,80,240,107"/>
-<area shape="rect" id="node3" href="$GateNode_8cpp.html" title=" " alt="" coords="264,80,475,107"/>
+<map id="src/Circuit/Simulation/BitOperations.hpp" name="src/Circuit/Simulation/BitOperations.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="97,5,259,47"/>
+<area shape="rect" id="node2" href="$BitOperations_8cpp.html" title=" " alt="" coords="5,95,167,136"/>
+<area shape="rect" id="node3" href="$GateNode_8cpp.html" title=" " alt="" coords="191,95,352,136"/>
 </map>

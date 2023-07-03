@@ -1,5 +1,5 @@
-<map id="src/Simulation/GateNodesBuffer.hpp" name="src/Simulation/GateNodesBuffer.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="1263,5,1454,47"/>
+<map id="src/Circuit/Simulation/GateNodesBuffer.hpp" name="src/Circuit/Simulation/GateNodesBuffer.hpp">
+<area shape="rect" id="node1" title=" " alt="" coords="1277,5,1441,47"/>
 <area shape="rect" id="node2" title=" " alt="" coords="5,326,83,353"/>
 <area shape="rect" id="node3" href="$GateNode_8hpp.html" title=" " alt="" coords="1301,95,1416,121"/>
 <area shape="rect" id="node4" href="$MatrixAnalysis_8hpp.html" title=" " alt="" coords="1348,169,1559,196"/>

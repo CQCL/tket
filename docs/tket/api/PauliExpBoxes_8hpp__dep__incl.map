@@ -1,8 +1,8 @@
 <map id="include/tket/Circuit/PauliExpBoxes.hpp" name="include/tket/Circuit/PauliExpBoxes.hpp">
-<area shape="rect" id="node1" title=" " alt="" coords="512,5,660,47"/>
+<area shape="rect" id="node1" title=" " alt="" coords="487,5,635,47"/>
 <area shape="rect" id="node2" href="$PauliExpBoxes_8cpp.html" title=" " alt="" coords="5,102,217,129"/>
-<area shape="rect" id="node3" href="$PauliGadget_8cpp.html" title=" " alt="" coords="241,102,467,129"/>
-<area shape="rect" id="node4" href="$PauliGraphConverters_8cpp.html" title=" " alt="" coords="491,95,681,136"/>
-<area shape="rect" id="node5" href="$DecomposeCircuit_8cpp.html" title=" " alt="" coords="705,95,901,136"/>
-<area shape="rect" id="node6" href="$PauliExpBoxUnitaryCalculator_8cpp.html" title=" " alt="" coords="925,95,1124,136"/>
+<area shape="rect" id="node3" href="$DecomposeCircuit_8cpp.html" title=" " alt="" coords="241,95,413,136"/>
+<area shape="rect" id="node4" href="$PauliExpBoxUnitaryCalculator_8cpp.html" title=" " alt="" coords="437,95,684,136"/>
+<area shape="rect" id="node5" href="$PauliGadget_8cpp.html" title=" " alt="" coords="708,102,933,129"/>
+<area shape="rect" id="node6" href="$PauliGraphConverters_8cpp.html" title=" " alt="" coords="957,95,1148,136"/>
 </map>

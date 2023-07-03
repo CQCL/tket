@@ -1,8 +1,7 @@
 var searchData=
 [
-  ['z_2276',['Z',['../structtket_1_1internal_1_1GateUnitaryMatrixImplementations.html#a01d6cccf4943fd146b6bd7103bd713f1',1,'tket::internal::GateUnitaryMatrixImplementations::Z()'],['../namespacetket.html#a342a289d54f4f5f5a405373c07aca66aa21c2e59531c8710156d34a3c30ac81d5',1,'tket::Z()'],['../namespacetket.html#a342a289d54f4f5f5a405373c07aca66aa7c8e2f1f98ede6f3306ba12e09e1f854',1,'tket::Z()']]],
   ['z_2277',['z',['../structtket_1_1BoolPauli.html#a48f9b6bc0fb4525a040a31ff4e6a146c',1,'tket::BoolPauli']]],
-  ['z_2278',['Z',['../namespacestd__clifford__decomp.html#ad6c61526bfb84c3730bdbae5332d1862',1,'std_clifford_decomp.Z()'],['../GateUnitaryMatrixFixedMatrices_8cpp.html#a50e494b6c0479f509addc00437f7d321',1,'Z():&#160;GateUnitaryMatrixFixedMatrices.cpp']]],
+  ['z_2278',['Z',['../namespacetket.html#a342a289d54f4f5f5a405373c07aca66aa21c2e59531c8710156d34a3c30ac81d5',1,'tket::Z()'],['../namespacetket.html#a342a289d54f4f5f5a405373c07aca66aa7c8e2f1f98ede6f3306ba12e09e1f854',1,'tket::Z()'],['../structtket_1_1internal_1_1GateUnitaryMatrixImplementations.html#a01d6cccf4943fd146b6bd7103bd713f1',1,'tket::internal::GateUnitaryMatrixImplementations::Z()'],['../namespacestd__clifford__decomp.html#ad6c61526bfb84c3730bdbae5332d1862',1,'std_clifford_decomp.Z()'],['../GateUnitaryMatrixFixedMatrices_8cpp.html#a50e494b6c0479f509addc00437f7d321',1,'Z():&#160;GateUnitaryMatrixFixedMatrices.cpp']]],
   ['z0_5fcx_2279',['Z0_CX',['../namespacetket_1_1CircPool.html#ad1beab21da313684a5aa24f4f97a0a18',1,'tket::CircPool']]],
   ['zerointree_2280',['ZeroInTree',['../namespacetket_1_1aas.html#a5d7e42ff2fcc3a26d82ea3d4dd415374a65436f186d3c96249cc3283423cc42a5',1,'tket::aas']]],
   ['zspider_2281',['ZSpider',['../namespacetket_1_1zx.html#ab1dacff6605c3bc8caa5f7fa6e3f5646af91c1012cc32302ba7900a3c72c0ad77',1,'tket::zx']]],
