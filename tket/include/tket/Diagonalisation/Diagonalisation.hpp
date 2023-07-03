@@ -70,4 +70,13 @@ bool conjugate_with_xxphase3(
     const Qubit &qb_a, const Qubit &qb_b, Conjugations &conjugations,
     Circuit &cliff_circ);
 
+std::pair<Circuit, Qubit> reduce_pauli_to_z(
+    const QubitPauliTensor &pauli, CXConfigType cx_config);
+
+std::pair<Circuit, Qubit> reduce_anticommuting_paulis_to_z_x(
+    QubitPauliTensor pauli0, QubitPauliTensor pauli1, CXConfigType cx_config);
+
+std::tuple<Circuit, Qubit, Qubit> reduce_commuting_paulis_to_zi_iz(
+    QubitPauliTensor pauli0, QubitPauliTensor pauli1, CXConfigType cx_config);
+
 }  // namespace tket

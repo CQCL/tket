@@ -109,15 +109,6 @@ std::pair<Circuit, Complex> decompose_2cx_DV(const Eigen::Matrix4cd& U);
 
 Expr pauli_angle_convert_or_throw(Complex pauliCoeff, const Expr& angle);
 
-std::pair<Circuit, Qubit> reduce_pauli_to_z(
-    const QubitPauliTensor& pauli, CXConfigType cx_config);
-
-std::pair<Circuit, Qubit> reduce_anticommuting_paulis_to_z_x(
-    QubitPauliTensor pauli0, QubitPauliTensor pauli1, CXConfigType cx_config);
-
-std::tuple<Circuit, Qubit, Qubit> reduce_commuting_paulis_to_zi_iz(
-    QubitPauliTensor pauli0, QubitPauliTensor pauli1, CXConfigType cx_config);
-
 /**
  * Construct a phase gadget
  *

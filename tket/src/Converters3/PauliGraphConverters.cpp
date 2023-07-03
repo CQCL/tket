@@ -18,6 +18,7 @@
 #include "tket/Clifford/UnitaryTableau.hpp"
 #include "tket/Converters/Converters.hpp"
 #include "tket/Converters3/Converters.hpp"
+#include "tket/Diagonalisation/Diagonalisation.hpp"
 #include "tket/Gate/Gate.hpp"
 #include "tket/PauliGraph/ConjugatePauliFunctions.hpp"
 
