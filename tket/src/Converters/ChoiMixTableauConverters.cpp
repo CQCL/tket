@@ -36,7 +36,8 @@ ChoiMixTableau circuit_to_cm_tableau(const Circuit& circ) {
   return tab;
 }
 
-std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(const ChoiMixTableau& t) {
+std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(
+    const ChoiMixTableau& t, ChoiMixSynthType synth_type) {
   /**
    * THE PLAN:
    * We first identify and solve all post-selections by Gaussian elimination and
@@ -631,18 +632,21 @@ std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(const ChoiMixTableau& t) {
       } else {
         // Just an X row, so must be connected to out_qb via a decoherence
         if (tab.tab_.phase_(*x_row)) in_circ.add_op<Qubit>(OpType::Z, {in_qb});
-        in_circ.add_op<Qubit>(OpType::H, {in_qb});
-        in_circ.add_op<Qubit>(OpType::Collapse, {in_qb});
-        in_circ.add_op<Qubit>(OpType::H, {in_qb});
+        if (synth_type == ChoiMixSynthType::exact) {
+          in_circ.add_op<Qubit>(OpType::H, {in_qb});
+          in_circ.add_op<Qubit>(OpType::Collapse, {in_qb});
+          in_circ.add_op<Qubit>(OpType::H, {in_qb});
+        }
         join_permutation.insert({*out_qb, in_qb});
       }
     } else {
       if (z_row) {
         // Just a Z row, so must be connected to out_qb via a decoherence
         if (tab.tab_.phase_(*z_row)) in_circ.add_op<Qubit>(OpType::X, {in_qb});
-        in_circ.add_op<Qubit>(OpType::Collapse, {in_qb});
+        if (synth_type == ChoiMixSynthType::exact)
+          in_circ.add_op<Qubit>(OpType::Collapse, {in_qb});
         join_permutation.insert({*out_qb, in_qb});
-      } else {
+      } else if (synth_type == ChoiMixSynthType::exact) {
         // No rows involving this input, so it is discarded
         in_circ.qubit_discard(in_qb);
       }
@@ -712,7 +716,8 @@ std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(const ChoiMixTableau& t) {
           "Unexpected error during zero initialisation in ChoiMixTableau "
           "synthesis");
     Qubit initialised_qb = row.second.string.map.begin()->first;
-    out_circ.qubit_create(initialised_qb);
+    if (synth_type == ChoiMixSynthType::exact)
+      out_circ.qubit_create(initialised_qb);
     if (row.second.coeff == -1.) {
       out_circ.add_op<Qubit>(OpType::X, {initialised_qb});
     }
@@ -732,7 +737,8 @@ std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(const ChoiMixTableau& t) {
   }
   for (const Qubit& out_qb : output_qubits) {
     if (matched_qubits.right.find(out_qb) == matched_qubits.right.end()) {
-      if (zero_initialised.find(out_qb) == zero_initialised.end()) {
+      if (synth_type == ChoiMixSynthType::exact &&
+          zero_initialised.find(out_qb) == zero_initialised.end()) {
         out_circ.qubit_create(out_qb);
         out_circ.add_op<Qubit>(OpType::H, {out_qb});
         out_circ.add_op<Qubit>(OpType::Collapse, {out_qb});

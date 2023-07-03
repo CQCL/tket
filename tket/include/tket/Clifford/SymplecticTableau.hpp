@@ -25,6 +25,7 @@ class ChoiMixTableau;
 class UnitaryTableau;
 class UnitaryRevTableau;
 class Circuit;
+enum ChoiMixSynthType { exact, unitary };
 namespace pg {
 class PauliGraph;
 class PGOp;
@@ -219,7 +220,7 @@ class SymplecticTableau {
   friend class ChoiMixTableau;
   friend Circuit unitary_tableau_to_circuit(const UnitaryTableau &tab);
   friend std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(
-      const ChoiMixTableau &tab);
+      const ChoiMixTableau &tab, ChoiMixSynthType synth_type);
   friend std::vector<pg::PGOp_ptr> op_to_pgops(
       const Op_ptr &op, const unit_vector_t &args, pg::PauliGraph &pg,
       bool allow_tableau);

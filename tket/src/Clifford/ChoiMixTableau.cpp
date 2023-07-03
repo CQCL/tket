@@ -103,11 +103,13 @@ ChoiMixTableau::ChoiMixTableau(const std::list<row_tensor_t>& rows)
   VectorXb phase = VectorXb::Zero(n_rows);
   unsigned r = 0;
   for (const row_tensor_t& row : rows) {
+    unsigned n_ys = 0;
     for (const std::pair<const Qubit, Pauli>& qb : row.first.string.map) {
       unsigned c =
           col_index_.left.at(col_key_t{qb.first, TableauSegment::Input});
       if (qb.second == Pauli::X || qb.second == Pauli::Y) xmat(r, c) = true;
       if (qb.second == Pauli::Z || qb.second == Pauli::Y) zmat(r, c) = true;
+      if (qb.second == Pauli::Y) ++n_ys;
     }
     for (const std::pair<const Qubit, Pauli>& qb : row.second.string.map) {
       unsigned c =
@@ -116,6 +118,8 @@ ChoiMixTableau::ChoiMixTableau(const std::list<row_tensor_t>& rows)
       if (qb.second == Pauli::Z || qb.second == Pauli::Y) zmat(r, c) = true;
     }
     Complex ph = row.first.coeff * row.second.coeff;
+    // Transpose lhs
+    if (n_ys % 2 == 1) ph *= -1;
     if (std::abs(ph - 1.) < EPS)
       phase(r) = false;
     else if (std::abs(ph + 1.) < EPS)
@@ -183,17 +187,22 @@ PauliStabiliser ChoiMixTableau::row_tensor_to_stab(
 }
 
 ChoiMixTableau::row_tensor_t ChoiMixTableau::get_row(unsigned i) const {
-  return stab_to_row_tensor(tab_.get_pauli(i));
+  ChoiMixTableau::row_tensor_t res = stab_to_row_tensor(tab_.get_pauli(i));
+  res.first.transpose();
+  res.second.coeff *= res.first.coeff;
+  res.first.coeff = 1.;
+  return res;
 }
 
 ChoiMixTableau::row_tensor_t ChoiMixTableau::get_row_product(
     const std::vector<unsigned>& rows) const {
   row_tensor_t result = {{}, {}};
   for (unsigned i : rows) {
-    row_tensor_t row_i = get_row(i);
+    row_tensor_t row_i = stab_to_row_tensor(tab_.get_pauli(i));
     result.first = result.first * row_i.first;
     result.second = result.second * row_i.second;
   }
+  result.first.transpose();
   result.second.coeff *= result.first.coeff;
   result.first.coeff = 1.;
   return result;

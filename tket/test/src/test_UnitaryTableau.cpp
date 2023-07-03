@@ -19,6 +19,7 @@
 #include "tket/Clifford/UnitaryTableau.hpp"
 #include "tket/Converters/Converters.hpp"
 #include "tket/Converters/UnitaryTableauBox.hpp"
+#include "tket/Simulation/CircuitSimulator.hpp"
 
 namespace tket::test_UnitaryTableau {
 
@@ -297,6 +298,21 @@ SCENARIO("Correct creation of UnitaryTableau") {
     UnitaryTableau tab = circuit_to_unitary_tableau(circ);
     UnitaryTableau rev_tab = get_tableau_with_gates_applied_at_front();
     REQUIRE(tab == rev_tab);
+    Eigen::MatrixXcd circ_u = tket_sim::get_unitary(circ);
+    for (unsigned q = 0; q < 3; ++q) {
+      CmplxSpMat xq = QubitPauliString(Qubit(q), Pauli::X).to_sparse_matrix(3);
+      Eigen::MatrixXcd xqd = xq;
+      QubitPauliTensor xrow = tab.get_xrow(Qubit(q));
+      CmplxSpMat xrowmat = xrow.string.to_sparse_matrix(3) * xrow.coeff;
+      Eigen::MatrixXcd xrowmatd = xrowmat;
+      CHECK((xrowmatd * circ_u * xqd).isApprox(circ_u));
+      CmplxSpMat zq = QubitPauliString(Qubit(q), Pauli::Z).to_sparse_matrix(3);
+      Eigen::MatrixXcd zqd = zq;
+      QubitPauliTensor zrow = tab.get_zrow(Qubit(q));
+      CmplxSpMat zrowmat = zrow.string.to_sparse_matrix(3) * zrow.coeff;
+      Eigen::MatrixXcd zrowmatd = zrowmat;
+      CHECK((zrowmatd * circ_u * zqd).isApprox(circ_u));
+    }
   }
   GIVEN("A PI/2 rotation") {
     Circuit circ = get_test_circ();

@@ -23,7 +23,7 @@ namespace tket {
 // and boxes
 ChoiMixTableau circuit_to_cm_tableau(const Circuit& circ);
 std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(
-    const ChoiMixTableau& circ);
+    const ChoiMixTableau& circ, ChoiMixSynthType synth_type);
 
 pg::PauliGraph circuit_to_pauli_graph3(const Circuit& circ);
 

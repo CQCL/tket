@@ -298,7 +298,8 @@ class PGStabilizer : public PGOp {
 class PGInputTableau : public PGOp {
  public:
   // Returns the row tensor as from the tableau; first component is for the
-  // input segment, second for the output component (the active paulis)
+  // input segment, second for the output component (the active paulis); RxS
+  // means SCR = C
   const ChoiMixTableau::row_tensor_t& get_full_row(unsigned p) const;
 
   PGInputTableau(const ChoiMixTableau& tableau);
@@ -323,7 +324,8 @@ class PGInputTableau : public PGOp {
 class PGOutputTableau : public PGOp {
  public:
   // Returns the row tensor as from the tableau; first component is for the
-  // input segment (the active paulis), second for the output component
+  // input segment (the active paulis), second for the output component; RxS
+  // means SCR = C
   const ChoiMixTableau::row_tensor_t& get_full_row(unsigned p) const;
 
   PGOutputTableau(const ChoiMixTableau& tableau);

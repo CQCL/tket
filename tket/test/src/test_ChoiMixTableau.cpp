@@ -16,6 +16,7 @@
 
 #include "testutil.hpp"
 #include "tket/Converters/Converters.hpp"
+#include "tket/Simulation/CircuitSimulator.hpp"
 
 namespace tket {
 namespace test_ChoiMixTableau {
@@ -89,7 +90,7 @@ SCENARIO("Correct creation of ChoiMixTableau") {
         tab.get_row_product({0, 1}) ==
         ChoiMixTableau::row_tensor_t{
             QubitPauliTensor(Qubit(0), Pauli::Y),
-            QubitPauliTensor(Qubit(0), Pauli::Y, -1.)});
+            QubitPauliTensor(Qubit(0), Pauli::Y)});
     THEN("Serialize and deserialize") {
       nlohmann::json j_tab = tab;
       ChoiMixTableau tab2{{}};
@@ -174,12 +175,10 @@ SCENARIO("Correct creation of ChoiMixTableau") {
                               QubitPauliTensor(Qubit(0), Pauli::Z),
                               QubitPauliTensor(Qubit(0), Pauli::Z)});
     // Affecting the input segment should give the same effect as for
-    // UnitaryRevTableau (since lhs is transposed, +Y is flipped to -Y, and
-    // phase is returned on rhs)
+    // UnitaryRevTableau
     REQUIRE(
         tab.get_row(2) ==
-        ChoiMixTableau::row_tensor_t{
-            QubitPauliTensor(Qubit(1), Pauli::Y), QubitPauliTensor(-1.)});
+        ChoiMixTableau::row_tensor_t{QubitPauliTensor(Qubit(1), Pauli::Y), {}});
     // Affecting the output segment should give the same effect as for
     // UnitaryTableau
     REQUIRE(
@@ -198,8 +197,7 @@ SCENARIO("Correct creation of ChoiMixTableau") {
                               QubitPauliTensor(Qubit(0), Pauli::Y, -1.)});
     REQUIRE(
         tab.get_row(2) ==
-        ChoiMixTableau::row_tensor_t{
-            QubitPauliTensor(Qubit(1), Pauli::Y), QubitPauliTensor(-1.)});
+        ChoiMixTableau::row_tensor_t{QubitPauliTensor(Qubit(1), Pauli::Y), {}});
     REQUIRE(
         tab.get_row(3) == ChoiMixTableau::row_tensor_t{
                               {}, QubitPauliTensor(Qubit(2), Pauli::Y, -1.)});
@@ -216,8 +214,7 @@ SCENARIO("Correct creation of ChoiMixTableau") {
                               QubitPauliTensor(Qubit(0), Pauli::Z, -1.)});
     REQUIRE(
         tab.get_row(2) ==
-        ChoiMixTableau::row_tensor_t{
-            QubitPauliTensor(Qubit(1), Pauli::Y), QubitPauliTensor(-1.)});
+        ChoiMixTableau::row_tensor_t{QubitPauliTensor(Qubit(1), Pauli::Y), {}});
     REQUIRE(
         tab.get_row(3) == ChoiMixTableau::row_tensor_t{
                               {}, QubitPauliTensor(Qubit(2), Pauli::Y, -1.)});
@@ -452,7 +449,9 @@ SCENARIO("Synthesis of circuits from ChoiMixTableaus") {
   GIVEN("An identity circuit") {
     Circuit circ(3);
     ChoiMixTableau tab = circuit_to_cm_tableau(circ);
-    Circuit res = cm_tableau_to_circuit(tab).first;
+    Circuit res = cm_tableau_to_circuit(tab, ChoiMixSynthType::exact).first;
+    REQUIRE(res == circ);
+    res = cm_tableau_to_circuit(tab, ChoiMixSynthType::unitary).first;
     REQUIRE(res == circ);
   }
   GIVEN("Just some Pauli gates for phase tests") {
@@ -462,7 +461,9 @@ SCENARIO("Synthesis of circuits from ChoiMixTableaus") {
     circ.add_op<unsigned>(OpType::Z, {2});
     circ.add_op<unsigned>(OpType::Z, {3});
     ChoiMixTableau tab = circuit_to_cm_tableau(circ);
-    Circuit res = cm_tableau_to_circuit(tab).first;
+    Circuit res = cm_tableau_to_circuit(tab, ChoiMixSynthType::exact).first;
+    REQUIRE(res == circ);
+    res = cm_tableau_to_circuit(tab, ChoiMixSynthType::unitary).first;
     REQUIRE(res == circ);
   }
   GIVEN("Iterate through single-qubit Cliffords with all entanglements") {
@@ -483,7 +484,10 @@ SCENARIO("Synthesis of circuits from ChoiMixTableaus") {
       if ((i / 9) % 3 == 1) circ.add_op<unsigned>(OpType::S, {0});
       if ((i / 9) % 3 == 2) circ.add_op<unsigned>(OpType::Sdg, {0});
       ChoiMixTableau tab = circuit_to_cm_tableau(circ);
-      Circuit res = cm_tableau_to_circuit(tab).first;
+      Circuit res = cm_tableau_to_circuit(tab, ChoiMixSynthType::exact).first;
+      Circuit res_uni =
+          cm_tableau_to_circuit(tab, ChoiMixSynthType::unitary).first;
+      REQUIRE(res == res_uni);
       ChoiMixTableau res_tab = circuit_to_cm_tableau(res);
       REQUIRE(res_tab == tab);
       REQUIRE(test_unitary_comparison(circ, res, true));
@@ -492,7 +496,10 @@ SCENARIO("Synthesis of circuits from ChoiMixTableaus") {
   GIVEN("A unitary circuit") {
     Circuit circ = get_test_circ();
     ChoiMixTableau tab = circuit_to_cm_tableau(circ);
-    Circuit res = cm_tableau_to_circuit(tab).first;
+    Circuit res = cm_tableau_to_circuit(tab, ChoiMixSynthType::exact).first;
+    Circuit res_uni =
+        cm_tableau_to_circuit(tab, ChoiMixSynthType::unitary).first;
+    REQUIRE(res == res_uni);
     ChoiMixTableau res_tab = circuit_to_cm_tableau(res);
     REQUIRE(res_tab == tab);
     REQUIRE(test_unitary_comparison(circ, res, true));
@@ -505,20 +512,26 @@ SCENARIO("Synthesis of circuits from ChoiMixTableaus") {
     circ.add_op<unsigned>(OpType::SX, {1});
     circ.add_op<unsigned>(OpType::SXdg, {2});
     ChoiMixTableau tab = circuit_to_cm_tableau(circ);
-    Circuit res = cm_tableau_to_circuit(tab).first;
+    Circuit res = cm_tableau_to_circuit(tab, ChoiMixSynthType::exact).first;
+    Circuit res_uni =
+        cm_tableau_to_circuit(tab, ChoiMixSynthType::unitary).first;
+    REQUIRE(res == res_uni);
     REQUIRE(test_unitary_comparison(circ, res, true));
   }
   GIVEN("A Clifford state") {
     Circuit circ = get_test_circ();
     circ.qubit_create_all();
     ChoiMixTableau tab = circuit_to_cm_tableau(circ);
-    Circuit res = cm_tableau_to_circuit(tab).first;
+    Circuit res = cm_tableau_to_circuit(tab, ChoiMixSynthType::exact).first;
     ChoiMixTableau res_tab = circuit_to_cm_tableau(res);
     tab.canonical_column_order();
     tab.gaussian_form();
     res_tab.canonical_column_order();
     res_tab.gaussian_form();
     REQUIRE(res_tab == tab);
+    Circuit res_uni =
+        cm_tableau_to_circuit(tab, ChoiMixSynthType::unitary).first;
+    REQUIRE(test_statevector_comparison(res, res_uni, true));
   }
   GIVEN("A total diagonalisation circuit") {
     Circuit circ = get_test_circ();
@@ -526,9 +539,14 @@ SCENARIO("Synthesis of circuits from ChoiMixTableaus") {
       circ.add_op<unsigned>(OpType::Collapse, {i});
     }
     ChoiMixTableau tab = circuit_to_cm_tableau(circ);
-    Circuit res = cm_tableau_to_circuit(tab).first;
+    Circuit res = cm_tableau_to_circuit(tab, ChoiMixSynthType::exact).first;
     ChoiMixTableau res_tab = circuit_to_cm_tableau(res);
     REQUIRE(res_tab == tab);
+    // Test unitary synthesis by statevector of dagger
+    Circuit as_state = get_test_circ().dagger();
+    Circuit res_uni_dag =
+        cm_tableau_to_circuit(tab, ChoiMixSynthType::unitary).first.dagger();
+    REQUIRE(test_statevector_comparison(as_state, res_uni_dag, true));
   }
   GIVEN("A partial diagonalisation circuit") {
     Circuit circ = get_test_circ();
@@ -537,7 +555,8 @@ SCENARIO("Synthesis of circuits from ChoiMixTableaus") {
     }
     circ.qubit_discard(Qubit(0));
     ChoiMixTableau tab = circuit_to_cm_tableau(circ);
-    std::pair<Circuit, unit_map_t> res = cm_tableau_to_circuit(tab);
+    std::pair<Circuit, unit_map_t> res =
+        cm_tableau_to_circuit(tab, ChoiMixSynthType::exact);
     ChoiMixTableau res_tab = circuit_to_cm_tableau(res.first);
     qubit_map_t perm;
     for (const std::pair<const UnitID, UnitID>& p : res.second) {
@@ -549,6 +568,16 @@ SCENARIO("Synthesis of circuits from ChoiMixTableaus") {
     res_tab.canonical_column_order();
     res_tab.gaussian_form();
     REQUIRE(res_tab == tab);
+    Circuit res_uni_dag =
+        cm_tableau_to_circuit(tab, ChoiMixSynthType::unitary).first.dagger();
+    Eigen::VectorXcd as_state = tket_sim::get_statevector(res_uni_dag);
+    for (unsigned r = 0; r < tab.get_n_rows(); ++r) {
+      ChoiMixTableau::row_tensor_t rrow = tab.get_row(r);
+      CmplxSpMat rmat = rrow.first.string.to_sparse_matrix(3) *
+                        rrow.first.coeff * rrow.second.coeff;
+      Eigen::MatrixXcd rmatd = rmat;
+      CHECK((rmat * as_state).isApprox(as_state));
+    }
   }
   GIVEN("Another circuit for extra test coverage in row reductions") {
     Circuit circ(5);
@@ -567,13 +596,28 @@ SCENARIO("Synthesis of circuits from ChoiMixTableaus") {
     circ.add_op<unsigned>(OpType::Collapse, {4});
     circ.add_op<unsigned>(OpType::H, {4});
     ChoiMixTableau tab = circuit_to_cm_tableau(circ);
-    Circuit res = cm_tableau_to_circuit(tab).first;
+    Circuit res = cm_tableau_to_circuit(tab, ChoiMixSynthType::exact).first;
     ChoiMixTableau res_tab = circuit_to_cm_tableau(res);
     tab.canonical_column_order();
     tab.gaussian_form();
     res_tab.canonical_column_order();
     res_tab.gaussian_form();
     REQUIRE(res_tab == tab);
+    Circuit res_uni =
+        cm_tableau_to_circuit(tab, ChoiMixSynthType::unitary).first;
+    res_tab = circuit_to_cm_tableau(res_uni);
+    res_tab.tab_.row_mult(0, 1);
+    Eigen::MatrixXcd res_u = tket_sim::get_unitary(res_uni);
+    for (unsigned r = 0; r < tab.get_n_rows(); ++r) {
+      ChoiMixTableau::row_tensor_t rrow = tab.get_row(r);
+      CmplxSpMat inmat =
+          rrow.first.string.to_sparse_matrix(5) * rrow.first.coeff;
+      Eigen::MatrixXcd inmatd = inmat;
+      CmplxSpMat outmat =
+          rrow.second.string.to_sparse_matrix(5) * rrow.second.coeff;
+      Eigen::MatrixXcd outmatd = outmat;
+      CHECK((outmatd * res_u * inmatd).isApprox(res_u));
+    }
   }
   GIVEN("An isometry") {
     Circuit circ(5);
@@ -589,7 +633,8 @@ SCENARIO("Synthesis of circuits from ChoiMixTableaus") {
     circ.add_op<unsigned>(OpType::CX, {1, 2});
     circ.add_op<unsigned>(OpType::CX, {1, 0});
     ChoiMixTableau tab = circuit_to_cm_tableau(circ);
-    std::pair<Circuit, unit_map_t> res = cm_tableau_to_circuit(tab);
+    std::pair<Circuit, unit_map_t> res =
+        cm_tableau_to_circuit(tab, ChoiMixSynthType::exact);
     ChoiMixTableau res_tab = circuit_to_cm_tableau(res.first);
     qubit_map_t perm;
     for (const std::pair<const UnitID, UnitID>& p : res.second) {
@@ -601,6 +646,26 @@ SCENARIO("Synthesis of circuits from ChoiMixTableaus") {
     res_tab.canonical_column_order();
     res_tab.gaussian_form();
     REQUIRE(res_tab == tab);
+    std::pair<Circuit, unit_map_t> res_uni =
+        cm_tableau_to_circuit(tab, ChoiMixSynthType::unitary);
+    Eigen::MatrixXcd res_u = tket_sim::get_unitary(res_uni.first);
+    Eigen::MatrixXcd init_proj = Eigen::MatrixXcd::Zero(32, 32);
+    init_proj.block(0, 0, 2, 2) = Eigen::MatrixXcd::Identity(2, 2);
+    init_proj.block(16, 16, 2, 2) = Eigen::MatrixXcd::Identity(2, 2);
+    Eigen::MatrixXcd res_iso = res_u * init_proj;
+    for (unsigned r = 0; r < tab.get_n_rows(); ++r) {
+      ChoiMixTableau::row_tensor_t rrow = tab.get_row(r);
+      CmplxSpMat inmat =
+          rrow.first.string.to_sparse_matrix(5) * rrow.first.coeff;
+      Eigen::MatrixXcd inmatd = inmat;
+      QubitPauliMap outstr;
+      for (const std::pair<const Qubit, Pauli>& qp : rrow.second.string.map)
+        outstr.insert({Qubit(res_uni.second.at(qp.first)), qp.second});
+      CmplxSpMat outmat =
+          QubitPauliString(outstr).to_sparse_matrix(5) * rrow.second.coeff;
+      Eigen::MatrixXcd outmatd = outmat;
+      CHECK((outmatd * res_iso * inmatd).isApprox(res_iso));
+    }
   }
   GIVEN("Extra coverage for isometries") {
     Circuit circ(5);
@@ -618,7 +683,8 @@ SCENARIO("Synthesis of circuits from ChoiMixTableaus") {
     circ.add_op<unsigned>(OpType::CX, {1, 2});
     circ.add_op<unsigned>(OpType::CX, {1, 0});
     ChoiMixTableau tab = circuit_to_cm_tableau(circ);
-    std::pair<Circuit, unit_map_t> res = cm_tableau_to_circuit(tab);
+    std::pair<Circuit, unit_map_t> res =
+        cm_tableau_to_circuit(tab, ChoiMixSynthType::exact);
     ChoiMixTableau res_tab = circuit_to_cm_tableau(res.first);
     qubit_map_t perm;
     for (const std::pair<const UnitID, UnitID>& p : res.second) {
@@ -630,6 +696,26 @@ SCENARIO("Synthesis of circuits from ChoiMixTableaus") {
     res_tab.canonical_column_order();
     res_tab.gaussian_form();
     REQUIRE(res_tab == tab);
+    std::pair<Circuit, unit_map_t> res_uni =
+        cm_tableau_to_circuit(tab, ChoiMixSynthType::unitary);
+    Eigen::MatrixXcd res_u = tket_sim::get_unitary(res_uni.first);
+    Eigen::MatrixXcd init_proj = Eigen::MatrixXcd::Zero(32, 32);
+    init_proj.block(0, 0, 2, 2) = Eigen::MatrixXcd::Identity(2, 2);
+    init_proj.block(16, 16, 2, 2) = Eigen::MatrixXcd::Identity(2, 2);
+    Eigen::MatrixXcd res_iso = res_u * init_proj;
+    for (unsigned r = 0; r < tab.get_n_rows(); ++r) {
+      ChoiMixTableau::row_tensor_t rrow = tab.get_row(r);
+      CmplxSpMat inmat =
+          rrow.first.string.to_sparse_matrix(5) * rrow.first.coeff;
+      Eigen::MatrixXcd inmatd = inmat;
+      QubitPauliMap outstr;
+      for (const std::pair<const Qubit, Pauli>& qp : rrow.second.string.map)
+        outstr.insert({Qubit(res_uni.second.at(qp.first)), qp.second});
+      CmplxSpMat outmat =
+          QubitPauliString(outstr).to_sparse_matrix(5) * rrow.second.coeff;
+      Eigen::MatrixXcd outmatd = outmat;
+      CHECK((outmatd * res_iso * inmatd).isApprox(res_iso));
+    }
   }
 }
 

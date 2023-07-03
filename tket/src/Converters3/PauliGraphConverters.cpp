@@ -375,12 +375,8 @@ pg::PauliGraph circuit_to_pauli_graph3(const Circuit& circ) {
   }
   std::list<ChoiMixTableau::row_tensor_t> final_rows;
   for (const Qubit& q : final_u.get_qubits()) {
-    QubitPauliTensor zrow = final_u.get_zrow(q);
-    zrow.transpose();
-    final_rows.push_back({zrow, QubitPauliTensor(q, Pauli::Z)});
-    QubitPauliTensor xrow = final_u.get_xrow(q);
-    xrow.transpose();
-    final_rows.push_back({xrow, QubitPauliTensor(q, Pauli::X)});
+    final_rows.push_back({final_u.get_zrow(q), QubitPauliTensor(q, Pauli::Z)});
+    final_rows.push_back({final_u.get_xrow(q), QubitPauliTensor(q, Pauli::X)});
   }
   ChoiMixTableau final_cm(final_rows);
   for (const Qubit& q : circ.discarded_qubits()) final_cm.discard_qubit(q);
@@ -487,7 +483,8 @@ Circuit pauli_graph3_to_circuit_individual(
             }
           }
           ChoiMixTableau tab(rows);
-          std::pair<Circuit, unit_map_t> tab_circ = cm_tableau_to_circuit(tab);
+          std::pair<Circuit, unit_map_t> tab_circ =
+              cm_tableau_to_circuit(tab, ChoiMixSynthType::exact);
           qubit_map_t perm;
           for (const std::pair<const UnitID, UnitID>& p : tab_circ.second)
             perm.insert({Qubit(p.second), Qubit(p.first)});
@@ -519,16 +516,9 @@ Circuit pauli_graph3_to_circuit_individual(
             }
           }
           ChoiMixTableau diag_tab{tab_rows};
-          std::pair<Circuit, unit_map_t> diag = cm_tableau_to_circuit(diag_tab);
-          Circuit& diag_circ = diag.first;
-          // Remove endpoints to obtain a unitary Circuit
-          for (const Qubit& q : diag_circ.created_qubits())
-            diag_circ.set_vertex_Op_ptr(
-                diag_circ.get_in(q), get_op_ptr(OpType::Input));
-          for (const Qubit& q : diag_circ.discarded_qubits())
-            diag_circ.set_vertex_Op_ptr(
-                diag_circ.get_out(q), get_op_ptr(OpType::Output));
-          circ.append(diag_circ);
+          std::pair<Circuit, unit_map_t> diag =
+              cm_tableau_to_circuit(diag_tab, ChoiMixSynthType::unitary);
+          circ.append(diag.first);
           unit_vector_t args;
           for (const UnitID& a : box_op.get_args()) {
             if (a.type() == UnitType::Qubit)
@@ -537,7 +527,7 @@ Circuit pauli_graph3_to_circuit_individual(
               args.push_back(a);
           }
           circ.add_op<UnitID>(box_op.get_op(), args);
-          circ.append(diag_circ.dagger());
+          circ.append(diag.first.dagger());
           break;
         }
         case PGOpType::Stabilizer: {

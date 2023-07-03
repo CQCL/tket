@@ -51,9 +51,23 @@ ChoiMixTableau circuit_to_cm_tableau(const Circuit &circ);
  * Since Circuit does not support distinct qubit addresses for inputs and
  * outputs, also returns a map from the output qubit IDs in the tableau to their
  * corresponding outputs in the circuit
+ *
+ * If synth_type == ChoiMixSynthType::exact, the circuit produced will be the
+ * (possibly non-unitary) channel whose stabilisers are exactly those of the
+ * tableau and no more, using initialisations, post-selections, discards,
+ * resets, and collapses to ensure this.
+ *
+ * If synth_type == ChoiMixSynthType::unitary, the circuit produced will be a
+ * unitary whose stabilisers include all rows of the tableau (rows that exist
+ * purely on one segment may have some term introduced on the other segment) and
+ * possibly more. This is useful when we are treating the ChoiMixTableau as a
+ * means to encode a diagonalisation problem, since we are generally looking for
+ * a unitary as we may wish to apply the inverse afterwards (e.g. conjugating
+ * some rotations to implement a set of Pauli gadgets).
  */
 std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(
-    const ChoiMixTableau &circ);
+    const ChoiMixTableau &circ,
+    ChoiMixSynthType synth_type = ChoiMixSynthType::exact);
 
 PauliGraph circuit_to_pauli_graph(const Circuit &circ);
 
