@@ -138,8 +138,6 @@ setup_dir = os.path.abspath(os.path.dirname(__file__))
 plat_name = os.getenv("WHEEL_PLAT_NAME")
 
 def get_build_ext():
-    print("GETTING BUILD EXT")
-
     if os.getenv("USE_NIX"):
         return NixBuild
     elif os.getenv("NO_CONAN"):
@@ -151,6 +149,7 @@ class bdist_wheel(_bdist_wheel):
     def finalize_options(self):
         _bdist_wheel.finalize_options(self)
         if plat_name is not None:
+            print(f"Overriding plat_name to {plat_name}")
             self.plat_name = plat_name
             self.plat_name_supplied = True
 
