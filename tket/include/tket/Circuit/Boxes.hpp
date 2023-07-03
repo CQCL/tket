@@ -542,6 +542,8 @@ class QControlBox : public Box {
 
   Op_ptr transpose() const override;
 
+  std::optional<Eigen::MatrixXcd> get_box_unitary() const override;
+
   Op_ptr get_op() const { return op_; }
   unsigned get_n_controls() const { return n_controls_; }
 

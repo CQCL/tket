@@ -1049,6 +1049,16 @@ SCENARIO("Unitaries") {
     Eigen::MatrixXcd u1 = tket_sim::get_unitary(c);
     CHECK(u1.isApprox(u));
   }
+
+  GIVEN("QControlBox") {
+    Op_ptr op = get_op_ptr(OpType::H);
+    QControlBox qcbox(op, 2);
+    Circuit c(3);
+    c.add_box(qcbox, {0, 1, 2});
+    Eigen::MatrixXcd u = tket_sim::get_unitary(c);
+    CHECK(u.topLeftCorner(6, 6).isApprox(Eigen::MatrixXcd::Identity(6, 6)));
+    CHECK(u.bottomRightCorner(2, 2).isApprox(op->get_unitary()));
+  }
 }
 
 }  // namespace test_Boxes

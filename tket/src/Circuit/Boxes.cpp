@@ -369,6 +369,14 @@ Op_ptr QControlBox::transpose() const {
   return std::make_shared<QControlBox>(inner_transpose, n_controls_);
 }
 
+std::optional<Eigen::MatrixXcd> QControlBox::get_box_unitary() const {
+  const unsigned inner_sz = 1u << n_inner_qubits_;
+  const unsigned sz = inner_sz << n_controls_;
+  Eigen::MatrixXcd u = Eigen::MatrixXcd::Identity(sz, sz);
+  u.bottomRightCorner(inner_sz, inner_sz) = op_->get_unitary();
+  return u;
+}
+
 ProjectorAssertionBox::ProjectorAssertionBox(
     const Eigen::MatrixXcd &m, BasisOrder basis)
     : Box(OpType::ProjectorAssertionBox),
