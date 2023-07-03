@@ -16,6 +16,7 @@
 
 #include <cstdint>
 #include <vector>
+using std::size_t;
 
 namespace tket {
 
