@@ -19,7 +19,7 @@
 #include "Simulation/ComparisonFunctions.hpp"
 #include "testutil.hpp"
 #include "tket/Circuit/CircUtils.hpp"
-#include "tket/Simulation/CircuitSimulator.hpp"
+#include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Transformations/CliffordOptimisation.hpp"
 #include "tket/Transformations/Decomposition.hpp"
 #include "tket/Transformations/OptimisationPass.hpp"

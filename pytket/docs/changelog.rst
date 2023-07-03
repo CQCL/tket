@@ -1,6 +1,14 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Minor new features:
+
+* `Circuit.get_unitary()` and `Circuit.get_statevector()` now work for circuits
+  containing boxes.
+
 1.16.0 (June 2023)
 ------------------
 

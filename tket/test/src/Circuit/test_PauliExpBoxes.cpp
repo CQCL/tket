@@ -15,8 +15,8 @@
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/generators/catch_generators.hpp>
 #include <catch2/matchers/catch_matchers_string.hpp>
+#include <tket/Circuit/Simulation/CircuitSimulator.hpp>
 #include <tket/Gate/SymTable.hpp>
-#include <tket/Simulation/CircuitSimulator.hpp>
 
 #include "../testutil.hpp"
 #include "tket/Circuit/Circuit.hpp"

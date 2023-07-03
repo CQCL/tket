@@ -22,12 +22,12 @@
 #include "GatesData.hpp"
 #include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Gate/Gate.hpp"
 #include "tket/Gate/GateUnitaryMatrix.hpp"
 #include "tket/Gate/GateUnitaryMatrixError.hpp"
 #include "tket/Gate/GateUnitaryMatrixImplementations.hpp"
 #include "tket/Gate/Rotation.hpp"
-#include "tket/Simulation/CircuitSimulator.hpp"
 #include "tket/Utils/MatrixAnalysis.hpp"
 
 using Catch::Matchers::ContainsSubstring;

@@ -20,8 +20,8 @@
 #include <vector>
 
 #include "symengine/eval_double.h"
+#include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/OpType/OpType.hpp"
-#include "tket/Simulation/CircuitSimulator.hpp"
 
 namespace tket {
 namespace test_Symbolic {

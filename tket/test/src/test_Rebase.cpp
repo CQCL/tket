@@ -20,7 +20,7 @@
 #include "testutil.hpp"
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/CircPool.hpp"
-#include "tket/Simulation/CircuitSimulator.hpp"
+#include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Transformations/BasicOptimisation.hpp"
 #include "tket/Transformations/Decomposition.hpp"
 #include "tket/Transformations/Rebase.hpp"

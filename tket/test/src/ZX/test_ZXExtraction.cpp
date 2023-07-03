@@ -15,8 +15,8 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "../testutil.hpp"
+#include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Converters/Converters.hpp"
-#include "tket/Simulation/CircuitSimulator.hpp"
 #include "tket/Transformations/Rebase.hpp"
 #include "tket/ZX/Flow.hpp"
 #include "tket/ZX/Rewrite.hpp"

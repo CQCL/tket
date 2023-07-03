@@ -21,8 +21,8 @@
 #include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/Multiplexor.hpp"
+#include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Gate/SymTable.hpp"
-#include "tket/Simulation/CircuitSimulator.hpp"
 #include "tket/Utils/HelperFunctions.hpp"
 
 namespace tket {

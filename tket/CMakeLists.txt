@@ -156,6 +156,12 @@ target_sources(tket
         src/Circuit/DiagonalBox.cpp
         src/Circuit/ToffoliBox.cpp
         src/Circuit/PauliExpBoxes.cpp
+        src/Circuit/Simulation/BitOperations.cpp
+        src/Circuit/Simulation/CircuitSimulator.cpp
+        src/Circuit/Simulation/DecomposeCircuit.cpp
+        src/Circuit/Simulation/GateNode.cpp
+        src/Circuit/Simulation/GateNodesBuffer.cpp
+        src/Circuit/Simulation/PauliExpBoxUnitaryCalculator.cpp
         src/Architecture/Architecture.cpp
         src/Architecture/ArchitectureGraphClasses.cpp
         src/Architecture/ArchitectureMapping.cpp
@@ -163,12 +169,6 @@ target_sources(tket
         src/Architecture/DistancesFromArchitecture.cpp
         src/Architecture/NeighboursFromArchitecture.cpp
         src/Architecture/SubgraphMonomorphisms.cpp
-        src/Simulation/BitOperations.cpp
-        src/Simulation/CircuitSimulator.cpp
-        src/Simulation/DecomposeCircuit.cpp
-        src/Simulation/GateNode.cpp
-        src/Simulation/GateNodesBuffer.cpp
-        src/Simulation/PauliExpBoxUnitaryCalculator.cpp
         src/Diagonalisation/DiagUtils.cpp
         src/Diagonalisation/Diagonalisation.cpp
         src/Diagonalisation/PauliPartition.cpp
@@ -317,14 +317,14 @@ target_sources(tket
         include/tket/Circuit/ThreeQubitConversion.hpp
         include/tket/Circuit/ToffoliBox.hpp
         include/tket/Circuit/PauliExpBoxes.hpp
+        include/tket/Circuit/Simulation/CircuitSimulator.hpp
+        include/tket/Circuit/Simulation/PauliExpBoxUnitaryCalculator.hpp
         include/tket/Architecture/Architecture.hpp
         include/tket/Architecture/ArchitectureMapping.hpp
         include/tket/Architecture/BestTsaWithArch.hpp
         include/tket/Architecture/DistancesFromArchitecture.hpp
         include/tket/Architecture/NeighboursFromArchitecture.hpp
         include/tket/Architecture/SubgraphMonomorphisms.hpp
-        include/tket/Simulation/CircuitSimulator.hpp
-        include/tket/Simulation/PauliExpBoxUnitaryCalculator.hpp
         include/tket/Diagonalisation/Diagonalisation.hpp
         include/tket/Diagonalisation/DiagUtils.hpp
         include/tket/Diagonalisation/PauliPartition.hpp
