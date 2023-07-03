@@ -7,15 +7,12 @@
       let
         pkgs = import nixpkgs {
           inherit system;
-          overlays = [
-            (self: super: {
-              tket = import ./tket.nix { pkgs=super; };
-            })
-          ];
         };
+        libs = pkgs.callPackage ./libs { };
+        tket = pkgs.callPackage ./tket { inherit libs; };
       in
         {
-          defaultPackage = pkgs.tket;
+          defaultPackage = tket;
         }
     );
 }
