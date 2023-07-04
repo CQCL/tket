@@ -54,7 +54,6 @@ binders = [
 
 class CMakeBuild(build_ext):
     def run(self):
-        print("WTAF");
         self.check_extensions_list(self.extensions)
         extdir = os.path.abspath(
             os.path.dirname(self.get_ext_fullpath(self.extensions[0].name))
@@ -131,8 +130,32 @@ class ConanBuild(build_ext):
 
 class NixBuild(build_ext):
     def run(self):
-        print("Doing nothing")
-
+        self.check_extensions_list(self.extensions)
+        extdir = os.path.abspath(
+            os.path.dirname(self.get_ext_fullpath(self.extensions[0].name))
+        )
+        if os.path.exists(extdir):
+            shutil.rmtree(extdir)
+        os.makedirs(extdir)
+        extsource = self.extensions[0].sourcedir
+        # search for libraries in PATH
+        nix_ldflags = os.environ['NIX_LDFLAGS'].split()
+        build_inputs = os.environ['buildInputs'].split()
+        location_tklog = [l[2:] for l in nix_ldflags if '-tklog' in l]
+        location_tket = [l[2:] for l in nix_ldflags if '-tket' in l]
+        location_binders = [l for l in build_inputs if '-binders' in l]
+        print("FLAGS_TKLOG", location_tklog)
+        print("FLAGS_TKET", location_tket)
+        print("FLAGS_BINDERS", location_binders)
+        assert location_tklog and location_tket and location_binders
+        # if multiple versions are present, choose the first as per convention
+        for location in [location_tklog[0],
+                         location_tket[0],
+                         location_binders[0]]:
+            for lib in os.listdir(location):
+                libpath = os.path.join(location, lib)
+                if not os.path.isdir(libpath):
+                    shutil.copy(libpath, extdir)
 
 setup_dir = os.path.abspath(os.path.dirname(__file__))
 plat_name = os.getenv("WHEEL_PLAT_NAME")
