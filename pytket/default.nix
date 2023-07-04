@@ -49,9 +49,6 @@ let
     '';
     doCheck = false;
   };
-  pytket-tests = 
-in {
-  pytket = pytket;
-  pytket-tests = pytket-tests;
-}
+in
+  pytket
 
