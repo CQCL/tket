@@ -1,0 +1,1043 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pytket.backends.backend &#8212; pytket 1.17.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/clipboard.min.js"></script>
+    <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/thebelab-helper.js"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/pytket/backends/backend';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/Quantinuum_logo_black.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../../../_static/Quantinuum_logo_white.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faqs.html">TKET FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../opensource.html">Open Source Attribution</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">More Documentation:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket/manual/index.html">Manual</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket-extensions/api/index.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/CQCL/pytket/tree/main/examples">Example notebooks</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../backends.html">pytket.backends</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../circuit.html">pytket.circuit</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../circuit_class.html">pytket.circuit.Circuit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../optype.html">pytket.circuit.OpType</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../classical.html">pytket.circuit.logic_exp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../display.html">pytket.circuit.display</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pauli.html">pytket.pauli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../passes.html">pytket.passes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../predicates.html">pytket.predicates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../partition.html">pytket.partition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qasm.html">pytket.qasm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quipper.html">pytket.quipper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">pytket.architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../placement.html">pytket.placement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../mapping.html">pytket.mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tableau.html">pytket.tableau</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../transform.html">pytket.transform</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tailoring.html">pytket.tailoring</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../wasm.html">pytket.wasm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../zx.html">pytket.zx</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.html">pytket.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging.html">pytket.logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../config.html">pytket.config</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/CQCL/tket" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/CQCL/tket/issues/new?title=Issue%20on%20page%20%2F_modules/pytket/backends/backend.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <h1>Source code for pytket.backends.backend</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright 2019-2023 Cambridge Quantum Computing</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+
+<span class="sd">&quot;&quot;&quot; Abstract base class for all Backend encapsulations.&quot;&quot;&quot;</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+<span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Dict</span><span class="p">,</span>
+    <span class="n">Iterable</span><span class="p">,</span>
+    <span class="n">List</span><span class="p">,</span>
+    <span class="n">Optional</span><span class="p">,</span>
+    <span class="n">Sequence</span><span class="p">,</span>
+    <span class="n">Union</span><span class="p">,</span>
+    <span class="n">Any</span><span class="p">,</span>
+    <span class="n">cast</span><span class="p">,</span>
+    <span class="n">overload</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">importlib</span> <span class="kn">import</span> <span class="n">import_module</span>
+<span class="kn">from</span> <span class="nn">types</span> <span class="kn">import</span> <span class="n">ModuleType</span>
+
+<span class="kn">from</span> <span class="nn">typing_extensions</span> <span class="kn">import</span> <span class="n">Literal</span>
+
+<span class="kn">from</span> <span class="nn">pytket.circuit</span> <span class="kn">import</span> <span class="n">Bit</span><span class="p">,</span> <span class="n">Circuit</span><span class="p">,</span> <span class="n">OpType</span>  <span class="c1"># type: ignore</span>
+<span class="kn">from</span> <span class="nn">pytket.passes</span> <span class="kn">import</span> <span class="n">BasePass</span>  <span class="c1"># type: ignore</span>
+<span class="kn">from</span> <span class="nn">pytket.predicates</span> <span class="kn">import</span> <span class="n">Predicate</span>  <span class="c1"># type: ignore</span>
+<span class="kn">from</span> <span class="nn">pytket.utils.outcomearray</span> <span class="kn">import</span> <span class="n">OutcomeArray</span>
+<span class="kn">from</span> <span class="nn">pytket.utils.results</span> <span class="kn">import</span> <span class="n">KwargTypes</span>
+
+<span class="kn">from</span> <span class="nn">.backend_exceptions</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">CircuitNotValidError</span><span class="p">,</span>
+    <span class="n">CircuitNotRunError</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">.backendinfo</span> <span class="kn">import</span> <span class="n">BackendInfo</span>
+<span class="kn">from</span> <span class="nn">.backendresult</span> <span class="kn">import</span> <span class="n">BackendResult</span>
+<span class="kn">from</span> <span class="nn">.resulthandle</span> <span class="kn">import</span> <span class="n">ResultHandle</span><span class="p">,</span> <span class="n">_ResultIdTuple</span>
+<span class="kn">from</span> <span class="nn">.status</span> <span class="kn">import</span> <span class="n">CircuitStatus</span>
+
+<span class="n">ResultCache</span> <span class="o">=</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span>
+
+
+<span class="k">class</span> <span class="nc">ResultHandleTypeError</span><span class="p">(</span><span class="ne">Exception</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Wrong result handle type.&quot;&quot;&quot;</span>
+
+
+<div class="viewcode-block" id="Backend"><a class="viewcode-back" href="../../../backends.html#pytket.backends.Backend">[docs]</a><span class="k">class</span> <span class="nc">Backend</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    This abstract class defines the structure of a backend as something that</span>
+<span class="sd">    can run quantum circuits and produce output as at least one of shots,</span>
+<span class="sd">    counts, state, or unitary</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">_supports_shots</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">_supports_counts</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">_supports_state</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">_supports_unitary</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">_supports_density_matrix</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">_supports_expectation</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">_expectation_allows_nonhermitian</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">_supports_contextual_optimisation</span> <span class="o">=</span> <span class="kc">False</span>
+    <span class="n">_persistent_handles</span> <span class="o">=</span> <span class="kc">False</span>
+
+<div class="viewcode-block" id="Backend.__init__"><a class="viewcode-back" href="../../../backends.html#pytket.backends.Backend.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">ResultHandle</span><span class="p">,</span> <span class="n">ResultCache</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span></div>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">empty_result</span><span class="p">(</span><span class="n">circuit</span><span class="p">:</span> <span class="n">Circuit</span><span class="p">,</span> <span class="n">n_shots</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BackendResult</span><span class="p">:</span>
+        <span class="n">n_bits</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">circuit</span><span class="o">.</span><span class="n">bits</span><span class="p">)</span>
+        <span class="n">empty_readouts</span> <span class="o">=</span> <span class="p">[[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_bits</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_shots</span><span class="p">)]</span>
+        <span class="n">shots</span> <span class="o">=</span> <span class="n">OutcomeArray</span><span class="o">.</span><span class="n">from_readouts</span><span class="p">(</span><span class="n">empty_readouts</span><span class="p">)</span>
+        <span class="n">c_bits</span> <span class="o">=</span> <span class="p">[</span><span class="n">Bit</span><span class="p">(</span><span class="n">index</span><span class="p">)</span> <span class="k">for</span> <span class="n">index</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_bits</span><span class="p">)]</span>
+        <span class="k">return</span> <span class="n">BackendResult</span><span class="p">(</span><span class="n">shots</span><span class="o">=</span><span class="n">shots</span><span class="p">,</span> <span class="n">c_bits</span><span class="o">=</span><span class="n">c_bits</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">required_predicates</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Predicate</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        The minimum set of predicates that a circuit must satisfy before it can</span>
+<span class="sd">        be successfully run on this backend.</span>
+
+<span class="sd">        :return: Required predicates.</span>
+<span class="sd">        :rtype: List[Predicate]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="o">...</span>
+
+<div class="viewcode-block" id="Backend.valid_circuit"><a class="viewcode-back" href="../../../backends.html#pytket.backends.Backend.valid_circuit">[docs]</a>    <span class="k">def</span> <span class="nf">valid_circuit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">circuit</span><span class="p">:</span> <span class="n">Circuit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Checks that the circuit satisfies all of required_predicates.</span>
+
+<span class="sd">        :param circuit: The circuit to check.</span>
+<span class="sd">        :type circuit: Circuit</span>
+<span class="sd">        :return: Whether or not all of required_predicates are satisfied.</span>
+<span class="sd">        :rtype: bool</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="nb">all</span><span class="p">(</span><span class="n">pred</span><span class="o">.</span><span class="n">verify</span><span class="p">(</span><span class="n">circuit</span><span class="p">)</span> <span class="k">for</span> <span class="n">pred</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">required_predicates</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_check_all_circuits</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">circuits</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Circuit</span><span class="p">],</span> <span class="n">nomeasure_warn</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+
+        <span class="k">if</span> <span class="n">nomeasure_warn</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">nomeasure_warn</span> <span class="o">=</span> <span class="ow">not</span> <span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_supports_state</span>
+                <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supports_unitary</span>
+                <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supports_density_matrix</span>
+                <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supports_expectation</span>
+            <span class="p">)</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">circ</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">circuits</span><span class="p">):</span>
+            <span class="n">errors</span> <span class="o">=</span> <span class="p">(</span>
+                <span class="n">CircuitNotValidError</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="nb">repr</span><span class="p">(</span><span class="n">pred</span><span class="p">))</span>
+                <span class="k">for</span> <span class="n">pred</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">required_predicates</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">pred</span><span class="o">.</span><span class="n">verify</span><span class="p">(</span><span class="n">circ</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="k">for</span> <span class="n">error</span> <span class="ow">in</span> <span class="n">errors</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">error</span>
+            <span class="k">if</span> <span class="n">nomeasure_warn</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">circ</span><span class="o">.</span><span class="n">n_gates_of_type</span><span class="p">(</span><span class="n">OpType</span><span class="o">.</span><span class="n">Measure</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+                    <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+                        <span class="sa">f</span><span class="s2">&quot;Circuit with index </span><span class="si">{</span><span class="n">i</span><span class="si">}</span><span class="s2"> in submitted does not contain a &quot;</span>
+                        <span class="s2">&quot;measure operation.&quot;</span>
+                    <span class="p">)</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+<div class="viewcode-block" id="Backend.rebase_pass"><a class="viewcode-back" href="../../../backends.html#pytket.backends.Backend.rebase_pass">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">rebase_pass</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A single compilation pass that when run converts all gates in a Circuit to</span>
+<span class="sd">        an OpType supported by the Backend (ignoring architecture constraints).</span>
+
+<span class="sd">        :return: Compilation pass that converts gates to primitives supported by</span>
+<span class="sd">            Backend.</span>
+<span class="sd">        :rtype: BasePass</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="o">...</span></div>
+
+<div class="viewcode-block" id="Backend.default_compilation_pass"><a class="viewcode-back" href="../../../backends.html#pytket.backends.Backend.default_compilation_pass">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">default_compilation_pass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">optimisation_level</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A suggested compilation pass that will will, if possible, produce an equivalent</span>
+<span class="sd">        circuit suitable for running on this backend.</span>
+
+<span class="sd">        At a minimum it will ensure that compatible gates are used and that all two-</span>
+<span class="sd">        qubit interactions are compatible with the backend&#39;s qubit architecture. At</span>
+<span class="sd">        higher optimisation levels, further optimisations may be applied.</span>
+
+<span class="sd">        This is a an abstract method which is implemented in the backend itself, and so</span>
+<span class="sd">        is tailored to the backend&#39;s requirements.</span>
+
+<span class="sd">        :param optimisation_level: The level of optimisation to perform during</span>
+<span class="sd">            compilation.</span>
+
+<span class="sd">            - Level 0 does the minimum required to solves the device constraints,</span>
+<span class="sd">              without any optimisation.</span>
+<span class="sd">            - Level 1 additionally performs some light optimisations.</span>
+<span class="sd">            - Level 2 (the default) adds more computationally intensive optimisations</span>
+<span class="sd">              that should give the best results from execution.</span>
+
+<span class="sd">        :type optimisation_level: int, optional</span>
+<span class="sd">        :return: Compilation pass guaranteeing required predicates.</span>
+<span class="sd">        :rtype: BasePass</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="o">...</span></div>
+
+<div class="viewcode-block" id="Backend.get_compiled_circuit"><a class="viewcode-back" href="../../../backends.html#pytket.backends.Backend.get_compiled_circuit">[docs]</a>    <span class="k">def</span> <span class="nf">get_compiled_circuit</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">circuit</span><span class="p">:</span> <span class="n">Circuit</span><span class="p">,</span> <span class="n">optimisation_level</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Circuit</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a single circuit compiled with :py:meth:`default_compilation_pass`. See</span>
+<span class="sd">        :py:meth:`Backend.get_compiled_circuits`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">return_circuit</span> <span class="o">=</span> <span class="n">circuit</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">default_compilation_pass</span><span class="p">(</span><span class="n">optimisation_level</span><span class="p">)</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">return_circuit</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">return_circuit</span></div>
+
+<div class="viewcode-block" id="Backend.get_compiled_circuits"><a class="viewcode-back" href="../../../backends.html#pytket.backends.Backend.get_compiled_circuits">[docs]</a>    <span class="k">def</span> <span class="nf">get_compiled_circuits</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">circuits</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Circuit</span><span class="p">],</span> <span class="n">optimisation_level</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Circuit</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Compile a sequence of circuits with :py:meth:`default_compilation_pass`</span>
+<span class="sd">        and return the list of compiled circuits (does not act in place).</span>
+
+<span class="sd">        As well as applying a degree of optimisation (controlled by the</span>
+<span class="sd">        `optimisation_level` parameter), this method tries to ensure that the circuits</span>
+<span class="sd">        can be run on the backend (i.e. successfully passed to</span>
+<span class="sd">        :py:meth:`process_circuits`), for example by rebasing to the supported gate set,</span>
+<span class="sd">        or routing to match the connectivity of the device. However, this is not always</span>
+<span class="sd">        possible, for example if the circuit contains classical operations that are not</span>
+<span class="sd">        supported by the backend. You may use :py:meth:`valid_circuit` to check whether</span>
+<span class="sd">        the circuit meets the backend&#39;s requirements after compilation. This validity</span>
+<span class="sd">        check is included in :py:meth:`process_circuits` by default, before any circuits</span>
+<span class="sd">        are submitted to the backend.</span>
+
+<span class="sd">        If the validity check fails, you can obtain more information about the failure</span>
+<span class="sd">        by iterating through the predicates in the `required_predicates` property of the</span>
+<span class="sd">        backend, and running the :py:meth:`verify` method on each in turn with your</span>
+<span class="sd">        circuit.</span>
+
+<span class="sd">        :param circuits: The circuits to compile.</span>
+<span class="sd">        :type circuit: Sequence[Circuit]</span>
+<span class="sd">        :param optimisation_level: The level of optimisation to perform during</span>
+<span class="sd">            compilation. See :py:meth:`default_compilation_pass` for a description of</span>
+<span class="sd">            the different levels (0, 1 or 2). Defaults to 2.</span>
+<span class="sd">        :type optimisation_level: int, optional</span>
+<span class="sd">        :return: Compiled circuits.</span>
+<span class="sd">        :rtype: List[Circuit]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_compiled_circuit</span><span class="p">(</span><span class="n">c</span><span class="p">,</span> <span class="n">optimisation_level</span><span class="p">)</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">circuits</span><span class="p">]</span></div>
+
+    <span class="nd">@property</span>
+    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">_result_id_type</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_ResultIdTuple</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Identifier type signature for ResultHandle for this backend.</span>
+
+<span class="sd">        :return: Type signature (tuple of hashable types)</span>
+<span class="sd">        :rtype: _ResultIdTuple</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="o">...</span>
+
+    <span class="k">def</span> <span class="nf">_check_handle_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">reshandle</span><span class="p">:</span> <span class="n">ResultHandle</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Check a result handle is valid for this backend, raises TypeError if not.</span>
+
+<span class="sd">        :param reshandle: Handle to check</span>
+<span class="sd">        :type reshandle: ResultHandle</span>
+<span class="sd">        :raises TypeError: Types of handle identifiers don&#39;t match those of backend.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">reshandle</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_result_id_type</span><span class="p">))</span> <span class="ow">or</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span>
+            <span class="nb">isinstance</span><span class="p">(</span><span class="n">idval</span><span class="p">,</span> <span class="n">ty</span><span class="p">)</span> <span class="k">for</span> <span class="n">idval</span><span class="p">,</span> <span class="n">ty</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">reshandle</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result_id_type</span><span class="p">)</span>
+        <span class="p">):</span>
+            <span class="k">raise</span> <span class="n">ResultHandleTypeError</span><span class="p">(</span>
+                <span class="s2">&quot;</span><span class="si">{0!r}</span><span class="s2"> does not match expected identifier types </span><span class="si">{1}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span>
+                    <span class="n">reshandle</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_result_id_type</span>
+                <span class="p">)</span>
+            <span class="p">)</span>
+
+<div class="viewcode-block" id="Backend.process_circuit"><a class="viewcode-back" href="../../../backends.html#pytket.backends.Backend.process_circuit">[docs]</a>    <span class="k">def</span> <span class="nf">process_circuit</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">circuit</span><span class="p">:</span> <span class="n">Circuit</span><span class="p">,</span>
+        <span class="n">n_shots</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">valid_check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">KwargTypes</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ResultHandle</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Submit a single circuit to the backend for running. See</span>
+<span class="sd">        :py:meth:`Backend.process_circuits`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_circuits</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">circuit</span><span class="p">],</span> <span class="n">n_shots</span><span class="o">=</span><span class="n">n_shots</span><span class="p">,</span> <span class="n">valid_check</span><span class="o">=</span><span class="n">valid_check</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Backend.process_circuits"><a class="viewcode-back" href="../../../backends.html#pytket.backends.Backend.process_circuits">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">process_circuits</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">circuits</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Circuit</span><span class="p">],</span>
+        <span class="n">n_shots</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">valid_check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">KwargTypes</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">ResultHandle</span><span class="p">]:</span>
+
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Submit circuits to the backend for running. The results will be stored</span>
+<span class="sd">        in the backend&#39;s result cache to be retrieved by the corresponding</span>
+<span class="sd">        get_&lt;data&gt; method.</span>
+
+<span class="sd">        If the `postprocess` keyword argument is set to True, and the backend supports</span>
+<span class="sd">        the feature (see  :py:meth:`supports_contextual_optimisation`), then contextual</span>
+<span class="sd">        optimisatioons are applied before running the circuit and retrieved results will</span>
+<span class="sd">        have any necessary classical postprocessing applied. This is not enabled by</span>
+<span class="sd">        default.</span>
+
+<span class="sd">        Use keyword arguments to specify parameters to be used in submitting circuits</span>
+<span class="sd">        See specific Backend derived class for available parameters, from the following</span>
+<span class="sd">        list:</span>
+
+<span class="sd">        * `seed`: RNG seed for simulators</span>
+<span class="sd">        * `postprocess`: if True, apply contextual optimisations</span>
+
+<span class="sd">        Note: If a backend is reused many times, the in-memory results cache grows</span>
+<span class="sd">        indefinitely. Therefore, when processing many circuits on a statevector or</span>
+<span class="sd">        unitary backend (whose results may occupy significant amounts of memory), it is</span>
+<span class="sd">        advisable to run :py:meth:`Backend.empty_cache` after each result is retrieved.</span>
+
+<span class="sd">        :param circuits: Circuits to process on the backend.</span>
+<span class="sd">        :type circuits: Sequence[Circuit]</span>
+<span class="sd">        :param n_shots: Number of shots to run per circuit. Optionally, this can be</span>
+<span class="sd">            a list of shots specifying the number of shots for each circuit separately.</span>
+<span class="sd">            None is to be used for state/unitary simulators. Defaults to None.</span>
+<span class="sd">        :type n_shots: Optional[Union[int, Iterable[int]], optional</span>
+<span class="sd">        :param valid_check: Explicitly check that all circuits satisfy all required</span>
+<span class="sd">            predicates to run on the backend. Defaults to True</span>
+<span class="sd">        :type valid_check: bool, optional</span>
+<span class="sd">        :return: Handles to results for each input circuit, as an interable in</span>
+<span class="sd">            the same order as the circuits.</span>
+<span class="sd">        :rtype: List[ResultHandle]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="o">...</span></div>
+
+<div class="viewcode-block" id="Backend.circuit_status"><a class="viewcode-back" href="../../../backends.html#pytket.backends.Backend.circuit_status">[docs]</a>    <span class="nd">@abstractmethod</span>
+    <span class="k">def</span> <span class="nf">circuit_status</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handle</span><span class="p">:</span> <span class="n">ResultHandle</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CircuitStatus</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a CircuitStatus reporting the status of the circuit execution</span>
+<span class="sd">        corresponding to the ResultHandle</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="o">...</span></div>
+
+<div class="viewcode-block" id="Backend.empty_cache"><a class="viewcode-back" href="../../../backends.html#pytket.backends.Backend.empty_cache">[docs]</a>    <span class="k">def</span> <span class="nf">empty_cache</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Manually empty the result cache on the backend.&quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="o">=</span> <span class="p">{}</span></div>
+
+<div class="viewcode-block" id="Backend.pop_result"><a class="viewcode-back" href="../../../backends.html#pytket.backends.Backend.pop_result">[docs]</a>    <span class="k">def</span> <span class="nf">pop_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handle</span><span class="p">:</span> <span class="n">ResultHandle</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ResultCache</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Remove cache entry corresponding to handle from the cache and return.</span>
+
+<span class="sd">        :param handle: ResultHandle object</span>
+<span class="sd">        :type handle: ResultHandle</span>
+<span class="sd">        :return: Cache entry corresponding to handle, if it was present</span>
+<span class="sd">        :rtype: Optional[ResultCache]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Backend.get_result"><a class="viewcode-back" href="../../../backends.html#pytket.backends.Backend.get_result">[docs]</a>    <span class="k">def</span> <span class="nf">get_result</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handle</span><span class="p">:</span> <span class="n">ResultHandle</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">KwargTypes</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BackendResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return a BackendResult corresponding to the handle.</span>
+
+<span class="sd">        Use keyword arguments to specify parameters to be used in retrieving results.</span>
+<span class="sd">        See specific Backend derived class for available parameters, from the following</span>
+<span class="sd">        list:</span>
+
+<span class="sd">        * `timeout`: maximum time to wait for remote job to finish</span>
+<span class="sd">        * `wait`: polling interval between remote calls to check job status</span>
+
+<span class="sd">        :param handle: handle to results</span>
+<span class="sd">        :type handle: ResultHandle</span>
+<span class="sd">        :return: Results corresponding to handle.</span>
+<span class="sd">        :rtype: BackendResult</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_check_handle_type</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">handle</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span> <span class="ow">and</span> <span class="s2">&quot;result&quot;</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="n">handle</span><span class="p">]:</span>
+            <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="n">BackendResult</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_cache</span><span class="p">[</span><span class="n">handle</span><span class="p">][</span><span class="s2">&quot;result&quot;</span><span class="p">])</span>
+        <span class="k">raise</span> <span class="n">CircuitNotRunError</span><span class="p">(</span><span class="n">handle</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Backend.get_results"><a class="viewcode-back" href="../../../backends.html#pytket.backends.Backend.get_results">[docs]</a>    <span class="k">def</span> <span class="nf">get_results</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">handles</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">ResultHandle</span><span class="p">],</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">KwargTypes</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">BackendResult</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return results corresponding to handles.</span>
+
+<span class="sd">        :param handles: Iterable of handles</span>
+<span class="sd">        :return: List of results</span>
+
+<span class="sd">        Keyword arguments are as for `get_result`, and apply to all jobs.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">get_result</span><span class="p">(</span><span class="n">handle</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span> <span class="k">for</span> <span class="n">handle</span> <span class="ow">in</span> <span class="n">handles</span><span class="p">]</span>
+        <span class="k">except</span> <span class="n">ResultHandleTypeError</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_check_handle_type</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="n">ResultHandle</span><span class="p">,</span> <span class="n">handles</span><span class="p">))</span>
+            <span class="k">except</span> <span class="n">ResultHandleTypeError</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">e</span>
+
+            <span class="k">raise</span> <span class="n">ResultHandleTypeError</span><span class="p">(</span>
+                <span class="s2">&quot;Possible use of single ResultHandle&quot;</span>
+                <span class="s2">&quot; where sequence of ResultHandles was expected.&quot;</span>
+            <span class="p">)</span> <span class="kn">from</span> <span class="nn">e</span></div>
+
+<div class="viewcode-block" id="Backend.run_circuit"><a class="viewcode-back" href="../../../backends.html#pytket.backends.Backend.run_circuit">[docs]</a>    <span class="k">def</span> <span class="nf">run_circuit</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">circuit</span><span class="p">:</span> <span class="n">Circuit</span><span class="p">,</span>
+        <span class="n">n_shots</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">valid_check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">KwargTypes</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BackendResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Submits a circuit to the backend and returns results</span>
+
+<span class="sd">        :param circuit: Circuit to be executed</span>
+<span class="sd">        :param n_shots: Passed on to :py:meth:`Backend.process_circuit`</span>
+<span class="sd">        :param valid_check: Passed on to :py:meth:`Backend.process_circuit`</span>
+<span class="sd">        :return: Result</span>
+
+<span class="sd">        This is a convenience method equivalent to calling</span>
+<span class="sd">        :py:meth:`Backend.process_circuit` followed by :py:meth:`Backend.get_result`.</span>
+<span class="sd">        Any additional keyword arguments are passed on to</span>
+<span class="sd">        :py:meth:`Backend.process_circuit` and :py:meth:`Backend.get_result`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">run_circuits</span><span class="p">(</span>
+            <span class="p">[</span><span class="n">circuit</span><span class="p">],</span> <span class="n">n_shots</span><span class="o">=</span><span class="n">n_shots</span><span class="p">,</span> <span class="n">valid_check</span><span class="o">=</span><span class="n">valid_check</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span>
+        <span class="p">)[</span><span class="mi">0</span><span class="p">]</span></div>
+
+<div class="viewcode-block" id="Backend.run_circuits"><a class="viewcode-back" href="../../../backends.html#pytket.backends.Backend.run_circuits">[docs]</a>    <span class="k">def</span> <span class="nf">run_circuits</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">circuits</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Circuit</span><span class="p">],</span>
+        <span class="n">n_shots</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="nb">int</span><span class="p">]]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">valid_check</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">KwargTypes</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">BackendResult</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Submits circuits to the backend and returns results</span>
+
+<span class="sd">        :param circuits: Sequence of Circuits to be executed</span>
+<span class="sd">        :param n_shots: Passed on to :py:meth:`Backend.process_circuits`</span>
+<span class="sd">        :param valid_check: Passed on to :py:meth:`Backend.process_circuits`</span>
+<span class="sd">        :return: List of results</span>
+
+<span class="sd">        This is a convenience method equivalent to calling</span>
+<span class="sd">        :py:meth:`Backend.process_circuits` followed by :py:meth:`Backend.get_results`.</span>
+<span class="sd">        Any additional keyword arguments are passed on to</span>
+<span class="sd">        :py:meth:`Backend.process_circuits` and :py:meth:`Backend.get_results`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">handles</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">process_circuits</span><span class="p">(</span><span class="n">circuits</span><span class="p">,</span> <span class="n">n_shots</span><span class="p">,</span> <span class="n">valid_check</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="n">results</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_results</span><span class="p">(</span><span class="n">handles</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">h</span> <span class="ow">in</span> <span class="n">handles</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">pop_result</span><span class="p">(</span><span class="n">h</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">results</span></div>
+
+<div class="viewcode-block" id="Backend.cancel"><a class="viewcode-back" href="../../../backends.html#pytket.backends.Backend.cancel">[docs]</a>    <span class="k">def</span> <span class="nf">cancel</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">handle</span><span class="p">:</span> <span class="n">ResultHandle</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Cancel a job.</span>
+
+<span class="sd">        :param handle: handle to job</span>
+<span class="sd">        :type handle: ResultHandle</span>
+<span class="sd">        :raises NotImplementedError: If backend does not support job cancellation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Backend does not support job cancellation.&quot;</span><span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">backend_info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">BackendInfo</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve all Backend properties in a BackendInfo object, including</span>
+<span class="sd">        device architecture, supported gate set, gate errors and other hardware-specific</span>
+<span class="sd">        information.</span>
+
+<span class="sd">        :return: The BackendInfo describing this backend if it exists.</span>
+<span class="sd">        :rtype: Optional[BackendInfo]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Backend does not provide any device properties.&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="Backend.available_devices"><a class="viewcode-back" href="../../../backends.html#pytket.backends.Backend.available_devices">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">available_devices</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">BackendInfo</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve all available devices as a list of BackendInfo objects, including</span>
+<span class="sd">        device name, architecture, supported gate set, gate errors,</span>
+<span class="sd">        and other hardware-specific information.</span>
+
+<span class="sd">        :return: A list of BackendInfo objects describing available devices.</span>
+<span class="sd">        :rtype: List[BackendInfo]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span>
+            <span class="s2">&quot;Backend does not provide information about available devices.&quot;</span>
+        <span class="p">)</span></div>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">persistent_handles</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Whether the backend produces `ResultHandle` objects that can be reused with</span>
+<span class="sd">        other instances of the backend class.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_persistent_handles</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">supports_shots</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Does this backend support shot result retrieval via</span>
+<span class="sd">        :py:meth:`backendresult.BackendResult.get_shots`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supports_shots</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">supports_counts</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Does this backend support counts result retrieval via</span>
+<span class="sd">        :py:meth:`backendresult.BackendResult.get_counts`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supports_counts</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">supports_state</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Does this backend support statevector retrieval via</span>
+<span class="sd">        :py:meth:`backendresult.BackendResult.get_state`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supports_state</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">supports_unitary</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Does this backend support unitary retrieval via</span>
+<span class="sd">        :py:meth:`backendresult.BackendResult.get_unitary`.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supports_unitary</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">supports_density_matrix</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Does this backend support density matrix retrieval via</span>
+<span class="sd">        `get_density_matrix`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supports_density_matrix</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">supports_expectation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Does this backend support expectation value calculation for operators.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supports_expectation</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">expectation_allows_nonhermitian</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;If expectations are supported, is the operator allowed to be non-Hermitan?&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_expectation_allows_nonhermitian</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">supports_contextual_optimisation</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Does this backend support contextual optimisation?</span>
+
+<span class="sd">        See :py:meth:`process_circuits`.&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_supports_contextual_optimisation</span>
+
+    <span class="k">def</span> <span class="nf">_get_extension_module</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="n">ModuleType</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return the extension module of the backend if it belongs to a</span>
+<span class="sd">        pytket-extension package.</span>
+
+<span class="sd">        :return: The extension module of the backend if it belongs to a pytket-extension</span>
+<span class="sd">            package.</span>
+<span class="sd">        :rtype: Optional[ModuleType]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">mod_parts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__module__</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">)[:</span><span class="mi">3</span><span class="p">]</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="p">(</span><span class="n">mod_parts</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;pytket&quot;</span> <span class="ow">and</span> <span class="n">mod_parts</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;extensions&quot;</span><span class="p">):</span>
+            <span class="k">return</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">import_module</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">mod_parts</span><span class="p">))</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">__extension_name__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve the extension name of the backend if it belongs to a</span>
+<span class="sd">        pytket-extension package.</span>
+
+<span class="sd">        :return: The extension name of the backend if it belongs to a pytket-extension</span>
+<span class="sd">            package.</span>
+<span class="sd">        :rtype: Optional[str]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_extension_module</span><span class="p">()</span><span class="o">.</span><span class="n">__extension_name__</span>  <span class="c1"># type: ignore</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">__extension_version__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">str</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve the extension version of the backend if it belongs to a</span>
+<span class="sd">        pytket-extension package.</span>
+
+<span class="sd">        :return: The extension version of the backend if it belongs to a</span>
+<span class="sd">            pytket-extension package.</span>
+<span class="sd">        :rtype: Optional[str]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_extension_module</span><span class="p">()</span><span class="o">.</span><span class="n">__extension_version__</span>  <span class="c1"># type: ignore</span>
+        <span class="k">except</span> <span class="ne">AttributeError</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">None</span>
+
+    <span class="nd">@overload</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_n_shots_as_list</span><span class="p">(</span>
+        <span class="n">n_shots</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]],</span>
+        <span class="n">n_circuits</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">optional</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">False</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="o">...</span>
+
+    <span class="nd">@overload</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_n_shots_as_list</span><span class="p">(</span>
+        <span class="n">n_shots</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]],</span>
+        <span class="n">n_circuits</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">optional</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">True</span><span class="p">],</span>
+        <span class="n">set_zero</span><span class="p">:</span> <span class="n">Literal</span><span class="p">[</span><span class="kc">True</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]:</span>
+        <span class="o">...</span>
+
+    <span class="nd">@overload</span>
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_n_shots_as_list</span><span class="p">(</span>
+        <span class="n">n_shots</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]],</span>
+        <span class="n">n_circuits</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">optional</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">set_zero</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
+        <span class="o">...</span>
+
+    <span class="nd">@staticmethod</span>
+    <span class="k">def</span> <span class="nf">_get_n_shots_as_list</span><span class="p">(</span>
+        <span class="n">n_shots</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]],</span>
+        <span class="n">n_circuits</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+        <span class="n">optional</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span>
+        <span class="n">set_zero</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]],</span> <span class="n">List</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Convert any admissible n_shots value into List[Optional[int]] format.</span>
+
+<span class="sd">        This validates the n_shots argument for process_circuits. If a single</span>
+<span class="sd">        value is passed, this value is broadcast to the number of circuits.</span>
+<span class="sd">        Additional boolean flags control how the argument is validated.</span>
+<span class="sd">        Raises an exception if n_shots is in an invalid format.</span>
+
+<span class="sd">        :param n_shots: The argument to be validated.</span>
+<span class="sd">        :type n_shots: Union[None, int, Sequence[Optional[int]]]</span>
+<span class="sd">        :param n_circuits: Length of the converted argument returned.</span>
+<span class="sd">        :type n_circuits: int</span>
+<span class="sd">        :param optional: Whether n_shots can be None (default: True).</span>
+<span class="sd">        :type optional: bool</span>
+<span class="sd">        :param set_zero: Whether None values should be set to 0 (default: False).</span>
+<span class="sd">        :type set_zero: bool</span>
+<span class="sd">        :return: a list of length `n_circuits`, the converted argument</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">n_shots_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">def</span> <span class="nf">validate_n_shots</span><span class="p">(</span><span class="n">n</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">optional</span> <span class="ow">or</span> <span class="p">(</span><span class="n">n</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">n</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">set_zero</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">optional</span><span class="p">:</span>
+            <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;set_zero cannot be true when optional is false&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">hasattr</span><span class="p">(</span><span class="n">n_shots</span><span class="p">,</span> <span class="s2">&quot;__iter__&quot;</span><span class="p">):</span>
+            <span class="k">assert</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n_shots</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+            <span class="k">assert</span> <span class="n">n_shots</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="nb">all</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="n">validate_n_shots</span><span class="p">,</span> <span class="n">n_shots</span><span class="p">)):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                    <span class="s2">&quot;n_shots values are required for all circuits for this backend&quot;</span>
+                <span class="p">)</span>
+            <span class="n">n_shots_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">n_shots</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="n">n_shots</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">n_shots</span><span class="p">,</span> <span class="nb">int</span><span class="p">)</span>
+
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">validate_n_shots</span><span class="p">(</span><span class="n">n_shots</span><span class="p">):</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Parameter n_shots is required for this backend&quot;</span><span class="p">)</span>
+            <span class="c1"># convert n_shots to a list</span>
+            <span class="n">n_shots_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">n_shots</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_circuits</span>
+
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">n_shots_list</span><span class="p">)</span> <span class="o">!=</span> <span class="n">n_circuits</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The length of n_shots and circuits must match&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">set_zero</span><span class="p">:</span>
+            <span class="c1"># replace None with 0</span>
+            <span class="n">n_shots_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">n</span><span class="p">:</span> <span class="n">n</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">,</span> <span class="n">n_shots_list</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">n_shots_list</span></div>
+</pre></div>
+
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Quantinuum
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2023 Quantinuum.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

@@ -7,9 +7,9 @@
 
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>pytket.circuit.OpType &#8212; pytket 1.16.0 documentation</title>
+    <title>pytket.circuit.OpType &#8212; pytket 1.17.0 documentation</title>
   
   
   
@@ -178,7 +178,6 @@
 <li class="toctree-l1"><a class="reference internal" href="utils.html">pytket.utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="logging.html">pytket.logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="config.html">pytket.config</a></li>
-<li class="toctree-l1"><a class="reference internal" href="faqs.html">TKET FAQs</a></li>
 </ul>
 
     </div>
@@ -457,6 +456,8 @@ Therefore, for instance <cite>circuit.add_gate(OpType.Rx, 1, [0])</cite> is equi
 <p>Unitary3qBox : Represents an arbitrary three-qubit unitary operation by its matrix</p>
 <p>ExpBox : A two-qubit operation corresponding to a unitary matrix defined as the exponential <span class="math notranslate nohighlight">\(e^{itA}\)</span> of an arbitrary 4x4 hermitian matrix <span class="math notranslate nohighlight">\(A\)</span>.</p>
 <p>PauliExpBox : An operation defined as the exponential <span class="math notranslate nohighlight">\(e^{-\frac{i\pi\alpha}{2} P}\)</span> of a tensor <span class="math notranslate nohighlight">\(P\)</span> of Pauli operations.</p>
+<p>PauliExpPairBox : An operation defined as a pairof exponentials of the form <span class="math notranslate nohighlight">\(e^{-\frac{i\pi\alpha}{2} P}\)</span> of a tensor <span class="math notranslate nohighlight">\(P\)</span> of Pauli operations.</p>
+<p>PauliExpCommutingSetBox : An operation defined as a setof commuting exponentials of the form <span class="math notranslate nohighlight">\(e^{-\frac{i\pi\alpha}{2} P}\)</span> of a tensor <span class="math notranslate nohighlight">\(P\)</span> of Pauli operations.</p>
 <p>QControlBox : An arbitrary n-controlled operation</p>
 <p>ToffoliBox : A permutation of classical basis states</p>
 <p>CustomGate : <span class="math notranslate nohighlight">\((\alpha, \beta, \ldots) \mapsto\)</span> A user-defined operation, based on a <a class="reference internal" href="circuit_class.html#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">Circuit</span></code></a> <span class="math notranslate nohighlight">\(C\)</span> with parameters <span class="math notranslate nohighlight">\(\alpha, \beta, \ldots\)</span> substituted in place of bound symbolic variables in <span class="math notranslate nohighlight">\(C\)</span>, as defined by the <a class="reference internal" href="circuit.html#pytket.circuit.CustomGateDef" title="pytket.circuit.CustomGateDef"><code class="xref py py-class docutils literal notranslate"><span class="pre">CustomGateDef</span></code></a>.</p>

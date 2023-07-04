@@ -1,0 +1,1103 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pytket.backends.backendresult &#8212; pytket 1.17.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/clipboard.min.js"></script>
+    <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/thebelab-helper.js"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/pytket/backends/backendresult';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/Quantinuum_logo_black.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../../../_static/Quantinuum_logo_white.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faqs.html">TKET FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../opensource.html">Open Source Attribution</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">More Documentation:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket/manual/index.html">Manual</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket-extensions/api/index.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/CQCL/pytket/tree/main/examples">Example notebooks</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../backends.html">pytket.backends</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../circuit.html">pytket.circuit</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../circuit_class.html">pytket.circuit.Circuit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../optype.html">pytket.circuit.OpType</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../classical.html">pytket.circuit.logic_exp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../display.html">pytket.circuit.display</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pauli.html">pytket.pauli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../passes.html">pytket.passes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../predicates.html">pytket.predicates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../partition.html">pytket.partition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qasm.html">pytket.qasm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quipper.html">pytket.quipper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">pytket.architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../placement.html">pytket.placement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../mapping.html">pytket.mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tableau.html">pytket.tableau</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../transform.html">pytket.transform</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tailoring.html">pytket.tailoring</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../wasm.html">pytket.wasm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../zx.html">pytket.zx</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.html">pytket.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging.html">pytket.logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../config.html">pytket.config</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/CQCL/tket" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/CQCL/tket/issues/new?title=Issue%20on%20page%20%2F_modules/pytket/backends/backendresult.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <h1>Source code for pytket.backends.backendresult</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright 2019-2023 Cambridge Quantum Computing</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+
+<span class="sd">&quot;&quot;&quot;`BackendResult` class and associated methods.&quot;&quot;&quot;</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">Optional</span><span class="p">,</span>
+    <span class="n">Any</span><span class="p">,</span>
+    <span class="n">Sequence</span><span class="p">,</span>
+    <span class="n">Iterable</span><span class="p">,</span>
+    <span class="n">List</span><span class="p">,</span>
+    <span class="n">Tuple</span><span class="p">,</span>
+    <span class="n">Dict</span><span class="p">,</span>
+    <span class="n">Counter</span><span class="p">,</span>
+    <span class="n">NamedTuple</span><span class="p">,</span>
+    <span class="n">Collection</span><span class="p">,</span>
+    <span class="n">Type</span><span class="p">,</span>
+    <span class="n">TypeVar</span><span class="p">,</span>
+    <span class="n">cast</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">import</span> <span class="nn">operator</span>
+<span class="kn">from</span> <span class="nn">functools</span> <span class="kn">import</span> <span class="n">reduce</span>
+<span class="kn">import</span> <span class="nn">warnings</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+
+<span class="kn">from</span> <span class="nn">pytket.circuit</span> <span class="kn">import</span> <span class="p">(</span>  <span class="c1"># type: ignore</span>
+    <span class="n">BasisOrder</span><span class="p">,</span>
+    <span class="n">Bit</span><span class="p">,</span>
+    <span class="n">Circuit</span><span class="p">,</span>
+    <span class="n">Qubit</span><span class="p">,</span>
+    <span class="n">UnitID</span><span class="p">,</span>
+    <span class="n">_DEBUG_ZERO_REG_PREFIX</span><span class="p">,</span>
+    <span class="n">_DEBUG_ONE_REG_PREFIX</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pytket.utils.distribution</span> <span class="kn">import</span> <span class="n">EmpiricalDistribution</span><span class="p">,</span> <span class="n">ProbabilityDistribution</span>
+<span class="kn">from</span> <span class="nn">pytket.utils.results</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">probs_from_state</span><span class="p">,</span>
+    <span class="n">get_n_qb_from_statevector</span><span class="p">,</span>
+    <span class="n">permute_basis_indexing</span><span class="p">,</span>
+    <span class="n">permute_rows_cols_in_unitary</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pytket.utils.outcomearray</span> <span class="kn">import</span> <span class="n">OutcomeArray</span><span class="p">,</span> <span class="n">readout_counts</span>
+
+<span class="kn">from</span> <span class="nn">.backend_exceptions</span> <span class="kn">import</span> <span class="n">InvalidResultType</span>
+
+
+<div class="viewcode-block" id="StoredResult"><a class="viewcode-back" href="../../../backends.html#pytket.backends.backendresult.StoredResult">[docs]</a><span class="k">class</span> <span class="nc">StoredResult</span><span class="p">(</span><span class="n">NamedTuple</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;NamedTuple with optional fields for all result types.&quot;&quot;&quot;</span>
+
+    <span class="n">counts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Counter</span><span class="p">[</span><span class="n">OutcomeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">shots</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">OutcomeArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">state</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">unitary</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">density_matrix</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span></div>
+
+
+<div class="viewcode-block" id="BackendResult"><a class="viewcode-back" href="../../../backends.html#pytket.backends.backendresult.BackendResult">[docs]</a><span class="k">class</span> <span class="nc">BackendResult</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Encapsulate generic results from pytket Backend instances.</span>
+
+<span class="sd">    In the case of a real quantum device or a shots-based simulator</span>
+<span class="sd">    a BackendResult will typically be a collection of measurements (shots and counts).</span>
+
+<span class="sd">    Results can also be the output of ideal simulations of circuits.</span>
+<span class="sd">    These can take the form of statevectors, unitary arrays or density matrices.</span>
+
+<span class="sd">    :param q_bits: Sequence of qubits.</span>
+<span class="sd">    :param c_bits: Sequence of classical bits.</span>
+<span class="sd">    :param counts: The counts in the result.</span>
+<span class="sd">    :param shots: The shots in the result.</span>
+<span class="sd">    :param state: The resulting statevector (from a statevector simulation).</span>
+<span class="sd">    :param unitary: The resulting unitary operator (from a unitary simulation).</span>
+<span class="sd">    :param density_matrix: The resulting density matrix</span>
+<span class="sd">        (from a density-matrix simulator).</span>
+<span class="sd">    :param ppcirc: If provided, classical postprocessing to be applied to all measured</span>
+<span class="sd">        results (i.e. shots and counts).</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="o">*</span><span class="p">,</span>
+        <span class="n">q_bits</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Qubit</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">c_bits</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Bit</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">counts</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Counter</span><span class="p">[</span><span class="n">OutcomeArray</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">shots</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">OutcomeArray</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">state</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">unitary</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">density_matrix</span><span class="p">:</span> <span class="n">Any</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">ppcirc</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Circuit</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">):</span>
+        <span class="c1"># deal with mutable defaults</span>
+        <span class="k">if</span> <span class="n">q_bits</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">q_bits</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">if</span> <span class="n">c_bits</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">c_bits</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_counts</span> <span class="o">=</span> <span class="n">counts</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_shots</span> <span class="o">=</span> <span class="n">shots</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="o">=</span> <span class="n">state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_unitary</span> <span class="o">=</span> <span class="n">unitary</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_density_matrix</span> <span class="o">=</span> <span class="n">density_matrix</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_ppcirc</span> <span class="o">=</span> <span class="n">ppcirc</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">c_bits</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Bit</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">q_bits</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Qubit</span><span class="p">,</span> <span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+
+        <span class="k">def</span> <span class="nf">_process_unitids</span><span class="p">(</span>
+            <span class="n">var</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">UnitID</span><span class="p">],</span> <span class="n">attr</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">lent</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span> <span class="n">uid</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">UnitID</span><span class="p">]</span>
+        <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">var</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="nb">dict</span><span class="p">((</span><span class="n">unit</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">unit</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">var</span><span class="p">)))</span>
+                <span class="k">if</span> <span class="n">lent</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">var</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="p">(</span>
+                            <span class="sa">f</span><span class="s2">&quot;Length of </span><span class="si">{</span><span class="n">attr</span><span class="si">}</span><span class="s2"> (</span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">var</span><span class="p">)</span><span class="si">}</span><span class="s2">) does not&quot;</span>
+                            <span class="sa">f</span><span class="s2">&quot; match input data dimensions (</span><span class="si">{</span><span class="n">lent</span><span class="si">}</span><span class="s2">).&quot;</span>
+                        <span class="p">)</span>
+                    <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="nb">setattr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">attr</span><span class="p">,</span> <span class="nb">dict</span><span class="p">((</span><span class="n">uid</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">lent</span><span class="p">)))</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">contains_measured_results</span><span class="p">:</span>
+            <span class="n">_bitlength</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_counts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">shots</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                        <span class="s2">&quot;Provide either counts or shots, both is not valid.&quot;</span>
+                    <span class="p">)</span>
+                <span class="n">_bitlength</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_counts</span><span class="o">.</span><span class="n">elements</span><span class="p">())</span><span class="o">.</span><span class="n">width</span>
+
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shots</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">_bitlength</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shots</span><span class="o">.</span><span class="n">width</span>
+
+            <span class="n">_process_unitids</span><span class="p">(</span><span class="n">c_bits</span><span class="p">,</span> <span class="s2">&quot;c_bits&quot;</span><span class="p">,</span> <span class="n">_bitlength</span><span class="p">,</span> <span class="n">Bit</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">contains_state_results</span><span class="p">:</span>
+            <span class="n">_n_qubits</span> <span class="o">=</span> <span class="mi">0</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unitary</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">_n_qubits</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unitary</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">_n_qubits</span> <span class="o">=</span> <span class="n">get_n_qb_from_statevector</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">_density_matrix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">_n_qubits</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log2</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_density_matrix</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]))</span>
+
+            <span class="n">_process_unitids</span><span class="p">(</span><span class="n">q_bits</span><span class="p">,</span> <span class="s2">&quot;q_bits&quot;</span><span class="p">,</span> <span class="n">_n_qubits</span><span class="p">,</span> <span class="n">Qubit</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="s2">&quot;BackendResult(q_bits=</span><span class="si">{s.q_bits}</span><span class="s2">,c_bits=</span><span class="si">{s.c_bits}</span><span class="s2">,counts=</span><span class="si">{s._counts}</span><span class="s2">,&quot;</span>
+            <span class="s2">&quot;shots=</span><span class="si">{s._shots}</span><span class="s2">,state=</span><span class="si">{s._state}</span><span class="s2">,unitary=</span><span class="si">{s._unitary}</span><span class="s2">,&quot;</span>
+            <span class="s2">&quot;density_matrix=</span><span class="si">{s._density_matrix}</span><span class="s2">)&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">s</span><span class="o">=</span><span class="bp">self</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">contains_measured_results</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether measured type results (shots or counts) are stored&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_counts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_shots</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">contains_state_results</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Whether state type results (state vector or unitary or density_matrix)</span>
+<span class="sd">        are stored&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unitary</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+            <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_density_matrix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">BackendResult</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">NotImplemented</span>
+        <span class="k">return</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">q_bits</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">q_bits</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">c_bits</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">c_bits</span>
+            <span class="ow">and</span> <span class="p">(</span>
+                <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_shots</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">other</span><span class="o">.</span><span class="n">_shots</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">)</span>
+                <span class="ow">or</span> <span class="n">cast</span><span class="p">(</span><span class="n">OutcomeArray</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shots</span><span class="p">)</span> <span class="o">==</span> <span class="n">cast</span><span class="p">(</span><span class="n">OutcomeArray</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">_shots</span><span class="p">)</span>
+            <span class="p">)</span>
+            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">_counts</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_counts</span>
+            <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">_state</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unitary</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">_unitary</span><span class="p">)</span>
+            <span class="ow">and</span> <span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_density_matrix</span><span class="p">,</span> <span class="n">other</span><span class="o">.</span><span class="n">_density_matrix</span><span class="p">)</span>
+        <span class="p">)</span>
+
+<div class="viewcode-block" id="BackendResult.get_bitlist"><a class="viewcode-back" href="../../../backends.html#pytket.backends.backendresult.BackendResult.get_bitlist">[docs]</a>    <span class="k">def</span> <span class="nf">get_bitlist</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Bit</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return list of Bits in internal storage order.</span>
+
+<span class="sd">        :raises AttributeError: BackendResult does not include a Bits list.</span>
+<span class="sd">        :return: Sorted list of Bits.</span>
+<span class="sd">        :rtype: List[Bit]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="n">_sort_keys_by_val</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">c_bits</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BackendResult.get_qbitlist"><a class="viewcode-back" href="../../../backends.html#pytket.backends.backendresult.BackendResult.get_qbitlist">[docs]</a>    <span class="k">def</span> <span class="nf">get_qbitlist</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Qubit</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return list of Qubits in internal storage order.</span>
+
+<span class="sd">        :raises AttributeError: BackendResult does not include a Qubits list.</span>
+<span class="sd">        :return: Sorted list of Qubits.</span>
+<span class="sd">        :rtype: List[Qubit]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">return</span> <span class="n">_sort_keys_by_val</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">q_bits</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="nf">_get_measured_res</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">bits</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Bit</span><span class="p">],</span> <span class="n">ppcirc</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Circuit</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StoredResult</span><span class="p">:</span>
+        <span class="n">vals</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">contains_measured_results</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidResultType</span><span class="p">(</span><span class="s2">&quot;shots/counts&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ppcirc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ppcirc</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="n">ppcirc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_ppcirc</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Postprocessing circuit already provided.&quot;</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">chosen_readouts</span> <span class="o">=</span> <span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">c_bits</span><span class="p">[</span><span class="n">bit</span><span class="p">]</span> <span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="n">bits</span><span class="p">]</span>
+        <span class="k">except</span> <span class="ne">KeyError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Requested Bit not in result.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_counts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ppcirc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Modify self._counts:</span>
+                <span class="n">new_counts</span><span class="p">:</span> <span class="n">Counter</span><span class="p">[</span><span class="n">OutcomeArray</span><span class="p">]</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">()</span>
+                <span class="k">for</span> <span class="n">oa</span><span class="p">,</span> <span class="n">n</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_counts</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                    <span class="n">readout</span> <span class="o">=</span> <span class="n">oa</span><span class="o">.</span><span class="n">to_readout</span><span class="p">()</span>
+                    <span class="n">values</span> <span class="o">=</span> <span class="p">{</span><span class="n">bit</span><span class="p">:</span> <span class="nb">bool</span><span class="p">(</span><span class="n">readout</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">bit</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">c_bits</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+                    <span class="n">new_values</span> <span class="o">=</span> <span class="n">ppcirc</span><span class="o">.</span><span class="n">_classical_eval</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+                    <span class="n">new_oa</span> <span class="o">=</span> <span class="n">OutcomeArray</span><span class="o">.</span><span class="n">from_readouts</span><span class="p">(</span>
+                        <span class="p">[[</span><span class="nb">int</span><span class="p">(</span><span class="n">new_values</span><span class="p">[</span><span class="n">bit</span><span class="p">])</span> <span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="n">bits</span><span class="p">]]</span>
+                    <span class="p">)</span>
+                    <span class="n">new_counts</span><span class="p">[</span><span class="n">new_oa</span><span class="p">]</span> <span class="o">+=</span> <span class="n">n</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">new_counts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_counts</span>
+            <span class="n">vals</span><span class="p">[</span><span class="s2">&quot;counts&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">reduce</span><span class="p">(</span>
+                <span class="n">operator</span><span class="o">.</span><span class="n">add</span><span class="p">,</span>
+                <span class="p">(</span>
+                    <span class="n">Counter</span><span class="p">({</span><span class="n">outcome</span><span class="o">.</span><span class="n">choose_indices</span><span class="p">(</span><span class="n">chosen_readouts</span><span class="p">):</span> <span class="n">count</span><span class="p">})</span>
+                    <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">new_counts</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+                <span class="p">),</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shots</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">ppcirc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+                <span class="c1"># Modify self._shots:</span>
+                <span class="n">readouts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shots</span><span class="o">.</span><span class="n">to_readouts</span><span class="p">()</span>
+                <span class="n">new_readouts</span> <span class="o">=</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_shots</span><span class="o">.</span><span class="n">n_outcomes</span><span class="p">):</span>
+                    <span class="n">readout</span> <span class="o">=</span> <span class="n">readouts</span><span class="p">[</span><span class="n">i</span><span class="p">,</span> <span class="p">:]</span>
+                    <span class="n">values</span> <span class="o">=</span> <span class="p">{</span><span class="n">bit</span><span class="p">:</span> <span class="nb">bool</span><span class="p">(</span><span class="n">readout</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> <span class="k">for</span> <span class="n">bit</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">c_bits</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+                    <span class="n">new_values</span> <span class="o">=</span> <span class="n">ppcirc</span><span class="o">.</span><span class="n">_classical_eval</span><span class="p">(</span><span class="n">values</span><span class="p">)</span>
+                    <span class="n">new_readout</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shots</span><span class="o">.</span><span class="n">width</span>
+                    <span class="k">for</span> <span class="n">bit</span><span class="p">,</span> <span class="n">i</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">c_bits</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                        <span class="k">if</span> <span class="n">new_values</span><span class="p">[</span><span class="n">bit</span><span class="p">]:</span>
+                            <span class="n">new_readout</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span>
+                    <span class="n">new_readouts</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">new_readout</span><span class="p">)</span>
+                <span class="n">new_shots</span> <span class="o">=</span> <span class="n">OutcomeArray</span><span class="o">.</span><span class="n">from_readouts</span><span class="p">(</span><span class="n">new_readouts</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="n">new_shots</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shots</span>
+            <span class="n">vals</span><span class="p">[</span><span class="s2">&quot;shots&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_shots</span><span class="o">.</span><span class="n">choose_indices</span><span class="p">(</span><span class="n">chosen_readouts</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">StoredResult</span><span class="p">(</span><span class="o">**</span><span class="n">vals</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">_permute_statearray_qb_labels</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+        <span class="n">relabling_map</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Qubit</span><span class="p">,</span> <span class="n">Qubit</span><span class="p">],</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Permute statevector/unitary according to a relabelling of Qubits.</span>
+
+<span class="sd">        :param array: The statevector or unitary</span>
+<span class="sd">        :type array: np.ndarray</span>
+<span class="sd">        :param relabling_map: Map from original Qubits to new.</span>
+<span class="sd">        :type relabling_map: Dict[Qubit, Qubit]</span>
+<span class="sd">        :return: Permuted array.</span>
+<span class="sd">        :rtype: np.ndarray</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">original_labeling</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="s2">&quot;Qubit&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_qbitlist</span><span class="p">()</span>
+        <span class="n">n_labels</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">original_labeling</span><span class="p">)</span>
+        <span class="n">permutation</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">*</span> <span class="n">n_labels</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">orig_qb</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">original_labeling</span><span class="p">):</span>
+            <span class="n">permutation</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="o">=</span> <span class="n">original_labeling</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">relabling_map</span><span class="p">[</span><span class="n">orig_qb</span><span class="p">])</span>
+        <span class="k">if</span> <span class="n">permutation</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">n_labels</span><span class="p">)):</span>
+            <span class="c1"># Optimization: nothing to do; return original array.</span>
+            <span class="k">return</span> <span class="n">array</span>
+        <span class="n">permuter</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="n">permute_basis_indexing</span>
+            <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+            <span class="k">else</span> <span class="n">permute_rows_cols_in_unitary</span>
+        <span class="p">)</span>
+        <span class="k">return</span> <span class="n">permuter</span><span class="p">(</span><span class="n">array</span><span class="p">,</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">permutation</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">_get_state_res</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">qubits</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">Qubit</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">StoredResult</span><span class="p">:</span>
+        <span class="n">vals</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">contains_state_results</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidResultType</span><span class="p">(</span><span class="s2">&quot;state/unitary/density_matrix&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">_check_permuted_sequence</span><span class="p">(</span><span class="n">qubits</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_bits</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;For state/unitary/density_matrix results only a permutation of&quot;</span>
+                <span class="s2">&quot; all qubits can be requested.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">qb_mapping</span> <span class="o">=</span> <span class="p">{</span><span class="n">selfqb</span><span class="p">:</span> <span class="n">qubits</span><span class="p">[</span><span class="n">index</span><span class="p">]</span> <span class="k">for</span> <span class="n">selfqb</span><span class="p">,</span> <span class="n">index</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_bits</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">vals</span><span class="p">[</span><span class="s2">&quot;state&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_permute_statearray_qb_labels</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="p">,</span> <span class="n">qb_mapping</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unitary</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">vals</span><span class="p">[</span><span class="s2">&quot;unitary&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_permute_statearray_qb_labels</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_unitary</span><span class="p">,</span> <span class="n">qb_mapping</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_density_matrix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">vals</span><span class="p">[</span><span class="s2">&quot;density_matrix&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_permute_statearray_qb_labels</span><span class="p">(</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_density_matrix</span><span class="p">,</span> <span class="n">qb_mapping</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">StoredResult</span><span class="p">(</span><span class="o">**</span><span class="n">vals</span><span class="p">)</span>
+
+<div class="viewcode-block" id="BackendResult.get_result"><a class="viewcode-back" href="../../../backends.html#pytket.backends.backendresult.BackendResult.get_result">[docs]</a>    <span class="k">def</span> <span class="nf">get_result</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">request_ids</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">UnitID</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">basis</span><span class="p">:</span> <span class="n">BasisOrder</span> <span class="o">=</span> <span class="n">BasisOrder</span><span class="o">.</span><span class="n">ilo</span><span class="p">,</span>
+        <span class="n">ppcirc</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Circuit</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">StoredResult</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Retrieve all results, optionally according to a specified UnitID ordering</span>
+<span class="sd">         or subset.</span>
+
+<span class="sd">        :param request_ids: Ordered set of either Qubits or Bits for which to</span>
+<span class="sd">            retrieve results, defaults to None in which case all results are returned.</span>
+<span class="sd">            For statevector/unitary/density_matrix results some permutation of all</span>
+<span class="sd">            qubits must be requested.</span>
+<span class="sd">            For measured results (shots/counts), some subset of the relevant bits must</span>
+<span class="sd">            be requested.</span>
+<span class="sd">        :type request_ids: Optional[Sequence[UnitID]], optional</span>
+<span class="sd">        :param basis: Toggle between ILO (increasing lexicographic order of bit ids) and</span>
+<span class="sd">            DLO (decreasing lexicographic order) for column ordering if request_ids is</span>
+<span class="sd">            None. Defaults to BasisOrder.ilo.</span>
+<span class="sd">        :param ppcirc: Classical post-processing circuit to apply to measured results</span>
+<span class="sd">        :raises ValueError: Requested UnitIds (request_ids) contain a mixture of qubits</span>
+<span class="sd">            and bits.</span>
+<span class="sd">        :raises RuntimeError: Classical bits not set.</span>
+<span class="sd">        :raises ValueError: Requested (Qu)Bit not in result.</span>
+<span class="sd">        :raises RuntimeError: &quot;Qubits not set.&quot;</span>
+<span class="sd">        :raises ValueError: For state/unitary/density_matrix results only a permutation</span>
+<span class="sd">            of all qubits can be requested.</span>
+<span class="sd">        :return: All stored results corresponding to requested IDs.</span>
+<span class="sd">        :rtype: StoredResult</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">request_ids</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">contains_measured_results</span><span class="p">:</span>
+                <span class="n">request_ids</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">c_bits</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">reverse</span><span class="o">=</span><span class="p">(</span><span class="n">basis</span> <span class="o">==</span> <span class="n">BasisOrder</span><span class="o">.</span><span class="n">dlo</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">contains_state_results</span><span class="p">:</span>
+                <span class="n">request_ids</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">q_bits</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">reverse</span><span class="o">=</span><span class="p">(</span><span class="n">basis</span> <span class="o">==</span> <span class="n">BasisOrder</span><span class="o">.</span><span class="n">dlo</span><span class="p">)</span>
+                <span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="n">InvalidResultType</span><span class="p">(</span><span class="s2">&quot;No results stored.&quot;</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">Bit</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">request_ids</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_measured_res</span><span class="p">(</span><span class="n">request_ids</span><span class="p">,</span> <span class="n">ppcirc</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">i</span><span class="p">,</span> <span class="n">Qubit</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">request_ids</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_state_res</span><span class="p">(</span><span class="n">request_ids</span><span class="p">)</span>
+
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+            <span class="s2">&quot;Requested UnitIds (request_ids) contain a mixture of qubits and bits.&quot;</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="BackendResult.get_shots"><a class="viewcode-back" href="../../../backends.html#pytket.backends.backendresult.BackendResult.get_shots">[docs]</a>    <span class="k">def</span> <span class="nf">get_shots</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">cbits</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Bit</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">basis</span><span class="p">:</span> <span class="n">BasisOrder</span> <span class="o">=</span> <span class="n">BasisOrder</span><span class="o">.</span><span class="n">ilo</span><span class="p">,</span>
+        <span class="n">ppcirc</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Circuit</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return shots if available.</span>
+
+<span class="sd">        :param cbits: ordered subset of Bits, returns all results by default, defaults</span>
+<span class="sd">         to None</span>
+<span class="sd">        :type cbits: Optional[Sequence[Bit]], optional</span>
+<span class="sd">        :param basis: Toggle between ILO (increasing lexicographic order of bit ids) and</span>
+<span class="sd">            DLO (decreasing lexicographic order) for column ordering if cbits is None.</span>
+<span class="sd">            Defaults to BasisOrder.ilo.</span>
+<span class="sd">        :param ppcirc: Classical post-processing circuit to apply to measured results</span>
+<span class="sd">        :raises InvalidResultType: Shot results are not available</span>
+<span class="sd">        :return: 2D array of readouts, each row a separate outcome and each column a</span>
+<span class="sd">         bit value.</span>
+<span class="sd">        :rtype: np.ndarray</span>
+
+<span class="sd">        The order of the columns follows the order of `cbits`, if provided.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">cbits</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cbits</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">c_bits</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">reverse</span><span class="o">=</span><span class="p">(</span><span class="n">basis</span> <span class="o">==</span> <span class="n">BasisOrder</span><span class="o">.</span><span class="n">dlo</span><span class="p">))</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_result</span><span class="p">(</span><span class="n">cbits</span><span class="p">,</span> <span class="n">ppcirc</span><span class="o">=</span><span class="n">ppcirc</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">shots</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">shots</span><span class="o">.</span><span class="n">to_readouts</span><span class="p">()</span>
+        <span class="k">raise</span> <span class="n">InvalidResultType</span><span class="p">(</span><span class="s2">&quot;shots&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BackendResult.get_counts"><a class="viewcode-back" href="../../../backends.html#pytket.backends.backendresult.BackendResult.get_counts">[docs]</a>    <span class="k">def</span> <span class="nf">get_counts</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">cbits</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Bit</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">basis</span><span class="p">:</span> <span class="n">BasisOrder</span> <span class="o">=</span> <span class="n">BasisOrder</span><span class="o">.</span><span class="n">ilo</span><span class="p">,</span>
+        <span class="n">ppcirc</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Circuit</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Counter</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return counts of outcomes if available.</span>
+
+<span class="sd">        :param cbits: ordered subset of Bits, returns all results by default, defaults</span>
+<span class="sd">         to None</span>
+<span class="sd">        :type cbits: Optional[Sequence[Bit]], optional</span>
+<span class="sd">        :param basis: Toggle between ILO (increasing lexicographic order of bit ids) and</span>
+<span class="sd">            DLO (decreasing lexicographic order) for column ordering if cbits is None.</span>
+<span class="sd">            Defaults to BasisOrder.ilo.</span>
+<span class="sd">        :param ppcirc: Classical post-processing circuit to apply to measured results</span>
+<span class="sd">        :raises InvalidResultType: Counts are not available</span>
+<span class="sd">        :return: Counts of outcomes</span>
+<span class="sd">        :rtype: Counter[Tuple(int)]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">cbits</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">cbits</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">c_bits</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">reverse</span><span class="o">=</span><span class="p">(</span><span class="n">basis</span> <span class="o">==</span> <span class="n">BasisOrder</span><span class="o">.</span><span class="n">dlo</span><span class="p">))</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_result</span><span class="p">(</span><span class="n">cbits</span><span class="p">,</span> <span class="n">ppcirc</span><span class="o">=</span><span class="n">ppcirc</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">counts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">readout_counts</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">counts</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">shots</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">readout_counts</span><span class="p">(</span><span class="n">res</span><span class="o">.</span><span class="n">shots</span><span class="o">.</span><span class="n">counts</span><span class="p">())</span>
+        <span class="k">raise</span> <span class="n">InvalidResultType</span><span class="p">(</span><span class="s2">&quot;counts&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BackendResult.get_state"><a class="viewcode-back" href="../../../backends.html#pytket.backends.backendresult.BackendResult.get_state">[docs]</a>    <span class="k">def</span> <span class="nf">get_state</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">qbits</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Qubit</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">basis</span><span class="p">:</span> <span class="n">BasisOrder</span> <span class="o">=</span> <span class="n">BasisOrder</span><span class="o">.</span><span class="n">ilo</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return statevector if available.</span>
+
+<span class="sd">        :param qbits: permutation of Qubits, defaults to None</span>
+<span class="sd">        :type qbits: Optional[Sequence[Qubit]], optional</span>
+<span class="sd">        :param basis: Toggle between ILO (increasing lexicographic order of qubit ids)</span>
+<span class="sd">            and DLO (decreasing lexicographic order) for column ordering if qbits is</span>
+<span class="sd">            None. Defaults to BasisOrder.ilo.</span>
+<span class="sd">        :raises InvalidResultType: Statevector not available</span>
+<span class="sd">        :return: Statevector, (complex 1-D numpy array)</span>
+<span class="sd">        :rtype: np.ndarray</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">qbits</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">qbits</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">q_bits</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">reverse</span><span class="o">=</span><span class="p">(</span><span class="n">basis</span> <span class="o">==</span> <span class="n">BasisOrder</span><span class="o">.</span><span class="n">dlo</span><span class="p">))</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_result</span><span class="p">(</span><span class="n">qbits</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">state</span>
+        <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">unitary</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">state</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span> <span class="o">=</span> <span class="n">res</span><span class="o">.</span><span class="n">unitary</span><span class="p">[:,</span> <span class="mi">0</span><span class="p">]</span>
+            <span class="k">return</span> <span class="n">state</span>
+        <span class="k">raise</span> <span class="n">InvalidResultType</span><span class="p">(</span><span class="s2">&quot;state&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BackendResult.get_unitary"><a class="viewcode-back" href="../../../backends.html#pytket.backends.backendresult.BackendResult.get_unitary">[docs]</a>    <span class="k">def</span> <span class="nf">get_unitary</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">qbits</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Qubit</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">basis</span><span class="p">:</span> <span class="n">BasisOrder</span> <span class="o">=</span> <span class="n">BasisOrder</span><span class="o">.</span><span class="n">ilo</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return unitary if available.</span>
+
+<span class="sd">        :param qbits: permutation of Qubits, defaults to None</span>
+<span class="sd">        :type qbits: Optional[Sequence[Qubit]], optional</span>
+<span class="sd">        :param basis: Toggle between ILO (increasing lexicographic order of qubit ids)</span>
+<span class="sd">            and DLO (decreasing lexicographic order) for column ordering if qbits is</span>
+<span class="sd">            None. Defaults to BasisOrder.ilo.</span>
+<span class="sd">        :raises InvalidResultType: Statevector not available</span>
+<span class="sd">        :return: Unitary, (complex 2-D numpy array)</span>
+<span class="sd">        :rtype: np.ndarray</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">qbits</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">qbits</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">q_bits</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">reverse</span><span class="o">=</span><span class="p">(</span><span class="n">basis</span> <span class="o">==</span> <span class="n">BasisOrder</span><span class="o">.</span><span class="n">dlo</span><span class="p">))</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_result</span><span class="p">(</span><span class="n">qbits</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">unitary</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">unitary</span>
+        <span class="k">raise</span> <span class="n">InvalidResultType</span><span class="p">(</span><span class="s2">&quot;unitary&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BackendResult.get_density_matrix"><a class="viewcode-back" href="../../../backends.html#pytket.backends.backendresult.BackendResult.get_density_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">get_density_matrix</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">qbits</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Qubit</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+        <span class="n">basis</span><span class="p">:</span> <span class="n">BasisOrder</span> <span class="o">=</span> <span class="n">BasisOrder</span><span class="o">.</span><span class="n">ilo</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Return density_matrix if available.</span>
+
+<span class="sd">        :param qbits: permutation of Qubits, defaults to None</span>
+<span class="sd">        :type qbits: Optional[Sequence[Qubit]], optional</span>
+<span class="sd">        :param basis: Toggle between ILO (increasing lexicographic order of qubit ids)</span>
+<span class="sd">            and DLO (decreasing lexicographic order) for column ordering if qbits is</span>
+<span class="sd">            None. Defaults to BasisOrder.ilo.</span>
+<span class="sd">        :raises InvalidResultType: Statevector not available</span>
+<span class="sd">        :return: density_matrix, (complex 2-D numpy array)</span>
+<span class="sd">        :rtype: np.ndarray</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="n">qbits</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">qbits</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">q_bits</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span> <span class="n">reverse</span><span class="o">=</span><span class="p">(</span><span class="n">basis</span> <span class="o">==</span> <span class="n">BasisOrder</span><span class="o">.</span><span class="n">dlo</span><span class="p">))</span>
+        <span class="n">res</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_result</span><span class="p">(</span><span class="n">qbits</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">res</span><span class="o">.</span><span class="n">density_matrix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">res</span><span class="o">.</span><span class="n">density_matrix</span>
+        <span class="k">raise</span> <span class="n">InvalidResultType</span><span class="p">(</span><span class="s2">&quot;density_matrix&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="BackendResult.get_distribution"><a class="viewcode-back" href="../../../backends.html#pytket.backends.backendresult.BackendResult.get_distribution">[docs]</a>    <span class="k">def</span> <span class="nf">get_distribution</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">units</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">UnitID</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">],</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate an exact or approximate probability distribution over outcomes.</span>
+
+<span class="sd">        If the exact statevector is known, the exact probability distribution is</span>
+<span class="sd">        returned. Otherwise, if measured results are available the distribution</span>
+<span class="sd">        is estimated from these results.</span>
+
+<span class="sd">        This method is deprecated. Please use :py:meth:`get_empirical_distribution` or</span>
+<span class="sd">        :py:meth:`get_probability_distribution` instead.</span>
+
+<span class="sd">        :param units: Optionally provide the Qubits or Bits</span>
+<span class="sd">            to marginalise the distribution over, defaults to None</span>
+<span class="sd">        :type units: Optional[Sequence[UnitID]], optional</span>
+<span class="sd">        :return: A distribution as a map from bitstring to probability.</span>
+<span class="sd">        :rtype: Dict[Tuple[int, ...], float]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">warnings</span><span class="o">.</span><span class="n">warn</span><span class="p">(</span>
+            <span class="s2">&quot;The `BackendResult.get_distribution()` method is deprecated: &quot;</span>
+            <span class="s2">&quot;please use `get_empirical_distribution()` or &quot;</span>
+            <span class="s2">&quot;`get_probability_distribution()` instead.&quot;</span><span class="p">,</span>
+            <span class="ne">DeprecationWarning</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="k">try</span><span class="p">:</span>
+            <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">units</span><span class="p">)</span>
+            <span class="k">return</span> <span class="n">probs_from_state</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+        <span class="k">except</span> <span class="n">InvalidResultType</span><span class="p">:</span>
+            <span class="n">counts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_counts</span><span class="p">(</span><span class="n">units</span><span class="p">)</span>
+            <span class="n">total</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">counts</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+            <span class="n">dist</span> <span class="o">=</span> <span class="p">{</span><span class="n">outcome</span><span class="p">:</span> <span class="n">count</span> <span class="o">/</span> <span class="n">total</span> <span class="k">for</span> <span class="n">outcome</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">counts</span><span class="o">.</span><span class="n">items</span><span class="p">()}</span>
+            <span class="k">return</span> <span class="n">dist</span></div>
+
+<div class="viewcode-block" id="BackendResult.get_empirical_distribution"><a class="viewcode-back" href="../../../backends.html#pytket.backends.backendresult.BackendResult.get_empirical_distribution">[docs]</a>    <span class="k">def</span> <span class="nf">get_empirical_distribution</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">bits</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Bit</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">EmpiricalDistribution</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert to a :py:class:`pytket.utils.distribution.EmpiricalDistribution`</span>
+<span class="sd">        where the observations are sequences of 0s and 1s.</span>
+
+<span class="sd">        :param bits: Optionally provide the :py:class:`Bit` s over which to</span>
+<span class="sd">            marginalize the distribution.</span>
+<span class="sd">        :return: A distribution where the observations are sequences of 0s and 1s.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">contains_measured_results</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidResultType</span><span class="p">(</span>
+                <span class="s2">&quot;Empirical distribution only available for measured result types.&quot;</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">EmpiricalDistribution</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">get_counts</span><span class="p">(</span><span class="n">bits</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="BackendResult.get_probability_distribution"><a class="viewcode-back" href="../../../backends.html#pytket.backends.backendresult.BackendResult.get_probability_distribution">[docs]</a>    <span class="k">def</span> <span class="nf">get_probability_distribution</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">qubits</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Sequence</span><span class="p">[</span><span class="n">Qubit</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ProbabilityDistribution</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="o">...</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Convert to a :py:class:`pytket.utils.distribution.ProbabilityDistribution`</span>
+<span class="sd">        where the possible outcomes are sequences of 0s and 1s.</span>
+
+<span class="sd">        :param qubits: Optionally provide the :py:class:`Qubit` s over which to</span>
+<span class="sd">            marginalize the distribution.</span>
+<span class="sd">        :return: A distribution where the possible outcomes are tuples of 0s and 1s.</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">contains_state_results</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="n">InvalidResultType</span><span class="p">(</span>
+                <span class="s2">&quot;Probability distribution only available for statevector result types.&quot;</span>
+            <span class="p">)</span>
+        <span class="n">state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_state</span><span class="p">(</span><span class="n">qubits</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">ProbabilityDistribution</span><span class="p">(</span><span class="n">probs_from_state</span><span class="p">(</span><span class="n">state</span><span class="p">))</span></div>
+
+<div class="viewcode-block" id="BackendResult.get_debug_info"><a class="viewcode-back" href="../../../backends.html#pytket.backends.backendresult.BackendResult.get_debug_info">[docs]</a>    <span class="k">def</span> <span class="nf">get_debug_info</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculate the success rate of each assertion averaged across shots.</span>
+
+<span class="sd">        Each assertion in pytket is decomposed into a sequence of transformations</span>
+<span class="sd">        and measurements. An assertion is successful if and only if all its associated</span>
+<span class="sd">        measurements yield the correct results.</span>
+
+<span class="sd">        :return: The debug results as a map from assertion to average success rate.</span>
+<span class="sd">        :rtype: Dict[str, float]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">_tket_debug_zero_prefix</span> <span class="o">=</span> <span class="n">_DEBUG_ZERO_REG_PREFIX</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span>
+        <span class="n">_tket_debug_one_prefix</span> <span class="o">=</span> <span class="n">_DEBUG_ONE_REG_PREFIX</span> <span class="o">+</span> <span class="s2">&quot;_&quot;</span>
+        <span class="n">debug_bit_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">bit</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">c_bits</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">bit</span><span class="o">.</span><span class="n">reg_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">_tket_debug_zero_prefix</span><span class="p">):</span>
+                <span class="n">expectation</span> <span class="o">=</span> <span class="mi">0</span>
+                <span class="n">assertion_name</span> <span class="o">=</span> <span class="n">bit</span><span class="o">.</span><span class="n">reg_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">_tket_debug_zero_prefix</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">elif</span> <span class="n">bit</span><span class="o">.</span><span class="n">reg_name</span><span class="o">.</span><span class="n">startswith</span><span class="p">(</span><span class="n">_tket_debug_one_prefix</span><span class="p">):</span>
+                <span class="n">expectation</span> <span class="o">=</span> <span class="mi">1</span>
+                <span class="n">assertion_name</span> <span class="o">=</span> <span class="n">bit</span><span class="o">.</span><span class="n">reg_name</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="n">_tket_debug_one_prefix</span><span class="p">,</span> <span class="mi">1</span><span class="p">)[</span><span class="mi">1</span><span class="p">]</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="n">assertion_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">debug_bit_dict</span><span class="p">:</span>
+                <span class="n">debug_bit_dict</span><span class="p">[</span><span class="n">assertion_name</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;bits&quot;</span><span class="p">:</span> <span class="p">[],</span> <span class="s2">&quot;expectations&quot;</span><span class="p">:</span> <span class="p">[]}</span>
+            <span class="n">debug_bit_dict</span><span class="p">[</span><span class="n">assertion_name</span><span class="p">][</span><span class="s2">&quot;bits&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">bit</span><span class="p">)</span>
+            <span class="n">debug_bit_dict</span><span class="p">[</span><span class="n">assertion_name</span><span class="p">][</span><span class="s2">&quot;expectations&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">expectation</span><span class="p">)</span>
+
+        <span class="n">debug_result_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">float</span><span class="p">]</span> <span class="o">=</span> <span class="p">{}</span>
+        <span class="k">for</span> <span class="n">assertion_name</span><span class="p">,</span> <span class="n">bits_info</span> <span class="ow">in</span> <span class="n">debug_bit_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">counts</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_counts</span><span class="p">(</span><span class="n">bits_info</span><span class="p">[</span><span class="s2">&quot;bits&quot;</span><span class="p">])</span>
+            <span class="n">debug_result_dict</span><span class="p">[</span><span class="n">assertion_name</span><span class="p">]</span> <span class="o">=</span> <span class="n">counts</span><span class="p">[</span>
+                <span class="nb">tuple</span><span class="p">(</span><span class="n">bits_info</span><span class="p">[</span><span class="s2">&quot;expectations&quot;</span><span class="p">])</span>
+            <span class="p">]</span> <span class="o">/</span> <span class="nb">sum</span><span class="p">(</span><span class="n">counts</span><span class="o">.</span><span class="n">values</span><span class="p">())</span>
+        <span class="k">return</span> <span class="n">debug_result_dict</span></div>
+
+<div class="viewcode-block" id="BackendResult.to_dict"><a class="viewcode-back" href="../../../backends.html#pytket.backends.backendresult.BackendResult.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a dictionary serialized representation of BackendResult,</span>
+<span class="sd">         suitable for writing to JSON.</span>
+
+<span class="sd">        :return: JSON serializable dictionary.</span>
+<span class="sd">        :rtype: Dict[str, Any]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">outdict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="n">outdict</span><span class="p">[</span><span class="s2">&quot;qubits&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">q</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_qbitlist</span><span class="p">()]</span>
+        <span class="n">outdict</span><span class="p">[</span><span class="s2">&quot;bits&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">c</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span> <span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_bitlist</span><span class="p">()]</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shots</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">outdict</span><span class="p">[</span><span class="s2">&quot;shots&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_shots</span><span class="o">.</span><span class="n">to_dict</span><span class="p">()</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_counts</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">outdict</span><span class="p">[</span><span class="s2">&quot;counts&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="p">{</span><span class="s2">&quot;outcome&quot;</span><span class="p">:</span> <span class="n">oc</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span> <span class="s2">&quot;count&quot;</span><span class="p">:</span> <span class="n">count</span><span class="p">}</span>
+                <span class="k">for</span> <span class="n">oc</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_counts</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="p">]</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_state</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">outdict</span><span class="p">[</span><span class="s2">&quot;state&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_complex_ar_to_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_state</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unitary</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">outdict</span><span class="p">[</span><span class="s2">&quot;unitary&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_complex_ar_to_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_unitary</span><span class="p">)</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">_density_matrix</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">outdict</span><span class="p">[</span><span class="s2">&quot;density_matrix&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_complex_ar_to_dict</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_density_matrix</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">outdict</span></div>
+
+<div class="viewcode-block" id="BackendResult.from_dict"><a class="viewcode-back" href="../../../backends.html#pytket.backends.backendresult.BackendResult.from_dict">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">res_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;BackendResult&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct BackendResult object from JSON serializable dictionary</span>
+<span class="sd">         representation, as generated by BackendResult.to_dict.</span>
+
+<span class="sd">        :return: Instance of BackendResult constructed from dictionary.</span>
+<span class="sd">        :rtype: BackendResult</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">init_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="o">.</span><span class="n">fromkeys</span><span class="p">(</span>
+            <span class="p">(</span>
+                <span class="s2">&quot;q_bits&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;c_bits&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;shots&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;counts&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;state&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;unitary&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;density_matrix&quot;</span><span class="p">,</span>
+            <span class="p">)</span>
+        <span class="p">)</span>
+
+        <span class="k">if</span> <span class="s2">&quot;qubits&quot;</span> <span class="ow">in</span> <span class="n">res_dict</span><span class="p">:</span>
+            <span class="n">init_dict</span><span class="p">[</span><span class="s2">&quot;q_bits&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">Qubit</span><span class="o">.</span><span class="n">from_list</span><span class="p">(</span><span class="n">tup</span><span class="p">)</span> <span class="k">for</span> <span class="n">tup</span> <span class="ow">in</span> <span class="n">res_dict</span><span class="p">[</span><span class="s2">&quot;qubits&quot;</span><span class="p">]]</span>
+        <span class="k">if</span> <span class="s2">&quot;bits&quot;</span> <span class="ow">in</span> <span class="n">res_dict</span><span class="p">:</span>
+            <span class="n">init_dict</span><span class="p">[</span><span class="s2">&quot;c_bits&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span><span class="n">Bit</span><span class="o">.</span><span class="n">from_list</span><span class="p">(</span><span class="n">tup</span><span class="p">)</span> <span class="k">for</span> <span class="n">tup</span> <span class="ow">in</span> <span class="n">res_dict</span><span class="p">[</span><span class="s2">&quot;bits&quot;</span><span class="p">]]</span>
+        <span class="k">if</span> <span class="s2">&quot;shots&quot;</span> <span class="ow">in</span> <span class="n">res_dict</span><span class="p">:</span>
+            <span class="n">init_dict</span><span class="p">[</span><span class="s2">&quot;shots&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">OutcomeArray</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">res_dict</span><span class="p">[</span><span class="s2">&quot;shots&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s2">&quot;counts&quot;</span> <span class="ow">in</span> <span class="n">res_dict</span><span class="p">:</span>
+            <span class="n">init_dict</span><span class="p">[</span><span class="s2">&quot;counts&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="n">OutcomeArray</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">elem</span><span class="p">[</span><span class="s2">&quot;outcome&quot;</span><span class="p">]):</span> <span class="n">elem</span><span class="p">[</span><span class="s2">&quot;count&quot;</span><span class="p">]</span>
+                    <span class="k">for</span> <span class="n">elem</span> <span class="ow">in</span> <span class="n">res_dict</span><span class="p">[</span><span class="s2">&quot;counts&quot;</span><span class="p">]</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+        <span class="k">if</span> <span class="s2">&quot;state&quot;</span> <span class="ow">in</span> <span class="n">res_dict</span><span class="p">:</span>
+            <span class="n">init_dict</span><span class="p">[</span><span class="s2">&quot;state&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_complex_ar_from_dict</span><span class="p">(</span><span class="n">res_dict</span><span class="p">[</span><span class="s2">&quot;state&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s2">&quot;unitary&quot;</span> <span class="ow">in</span> <span class="n">res_dict</span><span class="p">:</span>
+            <span class="n">init_dict</span><span class="p">[</span><span class="s2">&quot;unitary&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_complex_ar_from_dict</span><span class="p">(</span><span class="n">res_dict</span><span class="p">[</span><span class="s2">&quot;unitary&quot;</span><span class="p">])</span>
+        <span class="k">if</span> <span class="s2">&quot;density_matrix&quot;</span> <span class="ow">in</span> <span class="n">res_dict</span><span class="p">:</span>
+            <span class="n">init_dict</span><span class="p">[</span><span class="s2">&quot;density_matrix&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">_complex_ar_from_dict</span><span class="p">(</span>
+                <span class="n">res_dict</span><span class="p">[</span><span class="s2">&quot;density_matrix&quot;</span><span class="p">]</span>
+            <span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">BackendResult</span><span class="p">(</span><span class="o">**</span><span class="n">init_dict</span><span class="p">)</span></div></div>
+
+
+<span class="n">T</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_sort_keys_by_val</span><span class="p">(</span><span class="n">dic</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">T</span><span class="p">,</span> <span class="nb">int</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">T</span><span class="p">]:</span>
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">dic</span><span class="p">:</span>
+        <span class="k">return</span> <span class="p">[]</span>
+    <span class="n">vals</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="nb">sorted</span><span class="p">(</span><span class="n">dic</span><span class="o">.</span><span class="n">items</span><span class="p">(),</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
+    <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="n">Iterable</span><span class="p">[</span><span class="n">T</span><span class="p">],</span> <span class="n">vals</span><span class="p">))</span>
+
+
+<span class="k">def</span> <span class="nf">_check_permuted_sequence</span><span class="p">(</span><span class="n">first</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="n">Any</span><span class="p">],</span> <span class="n">second</span><span class="p">:</span> <span class="n">Collection</span><span class="p">[</span><span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">first</span><span class="p">)</span> <span class="o">==</span> <span class="nb">len</span><span class="p">(</span><span class="n">second</span><span class="p">)</span> <span class="ow">and</span> <span class="nb">set</span><span class="p">(</span><span class="n">first</span><span class="p">)</span> <span class="o">==</span> <span class="nb">set</span><span class="p">(</span><span class="n">second</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">_complex_ar_to_dict</span><span class="p">(</span><span class="n">ar</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">]:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Dictionary of real, imaginary parts of complex array, each in list form.&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;real&quot;</span><span class="p">:</span> <span class="n">ar</span><span class="o">.</span><span class="n">real</span><span class="o">.</span><span class="n">tolist</span><span class="p">(),</span> <span class="s2">&quot;imag&quot;</span><span class="p">:</span> <span class="n">ar</span><span class="o">.</span><span class="n">imag</span><span class="o">.</span><span class="n">tolist</span><span class="p">()}</span>
+
+
+<span class="k">def</span> <span class="nf">_complex_ar_from_dict</span><span class="p">(</span><span class="n">dic</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">List</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Construct complex array from dictionary of real and imaginary parts&quot;&quot;&quot;</span>
+
+    <span class="n">out</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="s2">&quot;real&quot;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">complex</span><span class="p">)</span>
+    <span class="n">out</span><span class="o">.</span><span class="n">imag</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="n">dic</span><span class="p">[</span><span class="s2">&quot;imag&quot;</span><span class="p">],</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">out</span>
+</pre></div>
+
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Quantinuum
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2023 Quantinuum.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

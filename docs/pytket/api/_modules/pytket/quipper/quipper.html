@@ -1,0 +1,1111 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pytket.quipper.quipper &#8212; pytket 1.17.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/clipboard.min.js"></script>
+    <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/thebelab-helper.js"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/pytket/quipper/quipper';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/Quantinuum_logo_black.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../../../_static/Quantinuum_logo_white.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faqs.html">TKET FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../opensource.html">Open Source Attribution</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">More Documentation:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket/manual/index.html">Manual</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket-extensions/api/index.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/CQCL/pytket/tree/main/examples">Example notebooks</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../backends.html">pytket.backends</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../circuit.html">pytket.circuit</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../circuit_class.html">pytket.circuit.Circuit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../optype.html">pytket.circuit.OpType</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../classical.html">pytket.circuit.logic_exp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../display.html">pytket.circuit.display</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pauli.html">pytket.pauli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../passes.html">pytket.passes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../predicates.html">pytket.predicates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../partition.html">pytket.partition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qasm.html">pytket.qasm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quipper.html">pytket.quipper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">pytket.architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../placement.html">pytket.placement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../mapping.html">pytket.mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tableau.html">pytket.tableau</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../transform.html">pytket.transform</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tailoring.html">pytket.tailoring</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../wasm.html">pytket.wasm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../zx.html">pytket.zx</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.html">pytket.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging.html">pytket.logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../config.html">pytket.config</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/CQCL/tket" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/CQCL/tket/issues/new?title=Issue%20on%20page%20%2F_modules/pytket/quipper/quipper.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <h1>Source code for pytket.quipper.quipper</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright 2019-2023 Cambridge Quantum Computing</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">unique</span><span class="p">,</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">,</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">math</span> <span class="kn">import</span> <span class="n">pi</span>
+<span class="kn">from</span> <span class="nn">lark</span> <span class="kn">import</span> <span class="n">Lark</span><span class="p">,</span> <span class="n">Transformer</span><span class="p">,</span> <span class="n">Tree</span>
+<span class="kn">from</span> <span class="nn">pytket.circuit</span> <span class="kn">import</span> <span class="n">Circuit</span><span class="p">,</span> <span class="n">OpType</span><span class="p">,</span> <span class="n">CircBox</span>  <span class="c1"># type: ignore</span>
+
+<span class="c1"># The Lark grammar, transformer and type definitions below are adapted from the</span>
+<span class="c1"># code in Eddie Schoute&#39;s `quippy` project</span>
+<span class="c1"># (https://github.com/eddieschoute/quippy). The main enhancements are support</span>
+<span class="c1"># for multi-qubit gates and correct handling of negative controls on qubit 0.</span>
+
+<span class="c1"># Types</span>
+<span class="n">Wire</span> <span class="o">=</span> <span class="n">NamedTuple</span><span class="p">(</span><span class="s2">&quot;Wire&quot;</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;i&quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">)])</span>
+<span class="n">ControlWire</span> <span class="o">=</span> <span class="n">NamedTuple</span><span class="p">(</span><span class="s2">&quot;ControlWire&quot;</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;wire&quot;</span><span class="p">,</span> <span class="n">Wire</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;negative&quot;</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)])</span>
+<span class="n">Control</span> <span class="o">=</span> <span class="n">NamedTuple</span><span class="p">(</span>
+    <span class="s2">&quot;Control&quot;</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;controlled&quot;</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">ControlWire</span><span class="p">]),</span> <span class="p">(</span><span class="s2">&quot;no_control&quot;</span><span class="p">,</span> <span class="nb">bool</span><span class="p">)]</span>
+<span class="p">)</span>
+
+
+<span class="nd">@unique</span>
+<span class="k">class</span> <span class="nc">TypeAssignment_Type</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">Qbit</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">Cbit</span> <span class="o">=</span> <span class="mi">2</span>
+
+
+<span class="n">TypeAssignment</span> <span class="o">=</span> <span class="n">NamedTuple</span><span class="p">(</span>
+    <span class="s2">&quot;TypeAssignment&quot;</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;wire&quot;</span><span class="p">,</span> <span class="n">Wire</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;type&quot;</span><span class="p">,</span> <span class="n">TypeAssignment_Type</span><span class="p">)]</span>
+<span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">Gate</span><span class="p">:</span>
+    <span class="k">pass</span>
+
+
+<span class="nd">@unique</span>
+<span class="k">class</span> <span class="nc">QGate_Op</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">Not</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># Pauli X</span>
+    <span class="n">H</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># Hadamard</span>
+    <span class="n">MultiNot</span> <span class="o">=</span> <span class="mi">3</span>  <span class="c1"># Multi-target not</span>
+    <span class="n">Y</span> <span class="o">=</span> <span class="mi">4</span>  <span class="c1"># Pauli Y</span>
+    <span class="n">Z</span> <span class="o">=</span> <span class="mi">5</span>  <span class="c1"># Pauli Z</span>
+    <span class="n">S</span> <span class="o">=</span> <span class="mi">6</span>  <span class="c1"># Clifford S</span>
+    <span class="n">T</span> <span class="o">=</span> <span class="mi">7</span>  <span class="c1"># Clifford T = sqrt(S)</span>
+    <span class="n">E</span> <span class="o">=</span> <span class="mi">8</span>  <span class="c1"># Clifford E = H S (omega)^3</span>
+    <span class="n">Omega</span> <span class="o">=</span> <span class="mi">9</span>  <span class="c1"># scalar = exp(i pi / 4)</span>
+    <span class="n">V</span> <span class="o">=</span> <span class="mi">10</span>  <span class="c1"># V = sqrt(X)</span>
+    <span class="n">Swap</span> <span class="o">=</span> <span class="mi">11</span>
+    <span class="n">W</span> <span class="o">=</span> <span class="mi">12</span>  <span class="c1"># W is self-inverse and diagonalizes Swap</span>
+    <span class="n">IX</span> <span class="o">=</span> <span class="mi">13</span>  <span class="c1"># i X</span>
+
+
+<span class="k">class</span> <span class="nc">QGate</span><span class="p">(</span>
+    <span class="n">Gate</span><span class="p">,</span>
+    <span class="n">NamedTuple</span><span class="p">(</span>
+        <span class="s2">&quot;QGate&quot;</span><span class="p">,</span>
+        <span class="p">[</span>
+            <span class="p">(</span><span class="s2">&quot;op&quot;</span><span class="p">,</span> <span class="n">QGate_Op</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;inverted&quot;</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;wires&quot;</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Wire</span><span class="p">]),</span>
+            <span class="p">(</span><span class="s2">&quot;control&quot;</span><span class="p">,</span> <span class="n">Control</span><span class="p">),</span>
+        <span class="p">],</span>
+    <span class="p">),</span>
+<span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<span class="nd">@unique</span>
+<span class="k">class</span> <span class="nc">QRot_Op</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">ExpZt</span> <span class="o">=</span> <span class="mi">1</span>  <span class="c1"># exp(−i Z t)</span>
+    <span class="n">R</span> <span class="o">=</span> <span class="mi">2</span>  <span class="c1"># R(2 / 2^t) (notation is confusing but see Monad.hs)</span>
+
+
+<span class="k">class</span> <span class="nc">QRot</span><span class="p">(</span>
+    <span class="n">Gate</span><span class="p">,</span>
+    <span class="n">NamedTuple</span><span class="p">(</span>
+        <span class="s2">&quot;QRot&quot;</span><span class="p">,</span>
+        <span class="p">[(</span><span class="s2">&quot;op&quot;</span><span class="p">,</span> <span class="n">QRot_Op</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;inverted&quot;</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;timestep&quot;</span><span class="p">,</span> <span class="nb">float</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;wire&quot;</span><span class="p">,</span> <span class="n">Wire</span><span class="p">)],</span>
+    <span class="p">),</span>
+<span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">QInit</span><span class="p">(</span><span class="n">Gate</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">(</span><span class="s2">&quot;QInit&quot;</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;wire&quot;</span><span class="p">,</span> <span class="n">Wire</span><span class="p">)])):</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">CInit</span><span class="p">(</span><span class="n">Gate</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">(</span><span class="s2">&quot;CInit&quot;</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;wire&quot;</span><span class="p">,</span> <span class="n">Wire</span><span class="p">)])):</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">QTerm</span><span class="p">(</span><span class="n">Gate</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">(</span><span class="s2">&quot;QTerm&quot;</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;wire&quot;</span><span class="p">,</span> <span class="n">Wire</span><span class="p">)])):</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">CTerm</span><span class="p">(</span><span class="n">Gate</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">(</span><span class="s2">&quot;CTerm&quot;</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;value&quot;</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;wire&quot;</span><span class="p">,</span> <span class="n">Wire</span><span class="p">)])):</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">QMeas</span><span class="p">(</span><span class="n">Gate</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">(</span><span class="s2">&quot;QMeas&quot;</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;wire&quot;</span><span class="p">,</span> <span class="n">Wire</span><span class="p">)])):</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">QDiscard</span><span class="p">(</span><span class="n">Gate</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">(</span><span class="s2">&quot;QDiscard&quot;</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;wire&quot;</span><span class="p">,</span> <span class="n">Wire</span><span class="p">)])):</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">CDiscard</span><span class="p">(</span><span class="n">Gate</span><span class="p">,</span> <span class="n">NamedTuple</span><span class="p">(</span><span class="s2">&quot;CDiscard&quot;</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;wire&quot;</span><span class="p">,</span> <span class="n">Wire</span><span class="p">)])):</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">SubroutineCall</span><span class="p">(</span>
+    <span class="n">Gate</span><span class="p">,</span>
+    <span class="n">NamedTuple</span><span class="p">(</span>
+        <span class="s2">&quot;SubroutineCall&quot;</span><span class="p">,</span>
+        <span class="p">[</span>
+            <span class="p">(</span><span class="s2">&quot;repetitions&quot;</span><span class="p">,</span> <span class="nb">int</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;shape&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;inverted&quot;</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;inputs&quot;</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Wire</span><span class="p">]),</span>
+            <span class="p">(</span><span class="s2">&quot;outputs&quot;</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Wire</span><span class="p">]),</span>
+            <span class="p">(</span><span class="s2">&quot;control&quot;</span><span class="p">,</span> <span class="n">Control</span><span class="p">),</span>
+        <span class="p">],</span>
+    <span class="p">),</span>
+<span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<span class="k">class</span> <span class="nc">Comment</span><span class="p">(</span>
+    <span class="n">Gate</span><span class="p">,</span>
+    <span class="n">NamedTuple</span><span class="p">(</span>
+        <span class="s2">&quot;Comment&quot;</span><span class="p">,</span>
+        <span class="p">[</span>
+            <span class="p">(</span><span class="s2">&quot;comment&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;inverted&quot;</span><span class="p">,</span> <span class="nb">bool</span><span class="p">),</span>
+            <span class="p">(</span><span class="s2">&quot;wire_comments&quot;</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Wire</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]),</span>
+        <span class="p">],</span>
+    <span class="p">),</span>
+<span class="p">):</span>
+    <span class="k">pass</span>
+
+
+<span class="n">Program</span> <span class="o">=</span> <span class="n">NamedTuple</span><span class="p">(</span>
+    <span class="s2">&quot;Program&quot;</span><span class="p">,</span>
+    <span class="p">[</span>
+        <span class="p">(</span><span class="s2">&quot;inputs&quot;</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">TypeAssignment</span><span class="p">]),</span>
+        <span class="p">(</span><span class="s2">&quot;gates&quot;</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Gate</span><span class="p">]),</span>
+        <span class="p">(</span><span class="s2">&quot;outputs&quot;</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">TypeAssignment</span><span class="p">]),</span>
+    <span class="p">],</span>
+<span class="p">)</span>
+
+
+<span class="nd">@unique</span>
+<span class="k">class</span> <span class="nc">Subroutine_Control</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">yes</span> <span class="o">=</span> <span class="mi">1</span>
+    <span class="n">no</span> <span class="o">=</span> <span class="mi">2</span>
+    <span class="n">classically</span> <span class="o">=</span> <span class="mi">3</span>
+
+
+<span class="n">Subroutine</span> <span class="o">=</span> <span class="n">NamedTuple</span><span class="p">(</span>
+    <span class="s2">&quot;Subroutine&quot;</span><span class="p">,</span>
+    <span class="p">[</span>
+        <span class="p">(</span><span class="s2">&quot;name&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;shape&quot;</span><span class="p">,</span> <span class="nb">str</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;controllable&quot;</span><span class="p">,</span> <span class="n">Subroutine_Control</span><span class="p">),</span>
+        <span class="p">(</span><span class="s2">&quot;circuit&quot;</span><span class="p">,</span> <span class="n">Program</span><span class="p">),</span>
+    <span class="p">],</span>
+<span class="p">)</span>
+<span class="n">Start</span> <span class="o">=</span> <span class="n">NamedTuple</span><span class="p">(</span><span class="s2">&quot;Start&quot;</span><span class="p">,</span> <span class="p">[(</span><span class="s2">&quot;circuit&quot;</span><span class="p">,</span> <span class="n">Program</span><span class="p">),</span> <span class="p">(</span><span class="s2">&quot;subroutines&quot;</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Subroutine</span><span class="p">])])</span>
+
+<span class="c1"># Transformer</span>
+<span class="k">class</span> <span class="nc">QuipperTransformer</span><span class="p">(</span><span class="n">Transformer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">int</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">int</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">float</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">float</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">float</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">string</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">wire</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Wire</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Wire</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="n">wire_list</span> <span class="o">=</span> <span class="nb">list</span>
+
+    <span class="k">def</span> <span class="nf">wire_string_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tuple</span><span class="p">[</span><span class="n">Wire</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]:</span>
+        <span class="n">wires</span> <span class="o">=</span> <span class="p">(</span><span class="n">el</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">el</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span>
+        <span class="n">labels</span> <span class="o">=</span> <span class="p">(</span><span class="n">el</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">el</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="k">if</span> <span class="n">i</span> <span class="o">%</span> <span class="mi">2</span> <span class="o">==</span> <span class="mi">1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">wires</span><span class="p">,</span> <span class="n">labels</span><span class="p">))</span>
+
+    <span class="k">def</span> <span class="nf">pos_control_wire</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ControlWire</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ControlWire</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="kc">False</span><span class="p">)</span>
+
+    <span class="n">control_wire_list</span> <span class="o">=</span> <span class="nb">list</span>
+
+    <span class="k">def</span> <span class="nf">neg_control_wire</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ControlWire</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ControlWire</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">type_assignment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">TypeAssignment</span><span class="p">:</span>
+        <span class="n">ty</span> <span class="o">=</span> <span class="n">TypeAssignment_Type</span><span class="o">.</span><span class="n">Qbit</span> <span class="k">if</span> <span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;Qbit&quot;</span> <span class="k">else</span> <span class="n">TypeAssignment_Type</span><span class="o">.</span><span class="n">Cbit</span>
+        <span class="k">return</span> <span class="n">TypeAssignment</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">ty</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">arity</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Tree</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">qgate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QGate</span><span class="p">:</span>
+        <span class="n">ops</span> <span class="o">=</span> <span class="n">QGate_Op</span>
+        <span class="n">n</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+        <span class="k">if</span> <span class="n">n</span> <span class="o">==</span> <span class="s2">&quot;not&quot;</span> <span class="ow">or</span> <span class="n">n</span> <span class="o">==</span> <span class="s2">&quot;x&quot;</span> <span class="ow">or</span> <span class="n">n</span> <span class="o">==</span> <span class="s2">&quot;X&quot;</span><span class="p">:</span>
+            <span class="n">op</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">Not</span>
+        <span class="k">elif</span> <span class="n">n</span> <span class="o">==</span> <span class="s2">&quot;H&quot;</span><span class="p">:</span>
+            <span class="n">op</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">H</span>
+        <span class="k">elif</span> <span class="n">n</span> <span class="o">==</span> <span class="s2">&quot;multinot&quot;</span><span class="p">:</span>
+            <span class="n">op</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">MultiNot</span>
+        <span class="k">elif</span> <span class="n">n</span> <span class="o">==</span> <span class="s2">&quot;Y&quot;</span><span class="p">:</span>
+            <span class="n">op</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">Y</span>
+        <span class="k">elif</span> <span class="n">n</span> <span class="o">==</span> <span class="s2">&quot;Z&quot;</span><span class="p">:</span>
+            <span class="n">op</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">Z</span>
+        <span class="k">elif</span> <span class="n">n</span> <span class="o">==</span> <span class="s2">&quot;S&quot;</span><span class="p">:</span>
+            <span class="n">op</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">S</span>
+        <span class="k">elif</span> <span class="n">n</span> <span class="o">==</span> <span class="s2">&quot;E&quot;</span><span class="p">:</span>
+            <span class="n">op</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">E</span>
+        <span class="k">elif</span> <span class="n">n</span> <span class="o">==</span> <span class="s2">&quot;T&quot;</span><span class="p">:</span>
+            <span class="n">op</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">T</span>
+        <span class="k">elif</span> <span class="n">n</span> <span class="o">==</span> <span class="s2">&quot;V&quot;</span><span class="p">:</span>
+            <span class="n">op</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">V</span>
+        <span class="k">elif</span> <span class="n">n</span> <span class="o">==</span> <span class="s2">&quot;swap&quot;</span><span class="p">:</span>
+            <span class="n">op</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">Swap</span>
+        <span class="k">elif</span> <span class="n">n</span> <span class="o">==</span> <span class="s2">&quot;omega&quot;</span><span class="p">:</span>
+            <span class="n">op</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">Omega</span>
+        <span class="k">elif</span> <span class="n">n</span> <span class="o">==</span> <span class="s2">&quot;iX&quot;</span><span class="p">:</span>
+            <span class="n">op</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">IX</span>
+        <span class="k">elif</span> <span class="n">n</span> <span class="o">==</span> <span class="s2">&quot;W&quot;</span><span class="p">:</span>
+            <span class="n">op</span> <span class="o">=</span> <span class="n">ops</span><span class="o">.</span><span class="n">W</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;Unknown QGate operation: </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">n</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">QGate</span><span class="p">(</span><span class="n">op</span><span class="o">=</span><span class="n">op</span><span class="p">,</span> <span class="n">inverted</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">children</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wires</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">control</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">3</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">qrot1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QRot</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">QRot</span><span class="p">(</span>
+            <span class="n">op</span><span class="o">=</span><span class="n">QRot_Op</span><span class="o">.</span><span class="n">ExpZt</span><span class="p">,</span> <span class="n">timestep</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">inverted</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">children</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wire</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">qrot2</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QRot</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">QRot</span><span class="p">(</span>
+            <span class="n">op</span><span class="o">=</span><span class="n">QRot_Op</span><span class="o">.</span><span class="n">R</span><span class="p">,</span> <span class="n">timestep</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">inverted</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">children</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wire</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">qinit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QInit</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">QInit</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;QInit1&quot;</span><span class="p">),</span> <span class="n">wire</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">cinit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CInit</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">CInit</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;CInit1&quot;</span><span class="p">),</span> <span class="n">wire</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">qterm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QTerm</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">QTerm</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;QTerm1&quot;</span><span class="p">),</span> <span class="n">wire</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">cterm</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CTerm</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">CTerm</span><span class="p">(</span><span class="n">value</span><span class="o">=</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;CTerm1&quot;</span><span class="p">),</span> <span class="n">wire</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">qmeas</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QMeas</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">QMeas</span><span class="p">(</span><span class="n">wire</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">qdiscard</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">QDiscard</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">QDiscard</span><span class="p">(</span><span class="n">wire</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">cdiscard</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CDiscard</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">CDiscard</span><span class="p">(</span><span class="n">wire</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">subroutine_call</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">SubroutineCall</span><span class="p">:</span>
+        <span class="n">repetitions</span> <span class="o">=</span> <span class="mi">1</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="nb">int</span><span class="p">):</span>
+            <span class="n">repetitions</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+            <span class="n">t</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">SubroutineCall</span><span class="p">(</span>
+            <span class="n">repetitions</span><span class="o">=</span><span class="n">repetitions</span><span class="p">,</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span>
+            <span class="n">shape</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span>
+            <span class="n">inverted</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">children</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span>
+            <span class="n">inputs</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">3</span><span class="p">],</span>
+            <span class="n">outputs</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">4</span><span class="p">],</span>
+            <span class="n">control</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">5</span><span class="p">],</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">comment</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Comment</span><span class="p">:</span>
+        <span class="n">wire_comments</span> <span class="o">=</span> <span class="n">t</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="k">else</span> <span class="kc">None</span>
+        <span class="k">return</span> <span class="n">Comment</span><span class="p">(</span>
+            <span class="n">comment</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">inverted</span><span class="o">=</span><span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">children</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span><span class="p">,</span> <span class="n">wire_comments</span><span class="o">=</span><span class="n">wire_comments</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">control_app</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Control</span><span class="p">:</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="n">t</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Control</span><span class="p">(</span><span class="n">controlled</span><span class="o">=</span><span class="nb">list</span><span class="p">(),</span> <span class="n">no_control</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">t</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Control</span><span class="p">(</span><span class="n">controlled</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">no_control</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;with nocontrol&quot;</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">Control</span><span class="p">(</span><span class="n">controlled</span><span class="o">=</span><span class="nb">list</span><span class="p">(),</span> <span class="n">no_control</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Control</span><span class="p">(</span><span class="n">controlled</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">no_control</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">circuit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Program</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">Program</span><span class="p">(</span><span class="n">inputs</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">gates</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">:</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">outputs</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">subroutine</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Subroutine</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">t</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;yes&quot;</span><span class="p">:</span>
+            <span class="n">controllable</span> <span class="o">=</span> <span class="n">Subroutine_Control</span><span class="o">.</span><span class="n">yes</span>
+        <span class="k">elif</span> <span class="n">t</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">==</span> <span class="s2">&quot;no&quot;</span><span class="p">:</span>
+            <span class="n">controllable</span> <span class="o">=</span> <span class="n">Subroutine_Control</span><span class="o">.</span><span class="n">no</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">controllable</span> <span class="o">=</span> <span class="n">Subroutine_Control</span><span class="o">.</span><span class="n">classically</span>
+        <span class="k">return</span> <span class="n">Subroutine</span><span class="p">(</span>
+            <span class="n">name</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">shape</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">controllable</span><span class="o">=</span><span class="n">controllable</span><span class="p">,</span> <span class="n">circuit</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+        <span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Start</span><span class="p">:</span>
+        <span class="n">circuit</span> <span class="o">=</span> <span class="n">t</span><span class="o">.</span><span class="n">pop</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">Start</span><span class="p">(</span><span class="n">circuit</span><span class="p">,</span> <span class="nb">list</span><span class="p">(</span><span class="n">t</span><span class="p">))</span>
+
+
+<span class="c1"># Utility function</span>
+<span class="k">def</span> <span class="nf">allowed</span><span class="p">(</span><span class="n">op</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">arity</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">op</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;Not&quot;</span><span class="p">,</span> <span class="s2">&quot;IX&quot;</span><span class="p">,</span> <span class="s2">&quot;H&quot;</span><span class="p">,</span> <span class="s2">&quot;Y&quot;</span><span class="p">,</span> <span class="s2">&quot;Z&quot;</span><span class="p">,</span> <span class="s2">&quot;S&quot;</span><span class="p">,</span> <span class="s2">&quot;T&quot;</span><span class="p">,</span> <span class="s2">&quot;E&quot;</span><span class="p">,</span> <span class="s2">&quot;Omega&quot;</span><span class="p">,</span> <span class="s2">&quot;V&quot;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">arity</span> <span class="o">==</span> <span class="mi">1</span>
+    <span class="k">elif</span> <span class="n">op</span> <span class="ow">in</span> <span class="p">[</span><span class="s2">&quot;Swap&quot;</span><span class="p">,</span> <span class="s2">&quot;W&quot;</span><span class="p">]:</span>
+        <span class="k">return</span> <span class="n">arity</span> <span class="o">==</span> <span class="mi">2</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="c1"># MultiNot</span>
+        <span class="k">return</span> <span class="kc">True</span>
+
+
+<span class="c1"># Class for constructing a pytket Circuit from a parsed Quipper program</span>
+<span class="k">class</span> <span class="nc">CircuitMaker</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">subr</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Subroutine</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">subrd</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">s</span><span class="o">.</span><span class="n">name</span><span class="p">,</span> <span class="n">s</span><span class="p">)</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">subr</span><span class="p">)</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">subrd</span><span class="p">)</span> <span class="o">!=</span> <span class="nb">len</span><span class="p">(</span><span class="n">subr</span><span class="p">):</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Repeated subroutine names&quot;</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">make_circuit</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">circ</span><span class="p">:</span> <span class="n">Program</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Circuit</span><span class="p">:</span>
+        <span class="n">inps</span><span class="p">,</span> <span class="n">outs</span><span class="p">,</span> <span class="n">gates</span> <span class="o">=</span> <span class="n">circ</span><span class="o">.</span><span class="n">inputs</span><span class="p">,</span> <span class="n">circ</span><span class="o">.</span><span class="n">outputs</span><span class="p">,</span> <span class="n">circ</span><span class="o">.</span><span class="n">gates</span>
+        <span class="k">if</span> <span class="n">inps</span> <span class="o">!=</span> <span class="n">outs</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Inputs don&#39;t match outputs&quot;</span><span class="p">)</span>
+        <span class="n">qbits</span> <span class="o">=</span> <span class="p">[</span><span class="n">inp</span><span class="o">.</span><span class="n">wire</span><span class="o">.</span><span class="n">i</span> <span class="k">for</span> <span class="n">inp</span> <span class="ow">in</span> <span class="n">inps</span> <span class="k">if</span> <span class="n">inp</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Qbit&quot;</span><span class="p">]</span>
+        <span class="n">cbits</span> <span class="o">=</span> <span class="p">[</span><span class="n">inp</span><span class="o">.</span><span class="n">wire</span><span class="o">.</span><span class="n">i</span> <span class="k">for</span> <span class="n">inp</span> <span class="ow">in</span> <span class="n">inps</span> <span class="k">if</span> <span class="n">inp</span><span class="o">.</span><span class="n">type</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;Cbit&quot;</span><span class="p">]</span>
+        <span class="n">n_qbits</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">qbits</span><span class="p">)</span>
+        <span class="n">n_cbits</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">cbits</span><span class="p">)</span>
+        <span class="c1"># Construct mappings from wire labels to tket indices.</span>
+        <span class="n">tkqbits</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">qbits</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_qbits</span><span class="p">))</span>
+        <span class="n">tkcbits</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">((</span><span class="n">cbits</span><span class="p">[</span><span class="n">i</span><span class="p">],</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_cbits</span><span class="p">))</span>
+        <span class="c1"># Construct circuit in tket.</span>
+        <span class="n">c</span> <span class="o">=</span> <span class="n">Circuit</span><span class="p">(</span><span class="n">n_qbits</span><span class="p">,</span> <span class="n">n_cbits</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">gate</span> <span class="ow">in</span> <span class="n">gates</span><span class="p">:</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gate</span><span class="p">,</span> <span class="n">SubroutineCall</span><span class="p">):</span>
+                <span class="n">s</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">subrd</span><span class="p">[</span><span class="n">gate</span><span class="o">.</span><span class="n">name</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">gate</span><span class="o">.</span><span class="n">shape</span> <span class="o">!=</span> <span class="n">s</span><span class="o">.</span><span class="n">shape</span><span class="p">:</span>
+                    <span class="c1"># Just a sanity check, otherwise we assume &#39;shape&#39; OK.</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Mismatched shape in subroutine call&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">gate</span><span class="o">.</span><span class="n">inputs</span> <span class="o">!=</span> <span class="n">gate</span><span class="o">.</span><span class="n">outputs</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Mismatched outputs in subroutine call&quot;</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">gate</span><span class="o">.</span><span class="n">control</span><span class="o">.</span><span class="n">controlled</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Controls on subroutine&quot;</span><span class="p">)</span>
+                <span class="n">subcirc</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">make_circuit</span><span class="p">(</span><span class="n">s</span><span class="o">.</span><span class="n">circuit</span><span class="p">)</span>  <span class="c1"># recurse</span>
+                <span class="k">if</span> <span class="n">gate</span><span class="o">.</span><span class="n">inverted</span><span class="p">:</span>
+                    <span class="n">subcirc</span> <span class="o">=</span> <span class="n">subcirc</span><span class="o">.</span><span class="n">dagger</span><span class="p">()</span>
+                <span class="n">cbox</span> <span class="o">=</span> <span class="n">CircBox</span><span class="p">(</span><span class="n">subcirc</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">gate</span><span class="o">.</span><span class="n">repetitions</span><span class="p">):</span>
+                    <span class="n">c</span><span class="o">.</span><span class="n">add_circbox</span><span class="p">(</span><span class="n">cbox</span><span class="p">,</span> <span class="p">[</span><span class="n">wire</span><span class="o">.</span><span class="n">i</span> <span class="k">for</span> <span class="n">wire</span> <span class="ow">in</span> <span class="n">gate</span><span class="o">.</span><span class="n">inputs</span><span class="p">])</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gate</span><span class="p">,</span> <span class="n">QGate</span><span class="p">):</span>
+                <span class="c1"># The `nocontrol&#39; flag is irrelevant here.</span>
+                <span class="n">op</span> <span class="o">=</span> <span class="n">gate</span><span class="o">.</span><span class="n">op</span><span class="o">.</span><span class="n">name</span>
+                <span class="n">qctrls</span><span class="p">,</span> <span class="n">neg_qctrls</span><span class="p">,</span> <span class="n">cctrls</span> <span class="o">=</span> <span class="p">[],</span> <span class="p">[],</span> <span class="p">[]</span>
+                <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">gate</span><span class="o">.</span><span class="n">control</span><span class="o">.</span><span class="n">controlled</span><span class="p">:</span>
+                    <span class="n">idx</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">wire</span><span class="o">.</span><span class="n">i</span>  <span class="c1"># type: ignore</span>
+                    <span class="n">is_neg</span> <span class="o">=</span> <span class="n">w</span><span class="o">.</span><span class="n">children</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">negative</span>  <span class="c1"># type: ignore</span>
+                    <span class="k">if</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">qbits</span><span class="p">:</span>
+                        <span class="n">tkqidx</span> <span class="o">=</span> <span class="n">tkqbits</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+                        <span class="n">qctrls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tkqidx</span><span class="p">)</span>
+                        <span class="k">if</span> <span class="n">is_neg</span><span class="p">:</span>
+                            <span class="n">neg_qctrls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tkqidx</span><span class="p">)</span>
+                    <span class="k">elif</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">cbits</span><span class="p">:</span>
+                        <span class="n">tkcidx</span> <span class="o">=</span> <span class="n">tkcbits</span><span class="p">[</span><span class="n">idx</span><span class="p">]</span>
+                        <span class="n">cctrls</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">tkcidx</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">cctrls</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Classical controls&quot;</span><span class="p">)</span>
+                <span class="n">inv</span> <span class="o">=</span> <span class="n">gate</span><span class="o">.</span><span class="n">inverted</span>
+                <span class="n">wires</span> <span class="o">=</span> <span class="p">[</span><span class="n">tkqbits</span><span class="p">[</span><span class="n">wire</span><span class="o">.</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">wire</span> <span class="ow">in</span> <span class="n">gate</span><span class="o">.</span><span class="n">wires</span><span class="p">]</span>  <span class="c1"># all must be qubits</span>
+                <span class="n">n_wires</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">wires</span><span class="p">)</span>
+                <span class="k">if</span> <span class="ow">not</span> <span class="n">allowed</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">n_wires</span><span class="p">):</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;&#39;</span><span class="si">%s</span><span class="s2">&#39; gate with </span><span class="si">%d</span><span class="s2"> wires&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">n_wires</span><span class="p">))</span>
+                <span class="n">n_ctrls</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">qctrls</span><span class="p">)</span>
+                <span class="c1"># Negative control values must be handled using NOT gates</span>
+                <span class="c1"># either side.</span>
+                <span class="k">for</span> <span class="n">ctrl</span> <span class="ow">in</span> <span class="n">neg_qctrls</span><span class="p">:</span>
+                    <span class="n">c</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="n">ctrl</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="s2">&quot;Not&quot;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">n_ctrls</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="n">wires</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="k">elif</span> <span class="n">n_ctrls</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">CX</span><span class="p">(</span><span class="n">qctrls</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">wires</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="k">elif</span> <span class="n">n_ctrls</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">CCX</span><span class="p">(</span><span class="n">qctrls</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">qctrls</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">wires</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">add_gate</span><span class="p">(</span><span class="n">OpType</span><span class="o">.</span><span class="n">CnX</span><span class="p">,</span> <span class="n">qctrls</span> <span class="o">+</span> <span class="n">wires</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">op</span> <span class="o">==</span> <span class="s2">&quot;IX&quot;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">n_ctrls</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="n">wires</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>  <span class="c1"># ignore phase</span>
+                    <span class="k">elif</span> <span class="n">n_ctrls</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">S</span><span class="p">(</span><span class="n">qctrls</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">CX</span><span class="p">(</span><span class="n">qctrls</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">wires</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;IX with more than 1 control&quot;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">op</span> <span class="o">==</span> <span class="s2">&quot;MultiNot&quot;</span><span class="p">:</span>
+                    <span class="c1"># Implement as a series of (controlled) X gates.</span>
+                    <span class="k">for</span> <span class="n">wire</span> <span class="ow">in</span> <span class="n">wires</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">n_ctrls</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                            <span class="n">c</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="n">wire</span><span class="p">)</span>
+                        <span class="k">elif</span> <span class="n">n_ctrls</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                            <span class="n">c</span><span class="o">.</span><span class="n">CX</span><span class="p">(</span><span class="n">qctrls</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">wire</span><span class="p">)</span>
+                        <span class="k">elif</span> <span class="n">n_ctrls</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+                            <span class="n">c</span><span class="o">.</span><span class="n">CCX</span><span class="p">(</span><span class="n">qctrls</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">qctrls</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">wire</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">c</span><span class="o">.</span><span class="n">add_gate</span><span class="p">(</span><span class="n">OpType</span><span class="o">.</span><span class="n">CnX</span><span class="p">,</span> <span class="n">qctrls</span> <span class="o">+</span> <span class="p">[</span><span class="n">wire</span><span class="p">])</span>
+                <span class="k">elif</span> <span class="n">op</span> <span class="o">==</span> <span class="s2">&quot;H&quot;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">n_ctrls</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">H</span><span class="p">(</span><span class="n">wires</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="k">elif</span> <span class="n">n_ctrls</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">CH</span><span class="p">(</span><span class="n">qctrls</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">wires</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;H with more than 1 control&quot;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">op</span> <span class="o">==</span> <span class="s2">&quot;Y&quot;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">n_ctrls</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">Y</span><span class="p">(</span><span class="n">wires</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="k">elif</span> <span class="n">n_ctrls</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">CY</span><span class="p">(</span><span class="n">qctrls</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">wires</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Y with more than 1 control&quot;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">op</span> <span class="o">==</span> <span class="s2">&quot;Z&quot;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">n_ctrls</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">Z</span><span class="p">(</span><span class="n">wires</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="k">elif</span> <span class="n">n_ctrls</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">CZ</span><span class="p">(</span><span class="n">qctrls</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">wires</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Z with more than 1 control&quot;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">op</span> <span class="o">==</span> <span class="s2">&quot;S&quot;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">n_ctrls</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">inv</span><span class="p">:</span>
+                            <span class="n">c</span><span class="o">.</span><span class="n">Sdg</span><span class="p">(</span><span class="n">wires</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">c</span><span class="o">.</span><span class="n">S</span><span class="p">(</span><span class="n">wires</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="k">elif</span> <span class="n">n_ctrls</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="c1"># S = U1(1/2)</span>
+                        <span class="k">if</span> <span class="n">inv</span><span class="p">:</span>
+                            <span class="n">c</span><span class="o">.</span><span class="n">add_gate</span><span class="p">(</span><span class="n">OpType</span><span class="o">.</span><span class="n">CU1</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.5</span><span class="p">,</span> <span class="p">[</span><span class="n">qctrls</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">wires</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">c</span><span class="o">.</span><span class="n">add_gate</span><span class="p">(</span><span class="n">OpType</span><span class="o">.</span><span class="n">CU1</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.5</span><span class="p">,</span> <span class="p">[</span><span class="n">qctrls</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">wires</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;S with more than 1 control&quot;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">op</span> <span class="o">==</span> <span class="s2">&quot;T&quot;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">n_ctrls</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">inv</span><span class="p">:</span>
+                            <span class="n">c</span><span class="o">.</span><span class="n">Tdg</span><span class="p">(</span><span class="n">wires</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">c</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">wires</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="k">elif</span> <span class="n">n_ctrls</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="c1"># T = U1(1/4)</span>
+                        <span class="k">if</span> <span class="n">inv</span><span class="p">:</span>
+                            <span class="n">c</span><span class="o">.</span><span class="n">add_gate</span><span class="p">(</span><span class="n">OpType</span><span class="o">.</span><span class="n">CU1</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.25</span><span class="p">,</span> <span class="p">[</span><span class="n">qctrls</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">wires</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">c</span><span class="o">.</span><span class="n">add_gate</span><span class="p">(</span><span class="n">OpType</span><span class="o">.</span><span class="n">CU1</span><span class="p">,</span> <span class="o">+</span><span class="mf">0.25</span><span class="p">,</span> <span class="p">[</span><span class="n">qctrls</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">wires</span><span class="p">[</span><span class="mi">0</span><span class="p">]])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;T with more than 1 control&quot;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">op</span> <span class="o">==</span> <span class="s2">&quot;E&quot;</span><span class="p">:</span>
+                    <span class="c1"># E = H S^3 omega^3 = H Sdg up to a scalar.</span>
+                    <span class="k">if</span> <span class="n">n_ctrls</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">inv</span><span class="p">:</span>
+                            <span class="n">c</span><span class="o">.</span><span class="n">H</span><span class="p">(</span><span class="n">wires</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                            <span class="n">c</span><span class="o">.</span><span class="n">S</span><span class="p">(</span><span class="n">wires</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">c</span><span class="o">.</span><span class="n">Sdg</span><span class="p">(</span><span class="n">wires</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                            <span class="n">c</span><span class="o">.</span><span class="n">H</span><span class="p">(</span><span class="n">wires</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Controlled E&quot;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">op</span> <span class="o">==</span> <span class="s2">&quot;Omega&quot;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">n_ctrls</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="k">pass</span>  <span class="c1"># ignore phase</span>
+                    <span class="k">elif</span> <span class="n">n_ctrls</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">Rz</span><span class="p">(</span><span class="n">qctrls</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="mf">0.25</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Omega with more than 1 control&quot;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">op</span> <span class="o">==</span> <span class="s2">&quot;V&quot;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">n_ctrls</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="k">if</span> <span class="n">inv</span><span class="p">:</span>
+                            <span class="n">c</span><span class="o">.</span><span class="n">add_gate</span><span class="p">(</span><span class="n">OpType</span><span class="o">.</span><span class="n">Vdg</span><span class="p">,</span> <span class="n">wires</span><span class="p">)</span>
+                        <span class="k">else</span><span class="p">:</span>
+                            <span class="n">c</span><span class="o">.</span><span class="n">add_gate</span><span class="p">(</span><span class="n">OpType</span><span class="o">.</span><span class="n">V</span><span class="p">,</span> <span class="n">wires</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Controlled V&quot;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">op</span> <span class="o">==</span> <span class="s2">&quot;Swap&quot;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">n_ctrls</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">SWAP</span><span class="p">(</span><span class="n">wires</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">wires</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="k">elif</span> <span class="n">n_ctrls</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">CSWAP</span><span class="p">(</span><span class="n">qctrls</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">wires</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">wires</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;SWAP with more than 2 controls&quot;</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">op</span> <span class="o">==</span> <span class="s2">&quot;W&quot;</span><span class="p">:</span>
+                    <span class="c1"># W is self-inverse.</span>
+                    <span class="c1"># Is there a simpler way to synthesize this?</span>
+                    <span class="k">if</span> <span class="n">n_ctrls</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">Rz</span><span class="p">(</span><span class="mf">1.25</span><span class="p">,</span> <span class="n">wires</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">Ry</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">wires</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">wires</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">Ry</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">wires</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">CX</span><span class="p">(</span><span class="n">wires</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">wires</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">Ry</span><span class="p">(</span><span class="o">-</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">wires</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">CX</span><span class="p">(</span><span class="n">wires</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">wires</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">Ry</span><span class="p">(</span><span class="mf">0.25</span><span class="p">,</span> <span class="n">wires</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">CX</span><span class="p">(</span><span class="n">wires</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">wires</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">T</span><span class="p">(</span><span class="n">wires</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">Ry</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">wires</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">Rz</span><span class="p">(</span><span class="mf">1.25</span><span class="p">,</span> <span class="n">wires</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">Ry</span><span class="p">(</span><span class="mf">1.0</span><span class="p">,</span> <span class="n">wires</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;Controlled W&quot;</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Unknown op type: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">op</span><span class="p">)</span>
+                <span class="c1"># Apply the NOT gates again for the negative controls.</span>
+                <span class="k">for</span> <span class="n">ctrl</span> <span class="ow">in</span> <span class="n">neg_qctrls</span><span class="p">:</span>
+                    <span class="n">c</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="n">ctrl</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gate</span><span class="p">,</span> <span class="n">QRot</span><span class="p">):</span>
+                <span class="n">op</span> <span class="o">=</span> <span class="n">gate</span><span class="o">.</span><span class="n">op</span><span class="o">.</span><span class="n">name</span>
+                <span class="n">inv</span> <span class="o">=</span> <span class="n">gate</span><span class="o">.</span><span class="n">inverted</span>
+                <span class="n">t</span> <span class="o">=</span> <span class="n">gate</span><span class="o">.</span><span class="n">timestep</span>
+                <span class="n">wire</span> <span class="o">=</span> <span class="n">tkqbits</span><span class="p">[</span><span class="n">gate</span><span class="o">.</span><span class="n">wire</span><span class="o">.</span><span class="n">i</span><span class="p">]</span>  <span class="c1"># must be quantum</span>
+                <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="s2">&quot;ExpZt&quot;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">inv</span><span class="p">:</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">Rz</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">t</span> <span class="o">/</span> <span class="n">pi</span><span class="p">,</span> <span class="n">wire</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">Rz</span><span class="p">(</span><span class="mi">2</span> <span class="o">*</span> <span class="n">t</span> <span class="o">/</span> <span class="n">pi</span><span class="p">,</span> <span class="n">wire</span><span class="p">)</span>
+                <span class="k">elif</span> <span class="n">op</span> <span class="o">==</span> <span class="s2">&quot;R&quot;</span><span class="p">:</span>
+                    <span class="k">if</span> <span class="n">inv</span><span class="p">:</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">Rz</span><span class="p">(</span><span class="o">-</span><span class="mi">2</span> <span class="o">/</span> <span class="n">t</span><span class="p">,</span> <span class="n">wire</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">Rz</span><span class="p">(</span><span class="mi">2</span> <span class="o">/</span> <span class="n">t</span><span class="p">,</span> <span class="n">wire</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Unknown op type: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="n">op</span><span class="p">)</span>
+            <span class="c1"># QInit, QTerm, CInit, CTerm represent &#39;temporary&#39; wires that</span>
+            <span class="c1"># only occupy part of a circuit (and can be initialized with 0/1).</span>
+            <span class="c1"># Not supported in pytket.</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gate</span><span class="p">,</span> <span class="n">QInit</span><span class="p">):</span>
+                <span class="n">wire</span> <span class="o">=</span> <span class="n">tkqbits</span><span class="p">[</span><span class="n">gate</span><span class="o">.</span><span class="n">wire</span><span class="o">.</span><span class="n">i</span><span class="p">]</span>  <span class="c1"># must be quantum</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;QInit&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gate</span><span class="p">,</span> <span class="n">CInit</span><span class="p">):</span>
+                <span class="n">wire</span> <span class="o">=</span> <span class="n">tkcbits</span><span class="p">[</span><span class="n">gate</span><span class="o">.</span><span class="n">wire</span><span class="o">.</span><span class="n">i</span><span class="p">]</span>  <span class="c1"># must be clasical</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;CInit&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gate</span><span class="p">,</span> <span class="n">QTerm</span><span class="p">):</span>
+                <span class="n">wire</span> <span class="o">=</span> <span class="n">tkqbits</span><span class="p">[</span><span class="n">gate</span><span class="o">.</span><span class="n">wire</span><span class="o">.</span><span class="n">i</span><span class="p">]</span>  <span class="c1"># must be quantum</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;QTerm&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gate</span><span class="p">,</span> <span class="n">CTerm</span><span class="p">):</span>
+                <span class="n">wire</span> <span class="o">=</span> <span class="n">tkcbits</span><span class="p">[</span><span class="n">gate</span><span class="o">.</span><span class="n">wire</span><span class="o">.</span><span class="n">i</span><span class="p">]</span>  <span class="c1"># must be clasical</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;CTerm&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gate</span><span class="p">,</span> <span class="n">QMeas</span><span class="p">):</span>
+                <span class="c1"># QMeas turns a qubit into a bit.</span>
+                <span class="c1"># Not supported in pytket.</span>
+                <span class="n">wire</span> <span class="o">=</span> <span class="n">tkqbits</span><span class="p">[</span><span class="n">gate</span><span class="o">.</span><span class="n">wire</span><span class="o">.</span><span class="n">i</span><span class="p">]</span>  <span class="c1"># must be quantum</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;QMeas&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gate</span><span class="p">,</span> <span class="n">QDiscard</span><span class="p">):</span>
+                <span class="c1"># QDiscard discards a qubit.</span>
+                <span class="c1"># Not supported in pytket.</span>
+                <span class="n">wire</span> <span class="o">=</span> <span class="n">tkqbits</span><span class="p">[</span><span class="n">gate</span><span class="o">.</span><span class="n">wire</span><span class="o">.</span><span class="n">i</span><span class="p">]</span>  <span class="c1"># must be quantum</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;QDiscard&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gate</span><span class="p">,</span> <span class="n">CDiscard</span><span class="p">):</span>
+                <span class="c1"># CDiscard discards a bit.</span>
+                <span class="c1"># Not supported in pytket.</span>
+                <span class="n">wire</span> <span class="o">=</span> <span class="n">tkcbits</span><span class="p">[</span><span class="n">gate</span><span class="o">.</span><span class="n">wire</span><span class="o">.</span><span class="n">i</span><span class="p">]</span>  <span class="c1"># must be classical</span>
+                <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;CDiscard&quot;</span><span class="p">)</span>
+            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">gate</span><span class="p">,</span> <span class="n">Comment</span><span class="p">):</span>
+                <span class="k">pass</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Unknown gate type: </span><span class="si">%s</span><span class="s2">&quot;</span> <span class="o">%</span> <span class="nb">type</span><span class="p">(</span><span class="n">gate</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">c</span>
+
+
+<div class="viewcode-block" id="circuit_from_quipper"><a class="viewcode-back" href="../../../quipper.html#pytket.quipper.circuit_from_quipper">[docs]</a><span class="k">def</span> <span class="nf">circuit_from_quipper</span><span class="p">(</span><span class="n">input_file</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Circuit</span><span class="p">:</span>
+    <span class="c1"># pylint: disable=C0301</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a pytket :py:class:`Circuit` given a program in Quipper ASCII format.</span>
+<span class="sd">    Limitations (due to current limitations of `pytket`):</span>
+
+<span class="sd">    * Subroutines must be defined over the full set of qubits.</span>
+
+<span class="sd">    * Global phases are ignored.</span>
+
+<span class="sd">    * Only limited support for controlled gates (depending on the gate type).</span>
+
+<span class="sd">    * No support for &#39;QInit&#39; and &#39;QTerm&#39;. All qubits must run from the begining</span>
+<span class="sd">      to the end of the circuit.</span>
+
+<span class="sd">    * No support for the legacy keywords (&#39;QNot&#39;, &#39;QMultinot&#39;, &#39;QHad&#39;, &#39;QSwap&#39;,</span>
+<span class="sd">      &#39;QW&#39;). These are now represented in Quipper as types of &#39;QGate&#39;.</span>
+
+<span class="sd">    * No support for &#39;QMeas&#39; (which in Quipper converts a Q wire to a C wire).</span>
+
+<span class="sd">    * No support for: &#39;GPhase&#39; (global phase), &#39;QPrep&#39;, &#39;QUnprep&#39;, &#39;QDiscard&#39;,</span>
+<span class="sd">      or &#39;DTerm&#39;.</span>
+
+<span class="sd">    * No support for classical operations (&#39;CNot&#39;, &#39;CGate&#39;, &#39;CSwap&#39;, &#39;CInit&#39;,</span>
+<span class="sd">      &#39;CTerm&#39;, &#39;CDiscard&#39;).</span>
+
+<span class="sd">    :param input_file: name of file to read</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="c1"># Read Quipper program from file.</span>
+    <span class="k">with</span> <span class="nb">open</span><span class="p">(</span><span class="n">input_file</span><span class="p">,</span> <span class="s2">&quot;r&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">f</span><span class="p">:</span>
+        <span class="n">quip</span> <span class="o">=</span> <span class="n">f</span><span class="o">.</span><span class="n">read</span><span class="p">()</span>
+
+    <span class="c1"># Parse the circuit using the QuipperTransformer.</span>
+    <span class="n">x</span> <span class="o">=</span> <span class="n">Lark</span><span class="p">(</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        start : circuit subroutine* _NEWLINE*</span>
+<span class="sd">        circuit : &quot;Inputs:&quot; arity (gate _NEWLINE)* &quot;Outputs:&quot; arity</span>
+<span class="sd">        subroutine: _NEWLINE &quot;Subroutine:&quot; string _NEWLINE &quot;Shape:&quot; string _NEWLINE &quot;Controllable:&quot; SUB_CONTROL _NEWLINE circuit</span>
+<span class="sd">        SUB_CONTROL : &quot;yes&quot;</span>
+<span class="sd">            | &quot;no&quot;</span>
+<span class="sd">            | &quot;classically&quot;</span>
+<span class="sd">        arity : type_assignment (&quot;,&quot; type_assignment)* &quot;,&quot;? _NEWLINE</span>
+<span class="sd">        type_assignment : wire &quot;:&quot; TYPE</span>
+<span class="sd">        TYPE: &quot;Qbit&quot;</span>
+<span class="sd">            | &quot;Cbit&quot;</span>
+<span class="sd">        control_app : controlled? NO_CONTROL?</span>
+<span class="sd">        ?controlled : &quot;with controls=[&quot; control_wire_list &quot;]&quot;</span>
+<span class="sd">        NO_CONTROL : &quot;with nocontrol&quot;</span>
+<span class="sd">        ?gate : qgate</span>
+<span class="sd">            | qrot1</span>
+<span class="sd">            | qrot2</span>
+<span class="sd">            | gphase</span>
+<span class="sd">            | cnot</span>
+<span class="sd">            | cgate</span>
+<span class="sd">            | cswap</span>
+<span class="sd">            | qprep</span>
+<span class="sd">            | qunprep</span>
+<span class="sd">            | qinit</span>
+<span class="sd">            | cinit</span>
+<span class="sd">            | qterm</span>
+<span class="sd">            | cterm</span>
+<span class="sd">            | qmeas</span>
+<span class="sd">            | qdiscard</span>
+<span class="sd">            | cdiscard</span>
+<span class="sd">            | dterm</span>
+<span class="sd">            | subroutine_call</span>
+<span class="sd">            | comment</span>
+<span class="sd">        !inversion  : &quot;*&quot;?</span>
+<span class="sd">        qgate       : &quot;QGate[&quot; string &quot;]&quot; inversion &quot;(&quot; wire_list &quot;)&quot; control_app</span>
+<span class="sd">        qrot1       : &quot;QRot[\\&quot;exp(-i%Z)\\&quot;,&quot; float &quot;]&quot; inversion &quot;(&quot; wire &quot;)&quot;</span>
+<span class="sd">        qrot2       : &quot;QRot[\\&quot;R(2pi/%)\\&quot;,&quot; int &quot;]&quot; inversion &quot;(&quot; wire &quot;)&quot;</span>
+<span class="sd">        gphase      : &quot;Gphase() with t=&quot; float control_app &quot;with anchors=[&quot; wire_list &quot;]&quot;</span>
+<span class="sd">        cnot        : &quot;CNot(&quot; wire &quot;)&quot; control_app</span>
+<span class="sd">        cgate       : &quot;CGate[&quot; string &quot;]&quot; inversion &quot;(&quot; wire_list &quot;)&quot; NO_CONTROL?</span>
+<span class="sd">        cswap       : &quot;CSwap(&quot; wire &quot;,&quot; wire &quot;)&quot; control_app</span>
+<span class="sd">        qprep       : &quot;QPrep(&quot; wire &quot;)&quot; NO_CONTROL?</span>
+<span class="sd">        qunprep     : &quot;QUnprep(&quot; wire &quot;)&quot; NO_CONTROL?</span>
+<span class="sd">        qinit       : QINIT_STATE &quot;(&quot; wire &quot;)&quot; NO_CONTROL?</span>
+<span class="sd">        QINIT_STATE : &quot;QInit0&quot; | &quot;QInit1&quot;</span>
+<span class="sd">        cinit       :  CINIT_STATE &quot;(&quot; wire &quot;)&quot; NO_CONTROL?</span>
+<span class="sd">        CINIT_STATE : &quot;CInit0&quot; | &quot;CInit1&quot;</span>
+<span class="sd">        qterm       : QTERM_STATE &quot;(&quot; wire &quot;)&quot; NO_CONTROL?</span>
+<span class="sd">        QTERM_STATE : &quot;QTerm0&quot; | &quot;QTerm1&quot;</span>
+<span class="sd">        cterm       : CTERM_STATE &quot;(&quot; wire &quot;)&quot; NO_CONTROL?</span>
+<span class="sd">        CTERM_STATE : &quot;CTerm0&quot; | &quot;CTerm1&quot;</span>
+<span class="sd">        qmeas       : &quot;QMeas(&quot; wire &quot;)&quot;</span>
+<span class="sd">        qdiscard    : &quot;QDiscard(&quot; wire &quot;)&quot;</span>
+<span class="sd">        cdiscard    : &quot;CDiscard(&quot; wire &quot;)&quot;</span>
+<span class="sd">        dterm       : DTERM_STATE &quot;(&quot; wire &quot;)&quot;</span>
+<span class="sd">        DTERM_STATE : &quot;DTerm0&quot; | &quot;DTerm1&quot;</span>
+<span class="sd">        subroutine_call : &quot;Subroutine&quot; [&quot;(x&quot; int &quot;)&quot;] &quot;[&quot; string &quot;, shape&quot; string &quot;]&quot; inversion &quot;(&quot; wire_list &quot;) -&gt; (&quot; wire_list &quot;)&quot; control_app</span>
+<span class="sd">        comment : &quot;Comment[&quot; string &quot;]&quot; inversion &quot;(&quot; wire_string_list? &quot;)&quot;</span>
+<span class="sd">        wire_string_list: wire &quot;:&quot; string (&quot;,&quot; wire &quot;:&quot; string)*</span>
+<span class="sd">        wire : int</span>
+<span class="sd">        wire_list : wire (&quot;,&quot; wire)*</span>
+<span class="sd">        pos_control_wire : &quot;+&quot; wire</span>
+<span class="sd">        neg_control_wire : &quot;-&quot; wire</span>
+<span class="sd">        control_wire : pos_control_wire | neg_control_wire</span>
+<span class="sd">        control_wire_list : control_wire (&quot;,&quot; control_wire)*</span>
+<span class="sd">        %import common.WS_INLINE -&gt; WS</span>
+<span class="sd">        %ignore WS</span>
+<span class="sd">        %import common.CR</span>
+<span class="sd">        %import common.LF</span>
+<span class="sd">        _NEWLINE: CR? LF</span>
+<span class="sd">        %import common.ESCAPED_STRING</span>
+<span class="sd">        string: ESCAPED_STRING</span>
+<span class="sd">        %import common.SIGNED_FLOAT</span>
+<span class="sd">        float : SIGNED_FLOAT</span>
+<span class="sd">        %import common.INT</span>
+<span class="sd">        int : INT</span>
+<span class="sd">        &quot;&quot;&quot;</span><span class="p">,</span>
+        <span class="n">parser</span><span class="o">=</span><span class="s2">&quot;lalr&quot;</span><span class="p">,</span>
+        <span class="n">transformer</span><span class="o">=</span><span class="n">QuipperTransformer</span><span class="p">(),</span>
+    <span class="p">)</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">quip</span><span class="p">)</span>
+
+    <span class="c1"># Load the subroutine list.</span>
+    <span class="n">maker</span> <span class="o">=</span> <span class="n">CircuitMaker</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">subroutines</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+
+    <span class="c1"># Make the tket circuit.</span>
+    <span class="k">return</span> <span class="n">maker</span><span class="o">.</span><span class="n">make_circuit</span><span class="p">(</span><span class="n">x</span><span class="o">.</span><span class="n">circuit</span><span class="p">)</span>  <span class="c1"># type: ignore</span></div>
+</pre></div>
+
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Quantinuum
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2023 Quantinuum.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

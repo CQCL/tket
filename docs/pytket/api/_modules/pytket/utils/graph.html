@@ -1,0 +1,735 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pytket.utils.graph &#8212; pytket 1.17.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/clipboard.min.js"></script>
+    <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/thebelab-helper.js"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/pytket/utils/graph';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/Quantinuum_logo_black.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../../../_static/Quantinuum_logo_white.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faqs.html">TKET FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../opensource.html">Open Source Attribution</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">More Documentation:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket/manual/index.html">Manual</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket-extensions/api/index.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/CQCL/pytket/tree/main/examples">Example notebooks</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../backends.html">pytket.backends</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../circuit.html">pytket.circuit</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../circuit_class.html">pytket.circuit.Circuit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../optype.html">pytket.circuit.OpType</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../classical.html">pytket.circuit.logic_exp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../display.html">pytket.circuit.display</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pauli.html">pytket.pauli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../passes.html">pytket.passes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../predicates.html">pytket.predicates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../partition.html">pytket.partition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qasm.html">pytket.qasm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quipper.html">pytket.quipper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">pytket.architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../placement.html">pytket.placement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../mapping.html">pytket.mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tableau.html">pytket.tableau</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../transform.html">pytket.transform</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tailoring.html">pytket.tailoring</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../wasm.html">pytket.wasm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../zx.html">pytket.zx</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.html">pytket.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging.html">pytket.logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../config.html">pytket.config</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/CQCL/tket" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/CQCL/tket/issues/new?title=Issue%20on%20page%20%2F_modules/pytket/utils/graph.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <h1>Source code for pytket.utils.graph</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright 2019-2023 Cambridge Quantum Computing</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+
+<span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
+<span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">combinations</span>
+<span class="kn">from</span> <span class="nn">tempfile</span> <span class="kn">import</span> <span class="n">NamedTemporaryFile</span>
+<span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>  <span class="c1"># type: ignore</span>
+<span class="kn">import</span> <span class="nn">graphviz</span> <span class="k">as</span> <span class="nn">gv</span>  <span class="c1"># type: ignore</span>
+<span class="kn">from</span> <span class="nn">pytket.circuit</span> <span class="kn">import</span> <span class="n">Circuit</span>  <span class="c1"># type: ignore</span>
+
+
+<div class="viewcode-block" id="Graph"><a class="viewcode-back" href="../../../utils.html#pytket.utils.Graph">[docs]</a><span class="k">class</span> <span class="nc">Graph</span><span class="p">:</span>
+<div class="viewcode-block" id="Graph.__init__"><a class="viewcode-back" href="../../../utils.html#pytket.utils.Graph.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">c</span><span class="p">:</span> <span class="n">Circuit</span><span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        A class for visualising a circuit as a directed acyclic graph (DAG).</span>
+
+<span class="sd">        Note: in order to use graph-rendering methods, such as</span>
+<span class="sd">        :py:meth:`Graph.save_DAG`, it is necessary to have the Graphviz tools installed</span>
+<span class="sd">        and on your path. See the `Graphviz website &lt;https://graphviz.org/download/&gt;`_</span>
+<span class="sd">        for instructions on how to install them.</span>
+
+<span class="sd">        :param      c:    Circuit</span>
+<span class="sd">        :type       c:    pytket.Circuit</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="p">(</span>
+            <span class="n">q_inputs</span><span class="p">,</span>
+            <span class="n">c_inputs</span><span class="p">,</span>
+            <span class="n">w_inputs</span><span class="p">,</span>
+            <span class="n">q_outputs</span><span class="p">,</span>
+            <span class="n">c_outputs</span><span class="p">,</span>
+            <span class="n">w_outputs</span><span class="p">,</span>
+            <span class="n">input_names</span><span class="p">,</span>
+            <span class="n">output_names</span><span class="p">,</span>
+            <span class="n">node_data</span><span class="p">,</span>
+            <span class="n">edge_data</span><span class="p">,</span>
+        <span class="p">)</span> <span class="o">=</span> <span class="n">c</span><span class="o">.</span><span class="n">_dag_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">q_inputs</span> <span class="o">=</span> <span class="n">q_inputs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">c_inputs</span> <span class="o">=</span> <span class="n">c_inputs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w_inputs</span> <span class="o">=</span> <span class="n">w_inputs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">q_outputs</span> <span class="o">=</span> <span class="n">q_outputs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">c_outputs</span> <span class="o">=</span> <span class="n">c_outputs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">w_outputs</span> <span class="o">=</span> <span class="n">w_outputs</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">input_names</span> <span class="o">=</span> <span class="n">input_names</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">output_names</span> <span class="o">=</span> <span class="n">output_names</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">node_data</span> <span class="o">=</span> <span class="n">node_data</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Gnx</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">G</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Gqc</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge_data</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">port_counts</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">src_node</span><span class="p">,</span> <span class="n">tgt_node</span><span class="p">,</span> <span class="n">src_port</span><span class="p">,</span> <span class="n">tgt_port</span><span class="p">,</span> <span class="n">edge_type</span> <span class="ow">in</span> <span class="n">edge_data</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">edge_data</span><span class="p">[(</span><span class="n">src_node</span><span class="p">,</span> <span class="n">tgt_node</span><span class="p">)]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">src_port</span><span class="p">,</span> <span class="n">tgt_port</span><span class="p">,</span> <span class="n">edge_type</span><span class="p">))</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">port_counts</span><span class="p">[(</span><span class="n">src_node</span><span class="p">,</span> <span class="n">src_port</span><span class="p">)]</span> <span class="o">+=</span> <span class="mi">1</span></div>
+
+<div class="viewcode-block" id="Graph.as_nx"><a class="viewcode-back" href="../../../utils.html#pytket.utils.Graph.as_nx">[docs]</a>    <span class="k">def</span> <span class="nf">as_nx</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">nx</span><span class="o">.</span><span class="n">MultiDiGraph</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a logical representation of the circuit as a DAG.</span>
+
+<span class="sd">        :returns:   Representation of the DAG</span>
+<span class="sd">        :rtype:     networkx.MultiDiGraph</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gnx</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gnx</span>  <span class="c1"># type: ignore</span>
+        <span class="n">Gnx</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">MultiDiGraph</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">desc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">Gnx</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="n">desc</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">nodepair</span><span class="p">,</span> <span class="n">portpairlist</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">edge_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">src_node</span><span class="p">,</span> <span class="n">tgt_node</span> <span class="o">=</span> <span class="n">nodepair</span>
+            <span class="k">for</span> <span class="n">src_port</span><span class="p">,</span> <span class="n">tgt_port</span><span class="p">,</span> <span class="n">edge_type</span> <span class="ow">in</span> <span class="n">portpairlist</span><span class="p">:</span>
+                <span class="n">Gnx</span><span class="o">.</span><span class="n">add_edge</span><span class="p">(</span>
+                    <span class="n">src_node</span><span class="p">,</span>
+                    <span class="n">tgt_node</span><span class="p">,</span>
+                    <span class="n">src_port</span><span class="o">=</span><span class="n">src_port</span><span class="p">,</span>
+                    <span class="n">tgt_port</span><span class="o">=</span><span class="n">tgt_port</span><span class="p">,</span>
+                    <span class="n">edge_type</span><span class="o">=</span><span class="n">edge_type</span><span class="p">,</span>
+                <span class="p">)</span>
+
+        <span class="c1"># Add node IDs to edges</span>
+        <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">nx</span><span class="o">.</span><span class="n">topological_sort</span><span class="p">(</span><span class="n">nx</span><span class="o">.</span><span class="n">line_graph</span><span class="p">(</span><span class="n">Gnx</span><span class="p">)):</span>
+            <span class="n">src_node</span><span class="p">,</span> <span class="n">tgt_node</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">edge</span>
+            <span class="c1"># List parent edges with matching port number</span>
+            <span class="n">src_port</span> <span class="o">=</span> <span class="n">Gnx</span><span class="o">.</span><span class="n">edges</span><span class="p">[</span><span class="n">edge</span><span class="p">][</span><span class="s2">&quot;src_port&quot;</span><span class="p">]</span>
+            <span class="n">prev_edges</span> <span class="o">=</span> <span class="p">[</span>
+                <span class="n">e</span>
+                <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">Gnx</span><span class="o">.</span><span class="n">in_edges</span><span class="p">(</span><span class="n">src_node</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+                <span class="k">if</span> <span class="n">Gnx</span><span class="o">.</span><span class="n">edges</span><span class="p">[</span><span class="n">e</span><span class="p">][</span><span class="s2">&quot;tgt_port&quot;</span><span class="p">]</span> <span class="o">==</span> <span class="n">src_port</span>
+            <span class="p">]</span>
+            <span class="k">if</span> <span class="ow">not</span> <span class="n">prev_edges</span><span class="p">:</span>
+                <span class="c1"># The source must be an input node</span>
+                <span class="n">unit_id</span> <span class="o">=</span> <span class="n">src_node</span>
+                <span class="n">nx</span><span class="o">.</span><span class="n">set_edge_attributes</span><span class="p">(</span><span class="n">Gnx</span><span class="p">,</span> <span class="p">{</span><span class="n">edge</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;unit_id&quot;</span><span class="p">:</span> <span class="n">unit_id</span><span class="p">}})</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="c1"># The parent must be unique</span>
+                <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">prev_edges</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+                <span class="n">prev_edge</span> <span class="o">=</span> <span class="n">prev_edges</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+                <span class="n">unit_id</span> <span class="o">=</span> <span class="n">Gnx</span><span class="o">.</span><span class="n">edges</span><span class="p">[</span><span class="n">prev_edge</span><span class="p">][</span><span class="s2">&quot;unit_id&quot;</span><span class="p">]</span>
+                <span class="n">nx</span><span class="o">.</span><span class="n">set_edge_attributes</span><span class="p">(</span><span class="n">Gnx</span><span class="p">,</span> <span class="p">{</span><span class="n">edge</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;unit_id&quot;</span><span class="p">:</span> <span class="n">unit_id</span><span class="p">}})</span>
+
+        <span class="c1"># Remove unnecessary port attributes to avoid clutter:</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">Gnx</span><span class="o">.</span><span class="n">nodes</span><span class="p">:</span>
+            <span class="k">if</span> <span class="n">Gnx</span><span class="o">.</span><span class="n">in_degree</span><span class="p">(</span><span class="n">node</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">Gnx</span><span class="o">.</span><span class="n">in_edges</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                    <span class="n">nx</span><span class="o">.</span><span class="n">set_edge_attributes</span><span class="p">(</span><span class="n">Gnx</span><span class="p">,</span> <span class="p">{</span><span class="n">edge</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;tgt_port&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}})</span>
+                <span class="k">for</span> <span class="n">edge</span> <span class="ow">in</span> <span class="n">Gnx</span><span class="o">.</span><span class="n">out_edges</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                    <span class="n">nx</span><span class="o">.</span><span class="n">set_edge_attributes</span><span class="p">(</span><span class="n">Gnx</span><span class="p">,</span> <span class="p">{</span><span class="n">edge</span><span class="p">:</span> <span class="p">{</span><span class="s2">&quot;src_port&quot;</span><span class="p">:</span> <span class="kc">None</span><span class="p">}})</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">Gnx</span> <span class="o">=</span> <span class="n">Gnx</span>
+        <span class="k">return</span> <span class="n">Gnx</span></div>
+
+<div class="viewcode-block" id="Graph.get_DAG"><a class="viewcode-back" href="../../../utils.html#pytket.utils.Graph.get_DAG">[docs]</a>    <span class="k">def</span> <span class="nf">get_DAG</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">gv</span><span class="o">.</span><span class="n">Digraph</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a visual representation of the DAG as a graphviz object.</span>
+
+<span class="sd">        :returns:   Representation of the DAG</span>
+<span class="sd">        :rtype:     graphviz.DiGraph</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">G</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">G</span>  <span class="c1"># type: ignore</span>
+        <span class="n">G</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">Digraph</span><span class="p">(</span>
+            <span class="s2">&quot;Circuit&quot;</span><span class="p">,</span>
+            <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">G</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="n">rankdir</span><span class="o">=</span><span class="s2">&quot;LR&quot;</span><span class="p">,</span> <span class="n">ranksep</span><span class="o">=</span><span class="s2">&quot;0.3&quot;</span><span class="p">,</span> <span class="n">nodesep</span><span class="o">=</span><span class="s2">&quot;0.15&quot;</span><span class="p">,</span> <span class="n">margin</span><span class="o">=</span><span class="s2">&quot;0&quot;</span><span class="p">)</span>
+        <span class="n">q_color</span> <span class="o">=</span> <span class="s2">&quot;blue&quot;</span>
+        <span class="n">c_color</span> <span class="o">=</span> <span class="s2">&quot;slategray&quot;</span>
+        <span class="n">b_color</span> <span class="o">=</span> <span class="s2">&quot;gray&quot;</span>
+        <span class="n">w_color</span> <span class="o">=</span> <span class="s2">&quot;green&quot;</span>
+        <span class="n">gate_color</span> <span class="o">=</span> <span class="s2">&quot;lightblue&quot;</span>
+        <span class="n">boundary_cluster_attr</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;style&quot;</span><span class="p">:</span> <span class="s2">&quot;rounded, filled&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;lightgrey&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;margin&quot;</span><span class="p">:</span> <span class="s2">&quot;5&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">boundary_node_attr</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;fontname&quot;</span><span class="p">:</span> <span class="s2">&quot;Courier&quot;</span><span class="p">,</span> <span class="s2">&quot;fontsize&quot;</span><span class="p">:</span> <span class="s2">&quot;8&quot;</span><span class="p">}</span>
+        <span class="k">with</span> <span class="n">G</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;cluster_q_inputs&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">c</span><span class="p">:</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="s2">&quot;source&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">boundary_cluster_attr</span><span class="p">)</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">node_attr</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="s2">&quot;point&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">q_color</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_inputs</span><span class="p">:</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">node</span><span class="p">(</span>
+                    <span class="nb">str</span><span class="p">((</span><span class="n">node</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">xlabel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">input_names</span><span class="p">[</span><span class="n">node</span><span class="p">],</span> <span class="o">**</span><span class="n">boundary_node_attr</span>
+                <span class="p">)</span>
+        <span class="k">with</span> <span class="n">G</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;cluster_c_inputs&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">c</span><span class="p">:</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="s2">&quot;source&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">boundary_cluster_attr</span><span class="p">)</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">node_attr</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="s2">&quot;point&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">c_color</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">c_inputs</span><span class="p">:</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">node</span><span class="p">(</span>
+                    <span class="nb">str</span><span class="p">((</span><span class="n">node</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">xlabel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">input_names</span><span class="p">[</span><span class="n">node</span><span class="p">],</span> <span class="o">**</span><span class="n">boundary_node_attr</span>
+                <span class="p">)</span>
+        <span class="k">with</span> <span class="n">G</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;cluster_w_inputs&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">c</span><span class="p">:</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="s2">&quot;source&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">boundary_cluster_attr</span><span class="p">)</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">node_attr</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="s2">&quot;point&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">w_color</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">w_inputs</span><span class="p">:</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">node</span><span class="p">(</span>
+                    <span class="nb">str</span><span class="p">((</span><span class="n">node</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">xlabel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">input_names</span><span class="p">[</span><span class="n">node</span><span class="p">],</span> <span class="o">**</span><span class="n">boundary_node_attr</span>
+                <span class="p">)</span>
+        <span class="k">with</span> <span class="n">G</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;cluster_q_outputs&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">c</span><span class="p">:</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="s2">&quot;sink&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">boundary_cluster_attr</span><span class="p">)</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">node_attr</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="s2">&quot;point&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">q_color</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_outputs</span><span class="p">:</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">node</span><span class="p">(</span>
+                    <span class="nb">str</span><span class="p">((</span><span class="n">node</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">xlabel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_names</span><span class="p">[</span><span class="n">node</span><span class="p">],</span> <span class="o">**</span><span class="n">boundary_node_attr</span>
+                <span class="p">)</span>
+        <span class="k">with</span> <span class="n">G</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;cluster_c_outputs&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">c</span><span class="p">:</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="s2">&quot;sink&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">boundary_cluster_attr</span><span class="p">)</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">node_attr</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="s2">&quot;point&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">c_color</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">c_outputs</span><span class="p">:</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">node</span><span class="p">(</span>
+                    <span class="nb">str</span><span class="p">((</span><span class="n">node</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">xlabel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_names</span><span class="p">[</span><span class="n">node</span><span class="p">],</span> <span class="o">**</span><span class="n">boundary_node_attr</span>
+                <span class="p">)</span>
+        <span class="k">with</span> <span class="n">G</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;cluster_w_outputs&quot;</span><span class="p">)</span> <span class="k">as</span> <span class="n">c</span><span class="p">:</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="n">rank</span><span class="o">=</span><span class="s2">&quot;sink&quot;</span><span class="p">,</span> <span class="o">**</span><span class="n">boundary_cluster_attr</span><span class="p">)</span>
+            <span class="n">c</span><span class="o">.</span><span class="n">node_attr</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">shape</span><span class="o">=</span><span class="s2">&quot;point&quot;</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">w_color</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">w_outputs</span><span class="p">:</span>
+                <span class="n">c</span><span class="o">.</span><span class="n">node</span><span class="p">(</span>
+                    <span class="nb">str</span><span class="p">((</span><span class="n">node</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="n">xlabel</span><span class="o">=</span><span class="bp">self</span><span class="o">.</span><span class="n">output_names</span><span class="p">[</span><span class="n">node</span><span class="p">],</span> <span class="o">**</span><span class="n">boundary_node_attr</span>
+                <span class="p">)</span>
+        <span class="n">boundary_nodes</span> <span class="o">=</span> <span class="p">(</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">q_inputs</span>
+            <span class="o">|</span> <span class="bp">self</span><span class="o">.</span><span class="n">c_inputs</span>
+            <span class="o">|</span> <span class="bp">self</span><span class="o">.</span><span class="n">w_inputs</span>
+            <span class="o">|</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_outputs</span>
+            <span class="o">|</span> <span class="bp">self</span><span class="o">.</span><span class="n">c_outputs</span>
+            <span class="o">|</span> <span class="bp">self</span><span class="o">.</span><span class="n">w_outputs</span>
+        <span class="p">)</span>
+        <span class="n">Gnx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">as_nx</span><span class="p">()</span>
+        <span class="n">node_cluster_attr</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;style&quot;</span><span class="p">:</span> <span class="s2">&quot;rounded, filled&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="n">gate_color</span><span class="p">,</span>
+            <span class="s2">&quot;fontname&quot;</span><span class="p">:</span> <span class="s2">&quot;Times-Roman&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;fontsize&quot;</span><span class="p">:</span> <span class="s2">&quot;10&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;margin&quot;</span><span class="p">:</span> <span class="s2">&quot;5&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;lheight&quot;</span><span class="p">:</span> <span class="s2">&quot;100&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="n">port_node_attr</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;shape&quot;</span><span class="p">:</span> <span class="s2">&quot;point&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;weight&quot;</span><span class="p">:</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;fontname&quot;</span><span class="p">:</span> <span class="s2">&quot;Helvetica&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;fontsize&quot;</span><span class="p">:</span> <span class="s2">&quot;8&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">ndata</span> <span class="ow">in</span> <span class="n">Gnx</span><span class="o">.</span><span class="n">nodes</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">node</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">boundary_nodes</span><span class="p">:</span>
+                <span class="k">with</span> <span class="n">G</span><span class="o">.</span><span class="n">subgraph</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="s2">&quot;cluster_&quot;</span> <span class="o">+</span> <span class="nb">str</span><span class="p">(</span><span class="n">node</span><span class="p">))</span> <span class="k">as</span> <span class="n">c</span><span class="p">:</span>
+                    <span class="n">c</span><span class="o">.</span><span class="n">attr</span><span class="p">(</span><span class="n">label</span><span class="o">=</span><span class="n">ndata</span><span class="p">[</span><span class="s2">&quot;desc&quot;</span><span class="p">],</span> <span class="o">**</span><span class="n">node_cluster_attr</span><span class="p">)</span>
+                    <span class="n">n_ports</span> <span class="o">=</span> <span class="n">Gnx</span><span class="o">.</span><span class="n">in_degree</span><span class="p">(</span><span class="n">node</span><span class="p">)</span>
+                    <span class="k">if</span> <span class="n">n_ports</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+                        <span class="n">c</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="nb">str</span><span class="p">((</span><span class="n">node</span><span class="p">,</span> <span class="mi">0</span><span class="p">)),</span> <span class="o">**</span><span class="n">port_node_attr</span><span class="p">)</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_ports</span><span class="p">):</span>
+                            <span class="n">c</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="nb">str</span><span class="p">((</span><span class="n">node</span><span class="p">,</span> <span class="n">i</span><span class="p">)),</span> <span class="n">xlabel</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="o">**</span><span class="n">port_node_attr</span><span class="p">)</span>
+        <span class="n">edge_colors</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="mi">0</span><span class="p">:</span> <span class="n">q_color</span><span class="p">,</span>  <span class="c1"># Quantum</span>
+            <span class="mi">1</span><span class="p">:</span> <span class="n">b_color</span><span class="p">,</span>  <span class="c1"># Boolean</span>
+            <span class="mi">2</span><span class="p">:</span> <span class="n">c_color</span><span class="p">,</span>  <span class="c1"># Classical</span>
+            <span class="mi">3</span><span class="p">:</span> <span class="n">w_color</span><span class="p">,</span>  <span class="c1"># WASM (and other)</span>
+        <span class="p">}</span>
+        <span class="n">edge_attr</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="s2">&quot;weight&quot;</span><span class="p">:</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;arrowhead&quot;</span><span class="p">:</span> <span class="s2">&quot;vee&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;arrowsize&quot;</span><span class="p">:</span> <span class="s2">&quot;0.2&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;headclip&quot;</span><span class="p">:</span> <span class="s2">&quot;true&quot;</span><span class="p">,</span>
+            <span class="s2">&quot;tailclip&quot;</span><span class="p">:</span> <span class="s2">&quot;true&quot;</span><span class="p">,</span>
+        <span class="p">}</span>
+        <span class="k">for</span> <span class="n">edge</span><span class="p">,</span> <span class="n">edata</span> <span class="ow">in</span> <span class="n">Gnx</span><span class="o">.</span><span class="n">edges</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">src_node</span><span class="p">,</span> <span class="n">tgt_node</span><span class="p">,</span> <span class="n">_</span> <span class="o">=</span> <span class="n">edge</span>
+            <span class="n">src_port</span> <span class="o">=</span> <span class="n">edata</span><span class="p">[</span><span class="s2">&quot;src_port&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="mi">0</span>
+            <span class="n">tgt_port</span> <span class="o">=</span> <span class="n">edata</span><span class="p">[</span><span class="s2">&quot;tgt_port&quot;</span><span class="p">]</span> <span class="ow">or</span> <span class="mi">0</span>
+            <span class="n">edge_type</span> <span class="o">=</span> <span class="n">edata</span><span class="p">[</span><span class="s2">&quot;edge_type&quot;</span><span class="p">]</span>
+            <span class="n">src_nodename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">((</span><span class="n">src_node</span><span class="p">,</span> <span class="n">src_port</span><span class="p">))</span>
+            <span class="n">tgt_nodename</span> <span class="o">=</span> <span class="nb">str</span><span class="p">((</span><span class="n">tgt_node</span><span class="p">,</span> <span class="n">tgt_port</span><span class="p">))</span>
+            <span class="n">G</span><span class="o">.</span><span class="n">edge</span><span class="p">(</span>
+                <span class="n">src_nodename</span><span class="p">,</span> <span class="n">tgt_nodename</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="n">edge_colors</span><span class="p">[</span><span class="n">edge_type</span><span class="p">],</span> <span class="o">**</span><span class="n">edge_attr</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">G</span> <span class="o">=</span> <span class="n">G</span>
+        <span class="k">return</span> <span class="n">G</span></div>
+
+<div class="viewcode-block" id="Graph.save_DAG"><a class="viewcode-back" href="../../../utils.html#pytket.utils.Graph.save_DAG">[docs]</a>    <span class="k">def</span> <span class="nf">save_DAG</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;pdf&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save an image of the DAG to a file.</span>
+
+<span class="sd">        The actual filename will be &quot;&lt;name&gt;.&lt;fmt&gt;&quot;. A wide range of formats is</span>
+<span class="sd">        supported. See https://graphviz.org/doc/info/output.html.</span>
+
+<span class="sd">        :param      name:   Prefix of file name</span>
+<span class="sd">        :type       name:   str</span>
+<span class="sd">        :param      fmt:    File format, e.g. &quot;pdf&quot;, &quot;png&quot;, ...</span>
+<span class="sd">        :type       fmt:    str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">G</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_DAG</span><span class="p">()</span>
+        <span class="n">G</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">cleanup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">fmt</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="Graph.view_DAG"><a class="viewcode-back" href="../../../utils.html#pytket.utils.Graph.view_DAG">[docs]</a>    <span class="k">def</span> <span class="nf">view_DAG</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        View the DAG.</span>
+
+<span class="sd">        This method creates a temporary file, and returns its filename so that the</span>
+<span class="sd">        caller may delete it afterwards.</span>
+
+<span class="sd">        :returns: filename of temporary created file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">G</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_DAG</span><span class="p">()</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">G</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">filename</span></div>
+
+<div class="viewcode-block" id="Graph.get_qubit_graph"><a class="viewcode-back" href="../../../utils.html#pytket.utils.Graph.get_qubit_graph">[docs]</a>    <span class="k">def</span> <span class="nf">get_qubit_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">gv</span><span class="o">.</span><span class="n">Graph</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Return a visual representation of the qubit connectivity graph as a graphviz</span>
+<span class="sd">        object.</span>
+
+<span class="sd">        :returns:   Representation of the qubit connectivity graph of the circuit</span>
+<span class="sd">        :rtype:     graphviz.Graph</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gqc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gqc</span>  <span class="c1"># type: ignore</span>
+        <span class="n">Gnx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">as_nx</span><span class="p">()</span>
+        <span class="n">Gqcnx</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">Gnx</span><span class="o">.</span><span class="n">nodes</span><span class="p">():</span>
+            <span class="n">qubits</span> <span class="o">=</span> <span class="p">[]</span>
+            <span class="k">for</span> <span class="n">e</span> <span class="ow">in</span> <span class="n">Gnx</span><span class="o">.</span><span class="n">in_edges</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">keys</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>
+                <span class="n">unit_id</span> <span class="o">=</span> <span class="n">Gnx</span><span class="o">.</span><span class="n">edges</span><span class="p">[</span><span class="n">e</span><span class="p">][</span><span class="s2">&quot;unit_id&quot;</span><span class="p">]</span>
+                <span class="k">if</span> <span class="n">unit_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">q_inputs</span><span class="p">:</span>
+                    <span class="n">qubits</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">unit_id</span><span class="p">)</span>
+
+            <span class="n">Gqcnx</span><span class="o">.</span><span class="n">add_edges_from</span><span class="p">(</span><span class="n">combinations</span><span class="p">(</span><span class="n">qubits</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+        <span class="n">G</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">Graph</span><span class="p">(</span>
+            <span class="s2">&quot;Qubit connectivity&quot;</span><span class="p">,</span>
+            <span class="n">node_attr</span><span class="o">=</span><span class="p">{</span>
+                <span class="s2">&quot;shape&quot;</span><span class="p">:</span> <span class="s2">&quot;circle&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;color&quot;</span><span class="p">:</span> <span class="s2">&quot;blue&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;fontname&quot;</span><span class="p">:</span> <span class="s2">&quot;Courier&quot;</span><span class="p">,</span>
+                <span class="s2">&quot;fontsize&quot;</span><span class="p">:</span> <span class="s2">&quot;10&quot;</span><span class="p">,</span>
+            <span class="p">},</span>
+            <span class="n">engine</span><span class="o">=</span><span class="s2">&quot;neato&quot;</span><span class="p">,</span>
+        <span class="p">)</span>
+        <span class="n">G</span><span class="o">.</span><span class="n">edges</span><span class="p">(</span>
+            <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">input_names</span><span class="p">[</span><span class="n">src</span><span class="p">],</span> <span class="bp">self</span><span class="o">.</span><span class="n">input_names</span><span class="p">[</span><span class="n">tgt</span><span class="p">])</span> <span class="k">for</span> <span class="n">src</span><span class="p">,</span> <span class="n">tgt</span> <span class="ow">in</span> <span class="n">Gqcnx</span><span class="o">.</span><span class="n">edges</span><span class="p">()</span>
+        <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Gqc</span> <span class="o">=</span> <span class="n">G</span>
+        <span class="k">return</span> <span class="n">G</span></div>
+
+<div class="viewcode-block" id="Graph.view_qubit_graph"><a class="viewcode-back" href="../../../utils.html#pytket.utils.Graph.view_qubit_graph">[docs]</a>    <span class="k">def</span> <span class="nf">view_qubit_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        View the qubit connectivity graph.</span>
+
+<span class="sd">        This method creates a temporary file, and returns its filename so that the</span>
+<span class="sd">        caller may delete it afterwards.</span>
+
+<span class="sd">        :returns: filename of temporary created file</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">G</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_qubit_graph</span><span class="p">()</span>
+        <span class="n">filename</span> <span class="o">=</span> <span class="n">NamedTemporaryFile</span><span class="p">(</span><span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span><span class="o">.</span><span class="n">name</span>
+        <span class="n">G</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="n">filename</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">filename</span></div>
+
+<div class="viewcode-block" id="Graph.save_qubit_graph"><a class="viewcode-back" href="../../../utils.html#pytket.utils.Graph.save_qubit_graph">[docs]</a>    <span class="k">def</span> <span class="nf">save_qubit_graph</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">fmt</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;pdf&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Save an image of the qubit connectivity graph to a file.</span>
+
+<span class="sd">        The actual filename will be &quot;&lt;name&gt;.&lt;fmt&gt;&quot;. A wide range of formats is</span>
+<span class="sd">        supported. See https://graphviz.org/doc/info/output.html.</span>
+
+<span class="sd">        :param      name:   Prefix of file name</span>
+<span class="sd">        :type       name:   str</span>
+<span class="sd">        :param      fmt:    File format, e.g. &quot;pdf&quot;, &quot;png&quot;, ...</span>
+<span class="sd">        :type       fmt:    str</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">G</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get_qubit_graph</span><span class="p">()</span>
+        <span class="n">G</span><span class="o">.</span><span class="n">render</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">cleanup</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="nb">format</span><span class="o">=</span><span class="n">fmt</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span></div></div>
+</pre></div>
+
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Quantinuum
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2023 Quantinuum.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

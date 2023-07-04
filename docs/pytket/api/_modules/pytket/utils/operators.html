@@ -1,0 +1,777 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pytket.utils.operators &#8212; pytket 1.17.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/clipboard.min.js"></script>
+    <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/thebelab-helper.js"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/pytket/utils/operators';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/Quantinuum_logo_black.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../../../_static/Quantinuum_logo_white.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faqs.html">TKET FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../opensource.html">Open Source Attribution</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">More Documentation:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket/manual/index.html">Manual</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket-extensions/api/index.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/CQCL/pytket/tree/main/examples">Example notebooks</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../backends.html">pytket.backends</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../circuit.html">pytket.circuit</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../circuit_class.html">pytket.circuit.Circuit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../optype.html">pytket.circuit.OpType</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../classical.html">pytket.circuit.logic_exp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../display.html">pytket.circuit.display</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pauli.html">pytket.pauli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../passes.html">pytket.passes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../predicates.html">pytket.predicates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../partition.html">pytket.partition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qasm.html">pytket.qasm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quipper.html">pytket.quipper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">pytket.architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../placement.html">pytket.placement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../mapping.html">pytket.mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tableau.html">pytket.tableau</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../transform.html">pytket.transform</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tailoring.html">pytket.tailoring</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../wasm.html">pytket.wasm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../zx.html">pytket.zx</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.html">pytket.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging.html">pytket.logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../config.html">pytket.config</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/CQCL/tket" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/CQCL/tket/issues/new?title=Issue%20on%20page%20%2F_modules/pytket/utils/operators.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <h1>Source code for pytket.utils.operators</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright 2019-2023 Cambridge Quantum Computing</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+
+<span class="kn">import</span> <span class="nn">copy</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">cast</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">from</span> <span class="nn">sympy</span> <span class="kn">import</span> <span class="n">Symbol</span><span class="p">,</span> <span class="n">sympify</span><span class="p">,</span> <span class="n">Expr</span><span class="p">,</span> <span class="n">re</span><span class="p">,</span> <span class="n">im</span>  <span class="c1"># type: ignore</span>
+<span class="kn">from</span> <span class="nn">pytket.pauli</span> <span class="kn">import</span> <span class="n">QubitPauliString</span><span class="p">,</span> <span class="n">pauli_string_mult</span>  <span class="c1"># type: ignore</span>
+<span class="kn">from</span> <span class="nn">pytket.circuit</span> <span class="kn">import</span> <span class="n">Qubit</span>  <span class="c1"># type: ignore</span>
+<span class="kn">from</span> <span class="nn">pytket.utils.serialization</span> <span class="kn">import</span> <span class="n">complex_to_list</span><span class="p">,</span> <span class="n">list_to_complex</span>  <span class="c1"># type: ignore</span>
+
+
+<span class="n">CoeffType</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">complex</span><span class="p">,</span> <span class="n">Expr</span><span class="p">]</span>
+
+<span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
+    <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">csc_matrix</span>  <span class="c1"># type: ignore</span>
+
+
+<div class="viewcode-block" id="QubitPauliOperator"><a class="viewcode-back" href="../../../utils.html#pytket.utils.QubitPauliOperator">[docs]</a><span class="k">class</span> <span class="nc">QubitPauliOperator</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Generic data structure for generation of circuits and expectation</span>
+<span class="sd">    value calculation. Contains a dictionary from QubitPauliString to</span>
+<span class="sd">    sympy Expr. Capacity for symbolic expressions allows the operator</span>
+<span class="sd">    to be used to generate ansätze for variational algorithms.</span>
+
+<span class="sd">    Represents a mathematical object :math:`\\sum_j \\alpha_j P_j`,</span>
+<span class="sd">    where each :math:`\\alpha_j` is a complex symbolic expression and</span>
+<span class="sd">    :math:`P_j` is a Pauli string, i.e. :math:`P_j \\in \\{ I, X, Y,</span>
+<span class="sd">    Z\\}^{\\otimes n}`.</span>
+
+<span class="sd">    A prototypical example is a molecular Hamiltonian, for which one</span>
+<span class="sd">    may wish to calculate the expectation value :math:`\\langle \\Psi</span>
+<span class="sd">    | H | \\Psi \\rangle` by decomposing :math:`H` into individual</span>
+<span class="sd">    Pauli measurements. Alternatively, one may wish to evolve a state</span>
+<span class="sd">    by the operator :math:`e^{-iHt}` for digital quantum simulation.</span>
+<span class="sd">    In this case, the whole operator must be decomposed into native</span>
+<span class="sd">    operations.</span>
+
+<span class="sd">    In both cases, :math:`H` may be represented by a</span>
+<span class="sd">    QubitPauliOperator.</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+<div class="viewcode-block" id="QubitPauliOperator.__init__"><a class="viewcode-back" href="../../../utils.html#pytket.utils.QubitPauliOperator.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">dictionary</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="n">QubitPauliString</span><span class="p">,</span> <span class="n">CoeffType</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+        <span class="k">if</span> <span class="n">dictionary</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">(</span>
+                <span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">sympify</span><span class="p">(</span><span class="n">value</span><span class="p">))</span> <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">dictionary</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>  <span class="c1"># type: ignore</span>
+            <span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_collect_qubits</span><span class="p">()</span></div>
+
+    <span class="k">def</span> <span class="fm">__repr__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span><span class="o">.</span><span class="fm">__repr__</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">QubitPauliString</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Any</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">get</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">QubitPauliString</span><span class="p">,</span> <span class="n">default</span><span class="p">:</span> <span class="n">CoeffType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CoeffType</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="n">default</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__setitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">QubitPauliString</span><span class="p">,</span> <span class="n">value</span><span class="p">:</span> <span class="n">CoeffType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Update value in dictionary ([]). Automatically converts value into sympy</span>
+<span class="sd">        Expr.</span>
+
+<span class="sd">        :param key: String to use as key</span>
+<span class="sd">        :type key: QubitPauliString</span>
+<span class="sd">        :param value: Associated coefficient</span>
+<span class="sd">        :type value: Union[int, float, complex, Expr]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">sympify</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_all_qubits</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">key</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
+
+    <span class="k">def</span> <span class="nf">__getstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">dict</span><span class="p">:</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span>
+
+    <span class="k">def</span> <span class="nf">__setstate__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">QubitPauliString</span><span class="p">,</span> <span class="n">CoeffType</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="c1"># values assumed to be already sympified</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span> <span class="o">=</span> <span class="n">_dict</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_collect_qubits</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s2">&quot;QubitPauliOperator&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>  <span class="c1"># type: ignore</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_dict</span>
+
+    <span class="k">def</span> <span class="fm">__iadd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">addend</span><span class="p">:</span> <span class="s2">&quot;QubitPauliOperator&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;QubitPauliOperator&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;In-place addition (+=) of QubitPauliOperators.</span>
+
+<span class="sd">        :param addend: The operator to add</span>
+<span class="sd">        :type addend: QubitPauliOperator</span>
+<span class="sd">        :return: Updated operator (self)</span>
+<span class="sd">        :rtype: QubitPauliOperator</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">addend</span><span class="p">,</span> <span class="n">QubitPauliOperator</span><span class="p">):</span>
+            <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="n">addend</span><span class="o">.</span><span class="n">_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">)</span> <span class="o">+</span> <span class="n">value</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_all_qubits</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">addend</span><span class="o">.</span><span class="n">_all_qubits</span><span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span><span class="s2">&quot;Cannot add </span><span class="si">{}</span><span class="s2"> to QubitPauliOperator.&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">addend</span><span class="p">)))</span>
+
+        <span class="k">return</span> <span class="bp">self</span>
+
+    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">addend</span><span class="p">:</span> <span class="s2">&quot;QubitPauliOperator&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;QubitPauliOperator&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Addition (+) of QubitPauliOperators.</span>
+
+<span class="sd">        :param addend: The operator to add</span>
+<span class="sd">        :type addend: QubitPauliOperator</span>
+<span class="sd">        :return: Sum operator</span>
+<span class="sd">        :rtype: QubitPauliOperator</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">summand</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">summand</span> <span class="o">+=</span> <span class="n">addend</span>
+        <span class="k">return</span> <span class="n">summand</span>
+
+    <span class="k">def</span> <span class="fm">__imul__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">multiplier</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">complex</span><span class="p">,</span> <span class="n">Expr</span><span class="p">,</span> <span class="s2">&quot;QubitPauliOperator&quot;</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;QubitPauliOperator&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;In-place multiplication (*=) with QubitPauliOperator or scalar.</span>
+<span class="sd">        Multiply coefficients and terms.</span>
+
+<span class="sd">        :param multiplier: The operator or scalar to multiply</span>
+<span class="sd">        :type multiplier: Union[QubitPauliOperator, int, float, complex, Expr]</span>
+<span class="sd">        :return: Updated operator (self)</span>
+<span class="sd">        :rtype: QubitPauliOperator</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="c1"># Handle operator of the same type</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">multiplier</span><span class="p">,</span> <span class="n">QubitPauliOperator</span><span class="p">):</span>
+            <span class="n">result_terms</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
+            <span class="k">for</span> <span class="n">left_key</span><span class="p">,</span> <span class="n">left_value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+                <span class="k">for</span> <span class="n">right_key</span><span class="p">,</span> <span class="n">right_value</span> <span class="ow">in</span> <span class="n">multiplier</span><span class="o">.</span><span class="n">_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+
+                    <span class="n">new_term</span><span class="p">,</span> <span class="n">bonus_coeff</span> <span class="o">=</span> <span class="n">pauli_string_mult</span><span class="p">(</span><span class="n">left_key</span><span class="p">,</span> <span class="n">right_key</span><span class="p">)</span>
+                    <span class="n">new_coefficient</span> <span class="o">=</span> <span class="n">bonus_coeff</span> <span class="o">*</span> <span class="n">left_value</span> <span class="o">*</span> <span class="n">right_value</span>
+
+                    <span class="c1"># Update result dict.</span>
+                    <span class="k">if</span> <span class="n">new_term</span> <span class="ow">in</span> <span class="n">result_terms</span><span class="p">:</span>
+                        <span class="n">result_terms</span><span class="p">[</span><span class="n">new_term</span><span class="p">]</span> <span class="o">+=</span> <span class="n">new_coefficient</span>
+                    <span class="k">else</span><span class="p">:</span>
+                        <span class="n">result_terms</span><span class="p">[</span><span class="n">new_term</span><span class="p">]</span> <span class="o">=</span> <span class="n">new_coefficient</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span> <span class="o">=</span> <span class="n">result_terms</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_all_qubits</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">multiplier</span><span class="o">.</span><span class="n">_all_qubits</span><span class="p">)</span>
+            <span class="k">return</span> <span class="bp">self</span>
+
+        <span class="c1"># Handle scalars.</span>
+        <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">multiplier</span><span class="p">,</span> <span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">complex</span><span class="p">,</span> <span class="n">Expr</span><span class="p">)):</span>
+            <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span><span class="p">:</span>
+                <span class="bp">self</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">*=</span> <span class="n">multiplier</span>
+            <span class="k">return</span> <span class="bp">self</span>
+
+        <span class="c1"># Invalid multiplier type</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">TypeError</span><span class="p">(</span>
+                <span class="s2">&quot;Cannot multiply QubitPauliOperator with </span><span class="si">{}</span><span class="s2">&quot;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="nb">type</span><span class="p">(</span><span class="n">multiplier</span><span class="p">))</span>
+            <span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">multiplier</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">complex</span><span class="p">,</span> <span class="n">Expr</span><span class="p">,</span> <span class="s2">&quot;QubitPauliOperator&quot;</span><span class="p">]</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;QubitPauliOperator&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Multiplication (*) by QubitPauliOperator or scalar.</span>
+
+<span class="sd">        :param multiplier: The scalar to multiply by</span>
+<span class="sd">        :type multiplier: Union[int, float, complex, Expr, QubitPauliOperator]</span>
+<span class="sd">        :return: Product operator</span>
+<span class="sd">        :rtype: QubitPauliOperator</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">product</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
+        <span class="n">product</span> <span class="o">*=</span> <span class="n">multiplier</span>
+        <span class="k">return</span> <span class="n">product</span>
+
+    <span class="k">def</span> <span class="fm">__rmul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">multiplier</span><span class="p">:</span> <span class="n">CoeffType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;QubitPauliOperator&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Multiplication (*) by a scalar.</span>
+<span class="sd">        We only define __rmul__ for scalars because left multiply is</span>
+<span class="sd">        queried as default behaviour, and is used for</span>
+<span class="sd">        QubitPauliOperator*QubitPauliOperator.</span>
+
+<span class="sd">        :param multiplier: The scalar to multiply by</span>
+<span class="sd">        :type multiplier: Union[int, float, complex, Expr]</span>
+<span class="sd">        :return: Product operator</span>
+<span class="sd">        :rtype: QubitPauliOperator</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span> <span class="o">*</span> <span class="n">multiplier</span>
+
+    <span class="nd">@property</span>
+    <span class="k">def</span> <span class="nf">all_qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Set</span><span class="p">[</span><span class="n">Qubit</span><span class="p">]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: The set of all qubits the operator ranges over (including qubits</span>
+<span class="sd">            that were provided explicitly as identities)</span>
+<span class="sd">        :rtype: Set[Qubit]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_all_qubits</span>
+
+<div class="viewcode-block" id="QubitPauliOperator.subs"><a class="viewcode-back" href="../../../utils.html#pytket.utils.QubitPauliOperator.subs">[docs]</a>    <span class="k">def</span> <span class="nf">subs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">symbol_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Symbol</span><span class="p">,</span> <span class="nb">complex</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Substitutes any matching symbols in the QubitPauliOperator.</span>
+
+<span class="sd">        :param symbol_dict: A dictionary of symbols to fixed values.</span>
+<span class="sd">        :type symbol_dict: Dict[Symbol, complex]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">subs</span><span class="p">(</span><span class="n">symbol_dict</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="QubitPauliOperator.to_list"><a class="viewcode-back" href="../../../utils.html#pytket.utils.QubitPauliOperator.to_list">[docs]</a>    <span class="k">def</span> <span class="nf">to_list</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Generate a list serialized representation of QubitPauliOperator,</span>
+<span class="sd">         suitable for writing to JSON.</span>
+
+<span class="sd">        :return: JSON serializable list of dictionaries.</span>
+<span class="sd">        :rtype: List[Dict[str, Any]]</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">ret</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">v</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">coeff</span> <span class="o">=</span> <span class="n">complex_to_list</span><span class="p">(</span><span class="nb">complex</span><span class="p">(</span><span class="n">v</span><span class="p">))</span>
+            <span class="k">except</span> <span class="ne">TypeError</span><span class="p">:</span>
+                <span class="k">assert</span> <span class="nb">type</span><span class="p">(</span><span class="n">Expr</span><span class="p">(</span><span class="n">v</span><span class="p">))</span> <span class="o">==</span> <span class="n">Expr</span>  <span class="c1"># type: ignore</span>
+                <span class="n">coeff</span> <span class="o">=</span> <span class="nb">str</span><span class="p">(</span><span class="n">v</span><span class="p">)</span>
+            <span class="n">ret</span><span class="o">.</span><span class="n">append</span><span class="p">(</span>
+                <span class="p">{</span>
+                    <span class="s2">&quot;string&quot;</span><span class="p">:</span> <span class="n">k</span><span class="o">.</span><span class="n">to_list</span><span class="p">(),</span>
+                    <span class="s2">&quot;coefficient&quot;</span><span class="p">:</span> <span class="n">coeff</span><span class="p">,</span>
+                <span class="p">}</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">ret</span></div>
+
+<div class="viewcode-block" id="QubitPauliOperator.from_list"><a class="viewcode-back" href="../../../utils.html#pytket.utils.QubitPauliOperator.from_list">[docs]</a>    <span class="nd">@classmethod</span>
+    <span class="k">def</span> <span class="nf">from_list</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">pauli_list</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]])</span> <span class="o">-&gt;</span> <span class="s2">&quot;QubitPauliOperator&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Construct a QubitPauliOperator from a serializable JSON list format,</span>
+<span class="sd">        as returned by QubitPauliOperator.to_list()</span>
+
+<span class="sd">        :return: New QubitPauliOperator instance.</span>
+<span class="sd">        :rtype: QubitPauliOperator</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="k">def</span> <span class="nf">get_qps</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">QubitPauliString</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">QubitPauliString</span><span class="o">.</span><span class="n">from_list</span><span class="p">(</span><span class="n">obj</span><span class="p">[</span><span class="s2">&quot;string&quot;</span><span class="p">])</span>
+
+        <span class="k">def</span> <span class="nf">get_coeff</span><span class="p">(</span><span class="n">obj</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">CoeffType</span><span class="p">:</span>
+            <span class="n">coeff</span> <span class="o">=</span> <span class="n">obj</span><span class="p">[</span><span class="s2">&quot;coefficient&quot;</span><span class="p">]</span>
+            <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">coeff</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">sympify</span><span class="p">(</span><span class="n">coeff</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="nb">complex</span><span class="p">,</span> <span class="n">list_to_complex</span><span class="p">(</span><span class="n">coeff</span><span class="p">))</span>
+
+        <span class="k">return</span> <span class="n">QubitPauliOperator</span><span class="p">({</span><span class="n">get_qps</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span> <span class="n">get_coeff</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">pauli_list</span><span class="p">})</span></div>
+
+<div class="viewcode-block" id="QubitPauliOperator.to_sparse_matrix"><a class="viewcode-back" href="../../../utils.html#pytket.utils.QubitPauliOperator.to_sparse_matrix">[docs]</a>    <span class="k">def</span> <span class="nf">to_sparse_matrix</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">qubits</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Qubit</span><span class="p">],</span> <span class="nb">int</span><span class="p">,</span> <span class="kc">None</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;csc_matrix&quot;</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Represents the sparse operator as a dense operator under the ordering</span>
+<span class="sd">        scheme specified by ``qubits``, and generates the corresponding matrix.</span>
+
+<span class="sd">        - When ``qubits`` is an explicit list, the qubits are ordered with</span>
+<span class="sd">          ``qubits[0]`` as the most significant qubit for indexing into the matrix.</span>
+<span class="sd">        - If ``None``, then no padding qubits are introduced and we use the ILO-BE</span>
+<span class="sd">          convention, e.g. ``Qubit(&quot;a&quot;, 0)`` is more significant than</span>
+<span class="sd">          ``Qubit(&quot;a&quot;, 1)`` or ``Qubit(&quot;b&quot;)``.</span>
+<span class="sd">        - Giving a number specifies the number of qubits to use in the final</span>
+<span class="sd">          operator, treated as sequentially indexed from 0 in the default register</span>
+<span class="sd">          (padding with identities as necessary) and ordered by ILO-BE so</span>
+<span class="sd">          ``Qubit(0)`` is the most significant.</span>
+
+<span class="sd">        :param qubits: Sequencing of qubits in the matrix, either as an explicit</span>
+<span class="sd">            list, number of qubits to pad to, or infer from the operator.</span>
+<span class="sd">            Defaults to None</span>
+<span class="sd">        :type qubits: Union[List[Qubit], int, None], optional</span>
+<span class="sd">        :return: A sparse matrix representation of the operator.</span>
+<span class="sd">        :rtype: csc_matrix</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">qubits_</span> <span class="o">=</span> <span class="n">qubits</span>
+        <span class="k">if</span> <span class="n">qubits</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+            <span class="n">qubits_</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_all_qubits</span><span class="p">))</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span>
+            <span class="nb">complex</span><span class="p">(</span><span class="n">coeff</span><span class="p">)</span> <span class="o">*</span> <span class="n">pauli</span><span class="o">.</span><span class="n">to_sparse_matrix</span><span class="p">(</span><span class="n">qubits_</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">pauli</span><span class="p">,</span> <span class="n">coeff</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="QubitPauliOperator.dot_state"><a class="viewcode-back" href="../../../utils.html#pytket.utils.QubitPauliOperator.dot_state">[docs]</a>    <span class="k">def</span> <span class="nf">dot_state</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">qubits</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Qubit</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Applies the operator to the given state, mapping qubits to indexes</span>
+<span class="sd">        according to ``qubits``.</span>
+
+<span class="sd">        - When ``qubits`` is an explicit list, the qubits are ordered with</span>
+<span class="sd">          ``qubits[0]`` as the most significant qubit for indexing into ``state``.</span>
+<span class="sd">        - If ``None``, qubits sequentially indexed from 0 in the default register</span>
+<span class="sd">          and ordered by ILO-BE so ``Qubit(0)`` is the most significant.</span>
+
+<span class="sd">        :param state: The initial statevector</span>
+<span class="sd">        :type state: numpy.ndarray</span>
+<span class="sd">        :param qubits: Sequencing of qubits in ``state``, if not mapped to the</span>
+<span class="sd">            default register. Defaults to None</span>
+<span class="sd">        :type qubits: Union[List[Qubit], None], optional</span>
+<span class="sd">        :return: The dot product of the operator with the statevector</span>
+<span class="sd">        :rtype: numpy.ndarray</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">indexed_state</span> <span class="o">=</span> <span class="p">[</span><span class="n">state</span><span class="p">,</span> <span class="n">qubits</span><span class="p">]</span> <span class="k">if</span> <span class="n">qubits</span> <span class="k">else</span> <span class="p">[</span><span class="n">state</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span>
+            <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
+            <span class="nb">sum</span><span class="p">(</span>
+                <span class="nb">complex</span><span class="p">(</span><span class="n">coeff</span><span class="p">)</span> <span class="o">*</span> <span class="n">pauli</span><span class="o">.</span><span class="n">dot_state</span><span class="p">(</span><span class="o">*</span><span class="n">indexed_state</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">pauli</span><span class="p">,</span> <span class="n">coeff</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="p">),</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="QubitPauliOperator.state_expectation"><a class="viewcode-back" href="../../../utils.html#pytket.utils.QubitPauliOperator.state_expectation">[docs]</a>    <span class="k">def</span> <span class="nf">state_expectation</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">qubits</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Qubit</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">complex</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Calculates the expectation value of the given statevector with respect</span>
+<span class="sd">        to the operator, mapping qubits to indexes according to ``qubits``.</span>
+
+<span class="sd">        - When ``qubits`` is an explicit list, the qubits are ordered with</span>
+<span class="sd">          ``qubits[0]`` as the most significant qubit for indexing into ``state``.</span>
+<span class="sd">        - If ``None``, qubits sequentially indexed from 0 in the default register</span>
+<span class="sd">          and ordered by ILO-BE so ``Qubit(0)`` is the most significant.</span>
+
+<span class="sd">        :param state: The initial statevector</span>
+<span class="sd">        :type state: numpy.ndarray</span>
+<span class="sd">        :param qubits: Sequencing of qubits in ``state``, if not mapped to the</span>
+<span class="sd">            default register. Defaults to None</span>
+<span class="sd">        :type qubits: Union[List[Qubit], None], optional</span>
+<span class="sd">        :return: The expectation value of the statevector and operator</span>
+<span class="sd">        :rtype: complex</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">indexed_state</span> <span class="o">=</span> <span class="p">[</span><span class="n">state</span><span class="p">,</span> <span class="n">qubits</span><span class="p">]</span> <span class="k">if</span> <span class="n">qubits</span> <span class="k">else</span> <span class="p">[</span><span class="n">state</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span>
+            <span class="nb">complex</span><span class="p">,</span>
+            <span class="nb">sum</span><span class="p">(</span>
+                <span class="nb">complex</span><span class="p">(</span><span class="n">coeff</span><span class="p">)</span> <span class="o">*</span> <span class="n">pauli</span><span class="o">.</span><span class="n">state_expectation</span><span class="p">(</span><span class="o">*</span><span class="n">indexed_state</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">pauli</span><span class="p">,</span> <span class="n">coeff</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="p">),</span>
+        <span class="p">)</span></div>
+
+<div class="viewcode-block" id="QubitPauliOperator.compress"><a class="viewcode-back" href="../../../utils.html#pytket.utils.QubitPauliOperator.compress">[docs]</a>    <span class="k">def</span> <span class="nf">compress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">abs_tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;Substitutes all free symbols in the QubitPauliOperator with</span>
+<span class="sd">        1, and then removes imaginary and real components which have</span>
+<span class="sd">        magnitudes below the tolerance. If the resulting expression is</span>
+<span class="sd">        0, the term is removed entirely.</span>
+
+<span class="sd">        Warning: This methods assumes significant expression structure</span>
+<span class="sd">        is known a priori, and is best suited to operators which have</span>
+<span class="sd">        simple product expressions, such as excitation operators for</span>
+<span class="sd">        VQE ansätze and digital quantum simulation. Otherwise, it may</span>
+<span class="sd">        remove terms relevant to computation. Each expression is of</span>
+<span class="sd">        the form :math:`f(a_1,a_2,\\ldots,a_n)` for some symbols</span>
+<span class="sd">        :math:`a_i`. :math:`|f(a_1,a_2,\\ldots,a_n)|` is assumed to</span>
+<span class="sd">        monotonically increase in both real and imaginary components</span>
+<span class="sd">        for all :math:`a_i \\in [0, 1]`.</span>
+
+<span class="sd">        :param abs_tol: The threshold below which to remove values.</span>
+<span class="sd">        :type abs_tol: float</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+
+        <span class="n">to_delete</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">key</span><span class="p">,</span> <span class="n">value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="n">placeholder</span> <span class="o">=</span> <span class="n">value</span><span class="o">.</span><span class="n">subs</span><span class="p">({</span><span class="n">s</span><span class="p">:</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">s</span> <span class="ow">in</span> <span class="n">value</span><span class="o">.</span><span class="n">free_symbols</span><span class="p">})</span>
+            <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">re</span><span class="p">(</span><span class="n">placeholder</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="n">abs_tol</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">abs</span><span class="p">(</span><span class="n">im</span><span class="p">(</span><span class="n">placeholder</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="n">abs_tol</span><span class="p">:</span>
+                    <span class="n">to_delete</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">key</span><span class="p">)</span>
+                <span class="k">else</span><span class="p">:</span>
+                    <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">im</span><span class="p">(</span><span class="n">value</span><span class="p">)</span> <span class="o">*</span> <span class="mi">1</span><span class="n">j</span>
+            <span class="k">elif</span> <span class="nb">abs</span><span class="p">(</span><span class="n">im</span><span class="p">(</span><span class="n">placeholder</span><span class="p">))</span> <span class="o">&lt;=</span> <span class="n">abs_tol</span><span class="p">:</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span> <span class="o">=</span> <span class="n">re</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="n">to_delete</span><span class="p">:</span>
+            <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span></div>
+
+    <span class="k">def</span> <span class="nf">_collect_qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_all_qubits</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+            <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">key</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_all_qubits</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">q</span><span class="p">)</span></div>
+</pre></div>
+
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Quantinuum
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2023 Quantinuum.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

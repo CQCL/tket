@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Index &#8212; pytket 1.16.0 documentation</title>
+    <title>Index &#8212; pytket 1.17.0 documentation</title>
   
   
   
@@ -174,7 +174,6 @@
 <li class="toctree-l1"><a class="reference internal" href="utils.html">pytket.utils</a></li>
 <li class="toctree-l1"><a class="reference internal" href="logging.html">pytket.logging</a></li>
 <li class="toctree-l1"><a class="reference internal" href="config.html">pytket.config</a></li>
-<li class="toctree-l1"><a class="reference internal" href="faqs.html">TKET FAQs</a></li>
 </ul>
 
     </div>
@@ -554,8 +553,6 @@ document.write(`
 </li>
         <li><a href="tailoring.html#pytket.tailoring.UniversalFrameRandomisation.__init__">(pytket.tailoring.UniversalFrameRandomisation method)</a>
 </li>
-        <li><a href="transform.html#pytket.transform.CXConfigType.__init__">(pytket.transform.CXConfigType method)</a>
-</li>
         <li><a href="transform.html#pytket.transform.PauliSynthStrat.__init__">(pytket.transform.PauliSynthStrat method)</a>
 </li>
         <li><a href="transform.html#pytket.transform.Transform.__init__">(pytket.transform.Transform method)</a>
@@ -635,6 +632,8 @@ document.write(`
 </li>
       <li><a href="passes.html#pytket.passes.AASRouting">AASRouting() (in module pytket.passes)</a>
 </li>
+      <li><a href="classical.html#pytket.circuit.logic_exp.RegWiseOp.ADD">ADD (pytket.circuit.logic_exp.RegWiseOp attribute)</a>
+</li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.add_assertion">add_assertion() (pytket.circuit.Circuit method)</a>
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.add_barrier">add_barrier() (pytket.circuit.Circuit method)</a>
@@ -707,8 +706,12 @@ document.write(`
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.add_pauliexpbox">add_pauliexpbox() (pytket.circuit.Circuit method)</a>
 </li>
+      <li><a href="circuit_class.html#pytket.circuit.Circuit.add_pauliexpcommutingsetbox">add_pauliexpcommutingsetbox() (pytket.circuit.Circuit method)</a>
+</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="circuit_class.html#pytket.circuit.Circuit.add_pauliexppairbox">add_pauliexppairbox() (pytket.circuit.Circuit method)</a>
+</li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.add_phase">add_phase() (pytket.circuit.Circuit method)</a>
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.add_phasepolybox">add_phasepolybox() (pytket.circuit.Circuit method)</a>
@@ -749,6 +752,12 @@ document.write(`
 </li>
       <li><a href="classical.html#pytket.circuit.logic_exp.And">And (class in pytket.circuit.logic_exp)</a>
 </li>
+      <li><a href="classical.html#pytket.circuit.logic_exp.BitWiseOp.AND">AND (pytket.circuit.logic_exp.BitWiseOp attribute)</a>
+
+      <ul>
+        <li><a href="classical.html#pytket.circuit.logic_exp.RegWiseOp.AND">(pytket.circuit.logic_exp.RegWiseOp attribute)</a>
+</li>
+      </ul></li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.append">append() (pytket.circuit.Circuit method)</a>
 </li>
       <li><a href="utils.html#pytket.utils.append_pauli_measurement">append_pauli_measurement() (in module pytket.utils)</a>
@@ -819,10 +828,10 @@ document.write(`
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.bit_readout">bit_readout (pytket.circuit.Circuit property)</a>
 </li>
-      <li><a href="classical.html#pytket.circuit.logic_exp.BitAnd">BitAnd (class in pytket.circuit.logic_exp)</a>
-</li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="classical.html#pytket.circuit.logic_exp.BitAnd">BitAnd (class in pytket.circuit.logic_exp)</a>
+</li>
       <li><a href="classical.html#pytket.circuit.logic_exp.BitEq">BitEq (class in pytket.circuit.logic_exp)</a>
 </li>
       <li><a href="classical.html#pytket.circuit.logic_exp.BitLogicExp">BitLogicExp (class in pytket.circuit.logic_exp)</a>
@@ -843,8 +852,6 @@ document.write(`
         <li><a href="partition.html#pytket.partition.MeasurementBitMap.bits">(pytket.partition.MeasurementBitMap property)</a>
 </li>
       </ul></li>
-      <li><a href="classical.html#pytket.circuit.logic_exp.BitWiseOp">BitWiseOp (class in pytket.circuit.logic_exp)</a>
-</li>
       <li><a href="classical.html#pytket.circuit.logic_exp.BitXor">BitXor (class in pytket.circuit.logic_exp)</a>
 </li>
       <li><a href="mapping.html#pytket.mapping.BoxDecompositionRoutingMethod">BoxDecompositionRoutingMethod (class in pytket.mapping)</a>
@@ -864,6 +871,8 @@ document.write(`
       <li><a href="utils.html#pytket.utils.spam.SpamCorrecter.calibration_circuits">calibration_circuits() (pytket.utils.spam.SpamCorrecter method)</a>
 </li>
       <li><a href="backends.html#pytket.backends.Backend.cancel">cancel() (pytket.backends.Backend method)</a>
+</li>
+      <li><a href="backends.html#pytket.backends.status.StatusEnum.CANCELLED">CANCELLED (pytket.backends.status.StatusEnum attribute)</a>
 </li>
       <li><a href="backends.html#pytket.backends.status.CircuitStatus.cancelled_time">cancelled_time (pytket.backends.status.CircuitStatus attribute)</a>
 </li>
@@ -971,6 +980,8 @@ document.write(`
 </li>
       <li><a href="predicates.html#pytket.predicates.CompilationUnit">CompilationUnit (class in pytket.predicates)</a>
 </li>
+      <li><a href="backends.html#pytket.backends.status.StatusEnum.COMPLETED">COMPLETED (pytket.backends.status.StatusEnum attribute)</a>
+</li>
       <li><a href="backends.html#pytket.backends.status.CircuitStatus.completed_time">completed_time (pytket.backends.status.CircuitStatus attribute)</a>
 </li>
       <li><a href="passes.html#pytket.passes.ComposePhasePolyBoxes">ComposePhasePolyBoxes() (in module pytket.passes)</a>
@@ -1060,8 +1071,6 @@ document.write(`
       <li><a href="circuit_class.html#pytket.circuit.Circuit.CVdg">CVdg() (pytket.circuit.Circuit method)</a>
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.CX">CX() (pytket.circuit.Circuit method)</a>
-</li>
-      <li><a href="transform.html#pytket.transform.CXConfigType">CXConfigType (class in pytket.transform)</a>
 </li>
       <li><a href="passes.html#pytket.passes.CXMappingPass">CXMappingPass() (in module pytket.passes)</a>
 </li>
@@ -1155,6 +1164,8 @@ document.write(`
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.discarded_qubits">discarded_qubits (pytket.circuit.Circuit property)</a>
 </li>
+      <li><a href="classical.html#pytket.circuit.logic_exp.RegWiseOp.DIV">DIV (pytket.circuit.logic_exp.RegWiseOp attribute)</a>
+</li>
       <li><a href="zx.html#pytket.zx.Flow.dmap">dmap (pytket.zx.Flow property)</a>
 </li>
       <li><a href="pauli.html#pytket.pauli.QubitPauliString.dot_state">dot_state() (pytket.pauli.QubitPauliString method)</a>
@@ -1177,12 +1188,22 @@ document.write(`
 </li>
       <li><a href="classical.html#pytket.circuit.logic_exp.Eq">Eq (class in pytket.circuit.logic_exp)</a>
 </li>
+      <li><a href="classical.html#pytket.circuit.logic_exp.BitWiseOp.EQ">EQ (pytket.circuit.logic_exp.BitWiseOp attribute)</a>
+
+      <ul>
+        <li><a href="classical.html#pytket.circuit.logic_exp.RegWiseOp.EQ">(pytket.circuit.logic_exp.RegWiseOp attribute)</a>
+</li>
+      </ul></li>
+      <li><a href="backends.html#pytket.backends.status.StatusEnum.ERROR">ERROR (pytket.backends.status.StatusEnum attribute)</a>
+</li>
       <li><a href="backends.html#pytket.backends.status.CircuitStatus.error_detail">error_detail (pytket.backends.status.CircuitStatus attribute)</a>
 </li>
       <li><a href="backends.html#pytket.backends.status.CircuitStatus.error_time">error_time (pytket.backends.status.CircuitStatus attribute)</a>
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.ESWAP">ESWAP() (pytket.circuit.Circuit method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="passes.html#pytket.passes.EulerAngleReduction">EulerAngleReduction() (in module pytket.passes)</a>
 </li>
       <li><a href="classical.html#pytket.circuit.logic_exp.And.eval_vals">eval_vals() (pytket.circuit.logic_exp.And method)</a>
@@ -1193,8 +1214,6 @@ document.write(`
         <li><a href="classical.html#pytket.circuit.logic_exp.LogicExp.eval_vals">(pytket.circuit.logic_exp.LogicExp method)</a>
 </li>
       </ul></li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="circuit.html#pytket.circuit.ExpBox">ExpBox (class in pytket.circuit)</a>
 </li>
       <li><a href="utils.html#pytket.utils.distribution.ProbabilityDistribution.expectation">expectation() (pytket.utils.distribution.ProbabilityDistribution method)</a>
@@ -1333,6 +1352,8 @@ document.write(`
 </li>
       <li><a href="utils.html#pytket.utils.gen_term_sequence_circuit">gen_term_sequence_circuit() (in module pytket.utils)</a>
 </li>
+      <li><a href="classical.html#pytket.circuit.logic_exp.RegWiseOp.GEQ">GEQ (pytket.circuit.logic_exp.RegWiseOp attribute)</a>
+</li>
       <li><a href="architecture.html#pytket.architecture.Architecture.get_adjacent_nodes">get_adjacent_nodes() (pytket.architecture.Architecture method)</a>
 </li>
       <li><a href="tailoring.html#pytket.tailoring.FrameRandomisation.get_all_circuits">get_all_circuits() (pytket.tailoring.FrameRandomisation method)</a>
@@ -1400,6 +1421,8 @@ document.write(`
       <li><a href="config.html#pytket.config.get_config_file_path">get_config_file_path() (in module pytket.config)</a>
 </li>
       <li><a href="backends.html#pytket.backends.backendresult.BackendResult.get_counts">get_counts() (pytket.backends.backendresult.BackendResult method)</a>
+</li>
+      <li><a href="circuit.html#pytket.circuit.PauliExpBox.get_cx_config">get_cx_config() (pytket.circuit.PauliExpBox method)</a>
 </li>
       <li><a href="utils.html#pytket.utils.Graph.get_DAG">get_DAG() (pytket.utils.Graph method)</a>
 </li>
@@ -1565,6 +1588,8 @@ document.write(`
 </li>
       <li><a href="placement.html#pytket.placement.GraphPlacement">GraphPlacement (class in pytket.placement)</a>
 </li>
+      <li><a href="classical.html#pytket.circuit.logic_exp.RegWiseOp.GT">GT (pytket.circuit.logic_exp.RegWiseOp attribute)</a>
+</li>
       <li><a href="passes.html#pytket.passes.GuidedPauliSimp">GuidedPauliSimp() (in module pytket.passes)</a>
 </li>
   </ul></td>
@@ -1649,6 +1674,8 @@ document.write(`
 <h2 id="L">L</h2>
 <table style="width: 100%" class="indextable genindextable"><tr>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="classical.html#pytket.circuit.logic_exp.RegWiseOp.LEQ">LEQ (pytket.circuit.logic_exp.RegWiseOp attribute)</a>
+</li>
       <li><a href="logging.html#pytket.logging.level">level (class in pytket.logging)</a>
 </li>
       <li><a href="mapping.html#pytket.mapping.LexiLabellingMethod">LexiLabellingMethod (class in pytket.mapping)</a>
@@ -1666,6 +1693,10 @@ document.write(`
       <li><a href="classical.html#pytket.circuit.logic_exp.LogicExp">LogicExp (class in pytket.circuit.logic_exp)</a>
 </li>
       <li><a href="circuit.html#pytket.circuit.RangePredicateOp.lower">lower (pytket.circuit.RangePredicateOp property)</a>
+</li>
+      <li><a href="classical.html#pytket.circuit.logic_exp.RegWiseOp.LSH">LSH (pytket.circuit.logic_exp.RegWiseOp attribute)</a>
+</li>
+      <li><a href="classical.html#pytket.circuit.logic_exp.RegWiseOp.LT">LT (pytket.circuit.logic_exp.RegWiseOp attribute)</a>
 </li>
   </ul></td>
 </tr></table>
@@ -1782,6 +1813,8 @@ document.write(`
       </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
+      <li><a href="classical.html#pytket.circuit.logic_exp.RegWiseOp.MUL">MUL (pytket.circuit.logic_exp.RegWiseOp attribute)</a>
+</li>
       <li><a href="circuit.html#pytket.circuit.MultiBitOp">MultiBitOp (class in pytket.circuit)</a>
 </li>
       <li><a href="mapping.html#pytket.mapping.MultiGateReorderRoutingMethod">MultiGateReorderRoutingMethod (class in pytket.mapping)</a>
@@ -1873,8 +1906,6 @@ document.write(`
 </li>
         <li><a href="pauli.html#pytket.pauli.Pauli.name">(pytket.pauli.Pauli property)</a>
 </li>
-        <li><a href="transform.html#pytket.transform.CXConfigType.name">(pytket.transform.CXConfigType property)</a>
-</li>
         <li><a href="transform.html#pytket.transform.PauliSynthStrat.name">(pytket.transform.PauliSynthStrat property)</a>
 </li>
         <li><a href="zx.html#pytket.zx.QuantumType.name">(pytket.zx.QuantumType property)</a>
@@ -1890,6 +1921,12 @@ document.write(`
 </li>
       <li><a href="classical.html#pytket.circuit.logic_exp.Neq">Neq (class in pytket.circuit.logic_exp)</a>
 </li>
+      <li><a href="classical.html#pytket.circuit.logic_exp.BitWiseOp.NEQ">NEQ (pytket.circuit.logic_exp.BitWiseOp attribute)</a>
+
+      <ul>
+        <li><a href="classical.html#pytket.circuit.logic_exp.RegWiseOp.NEQ">(pytket.circuit.logic_exp.RegWiseOp attribute)</a>
+</li>
+      </ul></li>
       <li><a href="predicates.html#pytket.predicates.NoBarriersPredicate">NoBarriersPredicate (class in pytket.predicates)</a>
 </li>
       <li><a href="predicates.html#pytket.predicates.NoClassicalBitsPredicate">NoClassicalBitsPredicate (class in pytket.predicates)</a>
@@ -1922,6 +1959,12 @@ document.write(`
       </ul></li>
       <li><a href="predicates.html#pytket.predicates.NoSymbolsPredicate">NoSymbolsPredicate (class in pytket.predicates)</a>
 </li>
+      <li><a href="classical.html#pytket.circuit.logic_exp.BitWiseOp.NOT">NOT (pytket.circuit.logic_exp.BitWiseOp attribute)</a>
+
+      <ul>
+        <li><a href="classical.html#pytket.circuit.logic_exp.RegWiseOp.NOT">(pytket.circuit.logic_exp.RegWiseOp attribute)</a>
+</li>
+      </ul></li>
       <li><a href="predicates.html#pytket.predicates.NoWireSwapsPredicate">NoWireSwapsPredicate (class in pytket.predicates)</a>
 </li>
       <li><a href="circuit.html#pytket.circuit.WASMOp.num_bits">num_bits (pytket.circuit.WASMOp property)</a>
@@ -1954,10 +1997,10 @@ document.write(`
 </li>
       <li><a href="transform.html#pytket.transform.Transform.OptimiseCliffords">OptimiseCliffords() (pytket.transform.Transform static method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="transform.html#pytket.transform.Transform.OptimisePauliGadgets">OptimisePauliGadgets() (pytket.transform.Transform static method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="passes.html#pytket.passes.OptimisePhaseGadgets">OptimisePhaseGadgets() (in module pytket.passes)</a>
 
       <ul>
@@ -1972,6 +2015,12 @@ document.write(`
 </li>
       <li><a href="classical.html#pytket.circuit.logic_exp.Or">Or (class in pytket.circuit.logic_exp)</a>
 </li>
+      <li><a href="classical.html#pytket.circuit.logic_exp.BitWiseOp.OR">OR (pytket.circuit.logic_exp.BitWiseOp attribute)</a>
+
+      <ul>
+        <li><a href="classical.html#pytket.circuit.logic_exp.RegWiseOp.OR">(pytket.circuit.logic_exp.RegWiseOp attribute)</a>
+</li>
+      </ul></li>
       <li><a href="zx.html#pytket.zx.ZXDiagram.other_end">other_end() (pytket.zx.ZXDiagram method)</a>
 </li>
       <li><a href="utils.html#pytket.utils.OutcomeArray">OutcomeArray (class in pytket.utils)</a>
@@ -2003,6 +2052,8 @@ document.write(`
       <li><a href="pauli.html#pytket.pauli.pauli_string_mult">pauli_string_mult() (in module pytket.pauli)</a>
 </li>
       <li><a href="circuit.html#pytket.circuit.PauliExpBox">PauliExpBox (class in pytket.circuit)</a>
+</li>
+      <li><a href="passes.html#pytket.passes.PauliExponentials">PauliExponentials() (in module pytket.passes)</a>
 </li>
       <li><a href="tailoring.html#pytket.tailoring.PauliFrameRandomisation">PauliFrameRandomisation (class in pytket.tailoring)</a>
 </li>
@@ -2057,6 +2108,8 @@ document.write(`
       <li><a href="predicates.html#pytket.predicates.PlacementPredicate">PlacementPredicate (class in pytket.predicates)</a>
 </li>
       <li><a href="backends.html#pytket.backends.Backend.pop_result">pop_result() (pytket.backends.Backend method)</a>
+</li>
+      <li><a href="classical.html#pytket.circuit.logic_exp.RegWiseOp.POW">POW (pytket.circuit.logic_exp.RegWiseOp attribute)</a>
 </li>
       <li><a href="predicates.html#pytket.predicates.Predicate">Predicate (class in pytket.predicates)</a>
 </li>
@@ -2351,6 +2404,8 @@ document.write(`
       </ul></li>
       <li><a href="backends.html#pytket.backends.status.CircuitStatus.queue_position">queue_position (pytket.backends.status.CircuitStatus attribute)</a>
 </li>
+      <li><a href="backends.html#pytket.backends.status.StatusEnum.QUEUED">QUEUED (pytket.backends.status.StatusEnum attribute)</a>
+</li>
       <li><a href="backends.html#pytket.backends.status.CircuitStatus.queued_time">queued_time (pytket.backends.status.CircuitStatus attribute)</a>
 </li>
   </ul></td>
@@ -2443,13 +2498,11 @@ document.write(`
 </li>
       <li><a href="classical.html#pytket.circuit.logic_exp.RegPow">RegPow (class in pytket.circuit.logic_exp)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="classical.html#pytket.circuit.logic_exp.RegRsh">RegRsh (class in pytket.circuit.logic_exp)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="classical.html#pytket.circuit.logic_exp.RegSub">RegSub (class in pytket.circuit.logic_exp)</a>
-</li>
-      <li><a href="classical.html#pytket.circuit.logic_exp.RegWiseOp">RegWiseOp (class in pytket.circuit.logic_exp)</a>
 </li>
       <li><a href="classical.html#pytket.circuit.logic_exp.RegXor">RegXor (class in pytket.circuit.logic_exp)</a>
 </li>
@@ -2523,9 +2576,13 @@ document.write(`
 </li>
       <li><a href="passes.html#pytket.passes.RoutingPass">RoutingPass() (in module pytket.passes)</a>
 </li>
+      <li><a href="classical.html#pytket.circuit.logic_exp.RegWiseOp.RSH">RSH (pytket.circuit.logic_exp.RegWiseOp attribute)</a>
+</li>
       <li><a href="backends.html#pytket.backends.Backend.run_circuit">run_circuit() (pytket.backends.Backend method)</a>
 </li>
       <li><a href="backends.html#pytket.backends.Backend.run_circuits">run_circuits() (pytket.backends.Backend method)</a>
+</li>
+      <li><a href="backends.html#pytket.backends.status.StatusEnum.RUNNING">RUNNING (pytket.backends.status.StatusEnum attribute)</a>
 </li>
       <li><a href="backends.html#pytket.backends.status.CircuitStatus.running_time">running_time (pytket.backends.status.CircuitStatus attribute)</a>
 </li>
@@ -2641,11 +2698,13 @@ document.write(`
 </li>
       <li><a href="backends.html#pytket.backends.status.CircuitStatus.status">status (pytket.backends.status.CircuitStatus attribute)</a>
 </li>
-      <li><a href="backends.html#pytket.backends.status.StatusEnum">StatusEnum (class in pytket.backends.status)</a>
-</li>
       <li><a href="backends.html#pytket.backends.backendresult.StoredResult">StoredResult (class in pytket.backends.backendresult)</a>
 </li>
       <li><a href="pauli.html#pytket.pauli.PauliStabiliser.string">string (pytket.pauli.PauliStabiliser property)</a>
+</li>
+      <li><a href="classical.html#pytket.circuit.logic_exp.RegWiseOp.SUB">SUB (pytket.circuit.logic_exp.RegWiseOp attribute)</a>
+</li>
+      <li><a href="backends.html#pytket.backends.status.StatusEnum.SUBMITTED">SUBMITTED (pytket.backends.status.StatusEnum attribute)</a>
 </li>
       <li><a href="backends.html#pytket.backends.status.CircuitStatus.submitted_time">submitted_time (pytket.backends.status.CircuitStatus attribute)</a>
 </li>
@@ -2941,6 +3000,12 @@ document.write(`
 </li>
       <li><a href="classical.html#pytket.circuit.logic_exp.Xor">Xor (class in pytket.circuit.logic_exp)</a>
 </li>
+      <li><a href="classical.html#pytket.circuit.logic_exp.BitWiseOp.XOR">XOR (pytket.circuit.logic_exp.BitWiseOp attribute)</a>
+
+      <ul>
+        <li><a href="classical.html#pytket.circuit.logic_exp.RegWiseOp.XOR">(pytket.circuit.logic_exp.RegWiseOp attribute)</a>
+</li>
+      </ul></li>
   </ul></td>
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.XXPhase">XXPhase() (pytket.circuit.Circuit method)</a>

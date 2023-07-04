@@ -1,0 +1,794 @@
+
+
+<!DOCTYPE html>
+
+
+<html lang="en" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>pytket.passes.script &#8212; pytket 1.17.0 documentation</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "light";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="../../../_static/styles/theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=e353d410970836974a52" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=e353d410970836974a52" rel="stylesheet" />
+
+  
+  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=e353d410970836974a52" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="../../../_static/pygments.css" />
+    <link rel="stylesheet" href="../../../_static/styles/sphinx-book-theme.css?digest=14f4ca6b54d191a8c7657f6c759bf11a5fb86285" type="text/css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/copybutton.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/jupyter-sphinx.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/thebelab.css" />
+    <link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52" />
+
+    <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
+    <script src="../../../_static/doctools.js"></script>
+    <script src="../../../_static/sphinx_highlight.js"></script>
+    <script src="../../../_static/clipboard.min.js"></script>
+    <script src="../../../_static/copybutton.js"></script>
+    <script src="../../../_static/thebelab-helper.js"></script>
+    <script src="../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/pytket/passes/script';</script>
+    <link rel="index" title="Index" href="../../../genindex.html" />
+    <link rel="search" title="Search" href="../../../search.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <a class="skip-link" href="#main-content">Skip to main content</a>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__primary"
+          id="__primary"/>
+  <label class="overlay overlay-primary" for="__primary"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          name="__secondary"
+          id="__secondary"/>
+  <label class="overlay overlay-secondary" for="__secondary"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="../../../search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search..."
+         aria-label="Search..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+  
+    <nav class="bd-header navbar navbar-expand-lg bd-navbar">
+    </nav>
+  
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+  
+
+<a class="navbar-brand logo" href="../../../index.html">
+  
+  
+  
+  
+    
+    
+      
+    
+    
+    <img src="../../../_static/Quantinuum_logo_black.png" class="logo__image only-light" alt="Logo image"/>
+    <script>document.write(`<img src="../../../_static/Quantinuum_logo_white.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+  
+  
+</a></div>
+        <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        <p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../getting_started.html">Getting Started</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../faqs.html">TKET FAQs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../opensource.html">Open Source Attribution</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">More Documentation:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket/manual/index.html">Manual</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket-extensions/api/index.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://github.com/CQCL/pytket/tree/main/examples">Example notebooks</a></li>
+</ul>
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
+<ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="../../../backends.html">pytket.backends</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../circuit.html">pytket.circuit</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference internal" href="../../../circuit_class.html">pytket.circuit.Circuit</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../optype.html">pytket.circuit.OpType</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../classical.html">pytket.circuit.logic_exp</a></li>
+<li class="toctree-l2"><a class="reference internal" href="../../../display.html">pytket.circuit.display</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="../../../pauli.html">pytket.pauli</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../passes.html">pytket.passes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../predicates.html">pytket.predicates</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../partition.html">pytket.partition</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../qasm.html">pytket.qasm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../quipper.html">pytket.quipper</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../architecture.html">pytket.architecture</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../placement.html">pytket.placement</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../mapping.html">pytket.mapping</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tableau.html">pytket.tableau</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../transform.html">pytket.transform</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../tailoring.html">pytket.tailoring</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../wasm.html">pytket.wasm</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../zx.html">pytket.zx</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../utils.html">pytket.utils</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../logging.html">pytket.logging</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../../../config.html">pytket.config</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><label class="sidebar-toggle primary-toggle btn btn-sm" for="__primary" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</label></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/CQCL/tket" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/CQCL/tket/issues/new?title=Issue%20on%20page%20%2F_modules/pytket/passes/script.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+<script>
+document.write(`
+  <button class="theme-switch-button btn btn-sm btn-outline-primary navbar-btn rounded-circle" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="theme-switch" data-mode="light"><i class="fa-solid fa-sun"></i></span>
+    <span class="theme-switch" data-mode="dark"><i class="fa-solid fa-moon"></i></span>
+    <span class="theme-switch" data-mode="auto"><i class="fa-solid fa-circle-half-stroke"></i></span>
+  </button>
+`);
+</script>
+
+<script>
+document.write(`
+  <button class="btn btn-sm navbar-btn search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+  </button>
+`);
+</script>
+
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1></h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article" role="main">
+                  
+  <h1>Source code for pytket.passes.script</h1><div class="highlight"><pre>
+<span></span><span class="c1"># Copyright 2019-2023 Cambridge Quantum Computing</span>
+<span class="c1">#</span>
+<span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
+<span class="c1"># you may not use this file except in compliance with the License.</span>
+<span class="c1"># You may obtain a copy of the License at</span>
+<span class="c1">#</span>
+<span class="c1">#     http://www.apache.org/licenses/LICENSE-2.0</span>
+<span class="c1">#</span>
+<span class="c1"># Unless required by applicable law or agreed to in writing, software</span>
+<span class="c1"># distributed under the License is distributed on an &quot;AS IS&quot; BASIS,</span>
+<span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
+<span class="c1"># See the License for the specific language governing permissions and</span>
+<span class="c1"># limitations under the License.</span>
+
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">lark</span> <span class="kn">import</span> <span class="n">Lark</span><span class="p">,</span> <span class="n">Transformer</span>
+<span class="kn">from</span> <span class="nn">pytket.circuit</span> <span class="kn">import</span> <span class="n">OpType</span>  <span class="c1"># type: ignore</span>
+<span class="kn">from</span> <span class="nn">pytket.passes</span> <span class="kn">import</span> <span class="n">BasePass</span><span class="p">,</span> <span class="n">RepeatPass</span><span class="p">,</span> <span class="n">SequencePass</span>  <span class="c1"># type: ignore</span>
+<span class="kn">from</span> <span class="nn">pytket.passes</span> <span class="kn">import</span> <span class="p">(</span>  <span class="c1"># type: ignore</span>
+    <span class="n">CliffordSimp</span><span class="p">,</span>
+    <span class="n">CommuteThroughMultis</span><span class="p">,</span>
+    <span class="n">ContextSimp</span><span class="p">,</span>
+    <span class="n">DecomposeArbitrarilyControlledGates</span><span class="p">,</span>
+    <span class="n">DecomposeBoxes</span><span class="p">,</span>
+    <span class="n">DecomposeClassicalExp</span><span class="p">,</span>
+    <span class="n">DecomposeMultiQubitsCX</span><span class="p">,</span>
+    <span class="n">DecomposeSingleQubitsTK1</span><span class="p">,</span>
+    <span class="n">DelayMeasures</span><span class="p">,</span>
+    <span class="n">EulerAngleReduction</span><span class="p">,</span>
+    <span class="n">FlattenRegisters</span><span class="p">,</span>
+    <span class="n">FullPeepholeOptimise</span><span class="p">,</span>
+    <span class="n">GuidedPauliSimp</span><span class="p">,</span>
+    <span class="n">KAKDecomposition</span><span class="p">,</span>
+    <span class="n">OptimisePhaseGadgets</span><span class="p">,</span>
+    <span class="n">PauliSimp</span><span class="p">,</span>
+    <span class="n">PauliExponentials</span><span class="p">,</span>
+    <span class="n">PauliSquash</span><span class="p">,</span>
+    <span class="n">PeepholeOptimise2Q</span><span class="p">,</span>
+    <span class="n">RebaseTket</span><span class="p">,</span>
+    <span class="n">RemoveBarriers</span><span class="p">,</span>
+    <span class="n">RemoveDiscarded</span><span class="p">,</span>
+    <span class="n">RemoveRedundancies</span><span class="p">,</span>
+    <span class="n">SimplifyInitial</span><span class="p">,</span>
+    <span class="n">SimplifyMeasured</span><span class="p">,</span>
+    <span class="n">SynthesiseHQS</span><span class="p">,</span>
+    <span class="n">SynthesiseTket</span><span class="p">,</span>
+    <span class="n">SynthesiseOQC</span><span class="p">,</span>
+    <span class="n">SynthesiseUMD</span><span class="p">,</span>
+    <span class="n">ThreeQubitSquash</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pytket.circuit</span> <span class="kn">import</span> <span class="n">CXConfigType</span>  <span class="c1"># type: ignore</span>
+<span class="kn">from</span> <span class="nn">pytket.transform</span> <span class="kn">import</span> <span class="n">PauliSynthStrat</span>  <span class="c1"># type: ignore</span>
+
+<span class="n">pass_grammar</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
+<span class="s2">start: comp_pass</span>
+<span class="s2">comp_pass: ( basic_pass | seq_pass | repeat_pass )</span>
+<span class="s2">basic_pass:</span>
+<span class="s2">    | clifford_simp</span>
+<span class="s2">    | clifford_simp_no_swaps</span>
+<span class="s2">    | commute_through_multis</span>
+<span class="s2">    | context_simp</span>
+<span class="s2">    | context_simp_no_classical</span>
+<span class="s2">    | decompose_arbitrarily_controlled_gates</span>
+<span class="s2">    | decompose_boxes</span>
+<span class="s2">    | decompose_classical_exp</span>
+<span class="s2">    | decompose_multi_qubits_cx</span>
+<span class="s2">    | decompose_single_qubits_tk1</span>
+<span class="s2">    | delay_measures</span>
+<span class="s2">    | delay_measures_try</span>
+<span class="s2">    | euler_angle_reduction</span>
+<span class="s2">    | flatten_registers</span>
+<span class="s2">    | full_peephole_optimise</span>
+<span class="s2">    | full_peephole_optimise_no_swaps</span>
+<span class="s2">    | guided_pauli_simp</span>
+<span class="s2">    | guided_pauli_simp_default</span>
+<span class="s2">    | kak_decomposition</span>
+<span class="s2">    | optimise_phase_gadgets</span>
+<span class="s2">    | optimise_phase_gadgets_default</span>
+<span class="s2">    | pauli_simp</span>
+<span class="s2">    | pauli_simp_default</span>
+<span class="s2">    | pauli_squash</span>
+<span class="s2">    | pauli_squash_default</span>
+<span class="s2">    | peephole_optimise_2q</span>
+<span class="s2">    | rebase_tket</span>
+<span class="s2">    | remove_barriers</span>
+<span class="s2">    | remove_discarded</span>
+<span class="s2">    | remove_redundancies</span>
+<span class="s2">    | simplify_initial</span>
+<span class="s2">    | simplify_initial_no_classical</span>
+<span class="s2">    | simplify_measured</span>
+<span class="s2">    | synthesise_hqs</span>
+<span class="s2">    | synthesise_tket</span>
+<span class="s2">    | synthesise_oqc</span>
+<span class="s2">    | synthesise_umd</span>
+<span class="s2">    | three_qubit_squash</span>
+<span class="s2">seq_pass: &quot;[&quot; pass_list &quot;]&quot;</span>
+<span class="s2">pass_list: comp_pass (&quot;,&quot; comp_pass)*</span>
+<span class="s2">repeat_pass: &quot;repeat&quot; &quot;(&quot; comp_pass &quot;)&quot;</span>
+
+<span class="s2">clifford_simp: &quot;CliffordSimp&quot;</span>
+<span class="s2">clifford_simp_no_swaps: &quot;CliffordSimpNoSwaps&quot;</span>
+<span class="s2">commute_through_multis: &quot;CommuteThroughMultis&quot;</span>
+<span class="s2">context_simp: &quot;ContextSimp&quot;</span>
+<span class="s2">context_simp_no_classical: &quot;ContextSimpNoClassical&quot;</span>
+<span class="s2">decompose_arbitrarily_controlled_gates: &quot;DecomposeArbitrarilyControlledGates&quot;</span>
+<span class="s2">decompose_boxes: &quot;DecomposeBoxes&quot;</span>
+<span class="s2">decompose_classical_exp: &quot;DecomposeClassicalExp&quot;</span>
+<span class="s2">decompose_multi_qubits_cx: &quot;DecomposeMultiQubitsCX&quot;</span>
+<span class="s2">decompose_single_qubits_tk1: &quot;DecomposeSingleQubitsTK1&quot;</span>
+<span class="s2">delay_measures: &quot;DelayMeasures&quot;</span>
+<span class="s2">delay_measures_try: &quot;TryDelayMeasures&quot;</span>
+<span class="s2">euler_angle_reduction: &quot;EulerAngleReduction&quot; &quot;(&quot; op_type &quot;,&quot; op_type &quot;)&quot;</span>
+<span class="s2">flatten_registers: &quot;FlattenRegisters&quot;</span>
+<span class="s2">full_peephole_optimise: &quot;FullPeepholeOptimise&quot;</span>
+<span class="s2">full_peephole_optimise_no_swaps: &quot;FullPeepholeOptimiseNoSwaps&quot;</span>
+<span class="s2">guided_pauli_simp: &quot;GuidedPauliSimp&quot; &quot;(&quot; pauli_synth_strat &quot;,&quot; cx_config_type &quot;)&quot;</span>
+<span class="s2">guided_pauli_simp_default: &quot;GuidedPauliSimp&quot;</span>
+<span class="s2">kak_decomposition: &quot;KAKDecomposition&quot;</span>
+<span class="s2">optimise_phase_gadgets: &quot;OptimisePhaseGadgets&quot; &quot;(&quot; cx_config_type &quot;)&quot;</span>
+<span class="s2">optimise_phase_gadgets_default: &quot;OptimisePhaseGadgets&quot;</span>
+<span class="s2">pauli_exponentials: &quot;PauliExponentials&quot; &quot;(&quot; pauli_synth_strat &quot;,&quot; cx_config_type &quot;)&quot;</span>
+<span class="s2">pauli_exponentials_default: &quot;PauliExponentials&quot;</span>
+<span class="s2">pauli_simp: &quot;PauliSimp&quot; &quot;(&quot; pauli_synth_strat &quot;,&quot; cx_config_type &quot;)&quot;</span>
+<span class="s2">pauli_simp_default: &quot;PauliSimp&quot;</span>
+<span class="s2">pauli_squash: &quot;PauliSquash&quot; &quot;(&quot; pauli_synth_strat &quot;,&quot; cx_config_type &quot;)&quot;</span>
+<span class="s2">pauli_squash_default: &quot;PauliSquash&quot;</span>
+<span class="s2">peephole_optimise_2q: &quot;PeepholeOptimise2Q&quot;</span>
+<span class="s2">rebase_tket: &quot;RebaseTket&quot;</span>
+<span class="s2">remove_barriers: &quot;RemoveBarriers&quot;</span>
+<span class="s2">remove_discarded: &quot;RemoveDiscarded&quot;</span>
+<span class="s2">remove_redundancies: &quot;RemoveRedundancies&quot;</span>
+<span class="s2">simplify_initial: &quot;SimplifyInitial&quot;</span>
+<span class="s2">simplify_initial_no_classical: &quot;SimplifyInitialNoClassical&quot;</span>
+<span class="s2">simplify_measured: &quot;SimplifyMeasured&quot;</span>
+<span class="s2">synthesise_hqs: &quot;SynthesiseHQS&quot;</span>
+<span class="s2">synthesise_tket: &quot;SynthesiseTket&quot;</span>
+<span class="s2">synthesise_oqc: &quot;SynthesiseOQC&quot;</span>
+<span class="s2">synthesise_umd: &quot;SynthesiseUMD&quot;</span>
+<span class="s2">three_qubit_squash: &quot;ThreeQubitSquash&quot;</span>
+
+<span class="s2">cx_config_type:</span>
+<span class="s2">    | cx_config_type_snake</span>
+<span class="s2">    | cx_config_type_star</span>
+<span class="s2">    | cx_config_type_tree</span>
+<span class="s2">    | cx_config_type_multi_q_gate</span>
+<span class="s2">cx_config_type_snake: &quot;Snake&quot;</span>
+<span class="s2">cx_config_type_star: &quot;Star&quot;</span>
+<span class="s2">cx_config_type_tree: &quot;Tree&quot;</span>
+<span class="s2">cx_config_type_multi_q_gate: &quot;MultiQGate&quot;</span>
+<span class="s2">op_type: ( op_type_rx | op_type_ry | op_type_rz )</span>
+<span class="s2">op_type_rx: &quot;Rx&quot;</span>
+<span class="s2">op_type_ry: &quot;Ry&quot;</span>
+<span class="s2">op_type_rz: &quot;Rz&quot;</span>
+<span class="s2">pauli_synth_strat:</span>
+<span class="s2">    | pauli_synth_strat_individual</span>
+<span class="s2">    | pauli_synth_strat_pairwise</span>
+<span class="s2">    | pauli_synth_strat_sets</span>
+<span class="s2">pauli_synth_strat_individual: &quot;Individual&quot;</span>
+<span class="s2">pauli_synth_strat_pairwise: &quot;Pairwise&quot;</span>
+<span class="s2">pauli_synth_strat_sets: &quot;Sets&quot;</span>
+
+<span class="si">%i</span><span class="s2">mport common.WS_INLINE -&gt; WS</span>
+<span class="si">%i</span><span class="s2">mport common.CR</span>
+<span class="si">%i</span><span class="s2">mport common.LF</span>
+<span class="s2">_NEWLINE: CR? LF</span>
+<span class="si">%i</span><span class="s2">gnore WS</span>
+<span class="si">%i</span><span class="s2">gnore _NEWLINE</span>
+<span class="s2">&quot;&quot;&quot;</span>
+
+
+<span class="k">class</span> <span class="nc">PassTransformer</span><span class="p">(</span><span class="n">Transformer</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">comp_pass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">basic_pass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">seq_pass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">pass_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">SequencePass</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">repeat_pass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RepeatPass</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">clifford_simp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">CliffordSimp</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">clifford_simp_no_swaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">CliffordSimp</span><span class="p">(</span><span class="n">allow_swaps</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">commute_through_multis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">CommuteThroughMultis</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">context_simp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ContextSimp</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">context_simp_no_classical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ContextSimp</span><span class="p">(</span><span class="n">allow_classical</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">decompose_arbitrarily_controlled_gates</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">DecomposeArbitrarilyControlledGates</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">decompose_boxes</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">DecomposeBoxes</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">decompose_classical_exp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">DecomposeClassicalExp</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">decompose_multi_qubits_cx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">DecomposeMultiQubitsCX</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">decompose_single_qubits_tk1</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">DecomposeSingleQubitsTK1</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">delay_measures</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">DelayMeasures</span><span class="p">(</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">delay_measures_try</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">DelayMeasures</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">euler_angle_reduction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">EulerAngleReduction</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">flatten_registers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">FlattenRegisters</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">full_peephole_optimise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">FullPeepholeOptimise</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">full_peephole_optimise_no_swaps</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">FullPeepholeOptimise</span><span class="p">(</span><span class="n">allow_swaps</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">guided_pauli_simp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">GuidedPauliSimp</span><span class="p">(</span><span class="n">strat</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cx_config</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">guided_pauli_simp_default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">GuidedPauliSimp</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">kak_decomposition</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">KAKDecomposition</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">optimise_phase_gadgets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">OptimisePhaseGadgets</span><span class="p">(</span><span class="n">cx_config</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">optimise_phase_gadgets_default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">OptimisePhaseGadgets</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">pauli_exponentials</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PauliExponentials</span><span class="p">(</span><span class="n">strat</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cx_config</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">pauli_exponentials_default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PauliExponentials</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">pauli_simp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PauliSimp</span><span class="p">(</span><span class="n">strat</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cx_config</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">pauli_simp_default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PauliSimp</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">pauli_squash</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PauliSquash</span><span class="p">(</span><span class="n">strat</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cx_config</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="k">def</span> <span class="nf">pauli_squash_default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PauliSquash</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">peephole_optimise_2q</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PeepholeOptimise2Q</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">rebase_tket</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RebaseTket</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">remove_barriers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RemoveBarriers</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">remove_discarded</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RemoveDiscarded</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">remove_redundancies</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RemoveRedundancies</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">simplify_initial</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">SimplifyInitial</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">simplify_initial_no_classical</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">SimplifyInitial</span><span class="p">(</span><span class="n">allow_classical</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">simplify_measured</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">SimplifyMeasured</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">synthesise_hqs</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">SynthesiseHQS</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">synthesise_tket</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">SynthesiseTket</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">synthesise_oqc</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">SynthesiseOQC</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">synthesise_umd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">SynthesiseUMD</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">three_qubit_squash</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">ThreeQubitSquash</span><span class="p">()</span>
+
+    <span class="k">def</span> <span class="nf">cx_config_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CXConfigType</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">cx_config_type_snake</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CXConfigType</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">CXConfigType</span><span class="o">.</span><span class="n">Snake</span>
+
+    <span class="k">def</span> <span class="nf">cx_config_type_star</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CXConfigType</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">CXConfigType</span><span class="o">.</span><span class="n">Star</span>
+
+    <span class="k">def</span> <span class="nf">cx_config_type_tree</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CXConfigType</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">CXConfigType</span><span class="o">.</span><span class="n">Tree</span>
+
+    <span class="k">def</span> <span class="nf">cx_config_type_multi_q_gate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CXConfigType</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">CXConfigType</span><span class="o">.</span><span class="n">MultiQGate</span>
+
+    <span class="k">def</span> <span class="nf">op_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OpType</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">op_type_rx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OpType</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">OpType</span><span class="o">.</span><span class="n">Rx</span>
+
+    <span class="k">def</span> <span class="nf">op_type_ry</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OpType</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">OpType</span><span class="o">.</span><span class="n">Ry</span>
+
+    <span class="k">def</span> <span class="nf">op_type_rz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OpType</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">OpType</span><span class="o">.</span><span class="n">Rz</span>
+
+    <span class="k">def</span> <span class="nf">pauli_synth_strat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PauliSynthStrat</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+
+    <span class="k">def</span> <span class="nf">pauli_synth_strat_individual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PauliSynthStrat</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PauliSynthStrat</span><span class="o">.</span><span class="n">Individual</span>
+
+    <span class="k">def</span> <span class="nf">pauli_synth_strat_pairwise</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PauliSynthStrat</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PauliSynthStrat</span><span class="o">.</span><span class="n">Pairwise</span>
+
+    <span class="k">def</span> <span class="nf">pauli_synth_strat_sets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PauliSynthStrat</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">PauliSynthStrat</span><span class="o">.</span><span class="n">Sets</span>
+
+
+<span class="n">parser</span> <span class="o">=</span> <span class="n">Lark</span><span class="p">(</span><span class="n">pass_grammar</span><span class="p">)</span>
+<span class="n">transformer</span> <span class="o">=</span> <span class="n">PassTransformer</span><span class="p">()</span>
+
+
+<div class="viewcode-block" id="compilation_pass_from_script"><a class="viewcode-back" href="../../../passes.html#pytket.passes.script.compilation_pass_from_script">[docs]</a><span class="k">def</span> <span class="nf">compilation_pass_from_script</span><span class="p">(</span><span class="n">script</span><span class="p">:</span> <span class="nb">str</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Generate a compilation pass from a specification.</span>
+
+<span class="sd">    The specification must conform to a simple grammar. For example, the following are</span>
+<span class="sd">    valid specifications:</span>
+
+<span class="sd">    * &quot;RemoveRedundancies&quot;</span>
+<span class="sd">    * &quot;[RemoveBarriers, RemoveRedundancies]&quot; (a sequence of passes)</span>
+<span class="sd">    * &quot;repeat(FullPeepholeOptimise)&quot; (repeat a pass until it doesn&#39;t change the circuit)</span>
+
+<span class="sd">    Sequences and repeats can be nested arbitrarily. Whitespace is ignored.</span>
+
+<span class="sd">    Most passes are specified using their Python names. For those that take enums as</span>
+<span class="sd">    parameters, non-default values can be specified using their Python names:</span>
+
+<span class="sd">    * &quot;PauliSimp&quot; (default parameters)</span>
+<span class="sd">    * &quot;PauliSimp(Pairwise, Tree)&quot;</span>
+<span class="sd">    * &quot;EulerAngleReduction(Ry, Rz)&quot;</span>
+
+<span class="sd">    For some passes with optional boolean parameters the name can be modified as</span>
+<span class="sd">    follows:</span>
+
+<span class="sd">    * &quot;CliffordSimp&quot; (default parameters)</span>
+<span class="sd">    * &quot;CliffordSimpNoSwaps&quot;</span>
+<span class="sd">    * &quot;SimplifyInitial&quot; (default parameters)</span>
+<span class="sd">    * &quot;SimplifyInitialNoClassical&quot;</span>
+
+<span class="sd">    There is currently no support for passes requiring more complex parameters such as</span>
+<span class="sd">    lambdas or circuits.</span>
+
+<span class="sd">    The full formal grammar can be inspected using :py:meth:`compilation_pass_grammar`.</span>
+
+<span class="sd">    :param script: specification of pass</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">tree</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">script</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">tree</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="compilation_pass_grammar"><a class="viewcode-back" href="../../../passes.html#pytket.passes.script.compilation_pass_grammar">[docs]</a><span class="k">def</span> <span class="nf">compilation_pass_grammar</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Formal grammar for specifying compilation passes.</span>
+
+<span class="sd">    This is the grammar assumed by :py:meth:`complilation_pass_from_script`.</span>
+
+<span class="sd">    :return: grammar in extended Backus--Naur form&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">pass_grammar</span></div>
+</pre></div>
+
+                </article>
+              
+
+              
+              
+                <footer class="bd-footer-article">
+                  
+<div class="footer-article-items footer-article__inner">
+  
+    <div class="footer-article-item"><!-- Previous / next buttons -->
+<div class="prev-next-area">
+</div></div>
+  
+</div>
+
+                </footer>
+              
+            </div>
+            
+            
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Quantinuum
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  <p class="copyright">
+    
+      © Copyright 2023 Quantinuum.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="../../../_static/scripts/bootstrap.js?digest=e353d410970836974a52"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=e353d410970836974a52"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
