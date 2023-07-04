@@ -1,14 +1,15 @@
 {
   pkgs ? import <nixpkgs> {},
   python_version ? pkgs.python3,
-  libs ? import ../libs { inherit pkgs; },
-  tket ? import ../tket { inherit pkgs; inherit libs; },
+  libs ? import ../libs { inherit pkgs; static=true; },
+  tket ? import ../tket { inherit pkgs; static=true; inherit libs; },
   third-party ? import ./third-party.nix { inherit pkgs; inherit python_version; }
 }:
 let
   binders = pkgs.stdenv.mkDerivation{
     name = "binders";
     nativeBuildInputs = [ pkgs.cmake pkgs.pkgconfig ];
+    cmakeFlags = [ "-DBUILD_SHARED_LIBS=ON" ];
     propagatedBuildInputs = [
       python_version.pkgs.pybind11
       third-party.pybind11_json

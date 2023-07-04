@@ -1,6 +1,7 @@
 {
   pkgs ? import <nixpkgs> {},
-  tklog ? import ../tklog { inherit pkgs; }
+  static ? true,
+  tklog ? import ../tklog { inherit pkgs static; }
 }:
 let
   src = builtins.filterSource(p: _: baseNameOf p != "default.nix") ./.;
@@ -10,6 +11,7 @@ in
     inherit src;
     buildInputs = [ pkgs.cmake ];
     nativeBuildInputs = [ tklog ];
+    cmakeFlags = if static then [ "-DBUILD_SHARED_LIBS=OFF" ] else [ "-DBUILD_SHARED_LIBS=ON" ];
     postFixup = ''
       # fix bogus include paths
       # trick found here: https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/libraries/crc32c/default.nix

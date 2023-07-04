@@ -1,10 +1,13 @@
-{ pkgs ? import <nixpkgs> {} }:
+{
+  pkgs ? import <nixpkgs> {},
+  static ? true
+}:
 let
-  tklog = import ./tklog { inherit pkgs; };
-  tkrng = import ./tkrng { inherit pkgs; };
-  tkassert = import ./tkassert { inherit pkgs; inherit tklog; };
-  tktokenswap = import ./tktokenswap { inherit pkgs; inherit tklog; inherit tkassert; inherit tkrng; };
-  tkwsm = import ./tkwsm { inherit pkgs; inherit tklog; inherit tkassert; inherit tkrng; };
+  tklog = import ./tklog { inherit pkgs static; };
+  tkrng = import ./tkrng { inherit pkgs static; };
+  tkassert = import ./tkassert { inherit pkgs static tklog; };
+  tktokenswap = import ./tktokenswap { inherit pkgs static tklog tkassert tkrng; };
+  tkwsm = import ./tkwsm { inherit pkgs static tklog tkassert tkrng; };
 in
   {
     inherit tklog;

@@ -8,19 +8,23 @@
         pkgs = import nixpkgs {
           inherit system;
         };
-        libs = pkgs.callPackage ./libs { };
-        tket = pkgs.callPackage ./tket { inherit libs; };
-        pytket = pkgs.callPackage ./pytket { inherit tket; };
+        libs-static = pkgs.callPackage ./libs { static=true; };
+        libs-shared = pkgs.callPackage ./libs { static=false; };
+        tket-static = pkgs.callPackage ./tket { libs=libs-static; static=true; };
+        tket-shared = pkgs.callPackage ./tket { libs=libs-shared; static=false; };
+        pytket = pkgs.callPackage ./pytket { tket=tket-shared; };
       in
         {
-          defaultPackage = tket;
+          defaultPackage = tket-static;
           packages = {
-            tket = tket;
+            tket = tket-static;
+            tket-shared = tket-shared;
+            tket-static = tket-static;
             pytket = pytket;
           };
           devShell = with pkgs; mkShell {
             buildInputs = [
-              tket
+              tket-static
               pytket
             ];
           };

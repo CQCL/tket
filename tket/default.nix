@@ -1,6 +1,7 @@
 {
   pkgs ? import <nixpkgs> {},
-  libs ? import ../libs { inherit pkgs; }
+  static ? true,
+  libs ? import ../libs { inherit pkgs static; }
 }:
 let
   src = builtins.filterSource(p: _: baseNameOf p != "default.nix") ./.;
@@ -20,6 +21,7 @@ in
       libs.tktokenswap
       libs.tkwsm
     ] ++ pkgs.symengine.buildInputs;
+    cmakeFlags = if static then [ "-DBUILD_SHARED_LIBS=OFF" ] else [ "-DBUILD_SHARED_LIBS=ON" ];
     postFixup = ''
       # fix bogus include paths
       # trick found here: https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/libraries/crc32c/default.nix

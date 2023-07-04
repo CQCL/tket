@@ -1,8 +1,9 @@
 {
   pkgs ? import <nixpkgs> {},
-  tklog ? import ../tklog { inherit pkgs; },
-  tkrng ? import ../tkrng { inherit pkgs; },
-  tkassert ? import ../tkassert { inherit pkgs; inherit tklog; },
+  static ? true,
+  tklog ? import ../tklog { inherit pkgs static; },
+  tkrng ? import ../tkrng { inherit pkgs static; },
+  tkassert ? import ../tkassert { inherit pkgs static tklog; },
 }:
 let
   src = builtins.filterSource(p: _: baseNameOf p != "default.nix") ./.;
@@ -11,6 +12,7 @@ in
     name = "tkwsm";
     inherit src;
     buildInputs = [ pkgs.cmake pkgs.boost tklog tkassert tkrng ];
+    cmakeFlags = if static then [ "-DBUILD_SHARED_LIBS=OFF" ] else [ "-DBUILD_SHARED_LIBS=ON" ];
     postFixup = ''
       # fix bogus include paths
       # trick found here: https://github.com/NixOS/nixpkgs/blob/master/pkgs/development/libraries/crc32c/default.nix
