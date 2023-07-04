@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include "tket/Architecture/Architecture.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Clifford/ChoiMixTableau.hpp"
 #include "tket/Clifford/UnitaryTableau.hpp"
@@ -35,8 +36,12 @@ UnitaryRevTableau circuit_to_unitary_rev_tableau(const Circuit &circ);
  * Stabilizer Circuits, Theorem 8.
  * CAUTION: GATE COUNT IS ATROCIOUS IN PRACTICE
  */
-Circuit unitary_tableau_to_circuit(const UnitaryTableau &tab);
-Circuit unitary_rev_tableau_to_circuit(const UnitaryRevTableau &tab);
+Circuit unitary_tableau_to_circuit(
+    const UnitaryTableau &tab,
+    const std::optional<Architecture> &opt_arch = std::nullopt);
+Circuit unitary_rev_tableau_to_circuit(
+    const UnitaryRevTableau &tab,
+    const std::optional<Architecture> &opt_arch = std::nullopt);
 
 /**
  * Construct a ChoiMixTableau for a given circuit.

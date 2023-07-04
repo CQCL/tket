@@ -15,6 +15,7 @@
 #pragma once
 
 #include "SymplecticTableau.hpp"
+#include "tket/Architecture/Architecture.hpp"
 
 namespace tket {
 
@@ -148,7 +149,8 @@ class UnitaryTableau {
   UnitaryTableau conjugate() const;
 
   friend UnitaryTableau circuit_to_unitary_tableau(const Circuit& circ);
-  friend Circuit unitary_tableau_to_circuit(const UnitaryTableau& tab);
+  friend Circuit unitary_tableau_to_circuit(
+      const UnitaryTableau& tab, const std::optional<Architecture>& opt_arch);
 
   friend void to_json(nlohmann::json& j, const UnitaryTableau& tab);
   friend void from_json(const nlohmann::json& j, UnitaryTableau& tab);
@@ -283,7 +285,9 @@ class UnitaryRevTableau {
   UnitaryRevTableau conjugate() const;
 
   friend UnitaryRevTableau circuit_to_unitary_rev_tableau(const Circuit& circ);
-  friend Circuit unitary_rev_tableau_to_circuit(const UnitaryRevTableau& tab);
+  friend Circuit unitary_rev_tableau_to_circuit(
+      const UnitaryRevTableau& tab,
+      const std::optional<Architecture>& opt_arch);
 
   friend void to_json(nlohmann::json& j, const UnitaryRevTableau& tab);
   friend void from_json(const nlohmann::json& j, UnitaryRevTableau& tab);

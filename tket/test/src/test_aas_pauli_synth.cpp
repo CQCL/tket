@@ -30,6 +30,45 @@ static void add_ops_to_prepend_2(Circuit& circ) {
 }
 
 SCENARIO("Test AAS pauli synth") {
+  GIVEN("4 qb 3 Pauli Gadget circuit") {
+    auto prepend = CircuitsForTesting::get_prepend_circuit(3);
+    add_ops_to_prepend_1(prepend);
+    Circuit circ(4);
+    PauliExpBox peb({Pauli::Z, Pauli::Z, Pauli::Z, Pauli::Z}, 0.333);
+    circ.add_box(peb, {0, 1, 2, 3});
+    PauliExpBox peb2({Pauli::X, Pauli::Z, Pauli::X, Pauli::I}, 0.233);
+    circ.add_box(peb2, {0, 1, 2, 3});
+    PauliExpBox peb3({Pauli::X, Pauli::X, Pauli::X, Pauli::X}, 0.174);
+    circ.add_box(peb3, {0, 1, 2, 3});
+    Circuit test_circ = prepend >> circ;
+    // 2. Defined a grid architecture
+    std::vector<Node> nodes = {
+        Node("a", 0), Node("a", 1), Node("a", 2), Node("a", 3)};
+
+    Architecture arch(
+        {{nodes[0], nodes[1]},
+         {nodes[2], nodes[3]},
+         {nodes[0], nodes[3]},
+         {nodes[1], nodes[3]}});
+    // 3. manually place the qubits
+    std::vector<Qubit> qubits = test_circ.all_qubits();
+    std::map<UnitID, UnitID> rename_map = {
+        {qubits[0], nodes[0]},
+        {qubits[1], nodes[1]},
+        {qubits[2], nodes[2]},
+        {qubits[3], nodes[3]}};
+    test_circ.rename_units(rename_map);
+    // 4. synthesis
+    PauliGraph pg = circuit_to_pauli_graph(test_circ);
+    Circuit out_circ = pauli_graph_to_circuit_lazy_aas(pg, arch);
+    // 5. check correctness
+    REQUIRE(test_statevector_comparison(test_circ, out_circ, true));
+    for (const auto& cmd : out_circ) {
+      std::vector<Node> nodes;
+      for (auto arg : cmd.get_args()) nodes.push_back(Node(arg));
+      REQUIRE(arch.valid_operation(nodes));
+    }
+  }
   GIVEN("5 qubit 7 Pauli Gadget circuit") {
     // 1. prepare the test_circ
     auto prepend = CircuitsForTesting::get_prepend_circuit(5);
@@ -78,9 +117,13 @@ SCENARIO("Test AAS pauli synth") {
     // 4. synthesis
     PauliGraph pg = circuit_to_pauli_graph(test_circ);
     Circuit out_circ = pauli_graph_to_circuit_lazy_aas(pg, arch);
-
     // 5. check correctness
     REQUIRE(test_statevector_comparison(test_circ, out_circ, true));
+    for (const auto& cmd : out_circ) {
+      std::vector<Node> nodes;
+      for (auto arg : cmd.get_args()) nodes.push_back(Node(arg));
+      REQUIRE(arch.valid_operation(nodes));
+    }
   }
 }
 

@@ -14,6 +14,8 @@
 
 #include <stdexcept>
 
+#include "tket/ArchAwareSynth/SteinerForest.hpp"
+#include "tket/Architecture/Architecture.hpp"
 #include "tket/Converters/Converters.hpp"
 
 namespace tket {
@@ -28,7 +30,8 @@ UnitaryTableau circuit_to_unitary_tableau(const Circuit& circ) {
   return tab;
 }
 
-Circuit unitary_tableau_to_circuit(const UnitaryTableau& tab) {
+Circuit unitary_tableau_to_circuit(
+    const UnitaryTableau& tab, const std::optional<Architecture>& opt_arch) {
   SymplecticTableau tabl(tab.tab_);
   unsigned size = tabl.get_n_qubits();
   Circuit c(size);
@@ -90,10 +93,32 @@ Circuit unitary_tableau_to_circuit(const UnitaryTableau& tab) {
    * \ I D /
    */
   MatrixXb to_reduce = tabl.xmat_.block(size, 0, size, size);
-  for (const std::pair<unsigned, unsigned>& qbs :
-       gaussian_elimination_col_ops(to_reduce)) {
-    c.add_op<unsigned>(OpType::CX, {qbs.first, qbs.second});
-    tabl.apply_CX(qbs.first, qbs.second);
+  if (opt_arch == std::nullopt) {
+    for (const std::pair<unsigned, unsigned>& qbs :
+         gaussian_elimination_col_ops(to_reduce)) {
+      c.add_op<unsigned>(OpType::CX, {qbs.first, qbs.second});
+      tabl.apply_CX(qbs.first, qbs.second);
+    }
+  } else {
+    Circuit cx_circ;
+    for (auto it = tab.qubits_.left.begin(); it != tab.qubits_.left.end(); it++)
+      cx_circ.add_qubit(Qubit(it->first));
+    for (const std::pair<unsigned, unsigned>& qbs :
+         gaussian_elimination_col_ops(to_reduce)) {
+      auto it0 = tab.qubits_.right.find(qbs.first);
+      auto it1 = tab.qubits_.right.find(qbs.second);
+      cx_circ.add_op<Qubit>(OpType::CX, {it0->second, it1->second});
+    }
+    Circuit aas_cx_circ =
+        aas::get_aased_phase_poly_circ(opt_arch.value(), cx_circ);
+    for (const Command& cmd : aas_cx_circ) {
+      TKET_ASSERT(cmd.get_op_ptr()->get_type() == OpType::CX);
+      auto args = cmd.get_args();
+      auto it0 = tab.qubits_.left.find(Qubit(args[0]));
+      auto it1 = tab.qubits_.left.find(Qubit(args[1]));
+      c.add_op<unsigned>(OpType::CX, {it0->second, it1->second});
+      tabl.apply_CX(it0->second, it1->second);
+    }
   }
 
   /*
@@ -121,11 +146,34 @@ Circuit unitary_tableau_to_circuit(const UnitaryTableau& tab) {
    */
   std::vector<std::pair<unsigned, unsigned>> m_to_i =
       gaussian_elimination_col_ops(zp_z_llt.first);
-  for (std::vector<std::pair<unsigned, unsigned>>::reverse_iterator it =
-           m_to_i.rbegin();
-       it != m_to_i.rend(); it++) {
-    c.add_op<unsigned>(OpType::CX, {it->first, it->second});
-    tabl.apply_CX(it->first, it->second);
+  if (opt_arch == std::nullopt) {
+    for (std::vector<std::pair<unsigned, unsigned>>::reverse_iterator it =
+             m_to_i.rbegin();
+         it != m_to_i.rend(); it++) {
+      c.add_op<unsigned>(OpType::CX, {it->first, it->second});
+      tabl.apply_CX(it->first, it->second);
+    }
+  } else {
+    Circuit cx_circ;
+    for (auto it = tab.qubits_.left.begin(); it != tab.qubits_.left.end(); it++)
+      cx_circ.add_qubit(Qubit(it->first));
+    for (std::vector<std::pair<unsigned, unsigned>>::reverse_iterator it =
+             m_to_i.rbegin();
+         it != m_to_i.rend(); it++) {
+      auto it0 = tab.qubits_.right.find(it->first);
+      auto it1 = tab.qubits_.right.find(it->second);
+      cx_circ.add_op<Qubit>(OpType::CX, {it0->second, it1->second});
+    }
+    Circuit aas_cx_circ =
+        aas::get_aased_phase_poly_circ(opt_arch.value(), cx_circ);
+    for (const Command& cmd : aas_cx_circ) {
+      TKET_ASSERT(cmd.get_op_ptr()->get_type() == OpType::CX);
+      auto args = cmd.get_args();
+      auto it0 = tab.qubits_.left.find(Qubit(args[0]));
+      auto it1 = tab.qubits_.left.find(Qubit(args[1]));
+      c.add_op<unsigned>(OpType::CX, {it0->second, it1->second});
+      tabl.apply_CX(it0->second, it1->second);
+    }
   }
 
   /*
@@ -151,10 +199,32 @@ Circuit unitary_tableau_to_circuit(const UnitaryTableau& tab) {
    * By commutativity relations, IB^T = A0^T + I, therefore B = I.
    */
   to_reduce = tabl.xmat_.block(size, 0, size, size);
-  for (const std::pair<unsigned, unsigned>& qbs :
-       gaussian_elimination_col_ops(to_reduce)) {
-    c.add_op<unsigned>(OpType::CX, {qbs.first, qbs.second});
-    tabl.apply_CX(qbs.first, qbs.second);
+  if (opt_arch == std::nullopt) {
+    for (const std::pair<unsigned, unsigned>& qbs :
+         gaussian_elimination_col_ops(to_reduce)) {
+      c.add_op<unsigned>(OpType::CX, {qbs.first, qbs.second});
+      tabl.apply_CX(qbs.first, qbs.second);
+    }
+  } else {
+    Circuit cx_circ;
+    for (auto it = tab.qubits_.left.begin(); it != tab.qubits_.left.end(); it++)
+      cx_circ.add_qubit(Qubit(it->first));
+    for (const std::pair<unsigned, unsigned>& qbs :
+         gaussian_elimination_col_ops(to_reduce)) {
+      auto it0 = tab.qubits_.right.find(qbs.first);
+      auto it1 = tab.qubits_.right.find(qbs.second);
+      cx_circ.add_op<Qubit>(OpType::CX, {it0->second, it1->second});
+    }
+    Circuit aas_cx_circ =
+        aas::get_aased_phase_poly_circ(opt_arch.value(), cx_circ);
+    for (const Command& cmd : aas_cx_circ) {
+      TKET_ASSERT(cmd.get_op_ptr()->get_type() == OpType::CX);
+      auto args = cmd.get_args();
+      auto it0 = tab.qubits_.left.find(Qubit(args[0]));
+      auto it1 = tab.qubits_.left.find(Qubit(args[1]));
+      c.add_op<unsigned>(OpType::CX, {it0->second, it1->second});
+      tabl.apply_CX(it0->second, it1->second);
+    }
   }
 
   /*
@@ -192,11 +262,34 @@ Circuit unitary_tableau_to_circuit(const UnitaryTableau& tab) {
    */
   std::vector<std::pair<unsigned, unsigned>> n_to_i =
       gaussian_elimination_col_ops(xp_z_llt.first);
-  for (std::vector<std::pair<unsigned, unsigned>>::reverse_iterator it =
-           n_to_i.rbegin();
-       it != n_to_i.rend(); it++) {
-    c.add_op<unsigned>(OpType::CX, {it->first, it->second});
-    tabl.apply_CX(it->first, it->second);
+  if (opt_arch == std::nullopt) {
+    for (std::vector<std::pair<unsigned, unsigned>>::reverse_iterator it =
+             n_to_i.rbegin();
+         it != n_to_i.rend(); it++) {
+      c.add_op<unsigned>(OpType::CX, {it->first, it->second});
+      tabl.apply_CX(it->first, it->second);
+    }
+  } else {
+    Circuit cx_circ;
+    for (auto it = tab.qubits_.left.begin(); it != tab.qubits_.left.end(); it++)
+      cx_circ.add_qubit(Qubit(it->first));
+    for (std::vector<std::pair<unsigned, unsigned>>::reverse_iterator it =
+             n_to_i.rbegin();
+         it != n_to_i.rend(); it++) {
+      auto it0 = tab.qubits_.right.find(it->first);
+      auto it1 = tab.qubits_.right.find(it->second);
+      cx_circ.add_op<Qubit>(OpType::CX, {it0->second, it1->second});
+    }
+    Circuit aas_cx_circ =
+        aas::get_aased_phase_poly_circ(opt_arch.value(), cx_circ);
+    for (const Command& cmd : aas_cx_circ) {
+      TKET_ASSERT(cmd.get_op_ptr()->get_type() == OpType::CX);
+      auto args = cmd.get_args();
+      auto it0 = tab.qubits_.left.find(Qubit(args[0]));
+      auto it1 = tab.qubits_.left.find(Qubit(args[1]));
+      c.add_op<unsigned>(OpType::CX, {it0->second, it1->second});
+      tabl.apply_CX(it0->second, it1->second);
+    }
   }
 
   /*
@@ -219,12 +312,33 @@ Circuit unitary_tableau_to_circuit(const UnitaryTableau& tab) {
    * / I 0 \
    * \ 0 I /
    */
-  for (const std::pair<unsigned, unsigned>& qbs :
-       gaussian_elimination_col_ops(tabl.xmat_.block(0, 0, size, size))) {
-    c.add_op<unsigned>(OpType::CX, {qbs.first, qbs.second});
-    tabl.apply_CX(qbs.first, qbs.second);
+  if (opt_arch == std::nullopt) {
+    for (const std::pair<unsigned, unsigned>& qbs :
+         gaussian_elimination_col_ops(tabl.xmat_.block(0, 0, size, size))) {
+      c.add_op<unsigned>(OpType::CX, {qbs.first, qbs.second});
+      tabl.apply_CX(qbs.first, qbs.second);
+    }
+  } else {
+    Circuit cx_circ;
+    for (auto it = tab.qubits_.left.begin(); it != tab.qubits_.left.end(); it++)
+      cx_circ.add_qubit(Qubit(it->first));
+    for (const std::pair<unsigned, unsigned>& qbs :
+         gaussian_elimination_col_ops(tabl.xmat_.block(0, 0, size, size))) {
+      auto it0 = tab.qubits_.right.find(qbs.first);
+      auto it1 = tab.qubits_.right.find(qbs.second);
+      cx_circ.add_op<Qubit>(OpType::CX, {it0->second, it1->second});
+    }
+    Circuit aas_cx_circ =
+        aas::get_aased_phase_poly_circ(opt_arch.value(), cx_circ);
+    for (const Command& cmd : aas_cx_circ) {
+      TKET_ASSERT(cmd.get_op_ptr()->get_type() == OpType::CX);
+      auto args = cmd.get_args();
+      auto it0 = tab.qubits_.left.find(Qubit(args[0]));
+      auto it1 = tab.qubits_.left.find(Qubit(args[1]));
+      c.add_op<unsigned>(OpType::CX, {it0->second, it1->second});
+      tabl.apply_CX(it0->second, it1->second);
+    }
   }
-
   /*
    * DELAYED STEPS: Set all phases to 0 by applying Z or X gates
    */
@@ -261,8 +375,9 @@ UnitaryRevTableau circuit_to_unitary_rev_tableau(const Circuit& circ) {
   return result;
 }
 
-Circuit unitary_rev_tableau_to_circuit(const UnitaryRevTableau& tab) {
-  return unitary_tableau_to_circuit(tab.tab_.dagger());
+Circuit unitary_rev_tableau_to_circuit(
+    const UnitaryRevTableau& tab, const std::optional<Architecture>& opt_arch) {
+  return unitary_tableau_to_circuit(tab.tab_.dagger(), opt_arch);
 }
 
 }  // namespace tket

@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include "tket/Architecture/Architecture.hpp"
 #include "tket/OpType/OpType.hpp"
 #include "tket/Utils/MatrixAnalysis.hpp"
 #include "tket/Utils/PauliStrings.hpp"
@@ -209,7 +210,8 @@ class SymplecticTableau {
 
   friend class UnitaryTableau;
   friend class ChoiMixTableau;
-  friend Circuit unitary_tableau_to_circuit(const UnitaryTableau &tab);
+  friend Circuit unitary_tableau_to_circuit(
+      const UnitaryTableau &tab, const std::optional<Architecture> &opt_arch);
   friend std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(
       const ChoiMixTableau &tab);
   friend std::ostream &operator<<(std::ostream &os, const UnitaryTableau &tab);
