@@ -18,6 +18,12 @@
             tket = tket;
             pytket = pytket;
           };
+          devShell = with pkgs; mkShell {
+            buildInputs = [
+              tket
+              pytket
+            ];
+          };
         }
     );
 }
