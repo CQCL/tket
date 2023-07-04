@@ -143,10 +143,7 @@ class NixBuild(build_ext):
         build_inputs = os.environ['buildInputs'].split()
         location_tklog = [l[2:] for l in nix_ldflags if '-tklog' in l]
         location_tket = [l[2:] for l in nix_ldflags if '-tket' in l]
-        location_binders = [l for l in build_inputs if '-binders' in l]
-        print("FLAGS_TKLOG", location_tklog)
-        print("FLAGS_TKET", location_tket)
-        print("FLAGS_BINDERS", location_binders)
+        location_binders = [f"{l}/lib" for l in build_inputs if '-binders' in l]
         assert location_tklog and location_tket and location_binders
         # if multiple versions are present, choose the first as per convention
         for location in [location_tklog[0],
