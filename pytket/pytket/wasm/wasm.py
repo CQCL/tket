@@ -43,9 +43,15 @@ class WasmFileHandler:
     }
 
     def __init__(self, filepath: str, check_file: bool = True):
-        """construct a wasm file handler
-        :param filepath: path to the wasm file
-        :type filepath: str"""
+        """
+        Construct a wasm file handler
+
+        :param filepath: Path to the wasm file
+        :type filepath: str
+        :param check_file: If ``True`` checks file for compatibility with wasm
+          standards. If ``False`` checks are skipped.
+        :type check_file: bool
+        """
 
         self._filepath = filepath
 
@@ -118,7 +124,6 @@ class WasmFileHandler:
                 self._function_types = cur_sec_data.payload.types
 
         for i, x in enumerate(function_names):
-
             # check for only i32 type in parameters and return values
             supported_function = True
             for t in function_signatures[self._function_types[i]]["parameter_types"]:
@@ -153,7 +158,7 @@ class WasmFileHandler:
         return self._wasmfileuid
 
     def __repr__(self) -> str:
-        """str representation of the containment of the wasm file"""
+        """str representation of the contents of the wasm file"""
         result = f"Functions in wasm file with the uid {self._wasmfileuid}:\n"
         for x in self._functions:
             result += f"function '{x}' with {self._functions[x][0]} i32 parameter(s)"
@@ -169,7 +174,9 @@ class WasmFileHandler:
     def check_function(
         self, function_name: str, number_of_parameters: int, number_of_returns: int
     ) -> bool:
-        """checks a given function name and signature if it is included
+        """
+        Checks a given function name and signature if it is included
+
         :param function_name: name of the function that is checked
         :type function_name: str
         :param number_of_parameters: number of i32 parameters of the function

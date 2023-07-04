@@ -31,6 +31,7 @@ class TkrngConan(ConanFile):
         "profile_coverage": [True, False],
     }
     default_options = {"shared": False, "fPIC": True, "profile_coverage": False}
+    # a hash of the conanfile.py + the files listed here builds the conan revision
     exports_sources = "CMakeLists.txt", "cmake/*", "src/*", "include/*"
 
     def config_options(self):

@@ -63,9 +63,9 @@ bool MeasurementSetup::verify() const {
             pred, Circuit::GraphRewiring::Yes, Circuit::VertexDeletion::Yes);
       }
     }
-    CliffTableau tab = circuit_to_tableau(circ);
+    UnitaryRevTableau tab = circuit_to_unitary_rev_tableau(circ);
     for (const Qubit &qb : tab.get_qubits()) {
-      pauli_map.insert({{circ_id, readout[qb]}, tab.get_zpauli(qb)});
+      pauli_map.insert({{circ_id, readout[qb]}, tab.get_zrow(qb)});
     }
   }
   for (const std::pair<const QubitPauliString, std::vector<MeasurementBitMap>>

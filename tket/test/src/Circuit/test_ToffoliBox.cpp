@@ -23,9 +23,9 @@
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Circuit/ToffoliBox.hpp"
 #include "tket/Gate/Rotation.hpp"
-#include "tket/Simulation/CircuitSimulator.hpp"
 #include "tket/Utils/HelperFunctions.hpp"
 
 namespace tket {

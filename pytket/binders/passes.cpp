@@ -669,7 +669,7 @@ PYBIND11_MODULE(passes, m) {
       "Construct a pass to relabel :py:class:`Circuit` Qubits to "
       ":py:class:`Architecture` Nodes, and then route to the connectivity "
       "graph "
-      "of the given :py:class: 'Architecture'. Edge direction is ignored. "
+      "of the given :py:class:`Architecture`. Edge direction is ignored. "
       "Placement used "
       "is GraphPlacement."
       "\n\n:param arc: The Architecture used for connectivity information."
@@ -714,7 +714,7 @@ PYBIND11_MODULE(passes, m) {
   m.def(
       "CXMappingPass", &gen_cx_mapping_pass_kwargs,
       "Construct a pass to convert all gates to CX, relabel "
-      ":py:class:`Circuit` Qubits to :py:class'Architecture' Nodes, route to "
+      ":py:class:`Circuit` Qubits to :py:class:`Architecture` Nodes, route to "
       "the "
       "connectivty graph of a :py:class:`Architecture` and decompose "
       "additional "
@@ -762,6 +762,16 @@ PYBIND11_MODULE(passes, m) {
       "\n\n:param cx_config: A configuration of CXs to convert phase "
       "gadgets into."
       "\n:return: a pass to perform the synthesis",
+      py::arg("cx_config") = CXConfigType::Snake);
+  m.def(
+      "PauliExponentials", &gen_pauli_exponentials,
+      "Construct a pass that converts a circuit into a graph of Pauli "
+      "exponential boxes, with information"
+      "\n\n:param strat: A synthesis strategy for the Pauli graph."
+      "\n:param cx_config: A configuration of CXs to convert Pauli gadgets "
+      "into."
+      "\n:return: a pass to perform the simplification",
+      py::arg("strat") = Transforms::PauliSynthStrat::Sets,
       py::arg("cx_config") = CXConfigType::Snake);
   m.def(
       "PauliSimp", &gen_synthesise_pauli_graph,

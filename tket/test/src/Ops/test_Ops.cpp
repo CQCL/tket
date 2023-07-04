@@ -21,13 +21,14 @@
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/PauliExpBoxes.hpp"
+#include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Gate/GatePtr.hpp"
 #include "tket/Gate/SymTable.hpp"
 #include "tket/OpType/OpType.hpp"
 #include "tket/Ops/OpPtr.hpp"
 #include "tket/Predicates/CompilerPass.hpp"
 #include "tket/Predicates/PassLibrary.hpp"
-#include "tket/Simulation/CircuitSimulator.hpp"
 #include "tket/Transformations/OptimisationPass.hpp"
 #include "tket/Utils/Constants.hpp"
 #include "tket/Utils/Expression.hpp"
@@ -593,7 +594,7 @@ SCENARIO("Custom Gates") {
 
 // Where should this test go?
 // It could be argued that it belongs more in
-// Circuit/test_Boxes.cpp, or Simulation/test_TketSim.cpp.
+// Circuit/test_Boxes.cpp, or Circuit/Simulation/test_TketSim.cpp.
 // Or maybe even test_Synthesis.cpp, since they all use synthesise_tket
 SCENARIO("Two-qubit entangling gates") {
   GIVEN("ESWAP") {

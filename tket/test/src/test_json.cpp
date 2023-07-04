@@ -25,6 +25,8 @@
 #include "tket/Circuit/Command.hpp"
 #include "tket/Circuit/DiagonalBox.hpp"
 #include "tket/Circuit/Multiplexor.hpp"
+#include "tket/Circuit/PauliExpBoxes.hpp"
+#include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Circuit/StatePreparation.hpp"
 #include "tket/Circuit/ToffoliBox.hpp"
 #include "tket/Converters/PhasePoly.hpp"
@@ -38,7 +40,6 @@
 #include "tket/Ops/OpPtr.hpp"
 #include "tket/Predicates/PassGenerators.hpp"
 #include "tket/Predicates/PassLibrary.hpp"
-#include "tket/Simulation/CircuitSimulator.hpp"
 #include "tket/Transformations/OptimisationPass.hpp"
 #include "tket/Transformations/PauliOptimisation.hpp"
 #include "tket/Transformations/Transform.hpp"
@@ -74,10 +75,13 @@ SCENARIO("Test Op serialization") {
                                OpType::WASMInput, OpType::WASMOutput,
                                OpType::Barrier};
     const OpTypeSet boxes = {
-        OpType::CircBox,      OpType::Unitary1qBox, OpType::Unitary2qBox,
-        OpType::Unitary3qBox, OpType::ExpBox,       OpType::PauliExpBox,
-        OpType::ToffoliBox,   OpType::CustomGate,   OpType::CliffBox,
-        OpType::PhasePolyBox, OpType::QControlBox};
+        OpType::CircBox,         OpType::Unitary1qBox,
+        OpType::Unitary2qBox,    OpType::Unitary3qBox,
+        OpType::ExpBox,          OpType::PauliExpBox,
+        OpType::PauliExpPairBox, OpType::PauliExpCommutingSetBox,
+        OpType::ToffoliBox,      OpType::CustomGate,
+        OpType::CliffBox,        OpType::PhasePolyBox,
+        OpType::QControlBox};
 
     std::set<std::string> type_names;
     for (auto type :
@@ -312,9 +316,11 @@ SCENARIO("Test Circuit serialization") {
 
     REQUIRE(ebox == exp_b);
   }
-  GIVEN("Pauli ExpBoxes") {
+  GIVEN("PauliExpBoxes") {
     Circuit c(4, 2, "paulibox");
-    PauliExpBox pbox({Pauli::X, Pauli::Y, Pauli::I, Pauli::Z}, -0.72521);
+    PauliExpBox pbox(
+        {Pauli::X, Pauli::Y, Pauli::I, Pauli::Z}, -0.72521,
+        CXConfigType::MultiQGate);
     c.add_box(pbox, {0, 1, 2, 3});
     nlohmann::json j_pbox = c;
     const Circuit new_c = j_pbox.get<Circuit>();
@@ -324,6 +330,52 @@ SCENARIO("Test Circuit serialization") {
 
     REQUIRE(p_b.get_paulis() == pbox.get_paulis());
     REQUIRE(p_b.get_phase() == pbox.get_phase());
+    REQUIRE(p_b.get_cx_config() == pbox.get_cx_config());
+    REQUIRE(p_b == pbox);
+  }
+
+  GIVEN("PauliExpPairBoxes") {
+    Circuit c(4, 2, "paulipairbox");
+    PauliExpPairBox pbox(
+        {Pauli::X, Pauli::Y, Pauli::I, Pauli::Z}, -0.72521,
+        {Pauli::X, Pauli::I, Pauli::I, Pauli::X}, -0.32421,
+        CXConfigType::MultiQGate);
+    c.add_box(pbox, {0, 1, 2, 3});
+    nlohmann::json j_pbox = c;
+    const Circuit new_c = j_pbox.get<Circuit>();
+
+    const auto& p_b = static_cast<const PauliExpPairBox&>(
+        *new_c.get_commands()[0].get_op_ptr());
+
+    const auto [actual_paulis0, actual_paulis1] = p_b.get_paulis_pair();
+    const auto [actual_phase0, actual_phase1] = p_b.get_phase_pair();
+    const auto [expected_paulis0, expected_paulis1] = pbox.get_paulis_pair();
+    const auto [expected_phase0, expected_phase1] = pbox.get_phase_pair();
+
+    REQUIRE(actual_paulis0 == expected_paulis0);
+    REQUIRE(actual_phase0 == expected_phase0);
+    REQUIRE(actual_paulis1 == expected_paulis1);
+    REQUIRE(actual_phase1 == expected_phase1);
+    REQUIRE(p_b.get_cx_config() == pbox.get_cx_config());
+    REQUIRE(p_b == pbox);
+  }
+
+  GIVEN("PauliExpCommutingSetBoxes") {
+    Circuit c(5, 2, "paulisetbox");
+    PauliExpCommutingSetBox pbox(
+        {{{Pauli::I, Pauli::X, Pauli::Z, Pauli::I, Pauli::Z}, 0.3112},
+         {{Pauli::I, Pauli::Y, Pauli::I, Pauli::Z, Pauli::Y}, 1.178},
+         {{Pauli::X, Pauli::X, Pauli::I, Pauli::Y, Pauli::I}, -0.911}},
+        CXConfigType::MultiQGate);
+    c.add_box(pbox, {0, 1, 2, 3, 4});
+    nlohmann::json j_pbox = c;
+    const Circuit new_c = j_pbox.get<Circuit>();
+
+    const auto& p_b = static_cast<const PauliExpCommutingSetBox&>(
+        *new_c.get_commands()[0].get_op_ptr());
+
+    REQUIRE(p_b.get_pauli_gadgets() == pbox.get_pauli_gadgets());
+    REQUIRE(p_b.get_cx_config() == pbox.get_cx_config());
     REQUIRE(p_b == pbox);
   }
 
@@ -826,9 +878,6 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(
       OptimisePairwiseGadgets, gen_pairwise_pauli_gadgets(CXConfigType::Tree))
   COMPPASSJSONTEST(
-      PauliSimp, gen_synthesise_pauli_graph(
-                     Transforms::PauliSynthStrat::Sets, CXConfigType::Tree))
-  COMPPASSJSONTEST(
       GuidedPauliSimp,
       gen_special_UCC_synthesis(
           Transforms::PauliSynthStrat::Pairwise, CXConfigType::Snake))
@@ -845,6 +894,22 @@ SCENARIO("Test compiler pass serializations") {
   COMPPASSJSONTEST(GraphPlacement, gen_placement_pass(ga_place))
   COMPPASSJSONTEST(RoundAngles, RoundAngles(8, true))
 #undef COMPPASSJSONTEST
+  GIVEN("PauliExponentials") {
+    Circuit circ = CircuitsForTesting::get().uccsd;
+    CompilationUnit cu{circ};
+    CompilationUnit copy = cu;
+    PassPtr pp = gen_pauli_exponentials(
+        Transforms::PauliSynthStrat::Sets, CXConfigType::Tree);
+    nlohmann::json j_pp = pp;
+    PassPtr loaded = j_pp.get<PassPtr>();
+    pp->apply(cu);
+    loaded->apply(copy);
+    DecomposeBoxes()->apply(cu);
+    DecomposeBoxes()->apply(copy);
+    REQUIRE(cu.get_circ_ref() == copy.get_circ_ref());
+    nlohmann::json j_loaded = loaded;
+    REQUIRE(j_pp == j_loaded);
+  }
   GIVEN("RoutingPass") {
     // Can only be applied to placed circuits
     Circuit circ = CircuitsForTesting::get().uccsd;
@@ -960,6 +1025,24 @@ SCENARIO("Test compiler pass serializations") {
     loaded->apply(copy);
     REQUIRE(cu.get_circ_ref() == copy.get_circ_ref());
   }
+  GIVEN("PauliSimp") {
+    // Sequence pass - deserializable only
+    Circuit circ = CircuitsForTesting::get().uccsd;
+    CompilationUnit cu{circ};
+    CompilationUnit copy = cu;
+    PassPtr pp = gen_synthesise_pauli_graph(
+        Transforms::PauliSynthStrat::Sets, CXConfigType::Star);
+    nlohmann::json j_pp;
+    j_pp["pass_class"] = "StandardPass";
+    j_pp["StandardPass"]["name"] = "PauliSimp";
+    j_pp["StandardPass"]["pauli_synth_strat"] =
+        Transforms::PauliSynthStrat::Sets;
+    j_pp["StandardPass"]["cx_config"] = CXConfigType::Star;
+    PassPtr loaded = j_pp.get<PassPtr>();
+    pp->apply(cu);
+    loaded->apply(copy);
+    REQUIRE(cu.get_circ_ref() == copy.get_circ_ref());
+  }
   GIVEN("ContextSimp") {
     // Sequence pass - deserializable only
     Circuit circ = CircuitsForTesting::get().uccsd;
@@ -987,7 +1070,7 @@ SCENARIO("Test compiler pass combinator serializations") {
     CompilationUnit cu{circ};
     CompilationUnit copy = cu;
     std::vector<PassPtr> seq_vec = {
-        gen_synthesise_pauli_graph(), gen_clifford_simp_pass()};
+        gen_pauli_exponentials(), DecomposeBoxes(), gen_clifford_simp_pass()};
     PassPtr seq = std::make_shared<SequencePass>(seq_vec);
     nlohmann::json j_seq = seq;
     PassPtr loaded_seq = j_seq.get<PassPtr>();

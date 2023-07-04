@@ -20,10 +20,11 @@
 #include "GateNodesBuffer.hpp"
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/PauliExpBoxes.hpp"
+#include "tket/Circuit/Simulation/PauliExpBoxUnitaryCalculator.hpp"
 #include "tket/Gate/Gate.hpp"
 #include "tket/Gate/GateUnitaryMatrix.hpp"
 #include "tket/Gate/GateUnitaryMatrixError.hpp"
-#include "tket/Simulation/PauliExpBoxUnitaryCalculator.hpp"
 
 namespace tket {
 namespace tket_sim {

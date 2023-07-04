@@ -23,8 +23,8 @@
 #include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/DiagonalBox.hpp"
+#include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Gate/Rotation.hpp"
-#include "tket/Simulation/CircuitSimulator.hpp"
 
 namespace tket {
 namespace test_DiagonalBox {

@@ -222,7 +222,7 @@ cmake --build .
 cmake --install .
 ```
 
-## `test-tket` (tests)
+## `tket` with tests and proptests
 
 This needs the static `tklog` and `tket` libraries to be installed.
 
@@ -230,20 +230,7 @@ This needs the static `tklog` and `tket` libraries to be installed.
 cd ${TKET_DIR}/tket/test
 mkdir build
 cd build
-cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} ..
-cmake --build .
-cmake --install .
-```
-
-## `proptest-tket` (property tests)
-
-This needs the static `tklog` and `tket` libraries to be installed.
-
-```
-cd ${TKET_DIR}/tket/proptest
-mkdir build
-cd build
-cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} ..
+cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} -DBUILD_TKET_TEST=ON -DBUILD_TKET_PROPTEST=ON ..
 cmake --build .
 cmake --install .
 ```

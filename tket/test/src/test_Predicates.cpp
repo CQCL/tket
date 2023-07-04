@@ -17,13 +17,14 @@
 
 #include "testutil.hpp"
 #include "tket/Circuit/Boxes.hpp"
+#include "tket/Circuit/PauliExpBoxes.hpp"
+#include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Gate/SymTable.hpp"
 #include "tket/Placement/Placement.hpp"
 #include "tket/Predicates/CompilationUnit.hpp"
 #include "tket/Predicates/PassGenerators.hpp"
 #include "tket/Predicates/PassLibrary.hpp"
 #include "tket/Predicates/Predicates.hpp"
-#include "tket/Simulation/CircuitSimulator.hpp"
 
 namespace tket {
 namespace test_Predicates {

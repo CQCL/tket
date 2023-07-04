@@ -17,7 +17,7 @@
 #include <fstream>
 #include <stdexcept>
 
-#include "tket/Clifford/CliffTableau.hpp"
+#include "tket/Clifford/UnitaryTableau.hpp"
 #include "tket/Utils/Expression.hpp"
 #include "tket/Utils/GraphHeaders.hpp"
 #include "tket/Utils/PauliStrings.hpp"
@@ -87,7 +87,7 @@ class PauliGraph {
   void to_graphviz_file(const std::string &filename) const;
   void to_graphviz(std::ostream &out) const;
 
-  const CliffTableau &get_clifford_ref() { return cliff_; }
+  const UnitaryRevTableau &get_clifford_ref() { return cliff_; }
   unsigned n_vertices() const { return boost::num_vertices(this->graph_); }
 
   /**
@@ -105,11 +105,11 @@ class PauliGraph {
   void sanity_check() const;
 
   friend PauliGraph circuit_to_pauli_graph(const Circuit &circ);
-  friend Circuit pauli_graph_to_circuit_individually(
+  friend Circuit pauli_graph_to_pauli_exp_box_circuit_individually(
       const PauliGraph &pg, CXConfigType cx_config);
-  friend Circuit pauli_graph_to_circuit_pairwise(
+  friend Circuit pauli_graph_to_pauli_exp_box_circuit_pairwise(
       const PauliGraph &pg, CXConfigType cx_config);
-  friend Circuit pauli_graph_to_circuit_sets(
+  friend Circuit pauli_graph_to_pauli_exp_box_circuit_sets(
       const PauliGraph &pg, CXConfigType cx_config);
 
  private:
@@ -122,7 +122,7 @@ class PauliGraph {
   mutable PauliDAG graph_;
 
   /** The tableau of the Clifford effect of the circuit */
-  CliffTableau cliff_;
+  UnitaryRevTableau cliff_;
   /** The record of measurements at the very end of the circuit */
   boost::bimap<Qubit, Bit> measures_;
   bit_vector_t bits_;

@@ -18,7 +18,9 @@
 #include <boost/uuid/uuid_generators.hpp>
 #include <boost/uuid/uuid_io.hpp>
 #include <memory>
+#include <optional>
 
+#include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/OpType/OpTypeInfo.hpp"
 #include "tket/Ops/Op.hpp"
 #include "tket/Utils/BiMapHeaders.hpp"
@@ -67,6 +69,24 @@ class Box : public Op {
     if (circ_ == nullptr) generate_circuit();
     return circ_;
   };
+
+  /**
+   * If meaningful and implemented, return the numerical unitary matrix
+   * (in ILO-BE convention) which this Box represents.
+   *
+   * @return unitary matrix (ILO-BE) which this Box represents
+   */
+  virtual std::optional<Eigen::MatrixXcd> get_box_unitary() const {
+    return std::nullopt;
+  }
+
+  Eigen::MatrixXcd get_unitary() const override {
+    std::optional<Eigen::MatrixXcd> u = get_box_unitary();
+    if (u.has_value()) {
+      return *u;
+    }
+    return tket_sim::get_unitary(*to_circuit());
+  }
 
   /** Unique identifier (preserved on copy) */
   boost::uuids::uuid get_id() const { return id_; }
@@ -199,7 +219,9 @@ class Unitary1qBox : public Box {
   /** Get the unitary matrix correspnding to this operation */
   Eigen::Matrix2cd get_matrix() const { return m_; }
 
-  Eigen::MatrixXcd get_unitary() const override { return m_; }
+  std::optional<Eigen::MatrixXcd> get_box_unitary() const override {
+    return m_;
+  }
 
   Op_ptr dagger() const override;
 
@@ -262,7 +284,9 @@ class Unitary2qBox : public Box {
   /** Get the unitary matrix correspnding to this operation */
   Eigen::Matrix4cd get_matrix() const { return m_; }
 
-  Eigen::MatrixXcd get_unitary() const override { return m_; }
+  std::optional<Eigen::MatrixXcd> get_box_unitary() const override {
+    return m_;
+  }
 
   Op_ptr dagger() const override;
 
@@ -322,7 +346,9 @@ class Unitary3qBox : public Box {
   /** Get the unitary matrix correspnding to this operation */
   Matrix8cd get_matrix() const { return m_; }
 
-  Eigen::MatrixXcd get_unitary() const override { return m_; }
+  std::optional<Eigen::MatrixXcd> get_box_unitary() const override {
+    return m_;
+  }
 
   Op_ptr dagger() const override;
 
@@ -394,6 +420,8 @@ class ExpBox : public Box {
 
   Op_ptr transpose() const override;
 
+  std::optional<Eigen::MatrixXcd> get_box_unitary() const override;
+
   static Op_ptr from_json(const nlohmann::json &j);
 
   static nlohmann::json to_json(const Op_ptr &op);
@@ -404,67 +432,6 @@ class ExpBox : public Box {
  private:
   const Eigen::Matrix4cd A_;
   double t_;
-};
-
-/**
- * Operation defined as the exponential of a tensor of Pauli operators
- */
-class PauliExpBox : public Box {
- public:
-  /**
-   * The operation implements the unitary operator
-   * \f$ e^{-\frac12 i \pi t \sigma_0 \otimes \sigma_1 \otimes \cdots} \f$
-   * where \f$ \sigma_i \in \{I,X,Y,Z\} \f$ are the Pauli operators.
-   */
-  PauliExpBox(const std::vector<Pauli> &paulis, const Expr &t);
-
-  /**
-   * Construct from the empty vector
-   */
-  PauliExpBox();
-
-  /**
-   * Copy constructor
-   */
-  PauliExpBox(const PauliExpBox &other);
-
-  ~PauliExpBox() override {}
-
-  bool is_clifford() const override;
-
-  SymSet free_symbols() const override;
-
-  /**
-   * Equality check between two PauliExpBox instances
-   */
-  bool is_equal(const Op &op_other) const override {
-    const PauliExpBox &other = dynamic_cast<const PauliExpBox &>(op_other);
-    return id_ == other.get_id();
-  }
-
-  /** Get the Pauli string */
-  std::vector<Pauli> get_paulis() const { return paulis_; }
-
-  /** Get the phase parameter */
-  Expr get_phase() const { return t_; }
-
-  Op_ptr dagger() const override;
-
-  Op_ptr transpose() const override;
-
-  Op_ptr symbol_substitution(
-      const SymEngine::map_basic_basic &sub_map) const override;
-
-  static Op_ptr from_json(const nlohmann::json &j);
-
-  static nlohmann::json to_json(const Op_ptr &op);
-
- protected:
-  void generate_circuit() const override;
-
- private:
-  std::vector<Pauli> paulis_;
-  Expr t_;
 };
 
 class CompositeGateDef;
@@ -574,6 +541,8 @@ class QControlBox : public Box {
   Op_ptr dagger() const override;
 
   Op_ptr transpose() const override;
+
+  std::optional<Eigen::MatrixXcd> get_box_unitary() const override;
 
   Op_ptr get_op() const { return op_; }
   unsigned get_n_controls() const { return n_controls_; }

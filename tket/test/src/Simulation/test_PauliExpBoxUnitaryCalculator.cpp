@@ -16,8 +16,9 @@
 #include <stack>
 
 #include "tket/Circuit/Boxes.hpp"
+#include "tket/Circuit/PauliExpBoxes.hpp"
+#include "tket/Circuit/Simulation/PauliExpBoxUnitaryCalculator.hpp"
 #include "tket/Gate/GateUnitaryMatrix.hpp"
-#include "tket/Simulation/PauliExpBoxUnitaryCalculator.hpp"
 
 // This is for testing PauliExpBoxUnitaryCalculator, an internal
 // component of the Simulation code.

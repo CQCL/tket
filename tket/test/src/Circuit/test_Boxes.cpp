@@ -20,9 +20,10 @@
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/PauliExpBoxes.hpp"
+#include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Converters/PhasePoly.hpp"
 #include "tket/Gate/SymTable.hpp"
-#include "tket/Simulation/CircuitSimulator.hpp"
 
 using Catch::Matchers::StartsWith;
 
@@ -204,247 +205,6 @@ SCENARIO("Using Boxes", "[boxes]") {
     c.add_box(ubox, {0, 1});  // should act as the identity
     Eigen::MatrixXcd uc = tket_sim::get_unitary(c);
     REQUIRE((uc - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
-  }
-}
-
-SCENARIO("Pauli gadgets", "[boxes]") {
-  GIVEN("Basis Circuit check") {
-    PauliExpBox pbox({Pauli::X}, 1.0);
-    Circuit comp(1);
-    comp.add_op<unsigned>(OpType::H, {0});
-    comp.add_op<unsigned>(OpType::Rz, 1.0, {0});
-    comp.add_op<unsigned>(OpType::H, {0});
-    REQUIRE(*(pbox.to_circuit()) == comp);
-  }
-  GIVEN("X") {
-    // ---PauliExpBox([X], t)----Rx(-t)--- should be the identity
-    double t = 1.687029013593215;
-    Circuit c(1);
-    std::vector<Pauli> pauli_x = {Pauli::X};
-    PauliExpBox pbox(pauli_x, t);
-    REQUIRE(pbox.get_paulis() == pauli_x);
-    c.add_box(pbox, uvec{0});
-    c.add_op<unsigned>(OpType::Rx, -t, {0});
-    Eigen::Matrix2Xcd u = tket_sim::get_unitary(c);
-    REQUIRE((u - Eigen::Matrix2cd::Identity()).cwiseAbs().sum() < ERR_EPS);
-  }
-  GIVEN("Y") {
-    // ---PauliExpBox([Y], t)----Ry(-t)--- should be the identity
-    double t = 1.6791969622440162;
-    Circuit c(1);
-    PauliExpBox pbox({Pauli::Y}, t);
-    c.add_box(pbox, uvec{0});
-    c.add_op<unsigned>(OpType::Ry, -t, {0});
-    Eigen::Matrix2Xcd u = tket_sim::get_unitary(c);
-    REQUIRE((u - Eigen::Matrix2cd::Identity()).cwiseAbs().sum() < ERR_EPS);
-  }
-  GIVEN("Z") {
-    // ---PauliExpBox([Z], t)----Rz(-t)--- should be the identity
-    double t = 1.7811410013115163;
-    Circuit c(1);
-    PauliExpBox pbox({Pauli::Z}, t);
-    c.add_box(pbox, uvec{0});
-    c.add_op<unsigned>(OpType::Rz, -t, {0});
-    Eigen::Matrix2Xcd u = tket_sim::get_unitary(c);
-    REQUIRE((u - Eigen::Matrix2cd::Identity()).cwiseAbs().sum() < ERR_EPS);
-  }
-  GIVEN("II") {
-    double t = 0.10154905537993009;
-    Eigen::Matrix4cd a;
-    a << 1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1., 0., 0., 0., 0., 1.;
-    ExpBox ebox(a, +0.5 * PI * t);
-    Circuit c(2);
-    c.add_box(ebox, {0, 1});
-    PauliExpBox pbox({Pauli::I, Pauli::I}, t);
-    c.add_box(pbox, {0, 1});
-    Eigen::MatrixXcd u = tket_sim::get_unitary(c);
-    REQUIRE((u - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
-  }
-  GIVEN("IX") {
-    double t = -0.9124813027056411;
-    Eigen::Matrix4cd a;
-    a << 0., 1., 0., 0., 1., 0., 0., 0., 0., 0., 0., 1., 0., 0., 1., 0.;
-    ExpBox ebox(a, +0.5 * PI * t);
-    Circuit c(2);
-    c.add_box(ebox, {0, 1});
-    PauliExpBox pbox({Pauli::I, Pauli::X}, t);
-    c.add_box(pbox, {0, 1});
-    Eigen::MatrixXcd u = tket_sim::get_unitary(c);
-    REQUIRE((u - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
-  }
-  GIVEN("IY") {
-    double t = 0.4906808577976969;
-    Eigen::Matrix4cd a;
-    a << 0., -i_, 0., 0., i_, 0., 0., 0., 0., 0., 0., -i_, 0., 0., i_, 0.;
-    ExpBox ebox(a, +0.5 * PI * t);
-    Circuit c(2);
-    c.add_box(ebox, {0, 1});
-    PauliExpBox pbox({Pauli::I, Pauli::Y}, t);
-    c.add_box(pbox, {0, 1});
-    Eigen::MatrixXcd u = tket_sim::get_unitary(c);
-    REQUIRE((u - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
-  }
-  GIVEN("IZ") {
-    double t = -0.9536579982905538;
-    Eigen::Matrix4cd a;
-    a << 1., 0., 0., 0., 0., -1., 0., 0., 0., 0., 1., 0., 0., 0., 0., -1.;
-    ExpBox ebox(a, +0.5 * PI * t);
-    Circuit c(2);
-    c.add_box(ebox, {0, 1});
-    PauliExpBox pbox({Pauli::I, Pauli::Z}, t);
-    c.add_box(pbox, {0, 1});
-    Eigen::MatrixXcd u = tket_sim::get_unitary(c);
-    REQUIRE((u - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
-  }
-  GIVEN("XI") {
-    double t = 0.9735728239081902;
-    Eigen::Matrix4cd a;
-    a << 0., 0., 1., 0., 0., 0., 0., 1., 1., 0., 0., 0., 0., 1., 0., 0.;
-    ExpBox ebox(a, +0.5 * PI * t);
-    Circuit c(2);
-    c.add_box(ebox, {0, 1});
-    PauliExpBox pbox({Pauli::X, Pauli::I}, t);
-    c.add_box(pbox, {0, 1});
-    Eigen::MatrixXcd u = tket_sim::get_unitary(c);
-    REQUIRE((u - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
-  }
-  GIVEN("XX") {
-    double t = 0.27251750245844586;
-    Eigen::Matrix4cd a;
-    a << 0., 0., 0., 1., 0., 0., 1., 0., 0., 1., 0., 0., 1., 0., 0., 0.;
-    ExpBox ebox(a, +0.5 * PI * t);
-    Circuit c(2);
-    c.add_box(ebox, {0, 1});
-    PauliExpBox pbox({Pauli::X, Pauli::X}, t);
-    c.add_box(pbox, {0, 1});
-    Eigen::MatrixXcd u = tket_sim::get_unitary(c);
-    REQUIRE((u - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
-  }
-  GIVEN("XY") {
-    double t = -0.7252139115522431;
-    Eigen::Matrix4cd a;
-    a << 0., 0., 0., -i_, 0., 0., i_, 0., 0., -i_, 0., 0., i_, 0., 0., 0.;
-    ExpBox ebox(a, +0.5 * PI * t);
-    Circuit c(2);
-    c.add_box(ebox, {0, 1});
-    PauliExpBox pbox({Pauli::X, Pauli::Y}, t);
-    c.add_box(pbox, {0, 1});
-    Eigen::MatrixXcd u = tket_sim::get_unitary(c);
-    REQUIRE((u - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
-  }
-  GIVEN("XZ") {
-    double t = 0.7474044702065266;
-    Eigen::Matrix4cd a;
-    a << 0., 0., 1., 0., 0., 0., 0., -1., 1., 0., 0., 0., 0., -1., 0., 0.;
-    ExpBox ebox(a, +0.5 * PI * t);
-    Circuit c(2);
-    c.add_box(ebox, {0, 1});
-    PauliExpBox pbox({Pauli::X, Pauli::Z}, t);
-    c.add_box(pbox, {0, 1});
-    Eigen::MatrixXcd u = tket_sim::get_unitary(c);
-    REQUIRE((u - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
-  }
-  GIVEN("YI") {
-    double t = 0.31314409051199577;
-    Eigen::Matrix4cd a;
-    a << 0., 0., -i_, 0., 0., 0., 0., -i_, i_, 0., 0., 0., 0., i_, 0., 0.;
-    ExpBox ebox(a, +0.5 * PI * t);
-    Circuit c(2);
-    c.add_box(ebox, {0, 1});
-    PauliExpBox pbox({Pauli::Y, Pauli::I}, t);
-    c.add_box(pbox, {0, 1});
-    Eigen::MatrixXcd u = tket_sim::get_unitary(c);
-    REQUIRE((u - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
-  }
-  GIVEN("YX") {
-    double t = -0.4855765841278301;
-    Eigen::Matrix4cd a;
-    a << 0., 0., 0., -i_, 0., 0., -i_, 0., 0., i_, 0., 0., i_, 0., 0., 0.;
-    ExpBox ebox(a, +0.5 * PI * t);
-    Circuit c(2);
-    c.add_box(ebox, {0, 1});
-    PauliExpBox pbox({Pauli::Y, Pauli::X}, t);
-    c.add_box(pbox, {0, 1});
-    Eigen::MatrixXcd u = tket_sim::get_unitary(c);
-    REQUIRE((u - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
-  }
-  GIVEN("YY") {
-    double t = 0.3103588880238326;
-    Eigen::Matrix4cd a;
-    a << 0., 0., 0., -1., 0., 0., 1., 0., 0., 1., 0., 0., -1., 0., 0., 0.;
-    ExpBox ebox(a, +0.5 * PI * t);
-    Circuit c(2);
-    c.add_box(ebox, {0, 1});
-    PauliExpBox pbox({Pauli::Y, Pauli::Y}, t);
-    c.add_box(pbox, {0, 1});
-    Eigen::MatrixXcd u = tket_sim::get_unitary(c);
-    REQUIRE((u - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
-  }
-  GIVEN("YZ") {
-    double t = -0.1130806991828821;
-    Eigen::Matrix4cd a;
-    a << 0., 0., -i_, 0., 0., 0., 0., i_, i_, 0., 0., 0., 0., -i_, 0., 0.;
-    ExpBox ebox(a, +0.5 * PI * t);
-    Circuit c(2);
-    c.add_box(ebox, {0, 1});
-    PauliExpBox pbox({Pauli::Y, Pauli::Z}, t);
-    c.add_box(pbox, {0, 1});
-    Eigen::MatrixXcd u = tket_sim::get_unitary(c);
-    REQUIRE((u - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
-  }
-  GIVEN("ZI") {
-    double t = -0.21235736398463878;
-    Eigen::Matrix4cd a;
-    a << 1., 0., 0., 0., 0., 1., 0., 0., 0., 0., -1., 0., 0., 0., 0., -1.;
-    ExpBox ebox(a, +0.5 * PI * t);
-    Circuit c(2);
-    c.add_box(ebox, {0, 1});
-    PauliExpBox pbox({Pauli::Z, Pauli::I}, t);
-    c.add_box(pbox, {0, 1});
-    Eigen::MatrixXcd u = tket_sim::get_unitary(c);
-    REQUIRE((u - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
-  }
-  GIVEN("ZX") {
-    double t = 0.5841730428035412;
-    Eigen::Matrix4cd a;
-    a << 0., 1., 0., 0., 1., 0., 0., 0., 0., 0., 0., -1., 0., 0., -1., 0.;
-    ExpBox ebox(a, +0.5 * PI * t);
-    Circuit c(2);
-    c.add_box(ebox, {0, 1});
-    PauliExpBox pbox({Pauli::Z, Pauli::X}, t);
-    c.add_box(pbox, {0, 1});
-    Eigen::MatrixXcd u = tket_sim::get_unitary(c);
-    REQUIRE((u - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
-  }
-  GIVEN("ZY") {
-    double t = 0.4300676558283072;
-    Eigen::Matrix4cd a;
-    a << 0., -i_, 0., 0., i_, 0., 0., 0., 0., 0., 0., i_, 0., 0., -i_, 0.;
-    ExpBox ebox(a, +0.5 * PI * t);
-    Circuit c(2);
-    c.add_box(ebox, {0, 1});
-    PauliExpBox pbox({Pauli::Z, Pauli::Y}, t);
-    c.add_box(pbox, {0, 1});
-    Eigen::MatrixXcd u = tket_sim::get_unitary(c);
-    REQUIRE((u - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
-  }
-  GIVEN("ZZ") {
-    double t = -0.18497547540553927;
-    Eigen::Matrix4cd a;
-    a << 1., 0., 0., 0., 0., -1., 0., 0., 0., 0., -1., 0., 0., 0., 0., 1.;
-    ExpBox ebox(a, +0.5 * PI * t);
-    Circuit c(2);
-    c.add_box(ebox, {0, 1});
-    PauliExpBox pbox({Pauli::Z, Pauli::Z}, t);
-    c.add_box(pbox, {0, 1});
-    Eigen::MatrixXcd u = tket_sim::get_unitary(c);
-    REQUIRE((u - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
-  }
-  GIVEN("complex coefficient") {
-    Expr ei{SymEngine::I};
-    PauliExpBox pebox({Pauli::Z}, ei);
-    Expr p = pebox.get_phase();
-    REQUIRE(p == ei);
   }
 }
 
@@ -1234,6 +994,70 @@ SCENARIO("Checking box names", "[boxes]") {
     CustomGate g(def, {0.1111, 0.2222, 0.4444});
     const std::string name = g.get_name();
     CHECK(name == "gate with 3 params(0.1111,0.2222,0.4444)");
+  }
+}
+
+SCENARIO("Unitaries") {
+  GIVEN("Unitary1qBox") {
+    Eigen::Matrix2cd u = random_unitary(2, 1);
+    Unitary1qBox ubox(u);
+    Circuit c(1);
+    c.add_box(ubox, {0});
+    Eigen::MatrixXcd u1 = tket_sim::get_unitary(c);
+    CHECK(u1.isApprox(u));
+  }
+
+  GIVEN("Unitary2qBox") {
+    Eigen::Matrix4cd u = random_unitary(4, 1);
+    Unitary2qBox ubox(u);
+    Circuit c(2);
+    c.add_box(ubox, {0, 1});
+    Eigen::MatrixXcd u1 = tket_sim::get_unitary(c);
+    CHECK(u1.isApprox(u));
+  }
+
+  GIVEN("Unitary3qBox") {
+    Eigen::MatrixXcd u = random_unitary(8, 1);
+    Unitary3qBox ubox(u);
+    Circuit c(3);
+    c.add_box(ubox, {0, 1, 2});
+    Eigen::MatrixXcd u1 = tket_sim::get_unitary(c);
+    CHECK(u1.isApprox(u));
+  }
+
+  GIVEN("CircBox") {
+    Circuit c0(2);
+    c0.add_op<unsigned>(OpType::H, {0});
+    c0.add_op<unsigned>(OpType::CX, {0, 1});
+    Eigen::MatrixXcd u = tket_sim::get_unitary(c0);
+    CircBox cbox(c0);
+    Circuit c(2);
+    c.add_box(cbox, {0, 1});
+    Eigen::MatrixXcd u1 = tket_sim::get_unitary(c);
+    CHECK(u1.isApprox(u));
+  }
+
+  GIVEN("ExpBox") {
+    Eigen::Matrix4cd A;
+    A << 0., 1., 2., 3., 1., 2., 3. * i_, 4., 2., -3. * i_, 3, 2. - 3. * i_, 3.,
+        4., 2. + 3. * i_, 5.;
+    const double t = 0.7;
+    Eigen::MatrixXcd u = (i_ * t * A).exp();
+    ExpBox ebox(A, t);
+    Circuit c(2);
+    c.add_box(ebox, {0, 1});
+    Eigen::MatrixXcd u1 = tket_sim::get_unitary(c);
+    CHECK(u1.isApprox(u));
+  }
+
+  GIVEN("QControlBox") {
+    Op_ptr op = get_op_ptr(OpType::H);
+    QControlBox qcbox(op, 2);
+    Circuit c(3);
+    c.add_box(qcbox, {0, 1, 2});
+    Eigen::MatrixXcd u = tket_sim::get_unitary(c);
+    CHECK(u.topLeftCorner(6, 6).isApprox(Eigen::MatrixXcd::Identity(6, 6)));
+    CHECK(u.bottomRightCorner(2, 2).isApprox(op->get_unitary()));
   }
 }
 

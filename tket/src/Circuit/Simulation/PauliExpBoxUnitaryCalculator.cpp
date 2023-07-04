@@ -12,12 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "tket/Simulation/PauliExpBoxUnitaryCalculator.hpp"
+#include "tket/Circuit/Simulation/PauliExpBoxUnitaryCalculator.hpp"
 
 #include <algorithm>
 #include <tkassert/Assert.hpp>
 
-#include "tket/Circuit/Boxes.hpp"
+#include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Utils/PauliStrings.hpp"
 
 namespace tket {

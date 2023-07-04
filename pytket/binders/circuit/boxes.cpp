@@ -23,6 +23,7 @@
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/DiagonalBox.hpp"
 #include "tket/Circuit/Multiplexor.hpp"
+#include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Circuit/StatePreparation.hpp"
 #include "tket/Circuit/ToffoliBox.hpp"
 #include "tket/Converters/PhasePoly.hpp"
@@ -130,12 +131,13 @@ void init_boxes(py::module &m) {
       "An operation defined as the exponential of a tensor of Pauli "
       "operations and a (possibly symbolic) phase parameter.")
       .def(
-          py::init<const std::vector<Pauli> &, Expr>(),
+          py::init<const std::vector<Pauli> &, Expr, CXConfigType>(),
           "Construct :math:`e^{-\\frac12 i \\pi t \\sigma_0 \\otimes "
           "\\sigma_1 \\otimes \\cdots}` from Pauli operators "
           ":math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and a parameter "
           ":math:`t`.",
-          py::arg("paulis"), py::arg("t"))
+          py::arg("paulis"), py::arg("t"),
+          py::arg("cx_config_type") = CXConfigType::Tree)
       .def(
           "get_circuit", [](PauliExpBox &pbox) { return *pbox.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the box")
@@ -144,7 +146,67 @@ void init_boxes(py::module &m) {
           ":return: the corresponding list of " CLSOBJS(Pauli))
       .def(
           "get_phase", &PauliExpBox::get_phase,
-          ":return: the corresponding phase parameter");
+          ":return: the corresponding phase parameter")
+      .def(
+          "get_cx_config", &PauliExpBox::get_cx_config,
+          ":return: decomposition method");
+  py::class_<PauliExpPairBox, std::shared_ptr<PauliExpPairBox>, Op>(
+      m, "PauliExpPairBox",
+      "An operation defined as a pair of exponentials of a tensor of Pauli "
+      "operations and their (possibly symbolic) phase parameters.")
+      .def(
+          py::init<
+              const std::vector<Pauli> &, Expr, const std::vector<Pauli> &,
+              Expr, CXConfigType>(),
+          "Construct a pair of Pauli exponentials of the form"
+          " :math:`e^{-\\frac12 i \\pi t_j \\sigma_0 \\otimes "
+          "\\sigma_1 \\otimes \\cdots}` from Pauli operator strings "
+          ":math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and parameters "
+          ":math:`t_j, j \\in \\{0,1\\}`.",
+          py::arg("paulis0"), py::arg("t0"), py::arg("paulis1"), py::arg("t1"),
+          py::arg("cx_config_type") = CXConfigType::Tree)
+      .def(
+          "get_circuit",
+          [](PauliExpPairBox &pbox) { return *pbox.to_circuit(); },
+          ":return: the :py:class:`Circuit` described by the box")
+      .def(
+          "get_paulis_pair", &PauliExpPairBox::get_paulis_pair,
+          ":return: A tuple containing the two corresponding lists of " CLSOBJS(
+              Pauli))
+      .def(
+          "get_phase_pair", &PauliExpPairBox::get_phase_pair,
+          ":return: A tuple containing the two phase parameters")
+      .def(
+          "get_cx_config", &PauliExpPairBox::get_cx_config,
+          ":return: decomposition method");
+  py::class_<
+      PauliExpCommutingSetBox, std::shared_ptr<PauliExpCommutingSetBox>, Op>(
+      m, "PauliExpCommutingSetBox",
+      "An operation defined as a set of commuting of exponentials of a"
+      "tensor of Pauli operations and their (possibly symbolic) phase "
+      "parameters.")
+      .def(
+          py::init<
+              const std::vector<std::pair<std::vector<Pauli>, Expr>> &,
+              CXConfigType>(),
+          "Construct a set of necessarily commuting Pauli exponentials of the "
+          "form"
+          " :math:`e^{-\\frac12 i \\pi t_j \\sigma_0 \\otimes "
+          "\\sigma_1 \\otimes \\cdots}` from Pauli operator strings "
+          ":math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and parameters "
+          ":math:`t_j, j \\in \\{0, 1, \\cdots \\}`.",
+          py::arg("pauli_gadgets"),
+          py::arg("cx_config_type") = CXConfigType::Tree)
+      .def(
+          "get_circuit",
+          [](PauliExpCommutingSetBox &pbox) { return *pbox.to_circuit(); },
+          ":return: the :py:class:`Circuit` described by the box")
+      .def(
+          "get_paulis", &PauliExpCommutingSetBox::get_pauli_gadgets,
+          ":return: the corresponding list of Pauli gadgets")
+      .def(
+          "get_cx_config", &PauliExpCommutingSetBox::get_cx_config,
+          ":return: decomposition method");
   py::class_<ToffoliBox, std::shared_ptr<ToffoliBox>, Op>(
       m, "ToffoliBox",
       "An operation that constructs a circuit to implement the specified "
@@ -334,11 +396,11 @@ void init_boxes(py::module &m) {
   py::class_<
       StabiliserAssertionBox, std::shared_ptr<StabiliserAssertionBox>, Op>(
       m, "StabiliserAssertionBox",
-      "A user-defined assertion specified by a list of pauli stabilisers.")
+      "A user-defined assertion specified by a list of Pauli stabilisers.")
       .def(
           py::init<const PauliStabiliserList>(),
-          "Construct from a list of pauli stabilisers.\n\n"
-          ":param m: The list of pauli stabilisers\n",
+          "Construct from a list of Pauli stabilisers.\n\n"
+          ":param m: The list of Pauli stabilisers\n",
           py::arg("stabilisers"))
       .def(
           py::init([](const std::vector<std::string> &pauli_strings) {
@@ -353,7 +415,7 @@ void init_boxes(py::module &m) {
                       coeff = false;
                     } else {
                       throw std::invalid_argument(
-                          "Invalid pauli string: " + raw_string);
+                          "Invalid Pauli string: " + raw_string);
                     }
                     break;
                   case 'I':
@@ -370,15 +432,15 @@ void init_boxes(py::module &m) {
                     break;
                   default:
                     throw std::invalid_argument(
-                        "Invalid pauli string: " + raw_string);
+                        "Invalid Pauli string: " + raw_string);
                 }
               }
               stabilisers.push_back(PauliStabiliser(string, coeff));
             }
             return StabiliserAssertionBox(stabilisers);
           }),
-          "Construct from a list of pauli stabilisers.\n\n"
-          ":param m: The list of pauli stabilisers expressed as Python "
+          "Construct from a list of Pauli stabilisers.\n\n"
+          ":param m: The list of Pauli stabilisers expressed as Python "
           "strings\n",
           py::arg("stabilisers"))
       .def(
@@ -387,7 +449,7 @@ void init_boxes(py::module &m) {
           ":return: the :py:class:`Circuit` described by the box")
       .def(
           "get_stabilisers", &StabiliserAssertionBox::get_stabilisers,
-          ":return: the list of pauli stabilisers");
+          ":return: the list of Pauli stabilisers");
   py::class_<MultiplexorBox, std::shared_ptr<MultiplexorBox>, Op>(
       m, "MultiplexorBox",
       "A user-defined multiplexor (i.e. uniformly controlled operations) "
@@ -415,7 +477,7 @@ void init_boxes(py::module &m) {
       "a map from bitstrings to " CLSOBJS(Op))
       .def(
           py::init<const ctrl_op_map_t &>(),
-          "Construct from a map from bitstrings to :py:class:`Op`s."
+          "Construct from a map from bitstrings to :py:class:`Op` s."
           "All " CLSOBJS(Op) "  must share the same single-qubit rotation type: "
           "Rx, Ry, or Rz.\n\n"
           ":param op_map: Map from bitstrings to " CLSOBJS(Op) "\n",

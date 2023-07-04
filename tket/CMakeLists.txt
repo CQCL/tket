@@ -36,7 +36,9 @@ endif()
 
 find_program(CCACHE_PROGRAM ccache)
 if(CCACHE_PROGRAM)
-    set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
+  set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
+  message("-> Setting ccache (${CCACHE_PROGRAM} as compiler launcher for generator ${CMAKE_GENERATOR}")
+  message("-> This is only supported for the Ninja and Makefile generators")
 endif()
 
 if(WIN32)
@@ -102,7 +104,6 @@ target_sources(tket
         src/OpType/OpTypeInfo.cpp
         src/OpType/OpTypeFunctions.cpp
         src/OpType/OpTypeJson.cpp
-        src/Clifford/CliffTableau.cpp
         src/Clifford/ChoiMixTableau.cpp
         src/Clifford/SymplecticTableau.cpp
         src/Clifford/UnitaryTableau.cpp
@@ -154,6 +155,13 @@ target_sources(tket
         src/Circuit/StatePreparation.cpp
         src/Circuit/DiagonalBox.cpp
         src/Circuit/ToffoliBox.cpp
+        src/Circuit/PauliExpBoxes.cpp
+        src/Circuit/Simulation/BitOperations.cpp
+        src/Circuit/Simulation/CircuitSimulator.cpp
+        src/Circuit/Simulation/DecomposeCircuit.cpp
+        src/Circuit/Simulation/GateNode.cpp
+        src/Circuit/Simulation/GateNodesBuffer.cpp
+        src/Circuit/Simulation/PauliExpBoxUnitaryCalculator.cpp
         src/Architecture/Architecture.cpp
         src/Architecture/ArchitectureGraphClasses.cpp
         src/Architecture/ArchitectureMapping.cpp
@@ -161,12 +169,6 @@ target_sources(tket
         src/Architecture/DistancesFromArchitecture.cpp
         src/Architecture/NeighboursFromArchitecture.cpp
         src/Architecture/SubgraphMonomorphisms.cpp
-        src/Simulation/BitOperations.cpp
-        src/Simulation/CircuitSimulator.cpp
-        src/Simulation/DecomposeCircuit.cpp
-        src/Simulation/GateNode.cpp
-        src/Simulation/GateNodesBuffer.cpp
-        src/Simulation/PauliExpBoxUnitaryCalculator.cpp
         src/Diagonalisation/DiagUtils.cpp
         src/Diagonalisation/Diagonalisation.cpp
         src/Diagonalisation/PauliPartition.cpp
@@ -188,7 +190,6 @@ target_sources(tket
         src/ZX/Flow.cpp
         src/ZX/MBQCRewrites.cpp
         src/ZX/ZXRWSequences.cpp
-        src/Converters/CliffTableauConverters.cpp
         src/Converters/ChoiMixTableauConverters.cpp
         src/Converters/PauliGadget.cpp
         src/Converters/PauliGraphConverters.cpp
@@ -269,7 +270,6 @@ target_sources(tket
         include/tket/OpType/OpType.hpp
         include/tket/OpType/OpTypeInfo.hpp
         include/tket/Clifford/ChoiMixTableau.hpp
-        include/tket/Clifford/CliffTableau.hpp
         include/tket/Clifford/SymplecticTableau.hpp
         include/tket/Clifford/UnitaryTableau.hpp
         include/tket/Ops/ClassicalOps.hpp
@@ -316,14 +316,15 @@ target_sources(tket
         include/tket/Circuit/StatePreparation.hpp
         include/tket/Circuit/ThreeQubitConversion.hpp
         include/tket/Circuit/ToffoliBox.hpp
+        include/tket/Circuit/PauliExpBoxes.hpp
+        include/tket/Circuit/Simulation/CircuitSimulator.hpp
+        include/tket/Circuit/Simulation/PauliExpBoxUnitaryCalculator.hpp
         include/tket/Architecture/Architecture.hpp
         include/tket/Architecture/ArchitectureMapping.hpp
         include/tket/Architecture/BestTsaWithArch.hpp
         include/tket/Architecture/DistancesFromArchitecture.hpp
         include/tket/Architecture/NeighboursFromArchitecture.hpp
         include/tket/Architecture/SubgraphMonomorphisms.hpp
-        include/tket/Simulation/CircuitSimulator.hpp
-        include/tket/Simulation/PauliExpBoxUnitaryCalculator.hpp
         include/tket/Diagonalisation/Diagonalisation.hpp
         include/tket/Diagonalisation/DiagUtils.hpp
         include/tket/Diagonalisation/PauliPartition.hpp
@@ -389,6 +390,13 @@ target_sources(tket
         include/tket/Predicates/PassLibrary.hpp
         include/tket/Predicates/Predicates.hpp
     )
+
+if (BUILD_TKET_TEST)
+    add_subdirectory(test)
+endif()
+if (BUILD_TKET_PROPTEST)
+    add_subdirectory(proptest)
+endif()
 
 include(GNUInstallDirs)
 set(INSTALL_CONFIGDIR ${CMAKE_INSTALL_LIBDIR}/cmake/tket)
