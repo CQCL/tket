@@ -8,6 +8,10 @@ Minor new features:
 
 * `Circuit.get_unitary()` and `Circuit.get_statevector()` now work for circuits
   containing boxes.
+* New Box type `PauliExpPairBox`.
+* New Box type `PauliExpCommutingSetBox`.
+* New pass `PauliExponentials` that rewrites a circuit to a sequence of `PauliExpBox`,
+  `PauliExpPairBox`, `PauliExpCommutingSetBox` and a Clifford circuit.
 
 1.16.0 (June 2023)
 ------------------
