@@ -397,6 +397,9 @@ PYBIND11_MODULE(transform, m) {
           "Lazy synthesises Pauli Graphs.",
           py::arg("cx_config") = CXConfigType::Snake)
       .def_static(
+          "LazyAASPauliGraph", &Transforms::lazy_aas_pauli_graph,
+          "Lazy AAS Pauli Graphs.", py::arg("arch"))
+      .def_static(
           "UCCSynthesis", &Transforms::special_UCC_synthesis,
           "Synthesises UCC circuits in the form that Term Sequencing "
           "provides them.",

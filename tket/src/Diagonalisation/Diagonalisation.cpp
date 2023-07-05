@@ -318,7 +318,6 @@ void greedy_diagonalise_aas(
   }
   circ.append(aas_cx_circ);
   qubits.erase(first_qb);
-  return;
 }
 
 /* Diagonalise a set of Pauli Gadgets simultaneously using Cliffords*/

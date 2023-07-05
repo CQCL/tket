@@ -15,6 +15,7 @@
 #pragma once
 
 #include "Transform.hpp"
+#include "tket/Architecture/Architecture.hpp"
 
 namespace tket {
 
@@ -38,6 +39,8 @@ Transform synthesise_pauli_graph(
     CXConfigType cx_config = CXConfigType::Snake);
 
 Transform lazy_synthesise_pauli_graph(CXConfigType cx_config);
+Transform lazy_aas_pauli_graph(const Architecture &arch);
+
 // Assumes incoming circuit is composed of `CircBox`es with
 // `PauliExpBox`es inside
 Transform special_UCC_synthesis(

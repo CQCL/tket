@@ -14,6 +14,7 @@
 
 #include "tket/Transformations/PauliOptimisation.hpp"
 
+#include "tket/Architecture/Architecture.hpp"
 #include "tket/Converters/Converters.hpp"
 #include "tket/Converters/PauliGadget.hpp"
 #include "tket/OpType/OpType.hpp"
@@ -223,6 +224,36 @@ Transform lazy_synthesise_pauli_graph(CXConfigType cx_config) {
     circ.replace_all_implicit_wire_swaps();
     PauliGraph pg = circuit_to_pauli_graph(circ);
     circ = pauli_graph_to_circuit_lazy_synth(pg, cx_config);
+    circ.add_phase(t);
+    if (name) {
+      circ.set_name(*name);
+    }
+    // always turn circuit into PauliGraph and back, so always return true
+    return true;
+  });
+}
+
+Transform lazy_aas_pauli_graph(const Architecture &arch) {
+  return Transform([=](Circuit &circ) {
+    // verify the circuit is placed
+    qubit_vector_t q_vect = circ.all_qubits();
+    std::set<Qubit> all_qubits(q_vect.begin(), q_vect.end());
+    for (const Qubit &q : all_qubits) {
+      if (!arch.node_exists(Node(q))) {
+        throw CircuitInvalidity(
+            "All qubits must be placed for AAS Pauli synth");
+      }
+    }
+    for (const Node &n : arch.nodes()) {
+      if (all_qubits.find(n) == all_qubits.end()) {
+        circ.add_qubit(n);
+      }
+    }
+    Expr t = circ.get_phase();
+    std::optional<std::string> name = circ.get_name();
+    circ.replace_all_implicit_wire_swaps();
+    PauliGraph pg = circuit_to_pauli_graph(circ);
+    circ = pauli_graph_to_circuit_lazy_aas(pg, arch);
     circ.add_phase(t);
     if (name) {
       circ.set_name(*name);
