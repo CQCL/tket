@@ -38,6 +38,11 @@ if(APPLE)
     set(CMAKE_BUILD_WITH_INSTALL_NAME_DIR ON)
 endif()
 
+if(UNIX)
+    set(CMAKE_BUILD_WITH_INSTALL_RPATH ON)
+    set(CMAKE_INSTALL_RPATH "\${ORIGIN}")
+endif()
+
 add_library(tklog)
 
 if(MSVC)

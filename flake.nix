@@ -8,19 +8,31 @@
         pkgs = import nixpkgs {
           inherit system;
         };
+
+        # static libs
         libs-static = pkgs.callPackage ./libs { static=true; };
-        libs-shared = pkgs.callPackage ./libs { static=false; };
         tket-static = pkgs.callPackage ./tket { libs=libs-static; static=true; };
-        tket-shared = pkgs.callPackage ./tket { libs=libs-shared; static=false; };
-        pytket = pkgs.callPackage ./pytket { tket=tket-shared; };
+        symengine-static = pkgs.callPackage ./nix-helpers/symengine.nix { static=true; };
+        # shared libs
+        libs-shared = pkgs.callPackage ./libs { static=false; };
+        symengine-shared = pkgs.callPackage ./nix-helpers/symengine.nix { static=false; };
+        tket-shared = pkgs.callPackage ./tket { libs=libs-shared; static=false; symengine=symengine-shared; };
+        # pytket
+        pytket = pkgs.callPackage ./pytket {
+          libs=libs-shared;
+          tket=tket-shared;
+          symengine=symengine-shared;
+        };
       in
         {
           defaultPackage = tket-static;
           packages = {
             tket = tket-static;
-            tket-shared = tket-shared;
             tket-static = tket-static;
+            tket-shared = tket-shared;
             pytket = pytket;
+            symengine-static = symengine-static;
+            symengine-shared = symengine-shared;
           };
           devShell = with pkgs; mkShell {
             buildInputs = [

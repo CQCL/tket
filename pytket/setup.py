@@ -137,22 +137,20 @@ class NixBuild(build_ext):
         if os.path.exists(extdir):
             shutil.rmtree(extdir)
         os.makedirs(extdir)
-        extsource = self.extensions[0].sourcedir
-        # search for libraries in PATH
+
         nix_ldflags = os.environ['NIX_LDFLAGS'].split()
-        build_inputs = os.environ['buildInputs'].split()
+        build_inputs = os.environ['propagatedBuildInputs'].split()
         location_tklog = [l[2:] for l in nix_ldflags if '-tklog' in l]
         location_tket = [l[2:] for l in nix_ldflags if '-tket' in l]
         location_binders = [f"{l}/lib" for l in build_inputs if '-binders' in l]
         assert location_tklog and location_tket and location_binders
-        # if multiple versions are present, choose the first as per convention
         for location in [location_tklog[0],
                          location_tket[0],
                          location_binders[0]]:
             for lib in os.listdir(location):
                 libpath = os.path.join(location, lib)
                 if not os.path.isdir(libpath):
-                    shutil.copy(libpath, extdir)
+                    os.symlink(libpath, os.path.join(extdir, lib))
 
 setup_dir = os.path.abspath(os.path.dirname(__file__))
 plat_name = os.getenv("WHEEL_PLAT_NAME")
