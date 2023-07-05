@@ -45,8 +45,12 @@ std::optional<std::pair<Pauli, Pauli>> check_pair_compatibility(
 void greedy_diagonalise(
     const std::list<std::pair<QubitPauliTensor, Expr>> &gadgets,
     std::set<Qubit> &qubits, Conjugations &conjugations, Circuit &circ,
-    CXConfigType cx_config,
-    const std::optional<Architecture> &opt_arch = std::nullopt);
+    CXConfigType cx_config);
+
+void greedy_diagonalise_aas(
+    const std::list<std::pair<QubitPauliTensor, Expr>> &gadgets,
+    std::set<Qubit> &qubits, Conjugations &conjugations, Circuit &circ,
+    const Architecture &arch);
 
 /**
  * Diagonalise a mutually commuting set of Pauli strings. Modifies the
