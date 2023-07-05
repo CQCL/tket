@@ -358,7 +358,7 @@ Circuit pauli_graph_to_circuit_lazy_aas(
   }
   // implement the final tableau
   // TODO AAS tab synth
-  Circuit tab_circuit = unitary_rev_tableau_to_circuit(final_tab, arch);
+  Circuit tab_circuit = unitary_rev_tableau_to_circuit_aas(final_tab, arch);
   circ.append(tab_circuit);
   // add measures
   for (auto it = pg.measures_.begin(); it != pg.measures_.end(); ++it) {

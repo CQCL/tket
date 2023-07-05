@@ -36,12 +36,13 @@ UnitaryRevTableau circuit_to_unitary_rev_tableau(const Circuit &circ);
  * Stabilizer Circuits, Theorem 8.
  * CAUTION: GATE COUNT IS ATROCIOUS IN PRACTICE
  */
-Circuit unitary_tableau_to_circuit(
-    const UnitaryTableau &tab,
-    const std::optional<Architecture> &opt_arch = std::nullopt);
-Circuit unitary_rev_tableau_to_circuit(
-    const UnitaryRevTableau &tab,
-    const std::optional<Architecture> &opt_arch = std::nullopt);
+Circuit unitary_tableau_to_circuit(const UnitaryTableau &tab);
+Circuit unitary_rev_tableau_to_circuit(const UnitaryRevTableau &tab);
+
+Circuit unitary_tableau_to_circuit_aas(
+    const UnitaryTableau &tab, const Architecture &arch);
+Circuit unitary_rev_tableau_to_circuit_aas(
+    const UnitaryRevTableau &tab, const Architecture &arch);
 
 /**
  * Construct a ChoiMixTableau for a given circuit.

@@ -30,8 +30,7 @@ UnitaryTableau circuit_to_unitary_tableau(const Circuit& circ) {
   return tab;
 }
 
-Circuit unitary_tableau_to_circuit(
-    const UnitaryTableau& tab, const std::optional<Architecture>& opt_arch) {
+Circuit unitary_tableau_to_circuit(const UnitaryTableau& tab) {
   SymplecticTableau tabl(tab.tab_);
   unsigned size = tabl.get_n_qubits();
   Circuit c(size);
@@ -93,32 +92,10 @@ Circuit unitary_tableau_to_circuit(
    * \ I D /
    */
   MatrixXb to_reduce = tabl.xmat_.block(size, 0, size, size);
-  if (opt_arch == std::nullopt) {
-    for (const std::pair<unsigned, unsigned>& qbs :
-         gaussian_elimination_col_ops(to_reduce)) {
-      c.add_op<unsigned>(OpType::CX, {qbs.first, qbs.second});
-      tabl.apply_CX(qbs.first, qbs.second);
-    }
-  } else {
-    Circuit cx_circ;
-    for (auto it = tab.qubits_.left.begin(); it != tab.qubits_.left.end(); it++)
-      cx_circ.add_qubit(Qubit(it->first));
-    for (const std::pair<unsigned, unsigned>& qbs :
-         gaussian_elimination_col_ops(to_reduce)) {
-      auto it0 = tab.qubits_.right.find(qbs.first);
-      auto it1 = tab.qubits_.right.find(qbs.second);
-      cx_circ.add_op<Qubit>(OpType::CX, {it0->second, it1->second});
-    }
-    Circuit aas_cx_circ =
-        aas::get_aased_phase_poly_circ(opt_arch.value(), cx_circ);
-    for (const Command& cmd : aas_cx_circ) {
-      TKET_ASSERT(cmd.get_op_ptr()->get_type() == OpType::CX);
-      auto args = cmd.get_args();
-      auto it0 = tab.qubits_.left.find(Qubit(args[0]));
-      auto it1 = tab.qubits_.left.find(Qubit(args[1]));
-      c.add_op<unsigned>(OpType::CX, {it0->second, it1->second});
-      tabl.apply_CX(it0->second, it1->second);
-    }
+  for (const std::pair<unsigned, unsigned>& qbs :
+       gaussian_elimination_col_ops(to_reduce)) {
+    c.add_op<unsigned>(OpType::CX, {qbs.first, qbs.second});
+    tabl.apply_CX(qbs.first, qbs.second);
   }
 
   /*
@@ -146,34 +123,11 @@ Circuit unitary_tableau_to_circuit(
    */
   std::vector<std::pair<unsigned, unsigned>> m_to_i =
       gaussian_elimination_col_ops(zp_z_llt.first);
-  if (opt_arch == std::nullopt) {
-    for (std::vector<std::pair<unsigned, unsigned>>::reverse_iterator it =
-             m_to_i.rbegin();
-         it != m_to_i.rend(); it++) {
-      c.add_op<unsigned>(OpType::CX, {it->first, it->second});
-      tabl.apply_CX(it->first, it->second);
-    }
-  } else {
-    Circuit cx_circ;
-    for (auto it = tab.qubits_.left.begin(); it != tab.qubits_.left.end(); it++)
-      cx_circ.add_qubit(Qubit(it->first));
-    for (std::vector<std::pair<unsigned, unsigned>>::reverse_iterator it =
-             m_to_i.rbegin();
-         it != m_to_i.rend(); it++) {
-      auto it0 = tab.qubits_.right.find(it->first);
-      auto it1 = tab.qubits_.right.find(it->second);
-      cx_circ.add_op<Qubit>(OpType::CX, {it0->second, it1->second});
-    }
-    Circuit aas_cx_circ =
-        aas::get_aased_phase_poly_circ(opt_arch.value(), cx_circ);
-    for (const Command& cmd : aas_cx_circ) {
-      TKET_ASSERT(cmd.get_op_ptr()->get_type() == OpType::CX);
-      auto args = cmd.get_args();
-      auto it0 = tab.qubits_.left.find(Qubit(args[0]));
-      auto it1 = tab.qubits_.left.find(Qubit(args[1]));
-      c.add_op<unsigned>(OpType::CX, {it0->second, it1->second});
-      tabl.apply_CX(it0->second, it1->second);
-    }
+  for (std::vector<std::pair<unsigned, unsigned>>::reverse_iterator it =
+           m_to_i.rbegin();
+       it != m_to_i.rend(); it++) {
+    c.add_op<unsigned>(OpType::CX, {it->first, it->second});
+    tabl.apply_CX(it->first, it->second);
   }
 
   /*
@@ -199,32 +153,10 @@ Circuit unitary_tableau_to_circuit(
    * By commutativity relations, IB^T = A0^T + I, therefore B = I.
    */
   to_reduce = tabl.xmat_.block(size, 0, size, size);
-  if (opt_arch == std::nullopt) {
-    for (const std::pair<unsigned, unsigned>& qbs :
-         gaussian_elimination_col_ops(to_reduce)) {
-      c.add_op<unsigned>(OpType::CX, {qbs.first, qbs.second});
-      tabl.apply_CX(qbs.first, qbs.second);
-    }
-  } else {
-    Circuit cx_circ;
-    for (auto it = tab.qubits_.left.begin(); it != tab.qubits_.left.end(); it++)
-      cx_circ.add_qubit(Qubit(it->first));
-    for (const std::pair<unsigned, unsigned>& qbs :
-         gaussian_elimination_col_ops(to_reduce)) {
-      auto it0 = tab.qubits_.right.find(qbs.first);
-      auto it1 = tab.qubits_.right.find(qbs.second);
-      cx_circ.add_op<Qubit>(OpType::CX, {it0->second, it1->second});
-    }
-    Circuit aas_cx_circ =
-        aas::get_aased_phase_poly_circ(opt_arch.value(), cx_circ);
-    for (const Command& cmd : aas_cx_circ) {
-      TKET_ASSERT(cmd.get_op_ptr()->get_type() == OpType::CX);
-      auto args = cmd.get_args();
-      auto it0 = tab.qubits_.left.find(Qubit(args[0]));
-      auto it1 = tab.qubits_.left.find(Qubit(args[1]));
-      c.add_op<unsigned>(OpType::CX, {it0->second, it1->second});
-      tabl.apply_CX(it0->second, it1->second);
-    }
+  for (const std::pair<unsigned, unsigned>& qbs :
+       gaussian_elimination_col_ops(to_reduce)) {
+    c.add_op<unsigned>(OpType::CX, {qbs.first, qbs.second});
+    tabl.apply_CX(qbs.first, qbs.second);
   }
 
   /*
@@ -262,34 +194,11 @@ Circuit unitary_tableau_to_circuit(
    */
   std::vector<std::pair<unsigned, unsigned>> n_to_i =
       gaussian_elimination_col_ops(xp_z_llt.first);
-  if (opt_arch == std::nullopt) {
-    for (std::vector<std::pair<unsigned, unsigned>>::reverse_iterator it =
-             n_to_i.rbegin();
-         it != n_to_i.rend(); it++) {
-      c.add_op<unsigned>(OpType::CX, {it->first, it->second});
-      tabl.apply_CX(it->first, it->second);
-    }
-  } else {
-    Circuit cx_circ;
-    for (auto it = tab.qubits_.left.begin(); it != tab.qubits_.left.end(); it++)
-      cx_circ.add_qubit(Qubit(it->first));
-    for (std::vector<std::pair<unsigned, unsigned>>::reverse_iterator it =
-             n_to_i.rbegin();
-         it != n_to_i.rend(); it++) {
-      auto it0 = tab.qubits_.right.find(it->first);
-      auto it1 = tab.qubits_.right.find(it->second);
-      cx_circ.add_op<Qubit>(OpType::CX, {it0->second, it1->second});
-    }
-    Circuit aas_cx_circ =
-        aas::get_aased_phase_poly_circ(opt_arch.value(), cx_circ);
-    for (const Command& cmd : aas_cx_circ) {
-      TKET_ASSERT(cmd.get_op_ptr()->get_type() == OpType::CX);
-      auto args = cmd.get_args();
-      auto it0 = tab.qubits_.left.find(Qubit(args[0]));
-      auto it1 = tab.qubits_.left.find(Qubit(args[1]));
-      c.add_op<unsigned>(OpType::CX, {it0->second, it1->second});
-      tabl.apply_CX(it0->second, it1->second);
-    }
+  for (std::vector<std::pair<unsigned, unsigned>>::reverse_iterator it =
+           n_to_i.rbegin();
+       it != n_to_i.rend(); it++) {
+    c.add_op<unsigned>(OpType::CX, {it->first, it->second});
+    tabl.apply_CX(it->first, it->second);
   }
 
   /*
@@ -312,33 +221,266 @@ Circuit unitary_tableau_to_circuit(
    * / I 0 \
    * \ 0 I /
    */
-  if (opt_arch == std::nullopt) {
-    for (const std::pair<unsigned, unsigned>& qbs :
-         gaussian_elimination_col_ops(tabl.xmat_.block(0, 0, size, size))) {
-      c.add_op<unsigned>(OpType::CX, {qbs.first, qbs.second});
-      tabl.apply_CX(qbs.first, qbs.second);
+  for (const std::pair<unsigned, unsigned>& qbs :
+       gaussian_elimination_col_ops(tabl.xmat_.block(0, 0, size, size))) {
+    c.add_op<unsigned>(OpType::CX, {qbs.first, qbs.second});
+    tabl.apply_CX(qbs.first, qbs.second);
+  }
+
+  /*
+   * DELAYED STEPS: Set all phases to 0 by applying Z or X gates
+   */
+  for (unsigned i = 0; i < size; i++) {
+    if (tabl.phase_(i)) {
+      c.add_op<unsigned>(OpType::Z, {i});
+      tabl.apply_S(i);
+      tabl.apply_S(i);
     }
-  } else {
-    Circuit cx_circ;
-    for (auto it = tab.qubits_.left.begin(); it != tab.qubits_.left.end(); it++)
-      cx_circ.add_qubit(Qubit(it->first));
-    for (const std::pair<unsigned, unsigned>& qbs :
-         gaussian_elimination_col_ops(tabl.xmat_.block(0, 0, size, size))) {
-      auto it0 = tab.qubits_.right.find(qbs.first);
-      auto it1 = tab.qubits_.right.find(qbs.second);
-      cx_circ.add_op<Qubit>(OpType::CX, {it0->second, it1->second});
-    }
-    Circuit aas_cx_circ =
-        aas::get_aased_phase_poly_circ(opt_arch.value(), cx_circ);
-    for (const Command& cmd : aas_cx_circ) {
-      TKET_ASSERT(cmd.get_op_ptr()->get_type() == OpType::CX);
-      auto args = cmd.get_args();
-      auto it0 = tab.qubits_.left.find(Qubit(args[0]));
-      auto it1 = tab.qubits_.left.find(Qubit(args[1]));
-      c.add_op<unsigned>(OpType::CX, {it0->second, it1->second});
-      tabl.apply_CX(it0->second, it1->second);
+    if (tabl.phase_(i + size)) {
+      c.add_op<unsigned>(OpType::X, {i});
+      tabl.apply_V(i);
+      tabl.apply_V(i);
     }
   }
+
+  /*
+   * Rename qubits
+   */
+  unit_map_t rename_map;
+  for (boost::bimap<Qubit, unsigned>::const_iterator iter = tab.qubits_.begin(),
+                                                     iend = tab.qubits_.end();
+       iter != iend; ++iter) {
+    rename_map.insert({Qubit(iter->right), iter->left});
+  }
+  c.rename_units(rename_map);
+
+  return c.transpose();
+}
+
+/**
+ * @brief Naively synthesise architecture-aware CX circuits
+ * factored from unitary_tableau_to_circuit_aas
+ *
+ * @param qubit_pairs
+ * @param itorder set to false if iterate qubit_pairs in reverse
+ * @param qmap
+ * @param tabl
+ * @param c
+ * @param arch
+ */
+void add_aas_cnots(
+    std::vector<std::pair<unsigned, unsigned>>& qubit_pairs, bool itorder,
+    const boost::bimap<Qubit, unsigned>& qmap, SymplecticTableau& tabl,
+    Circuit& c, const Architecture& arch) {
+  Circuit cx_circ;
+  for (auto it = qmap.left.begin(); it != qmap.left.end(); it++)
+    cx_circ.add_qubit(Qubit(it->first));
+  if (itorder) {
+    for (const std::pair<unsigned, unsigned>& qbs : qubit_pairs) {
+      auto it0 = qmap.right.find(qbs.first);
+      auto it1 = qmap.right.find(qbs.second);
+      cx_circ.add_op<Qubit>(OpType::CX, {it0->second, it1->second});
+    }
+  } else {
+    for (std::vector<std::pair<unsigned, unsigned>>::reverse_iterator it =
+             qubit_pairs.rbegin();
+         it != qubit_pairs.rend(); it++) {
+      auto it0 = qmap.right.find(it->first);
+      auto it1 = qmap.right.find(it->second);
+      cx_circ.add_op<Qubit>(OpType::CX, {it0->second, it1->second});
+    }
+  }
+  Circuit aas_cx_circ = aas::get_aased_phase_poly_circ(arch, cx_circ);
+  for (const Command& cmd : aas_cx_circ) {
+    TKET_ASSERT(cmd.get_op_ptr()->get_type() == OpType::CX);
+    auto args = cmd.get_args();
+    auto it0 = qmap.left.find(Qubit(args[0]));
+    auto it1 = qmap.left.find(Qubit(args[1]));
+    c.add_op<unsigned>(OpType::CX, {it0->second, it1->second});
+    tabl.apply_CX(it0->second, it1->second);
+  }
+}
+
+Circuit unitary_tableau_to_circuit_aas(
+    const UnitaryTableau& tab, const Architecture& arch) {
+  SymplecticTableau tabl(tab.tab_);
+  unsigned size = tabl.get_n_qubits();
+  Circuit c(size);
+  /*
+   * Aaronson-Gottesman: Improved Simulation of Stabilizer Circuits, Theorem 8
+   * Any unitary stabilizer circuit has an equivalent circuit in canonical form
+   * (H-C-P-C-P-C-H-P-C-P-C).
+   * Produces a circuit realising the tableau, but consumes the tableau in the
+   * process.
+   */
+
+  /*
+   * Step 1: Use Hadamards (in our case, Vs) to make C (z rows of xmat_) have
+   * full rank
+   */
+  MatrixXb echelon = tabl.xmat_.block(size, 0, size, size);
+  std::map<unsigned, unsigned> leading_val_to_col;
+  for (unsigned i = 0; i < size; i++) {
+    for (unsigned j = 0; j < size; j++) {
+      if (echelon(j, i)) {
+        if (leading_val_to_col.find(j) == leading_val_to_col.end()) {
+          leading_val_to_col.insert({j, i});
+          break;
+        } else {
+          unsigned l = leading_val_to_col.at(j);
+          for (unsigned k = 0; k < size; k++) {
+            echelon(k, i) ^= echelon(k, l);
+          }
+        }
+      }
+    }
+    if (leading_val_to_col.size() > i)
+      continue;  // Independent of previous cols
+    c.add_op<unsigned>(OpType::V, {i});
+    tabl.apply_V(i);
+    tabl.apply_V(i);
+    tabl.apply_V(i);
+    echelon.col(i) = tabl.zmat_.block(size, i, size, 1);
+    for (unsigned j = 0; j < size; j++) {
+      if (echelon(j, i)) {
+        if (leading_val_to_col.find(j) == leading_val_to_col.end()) {
+          leading_val_to_col.insert({j, i});
+          break;
+        } else {
+          unsigned l = leading_val_to_col.at(j);
+          for (unsigned k = 0; k < size; k++) {
+            echelon(k, i) ^= echelon(k, l);
+          }
+        }
+      }
+    }
+    if (leading_val_to_col.size() == i)
+      throw std::invalid_argument("Stabilisers are not mutually independent");
+  }
+
+  /*
+   * Step 2: Use CXs to perform Gaussian elimination on C (zpauli_x), producing
+   * / A B \
+   * \ I D /
+   */
+  MatrixXb to_reduce = tabl.xmat_.block(size, 0, size, size);
+  std::vector<std::pair<unsigned, unsigned>> qubit_pairs =
+      gaussian_elimination_col_ops(to_reduce);
+  add_aas_cnots(qubit_pairs, true, tab.qubits_, tabl, c, arch);
+
+  /*
+   * Step 3: Commutativity of the stabilizer implies that ID^T is symmetric,
+   * therefore D is symmetric, and we can apply phase (S) gates to add a
+   * diagonal matrix to D and use Lemma 7 to convert D to the form D = MM^T
+   * for some invertible M.
+   */
+  std::pair<MatrixXb, MatrixXb> zp_z_llt =
+      binary_LLT_decomposition(tabl.zmat_.block(size, 0, size, size));
+  for (unsigned i = 0; i < size; i++) {
+    if (zp_z_llt.second(i, i)) {
+      c.add_op<unsigned>(OpType::S, {i});
+      tabl.apply_S(i);
+      tabl.apply_S(i);
+      tabl.apply_S(i);
+    }
+  }
+
+  /*
+   * Step 4: Use CXs to produce
+   * / A B \
+   * \ M M /
+   * Note that when we map I to IM, we also map D to D(M^T)^{-1} = M.
+   */
+  std::vector<std::pair<unsigned, unsigned>> m_to_i =
+      gaussian_elimination_col_ops(zp_z_llt.first);
+  add_aas_cnots(m_to_i, false, tab.qubits_, tabl, c, arch);
+
+  /*
+   * Step 5: Apply phases to all n qubits to obtain
+   * / A B \
+   * \ M 0 /
+   * Since M is full rank, there exists some subset S of qubits such that
+   * applying two phases in succession (Z) to every a \in S will preserve
+   * the tableau, but set r_{n+1} = ... = r_{2n} = 0 (zpauli_phase = 0^n).
+   * Apply two phases (Z) to every a \in S. DELAYED UNTIL END
+   */
+  for (unsigned i = 0; i < size; i++) {
+    c.add_op<unsigned>(OpType::S, {i});
+    tabl.apply_S(i);
+    tabl.apply_S(i);
+    tabl.apply_S(i);
+  }
+
+  /*
+   * Step 6: Use CXs to perform Gaussian elimination on M, producing
+   * / A B \
+   * \ I 0 /
+   * By commutativity relations, IB^T = A0^T + I, therefore B = I.
+   */
+  to_reduce = tabl.xmat_.block(size, 0, size, size);
+  qubit_pairs = gaussian_elimination_col_ops(to_reduce);
+  add_aas_cnots(qubit_pairs, true, tab.qubits_, tabl, c, arch);
+
+  /*
+   * Step 7: Use Hadamards to produce
+   * / I A \
+   * \ 0 I /
+   */
+  for (unsigned i = 0; i < size; i++) {
+    c.add_op<unsigned>(OpType::H, {i});
+    tabl.apply_S(i);
+    tabl.apply_V(i);
+    tabl.apply_S(i);
+  }
+
+  /*
+   * Step 8: Now commutativity of the destabilizer implies that A is symmetric,
+   * therefore we can again use phase (S) gates and Lemma 7 to make A = NN^T for
+   * some invertible N.
+   */
+  std::pair<MatrixXb, MatrixXb> xp_z_llt =
+      binary_LLT_decomposition(tabl.zmat_.block(0, 0, size, size));
+  for (unsigned i = 0; i < size; i++) {
+    if (xp_z_llt.second(i, i)) {
+      c.add_op<unsigned>(OpType::S, {i});
+      tabl.apply_S(i);
+      tabl.apply_S(i);
+      tabl.apply_S(i);
+    }
+  }
+
+  /*
+   * Step 9: Use CXs to produce
+   * / N N \
+   * \ 0 C /
+   */
+  std::vector<std::pair<unsigned, unsigned>> n_to_i =
+      gaussian_elimination_col_ops(xp_z_llt.first);
+  add_aas_cnots(n_to_i, false, tab.qubits_, tabl, c, arch);
+
+  /*
+   * Step 10: Use phases (S) to produce
+   * / N 0 \
+   * \ 0 C /
+   * then by commutativity relations NC^T = I. Next apply two phases (Z) each to
+   * some subset of qubits in order to preserve the above tableau, but set
+   * r_1 = ... = r_n = 0 (xpauli_phase = 0^n). DELAYED UNTIL END
+   */
+  for (unsigned i = 0; i < size; i++) {
+    c.add_op<unsigned>(OpType::S, {i});
+    tabl.apply_S(i);
+    tabl.apply_S(i);
+    tabl.apply_S(i);
+  }
+
+  /*
+   * Step 11: Use CXs to produce
+   * / I 0 \
+   * \ 0 I /
+   */
+  qubit_pairs =
+      gaussian_elimination_col_ops(tabl.xmat_.block(0, 0, size, size));
+  add_aas_cnots(qubit_pairs, true, tab.qubits_, tabl, c, arch);
   /*
    * DELAYED STEPS: Set all phases to 0 by applying Z or X gates
    */
@@ -375,9 +517,13 @@ UnitaryRevTableau circuit_to_unitary_rev_tableau(const Circuit& circ) {
   return result;
 }
 
-Circuit unitary_rev_tableau_to_circuit(
-    const UnitaryRevTableau& tab, const std::optional<Architecture>& opt_arch) {
-  return unitary_tableau_to_circuit(tab.tab_.dagger(), opt_arch);
+Circuit unitary_rev_tableau_to_circuit(const UnitaryRevTableau& tab) {
+  return unitary_tableau_to_circuit(tab.tab_.dagger());
+}
+
+Circuit unitary_rev_tableau_to_circuit_aas(
+    const UnitaryRevTableau& tab, const Architecture& arch) {
+  return unitary_tableau_to_circuit_aas(tab.tab_.dagger(), arch);
 }
 
 }  // namespace tket
