@@ -60,39 +60,44 @@ Eigen::MatrixXcd permutation_matrix(const state_perm_t &perm) {
 
 SCENARIO("Test ToffoliBox") {
   state_perm_t perm;
-  OpType axis;
+  OpType axis = OpType::Rx;
+  ToffoliBoxSynthStrat strat;
   GIVEN("1-q permutation") {
-    axis = OpType::Rx;
     perm[{0}] = {1};
     perm[{1}] = {0};
+    WHEN("Use Matching strat") { strat = ToffoliBoxSynthStrat::Matching; }
+    WHEN("Use Cycle strat") { strat = ToffoliBoxSynthStrat::Cycle; }
   }
   GIVEN("2-q permutation") {
-    axis = OpType::Rx;
     perm[{0, 1}] = {1, 1};
     perm[{1, 0}] = {0, 1};
     perm[{1, 1}] = {1, 0};
+    WHEN("Use Matching strat") { strat = ToffoliBoxSynthStrat::Matching; }
+    WHEN("Use Cycle strat") { strat = ToffoliBoxSynthStrat::Cycle; }
   }
   GIVEN("2-q permutation (2)") {
-    axis = OpType::Rx;
     perm[{0, 0}] = {1, 1};
     perm[{1, 1}] = {0, 0};
+    WHEN("Use Matching strat") { strat = ToffoliBoxSynthStrat::Matching; }
+    WHEN("Use Cycle strat") { strat = ToffoliBoxSynthStrat::Cycle; }
   }
   GIVEN("2-q permutation (3)") {
-    axis = OpType::Rx;
     perm[{0, 0}] = {1, 1};
     perm[{1, 1}] = {0, 0};
     perm[{0, 1}] = {1, 0};
     perm[{1, 0}] = {0, 1};
+    WHEN("Use Matching strat") { strat = ToffoliBoxSynthStrat::Matching; }
+    WHEN("Use Cycle strat") { strat = ToffoliBoxSynthStrat::Cycle; }
   }
   GIVEN("2-q permutation (4)") {
-    axis = OpType::Rx;
     perm[{0, 0}] = {1, 1};
     perm[{1, 1}] = {0, 1};
     perm[{0, 1}] = {1, 0};
     perm[{1, 0}] = {0, 0};
+    WHEN("Use Matching strat") { strat = ToffoliBoxSynthStrat::Matching; }
+    WHEN("Use Cycle strat") { strat = ToffoliBoxSynthStrat::Cycle; }
   }
   GIVEN("3-q permutation") {
-    axis = OpType::Ry;
     perm[{0, 0, 0}] = {1, 0, 0};
     perm[{0, 1, 0}] = {1, 0, 1};
     perm[{0, 1, 1}] = {0, 1, 0};
@@ -100,16 +105,24 @@ SCENARIO("Test ToffoliBox") {
     perm[{1, 0, 1}] = {0, 1, 1};
     perm[{1, 1, 0}] = {1, 1, 1};
     perm[{1, 1, 1}] = {1, 1, 0};
+    WHEN("Use Matching strat") {
+      strat = ToffoliBoxSynthStrat::Matching;
+      axis = OpType::Ry;
+    }
+    WHEN("Use Cycle strat") { strat = ToffoliBoxSynthStrat::Cycle; }
   }
   GIVEN("3-q permutation (2)") {
-    axis = OpType::Ry;
     perm[{0, 0, 1}] = {1, 1, 0};
     perm[{1, 1, 0}] = {0, 1, 0};
     perm[{0, 1, 0}] = {1, 0, 1};
     perm[{1, 0, 1}] = {0, 0, 1};
+    WHEN("Use Matching strat") {
+      strat = ToffoliBoxSynthStrat::Matching;
+      axis = OpType::Ry;
+    }
+    WHEN("Use Cycle strat") { strat = ToffoliBoxSynthStrat::Cycle; }
   }
   GIVEN("4-q permutation") {
-    axis = OpType::Ry;
     perm[{0, 0, 0, 0}] = {1, 1, 0, 0};
     perm[{1, 1, 0, 0}] = {1, 1, 0, 1};
     perm[{1, 1, 0, 1}] = {0, 0, 0, 1};
@@ -118,20 +131,31 @@ SCENARIO("Test ToffoliBox") {
     perm[{0, 0, 1, 1}] = {1, 0, 0, 1};
     perm[{1, 0, 0, 1}] = {1, 0, 1, 0};
     perm[{1, 0, 1, 0}] = {0, 0, 0, 0};
+    WHEN("Use Matching strat") {
+      strat = ToffoliBoxSynthStrat::Matching;
+      axis = OpType::Ry;
+    }
+    WHEN("Use Cycle strat") { strat = ToffoliBoxSynthStrat::Cycle; }
   }
   GIVEN("Random 4-q permutation") {
-    axis = OpType::Rx;
     perm = random_permutation(4, 1);
+    WHEN("Use Matching strat") { strat = ToffoliBoxSynthStrat::Matching; }
+    WHEN("Use Cycle strat") { strat = ToffoliBoxSynthStrat::Cycle; }
   }
   GIVEN("Random 5-q permutation") {
-    axis = OpType::Rx;
     perm = random_permutation(5, 1);
+    WHEN("Use Matching strat") { strat = ToffoliBoxSynthStrat::Matching; }
+    WHEN("Use Cycle strat") { strat = ToffoliBoxSynthStrat::Cycle; }
   }
   GIVEN("Random 6-q permutation") {
-    axis = OpType::Ry;
     perm = random_permutation(6, 1);
+    WHEN("Use Matching strat") {
+      strat = ToffoliBoxSynthStrat::Matching;
+      axis = OpType::Ry;
+    }
+    WHEN("Use Cycle strat") { strat = ToffoliBoxSynthStrat::Cycle; }
   }
-  ToffoliBox box(perm, axis);
+  ToffoliBox box(perm, strat, axis);
   Circuit circ = *box.to_circuit();
   const auto matrix = tket_sim::get_unitary(circ);
   const auto perm_matrix = permutation_matrix(perm);
@@ -156,8 +180,8 @@ SCENARIO("Test ToffoliBox Exceptions") {
     perm[{0}] = {1};
     perm[{1}] = {0};
     REQUIRE_THROWS_MATCHES(
-        ToffoliBox(perm, OpType::Rz), std::invalid_argument,
-        MessageContains("must be Rx or Ry"));
+        ToffoliBox(perm, ToffoliBoxSynthStrat::Matching, OpType::Rz),
+        std::invalid_argument, MessageContains("must be Rx or Ry"));
   }
   GIVEN("Invalid entries") {
     state_perm_t perm;
@@ -182,11 +206,12 @@ SCENARIO("Test constructors & transformations") {
   perm[{1, 0}] = {0, 1};
   perm[{1, 1}] = {1, 0};
   GIVEN("copy constructor") {
-    ToffoliBox box(perm, OpType::Rx);
+    ToffoliBox box(perm, ToffoliBoxSynthStrat::Cycle, OpType::Rx);
     REQUIRE(box.get_rotation_axis() == OpType::Rx);
+    REQUIRE(box.get_strat() == ToffoliBoxSynthStrat::Cycle);
     ToffoliBox box_copy(box);
-    REQUIRE(box.get_rotation_axis() == OpType::Rx);
     REQUIRE(box_copy.get_rotation_axis() == OpType::Rx);
+    REQUIRE(box_copy.get_strat() == ToffoliBoxSynthStrat::Cycle);
     REQUIRE(box_copy.get_permutation() == perm);
   }
   GIVEN("Dagger") {
