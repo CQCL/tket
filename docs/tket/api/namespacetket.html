@@ -604,6 +604,12 @@ Typedefs</h2></td></tr>
 <tr class="separator:ac5d305ae438820b8a07589696036e8bb"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a02a58b4b8be5a1385e897facba15dbf5"><td class="memItemLeft" align="right" valign="top">typedef boost::graph_traits&lt; <a class="el" href="namespacetket.html#ac5d305ae438820b8a07589696036e8bb">cube_graph_t</a> &gt;::vertex_descriptor&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a02a58b4b8be5a1385e897facba15dbf5">perm_vert_t</a></td></tr>
 <tr class="separator:a02a58b4b8be5a1385e897facba15dbf5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a677a65b476c363f3af8d25a3a4e5a94c"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; std::vector&lt; bool &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a677a65b476c363f3af8d25a3a4e5a94c">cycle_permutation_t</a></td></tr>
+<tr class="separator:a677a65b476c363f3af8d25a3a4e5a94c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a63048ced1fa8ac41a2e8b549e316654c"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; transposition_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a63048ced1fa8ac41a2e8b549e316654c">cycle_transposition_t</a></td></tr>
+<tr class="separator:a63048ced1fa8ac41a2e8b549e316654c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1a73eb3eca8478f0e1642b4a5697c5d6"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; std::pair&lt; std::vector&lt; bool &gt;, unsigned &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a1a73eb3eca8478f0e1642b4a5697c5d6">gray_code_t</a></td></tr>
+<tr class="separator:a1a73eb3eca8478f0e1642b4a5697c5d6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ace1478da3f599050f638d6415f1c8cd3"><td class="memItemLeft" align="right" valign="top">typedef std::pair&lt; <a class="el" href="namespacetket.html#a5d011cbb0539a2b400d1bb186190dad0">VertPort</a>, <a class="el" href="namespacetket.html#ada996db81e915837fb2a8b96ab83d3fd">ZXPortType</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#ace1478da3f599050f638d6415f1c8cd3">TypedVertPort</a></td></tr>
 <tr class="separator:ace1478da3f599050f638d6415f1c8cd3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a683aa757218edff02dc9f18694881d31"><td class="memItemLeft" align="right" valign="top">typedef std::pair&lt; <a class="el" href="namespacetket_1_1zx.html#a88a1c6316f25d021c01e4bb266cda567">ZXVert</a>, std::optional&lt; unsigned &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a683aa757218edff02dc9f18694881d31">ZXVertPort</a></td></tr>
@@ -895,6 +901,11 @@ Enumerations</h2></td></tr>
  }</td></tr>
 <tr class="memdesc:a8e33f26891628ded8365c5855a6e832d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether a vertex port is out-going (source) or in-coming (target)  <a href="namespacetket.html#a8e33f26891628ded8365c5855a6e832d">More...</a><br /></td></tr>
 <tr class="separator:a8e33f26891628ded8365c5855a6e832d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aaa9022e831653e0daea704d481725e3b"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#aaa9022e831653e0daea704d481725e3b">ToffoliBoxSynthStrat</a> { <a class="el" href="namespacetket.html#aaa9022e831653e0daea704d481725e3baca1b12f70c0a8471440324a11e4590af">Matching</a>
+, <a class="el" href="namespacetket.html#aaa9022e831653e0daea704d481725e3ba46e4c9ef8686e58a89edb553aba6d938">Cycle</a>
+ }</td></tr>
+<tr class="memdesc:aaa9022e831653e0daea704d481725e3b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Strategies for synthesising ToffoliBoxes Matching: use multiplexors to perform parallel swaps on hypercubes Cycle: use CnX gates to perform transpositions.  <a href="namespacetket.html#aaa9022e831653e0daea704d481725e3b">More...</a><br /></td></tr>
+<tr class="separator:aaa9022e831653e0daea704d481725e3b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2d578ba7a7267e8172ac6a302fab7f67"><td class="memItemLeft" align="right" valign="top">enum class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a2d578ba7a7267e8172ac6a302fab7f67">PauliPartitionStrat</a> { <a class="el" href="namespacetket.html#a2d578ba7a7267e8172ac6a302fab7f67aa14f01b7f06d08c48fcd7d489a614123">NonConflictingSets</a>
 , <a class="el" href="namespacetket.html#a2d578ba7a7267e8172ac6a302fab7f67a86136b8cb28f581080492c00147a2976">CommutingSets</a>
  }</td></tr>
@@ -1206,6 +1217,8 @@ Functions</h2></td></tr>
 <tr class="memitem:a49ba27c6b60daf2678b329efd1f7602e"><td class="memItemLeft" align="right" valign="top">Eigen::MatrixXcd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a49ba27c6b60daf2678b329efd1f7602e">get_3q_unitary</a> (const <a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;c)</td></tr>
 <tr class="memdesc:a49ba27c6b60daf2678b329efd1f7602e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Convert a 3-qubit circuit to its corresponding unitary matrix.  <a href="namespacetket.html#a49ba27c6b60daf2678b329efd1f7602e">More...</a><br /></td></tr>
 <tr class="separator:a49ba27c6b60daf2678b329efd1f7602e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ac81c31b078690562799af6ed411dec8e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#ac81c31b078690562799af6ed411dec8e">get_bitstring_circuit</a> (const std::vector&lt; bool &gt; &amp;bitstring, const unsigned &amp;target, const unsigned &amp;n_qubits)</td></tr>
+<tr class="separator:ac81c31b078690562799af6ed411dec8e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a77677e51df8706784a4a4ef9e87f92b2"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a77677e51df8706784a4a4ef9e87f92b2">operator&lt;&lt;</a> (std::ostream &amp;os, const <a class="el" href="classtket_1_1ChoiMixTableau.html">ChoiMixTableau</a> &amp;tab)</td></tr>
 <tr class="separator:a77677e51df8706784a4a4ef9e87f92b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab4421124b62da1b876a3b76e6e5e7072"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#ab4421124b62da1b876a3b76e6e5e7072">to_json</a> (nlohmann::json &amp;j, const <a class="el" href="classtket_1_1ChoiMixTableau.html#a4b7e94f491c095670df54eb2557257ab">ChoiMixTableau::TableauSegment</a> &amp;seg)</td></tr>
@@ -1895,6 +1908,8 @@ Functions</h2></td></tr>
 <tr class="memitem:a341757251e63fcd3f5051c6a419ad53f"><td class="memTemplItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a>&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacetket.html#a341757251e63fcd3f5051c6a419ad53f">set_box_id</a> (BoxT &amp;b, boost::uuids::uuid newid)</td></tr>
 <tr class="memdesc:a341757251e63fcd3f5051c6a419ad53f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set explicit ID on a box.  <a href="namespacetket.html#a341757251e63fcd3f5051c6a419ad53f">More...</a><br /></td></tr>
 <tr class="separator:a341757251e63fcd3f5051c6a419ad53f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ace65639a172eceb82c9450b01962070f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#ace65639a172eceb82c9450b01962070f">NLOHMANN_JSON_SERIALIZE_ENUM</a> (<a class="el" href="namespacetket.html#aaa9022e831653e0daea704d481725e3b">ToffoliBoxSynthStrat</a>, {{<a class="el" href="namespacetket.html#aaa9022e831653e0daea704d481725e3baca1b12f70c0a8471440324a11e4590af">ToffoliBoxSynthStrat::Matching</a>, &quot;Matching&quot;}, {ToffoliBoxSynthStrat::Cycle, &quot;Cycle&quot;}})</td></tr>
+<tr class="separator:ace65639a172eceb82c9450b01962070f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a927111948a205d5c6f6bf3a2a9a80305"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a927111948a205d5c6f6bf3a2a9a80305">conjugate_with_xxphase3</a> (const <a class="el" href="classtket_1_1Qubit.html">Qubit</a> &amp;qb_a, const <a class="el" href="classtket_1_1Qubit.html">Qubit</a> &amp;qb_b, <a class="el" href="namespacetket.html#af68c3d1ae6d4e2b35060ce06befbb61d">Conjugations</a> &amp;conjugations, <a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;cliff_circ)</td></tr>
 <tr class="memdesc:a927111948a205d5c6f6bf3a2a9a80305"><td class="mdescLeft">&#160;</td><td class="mdescRight">Given two qubits on which to conjugate a CX gate, try to conjugate with a XXPhase3 instead.  <a href="namespacetket.html#a927111948a205d5c6f6bf3a2a9a80305">More...</a><br /></td></tr>
 <tr class="separator:a927111948a205d5c6f6bf3a2a9a80305"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -2275,7 +2290,39 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ToffoliBox_8cpp_source.html#l00095">95</a> of file <a class="el" href="ToffoliBox_8cpp_source.html">ToffoliBox.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ToffoliBox_8cpp_source.html#l00100">100</a> of file <a class="el" href="ToffoliBox_8cpp_source.html">ToffoliBox.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a677a65b476c363f3af8d25a3a4e5a94c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a677a65b476c363f3af8d25a3a4e5a94c">&#9670;&nbsp;</a></span>cycle_permutation_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef std::vector&lt;std::vector&lt;bool&gt; &gt; <a class="el" href="namespacetket.html#a677a65b476c363f3af8d25a3a4e5a94c">tket::cycle_permutation_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="ToffoliBox_8cpp_source.html#l00347">347</a> of file <a class="el" href="ToffoliBox_8cpp_source.html">ToffoliBox.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a63048ced1fa8ac41a2e8b549e316654c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a63048ced1fa8ac41a2e8b549e316654c">&#9670;&nbsp;</a></span>cycle_transposition_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef std::vector&lt;transposition_t&gt; <a class="el" href="namespacetket.html#a63048ced1fa8ac41a2e8b549e316654c">tket::cycle_transposition_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="ToffoliBox_8cpp_source.html#l00348">348</a> of file <a class="el" href="ToffoliBox_8cpp_source.html">ToffoliBox.cpp</a>.</p>
 
 </div>
 </div>
@@ -2522,6 +2569,22 @@ Variables</h2></td></tr>
 </div><div class="memdoc">
 
 <p class="definition">Definition at line <a class="el" href="GatePtr_8hpp_source.html#l00024">24</a> of file <a class="el" href="GatePtr_8hpp_source.html">GatePtr.hpp</a>.</p>
+
+</div>
+</div>
+<a id="a1a73eb3eca8478f0e1642b4a5697c5d6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a1a73eb3eca8478f0e1642b4a5697c5d6">&#9670;&nbsp;</a></span>gray_code_t</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">typedef std::vector&lt;std::pair&lt;std::vector&lt;bool&gt;, unsigned&gt; &gt; <a class="el" href="namespacetket.html#a1a73eb3eca8478f0e1642b4a5697c5d6">tket::gray_code_t</a></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="ToffoliBox_8cpp_source.html#l00349">349</a> of file <a class="el" href="ToffoliBox_8cpp_source.html">ToffoliBox.cpp</a>.</p>
 
 </div>
 </div>
@@ -3079,7 +3142,7 @@ Variables</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ToffoliBox_8cpp_source.html#l00096">96</a> of file <a class="el" href="ToffoliBox_8cpp_source.html">ToffoliBox.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ToffoliBox_8cpp_source.html#l00101">101</a> of file <a class="el" href="ToffoliBox_8cpp_source.html">ToffoliBox.cpp</a>.</p>
 
 </div>
 </div>
@@ -3514,7 +3577,7 @@ template&lt;typename A , typename B &gt; </div>
 
 <p>Map bitstrings to bitstrings. </p>
 
-<p class="definition">Definition at line <a class="el" href="ToffoliBox_8hpp_source.html#l00027">27</a> of file <a class="el" href="ToffoliBox_8hpp_source.html">ToffoliBox.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ToffoliBox_8hpp_source.html#l00038">38</a> of file <a class="el" href="ToffoliBox_8hpp_source.html">ToffoliBox.hpp</a>.</p>
 
 </div>
 </div>
@@ -4557,6 +4620,36 @@ template&lt;typename A , typename B &gt; </div>
 </table>
 
 <p class="definition">Definition at line <a class="el" href="CompilerPass_8hpp_source.html#l00057">57</a> of file <a class="el" href="CompilerPass_8hpp_source.html">CompilerPass.hpp</a>.</p>
+
+</div>
+</div>
+<a id="aaa9022e831653e0daea704d481725e3b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aaa9022e831653e0daea704d481725e3b">&#9670;&nbsp;</a></span>ToffoliBoxSynthStrat</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">enum <a class="el" href="namespacetket.html#aaa9022e831653e0daea704d481725e3b">tket::ToffoliBoxSynthStrat</a></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">strong</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Strategies for synthesising ToffoliBoxes Matching: use multiplexors to perform parallel swaps on hypercubes <a class="el" href="classtket_1_1Cycle.html">Cycle</a>: use CnX gates to perform transpositions. </p>
+<table class="fieldtable">
+<tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="aaa9022e831653e0daea704d481725e3baca1b12f70c0a8471440324a11e4590af"></a>Matching&#160;</td><td class="fielddoc"></td></tr>
+<tr><td class="fieldname"><a id="aaa9022e831653e0daea704d481725e3ba46e4c9ef8686e58a89edb553aba6d938"></a>Cycle&#160;</td><td class="fielddoc"></td></tr>
+</table>
+
+<p class="definition">Definition at line <a class="el" href="ToffoliBox_8hpp_source.html#l00028">28</a> of file <a class="el" href="ToffoliBox_8hpp_source.html">ToffoliBox.hpp</a>.</p>
 
 </div>
 </div>
@@ -9345,6 +9438,42 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
+<a id="ac81c31b078690562799af6ed411dec8e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ac81c31b078690562799af6ed411dec8e">&#9670;&nbsp;</a></span>get_bitstring_circuit()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtket_1_1Circuit.html">Circuit</a> tket::get_bitstring_circuit </td>
+          <td>(</td>
+          <td class="paramtype">const std::vector&lt; bool &gt; &amp;&#160;</td>
+          <td class="paramname"><em>bitstring</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned &amp;&#160;</td>
+          <td class="paramname"><em>target</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const unsigned &amp;&#160;</td>
+          <td class="paramname"><em>n_qubits</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="ToffoliBox_8cpp_source.html#l00549">549</a> of file <a class="el" href="ToffoliBox_8cpp_source.html">ToffoliBox.cpp</a>.</p>
+
+</div>
+</div>
 <a id="a9e40476800cb13e5b86489f72362b9f7"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a9e40476800cb13e5b86489f72362b9f7">&#9670;&nbsp;</a></span>get_bloch_coordinate_from_state()</h2>
 
@@ -11340,7 +11469,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="a283bc95e31c391e217ac10465a88afbb"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a283bc95e31c391e217ac10465a88afbb">&#9670;&nbsp;</a></span>NLOHMANN_JSON_SERIALIZE_ENUM() <span class="overload">[1/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a283bc95e31c391e217ac10465a88afbb">&#9670;&nbsp;</a></span>NLOHMANN_JSON_SERIALIZE_ENUM() <span class="overload">[1/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -11368,7 +11497,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="ae879465fada4fcd0884a92ef43a5ed6c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae879465fada4fcd0884a92ef43a5ed6c">&#9670;&nbsp;</a></span>NLOHMANN_JSON_SERIALIZE_ENUM() <span class="overload">[2/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#ae879465fada4fcd0884a92ef43a5ed6c">&#9670;&nbsp;</a></span>NLOHMANN_JSON_SERIALIZE_ENUM() <span class="overload">[2/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -11396,7 +11525,7 @@ template&lt;typename T &gt; </div>
 </div>
 </div>
 <a id="aa5f3bbf274366dd15f89a1453874b7fe"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa5f3bbf274366dd15f89a1453874b7fe">&#9670;&nbsp;</a></span>NLOHMANN_JSON_SERIALIZE_ENUM() <span class="overload">[3/3]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#aa5f3bbf274366dd15f89a1453874b7fe">&#9670;&nbsp;</a></span>NLOHMANN_JSON_SERIALIZE_ENUM() <span class="overload">[3/4]</span></h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -11411,6 +11540,34 @@ template&lt;typename T &gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">{ {Pauli::I, &quot;I&quot;}, {Pauli::X, &quot;X&quot;}, {Pauli::Y, &quot;Y&quot;}, {Pauli::Z, &quot;Z&quot;}, }&#160;</td>
+          <td class="paramname">&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+</div>
+</div>
+<a id="ace65639a172eceb82c9450b01962070f"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ace65639a172eceb82c9450b01962070f">&#9670;&nbsp;</a></span>NLOHMANN_JSON_SERIALIZE_ENUM() <span class="overload">[4/4]</span></h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">tket::NLOHMANN_JSON_SERIALIZE_ENUM </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacetket.html#aaa9022e831653e0daea704d481725e3b">ToffoliBoxSynthStrat</a>&#160;</td>
+          <td class="paramname">, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">{{<a class="el" href="namespacetket.html#aaa9022e831653e0daea704d481725e3baca1b12f70c0a8471440324a11e4590af">ToffoliBoxSynthStrat::Matching</a>, &quot;Matching&quot;}, {ToffoliBoxSynthStrat::Cycle, &quot;Cycle&quot;}}&#160;</td>
           <td class="paramname">&#160;</td>
         </tr>
         <tr>
