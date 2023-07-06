@@ -8,13 +8,19 @@ let
     # as buildInputs, but they are actually propagatedBuildInputs,
     # as symengine's headers include them directly. Thus when
     # including from symengine, they must be available.
+    patches = [
+      ./symengine.patch
+    ];
+    cmakeFlags = old.cmakeFlags ++ [
+      "-DBUILD_TESTS=OFF"
+      "-DBUILD_BENCHMARKS=OFF"
+    ];
     propagatedBuildInputs = [
       pkgs.flint
       pkgs.gmp
       pkgs.libmpc
       pkgs.mpfr
     ];
-    buildInputs = [];
   });
   symengine-shared = symengine-static.overrideAttrs (old: {
     cmakeFlags = old.cmakeFlags ++ [

@@ -2,7 +2,7 @@
   pkgs ? import <nixpkgs> {},
   static ? true,
   libs ? import ../libs { inherit pkgs static; },
-  symengine ? import ../nix-helpers/symengine.nix { inherit pkgs static; }
+  symengine ? import ../nix-helpers/symengine.nix { inherit pkgs; static=true; }
 }:
 let
   src = builtins.filterSource(p: _: baseNameOf p != "default.nix") ./.;
@@ -17,11 +17,6 @@ let
       libs.tktokenswap
       libs.tkwsm
   ] ++ symengine.buildInputs;
-  rpath = builtins.concatStringsSep ":" (
-    map (x: "${x}/lib")
-    [libs.tklog libs.tkassert libs.tkrng libs.tktokenswap libs.tkwsm
-    pkgs.gcc.libc pkgs.gcc.cc.lib.lib symengine]
-  );
   tket-static = pkgs.stdenv.mkDerivation{
     name = "tket";
     inherit src;
@@ -40,7 +35,7 @@ let
     inherit src;
     nativeBuildInputs = [pkgs.cmake];
     buildInputs = inputs;
-    propagatedBuildInputs = [symengine];
+    propagatedBuildInputs = [];
     cmakeFlags = ["-DBUILD_SHARED_LIBS=ON"];
     postFixup = ''
       # fix bogus include paths
@@ -48,8 +43,6 @@ let
       for f in $(find $out/lib/cmake -name '*.cmake'); do
         substituteInPlace "$f" --replace "\''${_IMPORT_PREFIX}/$out/include" "\''${_IMPORT_PREFIX}/include"
       done
-      patchelf --add-needed "libsymengine.so" $out/lib/libtket.so;
-      patchelf --set-rpath "''${ORIGIN}:${rpath}" $out/lib/libtket.so;
     '';
   };
 in

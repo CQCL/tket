@@ -47,9 +47,6 @@ elseif(APPLE)
     # set correct install_name
     set(CMAKE_INSTALL_NAME_DIR "@loader_path")
     set(CMAKE_BUILD_WITH_INSTALL_NAME_DIR ON)
-elseif(UNIX)
-    set(CMAKE_BUILD_WITH_INSTALL_RPATH TRUE)
-    set(CMAKE_INSTALL_RPATH "\${ORIGIN}")
 endif()
 
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
