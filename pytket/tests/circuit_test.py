@@ -582,6 +582,7 @@ def test_tofollibox_strats() -> None:
         OpType.X
     )
 
+
 def test_state_prep_mid_circuit() -> None:
     c = Circuit(3).H(0).H(1).H(2)
     state = np.array([np.sqrt(0.125)] * 8)
