@@ -1,6 +1,14 @@
 Changelog
 =========
 
+1.18.0 (unreleased)
+-------------------
+
+Minor new features:
+
+* New constructor for ``ToffoliBox`` that allows switching between two decomposition strategies:
+  ``ToffoliBoxSynthStrat.Matching`` and ``ToffoliBoxSynthStrat.Cycle``. 
+
 1.17.0 (July 2023)
 ------------------
 
