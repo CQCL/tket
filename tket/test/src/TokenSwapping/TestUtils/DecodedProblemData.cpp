@@ -14,6 +14,8 @@
 
 #include "DecodedProblemData.hpp"
 
+#include <algorithm>
+
 #include <catch2/catch_test_macros.hpp>
 #include <tktokenswap/GeneralFunctions.hpp>
 #include <tktokenswap/VertexSwapResult.hpp>

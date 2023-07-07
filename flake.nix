@@ -31,7 +31,7 @@
             ];
           };
           checks = {
-            tket-tests = pkgs.tket-tests;
+            tket-tests = pkgs.run-tket-tests;
           };
         }
     );

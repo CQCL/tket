@@ -14,6 +14,8 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include <algorithm>
+
 #include "Data/FixedCompleteSolutions.hpp"
 #include "Data/FixedSwapSequences.hpp"
 #include "TestUtils/BestTsaTester.hpp"
