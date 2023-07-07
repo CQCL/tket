@@ -59,17 +59,17 @@ static const std::string& encoding_chars() {
   return chars;
 }
 
-static std::map<unsigned char, size_t> get_char_to_vertex_map_local() {
-  std::map<unsigned char, size_t> char_to_vertex_map;
+static std::map<unsigned char, std::size_t> get_char_to_vertex_map_local() {
+  std::map<unsigned char, std::size_t> char_to_vertex_map;
   const auto& chars = encoding_chars();
-  for (size_t ii = 0; ii < chars.size(); ++ii) {
+  for (std::size_t ii = 0; ii < chars.size(); ++ii) {
     char_to_vertex_map[chars[ii]] = ii;
   }
   return char_to_vertex_map;
 }
 
-static const std::map<unsigned char, size_t>& char_to_vertex_map() {
-  static const std::map<unsigned char, size_t> map(
+static const std::map<unsigned char, std::size_t>& char_to_vertex_map() {
+  static const std::map<unsigned char, std::size_t> map(
       get_char_to_vertex_map_local());
   return map;
 }
@@ -95,7 +95,7 @@ DecodedProblemData::DecodedProblemData(
     index += 2;
   }
 
-  std::set<size_t> vertices;
+  std::set<std::size_t> vertices;
   for (auto swap : swaps) {
     vertices.insert(swap.first);
     vertices.insert(swap.second);
@@ -136,8 +136,8 @@ DecodedArchitectureData::DecodedArchitectureData() : number_of_vertices(0) {}
 
 DecodedArchitectureData::DecodedArchitectureData(
     const std::string& solution_edges_string) {
-  vector<vector<size_t>> neighbours(1);
-  std::set<size_t> vertices_seen;
+  vector<vector<std::size_t>> neighbours(1);
+  std::set<std::size_t> vertices_seen;
   for (unsigned char ch : solution_edges_string) {
     if (ch != ':') {
       const auto new_v = char_to_vertex_map().at(ch);
@@ -159,7 +159,7 @@ DecodedArchitectureData::DecodedArchitectureData(
   REQUIRE(!vertices_seen.empty());
   REQUIRE(*vertices_seen.crbegin() <= neighbours.size());
 
-  for (size_t ii = 0; ii < neighbours.size(); ++ii) {
+  for (std::size_t ii = 0; ii < neighbours.size(); ++ii) {
     if (neighbours[ii].empty()) {
       continue;
     }

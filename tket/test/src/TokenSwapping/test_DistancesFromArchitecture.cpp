@@ -31,7 +31,7 @@ SCENARIO("Architecture with disconnected graph") {
   // different connected components.
   const std::vector<std::pair<unsigned, unsigned>> edges{
       {0, 1}, {0, 2}, {1, 3}, {4, 5}};
-  const size_t number_of_vertices = 6;
+  const std::size_t number_of_vertices = 6;
   const Architecture arch(edges);
   // Note: it's a "coincidence" that the vertex numbers are unchanged,
   // because 0,1,2,3,4,5 are first seen in this order.
@@ -39,8 +39,8 @@ SCENARIO("Architecture with disconnected graph") {
   REQUIRE(mapping.number_of_vertices() == number_of_vertices);
   DistancesFromArchitecture dist_calculator(mapping);
   std::stringstream summary;
-  for (size_t v1 = 0; v1 < number_of_vertices; ++v1) {
-    for (size_t v2 = 0; v2 < number_of_vertices; ++v2) {
+  for (std::size_t v1 = 0; v1 < number_of_vertices; ++v1) {
+    for (std::size_t v2 = 0; v2 < number_of_vertices; ++v2) {
       summary << "d(" << v1 << "," << v2 << ")=";
       try {
         const auto distance = dist_calculator(v1, v2);

@@ -21,11 +21,11 @@ namespace tket {
 namespace tsa_internal {
 namespace tests {
 
-std::set<size_t> get_random_set(
-    RNG& rng, size_t sample_size, size_t population_size) {
+std::set<std::size_t> get_random_set(
+    RNG& rng, std::size_t sample_size, std::size_t population_size) {
   TKET_ASSERT(sample_size <= population_size);
 
-  std::set<size_t> result;
+  std::set<std::size_t> result;
   if (sample_size == 0 || population_size == 0) {
     return result;
   }
@@ -35,7 +35,7 @@ std::set<size_t> get_random_set(
     }
     return result;
   }
-  std::vector<size_t> elems(population_size);
+  std::vector<std::size_t> elems(population_size);
   std::iota(elems.begin(), elems.end(), 0);
   rng.do_shuffle(elems);
   for (const auto& elem : elems) {

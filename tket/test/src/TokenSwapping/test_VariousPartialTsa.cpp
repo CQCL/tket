@@ -40,7 +40,7 @@ struct Tester {
 
   void run_test(
       const ArchitectureMapping& arch_mapping,
-      const vector<VertexMapping>& problems, size_t index) const {
+      const vector<VertexMapping>& problems, std::size_t index) const {
     trivial_tsa.set(TrivialTSA::Options::FULL_TSA);
     CHECK(
         run_tests(
@@ -168,7 +168,7 @@ SCENARIO("Partial TSA: Rings") {
   std::string arch_name;
   const ProblemGenerator00 generator;
 
-  for (size_t index = 0; index < problem_messages.size(); ++index) {
+  for (std::size_t index = 0; index < problem_messages.size(); ++index) {
     auto num_vertices = index + 3;
     if (num_vertices == 8) {
       num_vertices = 30;
@@ -229,7 +229,7 @@ SCENARIO("Partial TSA: Square grid") {
 
   const ProblemGenerator00 generator;
 
-  for (size_t index = 0; index < grid_parameters.size(); ++index) {
+  for (std::size_t index = 0; index < grid_parameters.size(); ++index) {
     const auto& parameters = grid_parameters[index];
 
     const auto edges =
