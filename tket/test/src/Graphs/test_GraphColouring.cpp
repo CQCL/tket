@@ -37,7 +37,7 @@ SCENARIO("Test many colourings: random trees") {
   EdgeSequenceColouringParameters colouring_parameters;
   EdgeSequence edge_sequence(adjacency_data, rng);
 
-  for (size_t number_of_vertices = 5; number_of_vertices < 100;
+  for (std::size_t number_of_vertices = 5; number_of_vertices < 100;
        number_of_vertices += 20) {
     for (params.approx_number_of_children_per_node = 2;
          params.approx_number_of_children_per_node <= 4;
@@ -62,7 +62,7 @@ SCENARIO("Test many colourings: random dense graphs") {
   EdgeSequenceColouringParameters colouring_parameters;
   EdgeSequence edge_sequence(adjacency_data, rng);
 
-  for (size_t number_of_vertices = 2; number_of_vertices < 15;
+  for (std::size_t number_of_vertices = 2; number_of_vertices < 15;
        number_of_vertices += 5) {
     for (int nn = 0; nn < 10; ++nn) {
       adjacency_data.clear(number_of_vertices);
@@ -79,7 +79,7 @@ SCENARIO("Test many colourings: random dense graphs with known colours") {
   EdgeSequenceColouringParameters colouring_parameters;
   EdgeSequence edge_sequence(adjacency_data, rng);
 
-  for (size_t number_of_vertices = 2; number_of_vertices < 15;
+  for (std::size_t number_of_vertices = 2; number_of_vertices < 15;
        number_of_vertices += 5) {
     for (params.max_number_of_colours_to_use = 1;
          params.max_number_of_colours_to_use < number_of_vertices;
@@ -99,8 +99,8 @@ SCENARIO("Test many colourings: random k-partite graphs") {
   AdjacencyData adjacency_data;
   EdgeSequenceColouringParameters colouring_parameters;
   EdgeSequence edge_sequence(adjacency_data, rng);
-  size_t total_number_of_edges = 0;
-  size_t total_number_of_colourings = 0;
+  std::size_t total_number_of_edges = 0;
+  std::size_t total_number_of_colourings = 0;
 
   for (params.number_of_vertex_sets = 1; params.number_of_vertex_sets < 5;
        ++params.number_of_vertex_sets) {
@@ -129,7 +129,7 @@ SCENARIO("Test many colourings: random fibrous graphs") {
   EdgeSequenceColouringParameters colouring_parameters;
   EdgeSequence edge_sequence(adjacency_data, rng);
 
-  for (size_t number_of_vertices = 5; number_of_vertices < 50;
+  for (std::size_t number_of_vertices = 5; number_of_vertices < 50;
        number_of_vertices += 10) {
     for (params.number_of_strands = 1; params.number_of_strands < 10;
          ++params.number_of_strands) {
@@ -154,7 +154,7 @@ SCENARIO("Test many colourings: trivial graphs") {
     EdgelessGraph params;
 
     // Very cheap to colour, so do lots
-    for (size_t number_of_vertices = 1; number_of_vertices < 1000;
+    for (std::size_t number_of_vertices = 1; number_of_vertices < 1000;
          ++number_of_vertices) {
       adjacency_data.clear(number_of_vertices);
       colouring_parameters.test_colourings(params, edge_sequence);
@@ -163,7 +163,7 @@ SCENARIO("Test many colourings: trivial graphs") {
   INFO("Complete graphs (all edges filled)");
   {
     CompleteGraph params;
-    for (size_t number_of_vertices = 5; number_of_vertices < 10;
+    for (std::size_t number_of_vertices = 5; number_of_vertices < 10;
          number_of_vertices += 4) {
       adjacency_data.clear(number_of_vertices);
       colouring_parameters.test_colourings(params, edge_sequence);
@@ -176,7 +176,7 @@ SCENARIO("Test fixed graph") {
   // Whenever a particular graph colouring fails somehow,
   // you can copy and paste it into here to add to the tests
   {
-    const map<size_t, vector<size_t>> data = {
+    const map<std::size_t, vector<std::size_t>> data = {
         // clang-format off
             { 0, { 2, 4, 5, 6, 7, 9, 12, } },
             { 1, { 6, 9, 10, 12, } },
@@ -192,7 +192,7 @@ SCENARIO("Test fixed graph") {
         // clang-format on
     };
 
-    const vector<size_t> known_colouring{
+    const vector<std::size_t> known_colouring{
         0, 2, 1, 0, 2, 2, 1, 3, 4, 4, 0, 0, 3,
     };
 
@@ -200,7 +200,7 @@ SCENARIO("Test fixed graph") {
         GraphColouringResult(known_colouring), AdjacencyData(data));
   }
   {
-    const map<size_t, vector<size_t>> data = {
+    const map<std::size_t, vector<std::size_t>> data = {
         // clang-format off
             { 0, { 1, 3, } },
             { 1, { 2, 3, 4, } },
@@ -208,13 +208,13 @@ SCENARIO("Test fixed graph") {
             { 3, { 4, } },
         // clang-format on
     };
-    const vector<size_t> known_colouring{0, 1, 2, 2, 0};
+    const vector<std::size_t> known_colouring{0, 1, 2, 2, 0};
 
     GraphTestingRoutines::calculate_and_check_optimal_colouring(
         GraphColouringResult(known_colouring), AdjacencyData(data));
   }
   {
-    const map<size_t, vector<size_t>> data = {
+    const map<std::size_t, vector<std::size_t>> data = {
         // clang-format off
             { 1, { 3, 6, 8, 11, 13, 17, } },
             { 4, { 8, } },
@@ -222,7 +222,7 @@ SCENARIO("Test fixed graph") {
         // clang-format on
     };
 
-    const vector<size_t> known_colouring{
+    const vector<std::size_t> known_colouring{
         0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0,
         1, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0,
     };
@@ -231,14 +231,14 @@ SCENARIO("Test fixed graph") {
         GraphColouringResult(known_colouring), AdjacencyData(data));
   }
   {
-    map<size_t, vector<size_t>> data = {
+    map<std::size_t, vector<std::size_t>> data = {
         // clang-format off
             { 2, { 9, 10, } },
             { 10, { 13, } },
             { 14, {} }
         // clang-format on
     };
-    const vector<size_t> known_colouring{
+    const vector<std::size_t> known_colouring{
         0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 1, 0, 0, 0, 0,
     };
 
@@ -248,17 +248,17 @@ SCENARIO("Test fixed graph") {
 }
 
 SCENARIO("Test random planar graphs") {
-  const size_t grid_width = 20;
-  const size_t max_number_of_regions = 50;
+  const std::size_t grid_width = 20;
+  const std::size_t max_number_of_regions = 50;
   RNG rng;
   RandomPlanarGraphs planar_graphs;
-  size_t number_of_colourings = 0;
+  std::size_t number_of_colourings = 0;
 
   for (int nn = 0; nn < 50; ++nn) {
     planar_graphs.reset(grid_width);
-    size_t current_number_of_regions = 10 * grid_width * grid_width;
+    std::size_t current_number_of_regions = 10 * grid_width * grid_width;
 
-    for (size_t paranoid_loop_counter = 10 * grid_width * grid_width;
+    for (std::size_t paranoid_loop_counter = 10 * grid_width * grid_width;
          paranoid_loop_counter > 0; --paranoid_loop_counter) {
       const auto new_number_of_regions = planar_graphs.merge_squares(rng);
       REQUIRE(new_number_of_regions <= current_number_of_regions);
@@ -296,15 +296,15 @@ SCENARIO("Test random planar graphs") {
 // and hence good for testing colouring. (The max clique size is just 2).
 // See https://en.wikipedia.org/wiki/Mycielskian
 static AdjacencyData get_Mycielski_graph(const AdjacencyData& graph) {
-  const size_t original_vertices = graph.get_number_of_vertices();
-  const size_t vertex_w = 2 * original_vertices;
+  const std::size_t original_vertices = graph.get_number_of_vertices();
+  const std::size_t vertex_w = 2 * original_vertices;
 
   AdjacencyData new_graph(2 * original_vertices + 1);
-  for (size_t ii = 0; ii < original_vertices; ++ii) {
+  for (std::size_t ii = 0; ii < original_vertices; ++ii) {
     REQUIRE(new_graph.add_edge(ii, vertex_w));
     const auto& original_neighbours = graph.get_neighbours(ii);
 
-    for (size_t jj : original_neighbours) {
+    for (std::size_t jj : original_neighbours) {
       // Add the original edges
       new_graph.add_edge(ii, jj);
 
@@ -317,12 +317,13 @@ static AdjacencyData get_Mycielski_graph(const AdjacencyData& graph) {
 
 // Pass in an initial seed graph with known chromatic number
 static void test_Mycielski_graph_sequence(
-    AdjacencyData graph, size_t chromatic_number, size_t number_of_graphs) {
+    AdjacencyData graph, std::size_t chromatic_number,
+    std::size_t number_of_graphs) {
   const auto initial_number_of_vertices = graph.get_number_of_vertices();
   const auto initial_number_of_edges = graph.get_number_of_edges();
   const auto initial_chromatic_number = chromatic_number;
 
-  for (size_t counter = 0; counter < number_of_graphs; ++counter) {
+  for (std::size_t counter = 0; counter < number_of_graphs; ++counter) {
     if (counter != 0) {
       graph = get_Mycielski_graph(graph);
       ++chromatic_number;

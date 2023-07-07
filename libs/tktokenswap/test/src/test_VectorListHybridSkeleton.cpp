@@ -32,14 +32,14 @@ namespace tests {
 // using linked lists
 struct VLHS_tester_reimplementation {
   // Each node will contain the index it was given.
-  mutable std::list<size_t> data;
+  mutable std::list<std::size_t> data;
 
   void clear() { data.clear(); }
-  size_t size() const { return data.size(); }
-  size_t front_index() const { return data.front(); }
-  size_t back_index() const { return data.back(); }
+  std::size_t size() const { return data.size(); }
+  std::size_t front_index() const { return data.front(); }
+  std::size_t back_index() const { return data.back(); }
 
-  std::list<size_t>::iterator find(size_t index) {
+  std::list<std::size_t>::iterator find(std::size_t index) {
     for (auto iter = data.begin(); iter != data.end(); ++iter) {
       if (*iter == index) {
         return iter;
@@ -49,7 +49,7 @@ struct VLHS_tester_reimplementation {
         std::string("index ") + std::to_string(index) + " not found");
   }
 
-  std::list<size_t>::const_iterator find(size_t index) const {
+  std::list<std::size_t>::const_iterator find(std::size_t index) const {
     for (auto citer = data.cbegin(); citer != data.cend(); ++citer) {
       if (*citer == index) {
         return citer;
@@ -59,7 +59,7 @@ struct VLHS_tester_reimplementation {
         std::string("index ") + std::to_string(index) + " not found");
   }
 
-  std::optional<size_t> next(size_t index) const {
+  std::optional<std::size_t> next(std::size_t index) const {
     auto citer = find(index);
     ++citer;
     if (citer == data.cend()) {
@@ -68,7 +68,7 @@ struct VLHS_tester_reimplementation {
     return *citer;
   }
 
-  std::optional<size_t> previous(size_t index) const {
+  std::optional<std::size_t> previous(std::size_t index) const {
     auto citer = find(index);
     --citer;
     if (citer != data.cend()) {
@@ -77,17 +77,17 @@ struct VLHS_tester_reimplementation {
     return *citer;
   }
 
-  void erase(size_t index) {
+  void erase(std::size_t index) {
     auto iter = find(index);
     data.erase(iter);
   }
 
-  void insert_for_empty_list(size_t new_index) {
+  void insert_for_empty_list(std::size_t new_index) {
     REQUIRE(data.empty());
     data.push_front(new_index);
   }
 
-  void insert_after(size_t index, size_t new_index) {
+  void insert_after(std::size_t index, std::size_t new_index) {
     auto iter = find(index);
     // We can only insert BEFORE an iter with STL
     ++iter;
@@ -100,7 +100,7 @@ struct VLHS_tester_reimplementation {
     data.insert(iter, new_index);
   }
 
-  void insert_before(size_t index, size_t new_index) {
+  void insert_before(std::size_t index, std::size_t new_index) {
     auto iter = find(index);
     data.insert(iter, new_index);
   }
@@ -108,24 +108,24 @@ struct VLHS_tester_reimplementation {
 
 // Keep track of which indices have currently not yet been erased
 struct ValidIndices {
-  std::set<size_t> indices;
+  std::set<std::size_t> indices;
 
-  bool contains(size_t index) const { return indices.count(index) != 0; }
-  void check_and_insert_new_index(size_t index) {
+  bool contains(std::size_t index) const { return indices.count(index) != 0; }
+  void check_and_insert_new_index(std::size_t index) {
     REQUIRE(index != VectorListHybridSkeleton::get_invalid_index());
     REQUIRE(indices.count(index) == 0);
     indices.insert(index);
   }
 
-  void check_and_erase_index(size_t index) {
+  void check_and_erase_index(std::size_t index) {
     REQUIRE(indices.count(index) != 0);
     indices.erase(index);
   }
 
-  size_t get_index(RNG& rng) const {
+  std::size_t get_index(RNG& rng) const {
     REQUIRE(!indices.empty());
     auto citer = indices.cbegin();
-    for (size_t ii = rng.get_size_t(indices.size() - 1); ii != 0; --ii) {
+    for (std::size_t ii = rng.get_size_t(indices.size() - 1); ii != 0; --ii) {
       ++citer;
     }
     return *citer;
@@ -133,7 +133,7 @@ struct ValidIndices {
 };
 
 void require_equal_indices(
-    size_t index, const std::optional<size_t>& index_opt) {
+    std::size_t index, const std::optional<std::size_t>& index_opt) {
   if (index == VectorListHybridSkeleton::get_invalid_index()) {
     REQUIRE(!index_opt);
     return;

@@ -55,21 +55,21 @@ void check_mapping(const VertexMapping& vertex_mapping) {
 }
 
 void append_swaps_to_interchange_path_ends(
-    const std::vector<size_t>& path, VertexMapping& vertex_mapping,
+    const std::vector<std::size_t>& path, VertexMapping& vertex_mapping,
     SwapList& swap_list) {
   if (path.size() < 2 || path.front() == path.back()) {
     return;
   }
-  for (size_t ii = path.size() - 1; ii > 0; --ii) {
+  for (std::size_t ii = path.size() - 1; ii > 0; --ii) {
     VertexSwapResult(path[ii], path[ii - 1], vertex_mapping, swap_list);
   }
-  for (size_t ii = 2; ii < path.size(); ++ii) {
+  for (std::size_t ii = 2; ii < path.size(); ++ii) {
     VertexSwapResult(path[ii], path[ii - 1], vertex_mapping, swap_list);
   }
 }
 
-size_t get_source_vertex(
-    VertexMapping& source_to_target_map, size_t target_vertex) {
+std::size_t get_source_vertex(
+    VertexMapping& source_to_target_map, std::size_t target_vertex) {
   if (source_to_target_map.count(target_vertex) == 0) {
     // If it IS a genuine permutation mapping (which we assume),
     // then the vertex is as yet unmentioned (and hence unmoved).

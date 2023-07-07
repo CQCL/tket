@@ -60,9 +60,9 @@ void from_json(const nlohmann::json& j, Matrix<_Scalar, _Rows, _Cols>& matrix) {
   // resize for dynamically-sized matrices
   if (j.size() == 0) return;
   matrix.resize(j.size(), j.at(0).size());
-  for (size_t i = 0; i < j.size(); ++i) {
+  for (std::size_t i = 0; i < j.size(); ++i) {
     const auto& j_row = j.at(i);
-    for (size_t j = 0; j < j_row.size(); ++j) {
+    for (std::size_t j = 0; j < j_row.size(); ++j) {
       matrix(i, j) =
           j_row.at(j).get<typename Matrix<_Scalar, _Rows, _Cols>::Scalar>();
     }

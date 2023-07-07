@@ -31,16 +31,18 @@ namespace graphs {
 
 struct BruteForceColouring::Impl {
   struct NodeColouringData {
-    vector<size_t> allowed_colours;
+    vector<std::size_t> allowed_colours;
 
     // The index in "allowed_colours", not the actual colour
-    size_t current_colour_index = 0;
+    std::size_t current_colour_index = 0;
 
     bool is_valid_colour() const {
       return current_colour_index < allowed_colours.size();
     }
 
-    size_t get_colour() const { return allowed_colours[current_colour_index]; }
+    std::size_t get_colour() const {
+      return allowed_colours[current_colour_index];
+    }
   };
 
   // This exactly mirrors the nodes in the ColouringPriority object;
@@ -48,13 +50,14 @@ struct BruteForceColouring::Impl {
   vector<NodeColouringData> colouring_data;
 
   // KEY: is the vertex, VALUE: the colour
-  map<size_t, size_t> colours;
+  map<std::size_t, std::size_t> colours;
 
   // Fills in the colour possibilities,
   // possibly increasing suggested_number_of_colours.
   // Returns false if it failed.
   bool initial_colouring_setup(
-      const ColouringPriority& priority, size_t& suggested_number_of_colours) {
+      const ColouringPriority& priority,
+      std::size_t& suggested_number_of_colours) {
     const auto& initial_clique = priority.get_initial_clique();
 
     suggested_number_of_colours =
@@ -67,7 +70,7 @@ struct BruteForceColouring::Impl {
     }
     colouring_data.resize(nodes.size());
 
-    for (size_t i = 0; i < initial_clique.size(); ++i) {
+    for (std::size_t i = 0; i < initial_clique.size(); ++i) {
       colouring_data[i].allowed_colours.assign(1, i);
       colours[nodes[i].vertex] = i;
     }
@@ -76,12 +79,12 @@ struct BruteForceColouring::Impl {
     // have nonempty colour possibility lists. (It may still be impossible, of
     // course, due to the detailed graph structure).
 
-    set<size_t> forbidden_colours;
+    set<std::size_t> forbidden_colours;
 
-    for (size_t i = initial_clique.size(); i < nodes.size(); ++i) {
+    for (std::size_t i = initial_clique.size(); i < nodes.size(); ++i) {
       forbidden_colours.clear();
 
-      for (size_t node_index : nodes[i].earlier_neighbour_node_indices) {
+      for (std::size_t node_index : nodes[i].earlier_neighbour_node_indices) {
         const auto& earlier_colours =
             colouring_data[node_index].allowed_colours;
 
@@ -97,7 +100,7 @@ struct BruteForceColouring::Impl {
       }
       auto& possible_colours = colouring_data[i].allowed_colours;
       possible_colours.clear();
-      for (size_t col = 0; col < suggested_number_of_colours; ++col) {
+      for (std::size_t col = 0; col < suggested_number_of_colours; ++col) {
         if (forbidden_colours.count(col) == 0) {
           possible_colours.push_back(col);
         }
@@ -112,7 +115,7 @@ struct BruteForceColouring::Impl {
 
   void fill_colour_map(const ColouringPriority& priority) {
     const auto& nodes = priority.get_nodes();
-    for (size_t i = 0; i < nodes.size(); ++i) {
+    for (std::size_t i = 0; i < nodes.size(); ++i) {
       colours[nodes[i].vertex] = colouring_data[i].get_colour();
     }
   }
@@ -122,9 +125,9 @@ struct BruteForceColouring::Impl {
       data.current_colour_index = 0;
     }
     const auto& nodes = priority.get_nodes();
-    const size_t number_of_nodes = nodes.size();
+    const std::size_t number_of_nodes = nodes.size();
 
-    for (size_t current_node_index = 0;;) {
+    for (std::size_t current_node_index = 0;;) {
       const auto& current_node = nodes[current_node_index];
       auto& current_colouring_node = colouring_data[current_node_index];
 
@@ -134,7 +137,7 @@ struct BruteForceColouring::Impl {
         bool colour_is_impossible = false;
 
         // TODO: would a set of colours be faster here?
-        for (size_t earlier_node_index :
+        for (std::size_t earlier_node_index :
              current_node.earlier_neighbour_node_indices) {
           if (colouring_data[earlier_node_index].get_colour() == current_col) {
             colour_is_impossible = true;
@@ -171,13 +174,13 @@ struct BruteForceColouring::Impl {
 BruteForceColouring::~BruteForceColouring() {}
 
 BruteForceColouring::BruteForceColouring(
-    const ColouringPriority& priority, size_t suggested_number_of_colours)
+    const ColouringPriority& priority, std::size_t suggested_number_of_colours)
     : m_pimpl(std::make_unique<BruteForceColouring::Impl>()) {
   const auto number_of_nodes = priority.get_nodes().size();
   if (suggested_number_of_colours >= number_of_nodes) {
     // We've been given permission to use many colours;
     // so just use them all!
-    for (size_t i = 0; i < number_of_nodes; ++i) {
+    for (std::size_t i = 0; i < number_of_nodes; ++i) {
       m_pimpl->colours[priority.get_nodes()[i].vertex] = i;
     }
     return;
@@ -207,8 +210,8 @@ BruteForceColouring::BruteForceColouring(
       // so try again with one more.
       // If we were really fancy we might consider
       // a binary search on the number of colours.
-      for (size_t i = priority.get_initial_clique().size(); i < number_of_nodes;
-           ++i) {
+      for (std::size_t i = priority.get_initial_clique().size();
+           i < number_of_nodes; ++i) {
         m_pimpl->colouring_data[i].allowed_colours.push_back(
             suggested_number_of_colours);
       }
@@ -227,7 +230,7 @@ BruteForceColouring::BruteForceColouring(
   }
 }
 
-const map<size_t, size_t>& BruteForceColouring::get_colours() const {
+const map<std::size_t, std::size_t>& BruteForceColouring::get_colours() const {
   return m_pimpl->colours;
 }
 

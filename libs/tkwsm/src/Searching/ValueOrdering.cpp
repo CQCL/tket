@@ -87,7 +87,7 @@ void ValueOrdering::fill_entries_for_high_degree_vertices(
     const NeighboursData& target_ndata) {
   // Multipass algorithm; simple and efficient enough.
   // Pass one: find the max degree.
-  size_t max_degree = 0;
+  std::size_t max_degree = 0;
   for (auto tv = possible_values.find_first(); tv < possible_values.size();
        tv = possible_values.find_next(tv)) {
     max_degree = std::max(max_degree, target_ndata.get_degree(tv));
@@ -131,7 +131,7 @@ VertexWSM ValueOrdering::get_random_choice_from_data(RNG& rng) const {
       continue;
     }
     for (auto vertex : entry.vertices) {
-      size_t mass_after_this_vertex = preceding_mass + entry.mass;
+      std::size_t mass_after_this_vertex = preceding_mass + entry.mass;
       if (mass_after_this_vertex >= index) {
         return vertex;
       }

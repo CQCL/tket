@@ -35,7 +35,7 @@ struct DecodedProblemData {
   /** The desired source->target mapping for a problem. */
   VertexMapping vertex_mapping;
 
-  size_t number_of_vertices;
+  std::size_t number_of_vertices;
 
   /** Do we require the vertex numbers to be {0,1,2,...,m}, with no gaps? */
   enum class RequireContiguousVertices { YES, NO };
@@ -58,7 +58,7 @@ struct DecodedArchitectureData {
   std::set<Swap> edges;
 
   /** The vertex numbers are contiguous, i.e. 0,1,2,...N for some N. */
-  size_t number_of_vertices;
+  std::size_t number_of_vertices;
 
   /** Simply without filling any data. */
   DecodedArchitectureData();

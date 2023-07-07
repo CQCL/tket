@@ -154,7 +154,7 @@ class LexiRoute {
    * @param p1_second Second Node in second interaction to find distance between
    * @return Pair of size_t, being distances on architecture graph
    */
-  const std::pair<size_t, size_t> pair_distances(
+  const std::pair<std::size_t, std::size_t> pair_distances(
       const Node& p0_first, const Node& p0_second, const Node& p1_first,
       const Node& p1_second) const;
 

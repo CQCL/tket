@@ -30,7 +30,7 @@ namespace tket {
 namespace graphs {
 namespace tests {
 
-size_t EdgeSequenceColouringParameters::test_colourings(
+std::size_t EdgeSequenceColouringParameters::test_colourings(
     RandomGraphParameters& parameters, EdgeSequence& edge_sequence) {
   const auto number_of_vertices =
       edge_sequence.adjacency_data.get_number_of_vertices();
@@ -43,10 +43,10 @@ size_t EdgeSequenceColouringParameters::test_colourings(
   edge_sequence.edges.clear();
   parameters.add_edges(edge_sequence);
 
-  size_t number_of_colourings = 0;
-  size_t previous_number_of_colours = 0;
+  std::size_t number_of_colourings = 0;
+  std::size_t previous_number_of_colours = 0;
 
-  const size_t known_max_chromatic_number =
+  const std::size_t known_max_chromatic_number =
       std::min(parameters.max_chromatic_number, number_of_vertices);
 
   // TODO: if the tests start getting slow, consider
@@ -62,7 +62,8 @@ size_t EdgeSequenceColouringParameters::test_colourings(
   string prev_graph;
   string prev_colouring;
 
-  for (size_t edge_index = 0; edge_index < max_number_of_edges; ++edge_index) {
+  for (std::size_t edge_index = 0; edge_index < max_number_of_edges;
+       ++edge_index) {
     if (edge_index >= edge_sequence.edges.size() ||
         number_of_colourings >= max_number_of_colourings) {
       return number_of_colourings;

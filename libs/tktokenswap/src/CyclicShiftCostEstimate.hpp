@@ -53,14 +53,14 @@ namespace tsa_internal {
  */
 struct CyclicShiftCostEstimate {
   /** A simple estimate of how many swaps will be needed. */
-  size_t estimated_concrete_swaps = 0;
+  std::size_t estimated_concrete_swaps = 0;
 
   /** If the stored vertices are v[0], v[1], ..., v[n],
    *  this is the value of i such that swapping along the abstract path
    *  v[i], v[i+1], ..., v[i+n] gives the smallest number of swaps.
    *  (Remembering that each abstract move is v[j] -> v[j+1]).
    */
-  size_t start_v_index = std::numeric_limits<size_t>::max();
+  std::size_t start_v_index = std::numeric_limits<std::size_t>::max();
 
   /** Calculate the data upon construction.
    *  @param vertices The list of vertices, in order, for a cyclic shift.
@@ -69,7 +69,7 @@ struct CyclicShiftCostEstimate {
    *    WHICH path between vertices will be used, at this stage).
    */
   CyclicShiftCostEstimate(
-      const std::vector<size_t>& vertices, DistancesInterface& distances);
+      const std::vector<std::size_t>& vertices, DistancesInterface& distances);
 };
 
 }  // namespace tsa_internal

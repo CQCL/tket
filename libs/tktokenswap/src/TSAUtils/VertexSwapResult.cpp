@@ -18,7 +18,8 @@ namespace tket {
 namespace tsa_internal {
 
 VertexSwapResult::VertexSwapResult(
-    size_t v1, size_t v2, VertexMapping& vertex_mapping, SwapList& swap_list)
+    std::size_t v1, std::size_t v2, VertexMapping& vertex_mapping,
+    SwapList& swap_list)
     : VertexSwapResult(v1, v2, vertex_mapping) {
   if (tokens_moved != 0) {
     swap_list.push_back(get_swap(v1, v2));
@@ -30,7 +31,7 @@ VertexSwapResult::VertexSwapResult(
     : VertexSwapResult(swap.first, swap.second, vertex_mapping) {}
 
 VertexSwapResult::VertexSwapResult(
-    size_t v1, size_t v2, VertexMapping& vertex_mapping) {
+    std::size_t v1, std::size_t v2, VertexMapping& vertex_mapping) {
   if (vertex_mapping.count(v1) == 0) {
     if (vertex_mapping.count(v2) == 0) {
       tokens_moved = 0;

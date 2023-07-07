@@ -30,9 +30,9 @@ SCENARIO("RNG: test get_size_t") {
   RNG rng;
   stringstream ss;
   {
-    std::array<size_t, 5> counts;
+    std::array<std::size_t, 5> counts;
     counts.fill(0);
-    const size_t max_v = counts.size() - 1;
+    const std::size_t max_v = counts.size() - 1;
 
     // Crudely check that we don't have too much bias.
     for (int nn = 0; nn < 100000; ++nn) {
@@ -44,15 +44,15 @@ SCENARIO("RNG: test get_size_t") {
     }
   }
   {
-    const size_t max_v = 99;
+    const std::size_t max_v = 99;
     ss << "Values for v=" << max_v << " : ";
     for (int nn = 0; nn < 30; ++nn) {
       ss << rng.get_size_t(max_v) << " ";
     }
   }
   {
-    const size_t min_v = 100;
-    const size_t max_v = 105;
+    const std::size_t min_v = 100;
+    const std::size_t max_v = 105;
     ss << "Values for min_v=" << min_v << ", max_v=" << max_v << " : ";
     for (int nn = 0; nn < 20; ++nn) {
       ss << rng.get_size_t(min_v, max_v) << " ";
@@ -72,7 +72,7 @@ SCENARIO("RNG: check_percentage bool sequence") {
   RNG rng;
   rng.set_seed(11111);
   stringstream ss;
-  size_t number_of_true = 0;
+  std::size_t number_of_true = 0;
   for (int nn = 0; nn < 100; ++nn) {
     if (rng.check_percentage(30)) {
       ++number_of_true;
@@ -119,11 +119,11 @@ SCENARIO("RNG: vector operations") {
 
 SCENARIO("RNG: permutations") {
   RNG rng;
-  const size_t size = 100;
+  const std::size_t size = 100;
   const auto numbers = rng.get_permutation(size);
   REQUIRE(numbers.size() == size);
 
-  const std::set<size_t> numbers_again(numbers.cbegin(), numbers.cend());
+  const std::set<std::size_t> numbers_again(numbers.cbegin(), numbers.cend());
   REQUIRE(numbers_again.size() == size);
   REQUIRE(*numbers_again.crbegin() == size - 1);
   stringstream ss;
@@ -142,14 +142,14 @@ SCENARIO("RNG: permutations") {
 }
 
 SCENARIO("RNG: default seed") {
-  vector<size_t> numbers;
+  vector<std::size_t> numbers;
   {
     RNG rng;
     for (unsigned ii = 0; ii < 10; ++ii) {
       numbers.emplace_back(rng.get_size_t(100));
     }
   }
-  vector<size_t> numbers_again;
+  vector<std::size_t> numbers_again;
   {
     RNG rng;
     rng.set_seed();
@@ -158,7 +158,7 @@ SCENARIO("RNG: default seed") {
     }
   }
   CHECK(numbers == numbers_again);
-  CHECK(numbers == vector<size_t>{79, 25, 71, 95, 1, 40, 25, 2, 52, 34});
+  CHECK(numbers == vector<std::size_t>{79, 25, 71, 95, 1, 40, 25, 2, 52, 34});
 }
 
 SCENARIO("RNG: 64-bit uints") {
