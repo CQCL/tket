@@ -647,8 +647,10 @@ PYBIND11_MODULE(passes, m) {
       py::arg("label") = q_default_reg());
 
   m.def(
-      "RenameQubitsPass", &gen_rename_qubits_pass, "Rename some or all qubits.",
-      "\n\n:param qubit_map: map from old to new qubit names",
+      "RenameQubitsPass", &gen_rename_qubits_pass,
+      "Rename some or all qubits. "
+      "\n\n"
+      ":param qubit_map: map from old to new qubit names ",
       py::arg("qubit_map"));
 
   m.def(
@@ -889,6 +891,7 @@ PYBIND11_MODULE(passes, m) {
       "\n\n"
       ":param transform: function taking a :py:class:`Circuit` as an argument "
       "and returning a new transformed circuit"
+      "\n"
       ":param label: optional label for the pass"
       "\n:return: a pass to perform the transformation",
       py::arg("transform"), py::arg("label") = "");
