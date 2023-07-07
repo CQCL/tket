@@ -250,7 +250,7 @@ class DirectedGraphBase : public AbstractGraph<T> {
     if (node1 == node2) {
       return 0;
     }
-    size_t d = get_distances(node1)[to_vertices(node2)];
+    std::size_t d = get_distances(node1)[to_vertices(node2)];
     if (d == 0) {
       throw NodesNotConnected(node1, node2);
     }
@@ -429,7 +429,7 @@ class DirectedGraph : public DirectedGraphBase<T> {
     if (node1 == node2) {
       return 0;
     }
-    size_t d;
+    std::size_t d;
     if (distance_cache.find(node1) != distance_cache.end()) {
       d = distance_cache[node1][this->to_vertices(node2)];
     } else if (distance_cache.find(node2) != distance_cache.end()) {

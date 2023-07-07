@@ -122,7 +122,7 @@ class SwapListOptimiser {
       SwapList& list, VertexMapping vertex_mapping);
 
  private:
-  std::map<Swap, size_t> m_data;
+  std::map<Swap, std::size_t> m_data;
 
   DynamicTokenTracker m_token_tracker;
 

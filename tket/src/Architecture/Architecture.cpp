@@ -103,7 +103,8 @@ std::set<Node> Architecture::get_articulation_points() const {
 }
 
 static bool lexicographical_comparison(
-    const std::vector<size_t>& dist1, const std::vector<size_t>& dist2) {
+    const std::vector<std::size_t>& dist1,
+    const std::vector<std::size_t>& dist2) {
   return std::lexicographical_compare(
       dist1.begin(), dist1.end(), dist2.begin(), dist2.end());
 }
@@ -121,16 +122,16 @@ std::optional<Node> Architecture::find_worst_node(
   if (bad_nodes.empty()) {
     return std::nullopt;
   }
-  auto make_lexicographic = [](std::vector<size_t> distances) {
+  auto make_lexicographic = [](std::vector<std::size_t> distances) {
     unsigned max = distances.size();
-    std::vector<size_t> out(max + 1, size_t(0));
+    std::vector<std::size_t> out(max + 1, std::size_t(0));
     for (const auto& distance : distances) {
       TKET_ASSERT(distance < max);
       out[max - distance]++;
     }
     return out;
   };
-  std::vector<size_t> worst_distances, temp_distances;
+  std::vector<std::size_t> worst_distances, temp_distances;
   Node worst_node = *bad_nodes.begin();
   worst_distances = make_lexicographic(get_distances(worst_node));
   for (Node temp_node : bad_nodes) {
@@ -141,9 +142,9 @@ std::optional<Node> Architecture::find_worst_node(
       worst_node = temp_node;
       worst_distances = temp_distances;
     } else if (distance_comp == -1) {
-      std::vector<size_t> temp_distances_full =
+      std::vector<std::size_t> temp_distances_full =
           make_lexicographic(original_arch.get_distances(temp_node));
-      std::vector<size_t> worst_distances_full =
+      std::vector<std::size_t> worst_distances_full =
           make_lexicographic(original_arch.get_distances(worst_node));
       if (lexicographical_comparison(
               temp_distances_full, worst_distances_full)) {

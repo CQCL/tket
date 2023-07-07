@@ -27,7 +27,7 @@ DiagonalBox::DiagonalBox(const Eigen::VectorXcd &diagonal, bool upper_triangle)
     : Box(OpType::DiagonalBox),
       diagonal_(diagonal),
       upper_triangle_(upper_triangle) {
-  size_t length = diagonal.size();
+  std::size_t length = diagonal.size();
   if (length < 2 || (length & (length - 1)) != 0) {
     throw std::invalid_argument(
         "The size of the diagonal operator passed to DiagonalBox is not a "

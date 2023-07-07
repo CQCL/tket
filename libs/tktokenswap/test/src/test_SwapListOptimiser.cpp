@@ -43,7 +43,7 @@ class SwapCorrectnessTester {
 
   void require_equal_permutations(const SwapList& swap_list) const {
     m_tracker_to_change.reset();
-    size_t num_swaps = 0;
+    std::size_t num_swaps = 0;
     for (auto id = swap_list.front_id(); id; id = swap_list.next(id.value())) {
       m_tracker_to_change.do_vertex_swap(swap_list.at(id.value()));
       ++num_swaps;
@@ -55,7 +55,7 @@ class SwapCorrectnessTester {
   }
 
  private:
-  size_t m_number_of_raw_swaps = 0;
+  std::size_t m_number_of_raw_swaps = 0;
   DynamicTokenTracker m_final_tracker;
   mutable DynamicTokenTracker m_tracker_to_change;
 };
@@ -105,7 +105,7 @@ class SwapTester {
     m_counts[1] += raw_swaps.size();
     m_correctness_tester.reset(raw_swaps);
 
-    for (size_t ii = 0; ii < m_optimisation_functions.size(); ++ii) {
+    for (std::size_t ii = 0; ii < m_optimisation_functions.size(); ++ii) {
       m_swap_list.clear();
       if (ii != 0) {
         for (const auto& swap : raw_swaps) {
@@ -121,7 +121,7 @@ class SwapTester {
   std::string get_final_result() const {
     std::stringstream ss;
     ss << "[ " << m_counts[0] << " tests; swap counts:";
-    for (size_t ii = 1; ii < m_counts.size(); ++ii) {
+    for (std::size_t ii = 1; ii < m_counts.size(); ++ii) {
       ss << " " << m_counts[ii] << " ";
     }
     ss << "]";
@@ -133,12 +133,12 @@ class SwapTester {
       std::function<void(const vector<Swap>&, SwapList&, SwapListOptimiser&)>>
       m_optimisation_functions;
 
-  vector<size_t> m_counts;
+  vector<std::size_t> m_counts;
 
   SwapList m_swap_list;
   SwapListOptimiser m_optimiser;
   SwapCorrectnessTester m_correctness_tester;
-  size_t number_of_tests;
+  std::size_t number_of_tests;
 };
 }  // namespace
 
@@ -146,33 +146,34 @@ SCENARIO("Random swaps are optimised") {
   RNG rng;
   SwapTester tester;
   vector<Swap> raw_swaps;
-  const vector<size_t> num_vertices{5, 10, 20};
+  const vector<std::size_t> num_vertices{5, 10, 20};
 
   // We will multiply the number of possible distinct swaps
   // by these numbers, then divide by 100, to determine how many swaps
   // to generate for the test.
-  const vector<size_t> percentages{50, 100, 200, 500};
+  const vector<std::size_t> percentages{50, 100, 200, 500};
 
   // Not necessarily contiguous.
-  std::set<size_t> vertices_set;
+  std::set<std::size_t> vertices_set;
 
-  for (size_t number_of_vertices : num_vertices) {
-    const size_t possible_swaps =
+  for (std::size_t number_of_vertices : num_vertices) {
+    const std::size_t possible_swaps =
         (number_of_vertices * (number_of_vertices - 1)) / 2;
     for (auto percent : percentages) {
-      const size_t num_swaps = (possible_swaps * percent) / 100;
+      const std::size_t num_swaps = (possible_swaps * percent) / 100;
       vertices_set.clear();
 
-      for (size_t ii = 0; ii < number_of_vertices; ++ii) {
+      for (std::size_t ii = 0; ii < number_of_vertices; ++ii) {
         vertices_set.insert(ii);
       }
-      const vector<size_t> vertices(vertices_set.cbegin(), vertices_set.cend());
+      const vector<std::size_t> vertices(
+          vertices_set.cbegin(), vertices_set.cend());
       for (int test_counter = 0; test_counter < 1; ++test_counter) {
         INFO(
             "test_counter=" << test_counter << ", number_of_vertices="
                             << number_of_vertices << ", percent=" << percent);
 
-        for (size_t jj = 0; jj < num_swaps; ++jj) {
+        for (std::size_t jj = 0; jj < num_swaps; ++jj) {
           const auto v1 = rng.get_element(vertices);
           auto v2 = v1;
           while (v1 == v2) {
@@ -197,16 +198,16 @@ namespace {
 // This might be more realistic.
 struct EdgesGenerator {
   std::set<Swap> swaps_set;
-  size_t approx_num_vertices = 5;
-  size_t approx_num_edges = 10;
-  size_t percentage_to_add_new_vertex = 50;
+  std::size_t approx_num_vertices = 5;
+  std::size_t approx_num_edges = 10;
+  std::size_t percentage_to_add_new_vertex = 50;
 
-  vector<Swap> get_swaps(RNG& rng, size_t& actual_num_vertices) {
+  vector<Swap> get_swaps(RNG& rng, std::size_t& actual_num_vertices) {
     actual_num_vertices = 2;
     swaps_set.clear();
     swaps_set.insert(get_swap(0, 1));
 
-    for (size_t counter = 10 * approx_num_edges; counter > 0; --counter) {
+    for (std::size_t counter = 10 * approx_num_edges; counter > 0; --counter) {
       if (actual_num_vertices >= approx_num_vertices ||
           swaps_set.size() >= approx_num_edges) {
         break;
@@ -246,28 +247,28 @@ struct ManyTestsRunner {
 
   EdgesGenerator swaps_generator;
   vector<Swap> possible_swaps;
-  size_t actual_num_vertices;
+  std::size_t actual_num_vertices;
   vector<Swap> raw_swaps;
 
   void run(
-      RNG& rng, const vector<size_t>& approx_num_vertices,
-      const vector<size_t>& approx_num_edges_percentages,
-      const vector<size_t>& swap_length_percentages,
-      size_t num_tests_per_parameter_list) {
+      RNG& rng, const vector<std::size_t>& approx_num_vertices,
+      const vector<std::size_t>& approx_num_edges_percentages,
+      const vector<std::size_t>& swap_length_percentages,
+      std::size_t num_tests_per_parameter_list) {
     for (auto approx_nv : approx_num_vertices) {
       swaps_generator.approx_num_vertices = approx_nv;
       for (auto approx_nep : approx_num_edges_percentages) {
         swaps_generator.approx_num_edges =
             approx_nv / 2 + (approx_nv * (approx_nv - 1) * approx_nep) / 200;
-        for (size_t num_graphs = 0; num_graphs < 1; ++num_graphs) {
+        for (std::size_t num_graphs = 0; num_graphs < 1; ++num_graphs) {
           possible_swaps = swaps_generator.get_swaps(rng, actual_num_vertices);
           for (auto slp : swap_length_percentages) {
-            const size_t swap_list_length =
+            const std::size_t swap_list_length =
                 1 + (possible_swaps.size() * slp) / 100;
-            for (size_t test_counter = 0;
+            for (std::size_t test_counter = 0;
                  test_counter < num_tests_per_parameter_list; ++test_counter) {
               raw_swaps.clear();
-              for (size_t nn = 0; nn < swap_list_length; ++nn) {
+              for (std::size_t nn = 0; nn < swap_list_length; ++nn) {
                 raw_swaps.push_back(rng.get_element(possible_swaps));
               }
               tester.test(raw_swaps);
@@ -282,18 +283,18 @@ struct ManyTestsRunner {
 
 SCENARIO("More realistic swap sequences") {
   RNG rng;
-  const size_t num_tests_per_parameter_list = 10;
+  const std::size_t num_tests_per_parameter_list = 10;
 
   // How many edges should we aim for, as a rough percentage of
   // the total number n(n-1)/2 of possibilities?
-  const vector<size_t> approx_num_edges_percentages{5, 10, 20, 30, 40, 80};
+  const vector<std::size_t> approx_num_edges_percentages{5, 10, 20, 30, 40, 80};
 
   // How long should the swap length be, as a percentage of the
   // total possible number of swaps?
-  const vector<size_t> swap_length_percentages{50, 100, 200};
+  const vector<std::size_t> swap_length_percentages{50, 100, 200};
 
   {
-    const vector<size_t> approx_num_vertices{5, 8};
+    const vector<std::size_t> approx_num_vertices{5, 8};
     ManyTestsRunner runner;
     runner.run(
         rng, approx_num_vertices, approx_num_edges_percentages,
@@ -303,7 +304,7 @@ SCENARIO("More realistic swap sequences") {
         "[ 360 tests; swap counts: 3160  2380  2104  2104  1396  1406 ]");
   }
   {
-    const vector<size_t> approx_num_vertices{10, 12, 14};
+    const vector<std::size_t> approx_num_vertices{10, 12, 14};
     ManyTestsRunner runner;
     runner.run(
         rng, approx_num_vertices, approx_num_edges_percentages,
@@ -313,7 +314,7 @@ SCENARIO("More realistic swap sequences") {
         "[ 540 tests; swap counts: 10370  9048  7580  7580  5180  5216 ]");
   }
   {
-    const vector<size_t> approx_num_vertices{30, 35, 40};
+    const vector<std::size_t> approx_num_vertices{30, 35, 40};
     ManyTestsRunner runner;
     runner.run(
         rng, approx_num_vertices, approx_num_edges_percentages,
@@ -362,13 +363,13 @@ SCENARIO("Trivial swap list reversed order optimisation; pass comparisons") {
     }
   };
 
-  size_t simple_travel_equals_token_tracking_count = 0;
-  size_t simple_travel_beats_token_tracking_count = 0;
-  size_t simple_travel_beaten_by_token_tracking_count = 0;
-  size_t full_optimise_fully_reduces_palindrome = 0;
-  size_t full_optimise_does_not_destroy_palindrome = 0;
-  size_t token_tracking_pass_fully_reduces_palindrome = 0;
-  size_t token_tracking_pass_does_not_destroy_palindrome = 0;
+  std::size_t simple_travel_equals_token_tracking_count = 0;
+  std::size_t simple_travel_beats_token_tracking_count = 0;
+  std::size_t simple_travel_beaten_by_token_tracking_count = 0;
+  std::size_t full_optimise_fully_reduces_palindrome = 0;
+  std::size_t full_optimise_does_not_destroy_palindrome = 0;
+  std::size_t token_tracking_pass_fully_reduces_palindrome = 0;
+  std::size_t token_tracking_pass_does_not_destroy_palindrome = 0;
 
   RNG rng;
 

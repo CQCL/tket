@@ -30,7 +30,7 @@ namespace tsa_internal {
 namespace tests {
 
 // Also checks if an empty token pair swap occurs.
-static size_t get_recalculated_final_L(
+static std::size_t get_recalculated_final_L(
     VertexMapping problem, const SwapList& swap_list,
     DistancesInterface& distances, TokenOption token_option) {
   bool empty_tok_swap = false;
@@ -51,7 +51,7 @@ static size_t get_recalculated_final_L(
 }
 
 static void check_progress(
-    size_t init_L, size_t final_L, RequiredTsaProgress progress) {
+    std::size_t init_L, std::size_t final_L, RequiredTsaProgress progress) {
   REQUIRE(final_L <= init_L);
   switch (progress) {
     case RequiredTsaProgress::FULL:

@@ -41,7 +41,8 @@ struct VertexSwapResult {
    *  @param vertex_mapping The source to target mapping,
    *    will be updated with the swap.
    */
-  VertexSwapResult(size_t v1, size_t v2, VertexMapping& vertex_mapping);
+  VertexSwapResult(
+      std::size_t v1, std::size_t v2, VertexMapping& vertex_mapping);
 
   /** If the swap moves at least one nonempty token, carry out the swap.
    *  Otherwise, does nothing.
@@ -52,7 +53,8 @@ struct VertexSwapResult {
    *  @param swap_list The list of swaps, which will be updated with the swap.
    */
   VertexSwapResult(
-      size_t v1, size_t v2, VertexMapping& vertex_mapping, SwapList& swap_list);
+      std::size_t v1, std::size_t v2, VertexMapping& vertex_mapping,
+      SwapList& swap_list);
 };
 
 }  // namespace tsa_internal

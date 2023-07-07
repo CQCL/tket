@@ -98,7 +98,7 @@ const CanonicalRelabelling::Result& CanonicalRelabelling::operator()(
     const auto& cyc = m_cycles[ii];
     TKET_ASSERT(!cyc.empty());
     TKET_ASSERT(cyc.size() <= 6);
-    for (size_t old_v : cyc) {
+    for (std::size_t old_v : cyc) {
       m_result.new_to_old_vertices.push_back(old_v);
     }
   }

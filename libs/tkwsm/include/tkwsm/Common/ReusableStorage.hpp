@@ -33,7 +33,7 @@ struct ReusableStorageId {
  * collection - rather than being erased, but the caller is responsible
  * for clearing such T objects when making use of them again.
  *
- * Access the objects by a size_t ID, in time O(1).
+ * Access the objects by a std::size_t ID, in time O(1).
  * The IDs are allowed to be reused, and references are allowed to be
  * invalidated if other elements are added or "erased" (released).
  * An ID remains valid (unlike a reference) even as others are added

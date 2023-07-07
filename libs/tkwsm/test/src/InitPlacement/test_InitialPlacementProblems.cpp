@@ -326,8 +326,8 @@ SCENARIO("Binary tree with ~100 vertices, ~30 logical qubits") {
   std::vector<WeightWSM> weights{0, 0};
   weights.resize(100);
   for (unsigned nn = 2; nn < weights.size(); ++nn) {
-    size_t a10 = rng.get_size_t(10);
-    size_t a5 = rng.get_size_t(5);
+    std::size_t a10 = rng.get_size_t(10);
+    std::size_t a5 = rng.get_size_t(5);
     weights[nn] = 1 + a5 + 10 * (a10 / 8);
   }
   WeightedBinaryTree tree(weights, 4);

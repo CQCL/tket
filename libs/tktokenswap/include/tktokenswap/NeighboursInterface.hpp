@@ -36,7 +36,7 @@ class NeighboursInterface {
    *  @param vertex A vertex.
    *  @return A sorted list of all adjacent vertices, stored internally.
    */
-  virtual const std::vector<size_t>& operator()(size_t vertex);
+  virtual const std::vector<std::size_t>& operator()(std::size_t vertex);
 
   virtual ~NeighboursInterface();
 };

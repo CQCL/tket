@@ -28,8 +28,8 @@ namespace tests {
  *    of nonnegative integers, starting at 0).
  *  @return A set of numbers. Throws upon invalid parameters.
  */
-std::set<size_t> get_random_set(
-    RNG& rng, size_t sample_size, size_t population_size);
+std::set<std::size_t> get_random_set(
+    RNG& rng, std::size_t sample_size, std::size_t population_size);
 
 }  // namespace tests
 }  // namespace tsa_internal

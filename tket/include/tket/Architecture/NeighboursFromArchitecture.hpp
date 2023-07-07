@@ -38,13 +38,14 @@ class NeighboursFromArchitecture : public NeighboursInterface {
    *  @param vertex A vertex.
    *  @return A sorted list of all adjacent vertices, stored internally.
    */
-  virtual const std::vector<size_t>& operator()(size_t vertex) override;
+  virtual const std::vector<std::size_t>& operator()(
+      std::size_t vertex) override;
 
  private:
   const ArchitectureMapping& m_arch_mapping;
 
   /** The key is the vertex, the value is the list of neighbours. */
-  std::map<size_t, std::vector<size_t>> m_cached_neighbours;
+  std::map<std::size_t, std::vector<std::size_t>> m_cached_neighbours;
 };
 
 }  // namespace tket

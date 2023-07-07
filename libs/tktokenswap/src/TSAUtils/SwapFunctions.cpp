@@ -19,7 +19,7 @@
 
 namespace tket {
 
-Swap get_swap(size_t v1, size_t v2) {
+Swap get_swap(std::size_t v1, std::size_t v2) {
   if (v1 == v2) {
     std::stringstream ss;
     ss << "get_swap : for equal vertices v1 = v2 = v_" << v1;

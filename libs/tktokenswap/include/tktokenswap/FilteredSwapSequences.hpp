@@ -128,7 +128,7 @@ class FilteredSwapSequences {
   /** For testing, just count how many entries we've stored.
    *  @return The total number of encoded swap sequences stored internally.
    */
-  size_t get_total_number_of_entries() const;
+  std::size_t get_total_number_of_entries() const;
 
  private:
   /** We recalculate the number of swaps each time, rather than storing.

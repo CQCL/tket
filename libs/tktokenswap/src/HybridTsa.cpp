@@ -33,7 +33,7 @@ void HybridTsa::append_partial_solution(
     DistancesInterface& distances, NeighboursInterface& neighbours,
     RiverFlowPathFinder& path_finder) {
   const auto initial_L = get_total_home_distances(vertex_mapping, distances);
-  for (size_t counter = initial_L + 1; counter > 0; --counter) {
+  for (std::size_t counter = initial_L + 1; counter > 0; --counter) {
     const auto swaps_before = swaps.size();
     m_cycles_tsa.append_partial_solution(
         swaps, vertex_mapping, distances, neighbours, path_finder);

@@ -52,7 +52,8 @@ class VertexMapResizing : public NeighboursInterface {
    * @param vertex A vertex in the graph.
    * @return A cached list of neighbours of that vertex, stored internally.
    */
-  virtual const std::vector<size_t>& operator()(size_t vertex) override;
+  virtual const std::vector<std::size_t>& operator()(
+      std::size_t vertex) override;
 
   /** The result of resizing a mapping by deleting fixed vertices if too big,
    * or adding new vertices if too small.
@@ -86,7 +87,7 @@ class VertexMapResizing : public NeighboursInterface {
   Result m_result;
 
   // KEY: a vertex. VALUE: all its neighbours.
-  std::map<size_t, std::vector<size_t>> m_cached_neighbours;
+  std::map<std::size_t, std::vector<std::size_t>> m_cached_neighbours;
   std::set<Swap> m_cached_full_edges;
 
   /** How many edges join the given vertex to other existing vertices?
@@ -96,7 +97,7 @@ class VertexMapResizing : public NeighboursInterface {
    * @return The total number of edges within the LARGER graph joining the
    * vertex to other vertices within the mapping.
    */
-  size_t get_edge_count(const VertexMapping& mapping, size_t vertex);
+  std::size_t get_edge_count(const VertexMapping& mapping, std::size_t vertex);
 
   /** Try to add a single new fixed vertex to the mapping, i.e. a new v with
    * map[v]=v.

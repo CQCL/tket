@@ -126,7 +126,7 @@ static void check_that_all_entries_have_the_same_permutation(
 // and see that the relabellings work.
 SCENARIO("Relabelling test for random mappings") {
   const unsigned number_of_vertices = 5;
-  vector<size_t> original_labels;
+  vector<std::size_t> original_labels;
 
   // The generated mappings, together with the relabelling results.
   // The key is the permutation hash.
@@ -146,7 +146,7 @@ SCENARIO("Relabelling test for random mappings") {
     }
     rng.do_shuffle(original_labels);
     {
-      size_t ii = 0;
+      std::size_t ii = 0;
       for (auto& entry : original_map) {
         entry.second = original_labels[ii];
         ++ii;

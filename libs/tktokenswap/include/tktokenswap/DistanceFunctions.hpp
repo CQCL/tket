@@ -33,7 +33,7 @@ namespace tsa_internal {
  *  @return the sum, over all tokens, of (current vertex)->(target vertex)
  * distances.
  */
-size_t get_total_home_distances(
+std::size_t get_total_home_distances(
     const VertexMapping& vertex_mapping, DistancesInterface& distances);
 
 /** For just the abstract move v1->v2, ignoring the token on v2,
@@ -49,7 +49,7 @@ size_t get_total_home_distances(
  * course, although positive numbers are good.
  */
 int get_move_decrease(
-    const VertexMapping& vertex_mapping, size_t v1, size_t v2,
+    const VertexMapping& vertex_mapping, std::size_t v1, std::size_t v2,
     DistancesInterface& distances);
 
 /** The same as get_move_decrease, but for an abstract swap(v1,v2).
@@ -63,7 +63,7 @@ int get_move_decrease(
  *    left unchanged.
  */
 int get_swap_decrease(
-    const VertexMapping& vertex_mapping, size_t v1, size_t v2,
+    const VertexMapping& vertex_mapping, std::size_t v1, std::size_t v2,
     DistancesInterface& distances);
 
 }  // namespace tsa_internal

@@ -61,14 +61,14 @@ class PartialMappingLookup {
    */
   const ExactMappingLookup::Result& operator()(
       const VertexMapping& desired_mapping, const std::vector<Swap>& edges,
-      const std::set<size_t>& vertices_with_tokens_at_start,
+      const std::set<std::size_t>& vertices_with_tokens_at_start,
       unsigned max_number_of_swaps = 16);
 
  private:
   Parameters m_parameters;
   ExactMappingLookup m_exact_mapping_lookup;
-  std::vector<size_t> m_empty_source_vertices;
-  std::vector<size_t> m_empty_target_vertices;
+  std::vector<std::size_t> m_empty_source_vertices;
+  std::vector<std::size_t> m_empty_target_vertices;
   VertexMapping m_altered_mapping;
 };
 

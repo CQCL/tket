@@ -36,7 +36,7 @@ void to_json(nlohmann::json& j, const Command& com) {
 
   nlohmann::json j_args;
 
-  for (size_t i = 0; i < sig.size(); i++) {
+  for (std::size_t i = 0; i < sig.size(); i++) {
     switch (sig[i]) {
       case EdgeType::WASM: {
         const WasmState& wb = static_cast<const WasmState&>(args[i]);
@@ -75,7 +75,7 @@ void from_json(const nlohmann::json& j, Command& com) {
     JsonError("Number of args does not match signature of op.");
   }
   unit_vector_t args;
-  for (size_t i = 0; i < sig.size(); i++) {
+  for (std::size_t i = 0; i < sig.size(); i++) {
     switch (sig[i]) {
       case EdgeType::WASM: {
         args.push_back(j_args[i].get<WasmState>());
