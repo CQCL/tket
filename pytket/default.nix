@@ -37,6 +37,7 @@ let
   };
   pytket = python_version.pkgs.buildPythonPackage{
     name = "pytket";
+    inherit version;
     propagatedBuildInputs = with python_version.pkgs; [
       binders
       graphviz
@@ -61,9 +62,7 @@ let
     '';
     postFixup = ''
       tketlib=$out/lib/python3.10/site-packages/pytket/_tket/libtket.so;
-      patchelf --add-needed "libsymengine.so" $tketlib;
-      patchelf --set-rpath "''${ORIGIN}:${rpath}" $tketlib;
-      echo '__version__ = "0.0.0"' > $out/lib/python3.10/site-packages/pytket/_version.py;
+      echo '__version__ = "${version}"' > $out/lib/python3.10/site-packages/pytket/_version.py;
     '';
     doCheck = false;
   };
@@ -73,6 +72,10 @@ let
     [libs.tklog libs.tkassert libs.tkrng libs.tktokenswap libs.tkwsm
     pkgs.gcc.libc pkgs.gcc.cc.lib.lib symengine]
   );
+  # extract version from docs
+  config_contents = builtins.readFile ./docs/conf.py;
+  versions = builtins.match ''.*''\nrelease *= *["']([^"']+)["'].*'' config_contents;
+  version = if builtins.length versions > 0 then builtins.elemAt versions 0 else "0.0.0";
 in
   pytket
 

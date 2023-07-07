@@ -29,8 +29,7 @@ let
     ];
   });
 in
-  builtins.trace "static: ${if static then "true" else "false"}" (
   if static
     then symengine-static
-    else symengine-shared)
+    else symengine-shared
  

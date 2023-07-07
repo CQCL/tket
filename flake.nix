@@ -31,8 +31,6 @@
             tket-static = tket-static;
             tket-shared = tket-shared;
             pytket = pytket;
-            symengine-static = symengine-static;
-            symengine-shared = symengine-shared;
           };
           devShell = with pkgs; mkShell {
             buildInputs = [
