@@ -263,7 +263,6 @@ int SteinerTree::cost_of_operation(unsigned i, unsigned j) const {
           TKET_ASSERT(!"[AAS]: Invalid cost, wrong SteinerNodeType");
         }
       }
-      break;
     }
     case SteinerNodeType::OneInTree: {
       switch (j_type) {
@@ -279,7 +278,6 @@ int SteinerTree::cost_of_operation(unsigned i, unsigned j) const {
           TKET_ASSERT(!"[AAS]: Invalid cost, wrong SteinerNodeType");
         }
       }
-      break;
     }
     case SteinerNodeType::Leaf: {
       switch (j_type) {
@@ -295,7 +293,6 @@ int SteinerTree::cost_of_operation(unsigned i, unsigned j) const {
           TKET_ASSERT(!"[AAS]: Invalid cost, wrong SteinerNodeType");
         }
       }
-      break;
     }
     case SteinerNodeType::OutOfTree: {
       switch (j_type) {
@@ -309,7 +306,6 @@ int SteinerTree::cost_of_operation(unsigned i, unsigned j) const {
           TKET_ASSERT(!"[AAS]: Invalid cost, wrong SteinerNodeType");
         }
       }
-      break;
     }
     default: {
       TKET_ASSERT(!"[AAS]: Invalid cost, wrong SteinerNodeType");
@@ -417,7 +413,6 @@ void SteinerTree::add_row(unsigned i, unsigned j) {
           TKET_ASSERT(false);
         }
       }
-      break;
     }
     case SteinerNodeType::OutOfTree: {
       // no action occurs
