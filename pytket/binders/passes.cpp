@@ -865,7 +865,7 @@ PYBIND11_MODULE(passes, m) {
 
   m.def(
       "CnXPairwiseDecomposition", &CnXPairwiseDecomposition,
-      "Decompose CnX gates to 2-qubit gates and single qubit gates."
+      "Decompose CnX gates to 2-qubit gates and single qubit gates. "
       "For every two CnX gates, reorder their control qubits to improve "
       "the chance of gate cancellation");
 
