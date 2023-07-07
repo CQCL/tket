@@ -26,10 +26,11 @@ using std::vector;
 namespace tket {
 namespace tsa_internal {
 
-size_t CyclesCandidateManager::fill_initial_cycle_ids(const Cycles& cycles) {
+std::size_t CyclesCandidateManager::fill_initial_cycle_ids(
+    const Cycles& cycles) {
   m_cycle_with_vertex_hash.clear();
   m_cycles_to_keep.clear();
-  size_t cycle_length = 0;
+  std::size_t cycle_length = 0;
   for (auto id_opt = cycles.front_id(); id_opt;
        id_opt = cycles.next(id_opt.value())) {
     const auto& cycle = cycles.at(id_opt.value());
@@ -53,13 +54,13 @@ size_t CyclesCandidateManager::fill_initial_cycle_ids(const Cycles& cycles) {
     CycleData cycle_data;
     cycle_data.id = id_opt.value();
     cycle_data.first_vertex_index = 0;
-    for (size_t ii = 1; ii < vertices.size(); ++ii) {
+    for (std::size_t ii = 1; ii < vertices.size(); ++ii) {
       if (vertices[ii] < vertices[cycle_data.first_vertex_index]) {
         cycle_data.first_vertex_index = ii;
       }
     }
-    size_t hash = static_cast<size_t>(cycle.decrease);
-    for (size_t ii = 0; ii < cycle_length; ++ii) {
+    std::size_t hash = static_cast<std::size_t>(cycle.decrease);
+    for (std::size_t ii = 0; ii < cycle_length; ++ii) {
       boost::hash_combine(
           hash, vertices[(ii + cycle_data.first_vertex_index) % cycle_length]);
     }
@@ -72,7 +73,7 @@ size_t CyclesCandidateManager::fill_initial_cycle_ids(const Cycles& cycles) {
       const auto& previous_cycle = cycles.at(previous_cycle_data.id);
       if (previous_cycle.decrease == cycle.decrease) {
         bool equal_vertices = true;
-        for (size_t ii = 0; ii < cycle_length; ++ii) {
+        for (std::size_t ii = 0; ii < cycle_length; ++ii) {
           if (previous_cycle.vertices
                   [(ii + previous_cycle_data.first_vertex_index) %
                    cycle_length] !=
@@ -102,7 +103,7 @@ void CyclesCandidateManager::discard_lower_power_solutions(
   }
   TKET_ASSERT(highest_decrease > 0);
 
-  for (size_t ii = 0; ii < m_cycles_to_keep.size();) {
+  for (std::size_t ii = 0; ii < m_cycles_to_keep.size();) {
     if (cycles.at(m_cycles_to_keep[ii]).decrease < highest_decrease) {
       // This cycle is not good enough.
       // Erase this ID, by swapping with the back
@@ -120,11 +121,11 @@ void CyclesCandidateManager::sort_candidates(const Cycles& cycles) {
   // So, choose those which touch few others first.
   // Experimentation is needed with other algorithms!
   m_touching_data.clear();
-  for (size_t ii = 0; ii < m_cycles_to_keep.size(); ++ii) {
+  for (std::size_t ii = 0; ii < m_cycles_to_keep.size(); ++ii) {
     // Automatically set to zero on first use.
     m_touching_data[m_cycles_to_keep[ii]];
 
-    for (size_t jj = ii + 1; jj < m_cycles_to_keep.size(); ++jj) {
+    for (std::size_t jj = ii + 1; jj < m_cycles_to_keep.size(); ++jj) {
       bool touches = false;
       // For short cycles, not much slower than using sets
       // or sorted vectors.
@@ -180,7 +181,7 @@ void CyclesCandidateManager::append_partial_solution(
     const CyclesGrowthManager& growth_manager, SwapList& swaps,
     VertexMapping& vertex_mapping) {
   const auto& cycles = growth_manager.get_cycles();
-  const size_t cycle_size = fill_initial_cycle_ids(cycles);
+  const std::size_t cycle_size = fill_initial_cycle_ids(cycles);
 
   if (m_cycles_to_keep.empty()) {
     return;
@@ -203,7 +204,7 @@ void CyclesCandidateManager::append_partial_solution(
       continue;
     }
     const auto& vertices = cycles.at(id).vertices;
-    for (size_t ii = vertices.size() - 1; ii > 0; --ii) {
+    for (std::size_t ii = vertices.size() - 1; ii > 0; --ii) {
       VertexSwapResult(vertices[ii], vertices[ii - 1], vertex_mapping, swaps);
     }
   }

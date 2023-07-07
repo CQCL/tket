@@ -91,7 +91,7 @@ void FilteredSwapSequences::initialise(
   TKET_ASSERT(codes[0] != 0);
   TrimmedSingleSequenceData datum;
 
-  for (size_t ii = 0; ii < codes.size(); ++ii) {
+  for (std::size_t ii = 0; ii < codes.size(); ++ii) {
     if (ii != 0 && codes[ii] == codes[ii - 1]) {
       // Filter out duplicate entries.
       continue;
@@ -117,7 +117,7 @@ void FilteredSwapSequences::push_back(TrimmedSingleSequenceData datum) {
   // vertices like (4,5). This may or may not be the case, but whatever
   // the truth, there are still enough bits available overall to break
   // the entries up well enough).
-  size_t list_size_to_use = std::numeric_limits<size_t>::max();
+  std::size_t list_size_to_use = std::numeric_limits<std::size_t>::max();
 
   while (bitset_copy != 0) {
     const auto new_bit = get_rightmost_bit(bitset_copy);
@@ -211,8 +211,8 @@ FilteredSwapSequences::get_lookup_result(
   return result;
 }
 
-size_t FilteredSwapSequences::get_total_number_of_entries() const {
-  size_t total = 0;
+std::size_t FilteredSwapSequences::get_total_number_of_entries() const {
+  std::size_t total = 0;
   for (const auto& entry : m_internal_data) {
     total += entry.second.size();
   }

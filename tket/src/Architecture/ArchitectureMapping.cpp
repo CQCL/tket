@@ -28,7 +28,7 @@ ArchitectureMapping::ArchitectureMapping(const Architecture& arch)
     m_vertex_to_node_mapping.emplace_back(Node(uid));
   }
 
-  for (size_t ii = 0; ii < m_vertex_to_node_mapping.size(); ++ii) {
+  for (std::size_t ii = 0; ii < m_vertex_to_node_mapping.size(); ++ii) {
     const auto& node = m_vertex_to_node_mapping[ii];
     {
       const auto citer = m_node_to_vertex_mapping.find(node);
@@ -91,11 +91,11 @@ ArchitectureMapping::ArchitectureMapping(
   }
 }
 
-size_t ArchitectureMapping::number_of_vertices() const {
+std::size_t ArchitectureMapping::number_of_vertices() const {
   return m_vertex_to_node_mapping.size();
 }
 
-const Node& ArchitectureMapping::get_node(size_t vertex) const {
+const Node& ArchitectureMapping::get_node(std::size_t vertex) const {
   const auto num_vertices = number_of_vertices();
   // GCOVR_EXCL_START
   TKET_ASSERT(
@@ -107,7 +107,7 @@ const Node& ArchitectureMapping::get_node(size_t vertex) const {
   return m_vertex_to_node_mapping[vertex];
 }
 
-size_t ArchitectureMapping::get_vertex(const Node& node) const {
+std::size_t ArchitectureMapping::get_vertex(const Node& node) const {
   const auto citer = m_node_to_vertex_mapping.find(node);
   // GCOVR_EXCL_START
   TKET_ASSERT(

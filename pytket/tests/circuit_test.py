@@ -40,6 +40,7 @@ from pytket.circuit import (  # type: ignore
     QControlBox,
     PhasePolyBox,
     ToffoliBox,
+    ToffoliBoxSynthStrat,
     CustomGateDef,
     CustomGate,
     Qubit,
@@ -565,6 +566,21 @@ def test_boxes() -> None:
     assert np.allclose(unitary, comparison)
     assert d.n_gates == 23
     assert json_validate(d)
+
+
+def test_tofollibox_strats() -> None:
+    permutation = {(0, 0, 0, 0): (1, 1, 1, 1), (1, 1, 1, 1): (0, 0, 0, 0)}
+    tb = ToffoliBox(permutation, ToffoliBoxSynthStrat.Cycle)
+    assert tb.type == OpType.ToffoliBox
+    assert tb.get_strat() == ToffoliBoxSynthStrat.Cycle
+    circ = tb.get_circuit()
+    unitary = circ.get_unitary()
+    comparison = np.eye(16)
+    comparison[[0, 15]] = comparison[[15, 0]]
+    assert np.allclose(unitary, comparison)
+    assert circ.n_gates == circ.n_gates_of_type(OpType.CnX) + circ.n_gates_of_type(
+        OpType.X
+    )
 
 
 def test_state_prep_mid_circuit() -> None:

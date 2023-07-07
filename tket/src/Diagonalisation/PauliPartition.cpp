@@ -137,11 +137,11 @@ get_partitioned_paulis_for_exhaustive_method(const PauliACGraph& pac_graph) {
 
   for (const auto& entry : data.get_vertex_map()) {
     const QubitPauliString& vertex = entry.first;
-    const size_t id = entry.second;
+    const std::size_t id = entry.second;
     TKET_ASSERT(id < colouring.colours.size());
 
     // "id" is the index of this vertex.
-    const size_t colour = colouring.colours[id];
+    const std::size_t colour = colouring.colours[id];
     TKET_ASSERT(colour < colouring.number_of_colours);
 
     colour_map[colour].push_back(vertex);

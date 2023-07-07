@@ -31,13 +31,13 @@ namespace graphs {
 
 static void fill_initial_node_sequence(
     ColouringPriority::Nodes& nodes, const AdjacencyData& adjacency_data,
-    const set<size_t>& vertices_in_component,
-    const set<size_t>& initial_clique) {
+    const set<std::size_t>& vertices_in_component,
+    const set<std::size_t>& initial_clique) {
   nodes.reserve(vertices_in_component.size());
   nodes.clear();
 
   try {
-    for (size_t clique_vertex : initial_clique) {
+    for (std::size_t clique_vertex : initial_clique) {
       // GCOVR_EXCL_START
       if (vertices_in_component.count(clique_vertex) == 0) {
         std::stringstream ss;
@@ -51,18 +51,18 @@ static void fill_initial_node_sequence(
     }
     // Now, we do a breadth-first traversal of the remaining vertices,
     // adding all vertices only one step away from the current set.
-    size_t current_nodes_begin = 0;
+    std::size_t current_nodes_begin = 0;
 
-    set<size_t> vertices_seen = initial_clique;
-    set<size_t> vertices_to_add;
+    set<std::size_t> vertices_seen = initial_clique;
+    set<std::size_t> vertices_to_add;
 
-    for (size_t counter = 0; counter < 2 * vertices_in_component.size();
+    for (std::size_t counter = 0; counter < 2 * vertices_in_component.size();
          ++counter) {
-      const size_t current_nodes_end = nodes.size();
+      const std::size_t current_nodes_end = nodes.size();
 
-      for (size_t i = current_nodes_begin; i < current_nodes_end; ++i) {
+      for (std::size_t i = current_nodes_begin; i < current_nodes_end; ++i) {
         const auto& neighbours = adjacency_data.get_neighbours(nodes[i].vertex);
-        for (size_t neighbour : neighbours) {
+        for (std::size_t neighbour : neighbours) {
           if (vertices_seen.count(neighbour) == 0) {
             vertices_to_add.insert(neighbour);
           }
@@ -71,7 +71,7 @@ static void fill_initial_node_sequence(
       if (vertices_to_add.empty()) {
         break;
       }
-      for (size_t neighbour : vertices_to_add) {
+      for (std::size_t neighbour : vertices_to_add) {
         vertices_seen.insert(neighbour);
         nodes.emplace_back();
         nodes.back().vertex = neighbour;
@@ -106,10 +106,10 @@ static void fill_initial_node_sequence(
 // Fills in "earlier_neighbour_node_indices".
 static void fill_node_dependencies(
     ColouringPriority::Nodes& nodes, const AdjacencyData& adjacency_data) {
-  for (size_t node_index = 1; node_index < nodes.size(); ++node_index) {
+  for (std::size_t node_index = 1; node_index < nodes.size(); ++node_index) {
     auto& this_node = nodes[node_index];
 
-    for (size_t other_index = 0; other_index < node_index; ++other_index) {
+    for (std::size_t other_index = 0; other_index < node_index; ++other_index) {
       if (adjacency_data.edge_exists(
               this_node.vertex, nodes[other_index].vertex)) {
         this_node.earlier_neighbour_node_indices.emplace_back(other_index);
@@ -125,9 +125,9 @@ const ColouringPriority::Nodes& ColouringPriority::get_nodes() const {
 // GCOVR_EXCL_START
 // currently used only within a tket assert macro
 string ColouringPriority::print_raw_data(bool relabel_to_simplify) const {
-  map<size_t, size_t> old_vertex_to_new_vertex;
+  map<std::size_t, std::size_t> old_vertex_to_new_vertex;
   if (relabel_to_simplify) {
-    for (size_t i = 0; i < m_nodes.size(); ++i) {
+    for (std::size_t i = 0; i < m_nodes.size(); ++i) {
       old_vertex_to_new_vertex[m_nodes[i].vertex] = i;
     }
   } else {
@@ -136,11 +136,11 @@ string ColouringPriority::print_raw_data(bool relabel_to_simplify) const {
       old_vertex_to_new_vertex[v] = v;
     }
   }
-  map<size_t, set<size_t>> data;
+  map<std::size_t, set<std::size_t>> data;
   for (const auto& node : m_nodes) {
     const auto this_v = old_vertex_to_new_vertex.at(node.vertex);
     const auto& earlier_v_indices = node.earlier_neighbour_node_indices;
-    for (size_t i : earlier_v_indices) {
+    for (std::size_t i : earlier_v_indices) {
       const auto other_v = old_vertex_to_new_vertex.at(m_nodes[i].vertex);
       data[this_v].insert(other_v);
       data[other_v].insert(this_v);
@@ -148,7 +148,7 @@ string ColouringPriority::print_raw_data(bool relabel_to_simplify) const {
   }
   // Compress: remove (i,j) edges if i>j.
   {
-    vector<size_t> v_to_erase;
+    vector<std::size_t> v_to_erase;
     for (auto& entry : data) {
       v_to_erase.clear();
       for (auto v : entry.second) {
@@ -181,7 +181,8 @@ string ColouringPriority::print_raw_data(bool relabel_to_simplify) const {
 
 ColouringPriority::ColouringPriority(
     const AdjacencyData& adjacency_data,
-    const set<size_t>& vertices_in_component, const set<size_t>& initial_clique)
+    const set<std::size_t>& vertices_in_component,
+    const set<std::size_t>& initial_clique)
     : m_initial_clique(initial_clique) {
   fill_initial_node_sequence(
       m_nodes, adjacency_data, vertices_in_component, initial_clique);
@@ -189,7 +190,7 @@ ColouringPriority::ColouringPriority(
   fill_node_dependencies(m_nodes, adjacency_data);
 }
 
-const set<size_t>& ColouringPriority::get_initial_clique() const {
+const set<std::size_t>& ColouringPriority::get_initial_clique() const {
   return m_initial_clique;
 }
 

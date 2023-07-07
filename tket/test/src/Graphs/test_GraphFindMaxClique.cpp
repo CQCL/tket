@@ -28,29 +28,29 @@ namespace graphs {
 namespace tests {
 
 struct MaxCliqueTestData {
-  vector<vector<size_t>> raw_adjacency_data;
+  vector<vector<std::size_t>> raw_adjacency_data;
   // It's not 100% guaranteed that there are no other cliques
   // of equal or larger size,
   // since by pure chance adding random edges might produce a larger clique.
-  vector<set<size_t>> cliques;
+  vector<set<std::size_t>> cliques;
 };
 
 // Used to test the maximum size clique function.
 struct MaxCliqueParameters {
-  size_t number_of_vertices = 20;
-  size_t max_clique_size = 4;
-  size_t approx_number_of_cliques = 3;
-  size_t approx_number_of_extra_edges = 5;
+  std::size_t number_of_vertices = 20;
+  std::size_t max_clique_size = 4;
+  std::size_t approx_number_of_cliques = 3;
+  std::size_t approx_number_of_extra_edges = 5;
 
   MaxCliqueTestData get_test_data(RNG& rng) const;
 };
 
 static void attempt_to_add_clique(
     const MaxCliqueParameters& parameters, RNG& rng, MaxCliqueTestData& data,
-    set<size_t>& clique_vertices) {
+    set<std::size_t>& clique_vertices) {
   clique_vertices.clear();
   bool should_add_clique = false;
-  for (size_t i = 0; i < 2 * parameters.max_clique_size; ++i) {
+  for (std::size_t i = 0; i < 2 * parameters.max_clique_size; ++i) {
     clique_vertices.insert(rng.get_size_t(parameters.number_of_vertices - 1));
     if (clique_vertices.size() == parameters.max_clique_size) {
       should_add_clique = true;
@@ -60,8 +60,8 @@ static void attempt_to_add_clique(
   if (should_add_clique) {
     data.cliques.emplace_back(clique_vertices);
     // Add the actual edges to make this a clique.
-    for (size_t i : clique_vertices) {
-      for (size_t j : clique_vertices) {
+    for (std::size_t i : clique_vertices) {
+      for (std::size_t j : clique_vertices) {
         if (i != j) {
           data.raw_adjacency_data[i].push_back(j);
         }
@@ -73,16 +73,18 @@ static void attempt_to_add_clique(
 MaxCliqueTestData MaxCliqueParameters::get_test_data(RNG& rng) const {
   MaxCliqueTestData data;
   data.raw_adjacency_data.resize(number_of_vertices);
-  set<size_t> clique_vertices;
+  set<std::size_t> clique_vertices;
 
-  for (size_t counter = 0; counter < 2 * approx_number_of_cliques; ++counter) {
+  for (std::size_t counter = 0; counter < 2 * approx_number_of_cliques;
+       ++counter) {
     attempt_to_add_clique(*this, rng, data, clique_vertices);
     if (data.cliques.size() >= approx_number_of_cliques) {
       break;
     }
   }
   // Finally, add extra edges.
-  for (size_t counter = 0; counter < approx_number_of_extra_edges; ++counter) {
+  for (std::size_t counter = 0; counter < approx_number_of_extra_edges;
+       ++counter) {
     const auto i = rng.get_size_t(number_of_vertices - 1);
     const auto j = rng.get_size_t(number_of_vertices - 1);
     if (i != j) {
@@ -93,14 +95,15 @@ MaxCliqueTestData MaxCliqueParameters::get_test_data(RNG& rng) const {
 }
 
 static bool is_clique(
-    const set<size_t>& vertices, const AdjacencyData& cleaned_adjacency_data) {
+    const set<std::size_t>& vertices,
+    const AdjacencyData& cleaned_adjacency_data) {
   if (vertices.size() < 2) {
     return true;
   }
   // simplest: just count the edges
-  size_t edge_count = 0;
-  for (size_t i : vertices) {
-    for (size_t j : vertices) {
+  std::size_t edge_count = 0;
+  for (std::size_t i : vertices) {
+    for (std::size_t j : vertices) {
       if (i < j && cleaned_adjacency_data.edge_exists(i, j)) {
         ++edge_count;
       }
@@ -110,12 +113,13 @@ static bool is_clique(
 }
 
 static bool set_is_present(
-    const set<size_t>& vertices, const vector<set<size_t>>& vertex_set_list) {
+    const set<std::size_t>& vertices,
+    const vector<set<std::size_t>>& vertex_set_list) {
   // Note: cliques CAN overlap, e.g.
   // consider two triangles {1,2,3} and {1,2,4}, with no edge between 3,4.
   for (const auto& other_set : vertex_set_list) {
-    size_t vertex_count = 0;
-    for (size_t i : vertices) {
+    std::size_t vertex_count = 0;
+    for (std::size_t i : vertices) {
       vertex_count += other_set.count(i);
     }
     if (vertex_count == vertices.size() && vertex_count == other_set.size()) {
@@ -126,10 +130,10 @@ static bool set_is_present(
 }
 
 // Returns the size of each clique (they should all be equal)
-static size_t check_that_calculated_cliques_are_valid(
-    const vector<set<size_t>>& calculated_clique_data,
+static std::size_t check_that_calculated_cliques_are_valid(
+    const vector<set<std::size_t>>& calculated_clique_data,
     const AdjacencyData& cleaned_adjacency_data) {
-  set<size_t> clique_sizes;
+  set<std::size_t> clique_sizes;
   for (const auto& calc_clique : calculated_clique_data) {
     clique_sizes.insert(calc_clique.size());
     REQUIRE(is_clique(calc_clique, cleaned_adjacency_data));
@@ -137,7 +141,7 @@ static size_t check_that_calculated_cliques_are_valid(
   // There ARE some cliques, and they are all of the same size!
   REQUIRE(clique_sizes.size() == 1);
   //...and of nonzero size...
-  const size_t max_clique_size_in_this_component = *clique_sizes.cbegin();
+  const std::size_t max_clique_size_in_this_component = *clique_sizes.cbegin();
   REQUIRE(max_clique_size_in_this_component > 0);
   return max_clique_size_in_this_component;
 }
@@ -147,11 +151,12 @@ static size_t check_that_calculated_cliques_are_valid(
 // than the calculated clique size,
 // so we do not epect to see the clique (as it's not of MAXIMUM possible size).
 static bool expected_clique_is_present(
-    const set<size_t>& expected_clique_vertices,
-    const vector<set<size_t>>& calculated_clique_data,
-    const set<size_t>& component, size_t max_clique_size_in_this_component) {
-  size_t expected_vertices_present = 0;
-  for (size_t vertex : expected_clique_vertices) {
+    const set<std::size_t>& expected_clique_vertices,
+    const vector<set<std::size_t>>& calculated_clique_data,
+    const set<std::size_t>& component,
+    std::size_t max_clique_size_in_this_component) {
+  std::size_t expected_vertices_present = 0;
+  for (std::size_t vertex : expected_clique_vertices) {
     expected_vertices_present += component.count(vertex);
   }
   if (expected_vertices_present == 0) {
@@ -175,20 +180,20 @@ static bool expected_clique_is_present(
 // the expected/calculated cliques.
 static void test_cliques_in_single_component(
     const MaxCliqueTestData& test_data,
-    const AdjacencyData& cleaned_adjacency_data, const set<size_t>& component,
-    set<size_t>& clique_indices_seen) {
+    const AdjacencyData& cleaned_adjacency_data,
+    const set<std::size_t>& component, set<std::size_t>& clique_indices_seen) {
   const LargeCliquesResult calculated_clique_result(
       cleaned_adjacency_data, component, 1000);
 
   REQUIRE(calculated_clique_result.cliques_are_definitely_max_size);
 
-  const size_t max_calc_clique_size_in_this_component =
+  const std::size_t max_calc_clique_size_in_this_component =
       check_that_calculated_cliques_are_valid(
           calculated_clique_result.cliques, cleaned_adjacency_data);
 
   // Which EXPECTED cliques in this component are present
   // in the list of calculated cliques?
-  for (size_t clique_index = 0; clique_index < test_data.cliques.size();
+  for (std::size_t clique_index = 0; clique_index < test_data.cliques.size();
        ++clique_index) {
     const auto& expected_clique_vertices = test_data.cliques[clique_index];
     if (expected_clique_is_present(
@@ -200,11 +205,11 @@ static void test_cliques_in_single_component(
 }
 
 // Returns the number of cliques seen, just as an extra check.
-static size_t test_max_clique_generated_data(
+static std::size_t test_max_clique_generated_data(
     const MaxCliqueTestData& test_data) {
   // We'll check at the end that every expected clique DID occur.
   // The indices are for the vector of index sets.
-  set<size_t> clique_indices_seen;
+  set<std::size_t> clique_indices_seen;
 
   const AdjacencyData cleaned_adjacency_data(test_data.raw_adjacency_data);
 
@@ -228,7 +233,7 @@ static size_t test_max_clique_generated_data(
 SCENARIO("Correctly calculates max cliques") {
   RNG rng;
   MaxCliqueParameters parameters;
-  size_t cliques_seen = 0;
+  std::size_t cliques_seen = 0;
 
   for (parameters.number_of_vertices = 10; parameters.number_of_vertices < 50;
        parameters.number_of_vertices += 20) {

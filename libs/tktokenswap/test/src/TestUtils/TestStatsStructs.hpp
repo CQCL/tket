@@ -21,19 +21,19 @@ namespace tsa_internal {
 namespace tests {
 
 struct MinMaxAv {
-  size_t min = std::numeric_limits<size_t>::max();
-  size_t max = 0;
-  size_t total = 0;
+  std::size_t min = std::numeric_limits<std::size_t>::max();
+  std::size_t max = 0;
+  std::size_t total = 0;
 
-  void add(size_t result);
+  void add(std::size_t result);
 };
 
 struct PartialTsaStatistics {
-  size_t number_of_problems = 0;
-  size_t total_of_L = 0;
-  size_t total_of_L_decreases = 0;
-  size_t total_number_of_tokens = 0;
-  size_t total_number_of_swaps = 0;
+  std::size_t number_of_problems = 0;
+  std::size_t total_of_L = 0;
+  std::size_t total_of_L_decreases = 0;
+  std::size_t total_number_of_tokens = 0;
+  std::size_t total_number_of_swaps = 0;
 
   MinMaxAv l_decrease_percentages;
 
@@ -44,9 +44,10 @@ struct PartialTsaStatistics {
   MinMaxAv powers;
 
   void add_problem_result(
-      size_t initial_L, size_t final_L, size_t tokens, size_t swaps);
+      std::size_t initial_L, std::size_t final_L, std::size_t tokens,
+      std::size_t swaps);
 
-  std::string str(size_t number_of_problems) const;
+  std::string str(std::size_t number_of_problems) const;
 };
 
 }  // namespace tests

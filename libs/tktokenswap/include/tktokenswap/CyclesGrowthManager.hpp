@@ -56,7 +56,7 @@ struct Cycle {
    *  [v0,v1,v2,v3,...,vN] must be a genuine path (the edges must exist),
    *  BUT the edge vN -> v0 to close the cycle does NOT have to exist.
    */
-  std::vector<size_t> vertices;
+  std::vector<std::size_t> vertices;
 
   /** We need this to maintain paths without duplicate vertices.
    *  Maintaining a std::set of vertices for quick lookup would work,
@@ -65,7 +65,7 @@ struct Cycle {
    *  @param vertex A vertex
    *  @return whether that vertex already exists in "vertices".
    */
-  bool contains(size_t vertex) const;
+  bool contains(std::size_t vertex) const;
 };
 
 typedef VectorListHybrid<Cycle> Cycles;
@@ -94,7 +94,7 @@ class CyclesGrowthManager {
    *  to find the best values.
    */
   struct Options {
-    size_t max_cycle_size = 6;
+    std::size_t max_cycle_size = 6;
 
     /** The worst-case total number of cycles grows exponentially,
      *  e.g. the complete graph with n vertices has ~ 0.5 n^2 edges,
@@ -103,7 +103,7 @@ class CyclesGrowthManager {
      *  We avoid exponential time/space blowup by limiting the number
      *  of cycles under consideration; any more are just discarded.
      */
-    size_t max_number_of_cycles = 1000;
+    std::size_t max_number_of_cycles = 1000;
 
     /** Discard a partially built up cycle as soon as the L-decrease
      *  (decrease of total distances of vertices from their targets)

@@ -1,13 +1,25 @@
 Changelog
 =========
 
-Unreleased
-----------
+1.18.0 (unreleased)
+-------------------
+
+Minor new features:
+
+* New constructor for ``ToffoliBox`` that allows switching between two decomposition strategies:
+  ``ToffoliBoxSynthStrat.Matching`` and ``ToffoliBoxSynthStrat.Cycle``. 
+
+1.17.0 (July 2023)
+------------------
 
 Minor new features:
 
 * `Circuit.get_unitary()` and `Circuit.get_statevector()` now work for circuits
   containing boxes.
+* New Box type `PauliExpPairBox`.
+* New Box type `PauliExpCommutingSetBox`.
+* New pass `PauliExponentials` that rewrites a circuit to a sequence of `PauliExpBox`,
+  `PauliExpPairBox`, `PauliExpCommutingSetBox` and a Clifford circuit.
 
 1.16.0 (June 2023)
 ------------------

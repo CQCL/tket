@@ -616,6 +616,14 @@
         "rotation_axis": {
           "type": "string",
           "description": "A string corresponding to the tket OpType of the rotation axis."
+        },
+        "strat": {
+          "type": "string",
+          "enum": [
+            "Cycle",
+            "Matching"
+          ],
+          "definition": "Strategies for synthesising \"ToffoliBoxes\""
         }
       },
       "required": [
@@ -738,7 +746,8 @@
           "then": {
             "required": [
               "permutation",
-              "rotation_axis"
+              "rotation_axis",
+              "strat"
             ]
           }
         },

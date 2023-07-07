@@ -23,7 +23,7 @@
 namespace tket {
 
 struct OverwriteIntervalResult {
-  size_t number_of_overwritten_elements;
+  std::size_t number_of_overwritten_elements;
   tsa_internal::VectorListHybridSkeleton::Index final_overwritten_element_id;
 };
 
@@ -114,7 +114,7 @@ class VectorListHybrid {
    *  to be reused).
    *  @return The number of active elements stored.
    */
-  size_t size() const;
+  std::size_t size() const;
 
   /** Exactly like std::vector push_back. Fine if T is lightweight.
    *  Otherwise, maybe better to reuse elements.
@@ -233,7 +233,7 @@ class VectorListHybrid {
    * @param number_of_elements The number of elements to erase. The list MUST
    * contain enough elements to be erased.
    */
-  void erase_interval(ID id, size_t number_of_elements);
+  void erase_interval(ID id, std::size_t number_of_elements);
 
   /** Starting with the given ID, and given cbegin, cend iterators to a
    * container of T objects, overwrite whatever T objects are currently stored
@@ -334,7 +334,7 @@ bool VectorListHybrid<T>::empty() const {
 }
 
 template <class T>
-size_t VectorListHybrid<T>::size() const {
+std::size_t VectorListHybrid<T>::size() const {
   return m_links_data.size();
 }
 
@@ -458,7 +458,7 @@ void VectorListHybrid<T>::erase(ID id) {
 
 template <class T>
 void VectorListHybrid<T>::erase_interval(
-    typename VectorListHybrid<T>::ID id, size_t number_of_elements) {
+    typename VectorListHybrid<T>::ID id, std::size_t number_of_elements) {
   m_links_data.erase_interval(id, number_of_elements);
 }
 
@@ -523,7 +523,7 @@ template <class T>
 std::string VectorListHybrid<T>::debug_str() const {
   std::stringstream ss;
   ss << "\nRaw stored elems:";
-  for (size_t nn = 0; nn < m_data.size(); ++nn) {
+  for (std::size_t nn = 0; nn < m_data.size(); ++nn) {
     ss << "\nData[" << nn << "] = " << m_data[nn];
   }
   ss << "\n" << m_links_data.debug_str() << "\n";

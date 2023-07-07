@@ -24,7 +24,7 @@ namespace tsa_internal {
 
 const ExactMappingLookup::Result& PartialMappingLookup::operator()(
     const VertexMapping& desired_mapping, const vector<Swap>& edges,
-    const std::set<size_t>& vertices_with_tokens_at_start,
+    const std::set<std::size_t>& vertices_with_tokens_at_start,
     unsigned max_number_of_swaps) {
   const auto& exact_mapping_result =
       m_exact_mapping_lookup(desired_mapping, edges, max_number_of_swaps);

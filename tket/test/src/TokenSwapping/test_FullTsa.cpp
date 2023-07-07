@@ -70,13 +70,13 @@ SCENARIO("Full TSA: stars") {
       "[Star5: 51528: v6 i1 f100 s1: 100 problems; 270 tokens]",
       "[Star10: 51662: v11 i1 f100 s1: 100 problems; 515 tokens]",
       "[Star20: 51494: v21 i1 f100 s1: 100 problems; 1015 tokens]"};
-  const vector<size_t> num_spokes{3, 5, 10, 20};
+  const vector<std::size_t> num_spokes{3, 5, 10, 20};
   FullTester tester;
   tester.test_name = "Stars";
   std::string arch_name;
   vector<std::pair<unsigned, unsigned>> edges;
 
-  for (size_t index = 0; index < problem_messages.size(); ++index) {
+  for (std::size_t index = 0; index < problem_messages.size(); ++index) {
     arch_name = "Star" + std::to_string(num_spokes[index]);
     edges.clear();
     for (unsigned vv = 1; vv <= num_spokes[index]; ++vv) {
@@ -104,13 +104,13 @@ SCENARIO("Full TSA: wheels") {
       "[Wheel10: 51662: v11 i1 f100 s1: 100 problems; 515 tokens]",
       "[Wheel20: 51494: v21 i1 f100 s1: 100 problems; 1015 tokens]"};
 
-  const vector<size_t> num_spokes{3, 5, 10, 20};
+  const vector<std::size_t> num_spokes{3, 5, 10, 20};
   FullTester tester;
   tester.test_name = "Wheels";
   std::string arch_name;
   vector<std::pair<unsigned, unsigned>> edges;
 
-  for (size_t index = 0; index < problem_messages.size(); ++index) {
+  for (std::size_t index = 0; index < problem_messages.size(); ++index) {
     arch_name = "Wheel" + std::to_string(num_spokes[index]);
     edges.clear();
     for (unsigned vv = 1; vv <= num_spokes[index]; ++vv) {
@@ -142,12 +142,12 @@ SCENARIO("Full TSA: Rings") {
       "[Ring5: 51644: v5 i1 f100 s1: 100 problems; 224 tokens]",
       "[Ring10: 51634: v10 i1 f100 s1: 100 problems; 469 tokens]",
       "[Ring20: 51498: v20 i1 f100 s1: 100 problems; 974 tokens]"};
-  const vector<size_t> num_vertices{3, 5, 10, 20};
+  const vector<std::size_t> num_vertices{3, 5, 10, 20};
   FullTester tester;
   tester.test_name = "Rings";
   std::string arch_name;
 
-  for (size_t index = 0; index < problem_messages.size(); ++index) {
+  for (std::size_t index = 0; index < problem_messages.size(); ++index) {
     const RingArch arch(num_vertices[index]);
     arch_name = "Ring" + std::to_string(num_vertices[index]);
     const ArchitectureMapping arch_mapping(arch);
@@ -181,7 +181,7 @@ SCENARIO("Full TSA: Square Grids") {
   FullTester tester;
   tester.test_name = "Square grids";
 
-  for (size_t index = 0; index < grid_parameters.size(); ++index) {
+  for (std::size_t index = 0; index < grid_parameters.size(); ++index) {
     const auto& parameters = grid_parameters[index];
 
     // NOTE: if we used a SquareGrid architecture object, then results
@@ -230,7 +230,7 @@ SCENARIO("Full TSA: Random trees") {
   tester.test_name = "Trees";
   std::string arch_name;
 
-  for (size_t index = 0; index < problem_messages.size(); ++index) {
+  for (std::size_t index = 0; index < problem_messages.size(); ++index) {
     tree_generator.min_number_of_children = index;
     tree_generator.max_number_of_children = 2 + 2 * index;
     tree_generator.approx_number_of_vertices =

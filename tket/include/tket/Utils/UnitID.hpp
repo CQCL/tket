@@ -100,7 +100,7 @@ class UnitID {
   bool operator!=(const UnitID &other) const { return !(*this == other); }
 
   friend std::size_t hash_value(UnitID const &unitid) {
-    size_t seed = 0;
+    std::size_t seed = 0;
     boost::hash_combine(seed, unitid.data_->name_);
     boost::hash_combine(seed, unitid.data_->index_);
     boost::hash_combine(seed, unitid.data_->type_);
