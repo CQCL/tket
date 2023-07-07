@@ -302,12 +302,12 @@ SymSet PhasePolyBox::free_symbols() const {
 // Dynamic Eigen matrix requires special treatment to load, to allocate memory
 template <typename T>
 Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> load_dynamic_matrix(
-    const nlohmann::json& j, size_t rows, size_t cols) {
+    const nlohmann::json& j, std::size_t rows, std::size_t cols) {
   Eigen::Matrix<T, Eigen::Dynamic, Eigen::Dynamic> mat(rows, cols);
 
-  for (size_t row = 0; row < j.size(); ++row) {
+  for (std::size_t row = 0; row < j.size(); ++row) {
     const auto& j_row = j.at(row);
-    for (size_t col = 0; col < j_row.size(); ++col) {
+    for (std::size_t col = 0; col < j_row.size(); ++col) {
       mat(row, col) = j_row.at(col).get<T>();
     }
   }

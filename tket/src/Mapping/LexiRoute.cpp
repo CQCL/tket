@@ -713,7 +713,7 @@ std::pair<bool, bool> LexiRoute::check_bridge(
 
 // Returns the distance between n1 and p1 and the distance between n2 and p2,
 // distance ordered (greatest first)
-const std::pair<size_t, size_t> LexiRoute::pair_distances(
+const std::pair<std::size_t, std::size_t> LexiRoute::pair_distances(
     const Node& p0_first, const Node& p0_second, const Node& p1_first,
     const Node& p1_second) const {
   {
@@ -723,8 +723,10 @@ const std::pair<size_t, size_t> LexiRoute::pair_distances(
                        this->architecture_->node_exists(p1_second);
     TKET_ASSERT(valid);
   }
-  size_t curr_dist1 = this->architecture_->get_distance(p0_first, p0_second);
-  size_t curr_dist2 = this->architecture_->get_distance(p1_first, p1_second);
+  std::size_t curr_dist1 =
+      this->architecture_->get_distance(p0_first, p0_second);
+  std::size_t curr_dist2 =
+      this->architecture_->get_distance(p1_first, p1_second);
   return (curr_dist1 > curr_dist2) ? std::make_pair(curr_dist1, curr_dist2)
                                    : std::make_pair(curr_dist2, curr_dist1);
 }
@@ -758,9 +760,9 @@ void LexiRoute::remove_swaps_decreasing(swap_set_t& swaps) {
     // Check should alrady be done with earlier continue
     TKET_ASSERT(pair_second != swap.first);
 
-    const std::pair<size_t, size_t>& curr_dists =
+    const std::pair<std::size_t, std::size_t>& curr_dists =
         this->pair_distances(swap.first, pair_first, swap.second, pair_second);
-    const std::pair<size_t, size_t>& news_dists =
+    const std::pair<std::size_t, std::size_t>& news_dists =
         this->pair_distances(swap.second, pair_first, swap.first, pair_second);
     if (news_dists >= curr_dists) {
       continue;

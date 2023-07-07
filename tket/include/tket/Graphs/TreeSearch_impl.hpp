@@ -49,7 +49,6 @@ template <typename Graph, typename BoostPMap>
 class TreeSearchBase {
  protected:
   using vertex = utils::vertex<Graph>;
-  using size_t = std::size_t;
   using parent_vec = std::vector<vertex>;
   using color_vec = std::vector<boost::default_color_type>;
   using index_pmap_t = BoostPMap;
@@ -92,7 +91,7 @@ class TreeSearchBase {
   /* vector of distances from the root */
   const dist_vec& get_dists() const& { return dists; }
   const dist_vec&& get_dists() const&& { return std::move(dists); }
-  size_t get_dist(const vertex& v) const { return dists[to_index[v]]; }
+  std::size_t get_dist(const vertex& v) const { return dists[to_index[v]]; }
 
   /* Rebase tree search from some new root */
   void change_root(vertex v) {
@@ -133,7 +132,7 @@ class TreeSearchBase {
   }
 
   /* Depth of tree search */
-  size_t max_depth() const {
+  std::size_t max_depth() const {
     auto it = std::max_element(dists.cbegin(), dists.cend());
     if (it == dists.cend()) {
       throw std::invalid_argument(
@@ -146,7 +145,7 @@ class TreeSearchBase {
   /* Vertex of max depth
    * if more than one exist, returns first found */
   vertex max_depth_vertex() const {
-    const size_t target_depth = max_depth();
+    const std::size_t target_depth = max_depth();
     for (vertex v : boost::make_iterator_range(boost::vertices(this->graph))) {
       if (get_dist(v) == target_depth) {
         return v;

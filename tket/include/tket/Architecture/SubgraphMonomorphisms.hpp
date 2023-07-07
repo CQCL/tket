@@ -31,7 +31,7 @@ struct SubgraphMonomorphisms {
 
   /** Element[i] is the target vertex number which the pattern vertex number i
    * is mapped to. */
-  typedef std::vector<size_t> Mapping;
+  typedef std::vector<std::size_t> Mapping;
 
   /** Only complete, valid mappings are included; they are all distinct from
    * each other. This should be fully deterministic and platform independent

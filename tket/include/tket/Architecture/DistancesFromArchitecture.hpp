@@ -40,7 +40,8 @@ class DistancesFromArchitecture : public DistancesInterface {
    *  @return distance from v1 to v2 within the Architecture graph, throwing if
    * they are disconnected (so the distance is +infinity).
    */
-  virtual size_t operator()(size_t vertex1, size_t vertex2) override;
+  virtual std::size_t operator()(
+      std::size_t vertex1, std::size_t vertex2) override;
 
   /** May save computation time later; by some method, the caller
    *  has determined a path from v1 to v2, and hence all along the path
@@ -51,14 +52,15 @@ class DistancesFromArchitecture : public DistancesInterface {
    * shortest path from v0 to vn. The caller must not call this without being
    * SURE that it really is a shortest path, or incorrect results may occur.
    */
-  virtual void register_shortest_path(const std::vector<size_t>& path) override;
+  virtual void register_shortest_path(
+      const std::vector<std::size_t>& path) override;
 
   /** The caller has determined that v1, v2 are adjacent, and therefore
    *  the distance from v1 to v2 equals one. Store this.
    *  @param vertex1 First vertex
    *  @param vertex2 Second vertex
    */
-  virtual void register_edge(size_t vertex1, size_t vertex2) override;
+  virtual void register_edge(std::size_t vertex1, std::size_t vertex2) override;
 
  private:
   /** Reference to the original object passed into the constructor;
@@ -69,7 +71,7 @@ class DistancesFromArchitecture : public DistancesInterface {
   /** The key is the vertex pair (v1, v2), but always sorted with v1<v2
    *  to use half the space.
    */
-  std::map<Swap, size_t> m_cached_distances;
+  std::map<Swap, std::size_t> m_cached_distances;
 
   /** The main register_shortest_path wraps around this; we want to avoid
    *  quadratic timings growth by cutting off long paths.
@@ -81,7 +83,7 @@ class DistancesFromArchitecture : public DistancesInterface {
    *  @param end Like end(), an index one past the last index in path to use.
    */
   void register_shortest_path_with_limits(
-      const std::vector<size_t>& path, size_t begin, size_t end);
+      const std::vector<std::size_t>& path, std::size_t begin, std::size_t end);
 };
 
 }  // namespace tket
