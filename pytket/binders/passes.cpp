@@ -859,6 +859,7 @@ PYBIND11_MODULE(passes, m) {
 
   m.def(
       "ZZPhaseToRz", &ZZPhaseToRz,
+      "\n"
       "Converts ZZPhase gates with angle pi or -pi to two Rz gates with"
       "angle pi. ",
       "\n\n"
@@ -873,9 +874,8 @@ PYBIND11_MODULE(passes, m) {
   m.def(
       "RoundAngles", &RoundAngles,
       "Round angles to the nearest :math:`\\pi / 2^n`. "
-      "\n\n"
-      ":param n: precision parameter, must be >= 0 and < 32",
-      ":param only_zeros: if True, only round angles less than "
+      "\n\n:param n: precision parameter, must be >= 0 and < 32 "
+      "\n:param only_zeros: if True, only round angles less than "
       ":math:`\\pi / 2^{n+1}` to zero, leave other angles alone (default "
       "False)",
       py::arg("n"), py::arg("only_zeros") = false);
