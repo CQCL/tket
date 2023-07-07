@@ -23,5 +23,10 @@ in
     cmakeFlags = ["-DBUILD_SHARED_LIBS=ON"];
     inherit postFixup;
   };
+  tket-tests = super.stdenv.mkDerivation{
+    name = "tket-tests";
+    src = ../tket/test;
+    buildInputs = inputs-base ++ super.tklibs-static ++ [super.symengine-static self.tket-static];
+  };
   tket = self.tket-static;
 }

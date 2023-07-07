@@ -17,18 +17,21 @@
         };
       in
         {
-          defaultPackage = pkgs.tket-static;
           packages = {
             tket = pkgs.tket;
             tket-static = pkgs.tket-static;
             tket-shared = pkgs.tket-shared;
             pytket = pkgs.pytket;
+            default = pkgs.tket;
           };
           devShell = with pkgs; mkShell {
             buildInputs = [
               pkgs.tket-static
               pkgs.pytket
             ];
+          };
+          checks = {
+            tket-tests = pkgs.tket-tests;
           };
         }
     );
