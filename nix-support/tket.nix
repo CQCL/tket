@@ -1,11 +1,5 @@
 self: super:
 let
-  inputs-base = [ 
-      super.cmake
-      super.boost
-      super.eigen
-      super.nlohmann_json
-  ];
   postFixup = import ./includes-fixup.nix;
   # only import necessary directories so that changes to unrelated
   # files inside of ../tket won't trigger a rebuild
@@ -22,27 +16,22 @@ let
   };
 in
 {
-  tket-static = super.stdenv.mkDerivation{
+  tket = super.stdenv.mkDerivation{
     name = "tket";
     src = tket-without-tests;
-    buildInputs = inputs-base ++ super.tklibs-static ++ [super.symengine-static];
-    cmakeFlags = ["-DBUILD_SHARED_LIBS=OFF"];
-    inherit postFixup;
-  };
-  tket-shared = super.stdenv.mkDerivation{
-    name = "tket";
-    src = tket-without-tests;
-    buildInputs = inputs-base ++ super.tklibs-shared ++ [super.symengine-shared];
+    nativeBuildInputs = [super.cmake];
+    propagatedBuildInputs = super.tklibs ++ [
+      super.boost super.symengine super.eigen super.nlohmann_json
+    ];
     cmakeFlags = ["-DBUILD_SHARED_LIBS=ON"];
     inherit postFixup;
   };
-  tket = self.tket-static;
   
   tket-tests = super.stdenv.mkDerivation{
     name = "tket-tests";
     src = ../tket/test;
     nativeBuildInputs = [super.cmake super.pkg-config];
-    buildInputs = inputs-base ++ super.tklibs-shared ++ [super.symengine-shared self.tket-shared super.catch2_3 self.tklog-shared];
+    buildInputs = [self.tket super.catch2_3];
   };
   run-tket-tests = super.stdenv.mkDerivation{
     name = "run-tket-tests";

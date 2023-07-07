@@ -14,13 +14,7 @@ in
       super.pybind11_json
     ];
     cmakeFlags = ["-DBUILD_SHARED_LIBS=ON" ];
-    buildInputs = [
-      super.boost
-      super.eigen
-      super.symengine-shared
-      super.nlohmann_json
-      super.tket-shared
-    ] ++ super.tklibs-shared ++ super.symengine-shared.buildInputs;
+    propagatedBuildInputs = [ super.tket ];
     unpackPhase = ''
       cp -r ${../pytket/binders} binders;
       cp ${../pytket/CMakeLists.txt} CMakeLists.txt;
@@ -31,17 +25,13 @@ in
     inherit version;
     propagatedBuildInputs = with super.python3.pkgs; [
       self.binders
-      graphviz
-      networkx
-      jinja2
-      sympy
-      scipy
-      numpy
-      typing-extensions
       super.lark-parser
       super.types-pkg_resources
       super.qwasm
-    ] ++ self.binders.buildInputs;
+      graphviz networkx jinja2
+      sympy scipy numpy
+      typing-extensions
+    ];
     
     unpackPhase = ''
       cp -r ${../pytket/pytket} pytket;
