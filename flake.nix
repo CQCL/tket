@@ -7,35 +7,27 @@
       let
         pkgs = import nixpkgs {
           inherit system;
-        };
-
-        # static libs
-        libs-static = pkgs.callPackage ./libs { static=true; };
-        tket-static = pkgs.callPackage ./tket { libs=libs-static; static=true; };
-        symengine-static = pkgs.callPackage ./nix-helpers/symengine.nix { static=true; };
-        # shared libs
-        libs-shared = pkgs.callPackage ./libs { static=false; };
-        symengine-shared = pkgs.callPackage ./nix-helpers/symengine.nix { static=false; };
-        tket-shared = pkgs.callPackage ./tket { libs=libs-shared; static=false; symengine=symengine-shared; };
-        # pytket
-        pytket = pkgs.callPackage ./pytket {
-          libs=libs-shared;
-          tket=tket-shared;
-          symengine=symengine-shared;
+          overlays = [
+            (import ./nix-support/libs.nix)
+            (import ./nix-support/symengine.nix)
+            (import ./nix-support/tket.nix)
+            (import ./nix-support/third-party-python-packages.nix)
+            (import ./nix-support/pytket.nix)
+          ];
         };
       in
         {
-          defaultPackage = tket-static;
+          defaultPackage = pkgs.tket-static;
           packages = {
-            tket = tket-static;
-            tket-static = tket-static;
-            tket-shared = tket-shared;
-            pytket = pytket;
+            tket = pkgs.tket;
+            tket-static = pkgs.tket-static;
+            tket-shared = pkgs.tket-shared;
+            pytket = pkgs.pytket;
           };
           devShell = with pkgs; mkShell {
             buildInputs = [
-              tket-static
-              pytket
+              pkgs.tket-static
+              pkgs.pytket
             ];
           };
         }

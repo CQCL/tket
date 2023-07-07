@@ -150,7 +150,7 @@ class NixBuild(build_ext):
             for lib in os.listdir(location):
                 libpath = os.path.join(location, lib)
                 if not os.path.isdir(libpath):
-                    os.symlink(libpath, os.path.join(extdir, lib))
+                    shutil.copy(libpath, extdir)
 
 setup_dir = os.path.abspath(os.path.dirname(__file__))
 plat_name = os.getenv("WHEEL_PLAT_NAME")
