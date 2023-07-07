@@ -152,7 +152,7 @@ $(function() {
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;  std::sort(</div>
 <div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;      line_pattern.begin(), line_pattern.end(),</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;      [](<a class="code" href="namespacetket.html#ad949814c463d9f998540c0f812e76aa6">qubit_vector_t</a> x, <a class="code" href="namespacetket.html#ad949814c463d9f998540c0f812e76aa6">qubit_vector_t</a> y) {</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        size_t xsz = x.size(), ysz = y.size();</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        std::size_t xsz = x.size(), ysz = y.size();</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;        if (xsz &gt; ysz) {</div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;          return true;</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;        } <span class="keywordflow">else</span> if (xsz &lt; ysz) {</div>

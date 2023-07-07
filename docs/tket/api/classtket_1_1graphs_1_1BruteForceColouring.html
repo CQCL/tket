@@ -90,9 +90,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:af75c8d98b47257941208e6c32fd0ec9c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1graphs_1_1BruteForceColouring.html#af75c8d98b47257941208e6c32fd0ec9c">BruteForceColouring</a> (const <a class="el" href="classtket_1_1graphs_1_1ColouringPriority.html">ColouringPriority</a> &amp;priority, std::size_t suggested_number_of_colours=0)</td></tr>
 <tr class="memdesc:af75c8d98b47257941208e6c32fd0ec9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">All the calculation is done upon construction.  <a href="classtket_1_1graphs_1_1BruteForceColouring.html#af75c8d98b47257941208e6c32fd0ec9c">More...</a><br /></td></tr>
 <tr class="separator:af75c8d98b47257941208e6c32fd0ec9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a22dfa236aa62336742a496bdad4ed9f7"><td class="memItemLeft" align="right" valign="top">const std::map&lt; std::size_t, std::size_t &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1graphs_1_1BruteForceColouring.html#a22dfa236aa62336742a496bdad4ed9f7">get_colours</a> () const</td></tr>
-<tr class="memdesc:a22dfa236aa62336742a496bdad4ed9f7"><td class="mdescLeft">&#160;</td><td class="mdescRight">The colours found for this component (already calculated during construction).  <a href="classtket_1_1graphs_1_1BruteForceColouring.html#a22dfa236aa62336742a496bdad4ed9f7">More...</a><br /></td></tr>
-<tr class="separator:a22dfa236aa62336742a496bdad4ed9f7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aa495baf91ba6e94fee3196054d05d13c"><td class="memItemLeft" align="right" valign="top">const std::map&lt; std::size_t, std::size_t &gt; &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1graphs_1_1BruteForceColouring.html#aa495baf91ba6e94fee3196054d05d13c">get_colours</a> () const</td></tr>
+<tr class="memdesc:aa495baf91ba6e94fee3196054d05d13c"><td class="mdescLeft">&#160;</td><td class="mdescRight">The colours found for this component (already calculated during construction).  <a href="classtket_1_1graphs_1_1BruteForceColouring.html#aa495baf91ba6e94fee3196054d05d13c">More...</a><br /></td></tr>
+<tr class="separator:aa495baf91ba6e94fee3196054d05d13c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a8ef3840bd8d8ac845c69123895ee0ef2"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1graphs_1_1BruteForceColouring.html#a8ef3840bd8d8ac845c69123895ee0ef2">~BruteForceColouring</a> ()</td></tr>
 <tr class="separator:a8ef3840bd8d8ac845c69123895ee0ef2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
@@ -137,7 +137,7 @@ Public Member Functions</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="BruteForceColouring_8cpp_source.html#l00173">173</a> of file <a class="el" href="BruteForceColouring_8cpp_source.html">BruteForceColouring.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="BruteForceColouring_8cpp_source.html#l00176">176</a> of file <a class="el" href="BruteForceColouring_8cpp_source.html">BruteForceColouring.cpp</a>.</p>
 
 </div>
 </div>
@@ -156,19 +156,19 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="BruteForceColouring_8cpp_source.html#l00171">171</a> of file <a class="el" href="BruteForceColouring_8cpp_source.html">BruteForceColouring.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="BruteForceColouring_8cpp_source.html#l00174">174</a> of file <a class="el" href="BruteForceColouring_8cpp_source.html">BruteForceColouring.cpp</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a22dfa236aa62336742a496bdad4ed9f7"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a22dfa236aa62336742a496bdad4ed9f7">&#9670;&nbsp;</a></span>get_colours()</h2>
+<a id="aa495baf91ba6e94fee3196054d05d13c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aa495baf91ba6e94fee3196054d05d13c">&#9670;&nbsp;</a></span>get_colours()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">const map&lt; size_t, size_t &gt; &amp; tket::graphs::BruteForceColouring::get_colours </td>
+          <td class="memname">const map&lt; std::size_t, std::size_t &gt; &amp; tket::graphs::BruteForceColouring::get_colours </td>
           <td>(</td>
           <td class="paramname"></td><td>)</td>
           <td> const</td>
@@ -179,7 +179,7 @@ Public Member Functions</h2></td></tr>
 <p>The colours found for this component (already calculated during construction). </p>
 <p>It is a vertex -&gt; colour mapping. </p>
 
-<p class="definition">Definition at line <a class="el" href="BruteForceColouring_8cpp_source.html#l00230">230</a> of file <a class="el" href="BruteForceColouring_8cpp_source.html">BruteForceColouring.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="BruteForceColouring_8cpp_source.html#l00233">233</a> of file <a class="el" href="BruteForceColouring_8cpp_source.html">BruteForceColouring.cpp</a>.</p>
 
 </div>
 </div>

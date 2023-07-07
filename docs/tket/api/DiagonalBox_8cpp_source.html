@@ -105,7 +105,7 @@ $(function() {
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    : <a class="code" href="classtket_1_1Box.html">Box</a>(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a>::<a class="code" href="classtket_1_1DiagonalBox.html">DiagonalBox</a>),</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;      diagonal_(diagonal),</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;      upper_triangle_(upper_triangle) {</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;  <span class="keywordtype">size_t</span> length = diagonal.size();</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;  std::size_t length = diagonal.size();</div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;  <span class="keywordflow">if</span> (length &lt; 2 || (length &amp; (length - 1)) != 0) {</div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="keywordflow">throw</span> std::invalid_argument(</div>
 <div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;        <span class="stringliteral">&quot;The size of the diagonal operator passed to DiagonalBox is not a &quot;</span></div>

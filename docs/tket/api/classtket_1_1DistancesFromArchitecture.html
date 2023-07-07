@@ -108,15 +108,15 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a29af9a8def968057a171c9dbeabf457f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1DistancesFromArchitecture.html#a29af9a8def968057a171c9dbeabf457f">DistancesFromArchitecture</a> (const <a class="el" href="classtket_1_1ArchitectureMapping.html">ArchitectureMapping</a> &amp;arch_mapping)</td></tr>
 <tr class="memdesc:a29af9a8def968057a171c9dbeabf457f"><td class="mdescLeft">&#160;</td><td class="mdescRight">The <a class="el" href="classtket_1_1ArchitectureMapping.html" title="Intended for use with TokenSwapping.">ArchitectureMapping</a> object already handles the <a class="el" href="classtket_1_1Node.html" title="Architectural qubit location.">Node</a> &lt;-&gt; vertex size_t conversion.  <a href="classtket_1_1DistancesFromArchitecture.html#a29af9a8def968057a171c9dbeabf457f">More...</a><br /></td></tr>
 <tr class="separator:a29af9a8def968057a171c9dbeabf457f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a19337ce68dd0ba99e8fb0d3e00f69e61"><td class="memItemLeft" align="right" valign="top">virtual size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1DistancesFromArchitecture.html#a19337ce68dd0ba99e8fb0d3e00f69e61">operator()</a> (size_t vertex1, size_t vertex2) override</td></tr>
-<tr class="memdesc:a19337ce68dd0ba99e8fb0d3e00f69e61"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the distance from v1 to v2.  <a href="classtket_1_1DistancesFromArchitecture.html#a19337ce68dd0ba99e8fb0d3e00f69e61">More...</a><br /></td></tr>
-<tr class="separator:a19337ce68dd0ba99e8fb0d3e00f69e61"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:afb11a0b8f31a36ffc755ea222ab46122"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1DistancesFromArchitecture.html#afb11a0b8f31a36ffc755ea222ab46122">register_shortest_path</a> (const std::vector&lt; size_t &gt; &amp;path) override</td></tr>
-<tr class="memdesc:afb11a0b8f31a36ffc755ea222ab46122"><td class="mdescLeft">&#160;</td><td class="mdescRight">May save computation time later; by some method, the caller has determined a path from v1 to v2, and hence all along the path we know the distance between any two points.  <a href="classtket_1_1DistancesFromArchitecture.html#afb11a0b8f31a36ffc755ea222ab46122">More...</a><br /></td></tr>
-<tr class="separator:afb11a0b8f31a36ffc755ea222ab46122"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a99eb26a901a089c35cf31a55b918f55c"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1DistancesFromArchitecture.html#a99eb26a901a089c35cf31a55b918f55c">register_edge</a> (size_t vertex1, size_t vertex2) override</td></tr>
-<tr class="memdesc:a99eb26a901a089c35cf31a55b918f55c"><td class="mdescLeft">&#160;</td><td class="mdescRight">The caller has determined that v1, v2 are adjacent, and therefore the distance from v1 to v2 equals one.  <a href="classtket_1_1DistancesFromArchitecture.html#a99eb26a901a089c35cf31a55b918f55c">More...</a><br /></td></tr>
-<tr class="separator:a99eb26a901a089c35cf31a55b918f55c"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a712294f18ccdb2ddbf58de3c8e2fb93b"><td class="memItemLeft" align="right" valign="top">virtual std::size_t&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1DistancesFromArchitecture.html#a712294f18ccdb2ddbf58de3c8e2fb93b">operator()</a> (std::size_t vertex1, std::size_t vertex2) override</td></tr>
+<tr class="memdesc:a712294f18ccdb2ddbf58de3c8e2fb93b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the distance from v1 to v2.  <a href="classtket_1_1DistancesFromArchitecture.html#a712294f18ccdb2ddbf58de3c8e2fb93b">More...</a><br /></td></tr>
+<tr class="separator:a712294f18ccdb2ddbf58de3c8e2fb93b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0e9eb3e1062552e60893239323ea1219"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1DistancesFromArchitecture.html#a0e9eb3e1062552e60893239323ea1219">register_shortest_path</a> (const std::vector&lt; std::size_t &gt; &amp;path) override</td></tr>
+<tr class="memdesc:a0e9eb3e1062552e60893239323ea1219"><td class="mdescLeft">&#160;</td><td class="mdescRight">May save computation time later; by some method, the caller has determined a path from v1 to v2, and hence all along the path we know the distance between any two points.  <a href="classtket_1_1DistancesFromArchitecture.html#a0e9eb3e1062552e60893239323ea1219">More...</a><br /></td></tr>
+<tr class="separator:a0e9eb3e1062552e60893239323ea1219"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4d17f0dabc68f231617ada1bbc962332"><td class="memItemLeft" align="right" valign="top">virtual void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1DistancesFromArchitecture.html#a4d17f0dabc68f231617ada1bbc962332">register_edge</a> (std::size_t vertex1, std::size_t vertex2) override</td></tr>
+<tr class="memdesc:a4d17f0dabc68f231617ada1bbc962332"><td class="mdescLeft">&#160;</td><td class="mdescRight">The caller has determined that v1, v2 are adjacent, and therefore the distance from v1 to v2 equals one.  <a href="classtket_1_1DistancesFromArchitecture.html#a4d17f0dabc68f231617ada1bbc962332">More...</a><br /></td></tr>
+<tr class="separator:a4d17f0dabc68f231617ada1bbc962332"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Directly get distances from an architecture object, but evaluated lazily. </p>
@@ -160,8 +160,8 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a19337ce68dd0ba99e8fb0d3e00f69e61"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a19337ce68dd0ba99e8fb0d3e00f69e61">&#9670;&nbsp;</a></span>operator()()</h2>
+<a id="a712294f18ccdb2ddbf58de3c8e2fb93b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a712294f18ccdb2ddbf58de3c8e2fb93b">&#9670;&nbsp;</a></span>operator()()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -170,15 +170,15 @@ Public Member Functions</h2></td></tr>
   <td class="mlabels-left">
       <table class="memname">
         <tr>
-          <td class="memname">size_t tket::DistancesFromArchitecture::operator() </td>
+          <td class="memname">std::size_t tket::DistancesFromArchitecture::operator() </td>
           <td>(</td>
-          <td class="paramtype">size_t&#160;</td>
+          <td class="paramtype">std::size_t&#160;</td>
           <td class="paramname"><em>vertex1</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">size_t&#160;</td>
+          <td class="paramtype">std::size_t&#160;</td>
           <td class="paramname"><em>vertex2</em>&#160;</td>
         </tr>
         <tr>
@@ -204,12 +204,12 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>distance from v1 to v2 within the <a class="el" href="classtket_1_1Architecture.html">Architecture</a> graph, throwing if they are disconnected (so the distance is +infinity). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="DistancesFromArchitecture_8cpp_source.html#l00061">61</a> of file <a class="el" href="DistancesFromArchitecture_8cpp_source.html">DistancesFromArchitecture.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="DistancesFromArchitecture_8cpp_source.html#l00062">62</a> of file <a class="el" href="DistancesFromArchitecture_8cpp_source.html">DistancesFromArchitecture.cpp</a>.</p>
 
 </div>
 </div>
-<a id="a99eb26a901a089c35cf31a55b918f55c"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a99eb26a901a089c35cf31a55b918f55c">&#9670;&nbsp;</a></span>register_edge()</h2>
+<a id="a4d17f0dabc68f231617ada1bbc962332"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4d17f0dabc68f231617ada1bbc962332">&#9670;&nbsp;</a></span>register_edge()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -220,13 +220,13 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">void tket::DistancesFromArchitecture::register_edge </td>
           <td>(</td>
-          <td class="paramtype">size_t&#160;</td>
+          <td class="paramtype">std::size_t&#160;</td>
           <td class="paramname"><em>vertex1</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">size_t&#160;</td>
+          <td class="paramtype">std::size_t&#160;</td>
           <td class="paramname"><em>vertex2</em>&#160;</td>
         </tr>
         <tr>
@@ -255,8 +255,8 @@ Public Member Functions</h2></td></tr>
 
 </div>
 </div>
-<a id="afb11a0b8f31a36ffc755ea222ab46122"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#afb11a0b8f31a36ffc755ea222ab46122">&#9670;&nbsp;</a></span>register_shortest_path()</h2>
+<a id="a0e9eb3e1062552e60893239323ea1219"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0e9eb3e1062552e60893239323ea1219">&#9670;&nbsp;</a></span>register_shortest_path()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -267,7 +267,7 @@ Public Member Functions</h2></td></tr>
         <tr>
           <td class="memname">void tket::DistancesFromArchitecture::register_shortest_path </td>
           <td>(</td>
-          <td class="paramtype">const std::vector&lt; size_t &gt; &amp;&#160;</td>
+          <td class="paramtype">const std::vector&lt; std::size_t &gt; &amp;&#160;</td>
           <td class="paramname"><em>path</em></td><td>)</td>
           <td></td>
         </tr>

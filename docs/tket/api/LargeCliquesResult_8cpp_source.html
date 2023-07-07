@@ -103,74 +103,76 @@ $(function() {
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
 <div class="line"><a name="l00026"></a><span class="lineno"><a class="line" href="structtket_1_1graphs_1_1LargeCliquesResult.html#a748a6cc7e0ca62dbeac85ce154c2f153">   26</a></span>&#160;<a class="code" href="structtket_1_1graphs_1_1LargeCliquesResult.html#a748a6cc7e0ca62dbeac85ce154c2f153">LargeCliquesResult::LargeCliquesResult</a>(</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <span class="keyword">const</span> <a class="code" href="classtket_1_1graphs_1_1AdjacencyData.html">AdjacencyData</a>&amp; adjacency_data,</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keyword">const</span> set&lt;size_t&gt;&amp; vertices_in_component, <span class="keywordtype">size_t</span> internal_size_limit) {</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;  <span class="comment">// ...and, before swapping, everything in here will have size one greater than</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;  <span class="comment">// &quot;result&quot;.</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;  vector&lt;set&lt;size_t&gt;&gt; extended_result;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;  <span class="comment">// At each stage, every set will have the same size, containing a clique of</span></div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;  <span class="comment">// that size.</span></div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;  <a class="code" href="structtket_1_1graphs_1_1LargeCliquesResult.html#aebd3bf692545a6760741845a1a1f3acf">cliques</a>.reserve(vertices_in_component.size());</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i : vertices_in_component) {</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <a class="code" href="structtket_1_1graphs_1_1LargeCliquesResult.html#aebd3bf692545a6760741845a1a1f3acf">cliques</a>.emplace_back(set{i});</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;  }</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  <span class="keywordtype">bool</span> hit_internal_limit = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160; </div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;  <span class="comment">// A little trick: the vertex indices can always be stored in order: v1 &lt; v2 &lt;</span></div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  <span class="comment">// ... Therefore, within each vertex set, if we only allow adding vertices</span></div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  <span class="comment">// with LARGER index than the largest already stored, we will automatically</span></div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  <span class="comment">// discard duplicates.</span></div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> counter = 0; counter &lt;= vertices_in_component.size(); ++counter) {</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="comment">// Extend the existing results.</span></div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; clique : <a class="code" href="structtket_1_1graphs_1_1LargeCliquesResult.html#aebd3bf692545a6760741845a1a1f3acf">cliques</a>) {</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;      <span class="comment">// Guaranteed to be nonempty.</span></div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;      <span class="keyword">const</span> <span class="keywordtype">size_t</span> largest_index = *clique.crbegin();</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160; </div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;      <span class="keywordflow">if</span> (extended_result.size() &gt;= internal_size_limit) {</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;        hit_internal_limit = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;        <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;      }</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;      <span class="comment">// We only have to check the neighbours of ONE vertex to form a larger</span></div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;      <span class="comment">// clique.</span></div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;      <span class="keyword">const</span> <span class="keyword">auto</span>&amp; neighbours = adjacency_data.<a class="code" href="classtket_1_1graphs_1_1AdjacencyData.html#adb6dd32fb93926039411efb5a93904a9">get_neighbours</a>(largest_index);</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;      <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> new_v : neighbours) {</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;        <span class="keywordflow">if</span> (new_v &lt;= largest_index) {</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;          <span class="keywordflow">continue</span>;</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        }</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;        <span class="comment">// We have a new vertex; does it adjoin EVERY existing vertex?</span></div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        <span class="keywordtype">bool</span> joins_every_vertex = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> existing_v : clique) {</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;          <span class="keywordflow">if</span> (adjacency_data.<a class="code" href="classtket_1_1graphs_1_1AdjacencyData.html#adb6dd32fb93926039411efb5a93904a9">get_neighbours</a>(existing_v).count(new_v) == 0) {</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;            joins_every_vertex = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;            <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;          }</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;        }</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;        <span class="keywordflow">if</span> (joins_every_vertex) {</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;          extended_result.emplace_back(clique);</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;          extended_result.back().insert(new_v);</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;          <span class="keywordflow">if</span> (extended_result.size() &gt;= internal_size_limit) {</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;            hit_internal_limit = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;            <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;          }</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;        }</div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;      }</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    }</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;    <span class="keywordflow">if</span> (extended_result.empty()) {</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;      <span class="comment">// No extensions</span></div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;      <a class="code" href="structtket_1_1graphs_1_1LargeCliquesResult.html#a8485fab6b0cbeae7251a86d745400eb6">cliques_are_definitely_max_size</a> = !hit_internal_limit;</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;      <span class="keywordflow">return</span>;</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    }</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    <a class="code" href="structtket_1_1graphs_1_1LargeCliquesResult.html#aebd3bf692545a6760741845a1a1f3acf">cliques</a> = extended_result;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <span class="comment">// TODO: improve memory reallocation etc. by reusing rather than clearing</span></div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <span class="comment">// (or, could be sneaky and do this within a single vector, jiggle with</span></div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    <span class="comment">// indices).</span></div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    extended_result.clear();</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;  }</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;  <a class="code" href="structtket_1_1graphs_1_1LargeCliquesResult.html#a8485fab6b0cbeae7251a86d745400eb6">cliques_are_definitely_max_size</a> = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;}</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;}  <span class="comment">// namespace graphs</span></div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;}  <span class="comment">// namespace tket</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keyword">const</span> set&lt;std::size_t&gt;&amp; vertices_in_component,</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    std::size_t internal_size_limit) {</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;  <span class="comment">// ...and, before swapping, everything in here will have size one greater than</span></div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;  <span class="comment">// &quot;result&quot;.</span></div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;  vector&lt;set&lt;std::size_t&gt;&gt; extended_result;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;  <span class="comment">// At each stage, every set will have the same size, containing a clique of</span></div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;  <span class="comment">// that size.</span></div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;  <a class="code" href="structtket_1_1graphs_1_1LargeCliquesResult.html#aebd3bf692545a6760741845a1a1f3acf">cliques</a>.reserve(vertices_in_component.size());</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;  <span class="keywordflow">for</span> (std::size_t i : vertices_in_component) {</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <a class="code" href="structtket_1_1graphs_1_1LargeCliquesResult.html#aebd3bf692545a6760741845a1a1f3acf">cliques</a>.emplace_back(set{i});</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  }</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  <span class="keywordtype">bool</span> hit_internal_limit = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  <span class="comment">// A little trick: the vertex indices can always be stored in order: v1 &lt; v2 &lt;</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  <span class="comment">// ... Therefore, within each vertex set, if we only allow adding vertices</span></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  <span class="comment">// with LARGER index than the largest already stored, we will automatically</span></div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;  <span class="comment">// discard duplicates.</span></div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;  <span class="keywordflow">for</span> (std::size_t counter = 0; counter &lt;= vertices_in_component.size();</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;       ++counter) {</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    <span class="comment">// Extend the existing results.</span></div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; clique : <a class="code" href="structtket_1_1graphs_1_1LargeCliquesResult.html#aebd3bf692545a6760741845a1a1f3acf">cliques</a>) {</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;      <span class="comment">// Guaranteed to be nonempty.</span></div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;      <span class="keyword">const</span> std::size_t largest_index = *clique.crbegin();</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160; </div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;      <span class="keywordflow">if</span> (extended_result.size() &gt;= internal_size_limit) {</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;        hit_internal_limit = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;        <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;      }</div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;      <span class="comment">// We only have to check the neighbours of ONE vertex to form a larger</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;      <span class="comment">// clique.</span></div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;      <span class="keyword">const</span> <span class="keyword">auto</span>&amp; neighbours = adjacency_data.<a class="code" href="classtket_1_1graphs_1_1AdjacencyData.html#adb6dd32fb93926039411efb5a93904a9">get_neighbours</a>(largest_index);</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;      <span class="keywordflow">for</span> (std::size_t new_v : neighbours) {</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;        <span class="keywordflow">if</span> (new_v &lt;= largest_index) {</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;          <span class="keywordflow">continue</span>;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;        }</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;        <span class="comment">// We have a new vertex; does it adjoin EVERY existing vertex?</span></div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;        <span class="keywordtype">bool</span> joins_every_vertex = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;        <span class="keywordflow">for</span> (std::size_t existing_v : clique) {</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;          <span class="keywordflow">if</span> (adjacency_data.<a class="code" href="classtket_1_1graphs_1_1AdjacencyData.html#adb6dd32fb93926039411efb5a93904a9">get_neighbours</a>(existing_v).count(new_v) == 0) {</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;            joins_every_vertex = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;          }</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;        }</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;        <span class="keywordflow">if</span> (joins_every_vertex) {</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;          extended_result.emplace_back(clique);</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;          extended_result.back().insert(new_v);</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;          <span class="keywordflow">if</span> (extended_result.size() &gt;= internal_size_limit) {</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;            hit_internal_limit = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;          }</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;        }</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;      }</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;    }</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <span class="keywordflow">if</span> (extended_result.empty()) {</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;      <span class="comment">// No extensions</span></div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;      <a class="code" href="structtket_1_1graphs_1_1LargeCliquesResult.html#a8485fab6b0cbeae7251a86d745400eb6">cliques_are_definitely_max_size</a> = !hit_internal_limit;</div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;      <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    }</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <a class="code" href="structtket_1_1graphs_1_1LargeCliquesResult.html#aebd3bf692545a6760741845a1a1f3acf">cliques</a> = extended_result;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    <span class="comment">// TODO: improve memory reallocation etc. by reusing rather than clearing</span></div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <span class="comment">// (or, could be sneaky and do this within a single vector, jiggle with</span></div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="comment">// indices).</span></div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    extended_result.clear();</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;  }</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;  <a class="code" href="structtket_1_1graphs_1_1LargeCliquesResult.html#a8485fab6b0cbeae7251a86d745400eb6">cliques_are_definitely_max_size</a> = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;}</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;}  <span class="comment">// namespace graphs</span></div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;}  <span class="comment">// namespace tket</span></div>
 <div class="ttc" id="aAdjacencyData_8hpp_html"><div class="ttname"><a href="AdjacencyData_8hpp.html">AdjacencyData.hpp</a></div></div>
 <div class="ttc" id="aLargeCliquesResult_8hpp_html"><div class="ttname"><a href="LargeCliquesResult_8hpp.html">LargeCliquesResult.hpp</a></div></div>
 <div class="ttc" id="aclasstket_1_1graphs_1_1AdjacencyData_html"><div class="ttname"><a href="classtket_1_1graphs_1_1AdjacencyData.html">tket::graphs::AdjacencyData</a></div><div class="ttdoc">Data for an undirected graph.</div><div class="ttdef"><b>Definition:</b> <a href="AdjacencyData_8hpp_source.html#l00062">AdjacencyData.hpp:62</a></div></div>

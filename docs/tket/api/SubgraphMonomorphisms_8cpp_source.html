@@ -101,7 +101,7 @@ $(function() {
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">using namespace </span>WeightedSubgraphMonomorphism;</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
 <div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">static</span> GraphEdgeWeights get_weight_one_edges(</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="keyword">const</span> std::vector&lt;Swap&gt;&amp; edges, <span class="keywordtype">size_t</span> number_of_vertices) {</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;    <span class="keyword">const</span> std::vector&lt;Swap&gt;&amp; edges, std::size_t number_of_vertices) {</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;  GraphEdgeWeights result;</div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; <a class="code" href="namespacetket_1_1graphs_1_1utils.html#a0ddb76f99e73585abb2f33d56bd69710">edge</a> : edges) {</div>
 <div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    TKET_ASSERT(<a class="code" href="namespacetket_1_1graphs_1_1utils.html#a0ddb76f99e73585abb2f33d56bd69710">edge</a>.first &lt; number_of_vertices);</div>
@@ -113,14 +113,14 @@ $(function() {
 <div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;}</div>
 <div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
 <div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> add_solver_solutions(</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keyword">const</span> std::vector&lt;SolutionWSM&gt;&amp; solutions, <span class="keywordtype">size_t</span> pattern_n_vertices,</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keywordtype">size_t</span> target_n_vertices, SubgraphMonomorphisms&amp; monomorphisms) {</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <span class="keyword">const</span> std::vector&lt;SolutionWSM&gt;&amp; solutions, std::size_t pattern_n_vertices,</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    std::size_t target_n_vertices, SubgraphMonomorphisms&amp; monomorphisms) {</div>
 <div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  monomorphisms.mappings.reserve(solutions.size());</div>
 <div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  <span class="comment">// The solver ignores isolated vertices, so we&#39;ll fill them in separately.</span></div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  std::set&lt;size_t&gt; used_pattern_vertices;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  std::set&lt;size_t&gt; used_pattern_vertices_copy;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;  std::set&lt;size_t&gt; used_target_vertices;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  std::set&lt;std::size_t&gt; used_pattern_vertices;</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  std::set&lt;std::size_t&gt; used_pattern_vertices_copy;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;  std::set&lt;std::size_t&gt; used_target_vertices;</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; solution : solutions) {</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    monomorphisms.mappings.emplace_back();</div>
@@ -150,8 +150,8 @@ $(function() {
 <div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    }</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;    <span class="comment">// Now, fill in isolated p-vertex values.</span></div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    <span class="keywordtype">size_t</span> next_tv = 0;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> pv = 0; pv &lt; pattern_n_vertices; ++pv) {</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;    std::size_t next_tv = 0;</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    <span class="keywordflow">for</span> (std::size_t pv = 0; pv &lt; pattern_n_vertices; ++pv) {</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;      <span class="comment">// We could save time by saving the isolated PVs,</span></div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;      <span class="comment">// but surely not worth it</span></div>
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;      <span class="keywordflow">if</span> (used_pattern_vertices.count(pv) != 0) {</div>
@@ -170,10 +170,10 @@ $(function() {
 <div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="comment">// of target vertices, and all permutations of k pattern vertices,</span></div>
 <div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="comment">// but don&#39;t bother for now - just give one solution.</span></div>
 <div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> fill_with_all_isolated_pattern_vertices(</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    SubgraphMonomorphisms&amp; monomorphisms, <span class="keywordtype">size_t</span> pattern_n_vertices) {</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    SubgraphMonomorphisms&amp; monomorphisms, std::size_t pattern_n_vertices) {</div>
 <div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;  monomorphisms.mappings.resize(1);</div>
 <div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;  monomorphisms.mappings[0].resize(pattern_n_vertices);</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> ii = 0; ii &lt; pattern_n_vertices; ++ii) {</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;  <span class="keywordflow">for</span> (std::size_t ii = 0; ii &lt; pattern_n_vertices; ++ii) {</div>
 <div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    monomorphisms.mappings[0][ii] = ii;</div>
 <div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;  }</div>
 <div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;}</div>
@@ -186,8 +186,8 @@ $(function() {
 <div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;  <span class="keywordflow">if</span> (parameters.<a class="code" href="structtket_1_1SubgraphMonomorphisms_1_1Parameters.html#aed7e5d696d0efcf38c57d92c2407fdec">max_number_of_mappings</a> == 0) {</div>
 <div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    <span class="keywordflow">return</span>;</div>
 <div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;  }</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;  <span class="keyword">const</span> <span class="keyword">auto</span> pattern_n_vertices = pattern_arch_mapping.<a class="code" href="classtket_1_1ArchitectureMapping.html#a161ddec97c1481504d11aa03dc424453">number_of_vertices</a>();</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;  <span class="keyword">const</span> <span class="keyword">auto</span> target_n_vertices = target_arch_mapping.<a class="code" href="classtket_1_1ArchitectureMapping.html#a161ddec97c1481504d11aa03dc424453">number_of_vertices</a>();</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;  <span class="keyword">const</span> <span class="keyword">auto</span> pattern_n_vertices = pattern_arch_mapping.<a class="code" href="classtket_1_1ArchitectureMapping.html#a19b316fac6320bd369b0575f4cfb2f21">number_of_vertices</a>();</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;  <span class="keyword">const</span> <span class="keyword">auto</span> target_n_vertices = target_arch_mapping.<a class="code" href="classtket_1_1ArchitectureMapping.html#a19b316fac6320bd369b0575f4cfb2f21">number_of_vertices</a>();</div>
 <div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;  <span class="keywordflow">if</span> (pattern_n_vertices &gt; target_n_vertices) {</div>
 <div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    <span class="keywordflow">return</span>;</div>
 <div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;  }</div>
@@ -227,7 +227,7 @@ $(function() {
 <div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;}  <span class="comment">// namespace tket</span></div>
 <div class="ttc" id="aSubgraphMonomorphisms_8hpp_html"><div class="ttname"><a href="SubgraphMonomorphisms_8hpp.html">SubgraphMonomorphisms.hpp</a></div></div>
 <div class="ttc" id="aclasstket_1_1ArchitectureMapping_html"><div class="ttname"><a href="classtket_1_1ArchitectureMapping.html">tket::ArchitectureMapping</a></div><div class="ttdoc">Intended for use with TokenSwapping.</div><div class="ttdef"><b>Definition:</b> <a href="ArchitectureMapping_8hpp_source.html#l00038">ArchitectureMapping.hpp:38</a></div></div>
-<div class="ttc" id="aclasstket_1_1ArchitectureMapping_html_a161ddec97c1481504d11aa03dc424453"><div class="ttname"><a href="classtket_1_1ArchitectureMapping.html#a161ddec97c1481504d11aa03dc424453">tket::ArchitectureMapping::number_of_vertices</a></div><div class="ttdeci">size_t number_of_vertices() const</div><div class="ttdoc">The number of vertices in the Architecture.</div><div class="ttdef"><b>Definition:</b> <a href="ArchitectureMapping_8cpp_source.html#l00094">ArchitectureMapping.cpp:94</a></div></div>
+<div class="ttc" id="aclasstket_1_1ArchitectureMapping_html_a19b316fac6320bd369b0575f4cfb2f21"><div class="ttname"><a href="classtket_1_1ArchitectureMapping.html#a19b316fac6320bd369b0575f4cfb2f21">tket::ArchitectureMapping::number_of_vertices</a></div><div class="ttdeci">std::size_t number_of_vertices() const</div><div class="ttdoc">The number of vertices in the Architecture.</div><div class="ttdef"><b>Definition:</b> <a href="ArchitectureMapping_8cpp_source.html#l00094">ArchitectureMapping.cpp:94</a></div></div>
 <div class="ttc" id="aclasstket_1_1ArchitectureMapping_html_a827870cb582f7eb9d639ba07537d21b6"><div class="ttname"><a href="classtket_1_1ArchitectureMapping.html#a827870cb582f7eb9d639ba07537d21b6">tket::ArchitectureMapping::get_edges</a></div><div class="ttdeci">std::vector&lt; Swap &gt; get_edges() const</div><div class="ttdoc">Get the edges using the vertices created by this ArchitectureMapping object.</div><div class="ttdef"><b>Definition:</b> <a href="ArchitectureMapping_8cpp_source.html#l00124">ArchitectureMapping.cpp:124</a></div></div>
 <div class="ttc" id="anamespacetket_1_1graphs_1_1utils_html_a0ddb76f99e73585abb2f33d56bd69710"><div class="ttname"><a href="namespacetket_1_1graphs_1_1utils.html#a0ddb76f99e73585abb2f33d56bd69710">tket::graphs::utils::edge</a></div><div class="ttdeci">detail::edge&lt; T &gt; edge</div><div class="ttdef"><b>Definition:</b> <a href="Utils_8hpp_source.html#l00039">Utils.hpp:39</a></div></div>
 <div class="ttc" id="anamespacetket_html"><div class="ttname"><a href="namespacetket.html">tket</a></div><div class="ttdoc">Defines tket::DeviceCharacterisation, used in NoiseAwarePlacement and in commute_SQ_gates_through_SWA...</div><div class="ttdef"><b>Definition:</b> <a href="Path_8cpp_source.html#l00019">Path.cpp:19</a></div></div>

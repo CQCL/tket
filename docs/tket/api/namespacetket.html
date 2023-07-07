@@ -739,8 +739,8 @@ Typedefs</h2></td></tr>
 <tr class="separator:a1d1f68863e6dd51735b1184f7e98e700"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a58227251a0754eedcc656c2552afae55"><td class="memItemLeft" align="right" valign="top">typedef std::set&lt; <a class="el" href="namespacetket.html#a1d1f68863e6dd51735b1184f7e98e700">swap_t</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a58227251a0754eedcc656c2552afae55">swap_set_t</a></td></tr>
 <tr class="separator:a58227251a0754eedcc656c2552afae55"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab4c7d0d5df6f3f632b227405be98884d"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; size_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#ab4c7d0d5df6f3f632b227405be98884d">lexicographical_distances_t</a></td></tr>
-<tr class="separator:ab4c7d0d5df6f3f632b227405be98884d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6409f03baf062ca16fff9b5b0dc09554"><td class="memItemLeft" align="right" valign="top">typedef std::vector&lt; std::size_t &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a6409f03baf062ca16fff9b5b0dc09554">lexicographical_distances_t</a></td></tr>
+<tr class="separator:a6409f03baf062ca16fff9b5b0dc09554"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a1d2b39b141fc098257835665b8d5830f"><td class="memItemLeft" align="right" valign="top">typedef <a class="el" href="namespacetket.html#ab833809f61dc0113df230395ed560ea4">sequenced_bimap_t</a>&lt; <a class="el" href="classtket_1_1UnitID.html">UnitID</a>, <a class="el" href="namespacetket.html#a5d011cbb0539a2b400d1bb186190dad0">VertPort</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a1d2b39b141fc098257835665b8d5830f">unit_vertport_frontier_t</a></td></tr>
 <tr class="separator:a1d2b39b141fc098257835665b8d5830f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a6f41065ab0b4ecd3f4672c64f3afbecc"><td class="memItemLeft" align="right" valign="top">typedef std::shared_ptr&lt; <a class="el" href="structtket_1_1MappingFrontier.html">MappingFrontier</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a6f41065ab0b4ecd3f4672c64f3afbecc">MappingFrontier_ptr</a></td></tr>
@@ -1283,9 +1283,9 @@ Functions</h2></td></tr>
 <tr class="separator:a33d9a6c1a35702ebd17ce2ce72ab6e6e"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a932186c537c4578b1de77ccb4cc36a45"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a932186c537c4578b1de77ccb4cc36a45">gray_synth</a> (unsigned n_qubits, const std::list&lt; <a class="el" href="namespacetket.html#ac8f21c5b5b88cc7d6c575ad14cdebc7d">phase_term_t</a> &gt; &amp;parities, const <a class="el" href="namespacetket.html#afc6a69cf78c26da6848112274764acc6">MatrixXb</a> &amp;linear_transformation)</td></tr>
 <tr class="separator:a932186c537c4578b1de77ccb4cc36a45"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a8676ea2e430ed41e948245bec68788bf"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
-<tr class="memitem:a8676ea2e430ed41e948245bec68788bf"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; T, Eigen::Dynamic, Eigen::Dynamic &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacetket.html#a8676ea2e430ed41e948245bec68788bf">load_dynamic_matrix</a> (const nlohmann::json &amp;j, size_t rows, size_t cols)</td></tr>
-<tr class="separator:a8676ea2e430ed41e948245bec68788bf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6277c759537588b21526b4223feb37b6"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
+<tr class="memitem:a6277c759537588b21526b4223feb37b6"><td class="memTemplItemLeft" align="right" valign="top">Eigen::Matrix&lt; T, Eigen::Dynamic, Eigen::Dynamic &gt;&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespacetket.html#a6277c759537588b21526b4223feb37b6">load_dynamic_matrix</a> (const nlohmann::json &amp;j, std::size_t rows, std::size_t cols)</td></tr>
+<tr class="separator:a6277c759537588b21526b4223feb37b6"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ace2143bc6b068ad3ab0e65bbffda8f06"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1UnitaryTableau.html">UnitaryTableau</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#ace2143bc6b068ad3ab0e65bbffda8f06">circuit_to_unitary_tableau</a> (const <a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ)</td></tr>
 <tr class="memdesc:ace2143bc6b068ad3ab0e65bbffda8f06"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct the tableau for a given circuit.  <a href="namespacetket.html#ace2143bc6b068ad3ab0e65bbffda8f06">More...</a><br /></td></tr>
 <tr class="separator:ace2143bc6b068ad3ab0e65bbffda8f06"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -2674,14 +2674,14 @@ Variables</h2></td></tr>
 
 </div>
 </div>
-<a id="ab4c7d0d5df6f3f632b227405be98884d"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab4c7d0d5df6f3f632b227405be98884d">&#9670;&nbsp;</a></span>lexicographical_distances_t</h2>
+<a id="a6409f03baf062ca16fff9b5b0dc09554"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6409f03baf062ca16fff9b5b0dc09554">&#9670;&nbsp;</a></span>lexicographical_distances_t</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">typedef std::vector&lt;size_t&gt; <a class="el" href="namespacetket.html#ab4c7d0d5df6f3f632b227405be98884d">tket::lexicographical_distances_t</a></td>
+          <td class="memname">typedef std::vector&lt;std::size_t&gt; <a class="el" href="namespacetket.html#a6409f03baf062ca16fff9b5b0dc09554">tket::lexicographical_distances_t</a></td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -7543,7 +7543,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Architecture_8cpp_source.html#l00229">229</a> of file <a class="el" href="Architecture_8cpp_source.html">Architecture.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Architecture_8cpp_source.html#l00230">230</a> of file <a class="el" href="Architecture_8cpp_source.html">Architecture.cpp</a>.</p>
 
 </div>
 </div>
@@ -7573,7 +7573,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Architecture_8cpp_source.html#l00207">207</a> of file <a class="el" href="Architecture_8cpp_source.html">Architecture.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Architecture_8cpp_source.html#l00208">208</a> of file <a class="el" href="Architecture_8cpp_source.html">Architecture.cpp</a>.</p>
 
 </div>
 </div>
@@ -7813,7 +7813,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Architecture_8cpp_source.html#l00247">247</a> of file <a class="el" href="Architecture_8cpp_source.html">Architecture.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Architecture_8cpp_source.html#l00248">248</a> of file <a class="el" href="Architecture_8cpp_source.html">Architecture.cpp</a>.</p>
 
 </div>
 </div>
@@ -11189,8 +11189,8 @@ template&lt;class T &gt; </div>
 
 </div>
 </div>
-<a id="a8676ea2e430ed41e948245bec68788bf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a8676ea2e430ed41e948245bec68788bf">&#9670;&nbsp;</a></span>load_dynamic_matrix()</h2>
+<a id="a6277c759537588b21526b4223feb37b6"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6277c759537588b21526b4223feb37b6">&#9670;&nbsp;</a></span>load_dynamic_matrix()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -11206,13 +11206,13 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">size_t&#160;</td>
+          <td class="paramtype">std::size_t&#160;</td>
           <td class="paramname"><em>rows</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
           <td></td>
-          <td class="paramtype">size_t&#160;</td>
+          <td class="paramtype">std::size_t&#160;</td>
           <td class="paramname"><em>cols</em>&#160;</td>
         </tr>
         <tr>
@@ -13615,7 +13615,7 @@ template&lt;typename BoxT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Architecture_8cpp_source.html#l00212">212</a> of file <a class="el" href="Architecture_8cpp_source.html">Architecture.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Architecture_8cpp_source.html#l00213">213</a> of file <a class="el" href="Architecture_8cpp_source.html">Architecture.cpp</a>.</p>
 
 </div>
 </div>
@@ -13645,7 +13645,7 @@ template&lt;typename BoxT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Architecture_8cpp_source.html#l00202">202</a> of file <a class="el" href="Architecture_8cpp_source.html">Architecture.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Architecture_8cpp_source.html#l00203">203</a> of file <a class="el" href="Architecture_8cpp_source.html">Architecture.cpp</a>.</p>
 
 </div>
 </div>
@@ -13885,7 +13885,7 @@ template&lt;typename BoxT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Architecture_8cpp_source.html#l00241">241</a> of file <a class="el" href="Architecture_8cpp_source.html">Architecture.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Architecture_8cpp_source.html#l00242">242</a> of file <a class="el" href="Architecture_8cpp_source.html">Architecture.cpp</a>.</p>
 
 </div>
 </div>
@@ -14556,7 +14556,7 @@ template&lt;typename BoxT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Architecture_8cpp_source.html#l00171">171</a> of file <a class="el" href="Architecture_8cpp_source.html">Architecture.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Architecture_8cpp_source.html#l00172">172</a> of file <a class="el" href="Architecture_8cpp_source.html">Architecture.cpp</a>.</p>
 
 </div>
 </div>
@@ -14586,7 +14586,7 @@ template&lt;typename BoxT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Architecture_8cpp_source.html#l00171">171</a> of file <a class="el" href="Architecture_8cpp_source.html">Architecture.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Architecture_8cpp_source.html#l00172">172</a> of file <a class="el" href="Architecture_8cpp_source.html">Architecture.cpp</a>.</p>
 
 </div>
 </div>

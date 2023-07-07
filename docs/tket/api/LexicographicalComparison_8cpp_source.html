@@ -100,7 +100,7 @@ $(function() {
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;    : architecture_(_architecture), interacting_nodes_(_interacting_nodes) {</div>
 <div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;  <span class="keywordtype">unsigned</span> diameter = this-&gt;architecture_-&gt;get_diameter();</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;  <a class="code" href="namespacetket.html#ab4c7d0d5df6f3f632b227405be98884d">lexicographical_distances_t</a> distance_vector(diameter, 0);</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;  <a class="code" href="namespacetket.html#a6409f03baf062ca16fff9b5b0dc09554">lexicographical_distances_t</a> distance_vector(diameter, 0);</div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; interaction : this-&gt;interacting_nodes_) {</div>
 <div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;    <span class="comment">// If Node not in architecture, don&#39;t add</span></div>
 <div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keywordflow">if</span> (!this-&gt;architecture_-&gt;node_exists(interaction.first) ||</div>
@@ -120,7 +120,7 @@ $(function() {
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;}</div>
 <div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
 <div class="line"><a name="l00044"></a><span class="lineno"><a class="line" href="classtket_1_1LexicographicalComparison.html#a2b1b735b332036efe72a1c91ecb810ba">   44</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classtket_1_1LexicographicalComparison.html#a2b1b735b332036efe72a1c91ecb810ba">LexicographicalComparison::increment_distances</a>(</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <a class="code" href="namespacetket.html#ab4c7d0d5df6f3f632b227405be98884d">lexicographical_distances_t</a>&amp; distances,</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <a class="code" href="namespacetket.html#a6409f03baf062ca16fff9b5b0dc09554">lexicographical_distances_t</a>&amp; distances,</div>
 <div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keyword">const</span> std::pair&lt;Node, Node&gt;&amp; interaction, <span class="keywordtype">int</span> increment)<span class="keyword"> const </span>{</div>
 <div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">unsigned</span> distances_index =</div>
 <div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;      this-&gt;architecture_-&gt;get_diameter() -</div>
@@ -133,15 +133,15 @@ $(function() {
 <div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;  distances[distances_index] += increment;</div>
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;}</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<a class="code" href="namespacetket.html#ab4c7d0d5df6f3f632b227405be98884d">lexicographical_distances_t</a></div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<a class="code" href="namespacetket.html#a6409f03baf062ca16fff9b5b0dc09554">lexicographical_distances_t</a></div>
 <div class="line"><a name="l00062"></a><span class="lineno"><a class="line" href="classtket_1_1LexicographicalComparison.html#a8103b0840f3b5ad65c96c687b2e2c10c">   62</a></span>&#160;<a class="code" href="classtket_1_1LexicographicalComparison.html#a8103b0840f3b5ad65c96c687b2e2c10c">LexicographicalComparison::get_lexicographical_distances</a>()<span class="keyword"> const </span>{</div>
 <div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;  <span class="keywordflow">return</span> this-&gt;lexicographical_distances;</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;}</div>
 <div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160; </div>
-<div class="line"><a name="l00072"></a><span class="lineno"><a class="line" href="classtket_1_1LexicographicalComparison.html#afad3ea1c0392991dfd2bf036a732d599">   72</a></span>&#160;<a class="code" href="namespacetket.html#ab4c7d0d5df6f3f632b227405be98884d">lexicographical_distances_t</a> <a class="code" href="classtket_1_1LexicographicalComparison.html#afad3ea1c0392991dfd2bf036a732d599">LexicographicalComparison::get_updated_distances</a>(</div>
+<div class="line"><a name="l00072"></a><span class="lineno"><a class="line" href="classtket_1_1LexicographicalComparison.html#afad3ea1c0392991dfd2bf036a732d599">   72</a></span>&#160;<a class="code" href="namespacetket.html#a6409f03baf062ca16fff9b5b0dc09554">lexicographical_distances_t</a> <a class="code" href="classtket_1_1LexicographicalComparison.html#afad3ea1c0392991dfd2bf036a732d599">LexicographicalComparison::get_updated_distances</a>(</div>
 <div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keyword">const</span> <a class="code" href="namespacetket.html#a1d1f68863e6dd51735b1184f7e98e700">swap_t</a>&amp; swap)<span class="keyword"> const </span>{</div>
 <div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;  <span class="comment">// make a copy of base lexicographical distances</span></div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;  <a class="code" href="namespacetket.html#ab4c7d0d5df6f3f632b227405be98884d">lexicographical_distances_t</a> copy = this-&gt;lexicographical_distances;</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;  <a class="code" href="namespacetket.html#a6409f03baf062ca16fff9b5b0dc09554">lexicographical_distances_t</a> copy = this-&gt;lexicographical_distances;</div>
 <div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;  <span class="keywordflow">if</span> (swap.first == swap.second) {</div>
 <div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    <span class="keywordflow">return</span> copy;</div>
 <div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;  }</div>
@@ -177,12 +177,12 @@ $(function() {
 <div class="line"><a name="l00120"></a><span class="lineno"><a class="line" href="classtket_1_1LexicographicalComparison.html#a2914592c31eeccff210ad217efd986d1">  120</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classtket_1_1LexicographicalComparison.html#a2914592c31eeccff210ad217efd986d1">LexicographicalComparison::remove_swaps_lexicographical</a>(</div>
 <div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <a class="code" href="namespacetket.html#a58227251a0754eedcc656c2552afae55">swap_set_t</a>&amp; candidate_swaps)<span class="keyword"> const </span>{</div>
 <div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;  <span class="keyword">auto</span> it = candidate_swaps.begin();</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;  <a class="code" href="namespacetket.html#ab4c7d0d5df6f3f632b227405be98884d">lexicographical_distances_t</a> winning_distances =</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;  <a class="code" href="namespacetket.html#a6409f03baf062ca16fff9b5b0dc09554">lexicographical_distances_t</a> winning_distances =</div>
 <div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;      this-&gt;<a class="code" href="classtket_1_1LexicographicalComparison.html#afad3ea1c0392991dfd2bf036a732d599">get_updated_distances</a>(*it);</div>
 <div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;  <a class="code" href="namespacetket.html#a58227251a0754eedcc656c2552afae55">swap_set_t</a> preserved_swaps = {*it};</div>
 <div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;  ++it;</div>
 <div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;  <span class="keywordflow">for</span> (; it != candidate_swaps.end(); ++it) {</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    <a class="code" href="namespacetket.html#ab4c7d0d5df6f3f632b227405be98884d">lexicographical_distances_t</a> comparison_distances =</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;    <a class="code" href="namespacetket.html#a6409f03baf062ca16fff9b5b0dc09554">lexicographical_distances_t</a> comparison_distances =</div>
 <div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;        this-&gt;<a class="code" href="classtket_1_1LexicographicalComparison.html#afad3ea1c0392991dfd2bf036a732d599">get_updated_distances</a>(*it);</div>
 <div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160; </div>
 <div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    <span class="keywordflow">if</span> (comparison_distances &lt; winning_distances) {</div>
@@ -206,9 +206,9 @@ $(function() {
 <div class="ttc" id="anamespacetket_html"><div class="ttname"><a href="namespacetket.html">tket</a></div><div class="ttdoc">Defines tket::DeviceCharacterisation, used in NoiseAwarePlacement and in commute_SQ_gates_through_SWA...</div><div class="ttdef"><b>Definition:</b> <a href="Path_8cpp_source.html#l00019">Path.cpp:19</a></div></div>
 <div class="ttc" id="anamespacetket_html_a1d1f68863e6dd51735b1184f7e98e700"><div class="ttname"><a href="namespacetket.html#a1d1f68863e6dd51735b1184f7e98e700">tket::swap_t</a></div><div class="ttdeci">std::pair&lt; Node, Node &gt; swap_t</div><div class="ttdef"><b>Definition:</b> <a href="LexicographicalComparison_8hpp_source.html#l00024">LexicographicalComparison.hpp:24</a></div></div>
 <div class="ttc" id="anamespacetket_html_a58227251a0754eedcc656c2552afae55"><div class="ttname"><a href="namespacetket.html#a58227251a0754eedcc656c2552afae55">tket::swap_set_t</a></div><div class="ttdeci">std::set&lt; swap_t &gt; swap_set_t</div><div class="ttdef"><b>Definition:</b> <a href="LexicographicalComparison_8hpp_source.html#l00025">LexicographicalComparison.hpp:25</a></div></div>
+<div class="ttc" id="anamespacetket_html_a6409f03baf062ca16fff9b5b0dc09554"><div class="ttname"><a href="namespacetket.html#a6409f03baf062ca16fff9b5b0dc09554">tket::lexicographical_distances_t</a></div><div class="ttdeci">std::vector&lt; std::size_t &gt; lexicographical_distances_t</div><div class="ttdef"><b>Definition:</b> <a href="LexicographicalComparison_8hpp_source.html#l00026">LexicographicalComparison.hpp:26</a></div></div>
 <div class="ttc" id="anamespacetket_html_a85464c8b1d835684b674404eda0e0014"><div class="ttname"><a href="namespacetket.html#a85464c8b1d835684b674404eda0e0014">tket::interacting_nodes_t</a></div><div class="ttdeci">std::map&lt; Node, Node &gt; interacting_nodes_t</div><div class="ttdef"><b>Definition:</b> <a href="LexicographicalComparison_8hpp_source.html#l00023">LexicographicalComparison.hpp:23</a></div></div>
 <div class="ttc" id="anamespacetket_html_aa48f675e04cadd3b47c165f6b033e887"><div class="ttname"><a href="namespacetket.html#aa48f675e04cadd3b47c165f6b033e887">tket::ArchitecturePtr</a></div><div class="ttdeci">std::shared_ptr&lt; Architecture &gt; ArchitecturePtr</div><div class="ttdef"><b>Definition:</b> <a href="Architecture_8hpp_source.html#l00214">Architecture.hpp:214</a></div></div>
-<div class="ttc" id="anamespacetket_html_ab4c7d0d5df6f3f632b227405be98884d"><div class="ttname"><a href="namespacetket.html#ab4c7d0d5df6f3f632b227405be98884d">tket::lexicographical_distances_t</a></div><div class="ttdeci">std::vector&lt; size_t &gt; lexicographical_distances_t</div><div class="ttdef"><b>Definition:</b> <a href="LexicographicalComparison_8hpp_source.html#l00026">LexicographicalComparison.hpp:26</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>

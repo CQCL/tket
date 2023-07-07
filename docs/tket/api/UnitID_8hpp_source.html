@@ -158,7 +158,7 @@ $(function() {
 <div class="line"><a name="l00100"></a><span class="lineno"><a class="line" href="classtket_1_1UnitID.html#a7cd614527df0046ea7fa810dfb219d39">  100</a></span>&#160;  <span class="keywordtype">bool</span> <a class="code" href="classtket_1_1UnitID.html#a7cd614527df0046ea7fa810dfb219d39">operator!=</a>(<span class="keyword">const</span> <a class="code" href="classtket_1_1UnitID.html">UnitID</a> &amp;other)<span class="keyword"> const </span>{ <span class="keywordflow">return</span> !(*<span class="keyword">this</span> == other); }</div>
 <div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160; </div>
 <div class="line"><a name="l00102"></a><span class="lineno"><a class="line" href="classtket_1_1UnitID.html#a3e32d701c4f518ea09c08f480aa19027">  102</a></span>&#160;  <span class="keyword">friend</span> std::size_t <a class="code" href="classtket_1_1UnitID.html#a3e32d701c4f518ea09c08f480aa19027">hash_value</a>(<a class="code" href="classtket_1_1UnitID.html">UnitID</a> <span class="keyword">const</span> &amp;unitid) {</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    <span class="keywordtype">size_t</span> seed = 0;</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    std::size_t seed = 0;</div>
 <div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    boost::hash_combine(seed, unitid.data_-&gt;name_);</div>
 <div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    boost::hash_combine(seed, unitid.data_-&gt;index_);</div>
 <div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    boost::hash_combine(seed, unitid.data_-&gt;type_);</div>

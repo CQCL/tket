@@ -133,9 +133,9 @@ $(function() {
 <div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;  <span class="comment">// resize for dynamically-sized matrices</span></div>
 <div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;  <span class="keywordflow">if</span> (j.size() == 0) <span class="keywordflow">return</span>;</div>
 <div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;  matrix.resize(j.size(), j.at(0).size());</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> i = 0; i &lt; j.size(); ++i) {</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;  <span class="keywordflow">for</span> (std::size_t i = 0; i &lt; j.size(); ++i) {</div>
 <div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="keyword">const</span> <span class="keyword">auto</span>&amp; j_row = j.at(i);</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">size_t</span> j = 0; j &lt; j_row.size(); ++j) {</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keywordflow">for</span> (std::size_t j = 0; j &lt; j_row.size(); ++j) {</div>
 <div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;      matrix(i, j) =</div>
 <div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;          j_row.at(j).get&lt;<span class="keyword">typename</span> Matrix&lt;_Scalar, _Rows, _Cols&gt;::Scalar&gt;();</div>
 <div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    }</div>
