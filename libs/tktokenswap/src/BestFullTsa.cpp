@@ -39,7 +39,7 @@ void BestFullTsa::append_partial_solution(
   m_swap_list_optimiser.full_optimise(swaps, vertex_mapping);
 
   VertexMapResizing map_resizing(neighbours);
-  std::set<size_t> vertices_with_tokens_at_start;
+  std::set<std::size_t> vertices_with_tokens_at_start;
   for (const auto& entry : vertex_mapping) {
     vertices_with_tokens_at_start.insert(entry.first);
   }

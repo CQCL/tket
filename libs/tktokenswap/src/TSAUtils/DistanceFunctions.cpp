@@ -20,10 +20,10 @@
 namespace tket {
 namespace tsa_internal {
 
-size_t get_total_home_distances(
+std::size_t get_total_home_distances(
     const VertexMapping& vertex_mapping,
     DistancesInterface& distances_calculator) {
-  size_t sum_of_distances = 0;
+  std::size_t sum_of_distances = 0;
   for (const auto& entry : vertex_mapping) {
     sum_of_distances += distances_calculator(entry.first, entry.second);
   }
@@ -31,7 +31,7 @@ size_t get_total_home_distances(
 }
 
 int get_move_decrease(
-    const VertexMapping& vertex_mapping, size_t v1, size_t v2,
+    const VertexMapping& vertex_mapping, std::size_t v1, std::size_t v2,
     DistancesInterface& distances) {
   const auto citer = vertex_mapping.find(v1);
   if (citer == vertex_mapping.cend()) {
@@ -44,7 +44,7 @@ int get_move_decrease(
 }
 
 int get_swap_decrease(
-    const VertexMapping& vertex_mapping, size_t v1, size_t v2,
+    const VertexMapping& vertex_mapping, std::size_t v1, std::size_t v2,
     DistancesInterface& distances) {
   return get_move_decrease(vertex_mapping, v1, v2, distances) +
          get_move_decrease(vertex_mapping, v2, v1, distances);

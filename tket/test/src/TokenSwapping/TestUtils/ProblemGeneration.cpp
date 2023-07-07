@@ -44,7 +44,7 @@ VertexMapping TSProblemParameters00::get_problem(
       get_random_set(rng, number_of_tokens, number_of_vertices);
   REQUIRE(tokens.size() == number_of_tokens);
   REQUIRE(targets_set.size() == number_of_tokens);
-  vector<size_t> targets{targets_set.cbegin(), targets_set.cend()};
+  vector<std::size_t> targets{targets_set.cbegin(), targets_set.cend()};
   for (auto token : tokens) {
     vertex_mapping[token] = rng.get_and_remove_element(targets);
   }

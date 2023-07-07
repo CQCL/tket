@@ -22,20 +22,20 @@ namespace tket {
 namespace tsa_internal {
 
 CyclicShiftCostEstimate::CyclicShiftCostEstimate(
-    const std::vector<size_t>& vertices, DistancesInterface& distances) {
+    const std::vector<std::size_t>& vertices, DistancesInterface& distances) {
   TKET_ASSERT(vertices.size() >= 2);
   // We first work out the total distance v(0)->v(1)-> .. -> v(n) -> v(0).
   // If we snip out v(i)->v(i+1), the remaining path tells us how many swaps
   // we need. So, we must snip out the LARGEST distance(v(i), v(i+1)).
-  size_t largest_distance = distances(vertices.back(), vertices[0]);
-  size_t total_distance = largest_distance;
+  std::size_t largest_distance = distances(vertices.back(), vertices[0]);
+  std::size_t total_distance = largest_distance;
 
   if (vertices.size() == 2) {
     start_v_index = 0;
   } else {
     // The value i such that distance(v(i), v(i+1)) is largest.
-    size_t v_index_with_largest_distance = vertices.size() - 1;
-    for (size_t ii = 0; ii + 1 < vertices.size(); ++ii) {
+    std::size_t v_index_with_largest_distance = vertices.size() - 1;
+    for (std::size_t ii = 0; ii + 1 < vertices.size(); ++ii) {
       const auto distance_i = distances(vertices[ii], vertices[ii + 1]);
       TKET_ASSERT(distance_i > 0);
       total_distance += distance_i;

@@ -31,8 +31,8 @@ namespace tsa_internal {
 namespace tests {
 
 void FullTsaTesting::check_solution(
-    size_t counts_list_index, VertexMapping vertex_mapping, size_t lower_bound,
-    AllowEmptySwaps allow_empty_swaps) {
+    std::size_t counts_list_index, VertexMapping vertex_mapping,
+    std::size_t lower_bound, AllowEmptySwaps allow_empty_swaps) {
   bool empty_swap_occurred = false;
   REQUIRE(m_swap_list.size() >= lower_bound);
   for (auto swap : m_swap_list.to_vector()) {
@@ -55,7 +55,7 @@ void FullTsaTesting::check_solution(
 }
 
 void FullTsaTesting::check_equivalent_good_solution(
-    size_t existing_index, VertexMapping vertex_mapping,
+    std::size_t existing_index, VertexMapping vertex_mapping,
     AllowEmptySwaps allow_empty_swaps) {
   check_solution(
       m_counts_list.size() - 1, vertex_mapping, 0, allow_empty_swaps);
@@ -65,7 +65,7 @@ void FullTsaTesting::check_equivalent_good_solution(
       m_counts_list.back().sorted_swaps);
 }
 
-void FullTsaTesting::test_order(size_t index1, size_t index2) const {
+void FullTsaTesting::test_order(std::size_t index1, std::size_t index2) const {
   INFO("i1=" << index1 << ", i2=" << index2);
   CHECK(
       m_counts_list[index1].sorted_swaps.size() <=
@@ -73,19 +73,19 @@ void FullTsaTesting::test_order(size_t index1, size_t index2) const {
 }
 
 void FullTsaTesting::complete_counts_list_for_single_problem() {
-  size_t smallest_number = m_counts_list[0].sorted_swaps.size();
+  std::size_t smallest_number = m_counts_list[0].sorted_swaps.size();
 
   // Ignore the last index, which is a dummy.
-  for (size_t index = 0; index + 1 < m_counts_list.size(); ++index) {
+  for (std::size_t index = 0; index + 1 < m_counts_list.size(); ++index) {
     auto& counts = m_counts_list[index];
     counts.total_swaps += counts.sorted_swaps.size();
     smallest_number = std::min(smallest_number, counts.sorted_swaps.size());
   }
   // Now, we've got the (joint) winner.
-  size_t best_index = m_counts_list.size();
-  size_t num_winners = 0;
+  std::size_t best_index = m_counts_list.size();
+  std::size_t num_winners = 0;
 
-  for (size_t index = 0; index + 1 < m_counts_list.size(); ++index) {
+  for (std::size_t index = 0; index + 1 < m_counts_list.size(); ++index) {
     auto& counts = m_counts_list[index];
     REQUIRE(counts.sorted_swaps.size() >= smallest_number);
     if (counts.sorted_swaps.size() == smallest_number) {
@@ -126,7 +126,7 @@ void FullTsaTesting::add_problems(
   vector<Swap> raw_calc_swaps;
   VertexMapping problem_copy_to_destroy;
 
-  for (size_t prob_index = 0; prob_index < problems.size(); ++prob_index) {
+  for (std::size_t prob_index = 0; prob_index < problems.size(); ++prob_index) {
     const auto& problem = problems[prob_index];
     const auto lower_bound = get_swaps_lower_bound(problem, distances);
     m_number_of_tokens += problem.size();
@@ -213,15 +213,15 @@ std::string FullTsaTesting::str() const {
      << m_number_of_tokens << " toks; " << m_total_lower_bounds
      << " tot.lb]\n[Total swaps:";
   // The last entry is a "dummy".
-  for (size_t index = 0; index + 1 < m_counts_list.size(); ++index) {
+  for (std::size_t index = 0; index + 1 < m_counts_list.size(); ++index) {
     ss << " " << m_counts_list[index].total_swaps;
   }
   ss << "]\n[Winners: joint:";
-  for (size_t index = 0; index + 1 < m_counts_list.size(); ++index) {
+  for (std::size_t index = 0; index + 1 < m_counts_list.size(); ++index) {
     ss << " " << m_counts_list[index].problems_where_this_was_the_joint_winner;
   }
   ss << "  undisputed:";
-  for (size_t index = 0; index + 1 < m_counts_list.size(); ++index) {
+  for (std::size_t index = 0; index + 1 < m_counts_list.size(); ++index) {
     ss << " " << m_counts_list[index].problems_where_this_was_the_clear_winner;
   }
   ss << "]";

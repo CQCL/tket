@@ -38,7 +38,7 @@ class VectorListHybridSkeleton {
    *  the objects we care about (templated on the object type; but this
    *  class stores no data except indexing information).
    */
-  typedef size_t Index;
+  typedef std::size_t Index;
 
   VectorListHybridSkeleton();
 
@@ -70,7 +70,7 @@ class VectorListHybridSkeleton {
    *  NOT equal to the underlying vector size!
    *  @return The number of valid elements stored.
    */
-  size_t size() const;
+  std::size_t size() const;
 
   /** The index of the front element (or the same index as returned by
    * get_invalid_index() if currently empty).
@@ -115,7 +115,7 @@ class VectorListHybridSkeleton {
    * @param number_of_elements Number of elements to erase; these MUST exist
    * (the list must be big enough).
    */
-  void erase_interval(Index index, size_t number_of_elements);
+  void erase_interval(Index index, std::size_t number_of_elements);
 
   /** The list must currently be empty, but not checked. */
   void insert_for_empty_list();
@@ -142,7 +142,7 @@ class VectorListHybridSkeleton {
   };
 
   std::vector<Link> m_links;
-  size_t m_size;
+  std::size_t m_size;
   Index m_front;
   Index m_back;
 

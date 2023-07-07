@@ -74,7 +74,7 @@ std::map<Qubit, Node> LinePlacement::assign_lines_to_target_graph(
   std::sort(
       line_pattern.begin(), line_pattern.end(),
       [](qubit_vector_t x, qubit_vector_t y) {
-        size_t xsz = x.size(), ysz = y.size();
+        std::size_t xsz = x.size(), ysz = y.size();
         if (xsz > ysz) {
           return true;
         } else if (xsz < ysz) {

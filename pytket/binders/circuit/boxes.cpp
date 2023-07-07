@@ -207,15 +207,39 @@ void init_boxes(py::module &m) {
       .def(
           "get_cx_config", &PauliExpCommutingSetBox::get_cx_config,
           ":return: decomposition method");
+  py::enum_<ToffoliBoxSynthStrat>(
+      m, "ToffoliBoxSynthStrat",
+      "Enum strategies for synthesising ToffoliBoxes")
+      .value(
+          "Matching", ToffoliBoxSynthStrat::Matching,
+          "Use multiplexors to perform parallel swaps on hypercubes")
+      .value(
+          "Cycle", ToffoliBoxSynthStrat::Cycle,
+          "Use CnX gates to perform transpositions");
   py::class_<ToffoliBox, std::shared_ptr<ToffoliBox>, Op>(
       m, "ToffoliBox",
       "An operation that constructs a circuit to implement the specified "
       "permutation of classical basis states.")
       .def(
-          py::init<state_perm_t, OpType>(),
-          "Construct from a permutation of basis states, and the prefered "
-          "rotation axis of the multiplexors used in the decomposition. The "
-          "axis can be either Ry or Rx, default to Ry.",
+          py::init<state_perm_t, ToffoliBoxSynthStrat, OpType>(),
+          "Construct from a permutation of basis states\n\n"
+          ":param permutation: a map between bitstrings\n"
+          ":param strat: synthesis strategy\n"
+          ":param rotation_axis: the rotation axis of the multiplexors used in "
+          "the decomposition. Can be either Rx or Ry. Only applicable to the "
+          "Matching strategy. Default to Ry.",
+          py::arg("permutation"), py::arg("strat"),
+          py::arg("rotation_axis") = OpType::Ry)
+      .def(
+          py::init([](const state_perm_t &perm, const OpType &rotation_axis) {
+            return ToffoliBox(
+                perm, ToffoliBoxSynthStrat::Matching, rotation_axis);
+          }),
+          "Construct from a permutation of basis states and perform synthesis "
+          "using the Matching strategy\n\n"
+          ":param permutation: a map between bitstrings\n"
+          ":param rotation_axis: the rotation axis of the multiplexors used in "
+          "the decomposition. Can be either Rx or Ry, default to Ry.",
           py::arg("permutation"), py::arg("rotation_axis") = OpType::Ry)
       .def(
           py::init([](unsigned n_qubits, const state_perm_t &perm,
@@ -226,7 +250,8 @@ void init_boxes(py::module &m) {
                 "The argument n_qubits is no longer needed. "
                 "Please create ToffoliBoxes without n_qubits.",
                 1);
-            return ToffoliBox(perm, rotation_axis);
+            return ToffoliBox(
+                perm, ToffoliBoxSynthStrat::Matching, rotation_axis);
           }),
           "Constructor for backward compatibility. Subject to deprecation.",
           py::arg("n_qubits"), py::arg("permutation"),
@@ -246,6 +271,9 @@ void init_boxes(py::module &m) {
             return outmap;
           },
           ":return: the permutation")
+      .def(
+          "get_strat", &ToffoliBox::get_strat,
+          ":return: the synthesis strategy")
       .def(
           "get_rotation_axis", &ToffoliBox::get_rotation_axis,
           ":return: the rotation axis");

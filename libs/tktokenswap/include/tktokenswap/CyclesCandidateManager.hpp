@@ -119,7 +119,7 @@ class CyclesCandidateManager {
      *  we don't know which final vertices will occur, so we can get many
      *  duplicate subpaths. Is there a clever data structure to improve this?)
      */
-    size_t first_vertex_index;
+    std::size_t first_vertex_index;
   };
 
   /** Key: a hash of the vertices in the cycle
@@ -130,7 +130,7 @@ class CyclesCandidateManager {
    *  Used to find duplicate cycles (the same vertices in the same cyclic
    *  order, but with different start vertex in the vector).
    */
-  std::map<size_t, CycleData> m_cycle_with_vertex_hash;
+  std::map<std::size_t, CycleData> m_cycle_with_vertex_hash;
 
   /** We will discard duplicate cycles. For better constness, we don't delete
    *  cycles, we just store the IDs of those ones we want to use.
@@ -143,12 +143,12 @@ class CyclesCandidateManager {
    *  This will be used to select a large subset of pairwise disjoint
    *  cycles, with a simple greedy algorithm.
    */
-  std::map<Cycles::ID, size_t> m_touching_data;
+  std::map<Cycles::ID, std::size_t> m_touching_data;
 
   /** Used by should_add_swaps_for_candidate, to see whether a cycle
    *  is disjoint from those already selected.
    */
-  std::set<size_t> m_vertices_used;
+  std::set<std::size_t> m_vertices_used;
 
   /** Fills m_cycles_to_keep (so, effectively discarding unsuitable cycles),
    *  returns the common cycle length.
@@ -156,7 +156,7 @@ class CyclesCandidateManager {
    *  @return The number of vertices in each cycle
    *    (all cycles should be the same length).
    */
-  size_t fill_initial_cycle_ids(const Cycles& cycles);
+  std::size_t fill_initial_cycle_ids(const Cycles& cycles);
 
   /** Updates m_cycles_to_keep. Keep only those solutions with the
    *  highest L-decrease.

@@ -25,15 +25,16 @@ namespace graphs {
 
 LargeCliquesResult::LargeCliquesResult(
     const AdjacencyData& adjacency_data,
-    const set<size_t>& vertices_in_component, size_t internal_size_limit) {
+    const set<std::size_t>& vertices_in_component,
+    std::size_t internal_size_limit) {
   // ...and, before swapping, everything in here will have size one greater than
   // "result".
-  vector<set<size_t>> extended_result;
+  vector<set<std::size_t>> extended_result;
 
   // At each stage, every set will have the same size, containing a clique of
   // that size.
   cliques.reserve(vertices_in_component.size());
-  for (size_t i : vertices_in_component) {
+  for (std::size_t i : vertices_in_component) {
     cliques.emplace_back(set{i});
   }
   bool hit_internal_limit = false;
@@ -42,11 +43,12 @@ LargeCliquesResult::LargeCliquesResult(
   // ... Therefore, within each vertex set, if we only allow adding vertices
   // with LARGER index than the largest already stored, we will automatically
   // discard duplicates.
-  for (size_t counter = 0; counter <= vertices_in_component.size(); ++counter) {
+  for (std::size_t counter = 0; counter <= vertices_in_component.size();
+       ++counter) {
     // Extend the existing results.
     for (const auto& clique : cliques) {
       // Guaranteed to be nonempty.
-      const size_t largest_index = *clique.crbegin();
+      const std::size_t largest_index = *clique.crbegin();
 
       if (extended_result.size() >= internal_size_limit) {
         hit_internal_limit = true;
@@ -55,13 +57,13 @@ LargeCliquesResult::LargeCliquesResult(
       // We only have to check the neighbours of ONE vertex to form a larger
       // clique.
       const auto& neighbours = adjacency_data.get_neighbours(largest_index);
-      for (size_t new_v : neighbours) {
+      for (std::size_t new_v : neighbours) {
         if (new_v <= largest_index) {
           continue;
         }
         // We have a new vertex; does it adjoin EVERY existing vertex?
         bool joins_every_vertex = true;
-        for (size_t existing_v : clique) {
+        for (std::size_t existing_v : clique) {
           if (adjacency_data.get_neighbours(existing_v).count(new_v) == 0) {
             joins_every_vertex = false;
             break;

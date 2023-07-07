@@ -33,7 +33,7 @@ class BestTsaTester {
    * @return The number of swaps returned by our TSA. The calculated swaps are
    * also checked for correctness.
    */
-  size_t get_checked_solution_size(const DecodedProblemData& data);
+  std::size_t get_checked_solution_size(const DecodedProblemData& data);
 
   /** For problems where the architecture is NOT simply given implicitly
    *  by the swap sequence, so we must also pass in the complete set
@@ -45,7 +45,7 @@ class BestTsaTester {
    * @return The number of swaps returned by our TSA. The calculated swaps are
    * also checked for correctness.
    */
-  size_t get_checked_solution_size(
+  std::size_t get_checked_solution_size(
       const DecodedProblemData& problem_data,
       const DecodedArchitectureData& architecture_data);
 

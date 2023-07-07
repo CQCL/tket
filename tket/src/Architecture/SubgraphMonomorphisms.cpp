@@ -23,7 +23,7 @@ namespace tket {
 using namespace WeightedSubgraphMonomorphism;
 
 static GraphEdgeWeights get_weight_one_edges(
-    const std::vector<Swap>& edges, size_t number_of_vertices) {
+    const std::vector<Swap>& edges, std::size_t number_of_vertices) {
   GraphEdgeWeights result;
   for (const auto& edge : edges) {
     TKET_ASSERT(edge.first < number_of_vertices);
@@ -35,14 +35,14 @@ static GraphEdgeWeights get_weight_one_edges(
 }
 
 static void add_solver_solutions(
-    const std::vector<SolutionWSM>& solutions, size_t pattern_n_vertices,
-    size_t target_n_vertices, SubgraphMonomorphisms& monomorphisms) {
+    const std::vector<SolutionWSM>& solutions, std::size_t pattern_n_vertices,
+    std::size_t target_n_vertices, SubgraphMonomorphisms& monomorphisms) {
   monomorphisms.mappings.reserve(solutions.size());
 
   // The solver ignores isolated vertices, so we'll fill them in separately.
-  std::set<size_t> used_pattern_vertices;
-  std::set<size_t> used_pattern_vertices_copy;
-  std::set<size_t> used_target_vertices;
+  std::set<std::size_t> used_pattern_vertices;
+  std::set<std::size_t> used_pattern_vertices_copy;
+  std::set<std::size_t> used_target_vertices;
 
   for (const auto& solution : solutions) {
     monomorphisms.mappings.emplace_back();
@@ -72,8 +72,8 @@ static void add_solver_solutions(
     }
 
     // Now, fill in isolated p-vertex values.
-    size_t next_tv = 0;
-    for (size_t pv = 0; pv < pattern_n_vertices; ++pv) {
+    std::size_t next_tv = 0;
+    for (std::size_t pv = 0; pv < pattern_n_vertices; ++pv) {
       // We could save time by saving the isolated PVs,
       // but surely not worth it
       if (used_pattern_vertices.count(pv) != 0) {
@@ -92,10 +92,10 @@ static void add_solver_solutions(
 // of target vertices, and all permutations of k pattern vertices,
 // but don't bother for now - just give one solution.
 static void fill_with_all_isolated_pattern_vertices(
-    SubgraphMonomorphisms& monomorphisms, size_t pattern_n_vertices) {
+    SubgraphMonomorphisms& monomorphisms, std::size_t pattern_n_vertices) {
   monomorphisms.mappings.resize(1);
   monomorphisms.mappings[0].resize(pattern_n_vertices);
-  for (size_t ii = 0; ii < pattern_n_vertices; ++ii) {
+  for (std::size_t ii = 0; ii < pattern_n_vertices; ++ii) {
     monomorphisms.mappings[0][ii] = ii;
   }
 }

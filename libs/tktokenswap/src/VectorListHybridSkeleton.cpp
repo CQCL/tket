@@ -113,7 +113,7 @@ void VectorListHybridSkeleton::reverse() {
   std::swap(m_front, m_back);
 }
 
-size_t VectorListHybridSkeleton::size() const { return m_size; }
+std::size_t VectorListHybridSkeleton::size() const { return m_size; }
 
 Index VectorListHybridSkeleton::front_index() const { return m_front; }
 
@@ -148,7 +148,7 @@ void VectorListHybridSkeleton::erase(Index index) {
 }
 
 void VectorListHybridSkeleton::erase_interval(
-    Index index, size_t number_of_elements) {
+    Index index, std::size_t number_of_elements) {
   if (number_of_elements == 0) {
     return;
   }
@@ -157,7 +157,7 @@ void VectorListHybridSkeleton::erase_interval(
   // We update only O(1) links in total, not O(N),
   // so slightly faster than a loop of next/erase calls.
   Index last_element_index = index;
-  for (size_t nn = 1; nn < number_of_elements; ++nn) {
+  for (std::size_t nn = 1; nn < number_of_elements; ++nn) {
     last_element_index = m_links.at(last_element_index).next;
 
     // GCOVR_EXCL_START
@@ -277,7 +277,7 @@ Index VectorListHybridSkeleton::get_new_index() {
 
 std::string VectorListHybridSkeleton::debug_str() const {
   std::stringstream ss;
-  const auto to_str = [](size_t ii) -> std::string {
+  const auto to_str = [](std::size_t ii) -> std::string {
     if (ii == INVALID_INDEX) {
       return "NULL";
     }

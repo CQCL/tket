@@ -57,7 +57,7 @@ std::string str(const std::vector<Swap>& swaps);
  *    the value seems about as hard as finding an actual solution, and thus
  *    is possibly exponentially hard (seems to be unknown, even for trees).
  */
-size_t get_swaps_lower_bound(
+std::size_t get_swaps_lower_bound(
     const VertexMapping& vertex_mapping, DistancesInterface& distances);
 
 }  // namespace tsa_internal
