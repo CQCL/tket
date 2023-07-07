@@ -22,14 +22,15 @@ namespace tket {
 namespace tsa_internal {
 namespace tests {
 
-void MinMaxAv::add(size_t result) {
+void MinMaxAv::add(std::size_t result) {
   min = std::min(min, result);
   max = std::max(max, result);
   total += result;
 }
 
 void PartialTsaStatistics::add_problem_result(
-    size_t initial_L, size_t final_L, size_t tokens, size_t swaps) {
+    std::size_t initial_L, std::size_t final_L, std::size_t tokens,
+    std::size_t swaps) {
   REQUIRE(final_L <= initial_L);
   REQUIRE(final_L + 2 * swaps >= initial_L);
   total_number_of_tokens += tokens;
@@ -41,7 +42,7 @@ void PartialTsaStatistics::add_problem_result(
   }
   ++number_of_problems;
   total_of_L += initial_L;
-  const size_t l_decrease = initial_L - final_L;
+  const std::size_t l_decrease = initial_L - final_L;
   total_of_L_decreases += l_decrease;
 
   l_decrease_percentages.add((100 * (initial_L - final_L)) / initial_L);
@@ -53,7 +54,7 @@ void PartialTsaStatistics::add_problem_result(
   }
 }
 
-std::string PartialTsaStatistics::str(size_t number_of_problems) const {
+std::string PartialTsaStatistics::str(std::size_t number_of_problems) const {
   REQUIRE(number_of_problems != 0);
   std::stringstream ss;
   ss << total_number_of_tokens << " tokens; " << total_of_L << " total L; "

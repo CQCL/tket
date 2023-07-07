@@ -75,7 +75,8 @@ class RiverFlowPathFinder {
    *  @return A list of vertices, starting with v1 and ending with v2,
    *    giving a shortest path from v1 to v2.
    */
-  const std::vector<size_t>& operator()(size_t vertex1, size_t vertex2);
+  const std::vector<std::size_t>& operator()(
+      std::size_t vertex1, std::size_t vertex2);
 
   ~RiverFlowPathFinder();
 
@@ -86,7 +87,7 @@ class RiverFlowPathFinder {
    * solution.
    * @param vertex2 Second vertex v2 of the edge.
    */
-  void register_edge(size_t vertex1, size_t vertex2);
+  void register_edge(std::size_t vertex1, std::size_t vertex2);
 
  private:
   struct Impl;

@@ -24,7 +24,7 @@ using std::vector;
 namespace tket {
 namespace tsa_internal {
 
-bool Cycle::contains(size_t vertex) const {
+bool Cycle::contains(std::size_t vertex) const {
   for (auto vv : vertices) {
     if (vertex == vv) {
       return true;

@@ -51,7 +51,7 @@ bool TrivialTSA::grow_cycle_forwards(
 
   // If valid, a single cycle contains at most one empty vertex.
   // Thus there are at most N+1 vertices.
-  for (size_t infin_loop_guard = vertex_mapping.size() + 1;
+  for (std::size_t infin_loop_guard = vertex_mapping.size() + 1;
        infin_loop_guard != 0; --infin_loop_guard) {
     const auto v1 = m_abstract_cycles_vertices.at(current_id);
     const auto citer = vertex_mapping.find(v1);
@@ -78,7 +78,7 @@ void TrivialTSA::grow_cycle_backwards(Endpoints& endpoints) {
 
   // In a valid cycle, every vertex but one (the empty vertex)
   // is the target of something, and therefore there are <= N+1 vertices.
-  for (size_t infin_loop_guard = m_reversed_vertex_mapping.size() + 1;
+  for (std::size_t infin_loop_guard = m_reversed_vertex_mapping.size() + 1;
        infin_loop_guard != 0; --infin_loop_guard) {
     const auto v1 = m_abstract_cycles_vertices.at(current_id);
     const auto citer = m_reversed_vertex_mapping.find(v1);
@@ -183,9 +183,10 @@ void TrivialTSA::append_partial_solution(
   TKET_ASSERT(m_options == Options::BREAK_AFTER_PROGRESS);
   // We're only going to do ONE cycle; so find which cycle
   // has the shortest estimated number of swaps
-  size_t best_estimated_concrete_swaps = std::numeric_limits<size_t>::max();
+  std::size_t best_estimated_concrete_swaps =
+      std::numeric_limits<std::size_t>::max();
   Endpoints best_endpoints;
-  size_t start_v_index = std::numeric_limits<size_t>::max();
+  std::size_t start_v_index = std::numeric_limits<std::size_t>::max();
 
   for (const auto& endpoints : m_cycle_endpoints) {
     copy_vertices_to_work_vector(endpoints);
@@ -196,7 +197,8 @@ void TrivialTSA::append_partial_solution(
     const CyclicShiftCostEstimate estimate(m_vertices_work_vector, distances);
     // GCOVR_EXCL_START
     TKET_ASSERT(
-        estimate.estimated_concrete_swaps < std::numeric_limits<size_t>::max());
+        estimate.estimated_concrete_swaps <
+        std::numeric_limits<std::size_t>::max());
     TKET_ASSERT(estimate.start_v_index < m_vertices_work_vector.size());
     // GCOVR_EXCL_STOP
     if (estimate.estimated_concrete_swaps < best_estimated_concrete_swaps) {
@@ -207,7 +209,7 @@ void TrivialTSA::append_partial_solution(
   }
   // GCOVR_EXCL_START
   TKET_ASSERT(
-      best_estimated_concrete_swaps < std::numeric_limits<size_t>::max());
+      best_estimated_concrete_swaps < std::numeric_limits<std::size_t>::max());
   // GCOVR_EXCL_STOP
   const auto swap_size_before = swaps.size();
   const auto decrease = append_partial_solution_with_single_cycle(
@@ -239,7 +241,7 @@ void TrivialTSA::append_partial_solution_with_all_cycles(
     // Break the abstract cycle into abstract swaps...
     // To shift: [a,b,c,d] -> [d,a,b,c], we do abstract swaps in
     // opposite order of the shift direction, i.e.   cd bc ab
-    for (size_t ii = m_vertices_work_vector.size() - 1; ii > 0; --ii) {
+    for (std::size_t ii = m_vertices_work_vector.size() - 1; ii > 0; --ii) {
       // Abstract swap(v1, v2).
       const auto v1 = m_vertices_work_vector[ii];
       const auto v2 = m_vertices_work_vector[ii - 1];
@@ -251,8 +253,8 @@ void TrivialTSA::append_partial_solution_with_all_cycles(
   }
 }
 
-size_t TrivialTSA::append_partial_solution_with_single_cycle(
-    const Endpoints& endpoints, size_t start_v_index, SwapList& swaps,
+std::size_t TrivialTSA::append_partial_solution_with_single_cycle(
+    const Endpoints& endpoints, std::size_t start_v_index, SwapList& swaps,
     VertexMapping& vertex_mapping, DistancesInterface& distances,
     RiverFlowPathFinder& path_finder) {
   copy_vertices_to_work_vector(endpoints);
@@ -265,7 +267,7 @@ size_t TrivialTSA::append_partial_solution_with_single_cycle(
 
   // To shift: [a,b,c,d] -> [d,a,b,c], we do abstract swaps in the opposite
   // order to the shift direction, i.e.   cd bc ab
-  for (size_t ii = m_vertices_work_vector.size() - 1; ii > 0; --ii) {
+  for (std::size_t ii = m_vertices_work_vector.size() - 1; ii > 0; --ii) {
     // Abstract swap(v1, v2).
     const auto v1 = m_vertices_work_vector
         [(ii + start_v_index) % m_vertices_work_vector.size()];
@@ -281,23 +283,23 @@ size_t TrivialTSA::append_partial_solution_with_single_cycle(
     // do concrete swaps xa ab bc cy bc ab xa.
 
     //  xa ab bc cy ...(ascending)
-    for (size_t jj = 1; jj < path.size(); ++jj) {
+    for (std::size_t jj = 1; jj < path.size(); ++jj) {
       current_L_decrease +=
           get_swap_decrease(vertex_mapping, path[jj], path[jj - 1], distances);
 
       VertexSwapResult(path[jj], path[jj - 1], vertex_mapping, swaps);
       if (current_L_decrease > 0) {
-        return static_cast<size_t>(current_L_decrease);
+        return static_cast<std::size_t>(current_L_decrease);
       }
     }
     // Now the reverse: bc ab xa
-    for (size_t kk = path.size() - 2; kk > 0; --kk) {
+    for (std::size_t kk = path.size() - 2; kk > 0; --kk) {
       current_L_decrease +=
           get_swap_decrease(vertex_mapping, path[kk], path[kk - 1], distances);
 
       VertexSwapResult(path[kk], path[kk - 1], vertex_mapping, swaps);
       if (current_L_decrease > 0) {
-        return static_cast<size_t>(current_L_decrease);
+        return static_cast<std::size_t>(current_L_decrease);
       }
     }
   }

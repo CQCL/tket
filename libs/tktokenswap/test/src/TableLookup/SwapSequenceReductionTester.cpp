@@ -43,7 +43,7 @@ static void reduce_sequence(
   for (const auto& swap : swaps) {
     raw_swap_list.push_back(swap);
   }
-  std::set<size_t> vertices_with_tokens;
+  std::set<std::size_t> vertices_with_tokens;
   for (const auto& entry : vertex_mapping) {
     vertices_with_tokens.insert(entry.first);
   }
@@ -76,7 +76,7 @@ static void check_solution(
   REQUIRE(all_tokens_home(problem_vertex_mapping));
 }
 
-static size_t get_reduced_swaps_size_with_checks(
+static std::size_t get_reduced_swaps_size_with_checks(
     const vector<Swap>& swaps, const VertexMapping& problem_vertex_mapping,
     NeighboursFromEdges& neighbours_calculator,
     SwapListOptimiser& general_optimiser,
@@ -90,7 +90,7 @@ static size_t get_reduced_swaps_size_with_checks(
   return raw_swap_list.size();
 }
 
-size_t SwapSequenceReductionTester::get_checked_solution_size(
+std::size_t SwapSequenceReductionTester::get_checked_solution_size(
     const DecodedProblemData& problem_data,
     const SwapSequenceReductionTester::Options& options) {
   NeighboursFromEdges neighbours_calculator(problem_data.swaps);
@@ -100,7 +100,7 @@ size_t SwapSequenceReductionTester::get_checked_solution_size(
 }
 
 // Reduces the sequence of swaps, checks it, and returns the size.
-size_t SwapSequenceReductionTester::get_checked_solution_size(
+std::size_t SwapSequenceReductionTester::get_checked_solution_size(
     const DecodedProblemData& problem_data,
     const DecodedArchitectureData& architecture_data,
     const SwapSequenceReductionTester::Options& options) {
@@ -118,7 +118,7 @@ SequenceReductionStats::SequenceReductionStats()
       total_reduced_swaps(0) {}
 
 void SequenceReductionStats::add_solution(
-    size_t original_swaps, size_t reduced_swaps) {
+    std::size_t original_swaps, std::size_t reduced_swaps) {
   REQUIRE(reduced_swaps <= original_swaps);
   ++problems;
   if (reduced_swaps < original_swaps) {
@@ -131,11 +131,12 @@ void SequenceReductionStats::add_solution(
 
 std::string SequenceReductionStats::str() const {
   std::stringstream ss;
-  const size_t swaps_for_equal_probs =
+  const std::size_t swaps_for_equal_probs =
       total_original_swaps - total_original_swaps_for_reduced_problems;
-  const size_t reduced_swaps_for_reduced_probs =
+  const std::size_t reduced_swaps_for_reduced_probs =
       total_reduced_swaps - swaps_for_equal_probs;
-  const size_t overall_decrease = total_original_swaps - total_reduced_swaps;
+  const std::size_t overall_decrease =
+      total_original_swaps - total_reduced_swaps;
   ss << "[" << problems - reduced_problems << " equal probs ("
      << swaps_for_equal_probs << "); " << reduced_problems << " reduced probs ("
      << reduced_swaps_for_reduced_probs << " vs "
