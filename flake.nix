@@ -20,8 +20,9 @@
           tket = pkgs.tket;
           pytket = pkgs.pytket;
         };
-        devShell = with pkgs;
-          mkShell { buildInputs = [ pkgs.tket pkgs.pytket ]; };
+        devShells = {
+          default = pkgs.mkShell { buildInputs = [ pkgs.tket pkgs.pytket ]; };
+        };
         checks = { tket-tests = pkgs.run-tket-tests; };
       });
 }
