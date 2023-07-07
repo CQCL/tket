@@ -465,8 +465,8 @@ PYBIND11_MODULE(passes, m) {
       "Removes gate-inverse pairs, merges rotations, removes identity "
       "rotations, and removes redundant gates before measurement. Does not "
       "add any new gate types.\n\n"
-      "When merging rotations with the same op group name, the merged"
-      " operation keeps the same name.");
+      "When merging rotations with the same op group name, the merged "
+      "operation keeps the same name.");
   m.def(
       "SynthesiseHQS", &SynthesiseHQS,
       "Optimises and converts a circuit consisting of CX and single-qubit "
@@ -859,15 +859,13 @@ PYBIND11_MODULE(passes, m) {
 
   m.def(
       "ZZPhaseToRz", &ZZPhaseToRz,
-      "\n"
       "Converts ZZPhase gates with angle pi or -pi to two Rz gates with"
-      "angle pi. ",
-      "\n\n"
-      ":return: a pass to convert ZZPhase gates to Rz");
+      "angle pi.\n\n"
+      ":return: a pass to convert ZZPhase gates to Rz.");
 
   m.def(
       "CnXPairwiseDecomposition", &CnXPairwiseDecomposition,
-      "Decompose CnX gates to 2-qubit gates and single qubit gates. "
+      "Decompose CnX gates to 2-qubit gates and single qubit gates."
       "For every two CnX gates, reorder their control qubits to improve "
       "the chance of gate cancellation");
 
