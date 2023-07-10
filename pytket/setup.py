@@ -139,15 +139,13 @@ class NixBuild(build_ext):
             shutil.rmtree(extdir)
         os.makedirs(extdir)
 
-        nix_ldflags = os.environ['NIX_LDFLAGS'].split()
-        build_inputs = os.environ['propagatedBuildInputs'].split()
-        location_tklog = [l[2:] for l in nix_ldflags if '-tklog' in l]
-        location_tket = [l[2:] for l in nix_ldflags if '-tket' in l]
-        location_binders = [f"{l}/lib" for l in build_inputs if '-binders' in l]
+        nix_ldflags = os.environ["NIX_LDFLAGS"].split()
+        build_inputs = os.environ["propagatedBuildInputs"].split()
+        location_tklog = [l[2:] for l in nix_ldflags if "-tklog" in l]
+        location_tket = [l[2:] for l in nix_ldflags if "-tket" in l]
+        location_binders = [f"{l}/lib" for l in build_inputs if "-binders" in l]
         assert location_tklog and location_tket and location_binders
-        for location in [location_tklog[0],
-                         location_tket[0],
-                         location_binders[0]]:
+        for location in [location_tklog[0], location_tket[0], location_binders[0]]:
             for lib in os.listdir(location):
                 libpath = os.path.join(location, lib)
                 if not os.path.isdir(libpath):
