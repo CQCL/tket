@@ -1,12 +1,11 @@
 var searchData=
 [
-  ['v_5fiterator_4817',['V_iterator',['../namespacetket.html#a8b916f703e4d56a381f8ae85739fe9c0',1,'tket']]],
-  ['vector2b_4818',['Vector2b',['../namespacetket.html#a22ae50db0ad69c19245833e79a1e75dc',1,'tket']]],
-  ['vectorxb_4819',['VectorXb',['../namespacetket.html#a1e0393129a9c3b372ec805621009d89f',1,'tket']]],
-  ['vertex_4820',['Vertex',['../classtket_1_1graphs_1_1DirectedGraphBase.html#a9196f41316f82448627e2d8979fd90a1',1,'tket::graphs::DirectedGraphBase::Vertex()'],['../namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5',1,'tket::Vertex()']]],
-  ['vertex_4821',['vertex',['../namespacetket_1_1graphs_1_1utils_1_1detail.html#a3ff88375a10ccbffbbd25d25884cec7c',1,'tket::graphs::utils::detail::vertex()'],['../namespacetket_1_1graphs_1_1utils.html#a050fee0366144452df8c98e74b35a76b',1,'tket::graphs::utils::vertex()']]],
-  ['vertex_4822',['Vertex',['../classtket_1_1graphs_1_1DirectedGraph.html#a8885c827d38ec3c89b0474efe1d4190c',1,'tket::graphs::DirectedGraph']]],
-  ['vertex_4823',['vertex',['../classtket_1_1graphs_1_1detail_1_1TreeSearchBase.html#ae9ab7f0be8f83a97e5536a8c136fa3e6',1,'tket::graphs::detail::TreeSearchBase']]],
+  ['v_5fiterator_4818',['V_iterator',['../namespacetket.html#a8b916f703e4d56a381f8ae85739fe9c0',1,'tket']]],
+  ['vector2b_4819',['Vector2b',['../namespacetket.html#a22ae50db0ad69c19245833e79a1e75dc',1,'tket']]],
+  ['vectorxb_4820',['VectorXb',['../namespacetket.html#a1e0393129a9c3b372ec805621009d89f',1,'tket']]],
+  ['vertex_4821',['Vertex',['../classtket_1_1graphs_1_1DirectedGraph.html#a8885c827d38ec3c89b0474efe1d4190c',1,'tket::graphs::DirectedGraph::Vertex()'],['../namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5',1,'tket::Vertex()']]],
+  ['vertex_4822',['vertex',['../namespacetket_1_1graphs_1_1utils_1_1detail.html#a3ff88375a10ccbffbbd25d25884cec7c',1,'tket::graphs::utils::detail::vertex()'],['../namespacetket_1_1graphs_1_1utils.html#a050fee0366144452df8c98e74b35a76b',1,'tket::graphs::utils::vertex()'],['../classtket_1_1graphs_1_1detail_1_1TreeSearchBase.html#ae9ab7f0be8f83a97e5536a8c136fa3e6',1,'tket::graphs::detail::TreeSearchBase::vertex()']]],
+  ['vertex_4823',['Vertex',['../classtket_1_1graphs_1_1DirectedGraphBase.html#a9196f41316f82448627e2d8979fd90a1',1,'tket::graphs::DirectedGraphBase']]],
   ['vertex_5fbimap_4824',['vertex_bimap',['../classtket_1_1graphs_1_1DirectedGraphBase.html#a2cb323ed0a7d2c6d082701bad6407186',1,'tket::graphs::DirectedGraphBase']]],
   ['vertex_5findex_4825',['vertex_index',['../namespacetket_1_1graphs_1_1utils_1_1detail.html#a59af211591c465c96336efc47d4f59da',1,'tket::graphs::utils::detail']]],
   ['vertex_5findex_5fpmap_4826',['vertex_index_pmap',['../namespacetket_1_1graphs_1_1utils_1_1detail.html#a3638ca87a008600f002b0c367e5f0b73',1,'tket::graphs::utils::detail']]],

@@ -131,6 +131,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aedb31279abb4dcd4d610e46f596287dc"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1ToffoliBox.html#aedb31279abb4dcd4d610e46f596287dc">is_equal</a> (const <a class="el" href="classtket_1_1Op.html">Op</a> &amp;op_other) const override</td></tr>
 <tr class="memdesc:aedb31279abb4dcd4d610e46f596287dc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Equality check between two <a class="el" href="classtket_1_1ToffoliBox.html" title="Box to synthesise a state permutation.">ToffoliBox</a> instances.  <a href="classtket_1_1ToffoliBox.html#aedb31279abb4dcd4d610e46f596287dc">More...</a><br /></td></tr>
 <tr class="separator:aedb31279abb4dcd4d610e46f596287dc"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8960defdd6b4d5e3c643d36e46b3aa16"><td class="memItemLeft" align="right" valign="top">std::optional&lt; Eigen::MatrixXcd &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1ToffoliBox.html#a8960defdd6b4d5e3c643d36e46b3aa16">get_box_unitary</a> () const override</td></tr>
+<tr class="memdesc:a8960defdd6b4d5e3c643d36e46b3aa16"><td class="mdescLeft">&#160;</td><td class="mdescRight">If meaningful and implemented, return the numerical unitary matrix (in ILO-BE convention) which this <a class="el" href="classtket_1_1Box.html" title="Abstract class for an operation from which a circuit can be extracted.">Box</a> represents.  <a href="classtket_1_1ToffoliBox.html#a8960defdd6b4d5e3c643d36e46b3aa16">More...</a><br /></td></tr>
+<tr class="separator:a8960defdd6b4d5e3c643d36e46b3aa16"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:acb7dcde60a1f026a69ad8ef0a0d53f9c"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1ToffoliBox.html#acb7dcde60a1f026a69ad8ef0a0d53f9c">dagger</a> () const override</td></tr>
 <tr class="memdesc:acb7dcde60a1f026a69ad8ef0a0d53f9c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Inverse (of a unitary operation)  <a href="classtket_1_1ToffoliBox.html#acb7dcde60a1f026a69ad8ef0a0d53f9c">More...</a><br /></td></tr>
 <tr class="separator:acb7dcde60a1f026a69ad8ef0a0d53f9c"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -165,9 +168,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aa8189b7ff8c3c0b8fd90cbc71cf19c3f inherit pub_methods_classtket_1_1Box"><td class="memItemLeft" align="right" valign="top">std::shared_ptr&lt; <a class="el" href="classtket_1_1Circuit.html">Circuit</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Box.html#aa8189b7ff8c3c0b8fd90cbc71cf19c3f">to_circuit</a> () const</td></tr>
 <tr class="memdesc:aa8189b7ff8c3c0b8fd90cbc71cf19c3f inherit pub_methods_classtket_1_1Box"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classtket_1_1Circuit.html" title="A circuit.">Circuit</a> represented by box.  <a href="classtket_1_1Box.html#aa8189b7ff8c3c0b8fd90cbc71cf19c3f">More...</a><br /></td></tr>
 <tr class="separator:aa8189b7ff8c3c0b8fd90cbc71cf19c3f inherit pub_methods_classtket_1_1Box"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aaea53cff30efc5bdf169973131ac986f inherit pub_methods_classtket_1_1Box"><td class="memItemLeft" align="right" valign="top">virtual std::optional&lt; Eigen::MatrixXcd &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Box.html#aaea53cff30efc5bdf169973131ac986f">get_box_unitary</a> () const</td></tr>
-<tr class="memdesc:aaea53cff30efc5bdf169973131ac986f inherit pub_methods_classtket_1_1Box"><td class="mdescLeft">&#160;</td><td class="mdescRight">If meaningful and implemented, return the numerical unitary matrix (in ILO-BE convention) which this <a class="el" href="classtket_1_1Box.html" title="Abstract class for an operation from which a circuit can be extracted.">Box</a> represents.  <a href="classtket_1_1Box.html#aaea53cff30efc5bdf169973131ac986f">More...</a><br /></td></tr>
-<tr class="separator:aaea53cff30efc5bdf169973131ac986f inherit pub_methods_classtket_1_1Box"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0447431c9a03a28e3687285c04b3198d inherit pub_methods_classtket_1_1Box"><td class="memItemLeft" align="right" valign="top">Eigen::MatrixXcd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Box.html#a0447431c9a03a28e3687285c04b3198d">get_unitary</a> () const override</td></tr>
 <tr class="memdesc:a0447431c9a03a28e3687285c04b3198d inherit pub_methods_classtket_1_1Box"><td class="mdescLeft">&#160;</td><td class="mdescRight">If meaningful and implemented, return the numerical unitary matrix (in ILO-BE convention) which this <a class="el" href="classtket_1_1Op.html" title="Abstract class representing an operation type.">Op</a> represents.  <a href="classtket_1_1Box.html#a0447431c9a03a28e3687285c04b3198d">More...</a><br /></td></tr>
 <tr class="separator:a0447431c9a03a28e3687285c04b3198d inherit pub_methods_classtket_1_1Box"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -312,7 +312,7 @@ Additional Inherited Members</h2></td></tr>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="ToffoliBox_8cpp_source.html#l00029">29</a> of file <a class="el" href="ToffoliBox_8cpp_source.html">ToffoliBox.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ToffoliBox_8cpp_source.html#l00063">63</a> of file <a class="el" href="ToffoliBox_8cpp_source.html">ToffoliBox.cpp</a>.</p>
 
 </div>
 </div>
@@ -334,7 +334,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Copy constructor. </p>
 
-<p class="definition">Definition at line <a class="el" href="ToffoliBox_8cpp_source.html#l00071">71</a> of file <a class="el" href="ToffoliBox_8cpp_source.html">ToffoliBox.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ToffoliBox_8cpp_source.html#l00078">78</a> of file <a class="el" href="ToffoliBox_8cpp_source.html">ToffoliBox.cpp</a>.</p>
 
 </div>
 </div>
@@ -388,7 +388,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ToffoliBox_8hpp_source.html#l00102">102</a> of file <a class="el" href="ToffoliBox_8hpp_source.html">ToffoliBox.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ToffoliBox_8hpp_source.html#l00104">104</a> of file <a class="el" href="ToffoliBox_8hpp_source.html">ToffoliBox.hpp</a>.</p>
 
 </div>
 </div>
@@ -426,7 +426,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classtket_1_1Op.html#a0184322dc89669726f8ddae2f5b8c005">tket::Op</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="ToffoliBox_8cpp_source.html#l00077">77</a> of file <a class="el" href="ToffoliBox_8cpp_source.html">ToffoliBox.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ToffoliBox_8cpp_source.html#l00097">97</a> of file <a class="el" href="ToffoliBox_8cpp_source.html">ToffoliBox.cpp</a>.</p>
 
 </div>
 </div>
@@ -485,7 +485,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ToffoliBox_8cpp_source.html#l00633">633</a> of file <a class="el" href="ToffoliBox_8cpp_source.html">ToffoliBox.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ToffoliBox_8cpp_source.html#l00651">651</a> of file <a class="el" href="ToffoliBox_8cpp_source.html">ToffoliBox.cpp</a>.</p>
 
 </div>
 </div>
@@ -516,7 +516,39 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implements <a class="el" href="classtket_1_1Box.html#afa60507ad9bb7463edc3775ca8e908a1">tket::Box</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="ToffoliBox_8cpp_source.html#l00319">319</a> of file <a class="el" href="ToffoliBox_8cpp_source.html">ToffoliBox.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ToffoliBox_8cpp_source.html#l00338">338</a> of file <a class="el" href="ToffoliBox_8cpp_source.html">ToffoliBox.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a8960defdd6b4d5e3c643d36e46b3aa16"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8960defdd6b4d5e3c643d36e46b3aa16">&#9670;&nbsp;</a></span>get_box_unitary()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::optional&lt; Eigen::MatrixXcd &gt; tket::ToffoliBox::get_box_unitary </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>If meaningful and implemented, return the numerical unitary matrix (in ILO-BE convention) which this <a class="el" href="classtket_1_1Box.html" title="Abstract class for an operation from which a circuit can be extracted.">Box</a> represents. </p>
+<dl class="section return"><dt>Returns</dt><dd>unitary matrix (ILO-BE) which this <a class="el" href="classtket_1_1Box.html" title="Abstract class for an operation from which a circuit can be extracted.">Box</a> represents </dd></dl>
+
+<p>Reimplemented from <a class="el" href="classtket_1_1Box.html#aaea53cff30efc5bdf169973131ac986f">tket::Box</a>.</p>
+
+<p class="definition">Definition at line <a class="el" href="ToffoliBox_8cpp_source.html#l00086">86</a> of file <a class="el" href="ToffoliBox_8cpp_source.html">ToffoliBox.cpp</a>.</p>
 
 </div>
 </div>
@@ -535,7 +567,7 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ToffoliBox_8cpp_source.html#l00093">93</a> of file <a class="el" href="ToffoliBox_8cpp_source.html">ToffoliBox.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ToffoliBox_8cpp_source.html#l00112">112</a> of file <a class="el" href="ToffoliBox_8cpp_source.html">ToffoliBox.cpp</a>.</p>
 
 </div>
 </div>
@@ -554,7 +586,7 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ToffoliBox_8cpp_source.html#l00095">95</a> of file <a class="el" href="ToffoliBox_8cpp_source.html">ToffoliBox.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ToffoliBox_8cpp_source.html#l00114">114</a> of file <a class="el" href="ToffoliBox_8cpp_source.html">ToffoliBox.cpp</a>.</p>
 
 </div>
 </div>
@@ -585,7 +617,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classtket_1_1Box.html#a27907b60521d873de703af37e1f682c9">tket::Box</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="ToffoliBox_8cpp_source.html#l00087">87</a> of file <a class="el" href="ToffoliBox_8cpp_source.html">ToffoliBox.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ToffoliBox_8cpp_source.html#l00107">107</a> of file <a class="el" href="ToffoliBox_8cpp_source.html">ToffoliBox.cpp</a>.</p>
 
 </div>
 </div>
@@ -604,7 +636,7 @@ Additional Inherited Members</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ToffoliBox_8cpp_source.html#l00097">97</a> of file <a class="el" href="ToffoliBox_8cpp_source.html">ToffoliBox.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ToffoliBox_8cpp_source.html#l00116">116</a> of file <a class="el" href="ToffoliBox_8cpp_source.html">ToffoliBox.cpp</a>.</p>
 
 </div>
 </div>
@@ -703,7 +735,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ToffoliBox_8cpp_source.html#l00624">624</a> of file <a class="el" href="ToffoliBox_8cpp_source.html">ToffoliBox.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ToffoliBox_8cpp_source.html#l00642">642</a> of file <a class="el" href="ToffoliBox_8cpp_source.html">ToffoliBox.cpp</a>.</p>
 
 </div>
 </div>
@@ -734,7 +766,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classtket_1_1Op.html#ac1f550854b098bff3ebdb090c5687ab1">tket::Op</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="ToffoliBox_8cpp_source.html#l00085">85</a> of file <a class="el" href="ToffoliBox_8cpp_source.html">ToffoliBox.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ToffoliBox_8cpp_source.html#l00105">105</a> of file <a class="el" href="ToffoliBox_8cpp_source.html">ToffoliBox.cpp</a>.</p>
 
 </div>
 </div>
