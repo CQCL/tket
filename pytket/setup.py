@@ -128,6 +128,7 @@ class ConanBuild(build_ext):
                 if not os.path.isdir(libpath):
                     shutil.copy(libpath, extdir)
 
+
 class NixBuild(build_ext):
     def run(self):
         self.check_extensions_list(self.extensions)
@@ -152,6 +153,7 @@ class NixBuild(build_ext):
                 if not os.path.isdir(libpath):
                     shutil.copy(libpath, extdir)
 
+
 setup_dir = os.path.abspath(os.path.dirname(__file__))
 plat_name = os.getenv("WHEEL_PLAT_NAME")
 
@@ -162,6 +164,7 @@ def get_build_ext():
         return CMakeBuild
     else:
         return ConanBuild
+
 
 class bdist_wheel(_bdist_wheel):
     def finalize_options(self):
