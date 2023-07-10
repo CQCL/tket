@@ -21,6 +21,7 @@
 #include "tket/Diagonalisation/DiagUtils.hpp"
 #include "tket/Diagonalisation/Diagonalisation.hpp"
 #include "tket/Gate/Gate.hpp"
+#include "tket/ArchAwareSynth/SteinerForest.hpp"
 
 namespace tket {
 
@@ -309,7 +310,8 @@ Circuit pauli_graph_to_circuit_lazy_synth(
 }
 
 Circuit pauli_graph_to_circuit_lazy_aas(
-    const PauliGraph &pg, const Architecture &arch) {
+    const PauliGraph &pg, const Architecture &arch,
+    const std::function<Circuit(const Circuit&)>& aas_phase_poly_func) {
   Circuit circ;
   // => circ has the original qubits prior to the Pauli graphication
   const std::set<Qubit> qbs = pg.cliff_.get_qubits();
@@ -333,7 +335,7 @@ Circuit pauli_graph_to_circuit_lazy_aas(
       gadgets.push_back(qps_pair);
     }
     // => this function should know how to append to original qubits
-    append_aased_commuting_pauli_gadget_set(gadget_circ, gadgets, arch);
+    append_aased_commuting_pauli_gadget_set(gadget_circ, gadgets, arch, aas_phase_poly_func);
     gadget_circ.decompose_boxes_recursively();
     gadget_circ.replace_all_implicit_wire_swaps();
     // 2. partition the decomposed gadget into non-clifford + clifford

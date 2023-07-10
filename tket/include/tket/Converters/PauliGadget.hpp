@@ -93,6 +93,8 @@ void append_commuting_pauli_gadget_set_as_box(
  */
 void append_aased_commuting_pauli_gadget_set(
     Circuit& circ, std::list<std::pair<QubitPauliTensor, Expr>> gadgets,
-    const Architecture& arch);
+    const Architecture& arch,
+    const std::function<Circuit(const Circuit&)>& aas_phase_poly_circ_func
+    );
 
 }  // namespace tket

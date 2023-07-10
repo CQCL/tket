@@ -149,8 +149,11 @@ void append_commuting_pauli_gadget_set_as_box(
 }
 
 void append_aased_commuting_pauli_gadget_set(
-    Circuit &circ, std::list<std::pair<QubitPauliTensor, Expr>> gadgets,
-    const Architecture &arch) {
+    Circuit &circ,
+    std::list<std::pair<QubitPauliTensor, Expr>> gadgets,
+    const Architecture &arch,
+    const std::function<Circuit(const Circuit&)>& aas_phase_poly
+    ) {
   // =>  circ has the original/custom qubits
   // Translate to QubitPauliTensors to vectors of Paulis of same length
   // Preserves ordering of qubits
@@ -179,8 +182,7 @@ void append_aased_commuting_pauli_gadget_set(
     append_single_pauli_gadget(phase_poly_circ, pgp.first, pgp.second);
   }
   // requires phase_poly_circ to be "full"
-  Circuit after_synth_circ =
-      aas::get_aased_phase_poly_circ(arch, phase_poly_circ);
+  Circuit after_synth_circ = aas_phase_poly(phase_poly_circ);
   circ.append(after_synth_circ);
   circ.append(cliff_circ.dagger());
 }

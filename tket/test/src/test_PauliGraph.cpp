@@ -15,6 +15,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <tket/Transformations/Decomposition.hpp>
 
+#include "ArchAwareSynth/SteinerForest.hpp"
 #include "CircuitsForTesting.hpp"
 #include "testutil.hpp"
 #include "tket/Circuit/Boxes.hpp"
@@ -1289,7 +1290,11 @@ SCENARIO("Test AAS pauli synth") {
     test_circ.rename_units(rename_map);
     // 4. synthesis
     PauliGraph pg = circuit_to_pauli_graph(test_circ);
-    Circuit out_circ = pauli_graph_to_circuit_lazy_aas(pg, arch);
+    auto aas_phase_poly_fixed_arch =
+        [&arch](const Circuit &input_circ) -> Circuit {
+      return aas::get_aased_phase_poly_circ(arch, input_circ);
+    };
+    Circuit out_circ = pauli_graph_to_circuit_lazy_aas(pg, arch, aas_phase_poly_fixed_arch);
     // 5. check correctness
     REQUIRE(test_statevector_comparison(test_circ, out_circ, true));
     for (const auto& cmd : out_circ) {
@@ -1345,13 +1350,17 @@ SCENARIO("Test AAS pauli synth") {
     test_circ.rename_units(rename_map);
     // 4. synthesis
     PauliGraph pg = circuit_to_pauli_graph(test_circ);
-    Circuit out_circ = pauli_graph_to_circuit_lazy_aas(pg, arch);
+    auto aas_phase_poly_fixed_arch =
+        [&arch](const Circuit &input_circ) -> Circuit {
+          return aas::get_aased_phase_poly_circ(arch, input_circ);
+        };
+    Circuit out_circ = pauli_graph_to_circuit_lazy_aas(pg, arch, aas_phase_poly_fixed_arch);
     // 5. check correctness
     REQUIRE(test_statevector_comparison(test_circ, out_circ, true));
     for (const auto& cmd : out_circ) {
-      std::vector<Node> nodes;
-      for (auto arg : cmd.get_args()) nodes.push_back(Node(arg));
-      REQUIRE(arch.valid_operation(nodes));
+      std::vector<Node> nodes_to_check;
+      for (auto arg : cmd.get_args()) nodes_to_check.push_back(Node(arg));
+      REQUIRE(arch.valid_operation(nodes_to_check));
     }
   }
 }

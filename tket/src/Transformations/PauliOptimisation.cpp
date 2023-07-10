@@ -24,6 +24,7 @@
 #include "tket/Transformations/Decomposition.hpp"
 #include "tket/Transformations/OptimisationPass.hpp"
 #include "tket/Transformations/Transform.hpp"
+#include "tket/ArchAwareSynth/SteinerForest.hpp"
 
 namespace tket {
 
@@ -233,7 +234,24 @@ Transform lazy_synthesise_pauli_graph(CXConfigType cx_config) {
   });
 }
 
-Transform lazy_aas_pauli_graph(const Architecture &arch) {
+Transform lazy_aas_pauli_graph(
+    const Architecture &arch,
+    std::optional<std::function<Circuit(const Architecture&, const Circuit&)>> aas_phase_poly_func = std::nullopt
+        ) {
+
+  std::function<Circuit(const Circuit&)> aas_phase_poly_fixed_arch;
+  if (aas_phase_poly_func.has_value()) {
+    aas_phase_poly_fixed_arch =
+        [&arch, &aas_phase_poly_func](const Circuit &input_circ) -> Circuit {
+          return aas_phase_poly_func.value()(arch, input_circ);
+    };
+  } else {
+    aas_phase_poly_fixed_arch =
+        [&arch](const Circuit &input_circ) -> Circuit {
+      return aas::get_aased_phase_poly_circ(arch, input_circ);
+    };
+  }
+
   return Transform([=](Circuit &circ) {
     // verify the circuit is placed
     qubit_vector_t q_vect = circ.all_qubits();
@@ -253,7 +271,7 @@ Transform lazy_aas_pauli_graph(const Architecture &arch) {
     std::optional<std::string> name = circ.get_name();
     circ.replace_all_implicit_wire_swaps();
     PauliGraph pg = circuit_to_pauli_graph(circ);
-    circ = pauli_graph_to_circuit_lazy_aas(pg, arch);
+    circ = pauli_graph_to_circuit_lazy_aas(pg, arch, aas_phase_poly_fixed_arch);
     circ.add_phase(t);
     if (name) {
       circ.set_name(*name);

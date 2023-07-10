@@ -115,7 +115,8 @@ class PauliGraph {
   friend Circuit pauli_graph_to_circuit_lazy_synth(
       const PauliGraph &pg, CXConfigType cx_config);
   friend Circuit pauli_graph_to_circuit_lazy_aas(
-      const PauliGraph &pg, const Architecture &arch);
+      const PauliGraph &pg, const Architecture &arch,
+      const std::function<Circuit(const Circuit&)>& aas_phase_poly);
 
  private:
   /**

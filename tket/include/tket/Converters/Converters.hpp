@@ -110,7 +110,7 @@ Circuit pauli_graph_to_circuit_lazy_synth(
  * @return Circuit
  */
 Circuit pauli_graph_to_circuit_lazy_aas(
-    const PauliGraph &pg, const Architecture &arch);
+    const PauliGraph &pg, const Architecture &arch, const std::function<Circuit(const Circuit&)>& aas_phase_poly);
 /**
  * Construct a zx diagram from a given circuit.
  * Return the zx diagram and a map between the zx boundary vertices and the
