@@ -349,6 +349,7 @@ target_sources(tket
         include/tket/Circuit/ToffoliBox.hpp
         include/tket/Circuit/PauliExpBoxes.hpp
         include/tket/Circuit/ConjugationBox.hpp
+        include/tket/Circuit/ResourceData.hpp
         include/tket/Circuit/Simulation/CircuitSimulator.hpp
         include/tket/Circuit/Simulation/PauliExpBoxUnitaryCalculator.hpp
         include/tket/Architecture/Architecture.hpp
