@@ -157,6 +157,7 @@ class NixBuild(build_ext):
 setup_dir = os.path.abspath(os.path.dirname(__file__))
 plat_name = os.getenv("WHEEL_PLAT_NAME")
 
+
 def get_build_ext():
     if os.getenv("USE_NIX"):
         return NixBuild
