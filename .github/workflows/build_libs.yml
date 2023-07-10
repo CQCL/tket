@@ -74,7 +74,7 @@ jobs:
       if: matrix.lib == 'tklog'
       run: conan create -s build_type=${{ matrix.build_type }} -o boost/*:header_only=True -o ${{ matrix.lib }}/*:shared=True libs/${{ matrix.lib }} --build=missing --user=tket --channel=stable
     - name: authenticate to repository
-      run: conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
+      run: conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_3 }}
     - name: get version
       shell: bash
       run: |
@@ -103,7 +103,7 @@ jobs:
     - name: build ${{ matrix.lib }}
       run: conan create -s build_type=${{ matrix.build_type }} -o boost/*:header_only=True libs/${{ matrix.lib }} --build=missing --user=tket --channel=stable --format json > ${{ matrix.lib }}.json
     - name: authenticate to repository
-      run: conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
+      run: conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_3 }}
     - name: get version
       run: |
         lib_label=`./libver ${{ matrix.lib }}.json ${{ matrix.lib }}`
@@ -141,7 +141,7 @@ jobs:
         cat <<EOF > env-vars
         TKLIB=${{ matrix.lib }}
         UPLOAD_PACKAGE=${UPLOAD_PACKAGE}
-        JFROG_ARTIFACTORY_TOKEN_2=${{ secrets.JFROG_ARTIFACTORY_TOKEN_2 }}
-        JFROG_ARTIFACTORY_USER_2=${{ secrets.JFROG_ARTIFACTORY_USER_2 }}
+        JFROG_ARTIFACTORY_TOKEN_3=${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }}
+        JFROG_ARTIFACTORY_USER_3=${{ secrets.JFROG_ARTIFACTORY_USER_3 }}
         EOF
         docker exec --env-file env-vars linux_build /bin/bash -c "/linuxbuildlib"
