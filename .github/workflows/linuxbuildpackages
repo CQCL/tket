@@ -46,7 +46,7 @@ do
     ${CONAN_CMD} install --requires ${PACKAGE} --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
 done
 
-${CONAN_CMD} remote login -p ${JFROG_ARTIFACTORY_TOKEN_2} tket-libs ${JFROG_ARTIFACTORY_USER_2}
+${CONAN_CMD} remote login -p ${JFROG_ARTIFACTORY_TOKEN_3} tket-libs ${JFROG_ARTIFACTORY_USER_3}
 
 for PACKAGE in ${PACKAGES}
 do
