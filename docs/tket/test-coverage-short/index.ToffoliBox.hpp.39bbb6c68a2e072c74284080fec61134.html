@@ -27,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2023-07-10 13:43:14</td>
+      <td>2023-07-10 16:40:37</td>
     </tr>
   </table>
 </div>
@@ -935,7 +935,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">Op_ptr</span><span class="w"> </span><span class="n">dagger</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">optional</span><span class="o">&lt;</span><span class="n">Eigen</span><span class="o">::</span><span class="n">MatrixXcd</span><span class="o">&gt;</span><span class="w"> </span><span class="n">get_box_unitary</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l82" href="#l82">82</a></td>
@@ -944,7 +944,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">Op_ptr</span><span class="w"> </span><span class="nf">transpose</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l83" href="#l83">83</a></td>
@@ -953,7 +953,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="w">  </span><span class="n">Op_ptr</span><span class="w"> </span><span class="nf">dagger</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l84" href="#l84">84</a></td>
@@ -962,7 +962,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">op_signature_t</span><span class="w"> </span><span class="nf">get_signature</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="n">Op_ptr</span><span class="w"> </span><span class="nf">transpose</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l85" href="#l85">85</a></td>
@@ -980,7 +980,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="n">Op_ptr</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="w"> </span><span class="o">&amp;</span><span class="n">j</span><span class="p">);</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="n">op_signature_t</span><span class="w"> </span><span class="nf">get_signature</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l87" href="#l87">87</a></td>
@@ -998,7 +998,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="w"> </span><span class="nf">to_json</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Op_ptr</span><span class="w"> </span><span class="o">&amp;</span><span class="n">op</span><span class="p">);</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="n">Op_ptr</span><span class="w"> </span><span class="nf">from_json</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="w"> </span><span class="o">&amp;</span><span class="n">j</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l89" href="#l89">89</a></td>
@@ -1016,7 +1016,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">state_perm_t</span><span class="w"> </span><span class="nf">get_permutation</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="k">static</span><span class="w"> </span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="w"> </span><span class="nf">to_json</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Op_ptr</span><span class="w"> </span><span class="o">&amp;</span><span class="n">op</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l91" href="#l91">91</a></td>
@@ -1025,7 +1025,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">OpType</span><span class="w"> </span><span class="nf">get_rotation_axis</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l92" href="#l92">92</a></td>
@@ -1034,7 +1034,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">ToffoliBoxSynthStrat</span><span class="w"> </span><span class="nf">get_strat</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="n">state_perm_t</span><span class="w"> </span><span class="nf">get_permutation</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l93" href="#l93">93</a></td>
@@ -1043,7 +1043,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="w">  </span><span class="n">OpType</span><span class="w"> </span><span class="nf">get_rotation_axis</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l94" href="#l94">94</a></td>
@@ -1052,7 +1052,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w"> </span><span class="k">protected</span><span class="o">:</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="n">ToffoliBoxSynthStrat</span><span class="w"> </span><span class="nf">get_strat</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l95" href="#l95">95</a></td>
@@ -1061,7 +1061,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l96" href="#l96">96</a></td>
@@ -1070,7 +1070,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * @brief Generate the decomposed circuit using</span></td>
+      <td class="src "><span class="w"> </span><span class="k">protected</span><span class="o">:</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l97" href="#l97">97</a></td>
@@ -1079,7 +1079,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * a sequence of multiplexed-Rx/Ry gates and a diagonal box</span></td>
+      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l98" href="#l98">98</a></td>
@@ -1088,7 +1088,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   *</span></td>
+      <td class="src "><span class="cm">   * @brief Generate the decomposed circuit using</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l99" href="#l99">99</a></td>
@@ -1097,7 +1097,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
+      <td class="src "><span class="cm">   * a sequence of multiplexed-Rx/Ry gates and a diagonal box</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l100" href="#l100">100</a></td>
@@ -1106,7 +1106,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">generate_circuit</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="cm">   *</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l101" href="#l101">101</a></td>
@@ -1115,7 +1115,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l102" href="#l102">102</a></td>
@@ -1124,7 +1124,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">ToffoliBox</span><span class="p">()</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="n">generate_circuit</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="k">override</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l103" href="#l103">103</a></td>
@@ -1133,7 +1133,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">      </span><span class="o">:</span><span class="w"> </span><span class="n">Box</span><span class="p">(</span><span class="n">OpType</span><span class="o">::</span><span class="n">ToffoliBox</span><span class="p">),</span><span class="w"></span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l104" href="#l104">104</a></td>
@@ -1142,7 +1142,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">        </span><span class="n">permutation_</span><span class="p">(),</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="n">ToffoliBox</span><span class="p">()</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l105" href="#l105">105</a></td>
@@ -1151,7 +1151,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">        </span><span class="n">strat_</span><span class="p">(</span><span class="n">ToffoliBoxSynthStrat</span><span class="o">::</span><span class="n">Matching</span><span class="p">),</span><span class="w"></span></td>
+      <td class="src "><span class="w">      </span><span class="o">:</span><span class="w"> </span><span class="n">Box</span><span class="p">(</span><span class="n">OpType</span><span class="o">::</span><span class="n">ToffoliBox</span><span class="p">),</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l106" href="#l106">106</a></td>
@@ -1160,7 +1160,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">        </span><span class="n">rotation_axis_</span><span class="p">(</span><span class="n">OpType</span><span class="o">::</span><span class="n">Ry</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w"></span></td>
+      <td class="src "><span class="w">        </span><span class="n">n_</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l107" href="#l107">107</a></td>
@@ -1169,7 +1169,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="w">        </span><span class="n">pow2n_</span><span class="p">(</span><span class="mi">1</span><span class="p">),</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l108" href="#l108">108</a></td>
@@ -1178,7 +1178,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w"> </span><span class="k">private</span><span class="o">:</span><span class="w"></span></td>
+      <td class="src "><span class="w">        </span><span class="n">permutation_</span><span class="p">(),</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l109" href="#l109">109</a></td>
@@ -1187,7 +1187,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">state_perm_t</span><span class="w"> </span><span class="n">permutation_</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="w">        </span><span class="n">strat_</span><span class="p">(</span><span class="n">ToffoliBoxSynthStrat</span><span class="o">::</span><span class="n">Matching</span><span class="p">),</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l110" href="#l110">110</a></td>
@@ -1196,7 +1196,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">ToffoliBoxSynthStrat</span><span class="w"> </span><span class="n">strat_</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="w">        </span><span class="n">rotation_axis_</span><span class="p">(</span><span class="n">OpType</span><span class="o">::</span><span class="n">Ry</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l111" href="#l111">111</a></td>
@@ -1205,7 +1205,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">OpType</span><span class="w"> </span><span class="n">rotation_axis_</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l112" href="#l112">112</a></td>
@@ -1214,7 +1214,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="p">};</span><span class="w"></span></td>
+      <td class="src "><span class="w"> </span><span class="k">private</span><span class="o">:</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l113" href="#l113">113</a></td>
@@ -1223,10 +1223,64 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="p">}</span><span class="w">  </span><span class="c1">// namespace tket</span></td>
+      <td class="src "><span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="n">n_</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l114" href="#l114">114</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="n">pow2n_</span><span class="p">;</span><span class="w"></span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l115" href="#l115">115</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">state_perm_t</span><span class="w"> </span><span class="n">permutation_</span><span class="p">;</span><span class="w"></span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l116" href="#l116">116</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">ToffoliBoxSynthStrat</span><span class="w"> </span><span class="n">strat_</span><span class="p">;</span><span class="w"></span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l117" href="#l117">117</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">OpType</span><span class="w"> </span><span class="n">rotation_axis_</span><span class="p">;</span><span class="w"></span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l118" href="#l118">118</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="p">};</span><span class="w"></span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l119" href="#l119">119</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="p">}</span><span class="w">  </span><span class="c1">// namespace tket</span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l120" href="#l120">120</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
