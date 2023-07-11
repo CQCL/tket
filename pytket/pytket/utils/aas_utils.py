@@ -122,7 +122,7 @@ def update_pauli_measurements(
                                 case Pauli.Y | Pauli.Z:
                                     measurement[control] = Pauli.I
                 case _:
-                    # {H,S,CX} is a universal gateset for Clifford Circuit
+                    # {H,S,V,Z,X,CX} is a universal gateset for Clifford Circuit
                     # Rebase before applying
                     assert False
             # make sure list is updated suitably
