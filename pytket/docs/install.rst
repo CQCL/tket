@@ -72,6 +72,11 @@ One possibility is that you are using an old version of ``pip`` that cannot acce
 
 As of pytket release 1.11.0 installing the latest version of pytket requires python version 3.9, 3.10 or 3.11. If you have an older version of python then you will need to upgrade it to use the latest version of pytket and the extensions.
 
+There is a `known issue <https://github.com/CQCL/tket/issues/926>`_ with
+installing pytket in a conda environment on MacOS: you may not be able to
+install versions more recent then 1.11.0. The only known remedy is to use an
+official Python distribution instead.
+
 
 I've tried the recommended actions here and it still won't work! What can I do?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
