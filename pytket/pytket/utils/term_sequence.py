@@ -37,7 +37,7 @@ def gen_term_sequence_circuit(
     graph colouring method.
 
     The resulting Circuit will contain a sequence of CircBoxes. Each CircBox
-    corresponds to a set of Pauli strings. Each exponentiated Pauli string 
+    corresponds to a set of Pauli strings. Each exponentiated Pauli string
     in the set is realised as a PauliExpBox.
 
     The ordering of terms prioritises reducing the two qubit gate count of the circuit rather
