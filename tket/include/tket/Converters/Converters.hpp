@@ -43,6 +43,7 @@ Circuit unitary_tableau_to_circuit_aas(
     const UnitaryTableau &tab, const Architecture &arch);
 Circuit unitary_rev_tableau_to_circuit_aas(
     const UnitaryRevTableau &tab, const Architecture &arch);
+typedef std::function<Circuit(const Architecture&, const Circuit&)> AasFunction;
 
 /**
  * Construct a ChoiMixTableau for a given circuit.
@@ -110,7 +111,7 @@ Circuit pauli_graph_to_circuit_lazy_synth(
  * @return Circuit
  */
 Circuit pauli_graph_to_circuit_lazy_aas(
-    const PauliGraph &pg, const Architecture &arch, const std::function<Circuit(const Circuit&)>& aas_phase_poly);
+    const PauliGraph &pg, const Architecture &arch, const AasFunction&);
 /**
  * Construct a zx diagram from a given circuit.
  * Return the zx diagram and a map between the zx boundary vertices and the

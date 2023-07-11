@@ -17,6 +17,7 @@
 #include <pybind11/operators.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
+#include <pybind11/functional.h>
 
 #include <functional>
 
@@ -29,6 +30,9 @@
 #include "tket/Transformations/PauliOptimisation.hpp"
 #include "tket/Transformations/Rebase.hpp"
 #include "tket/Transformations/ThreeQubitSquash.hpp"
+#include "tket/Architecture/Architecture.hpp"
+#include "tket/ArchAwareSynth/SteinerForest.hpp"
+
 #include "typecast.hpp"
 
 namespace py = pybind11;
@@ -398,7 +402,8 @@ PYBIND11_MODULE(transform, m) {
           py::arg("cx_config") = CXConfigType::Snake)
       .def_static(
           "LazyAASPauliGraph", &Transforms::lazy_aas_pauli_graph,
-          "Lazy AAS Pauli Graphs.", py::arg("arch"))
+          "Lazy AAS Pauli Graphs.", py::arg("arch"), py::arg("aas_phase_poly_func") = py::cpp_function([](const Architecture& arch, const Circuit& circ){ return aas::get_aased_phase_poly_circ(arch,circ);})
+                  )
       .def_static(
           "UCCSynthesis", &Transforms::special_UCC_synthesis,
           "Synthesises UCC circuits in the form that Term Sequencing "

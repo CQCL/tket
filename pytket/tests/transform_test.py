@@ -1232,6 +1232,30 @@ def test_lazy_AAS() -> None:
     circ.rename_units(rename_map)
     assert Transform.LazyAASPauliGraph(arch).apply(circ)
 
+
+def phase_poly(arch: Architecture, circ: Circuit) -> Circuit:
+    print("Calling from c++")
+    return circ
+
+
+def test_lazy_AAS_custom_phase_poly() -> None:
+    circ = Circuit(4)
+    pgs = [
+        PauliExpBox([Pauli.X, Pauli.Z, Pauli.Y, Pauli.I], 0.77),
+        PauliExpBox([Pauli.Z, Pauli.Z, Pauli.Y, Pauli.Z], 0.23),
+        PauliExpBox([Pauli.X, Pauli.Y, Pauli.Y, Pauli.I], 0.19),
+        PauliExpBox([Pauli.X, Pauli.X, Pauli.I, Pauli.Z], 0.1),
+        PauliExpBox([Pauli.Z, Pauli.X, Pauli.Z, Pauli.I], 0.35),
+    ]
+    for pg in pgs:
+        circ.add_pauliexpbox(pg, [0, 1, 2, 3])
+    # manually place
+    arch = Architecture([[0, 1], [1, 2], [2, 3]])
+    rename_map = {Qubit(i): Node(i) for i in range(4)}
+    circ.rename_units(rename_map)
+    assert Transform.LazyAASPauliGraph(arch, phase_poly).apply(circ)
+
+
 if __name__ == "__main__":
     test_remove_redundancies()
     test_reduce_singles()
@@ -1259,3 +1283,4 @@ if __name__ == "__main__":
     test_FullMappingPass()
     test_KAK_with_ClassicalExpBox()
     test_lazy_AAS()
+    test_lazy_AAS_custome_phase_poly()

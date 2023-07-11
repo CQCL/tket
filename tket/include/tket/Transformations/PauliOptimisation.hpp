@@ -39,7 +39,7 @@ Transform synthesise_pauli_graph(
     CXConfigType cx_config = CXConfigType::Snake);
 
 Transform lazy_synthesise_pauli_graph(CXConfigType cx_config);
-Transform lazy_aas_pauli_graph(const Architecture &arch);
+Transform lazy_aas_pauli_graph(const Architecture &arch, const std::function<Circuit(const Architecture&, const Circuit&)>& aas_phase_poly_func);
 
 // Assumes incoming circuit is composed of `CircBox`es with
 // `PauliExpBox`es inside

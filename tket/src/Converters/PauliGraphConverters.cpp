@@ -310,8 +310,7 @@ Circuit pauli_graph_to_circuit_lazy_synth(
 }
 
 Circuit pauli_graph_to_circuit_lazy_aas(
-    const PauliGraph &pg, const Architecture &arch,
-    const std::function<Circuit(const Circuit&)>& aas_phase_poly_func) {
+    const PauliGraph &pg, const Architecture &arch, const AasFunction& aas_phase_poly_func) {
   Circuit circ;
   // => circ has the original qubits prior to the Pauli graphication
   const std::set<Qubit> qbs = pg.cliff_.get_qubits();
