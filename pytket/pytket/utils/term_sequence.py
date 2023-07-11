@@ -28,8 +28,16 @@ def gen_term_sequence_circuit(
     partition_strat: PauliPartitionStrat = PauliPartitionStrat.CommutingSets,
     colour_method: GraphColourMethod = GraphColourMethod.Lazy,
 ) -> Circuit:
-    """Sequences QubitPauliOperator terms to generate a circuit made of CircBoxes.
-    Each CircBox contains a sequence of PauliExpBox objects.
+    """
+    Sequences a the terms of a QubitPauliOperator P in order to generate a circuit approximating
+    :math:`e^{\\frac{\\pi}{2}\\theta P}`. 
+
+    The sequencing is done according so some specified partitioning strategy and
+    graph colouring method.
+
+    The resulting Circuit will contain a sequence of CircBoxes. Each CircBox
+    corresponds to a set of Pauli strings. Each exponentiated Pauli string 
+    in the set is realised as a PauliExpBox.
 
     :param operator: The operator terms to sequence
     :type operator: QubitPauliOperator
