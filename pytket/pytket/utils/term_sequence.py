@@ -30,7 +30,8 @@ def gen_term_sequence_circuit(
 ) -> Circuit:
     """
     Sequences a the terms of a QubitPauliOperator P in order to generate a circuit approximating
-    :math:`e^{\\frac{\\pi}{2}\\theta P}`. 
+    :math:`e^{\\frac{\\pi}{2}\\theta P}`. This method performs Trotterisation with a single
+    Trotter step.
 
     The sequencing is done according so some specified partitioning strategy and
     graph colouring method.
@@ -38,6 +39,9 @@ def gen_term_sequence_circuit(
     The resulting Circuit will contain a sequence of CircBoxes. Each CircBox
     corresponds to a set of Pauli strings. Each exponentiated Pauli string 
     in the set is realised as a PauliExpBox.
+
+    The ordering of terms prioritises reducing the two qubit gate count of the circuit rather
+    than minimising trotter error.
 
     :param operator: The operator terms to sequence
     :type operator: QubitPauliOperator
