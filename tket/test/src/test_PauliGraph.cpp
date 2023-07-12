@@ -1291,15 +1291,15 @@ SCENARIO("Test AAS pauli synth") {
     // 4. synthesis
     PauliGraph pg = circuit_to_pauli_graph(test_circ);
     auto aas_phase_poly_fixed_arch =
-        [&arch](const Circuit &input_circ) -> Circuit {
-      return aas::get_aased_phase_poly_circ(arch, input_circ);
-    };
+        [](const Architecture& arch, const Circuit &input_circ) -> Circuit {
+          return aas::get_aased_phase_poly_circ(arch, input_circ);
+        };
     Circuit out_circ = pauli_graph_to_circuit_lazy_aas(pg, arch, aas_phase_poly_fixed_arch);
     // 5. check correctness
     REQUIRE(test_statevector_comparison(test_circ, out_circ, true));
     for (const auto& cmd : out_circ) {
       std::vector<Node> nodes;
-      for (auto arg : cmd.get_args()) nodes.push_back(Node(arg));
+      for (auto arg : cmd.get_args()) nodes.emplace_back(arg);
       REQUIRE(arch.valid_operation(nodes));
     }
   }
@@ -1351,7 +1351,7 @@ SCENARIO("Test AAS pauli synth") {
     // 4. synthesis
     PauliGraph pg = circuit_to_pauli_graph(test_circ);
     auto aas_phase_poly_fixed_arch =
-        [&arch](const Circuit &input_circ) -> Circuit {
+        [](const Architecture& arch, const Circuit &input_circ) -> Circuit {
           return aas::get_aased_phase_poly_circ(arch, input_circ);
         };
     Circuit out_circ = pauli_graph_to_circuit_lazy_aas(pg, arch, aas_phase_poly_fixed_arch);
@@ -1359,7 +1359,7 @@ SCENARIO("Test AAS pauli synth") {
     REQUIRE(test_statevector_comparison(test_circ, out_circ, true));
     for (const auto& cmd : out_circ) {
       std::vector<Node> nodes_to_check;
-      for (auto arg : cmd.get_args()) nodes_to_check.push_back(Node(arg));
+      for (auto arg : cmd.get_args()) nodes_to_check.emplace_back(arg);
       REQUIRE(arch.valid_operation(nodes_to_check));
     }
   }

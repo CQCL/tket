@@ -381,16 +381,16 @@ def test_while_repeat() -> None:
     c.Rz(0.34, 0)
     c.Rx(0.63, 1)
     assert (
-        Transform.while_repeat(
-            Transform.RebaseToCliffordSingles(), Transform.RemoveRedundancies()
-        ).apply(c)
-        == False
+            Transform.while_repeat(
+                Transform.RebaseToCliffordSingles(), Transform.RemoveRedundancies()
+            ).apply(c)
+            == False
     )
     assert (
-        Transform.while_repeat(
-            Transform.CommuteThroughMultis(), Transform.RemoveRedundancies()
-        ).apply(c)
-        == True
+            Transform.while_repeat(
+                Transform.CommuteThroughMultis(), Transform.RemoveRedundancies()
+            ).apply(c)
+            == True
     )
     assert c.n_gates_of_type(OpType.CX) == 1
     assert c.n_gates_of_type(OpType.Rz) == 0
@@ -791,7 +791,7 @@ def test_determinism() -> None:
 
 def test_full_peephole_optimise() -> None:
     with open(
-        Path(__file__).resolve().parent / "json_test_files" / "circuit.json", "r"
+            Path(__file__).resolve().parent / "json_test_files" / "circuit.json", "r"
     ) as f:
         circ = Circuit.from_dict(json.load(f))
 
@@ -1074,8 +1074,8 @@ def test_auto_rebase() -> None:
     assert rebase.apply(circ)
     assert circ.n_gates_of_type(OpType.TK2) == circ.n_2qb_gates()
     assert (
-        circ.n_gates_of_type(OpType.Rz) + circ.n_gates_of_type(OpType.PhasedX)
-        == circ.n_1qb_gates()
+            circ.n_gates_of_type(OpType.Rz) + circ.n_gates_of_type(OpType.PhasedX)
+            == circ.n_1qb_gates()
     )
 
     with pytest.raises(NoAutoRebase) as cx_err:
@@ -1215,6 +1215,7 @@ def test_round_angles() -> None:
     assert Transform.round_angles(8).apply(circ0)
     assert circ0 == circ1
 
+
 def test_lazy_AAS() -> None:
     circ = Circuit(4)
     pgs = [
@@ -1228,14 +1229,30 @@ def test_lazy_AAS() -> None:
         circ.add_pauliexpbox(pg, [0, 1, 2, 3])
     # manually place
     arch = Architecture([[0, 1], [1, 2], [2, 3]])
-    rename_map = {Qubit(i):Node(i) for i in range(4)}
+    rename_map = {Qubit(i): Node(i) for i in range(4)}
     circ.rename_units(rename_map)
     assert Transform.LazyAASPauliGraph(arch).apply(circ)
+    print(circ.n_2qb_gates())
 
 
-def phase_poly(arch: Architecture, circ: Circuit) -> Circuit:
+from pytket.extensions.pyzx import (
+    tk_to_pyzx,
+    pyzx_to_tk,
+    tk_to_pyzx_arc,
+    pyzx_to_tk_arc,
+    tk_to_pyzx_placed_circ,
+    pyzx_to_tk_placed_circ,
+)
+
+from pyzx.routing import route_phase_poly as pyzx_route_phase_poly
+
+
+def route_phase_poly(arch: Architecture, circ: Circuit) -> Circuit:
+    pyzx_arch, pyzx_circ, conversion_map = tk_to_pyzx_placed_circ(circ, arch)
+    routed_pyzx_circ = pyzx_route_phase_poly(pyzx_circ, pyzx_arch)
+    routed_circ = pyzx_to_tk_placed_circ(routed_pyzx_circ, conversion_map)
     print("Calling from c++")
-    return circ
+    return routed_circ
 
 
 def test_lazy_AAS_custom_phase_poly() -> None:
@@ -1253,7 +1270,8 @@ def test_lazy_AAS_custom_phase_poly() -> None:
     arch = Architecture([[0, 1], [1, 2], [2, 3]])
     rename_map = {Qubit(i): Node(i) for i in range(4)}
     circ.rename_units(rename_map)
-    assert Transform.LazyAASPauliGraph(arch, phase_poly).apply(circ)
+    assert Transform.LazyAASPauliGraph(arch, route_phase_poly).apply(circ)
+    print(circ.n_2qb_gates())
 
 
 if __name__ == "__main__":

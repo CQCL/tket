@@ -8,3 +8,5 @@ hypothesis
 docker
 jsonschema
 opt_einsum
+pytket-pyzx
+pyzx
