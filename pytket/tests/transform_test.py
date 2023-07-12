@@ -46,6 +46,7 @@ from pytket.qasm import circuit_from_qasm
 from pytket.architecture import Architecture  # type: ignore
 from pytket.mapping import MappingManager, LexiRouteRoutingMethod, LexiLabellingMethod  # type: ignore
 from pytket.placement import Placement, GraphPlacement, LinePlacement, NoiseAwarePlacement  # type: ignore
+from pytket.utils import compare_unitaries
 
 from sympy import Symbol  # type: ignore
 import numpy as np
@@ -1251,7 +1252,6 @@ def route_phase_poly(arch: Architecture, circ: Circuit) -> Circuit:
     pyzx_arch, pyzx_circ, conversion_map = tk_to_pyzx_placed_circ(circ, arch)
     routed_pyzx_circ = pyzx_route_phase_poly(pyzx_circ, pyzx_arch)
     routed_circ = pyzx_to_tk_placed_circ(routed_pyzx_circ, conversion_map)
-    print("Calling from c++")
     return routed_circ
 
 
@@ -1270,8 +1270,12 @@ def test_lazy_AAS_custom_phase_poly() -> None:
     arch = Architecture([[0, 1], [1, 2], [2, 3]])
     rename_map = {Qubit(i): Node(i) for i in range(4)}
     circ.rename_units(rename_map)
-    assert Transform.LazyAASPauliGraph(arch, route_phase_poly).apply(circ)
-    print(circ.n_2qb_gates())
+    circ2 = circ.copy()
+    assert Transform.LazyAASPauliGraph(arch).apply(circ)
+    assert Transform.LazyAASPauliGraph(arch, route_phase_poly).apply(circ2)
+    print("\n Circ 2q gates :", circ.n_2qb_gates())
+    print("\n Circ2 2q gates:", circ2.n_2qb_gates())
+    assert compare_unitaries(circ.get_unitary(), circ2.get_unitary())
 
 
 if __name__ == "__main__":
@@ -1301,4 +1305,4 @@ if __name__ == "__main__":
     test_FullMappingPass()
     test_KAK_with_ClassicalExpBox()
     test_lazy_AAS()
-    test_lazy_AAS_custome_phase_poly()
+    test_lazy_AAS_custom_phase_poly()
