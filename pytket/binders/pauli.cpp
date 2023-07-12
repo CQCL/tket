@@ -70,8 +70,8 @@ PYBIND11_MODULE(pauli, m) {
             json j = qps;
             return j;
           },
-          "A JSON-serializable representation of the QubitPauliString. "
-          "\n:return: a list of :py:class:`Qubit`-to-:py:class:`Pauli` "
+          "A JSON-serializable representation of the QubitPauliString.\n\n"
+          ":return: a list of :py:class:`Qubit`-to-:py:class:`Pauli` "
           "entries, "
           "represented as dicts.")
       .def_static(
