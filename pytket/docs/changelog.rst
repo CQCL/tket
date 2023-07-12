@@ -4,10 +4,16 @@ Changelog
 1.18.0 (unreleased)
 -------------------
 
+General:
+
+* Fix issue with installing recent pytket versions on macos x86_64 in conda
+  environments.
+
 Minor new features:
 
 * New constructor for ``ToffoliBox`` that allows switching between two decomposition strategies:
-  ``ToffoliBoxSynthStrat.Matching`` and ``ToffoliBoxSynthStrat.Cycle``. 
+  ``ToffoliBoxSynthStrat.Matching`` and ``ToffoliBoxSynthStrat.Cycle``.
+* Prefer ``ZZPhase`` to ``CX`` or ``ZZMax`` when using ``auto_rebase_pass()``.
 
 1.17.0 (July 2023)
 ------------------
