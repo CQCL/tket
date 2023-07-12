@@ -78,6 +78,8 @@ class ToffoliBox : public Box {
     return id_ == other.get_id();
   }
 
+  std::optional<Eigen::MatrixXcd> get_box_unitary() const override;
+
   Op_ptr dagger() const override;
   Op_ptr transpose() const override;
 
@@ -101,11 +103,15 @@ class ToffoliBox : public Box {
 
   ToffoliBox()
       : Box(OpType::ToffoliBox),
+        n_(0),
+        pow2n_(1),
         permutation_(),
         strat_(ToffoliBoxSynthStrat::Matching),
         rotation_axis_(OpType::Ry) {}
 
  private:
+  const unsigned n_;
+  const unsigned pow2n_;
   const state_perm_t permutation_;
   const ToffoliBoxSynthStrat strat_;
   const OpType rotation_axis_;
