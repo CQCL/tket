@@ -93,7 +93,7 @@ This prints out a summary of readouts (the final values of the classical bits) a
 
 Each pytket :py:class:`Backend` comes with its own default compilation method. This is a recommended sequence of optimisation passes to meet the requirements of the specific :py:class:`Backend`. 
 
-The following code snippet will show how to compile a circuit to run on an IBM device. This requires setting up IBM credentials (see `this page <https://cqcl.github.io/pytket-qiskit/api/index.html#access-and-credentials>`).
+The following code snippet will show how to compile a circuit to run on an IBM device. This requires setting up IBM credentials (see `this page <https://cqcl.github.io/pytket-qiskit/api/index.html#access-and-credentials>`_).
 
 ::
 
@@ -106,7 +106,7 @@ The following code snippet will show how to compile a circuit to run on an IBM d
     compiled_circ = belem_device.get_compiled_circuit(circ)
     result = backend.run_circuit(compiled_circ, n_shots=100)
 
-Here the default compilation pass is applied by :py:meth:`IBMQBackend.get_compiled_circuit`. See `this page <https://cqcl.github.io/pytket-qiskit/api/index.html>`_ for more details.
+Here the default compilation pass is applied by :py:meth:`IBMQBackend.get_compiled_circuit`. See `this page <https://cqcl.github.io/pytket-qiskit/api/index.html#default-compilation>`_ for more details.
 
 As an alternative, We can experiment with constructing our own circuit compilation routines in pytket. Passes from the :py:mod:`pytket.passes` module can be applied individually or composed in sequence. 
 See the section of the user manual on `circuit compilation <https://cqcl.github.io/pytket/manual/manual_compiler.html>`_ and the corresponding `notebook example <https://github.com/CQCL/pytket/blob/main/examples/compilation_example.ipynb>`_ for more.
