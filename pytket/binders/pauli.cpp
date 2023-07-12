@@ -36,7 +36,7 @@ PYBIND11_MODULE(pauli, m) {
 
   py::class_<QubitPauliString>(
       m, "QubitPauliString",
-      "A string of Pauli letters from the alphabet {I, X, Y, Z},"
+      "A string of Pauli letters from the alphabet {I, X, Y, Z}, "
       "implemented as a sparse list, indexed by qubit.")
       .def(py::init<>(), "Constructs an empty QubitPauliString.")
       .def(
