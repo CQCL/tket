@@ -1,9 +1,8 @@
 self: super:
 let
   config_contents = builtins.readFile ../pytket/docs/conf.py;
-  versions = builtins.match ''
-    .*
-    release *= *["']([^"']+)["'].*'' config_contents;
+  versions =
+    builtins.match ''.*release *= *["']([^"']+)["'].*'' config_contents;
   version = if builtins.length versions > 0 then
     builtins.elemAt versions 0
   else
@@ -45,14 +44,41 @@ in {
       cp -r ${../pytket/pytket} pytket;
       cp -r ${../pytket/setup.py} setup.py;
       cp -r ${../pytket/package.md} package.md;
+      cp -r ${../schemas} schemas;
+      mkdir test_root;
+      cp -r ${../pytket/tests} test_root/tests;
     '';
     preBuild = ''
       export USE_NIX=1;
     '';
     postFixup = ''
-      tketlib=$out/lib/python3.10/site-packages/pytket/_tket/libtket.so;
+      # hardcode the version extracted from docs/conf.py.
       echo '__version__ = "${version}"' > $out/lib/python3.10/site-packages/pytket/_version.py;
+
+      # these directories aren't copied by setup.py, so we do it manually
+      cp -r ${
+        ../pytket/pytket/circuit/display/js
+      } $out/lib/python3.10/site-packages/pytket/circuit/display/js;
+      cp -r ${
+        ../pytket/pytket/circuit/display/static
+      } $out/lib/python3.10/site-packages/pytket/circuit/display/static;
     '';
-    doCheck = false;
+    checkInputs = with super.python3.pkgs; [
+      pytest
+      pytest-cov
+      pytest-benchmark
+      py
+      hypothesis
+      docker
+      jsonschema
+      opt-einsum
+    ];
+    checkPhase = ''
+      export HOME=$TMPDIR;
+      chmod 700 $TMPDIR/test_root/tests/qasm_test_files;
+      cd test_root/tests;
+      python -m pytest
+    '';
+    doCheck = true;
   };
 }

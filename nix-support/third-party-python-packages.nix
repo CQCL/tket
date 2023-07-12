@@ -21,12 +21,12 @@ self: super: {
   };
   lark-parser = super.python3.pkgs.buildPythonPackage {
     pname = "lark-parser";
-    version = "0.7.8";
+    version = "0.12.0";
     src = super.fetchFromGitHub {
       owner = "lark-parser";
       repo = "lark";
-      rev = "refs/tags/0.7.8";
-      hash = "sha256:XwEcQO8u9UnLCKjnA3eAdTbktCyLQ8oQHDn6y/RgpT0=";
+      rev = "refs/tags/0.12.0";
+      hash = "sha256-zcMGCn3ixD3dJg3GlC/ijs+U1JN1BodHLTXZc/5UR7Y=";
     };
     doCheck = false;
   };

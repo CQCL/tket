@@ -23,6 +23,9 @@
         devShells = {
           default = pkgs.mkShell { buildInputs = [ pkgs.tket pkgs.pytket ]; };
         };
-        checks = { tket-tests = pkgs.run-tket-tests; };
+        checks = {
+          tket-tests = pkgs.run-tket-tests;
+          pytket-tests = pkgs.pytket;
+        };
       });
 }
