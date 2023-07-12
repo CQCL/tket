@@ -29,12 +29,13 @@ def gen_term_sequence_circuit(
     colour_method: GraphColourMethod = GraphColourMethod.Lazy,
 ) -> Circuit:
     """
-    Sequences the terms of a QubitPauliOperator P in order to generate a circuit
-    approximating :math:`e^{i \\frac{\\pi}{2}\\theta P}`. This method performs
-    Trotterisation with a single Trotter step.
+    Sequences the terms of a :py:class:`QubitPauliOperator` :math:`P` in
+    order to generate a circuit approximating
+    :math:`e^{i \\frac{\\pi}{2}\\theta P}`. This method performs Trotterisation
+    on :math:`P` with a single Trotter step.
 
-    The sequencing is done according to some partitioning strategy
-    for diagonalisation and graph colouring method.
+    This method uses a given partitioning strategy for diagonalisation
+    and a graph colouring method for term sequencing.
 
     The resulting Circuit will contain a sequence of CircBoxes. Each CircBox
     corresponds to a set of Pauli strings. Each exponentiated Pauli string
@@ -50,6 +51,8 @@ def gen_term_sequence_circuit(
     :type reference_state: Circuit
     :param partition_strat: a Partition strategy
     :type partition_strat: PauliPartitionStrat, optional
+    :param colour_method: a graph colouring method
+    :type colour_method: GraphColourMethod, optional
     """
     qps_list = list(operator._dict.keys())
     qps_list_list = term_sequence(qps_list, partition_strat, colour_method)
