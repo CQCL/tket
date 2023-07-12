@@ -141,11 +141,14 @@ class NixBuild(build_ext):
 
         nix_ldflags = os.environ["NIX_LDFLAGS"].split()
         build_inputs = os.environ["propagatedBuildInputs"].split()
-        location_tklog = [l[2:] for l in nix_ldflags if "-tklog" in l]
-        location_tket = [l[2:] for l in nix_ldflags if "-tket" in l]
-        location_binders = [f"{l}/lib" for l in build_inputs if "-binders" in l]
-        assert location_tklog and location_tket and location_binders
-        for location in [location_tklog[0], location_tket[0], location_binders[0]]:
+        tklibs = ['tklog', 'tktokenswap', 'tkassert', 'tkwsm', 'tkrng']
+        library_locations = {lib: [l[2:] for l in nix_ldflags if f"-{lib}" in l]
+                             for lib in tklibs}
+        library_locations['tket'] = [l[2:] for l in nix_ldflags if "-tket" in l]
+        library_locations['binders'] = [f"{l}/lib" for l in build_inputs if "-binders" in l]
+        for library, candidate_locations in library_locations.items():
+            assert len(candidate_locations) > 0, f"No known locations for {library}"
+            location = candidate_locations[0] # first come, first serve
             for lib in os.listdir(location):
                 libpath = os.path.join(location, lib)
                 if not os.path.isdir(libpath):

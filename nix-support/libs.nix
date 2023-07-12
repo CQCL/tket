@@ -34,7 +34,7 @@ in {
     inherit postFixup;
   };
   tkwsm = super.stdenv.mkDerivation {
-    name = "tkrng";
+    name = "tkwsm";
     src = ../libs/tkwsm;
     nativeBuildInputs = [ super.cmake super.boost ];
     buildInputs = [ self.tklog self.tkassert self.tkrng ];
