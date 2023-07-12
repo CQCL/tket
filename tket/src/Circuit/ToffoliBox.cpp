@@ -15,6 +15,7 @@
 #include "tket/Circuit/ToffoliBox.hpp"
 
 #include <boost/graph/max_cardinality_matching.hpp>
+#include <optional>
 
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/DiagonalBox.hpp"
@@ -26,34 +27,24 @@
 
 namespace tket {
 
-ToffoliBox::ToffoliBox(
-    const state_perm_t &permutation, const ToffoliBoxSynthStrat &strat,
-    const OpType &rotation_axis)
-    : Box(OpType::ToffoliBox),
-      permutation_(permutation),
-      strat_(strat),
-      rotation_axis_(rotation_axis) {
-  // we need to check every element has the same size, and every bitstrings
-  // appears twice
+static unsigned get_perm_size(const state_perm_t &permutation) {
   if (permutation.size() == 0) {
     throw std::invalid_argument(
         "The permutation argument passed to ToffoliBox is empty.");
   }
-  if (rotation_axis != OpType::Rx && rotation_axis != OpType::Ry) {
-    throw std::invalid_argument(
-        "The rotation_axis argument passed to ToffoliBox must be Rx or Ry.");
-  }
-  // verify the permutation is valid
   auto it = permutation.begin();
-  if (it->first.size() > 32) {
+  unsigned n = it->first.size();
+  // verify the permutation is valid
+  if (n > 32) {
     throw std::invalid_argument(
         "ToffoliBox only supports permutation up to 32 bits.");
   }
-  unsigned n_qubits = (unsigned)it->first.size();
+  // we need to check every element has the same size, and every bitstrings
+  // appears twice
   std::set<std::vector<bool>> rhs_states;
   std::set<std::vector<bool>> lhs_states;
   for (; it != permutation.end(); ++it) {
-    if (it->first.size() != n_qubits || it->second.size() != n_qubits) {
+    if (it->first.size() != n || it->second.size() != n) {
       throw std::invalid_argument(
           "The permutation argument passed to ToffoliBox contains bitstrings "
           "with different sizes.");
@@ -66,13 +57,42 @@ ToffoliBox::ToffoliBox(
         "The permutation argument passed to ToffoliBox is not complete because "
         "some states aren't mapped.");
   }
+  return n;
+}
+
+ToffoliBox::ToffoliBox(
+    const state_perm_t &permutation, const ToffoliBoxSynthStrat &strat,
+    const OpType &rotation_axis)
+    : Box(OpType::ToffoliBox),
+      n_(get_perm_size(permutation)),
+      pow2n_(1u << n_),
+      permutation_(permutation),
+      strat_(strat),
+      rotation_axis_(rotation_axis) {
+  if (rotation_axis != OpType::Rx && rotation_axis != OpType::Ry) {
+    throw std::invalid_argument(
+        "The rotation_axis argument passed to ToffoliBox must be Rx or Ry.");
+  }
 }
 
 ToffoliBox::ToffoliBox(const ToffoliBox &other)
     : Box(other),
+      n_(other.n_),
+      pow2n_(other.pow2n_),
       permutation_(other.permutation_),
       strat_(other.strat_),
       rotation_axis_(other.rotation_axis_) {}
+
+std::optional<Eigen::MatrixXcd> ToffoliBox::get_box_unitary() const {
+  Eigen::MatrixXcd U = Eigen::MatrixXcd::Identity(pow2n_, pow2n_);
+  for (const auto &pair : permutation_) {
+    const unsigned i = bin_to_dec(pair.second);
+    const unsigned j = bin_to_dec(pair.first);
+    U(i, i) = 0.;
+    U(i, j) = 1.;
+  }
+  return U;
+}
 
 Op_ptr ToffoliBox::dagger() const {
   state_perm_t reverse_perm;
@@ -85,8 +105,7 @@ Op_ptr ToffoliBox::dagger() const {
 Op_ptr ToffoliBox::transpose() const { return dagger(); }
 
 op_signature_t ToffoliBox::get_signature() const {
-  op_signature_t qubits(
-      (unsigned)permutation_.begin()->first.size(), EdgeType::Quantum);
+  op_signature_t qubits(n_, EdgeType::Quantum);
   return qubits;
 }
 
@@ -317,24 +336,23 @@ static Circuit gen_circuit_using_toffoli_gates(
     state_perm_t &perm, unsigned n_qubits);
 
 void ToffoliBox::generate_circuit() const {
-  unsigned n_qubits = (unsigned)permutation_.begin()->first.size();
   state_perm_t perm(permutation_);
   if (this->strat_ == ToffoliBoxSynthStrat::Cycle) {
-    circ_ = std::make_shared<Circuit>(
-        gen_circuit_using_toffoli_gates(perm, n_qubits));
+    circ_ =
+        std::make_shared<Circuit>(gen_circuit_using_toffoli_gates(perm, n_));
     return;
   }
   // fill the permutation with identities
-  if (perm.size() != (1ULL << n_qubits)) {
-    for (unsigned long long i = 0; i < (1ULL << n_qubits); i++) {
-      std::vector<bool> state = dec_to_bin(i, n_qubits);
+  if (perm.size() != pow2n_) {
+    for (unsigned long long i = 0; i < pow2n_; i++) {
+      std::vector<bool> state = dec_to_bin(i, n_);
       if (perm.find(state) == perm.end()) {
         perm.insert({state, state});
       }
     }
   }
   circ_ = std::make_shared<Circuit>(
-      permute(perm, n_qubits, get_op_ptr(rotation_axis_, 1)));
+      permute(perm, n_, get_op_ptr(rotation_axis_, 1)));
 }
 
 // Old ToffoliBox decomposition method
