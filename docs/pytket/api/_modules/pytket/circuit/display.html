@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pytket.circuit.display &#8212; pytket 1.17.0 documentation</title>
+    <title>pytket.circuit.display &#8212; pytket 1.17.1 documentation</title>
   
   
   
@@ -401,6 +401,7 @@ document.write(`
         <span class="s2">&quot;recursive&quot;</span><span class="p">:</span> <span class="s2">&quot;recursive&quot;</span><span class="p">,</span>
         <span class="s2">&quot;condensed&quot;</span><span class="p">:</span> <span class="s2">&quot;condensed&quot;</span><span class="p">,</span>
         <span class="s2">&quot;dark_theme&quot;</span><span class="p">:</span> <span class="s2">&quot;darkTheme&quot;</span><span class="p">,</span>
+        <span class="s2">&quot;system_theme&quot;</span><span class="p">:</span> <span class="s2">&quot;systemTheme&quot;</span><span class="p">,</span>
         <span class="s2">&quot;transparent_bg&quot;</span><span class="p">:</span> <span class="s2">&quot;transparentBg&quot;</span><span class="p">,</span>
         <span class="s2">&quot;crop_params&quot;</span><span class="p">:</span> <span class="s2">&quot;cropParams&quot;</span><span class="p">,</span>
     <span class="p">}</span>
@@ -409,6 +410,7 @@ document.write(`
     <span class="n">recursive</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">condensed</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">dark_theme</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+    <span class="n">system_theme</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">transparent_bg</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
     <span class="n">crop_params</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">bool</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
 
@@ -430,6 +432,7 @@ document.write(`
 <span class="sd">        :param recursive: bool, display nested circuits inline.</span>
 <span class="sd">        :param condensed: bool, display circuit on one line only.</span>
 <span class="sd">        :param dark_theme: bool, use dark mode.</span>
+<span class="sd">        :param system_theme: bool, use the system theme mode.</span>
 <span class="sd">        :param transparent_bg: bool, remove the circuit background.</span>
 <span class="sd">        :param crop_params: bool, shorten parameter expressions for display.</span>
 <span class="sd">        &quot;&quot;&quot;</span>
@@ -485,25 +488,13 @@ document.write(`
         <span class="k">if</span> <span class="n">jupyter</span><span class="p">:</span>
             <span class="c1"># If we are in a notebook, we can tell jupyter to display the html.</span>
             <span class="c1"># We don&#39;t import at the top in case we are not in a notebook environment.</span>
-            <span class="kn">import</span> <span class="nn">warnings</span>
             <span class="kn">from</span> <span class="nn">IPython.display</span> <span class="kn">import</span> <span class="p">(</span>  <span class="c1"># type: ignore</span>
                 <span class="n">HTML</span><span class="p">,</span>
                 <span class="n">display</span><span class="p">,</span>
             <span class="p">)</span>  <span class="c1"># pylint: disable=C0415</span>
 
-            <span class="n">fp</span> <span class="o">=</span> <span class="n">tempfile</span><span class="o">.</span><span class="n">NamedTemporaryFile</span><span class="p">(</span>
-                <span class="n">mode</span><span class="o">=</span><span class="s2">&quot;w&quot;</span><span class="p">,</span> <span class="n">suffix</span><span class="o">=</span><span class="s2">&quot;.html&quot;</span><span class="p">,</span> <span class="n">delete</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="nb">dir</span><span class="o">=</span><span class="n">os</span><span class="o">.</span><span class="n">getcwd</span><span class="p">()</span>
-            <span class="p">)</span>
-            <span class="n">fp</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="n">html</span><span class="p">)</span>
-            <span class="n">fp</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-            <span class="k">try</span><span class="p">:</span>
-                <span class="k">with</span> <span class="n">warnings</span><span class="o">.</span><span class="n">catch_warnings</span><span class="p">(</span><span class="n">record</span><span class="o">=</span><span class="kc">True</span><span class="p">):</span>  <span class="c1"># supress iframe suggestion</span>
-                    <span class="n">display</span><span class="p">(</span><span class="n">HTML</span><span class="p">(</span><span class="n">html</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
-                <span class="k">return</span> <span class="kc">None</span>
-            <span class="k">finally</span><span class="p">:</span>
-                <span class="c1"># Wait to make sure the file has time to be loaded first.</span>
-                <span class="n">time</span><span class="o">.</span><span class="n">sleep</span><span class="p">(</span><span class="mi">5</span><span class="p">)</span>
-                <span class="n">os</span><span class="o">.</span><span class="n">remove</span><span class="p">(</span><span class="n">fp</span><span class="o">.</span><span class="n">name</span><span class="p">)</span>
+            <span class="n">display</span><span class="p">(</span><span class="n">HTML</span><span class="p">(</span><span class="n">html</span><span class="p">))</span>
+            <span class="k">return</span> <span class="kc">None</span>
         <span class="k">return</span> <span class="n">html</span></div>
 
 <div class="viewcode-block" id="CircuitRenderer.render_circuit_jupyter"><a class="viewcode-back" href="../../../display.html#pytket.circuit.display.CircuitRenderer.render_circuit_jupyter">[docs]</a>    <span class="k">def</span> <span class="nf">render_circuit_jupyter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">circuit</span><span class="p">:</span> <span class="n">RenderCircuit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>

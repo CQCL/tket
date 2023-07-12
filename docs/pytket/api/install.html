@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Installation Troubleshooting &#8212; pytket 1.17.0 documentation</title>
+    <title>Installation Troubleshooting &#8212; pytket 1.17.1 documentation</title>
   
   
   
@@ -451,6 +451,10 @@ because of an issue installing <code class="docutils literal notranslate"><span 
 <p>At a couple of points in the development of the software, we had to increase the system requirements. Obtaining an old version from PyPI is likely the result of that being the most recent version compliant with your system.</p>
 <p>One possibility is that you are using an old version of <code class="docutils literal notranslate"><span class="pre">pip</span></code> that cannot accept the more recent Linux builds. Try running <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">--upgrade</span> <span class="pre">pip</span></code> to upgrade it to the most recent version and upgrade <code class="docutils literal notranslate"><span class="pre">pytket</span></code>.</p>
 <p>As of pytket release 1.11.0 installing the latest version of pytket requires python version 3.9, 3.10 or 3.11. If you have an older version of python then you will need to upgrade it to use the latest version of pytket and the extensions.</p>
+<p>There is a <a class="reference external" href="https://github.com/CQCL/tket/issues/926">known issue</a> with
+installing pytket in a conda environment on MacOS: you may not be able to
+install versions more recent then 1.11.0. The only known remedy is to use an
+official Python distribution instead.</p>
 </section>
 <section id="i-ve-tried-the-recommended-actions-here-and-it-still-won-t-work-what-can-i-do">
 <h3>I’ve tried the recommended actions here and it still won’t work! What can I do?<a class="headerlink" href="#i-ve-tried-the-recommended-actions-here-and-it-still-won-t-work-what-can-i-do" title="Permalink to this heading">#</a></h3>

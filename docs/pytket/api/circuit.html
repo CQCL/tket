@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>pytket.circuit &#8212; pytket 1.17.0 documentation</title>
+    <title>pytket.circuit &#8212; pytket 1.17.1 documentation</title>
   
   
   
@@ -483,6 +483,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.ToffoliBox.get_circuit"><code class="docutils literal notranslate"><span class="pre">ToffoliBox.get_circuit()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.ToffoliBox.get_permutation"><code class="docutils literal notranslate"><span class="pre">ToffoliBox.get_permutation()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.ToffoliBox.get_rotation_axis"><code class="docutils literal notranslate"><span class="pre">ToffoliBox.get_rotation_axis()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.ToffoliBox.get_strat"><code class="docutils literal notranslate"><span class="pre">ToffoliBox.get_strat()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.QControlBox"><code class="docutils literal notranslate"><span class="pre">QControlBox</span></code></a><ul class="nav section-nav flex-column">
@@ -1470,10 +1471,31 @@ Every backend and matrix-based box has a BasisOrder option which can toggle betw
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.ToffoliBox.__init__" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
+<li><p>__init__(self: pytket.circuit.ToffoliBox, permutation: Dict[List[bool], List[bool]], strat: pytket.circuit.ToffoliBoxSynthStrat, rotation_axis: pytket.circuit.OpType = &lt;OpType.Ry: 35&gt;) -&gt; None</p></li>
+</ol>
+<p>Construct from a permutation of basis states</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>permutation</strong> – a map between bitstrings</p></li>
+<li><p><strong>strat</strong> – synthesis strategy</p></li>
+<li><p><strong>rotation_axis</strong> – the rotation axis of the multiplexors used in the decomposition. Can be either Rx or Ry. Only applicable to the Matching strategy. Default to Ry.</p></li>
+</ul>
+</dd>
+</dl>
+<ol class="arabic simple" start="2">
 <li><p>__init__(self: pytket.circuit.ToffoliBox, permutation: Dict[List[bool], List[bool]], rotation_axis: pytket.circuit.OpType = &lt;OpType.Ry: 35&gt;) -&gt; None</p></li>
 </ol>
-<p>Construct from a permutation of basis states, and the prefered rotation axis of the multiplexors used in the decomposition. The axis can be either Ry or Rx, default to Ry.</p>
-<ol class="arabic simple" start="2">
+<p>Construct from a permutation of basis states and perform synthesis using the Matching strategy</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>permutation</strong> – a map between bitstrings</p></li>
+<li><p><strong>rotation_axis</strong> – the rotation axis of the multiplexors used in the decomposition. Can be either Rx or Ry, default to Ry.</p></li>
+</ul>
+</dd>
+</dl>
+<ol class="arabic simple" start="3">
 <li><p>__init__(self: pytket.circuit.ToffoliBox, n_qubits: int, permutation: Dict[List[bool], List[bool]], rotation_axis: pytket.circuit.OpType = &lt;OpType.Ry: 35&gt;) -&gt; None</p></li>
 </ol>
 <p>Constructor for backward compatibility. Subject to deprecation.</p>
@@ -1505,6 +1527,16 @@ Every backend and matrix-based box has a BasisOrder option which can toggle betw
 <dd><dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
 <dd class="field-odd"><p>the rotation axis</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.circuit.ToffoliBox.get_strat">
+<span class="sig-name descname"><span class="pre">get_strat</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.circuit.ToffoliBox" title="pytket.circuit.ToffoliBox"><span class="pre">pytket.circuit.ToffoliBox</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">pytket.circuit.ToffoliBoxSynthStrat</span></span></span><a class="headerlink" href="#pytket.circuit.ToffoliBox.get_strat" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the synthesis strategy</p>
 </dd>
 </dl>
 </dd></dl>
@@ -2483,6 +2515,7 @@ Every backend and matrix-based box has a BasisOrder option which can toggle betw
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.ToffoliBox.get_circuit"><code class="docutils literal notranslate"><span class="pre">ToffoliBox.get_circuit()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.ToffoliBox.get_permutation"><code class="docutils literal notranslate"><span class="pre">ToffoliBox.get_permutation()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.ToffoliBox.get_rotation_axis"><code class="docutils literal notranslate"><span class="pre">ToffoliBox.get_rotation_axis()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.ToffoliBox.get_strat"><code class="docutils literal notranslate"><span class="pre">ToffoliBox.get_strat()</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.QControlBox"><code class="docutils literal notranslate"><span class="pre">QControlBox</span></code></a><ul class="nav section-nav flex-column">
