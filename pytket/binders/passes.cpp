@@ -859,7 +859,7 @@ PYBIND11_MODULE(passes, m) {
 
   m.def(
       "ZZPhaseToRz", &ZZPhaseToRz,
-      "Converts ZZPhase gates with angle pi or -pi to two Rz gates with"
+      "Converts ZZPhase gates with angle pi or -pi to two Rz gates with "
       "angle pi.\n\n"
       ":return: a pass to convert ZZPhase gates to Rz.");
 
