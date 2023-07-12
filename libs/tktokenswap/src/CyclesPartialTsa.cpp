@@ -33,7 +33,7 @@ void CyclesPartialTsa::append_partial_solution(
   // reduce/reorder swaps, and so it would be invalid just to go back through
   // the appended swaps. However, THIS class knows that no reordering or
   // reduction occurs.
-  const size_t initial_swap_size = swaps.size();
+  const std::size_t initial_swap_size = swaps.size();
   for (;;) {
     const auto swap_size_before = swaps.size();
     single_iteration_partial_solution(
@@ -44,7 +44,7 @@ void CyclesPartialTsa::append_partial_solution(
       break;
     }
   }
-  const size_t final_swap_size = swaps.size();
+  const std::size_t final_swap_size = swaps.size();
   TKET_ASSERT(initial_swap_size <= final_swap_size);
   if (initial_swap_size == final_swap_size) {
     return;
@@ -53,7 +53,7 @@ void CyclesPartialTsa::append_partial_solution(
   const auto current_back_id_opt = swaps.back_id();
   TKET_ASSERT(current_back_id_opt);
   auto current_id = current_back_id_opt.value();
-  for (size_t remaining_swaps = final_swap_size - initial_swap_size;;) {
+  for (std::size_t remaining_swaps = final_swap_size - initial_swap_size;;) {
     const auto& swap = swaps.at(current_id);
     path_finder.register_edge(swap.first, swap.second);
     --remaining_swaps;

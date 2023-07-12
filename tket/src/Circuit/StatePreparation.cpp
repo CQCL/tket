@@ -26,7 +26,7 @@
 
 namespace tket {
 
-static unsigned compute_log2(size_t length) {
+static unsigned compute_log2(std::size_t length) {
   if (length < 2 || (length & (length - 1)) != 0) {
     throw std::invalid_argument(
         "The length of the statevector is not a power of 2.");

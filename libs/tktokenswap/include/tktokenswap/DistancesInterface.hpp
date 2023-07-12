@@ -31,7 +31,7 @@ class DistancesInterface {
    *  @param vertex2 Second vertex
    *  @return distance from v1 to v2 within the graph.
    */
-  virtual size_t operator()(size_t vertex1, size_t vertex2) = 0;
+  virtual std::size_t operator()(std::size_t vertex1, std::size_t vertex2) = 0;
 
   /** If you KNOW a path from v1 to v2 which is shortest, then
    *  extra information about distances can be deduced from subpaths
@@ -42,7 +42,7 @@ class DistancesInterface {
    * shortest path from v0 to vn. The caller must not call this without being
    * SURE that it really is a shortest path, or incorrect results may occur.
    */
-  virtual void register_shortest_path(const std::vector<size_t>& path);
+  virtual void register_shortest_path(const std::vector<std::size_t>& path);
 
   /** If you know the neighbours of a vertex, you can tell this class
    *  and it MIGHT choose to cache the distances.
@@ -51,14 +51,14 @@ class DistancesInterface {
    *  @param neighbours A list of vertices adjacent to the given vertex.
    */
   virtual void register_neighbours(
-      size_t vertex, const std::vector<size_t>& neighbours);
+      std::size_t vertex, const std::vector<std::size_t>& neighbours);
 
   /** Does nothing unless overridden. Stores the fact that v1,v2 are adjacent,
    *  to save later recalculation.
    *  @param vertex1 First vertex
    *  @param vertex2 Second vertex
    */
-  virtual void register_edge(size_t vertex1, size_t vertex2);
+  virtual void register_edge(std::size_t vertex1, std::size_t vertex2);
 
   virtual ~DistancesInterface();
 };

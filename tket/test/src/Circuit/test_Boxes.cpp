@@ -15,6 +15,7 @@
 #include <Eigen/Core>
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_string.hpp>
+#include <tket/Circuit/ToffoliBox.hpp>
 
 #include "../testutil.hpp"
 #include "tket/Circuit/Boxes.hpp"
@@ -1058,6 +1059,25 @@ SCENARIO("Unitaries") {
     Eigen::MatrixXcd u = tket_sim::get_unitary(c);
     CHECK(u.topLeftCorner(6, 6).isApprox(Eigen::MatrixXcd::Identity(6, 6)));
     CHECK(u.bottomRightCorner(2, 2).isApprox(op->get_unitary()));
+  }
+
+  GIVEN("ToffoliBox") {
+    state_perm_t p;
+    p[{0, 1, 1}] = {0, 0, 1};
+    p[{0, 0, 1}] = {1, 1, 0};
+    p[{1, 1, 0}] = {0, 1, 1};
+    ToffoliBox tbox(p);
+    Circuit c(3);
+    c.add_box(tbox, {0, 1, 2});
+    Eigen::MatrixXcd u = tket_sim::get_unitary(c);
+    CHECK(std::abs(u(0, 0) - 1.) < ERR_EPS);
+    CHECK(std::abs(u(1, 3) - 1.) < ERR_EPS);
+    CHECK(std::abs(u(2, 2) - 1.) < ERR_EPS);
+    CHECK(std::abs(u(3, 6) - 1.) < ERR_EPS);
+    CHECK(std::abs(u(4, 4) - 1.) < ERR_EPS);
+    CHECK(std::abs(u(5, 5) - 1.) < ERR_EPS);
+    CHECK(std::abs(u(6, 1) - 1.) < ERR_EPS);
+    CHECK(std::abs(u(7, 7) - 1.) < ERR_EPS);
   }
 }
 

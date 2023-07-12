@@ -71,20 +71,20 @@ class ArchitectureMapping {
   /** The number of vertices in the Architecture.
    *  @return The number of vertices
    */
-  size_t number_of_vertices() const;
+  std::size_t number_of_vertices() const;
 
   /** Get the newly created vertex assigned to the node.
    *  Throws if the node is invalid.
    *  @param node The node within the original Architecture object
    *  @return The newly created vertex representing this node
    */
-  size_t get_vertex(const Node& node) const;
+  std::size_t get_vertex(const Node& node) const;
 
   /** Reverse of "get_vertex", throws if the vertex is invalid.
    *  @param vertex The vertex created by this ArchitectureMapping object.
    *  @return The node corresponding to this vertex.
    */
-  const Node& get_node(size_t vertex) const;
+  const Node& get_node(std::size_t vertex) const;
 
   /** Get the edges using the vertices created by this ArchitectureMapping
    *  object. The vertex numbers, of course, do not necessarily match with
@@ -103,7 +103,7 @@ class ArchitectureMapping {
   node_vector_t m_vertex_to_node_mapping;
 
   /// Reverse of m_vertex_to_node_mapping; look up the index of a node.
-  std::map<Node, size_t> m_node_to_vertex_mapping;
+  std::map<Node, std::size_t> m_node_to_vertex_mapping;
 };
 
 }  // namespace tket

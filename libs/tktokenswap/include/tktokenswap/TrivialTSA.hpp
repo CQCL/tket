@@ -102,10 +102,10 @@ class TrivialTSA : public PartialTsaInterface {
    *  object m_cycle_endpoints will store information about where
    *  each cycle starts and ends.
    */
-  VectorListHybrid<size_t> m_abstract_cycles_vertices;
-  mutable std::set<size_t> m_vertices_seen;
+  VectorListHybrid<std::size_t> m_abstract_cycles_vertices;
+  mutable std::set<std::size_t> m_vertices_seen;
 
-  typedef VectorListHybrid<size_t>::ID ID;
+  typedef VectorListHybrid<std::size_t>::ID ID;
 
   /** For an abstract cycle: the first is the ID of the start vertex in
    *  "m_abstract_cycles_vertices" (which already has a builtin linked list
@@ -117,7 +117,7 @@ class TrivialTSA : public PartialTsaInterface {
    *  using the vertices in m_abstract_cycles_vertices.
    */
   std::vector<Endpoints> m_cycle_endpoints;
-  std::vector<size_t> m_vertices_work_vector;
+  std::vector<std::size_t> m_vertices_work_vector;
 
   /** Fills m_abstract_cycles_vertices, m_cycle_endpoints with the cycles.
    *  @param vertex_mapping The current desired mapping.
@@ -209,8 +209,8 @@ class TrivialTSA : public PartialTsaInterface {
    *    pair of vertices.
    *  @return the actual L-decrease (will be strictly positive).
    */
-  size_t append_partial_solution_with_single_cycle(
-      const Endpoints& endpoints, size_t start_v_index,
+  std::size_t append_partial_solution_with_single_cycle(
+      const Endpoints& endpoints, std::size_t start_v_index,
       // L (the sum of the distances to home) must decrease
       // by at least this amount, to break off early.
       SwapList& swaps, VertexMapping& vertex_mapping,

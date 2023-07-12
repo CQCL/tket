@@ -38,7 +38,7 @@ std::string str(const std::vector<Swap>& swaps) {
   return ss.str();
 }
 
-size_t get_swaps_lower_bound(
+std::size_t get_swaps_lower_bound(
     const VertexMapping& vertex_mapping,
     DistancesInterface& distances_calculator) {
   // Each swap decreases the sum by at most 2 (and more likely 1 in many cases,

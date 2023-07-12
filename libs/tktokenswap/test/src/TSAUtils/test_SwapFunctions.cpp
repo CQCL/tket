@@ -25,8 +25,8 @@ namespace tsa_internal {
 namespace tests {
 
 SCENARIO("Get swaps, with exceptions") {
-  for (size_t ii = 0; ii < 5; ++ii) {
-    for (size_t jj = 0; jj < 5; ++jj) {
+  for (std::size_t ii = 0; ii < 5; ++ii) {
+    for (std::size_t jj = 0; jj < 5; ++jj) {
       try {
         const auto swap = get_swap(ii, jj);
         CHECK(ii != jj);
@@ -42,8 +42,8 @@ SCENARIO("Get swaps, with exceptions") {
 
 SCENARIO("Disjoint swaps") {
   std::vector<Swap> swaps;
-  for (size_t ii = 0; ii < 5; ++ii) {
-    for (size_t jj = ii + 1; jj < 5; ++jj) {
+  for (std::size_t ii = 0; ii < 5; ++ii) {
+    for (std::size_t jj = ii + 1; jj < 5; ++jj) {
       swaps.push_back(get_swap(ii, jj));
     }
   }

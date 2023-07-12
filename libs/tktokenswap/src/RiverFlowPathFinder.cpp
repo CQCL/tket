@@ -42,7 +42,7 @@ struct RiverFlowPathFinder::Impl {
   std::map<Swap, EdgeCount> edge_counts;
 
   struct ArrowData {
-    size_t end_vertex;
+    std::size_t end_vertex;
     EdgeCount count;
   };
 
@@ -53,7 +53,7 @@ struct RiverFlowPathFinder::Impl {
   vector<ArrowData> candidate_moves;
 
   /// A work vector, will be built up
-  vector<size_t> path;
+  vector<std::size_t> path;
 
   Impl(
       DistancesInterface& distances_interface,
@@ -65,7 +65,7 @@ struct RiverFlowPathFinder::Impl {
   void reset();
 
   /// Increases nonempty "path" towards the target vertex.
-  void grow_path(size_t target_vertex, size_t required_path_size);
+  void grow_path(std::size_t target_vertex, std::size_t required_path_size);
 
   /// Once "path" has been filled, update the counts (so that future paths
   /// through similar vertices are more likely to overlap).
@@ -80,7 +80,7 @@ void RiverFlowPathFinder::Impl::reset() {
 }
 
 void RiverFlowPathFinder::Impl::grow_path(
-    size_t target_vertex, size_t required_path_size) {
+    std::size_t target_vertex, std::size_t required_path_size) {
   TKET_ASSERT(path.size() < required_path_size);
   TKET_ASSERT(!path.empty());
 
@@ -92,7 +92,7 @@ void RiverFlowPathFinder::Impl::grow_path(
   const auto& neighbours = neighbours_calculator(path.back());
   distances_calculator.register_neighbours(path.back(), neighbours);
 
-  for (size_t neighbour : neighbours) {
+  for (std::size_t neighbour : neighbours) {
     const auto neighbour_distance_to_target =
         distances_calculator(neighbour, target_vertex);
 
@@ -138,7 +138,7 @@ void RiverFlowPathFinder::Impl::grow_path(
 }
 
 void RiverFlowPathFinder::Impl::update_data_with_path() {
-  for (size_t ii = 1; ii < path.size(); ++ii) {
+  for (std::size_t ii = 1; ii < path.size(); ++ii) {
     // Nonexistent counts automatically set to 0 initially
     ++edge_counts[get_swap(path[ii - 1], path[ii])];
   }
@@ -155,8 +155,8 @@ RiverFlowPathFinder::~RiverFlowPathFinder() {}
 
 void RiverFlowPathFinder::reset() { m_pimpl->reset(); }
 
-const vector<size_t>& RiverFlowPathFinder::operator()(
-    size_t vertex1, size_t vertex2) {
+const vector<std::size_t>& RiverFlowPathFinder::operator()(
+    std::size_t vertex1, std::size_t vertex2) {
   m_pimpl->path.clear();
   m_pimpl->path.push_back(vertex1);
   if (vertex1 == vertex2) {
@@ -165,10 +165,10 @@ const vector<size_t>& RiverFlowPathFinder::operator()(
 
   // We must build up the path.
   // The number of vertices including the source and target.
-  const size_t final_path_size =
+  const std::size_t final_path_size =
       1 + m_pimpl->distances_calculator(vertex1, vertex2);
 
-  for (size_t infinite_loop_guard = 10 * final_path_size;
+  for (std::size_t infinite_loop_guard = 10 * final_path_size;
        infinite_loop_guard != 0; --infinite_loop_guard) {
     m_pimpl->grow_path(vertex2, final_path_size);
     if (m_pimpl->path.size() == final_path_size) {
@@ -180,7 +180,8 @@ const vector<size_t>& RiverFlowPathFinder::operator()(
   throw std::runtime_error("get path - dropped out of loop");
 }
 
-void RiverFlowPathFinder::register_edge(size_t vertex1, size_t vertex2) {
+void RiverFlowPathFinder::register_edge(
+    std::size_t vertex1, std::size_t vertex2) {
   // Automatically zero if the edge doesn't exist.
   auto& edge_count = m_pimpl->edge_counts[get_swap(vertex1, vertex2)];
   ++edge_count;

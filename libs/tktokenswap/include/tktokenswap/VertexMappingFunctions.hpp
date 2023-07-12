@@ -24,7 +24,7 @@ namespace tket {
 
 /// The desired result of swapping is to move a token on each "key"
 /// vertex to the "value" vertex.
-typedef std::map<size_t, size_t> VertexMapping;
+typedef std::map<std::size_t, std::size_t> VertexMapping;
 
 /** Are all tokens on their target vertices?
  *  @param vertex_mapping The desired mapping.
@@ -56,7 +56,7 @@ void check_mapping(
  *  @param swap_list The list of swaps, which will be updated.
  */
 void append_swaps_to_interchange_path_ends(
-    const std::vector<size_t>& path, VertexMapping& vertex_mapping,
+    const std::vector<std::size_t>& path, VertexMapping& vertex_mapping,
     SwapList& swap_list);
 
 /** Given a source->target vertex mapping and a TARGET vertex, find the
@@ -68,8 +68,8 @@ void append_swaps_to_interchange_path_ends(
  * @return The source vertex corresponding to the target (possibly newly created
  * if the target was not present).
  */
-size_t get_source_vertex(
-    VertexMapping& source_to_target_map, size_t target_vertex);
+std::size_t get_source_vertex(
+    VertexMapping& source_to_target_map, std::size_t target_vertex);
 
 /** We currently have a source->target mapping. Perform the vertex swap,
  * but if any vertex in the swap is not present in the map, add it to the map as

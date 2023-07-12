@@ -58,7 +58,7 @@ class SwapListTableOptimiser {
    * (i.e., clustering interacting swaps together).
    */
   void optimise(
-      const std::set<size_t>& vertices_with_tokens_at_start,
+      const std::set<std::size_t>& vertices_with_tokens_at_start,
       VertexMapResizing& map_resizing, SwapList& swap_list,
       SwapListOptimiser& swap_list_optimiser);
 
@@ -82,7 +82,7 @@ class SwapListTableOptimiser {
    * @param swap_list_optimiser An object to handle non-table optimisations.
    */
   void optimise_in_forward_direction(
-      const std::set<size_t>& vertices_with_tokens_at_start,
+      const std::set<std::size_t>& vertices_with_tokens_at_start,
       VertexMapResizing& map_resizing, SwapList& swap_list,
       SwapListOptimiser& swap_list_optimiser);
 };

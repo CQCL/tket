@@ -64,7 +64,7 @@ class CanonicalRelabelling {
     /** Element[i], for new vertex i, is the old vertex number which corresponds
      * to i. Empty if too many vertices.
      */
-    std::vector<size_t> new_to_old_vertices;
+    std::vector<std::size_t> new_to_old_vertices;
 
     /** Set equal to zero if too many vertices. Any permutation on <= 6 vertices
      * is assigned a number, to be looked up in the table. 0 is the identity
@@ -99,7 +99,7 @@ class CanonicalRelabelling {
    * arbitrarily labelled permutation into disjoint cycles, then relabelling the
    * vertices within the cycles in a reasonable way.
    */
-  std::vector<std::vector<size_t>> m_cycles;
+  std::vector<std::vector<std::size_t>> m_cycles;
 
   /** The indices in "m_cycles" after sorting appropriately. */
   std::vector<unsigned> m_sorted_cycles_indices;

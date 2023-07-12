@@ -24,8 +24,8 @@ NeighboursFromArchitecture::NeighboursFromArchitecture(
     const ArchitectureMapping& arch_mapping)
     : m_arch_mapping(arch_mapping) {}
 
-const std::vector<size_t>& NeighboursFromArchitecture::operator()(
-    size_t vertex) {
+const std::vector<std::size_t>& NeighboursFromArchitecture::operator()(
+    std::size_t vertex) {
   const auto num_vertices = m_arch_mapping.number_of_vertices();
   // GCOVR_EXCL_START
   TKET_ASSERT(

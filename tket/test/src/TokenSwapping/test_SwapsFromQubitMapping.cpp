@@ -44,8 +44,8 @@ SCENARIO("get_swaps : swaps returned directly from architecture") {
   }
 
   // Key: a node Value: its original position in "nodes"
-  std::map<Node, size_t> original_vertex_indices;
-  for (size_t ii = 0; ii < nodes.size(); ++ii) {
+  std::map<Node, std::size_t> original_vertex_indices;
+  for (std::size_t ii = 0; ii < nodes.size(); ++ii) {
     original_vertex_indices[nodes[ii]] = ii;
   }
   RNG rng_to_generate_swaps;
@@ -55,7 +55,7 @@ SCENARIO("get_swaps : swaps returned directly from architecture") {
 
   problem_ss << " Node mapping:";
   BestTsaWithArch::NodeMapping node_mapping;
-  for (size_t ii = 0; ii < nodes.size(); ++ii) {
+  for (std::size_t ii = 0; ii < nodes.size(); ++ii) {
     problem_ss << "\ni=" << ii << " : " << node_final_positions[ii].repr()
                << " -> " << nodes[ii].repr();
     node_mapping[node_final_positions[ii]] = nodes[ii];

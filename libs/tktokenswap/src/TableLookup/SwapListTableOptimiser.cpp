@@ -32,7 +32,7 @@ enum class EmptySwapCheckResult {
 // vertices_with_tokens is correct just BEFORE performing the swap.
 // If the swap is empty, erase it and update current_id (to the next swap).
 static EmptySwapCheckResult check_for_empty_swap(
-    const std::set<size_t>& vertices_with_tokens, SwapID& current_id,
+    const std::set<std::size_t>& vertices_with_tokens, SwapID& current_id,
     SwapList& swap_list) {
   const auto swap = swap_list.at(current_id);
   if (vertices_with_tokens.count(swap.first) != 0 ||
@@ -54,7 +54,7 @@ static EmptySwapCheckResult check_for_empty_swap(
 // until EITHER we hit a nonempty swap, OR we run out of swaps,
 // and thus return false.
 static bool erase_empty_swaps_interval(
-    const std::set<size_t>& vertices_with_tokens, SwapID& current_id,
+    const std::set<std::size_t>& vertices_with_tokens, SwapID& current_id,
     SwapList& swap_list) {
   for (auto infinite_loop_guard = 1 + swap_list.size(); infinite_loop_guard > 0;
        --infinite_loop_guard) {
@@ -81,7 +81,7 @@ static bool erase_empty_swaps_interval(
 // Perform the swap (i.e., updating vertices_with_tokens),
 // and advance current_id to the next swap.
 static bool perform_current_nonempty_swap(
-    std::set<size_t>& vertices_with_tokens, SwapID& current_id,
+    std::set<std::size_t>& vertices_with_tokens, SwapID& current_id,
     const SwapList& swap_list) {
   const auto swap = swap_list.at(current_id);
 
@@ -109,7 +109,7 @@ static bool perform_current_nonempty_swap(
 }
 
 void SwapListTableOptimiser::optimise(
-    const std::set<size_t>& vertices_with_tokens_at_start,
+    const std::set<std::size_t>& vertices_with_tokens_at_start,
     VertexMapResizing& map_resizing, SwapList& swap_list,
     SwapListOptimiser& swap_list_optimiser) {
   if (vertices_with_tokens_at_start.empty()) {
@@ -170,7 +170,7 @@ void SwapListTableOptimiser::optimise(
 }
 
 void SwapListTableOptimiser::optimise_in_forward_direction(
-    const std::set<size_t>& vertices_with_tokens_at_start,
+    const std::set<std::size_t>& vertices_with_tokens_at_start,
     VertexMapResizing& map_resizing, SwapList& swap_list,
     SwapListOptimiser& swap_list_optimiser) {
   swap_list_optimiser.optimise_pass_with_frontward_travel(swap_list);
@@ -187,8 +187,8 @@ void SwapListTableOptimiser::optimise_in_forward_direction(
   auto current_id = swap_list.front_id().value();
   auto vertices_with_tokens = vertices_with_tokens_at_start;
 
-  for (size_t infinite_loop_guard = swap_list.size(); infinite_loop_guard != 0;
-       --infinite_loop_guard) {
+  for (std::size_t infinite_loop_guard = swap_list.size();
+       infinite_loop_guard != 0; --infinite_loop_guard) {
     if (!erase_empty_swaps_interval(
             vertices_with_tokens, current_id, swap_list)) {
       return;

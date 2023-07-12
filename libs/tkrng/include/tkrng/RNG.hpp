@@ -63,7 +63,7 @@ class RNG {
    * which can be returned.
    * @return A size_t from the inclusive range {0,1,2,...,N}.
    */
-  size_t get_size_t(size_t max_value);
+  std::size_t get_size_t(std::size_t max_value);
 
   /** Returns the next 64-bit integer; guaranteed by the C++ standard
    * to be portable.
@@ -77,7 +77,7 @@ class RNG {
    * @param max_value The largest value (inclusive) that can be returned.
    * @return A size_t from the inclusive range {a, a+1, a+2, ... , b}.
    */
-  size_t get_size_t(size_t min_value, size_t max_value);
+  std::size_t get_size_t(std::size_t min_value, std::size_t max_value);
 
   /**
    * The behaviour of the RAW BITS of the Mersenne twister random engine
@@ -86,7 +86,7 @@ class RNG {
    * @param seed A seed value, to alter the RNG state.
    *    By default, uses the value specified by the standard.
    */
-  void set_seed(size_t seed = 5489);
+  void set_seed(std::size_t seed = 5489);
 
   /** Return true p% of the time.
    * (Very quick and dirty, doesn't check for, e.g., 110% effort...)
@@ -96,7 +96,7 @@ class RNG {
    *  a percentage.
    * @return A random bool, returns true with specified probability.
    */
-  bool check_percentage(size_t percentage);
+  bool check_percentage(std::size_t percentage);
 
   /**
    * Simply shuffle the elements around at random.
@@ -117,7 +117,7 @@ class RNG {
       return;
     }
     m_shuffling_data.resize(elements.size());
-    for (size_t i = 0; i < m_shuffling_data.size(); ++i) {
+    for (std::size_t i = 0; i < m_shuffling_data.size(); ++i) {
       m_shuffling_data[i].first = m_engine();
       // Tricky subtle point: without this extra entry to break ties,
       // std::sort could give DIFFERENT results across platforms and compilers,
@@ -126,14 +126,14 @@ class RNG {
     }
     std::sort(
         m_shuffling_data.begin(), m_shuffling_data.end(),
-        [](const std::pair<std::uintmax_t, size_t>& lhs,
-           const std::pair<std::uintmax_t, size_t>& rhs) {
+        [](const std::pair<std::uintmax_t, std::size_t>& lhs,
+           const std::pair<std::uintmax_t, std::size_t>& rhs) {
           return lhs.first < rhs.first ||
                  (lhs.first == rhs.first && lhs.second < rhs.second);
         });
     // Don't need to make a copy of "elements"! Just do repeated swaps...
-    for (size_t i = 0; i < m_shuffling_data.size(); ++i) {
-      const size_t& j = m_shuffling_data[i].second;
+    for (std::size_t i = 0; i < m_shuffling_data.size(); ++i) {
+      const std::size_t& j = m_shuffling_data[i].second;
       if (i != j) {
         std::swap(elements[i], elements[j]);
       }
@@ -167,7 +167,7 @@ class RNG {
       throw std::runtime_error(
           "RNG: get_and_remove_element called on empty vector");
     }
-    size_t index = get_size_t(elements.size() - 1);
+    std::size_t index = get_size_t(elements.size() - 1);
     const T copy = elements[index];
     elements[index] = elements.back();
     elements.pop_back();
@@ -179,13 +179,13 @@ class RNG {
    *  @return An interval of nonnegative numbers, starting at zero,
    *    but rearranged randomly.
    */
-  std::vector<size_t> get_permutation(size_t size);
+  std::vector<std::size_t> get_permutation(std::size_t size);
 
  private:
   std::mt19937_64 m_engine;
 
   // Avoids repeated memory reallocation.
-  std::vector<std::pair<std::uintmax_t, size_t>> m_shuffling_data;
+  std::vector<std::pair<std::uintmax_t, std::size_t>> m_shuffling_data;
 };
 
 }  // namespace tket

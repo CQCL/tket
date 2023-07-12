@@ -57,8 +57,8 @@ SCENARIO("Test random degree sequences for compatibility") {
     degree_counts_map.clear();
     for (unsigned number_of_degrees = 1 + (ii / divisor); number_of_degrees > 0;
          --number_of_degrees) {
-      size_t a0 = rng.get_size_t(max_degree_minus_1);
-      size_t a1 = rng.get_size_t(max_count_minus_1);
+      std::size_t a0 = rng.get_size_t(max_degree_minus_1);
+      std::size_t a1 = rng.get_size_t(max_count_minus_1);
       degree_counts_map[1 + a0] += 1 + a1;
     }
     unsigned size = 0;

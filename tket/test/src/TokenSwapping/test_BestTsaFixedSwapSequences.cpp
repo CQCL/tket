@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <algorithm>
 #include <catch2/catch_test_macros.hpp>
 
 #include "Data/FixedCompleteSolutions.hpp"
@@ -32,20 +33,20 @@ namespace tests {
 
 namespace {
 struct FixedSeqsStats {
-  size_t equivalent_solns = 0;
-  size_t equivalent_solns_swaps = 0;
-  size_t better_solns = 0;
-  size_t better_solns_swaps = 0;
-  size_t better_solns_known_swaps = 0;
-  size_t better_solns_total_swap_diff = 0;
-  size_t better_solns_percent_decr_total = 0;
-  size_t worse_solns = 0;
-  size_t worse_solns_swaps = 0;
-  size_t worse_solns_known_swaps = 0;
-  size_t worse_solns_total_swap_diff = 0;
-  size_t worse_solns_percent_incr_total = 0;
+  std::size_t equivalent_solns = 0;
+  std::size_t equivalent_solns_swaps = 0;
+  std::size_t better_solns = 0;
+  std::size_t better_solns_swaps = 0;
+  std::size_t better_solns_known_swaps = 0;
+  std::size_t better_solns_total_swap_diff = 0;
+  std::size_t better_solns_percent_decr_total = 0;
+  std::size_t worse_solns = 0;
+  std::size_t worse_solns_swaps = 0;
+  std::size_t worse_solns_known_swaps = 0;
+  std::size_t worse_solns_total_swap_diff = 0;
+  std::size_t worse_solns_percent_incr_total = 0;
 
-  void add(size_t known_size, size_t calc_size) {
+  void add(std::size_t known_size, std::size_t calc_size) {
     if (known_size == calc_size) {
       ++equivalent_solns;
       equivalent_solns_swaps += known_size;
@@ -70,11 +71,11 @@ struct FixedSeqsStats {
 
   std::string str() const {
     std::stringstream ss;
-    size_t good_soln_av_decr = 0;
+    std::size_t good_soln_av_decr = 0;
     if (better_solns > 0) {
       good_soln_av_decr = better_solns_percent_decr_total / better_solns;
     }
-    size_t bad_soln_av_incr = 0;
+    std::size_t bad_soln_av_incr = 0;
     if (worse_solns > 0) {
       bad_soln_av_incr = worse_solns_percent_incr_total / worse_solns;
     }

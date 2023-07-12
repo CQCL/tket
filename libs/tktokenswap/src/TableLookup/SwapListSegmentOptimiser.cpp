@@ -26,7 +26,8 @@ namespace tsa_internal {
 
 const SwapListSegmentOptimiser::Output&
 SwapListSegmentOptimiser::optimise_segment(
-    SwapID initial_id, const std::set<size_t>& vertices_with_tokens_at_start,
+    SwapID initial_id,
+    const std::set<std::size_t>& vertices_with_tokens_at_start,
     VertexMapResizing& map_resizing, SwapList& swap_list) {
   m_best_optimised_swaps.clear();
 
@@ -47,7 +48,7 @@ SwapListSegmentOptimiser::optimise_segment(
     current_map[initial_swap.first] = initial_swap.second;
     current_map[initial_swap.second] = initial_swap.first;
   }
-  size_t current_number_of_swaps = 1;
+  std::size_t current_number_of_swaps = 1;
   VertexMapping current_map_copy;
   for (auto next_id_opt = swap_list.next(initial_id);;) {
     bool too_many_vertices = false;
@@ -82,10 +83,10 @@ SwapListSegmentOptimiser::optimise_segment(
             TKET_ASSERT(
                 m_output.initial_segment_size >= m_best_optimised_swaps.size());
             // GCOVR_EXCL_STOP
-            const size_t current_decrease =
+            const std::size_t current_decrease =
                 m_output.initial_segment_size - m_best_optimised_swaps.size();
             TKET_ASSERT(current_number_of_swaps >= lookup_result.swaps.size());
-            const size_t new_decrease =
+            const std::size_t new_decrease =
                 current_number_of_swaps - lookup_result.swaps.size();
             should_store = new_decrease > current_decrease;
           }
@@ -159,7 +160,7 @@ void SwapListSegmentOptimiser::fill_final_output_and_swaplist(
     m_output.new_segment_last_id =
         overwrite_result.final_overwritten_element_id;
 
-    const size_t remaining_elements_to_erase =
+    const std::size_t remaining_elements_to_erase =
         m_output.initial_segment_size - m_output.final_segment_size;
 
     const auto next_id_opt =
