@@ -33,8 +33,8 @@ def gen_term_sequence_circuit(
     a circuit approximating :math:`e^{i \\frac{\\pi}{2}\\theta P}`. This method
     performs Trotterisation on :math:`P` with a single Trotter step.
 
-    This method uses a given partitioning strategy for diagonalisation
-    and a graph colouring method for term sequencing.
+    This method uses a given partitioning strategy and a graph colouring
+      method for term sequencing.
 
     The resulting Circuit will contain a sequence of CircBoxes. Each CircBox
     corresponds to a set of Pauli strings. Each exponentiated Pauli string

@@ -30,7 +30,8 @@ PYBIND11_MODULE(partition, m) {
       .value(
           "NonConflictingSets", PauliPartitionStrat::NonConflictingSets,
           "Build sets of Pauli tensors in which each qubit has the "
-          "same Pauli or Pauli.I. Requires no additional CX gates.")
+          "same Pauli or Pauli.I. Requires no additional CX gates "
+          "for diagonalisation.")
       .value(
           "CommutingSets", PauliPartitionStrat::CommutingSets,
           "Build sets of mutually commuting Pauli tensors. Requires "
