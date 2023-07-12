@@ -29,11 +29,11 @@ def gen_term_sequence_circuit(
     colour_method: GraphColourMethod = GraphColourMethod.Lazy,
 ) -> Circuit:
     """
-    Sequences a the terms of a QubitPauliOperator P in order to generate a circuit
-    approximating :math:`e^{\\frac{\\pi}{2}\\theta P}`. This method performs
+    Sequences the terms of a QubitPauliOperator P in order to generate a circuit
+    approximating :math:`e^{i \\frac{\\pi}{2}\\theta P}`. This method performs
     Trotterisation with a single Trotter step.
 
-    The sequencing is done according so some specified partitioning strategy and
+    The sequencing is done according to some specified partitioning strategy and
     graph colouring method.
 
     The resulting Circuit will contain a sequence of CircBoxes. Each CircBox
@@ -41,7 +41,8 @@ def gen_term_sequence_circuit(
     in the set is realised as a PauliExpBox.
 
     The ordering of terms prioritises reducing the two qubit gate count of the
-    circuit rather than minimising trotter error.
+    circuit when PauliSimp or GuidedPauliSimp is applied rather than
+    minimising the trotter error.
 
     :param operator: The operator terms to sequence
     :type operator: QubitPauliOperator
