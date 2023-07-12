@@ -7,7 +7,7 @@ application, using [pyproject.toml](pyproject.toml) and the
 two scripts: `entanglement` and `teleport`, that set up trivial circuits
 and display them in your browser.
 
-To run these scripts, simply run:
+To run these scripts, simply run the following commands from within this directory:
 
 ```
 nix run .#entanglement
