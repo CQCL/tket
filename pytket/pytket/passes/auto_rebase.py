@@ -39,9 +39,9 @@ def _TK2_using_TK2(a: Param, b: Param, c: Param) -> Circuit:
 
 _TK2_CIRCS: Dict[OpType, Callable[[Param, Param, Param], "Circuit"]] = {
     OpType.TK2: _TK2_using_TK2,
+    OpType.ZZPhase: _library._TK2_using_ZZPhase,
     OpType.CX: _library._TK2_using_CX,
     OpType.ZZMax: _library._TK2_using_ZZMax,
-    OpType.ZZPhase: _library._TK2_using_ZZPhase,
 }
 
 
