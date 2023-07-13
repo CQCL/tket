@@ -20,7 +20,7 @@ set -evu
 export PYBIN=/opt/python/cp39-cp39/bin
 
 ${PYBIN}/pip install --upgrade pip
-${PYBIN}/pip install conan~=2.0
+${PYBIN}/pip install conan==2.0.7
 
 export CONAN_CMD=${PYBIN}/conan
 
