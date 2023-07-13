@@ -45,6 +45,8 @@ jobs:
             - 'pytket/**'
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
+      with:
+        version: 2.0.7
     - name: parse version from conanfile
       id: tket_ver
       run: |
@@ -105,6 +107,8 @@ jobs:
         python-version: '3.10'
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
+      with:
+        version: 2.0.7
     - name: Set up conan
       run: |
         conan profile detect
@@ -216,6 +220,8 @@ jobs:
     - uses: actions/checkout@v3
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
+      with:
+        version: 2.0.7
     - name: Set up conan
       run: |
         conan profile detect --force
@@ -269,6 +275,8 @@ jobs:
     - uses: actions/checkout@v3
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
+      with:
+        version: 2.0.7
     - name: Set up conan
       run: |
         conan profile detect
@@ -369,6 +377,8 @@ jobs:
         python-version: '3.10'
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
+      with:
+        version: 2.0.7
     - name: Set up conan
       run: |
         conan profile detect
@@ -451,6 +461,8 @@ jobs:
     - uses: actions/checkout@v3
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
+      with:
+        version: 2.0.7
     - name: Set up conan
       run: |
         conan profile detect
@@ -523,6 +535,8 @@ jobs:
     - uses: actions/checkout@v3
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
+      with:
+        version: 2.0.7
     - name: Set up conan
       run: |
         conan profile detect --force
@@ -552,7 +566,7 @@ jobs:
         eval "$(pyenv init -)"
         pyenv shell tket-3.9
         PKG_CONFIG_PATH="$(brew --prefix openblas)"/lib/pkgconfig pip install -U scipy
-        pip install -U conan
+        pip install conan==2.0.7
         conan remove -c "pybind11/*"
         conan remove -c "pytket/*"
         conan create recipes/pybind11
@@ -570,7 +584,7 @@ jobs:
         eval "$(pyenv init -)"
         pyenv shell tket-3.10
         PKG_CONFIG_PATH="$(brew --prefix openblas)"/lib/pkgconfig pip install -U scipy
-        pip install -U conan
+        pip install conan==2.0.7
         conan remove -c "pybind11/*"
         conan remove -c "pytket/*"
         conan create recipes/pybind11
@@ -588,7 +602,7 @@ jobs:
         eval "$(pyenv init -)"
         pyenv shell tket-3.11
         PKG_CONFIG_PATH="$(brew --prefix openblas)"/lib/pkgconfig pip install -U scipy
-        pip install -U conan
+        pip install conan==2.0.7
         conan remove -c "pybind11/*"
         conan remove -c "pytket/*"
         conan create recipes/pybind11
@@ -602,6 +616,8 @@ jobs:
         pytest --ignore=simulator/
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
+      with:
+        version: 2.0.7
     - name: Upload package
       if: github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_changed == 'true'
       run: |
