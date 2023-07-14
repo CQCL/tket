@@ -57,7 +57,7 @@ jobs:
         ccache -p
     - name: Build tket
       run: |
-        conan install tket --user=tket --channel=stable -s build_type=Debug -o boost/*:header_only=True -o tket/*:profile_coverage=True -o with_test=True -of build/tket
+        conan install tket --user=tket --channel=stable -s build_type=Debug --build=missing -o boost/*:header_only=True -o tket/*:profile_coverage=True -o with_test=True -of build/tket
         conan build tket --user=tket --channel=stable -s build_type=Debug -o boost/*:header_only=True -o tket/*:profile_coverage=True  -o with_test=True -o test-tket/*:with_coverage=True -of build/tket
         conan export-pkg tket --user=tket --channel=stable -s build_type=Debug -o boost/*:header_only=True -o tket/*:profile_coverage=True -o with_test=True -of build/tket -tf ""
     - name: Install runtime test requirements
