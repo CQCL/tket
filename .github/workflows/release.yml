@@ -88,8 +88,6 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
-      with:
-        version: 2.0.7
     - name: Set up conan
       run: |
         conan profile detect
@@ -128,7 +126,7 @@ jobs:
       run: |
         eval "$(pyenv init -)"
         pyenv shell tket-${{ matrix.python-version }}
-        python -m pip install conan==2.0.7
+        python -m pip install -U conan
         conan profile detect --force
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force --index 0
         conan remove -c 'tket/*'
@@ -166,8 +164,6 @@ jobs:
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
-      with:
-        version: 2.0.7
     - name: Set up conan
       run: |
         conan profile detect
