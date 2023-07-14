@@ -121,7 +121,7 @@ class TketConan(ConanFile):
         self.requires("tktokenswap/0.3.4@tket/stable")
         self.requires("tkwsm/0.3.4@tket/stable")
         if self.build_test():
-            self.test_requires("catch2/3.3.2")
+            self.test_requires("catch2/3.4.0")
         if self.build_proptest():
             self.test_requires("rapidcheck/cci.20220514")
 
