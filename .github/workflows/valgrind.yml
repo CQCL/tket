@@ -37,8 +37,6 @@ jobs:
       run: sudo apt update
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
-      with:
-        version: 2.0.7
     - name: Set up conan
       run: |
         conan profile detect
