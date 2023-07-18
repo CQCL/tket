@@ -342,6 +342,13 @@ std::set<Qubit> QubitPauliString::conflicting_qubits(
   return conflicts;
 }
 
+bool QubitPauliString::is_identity() const {
+  for (const std::pair<const Qubit, Pauli> &qp : map) {
+    if (qp.second != Pauli::I) return false;
+  }
+  return true;
+}
+
 std::string QubitPauliString::to_str() const {
   std::stringstream d;
   d << "(";

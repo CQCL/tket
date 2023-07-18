@@ -45,7 +45,8 @@ class ChoiMixTableau {
    * When mapped to a sparse readable representation, independent
    * QubitPauliTensor objects are used for each segment, so we no longer expect
    * their individual phases to be +-1, instead only requiring this on their
-   * product.
+   * product. get_row() will automatically transpose the input segment term so
+   * it is presented as RxS s.t. SCR = C.
    *
    * Columns of the tableau are indexed by pair of Qubit id and a tag to
    * distinguish input vs output. Rows are not maintained in any particular
@@ -93,6 +94,7 @@ class ChoiMixTableau {
    * Construct a tableau directly from its rows.
    * Each row is represented as a product of QubitPauliTensors where the first
    * is over the input qubits and the second is over the outputs.
+   * A row RxS is a pair s.t. SCR = C
    */
   explicit ChoiMixTableau(const std::list<row_tensor_t>& rows);
   /**
@@ -124,11 +126,13 @@ class ChoiMixTableau {
   unsigned get_n_outputs() const;
 
   /**
-   * Read off a row as a Pauli string
+   * Read off a row as a Pauli string.
+   * Returns a pair of Pauli strings RxS such that SCR = C
    */
   row_tensor_t get_row(unsigned i) const;
   /**
-   * Combine rows into a single row
+   * Combine rows into a single row.
+   * Returns a pair of Pauli strings RxS such that SCR = C
    */
   row_tensor_t get_row_product(const std::vector<unsigned>& rows) const;
 
@@ -190,6 +194,8 @@ class ChoiMixTableau {
    */
   void collapse_qubit(
       const Qubit& qb, TableauSegment seg = TableauSegment::Output);
+
+  void add_qubit(const Qubit& qb, TableauSegment seg = TableauSegment::Output);
 
   /**
    * Removes a row from the tableau.

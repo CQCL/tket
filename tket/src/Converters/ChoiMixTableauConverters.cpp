@@ -36,7 +36,8 @@ ChoiMixTableau circuit_to_cm_tableau(const Circuit& circ) {
   return tab;
 }
 
-std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(const ChoiMixTableau& t) {
+std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(
+    const ChoiMixTableau& t, ChoiMixSynthType synth_type) {
   /**
    * THE PLAN:
    * We first identify and solve all post-selections by Gaussian elimination and
@@ -78,11 +79,6 @@ std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(const ChoiMixTableau& t) {
   // Operate on a copy of the tableau to track the remainder as we extract gates
   ChoiMixTableau tab(t);
 
-  // Canonicalise tableau and perform output-first gaussian elimination to
-  // isolate post-selected subspace in lower rows
-  tab.canonical_column_order(ChoiMixTableau::TableauSegment::Output);
-  tab.gaussian_form();
-
   // Set up circuits for extracting gates into (in_circ is set up after
   // diagonalising the post-selected subspace)
   qubit_vector_t input_qubits, output_qubits;
@@ -95,10 +91,64 @@ std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(const ChoiMixTableau& t) {
   }
   Circuit out_circ_tp(output_qubits, {});
   unit_map_t join_permutation;
+  std::set<Qubit> input_set{input_qubits.begin(), input_qubits.end()};
+  std::set<Qubit> output_set{output_qubits.begin(), output_qubits.end()};
+  std::set<Qubit> just_input;
+  std::set<Qubit> just_output;
+  std::set<Qubit> both_input_output;
+  for (const Qubit& q : input_set) {
+    if (output_set.find(q) == output_set.end())
+      just_input.insert(q);
+    else
+      both_input_output.insert(q);
+  }
+  for (const Qubit& q : output_set) {
+    if (input_set.find(q) == input_set.end()) just_output.insert(q);
+  }
   std::set<Qubit> post_selected;
+  std::set<Qubit> zero_initialised;
+  std::set<Qubit> mix_initialised;
+  std::set<Qubit> discarded;
+  std::set<Qubit> live_ins;
+  std::set<Qubit> live_outs;
   std::map<Qubit, std::optional<unsigned>> in_x_row;
   std::map<Qubit, std::optional<unsigned>> in_z_row;
   boost::bimap<Qubit, Qubit> matched_qubits;
+
+  // For unitary synth mode, post-selected ins must be matched up with unused
+  // outs or (if n_outs < n_ins) input qbs that are not output qbs; vice versa
+  // for zero-initialised outs
+  std::set<Qubit> unused_ins;
+  std::set<Qubit> unused_outs;
+  if (synth_type == ChoiMixSynthType::unitary) {
+    for (unsigned c = 0; c < tab.tab_.get_n_qubits(); ++c) {
+      bool used = false;
+      for (unsigned r = 0; r < tab.get_n_rows(); ++r) {
+        if (tab.tab_.zmat_(r, c) || tab.tab_.xmat_(r, c)) {
+          used = true;
+          break;
+        }
+      }
+      if (!used) {
+        ChoiMixTableau::col_key_t col = tab.col_index_.right.at(c);
+        if (col.second == ChoiMixTableau::TableauSegment::Input)
+          unused_ins.insert(col.first);
+        else
+          unused_outs.insert(col.first);
+      }
+    }
+    for (const Qubit& q : unused_ins)
+      tab.discard_qubit(q, ChoiMixTableau::TableauSegment::Input);
+    for (const Qubit& q : unused_outs)
+      tab.discard_qubit(q, ChoiMixTableau::TableauSegment::Output);
+  }
+  unsigned remaining_ins = input_qubits.size() - unused_ins.size();
+  unsigned remaining_outs = output_qubits.size() - unused_outs.size();
+
+  // Canonicalise tableau and perform output-first gaussian elimination to
+  // isolate post-selected subspace in lower rows
+  tab.canonical_column_order(ChoiMixTableau::TableauSegment::Output);
+  tab.gaussian_form();
 
   // Call diagonalisation methods to diagonalise post-selected subspace
   std::list<std::pair<QubitPauliTensor, Expr>> to_diag;
@@ -113,6 +163,7 @@ std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(const ChoiMixTableau& t) {
     to_diag.push_back({rten.first, 1.});
   }
   unsigned post_selected_size = to_diag.size();
+  unsigned post_selected_start = tab.get_n_rows() - post_selected_size;
   std::set<Qubit> diag_ins{input_qubits.begin(), input_qubits.end()};
   Circuit in_circ = mutual_diagonalise(to_diag, diag_ins, CXConfigType::Tree);
   // Extract the dagger of each gate in order from tab
@@ -127,46 +178,55 @@ std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(const ChoiMixTableau& t) {
   // Diagonalised rows should still be at the bottom of the tableau - reduce
   // them to a minimal set of qubits for post-selection by first reducing to
   // upper echelon form
+  unsigned n_ins = tab.get_n_inputs();
+  unsigned n_outs = tab.get_n_outputs();
   std::vector<std::pair<unsigned, unsigned>> row_ops =
       gaussian_elimination_row_ops(
-          tab.tab_.zmat_.bottomRows(post_selected_size));
+          tab.tab_.zmat_.bottomRightCorner(post_selected_size, n_ins));
   for (const std::pair<unsigned, unsigned>& op : row_ops) {
-    tab.tab_.row_mult(op.first, op.second);
+    tab.tab_.row_mult(
+        post_selected_start + op.first, post_selected_start + op.second);
   }
   // Obtain CX instructions as column operations
   std::vector<std::pair<unsigned, unsigned>> col_ops =
       gaussian_elimination_col_ops(
-          tab.tab_.zmat_.bottomRows(post_selected_size));
+          tab.tab_.zmat_.bottomRightCorner(post_selected_size, n_ins));
   // These gates will also swap qubits to isolate the post-selections on the
   // first few qubits - this is fine as can be cleaned up later with peephole
   // optimisations
   for (const std::pair<unsigned, unsigned>& op : col_ops) {
-    tab.tab_.apply_CX(op.first, op.second);
-    ChoiMixTableau::col_key_t ctrl = tab.col_index_.right.at(op.first);
-    ChoiMixTableau::col_key_t trgt = tab.col_index_.right.at(op.second);
+    tab.tab_.apply_CX(n_outs + op.second, n_outs + op.first);
+    ChoiMixTableau::col_key_t ctrl =
+        tab.col_index_.right.at(n_outs + op.second);
+    ChoiMixTableau::col_key_t trgt = tab.col_index_.right.at(n_outs + op.first);
     in_circ.add_op<Qubit>(OpType::CX, {ctrl.first, trgt.first});
   }
 
   // Post-select rows
-  // TODO Post-selection op is not yet available in tket - replace this once
-  // implemented; an implementation hint is provided below
-  if (post_selected_size != 0)
-    throw std::logic_error(
-        "Not yet implemented: post-selection required during ChoiMixTableau "
-        "synthesis");
-  // for (unsigned r = 0; r < post_selected_size; ++r) {
-  //   ChoiMixTableau::row_tensor_t row = tab.get_row(tab.get_n_rows() - 1);
-  //   if (row.second.string.map.size() != 0 || row.first.string.map.size() != 1
-  //   || row.first.string.map.begin()->second != Pauli::Z) throw
-  //   std::logic_error("Unexpected error during post-selection identification
-  //   in ChoiMixTableau synthesis"); Qubit post_selected_qb =
-  //   row.first.string.map.begin()->first; if (row.second.coeff == -1.)
-  //   in_circ.add_op<Qubit>(OpType::X, {post_selected_qb});
-  //   tab.remove_row(tab.get_n_rows() - 1);
-  //   post_selected.insert(post_selected_qb);
-  //   throw std::logic_error("Not yet implemented: post-selection required
-  //   during ChoiMixTableau synthesis");
-  // }
+  for (unsigned r = 0; r < post_selected_size; ++r) {
+    unsigned final_row = tab.get_n_rows() - 1;
+    ChoiMixTableau::row_tensor_t row = tab.get_row(final_row);
+    if (row.second.string.map.size() != 0 || row.first.string.map.size() != 1 ||
+        row.first.string.map.begin()->second != Pauli::Z)
+      throw std::logic_error(
+          "Unexpected error during post-selection identification in "
+          "ChoiMixTableau synthesis");
+    Qubit post_selected_qb = row.first.string.map.begin()->first;
+    // Multiply other rows to remove Z_qb components
+    unsigned qb_col = tab.col_index_.left.at(ChoiMixTableau::col_key_t{
+        post_selected_qb, ChoiMixTableau::TableauSegment::Input});
+    for (unsigned s = 0; s < final_row; ++s)
+      if (tab.tab_.zmat_(s, qb_col)) tab.tab_.row_mult(final_row, s);
+    // Post-select on correct phase
+    if (row.second.coeff == -1.)
+      in_circ.add_op<Qubit>(OpType::X, {post_selected_qb});
+    tab.remove_row(final_row);
+    post_selected.insert(post_selected_qb);
+    if (synth_type == ChoiMixSynthType::exact)
+      throw std::logic_error(
+          "Not yet implemented: post-selection required during ChoiMixTableau "
+          "synthesis");
+  }
 
   // Input-first gaussian elimination to solve input-sides of remaining rows
   tab.canonical_column_order(ChoiMixTableau::TableauSegment::Input);
@@ -175,6 +235,8 @@ std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(const ChoiMixTableau& t) {
   // Iterate through remaining inputs and reduce output portion to a single
   // qubit
   for (const Qubit& in_qb : input_qubits) {
+    // Skip unused qubits
+    if (unused_ins.find(in_qb) != unused_ins.end()) continue;
     // Skip post-selected qubits
     if (post_selected.find(in_qb) != post_selected.end()) continue;
 
@@ -405,6 +467,98 @@ std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(const ChoiMixTableau& t) {
       }
     }
 
+    // In the case of rows like Xq[1], Zq[0]Zq[1], we want these rows to be
+    // paired up. No X row is found for q[0] but a Z row is found. In reducing
+    // the Z row, an X row is created. Check here in case an X row was created
+    if (z_row && !x_row) {
+      for (unsigned r = 0; r < tab.get_n_rows(); ++r) {
+        if (tab.tab_.xmat_(r, col)) {
+          x_row = r;
+          break;
+        }
+      }
+      if (x_row) {
+        ChoiMixTableau::row_tensor_t row_paulis = tab.get_row(*x_row);
+        // out_qb definitely already set.
+        // Reduce input string to just X_in_qb.
+        // Similarly, no need to consider different paulis on in_qb.
+        // The entangling gates in reducing the Z row are CXs so would only
+        // introduce X_in_qb if anything
+        for (const std::pair<const Qubit, Pauli>& qbp :
+             row_paulis.first.string.map) {
+          if (qbp.first == in_qb) continue;
+          // Extract an entangling gate to eliminate the qubit
+          switch (qbp.second) {
+            case Pauli::X: {
+              in_circ.add_op<Qubit>(OpType::CX, {in_qb, qbp.first});
+              tab.apply_CX(
+                  in_qb, qbp.first, ChoiMixTableau::TableauSegment::Input);
+              break;
+            }
+            case Pauli::Y: {
+              in_circ.add_op<Qubit>(OpType::CY, {in_qb, qbp.first});
+              tab.apply_gate(
+                  OpType::CY, {in_qb, qbp.first},
+                  ChoiMixTableau::TableauSegment::Input);
+              break;
+            }
+            case Pauli::Z: {
+              in_circ.add_op<Qubit>(OpType::CZ, {in_qb, qbp.first});
+              tab.apply_gate(
+                  OpType::CZ, {in_qb, qbp.first},
+                  ChoiMixTableau::TableauSegment::Input);
+              break;
+            }
+            default: {
+              break;
+            }
+          }
+        }
+
+        // And then the same for X_out_qb
+        if (row_paulis.second.string.get(*out_qb) == Pauli::Y) {
+          // If it is a Y, extract an Sdg gate so the Pauli is exactly X.
+          // We do not need to care about messing up the Z row here since it
+          // must already be Z_in_qb Z_out_qb so will commute with the S
+          out_circ_tp.add_op<Qubit>(OpType::Sdg, {*out_qb});
+          tab.apply_S(*out_qb, ChoiMixTableau::TableauSegment::Output);
+        }
+        for (const std::pair<const Qubit, Pauli>& qbp :
+             row_paulis.second.string.map) {
+          if (qbp.first == *out_qb) continue;
+          // Extract an entangling gate to eliminate the qubit
+          switch (qbp.second) {
+            case Pauli::X: {
+              out_circ_tp.add_op<Qubit>(OpType::CX, {*out_qb, qbp.first});
+              tab.apply_CX(
+                  *out_qb, qbp.first, ChoiMixTableau::TableauSegment::Output);
+              break;
+            }
+            case Pauli::Y: {
+              // CY does not have a transpose OpType defined so decompose
+              out_circ_tp.add_op<Qubit>(OpType::S, {qbp.first});
+              out_circ_tp.add_op<Qubit>(OpType::CX, {*out_qb, qbp.first});
+              out_circ_tp.add_op<Qubit>(OpType::Sdg, {qbp.first});
+              tab.apply_gate(
+                  OpType::CY, {*out_qb, qbp.first},
+                  ChoiMixTableau::TableauSegment::Output);
+              break;
+            }
+            case Pauli::Z: {
+              out_circ_tp.add_op<Qubit>(OpType::CZ, {*out_qb, qbp.first});
+              tab.apply_gate(
+                  OpType::CZ, {*out_qb, qbp.first},
+                  ChoiMixTableau::TableauSegment::Output);
+              break;
+            }
+            default: {
+              break;
+            }
+          }
+        }
+      }
+    }
+
     in_x_row.insert({in_qb, x_row});
     in_z_row.insert({in_qb, z_row});
   }
@@ -430,20 +584,18 @@ std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(const ChoiMixTableau& t) {
     }
     ++out_stabs;
   }
-  MatrixXb out_rows = MatrixXb::Zero(out_stabs, 2 * output_qubits.size());
+  MatrixXb out_rows = MatrixXb::Zero(out_stabs, 2 * remaining_outs);
   out_rows(Eigen::all, Eigen::seq(0, Eigen::last, 2)) = tab.tab_.xmat_.block(
-      tab.get_n_rows() - out_stabs, input_qubits.size(), out_stabs,
-      output_qubits.size());
+      tab.get_n_rows() - out_stabs, remaining_ins, out_stabs, remaining_outs);
   out_rows(Eigen::all, Eigen::seq(1, Eigen::last, 2)) = tab.tab_.zmat_.block(
-      tab.get_n_rows() - out_stabs, input_qubits.size(), out_stabs,
-      output_qubits.size());
+      tab.get_n_rows() - out_stabs, remaining_ins, out_stabs, remaining_outs);
   // Identify other qubits to apply gates to for removing the extra matched
   // output terms
-  MatrixXb unmatched_outs = MatrixXb::Zero(
-      out_stabs, 2 * (output_qubits.size() - matched_qubits.size()));
+  MatrixXb unmatched_outs =
+      MatrixXb::Zero(out_stabs, 2 * (remaining_outs - matched_qubits.size()));
   std::vector<std::pair<Qubit, Pauli>> col_lookup;
-  for (unsigned out_col = 0; out_col < output_qubits.size(); ++out_col) {
-    unsigned tab_col = input_qubits.size() + out_col;
+  for (unsigned out_col = 0; out_col < remaining_outs; ++out_col) {
+    unsigned tab_col = remaining_ins + out_col;
     Qubit out_qb = tab.col_index_.right.at(tab_col).first;
     if (matched_qubits.right.find(out_qb) != matched_qubits.right.end())
       continue;
@@ -521,6 +673,7 @@ std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(const ChoiMixTableau& t) {
   // Now that X_in_qb X_out_qb (or Zs) is the unique row for each of X_in_qb and
   // X_out_qb, we can actually link up the qubit wires and remove the rows
   for (const Qubit& in_qb : input_qubits) {
+    if (unused_ins.find(in_qb) != unused_ins.end()) continue;
     if (post_selected.find(in_qb) != post_selected.end()) continue;
 
     std::optional<unsigned> x_row = in_x_row.at(in_qb);
@@ -539,20 +692,28 @@ std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(const ChoiMixTableau& t) {
       } else {
         // Just an X row, so must be connected to out_qb via a decoherence
         if (tab.tab_.phase_(*x_row)) in_circ.add_op<Qubit>(OpType::Z, {in_qb});
-        in_circ.add_op<Qubit>(OpType::H, {in_qb});
-        in_circ.add_op<Qubit>(OpType::Collapse, {in_qb});
-        in_circ.add_op<Qubit>(OpType::H, {in_qb});
+        if (synth_type == ChoiMixSynthType::exact) {
+          in_circ.add_op<Qubit>(OpType::H, {in_qb});
+          in_circ.add_op<Qubit>(OpType::Collapse, {in_qb});
+          in_circ.add_op<Qubit>(OpType::H, {in_qb});
+        }
         join_permutation.insert({*out_qb, in_qb});
       }
+      live_ins.insert(in_qb);
+      live_outs.insert(*out_qb);
     } else {
       if (z_row) {
         // Just a Z row, so must be connected to out_qb via a decoherence
         if (tab.tab_.phase_(*z_row)) in_circ.add_op<Qubit>(OpType::X, {in_qb});
-        in_circ.add_op<Qubit>(OpType::Collapse, {in_qb});
+        if (synth_type == ChoiMixSynthType::exact)
+          in_circ.add_op<Qubit>(OpType::Collapse, {in_qb});
         join_permutation.insert({*out_qb, in_qb});
-      } else {
+        live_ins.insert(in_qb);
+        live_outs.insert(*out_qb);
+      } else if (synth_type == ChoiMixSynthType::exact) {
         // No rows involving this input, so it is discarded
         in_circ.qubit_discard(in_qb);
+        discarded.insert(in_qb);
       }
     }
   }
@@ -610,7 +771,6 @@ std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(const ChoiMixTableau& t) {
   }
 
   // Fix phases of zero_initialised qubits
-  std::set<Qubit> zero_initialised;
   Circuit out_circ(output_qubits, {});
   for (unsigned r = 0; r < tab.get_n_rows(); ++r) {
     ChoiMixTableau::row_tensor_t row = tab.get_row(r);
@@ -620,7 +780,8 @@ std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(const ChoiMixTableau& t) {
           "Unexpected error during zero initialisation in ChoiMixTableau "
           "synthesis");
     Qubit initialised_qb = row.second.string.map.begin()->first;
-    out_circ.qubit_create(initialised_qb);
+    if (synth_type == ChoiMixSynthType::exact)
+      out_circ.qubit_create(initialised_qb);
     if (row.second.coeff == -1.) {
       out_circ.add_op<Qubit>(OpType::X, {initialised_qb});
     }
@@ -629,6 +790,57 @@ std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(const ChoiMixTableau& t) {
 
   // Remaining outputs that aren't zero initialised or matched need to be
   // initialised in the maximally-mixed state.
+  for (const Qubit& out_qb : output_qubits) {
+    if (matched_qubits.right.find(out_qb) == matched_qubits.right.end() &&
+        zero_initialised.find(out_qb) == zero_initialised.end()) {
+      mix_initialised.insert(out_qb);
+      if (synth_type == ChoiMixSynthType::exact) {
+        out_circ.qubit_create(out_qb);
+        out_circ.add_op<Qubit>(OpType::H, {out_qb});
+        out_circ.add_op<Qubit>(OpType::Collapse, {out_qb});
+      }
+    }
+  }
+
+  if (synth_type == ChoiMixSynthType::unitary) {
+    for (const Qubit& ps : post_selected) {
+      std::set<Qubit>::iterator qb_it = unused_outs.begin();
+      if (qb_it == unused_outs.end()) {
+        qb_it = just_input.begin();
+        if (qb_it == just_input.end())
+          throw std::logic_error(
+              "Not enough spare output qubits for unitary extension of "
+              "ChoiMixTableau to safely handle post-selected subspace");
+        matched_qubits.insert({ps, *qb_it});
+        join_permutation.insert({*qb_it, ps});
+        unused_ins.erase(*qb_it);
+        just_input.erase(qb_it);
+      } else {
+        matched_qubits.insert({ps, *qb_it});
+        join_permutation.insert({*qb_it, ps});
+        just_output.erase(*qb_it);
+        unused_outs.erase(qb_it);
+      }
+    }
+    for (const Qubit& zi : zero_initialised) {
+      std::set<Qubit>::iterator qb_it = unused_ins.begin();
+      if (qb_it == unused_ins.end()) {
+        qb_it = just_output.begin();
+        if (qb_it == just_output.end())
+          throw std::logic_error(
+              "Not enough spare input qubits for unitary extension of "
+              "ChoiMixTableau to safely handle initialised subspace");
+        matched_qubits.insert({*qb_it, zi});
+        join_permutation.insert({zi, *qb_it});
+        just_output.erase(qb_it);
+      } else {
+        matched_qubits.insert({*qb_it, zi});
+        join_permutation.insert({zi, *qb_it});
+        unused_ins.erase(qb_it);
+      }
+    }
+  }
+
   // Also match up unmatched outputs to either unmatched inputs or reusable
   // output names (ones that are already matched up to other input names),
   // preferring the qubit of the same name
@@ -640,11 +852,6 @@ std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(const ChoiMixTableau& t) {
   }
   for (const Qubit& out_qb : output_qubits) {
     if (matched_qubits.right.find(out_qb) == matched_qubits.right.end()) {
-      if (zero_initialised.find(out_qb) == zero_initialised.end()) {
-        out_circ.qubit_create(out_qb);
-        out_circ.add_op<Qubit>(OpType::H, {out_qb});
-        out_circ.add_op<Qubit>(OpType::Collapse, {out_qb});
-      }
       if (matched_qubits.left.find(out_qb) == matched_qubits.left.end()) {
         matched_qubits.insert({out_qb, out_qb});
         join_permutation.insert({out_qb, out_qb});

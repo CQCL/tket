@@ -187,11 +187,13 @@ void SymplecticTableau::apply_gate(
       apply_S(qbs.at(0));
       break;
     }
-    case OpType::V: {
+    case OpType::V:
+    case OpType::SX: {
       apply_V(qbs.at(0));
       break;
     }
-    case OpType::Vdg: {
+    case OpType::Vdg:
+    case OpType::SXdg: {
       apply_V(qbs.at(0));
       apply_V(qbs.at(0));
       apply_V(qbs.at(0));
@@ -233,6 +235,47 @@ void SymplecticTableau::apply_gate(
     }
     case OpType::BRIDGE: {
       apply_CX(qbs.at(0), qbs.at(2));
+      break;
+    }
+    case OpType::ZZMax: {
+      apply_S(qbs.at(1));
+      apply_V(qbs.at(1));
+      apply_S(qbs.at(1));
+      apply_S(qbs.at(0));
+      apply_V(qbs.at(1));
+      apply_CX(qbs.at(0), qbs.at(1));
+      apply_S(qbs.at(1));
+      apply_V(qbs.at(1));
+      apply_S(qbs.at(1));
+      break;
+    }
+    case OpType::ECR: {
+      apply_S(qbs.at(0));
+      apply_V(qbs.at(0));
+      apply_V(qbs.at(0));
+      apply_V(qbs.at(1));
+      apply_V(qbs.at(1));
+      apply_V(qbs.at(1));
+      apply_CX(qbs.at(0), qbs.at(1));
+      break;
+    }
+    case OpType::ISWAPMax: {
+      apply_V(qbs.at(0));
+      apply_V(qbs.at(1));
+      apply_CX(qbs.at(0), qbs.at(1));
+      apply_V(qbs.at(0));
+      apply_V(qbs.at(0));
+      apply_V(qbs.at(0));
+      apply_S(qbs.at(1));
+      apply_S(qbs.at(1));
+      apply_S(qbs.at(1));
+      apply_CX(qbs.at(0), qbs.at(1));
+      apply_V(qbs.at(0));
+      apply_V(qbs.at(0));
+      apply_V(qbs.at(0));
+      apply_V(qbs.at(1));
+      apply_V(qbs.at(1));
+      apply_V(qbs.at(1));
       break;
     }
     case OpType::noop:

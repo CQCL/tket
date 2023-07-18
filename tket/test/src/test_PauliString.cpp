@@ -17,7 +17,7 @@
 
 #include "CircuitsForTesting.hpp"
 #include "testutil.hpp"
-#include "tket/Converters/PauliGadget.hpp"
+#include "tket/Circuit/CircUtils.hpp"
 #include "tket/PauliGraph/ConjugatePauliFunctions.hpp"
 #include "tket/Utils/PauliStrings.hpp"
 
@@ -159,12 +159,12 @@ SCENARIO("Test basic conjugations") {
     for (QubitPauliTensor qps : qps_vec) {
       Circuit test(2);
       test.add_op<unsigned>(op_type, {0});
-      append_single_pauli_gadget(test, qps, angle);
+      test.append(pauli_gadget(qps, angle));
       test.add_op<unsigned>(op_type_dag, {0});
       test = prepend >> test;
       conjugate_PauliTensor(qps, tensor_op_type, q0, reverse);
       Circuit test1 = prepend;
-      append_single_pauli_gadget(test1, qps, angle);
+      test1.append(pauli_gadget(qps, angle));
       REQUIRE(test_statevector_comparison(test, test1));
     }
   };
@@ -184,12 +184,12 @@ SCENARIO("Test basic conjugations") {
     for (QubitPauliTensor qps : qps_vec) {
       Circuit test(2);
       test.add_op<unsigned>(OpType::CX, {0, 1});
-      append_single_pauli_gadget(test, qps, angle);
+      test.append(pauli_gadget(qps, angle));
       test.add_op<unsigned>(OpType::CX, {0, 1});
       test = prepend >> test;
       conjugate_PauliTensor(qps, OpType::CX, q0, q1);
       Circuit test2 = prepend;
-      append_single_pauli_gadget(test2, qps, angle);
+      test2.append(pauli_gadget(qps, angle));
       REQUIRE(test_statevector_comparison(test, test2));
     }
   }

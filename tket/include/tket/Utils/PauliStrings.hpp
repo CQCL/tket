@@ -228,6 +228,8 @@ class QubitPauliString {
    */
   std::set<Qubit> conflicting_qubits(const QubitPauliString &other) const;
 
+  bool is_identity() const;
+
   /**
    * Readable string for sparse operator
    */

@@ -14,8 +14,8 @@
 
 #include "tket/Transformations/PauliOptimisation.hpp"
 
+#include "tket/Circuit/CircUtils.hpp"
 #include "tket/Converters/Converters.hpp"
-#include "tket/Converters/PauliGadget.hpp"
 #include "tket/OpType/OpType.hpp"
 #include "tket/OpType/OpTypeInfo.hpp"
 #include "tket/Ops/Op.hpp"
@@ -166,15 +166,15 @@ Transform pairwise_pauli_gadgets(CXConfigType cx_config) {
     while (g + 1 < pauli_gadgets.size()) {
       auto [pauli0, angle0] = pauli_gadgets[g];
       auto [pauli1, angle1] = pauli_gadgets[g + 1];
-      append_pauli_gadget_pair(
-          gadget_circ, pauli0, angle0, pauli1, angle1, cx_config);
+      gadget_circ.append(
+          pauli_gadget_pair(pauli0, angle0, pauli1, angle1, cx_config));
       g += 2;
     }
     // As we synthesised Pauli gadgets 2 at a time, if there were an odd
     // number, we will have one left over, so add that one on its own
     if (g < pauli_gadgets.size()) {
       auto [pauli, angle] = pauli_gadgets[g];
-      append_single_pauli_gadget(gadget_circ, pauli, angle, cx_config);
+      gadget_circ.append(pauli_gadget(pauli, angle, cx_config));
     }
     // Stitch gadget circuit and Clifford circuit together
     circ = gadget_circ >> clifford_circ;

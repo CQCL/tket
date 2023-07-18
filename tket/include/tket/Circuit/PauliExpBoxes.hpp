@@ -214,4 +214,16 @@ class PauliExpCommutingSetBox : public Box {
   CXConfigType cx_config_;
 };
 
+void append_single_pauli_gadget_as_pauli_exp_box(
+    Circuit &circ, const QubitPauliTensor &pauli, Expr angle,
+    CXConfigType cx_config);
+
+void append_pauli_gadget_pair_as_box(
+    Circuit &circ, const QubitPauliTensor &pauli0, Expr angle0,
+    const QubitPauliTensor &pauli1, Expr angle1, CXConfigType cx_config);
+
+void append_commuting_pauli_gadget_set_as_box(
+    Circuit &circ, const std::list<std::pair<QubitPauliTensor, Expr>> &gadgets,
+    CXConfigType cx_config);
+
 }  // namespace tket

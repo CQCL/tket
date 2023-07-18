@@ -21,6 +21,7 @@
 
 #include "tket/Circuit/CircPool.hpp"
 #include "tket/Circuit/Circuit.hpp"
+#include "tket/Diagonalisation/Diagonalisation.hpp"
 #include "tket/Gate/GatePtr.hpp"
 #include "tket/Gate/GateUnitaryMatrixImplementations.hpp"
 #include "tket/Gate/Rotation.hpp"
@@ -266,139 +267,69 @@ std::pair<Circuit, Complex> decompose_2cx_DV(const Eigen::Matrix4cd &U) {
   return {circ, std::conj(z0)};
 }
 
+Expr pauli_angle_convert_or_throw(Complex pauliCoeff, const Expr &angle) {
+  if (pauliCoeff == -1.) {
+    return -1 * angle;
+  }
+  if (pauliCoeff != 1.) {
+    throw CircuitInvalidity("Pauli coefficient must be +/- 1");
+  }
+  return angle;
+}
+
 Circuit phase_gadget(unsigned n_qubits, const Expr &t, CXConfigType cx_config) {
-  // Handle n_qubits==0 as a special case, or the calculations below
-  // go badly wrong.
-  Circuit new_circ(n_qubits);
-  if (n_qubits == 0) {
-    new_circ.add_phase(-t / 2);
-    return new_circ;
-  }
-  switch (cx_config) {
-    case CXConfigType::Snake: {
-      for (unsigned i = n_qubits - 1; i != 0; --i) {
-        unsigned j = i - 1;
-        new_circ.add_op<unsigned>(OpType::CX, {i, j});
-      }
-      new_circ.add_op<unsigned>(OpType::Rz, t, {0});
-      for (unsigned i = 0; i != n_qubits - 1; ++i) {
-        unsigned j = i + 1;
-        new_circ.add_op<unsigned>(OpType::CX, {j, i});
-      }
-      break;
-    }
-    case CXConfigType::Star: {
-      for (unsigned i = n_qubits - 1; i != 0; --i) {
-        new_circ.add_op<unsigned>(OpType::CX, {i, 0});
-      }
-      new_circ.add_op<unsigned>(OpType::Rz, t, {0});
-      for (unsigned i = 1; i != n_qubits; ++i) {
-        new_circ.add_op<unsigned>(OpType::CX, {i, 0});
-      }
-      break;
-    }
-    case CXConfigType::Tree: {
-      unsigned complete_layers = floor(log2(n_qubits));
-      unsigned dense_end = pow(2, complete_layers);
-      for (unsigned i = 0; i < n_qubits - dense_end; i++)
-        new_circ.add_op<unsigned>(
-            OpType::CX, {dense_end + i, dense_end - 1 - i});
-      for (unsigned step_size = 1; step_size < dense_end; step_size *= 2) {
-        for (unsigned i = 0; i < dense_end; i += 2 * step_size)
-          new_circ.add_op<unsigned>(OpType::CX, {i + step_size, i});
-      }
-      new_circ.add_op<unsigned>(OpType::Rz, t, {0});
-      for (unsigned step_size = dense_end / 2; step_size >= 1; step_size /= 2) {
-        for (unsigned i = 0; i < dense_end; i += 2 * step_size)
-          new_circ.add_op<unsigned>(OpType::CX, {i + step_size, i});
-      }
-      for (unsigned i = 0; i < n_qubits - dense_end; i++)
-        new_circ.add_op<unsigned>(
-            OpType::CX, {dense_end + i, dense_end - 1 - i});
-      break;
-    }
-    case CXConfigType::MultiQGate: {
-      std::vector<std::vector<unsigned>> conjugations;
-      int sign_correction = 1;
-      for (int q = n_qubits - 1; q > 0; q -= 2) {
-        if (q - 1 > 0) {
-          unsigned i = q, j = q - 1;
-          // this is only equal to the CX decompositions above
-          // up to phase, but phase differences are cancelled out by
-          // its dagger XXPhase(-1/2) below.
-          new_circ.add_op<unsigned>(OpType::H, {i});
-          new_circ.add_op<unsigned>(OpType::H, {j});
-          new_circ.add_op<unsigned>(OpType::XXPhase3, 0.5, {i, j, 0});
-          sign_correction *= -1;
-          conjugations.push_back({i, j, 0});
-        } else {
-          unsigned i = q;
-          new_circ.add_op<unsigned>(OpType::CX, {i, 0});
-          conjugations.push_back({i, 0});
-        }
-      }
-      new_circ.add_op<unsigned>(OpType::Rz, sign_correction * t, {0});
-      for (const auto &conj : conjugations) {
-        if (conj.size() == 2) {
-          new_circ.add_op<unsigned>(OpType::CX, conj);
-        } else {
-          TKET_ASSERT(conj.size() == 3);
-          new_circ.add_op<unsigned>(OpType::XXPhase3, -0.5, conj);
-          new_circ.add_op<unsigned>(OpType::H, {conj[0]});
-          new_circ.add_op<unsigned>(OpType::H, {conj[1]});
-        }
-      }
-      break;
-    }
-  }
-  return new_circ;
+  return pauli_gadget(
+      QubitPauliTensor(std::list<Pauli>(n_qubits, Pauli::Z)), t, cx_config);
 }
 
 Circuit pauli_gadget(
-    const std::vector<Pauli> &paulis, const Expr &t, CXConfigType cx_config) {
-  unsigned n = paulis.size();
-  Circuit circ(n);
-  std::vector<unsigned> qubits;
-  for (unsigned i = 0; i < n; i++) {
-    switch (paulis[i]) {
-      case Pauli::I:
-        break;
-      case Pauli::X:
-        circ.add_op<unsigned>(OpType::H, {i});
-        qubits.push_back(i);
-        break;
-      case Pauli::Y:
-        circ.add_op<unsigned>(OpType::V, {i});
-        qubits.push_back(i);
-        break;
-      case Pauli::Z:
-        qubits.push_back(i);
-        break;
-    }
+    QubitPauliTensor pauli, Expr angle, CXConfigType cx_config) {
+  Expr converted_angle = pauli_angle_convert_or_throw(pauli.coeff, angle);
+  if (pauli.string.is_identity()) {
+    Circuit phase_circ(0);
+    phase_circ.add_phase(-converted_angle / 2);
+    return phase_circ;
   }
-  if (qubits.empty()) {
-    circ.add_phase(-t / 2);
+  std::pair<Circuit, Qubit> diag = reduce_pauli_to_z(pauli, cx_config);
+  Circuit undiag = diag.first.dagger();
+  diag.first.add_op<Qubit>(OpType::Rz, converted_angle, {diag.second});
+  diag.first.append(undiag);
+  return diag.first;
+}
+
+Circuit pauli_gadget_pair(
+    QubitPauliTensor pauli0, Expr angle0, QubitPauliTensor pauli1, Expr angle1,
+    CXConfigType cx_config) {
+  Expr converted_angle0 = pauli_angle_convert_or_throw(pauli0.coeff, angle0);
+  Expr converted_angle1 = pauli_angle_convert_or_throw(pauli1.coeff, angle1);
+  if (pauli0.string.is_identity()) {
+    Circuit p1_circ = pauli_gadget(pauli1, converted_angle1, cx_config);
+    p1_circ.add_phase(-converted_angle0 / 2);
+    return p1_circ;
+  } else if (pauli1.string.is_identity()) {
+    Circuit p0_circ = pauli_gadget(pauli0, converted_angle0, cx_config);
+    p0_circ.add_phase(-converted_angle1 / 2);
+    return p0_circ;
+  }
+  if (pauli0.commutes_with(pauli1)) {
+    std::tuple<Circuit, Qubit, Qubit> diag =
+        reduce_commuting_paulis_to_zi_iz(pauli0, pauli1, cx_config);
+    Circuit &diag_circ = std::get<0>(diag);
+    Circuit undiag_circ = diag_circ.dagger();
+    diag_circ.add_op<Qubit>(OpType::Rz, converted_angle0, {std::get<1>(diag)});
+    diag_circ.add_op<Qubit>(OpType::Rz, converted_angle1, {std::get<2>(diag)});
+    diag_circ.append(undiag_circ);
+    return diag_circ;
   } else {
-    Vertex v = circ.add_op<unsigned>(OpType::PhaseGadget, t, qubits);
-    Circuit cx_gadget = phase_gadget(circ.n_in_edges(v), t, cx_config);
-    Subcircuit sub = {circ.get_in_edges(v), circ.get_all_out_edges(v), {v}};
-    circ.substitute(cx_gadget, sub, Circuit::VertexDeletion::Yes);
-    for (unsigned i = 0; i < n; i++) {
-      switch (paulis[i]) {
-        case Pauli::I:
-          break;
-        case Pauli::X:
-          circ.add_op<unsigned>(OpType::H, {i});
-          break;
-        case Pauli::Y:
-          circ.add_op<unsigned>(OpType::Vdg, {i});
-          break;
-        case Pauli::Z:
-          break;
-      }
-    }
+    std::pair<Circuit, Qubit> diag =
+        reduce_anticommuting_paulis_to_z_x(pauli0, pauli1, cx_config);
+    Circuit &diag_circ = diag.first;
+    Circuit undiag_circ = diag_circ.dagger();
+    diag_circ.add_op<Qubit>(OpType::Rz, converted_angle0, {diag.second});
+    diag_circ.add_op<Qubit>(OpType::Rx, converted_angle1, {diag.second});
+    diag_circ.append(undiag_circ);
+    return diag_circ;
   }
-  return circ;
 }
 
 void replace_CX_with_TK2(Circuit &c) {

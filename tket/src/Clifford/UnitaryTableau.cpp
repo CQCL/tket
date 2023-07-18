@@ -216,11 +216,13 @@ void UnitaryTableau::apply_gate_at_front(
       apply_S_at_front(qbs.at(0));
       break;
     }
-    case OpType::V: {
+    case OpType::V:
+    case OpType::SX: {
       apply_V_at_front(qbs.at(0));
       break;
     }
-    case OpType::Vdg: {
+    case OpType::Vdg:
+    case OpType::SXdg: {
       apply_V_at_front(qbs.at(0));
       apply_V_at_front(qbs.at(0));
       apply_V_at_front(qbs.at(0));
@@ -262,6 +264,47 @@ void UnitaryTableau::apply_gate_at_front(
     }
     case OpType::BRIDGE: {
       apply_CX_at_front(qbs.at(0), qbs.at(2));
+      break;
+    }
+    case OpType::ZZMax: {
+      apply_S_at_front(qbs.at(1));
+      apply_V_at_front(qbs.at(1));
+      apply_S_at_front(qbs.at(1));
+      apply_S_at_front(qbs.at(0));
+      apply_V_at_front(qbs.at(1));
+      apply_CX_at_front(qbs.at(0), qbs.at(1));
+      apply_S_at_front(qbs.at(1));
+      apply_V_at_front(qbs.at(1));
+      apply_S_at_front(qbs.at(1));
+      break;
+    }
+    case OpType::ECR: {
+      apply_S_at_front(qbs.at(0));
+      apply_V_at_front(qbs.at(0));
+      apply_V_at_front(qbs.at(0));
+      apply_V_at_front(qbs.at(1));
+      apply_V_at_front(qbs.at(1));
+      apply_V_at_front(qbs.at(1));
+      apply_CX_at_front(qbs.at(0), qbs.at(1));
+      break;
+    }
+    case OpType::ISWAPMax: {
+      apply_V_at_front(qbs.at(0));
+      apply_V_at_front(qbs.at(1));
+      apply_CX_at_front(qbs.at(0), qbs.at(1));
+      apply_V_at_front(qbs.at(0));
+      apply_V_at_front(qbs.at(0));
+      apply_V_at_front(qbs.at(0));
+      apply_S_at_front(qbs.at(1));
+      apply_S_at_front(qbs.at(1));
+      apply_S_at_front(qbs.at(1));
+      apply_CX_at_front(qbs.at(0), qbs.at(1));
+      apply_V_at_front(qbs.at(0));
+      apply_V_at_front(qbs.at(0));
+      apply_V_at_front(qbs.at(0));
+      apply_V_at_front(qbs.at(1));
+      apply_V_at_front(qbs.at(1));
+      apply_V_at_front(qbs.at(1));
       break;
     }
     case OpType::noop:
@@ -555,14 +598,54 @@ void UnitaryRevTableau::apply_CX_at_end(
 
 void UnitaryRevTableau::apply_gate_at_front(
     OpType type, const qubit_vector_t& qbs) {
-  if (type != OpType::Phase)
-    tab_.apply_gate_at_end(get_op_ptr(type)->dagger()->get_type(), qbs);
+  // Handle types whose dagger is not an optype
+  switch (type) {
+    case OpType::ZZMax: {
+      tab_.apply_gate_at_end(OpType::ZZMax, qbs);
+      tab_.apply_gate_at_end(OpType::Z, {qbs.at(0)});
+      tab_.apply_gate_at_end(OpType::Z, {qbs.at(1)});
+      break;
+    }
+    case OpType::ISWAPMax: {
+      tab_.apply_gate_at_end(OpType::ISWAPMax, qbs);
+      tab_.apply_gate_at_end(OpType::Z, {qbs.at(0)});
+      tab_.apply_gate_at_end(OpType::Z, {qbs.at(1)});
+      break;
+    }
+    case OpType::Phase: {
+      break;
+    }
+    default: {
+      tab_.apply_gate_at_end(get_op_ptr(type)->dagger()->get_type(), qbs);
+      break;
+    }
+  }
 }
 
 void UnitaryRevTableau::apply_gate_at_end(
     OpType type, const qubit_vector_t& qbs) {
-  if (type != OpType::Phase)
-    tab_.apply_gate_at_front(get_op_ptr(type)->dagger()->get_type(), qbs);
+  // Handle types whose dagger is not an optype
+  switch (type) {
+    case OpType::ZZMax: {
+      tab_.apply_gate_at_front(OpType::ZZMax, qbs);
+      tab_.apply_gate_at_front(OpType::Z, {qbs.at(0)});
+      tab_.apply_gate_at_front(OpType::Z, {qbs.at(1)});
+      break;
+    }
+    case OpType::ISWAPMax: {
+      tab_.apply_gate_at_front(OpType::ISWAPMax, qbs);
+      tab_.apply_gate_at_front(OpType::Z, {qbs.at(0)});
+      tab_.apply_gate_at_front(OpType::Z, {qbs.at(1)});
+      break;
+    }
+    case OpType::Phase: {
+      break;
+    }
+    default: {
+      tab_.apply_gate_at_front(get_op_ptr(type)->dagger()->get_type(), qbs);
+      break;
+    }
+  }
 }
 
 void UnitaryRevTableau::apply_pauli_at_front(

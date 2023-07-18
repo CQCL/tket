@@ -18,10 +18,10 @@
 #include "CircuitsForTesting.hpp"
 #include "testutil.hpp"
 #include "tket/Circuit/Boxes.hpp"
+#include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Converters/Converters.hpp"
-#include "tket/Converters/PauliGadget.hpp"
 #include "tket/Diagonalisation/Diagonalisation.hpp"
 #include "tket/Gate/SymTable.hpp"
 #include "tket/PauliGraph/ConjugatePauliFunctions.hpp"
@@ -950,14 +950,15 @@ SCENARIO("Diagonalise a pair of gadgets") {
 
   Circuit correct;
   for (unsigned i = 0; i < 2; ++i) {
-    append_single_pauli_gadget(correct, tensors[i], exprs[i]);
+    correct.append(pauli_gadget(tensors[i], exprs[i]));
   }
   auto u_correct = tket_sim::get_unitary(correct);
 
   GIVEN("Snake configuration") {
     CXConfigType config = CXConfigType::Snake;
-    append_pauli_gadget_pair(
-        circ, tensors[0], exprs[0], tensors[1], exprs[1], config);
+
+    circ.append(
+        pauli_gadget_pair(tensors[0], exprs[0], tensors[1], exprs[1], config));
     THEN("Unitary is correct") {
       auto u_res = tket_sim::get_unitary(circ);
       REQUIRE((u_correct - u_res).cwiseAbs().sum() < ERR_EPS);
@@ -965,8 +966,8 @@ SCENARIO("Diagonalise a pair of gadgets") {
   }
   GIVEN("Star configuration") {
     CXConfigType config = CXConfigType::Star;
-    append_pauli_gadget_pair(
-        circ, tensors[0], exprs[0], tensors[1], exprs[1], config);
+    circ.append(
+        pauli_gadget_pair(tensors[0], exprs[0], tensors[1], exprs[1], config));
     THEN("Unitary is correct") {
       auto u_res = tket_sim::get_unitary(circ);
       REQUIRE((u_correct - u_res).cwiseAbs().sum() < ERR_EPS);
@@ -974,8 +975,8 @@ SCENARIO("Diagonalise a pair of gadgets") {
   }
   GIVEN("Tree configuration") {
     CXConfigType config = CXConfigType::Tree;
-    append_pauli_gadget_pair(
-        circ, tensors[0], exprs[0], tensors[1], exprs[1], config);
+    circ.append(
+        pauli_gadget_pair(tensors[0], exprs[0], tensors[1], exprs[1], config));
     THEN("Unitary is correct") {
       auto u_res = tket_sim::get_unitary(circ);
       REQUIRE((u_correct - u_res).cwiseAbs().sum() < ERR_EPS);
@@ -983,10 +984,11 @@ SCENARIO("Diagonalise a pair of gadgets") {
   }
   GIVEN("MultiQGate configuration") {
     CXConfigType config = CXConfigType::MultiQGate;
-    append_pauli_gadget_pair(
-        circ, tensors[0], exprs[0], tensors[1], exprs[1], config);
-    THEN("XXPhase3 were used") {
-      REQUIRE(circ.count_gates(OpType::XXPhase3) == 2);
+    circ.append(
+        pauli_gadget_pair(tensors[0], exprs[0], tensors[1], exprs[1], config));
+    THEN(
+        "XXPhase3 were used for both mutual reduction and individual gadgets") {
+      REQUIRE(circ.count_gates(OpType::XXPhase3) == 4);
     }
     THEN("Unitary is correct") {
       auto u_res = tket_sim::get_unitary(circ);
