@@ -195,6 +195,8 @@ class ChoiMixTableau {
   void collapse_qubit(
       const Qubit& qb, TableauSegment seg = TableauSegment::Output);
 
+  void add_qubit(const Qubit& qb, TableauSegment seg = TableauSegment::Output);
+
   /**
    * Removes a row from the tableau.
    * The final row is shifted into its place.

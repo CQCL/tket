@@ -717,6 +717,194 @@ SCENARIO("Synthesis of circuits from ChoiMixTableaus") {
       CHECK((outmatd * res_iso * inmatd).isApprox(res_iso));
     }
   }
+  GIVEN("Synthesising a tableau requiring post-selection") {
+    Circuit circ = get_test_circ();
+    ChoiMixTableau tab = circuit_to_cm_tableau(circ);
+    tab.post_select(Qubit(0), ChoiMixTableau::TableauSegment::Output);
+    std::pair<Circuit, unit_map_t> res_uni =
+        cm_tableau_to_circuit(tab, ChoiMixSynthType::unitary);
+    Eigen::MatrixXcd res_u = tket_sim::get_unitary(res_uni.first);
+    // q[0] was removed from the tableau by postselection so need to infer
+    // position in res_uni.second from the other qubits
+    QubitPauliString zzz{Pauli::Z, Pauli::Z, Pauli::Z};
+    zzz.map.at(Qubit(res_uni.second.at(Qubit(1)))) = Pauli::I;
+    zzz.map.at(Qubit(res_uni.second.at(Qubit(2)))) = Pauli::I;
+    Eigen::MatrixXcd z0 = zzz.to_sparse_matrix(3);
+    Eigen::MatrixXcd res_proj = 0.5 * (res_u + (z0 * res_u));
+    for (unsigned r = 0; r < tab.get_n_rows(); ++r) {
+      ChoiMixTableau::row_tensor_t rrow = tab.get_row(r);
+      CmplxSpMat inmat =
+          rrow.first.string.to_sparse_matrix(3) * rrow.first.coeff;
+      Eigen::MatrixXcd inmatd = inmat;
+      QubitPauliMap outstr;
+      for (const std::pair<const Qubit, Pauli>& qp : rrow.second.string.map)
+        outstr.insert({Qubit(res_uni.second.at(qp.first)), qp.second});
+      CmplxSpMat outmat =
+          QubitPauliString(outstr).to_sparse_matrix(3) * rrow.second.coeff;
+      Eigen::MatrixXcd outmatd = outmat;
+      CHECK((outmatd * res_proj * inmatd).isApprox(res_proj));
+    }
+  }
+  GIVEN("Synthesising a tableau with all post-selections") {
+    Circuit circ = get_test_circ();
+    ChoiMixTableau tab = circuit_to_cm_tableau(circ);
+    tab.post_select(Qubit(0), ChoiMixTableau::TableauSegment::Output);
+    tab.post_select(Qubit(1), ChoiMixTableau::TableauSegment::Output);
+    tab.post_select(Qubit(2), ChoiMixTableau::TableauSegment::Output);
+    Circuit res =
+        cm_tableau_to_circuit(tab, ChoiMixSynthType::unitary).first.dagger();
+    Eigen::VectorXcd res_sv = tket_sim::get_statevector(res);
+    for (unsigned r = 0; r < tab.get_n_rows(); ++r) {
+      ChoiMixTableau::row_tensor_t rrow = tab.get_row(r);
+      Eigen::MatrixXcd inmat = rrow.first.string.to_sparse_matrix(3) *
+                               rrow.first.coeff * rrow.second.coeff;
+      CHECK((inmat * res_sv).isApprox(res_sv));
+    }
+  }
+  GIVEN("Initialisations, collapses, discards and post-selections") {
+    Circuit circ(5);
+    circ.qubit_create(Qubit(1));
+    circ.qubit_create(Qubit(2));
+    circ.add_op<unsigned>(OpType::H, {4});
+    circ.add_op<unsigned>(OpType::Collapse, {4});
+    circ.add_op<unsigned>(OpType::CX, {4, 1});
+    circ.add_op<unsigned>(OpType::CX, {4, 2});
+    circ.add_op<unsigned>(OpType::CX, {4, 3});
+    circ.add_op<unsigned>(OpType::H, {4});
+    circ.add_op<unsigned>(OpType::H, {1});
+    circ.add_op<unsigned>(OpType::V, {2});
+    circ.add_op<unsigned>(OpType::CX, {1, 2});
+    circ.add_op<unsigned>(OpType::CX, {1, 0});
+    circ.qubit_discard(Qubit(0));
+    ChoiMixTableau tab = circuit_to_cm_tableau(circ);
+    tab.post_select(Qubit(3), ChoiMixTableau::TableauSegment::Output);
+    std::pair<Circuit, unit_map_t> res_uni =
+        cm_tableau_to_circuit(tab, ChoiMixSynthType::unitary);
+    // First rebuild tableau by initialising, post-selecting, etc.
+    ChoiMixTableau res_tab = circuit_to_cm_tableau(res_uni.first);
+    qubit_map_t perm;
+    for (const std::pair<const UnitID, UnitID>& p : res_uni.second)
+      perm.insert({Qubit(p.second), Qubit(p.first)});
+    res_tab.rename_qubits(perm, ChoiMixTableau::TableauSegment::Output);
+    tab.canonical_column_order();
+    tab.gaussian_form();
+    // Post-select/initialise unused outputs/inputs (currently, in this
+    // particular synthesis, we can use one fewer qubit, so q[2] is not an input
+    // and q[3] is not an output)
+    res_tab.post_select(Qubit(1), ChoiMixTableau::TableauSegment::Input);
+    res_tab.post_select(Qubit(0), ChoiMixTableau::TableauSegment::Output);
+    // Collapsing q[4] in X basis as per circ
+    res_tab.apply_gate(
+        OpType::H, {Qubit(4)}, ChoiMixTableau::TableauSegment::Output);
+    res_tab.collapse_qubit(Qubit(4), ChoiMixTableau::TableauSegment::Output);
+    res_tab.apply_gate(
+        OpType::H, {Qubit(4)}, ChoiMixTableau::TableauSegment::Output);
+    // Discarding q[0] also removes Z row for q[0], so recreate this by
+    // XCollapse at input
+    res_tab.apply_gate(
+        OpType::H, {Qubit(0)}, ChoiMixTableau::TableauSegment::Input);
+    res_tab.collapse_qubit(Qubit(0), ChoiMixTableau::TableauSegment::Input);
+    res_tab.apply_gate(
+        OpType::H, {Qubit(0)}, ChoiMixTableau::TableauSegment::Input);
+    res_tab.canonical_column_order();
+    res_tab.gaussian_form();
+    REQUIRE(res_tab == tab);
+
+    Eigen::MatrixXcd res_u = tket_sim::get_unitary(res_uni.first);
+    qubit_vector_t res_qbs = res_uni.first.all_qubits();
+    // q[1] has no input terms, so initialise it
+    QubitPauliString z1{Qubit(1), Pauli::Z};
+    Eigen::MatrixXcd z1u = z1.to_sparse_matrix(res_qbs);
+    res_u = 0.5 * (res_u + (res_u * z1u));
+    // q[0] has no output terms, so postselect it
+    QubitPauliString z0{Qubit(res_uni.second.at(Qubit(0))), Pauli::Z};
+    Eigen::MatrixXcd z0u = z0.to_sparse_matrix(res_qbs);
+    res_u = 0.5 * (res_u + (z0u * res_u));
+
+    for (unsigned r = 0; r < tab.get_n_rows(); ++r) {
+      ChoiMixTableau::row_tensor_t rrow = tab.get_row(r);
+      Eigen::MatrixXcd inmat =
+          rrow.first.string.to_sparse_matrix(res_qbs) * rrow.first.coeff;
+      QubitPauliMap outstr;
+      for (const std::pair<const Qubit, Pauli>& qp : rrow.second.string.map)
+        outstr.insert({Qubit(res_uni.second.at(qp.first)), qp.second});
+      Eigen::MatrixXcd outmat =
+          QubitPauliString(outstr).to_sparse_matrix(res_qbs) *
+          rrow.second.coeff;
+      CHECK((outmat * res_u * inmat).isApprox(res_u));
+    }
+  }
+  GIVEN(
+      "A custom tableau with overlapping initialised and post-selected "
+      "qubits") {
+    std::list<ChoiMixTableau::row_tensor_t> rows{
+        {QubitPauliTensor({Pauli::Z, Pauli::X, Pauli::I}), {}},
+        {QubitPauliTensor({Pauli::X, Pauli::Y, Pauli::Z}), {}},
+        {{}, QubitPauliTensor({Pauli::X, Pauli::X, Pauli::I})},
+        {{}, QubitPauliTensor({Pauli::I, Pauli::X, Pauli::X})},
+        {QubitPauliTensor({Pauli::I, Pauli::I, Pauli::Z}),
+         QubitPauliTensor({Pauli::Z, Pauli::Z, Pauli::Z})},
+        {QubitPauliTensor({Pauli::Z, Pauli::I, Pauli::X}),
+         QubitPauliTensor({Pauli::I, Pauli::I, Pauli::X})},
+    };
+    ChoiMixTableau tab(rows);
+    REQUIRE_THROWS(cm_tableau_to_circuit(tab, ChoiMixSynthType::unitary));
+    tab.add_qubit(Qubit(3), ChoiMixTableau::TableauSegment::Output);
+    tab.add_qubit(Qubit(4), ChoiMixTableau::TableauSegment::Output);
+    tab.add_qubit(Qubit(3), ChoiMixTableau::TableauSegment::Input);
+    tab.add_qubit(Qubit(4), ChoiMixTableau::TableauSegment::Input);
+    std::pair<Circuit, unit_map_t> res_uni =
+        cm_tableau_to_circuit(tab, ChoiMixSynthType::unitary);
+
+    ChoiMixTableau res_tab = circuit_to_cm_tableau(res_uni.first);
+    qubit_map_t perm;
+    for (const std::pair<const UnitID, UnitID>& p : res_uni.second)
+      perm.insert({Qubit(p.second), Qubit(p.first)});
+    res_tab.rename_qubits(perm, ChoiMixTableau::TableauSegment::Output);
+    res_tab.post_select(Qubit(3), ChoiMixTableau::TableauSegment::Input);
+    res_tab.post_select(Qubit(4), ChoiMixTableau::TableauSegment::Input);
+    res_tab.post_select(Qubit(3), ChoiMixTableau::TableauSegment::Output);
+    res_tab.post_select(Qubit(4), ChoiMixTableau::TableauSegment::Output);
+    res_tab.add_qubit(Qubit(3), ChoiMixTableau::TableauSegment::Output);
+    res_tab.add_qubit(Qubit(4), ChoiMixTableau::TableauSegment::Output);
+    res_tab.add_qubit(Qubit(3), ChoiMixTableau::TableauSegment::Input);
+    res_tab.add_qubit(Qubit(4), ChoiMixTableau::TableauSegment::Input);
+    res_tab.canonical_column_order();
+    res_tab.gaussian_form();
+    tab.canonical_column_order();
+    tab.gaussian_form();
+    REQUIRE(res_tab == tab);
+
+    Eigen::MatrixXcd res_u = tket_sim::get_unitary(res_uni.first);
+    qubit_vector_t res_qbs = res_uni.first.all_qubits();
+    // q[3] and q[4] have no input terms, so initialise them
+    QubitPauliString z3i{Qubit(3), Pauli::Z};
+    Eigen::MatrixXcd z3iu = z3i.to_sparse_matrix(res_qbs);
+    res_u = 0.5 * (res_u + (res_u * z3iu));
+    QubitPauliString z4i{Qubit(4), Pauli::Z};
+    Eigen::MatrixXcd z4iu = z4i.to_sparse_matrix(res_qbs);
+    res_u = 0.5 * (res_u + (res_u * z4iu));
+    // q[3] and q[4] have no output terms, so postselect them
+    QubitPauliString z3o{Qubit(res_uni.second.at(Qubit(3))), Pauli::Z};
+    Eigen::MatrixXcd z3ou = z3o.to_sparse_matrix(res_qbs);
+    res_u = 0.5 * (res_u + (z3ou * res_u));
+    QubitPauliString z4o{Qubit(res_uni.second.at(Qubit(4))), Pauli::Z};
+    Eigen::MatrixXcd z4ou = z4o.to_sparse_matrix(res_qbs);
+    res_u = 0.5 * (res_u + (z4ou * res_u));
+
+    for (unsigned r = 0; r < tab.get_n_rows(); ++r) {
+      ChoiMixTableau::row_tensor_t rrow = tab.get_row(r);
+      Eigen::MatrixXcd inmat =
+          rrow.first.string.to_sparse_matrix(res_qbs) * rrow.first.coeff;
+      QubitPauliMap outstr;
+      for (const std::pair<const Qubit, Pauli>& qp : rrow.second.string.map)
+        outstr.insert({Qubit(res_uni.second.at(qp.first)), qp.second});
+      Eigen::MatrixXcd outmat =
+          QubitPauliString(outstr).to_sparse_matrix(res_qbs) *
+          rrow.second.coeff;
+      CHECK((outmat * res_u * inmat).isApprox(res_u));
+    }
+  }
 }
 
 }  // namespace test_ChoiMixTableau
