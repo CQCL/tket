@@ -29,7 +29,6 @@ enum ChoiMixSynthType { exact, unitary };
 namespace pg {
 class PauliGraph;
 class PGOp;
-// typedef std::shared_ptr<const PGOp> PGOp_ptr;
 typedef std::shared_ptr<PGOp> PGOp_ptr;
 }  // namespace pg
 class Op;
