@@ -1326,6 +1326,41 @@ SCENARIO("Test depth_by_type method") {
     REQUIRE(circ.depth_by_types({OpType::CX, OpType::CY}) == 2);
   }
 }
+SCENARIO("Test depth_by_2q_gates method") {
+  GIVEN("2q OpTypes") {
+    Circuit circ(3, 1);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::Z, {0});
+    circ.add_op<unsigned>(OpType::Z, {1});
+    circ.add_op<unsigned>(OpType::CZ, {1, 0});
+    circ.add_conditional_gate<unsigned>(OpType::CY, {}, {1, 2}, {0}, 0);
+    REQUIRE(circ.depth_by_2q_gates() == 2);
+  }
+  GIVEN("Boxes") {
+    Circuit circ(3);
+    Circuit inner(2);
+    inner.add_op<unsigned>(OpType::CX, {0, 1});
+    CircBox cbox(inner);
+    circ.add_box(cbox, {0, 1});
+    circ.add_op<unsigned>(OpType::Z, {1});
+    REQUIRE(circ.depth_by_2q_gates() == 0);
+  }
+  GIVEN("Multi-q gates") {
+    Circuit circ(5, 2);
+    circ.add_op<unsigned>(OpType::CnX, {0, 1, 2, 4, 3});
+    circ.add_op<unsigned>(OpType::CnX, {0, 2});
+    circ.add_op<unsigned>(OpType::CnX, {2, 4, 3});
+    circ.add_op<unsigned>(OpType::CnX, {3, 4});
+    REQUIRE(circ.depth_by_2q_gates() == 2);
+  }
+  GIVEN("A circuit with other causal links") {
+    Circuit circ(4);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_barrier({0, 2});
+    circ.add_op<unsigned>(OpType::CZ, {2, 3});
+    REQUIRE(circ.depth_by_2q_gates() == 2);
+  }
+}
 
 SCENARIO("Test extracting slice segments") {
   GIVEN("A simple circuit") {

@@ -1184,6 +1184,16 @@ class Circuit {
    */
   unsigned depth_by_types(const OpTypeSet &_types) const;
 
+  /**
+   * Depth of circuit restricting to 2-qubit quantum gates.
+   *
+   * This is the number of vertices in the longest path through the sub-DAG
+   * consisting of vertices representing 2-qubit operations.
+   *
+   * @return depth
+   */
+  unsigned depth_by_2q_gates() const;
+
   std::map<Vertex, unit_set_t> vertex_unit_map() const;
   std::map<Vertex, unsigned> vertex_depth_map() const;
   std::map<Vertex, unsigned> vertex_rev_depth_map() const;

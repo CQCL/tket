@@ -708,6 +708,21 @@ unsigned Circuit::depth_by_types(const OpTypeSet& _types) const {
   return count;
 }
 
+unsigned Circuit::depth_by_2q_gates() const {
+  unsigned count = 0;
+  std::function<bool(Op_ptr)> skip_func = [&](Op_ptr op) {
+    return (op->n_qubits() != 2 || !is_gate_type(op->get_type()));
+  };
+  Circuit::SliceIterator slice_iter(*this, skip_func);
+  if (!(*slice_iter).empty()) count++;
+  while (!slice_iter.finished()) {
+    slice_iter.cut_ = this->next_cut(
+        slice_iter.cut_.u_frontier, slice_iter.cut_.b_frontier, skip_func);
+    if (!(*slice_iter).empty()) count++;
+  }
+  return count;
+}
+
 std::map<Vertex, unit_set_t> Circuit::vertex_unit_map() const {
   std::map<Vertex, unit_set_t> map;
   BGL_FORALL_VERTICES(v, dag, DAG) { map[v] = {}; }
