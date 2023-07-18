@@ -1024,6 +1024,7 @@ def test_depth() -> None:
     assert c.depth_by_type({OpType.CX, OpType.H}) == 6
     assert c.depth_by_type({OpType.CZ, OpType.H}) == 6
     assert c.depth_by_type(set()) == 0
+    assert c.depth_by_2q_gates() == 6
 
 
 def test_op_dagger_transpose() -> None:
