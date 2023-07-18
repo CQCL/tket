@@ -286,7 +286,7 @@ Circuit pauli_gadget(
     QubitPauliTensor pauli, Expr angle, CXConfigType cx_config) {
   Expr converted_angle = pauli_angle_convert_or_throw(pauli.coeff, angle);
   if (pauli.string.is_identity()) {
-    Circuit phase_circ(0);
+    Circuit phase_circ(pauli.string.map.size());
     phase_circ.add_phase(-converted_angle / 2);
     return phase_circ;
   }
