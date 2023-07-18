@@ -18,9 +18,9 @@
 #include "testutil.hpp"
 #include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Converters/PhasePoly.hpp"
 #include "tket/Ops/ClassicalOps.hpp"
-#include "tket/Simulation/CircuitSimulator.hpp"
 
 namespace tket {
 namespace test_Boxes {

@@ -41,13 +41,14 @@ class NeighboursFromEdges : public NeighboursInterface {
    * @param vertex A vertex in the graph
    * @return All other vertices adjecent to the vertex (stored internally).
    */
-  virtual const std::vector<size_t>& operator()(size_t vertex) override;
+  virtual const std::vector<std::size_t>& operator()(
+      std::size_t vertex) override;
 
  private:
   /** The key is the vertex, the value is the list of neighbours. */
-  std::map<size_t, std::set<size_t>> m_cached_neighbours;
+  std::map<std::size_t, std::set<std::size_t>> m_cached_neighbours;
 
-  std::vector<size_t> m_neighbours_storage;
+  std::vector<std::size_t> m_neighbours_storage;
 };
 
 template <class SwapContainer>

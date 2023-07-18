@@ -20,12 +20,12 @@
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
+#include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Converters/Converters.hpp"
 #include "tket/Diagonalisation/Diagonalisation.hpp"
 #include "tket/Gate/SymTable.hpp"
 #include "tket/PauliGraph/ConjugatePauliFunctions.hpp"
 #include "tket/PauliGraph/PauliGraph.hpp"
-#include "tket/Simulation/CircuitSimulator.hpp"
 #include "tket/Transformations/PauliOptimisation.hpp"
 #include "tket/Transformations/Rebase.hpp"
 

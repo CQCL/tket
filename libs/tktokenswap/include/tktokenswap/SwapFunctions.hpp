@@ -22,7 +22,7 @@
 
 namespace tket {
 
-typedef std::pair<size_t, size_t> Swap;
+typedef std::pair<std::size_t, std::size_t> Swap;
 typedef VectorListHybrid<Swap> SwapList;
 typedef SwapList::ID SwapID;
 
@@ -33,7 +33,7 @@ typedef SwapList::ID SwapID;
  *  @param v2 The second vertex (throws if equal to the first).
  *  @return A swap object.
  */
-Swap get_swap(size_t v1, size_t v2);
+Swap get_swap(std::size_t v1, std::size_t v2);
 
 /** Do the swaps act on 4 different vertices?
  *  @param swap1 The first swap.

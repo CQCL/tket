@@ -18,7 +18,7 @@
 
 namespace tket {
 
-const std::vector<size_t>& NeighboursInterface::operator()(size_t) {
+const std::vector<std::size_t>& NeighboursInterface::operator()(std::size_t) {
   throw std::logic_error("NeighboursInterface::operator() not implemented");
 }
 

@@ -21,6 +21,17 @@
 namespace tket {
 
 /**
+ * @brief Strategies for synthesising ToffoliBoxes
+ * Matching: use multiplexors to perform parallel swaps on hypercubes
+ * Cycle: use CnX gates to perform transpositions
+ */
+enum class ToffoliBoxSynthStrat { Matching, Cycle };
+
+NLOHMANN_JSON_SERIALIZE_ENUM(
+    ToffoliBoxSynthStrat, {{ToffoliBoxSynthStrat::Matching, "Matching"},
+                           {ToffoliBoxSynthStrat::Cycle, "Cycle"}});
+
+/**
  * @brief Map bitstrings to bitstrings
  *
  */
@@ -35,12 +46,15 @@ class ToffoliBox : public Box {
    * @brief Construct a circuit that synthesise the given state permutation
    *
    * @param permutation map between basis states
+   * @param strat synthesis strategy
    * @param rotation_axis the rotation axis of the multiplexors used in the
-   * decomposition. Can be either Rx or Ry.
+   * decomposition. Can be either Rx or Ry. Only applicable to the
+   * ToffoliBoxSynthStrat::Matching strategy
    *
    */
   explicit ToffoliBox(
       const state_perm_t &permutation,
+      const ToffoliBoxSynthStrat &strat = ToffoliBoxSynthStrat::Matching,
       const OpType &rotation_axis = OpType::Ry);
 
   /**
@@ -64,6 +78,8 @@ class ToffoliBox : public Box {
     return id_ == other.get_id();
   }
 
+  std::optional<Eigen::MatrixXcd> get_box_unitary() const override;
+
   Op_ptr dagger() const override;
   Op_ptr transpose() const override;
 
@@ -75,6 +91,7 @@ class ToffoliBox : public Box {
 
   state_perm_t get_permutation() const;
   OpType get_rotation_axis() const;
+  ToffoliBoxSynthStrat get_strat() const;
 
  protected:
   /**
@@ -85,10 +102,18 @@ class ToffoliBox : public Box {
   void generate_circuit() const override;
 
   ToffoliBox()
-      : Box(OpType::ToffoliBox), permutation_(), rotation_axis_(OpType::Ry) {}
+      : Box(OpType::ToffoliBox),
+        n_(0),
+        pow2n_(1),
+        permutation_(),
+        strat_(ToffoliBoxSynthStrat::Matching),
+        rotation_axis_(OpType::Ry) {}
 
  private:
+  const unsigned n_;
+  const unsigned pow2n_;
   const state_perm_t permutation_;
+  const ToffoliBoxSynthStrat strat_;
   const OpType rotation_axis_;
 };
 }  // namespace tket

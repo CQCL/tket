@@ -18,10 +18,10 @@
 #include "rapidcheck.h"
 #include "tket/Architecture/Architecture.hpp"
 #include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Predicates/PassGenerators.hpp"
 #include "tket/Predicates/PassLibrary.hpp"
 #include "tket/Predicates/Predicates.hpp"
-#include "tket/Simulation/CircuitSimulator.hpp"
 #include "tket/Transformations/ContextualReduction.hpp"
 #include "tket/Transformations/Transform.hpp"
 

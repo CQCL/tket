@@ -4,6 +4,7 @@
 #include "Simulation/ComparisonFunctions.hpp"
 #include "testutil.hpp"
 #include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Mapping/AASLabelling.hpp"
 #include "tket/Mapping/AASRoute.hpp"
 #include "tket/Mapping/LexiLabelling.hpp"
@@ -15,7 +16,6 @@
 #include "tket/Predicates/CompilerPass.hpp"
 #include "tket/Predicates/PassGenerators.hpp"
 #include "tket/Predicates/PassLibrary.hpp"
-#include "tket/Simulation/CircuitSimulator.hpp"
 #include "tket/Transformations/ContextualReduction.hpp"
 
 namespace tket {

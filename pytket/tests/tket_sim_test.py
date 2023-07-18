@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import pytest  # type: ignore
-from pytket.circuit import Circuit  # type: ignore
+from pytket.circuit import Circuit, CircBox, QControlBox, Op, OpType  # type: ignore
 from enum import Enum  # type: ignore
 import numpy as np
 import math  # type: ignore
@@ -253,6 +253,20 @@ def test_statevector() -> None:
             except ValueError as e:
                 assert expected_behaviour == Behaviour.INVALID_MATRIX_PRODUCT
                 check_matmul_failure_exception_string(str(e))
+
+
+def test_boxes() -> None:
+    c0 = Circuit(2).CY(1, 0)
+    cbox = CircBox(c0)
+    op = Op.create(OpType.Y)
+    qcbox = QControlBox(op, 1)
+    c = Circuit(2)
+    c.add_circbox(cbox, [1, 0])
+    c.add_qcontrolbox(qcbox, [0, 1])
+    u = c.get_unitary()
+    assert np.allclose(u, np.eye(4, dtype=complex))
+    s = c.get_statevector()
+    assert np.isclose(s[0], 1.0)
 
 
 if __name__ == "__main__":

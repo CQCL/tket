@@ -26,7 +26,7 @@ namespace tsa_internal {
 VertexMapResizing::VertexMapResizing(NeighboursInterface& neighbours)
     : m_neighbours(neighbours) {}
 
-const vector<size_t>& VertexMapResizing::operator()(size_t vertex) {
+const vector<std::size_t>& VertexMapResizing::operator()(std::size_t vertex) {
   const auto citer = m_cached_neighbours.find(vertex);
   if (citer != m_cached_neighbours.cend()) {
     return citer->second;
@@ -87,17 +87,17 @@ const VertexMapResizing::Result& VertexMapResizing::resize_mapping(
   return m_result;
 }
 
-size_t VertexMapResizing::get_edge_count(
-    const VertexMapping& mapping, size_t vertex) {
+std::size_t VertexMapResizing::get_edge_count(
+    const VertexMapping& mapping, std::size_t vertex) {
   const auto& neighbours = operator()(vertex);
   return std::count_if(
       neighbours.cbegin(), neighbours.cend(),
       // Note that "neighbours" automatically will not contain "vertex" itself.
-      [&mapping](size_t vertex) { return mapping.count(vertex) != 0; });
+      [&mapping](std::size_t vertex) { return mapping.count(vertex) != 0; });
 }
 
 void VertexMapResizing::add_vertex(VertexMapping& mapping) {
-  std::set<size_t> new_vertices;
+  std::set<std::size_t> new_vertices;
 
   // Multipass, maybe a bit inefficient, but doesn't matter.
   // After a few calls, it's just map lookup so not so bad.
@@ -113,8 +113,8 @@ void VertexMapResizing::add_vertex(VertexMapping& mapping) {
   }
 
   // Now find the new vertex which would add the largest number of new edges.
-  size_t maximum_new_edges = 0;
-  size_t best_new_vertex = std::numeric_limits<size_t>::max();
+  std::size_t maximum_new_edges = 0;
+  std::size_t best_new_vertex = std::numeric_limits<std::size_t>::max();
 
   for (auto new_v : new_vertices) {
     const auto edge_count = get_edge_count(mapping, new_v);
@@ -129,12 +129,12 @@ void VertexMapResizing::add_vertex(VertexMapping& mapping) {
 }
 
 void VertexMapResizing::remove_vertex(VertexMapping& mapping) {
-  const auto invalid_number_of_edges = std::numeric_limits<size_t>::max();
+  const auto invalid_number_of_edges = std::numeric_limits<std::size_t>::max();
 
   // We want to leave as many edges as possible,
   // so we remove the minimum number.
-  size_t minimum_edges_removed = invalid_number_of_edges;
-  size_t best_vertex = std::numeric_limits<size_t>::max();
+  std::size_t minimum_edges_removed = invalid_number_of_edges;
+  std::size_t best_vertex = std::numeric_limits<std::size_t>::max();
   for (const auto& existing_vertex_pair : mapping) {
     if (existing_vertex_pair.first != existing_vertex_pair.second) {
       // The vertex is not fixed, so we cannot remove it.

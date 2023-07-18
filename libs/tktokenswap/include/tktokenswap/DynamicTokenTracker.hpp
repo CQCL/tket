@@ -76,7 +76,7 @@ class DynamicTokenTracker {
    *  @return The token at that vertex, or equal to the vertex number
    *    IF it doesn't already exist.
    */
-  size_t get_token_at_vertex(size_t vertex);
+  std::size_t get_token_at_vertex(std::size_t vertex);
 
   /** Does every token mentioned in this object lie at the same vertex in
    *  the other object?

@@ -19,17 +19,17 @@ using std::vector;
 namespace tket {
 
 void DistancesInterface::register_shortest_path(
-    const vector<size_t>& /*path*/) {}
+    const vector<std::size_t>& /*path*/) {}
 
 void DistancesInterface::register_neighbours(
-    size_t vertex, const vector<size_t>& neighbours) {
-  for (size_t nv : neighbours) {
+    std::size_t vertex, const vector<std::size_t>& neighbours) {
+  for (std::size_t nv : neighbours) {
     register_edge(vertex, nv);
   }
 }
 
-void DistancesInterface::register_edge(size_t /*vertex1*/, size_t /*vertex2*/) {
-}
+void DistancesInterface::register_edge(
+    std::size_t /*vertex1*/, std::size_t /*vertex2*/) {}
 
 DistancesInterface::~DistancesInterface() {}
 

@@ -38,11 +38,11 @@ class SwapListSegmentOptimiser {
     /** The length of the segment that was replaced.
      * Of course, this will be zero if no optimisation takes place.
      */
-    size_t initial_segment_size;
+    std::size_t initial_segment_size;
 
     /** The length of the segment after replacement. Always <=
      * initial_segment_size. */
-    size_t final_segment_size;
+    std::size_t final_segment_size;
 
     /** If we did replace a segment with a shorter one, give the ID of the last
      * swap of the segment. It might be null because the new segment might be
@@ -71,7 +71,8 @@ class SwapListSegmentOptimiser {
    * replacement/reduction (if any).
    */
   const Output& optimise_segment(
-      SwapID initial_id, const std::set<size_t>& vertices_with_tokens_at_start,
+      SwapID initial_id,
+      const std::set<std::size_t>& vertices_with_tokens_at_start,
       VertexMapResizing& map_resizing, SwapList& swap_list);
 
  private:

@@ -38,9 +38,9 @@ copyright = "2023 Quantinuum"
 author = "Quantinuum"
 
 # The short X.Y version
-version = "1.16"
+version = "1.17"
 # The full version, including alpha/beta/rc tags
-release = "1.16.0"
+release = "1.17.1"
 
 
 # -- General configuration ---------------------------------------------------
@@ -57,6 +57,7 @@ extensions = [
     "sphinx.ext.autosummary",
     "sphinx.ext.intersphinx",
     "sphinx.ext.mathjax",
+    "sphinx.ext.viewcode",
     "sphinx_copybutton",
     "jupyter_sphinx",
     "enum_tools.autoenum",
@@ -207,10 +208,6 @@ epub_title = project
 
 # A list of files that should not be packed into the epub file.
 epub_exclude_files = ["search.html"]
-
-
-# -- Extension configuration -------------------------------------------------
-intersphinx_mapping = {"https://docs.python.org/": None}
 
 autodoc_member_order = "groupwise"
 

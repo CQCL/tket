@@ -18,7 +18,7 @@ using std::vector;
 
 namespace tket {
 
-size_t RNG::get_size_t(size_t max_value) {
+std::size_t RNG::get_size_t(std::size_t max_value) {
   if (max_value == 0) {
     return 0;
   }
@@ -128,14 +128,14 @@ size_t RNG::get_size_t(size_t max_value) {
 
   // interval_width cannot be zero, because we ensured above that
   // max_value + 1 <= m_engine.max().
-  const size_t result = random_int / interval_width;
+  const std::size_t result = random_int / interval_width;
 
   // Modulo arithmetic shouldn't be necessary, but be paranoid,
   // in case there are mistakes in the above analysis (very likely!)
   return result % (max_value + 1);
 }
 
-size_t RNG::get_size_t(size_t min_value, size_t max_value) {
+std::size_t RNG::get_size_t(std::size_t min_value, std::size_t max_value) {
   if (min_value > max_value) {
     std::swap(min_value, max_value);
   }
@@ -144,18 +144,18 @@ size_t RNG::get_size_t(size_t min_value, size_t max_value) {
 
 std::uint64_t RNG::operator()() { return m_engine(); }
 
-vector<size_t> RNG::get_permutation(size_t size) {
-  vector<size_t> numbers(size);
-  for (size_t i = 0; i < size; ++i) {
+vector<std::size_t> RNG::get_permutation(std::size_t size) {
+  vector<std::size_t> numbers(size);
+  for (std::size_t i = 0; i < size; ++i) {
     numbers[i] = i;
   }
   do_shuffle(numbers);
   return numbers;
 }
 
-void RNG::set_seed(size_t seed) { m_engine.seed(seed); }
+void RNG::set_seed(std::size_t seed) { m_engine.seed(seed); }
 
-bool RNG::check_percentage(size_t percentage) {
+bool RNG::check_percentage(std::size_t percentage) {
   // e.g. the numbers {0,1,2,3,4} are 5%
   // of the numbers {0,1,...,99}.
   return get_size_t(99) < percentage;

@@ -28,9 +28,9 @@ namespace tests {
 
 namespace {
 struct ResultChecker {
-  size_t failed_due_to_too_many_vertices = 0;
-  size_t failed_due_to_table_missing_entry = 0;
-  size_t success = 0;
+  std::size_t failed_due_to_too_many_vertices = 0;
+  std::size_t failed_due_to_table_missing_entry = 0;
+  std::size_t success = 0;
 
   void check_failed_result(
       const ExactMappingLookup::Result& lookup_result,
@@ -108,7 +108,7 @@ SCENARIO("Test exact mapping table lookup for wheel") {
   // (although it shouldn't).
   vector<Swap> all_edges;
   vector<Swap> all_edges_sorted;
-  vector<size_t> vertices_used;
+  vector<std::size_t> vertices_used;
   ResultChecker checker;
 
   for (unsigned number_of_spokes = 3; number_of_spokes <= 6;

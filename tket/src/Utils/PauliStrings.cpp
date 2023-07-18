@@ -401,7 +401,7 @@ void QubitPauliString::set(const Qubit &q, Pauli p) {
 }
 
 std::size_t hash_value(const QubitPauliString &qps) {
-  size_t seed = 0;
+  std::size_t seed = 0;
   for (const std::pair<const Qubit, Pauli> &qb_p : qps.map) {
     if (qb_p.second != Pauli::I) {
       boost::hash_combine(seed, qb_p.first);
@@ -533,7 +533,7 @@ std::string QubitPauliTensor::to_str() const {
 }
 
 std::size_t hash_value(const QubitPauliTensor &qpt) {
-  size_t seed = hash_value(qpt.string);
+  std::size_t seed = hash_value(qpt.string);
   boost::hash_combine(seed, qpt.coeff);
   return seed;
 }

@@ -36,7 +36,7 @@ namespace tests {
 
 void GraphTestingRoutines::require_valid_colouring_without_graph(
     const GraphColouringResult& colouring_result, bool require_no_colour_gaps) {
-  const set<size_t> colours_seen(
+  const set<std::size_t> colours_seen(
       colouring_result.colours.cbegin(), colouring_result.colours.cend());
 
   try {
@@ -66,13 +66,13 @@ void GraphTestingRoutines::require_valid_colouring_without_graph(
 
 void GraphTestingRoutines::require_valid_colouring(
     const GraphColouringResult& colouring_result,
-    const vector<std::pair<size_t, size_t>>& edges,
-    size_t number_of_edges_to_check) {
+    const vector<std::pair<std::size_t, std::size_t>>& edges,
+    std::size_t number_of_edges_to_check) {
   require_valid_colouring_without_graph(colouring_result);
 
   number_of_edges_to_check = std::min(number_of_edges_to_check, edges.size());
 
-  for (size_t edge_index = 0; edge_index < number_of_edges_to_check;
+  for (std::size_t edge_index = 0; edge_index < number_of_edges_to_check;
        ++edge_index) {
     const auto& edge = edges[edge_index];
     try {
@@ -110,9 +110,9 @@ void GraphTestingRoutines::require_valid_suboptimal_colouring(
     if (number_of_vertices != graph_data.get_number_of_vertices()) {
       throw runtime_error("Mismatching number of vertices");
     }
-    for (size_t vertex = 0; vertex < number_of_vertices; ++vertex) {
+    for (std::size_t vertex = 0; vertex < number_of_vertices; ++vertex) {
       const auto& neighbours = graph_data.get_neighbours(vertex);
-      for (size_t other_vertex : neighbours) {
+      for (std::size_t other_vertex : neighbours) {
         if (colouring_result.colours[vertex] ==
             colouring_result.colours[other_vertex]) {
           stringstream ss;

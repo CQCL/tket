@@ -285,7 +285,7 @@ get_list_of_increasing_graph_sequences() {
     // Check an edge in the middle...
     const auto& middle_graph = final_list[final_list.size() / 2];
     CHECK(middle_graph.size() == 85);
-    size_t counter = middle_graph.size() / 2;
+    std::size_t counter = middle_graph.size() / 2;
     for (const auto& edge_weight_pair : middle_graph) {
       CHECK(edge_weight_pair.second == 1);
       if (counter != 0) {

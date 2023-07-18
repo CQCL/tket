@@ -22,12 +22,12 @@
 #include "GatesData.hpp"
 #include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Gate/Gate.hpp"
 #include "tket/Gate/GateUnitaryMatrix.hpp"
 #include "tket/Gate/GateUnitaryMatrixError.hpp"
 #include "tket/Gate/GateUnitaryMatrixImplementations.hpp"
 #include "tket/Gate/Rotation.hpp"
-#include "tket/Simulation/CircuitSimulator.hpp"
 #include "tket/Utils/MatrixAnalysis.hpp"
 
 using Catch::Matchers::ContainsSubstring;
@@ -72,7 +72,7 @@ static Eigen::MatrixXcd get_tket_sim_unitary(
 
 static void write_error_information(
     const std::string& name, const std::vector<double>& current_values,
-    size_t number_of_qubits, const Eigen::MatrixXcd& unitary,
+    std::size_t number_of_qubits, const Eigen::MatrixXcd& unitary,
     std::stringstream& ss) {
   ss << "\nOp type " << name << " acting on " << number_of_qubits
      << " qubits, with " << current_values.size() << " parameters: [";
@@ -112,7 +112,7 @@ static bool calculate_and_compare_unitaries(
 // Returns false if the calculated matrix U is not almost unitary.
 static bool check_is_unitary(
     const std::string& name, const std::vector<double>& current_values,
-    size_t number_of_qubits, const Eigen::MatrixXcd& unitary,
+    std::size_t number_of_qubits, const Eigen::MatrixXcd& unitary,
     std::stringstream& ss) {
   if (is_unitary(unitary)) {
     return true;
@@ -170,7 +170,7 @@ static bool update_parameter_values(
   if (current_values.empty()) {
     return false;
   }
-  for (size_t nn = current_values.size() - 1;;) {
+  for (std::size_t nn = current_values.size() - 1;;) {
     double& value = current_values[nn];
     value = values_map.at(value);
     if (value != values_map.crbegin()->first) {
@@ -187,8 +187,8 @@ static bool update_parameter_values(
 }
 
 static void test_op(
-    OpType op_type, size_t number_of_parameters, size_t number_of_qubits,
-    const ValuesMap& values_map) {
+    OpType op_type, std::size_t number_of_parameters,
+    std::size_t number_of_qubits, const ValuesMap& values_map) {
   const OpDesc desc(op_type);
   const auto name = desc.name();
   INFO(
@@ -217,7 +217,7 @@ static void test_op(
   try {
     for (;;) {
       // Convert the doubles to expressions.
-      for (size_t nn = 0; nn < current_values.size(); ++nn) {
+      for (std::size_t nn = 0; nn < current_values.size(); ++nn) {
         current_values_expr[nn] = Expr(current_values[nn]);
       }
       if (!test_op_with_parameters(

@@ -64,7 +64,7 @@ bool DynamicTokenTracker::tokens_here_have_equal_locations_in_the_other_object(
   return true;
 }
 
-size_t DynamicTokenTracker::get_token_at_vertex(size_t vertex) {
+std::size_t DynamicTokenTracker::get_token_at_vertex(std::size_t vertex) {
   const auto iter = m_vertex_to_token.find(vertex);
   if (iter == m_vertex_to_token.end()) {
     m_vertex_to_token[vertex] = vertex;

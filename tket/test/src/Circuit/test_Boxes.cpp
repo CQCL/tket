@@ -15,15 +15,16 @@
 #include <Eigen/Core>
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_string.hpp>
+#include <tket/Circuit/ToffoliBox.hpp>
 
 #include "../testutil.hpp"
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
+#include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Converters/PhasePoly.hpp"
 #include "tket/Gate/SymTable.hpp"
-#include "tket/Simulation/CircuitSimulator.hpp"
 
 using Catch::Matchers::StartsWith;
 
@@ -994,6 +995,89 @@ SCENARIO("Checking box names", "[boxes]") {
     CustomGate g(def, {0.1111, 0.2222, 0.4444});
     const std::string name = g.get_name();
     CHECK(name == "gate with 3 params(0.1111,0.2222,0.4444)");
+  }
+}
+
+SCENARIO("Unitaries") {
+  GIVEN("Unitary1qBox") {
+    Eigen::Matrix2cd u = random_unitary(2, 1);
+    Unitary1qBox ubox(u);
+    Circuit c(1);
+    c.add_box(ubox, {0});
+    Eigen::MatrixXcd u1 = tket_sim::get_unitary(c);
+    CHECK(u1.isApprox(u));
+  }
+
+  GIVEN("Unitary2qBox") {
+    Eigen::Matrix4cd u = random_unitary(4, 1);
+    Unitary2qBox ubox(u);
+    Circuit c(2);
+    c.add_box(ubox, {0, 1});
+    Eigen::MatrixXcd u1 = tket_sim::get_unitary(c);
+    CHECK(u1.isApprox(u));
+  }
+
+  GIVEN("Unitary3qBox") {
+    Eigen::MatrixXcd u = random_unitary(8, 1);
+    Unitary3qBox ubox(u);
+    Circuit c(3);
+    c.add_box(ubox, {0, 1, 2});
+    Eigen::MatrixXcd u1 = tket_sim::get_unitary(c);
+    CHECK(u1.isApprox(u));
+  }
+
+  GIVEN("CircBox") {
+    Circuit c0(2);
+    c0.add_op<unsigned>(OpType::H, {0});
+    c0.add_op<unsigned>(OpType::CX, {0, 1});
+    Eigen::MatrixXcd u = tket_sim::get_unitary(c0);
+    CircBox cbox(c0);
+    Circuit c(2);
+    c.add_box(cbox, {0, 1});
+    Eigen::MatrixXcd u1 = tket_sim::get_unitary(c);
+    CHECK(u1.isApprox(u));
+  }
+
+  GIVEN("ExpBox") {
+    Eigen::Matrix4cd A;
+    A << 0., 1., 2., 3., 1., 2., 3. * i_, 4., 2., -3. * i_, 3, 2. - 3. * i_, 3.,
+        4., 2. + 3. * i_, 5.;
+    const double t = 0.7;
+    Eigen::MatrixXcd u = (i_ * t * A).exp();
+    ExpBox ebox(A, t);
+    Circuit c(2);
+    c.add_box(ebox, {0, 1});
+    Eigen::MatrixXcd u1 = tket_sim::get_unitary(c);
+    CHECK(u1.isApprox(u));
+  }
+
+  GIVEN("QControlBox") {
+    Op_ptr op = get_op_ptr(OpType::H);
+    QControlBox qcbox(op, 2);
+    Circuit c(3);
+    c.add_box(qcbox, {0, 1, 2});
+    Eigen::MatrixXcd u = tket_sim::get_unitary(c);
+    CHECK(u.topLeftCorner(6, 6).isApprox(Eigen::MatrixXcd::Identity(6, 6)));
+    CHECK(u.bottomRightCorner(2, 2).isApprox(op->get_unitary()));
+  }
+
+  GIVEN("ToffoliBox") {
+    state_perm_t p;
+    p[{0, 1, 1}] = {0, 0, 1};
+    p[{0, 0, 1}] = {1, 1, 0};
+    p[{1, 1, 0}] = {0, 1, 1};
+    ToffoliBox tbox(p);
+    Circuit c(3);
+    c.add_box(tbox, {0, 1, 2});
+    Eigen::MatrixXcd u = tket_sim::get_unitary(c);
+    CHECK(std::abs(u(0, 0) - 1.) < ERR_EPS);
+    CHECK(std::abs(u(1, 3) - 1.) < ERR_EPS);
+    CHECK(std::abs(u(2, 2) - 1.) < ERR_EPS);
+    CHECK(std::abs(u(3, 6) - 1.) < ERR_EPS);
+    CHECK(std::abs(u(4, 4) - 1.) < ERR_EPS);
+    CHECK(std::abs(u(5, 5) - 1.) < ERR_EPS);
+    CHECK(std::abs(u(6, 1) - 1.) < ERR_EPS);
+    CHECK(std::abs(u(7, 7) - 1.) < ERR_EPS);
   }
 }
 

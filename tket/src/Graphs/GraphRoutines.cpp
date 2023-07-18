@@ -26,29 +26,30 @@ using std::vector;
 namespace tket {
 namespace graphs {
 
-vector<set<size_t>> GraphRoutines::get_connected_components(
+vector<set<std::size_t>> GraphRoutines::get_connected_components(
     const AdjacencyData& adjacency_data) {
-  set<size_t> vertices_seen;
-  vector<set<size_t>> result;
-  const size_t number_of_vertices = adjacency_data.get_number_of_vertices();
+  set<std::size_t> vertices_seen;
+  vector<set<std::size_t>> result;
+  const std::size_t number_of_vertices =
+      adjacency_data.get_number_of_vertices();
 
-  for (size_t v = 0; v < number_of_vertices; ++v) {
+  for (std::size_t v = 0; v < number_of_vertices; ++v) {
     if (vertices_seen.count(v) != 0) {
       continue;
     }
-    set<size_t> vertices_seen_in_this_component;
+    set<std::size_t> vertices_seen_in_this_component;
     vertices_seen_in_this_component.insert(v);
 
-    std::stack<size_t> vertices_to_examine_next;
+    std::stack<std::size_t> vertices_to_examine_next;
     vertices_to_examine_next.push(v);
 
     while (!vertices_to_examine_next.empty()) {
-      const size_t this_vertex = vertices_to_examine_next.top();
+      const std::size_t this_vertex = vertices_to_examine_next.top();
       vertices_to_examine_next.pop();
       const auto& neighbouring_vertices =
           adjacency_data.get_neighbours(this_vertex);
 
-      for (size_t j : neighbouring_vertices) {
+      for (std::size_t j : neighbouring_vertices) {
         if (vertices_seen_in_this_component.count(j) == 0) {
           vertices_to_examine_next.push(j);
           vertices_seen_in_this_component.insert(j);
@@ -57,7 +58,7 @@ vector<set<size_t>> GraphRoutines::get_connected_components(
     }
     // Now, push back the vertices seen.
     result.emplace_back(vertices_seen_in_this_component);
-    for (size_t k : vertices_seen_in_this_component) {
+    for (std::size_t k : vertices_seen_in_this_component) {
       vertices_seen.insert(k);
     }
   }

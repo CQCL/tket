@@ -115,7 +115,6 @@ Licensed under the `Apache 2 License <http://www.apache.org/licenses/LICENSE-2.0
     utils.rst
     logging.rst
     config.rst
-    faqs.rst
 
 Indices and tables
 ==================

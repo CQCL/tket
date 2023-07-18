@@ -21,10 +21,10 @@
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
+#include "tket/Circuit/Simulation/PauliExpBoxUnitaryCalculator.hpp"
 #include "tket/Gate/Gate.hpp"
 #include "tket/Gate/GateUnitaryMatrix.hpp"
 #include "tket/Gate/GateUnitaryMatrixError.hpp"
-#include "tket/Simulation/PauliExpBoxUnitaryCalculator.hpp"
 
 namespace tket {
 namespace tket_sim {
@@ -52,46 +52,14 @@ static QMap get_qmap_no_checks(
 // fill the node triplets with the raw unitary matrix represented by this box.
 // Return true if it found the triplets.
 static bool fill_triplets_directly_from_box(
-    GateNode& node, const std::shared_ptr<const Box>& box_ptr, OpType type,
+    GateNode& node, const std::shared_ptr<const Box>& box_ptr,
     double abs_epsilon) {
-  switch (type) {
-    case OpType::Unitary1qBox: {
-      auto u1q_ptr = dynamic_cast<const Unitary1qBox*>(box_ptr.get());
-      TKET_ASSERT(u1q_ptr);
-      node.triplets = tket::get_triplets(u1q_ptr->get_matrix(), abs_epsilon);
-      return true;
-    }
-    case OpType::Unitary2qBox: {
-      auto u2q_ptr = dynamic_cast<const Unitary2qBox*>(box_ptr.get());
-      TKET_ASSERT(u2q_ptr);
-      node.triplets = tket::get_triplets(u2q_ptr->get_matrix(), abs_epsilon);
-      return true;
-    }
-    case OpType::Unitary3qBox: {
-      auto u3q_ptr = dynamic_cast<const Unitary3qBox*>(box_ptr.get());
-      TKET_ASSERT(u3q_ptr);
-      node.triplets = tket::get_triplets(u3q_ptr->get_matrix(), abs_epsilon);
-      return true;
-    }
-    case OpType::PauliExpBox: {
-      auto pauli_box_ptr = dynamic_cast<const PauliExpBox*>(box_ptr.get());
-      TKET_ASSERT(pauli_box_ptr);
-      node.triplets = get_triplets(*pauli_box_ptr);
-      return true;
-    }
-    case OpType::ExpBox: {
-      auto exp_box_ptr = dynamic_cast<const ExpBox*>(box_ptr.get());
-      TKET_ASSERT(exp_box_ptr);
-      const auto numerical_data = exp_box_ptr->get_matrix_and_phase();
-      Eigen::Matrix4cd matrix =
-          numerical_data.first * (i_ * numerical_data.second);
-      matrix = matrix.exp();
-      node.triplets = tket::get_triplets(matrix);
-      return true;
-    }
-    default:
-      return false;
+  std::optional<Eigen::MatrixXcd> u = box_ptr->get_unitary();
+  if (!u.has_value()) {
+    return false;
   }
+  node.triplets = tket::get_triplets(*u, abs_epsilon);
+  return true;
 }
 
 static void add_global_phase(const Circuit& circ, GateNodesBuffer& buffer) {
@@ -163,8 +131,8 @@ static void decompose_circuit_recursive(
     TKET_ASSERT(box_ptr.get());
 
     node.triplets.clear();
-    const bool found_unitary = fill_triplets_directly_from_box(
-        node, box_ptr, current_op->get_type(), abs_epsilon);
+    const bool found_unitary =
+        fill_triplets_directly_from_box(node, box_ptr, abs_epsilon);
 
     if (!node.triplets.empty()) {
       TKET_ASSERT(found_unitary);

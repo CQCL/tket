@@ -37,7 +37,7 @@ namespace {
 // vertex relabelling takes place.
 // Thus we need an extra layer of conversion to get back what we want.
 struct VertexRelabellingManager {
-  std::map<unsigned, size_t> raw_to_internal_map;
+  std::map<unsigned, std::size_t> raw_to_internal_map;
   // The internal indices are, of course, 0,1,2,...,N for some N,
   // and therefore we can use a vector instead of a map.
   vector<unsigned> internal_to_raw_map;
@@ -47,7 +47,7 @@ struct VertexRelabellingManager {
   explicit VertexRelabellingManager(
       const vector<std::pair<unsigned, unsigned>>& raw_edges) {
     for (auto edge : raw_edges) {
-      size_t next_index = raw_to_internal_map.size();
+      std::size_t next_index = raw_to_internal_map.size();
       if (raw_to_internal_map.count(edge.first) == 0) {
         raw_to_internal_map[edge.first] = next_index;
       }
@@ -81,7 +81,7 @@ struct VertexRelabellingManager {
 };
 }  // namespace
 
-size_t BestTsaTester::get_checked_solution_size(
+std::size_t BestTsaTester::get_checked_solution_size(
     const DecodedProblemData& problem_data) {
   m_architecture_work_data.edges.clear();
   for (const auto& swap : problem_data.swaps) {
@@ -91,7 +91,7 @@ size_t BestTsaTester::get_checked_solution_size(
   return get_checked_solution_size(problem_data, m_architecture_work_data);
 }
 
-size_t BestTsaTester::get_checked_solution_size(
+std::size_t BestTsaTester::get_checked_solution_size(
     const DecodedProblemData& problem_data,
     const DecodedArchitectureData& architecture_data) {
   CHECK(problem_data.number_of_vertices >= 4);

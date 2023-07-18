@@ -31,23 +31,23 @@ namespace tests {
 namespace {
 // It is a cycle (ring) on vertices [0,1,2,..., N-1], with N ~ 0.
 struct DistancesForCycle : public DistancesInterface {
-  size_t number_of_vertices = 10;
+  std::size_t number_of_vertices = 10;
 
-  virtual size_t operator()(size_t v1, size_t v2) override {
-    size_t distance1;
+  virtual std::size_t operator()(std::size_t v1, std::size_t v2) override {
+    std::size_t distance1;
     if (v1 < v2) {
       distance1 = v2 - v1;
     } else {
       distance1 = v1 - v2;
     }
-    const size_t distance2 = number_of_vertices - distance1;
+    const std::size_t distance2 = number_of_vertices - distance1;
     return std::min(distance1, distance2);
   }
 };
 
 class NeighboursForCycle : public NeighboursInterface {
  public:
-  explicit NeighboursForCycle(size_t number_of_vertices)
+  explicit NeighboursForCycle(std::size_t number_of_vertices)
       : m_number_of_vertices(number_of_vertices) {
     REQUIRE(number_of_vertices > 1);
     if (m_number_of_vertices == 2) {
@@ -57,7 +57,7 @@ class NeighboursForCycle : public NeighboursInterface {
     }
   }
 
-  virtual const vector<size_t>& operator()(size_t vertex) override {
+  virtual const vector<std::size_t>& operator()(std::size_t vertex) override {
     if (vertex >= m_number_of_vertices) {
       throw std::runtime_error("neighbours requested for invalid vertex");
     }
@@ -70,13 +70,13 @@ class NeighboursForCycle : public NeighboursInterface {
   }
 
  private:
-  size_t m_number_of_vertices;
-  vector<size_t> m_neighbours;
+  std::size_t m_number_of_vertices;
+  vector<std::size_t> m_neighbours;
 };
 
 struct TestResult {
-  size_t total_number_of_path_calls = 0;
-  size_t total_number_of_differing_extra_paths = 0;
+  std::size_t total_number_of_path_calls = 0;
+  std::size_t total_number_of_differing_extra_paths = 0;
 
   std::string str() const {
     std::stringstream ss;
@@ -89,19 +89,20 @@ struct TestResult {
 }  // namespace
 
 static void do_simple_path_test(
-    const vector<size_t>& path, const Swap& endpoints) {
+    const vector<std::size_t>& path, const Swap& endpoints) {
   REQUIRE(!path.empty());
   REQUIRE(path[0] == endpoints.first);
   REQUIRE(path.back() == endpoints.second);
 
-  const std::set<size_t> vertices{path.cbegin(), path.cend()};
+  const std::set<std::size_t> vertices{path.cbegin(), path.cend()};
   REQUIRE(vertices.size() == path.size());
 }
 
 static void require_path_to_have_valid_edges(
-    const vector<size_t>& path, NeighboursInterface& neighbours_interface) {
+    const vector<std::size_t>& path,
+    NeighboursInterface& neighbours_interface) {
   std::array<Swap, 2> vertices;
-  for (size_t ii = 0; ii + 1 < path.size(); ++ii) {
+  for (std::size_t ii = 0; ii + 1 < path.size(); ++ii) {
     vertices[0].first = path[ii];
     vertices[0].second = path[ii + 1];
     vertices[1].first = path[ii + 1];
@@ -123,15 +124,15 @@ static void require_path_to_have_valid_edges(
 static void test(
     TestResult& result, RiverFlowPathFinder& path_finder,
     DistancesInterface& distance_calculator,
-    NeighboursInterface& neighbours_calculator, size_t number_of_vertices,
-    RNG& rng_for_test_data, size_t number_of_test_repeats = 10) {
+    NeighboursInterface& neighbours_calculator, std::size_t number_of_vertices,
+    RNG& rng_for_test_data, std::size_t number_of_test_repeats = 10) {
   // We will check that calculated paths are mostly unchanged.
-  std::map<Swap, vector<vector<size_t>>> calculated_paths;
+  std::map<Swap, vector<vector<std::size_t>>> calculated_paths;
 
   vector<Swap> possible_path_calls;
   possible_path_calls.reserve(number_of_vertices * number_of_vertices);
-  for (size_t ii = 0; ii < number_of_vertices; ++ii) {
-    for (size_t jj = 0; jj < number_of_vertices; ++jj) {
+  for (std::size_t ii = 0; ii < number_of_vertices; ++ii) {
+    for (std::size_t jj = 0; jj < number_of_vertices; ++jj) {
       possible_path_calls.emplace_back(ii, jj);
       calculated_paths[std::make_pair(ii, jj)];
     }
@@ -140,7 +141,7 @@ static void test(
   // The first time a path is calculated, its length will be checked using
   // the distance_calculator
   const auto get_path_size = [&calculated_paths, &distance_calculator](
-                                 const Swap& end_vertices) -> size_t {
+                                 const Swap& end_vertices) -> std::size_t {
     if (end_vertices.first == end_vertices.second) {
       return 1;
     }
@@ -157,7 +158,7 @@ static void test(
     return 1 + distance_calculator(end_vertices.first, end_vertices.second);
   };
 
-  for (size_t counter = number_of_test_repeats; counter > 0; --counter) {
+  for (std::size_t counter = number_of_test_repeats; counter > 0; --counter) {
     rng_for_test_data.do_shuffle(possible_path_calls);
     result.total_number_of_path_calls += possible_path_calls.size();
 
@@ -193,7 +194,7 @@ SCENARIO("Test path generation for cycles") {
   DistancesForCycle distances;
   TestResult result;
 
-  for (size_t number_of_vertices = 2; number_of_vertices <= 10;
+  for (std::size_t number_of_vertices = 2; number_of_vertices <= 10;
        ++number_of_vertices) {
     INFO("number_of_vertices = " << number_of_vertices);
     distances.number_of_vertices = number_of_vertices;
@@ -244,9 +245,9 @@ SCENARIO("Path generation for ring graph") {
 SCENARIO("Path generation for square grids") {
   RNG rng;
   TestResult result;
-  for (size_t ver = 2; ver <= 4; ver += 2) {
-    for (size_t hor = 1; hor <= 5; hor += 2) {
-      for (size_t layer = 1; layer <= 3; layer += 2) {
+  for (std::size_t ver = 2; ver <= 4; ver += 2) {
+    for (std::size_t hor = 1; hor <= 5; hor += 2) {
+      for (std::size_t layer = 1; layer <= 3; layer += 2) {
         const auto edges = get_square_grid_edges(ver, hor, layer);
         const Architecture arch(edges);
         const ArchitectureMapping arch_mapping(arch, edges);

@@ -18,6 +18,11 @@ To install the pytket extension modules add a hyphen and the extension name to t
 
 For a list of pytket extensions see this page: https://cqcl.github.io/pytket-extensions/api/index.html.
 
+_Warning._ There is a [known issue](https://github.com/CQCL/tket/issues/926)
+with installing pytket in a conda environment on MacOS: you may not be able to
+install versions more recent then 1.11.0. The only known remedy is to use an
+official Python distribution instead.
+
 ## Documentation and Examples
 
 API reference: https://cqcl.github.io/tket/pytket/api/

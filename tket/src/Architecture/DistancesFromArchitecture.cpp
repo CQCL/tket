@@ -24,14 +24,14 @@ DistancesFromArchitecture::DistancesFromArchitecture(
     : m_arch_mapping(arch_mapping) {}
 
 void DistancesFromArchitecture::register_shortest_path(
-    const std::vector<size_t>& path) {
+    const std::vector<std::size_t>& path) {
   // To avoid quadratic growth for really long paths,
   // just do various slices.
   if (path.size() <= 5) {
     register_shortest_path_with_limits(path, 0, path.size());
     return;
   }
-  const size_t middle = path.size() / 2;
+  const std::size_t middle = path.size() / 2;
   if (path.size() <= 10) {
     register_shortest_path_with_limits(path, 0, middle);
     register_shortest_path_with_limits(path, middle, path.size());
@@ -46,19 +46,21 @@ void DistancesFromArchitecture::register_shortest_path(
 }
 
 void DistancesFromArchitecture::register_shortest_path_with_limits(
-    const std::vector<size_t>& path, size_t begin, size_t end) {
-  for (size_t ii = begin; ii < end; ++ii) {
-    for (size_t jj = ii + 1; jj < end; ++jj) {
+    const std::vector<std::size_t>& path, std::size_t begin, std::size_t end) {
+  for (std::size_t ii = begin; ii < end; ++ii) {
+    for (std::size_t jj = ii + 1; jj < end; ++jj) {
       m_cached_distances[get_swap(path[ii], path[jj])] = jj - ii;
     }
   }
 }
 
-void DistancesFromArchitecture::register_edge(size_t vertex1, size_t vertex2) {
+void DistancesFromArchitecture::register_edge(
+    std::size_t vertex1, std::size_t vertex2) {
   m_cached_distances[get_swap(vertex1, vertex2)] = 1;
 }
 
-size_t DistancesFromArchitecture::operator()(size_t vertex1, size_t vertex2) {
+std::size_t DistancesFromArchitecture::operator()(
+    std::size_t vertex1, std::size_t vertex2) {
   if (vertex1 == vertex2) {
     return 0;
   }

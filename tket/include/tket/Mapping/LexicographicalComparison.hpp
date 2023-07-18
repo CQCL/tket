@@ -23,7 +23,7 @@ namespace tket {
 typedef std::map<Node, Node> interacting_nodes_t;
 typedef std::pair<Node, Node> swap_t;
 typedef std::set<swap_t> swap_set_t;
-typedef std::vector<size_t> lexicographical_distances_t;
+typedef std::vector<std::size_t> lexicographical_distances_t;
 
 class LexicographicalComparisonError : public std::logic_error {
  public:

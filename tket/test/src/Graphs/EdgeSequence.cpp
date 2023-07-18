@@ -25,7 +25,7 @@ namespace tests {
 EdgeSequence::EdgeSequence(AdjacencyData& _adj_data, RNG& _rng)
     : adjacency_data(_adj_data), rng(_rng) {}
 
-bool EdgeSequence::add_edge(size_t i, size_t j) {
+bool EdgeSequence::add_edge(std::size_t i, std::size_t j) {
   if (adjacency_data.add_edge(i, j)) {
     edges.emplace_back(i, j);
     return true;

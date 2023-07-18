@@ -16,8 +16,8 @@
 
 #include "CircuitsForTesting.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
+#include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Predicates/PassGenerators.hpp"
-#include "tket/Simulation/CircuitSimulator.hpp"
 #include "tket/Transformations/Combinator.hpp"
 #include "tket/Transformations/OptimisationPass.hpp"
 #include "tket/Transformations/Rebase.hpp"

@@ -1,6 +1,32 @@
 Changelog
 =========
 
+1.17.1 (July 2023)
+------------------
+
+General:
+
+* Fix issue with installing recent pytket versions on macos x86_64 in conda
+  environments.
+
+Minor new features:
+
+* New constructor for ``ToffoliBox`` that allows switching between two decomposition strategies:
+  ``ToffoliBoxSynthStrat.Matching`` and ``ToffoliBoxSynthStrat.Cycle``.
+* Prefer ``ZZPhase`` to ``CX`` or ``ZZMax`` when using ``auto_rebase_pass()``.
+
+1.17.0 (July 2023)
+------------------
+
+Minor new features:
+
+* `Circuit.get_unitary()` and `Circuit.get_statevector()` now work for circuits
+  containing boxes.
+* New Box type `PauliExpPairBox`.
+* New Box type `PauliExpCommutingSetBox`.
+* New pass `PauliExponentials` that rewrites a circuit to a sequence of `PauliExpBox`,
+  `PauliExpPairBox`, `PauliExpCommutingSetBox` and a Clifford circuit.
+
 1.16.0 (June 2023)
 ------------------
 
