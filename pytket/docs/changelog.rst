@@ -6,7 +6,7 @@ Unreleased
 
 Minor new features:
 
-* Add circuit method ``depth_by_2q_gates``
+* Add circuit method ``depth_2q``
 
 
 1.17.1 (July 2023)

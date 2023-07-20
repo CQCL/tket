@@ -708,10 +708,10 @@ unsigned Circuit::depth_by_types(const OpTypeSet& _types) const {
   return count;
 }
 
-unsigned Circuit::depth_by_2q_gates() const {
+unsigned Circuit::depth_2q() const {
   unsigned count = 0;
   std::function<bool(Op_ptr)> skip_func = [&](Op_ptr op) {
-    return (op->n_qubits() != 2 || !is_gate_type(op->get_type()));
+    return (op->n_qubits() != 2 || op->get_type() == OpType::Barrier);
   };
   Circuit::SliceIterator slice_iter(*this, skip_func);
   if (!(*slice_iter).empty()) count++;
