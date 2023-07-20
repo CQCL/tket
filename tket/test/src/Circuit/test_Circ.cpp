@@ -1326,7 +1326,7 @@ SCENARIO("Test depth_by_type method") {
     REQUIRE(circ.depth_by_types({OpType::CX, OpType::CY}) == 2);
   }
 }
-SCENARIO("Test depth_2q_gates method") {
+SCENARIO("Test depth_2q method") {
   GIVEN("2q OpTypes") {
     Circuit circ(3, 1);
     circ.add_op<unsigned>(OpType::CX, {0, 1});
