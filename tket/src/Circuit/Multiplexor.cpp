@@ -847,13 +847,18 @@ void MultiplexedTensoredU2Box::generate_circuit() const {
     }
   }
 
-  circ.append(diag_circ);
+  PhasePolyBox ppb(diag_circ);
+  // ppb.get_circuit()
+  circ.append(ppb.get_circuit());
+  // circ.append(diag_circ);
   if ((diag_vec - Eigen::VectorXcd::Constant(1ULL << n_controls_, 1))
           .cwiseAbs()
           .sum() > EPS) {
     std::vector<unsigned> args(n_controls_);
     std::iota(std::begin(args), std::end(args), 0);
-    circ.add_box(DiagonalBox(diag_vec), args);
+    PhasePolyBox ppb_end_diagonal(DiagonalBox(diag_vec).get_circuit());
+    circ.append(ppb_end_diagonal.get_circuit());
+    // circ.add_box(DiagonalBox(diag_vec), args);
   }
 
   circ_ = std::make_shared<Circuit>(circ);

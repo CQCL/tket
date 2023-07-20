@@ -44,6 +44,12 @@ _TK2_CIRCS: Dict[OpType, Callable[[Param, Param, Param], "Circuit"]] = {
     OpType.ZZMax: _library._TK2_using_ZZMax,
 }
 
+_TK2_CIRCS_WIRE_SWAP: Dict[OpType, Callable[[Param, Param, Param], "Circuit"]] = {
+    OpType.TK2: _TK2_using_TK2,
+    OpType.ZZPhase: _library._TK2_using_ZZPhase,
+    OpType.CX: _library._TK2_using_CX_and_swap,
+    OpType.ZZMax: _library._TK2_using_ZZMax_and_swap,
+}
 
 def get_cx_decomposition(gateset: Set[OpType]) -> Circuit:
     """Return a Circuit expressing a CX in terms of a two qubit gate in the
@@ -62,6 +68,7 @@ def get_cx_decomposition(gateset: Set[OpType]) -> Circuit:
 
 def get_tk2_decomposition(
     gateset: Set[OpType],
+    allow_swaps: bool,
 ) -> Callable[[Param, Param, Param], "Circuit"]:
     """Return a function to construct a circuit expressing a TK2 in terms of gates in
     the given gateset, if such a function is available.
@@ -70,9 +77,15 @@ def get_tk2_decomposition(
     :raises NoAutoRebase: no suitable TK2 decomposition found
     :return: function to decompose TK2 gates
     """
-    for k, fn in _TK2_CIRCS.items():
-        if k in gateset:
-            return fn
+    if allow_swaps:
+        for k, fn in _TK2_CIRCS_WIRE_SWAP.items():
+            if k in gateset:
+                return fn
+    else:
+        for k, fn in _TK2_CIRCS.items():
+            if k in gateset:
+                return fn
+            
     raise NoAutoRebase("No known decomposition from TK2 to given gateset")
 
 
@@ -109,7 +122,7 @@ def get_TK1_decomposition_function(
     raise NoAutoRebase("No known decomposition from TK1 to available gateset.")
 
 
-def auto_rebase_pass(gateset: Set[OpType]) -> RebaseCustom:
+def auto_rebase_pass(gateset: Set[OpType], allow_swaps: bool = False) -> RebaseCustom:
     """Attempt to generate a rebase pass automatically for the given target
     gateset.
 
@@ -132,7 +145,7 @@ def auto_rebase_pass(gateset: Set[OpType]) -> RebaseCustom:
         return RebaseCustom(gateset, _library._CX(), tk1)
     # in other cases, try to rebase via TK2 first
     try:
-        return RebaseCustom(gateset, get_tk2_decomposition(gateset), tk1)
+        return RebaseCustom(gateset, get_tk2_decomposition(gateset, allow_swaps), tk1)
     except NoAutoRebase:
         pass
     try:

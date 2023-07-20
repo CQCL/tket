@@ -42,6 +42,12 @@ void init_library(py::module &m) {
       "TK2(α, β, γ) using up to 3 CX and single-qubit gates.\n\n"
       "The decomposition minimizes the number of CX gates.");
   library_m.def(
+      "_TK2_using_CX_and_swap", &CircPool::TK2_using_CX_and_swap,
+      "Given expressions α, β and γ, return circuit equivalent to "
+      "TK2(α, β, γ), up to a wire swap, using up to 3 CX and single-qubit "
+      "gates.\n\n"
+      "The decomposition minimizes the number of CX gates.");
+  library_m.def(
       "_approx_TK2_using_1xCX", &CircPool::approx_TK2_using_1xCX,
       "Best approximation of TK2 using 1 CX gate and single-qubit gates, using "
       "squared trace fidelity metric. "
@@ -227,6 +233,9 @@ void init_library(py::module &m) {
   library_m.def(
       "_TK2_using_ZZMax", &CircPool::TK2_using_ZZMax,
       "Equivalent to TK2, using up to 3 ZZMax gates.");
+  library_m.def(
+      "_TK2_using_ZZMax_and_swap", &CircPool::TK2_using_ZZMax_and_swap,
+      "Equivalent to TK2, up to a wire swap, using up to 3 ZZMax gates.");
   library_m.def(
       "_XXPhase3_using_TK2", &CircPool::XXPhase3_using_TK2,
       "Equivalent to XXPhase3, using three TK2 gates");

@@ -111,9 +111,9 @@ static bool commute_singles_to_front(Circuit &circ) {
 // helper class subcircuits representing 2qb interactions
 struct Interaction {
   Interaction(const Qubit &_q0, const Qubit &_q1) : q0(_q0), q1(_q1) {}
-  Qubit q0;  // Qubit numbers
+  Qubit q0;            // Qubit numbers
   Qubit q1;
-  Edge e0;  // In edges starting interaction
+  Edge e0;             // In edges starting interaction
   Edge e1;
   unsigned count;      // Number of two qubit gates in interaction
   VertexSet vertices;  // Vertices in interaction subcircuit

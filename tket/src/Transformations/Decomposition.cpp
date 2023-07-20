@@ -606,6 +606,7 @@ static double best_noise_aware_decomposition(
   double cx_fid = std::max(
       fid.CX_fidelity ? fid.CX_fidelity.value() : 0.,
       fid.ZZMax_fidelity ? fid.ZZMax_fidelity.value() : 0.);
+  std::cout << "CX FID: " << cx_fid << std::endl;
   bool zzmax_is_better = false;
   if (cx_fid < EPS) {
     if (!fid.ZZPhase_fidelity) {
@@ -617,8 +618,12 @@ static double best_noise_aware_decomposition(
   }
   if (cx_fid > EPS) {
     for (unsigned n_cx = 0; n_cx <= 3; ++n_cx) {
+      std::cout << "Cx fid: " << cx_fid << std::endl;
+      std::cout << "thing: " << pow(cx_fid, n_cx) << std::endl;
       double ncx_fid = get_CX_fidelity(angles, n_cx) * pow(cx_fid, n_cx);
+      std::cout << "NCX FID:" << ncx_fid << " ncx: " << n_cx << std::endl;
       if (ncx_fid > max_fid) {
+        std::cout << " poggies " << std::endl;
         max_fid = ncx_fid;
         best_optype = zzmax_is_better ? OpType::ZZMax : OpType::CX;
         n_gates = n_cx;

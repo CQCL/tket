@@ -1215,30 +1215,111 @@ def test_round_angles() -> None:
     assert Transform.round_angles(8).apply(circ0)
     assert circ0 == circ1
 
+from pytket.passes import NormaliseTK2, DecomposeTK2
+def test_auto_rebase_with_swap() -> None:
+    swap_pass = auto_rebase_pass({OpType.ZZMax, OpType.PhasedX, OpType.Rz}, True)
+    no_swap_pass = auto_rebase_pass({OpType.ZZMax, OpType.PhasedX, OpType.Rz}, False)
+
+    c_swap = Circuit(2).ISWAPMax(0, 1)
+    swap_pass.apply(c_swap)
+
+    # print("\n",c_swap.get_commands())
+
+
+    # c_swap = Circuit(2).ISWAPMax(0,1)
+    # auto_rebase_pass({OpType.TK2, OpType.PhasedX, OpType.Rz}).apply(c_swap)
+    # NormaliseTK2().apply(c_swap)
+    # DecomposeTK2().apply(c_swap)
+    # print("\n",c_swap.get_commands())
+
+
+    assert c_swap.n_gates_of_type(OpType.ZZMax) == 1
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(1)
+    assert iqp[Qubit(1)] == Qubit(0)
+    c_no_swap = Circuit(2).ISWAPMax(0, 1)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.ZZMax) == 2
+
+    print("\nISWAPMax:", c_swap.n_gates, c_no_swap.n_gates)
+
+    c_swap = Circuit(2).Sycamore(0, 1)
+    swap_pass.apply(c_swap)
+    print(c_swap.get_commands())
+    print(c_swap.n_gates_of_type(OpType.ZZMax))
+    assert c_swap.n_gates_of_type(OpType.ZZMax) == 2
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(1)
+    assert iqp[Qubit(1)] == Qubit(0)
+    c_no_swap = Circuit(2).Sycamore(0, 1)
+    no_swap_pass.apply(c_swap)
+    assert c_no_swap.n_gates_of_type(OpType.ZZMax) == 3
+    print("\nSycamore:", c_swap.n_gates, c_no_swap.n_gates)
+
+    c_swap = Circuit(2).ISWAP(0.3, 0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.ZZMax) == 2
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(0)
+    assert iqp[Qubit(1)] == Qubit(1)
+    c_no_swap = Circuit(2).ISWAP(0.3, 0, 1)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.ZZMax) == 2
+
+    print("\nISWAP:", c_swap.n_gates, c.n_gates)
+    c_swap = Circuit(2).ISWAPMax(0, 1).ISWAPMax(1, 0)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.ZZMax) == 2
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(0)
+    assert iqp[Qubit(1)] == Qubit(1)
+    c_no_swap = Circuit(2).ISWAPMax(0, 1).ISWAPMax(1, 0)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.ZZMax) == 4
+
+    c_swap = Circuit(2).SWAP(0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.ZZMax) == 0
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(1)
+    assert iqp[Qubit(1)] == Qubit(0)
+    c_no_swap = Circuit(2).SWAP(0, 1)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.ZZMax) == 3
+
+    print("\nSWAP:", c_swap.n_gates, c.n_gates)
+
+    c_swap = Circuit(2).ZZMax(0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates == 1
+
+    print("\nZZMax:", c_swap.n_gates, c.n_gates)
+
 
 if __name__ == "__main__":
-    test_remove_redundancies()
-    test_reduce_singles()
-    test_commute()
-    test_KAK()
-    test_basic_rebases()
-    test_post_routing()
-    test_phase_gadget()
-    test_Cliffords()
-    test_Pauli_gadget()
-    test_cons_sequencing()
-    test_list_sequencing()
-    test_basic_repeat()
-    test_while_repeat()
-    test_implicit_swaps_1()
-    test_implicit_swaps_2()
-    test_implicit_swaps_3()
-    test_decompose_swap_to_cx()
-    test_noncontiguous_DefaultMappingPass_arc()
-    test_RoutingPass()
-    test_DefaultMappingPass()
-    test_CXMappingPass()
-    test_CXMappingPass_correctness()
-    test_CXMappingPass_terminates()
-    test_FullMappingPass()
-    test_KAK_with_ClassicalExpBox()
+    # test_remove_redundancies()
+    # test_reduce_singles()
+    # test_commute()
+    # test_KAK()
+    # test_basic_rebases()
+    # test_post_routing()
+    # test_phase_gadget()
+    # test_Cliffords()
+    # test_Pauli_gadget()
+    # test_cons_sequencing()
+    # test_list_sequencing()
+    # test_basic_repeat()
+    # test_while_repeat()
+    # test_implicit_swaps_1()
+    # test_implicit_swaps_2()
+    # test_implicit_swaps_3()
+    # test_decompose_swap_to_cx()
+    # test_noncontiguous_DefaultMappingPass_arc()
+    # test_RoutingPass()
+    # test_DefaultMappingPass()
+    # test_CXMappingPass()
+    # test_CXMappingPass_correctness()
+    # test_CXMappingPass_terminates()
+    # test_FullMappingPass()
+    # test_KAK_with_ClassicalExpBox()
+    test_auto_rebase_with_swap()

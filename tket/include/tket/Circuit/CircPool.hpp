@@ -317,6 +317,17 @@ Circuit normalised_TK2_using_CX(
 Circuit TK2_using_CX(const Expr &alpha, const Expr &beta, const Expr &gamma);
 
 /**
+ * @brief Equivalent to TK2(α, β, γ) up to a wire swap, with minimal number of
+ * CX gates.
+ *
+ * A TK2-equivalent circuit with as few CX gates as possible (0, 1, 2 or 3 CX).
+ *
+ * @return Circuit Equivalent circuit, up to a wire swap, to TK2(α, β, γ).
+ */
+Circuit TK2_using_CX_and_swap(
+    const Expr &alpha, const Expr &beta, const Expr &gamma);
+
+/**
  * @brief Equivalent to TK2(α, 0, 0), using 1 ZZPhase gate.
  *
  * Using 1 ZZPhase gate we can implement any gate of the form TK2(α, 0, 0).
@@ -366,6 +377,15 @@ Circuit TK2_using_ZZPhase(
  * @return Circuit equivalent to TK2(α, β, γ).
  */
 Circuit TK2_using_ZZMax(const Expr &alpha, const Expr &beta, const Expr &gamma);
+
+/**
+ * @brief Equivalent to TK2(α, β, γ), up to a wire swap, using up to 3 ZZMax
+ * gates.
+ *
+ * @return Circuit equivalent to TK2(α, β, γ) up to a wire swap.
+ */
+Circuit TK2_using_ZZMax_and_swap(
+    const Expr &alpha, const Expr &beta, const Expr &gamma);
 
 /** Equivalent to XXPhase3, using three TK2 gates */
 Circuit XXPhase3_using_TK2(const Expr &alpha);

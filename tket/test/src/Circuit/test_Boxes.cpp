@@ -203,7 +203,7 @@ SCENARIO("Using Boxes", "[boxes]") {
     c.add_box(ebox, {0, 1});
     Eigen::Matrix4cd U = (+0.5 * i_ * A).exp();  // should be the inverse
     Unitary2qBox ubox(U);
-    c.add_box(ubox, {0, 1});  // should act as the identity
+    c.add_box(ubox, {0, 1});                     // should act as the identity
     Eigen::MatrixXcd uc = tket_sim::get_unitary(c);
     REQUIRE((uc - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
   }
