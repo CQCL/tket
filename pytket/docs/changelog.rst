@@ -1,8 +1,8 @@
 Changelog
 =========
 
-1.18.0 (unreleased)
--------------------
+1.17.1 (July 2023)
+------------------
 
 General:
 
@@ -12,7 +12,8 @@ General:
 Minor new features:
 
 * New constructor for ``ToffoliBox`` that allows switching between two decomposition strategies:
-  ``ToffoliBoxSynthStrat.Matching`` and ``ToffoliBoxSynthStrat.Cycle``. 
+  ``ToffoliBoxSynthStrat.Matching`` and ``ToffoliBoxSynthStrat.Cycle``.
+* Prefer ``ZZPhase`` to ``CX`` or ``ZZMax`` when using ``auto_rebase_pass()``.
 
 1.17.0 (July 2023)
 ------------------

@@ -77,8 +77,11 @@ double NoiseAwarePlacement::cost_placement(
           this->characterisation_.get_error({node, neighbour});
       gate_error_t bck_error =
           this->characterisation_.get_error({neighbour, node});
-      edge_sum += fwd_edge_weighting * (1.0 - fwd_error);
-      edge_sum += bck_edge_weighting * (1.0 - bck_error);
+
+      if (fwd_error < 1.0 && bck_error < 1.0) {
+        edge_sum += fwd_edge_weighting * (1.0 - fwd_error);
+        edge_sum += bck_edge_weighting * (1.0 - bck_error);
+      }
     }
     // bigger edge sum -> smaller cost
     cost += 1.0 / (edge_sum);
