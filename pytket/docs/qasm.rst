@@ -11,7 +11,7 @@ to save your :py:class:`Circuit` objects.
 However, we do support symbolic parameters of gates, both on import and export.
 
 In addition to the qelib1 qasm header the hqslib1 header is also supported.
-We can set the ``header`` argument in the qasm conversion functions. By default the converter uses the qelib1 header.
+We can set the ``header`` argument in the qasm conversion functions. By default the qasm parser uses the qelib1 header.
 
 ::
     
