@@ -93,7 +93,7 @@ This prints out a summary of readouts (the final values of the classical bits) a
 
 Each pytket :py:class:`Backend` comes with its own default compilation method. This is a recommended sequence of optimisation passes to meet the requirements of the specific :py:class:`Backend`. 
 
-The following code snippet will show how to compile a circuit to run on an IBM device. This requires setting up IBM credentials (see `this page <https://cqcl.github.io/pytket-qiskit/api/index.html#access-and-credentials>`_).
+The following code snippet will show how to compile a circuit to run on an IBM device. This requires setting up IBM credentials (see the `credentials guide <https://cqcl.github.io/pytket-qiskit/api/index.html#access-and-credentials>`_).
 
 ::
 
