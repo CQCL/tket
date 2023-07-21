@@ -859,10 +859,10 @@ PYBIND11_MODULE(passes, m) {
 
   m.def(
       "ZZPhaseToRz", &ZZPhaseToRz,
-      "Converts all ZZPhase gates in a circuit with angle 1 or -1 (radians) "
-      "into two Rz gates each with a parameter value of 1 (radians). "
+      "Converts all ZZPhase gates in a circuit with angle 1 or -1 (half-turns) "
+      "into two Rz gates each with a parameter value of 1 (half-turns). "
       "ZZPhase gates with parameter values other than 1 or -1 "
-      "(radians) are left "
+      "(half-turns) are left "
       "unchanged.\n\n"
       ":return: a pass to convert ZZPhase gates to Rz.");
 
