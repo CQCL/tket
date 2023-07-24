@@ -188,8 +188,8 @@ void init_unitid(py::module &m) {
       .def(
           "to_list", [](const Bit &b) { return json(b); },
           "Return a JSON serializable list representation of "
-          "the Bit.\n"
-          ":return: list containing register name and index")
+          "the Bit."
+          "\n\n:return: list containing register name and index")
       .def_static(
           "from_list", [](const json &j) { return j.get<Bit>(); },
           "Construct Bit instance from JSON serializable "

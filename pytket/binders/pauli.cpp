@@ -36,7 +36,7 @@ PYBIND11_MODULE(pauli, m) {
 
   py::class_<QubitPauliString>(
       m, "QubitPauliString",
-      "A string of Pauli letters from the alphabet {I, X, Y, Z},"
+      "A string of Pauli letters from the alphabet {I, X, Y, Z}, "
       "implemented as a sparse list, indexed by qubit.")
       .def(py::init<>(), "Constructs an empty QubitPauliString.")
       .def(
@@ -70,8 +70,8 @@ PYBIND11_MODULE(pauli, m) {
             json j = qps;
             return j;
           },
-          "A JSON-serializable representation of the QubitPauliString. "
-          "\n:return: a list of :py:class:`Qubit`-to-:py:class:`Pauli` "
+          "A JSON-serializable representation of the QubitPauliString.\n\n"
+          ":return: a list of :py:class:`Qubit`-to-:py:class:`Pauli` "
           "entries, "
           "represented as dicts.")
       .def_static(
