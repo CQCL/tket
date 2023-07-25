@@ -425,11 +425,7 @@ PassPtr aas_routing_pass(
       switch (ot) {
         case OpType::PhasePolyBox: {
           Op_ptr op = com.get_op_ptr();
-          const PhasePolyBox& b = static_cast<const PhasePolyBox&>(*op);
-
-          Circuit b_circ(*b.to_circuit());
-
-          PhasePolyBox ppb(b_circ);
+          const auto& ppb = dynamic_cast<const PhasePolyBox&>(*op);
 
           Circuit result =
               aas::phase_poly_synthesis(arc, ppb, lookahead, cnotsynthtype);
