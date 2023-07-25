@@ -271,19 +271,21 @@ PhasePolyBox::PhasePolyBox(
 
 /*
  * Note: The generate circuit method no longer uses the input qubits to rename
- * the units of the generated circuit. This is because doing this contradicts the
- * expectations of the decompose boxes method and was causing errors in some cases
- * when using custom registers.
+ * the units of the generated circuit. This is because doing this contradicts
+ * the expectations of the decompose boxes method and was causing errors in some
+ * cases when using custom registers.
  *
  * Usually boxes don't know about external
- * qubit names, because this info is stored in the way the box is wired into a circuit.
- * For some reason the PhasePolyBox box was written so that it does know about the
- * names of qubits it was wired to at generation time (either deduced from the circuit it
- * was generated from or provided by a map). This internal information is used in some of the
- * AAS compilation strategies. Although it appears to me that this could be handled in a
- * better way I don't have time to refactor the AAS code at the moment. So I added a method
- * generate_circuit_with_original_placement (see below) that uses the logic that the AAS code expects (the
- * generate_circuit logic), and this is used in the AAS code.
+ * qubit names, because this info is stored in the way the box is wired into a
+ * circuit. For some reason the PhasePolyBox box was written so that it does
+ * know about the names of qubits it was wired to at generation time (either
+ * deduced from the circuit it was generated from or provided by a map). This
+ * internal information is used in some of the AAS compilation strategies.
+ * Although it appears to me that this could be handled in a better way I don't
+ * have time to refactor the AAS code at the moment. So I added a method
+ * generate_circuit_with_original_placement (see below) that uses the logic that
+ * the AAS code expects (the generate_circuit logic), and this is used in the
+ * AAS code.
  */
 
 void PhasePolyBox::generate_circuit() const {

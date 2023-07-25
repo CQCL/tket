@@ -1,10 +1,6 @@
 import numpy as np
 
-from pytket.circuit import (  # type: ignore
-    Circuit,
-    Qubit,
-    PhasePolyBox
-)
+from pytket.circuit import Circuit, Qubit, PhasePolyBox  # type: ignore
 from pytket.passes import ComposePhasePolyBoxes, DecomposeBoxes  # type: ignore
 from pytket.utils import compare_unitaries
 
