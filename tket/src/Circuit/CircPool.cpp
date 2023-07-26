@@ -1069,8 +1069,6 @@ static Circuit TK2_swap_replacement(std::array<Expr, 3> angles) {
     Circuit swap(2);
     swap.add_op<unsigned>(OpType::SWAP, {0, 1});
     sub = pre >> sub >> post >> swap;
-    // Transforms::squash_1qb_to_tk1().apply(sub);
-    // sub = sub >> swap;
     sub.replace_SWAPs();
   }
   // This decomposition can leave many extraneous single qubits gates: squash
