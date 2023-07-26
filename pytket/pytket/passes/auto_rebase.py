@@ -51,6 +51,7 @@ _TK2_CIRCS_WIRE_SWAP: Dict[OpType, Callable[[Param, Param, Param], "Circuit"]] =
     OpType.ZZMax: _library._TK2_using_ZZMax_and_swap,
 }
 
+
 def get_cx_decomposition(gateset: Set[OpType]) -> Circuit:
     """Return a Circuit expressing a CX in terms of a two qubit gate in the
     gateset if one is available, raise an error otherwise.
@@ -85,7 +86,7 @@ def get_tk2_decomposition(
         for k, fn in _TK2_CIRCS.items():
             if k in gateset:
                 return fn
-            
+
     raise NoAutoRebase("No known decomposition from TK2 to given gateset")
 
 
@@ -140,6 +141,13 @@ def auto_rebase_pass(gateset: Set[OpType], allow_swaps: bool = False) -> RebaseC
     """
     tk1 = get_TK1_decomposition_function(gateset)
 
+    if allow_swaps:
+        try:
+            return RebaseCustom(
+                gateset, get_tk2_decomposition(gateset, allow_swaps), tk1
+            )
+        except NoAutoRebase:
+            pass
     # if the gateset has CX but not TK2, rebase via CX
     if OpType.CX in gateset and OpType.TK2 not in gateset:
         return RebaseCustom(gateset, _library._CX(), tk1)

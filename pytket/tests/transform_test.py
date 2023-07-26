@@ -1216,7 +1216,70 @@ def test_round_angles() -> None:
     assert circ0 == circ1
 
 
-def test_auto_rebase_with_swap() -> None:
+def test_auto_rebase_with_swap_cx() -> None:
+    swap_pass = auto_rebase_pass({OpType.CX, OpType.PhasedX, OpType.Rz}, True)
+    no_swap_pass = auto_rebase_pass({OpType.CX, OpType.PhasedX, OpType.Rz}, False)
+
+    c_swap = Circuit(2).ISWAPMax(0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.CX) == 1
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(1)
+    assert iqp[Qubit(1)] == Qubit(0)
+    c_no_swap = Circuit(2).ISWAPMax(0, 1)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.CX) == 2
+
+    c_swap = Circuit(2).Sycamore(0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.CX) == 2
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(1)
+    assert iqp[Qubit(1)] == Qubit(0)
+    c_no_swap = Circuit(2).Sycamore(0, 1)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.CX) == 3
+
+    c_swap = Circuit(2).ISWAP(0.3, 0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.CX) == 2
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(0)
+    assert iqp[Qubit(1)] == Qubit(1)
+    c_no_swap = Circuit(2).ISWAP(0.3, 0, 1)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.CX) == 2
+
+    c_swap = Circuit(2).ISWAPMax(0, 1).ISWAPMax(1, 0)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.CX) == 2
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(0)
+    assert iqp[Qubit(1)] == Qubit(1)
+    c_no_swap = Circuit(2).ISWAPMax(0, 1).ISWAPMax(1, 0)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.CX) == 4
+
+    c_swap = Circuit(2).SWAP(0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.CX) == 0
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(1)
+    assert iqp[Qubit(1)] == Qubit(0)
+    c_no_swap = Circuit(2).SWAP(0, 1)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.CX) == 3
+
+    c_swap = Circuit(2).ZZMax(0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.CX) == 1
+
+    c_swap = Circuit(2).CX(0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates == 1
+
+
+def test_auto_rebase_with_swap_zzmax() -> None:
     swap_pass = auto_rebase_pass({OpType.ZZMax, OpType.PhasedX, OpType.Rz}, True)
     no_swap_pass = auto_rebase_pass({OpType.ZZMax, OpType.PhasedX, OpType.Rz}, False)
 
@@ -1312,4 +1375,5 @@ if __name__ == "__main__":
     test_CXMappingPass_terminates()
     test_FullMappingPass()
     test_KAK_with_ClassicalExpBox()
-    test_auto_rebase_with_swap()
+    test_auto_rebase_with_swap_cx()
+    test_auto_rebase_with_swap_zzmax()
