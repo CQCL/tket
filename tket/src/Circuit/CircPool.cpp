@@ -953,7 +953,7 @@ static Circuit TK2_swap_replacement(std::array<Expr, 3> angles) {
   bool implicit_swap = false;  // default to no implicit swap
 
   // Generate to support allowing swap gates
-  // Circuit pre, post;
+  Circuit pre, post;
   std::array<Expr, 3> angles_swapped;
   // Swapped circuit
   Circuit swap_circ(2);
@@ -1069,12 +1069,13 @@ static Circuit TK2_swap_replacement(std::array<Expr, 3> angles) {
     Circuit swap(2);
     swap.add_op<unsigned>(OpType::SWAP, {0, 1});
     sub = pre >> sub >> post >> swap;
+    // Transforms::squash_1qb_to_tk1().apply(sub);
+    // sub = sub >> swap;
     sub.replace_SWAPs();
   }
   // This decomposition can leave many extraneous single qubits gates: squash
   // them into TK1 that can be resynthesised
   Transforms::squash_1qb_to_tk1().apply(sub);
-  std::cout << "replacement circuit: " << sub << std::endl;
   return sub;
 }
 
