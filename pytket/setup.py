@@ -76,9 +76,7 @@ class CMakeBuild(build_ext):
         ext_suffix = get_config_var("EXT_SUFFIX")
         lib_names.extend(f"{binder}{ext_suffix}" for binder in binders)
         # TODO make the above generic
-        if os.path.exists(extdir):
-            shutil.rmtree(extdir)
-        os.makedirs(extdir)
+        os.makedirs(extdir, exist_ok=True)
         for lib_name in lib_names:
             shutil.copy(os.path.join(lib_folder, lib_name), extdir)
 
@@ -112,9 +110,7 @@ class ConanBuild(build_ext):
         # Collect the paths to the libraries to package together
         conaninfo = json.loads(jsonstr)
         nodes = conaninfo["graph"]["nodes"]
-        if os.path.exists(extdir):
-            shutil.rmtree(extdir)
-        os.makedirs(extdir)
+        os.makedirs(extdir, exist_ok=True)
         for comp in ["tklog", "tket", "pytket"]:
             compnodes = [
                 node for _, node in nodes.items() if node["ref"].startswith(comp + "/")

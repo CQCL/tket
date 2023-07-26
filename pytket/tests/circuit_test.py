@@ -17,7 +17,7 @@ from jsonschema import validate  # type: ignore
 from pathlib import Path
 import pickle
 
-from pytket.circuit import (  # type: ignore
+from pytket.circuit import (
     Circuit,
     Op,
     OpType,

@@ -169,7 +169,7 @@ class LogicExp:
                 outset.update(arg.all_inputs())
         return outset
 
-    def __eq__(self, other: ArgType) -> bool:
+    def __eq__(self, other: object) -> bool:
         if not isinstance(other, LogicExp):
             return False
         return (self.op == other.op) and (self.args == other.args)

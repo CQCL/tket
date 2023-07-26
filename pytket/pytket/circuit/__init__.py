@@ -77,7 +77,7 @@ def overload_add_wasm(  # type: ignore
     list_o: List[int],
     args: Union[List[int], List[Bit]],
     args_wasm: Optional[List[int]] = None,
-    **kwargs,
+    **kwargs: Any,
 ) -> Circuit:
     """Add a classical function call from a wasm file to the circuit.
     \n\n:param funcname: name of the function that is called
