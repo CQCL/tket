@@ -1722,5 +1722,114 @@ SCENARIO("Flatten and relabel registers") {
   }
 }
 
+SCENARIO("Custom rebase pass with implicit wire swaps.") {
+  OpTypeSet allowed_gates_cx = {OpType::PhasedX, OpType::Rz, OpType::CX};
+  PassPtr pp_rebase_cx = gen_rebase_pass_via_tk2(
+      allowed_gates_cx, CircPool::TK2_using_CX_and_swap,
+      CircPool::tk1_to_PhasedXRz);
+  OpTypeSet allowed_gates_zzmax = {OpType::PhasedX, OpType::Rz, OpType::ZZMax};
+  PassPtr pp_rebase_zzmax = gen_rebase_pass_via_tk2(
+      allowed_gates_zzmax, CircPool::TK2_using_ZZMax_and_swap,
+      CircPool::tk1_to_PhasedXRz);
+
+  GIVEN("Targeting CX gates, ISWAPMax gate.") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::ISWAPMax, {0, 1});
+    CompilationUnit cu(c);
+    CHECK(pp_rebase_cx->apply(cu));
+    REQUIRE(cu.get_circ_ref().count_gates(OpType::CX) == 1);
+  }
+  GIVEN("Targeting CX gates, Sycamore gate.") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::Sycamore, {0, 1});
+    CompilationUnit cu(c);
+    CHECK(pp_rebase_cx->apply(cu));
+    REQUIRE(cu.get_circ_ref().count_gates(OpType::CX) == 2);
+  }
+  GIVEN("Targeting CX gates, ISWAP gate.") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::ISWAP, 0.3, {0, 1});
+    CompilationUnit cu(c);
+    CHECK(pp_rebase_cx->apply(cu));
+    REQUIRE(cu.get_circ_ref().count_gates(OpType::CX) == 2);
+  }
+  GIVEN("Targeting CX gates, SWAP gate.") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::SWAP, {0, 1});
+    CompilationUnit cu(c);
+    CHECK(pp_rebase_cx->apply(cu));
+    REQUIRE(cu.get_circ_ref().count_gates(OpType::CX) == 0);
+  }
+  GIVEN("Targeting CX gates, CX gate.") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    CompilationUnit cu(c);
+    CHECK(!pp_rebase_cx->apply(cu));
+    REQUIRE(cu.get_circ_ref().count_gates(OpType::CX) == 1);
+  }
+  GIVEN("Targeting CX gates, ZZMAX gate.") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::ZZMax, {0, 1});
+    CompilationUnit cu(c);
+    CHECK(pp_rebase_cx->apply(cu));
+    REQUIRE(cu.get_circ_ref().count_gates(OpType::CX) == 1);
+  }
+  GIVEN("Targeting CX gates, ZZPhasegate.") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::ZZPhase, 0.3, {0, 1});
+    CompilationUnit cu(c);
+    CHECK(pp_rebase_cx->apply(cu));
+    REQUIRE(cu.get_circ_ref().count_gates(OpType::CX) == 2);
+  }
+  GIVEN("Targeting ZZMax gates, ISWAPMax gate.") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::ISWAPMax, {0, 1});
+    CompilationUnit cu(c);
+    CHECK(pp_rebase_zzmax->apply(cu));
+    REQUIRE(cu.get_circ_ref().count_gates(OpType::ZZMax) == 1);
+  }
+  GIVEN("Targeting ZZMax gates, ISWAP gate.") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::ISWAP, 0.3, {0, 1});
+    CompilationUnit cu(c);
+    CHECK(pp_rebase_zzmax->apply(cu));
+    REQUIRE(cu.get_circ_ref().count_gates(OpType::ZZMax) == 2);
+  }
+  GIVEN("Targeting ZZMax gates, Sycamore gate.") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::Sycamore, {0, 1});
+    CompilationUnit cu(c);
+    CHECK(pp_rebase_zzmax->apply(cu));
+    REQUIRE(cu.get_circ_ref().count_gates(OpType::ZZMax) == 2);
+  }
+  GIVEN("Targeting ZZMax gates, SWAP gate.") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::SWAP, {0, 1});
+    CompilationUnit cu(c);
+    CHECK(pp_rebase_zzmax->apply(cu));
+    REQUIRE(cu.get_circ_ref().count_gates(OpType::ZZMax) == 0);
+  }
+  GIVEN("Targeting ZZMax gates, CX gate.") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::CX, {0, 1});
+    CompilationUnit cu(c);
+    CHECK(pp_rebase_zzmax->apply(cu));
+    REQUIRE(cu.get_circ_ref().count_gates(OpType::ZZMax) == 1);
+  }
+  GIVEN("Targeting ZZMax gates, ZZMAX gate.") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::ZZMax, {0, 1});
+    CompilationUnit cu(c);
+    CHECK(!pp_rebase_zzmax->apply(cu));
+    REQUIRE(cu.get_circ_ref().count_gates(OpType::ZZMax) == 1);
+  }
+  GIVEN("Targeting ZZMax gates, ZZPhasegate.") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::ZZPhase, 0.3, {0, 1});
+    CompilationUnit cu(c);
+    CHECK(pp_rebase_zzmax->apply(cu));
+    REQUIRE(cu.get_circ_ref().count_gates(OpType::ZZMax) == 2);
+  }
+}
 }  // namespace test_CompilerPass
 }  // namespace tket
