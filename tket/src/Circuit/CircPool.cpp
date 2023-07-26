@@ -1043,7 +1043,6 @@ static Circuit TK2_swap_replacement(std::array<Expr, 3> angles) {
       implicit_swap = false;
     }
   }
-
   // Build circuit for substitution.
   Circuit sub(2);
   switch (n_gates) {
