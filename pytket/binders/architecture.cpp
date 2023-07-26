@@ -79,8 +79,8 @@ PYBIND11_MODULE(architecture, m) {
       .def(
           "to_dict", [](const Architecture &arch) { return json(arch); },
           "Return a JSON serializable dict representation of "
-          "the Architecture.\n"
-          ":return: dict containing nodes and links.")
+          "the Architecture."
+          "\n\n:return: dict containing nodes and links.")
       .def_static(
           "from_dict", [](const json &j) { return j.get<Architecture>(); },
           "Construct Architecture instance from JSON serializable "
@@ -160,8 +160,8 @@ PYBIND11_MODULE(architecture, m) {
       .def(
           py::init<const unsigned, const std::string>(),
           "The constructor for a RingArchitecture with some undirected "
-          "connectivity between qubits.\n\n:param number of qubits\n:param "
-          "label: Name for Node in RingArch Architecture",
+          "connectivity between qubits.\n\n:param number of qubits:"
+          "\n:param label: Name for Node in RingArch Architecture",
           py::arg("nodes"), py::arg("label") = "ringNode")
       .def(
           "__deepcopy__",
@@ -177,7 +177,8 @@ PYBIND11_MODULE(architecture, m) {
       .def(
           py::init<unsigned, const std::string>(),
           "Construct a fully-connected architecture."
-          "\n\n:param n: number of qubits\n:param label: Name for Node in "
+          "\n\n:param n: number of qubits"
+          "\n:param label: Name for Node in "
           "FullyConnected Architecture",
           py::arg("n"), py::arg("label") = "fcNode")
       .def(
@@ -196,7 +197,8 @@ PYBIND11_MODULE(architecture, m) {
       .def(
           "to_dict", [](const FullyConnected &arch) { return json(arch); },
           "JSON-serializable dict representation of the architecture."
-          "\n\n:return: dict containing nodes")
+          "\n\n"
+          ":return: dict containing nodes")
       .def_static(
           "from_dict", [](const json &j) { return j.get<FullyConnected>(); },
           "Construct FullyConnected instance from dict representation.");

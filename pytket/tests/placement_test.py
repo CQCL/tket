@@ -245,6 +245,27 @@ def test_big_placement() -> None:
     assert DefaultMappingPass(arc).apply(c)
 
 
+def test_large_error_rate_noise_aware() -> None:
+    nodes = [Node(i) for i in range(3)]
+    arc = Architecture([(nodes[0], nodes[1]), (nodes[1], nodes[2])])
+    nap = NoiseAwarePlacement(
+        arc,
+        {},
+        {
+            (nodes[0], nodes[1]): 0.2,
+            (nodes[1], nodes[0]): 0.5,
+            (nodes[1], nodes[2]): 2,
+            (nodes[2], nodes[1]): 1,
+        },
+    )
+
+    c = Circuit(2).CX(0, 1)
+
+    placement_map = nap.get_placement_map(c)
+    assert placement_map[Qubit(0)] == Node(0)
+    assert placement_map[Qubit(1)] == Node(1)
+
+
 if __name__ == "__main__":
     test_placements()
     test_placements_serialization()
@@ -253,3 +274,4 @@ if __name__ == "__main__":
     test_big_placement()
     test_place_fully_connected()
     test_placement_config()
+    test_large_error_rate_noise_aware()
