@@ -645,7 +645,7 @@ std::pair<bool, bool> LexiRoute::check_bridge(
   auto it = this->interacting_uids_.find(swap.first);
   if (it != this->interacting_uids_.end()) {  // => in interaction
     if (this->architecture_->get_distance(swap.first, Node(it->second)) ==
-        2) {                                  // => could be bridge
+        2) {  // => could be bridge
       // below should always return correct object given prior checks
       VertPort vp =
           (*this->mapping_frontier_->linear_boundary->find(swap.first)).second;
