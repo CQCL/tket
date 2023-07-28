@@ -17,6 +17,8 @@ from itertools import combinations
 from tempfile import NamedTemporaryFile
 import networkx as nx  # type: ignore
 import graphviz as gv  # type: ignore
+
+from pytket._tket.circuit import EdgeType
 from pytket.circuit import Circuit  # type: ignore
 
 
@@ -219,10 +221,10 @@ class Graph:
                         for i in range(n_ports):
                             c.node(name=str((node, i)), xlabel=str(i), **port_node_attr)
         edge_colors = {
-            0: q_color,  # Quantum
-            1: b_color,  # Boolean
-            2: c_color,  # Classical
-            3: w_color,  # WASM (and other)
+            EdgeType.Quantum:  q_color,
+            EdgeType.Boolean: b_color,
+            EdgeType.Classical: c_color,
+            EdgeType.WASM: w_color,
         }
         edge_attr = {
             "weight": "2",

@@ -185,6 +185,8 @@ void init_unitid(py::module &m) {
           "index\n\n:param name: The readable name for the "
           "register\n:param index: The index vector",
           py::arg("name"), py::arg("index"))
+      .def(py::self == py::self)
+      .def("__hash__", [](const Bit &b) { return hash_value(b); })
       .def(
           "to_list", [](const Bit &b) { return json(b); },
           "Return a JSON serializable list representation of "

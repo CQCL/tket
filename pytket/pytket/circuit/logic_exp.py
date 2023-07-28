@@ -161,12 +161,16 @@ class LogicExp:
         """
         outset: Set[Variable] = set()
 
-        var_type = Bit if isinstance(self, BitLogicExp) else BitRegister
         for arg in self.args:
-            if isinstance(arg, var_type):
-                outset.add(arg)
-            elif isinstance(arg, LogicExp):
+            if isinstance(arg, LogicExp):
                 outset.update(arg.all_inputs())
+                continue
+            if isinstance(self, BitLogicExp):
+                if isinstance(arg, Bit):
+                    outset.add(arg)
+            else:
+                if isinstance(arg, BitRegister):
+                    outset.add(arg)
         return outset
 
     def __eq__(self, other: object) -> bool:

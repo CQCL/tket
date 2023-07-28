@@ -1,4 +1,4 @@
-from typing import Callable, Union
+from typing import Callable, Union, Dict, Any
 
 import numpy
 from sympy import Symbol

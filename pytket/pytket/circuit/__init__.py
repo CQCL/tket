@@ -56,19 +56,6 @@ from .logic_exp import (
 )
 
 
-# Add ability to compare Bit equality with arbitrary class
-Bit.oldeq = Bit.__eq__
-
-
-def overload_biteq(self: Bit, other: Any) -> bool:
-    if not isinstance(other, Bit):
-        return False
-    return cast(bool, self.oldeq(other))
-
-
-setattr(Bit, "__eq__", overload_biteq)
-
-
 def overload_add_wasm(  # type: ignore
     self: Circuit,
     funcname: str,

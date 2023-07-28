@@ -865,21 +865,14 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>>& pyCircuit){
             // set of tuples (source node, target node, source port, target
             // port, edge type)
             std::set<
-                std::tuple<unsigned, unsigned, unsigned, unsigned, unsigned>>
+                std::tuple<unsigned, unsigned, unsigned, unsigned, EdgeType>>
                 edge_data;
             BGL_FORALL_EDGES(e, circ.dag, DAG) {
               Vertex v_so = circ.source(e);
               Vertex v_ta = circ.target(e);
               unsigned v_s = im[v_so];
               unsigned v_t = im[v_ta];
-              // EdgeType converted to unsigned because of some weird
-              // behaviour with pybind11 conversions being
-              // overwritten. TODO Do this properly.
-              EdgeType etype = circ.dag[e].type;
-              unsigned edge_type = (etype == EdgeType::Quantum)     ? 0
-                                   : (etype == EdgeType::Boolean)   ? 1
-                                   : (etype == EdgeType::Classical) ? 2
-                                                                    : 3;
+              EdgeType edge_type = circ.dag[e].type;
               edge_data.insert(
                   {v_s, v_t, circ.get_source_port(e), circ.get_target_port(e),
                    edge_type});
