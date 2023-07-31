@@ -139,7 +139,7 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           ":param type: :py:class:`ZXType` to filter by, from "
           "{:py:meth:`ZXType.Input`, :py:meth:`ZXType.Output`, "
           ":py:meth:`ZXType.Open`, None}. Defaults to None."
-          ":param qtype: :py:class:`QuantumType` to filter by, from "
+          "\n\n:param qtype: :py:class:`QuantumType` to filter by, from "
           "{:py:meth:`QuantumType.Quantum`, :py:meth:`QuantumType.Classical`, "
           "None}. Defaults to None.",
           py::arg("type") = std::nullopt, py::arg("qtype") = std::nullopt)

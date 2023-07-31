@@ -465,7 +465,7 @@ PYBIND11_MODULE(passes, m) {
       "Removes gate-inverse pairs, merges rotations, removes identity "
       "rotations, and removes redundant gates before measurement. Does not "
       "add any new gate types.\n\n"
-      "When merging rotations with the same op group name, the merged"
+      "When merging rotations with the same op group name, the merged "
       "operation keeps the same name.");
   m.def(
       "SynthesiseHQS", &SynthesiseHQS,
@@ -611,8 +611,9 @@ PYBIND11_MODULE(passes, m) {
   m.def(
       "CustomRoutingPass", &gen_routing_pass,
       "Construct a pass to route to the connectivity graph of an "
-      ":py:class:`Architecture`. Edge direction is ignored."
-      "\n:return: a pass that routes to the given device architecture",
+      ":py:class:`Architecture`. Edge direction is ignored. "
+      "\n\n"
+      ":return: a pass that routes to the given device architecture ",
       py::arg("arc"), py::arg("config"));
 
   m.def(
@@ -621,7 +622,8 @@ PYBIND11_MODULE(passes, m) {
       ":py:class:`Architecture`. Edge direction is ignored. "
       "Uses :py:class:`LexiLabellingMethod` and "
       ":py:class:`LexiRouteRoutingMethod`."
-      "\n:return: a pass that routes to the given device architecture",
+      "\n\n"
+      ":return: a pass that routes to the given device architecture",
       py::arg("arc"));
 
   m.def(
@@ -647,8 +649,10 @@ PYBIND11_MODULE(passes, m) {
       py::arg("label") = q_default_reg());
 
   m.def(
-      "RenameQubitsPass", &gen_rename_qubits_pass, "Rename some or all qubits.",
-      "\n\n:param qubit_map: map from old to new qubit names",
+      "RenameQubitsPass", &gen_rename_qubits_pass,
+      "Rename some or all qubits. "
+      "\n\n"
+      ":param qubit_map: map from old to new qubit names ",
       py::arg("qubit_map"));
 
   m.def(
@@ -855,8 +859,12 @@ PYBIND11_MODULE(passes, m) {
 
   m.def(
       "ZZPhaseToRz", &ZZPhaseToRz,
-      "Converts ZZPhase gates with angle pi or -pi to two Rz gates with"
-      "angle pi.\n:return: a pass to convert ZZPhase gates to Rz");
+      "Converts all ZZPhase gates in a circuit with angle 1 or -1 (half-turns) "
+      "into two Rz gates each with a parameter value of 1 (half-turns). "
+      "ZZPhase gates with parameter values other than 1 or -1 "
+      "(half-turns) are left "
+      "unchanged.\n\n"
+      ":return: a pass to convert ZZPhase gates to Rz.");
 
   m.def(
       "CnXPairwiseDecomposition", &CnXPairwiseDecomposition,
@@ -866,9 +874,9 @@ PYBIND11_MODULE(passes, m) {
 
   m.def(
       "RoundAngles", &RoundAngles,
-      "Round angles to the nearest :math:`\\pi / 2^n`."
-      "\n\n:param n: precision parameter, must be >= 0 and < 32",
-      "\n\n:param only_zeros: if True, only round angles less than "
+      "Round angles to the nearest :math:`\\pi / 2^n`. "
+      "\n\n:param n: precision parameter, must be >= 0 and < 32 "
+      "\n:param only_zeros: if True, only round angles less than "
       ":math:`\\pi / 2^{n+1}` to zero, leave other angles alone (default "
       "False)",
       py::arg("n"), py::arg("only_zeros") = false);
@@ -889,6 +897,7 @@ PYBIND11_MODULE(passes, m) {
       "\n\n"
       ":param transform: function taking a :py:class:`Circuit` as an argument "
       "and returning a new transformed circuit"
+      "\n"
       ":param label: optional label for the pass"
       "\n:return: a pass to perform the transformation",
       py::arg("transform"), py::arg("label") = "");

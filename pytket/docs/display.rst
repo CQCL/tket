@@ -21,7 +21,7 @@ Example usage:
     from pytket.circuit.display import get_circuit_renderer
 
     circuit_renderer = get_circuit_renderer() # Instantiate a circuit renderer
-    circuit_renderer.set_render_options(zx_style=False) # Configure render options
+    circuit_renderer.set_render_options(zx_style=True) # Configure render options
     circuit_renderer.condense_c_bits = False # You can also set the properties on the instance directly
     print("Render options:")
     print(circuit_renderer.get_render_options()) # View currently set render options
