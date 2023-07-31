@@ -1,6 +1,14 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Fixes:
+
+* Fix slow ``Circuit.get_statevector()``.
+
+
 1.17.1 (July 2023)
 ------------------
 
