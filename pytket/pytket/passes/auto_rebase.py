@@ -148,7 +148,8 @@ def auto_rebase_pass(gateset: Set[OpType], allow_swaps: bool = False) -> RebaseC
     :rtype: RebaseCustom
     """
     tk1 = get_TK1_decomposition_function(gateset)
-    # if the gateset has CX but not TK2, and implicit wire swaps not allowed, rebase via CX
+    # if the gateset has CX but not TK2, and implicit wire swaps not allowed:
+    # rebase via CX
     if OpType.CX in gateset and OpType.TK2 not in gateset and not allow_swaps:
         return RebaseCustom(gateset, _library._CX(), tk1)
     # in other cases, try to rebase via TK2 first
