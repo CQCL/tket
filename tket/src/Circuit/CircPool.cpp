@@ -986,7 +986,7 @@ static Circuit TK2_swap_replacement(std::array<Expr, 3> angles) {
   unsigned last_angle = 0;
   for (; last_angle < 3; ++last_angle) {
     std::optional<double> eval = eval_expr_mod(angles[last_angle]);
-    if (eval && *eval > 0) {
+    if (eval) {
       angles_eval[last_angle] = *eval;
     } else {
       break;
@@ -997,7 +997,7 @@ static Circuit TK2_swap_replacement(std::array<Expr, 3> angles) {
   for (; last_angle_swapped < 3; ++last_angle_swapped) {
     std::optional<double> eval =
         eval_expr_mod(angles_swapped[last_angle_swapped]);
-    if (eval && *eval > 0) {
+    if (eval) {
       angles_eval_swapped[last_angle_swapped] = *eval;
     } else {
       break;
