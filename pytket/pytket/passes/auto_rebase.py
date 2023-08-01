@@ -36,12 +36,14 @@ _CX_CIRCS: Dict[OpType, Callable[[], "Circuit"]] = {
 def _TK2_using_TK2(a: Param, b: Param, c: Param) -> Circuit:
     return Circuit(2).TK2(a, b, c, 0, 1)
 
+
 def _TK2_using_TK2_or_swap(a: Param, b: Param, c: Param) -> Circuit:
     if a == b == c == 0.5:
-        c = Circuit(2).SWAP(0,1)
+        c = Circuit(2).SWAP(0, 1)
         c.replace_SWAPs()
         return c
     return Circuit(2).TK2(a, b, c, 0, 1)
+
 
 _TK2_CIRCS: Dict[OpType, Callable[[Param, Param, Param], "Circuit"]] = {
     OpType.TK2: _TK2_using_TK2,
