@@ -36,6 +36,12 @@ _CX_CIRCS: Dict[OpType, Callable[[], "Circuit"]] = {
 def _TK2_using_TK2(a: Param, b: Param, c: Param) -> Circuit:
     return Circuit(2).TK2(a, b, c, 0, 1)
 
+def _TK2_using_TK2_or_swap(a: Param, b: Param, c: Param) -> Circuit:
+    if a == b == c == 0.5:
+        c = Circuit(2).SWAP(0,1)
+        c.replace_SWAPs()
+        return c
+    return Circuit(2).TK2(a, b, c, 0, 1)
 
 _TK2_CIRCS: Dict[OpType, Callable[[Param, Param, Param], "Circuit"]] = {
     OpType.TK2: _TK2_using_TK2,
@@ -45,7 +51,7 @@ _TK2_CIRCS: Dict[OpType, Callable[[Param, Param, Param], "Circuit"]] = {
 }
 
 _TK2_CIRCS_WIRE_SWAP: Dict[OpType, Callable[[Param, Param, Param], "Circuit"]] = {
-    OpType.TK2: _TK2_using_TK2,
+    OpType.TK2: _TK2_using_TK2_or_swap,
     OpType.ZZPhase: _library._TK2_using_ZZPhase,
     OpType.CX: _library._TK2_using_CX_and_swap,
     OpType.ZZMax: _library._TK2_using_ZZMax_and_swap,
@@ -140,16 +146,8 @@ def auto_rebase_pass(gateset: Set[OpType], allow_swaps: bool = False) -> RebaseC
     :rtype: RebaseCustom
     """
     tk1 = get_TK1_decomposition_function(gateset)
-
-    if allow_swaps:
-        try:
-            return RebaseCustom(
-                gateset, get_tk2_decomposition(gateset, allow_swaps), tk1
-            )
-        except NoAutoRebase:
-            pass
-    # if the gateset has CX but not TK2, rebase via CX
-    if OpType.CX in gateset and OpType.TK2 not in gateset:
+    # if the gateset has CX but not TK2, and implicit wire swaps not allowed, rebase via CX
+    if OpType.CX in gateset and OpType.TK2 not in gateset and not allow_swaps:
         return RebaseCustom(gateset, _library._CX(), tk1)
     # in other cases, try to rebase via TK2 first
     try:

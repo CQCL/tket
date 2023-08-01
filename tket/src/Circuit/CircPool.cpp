@@ -107,6 +107,22 @@ const Circuit &CX_using_ZZMax() {
   return *C;
 }
 
+const Circuit &CX_using_ZZPhase() {
+  static std::unique_ptr<const Circuit> C = std::make_unique<Circuit>([]() {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::Rz, 1.5, {0});
+    c.add_op<unsigned>(OpType::Rx, 0.5, {1});
+    c.add_op<unsigned>(OpType::Rz, 1.5, {1});
+    c.add_op<unsigned>(OpType::Rx, 1.5, {1});
+    c.add_op<unsigned>(OpType::ZZPhase, 0.5, {0, 1});
+    c.add_op<unsigned>(OpType::Rx, 1.5, {1});
+    c.add_op<unsigned>(OpType::Rz, 1.5, {1});
+    c.add_phase(0.75);
+    return c;
+  }());
+  return *C;
+}
+
 const Circuit &CX_using_XXPhase_0() {
   static std::unique_ptr<const Circuit> C = std::make_unique<Circuit>([]() {
     Circuit c(2);
@@ -955,8 +971,6 @@ static Circuit TK2_swap_replacement(std::array<Expr, 3> angles) {
   // Generate to support allowing swap gates
   Circuit pre, post;
   std::array<Expr, 3> angles_swapped;
-  // Swapped circuit
-  Circuit swap_circ(2);
   angles_swapped = angles;
   for (unsigned i = 0; i < 3; ++i) {
     angles_swapped[i] += 0.5;
@@ -972,25 +986,35 @@ static Circuit TK2_swap_replacement(std::array<Expr, 3> angles) {
   unsigned last_angle = 0;
   for (; last_angle < 3; ++last_angle) {
     std::optional<double> eval = eval_expr_mod(angles[last_angle]);
-    if (eval) {
+    if (eval && *eval > 0) {
       angles_eval[last_angle] = *eval;
     } else {
       break;
     }
-    eval = eval_expr_mod(angles_swapped[last_angle]);
-    TKET_ASSERT(eval);
-    angles_eval_swapped[last_angle] = *eval;
+  }
+
+  unsigned last_angle_swapped = 0;
+  for (; last_angle_swapped < 3; ++last_angle_swapped) {
+    std::optional<double> eval =
+        eval_expr_mod(angles_swapped[last_angle_swapped]);
+    if (eval && *eval > 0) {
+      angles_eval_swapped[last_angle_swapped] = *eval;
+    } else {
+      break;
+    }
   }
 
   // Check if fewer gates can be used.
   if (last_angle <= 2) {
     if (equiv_0(angles[2], 4) && equiv_0(angles[1], 4)) {
       n_gates = 1;
-    } else if (equiv_0(angles_swapped[2], 4) && equiv_0(angles_swapped[1], 4)) {
-      implicit_swap = true;
-      n_gates = 1;
     } else if (equiv_0(angles[2], 4)) {
       n_gates = 2;
+    }
+  } else if (last_angle_swapped <= 2) {
+    if (equiv_0(angles_swapped[2], 4) && equiv_0(angles_swapped[1], 4)) {
+      implicit_swap = true;
+      n_gates = 1;
     } else if (equiv_0(angles_swapped[2], 4)) {
       implicit_swap = true;
       n_gates = 2;
@@ -1043,6 +1067,7 @@ static Circuit TK2_swap_replacement(std::array<Expr, 3> angles) {
       implicit_swap = false;
     }
   }
+
   // Build circuit for substitution.
   Circuit sub(2);
   switch (n_gates) {
@@ -1114,6 +1139,26 @@ Circuit TK2_using_ZZPhase(
   return c;
 }
 
+Circuit TK2_using_ZZPhase_and_swap(
+    const Expr &alpha, const Expr &beta, const Expr &gamma) {
+  Circuit c = TK2_using_CX_and_swap(alpha, beta, gamma);
+  if (c.count_gates(OpType::CX) < 3) {
+    // Find the CX gates and replace them with ZZMax.
+    VertexSet bin;
+    BGL_FORALL_VERTICES(v, c.dag, DAG) {
+      Op_ptr op = c.get_Op_ptr_from_Vertex(v);
+      if (op->get_type() == OpType::CX) {
+        c.substitute(CX_using_ZZPhase(), v, Circuit::VertexDeletion::No);
+        bin.insert(v);
+      }
+    }
+    c.remove_vertices(
+        bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
+    return c;
+  }
+  return TK2_using_ZZPhase(alpha, beta, gamma);
+}
+
 Circuit TK2_using_ZZMax(
     const Expr &alpha, const Expr &beta, const Expr &gamma) {
   Circuit c = TK2_using_CX(alpha, beta, gamma);
@@ -1134,18 +1179,23 @@ Circuit TK2_using_ZZMax(
 Circuit TK2_using_ZZMax_and_swap(
     const Expr &alpha, const Expr &beta, const Expr &gamma) {
   Circuit c = TK2_using_CX_and_swap(alpha, beta, gamma);
-  // Find the CX gates and replace them with ZZMax.
-  VertexSet bin;
-  BGL_FORALL_VERTICES(v, c.dag, DAG) {
-    Op_ptr op = c.get_Op_ptr_from_Vertex(v);
-    if (op->get_type() == OpType::CX) {
-      c.substitute(CX_using_ZZMax(), v, Circuit::VertexDeletion::No);
-      bin.insert(v);
+
+  if (c.count_gates(OpType::CX) < 3) {
+    // Find the CX gates and replace them with ZZMax.
+    VertexSet bin;
+    BGL_FORALL_VERTICES(v, c.dag, DAG) {
+      Op_ptr op = c.get_Op_ptr_from_Vertex(v);
+      if (op->get_type() == OpType::CX) {
+        c.substitute(CX_using_ZZMax(), v, Circuit::VertexDeletion::No);
+        bin.insert(v);
+      }
     }
+    c.remove_vertices(
+        bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
+    return c;
   }
-  c.remove_vertices(
-      bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
-  return c;
+
+  return TK2_using_ZZMax(alpha, beta, gamma);
 }
 
 Circuit XXPhase3_using_TK2(const Expr &alpha) {
@@ -1258,7 +1308,6 @@ Circuit TK2_using_normalised_TK2(
     const Expr &alpha, const Expr &beta, const Expr &gamma) {
   auto [pre, normalised_exprs, post] = normalise_TK2_angles(alpha, beta, gamma);
   auto [alpha_norm, beta_norm, gamma_norm] = normalised_exprs;
-
   Circuit res(2);
   res.append(pre);
   res.add_op<unsigned>(

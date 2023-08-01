@@ -122,7 +122,7 @@ static bool standard_rebase_via_tk2(
         tk2_replacement) {
   bool success = false;
   VertexSet bin;
-  bool TK2_allowed = allowed_gates.contains(OpType::TK2);
+  const bool TK2_allowed = allowed_gates.contains(OpType::TK2);
   // 1. Replace all multi-qubit gates outside the target gateset to TK2.
   for (const Vertex& v : circ.all_vertices()) {
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
@@ -139,7 +139,7 @@ static bool standard_rebase_via_tk2(
       continue;
     // need to convert
     Circuit replacement = TK2_circ_from_multiq(op);
-    // 2. If TK2 gates are not allowed in the target gateset we find a
+    // If TK2 gates are not allowed in the target gateset we find a
     // replacement circuit by decomposing them
     if (!TK2_allowed) {
       VertexSet TK2_bin;
@@ -169,7 +169,7 @@ static bool standard_rebase_via_tk2(
     success = true;
   }
 
-  // 3. Replace 0- and 1-qubit gates by converting to TK1 and replacing.
+  // 2. Replace 0- and 1-qubit gates by converting to TK1 and replacing.
   for (const Vertex& v : circ.all_vertices()) {
     if (bin.contains(v)) continue;
     if (circ.n_in_edges_of_type(v, EdgeType::Quantum) > 1) continue;
