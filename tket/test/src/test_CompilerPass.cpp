@@ -162,8 +162,7 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
 
     PassPtr cp_route = gen_default_mapping_pass(grid, false);
     Circuit circ(5);
-    add_2qb_gates(circ, OpType::CX, {{0, 1}, {0, 2}, {0, 3}, {1, 2}, {3,
-    4}});
+    add_2qb_gates(circ, OpType::CX, {{0, 1}, {0, 2}, {0, 3}, {1, 2}, {3, 4}});
 
     PredicatePtr routed_correctly =
         std::make_shared<ConnectivityPredicate>(grid);
@@ -184,8 +183,7 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
 
     PassPtr cp_route = gen_default_mapping_pass(grid, false);
     Circuit circ(6);
-    add_2qb_gates(circ, OpType::CX, {{0, 1}, {0, 5}, {0, 3}, {1, 2}, {3,
-    4}});
+    add_2qb_gates(circ, OpType::CX, {{0, 1}, {0, 5}, {0, 3}, {1, 2}, {3, 4}});
 
     SquareGrid grid2(1, 6);
     PredicatePtr routed_correctly =
@@ -198,10 +196,8 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
       REQUIRE(!cu.check_all_predicates());
     }
     WHEN("Ran in safe mode") {
-      REQUIRE(
-          cp_route->apply(cu, SafetyMode::Audit));  // warning should be
-          logged
-      REQUIRE(!cu.check_all_predicates());
+      REQUIRE(cp_route->apply(cu, SafetyMode::Audit));  // warning should be
+      logged REQUIRE(!cu.check_all_predicates());
     }
   }
   GIVEN("Correct sequence of Synthesis, Routing and Rebasing") {
@@ -399,8 +395,7 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
   GIVEN("Full compilation sequence") {
     SquareGrid grid(1, 5);
     std::vector<PassPtr> passes = {
-        DecomposeBoxes(), RebaseTket(), gen_default_mapping_pass(grid,
-        true)};
+        DecomposeBoxes(), RebaseTket(), gen_default_mapping_pass(grid, true)};
     REQUIRE_NOTHROW(SequencePass(passes));
   }
   GIVEN("TK1 and TK2 replacement functions") {
@@ -461,8 +456,7 @@ SCENARIO("Construct invalid sequence passes from vector") {
     PassPtr compass = std::make_shared<StandardPass>(
         ppm, Transforms::id, pc, nlohmann::json{});
     passes.push_back(compass);
-    REQUIRE_THROWS_AS((void)SequencePass(passes),
-    IncompatibleCompilerPasses);
+    REQUIRE_THROWS_AS((void)SequencePass(passes), IncompatibleCompilerPasses);
   }
 }
 
@@ -471,8 +465,7 @@ SCENARIO("Construct invalid sequence of loops") {
   PredicatePtrMap ppm{CompilationUnit::make_type_pair(pp1)};
   PostConditions pc{{}, {}, Guarantee::Preserve};
   PassPtr pass1 =
-      std::make_shared<StandardPass>(ppm, Transforms::id, pc,
-      nlohmann::json{});
+      std::make_shared<StandardPass>(ppm, Transforms::id, pc, nlohmann::json{});
   PassPtr loop1 = std::make_shared<RepeatPass>(pass1);
   PostConditions pc2{{}, {}, Guarantee::Clear};
   PredicatePtrMap empty_ppm{};
@@ -482,8 +475,7 @@ SCENARIO("Construct invalid sequence of loops") {
   std::vector<PassPtr> good_passes{loop1, loop2};
   std::vector<PassPtr> bad_passes{loop2, loop1};
   REQUIRE_NOTHROW((void)SequencePass(good_passes));
-  REQUIRE_THROWS_AS((void)SequencePass(bad_passes),
-  IncompatibleCompilerPasses);
+  REQUIRE_THROWS_AS((void)SequencePass(bad_passes), IncompatibleCompilerPasses);
 }
 
 SCENARIO("Test RepeatWithMetricPass") {
@@ -686,11 +678,9 @@ SCENARIO("gen_placement_pass test") {
     REQUIRE(graph_cu.get_final_map_ref() != line_cu.get_final_map_ref());
     REQUIRE(noise_cu.get_final_map_ref() != line_cu.get_final_map_ref());
     REQUIRE(
-        graph_fall_back_cu.get_final_map_ref() ==
-        line_cu.get_final_map_ref());
+        graph_fall_back_cu.get_final_map_ref() == line_cu.get_final_map_ref());
     REQUIRE(
-        noise_fall_back_cu.get_final_map_ref() ==
-        line_cu.get_final_map_ref());
+        noise_fall_back_cu.get_final_map_ref() == line_cu.get_final_map_ref());
   }
 }
 
@@ -845,14 +835,12 @@ SCENARIO("FullPeepholeOptimise with various options") {
     Circuit compiled_circ_noswaps_tk2 = cu_noswaps_tk2.get_circ_ref();
     unsigned n_gates_swaps_cx = compiled_circ_swaps_cx.n_gates();
     unsigned n_cx_swaps_cx = compiled_circ_swaps_cx.count_gates(OpType::CX);
-    unsigned n_tk1_swaps_cx =
-    compiled_circ_swaps_cx.count_gates(OpType::TK1); unsigned
-    n_gates_swaps_tk2 = compiled_circ_swaps_tk2.n_gates(); unsigned
-    n_tk2_swaps_tk2 = compiled_circ_swaps_tk2.count_gates(OpType::TK2);
-    unsigned n_tk1_swaps_tk2 =
-    compiled_circ_swaps_tk2.count_gates(OpType::TK1); unsigned
-    n_gates_noswaps_cx = compiled_circ_noswaps_cx.n_gates(); unsigned
-    n_cx_noswaps_cx = compiled_circ_noswaps_cx.count_gates(OpType::CX);
+    unsigned n_tk1_swaps_cx = compiled_circ_swaps_cx.count_gates(OpType::TK1);
+    unsigned n_gates_swaps_tk2 = compiled_circ_swaps_tk2.n_gates();
+    unsigned n_tk2_swaps_tk2 = compiled_circ_swaps_tk2.count_gates(OpType::TK2);
+    unsigned n_tk1_swaps_tk2 = compiled_circ_swaps_tk2.count_gates(OpType::TK1);
+    unsigned n_gates_noswaps_cx = compiled_circ_noswaps_cx.n_gates();
+    unsigned n_cx_noswaps_cx = compiled_circ_noswaps_cx.count_gates(OpType::CX);
     unsigned n_tk1_noswaps_cx =
         compiled_circ_noswaps_cx.count_gates(OpType::TK1);
     unsigned n_gates_noswaps_tk2 = compiled_circ_noswaps_tk2.n_gates();
@@ -939,8 +927,7 @@ SCENARIO("rebase and decompose PhasePolyBox test") {
     Circuit c(1, 1);
     c.add_conditional_gate<unsigned>(OpType::H, {}, {0}, {0}, 1);
     CompilationUnit cu(c);
-    REQUIRE_THROWS_AS(ComposePhasePolyBoxes()->apply(cu),
-    UnsatisfiedPredicate);
+    REQUIRE_THROWS_AS(ComposePhasePolyBoxes()->apply(cu), UnsatisfiedPredicate);
   }
   GIVEN("NoWireSwapsPredicate for ComposePhasePolyBoxes") {
     Circuit circ(5);
@@ -1287,8 +1274,7 @@ SCENARIO("Commute measurements to the end of a circuit") {
     CompilationUnit cu(c);
     REQUIRE_THROWS_AS(delay_pass->apply(cu), UnsatisfiedPredicate);
   }
-  GIVEN("Measure blocked by classical operation, using a partial delay pass")
-  {
+  GIVEN("Measure blocked by classical operation, using a partial delay pass") {
     Circuit c(2, 1);
     add_2qb_gates(c, OpType::Measure, {{0, 0}, {1, 0}});
     c.add_op<unsigned>(OpType::Measure, {0, 0});
@@ -1320,15 +1306,13 @@ SCENARIO("Commute measurements to the end of a circuit") {
     c.add_op<unsigned>(OpType::CZ, {0, 1});
     c.add_op<unsigned>(OpType::Measure, {0, 0});
     c.add_conditional_gate<unsigned>(OpType::Z, {}, {1}, {0}, 1);
-    REQUIRE_THROWS_AS(Transforms::delay_measures().apply(c),
-    CircuitInvalidity);
+    REQUIRE_THROWS_AS(Transforms::delay_measures().apply(c), CircuitInvalidity);
   }
   GIVEN(
-      "Call on invalid nested circuit without checking the predicate throws")
-      {
+      "Call on invalid nested circuit without checking the predicate throws") {
     Circuit inner1(1, 2);
-    inner1.add_conditional_gate<unsigned>(OpType::Measure, {}, {0, 0}, {1},
-    1); CircBox cbox1(inner1);
+    inner1.add_conditional_gate<unsigned>(OpType::Measure, {}, {0, 0}, {1}, 1);
+    CircBox cbox1(inner1);
 
     Circuit inner2(1, 2);
     inner2.add_box(cbox1, {0, 0, 1});
@@ -1337,8 +1321,7 @@ SCENARIO("Commute measurements to the end of a circuit") {
     Circuit c(1, 2);
     c.add_box(cbox2, {0, 0, 1});
     c.add_op<unsigned>(OpType::X, {0});
-    REQUIRE_THROWS_AS(Transforms::delay_measures().apply(c),
-    CircuitInvalidity);
+    REQUIRE_THROWS_AS(Transforms::delay_measures().apply(c), CircuitInvalidity);
   }
   GIVEN("Combined with routing") {
     Circuit test(3, 1);
@@ -1534,8 +1517,8 @@ SCENARIO("CX mapping pass") {
   }
   GIVEN("A circuit with measurements inside boxes.") {
     Circuit inner1(1, 2);
-    inner1.add_conditional_gate<unsigned>(OpType::Measure, {}, {0, 0}, {1},
-    1); CircBox cbox1(inner1);
+    inner1.add_conditional_gate<unsigned>(OpType::Measure, {}, {0, 0}, {1}, 1);
+    CircBox cbox1(inner1);
 
     Circuit inner2(1, 2);
     inner2.add_box(cbox1, {0, 0, 1});
