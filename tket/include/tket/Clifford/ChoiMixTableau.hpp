@@ -125,6 +125,9 @@ class ChoiMixTableau {
    */
   unsigned get_n_outputs() const;
 
+  qubit_vector_t input_qubits() const;
+  qubit_vector_t output_qubits() const;
+
   /**
    * Read off a row as a Pauli string.
    * Returns a pair of Pauli strings RxS such that SCR = C

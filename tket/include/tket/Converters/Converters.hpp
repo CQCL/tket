@@ -108,9 +108,12 @@ ChoiMixTableau circuit_to_cm_tableau(const Circuit &circ);
  * outputs p[0], p[1]), then the synthesised circuit may have up to four qubits
  * and there are then enough to use a separate initialised qubit.
  */
-std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(
-    const ChoiMixTableau &circ,
-    ChoiMixSynthType synth_type = ChoiMixSynthType::exact);
+std::pair<Circuit, qubit_map_t> cm_tableau_to_exact_circuit(
+    const ChoiMixTableau &tab, CXConfigType cx_config = CXConfigType::Snake);
+std::pair<Circuit, qubit_map_t> cm_tableau_to_unitary_extension_circuit(
+    const ChoiMixTableau &tab, const std::vector<Qubit> &init_names = {},
+    const std::vector<Qubit> &post_names = {},
+    CXConfigType cx_config = CXConfigType::Snake);
 
 PauliGraph circuit_to_pauli_graph(const Circuit &circ);
 
