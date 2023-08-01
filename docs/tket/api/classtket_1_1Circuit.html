@@ -504,6 +504,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:ad5824789d0ad59838d6e0d5713440259"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Circuit.html#ad5824789d0ad59838d6e0d5713440259">depth_by_types</a> (const <a class="el" href="namespacetket.html#a165b1d270a350af87f1c7a63d68f9276">OpTypeSet</a> &amp;_types) const</td></tr>
 <tr class="memdesc:ad5824789d0ad59838d6e0d5713440259"><td class="mdescLeft">&#160;</td><td class="mdescRight">Depth of circuit restricting to a set of operation types.  <a href="classtket_1_1Circuit.html#ad5824789d0ad59838d6e0d5713440259">More...</a><br /></td></tr>
 <tr class="separator:ad5824789d0ad59838d6e0d5713440259"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a5de543cf36b10e42203002ee01366cbc"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Circuit.html#a5de543cf36b10e42203002ee01366cbc">depth_2q</a> () const</td></tr>
+<tr class="memdesc:a5de543cf36b10e42203002ee01366cbc"><td class="mdescLeft">&#160;</td><td class="mdescRight">Depth of circuit restricting to 2-qubit operations, excluding barriers.  <a href="classtket_1_1Circuit.html#a5de543cf36b10e42203002ee01366cbc">More...</a><br /></td></tr>
+<tr class="separator:a5de543cf36b10e42203002ee01366cbc"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:abab8ded252c339df35268824bd9f638d"><td class="memItemLeft" align="right" valign="top">std::map&lt; <a class="el" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a>, <a class="el" href="namespacetket.html#ac9d3d98b8baadf31ee7888635e0185f0">unit_set_t</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Circuit.html#abab8ded252c339df35268824bd9f638d">vertex_unit_map</a> () const</td></tr>
 <tr class="separator:abab8ded252c339df35268824bd9f638d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a11d35cea119a10fff4636e9a104c514c"><td class="memItemLeft" align="right" valign="top">std::map&lt; <a class="el" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a>, unsigned &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Circuit.html#a11d35cea119a10fff4636e9a104c514c">vertex_depth_map</a> () const</td></tr>
@@ -755,7 +758,7 @@ Friends</h2></td></tr>
 <tr><td class="fieldname"><a id="a80fa413c88ea82abce86d16c8f220559a49ee3087348e8d44e1feda1917443987"></a>Name&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01226">1226</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01237">1237</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -1645,7 +1648,7 @@ template&lt;class ID &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the newly-added vertex in the circuit's DAG </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01714">1714</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01725">1725</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -2333,7 +2336,7 @@ template&lt;class ID &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="macro__circ__info_8cpp_source.html#l00921">921</a> of file <a class="el" href="macro__circ__info_8cpp_source.html">macro_circ_info.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macro__circ__info_8cpp_source.html#l00936">936</a> of file <a class="el" href="macro__circ__info_8cpp_source.html">macro_circ_info.cpp</a>.</p>
 
 </div>
 </div>
@@ -2374,7 +2377,7 @@ template&lt;class ID &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="macro__circ__info_8cpp_source.html#l00884">884</a> of file <a class="el" href="macro__circ__info_8cpp_source.html">macro_circ_info.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macro__circ__info_8cpp_source.html#l00899">899</a> of file <a class="el" href="macro__circ__info_8cpp_source.html">macro_circ_info.cpp</a>.</p>
 
 </div>
 </div>
@@ -2553,7 +2556,7 @@ template&lt;class ID &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="macro__circ__info_8cpp_source.html#l00985">985</a> of file <a class="el" href="macro__circ__info_8cpp_source.html">macro_circ_info.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macro__circ__info_8cpp_source.html#l01000">1000</a> of file <a class="el" href="macro__circ__info_8cpp_source.html">macro_circ_info.cpp</a>.</p>
 
 </div>
 </div>
@@ -2993,6 +2996,29 @@ template&lt;class ID &gt; </div>
 
 </div>
 </div>
+<a id="a5de543cf36b10e42203002ee01366cbc"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a5de543cf36b10e42203002ee01366cbc">&#9670;&nbsp;</a></span>depth_2q()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">unsigned tket::Circuit::depth_2q </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Depth of circuit restricting to 2-qubit operations, excluding barriers. </p>
+<p>This is the number of vertices in the longest path through the sub-DAG consisting of vertices with 2 quantum wires, excluding vertices representing barrier operations.</p>
+<dl class="section return"><dt>Returns</dt><dd>depth </dd></dl>
+
+<p class="definition">Definition at line <a class="el" href="macro__circ__info_8cpp_source.html#l00711">711</a> of file <a class="el" href="macro__circ__info_8cpp_source.html">macro_circ_info.cpp</a>.</p>
+
+</div>
+</div>
 <a id="a1c5e3c5db04e28a2e855d726c9125a41"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a1c5e3c5db04e28a2e855d726c9125a41">&#9670;&nbsp;</a></span>depth_by_type()</h2>
 
@@ -3161,7 +3187,7 @@ template&lt;class ID &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="macro__circ__info_8cpp_source.html#l00753">753</a> of file <a class="el" href="macro__circ__info_8cpp_source.html">macro_circ_info.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macro__circ__info_8cpp_source.html#l00768">768</a> of file <a class="el" href="macro__circ__info_8cpp_source.html">macro_circ_info.cpp</a>.</p>
 
 </div>
 </div>
@@ -3180,7 +3206,7 @@ template&lt;class ID &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="macro__circ__info_8cpp_source.html#l00888">888</a> of file <a class="el" href="macro__circ__info_8cpp_source.html">macro_circ_info.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macro__circ__info_8cpp_source.html#l00903">903</a> of file <a class="el" href="macro__circ__info_8cpp_source.html">macro_circ_info.cpp</a>.</p>
 
 </div>
 </div>
@@ -3672,7 +3698,7 @@ template&lt;class ID &gt; </div>
 <p>Get the name of the circuit. </p>
 <dl class="section return"><dt>Returns</dt><dd>name </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01598">1598</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01609">1609</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -5060,7 +5086,7 @@ template&lt;class ID &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01232">1232</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01243">1243</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -5545,7 +5571,7 @@ template&lt;typename UnitA , typename UnitB &gt; </div>
 <p>Templated method definitions.</p>
 <dl class="section return"><dt>Returns</dt><dd>true iff circuit was modified </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01641">1641</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01652">1652</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -5712,7 +5738,7 @@ template&lt;typename UnitA , typename UnitB &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01605">1605</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01616">1616</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -5781,7 +5807,7 @@ template&lt;typename UnitA , typename UnitB &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="macro__circ__info_8cpp_source.html#l00835">835</a> of file <a class="el" href="macro__circ__info_8cpp_source.html">macro_circ_info.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macro__circ__info_8cpp_source.html#l00850">850</a> of file <a class="el" href="macro__circ__info_8cpp_source.html">macro_circ_info.cpp</a>.</p>
 
 </div>
 </div>
@@ -5808,7 +5834,7 @@ template&lt;typename UnitA , typename UnitB &gt; </div>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="macro__circ__info_8cpp_source.html#l00839">839</a> of file <a class="el" href="macro__circ__info_8cpp_source.html">macro_circ_info.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macro__circ__info_8cpp_source.html#l00854">854</a> of file <a class="el" href="macro__circ__info_8cpp_source.html">macro_circ_info.cpp</a>.</p>
 
 </div>
 </div>
@@ -6143,7 +6169,7 @@ template&lt;class BoxT &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>whether any replacements were made </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01434">1434</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01445">1445</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -6470,7 +6496,7 @@ template&lt;class BoxT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="macro__circ__info_8cpp_source.html#l00722">722</a> of file <a class="el" href="macro__circ__info_8cpp_source.html">macro_circ_info.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macro__circ__info_8cpp_source.html#l00737">737</a> of file <a class="el" href="macro__circ__info_8cpp_source.html">macro_circ_info.cpp</a>.</p>
 
 </div>
 </div>
@@ -6489,7 +6515,7 @@ template&lt;class BoxT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="macro__circ__info_8cpp_source.html#l00738">738</a> of file <a class="el" href="macro__circ__info_8cpp_source.html">macro_circ_info.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macro__circ__info_8cpp_source.html#l00753">753</a> of file <a class="el" href="macro__circ__info_8cpp_source.html">macro_circ_info.cpp</a>.</p>
 
 </div>
 </div>
@@ -6508,7 +6534,7 @@ template&lt;class BoxT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="macro__circ__info_8cpp_source.html#l00711">711</a> of file <a class="el" href="macro__circ__info_8cpp_source.html">macro_circ_info.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macro__circ__info_8cpp_source.html#l00726">726</a> of file <a class="el" href="macro__circ__info_8cpp_source.html">macro_circ_info.cpp</a>.</p>
 
 </div>
 </div>
@@ -6701,7 +6727,7 @@ template&lt;class BoxT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01625">1625</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01636">1636</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -6719,7 +6745,7 @@ template&lt;class BoxT &gt; </div>
 
 <p>Representation as directed graph. </p>
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01623">1623</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01634">1634</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -6735,7 +6761,7 @@ template&lt;class BoxT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01622">1622</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01633">1633</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -6799,7 +6825,7 @@ template&lt;class BoxT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01624">1624</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01635">1635</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
