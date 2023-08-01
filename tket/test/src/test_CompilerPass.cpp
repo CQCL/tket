@@ -196,7 +196,8 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
       REQUIRE(!cu.check_all_predicates());
     }
     WHEN("Ran in safe mode") {
-      REQUIRE(cp_route->apply(cu, SafetyMode::Audit));  // warning should be logged
+      REQUIRE(
+          cp_route->apply(cu, SafetyMode::Audit));  // warning should be logged
       REQUIRE(!cu.check_all_predicates());
     }
   }
