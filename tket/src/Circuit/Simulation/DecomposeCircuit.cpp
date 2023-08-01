@@ -54,7 +54,7 @@ static QMap get_qmap_no_checks(
 static bool fill_triplets_directly_from_box(
     GateNode& node, const std::shared_ptr<const Box>& box_ptr,
     double abs_epsilon) {
-  std::optional<Eigen::MatrixXcd> u = box_ptr->get_unitary();
+  std::optional<Eigen::MatrixXcd> u = box_ptr->get_box_unitary();
   if (!u.has_value()) {
     return false;
   }
