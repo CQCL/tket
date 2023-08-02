@@ -37,6 +37,7 @@
 #include "tket/Ops/Op.hpp"
 #include "tket/Utils/Json.hpp"
 #include "typecast.hpp"
+#include "py_operators.hpp"
 
 namespace py = pybind11;
 using json = nlohmann::json;
@@ -75,7 +76,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>>& pyCircuit){
           "the circuit\n:param name: Optional name for the circuit.",
           py::arg("n_qubits"), py::arg("n_bits"),
           py::arg("name") = std::nullopt)
-      .def("__eq__", &Circuit::operator==)
+      .def("__eq__", &py_equals<Circuit>)
       .def(
           "__str__",
           [](const Circuit &circ) {
@@ -462,7 +463,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>>& pyCircuit){
           "to new ids",
           py::arg("map"))
       .def(
-          "depth", [](const Circuit &circ) { return circ.depth(); },
+          "depth", &Circuit::depth,
           "Returns the number of interior vertices on the longest path through "
           "the DAG, excluding vertices representing barrier operations."
           "\n\n>>> c = Circuit(3)"

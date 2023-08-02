@@ -56,6 +56,8 @@ Transforms::TwoQbFidelities get_fidelities(const py::kwargs &kwargs) {
 }
 
 PYBIND11_MODULE(transform, m) {
+  //py::module::import("pytket._tket.circuit");
+  //py::module::import("pytket._tket.architecture");
   py::enum_<Transforms::PauliSynthStrat>(
       m, "PauliSynthStrat",
       "Enum for available strategies to synthesise Pauli gadgets")
@@ -170,7 +172,7 @@ PYBIND11_MODULE(transform, m) {
           "prefer to insert the CXs such that fewer need redirecting."
           "\n\n:param arc: Device architecture used to specify a "
           "preference for CX direction",
-          py::arg("arc") = Architecture())
+          py::arg("arc"))
       .def_static(
           "DecomposeBRIDGE", &Transforms::decompose_BRIDGE_to_CX,
           "Decomposes all BRIDGE gates into CX gates.")
@@ -366,8 +368,11 @@ PYBIND11_MODULE(transform, m) {
       .def_static(
           "DecomposeNPhasedX", &Transforms::decompose_NPhasedX,
           "Decompose NPhasedX gates into single-qubit PhasedX gates.")
+      // Not sure why, but if I use &Transforms::globalise_PhasedX instead of this lambda, pybind11 creates a
+      // weird overload of GlobalisePhasedX in python that takes nothing and returns Any
+      // Probably something to do wih the tket code but I couldn't figure it out
       .def_static(
-          "GlobalisePhasedX", &Transforms::globalise_PhasedX,
+          "GlobalisePhasedX", [](bool squash){return Transforms::globalise_PhasedX(squash);},
           "Turns all PhasedX and NPhasedX gates into global gates\n\n"
           "Replaces any PhasedX gates with global NPhasedX gates. "
           "By default, this transform will squash all single-qubit gates "

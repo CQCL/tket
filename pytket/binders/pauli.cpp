@@ -20,6 +20,7 @@
 #include "binder_json.hpp"
 #include "tket/Utils/PauliStrings.hpp"
 #include "typecast.hpp"
+#include "py_operators.hpp"
 
 namespace py = pybind11;
 using json = nlohmann::json;
@@ -55,7 +56,7 @@ PYBIND11_MODULE(pauli, m) {
           "__hash__",
           [](const QubitPauliString &qps) { return hash_value(qps); })
       .def("__repr__", &QubitPauliString::to_str)
-      .def("__eq__", &QubitPauliString::operator==)
+      .def("__eq__", &py_equals<QubitPauliString>)
       .def("__ne__", &QubitPauliString::operator!=)
       .def("__lt__", &QubitPauliString::operator<)
       .def("__getitem__", &QubitPauliString::get)
@@ -235,8 +236,8 @@ PYBIND11_MODULE(pauli, m) {
           "string",
           [](const PauliStabiliser &stabiliser) { return stabiliser.string; },
           "The list of Pauli terms")
-      .def("__eq__", &PauliStabiliser::operator==)
-      .def("__ne__", &PauliStabiliser::operator!=);
+      .def("__eq__", &py_equals<PauliStabiliser>)
+      .def("__ne__", &py_not_equals<PauliStabiliser>);
 }
 
 }  // namespace tket

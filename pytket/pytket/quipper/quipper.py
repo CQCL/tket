@@ -15,6 +15,7 @@
 from enum import unique, Enum
 from typing import List, NamedTuple, Tuple
 from math import pi
+
 from lark import Lark, Transformer, Tree
 from pytket.circuit import Circuit, OpType, CircBox  # type: ignore
 
@@ -465,7 +466,7 @@ class CircuitMaker:
                         if inv:
                             c.add_gate(OpType.CU1, -0.5, [qctrls[0], wires[0]])
                         else:
-                            c.add_gate(OpType.CU1, +0.5, [qctrls[0], wires[0]])
+                            c.add_gate(OpType.CU1, 0.5, [qctrls[0], wires[0]])
                     else:
                         raise NotImplementedError("S with more than 1 control")
                 elif op == "T":
@@ -479,7 +480,7 @@ class CircuitMaker:
                         if inv:
                             c.add_gate(OpType.CU1, -0.25, [qctrls[0], wires[0]])
                         else:
-                            c.add_gate(OpType.CU1, +0.25, [qctrls[0], wires[0]])
+                            c.add_gate(OpType.CU1, 0.25, [qctrls[0], wires[0]])
                     else:
                         raise NotImplementedError("T with more than 1 control")
                 elif op == "E":
@@ -497,7 +498,7 @@ class CircuitMaker:
                     if n_ctrls == 0:
                         pass  # ignore phase
                     elif n_ctrls == 1:
-                        c.Rz(qctrls[0], 0.25)
+                        c.Rz(0.25, qctrls[0])
                     else:
                         raise NotImplementedError("Omega with more than 1 control")
                 elif op == "V":

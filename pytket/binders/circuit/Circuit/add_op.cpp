@@ -12,17 +12,14 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <pybind11/eigen.h>
-#include <pybind11/functional.h>
-#include <pybind11/operators.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
 #include <optional>
+#include <vector>
 
 #include "UnitRegister.hpp"
 #include "add_gate.hpp"
-#include "binder_utils.hpp"
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/ClassicalExpBox.hpp"
@@ -33,11 +30,15 @@
 #include "tket/Circuit/ToffoliBox.hpp"
 #include "tket/Converters/PhasePoly.hpp"
 #include "tket/Gate/OpPtrFunctions.hpp"
-#include "tket/Ops/Op.hpp"
 #include "typecast.hpp"
+#include "variant_conversion.hpp"
 namespace py = pybind11;
 
+
 namespace tket {
+
+// For conversions to work the most general type must be first
+using ExprVariant = std::variant<Expr, double>;
 
 const bit_vector_t no_bits;
 
@@ -51,16 +52,18 @@ static Circuit *add_gate_method_noparams(
 
 template <typename ID>
 static Circuit *add_gate_method_oneparam(
-    Circuit *circ, OpType type, const Expr &p, const std::vector<ID> &args,
-    const py::kwargs &kwargs) {
-  return add_gate_method(circ, get_op_ptr(type, p, args.size()), args, kwargs);
+        Circuit *circ, OpType type, const ExprVariant &p, const std::vector<ID> &args,
+        const py::kwargs &kwargs) {
+    auto expr_p = convertVariantToFirstType(p);
+  return add_gate_method(circ, get_op_ptr(type, expr_p, args.size()), args, kwargs);
 }
 
 template <typename ID>
 static Circuit *add_gate_method_manyparams(
-    Circuit *circ, OpType type, const std::vector<Expr> &ps,
-    const std::vector<ID> &args, const py::kwargs &kwargs) {
-  return add_gate_method(circ, get_op_ptr(type, ps, args.size()), args, kwargs);
+        Circuit *circ, OpType type, const std::vector<ExprVariant> &ps,
+        const std::vector<ID> &args, const py::kwargs &kwargs) {
+    auto expr_params = convertVariantVectorToFirstTypeVector(ps);
+  return add_gate_method(circ, get_op_ptr(type, expr_params, args.size()), args, kwargs);
 }
 
 template <typename ID>
@@ -321,7 +324,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
 
       .def(
           "add_classicalexpbox_bit",
-          [](Circuit *circ, const py::object exp,
+          [](Circuit *circ, const py::object& exp,
              const std::vector<Bit> &outputs, const py::kwargs &kwargs) {
             auto inputs = exp.attr("all_inputs")().cast<std::set<Bit>>();
             std::vector<Bit> o_vec, io_vec;
@@ -354,7 +357,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("expression"), py::arg("target"))
       .def(
           "add_classicalexpbox_register",
-          [](Circuit *circ, const py::object exp,
+          [](Circuit *circ, const py::object& exp,
              const std::vector<Bit> &outputs, const py::kwargs &kwargs) {
             auto inputs =
                 exp.attr("all_inputs")().cast<std::set<BitRegister>>();
@@ -394,10 +397,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
       .def(
           "add_custom_gate",
           [](Circuit *circ, const composite_def_ptr_t &definition,
-             const std::vector<Expr> &params,
+             const std::vector<ExprVariant> &params,
              const std::vector<unsigned> &qubits, const py::kwargs &kwargs) {
+              const auto& expr_params = convertVariantVectorToFirstTypeVector(params);
             return add_box_method<unsigned>(
-                circ, std::make_shared<CustomGate>(definition, params), qubits,
+                circ, std::make_shared<CustomGate>(definition, expr_params), qubits,
                 kwargs);
           },
           "Append an instance of a :py:class:`CustomGateDef` to the "
@@ -565,10 +569,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
       .def(
           "add_custom_gate",
           [](Circuit *circ, const composite_def_ptr_t &definition,
-             const std::vector<Expr> &params, const qubit_vector_t &qubits,
+             const std::vector<ExprVariant> &params, const qubit_vector_t &qubits,
              const py::kwargs &kwargs) {
+              const auto& expr_params = convertVariantVectorToFirstTypeVector(params);
             return add_box_method<UnitID>(
-                circ, std::make_shared<CustomGate>(definition, params),
+                circ, std::make_shared<CustomGate>(definition, expr_params),
                 {qubits.begin(), qubits.end()}, kwargs);
           },
           "Append an instance of a :py:class:`CustomGateDef` to the "
@@ -585,8 +590,9 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
              const std::optional<unsigned> &ancilla,
              const std::optional<std::string> &name) -> Circuit * {
             std::vector<Qubit> qubits_;
-            for (unsigned i = 0; i < qubits.size(); ++i) {
-              qubits_.push_back(Qubit(qubits[i]));
+            qubits_.reserve(qubits.size());
+            for (unsigned int qubit : qubits) {
+              qubits_.emplace_back(qubit);
             }
             std::optional<Qubit> ancilla_;
             if (ancilla == std::nullopt) {
@@ -628,8 +634,9 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
              const std::vector<unsigned> &qubits, const unsigned &ancilla,
              const std::optional<std::string> &name) -> Circuit * {
             std::vector<Qubit> qubits_;
-            for (unsigned i = 0; i < qubits.size(); ++i) {
-              qubits_.push_back(Qubit(qubits[i]));
+            qubits_.reserve(qubits.size());
+            for (unsigned int qubit : qubits) {
+              qubits_.emplace_back(qubit);
             }
             Qubit ancilla_(ancilla);
             circ->add_assertion(box, qubits_, ancilla_, name);
@@ -926,7 +933,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("qubit"), py::arg("bit_index"))
       .def(
           "Rz",
-          [](Circuit *circ, const Expr &angle, unsigned qb,
+          [](Circuit *circ, const ExprVariant &angle, unsigned qb,
              const py::kwargs &kwargs) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::Rz, angle, {qb}, kwargs);
@@ -937,7 +944,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("angle"), py::arg("qubit"))
       .def(
           "Rx",
-          [](Circuit *circ, const Expr &angle, unsigned qb,
+          [](Circuit *circ, const ExprVariant &angle, unsigned qb,
              const py::kwargs &kwargs) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::Rx, angle, {qb}, kwargs);
@@ -948,7 +955,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("angle"), py::arg("qubit"))
       .def(
           "Ry",
-          [](Circuit *circ, const Expr &angle, unsigned qb,
+          [](Circuit *circ, const ExprVariant &angle, unsigned qb,
              const py::kwargs &kwargs) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::Ry, angle, {qb}, kwargs);
@@ -959,7 +966,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("angle"), py::arg("qubit"))
       .def(
           "U1",
-          [](Circuit *circ, const Expr &angle, unsigned qb,
+          [](Circuit *circ, const ExprVariant &angle, unsigned qb,
              const py::kwargs &kwargs) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::U1, angle, {qb}, kwargs);
@@ -970,7 +977,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("angle"), py::arg("qubit"))
       .def(
           "U2",
-          [](Circuit *circ, const Expr &angle0, const Expr &angle1,
+          [](Circuit *circ, const ExprVariant &angle0, const ExprVariant &angle1,
              const unsigned &qb, const py::kwargs &kwargs) {
             return add_gate_method_manyparams<unsigned>(
                 circ, OpType::U2, {angle0, angle1}, {qb}, kwargs);
@@ -981,8 +988,8 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("angle0"), py::arg("angle1"), py::arg("qubit"))
       .def(
           "U3",
-          [](Circuit *circ, const Expr &angle0, const Expr &angle1,
-             const Expr &angle2, const unsigned &qb, const py::kwargs &kwargs) {
+          [](Circuit *circ, const ExprVariant &angle0, const ExprVariant &angle1,
+             const ExprVariant &angle2, const unsigned &qb, const py::kwargs &kwargs) {
             return add_gate_method_manyparams<unsigned>(
                 circ, OpType::U3, {angle0, angle1, angle2}, {qb}, kwargs);
           },
@@ -993,8 +1000,8 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("qubit"))
       .def(
           "TK1",
-          [](Circuit *circ, const Expr &angle0, const Expr &angle1,
-             const Expr &angle2, const unsigned &qb, const py::kwargs &kwargs) {
+          [](Circuit *circ, const ExprVariant &angle0, const ExprVariant &angle1,
+             const ExprVariant &angle2, const unsigned &qb, const py::kwargs &kwargs) {
             return add_gate_method_manyparams<unsigned>(
                 circ, OpType::TK1, {angle0, angle1, angle2}, {qb}, kwargs);
           },
@@ -1005,8 +1012,8 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("qubit"))
       .def(
           "TK2",
-          [](Circuit *circ, const Expr &angle0, const Expr &angle1,
-             const Expr &angle2, const unsigned &qb0, const unsigned &qb1,
+          [](Circuit *circ, const ExprVariant &angle0, const ExprVariant &angle1,
+             const ExprVariant &angle2, const unsigned &qb0, const unsigned &qb1,
              const py::kwargs &kwargs) {
             return add_gate_method_manyparams<unsigned>(
                 circ, OpType::TK2, {angle0, angle1, angle2}, {qb0, qb1},
@@ -1107,7 +1114,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("control_qubit"), py::arg("target_qubit"))
       .def(
           "CRz",
-          [](Circuit *circ, const Expr &angle, unsigned ctrl, unsigned trgt,
+          [](Circuit *circ, const ExprVariant &angle, unsigned ctrl, unsigned trgt,
              const py::kwargs &kwargs) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::CRz, angle, {ctrl, trgt}, kwargs);
@@ -1119,7 +1126,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("angle"), py::arg("control_qubit"), py::arg("target_qubit"))
       .def(
           "CRx",
-          [](Circuit *circ, const Expr &angle, unsigned ctrl, unsigned trgt,
+          [](Circuit *circ, const ExprVariant &angle, unsigned ctrl, unsigned trgt,
              const py::kwargs &kwargs) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::CRx, angle, {ctrl, trgt}, kwargs);
@@ -1131,7 +1138,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("angle"), py::arg("control_qubit"), py::arg("target_qubit"))
       .def(
           "CRy",
-          [](Circuit *circ, const Expr &angle, unsigned ctrl, unsigned trgt,
+          [](Circuit *circ, const ExprVariant &angle, unsigned ctrl, unsigned trgt,
              const py::kwargs &kwargs) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::CRy, angle, {ctrl, trgt}, kwargs);
@@ -1143,7 +1150,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("angle"), py::arg("control_qubit"), py::arg("target_qubit"))
       .def(
           "CU1",
-          [](Circuit *circ, const Expr &angle, unsigned ctrl, unsigned trgt,
+          [](Circuit *circ, const ExprVariant &angle, unsigned ctrl, unsigned trgt,
              const py::kwargs &kwargs) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::CU1, angle, {ctrl, trgt}, kwargs);
@@ -1155,8 +1162,8 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("angle"), py::arg("control_qubit"), py::arg("target_qubit"))
       .def(
           "CU3",
-          [](Circuit *circ, const Expr &angle0, const Expr &angle1,
-             const Expr &angle2, unsigned ctrl, unsigned trgt,
+          [](Circuit *circ, const ExprVariant &angle0, const ExprVariant &angle1,
+             const ExprVariant &angle2, unsigned ctrl, unsigned trgt,
              const py::kwargs &kwargs) {
             return add_gate_method_manyparams<unsigned>(
                 circ, OpType::CU3, {angle0, angle1, angle2}, {ctrl, trgt},
@@ -1170,7 +1177,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("control_qubit"), py::arg("target_qubit"))
       .def(
           "ZZPhase",
-          [](Circuit *circ, const Expr &angle, unsigned qb0, unsigned qb1,
+          [](Circuit *circ, const ExprVariant &angle, unsigned qb0, unsigned qb1,
              const py::kwargs &kwargs) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::ZZPhase, angle, {qb0, qb1}, kwargs);
@@ -1191,7 +1198,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("qubit0"), py::arg("qubit1"))
       .def(
           "ESWAP",
-          [](Circuit *circ, const Expr &angle, unsigned qb0, unsigned qb1,
+          [](Circuit *circ, const ExprVariant &angle, unsigned qb0, unsigned qb1,
              const py::kwargs &kwargs) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::ESWAP, angle, {qb0, qb1}, kwargs);
@@ -1202,7 +1209,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("angle"), py::arg("qubit0"), py::arg("qubit1"))
       .def(
           "FSim",
-          [](Circuit *circ, const Expr &angle0, const Expr &angle1,
+          [](Circuit *circ, const ExprVariant &angle0, const ExprVariant &angle1,
              unsigned qb0, unsigned qb1, const py::kwargs &kwargs) {
             return add_gate_method_manyparams<unsigned>(
                 circ, OpType::FSim, {angle0, angle1}, {qb0, qb1}, kwargs);
@@ -1224,7 +1231,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("qubit0"), py::arg("qubit1"))
       .def(
           "XXPhase",
-          [](Circuit *circ, const Expr &angle, unsigned qb0, unsigned qb1,
+          [](Circuit *circ, const ExprVariant &angle, unsigned qb0, unsigned qb1,
              const py::kwargs &kwargs) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::XXPhase, angle, {qb0, qb1}, kwargs);
@@ -1235,7 +1242,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("angle"), py::arg("qubit0"), py::arg("qubit1"))
       .def(
           "YYPhase",
-          [](Circuit *circ, const Expr &angle, unsigned qb0, unsigned qb1,
+          [](Circuit *circ, const ExprVariant &angle, unsigned qb0, unsigned qb1,
              const py::kwargs &kwargs) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::YYPhase, angle, {qb0, qb1}, kwargs);
@@ -1246,7 +1253,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("angle"), py::arg("qubit0"), py::arg("qubit1"))
       .def(
           "XXPhase3",
-          [](Circuit *circ, const Expr &angle, unsigned qb0, unsigned qb1,
+          [](Circuit *circ, const ExprVariant &angle, unsigned qb0, unsigned qb1,
              unsigned qb2, const py::kwargs &kwargs) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::XXPhase3, angle, {qb0, qb1, qb2}, kwargs);
@@ -1259,7 +1266,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("qubit2"))
       .def(
           "PhasedX",
-          [](Circuit *circ, const Expr &angle0, const Expr &angle1, unsigned qb,
+          [](Circuit *circ, const ExprVariant &angle0, const ExprVariant &angle1, unsigned qb,
              const py::kwargs &kwargs) {
             return add_gate_method_manyparams<unsigned>(
                 circ, OpType::PhasedX, {angle0, angle1}, {qb}, kwargs);
@@ -1312,7 +1319,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("control"), py::arg("target_0"), py::arg("target_1"))
       .def(
           "ISWAP",
-          [](Circuit *circ, const Expr &angle, unsigned qb0, unsigned qb1,
+          [](Circuit *circ, const ExprVariant &angle, unsigned qb0, unsigned qb1,
              const py::kwargs &kwargs) {
             return add_gate_method_oneparam<unsigned>(
                 circ, OpType::ISWAP, angle, {qb0, qb1}, kwargs);
@@ -1333,7 +1340,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("qubit0"), py::arg("qubit1"))
       .def(
           "PhasedISWAP",
-          [](Circuit *circ, const Expr &angle0, const Expr &angle1,
+          [](Circuit *circ, const ExprVariant &angle0, const ExprVariant &angle1,
              unsigned qb0, unsigned qb1, const py::kwargs &kwargs) {
             return add_gate_method_manyparams<unsigned>(
                 circ, OpType::PhasedISWAP, {angle0, angle1}, {qb0, qb1},
@@ -1517,7 +1524,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("qubit"), py::arg("bit"))
       .def(
           "Rz",
-          [](Circuit *circ, const Expr &angle, const Qubit &qb,
+          [](Circuit *circ, const ExprVariant &angle, const Qubit &qb,
              const py::kwargs &kwargs) {
             return add_gate_method_oneparam<UnitID>(
                 circ, OpType::Rz, angle, {qb}, kwargs);
@@ -1528,7 +1535,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("angle"), py::arg("qubit"))
       .def(
           "Rx",
-          [](Circuit *circ, const Expr &angle, const Qubit &qb,
+          [](Circuit *circ, const ExprVariant &angle, const Qubit &qb,
              const py::kwargs &kwargs) {
             return add_gate_method_oneparam<UnitID>(
                 circ, OpType::Rx, angle, {qb}, kwargs);
@@ -1539,7 +1546,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("angle"), py::arg("qubit"))
       .def(
           "Ry",
-          [](Circuit *circ, const Expr &angle, const Qubit &qb,
+          [](Circuit *circ, const ExprVariant &angle, const Qubit &qb,
              const py::kwargs &kwargs) {
             return add_gate_method_oneparam<UnitID>(
                 circ, OpType::Ry, angle, {qb}, kwargs);
@@ -1550,7 +1557,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("angle"), py::arg("qubit"))
       .def(
           "U1",
-          [](Circuit *circ, const Expr &angle, const Qubit &qb,
+          [](Circuit *circ, const ExprVariant &angle, const Qubit &qb,
              const py::kwargs &kwargs) {
             return add_gate_method_oneparam<UnitID>(
                 circ, OpType::U1, angle, {qb}, kwargs);
@@ -1561,7 +1568,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("angle"), py::arg("qubit"))
       .def(
           "U2",
-          [](Circuit *circ, const Expr &angle0, const Expr &angle1,
+          [](Circuit *circ, const ExprVariant &angle0, const ExprVariant &angle1,
              const Qubit &qb, const py::kwargs &kwargs) {
             return add_gate_method_manyparams<UnitID>(
                 circ, OpType::U2, {angle0, angle1}, {qb}, kwargs);
@@ -1572,8 +1579,8 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("angle0"), py::arg("angle1"), py::arg("qubit"))
       .def(
           "U3",
-          [](Circuit *circ, const Expr &angle0, const Expr &angle1,
-             const Expr &angle2, const Qubit &qb, const py::kwargs &kwargs) {
+          [](Circuit *circ, const ExprVariant &angle0, const ExprVariant &angle1,
+             const ExprVariant &angle2, const Qubit &qb, const py::kwargs &kwargs) {
             return add_gate_method_manyparams<UnitID>(
                 circ, OpType::U3, {angle0, angle1, angle2}, {qb}, kwargs);
           },
@@ -1584,8 +1591,8 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("qubit"))
       .def(
           "TK1",
-          [](Circuit *circ, const Expr &angle0, const Expr &angle1,
-             const Expr &angle2, const Qubit &qb, const py::kwargs &kwargs) {
+          [](Circuit *circ, const ExprVariant &angle0, const ExprVariant &angle1,
+             const ExprVariant &angle2, const Qubit &qb, const py::kwargs &kwargs) {
             return add_gate_method_manyparams<UnitID>(
                 circ, OpType::TK1, {angle0, angle1, angle2}, {qb}, kwargs);
           },
@@ -1596,8 +1603,8 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("qubit"))
       .def(
           "TK2",
-          [](Circuit *circ, const Expr &angle0, const Expr &angle1,
-             const Expr &angle2, const Qubit &qb0, const Qubit &qb1,
+          [](Circuit *circ, const ExprVariant &angle0, const ExprVariant &angle1,
+             const ExprVariant &angle2, const Qubit &qb0, const Qubit &qb1,
              const py::kwargs &kwargs) {
             return add_gate_method_manyparams<UnitID>(
                 circ, OpType::TK2, {angle0, angle1, angle2}, {qb0, qb1},
@@ -1698,7 +1705,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("control_qubit"), py::arg("target_qubit"))
       .def(
           "CRz",
-          [](Circuit *circ, const Expr &angle, const Qubit &ctrl,
+          [](Circuit *circ, const ExprVariant &angle, const Qubit &ctrl,
              const Qubit &trgt, const py::kwargs &kwargs) {
             return add_gate_method_oneparam<UnitID>(
                 circ, OpType::CRz, angle, {ctrl, trgt}, kwargs);
@@ -1710,7 +1717,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("angle"), py::arg("control_qubit"), py::arg("target_qubit"))
       .def(
           "CRx",
-          [](Circuit *circ, const Expr &angle, const Qubit &ctrl,
+          [](Circuit *circ, const ExprVariant &angle, const Qubit &ctrl,
              const Qubit &trgt, const py::kwargs &kwargs) {
             return add_gate_method_oneparam<UnitID>(
                 circ, OpType::CRx, angle, {ctrl, trgt}, kwargs);
@@ -1722,7 +1729,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("angle"), py::arg("control_qubit"), py::arg("target_qubit"))
       .def(
           "CRy",
-          [](Circuit *circ, const Expr &angle, const Qubit &ctrl,
+          [](Circuit *circ, const ExprVariant &angle, const Qubit &ctrl,
              const Qubit &trgt, const py::kwargs &kwargs) {
             return add_gate_method_oneparam<UnitID>(
                 circ, OpType::CRy, angle, {ctrl, trgt}, kwargs);
@@ -1734,7 +1741,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("angle"), py::arg("control_qubit"), py::arg("target_qubit"))
       .def(
           "CU1",
-          [](Circuit *circ, const Expr &angle, const Qubit &ctrl,
+          [](Circuit *circ, const ExprVariant &angle, const Qubit &ctrl,
              const Qubit &trgt, const py::kwargs &kwargs) {
             return add_gate_method_oneparam<UnitID>(
                 circ, OpType::CU1, angle, {ctrl, trgt}, kwargs);
@@ -1746,8 +1753,8 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("angle"), py::arg("control_qubit"), py::arg("target_qubit"))
       .def(
           "CU3",
-          [](Circuit *circ, const Expr &angle0, const Expr &angle1,
-             const Expr &angle2, const Qubit &ctrl, const Qubit &trgt,
+          [](Circuit *circ, const ExprVariant &angle0, const ExprVariant &angle1,
+             const ExprVariant &angle2, const Qubit &ctrl, const Qubit &trgt,
              const py::kwargs &kwargs) {
             return add_gate_method_manyparams<UnitID>(
                 circ, OpType::CU3, {angle0, angle1, angle2}, {ctrl, trgt},
@@ -1762,7 +1769,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
 
       .def(
           "ZZPhase",
-          [](Circuit *circ, const Expr &angle, const Qubit &qb0,
+          [](Circuit *circ, const ExprVariant &angle, const Qubit &qb0,
              const Qubit &qb1, const py::kwargs &kwargs) {
             return add_gate_method_oneparam<UnitID>(
                 circ, OpType::ZZPhase, angle, {qb0, qb1}, kwargs);
@@ -1783,7 +1790,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("qubit0"), py::arg("qubit1"))
       .def(
           "ESWAP",
-          [](Circuit *circ, const Expr &angle, const Qubit &qb0,
+          [](Circuit *circ, const ExprVariant &angle, const Qubit &qb0,
              const Qubit &qb1, const py::kwargs &kwargs) {
             return add_gate_method_oneparam<UnitID>(
                 circ, OpType::ESWAP, angle, {qb0, qb1}, kwargs);
@@ -1794,7 +1801,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("angle"), py::arg("qubit0"), py::arg("qubit1"))
       .def(
           "FSim",
-          [](Circuit *circ, const Expr &angle0, const Expr &angle1,
+          [](Circuit *circ, const ExprVariant &angle0, const ExprVariant &angle1,
              const Qubit &qb0, const Qubit &qb1, const py::kwargs &kwargs) {
             return add_gate_method_manyparams<UnitID>(
                 circ, OpType::FSim, {angle0, angle1}, {qb0, qb1}, kwargs);
@@ -1816,7 +1823,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("qubit0"), py::arg("qubit1"))
       .def(
           "XXPhase",
-          [](Circuit *circ, const Expr &angle, const Qubit &qb0,
+          [](Circuit *circ, const ExprVariant &angle, const Qubit &qb0,
              const Qubit &qb1, const py::kwargs &kwargs) {
             return add_gate_method_oneparam<UnitID>(
                 circ, OpType::XXPhase, angle, {qb0, qb1}, kwargs);
@@ -1827,7 +1834,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("qubit0"), py::arg("qubit1"), py::arg("angle"))
       .def(
           "YYPhase",
-          [](Circuit *circ, const Expr &angle, const Qubit &qb0,
+          [](Circuit *circ, const ExprVariant &angle, const Qubit &qb0,
              const Qubit &qb1, const py::kwargs &kwargs) {
             return add_gate_method_oneparam<UnitID>(
                 circ, OpType::YYPhase, angle, {qb0, qb1}, kwargs);
@@ -1838,7 +1845,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("qubit0"), py::arg("qubit1"), py::arg("angle"))
       .def(
           "XXPhase3",
-          [](Circuit *circ, const Expr &angle, const Qubit &qb0,
+          [](Circuit *circ, const ExprVariant &angle, const Qubit &qb0,
              const Qubit &qb1, const Qubit &qb2, const py::kwargs &kwargs) {
             return add_gate_method_oneparam<UnitID>(
                 circ, OpType::XXPhase3, angle, {qb0, qb1, qb2}, kwargs);
@@ -1850,7 +1857,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("qubit2"))
       .def(
           "PhasedX",
-          [](Circuit *circ, const Expr &angle0, const Expr &angle1,
+          [](Circuit *circ, const ExprVariant &angle0, const ExprVariant &angle1,
              const Qubit &qubit, const py::kwargs &kwargs) {
             return add_gate_method_manyparams<UnitID>(
                 circ, OpType::PhasedX, {angle0, angle1}, {qubit}, kwargs);
@@ -1903,7 +1910,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("control"), py::arg("target_0"), py::arg("target_1"))
       .def(
           "ISWAP",
-          [](Circuit *circ, const Expr &angle, const Qubit &qb0,
+          [](Circuit *circ, const ExprVariant &angle, const Qubit &qb0,
              const Qubit &qb1, const py::kwargs &kwargs) {
             return add_gate_method_oneparam<UnitID>(
                 circ, OpType::ISWAP, angle, {qb0, qb1}, kwargs);
@@ -1924,7 +1931,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("qubit0"), py::arg("qubit1"))
       .def(
           "PhasedISWAP",
-          [](Circuit *circ, const Expr &angle0, const Expr &angle1,
+          [](Circuit *circ, const ExprVariant &angle0, const ExprVariant &angle1,
              const Qubit &qb0, const Qubit &qb1, const py::kwargs &kwargs) {
             return add_gate_method_manyparams<UnitID>(
                 circ, OpType::PhasedISWAP, {angle0, angle1}, {qb0, qb1},
@@ -1938,7 +1945,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("qubit1"))
       .def(
           "Phase",
-          [](Circuit *circ, const Expr &angle, const py::kwargs &kwargs) {
+          [](Circuit *circ, const ExprVariant &angle, const py::kwargs &kwargs) {
             return add_gate_method_oneparam<UnitID>(
                 circ, OpType::Phase, angle, {}, kwargs);
           });

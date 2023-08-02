@@ -24,6 +24,7 @@
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Utils/Json.hpp"
 #include "typecast.hpp"
+#include "py_operators.hpp"
 
 namespace py = pybind11;
 using json = nlohmann::json;
@@ -34,6 +35,7 @@ PYBIND11_MODULE(architecture, m) {
   py::class_<Architecture, std::shared_ptr<Architecture>>(
       m, "Architecture",
       "Class describing the connectivity of qubits on a general device.")
+      .def(py::init<>(), "Produces an empty architecture")
       .def(
           py::init([](const std::vector<std::pair<unsigned, unsigned>>
                           &connections) { return Architecture(connections); }),
@@ -88,14 +90,14 @@ PYBIND11_MODULE(architecture, m) {
       // as far as Python is concerned, Architectures are immutable
       .def(
           "__deepcopy__",
-          [](const Architecture &arc, py::dict = py::dict()) { return arc; })
+          [](const Architecture &arc, const py::dict& = py::dict()) { return arc; })
       .def(
           "__repr__",
           [](const Architecture &arc) {
             return "<tket::Architecture, nodes=" +
                    std::to_string(arc.n_nodes()) + ">";
           })
-      .def(py::self == py::self);
+      .def("__eq__", &py_equals<Architecture>);
   py::class_<SquareGrid, std::shared_ptr<SquareGrid>, Architecture>(
       m, "SquareGrid",
       "Inherited Architecture class for qubits arranged in a square lattice of "
@@ -190,7 +192,7 @@ PYBIND11_MODULE(architecture, m) {
             return "<tket::FullyConnected, nodes=" +
                    std::to_string(arc.n_nodes()) + ">";
           })
-      .def(py::self == py::self)
+      .def("__eq__", &py_equals<FullyConnected>)
       .def_property_readonly(
           "nodes", &FullyConnected::get_all_nodes_vec,
           "All nodes of the architecture as :py:class:`Node` objects.")

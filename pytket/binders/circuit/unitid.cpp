@@ -22,6 +22,7 @@
 #include "binder_json.hpp"
 #include "tket/Utils/Json.hpp"
 #include "unit_downcast.hpp"
+#include "py_operators.hpp"
 
 namespace py = pybind11;
 using json = nlohmann::json;
@@ -42,7 +43,7 @@ void declare_register(py::module &m, const std::string &typestr) {
           py::arg("name"), py::arg("size"))
       .def("__getitem__", &UnitRegister<T>::operator[])
       .def("__lt__", &UnitRegister<T>::operator<)
-      .def("__eq__", &UnitRegister<T>::operator==)
+      .def("__eq__", &py_equals<UnitRegister<T>>)
       .def("__contains__", &UnitRegister<T>::contains)
       .def("__len__", &UnitRegister<T>::size)
       .def("__str__", &UnitRegister<T>::name)
@@ -86,14 +87,13 @@ void init_unitid(py::module &m) {
   py::class_<UnitID>(
       m, "UnitID", "A handle to a computational unit (e.g. qubit, bit)")
       .def(py::init<>())
-      .def("__eq__", &UnitID::operator==)
+      .def("__eq__", &py_equals<UnitID>)
       .def("__lt__", &UnitID::operator<)
       .def("__repr__", &UnitID::repr)
       .def("__hash__", [](const UnitID &id) { return hash_value(id); })
       .def("__copy__", [](const UnitID &id) { return UnitID(id); })
       .def(
           "__deepcopy__", [](const UnitID &id, py::dict) { return UnitID(id); })
-      .def(py::self == py::self)
       .def_property_readonly(
           "reg_name", &UnitID::reg_name, "Readable name of register")
       .def_property_readonly(
@@ -185,7 +185,7 @@ void init_unitid(py::module &m) {
           "index\n\n:param name: The readable name for the "
           "register\n:param index: The index vector",
           py::arg("name"), py::arg("index"))
-      .def(py::self == py::self)
+      .def("__eq__",&py_equals<Bit>)
       .def("__hash__", [](const Bit &b) { return hash_value(b); })
       .def(
           "to_list", [](const Bit &b) { return json(b); },
