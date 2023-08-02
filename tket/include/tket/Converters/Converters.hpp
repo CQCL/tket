@@ -108,8 +108,87 @@ ChoiMixTableau circuit_to_cm_tableau(const Circuit &circ);
  * outputs p[0], p[1]), then the synthesised circuit may have up to four qubits
  * and there are then enough to use a separate initialised qubit.
  */
+
+/**
+ * Constructs a circuit producing the same effect as a ChoiMixTableau.
+ * Since Circuit does not support distinct qubit addresses for inputs and
+ * outputs, also returns a map from the output qubit IDs in the tableau to their
+ * corresponding outputs in the circuit.
+ *
+ * The circuit produced will be the (possibly non-unitary) channel whose
+ * stabilisers are exactly those of the tableau and no more, using
+ * initialisations, post-selections, discards, resets, and collapses to ensure
+ * this. It will automatically reuse qubits so no more qubits will be needed
+ * than max(tab.get_n_inputs(), tab.get_n_outputs()).
+ *
+ * Example 1:
+ * ZXI -> ()
+ * YYZ -> ()
+ * This becomes a diagonalisation circuit followed by post-selections.
+ *
+ * Example 2:
+ * Z -> ZZ
+ * X -> IY
+ * Z -> -XX
+ * Combining the first and last rows reveals an initialisation is required for I
+ * -> YY. Since there are two output qubits, at least one of them does not
+ * already exist in the input fragment so we can freely add an extra qubit on
+ * the input side, initialise it and apply a unitary mapping IZ -> YY.
+ *
+ * Example 3:
+ * ZX -> IZ
+ * II -> ZI
+ * We require an initialised qubit for the final row, but both input and output
+ * spaces only have q[0] and q[1], of which both inputs need to be open for the
+ * first row. We can obtain an initialised qubit by resetting a qubit after
+ * reducing the first row to only a single qubit.
+ */
 std::pair<Circuit, qubit_map_t> cm_tableau_to_exact_circuit(
     const ChoiMixTableau &tab, CXConfigType cx_config = CXConfigType::Snake);
+
+/**
+ * We define a unitary extension of a ChoiMixTableau to be a unitary circuit
+ * whose stabilizer group contain all the rows of the ChoiMixTableau and
+ * possibly more. This is useful when we are treating the ChoiMixTableau as a
+ * means to encode a diagonalisation problem, since we are generally looking for
+ * a unitary as we may wish to apply the inverse afterwards (e.g. conjugating
+ * some rotations to implement a set of Pauli gadgets).
+ *
+ * Not every ChoiMixTableau can be extended to a unitary by just adding rows,
+ * e.g. if it requires any initialisation or post-selections. In this case, the
+ * unitary circuit is extended with additional input qubits which are assumed to
+ * be zero-initialised, and additional output qubits which are assumed to be
+ * post-selected. The synthesis guarantees that, if we take the unitary,
+ * initialise all designated inputs, and post-select on all designated outputs,
+ * every row from the original tableau is a stabiliser for the remaining
+ * projector. When not enough additional qubit names are provided, an error is
+ * thrown.
+ *
+ *
+ * Example 1:
+ * ZXI -> ()
+ * YYZ -> ()
+ * Since, in exact synthesis, at least two post-selections would be required, we
+ * pick two names from post_names. This is then a diagonalisation circuit which
+ * maps each row to an arbitrary diagonal string over post_names.
+ *
+ * Example 2:
+ * Z -> ZZ
+ * X -> IY
+ * Z -> -XX
+ * Combining the first and last rows reveals an initialisation is required for I
+ * -> YY. We extend the inputs with a qubit from init_names. The initialisation
+ * can manifest as either altering the first row to ZZ -> ZZ or the last row to
+ * ZZ -> -XX.
+ *
+ * Example 3:
+ * ZX -> IZ
+ * II -> ZI
+ * We require an initialised qubit for the final row, but both input and output
+ * spaces only have q[0] and q[1], of which both inputs need to be open for the
+ * first row. Unlike exact synthesis, we cannot reuse qubits, so the returned
+ * circuit will be over 3 qubits, extending with a name from init_names.
+ */
 std::pair<Circuit, qubit_map_t> cm_tableau_to_unitary_extension_circuit(
     const ChoiMixTableau &tab, const std::vector<Qubit> &init_names = {},
     const std::vector<Qubit> &post_names = {},
