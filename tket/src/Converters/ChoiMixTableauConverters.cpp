@@ -117,9 +117,16 @@ struct ChoiMixBuilder {
   // between a pair of qubits; we solve this by pairwise Pauli reduction methods
   void solve_id_subspace();
   // After removing the identity subspace, all remaining rows mutually commute
-  // within each tableau segment; we can diagonalise both segments and then
-  // reduce each row down to a minimal set of qubits
-  void solve_segmentwise_commuting_subspace();
+  // within each tableau segment; diagonalise each segment individually
+  void diagonalise_segments();
+  // Solve the post-selected subspace which has already been diagonalised
+  void solve_postselected_subspace();
+  // Solve the zero-initialised subspace which has already been diagonalised
+  void solve_initialised_subspace();
+  // All remaining rows are in the collapsed subspace (each row is the unique
+  // stabilizer passing through some Collapse gate); solve it
+  void solve_collapsed_subspace();
+
   // Simplifies the tableau by removing qubits on which all rows have I; such
   // qubits are either discarded inputs or mixed-initialised outputs
   void remove_unused_qubits();
@@ -143,7 +150,10 @@ std::pair<Circuit, qubit_map_t> cm_tableau_to_exact_circuit(
   ChoiMixBuilder builder(tab, cx_config);
   builder.remove_unused_qubits();
   builder.solve_id_subspace();
-  builder.solve_segmentwise_commuting_subspace();
+  builder.diagonalise_segments();
+  builder.solve_postselected_subspace();
+  builder.solve_initialised_subspace();
+  builder.solve_collapsed_subspace();
   builder.remove_unused_qubits();
   builder.assign_remaining_names();
   return builder.output_circuit();
@@ -155,7 +165,10 @@ std::pair<Circuit, qubit_map_t> cm_tableau_to_unitary_extension_circuit(
   ChoiMixBuilder builder(tab, cx_config, init_names, post_names);
   builder.remove_unused_qubits();
   builder.solve_id_subspace();
-  builder.solve_segmentwise_commuting_subspace();
+  builder.diagonalise_segments();
+  builder.solve_postselected_subspace();
+  builder.solve_initialised_subspace();
+  builder.solve_collapsed_subspace();
   builder.remove_unused_qubits();
   builder.assign_init_post_names();
   builder.assign_remaining_names();
@@ -374,7 +387,7 @@ leading_column_gaussian_col_ops(const MatrixXb& source) {
   return res;
 }
 
-void ChoiMixBuilder::solve_segmentwise_commuting_subspace() {
+void ChoiMixBuilder::diagonalise_segments() {
   // Canonicalise tableau
   tab.canonical_column_order(ChoiMixTableau::TableauSegment::Output);
   tab.gaussian_form();
@@ -416,15 +429,22 @@ void ChoiMixBuilder::solve_segmentwise_commuting_subspace() {
       MatrixXb::Zero(tab.get_n_rows(), tab.get_n_boundaries()))
     throw std::logic_error(
         "Diagonalisation in ChoiMixTableau synthesis failed");
+}
 
+void ChoiMixBuilder::solve_postselected_subspace() {
   // As column order is currently output first, gaussian form will reveal the
   // post-selected space at the bottom of the tableau and the submatrix of those
   // rows will already be in upper echelon form
   tab.gaussian_form();
   // Reduce them to a minimal set of qubits using CX gates
-  unsigned n_postselected = tab.get_n_rows() - to_diag_outs.size();
-  unsigned n_outs = output_qubits.size();
-  unsigned n_ins = input_qubits.size();
+  unsigned n_postselected = 0;
+  for (; n_postselected < tab.get_n_rows(); ++n_postselected) {
+    if (!tab.get_row(tab.get_n_rows() - 1 - n_postselected)
+             .second.string.map.empty())
+      break;
+  }
+  unsigned n_ins = tab.get_n_inputs();
+  unsigned n_outs = tab.get_n_outputs();
   MatrixXb subtableau = tab.tab_.zmat_.bottomRightCorner(n_postselected, n_ins);
   std::vector<std::pair<unsigned, unsigned>> col_ops =
       leading_column_gaussian_col_ops(subtableau);
@@ -457,9 +477,10 @@ void ChoiMixBuilder::solve_segmentwise_commuting_subspace() {
     tab.remove_row(final_row);
     post_selected.insert(post_selected_qb);
     tab.discard_qubit(post_selected_qb, ChoiMixTableau::TableauSegment::Input);
-    --n_ins;
   }
+}
 
+void ChoiMixBuilder::solve_initialised_subspace() {
   // Input-first gaussian elimination now sorts the remaining rows into the
   // collapsed subspace followed by the zero-initialised subspace and the
   // collapsed subspace rows are in upper echelon form over the inputs, giving
@@ -474,9 +495,12 @@ void ChoiMixBuilder::solve_segmentwise_commuting_subspace() {
   for (; n_collapsed < tab.get_n_rows(); ++n_collapsed) {
     if (tab.get_row(n_collapsed).first.string.map.empty()) break;
   }
-  subtableau =
+  unsigned n_ins = tab.get_n_inputs();
+  unsigned n_outs = tab.get_n_outputs();
+  MatrixXb subtableau =
       tab.tab_.zmat_.bottomRightCorner(tab.get_n_rows() - n_collapsed, n_outs);
-  col_ops = leading_column_gaussian_col_ops(subtableau);
+  std::vector<std::pair<unsigned, unsigned>> col_ops =
+      leading_column_gaussian_col_ops(subtableau);
   for (const std::pair<unsigned, unsigned>& op : col_ops) {
     unsigned tab_ctrl_col = n_ins + op.second;
     unsigned tab_trgt_col = n_ins + op.first;
@@ -506,14 +530,18 @@ void ChoiMixBuilder::solve_segmentwise_commuting_subspace() {
     tab.remove_row(r);
     zero_initialised.insert(initialised_qb);
     tab.discard_qubit(initialised_qb, ChoiMixTableau::TableauSegment::Output);
-    --n_outs;
   }
+}
 
+void ChoiMixBuilder::solve_collapsed_subspace() {
   // Solving the initialised subspace will have preserved the upper echelon form
   // of the collapsed subspace; reduce the inputs of the collapsed space to a
   // minimal set of qubits using CX gates
-  subtableau = tab.tab_.zmat_.topLeftCorner(n_collapsed, n_ins);
-  col_ops = leading_column_gaussian_col_ops(subtableau);
+  unsigned n_ins = tab.get_n_inputs();
+  unsigned n_outs = tab.get_n_outputs();
+  MatrixXb subtableau = tab.tab_.zmat_.topLeftCorner(tab.get_n_rows(), n_ins);
+  std::vector<std::pair<unsigned, unsigned>> col_ops =
+      leading_column_gaussian_col_ops(subtableau);
   for (const std::pair<unsigned, unsigned>& op : col_ops) {
     tab.tab_.apply_CX(op.second, op.first);
     ChoiMixTableau::col_key_t ctrl = tab.col_index_.right.at(op.second);
@@ -530,7 +558,7 @@ void ChoiMixBuilder::solve_segmentwise_commuting_subspace() {
   n_ins = tab.get_n_inputs();
   n_outs = tab.get_n_outputs();
   col_ops = gaussian_elimination_col_ops(
-      tab.tab_.zmat_.topRightCorner(n_collapsed, n_outs));
+      tab.tab_.zmat_.topRightCorner(tab.get_n_rows(), n_outs));
   for (const std::pair<unsigned, unsigned>& op : col_ops) {
     tab.tab_.apply_CX(n_ins + op.second, n_ins + op.first);
     ChoiMixTableau::col_key_t ctrl = tab.col_index_.right.at(n_ins + op.second);
