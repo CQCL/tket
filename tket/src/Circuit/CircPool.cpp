@@ -983,7 +983,6 @@ static Circuit TK2_swap_replacement(std::array<Expr, 3> angles) {
   // Try to evaluate exprs to doubles.
   std::array<double, 3> angles_eval;
   std::array<double, 3> angles_eval_swapped;
-  unsigned last_angle = 0;
   for (; last_angle < 3; ++last_angle) {
     std::optional<double> eval = eval_expr_mod(angles[last_angle]);
     if (eval) {
@@ -991,16 +990,10 @@ static Circuit TK2_swap_replacement(std::array<Expr, 3> angles) {
     } else {
       break;
     }
-  }
-
-  unsigned last_angle_swapped = 0;
-  for (; last_angle_swapped < 3; ++last_angle_swapped) {
-    std::optional<double> eval =
-        eval_expr_mod(angles_swapped[last_angle_swapped]);
-    if (eval) {
-      angles_eval_swapped[last_angle_swapped] = *eval;
-    } else {
-      break;
+    if (allow_swaps) {
+      eval = eval_expr_mod(angles_swapped[last_angle]);
+      TKET_ASSERT(eval);
+      angles_eval_swapped[last_angle] = *eval;
     }
   }
 
@@ -1008,13 +1001,11 @@ static Circuit TK2_swap_replacement(std::array<Expr, 3> angles) {
   if (last_angle <= 2) {
     if (equiv_0(angles[2], 4) && equiv_0(angles[1], 4)) {
       n_gates = 1;
-    } else if (equiv_0(angles[2], 4)) {
-      n_gates = 2;
-    }
-  } else if (last_angle_swapped <= 2) {
-    if (equiv_0(angles_swapped[2], 4) && equiv_0(angles_swapped[1], 4)) {
+    } else if (equiv_0(angles_swapped[2], 4) && equiv_0(angles_swapped[1], 4)) {
       implicit_swap = true;
       n_gates = 1;
+    } else if (equiv_0(angles[2], 4)) {
+      n_gates = 2;
     } else if (equiv_0(angles_swapped[2], 4)) {
       implicit_swap = true;
       n_gates = 2;
