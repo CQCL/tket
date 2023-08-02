@@ -79,7 +79,7 @@ class PyBind11Conan(ConanFile):
             os.path.join(
                 self.package_folder, "lib", "cmake", "pybind11", "pybind11Common.cmake"
             ),
-            "if(TARGET pybind11::lto)",
+            "if(TARGET pybind11::pybind11)",
             "if(FALSE)",
         )
         replace_in_file(
