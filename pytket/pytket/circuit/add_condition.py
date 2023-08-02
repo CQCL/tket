@@ -85,7 +85,7 @@ def _add_condition(
     assert isinstance(pred_exp, (RegLogicExp, BitRegister))
     if isinstance(pred_exp, RegLogicExp):
         inps = pred_exp.all_inputs()
-        min_reg_size = min(reg.size for reg in inps)
+        min_reg_size = min(reg.size for reg in inps)  # type: ignore
         existing_reg_names = set(
             bit.reg_name
             for bit in circ.bits
@@ -97,10 +97,10 @@ def _add_condition(
         next_index = max(existing_reg_indices, default=-1) + 1
         temp_reg = BitRegister(f"{_TEMP_BIT_REG_BASE}_{next_index}", _TEMP_REG_SIZE)
         circ.add_c_register(temp_reg)
-        target_bits = list(temp_reg)[:min_reg_size]
+        target_bits = list(temp_reg)[:min_reg_size]  # type: ignore
         circ.add_classicalexpbox_register(pred_exp, target_bits)
     else:
-        target_bits = list(cast(BitRegister, pred_exp))
+        target_bits = list(cast(BitRegister, pred_exp))  # type: ignore
 
     minval = 0
     maxval = (1 << 32) - 1

@@ -14,6 +14,8 @@
 
 import copy
 from typing import cast, Dict, TYPE_CHECKING, Union, List, Optional, Set, Any
+
+import numpy
 import numpy as np
 from sympy import Symbol, sympify, Expr, re, im  # type: ignore
 from pytket.pauli import QubitPauliString, pauli_string_mult  # type: ignore
@@ -249,7 +251,7 @@ class QubitPauliOperator:
             if type(coeff) is str:
                 return sympify(coeff)  # type: ignore
             else:
-                return cast(complex, list_to_complex(coeff))
+                return list_to_complex(coeff)
 
         return QubitPauliOperator({get_qps(obj): get_coeff(obj) for obj in pauli_list})
 
@@ -276,13 +278,17 @@ class QubitPauliOperator:
         :return: A sparse matrix representation of the operator.
         :rtype: csc_matrix
         """
-        qubits_ = qubits
         if qubits is None:
             qubits_ = sorted(list(self._all_qubits))
+            return sum(
+                complex(coeff) * pauli.to_sparse_matrix(qubits_)
+                for pauli, coeff in self._dict.items()
+            )
         return sum(
-            complex(coeff) * pauli.to_sparse_matrix(qubits_)
+            complex(coeff) * pauli.to_sparse_matrix(qubits)
             for pauli, coeff in self._dict.items()
         )
+
 
     def dot_state(
         self, state: np.ndarray, qubits: Optional[List[Qubit]] = None
@@ -303,14 +309,17 @@ class QubitPauliOperator:
         :return: The dot product of the operator with the statevector
         :rtype: numpy.ndarray
         """
-        indexed_state = [state, qubits] if qubits else [state]
-        return cast(
-            np.ndarray,
-            sum(
-                complex(coeff) * pauli.dot_state(*indexed_state)
+        if qubits:
+            product_sum =  sum(
+                complex(coeff) * pauli.dot_state(state, qubits)
                 for pauli, coeff in self._dict.items()
-            ),
-        )
+            )
+        else:
+            product_sum = sum(
+                complex(coeff) * pauli.dot_state(state)
+                for pauli, coeff in self._dict.items()
+            )
+        return product_sum if isinstance(product_sum, numpy.ndarray) else state
 
     def state_expectation(
         self, state: np.ndarray, qubits: Optional[List[Qubit]] = None
@@ -331,13 +340,14 @@ class QubitPauliOperator:
         :return: The expectation value of the statevector and operator
         :rtype: complex
         """
-        indexed_state = [state, qubits] if qubits else [state]
-        return cast(
-            complex,
-            sum(
-                complex(coeff) * pauli.state_expectation(*indexed_state)
+        if qubits:
+            return sum(
+                complex(coeff) * pauli.state_expectation(state, qubits)
                 for pauli, coeff in self._dict.items()
-            ),
+            )
+        return sum(
+            complex(coeff) * pauli.state_expectation(state)
+            for pauli, coeff in self._dict.items()
         )
 
     def compress(self, abs_tol: float = 1e-10) -> None:
@@ -375,7 +385,7 @@ class QubitPauliOperator:
             del self._dict[key]
 
     def _collect_qubits(self) -> None:
-        self._all_qubits = set()
+        self._all_qubits: set[Qubit] = set()
         for key in self._dict.keys():
             for q in key.map.keys():
                 self._all_qubits.add(q)

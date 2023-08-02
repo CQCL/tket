@@ -13,17 +13,16 @@
 // limitations under the License.
 
 #include <pybind11/eigen.h>
-#include <pybind11/functional.h>
 #include <pybind11/operators.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
 #include <optional>
 #include <sstream>
+#include <utility>
 
 #include "UnitRegister.hpp"
 #include "binder_json.hpp"
-#include "binder_utils.hpp"
 #include "boost/graph/iteration_macros.hpp"
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/Circuit.hpp"
@@ -38,6 +37,7 @@
 #include "tket/Utils/Json.hpp"
 #include "typecast.hpp"
 #include "py_operators.hpp"
+#include "variant_conversion.hpp"
 
 namespace py = pybind11;
 using json = nlohmann::json;
@@ -88,13 +88,13 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>>& pyCircuit){
           [](const Circuit &circ) {
             std::stringstream ss;
             ss << "[";
-            for (auto q : circ.created_qubits()) {
+            for (const auto& q : circ.created_qubits()) {
               ss << "Create " << q.repr() << "; ";
             }
-            for (auto com : circ.get_commands()) {
+            for (const auto& com : circ.get_commands()) {
               ss << com.to_str() << " ";
             }
-            for (auto q : circ.discarded_qubits()) {
+            for (const auto& q : circ.discarded_qubits()) {
               ss << "Discard " << q.repr() << "; ";
             }
             ss << "]";
@@ -165,7 +165,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>>& pyCircuit){
             const std::size_t &size = reg.size();
             register_t existing = circ.get_reg(name);
 
-            if (existing.size() > 0) {
+            if (!existing.empty()) {
               if (existing.size() != size) {
                 throw CircuitInvalidity(
                     "Existing register with name \"" + name +
@@ -209,7 +209,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>>& pyCircuit){
             const std::size_t &size = reg.size();
             register_t existing = circ.get_reg(name);
 
-            if (existing.size() > 0) {
+            if (!existing.empty()) {
               if (existing.size() != size) {
                 throw CircuitInvalidity(
                     "Existing register with name \"" + name +
@@ -228,7 +228,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>>& pyCircuit){
           "get_c_register",
           [](Circuit &circ, const std::string &name) {
             register_t reg = circ.get_reg(name);
-            if (reg.size() == 0 ||
+            if (reg.empty() ||
                 reg.begin()->second.type() != UnitType::Bit) {
               throw CircuitInvalidity(
                   "Cannot find classical register with name \"" + name + "\".");
@@ -245,7 +245,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>>& pyCircuit){
             bit_vector_t all_bits = circ.all_bits();
             std::map<std::string, unsigned> bits_map;
             std::vector<BitRegister> b_regs;
-            for (Bit bit : all_bits) {
+            for (const Bit& bit : all_bits) {
               auto it = bits_map.find(bit.reg_name());
               if (it == bits_map.end()) {
                 bits_map.insert({bit.reg_name(), 1});
@@ -253,8 +253,9 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>>& pyCircuit){
                 it->second++;
               }
             }
+            b_regs.reserve(bits_map.size());
             for (auto const &it : bits_map) {
-              b_regs.push_back(BitRegister(it.first, it.second));
+              b_regs.emplace_back(it.first, it.second);
             }
             return b_regs;
           },
@@ -264,7 +265,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>>& pyCircuit){
           "get_q_register",
           [](Circuit &circ, const std::string &name) {
             register_t reg = circ.get_reg(name);
-            if (reg.size() == 0 ||
+            if (reg.empty() ||
                 reg.begin()->second.type() != UnitType::Qubit) {
               throw CircuitInvalidity(
                   "Cannot find quantum register with name \"" + name + "\".");
@@ -281,7 +282,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>>& pyCircuit){
             qubit_vector_t all_qbs = circ.all_qubits();
             std::map<std::string, unsigned> qbs_map;
             std::vector<QubitRegister> q_regs;
-            for (Qubit qb : all_qbs) {
+            for (const Qubit& qb : all_qbs) {
               auto it = qbs_map.find(qb.reg_name());
               if (it == qbs_map.end()) {
                 qbs_map.insert({qb.reg_name(), 1});
@@ -289,8 +290,9 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>>& pyCircuit){
                 it->second++;
               }
             }
+            q_regs.reserve(qbs_map.size());
             for (auto const &it : qbs_map) {
-              q_regs.push_back(QubitRegister(it.first, it.second));
+              q_regs.emplace_back(it.first, it.second);
             }
             return q_regs;
           },
@@ -409,8 +411,9 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>>& pyCircuit){
           py::arg("circuit"))
       .def(
           "add_phase",
-          [](Circuit &circ, Expr a) {
-            circ.add_phase(a);
+          [](Circuit &circ, const ExprVariant& a) {
+              const auto& expr_a = convertVariantToFirstType(a);
+            circ.add_phase(expr_a);
             return &circ;
           },
           "Add a global phase to the circuit.\n\n:param a: Phase to "
@@ -548,7 +551,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>>& pyCircuit){
           "Construct Circuit instance from JSON serializable "
           "dictionary representation of the Circuit.")
       .def(py::pickle(
-          [](py::object self) {  // __getstate__
+          [](const py::object& self) {  // __getstate__
             return py::make_tuple(self.attr("to_dict")());
           },
           [](const py::tuple &t) {  // __setstate__
@@ -617,8 +620,8 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>>& pyCircuit){
           "contains any free symbols, False otherwise.")
       .def(
           "substitute_named",
-          [](Circuit &circ, Op_ptr op, const std::string opgroup) {
-            return circ.substitute_named(op, opgroup);
+          [](Circuit &circ, Op_ptr op, const std::string& opgroup) {
+            return circ.substitute_named(std::move(op), opgroup);
           },
           "Substitute all ops with the given name for the given op."
           "The replacement operations retain the same name.\n\n"
@@ -628,7 +631,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>>& pyCircuit){
           py::arg("op"), py::arg("opgroup"))
       .def(
           "substitute_named",
-          [](Circuit &circ, const Circuit &repl, const std::string opgroup) {
+          [](Circuit &circ, const Circuit &repl, const std::string& opgroup) {
             return circ.substitute_named(repl, opgroup);
           },
           "Substitute all ops with the given name for the given circuit."
@@ -640,7 +643,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>>& pyCircuit){
           py::arg("repl"), py::arg("opgroup"))
       .def(
           "substitute_named",
-          [](Circuit &circ, const CircBox &box, const std::string opgroup) {
+          [](Circuit &circ, const CircBox &box, const std::string& opgroup) {
             return circ.substitute_named(box, opgroup);
           },
           "Substitute all ops with the given name for the given box."
@@ -652,7 +655,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>>& pyCircuit){
       .def(
           "substitute_named",
           [](Circuit &circ, const Unitary1qBox &box,
-             const std::string opgroup) {
+             const std::string& opgroup) {
             return circ.substitute_named(box, opgroup);
           },
           "Substitute all ops with the given name for the given box."
@@ -664,7 +667,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>>& pyCircuit){
       .def(
           "substitute_named",
           [](Circuit &circ, const Unitary2qBox &box,
-             const std::string opgroup) {
+             const std::string& opgroup) {
             return circ.substitute_named(box, opgroup);
           },
           "Substitute all ops with the given name for the given box."
@@ -676,7 +679,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>>& pyCircuit){
       .def(
           "substitute_named",
           [](Circuit &circ, const Unitary3qBox &box,
-             const std::string opgroup) {
+             const std::string& opgroup) {
             return circ.substitute_named(box, opgroup);
           },
           "Substitute all ops with the given name for the given box."
@@ -687,7 +690,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>>& pyCircuit){
           py::arg("box"), py::arg("opgroup"))
       .def(
           "substitute_named",
-          [](Circuit &circ, const ExpBox &box, const std::string opgroup) {
+          [](Circuit &circ, const ExpBox &box, const std::string& opgroup) {
             return circ.substitute_named(box, opgroup);
           },
           "Substitute all ops with the given name for the given box."
@@ -698,7 +701,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>>& pyCircuit){
           py::arg("box"), py::arg("opgroup"))
       .def(
           "substitute_named",
-          [](Circuit &circ, const PauliExpBox &box, const std::string opgroup) {
+          [](Circuit &circ, const PauliExpBox &box, const std::string& opgroup) {
             return circ.substitute_named(box, opgroup);
           },
           "Substitute all ops with the given name for the given box."
@@ -709,7 +712,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>>& pyCircuit){
           py::arg("box"), py::arg("opgroup"))
       .def(
           "substitute_named",
-          [](Circuit &circ, const ToffoliBox &box, const std::string opgroup) {
+          [](Circuit &circ, const ToffoliBox &box, const std::string& opgroup) {
             return circ.substitute_named(box, opgroup);
           },
           "Substitute all ops with the given name for the given box."
@@ -720,7 +723,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>>& pyCircuit){
           py::arg("box"), py::arg("opgroup"))
       .def(
           "substitute_named",
-          [](Circuit &circ, const QControlBox &box, const std::string opgroup) {
+          [](Circuit &circ, const QControlBox &box, const std::string& opgroup) {
             return circ.substitute_named(box, opgroup);
           },
           "Substitute all ops with the given name for the given box."
@@ -731,7 +734,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>>& pyCircuit){
           py::arg("box"), py::arg("opgroup"))
       .def(
           "substitute_named",
-          [](Circuit &circ, const CustomGate &box, const std::string opgroup) {
+          [](Circuit &circ, const CustomGate &box, const std::string& opgroup) {
             return circ.substitute_named(box, opgroup);
           },
           "Substitute all ops with the given name for the given box."

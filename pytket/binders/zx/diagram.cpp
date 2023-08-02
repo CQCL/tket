@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <memory>
+
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Converters/Converters.hpp"
 #include "tket/Utils/GraphHeaders.hpp"
@@ -19,6 +21,7 @@
 #include "tket/ZX/ZXDiagram.hpp"
 #include "typecast.hpp"
 #include "py_operators.hpp"
+#include "variant_conversion.hpp"
 
 namespace py = pybind11;
 
@@ -149,7 +152,10 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           "Returns the global scalar stored numerically. This may be a "
           "symbolic expression.")
       .def(
-          "multiply_scalar", &ZXDiagram::multiply_scalar,
+          "multiply_scalar", [](ZXDiagram& zx_diag, const ExprVariant & sc){
+              const auto& expr_sc = convertVariantToFirstType(sc);
+                zx_diag.multiply_scalar(expr_sc);
+              },
           "Multiplies the global scalar by a numerical (possibly symbolic) "
           "constant.",
           py::arg("scalar"))
@@ -387,9 +393,10 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           py::arg("qtype") = QuantumType::Quantum)
       .def(
           "add_vertex",
-          [](ZXDiagram& diag, ZXType type, const Expr& param,
+          [](ZXDiagram& diag, ZXType type, const ExprVariant & param,
              QuantumType qtype) {
-            return ZXVertWrapper(diag.add_vertex(type, param, qtype));
+              const auto& expr_param = convertVariantToFirstType(param);
+            return ZXVertWrapper(diag.add_vertex(type, expr_param, qtype));
           },
           "Adds a new vertex to the diagram for a parameterised, doubleable "
           "generator type.\n\n"
@@ -596,8 +603,9 @@ PYBIND11_MODULE(zx, m) {
           py::arg("qtype") = QuantumType::Quantum)
       .def_static(
           "create",
-          [](ZXType type, const Expr& param, QuantumType qtype) {
-            return ZXGen::create_gen(type, param, qtype);
+          [](ZXType type, const ExprVariant & param, QuantumType qtype) {
+              const auto& expr_param = convertVariantToFirstType(param);
+            return ZXGen::create_gen(type, expr_param, qtype);
           },
           "Create a boundary type generator.", py::arg("type"),
           py::arg("param"), py::arg("qtype") = QuantumType::Quantum)
@@ -611,8 +619,10 @@ PYBIND11_MODULE(zx, m) {
       m, "PhasedGen",
       "Specialisation of :py:class:`ZXGen` for arbitrary-arity, symmetric "
       "generators with a single continuous parameter.")
-      .def(
-          py::init<ZXType, const Expr&, QuantumType>(),
+      .def(py::init([](ZXType zx_type, const ExprVariant & param, QuantumType q_type){
+               const auto& expr_param = convertVariantToFirstType(param);
+               return std::make_unique<PhasedGen>(zx_type, expr_param, q_type);
+          }),
           "Construct from a ZX type, parameter and quantum type.",
           py::arg("zxtype"), py::arg("param") = 0.,
           py::arg("qtype") = QuantumType::Quantum)

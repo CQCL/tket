@@ -37,9 +37,6 @@ namespace py = pybind11;
 
 namespace tket {
 
-// For conversions to work the most general type must be first
-using ExprVariant = std::variant<Expr, double>;
-
 const bit_vector_t no_bits;
 
 template <typename ID>

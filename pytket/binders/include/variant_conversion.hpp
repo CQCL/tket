@@ -17,6 +17,9 @@
 #include <variant>
 #include <type_traits>
 
+// For conversions to work the most general type must be first
+using ExprVariant = std::variant<tket::Expr, double>;
+
 // Helper function to convert a value of one type to another
 // Conversion must be possible to compile
 template <typename TargetType, typename StartType>

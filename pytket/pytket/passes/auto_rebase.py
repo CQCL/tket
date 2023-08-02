@@ -18,6 +18,7 @@ from pytket._tket.circuit import _library  # type: ignore
 from pytket.passes import RebaseCustom, SquashCustom, SquashRzPhasedX  # type: ignore
 
 from ._decompositions import Param, _TK1_to_X_SX_Rz, _TK1_to_RxRy, _TK1_to_U
+from .._tket.passes import BasePass
 
 
 class NoAutoRebase(Exception):
@@ -109,7 +110,7 @@ def get_TK1_decomposition_function(
     raise NoAutoRebase("No known decomposition from TK1 to available gateset.")
 
 
-def auto_rebase_pass(gateset: Set[OpType]) -> RebaseCustom:
+def auto_rebase_pass(gateset: Set[OpType]) -> BasePass:
     """Attempt to generate a rebase pass automatically for the given target
     gateset.
 
@@ -143,7 +144,7 @@ def auto_rebase_pass(gateset: Set[OpType]) -> RebaseCustom:
         )
 
 
-def auto_squash_pass(gateset: Set[OpType]) -> Union[SquashCustom, SquashRzPhasedX]:
+def auto_squash_pass(gateset: Set[OpType]) -> BasePass:
     """Attempt to generate a squash pass automatically for the given target
     single qubit gateset.
 

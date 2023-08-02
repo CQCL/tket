@@ -199,7 +199,7 @@ class BackendInfo:
         :return: List of nodes.
         :rtype: List[Node]
         """
-        return cast(List[Node], self.architecture.nodes)
+        return self.architecture.nodes
 
     @property
     def n_nodes(self) -> int:

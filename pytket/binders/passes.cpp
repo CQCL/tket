@@ -135,6 +135,7 @@ const PassPtr &DecomposeClassicalExp() {
 }
 
 PYBIND11_MODULE(passes, m) {
+    py::module_::import("pytket._tket.predicates");
   py::enum_<SafetyMode>(m, "SafetyMode")
       .value(
           "Audit", SafetyMode::Audit,
@@ -842,11 +843,16 @@ PYBIND11_MODULE(passes, m) {
       py::arg("remove_redundancies") = true, py::arg("xcirc") = nullptr);
   m.def(
       "ContextSimp",
-      [](bool allow_classical, std::shared_ptr<const Circuit> xcirc) {
-        return gen_contextual_pass(
-            allow_classical ? Transforms::AllowClassical::Yes
-                            : Transforms::AllowClassical::No,
-            xcirc);
+      [](bool allow_classical, std::optional<std::shared_ptr<const Circuit>> xcirc) {
+          if (xcirc.has_value()){
+              return gen_contextual_pass(
+                      allow_classical ? Transforms::AllowClassical::Yes
+                                      : Transforms::AllowClassical::No,
+                      std::move(xcirc.value()));
+          }
+          return gen_contextual_pass(
+                  allow_classical ? Transforms::AllowClassical::Yes
+                                  : Transforms::AllowClassical::No);
       },
       "Applies simplifications enabled by knowledge of qubit state and "
       "discarded qubits."
