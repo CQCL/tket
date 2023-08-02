@@ -388,6 +388,15 @@ Circuit TK2_using_ZZPhase_and_swap(
     const Expr &alpha, const Expr &beta, const Expr &gamma);
 
 /**
+ * @brief Either returns TK2(α, β, γ), or a wire swap and single qubit
+ * corrections
+ *
+ * @return Circuit Equivalent circuit, either a wire swap with single
+ * qubit corrections or TK2(α, β, γ).
+ */
+Circuit TK2_using_TK2_or_swap(
+    const Expr &alpha, const Expr &beta, const Expr &gamma);
+/**
  * @brief Equivalent to TK2(α, β, γ), using up to 3 ZZMax gates.
  *
  * @return Circuit equivalent to TK2(α, β, γ).

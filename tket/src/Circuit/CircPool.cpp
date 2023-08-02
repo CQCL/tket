@@ -1149,6 +1149,17 @@ Circuit TK2_using_ZZPhase_and_swap(
   return TK2_using_ZZPhase(alpha, beta, gamma);
 }
 
+Circuit TK2_using_TK2_or_swap(
+    const Expr &alpha, const Expr &beta, const Expr &gamma) {
+  Circuit c = TK2_using_CX_and_swap(alpha, beta, gamma);
+  if (c.count_gates(OpType::CX) == 0) {
+    return c;
+  }
+  Circuit tk2(2);
+  tk2.add_op<unsigned>(OpType::TK2, {alpha, beta, gamma}, {0, 1});
+  return tk2;
+}
+
 Circuit TK2_using_ZZMax(
     const Expr &alpha, const Expr &beta, const Expr &gamma) {
   Circuit c = TK2_using_CX(alpha, beta, gamma);
@@ -1169,7 +1180,6 @@ Circuit TK2_using_ZZMax(
 Circuit TK2_using_ZZMax_and_swap(
     const Expr &alpha, const Expr &beta, const Expr &gamma) {
   Circuit c = TK2_using_CX_and_swap(alpha, beta, gamma);
-
   if (c.count_gates(OpType::CX) < 3) {
     // Find the CX gates and replace them with ZZMax.
     VertexSet bin;

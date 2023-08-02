@@ -122,7 +122,6 @@ static bool standard_rebase_via_tk2(
         tk2_replacement) {
   bool success = false;
   VertexSet bin;
-  const bool TK2_allowed = allowed_gates.contains(OpType::TK2);
   // 1. Replace all multi-qubit gates outside the target gateset to TK2.
   for (const Vertex& v : circ.all_vertices()) {
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
@@ -139,27 +138,24 @@ static bool standard_rebase_via_tk2(
       continue;
     // need to convert
     Circuit replacement = TK2_circ_from_multiq(op);
-    // If TK2 gates are not allowed in the target gateset we find a
-    // replacement circuit by decomposing them
-    if (!TK2_allowed) {
-      VertexSet TK2_bin;
-      for (const Vertex& u : replacement.all_vertices()) {
-        Op_ptr op = circ.get_Op_ptr_from_Vertex(u);
-        TKET_ASSERT(op->get_type() != OpType::Conditional);
-        if (op->get_type() == OpType::TK2) {
-          std::vector<Expr> params = op->get_params();
-          TKET_ASSERT(params.size() == 3);
-          Circuit u_replacement =
-              tk2_replacement(params[0], params[1], params[2]);
-          replacement.substitute(u_replacement, u, Circuit::VertexDeletion::No);
-          TK2_bin.insert(u);
-        }
+    // Find replacement Circuit for all TK2 gates
+    VertexSet TK2_bin;
+    for (const Vertex& u : replacement.all_vertices()) {
+      Op_ptr op = circ.get_Op_ptr_from_Vertex(u);
+      TKET_ASSERT(op->get_type() != OpType::Conditional);
+      if (op->get_type() == OpType::TK2) {
+        std::vector<Expr> params = op->get_params();
+        TKET_ASSERT(params.size() == 3);
+        Circuit u_replacement =
+            tk2_replacement(params[0], params[1], params[2]);
+        replacement.substitute(u_replacement, u, Circuit::VertexDeletion::No);
+        TK2_bin.insert(u);
       }
-      Transforms::squash_1qb_to_tk1().apply(replacement);
-      remove_redundancies().apply(replacement);
-      replacement.remove_vertices(
-          TK2_bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
     }
+    Transforms::squash_1qb_to_tk1().apply(replacement);
+    remove_redundancies().apply(replacement);
+    replacement.remove_vertices(
+        TK2_bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
     if (conditional) {
       circ.substitute_conditional(replacement, v, Circuit::VertexDeletion::No);
     } else {

@@ -231,6 +231,10 @@ void init_library(py::module &m) {
       "Equivalent to TK2, up to a wire swap that is encoded in the implicit "
       " qubit permutation of the Circuit, using up to 3 ZZPhase gates.");
   library_m.def(
+      "_TK2_using_TK2_or_swap", &CircPool::TK2_using_TK2_or_swap,
+      "Either the exact TK2, or a wire swap encoded in the implicit qubit "
+      "permutation of the Circuit and single qubit gates.");
+  library_m.def(
       "_approx_TK2_using_1xZZPhase", &CircPool::approx_TK2_using_1xZZPhase,
       "Approximate equivalent to TK2, using 1 ZZPhase gate and single-qubit "
       "gates. Only requires the first angle of the TK2 gate.");

@@ -1751,15 +1751,9 @@ SCENARIO("Custom rebase pass with implicit wire swaps.") {
   //   c.add_op<unsigned>(OpType::Sycamore, {0, 1});
   //   CompilationUnit cu(c);
   //   CHECK(pp_rebase_cx->apply(cu));
-  //   REQUIRE(cu.get_circ_ref().count_gates(OpType::CX) == 1);
+  //   REQUIRE(cu.get_circ_ref().count_gates(OpType::CX) ==2);
   //   auto u1 = tket_sim::get_unitary(c);
   //   auto u2 = tket_sim::get_unitary(cu.get_circ_ref());
-  //   CompilationUnit cu0(c);
-  //   gen_rebase_pass_via_tk2(
-  //     allowed_gates_cx, CircPool::TK2_using_CX,
-  //     CircPool::tk1_to_PhasedXRz)->apply(cu0);
-  //   auto u3 = tket_sim::get_unitary(cu.get_circ_ref());
-  //   REQUIRE(u1.isApprox(u3));
   //   REQUIRE(u1.isApprox(u2));
   // }
   GIVEN("Targeting CX gates, ISWAP gate.") {
@@ -1948,6 +1942,19 @@ SCENARIO("Custom rebase pass with implicit wire swaps.") {
     CompilationUnit cu(c);
     CHECK(!pp_rebase_zzphase->apply(cu));
     REQUIRE(cu.get_circ_ref().count_gates(OpType::ZZPhase) == 1);
+    auto u1 = tket_sim::get_unitary(c);
+    auto u2 = tket_sim::get_unitary(cu.get_circ_ref());
+    REQUIRE(u1.isApprox(u2));
+  }
+  GIVEN("Targeting TK2 gates, SWAP gate.") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::SWAP, {0, 1});
+    CompilationUnit cu(c);
+    CHECK(gen_rebase_pass_via_tk2(
+              {OpType::PhasedX, OpType::Rz, OpType::TK2},
+              CircPool::TK2_using_TK2_or_swap, CircPool::tk1_to_PhasedXRz)
+              ->apply(cu));
+    REQUIRE(cu.get_circ_ref().n_gates() == 0);
     auto u1 = tket_sim::get_unitary(c);
     auto u2 = tket_sim::get_unitary(cu.get_circ_ref());
     REQUIRE(u1.isApprox(u2));

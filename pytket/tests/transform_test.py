@@ -1388,7 +1388,7 @@ def test_auto_rebase_with_swap_zzphase() -> None:
     c_no_swap = Circuit(2).ISWAP(0.3, 0, 1)
     no_swap_pass.apply(c_no_swap)
     assert c_no_swap.n_gates_of_type(OpType.ZZPhase) == 2
-    assert c_no_swap.n_gates == 13
+    assert c_no_swap.n_gates == 14
 
     c_swap = Circuit(2).ISWAPMax(0, 1).ISWAPMax(1, 0)
     swap_pass.apply(c_swap)
@@ -1412,9 +1412,9 @@ def test_auto_rebase_with_swap_zzphase() -> None:
     c_no_swap = Circuit(2).SWAP(0, 1)
     no_swap_pass.apply(c_no_swap)
     assert c_no_swap.n_gates_of_type(OpType.ZZPhase) == 3
-    assert c_no_swap.n_gates == 16
+    assert c_no_swap.n_gates == 13
 
-    c_swap = Circuit(2).ZZPhase(0, 1)
+    c_swap = Circuit(2).ZZPhase(0.4, 0, 1)
     swap_pass.apply(c_swap)
     assert c_swap.n_gates == 1
 
@@ -1428,6 +1428,7 @@ def test_auto_rebase_with_swap_tk2() -> None:
     no_swap_pass = auto_rebase_pass({OpType.TK2, OpType.PhasedX, OpType.Rz}, False)
     c_swap = Circuit(2).SWAP(0, 1)
     swap_pass.apply(c_swap)
+    print(c_swap.get_commands())
     assert c_swap.n_gates == 0
     c_no_swap = Circuit(2).SWAP(0, 1)
     no_swap_pass.apply(c_no_swap)
