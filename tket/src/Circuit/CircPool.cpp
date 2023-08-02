@@ -983,6 +983,7 @@ static Circuit TK2_swap_replacement(std::array<Expr, 3> angles) {
   // Try to evaluate exprs to doubles.
   std::array<double, 3> angles_eval;
   std::array<double, 3> angles_eval_swapped;
+  unsigned last_angle = 0;
   for (; last_angle < 3; ++last_angle) {
     std::optional<double> eval = eval_expr_mod(angles[last_angle]);
     if (eval) {
@@ -990,11 +991,9 @@ static Circuit TK2_swap_replacement(std::array<Expr, 3> angles) {
     } else {
       break;
     }
-    if (allow_swaps) {
-      eval = eval_expr_mod(angles_swapped[last_angle]);
-      TKET_ASSERT(eval);
-      angles_eval_swapped[last_angle] = *eval;
-    }
+    eval = eval_expr_mod(angles_swapped[last_angle]);
+    TKET_ASSERT(eval);
+    angles_eval_swapped[last_angle] = *eval;
   }
 
   // Check if fewer gates can be used.
