@@ -578,7 +578,6 @@ static double get_ZZPhase_fidelity(
 static double get_CX_fidelity(const std::array<double, 3> &k, unsigned nb_cx) {
   TKET_ASSERT(nb_cx < 4);
   auto [a, b, c] = k;
-
   // gate fidelity achievable with 0,...,3 cnots
   // this is fully determined by the information content k and is optimal
   // see PhysRevA 71.062331 (2005) for more details on this

@@ -7,6 +7,7 @@ Unreleased
 Minor new features:
 
 * Add circuit method ``depth_2q``.
+* Add ``allow_swaps`` parameter to ``auto_rebase_pass``.
 
 Fixes:
 
