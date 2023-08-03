@@ -45,7 +45,7 @@ void init_library(py::module &m) {
       "_TK2_using_CX_and_swap", &CircPool::TK2_using_CX_and_swap,
       "Given expressions α, β and γ, return circuit equivalent to "
       "TK2(α, β, γ), up to a wire swap that is encoded in the implicit "
-      " qubit permutation of the Circuit, using up to 3 CX and single-qubit "
+      "qubit permutation of the Circuit, using up to 3 CX and single-qubit "
       "gates.\n\n"
       "The decomposition minimizes the number of CX gates.");
   library_m.def(
@@ -229,7 +229,7 @@ void init_library(py::module &m) {
   library_m.def(
       "_TK2_using_ZZPhase_and_swap", &CircPool::TK2_using_ZZPhase_and_swap,
       "Equivalent to TK2, up to a wire swap that is encoded in the implicit "
-      " qubit permutation of the Circuit, using up to 3 ZZPhase gates.");
+      "qubit permutation of the Circuit, using up to 3 ZZPhase gates.");
   library_m.def(
       "_TK2_using_TK2_or_swap", &CircPool::TK2_using_TK2_or_swap,
       "Either the exact TK2, or a wire swap encoded in the implicit qubit "
@@ -248,7 +248,7 @@ void init_library(py::module &m) {
   library_m.def(
       "_TK2_using_ZZMax_and_swap", &CircPool::TK2_using_ZZMax_and_swap,
       "Equivalent to TK2, up to a wire swap that is encoded in the implicit "
-      " qubit permutation of the Circuit, using up to 3 ZZMax gates.");
+      "qubit permutation of the Circuit, using up to 3 ZZMax gates.");
   library_m.def(
       "_XXPhase3_using_TK2", &CircPool::XXPhase3_using_TK2,
       "Equivalent to XXPhase3, using three TK2 gates");
