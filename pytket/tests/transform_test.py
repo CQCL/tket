@@ -1376,7 +1376,7 @@ def test_auto_rebase_with_swap_zzphase() -> None:
     c_no_swap = Circuit(2).Sycamore(0, 1)
     no_swap_pass.apply(c_no_swap)
     assert c_no_swap.n_gates_of_type(OpType.ZZPhase) == 3
-    assert c_no_swap.n_gates == 16
+    assert c_no_swap.n_gates == 15
 
     c_swap = Circuit(2).ISWAP(0.3, 0, 1)
     swap_pass.apply(c_swap)
