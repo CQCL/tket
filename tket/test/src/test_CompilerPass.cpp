@@ -196,9 +196,8 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
       REQUIRE(!cu.check_all_predicates());
     }
     WHEN("Ran in safe mode") {
-      REQUIRE(
-          cp_route->apply(cu, SafetyMode::Audit));  // warning should be logged
-      REQUIRE(!cu.check_all_predicates());
+      REQUIRE(cp_route->apply(cu, SafetyMode::Audit));  // warning should be
+      logged REQUIRE(!cu.check_all_predicates());
     }
   }
   GIVEN("Correct sequence of Synthesis, Routing and Rebasing") {
@@ -1746,16 +1745,16 @@ SCENARIO("Custom rebase pass with implicit wire swaps.") {
     auto u2 = tket_sim::get_unitary(cu.get_circ_ref());
     REQUIRE(u1.isApprox(u2));
   }
-  // GIVEN("Targeting CX gates, Sycamore gate.") {
-  //   Circuit c(2);
-  //   c.add_op<unsigned>(OpType::Sycamore, {0, 1});
-  //   CompilationUnit cu(c);
-  //   CHECK(pp_rebase_cx->apply(cu));
-  //   REQUIRE(cu.get_circ_ref().count_gates(OpType::CX) ==2);
-  //   auto u1 = tket_sim::get_unitary(c);
-  //   auto u2 = tket_sim::get_unitary(cu.get_circ_ref());
-  //   REQUIRE(u1.isApprox(u2));
-  // }
+  GIVEN("Targeting CX gates, Sycamore gate.") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::Sycamore, {0, 1});
+    CompilationUnit cu(c);
+    CHECK(pp_rebase_cx->apply(cu));
+    REQUIRE(cu.get_circ_ref().count_gates(OpType::CX) == 2);
+    auto u1 = tket_sim::get_unitary(c);
+    auto u2 = tket_sim::get_unitary(cu.get_circ_ref());
+    REQUIRE(u1.isApprox(u2));
+  }
   GIVEN("Targeting CX gates, ISWAP gate.") {
     Circuit c(2);
     c.add_op<unsigned>(OpType::ISWAP, 0.3, {0, 1});
@@ -1826,16 +1825,16 @@ SCENARIO("Custom rebase pass with implicit wire swaps.") {
     auto u2 = tket_sim::get_unitary(cu.get_circ_ref());
     REQUIRE(u1.isApprox(u2));
   }
-  // GIVEN("Targeting ZZMax gates, Sycamore gate.") {
-  //   Circuit c(2);
-  //   c.add_op<unsigned>(OpType::Sycamore, {0, 1});
-  //   CompilationUnit cu(c);
-  //   CHECK(pp_rebase_zzmax->apply(cu));
-  //   REQUIRE(cu.get_circ_ref().count_gates(OpType::ZZMax) == 1);
-  //   auto u1 = tket_sim::get_unitary(c);
-  //   auto u2 = tket_sim::get_unitary(cu.get_circ_ref());
-  //   REQUIRE(u1.isApprox(u2));
-  // }
+  GIVEN("Targeting ZZMax gates, Sycamore gate.") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::Sycamore, {0, 1});
+    CompilationUnit cu(c);
+    CHECK(pp_rebase_zzmax->apply(cu));
+    REQUIRE(cu.get_circ_ref().count_gates(OpType::ZZMax) == 2);
+    auto u1 = tket_sim::get_unitary(c);
+    auto u2 = tket_sim::get_unitary(cu.get_circ_ref());
+    REQUIRE(u1.isApprox(u2));
+  }
   GIVEN("Targeting ZZMax gates, SWAP gate.") {
     Circuit c(2);
     c.add_op<unsigned>(OpType::SWAP, {0, 1});
@@ -1896,16 +1895,16 @@ SCENARIO("Custom rebase pass with implicit wire swaps.") {
     auto u2 = tket_sim::get_unitary(cu.get_circ_ref());
     REQUIRE(u1.isApprox(u2));
   }
-  // GIVEN("Targeting ZZPhase gates, Sycamore gate.") {
-  //   Circuit c(2);
-  //   c.add_op<unsigned>(OpType::Sycamore, {0, 1});
-  //   CompilationUnit cu(c);
-  //   CHECK(pp_rebase_zzphase->apply(cu));
-  //   REQUIRE(cu.get_circ_ref().count_gates(OpType::ZZPhase) == 1);
-  //   auto u1 = tket_sim::get_unitary(c);
-  //   auto u2 = tket_sim::get_unitary(cu.get_circ_ref());
-  //   REQUIRE(u1.isApprox(u2));
-  // }
+  GIVEN("Targeting ZZPhase gates, Sycamore gate.") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::Sycamore, {0, 1});
+    CompilationUnit cu(c);
+    CHECK(pp_rebase_zzphase->apply(cu));
+    REQUIRE(cu.get_circ_ref().count_gates(OpType::ZZPhase) == 2);
+    auto u1 = tket_sim::get_unitary(c);
+    auto u2 = tket_sim::get_unitary(cu.get_circ_ref());
+    REQUIRE(u1.isApprox(u2));
+  }
   GIVEN("Targeting ZZPhase gates, SWAP gate.") {
     Circuit c(2);
     c.add_op<unsigned>(OpType::SWAP, {0, 1});

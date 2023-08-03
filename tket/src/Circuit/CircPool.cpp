@@ -961,134 +961,35 @@ Circuit TK2_using_CX(const Expr &alpha, const Expr &beta, const Expr &gamma) {
  * @param angles The TK2 parameters
  * @return Circuit TK2-equivalent up to wire swap circuit
  */
-static Circuit TK2_swap_replacement(std::array<Expr, 3> angles) {
-  if (!in_weyl_chamber(angles)) {
-    throw std::domain_error("TK2 params are not normalised to Weyl chamber.");
+static Circuit normalised_TK2_using_CX_and_swap(
+    const Expr &alpha, const Expr &beta, const Expr &gamma) {
+  // first construct parameters for producing TK2 with wire swap
+  std::tuple<Circuit, std::array<Expr, 3>, Circuit> pre_angles_post =
+      normalise_TK2_angles(alpha + 0.5, beta + 0.5, gamma + 0.5);
+  std::array<Expr, 3> swap_angles = std::get<1>(pre_angles_post);
+
+  // generate two circuits for both sets of angles
+  Circuit without_swap = normalised_TK2_using_CX(alpha, beta, gamma);
+  Circuit with_swap =
+      normalised_TK2_using_CX(swap_angles[0], swap_angles[1], swap_angles[2]);
+
+  // if without_swap has same or fewer number of CX gates, return it, else build
+  // with_swap circuit
+  if (without_swap.count_gates(OpType::CX) <=
+      with_swap.count_gates(OpType::CX)) {
+    return without_swap;
   }
-  unsigned n_gates = 3;        // default to 3x CX
-  bool implicit_swap = false;  // default to no implicit swap
+  Circuit swap(2);
+  swap.add_op<unsigned>(OpType::SWAP, {0, 1});
+  with_swap = std::get<0>(pre_angles_post) >> with_swap >>
+              std::get<2>(pre_angles_post) >> swap;
+  with_swap.add_phase(0.25);
+  with_swap.replace_SWAPs();
 
-  // Generate to support allowing swap gates
-  Circuit pre, post;
-  std::array<Expr, 3> angles_swapped;
-  angles_swapped = angles;
-  for (unsigned i = 0; i < 3; ++i) {
-    angles_swapped[i] += 0.5;
-  }
-
-  std::tie(pre, angles_swapped, post) = normalise_TK2_angles(
-      angles_swapped[0], angles_swapped[1], angles_swapped[2]);
-  pre.add_phase(0.25);
-
-  // Try to evaluate exprs to doubles.
-  std::array<double, 3> angles_eval;
-  std::array<double, 3> angles_eval_swapped;
-  unsigned last_angle = 0;
-  for (; last_angle < 3; ++last_angle) {
-    std::optional<double> eval = eval_expr_mod(angles[last_angle]);
-    if (eval) {
-      angles_eval[last_angle] = *eval;
-    } else {
-      break;
-    }
-    eval = eval_expr_mod(angles_swapped[last_angle]);
-    TKET_ASSERT(eval);
-    angles_eval_swapped[last_angle] = *eval;
-  }
-
-  // Check if fewer gates can be used.
-  if (last_angle <= 2) {
-    if (equiv_0(angles[2], 4) && equiv_0(angles[1], 4)) {
-      n_gates = 1;
-    } else if (equiv_0(angles_swapped[2], 4) && equiv_0(angles_swapped[1], 4)) {
-      implicit_swap = true;
-      n_gates = 1;
-    } else if (equiv_0(angles[2], 4)) {
-      n_gates = 2;
-    } else if (equiv_0(angles_swapped[2], 4)) {
-      implicit_swap = true;
-      n_gates = 2;
-    }
-  } else {
-    double max_fid = 0.;
-
-    auto [a, b, c] = angles_eval;
-    auto [as, bs, cs] = angles_eval_swapped;
-
-    double ncx_fid = trace_fidelity(a, b, c);
-    if (ncx_fid > max_fid) {
-      max_fid = ncx_fid;
-      n_gates = 0;
-      implicit_swap = false;
-    }
-    ncx_fid = trace_fidelity(as, bs, cs);
-    if (ncx_fid > max_fid) {
-      max_fid = ncx_fid;
-      n_gates = 0;
-      implicit_swap = true;
-    }
-    ncx_fid = trace_fidelity(0.5 - a, b, c);
-    if (ncx_fid > max_fid) {
-      max_fid = ncx_fid;
-      n_gates = 1;
-      implicit_swap = false;
-    }
-    ncx_fid = trace_fidelity(0.5 - as, bs, cs);
-    if (ncx_fid > max_fid) {
-      max_fid = ncx_fid;
-      n_gates = 1;
-      implicit_swap = true;
-    }
-    ncx_fid = trace_fidelity(0, 0, c);
-    if (ncx_fid > max_fid) {
-      max_fid = ncx_fid;
-      n_gates = 2;
-      implicit_swap = false;
-    }
-    ncx_fid = trace_fidelity(0, 0, cs);
-    if (ncx_fid > max_fid) {
-      max_fid = ncx_fid;
-      n_gates = 2;
-      implicit_swap = true;
-    }
-    if (1 > max_fid) {
-      max_fid = 1;
-      n_gates = 3;
-      implicit_swap = false;
-    }
-  }
-
-  // Build circuit for substitution.
-  Circuit sub(2);
-  switch (n_gates) {
-    case 0:
-      break;
-    case 1: {
-      sub.append(CircPool::approx_TK2_using_1xCX());
-      break;
-    }
-    case 2: {
-      sub.append(CircPool::approx_TK2_using_2xCX(angles[0], angles[1]));
-      break;
-    }
-    case 3: {
-      sub.append(CircPool::TK2_using_3xCX(angles[0], angles[1], angles[2]));
-      break;
-    }
-    default:
-      TKET_ASSERT(!"Number of CX invalid in decompose_TK2");
-  }
-
-  if (implicit_swap) {
-    Circuit swap(2);
-    swap.add_op<unsigned>(OpType::SWAP, {0, 1});
-    sub = pre >> sub >> post >> swap;
-    sub.replace_SWAPs();
-  }
   // This decomposition can leave many extraneous single qubits gates: squash
   // them into TK1 that can be resynthesised
-  Transforms::squash_1qb_to_tk1().apply(sub);
-  return sub;
+  Transforms::squash_1qb_to_tk1().apply(with_swap);
+  return with_swap;
 }
 
 Circuit TK2_using_CX_and_swap(
@@ -1100,8 +1001,8 @@ Circuit TK2_using_CX_and_swap(
     if (op->get_type() == OpType::TK2) {
       std::vector<Expr> params = op->get_params();
       TKET_ASSERT(params.size() == 3);
-      std::array<Expr, 3> arr_params = {params[0], params[1], params[2]};
-      Circuit rep = TK2_swap_replacement(arr_params);
+      Circuit rep =
+          normalised_TK2_using_CX_and_swap(params[0], params[1], params[2]);
       c.substitute(rep, v, Circuit::VertexDeletion::Yes);
       break;
     }
