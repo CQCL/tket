@@ -512,6 +512,7 @@ SCENARIO("Synthesis of circuits from ChoiMixTableaus") {
     circ.add_op<unsigned>(OpType::ISWAPMax, {0, 3});
     circ.add_op<unsigned>(OpType::SX, {1});
     circ.add_op<unsigned>(OpType::SXdg, {2});
+    circ.add_op<unsigned>(OpType::CY, {1, 3});
     ChoiMixTableau tab = circuit_to_cm_tableau(circ);
     std::pair<Circuit, qubit_map_t> res = cm_tableau_to_exact_circuit(tab);
     res.first.permute_boundary_output(res.second);
@@ -520,6 +521,28 @@ SCENARIO("Synthesis of circuits from ChoiMixTableaus") {
     res_uni.first.permute_boundary_output(res_uni.second);
     REQUIRE(res.first == res_uni.first);
     REQUIRE(test_unitary_comparison(circ, res.first, true));
+    THEN("Build the tableau manually for apply_gate coverage on inputs") {
+      ChoiMixTableau rev_tab(4);
+      rev_tab.apply_gate(
+          OpType::CY, {Qubit(1), Qubit(3)},
+          ChoiMixTableau::TableauSegment::Input);
+      rev_tab.apply_gate(
+          OpType::SXdg, {Qubit(2)}, ChoiMixTableau::TableauSegment::Input);
+      rev_tab.apply_gate(
+          OpType::SX, {Qubit(1)}, ChoiMixTableau::TableauSegment::Input);
+      rev_tab.apply_gate(
+          OpType::ISWAPMax, {Qubit(0), Qubit(3)},
+          ChoiMixTableau::TableauSegment::Input);
+      rev_tab.apply_gate(
+          OpType::ECR, {Qubit(2), Qubit(3)},
+          ChoiMixTableau::TableauSegment::Input);
+      rev_tab.apply_gate(
+          OpType::ZZMax, {Qubit(0), Qubit(1)},
+          ChoiMixTableau::TableauSegment::Input);
+      rev_tab.canonical_column_order();
+      rev_tab.gaussian_form();
+      REQUIRE(tab == rev_tab);
+    }
   }
   GIVEN("A Clifford state") {
     Circuit circ = get_test_circ();
@@ -531,6 +554,25 @@ SCENARIO("Synthesis of circuits from ChoiMixTableaus") {
     Circuit res_uni =
         cm_tableau_to_unitary_extension_circuit(tab, circ.all_qubits()).first;
     REQUIRE(test_statevector_comparison(res, res_uni, true));
+  }
+  GIVEN("A partial Clifford state (tests mixed initialisations)") {
+    Circuit circ(3);
+    circ.add_op<unsigned>(OpType::Collapse, {1});
+    add_ops_list_one_to_circuit(circ);
+    circ.qubit_create_all();
+    ChoiMixTableau tab = circuit_to_cm_tableau(circ);
+    Circuit res = cm_tableau_to_exact_circuit(tab).first;
+    ChoiMixTableau res_tab = circuit_to_cm_tableau(res);
+    REQUIRE(res_tab == tab);
+    Circuit res_uni =
+        cm_tableau_to_unitary_extension_circuit(tab, circ.all_qubits()).first;
+    Eigen::VectorXcd res_sv = tket_sim::get_statevector(res_uni);
+    for (unsigned r = 0; r < tab.get_n_rows(); ++r) {
+      ChoiMixTableau::row_tensor_t rrow = tab.get_row(r);
+      Eigen::MatrixXcd outmat =
+          rrow.second.string.to_sparse_matrix(3) * rrow.second.coeff;
+      CHECK((outmat * res_sv).isApprox(res_sv));
+    }
   }
   GIVEN("A total diagonalisation circuit") {
     Circuit circ = get_test_circ();

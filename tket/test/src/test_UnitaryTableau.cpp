@@ -377,6 +377,22 @@ SCENARIO("Synthesis of circuits from UnitaryTableau") {
     UnitaryTableau res_tab = circuit_to_unitary_tableau(res);
     REQUIRE(res_tab == tab);
   }
+  GIVEN("Additional gate coverage, check unitary") {
+    Circuit circ(4);
+    circ.add_op<unsigned>(OpType::ZZMax, {0, 1});
+    circ.add_op<unsigned>(OpType::ECR, {2, 3});
+    circ.add_op<unsigned>(OpType::ISWAPMax, {1, 2});
+    circ.add_op<unsigned>(OpType::noop, {0});
+    UnitaryTableau tab = circuit_to_unitary_tableau(circ);
+    UnitaryTableau rev_tab(4);
+    rev_tab.apply_gate_at_front(OpType::noop, {Qubit(0)});
+    rev_tab.apply_gate_at_front(OpType::ISWAPMax, {Qubit(1), Qubit(2)});
+    rev_tab.apply_gate_at_front(OpType::ECR, {Qubit(2), Qubit(3)});
+    rev_tab.apply_gate_at_front(OpType::ZZMax, {Qubit(0), Qubit(1)});
+    REQUIRE(tab == rev_tab);
+    Circuit res = unitary_tableau_to_circuit(tab);
+    REQUIRE(test_unitary_comparison(circ, res, true));
+  }
 }
 
 SCENARIO("Correct creation of UnitaryRevTableau") {
@@ -544,6 +560,18 @@ SCENARIO("Synthesis of circuits from UnitaryRevTableau") {
     Circuit res = unitary_rev_tableau_to_circuit(tab);
     UnitaryRevTableau res_tab = circuit_to_unitary_rev_tableau(res);
     REQUIRE(res_tab == tab);
+  }
+  GIVEN("Gate coverage for OpTypes without daggers") {
+    UnitaryRevTableau tab(3);
+    rev_tab.apply_gate_at_end(OpType::ZZMax, {Qubit(0), Qubit(1)});
+    rev_tab.apply_gate_at_end(OpType::ISWAPMax, {Qubit(1), Qubit(2)});
+    UnitaryRevTableau rev_tab(3);
+    rev_tab.apply_gate_at_front(OpType::ISWAPMax, {Qubit(1), Qubit(2)});
+    rev_tab.apply_gate_at_front(OpType::ZZMax, {Qubit(0), Qubit(1)});
+    REQUIRE(tab == rev_tab);
+    Circuit res = unitary_rev_tableau_to_circuit(tab);
+    UnitaryRevTableau res_tab = circuit_to_unitary_rev_tableau(res);
+    REQUIRE(tab == res_tab);
   }
 }
 
