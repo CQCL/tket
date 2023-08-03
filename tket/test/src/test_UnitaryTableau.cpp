@@ -563,8 +563,8 @@ SCENARIO("Synthesis of circuits from UnitaryRevTableau") {
   }
   GIVEN("Gate coverage for OpTypes without daggers") {
     UnitaryRevTableau tab(3);
-    rev_tab.apply_gate_at_end(OpType::ZZMax, {Qubit(0), Qubit(1)});
-    rev_tab.apply_gate_at_end(OpType::ISWAPMax, {Qubit(1), Qubit(2)});
+    tab.apply_gate_at_end(OpType::ZZMax, {Qubit(0), Qubit(1)});
+    tab.apply_gate_at_end(OpType::ISWAPMax, {Qubit(1), Qubit(2)});
     UnitaryRevTableau rev_tab(3);
     rev_tab.apply_gate_at_front(OpType::ISWAPMax, {Qubit(1), Qubit(2)});
     rev_tab.apply_gate_at_front(OpType::ZZMax, {Qubit(0), Qubit(1)});

@@ -61,6 +61,12 @@ static ChoiMixTableau get_tableau_with_gates_applied_at_front() {
       OpType::CX, {Qubit(0), Qubit(1)}, ChoiMixTableau::TableauSegment::Input);
   return tab;
 }
+static qubit_map_t inv_perm(const qubit_map_t& perm) {
+  qubit_map_t inv;
+  for (const std::pair<const Qubit, Qubit>& qp : perm)
+    inv.insert({qp.second, qp.first});
+  return inv;
+}
 
 SCENARIO("Correct creation of ChoiMixTableau") {
   GIVEN(
@@ -496,10 +502,10 @@ SCENARIO("Synthesis of circuits from ChoiMixTableaus") {
     Circuit circ = get_test_circ();
     ChoiMixTableau tab = circuit_to_cm_tableau(circ);
     std::pair<Circuit, qubit_map_t> res = cm_tableau_to_exact_circuit(tab);
-    res.first.permute_boundary_output(res.second);
+    res.first.permute_boundary_output(inv_perm(res.second));
     std::pair<Circuit, qubit_map_t> res_uni =
         cm_tableau_to_unitary_extension_circuit(tab);
-    res_uni.first.permute_boundary_output(res_uni.second);
+    res_uni.first.permute_boundary_output(inv_perm(res_uni.second));
     REQUIRE(res.first == res_uni.first);
     ChoiMixTableau res_tab = circuit_to_cm_tableau(res.first);
     REQUIRE(res_tab == tab);
@@ -515,10 +521,10 @@ SCENARIO("Synthesis of circuits from ChoiMixTableaus") {
     circ.add_op<unsigned>(OpType::CY, {1, 3});
     ChoiMixTableau tab = circuit_to_cm_tableau(circ);
     std::pair<Circuit, qubit_map_t> res = cm_tableau_to_exact_circuit(tab);
-    res.first.permute_boundary_output(res.second);
+    res.first.permute_boundary_output(inv_perm(res.second));
     std::pair<Circuit, qubit_map_t> res_uni =
         cm_tableau_to_unitary_extension_circuit(tab);
-    res_uni.first.permute_boundary_output(res_uni.second);
+    res_uni.first.permute_boundary_output(inv_perm(res_uni.second));
     REQUIRE(res.first == res_uni.first);
     REQUIRE(test_unitary_comparison(circ, res.first, true));
     THEN("Build the tableau manually for apply_gate coverage on inputs") {
@@ -635,12 +641,12 @@ SCENARIO("Synthesis of circuits from ChoiMixTableaus") {
     circ.add_op<unsigned>(OpType::H, {4});
     ChoiMixTableau tab = circuit_to_cm_tableau(circ);
     std::pair<Circuit, qubit_map_t> res = cm_tableau_to_exact_circuit(tab);
-    res.first.permute_boundary_output(res.second);
+    res.first.permute_boundary_output(inv_perm(res.second));
     ChoiMixTableau res_tab = circuit_to_cm_tableau(res.first);
     REQUIRE(res_tab == tab);
     std::pair<Circuit, qubit_map_t> res_uni =
         cm_tableau_to_unitary_extension_circuit(tab);
-    res_uni.first.permute_boundary_output(res_uni.second);
+    res_uni.first.permute_boundary_output(inv_perm(res_uni.second));
     res_tab = circuit_to_cm_tableau(res_uni.first);
     res_tab.tab_.row_mult(0, 1);
     Eigen::MatrixXcd res_u = tket_sim::get_unitary(res_uni.first);

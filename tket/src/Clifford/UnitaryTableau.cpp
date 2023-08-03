@@ -279,13 +279,13 @@ void UnitaryTableau::apply_gate_at_front(
       break;
     }
     case OpType::ECR: {
-      apply_S_at_front(qbs.at(0));
-      apply_V_at_front(qbs.at(0));
-      apply_V_at_front(qbs.at(0));
-      apply_V_at_front(qbs.at(1));
-      apply_V_at_front(qbs.at(1));
-      apply_V_at_front(qbs.at(1));
       apply_CX_at_front(qbs.at(0), qbs.at(1));
+      apply_V_at_front(qbs.at(0));
+      apply_V_at_front(qbs.at(0));
+      apply_S_at_front(qbs.at(0));
+      apply_V_at_front(qbs.at(1));
+      apply_V_at_front(qbs.at(1));
+      apply_V_at_front(qbs.at(1));
       break;
     }
     case OpType::ISWAPMax: {
