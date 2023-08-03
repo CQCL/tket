@@ -677,10 +677,13 @@ std::pair<Circuit, std::optional<Qubit>> reduce_overlap_of_paulis(
           throw std::logic_error(
               "Cannot reduce identical Paulis to different qubits");
       }
-      if (other->second == Pauli::X)
-        u.add_op<Qubit>(OpType::CZ, {last_match, other->first});
-      else
+      if (other->second == Pauli::X) {
+        u.add_op<Qubit>(OpType::H, {other->first});
         u.add_op<Qubit>(OpType::CX, {last_match, other->first});
+        u.add_op<Qubit>(OpType::H, {other->first});
+      } else {
+        u.add_op<Qubit>(OpType::CX, {last_match, other->first});
+      }
     }
   }
 
@@ -734,7 +737,9 @@ std::pair<Circuit, Qubit> reduce_anticommuting_paulis_to_z_x(
   if (!pauli1.string.map.empty()) {
     std::pair<Circuit, Qubit> diag1 = reduce_pauli_to_z(pauli1, cx_config);
     u.append(diag1.first);
-    u.add_op<Qubit>(OpType::CZ, {diag1.second, last_mismatch});
+    u.add_op<Qubit>(OpType::H, {last_mismatch});
+    u.add_op<Qubit>(OpType::CX, {diag1.second, last_mismatch});
+    u.add_op<Qubit>(OpType::H, {last_mismatch});
   }
 
   return {u, last_mismatch};
