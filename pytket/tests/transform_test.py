@@ -1298,7 +1298,7 @@ def test_auto_rebase_with_swap_zzmax() -> None:
     c_swap = Circuit(2).Sycamore(0, 1)
     swap_pass.apply(c_swap)
     assert c_swap.n_gates_of_type(OpType.ZZMax) == 2
-    assert c_swap.n_gates == 12
+    assert c_swap.n_gates == 11
     iqp = c_swap.implicit_qubit_permutation()
     assert iqp[Qubit(0)] == Qubit(1)
     assert iqp[Qubit(1)] == Qubit(0)
@@ -1368,7 +1368,7 @@ def test_auto_rebase_with_swap_zzphase() -> None:
     c_swap = Circuit(2).Sycamore(0, 1)
     swap_pass.apply(c_swap)
     assert c_swap.n_gates_of_type(OpType.ZZPhase) == 2
-    assert c_swap.n_gates == 12
+    assert c_swap.n_gates == 11
     iqp = c_swap.implicit_qubit_permutation()
     assert iqp[Qubit(0)] == Qubit(1)
     assert iqp[Qubit(1)] == Qubit(0)
