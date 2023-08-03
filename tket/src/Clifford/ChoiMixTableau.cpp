@@ -535,20 +535,6 @@ void ChoiMixTableau::collapse_qubit(const Qubit& qb, TableauSegment seg) {
   }
 }
 
-void ChoiMixTableau::add_qubit(const Qubit& qb, TableauSegment seg) {
-  unsigned n_rows = get_n_rows();
-  unsigned n_cols = get_n_boundaries();
-  auto inserted = col_index_.insert({{qb, seg}, n_cols});
-  if (!inserted.second)
-    throw std::logic_error(
-        "Could not add qubit to ChoiMixTableau, it already exists");
-  tab_.xmat_.conservativeResize(n_rows, n_cols + 1);
-  tab_.xmat_.block(0, n_cols, n_rows, 1) = MatrixXb::Zero(n_rows, 1);
-  tab_.zmat_.conservativeResize(n_rows, n_cols + 1);
-  tab_.zmat_.block(0, n_cols, n_rows, 1) = MatrixXb::Zero(n_rows, 1);
-  ++tab_.n_qubits_;
-}
-
 void ChoiMixTableau::remove_row(unsigned row) {
   if (row >= get_n_rows())
     throw std::invalid_argument(
