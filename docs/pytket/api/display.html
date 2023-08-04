@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>pytket.circuit.display &#8212; pytket 1.17.1 documentation</title>
+    <title>pytket.circuit.display &#8212; pytket 1.18.0 documentation</title>
   
   
   
@@ -500,7 +500,7 @@ for internal use only.</p></li>
 <span class="kn">from</span> <span class="nn">pytket.circuit.display</span> <span class="kn">import</span> <span class="n">get_circuit_renderer</span>
 
 <span class="n">circuit_renderer</span> <span class="o">=</span> <span class="n">get_circuit_renderer</span><span class="p">()</span> <span class="c1"># Instantiate a circuit renderer</span>
-<span class="n">circuit_renderer</span><span class="o">.</span><span class="n">set_render_options</span><span class="p">(</span><span class="n">zx_style</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span> <span class="c1"># Configure render options</span>
+<span class="n">circuit_renderer</span><span class="o">.</span><span class="n">set_render_options</span><span class="p">(</span><span class="n">zx_style</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span> <span class="c1"># Configure render options</span>
 <span class="n">circuit_renderer</span><span class="o">.</span><span class="n">condense_c_bits</span> <span class="o">=</span> <span class="kc">False</span> <span class="c1"># You can also set the properties on the instance directly</span>
 <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Render options:&quot;</span><span class="p">)</span>
 <span class="nb">print</span><span class="p">(</span><span class="n">circuit_renderer</span><span class="o">.</span><span class="n">get_render_options</span><span class="p">())</span> <span class="c1"># View currently set render options</span>
@@ -516,7 +516,7 @@ for internal use only.</p></li>
 </div>
 <div class="cell_output docutils container">
 <div class="output stream highlight-none notranslate"><div class="highlight"><pre><span></span>Render options:
-{&#39;zx_style&#39;: False, &#39;condense_c_bits&#39;: False}
+{&#39;zx_style&#39;: True, &#39;condense_c_bits&#39;: False}
 </pre></div>
 </div>
 <div class="output text_html">
@@ -541,7 +541,7 @@ for internal use only.</p></li>
 
 
 
-    &lt;div id=&#34;circuit-display-vue-container-d404902b-f160-42c9-b605-b8f2b0106dcd&#34; class=&#34;pytket-circuit-display-container&#34;&gt;
+    &lt;div id=&#34;circuit-display-vue-container-f427fe90-dc8c-4d95-a2bb-7103948af2ce&#34; class=&#34;pytket-circuit-display-container&#34;&gt;
         &lt;div style=&#34;display: none&#34;&gt;
             &lt;div id=&#34;circuit-json-to-display&#34;&gt;{&#34;bits&#34;: [[&#34;c&#34;, [0]], [&#34;c&#34;, [1]]], &#34;commands&#34;: [{&#34;args&#34;: [[&#34;q&#34;, [0]]], &#34;op&#34;: {&#34;type&#34;: &#34;H&#34;}}, {&#34;args&#34;: [[&#34;q&#34;, [1]]], &#34;op&#34;: {&#34;type&#34;: &#34;H&#34;}}, {&#34;args&#34;: [[&#34;q&#34;, [0]], [&#34;q&#34;, [1]]], &#34;op&#34;: {&#34;type&#34;: &#34;CX&#34;}}, {&#34;args&#34;: [[&#34;q&#34;, [1]]], &#34;op&#34;: {&#34;params&#34;: [&#34;0.4&#34;], &#34;type&#34;: &#34;Rz&#34;}}, {&#34;args&#34;: [[&#34;q&#34;, [0]], [&#34;q&#34;, [1]]], &#34;op&#34;: {&#34;type&#34;: &#34;CX&#34;}}, {&#34;args&#34;: [[&#34;q&#34;, [0]]], &#34;op&#34;: {&#34;type&#34;: &#34;H&#34;}}, {&#34;args&#34;: [[&#34;q&#34;, [1]]], &#34;op&#34;: {&#34;type&#34;: &#34;H&#34;}}, {&#34;args&#34;: [[&#34;q&#34;, [0]], [&#34;c&#34;, [0]]], &#34;op&#34;: {&#34;type&#34;: &#34;Measure&#34;}}, {&#34;args&#34;: [[&#34;q&#34;, [1]], [&#34;c&#34;, [1]]], &#34;op&#34;: {&#34;type&#34;: &#34;Measure&#34;}}], &#34;created_qubits&#34;: [], &#34;discarded_qubits&#34;: [], &#34;implicit_permutation&#34;: [[[&#34;q&#34;, [0]], [&#34;q&#34;, [0]]], [[&#34;q&#34;, [1]], [&#34;q&#34;, [1]]]], &#34;phase&#34;: &#34;0.0&#34;, &#34;qubits&#34;: [[&#34;q&#34;, [0]], [&#34;q&#34;, [1]]]}&lt;/div&gt;
         &lt;/div&gt;
@@ -551,8 +551,8 @@ for internal use only.</p></li>
         &gt;&lt;/circuit-display-container&gt;
     &lt;/div&gt;
     &lt;script type=&#34;application/javascript&#34;&gt;
-      const circuitRendererUid = &#34;d404902b-f160-42c9-b605-b8f2b0106dcd&#34;;
-      const displayOptions = JSON.parse(&#39;{&#34;zxStyle&#34;: false, &#34;condenseCBits&#34;: false}&#39;);
+      const circuitRendererUid = &#34;f427fe90-dc8c-4d95-a2bb-7103948af2ce&#34;;
+      const displayOptions = JSON.parse(&#39;{&#34;zxStyle&#34;: true, &#34;condenseCBits&#34;: false}&#39;);
 
       // Script to initialise the circuit renderer app
 
@@ -625,7 +625,7 @@ functions directly:</p>
 
 
 
-    &lt;div id=&#34;circuit-display-vue-container-a92521d3-fc2e-4d33-94c2-b90ac5e48c78&#34; class=&#34;pytket-circuit-display-container&#34;&gt;
+    &lt;div id=&#34;circuit-display-vue-container-cc2d0f60-642c-4152-9763-9518ef29e0f8&#34; class=&#34;pytket-circuit-display-container&#34;&gt;
         &lt;div style=&#34;display: none&#34;&gt;
             &lt;div id=&#34;circuit-json-to-display&#34;&gt;{&#34;bits&#34;: [[&#34;c&#34;, [0]], [&#34;c&#34;, [1]]], &#34;commands&#34;: [{&#34;args&#34;: [[&#34;q&#34;, [0]]], &#34;op&#34;: {&#34;type&#34;: &#34;H&#34;}}, {&#34;args&#34;: [[&#34;q&#34;, [1]]], &#34;op&#34;: {&#34;type&#34;: &#34;H&#34;}}, {&#34;args&#34;: [[&#34;q&#34;, [0]], [&#34;q&#34;, [1]]], &#34;op&#34;: {&#34;type&#34;: &#34;CX&#34;}}, {&#34;args&#34;: [[&#34;q&#34;, [1]]], &#34;op&#34;: {&#34;params&#34;: [&#34;0.4&#34;], &#34;type&#34;: &#34;Rz&#34;}}, {&#34;args&#34;: [[&#34;q&#34;, [0]], [&#34;q&#34;, [1]]], &#34;op&#34;: {&#34;type&#34;: &#34;CX&#34;}}, {&#34;args&#34;: [[&#34;q&#34;, [0]]], &#34;op&#34;: {&#34;type&#34;: &#34;H&#34;}}, {&#34;args&#34;: [[&#34;q&#34;, [1]]], &#34;op&#34;: {&#34;type&#34;: &#34;H&#34;}}, {&#34;args&#34;: [[&#34;q&#34;, [0]], [&#34;c&#34;, [0]]], &#34;op&#34;: {&#34;type&#34;: &#34;Measure&#34;}}, {&#34;args&#34;: [[&#34;q&#34;, [1]], [&#34;c&#34;, [1]]], &#34;op&#34;: {&#34;type&#34;: &#34;Measure&#34;}}], &#34;created_qubits&#34;: [], &#34;discarded_qubits&#34;: [], &#34;implicit_permutation&#34;: [[[&#34;q&#34;, [0]], [&#34;q&#34;, [0]]], [[&#34;q&#34;, [1]], [&#34;q&#34;, [1]]]], &#34;phase&#34;: &#34;0.0&#34;, &#34;qubits&#34;: [[&#34;q&#34;, [0]], [&#34;q&#34;, [1]]]}&lt;/div&gt;
         &lt;/div&gt;
@@ -635,7 +635,7 @@ functions directly:</p>
         &gt;&lt;/circuit-display-container&gt;
     &lt;/div&gt;
     &lt;script type=&#34;application/javascript&#34;&gt;
-      const circuitRendererUid = &#34;a92521d3-fc2e-4d33-94c2-b90ac5e48c78&#34;;
+      const circuitRendererUid = &#34;cc2d0f60-642c-4152-9763-9518ef29e0f8&#34;;
       const displayOptions = JSON.parse(&#39;{}&#39;);
 
       // Script to initialise the circuit renderer app

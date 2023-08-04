@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Getting Started &#8212; pytket 1.17.1 documentation</title>
+    <title>Getting Started &#8212; pytket 1.18.0 documentation</title>
   
   
   
@@ -446,7 +446,7 @@ It’s possible to run circuits on platforms from different providers through th
 </div>
 <p>This prints out a summary of readouts (the final values of the classical bits) and their frequencies.</p>
 <p>Each pytket <code class="xref py py-class docutils literal notranslate"><span class="pre">Backend</span></code> comes with its own default compilation method. This is a recommended sequence of optimisation passes to meet the requirements of the specific <code class="xref py py-class docutils literal notranslate"><span class="pre">Backend</span></code>.</p>
-<p>The following code snippet will show how to compile a circuit to run on an IBM device. This requires setting up IBM credentials (see <cite>this page &lt;https://cqcl.github.io/pytket-qiskit/api/index.html#access-and-credentials&gt;</cite>).</p>
+<p>The following code snippet will show how to compile a circuit to run on an IBM device. This requires setting up IBM credentials (see the <a class="reference external" href="https://cqcl.github.io/pytket-qiskit/api/index.html#access-and-credentials">credentials guide</a>).</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span> <span class="nn">pytket.extensions.qiskit</span> <span class="kn">import</span> <span class="n">IBMQBackend</span>
 
 <span class="n">circ</span> <span class="o">=</span> <span class="n">Circuit</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">X</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">CCX</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
@@ -457,7 +457,7 @@ It’s possible to run circuits on platforms from different providers through th
 <span class="n">result</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">run_circuit</span><span class="p">(</span><span class="n">compiled_circ</span><span class="p">,</span> <span class="n">n_shots</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>Here the default compilation pass is applied by <code class="xref py py-meth docutils literal notranslate"><span class="pre">IBMQBackend.get_compiled_circuit()</span></code>. See <a class="reference external" href="https://cqcl.github.io/pytket-qiskit/api/index.html">this page</a> for more details.</p>
+<p>Here the default compilation pass is applied by <code class="xref py py-meth docutils literal notranslate"><span class="pre">IBMQBackend.get_compiled_circuit()</span></code>. See <a class="reference external" href="https://cqcl.github.io/pytket-qiskit/api/index.html#default-compilation">this page</a> for more details.</p>
 <p>As an alternative, We can experiment with constructing our own circuit compilation routines in pytket. Passes from the <code class="xref py py-mod docutils literal notranslate"><span class="pre">pytket.passes</span></code> module can be applied individually or composed in sequence.
 See the section of the user manual on <a class="reference external" href="https://cqcl.github.io/pytket/manual/manual_compiler.html">circuit compilation</a> and the corresponding <a class="reference external" href="https://github.com/CQCL/pytket/blob/main/examples/compilation_example.ipynb">notebook example</a> for more.</p>
 </section>

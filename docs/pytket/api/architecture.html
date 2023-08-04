@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>pytket.architecture &#8212; pytket 1.17.1 documentation</title>
+    <title>pytket.architecture &#8212; pytket 1.18.0 documentation</title>
   
   
   
@@ -460,8 +460,12 @@ document.write(`
 <dl class="py method">
 <dt class="sig sig-object py" id="pytket.architecture.Architecture.to_dict">
 <span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.architecture.Architecture" title="pytket.architecture.Architecture"><span class="pre">pytket.architecture.Architecture</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">json</span></span></span><a class="headerlink" href="#pytket.architecture.Architecture.to_dict" title="Permalink to this definition">#</a></dt>
-<dd><p>Return a JSON serializable dict representation of the Architecture.
-:return: dict containing nodes and links.</p>
+<dd><p>Return a JSON serializable dict representation of the Architecture.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>dict containing nodes and links.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">
@@ -540,8 +544,14 @@ document.write(`
 <dt class="sig sig-object py" id="pytket.architecture.RingArch.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.architecture.RingArch" title="pytket.architecture.RingArch"><span class="pre">pytket.architecture.RingArch</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">nodes</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">label</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'ringNode'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pytket.architecture.RingArch.__init__" title="Permalink to this definition">#</a></dt>
 <dd><p>The constructor for a RingArchitecture with some undirected connectivity between qubits.</p>
-<p>:param number of qubits
-:param label: Name for Node in RingArch Architecture</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>qubits</strong> (<em>number of</em>) – </p></li>
+<li><p><strong>label</strong> – Name for Node in RingArch Architecture</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 </dd></dl>

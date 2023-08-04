@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pytket.passes.auto_rebase &#8212; pytket 1.17.1 documentation</title>
+    <title>pytket.passes.auto_rebase &#8212; pytket 1.18.0 documentation</title>
   
   
   
@@ -363,9 +363,16 @@ document.write(`
 
 <span class="n">_TK2_CIRCS</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">OpType</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Param</span><span class="p">,</span> <span class="n">Param</span><span class="p">,</span> <span class="n">Param</span><span class="p">],</span> <span class="s2">&quot;Circuit&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
     <span class="n">OpType</span><span class="o">.</span><span class="n">TK2</span><span class="p">:</span> <span class="n">_TK2_using_TK2</span><span class="p">,</span>
+    <span class="n">OpType</span><span class="o">.</span><span class="n">ZZPhase</span><span class="p">:</span> <span class="n">_library</span><span class="o">.</span><span class="n">_TK2_using_ZZPhase</span><span class="p">,</span>
     <span class="n">OpType</span><span class="o">.</span><span class="n">CX</span><span class="p">:</span> <span class="n">_library</span><span class="o">.</span><span class="n">_TK2_using_CX</span><span class="p">,</span>
     <span class="n">OpType</span><span class="o">.</span><span class="n">ZZMax</span><span class="p">:</span> <span class="n">_library</span><span class="o">.</span><span class="n">_TK2_using_ZZMax</span><span class="p">,</span>
-    <span class="n">OpType</span><span class="o">.</span><span class="n">ZZPhase</span><span class="p">:</span> <span class="n">_library</span><span class="o">.</span><span class="n">_TK2_using_ZZPhase</span><span class="p">,</span>
+<span class="p">}</span>
+
+<span class="n">_TK2_CIRCS_WIRE_SWAP</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">OpType</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Param</span><span class="p">,</span> <span class="n">Param</span><span class="p">,</span> <span class="n">Param</span><span class="p">],</span> <span class="s2">&quot;Circuit&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">OpType</span><span class="o">.</span><span class="n">TK2</span><span class="p">:</span> <span class="n">_library</span><span class="o">.</span><span class="n">_TK2_using_TK2_or_swap</span><span class="p">,</span>
+    <span class="n">OpType</span><span class="o">.</span><span class="n">ZZPhase</span><span class="p">:</span> <span class="n">_library</span><span class="o">.</span><span class="n">_TK2_using_ZZPhase_and_swap</span><span class="p">,</span>
+    <span class="n">OpType</span><span class="o">.</span><span class="n">CX</span><span class="p">:</span> <span class="n">_library</span><span class="o">.</span><span class="n">_TK2_using_CX_and_swap</span><span class="p">,</span>
+    <span class="n">OpType</span><span class="o">.</span><span class="n">ZZMax</span><span class="p">:</span> <span class="n">_library</span><span class="o">.</span><span class="n">_TK2_using_ZZMax_and_swap</span><span class="p">,</span>
 <span class="p">}</span>
 
 
@@ -386,6 +393,7 @@ document.write(`
 
 <span class="k">def</span> <span class="nf">get_tk2_decomposition</span><span class="p">(</span>
     <span class="n">gateset</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="n">OpType</span><span class="p">],</span>
+    <span class="n">allow_swaps</span><span class="p">:</span> <span class="nb">bool</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Param</span><span class="p">,</span> <span class="n">Param</span><span class="p">,</span> <span class="n">Param</span><span class="p">],</span> <span class="s2">&quot;Circuit&quot;</span><span class="p">]:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Return a function to construct a circuit expressing a TK2 in terms of gates in</span>
 <span class="sd">    the given gateset, if such a function is available.</span>
@@ -394,9 +402,15 @@ document.write(`
 <span class="sd">    :raises NoAutoRebase: no suitable TK2 decomposition found</span>
 <span class="sd">    :return: function to decompose TK2 gates</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">_TK2_CIRCS</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-        <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">gateset</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">fn</span>
+    <span class="k">if</span> <span class="n">allow_swaps</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">_TK2_CIRCS_WIRE_SWAP</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">gateset</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">fn</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">k</span><span class="p">,</span> <span class="n">fn</span> <span class="ow">in</span> <span class="n">_TK2_CIRCS</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
+            <span class="k">if</span> <span class="n">k</span> <span class="ow">in</span> <span class="n">gateset</span><span class="p">:</span>
+                <span class="k">return</span> <span class="n">fn</span>
+
     <span class="k">raise</span> <span class="n">NoAutoRebase</span><span class="p">(</span><span class="s2">&quot;No known decomposition from TK2 to given gateset&quot;</span><span class="p">)</span>
 
 
@@ -433,7 +447,7 @@ document.write(`
     <span class="k">raise</span> <span class="n">NoAutoRebase</span><span class="p">(</span><span class="s2">&quot;No known decomposition from TK1 to available gateset.&quot;</span><span class="p">)</span>
 
 
-<div class="viewcode-block" id="auto_rebase_pass"><a class="viewcode-back" href="../../../passes.html#pytket.passes.auto_rebase.auto_rebase_pass">[docs]</a><span class="k">def</span> <span class="nf">auto_rebase_pass</span><span class="p">(</span><span class="n">gateset</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="n">OpType</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">RebaseCustom</span><span class="p">:</span>
+<div class="viewcode-block" id="auto_rebase_pass"><a class="viewcode-back" href="../../../passes.html#pytket.passes.auto_rebase.auto_rebase_pass">[docs]</a><span class="k">def</span> <span class="nf">auto_rebase_pass</span><span class="p">(</span><span class="n">gateset</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="n">OpType</span><span class="p">],</span> <span class="n">allow_swaps</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">False</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RebaseCustom</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Attempt to generate a rebase pass automatically for the given target</span>
 <span class="sd">    gateset.</span>
 
@@ -450,13 +464,13 @@ document.write(`
 <span class="sd">    :rtype: RebaseCustom</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">tk1</span> <span class="o">=</span> <span class="n">get_TK1_decomposition_function</span><span class="p">(</span><span class="n">gateset</span><span class="p">)</span>
-
-    <span class="c1"># if the gateset has CX but not TK2, rebase via CX</span>
-    <span class="k">if</span> <span class="n">OpType</span><span class="o">.</span><span class="n">CX</span> <span class="ow">in</span> <span class="n">gateset</span> <span class="ow">and</span> <span class="n">OpType</span><span class="o">.</span><span class="n">TK2</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">gateset</span><span class="p">:</span>
+    <span class="c1"># if the gateset has CX but not TK2, and implicit wire swaps not allowed:</span>
+    <span class="c1"># rebase via CX</span>
+    <span class="k">if</span> <span class="n">OpType</span><span class="o">.</span><span class="n">CX</span> <span class="ow">in</span> <span class="n">gateset</span> <span class="ow">and</span> <span class="n">OpType</span><span class="o">.</span><span class="n">TK2</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">gateset</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">allow_swaps</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">RebaseCustom</span><span class="p">(</span><span class="n">gateset</span><span class="p">,</span> <span class="n">_library</span><span class="o">.</span><span class="n">_CX</span><span class="p">(),</span> <span class="n">tk1</span><span class="p">)</span>
     <span class="c1"># in other cases, try to rebase via TK2 first</span>
     <span class="k">try</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">RebaseCustom</span><span class="p">(</span><span class="n">gateset</span><span class="p">,</span> <span class="n">get_tk2_decomposition</span><span class="p">(</span><span class="n">gateset</span><span class="p">),</span> <span class="n">tk1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">RebaseCustom</span><span class="p">(</span><span class="n">gateset</span><span class="p">,</span> <span class="n">get_tk2_decomposition</span><span class="p">(</span><span class="n">gateset</span><span class="p">,</span> <span class="n">allow_swaps</span><span class="p">),</span> <span class="n">tk1</span><span class="p">)</span>
     <span class="k">except</span> <span class="n">NoAutoRebase</span><span class="p">:</span>
         <span class="k">pass</span>
     <span class="k">try</span><span class="p">:</span>

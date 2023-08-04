@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Changelog &#8212; pytket 1.17.1 documentation</title>
+    <title>Changelog &#8212; pytket 1.18.0 documentation</title>
   
   
   
@@ -371,6 +371,7 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#august-2023">1.18.0 (August 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#july-2023">1.17.1 (July 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">1.17.0 (July 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#june-2023">1.16.0 (June 2023)</a></li>
@@ -452,6 +453,18 @@ document.write(`
                   
   <section id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this heading">#</a></h1>
+<section id="august-2023">
+<h2>1.18.0 (August 2023)<a class="headerlink" href="#august-2023" title="Permalink to this heading">#</a></h2>
+<p>Minor new features:</p>
+<ul class="simple">
+<li><p>Add circuit method <code class="docutils literal notranslate"><span class="pre">depth_2q</span></code>.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">allow_swaps</span></code> parameter to <code class="docutils literal notranslate"><span class="pre">auto_rebase_pass</span></code>.</p></li>
+</ul>
+<p>Fixes:</p>
+<ul class="simple">
+<li><p>Fix slow <code class="docutils literal notranslate"><span class="pre">Circuit.get_statevector()</span></code>.</p></li>
+</ul>
+</section>
 <section id="july-2023">
 <h2>1.17.1 (July 2023)<a class="headerlink" href="#july-2023" title="Permalink to this heading">#</a></h2>
 <p>General:</p>
@@ -463,6 +476,7 @@ environments.</p></li>
 <ul class="simple">
 <li><p>New constructor for <code class="docutils literal notranslate"><span class="pre">ToffoliBox</span></code> that allows switching between two decomposition strategies:
 <code class="docutils literal notranslate"><span class="pre">ToffoliBoxSynthStrat.Matching</span></code> and <code class="docutils literal notranslate"><span class="pre">ToffoliBoxSynthStrat.Cycle</span></code>.</p></li>
+<li><p>Prefer <code class="docutils literal notranslate"><span class="pre">ZZPhase</span></code> to <code class="docutils literal notranslate"><span class="pre">CX</span></code> or <code class="docutils literal notranslate"><span class="pre">ZZMax</span></code> when using <code class="docutils literal notranslate"><span class="pre">auto_rebase_pass()</span></code>.</p></li>
 </ul>
 </section>
 <section id="id1">
@@ -1713,6 +1727,7 @@ circumstances.</p></li>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#august-2023">1.18.0 (August 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#july-2023">1.17.1 (July 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">1.17.0 (July 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#june-2023">1.16.0 (June 2023)</a></li>

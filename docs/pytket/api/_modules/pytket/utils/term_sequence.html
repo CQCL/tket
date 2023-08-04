@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pytket.utils.term_sequence &#8212; pytket 1.17.1 documentation</title>
+    <title>pytket.utils.term_sequence &#8212; pytket 1.18.0 documentation</title>
   
   
   
@@ -352,15 +352,30 @@ document.write(`
     <span class="n">partition_strat</span><span class="p">:</span> <span class="n">PauliPartitionStrat</span> <span class="o">=</span> <span class="n">PauliPartitionStrat</span><span class="o">.</span><span class="n">CommutingSets</span><span class="p">,</span>
     <span class="n">colour_method</span><span class="p">:</span> <span class="n">GraphColourMethod</span> <span class="o">=</span> <span class="n">GraphColourMethod</span><span class="o">.</span><span class="n">Lazy</span><span class="p">,</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Circuit</span><span class="p">:</span>
-<span class="w">    </span><span class="sd">&quot;&quot;&quot;Sequences QubitPauliOperator terms to generate a circuit made of CircBoxes.</span>
-<span class="sd">    Each CircBox contains a sequence of PauliExpBox objects.</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Sequences the terms of a :py:class:`QubitPauliOperator` :math:`P` to generate</span>
+<span class="sd">    a circuit approximating :math:`e^{i \\frac{\\pi}{2} P}`. This method</span>
+<span class="sd">    performs Trotterisation on :math:`P` with a single Trotter step.</span>
+
+<span class="sd">    This method uses a given partitioning strategy and a graph colouring</span>
+<span class="sd">      method for term sequencing.</span>
+
+<span class="sd">    The resulting Circuit will contain a sequence of CircBoxes. Each CircBox</span>
+<span class="sd">    corresponds to a set of Pauli strings. Each exponentiated Pauli string</span>
+<span class="sd">    in the set is realised as a PauliExpBox.</span>
+
+<span class="sd">    The ordering of terms prioritises reducing the two qubit gate count of the</span>
+<span class="sd">    circuit when the PauliSimp or GuidedPauliSimp passes are applied rather</span>
+<span class="sd">    than minimising the trotter error.</span>
 
 <span class="sd">    :param operator: The operator terms to sequence</span>
 <span class="sd">    :type operator: QubitPauliOperator</span>
 <span class="sd">    :param reference_state: reference state to add sequenced terms to.</span>
 <span class="sd">    :type reference_state: Circuit</span>
 <span class="sd">    :param partition_strat: a Partition strategy</span>
-<span class="sd">    :type partition_strat: PauliPartitionStrat, optional</span>
+<span class="sd">    :type partition_strat: PauliPartitionStrat, Optional</span>
+<span class="sd">    :param colour_method: a graph colouring method</span>
+<span class="sd">    :type colour_method: GraphColourMethod, Optional</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">qps_list</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">operator</span><span class="o">.</span><span class="n">_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
     <span class="n">qps_list_list</span> <span class="o">=</span> <span class="n">term_sequence</span><span class="p">(</span><span class="n">qps_list</span><span class="p">,</span> <span class="n">partition_strat</span><span class="p">,</span> <span class="n">colour_method</span><span class="p">)</span>

@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>pytket.utils &#8212; pytket 1.17.1 documentation</title>
+    <title>pytket.utils &#8212; pytket 1.18.0 documentation</title>
   
   
   
@@ -611,14 +611,26 @@ from each row, and returns the average.</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pytket.utils.gen_term_sequence_circuit">
 <span class="sig-prename descclassname"><span class="pre">pytket.utils.</span></span><span class="sig-name descname"><span class="pre">gen_term_sequence_circuit</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">operator</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.utils.QubitPauliOperator" title="pytket.utils.QubitPauliOperator"><span class="pre">QubitPauliOperator</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">reference_state</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="circuit_class.html#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><span class="pre">Circuit</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">partition_strat</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="partition.html#pytket.partition.PauliPartitionStrat" title="pytket.partition.PauliPartitionStrat"><span class="pre">PauliPartitionStrat</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">PauliPartitionStrat.CommutingSets</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">colour_method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="partition.html#pytket.partition.GraphColourMethod" title="pytket.partition.GraphColourMethod"><span class="pre">GraphColourMethod</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">GraphColourMethod.Lazy</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="circuit_class.html#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><span class="pre">Circuit</span></a></span></span><a class="reference internal" href="_modules/pytket/utils/term_sequence.html#gen_term_sequence_circuit"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pytket.utils.gen_term_sequence_circuit" title="Permalink to this definition">#</a></dt>
-<dd><p>Sequences QubitPauliOperator terms to generate a circuit made of CircBoxes.
-Each CircBox contains a sequence of PauliExpBox objects.</p>
+<dd><p>Sequences the terms of a <a class="reference internal" href="#pytket.utils.QubitPauliOperator" title="pytket.utils.QubitPauliOperator"><code class="xref py py-class docutils literal notranslate"><span class="pre">QubitPauliOperator</span></code></a> <span class="math notranslate nohighlight">\(P\)</span> to generate
+a circuit approximating <span class="math notranslate nohighlight">\(e^{i \frac{\pi}{2} P}\)</span>. This method
+performs Trotterisation on <span class="math notranslate nohighlight">\(P\)</span> with a single Trotter step.</p>
+<dl class="simple">
+<dt>This method uses a given partitioning strategy and a graph colouring</dt><dd><p>method for term sequencing.</p>
+</dd>
+</dl>
+<p>The resulting Circuit will contain a sequence of CircBoxes. Each CircBox
+corresponds to a set of Pauli strings. Each exponentiated Pauli string
+in the set is realised as a PauliExpBox.</p>
+<p>The ordering of terms prioritises reducing the two qubit gate count of the
+circuit when the PauliSimp or GuidedPauliSimp passes are applied rather
+than minimising the trotter error.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>operator</strong> (<a class="reference internal" href="#pytket.utils.QubitPauliOperator" title="pytket.utils.QubitPauliOperator"><em>QubitPauliOperator</em></a>) – The operator terms to sequence</p></li>
 <li><p><strong>reference_state</strong> (<a class="reference internal" href="circuit_class.html#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><em>Circuit</em></a>) – reference state to add sequenced terms to.</p></li>
-<li><p><strong>partition_strat</strong> (<a class="reference internal" href="partition.html#pytket.partition.PauliPartitionStrat" title="pytket.partition.PauliPartitionStrat"><em>PauliPartitionStrat</em></a><em>, </em><em>optional</em>) – a Partition strategy</p></li>
+<li><p><strong>partition_strat</strong> (<a class="reference internal" href="partition.html#pytket.partition.PauliPartitionStrat" title="pytket.partition.PauliPartitionStrat"><em>PauliPartitionStrat</em></a><em>, </em><em>Optional</em>) – a Partition strategy</p></li>
+<li><p><strong>colour_method</strong> (<a class="reference internal" href="partition.html#pytket.partition.GraphColourMethod" title="pytket.partition.GraphColourMethod"><em>GraphColourMethod</em></a><em>, </em><em>Optional</em>) – a graph colouring method</p></li>
 </ul>
 </dd>
 </dl>

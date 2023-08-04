@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>pytket.pauli &#8212; pytket 1.17.1 documentation</title>
+    <title>pytket.pauli &#8212; pytket 1.18.0 documentation</title>
   
   
   
@@ -462,7 +462,7 @@ document.write(`
 <dl class="py class">
 <dt class="sig sig-object py" id="pytket.pauli.QubitPauliString">
 <em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pytket.pauli.</span></span><span class="sig-name descname"><span class="pre">QubitPauliString</span></span><a class="headerlink" href="#pytket.pauli.QubitPauliString" title="Permalink to this definition">#</a></dt>
-<dd><p>A string of Pauli letters from the alphabet {I, X, Y, Z},implemented as a sparse list, indexed by qubit.</p>
+<dd><p>A string of Pauli letters from the alphabet {I, X, Y, Z}, implemented as a sparse list, indexed by qubit.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pytket.pauli.QubitPauliString.__init__">
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.pauli.QubitPauliString.__init__" title="Permalink to this definition">#</a></dt>
@@ -576,8 +576,12 @@ document.write(`
 <dl class="py method">
 <dt class="sig sig-object py" id="pytket.pauli.QubitPauliString.to_list">
 <span class="sig-name descname"><span class="pre">to_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.pauli.QubitPauliString" title="pytket.pauli.QubitPauliString"><span class="pre">pytket.pauli.QubitPauliString</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">json</span></span></span><a class="headerlink" href="#pytket.pauli.QubitPauliString.to_list" title="Permalink to this definition">#</a></dt>
-<dd><p>A JSON-serializable representation of the QubitPauliString. 
-:return: a list of <code class="xref py py-class docutils literal notranslate"><span class="pre">Qubit</span></code>-to-<a class="reference internal" href="#pytket.pauli.Pauli" title="pytket.pauli.Pauli"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pauli</span></code></a> entries, represented as dicts.</p>
+<dd><p>A JSON-serializable representation of the QubitPauliString.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a list of <code class="xref py py-class docutils literal notranslate"><span class="pre">Qubit</span></code>-to-<a class="reference internal" href="#pytket.pauli.Pauli" title="pytket.pauli.Pauli"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pauli</span></code></a> entries, represented as dicts.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py method">

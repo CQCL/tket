@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>pytket.passes &#8212; pytket 1.17.1 documentation</title>
+    <title>pytket.passes &#8212; pytket 1.18.0 documentation</title>
   
   
   
@@ -821,7 +821,10 @@ document.write(`
 <p>It is the caller’s responsibility to provide a valid transform.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>transform</strong> – function taking a <code class="xref py py-class docutils literal notranslate"><span class="pre">Circuit</span></code> as an argument and returning a new transformed circuit:param label: optional label for the pass</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>transform</strong> – function taking a <code class="xref py py-class docutils literal notranslate"><span class="pre">Circuit</span></code> as an argument and returning a new transformed circuit</p></li>
+<li><p><strong>label</strong> – optional label for the pass</p></li>
+</ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>
 <dd class="field-even"><p>a pass to perform the transformation</p>
@@ -832,8 +835,12 @@ document.write(`
 <dl class="py function">
 <dt class="sig sig-object py" id="pytket.passes.CustomRoutingPass">
 <span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">CustomRoutingPass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="architecture.html#pytket.architecture.Architecture" title="pytket.architecture.Architecture"><span class="pre">pytket.architecture.Architecture</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="mapping.html#pytket.mapping.RoutingMethod" title="pytket.mapping.RoutingMethod"><span class="pre">pytket.mapping.RoutingMethod</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.CustomRoutingPass" title="Permalink to this definition">#</a></dt>
-<dd><p>Construct a pass to route to the connectivity graph of an <code class="xref py py-class docutils literal notranslate"><span class="pre">Architecture</span></code>. Edge direction is ignored.
-:return: a pass that routes to the given device architecture</p>
+<dd><p>Construct a pass to route to the connectivity graph of an <code class="xref py py-class docutils literal notranslate"><span class="pre">Architecture</span></code>. Edge direction is ignored.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a pass that routes to the given device architecture</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -1263,13 +1270,14 @@ document.write(`
 <dt class="sig sig-object py" id="pytket.passes.RemoveRedundancies">
 <span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">RemoveRedundancies</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.RemoveRedundancies" title="Permalink to this definition">#</a></dt>
 <dd><p>Removes gate-inverse pairs, merges rotations, removes identity rotations, and removes redundant gates before measurement. Does not add any new gate types.</p>
-<p>When merging rotations with the same op group name, the mergedoperation keeps the same name.</p>
+<p>When merging rotations with the same op group name, the merged operation keeps the same name.</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pytket.passes.RenameQubitsPass">
 <span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">RenameQubitsPass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qubit_map</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="circuit.html#pytket.circuit.Qubit" title="pytket.circuit.Qubit"><span class="pre">pytket.circuit.Qubit</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="circuit.html#pytket.circuit.Qubit" title="pytket.circuit.Qubit"><span class="pre">pytket.circuit.Qubit</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.RenameQubitsPass" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Rename some or all qubits.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><p><strong>qubit_map</strong> – map from old to new qubit names</p>
 </dd>
@@ -1279,9 +1287,13 @@ document.write(`
 <dl class="py function">
 <dt class="sig sig-object py" id="pytket.passes.RoundAngles">
 <span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">RoundAngles</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">n</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">only_zeros</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.RoundAngles" title="Permalink to this definition">#</a></dt>
-<dd><dl class="field-list simple">
+<dd><p>Round angles to the nearest <span class="math notranslate nohighlight">\(\pi / 2^n\)</span>.</p>
+<dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
-<dd class="field-odd"><p><strong>only_zeros</strong> – if True, only round angles less than <span class="math notranslate nohighlight">\(\pi / 2^{n+1}\)</span> to zero, leave other angles alone (default False)</p>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>n</strong> – precision parameter, must be &gt;= 0 and &lt; 32</p></li>
+<li><p><strong>only_zeros</strong> – if True, only round angles less than <span class="math notranslate nohighlight">\(\pi / 2^{n+1}\)</span> to zero, leave other angles alone (default False)</p></li>
+</ul>
 </dd>
 </dl>
 </dd></dl>
@@ -1289,8 +1301,12 @@ document.write(`
 <dl class="py function">
 <dt class="sig sig-object py" id="pytket.passes.RoutingPass">
 <span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">RoutingPass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="architecture.html#pytket.architecture.Architecture" title="pytket.architecture.Architecture"><span class="pre">pytket.architecture.Architecture</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.RoutingPass" title="Permalink to this definition">#</a></dt>
-<dd><p>Construct a pass to route to the connectivity graph of an <code class="xref py py-class docutils literal notranslate"><span class="pre">Architecture</span></code>. Edge direction is ignored. Uses <code class="xref py py-class docutils literal notranslate"><span class="pre">LexiLabellingMethod</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">LexiRouteRoutingMethod</span></code>.
-:return: a pass that routes to the given device architecture</p>
+<dd><p>Construct a pass to route to the connectivity graph of an <code class="xref py py-class docutils literal notranslate"><span class="pre">Architecture</span></code>. Edge direction is ignored. Uses <code class="xref py py-class docutils literal notranslate"><span class="pre">LexiLabellingMethod</span></code> and <code class="xref py py-class docutils literal notranslate"><span class="pre">LexiRouteRoutingMethod</span></code>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a pass that routes to the given device architecture</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
@@ -1394,8 +1410,12 @@ document.write(`
 <dl class="py function">
 <dt class="sig sig-object py" id="pytket.passes.ZZPhaseToRz">
 <span class="sig-prename descclassname"><span class="pre">pytket.passes.</span></span><span class="sig-name descname"><span class="pre">ZZPhaseToRz</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.passes.BasePass" title="pytket.passes.BasePass"><span class="pre">pytket.passes.BasePass</span></a></span></span><a class="headerlink" href="#pytket.passes.ZZPhaseToRz" title="Permalink to this definition">#</a></dt>
-<dd><p>Converts ZZPhase gates with angle pi or -pi to two Rz gates withangle pi.
-:return: a pass to convert ZZPhase gates to Rz</p>
+<dd><p>Converts all ZZPhase gates in a circuit with angle 1 or -1 (half-turns) into two Rz gates each with a parameter value of 1 (half-turns). ZZPhase gates with parameter values other than 1 or -1 (half-turns) are left unchanged.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a pass to convert ZZPhase gates to Rz.</p>
+</dd>
+</dl>
 </dd></dl>
 
 <section id="module-pytket.passes.script">
@@ -1454,7 +1474,7 @@ lambdas or circuits.</p>
 <span id="pytket-passes-auto-rebase"></span><h2>pytket.passes.auto_rebase<a class="headerlink" href="#module-pytket.passes.auto_rebase" title="Permalink to this heading">#</a></h2>
 <dl class="py function">
 <dt class="sig sig-object py" id="pytket.passes.auto_rebase.auto_rebase_pass">
-<span class="sig-prename descclassname"><span class="pre">pytket.passes.auto_rebase.</span></span><span class="sig-name descname"><span class="pre">auto_rebase_pass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gateset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="optype.html#pytket.circuit.OpType" title="pytket.circuit.OpType"><span class="pre">OpType</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">RebaseCustom</span></span></span><a class="reference internal" href="_modules/pytket/passes/auto_rebase.html#auto_rebase_pass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pytket.passes.auto_rebase.auto_rebase_pass" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pytket.passes.auto_rebase.</span></span><span class="sig-name descname"><span class="pre">auto_rebase_pass</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">gateset</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="optype.html#pytket.circuit.OpType" title="pytket.circuit.OpType"><span class="pre">OpType</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">allow_swaps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">RebaseCustom</span></span></span><a class="reference internal" href="_modules/pytket/passes/auto_rebase.html#auto_rebase_pass"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pytket.passes.auto_rebase.auto_rebase_pass" title="Permalink to this definition">#</a></dt>
 <dd><p>Attempt to generate a rebase pass automatically for the given target
 gateset.</p>
 <p>Checks if there are known existing decompositions

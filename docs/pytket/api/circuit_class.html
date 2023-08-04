@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>pytket.circuit.Circuit &#8212; pytket 1.17.1 documentation</title>
+    <title>pytket.circuit.Circuit &#8212; pytket 1.18.0 documentation</title>
   
   
   
@@ -485,6 +485,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.copy"><code class="docutils literal notranslate"><span class="pre">Circuit.copy()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.dagger"><code class="docutils literal notranslate"><span class="pre">Circuit.dagger()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.depth"><code class="docutils literal notranslate"><span class="pre">Circuit.depth()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.depth_2q"><code class="docutils literal notranslate"><span class="pre">Circuit.depth_2q()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.depth_by_type"><code class="docutils literal notranslate"><span class="pre">Circuit.depth_by_type()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.flatten_registers"><code class="docutils literal notranslate"><span class="pre">Circuit.flatten_registers()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.free_symbols"><code class="docutils literal notranslate"><span class="pre">Circuit.free_symbols()</span></code></a></li>
@@ -3432,6 +3433,23 @@ Allowed parameters are <cite>opgroup</cite>,  <cite>condition</cite> , <cite>con
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="pytket.circuit.Circuit.depth_2q">
+<span class="sig-name descname"><span class="pre">depth_2q</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><span class="pre">pytket.circuit.Circuit</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#pytket.circuit.Circuit.depth_2q" title="Permalink to this definition">#</a></dt>
+<dd><p>Returns the number of vertices in the longest path through the sub-DAG consisting of vertices with 2 quantum wires,excluding vertices representing barrier operations.</p>
+<div class="doctest highlight-default notranslate"><div class="highlight"><pre><span></span><span class="gp">&gt;&gt;&gt; </span><span class="n">c</span> <span class="o">=</span> <span class="n">Circuit</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">CZ</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">Z</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">Z</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">ZZMax</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">CX</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span>
+<span class="gp">&gt;&gt;&gt; </span><span class="n">c</span><span class="o">.</span><span class="n">depth_2q</span><span class="p">()</span>
+<span class="go">3</span>
+<span class="go">:return: the circuit depth with respect to 2-qubit operations.</span>
+</pre></div>
+</div>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pytket.circuit.Circuit.depth_by_type">
 <span class="sig-name descname"><span class="pre">depth_by_type</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.depth_by_type" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
@@ -4271,6 +4289,7 @@ Allowed parameters are <cite>opgroup</cite>,  <cite>condition</cite> , <cite>con
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.copy"><code class="docutils literal notranslate"><span class="pre">Circuit.copy()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.dagger"><code class="docutils literal notranslate"><span class="pre">Circuit.dagger()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.depth"><code class="docutils literal notranslate"><span class="pre">Circuit.depth()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.depth_2q"><code class="docutils literal notranslate"><span class="pre">Circuit.depth_2q()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.depth_by_type"><code class="docutils literal notranslate"><span class="pre">Circuit.depth_by_type()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.flatten_registers"><code class="docutils literal notranslate"><span class="pre">Circuit.flatten_registers()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.free_symbols"><code class="docutils literal notranslate"><span class="pre">Circuit.free_symbols()</span></code></a></li>
