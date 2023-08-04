@@ -20,6 +20,7 @@
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Gate/Rotation.hpp"
 #include "tket/OpType/OpType.hpp"
+#include "tket/Transformations/BasicOptimisation.hpp"
 #include "tket/Utils/Expression.hpp"
 #include "tket/Utils/MatrixAnalysis.hpp"
 
@@ -98,6 +99,22 @@ const Circuit &CX_using_ZZMax() {
     c.add_op<unsigned>(OpType::Rz, 1.5, {1});
     c.add_op<unsigned>(OpType::Rx, 1.5, {1});
     c.add_op<unsigned>(OpType::ZZMax, {0, 1});
+    c.add_op<unsigned>(OpType::Rx, 1.5, {1});
+    c.add_op<unsigned>(OpType::Rz, 1.5, {1});
+    c.add_phase(0.75);
+    return c;
+  }());
+  return *C;
+}
+
+const Circuit &CX_using_ZZPhase() {
+  static std::unique_ptr<const Circuit> C = std::make_unique<Circuit>([]() {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::Rz, 1.5, {0});
+    c.add_op<unsigned>(OpType::Rx, 0.5, {1});
+    c.add_op<unsigned>(OpType::Rz, 1.5, {1});
+    c.add_op<unsigned>(OpType::Rx, 1.5, {1});
+    c.add_op<unsigned>(OpType::ZZPhase, 0.5, {0, 1});
     c.add_op<unsigned>(OpType::Rx, 1.5, {1});
     c.add_op<unsigned>(OpType::Rz, 1.5, {1});
     c.add_phase(0.75);
@@ -906,7 +923,6 @@ Circuit TK2_using_3xCX(const Expr &alpha, const Expr &beta, const Expr &gamma) {
 
 Circuit normalised_TK2_using_CX(
     const Expr &alpha, const Expr &beta, const Expr &gamma) {
-  // only handle TK2 if normalised to Weyl chamber
   if (equiv_0(alpha, 4) && equiv_0(beta, 4) && equiv_0(gamma, 4)) {
     return Circuit(2);
   } else if (
@@ -935,6 +951,65 @@ Circuit TK2_using_CX(const Expr &alpha, const Expr &beta, const Expr &gamma) {
   return c;
 }
 
+/**
+ * @brief TK2 expressed as CX and optional wire swap
+ *
+ * Decomposes a TK2 gate into CX gates
+ *
+ * Symbolic parameters are supported. In that case, decompositions are exact.
+ *
+ * @param angles The TK2 parameters
+ * @return Circuit TK2-equivalent up to wire swap circuit
+ */
+static Circuit normalised_TK2_using_CX_and_swap(
+    const Expr &alpha, const Expr &beta, const Expr &gamma) {
+  // first construct parameters for producing TK2 with wire swap
+  std::tuple<Circuit, std::array<Expr, 3>, Circuit> pre_angles_post =
+      normalise_TK2_angles(alpha + 0.5, beta + 0.5, gamma + 0.5);
+  std::array<Expr, 3> swap_angles = std::get<1>(pre_angles_post);
+
+  // generate two circuits for both sets of angles
+  Circuit without_swap = normalised_TK2_using_CX(alpha, beta, gamma);
+  Circuit with_swap =
+      normalised_TK2_using_CX(swap_angles[0], swap_angles[1], swap_angles[2]);
+
+  // if without_swap has same or fewer number of CX gates, return it, else build
+  // with_swap circuit
+  if (without_swap.count_gates(OpType::CX) <=
+      with_swap.count_gates(OpType::CX)) {
+    return without_swap;
+  }
+  Circuit swap(2);
+  swap.add_op<unsigned>(OpType::SWAP, {0, 1});
+  with_swap = std::get<0>(pre_angles_post) >> with_swap >>
+              std::get<2>(pre_angles_post) >> swap;
+  with_swap.add_phase(0.25);
+  with_swap.replace_SWAPs();
+
+  // This decomposition can leave many extraneous single qubits gates: squash
+  // them into TK1 that can be resynthesised
+  Transforms::squash_1qb_to_tk1().apply(with_swap);
+  return with_swap;
+}
+
+Circuit TK2_using_CX_and_swap(
+    const Expr &alpha, const Expr &beta, const Expr &gamma) {
+  Circuit c = TK2_using_normalised_TK2(alpha, beta, gamma);
+  // Find the TK2 vertex and replace it.
+  BGL_FORALL_VERTICES(v, c.dag, DAG) {
+    Op_ptr op = c.get_Op_ptr_from_Vertex(v);
+    if (op->get_type() == OpType::TK2) {
+      std::vector<Expr> params = op->get_params();
+      TKET_ASSERT(params.size() == 3);
+      Circuit rep =
+          normalised_TK2_using_CX_and_swap(params[0], params[1], params[2]);
+      c.substitute(rep, v, Circuit::VertexDeletion::Yes);
+      break;
+    }
+  }
+  return c;
+}
+
 Circuit approx_TK2_using_1xZZPhase(const Expr &alpha) {
   return XXPhase_using_ZZPhase(alpha);
 }
@@ -955,6 +1030,37 @@ Circuit TK2_using_ZZPhase(
   return c;
 }
 
+Circuit TK2_using_ZZPhase_and_swap(
+    const Expr &alpha, const Expr &beta, const Expr &gamma) {
+  Circuit c = TK2_using_CX_and_swap(alpha, beta, gamma);
+  if (c.count_gates(OpType::CX) < 3) {
+    // Find the CX gates and replace them with ZZMax.
+    VertexSet bin;
+    BGL_FORALL_VERTICES(v, c.dag, DAG) {
+      Op_ptr op = c.get_Op_ptr_from_Vertex(v);
+      if (op->get_type() == OpType::CX) {
+        c.substitute(CX_using_ZZPhase(), v, Circuit::VertexDeletion::No);
+        bin.insert(v);
+      }
+    }
+    c.remove_vertices(
+        bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
+    return c;
+  }
+  return TK2_using_ZZPhase(alpha, beta, gamma);
+}
+
+Circuit TK2_using_TK2_or_swap(
+    const Expr &alpha, const Expr &beta, const Expr &gamma) {
+  Circuit c = TK2_using_CX_and_swap(alpha, beta, gamma);
+  if (c.count_gates(OpType::CX) == 0) {
+    return c;
+  }
+  Circuit tk2(2);
+  tk2.add_op<unsigned>(OpType::TK2, {alpha, beta, gamma}, {0, 1});
+  return tk2;
+}
+
 Circuit TK2_using_ZZMax(
     const Expr &alpha, const Expr &beta, const Expr &gamma) {
   Circuit c = TK2_using_CX(alpha, beta, gamma);
@@ -970,6 +1076,27 @@ Circuit TK2_using_ZZMax(
   c.remove_vertices(
       bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
   return c;
+}
+
+Circuit TK2_using_ZZMax_and_swap(
+    const Expr &alpha, const Expr &beta, const Expr &gamma) {
+  Circuit c = TK2_using_CX_and_swap(alpha, beta, gamma);
+  if (c.count_gates(OpType::CX) < 3) {
+    // Find the CX gates and replace them with ZZMax.
+    VertexSet bin;
+    BGL_FORALL_VERTICES(v, c.dag, DAG) {
+      Op_ptr op = c.get_Op_ptr_from_Vertex(v);
+      if (op->get_type() == OpType::CX) {
+        c.substitute(CX_using_ZZMax(), v, Circuit::VertexDeletion::No);
+        bin.insert(v);
+      }
+    }
+    c.remove_vertices(
+        bin, Circuit::GraphRewiring::No, Circuit::VertexDeletion::Yes);
+    return c;
+  }
+
+  return TK2_using_ZZMax(alpha, beta, gamma);
 }
 
 Circuit XXPhase3_using_TK2(const Expr &alpha) {
@@ -1082,7 +1209,6 @@ Circuit TK2_using_normalised_TK2(
     const Expr &alpha, const Expr &beta, const Expr &gamma) {
   auto [pre, normalised_exprs, post] = normalise_TK2_angles(alpha, beta, gamma);
   auto [alpha_norm, beta_norm, gamma_norm] = normalised_exprs;
-
   Circuit res(2);
   res.append(pre);
   res.add_op<unsigned>(

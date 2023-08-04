@@ -21,7 +21,7 @@ import os
 
 class PyBind11Conan(ConanFile):
     name = "pybind11"
-    version = "2.10.4"
+    version = "2.11.1"
     description = "Seamless operability between C++11 and Python"
     topics = "pybind11", "python", "binding"
     homepage = "https://github.com/pybind/pybind11"
@@ -79,7 +79,7 @@ class PyBind11Conan(ConanFile):
             os.path.join(
                 self.package_folder, "lib", "cmake", "pybind11", "pybind11Common.cmake"
             ),
-            "if(TARGET pybind11::lto)",
+            "if(TARGET pybind11::pybind11)",
             "if(FALSE)",
         )
         replace_in_file(
