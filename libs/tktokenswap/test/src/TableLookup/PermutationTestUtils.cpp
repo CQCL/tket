@@ -16,6 +16,7 @@
 
 #include <catch2/catch_test_macros.hpp>
 #include <vector>
+#include <algorithm>
 
 namespace tket {
 namespace tsa_internal {

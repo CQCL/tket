@@ -67,7 +67,7 @@ target_include_directories(tktokenswap PUBLIC
     $<INSTALL_INTERFACE:include/tktokenswap>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tktokenswap>)
 target_link_libraries(tktokenswap PRIVATE tklog::tklog)
-target_link_libraries(tktokenswap PRIVATE tkassert::tkassert)
+target_link_libraries(tktokenswap PUBLIC tkassert::tkassert)
 target_link_libraries(tktokenswap PRIVATE tkrng::tkrng)
 target_link_libraries(tktokenswap PRIVATE Boost::headers)
 

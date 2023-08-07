@@ -63,7 +63,7 @@ ENDIF()
 target_include_directories(tkassert PUBLIC
     $<INSTALL_INTERFACE:include/tkassert>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tkassert>)
-target_link_libraries(tkassert PRIVATE tklog::tklog)
+target_link_libraries(tkassert PUBLIC tklog::tklog)
 
 target_sources(tkassert
     PRIVATE src/AssertMessage.cpp
