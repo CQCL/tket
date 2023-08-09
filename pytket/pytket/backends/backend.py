@@ -107,7 +107,6 @@ class Backend(ABC):
     def _check_all_circuits(
         self, circuits: Iterable[Circuit], nomeasure_warn: Optional[bool] = None
     ) -> bool:
-
         if nomeasure_warn is None:
             nomeasure_warn = not (
                 self._supports_state
@@ -172,18 +171,19 @@ class Backend(ABC):
         ...
 
     def get_compiled_circuit(
-        self, circuit: Circuit, optimisation_level: int = 2
+        self, circuit: Circuit, optimisation_level: int = 2, **kwargs
     ) -> Circuit:
         """
-        Return a single circuit compiled with :py:meth:`default_compilation_pass`. See
-        :py:meth:`Backend.get_compiled_circuits`.
+        Return a single circuit compiled with :py:meth:`default_compilation_pass` See
+        :py:meth:`Backend.get_compiled_circuits`. Valid kwargs are Backend specific.
+
         """
         return_circuit = circuit.copy()
-        self.default_compilation_pass(optimisation_level).apply(return_circuit)
+        self.default_compilation_pass(optimisation_level, kwargs).apply(return_circuit)
         return return_circuit
 
     def get_compiled_circuits(
-        self, circuits: Sequence[Circuit], optimisation_level: int = 2
+        self, circuits: Sequence[Circuit], optimisation_level: int = 2, **kwargs
     ) -> List[Circuit]:
         """Compile a sequence of circuits with :py:meth:`default_compilation_pass`
         and return the list of compiled circuits (does not act in place).
@@ -204,6 +204,8 @@ class Backend(ABC):
         backend, and running the :py:meth:`verify` method on each in turn with your
         circuit.
 
+        Valid kwargs are backend specific.
+
         :param circuits: The circuits to compile.
         :type circuit: Sequence[Circuit]
         :param optimisation_level: The level of optimisation to perform during
@@ -213,7 +215,9 @@ class Backend(ABC):
         :return: Compiled circuits.
         :rtype: List[Circuit]
         """
-        return [self.get_compiled_circuit(c, optimisation_level) for c in circuits]
+        return [
+            self.get_compiled_circuit(c, optimisation_level, kwargs) for c in circuits
+        ]
 
     @property
     @abstractmethod
@@ -265,7 +269,6 @@ class Backend(ABC):
         valid_check: bool = True,
         **kwargs: KwargTypes,
     ) -> List[ResultHandle]:
-
         """
         Submit circuits to the backend for running. The results will be stored
         in the backend's result cache to be retrieved by the corresponding
