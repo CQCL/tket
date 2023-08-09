@@ -143,7 +143,9 @@ class Backend(ABC):
         ...
 
     @abstractmethod
-    def default_compilation_pass(self, optimisation_level: int = 2) -> BasePass:
+    def default_compilation_pass(
+        self, optimisation_level: int = 2, **kwarfs
+    ) -> BasePass:
         """
         A suggested compilation pass that will will, if possible, produce an equivalent
         circuit suitable for running on this backend.
@@ -153,7 +155,7 @@ class Backend(ABC):
         higher optimisation levels, further optimisations may be applied.
 
         This is a an abstract method which is implemented in the backend itself, and so
-        is tailored to the backend's requirements.
+        is tailored to the backend's requirements. Valid kwargs are Backend specific.
 
         :param optimisation_level: The level of optimisation to perform during
             compilation.
