@@ -508,6 +508,13 @@ op_signature_t StabiliserAssertionBox::get_signature() const {
   return qubs;
 }
 
+bool StabiliserAssertionBox::is_equal(const Op &op_other) const {
+  const StabiliserAssertionBox &other =
+      dynamic_cast<const StabiliserAssertionBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  return paulis_ == other.paulis_;
+}
+
 nlohmann::json core_box_json(const Box &box) {
   nlohmann::json j;
   j["type"] = box.get_type();

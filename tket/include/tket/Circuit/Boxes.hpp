@@ -624,11 +624,7 @@ class StabiliserAssertionBox : public Box {
   /**
    * Equality check between two StabiliserAssertionBox instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const StabiliserAssertionBox &other =
-        dynamic_cast<const StabiliserAssertionBox &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   /** Get the pauli stabilisers */
   PauliStabiliserList get_stabilisers() const { return paulis_; }

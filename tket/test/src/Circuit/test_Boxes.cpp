@@ -1009,6 +1009,19 @@ SCENARIO("Checking equality", "[boxes]") {
       REQUIRE(box != ProjectorAssertionBox(p));
     }
   }
+  GIVEN("StabiliserAssertionBox") {
+    PauliStabiliser p1 = {{Pauli::X, Pauli::X}, true};
+    PauliStabiliser p2 = {{Pauli::Z, Pauli::Z}, true};
+    PauliStabiliser p3 = {{Pauli::Z, Pauli::Z}, false};
+    StabiliserAssertionBox box({p1, p2});
+    WHEN("both arguments are equal") { REQUIRE(box == box); }
+    WHEN("different ids but equivalent stabilisers") {
+      REQUIRE(box == StabiliserAssertionBox({p1, p2}));
+    }
+    WHEN("different stabilisers") {
+      REQUIRE(box != StabiliserAssertionBox({p1, p3}));
+    }
+  }
 }
 
 SCENARIO("Checking box names", "[boxes]") {
