@@ -21,6 +21,7 @@
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/DiagonalBox.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Converters/PhasePoly.hpp"
@@ -1020,6 +1021,19 @@ SCENARIO("Checking equality", "[boxes]") {
     }
     WHEN("different stabilisers") {
       REQUIRE(box != StabiliserAssertionBox({p1, p3}));
+    }
+  }
+  GIVEN("DiagonalBox") {
+    Eigen::Vector2cd diag(i_, 1);
+    DiagonalBox box(diag);
+    WHEN("all arguments are equal") { REQUIRE(box == box); }
+    WHEN("different ids but other args are equal") {
+      DiagonalBox box2(diag);
+      REQUIRE(box == box2);
+    }
+    WHEN("arguments are different") {
+      DiagonalBox box3(diag, false);
+      REQUIRE(box != box3);
     }
   }
 }
