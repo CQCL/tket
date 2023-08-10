@@ -104,7 +104,9 @@ class TketSimBackend(Backend):
     def rebase_pass(self) -> BasePass:
         return auto_rebase_pass(_GATE_SET)
 
-    def default_compilation_pass(self, optimisation_level: int = 1) -> BasePass:
+    def default_compilation_pass(
+        self, optimisation_level: int = 1, **kwargs
+    ) -> BasePass:
         assert optimisation_level in range(3)
         if optimisation_level == 0:
             return SequencePass([DecomposeBoxes(), self.rebase_pass()])
@@ -155,7 +157,9 @@ class TketSimShotBackend(TketSimBackend):
     _supports_state = False
     _supports_contextual_optimisation = True
 
-    def default_compilation_pass(self, optimisation_level: int = 1) -> BasePass:
+    def default_compilation_pass(
+        self, optimisation_level: int = 1, **kwargs
+    ) -> BasePass:
         assert optimisation_level in range(3)
         if optimisation_level == 0:
             return SequencePass([DecomposeBoxes(), self.rebase_pass()])
