@@ -851,11 +851,16 @@ SCENARIO("Checking equality", "[boxes]") {
     Unitary1qBox mbox(m);
 
     WHEN("both arguments are equal") { REQUIRE(mbox == mbox); }
-    WHEN("both arguments are different") {
-      setup.add_op<unsigned>(OpType::TK1, {0.2374, 1.0353, 0.5372}, {0});
+    WHEN("different ids but matrices are equal") {
       Eigen::Matrix2cd m2 = tket_sim::get_unitary(setup);
       Unitary1qBox mbox2(m2);
-      REQUIRE(mbox != mbox2);
+      REQUIRE(mbox == mbox2);
+    }
+    WHEN("both arguments are different") {
+      setup.add_op<unsigned>(OpType::TK1, {0.2374, 1.0353, 0.5372}, {0});
+      Eigen::Matrix2cd m3 = tket_sim::get_unitary(setup);
+      Unitary1qBox mbox3(m3);
+      REQUIRE(mbox != mbox3);
     }
   }
   GIVEN("Unitary2qBox") {

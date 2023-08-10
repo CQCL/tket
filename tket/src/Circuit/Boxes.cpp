@@ -146,6 +146,12 @@ void Unitary1qBox::generate_circuit() const {
   circ_->add_phase(tk1_params[3]);
 }
 
+bool Unitary1qBox::is_equal(const Op &op_other) const {
+  const Unitary1qBox &other = dynamic_cast<const Unitary1qBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  return m_.isApprox(other.m_);
+}
+
 Unitary2qBox::Unitary2qBox(const Eigen::Matrix4cd &m, BasisOrder basis)
     : Box(OpType::Unitary2qBox),
       m_(basis == BasisOrder::ilo ? m : reverse_indexing(m)) {
