@@ -340,6 +340,14 @@ void PauliExpCommutingSetBox::generate_circuit() const {
   circ_ = std::make_shared<Circuit>(circ);
 }
 
+bool PauliExpCommutingSetBox::is_equal(const Op &op_other) const {
+  const PauliExpCommutingSetBox &other =
+      dynamic_cast<const PauliExpCommutingSetBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  return cx_config_ == other.cx_config_ &&
+         pauli_gadgets_ == other.pauli_gadgets_;
+}
+
 nlohmann::json PauliExpCommutingSetBox::to_json(const Op_ptr &op) {
   const auto &box = static_cast<const PauliExpCommutingSetBox &>(*op);
   nlohmann::json j = core_box_json(box);

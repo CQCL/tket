@@ -178,10 +178,7 @@ class PauliExpCommutingSetBox : public Box {
   /**
    * Equality check between two instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const auto &other = dynamic_cast<const PauliExpCommutingSetBox &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   /** Get the pauli gadgets */
   auto get_pauli_gadgets() const { return pauli_gadgets_; }
