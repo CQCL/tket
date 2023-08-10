@@ -144,7 +144,7 @@ class Backend(ABC):
 
     @abstractmethod
     def default_compilation_pass(
-        self, optimisation_level: int = 2, **kwargs
+        self, optimisation_level: int = 2, **kwargs: KwargTypes
     ) -> BasePass:
         """
         A suggested compilation pass that will will, if possible, produce an equivalent
@@ -173,7 +173,7 @@ class Backend(ABC):
         ...
 
     def get_compiled_circuit(
-        self, circuit: Circuit, optimisation_level: int = 2, **kwargs
+        self, circuit: Circuit, optimisation_level: int = 2, **kwargs: KwargTypes
     ) -> Circuit:
         """
         Return a single circuit compiled with :py:meth:`default_compilation_pass` See
@@ -187,7 +187,10 @@ class Backend(ABC):
         return return_circuit
 
     def get_compiled_circuits(
-        self, circuits: Sequence[Circuit], optimisation_level: int = 2, **kwargs
+        self,
+        circuits: Sequence[Circuit],
+        optimisation_level: int = 2,
+        **kwargs: KwargTypes,
     ) -> List[Circuit]:
         """Compile a sequence of circuits with :py:meth:`default_compilation_pass`
         and return the list of compiled circuits (does not act in place).
