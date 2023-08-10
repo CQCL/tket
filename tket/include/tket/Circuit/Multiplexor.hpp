@@ -67,11 +67,7 @@ class MultiplexorBox : public Box {
   /**
    * Equality check between two MultiplexorBox instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const MultiplexorBox &other =
-        dynamic_cast<const MultiplexorBox &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   Op_ptr dagger() const override;
 

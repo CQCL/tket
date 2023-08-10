@@ -411,6 +411,12 @@ op_signature_t MultiplexorBox::get_signature() const {
   return qubits;
 }
 
+bool MultiplexorBox::is_equal(const Op &op_other) const {
+  const MultiplexorBox &other = dynamic_cast<const MultiplexorBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  return op_map_ == other.op_map_;
+}
+
 nlohmann::json MultiplexorBox::to_json(const Op_ptr &op) {
   const auto &box = static_cast<const MultiplexorBox &>(*op);
   nlohmann::json j = core_box_json(box);

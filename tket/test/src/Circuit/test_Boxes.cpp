@@ -22,6 +22,7 @@
 #include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/DiagonalBox.hpp"
+#include "tket/Circuit/Multiplexor.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Converters/PhasePoly.hpp"
@@ -1033,6 +1034,20 @@ SCENARIO("Checking equality", "[boxes]") {
     }
     WHEN("arguments are different") {
       DiagonalBox box3(diag, false);
+      REQUIRE(box != box3);
+    }
+  }
+  GIVEN("MultiplexorBox") {
+    ctrl_op_map_t op_map = {{{1}, get_op_ptr(OpType::H)}};
+    MultiplexorBox box(op_map);
+    WHEN("all arguments are equal") { REQUIRE(box == box); }
+    WHEN("different ids but other args are equal") {
+      MultiplexorBox box2(op_map);
+      REQUIRE(box == box2);
+    }
+    WHEN("arguments are different") {
+      ctrl_op_map_t op_map2 = {{{0}, get_op_ptr(OpType::H)}};
+      MultiplexorBox box3(op_map2);
       REQUIRE(box != box3);
     }
   }
