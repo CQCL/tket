@@ -572,11 +572,7 @@ class ProjectorAssertionBox : public Box {
   /**
    * Equality check between two ProjectorAssertionBox instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const ProjectorAssertionBox &other =
-        dynamic_cast<const ProjectorAssertionBox &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   /** Get the unitary matrix correspnding to this operation */
   Eigen::MatrixXcd get_matrix() const { return m_; }

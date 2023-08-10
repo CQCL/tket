@@ -995,6 +995,20 @@ SCENARIO("Checking equality", "[boxes]") {
     CHECK(g1_repeated != g1_wrong);
     CHECK_THROWS_AS(CustomGate(nullptr, {param3}), std::runtime_error);
   }
+  GIVEN("ProjectorAssertionBox") {
+    Eigen::MatrixXcd bell(4, 4);
+    bell << 0.5, 0, 0, 0.5, 0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0, 0, 0.5;
+    ProjectorAssertionBox box(bell);
+    WHEN("both arguments are equal") { REQUIRE(box == box); }
+    WHEN("different ids but equivalent projectors") {
+      REQUIRE(box == ProjectorAssertionBox(bell));
+    }
+    WHEN("different projectors") {
+      Eigen::MatrixXcd p(4, 4);
+      p << 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
+      REQUIRE(box != ProjectorAssertionBox(p));
+    }
+  }
 }
 
 SCENARIO("Checking box names", "[boxes]") {

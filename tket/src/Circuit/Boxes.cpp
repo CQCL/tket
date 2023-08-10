@@ -454,6 +454,13 @@ void ProjectorAssertionBox::generate_circuit() const {
   circ_ = std::make_shared<Circuit>(c);
 }
 
+bool ProjectorAssertionBox::is_equal(const Op &op_other) const {
+  const ProjectorAssertionBox &other =
+      dynamic_cast<const ProjectorAssertionBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  return m_.isApprox(other.m_);
+}
+
 StabiliserAssertionBox::StabiliserAssertionBox(
     const PauliStabiliserList &paulis)
     : Box(OpType::StabiliserAssertionBox),
