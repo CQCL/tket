@@ -198,9 +198,9 @@ bool StatePreparationBox::is_equal(const Op &op_other) const {
   const StatePreparationBox &other =
       dynamic_cast<const StatePreparationBox &>(op_other);
   if (id_ == other.get_id()) return true;
-  return statevector_.isApprox(other.statevector_) &&
-         is_inverse_ == other.is_inverse_ &&
-         with_initial_reset_ == other.with_initial_reset_;
+  return is_inverse_ == other.is_inverse_ &&
+         with_initial_reset_ == other.with_initial_reset_ &&
+         statevector_.isApprox(other.statevector_);
 }
 
 nlohmann::json StatePreparationBox::to_json(const Op_ptr &op) {

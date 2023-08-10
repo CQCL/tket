@@ -125,8 +125,8 @@ void DiagonalBox::generate_circuit() const {
 bool DiagonalBox::is_equal(const Op &op_other) const {
   const DiagonalBox &other = dynamic_cast<const DiagonalBox &>(op_other);
   if (id_ == other.get_id()) return true;
-  return diagonal_.isApprox(other.diagonal_) &&
-         upper_triangle_ == other.upper_triangle_;
+  return upper_triangle_ == other.upper_triangle_ &&
+         diagonal_.isApprox(other.diagonal_);
 }
 
 nlohmann::json DiagonalBox::to_json(const Op_ptr &op) {

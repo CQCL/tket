@@ -614,7 +614,7 @@ bool MultiplexedU2Box::is_equal(const Op &op_other) const {
   const MultiplexedU2Box &other =
       dynamic_cast<const MultiplexedU2Box &>(op_other);
   if (id_ == other.get_id()) return true;
-  return op_map_ == other.op_map_ && impl_diag_ == other.impl_diag_;
+  return impl_diag_ == other.impl_diag_ && op_map_ == other.op_map_;
 }
 
 nlohmann::json MultiplexedU2Box::to_json(const Op_ptr &op) {
