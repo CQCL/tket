@@ -204,6 +204,12 @@ void Unitary3qBox::generate_circuit() const {
   circ_ = std::make_shared<Circuit>(three_qubit_tk_synthesis(m_));
 }
 
+bool Unitary3qBox::is_equal(const Op &op_other) const {
+  const Unitary3qBox &other = dynamic_cast<const Unitary3qBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  return m_.isApprox(other.m_);
+}
+
 ExpBox::ExpBox(const Eigen::Matrix4cd &A, double t, BasisOrder basis)
     : Box(OpType::ExpBox),
       A_(basis == BasisOrder::ilo ? A : reverse_indexing(A)),

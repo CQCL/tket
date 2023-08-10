@@ -329,10 +329,7 @@ class Unitary3qBox : public Box {
   /**
    * Equality check between two Unitary3qBox instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const Unitary3qBox &other = dynamic_cast<const Unitary3qBox &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   /** Get the unitary matrix correspnding to this operation */
   Matrix8cd get_matrix() const { return m_; }
