@@ -500,6 +500,13 @@ op_signature_t MultiplexedRotationBox::get_signature() const {
   return qubits;
 }
 
+bool MultiplexedRotationBox::is_equal(const Op &op_other) const {
+  const MultiplexedRotationBox &other =
+      dynamic_cast<const MultiplexedRotationBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  return op_map_ == other.op_map_;
+}
+
 nlohmann::json MultiplexedRotationBox::to_json(const Op_ptr &op) {
   const auto &box = static_cast<const MultiplexedRotationBox &>(*op);
   nlohmann::json j = core_box_json(box);

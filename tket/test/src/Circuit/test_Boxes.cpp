@@ -1051,6 +1051,20 @@ SCENARIO("Checking equality", "[boxes]") {
       REQUIRE(box != box3);
     }
   }
+  GIVEN("MultiplexedRotationBox") {
+    ctrl_op_map_t op_map = {{{1}, get_op_ptr(OpType::Rz, 0.7)}};
+    MultiplexedRotationBox box(op_map);
+    WHEN("all arguments are equal") { REQUIRE(box == box); }
+    WHEN("different ids but other args are equal") {
+      MultiplexedRotationBox box2(op_map);
+      REQUIRE(box == box2);
+    }
+    WHEN("arguments are different") {
+      ctrl_op_map_t op_map2 = {{{0}, get_op_ptr(OpType::Rz, 0.7)}};
+      MultiplexedRotationBox box3(op_map2);
+      REQUIRE(box != box3);
+    }
+  }
 }
 
 SCENARIO("Checking box names", "[boxes]") {
