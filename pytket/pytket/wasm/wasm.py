@@ -42,7 +42,7 @@ class WasmFileHandler:
         LANG_TYPE_EMPTY: None,
     }
 
-    def __init__(self, filepath: str, check_file: bool = True):
+    def __init__(self, filepath: str, check_file: bool = True, int_size: int = 32):
         """
         Construct a wasm file handler
 
@@ -51,7 +51,18 @@ class WasmFileHandler:
         :param check_file: If ``True`` checks file for compatibility with wasm
           standards. If ``False`` checks are skipped.
         :type check_file: bool
+        :param int_size: length of the integer that is used in the wasm file
+        :type int_size: int
         """
+        self._int_size = int_size
+        if int_size == 32:
+            self._int_type = self.type_lookup[LANG_TYPE_I32]
+        elif int_size == 64:
+            self._int_type = self.type_lookup[LANG_TYPE_I64]
+        else:
+            raise ValueError(
+                "given integer length not valid, only 32 and 64 are allowed"
+            )
 
         self._filepath = filepath
 
@@ -103,7 +114,7 @@ class WasmFileHandler:
                             ] * entry.return_count
                         else:
                             raise ValueError(
-                                f"Only parameter and return values of i32 types are"
+                                f"Only parameter and return values of i{self._int_size} types are"
                                 + f"allowed, found type: {entry.return_type}"
                             )
                     elif entry.return_count == 1:
@@ -124,13 +135,13 @@ class WasmFileHandler:
                 self._function_types = cur_sec_data.payload.types
 
         for i, x in enumerate(function_names):
-            # check for only i32 type in parameters and return values
+            # check for only integer type in parameters and return values
             supported_function = True
             for t in function_signatures[self._function_types[i]]["parameter_types"]:
-                if t != "i32":
+                if t != self._int_type:
                     supported_function = False
             for t in function_signatures[self._function_types[i]]["return_types"]:
-                if t != "i32":
+                if t != self._int_type:
                     supported_function = False
 
             if supported_function:
@@ -161,8 +172,10 @@ class WasmFileHandler:
         """str representation of the contents of the wasm file"""
         result = f"Functions in wasm file with the uid {self._wasmfileuid}:\n"
         for x in self._functions:
-            result += f"function '{x}' with {self._functions[x][0]} i32 parameter(s)"
-            result += f" and {self._functions[x][1]} i32 return value(s)\n"
+            result += f"function '{x}' with {self._functions[x][0]} i{self._int_size} parameter(s)"
+            result += (
+                f" and {self._functions[x][1]} i{self._int_size} return value(s)\n"
+            )
 
         for x in self._unsupported_function:
             result += (
@@ -179,9 +192,9 @@ class WasmFileHandler:
 
         :param function_name: name of the function that is checked
         :type function_name: str
-        :param number_of_parameters: number of i32 parameters of the function
+        :param number_of_parameters: number of integer parameters of the function
         :type number_of_parameters: int
-        :param number_of_returns: number of i32 return values of the function
+        :param number_of_returns: number of integer return values of the function
         :type number_of_returns: int
         :return: true if the signature and the name of the function is correct"""
 
