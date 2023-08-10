@@ -1147,6 +1147,16 @@ SCENARIO("Checking equality", "[boxes]") {
       REQUIRE(box != box2);
     }
   }
+  GIVEN("PauliExpBox") {
+    PauliExpBox pbox({Pauli::X, Pauli::Y, Pauli::Z}, 0.8);
+    WHEN("both arguments are equal") { REQUIRE(pbox == pbox); }
+    WHEN("different ids but same arguments") {
+      REQUIRE(pbox == PauliExpBox({Pauli::X, Pauli::Y, Pauli::Z}, 0.8));
+    }
+    WHEN("different arguments") {
+      REQUIRE(pbox != PauliExpBox({Pauli::X, Pauli::Y, Pauli::Z}, 0.9));
+    }
+  }
 }
 
 SCENARIO("Checking box names", "[boxes]") {

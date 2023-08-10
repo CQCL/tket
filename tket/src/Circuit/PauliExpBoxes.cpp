@@ -72,6 +72,13 @@ void PauliExpBox::generate_circuit() const {
   circ_ = std::make_shared<Circuit>(circ);
 }
 
+bool PauliExpBox::is_equal(const Op &op_other) const {
+  const PauliExpBox &other = dynamic_cast<const PauliExpBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  return t_ == other.t_ && cx_config_ == other.cx_config_ &&
+         paulis_ == other.paulis_;
+}
+
 nlohmann::json PauliExpBox::to_json(const Op_ptr &op) {
   const auto &box = static_cast<const PauliExpBox &>(*op);
   nlohmann::json j = core_box_json(box);
