@@ -194,6 +194,15 @@ void StatePreparationBox::generate_circuit() const {
       state_prep_circ(statevector_, is_inverse_, with_initial_reset_));
 }
 
+bool StatePreparationBox::is_equal(const Op &op_other) const {
+  const StatePreparationBox &other =
+      dynamic_cast<const StatePreparationBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  return statevector_.isApprox(other.statevector_) &&
+         is_inverse_ == other.is_inverse_ &&
+         with_initial_reset_ == other.with_initial_reset_;
+}
+
 nlohmann::json StatePreparationBox::to_json(const Op_ptr &op) {
   const auto &box = static_cast<const StatePreparationBox &>(*op);
   nlohmann::json j = core_box_json(box);

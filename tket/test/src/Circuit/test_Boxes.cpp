@@ -25,6 +25,7 @@
 #include "tket/Circuit/Multiplexor.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
+#include "tket/Circuit/StatePreparation.hpp"
 #include "tket/Converters/PhasePoly.hpp"
 #include "tket/Gate/SymTable.hpp"
 
@@ -1090,6 +1091,19 @@ SCENARIO("Checking equality", "[boxes]") {
     WHEN("arguments are different") {
       op_map.insert({{0, 1}, {get_op_ptr(OpType::H), get_op_ptr(OpType::X)}});
       MultiplexedTensoredU2Box box3(op_map);
+      REQUIRE(box != box3);
+    }
+  }
+  GIVEN("StatePreparationBox") {
+    Eigen::Vector2cd diag(0, 1);
+    StatePreparationBox box(diag);
+    WHEN("all arguments are equal") { REQUIRE(box == box); }
+    WHEN("different ids but other args are equal") {
+      StatePreparationBox box2(diag);
+      REQUIRE(box == box2);
+    }
+    WHEN("arguments are different") {
+      StatePreparationBox box3(diag, false, true);
       REQUIRE(box != box3);
     }
   }
