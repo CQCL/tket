@@ -911,9 +911,13 @@ SCENARIO("Checking equality", "[boxes]") {
         4., 2. + 3. * i_, 5.;
     ExpBox ebox(A, -0.5);
     WHEN("both arguments are equal") { REQUIRE(ebox == ebox); }
+    WHEN("different ids but matrices are equal") {
+      ExpBox ebox2(A, -0.5);
+      REQUIRE(ebox == ebox2);
+    }
     WHEN("both arguments are different") {
-      ExpBox ebox2(A, -0.2);
-      REQUIRE(ebox != ebox2);
+      ExpBox ebox3(A, -0.2);
+      REQUIRE(ebox != ebox3);
     }
   }
   GIVEN("Pauli gadgets") {

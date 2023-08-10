@@ -394,10 +394,7 @@ class ExpBox : public Box {
   /**
    * Equality check between two ExpBox instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const ExpBox &other = dynamic_cast<const ExpBox &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   /** Get the hermitian matrix and phase parameter */
   std::pair<Eigen::Matrix4cd, double> get_matrix_and_phase() const {

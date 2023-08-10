@@ -229,6 +229,14 @@ Op_ptr ExpBox::transpose() const {
   return std::make_shared<ExpBox>(A_.transpose(), t_);
 }
 
+bool ExpBox::is_equal(const Op &op_other) const {
+  const ExpBox &other = dynamic_cast<const ExpBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  std::optional<Eigen::MatrixXcd> m = get_box_unitary();
+  std::optional<Eigen::MatrixXcd> other_m = other.get_box_unitary();
+  return m.value().isApprox(other_m.value());
+}
+
 std::optional<Eigen::MatrixXcd> ExpBox::get_box_unitary() const {
   return (i_ * t_ * A_).exp();
 }
