@@ -409,6 +409,12 @@ std::optional<Eigen::MatrixXcd> QControlBox::get_box_unitary() const {
   return u;
 }
 
+bool QControlBox::is_equal(const Op &op_other) const {
+  const QControlBox &other = dynamic_cast<const QControlBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  return *op_ == *other.op_ && n_controls_ == other.n_controls_;
+}
+
 ProjectorAssertionBox::ProjectorAssertionBox(
     const Eigen::MatrixXcd &m, BasisOrder basis)
     : Box(OpType::ProjectorAssertionBox),

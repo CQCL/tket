@@ -930,13 +930,26 @@ SCENARIO("Checking equality", "[boxes]") {
     }
   }
   GIVEN("QControlBox") {
-    Op_ptr op = get_op_ptr(OpType::X);
+    Circuit u(2);
+    u.add_op<unsigned>(OpType::CX, {0, 1});
+    Op_ptr op = std::make_shared<CircBox>(CircBox(u));
     QControlBox qcbox(op);
     WHEN("both arguments are equal") { REQUIRE(qcbox == qcbox); }
-    WHEN("both arguments are different") {
-      Op_ptr op2 = get_op_ptr(OpType::Y);
+    WHEN("different ids but equivalent ops") {
+      Circuit u2(2);
+      u2.add_op<unsigned>(OpType::CX, {0, 1});
+      Op_ptr op2 = std::make_shared<CircBox>(CircBox(u2));
       QControlBox qcbox2(op2);
-      REQUIRE(qcbox != qcbox2);
+      REQUIRE(qcbox == qcbox2);
+    }
+    WHEN("different ids, equivalent ops, but different types") {
+      Op_ptr op3 = get_op_ptr(OpType::CX);
+      REQUIRE(qcbox != QControlBox(op3));
+    }
+    WHEN("both arguments are different") {
+      Op_ptr op4 = get_op_ptr(OpType::Y);
+      QControlBox qcbox4(op4);
+      REQUIRE(qcbox != qcbox4);
     }
   }
   GIVEN("PhasePolyBox") {

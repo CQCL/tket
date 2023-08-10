@@ -516,10 +516,7 @@ class QControlBox : public Box {
   /**
    * Equality check between two QControlBox instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const QControlBox &other = dynamic_cast<const QControlBox &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   std::string get_command_str(const unit_vector_t &args) const override;
 
