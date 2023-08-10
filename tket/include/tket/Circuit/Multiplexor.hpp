@@ -257,11 +257,7 @@ class MultiplexedTensoredU2Box : public Box {
   /**
    * Equality check between two MultiplexedTensoredU2Box instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const MultiplexedTensoredU2Box &other =
-        dynamic_cast<const MultiplexedTensoredU2Box &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   Op_ptr dagger() const override;
 

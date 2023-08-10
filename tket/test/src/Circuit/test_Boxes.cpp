@@ -1078,6 +1078,21 @@ SCENARIO("Checking equality", "[boxes]") {
       REQUIRE(box != box3);
     }
   }
+  GIVEN("MultiplexedTensoredU2Box") {
+    ctrl_tensored_op_map_t op_map;
+    op_map.insert({{0, 0}, {get_op_ptr(OpType::X), get_op_ptr(OpType::X)}});
+    MultiplexedTensoredU2Box box(op_map);
+    WHEN("all arguments are equal") { REQUIRE(box == box); }
+    WHEN("different ids but other args are equal") {
+      MultiplexedTensoredU2Box box2(op_map);
+      REQUIRE(box == box2);
+    }
+    WHEN("arguments are different") {
+      op_map.insert({{0, 1}, {get_op_ptr(OpType::H), get_op_ptr(OpType::X)}});
+      MultiplexedTensoredU2Box box3(op_map);
+      REQUIRE(box != box3);
+    }
+  }
 }
 
 SCENARIO("Checking box names", "[boxes]") {
