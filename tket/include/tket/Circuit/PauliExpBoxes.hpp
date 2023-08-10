@@ -114,10 +114,7 @@ class PauliExpPairBox : public Box {
   /**
    * Equality check between two instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const auto &other = dynamic_cast<const PauliExpPairBox &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   /** Get Pauli strings for the pair */
   std::pair<std::vector<Pauli>, std::vector<Pauli>> get_paulis_pair() const {

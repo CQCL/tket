@@ -177,6 +177,15 @@ void PauliExpPairBox::generate_circuit() const {
   circ_ = std::make_shared<Circuit>(circ);
 }
 
+bool PauliExpPairBox::is_equal(const Op &op_other) const {
+  const PauliExpPairBox &other =
+      dynamic_cast<const PauliExpPairBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  return cx_config_ == other.cx_config_ && t0_ == other.t0_ &&
+         t1_ == other.t1_ && paulis0_ == other.paulis0_ &&
+         paulis1_ == other.paulis1_;
+}
+
 nlohmann::json PauliExpPairBox::to_json(const Op_ptr &op) {
   const auto &box = static_cast<const PauliExpPairBox &>(*op);
   nlohmann::json j = core_box_json(box);
