@@ -160,10 +160,7 @@ class CircBox : public Box {
   /**
    * Equality check between two CircBox instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const CircBox &other = dynamic_cast<const CircBox &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   Op_ptr dagger() const override;
 

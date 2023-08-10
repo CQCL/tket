@@ -105,6 +105,12 @@ Op_ptr CircBox::transpose() const {
   return std::make_shared<CircBox>(circ_->transpose());
 }
 
+bool CircBox::is_equal(const Op &op_other) const {
+  const CircBox &other = dynamic_cast<const CircBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  return circ_->circuit_equality(*other.circ_, {}, false);
+}
+
 Unitary1qBox::Unitary1qBox(const Eigen::Matrix2cd &m)
     : Box(OpType::Unitary1qBox), m_(m) {
   if (!is_unitary(m)) {

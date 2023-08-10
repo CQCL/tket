@@ -833,8 +833,16 @@ SCENARIO("Checking equality", "[boxes]") {
     u.add_op<unsigned>(OpType::CX, {0, 1});
     const CircBox ubox(u);
 
+    Circuit u2(2);
+    u2.add_op<unsigned>(OpType::Ry, -0.35, {0});
+    u2.add_op<unsigned>(OpType::CX, {0, 1});
+    const CircBox ubox2(u2);
+
     WHEN("both arguments are equal") { REQUIRE(ubox == ubox); }
-    WHEN("both arguments are different") { REQUIRE(ubox != CircBox(u)); }
+    WHEN("different ids but equivalent inner circuits") {
+      REQUIRE(ubox == CircBox(u));
+    }
+    WHEN("different inner circuits") { REQUIRE(ubox != ubox2); }
   }
   GIVEN("Unitary1qBox") {
     Circuit setup(1);
