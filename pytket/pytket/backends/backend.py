@@ -144,7 +144,7 @@ class Backend(ABC):
 
     @abstractmethod
     def default_compilation_pass(
-        self, optimisation_level: int = 2, **kwarfs
+        self, optimisation_level: int = 2, **kwargs
     ) -> BasePass:
         """
         A suggested compilation pass that will will, if possible, produce an equivalent
@@ -181,7 +181,9 @@ class Backend(ABC):
 
         """
         return_circuit = circuit.copy()
-        self.default_compilation_pass(optimisation_level, kwargs).apply(return_circuit)
+        self.default_compilation_pass(optimisation_level, **kwargs).apply(
+            return_circuit
+        )
         return return_circuit
 
     def get_compiled_circuits(
@@ -218,7 +220,7 @@ class Backend(ABC):
         :rtype: List[Circuit]
         """
         return [
-            self.get_compiled_circuit(c, optimisation_level, kwargs) for c in circuits
+            self.get_compiled_circuit(c, optimisation_level, **kwargs) for c in circuits
         ]
 
     @property
