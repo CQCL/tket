@@ -26,6 +26,7 @@
 #include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Circuit/StatePreparation.hpp"
+#include "tket/Circuit/ToffoliBox.hpp"
 #include "tket/Converters/PhasePoly.hpp"
 #include "tket/Gate/SymTable.hpp"
 
@@ -1105,6 +1106,45 @@ SCENARIO("Checking equality", "[boxes]") {
     WHEN("arguments are different") {
       StatePreparationBox box3(diag, false, true);
       REQUIRE(box != box3);
+    }
+  }
+  GIVEN("ToffoliBox") {
+    state_perm_t perm;
+    perm[{0, 1}] = {1, 0};
+    perm[{1, 0}] = {0, 1};
+    ToffoliBox box(perm);
+    WHEN("all arguments are equal") { REQUIRE(box == box); }
+    WHEN("different ids but other args are equal") {
+      ToffoliBox box2(perm);
+      REQUIRE(box == box2);
+    }
+    WHEN("permutations are equivalent") {
+      state_perm_t perm2;
+      perm2[{0, 1}] = {1, 0};
+      perm2[{1, 0}] = {0, 1};
+      perm2[{1, 1}] = {1, 1};
+      ToffoliBox box2(perm2);
+      REQUIRE(box == box2);
+    }
+    WHEN("permutations are not equivalent") {
+      state_perm_t perm2;
+      perm2[{0, 1}] = {1, 0};
+      perm2[{1, 0}] = {0, 1};
+      perm2[{1, 1}] = {0, 0};
+      perm2[{0, 0}] = {1, 1};
+      ToffoliBox box2(perm2);
+      REQUIRE(box != box2);
+    }
+    WHEN("permutations are not equivalent case 2") {
+      state_perm_t perm2;
+      perm2[{1, 1}] = {0, 0};
+      perm2[{0, 0}] = {1, 1};
+      ToffoliBox box2(perm2);
+      REQUIRE(box != box2);
+    }
+    WHEN("arguments are different") {
+      ToffoliBox box2(perm, ToffoliBoxSynthStrat::Cycle);
+      REQUIRE(box != box2);
     }
   }
 }

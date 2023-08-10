@@ -355,6 +355,37 @@ void ToffoliBox::generate_circuit() const {
       permute(perm, n_, get_op_ptr(rotation_axis_, 1)));
 }
 
+static bool perm_compare(const state_perm_t &a, const state_perm_t &b) {
+  auto ita = a.begin();
+  auto itb = b.begin();
+  for (; ita != a.end(); ita++) {
+    auto b_entry = b.find(ita->first);
+    if (b_entry == b.end() && ita->first != ita->second) {
+      return false;
+    }
+    if (b_entry != b.end() && b_entry->second != ita->second) {
+      return false;
+    }
+  }
+  for (; itb != b.end(); itb++) {
+    auto a_entry = a.find(itb->first);
+    if (a_entry == a.end() && itb->first != itb->second) {
+      return false;
+    }
+    if (a_entry != a.end() && a_entry->second != itb->second) {
+      return false;
+    }
+  }
+  return true;
+}
+
+bool ToffoliBox::is_equal(const Op &op_other) const {
+  const ToffoliBox &other = dynamic_cast<const ToffoliBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  return strat_ == other.strat_ && rotation_axis_ == other.rotation_axis_ &&
+         perm_compare(permutation_, other.permutation_);
+}
+
 // Old ToffoliBox decomposition method
 
 struct transposition_t {
