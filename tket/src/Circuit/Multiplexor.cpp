@@ -610,6 +610,13 @@ op_signature_t MultiplexedU2Box::get_signature() const {
   return qubits;
 }
 
+bool MultiplexedU2Box::is_equal(const Op &op_other) const {
+  const MultiplexedU2Box &other =
+      dynamic_cast<const MultiplexedU2Box &>(op_other);
+  if (id_ == other.get_id()) return true;
+  return op_map_ == other.op_map_ && impl_diag_ == other.impl_diag_;
+}
+
 nlohmann::json MultiplexedU2Box::to_json(const Op_ptr &op) {
   const auto &box = static_cast<const MultiplexedU2Box &>(*op);
   nlohmann::json j = core_box_json(box);

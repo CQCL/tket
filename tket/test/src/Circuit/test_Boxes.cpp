@@ -1065,6 +1065,19 @@ SCENARIO("Checking equality", "[boxes]") {
       REQUIRE(box != box3);
     }
   }
+  GIVEN("MultiplexedU2Box") {
+    ctrl_op_map_t op_map = {{{1}, get_op_ptr(OpType::H)}};
+    MultiplexedU2Box box(op_map);
+    WHEN("all arguments are equal") { REQUIRE(box == box); }
+    WHEN("different ids but other args are equal") {
+      MultiplexedU2Box box2(op_map);
+      REQUIRE(box == box2);
+    }
+    WHEN("arguments are different") {
+      MultiplexedU2Box box3(op_map, false);
+      REQUIRE(box != box3);
+    }
+  }
 }
 
 SCENARIO("Checking box names", "[boxes]") {
