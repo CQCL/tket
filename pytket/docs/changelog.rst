@@ -1,6 +1,15 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Minor new features:
+
+* ``Backend.get_compiled_circuit``, ``Backend.get_compiled_circuits`` and 
+  ``Backend.default_compilation_pass`` can now take ``kwargs``. Supported
+  ``kwargs`` are specific to child ``Backend`` classes. 
+
 1.18.0 (August 2023)
 --------------------
 
