@@ -270,10 +270,7 @@ class Unitary2qBox : public Box {
   /**
    * Equality check between two Unitary2qBox instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const Unitary2qBox &other = dynamic_cast<const Unitary2qBox &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   /** Get the unitary matrix correspnding to this operation */
   Eigen::Matrix4cd get_matrix() const { return m_; }
