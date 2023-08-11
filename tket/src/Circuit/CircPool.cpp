@@ -839,11 +839,11 @@ Circuit YYPhase_using_TK2(const Expr &alpha) {
 
 Circuit YYPhase_using_CX(const Expr &alpha) {
   Circuit c(2);
-  c.add_op<unsigned>(OpType::U3, {0, -0.5, 0}, {0});
+  c.add_op<unsigned>(OpType::Sdg, {0});
   c.add_op<unsigned>(OpType::CX, {1, 0});
-  c.add_op<unsigned>(OpType::U3, {0, alpha, 0}, {1});
+  c.add_op<unsigned>(OpType::Ry, alpha, {1});
   c.add_op<unsigned>(OpType::CX, {1, 0});
-  c.add_op<unsigned>(OpType::U3, {0, 0.5, 0}, {0});
+  c.add_op<unsigned>(OpType::S, {0});
   return c;
 }
 
