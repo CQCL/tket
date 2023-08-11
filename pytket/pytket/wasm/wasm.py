@@ -114,8 +114,9 @@ class WasmFileHandler:
                             ] * entry.return_count
                         else:
                             raise ValueError(
-                                f"Only parameter and return values of i{self._int_size} types are"
-                                + f"allowed, found type: {entry.return_type}"
+                                f"Only parameter and return values of "
+                                + f"i{self._int_size} types are"
+                                + f" allowed, found type: {entry.return_type}"
                             )
                     elif entry.return_count == 1:
                         function_signatures[idx]["return_types"] = [
@@ -172,7 +173,8 @@ class WasmFileHandler:
         """str representation of the contents of the wasm file"""
         result = f"Functions in wasm file with the uid {self._wasmfileuid}:\n"
         for x in self._functions:
-            result += f"function '{x}' with {self._functions[x][0]} i{self._int_size} parameter(s)"
+            result += f"function '{x}' with "
+            result += f"{self._functions[x][0]} i{self._int_size} parameter(s)"
             result += (
                 f" and {self._functions[x][1]} i{self._int_size} return value(s)\n"
             )
