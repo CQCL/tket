@@ -429,6 +429,7 @@ Circuit with_TK2(Gate_ptr op) {
     case OpType::XXPhase:
       return CircPool::XXPhase_using_TK2(params[0]);
     case OpType::YYPhase:
+      return CircPool::YYPhase_using_TK2(params[0]);
     case OpType::ZZPhase:
       return CircPool::ZZPhase_using_TK2(params[0]);
     case OpType::ZZMax:
