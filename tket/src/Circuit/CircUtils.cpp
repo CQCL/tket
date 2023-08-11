@@ -419,7 +419,54 @@ Circuit with_TK2(Gate_ptr op) {
     Circuit c(1);
     c.add_op(op, std::vector<unsigned>{0});
     return c;
-  } else if (n == 2 && op->free_symbols().empty()) {
+  }
+  // Check Ops with known decompositions
+  switch (op->get_type()) {
+    case OpType::ISWAP:
+      return CircPool::ISWAP_using_TK2(params[0]);
+    case OpType::PhasedISWAP:
+      return CircPool::PhasedISWAP_using_TK2(params[0], params[1]);
+    case OpType::XXPhase:
+      return CircPool::XXPhase_using_TK2(params[0]);
+    case OpType::YYPhase:
+    case OpType::ZZPhase:
+      return CircPool::ZZPhase_using_TK2(params[0]);
+    case OpType::ZZMax:
+      return CircPool::ZZPhase_using_TK2(0.5);
+    case OpType::NPhasedX:
+      return CircPool::NPhasedX_using_PhasedX(n, params[0], params[1]);
+    case OpType::ESWAP:
+      return CircPool::ESWAP_using_TK2(params[0]);
+    case OpType::FSim:
+      return CircPool::FSim_using_TK2(params[0], params[1]);
+    case OpType::CRx:
+      return CircPool::CRx_using_TK2(params[0]);
+    case OpType::CRy:
+      return CircPool::CRy_using_TK2(params[0]);
+    case OpType::CRz:
+      return CircPool::CRz_using_TK2(params[0]);
+    case OpType::CU1:
+      return CircPool::CU1_using_TK2(params[0]);
+    case OpType::XXPhase3:
+      return CircPool::XXPhase3_using_TK2(params[0]);
+    case OpType::CX:
+      return CircPool::CX_using_TK2();
+    case OpType::CCX:
+    case OpType::CSWAP:
+    case OpType::BRIDGE:
+    case OpType::PhaseGadget: {
+      // As a first, inefficient, solution, decompose these into CX and then
+      // replace each CX with a TK2 (and some single-qubit gates).
+      // TODO Find more efficient decompositions for these gates.
+      Circuit c = with_CX(op);
+      replace_CX_with_TK2(c);
+      return c;
+    }
+    default:
+      break;
+  }
+
+  if (n == 2 && op->free_symbols().empty()) {
     Eigen::Matrix4cd U = op->get_unitary();
     auto [K1, A, K2] = get_information_content(U);
     // Decompose single qubits
@@ -465,49 +512,7 @@ Circuit with_TK2(Gate_ptr op) {
 
     return c;
   }
-  // Now the non-trivial cases.
-  switch (op->get_type()) {
-    case OpType::ISWAP:
-      return CircPool::ISWAP_using_TK2(params[0]);
-    case OpType::PhasedISWAP:
-      return CircPool::PhasedISWAP_using_TK2(params[0], params[1]);
-    case OpType::XXPhase:
-      return CircPool::XXPhase_using_TK2(params[0]);
-    case OpType::YYPhase:
-      return CircPool::YYPhase_using_TK2(params[0]);
-    case OpType::ZZPhase:
-      return CircPool::ZZPhase_using_TK2(params[0]);
-    case OpType::NPhasedX:
-      return CircPool::NPhasedX_using_PhasedX(n, params[0], params[1]);
-    case OpType::ESWAP:
-      return CircPool::ESWAP_using_TK2(params[0]);
-    case OpType::FSim:
-      return CircPool::FSim_using_TK2(params[0], params[1]);
-    case OpType::CRx:
-      return CircPool::CRx_using_TK2(params[0]);
-    case OpType::CRy:
-      return CircPool::CRy_using_TK2(params[0]);
-    case OpType::CRz:
-      return CircPool::CRz_using_TK2(params[0]);
-    case OpType::CU1:
-      return CircPool::CU1_using_TK2(params[0]);
-    case OpType::XXPhase3:
-      return CircPool::XXPhase3_using_TK2(params[0]);
-    case OpType::CCX:
-    case OpType::CSWAP:
-    case OpType::BRIDGE:
-    case OpType::CU3:
-    case OpType::PhaseGadget: {
-      // As a first, inefficient, solution, decompose these into CX and then
-      // replace each CX with a TK2 (and some single-qubit gates).
-      // TODO Find more efficient decompositions for these gates.
-      Circuit c = with_CX(op);
-      replace_CX_with_TK2(c);
-      return c;
-    }
-    default:
-      throw CircuitInvalidity("Cannot decompose " + op->get_name());
-  }
+  throw CircuitInvalidity("Cannot decompose " + op->get_name());
 }
 
 Circuit with_CX(Gate_ptr op) {
