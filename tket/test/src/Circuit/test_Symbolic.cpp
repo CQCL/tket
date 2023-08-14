@@ -147,8 +147,8 @@ SCENARIO("Symbolic squashing, correctness") {
     symbol_map_t smap = {{asym, 0}, {bsym, 0}};
     circ.symbol_substitution(smap);
     std::vector<Command> cmds = circ.get_commands();
-    CHECK(cmds.size() == 1);
-    Op_ptr op = cmds[0].get_op_ptr();
+    CHECK(cmds.size() == 4);
+    Op_ptr op = cmds[1].get_op_ptr();
     CHECK(op->get_type() == OpType::TK1);
     std::vector<Expr> params = op->get_params();
     CHECK_NOTHROW(SymEngine::eval_double(params[0]));
@@ -169,8 +169,8 @@ SCENARIO("Symbolic squashing, correctness") {
     symbol_map_t smap = {{asym, 0}};
     circ.symbol_substitution(smap);
     std::vector<Command> cmds = circ.get_commands();
-    CHECK(cmds.size() == 1);
-    Op_ptr op = cmds[0].get_op_ptr();
+    CHECK(cmds.size() == 4);
+    Op_ptr op = cmds[1].get_op_ptr();
     CHECK(op->get_type() == OpType::TK1);
     std::vector<Expr> params = op->get_params();
     CHECK_NOTHROW(SymEngine::eval_double(params[0]));
