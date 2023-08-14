@@ -107,8 +107,10 @@ PassPtr gen_rebase_pass_via_tk2(
 PassPtr gen_squash_pass(
     const OpTypeSet& singleqs,
     const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
-        tk1_replacement) {
-  Transform t = Transforms::squash_factory(singleqs, tk1_replacement);
+        tk1_replacement,
+    bool always_squash_symbols) {
+  Transform t = Transforms::squash_factory(
+      singleqs, tk1_replacement, always_squash_symbols);
   PostConditions postcon = {{}, {}, Guarantee::Preserve};
   PredicatePtrMap precons;
   // record pass config

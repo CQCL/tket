@@ -504,8 +504,13 @@ PYBIND11_MODULE(passes, m) {
       "already in this set."
       "\n:param tk1_replacement: A function which, given the parameters of "
       "an Rz(a)Rx(b)Rz(c) triple, returns an equivalent circuit in the "
-      "desired basis.",
-      py::arg("singleqs"), py::arg("tk1_replacement"));
+      "desired basis."
+      "\n: param always_squash_symbols: If true, always squash symbolic gates "
+      "regardless of the blow-up in complexity. Default is false, meaning that "
+      "symbolic gates are only squashed if doing so reduces the overall "
+      "symbolic complexity.",
+      py::arg("singleqs"), py::arg("tk1_replacement"),
+      py::arg("always_squash_symbols") = false);
   m.def(
       "DelayMeasures", &DelayMeasures,
       "Commutes Measure operations to the end of the circuit. Throws an "

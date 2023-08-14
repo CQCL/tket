@@ -206,7 +206,7 @@ bool SingleQubitSquash::sub_is_better(
   if (n_gates > chain.size()) {
     return false;
   }
-  if (!sub.is_symbolic()) {
+  if (!sub.is_symbolic() || always_squash_symbols_) {
     return n_gates < chain.size() || !is_equal(sub, chain, reversed_);
   }
   // For symbolic circuits, we don't want to squash gates if it blows up the

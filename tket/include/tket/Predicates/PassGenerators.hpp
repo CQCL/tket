@@ -51,7 +51,8 @@ PassPtr gen_rebase_pass_via_tk2(
 PassPtr gen_squash_pass(
     const OpTypeSet& singleqs,
     const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
-        tk1_replacement);
+        tk1_replacement,
+    bool always_squash_symbols = false);
 PassPtr gen_euler_pass(const OpType& q, const OpType& p, bool strict = false);
 PassPtr gen_clifford_simp_pass(bool allow_swaps = true);
 

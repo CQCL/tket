@@ -110,7 +110,8 @@ Transform squash_1qb_to_pqp(
 Transform squash_factory(
     const OpTypeSet& singleqs,
     const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
-        tk1_replacement);
+        tk1_replacement,
+    bool always_squash_symbols = false);
 
 // commutes single qubit gates through SWAP gates, leaving them on the
 // PhysicalQubit with best fidelity for the given OP Expects: any single qubit
