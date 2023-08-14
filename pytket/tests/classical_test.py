@@ -415,7 +415,7 @@ def test_wasmfilehandler_without_init() -> None:
 
 
 def test_wasmfilehandler_repr() -> None:
-    w = wasm.WasmFileHandler("testfile.wasm")
+    w = wasm.WasmFileHandler("testfile.wasm", int_size=32)
     assert (
         repr(w)
         == """Functions in wasm file with the uid 6a0a29e235cd5c60353254bc2b459e631d381cdd0bded7ae6cb44afb784bd2de:
@@ -428,6 +428,24 @@ function 'no_return' with 1 i32 parameter(s) and 0 i32 return value(s)
 function 'no_parameters' with 0 i32 parameter(s) and 1 i32 return value(s)
 function 'new_function' with 0 i32 parameter(s) and 1 i32 return value(s)
 unsupported function with unvalid parameter or result type: 'add_something' 
+"""
+    )
+
+
+def test_wasmfilehandler_repr_64() -> None:
+    w = wasm.WasmFileHandler("testfile.wasm", int_size=64)
+    assert (
+        repr(w)
+        == """Functions in wasm file with the uid 6a0a29e235cd5c60353254bc2b459e631d381cdd0bded7ae6cb44afb784bd2de:
+function 'init' with 0 i64 parameter(s) and 0 i64 return value(s)
+function 'add_something' with 1 i64 parameter(s) and 1 i64 return value(s)
+unsupported function with unvalid parameter or result type: 'add_one' 
+unsupported function with unvalid parameter or result type: 'multi' 
+unsupported function with unvalid parameter or result type: 'add_two' 
+unsupported function with unvalid parameter or result type: 'add_eleven' 
+unsupported function with unvalid parameter or result type: 'no_return' 
+unsupported function with unvalid parameter or result type: 'no_parameters' 
+unsupported function with unvalid parameter or result type: 'new_function' 
 """
     )
 
