@@ -232,7 +232,9 @@ Circuit XXPhase_using_CX(const Expr &alpha);
 /** Equivalent to YYPhase, using a TK2 gate */
 Circuit YYPhase_using_TK2(const Expr &alpha);
 
-/** Equivalent to YYPhase, using CX, Rz and U3 gates */
+/** Equivalent to YYPhase, using two CX gates and one Rz
+ * one Sdg and one S gate.
+ */
 Circuit YYPhase_using_CX(const Expr &alpha);
 
 /** Equivalent to ZZPhase, using a TK2 gate */
