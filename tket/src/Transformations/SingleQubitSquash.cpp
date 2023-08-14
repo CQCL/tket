@@ -14,6 +14,10 @@
 
 #include "tket/Transformations/SingleQubitSquash.hpp"
 
+#include <numeric>
+
+#include "Circuit/Command.hpp"
+#include "Gate/GatePtr.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/DAGDefs.hpp"
 #include "tket/Gate/Gate.hpp"
@@ -199,8 +203,25 @@ void SingleQubitSquash::insert_left_over_gate(
 bool SingleQubitSquash::sub_is_better(
     const Circuit &sub, const std::vector<Gate_ptr> chain) const {
   const unsigned n_gates = sub.n_gates();
-  return n_gates < chain.size() ||
-         (n_gates == chain.size() && !is_equal(sub, chain, reversed_));
+  if (n_gates > chain.size()) {
+    return false;
+  }
+  if (!sub.is_symbolic()) {
+    return n_gates < chain.size() || !is_equal(sub, chain, reversed_);
+  }
+  // For symbolic circuits, we don't want to squash gates if it blows up the
+  // complexity of the expressions. As a crude but adequate measure, we compare
+  // the total size of the string representations.
+  return std::accumulate(
+             sub.begin(), sub.end(), 0,
+             [](unsigned a, const Command &cmd) {
+               return a + cmd.get_op_ptr()->get_name().size();
+             }) <
+         std::accumulate(
+             chain.begin(), chain.end(), 0,
+             [](unsigned a, const Gate_ptr &gpr) {
+               return a + gpr->get_name().size();
+             });
 }
 
 // returns a description of the condition of current vertex
