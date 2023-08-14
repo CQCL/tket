@@ -75,7 +75,7 @@ void PauliExpBox::generate_circuit() const {
 bool PauliExpBox::is_equal(const Op &op_other) const {
   const PauliExpBox &other = dynamic_cast<const PauliExpBox &>(op_other);
   if (id_ == other.get_id()) return true;
-  return t_ == other.t_ && cx_config_ == other.cx_config_ &&
+  return equiv_expr(t_, other.t_, 4) && cx_config_ == other.cx_config_ &&
          paulis_ == other.paulis_;
 }
 
@@ -181,8 +181,8 @@ bool PauliExpPairBox::is_equal(const Op &op_other) const {
   const PauliExpPairBox &other =
       dynamic_cast<const PauliExpPairBox &>(op_other);
   if (id_ == other.get_id()) return true;
-  return cx_config_ == other.cx_config_ && t0_ == other.t0_ &&
-         t1_ == other.t1_ && paulis0_ == other.paulis0_ &&
+  return cx_config_ == other.cx_config_ && equiv_expr(t0_, other.t0_, 4) &&
+         equiv_expr(t1_, other.t1_, 4) && paulis0_ == other.paulis0_ &&
          paulis1_ == other.paulis1_;
 }
 
@@ -340,12 +340,24 @@ void PauliExpCommutingSetBox::generate_circuit() const {
   circ_ = std::make_shared<Circuit>(circ);
 }
 
+// check two gadges are semantically equal
+static bool gadget_compare(
+    const std::vector<std::pair<std::vector<Pauli>, Expr>> &g1,
+    const std::vector<std::pair<std::vector<Pauli>, Expr>> &g2) {
+  return std::equal(
+      g1.begin(), g1.end(), g2.begin(), g2.end(),
+      [](const std::pair<std::vector<Pauli>, Expr> &a,
+         const std::pair<std::vector<Pauli>, Expr> &b) {
+        return a.first == b.first && equiv_expr(a.second, b.second, 4);
+      });
+}
+
 bool PauliExpCommutingSetBox::is_equal(const Op &op_other) const {
   const PauliExpCommutingSetBox &other =
       dynamic_cast<const PauliExpCommutingSetBox &>(op_other);
   if (id_ == other.get_id()) return true;
   return cx_config_ == other.cx_config_ &&
-         pauli_gadgets_ == other.pauli_gadgets_;
+         gadget_compare(pauli_gadgets_, other.pauli_gadgets_);
 }
 
 nlohmann::json PauliExpCommutingSetBox::to_json(const Op_ptr &op) {

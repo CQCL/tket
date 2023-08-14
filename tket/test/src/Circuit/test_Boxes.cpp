@@ -1158,6 +1158,9 @@ SCENARIO("Checking equality", "[boxes]") {
     WHEN("different ids but same arguments") {
       REQUIRE(pbox == PauliExpBox({Pauli::X, Pauli::Y, Pauli::Z}, 0.8));
     }
+    WHEN("different ids, equivalent angle") {
+      REQUIRE(pbox == PauliExpBox({Pauli::X, Pauli::Y, Pauli::Z}, 4.8));
+    }
     WHEN("different arguments") {
       REQUIRE(pbox != PauliExpBox({Pauli::X, Pauli::Y, Pauli::Z}, 0.9));
     }
@@ -1167,6 +1170,9 @@ SCENARIO("Checking equality", "[boxes]") {
     WHEN("both arguments are equal") { REQUIRE(pbox == pbox); }
     WHEN("different ids but same arguments") {
       REQUIRE(pbox == PauliExpPairBox({Pauli::X}, 1.0, {Pauli::I}, 0.0));
+    }
+    WHEN("different ids, equivalent angle") {
+      REQUIRE(pbox == PauliExpPairBox({Pauli::X}, 1.0, {Pauli::I}, 4.0));
     }
     WHEN("different arguments") {
       REQUIRE(pbox != PauliExpPairBox({Pauli::X}, -1.0, {Pauli::I}, 0.0));
@@ -1181,6 +1187,12 @@ SCENARIO("Checking equality", "[boxes]") {
           pbox ==
           PauliExpCommutingSetBox(
               {{{Pauli::X}, 1.0}, {{Pauli::I}, 1.2}, {{Pauli::I}, -0.5}}));
+    }
+    WHEN("different ids, equivalent angles") {
+      REQUIRE(
+          pbox ==
+          PauliExpCommutingSetBox(
+              {{{Pauli::X}, -3.0}, {{Pauli::I}, 5.2}, {{Pauli::I}, -0.5}}));
     }
     WHEN("different arguments") {
       REQUIRE(
