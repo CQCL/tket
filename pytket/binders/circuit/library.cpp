@@ -216,7 +216,7 @@ void init_library(py::module &m) {
       "Equivalent to YYPhase, using a TK2 gate");
   library_m.def(
       "_YYPhase_using_CX", &CircPool::YYPhase_using_CX,
-      "Equivalent to YYPhase, using two CX gates and one Rz, one Sdg and one S "
+      "Equivalent to YYPhase, using two CX gates and one Ry, one Sdg and one S "
       "gate.");
   library_m.def(
       "_ZZPhase_using_TK2", &CircPool::ZZPhase_using_TK2,
