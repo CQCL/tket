@@ -7,6 +7,8 @@ Unreleased
 Minor new features:
 
 * Implement equality checking for all boxes.
+* Single-qubit squashing ignores chains of symbolic gates if squashing them
+  would increase the overall complexity of the expressions.
 
 1.18.0 (August 2023)
 --------------------
