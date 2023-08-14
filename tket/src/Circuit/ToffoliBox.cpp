@@ -355,10 +355,10 @@ void ToffoliBox::generate_circuit() const {
       permute(perm, n_, get_op_ptr(rotation_axis_, 1)));
 }
 
-static bool perm_compare(const state_perm_t &a, const state_perm_t &b) {
-  auto ita = a.begin();
-  auto itb = b.begin();
-  for (; ita != a.end(); ita++) {
+// check every key k in a,
+// either 1. a[k] == b[k] or 2. k is not in b and a[k]==k
+static bool oneway_perm_compare(const state_perm_t &a, const state_perm_t &b) {
+  for (auto ita = a.begin(); ita != a.end(); ita++) {
     auto b_entry = b.find(ita->first);
     if (b_entry == b.end() && ita->first != ita->second) {
       return false;
@@ -367,16 +367,10 @@ static bool perm_compare(const state_perm_t &a, const state_perm_t &b) {
       return false;
     }
   }
-  for (; itb != b.end(); itb++) {
-    auto a_entry = a.find(itb->first);
-    if (a_entry == a.end() && itb->first != itb->second) {
-      return false;
-    }
-    if (a_entry != a.end() && a_entry->second != itb->second) {
-      return false;
-    }
-  }
   return true;
+}
+static bool perm_compare(const state_perm_t &a, const state_perm_t &b) {
+  return oneway_perm_compare(a, b) && oneway_perm_compare(b, a);
 }
 
 bool ToffoliBox::is_equal(const Op &op_other) const {
