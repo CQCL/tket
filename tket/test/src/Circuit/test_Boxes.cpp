@@ -1044,7 +1044,8 @@ SCENARIO("Checking equality", "[boxes]") {
     MultiplexorBox box(op_map);
     WHEN("all arguments are equal") { REQUIRE(box == box); }
     WHEN("different ids but other args are equal") {
-      MultiplexorBox box2(op_map);
+      ctrl_op_map_t op_map2 = {{{1}, get_op_ptr(OpType::H)}};
+      MultiplexorBox box2(op_map2);
       REQUIRE(box == box2);
     }
     WHEN("arguments are different") {
@@ -1058,7 +1059,8 @@ SCENARIO("Checking equality", "[boxes]") {
     MultiplexedRotationBox box(op_map);
     WHEN("all arguments are equal") { REQUIRE(box == box); }
     WHEN("different ids but other args are equal") {
-      MultiplexedRotationBox box2(op_map);
+      ctrl_op_map_t op_map2 = {{{1}, get_op_ptr(OpType::Rz, 0.7)}};
+      MultiplexedRotationBox box2(op_map2);
       REQUIRE(box == box2);
     }
     WHEN("arguments are different") {
@@ -1072,7 +1074,8 @@ SCENARIO("Checking equality", "[boxes]") {
     MultiplexedU2Box box(op_map);
     WHEN("all arguments are equal") { REQUIRE(box == box); }
     WHEN("different ids but other args are equal") {
-      MultiplexedU2Box box2(op_map);
+      ctrl_op_map_t op_map2 = {{{1}, get_op_ptr(OpType::H)}};
+      MultiplexedU2Box box2(op_map2);
       REQUIRE(box == box2);
     }
     WHEN("arguments are different") {
@@ -1086,7 +1089,9 @@ SCENARIO("Checking equality", "[boxes]") {
     MultiplexedTensoredU2Box box(op_map);
     WHEN("all arguments are equal") { REQUIRE(box == box); }
     WHEN("different ids but other args are equal") {
-      MultiplexedTensoredU2Box box2(op_map);
+      ctrl_tensored_op_map_t op_map2;
+      op_map2.insert({{0, 0}, {get_op_ptr(OpType::X), get_op_ptr(OpType::X)}});
+      MultiplexedTensoredU2Box box2(op_map2);
       REQUIRE(box == box2);
     }
     WHEN("arguments are different") {
