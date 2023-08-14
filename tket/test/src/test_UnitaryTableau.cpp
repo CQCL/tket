@@ -20,7 +20,6 @@
 #include "tket/Clifford/UnitaryTableau.hpp"
 #include "tket/Converters/Converters.hpp"
 #include "tket/Converters/UnitaryTableauBox.hpp"
-#include "tket/Simulation/CircuitSimulator.hpp"
 
 namespace tket::test_UnitaryTableau {
 

@@ -17,7 +17,6 @@
 #include "testutil.hpp"
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Converters/Converters.hpp"
-#include "tket/Simulation/CircuitSimulator.hpp"
 
 namespace tket {
 namespace test_ChoiMixTableau {

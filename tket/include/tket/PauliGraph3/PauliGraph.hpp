@@ -15,6 +15,7 @@
 #pragma once
 
 #include "tket/Clifford/ChoiMixTableau.hpp"
+#include "tket/Clifford/UnitaryTableau.hpp"
 #include "tket/Utils/GraphHeaders.hpp"
 #include "tket/Utils/PauliStrings.hpp"
 
@@ -34,6 +35,9 @@ typedef std::shared_ptr<const Op> Op_ptr;
 pg::PauliGraph circuit_to_pauli_graph3(const Circuit& circ);
 Circuit pauli_graph3_to_circuit_individual(
     const pg::PauliGraph& pg, CXConfigType cx_config);
+std::vector<pg::PGOp_ptr> op_to_pgops(
+    const Op_ptr& op, const unit_vector_t& args, UnitaryRevTableau& tab,
+    bool allow_tableau);
 
 namespace pg {
 
@@ -487,7 +491,7 @@ class PauliGraph {
   friend tket::Circuit tket::pauli_graph3_to_circuit_individual(
       const PauliGraph& pg, CXConfigType cx_config);
   friend std::vector<PGOp_ptr> tket::op_to_pgops(
-      const tket::Op_ptr& op, const unit_vector_t& args, PauliGraph& pg,
+      const tket::Op_ptr& op, const unit_vector_t& args, UnitaryRevTableau& pg,
       bool allow_tableau);
 
  private:

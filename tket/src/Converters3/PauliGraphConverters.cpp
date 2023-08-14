@@ -16,7 +16,6 @@
 #include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Clifford/ChoiMixTableau.hpp"
 #include "tket/Clifford/UnitaryTableau.hpp"
-#include "tket/Converters/Converters.hpp"
 #include "tket/Converters3/Converters.hpp"
 #include "tket/Diagonalisation/Diagonalisation.hpp"
 #include "tket/Gate/Gate.hpp"
@@ -483,11 +482,11 @@ Circuit pauli_graph3_to_circuit_individual(
             }
           }
           ChoiMixTableau tab(rows);
-          std::pair<Circuit, unit_map_t> tab_circ =
-              cm_tableau_to_circuit(tab, ChoiMixSynthType::exact);
+          std::pair<Circuit, qubit_map_t> tab_circ =
+              cm_tableau_to_exact_circuit(tab, cx_config);
           qubit_map_t perm;
-          for (const std::pair<const UnitID, UnitID>& p : tab_circ.second)
-            perm.insert({Qubit(p.second), Qubit(p.first)});
+          for (const std::pair<const Qubit, Qubit>& p : tab_circ.second)
+            perm.insert({p.second, p.first});
           tab_circ.first.permute_boundary_output(perm);
           circ.append(tab_circ.first);
           break;
@@ -516,13 +515,14 @@ Circuit pauli_graph3_to_circuit_individual(
             }
           }
           ChoiMixTableau diag_tab{tab_rows};
-          std::pair<Circuit, unit_map_t> diag =
-              cm_tableau_to_circuit(diag_tab, ChoiMixSynthType::unitary);
+          std::pair<Circuit, qubit_map_t> diag =
+              cm_tableau_to_unitary_extension_circuit(
+                  diag_tab, {}, {}, cx_config);
           circ.append(diag.first);
           unit_vector_t args;
           for (const UnitID& a : box_op.get_args()) {
             if (a.type() == UnitType::Qubit)
-              args.push_back(diag.second.at(a));
+              args.push_back(diag.second.at(Qubit(a)));
             else
               args.push_back(a);
           }

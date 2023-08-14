@@ -22,8 +22,16 @@ namespace tket {
 // Copied from Converters/Converters.hpp to allow synthesis and testing of reset
 // and boxes
 ChoiMixTableau circuit_to_cm_tableau(const Circuit& circ);
-std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(
-    const ChoiMixTableau& circ, ChoiMixSynthType synth_type);
+std::pair<Circuit, qubit_map_t> cm_tableau_to_exact_circuit(
+    const ChoiMixTableau& tab, CXConfigType cx_config = CXConfigType::Snake);
+std::pair<Circuit, qubit_map_t> cm_tableau_to_unitary_extension_circuit(
+    const ChoiMixTableau& tab, const std::vector<Qubit>& init_names = {},
+    const std::vector<Qubit>& post_names = {},
+    CXConfigType cx_config = CXConfigType::Snake);
+
+std::vector<pg::PGOp_ptr> op_to_pgops(
+    const Op_ptr& op, const unit_vector_t& args, UnitaryRevTableau& tab,
+    bool allow_tableau);
 
 pg::PauliGraph circuit_to_pauli_graph3(const Circuit& circ);
 
