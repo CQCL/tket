@@ -20,21 +20,6 @@
 
 namespace tket {
 
-// Forward declare friend classes for converters
-class ChoiMixTableau;
-class UnitaryTableau;
-class UnitaryRevTableau;
-class Circuit;
-enum ChoiMixSynthType { exact, unitary };
-namespace pg {
-class PauliGraph;
-class PGOp;
-// typedef std::shared_ptr<const PGOp> PGOp_ptr;
-typedef std::shared_ptr<PGOp> PGOp_ptr;
-}  // namespace pg
-class Op;
-typedef std::shared_ptr<const Op> Op_ptr;
-
 /**
  * Boolean encoding of Pauli
  * <x, z> = <false, false> ==> I
@@ -182,7 +167,6 @@ class SymplecticTableau {
    */
   void gaussian_form();
 
- private:
   /**
    * Number of rows
    */
@@ -205,6 +189,7 @@ class SymplecticTableau {
    */
   SymplecticTableau conjugate() const;
 
+ private:
   /**
    * Helper methods for manipulating the tableau when applying gates
    */
@@ -215,21 +200,6 @@ class SymplecticTableau {
   void col_mult(
       const MatrixXb::ColXpr &a, const MatrixXb::ColXpr &b, bool flip,
       MatrixXb::ColXpr &w, VectorXb &pw);
-
-  friend class UnitaryTableau;
-  friend class ChoiMixTableau;
-  friend Circuit unitary_tableau_to_circuit(const UnitaryTableau &tab);
-  friend std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(
-      const ChoiMixTableau &tab, ChoiMixSynthType synth_type);
-  friend std::vector<pg::PGOp_ptr> op_to_pgops(
-      const Op_ptr &op, const unit_vector_t &args, pg::PauliGraph &pg,
-      bool allow_tableau);
-  friend std::ostream &operator<<(std::ostream &os, const UnitaryTableau &tab);
-  friend std::ostream &operator<<(
-      std::ostream &os, const UnitaryRevTableau &tab);
-
-  friend void to_json(nlohmann::json &j, const SymplecticTableau &tab);
-  friend void from_json(const nlohmann::json &j, SymplecticTableau &tab);
 };
 
 JSON_DECL(SymplecticTableau)

@@ -14,8 +14,8 @@
 
 #include <catch2/catch_test_macros.hpp>
 
+#include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Diagonalisation/Diagonalisation.hpp"
-#include "tket/Simulation/CircuitSimulator.hpp"
 
 namespace tket {
 

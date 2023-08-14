@@ -136,22 +136,30 @@ unsigned ChoiMixTableau::get_n_rows() const { return tab_.get_n_rows(); }
 
 unsigned ChoiMixTableau::get_n_boundaries() const { return col_index_.size(); }
 
-unsigned ChoiMixTableau::get_n_inputs() const {
-  unsigned n = 0;
-  BOOST_FOREACH (
-      tableau_col_index_t::left_const_reference entry, col_index_.left) {
-    if (entry.first.second == TableauSegment::Input) ++n;
-  }
-  return n;
-}
+unsigned ChoiMixTableau::get_n_inputs() const { return input_qubits().size(); }
 
 unsigned ChoiMixTableau::get_n_outputs() const {
-  unsigned n = 0;
+  return output_qubits().size();
+}
+
+qubit_vector_t ChoiMixTableau::input_qubits() const {
+  qubit_vector_t ins;
   BOOST_FOREACH (
       tableau_col_index_t::left_const_reference entry, col_index_.left) {
-    if (entry.first.second == TableauSegment::Output) ++n;
+    if (entry.first.second == TableauSegment::Input)
+      ins.push_back(entry.first.first);
   }
-  return n;
+  return ins;
+}
+
+qubit_vector_t ChoiMixTableau::output_qubits() const {
+  qubit_vector_t outs;
+  BOOST_FOREACH (
+      tableau_col_index_t::left_const_reference entry, col_index_.left) {
+    if (entry.first.second == TableauSegment::Output)
+      outs.push_back(entry.first.first);
+  }
+  return outs;
 }
 
 ChoiMixTableau::row_tensor_t ChoiMixTableau::stab_to_row_tensor(
