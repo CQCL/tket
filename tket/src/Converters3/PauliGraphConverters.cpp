@@ -383,6 +383,137 @@ pg::PauliGraph circuit_to_pauli_graph3(const Circuit& circ) {
   return res;
 }
 
+std::pair<Op_ptr, unit_vector_t> pgop_to_inner_command(
+    const PGOp_ptr& pgop, const qubit_vector_t& qubits) {
+  switch (pgop->get_type()) {
+    case PGOpType::Rotation: {
+      const PGRotation& rot = dynamic_cast<const PGRotation&>(*pgop);
+      return {get_op_ptr(OpType::Rz, rot.get_angle()), {qubits.front()}};
+    }
+    case PGOpType::CliffordRot: {
+      const PGCliffordRot& crot = dynamic_cast<const PGCliffordRot&>(*pgop);
+      return {get_op_ptr(OpType::Rz, 0.5 * crot.get_angle()), {qubits.front()}};
+    }
+    case PGOpType::Measure: {
+      const PGMeasure& meas = dynamic_cast<const PGMeasure&>(*pgop);
+      return {get_op_ptr(OpType::Measure), {qubits.front(), meas.get_target()}};
+    }
+    case PGOpType::Decoherence: {
+      return {get_op_ptr(OpType::Collapse), {qubits.front()}};
+    }
+    case PGOpType::Reset: {
+      return {get_op_ptr(OpType::Reset), {qubits.front()}};
+    }
+    case PGOpType::Conditional: {
+      const PGConditional& cond = dynamic_cast<const PGConditional&>(*pgop);
+      unit_vector_t args;
+      for (const Bit& b : cond.get_args()) args.push_back(b);
+      std::pair<Op_ptr, unit_vector_t> inner =
+          pgop_to_inner_command(cond.get_inner_op(), qubits);
+      for (const UnitID& u : inner.second) args.push_back(u);
+      return {
+          std::make_shared<Conditional>(
+              inner.first, cond.get_args().size(), cond.get_value()),
+          args};
+    }
+    case PGOpType::Box: {
+      const PGBox& box = dynamic_cast<const PGBox&>(*pgop);
+      unit_vector_t new_args;
+      unsigned qb_i = 0;
+      for (const UnitID& u : box.get_args()) {
+        if (u.type() == UnitType::Qubit) {
+          new_args.push_back(qubits.at(qb_i));
+          ++qb_i;
+        } else
+          new_args.push_back(u);
+      }
+      return {box.get_op(), new_args};
+    }
+    case PGOpType::Stabilizer: {
+      const PGStabilizer& stab = dynamic_cast<const PGStabilizer&>(*pgop);
+      unit_vector_t args = {qubits.at(0), qubits.at(1), stab.get_target()};
+      return {
+          std::make_shared<StabiliserAssertionBox>(
+              PauliStabiliserList{PauliStabiliser({Pauli::Z}, true)}),
+          args};
+    }
+    default: {
+      throw std::logic_error(
+          "Error during PauliGraph synthesis: unexpected PGOpType in "
+          "pgop_to_inner_op");
+    }
+  }
+}
+
+Circuit pgop_to_circuit(const PGOp_ptr& pgop) {
+  ChoiMixTableau diag_tab(0);
+  qubit_vector_t arg_qubits;
+  PGOp_ptr true_pgop = pgop;
+  while (true_pgop->get_type() == PGOpType::Conditional) {
+    const PGConditional& cond = dynamic_cast<const PGConditional&>(*true_pgop);
+    true_pgop = cond.get_inner_op();
+  }
+  switch (true_pgop->get_type()) {
+    case PGOpType::Rotation:
+    case PGOpType::CliffordRot:
+    case PGOpType::Measure:
+    case PGOpType::Decoherence: {
+      diag_tab = ChoiMixTableau(
+          {{true_pgop->port(0), QubitPauliTensor(Qubit(0), Pauli::Z)}});
+      arg_qubits.push_back(Qubit(0));
+      break;
+    }
+    case PGOpType::Reset: {
+      const PGReset& reset = dynamic_cast<const PGReset&>(*true_pgop);
+      diag_tab = ChoiMixTableau(
+          {{reset.get_stab(), QubitPauliTensor(Qubit(0), Pauli::Z)},
+           {reset.get_destab(), QubitPauliTensor(Qubit(0), Pauli::X)}});
+      arg_qubits.push_back(Qubit(0));
+      break;
+    }
+    case PGOpType::Box: {
+      unsigned n_qbs = true_pgop->n_paulis() / 2;
+      std::list<ChoiMixTableau::row_tensor_t> rows;
+      for (unsigned i = 0; i < n_qbs; ++i) {
+        rows.push_back(
+            {true_pgop->port(2 * i), QubitPauliTensor(Qubit(i), Pauli::Z)});
+        rows.push_back(
+            {true_pgop->port(2 * i + 1), QubitPauliTensor(Qubit(i), Pauli::X)});
+        arg_qubits.push_back(Qubit(i));
+      }
+      diag_tab = ChoiMixTableau(rows);
+      break;
+    }
+    case PGOpType::Stabilizer: {
+      const PGStabilizer& stab = dynamic_cast<const PGStabilizer&>(*true_pgop);
+      diag_tab = ChoiMixTableau(
+          {{stab.get_stab(), QubitPauliTensor(Qubit(0), Pauli::Z)},
+           {stab.get_anc_z(), QubitPauliTensor(Qubit(1), Pauli::Z)},
+           {stab.get_anc_x(), QubitPauliTensor(Qubit(1), Pauli::X)}});
+      arg_qubits.push_back(Qubit(0));
+      arg_qubits.push_back(Qubit(1));
+      break;
+    }
+    default: {
+      throw std::logic_error(
+          "Error during PauliGraph synthesis: unexpected PGOpType in "
+          "pgop_to_circuit");
+    }
+  }
+  auto [diag_circ, qb_map] = cm_tableau_to_unitary_extension_circuit(diag_tab);
+  qubit_vector_t new_qubits;
+  for (const Qubit& q : arg_qubits) new_qubits.push_back(qb_map.at(q));
+  Circuit diag_dag = diag_circ.dagger();
+  auto [op_ptr, unit_args] = pgop_to_inner_command(pgop, new_qubits);
+  for (const UnitID& u : unit_args) {
+    if (u.type() == UnitType::Bit && !diag_circ.contains_unit(u))
+      diag_circ.add_bit(Bit(u));
+  }
+  diag_circ.add_op<UnitID>(op_ptr, unit_args);
+  diag_circ.append(diag_dag);
+  return diag_circ;
+}
+
 Circuit pauli_graph3_to_circuit_individual(
     const pg::PauliGraph& pg, CXConfigType cx_config) {
   Circuit circ(
@@ -419,174 +550,33 @@ Circuit pauli_graph3_to_circuit_individual(
     for (const PGVert& v : initials) {
       lookup.erase(lookup.find(v));
       PGOp_ptr pgop = pg.c_graph_[v];
-      switch (pgop->get_type()) {
-        case PGOpType::Rotation:
-        case PGOpType::CliffordRot:
-        case PGOpType::Measure:
-        case PGOpType::Decoherence: {
-          QubitPauliTensor pauli = pgop->active_paulis().front();
-          bool phase_flip = false;
-          if (abs(pauli.coeff + 1.) < EPS)
-            phase_flip = true;
-          else if (abs(pauli.coeff - 1.) > EPS)
-            throw PGError("Pauli coefficient in PGOp must be +/- 1");
-          pauli.compress();
-          auto [diag_circ, z_qubit] = reduce_pauli_to_z(pauli, cx_config);
-          circ.append(diag_circ);
-          switch (pgop->get_type()) {
-            case PGOpType::Rotation: {
-              PGRotation& rot = dynamic_cast<PGRotation&>(*pgop);
-              Expr angle = rot.get_angle();
-              if (phase_flip) angle = -angle;
-              circ.add_op<Qubit>(OpType::Rz, angle, {z_qubit});
-              break;
-            }
-            case PGOpType::CliffordRot: {
-              PGCliffordRot& rot = dynamic_cast<PGCliffordRot&>(*pgop);
-              Expr angle = 0.5 * rot.get_angle();
-              if (phase_flip) angle = -angle;
-              circ.add_op<Qubit>(OpType::Rz, angle, {z_qubit});
-              break;
-            }
-            case PGOpType::Measure: {
-              PGMeasure& meas = dynamic_cast<PGMeasure&>(*pgop);
-              if (phase_flip) circ.add_op<Qubit>(OpType::X, {z_qubit});
-              circ.add_op<UnitID>(
-                  OpType::Measure, {z_qubit, meas.get_target()});
-              if (phase_flip) circ.add_op<Qubit>(OpType::X, {z_qubit});
-              break;
-            }
-            case PGOpType::Decoherence: {
-              circ.add_op<Qubit>(OpType::Collapse, {z_qubit});
-              break;
-            }
-            default: {
-              break;
-            }
+      if (pgop->get_type() == PGOpType::InputTableau ||
+          pgop->get_type() == PGOpType::OutputTableau) {
+        std::list<ChoiMixTableau::row_tensor_t> rows;
+        if (pgop->get_type() == PGOpType::InputTableau) {
+          PGInputTableau& tab_op = dynamic_cast<PGInputTableau&>(*pgop);
+          for (unsigned i = 0; i < tab_op.n_paulis(); ++i) {
+            rows.push_back(tab_op.get_full_row(i));
           }
-          circ.append(diag_circ.dagger());
-          break;
-        }
-        case PGOpType::InputTableau:
-        case PGOpType::OutputTableau: {
-          std::list<ChoiMixTableau::row_tensor_t> rows;
-          if (pgop->get_type() == PGOpType::InputTableau) {
-            PGInputTableau& tab_op = dynamic_cast<PGInputTableau&>(*pgop);
-            for (unsigned i = 0; i < tab_op.n_paulis(); ++i) {
-              rows.push_back(tab_op.get_full_row(i));
-            }
-          } else {
-            PGOutputTableau& tab_op = dynamic_cast<PGOutputTableau&>(*pgop);
-            for (unsigned i = 0; i < tab_op.n_paulis(); ++i) {
-              rows.push_back(tab_op.get_full_row(i));
-            }
+        } else {
+          PGOutputTableau& tab_op = dynamic_cast<PGOutputTableau&>(*pgop);
+          for (unsigned i = 0; i < tab_op.n_paulis(); ++i) {
+            rows.push_back(tab_op.get_full_row(i));
           }
-          ChoiMixTableau tab(rows);
-          std::pair<Circuit, qubit_map_t> tab_circ =
-              cm_tableau_to_exact_circuit(tab, cx_config);
-          qubit_map_t perm;
-          for (const std::pair<const Qubit, Qubit>& p : tab_circ.second)
-            perm.insert({p.second, p.first});
-          tab_circ.first.permute_boundary_output(perm);
-          circ.append(tab_circ.first);
-          break;
         }
-        case PGOpType::Reset: {
-          PGReset reset_op = dynamic_cast<PGReset&>(*pgop);
-          std::pair<Circuit, Qubit> diag = reduce_anticommuting_paulis_to_z_x(
-              reset_op.get_stab(), reset_op.get_destab(), cx_config);
-          circ.append(diag.first);
-          circ.add_op<Qubit>(OpType::Reset, {diag.second});
-          circ.append(diag.first.dagger());
-          break;
-        }
-        case PGOpType::Box: {
-          PGBox& box_op = dynamic_cast<PGBox&>(*pgop);
-          std::list<ChoiMixTableau::row_tensor_t> tab_rows;
-          unsigned i = 0;
-          for (const UnitID& a : box_op.get_args()) {
-            if (a.type() == UnitType::Qubit) {
-              tab_rows.push_back(
-                  {box_op.port(i), QubitPauliTensor(Qubit(a), Pauli::Z)});
-              ++i;
-              tab_rows.push_back(
-                  {box_op.port(i), QubitPauliTensor(Qubit(a), Pauli::X)});
-              ++i;
-            }
-          }
-          ChoiMixTableau diag_tab{tab_rows};
-          std::pair<Circuit, qubit_map_t> diag =
-              cm_tableau_to_unitary_extension_circuit(
-                  diag_tab, {}, {}, cx_config);
-          circ.append(diag.first);
-          unit_vector_t args;
-          for (const UnitID& a : box_op.get_args()) {
-            if (a.type() == UnitType::Qubit)
-              args.push_back(diag.second.at(Qubit(a)));
-            else
-              args.push_back(a);
-          }
-          circ.add_op<UnitID>(box_op.get_op(), args);
-          circ.append(diag.first.dagger());
-          break;
-        }
-        case PGOpType::Stabilizer: {
-          PGStabilizer& stab_op = dynamic_cast<PGStabilizer&>(*pgop);
-          std::pair<Circuit, Qubit> diag = reduce_anticommuting_paulis_to_z_x(
-              stab_op.get_anc_z(), stab_op.get_anc_x(), cx_config);
-          QubitPauliTensor string = stab_op.get_stab();
-          for (const Command& com : diag.first) {
-            unit_vector_t args = com.get_args();
-            switch (args.size()) {
-              case 1: {
-                conjugate_PauliTensor(
-                    string, com.get_op_ptr()->get_type(), Qubit(args.at(0)),
-                    true);
-                break;
-              }
-              case 2: {
-                conjugate_PauliTensor(
-                    string, com.get_op_ptr()->get_type(), Qubit(args.at(0)),
-                    Qubit(args.at(1)));
-                break;
-              }
-              default: {
-                conjugate_PauliTensor(
-                    string, com.get_op_ptr()->get_type(), Qubit(args.at(0)),
-                    Qubit(args.at(1)), Qubit(args.at(2)));
-                break;
-              }
-            }
-          }
-          string.compress();
-          std::vector<Pauli> paulis;
-          unit_vector_t args;
-          for (const std::pair<const Qubit, Pauli>& qp : string.string.map) {
-            args.push_back(qp.first);
-            paulis.push_back(qp.second);
-          }
-          bool coeff = false;
-          if (string.coeff == 1.)
-            coeff = true;
-          else if (string.coeff != -1.)
-            throw std::logic_error("Stabilizer coeffient must be +-1");
-          args.push_back(diag.second);
-          args.push_back(stab_op.get_target());
-          circ.append(diag.first);
-          circ.add_op<UnitID>(
-              std::make_shared<StabiliserAssertionBox>(
-                  PauliStabiliserList{PauliStabiliser(paulis, coeff)}),
-              args);
-          break;
-        }
-        case PGOpType::Conditional:
-        default: {
-          throw PGError("Cannot synthesise unidentified PGOpType");
-        }
+        ChoiMixTableau tab(rows);
+        std::pair<Circuit, qubit_map_t> tab_circ =
+            cm_tableau_to_exact_circuit(tab, cx_config);
+        qubit_map_t perm;
+        for (const std::pair<const Qubit, Qubit>& p : tab_circ.second)
+          perm.insert({p.second, p.first});
+        tab_circ.first.permute_boundary_output(perm);
+        circ.append(tab_circ.first);
+      } else {
+        circ.append(pgop_to_circuit(pgop));
       }
     }
   }
-
   return circ;
 }
 
