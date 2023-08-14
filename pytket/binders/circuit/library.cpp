@@ -42,6 +42,13 @@ void init_library(py::module &m) {
       "TK2(α, β, γ) using up to 3 CX and single-qubit gates.\n\n"
       "The decomposition minimizes the number of CX gates.");
   library_m.def(
+      "_TK2_using_CX_and_swap", &CircPool::TK2_using_CX_and_swap,
+      "Given expressions α, β and γ, return circuit equivalent to "
+      "TK2(α, β, γ), up to a wire swap that is encoded in the implicit "
+      "qubit permutation of the Circuit, using up to 3 CX and single-qubit "
+      "gates.\n\n"
+      "The decomposition minimizes the number of CX gates.");
+  library_m.def(
       "_approx_TK2_using_1xCX", &CircPool::approx_TK2_using_1xCX,
       "Best approximation of TK2 using 1 CX gate and single-qubit gates, using "
       "squared trace fidelity metric. "
@@ -68,6 +75,9 @@ void init_library(py::module &m) {
   library_m.def(
       "_CX_using_ZZMax", &CircPool::CX_using_ZZMax,
       "Equivalent to CX, using only ZZMax, Rx and Rz gates");
+  library_m.def(
+      "_CX_using_ZZPhase", &CircPool::CX_using_ZZPhase,
+      "Equivalent to CX, using only ZZPhase, Rx and Rz gates");
   library_m.def(
       "_CX_using_XXPhase_0", &CircPool::CX_using_XXPhase_0,
       "Equivalent to CX, using only XXPhase, Rx, Ry and Rz gates");
@@ -217,6 +227,14 @@ void init_library(py::module &m) {
       "_TK2_using_ZZPhase", &CircPool::TK2_using_ZZPhase,
       "Equivalent to TK2, using 3 ZZPhase gates");
   library_m.def(
+      "_TK2_using_ZZPhase_and_swap", &CircPool::TK2_using_ZZPhase_and_swap,
+      "Equivalent to TK2, up to a wire swap that is encoded in the implicit "
+      "qubit permutation of the Circuit, using up to 3 ZZPhase gates.");
+  library_m.def(
+      "_TK2_using_TK2_or_swap", &CircPool::TK2_using_TK2_or_swap,
+      "Either the exact TK2, or a wire swap encoded in the implicit qubit "
+      "permutation of the Circuit and single qubit gates.");
+  library_m.def(
       "_approx_TK2_using_1xZZPhase", &CircPool::approx_TK2_using_1xZZPhase,
       "Approximate equivalent to TK2, using 1 ZZPhase gate and single-qubit "
       "gates. Only requires the first angle of the TK2 gate.");
@@ -227,6 +245,10 @@ void init_library(py::module &m) {
   library_m.def(
       "_TK2_using_ZZMax", &CircPool::TK2_using_ZZMax,
       "Equivalent to TK2, using up to 3 ZZMax gates.");
+  library_m.def(
+      "_TK2_using_ZZMax_and_swap", &CircPool::TK2_using_ZZMax_and_swap,
+      "Equivalent to TK2, up to a wire swap that is encoded in the implicit "
+      "qubit permutation of the Circuit, using up to 3 ZZMax gates.");
   library_m.def(
       "_XXPhase3_using_TK2", &CircPool::XXPhase3_using_TK2,
       "Equivalent to XXPhase3, using three TK2 gates");

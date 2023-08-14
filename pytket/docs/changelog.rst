@@ -1,12 +1,13 @@
 Changelog
 =========
 
-Unreleased
-----------
+1.18.0 (August 2023)
+--------------------
 
 Minor new features:
 
 * Add circuit method ``depth_2q``.
+* Add ``allow_swaps`` parameter to ``auto_rebase_pass``.
 
 Fixes:
 
