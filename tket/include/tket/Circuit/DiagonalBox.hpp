@@ -52,10 +52,7 @@ class DiagonalBox : public Box {
   /**
    * Equality check between two DiagonalBox instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const DiagonalBox &other = dynamic_cast<const DiagonalBox &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   Op_ptr dagger() const override;
   Op_ptr transpose() const override;
