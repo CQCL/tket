@@ -27,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2023-08-14 15:34:27</td>
+      <td>2023-08-15 09:24:49</td>
     </tr>
   </table>
 </div>
@@ -41,26 +41,26 @@
     </tr>
     <tr>
       <th scope="row">Lines:</th>
-      <td>78</td>
-      <td>80</td>
-      <td class="coverage-high">97.5%</td>
+      <td>83</td>
+      <td>85</td>
+      <td class="coverage-high">97.6%</td>
     </tr>
     <tr>
       <th scope="row">Functions:</th>
-      <td>11</td>
-      <td>11</td>
+      <td>12</td>
+      <td>12</td>
       <td class="coverage-high">100.0%</td>
     </tr>
     <tr>
       <th scope="row">Branches:</th>
-      <td>65</td>
-      <td>110</td>
-      <td class="coverage-low">59.1%</td>
+      <td>72</td>
+      <td>120</td>
+      <td class="coverage-low">60.0%</td>
     </tr>
     <tr>
       <th scope="row">Decisions:</th>
-      <td>18</td>
-      <td>18</td>
+      <td>20</td>
+      <td>20</td>
       <td class="coverage-high">100.0%</td>
     </tr>
   </table>
@@ -87,7 +87,7 @@
         <a href="#l26">26</a>
       </td>
       <td>
-        <a href="#l26"> called 73 times</a>
+        <a href="#l26"> called 78 times</a>
       </td>
     </tr>
     <tr>
@@ -114,13 +114,13 @@
     </tr>
     <tr>
       <td>
-        <a href="#l133">tket::DiagonalBox::from_json(nlohmann::json_abi_v3_11_2::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::json_abi_v3_11_2::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt; const&amp;)</a>
+        <a href="#l140">tket::DiagonalBox::from_json(nlohmann::json_abi_v3_11_2::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::json_abi_v3_11_2::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt; const&amp;)</a>
       </td>
       <td>
-        <a href="#l133">133</a>
+        <a href="#l140">140</a>
       </td>
       <td>
-        <a href="#l133"> called 1 time</a>
+        <a href="#l140"> called 1 time</a>
       </td>
     </tr>
     <tr>
@@ -158,6 +158,17 @@
     </tr>
     <tr>
       <td>
+        <a href="#l125">tket::DiagonalBox::is_equal(tket::Op const&amp;) const</a>
+      </td>
+      <td>
+        <a href="#l125">125</a>
+      </td>
+      <td>
+        <a href="#l125"> called 3 times</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
         <a href="#l64">tket::DiagonalBox::is_upper_triangle() const</a>
       </td>
       <td>
@@ -169,13 +180,13 @@
     </tr>
     <tr>
       <td>
-        <a href="#l125">tket::DiagonalBox::to_json[abi:cxx11](std::shared_ptr&lt;tket::Op const&gt; const&amp;)</a>
+        <a href="#l132">tket::DiagonalBox::to_json[abi:cxx11](std::shared_ptr&lt;tket::Op const&gt; const&amp;)</a>
       </td>
       <td>
-        <a href="#l125">125</a>
+        <a href="#l132">132</a>
       </td>
       <td>
-        <a href="#l125"> called 1 time</a>
+        <a href="#l132"> called 1 time</a>
       </td>
     </tr>
     <tr>
@@ -446,7 +457,7 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount coveredLine">73</td>
+      <td class="linecount coveredLine">78</td>
       <td class="src coveredLine"><span class="n">DiagonalBox</span><span class="o">::</span><span class="n">DiagonalBox</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Eigen</span><span class="o">::</span><span class="n">VectorXcd</span><span class="w"> </span><span class="o">&amp;</span><span class="n">diagonal</span><span class="p">,</span><span class="w"> </span><span class="kt">bool</span><span class="w"> </span><span class="n">upper_triangle</span><span class="p">)</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
@@ -464,7 +475,7 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount coveredLine">77</td>
+      <td class="linecount coveredLine">82</td>
       <td class="src coveredLine"><span class="w">      </span><span class="n">diagonal_</span><span class="p">(</span><span class="n">diagonal</span><span class="p">),</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
@@ -473,16 +484,16 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/4</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 2 taken 73 times.</div>
+          <div class="takenBranch">&check; Branch 2 taken 78 times.</div>
           <div class="notTakenBranch">&cross; Branch 3 not taken.</div>
-          <div class="takenBranch">&check; Branch 6 taken 73 times.</div>
+          <div class="takenBranch">&check; Branch 6 taken 78 times.</div>
           <div class="notTakenBranch">&cross; Branch 7 not taken.</div>
         </div>
         </details>
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount coveredLine">73</td>
+      <td class="linecount coveredLine">78</td>
       <td class="src coveredLine"><span class="w">      </span><span class="n">upper_triangle_</span><span class="p">(</span><span class="n">upper_triangle</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
@@ -491,7 +502,7 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount coveredLine">73</td>
+      <td class="linecount coveredLine">78</td>
       <td class="src coveredLine"><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="kt">size_t</span><span class="w"> </span><span class="n">length</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">diagonal</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
@@ -500,10 +511,10 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">4/4</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 0 taken 72 times.</div>
+          <div class="takenBranch">&check; Branch 0 taken 77 times.</div>
           <div class="takenBranch">&check; Branch 1 taken 1 times.</div>
           <div class="takenBranch">&check; Branch 2 taken 1 times.</div>
-          <div class="takenBranch">&check; Branch 3 taken 71 times.</div>
+          <div class="takenBranch">&check; Branch 3 taken 76 times.</div>
         </div>
         </details>
       </td>
@@ -512,11 +523,11 @@
           <summary class="linedecisionSummary">2/2</summary>
           <div class="linedecisionContents">
             <div class="takenDecision">&check; Decision 'true' taken 2 times.</div>
-            <div class="takenDecision">&check; Decision 'false' taken 71 times.</div>
+            <div class="takenDecision">&check; Decision 'false' taken 76 times.</div>
           </div>
         </details>
       </td>
-      <td class="linecount coveredLine">73</td>
+      <td class="linecount coveredLine">78</td>
       <td class="src coveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">length</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="mi">2</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="p">(</span><span class="n">length</span><span class="w"> </span><span class="o">&amp;</span><span class="w"> </span><span class="p">(</span><span class="n">length</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="mi">1</span><span class="p">))</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="mi">0</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
@@ -577,8 +588,8 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/2</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 1 taken 1094 times.</div>
-          <div class="takenBranch">&check; Branch 2 taken 69 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 1104 times.</div>
+          <div class="takenBranch">&check; Branch 2 taken 74 times.</div>
         </div>
         </details>
       </td>
@@ -586,12 +597,12 @@
         <details class="linedecisionDetails">
           <summary class="linedecisionSummary">2/2</summary>
           <div class="linedecisionContents">
-            <div class="takenDecision">&check; Decision 'true' taken 1094 times.</div>
-            <div class="takenDecision">&check; Decision 'false' taken 69 times.</div>
+            <div class="takenDecision">&check; Decision 'true' taken 1104 times.</div>
+            <div class="takenDecision">&check; Decision 'false' taken 74 times.</div>
           </div>
         </details>
       </td>
-      <td class="linecount coveredLine">1163</td>
+      <td class="linecount coveredLine">1178</td>
       <td class="src coveredLine"><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="kt">unsigned</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="mi">0</span><span class="p">;</span><span class="w"> </span><span class="n">i</span><span class="w"> </span><span class="o">&lt;</span><span class="w"> </span><span class="n">diagonal</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"> </span><span class="n">i</span><span class="o">++</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
@@ -600,10 +611,10 @@
         <details class="linebranchDetails">
         <summary class="linebranchSummary">3/4</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 1 taken 1094 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 1104 times.</div>
           <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
           <div class="takenBranch">&check; Branch 5 taken 2 times.</div>
-          <div class="takenBranch">&check; Branch 6 taken 1092 times.</div>
+          <div class="takenBranch">&check; Branch 6 taken 1102 times.</div>
         </div>
         </details>
       </td>
@@ -612,11 +623,11 @@
           <summary class="linedecisionSummary">2/2</summary>
           <div class="linedecisionContents">
             <div class="takenDecision">&check; Decision 'true' taken 2 times.</div>
-            <div class="takenDecision">&check; Decision 'false' taken 1092 times.</div>
+            <div class="takenDecision">&check; Decision 'false' taken 1102 times.</div>
           </div>
         </details>
       </td>
-      <td class="linecount coveredLine">1094</td>
+      <td class="linecount coveredLine">1104</td>
       <td class="src coveredLine"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">abs</span><span class="p">(</span><span class="mi">1</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">abs</span><span class="p">(</span><span class="n">diagonal</span><span class="p">[</span><span class="n">i</span><span class="p">]))</span><span class="w"> </span><span class="o">&gt;</span><span class="w"> </span><span class="n">EPS</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
@@ -668,7 +679,7 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount coveredLine">77</td>
+      <td class="linecount coveredLine">82</td>
       <td class="src coveredLine"><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
@@ -1642,11 +1653,111 @@
       </td>
       <td class="linedecision">
       </td>
+      <td class="linecount coveredLine">3</td>
+      <td class="src coveredLine"><span class="kt">bool</span><span class="w"> </span><span class="nf">DiagonalBox::is_equal</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Op</span><span class="w"> </span><span class="o">&amp;</span><span class="n">op_other</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l126" href="#l126">126</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">1/2</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 0 taken 3 times.</div>
+          <div class="notTakenBranch">&cross; Branch 1 not taken.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">3</td>
+      <td class="src coveredLine"><span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">DiagonalBox</span><span class="w"> </span><span class="o">&amp;</span><span class="n">other</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">dynamic_cast</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">DiagonalBox</span><span class="w"> </span><span class="o">&amp;&gt;</span><span class="p">(</span><span class="n">op_other</span><span class="p">);</span><span class="w"></span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l127" href="#l127">127</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">2/2</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 2 taken 1 times.</div>
+          <div class="takenBranch">&check; Branch 3 taken 2 times.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linedecision">
+        <details class="linedecisionDetails">
+          <summary class="linedecisionSummary">2/2</summary>
+          <div class="linedecisionContents">
+            <div class="takenDecision">&check; Decision 'true' taken 1 times.</div>
+            <div class="takenDecision">&check; Decision 'false' taken 2 times.</div>
+          </div>
+        </details>
+      </td>
+      <td class="linecount coveredLine">3</td>
+      <td class="src coveredLine"><span class="w">  </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">id_</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">other</span><span class="p">.</span><span class="n">get_id</span><span class="p">())</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l128" href="#l128">128</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">2/2</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 0 taken 1 times.</div>
+          <div class="takenBranch">&check; Branch 1 taken 1 times.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">3</td>
+      <td class="src coveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">upper_triangle_</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">other</span><span class="p">.</span><span class="n">upper_triangle_</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"></span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l129" href="#l129">129</a></td>
+      <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">2/4</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 2 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 3 not taken.</div>
+          <div class="takenBranch">&check; Branch 4 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 5 not taken.</div>
+        </div>
+        </details>
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount coveredLine">3</td>
+      <td class="src coveredLine"><span class="w">         </span><span class="n">diagonal_</span><span class="p">.</span><span class="n">isApprox</span><span class="p">(</span><span class="n">other</span><span class="p">.</span><span class="n">diagonal_</span><span class="p">);</span><span class="w"></span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l130" href="#l130">130</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="p">}</span><span class="w"></span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l131" href="#l131">131</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l132" href="#l132">132</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
       <td class="linecount coveredLine">1</td>
       <td class="src coveredLine"><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="w"> </span><span class="nf">DiagonalBox::to_json</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Op_ptr</span><span class="w"> </span><span class="o">&amp;</span><span class="n">op</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l126" href="#l126">126</a></td>
+      <td class="lineno"><a id="l133" href="#l133">133</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1655,7 +1766,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="k">auto</span><span class="w"> </span><span class="o">&amp;</span><span class="n">box</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="k">static_cast</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="n">DiagonalBox</span><span class="w"> </span><span class="o">&amp;&gt;</span><span class="p">(</span><span class="o">*</span><span class="n">op</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l127" href="#l127">127</a></td>
+      <td class="lineno"><a id="l134" href="#l134">134</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1664,7 +1775,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="w"> </span><span class="n">j</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">core_box_json</span><span class="p">(</span><span class="n">box</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l128" href="#l128">128</a></td>
+      <td class="lineno"><a id="l135" href="#l135">135</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">3/6</summary>
@@ -1684,7 +1795,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="n">j</span><span class="p">[</span><span class="s">&quot;diagonal&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">box</span><span class="p">.</span><span class="n">get_diagonal</span><span class="p">();</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l129" href="#l129">129</a></td>
+      <td class="lineno"><a id="l136" href="#l136">136</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/4</summary>
@@ -1702,7 +1813,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="n">j</span><span class="p">[</span><span class="s">&quot;upper_triangle&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">box</span><span class="p">.</span><span class="n">is_upper_triangle</span><span class="p">();</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l130" href="#l130">130</a></td>
+      <td class="lineno"><a id="l137" href="#l137">137</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1711,7 +1822,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">j</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l131" href="#l131">131</a></td>
+      <td class="lineno"><a id="l138" href="#l138">138</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1720,7 +1831,7 @@
       <td class="src uncoveredLine"><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l132" href="#l132">132</a></td>
+      <td class="lineno"><a id="l139" href="#l139">139</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1729,7 +1840,7 @@
       <td class="src "></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l133" href="#l133">133</a></td>
+      <td class="lineno"><a id="l140" href="#l140">140</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1738,7 +1849,7 @@
       <td class="src coveredLine"><span class="n">Op_ptr</span><span class="w"> </span><span class="nf">DiagonalBox::from_json</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="w"> </span><span class="o">&amp;</span><span class="n">j</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l134" href="#l134">134</a></td>
+      <td class="lineno"><a id="l141" href="#l141">141</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1747,7 +1858,7 @@
       <td class="src "><span class="w">  </span><span class="n">DiagonalBox</span><span class="w"> </span><span class="n">box</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">DiagonalBox</span><span class="p">(</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l135" href="#l135">135</a></td>
+      <td class="lineno"><a id="l142" href="#l142">142</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -1763,7 +1874,7 @@
       <td class="src coveredLine"><span class="w">      </span><span class="n">j</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;diagonal&quot;</span><span class="p">).</span><span class="n">get</span><span class="o">&lt;</span><span class="n">Eigen</span><span class="o">::</span><span class="n">VectorXcd</span><span class="o">&gt;</span><span class="p">(),</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l136" href="#l136">136</a></td>
+      <td class="lineno"><a id="l143" href="#l143">143</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">4/8</summary>
@@ -1785,7 +1896,7 @@
       <td class="src coveredLine"><span class="w">      </span><span class="n">j</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;upper_triangle&quot;</span><span class="p">).</span><span class="n">get</span><span class="o">&lt;</span><span class="kt">bool</span><span class="o">&gt;</span><span class="p">());</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l137" href="#l137">137</a></td>
+      <td class="lineno"><a id="l144" href="#l144">144</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1794,7 +1905,7 @@
       <td class="src "><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">set_box_id</span><span class="p">(</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l138" href="#l138">138</a></td>
+      <td class="lineno"><a id="l145" href="#l145">145</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1803,7 +1914,7 @@
       <td class="src "><span class="w">      </span><span class="n">box</span><span class="p">,</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l139" href="#l139">139</a></td>
+      <td class="lineno"><a id="l146" href="#l146">146</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">4/8</summary>
@@ -1825,7 +1936,7 @@
       <td class="src coveredLine"><span class="w">      </span><span class="n">boost</span><span class="o">::</span><span class="n">lexical_cast</span><span class="o">&lt;</span><span class="n">boost</span><span class="o">::</span><span class="n">uuids</span><span class="o">::</span><span class="n">uuid</span><span class="o">&gt;</span><span class="p">(</span><span class="n">j</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;id&quot;</span><span class="p">).</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="o">&gt;</span><span class="p">()));</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l140" href="#l140">140</a></td>
+      <td class="lineno"><a id="l147" href="#l147">147</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1834,7 +1945,7 @@
       <td class="src coveredLine"><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l141" href="#l141">141</a></td>
+      <td class="lineno"><a id="l148" href="#l148">148</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1843,7 +1954,7 @@
       <td class="src "></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l142" href="#l142">142</a></td>
+      <td class="lineno"><a id="l149" href="#l149">149</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1852,7 +1963,7 @@
       <td class="src "><span class="n">REGISTER_OPFACTORY</span><span class="p">(</span><span class="n">DiagonalBox</span><span class="p">,</span><span class="w"> </span><span class="n">DiagonalBox</span><span class="p">)</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l143" href="#l143">143</a></td>
+      <td class="lineno"><a id="l150" href="#l150">150</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1861,7 +1972,7 @@
       <td class="src "></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l144" href="#l144">144</a></td>
+      <td class="lineno"><a id="l151" href="#l151">151</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -1870,7 +1981,7 @@
       <td class="src "><span class="p">}</span><span class="w">  </span><span class="c1">// namespace tket</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l145" href="#l145">145</a></td>
+      <td class="lineno"><a id="l152" href="#l152">152</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
