@@ -355,8 +355,8 @@ Functions</h2></td></tr>
 <tr class="memitem:a69d0a33ab14018f00d76b7bcea8ff987"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#a69d0a33ab14018f00d76b7bcea8ff987">squash_1qb_to_Rz_PhasedX</a> ()</td></tr>
 <tr class="memdesc:a69d0a33ab14018f00d76b7bcea8ff987"><td class="mdescLeft">&#160;</td><td class="mdescRight">Squash single qubit gates into PhasedX and Rz gates.  <a href="namespacetket_1_1Transforms.html#a69d0a33ab14018f00d76b7bcea8ff987">More...</a><br /></td></tr>
 <tr class="separator:a69d0a33ab14018f00d76b7bcea8ff987"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a329feecb64d1ae61974ede6b2257b849"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#a329feecb64d1ae61974ede6b2257b849">squash_factory</a> (const <a class="el" href="namespacetket.html#a165b1d270a350af87f1c7a63d68f9276">OpTypeSet</a> &amp;singleqs, const std::function&lt; <a class="el" href="classtket_1_1Circuit.html">Circuit</a>(const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;, const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;, const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;)&gt; &amp;tk1_replacement)</td></tr>
-<tr class="separator:a329feecb64d1ae61974ede6b2257b849"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:aba553c4d1868e9e807791ee31ecf5b71"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#aba553c4d1868e9e807791ee31ecf5b71">squash_factory</a> (const <a class="el" href="namespacetket.html#a165b1d270a350af87f1c7a63d68f9276">OpTypeSet</a> &amp;singleqs, const std::function&lt; <a class="el" href="classtket_1_1Circuit.html">Circuit</a>(const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;, const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;, const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;)&gt; &amp;tk1_replacement, bool always_squash_symbols)</td></tr>
+<tr class="separator:aba553c4d1868e9e807791ee31ecf5b71"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a7c4379973e3cfb56ce6e8b33c0225912"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#a7c4379973e3cfb56ce6e8b33c0225912">three_qubit_squash</a> (<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a> target_2qb_gate=<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a833e36d1a5a93dedb10c85f50ced9ce7">OpType::CX</a>)</td></tr>
 <tr class="memdesc:a7c4379973e3cfb56ce6e8b33c0225912"><td class="mdescLeft">&#160;</td><td class="mdescRight">Squash sequences of 3-qubit instructions into a canonical form.  <a href="namespacetket_1_1Transforms.html#a7c4379973e3cfb56ce6e8b33c0225912">More...</a><br /></td></tr>
 <tr class="separator:a7c4379973e3cfb56ce6e8b33c0225912"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -2449,8 +2449,8 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a329feecb64d1ae61974ede6b2257b849"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a329feecb64d1ae61974ede6b2257b849">&#9670;&nbsp;</a></span>squash_factory()</h2>
+<a id="aba553c4d1868e9e807791ee31ecf5b71"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#aba553c4d1868e9e807791ee31ecf5b71">&#9670;&nbsp;</a></span>squash_factory()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -2465,7 +2465,13 @@ template&lt;typename T &gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const std::function&lt; <a class="el" href="classtket_1_1Circuit.html">Circuit</a>(const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;, const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;, const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;)&gt; &amp;&#160;</td>
-          <td class="paramname"><em>tk1_replacement</em>&#160;</td>
+          <td class="paramname"><em>tk1_replacement</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>always_squash_symbols</em>&#160;</td>
         </tr>
         <tr>
           <td></td>
@@ -2475,7 +2481,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="StandardSquash_8cpp_source.html#l00091">91</a> of file <a class="el" href="StandardSquash_8cpp_source.html">StandardSquash.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="StandardSquash_8cpp_source.html#l00094">94</a> of file <a class="el" href="StandardSquash_8cpp_source.html">StandardSquash.cpp</a>.</p>
 
 </div>
 </div>
