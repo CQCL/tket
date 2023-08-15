@@ -510,8 +510,8 @@ void ChoiMixBuilder::solve_initialised_subspace() {
     out_circ_tp.add_op<Qubit>(OpType::CX, {ctrl.first, trgt.first});
   }
   // Initialise rows
-  for (unsigned r = tab.get_n_rows(); r > n_collapsed;) {
-    --r;  // This always refers to the final row in the tableau
+  for (unsigned r = tab.get_n_rows(); r-- > n_collapsed;) {
+    // r always refers to the final row in the tableau
     ChoiMixTableau::row_tensor_t row = tab.get_row(r);
     if (row.first.string.map.size() != 0 || row.second.string.map.size() != 1 ||
         row.second.string.map.begin()->second != Pauli::Z)
@@ -566,8 +566,8 @@ void ChoiMixBuilder::solve_collapsed_subspace() {
     out_circ_tp.add_op<Qubit>(OpType::CX, {ctrl.first, trgt.first});
   }
   // Connect up and remove rows and columns
-  for (unsigned r = tab.get_n_rows(); r > 0;) {
-    --r;  // Refers to the final row
+  for (unsigned r = tab.get_n_rows(); r-- > 0;) {
+    // r refers to the final row
     // Check that row r has been successfully reduced
     ChoiMixTableau::row_tensor_t row_r = tab.get_row(r);
     if (row_r.first.string.map.size() != 1 ||
@@ -596,8 +596,7 @@ void ChoiMixBuilder::solve_collapsed_subspace() {
 void ChoiMixBuilder::remove_unused_qubits() {
   // Since removing a column replaces it with the last column, remove in reverse
   // order to examine each column exactly once
-  for (unsigned c = tab.get_n_boundaries(); c > 0;) {
-    --c;
+  for (unsigned c = tab.get_n_boundaries(); c-- > 0;) {
     bool used = false;
     for (unsigned r = 0; r < tab.get_n_rows(); ++r) {
       if (tab.tab_.zmat_(r, c) || tab.tab_.xmat_(r, c)) {
