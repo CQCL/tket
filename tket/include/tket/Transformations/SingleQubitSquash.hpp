@@ -106,10 +106,10 @@ class SingleQubitSquash {
 
   // rule of 5
   SingleQubitSquash(const SingleQubitSquash &other);
-  SingleQubitSquash &operator=(const SingleQubitSquash &other);
+  SingleQubitSquash &operator=(const SingleQubitSquash &other) = delete;
   ~SingleQubitSquash() = default;
-  SingleQubitSquash(SingleQubitSquash &&other);
-  SingleQubitSquash &operator=(SingleQubitSquash &&other);
+  SingleQubitSquash(SingleQubitSquash &&other) = delete;
+  SingleQubitSquash &operator=(SingleQubitSquash &&other) = delete;
 
   /**
    * @brief Squash entire circuit, one qubit at a time.
