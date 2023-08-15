@@ -769,6 +769,16 @@ SCENARIO("PeepholeOptimise2Q and FullPeepholeOptimise") {
     CompilationUnit cu1(circ1);
     REQUIRE(FullPeepholeOptimise()->apply(cu1));
   }
+  GIVEN("Symbolic circuit, FullPeepholeOptimise TK2") {
+    // https://github.com/CQCL/tket/issues/963
+    Sym a = SymEngine::symbol("a");
+    Circuit circ(3);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::Rz, Expr(a), {0});
+    circ.add_op<unsigned>(OpType::CX, {0, 2});
+    CompilationUnit cu(circ);
+    REQUIRE(FullPeepholeOptimise(true, OpType::TK2)->apply(cu));
+  }
   GIVEN("YYPhase") {
     // TKET-1302
     Circuit circ(2);
