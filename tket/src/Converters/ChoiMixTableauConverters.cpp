@@ -596,8 +596,7 @@ void ChoiMixBuilder::solve_collapsed_subspace() {
 void ChoiMixBuilder::remove_unused_qubits() {
   // Since removing a column replaces it with the last column, remove in reverse
   // order to examine each column exactly once
-  for (unsigned c = tab.get_n_boundaries(); c > 0;) {
-    --c;
+  for (unsigned c = tab.get_n_boundaries(); c-- > 0;) {
     bool used = false;
     for (unsigned r = 0; r < tab.get_n_rows(); ++r) {
       if (tab.tab_.zmat_(r, c) || tab.tab_.xmat_(r, c)) {
