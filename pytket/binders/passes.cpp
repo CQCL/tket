@@ -505,7 +505,7 @@ PYBIND11_MODULE(passes, m) {
       "\n:param tk1_replacement: A function which, given the parameters of "
       "an Rz(a)Rx(b)Rz(c) triple, returns an equivalent circuit in the "
       "desired basis."
-      "\n: param always_squash_symbols: If true, always squash symbolic gates "
+      "\n:param always_squash_symbols: If true, always squash symbolic gates "
       "regardless of the blow-up in complexity. Default is false, meaning that "
       "symbolic gates are only squashed if doing so reduces the overall "
       "symbolic complexity.",
