@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Minor new features:
+
+* Implement equality checking for all boxes.
+
 1.18.0 (August 2023)
 --------------------
 

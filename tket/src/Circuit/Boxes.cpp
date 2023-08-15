@@ -105,6 +105,12 @@ Op_ptr CircBox::transpose() const {
   return std::make_shared<CircBox>(circ_->transpose());
 }
 
+bool CircBox::is_equal(const Op &op_other) const {
+  const CircBox &other = dynamic_cast<const CircBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  return circ_->circuit_equality(*other.circ_, {}, false);
+}
+
 Unitary1qBox::Unitary1qBox(const Eigen::Matrix2cd &m)
     : Box(OpType::Unitary1qBox), m_(m) {
   if (!is_unitary(m)) {
@@ -140,6 +146,12 @@ void Unitary1qBox::generate_circuit() const {
   circ_->add_phase(tk1_params[3]);
 }
 
+bool Unitary1qBox::is_equal(const Op &op_other) const {
+  const Unitary1qBox &other = dynamic_cast<const Unitary1qBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  return m_.isApprox(other.m_);
+}
+
 Unitary2qBox::Unitary2qBox(const Eigen::Matrix4cd &m, BasisOrder basis)
     : Box(OpType::Unitary2qBox),
       m_(basis == BasisOrder::ilo ? m : reverse_indexing(m)) {
@@ -165,6 +177,12 @@ void Unitary2qBox::generate_circuit() const {
   circ_ = std::make_shared<Circuit>(two_qubit_canonical(m_));
 }
 
+bool Unitary2qBox::is_equal(const Op &op_other) const {
+  const Unitary2qBox &other = dynamic_cast<const Unitary2qBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  return m_.isApprox(other.m_);
+}
+
 Unitary3qBox::Unitary3qBox(const Matrix8cd &m, BasisOrder basis)
     : Box(OpType::Unitary3qBox),
       m_(basis == BasisOrder::ilo ? m : reverse_indexing(m)) {}
@@ -186,6 +204,12 @@ void Unitary3qBox::generate_circuit() const {
   circ_ = std::make_shared<Circuit>(three_qubit_tk_synthesis(m_));
 }
 
+bool Unitary3qBox::is_equal(const Op &op_other) const {
+  const Unitary3qBox &other = dynamic_cast<const Unitary3qBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  return m_.isApprox(other.m_);
+}
+
 ExpBox::ExpBox(const Eigen::Matrix4cd &A, double t, BasisOrder basis)
     : Box(OpType::ExpBox),
       A_(basis == BasisOrder::ilo ? A : reverse_indexing(A)),
@@ -203,6 +227,14 @@ Op_ptr ExpBox::dagger() const { return std::make_shared<ExpBox>(A_, -t_); }
 
 Op_ptr ExpBox::transpose() const {
   return std::make_shared<ExpBox>(A_.transpose(), t_);
+}
+
+bool ExpBox::is_equal(const Op &op_other) const {
+  const ExpBox &other = dynamic_cast<const ExpBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  std::optional<Eigen::MatrixXcd> m = get_box_unitary();
+  std::optional<Eigen::MatrixXcd> other_m = other.get_box_unitary();
+  return m.value().isApprox(other_m.value());
 }
 
 std::optional<Eigen::MatrixXcd> ExpBox::get_box_unitary() const {
@@ -377,6 +409,12 @@ std::optional<Eigen::MatrixXcd> QControlBox::get_box_unitary() const {
   return u;
 }
 
+bool QControlBox::is_equal(const Op &op_other) const {
+  const QControlBox &other = dynamic_cast<const QControlBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  return n_controls_ == other.n_controls_ && *op_ == *other.op_;
+}
+
 ProjectorAssertionBox::ProjectorAssertionBox(
     const Eigen::MatrixXcd &m, BasisOrder basis)
     : Box(OpType::ProjectorAssertionBox),
@@ -414,6 +452,13 @@ void ProjectorAssertionBox::generate_circuit() const {
   std::tie(c, expected_readouts_) = projector_assertion_synthesis(m_);
   c.decompose_boxes_recursively();
   circ_ = std::make_shared<Circuit>(c);
+}
+
+bool ProjectorAssertionBox::is_equal(const Op &op_other) const {
+  const ProjectorAssertionBox &other =
+      dynamic_cast<const ProjectorAssertionBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  return m_.isApprox(other.m_);
 }
 
 StabiliserAssertionBox::StabiliserAssertionBox(
@@ -461,6 +506,13 @@ op_signature_t StabiliserAssertionBox::get_signature() const {
   op_signature_t bs(circ_ptr->n_bits(), EdgeType::Classical);
   qubs.insert(qubs.end(), bs.begin(), bs.end());
   return qubs;
+}
+
+bool StabiliserAssertionBox::is_equal(const Op &op_other) const {
+  const StabiliserAssertionBox &other =
+      dynamic_cast<const StabiliserAssertionBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  return paulis_ == other.paulis_;
 }
 
 nlohmann::json core_box_json(const Box &box) {

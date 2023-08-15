@@ -160,10 +160,7 @@ class CircBox : public Box {
   /**
    * Equality check between two CircBox instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const CircBox &other = dynamic_cast<const CircBox &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   Op_ptr dagger() const override;
 
@@ -211,10 +208,7 @@ class Unitary1qBox : public Box {
   /**
    * Equality check between two Unitary1qBox instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const Unitary1qBox &other = dynamic_cast<const Unitary1qBox &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   /** Get the unitary matrix correspnding to this operation */
   Eigen::Matrix2cd get_matrix() const { return m_; }
@@ -276,10 +270,7 @@ class Unitary2qBox : public Box {
   /**
    * Equality check between two Unitary2qBox instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const Unitary2qBox &other = dynamic_cast<const Unitary2qBox &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   /** Get the unitary matrix correspnding to this operation */
   Eigen::Matrix4cd get_matrix() const { return m_; }
@@ -338,10 +329,7 @@ class Unitary3qBox : public Box {
   /**
    * Equality check between two Unitary3qBox instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const Unitary3qBox &other = dynamic_cast<const Unitary3qBox &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   /** Get the unitary matrix correspnding to this operation */
   Matrix8cd get_matrix() const { return m_; }
@@ -406,10 +394,7 @@ class ExpBox : public Box {
   /**
    * Equality check between two ExpBox instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const ExpBox &other = dynamic_cast<const ExpBox &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   /** Get the hermitian matrix and phase parameter */
   std::pair<Eigen::Matrix4cd, double> get_matrix_and_phase() const {
@@ -531,10 +516,7 @@ class QControlBox : public Box {
   /**
    * Equality check between two QControlBox instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const QControlBox &other = dynamic_cast<const QControlBox &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   std::string get_command_str(const unit_vector_t &args) const override;
 
@@ -590,11 +572,7 @@ class ProjectorAssertionBox : public Box {
   /**
    * Equality check between two ProjectorAssertionBox instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const ProjectorAssertionBox &other =
-        dynamic_cast<const ProjectorAssertionBox &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   /** Get the unitary matrix correspnding to this operation */
   Eigen::MatrixXcd get_matrix() const { return m_; }
@@ -646,11 +624,7 @@ class StabiliserAssertionBox : public Box {
   /**
    * Equality check between two StabiliserAssertionBox instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const StabiliserAssertionBox &other =
-        dynamic_cast<const StabiliserAssertionBox &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   /** Get the pauli stabilisers */
   PauliStabiliserList get_stabilisers() const { return paulis_; }
