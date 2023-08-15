@@ -1966,23 +1966,23 @@ SCENARIO("Test FullPeepholeOptimise for short sequences of YYPhase, XXPhase and 
     Circuit c(2);
     c.add_op<unsigned>(OpType::YYPhase, 0.3, {0,1});
     CompilationUnit cu(c);
-    CHECK(FullPeepholeOptimise(false, OpType::TK2)->apply(cu));
-    std::cout << "YY case: " << cu.get_circ_ref() << std::endl;
+    CHECK(SynthesiseTK()->apply(cu));
+    REQUIRE(cu.get_circ_ref().n_gates() == 1);
   }
   GIVEN("XXPhase(0.3)"){
     Circuit c(2);
     c.add_op<unsigned>(OpType::XXPhase, 0.3, {0,1});
     CompilationUnit cu(c);
-    CHECK(FullPeepholeOptimise(false, OpType::TK2)->apply(cu));
-    std::cout << "XX case: " << cu.get_circ_ref() << std::endl;
+    CHECK(SynthesiseTK()->apply(cu));
+    REQUIRE(cu.get_circ_ref().n_gates() == 1);
   }
 
   GIVEN("ZZPhase(0.3)"){
     Circuit c(2);
     c.add_op<unsigned>(OpType::ZZPhase, 0.3, {0,1});
     CompilationUnit cu(c);
-    CHECK(FullPeepholeOptimise(false, OpType::TK2)->apply(cu));
-    std::cout << "ZZ case: " << cu.get_circ_ref() << std::endl;
+    CHECK(SynthesiseTK()->apply(cu));
+    REQUIRE(cu.get_circ_ref().n_gates() == 1);
   }
 }
 }  // namespace test_CompilerPass
