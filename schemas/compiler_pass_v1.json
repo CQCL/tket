@@ -183,6 +183,10 @@
           "type": "string",
           "description": "A method for generating optimised single-qubit unitary circuits in a target gate set. This string should be interpreted by Python \"dill\" into a function. Used in \"RebaseCustom\" and \"SquashCustom\"."
         },
+        "always_squash_symbols": {
+          "type": "boolean",
+          "description": "Whether to always squash symbolic gates regardless of the complexity blow-up. Used in \"SquashCustom\"."
+        },
         "euler_p": {
           "type": "string",
           "description": "The choice of P rotation for \"EulerAngleReduction\" for P-Q-P and Q-P-Q triples.",
@@ -351,7 +355,8 @@
           "then": {
             "required": [
               "basis_singleqs",
-              "basis_tk1_replacement"
+              "basis_tk1_replacement",
+              "always_squash_symbols"
             ],
             "maxProperties": 3
           }

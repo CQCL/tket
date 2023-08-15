@@ -119,6 +119,7 @@ PassPtr gen_squash_pass(
   j["basis_singleqs"] = singleqs;
   j["basis_tk1_replacement"] =
       "SERIALIZATION OF FUNCTIONS IS NOT YET SUPPORTED";
+  j["always_squash_symbols"] = always_squash_symbols;
   return std::make_shared<StandardPass>(precons, t, postcon, j);
 }
 
