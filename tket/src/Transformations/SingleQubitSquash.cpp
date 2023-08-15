@@ -14,6 +14,7 @@
 
 #include "tket/Transformations/SingleQubitSquash.hpp"
 
+#include <cstddef>
 #include <numeric>
 
 #include "Circuit/Command.hpp"
@@ -214,12 +215,12 @@ bool SingleQubitSquash::sub_is_better(
   // the total size of the string representations.
   return std::accumulate(
              sub.begin(), sub.end(), 0,
-             [](unsigned a, const Command &cmd) {
+             [](std::size_t a, const Command &cmd) {
                return a + cmd.get_op_ptr()->get_name().size();
              }) <
          std::accumulate(
              chain.begin(), chain.end(), 0,
-             [](unsigned a, const Gate_ptr &gpr) {
+             [](std::size_t a, const Gate_ptr &gpr) {
                return a + gpr->get_name().size();
              });
 }
