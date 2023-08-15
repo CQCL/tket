@@ -17,6 +17,7 @@
 #include <tket/Transformations/BasicOptimisation.hpp>
 #include <tket/Transformations/CliffordOptimisation.hpp>
 #include <tket/Transformations/OptimisationPass.hpp>
+#include <tket/Transformations/PQPSquash.hpp>
 #include <vector>
 
 #include "symengine/eval_double.h"
@@ -50,6 +51,8 @@ SCENARIO("Symbolic squashing, correctness") {
   Expr alpha(asym);
   Sym bsym = SymEngine::symbol("b");
   Expr beta(bsym);
+  Sym csym = SymEngine::symbol("c");
+  Expr gamma(csym);
 
   GIVEN("squash_1qb_to_pqp") {
     Circuit circ(1);
@@ -178,6 +181,29 @@ SCENARIO("Symbolic squashing, correctness") {
     CHECK_NOTHROW(SymEngine::eval_double(params[2]));
     CHECK(approx_0(params[1]));
     CHECK(approx_0(params[0] + params[2]));
+  }
+
+  GIVEN("Squashing where expressions are allowed to expand") {
+    auto squash_circuit = [](Circuit &c, bool always_squash_symbols) {
+      auto squasher =
+          std::make_unique<Transforms::PQPSquasher>(OpType::Ry, OpType::Rz);
+      return SingleQubitSquash(
+                 std::move(squasher), c, false, always_squash_symbols)
+          .squash();
+    };
+    Circuit circ0(1);
+    circ0.add_op<unsigned>(OpType::Rz, 0.5, {0});
+    circ0.add_op<unsigned>(OpType::Ry, 0.5, {0});
+    circ0.add_op<unsigned>(OpType::Rz, {alpha}, {0});
+    circ0.add_op<unsigned>(OpType::Ry, {beta}, {0});
+    circ0.add_op<unsigned>(OpType::Rz, {gamma}, {0});
+    Circuit circ1 = circ0;
+    CHECK_FALSE(squash_circuit(circ0, false));
+    CHECK(squash_circuit(circ1, true));
+    symbol_map_t smap = {{bsym, 0.3}, {csym, 0.4}};
+    circ0.symbol_substitution(smap);
+    circ1.symbol_substitution(smap);
+    check_equiv(circ0, circ1);
   }
 }
 
