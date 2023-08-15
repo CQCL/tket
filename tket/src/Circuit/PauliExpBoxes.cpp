@@ -404,7 +404,7 @@ void append_pauli_gadget_pair_as_box(
 void append_commuting_pauli_gadget_set_as_box(
     Circuit &circ, const std::list<std::pair<QubitPauliTensor, Expr>> &gadgets,
     CXConfigType cx_config) {
-  // Translate to QubitPauliTensors to vectors of Paulis of same length
+  // Translate from QubitPauliTensors to vectors of Paulis of same length
   // Preserves ordering of qubits
 
   std::set<Qubit> all_qubits;
