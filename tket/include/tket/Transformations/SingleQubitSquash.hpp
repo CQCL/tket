@@ -102,11 +102,7 @@ class SingleQubitSquash {
    */
   SingleQubitSquash(
       std::unique_ptr<AbstractSquasher> squasher, Circuit &circ,
-      bool reversed = false, bool always_squash_symbols = false)
-      : squasher_(std::move(squasher)),
-        circ_(circ),
-        reversed_(reversed),
-        always_squash_symbols_(always_squash_symbols) {}
+      bool reversed = false, bool always_squash_symbols = false);
 
   // rule of 5
   SingleQubitSquash(const SingleQubitSquash &other);

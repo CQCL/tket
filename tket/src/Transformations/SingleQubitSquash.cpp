@@ -25,6 +25,14 @@
 
 namespace tket {
 
+SingleQubitSquash::SingleQubitSquash(
+    std::unique_ptr<AbstractSquasher> squasher, Circuit &circ, bool reversed,
+    bool always_squash_symbols)
+    : squasher_(std::move(squasher)),
+      circ_(circ),
+      reversed_(reversed),
+      always_squash_symbols_(always_squash_symbols) {}
+
 SingleQubitSquash::SingleQubitSquash(const SingleQubitSquash &other)
     : squasher_(other.squasher_->clone()),
       circ_(other.circ_),
