@@ -214,12 +214,12 @@ bool SingleQubitSquash::sub_is_better(
   // complexity of the expressions. As a crude but adequate measure, we compare
   // the total size of the string representations.
   return std::accumulate(
-             sub.begin(), sub.end(), 0,
+             sub.begin(), sub.end(), std::size_t{0},
              [](std::size_t a, const Command &cmd) {
                return a + cmd.get_op_ptr()->get_name().size();
              }) <
          std::accumulate(
-             chain.begin(), chain.end(), 0,
+             chain.begin(), chain.end(), std::size_t{0},
              [](std::size_t a, const Gate_ptr &gpr) {
                return a + gpr->get_name().size();
              });
