@@ -7,6 +7,7 @@ Unreleased
 Minor new features:
 
 * Implement equality checking for all boxes.
+* Add ``Op.is_clifford`` to python binding.
 * Single-qubit squashing ignores chains of symbolic gates if squashing them
   would increase the overall complexity of the expressions. This behaviour can
   be overridden using the ``always_squash_symbols`` parameter to
