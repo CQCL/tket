@@ -67,11 +67,7 @@ class MultiplexorBox : public Box {
   /**
    * Equality check between two MultiplexorBox instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const MultiplexorBox &other =
-        dynamic_cast<const MultiplexorBox &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   Op_ptr dagger() const override;
 
@@ -129,11 +125,7 @@ class MultiplexedRotationBox : public Box {
   /**
    * Equality check between two MultiplexedRotationBox instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const MultiplexedRotationBox &other =
-        dynamic_cast<const MultiplexedRotationBox &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   Op_ptr dagger() const override;
 
@@ -195,11 +187,7 @@ class MultiplexedU2Box : public Box {
   /**
    * Equality check between two MultiplexedU2Box instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const MultiplexedU2Box &other =
-        dynamic_cast<const MultiplexedU2Box &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   Op_ptr dagger() const override;
 
@@ -269,11 +257,7 @@ class MultiplexedTensoredU2Box : public Box {
   /**
    * Equality check between two MultiplexedTensoredU2Box instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const MultiplexedTensoredU2Box &other =
-        dynamic_cast<const MultiplexedTensoredU2Box &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   Op_ptr dagger() const override;
 

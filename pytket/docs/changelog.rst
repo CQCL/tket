@@ -1,6 +1,14 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Minor new features:
+
+* Implement equality checking for all boxes.
+* Add ``Op.is_clifford`` to python binding.
+
 1.18.0 (August 2023)
 --------------------
 
