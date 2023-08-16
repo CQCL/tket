@@ -14,37 +14,30 @@
 
 #include "tket/Transformations/SingleQubitSquash.hpp"
 
+#include <cstddef>
+#include <numeric>
+
+#include "Circuit/Command.hpp"
+#include "Gate/GatePtr.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/DAGDefs.hpp"
 #include "tket/Gate/Gate.hpp"
 
 namespace tket {
 
+SingleQubitSquash::SingleQubitSquash(
+    std::unique_ptr<AbstractSquasher> squasher, Circuit &circ, bool reversed,
+    bool always_squash_symbols)
+    : squasher_(std::move(squasher)),
+      circ_(circ),
+      reversed_(reversed),
+      always_squash_symbols_(always_squash_symbols) {}
+
 SingleQubitSquash::SingleQubitSquash(const SingleQubitSquash &other)
     : squasher_(other.squasher_->clone()),
       circ_(other.circ_),
-      reversed_(other.reversed_) {}
-
-SingleQubitSquash &SingleQubitSquash::operator=(
-    const SingleQubitSquash &other) {
-  squasher_ = other.squasher_->clone();
-  circ_ = other.circ_;
-  reversed_ = other.reversed_;
-  return *this;
-}
-
-SingleQubitSquash::SingleQubitSquash(SingleQubitSquash &&other)
-    : squasher_(std::move(other.squasher_)),
-      circ_(other.circ_),
-      reversed_(other.reversed_) {}
-
-SingleQubitSquash &SingleQubitSquash::operator=(SingleQubitSquash &&other) {
-  squasher_ = std::move(other.squasher_);
-  circ_ = other.circ_;
-  reversed_ = other.reversed_;
-  return *this;
-}
-
+      reversed_(other.reversed_),
+      always_squash_symbols_(other.always_squash_symbols_) {}
 bool SingleQubitSquash::squash() {
   bool success = false;
 
@@ -199,8 +192,25 @@ void SingleQubitSquash::insert_left_over_gate(
 bool SingleQubitSquash::sub_is_better(
     const Circuit &sub, const std::vector<Gate_ptr> chain) const {
   const unsigned n_gates = sub.n_gates();
-  return n_gates < chain.size() ||
-         (n_gates == chain.size() && !is_equal(sub, chain, reversed_));
+  if (n_gates > chain.size()) {
+    return false;
+  }
+  if (!sub.is_symbolic() || always_squash_symbols_) {
+    return n_gates < chain.size() || !is_equal(sub, chain, reversed_);
+  }
+  // For symbolic circuits, we don't want to squash gates if it blows up the
+  // complexity of the expressions. As a crude but adequate measure, we compare
+  // the total size of the string representations.
+  return std::accumulate(
+             sub.begin(), sub.end(), std::size_t{0},
+             [](std::size_t a, const Command &cmd) {
+               return a + cmd.get_op_ptr()->get_name().size();
+             }) <
+         std::accumulate(
+             chain.begin(), chain.end(), std::size_t{0},
+             [](std::size_t a, const Gate_ptr &gpr) {
+               return a + gpr->get_name().size();
+             });
 }
 
 // returns a description of the condition of current vertex
