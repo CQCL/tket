@@ -1970,5 +1970,32 @@ SCENARIO("Custom rebase pass with implicit wire swaps.") {
     REQUIRE(u1.isApprox(u2));
   }
 }
+
+SCENARIO(
+    "Test FullPeepholeOptimise for short sequences of YYPhase, XXPhase and "
+    "ZZPhase.") {
+  GIVEN("YYPhase(0.3)") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::YYPhase, 0.3, {0, 1});
+    CompilationUnit cu(c);
+    CHECK(SynthesiseTK()->apply(cu));
+    REQUIRE(cu.get_circ_ref().n_gates() == 1);
+  }
+  GIVEN("XXPhase(0.3)") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::XXPhase, 0.3, {0, 1});
+    CompilationUnit cu(c);
+    CHECK(SynthesiseTK()->apply(cu));
+    REQUIRE(cu.get_circ_ref().n_gates() == 1);
+  }
+
+  GIVEN("ZZPhase(0.3)") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::ZZPhase, 0.3, {0, 1});
+    CompilationUnit cu(c);
+    CHECK(SynthesiseTK()->apply(cu));
+    REQUIRE(cu.get_circ_ref().n_gates() == 1);
+  }
+}
 }  // namespace test_CompilerPass
 }  // namespace tket
