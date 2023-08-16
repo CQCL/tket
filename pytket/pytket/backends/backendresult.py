@@ -138,7 +138,10 @@ class BackendResult:
                     raise ValueError(
                         "Provide either counts or shots, both is not valid."
                     )
-                _bitlength = next(self._counts.elements()).width
+                try:
+                    _bitlength = next(self._counts.elements()).width
+                except StopIteration:
+                    _bitlength = len(c_bits)
 
             if self._shots is not None:
                 _bitlength = self._shots.width
