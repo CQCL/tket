@@ -255,6 +255,7 @@ class BackendResult:
                     Counter({outcome.choose_indices(chosen_readouts): count})
                     for outcome, count in new_counts.items()
                 ),
+                Counter(),
             )
         if self._shots is not None:
             if ppcirc is not None:
