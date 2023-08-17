@@ -138,7 +138,10 @@ class BackendResult:
                     raise ValueError(
                         "Provide either counts or shots, both is not valid."
                     )
-                _bitlength = next(self._counts.elements()).width
+                try:
+                    _bitlength = next(self._counts.elements()).width
+                except StopIteration:
+                    _bitlength = len(c_bits)
 
             if self._shots is not None:
                 _bitlength = self._shots.width
@@ -252,6 +255,7 @@ class BackendResult:
                     Counter({outcome.choose_indices(chosen_readouts): count})
                     for outcome, count in new_counts.items()
                 ),
+                Counter(),
             )
         if self._shots is not None:
             if ppcirc is not None:

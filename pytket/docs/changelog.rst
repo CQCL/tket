@@ -13,6 +13,10 @@ Minor new features:
   be overridden using the ``always_squash_symbols`` parameter to
   ``SquashCustom``.
 
+Fixes:
+
+* Allow ``BackendResult`` objects containing no results.
+
 1.18.0 (August 2023)
 --------------------
 

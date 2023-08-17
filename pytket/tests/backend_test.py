@@ -589,6 +589,12 @@ def test_postprocess_4() -> None:
     assert all(readout[0] == 1 for readout in counts.keys())
 
 
+def test_empty_backenresult() -> None:
+    # https://github.com/CQCL/tket/issues/961
+    r = BackendResult(counts=Counter(), c_bits=[Bit(name="A", index=0)])
+    assert r.get_counts() == Counter()
+
+
 if __name__ == "__main__":
     # test_resulthandle()
     # test_bell()
