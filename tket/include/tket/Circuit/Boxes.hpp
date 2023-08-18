@@ -498,7 +498,7 @@ class QControlBox : public Box {
    *
    * @param op op to control
    * @param n_controls number of qubit controls to add
-   * @param control_state control state expressed as an integer
+   * @param control_state control state expressed as a bit vector
    */
   explicit QControlBox(
       const Op_ptr &op, unsigned n_controls = 1,
