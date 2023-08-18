@@ -384,7 +384,7 @@ std::string QControlBox::get_command_str(const unit_vector_t &args) const {
   std::stringstream out;
   out << "qif (";
   if (n_controls_ > 0) {
-    out << args.at(0).repr();
+    out << args.at(0).repr() << " = " << control_state_.at(0);
     for (unsigned i = 1; i < n_controls_; ++i) {
       out << ", " << args.at(i).repr() << " = " << control_state_.at(i);
     }
