@@ -524,6 +524,11 @@
           "minimum": 0,
           "description": "Number of qubits a QControlBox is conditional on."
         },
+        "control_state": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Control state expressed as an integer."
+        },
         "n_i": {
           "type": "integer",
           "minimum": 0
@@ -882,7 +887,8 @@
           "then": {
             "required": [
               "n_controls",
-              "op"
+              "op",
+              "control_state"
             ]
           }
         },
