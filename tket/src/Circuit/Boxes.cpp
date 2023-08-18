@@ -353,7 +353,7 @@ QControlBox::QControlBox(
                                 : control_state) {
   if (n_controls != control_state_.size()) {
     throw CircuitInvalidity(
-        "The argument control_state doesn't match the argument n_controls");
+        "The size of control_state doesn't match the argument n_controls");
   }
   op_signature_t inner_sig = op_->get_signature();
   n_inner_qubits_ = inner_sig.size();
