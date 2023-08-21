@@ -436,7 +436,7 @@ def test_pauli_graph_synth() -> None:
         num_cxs = c.n_gates_of_type(OpType.CX)
         cx_counts.append(num_cxs)
 
-    for (i, count) in enumerate(cx_counts):
+    for i, count in enumerate(cx_counts):
         if i == 0:
             continue
         assert count < cx_counts[i - 1]
@@ -1216,6 +1216,224 @@ def test_round_angles() -> None:
     assert circ0 == circ1
 
 
+def test_auto_rebase_with_swap_cx() -> None:
+    swap_pass = auto_rebase_pass({OpType.CX, OpType.PhasedX, OpType.Rz}, True)
+    no_swap_pass = auto_rebase_pass({OpType.CX, OpType.PhasedX, OpType.Rz}, False)
+
+    c_swap = Circuit(2).ISWAPMax(0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.CX) == 1
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(1)
+    assert iqp[Qubit(1)] == Qubit(0)
+    c_no_swap = Circuit(2).ISWAPMax(0, 1)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.CX) == 2
+
+    c_swap = Circuit(2).Sycamore(0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.CX) == 2
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(1)
+    assert iqp[Qubit(1)] == Qubit(0)
+    c_no_swap = Circuit(2).Sycamore(0, 1)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.CX) == 3
+
+    c_swap = Circuit(2).ISWAP(0.3, 0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.CX) == 2
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(0)
+    assert iqp[Qubit(1)] == Qubit(1)
+    c_no_swap = Circuit(2).ISWAP(0.3, 0, 1)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.CX) == 2
+
+    c_swap = Circuit(2).ISWAPMax(0, 1).ISWAPMax(1, 0)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.CX) == 2
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(0)
+    assert iqp[Qubit(1)] == Qubit(1)
+    c_no_swap = Circuit(2).ISWAPMax(0, 1).ISWAPMax(1, 0)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.CX) == 4
+
+    c_swap = Circuit(2).SWAP(0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.CX) == 0
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(1)
+    assert iqp[Qubit(1)] == Qubit(0)
+    c_no_swap = Circuit(2).SWAP(0, 1)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.CX) == 3
+
+    c_swap = Circuit(2).ZZMax(0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.CX) == 1
+
+    c_swap = Circuit(2).CX(0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates == 1
+
+
+def test_auto_rebase_with_swap_zzmax() -> None:
+    swap_pass = auto_rebase_pass({OpType.ZZMax, OpType.PhasedX, OpType.Rz}, True)
+    no_swap_pass = auto_rebase_pass({OpType.ZZMax, OpType.PhasedX, OpType.Rz}, False)
+
+    c_swap = Circuit(2).ISWAPMax(0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.ZZMax) == 1
+    assert c_swap.n_gates == 4
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(1)
+    assert iqp[Qubit(1)] == Qubit(0)
+    c_no_swap = Circuit(2).ISWAPMax(0, 1)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.ZZMax) == 2
+    assert c_no_swap.n_gates == 13
+
+    c_swap = Circuit(2).Sycamore(0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.ZZMax) == 2
+    assert c_swap.n_gates == 11
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(1)
+    assert iqp[Qubit(1)] == Qubit(0)
+
+    c_no_swap = Circuit(2).Sycamore(0, 1)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.ZZMax) == 3
+    assert c_no_swap.n_gates == 16
+
+    c_swap = Circuit(2).ISWAP(0.3, 0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.ZZMax) == 2
+    assert c_swap.n_gates == 13
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(0)
+    assert iqp[Qubit(1)] == Qubit(1)
+    c_no_swap = Circuit(2).ISWAP(0.3, 0, 1)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.ZZMax) == 2
+    assert c_no_swap.n_gates == 13
+
+    c_swap = Circuit(2).ISWAPMax(0, 1).ISWAPMax(1, 0)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.ZZMax) == 2
+    assert c_swap.n_gates == 8
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(0)
+    assert iqp[Qubit(1)] == Qubit(1)
+    c_no_swap = Circuit(2).ISWAPMax(0, 1).ISWAPMax(1, 0)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.ZZMax) == 4
+    assert c_no_swap.n_gates == 26
+
+    c_swap = Circuit(2).SWAP(0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.ZZMax) == 0
+    assert c_swap.n_gates == 0
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(1)
+    assert iqp[Qubit(1)] == Qubit(0)
+    c_no_swap = Circuit(2).SWAP(0, 1)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.ZZMax) == 3
+    assert c_no_swap.n_gates == 16
+
+    c_swap = Circuit(2).ZZMax(0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates == 1
+
+
+def test_auto_rebase_with_swap_zzphase() -> None:
+    swap_pass = auto_rebase_pass({OpType.ZZPhase, OpType.PhasedX, OpType.Rz}, True)
+    no_swap_pass = auto_rebase_pass({OpType.ZZPhase, OpType.PhasedX, OpType.Rz}, False)
+
+    c_swap = Circuit(2).ISWAPMax(0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.ZZPhase) == 1
+    assert c_swap.n_gates == 4
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(1)
+    assert iqp[Qubit(1)] == Qubit(0)
+    c_no_swap = Circuit(2).ISWAPMax(0, 1)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.ZZPhase) == 2
+    assert c_no_swap.n_gates == 13
+
+    c_swap = Circuit(2).Sycamore(0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.ZZPhase) == 2
+    assert c_swap.n_gates == 11
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(1)
+    assert iqp[Qubit(1)] == Qubit(0)
+
+    c_no_swap = Circuit(2).Sycamore(0, 1)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.ZZPhase) == 3
+    assert c_no_swap.n_gates == 15
+
+    c_swap = Circuit(2).ISWAP(0.3, 0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.ZZPhase) == 2
+    assert c_swap.n_gates == 13
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(0)
+    assert iqp[Qubit(1)] == Qubit(1)
+    c_no_swap = Circuit(2).ISWAP(0.3, 0, 1)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.ZZPhase) == 2
+    assert c_no_swap.n_gates == 14
+
+    c_swap = Circuit(2).ISWAPMax(0, 1).ISWAPMax(1, 0)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.ZZPhase) == 2
+    assert c_swap.n_gates == 8
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(0)
+    assert iqp[Qubit(1)] == Qubit(1)
+    c_no_swap = Circuit(2).ISWAPMax(0, 1).ISWAPMax(1, 0)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.ZZPhase) == 4
+    assert c_no_swap.n_gates == 26
+
+    c_swap = Circuit(2).SWAP(0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.ZZPhase) == 0
+    assert c_swap.n_gates == 0
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(1)
+    assert iqp[Qubit(1)] == Qubit(0)
+    c_no_swap = Circuit(2).SWAP(0, 1)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.ZZPhase) == 3
+    assert c_no_swap.n_gates == 13
+
+    c_swap = Circuit(2).ZZPhase(0.4, 0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates == 1
+
+    c_swap = Circuit(2).ZZMax(0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.ZZPhase) == 1
+
+
+def test_auto_rebase_with_swap_tk2() -> None:
+    swap_pass = auto_rebase_pass({OpType.TK2, OpType.PhasedX, OpType.Rz}, True)
+    no_swap_pass = auto_rebase_pass({OpType.TK2, OpType.PhasedX, OpType.Rz}, False)
+    c_swap = Circuit(2).SWAP(0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates == 0
+    c_no_swap = Circuit(2).SWAP(0, 1)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates > 0
+
+
 if __name__ == "__main__":
     test_remove_redundancies()
     test_reduce_singles()
@@ -1242,3 +1460,7 @@ if __name__ == "__main__":
     test_CXMappingPass_terminates()
     test_FullMappingPass()
     test_KAK_with_ClassicalExpBox()
+    test_auto_rebase_with_swap_cx()
+    test_auto_rebase_with_swap_zzmax()
+    test_auto_rebase_with_swap_zzphase()
+    test_auto_rebase_with_swap_tk2()

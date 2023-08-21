@@ -549,7 +549,14 @@ PYBIND11_MODULE(circuit, m) {
           })
       .def(
           "is_clifford_type",
-          [](const Op &op) { return op.get_desc().is_clifford_gate(); })
+          [](const Op &op) { return op.get_desc().is_clifford_gate(); },
+          "Check if the operation is one of the Clifford `OpType`s.")
+      .def(
+          "is_clifford", [](const Op &op) { return op.is_clifford(); },
+          "Test whether the operation is in the Clifford group. A return value "
+          "of true guarantees that the operation is Clifford. However, the "
+          "converse is not the case as some Clifford operations may not be "
+          "detected as such.")
       .def("is_gate", [](const Op &op) { return op.get_desc().is_gate(); });
 
   py::enum_<BasisOrder>(

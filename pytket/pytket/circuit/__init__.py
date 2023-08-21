@@ -82,12 +82,16 @@ def overload_add_wasm(  # type: ignore
         args_wasm = [0]
 
     for x in list_i:
-        if x > 32:
-            raise ValueError("only functions with i32 type are allowed")
+        if x > filehandler._int_size:
+            raise ValueError(
+                f"only functions with i{filehandler._int_size} type are allowed"
+            )
 
     for x in list_o:
-        if x > 32:
-            raise ValueError("only functions with i32 type are allowed")
+        if x > filehandler._int_size:
+            raise ValueError(
+                f"only functions with i{filehandler._int_size} type are allowed"
+            )
 
     if filehandler.check_function(funcname, len(list_i), len(list_o)):
         if (len(args_wasm)) > 0:

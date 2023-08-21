@@ -415,7 +415,7 @@ def test_wasmfilehandler_without_init() -> None:
 
 
 def test_wasmfilehandler_repr() -> None:
-    w = wasm.WasmFileHandler("testfile.wasm")
+    w = wasm.WasmFileHandler("testfile.wasm", int_size=32)
     assert (
         repr(w)
         == """Functions in wasm file with the uid 6a0a29e235cd5c60353254bc2b459e631d381cdd0bded7ae6cb44afb784bd2de:
@@ -428,6 +428,24 @@ function 'no_return' with 1 i32 parameter(s) and 0 i32 return value(s)
 function 'no_parameters' with 0 i32 parameter(s) and 1 i32 return value(s)
 function 'new_function' with 0 i32 parameter(s) and 1 i32 return value(s)
 unsupported function with unvalid parameter or result type: 'add_something' 
+"""
+    )
+
+
+def test_wasmfilehandler_repr_64() -> None:
+    w = wasm.WasmFileHandler("testfile.wasm", int_size=64)
+    assert (
+        repr(w)
+        == """Functions in wasm file with the uid 6a0a29e235cd5c60353254bc2b459e631d381cdd0bded7ae6cb44afb784bd2de:
+function 'init' with 0 i64 parameter(s) and 0 i64 return value(s)
+function 'add_something' with 1 i64 parameter(s) and 1 i64 return value(s)
+unsupported function with unvalid parameter or result type: 'add_one' 
+unsupported function with unvalid parameter or result type: 'multi' 
+unsupported function with unvalid parameter or result type: 'add_two' 
+unsupported function with unvalid parameter or result type: 'add_eleven' 
+unsupported function with unvalid parameter or result type: 'no_return' 
+unsupported function with unvalid parameter or result type: 'no_parameters' 
+unsupported function with unvalid parameter or result type: 'new_function' 
 """
     )
 
@@ -1165,6 +1183,19 @@ def test_flatten_registers_with_classical_exps() -> None:
     commands = circ.get_commands()
     assert str(commands[0].op.get_exp()) == "(c[2] & c[8])"
     assert str(commands[1].op.get_exp()) == "(c[4] | (c[9] ^ c[1]))"
+
+
+def test_box_equality_check() -> None:
+    exp1 = Bit(2) & Bit(3)
+    exp2 = Bit(1) & Bit(3)
+    exp3 = Bit(1)
+    ceb1 = ClassicalExpBox(2, 0, 1, exp1)
+    ceb2 = ClassicalExpBox(2, 0, 1, exp2)
+    ceb3 = ClassicalExpBox(1, 0, 1, exp3)
+    assert ceb1 != ceb2
+    assert ceb1 != ceb3
+    assert ceb1 == ceb1
+    assert ceb1 == ClassicalExpBox(2, 0, 1, exp1)
 
 
 if __name__ == "__main__":

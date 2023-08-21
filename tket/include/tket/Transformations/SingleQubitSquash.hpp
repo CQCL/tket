@@ -96,18 +96,20 @@ class SingleQubitSquash {
    * @param circ The circuit to be squashed.
    * @param reversed Whether squashing is made back to front or front to back
    *      (default: false, ie front to back).
+   * @param always_squash_symbols Whether to squash symbolic gates regardless of
+   *      the complexity blow-up (default: false, i.e. symbolic gates are only
+   *      squashed if the overall complexity of the expressions is reduced).
    */
   SingleQubitSquash(
       std::unique_ptr<AbstractSquasher> squasher, Circuit &circ,
-      bool reversed = false)
-      : squasher_(std::move(squasher)), circ_(circ), reversed_(reversed) {}
+      bool reversed = false, bool always_squash_symbols = false);
 
   // rule of 5
   SingleQubitSquash(const SingleQubitSquash &other);
-  SingleQubitSquash &operator=(const SingleQubitSquash &other);
+  SingleQubitSquash &operator=(const SingleQubitSquash &other) = delete;
   ~SingleQubitSquash() = default;
-  SingleQubitSquash(SingleQubitSquash &&other);
-  SingleQubitSquash &operator=(SingleQubitSquash &&other);
+  SingleQubitSquash(SingleQubitSquash &&other) = delete;
+  SingleQubitSquash &operator=(SingleQubitSquash &&other) = delete;
 
   /**
    * @brief Squash entire circuit, one qubit at a time.
@@ -135,6 +137,7 @@ class SingleQubitSquash {
   std::unique_ptr<AbstractSquasher> squasher_;
   Circuit &circ_;
   bool reversed_;
+  bool always_squash_symbols_;
 
   // substitute chain by a sub circuit, handling conditions
   // and backing up + restoring current edge

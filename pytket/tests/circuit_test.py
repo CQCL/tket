@@ -1024,6 +1024,7 @@ def test_depth() -> None:
     assert c.depth_by_type({OpType.CX, OpType.H}) == 6
     assert c.depth_by_type({OpType.CZ, OpType.H}) == 6
     assert c.depth_by_type(set()) == 0
+    assert c.depth_2q() == 6
 
 
 def test_op_dagger_transpose() -> None:
@@ -1048,6 +1049,17 @@ def test_clifford_checking() -> None:
     assert rz2.is_clifford_type() == False
     m = c.get_commands()[5].op
     assert m.is_clifford_type() == False
+
+
+def test_clifford_evaluation() -> None:
+    c = Circuit(2, 1)
+    c.Rx(0, 0).ISWAP(1, 0, 1).Rz(0.3, 0)
+    rx = c.get_commands()[0].op
+    assert rx.is_clifford()
+    iswap = c.get_commands()[1].op
+    assert iswap.is_clifford()
+    rz = c.get_commands()[2].op
+    assert rz.is_clifford() == False
 
 
 def test_getting_registers() -> None:
@@ -1159,6 +1171,7 @@ if __name__ == "__main__":
     test_str()
     test_phase()
     test_clifford_checking()
+    test_clifford_evaluation()
     test_measuring_registers()
     test_multi_controlled_gates()
     test_counting_n_qubit_gates()

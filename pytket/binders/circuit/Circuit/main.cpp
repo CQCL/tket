@@ -539,6 +539,20 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>>& pyCircuit){
           "element of `types`",
           py::arg("types"))
       .def(
+          "depth_2q", &Circuit::depth_2q,
+          "Returns the number of vertices in the longest path through the "
+          "sub-DAG consisting of vertices with 2 quantum wires,"
+          "excluding vertices representing barrier operations."
+          "\n\n>>> c = Circuit(3)"
+          "\n>>> c.CZ(0,1)"
+          "\n>>> c.Z(0)"
+          "\n>>> c.Z(1)"
+          "\n>>> c.ZZMax(1,2)"
+          "\n>>> c.CX(1,2)"
+          "\n>>> c.depth_2q()"
+          "\n3"
+          "\n:return: the circuit depth with respect to 2-qubit operations.")
+      .def(
           "_to_graphviz_file", &Circuit::to_graphviz_file,
           "Saves a visualisation of a circuit's DAG to a \".dot\" file",
           py::arg("filename"))
