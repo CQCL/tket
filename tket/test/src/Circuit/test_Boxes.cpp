@@ -815,13 +815,13 @@ SCENARIO("QControlBox", "[boxes]") {
     Eigen::MatrixXcd u = random_unitary(8, 1);
     Unitary3qBox ubox(u);
     Op_ptr op = std::make_shared<Unitary3qBox>(ubox);
-    QControlBox qcbox(op, 3, {1, 0, 1});
+    QControlBox qcbox(op, 3, {1, 0, 0});
     std::shared_ptr<Circuit> c = qcbox.to_circuit();
     const Eigen::MatrixXcd circ_u = tket_sim::get_unitary(*c);
     Eigen::MatrixXcd V = Eigen::MatrixXcd::Identity(64, 64);
     for (unsigned i = 0; i < 8; i++) {
       for (unsigned j = 0; j < 8; j++) {
-        V(40 + i, 40 + j) = u(i, j);
+        V(32 + i, 32 + j) = u(i, j);
       }
     }
     REQUIRE(circ_u.isApprox(V));
