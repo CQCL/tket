@@ -1166,8 +1166,8 @@ def test_qcontrol_box_constructors() -> None:
     qcbox4 = QControlBox(Op.create(OpType.S), 2, [0, 1])
     assert qcbox1 == qcbox2
     assert qcbox3 == qcbox4
-    assert qcbox1.get_control_state() == [1]
-    assert qcbox3.get_control_state() == [0, 1]
+    assert qcbox1.get_control_state() == 1
+    assert qcbox3.get_control_state() == 1
 
 
 def test_error_wrong_parameters() -> None:

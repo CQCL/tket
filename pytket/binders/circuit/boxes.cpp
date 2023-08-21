@@ -295,7 +295,8 @@ void init_boxes(py::module &m) {
           py::arg("op"), py::arg("n_controls") = 1,
           py::arg("control_state") = std::vector<bool>())
       .def(
-          py::init([](Op_ptr &op, unsigned n_controls, unsigned control_state) {
+          py::init([](Op_ptr &op, unsigned n_controls,
+                      unsigned long long control_state) {
             return QControlBox(
                 op, n_controls, dec_to_bin(control_state, n_controls));
           }),
@@ -322,8 +323,11 @@ void init_boxes(py::module &m) {
           "get_n_controls", &QControlBox::get_n_controls,
           ":return: the number of control qubits")
       .def(
-          "get_control_state", &QControlBox::get_control_state,
-          ":return: the control state as a bit vector");
+          "get_control_state",
+          [](QControlBox &qcbox) {
+            return bin_to_dec(qcbox.get_control_state());
+          },
+          ":return: the control state as an integer");
 
   py::class_<CompositeGateDef, composite_def_ptr_t>(
       m, "CustomGateDef",
