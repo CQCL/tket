@@ -27,7 +27,7 @@ from jinja2.ext import Extension
 from jinja2.utils import markupsafe
 from jinja2.parser import Parser
 
-from pytket.circuit import Circuit  # type: ignore
+from pytket.circuit import Circuit
 
 
 # js scripts to be loaded must not be parsed as template files.

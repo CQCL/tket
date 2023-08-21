@@ -15,11 +15,13 @@
 from collections import defaultdict
 from itertools import combinations
 from tempfile import NamedTemporaryFile
+from typing import Optional
+
 import networkx as nx  # type: ignore
 import graphviz as gv  # type: ignore
 
 from pytket._tket.circuit import EdgeType
-from pytket.circuit import Circuit  # type: ignore
+from pytket.circuit import Circuit
 
 
 class Graph:
@@ -56,9 +58,9 @@ class Graph:
         self.input_names = input_names
         self.output_names = output_names
         self.node_data = node_data
-        self.Gnx = None
-        self.G = None
-        self.Gqc = None
+        self.Gnx: Optional[nx.MultiDiGraph] = None
+        self.G: Optional[gv.Digraph] = None
+        self.Gqc: Optional[gv.Graph] = None
         self.edge_data = defaultdict(list)
         self.port_counts: dict = defaultdict(int)
         for src_node, tgt_node, src_port, tgt_port, edge_type in edge_data:
@@ -73,7 +75,7 @@ class Graph:
         :rtype:     networkx.MultiDiGraph
         """
         if self.Gnx is not None:
-            return self.Gnx  # type: ignore
+            return self.Gnx
         Gnx = nx.MultiDiGraph()
         for node, desc in self.node_data.items():
             Gnx.add_node(node, desc=desc)
@@ -128,7 +130,7 @@ class Graph:
         :rtype:     graphviz.DiGraph
         """
         if self.G is not None:
-            return self.G  # type: ignore
+            return self.G
         G = gv.Digraph(
             "Circuit",
             strict=True,
@@ -284,7 +286,7 @@ class Graph:
         :rtype:     graphviz.Graph
         """
         if self.Gqc is not None:
-            return self.Gqc  # type: ignore
+            return self.Gqc
         Gnx = self.as_nx()
         Gqcnx = nx.Graph()
         for node in Gnx.nodes():

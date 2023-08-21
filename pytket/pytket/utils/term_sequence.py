@@ -14,8 +14,8 @@
 from typing import cast
 
 from pytket import Circuit
-from pytket.circuit import PauliExpBox, CircBox  # type: ignore
-from pytket.partition import (  # type: ignore
+from pytket.circuit import PauliExpBox, CircBox
+from pytket.partition import (
     term_sequence,
     PauliPartitionStrat,
     GraphColourMethod,

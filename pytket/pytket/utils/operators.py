@@ -18,9 +18,9 @@ from typing import cast, Dict, TYPE_CHECKING, Union, List, Optional, Set, Any
 import numpy
 import numpy as np
 from sympy import Symbol, sympify, Expr, re, im  # type: ignore
-from pytket.pauli import QubitPauliString, pauli_string_mult  # type: ignore
-from pytket.circuit import Qubit  # type: ignore
-from pytket.utils.serialization import complex_to_list, list_to_complex  # type: ignore
+from pytket.pauli import QubitPauliString, pauli_string_mult
+from pytket.circuit import Qubit
+from pytket.utils.serialization import complex_to_list, list_to_complex
 
 
 CoeffType = Union[int, float, complex, Expr]
@@ -93,8 +93,10 @@ class QubitPauliOperator:
         self._dict = _dict
         self._collect_qubits()
 
-    def __eq__(self, other: "QubitPauliOperator") -> bool:  # type: ignore
-        return self._dict == other._dict
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, QubitPauliOperator):
+            return self._dict == other._dict
+        return False
 
     def __iadd__(self, addend: "QubitPauliOperator") -> "QubitPauliOperator":
         """In-place addition (+=) of QubitPauliOperators.

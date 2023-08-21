@@ -14,9 +14,9 @@
 
 from typing import List, cast
 from lark import Lark, Transformer
-from pytket.circuit import OpType  # type: ignore
-from pytket.passes import BasePass, RepeatPass, SequencePass  # type: ignore
-from pytket.passes import (  # type: ignore
+from pytket.circuit import OpType
+from pytket.passes import BasePass, RepeatPass, SequencePass
+from pytket.passes import (
     CliffordSimp,
     CommuteThroughMultis,
     ContextSimp,
@@ -48,8 +48,8 @@ from pytket.passes import (  # type: ignore
     SynthesiseUMD,
     ThreeQubitSquash,
 )
-from pytket.circuit import CXConfigType  # type: ignore
-from pytket.transform import PauliSynthStrat  # type: ignore
+from pytket.circuit import CXConfigType
+from pytket.transform import PauliSynthStrat
 
 pass_grammar = """
 start: comp_pass

@@ -17,7 +17,7 @@ from typing import List, NamedTuple, Tuple
 from math import pi
 
 from lark import Lark, Transformer, Tree
-from pytket.circuit import Circuit, OpType, CircBox  # type: ignore
+from pytket.circuit import Circuit, OpType, CircBox
 
 # The Lark grammar, transformer and type definitions below are adapted from the
 # code in Eddie Schoute's `quippy` project

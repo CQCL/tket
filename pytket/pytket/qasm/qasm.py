@@ -44,8 +44,8 @@ from typing import (
 from sympy import Symbol, pi  # type: ignore
 from lark import Discard, Lark, Token, Transformer, Tree
 
-from pytket._tket.circuit import _TEMP_BIT_NAME  # type: ignore
-from pytket.circuit import (  # type: ignore
+from pytket._tket.circuit import _TEMP_BIT_NAME
+from pytket.circuit import (
     Bit,
     BitRegister,
     Circuit,
@@ -67,7 +67,7 @@ from pytket.circuit.logic_exp import (
     RegWiseOp,
 )
 from pytket.qasm.grammar import grammar
-from pytket.passes import auto_rebase_pass, RemoveRedundancies  # type: ignore
+from pytket.passes import auto_rebase_pass, RemoveRedundancies
 from pytket.wasm import WasmFileHandler
 
 
@@ -524,7 +524,7 @@ class CircuitTransformer(Transformer):
                     raise QASMParseError(f"Could not pass argument {tok}")
             else:
                 raise QASMParseError(f"Could not pass argument {tok}")
-        return args, line  # type: ignore
+        return args, line
 
     par_add = _bin_par_exp("+")
     par_sub = _bin_par_exp("-")

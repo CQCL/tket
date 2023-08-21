@@ -45,6 +45,7 @@ from .backendinfo import BackendInfo
 from .backendresult import BackendResult
 from .resulthandle import ResultHandle, _ResultIdTuple
 from .status import CircuitStatus
+from .._tket.pauli import QubitPauliString
 
 ResultCache = Dict[str, Any]
 
@@ -645,3 +646,6 @@ class Backend(ABC):
             n_shots_list = list(map(lambda n: n or 0, n_shots_list))
 
         return n_shots_list
+
+    def get_pauli_expectation_value(self, state_circuit: Circuit, pauli: QubitPauliString):
+        pass

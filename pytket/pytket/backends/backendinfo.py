@@ -17,7 +17,7 @@
 from dataclasses import dataclass, field, asdict
 from typing import Any, Dict, List, Optional, Set, cast, Tuple, Union
 
-from pytket.architecture import Architecture, FullyConnected  # type: ignore
+from pytket.architecture import Architecture, FullyConnected
 from pytket.circuit import Node, OpType  # type: ignore
 
 _OpTypeErrs = Dict[OpType, float]

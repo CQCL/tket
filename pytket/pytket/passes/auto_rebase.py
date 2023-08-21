@@ -13,9 +13,9 @@
 # limitations under the License.
 
 from typing import Set, Callable, Dict, FrozenSet, Union
-from pytket.circuit import Circuit, OpType  # type: ignore
-from pytket._tket.circuit import _library  # type: ignore
-from pytket.passes import RebaseCustom, SquashCustom, SquashRzPhasedX  # type: ignore
+from pytket.circuit import Circuit, OpType
+from pytket._tket.circuit import _library
+from pytket.passes import RebaseCustom, SquashCustom, SquashRzPhasedX
 
 from ._decompositions import Param, _TK1_to_X_SX_Rz, _TK1_to_RxRy, _TK1_to_U
 from .._tket.passes import BasePass

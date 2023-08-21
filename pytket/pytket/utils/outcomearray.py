@@ -18,6 +18,7 @@ from functools import reduce
 from typing import Counter, List, Sequence, Dict, Tuple, Any, Optional, cast
 
 import numpy as np
+import numpy.typing as npt
 from numpy.typing import ArrayLike
 
 
@@ -35,7 +36,7 @@ class OutcomeArray(np.ndarray):
     :type n_outcomes: int
     """
 
-    def __new__(cls, input_array: np.ndarray, width: int):  # type: ignore
+    def __new__(cls, input_array: npt.ArrayLike, width: int) -> "OutcomeArray":
         # Input array is an already formed ndarray instance
         # We first cast to be our class type
         obj = np.asarray(input_array).view(cls)
@@ -54,7 +55,7 @@ class OutcomeArray(np.ndarray):
         # Finally, we must return the newly created object:
         return obj
 
-    def __array_finalize__(self, obj):  # type: ignore
+    def __array_finalize__(self, obj: Any, *args: Any, **kwargs: Any) -> None:
         # see InfoArray.__array_finalize__ for comments
         if obj is None:
             return
@@ -77,8 +78,10 @@ class OutcomeArray(np.ndarray):
     def __hash__(self):  # type: ignore
         return hash((self.tobytes(), self.width))
 
-    def __eq__(self, other: "OutcomeArray") -> bool:  # type: ignore
-        return bool(np.array_equal(self, other) and self.width == other.width)
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, OutcomeArray):
+            return bool(np.array_equal(self, other) and self.width == other.width)
+        return False
 
     @classmethod
     def from_readouts(cls, readouts: ArrayLike) -> "OutcomeArray":
@@ -112,12 +115,12 @@ class OutcomeArray(np.ndarray):
         if big_endian:
             array = self
         else:
-            array = OutcomeArray.from_readouts(np.fliplr(self.to_readouts()))  # type: ignore
+            array = OutcomeArray.from_readouts(np.fliplr(self.to_readouts()))
         bitcapacity = array.shape[-1] * 8
         intify = lambda bytear: reduce(
             operator.or_, (num << (8 * i) for i, num in enumerate(bytear[::-1])), 0
         ) >> (bitcapacity - array.width)
-        intar = np.apply_along_axis(intify, -1, array)  # type: ignore
+        intar = np.apply_along_axis(intify, -1, array)
         return list(intar)
 
     @classmethod
@@ -142,7 +145,7 @@ class OutcomeArray(np.ndarray):
             bin(int_val)[2:].zfill(width)[:: (-1) ** (not big_endian)]
             for int_val in ints
         )
-        bitar = np.frombuffer(  # type: ignore
+        bitar = np.frombuffer(
             "".join(bitstrings).encode("ascii"), dtype=np.uint8, count=n_ints * width
         ) - ord("0")
         bitar.resize((n_ints, width))
@@ -154,7 +157,7 @@ class OutcomeArray(np.ndarray):
         :return: Counter of outcome, number of instances
         :rtype: Counter[OutcomeArray]
         """
-        ars, count_vals = np.unique(self, axis=0, return_counts=True)  # type: ignore
+        ars, count_vals = np.unique(self, axis=0, return_counts=True)
         width = self.width
         oalist = [OutcomeArray(x[None, :], width) for x in ars]
         return Counter(dict(zip(oalist, count_vals)))

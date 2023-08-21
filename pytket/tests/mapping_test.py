@@ -26,7 +26,7 @@ from pytket.architecture import Architecture  # type: ignore
 from pytket import Circuit, OpType
 from pytket.circuit import Node, PhasePolyBox, Qubit, CircBox  # type: ignore
 from pytket.placement import Placement  # type: ignore
-from typing import Tuple, Dict
+from typing import Tuple, Dict, cast
 import numpy as np
 
 # simple deterministic heuristic used for testing purposes
@@ -45,8 +45,9 @@ def route_subcircuit_func(
     relabelling_map = dict()
 
     for qb in circuit.qubits:
-        if qb in unused_nodes:
-            unused_nodes.remove(qb)
+        node = cast(Node, qb)
+        if node in unused_nodes:
+            unused_nodes.remove(node)
 
     for qb in circuit.qubits:
         if qb not in architecture.nodes:
