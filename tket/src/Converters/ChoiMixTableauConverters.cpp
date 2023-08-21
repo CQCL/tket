@@ -254,14 +254,14 @@ void ChoiMixBuilder::solve_id_subspace() {
     // Look for a row which anticommutes with row r over the inputs
     std::list<unsigned> xcols, zcols;
     for (unsigned c = 0; c < tab.get_n_inputs(); ++c) {
-      if (tab.tab_.xmat_(r, c)) xcols.push_back(c);
-      if (tab.tab_.zmat_(r, c)) zcols.push_back(c);
+      if (tab.tab_.xmat(r, c)) xcols.push_back(c);
+      if (tab.tab_.zmat(r, c)) zcols.push_back(c);
     }
     for (unsigned r2 = r + 1; r2 < tab.get_n_rows(); ++r2) {
       if (solved_rows.find(r2) != solved_rows.end()) continue;
       bool anti = false;
-      for (const unsigned c : xcols) anti ^= tab.tab_.zmat_(r2, c);
-      for (const unsigned c : zcols) anti ^= tab.tab_.xmat_(r2, c);
+      for (const unsigned c : xcols) anti ^= tab.tab_.zmat(r2, c);
+      for (const unsigned c : zcols) anti ^= tab.tab_.xmat(r2, c);
       if (!anti) continue;
 
       // Found a candidate pair of rows. Because of the Gaussian elimination, it
@@ -335,8 +335,8 @@ void ChoiMixBuilder::solve_id_subspace() {
       unsigned in_c = tab.col_index_.left.at(ChoiMixTableau::col_key_t{
           in_diag_circ.second, ChoiMixTableau::TableauSegment::Input});
       for (unsigned r3 = 0; r3 < tab.get_n_rows(); ++r3) {
-        if (r3 != r && tab.tab_.xmat_(r3, in_c)) tab.tab_.row_mult(r, r3);
-        if (r3 != r2 && tab.tab_.zmat_(r3, in_c)) tab.tab_.row_mult(r2, r3);
+        if (r3 != r && tab.tab_.xmat(r3, in_c)) tab.tab_.row_mult(r, r3);
+        if (r3 != r2 && tab.tab_.zmat(r3, in_c)) tab.tab_.row_mult(r2, r3);
       }
       solved_ins.insert({in_diag_circ.second});
       solved_outs.insert({out_diag_circ_dag.second});
@@ -425,7 +425,7 @@ void ChoiMixBuilder::diagonalise_segments() {
   }
 
   // All rows are diagonalised, so we can just focus on the Z matrix
-  if (tab.tab_.xmat_ !=
+  if (tab.tab_.xmat !=
       MatrixXb::Zero(tab.get_n_rows(), tab.get_n_boundaries()))
     throw std::logic_error(
         "Diagonalisation in ChoiMixTableau synthesis failed");
@@ -445,7 +445,7 @@ void ChoiMixBuilder::solve_postselected_subspace() {
   }
   unsigned n_ins = tab.get_n_inputs();
   unsigned n_outs = tab.get_n_outputs();
-  MatrixXb subtableau = tab.tab_.zmat_.bottomRightCorner(n_postselected, n_ins);
+  MatrixXb subtableau = tab.tab_.zmat.bottomRightCorner(n_postselected, n_ins);
   std::vector<std::pair<unsigned, unsigned>> col_ops =
       leading_column_gaussian_col_ops(subtableau);
   for (const std::pair<unsigned, unsigned>& op : col_ops) {
@@ -470,7 +470,7 @@ void ChoiMixBuilder::solve_postselected_subspace() {
     unsigned qb_col = tab.col_index_.left.at(ChoiMixTableau::col_key_t{
         post_selected_qb, ChoiMixTableau::TableauSegment::Input});
     for (unsigned s = 0; s < final_row; ++s)
-      if (tab.tab_.zmat_(s, qb_col)) tab.tab_.row_mult(final_row, s);
+      if (tab.tab_.zmat(s, qb_col)) tab.tab_.row_mult(final_row, s);
     // Post-select on correct phase
     if (row.second.coeff == -1.)
       in_circ.add_op<Qubit>(OpType::X, {post_selected_qb});
@@ -498,7 +498,7 @@ void ChoiMixBuilder::solve_initialised_subspace() {
   unsigned n_ins = tab.get_n_inputs();
   unsigned n_outs = tab.get_n_outputs();
   MatrixXb subtableau =
-      tab.tab_.zmat_.bottomRightCorner(tab.get_n_rows() - n_collapsed, n_outs);
+      tab.tab_.zmat.bottomRightCorner(tab.get_n_rows() - n_collapsed, n_outs);
   std::vector<std::pair<unsigned, unsigned>> col_ops =
       leading_column_gaussian_col_ops(subtableau);
   for (const std::pair<unsigned, unsigned>& op : col_ops) {
@@ -523,7 +523,7 @@ void ChoiMixBuilder::solve_initialised_subspace() {
     unsigned qb_col = tab.col_index_.left.at(ChoiMixTableau::col_key_t{
         initialised_qb, ChoiMixTableau::TableauSegment::Output});
     for (unsigned s = 0; s < r; ++s)
-      if (tab.tab_.zmat_(s, qb_col)) tab.tab_.row_mult(r, s);
+      if (tab.tab_.zmat(s, qb_col)) tab.tab_.row_mult(r, s);
     // Initialise with correct phase
     if (row.second.coeff == -1.)
       out_circ_tp.add_op<Qubit>(OpType::X, {initialised_qb});
@@ -539,7 +539,7 @@ void ChoiMixBuilder::solve_collapsed_subspace() {
   // minimal set of qubits using CX gates
   unsigned n_ins = tab.get_n_inputs();
   unsigned n_outs = tab.get_n_outputs();
-  MatrixXb subtableau = tab.tab_.zmat_.topLeftCorner(tab.get_n_rows(), n_ins);
+  MatrixXb subtableau = tab.tab_.zmat.topLeftCorner(tab.get_n_rows(), n_ins);
   std::vector<std::pair<unsigned, unsigned>> col_ops =
       leading_column_gaussian_col_ops(subtableau);
   for (const std::pair<unsigned, unsigned>& op : col_ops) {
@@ -558,7 +558,7 @@ void ChoiMixBuilder::solve_collapsed_subspace() {
   n_ins = tab.get_n_inputs();
   n_outs = tab.get_n_outputs();
   col_ops = gaussian_elimination_col_ops(
-      tab.tab_.zmat_.topRightCorner(tab.get_n_rows(), n_outs));
+      tab.tab_.zmat.topRightCorner(tab.get_n_rows(), n_outs));
   for (const std::pair<unsigned, unsigned>& op : col_ops) {
     tab.tab_.apply_CX(n_ins + op.second, n_ins + op.first);
     ChoiMixTableau::col_key_t ctrl = tab.col_index_.right.at(n_ins + op.second);
@@ -599,7 +599,7 @@ void ChoiMixBuilder::remove_unused_qubits() {
   for (unsigned c = tab.get_n_boundaries(); c-- > 0;) {
     bool used = false;
     for (unsigned r = 0; r < tab.get_n_rows(); ++r) {
-      if (tab.tab_.zmat_(r, c) || tab.tab_.xmat_(r, c)) {
+      if (tab.tab_.zmat(r, c) || tab.tab_.xmat(r, c)) {
         used = true;
         break;
       }

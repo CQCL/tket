@@ -283,14 +283,14 @@ Circuit phase_gadget(unsigned n_qubits, const Expr &t, CXConfigType cx_config) {
 }
 
 Circuit pauli_gadget(
-    QubitPauliTensor pauli, Expr angle, CXConfigType cx_config) {
-  Expr converted_angle = pauli_angle_convert_or_throw(pauli.coeff, angle);
-  if (pauli.string.is_identity()) {
-    Circuit phase_circ(pauli.string.map.size());
+    QubitPauliTensor paulis, Expr angle, CXConfigType cx_config) {
+  Expr converted_angle = pauli_angle_convert_or_throw(paulis.coeff, angle);
+  if (paulis.string.is_identity()) {
+    Circuit phase_circ(paulis.string.map.size());
     phase_circ.add_phase(-converted_angle / 2);
     return phase_circ;
   }
-  std::pair<Circuit, Qubit> diag = reduce_pauli_to_z(pauli, cx_config);
+  std::pair<Circuit, Qubit> diag = reduce_pauli_to_z(paulis, cx_config);
   Circuit undiag = diag.first.dagger();
   diag.first.add_op<Qubit>(OpType::Rz, converted_angle, {diag.second});
   diag.first.append(undiag);
@@ -298,22 +298,22 @@ Circuit pauli_gadget(
 }
 
 Circuit pauli_gadget_pair(
-    QubitPauliTensor pauli0, Expr angle0, QubitPauliTensor pauli1, Expr angle1,
-    CXConfigType cx_config) {
-  Expr converted_angle0 = pauli_angle_convert_or_throw(pauli0.coeff, angle0);
-  Expr converted_angle1 = pauli_angle_convert_or_throw(pauli1.coeff, angle1);
-  if (pauli0.string.is_identity()) {
-    Circuit p1_circ = pauli_gadget(pauli1, converted_angle1, cx_config);
+    QubitPauliTensor paulis0, Expr angle0, QubitPauliTensor paulis1,
+    Expr angle1, CXConfigType cx_config) {
+  Expr converted_angle0 = pauli_angle_convert_or_throw(paulis0.coeff, angle0);
+  Expr converted_angle1 = pauli_angle_convert_or_throw(paulis1.coeff, angle1);
+  if (paulis0.string.is_identity()) {
+    Circuit p1_circ = pauli_gadget(paulis1, converted_angle1, cx_config);
     p1_circ.add_phase(-converted_angle0 / 2);
     return p1_circ;
-  } else if (pauli1.string.is_identity()) {
-    Circuit p0_circ = pauli_gadget(pauli0, converted_angle0, cx_config);
+  } else if (paulis1.string.is_identity()) {
+    Circuit p0_circ = pauli_gadget(paulis0, converted_angle0, cx_config);
     p0_circ.add_phase(-converted_angle1 / 2);
     return p0_circ;
   }
-  if (pauli0.commutes_with(pauli1)) {
+  if (paulis0.commutes_with(paulis1)) {
     std::tuple<Circuit, Qubit, Qubit> diag =
-        reduce_commuting_paulis_to_zi_iz(pauli0, pauli1, cx_config);
+        reduce_commuting_paulis_to_zi_iz(paulis0, paulis1, cx_config);
     Circuit &diag_circ = std::get<0>(diag);
     Circuit undiag_circ = diag_circ.dagger();
     diag_circ.add_op<Qubit>(OpType::Rz, converted_angle0, {std::get<1>(diag)});
@@ -322,7 +322,7 @@ Circuit pauli_gadget_pair(
     return diag_circ;
   } else {
     std::pair<Circuit, Qubit> diag =
-        reduce_anticommuting_paulis_to_z_x(pauli0, pauli1, cx_config);
+        reduce_anticommuting_paulis_to_z_x(paulis0, paulis1, cx_config);
     Circuit &diag_circ = diag.first;
     Circuit undiag_circ = diag_circ.dagger();
     diag_circ.add_op<Qubit>(OpType::Rz, converted_angle0, {diag.second});

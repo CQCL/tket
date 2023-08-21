@@ -228,6 +228,10 @@ class QubitPauliString {
    */
   std::set<Qubit> conflicting_qubits(const QubitPauliString &other) const;
 
+  /**
+   * Returns whether the string represents the identity string, i.e. if every
+   * term in the string is I.
+   */
   bool is_identity() const;
 
   /**

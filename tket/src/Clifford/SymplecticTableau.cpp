@@ -62,56 +62,53 @@ const std::map<std::pair<BoolPauli, BoolPauli>, std::pair<BoolPauli, Complex>>
 
 SymplecticTableau::SymplecticTableau(
     const MatrixXb &xmat, const MatrixXb &zmat, const VectorXb &phase)
-    : n_rows_(xmat.rows()),
-      n_qubits_(xmat.cols()),
-      xmat_(xmat),
-      zmat_(zmat),
-      phase_(phase) {
-  if (zmat.rows() != n_rows_ || phase_.size() != n_rows_)
+    : xmat(xmat),
+      zmat(zmat),
+      phase(phase) {
+  if (zmat.rows() != xmat.rows() || phase.size() != xmat.rows())
     throw std::invalid_argument(
         "Tableau must have the same number of rows in each component.");
-  if (zmat.cols() != n_qubits_)
+  if (zmat.cols() != xmat.cols())
     throw std::invalid_argument(
         "Tableau must have the same number of columns in x and z components.");
 }
 
 SymplecticTableau::SymplecticTableau(const PauliStabiliserList &rows) {
-  n_rows_ = rows.size();
-  if (n_rows_ == 0)
-    n_qubits_ = 0;
-  else
-    n_qubits_ = rows[0].string.size();
-  xmat_ = MatrixXb::Zero(n_rows_, n_qubits_);
-  zmat_ = MatrixXb::Zero(n_rows_, n_qubits_);
-  phase_ = VectorXb::Zero(n_rows_);
-  for (unsigned i = 0; i < n_rows_; ++i) {
+  unsigned n_rows = rows.size();
+  unsigned n_qubits = 0;
+  if (n_rows != 0) n_qubits = rows[0].string.size();
+  xmat = MatrixXb::Zero(n_rows, n_qubits);
+  zmat = MatrixXb::Zero(n_rows, n_qubits);
+  phase = VectorXb::Zero(n_rows);
+  for (unsigned i = 0; i < n_rows; ++i) {
     const PauliStabiliser &stab = rows[i];
-    if (stab.string.size() != n_qubits_)
+    if (stab.string.size() != n_qubits)
       throw std::invalid_argument(
           "Tableau must have the same number of qubits in each row.");
-    for (unsigned q = 0; q < n_qubits_; ++q) {
+    for (unsigned q = 0; q < n_qubits; ++q) {
       const Pauli &p = stab.string[q];
-      xmat_(i, q) = (p == Pauli::X) || (p == Pauli::Y);
-      zmat_(i, q) = (p == Pauli::Z) || (p == Pauli::Y);
+      xmat(i, q) = (p == Pauli::X) || (p == Pauli::Y);
+      zmat(i, q) = (p == Pauli::Z) || (p == Pauli::Y);
     }
-    phase_(i) = !stab.coeff;
+    phase(i) = !stab.coeff;
   }
 }
 
-unsigned SymplecticTableau::get_n_rows() const { return n_rows_; }
-unsigned SymplecticTableau::get_n_qubits() const { return n_qubits_; }
+unsigned SymplecticTableau::get_n_rows() const { return xmat.rows(); }
+unsigned SymplecticTableau::get_n_qubits() const { return xmat.cols(); }
 
 PauliStabiliser SymplecticTableau::get_pauli(unsigned i) const {
-  std::vector<Pauli> str(n_qubits_);
-  for (unsigned q = 0; q < n_qubits_; ++q) {
-    str[q] = BoolPauli{xmat_(i, q), zmat_(i, q)}.to_pauli();
+  unsigned n_qubits = get_n_qubits();
+  std::vector<Pauli> str(n_qubits);
+  for (unsigned q = 0; q < n_qubits; ++q) {
+    str[q] = BoolPauli{xmat(i, q), zmat(i, q)}.to_pauli();
   }
-  return PauliStabiliser(str, !phase_(i));
+  return PauliStabiliser(str, !phase(i));
 }
 
 std::ostream &operator<<(std::ostream &os, const SymplecticTableau &tab) {
-  for (unsigned i = 0; i < tab.n_rows_; ++i) {
-    os << tab.xmat_.row(i) << " " << tab.zmat_.row(i) << " " << tab.phase_(i)
+  for (unsigned i = 0; i < tab.get_n_rows(); ++i) {
+    os << tab.xmat.row(i) << " " << tab.zmat.row(i) << " " << tab.phase(i)
        << std::endl;
   }
   return os;
@@ -120,40 +117,57 @@ std::ostream &operator<<(std::ostream &os, const SymplecticTableau &tab) {
 bool SymplecticTableau::operator==(const SymplecticTableau &other) const {
   // Need this to short-circuit before matrix checks as comparing matrices of
   // different sizes will throw an exception
-  return (this->n_rows_ == other.n_rows_) &&
-         (this->n_qubits_ == other.n_qubits_) && (this->xmat_ == other.xmat_) &&
-         (this->zmat_ == other.zmat_) && (this->phase_ == other.phase_);
+  return (this->get_n_rows() == other.get_n_rows()) &&
+         (this->get_n_qubits() == other.get_n_qubits()) && (this->xmat == other.xmat) &&
+         (this->zmat == other.zmat) && (this->phase == other.phase);
 }
 
 void SymplecticTableau::row_mult(unsigned ra, unsigned rw, Complex coeff) {
-  MatrixXb::RowXpr xa = xmat_.row(ra);
-  MatrixXb::RowXpr za = zmat_.row(ra);
-  MatrixXb::RowXpr xw = xmat_.row(rw);
-  MatrixXb::RowXpr zw = zmat_.row(rw);
-  row_mult(xa, za, phase_(ra), xw, zw, phase_(rw), coeff, xw, zw, phase_(rw));
+  MatrixXb::RowXpr xa = xmat.row(ra);
+  MatrixXb::RowXpr za = zmat.row(ra);
+  MatrixXb::RowXpr xw = xmat.row(rw);
+  MatrixXb::RowXpr zw = zmat.row(rw);
+  row_mult(xa, za, phase(ra), xw, zw, phase(rw), coeff, xw, zw, phase(rw));
 }
 
 void SymplecticTableau::apply_S(unsigned qb) {
-  MatrixXb::ColXpr xcol = xmat_.col(qb);
-  MatrixXb::ColXpr zcol = zmat_.col(qb);
-  col_mult(xcol, zcol, false, zcol, phase_);
+  MatrixXb::ColXpr xcol = xmat.col(qb);
+  MatrixXb::ColXpr zcol = zmat.col(qb);
+  col_mult(xcol, zcol, false, zcol, phase);
+}
+
+void SymplecticTableau::apply_Z(unsigned qb) {
+  for (unsigned i = 0; i < get_n_rows(); ++i) phase(i) = phase(i) ^ xmat(i, qb);
 }
 
 void SymplecticTableau::apply_V(unsigned qb) {
-  MatrixXb::ColXpr xcol = xmat_.col(qb);
-  MatrixXb::ColXpr zcol = zmat_.col(qb);
-  col_mult(zcol, xcol, true, xcol, phase_);
+  MatrixXb::ColXpr xcol = xmat.col(qb);
+  MatrixXb::ColXpr zcol = zmat.col(qb);
+  col_mult(zcol, xcol, true, xcol, phase);
+}
+
+void SymplecticTableau::apply_X(unsigned qb) {
+  for (unsigned i = 0; i < get_n_rows(); ++i) phase(i) = phase(i) ^ zmat(i, qb);
+}
+
+void SymplecticTableau::apply_H(unsigned qb) {
+  for (unsigned i = 0; i < get_n_rows(); ++i) {
+    phase(i) = phase(i) ^ (xmat(i, qb) && zmat(i, qb));
+    bool temp = xmat(i, qb);
+    xmat(i, qb) = zmat(i, qb);
+    zmat(i, qb) = temp;
+  }
 }
 
 void SymplecticTableau::apply_CX(unsigned qc, unsigned qt) {
   if (qc == qt)
     throw std::logic_error(
         "Attempting to apply a CX with equal control and target in a tableau");
-  for (unsigned i = 0; i < n_rows_; ++i) {
-    phase_(i) = phase_(i) ^ (xmat_(i, qc) && zmat_(i, qt) &&
-                             !(xmat_(i, qt) ^ zmat_(i, qc)));
-    xmat_(i, qt) = xmat_(i, qc) ^ xmat_(i, qt);
-    zmat_(i, qc) = zmat_(i, qc) ^ zmat_(i, qt);
+  for (unsigned i = 0; i < get_n_rows(); ++i) {
+    phase(i) = phase(i) ^ (xmat(i, qc) && zmat(i, qt) &&
+                             !(xmat(i, qt) ^ zmat(i, qc)));
+    xmat(i, qt) = xmat(i, qc) ^ xmat(i, qt);
+    zmat(i, qc) = zmat(i, qc) ^ zmat(i, qt);
   }
 }
 
@@ -161,20 +175,16 @@ void SymplecticTableau::apply_gate(
     OpType type, const std::vector<unsigned> &qbs) {
   switch (type) {
     case OpType::Z: {
-      apply_S(qbs.at(0));
-      apply_S(qbs.at(0));
+      apply_Z(qbs.at(0));
       break;
     }
     case OpType::X: {
-      apply_V(qbs.at(0));
-      apply_V(qbs.at(0));
+      apply_X(qbs.at(0));
       break;
     }
     case OpType::Y: {
-      apply_S(qbs.at(0));
-      apply_S(qbs.at(0));
-      apply_V(qbs.at(0));
-      apply_V(qbs.at(0));
+      apply_Z(qbs.at(0));
+      apply_X(qbs.at(0));
       break;
     }
     case OpType::S: {
@@ -183,8 +193,7 @@ void SymplecticTableau::apply_gate(
     }
     case OpType::Sdg: {
       apply_S(qbs.at(0));
-      apply_S(qbs.at(0));
-      apply_S(qbs.at(0));
+      apply_Z(qbs.at(0));
       break;
     }
     case OpType::V:
@@ -195,14 +204,11 @@ void SymplecticTableau::apply_gate(
     case OpType::Vdg:
     case OpType::SXdg: {
       apply_V(qbs.at(0));
-      apply_V(qbs.at(0));
-      apply_V(qbs.at(0));
+      apply_X(qbs.at(0));
       break;
     }
     case OpType::H: {
-      apply_S(qbs.at(0));
-      apply_V(qbs.at(0));
-      apply_S(qbs.at(0));
+      apply_H(qbs.at(0));
       break;
     }
     case OpType::CX: {
@@ -211,20 +217,15 @@ void SymplecticTableau::apply_gate(
     }
     case OpType::CY: {
       apply_S(qbs.at(1));
-      apply_S(qbs.at(1));
-      apply_S(qbs.at(1));
+      apply_Z(qbs.at(1));
       apply_CX(qbs.at(0), qbs.at(1));
       apply_S(qbs.at(1));
       break;
     }
     case OpType::CZ: {
-      apply_S(qbs.at(1));
-      apply_V(qbs.at(1));
-      apply_S(qbs.at(1));
+      apply_H(qbs.at(1));
       apply_CX(qbs.at(0), qbs.at(1));
-      apply_S(qbs.at(1));
-      apply_V(qbs.at(1));
-      apply_S(qbs.at(1));
+      apply_H(qbs.at(1));
       break;
     }
     case OpType::SWAP: {
@@ -238,24 +239,18 @@ void SymplecticTableau::apply_gate(
       break;
     }
     case OpType::ZZMax: {
-      apply_S(qbs.at(1));
-      apply_V(qbs.at(1));
-      apply_S(qbs.at(1));
+      apply_H(qbs.at(1));
       apply_S(qbs.at(0));
       apply_V(qbs.at(1));
       apply_CX(qbs.at(0), qbs.at(1));
-      apply_S(qbs.at(1));
-      apply_V(qbs.at(1));
-      apply_S(qbs.at(1));
+      apply_H(qbs.at(1));
       break;
     }
     case OpType::ECR: {
       apply_S(qbs.at(0));
-      apply_V(qbs.at(0));
-      apply_V(qbs.at(0));
+      apply_X(qbs.at(0));
       apply_V(qbs.at(1));
-      apply_V(qbs.at(1));
-      apply_V(qbs.at(1));
+      apply_X(qbs.at(1));
       apply_CX(qbs.at(0), qbs.at(1));
       break;
     }
@@ -264,17 +259,10 @@ void SymplecticTableau::apply_gate(
       apply_V(qbs.at(1));
       apply_CX(qbs.at(0), qbs.at(1));
       apply_V(qbs.at(0));
-      apply_V(qbs.at(0));
-      apply_V(qbs.at(0));
       apply_S(qbs.at(1));
-      apply_S(qbs.at(1));
-      apply_S(qbs.at(1));
+      apply_Z(qbs.at(1));
       apply_CX(qbs.at(0), qbs.at(1));
       apply_V(qbs.at(0));
-      apply_V(qbs.at(0));
-      apply_V(qbs.at(0));
-      apply_V(qbs.at(1));
-      apply_V(qbs.at(1));
       apply_V(qbs.at(1));
       break;
     }
@@ -292,7 +280,8 @@ void SymplecticTableau::apply_gate(
 
 void SymplecticTableau::apply_pauli_gadget(
     const PauliStabiliser &pauli, unsigned half_pis) {
-  if (pauli.string.size() != n_qubits_) {
+  unsigned n_qubits = get_n_qubits();
+  if (pauli.string.size() != n_qubits) {
     throw std::invalid_argument(
         "Cannot apply pauli gadget to SymplecticTableau; string and tableau "
         "have different numbers of qubits");
@@ -324,39 +313,40 @@ void SymplecticTableau::apply_pauli_gadget(
 
   // From here, half_pis == 1 or 3
   // They act the same except for a phase flip on the product term
-  MatrixXb pauli_xrow = MatrixXb::Zero(1, n_qubits_);
-  MatrixXb pauli_zrow = MatrixXb::Zero(1, n_qubits_);
-  for (unsigned i = 0; i < n_qubits_; ++i) {
+  MatrixXb pauli_xrow = MatrixXb::Zero(1, n_qubits);
+  MatrixXb pauli_zrow = MatrixXb::Zero(1, n_qubits);
+  for (unsigned i = 0; i < n_qubits; ++i) {
     Pauli p = pauli.string.at(i);
     pauli_xrow(i) = (p == Pauli::X) || (p == Pauli::Y);
     pauli_zrow(i) = (p == Pauli::Z) || (p == Pauli::Y);
   }
-  bool phase = (!pauli.coeff) ^ (half_pis == 3);
+  bool phase_flip = (!pauli.coeff) ^ (half_pis == 3);
 
-  for (unsigned i = 0; i < n_rows_; ++i) {
+  for (unsigned i = 0; i < get_n_rows(); ++i) {
     bool anti = false;
-    MatrixXb::RowXpr xr = xmat_.row(i);
-    MatrixXb::RowXpr zr = zmat_.row(i);
-    for (unsigned q = 0; q < n_qubits_; ++q) {
+    MatrixXb::RowXpr xr = xmat.row(i);
+    MatrixXb::RowXpr zr = zmat.row(i);
+    for (unsigned q = 0; q < n_qubits; ++q) {
       anti ^= (xr(q) && pauli_zrow(q));
       anti ^= (zr(q) && pauli_xrow(q));
     }
     if (anti) {
       row_mult(
-          xr, zr, phase_(i), pauli_xrow.row(0), pauli_zrow.row(0), phase, i_,
-          xr, zr, phase_(i));
+          xr, zr, phase(i), pauli_xrow.row(0), pauli_zrow.row(0), phase_flip,
+          i_, xr, zr, phase(i));
     }
   }
 }
 
 MatrixXb SymplecticTableau::anticommuting_rows() const {
-  MatrixXb res = MatrixXb::Zero(n_rows_, n_rows_);
-  for (unsigned i = 0; i < n_rows_; ++i) {
+  unsigned n_rows = get_n_rows();
+  MatrixXb res = MatrixXb::Zero(n_rows, n_rows);
+  for (unsigned i = 0; i < n_rows; ++i) {
     for (unsigned j = 0; j < i; ++j) {
       bool anti = false;
-      for (unsigned q = 0; q < n_qubits_; ++q) {
-        anti ^= (xmat_(i, q) && zmat_(j, q));
-        anti ^= (xmat_(j, q) && zmat_(i, q));
+      for (unsigned q = 0; q < get_n_qubits(); ++q) {
+        anti ^= (xmat(i, q) && zmat(j, q));
+        anti ^= (xmat(j, q) && zmat(i, q));
       }
       res(i, j) = anti;
       res(j, i) = anti;
@@ -370,32 +360,33 @@ unsigned SymplecticTableau::rank() const {
   SymplecticTableau copy(*this);
   copy.gaussian_form();
   unsigned empty_rows = 0;
-  for (unsigned i = 0; i < n_rows_; ++i) {
-    if (copy.xmat_.row(n_rows_ - 1 - i).isZero() &&
-        copy.zmat_.row(n_rows_ - 1 - i).isZero())
+  unsigned n_rows = get_n_rows();
+  for (unsigned i = 0; i < n_rows; ++i) {
+    if (copy.xmat.row(n_rows - 1 - i).isZero() &&
+        copy.zmat.row(n_rows - 1 - i).isZero())
       ++empty_rows;
     else
       break;
   }
-  return n_rows_ - empty_rows;
+  return n_rows - empty_rows;
 }
 
 SymplecticTableau SymplecticTableau::conjugate() const {
   SymplecticTableau conj(*this);
-  for (unsigned i = 0; i < n_rows_; ++i) {
+  for (unsigned i = 0; i < get_n_rows(); ++i) {
     unsigned sum = 0;
-    for (unsigned j = 0; j < n_qubits_; ++j) {
-      if (xmat_(i, j) && zmat_(i, j)) ++sum;
+    for (unsigned j = 0; j < get_n_qubits(); ++j) {
+      if (xmat(i, j) && zmat(i, j)) ++sum;
     }
-    if (sum % 2 == 1) conj.phase_(i) ^= true;
+    if (sum % 2 == 1) conj.phase(i) ^= true;
   }
   return conj;
 }
 
 void SymplecticTableau::gaussian_form() {
-  MatrixXb fullmat = MatrixXb::Zero(n_rows_, 2 * n_qubits_);
-  fullmat(Eigen::all, Eigen::seq(0, Eigen::last, 2)) = xmat_;
-  fullmat(Eigen::all, Eigen::seq(1, Eigen::last, 2)) = zmat_;
+  MatrixXb fullmat = MatrixXb::Zero(get_n_rows(), 2 * get_n_qubits());
+  fullmat(Eigen::all, Eigen::seq(0, Eigen::last, 2)) = xmat;
+  fullmat(Eigen::all, Eigen::seq(1, Eigen::last, 2)) = zmat;
   std::vector<std::pair<unsigned, unsigned>> row_ops =
       gaussian_elimination_row_ops(fullmat);
   for (const std::pair<unsigned, unsigned> &op : row_ops) {
@@ -409,7 +400,7 @@ void SymplecticTableau::row_mult(
     Complex phase, MatrixXb::RowXpr &xw, MatrixXb::RowXpr &zw, bool &pw) {
   if (pa) phase *= -1;
   if (pb) phase *= -1;
-  for (unsigned i = 0; i < n_qubits_; i++) {
+  for (unsigned i = 0; i < get_n_qubits(); i++) {
     std::pair<BoolPauli, Complex> res =
         BoolPauli::mult_lut.at({{xa(i), za(i)}, {xb(i), zb(i)}});
     xw(i) = res.first.x;
@@ -422,18 +413,18 @@ void SymplecticTableau::row_mult(
 void SymplecticTableau::col_mult(
     const MatrixXb::ColXpr &a, const MatrixXb::ColXpr &b, bool flip,
     MatrixXb::ColXpr &w, VectorXb &pw) {
-  for (unsigned i = 0; i < n_rows_; i++) {
+  for (unsigned i = 0; i < get_n_rows(); i++) {
     pw(i) = pw(i) ^ (a(i) && (b(i) ^ flip));
     w(i) = a(i) ^ b(i);
   }
 }
 
 void to_json(nlohmann::json &j, const SymplecticTableau &tab) {
-  j["nrows"] = tab.n_rows_;
-  j["nqubits"] = tab.n_qubits_;
-  j["xmat"] = tab.xmat_;
-  j["zmat"] = tab.zmat_;
-  j["phase"] = tab.phase_;
+  j["nrows"] = tab.get_n_rows();
+  j["nqubits"] = tab.get_n_qubits();
+  j["xmat"] = tab.xmat;
+  j["zmat"] = tab.zmat;
+  j["phase"] = tab.phase;
 }
 
 void from_json(const nlohmann::json &j, SymplecticTableau &tab) {

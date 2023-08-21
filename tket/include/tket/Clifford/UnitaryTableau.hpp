@@ -101,8 +101,14 @@ class UnitaryTableau {
    */
   void apply_S_at_front(const Qubit& qb);
   void apply_S_at_end(const Qubit& qb);
+  void apply_Z_at_front(const Qubit& qb);
+  void apply_Z_at_end(const Qubit& qb);
   void apply_V_at_front(const Qubit& qb);
   void apply_V_at_end(const Qubit& qb);
+  void apply_X_at_front(const Qubit& qb);
+  void apply_X_at_end(const Qubit& qb);
+  void apply_H_at_front(const Qubit& qb);
+  void apply_H_at_end(const Qubit& qb);
   void apply_CX_at_front(const Qubit& control, const Qubit& target);
   void apply_CX_at_end(const Qubit& control, const Qubit& target);
   void apply_gate_at_front(OpType type, const qubit_vector_t& qbs);
@@ -236,8 +242,14 @@ class UnitaryRevTableau {
    */
   void apply_S_at_front(const Qubit& qb);
   void apply_S_at_end(const Qubit& qb);
+  void apply_Z_at_front(const Qubit& qb);
+  void apply_Z_at_end(const Qubit& qb);
   void apply_V_at_front(const Qubit& qb);
   void apply_V_at_end(const Qubit& qb);
+  void apply_X_at_front(const Qubit& qb);
+  void apply_X_at_end(const Qubit& qb);
+  void apply_H_at_front(const Qubit& qb);
+  void apply_H_at_end(const Qubit& qb);
   void apply_CX_at_front(const Qubit& control, const Qubit& target);
   void apply_CX_at_end(const Qubit& control, const Qubit& target);
   void apply_gate_at_front(OpType type, const qubit_vector_t& qbs);

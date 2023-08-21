@@ -113,13 +113,13 @@ Expr pauli_angle_convert_or_throw(Complex pauliCoeff, const Expr& angle);
  * Construct a phase gadget
  *
  * @param n_qubits number of qubits
- * @param t phase parameter
+ * @param angle phase parameter
  * @param cx_config CX configuration
  *
  * @return phase gadget
  */
 Circuit phase_gadget(
-    unsigned n_qubits, const Expr& t,
+    unsigned n_qubits, const Expr& angle,
     CXConfigType cx_config = CXConfigType::Snake);
 
 /**
@@ -130,16 +130,30 @@ Circuit phase_gadget(
  * where \f$ \sigma_i \in \{I,X,Y,Z\} \f$ are the Pauli operators.
  *
  * @param pauli Pauli operators
- * @param t angle in half-turns
+ * @param angle angle in half-turns
  * @param cx_config CX configuration
  */
 Circuit pauli_gadget(
-    QubitPauliTensor pauli, Expr t,
+    QubitPauliTensor paulis, Expr angle,
     CXConfigType cx_config = CXConfigType::Snake);
 
+/**
+ * Construct a circuit realising a pair of Pauli gadgets with the fewest
+ * two-qubit gates.
+ *
+ * The returned circuit implements the unitary e^{-i pi angle1 paulis1 / 2}
+ * e^{-i pi angle0 paulis0 / 2}, i.e. a gadget of angle0 about paulis0 followed
+ * by a gadget of angle1 about paulis1.
+ *
+ * @param paulis0 Pauli operators for first gadget
+ * @param angle0 angle for first gadget in half-turns
+ * @param paulis1 Pauli operators for second gadget
+ * @param angle1 angle for second gadget in half-turns
+ * @param cx_config CX configuration
+ */
 Circuit pauli_gadget_pair(
-    QubitPauliTensor pauli0, Expr t0, QubitPauliTensor pauli1, Expr t1,
-    CXConfigType cx_config = CXConfigType::Snake);
+    QubitPauliTensor paulis0, Expr angle0, QubitPauliTensor paulis1,
+    Expr angle1, CXConfigType cx_config = CXConfigType::Snake);
 
 /**
  * Utility function to replace all CX gates with TK2 and single-qubit gates.

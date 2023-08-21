@@ -14,6 +14,7 @@
 
 #include "tket/Utils/PauliStrings.hpp"
 
+#include <algorithm>
 #include <map>
 #include <sstream>
 #include <stdexcept>
@@ -343,10 +344,10 @@ std::set<Qubit> QubitPauliString::conflicting_qubits(
 }
 
 bool QubitPauliString::is_identity() const {
-  for (const std::pair<const Qubit, Pauli> &qp : map) {
-    if (qp.second != Pauli::I) return false;
-  }
-  return true;
+  return std::all_of(
+      map.begin(), map.end(), [](const std::pair<const Qubit, Pauli> &qp) {
+        return qp.second == Pauli::I;
+      });
 }
 
 std::string QubitPauliString::to_str() const {

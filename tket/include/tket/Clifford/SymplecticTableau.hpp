@@ -130,10 +130,13 @@ class SymplecticTableau {
   void row_mult(unsigned ra, unsigned rw, Complex coeff = 1.);
 
   /**
-   * Applies an S/V/CX gate to the given qubit(s)
+   * Applies a chosen gate to the given qubit(s)
    */
   void apply_S(unsigned qb);
+  void apply_Z(unsigned qb);
   void apply_V(unsigned qb);
+  void apply_X(unsigned qb);
+  void apply_H(unsigned qb);
   void apply_CX(unsigned qc, unsigned qt);
   void apply_gate(OpType type, const std::vector<unsigned> &qbs);
 
@@ -168,21 +171,11 @@ class SymplecticTableau {
   void gaussian_form();
 
   /**
-   * Number of rows
-   */
-  unsigned n_rows_;
-
-  /**
-   * Number of qubits in each row
-   */
-  unsigned n_qubits_;
-
-  /**
    * Tableau contents
    */
-  MatrixXb xmat_;
-  MatrixXb zmat_;
-  VectorXb phase_;
+  MatrixXb xmat;
+  MatrixXb zmat;
+  VectorXb phase;
 
   /**
    * Complex conjugate of the state by conjugating rows
