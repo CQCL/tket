@@ -327,7 +327,12 @@ void init_boxes(py::module &m) {
           [](QControlBox &qcbox) {
             return bin_to_dec(qcbox.get_control_state());
           },
-          ":return: the control state as an integer (big-endian binary representation)");
+          ":return: the control state as an integer (big-endian binary "
+          "representation)")
+      .def(
+          "get_control_state_bits",
+          [](QControlBox &qcbox) { return qcbox.get_control_state(); },
+          ":return: the control state as a bit vector");
 
   py::class_<CompositeGateDef, composite_def_ptr_t>(
       m, "CustomGateDef",

@@ -1168,6 +1168,7 @@ def test_qcontrol_box_constructors() -> None:
     assert qcbox3 == qcbox4
     assert qcbox1.get_control_state() == 1
     assert qcbox3.get_control_state() == 1
+    assert qcbox3.get_control_state_bits() == [0, 1]
 
 
 def test_error_wrong_parameters() -> None:
