@@ -147,11 +147,12 @@ void init_unitid(py::module &m) {
                 t[0].cast<std::string>(), t[1].cast<std::vector<unsigned>>());
           }))
       .def(
-          "to_list", [](const Qubit &q) { return json(q); },
+          "to_list", [](const Qubit &q) {
+              return py::list(json(q)); },
           ":return: a JSON serializable list representation of "
           "the Qubit")
       .def_static(
-          "from_list", [](const json &j) { return j.get<Qubit>(); },
+          "from_list", [](const py::list &py_list) { return json(py_list).get<Qubit>(); },
           "Construct Qubit instance from JSON serializable "
           "list representation of the Qubit.");
 
@@ -188,12 +189,12 @@ void init_unitid(py::module &m) {
       .def("__eq__",&py_equals<Bit>)
       .def("__hash__", [](const Bit &b) { return hash_value(b); })
       .def(
-          "to_list", [](const Bit &b) { return json(b); },
+          "to_list", [](const Bit &b) { return py::list(json(b)); },
           "Return a JSON serializable list representation of "
           "the Bit."
           "\n\n:return: list containing register name and index")
       .def_static(
-          "from_list", [](const json &j) { return j.get<Bit>(); },
+          "from_list", [](const py::list &py_list) { return json(py_list).get<Bit>(); },
           "Construct Bit instance from JSON serializable "
           "list representation of the Bit.");
 
@@ -230,11 +231,11 @@ void init_unitid(py::module &m) {
           "register\n:param index: The index vector",
           py::arg("name"), py::arg("index"))
       .def(
-          "to_list", [](const Node &n) { return json(n); },
+          "to_list", [](const Node &n) { return py::list(json(n)); },
           ":return: a JSON serializable list representation of "
           "the Node")
       .def_static(
-          "from_list", [](const json &j) { return j.get<Node>(); },
+          "from_list", [](const py::list &py_list) { return json(py_list).get<Node>(); },
           "Construct Node instance from JSON serializable "
           "list representation of the Node.");
   declare_register<Bit>(m, bit_reg_name);

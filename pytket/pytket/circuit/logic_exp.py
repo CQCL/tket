@@ -33,7 +33,6 @@ from enum import Enum
 from dataclasses import dataclass
 
 from pytket.circuit import Bit, BitRegister
-from pytket._tket.type_helpers import json
 
 T = TypeVar("T")
 
@@ -182,7 +181,7 @@ class LogicExp:
     def to_dict(self) -> Dict[str, Any]:
         """Output JSON serializable nested dictionary."""
         out: Dict[str, Any] = {"op": str(self.op)}
-        args_ser: List[Union[json, Constant, List[Union[str, int]]]] = []
+        args_ser: List[Union[Dict, Constant, List[Union[str, int]]]] = []
 
         for arg in self.args:
             if isinstance(arg, LogicExp):

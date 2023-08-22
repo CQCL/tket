@@ -23,7 +23,6 @@
 #include "tket/Predicates/PassGenerators.hpp"
 #include "tket/Predicates/PassLibrary.hpp"
 #include "tket/Transformations/ContextualReduction.hpp"
-#include "tket/Transformations/Decomposition.hpp"
 #include "tket/Transformations/PauliOptimisation.hpp"
 #include "tket/Transformations/Transform.hpp"
 #include "tket/Utils/Json.hpp"
@@ -33,6 +32,14 @@ namespace py = pybind11;
 using json = nlohmann::json;
 
 namespace tket {
+
+// using py::object and converting internally to json creates better stubs, hence this wrapper
+typedef std::function<void(const CompilationUnit&, const py::object&)> PyPassCallback;
+PassCallback from_py_pass_callback(const PyPassCallback& py_pass_callback){
+    return [py_pass_callback](const CompilationUnit& compilationUnit, const json& j) {
+        return py_pass_callback(compilationUnit, py::object(j));
+    };
+}
 
 // given keyword arguments for DecomposeTK2, return a TwoQbFidelities struct
 Transforms::TwoQbFidelities get_fidelities(const py::kwargs &kwargs) {
@@ -220,11 +227,11 @@ PYBIND11_MODULE(passes, m) {
       .def(
           "apply",
           [](const BasePass &pass, Circuit &circ,
-             const PassCallback &before_apply,
-             const PassCallback &after_apply) {
+             const PyPassCallback &before_apply,
+             const PyPassCallback &after_apply) {
             CompilationUnit cu(circ);
             bool applied =
-                pass.apply(cu, SafetyMode::Default, before_apply, after_apply);
+                pass.apply(cu, SafetyMode::Default, from_py_pass_callback(before_apply), from_py_pass_callback(after_apply));
             circ = cu.get_circ_ref();
             return applied;
           },
@@ -242,10 +249,12 @@ PYBIND11_MODULE(passes, m) {
       .def("__str__", [](const BasePass &) { return "<tket::BasePass>"; })
       .def("__repr__", &BasePass::to_string)
       .def(
-          "to_dict", &BasePass::get_config,
+          "to_dict", [](const BasePass& base_pass){
+               return py::dict(base_pass.get_config());
+              },
           ":return: A JSON serializable dictionary representation of the Pass.")
       .def_static(
-          "from_dict", [](const json &j) { return j.get<PassPtr>(); },
+          "from_dict", [](const py::dict &base_pass_dict) { return json(base_pass_dict).get<PassPtr>(); },
           "Construct a new Pass instance from a JSON serializable dictionary "
           "representation.")
       .def(py::pickle(

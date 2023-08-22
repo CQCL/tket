@@ -25,7 +25,6 @@
 #include "tket/Gate/Gate.hpp"
 #include "tket/Gate/OpPtrFunctions.hpp"
 #include "tket/Gate/SymTable.hpp"
-#include "tket/Ops/ClassicalOps.hpp"
 #include "tket/Ops/MetaOp.hpp"
 #include "tket/Ops/Op.hpp"
 #include "tket/Utils/Constants.hpp"
@@ -504,7 +503,7 @@ PYBIND11_MODULE(circuit, m) {
                   "A box for synthesising a diagonal unitary matrix into a sequence of "
                   "multiplexed-Rz gates")
           .def_static(
-                  "from_name", [](const json &j) { return j.get<OpType>(); },
+                  "from_name", [](const py::str &name) { return json(name).get<OpType>(); },
                   "Construct from name");
   py::class_<Op, std::shared_ptr<Op>>(
       m, "Op", "Encapsulates operation information")

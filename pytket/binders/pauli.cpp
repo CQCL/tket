@@ -68,15 +68,14 @@ PYBIND11_MODULE(pauli, m) {
       .def(
           "to_list",
           [](const QubitPauliString &qps) {
-            json j = qps;
-            return j;
+            return py::list(json(qps));
           },
           "A JSON-serializable representation of the QubitPauliString.\n\n"
           ":return: a list of :py:class:`Qubit`-to-:py:class:`Pauli` "
           "entries, "
           "represented as dicts.")
       .def_static(
-          "from_list", [](const json &j) { return j.get<QubitPauliString>(); },
+          "from_list", [](const py::list &qubit_pauli_string_list) { return json(qubit_pauli_string_list).get<QubitPauliString>(); },
           "Construct a new QubitPauliString instance from a JSON serializable "
           "list "
           "representation.")

@@ -72,12 +72,12 @@ PYBIND11_MODULE(architecture, m) {
           "Returns the coupling map of the Architecture as "
           "UnitIDs. ")
       .def(
-          "to_dict", [](const Architecture &arch) { return json(arch); },
+          "to_dict", [](const Architecture &arch) { return py::dict(json(arch)); },
           "Return a JSON serializable dict representation of "
           "the Architecture."
           "\n\n:return: dict containing nodes and links.")
       .def_static(
-          "from_dict", [](const json &j) { return j.get<Architecture>(); },
+          "from_dict", [](const py::dict &architecture_dict) { return json(architecture_dict).get<Architecture>(); },
           "Construct Architecture instance from JSON serializable "
           "dict representation of the Architecture.")
       // as far as Python is concerned, Architectures are immutable
@@ -190,12 +190,12 @@ PYBIND11_MODULE(architecture, m) {
           "nodes", &FullyConnected::get_all_nodes_vec,
           "All nodes of the architecture as :py:class:`Node` objects.")
       .def(
-          "to_dict", [](const FullyConnected &arch) { return json(arch); },
+          "to_dict", [](const FullyConnected &arch) { return py::dict(json(arch)); },
           "JSON-serializable dict representation of the architecture."
           "\n\n"
           ":return: dict containing nodes")
       .def_static(
-          "from_dict", [](const json &j) { return j.get<FullyConnected>(); },
+          "from_dict", [](const py::dict &fully_connected_dict) { return json(fully_connected_dict).get<FullyConnected>(); },
           "Construct FullyConnected instance from dict representation.");
 }
 }  // namespace tket

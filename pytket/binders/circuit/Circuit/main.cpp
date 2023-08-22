@@ -557,11 +557,11 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>>& pyCircuit){
           "Saves a visualisation of a circuit's DAG to a \".dot\" file",
           py::arg("filename"))
       .def(
-          "to_dict", [](const Circuit &c) { return json(c); },
+          "to_dict", [](const Circuit &c) { return py::dict(json(c)); },
           ":return: a JSON serializable dictionary representation of "
           "the Circuit")
       .def_static(
-          "from_dict", [](const json &j) { return j.get<Circuit>(); },
+          "from_dict", [](const py::dict &circuit_dict) { return json(circuit_dict).get<Circuit>(); },
           "Construct Circuit instance from JSON serializable "
           "dictionary representation of the Circuit.")
       .def(py::pickle(

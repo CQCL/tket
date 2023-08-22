@@ -26,17 +26,18 @@ using json = nlohmann::json;
 namespace tket {
 
 PYBIND11_MODULE(utils_serialization, m) {
-  m.def(
-      "complex_to_list",
-      [](std::complex<double> c) {
-        json j = c;
-        return j;
-      },
-      "Convert complex number to serializable list [real, imag].");
-  m.def(
-      "list_to_complex", [](json j) { return j.get<std::complex<double>>(); },
-      "Convert serializable list as output by `complex_to_list` to complex "
-      "number.");
+    m.def(
+            "complex_to_list",
+            [](std::complex<double> c) {
+                return py::object(json(c));
+            },
+            "Convert complex number to serializable list [real, imag].");
+    m.def(
+            "list_to_complex", [](const py::object& py_object) {
+                return json(py_object).get<std::complex<double>>();
+            },
+            "Convert serializable list as output by `complex_to_list` to complex "
+            "number.");
 }
 
 }  // namespace tket

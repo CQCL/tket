@@ -16,7 +16,6 @@
 
 #include <pybind11/eigen.h>
 #include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
 
 #include "binder_json.hpp"
 #include "binder_utils.hpp"
@@ -323,13 +322,13 @@ void init_boxes(py::module &m) {
       .def(
           "to_dict",
           [](const CompositeGateDef &c) {
-            return json(std::make_shared<CompositeGateDef>(c));
+            return py::dict(json(std::make_shared<CompositeGateDef>(c)));
           },
           ":return: a JSON serializable dictionary representation of "
           "the CustomGateDef")
       .def_static(
           "from_dict",
-          [](const json &j) { return j.get<composite_def_ptr_t>(); },
+          [](const py::dict &composite_gate_def_dict) { return json(composite_gate_def_dict).get<composite_def_ptr_t>(); },
           "Construct Circuit instance from JSON serializable "
           "dictionary representation of the Circuit.");
   py::class_<CustomGate, std::shared_ptr<CustomGate>, Op>(
