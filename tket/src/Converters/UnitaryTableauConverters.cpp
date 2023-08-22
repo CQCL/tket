@@ -228,7 +228,8 @@ Circuit unitary_tableau_to_circuit(const UnitaryTableau& tab) {
     }
     if (tabl.phase(i + size)) {
       c.add_op<unsigned>(OpType::X, {i});
-      tabl.apply_X(i);;
+      tabl.apply_X(i);
+      ;
     }
   }
 

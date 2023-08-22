@@ -425,8 +425,7 @@ void ChoiMixBuilder::diagonalise_segments() {
   }
 
   // All rows are diagonalised, so we can just focus on the Z matrix
-  if (tab.tab_.xmat !=
-      MatrixXb::Zero(tab.get_n_rows(), tab.get_n_boundaries()))
+  if (tab.tab_.xmat != MatrixXb::Zero(tab.get_n_rows(), tab.get_n_boundaries()))
     throw std::logic_error(
         "Diagonalisation in ChoiMixTableau synthesis failed");
 }

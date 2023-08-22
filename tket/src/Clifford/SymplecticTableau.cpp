@@ -62,9 +62,7 @@ const std::map<std::pair<BoolPauli, BoolPauli>, std::pair<BoolPauli, Complex>>
 
 SymplecticTableau::SymplecticTableau(
     const MatrixXb &xmat, const MatrixXb &zmat, const VectorXb &phase)
-    : xmat(xmat),
-      zmat(zmat),
-      phase(phase) {
+    : xmat(xmat), zmat(zmat), phase(phase) {
   if (zmat.rows() != xmat.rows() || phase.size() != xmat.rows())
     throw std::invalid_argument(
         "Tableau must have the same number of rows in each component.");
@@ -118,8 +116,9 @@ bool SymplecticTableau::operator==(const SymplecticTableau &other) const {
   // Need this to short-circuit before matrix checks as comparing matrices of
   // different sizes will throw an exception
   return (this->get_n_rows() == other.get_n_rows()) &&
-         (this->get_n_qubits() == other.get_n_qubits()) && (this->xmat == other.xmat) &&
-         (this->zmat == other.zmat) && (this->phase == other.phase);
+         (this->get_n_qubits() == other.get_n_qubits()) &&
+         (this->xmat == other.xmat) && (this->zmat == other.zmat) &&
+         (this->phase == other.phase);
 }
 
 void SymplecticTableau::row_mult(unsigned ra, unsigned rw, Complex coeff) {
@@ -164,8 +163,8 @@ void SymplecticTableau::apply_CX(unsigned qc, unsigned qt) {
     throw std::logic_error(
         "Attempting to apply a CX with equal control and target in a tableau");
   for (unsigned i = 0; i < get_n_rows(); ++i) {
-    phase(i) = phase(i) ^ (xmat(i, qc) && zmat(i, qt) &&
-                             !(xmat(i, qt) ^ zmat(i, qc)));
+    phase(i) =
+        phase(i) ^ (xmat(i, qc) && zmat(i, qt) && !(xmat(i, qt) ^ zmat(i, qc)));
     xmat(i, qt) = xmat(i, qc) ^ xmat(i, qt);
     zmat(i, qc) = zmat(i, qc) ^ zmat(i, qt);
   }

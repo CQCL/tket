@@ -129,7 +129,7 @@ Circuit phase_gadget(
  * \f$ e^{-\frac12 i \pi t \sigma_0 \otimes \sigma_1 \otimes \cdots} \f$
  * where \f$ \sigma_i \in \{I,X,Y,Z\} \f$ are the Pauli operators.
  *
- * @param pauli Pauli operators
+ * @param paulis Pauli operators
  * @param angle angle in half-turns
  * @param cx_config CX configuration
  */
