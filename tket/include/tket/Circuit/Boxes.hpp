@@ -498,8 +498,13 @@ class QControlBox : public Box {
    *
    * @param op op to control
    * @param n_controls number of qubit controls to add
+   * @param control_state control state expressed as a bit vector.
+   * If control_state is non-empty, its size should match n_controls.
+   * An empty vector is converted to an all-1s vector of length n_controls.
    */
-  explicit QControlBox(const Op_ptr &op, unsigned n_controls = 1);
+  explicit QControlBox(
+      const Op_ptr &op, unsigned n_controls = 1,
+      const std::vector<bool> &control_state = {});
 
   /**
    * Copy constructor
@@ -528,6 +533,7 @@ class QControlBox : public Box {
 
   Op_ptr get_op() const { return op_; }
   unsigned get_n_controls() const { return n_controls_; }
+  std::vector<bool> get_control_state() const { return control_state_; }
 
   static Op_ptr from_json(const nlohmann::json &j);
 
@@ -536,12 +542,17 @@ class QControlBox : public Box {
  protected:
   void generate_circuit() const override;
   QControlBox()
-      : Box(OpType::QControlBox), op_(), n_controls_(0), n_inner_qubits_(0) {}
+      : Box(OpType::QControlBox),
+        op_(),
+        n_controls_(0),
+        n_inner_qubits_(0),
+        control_state_() {}
 
  private:
   const Op_ptr op_;
   const unsigned n_controls_;
   unsigned n_inner_qubits_;
+  const std::vector<bool> control_state_;
 };
 
 class ProjectorAssertionBox : public Box {

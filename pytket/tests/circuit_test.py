@@ -1155,6 +1155,22 @@ def test_counting_n_qubit_gates() -> None:
     assert c.n_nqb_gates(5) == 1
 
 
+def test_qcontrol_box_constructors() -> None:
+    # only one argument
+    qcbox1 = QControlBox(Op.create(OpType.S))
+    # two arguments
+    qcbox2 = QControlBox(Op.create(OpType.S), 1)
+    # all arguments. state expressed as an integer
+    qcbox3 = QControlBox(Op.create(OpType.S), 2, 1)
+    # all arguments. state expressed as a bit vector
+    qcbox4 = QControlBox(Op.create(OpType.S), 2, [0, 1])
+    assert qcbox1 == qcbox2
+    assert qcbox3 == qcbox4
+    assert qcbox1.get_control_state() == 1
+    assert qcbox3.get_control_state() == 1
+    assert qcbox3.get_control_state_bits() == [0, 1]
+
+
 def test_error_wrong_parameters() -> None:
     circ = Circuit(1, 1)
     with pytest.raises(RuntimeError):

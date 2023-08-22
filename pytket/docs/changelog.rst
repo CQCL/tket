@@ -12,6 +12,7 @@ Minor new features:
   would increase the overall complexity of the expressions. This behaviour can
   be overridden using the ``always_squash_symbols`` parameter to
   ``SquashCustom``.
+* Add ``control_state`` argument to ``QControlBox``.
 
 Fixes:
 
