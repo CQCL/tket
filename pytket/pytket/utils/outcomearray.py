@@ -75,7 +75,7 @@ class OutcomeArray(np.ndarray):
 
     # A numpy ndarray is explicitly unhashable (its __hash__ has type None). But as we
     # are dealing with integral arrays only it makes sense to define a hash.
-    def __hash__(self):  # type: ignore
+    def __hash__(self) -> int:  # type: ignore
         return hash((self.tobytes(), self.width))
 
     def __eq__(self, other: object) -> bool:

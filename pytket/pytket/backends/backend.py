@@ -43,7 +43,7 @@ from .backend_exceptions import (
 )
 from .backendinfo import BackendInfo
 from .backendresult import BackendResult
-from .resulthandle import ResultHandle, _ResultIdTuple
+from .resulthandle import ResultHandle, ResultIdTuple
 from .status import CircuitStatus
 from .._tket.pauli import QubitPauliString
 
@@ -218,7 +218,7 @@ class Backend(ABC):
 
     @property
     @abstractmethod
-    def _result_id_type(self) -> _ResultIdTuple:
+    def _result_id_type(self) -> ResultIdTuple:
         """Identifier type signature for ResultHandle for this backend.
 
         :return: Type signature (tuple of hashable types)
