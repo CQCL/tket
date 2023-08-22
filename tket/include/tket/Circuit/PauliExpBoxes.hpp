@@ -57,10 +57,7 @@ class PauliExpBox : public Box {
   /**
    * Equality check between two PauliExpBox instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const auto &other = dynamic_cast<const PauliExpBox &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   /** Get the Pauli string */
   std::vector<Pauli> get_paulis() const { return paulis_; }
@@ -117,10 +114,7 @@ class PauliExpPairBox : public Box {
   /**
    * Equality check between two instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const auto &other = dynamic_cast<const PauliExpPairBox &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   /** Get Pauli strings for the pair */
   std::pair<std::vector<Pauli>, std::vector<Pauli>> get_paulis_pair() const {
@@ -184,10 +178,7 @@ class PauliExpCommutingSetBox : public Box {
   /**
    * Equality check between two instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const auto &other = dynamic_cast<const PauliExpCommutingSetBox &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   /** Get the pauli gadgets */
   auto get_pauli_gadgets() const { return pauli_gadgets_; }

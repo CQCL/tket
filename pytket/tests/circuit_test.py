@@ -1051,6 +1051,17 @@ def test_clifford_checking() -> None:
     assert m.is_clifford_type() == False
 
 
+def test_clifford_evaluation() -> None:
+    c = Circuit(2, 1)
+    c.Rx(0, 0).ISWAP(1, 0, 1).Rz(0.3, 0)
+    rx = c.get_commands()[0].op
+    assert rx.is_clifford()
+    iswap = c.get_commands()[1].op
+    assert iswap.is_clifford()
+    rz = c.get_commands()[2].op
+    assert rz.is_clifford() == False
+
+
 def test_getting_registers() -> None:
     c = Circuit(2, 1)
     c_regs = c.c_registers
@@ -1160,6 +1171,7 @@ if __name__ == "__main__":
     test_str()
     test_phase()
     test_clifford_checking()
+    test_clifford_evaluation()
     test_measuring_registers()
     test_multi_controlled_gates()
     test_counting_n_qubit_gates()
