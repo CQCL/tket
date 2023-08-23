@@ -107,7 +107,6 @@ class Backend(ABC):
     def _check_all_circuits(
         self, circuits: Iterable[Circuit], nomeasure_warn: Optional[bool] = None
     ) -> bool:
-
         if nomeasure_warn is None:
             nomeasure_warn = not (
                 self._supports_state
@@ -132,11 +131,12 @@ class Backend(ABC):
         return True
 
     @abstractmethod
-    def rebase_pass(self) -> BasePass:
+    def rebase_pass(self, **kwargs: KwargTypes) -> BasePass:
         """
         A single compilation pass that when run converts all gates in a Circuit to
         an OpType supported by the Backend (ignoring architecture constraints).
 
+        :param kwargs: Backend-specific keyword arguments.
         :return: Compilation pass that converts gates to primitives supported by
             Backend.
         :rtype: BasePass
@@ -144,7 +144,9 @@ class Backend(ABC):
         ...
 
     @abstractmethod
-    def default_compilation_pass(self, optimisation_level: int = 2) -> BasePass:
+    def default_compilation_pass(
+        self, optimisation_level: int = 2, **kwargs: KwargTypes
+    ) -> BasePass:
         """
         A suggested compilation pass that will will, if possible, produce an equivalent
         circuit suitable for running on this backend.
@@ -164,26 +166,31 @@ class Backend(ABC):
             - Level 1 additionally performs some light optimisations.
             - Level 2 (the default) adds more computationally intensive optimisations
               that should give the best results from execution.
-
         :type optimisation_level: int, optional
+        :param kwargs: Backend-specific keyword arguments.
         :return: Compilation pass guaranteeing required predicates.
         :rtype: BasePass
         """
         ...
 
     def get_compiled_circuit(
-        self, circuit: Circuit, optimisation_level: int = 2
+        self, circuit: Circuit, optimisation_level: int = 2, **kwargs: KwargTypes
     ) -> Circuit:
         """
         Return a single circuit compiled with :py:meth:`default_compilation_pass`. See
         :py:meth:`Backend.get_compiled_circuits`.
+
+        :param kwargs: Backend-specific keyword arguments.
         """
         return_circuit = circuit.copy()
         self.default_compilation_pass(optimisation_level).apply(return_circuit)
         return return_circuit
 
     def get_compiled_circuits(
-        self, circuits: Sequence[Circuit], optimisation_level: int = 2
+        self,
+        circuits: Sequence[Circuit],
+        optimisation_level: int = 2,
+        **kwargs: KwargTypes,
     ) -> List[Circuit]:
         """Compile a sequence of circuits with :py:meth:`default_compilation_pass`
         and return the list of compiled circuits (does not act in place).
@@ -210,6 +217,7 @@ class Backend(ABC):
             compilation. See :py:meth:`default_compilation_pass` for a description of
             the different levels (0, 1 or 2). Defaults to 2.
         :type optimisation_level: int, optional
+        :param kwargs: Backend-specific keyword arguments.
         :return: Compiled circuits.
         :rtype: List[Circuit]
         """
@@ -265,7 +273,6 @@ class Backend(ABC):
         valid_check: bool = True,
         **kwargs: KwargTypes,
     ) -> List[ResultHandle]:
-
         """
         Submit circuits to the backend for running. The results will be stored
         in the backend's result cache to be retrieved by the corresponding
