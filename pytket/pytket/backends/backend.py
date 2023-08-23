@@ -647,5 +647,5 @@ class Backend(ABC):
 
         return n_shots_list
 
-    def get_pauli_expectation_value(self, state_circuit: Circuit, pauli: QubitPauliString):
-        pass
+    def get_pauli_expectation_value(self, state_circuit: Circuit, pauli: QubitPauliString) -> complex:
+        raise NotImplementedError
