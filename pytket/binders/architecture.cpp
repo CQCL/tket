@@ -18,6 +18,7 @@
 #include "tket/Utils/Json.hpp"
 #include "typecast.hpp"
 #include "py_operators.hpp"
+#include "deleted_hash.hpp"
 
 namespace py = pybind11;
 using json = nlohmann::json;
@@ -90,7 +91,8 @@ PYBIND11_MODULE(architecture, m) {
             return "<tket::Architecture, nodes=" +
                    std::to_string(arc.n_nodes()) + ">";
           })
-      .def("__eq__", &py_equals<Architecture>);
+      .def("__eq__", &py_equals<Architecture>)
+      .def("__hash__", &deletedHash<Architecture>, deletedHashDocstring );
   py::class_<SquareGrid, std::shared_ptr<SquareGrid>, Architecture>(
       m, "SquareGrid",
       "Inherited Architecture class for qubits arranged in a square lattice of "
@@ -178,7 +180,7 @@ PYBIND11_MODULE(architecture, m) {
           py::arg("n"), py::arg("label") = "fcNode")
       .def(
           "__deepcopy__",
-          [](const FullyConnected &arc, py::dict = py::dict()) { return arc; })
+          [](const FullyConnected &arc, const py::dict& = py::dict()) { return arc; })
       .def(
           "__repr__",
           [](const FullyConnected &arc) {
@@ -186,6 +188,7 @@ PYBIND11_MODULE(architecture, m) {
                    std::to_string(arc.n_nodes()) + ">";
           })
       .def("__eq__", &py_equals<FullyConnected>)
+      .def("__hash__", &deletedHash<FullyConnected>, deletedHashDocstring )
       .def_property_readonly(
           "nodes", &FullyConnected::get_all_nodes_vec,
           "All nodes of the architecture as :py:class:`Node` objects.")

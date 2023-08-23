@@ -31,6 +31,7 @@
 #include "tket/Utils/Symbols.hpp"
 #include "typecast.hpp"
 #include "py_operators.hpp"
+#include "deleted_hash.hpp"
 
 
 namespace py = pybind11;
@@ -538,6 +539,7 @@ PYBIND11_MODULE(circuit, m) {
           "get_name", &Op::get_name, "String representation of op",
           py::arg("latex") = false)
       .def("__eq__", &py_equals<Op>)
+      .def("__hash__", &deletedHash<Op>, deletedHashDocstring)
       .def("__repr__", [](const Op &op) { return op.get_name(); })
       .def("free_symbols", [](const Op &op) { return op.free_symbols(); })
       .def(
@@ -592,6 +594,7 @@ PYBIND11_MODULE(circuit, m) {
           "Construct from an operation and a vector of unit IDs", py::arg("op"),
           py::arg("args"))
       .def("__eq__", &py_equals<Command>)
+      .def("__hash__", &deletedHash<Command>, deletedHashDocstring)
       .def("__repr__", &Command::to_str)
       .def_property_readonly(
           "op", &Command::get_op_ptr, "Operation for this command.")

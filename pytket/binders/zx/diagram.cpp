@@ -22,6 +22,7 @@
 #include "typecast.hpp"
 #include "py_operators.hpp"
 #include "variant_conversion.hpp"
+#include "deleted_hash.hpp"
 
 namespace py = pybind11;
 
@@ -614,6 +615,7 @@ PYBIND11_MODULE(zx, m) {
           "qtype", &ZXGen::get_qtype,
           "The :py:class:`QuantumType` of the generator (if applicable).")
       .def("__eq__", &py_equals<ZXGen>)
+      .def("__hash__", &deletedHash<ZXGen>, deletedHashDocstring)
       .def("__repr__", [](const ZXGen& gen) { return gen.get_name(); });
   py::class_<PhasedGen, std::shared_ptr<PhasedGen>, ZXGen>(
       m, "PhasedGen",

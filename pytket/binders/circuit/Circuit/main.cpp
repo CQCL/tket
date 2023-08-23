@@ -38,6 +38,7 @@
 #include "typecast.hpp"
 #include "py_operators.hpp"
 #include "variant_conversion.hpp"
+#include "deleted_hash.hpp"
 
 namespace py = pybind11;
 using json = nlohmann::json;
@@ -77,6 +78,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>>& pyCircuit){
           py::arg("n_qubits"), py::arg("n_bits"),
           py::arg("name") = std::nullopt)
       .def("__eq__", &py_equals<Circuit>)
+      .def("__hash__", &deletedHash<Circuit>, deletedHashDocstring)
       .def(
           "__str__",
           [](const Circuit &circ) {

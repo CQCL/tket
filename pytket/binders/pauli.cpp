@@ -21,6 +21,7 @@
 #include "tket/Utils/PauliStrings.hpp"
 #include "typecast.hpp"
 #include "py_operators.hpp"
+#include "deleted_hash.hpp"
 
 namespace py = pybind11;
 using json = nlohmann::json;
@@ -236,6 +237,7 @@ PYBIND11_MODULE(pauli, m) {
           [](const PauliStabiliser &stabiliser) { return stabiliser.string; },
           "The list of Pauli terms")
       .def("__eq__", &py_equals<PauliStabiliser>)
+      .def("__hash__", &deletedHash<PauliStabiliser>, deletedHashDocstring )
       .def("__ne__", &py_not_equals<PauliStabiliser>);
 }
 
