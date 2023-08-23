@@ -1,0 +1,34 @@
+#!/usr/bin/python3
+
+import re
+import subprocess
+from pathlib import Path
+
+
+def replace_in_file_string(file_string: str, matcher: str, replacement: str) -> tuple[str, int]:
+    split_text = re.split(matcher, file_string)
+    modified_text = replacement.join(split_text)
+    return modified_text, len(split_text)
+
+def import_set_if_necessary(file_string: str) -> int:
+    pass
+
+
+if __name__ == "__main__":
+    subprocess.run(["stubgen", "-p", "pytket._tket", "-o", "stubs"])
+
+    print("Cleanup:")
+    for path in Path('./stubs/pytket/_tket').iterdir():
+        if path.is_file():
+            print(path)
+            with path.open('r+') as file:
+                text = file.read()
+                text, n = replace_in_file_string(text, "\*args", "*args: Any")
+                print(f"   {n-1} times: *args -> *args: Any")
+                text, n = replace_in_file_string(text, "\*\*kwargs", "**kwargs: Any")
+                print(f"   {n-1} times: **kwargs -> **kwargs: Any")
+                text, n = replace_in_file_string(text, "Set\[", "set[")
+                print(f"   {n-1} times: Set[ -> set[")
+            with path.open('w') as file:
+                file.write(text)
+
