@@ -183,7 +183,9 @@ class Backend(ABC):
         :param kwargs: Backend-specific keyword arguments.
         """
         return_circuit = circuit.copy()
-        self.default_compilation_pass(optimisation_level).apply(return_circuit)
+        self.default_compilation_pass(optimisation_level, **kwargs).apply(
+            return_circuit
+        )
         return return_circuit
 
     def get_compiled_circuits(
@@ -221,7 +223,9 @@ class Backend(ABC):
         :return: Compiled circuits.
         :rtype: List[Circuit]
         """
-        return [self.get_compiled_circuit(c, optimisation_level) for c in circuits]
+        return [
+            self.get_compiled_circuit(c, optimisation_level, **kwargs) for c in circuits
+        ]
 
     @property
     @abstractmethod
