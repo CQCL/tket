@@ -25,8 +25,8 @@ import numpy as np
 import re
 
 from pytket import Circuit, Qubit, Bit
-from pytket._tket.circuit import BasisOrder, Node, OpType  # type: ignore
-from pytket._tket.architecture import Architecture  # type: ignore
+from pytket.circuit import BasisOrder, Node, OpType  # type: ignore
+from pytket.architecture import Architecture  # type: ignore
 from pytket.pauli import Pauli, QubitPauliString  # type: ignore
 from pytket.utils import QubitPauliOperator
 from pytket.utils.results import KwargTypes

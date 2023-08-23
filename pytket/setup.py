@@ -38,6 +38,7 @@ binders = [
     "logging",
     "utils_serialization",
     "circuit",
+    "unit_id",
     "passes",
     "predicates",
     "partition",

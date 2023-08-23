@@ -39,16 +39,15 @@ using json = nlohmann::json;
 
 namespace tket {
 
-void init_unitid(py::module &m);
 void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>>&);
 void init_classical(py::module &m);
 void init_boxes(py::module &m);
 void init_library(py::module &m);
 
 PYBIND11_MODULE(circuit, m) {
+  py::module::import("pytket._tket.unit_id");
   py::module::import("pytket._tket.pauli");
   py::module::import("pytket._tket.architecture");
-  init_unitid(m);
   py::enum_<CXConfigType>(
       m, "CXConfigType",
       "Enum for available configurations for CXs upon decompose phase "

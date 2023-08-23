@@ -28,10 +28,13 @@ from typing import (
 )
 
 from pytket._tket.circuit import *
-from pytket._tket.circuit import Bit, BitRegister, Circuit
+from pytket._tket.circuit import Circuit
+
+from pytket._tket.unit_id import *
+from pytket._tket.unit_id import Bit, BitRegister
 
 # prefixes for assertion bits
-from pytket._tket.circuit import _DEBUG_ZERO_REG_PREFIX, _DEBUG_ONE_REG_PREFIX
+from pytket._tket.unit_id import _DEBUG_ZERO_REG_PREFIX, _DEBUG_ONE_REG_PREFIX
 from pytket._tket.pauli import Pauli
 
 from pytket import wasm

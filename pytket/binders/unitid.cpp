@@ -71,7 +71,8 @@ void declare_register(py::module &m, const std::string &typestr) {
         return UnitRegister<T>(reg);
       });
 }
-void init_unitid(py::module &m) {
+
+PYBIND11_MODULE(unit_id, m) {
   m.attr("_TEMP_REG_SIZE") = _TKET_REG_WIDTH;
   m.attr("_TEMP_BIT_NAME") = "tk_SCRATCH_BIT";
   m.attr("_TEMP_BIT_REG_BASE") = "tk_SCRATCH_BITREG";
@@ -93,7 +94,7 @@ void init_unitid(py::module &m) {
       .def("__hash__", [](const UnitID &id) { return hash_value(id); })
       .def("__copy__", [](const UnitID &id) { return UnitID(id); })
       .def(
-          "__deepcopy__", [](const UnitID &id, py::dict) { return UnitID(id); })
+          "__deepcopy__", [](const UnitID &id, const py::dict&) { return UnitID(id); })
       .def_property_readonly(
           "reg_name", &UnitID::reg_name, "Readable name of register")
       .def_property_readonly(

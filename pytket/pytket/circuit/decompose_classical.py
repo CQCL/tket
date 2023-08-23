@@ -30,12 +30,14 @@ from typing import (
     Generic,
 )
 
-from pytket._tket.circuit import (
+from pytket._tket.unit_id import (
     _TEMP_BIT_NAME,
     _TEMP_BIT_REG_BASE,
     _TEMP_REG_SIZE,
     BitRegister,
     Bit,
+)
+from pytket._tket.circuit import (
     Circuit,
     OpType,
 )

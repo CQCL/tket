@@ -29,6 +29,7 @@ using json = nlohmann::json;
 namespace tket {
 
 PYBIND11_MODULE(pauli, m) {
+  py::module::import("pytket._tket.unit_id");
   py::enum_<Pauli>(m, "Pauli")
       .value("I", Pauli::I)
       .value("X", Pauli::X)

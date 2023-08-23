@@ -19,7 +19,7 @@ from typing import List
 
 import pytest  # type: ignore
 
-from pytket._tket.circuit import _TEMP_BIT_NAME, _TEMP_BIT_REG_BASE  # type: ignore
+from pytket._tket.unit_id import _TEMP_BIT_NAME, _TEMP_BIT_REG_BASE  # type: ignore
 from pytket.circuit import (  # type: ignore
     Circuit,
     OpType,

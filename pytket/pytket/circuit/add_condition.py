@@ -16,7 +16,7 @@
 from typing import Tuple, Union, cast
 
 from pytket.circuit import Bit, Circuit, BitRegister
-from pytket._tket.circuit import (
+from pytket._tket.unit_id import (
     _TEMP_REG_SIZE,
     _TEMP_BIT_NAME,
     _TEMP_BIT_REG_BASE,

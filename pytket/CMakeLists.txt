@@ -107,7 +107,6 @@ set(HEADER_FILES
 
 pybind11_add_module(circuit
     binders/circuit/main.cpp
-    binders/circuit/unitid.cpp
     binders/circuit/boxes.cpp
     binders/circuit/classical.cpp
     binders/circuit/library.cpp
@@ -117,6 +116,10 @@ pybind11_add_module(circuit
     ${HEADER_FILES})
 target_include_directories(circuit PRIVATE binders/include)
 target_link_libraries(circuit PRIVATE ${lib_deps})
+
+pybind11_add_module(unit_id binders/unitid.cpp ${HEADER_FILES})
+target_include_directories(unit_id PRIVATE binders/include)
+target_link_libraries(unit_id PRIVATE ${lib_deps})
 
 pybind11_add_module(mapping binders/mapping.cpp ${HEADER_FILES})
 target_include_directories(mapping PRIVATE binders/include)
@@ -177,6 +180,7 @@ install(TARGETS
     logging
     utils_serialization
     circuit
+    unit_id
     passes
     predicates
     partition

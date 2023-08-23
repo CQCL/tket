@@ -25,10 +25,8 @@ from hypothesis.strategies import SearchStrategy
 from pytket import wasm
 
 import pytest
-
-from pytket._tket.circuit import (  # type: ignore
-    _TEMP_BIT_NAME,
-    _TEMP_BIT_REG_BASE,
+from pytket._tket.unit_id import _TEMP_BIT_NAME, _TEMP_BIT_REG_BASE
+from pytket.circuit import (  # type: ignore
     BitRegister,
     QubitRegister,
     Bit,

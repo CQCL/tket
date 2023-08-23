@@ -21,7 +21,7 @@ from pytket.partition import (
     GraphColourMethod,
 )
 from .operators import QubitPauliOperator
-from .._tket.circuit import UnitID
+from .._tket.unit_id import UnitID
 
 
 def gen_term_sequence_circuit(

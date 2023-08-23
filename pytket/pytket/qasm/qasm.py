@@ -44,7 +44,7 @@ from typing import (
 from sympy import Symbol, pi  # type: ignore
 from lark import Discard, Lark, Token, Transformer, Tree
 
-from pytket._tket.circuit import _TEMP_BIT_NAME
+from pytket._tket.unit_id import _TEMP_BIT_NAME
 from pytket.circuit import (
     Bit,
     BitRegister,
