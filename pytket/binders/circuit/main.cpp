@@ -602,7 +602,7 @@ PYBIND11_MODULE(circuit, m) {
           ":return: set of symbolic parameters for the command");
 
   py::class_<MetaOp, std::shared_ptr<MetaOp>, Op>(
-      m, "MetaOp", "Meta operation, for example used as barrier")
+      m, "MetaOp", "Meta operation, such as input or output vertices.")
       .def(
           py::init<OpType, op_signature_t, const std::string &>(),
           "Construct MetaOp with optype, signature and additional data string"

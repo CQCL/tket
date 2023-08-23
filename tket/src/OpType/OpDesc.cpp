@@ -24,6 +24,7 @@ OpDesc::OpDesc(OpType type)
     : type_(type),
       info_(optypeinfo().at(type)),
       is_meta_(is_metaop_type(type)),
+      is_barrier_(is_barrier_type(type)),
       is_box_(is_box_type(type)),
       is_gate_(is_gate_type(type)),
       is_flowop_(is_flowop_type(type)),
@@ -74,6 +75,8 @@ OptUInt OpDesc::n_classical() const {
 }
 
 bool OpDesc::is_meta() const { return is_meta_; }
+
+bool OpDesc::is_barrier() const { return is_barrier_; }
 
 bool OpDesc::is_box() const { return is_box_; }
 

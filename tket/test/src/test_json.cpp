@@ -70,10 +70,10 @@ bool check_circuit(const Circuit& c) {
 
 SCENARIO("Test Op serialization") {
   GIVEN("OpType") {
-    const OpTypeSet metaops = {OpType::Input,     OpType::Output,
-                               OpType::ClInput,   OpType::ClOutput,
-                               OpType::WASMInput, OpType::WASMOutput,
-                               OpType::Barrier};
+    const OpTypeSet meta_barrier_ops = {OpType::Input,     OpType::Output,
+                                        OpType::ClInput,   OpType::ClOutput,
+                                        OpType::WASMInput, OpType::WASMOutput,
+                                        OpType::Barrier};
     const OpTypeSet boxes = {
         OpType::CircBox,         OpType::Unitary1qBox,
         OpType::Unitary2qBox,    OpType::Unitary3qBox,
@@ -85,7 +85,7 @@ SCENARIO("Test Op serialization") {
 
     std::set<std::string> type_names;
     for (auto type :
-         boost::join(all_gate_types(), boost::join(metaops, boxes))) {
+         boost::join(all_gate_types(), boost::join(meta_barrier_ops, boxes))) {
       bool success_insert =
           type_names.insert(optypeinfo().at(type).name).second;
       // check all optype names are unique

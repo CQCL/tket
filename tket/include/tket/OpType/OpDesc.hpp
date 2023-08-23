@@ -61,8 +61,11 @@ class OpDesc {
   /** Number of classical bits written to */
   OptUInt n_classical() const;
 
-  /** Whether the 'operation' is actually an input or output or barrier */
+  /** Whether the 'operation' is actually an input or output */
   bool is_meta() const;
+
+  /** Whether the operation is a Barrier */
+  bool is_barrier() const;
 
   /** Whether the operation is a box of some kind */
   bool is_box() const;

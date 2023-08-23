@@ -177,6 +177,25 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n:return: the new :py:class:`Circuit`",
           py::arg("qubits"), py::arg("bits") = no_bits, py::arg("data") = "")
       .def(
+          "_add_conditional_barrier",
+          [](
+              (Circuit *circ, const std::vector<Expr> &params,
+               const std::vector<unsigned> &qubits,
+               std::vector<unsigned> &barrier_bits const std::vector<unsigned>
+                   &condition_bits,
+               unsigned value) {
+                std::vector<UnitID> barrier_args;
+                for (const unsig)
+                  circ->add_conditional_barrier(params, args, bits, value);
+                return circ;
+              },
+              "Append a Conditional Barrier on the given units, conditioned on "
+              "the givne Bit."
+              "\n\n:param data: additional data stored in the barrier"
+              "\n:return: the new :py:class:`Circuit`",
+              py::arg("qubits"), py::arg("bits") = no_bits,
+              py::arg("data") = ""))
+      .def(
           "add_circbox",
           [](Circuit *circ, const CircBox &box,
              const std::vector<unsigned> &args, const py::kwargs &kwargs) {
