@@ -13,6 +13,7 @@ Minor new features:
   be overridden using the ``always_squash_symbols`` parameter to
   ``SquashCustom``.
 * Add ``control_state`` argument to ``QControlBox``.
+* Add backend-specific ``kwargs`` parameter to several ``Backend`` methods.
 
 Fixes:
 
