@@ -582,11 +582,11 @@ class CircuitTransformer(Transformer):
         if isinstance(var, Bit):
             assert condition.op in (BitWiseOp.EQ, BitWiseOp.NEQ)
             assert val in (0, 1)
-            condition_bits = [cast(Bit, var).to_list()]
+            condition_bits = [cast(Bit, var).to_list()]  # type: ignore[redundant-cast]
 
         else:
             assert isinstance(var, BitRegister)
-            reg_bits = next(self.unroll_all_args([cast(BitRegister, var).name]))
+            reg_bits = next(self.unroll_all_args([cast(BitRegister, var).name]))  # type: ignore[redundant-cast]
             if isinstance(condition, RegEq):
                 # special case for base qasm
                 condition_bits = reg_bits  # type: ignore

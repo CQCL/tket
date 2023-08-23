@@ -59,7 +59,7 @@ PYBIND11_MODULE(pauli, m) {
           [](const QubitPauliString &qps) { return hash_value(qps); })
       .def("__repr__", &QubitPauliString::to_str)
       .def("__eq__", &py_equals<QubitPauliString>)
-      .def("__ne__", &QubitPauliString::operator!=)
+      .def("__ne__", &py_not_equals<QubitPauliString>)
       .def("__lt__", &QubitPauliString::operator<)
       .def("__getitem__", &QubitPauliString::get)
       .def("__setitem__", &QubitPauliString::set)

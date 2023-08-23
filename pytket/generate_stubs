@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-
+import os
 import re
 import subprocess
 from pathlib import Path
@@ -8,10 +8,27 @@ from pathlib import Path
 def replace_in_file_string(file_string: str, matcher: str, replacement: str) -> tuple[str, int]:
     split_text = re.split(matcher, file_string)
     modified_text = replacement.join(split_text)
-    return modified_text, len(split_text)
+    return modified_text, len(split_text) - 1
 
-def import_set_if_necessary(file_string: str) -> int:
-    pass
+
+def handle_args_kwargs_types(file_string: str) -> tuple[str, int]:
+    modified, n_args = replace_in_file_string(file_string, "\*args", "*args: Any")
+    modified, n_kwargs = replace_in_file_string(modified, "\*\*kwargs", "**kwargs: Any")
+    n_total = n_args + n_kwargs
+    if n_total > 0 and not re.search("from typing import .*Any", modified):
+        modified = "from typing import Any" + os.linesep + modified
+    return modified, n_total > 0
+
+
+def handle_numpy_stuff(file_string: str) -> tuple[str, bool]:
+    split_text = re.split("numpy\.ndarray\[", file_string)
+    modified_text = "NDArray[".join(split_text)
+    if len(split_text) > 1:
+        modified_text, _ = replace_in_file_string(modified_text, "\[.,.\]", "")
+        modified_text, _ = replace_in_file_string(modified_text, "NDArray\[bool\]", "NDArray[numpy.bool_]")
+        modified_text = "from numpy.typing import NDArray" + os.linesep + modified_text
+        return modified_text, True
+    return file_string, False
 
 
 if __name__ == "__main__":
@@ -23,12 +40,12 @@ if __name__ == "__main__":
             print(path)
             with path.open('r+') as file:
                 text = file.read()
-                text, n = replace_in_file_string(text, "\*args", "*args: Any")
-                print(f"   {n-1} times: *args -> *args: Any")
-                text, n = replace_in_file_string(text, "\*\*kwargs", "**kwargs: Any")
-                print(f"   {n-1} times: **kwargs -> **kwargs: Any")
+                text, was_modified = handle_args_kwargs_types(text)
+                print(f"   required args, kwargs fixes: {was_modified}")
                 text, n = replace_in_file_string(text, "Set\[", "set[")
-                print(f"   {n-1} times: Set[ -> set[")
+                print(f"   required Set[ -> set[: {n>0}")
+                text, was_modified = handle_numpy_stuff(text)
+                print(f"   required numpy fixes: {was_modified}")
             with path.open('w') as file:
                 file.write(text)
 
