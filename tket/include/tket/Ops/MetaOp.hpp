@@ -49,9 +49,6 @@ class MetaOp : public Op {
 
   static Op_ptr deserialize(const nlohmann::json &j);
 
- protected:
-  MetaOp();
-
  private:
   op_signature_t
       signature_; /**< Types of inputs, when not deducible from op type */

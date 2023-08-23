@@ -114,6 +114,7 @@ class OpDesc {
   const OpType type_;
   const OpTypeInfo info_;
   const bool is_meta_;
+  const bool is_barrier_;
   const bool is_box_;
   const bool is_gate_;
   const bool is_flowop_;

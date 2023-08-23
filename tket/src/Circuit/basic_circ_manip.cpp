@@ -131,6 +131,7 @@ Vertex Circuit::add_barrier(
 
 Vertex Circuit::add_barrier(
     const unit_vector_t& args, const std::string& _data) {
+  op_signature_t sig;
   for (const UnitID& arg : args) {
     if (arg.type() == UnitType::Qubit) {
       sig.push_back(EdgeType::Quantum);
@@ -145,18 +146,42 @@ Vertex Circuit::add_conditional_barrier(
     const std::vector<unsigned>& barrier_qubits,
     const std::vector<unsigned>& barrier_bits,
     const std::vector<unsigned>& condition_bits, unsigned value,
-    const std::string& _data) {
+    const std::string& _data, std::optional<std::string> opgroup) {
+  // TODO: check no overlapping elements between barrier and condition bits
   op_signature_t sig(barrier_qubits.size(), EdgeType::Quantum);
   sig.insert(sig.end(), barrier_bits.size(), EdgeType::Classical);
 
-  return add_op(std::make_shared<Conditional>(
-      std::make_shared<BarrierOp>(sig, _data), (unsigned)condition_bits.size(),
-      value))
+  std::vector<unsigned> args = condition_bits;
+  args.insert(args.end(), barrier_qubits.begin(), barrier_qubits.end());
+  args.insert(args.end(), barrier_bits.begin(), barrier_bits.end());
+  return add_op(
+      std::make_shared<Conditional>(
+          std::make_shared<BarrierOp>(sig, _data),
+          (unsigned)condition_bits.size(), value),
+      args, opgroup);
 }
 
 Vertex Circuit::add_conditional_barrier(
-    const unit_vector_t& barrier_uids, const unit_vector_t& condition_bits,
-    unsigned value, std::optional<std::string> opgroup = std::nullopt);
+    const unit_vector_t& barrier_args, const unit_vector_t& condition_bits,
+    unsigned value, const std::string& _data,
+    std::optional<std::string> opgroup) {
+  // TODO: check no overlapping elements between barrier and condition bits
+  op_signature_t sig;
+  for (const UnitID& arg : barrier_args) {
+    if (arg.type() == UnitType::Qubit) {
+      sig.push_back(EdgeType::Quantum);
+    } else {
+      sig.push_back(EdgeType::Classical);
+    }
+  }
+  unit_vector_t args = condition_bits;
+  args.insert(args.end(), barrier_args.begin(), barrier_args.end());
+  return add_op(
+      std::make_shared<Conditional>(
+          std::make_shared<BarrierOp>(sig, _data),
+          (unsigned)condition_bits.size(), value),
+      args, opgroup);
+}
 
 std::string Circuit::get_next_c_reg_name(const std::string& reg_name) {
   if (!get_reg_info(reg_name)) {

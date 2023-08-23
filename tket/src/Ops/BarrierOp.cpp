@@ -23,13 +23,13 @@
 namespace tket {
 
 BarrierOp::BarrierOp(op_signature_t signature, const std::string& _data)
-    : Op(OpType::Barrier), signature_(signature), data_(_data);
+    : Op(OpType::Barrier), signature_(signature), data_(_data) {}
 
 Op_ptr BarrierOp::symbol_substitution(const SymEngine::map_basic_basic&) const {
   return Op_ptr();
 }
 
-SymSet BarrieraOp::free_symbols() const { return {}; }
+SymSet BarrierOp::free_symbols() const { return {}; }
 
 unsigned BarrierOp::n_qubits() const {
   OptUInt n = desc_.n_qubits();
@@ -75,7 +75,5 @@ bool BarrierOp::is_equal(const Op& op_other) const {
   const BarrierOp& other = dynamic_cast<const BarrierOp&>(op_other);
   return (get_signature() == other.get_signature());
 }
-
-BarrierOp::BarrierOp() : Op(OpType::Barrier) {}
 
 }  // namespace tket

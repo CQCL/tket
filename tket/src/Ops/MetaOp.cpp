@@ -79,6 +79,4 @@ bool MetaOp::is_equal(const Op& op_other) const {
   return (get_signature() == other.get_signature());
 }
 
-MetaOp::MetaOp() : Op(OpType::Barrier) {}
-
 }  // namespace tket

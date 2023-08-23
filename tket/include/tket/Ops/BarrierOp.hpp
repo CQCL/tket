@@ -22,8 +22,7 @@ namespace tket {
 class BarrierOp : public Op {
  public:
   explicit BarrierOp(
-    op_signature_t signature = {},
-      const std::string &_data = "");
+      op_signature_t signature = {}, const std::string &_data = "");
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &sub_map) const override;
@@ -48,9 +47,6 @@ class BarrierOp : public Op {
   nlohmann::json serialize() const override;
 
   static Op_ptr deserialize(const nlohmann::json &j);
-
- protected:
-  BarrierOp();
 
  private:
   op_signature_t

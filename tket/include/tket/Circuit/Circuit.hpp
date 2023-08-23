@@ -924,15 +924,15 @@ class Circuit {
   Vertex add_barrier(const unit_vector_t &args, const std::string &_data = "");
 
   Vertex add_conditional_barrier(
-      const std::vector<Expr> &params,
       const std::vector<unsigned> &barrier_qubits,
       const std::vector<unsigned> &barrier_bits,
       const std::vector<unsigned> &condition_bits, unsigned value,
+      const std::string &_data,
       std::optional<std::string> opgroup = std::nullopt);
 
   Vertex add_conditional_barrier(
-      const std::vector<Expr> &params, const unit_vector_t &barrier_uids,
-      const unit_vector_t &condition_bits, unsigned value,
+      const unit_vector_t &barrier_args, const unit_vector_t &condition_bits,
+      unsigned value, const std::string &_data,
       std::optional<std::string> opgroup = std::nullopt);
 
   /**
