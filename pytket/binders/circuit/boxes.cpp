@@ -29,9 +29,16 @@
 #include "tket/Utils/HelperFunctions.hpp"
 #include "tket/Utils/Json.hpp"
 #include "typecast.hpp"
+#include "variant_conversion.hpp"
 
 namespace py = pybind11;
 using json = nlohmann::json;
+
+// This version leads to the python type Dict[List[bool], ...], which is not allowed at runtime because lists aren't hashable
+typedef std::map<std::vector<bool>, ExprVariant> PyPhasePolynomialOld;
+// This version doesn't have the same problem
+typedef std::vector<std::pair<std::vector<bool>, ExprVariant>> PyPhasePolynomial;
+
 
 namespace tket {
 
@@ -354,19 +361,44 @@ void init_boxes(py::module &m) {
       "polynomial + linear transformation")
       .def(
           py::init([](unsigned n_qb, const std::map<Qubit, unsigned> &q_ind,
-                      const PhasePolynomial &p_p, const MatrixXb &lin_trans) {
+                      const PyPhasePolynomialOld &py_p_p, const MatrixXb &lin_trans) {
             boost::bimap<Qubit, unsigned> bmap;
             for (const auto &pair : q_ind) {
               bmap.insert({pair.first, pair.second});
             }
-
+            PhasePolynomial p_p;
+            for (const auto &pppair: py_p_p){
+                p_p[pppair.first] = convertVariantToFirstType(pppair.second);
+            }
             return PhasePolyBox(n_qb, bmap, p_p, lin_trans);
           }),
-          "Construct from the number of qubits, the mapping from "
+          "--- Deprecated --- "
+          "This method is broken when using dict[list[bool], ...] for phase_polynomial because lists"
+          "aren't hashable. It works if you pass a dict[tuple[bool, ...], ...], but mypy complains"
+          "Use the version with  list[tuple[list[bool], float]] for phase_polynomial instead"
+          "\n\nConstruct from the number of qubits, the mapping from "
           "Qubit to index, the phase polynomial (map from bitstring "
           "to phase) and the linear transformation (boolean matrix)",
           py::arg("n_qubits"), py::arg("qubit_indices"),
           py::arg("phase_polynomial"), py::arg("linear_transformation"))
+      .def(
+              py::init([](unsigned n_qb, const std::map<Qubit, unsigned> &q_ind,
+                          const PyPhasePolynomial &py_p_p, const MatrixXb &lin_trans) {
+          boost::bimap<Qubit, unsigned> bmap;
+          for (const auto &pair : q_ind) {
+              bmap.insert({pair.first, pair.second});
+          }
+          PhasePolynomial p_p;
+          for (const auto &pppair: py_p_p){
+              p_p[pppair.first] = convertVariantToFirstType(pppair.second);
+          }
+          return PhasePolyBox(n_qb, bmap, p_p, lin_trans);
+      }),
+      "Construct from the number of qubits, the mapping from "
+      "Qubit to index, the phase polynomial (list of bitstring "
+      "phase pairs) and the linear transformation (boolean matrix)",
+      py::arg("n_qubits"), py::arg("qubit_indices"),
+      py::arg("phase_polynomial"), py::arg("linear_transformation"))
       .def(
           py::init([](const Circuit &circ) { return PhasePolyBox(circ); }),
           "Construct a PhasePolyBox from a given circuit containing only Rz "
