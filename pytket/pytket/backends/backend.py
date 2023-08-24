@@ -46,6 +46,7 @@ from .backendresult import BackendResult
 from .resulthandle import ResultHandle, ResultIdTuple
 from .status import CircuitStatus
 from .._tket.pauli import QubitPauliString
+from ..utils import QubitPauliOperator
 
 ResultCache = Dict[str, Any]
 
@@ -648,4 +649,7 @@ class Backend(ABC):
         return n_shots_list
 
     def get_pauli_expectation_value(self, state_circuit: Circuit, pauli: QubitPauliString) -> complex:
+        raise NotImplementedError
+
+    def get_operator_expectation_value(self, state_circuit: Circuit, operator: QubitPauliOperator) -> complex:
         raise NotImplementedError

@@ -17,11 +17,8 @@ from typing import TYPE_CHECKING, Dict, List, Tuple, Union
 import numpy as np
 from pytket.circuit import BasisOrder
 
-if TYPE_CHECKING:
-    from pytket.circuit import Qubit
-
 StateTuple = Tuple[int, ...]
-CountsDict = Dict[StateTuple, int]
+CountsDict = Dict[StateTuple, Union[int, float]]
 KwargTypes = Union[int, float, str, None]
 
 
