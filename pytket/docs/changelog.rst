@@ -7,7 +7,7 @@ Unreleased
 Major new features:
 
 * Add ``ConjugationBox`` to express circuits that follow
-the compute-action-uncompute pattern.
+  the compute-action-uncompute pattern.
 
 Minor new features:
 
