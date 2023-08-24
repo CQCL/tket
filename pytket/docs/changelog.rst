@@ -4,6 +4,11 @@ Changelog
 Unreleased
 ----------
 
+Major new features:
+
+* Add ``ConjugationBox`` to express circuits that follow
+the compute-action-uncompute pattern.
+
 Minor new features:
 
 * Implement equality checking for all boxes.
