@@ -14,7 +14,7 @@
 
 from typing import Set, Callable, Dict, FrozenSet, Union
 from pytket.circuit import Circuit, OpType
-from pytket._tket.circuit import _library
+import pytket._tket.circuit_library as _library
 from pytket.passes import RebaseCustom, SquashCustom, SquashRzPhasedX
 
 from ._decompositions import Param, _TK1_to_X_SX_Rz, _TK1_to_RxRy, _TK1_to_U

@@ -22,7 +22,7 @@ from pytket.circuit import Node, Circuit, Qubit, OpType  # type: ignore
 from pytket.predicates import Predicate  # type: ignore
 from pytket.architecture import Architecture  # type: ignore
 from pytket.placement import Placement, GraphPlacement  # type: ignore
-from pytket._tket.circuit import _library  # type: ignore
+import pytket._tket.circuit_library as _library  # type: ignore
 
 from pytket.passes import (  # type: ignore
     BasePass,

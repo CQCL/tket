@@ -16,7 +16,7 @@ import itertools
 from typing import List
 from pathlib import Path
 from pytket.circuit import Circuit, OpType, PauliExpBox, Node, Qubit
-from pytket._tket.circuit import _library
+import pytket._tket.circuit_library as _library
 from pytket.pauli import Pauli
 from pytket.passes import (
     RemoveRedundancies,

@@ -42,7 +42,6 @@ namespace tket {
 void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>>&);
 void init_classical(py::module &m);
 void init_boxes(py::module &m);
-void init_library(py::module &m);
 
 PYBIND11_MODULE(circuit, m) {
   py::module::import("pytket._tket.unit_id");
@@ -634,7 +633,6 @@ PYBIND11_MODULE(circuit, m) {
           "c.Rx(0.5,1) # Angles of rotation are expressed in half-turns "
           "(i.e. 0.5 means PI/2)\n>>> c.Measure(1,0) # Measure qubit 1, saving "
           "result in bit 0");
-  init_library(m);
   init_boxes(m);
   init_classical(m);
   def_circuit(pyCircuit);
