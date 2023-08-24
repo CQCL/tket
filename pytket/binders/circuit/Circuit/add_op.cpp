@@ -26,6 +26,7 @@
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/ClassicalExpBox.hpp"
+#include "tket/Circuit/ConjugationBox.hpp"
 #include "tket/Circuit/DiagonalBox.hpp"
 #include "tket/Circuit/Multiplexor.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
@@ -803,6 +804,30 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
                 circ, std::make_shared<DiagonalBox>(box), args, kwargs);
           },
           "Append a :py:class:`DiagonalBox` to the circuit.\n\n"
+          ":param box: The box to append\n"
+          ":param args: Indices of the qubits to append the box to"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("box"), py::arg("args"))
+      .def(
+          "add_conjugation_box",
+          [](Circuit *circ, const ConjugationBox &box,
+             const unit_vector_t &args, const py::kwargs &kwargs) {
+            return add_box_method(
+                circ, std::make_shared<ConjugationBox>(box), args, kwargs);
+          },
+          "Append a :py:class:`ConjugationBox` to the circuit.\n\n"
+          ":param box: The box to append\n"
+          ":param args: The qubits to append the box to"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("box"), py::arg("args"))
+      .def(
+          "add_conjugation_box",
+          [](Circuit *circ, const ConjugationBox &box,
+             const std::vector<unsigned> &args, const py::kwargs &kwargs) {
+            return add_box_method(
+                circ, std::make_shared<ConjugationBox>(box), args, kwargs);
+          },
+          "Append a :py:class:`ConjugationBox` to the circuit.\n\n"
           ":param box: The box to append\n"
           ":param args: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
