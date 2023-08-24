@@ -445,7 +445,7 @@ PYBIND11_MODULE(passes, m) {
       "be left untouched."
       "\n\n:param squash: Whether to squash the circuit in pre-processing "
       "(default: true)."
-      "\n\nIf squash=true (default), the `GlobalisePhasedX().apply` method "
+      "\n\nIf squash=true (default), the `GlobalisePhasedX` transform's `apply` method "
       "will always return true. "
       "For squash=false, `apply()` will return true if the circuit was "
       "changed and false otherwise.\n\n"

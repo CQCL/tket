@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pytket.mapping import (  # type: ignore
+from pytket.mapping import (
     MappingManager,
     RoutingMethodCircuit,
     LexiRouteRoutingMethod,
@@ -22,10 +22,10 @@ from pytket.mapping import (  # type: ignore
     MultiGateReorderRoutingMethod,
     BoxDecompositionRoutingMethod,
 )
-from pytket.architecture import Architecture  # type: ignore
+from pytket.architecture import Architecture
 from pytket import Circuit, OpType
-from pytket.circuit import Node, PhasePolyBox, Qubit, CircBox  # type: ignore
-from pytket.placement import Placement  # type: ignore
+from pytket.circuit import Node, PhasePolyBox, Qubit, CircBox
+from pytket.placement import Placement
 from typing import Tuple, Dict, cast
 import numpy as np
 
@@ -34,6 +34,7 @@ def route_subcircuit_func(
     circuit: Circuit, architecture: Architecture
 ) -> Tuple[bool, Circuit, Dict[Node, Node], Dict[Node, Node]]:
     #     make a replacement circuit with identical unitds
+    global n1, n0
     replacement_circuit = Circuit()
     for qb in circuit.qubits:
         replacement_circuit.add_qubit(qb)
@@ -112,7 +113,7 @@ def route_subcircuit_func_false(
 def test_LexiRouteRoutingMethod() -> None:
     test_c = Circuit(3).CX(0, 1).CX(0, 2).CX(1, 2)
     nodes = [Node("test", 0), Node("test", 1), Node("test", 2)]
-    test_a = Architecture([[nodes[0], nodes[1]], [nodes[1], nodes[2]]])
+    test_a = Architecture([(nodes[0], nodes[1]), (nodes[1], nodes[2])])
     test_mm = MappingManager(test_a)
     test_mm.route_circuit(test_c, [LexiLabellingMethod(), LexiRouteRoutingMethod()])
     routed_commands = test_c.get_commands()
@@ -131,7 +132,7 @@ def test_AASRouteRoutingMethod() -> None:
     test_c = Circuit(3, 3)
     n_qb = 3
     qubit_indices = {Qubit(0): 0, Qubit(1): 1, Qubit(2): 2}
-    phase_polynomial = {(True, False, True): 0.333, (False, False, True): 0.05}
+    phase_polynomial = {[True, False, True]: 0.333, [False, False, True]: 0.05}
     linear_transformation = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
     p_box = PhasePolyBox(n_qb, qubit_indices, phase_polynomial, linear_transformation)
 

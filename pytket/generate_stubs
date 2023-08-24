@@ -11,6 +11,12 @@ def replace_in_file_string(file_string: str, matcher: str, replacement: str) -> 
     return modified_text, len(split_text) - 1
 
 
+def replace_in_file_string_multiline(file_string: str, matcher: str, replacement: str) -> tuple[str, int]:
+    split_text = re.split(matcher, file_string, re.MULTILINE)
+    modified_text = replacement.join(split_text)
+    return modified_text, len(split_text) - 1
+
+
 def handle_args_kwargs_types(file_string: str) -> tuple[str, int]:
     modified, n_args = replace_in_file_string(file_string, "\*args", "*args: Any")
     modified, n_kwargs = replace_in_file_string(modified, "\*\*kwargs", "**kwargs: Any")
@@ -31,6 +37,18 @@ def handle_numpy_stuff(file_string: str) -> tuple[str, bool]:
     return file_string, False
 
 
+def handle_circuit_depth_problem(file_string: str) -> str:
+    split_text = re.split(f'@overload{os.linesep}\s+def depth\(self\) -> int: \.\.\.', file_string, re.MULTILINE)
+    modified = "def depth(self) -> int: ...".join(split_text)
+    split_text = re.split(f'@overload{os.linesep}\s+def depth\(self\) -> Any: \.\.\.{os.linesep}\s+', modified, re.MULTILINE)
+    modified = "".join(split_text)
+    split_text = re.split(f'@overload{os.linesep}\s+def depth_2q\(self\) -> int: \.\.\.', modified, re.MULTILINE)
+    modified = "def depth_2q(self) -> int: ...".join(split_text)
+    split_text = re.split(f'@overload{os.linesep}\s+def depth_2q\(self\) -> Any: \.\.\.{os.linesep}\s+', modified, re.MULTILINE)
+    modified = "".join(split_text)
+    return modified
+
+
 if __name__ == "__main__":
     subprocess.run(["stubgen", "-p", "pytket._tket", "-o", "stubs"])
 
@@ -46,6 +64,12 @@ if __name__ == "__main__":
                 print(f"   required Set[ -> set[: {n>0}")
                 text, was_modified = handle_numpy_stuff(text)
                 print(f"   required numpy fixes: {was_modified}")
+
+                # file specific stuff
+                if path.name == "circuit.pyi":
+                    print("special stuff for circuit.pyi")
+                    text = handle_circuit_depth_problem(text)
+
             with path.open('w') as file:
                 file.write(text)
 

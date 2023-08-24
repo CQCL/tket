@@ -469,6 +469,9 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>>& pyCircuit){
           py::arg("map"))
       .def(
           "depth", &Circuit::depth,
+          // for some reason, each c.depth() in this docstring causes stubgen to create a faulty stub
+          // these are manually removed within the stub generation script, I couldn't figure out how to do it otherwise without
+          // removing the examples
           "Returns the number of interior vertices on the longest path through "
           "the DAG, excluding vertices representing barrier operations."
           "\n\n>>> c = Circuit(3)"
@@ -542,6 +545,9 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>>& pyCircuit){
           py::arg("types"))
       .def(
           "depth_2q", &Circuit::depth_2q,
+          // for some reason, each c.depth_2q() in this docstring causes stubgen to create a faulty stub
+          // these are manually removed within the stub generation script, I couldn't figure out how to do it otherwise without
+          // removing the examples
           "Returns the number of vertices in the longest path through the "
           "sub-DAG consisting of vertices with 2 quantum wires,"
           "excluding vertices representing barrier operations."

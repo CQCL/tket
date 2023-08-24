@@ -368,11 +368,8 @@ PYBIND11_MODULE(transform, m) {
       .def_static(
           "DecomposeNPhasedX", &Transforms::decompose_NPhasedX,
           "Decompose NPhasedX gates into single-qubit PhasedX gates.")
-      // Not sure why, but if I use &Transforms::globalise_PhasedX instead of this lambda, pybind11 creates a
-      // weird overload of GlobalisePhasedX in python that takes nothing and returns Any
-      // Probably something to do wih the tket code but I couldn't figure it out
       .def_static(
-          "GlobalisePhasedX", [](bool squash){return Transforms::globalise_PhasedX(squash);},
+          "GlobalisePhasedX", &Transforms::globalise_PhasedX,
           "Turns all PhasedX and NPhasedX gates into global gates\n\n"
           "Replaces any PhasedX gates with global NPhasedX gates. "
           "By default, this transform will squash all single-qubit gates "
@@ -384,8 +381,8 @@ PYBIND11_MODULE(transform, m) {
           "be left untouched."
           "\n\n:param squash: Whether to squash the circuit in pre-processing "
           "(default: true)."
-          "\n\nIf squash=true (default), the `GlobalisePhasedX().apply` method "
-          "will always returns true. "
+          "\n\nIf squash=true (default), the `GlobalisePhasedX` transform's `apply` method "
+          "will always return true. "
           "For squash=false, `apply()` will return true if the circuit was "
           "changed and false otherwise.\n\n"
           "It is not recommended to use this transformation with symbolic "
