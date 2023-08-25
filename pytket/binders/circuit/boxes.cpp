@@ -372,7 +372,35 @@ void init_boxes(py::module &m) {
   py::class_<QControlBox, std::shared_ptr<QControlBox>, Op>(
       m, "QControlBox",
       "A user-defined controlled operation specified by an "
-      ":py:class:`Op` and the number of quantum controls.")
+      ":py:class:`Op`, the number of quantum controls, and the control state "
+      "expressed as an integer or a bit vector.")
+      .def(
+          py::init<Op_ptr &, unsigned, std::vector<bool> &>(),
+          "Construct from an :py:class:`Op`, a number of quantum "
+          "controls, and the control state expressed as a bit vector. The "
+          "controls occupy the low-index ports of the "
+          "resulting operation.\n\n"
+          ":param op: the underlying operator\n"
+          ":param n_controls: the number of control qubits. Default to 1\n"
+          ":param control_state: the control state expressed as a bit vector. "
+          "Default to all 1s\n",
+          py::arg("op"), py::arg("n_controls") = 1,
+          py::arg("control_state") = std::vector<bool>())
+      .def(
+          py::init([](Op_ptr &op, unsigned n_controls,
+                      unsigned long long control_state) {
+            return QControlBox(
+                op, n_controls, dec_to_bin(control_state, n_controls));
+          }),
+          "Construct from an :py:class:`Op`, a number of quantum "
+          "controls, and the control state expressed as an integer. The "
+          "controls occupy the low-index ports of the "
+          "resulting operation.\n\n"
+          ":param op: the underlying operator\n"
+          ":param n_controls: the number of control qubits\n"
+          ":param control_state: the control state expressed as an integer. "
+          "Big-endian\n",
+          py::arg("op"), py::arg("n_controls"), py::arg("control_state"))
       .def(
           py::init<Op_ptr &, unsigned>(),
           "Construct from an :py:class:`Op` and a number of quantum "
@@ -385,7 +413,18 @@ void init_boxes(py::module &m) {
       .def("get_op", &QControlBox::get_op, ":return: the underlying operator")
       .def(
           "get_n_controls", &QControlBox::get_n_controls,
-          ":return: the number of control qubits");
+          ":return: the number of control qubits")
+      .def(
+          "get_control_state",
+          [](QControlBox &qcbox) {
+            return bin_to_dec(qcbox.get_control_state());
+          },
+          ":return: the control state as an integer (big-endian binary "
+          "representation)")
+      .def(
+          "get_control_state_bits",
+          [](QControlBox &qcbox) { return qcbox.get_control_state(); },
+          ":return: the control state as a bit vector");
 
   py::class_<CompositeGateDef, composite_def_ptr_t>(
       m, "CustomGateDef",

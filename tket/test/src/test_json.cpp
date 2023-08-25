@@ -432,19 +432,24 @@ SCENARIO("Test Circuit serialization") {
 
   GIVEN("QControlBox") {
     Op_ptr op = get_op_ptr(OpType::Sycamore);
-    QControlBox qcbox(op, 2);
+    QControlBox qcbox(op, 2, {1, 1});
     Circuit c(4);
     c.add_box(qcbox, {0, 1, 2, 3});
 
-    nlohmann::json j_box = c;
-    const Circuit new_c = j_box.get<Circuit>();
+    nlohmann::json j_circ = c;
+    const Circuit new_c = j_circ.get<Circuit>();
 
     const auto& qc_b =
         static_cast<const QControlBox&>(*new_c.get_commands()[0].get_op_ptr());
 
     REQUIRE(qc_b == qcbox);
-    REQUIRE(qc_b.get_n_controls() == qcbox.get_n_controls());
-    REQUIRE(*qc_b.get_op() == *qc_b.get_op());
+
+    // test backward compatibility
+    nlohmann::json j_box = std::make_shared<QControlBox>(qcbox);
+    j_box.erase("control_state");
+    Op_ptr qcbox_ptr = j_box.get<Op_ptr>();
+    const auto& qcbox2 = static_cast<const QControlBox&>(*qcbox_ptr);
+    REQUIRE(qcbox == qcbox2);
   }
 
   GIVEN("MultiplexorBox") {
