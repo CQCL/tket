@@ -14,13 +14,9 @@
 
 import multiprocessing
 import os
-import platform
-import re
 import subprocess
-import sys
 import json
 import shutil
-from distutils.version import LooseVersion
 import setuptools  # type: ignore
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext  # type: ignore
