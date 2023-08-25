@@ -507,7 +507,12 @@ PYBIND11_MODULE(passes, m) {
       "respective "
       "default registers with contiguous indexing.");
   m.def(
-      "SquashCustom", &gen_squash_pass,
+      "SquashCustom", [](
+        const OpTypeSet& singleqs,
+        const std::function<Circuit(const ExprVariant &, const ExprVariant &, const ExprVariant &)>&
+                tk1_replacement,
+        bool always_squash_symbols = false){
+          return gen_squash_pass(singleqs, tk1_replacement, always_squash_symbols);},
       "Squash sequences of single qubit gates from the target gate set "
       "into an optimal form given by `tk1_replacement`."
       "\n\n:param singleqs: The types of single qubit gates in the target "
@@ -616,7 +621,9 @@ PYBIND11_MODULE(passes, m) {
       "of an Rz(a)Rx(b)Rz(c) triple, returns an equivalent circuit in the "
       "desired basis\n"
       ":return: a pass that rebases to the given gate set (possibly including "
-      "conditional and phase operations)");
+      "conditional and phase operations)",
+       py::arg("gateset"), py::arg("tk2_replacement"),
+                py::arg("tk1_replacement"));
 
   m.def(
       "EulerAngleReduction", &gen_euler_pass,
