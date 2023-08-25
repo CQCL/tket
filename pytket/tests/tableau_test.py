@@ -13,8 +13,8 @@
 # limitations under the License.
 
 import pytest  # type: ignore
-from pytket.circuit import Circuit, OpType, Qubit  # type: ignore
-from pytket.tableau import UnitaryTableau, UnitaryTableauBox  # type: ignore
+from pytket.circuit import Circuit, OpType, Qubit
+from pytket.tableau import UnitaryTableau, UnitaryTableauBox
 from pytket.utils.results import compare_unitaries
 import numpy as np
 

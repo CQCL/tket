@@ -25,11 +25,10 @@ import numpy as np
 import re
 
 from pytket import Circuit, Qubit, Bit
-from pytket.circuit import BasisOrder, Node, OpType  # type: ignore
-from pytket.architecture import Architecture  # type: ignore
-from pytket.pauli import Pauli, QubitPauliString  # type: ignore
+from pytket.circuit import Node, OpType
+from pytket.architecture import Architecture
+from pytket.pauli import Pauli, QubitPauliString
 from pytket.utils import QubitPauliOperator
-from pytket.utils.results import KwargTypes
 from pytket.utils.outcomearray import OutcomeArray
 from pytket.backends.backendresult import BackendResult
 from pytket.backends.backendinfo import BackendInfo

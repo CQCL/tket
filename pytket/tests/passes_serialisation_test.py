@@ -20,13 +20,13 @@ from typing import Any, Dict, List, cast
 
 from sympy import Expr
 
-from pytket.circuit import Node, Circuit, Qubit, OpType  # type: ignore
-from pytket.predicates import Predicate  # type: ignore
-from pytket.architecture import Architecture  # type: ignore
-from pytket.placement import Placement, GraphPlacement  # type: ignore
-import pytket._tket.circuit_library as _library  # type: ignore
+from pytket.circuit import Node, Circuit, Qubit, OpType
+from pytket.predicates import Predicate
+from pytket.architecture import Architecture
+from pytket.placement import Placement, GraphPlacement
+import pytket._tket.circuit_library as _library
 
-from pytket.passes import (  # type: ignore
+from pytket.passes import (
     BasePass,
     SequencePass,
     RemoveRedundancies,
@@ -39,9 +39,8 @@ from pytket.passes import (  # type: ignore
     DefaultMappingPass,
     AASRouting,
     SquashCustom,
-    RoundAngles,
 )
-from pytket.mapping import (  # type: ignore
+from pytket.mapping import (
     LexiLabellingMethod,
     LexiRouteRoutingMethod,
     MultiGateReorderRoutingMethod,

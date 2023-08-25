@@ -13,10 +13,10 @@
 # limitations under the License.
 
 from pathlib import Path
-from pytket import Circuit  # type: ignore
-from pytket.circuit import Node, Qubit  # type: ignore
-from pytket.architecture import Architecture, FullyConnected  # type: ignore
-from pytket.placement import (  # type: ignore
+from pytket import Circuit
+from pytket.circuit import Node, Qubit
+from pytket.architecture import Architecture, FullyConnected
+from pytket.placement import (
     Placement,
     LinePlacement,
     GraphPlacement,
@@ -24,9 +24,9 @@ from pytket.placement import (  # type: ignore
     place_with_map,
     place_fully_connected,
 )
-from pytket.passes import PauliSimp, DefaultMappingPass  # type: ignore
-from pytket.mapping import MappingManager, LexiRouteRoutingMethod, LexiLabellingMethod  # type: ignore
-from pytket.qasm import circuit_from_qasm  # type: ignore
+from pytket.passes import PauliSimp, DefaultMappingPass
+from pytket.mapping import MappingManager, LexiRouteRoutingMethod, LexiLabellingMethod
+from pytket.qasm import circuit_from_qasm
 
 import json
 import pytest

@@ -23,13 +23,13 @@ from typing import TYPE_CHECKING, List, Optional, Sequence, Union, cast
 from uuid import uuid4
 
 import numpy as np
-from pytket.circuit import BasisOrder, Circuit, OpType  # type: ignore
+from pytket.circuit import BasisOrder, Circuit, OpType
 from pytket.backends.backend import Backend, KwargTypes
 from pytket.backends.backend_exceptions import CircuitNotRunError
 from pytket.backends.backendresult import BackendResult
 from pytket.backends.resulthandle import ResultHandle, ResultIdTuple
 from pytket.backends.status import CircuitStatus, StatusEnum
-from pytket.passes import (  # type: ignore
+from pytket.passes import (
     BasePass,
     SequencePass,
     SynthesiseTket,
@@ -38,11 +38,9 @@ from pytket.passes import (  # type: ignore
     SimplifyInitial,
     auto_rebase_pass,
 )
-from pytket.predicates import (  # type: ignore
-    GateSetPredicate,
+from pytket.predicates import (
     NoClassicalControlPredicate,
     NoFastFeedforwardPredicate,
-    NoMidMeasurePredicate,
     Predicate,
 )
 from pytket.utils import prepare_circuit

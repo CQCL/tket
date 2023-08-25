@@ -16,11 +16,11 @@ import tempfile
 import json
 
 from pytket.utils.spam import SpamCorrecter, compress_counts
-from pytket.circuit import Node, Circuit, Qubit  # type: ignore
-from pytket.mapping import MappingManager, LexiLabellingMethod, LexiRouteRoutingMethod  # type: ignore
-from pytket.architecture import Architecture  # type: ignore
-from pytket.placement import place_with_map  # type: ignore
-from pytket.passes import DelayMeasures  # type: ignore
+from pytket.circuit import Node, Circuit, Qubit
+from pytket.mapping import MappingManager, LexiLabellingMethod, LexiRouteRoutingMethod
+from pytket.architecture import Architecture
+from pytket.placement import place_with_map
+from pytket.passes import DelayMeasures
 from typing import List, Dict, Counter, Tuple, cast
 from pytket.utils.outcomearray import OutcomeArray
 from math import ceil

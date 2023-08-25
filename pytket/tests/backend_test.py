@@ -21,14 +21,13 @@ from typing import Any, List
 
 import numpy as np
 
-from pytket.circuit import Circuit, OpType, BasisOrder, Qubit, Bit, Node  # type: ignore
-from pytket.predicates import CompilationUnit  # type: ignore
-from pytket.passes import PauliSimp, CliffordSimp, ContextSimp  # type: ignore
-from pytket.mapping import MappingManager, LexiRouteRoutingMethod, LexiLabellingMethod  # type: ignore
-from pytket.architecture import Architecture  # type: ignore
+from pytket.circuit import Circuit, OpType, BasisOrder, Qubit, Bit, Node
+from pytket.predicates import CompilationUnit
+from pytket.passes import PauliSimp, CliffordSimp
+from pytket.mapping import MappingManager, LexiRouteRoutingMethod, LexiLabellingMethod
+from pytket.architecture import Architecture
 from pytket.utils.outcomearray import OutcomeArray, readout_counts
 from pytket.utils.prepare import prepare_circuit
-from pytket.backends import CircuitNotValidError
 from pytket.backends.backend import Backend, ResultHandleTypeError
 from pytket.backends.resulthandle import ResultHandle
 from pytket.backends.backendresult import BackendResult

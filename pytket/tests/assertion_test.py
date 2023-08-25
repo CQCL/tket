@@ -15,18 +15,18 @@
 import numpy as np
 import pytest  # type: ignore
 
-from pytket.circuit import (  # type: ignore
+from pytket.circuit import (
     ProjectorAssertionBox,
     StabiliserAssertionBox,
     Circuit,
     Qubit,
 )
 
-from pytket.passes import (  # type: ignore
+from pytket.passes import (
     DecomposeBoxes,
 )
 
-from pytket.pauli import PauliStabiliser, Pauli  # type: ignore
+from pytket.pauli import PauliStabiliser, Pauli
 from simulator import TketSimShotBackend  # type: ignore
 
 
