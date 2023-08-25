@@ -32,8 +32,8 @@ class ConjugationBox : public Box {
    * @param compute the compute operation
    * @param action the action operation
    * @param uncompute optional uncompute operation, default to compute.dagger().
-   * If provided, the user needs to make sure that the unitary matrices of
-   * uncompute.dagger() and compute must be equal.
+   * If provided, the user needs to make sure that uncompute.dagger() and
+   * compute have the same unitary.
    */
   explicit ConjugationBox(
       const Op_ptr &compute, const Op_ptr &action,

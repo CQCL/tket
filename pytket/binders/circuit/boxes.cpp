@@ -704,9 +704,8 @@ void init_boxes(py::module &m) {
           ":param compute: the compute operation\n"
           ":param action: the action operation\n"
           ":param uncompute: optional uncompute operation, default to "
-          "compute.dagger(). If provided, the user needs to make sure that the "
-          "unitary matrices of uncompute.dagger() and compute must be the "
-          "equal.",
+          "compute.dagger(). If provided, the user needs to make sure that "
+          "uncompute.dagger() and compute have the same unitary.",
           py::arg("compute"), py::arg("action"),
           py::arg("uncompute") = std::nullopt)
       .def(
