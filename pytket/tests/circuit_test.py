@@ -1176,7 +1176,7 @@ def test_qcontrol_box_constructors() -> None:
     # all arguments. state expressed as an integer
     qcbox3 = QControlBox(Op.create(OpType.S), 2, 1)
     # all arguments. state expressed as a bit vector
-    qcbox4 = QControlBox(Op.create(OpType.S), 2, [0, 1])
+    qcbox4 = QControlBox(Op.create(OpType.S), 2, [_0, _1])
     assert qcbox1 == qcbox2
     assert qcbox3 == qcbox4
     assert qcbox1.get_control_state() == 1
