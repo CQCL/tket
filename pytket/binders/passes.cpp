@@ -27,6 +27,7 @@
 #include "tket/Transformations/Transform.hpp"
 #include "tket/Utils/Json.hpp"
 #include "typecast.hpp"
+#include "variant_conversion.hpp"
 
 namespace py = pybind11;
 using json = nlohmann::json;
@@ -558,7 +559,12 @@ PYBIND11_MODULE(passes, m) {
   /* Pass generators */
 
   m.def(
-      "RebaseCustom", &gen_rebase_pass,
+      "RebaseCustom",
+        [](const OpTypeSet& allowed_gates, const Circuit& cx_replacement,
+        const std::function<Circuit(const ExprVariant &, const ExprVariant &, const ExprVariant &)>&
+        tk1_replacement){
+         return gen_rebase_pass(allowed_gates, cx_replacement, tk1_replacement);
+      },
       "Construct a custom rebase pass, given user-defined rebases for TK1 and "
       "CX. This pass:"
       "\n\n"
@@ -585,7 +591,12 @@ PYBIND11_MODULE(passes, m) {
       py::arg("tk1_replacement"));
 
   m.def(
-      "RebaseCustom", &gen_rebase_pass_via_tk2,
+      "RebaseCustom", [](
+                  const OpTypeSet& allowed_gates,
+                  const std::function<Circuit(const ExprVariant &, const ExprVariant &, const ExprVariant &)>&
+                  tk2_replacement,
+                  const std::function<Circuit(const ExprVariant &, const ExprVariant &, const ExprVariant &)>&
+                  tk1_replacement){return gen_rebase_pass_via_tk2(allowed_gates, tk2_replacement, tk1_replacement);},
       "Construct a custom rebase pass, given user-defined rebases for TK1 and "
       "TK2. This pass:"
       "\n\n"

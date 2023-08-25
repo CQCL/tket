@@ -32,6 +32,7 @@
 #include "typecast.hpp"
 #include "py_operators.hpp"
 #include "deleted_hash.hpp"
+#include "variant_conversion.hpp"
 
 
 namespace py = pybind11;
@@ -512,12 +513,12 @@ PYBIND11_MODULE(circuit, m) {
           "Create an :py:class:`Op` with given type")
       .def_static(
           "create",
-          [](OpType optype, Expr param) { return get_op_ptr(optype, param); },
+          [](OpType optype, const ExprVariant& param) { return get_op_ptr(optype, convertVariantToFirstType(param)); },
           "Create an :py:class:`Op` with given type and parameter")
       .def_static(
           "create",
-          [](OpType optype, const std::vector<Expr> &params) {
-            return get_op_ptr(optype, params);
+          [](OpType optype, const std::vector<ExprVariant> &params) {
+            return get_op_ptr(optype, convertVariantVectorToFirstTypeVector(params));
           },
           "Create an :py:class:`Op` with given type and parameters")
       .def_property_readonly(

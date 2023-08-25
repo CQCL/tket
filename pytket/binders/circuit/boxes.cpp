@@ -137,7 +137,8 @@ void init_boxes(py::module &m) {
       "An operation defined as the exponential of a tensor of Pauli "
       "operations and a (possibly symbolic) phase parameter.")
       .def(
-          py::init<const std::vector<Pauli> &, Expr, CXConfigType>(),
+          py::init([](const std::vector<Pauli> & pauli, const ExprVariant& expr_var, const CXConfigType & config){
+              return PauliExpBox(pauli, convertVariantToFirstType(expr_var), config);}),
           "Construct :math:`e^{-\\frac12 i \\pi t \\sigma_0 \\otimes "
           "\\sigma_1 \\otimes \\cdots}` from Pauli operators "
           ":math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and a parameter "
@@ -161,9 +162,11 @@ void init_boxes(py::module &m) {
       "An operation defined as a pair of exponentials of a tensor of Pauli "
       "operations and their (possibly symbolic) phase parameters.")
       .def(
-          py::init<
-              const std::vector<Pauli> &, Expr, const std::vector<Pauli> &,
-              Expr, CXConfigType>(),
+          py::init([](
+              const std::vector<Pauli> & pauli0, ExprVariant exprvar0, const std::vector<Pauli> & pauli1,
+              ExprVariant exprvar1, CXConfigType config){
+              return PauliExpPairBox(pauli0, convertVariantToFirstType(exprvar0), pauli1, convertVariantToFirstType(exprvar1), config);
+              }),
           "Construct a pair of Pauli exponentials of the form"
           " :math:`e^{-\\frac12 i \\pi t_j \\sigma_0 \\otimes "
           "\\sigma_1 \\otimes \\cdots}` from Pauli operator strings "
@@ -192,9 +195,16 @@ void init_boxes(py::module &m) {
       "tensor of Pauli operations and their (possibly symbolic) phase "
       "parameters.")
       .def(
-          py::init<
-              const std::vector<std::pair<std::vector<Pauli>, Expr>> &,
-              CXConfigType>(),
+          py::init([](
+              const std::vector<std::pair<std::vector<Pauli>, ExprVariant>> & py_gadgets,
+              CXConfigType config){
+              std::vector<std::pair<std::vector<Pauli>, Expr>> gadgets;
+              gadgets.reserve(py_gadgets.size());
+              for (const auto& py_gadget: py_gadgets){
+                  gadgets.emplace_back(py_gadget.first, convertVariantToFirstType(py_gadget.second));
+              }
+              return PauliExpCommutingSetBox(gadgets, config);
+          }),
           "Construct a set of necessarily commuting Pauli exponentials of the "
           "form"
           " :math:`e^{-\\frac12 i \\pi t_j \\sigma_0 \\otimes "
