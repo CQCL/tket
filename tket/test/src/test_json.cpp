@@ -225,6 +225,7 @@ SCENARIO("Test Circuit serialization") {
     c.add_conditional_gate<unsigned>(OpType::Ry, {-0.75}, {0}, {0, 1}, 1);
     c.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0, 1}, 1);
     c.add_conditional_gate<unsigned>(OpType::Measure, {}, {0, 2}, {0, 1}, 1);
+    c.add_conditional_barrier({0, 1}, {1, 2}, {0}, 0, "");
 
     nlohmann::json j_box = c;
     const Circuit new_c = j_box.get<Circuit>();
