@@ -12,10 +12,10 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pytket.circuit import Circuit, OpType  # type: ignore
-from pytket.architecture import Architecture  # type: ignore
-from pytket.passes import AASRouting, CNotSynthType, ComposePhasePolyBoxes  # type: ignore
-from pytket.predicates import CompilationUnit  # type: ignore
+from pytket.circuit import Circuit, OpType
+from pytket.architecture import Architecture
+from pytket.passes import AASRouting, CNotSynthType, ComposePhasePolyBoxes
+from pytket.predicates import CompilationUnit
 
 
 def test_AAS() -> None:

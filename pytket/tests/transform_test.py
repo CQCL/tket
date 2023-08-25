@@ -24,7 +24,6 @@ from pytket.passes import (
     SquashCustom,
     SquashRzPhasedX,
     CommuteThroughMultis,
-    RebaseCustom,
     PauliSquash,
     FullPeepholeOptimise,
     DefaultMappingPass,
