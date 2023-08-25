@@ -14,8 +14,8 @@
 
 #pragma once
 
-#include <variant>
 #include <type_traits>
+#include <variant>
 
 // For conversions to work the most general type must be first
 using ExprVariant = std::variant<tket::Expr, double>;
@@ -24,7 +24,7 @@ using ExprVariant = std::variant<tket::Expr, double>;
 // Conversion must be possible to compile
 template <typename TargetType, typename StartType>
 TargetType convertTo(const StartType& value) {
-    return static_cast<TargetType>(value);
+  return static_cast<TargetType>(value);
 }
 
 // Function to convert a variant with value of any of its types
@@ -32,20 +32,20 @@ TargetType convertTo(const StartType& value) {
 // All other types must be convertible to first
 template <typename First, typename... Other>
 First convertVariantToFirstType(const std::variant<First, Other...>& var) {
-    return std::visit([](const auto& value) {
-        return convertTo<First>(value);
-    }, var);
+  return std::visit(
+      [](const auto& value) { return convertTo<First>(value); }, var);
 }
 
 // Function to convert a vector of a variant with values of any of its types
 // to a vector of values of its first type
 // All other types must be convertible to first
 template <typename First, typename... Other>
-std::vector<First> convertVariantVectorToFirstTypeVector(const std::vector<std::variant<First, Other...>>& variant_vec){
-    auto first_vec = std::vector<First>();
-    first_vec.reserve(variant_vec.size());
-    for (const auto& variant_scalar: variant_vec){
-        first_vec.push_back(convertVariantToFirstType(variant_scalar));
-    }
-    return first_vec;
+std::vector<First> convertVariantVectorToFirstTypeVector(
+    const std::vector<std::variant<First, Other...>>& variant_vec) {
+  auto first_vec = std::vector<First>();
+  first_vec.reserve(variant_vec.size());
+  for (const auto& variant_scalar : variant_vec) {
+    first_vec.push_back(convertVariantToFirstType(variant_scalar));
+  }
+  return first_vec;
 }

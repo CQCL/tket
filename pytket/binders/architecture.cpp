@@ -13,12 +13,14 @@
 // limitations under the License.
 
 #include "tket/Architecture/Architecture.hpp"
+
 #include <pybind11/pybind11.h>
+
 #include "binder_json.hpp"
+#include "deleted_hash.hpp"
+#include "py_operators.hpp"
 #include "tket/Utils/Json.hpp"
 #include "typecast.hpp"
-#include "py_operators.hpp"
-#include "deleted_hash.hpp"
 
 namespace py = pybind11;
 using json = nlohmann::json;
@@ -74,18 +76,22 @@ PYBIND11_MODULE(architecture, m) {
           "Returns the coupling map of the Architecture as "
           "UnitIDs. ")
       .def(
-          "to_dict", [](const Architecture &arch) { return py::dict(json(arch)); },
+          "to_dict",
+          [](const Architecture &arch) { return py::dict(json(arch)); },
           "Return a JSON serializable dict representation of "
           "the Architecture."
           "\n\n:return: dict containing nodes and links.")
       .def_static(
-          "from_dict", [](const py::dict &architecture_dict) { return json(architecture_dict).get<Architecture>(); },
+          "from_dict",
+          [](const py::dict &architecture_dict) {
+            return json(architecture_dict).get<Architecture>();
+          },
           "Construct Architecture instance from JSON serializable "
           "dict representation of the Architecture.")
       // as far as Python is concerned, Architectures are immutable
       .def(
-          "__deepcopy__",
-          [](const Architecture &arc, const py::dict& = py::dict()) { return arc; })
+          "__deepcopy__", [](const Architecture &arc,
+                             const py::dict & = py::dict()) { return arc; })
       .def(
           "__repr__",
           [](const Architecture &arc) {
@@ -93,7 +99,7 @@ PYBIND11_MODULE(architecture, m) {
                    std::to_string(arc.n_nodes()) + ">";
           })
       .def("__eq__", &py_equals<Architecture>)
-      .def("__hash__", &deletedHash<Architecture>, deletedHashDocstring );
+      .def("__hash__", &deletedHash<Architecture>, deletedHashDocstring);
   py::class_<SquareGrid, std::shared_ptr<SquareGrid>, Architecture>(
       m, "SquareGrid",
       "Inherited Architecture class for qubits arranged in a square lattice of "
@@ -180,8 +186,8 @@ PYBIND11_MODULE(architecture, m) {
           "FullyConnected Architecture",
           py::arg("n"), py::arg("label") = "fcNode")
       .def(
-          "__deepcopy__",
-          [](const FullyConnected &arc, const py::dict& = py::dict()) { return arc; })
+          "__deepcopy__", [](const FullyConnected &arc,
+                             const py::dict & = py::dict()) { return arc; })
       .def(
           "__repr__",
           [](const FullyConnected &arc) {
@@ -189,17 +195,21 @@ PYBIND11_MODULE(architecture, m) {
                    std::to_string(arc.n_nodes()) + ">";
           })
       .def("__eq__", &py_equals<FullyConnected>)
-      .def("__hash__", &deletedHash<FullyConnected>, deletedHashDocstring )
+      .def("__hash__", &deletedHash<FullyConnected>, deletedHashDocstring)
       .def_property_readonly(
           "nodes", &FullyConnected::get_all_nodes_vec,
           "All nodes of the architecture as :py:class:`Node` objects.")
       .def(
-          "to_dict", [](const FullyConnected &arch) { return py::dict(json(arch)); },
+          "to_dict",
+          [](const FullyConnected &arch) { return py::dict(json(arch)); },
           "JSON-serializable dict representation of the architecture."
           "\n\n"
           ":return: dict containing nodes")
       .def_static(
-          "from_dict", [](const py::dict &fully_connected_dict) { return json(fully_connected_dict).get<FullyConnected>(); },
+          "from_dict",
+          [](const py::dict &fully_connected_dict) {
+            return json(fully_connected_dict).get<FullyConnected>();
+          },
           "Construct FullyConnected instance from dict representation.");
 }
 }  // namespace tket

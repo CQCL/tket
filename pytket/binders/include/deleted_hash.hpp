@@ -17,11 +17,14 @@
 #include <pybind11/pybind11.h>
 namespace py = pybind11;
 
-template <class T> int deletedHash(const T&) {
-    py::type T_py = py::type::of<T>();
-    auto T_name = T_py.attr("__name__").cast<std::string>();
-    auto error_message = std::string("unhashable type: '") + T_name + "'";
-    throw py::type_error(error_message);
+template <class T>
+int deletedHash(const T&) {
+  py::type T_py = py::type::of<T>();
+  auto T_name = T_py.attr("__name__").cast<std::string>();
+  auto error_message = std::string("unhashable type: '") + T_name + "'";
+  throw py::type_error(error_message);
 }
 
-constexpr auto deletedHashDocstring = "Hashing is not implemented for this class, attempting to hash an object will raise a type error";
+constexpr auto deletedHashDocstring =
+    "Hashing is not implemented for this class, attempting to hash an object "
+    "will raise a type error";

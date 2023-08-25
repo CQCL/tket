@@ -56,8 +56,8 @@ Transforms::TwoQbFidelities get_fidelities(const py::kwargs &kwargs) {
 }
 
 PYBIND11_MODULE(transform, m) {
-  //py::module::import("pytket._tket.circuit");
-  //py::module::import("pytket._tket.architecture");
+  // py::module::import("pytket._tket.circuit");
+  // py::module::import("pytket._tket.architecture");
   py::enum_<Transforms::PauliSynthStrat>(
       m, "PauliSynthStrat",
       "Enum for available strategies to synthesise Pauli gadgets")
@@ -381,7 +381,8 @@ PYBIND11_MODULE(transform, m) {
           "be left untouched."
           "\n\n:param squash: Whether to squash the circuit in pre-processing "
           "(default: true)."
-          "\n\nIf squash=true (default), the `GlobalisePhasedX` transform's `apply` method "
+          "\n\nIf squash=true (default), the `GlobalisePhasedX` transform's "
+          "`apply` method "
           "will always return true. "
           "For squash=false, `apply()` will return true if the circuit was "
           "changed and false otherwise.\n\n"

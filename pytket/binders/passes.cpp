@@ -34,12 +34,15 @@ using json = nlohmann::json;
 
 namespace tket {
 
-// using py::object and converting internally to json creates better stubs, hence this wrapper
-typedef std::function<void(const CompilationUnit&, const py::object&)> PyPassCallback;
-PassCallback from_py_pass_callback(const PyPassCallback& py_pass_callback){
-    return [py_pass_callback](const CompilationUnit& compilationUnit, const json& j) {
-        return py_pass_callback(compilationUnit, py::object(j));
-    };
+// using py::object and converting internally to json creates better stubs,
+// hence this wrapper
+typedef std::function<void(const CompilationUnit &, const py::object &)>
+    PyPassCallback;
+PassCallback from_py_pass_callback(const PyPassCallback &py_pass_callback) {
+  return [py_pass_callback](
+             const CompilationUnit &compilationUnit, const json &j) {
+    return py_pass_callback(compilationUnit, py::object(j));
+  };
 }
 
 // given keyword arguments for DecomposeTK2, return a TwoQbFidelities struct
@@ -143,7 +146,7 @@ const PassPtr &DecomposeClassicalExp() {
 }
 
 PYBIND11_MODULE(passes, m) {
-    py::module_::import("pytket._tket.predicates");
+  py::module_::import("pytket._tket.predicates");
   py::enum_<SafetyMode>(m, "SafetyMode")
       .value(
           "Audit", SafetyMode::Audit,
@@ -231,8 +234,9 @@ PYBIND11_MODULE(passes, m) {
              const PyPassCallback &before_apply,
              const PyPassCallback &after_apply) {
             CompilationUnit cu(circ);
-            bool applied =
-                pass.apply(cu, SafetyMode::Default, from_py_pass_callback(before_apply), from_py_pass_callback(after_apply));
+            bool applied = pass.apply(
+                cu, SafetyMode::Default, from_py_pass_callback(before_apply),
+                from_py_pass_callback(after_apply));
             circ = cu.get_circ_ref();
             return applied;
           },
@@ -250,12 +254,16 @@ PYBIND11_MODULE(passes, m) {
       .def("__str__", [](const BasePass &) { return "<tket::BasePass>"; })
       .def("__repr__", &BasePass::to_string)
       .def(
-          "to_dict", [](const BasePass& base_pass){
-               return py::dict(base_pass.get_config());
-              },
+          "to_dict",
+          [](const BasePass &base_pass) {
+            return py::dict(base_pass.get_config());
+          },
           ":return: A JSON serializable dictionary representation of the Pass.")
       .def_static(
-          "from_dict", [](const py::dict &base_pass_dict) { return json(base_pass_dict).get<PassPtr>(); },
+          "from_dict",
+          [](const py::dict &base_pass_dict) {
+            return json(base_pass_dict).get<PassPtr>();
+          },
           "Construct a new Pass instance from a JSON serializable dictionary "
           "representation.")
       .def(py::pickle(
@@ -446,7 +454,8 @@ PYBIND11_MODULE(passes, m) {
       "be left untouched."
       "\n\n:param squash: Whether to squash the circuit in pre-processing "
       "(default: true)."
-      "\n\nIf squash=true (default), the `GlobalisePhasedX` transform's `apply` method "
+      "\n\nIf squash=true (default), the `GlobalisePhasedX` transform's "
+      "`apply` method "
       "will always return true. "
       "For squash=false, `apply()` will return true if the circuit was "
       "changed and false otherwise.\n\n"
@@ -507,12 +516,15 @@ PYBIND11_MODULE(passes, m) {
       "respective "
       "default registers with contiguous indexing.");
   m.def(
-      "SquashCustom", [](
-        const OpTypeSet& singleqs,
-        const std::function<Circuit(const ExprVariant &, const ExprVariant &, const ExprVariant &)>&
-                tk1_replacement,
-        bool always_squash_symbols = false){
-          return gen_squash_pass(singleqs, tk1_replacement, always_squash_symbols);},
+      "SquashCustom",
+      [](const OpTypeSet &singleqs,
+         const std::function<Circuit(
+             const ExprVariant &, const ExprVariant &, const ExprVariant &)>
+             &tk1_replacement,
+         bool always_squash_symbols = false) {
+        return gen_squash_pass(
+            singleqs, tk1_replacement, always_squash_symbols);
+      },
       "Squash sequences of single qubit gates from the target gate set "
       "into an optimal form given by `tk1_replacement`."
       "\n\n:param singleqs: The types of single qubit gates in the target "
@@ -565,10 +577,11 @@ PYBIND11_MODULE(passes, m) {
 
   m.def(
       "RebaseCustom",
-        [](const OpTypeSet& allowed_gates, const Circuit& cx_replacement,
-        const std::function<Circuit(const ExprVariant &, const ExprVariant &, const ExprVariant &)>&
-        tk1_replacement){
-         return gen_rebase_pass(allowed_gates, cx_replacement, tk1_replacement);
+      [](const OpTypeSet &allowed_gates, const Circuit &cx_replacement,
+         const std::function<Circuit(
+             const ExprVariant &, const ExprVariant &, const ExprVariant &)>
+             &tk1_replacement) {
+        return gen_rebase_pass(allowed_gates, cx_replacement, tk1_replacement);
       },
       "Construct a custom rebase pass, given user-defined rebases for TK1 and "
       "CX. This pass:"
@@ -596,12 +609,17 @@ PYBIND11_MODULE(passes, m) {
       py::arg("tk1_replacement"));
 
   m.def(
-      "RebaseCustom", [](
-                  const OpTypeSet& allowed_gates,
-                  const std::function<Circuit(const ExprVariant &, const ExprVariant &, const ExprVariant &)>&
-                  tk2_replacement,
-                  const std::function<Circuit(const ExprVariant &, const ExprVariant &, const ExprVariant &)>&
-                  tk1_replacement){return gen_rebase_pass_via_tk2(allowed_gates, tk2_replacement, tk1_replacement);},
+      "RebaseCustom",
+      [](const OpTypeSet &allowed_gates,
+         const std::function<Circuit(
+             const ExprVariant &, const ExprVariant &, const ExprVariant &)>
+             &tk2_replacement,
+         const std::function<Circuit(
+             const ExprVariant &, const ExprVariant &, const ExprVariant &)>
+             &tk1_replacement) {
+        return gen_rebase_pass_via_tk2(
+            allowed_gates, tk2_replacement, tk1_replacement);
+      },
       "Construct a custom rebase pass, given user-defined rebases for TK1 and "
       "TK2. This pass:"
       "\n\n"
@@ -622,8 +640,8 @@ PYBIND11_MODULE(passes, m) {
       "desired basis\n"
       ":return: a pass that rebases to the given gate set (possibly including "
       "conditional and phase operations)",
-       py::arg("gateset"), py::arg("tk2_replacement"),
-                py::arg("tk1_replacement"));
+      py::arg("gateset"), py::arg("tk2_replacement"),
+      py::arg("tk1_replacement"));
 
   m.def(
       "EulerAngleReduction", &gen_euler_pass,
@@ -875,16 +893,17 @@ PYBIND11_MODULE(passes, m) {
       py::arg("remove_redundancies") = true, py::arg("xcirc") = nullptr);
   m.def(
       "ContextSimp",
-      [](bool allow_classical, std::optional<std::shared_ptr<const Circuit>> xcirc) {
-          if (xcirc.has_value()){
-              return gen_contextual_pass(
-                      allow_classical ? Transforms::AllowClassical::Yes
-                                      : Transforms::AllowClassical::No,
-                      std::move(xcirc.value()));
-          }
+      [](bool allow_classical,
+         std::optional<std::shared_ptr<const Circuit>> xcirc) {
+        if (xcirc.has_value()) {
           return gen_contextual_pass(
-                  allow_classical ? Transforms::AllowClassical::Yes
-                                  : Transforms::AllowClassical::No);
+              allow_classical ? Transforms::AllowClassical::Yes
+                              : Transforms::AllowClassical::No,
+              std::move(xcirc.value()));
+        }
+        return gen_contextual_pass(
+            allow_classical ? Transforms::AllowClassical::Yes
+                            : Transforms::AllowClassical::No);
       },
       "Applies simplifications enabled by knowledge of qubit state and "
       "discarded qubits."

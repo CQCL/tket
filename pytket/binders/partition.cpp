@@ -98,7 +98,8 @@ PYBIND11_MODULE(partition, m) {
       .def_static(
           "from_dict",
           [](const py::dict &measurement_bit_map_dict) {
-            return json(measurement_bit_map_dict).get<MeasurementSetup::MeasurementBitMap>();
+            return json(measurement_bit_map_dict)
+                .get<MeasurementSetup::MeasurementBitMap>();
           },
           "Construct MeasurementBitMap instance from dict representation.");
 
@@ -142,7 +143,9 @@ PYBIND11_MODULE(partition, m) {
           "\n\n:return: dict representation of the MeasurementSetup")
       .def_static(
           "from_dict",
-          [](const py::dict &measurement_setup_dict) { return json(measurement_setup_dict).get<MeasurementSetup>(); },
+          [](const py::dict &measurement_setup_dict) {
+            return json(measurement_setup_dict).get<MeasurementSetup>();
+          },
           "Construct MeasurementSetup instance from dict representation.");
 
   m.def(

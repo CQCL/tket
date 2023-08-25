@@ -95,7 +95,9 @@ PYBIND11_MODULE(predicates, m) {
           ":return: dict representation of the Predicate.")
       .def_static(
           "from_dict",
-          [](const py::dict &predicate_dict) { return json(predicate_dict).get<PredicatePtr>(); },
+          [](const py::dict &predicate_dict) {
+            return json(predicate_dict).get<PredicatePtr>();
+          },
           "Construct Predicate instance from JSON serializable "
           "dict representation of the Predicate.");
   py::class_<GateSetPredicate, std::shared_ptr<GateSetPredicate>, Predicate>(

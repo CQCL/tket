@@ -31,7 +31,6 @@ PYBIND11_NAMESPACE_BEGIN(detail)
 template <>
 struct type_caster<SymEngine::Expression> {
  public:
-
   PYBIND11_TYPE_CASTER(SymEngine::Expression, _("sympy.Expr"));
 
   static void assert_tuple_length(tuple t, unsigned len) {
@@ -314,7 +313,8 @@ struct type_caster<SymEngine::Expression> {
 template <>
 struct type_caster<SymEngine::RCP<const SymEngine::Symbol>> {
  public:
-  PYBIND11_TYPE_CASTER(SymEngine::RCP<const SymEngine::Symbol>, _("sympy.Symbol"));
+  PYBIND11_TYPE_CASTER(
+      SymEngine::RCP<const SymEngine::Symbol>, _("sympy.Symbol"));
   bool load(handle src, bool) {
     pybind11::module sympy = pybind11::module::import("sympy");
     if (!isinstance(src, sympy.attr("Symbol"))) return false;
@@ -328,6 +328,6 @@ struct type_caster<SymEngine::RCP<const SymEngine::Symbol>> {
     return sympy.attr("Symbol")(src->get_name()).release();
   }
 };
-  // namespace detail
+// namespace detail
 PYBIND11_NAMESPACE_END(detail)
 PYBIND11_NAMESPACE_END(PYBIND11_NAMESPACE)

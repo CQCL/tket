@@ -18,10 +18,10 @@
 #include <pybind11/stl.h>
 
 #include "binder_json.hpp"
+#include "deleted_hash.hpp"
+#include "py_operators.hpp"
 #include "tket/Utils/PauliStrings.hpp"
 #include "typecast.hpp"
-#include "py_operators.hpp"
-#include "deleted_hash.hpp"
 
 namespace py = pybind11;
 using json = nlohmann::json;
@@ -69,15 +69,16 @@ PYBIND11_MODULE(pauli, m) {
           ":py:class:`Qubit` to :py:class:`Pauli`")
       .def(
           "to_list",
-          [](const QubitPauliString &qps) {
-            return py::list(json(qps));
-          },
+          [](const QubitPauliString &qps) { return py::list(json(qps)); },
           "A JSON-serializable representation of the QubitPauliString.\n\n"
           ":return: a list of :py:class:`Qubit`-to-:py:class:`Pauli` "
           "entries, "
           "represented as dicts.")
       .def_static(
-          "from_list", [](const py::list &qubit_pauli_string_list) { return json(qubit_pauli_string_list).get<QubitPauliString>(); },
+          "from_list",
+          [](const py::list &qubit_pauli_string_list) {
+            return json(qubit_pauli_string_list).get<QubitPauliString>();
+          },
           "Construct a new QubitPauliString instance from a JSON serializable "
           "list "
           "representation.")
@@ -238,7 +239,7 @@ PYBIND11_MODULE(pauli, m) {
           [](const PauliStabiliser &stabiliser) { return stabiliser.string; },
           "The list of Pauli terms")
       .def("__eq__", &py_equals<PauliStabiliser>)
-      .def("__hash__", &deletedHash<PauliStabiliser>, deletedHashDocstring )
+      .def("__hash__", &deletedHash<PauliStabiliser>, deletedHashDocstring)
       .def("__ne__", &py_not_equals<PauliStabiliser>);
 }
 

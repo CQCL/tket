@@ -21,6 +21,8 @@
 
 #include "binder_json.hpp"
 #include "binder_utils.hpp"
+#include "deleted_hash.hpp"
+#include "py_operators.hpp"
 #include "tket/Circuit/Command.hpp"
 #include "tket/Gate/Gate.hpp"
 #include "tket/Gate/OpPtrFunctions.hpp"
@@ -30,17 +32,14 @@
 #include "tket/Utils/Constants.hpp"
 #include "tket/Utils/Symbols.hpp"
 #include "typecast.hpp"
-#include "py_operators.hpp"
-#include "deleted_hash.hpp"
 #include "variant_conversion.hpp"
-
 
 namespace py = pybind11;
 using json = nlohmann::json;
 
 namespace tket {
 
-void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>>&);
+void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &);
 void init_classical(py::module &m);
 void init_boxes(py::module &m);
 
@@ -67,444 +66,444 @@ PYBIND11_MODULE(circuit, m) {
           "Support for multi-qubit architectures, decomposing to 3-qubit "
           "XXPhase3 gates instead of CXs where possible.");
   py::enum_<EdgeType>(
-          m, "EdgeType",
-          "Type of a wire in a circuit or input to an op")
-          .value( "Boolean", EdgeType::Boolean)
-          .value( "Classical", EdgeType::Classical)
-          .value( "Quantum", EdgeType::Quantum)
-          .value( "WASM", EdgeType::WASM);
+      m, "EdgeType", "Type of a wire in a circuit or input to an op")
+      .value("Boolean", EdgeType::Boolean)
+      .value("Classical", EdgeType::Classical)
+      .value("Quantum", EdgeType::Quantum)
+      .value("WASM", EdgeType::WASM);
   // NOTE: Sphinx does not automatically pick up the docstring for OpType
   py::enum_<OpType>(
-          m, "OpType",
-          "Enum for available operations compatible with "
-          "tket " CLSOBJS(Circuit) ".",
-          py::arithmetic())
-          .value(
-                  "Phase", OpType::Phase,
-                  "Global phase: :math:`(\\alpha) \\mapsto \\left[ \\begin{array}{c} "
-                  "e^{i\\pi\\alpha} \\end{array} \\right]`")
-          .value(
-                  "Z", OpType::Z,
-                  "Pauli Z: :math:`\\left[ \\begin{array}{cc} 1 & 0 \\\\ 0 & "
-                  "-1 \\end{array} \\right]`")
-          .value(
-                  "X", OpType::X,
-                  "Pauli X: :math:`\\left[ \\begin{array}{cc} 0 & 1 \\\\ 1 & "
-                  "0 \\end{array} \\right]`")
-          .value(
-                  "Y", OpType::Y,
-                  "Pauli Y: :math:`\\left[ \\begin{array}{cc} 0 & -i \\\\ i & "
-                  "0 \\end{array} \\right]`")
-          .value(
-                  "S", OpType::S,
-                  ":math:`\\left[ \\begin{array}{cc} 1 & 0 \\\\ 0 & i "
-                  "\\end{array} \\right] = \\mathrm{U1}(\\frac12)`")
-          .value(
-                  "Sdg", OpType::Sdg,
-                  ":math:`\\mathrm{S}^{\\dagger} = \\left[ \\begin{array}{cc} "
-                  "1 & 0 \\\\ 0 & -i \\end{array} \\right] = "
-                  "\\mathrm{U1}(-\\frac12)`")
-          .value(
-                  "T", OpType::T,
-                  ":math:`\\left[ \\begin{array}{cc} 1 & 0 \\\\ 0 & "
-                  "e^{i\\pi/4} \\end{array} \\right] = "
-                  "\\mathrm{U1}(\\frac14)`")
-          .value(
-                  "Tdg", OpType::Tdg,
-                  ":math:`\\mathrm{T}^{\\dagger} = \\left[ \\begin{array}{cc} "
-                  "1 & 0 \\\\ 0 & e^{-i\\pi/4} \\end{array} \\right] = "
-                  "\\mathrm{U1}(-\\frac14)`")
-          .value(
-                  "V", OpType::V,
-                  ":math:`\\frac{1}{\\sqrt 2} \\left[ \\begin{array}{cc} 1 & "
-                  "-i \\\\ -i & 1 \\end{array} \\right] = "
-                  "\\mathrm{Rx}(\\frac12)`")
-          .value(
-                  "Vdg", OpType::Vdg,
-                  ":math:`\\mathrm{V}^{\\dagger} = \\frac{1}{\\sqrt 2} "
-                  "\\left[ \\begin{array}{cc} 1 & i \\\\ i & 1 \\end{array} "
-                  "\\right] = \\mathrm{Rx}(-\\frac12)`")
-          .value(
-                  "SX", OpType::SX,
-                  ":math:`\\frac{1}{2} \\left[ \\begin{array}{cc} 1 + i & "
-                  "1 - i \\\\ 1 - i & 1 + i \\end{array} \\right] = "
-                  "e^{\\frac{i\\pi}{4}}\\mathrm{Rx}(\\frac12)`")
-          .value(
-                  "SXdg", OpType::SXdg,
-                  ":math:`\\mathrm{SX}^{\\dagger} = \\frac{1}{2} "
-                  "\\left[ \\begin{array}{cc} 1 - i & 1 + i "
-                  "\\\\ 1 + i & 1 - i \\end{array} "
-                  "\\right] = e^{\\frac{-i\\pi}{4}}\\mathrm{Rx}(-\\frac12)`")
-          .value(
-                  "H", OpType::H,
-                  "Hadamard gate: :math:`\\frac{1}{\\sqrt 2} \\left[ "
-                  "\\begin{array}{cc} 1 & 1 \\\\ 1 & -1 \\end{array} "
-                  "\\right]`")
-          .value(
-                  "Rx", OpType::Rx,
-                  ":math:`(\\alpha) \\mapsto e^{-\\frac12 i \\pi \\alpha "
-                  "\\mathrm{X}} = \\left[ \\begin{array}{cc} "
-                  "\\cos\\frac{\\pi\\alpha}{2} & "
-                  "-i\\sin\\frac{\\pi\\alpha}{2} \\\\ "
-                  "-i\\sin\\frac{\\pi\\alpha}{2} & "
-                  "\\cos\\frac{\\pi\\alpha}{2} \\end{array} \\right]`")
-          .value(
-                  "Ry", OpType::Ry,
-                  ":math:`(\\alpha) \\mapsto e^{-\\frac12 i \\pi \\alpha "
-                  "\\mathrm{Y}} = \\left[ \\begin{array}{cc} "
-                  "\\cos\\frac{\\pi\\alpha}{2} & -\\sin\\frac{\\pi\\alpha}{2} "
-                  "\\\\ \\sin\\frac{\\pi\\alpha}{2} & "
-                  "\\cos\\frac{\\pi\\alpha}{2} \\end{array} \\right]`")
-          .value(
-                  "Rz", OpType::Rz,
-                  ":math:`(\\alpha) \\mapsto e^{-\\frac12 i \\pi \\alpha "
-                  "\\mathrm{Z}} = \\left[ \\begin{array}{cc} e^{-\\frac12 i "
-                  "\\pi\\alpha} & 0 \\\\ 0 & e^{\\frac12 i \\pi\\alpha} "
-                  "\\end{array} \\right]`")
-          .value(
-                  "U1", OpType::U1,
-                  ":math:`(\\lambda) \\mapsto \\mathrm{U3}(0, 0, \\lambda) = "
-                  "e^{\\frac12 i\\pi\\lambda} \\mathrm{Rz}(\\lambda)`. "
-                  "U-gates are used by IBM. See "
-                  "https://qiskit.org/documentation/tutorials/circuits/"
-                  "3_summary_of_quantum_operations.html "
-                  "for more information on U-gates.")
-          .value(
-                  "U2", OpType::U2,
-                  ":math:`(\\phi, \\lambda) \\mapsto \\mathrm{U3}(\\frac12, "
-                  "\\phi, \\lambda) = e^{\\frac12 i\\pi(\\lambda+\\phi)} "
-                  "\\mathrm{Rz}(\\phi) \\mathrm{Ry}(\\frac12) "
-                  "\\mathrm{Rz}(\\lambda)`, defined by matrix multiplication")
-          .value(
-                  "U3", OpType::U3,
-                  ":math:`(\\theta, \\phi, \\lambda) \\mapsto  \\left[ "
-                  "\\begin{array}{cc} \\cos\\frac{\\pi\\theta}{2} & "
-                  "-e^{i\\pi\\lambda} \\sin\\frac{\\pi\\theta}{2} \\\\ "
-                  "e^{i\\pi\\phi} \\sin\\frac{\\pi\\theta}{2} & "
-                  "e^{i\\pi(\\lambda+\\phi)} \\cos\\frac{\\pi\\theta}{2} "
-                  "\\end{array} \\right] = e^{\\frac12 i\\pi(\\lambda+\\phi)} "
-                  "\\mathrm{Rz}(\\phi) \\mathrm{Ry}(\\theta) "
-                  "\\mathrm{Rz}(\\lambda)`")
-          .value(
-                  "TK1", OpType::TK1,
-                  ":math:`(\\alpha, \\beta, \\gamma) \\mapsto "
-                  "\\mathrm{Rz}(\\alpha) \\mathrm{Rx}(\\beta) "
-                  "\\mathrm{Rz}(\\gamma)`")
-          .value(
-                  "TK2", OpType::TK2,
-                  ":math:`(\\alpha, \\beta, \\gamma) \\mapsto "
-                  "\\mathrm{XXPhase}(\\alpha) "
-                  "\\mathrm{YYPhase}(\\beta) "
-                  "\\mathrm{ZZPhase}(\\gamma)`")
-          .value("CX", OpType::CX, "Controlled :math:`\\mathrm{X}` gate")
-          .value("CY", OpType::CY, "Controlled :math:`\\mathrm{Y}` gate")
-          .value("CZ", OpType::CZ, "Controlled :math:`\\mathrm{Z}` gate")
-          .value("CH", OpType::CH, "Controlled :math:`\\mathrm{H}` gate")
-          .value("CV", OpType::CV, "Controlled :math:`\\mathrm{V}` gate")
-          .value(
-                  "CVdg", OpType::CVdg,
-                  "Controlled :math:`\\mathrm{V}^{\\dagger}` gate")
-          .value("CSX", OpType::CSX, "Controlled :math:`\\mathrm{SX}` gate")
-          .value(
-                  "CSXdg", OpType::CSXdg,
-                  "Controlled :math:`\\mathrm{SX}^{\\dagger}` gate")
-          .value(
-                  "CRz", OpType::CRz,
-                  ":math:`(\\alpha) \\mapsto` Controlled "
-                  ":math:`\\mathrm{Rz}(\\alpha)` gate")
-          .value(
-                  "CRx", OpType::CRx,
-                  ":math:`(\\alpha) \\mapsto` Controlled "
-                  ":math:`\\mathrm{Rx}(\\alpha)` gate")
-          .value(
-                  "CRy", OpType::CRy,
-                  ":math:`(\\alpha) \\mapsto` Controlled "
-                  ":math:`\\mathrm{Ry}(\\alpha)` gate")
-          .value(
-                  "CU1", OpType::CU1,
-                  ":math:`(\\lambda) \\mapsto` Controlled "
-                  ":math:`\\mathrm{U1}(\\lambda)` gate. Note that this is not "
-                  "equivalent to a :math:`\\mathrm{CRz}(\\lambda)` up to "
-                  "global phase, differing by an extra "
-                  ":math:`\\mathrm{Rz}(\\frac{\\lambda}{2})` on the control "
-                  "qubit.")
-          .value(
-                  "CU3", OpType::CU3,
-                  ":math:`(\\theta, \\phi, \\lambda) \\mapsto` Controlled "
-                  ":math:`\\mathrm{U3}(\\theta, \\phi, \\lambda)` gate. "
-                  "Similar rules apply.")
-          .value("CCX", OpType::CCX, "Toffoli gate")
-          .value(
-                  "ECR", OpType::ECR,
-                  ":math:`\\frac{1}{\\sqrt 2} \\left[ "
-                  "\\begin{array}{cccc} 0 & 0 & 1 & i \\\\"
-                  "0 & 0 & i & 1 \\\\"
-                  "1 & -i & 0 & 0 \\\\"
-                  "-i & 1 & 0 & 0 \\end{array} \\right]`")
-          .value("SWAP", OpType::SWAP, "Swap gate")
-          .value("CSWAP", OpType::CSWAP, "Controlled swap gate")
-          .value(
-                  "noop", OpType::noop,
-                  "Identity gate. These gates are not permanent and are "
-                  "automatically stripped by the compiler")
-          .value(
-                  "Barrier", OpType::Barrier,
-                  "Meta-operation preventing compilation through it. Not "
-                  "automatically stripped by the compiler")
-          .value(
-                  "Label", OpType::Label,
-                  "Label for control flow jumps. Does not appear within a "
-                  "circuit")
-          .value(
-                  "Branch", OpType::Branch,
-                  "A control flow jump to a label dependent on the value of a "
-                  "given Bit. Does not appear within a circuit")
-          .value(
-                  "Goto", OpType::Goto,
-                  "An unconditional control flow jump to a Label. Does not "
-                  "appear within a circuit.")
-          .value(
-                  "Stop", OpType::Stop,
-                  "Halts execution immediately. Used to terminate a program. "
-                  "Does not appear within a circuit.")
-          .value(
-                  "BRIDGE", OpType::BRIDGE,
-                  "A CX Bridge over 3 qubits. Used to apply a logical CX "
-                  "between the first and third qubits when they are not "
-                  "adjacent on the device, but both neighbour the second "
-                  "qubit. Acts as the identity on the second qubit")
-          .value(
-                  "Measure", OpType::Measure,
-                  "Z-basis projective measurement, storing the measurement "
-                  "outcome in a specified bit")
-          .value(
-                  "Reset", OpType::Reset,
-                  "Resets the qubit to :math:`\\left|0\\right>`")
-          .value("CircBox", OpType::CircBox, "Represents an arbitrary subcircuit")
-          .value(
-                  "PhasePolyBox", OpType::PhasePolyBox,
-                  "An operation representing arbitrary circuits made up of CX and Rz "
-                  "gates, represented as a phase polynomial together with a boolean "
-                  "matrix representing an additional linear transformation.")
-          .value(
-                  "Unitary1qBox", OpType::Unitary1qBox,
-                  "Represents an arbitrary one-qubit unitary operation by its "
-                  "matrix")
-          .value(
-                  "Unitary2qBox", OpType::Unitary2qBox,
-                  "Represents an arbitrary two-qubit unitary operation by its "
-                  "matrix")
-          .value(
-                  "Unitary3qBox", OpType::Unitary3qBox,
-                  "Represents an arbitrary three-qubit unitary operation by its matrix")
-          .value(
-                  "ExpBox", OpType::ExpBox,
-                  "A two-qubit operation corresponding to a unitary matrix "
-                  "defined as the exponential :math:`e^{itA}` of an arbitrary "
-                  "4x4 hermitian matrix :math:`A`.")
-          .value(
-                  "PauliExpBox", OpType::PauliExpBox,
-                  "An operation defined as the exponential "
-                  ":math:`e^{-\\frac{i\\pi\\alpha}{2} P}` of a tensor "
-                  ":math:`P` of Pauli operations.")
-          .value(
-                  "PauliExpPairBox", OpType::PauliExpPairBox,
-                  "An operation defined as a pair"
-                  "of exponentials of the form "
-                  ":math:`e^{-\\frac{i\\pi\\alpha}{2} P}` of a tensor "
-                  ":math:`P` of Pauli operations.")
-          .value(
-                  "PauliExpCommutingSetBox", OpType::PauliExpCommutingSetBox,
-                  "An operation defined as a set"
-                  "of commuting exponentials of the form "
-                  ":math:`e^{-\\frac{i\\pi\\alpha}{2} P}` of a tensor "
-                  ":math:`P` of Pauli operations.")
-          .value(
-                  "QControlBox", OpType::QControlBox,
-                  "An arbitrary n-controlled operation")
-          .value(
-                  "ToffoliBox", OpType::ToffoliBox,
-                  "A permutation of classical basis states")
-          .value(
-                  "CustomGate", OpType::CustomGate,
-                  ":math:`(\\alpha, \\beta, \\ldots) \\mapsto` A user-defined "
-                  "operation, based on a :py:class:`Circuit` :math:`C` with "
-                  "parameters :math:`\\alpha, \\beta, \\ldots` substituted in "
-                  "place of bound symbolic variables in :math:`C`, as defined "
-                  "by the :py:class:`CustomGateDef`.")
-          .value(
-                  "Conditional", OpType::Conditional,
-                  "An operation to be applied conditionally on the value of "
-                  "some classical register")
-          .value(
-                  "ISWAP", OpType::ISWAP,
-                  ":math:`(\\alpha) \\mapsto e^{\\frac14 i \\pi\\alpha "
-                  "(\\mathrm{X} \\otimes \\mathrm{X} + \\mathrm{Y} \\otimes "
-                  "\\mathrm{Y})} = \\left[ \\begin{array}{cccc} 1 & 0 & 0 & 0 "
-                  "\\\\ 0 & \\cos\\frac{\\pi\\alpha}{2} & "
-                  "i\\sin\\frac{\\pi\\alpha}{2} & 0 \\\\ 0 & "
-                  "i\\sin\\frac{\\pi\\alpha}{2} & \\cos\\frac{\\pi\\alpha}{2} "
-                  "& 0 \\\\ 0 & 0 & 0 & 1 \\end{array} \\right]`")
-          .value(
-                  "PhasedISWAP", OpType::PhasedISWAP,
-                  ":math:`(p, t) \\mapsto \\left[ \\begin{array}{cccc} 1 & 0 "
-                  "& 0 & 0 \\\\ 0 & \\cos\\frac{\\pi t}{2} & "
-                  "i\\sin\\frac{\\pi t}{2}e^{2i\\pi p} & 0 \\\\ 0 & "
-                  "i\\sin\\frac{\\pi t}{2}e^{-2i\\pi p} & \\cos\\frac{\\pi "
-                  "t}{2} & 0 \\\\ 0 & 0 & 0 & 1 \\end{array} \\right]` "
-                  "(equivalent to: Rz(p)[0]; Rz(-p)[1]; ISWAP(t); "
-                  "Rz(-p)[0]; Rz(p)[1])")
-          .value(
-                  "XXPhase", OpType::XXPhase,
-                  ":math:`(\\alpha) \\mapsto e^{-\\frac12 i \\pi\\alpha "
-                  "(\\mathrm{X} \\otimes \\mathrm{X})} = \\left[ "
-                  "\\begin{array}{cccc} \\cos\\frac{\\pi\\alpha}{2} & 0 & 0 & "
-                  "-i\\sin\\frac{\\pi\\alpha}{2} \\\\ 0 & "
-                  "\\cos\\frac{\\pi\\alpha}{2} & "
-                  "-i\\sin\\frac{\\pi\\alpha}{2} & 0 \\\\ 0 & "
-                  "-i\\sin\\frac{\\pi\\alpha}{2} & "
-                  "\\cos\\frac{\\pi\\alpha}{2} & 0 \\\\ "
-                  "-i\\sin\\frac{\\pi\\alpha}{2} & 0 & 0 & "
-                  "\\cos\\frac{\\pi\\alpha}{2} \\end{array} \\right]`")
-          .value(
-                  "YYPhase", OpType::YYPhase,
-                  ":math:`(\\alpha) \\mapsto e^{-\\frac12 i \\pi\\alpha "
-                  "(\\mathrm{Y} \\otimes \\mathrm{Y})} = \\left[ "
-                  "\\begin{array}{cccc} \\cos\\frac{\\pi\\alpha}{2} & 0 & 0 & "
-                  "i\\sin\\frac{\\pi\\alpha}{2} \\\\ 0 & "
-                  "\\cos\\frac{\\pi\\alpha}{2} & "
-                  "-i\\sin\\frac{\\pi\\alpha}{2} & 0 \\\\ 0 & "
-                  "-i\\sin\\frac{\\pi\\alpha}{2} & "
-                  "\\cos\\frac{\\pi\\alpha}{2} & 0 \\\\ "
-                  "i\\sin\\frac{\\pi\\alpha}{2} & 0 & 0 & "
-                  "\\cos\\frac{\\pi\\alpha}{2} \\end{array} \\right]`")
-          .value(
-                  "ZZPhase", OpType::ZZPhase,
-                  ":math:`(\\alpha) \\mapsto e^{-\\frac12 i \\pi\\alpha "
-                  "(\\mathrm{Z} \\otimes \\mathrm{Z})} = \\left[ "
-                  "\\begin{array}{cccc} e^{-\\frac12 i \\pi\\alpha} & 0 & 0 & "
-                  "0 \\\\ 0 & e^{\\frac12 i \\pi\\alpha} & 0 & 0 \\\\ 0 & 0 & "
-                  "e^{\\frac12 i \\pi\\alpha} & 0 \\\\ 0 & 0 & 0 & "
-                  "e^{-\\frac12 i \\pi\\alpha} \\end{array} \\right]`")
-          .value(
-                  "XXPhase3", OpType::XXPhase3,
-                  "A 3-qubit gate XXPhase3(α) consists of pairwise 2-qubit XXPhase(α) "
-                  "interactions. "
-                  "Equivalent to XXPhase(α)[0, 1] XXPhase(α)[1, 2] XXPhase(α)[0, 2].")
-          .value(
-                  "PhasedX", OpType::PhasedX,
-                  ":math:`(\\alpha,\\beta) \\mapsto "
-                  "\\mathrm{Rz}(\\beta)\\mathrm{Rx}(\\alpha)\\mathrm{Rz}(-"
-                  "\\beta)` (matrix-multiplication order)")
-          .value(
-                  "NPhasedX", OpType::NPhasedX,
-                  ":math:`(\\alpha, \\beta) \\mapsto \\mathrm{PhasedX}(\\alpha, \\beta)"
-                  "^{\\otimes n}` (n-qubit gate composed of identical PhasedX in "
-                  "parallel.")
-          .value(
-                  "CnRy", OpType::CnRy,
-                  ":math:`(\\alpha)` := n-controlled "
-                  ":math:`\\mathrm{Ry}(\\alpha)` gate.")
-          .value("CnX", OpType::CnX, "n-controlled X gate.")
-          .value("CnY", OpType::CnY, "n-controlled Y gate.")
-          .value("CnZ", OpType::CnZ, "n-controlled Z gate.")
-          .value(
-                  "ZZMax", OpType::ZZMax,
-                  ":math:`e^{-\\frac{i\\pi}{4}(\\mathrm{Z} \\otimes "
-                  "\\mathrm{Z})}`, a maximally entangling ZZPhase")
-          .value(
-                  "ESWAP", OpType::ESWAP,
-                  ":math:`\\alpha \\mapsto e^{-\\frac12 i\\pi\\alpha \\cdot "
-                  "\\mathrm{SWAP}} = \\left[ \\begin{array}{cccc} "
-                  "e^{-\\frac12 i \\pi\\alpha} & 0 & 0 & 0 \\\\ 0 & "
-                  "\\cos\\frac{\\pi\\alpha}{2} & "
-                  "-i\\sin\\frac{\\pi\\alpha}{2} & 0 \\\\ 0 & "
-                  "-i\\sin\\frac{\\pi\\alpha}{2} & "
-                  "\\cos\\frac{\\pi\\alpha}{2} & 0 \\\\ 0 & 0 & 0 & "
-                  "e^{-\\frac12 i \\pi\\alpha} \\end{array} \\right]`")
-          .value(
-                  "FSim", OpType::FSim,
-                  ":math:`(\\alpha, \\beta) \\mapsto \\left[ "
-                  "\\begin{array}{cccc} 1 & 0 & 0 & 0 \\\\ 0 & "
-                  "\\cos \\pi\\alpha & "
-                  "-i\\sin \\pi\\alpha & 0 \\\\ 0 & "
-                  "-i\\sin \\pi\\alpha & "
-                  "\\cos \\pi\\alpha & 0 \\\\ 0 & 0 & 0 & "
-                  "e^{-i\\pi\\beta} \\end{array} \\right]`")
-          .value(
-                  "Sycamore", OpType::Sycamore,
-                  ":math:`\\mathrm{FSim}(\\frac12, \\frac16)`")
-          .value(
-                  "ISWAPMax", OpType::ISWAPMax,
-                  ":math:`\\mathrm{ISWAP}(1) = \\left[ \\begin{array}{cccc} 1 "
-                  "& 0 & 0 & 0 \\\\ 0 & 0 & i & 0 \\\\ 0 & i & 0 & 0 \\\\ 0 & "
-                  "0 & 0 & 1 \\end{array} \\right]`")
-          .value(
-                  "ClassicalTransform", OpType::ClassicalTransform,
-                  "A general classical operation where all inputs are also outputs")
-          .value(
-                  "WASM", OpType::WASM, "Op containing a classical wasm function call")
-                  /* this optypes are intentionally not in python avilable at the moment
-                  .value("_WASMInput", OpType::WASMInput, "WASM wire input node")
-                  .value("_WASMOutput", OpType::WASMOutput, "WASM wire output node")
-                  .value("_Input", OpType::Input, "Quantum input node of the circuit")
-                  .value("_Output", OpType::Output, "Quantum output node of the circuit")
-                  .value(
-                      "_Create", OpType::Create,
-                      "Quantum node with no predecessors, implicitly in zero state.")
-                  .value(
-                      "_Discard", OpType::Discard,
-                      "Quantum node with no successors, not composable with input nodes of "
-                      "other circuits.")
-                  .value("_ClInput", OpType::ClInput, "Classical input node of the circuit")
-                  .value(
-                      "_ClOutput", OpType::ClOutput, "Classical output node of the
-                  circuit")*/
-          .value(
-                  "SetBits", OpType::SetBits,
-                  "An operation to set some bits to specified values")
-          .value(
-                  "CopyBits", OpType::CopyBits, "An operation to copy some bit values")
-          .value(
-                  "RangePredicate", OpType::RangePredicate,
-                  "A classical predicate defined by a range of values in binary "
-                  "encoding")
-          .value(
-                  "ExplicitPredicate", OpType::ExplicitPredicate,
-                  "A classical predicate defined by a truth table")
-          .value(
-                  "ExplicitModifier", OpType::ExplicitModifier,
-                  "An operation defined by a truth table that modifies one bit")
-          .value(
-                  "MultiBit", OpType::MultiBit,
-                  "A classical operation applied to multiple bits simultaneously")
-          .value(
-                "ClassicalExpBox", OpType::ClassicalExpBox,
-                "A box for holding compound classical operations on Bits.")
-          .value(
-                  "MultiplexorBox", OpType::MultiplexorBox,
-                  "A multiplexor (i.e. uniformly controlled operations)")
-          .value(
-                  "MultiplexedRotationBox", OpType::MultiplexedRotationBox,
-                  "A multiplexed rotation gate (i.e. "
-                  "uniformly controlled single-axis rotations)")
-          .value(
-                  "MultiplexedU2Box", OpType::MultiplexedU2Box,
-                  "A multiplexed U2 gate (i.e. uniformly controlled U2 gate)")
-          .value(
-                  "MultiplexedTensoredU2Box", OpType::MultiplexedTensoredU2Box,
-                  "A multiplexed tensored-U2 gate")
-          .value(
-                  "StatePreparationBox", OpType::StatePreparationBox,
-                  "A box for preparing quantum states using multiplexed-Ry and "
-                  "multiplexed-Rz gates")
-          .value(
-                  "DiagonalBox", OpType::DiagonalBox,
-                  "A box for synthesising a diagonal unitary matrix into a sequence of "
-                  "multiplexed-Rz gates")
-          .def_static(
-                  "from_name", [](const py::str &name) { return json(name).get<OpType>(); },
-                  "Construct from name");
+      m, "OpType",
+      "Enum for available operations compatible with "
+      "tket " CLSOBJS(Circuit) ".",
+      py::arithmetic())
+      .value(
+          "Phase", OpType::Phase,
+          "Global phase: :math:`(\\alpha) \\mapsto \\left[ \\begin{array}{c} "
+          "e^{i\\pi\\alpha} \\end{array} \\right]`")
+      .value(
+          "Z", OpType::Z,
+          "Pauli Z: :math:`\\left[ \\begin{array}{cc} 1 & 0 \\\\ 0 & "
+          "-1 \\end{array} \\right]`")
+      .value(
+          "X", OpType::X,
+          "Pauli X: :math:`\\left[ \\begin{array}{cc} 0 & 1 \\\\ 1 & "
+          "0 \\end{array} \\right]`")
+      .value(
+          "Y", OpType::Y,
+          "Pauli Y: :math:`\\left[ \\begin{array}{cc} 0 & -i \\\\ i & "
+          "0 \\end{array} \\right]`")
+      .value(
+          "S", OpType::S,
+          ":math:`\\left[ \\begin{array}{cc} 1 & 0 \\\\ 0 & i "
+          "\\end{array} \\right] = \\mathrm{U1}(\\frac12)`")
+      .value(
+          "Sdg", OpType::Sdg,
+          ":math:`\\mathrm{S}^{\\dagger} = \\left[ \\begin{array}{cc} "
+          "1 & 0 \\\\ 0 & -i \\end{array} \\right] = "
+          "\\mathrm{U1}(-\\frac12)`")
+      .value(
+          "T", OpType::T,
+          ":math:`\\left[ \\begin{array}{cc} 1 & 0 \\\\ 0 & "
+          "e^{i\\pi/4} \\end{array} \\right] = "
+          "\\mathrm{U1}(\\frac14)`")
+      .value(
+          "Tdg", OpType::Tdg,
+          ":math:`\\mathrm{T}^{\\dagger} = \\left[ \\begin{array}{cc} "
+          "1 & 0 \\\\ 0 & e^{-i\\pi/4} \\end{array} \\right] = "
+          "\\mathrm{U1}(-\\frac14)`")
+      .value(
+          "V", OpType::V,
+          ":math:`\\frac{1}{\\sqrt 2} \\left[ \\begin{array}{cc} 1 & "
+          "-i \\\\ -i & 1 \\end{array} \\right] = "
+          "\\mathrm{Rx}(\\frac12)`")
+      .value(
+          "Vdg", OpType::Vdg,
+          ":math:`\\mathrm{V}^{\\dagger} = \\frac{1}{\\sqrt 2} "
+          "\\left[ \\begin{array}{cc} 1 & i \\\\ i & 1 \\end{array} "
+          "\\right] = \\mathrm{Rx}(-\\frac12)`")
+      .value(
+          "SX", OpType::SX,
+          ":math:`\\frac{1}{2} \\left[ \\begin{array}{cc} 1 + i & "
+          "1 - i \\\\ 1 - i & 1 + i \\end{array} \\right] = "
+          "e^{\\frac{i\\pi}{4}}\\mathrm{Rx}(\\frac12)`")
+      .value(
+          "SXdg", OpType::SXdg,
+          ":math:`\\mathrm{SX}^{\\dagger} = \\frac{1}{2} "
+          "\\left[ \\begin{array}{cc} 1 - i & 1 + i "
+          "\\\\ 1 + i & 1 - i \\end{array} "
+          "\\right] = e^{\\frac{-i\\pi}{4}}\\mathrm{Rx}(-\\frac12)`")
+      .value(
+          "H", OpType::H,
+          "Hadamard gate: :math:`\\frac{1}{\\sqrt 2} \\left[ "
+          "\\begin{array}{cc} 1 & 1 \\\\ 1 & -1 \\end{array} "
+          "\\right]`")
+      .value(
+          "Rx", OpType::Rx,
+          ":math:`(\\alpha) \\mapsto e^{-\\frac12 i \\pi \\alpha "
+          "\\mathrm{X}} = \\left[ \\begin{array}{cc} "
+          "\\cos\\frac{\\pi\\alpha}{2} & "
+          "-i\\sin\\frac{\\pi\\alpha}{2} \\\\ "
+          "-i\\sin\\frac{\\pi\\alpha}{2} & "
+          "\\cos\\frac{\\pi\\alpha}{2} \\end{array} \\right]`")
+      .value(
+          "Ry", OpType::Ry,
+          ":math:`(\\alpha) \\mapsto e^{-\\frac12 i \\pi \\alpha "
+          "\\mathrm{Y}} = \\left[ \\begin{array}{cc} "
+          "\\cos\\frac{\\pi\\alpha}{2} & -\\sin\\frac{\\pi\\alpha}{2} "
+          "\\\\ \\sin\\frac{\\pi\\alpha}{2} & "
+          "\\cos\\frac{\\pi\\alpha}{2} \\end{array} \\right]`")
+      .value(
+          "Rz", OpType::Rz,
+          ":math:`(\\alpha) \\mapsto e^{-\\frac12 i \\pi \\alpha "
+          "\\mathrm{Z}} = \\left[ \\begin{array}{cc} e^{-\\frac12 i "
+          "\\pi\\alpha} & 0 \\\\ 0 & e^{\\frac12 i \\pi\\alpha} "
+          "\\end{array} \\right]`")
+      .value(
+          "U1", OpType::U1,
+          ":math:`(\\lambda) \\mapsto \\mathrm{U3}(0, 0, \\lambda) = "
+          "e^{\\frac12 i\\pi\\lambda} \\mathrm{Rz}(\\lambda)`. "
+          "U-gates are used by IBM. See "
+          "https://qiskit.org/documentation/tutorials/circuits/"
+          "3_summary_of_quantum_operations.html "
+          "for more information on U-gates.")
+      .value(
+          "U2", OpType::U2,
+          ":math:`(\\phi, \\lambda) \\mapsto \\mathrm{U3}(\\frac12, "
+          "\\phi, \\lambda) = e^{\\frac12 i\\pi(\\lambda+\\phi)} "
+          "\\mathrm{Rz}(\\phi) \\mathrm{Ry}(\\frac12) "
+          "\\mathrm{Rz}(\\lambda)`, defined by matrix multiplication")
+      .value(
+          "U3", OpType::U3,
+          ":math:`(\\theta, \\phi, \\lambda) \\mapsto  \\left[ "
+          "\\begin{array}{cc} \\cos\\frac{\\pi\\theta}{2} & "
+          "-e^{i\\pi\\lambda} \\sin\\frac{\\pi\\theta}{2} \\\\ "
+          "e^{i\\pi\\phi} \\sin\\frac{\\pi\\theta}{2} & "
+          "e^{i\\pi(\\lambda+\\phi)} \\cos\\frac{\\pi\\theta}{2} "
+          "\\end{array} \\right] = e^{\\frac12 i\\pi(\\lambda+\\phi)} "
+          "\\mathrm{Rz}(\\phi) \\mathrm{Ry}(\\theta) "
+          "\\mathrm{Rz}(\\lambda)`")
+      .value(
+          "TK1", OpType::TK1,
+          ":math:`(\\alpha, \\beta, \\gamma) \\mapsto "
+          "\\mathrm{Rz}(\\alpha) \\mathrm{Rx}(\\beta) "
+          "\\mathrm{Rz}(\\gamma)`")
+      .value(
+          "TK2", OpType::TK2,
+          ":math:`(\\alpha, \\beta, \\gamma) \\mapsto "
+          "\\mathrm{XXPhase}(\\alpha) "
+          "\\mathrm{YYPhase}(\\beta) "
+          "\\mathrm{ZZPhase}(\\gamma)`")
+      .value("CX", OpType::CX, "Controlled :math:`\\mathrm{X}` gate")
+      .value("CY", OpType::CY, "Controlled :math:`\\mathrm{Y}` gate")
+      .value("CZ", OpType::CZ, "Controlled :math:`\\mathrm{Z}` gate")
+      .value("CH", OpType::CH, "Controlled :math:`\\mathrm{H}` gate")
+      .value("CV", OpType::CV, "Controlled :math:`\\mathrm{V}` gate")
+      .value(
+          "CVdg", OpType::CVdg,
+          "Controlled :math:`\\mathrm{V}^{\\dagger}` gate")
+      .value("CSX", OpType::CSX, "Controlled :math:`\\mathrm{SX}` gate")
+      .value(
+          "CSXdg", OpType::CSXdg,
+          "Controlled :math:`\\mathrm{SX}^{\\dagger}` gate")
+      .value(
+          "CRz", OpType::CRz,
+          ":math:`(\\alpha) \\mapsto` Controlled "
+          ":math:`\\mathrm{Rz}(\\alpha)` gate")
+      .value(
+          "CRx", OpType::CRx,
+          ":math:`(\\alpha) \\mapsto` Controlled "
+          ":math:`\\mathrm{Rx}(\\alpha)` gate")
+      .value(
+          "CRy", OpType::CRy,
+          ":math:`(\\alpha) \\mapsto` Controlled "
+          ":math:`\\mathrm{Ry}(\\alpha)` gate")
+      .value(
+          "CU1", OpType::CU1,
+          ":math:`(\\lambda) \\mapsto` Controlled "
+          ":math:`\\mathrm{U1}(\\lambda)` gate. Note that this is not "
+          "equivalent to a :math:`\\mathrm{CRz}(\\lambda)` up to "
+          "global phase, differing by an extra "
+          ":math:`\\mathrm{Rz}(\\frac{\\lambda}{2})` on the control "
+          "qubit.")
+      .value(
+          "CU3", OpType::CU3,
+          ":math:`(\\theta, \\phi, \\lambda) \\mapsto` Controlled "
+          ":math:`\\mathrm{U3}(\\theta, \\phi, \\lambda)` gate. "
+          "Similar rules apply.")
+      .value("CCX", OpType::CCX, "Toffoli gate")
+      .value(
+          "ECR", OpType::ECR,
+          ":math:`\\frac{1}{\\sqrt 2} \\left[ "
+          "\\begin{array}{cccc} 0 & 0 & 1 & i \\\\"
+          "0 & 0 & i & 1 \\\\"
+          "1 & -i & 0 & 0 \\\\"
+          "-i & 1 & 0 & 0 \\end{array} \\right]`")
+      .value("SWAP", OpType::SWAP, "Swap gate")
+      .value("CSWAP", OpType::CSWAP, "Controlled swap gate")
+      .value(
+          "noop", OpType::noop,
+          "Identity gate. These gates are not permanent and are "
+          "automatically stripped by the compiler")
+      .value(
+          "Barrier", OpType::Barrier,
+          "Meta-operation preventing compilation through it. Not "
+          "automatically stripped by the compiler")
+      .value(
+          "Label", OpType::Label,
+          "Label for control flow jumps. Does not appear within a "
+          "circuit")
+      .value(
+          "Branch", OpType::Branch,
+          "A control flow jump to a label dependent on the value of a "
+          "given Bit. Does not appear within a circuit")
+      .value(
+          "Goto", OpType::Goto,
+          "An unconditional control flow jump to a Label. Does not "
+          "appear within a circuit.")
+      .value(
+          "Stop", OpType::Stop,
+          "Halts execution immediately. Used to terminate a program. "
+          "Does not appear within a circuit.")
+      .value(
+          "BRIDGE", OpType::BRIDGE,
+          "A CX Bridge over 3 qubits. Used to apply a logical CX "
+          "between the first and third qubits when they are not "
+          "adjacent on the device, but both neighbour the second "
+          "qubit. Acts as the identity on the second qubit")
+      .value(
+          "Measure", OpType::Measure,
+          "Z-basis projective measurement, storing the measurement "
+          "outcome in a specified bit")
+      .value(
+          "Reset", OpType::Reset,
+          "Resets the qubit to :math:`\\left|0\\right>`")
+      .value("CircBox", OpType::CircBox, "Represents an arbitrary subcircuit")
+      .value(
+          "PhasePolyBox", OpType::PhasePolyBox,
+          "An operation representing arbitrary circuits made up of CX and Rz "
+          "gates, represented as a phase polynomial together with a boolean "
+          "matrix representing an additional linear transformation.")
+      .value(
+          "Unitary1qBox", OpType::Unitary1qBox,
+          "Represents an arbitrary one-qubit unitary operation by its "
+          "matrix")
+      .value(
+          "Unitary2qBox", OpType::Unitary2qBox,
+          "Represents an arbitrary two-qubit unitary operation by its "
+          "matrix")
+      .value(
+          "Unitary3qBox", OpType::Unitary3qBox,
+          "Represents an arbitrary three-qubit unitary operation by its matrix")
+      .value(
+          "ExpBox", OpType::ExpBox,
+          "A two-qubit operation corresponding to a unitary matrix "
+          "defined as the exponential :math:`e^{itA}` of an arbitrary "
+          "4x4 hermitian matrix :math:`A`.")
+      .value(
+          "PauliExpBox", OpType::PauliExpBox,
+          "An operation defined as the exponential "
+          ":math:`e^{-\\frac{i\\pi\\alpha}{2} P}` of a tensor "
+          ":math:`P` of Pauli operations.")
+      .value(
+          "PauliExpPairBox", OpType::PauliExpPairBox,
+          "An operation defined as a pair"
+          "of exponentials of the form "
+          ":math:`e^{-\\frac{i\\pi\\alpha}{2} P}` of a tensor "
+          ":math:`P` of Pauli operations.")
+      .value(
+          "PauliExpCommutingSetBox", OpType::PauliExpCommutingSetBox,
+          "An operation defined as a set"
+          "of commuting exponentials of the form "
+          ":math:`e^{-\\frac{i\\pi\\alpha}{2} P}` of a tensor "
+          ":math:`P` of Pauli operations.")
+      .value(
+          "QControlBox", OpType::QControlBox,
+          "An arbitrary n-controlled operation")
+      .value(
+          "ToffoliBox", OpType::ToffoliBox,
+          "A permutation of classical basis states")
+      .value(
+          "CustomGate", OpType::CustomGate,
+          ":math:`(\\alpha, \\beta, \\ldots) \\mapsto` A user-defined "
+          "operation, based on a :py:class:`Circuit` :math:`C` with "
+          "parameters :math:`\\alpha, \\beta, \\ldots` substituted in "
+          "place of bound symbolic variables in :math:`C`, as defined "
+          "by the :py:class:`CustomGateDef`.")
+      .value(
+          "Conditional", OpType::Conditional,
+          "An operation to be applied conditionally on the value of "
+          "some classical register")
+      .value(
+          "ISWAP", OpType::ISWAP,
+          ":math:`(\\alpha) \\mapsto e^{\\frac14 i \\pi\\alpha "
+          "(\\mathrm{X} \\otimes \\mathrm{X} + \\mathrm{Y} \\otimes "
+          "\\mathrm{Y})} = \\left[ \\begin{array}{cccc} 1 & 0 & 0 & 0 "
+          "\\\\ 0 & \\cos\\frac{\\pi\\alpha}{2} & "
+          "i\\sin\\frac{\\pi\\alpha}{2} & 0 \\\\ 0 & "
+          "i\\sin\\frac{\\pi\\alpha}{2} & \\cos\\frac{\\pi\\alpha}{2} "
+          "& 0 \\\\ 0 & 0 & 0 & 1 \\end{array} \\right]`")
+      .value(
+          "PhasedISWAP", OpType::PhasedISWAP,
+          ":math:`(p, t) \\mapsto \\left[ \\begin{array}{cccc} 1 & 0 "
+          "& 0 & 0 \\\\ 0 & \\cos\\frac{\\pi t}{2} & "
+          "i\\sin\\frac{\\pi t}{2}e^{2i\\pi p} & 0 \\\\ 0 & "
+          "i\\sin\\frac{\\pi t}{2}e^{-2i\\pi p} & \\cos\\frac{\\pi "
+          "t}{2} & 0 \\\\ 0 & 0 & 0 & 1 \\end{array} \\right]` "
+          "(equivalent to: Rz(p)[0]; Rz(-p)[1]; ISWAP(t); "
+          "Rz(-p)[0]; Rz(p)[1])")
+      .value(
+          "XXPhase", OpType::XXPhase,
+          ":math:`(\\alpha) \\mapsto e^{-\\frac12 i \\pi\\alpha "
+          "(\\mathrm{X} \\otimes \\mathrm{X})} = \\left[ "
+          "\\begin{array}{cccc} \\cos\\frac{\\pi\\alpha}{2} & 0 & 0 & "
+          "-i\\sin\\frac{\\pi\\alpha}{2} \\\\ 0 & "
+          "\\cos\\frac{\\pi\\alpha}{2} & "
+          "-i\\sin\\frac{\\pi\\alpha}{2} & 0 \\\\ 0 & "
+          "-i\\sin\\frac{\\pi\\alpha}{2} & "
+          "\\cos\\frac{\\pi\\alpha}{2} & 0 \\\\ "
+          "-i\\sin\\frac{\\pi\\alpha}{2} & 0 & 0 & "
+          "\\cos\\frac{\\pi\\alpha}{2} \\end{array} \\right]`")
+      .value(
+          "YYPhase", OpType::YYPhase,
+          ":math:`(\\alpha) \\mapsto e^{-\\frac12 i \\pi\\alpha "
+          "(\\mathrm{Y} \\otimes \\mathrm{Y})} = \\left[ "
+          "\\begin{array}{cccc} \\cos\\frac{\\pi\\alpha}{2} & 0 & 0 & "
+          "i\\sin\\frac{\\pi\\alpha}{2} \\\\ 0 & "
+          "\\cos\\frac{\\pi\\alpha}{2} & "
+          "-i\\sin\\frac{\\pi\\alpha}{2} & 0 \\\\ 0 & "
+          "-i\\sin\\frac{\\pi\\alpha}{2} & "
+          "\\cos\\frac{\\pi\\alpha}{2} & 0 \\\\ "
+          "i\\sin\\frac{\\pi\\alpha}{2} & 0 & 0 & "
+          "\\cos\\frac{\\pi\\alpha}{2} \\end{array} \\right]`")
+      .value(
+          "ZZPhase", OpType::ZZPhase,
+          ":math:`(\\alpha) \\mapsto e^{-\\frac12 i \\pi\\alpha "
+          "(\\mathrm{Z} \\otimes \\mathrm{Z})} = \\left[ "
+          "\\begin{array}{cccc} e^{-\\frac12 i \\pi\\alpha} & 0 & 0 & "
+          "0 \\\\ 0 & e^{\\frac12 i \\pi\\alpha} & 0 & 0 \\\\ 0 & 0 & "
+          "e^{\\frac12 i \\pi\\alpha} & 0 \\\\ 0 & 0 & 0 & "
+          "e^{-\\frac12 i \\pi\\alpha} \\end{array} \\right]`")
+      .value(
+          "XXPhase3", OpType::XXPhase3,
+          "A 3-qubit gate XXPhase3(α) consists of pairwise 2-qubit XXPhase(α) "
+          "interactions. "
+          "Equivalent to XXPhase(α)[0, 1] XXPhase(α)[1, 2] XXPhase(α)[0, 2].")
+      .value(
+          "PhasedX", OpType::PhasedX,
+          ":math:`(\\alpha,\\beta) \\mapsto "
+          "\\mathrm{Rz}(\\beta)\\mathrm{Rx}(\\alpha)\\mathrm{Rz}(-"
+          "\\beta)` (matrix-multiplication order)")
+      .value(
+          "NPhasedX", OpType::NPhasedX,
+          ":math:`(\\alpha, \\beta) \\mapsto \\mathrm{PhasedX}(\\alpha, \\beta)"
+          "^{\\otimes n}` (n-qubit gate composed of identical PhasedX in "
+          "parallel.")
+      .value(
+          "CnRy", OpType::CnRy,
+          ":math:`(\\alpha)` := n-controlled "
+          ":math:`\\mathrm{Ry}(\\alpha)` gate.")
+      .value("CnX", OpType::CnX, "n-controlled X gate.")
+      .value("CnY", OpType::CnY, "n-controlled Y gate.")
+      .value("CnZ", OpType::CnZ, "n-controlled Z gate.")
+      .value(
+          "ZZMax", OpType::ZZMax,
+          ":math:`e^{-\\frac{i\\pi}{4}(\\mathrm{Z} \\otimes "
+          "\\mathrm{Z})}`, a maximally entangling ZZPhase")
+      .value(
+          "ESWAP", OpType::ESWAP,
+          ":math:`\\alpha \\mapsto e^{-\\frac12 i\\pi\\alpha \\cdot "
+          "\\mathrm{SWAP}} = \\left[ \\begin{array}{cccc} "
+          "e^{-\\frac12 i \\pi\\alpha} & 0 & 0 & 0 \\\\ 0 & "
+          "\\cos\\frac{\\pi\\alpha}{2} & "
+          "-i\\sin\\frac{\\pi\\alpha}{2} & 0 \\\\ 0 & "
+          "-i\\sin\\frac{\\pi\\alpha}{2} & "
+          "\\cos\\frac{\\pi\\alpha}{2} & 0 \\\\ 0 & 0 & 0 & "
+          "e^{-\\frac12 i \\pi\\alpha} \\end{array} \\right]`")
+      .value(
+          "FSim", OpType::FSim,
+          ":math:`(\\alpha, \\beta) \\mapsto \\left[ "
+          "\\begin{array}{cccc} 1 & 0 & 0 & 0 \\\\ 0 & "
+          "\\cos \\pi\\alpha & "
+          "-i\\sin \\pi\\alpha & 0 \\\\ 0 & "
+          "-i\\sin \\pi\\alpha & "
+          "\\cos \\pi\\alpha & 0 \\\\ 0 & 0 & 0 & "
+          "e^{-i\\pi\\beta} \\end{array} \\right]`")
+      .value(
+          "Sycamore", OpType::Sycamore,
+          ":math:`\\mathrm{FSim}(\\frac12, \\frac16)`")
+      .value(
+          "ISWAPMax", OpType::ISWAPMax,
+          ":math:`\\mathrm{ISWAP}(1) = \\left[ \\begin{array}{cccc} 1 "
+          "& 0 & 0 & 0 \\\\ 0 & 0 & i & 0 \\\\ 0 & i & 0 & 0 \\\\ 0 & "
+          "0 & 0 & 1 \\end{array} \\right]`")
+      .value(
+          "ClassicalTransform", OpType::ClassicalTransform,
+          "A general classical operation where all inputs are also outputs")
+      .value(
+          "WASM", OpType::WASM, "Op containing a classical wasm function call")
+      /* this optypes are intentionally not in python avilable at the moment
+      .value("_WASMInput", OpType::WASMInput, "WASM wire input node")
+      .value("_WASMOutput", OpType::WASMOutput, "WASM wire output node")
+      .value("_Input", OpType::Input, "Quantum input node of the circuit")
+      .value("_Output", OpType::Output, "Quantum output node of the circuit")
+      .value(
+          "_Create", OpType::Create,
+          "Quantum node with no predecessors, implicitly in zero state.")
+      .value(
+          "_Discard", OpType::Discard,
+          "Quantum node with no successors, not composable with input nodes of "
+          "other circuits.")
+      .value("_ClInput", OpType::ClInput, "Classical input node of the circuit")
+      .value(
+          "_ClOutput", OpType::ClOutput, "Classical output node of the
+      circuit")*/
+      .value(
+          "SetBits", OpType::SetBits,
+          "An operation to set some bits to specified values")
+      .value(
+          "CopyBits", OpType::CopyBits, "An operation to copy some bit values")
+      .value(
+          "RangePredicate", OpType::RangePredicate,
+          "A classical predicate defined by a range of values in binary "
+          "encoding")
+      .value(
+          "ExplicitPredicate", OpType::ExplicitPredicate,
+          "A classical predicate defined by a truth table")
+      .value(
+          "ExplicitModifier", OpType::ExplicitModifier,
+          "An operation defined by a truth table that modifies one bit")
+      .value(
+          "MultiBit", OpType::MultiBit,
+          "A classical operation applied to multiple bits simultaneously")
+      .value(
+          "ClassicalExpBox", OpType::ClassicalExpBox,
+          "A box for holding compound classical operations on Bits.")
+      .value(
+          "MultiplexorBox", OpType::MultiplexorBox,
+          "A multiplexor (i.e. uniformly controlled operations)")
+      .value(
+          "MultiplexedRotationBox", OpType::MultiplexedRotationBox,
+          "A multiplexed rotation gate (i.e. "
+          "uniformly controlled single-axis rotations)")
+      .value(
+          "MultiplexedU2Box", OpType::MultiplexedU2Box,
+          "A multiplexed U2 gate (i.e. uniformly controlled U2 gate)")
+      .value(
+          "MultiplexedTensoredU2Box", OpType::MultiplexedTensoredU2Box,
+          "A multiplexed tensored-U2 gate")
+      .value(
+          "StatePreparationBox", OpType::StatePreparationBox,
+          "A box for preparing quantum states using multiplexed-Ry and "
+          "multiplexed-Rz gates")
+      .value(
+          "DiagonalBox", OpType::DiagonalBox,
+          "A box for synthesising a diagonal unitary matrix into a sequence of "
+          "multiplexed-Rz gates")
+      .def_static(
+          "from_name",
+          [](const py::str &name) { return json(name).get<OpType>(); },
+          "Construct from name");
   py::class_<Op, std::shared_ptr<Op>>(
       m, "Op", "Encapsulates operation information")
       .def_static(
@@ -513,12 +512,15 @@ PYBIND11_MODULE(circuit, m) {
           "Create an :py:class:`Op` with given type")
       .def_static(
           "create",
-          [](OpType optype, const ExprVariant& param) { return get_op_ptr(optype, convertVariantToFirstType(param)); },
+          [](OpType optype, const ExprVariant &param) {
+            return get_op_ptr(optype, convertVariantToFirstType(param));
+          },
           "Create an :py:class:`Op` with given type and parameter")
       .def_static(
           "create",
           [](OpType optype, const std::vector<ExprVariant> &params) {
-            return get_op_ptr(optype, convertVariantVectorToFirstTypeVector(params));
+            return get_op_ptr(
+                optype, convertVariantVectorToFirstTypeVector(params));
           },
           "Create an :py:class:`Op` with given type and parameters")
       .def_property_readonly(
@@ -626,14 +628,14 @@ PYBIND11_MODULE(circuit, m) {
       .def_property_readonly("data", &MetaOp::get_data, "Get data from MetaOp");
 
   auto pyCircuit = py::class_<Circuit, std::shared_ptr<Circuit>>(
-          m, "Circuit", py::dynamic_attr(),
-          "Encapsulates a quantum circuit using a DAG representation.\n\n>>> "
-          "from pytket import Circuit\n>>> c = Circuit(4,2) # Create a circuit "
-          "with 4 qubits and 2 classical bits"
-          "\n>>> c.H(0) # Apply a gate to qubit 0\n>>> "
-          "c.Rx(0.5,1) # Angles of rotation are expressed in half-turns "
-          "(i.e. 0.5 means PI/2)\n>>> c.Measure(1,0) # Measure qubit 1, saving "
-          "result in bit 0");
+      m, "Circuit", py::dynamic_attr(),
+      "Encapsulates a quantum circuit using a DAG representation.\n\n>>> "
+      "from pytket import Circuit\n>>> c = Circuit(4,2) # Create a circuit "
+      "with 4 qubits and 2 classical bits"
+      "\n>>> c.H(0) # Apply a gate to qubit 0\n>>> "
+      "c.Rx(0.5,1) # Angles of rotation are expressed in half-turns "
+      "(i.e. 0.5 means PI/2)\n>>> c.Measure(1,0) # Measure qubit 1, saving "
+      "result in bit 0");
   init_boxes(m);
   init_classical(m);
   def_circuit(pyCircuit);

@@ -20,9 +20,9 @@
 
 #include "UnitRegister.hpp"
 #include "binder_json.hpp"
+#include "py_operators.hpp"
 #include "tket/Utils/Json.hpp"
 #include "unit_downcast.hpp"
-#include "py_operators.hpp"
 
 namespace py = pybind11;
 using json = nlohmann::json;
@@ -94,7 +94,8 @@ PYBIND11_MODULE(unit_id, m) {
       .def("__hash__", [](const UnitID &id) { return hash_value(id); })
       .def("__copy__", [](const UnitID &id) { return UnitID(id); })
       .def(
-          "__deepcopy__", [](const UnitID &id, const py::dict&) { return UnitID(id); })
+          "__deepcopy__",
+          [](const UnitID &id, const py::dict &) { return UnitID(id); })
       .def_property_readonly(
           "reg_name", &UnitID::reg_name, "Readable name of register")
       .def_property_readonly(
@@ -148,12 +149,12 @@ PYBIND11_MODULE(unit_id, m) {
                 t[0].cast<std::string>(), t[1].cast<std::vector<unsigned>>());
           }))
       .def(
-          "to_list", [](const Qubit &q) {
-              return py::list(json(q)); },
+          "to_list", [](const Qubit &q) { return py::list(json(q)); },
           ":return: a JSON serializable list representation of "
           "the Qubit")
       .def_static(
-          "from_list", [](const py::list &py_list) { return json(py_list).get<Qubit>(); },
+          "from_list",
+          [](const py::list &py_list) { return json(py_list).get<Qubit>(); },
           "Construct Qubit instance from JSON serializable "
           "list representation of the Qubit.");
 
@@ -187,7 +188,7 @@ PYBIND11_MODULE(unit_id, m) {
           "index\n\n:param name: The readable name for the "
           "register\n:param index: The index vector",
           py::arg("name"), py::arg("index"))
-      .def("__eq__",&py_equals<Bit>)
+      .def("__eq__", &py_equals<Bit>)
       .def("__hash__", [](const Bit &b) { return hash_value(b); })
       .def(
           "to_list", [](const Bit &b) { return py::list(json(b)); },
@@ -195,7 +196,8 @@ PYBIND11_MODULE(unit_id, m) {
           "the Bit."
           "\n\n:return: list containing register name and index")
       .def_static(
-          "from_list", [](const py::list &py_list) { return json(py_list).get<Bit>(); },
+          "from_list",
+          [](const py::list &py_list) { return json(py_list).get<Bit>(); },
           "Construct Bit instance from JSON serializable "
           "list representation of the Bit.");
 
@@ -236,7 +238,8 @@ PYBIND11_MODULE(unit_id, m) {
           ":return: a JSON serializable list representation of "
           "the Node")
       .def_static(
-          "from_list", [](const py::list &py_list) { return json(py_list).get<Node>(); },
+          "from_list",
+          [](const py::list &py_list) { return json(py_list).get<Node>(); },
           "Construct Node instance from JSON serializable "
           "list representation of the Node.");
   declare_register<Bit>(m, bit_reg_name);
