@@ -13,6 +13,8 @@
 # limitations under the License.
 
 import json
+from typing import cast
+
 from jsonschema import validate  # type: ignore
 from pathlib import Path
 import pickle
@@ -50,15 +52,14 @@ from pytket.circuit import (
 )
 from pytket.circuit.display import get_circuit_renderer, render_circuit_as_html
 
-from pytket.pauli import Pauli  # type: ignore
-from pytket.passes import PauliSimp, CliffordSimp, SynthesiseTket, DecomposeBoxes, RemoveRedundancies  # type: ignore
-from pytket.predicates import CompilationUnit  # type: ignore
-from pytket.transform import Transform, PauliSynthStrat  # type: ignore
+from pytket.pauli import Pauli
+from pytket.passes import CliffordSimp, SynthesiseTket, DecomposeBoxes, RemoveRedundancies
+from pytket.transform import Transform
 
 import numpy as np
 from scipy.linalg import block_diag  # type: ignore
 import sympy  # type: ignore
-from sympy import Symbol, pi, sympify, functions  # type: ignore
+from sympy import Symbol, pi, sympify, functions, Expr  # type: ignore
 from math import sqrt
 
 import pytest  # type: ignore
@@ -70,6 +71,17 @@ curr_file_path = Path(__file__).resolve().parent
 
 with open(curr_file_path.parent.parent / "schemas/circuit_v1.json", "r") as f:
     schema = json.load(f)
+
+_0 = bool(0)
+_1 = bool(1)
+
+PhasePolynomial = list[tuple[list[bool], Expr | float]]
+
+
+def phase_polynomials_are_equal(phase_poly_0: PhasePolynomial, phase_poly_1: PhasePolynomial) -> bool:
+    to_compare_0 = {tuple(pair[0]): pair[1] for pair in phase_poly_0}
+    to_compare_1 = {tuple(pair[0]): pair[1] for pair in phase_poly_1}
+    return to_compare_0 == to_compare_1
 
 
 def json_validate(circ: Circuit) -> bool:
@@ -99,6 +111,7 @@ def test_circuit_transpose() -> None:
     commands = c_t.get_commands()
     assert str(commands[0]) == "CX q[0], q[1];"
     assert str(commands[1]) == "Unitary2qBox q[1], q[0];"
+    assert isinstance(commands[1].op, Unitary2qBox)
     assert commands[1].op.get_matrix().all() == u.transpose().all()
 
 
@@ -113,6 +126,7 @@ def test_circuit_dagger() -> None:
     assert str(commands[0]) == "CnRy(3.7) q[0], q[1];"
     assert commands[0].qubits == [Qubit(0), Qubit(1)]
     assert str(commands[1]) == "Unitary2qBox q[1], q[0];"
+    assert isinstance(commands[1].op, Unitary2qBox)
     assert commands[1].op.get_matrix().all() == u.conj().transpose().all()
 
 
@@ -261,14 +275,14 @@ def test_symbolic_ops() -> None:
     c.CRz(beta * 2, 1, 0)
     s_map = {alpha: 0.5, beta: 3.2}
     assert c.is_symbolic()
-    assert c.free_symbols() == set([alpha, beta])
+    assert c.free_symbols() == {alpha, beta}
     c.symbol_substitution(s_map)
     assert not c.is_symbolic()
 
     commands = c.get_commands()
-    assert beta.__str__() == "alpha_1"
-    assert np.allclose(commands[0].op.params, [0.5], atol=1e-10)
-    assert np.allclose(commands[1].op.params, [2.4], atol=1e-10)
+    assert beta.__str__() == "alpha_1"  # type: ignore
+    assert np.allclose(np.asarray(commands[0].op.params), [0.5], atol=1e-10)
+    assert np.allclose(np.asarray(commands[1].op.params), [2.4], atol=1e-10)
 
 
 def test_subst_4() -> None:
@@ -278,12 +292,12 @@ def test_subst_4() -> None:
     a = m / 4
     c.add_gate(OpType.Rx, a, [0])
     c.symbol_substitution({m: 4})
-    angle = c.get_commands()[0].op.params[0]
+    angle = float(c.get_commands()[0].op.params[0])
     assert np.isclose(angle, 1.0)
 
 
 def test_sympy_conversion() -> None:
-    def get_type_tree(expr: sympy.Expr) -> str:
+    def get_type_tree(expr: Expr) -> str:
         # Format e.g. "<class 'sympy.core.numbers.Pi'>" to "Pi"
         tree_str = str(type(expr)).rsplit(".", 1)[-1].split("'")[0]
         if len(expr.args) != 0:
@@ -346,7 +360,7 @@ def test_8x8_matrix_to_circ() -> None:
 
 def test_exp_to_circ() -> None:
     PI = float(pi.evalf())
-    u = np.asarray([[1, 0, 0, 0], [0, -1, 0, 0], [0, 0, -1, 0], [0, 0, 0, 1]]) * -PI / 4
+    u = np.asarray([[1, 0, 0, 0], [0, -1, 0, 0], [0, 0, -1, 0], [0, 0, 0, 1]], dtype=np.complex_) * -PI / 4
     ebox = ExpBox(u, 1.0)
     c = Circuit(2)
     c.add_expbox(ebox, 0, 1)
@@ -464,8 +478,7 @@ def test_boxes() -> None:
     boxes = (cbox, mbox, u2qbox, u3qbox, ebox, pbox, qcbox)
     assert all(box == box for box in boxes)
     assert all(isinstance(box, Op) for box in boxes)
-
-    permutation = {(0, 0): (1, 1), (1, 1): (0, 0)}
+    permutation = [([_0, _0], [_1, _1]), ([_1, _1], [_0, _0])]
     tb = ToffoliBox(permutation)
     assert tb.type == OpType.ToffoliBox
     unitary = tb.get_circuit().get_unitary()
@@ -475,13 +488,13 @@ def test_boxes() -> None:
     assert d.n_gates == 10
 
     # MultiplexorBox, MultiplexedU2Box
-    op_map = {(0, 0): Op.create(OpType.Rz, 0.3), (1, 1): Op.create(OpType.H)}
+    op_map = [([_0, _0], Op.create(OpType.Rz, 0.3)), ([_1, _1], Op.create(OpType.H))]
     multiplexor = MultiplexorBox(op_map)
-    out_op_map = multiplexor.get_op_map()
-    assert all(op_map[key] == out_op_map[key] for key in op_map)
+    out_op_map = multiplexor.get_bitstring_op_pair_list()
+    assert all(op_map[i] == out_op_map[i] for i in range(len(op_map)))
     ucu2_box = MultiplexedU2Box(op_map)
-    out_op_map = ucu2_box.get_op_map()
-    assert all(op_map[key] == out_op_map[key] for key in op_map)
+    out_op_map = ucu2_box.get_bitstring_op_pair_list()
+    assert all(op_map[i] == out_op_map[i] for i in range(len(op_map)))
     c0 = multiplexor.get_circuit()
     DecomposeBoxes().apply(c0)
     unitary0 = c0.get_unitary()
@@ -503,11 +516,11 @@ def test_boxes() -> None:
     d.add_multiplexedu2(ucu2_box, [0, 1, 2])
     assert d.n_gates == 14
     # MultiplexedRotationBox
-    op_map = {(0, 0): Op.create(OpType.Rz, 0.3), (1, 1): Op.create(OpType.Rz, 1.7)}
-    multiplexor = MultiplexedRotationBox(op_map)
-    out_op_map = multiplexor.get_op_map()
-    assert all(op_map[key] == out_op_map[key] for key in op_map)
-    c0 = multiplexor.get_circuit()
+    op_map = [([_0, _0], Op.create(OpType.Rz, 0.3)), ([_1, _1], Op.create(OpType.Rz, 1.7))]
+    multiplexed_rot = MultiplexedRotationBox(op_map)
+    out_op_map = multiplexed_rot.get_bitstring_op_pair_list()
+    assert all(op_map[i] == out_op_map[i] for i in range(len(op_map)))
+    c0 = multiplexed_rot.get_circuit()
     unitary = c0.get_unitary()
     comparison = block_diag(
         Circuit(1).Rz(0.3, 0).get_unitary(),
@@ -516,13 +529,13 @@ def test_boxes() -> None:
         Circuit(1).Rz(1.7, 0).get_unitary(),
     )
     assert np.allclose(unitary, comparison)
-    d.add_multiplexedrotation(multiplexor, [Qubit(0), Qubit(1), Qubit(2)])
-    d.add_multiplexedrotation(multiplexor, [1, 2, 0])
+    d.add_multiplexedrotation(multiplexed_rot, [Qubit(0), Qubit(1), Qubit(2)])
+    d.add_multiplexedrotation(multiplexed_rot, [1, 2, 0])
     assert d.n_gates == 16
-    multiplexor = MultiplexedRotationBox([0.3, 0, 0, 1.7], OpType.Rz)
-    unitary = multiplexor.get_circuit().get_unitary()
+    multiplexed_rot = MultiplexedRotationBox([0.3, 0, 0, 1.7], OpType.Rz)
+    unitary = multiplexed_rot.get_circuit().get_unitary()
     assert np.allclose(unitary, comparison)
-    d.add_multiplexedrotation(multiplexor, [Qubit(0), Qubit(1), Qubit(2)])
+    d.add_multiplexedrotation(multiplexed_rot, [Qubit(0), Qubit(1), Qubit(2)])
     assert d.n_gates == 17
     # StatePreparationBox
     state = np.array([np.sqrt(0.125)] * 8)
@@ -549,11 +562,11 @@ def test_boxes() -> None:
     rz_op = Op.create(OpType.Rz, 0.3)
     pauli_x_op = Op.create(OpType.X)
     pauli_z_op = Op.create(OpType.Z)
-    op_map = {(0, 0): [rz_op, pauli_x_op], (1, 1): [pauli_x_op, pauli_z_op]}
-    multiplexor = MultiplexedTensoredU2Box(op_map)
-    out_op_map = multiplexor.get_op_map()
-    assert all(op_map[key] == out_op_map[key] for key in op_map)
-    c0 = multiplexor.get_circuit()
+    op_map_new = [([_0, _0], [rz_op, pauli_x_op]), ([_1, _1], [pauli_x_op, pauli_z_op])]
+    multiplexU2 = MultiplexedTensoredU2Box(op_map_new)
+    out_op_map_new = multiplexU2.get_bitstring_op_pair_list()
+    assert all(op_map_new[i] == out_op_map_new[i] for i in range(len(op_map_new)))
+    c0 = multiplexU2.get_circuit()
     unitary = c0.get_unitary()
     comparison = block_diag(
         np.kron(rz_op.get_unitary(), pauli_x_op.get_unitary()),
@@ -561,15 +574,15 @@ def test_boxes() -> None:
         np.eye(4),
         np.kron(pauli_x_op.get_unitary(), pauli_z_op.get_unitary()),
     )
-    d.add_multiplexed_tensored_u2(multiplexor, [Qubit(0), Qubit(1), Qubit(2), Qubit(3)])
-    d.add_multiplexed_tensored_u2(multiplexor, [3, 2, 1, 0])
+    d.add_multiplexed_tensored_u2(multiplexU2, [Qubit(0), Qubit(1), Qubit(2), Qubit(3)])
+    d.add_multiplexed_tensored_u2(multiplexU2, [3, 2, 1, 0])
     assert np.allclose(unitary, comparison)
     assert d.n_gates == 23
     assert json_validate(d)
 
 
 def test_tofollibox_strats() -> None:
-    permutation = {(0, 0, 0, 0): (1, 1, 1, 1), (1, 1, 1, 1): (0, 0, 0, 0)}
+    permutation = [([_0, _0, _0, _0], [_1, _1, _1, _1]), ([_1, _1, _1, _1], [_0, _0, _0, _0])]
     tb = ToffoliBox(permutation, ToffoliBoxSynthStrat.Cycle)
     assert tb.type == OpType.ToffoliBox
     assert tb.get_strat() == ToffoliBoxSynthStrat.Cycle
@@ -611,9 +624,9 @@ def test_u1q_stability() -> None:
     op = ubox.get_circuit().get_commands()[0].op
     assert op.type == OpType.TK1
     a, b, c = op.params
-    assert np.isfinite(a)
-    assert np.isfinite(b)
-    assert np.isfinite(c)
+    assert np.isfinite(float(a))
+    assert np.isfinite(float(b))
+    assert np.isfinite(float(c))
 
 
 def test_custom_gates() -> None:
@@ -649,7 +662,7 @@ def test_errors() -> None:
     c.Rz(0.5, 0)
     c.Rz(0, 0)
     with pytest.raises(TypeError):
-        c.Rz(0, "a")
+        c.Rz(0, "a")  # type: ignore
     assert c.get_commands()[0].free_symbols() == set([a])
 
 
@@ -930,7 +943,7 @@ def test_phase_polybox() -> None:
     c = Circuit(1, 1)
     n_qb = 1
     qubit_indices = {Qubit(0): 0}
-    phase_polynomial = {(True,): 0.1}
+    phase_polynomial: PhasePolynomial = [([True], 0.1)]
     linear_transformation = np.array([[1]])
     p_box = PhasePolyBox(n_qb, qubit_indices, phase_polynomial, linear_transformation)
 
@@ -947,8 +960,8 @@ def test_phase_polybox() -> None:
     assert p_box_ii.n_qubits == n_qb
     assert p_box.qubit_indices == qubit_indices
     assert p_box_ii.qubit_indices == qubit_indices
-    assert p_box.phase_polynomial == phase_polynomial
-    assert p_box_ii.phase_polynomial == phase_polynomial
+    assert phase_polynomials_are_equal(cast(PhasePolynomial, p_box.phase_polynomial_as_list), phase_polynomial)
+    assert phase_polynomials_are_equal(cast(PhasePolynomial, p_box_ii.phase_polynomial_as_list), phase_polynomial)
     assert np.array_equal(p_box.linear_transformation, linear_transformation)
     assert np.array_equal(p_box_ii.linear_transformation, linear_transformation)
     assert DecomposeBoxes().apply(c)
@@ -958,7 +971,7 @@ def test_phase_polybox_II() -> None:
     c = Circuit(1, 1)
     n_qb = 1
     qubit_indices = {Qubit(0): 0}
-    phase_polynomial = {(True,): 0.1, (True,): 0.3}
+    phase_polynomial: PhasePolynomial = [([True], 0.1), ([True], 0.3)]
     linear_transformation = np.array([[1]])
     p_box = PhasePolyBox(n_qb, qubit_indices, phase_polynomial, linear_transformation)
 
@@ -975,8 +988,8 @@ def test_phase_polybox_II() -> None:
     assert p_box_ii.n_qubits == n_qb
     assert p_box.qubit_indices == qubit_indices
     assert p_box_ii.qubit_indices == qubit_indices
-    assert p_box.phase_polynomial == phase_polynomial
-    assert p_box_ii.phase_polynomial == phase_polynomial
+    assert phase_polynomials_are_equal(cast(PhasePolynomial, p_box.phase_polynomial_as_list), phase_polynomial)
+    assert phase_polynomials_are_equal(cast(PhasePolynomial, p_box_ii.phase_polynomial_as_list), phase_polynomial)
     assert np.array_equal(p_box.linear_transformation, linear_transformation)
     assert np.array_equal(p_box_ii.linear_transformation, linear_transformation)
     assert DecomposeBoxes().apply(c)
@@ -986,11 +999,11 @@ def test_phase_polybox_big() -> None:
     c = Circuit(3, 3)
     n_qb = 3
     qubit_indices = {Qubit(0): 0, Qubit(1): 1, Qubit(2): 2}
-    phase_polynomial = {
-        (True, False, True): 0.333,
-        (False, False, True): 0.05,
-        (False, True, False): 1.05,
-    }
+    phase_polynomial: PhasePolynomial = [
+        ([True, False, True], 0.333),
+        ([False, False, True], 0.05),
+        ([False, True, False], 1.05),
+    ]
     linear_transformation = np.array([[1, 1, 0], [0, 1, 0], [0, 0, 1]])
     p_box = PhasePolyBox(n_qb, qubit_indices, phase_polynomial, linear_transformation)
 
@@ -1004,8 +1017,8 @@ def test_phase_polybox_big() -> None:
     assert p_box_ii.n_qubits == n_qb
     assert p_box.qubit_indices == qubit_indices
     assert p_box_ii.qubit_indices == qubit_indices
-    assert p_box.phase_polynomial == phase_polynomial
-    assert p_box_ii.phase_polynomial == phase_polynomial
+    assert phase_polynomials_are_equal(cast(PhasePolynomial, p_box.phase_polynomial_as_list), phase_polynomial)
+    assert phase_polynomials_are_equal(cast(PhasePolynomial, p_box_ii.phase_polynomial_as_list), phase_polynomial)
     assert np.array_equal(p_box.linear_transformation, linear_transformation)
     assert np.array_equal(p_box_ii.linear_transformation, linear_transformation)
     assert DecomposeBoxes().apply(c)
