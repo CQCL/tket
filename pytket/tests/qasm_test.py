@@ -19,8 +19,8 @@ from typing import List
 
 import pytest  # type: ignore
 
-from pytket._tket.unit_id import _TEMP_BIT_NAME, _TEMP_BIT_REG_BASE  # type: ignore
-from pytket.circuit import (  # type: ignore
+from pytket._tket.unit_id import _TEMP_BIT_NAME, _TEMP_BIT_REG_BASE
+from pytket.circuit import (
     Circuit,
     OpType,
     fresh_symbol,
@@ -33,6 +33,8 @@ from pytket.circuit import (  # type: ignore
     reg_leq,
     reg_geq,
     if_not_bit,
+    BitRegister,
+    CustomGate
 )
 from pytket.circuit.decompose_classical import DecomposeClassicalError
 from pytket.qasm import (
@@ -51,10 +53,14 @@ from pytket.qasm.includes.load_includes import (
     _write_decls,
     _load_gdict,
 )
-from pytket.transform import Transform  # type: ignore
-from pytket.passes import DecomposeClassicalExp, DecomposeBoxes  # type: ignore
+from pytket.transform import Transform
+from pytket.passes import DecomposeClassicalExp, DecomposeBoxes
 
 curr_file_path = Path(__file__).resolve().parent
+
+
+def register_to_list(br: BitRegister) -> list[Bit]:
+    return [br[i] for i in range(br.size)]
 
 
 def test_qasm_correct() -> None:
@@ -224,8 +230,8 @@ def test_hqs_conditional() -> None:
     d = c.add_c_register("c", 10)
 
     c.add_c_setbits([True], [a[0]])
-    c.add_c_setbits([False, True] + [False] * 6, list(a))
-    c.add_c_setbits([True, True] + [False] * 8, list(b))
+    c.add_c_setbits([False, True] + [False] * 6, register_to_list(a))
+    c.add_c_setbits([True, True] + [False] * 8, register_to_list(b))
 
     c.X(0, condition=reg_eq(a ^ b, 1))
     c.X(0, condition=(a[0] ^ b[0]))
@@ -256,7 +262,7 @@ def test_hqs_conditional() -> None:
         assert "HQS OpenQASM conditions must act on one bit" in str(errorinfo.value)
 
     copy2 = c.copy()
-    copy2.add_c_range_predicate(2, 5, list(d), b[0])
+    copy2.add_c_range_predicate(2, 5, register_to_list(d), b[0])
     with pytest.raises(Exception) as errorinfo:
         circuit_to_qasm_str(copy1, header="hqslib1")
         assert "Range can only be bounded on one side" in str(errorinfo.value)
@@ -506,6 +512,7 @@ def test_custom_gate_with_barrier() -> None:
     assert len(cmds) == 1
     op = cmds[0].op
     assert op.type == OpType.CustomGate
+    assert isinstance(op, CustomGate)
     opcirc = op.get_circuit()
     opcmds = opcirc.get_commands()
     assert len(opcmds) == 1

@@ -561,7 +561,7 @@ def test_postprocess_2() -> None:
 def test_postprocess_3() -> None:
     b = TketSimShotBackend(ignore_measures=True)
     qbs = [Node("qn", i) for i in range(4)]
-    arc = Architecture([[qbs[i], qbs[i + 1]] for i in range(3)])
+    arc = Architecture([(qbs[i], qbs[i + 1]) for i in range(3)])
     c = Circuit(3, 3).H(0).CX(0, 2).measure_all()
 
     mm = MappingManager(arc)
