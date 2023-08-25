@@ -27,7 +27,7 @@ from pytket.passes import (
 )
 
 from pytket.pauli import PauliStabiliser, Pauli
-from simulator import TketSimShotBackend  # type: ignore
+from .simulator import TketSimShotBackend
 
 
 def test_assertion_init() -> None:

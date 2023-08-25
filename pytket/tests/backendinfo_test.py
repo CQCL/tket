@@ -26,7 +26,7 @@ from pytket.backends.backendinfo import BackendInfo, fully_connected_backendinfo
 from pytket.architecture import SquareGrid, RingArch, FullyConnected
 from pytket.circuit import OpType, Node
 
-import strategies as st  # type: ignore
+import tests.strategies as st
 
 
 def test_nodes() -> None:

@@ -12,14 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, Callable, Dict, List, Optional, Tuple, TypeVar
 from collections import Counter
 import hypothesis.strategies as st
-from hypothesis.extra.numpy import arrays
-from hypothesis.strategies import *  # for reexport
 from hypothesis.strategies._internal import SearchStrategy
 from hypothesis.extra.numpy import arrays
-from typing import Any, Callable, Dict, List, Optional, Tuple, TypeVar
+from typing import Any, Callable
 
 import numpy as np
 import re

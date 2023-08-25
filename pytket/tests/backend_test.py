@@ -34,8 +34,8 @@ from pytket.backends.backendresult import BackendResult
 from pytket.backends.backend_exceptions import InvalidResultType, CircuitNotRunError
 from pytket.backends.status import CircuitStatus, StatusEnum
 
-import strategies as st  # type: ignore
-from simulator import TketSimShotBackend, TketSimBackend  # type: ignore
+from .strategies import outcomearrays, backendresults
+from .simulator import TketSimShotBackend, TketSimBackend
 
 
 def test_resulthandle() -> None:
@@ -392,14 +392,14 @@ def test_backendresult_ppcirc_init() -> None:
     assert counts == Counter({(0, 0): 1, (0, 1): 2, (1, 1): 3, (1, 0): 4})
 
 
-@given(st.outcomearrays())
+@given(outcomearrays())
 def test_outcomearray_serialization(outcome: OutcomeArray) -> None:
     serializable = outcome.to_dict()
     assert OutcomeArray.from_dict(serializable) == outcome
     assert json.loads(json.dumps(serializable)) == serializable
 
 
-@given(st.backendresults())
+@given(backendresults())
 def test_backendresult_serialization(backres: BackendResult) -> None:
     serializable = backres.to_dict()
     assert BackendResult.from_dict(serializable) == backres
