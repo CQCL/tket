@@ -46,6 +46,7 @@ from pytket.mapping import (
     MultiGateReorderRoutingMethod,
     BoxDecompositionRoutingMethod,
 )
+from tests.useful_typedefs import ParamType
 
 
 def standard_pass_dict(content: Dict[str, Any]) -> Dict[str, Any]:
@@ -562,7 +563,7 @@ def check_arc_dict(arc: Architecture, d: dict) -> bool:
 
 def test_pass_deserialisation_only() -> None:
     # SquashCustom
-    def sq(a: Expr | float, b: Expr | float, c: Expr | float) -> Circuit:
+    def sq(a: ParamType, b: ParamType, c: ParamType) -> Circuit:
         circ = Circuit(1)
         if c != 0:
             circ.Rz(c, 0)
@@ -593,10 +594,10 @@ def test_pass_deserialisation_only() -> None:
     }
     assert cx.to_dict() == pz_rebase.to_dict()["StandardPass"]["basis_cx_replacement"]
 
-    def tk2_rep(a: Expr | float, b: Expr | float, c: Expr | float) -> Circuit:
+    def tk2_rep(a: ParamType, b: ParamType, c: ParamType) -> Circuit:
         return Circuit(2).ZZPhase(c, 0, 1).YYPhase(b, 0, 1).XXPhase(a, 0, 1)
 
-    def tk1_rep(a: Expr | float, b: Expr | float, c: Expr | float) -> Circuit:
+    def tk1_rep(a: ParamType, b: ParamType, c: ParamType) -> Circuit:
         return Circuit(1).Rz(c, 0).Rx(b, 0).Rz(a, 0)
 
     # RebaseCustomViaTK2

@@ -46,10 +46,12 @@ from pytket.architecture import Architecture
 from pytket.mapping import MappingManager, LexiRouteRoutingMethod, LexiLabellingMethod
 from pytket.placement import Placement, GraphPlacement, LinePlacement, NoiseAwarePlacement
 
-from sympy import Symbol, Expr
+from sympy import Symbol
 import numpy as np
 import json
 import pytest
+
+from tests.useful_typedefs import ParamType
 
 
 def get_test_circuit() -> Circuit:
@@ -1074,7 +1076,7 @@ def test_auto_squash() -> None:
         for gate in itertools.islice(itertools.cycle(gateset), 5):
             # make a sequence of 5 gates from gateset to make sure squash does
             # something
-            params: List[float | Expr] = []
+            params: List[ParamType] = []
             while True:
                 try:
                     circ.add_gate(gate, params, [0])
@@ -1112,7 +1114,7 @@ def test_custom_pass() -> None:
             c1.add_c_register(c_reg.name, c_reg.size)
         for cmd in c.get_commands():
             op = cmd.op
-            params: list[Expr | float] = [param if abs(param) >= 0.01 else 0.0 for param in op.params]
+            params: list[ParamType] = [param if abs(param) >= 0.01 else 0.0 for param in op.params]
             c1.add_gate(op.type, params, cmd.args)
         return c1
 

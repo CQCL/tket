@@ -66,6 +66,7 @@ import pytest  # type: ignore
 
 from hypothesis import given, settings
 import strategies as st  # type: ignore
+from tests.useful_typedefs import ParamType
 
 curr_file_path = Path(__file__).resolve().parent
 
@@ -75,7 +76,7 @@ with open(curr_file_path.parent.parent / "schemas/circuit_v1.json", "r") as f:
 _0 = bool(0)
 _1 = bool(1)
 
-PhasePolynomial = list[tuple[list[bool], Expr | float]]
+PhasePolynomial = list[tuple[list[bool], ParamType]]
 
 
 def phase_polynomials_are_equal(phase_poly_0: PhasePolynomial, phase_poly_1: PhasePolynomial) -> bool:
