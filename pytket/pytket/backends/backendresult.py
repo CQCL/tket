@@ -34,7 +34,7 @@ import warnings
 
 import numpy as np
 
-from pytket.circuit import (  # type: ignore
+from pytket.circuit import (
     BasisOrder,
     Bit,
     Circuit,

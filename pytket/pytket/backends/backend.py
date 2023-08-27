@@ -31,11 +31,13 @@ from types import ModuleType
 
 from typing_extensions import Literal
 
-from pytket.circuit import Bit, Circuit, OpType  # type: ignore
-from pytket.passes import BasePass  # type: ignore
-from pytket.predicates import Predicate  # type: ignore
+from pytket.circuit import Bit, Circuit, OpType
+from pytket.passes import BasePass
+from pytket.pauli import QubitPauliString
+from pytket.predicates import Predicate
 from pytket.utils.outcomearray import OutcomeArray
 from pytket.utils.results import KwargTypes
+from pytket.utils import QubitPauliOperator
 
 from .backend_exceptions import (
     CircuitNotValidError,
@@ -45,8 +47,6 @@ from .backendinfo import BackendInfo
 from .backendresult import BackendResult
 from .resulthandle import ResultHandle, ResultIdTuple
 from .status import CircuitStatus
-from .._tket.pauli import QubitPauliString
-from ..utils import QubitPauliOperator
 
 ResultCache = Dict[str, Any]
 

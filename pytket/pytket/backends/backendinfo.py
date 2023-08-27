@@ -18,7 +18,7 @@ from dataclasses import dataclass, field, asdict
 from typing import Any, Dict, List, Optional, Set, cast, Tuple, Union
 
 from pytket.architecture import Architecture, FullyConnected
-from pytket.circuit import Node, OpType  # type: ignore
+from pytket.circuit import Node, OpType
 
 _OpTypeErrs = Dict[OpType, float]
 _Edge = Tuple[Node, Node]

@@ -18,7 +18,7 @@ from typing import Dict, List, Any
 from math import floor, pi, sqrt, cos, sin
 import sympy  # type: ignore
 import numpy as np
-from pytket.zx import ZXDiagram, ZXType, ZXVert, ZXGen, PhasedGen, CliffordGen, DirectedGen, ZXBox, QuantumType, Rewrite  # type: ignore
+from pytket.zx import ZXDiagram, ZXType, ZXVert, ZXGen, PhasedGen, CliffordGen, DirectedGen, ZXBox, QuantumType, Rewrite
 
 try:
     import quimb.tensor as qtn  # type: ignore

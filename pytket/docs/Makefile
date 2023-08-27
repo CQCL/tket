@@ -17,5 +17,15 @@ help:
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
 %: Makefile
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
-	find build/html/ -type f -name *.html | xargs sed -i 's/pytket._tket/pytket/g'
+	find build/html/ -type f -name "*.html" | xargs sed -i 's/pytket._tket.unit_id/pytket.circuit/g'
+	find build/html/ -type f -name "*.html" | xargs sed -i 's/pytket._tket/pytket/g'
+	sed -i 's/pytket._tket.unit_id/pytket.circuit/g' build/html/searchindex.js
 	sed -i 's/pytket._tket/pytket/g' build/html/searchindex.js
+
+# for local builds on mac (mac sed is slightly different)
+html-mac:
+	@$(SPHINXBUILD) -M html "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O)
+	find build/html/ -type f -name "*.html" | xargs sed -e 's/pytket._tket.unit_id/pytket.circuit/g' -i ""
+	find build/html/ -type f -name "*.html" | xargs sed -e 's/pytket._tket/pytket/g' -i ""
+	sed -e 's/pytket._tket.unit_id/pytket.circuit/g' -i "" build/html/searchindex.js
+	sed -e 's/pytket._tket/pytket/g' -i "" build/html/searchindex.js
