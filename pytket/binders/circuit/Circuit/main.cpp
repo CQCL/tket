@@ -565,7 +565,8 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "Saves a visualisation of a circuit's DAG to a \".dot\" file",
           py::arg("filename"))
       .def(
-          "to_dict", [](const Circuit &c) { return py::dict(json(c)); },
+          "to_dict",
+          [](const Circuit &c) { return py::object(json(c)).cast<py::dict>(); },
           ":return: a JSON serializable dictionary representation of "
           "the Circuit")
       .def_static(

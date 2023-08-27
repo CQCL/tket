@@ -149,7 +149,8 @@ PYBIND11_MODULE(unit_id, m) {
                 t[0].cast<std::string>(), t[1].cast<std::vector<unsigned>>());
           }))
       .def(
-          "to_list", [](const Qubit &q) { return py::list(json(q)); },
+          "to_list",
+          [](const Qubit &q) { return py::object(json(q)).cast<py::list>(); },
           ":return: a JSON serializable list representation of "
           "the Qubit")
       .def_static(
@@ -191,7 +192,15 @@ PYBIND11_MODULE(unit_id, m) {
       .def("__eq__", &py_equals<Bit>)
       .def("__hash__", [](const Bit &b) { return hash_value(b); })
       .def(
-          "to_list", [](const Bit &b) { return py::list(json(b)); },
+          "to_list",
+          [](const Bit &b) {
+            json j = b;
+            py::list py_list;
+            for (const auto &j_item : j) {
+              py_list.append(j_item);
+            }
+            return py_list;
+          },
           "Return a JSON serializable list representation of "
           "the Bit."
           "\n\n:return: list containing register name and index")
@@ -234,7 +243,8 @@ PYBIND11_MODULE(unit_id, m) {
           "register\n:param index: The index vector",
           py::arg("name"), py::arg("index"))
       .def(
-          "to_list", [](const Node &n) { return py::list(json(n)); },
+          "to_list",
+          [](const Node &n) { return py::object(json(n)).cast<py::list>(); },
           ":return: a JSON serializable list representation of "
           "the Node")
       .def_static(

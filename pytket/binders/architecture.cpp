@@ -77,7 +77,9 @@ PYBIND11_MODULE(architecture, m) {
           "UnitIDs. ")
       .def(
           "to_dict",
-          [](const Architecture &arch) { return py::dict(json(arch)); },
+          [](const Architecture &arch) {
+            return py::object(json(arch)).cast<py::dict>();
+          },
           "Return a JSON serializable dict representation of "
           "the Architecture."
           "\n\n:return: dict containing nodes and links.")
@@ -201,7 +203,9 @@ PYBIND11_MODULE(architecture, m) {
           "All nodes of the architecture as :py:class:`Node` objects.")
       .def(
           "to_dict",
-          [](const FullyConnected &arch) { return py::dict(json(arch)); },
+          [](const FullyConnected &arch) {
+            return py::object(json(arch)).cast<py::dict>();
+          },
           "JSON-serializable dict representation of the architecture."
           "\n\n"
           ":return: dict containing nodes")

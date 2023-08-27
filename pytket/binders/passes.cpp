@@ -256,7 +256,7 @@ PYBIND11_MODULE(passes, m) {
       .def(
           "to_dict",
           [](const BasePass &base_pass) {
-            return py::dict(base_pass.get_config());
+            return py::object(base_pass.get_config()).cast<py::dict>();
           },
           ":return: A JSON serializable dictionary representation of the Pass.")
       .def_static(

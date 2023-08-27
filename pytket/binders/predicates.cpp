@@ -88,7 +88,7 @@ PYBIND11_MODULE(predicates, m) {
       .def(
           "to_dict",
           [](const PredicatePtr &predicate) {
-            return py::dict(json(predicate));
+            return py::object(json(predicate)).cast<py::dict>();
           },
           "Return a JSON serializable dict representation of "
           "the Predicate.\n\n"

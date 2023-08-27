@@ -91,7 +91,7 @@ PYBIND11_MODULE(partition, m) {
       .def(
           "to_dict",
           [](const MeasurementSetup::MeasurementBitMap &map) {
-            return py::dict(json(map));
+            return py::object(json(map)).cast<py::dict>();
           },
           "JSON-serializable dict representation of the MeasurementBitMap."
           "\n\n:return: dict representation of the MeasurementBitMap")
@@ -138,7 +138,9 @@ PYBIND11_MODULE(partition, m) {
           ":return: True or False")
       .def(
           "to_dict",
-          [](const MeasurementSetup &setup) { return py::dict(json(setup)); },
+          [](const MeasurementSetup &setup) {
+            return py::object(json(setup)).cast<py::dict>();
+          },
           "JSON-serializable dict representation of the MeasurementSetup."
           "\n\n:return: dict representation of the MeasurementSetup")
       .def_static(

@@ -454,7 +454,10 @@ void init_boxes(py::module &m) {
       .def(
           "to_dict",
           [](const CompositeGateDef &c) {
-            return py::dict(json(std::make_shared<CompositeGateDef>(c)));
+            return py::object(json(std::make_shared<CompositeGateDef>(c)))
+                .
+
+                cast<py::dict>();
           },
           ":return: a JSON serializable dictionary representation of "
           "the CustomGateDef")
