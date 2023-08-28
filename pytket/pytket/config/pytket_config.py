@@ -14,7 +14,7 @@
 
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Any, ClassVar, Dict, Optional, Type, TypeVar
+from typing import Any, ClassVar, Dict, Optional
 from dataclasses import asdict, dataclass
 import json
 import os
@@ -85,7 +85,6 @@ def load_config_file() -> PytketConfig:
 def write_config_file(config: PytketConfig) -> None:
     """Write config to default file path."""
     config.write_file(get_config_file_path())
-
 
 
 @dataclass

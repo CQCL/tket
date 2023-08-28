@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import copy
-from typing import cast, Dict, TYPE_CHECKING, Union, List, Optional, Set, Any
+from typing import Dict, TYPE_CHECKING, Union, List, Optional, Set, Any
 
 import numpy
 import numpy as np
@@ -291,7 +291,6 @@ class QubitPauliOperator:
             for pauli, coeff in self._dict.items()
         )
 
-
     def dot_state(
         self, state: np.ndarray, qubits: Optional[List[Qubit]] = None
     ) -> np.ndarray:
@@ -312,7 +311,7 @@ class QubitPauliOperator:
         :rtype: numpy.ndarray
         """
         if qubits:
-            product_sum =  sum(
+            product_sum = sum(
                 complex(coeff) * pauli.dot_state(state, qubits)
                 for pauli, coeff in self._dict.items()
             )

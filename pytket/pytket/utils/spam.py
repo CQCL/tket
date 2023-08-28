@@ -47,7 +47,9 @@ def compress_counts(
     :return: Filtered counts
     :rtype: CountsDict
     """
-    valprocess: Callable[[float], Union[int, float]] = lambda x: int(round(x)) if round_to_int else x
+    valprocess: Callable[[float], Union[int, float]] = (
+        lambda x: int(round(x)) if round_to_int else x
+    )
     processed_pairs = (
         (key, valprocess(val)) for key, val in counts.items() if val > tol
     )

@@ -13,7 +13,16 @@
 # limitations under the License.
 import sympy
 
-from pytket.circuit import Circuit, OpType, Op, PauliExpBox, Unitary2qBox, Node, Qubit, UnitID
+from pytket.circuit import (
+    Circuit,
+    OpType,
+    Op,
+    PauliExpBox,
+    Unitary2qBox,
+    Node,
+    Qubit,
+    UnitID,
+)
 from pytket.pauli import Pauli
 from pytket.passes import (
     SequencePass,

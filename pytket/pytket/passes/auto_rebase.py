@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Set, Callable, Dict, FrozenSet, Union
+from typing import Set, Callable, Dict, FrozenSet
 from pytket.circuit import Circuit, OpType
 import pytket._tket.circuit_library as _library
 from pytket.passes import RebaseCustom, SquashCustom, SquashRzPhasedX

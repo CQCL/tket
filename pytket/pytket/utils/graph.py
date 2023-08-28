@@ -223,7 +223,7 @@ class Graph:
                         for i in range(n_ports):
                             c.node(name=str((node, i)), xlabel=str(i), **port_node_attr)
         edge_colors = {
-            EdgeType.Quantum:  q_color,
+            EdgeType.Quantum: q_color,
             EdgeType.Boolean: b_color,
             EdgeType.Classical: c_color,
             EdgeType.WASM: w_color,

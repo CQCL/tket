@@ -169,7 +169,7 @@ class CircuitRenderer:
                 display,
             )  # pylint: disable=C0415
 
-            display(HTML(html)) # type: ignore
+            display(HTML(html))  # type: ignore
             return None
         return html
 

@@ -499,7 +499,9 @@ def test_registers(reg: Union[BitRegister, QubitRegister], index: int) -> None:
     if index < reg.size:
         assert reg[index] == unit_type(reg.name, index)
 
-    assert [reg[i] for i in range(reg.size)] == [unit_type(reg.name, i) for i in range(reg.size)]
+    assert [reg[i] for i in range(reg.size)] == [
+        unit_type(reg.name, i) for i in range(reg.size)
+    ]
 
 
 @strategies.composite
@@ -914,7 +916,9 @@ def test_decomposition_known() -> None:
     conditioned_circ.Z(qreg[5], condition_bits=[temp_bits[6]], condition_value=1)
     conditioned_circ.add_c_range_predicate(0, 6, registers_lists[4], temp_bits[7])
     conditioned_circ.S(qreg[6], condition_bits=[temp_bits[7]], condition_value=1)
-    conditioned_circ.add_c_range_predicate( 3, 4294967295, registers_lists[5], temp_bits[8] )
+    conditioned_circ.add_c_range_predicate(
+        3, 4294967295, registers_lists[5], temp_bits[8]
+    )
     conditioned_circ.T(qreg[7], condition_bits=[temp_bits[8]], condition_value=1)
 
     temp_reg_bits = [temp_reg(0)[i] for i in range(3)][:3]
@@ -977,7 +981,9 @@ def test_decomposition_known() -> None:
     decomposed_circ.add_c_or_to_registers(
         temp_reg(0), BitRegister(temp_reg(1).name, 3), temp_reg(0)
     )
-    decomposed_circ.add_c_range_predicate(3, 3, register_to_list(temp_reg(0))[:3], temp_bits[9])
+    decomposed_circ.add_c_range_predicate(
+        3, 3, register_to_list(temp_reg(0))[:3], temp_bits[9]
+    )
     decomposed_circ.CX(
         qreg[3], qreg[4], condition_bits=[temp_bits[9]], condition_value=1
     )
@@ -1126,10 +1132,14 @@ def test_arithmetic_ops() -> None:
     commands = circ.get_commands()
     assert all(com.op.type == OpType.ClassicalExpBox for com in commands)
 
-    assert commands[0].args == register_to_list(b) + register_to_list(c) + register_to_list(a)
+    assert commands[0].args == register_to_list(b) + register_to_list(
+        c
+    ) + register_to_list(a)
     assert commands[1].args == register_to_list(b) + register_to_list(c)
     assert commands[2].args == register_to_list(c) + register_to_list(b)
-    assert commands[3].args == register_to_list(b) + register_to_list(c) + register_to_list(a)
+    assert commands[3].args == register_to_list(b) + register_to_list(
+        c
+    ) + register_to_list(a)
 
     ops = [com.op for com in commands]
     assert isinstance(ops[0], ClassicalExpBox)

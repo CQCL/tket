@@ -53,7 +53,12 @@ from pytket.circuit import (
 from pytket.circuit.display import get_circuit_renderer, render_circuit_as_html
 
 from pytket.pauli import Pauli
-from pytket.passes import CliffordSimp, SynthesiseTket, DecomposeBoxes, RemoveRedundancies
+from pytket.passes import (
+    CliffordSimp,
+    SynthesiseTket,
+    DecomposeBoxes,
+    RemoveRedundancies,
+)
 from pytket.transform import Transform
 
 import numpy as np
@@ -79,7 +84,9 @@ _1 = bool(1)
 PhasePolynomial = list[tuple[list[bool], ParamType]]
 
 
-def phase_polynomials_are_equal(phase_poly_0: PhasePolynomial, phase_poly_1: PhasePolynomial) -> bool:
+def phase_polynomials_are_equal(
+    phase_poly_0: PhasePolynomial, phase_poly_1: PhasePolynomial
+) -> bool:
     to_compare_0 = {tuple(pair[0]): pair[1] for pair in phase_poly_0}
     to_compare_1 = {tuple(pair[0]): pair[1] for pair in phase_poly_1}
     return to_compare_0 == to_compare_1
@@ -363,7 +370,14 @@ def test_8x8_matrix_to_circ() -> None:
 
 def test_exp_to_circ() -> None:
     PI = float(pi.evalf())
-    u = np.asarray([[1, 0, 0, 0], [0, -1, 0, 0], [0, 0, -1, 0], [0, 0, 0, 1]], dtype=np.complex_) * -PI / 4
+    u = (
+        np.asarray(
+            [[1, 0, 0, 0], [0, -1, 0, 0], [0, 0, -1, 0], [0, 0, 0, 1]],
+            dtype=np.complex_,
+        )
+        * -PI
+        / 4
+    )
     ebox = ExpBox(u, 1.0)
     c = Circuit(2)
     c.add_expbox(ebox, 0, 1)
@@ -519,7 +533,10 @@ def test_boxes() -> None:
     d.add_multiplexedu2(ucu2_box, [0, 1, 2])
     assert d.n_gates == 14
     # MultiplexedRotationBox
-    op_map = [([_0, _0], Op.create(OpType.Rz, 0.3)), ([_1, _1], Op.create(OpType.Rz, 1.7))]
+    op_map = [
+        ([_0, _0], Op.create(OpType.Rz, 0.3)),
+        ([_1, _1], Op.create(OpType.Rz, 1.7)),
+    ]
     multiplexed_rot = MultiplexedRotationBox(op_map)
     out_op_map = multiplexed_rot.get_bitstring_op_pair_list()
     assert all(op_map[i] == out_op_map[i] for i in range(len(op_map)))
@@ -585,7 +602,10 @@ def test_boxes() -> None:
 
 
 def test_tofollibox_strats() -> None:
-    permutation = [([_0, _0, _0, _0], [_1, _1, _1, _1]), ([_1, _1, _1, _1], [_0, _0, _0, _0])]
+    permutation = [
+        ([_0, _0, _0, _0], [_1, _1, _1, _1]),
+        ([_1, _1, _1, _1], [_0, _0, _0, _0]),
+    ]
     tb = ToffoliBox(permutation, ToffoliBoxSynthStrat.Cycle)
     assert tb.type == OpType.ToffoliBox
     assert tb.get_strat() == ToffoliBoxSynthStrat.Cycle
@@ -963,8 +983,12 @@ def test_phase_polybox() -> None:
     assert p_box_ii.n_qubits == n_qb
     assert p_box.qubit_indices == qubit_indices
     assert p_box_ii.qubit_indices == qubit_indices
-    assert phase_polynomials_are_equal(cast(PhasePolynomial, p_box.phase_polynomial_as_list), phase_polynomial)
-    assert phase_polynomials_are_equal(cast(PhasePolynomial, p_box_ii.phase_polynomial_as_list), phase_polynomial)
+    assert phase_polynomials_are_equal(
+        cast(PhasePolynomial, p_box.phase_polynomial_as_list), phase_polynomial
+    )
+    assert phase_polynomials_are_equal(
+        cast(PhasePolynomial, p_box_ii.phase_polynomial_as_list), phase_polynomial
+    )
     assert np.array_equal(p_box.linear_transformation, linear_transformation)
     assert np.array_equal(p_box_ii.linear_transformation, linear_transformation)
     assert DecomposeBoxes().apply(c)
@@ -991,8 +1015,12 @@ def test_phase_polybox_II() -> None:
     assert p_box_ii.n_qubits == n_qb
     assert p_box.qubit_indices == qubit_indices
     assert p_box_ii.qubit_indices == qubit_indices
-    assert phase_polynomials_are_equal(cast(PhasePolynomial, p_box.phase_polynomial_as_list), phase_polynomial)
-    assert phase_polynomials_are_equal(cast(PhasePolynomial, p_box_ii.phase_polynomial_as_list), phase_polynomial)
+    assert phase_polynomials_are_equal(
+        cast(PhasePolynomial, p_box.phase_polynomial_as_list), phase_polynomial
+    )
+    assert phase_polynomials_are_equal(
+        cast(PhasePolynomial, p_box_ii.phase_polynomial_as_list), phase_polynomial
+    )
     assert np.array_equal(p_box.linear_transformation, linear_transformation)
     assert np.array_equal(p_box_ii.linear_transformation, linear_transformation)
     assert DecomposeBoxes().apply(c)
@@ -1020,8 +1048,12 @@ def test_phase_polybox_big() -> None:
     assert p_box_ii.n_qubits == n_qb
     assert p_box.qubit_indices == qubit_indices
     assert p_box_ii.qubit_indices == qubit_indices
-    assert phase_polynomials_are_equal(cast(PhasePolynomial, p_box.phase_polynomial_as_list), phase_polynomial)
-    assert phase_polynomials_are_equal(cast(PhasePolynomial, p_box_ii.phase_polynomial_as_list), phase_polynomial)
+    assert phase_polynomials_are_equal(
+        cast(PhasePolynomial, p_box.phase_polynomial_as_list), phase_polynomial
+    )
+    assert phase_polynomials_are_equal(
+        cast(PhasePolynomial, p_box_ii.phase_polynomial_as_list), phase_polynomial
+    )
     assert np.array_equal(p_box.linear_transformation, linear_transformation)
     assert np.array_equal(p_box_ii.linear_transformation, linear_transformation)
     assert DecomposeBoxes().apply(c)

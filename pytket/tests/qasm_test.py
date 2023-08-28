@@ -34,7 +34,7 @@ from pytket.circuit import (
     reg_geq,
     if_not_bit,
     BitRegister,
-    CustomGate
+    CustomGate,
 )
 from pytket.circuit.decompose_classical import DecomposeClassicalError
 from pytket.qasm import (

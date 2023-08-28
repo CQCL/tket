@@ -100,7 +100,12 @@ def route_subcircuit_func(
 
             replacement_circuit.add_gate(com.op.type, cast(list[UnitID], rp_qubits))
 
-    return True, replacement_circuit, cast(dict[UnitID, UnitID], relabelling_map), cast(dict[UnitID, UnitID], permutation_map)
+    return (
+        True,
+        replacement_circuit,
+        cast(dict[UnitID, UnitID], relabelling_map),
+        cast(dict[UnitID, UnitID], permutation_map),
+    )
 
 
 def route_subcircuit_func_false(
@@ -133,7 +138,9 @@ def test_AASRouteRoutingMethod() -> None:
     qubit_indices = {Qubit(0): 0, Qubit(1): 1, Qubit(2): 2}
     phase_polynomial = [([True, False, True], 0.333), ([False, False, True], 0.05)]
     linear_transformation = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-    p_box = PhasePolyBox(n_qb, qubit_indices, list(phase_polynomial), linear_transformation)
+    p_box = PhasePolyBox(
+        n_qb, qubit_indices, list(phase_polynomial), linear_transformation
+    )
 
     test_c.add_phasepolybox(p_box, [0, 1, 2])
 
@@ -158,7 +165,9 @@ def test_AASRouteRoutingMethod_2() -> None:
     qubit_indices = {Qubit(0): 0, Qubit(1): 1, Qubit(2): 2}
     phase_polynomial = [([True, False, False], 0.333)]
     linear_transformation = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-    p_box = PhasePolyBox(n_qb, qubit_indices, list(phase_polynomial), linear_transformation)
+    p_box = PhasePolyBox(
+        n_qb, qubit_indices, list(phase_polynomial), linear_transformation
+    )
 
     test_c.add_phasepolybox(p_box, [0, 1, 2])
 
@@ -187,7 +196,9 @@ def test_AASRouteRoutingMethod_3() -> None:
     qubit_indices = {Qubit(0): 0, Qubit(1): 1, Qubit(2): 2}
     phase_polynomial = [([True, True, False], 0.333)]
     linear_transformation = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-    p_box = PhasePolyBox(n_qb, qubit_indices, list(phase_polynomial), linear_transformation)
+    p_box = PhasePolyBox(
+        n_qb, qubit_indices, list(phase_polynomial), linear_transformation
+    )
 
     test_c.add_phasepolybox(p_box, [0, 1, 2])
 
@@ -218,7 +229,9 @@ def test_AASRouteRoutingMethod_4() -> None:
     qubit_indices = {Qubit(0): 0, Qubit(1): 1, Qubit(2): 2}
     phase_polynomial = [([True, True, False], 0.333)]
     linear_transformation = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-    p_box = PhasePolyBox(n_qb, qubit_indices, list(phase_polynomial), linear_transformation)
+    p_box = PhasePolyBox(
+        n_qb, qubit_indices, list(phase_polynomial), linear_transformation
+    )
 
     test_c.add_phasepolybox(p_box, [0, 1, 2])
     test_c.CX(0, 1)

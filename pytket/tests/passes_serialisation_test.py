@@ -62,7 +62,7 @@ def repeat_pass_dict(content: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def repeat_until_satisfied_pass_dict(
-        content: Dict[str, Any], pred: Dict[str, Any]
+    content: Dict[str, Any], pred: Dict[str, Any]
 ) -> Dict[str, Any]:
     return {
         "RepeatUntilSatisfiedPass": {"body": content, "predicate": pred},
@@ -418,7 +418,7 @@ predicate_validator = Draft7Validator(
 
 
 def check_pass_serialisation(
-        serialised_pass: Dict[str, Any], check_roundtrip: bool = True
+    serialised_pass: Dict[str, Any], check_roundtrip: bool = True
 ) -> None:
     # Check the JSON is valid
     pass_validator.validate(serialised_pass)
@@ -601,7 +601,11 @@ def test_pass_deserialisation_only() -> None:
         return Circuit(1).Rz(c, 0).Rx(b, 0).Rz(a, 0)
 
     # RebaseCustomViaTK2
-    rebase = RebaseCustom({OpType.XXPhase, OpType.YYPhase, OpType.ZZPhase, OpType.Rx, OpType.Rz}, tk2_rep, tk1_rep)
+    rebase = RebaseCustom(
+        {OpType.XXPhase, OpType.YYPhase, OpType.ZZPhase, OpType.Rx, OpType.Rz},
+        tk2_rep,
+        tk1_rep,
+    )
     assert rebase.to_dict()["StandardPass"]["name"] == "RebaseCustomViaTK2"
     assert set(rebase.to_dict()["StandardPass"]["basis_allowed"]) == {
         "XXPhase",
@@ -688,12 +692,12 @@ def test_pass_deserialisation_only() -> None:
     assert aasrou_pass.to_dict()["StandardPass"]["name"] == "AASRoutingPass"
     assert check_arc_dict(arc, aasrou_pass.to_dict()["StandardPass"]["architecture"])
     assert (
-            comppba_plac_pass.get_sequence()[0].to_dict()["StandardPass"]["name"]
-            == "ComposePhasePolyBoxes"
+        comppba_plac_pass.get_sequence()[0].to_dict()["StandardPass"]["name"]
+        == "ComposePhasePolyBoxes"
     )
     assert (
-            comppba_plac_pass.get_sequence()[1].to_dict()["StandardPass"]["name"]
-            == "PlacementPass"
+        comppba_plac_pass.get_sequence()[1].to_dict()["StandardPass"]["name"]
+        == "PlacementPass"
     )
     # CXMappingPass
     cxm_pass = CXMappingPass(arc, placer, directed_cx=True, delay_measures=True)
@@ -761,6 +765,6 @@ def test_pass_deserialisation_only() -> None:
     assert sps[1].to_dict()["StandardPass"]["name"] == "RemoveRedundancies"
     assert rps.get_predicate().__repr__() == "UserDefinedPredicate"
     assert (
-            rps.to_dict()["RepeatUntilSatisfiedPass"]["predicate"]["type"]
-            == "UserDefinedPredicate"
+        rps.to_dict()["RepeatUntilSatisfiedPass"]["predicate"]["type"]
+        == "UserDefinedPredicate"
     )
