@@ -324,8 +324,7 @@ def _op_to_sympy_gate(op: Op, targets: List[int]) -> symgate.Gate:
     # pytket matrix basis indexing is in opposite order to sympy
     targets = targets[::-1]
     if (not float_params) and SymGateRegister.is_registered(op.type):
-        params_casted = cast(list[Union[Expr, float]], op.params)
-        u_mat = SymGateRegister.get_func(op.type)(params_casted)
+        u_mat = SymGateRegister.get_func(op.type)(op.params)
     else:
         try:
             # use internal tket unitary definition

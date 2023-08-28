@@ -321,7 +321,9 @@ def test_sympy_conversion() -> None:
         c = Circuit(1)
         c.Rz(sympify(expr_string), 0)  # type: ignore
         com = c.get_commands()[0]
-        assert get_type_tree(com.op.params[0]) == type_tree
+        param0 = com.op.params[0]
+        assert isinstance(param0, Expr)
+        assert get_type_tree(param0) == type_tree
 
 
 def test_4x4_matrix_to_circ() -> None:

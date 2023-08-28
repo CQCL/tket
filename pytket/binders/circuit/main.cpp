@@ -32,7 +32,6 @@
 #include "tket/Utils/Constants.hpp"
 #include "tket/Utils/Symbols.hpp"
 #include "typecast.hpp"
-#include "variant_conversion.hpp"
 
 namespace py = pybind11;
 using json = nlohmann::json;
@@ -512,15 +511,15 @@ PYBIND11_MODULE(circuit, m) {
           "Create an :py:class:`Op` with given type")
       .def_static(
           "create",
-          [](OpType optype, const ExprVariant &param) {
-            return get_op_ptr(optype, convertVariantToFirstType(param));
+          [](OpType optype, const Expr &param) {
+            return get_op_ptr(optype, param);
           },
           "Create an :py:class:`Op` with given type and parameter")
       .def_static(
           "create",
-          [](OpType optype, const std::vector<ExprVariant> &params) {
+          [](OpType optype, const std::vector<Expr> &params) {
             return get_op_ptr(
-                optype, convertVariantVectorToFirstTypeVector(params));
+                optype, params);
           },
           "Create an :py:class:`Op` with given type and parameters")
       .def_property_readonly(
@@ -546,7 +545,7 @@ PYBIND11_MODULE(circuit, m) {
       .def(
           "get_unitary",
           [](const Op *op) {
-            const auto &gate = static_cast<const Gate &>(*op);
+            const auto &gate = dynamic_cast<const Gate &>(*op);
             return gate.get_unitary();
           })
       .def(

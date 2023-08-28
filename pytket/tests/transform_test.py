@@ -15,6 +15,9 @@
 import itertools
 from typing import List
 from pathlib import Path
+
+import sympy
+
 from pytket.circuit import Circuit, OpType, PauliExpBox, Node, Qubit
 import pytket._tket.circuit_library as _library
 from pytket.pauli import Pauli
@@ -52,7 +55,6 @@ import json
 import pytest
 
 from .useful_typedefs import ParamType
-
 
 def get_test_circuit() -> Circuit:
     # alpha = Symbol("alpha")
@@ -1106,6 +1108,10 @@ def test_tk2_decompositions() -> None:
 
 
 def test_custom_pass() -> None:
+    def abs_float_param(param: ParamType) -> float:
+        assert isinstance(param, float)
+        return abs(param)
+
     def transform(c: "Circuit") -> "Circuit":
         c1 = Circuit()
         for q_reg in c.q_registers:
@@ -1114,7 +1120,7 @@ def test_custom_pass() -> None:
             c1.add_c_register(c_reg.name, c_reg.size)
         for cmd in c.get_commands():
             op = cmd.op
-            params: list[ParamType] = [param if abs(param) >= 0.01 else 0.0 for param in op.params]
+            params = [param if abs_float_param(param) >= 0.01 else 0.0 for param in op.params]
             c1.add_gate(op.type, params, cmd.args)
         return c1
 

@@ -29,22 +29,20 @@
 #include "tket/Utils/HelperFunctions.hpp"
 #include "tket/Utils/Json.hpp"
 #include "typecast.hpp"
-#include "variant_conversion.hpp"
 
 namespace py = pybind11;
 using json = nlohmann::json;
 
-// This version leads to the python type Dict[List[bool], ...], which is not
-// allowed at runtime because lists aren't hashable
-typedef std::map<std::vector<bool>, ExprVariant> PyPhasePolynomialOld;
-// This version doesn't have the same problem
-typedef std::vector<std::pair<std::vector<bool>, ExprVariant>>
-    PyPhasePolynomial;
-// state_perm_t has the same hashability problem
-typedef std::vector<std::pair<std::vector<bool>, std::vector<bool>>>
-    py_state_perm_t;
 
 namespace tket {
+
+// The typedef PhasePolynomial leads to the python type Dict[List[bool], ...], which is not
+// allowed at runtime because lists aren't hashable
+typedef std::vector<std::pair<std::vector<bool>, Expr>>
+            PyPhasePolynomial;
+// state_perm_t has the same hashability problem
+typedef std::vector<std::pair<std::vector<bool>, std::vector<bool>>>
+            py_state_perm_t;
 
 // Cast the std::vector keys in a map to py::tuple, since vector is not hashable
 // in python
@@ -153,11 +151,7 @@ void init_boxes(py::module &m) {
       "An operation defined as the exponential of a tensor of Pauli "
       "operations and a (possibly symbolic) phase parameter.")
       .def(
-          py::init([](const std::vector<Pauli> &pauli,
-                      const ExprVariant &expr_var, const CXConfigType &config) {
-            return PauliExpBox(
-                pauli, convertVariantToFirstType(expr_var), config);
-          }),
+          py::init<const std::vector<Pauli> &, const Expr&, const CXConfigType &>(),
           "Construct :math:`e^{-\\frac12 i \\pi t \\sigma_0 \\otimes "
           "\\sigma_1 \\otimes \\cdots}` from Pauli operators "
           ":math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and a parameter "
@@ -180,14 +174,9 @@ void init_boxes(py::module &m) {
       m, "PauliExpPairBox",
       "An operation defined as a pair of exponentials of a tensor of Pauli "
       "operations and their (possibly symbolic) phase parameters.")
-      .def(
-          py::init([](const std::vector<Pauli> &pauli0, ExprVariant exprvar0,
-                      const std::vector<Pauli> &pauli1, ExprVariant exprvar1,
-                      CXConfigType config) {
-            return PauliExpPairBox(
-                pauli0, convertVariantToFirstType(exprvar0), pauli1,
-                convertVariantToFirstType(exprvar1), config);
-          }),
+      .def( py::init<const std::vector<Pauli> &, const Expr&,
+                      const std::vector<Pauli> &, Expr,
+                      CXConfigType>(),
           "Construct a pair of Pauli exponentials of the form"
           " :math:`e^{-\\frac12 i \\pi t_j \\sigma_0 \\otimes "
           "\\sigma_1 \\otimes \\cdots}` from Pauli operator strings "
@@ -217,7 +206,7 @@ void init_boxes(py::module &m) {
       "parameters.")
       .def(
           py::init(
-              [](const std::vector<std::pair<std::vector<Pauli>, ExprVariant>>
+              [](const std::vector<std::pair<std::vector<Pauli>, Expr>>
                      &py_gadgets,
                  CXConfigType config) {
                 std::vector<std::pair<std::vector<Pauli>, Expr>> gadgets;
@@ -225,7 +214,7 @@ void init_boxes(py::module &m) {
                 for (const auto &py_gadget : py_gadgets) {
                   gadgets.emplace_back(
                       py_gadget.first,
-                      convertVariantToFirstType(py_gadget.second));
+                      py_gadget.second);
                 }
                 return PauliExpCommutingSetBox(gadgets, config);
               }),
@@ -472,12 +461,7 @@ void init_boxes(py::module &m) {
       m, "CustomGate",
       "A user-defined gate defined by a parametrised :py:class:`Circuit`.")
       .def(
-          py::init([](const composite_def_ptr_t &compositeDefPtr,
-                      const std::vector<ExprVariant> &exr_var) {
-            return CustomGate(
-                compositeDefPtr,
-                convertVariantVectorToFirstTypeVector(exr_var));
-          }),
+          py::init<const composite_def_ptr_t &, const std::vector<Expr> &>(),
           "Instantiate a custom gate.", py::arg("gatedef"), py::arg("params"))
       .def_property_readonly(
           "name", [](CustomGate &cgate) { return cgate.get_name(false); },
@@ -496,19 +480,13 @@ void init_boxes(py::module &m) {
       "polynomial + linear transformation")
       .def(
           py::init([](unsigned n_qb, const std::map<Qubit, unsigned> &q_ind,
-                      const PyPhasePolynomialOld &py_p_p,
-                      const MatrixXb &lin_trans) {
+                      const PhasePolynomial &p_p, const MatrixXb &lin_trans) {
             boost::bimap<Qubit, unsigned> bmap;
             for (const auto &pair : q_ind) {
               bmap.insert({pair.first, pair.second});
             }
-            PhasePolynomial p_p;
-            for (const auto &pppair : py_p_p) {
-              p_p[pppair.first] = convertVariantToFirstType(pppair.second);
-            }
             return PhasePolyBox(n_qb, bmap, p_p, lin_trans);
           }),
-          "--- Deprecated --- "
           "This method is broken when using dict[list[bool], ...] for "
           "phase_polynomial because lists"
           "aren't hashable. It works if you pass a dict[tuple[bool, ...], "
@@ -530,7 +508,7 @@ void init_boxes(py::module &m) {
             }
             PhasePolynomial p_p;
             for (const auto &pppair : py_p_p) {
-              p_p[pppair.first] = convertVariantToFirstType(pppair.second);
+              p_p[pppair.first] = pppair.second;
             }
             return PhasePolyBox(n_qb, bmap, p_p, lin_trans);
           }),

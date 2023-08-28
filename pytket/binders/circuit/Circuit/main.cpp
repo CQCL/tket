@@ -38,7 +38,6 @@
 #include "tket/Ops/Op.hpp"
 #include "tket/Utils/Json.hpp"
 #include "typecast.hpp"
-#include "variant_conversion.hpp"
 
 namespace py = pybind11;
 using json = nlohmann::json;
@@ -411,9 +410,8 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           py::arg("circuit"))
       .def(
           "add_phase",
-          [](Circuit &circ, const ExprVariant &a) {
-            const auto &expr_a = convertVariantToFirstType(a);
-            circ.add_phase(expr_a);
+          [](Circuit &circ, const Expr& a) {
+            circ.add_phase(a);
             return &circ;
           },
           "Add a global phase to the circuit.\n\n:param a: Phase to "

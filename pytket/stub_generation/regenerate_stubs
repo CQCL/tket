@@ -55,13 +55,9 @@ if __name__ == "__main__":
         prog='StubGenerator',
         description='generates type stubs for pybind11 modules',
     )
-    parser.add_argument('-d', '--dry-run', action='store_true', help="Don't overwrite stubs, generate within stubs directory")
-    args = parser.parse_args()
 
-    gen_root_dir = "."
-    if args.dry_run:
-        gen_root_dir = "stubs"
-        print(f"Dry run: will generate stubs within {gen_root_dir} directory")
+    pytket_dir = Path(__file__).parent.parent.resolve()
+    gen_root_dir = pytket_dir
 
     subprocess.run(["stubgen", "-p", "pytket._tket", "-o", gen_root_dir])
     print("Cleanup:")
