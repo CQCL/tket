@@ -56,10 +56,7 @@ pytest --hypothesis-seed=1 --cov=../pytket --cov-branch --cov-report=html --cov-
 
 Python type stubs are generated from the `pybind11` modules using mypy's `stubgen`. Changes the
 binding code under [binders](binders) (or, in some cases, to `tket` itself) may require stub regeneration.
-This can be done by running the stub generation script:
-```shell
-./regenerate_stubs
-```
+See [stub_generation/README.md](stub_generation/README.md) for more information.
 
 ## Building without conan
 
