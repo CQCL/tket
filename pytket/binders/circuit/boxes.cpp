@@ -33,16 +33,14 @@
 namespace py = pybind11;
 using json = nlohmann::json;
 
-
 namespace tket {
 
-// The typedef PhasePolynomial leads to the python type Dict[List[bool], ...], which is not
-// allowed at runtime because lists aren't hashable
-typedef std::vector<std::pair<std::vector<bool>, Expr>>
-            PyPhasePolynomial;
+// The typedef PhasePolynomial leads to the python type Dict[List[bool], ...],
+// which is not allowed at runtime because lists aren't hashable
+typedef std::vector<std::pair<std::vector<bool>, Expr>> PyPhasePolynomial;
 // state_perm_t has the same hashability problem
 typedef std::vector<std::pair<std::vector<bool>, std::vector<bool>>>
-            py_state_perm_t;
+    py_state_perm_t;
 
 // Cast the std::vector keys in a map to py::tuple, since vector is not hashable
 // in python
@@ -151,7 +149,8 @@ void init_boxes(py::module &m) {
       "An operation defined as the exponential of a tensor of Pauli "
       "operations and a (possibly symbolic) phase parameter.")
       .def(
-          py::init<const std::vector<Pauli> &, const Expr&, const CXConfigType &>(),
+          py::init<
+              const std::vector<Pauli> &, const Expr &, const CXConfigType &>(),
           "Construct :math:`e^{-\\frac12 i \\pi t \\sigma_0 \\otimes "
           "\\sigma_1 \\otimes \\cdots}` from Pauli operators "
           ":math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and a parameter "
@@ -174,9 +173,10 @@ void init_boxes(py::module &m) {
       m, "PauliExpPairBox",
       "An operation defined as a pair of exponentials of a tensor of Pauli "
       "operations and their (possibly symbolic) phase parameters.")
-      .def( py::init<const std::vector<Pauli> &, const Expr&,
-                      const std::vector<Pauli> &, Expr,
-                      CXConfigType>(),
+      .def(
+          py::init<
+              const std::vector<Pauli> &, const Expr &,
+              const std::vector<Pauli> &, Expr, CXConfigType>(),
           "Construct a pair of Pauli exponentials of the form"
           " :math:`e^{-\\frac12 i \\pi t_j \\sigma_0 \\otimes "
           "\\sigma_1 \\otimes \\cdots}` from Pauli operator strings "
@@ -205,19 +205,16 @@ void init_boxes(py::module &m) {
       "tensor of Pauli operations and their (possibly symbolic) phase "
       "parameters.")
       .def(
-          py::init(
-              [](const std::vector<std::pair<std::vector<Pauli>, Expr>>
-                     &py_gadgets,
-                 CXConfigType config) {
-                std::vector<std::pair<std::vector<Pauli>, Expr>> gadgets;
-                gadgets.reserve(py_gadgets.size());
-                for (const auto &py_gadget : py_gadgets) {
-                  gadgets.emplace_back(
-                      py_gadget.first,
-                      py_gadget.second);
-                }
-                return PauliExpCommutingSetBox(gadgets, config);
-              }),
+          py::init([](const std::vector<std::pair<std::vector<Pauli>, Expr>>
+                          &py_gadgets,
+                      CXConfigType config) {
+            std::vector<std::pair<std::vector<Pauli>, Expr>> gadgets;
+            gadgets.reserve(py_gadgets.size());
+            for (const auto &py_gadget : py_gadgets) {
+              gadgets.emplace_back(py_gadget.first, py_gadget.second);
+            }
+            return PauliExpCommutingSetBox(gadgets, config);
+          }),
           "Construct a set of necessarily commuting Pauli exponentials of the "
           "form"
           " :math:`e^{-\\frac12 i \\pi t_j \\sigma_0 \\otimes "

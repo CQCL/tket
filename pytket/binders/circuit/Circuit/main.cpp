@@ -410,7 +410,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           py::arg("circuit"))
       .def(
           "add_phase",
-          [](Circuit &circ, const Expr& a) {
+          [](Circuit &circ, const Expr &a) {
             circ.add_phase(a);
             return &circ;
           },

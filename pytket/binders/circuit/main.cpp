@@ -518,8 +518,7 @@ PYBIND11_MODULE(circuit, m) {
       .def_static(
           "create",
           [](OpType optype, const std::vector<Expr> &params) {
-            return get_op_ptr(
-                optype, params);
+            return get_op_ptr(optype, params);
           },
           "Create an :py:class:`Op` with given type and parameters")
       .def_property_readonly(

@@ -96,8 +96,7 @@ PYBIND11_MODULE(circuit_library, library_m) {
       "_CX_S_V_XC_reduced", &CircPool::CX_S_V_XC_reduced,
       "CX-reduced form of CX/-,S/-,V/XC");
   library_m.def(
-      "_CX_XC_reduced", &CircPool::CX_XC_reduced,
-      "CX-reduced form of CX/XC");
+      "_CX_XC_reduced", &CircPool::CX_XC_reduced, "CX-reduced form of CX/XC");
   library_m.def(
       "_SWAP_using_CX_0", &CircPool::SWAP_using_CX_0,
       "Equivalent to SWAP, using three CX, outer CX have control on qubit 0");
@@ -127,8 +126,7 @@ PYBIND11_MODULE(circuit_library, library_m) {
       "_C4X_normal_decomp", &CircPool::C4X_normal_decomp,
       "Equivalent to CCCCX, using 36 CX ");
   library_m.def(
-      "_ladder_down", &CircPool::ladder_down,
-      "CX[0,1]; CX[2,0]; CCX[0,1,2]");
+      "_ladder_down", &CircPool::ladder_down, "CX[0,1]; CX[2,0]; CCX[0,1,2]");
   library_m.def(
       "_ladder_down_2", &CircPool::ladder_down_2,
       "CX[0,1]; X[0]; X[2]; CCX[0,1,2]");
@@ -137,8 +135,7 @@ PYBIND11_MODULE(circuit_library, library_m) {
   library_m.def("_X", &CircPool::X, "Just an X gate");
   library_m.def("_CX", &CircPool::CX, "Just a CX[0,1] gate");
   library_m.def("_CCX", &CircPool::CCX, "Just a CCX[0,1,2] gate");
-  library_m.def(
-      "_BRIDGE", &CircPool::BRIDGE, "Just a BRIDGE[0,1,2] gate");
+  library_m.def("_BRIDGE", &CircPool::BRIDGE, "Just a BRIDGE[0,1,2] gate");
   library_m.def("_H_CZ_H", &CircPool::H_CZ_H, "H[1]; CZ[0,1]; H[1] ");
   library_m.def(
       "_CZ_using_CX", &CircPool::CZ_using_CX,
@@ -226,8 +223,7 @@ PYBIND11_MODULE(circuit_library, library_m) {
       "_TK2_using_ZZPhase", &CircPool::TK2_using_ZZPhase,
       "Equivalent to TK2, using 3 ZZPhase gates");
   library_m.def(
-      "_TK2_using_ZZPhase_and_swap",
-      &CircPool::TK2_using_ZZPhase_and_swap,
+      "_TK2_using_ZZPhase_and_swap", &CircPool::TK2_using_ZZPhase_and_swap,
       "Equivalent to TK2, up to a wire swap that is encoded in the implicit "
       "qubit permutation of the Circuit, using up to 3 ZZPhase gates.");
   library_m.def(
@@ -235,13 +231,11 @@ PYBIND11_MODULE(circuit_library, library_m) {
       "Either the exact TK2, or a wire swap encoded in the implicit qubit "
       "permutation of the Circuit and single qubit gates.");
   library_m.def(
-      "_approx_TK2_using_1xZZPhase",
-      &CircPool::approx_TK2_using_1xZZPhase,
+      "_approx_TK2_using_1xZZPhase", &CircPool::approx_TK2_using_1xZZPhase,
       "Approximate equivalent to TK2, using 1 ZZPhase gate and single-qubit "
       "gates. Only requires the first angle of the TK2 gate.");
   library_m.def(
-      "_approx_TK2_using_2xZZPhase",
-      &CircPool::approx_TK2_using_2xZZPhase,
+      "_approx_TK2_using_2xZZPhase", &CircPool::approx_TK2_using_2xZZPhase,
       "Approximate equivalent to TK2, using 2 ZZPhase gates and single-qubit "
       "gates. Only requires the first two angles of the TK2 gate.");
   library_m.def(

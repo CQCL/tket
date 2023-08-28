@@ -619,10 +619,9 @@ PYBIND11_MODULE(zx, m) {
       "Specialisation of :py:class:`ZXGen` for arbitrary-arity, symmetric "
       "generators with a single continuous parameter.")
       .def(
-          py::init(
-              [](ZXType zx_type, const Expr& param, QuantumType q_type) {
-                return std::make_unique<PhasedGen>(zx_type, param, q_type);
-              }),
+          py::init([](ZXType zx_type, const Expr& param, QuantumType q_type) {
+            return std::make_unique<PhasedGen>(zx_type, param, q_type);
+          }),
           "Construct from a ZX type, parameter and quantum type.",
           py::arg("zxtype"), py::arg("param") = 0.,
           py::arg("qtype") = QuantumType::Quantum)

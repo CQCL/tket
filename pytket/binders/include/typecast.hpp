@@ -31,8 +31,8 @@ PYBIND11_NAMESPACE_BEGIN(detail)
 template <>
 struct type_caster<SymEngine::Expression> {
  public:
-  PYBIND11_TYPE_CASTER(SymEngine::Expression, const_name("Union[sympy.Expr, float]"));
-
+  PYBIND11_TYPE_CASTER(
+      SymEngine::Expression, const_name("Union[sympy.Expr, float]"));
 
   static void assert_tuple_length(tuple t, unsigned len) {
     if (t.size() != len)
