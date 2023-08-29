@@ -59,6 +59,7 @@ void declare_register(py::module &m, const std::string &typestr) {
       .def_property(
           "size", &UnitRegister<T>::size, &UnitRegister<T>::set_size,
           "Size of register.")
+      .def("to_list", &UnitRegister<T>::to_vector)
       .def(
           "__hash__",
           [](const UnitRegister<T> &reg) {
