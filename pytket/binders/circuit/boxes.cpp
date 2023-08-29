@@ -53,8 +53,8 @@ std::map<py::tuple, T2> cast_keys_to_tuples(
   }
   return outmap;
 }
-// Cast std::map<T1, T2> to std::vector<std::pair<T1, T2>>, useful when T1 or T2
-// is a vector because list is not hashable in python
+// Cast std::map<T1, T2> to std::vector<std::pair<T1, T2>>, useful when T1
+// is a vector because vector, i.e. python list, is not hashable in python
 template <class T1, class T2>
 std::vector<std::pair<T1, T2>> cast_map_to_vector_of_pairs(
     const std::map<T1, T2> &map) {
@@ -204,17 +204,8 @@ void init_boxes(py::module &m) {
       "An operation defined as a set of commuting of exponentials of a"
       "tensor of Pauli operations and their (possibly symbolic) phase "
       "parameters.")
-      .def(
-          py::init([](const std::vector<std::pair<std::vector<Pauli>, Expr>>
-                          &py_gadgets,
-                      CXConfigType config) {
-            std::vector<std::pair<std::vector<Pauli>, Expr>> gadgets;
-            gadgets.reserve(py_gadgets.size());
-            for (const auto &py_gadget : py_gadgets) {
-              gadgets.emplace_back(py_gadget.first, py_gadget.second);
-            }
-            return PauliExpCommutingSetBox(gadgets, config);
-          }),
+      .def( py::init<const std::vector<std::pair<std::vector<Pauli>, Expr>>,
+                      const CXConfigType&>(),
           "Construct a set of necessarily commuting Pauli exponentials of the "
           "form"
           " :math:`e^{-\\frac12 i \\pi t_j \\sigma_0 \\otimes "
@@ -256,7 +247,7 @@ void init_boxes(py::module &m) {
             return ToffoliBox(statePerm, strat, optype);
           }),
           "Construct from a permutation of basis states\n\n"
-          ":param permutation: a map between bitstrings\n"
+          ":param permutation: a list of bitstring pairs\n"
           ":param strat: synthesis strategy\n"
           ":param rotation_axis: the rotation axis of the multiplexors used in "
           "the decomposition. Can be either Rx or Ry. Only applicable to the "
@@ -275,7 +266,7 @@ void init_boxes(py::module &m) {
               }),
           "Construct from a permutation of basis states and perform synthesis "
           "using the Matching strategy\n\n"
-          ":param permutation: a map between bitstrings\n"
+          ":param permutation: a list of bitstring pairs\n"
           ":param rotation_axis: the rotation axis of the multiplexors used in "
           "the decomposition. Can be either Rx or Ry, default to Ry.",
           py::arg("permutation"), py::arg("rotation_axis") = OpType::Ry)
@@ -484,12 +475,6 @@ void init_boxes(py::module &m) {
             }
             return PhasePolyBox(n_qb, bmap, p_p, lin_trans);
           }),
-          "This method is broken when using dict[list[bool], ...] for "
-          "phase_polynomial because lists"
-          "aren't hashable. It works if you pass a dict[tuple[bool, ...], "
-          "...], but mypy complains"
-          "Use the version with  list[tuple[list[bool], float]] for "
-          "phase_polynomial instead"
           "\n\nConstruct from the number of qubits, the mapping from "
           "Qubit to index, the phase polynomial (map from bitstring "
           "to phase) and the linear transformation (boolean matrix)",

@@ -56,8 +56,6 @@ Transforms::TwoQbFidelities get_fidelities(const py::kwargs &kwargs) {
 }
 
 PYBIND11_MODULE(transform, m) {
-  // py::module::import("pytket._tket.circuit");
-  // py::module::import("pytket._tket.architecture");
   py::enum_<Transforms::PauliSynthStrat>(
       m, "PauliSynthStrat",
       "Enum for available strategies to synthesise Pauli gadgets")

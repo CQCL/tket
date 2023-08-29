@@ -152,10 +152,7 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           "Returns the global scalar stored numerically. This may be a "
           "symbolic expression.")
       .def(
-          "multiply_scalar",
-          [](ZXDiagram& zx_diag, const Expr& sc) {
-            zx_diag.multiply_scalar(sc);
-          },
+          "multiply_scalar",&ZXDiagram::multiply_scalar,
           "Multiplies the global scalar by a numerical (possibly symbolic) "
           "constant.",
           py::arg("scalar"))
@@ -619,9 +616,7 @@ PYBIND11_MODULE(zx, m) {
       "Specialisation of :py:class:`ZXGen` for arbitrary-arity, symmetric "
       "generators with a single continuous parameter.")
       .def(
-          py::init([](ZXType zx_type, const Expr& param, QuantumType q_type) {
-            return std::make_unique<PhasedGen>(zx_type, param, q_type);
-          }),
+              py::init<ZXType, const Expr&, QuantumType>(),
           "Construct from a ZX type, parameter and quantum type.",
           py::arg("zxtype"), py::arg("param") = 0.,
           py::arg("qtype") = QuantumType::Quantum)

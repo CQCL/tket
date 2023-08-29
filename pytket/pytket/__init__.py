@@ -17,6 +17,8 @@
 from pytket.circuit import (
     Circuit,
     OpType,
+)
+from pytket.unit_id import (
     Qubit,
     Bit,
 )

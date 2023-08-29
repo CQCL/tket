@@ -193,13 +193,7 @@ PYBIND11_MODULE(unit_id, m) {
       .def("__hash__", [](const Bit &b) { return hash_value(b); })
       .def(
           "to_list",
-          [](const Bit &b) {
-            json j = b;
-            py::list py_list;
-            for (const auto &j_item : j) {
-              py_list.append(j_item);
-            }
-            return py_list;
+          [](const Bit &b) { return py::object(json(b)).cast<py::list>();
           },
           "Return a JSON serializable list representation of "
           "the Bit."

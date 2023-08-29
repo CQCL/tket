@@ -341,8 +341,11 @@ class SpamCorrecter:
 
         self.all_qbs = [qb for subset in qubit_subsets for qb in subset]
 
+        def to_tuple(inp: list[Node]) -> tuple:
+            return tuple(inp)
+
         self.subsets_matrix_map = OrderedDict.fromkeys(
-            sorted(map(tuple, self.correlations), key=len, reverse=True)  # type: ignore[arg-type]
+            sorted(map(to_tuple, self.correlations), key=len, reverse=True)
         )
         # ordered from largest to smallest via OrderedDict & sorted
         self.subset_dimensions = [len(subset) for subset in self.subsets_matrix_map]

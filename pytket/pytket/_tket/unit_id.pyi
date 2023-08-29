@@ -1,7 +1,6 @@
 from typing import ClassVar, List
 
 from typing import overload
-
 _DEBUG_ONE_REG_PREFIX: str
 _DEBUG_ZERO_REG_PREFIX: str
 _TEMP_BIT_NAME: str
