@@ -50,7 +50,9 @@ PYBIND11_MODULE(pauli, m) {
           py::arg("qubits"), py::arg("paulis"))
       .def(
           py::init<QubitPauliMap>(),
-          "Construct a QubitPauliString from a QubitPauliMap.", py::arg("map"))
+          "Construct a QubitPauliString from a dictionary mapping "
+          ":py:class:`Qubit` to :py:class:`Pauli`.",
+          py::arg("map"))
       .def(
           "__hash__",
           [](const QubitPauliString &qps) { return hash_value(qps); })
@@ -261,12 +263,13 @@ PYBIND11_MODULE(pauli, m) {
           py::arg("qubits"), py::arg("paulis"), py::arg("coeff") = 1.)
       .def(
           py::init<QubitPauliMap, Complex>(),
-          "Construct a QubitPauliTensor from a QubitPauliMap.", py::arg("map"),
-          py::arg("coeff") = 1.)
-      .def(
-          py::init<QubitPauliMap, Complex>(),
-          "Construct a QubitPauliTensor from a QubitPauliString.",
+          "Construct a QubitPauliTensor from a dictionary mapping "
+          ":py:class:`Qubit` to :py:class:`Pauli`.",
           py::arg("map"), py::arg("coeff") = 1.)
+      .def(
+          py::init<QubitPauliString, Complex>(),
+          "Construct a QubitPauliTensor from a QubitPauliString.",
+          py::arg("string"), py::arg("coeff") = 1.)
       .def(
           "__hash__",
           [](const QubitPauliTensor &qps) { return hash_value(qps); })
