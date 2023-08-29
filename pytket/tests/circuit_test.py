@@ -33,6 +33,7 @@ from pytket.circuit import (  # type: ignore
     MultiplexedTensoredU2Box,
     StatePreparationBox,
     DiagonalBox,
+    ConjugationBox,
     ExpBox,
     PauliExpBox,
     PauliExpPairBox,
@@ -565,6 +566,19 @@ def test_boxes() -> None:
     d.add_multiplexed_tensored_u2(multiplexor, [3, 2, 1, 0])
     assert np.allclose(unitary, comparison)
     assert d.n_gates == 23
+    # ConjugationBox
+    compute = CircBox(Circuit(3).CX(0, 1).CX(1, 2))
+    action = CircBox(Circuit(3).H(2))
+    conj_box1 = ConjugationBox(compute, action)
+    assert conj_box1.get_compute() == compute
+    assert conj_box1.get_action() == action
+    assert conj_box1.get_uncompute() is None
+    uncompute = CircBox(Circuit(3).CX(1, 2).CX(0, 1))
+    conj_box2 = ConjugationBox(compute, action, uncompute)
+    assert conj_box2.get_uncompute() == uncompute
+    d.add_conjugation_box(conj_box1, [0, 1, 2])
+    d.add_conjugation_box(conj_box2, [Qubit(0), Qubit(1), Qubit(2)])
+    assert d.n_gates == 25
     assert json_validate(d)
 
 
