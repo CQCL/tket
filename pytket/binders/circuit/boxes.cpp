@@ -699,8 +699,9 @@ void init_boxes(py::module &m) {
       .def(
           py::init<
               const Op_ptr &, const Op_ptr &, const std::optional<Op_ptr>>(),
-          "from operations that perform compute, action, and uncompute. All "
-          "three operations need to be quantum and have the same size.\n\n"
+          "Construct from operations that perform compute, action, and "
+          "uncompute. All three operations need to be quantum and have the "
+          "same size.\n\n"
           ":param compute: the compute operation\n"
           ":param action: the action operation\n"
           ":param uncompute: optional uncompute operation, default to "
