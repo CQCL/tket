@@ -107,7 +107,6 @@ class Backend(ABC):
     def _check_all_circuits(
         self, circuits: Iterable[Circuit], nomeasure_warn: Optional[bool] = None
     ) -> bool:
-
         if nomeasure_warn is None:
             nomeasure_warn = not (
                 self._supports_state
@@ -265,7 +264,6 @@ class Backend(ABC):
         valid_check: bool = True,
         **kwargs: KwargTypes,
     ) -> List[ResultHandle]:
-
         """
         Submit circuits to the backend for running. The results will be stored
         in the backend's result cache to be retrieved by the corresponding

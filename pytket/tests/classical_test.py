@@ -486,7 +486,6 @@ def qubit_register(
     index=strategies.integers(min_value=0, max_value=32),
 )
 def test_registers(reg: Union[BitRegister, QubitRegister], index: int) -> None:
-
     unit_type = Qubit if type(reg) is QubitRegister else Bit
     if index < reg.size:
         assert reg[index] == unit_type(reg.name, index)

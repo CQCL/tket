@@ -210,7 +210,7 @@ def test_conditional_gates() -> None:
     circ.Measure(0, 0)
     circ.Measure(1, 1)
     circ.Z(0, condition_bits=[0, 1], condition_value=2)
-    circ._add_conditional_barrier([0,1],[0],[1], 1)
+    circ._add_conditional_barrier([0, 1], [0], [1], 1)
     circ.Measure(0, 0, condition_bits=[0, 1], condition_value=1)
     qasm_out = str(curr_file_path / "qasm_test_files/testout5.qasm")
     circuit_to_qasm(circ, qasm_out)

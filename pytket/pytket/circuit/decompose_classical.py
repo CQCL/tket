@@ -337,7 +337,7 @@ def _decompose_expressions(circ: Circuit) -> Tuple[Circuit, bool]:
             modified = True
             continue
         if optype == OpType.Barrier:
-            # add_gate doesn't work for metaops 
+            # add_gate doesn't work for metaops
             newcirc.add_barrier(args)
         else:
             newcirc.add_gate(op, args, **kwargs)
