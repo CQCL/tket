@@ -230,6 +230,9 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Conditional.html">Conditional</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decorates another op, adding a QASM-style classical condition.  <a href="classtket_1_1Conditional.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1ConjugationBox.html">ConjugationBox</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classtket_1_1Box.html" title="Abstract class for an operation from which a circuit can be extracted.">Box</a> to express computations that follow the compute-action-uncompute pattern.  <a href="classtket_1_1ConjugationBox.html#details">More...</a><br /></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structtket_1_1VertexProperties.html">VertexProperties</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Description of a node in a circuit, representing some operation.  <a href="structtket_1_1VertexProperties.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1050,12 +1053,13 @@ Enumerations</h2></td></tr>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a36eb2fc691327e9917ffb76ca90dcece">StatePreparationBox</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a8afab1972f0d75adf02050866a070296">DiagonalBox</a>
 , <br />
-&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a81e83c562bbc4b3d830391b008dece4e">ClassicalExpBox</a>
+&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a228a4b87ea0227593dbfb130b0d4ea5c">ConjugationBox</a>
+, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a81e83c562bbc4b3d830391b008dece4e">ClassicalExpBox</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a9d3afea73e90192d96dda8d38c87a4fe">Conditional</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a927eb314e7755edbf2f295363eb70989">ProjectorAssertionBox</a>
-, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5873bfa21082d8011557e19ef525e2dd">StabiliserAssertionBox</a>
 , <br />
-&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a07bcde47c17d44eebfa6c59aa6942d1c">ToffoliBox</a>
+&#160;&#160;<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5873bfa21082d8011557e19ef525e2dd">StabiliserAssertionBox</a>
+, <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a07bcde47c17d44eebfa6c59aa6942d1c">ToffoliBox</a>
 , <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a875cbe7ba0f4486177a06d7f5847ff24">UnitaryTableauBox</a>
 <br />
  }</td></tr>
@@ -4432,6 +4436,8 @@ template&lt;typename A , typename B &gt; </div>
 <tr><td class="fieldname"><a id="a13e81344da4794f2648eb9a7b286fcf3a36eb2fc691327e9917ffb76ca90dcece"></a>StatePreparationBox&#160;</td><td class="fielddoc"><p>See <a class="el" href="classtket_1_1StatePreparationBox.html">StatePreparationBox</a>. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="a13e81344da4794f2648eb9a7b286fcf3a8afab1972f0d75adf02050866a070296"></a>DiagonalBox&#160;</td><td class="fielddoc"><p>See <a class="el" href="classtket_1_1DiagonalBox.html">DiagonalBox</a>. </p>
+</td></tr>
+<tr><td class="fieldname"><a id="a13e81344da4794f2648eb9a7b286fcf3a228a4b87ea0227593dbfb130b0d4ea5c"></a>ConjugationBox&#160;</td><td class="fielddoc"><p>See <a class="el" href="classtket_1_1ConjugationBox.html">ConjugationBox</a>. </p>
 </td></tr>
 <tr><td class="fieldname"><a id="a13e81344da4794f2648eb9a7b286fcf3a81e83c562bbc4b3d830391b008dece4e"></a>ClassicalExpBox&#160;</td><td class="fielddoc"><p>See <a class="el" href="classtket_1_1ClassicalExpBox.html">ClassicalExpBox</a>. </p>
 </td></tr>
@@ -10467,7 +10473,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for purely classical gates derived from <a class="el" href="classtket_1_1ClassicalOp.html" title="A purely classical operation.">ClassicalOp</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00253">253</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00254">254</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10489,7 +10495,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for Clifford operations. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00238">238</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00239">239</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10511,7 +10517,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for controlled gates. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00257">257</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00258">258</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10555,7 +10561,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for flowops (just for high-level control flow) </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00192">192</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00193">193</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10643,7 +10649,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for gates over more than one qubit. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00213">213</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00214">214</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10665,7 +10671,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for non-invertible operations. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00226">226</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00227">227</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10687,7 +10693,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for rotations around Pauli axes. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00207">207</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00208">208</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10709,7 +10715,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for measurement and reset gates. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00249">249</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00250">250</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10761,7 +10767,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for rotations (including controlled rotations) </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00198">198</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00199">199</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10783,7 +10789,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for gates over a single qubit. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00217">217</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00218">218</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10805,7 +10811,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for single-qubit gates that can be expressed as TK1. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00222">222</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00223">223</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
