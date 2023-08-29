@@ -179,21 +179,27 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
       .def(
           "_add_conditional_barrier",
           [](
-              (Circuit *circ, const std::vector<Expr> &params,
-               const std::vector<unsigned> &qubits,
-               std::vector<unsigned> &barrier_bits const std::vector<unsigned>
-                   &condition_bits,
-               unsigned value) {
-                std::vector<UnitID> barrier_args;
-                for (const unsig)
-                  circ->add_conditional_barrier(params, args, bits, value);
+              (Circuit *circ, const std::vector<unsigned> &barrier_qubits,
+               const std::vector<unsigned> &barrier_bits,
+               const std::vector<unsigned> &condition_bits, unsigned value,
+               const std::string &data) {
+                circ->add_conditional_barrier(
+                    barrier_qubits, barrier_bits, condition_bits, value, data);
                 return circ;
               },
-              "Append a Conditional Barrier on the given units, conditioned on "
-              "the givne Bit."
-              "\n\n:param data: additional data stored in the barrier"
+              "Append a Conditional Barrier on the given barrier qubits and "
+              "barrier bits, conditioned on the given condition bits."
+              "\n\n:param barrier_qubits: Qubit in Barrier operation."
+              "\n:param barrier_bits: Bit in Barrier operation."
+              "\n:param condition_bits: Bit covering classical control "
+              "condition "
+              "of barrier operation."
+              "\n:param value: Value that classical condition must have to "
+              "hold."
+              "\n: param data: Additional data stored in Barrier operation."
               "\n:return: the new :py:class:`Circuit`",
-              py::arg("qubits"), py::arg("bits") = no_bits,
+              py::arg("barrier_qubits"), py::arg("barrier_bits"),
+              py::arg("condition_bits"), py::arg("value"),
               py::arg("data") = ""))
       .def(
           "add_circbox",
@@ -437,6 +443,29 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n\n:param data: additional data stored in the barrier"
           "\n:return: the new :py:class:`Circuit`",
           py::arg("units"), py::arg("data") = "")
+
+      .def(
+          "_add_conditional_barrier",
+          [](
+              (Circuit *circ, const unit_vector_t &barrier_args,
+               const unit_vector_t &condition_bits, unsigned value,
+               const std::string &_data) {
+                circ->add_conditional_barrier(
+                    barrier_args, condition_bits, value, data);
+                return circ;
+              },
+              "Append a Conditional Barrier on the given barrier qubits and "
+              "barrier bits, conditioned on the given condition bits."
+              "\n\n:param barrier_args: Qubit and Bit in Barrier operation."
+              "\n:param condition_bits: Bit covering classical control "
+              "condition "
+              "of barrier operation."
+              "\n:param value: Value that classical condition must have to "
+              "hold."
+              "\n: param data: Additional data stored in Barrier operation."
+              "\n:return: the new :py:class:`Circuit`",
+              py::arg("barrier_args"), py::arg("condition_bits"),
+              py::arg("value"), py::arg("data") = ""))
       .def(
           "add_circbox",
           [](Circuit *circ, const CircBox &box, const unit_vector_t &args,
