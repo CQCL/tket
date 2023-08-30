@@ -21,6 +21,7 @@
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/ConjugationBox.hpp"
 #include "tket/Circuit/DiagonalBox.hpp"
 #include "tket/Circuit/Multiplexor.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
@@ -1248,6 +1249,38 @@ SCENARIO("Checking equality", "[boxes]") {
           pbox !=
           PauliExpCommutingSetBox(
               {{{Pauli::Y}, 1.0}, {{Pauli::I}, 1.2}, {{Pauli::I}, -0.5}}));
+    }
+  }
+  GIVEN("ConjugationBox") {
+    Circuit compute(2);
+    compute.add_op<unsigned>(OpType::CRx, 0.5, {1, 0});
+    Op_ptr compute_op = std::make_shared<CircBox>(CircBox(compute));
+    Circuit action(2);
+    action.add_op<unsigned>(OpType::H, {0});
+    Op_ptr action_op = std::make_shared<CircBox>(CircBox(action));
+    ConjugationBox box(compute_op, action_op);
+    WHEN("all arguments are equal") { REQUIRE(box == box); }
+    WHEN("different ids but equivalent ops") {
+      REQUIRE(box == ConjugationBox(compute_op, action_op));
+    }
+    WHEN("different uncompute") {
+      Circuit uncompute(2);
+      uncompute.add_op<unsigned>(OpType::CZ, {0, 1});
+      Op_ptr uncompute_op = std::make_shared<CircBox>(CircBox(uncompute));
+      REQUIRE(box != ConjugationBox(compute_op, action_op, uncompute_op));
+    }
+    WHEN("equivalent uncompute") {
+      REQUIRE(
+          box == ConjugationBox(compute_op, action_op, compute_op->dagger()));
+      REQUIRE(
+          ConjugationBox(compute_op, action_op, compute_op->dagger()) ==
+          ConjugationBox(compute_op, action_op));
+    }
+    WHEN("different args") {
+      Circuit compute_2(2);
+      compute_2.add_op<unsigned>(OpType::CZ, {0, 1});
+      Op_ptr compute_2_op = std::make_shared<CircBox>(CircBox(compute_2));
+      REQUIRE(box != ConjugationBox(compute_2_op, action_op));
     }
   }
 }

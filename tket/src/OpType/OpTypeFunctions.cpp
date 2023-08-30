@@ -182,6 +182,7 @@ bool is_box_type(OpType optype) {
       OpType::MultiplexedTensoredU2Box,
       OpType::StatePreparationBox,
       OpType::DiagonalBox,
+      OpType::ConjugationBox,
       OpType::ClassicalExpBox,
       OpType::ProjectorAssertionBox,
       OpType::StabiliserAssertionBox,
