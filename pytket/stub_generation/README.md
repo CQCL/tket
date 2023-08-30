@@ -29,7 +29,7 @@ In C++, an equality check between different types is typically a compile time er
 typically results in a runtime `False`. Thus, in python, the equality function of a class can be called
 for any python object. `pybind11` offers the syntax `pybind11::self ==  pybind11::self` to automatically
 generate this functionality, but the stubs generated are still too restrictive and `mypy` will complain. The
-custom functions above implement the python type equality and make sure the stubs specify that the
+custom functions above implement the python type equality and make sure the stubs specify the
 correct parameter type, a general python `object`.
 
 In python, if `__eq__` is defined explicitly but not `__hash__`, the `__hash__` function is "deleted".
@@ -44,8 +44,8 @@ function uses the correct signature and raises the same `TypeError` when called.
 > tldr: Don't use `nlohmann::json` as paramter or return types in the binding code. Convert explicitly from and to
 > `py::dict`, `py::list`, and `py::object` instead.
 
-If `pybind11_json` is good for casting between json and py::objects within the
-binder code but leads to bad stubs if the custom `type_caster` is used.
+The `pybind11_json` package is good for casting between json and py::objects within the
+binder code but leads to bad stubs if its custom `type_caster` is used.
 
 ### Docstrings of methods with no parameters 
 
