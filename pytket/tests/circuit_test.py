@@ -78,8 +78,8 @@ curr_file_path = Path(__file__).resolve().parent
 with open(curr_file_path.parent.parent / "schemas/circuit_v1.json", "r") as f:
     schema = json.load(f)
 
-_0 = bool(0)
-_1 = bool(1)
+_0 = False
+_1 = True
 
 PhasePolynomial = list[tuple[list[bool], ParamType]]
 

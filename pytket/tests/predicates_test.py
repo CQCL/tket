@@ -22,6 +22,7 @@ from pytket.circuit import (
     Node,
     Qubit,
     UnitID,
+    Conditional
 )
 from pytket.pauli import Pauli
 from pytket.passes import (
@@ -852,7 +853,7 @@ def test_conditional_phase() -> None:
     rebase.apply(c)
     cond_cmds = [cmd for cmd in c.get_commands() if cmd.op.type == OpType.Conditional]
     assert len(cond_cmds) > 0
-    assert any(cond_cmd.op.type not in target_gateset for cond_cmd in cond_cmds)
+    assert any(cast(Conditional, cond_cmd.op).op.type not in target_gateset for cond_cmd in cond_cmds)
 
 
 def test_flatten_relabel_pass() -> None:

@@ -77,11 +77,11 @@ with open(curr_file_path.parent.parent / "schemas/circuit_v1.json", "r") as f:
 
 
 def register_to_list(br: BitRegister) -> list[Bit]:
-    return [br[i] for i in range(br.size)]
+    return br.to_list()
 
 
 def qregister_to_unit_id_list(br: QubitRegister) -> list[UnitID]:
-    return [cast(UnitID, br[i]) for i in range(br.size)]
+    return cast(list[UnitID], br.to_list())
 
 
 def print_commands(c: Circuit) -> None:
@@ -921,7 +921,7 @@ def test_decomposition_known() -> None:
     )
     conditioned_circ.T(qreg[7], condition_bits=[temp_bits[8]], condition_value=1)
 
-    temp_reg_bits = [temp_reg(0)[i] for i in range(3)][:3]
+    temp_reg_bits = [temp_reg(0)[i] for i in range(3)]
     conditioned_circ.add_classicalexpbox_register(big_reg_exp, temp_reg_bits)
     conditioned_circ.add_c_range_predicate(3, 3, temp_reg_bits, temp_bits[9])
     conditioned_circ.CX(
