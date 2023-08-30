@@ -182,9 +182,9 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           [](Circuit *circ, const std::vector<unsigned> &barrier_qubits,
              const std::vector<unsigned> &barrier_bits,
              const std::vector<unsigned> &condition_bits, unsigned value,
-             const std::string &data) {
+             const std::string &_data) {
             circ->add_conditional_barrier(
-                barrier_qubits, barrier_bits, condition_bits, value, data);
+                barrier_qubits, barrier_bits, condition_bits, value, _data);
             return circ;
           },
           "Append a Conditional Barrier on the given barrier qubits and "
@@ -449,7 +449,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
              const unit_vector_t &condition_bits, unsigned value,
              const std::string &_data) {
             circ->add_conditional_barrier(
-                barrier_args, condition_bits, value, data);
+                barrier_args, condition_bits, value, _data);
             return circ;
           },
           "Append a Conditional Barrier on the given barrier qubits and "
