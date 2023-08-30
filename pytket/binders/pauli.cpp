@@ -280,8 +280,8 @@ PYBIND11_MODULE(pauli, m) {
           "__hash__",
           [](const QubitPauliTensor &qps) { return hash_value(qps); })
       .def("__repr__", &QubitPauliTensor::to_str)
-      .def("__eq__", &QubitPauliTensor::operator==)
-      .def("__ne__", &QubitPauliTensor::operator!=)
+      .def("__eq__", &py_equals<QubitPauliTensor>)
+      .def("__ne__", &py_not_equals<QubitPauliTensor>)
       .def("__lt__", &QubitPauliTensor::operator<)
       .def(
           "__getitem__", [](const QubitPauliTensor &qpt,
@@ -423,7 +423,5 @@ PYBIND11_MODULE(pauli, m) {
                     t[1].cast<std::list<Pauli>>()),
                 t[2].cast<Complex>());
           }));
-  ;
 }
-
 }  // namespace tket
