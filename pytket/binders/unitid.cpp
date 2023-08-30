@@ -194,8 +194,7 @@ PYBIND11_MODULE(unit_id, m) {
       .def("__hash__", [](const Bit &b) { return hash_value(b); })
       .def(
           "to_list",
-          [](const Bit &b) { return py::object(json(b)).cast<py::list>();
-          },
+          [](const Bit &b) { return py::object(json(b)).cast<py::list>(); },
           "Return a JSON serializable list representation of "
           "the Bit."
           "\n\n:return: list containing register name and index")

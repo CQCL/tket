@@ -204,8 +204,10 @@ void init_boxes(py::module &m) {
       "An operation defined as a set of commuting of exponentials of a"
       "tensor of Pauli operations and their (possibly symbolic) phase "
       "parameters.")
-      .def( py::init<const std::vector<std::pair<std::vector<Pauli>, Expr>>,
-                      const CXConfigType&>(),
+      .def(
+          py::init<
+              const std::vector<std::pair<std::vector<Pauli>, Expr>>,
+              const CXConfigType &>(),
           "Construct a set of necessarily commuting Pauli exponentials of the "
           "form"
           " :math:`e^{-\\frac12 i \\pi t_j \\sigma_0 \\otimes "

@@ -41,11 +41,21 @@ from typing import (
     Union,
     cast,
 )
-from sympy import Symbol, pi, Expr  # type: ignore
+from sympy import Symbol, pi  # type: ignore
 from lark import Discard, Lark, Token, Transformer, Tree
 
-from pytket._tket.circuit import ClassicalExpBox, Command, Conditional, RangePredicateOp, SetBitsOp, CopyBitsOp, \
-    MultiBitOp, WASMOp, CustomGate, MetaOp
+from pytket._tket.circuit import (
+    ClassicalExpBox,
+    Command,
+    Conditional,
+    RangePredicateOp,
+    SetBitsOp,
+    CopyBitsOp,
+    MultiBitOp,
+    WASMOp,
+    CustomGate,
+    MetaOp,
+)
 from pytket._tket.unit_id import _TEMP_BIT_NAME
 from pytket.circuit import (
     Bit,
@@ -993,9 +1003,7 @@ def _retrieve_registers(
 ) -> Dict[str, TypeReg]:
     if any(len(unit.index) != 1 for unit in units):
         raise NotImplementedError("OPENQASM registers must use a single index")
-    maxunits = map(
-        lambda x: max(x[1]), groupby(units, key=lambda un: un.reg_name)
-    )
+    maxunits = map(lambda x: max(x[1]), groupby(units, key=lambda un: un.reg_name))
     return {
         maxunit.reg_name: reg_type(maxunit.reg_name, maxunit.index[0] + 1)
         for maxunit in maxunits
@@ -1161,7 +1169,10 @@ def circuit_to_qasm_io(
                         "OpenQASM conditions must be on a register's fixed value."
                     )
                 bits = range_args[:-1]
-                variable: Union[str, UnitID, ] = range_args[0].reg_name
+                variable: Union[
+                    str,
+                    UnitID,
+                ] = range_args[0].reg_name
             else:
                 comparator = "=="
                 value = op.value
@@ -1207,7 +1218,7 @@ def circuit_to_qasm_io(
             continue
         if optype == OpType.CopyBits:
             assert isinstance(op, CopyBitsOp)
-            l_args = args[op.n_inputs:]
+            l_args = args[op.n_inputs :]
             r_args = args[: op.n_inputs]
             l_name = l_args[0].reg_name
             r_name = r_args[0].reg_name
@@ -1221,7 +1232,7 @@ def circuit_to_qasm_io(
             continue
         if optype == OpType.MultiBit:
             assert isinstance(op, MultiBitOp)
-            l_args = args[op.n_inputs:]
+            l_args = args[op.n_inputs :]
             op = op.basic_op
             optype = op.type
             registers_involved = [arg.reg_name for arg in args[:2]]
@@ -1244,7 +1255,7 @@ def circuit_to_qasm_io(
 
         if optype == OpType.ClassicalExpBox:
             assert isinstance(op, ClassicalExpBox)
-            out_args: list[UnitID] = args[op.get_n_i():]
+            out_args: list[UnitID] = args[op.get_n_i() :]
             if len(out_args) == 1:
                 buffer.write(f"{out_args[0]} = {str(op.get_exp())};\n")
             elif (
