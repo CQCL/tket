@@ -585,6 +585,21 @@
           "$ref": "#/definitions/matrix",
           "description": "Diagonal matrix represented by DiagonalBox."
         },
+        "compute": {
+          "$ref": "#/definitions/operation",
+          "description": "Compute operation in ConjugationBox."
+        },
+        "action": {
+          "$ref": "#/definitions/operation",
+          "description": "Action operation in ConjugationBox."
+        },
+        "uncompute": {
+          "anyOf": [
+            {"$ref": "#/definitions/operation"},
+            {"type": "null"}
+          ],
+          "description": "Uncompute operation in ConjugationBox."
+        },
         "upper_triangle": {
           "type": "boolean",
           "description": "Indicate whether to implement multiplexors in the DiagonalBox decomposition as an upper triangle."
@@ -841,6 +856,24 @@
             "required": [
               "diagonal",
               "upper_triangle"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "ConjugationBox"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "compute",
+              "action"
+            ],
+            "optional": [
+              "uncompute"
             ]
           }
         },

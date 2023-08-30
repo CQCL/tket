@@ -147,6 +147,8 @@ const std::map<OpType, OpTypeInfo>& optypeinfo() {
       {OpType::StatePreparationBox,
        {"StatePreparationBox", "StatePreparationBox", {}, std::nullopt}},
       {OpType::DiagonalBox, {"DiagonalBox", "DiagonalBox", {}, std::nullopt}},
+      {OpType::ConjugationBox,
+       {"ConjugationBox", "ConjugationBox", {}, std::nullopt}},
       {OpType::Conditional, {"Conditional", "If", {}, std::nullopt}},
       {OpType::ProjectorAssertionBox,
        {"ProjectorAssertionBox", "ProjectorAssertionBox", {}, std::nullopt}},

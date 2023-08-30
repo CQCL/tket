@@ -20,6 +20,7 @@
 #include "binder_json.hpp"
 #include "binder_utils.hpp"
 #include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/ConjugationBox.hpp"
 #include "tket/Circuit/DiagonalBox.hpp"
 #include "tket/Circuit/Multiplexor.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
@@ -882,5 +883,35 @@ void init_boxes(py::module &m) {
       .def(
           "is_upper_triangle", &DiagonalBox::is_upper_triangle,
           ":return: the upper_triangle flag");
+  py::class_<ConjugationBox, std::shared_ptr<ConjugationBox>, Op>(
+      m, "ConjugationBox",
+      "A box to express computations that follow the compute-action-uncompute "
+      "pattern.")
+      .def(
+          py::init<
+              const Op_ptr &, const Op_ptr &, const std::optional<Op_ptr>>(),
+          "Construct from operations that perform compute, action, and "
+          "uncompute. All three operations need to be quantum and have the "
+          "same size.\n\n"
+          ":param compute: the compute operation\n"
+          ":param action: the action operation\n"
+          ":param uncompute: optional uncompute operation, default to "
+          "compute.dagger(). If provided, the user needs to make sure that "
+          "uncompute.dagger() and compute have the same unitary.",
+          py::arg("compute"), py::arg("action"),
+          py::arg("uncompute") = std::nullopt)
+      .def(
+          "get_circuit", [](ConjugationBox &box) { return *box.to_circuit(); },
+          ":return: the :py:class:`Circuit` described by the box")
+      .def(
+          "get_compute", &ConjugationBox::get_compute,
+          ":return: the compute operation")
+      .def(
+          "get_action", &ConjugationBox::get_action,
+          ":return: the action operation")
+      .def(
+          "get_uncompute", &ConjugationBox::get_uncompute,
+          ":return: the uncompute operation. Returns None if the default "
+          "compute.dagger() is used");
 }
 }  // namespace tket

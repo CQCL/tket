@@ -4,6 +4,11 @@ Changelog
 Unreleased
 ----------
 
+Major new features:
+
+* Add ``ConjugationBox`` to express circuits that follow
+  the compute-action-uncompute pattern.
+
 Minor new features:
 
 * Implement equality checking for all boxes.
@@ -13,6 +18,9 @@ Minor new features:
   be overridden using the ``always_squash_symbols`` parameter to
   ``SquashCustom``.
 * Add ``control_state`` argument to ``QControlBox``.
+* Add ``QubitPauliTensor`` (combining ``QubitPauliString`` with a complex
+  coefficient) to python binding. This is incorporated into ``UnitaryTableau`` 
+  row inspection for phase tracking.
 
 Fixes:
 

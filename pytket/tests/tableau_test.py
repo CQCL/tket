@@ -14,6 +14,7 @@
 
 import pytest  # type: ignore
 from pytket.circuit import Circuit, OpType, Qubit
+from pytket.pauli import Pauli, QubitPauliTensor
 from pytket.tableau import UnitaryTableau, UnitaryTableauBox
 from pytket.utils.results import compare_unitaries
 import numpy as np
@@ -81,3 +82,22 @@ def test_tableau_box_from_matrix() -> None:
     circ.X(2)
     circ.Sdg(2)
     assert compare_unitaries(circ.get_unitary(), np.eye(8, dtype=complex))
+
+
+def test_tableau_rows() -> None:
+    circ = Circuit(3)
+    circ.H(0)
+    circ.CX(0, 1)
+    circ.V(1)
+    circ.CZ(2, 1)
+    circ.Vdg(2)
+    tab = UnitaryTableau(circ)
+    assert tab.get_zrow(Qubit(0)) == QubitPauliTensor(
+        [Qubit(0), Qubit(1), Qubit(2)], [Pauli.X, Pauli.X, Pauli.Y], 1.0
+    )
+    assert tab.get_xrow(Qubit(1)) == QubitPauliTensor(
+        {Qubit(1): Pauli.X, Qubit(2): Pauli.Y}, 1.0
+    )
+    assert tab.get_row_product(
+        QubitPauliTensor(Qubit(0), Pauli.Z) * QubitPauliTensor(Qubit(1), Pauli.X, -1.0)
+    ) == QubitPauliTensor(Qubit(0), Pauli.X, -1.0)

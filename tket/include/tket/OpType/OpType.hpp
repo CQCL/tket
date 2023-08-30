@@ -661,6 +661,11 @@ enum class OpType {
   DiagonalBox,
 
   /**
+   * See \ref ConjugationBox
+   */
+  ConjugationBox,
+
+  /**
    * See \ref ClassicalExpBox
    */
   ClassicalExpBox,
