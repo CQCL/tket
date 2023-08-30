@@ -41,9 +41,11 @@ from typing import (
     Union,
     cast,
 )
-from sympy import Symbol, pi  # type: ignore
+from sympy import Symbol, pi, Expr  # type: ignore
 from lark import Discard, Lark, Token, Transformer, Tree
 
+from pytket._tket.circuit import ClassicalExpBox, Command, Conditional, RangePredicateOp, SetBitsOp, CopyBitsOp, \
+    MultiBitOp, WASMOp, CustomGate, MetaOp
 from pytket._tket.unit_id import _TEMP_BIT_NAME
 from pytket.circuit import (
     Bit,
@@ -315,7 +317,7 @@ class CircuitTransformer(Transformer):
         else:
             return self._get_reg(arg.value)
 
-    def unroll_all_args(self, args: Iterable[Arg]) -> Iterator[List[UnitID]]:
+    def unroll_all_args(self, args: Iterable[Arg]) -> Iterator[List[Any]]:
         for arg in args:
             if isinstance(arg, str):
                 size = (
@@ -323,9 +325,9 @@ class CircuitTransformer(Transformer):
                     if arg in self.q_registers
                     else self.c_registers[arg]
                 )
-                yield [[arg, [idx]] for idx in range(size)]  # type: ignore
+                yield [[arg, [idx]] for idx in range(size)]
             else:
-                yield [arg]  # type: ignore
+                yield [arg]
 
     def margs(self, tree: Iterable[Token]) -> Iterator[Arg]:
         return map(self._get_arg, tree)
@@ -582,14 +584,14 @@ class CircuitTransformer(Transformer):
         if isinstance(var, Bit):
             assert condition.op in (BitWiseOp.EQ, BitWiseOp.NEQ)
             assert val in (0, 1)
-            condition_bits = [cast(Bit, var).to_list()]  # type: ignore[redundant-cast]
+            condition_bits = [var.to_list()]
 
         else:
             assert isinstance(var, BitRegister)
-            reg_bits = next(self.unroll_all_args([cast(BitRegister, var).name]))  # type: ignore[redundant-cast]
+            reg_bits = next(self.unroll_all_args([var.name]))
             if isinstance(condition, RegEq):
                 # special case for base qasm
-                condition_bits = reg_bits  # type: ignore
+                condition_bits = reg_bits
             else:
                 pred_val = cast(int, val)
                 minval = 0
@@ -721,7 +723,7 @@ class CircuitTransformer(Transformer):
         args = args_uids[0]
         if isinstance(out_arg, List):
             if isinstance(exp, LogicExp):
-                yield self._cexpbox_dict(exp, args)  # type: ignore
+                yield self._cexpbox_dict(exp, args)
             elif isinstance(exp, (int, bool)):
                 assert exp in (0, 1, True, False)
                 yield {
@@ -738,9 +740,9 @@ class CircuitTransformer(Transformer):
         else:
             reg = out_arg
             if isinstance(exp, RegLogicExp):
-                yield self._cexpbox_dict(exp, args)  # type: ignore
+                yield self._cexpbox_dict(exp, args)
             elif isinstance(exp, BitLogicExp):
-                yield self._cexpbox_dict(exp, args[:1])  # type: ignore
+                yield self._cexpbox_dict(exp, args[:1])
             elif isinstance(exp, int):
                 yield {
                     "args": args,
@@ -781,7 +783,7 @@ class CircuitTransformer(Transformer):
 
         wasm_args = list(chain.from_iterable(self.unroll_all_args(params)))
 
-        wasm_args.append(["_w", [0]])  # type: ignore
+        wasm_args.append(["_w", [0]])
 
         yield {
             "args": wasm_args,
@@ -856,7 +858,7 @@ class CircuitTransformer(Transformer):
             )
         if not existing_op:
             gate_circ.symbol_substitution(symbol_map)
-            gate_circ.rename_units(rename_map)  # type: ignore
+            gate_circ.rename_units(cast(Dict[UnitID, UnitID], rename_map))
 
             self.gate_dict[gate] = {
                 "definition": gate_circ.to_dict(),
@@ -992,7 +994,7 @@ def _retrieve_registers(
     if any(len(unit.index) != 1 for unit in units):
         raise NotImplementedError("OPENQASM registers must use a single index")
     maxunits = map(
-        lambda x: max(x[1]), groupby(units, key=lambda un: un.reg_name)  # type:ignore
+        lambda x: max(x[1]), groupby(units, key=lambda un: un.reg_name)
     )
     return {
         maxunit.reg_name: reg_type(maxunit.reg_name, maxunit.index[0] + 1)
@@ -1025,20 +1027,22 @@ def _get_optype_and_params(op: Op) -> Tuple[OpType, Optional[List[float]]]:
         params = [op.params[1], op.params[0] - 0.5, op.params[2] + 0.5]
     elif optype == OpType.CustomGate:
         params = op.params
-    return (optype, params)  # type: ignore
+    return optype, params  # type: ignore
 
 
 def _get_gate_circuit(
     optype: OpType, qubits: List[Qubit], symbols: Optional[List[Symbol]] = None
 ) -> Circuit:
     # create Circuit for constructing qasm from
+    unitids = cast(List[UnitID], qubits)
     gate_circ = Circuit()
     for q in qubits:
         gate_circ.add_qubit(q)
     if symbols:
-        gate_circ.add_gate(optype, symbols, qubits)  # type: ignore
+        exprs = [symbol.as_expr() for symbol in symbols]  # type: ignore
+        gate_circ.add_gate(optype, exprs, unitids)
     else:
-        gate_circ.add_gate(optype, qubits)  # type: ignore
+        gate_circ.add_gate(optype, unitids)
     auto_rebase_pass({OpType.CX, OpType.U3}).apply(gate_circ)
     RemoveRedundancies().apply(gate_circ)
 
@@ -1131,22 +1135,24 @@ def circuit_to_qasm_io(
     added_gate_definitions: Set[str] = set()
     range_preds = dict()
     for command in circ:
+        assert isinstance(command, Command)
         checked_op = True
         op = command.op
         args = command.args
         optype, params = _get_optype_and_params(op)
         if optype == OpType.RangePredicate:
-            range_preds[args[-1]] = command
+            assert isinstance(op, RangePredicateOp)
+            range_preds[args[-1]] = (op, args)
             # attach predicate to bit,
             # subsequent conditional will handle it
             continue
         if optype == OpType.Conditional:
+            assert isinstance(op, Conditional)
             bits = args[: op.width]
             control_bit = bits[0]
             if control_bit in range_preds:
                 # write range predicate in condition
-                range_com = range_preds[control_bit]
-                range_op = range_com.op
+                range_op, range_args = range_preds[control_bit]
                 comparator, value = _parse_range(range_op.lower, range_op.upper)
                 if op.value == 0 and comparator == "==":
                     comparator = "!="
@@ -1154,8 +1160,8 @@ def circuit_to_qasm_io(
                     raise QASMUnsupportedError(
                         "OpenQASM conditions must be on a register's fixed value."
                     )
-                bits = range_com.args[:-1]
-                variable = range_com.args[0].reg_name
+                bits = range_args[:-1]
+                variable: Union[str, UnitID, ] = range_args[0].reg_name
             else:
                 comparator = "=="
                 value = op.value
@@ -1163,17 +1169,18 @@ def circuit_to_qasm_io(
                     variable = control_bit
                 else:
                     variable = control_bit.reg_name
-                    if hqs_header(header) and bits != list(cregs[variable]):  # type: ignore
+                    if hqs_header(header) and bits != cregs[variable].to_list():
                         raise QASMUnsupportedError(
                             "hqslib1 QASM conditions must be an entire classical "
                             "register or a single bit"
                         )
             if not hqs_header(header):
+                assert isinstance(variable, str)
                 if op.width != cregs[variable].size:
                     raise QASMUnsupportedError(
                         "OpenQASM conditions must be an entire classical register"
                     )
-                if bits != list(cregs[variable]):  # type: ignore
+                if bits != cregs[variable].to_list():
                     raise QASMUnsupportedError(
                         "OpenQASM conditions must be a single classical register"
                     )
@@ -1186,11 +1193,12 @@ def circuit_to_qasm_io(
             # global phase is ignored in QASM
             continue
         if optype == OpType.SetBits:
+            assert isinstance(op, SetBitsOp)
             creg_name = args[0].reg_name
-            bits, vals = zip(*sorted(zip(args, op.values)))
+            bits, vals = zip(*sorted(zip(args, op.values)))  # type: ignore
 
             # check if whole register can be set at once
-            if bits == tuple(cregs[creg_name]):  # type: ignore
+            if bits == tuple(cregs[creg_name].to_list()):
                 value = int("".join(map(str, map(int, vals[::-1]))), 2)
                 buffer.write(f"{creg_name} = {value};\n")
             else:
@@ -1198,26 +1206,29 @@ def circuit_to_qasm_io(
                     buffer.write(f"{bit} = {int(value)};\n")
             continue
         if optype == OpType.CopyBits:
-            l_args = args[op.n_inputs :]
+            assert isinstance(op, CopyBitsOp)
+            l_args = args[op.n_inputs:]
             r_args = args[: op.n_inputs]
             l_name = l_args[0].reg_name
             r_name = r_args[0].reg_name
 
             # check if whole register can be set at once
-            if l_args == list(cregs[l_name]) and r_args == list(cregs[r_name]):  # type: ignore
+            if l_args == cregs[l_name].to_list() and r_args == cregs[r_name].to_list():
                 buffer.write(f"{l_name} = {r_name};\n")
             else:
                 for bit_l, bit_r in zip(l_args, r_args):
                     buffer.write(f"{bit_l} = {bit_r};\n")
             continue
         if optype == OpType.MultiBit:
+            assert isinstance(op, MultiBitOp)
+            l_args = args[op.n_inputs:]
             op = op.basic_op
             optype = op.type
             registers_involved = [arg.reg_name for arg in args[:2]]
             if len(args) > 2 and args[2].reg_name not in registers_involved:
                 # there is a distinct output register
                 registers_involved.append(args[2].reg_name)
-            args = [cregs[name] for name in registers_involved]
+            args = [cregs[name] for name in registers_involved]  # type: ignore
         if optype in (
             OpType.ExplicitPredicate,
             OpType.ExplicitModifier,
@@ -1232,12 +1243,13 @@ def circuit_to_qasm_io(
             continue
 
         if optype == OpType.ClassicalExpBox:
-            out_args = args[op.get_n_i() :]
+            assert isinstance(op, ClassicalExpBox)
+            out_args: list[UnitID] = args[op.get_n_i():]
             if len(out_args) == 1:
                 buffer.write(f"{out_args[0]} = {str(op.get_exp())};\n")
             elif (
                 out_args
-                == list(cregs[out_args[0].reg_name])[: op.get_n_io() + op.get_n_o()]  # type: ignore
+                == cregs[out_args[0].reg_name].to_list()[: op.get_n_io() + op.get_n_o()]
             ):
                 buffer.write(f"{out_args[0].reg_name} = {str(op.get_exp())};\n")
             else:
@@ -1247,6 +1259,7 @@ def circuit_to_qasm_io(
                 )
             continue
         if optype == OpType.WASM:
+            assert isinstance(op, WASMOp)
             inputs: List[str] = []
             outputs: List[str] = []
             for reglist, sizes in [
@@ -1265,6 +1278,7 @@ def circuit_to_qasm_io(
             buffer.write(f"{op.func_name}({', '.join(inputs)});\n")
             continue
         if optype == OpType.CustomGate:
+            assert isinstance(op, CustomGate)
             if op.gate.name not in include_gate_defs:
                 # unroll custom gate
                 gate_circ = op.get_circuit()
@@ -1289,13 +1303,14 @@ def circuit_to_qasm_io(
             # that 0 <= param < 4
             if param > 1:
                 # first get in to 0 <= param < 2 range
-                param = Decimal(str(param)) % Decimal("2")
+                param = Decimal(str(param)) % Decimal("2")  # type: ignore
                 # then flip 1 <= param < 2  range into
                 # -1 <= param < 0
                 if param > 1:
                     param = -2 + param
-            params = [param]
+            params = [param]  # type: ignore
         elif optype == OpType.Barrier and header == "hqslib1_dev":
+            assert isinstance(op, MetaOp)
             if op.data == "":
                 opstr = _tk_to_qasm_noparams[optype]
             else:

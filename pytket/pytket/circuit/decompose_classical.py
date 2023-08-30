@@ -172,12 +172,12 @@ def _gen_walk(
         RegWiseOp.XOR: newcirc.add_c_xor_to_registers,
     }
     if var_type is Bit:
-        op_type = BitWiseOp
-        exp_type = BitLogicExp
+        op_type: Union[Type[BitWiseOp], Type[RegWiseOp]] = BitWiseOp
+        exp_type: Union[Type[BitLogicExp], Type[RegLogicExp]] = BitLogicExp
     else:
         assert var_type is BitRegister
-        op_type = RegWiseOp  # type: ignore
-        exp_type = RegLogicExp  # type: ignore
+        op_type = RegWiseOp
+        exp_type = RegLogicExp
 
     def add_method(var: Variable) -> None:
         if isinstance(var, Bit):
@@ -210,6 +210,7 @@ def _gen_walk(
         kwargs = kwargs or {}
         # decompose children
         for i, sub_e in filter_by_type(exp.args, exp_type):
+            assert isinstance(sub_e, (BitLogicExp, RegLogicExp))
             exp.args[i] = recursive_walk(sub_e, kwargs)
         # all args should now be Constant or Variable
         # write Constant to temporary Variable
