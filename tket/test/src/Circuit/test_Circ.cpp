@@ -3253,26 +3253,25 @@ SCENARIO("Check Circuit::add_conditional_barrier.") {
       "Add various forms of valid conditional barrier using the unsigned "
       "constructor.") {
     Circuit c(4, 5);
-    c.add_conditional_barrier(
-        (std::vector<unsigned>){0}, (std::vector<unsigned>){},
-        (std::vector<unsigned>){0}, 0, "");
-    c.add_conditional_barrier(
-        (std::vector<unsigned>){0, 1}, (std::vector<unsigned>){0},
-        (std::vector<unsigned>){1, 2}, 1, "");
-    c.add_conditional_barrier(
-        (std::vector<unsigned>){0}, (std::vector<unsigned>){0},
-        (std::vector<unsigned>){1, 2}, 1, "");
-    c.add_conditional_barrier(
-        (std::vector<unsigned>){1, 3}, (std::vector<unsigned>){0, 1, 2},
-        (std::vector<unsigned>){3}, 0, "test");
-    c.add_conditional_barrier(
-        (std::vector<unsigned>){0, 2}, (std::vector<unsigned>){0},
-        (std::vector<unsigned>){1, 2}, 1, "test1");
-    c.add_conditional_barrier(
-        (std::vector<unsigned>){0, 1, 2, 3}, (std::vector<unsigned>){0, 1, 2},
-        {3}, 0, "test1");
+    std::vector<unsigned> c_empty = {};
+    std::vector<unsigned> c_0 = {0};
+    std::vector<unsigned> c_3 = {3};
+    std::vector<unsigned> c_4 = {4};
+    std::vector<unsigned> c_01 = {0, 1};
+    std::vector<unsigned> c_02 = {0, 2};
+    std::vector<unsigned> c_12 = {1, 2};
+    std::vector<unsigned> c_13 = {1, 3};
+    std::vector<unsigned> c_012 = {0, 1, 2};
+    std::vector<unsigned> c_0123 = {0, 1, 2, 3};
+
+    c.add_conditional_barrier(c_0, c_empty, c_0, 0, "");
+    c.add_conditional_barrier(c_01, c_0, c_12, 1, "");
+    c.add_conditional_barrier(c_0, c_0, c_12, 1, "");
+    c.add_conditional_barrier(c_13, c_012, c_3, 0, "test");
+    c.add_conditional_barrier(c_02, c_0, c_12, 1, "test1");
+    c.add_conditional_barrier(c_0123, c_012, c_3, 0, "test1");
     c.add_measure(3, 4);
-    c.add_conditional_barrier({0, 1, 2, 3}, {0, 1, 2}, {4}, 0, "test2");
+    c.add_conditional_barrier(c_0123, c_012, c_4, 0, "test2");
     check_conditional_circuit(c);
   }
   GIVEN(
