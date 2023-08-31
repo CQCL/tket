@@ -27,7 +27,7 @@ from pytket.circuit import BasisOrder, Circuit, OpType
 from pytket.backends.backend import Backend, KwargTypes
 from pytket.backends.backend_exceptions import CircuitNotRunError
 from pytket.backends.backendresult import BackendResult
-from pytket.backends.resulthandle import ResultHandle, ResultIdTuple
+from pytket.backends.resulthandle import ResultHandle, _ResultIdTuple
 from pytket.backends.status import CircuitStatus, StatusEnum
 from pytket.passes import (
     BasePass,
@@ -86,7 +86,7 @@ class TketSimBackend(Backend):
         self._ignore_measures = ignore_measures
 
     @property
-    def _result_id_type(self) -> ResultIdTuple:
+    def _result_id_type(self) -> _ResultIdTuple:
         return (str,)
 
     @property
