@@ -24,6 +24,7 @@
 #include "tket/Gate/Gate.hpp"
 #include "tket/Gate/OpPtrFunctions.hpp"
 #include "tket/Gate/SymTable.hpp"
+#include "tket/Ops/BarrierOp.hpp"
 #include "tket/Ops/ClassicalOps.hpp"
 #include "tket/Ops/MetaOp.hpp"
 #include "tket/Ops/Op.hpp"
@@ -611,6 +612,16 @@ PYBIND11_MODULE(circuit, m) {
           "\n:param data: additional string stored in the op",
           py::arg("type"), py::arg("signature"), py::arg("data"))
       .def_property_readonly("data", &MetaOp::get_data, "Get data from MetaOp");
+
+    py::class_<BarrierOp, std::shared_ptr<BarrierOp>, Op>(
+        m, "BarrierOp", "Barrier operations.")
+        .def(
+            py::init<op_signature_t, const std::string &>(),
+            "Construct BarrierOp with signature and additional data string"
+            "\n:param signature: signature for the op"
+            "\n:param data: additional string stored in the op",
+            py::arg("signature"), py::arg("data"))
+        .def_property_readonly("data", &BarrierOp::get_data, "Get data from BarrierOp");
 
   init_library(m);
   init_boxes(m);
