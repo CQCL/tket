@@ -88,7 +88,7 @@ Licensed under the `Apache 2 License <http://www.apache.org/licenses/LICENSE-2.0
     
     Manual <https://cqcl.github.io/pytket/manual/index.html>
     Extensions <https://cqcl.github.io/pytket-extensions/api/index.html>
-    Example notebooks <https://github.com/CQCL/pytket/tree/main/examples>
+    Example notebooks <https://github.com/CQCL/pytket/tree/main/examples#pytket-examples>
 
 .. toctree::
     :caption: API Reference:
