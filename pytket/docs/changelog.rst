@@ -8,6 +8,7 @@ Major new features:
 
 * Add ``ConjugationBox`` to express circuits that follow
   the compute-action-uncompute pattern.
+* Added typing support for compiled modules
 
 Minor new features:
 

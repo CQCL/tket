@@ -20,8 +20,8 @@ from ast import literal_eval
 from collections.abc import Sequence
 
 # mypy doesn't think you can pass the tuple to Union
-_BasicHashType = Union[int, float, complex, str, bool, bytes]
-_ResultIdTuple = Tuple[
+BasicHashType = Union[int, float, complex, str, bool, bytes]
+ResultIdTuple = Tuple[
     Union[Type[int], Type[float], Type[complex], Type[str], Type[bool], Type[bytes]],
     ...,
 ]
@@ -38,7 +38,7 @@ class ResultHandle(Sequence):
     to determine this.
     """
 
-    def __init__(self, *args: _BasicHashType):
+    def __init__(self, *args: BasicHashType):
         self._identifiers = tuple(args)
 
     @classmethod
@@ -83,16 +83,16 @@ class ResultHandle(Sequence):
         return len(self._identifiers)
 
     @overload
-    def __getitem__(self, key: int) -> _BasicHashType:
+    def __getitem__(self, key: int) -> BasicHashType:
         ...
 
     @overload
-    def __getitem__(self, key: slice) -> Tuple[_BasicHashType, ...]:
+    def __getitem__(self, key: slice) -> Tuple[BasicHashType, ...]:
         ...
 
     def __getitem__(
         self, key: Union[int, slice]
-    ) -> Union[_BasicHashType, Tuple[_BasicHashType, ...]]:
+    ) -> Union[BasicHashType, Tuple[BasicHashType, ...]]:
         # weird logic required to make mypy happy, can't just
         # return self._identifiers[key]
         if isinstance(key, slice):

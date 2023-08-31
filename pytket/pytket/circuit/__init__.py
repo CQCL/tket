@@ -27,12 +27,15 @@ from typing import (
     Optional,
 )
 
-from pytket._tket.circuit import *  # type: ignore
-from pytket._tket.circuit import Bit, BitRegister, Circuit
+from pytket._tket.circuit import *
+from pytket._tket.circuit import Circuit
+
+from pytket._tket.unit_id import *
+from pytket._tket.unit_id import Bit, BitRegister
 
 # prefixes for assertion bits
-from pytket._tket.circuit import _DEBUG_ZERO_REG_PREFIX, _DEBUG_ONE_REG_PREFIX  # type: ignore
-from pytket._tket.pauli import Pauli  # type: ignore
+from pytket._tket.unit_id import _DEBUG_ZERO_REG_PREFIX, _DEBUG_ONE_REG_PREFIX
+from pytket._tket.pauli import Pauli
 
 from pytket import wasm
 
@@ -56,20 +59,7 @@ from .logic_exp import (
 )
 
 
-# Add ability to compare Bit equality with arbitrary class
-Bit.oldeq = Bit.__eq__
-
-
-def overload_biteq(self: Bit, other: Any) -> bool:
-    if not isinstance(other, Bit):
-        return False
-    return cast(bool, self.oldeq(other))
-
-
-setattr(Bit, "__eq__", overload_biteq)
-
-
-def overload_add_wasm(  # type: ignore
+def overload_add_wasm(
     self: Circuit,
     funcname: str,
     filehandler: wasm.WasmFileHandler,
@@ -77,7 +67,7 @@ def overload_add_wasm(  # type: ignore
     list_o: List[int],
     args: Union[List[int], List[Bit]],
     args_wasm: Optional[List[int]] = None,
-    **kwargs,
+    **kwargs: Any,
 ) -> Circuit:
     """Add a classical function call from a wasm file to the circuit.
     \n\n:param funcname: name of the function that is called
@@ -119,14 +109,14 @@ def overload_add_wasm(  # type: ignore
 setattr(Circuit, "add_wasm", overload_add_wasm)
 
 
-def overload_add_wasm_to_reg(  # type: ignore
+def overload_add_wasm_to_reg(
     self: Circuit,
     funcname: str,
     filehandler: wasm.WasmFileHandler,
     list_i: List[BitRegister],
     list_o: List[BitRegister],
     args_wasm: Optional[List[int]] = None,
-    **kwargs,
+    **kwargs: Any,
 ) -> Circuit:
     """Add a classical function call from a wasm file to the circuit.
     \n\n:param funcname: name of the function that is called

@@ -15,9 +15,9 @@
 from typing import TYPE_CHECKING, Dict, Optional, Tuple, List
 
 import numpy as np
-from pytket.circuit import Circuit, Qubit  # type: ignore
-from pytket.pauli import QubitPauliString  # type: ignore
-from pytket.partition import (  # type: ignore
+from pytket.circuit import Circuit, Qubit
+from pytket.pauli import QubitPauliString
+from pytket.partition import (
     measurement_reduction,
     PauliPartitionStrat,
     GraphColourMethod,
@@ -98,7 +98,7 @@ def get_pauli_expectation_value(
         if not backend.valid_circuit(state_circuit):
             state_circuit = backend.get_compiled_circuit(state_circuit)
         if backend.supports_expectation:
-            return backend.get_pauli_expectation_value(state_circuit, pauli)  # type: ignore
+            return backend.get_pauli_expectation_value(state_circuit, pauli)
         state = backend.run_circuit(state_circuit).get_state()
         return complex(pauli.state_expectation(state))
 
@@ -156,7 +156,7 @@ def get_operator_expectation_value(
         if backend.supports_expectation and (
             backend.expectation_allows_nonhermitian or all(z.imag == 0 for z in coeffs)
         ):
-            return backend.get_operator_expectation_value(state_circuit, operator)  # type: ignore
+            return backend.get_operator_expectation_value(state_circuit, operator)
         result = backend.run_circuit(state_circuit)
         state = result.get_state()
         return operator.state_expectation(state)

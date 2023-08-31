@@ -17,11 +17,11 @@ from functools import lru_cache
 
 from math import ceil, log2
 from collections import OrderedDict
-from typing import Dict, Iterable, List, Tuple, Counter, cast, Optional
+from typing import Dict, Iterable, List, Tuple, Counter, cast, Optional, Callable, Union
 import numpy as np
-from pytket.circuit import Circuit, Qubit, Bit, Node, CircBox, OpType  # type: ignore
+from pytket.circuit import Circuit, Qubit, Bit, Node, CircBox, OpType
 from pytket.backends import Backend
-from pytket.passes import DecomposeBoxes, FlattenRegisters  # type: ignore
+from pytket.passes import DecomposeBoxes, FlattenRegisters
 from pytket.backends.backendresult import BackendResult
 from pytket.utils.outcomearray import OutcomeArray
 from pytket.utils.results import CountsDict, StateTuple
@@ -47,9 +47,11 @@ def compress_counts(
     :return: Filtered counts
     :rtype: CountsDict
     """
-    valprocess = (lambda x: int(round(x))) if round_to_int else (lambda x: x)  # type: ignore
+    valprocess: Callable[[float], Union[int, float]] = (
+        lambda x: int(round(x)) if round_to_int else x
+    )
     processed_pairs = (
-        (key, valprocess(val)) for key, val in counts.items() if val > tol  # type: ignore
+        (key, valprocess(val)) for key, val in counts.items() if val > tol
     )
     return {key: val for key, val in processed_pairs if val > 0}
 
@@ -339,8 +341,11 @@ class SpamCorrecter:
 
         self.all_qbs = [qb for subset in qubit_subsets for qb in subset]
 
+        def to_tuple(inp: list[Node]) -> tuple:
+            return tuple(inp)
+
         self.subsets_matrix_map = OrderedDict.fromkeys(
-            sorted(map(tuple, self.correlations), key=len, reverse=True)
+            sorted(map(to_tuple, self.correlations), key=len, reverse=True)
         )
         # ordered from largest to smallest via OrderedDict & sorted
         self.subset_dimensions = [len(subset) for subset in self.subsets_matrix_map]
@@ -399,7 +404,7 @@ class SpamCorrecter:
                 # find only qubits that are expected to be in 1 state,
                 # add xbox to given qubits
                 for flipped_qb in itertools.compress(qubits, major_state[:dim]):
-                    state_circuit.add_circbox(self.xbox, [flipped_qb])
+                    state_circuit.add_circbox(self.xbox, [flipped_qb])  # type: ignore[list-item]
             # Decompose boxes, add barriers to preserve circuit, add measures
             DecomposeBoxes().apply(state_circuit)
             for qb, cb in zip(self.all_qbs, c_reg):
@@ -433,7 +438,7 @@ class SpamCorrecter:
             self.subsets_matrix_map[qbs] = np.zeros((1 << dim,) * 2, dtype=float)
             for i in range(len(qbs)):
                 qb = qbs[i]
-                self.node_index_dict[qb] = (counter, i)
+                self.node_index_dict[qb] = (counter, i)  # type:ignore[index]
             counter += 1
 
         for result, state_info in zip(results_list, self.state_infos):
@@ -441,7 +446,7 @@ class SpamCorrecter:
             qb_bit_map = state_info[1]
             for qb_sub in self.subsets_matrix_map:
                 # bits of counts to consider
-                bits = [qb_bit_map[q] for q in qb_sub]
+                bits = [qb_bit_map[q] for q in qb_sub]  # type:ignore[index]
                 counts_dict = result.get_counts(cbits=bits)
                 for measured_state, count in counts_dict.items():
                     # intended state
@@ -526,7 +531,7 @@ class SpamCorrecter:
                         "Measured qubit {} is not characterised by "
                         "SpamCorrecter".format(q)
                     )
-                unused_qbs.remove(q)
+                unused_qbs.remove(q)  # type:ignore[arg-type]
                 char_bits_order.append(mapping[q])
             correction_matrices.extend(
                 reduce_matrices(
@@ -549,7 +554,7 @@ class SpamCorrecter:
         if method == "invert":
             try:
                 subinverts = [
-                    np.linalg.inv(submatrix) for submatrix in correction_matrices  # type: ignore
+                    np.linalg.inv(submatrix) for submatrix in correction_matrices
                 ]
             except np.linalg.LinAlgError:
                 raise ValueError(

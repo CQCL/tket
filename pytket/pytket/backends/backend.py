@@ -31,11 +31,13 @@ from types import ModuleType
 
 from typing_extensions import Literal
 
-from pytket.circuit import Bit, Circuit, OpType  # type: ignore
-from pytket.passes import BasePass  # type: ignore
-from pytket.predicates import Predicate  # type: ignore
+from pytket.circuit import Bit, Circuit, OpType
+from pytket.passes import BasePass
+from pytket.pauli import QubitPauliString
+from pytket.predicates import Predicate
 from pytket.utils.outcomearray import OutcomeArray
 from pytket.utils.results import KwargTypes
+from pytket.utils import QubitPauliOperator
 
 from .backend_exceptions import (
     CircuitNotValidError,
@@ -43,7 +45,7 @@ from .backend_exceptions import (
 )
 from .backendinfo import BackendInfo
 from .backendresult import BackendResult
-from .resulthandle import ResultHandle, _ResultIdTuple
+from .resulthandle import ResultHandle, ResultIdTuple
 from .status import CircuitStatus
 
 ResultCache = Dict[str, Any]
@@ -216,7 +218,7 @@ class Backend(ABC):
 
     @property
     @abstractmethod
-    def _result_id_type(self) -> _ResultIdTuple:
+    def _result_id_type(self) -> ResultIdTuple:
         """Identifier type signature for ResultHandle for this backend.
 
         :return: Type signature (tuple of hashable types)
@@ -643,3 +645,13 @@ class Backend(ABC):
             n_shots_list = list(map(lambda n: n or 0, n_shots_list))
 
         return n_shots_list
+
+    def get_pauli_expectation_value(
+        self, state_circuit: Circuit, pauli: QubitPauliString
+    ) -> complex:
+        raise NotImplementedError
+
+    def get_operator_expectation_value(
+        self, state_circuit: Circuit, operator: QubitPauliOperator
+    ) -> complex:
+        raise NotImplementedError
