@@ -67,7 +67,7 @@
             <a id="nextFileLink" class="nav" href="d_5d08fda6a8e102d3_backendresult_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.3.0">coverage.py v7.3.0</a>,
-            created at 2023-08-30 07:53 +0000
+            created at 2023-08-31 09:33 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"/>
@@ -99,10 +99,10 @@
     <p class="run"><span class="n"><a id="t15" href="#t15">15</a></span><span class="t"><span class="str">""" BackendInfo class: additional information on Backends """</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t16" href="#t16">16</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t17" href="#t17">17</a></span><span class="t"><span class="key">from</span> <span class="nam">dataclasses</span> <span class="key">import</span> <span class="nam">dataclass</span><span class="op">,</span> <span class="nam">field</span><span class="op">,</span> <span class="nam">asdict</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t18" href="#t18">18</a></span><span class="t"><span class="key">from</span> <span class="nam">typing</span> <span class="key">import</span> <span class="nam">Any</span><span class="op">,</span> <span class="nam">Dict</span><span class="op">,</span> <span class="nam">List</span><span class="op">,</span> <span class="nam">Optional</span><span class="op">,</span> <span class="nam">Set</span><span class="op">,</span> <span class="nam">cast</span><span class="op">,</span> <span class="nam">Tuple</span><span class="op">,</span> <span class="nam">Union</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t18" href="#t18">18</a></span><span class="t"><span class="key">from</span> <span class="nam">typing</span> <span class="key">import</span> <span class="nam">Any</span><span class="op">,</span> <span class="nam">Dict</span><span class="op">,</span> <span class="nam">List</span><span class="op">,</span> <span class="nam">Optional</span><span class="op">,</span> <span class="nam">Set</span><span class="op">,</span> <span class="nam">Tuple</span><span class="op">,</span> <span class="nam">Union</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t19" href="#t19">19</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t20" href="#t20">20</a></span><span class="t"><span class="key">from</span> <span class="nam">pytket</span><span class="op">.</span><span class="nam">architecture</span> <span class="key">import</span> <span class="nam">Architecture</span><span class="op">,</span> <span class="nam">FullyConnected</span>  <span class="com"># type: ignore</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t21" href="#t21">21</a></span><span class="t"><span class="key">from</span> <span class="nam">pytket</span><span class="op">.</span><span class="nam">circuit</span> <span class="key">import</span> <span class="nam">Node</span><span class="op">,</span> <span class="nam">OpType</span>  <span class="com"># type: ignore</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t20" href="#t20">20</a></span><span class="t"><span class="key">from</span> <span class="nam">pytket</span><span class="op">.</span><span class="nam">architecture</span> <span class="key">import</span> <span class="nam">Architecture</span><span class="op">,</span> <span class="nam">FullyConnected</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t21" href="#t21">21</a></span><span class="t"><span class="key">from</span> <span class="nam">pytket</span><span class="op">.</span><span class="nam">circuit</span> <span class="key">import</span> <span class="nam">Node</span><span class="op">,</span> <span class="nam">OpType</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t22" href="#t22">22</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t23" href="#t23">23</a></span><span class="t"><span class="nam">_OpTypeErrs</span> <span class="op">=</span> <span class="nam">Dict</span><span class="op">[</span><span class="nam">OpType</span><span class="op">,</span> <span class="nam">float</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t24" href="#t24">24</a></span><span class="t"><span class="nam">_Edge</span> <span class="op">=</span> <span class="nam">Tuple</span><span class="op">[</span><span class="nam">Node</span><span class="op">,</span> <span class="nam">Node</span><span class="op">]</span>&nbsp;</span><span class="r"></span></p>
@@ -283,7 +283,7 @@
     <p class="pln"><span class="n"><a id="t199" href="#t199">199</a></span><span class="t"><span class="str">        :return: List of nodes.</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t200" href="#t200">200</a></span><span class="t"><span class="str">        :rtype: List[Node]</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t201" href="#t201">201</a></span><span class="t"><span class="str">        """</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t202" href="#t202">202</a></span><span class="t">        <span class="key">return</span> <span class="nam">cast</span><span class="op">(</span><span class="nam">List</span><span class="op">[</span><span class="nam">Node</span><span class="op">]</span><span class="op">,</span> <span class="nam">self</span><span class="op">.</span><span class="nam">architecture</span><span class="op">.</span><span class="nam">nodes</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t202" href="#t202">202</a></span><span class="t">        <span class="key">return</span> <span class="nam">self</span><span class="op">.</span><span class="nam">architecture</span><span class="op">.</span><span class="nam">nodes</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t203" href="#t203">203</a></span><span class="t">&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t204" href="#t204">204</a></span><span class="t">    <span class="op">@</span><span class="nam">property</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t205" href="#t205">205</a></span><span class="t">    <span class="key">def</span> <span class="nam">n_nodes</span><span class="op">(</span><span class="nam">self</span><span class="op">)</span> <span class="op">-></span> <span class="nam">int</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
@@ -419,7 +419,7 @@
             <a id="nextFileLink" class="nav" href="d_5d08fda6a8e102d3_backendresult_py.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.3.0">coverage.py v7.3.0</a>,
-            created at 2023-08-30 07:53 +0000
+            created at 2023-08-31 09:33 +0000
         </p>
     </div>
 </footer>
