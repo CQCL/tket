@@ -217,8 +217,9 @@ def test_conditional_gates() -> None:
     c2 = circuit_from_qasm(qasm_out)
     assert circ == c2
 
+
 def test_named_conditional_barrier() -> None:
-    circ = Circuit(2,2)
+    circ = Circuit(2, 2)
     circ.add_bit(Bit("test", 3))
     circ.Z(0, condition_bits=[0, 1], condition_value=2)
     circ._add_conditional_barrier(

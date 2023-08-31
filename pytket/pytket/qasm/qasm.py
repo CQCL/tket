@@ -357,7 +357,9 @@ class CircuitTransformer(Transformer):
             elif arg[0] in self.q_registers:
                 signature.append("Q")
             else:
-                raise QASMParseError("UnitID", arg, "in Barrier arguments is not declared.")
+                raise QASMParseError(
+                    "UnitID", arg, "in Barrier arguments is not declared."
+                )
         yield {
             "args": args,
             "op": {"signature": signature, "type": "Barrier"},
