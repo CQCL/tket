@@ -16,8 +16,6 @@ Windows. To install, run
 
 If you have issues installing ``pytket`` please visit the `installation troubleshooting <https://cqcl.github.io/tket/pytket/api/install.html>`_ page.
 
-To use ``pytket``, you can simply import the appropriate modules into your python code or in an interactive Python notebook. We can build circuits directly using the ``pytket`` interface by creating a blank circuit and adding gates in the order we want to apply them.
-
 See the `Getting Started`_ page for a basic tutorial on using
 ``pytket``. To get more in depth on features, see the `examples`_. See the `pytket user manual <https://cqcl.github.io/pytket/manual/index.html>`_ for an extensive introduction to ``pytket`` functionality and how to use it.
 
