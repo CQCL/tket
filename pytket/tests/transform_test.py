@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import itertools
-from typing import List
+from typing import List, Union
 from pathlib import Path
 
 import sympy
@@ -54,12 +54,12 @@ from pytket.placement import (
     NoiseAwarePlacement,
 )
 
-from sympy import Symbol
+from sympy import Symbol, Expr
 import numpy as np
 import json
 import pytest
 
-from .useful_typedefs import ParamType
+ParamType = Union[float, Expr]
 
 
 def get_test_circuit() -> Circuit:

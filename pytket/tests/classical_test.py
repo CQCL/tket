@@ -68,7 +68,7 @@ from pytket.circuit.logic_exp import (
 
 from pytket.passes import DecomposeClassicalExp, FlattenRegisters
 
-from .strategies import reg_name_regex, binary_digits, uint32
+from strategies import reg_name_regex, binary_digits, uint32
 
 curr_file_path = Path(__file__).resolve().parent
 

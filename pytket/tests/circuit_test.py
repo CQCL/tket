@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import json
-from typing import cast
+from typing import cast, Union
 
 from jsonschema import validate  # type: ignore
 from pathlib import Path
@@ -72,7 +72,7 @@ import pytest  # type: ignore
 
 from hypothesis import given, settings
 import tests.strategies as st
-from tests.useful_typedefs import ParamType
+ParamType = Union[float, Expr]
 
 curr_file_path = Path(__file__).resolve().parent
 

@@ -34,8 +34,8 @@ from pytket.backends.backendresult import BackendResult
 from pytket.backends.backend_exceptions import InvalidResultType, CircuitNotRunError
 from pytket.backends.status import CircuitStatus, StatusEnum
 
-from .strategies import outcomearrays, backendresults
-from .simulator import TketSimShotBackend, TketSimBackend
+from strategies import outcomearrays, backendresults
+from simulator import TketSimShotBackend, TketSimBackend
 
 
 def test_resulthandle() -> None:

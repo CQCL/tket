@@ -16,7 +16,7 @@ import json
 import pytest
 from jsonschema import RefResolver, Draft7Validator, ValidationError  # type: ignore
 from pathlib import Path
-from typing import Any, Dict, List, cast
+from typing import Any, Dict, List, cast, Union
 
 from sympy import Expr
 
@@ -46,7 +46,7 @@ from pytket.mapping import (
     MultiGateReorderRoutingMethod,
     BoxDecompositionRoutingMethod,
 )
-from tests.useful_typedefs import ParamType
+ParamType = Union[float, Expr]
 
 
 def standard_pass_dict(content: Dict[str, Any]) -> Dict[str, Any]:

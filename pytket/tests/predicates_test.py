@@ -83,10 +83,10 @@ from pytket.placement import Placement, GraphPlacement
 from pytket.transform import Transform, PauliSynthStrat, CXConfigType
 from pytket.passes import SynthesiseOQC
 import numpy as np
-from sympy import Symbol
-from typing import Dict, Any, List, cast
+from sympy import Symbol, Expr
+from typing import Dict, Any, List, cast, Union
 
-from tests.useful_typedefs import ParamType as Param
+Param = Union[float, Expr]
 
 
 circ2 = Circuit(1)
