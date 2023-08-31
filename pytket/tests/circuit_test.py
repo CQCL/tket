@@ -71,7 +71,7 @@ from math import sqrt
 import pytest  # type: ignore
 
 from hypothesis import given, settings
-import tests.strategies as st
+import strategies as st
 ParamType = Union[float, Expr]
 
 curr_file_path = Path(__file__).resolve().parent

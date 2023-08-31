@@ -17,7 +17,7 @@
 ### WARNING: TketSimBackend accepts Measure gates but does not apply them
 ### TketSimBackend will not work properly if there are extra bits that are unwritten to.
 
-from tket_sim_wrapper import TketSimWrapper
+from .tket_sim_wrapper import TketSimWrapper
 
 from typing import TYPE_CHECKING, List, Optional, Sequence, Union, cast
 from uuid import uuid4

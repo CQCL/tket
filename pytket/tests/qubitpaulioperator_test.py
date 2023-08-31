@@ -25,7 +25,7 @@ from pytket.utils import QubitPauliOperator
 from pytket.pauli import Pauli, QubitPauliString, pauli_string_mult
 from pytket.circuit import Qubit
 
-import tests.strategies as st
+import strategies as st
 
 
 def test_QubitPauliOperator_addition() -> None:
