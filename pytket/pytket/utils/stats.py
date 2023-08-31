@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from typing import Counter
-from pytket.circuit import Circuit, OpType  # type: ignore
+from pytket.circuit import Circuit, OpType
 
 
 def gate_counts(circ: Circuit) -> Counter[OpType]:

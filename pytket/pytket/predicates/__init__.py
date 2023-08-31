@@ -14,4 +14,4 @@
 
 """Module exposing the predicates and tools needed for compiler passes."""
 
-from pytket._tket.predicates import *  # type: ignore
+from pytket._tket.predicates import *

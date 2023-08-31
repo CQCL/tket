@@ -39,7 +39,7 @@ from sympy.physics.quantum.tensorproduct import matrix_tensor_product  # type: i
 from sympy.physics.quantum.qapply import qapply  # type: ignore
 from sympy.physics.quantum.qubit import Qubit, matrix_to_qubit  # type: ignore
 
-from pytket.circuit import Circuit, Op, OpType  # type: ignore
+from pytket.circuit import Circuit, Op, OpType
 
 # gates that have an existing definition in sympy
 _FIXED_GATE_MAP: Dict[OpType, Type[symgate.Gate]] = {

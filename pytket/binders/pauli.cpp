@@ -18,6 +18,8 @@
 #include <pybind11/stl.h>
 
 #include "binder_json.hpp"
+#include "deleted_hash.hpp"
+#include "py_operators.hpp"
 #include "tket/Utils/PauliStrings.hpp"
 #include "typecast.hpp"
 
@@ -27,6 +29,7 @@ using json = nlohmann::json;
 namespace tket {
 
 PYBIND11_MODULE(pauli, m) {
+  py::module::import("pytket._tket.unit_id");
   py::enum_<Pauli>(m, "Pauli")
       .value("I", Pauli::I)
       .value("X", Pauli::X)
@@ -57,8 +60,8 @@ PYBIND11_MODULE(pauli, m) {
           "__hash__",
           [](const QubitPauliString &qps) { return hash_value(qps); })
       .def("__repr__", &QubitPauliString::to_str)
-      .def("__eq__", &QubitPauliString::operator==)
-      .def("__ne__", &QubitPauliString::operator!=)
+      .def("__eq__", &py_equals<QubitPauliString>)
+      .def("__ne__", &py_not_equals<QubitPauliString>)
       .def("__lt__", &QubitPauliString::operator<)
       .def("__getitem__", &QubitPauliString::get)
       .def("__setitem__", &QubitPauliString::set)
@@ -69,15 +72,17 @@ PYBIND11_MODULE(pauli, m) {
       .def(
           "to_list",
           [](const QubitPauliString &qps) {
-            json j = qps;
-            return j;
+            return py::object(json(qps)).cast<py::list>();
           },
           "A JSON-serializable representation of the QubitPauliString.\n\n"
           ":return: a list of :py:class:`Qubit`-to-:py:class:`Pauli` "
           "entries, "
           "represented as dicts.")
       .def_static(
-          "from_list", [](const json &j) { return j.get<QubitPauliString>(); },
+          "from_list",
+          [](const py::list &qubit_pauli_string_list) {
+            return json(qubit_pauli_string_list).get<QubitPauliString>();
+          },
           "Construct a new QubitPauliString instance from a JSON serializable "
           "list "
           "representation.")
@@ -237,8 +242,9 @@ PYBIND11_MODULE(pauli, m) {
           "string",
           [](const PauliStabiliser &stabiliser) { return stabiliser.string; },
           "The list of Pauli terms")
-      .def("__eq__", &PauliStabiliser::operator==)
-      .def("__ne__", &PauliStabiliser::operator!=);
+      .def("__eq__", &py_equals<PauliStabiliser>)
+      .def("__hash__", &deletedHash<PauliStabiliser>, deletedHashDocstring)
+      .def("__ne__", &py_not_equals<PauliStabiliser>);
 
   py::class_<QubitPauliTensor>(
       m, "QubitPauliTensor",
@@ -274,8 +280,8 @@ PYBIND11_MODULE(pauli, m) {
           "__hash__",
           [](const QubitPauliTensor &qps) { return hash_value(qps); })
       .def("__repr__", &QubitPauliTensor::to_str)
-      .def("__eq__", &QubitPauliTensor::operator==)
-      .def("__ne__", &QubitPauliTensor::operator!=)
+      .def("__eq__", &py_equals<QubitPauliTensor>)
+      .def("__ne__", &py_not_equals<QubitPauliTensor>)
       .def("__lt__", &QubitPauliTensor::operator<)
       .def(
           "__getitem__", [](const QubitPauliTensor &qpt,
@@ -417,7 +423,5 @@ PYBIND11_MODULE(pauli, m) {
                     t[1].cast<std::list<Pauli>>()),
                 t[2].cast<Complex>());
           }));
-  ;
 }
-
 }  // namespace tket

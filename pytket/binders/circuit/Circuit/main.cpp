@@ -13,18 +13,19 @@
 // limitations under the License.
 
 #include <pybind11/eigen.h>
-#include <pybind11/functional.h>
 #include <pybind11/operators.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
 #include <optional>
 #include <sstream>
+#include <utility>
 
 #include "UnitRegister.hpp"
 #include "binder_json.hpp"
-#include "binder_utils.hpp"
 #include "boost/graph/iteration_macros.hpp"
+#include "deleted_hash.hpp"
+#include "py_operators.hpp"
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/Command.hpp"
@@ -49,19 +50,10 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c);
 void init_circuit_add_classical_op(
     py::class_<Circuit, std::shared_ptr<Circuit>> &c);
 
-void init_circuit(py::module &m) {
-  py::class_<Circuit, std::shared_ptr<Circuit>> circuit_cls(
-      m, "Circuit", py::dynamic_attr(),
-      "Encapsulates a quantum circuit using a DAG representation.\n\n>>> "
-      "from pytket import Circuit\n>>> c = Circuit(4,2) # Create a circuit "
-      "with 4 qubits and 2 classical bits"
-      "\n>>> c.H(0) # Apply a gate to qubit 0\n>>> "
-      "c.Rx(0.5,1) # Angles of rotation are expressed in half-turns "
-      "(i.e. 0.5 means PI/2)\n>>> c.Measure(1,0) # Measure qubit 1, saving "
-      "result in bit 0");
-  init_circuit_add_op(circuit_cls);
-  init_circuit_add_classical_op(circuit_cls);
-  circuit_cls
+void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
+  init_circuit_add_op(pyCircuit);
+  init_circuit_add_classical_op(pyCircuit);
+  pyCircuit
       .def(py::init<>(), "Constructs a circuit with a completely empty DAG.")
       .def(
           py::init<const std::string &>(),
@@ -84,7 +76,8 @@ void init_circuit(py::module &m) {
           "the circuit\n:param name: Optional name for the circuit.",
           py::arg("n_qubits"), py::arg("n_bits"),
           py::arg("name") = std::nullopt)
-      .def("__eq__", &Circuit::operator==)
+      .def("__eq__", &py_equals<Circuit>)
+      .def("__hash__", &deletedHash<Circuit>, deletedHashDocstring)
       .def(
           "__str__",
           [](const Circuit &circ) {
@@ -96,13 +89,13 @@ void init_circuit(py::module &m) {
           [](const Circuit &circ) {
             std::stringstream ss;
             ss << "[";
-            for (auto q : circ.created_qubits()) {
+            for (const auto &q : circ.created_qubits()) {
               ss << "Create " << q.repr() << "; ";
             }
-            for (auto com : circ.get_commands()) {
+            for (const auto &com : circ.get_commands()) {
               ss << com.to_str() << " ";
             }
-            for (auto q : circ.discarded_qubits()) {
+            for (const auto &q : circ.discarded_qubits()) {
               ss << "Discard " << q.repr() << "; ";
             }
             ss << "]";
@@ -173,7 +166,7 @@ void init_circuit(py::module &m) {
             const std::size_t &size = reg.size();
             register_t existing = circ.get_reg(name);
 
-            if (existing.size() > 0) {
+            if (!existing.empty()) {
               if (existing.size() != size) {
                 throw CircuitInvalidity(
                     "Existing register with name \"" + name +
@@ -217,7 +210,7 @@ void init_circuit(py::module &m) {
             const std::size_t &size = reg.size();
             register_t existing = circ.get_reg(name);
 
-            if (existing.size() > 0) {
+            if (!existing.empty()) {
               if (existing.size() != size) {
                 throw CircuitInvalidity(
                     "Existing register with name \"" + name +
@@ -236,8 +229,7 @@ void init_circuit(py::module &m) {
           "get_c_register",
           [](Circuit &circ, const std::string &name) {
             register_t reg = circ.get_reg(name);
-            if (reg.size() == 0 ||
-                reg.begin()->second.type() != UnitType::Bit) {
+            if (reg.empty() || reg.begin()->second.type() != UnitType::Bit) {
               throw CircuitInvalidity(
                   "Cannot find classical register with name \"" + name + "\".");
             }
@@ -253,7 +245,7 @@ void init_circuit(py::module &m) {
             bit_vector_t all_bits = circ.all_bits();
             std::map<std::string, unsigned> bits_map;
             std::vector<BitRegister> b_regs;
-            for (Bit bit : all_bits) {
+            for (const Bit &bit : all_bits) {
               auto it = bits_map.find(bit.reg_name());
               if (it == bits_map.end()) {
                 bits_map.insert({bit.reg_name(), 1});
@@ -261,8 +253,9 @@ void init_circuit(py::module &m) {
                 it->second++;
               }
             }
+            b_regs.reserve(bits_map.size());
             for (auto const &it : bits_map) {
-              b_regs.push_back(BitRegister(it.first, it.second));
+              b_regs.emplace_back(it.first, it.second);
             }
             return b_regs;
           },
@@ -272,8 +265,7 @@ void init_circuit(py::module &m) {
           "get_q_register",
           [](Circuit &circ, const std::string &name) {
             register_t reg = circ.get_reg(name);
-            if (reg.size() == 0 ||
-                reg.begin()->second.type() != UnitType::Qubit) {
+            if (reg.empty() || reg.begin()->second.type() != UnitType::Qubit) {
               throw CircuitInvalidity(
                   "Cannot find quantum register with name \"" + name + "\".");
             }
@@ -289,7 +281,7 @@ void init_circuit(py::module &m) {
             qubit_vector_t all_qbs = circ.all_qubits();
             std::map<std::string, unsigned> qbs_map;
             std::vector<QubitRegister> q_regs;
-            for (Qubit qb : all_qbs) {
+            for (const Qubit &qb : all_qbs) {
               auto it = qbs_map.find(qb.reg_name());
               if (it == qbs_map.end()) {
                 qbs_map.insert({qb.reg_name(), 1});
@@ -297,8 +289,9 @@ void init_circuit(py::module &m) {
                 it->second++;
               }
             }
+            q_regs.reserve(qbs_map.size());
             for (auto const &it : qbs_map) {
-              q_regs.push_back(QubitRegister(it.first, it.second));
+              q_regs.emplace_back(it.first, it.second);
             }
             return q_regs;
           },
@@ -417,7 +410,7 @@ void init_circuit(py::module &m) {
           py::arg("circuit"))
       .def(
           "add_phase",
-          [](Circuit &circ, Expr a) {
+          [](Circuit &circ, const Expr &a) {
             circ.add_phase(a);
             return &circ;
           },
@@ -471,7 +464,11 @@ void init_circuit(py::module &m) {
           "to new ids",
           py::arg("map"))
       .def(
-          "depth", [](const Circuit &circ) { return circ.depth(); },
+          "depth", &Circuit::depth,
+          // for some reason, each c.depth() in this docstring causes stubgen to
+          // create a faulty stub these are manually removed within the stub
+          // generation script, I couldn't figure out how to do it otherwise
+          // without removing the examples
           "Returns the number of interior vertices on the longest path through "
           "the DAG, excluding vertices representing barrier operations."
           "\n\n>>> c = Circuit(3)"
@@ -545,6 +542,10 @@ void init_circuit(py::module &m) {
           py::arg("types"))
       .def(
           "depth_2q", &Circuit::depth_2q,
+          // for some reason, each c.depth_2q() in this docstring causes stubgen
+          // to create a faulty stub these are manually removed within the stub
+          // generation script, I couldn't figure out how to do it otherwise
+          // without removing the examples
           "Returns the number of vertices in the longest path through the "
           "sub-DAG consisting of vertices with 2 quantum wires,"
           "excluding vertices representing barrier operations."
@@ -562,15 +563,19 @@ void init_circuit(py::module &m) {
           "Saves a visualisation of a circuit's DAG to a \".dot\" file",
           py::arg("filename"))
       .def(
-          "to_dict", [](const Circuit &c) { return json(c); },
+          "to_dict",
+          [](const Circuit &c) { return py::object(json(c)).cast<py::dict>(); },
           ":return: a JSON serializable dictionary representation of "
           "the Circuit")
       .def_static(
-          "from_dict", [](const json &j) { return j.get<Circuit>(); },
+          "from_dict",
+          [](const py::dict &circuit_dict) {
+            return json(circuit_dict).get<Circuit>();
+          },
           "Construct Circuit instance from JSON serializable "
           "dictionary representation of the Circuit.")
       .def(py::pickle(
-          [](py::object self) {  // __getstate__
+          [](const py::object &self) {  // __getstate__
             return py::make_tuple(self.attr("to_dict")());
           },
           [](const py::tuple &t) {  // __setstate__
@@ -639,8 +644,8 @@ void init_circuit(py::module &m) {
           "contains any free symbols, False otherwise.")
       .def(
           "substitute_named",
-          [](Circuit &circ, Op_ptr op, const std::string opgroup) {
-            return circ.substitute_named(op, opgroup);
+          [](Circuit &circ, Op_ptr op, const std::string &opgroup) {
+            return circ.substitute_named(std::move(op), opgroup);
           },
           "Substitute all ops with the given name for the given op."
           "The replacement operations retain the same name.\n\n"
@@ -650,7 +655,7 @@ void init_circuit(py::module &m) {
           py::arg("op"), py::arg("opgroup"))
       .def(
           "substitute_named",
-          [](Circuit &circ, const Circuit &repl, const std::string opgroup) {
+          [](Circuit &circ, const Circuit &repl, const std::string &opgroup) {
             return circ.substitute_named(repl, opgroup);
           },
           "Substitute all ops with the given name for the given circuit."
@@ -662,7 +667,7 @@ void init_circuit(py::module &m) {
           py::arg("repl"), py::arg("opgroup"))
       .def(
           "substitute_named",
-          [](Circuit &circ, const CircBox &box, const std::string opgroup) {
+          [](Circuit &circ, const CircBox &box, const std::string &opgroup) {
             return circ.substitute_named(box, opgroup);
           },
           "Substitute all ops with the given name for the given box."
@@ -674,7 +679,7 @@ void init_circuit(py::module &m) {
       .def(
           "substitute_named",
           [](Circuit &circ, const Unitary1qBox &box,
-             const std::string opgroup) {
+             const std::string &opgroup) {
             return circ.substitute_named(box, opgroup);
           },
           "Substitute all ops with the given name for the given box."
@@ -686,7 +691,7 @@ void init_circuit(py::module &m) {
       .def(
           "substitute_named",
           [](Circuit &circ, const Unitary2qBox &box,
-             const std::string opgroup) {
+             const std::string &opgroup) {
             return circ.substitute_named(box, opgroup);
           },
           "Substitute all ops with the given name for the given box."
@@ -698,7 +703,7 @@ void init_circuit(py::module &m) {
       .def(
           "substitute_named",
           [](Circuit &circ, const Unitary3qBox &box,
-             const std::string opgroup) {
+             const std::string &opgroup) {
             return circ.substitute_named(box, opgroup);
           },
           "Substitute all ops with the given name for the given box."
@@ -709,7 +714,7 @@ void init_circuit(py::module &m) {
           py::arg("box"), py::arg("opgroup"))
       .def(
           "substitute_named",
-          [](Circuit &circ, const ExpBox &box, const std::string opgroup) {
+          [](Circuit &circ, const ExpBox &box, const std::string &opgroup) {
             return circ.substitute_named(box, opgroup);
           },
           "Substitute all ops with the given name for the given box."
@@ -720,7 +725,8 @@ void init_circuit(py::module &m) {
           py::arg("box"), py::arg("opgroup"))
       .def(
           "substitute_named",
-          [](Circuit &circ, const PauliExpBox &box, const std::string opgroup) {
+          [](Circuit &circ, const PauliExpBox &box,
+             const std::string &opgroup) {
             return circ.substitute_named(box, opgroup);
           },
           "Substitute all ops with the given name for the given box."
@@ -731,7 +737,7 @@ void init_circuit(py::module &m) {
           py::arg("box"), py::arg("opgroup"))
       .def(
           "substitute_named",
-          [](Circuit &circ, const ToffoliBox &box, const std::string opgroup) {
+          [](Circuit &circ, const ToffoliBox &box, const std::string &opgroup) {
             return circ.substitute_named(box, opgroup);
           },
           "Substitute all ops with the given name for the given box."
@@ -742,7 +748,8 @@ void init_circuit(py::module &m) {
           py::arg("box"), py::arg("opgroup"))
       .def(
           "substitute_named",
-          [](Circuit &circ, const QControlBox &box, const std::string opgroup) {
+          [](Circuit &circ, const QControlBox &box,
+             const std::string &opgroup) {
             return circ.substitute_named(box, opgroup);
           },
           "Substitute all ops with the given name for the given box."
@@ -753,7 +760,7 @@ void init_circuit(py::module &m) {
           py::arg("box"), py::arg("opgroup"))
       .def(
           "substitute_named",
-          [](Circuit &circ, const CustomGate &box, const std::string opgroup) {
+          [](Circuit &circ, const CustomGate &box, const std::string &opgroup) {
             return circ.substitute_named(box, opgroup);
           },
           "Substitute all ops with the given name for the given box."
@@ -888,21 +895,14 @@ void init_circuit(py::module &m) {
             // set of tuples (source node, target node, source port, target
             // port, edge type)
             std::set<
-                std::tuple<unsigned, unsigned, unsigned, unsigned, unsigned>>
+                std::tuple<unsigned, unsigned, unsigned, unsigned, EdgeType>>
                 edge_data;
             BGL_FORALL_EDGES(e, circ.dag, DAG) {
               Vertex v_so = circ.source(e);
               Vertex v_ta = circ.target(e);
               unsigned v_s = im[v_so];
               unsigned v_t = im[v_ta];
-              // EdgeType converted to unsigned because of some weird
-              // behaviour with pybind11 conversions being
-              // overwritten. TODO Do this properly.
-              EdgeType etype = circ.dag[e].type;
-              unsigned edge_type = (etype == EdgeType::Quantum)     ? 0
-                                   : (etype == EdgeType::Boolean)   ? 1
-                                   : (etype == EdgeType::Classical) ? 2
-                                                                    : 3;
+              EdgeType edge_type = circ.dag[e].type;
               edge_data.insert(
                   {v_s, v_t, circ.get_source_port(e), circ.get_target_port(e),
                    edge_type});
