@@ -54,7 +54,7 @@ from pytket._tket.circuit import (
     MultiBitOp,
     WASMOp,
     CustomGate,
-    MetaOp,
+    BarrierOp,
 )
 from pytket._tket.unit_id import _TEMP_BIT_NAME
 from pytket.circuit import (
@@ -1330,7 +1330,7 @@ def circuit_to_qasm_io(
                     param = -2 + param
             params = [param]  # type: ignore
         elif optype == OpType.Barrier and header == "hqslib1_dev":
-            assert isinstance(op, MetaOp)
+            assert isinstance(op, BarrierOp)
             if op.data == "":
                 opstr = _tk_to_qasm_noparams[optype]
             else:
