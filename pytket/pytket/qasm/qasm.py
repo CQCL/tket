@@ -350,9 +350,17 @@ class CircuitTransformer(Transformer):
 
     def barr(self, tree: List[Arg]) -> Iterable[CommandDict]:
         args = [q for qs in self.unroll_all_args(tree[0]) for q in qs]
+        signature: List[str] = []
+        for arg in args:
+            if arg[0] in self.c_registers:
+                signature.append("C")
+            elif arg[0] in self.q_registers:
+                signature.append("Q")
+            else:
+                raise QASMParseError("UnitID", arg, "in Barrier arguments is not declared.")
         yield {
             "args": args,
-            "op": {"signature": ["Q"] * len(args), "type": "Barrier"},
+            "op": {"signature": signature, "type": "Barrier"},
         }
 
     def reset(self, tree: List[Token]) -> Iterable[CommandDict]:
@@ -367,7 +375,6 @@ class CircuitTransformer(Transformer):
 
         optoken = next(child_iter)
         opstr = optoken.value
-
         next_tree = next(child_iter)
         try:
             args = next(child_iter)
