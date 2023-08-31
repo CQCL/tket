@@ -637,7 +637,6 @@ PYBIND11_MODULE(circuit, m) {
       .def_property_readonly(
           "data", &BarrierOp::get_data, "Get data from BarrierOp");
 
-  init_library(m);
   auto pyCircuit = py::class_<Circuit, std::shared_ptr<Circuit>>(
       m, "Circuit", py::dynamic_attr(),
       "Encapsulates a quantum circuit using a DAG representation.\n\n>>> "
