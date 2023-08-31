@@ -9,105 +9,105 @@ on:
       - 'wheel/**'
 
 jobs:
-  build_Linux_wheels:
-    name: Build manylinux
-    runs-on: ubuntu-22.04
-    strategy:
-      matrix:
-        python3-version: ['9', '10', '11']
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: '0'
-    - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-    - name: Set up container
-      run: |
-        docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux2014_x86_64:latest /bin/bash
-        docker cp . linux_build:/tket/
-    - name: Run build
-      run: |
-        docker start linux_build
-        docker exec -e PY_TAG="cp3${{ matrix.python3-version }}-cp3${{ matrix.python3-version }}" linux_build /bin/bash -c "/tket/.github/workflows/linuxbuildwheel"
-        mkdir wheelhouse
-        docker cp linux_build:/tket/pytket/audited/. wheelhouse/
-    - uses: actions/upload-artifact@v3
-      with:
-        name: Linux_3.${{ matrix.python3-version }}_wheel
-        path: wheelhouse/
+ # build_Linux_wheels:
+ #   name: Build manylinux
+ #   runs-on: ubuntu-22.04
+ #   strategy:
+ #     matrix:
+ #       python3-version: ['9', '10', '11']
+ #   steps:
+ #   - uses: actions/checkout@v3
+ #     with:
+ #       fetch-depth: '0'
+ #   - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+ #   - name: Set up container
+ #     run: |
+ #       docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux2014_x86_64:latest /bin/bash
+ #       docker cp . linux_build:/tket/
+ #   - name: Run build
+ #     run: |
+ #       docker start linux_build
+ #       docker exec -e PY_TAG="cp3${{ matrix.python3-version }}-cp3${{ matrix.python3-version }}" linux_build /bin/bash -c "/tket/.github/workflows/linuxbuildwheel"
+ #       mkdir wheelhouse
+ #       docker cp linux_build:/tket/pytket/audited/. wheelhouse/
+ #   - uses: actions/upload-artifact@v3
+ #     with:
+ #       name: Linux_3.${{ matrix.python3-version }}_wheel
+ #       path: wheelhouse/
 
-  build_Linux_aarch64_wheels:
-    name: Build manylinux aarch64
-    runs-on: ['self-hosted', 'macOS', 'ARM64']
-    strategy:
-      matrix:
-        python3-version: ['9', '10', '11']
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: '0'
-    - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-    - name: Set up container
-      run: |
-        export DOCKER_HOST=unix://${HOME}/.docker/run/docker.sock
-        docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux2014_aarch64:latest /bin/bash
-        docker cp . linux_build:/tket/
-    - name: Run build
-      run: |
-        export DOCKER_HOST=unix://${HOME}/.docker/run/docker.sock
-        docker start linux_build
-        docker exec -e PY_TAG="cp3${{ matrix.python3-version }}-cp3${{ matrix.python3-version }}" linux_build /bin/bash -c "/tket/.github/workflows/linuxbuildwheel"
-        mkdir wheelhouse
-        docker cp linux_build:/tket/pytket/audited/. wheelhouse/
-    - name: Remove container
-      if: always()
-      run: |
-        export DOCKER_HOST=unix://${HOME}/.docker/run/docker.sock
-        docker rm --force -v linux_build
-    - uses: actions/upload-artifact@v3
-      with:
-        name: Linux_aarch64_3.${{ matrix.python3-version }}_wheel
-        path: wheelhouse/
-    - name: Remove directory
-      if: always()
-      run: rm -rf wheelhouse
+ # build_Linux_aarch64_wheels:
+ #   name: Build manylinux aarch64
+ #   runs-on: ['self-hosted', 'macOS', 'ARM64']
+ #   strategy:
+ #     matrix:
+ #       python3-version: ['9', '10', '11']
+ #   steps:
+ #   - uses: actions/checkout@v3
+ #     with:
+ #       fetch-depth: '0'
+ #   - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+ #   - name: Set up container
+ #     run: |
+ #       export DOCKER_HOST=unix://${HOME}/.docker/run/docker.sock
+ #       docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux2014_aarch64:latest /bin/bash
+ #       docker cp . linux_build:/tket/
+ #   - name: Run build
+ #     run: |
+ #       export DOCKER_HOST=unix://${HOME}/.docker/run/docker.sock
+ #       docker start linux_build
+ #       docker exec -e PY_TAG="cp3${{ matrix.python3-version }}-cp3${{ matrix.python3-version }}" linux_build /bin/bash -c "/tket/.github/workflows/linuxbuildwheel"
+ #       mkdir wheelhouse
+ #       docker cp linux_build:/tket/pytket/audited/. wheelhouse/
+ #   - name: Remove container
+ #     if: always()
+ #     run: |
+ #       export DOCKER_HOST=unix://${HOME}/.docker/run/docker.sock
+ #       docker rm --force -v linux_build
+ #   - uses: actions/upload-artifact@v3
+ #     with:
+ #       name: Linux_aarch64_3.${{ matrix.python3-version }}_wheel
+ #       path: wheelhouse/
+ #   - name: Remove directory
+ #     if: always()
+ #     run: rm -rf wheelhouse
 
-  build_macos_wheels:
-    name: Build macos wheels
-    runs-on: macos-11
-    strategy:
-      matrix:
-        python-version: ['3.9', '3.10', '3.11']
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: '0'
-    - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Install conan
-      uses: turtlebrowser/get-conan@v1.2
-    - name: Set up conan
-      run: |
-        conan profile detect
-        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
-    - name: Build tket C++
-      run: conan create tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
-    - name: Build wheel
-      run: |
-        conan create recipes/pybind11
-        conan create recipes/pybind11_json/all --version 0.2.13
-        cd pytket
-        # Ensure wheels are compatible with MacOS 10.14 and later:
-        export WHEEL_PLAT_NAME=macosx_10_14_x86_64
-        pip install -U pip build delocate
-        python -m build
-        delocate-wheel -v -w "$GITHUB_WORKSPACE/wheelhouse/" "dist/pytket-"*".whl"
-    - uses: actions/upload-artifact@v3
-      with:
-        name: MacOS_${{ matrix.python-version }}_wheel
-        path: wheelhouse/
+ # build_macos_wheels:
+ #   name: Build macos wheels
+ #   runs-on: macos-11
+ #   strategy:
+ #     matrix:
+ #       python-version: ['3.9', '3.10', '3.11']
+ #   steps:
+ #   - uses: actions/checkout@v3
+ #     with:
+ #       fetch-depth: '0'
+ #   - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+ #   - name: Set up Python ${{ matrix.python-version }}
+ #     uses: actions/setup-python@v4
+ #     with:
+ #       python-version: ${{ matrix.python-version }}
+ #   - name: Install conan
+ #     uses: turtlebrowser/get-conan@v1.2
+ #   - name: Set up conan
+ #     run: |
+ #       conan profile detect
+ #       conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
+ #   - name: Build tket C++
+ #     run: conan create tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
+ #   - name: Build wheel
+ #     run: |
+ #       conan create recipes/pybind11
+ #       conan create recipes/pybind11_json/all --version 0.2.13
+ #       cd pytket
+ #       # Ensure wheels are compatible with MacOS 10.14 and later:
+ #       export WHEEL_PLAT_NAME=macosx_10_14_x86_64
+ #       pip install -U pip build delocate
+ #       python -m build
+ #       delocate-wheel -v -w "$GITHUB_WORKSPACE/wheelhouse/" "dist/pytket-"*".whl"
+ #   - uses: actions/upload-artifact@v3
+ #     with:
+ #       name: MacOS_${{ matrix.python-version }}_wheel
+ #       path: wheelhouse/
 
   build_macos_M1_wheels:
     name: Build macos (M1) wheels
@@ -151,134 +151,134 @@ jobs:
       if: always()
       run: rm -rf wheelhouse
 
-  build_Windows_wheels:
-    name: Build Windows wheels
-    runs-on: windows-2022
-    strategy:
-      matrix:
-        python-version: ['3.9', '3.10', '3.11']
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        fetch-depth: '0'
-    - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-    - name: Install conan
-      uses: turtlebrowser/get-conan@v1.2
-    - name: Set up conan
-      run: |
-        conan profile detect
-        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
-    - name: Build tket
-      run: conan create tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf `"`"
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Build wheel
-      run: |
-        conan create recipes/pybind11
-        conan create recipes/pybind11_json/all --version 0.2.13
-        cd pytket
-        python -m pip install -U pip build
-        python -m build --outdir "${{ github.workspace }}/wheelhouse"
-    - uses: actions/upload-artifact@v3
-      with:
-        name: Windows_${{ matrix.python-version }}_wheel
-        path: wheelhouse/
+ # build_Windows_wheels:
+ #   name: Build Windows wheels
+ #   runs-on: windows-2022
+ #   strategy:
+ #     matrix:
+ #       python-version: ['3.9', '3.10', '3.11']
+ #   steps:
+ #   - uses: actions/checkout@v3
+ #     with:
+ #       fetch-depth: '0'
+ #   - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
+ #   - name: Install conan
+ #     uses: turtlebrowser/get-conan@v1.2
+ #   - name: Set up conan
+ #     run: |
+ #       conan profile detect
+ #       conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
+ #   - name: Build tket
+ #     run: conan create tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf `"`"
+ #   - name: Set up Python ${{ matrix.python-version }}
+ #     uses: actions/setup-python@v4
+ #     with:
+ #       python-version: ${{ matrix.python-version }}
+ #   - name: Build wheel
+ #     run: |
+ #       conan create recipes/pybind11
+ #       conan create recipes/pybind11_json/all --version 0.2.13
+ #       cd pytket
+ #       python -m pip install -U pip build
+ #       python -m build --outdir "${{ github.workspace }}/wheelhouse"
+ #   - uses: actions/upload-artifact@v3
+ #     with:
+ #       name: Windows_${{ matrix.python-version }}_wheel
+ #       path: wheelhouse/
 
-  test_linux_wheels:
-    name: Test linux wheels
-    needs: build_Linux_wheels
-    runs-on: ubuntu-22.04
-    strategy:
-      matrix:
-        python3-version: ['9', '10', '11']
-    steps:
-      - name: Set up Python 3.${{ matrix.python3-version }}
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.${{ matrix.python3-version }}"
-      - name: Download wheels
-        uses: actions/download-artifact@v3
-        with:
-          name: Linux_3.${{ matrix.python3-version }}_wheel
-          path: wheelhouse/
-      - name: Install wheel
-        run: pip install wheelhouse/pytket-*.whl
-      - uses: actions/checkout@v3
-        with:
-          path: tket
-      - name: Setup tests
-        run: |
-          cd tket/pytket/tests
-          pip install -r requirements.txt
-      - name: Run tests
-        run: cd tket/pytket/tests && pytest --ignore=simulator/
+ # test_linux_wheels:
+ #   name: Test linux wheels
+ #   needs: build_Linux_wheels
+ #   runs-on: ubuntu-22.04
+ #   strategy:
+ #     matrix:
+ #       python3-version: ['9', '10', '11']
+ #   steps:
+ #     - name: Set up Python 3.${{ matrix.python3-version }}
+ #       uses: actions/setup-python@v4
+ #       with:
+ #         python-version: "3.${{ matrix.python3-version }}"
+ #     - name: Download wheels
+ #       uses: actions/download-artifact@v3
+ #       with:
+ #         name: Linux_3.${{ matrix.python3-version }}_wheel
+ #         path: wheelhouse/
+ #     - name: Install wheel
+ #       run: pip install wheelhouse/pytket-*.whl
+ #     - uses: actions/checkout@v3
+ #       with:
+ #         path: tket
+ #     - name: Setup tests
+ #       run: |
+ #         cd tket/pytket/tests
+ #         pip install -r requirements.txt
+ #     - name: Run tests
+ #       run: cd tket/pytket/tests && pytest --ignore=simulator/
 
-  test_Linux_aarch64_wheels:
-    name: Test linux aarch64 wheels
-    needs: build_Linux_aarch64_wheels
-    runs-on: ['self-hosted', 'macOS', 'ARM64']
-    strategy:
-      matrix:
-        python3-version: ['9', '10', '11']
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        path: tket
-    - name: Download wheel
-      uses: actions/download-artifact@v3
-      with:
-        name: Linux_aarch64_3.${{ matrix.python3-version }}_wheel
-        path: wheelhouse/
-    - name: Set up container
-      run: |
-        export DOCKER_HOST=unix://${HOME}/.docker/run/docker.sock
-        docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux2014_aarch64:latest /bin/bash
-        docker cp . linux_build:/tket/
-    - name: Run tests
-      run: |
-        export DOCKER_HOST=unix://${HOME}/.docker/run/docker.sock
-        docker start linux_build
-        docker exec -e PY_TAG="cp3${{ matrix.python3-version }}-cp3${{ matrix.python3-version }}" linux_build /bin/bash -c "/tket/.github/workflows/linuxtestwheel"
-    - name: Remove container
-      if: always()
-      run: |
-        export DOCKER_HOST=unix://${HOME}/.docker/run/docker.sock
-        docker rm --force -v linux_build
-    - name: Remove directory
-      if: always()
-      run: rm -rf wheelhouse
+ # test_Linux_aarch64_wheels:
+ #   name: Test linux aarch64 wheels
+ #   needs: build_Linux_aarch64_wheels
+ #   runs-on: ['self-hosted', 'macOS', 'ARM64']
+ #   strategy:
+ #     matrix:
+ #       python3-version: ['9', '10', '11']
+ #   steps:
+ #   - uses: actions/checkout@v3
+ #     with:
+ #       path: tket
+ #   - name: Download wheel
+ #     uses: actions/download-artifact@v3
+ #     with:
+ #       name: Linux_aarch64_3.${{ matrix.python3-version }}_wheel
+ #       path: wheelhouse/
+ #   - name: Set up container
+ #     run: |
+ #       export DOCKER_HOST=unix://${HOME}/.docker/run/docker.sock
+ #       docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux2014_aarch64:latest /bin/bash
+ #       docker cp . linux_build:/tket/
+ #   - name: Run tests
+ #     run: |
+ #       export DOCKER_HOST=unix://${HOME}/.docker/run/docker.sock
+ #       docker start linux_build
+ #       docker exec -e PY_TAG="cp3${{ matrix.python3-version }}-cp3${{ matrix.python3-version }}" linux_build /bin/bash -c "/tket/.github/workflows/linuxtestwheel"
+ #   - name: Remove container
+ #     if: always()
+ #     run: |
+ #       export DOCKER_HOST=unix://${HOME}/.docker/run/docker.sock
+ #       docker rm --force -v linux_build
+ #   - name: Remove directory
+ #     if: always()
+ #     run: rm -rf wheelhouse
 
-  test_macos_wheels:
-    name: Test macos wheels
-    needs: build_macos_wheels
-    strategy:
-      matrix:
-        os: ['macos-11', 'macos-12']
-        python-version: ['3.9', '3.10', '3.11']
-    runs-on: ${{ matrix.os }}
-    steps:
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Download wheels
-      uses: actions/download-artifact@v3
-      with:
-        name: MacOS_${{ matrix.python-version }}_wheel
-        path: wheelhouse/
-    - uses: actions/checkout@v3
-      with:
-        path: tket
-    - name: Install wheel
-      run: |
-        pip install $GITHUB_WORKSPACE/wheelhouse/pytket-*.whl
-    - name: Run tests
-      run: |
-        cd tket/pytket/tests
-        pip install -r requirements.txt
-        pytest --ignore=simulator/
+ # test_macos_wheels:
+ #   name: Test macos wheels
+ #   needs: build_macos_wheels
+ #   strategy:
+ #     matrix:
+ #       os: ['macos-11', 'macos-12']
+ #       python-version: ['3.9', '3.10', '3.11']
+ #   runs-on: ${{ matrix.os }}
+ #   steps:
+ #   - name: Set up Python ${{ matrix.python-version }}
+ #     uses: actions/setup-python@v4
+ #     with:
+ #       python-version: ${{ matrix.python-version }}
+ #   - name: Download wheels
+ #     uses: actions/download-artifact@v3
+ #     with:
+ #       name: MacOS_${{ matrix.python-version }}_wheel
+ #       path: wheelhouse/
+ #   - uses: actions/checkout@v3
+ #     with:
+ #       path: tket
+ #   - name: Install wheel
+ #     run: |
+ #       pip install $GITHUB_WORKSPACE/wheelhouse/pytket-*.whl
+ #   - name: Run tests
+ #     run: |
+ #       cd tket/pytket/tests
+ #       pip install -r requirements.txt
+ #       pytest --ignore=simulator/
 
   test_macos_M1_wheels:
     name: Test macos (M1) wheels
@@ -310,114 +310,114 @@ jobs:
       if: always()
       run: rm -rf wheelhouse
 
-  test_Windows_wheels:
-    name: Test Windows wheels
-    needs: build_Windows_wheels
-    runs-on: windows-2022
-    strategy:
-      matrix:
-        python-version: ['3.9', '3.10', '3.11']
-    steps:
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v4
-      with:
-        python-version: ${{ matrix.python-version }}
-    - name: Download wheel
-      uses: actions/download-artifact@v3
-      with:
-        name: Windows_${{ matrix.python-version }}_wheel
-        path: wheelhouse/
-    - name: Install wheel
-      shell: bash
-      run: for i in wheelhouse/pytket-*.whl ; do pip install $i ; done
-    - uses: actions/checkout@v3
-      with:
-          path: tket
-    - name: Run tests
-      run: |
-        pip install pytest hypothesis
-        cd tket/pytket/tests
-        pip install -r requirements.txt
-        pytest --ignore=simulator/
+ # test_Windows_wheels:
+ #   name: Test Windows wheels
+ #   needs: build_Windows_wheels
+ #   runs-on: windows-2022
+ #   strategy:
+ #     matrix:
+ #       python-version: ['3.9', '3.10', '3.11']
+ #   steps:
+ #   - name: Set up Python ${{ matrix.python-version }}
+ #     uses: actions/setup-python@v4
+ #     with:
+ #       python-version: ${{ matrix.python-version }}
+ #   - name: Download wheel
+ #     uses: actions/download-artifact@v3
+ #     with:
+ #       name: Windows_${{ matrix.python-version }}_wheel
+ #       path: wheelhouse/
+ #   - name: Install wheel
+ #     shell: bash
+ #     run: for i in wheelhouse/pytket-*.whl ; do pip install $i ; done
+ #   - uses: actions/checkout@v3
+ #     with:
+ #         path: tket
+ #   - name: Run tests
+ #     run: |
+ #       pip install pytest hypothesis
+ #       cd tket/pytket/tests
+ #       pip install -r requirements.txt
+ #       pytest --ignore=simulator/
 
-  publish_to_pypi:
-    name: Publish to pypi
-    if: github.event_name == 'release'
-    needs: [test_linux_wheels, test_linux_aarch64_wheels, test_macos_wheels, test_macos_M1_wheels, test_Windows_wheels]
-    runs-on: ubuntu-22.04
-    steps:
-    - name: Download all wheels
-      uses: actions/download-artifact@v3
-      with:
-        path: wheelhouse
-    - name: Put them all in the dist folder
-      run: |
-        mkdir dist
-        for w in `find wheelhouse/ -type f -name "*.whl"` ; do cp $w dist/ ; done
-    - name: Publish wheels
-      uses: pypa/gh-action-pypi-publish@release/v1
-      with:
-        user: __token__
-        password: ${{ secrets.PYPI_PYTKET_API_TOKEN }}
-        verbose: true
+  #publish_to_pypi:
+  #  name: Publish to pypi
+  #  if: github.event_name == 'release'
+  #  needs: [test_linux_wheels, test_linux_aarch64_wheels, test_macos_wheels, test_macos_M1_wheels, test_Windows_wheels]
+  #  runs-on: ubuntu-22.04
+  #  steps:
+  #  - name: Download all wheels
+  #    uses: actions/download-artifact@v3
+  #    with:
+  #      path: wheelhouse
+  #  - name: Put them all in the dist folder
+  #    run: |
+  #      mkdir dist
+  #      for w in `find wheelhouse/ -type f -name "*.whl"` ; do cp $w dist/ ; done
+  #  - name: Publish wheels
+  #    uses: pypa/gh-action-pypi-publish@release/v1
+  #    with:
+  #      user: __token__
+  #      password: ${{ secrets.PYPI_PYTKET_API_TOKEN }}
+  #      verbose: true
 
-  build_docs:
-    name: Build docs
-    needs: publish_to_pypi
-    if: github.event_name == 'release'
-    runs-on: ubuntu-22.04
-    steps:
-    - uses: actions/checkout@v3
-    - name: Set up Python 3.10
-      uses: actions/setup-python@v4
-      with:
-        python-version: '3.10'
-    - name: Download wheels
-      uses: actions/download-artifact@v3
-      with:
-        name: Linux_3.10_wheel
-        path: wheelhouse/
-    - name: Install pip, wheel
-      run: pip install -U pip wheel
-    - name: Install pytket
-      run: for w in `find wheelhouse/ -type f -name "*-cp310-cp310-*.whl"` ; do pip install $w ; done
-    - name: Install docs dependencies
-      run: pip install -r pytket/docs/requirements.txt
-    - name: Build docs
-      timeout-minutes: 20
-      run: ./.github/workflows/build-docs
-    - name: Upload artefact
-      uses: actions/upload-artifact@v3
-      with:
-        name: pytket_docs
-        path: pytket/docs/build/html/
+  #build_docs:
+  #  name: Build docs
+  #  needs: publish_to_pypi
+  #  if: github.event_name == 'release'
+  #  runs-on: ubuntu-22.04
+  #  steps:
+  #  - uses: actions/checkout@v3
+  #  - name: Set up Python 3.10
+  #    uses: actions/setup-python@v4
+  #    with:
+  #      python-version: '3.10'
+  #  - name: Download wheels
+  #    uses: actions/download-artifact@v3
+  #    with:
+  #      name: Linux_3.10_wheel
+  #      path: wheelhouse/
+  #  - name: Install pip, wheel
+  #    run: pip install -U pip wheel
+  #  - name: Install pytket
+  #    run: for w in `find wheelhouse/ -type f -name "*-cp310-cp310-*.whl"` ; do pip install $w ; done
+  #  - name: Install docs dependencies
+  #    run: pip install -r pytket/docs/requirements.txt
+  #  - name: Build docs
+  #    timeout-minutes: 20
+  #    run: ./.github/workflows/build-docs
+  #  - name: Upload artefact
+  #    uses: actions/upload-artifact@v3
+  #    with:
+  #      name: pytket_docs
+  #      path: pytket/docs/build/html/
 
-  publish_docs:
-    name: Publish docs
-    needs: build_docs
-    concurrency: gh_pages
-    if: github.event_name == 'release' && github.event.release.prerelease != true
-    runs-on: ubuntu-22.04
-    steps:
-    - uses: actions/checkout@v3
-      with:
-        ref: gh-pages
-    - name: Download artefact
-      uses: actions/download-artifact@v3
-      with:
-        name: pytket_docs
-        path: api/
-    - name: Configure git
-      run: |
-        git config --global user.email "tket-bot@cambridgequantum.com"
-        git config --global user.name  "«$GITHUB_WORKFLOW» github action"
-    - name: Remove old docs
-      run: git rm -r docs/pytket/api
-    - name: Add generated docs to repository
-      run: |
-        mkdir -p docs/pytket/
-        mv api/ docs/pytket/
-        git add -f docs/pytket/api/
-        git commit --allow-empty -m "Add generated pytket documentation."
-    - name: Publish docs
-      run:  git push origin gh-pages:gh-pages
+  #publish_docs:
+  #  name: Publish docs
+  #  needs: build_docs
+  #  concurrency: gh_pages
+  #  if: github.event_name == 'release' && github.event.release.prerelease != true
+  #  runs-on: ubuntu-22.04
+  #  steps:
+  #  - uses: actions/checkout@v3
+  #    with:
+  #      ref: gh-pages
+  #  - name: Download artefact
+  #    uses: actions/download-artifact@v3
+  #    with:
+  #      name: pytket_docs
+  #      path: api/
+  #  - name: Configure git
+  #    run: |
+  #      git config --global user.email "tket-bot@cambridgequantum.com"
+  #      git config --global user.name  "«$GITHUB_WORKFLOW» github action"
+  #  - name: Remove old docs
+  #    run: git rm -r docs/pytket/api
+  #  - name: Add generated docs to repository
+  #    run: |
+  #      mkdir -p docs/pytket/
+  #      mv api/ docs/pytket/
+  #      git add -f docs/pytket/api/
+  #      git commit --allow-empty -m "Add generated pytket documentation."
+  #  - name: Publish docs
+  #    run:  git push origin gh-pages:gh-pages
