@@ -255,8 +255,8 @@ jobs:
     needs: build_macos_wheels
     strategy:
       matrix:
-        os: ['macos-11', 'macos-12']
-        python-version: ['3.9', '3.10', '3.11']
+        os: ['macos-11']
+        python-version: ['3.11']
     runs-on: ${{ matrix.os }}
     steps:
     - name: Set up Python ${{ matrix.python-version }}
