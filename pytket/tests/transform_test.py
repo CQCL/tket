@@ -19,7 +19,7 @@ from pathlib import Path
 import sympy
 
 from pytket.circuit import Circuit, OpType, PauliExpBox, Node, Qubit
-import pytket._tket.circuit_library as _library
+import pytket.circuit_library as _library
 from pytket.pauli import Pauli
 from pytket.passes import (
     RemoveRedundancies,
