@@ -49,7 +49,7 @@ import pytest  # type: ignore
 import types
 from sympy import symbols  # type: ignore
 from typing import Any, Callable, Tuple, Dict, List
-from .simulator import TketSimShotBackend, TketSimBackend
+from simulator import TketSimShotBackend, TketSimBackend  # type: ignore
 
 
 def test_append_measurements() -> None:

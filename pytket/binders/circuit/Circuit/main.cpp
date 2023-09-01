@@ -895,7 +895,7 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
             // set of tuples (source node, target node, source port, target
             // port, edge type)
             std::set<
-                std::tuple<unsigned, unsigned, unsigned, unsigned, EdgeType>>
+                std::tuple<unsigned, unsigned, unsigned, unsigned, std::string>>
                 edge_data;
             BGL_FORALL_EDGES(e, circ.dag, DAG) {
               Vertex v_so = circ.source(e);
@@ -903,9 +903,17 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
               unsigned v_s = im[v_so];
               unsigned v_t = im[v_ta];
               EdgeType edge_type = circ.dag[e].type;
+              // This transformation is necessary due to a bug encountered
+              // with pybind11 on mac0S 11 only, that causes the python sided
+              // Enum class to take nonsensical values
+              std::string edge_type_str =
+                  (edge_type == EdgeType::Quantum)     ? "Quantum"
+                  : (edge_type == EdgeType::Boolean)   ? "Boolean"
+                  : (edge_type == EdgeType::Classical) ? "Classical"
+                                                       : "WASM";
               edge_data.insert(
                   {v_s, v_t, circ.get_source_port(e), circ.get_target_port(e),
-                   edge_type});
+                   edge_type_str});
             }
 
             return std::make_tuple(
