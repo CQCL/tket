@@ -24,7 +24,7 @@ from pytket.circuit import Node, Circuit, Qubit, OpType
 from pytket.predicates import Predicate
 from pytket.architecture import Architecture
 from pytket.placement import Placement, GraphPlacement
-import pytket.circuit_library as _library
+import pytket._tket.circuit_library as _library
 
 from pytket.passes import (
     BasePass,
