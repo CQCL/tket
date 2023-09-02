@@ -14,9 +14,9 @@
 
 from lark import Lark
 import pytest
-from pytket.circuit import OpType
-from pytket.passes import compilation_pass_from_script, compilation_pass_grammar
-from pytket.passes import (
+from pytket.circuit import OpType  # type: ignore
+from pytket.passes import compilation_pass_from_script, compilation_pass_grammar  # type: ignore
+from pytket.passes import (  # type: ignore
     CliffordSimp,
     ContextSimp,
     DecomposeBoxes,
@@ -28,8 +28,8 @@ from pytket.passes import (
     PauliSquash,
     SimplifyInitial,
 )
-from pytket.passes import BasePass, RepeatPass, SequencePass
-from pytket.transform import CXConfigType, PauliSynthStrat
+from pytket.passes import BasePass, RepeatPass, SequencePass  # type: ignore
+from pytket.transform import CXConfigType, PauliSynthStrat  # type: ignore
 
 
 def test_grammar() -> None:

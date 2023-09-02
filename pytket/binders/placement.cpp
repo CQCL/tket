@@ -14,7 +14,10 @@
 
 #include "tket/Placement/Placement.hpp"
 
+#include <pybind11/eigen.h>
+#include <pybind11/operators.h>
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 
 #include "binder_json.hpp"
 #include "binder_utils.hpp"
@@ -95,14 +98,12 @@ PYBIND11_MODULE(placement, m) {
                  "to " CLSOBJS(Node),
                  py::arg("circuit"), py::arg("matches")=100)
             .def(
-                "to_dict", [](const Placement::Ptr &placement) {
-                    return py::object(json(placement)); },
+                "to_dict", [](const Placement::Ptr &placement) { return json(placement); },
                 "Return a JSON serializable dict representation of "
                 "the Placement."
                 "\n\n:return: dict representing the Placement.")
             .def_static(
-                "from_dict", [](const py::dict &dict) {
-                    return json(dict).get<Placement::Ptr>(); },
+                "from_dict", [](const json &j) { return j.get<Placement::Ptr>(); },
                 "Construct Placement instance from JSON serializable "
                 "dict representation of the Placement.");
 

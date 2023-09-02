@@ -14,9 +14,13 @@
 
 import multiprocessing
 import os
+import platform
+import re
 import subprocess
+import sys
 import json
 import shutil
+from distutils.version import LooseVersion
 import setuptools  # type: ignore
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext  # type: ignore
@@ -34,8 +38,6 @@ binders = [
     "logging",
     "utils_serialization",
     "circuit",
-    "circuit_library",
-    "unit_id",
     "passes",
     "predicates",
     "partition",
@@ -74,7 +76,9 @@ class CMakeBuild(build_ext):
         ext_suffix = get_config_var("EXT_SUFFIX")
         lib_names.extend(f"{binder}{ext_suffix}" for binder in binders)
         # TODO make the above generic
-        os.makedirs(extdir, exist_ok=True)
+        if os.path.exists(extdir):
+            shutil.rmtree(extdir)
+        os.makedirs(extdir)
         for lib_name in lib_names:
             shutil.copy(os.path.join(lib_folder, lib_name), extdir)
 
@@ -108,7 +112,9 @@ class ConanBuild(build_ext):
         # Collect the paths to the libraries to package together
         conaninfo = json.loads(jsonstr)
         nodes = conaninfo["graph"]["nodes"]
-        os.makedirs(extdir, exist_ok=True)
+        if os.path.exists(extdir):
+            shutil.rmtree(extdir)
+        os.makedirs(extdir)
         for comp in ["tklog", "tket", "pytket"]:
             compnodes = [
                 node for _, node in nodes.items() if node["ref"].startswith(comp + "/")

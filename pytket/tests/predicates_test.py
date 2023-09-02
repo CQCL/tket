@@ -11,21 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
-import sympy
 
-from pytket.circuit import (
-    Circuit,
-    OpType,
-    Op,
-    PauliExpBox,
-    Unitary2qBox,
-    Node,
-    Qubit,
-    UnitID,
-    Conditional,
-)
-from pytket.pauli import Pauli
-from pytket.passes import (
+from pytket.circuit import Circuit, OpType, Op, PauliExpBox, Unitary2qBox, Node, Qubit  # type: ignore
+from pytket.pauli import Pauli  # type: ignore
+from pytket.passes import (  # type: ignore
     SequencePass,
     RemoveRedundancies,
     SynthesiseTket,
@@ -66,7 +55,7 @@ from pytket.passes import (
     RoundAngles,
     PeepholeOptimise2Q,
 )
-from pytket.predicates import (
+from pytket.predicates import (  # type: ignore
     GateSetPredicate,
     NoClassicalControlPredicate,
     DirectednessPredicate,
@@ -74,20 +63,22 @@ from pytket.predicates import (
     CompilationUnit,
     MaxNClRegPredicate,
 )
-from pytket.mapping import (
+from pytket.mapping import (  # type: ignore
     LexiLabellingMethod,
     LexiRouteRoutingMethod,
 )
-from pytket.architecture import Architecture
-from pytket.placement import Placement, GraphPlacement
-from pytket.transform import Transform, PauliSynthStrat, CXConfigType
-from pytket.passes import SynthesiseOQC
+from pytket.architecture import Architecture  # type: ignore
+from pytket.placement import Placement, GraphPlacement  # type: ignore
+from pytket.transform import Transform, PauliSynthStrat, CXConfigType  # type: ignore
+from pytket._tket.passes import SynthesiseOQC  # type: ignore
 import numpy as np
-from sympy import Symbol
-from typing import Dict, Any, List, cast
 
-from tests.useful_typedefs import ParamType as Param
+from pytket.qasm import circuit_to_qasm_str
+import pytest  # type: ignore
+from sympy import Symbol, Expr  # type: ignore
+from typing import Dict, Any, List, Union
 
+Param = Union[float, "Expr"]
 
 circ2 = Circuit(1)
 circ2.Rx(0.25, 0)
@@ -97,7 +88,7 @@ gsp = GateSetPredicate(ots)
 nccp = NoClassicalControlPredicate()
 
 
-def tk1_to_phasedxrz(a: Param, b: Param, c: Param) -> Circuit:
+def tk1_to_phasedxrz(a: float, b: float, c: float) -> Circuit:
     circ = Circuit(1)
     circ.Rz(a + c, 0)
     phasedx_op = Op.create(OpType.PhasedX, [b, a])
@@ -245,7 +236,7 @@ def test_routing_and_placement_pass() -> None:
     n3 = Node("a", 0)
     n4 = Node("f", 0)
     n5 = Node("f", 2)
-    arc = Architecture([(n0, n1), (n1, n2), (n2, n3), (n3, n4), (n1, n5)])
+    arc = Architecture([[n0, n1], [n1, n2], [n2, n3], [n3, n4], [n1, n5]])
     pl = Placement(arc)
     routing = RoutingPass(arc)
     placement = PlacementPass(pl)
@@ -298,7 +289,7 @@ def test_default_mapping_pass() -> None:
     n3 = Node("a", 0)
     n4 = Node("f", 0)
     n5 = Node("g", 7)
-    arc = Architecture([(n0, n1), (n1, n2), (n2, n3), (n3, n4), (n4, n5)])
+    arc = Architecture([[n0, n1], [n1, n2], [n2, n3], [n3, n4], [n4, n5]])
     pl = GraphPlacement(arc)
 
     nplacement = NaivePlacementPass(arc)
@@ -332,7 +323,7 @@ def test_default_mapping_pass_phase_poly_aas() -> None:
     n2 = Node("c", 2)
     n3 = Node("d", 3)
     n4 = Node("e", 4)
-    arc = Architecture([(n0, n1), (n1, n2), (n2, n3), (n3, n4)])
+    arc = Architecture([[n0, n1], [n1, n2], [n2, n3], [n3, n4]])
     default = AASRouting(arc, lookahead=1)
     assert default.apply(circ)
 
@@ -450,7 +441,7 @@ def test_directed_cx_pass() -> None:
     circ.CX(3, 4)
     circ.CX(4, 3)
     circ.CX(3, 1)
-    arc = Architecture([(0, 1), (1, 2), (2, 3), (3, 4)])
+    arc = Architecture([[0, 1], [1, 2], [2, 3], [3, 4]])
     pl = Placement(arc)
     cu1 = CompilationUnit(circ)
     dir_router = CXMappingPass(arc, pl, directed_cx=True)
@@ -490,7 +481,7 @@ def test_decompose_routing_gates_to_cxs() -> None:
 
     cu = CompilationUnit(circ)
 
-    arc = Architecture([(0, 1), (1, 2), (2, 3)])
+    arc = Architecture([[0, 1], [1, 2], [2, 3]])
     pss = DecomposeSwapsToCXs(arc)
 
     assert pss.apply(cu)
@@ -853,10 +844,7 @@ def test_conditional_phase() -> None:
     rebase.apply(c)
     cond_cmds = [cmd for cmd in c.get_commands() if cmd.op.type == OpType.Conditional]
     assert len(cond_cmds) > 0
-    assert any(
-        cast(Conditional, cond_cmd.op).op.type not in target_gateset
-        for cond_cmd in cond_cmds
-    )
+    assert any(cond_cmd.op.op.type not in target_gateset for cond_cmd in cond_cmds)
 
 
 def test_flatten_relabel_pass() -> None:
@@ -866,7 +854,7 @@ def test_flatten_relabel_pass() -> None:
     rename_map[Qubit(0)] = Qubit("a", 4)
     rename_map[Qubit(1)] = Qubit("b", 7)
     rename_map[Qubit(2)] = Qubit("a", 2)
-    c.rename_units(cast(dict[UnitID, UnitID], rename_map))
+    c.rename_units(rename_map)
 
     cu = CompilationUnit(c)
     FlattenRelabelRegistersPass("a").apply(cu)

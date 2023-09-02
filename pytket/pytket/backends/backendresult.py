@@ -34,7 +34,7 @@ import warnings
 
 import numpy as np
 
-from pytket.circuit import (
+from pytket.circuit import (  # type: ignore
     BasisOrder,
     Bit,
     Circuit,
@@ -129,7 +129,7 @@ class BackendResult:
                         )
                     )
             else:
-                setattr(self, attr, dict((uid(i), i) for i in range(lent)))  # type: ignore
+                setattr(self, attr, dict((uid(i), i) for i in range(lent)))
 
         if self.contains_measured_results:
             _bitlength = 0
@@ -373,10 +373,10 @@ class BackendResult:
                 raise InvalidResultType("No results stored.")
 
         if all(isinstance(i, Bit) for i in request_ids):
-            return self._get_measured_res(request_ids, ppcirc)  # type: ignore
+            return self._get_measured_res(request_ids, ppcirc)
 
         if all(isinstance(i, Qubit) for i in request_ids):
-            return self._get_state_res(request_ids)  # type: ignore
+            return self._get_state_res(request_ids)
 
         raise ValueError(
             "Requested UnitIds (request_ids) contain a mixture of qubits and bits."
@@ -536,10 +536,10 @@ class BackendResult:
             DeprecationWarning,
         )
         try:
-            state = self.get_state(units)  # type: ignore
+            state = self.get_state(units)
             return probs_from_state(state)
         except InvalidResultType:
-            counts = self.get_counts(units)  # type: ignore
+            counts = self.get_counts(units)
             total = sum(counts.values())
             dist = {outcome: count / total for outcome, count in counts.items()}
             return dist

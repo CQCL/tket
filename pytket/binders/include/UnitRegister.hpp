@@ -61,15 +61,6 @@ class UnitRegister {
     }
   }
 
-  std::vector<T> to_vector() {
-    std::vector<T> vecT;
-    vecT.reserve(size_);
-    for (std::size_t index = 0; index < size_; index++) {
-      vecT.emplace_back((*this)[index]);
-    }
-    return vecT;
-  }
-
  private:
   std::string name_;
   std::size_t size_;

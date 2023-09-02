@@ -16,6 +16,7 @@
 
 #include <pybind11/eigen.h>
 #include <pybind11/pybind11.h>
+#include <pybind11/stl.h>
 
 #include "binder_json.hpp"
 #include "binder_utils.hpp"
@@ -36,13 +37,6 @@ using json = nlohmann::json;
 
 namespace tket {
 
-// The typedef PhasePolynomial leads to the python type Dict[List[bool], ...],
-// which is not allowed at runtime because lists aren't hashable
-typedef std::vector<std::pair<std::vector<bool>, Expr>> PyPhasePolynomial;
-// state_perm_t has the same hashability problem
-typedef std::vector<std::pair<std::vector<bool>, std::vector<bool>>>
-    py_state_perm_t;
-
 // Cast the std::vector keys in a map to py::tuple, since vector is not hashable
 // in python
 template <class T1, class T2>
@@ -53,18 +47,6 @@ std::map<py::tuple, T2> cast_keys_to_tuples(
     outmap.insert({py::tuple(py::cast(pair.first)), pair.second});
   }
   return outmap;
-}
-// Cast std::map<T1, T2> to std::vector<std::pair<T1, T2>>, useful when T1
-// is a vector because vector, i.e. python list, is not hashable in python
-template <class T1, class T2>
-std::vector<std::pair<T1, T2>> cast_map_to_vector_of_pairs(
-    const std::map<T1, T2> &map) {
-  std::vector<std::pair<T1, T2>> result;
-  result.reserve(map.size());
-  for (const auto &pair : map) {
-    result.emplace_back(pair.first, pair.second);
-  }
-  return result;
 }
 
 void init_boxes(py::module &m) {
@@ -150,8 +132,7 @@ void init_boxes(py::module &m) {
       "An operation defined as the exponential of a tensor of Pauli "
       "operations and a (possibly symbolic) phase parameter.")
       .def(
-          py::init<
-              const std::vector<Pauli> &, const Expr &, const CXConfigType &>(),
+          py::init<const std::vector<Pauli> &, Expr, CXConfigType>(),
           "Construct :math:`e^{-\\frac12 i \\pi t \\sigma_0 \\otimes "
           "\\sigma_1 \\otimes \\cdots}` from Pauli operators "
           ":math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and a parameter "
@@ -176,8 +157,8 @@ void init_boxes(py::module &m) {
       "operations and their (possibly symbolic) phase parameters.")
       .def(
           py::init<
-              const std::vector<Pauli> &, const Expr &,
-              const std::vector<Pauli> &, Expr, CXConfigType>(),
+              const std::vector<Pauli> &, Expr, const std::vector<Pauli> &,
+              Expr, CXConfigType>(),
           "Construct a pair of Pauli exponentials of the form"
           " :math:`e^{-\\frac12 i \\pi t_j \\sigma_0 \\otimes "
           "\\sigma_1 \\otimes \\cdots}` from Pauli operator strings "
@@ -207,8 +188,8 @@ void init_boxes(py::module &m) {
       "parameters.")
       .def(
           py::init<
-              const std::vector<std::pair<std::vector<Pauli>, Expr>>,
-              const CXConfigType &>(),
+              const std::vector<std::pair<std::vector<Pauli>, Expr>> &,
+              CXConfigType>(),
           "Construct a set of necessarily commuting Pauli exponentials of the "
           "form"
           " :math:`e^{-\\frac12 i \\pi t_j \\sigma_0 \\otimes "
@@ -240,58 +221,6 @@ void init_boxes(py::module &m) {
       m, "ToffoliBox",
       "An operation that constructs a circuit to implement the specified "
       "permutation of classical basis states.")
-      .def(
-          py::init([](const py_state_perm_t &perm, ToffoliBoxSynthStrat strat,
-                      OpType optype) {
-            state_perm_t statePerm;
-            for (const auto &pair : perm) {
-              statePerm[pair.first] = pair.second;
-            }
-            return ToffoliBox(statePerm, strat, optype);
-          }),
-          "Construct from a permutation of basis states\n\n"
-          ":param permutation: a list of bitstring pairs\n"
-          ":param strat: synthesis strategy\n"
-          ":param rotation_axis: the rotation axis of the multiplexors used in "
-          "the decomposition. Can be either Rx or Ry. Only applicable to the "
-          "Matching strategy. Default to Ry.",
-          py::arg("permutation"), py::arg("strat"),
-          py::arg("rotation_axis") = OpType::Ry)
-      .def(
-          py::init(
-              [](const py_state_perm_t &perm, const OpType &rotation_axis) {
-                state_perm_t statePerm;
-                for (const auto &pair : perm) {
-                  statePerm[pair.first] = pair.second;
-                }
-                return ToffoliBox(
-                    statePerm, ToffoliBoxSynthStrat::Matching, rotation_axis);
-              }),
-          "Construct from a permutation of basis states and perform synthesis "
-          "using the Matching strategy\n\n"
-          ":param permutation: a list of bitstring pairs\n"
-          ":param rotation_axis: the rotation axis of the multiplexors used in "
-          "the decomposition. Can be either Rx or Ry, default to Ry.",
-          py::arg("permutation"), py::arg("rotation_axis") = OpType::Ry)
-      .def(
-          py::init([](unsigned n_qubits, const py_state_perm_t &perm,
-                      const OpType &rotation_axis) {
-            (void)n_qubits;
-            PyErr_WarnEx(
-                PyExc_DeprecationWarning,
-                "The argument n_qubits is no longer needed. "
-                "Please create ToffoliBoxes without n_qubits.",
-                1);
-            state_perm_t statePerm;
-            for (const auto &pair : perm) {
-              statePerm[pair.first] = pair.second;
-            }
-            return ToffoliBox(
-                statePerm, ToffoliBoxSynthStrat::Matching, rotation_axis);
-          }),
-          "Constructor for backward compatibility. Subject to deprecation.",
-          py::arg("n_qubits"), py::arg("permutation"),
-          py::arg("rotation_axis") = OpType::Ry)
       .def(
           py::init<state_perm_t, ToffoliBoxSynthStrat, OpType>(),
           "Construct from a permutation of basis states\n\n"
@@ -434,18 +363,13 @@ void init_boxes(py::module &m) {
       .def(
           "to_dict",
           [](const CompositeGateDef &c) {
-            return py::object(json(std::make_shared<CompositeGateDef>(c)))
-                .
-
-                cast<py::dict>();
+            return json(std::make_shared<CompositeGateDef>(c));
           },
           ":return: a JSON serializable dictionary representation of "
           "the CustomGateDef")
       .def_static(
           "from_dict",
-          [](const py::dict &composite_gate_def_dict) {
-            return json(composite_gate_def_dict).get<composite_def_ptr_t>();
-          },
+          [](const json &j) { return j.get<composite_def_ptr_t>(); },
           "Construct Circuit instance from JSON serializable "
           "dictionary representation of the Circuit.");
   py::class_<CustomGate, std::shared_ptr<CustomGate>, Op>(
@@ -476,30 +400,12 @@ void init_boxes(py::module &m) {
             for (const auto &pair : q_ind) {
               bmap.insert({pair.first, pair.second});
             }
-            return PhasePolyBox(n_qb, bmap, p_p, lin_trans);
-          }),
-          "\n\nConstruct from the number of qubits, the mapping from "
-          "Qubit to index, the phase polynomial (map from bitstring "
-          "to phase) and the linear transformation (boolean matrix)",
-          py::arg("n_qubits"), py::arg("qubit_indices"),
-          py::arg("phase_polynomial"), py::arg("linear_transformation"))
-      .def(
-          py::init([](unsigned n_qb, const std::map<Qubit, unsigned> &q_ind,
-                      const PyPhasePolynomial &py_p_p,
-                      const MatrixXb &lin_trans) {
-            boost::bimap<Qubit, unsigned> bmap;
-            for (const auto &pair : q_ind) {
-              bmap.insert({pair.first, pair.second});
-            }
-            PhasePolynomial p_p;
-            for (const auto &pppair : py_p_p) {
-              p_p[pppair.first] = pppair.second;
-            }
+
             return PhasePolyBox(n_qb, bmap, p_p, lin_trans);
           }),
           "Construct from the number of qubits, the mapping from "
-          "Qubit to index, the phase polynomial (list of bitstring "
-          "phase pairs) and the linear transformation (boolean matrix)",
+          "Qubit to index, the phase polynomial (map from bitstring "
+          "to phase) and the linear transformation (boolean matrix)",
           py::arg("n_qubits"), py::arg("qubit_indices"),
           py::arg("phase_polynomial"), py::arg("linear_transformation"))
       .def(
@@ -511,26 +417,12 @@ void init_boxes(py::module &m) {
           "n_qubits", &PhasePolyBox::get_n_qubits,
           "Number of gates the polynomial acts on.")
       .def_property_readonly(
-          "phase_polynomial_as_list",
-          [](PhasePolyBox &ppoly) {
-            const PhasePolynomial &phase_pol = ppoly.get_phase_polynomial();
-            return cast_map_to_vector_of_pairs(phase_pol);
-          },
-          "List of bitstring(basis state)-phase pairs.")
-      .def_property_readonly(
           "phase_polynomial",
           [](PhasePolyBox &ppoly) {
             const PhasePolynomial &phase_pol = ppoly.get_phase_polynomial();
             return cast_keys_to_tuples(phase_pol);
           },
           "Map from bitstring (basis state) to phase.")
-      .def_property_readonly(
-          "phase_polynomial_as_list",
-          [](PhasePolyBox &ppoly) {
-            const PhasePolynomial &phase_pol = ppoly.get_phase_polynomial();
-            return cast_map_to_vector_of_pairs(phase_pol);
-          },
-          "List of bitstring(basis state)-phase pairs.")
       .def_property_readonly(
           "linear_transformation", &PhasePolyBox::get_linear_transformation,
           "Boolean matrix corresponding to linear transformation.")
@@ -611,7 +503,7 @@ void init_boxes(py::module &m) {
                         "Invalid Pauli string: " + raw_string);
                 }
               }
-              stabilisers.emplace_back(string, coeff);
+              stabilisers.push_back(PauliStabiliser(string, coeff));
             }
             return StabiliserAssertionBox(stabilisers);
           }),
@@ -626,25 +518,11 @@ void init_boxes(py::module &m) {
       .def(
           "get_stabilisers", &StabiliserAssertionBox::get_stabilisers,
           ":return: the list of Pauli stabilisers");
-
-  typedef std::vector<std::pair<std::vector<bool>, Op_ptr>> py_ctrl_op_map_t;
-
   py::class_<MultiplexorBox, std::shared_ptr<MultiplexorBox>, Op>(
       m, "MultiplexorBox",
       "A user-defined multiplexor (i.e. uniformly controlled operations) "
       "specified by a "
-      "map from bitstrings to " CLSOBJS(Op)
-      "or a list of bitstring-" CLSOBJS(Op) " pairs")
-      .def(
-              py::init([](const py_ctrl_op_map_t & bitstring_op_pairs){
-                  ctrl_op_map_t bit_op_map;
-                  for (const auto& bit_op_pair: bitstring_op_pairs){
-                      bit_op_map[bit_op_pair.first] = bit_op_pair.second;
-                  }
-                  return MultiplexorBox(bit_op_map);}),
-      "Construct from a list of bitstring-" CLSOBJS(Op) "pairs\n\n"
-      ":param bitstring_to_op_list: List of bitstring-" CLSOBJS(Op) "pairs\n",
-      py::arg("bistring_to_op_list"))
+      "map from bitstrings to " CLSOBJS(Op))
       .def(
           py::init<const ctrl_op_map_t &>(),
           "Construct from a map from bitstrings to " CLSOBJS(Op) "\n\n"
@@ -658,32 +536,13 @@ void init_boxes(py::module &m) {
           [](MultiplexorBox &box) {
             return cast_keys_to_tuples(box.get_op_map());
           },
-          ":return: the underlying op map")
-      .def(
-          "get_bitstring_op_pair_list",
-          [](MultiplexorBox &box) {
-          return cast_map_to_vector_of_pairs(box.get_op_map());
-          },
-          ":return: the underlying bistring-op pairs");
+          ":return: the underlying op map");
   py::class_<
       MultiplexedRotationBox, std::shared_ptr<MultiplexedRotationBox>, Op>(
       m, "MultiplexedRotationBox",
       "A user-defined multiplexed rotation gate (i.e. "
       "uniformly controlled single-axis rotations) specified by "
-      "a map from bitstrings to " CLSOBJS(Op)
-      "or a list of bitstring-" CLSOBJS(Op) " pairs")
-      .def(
-              py::init([](const py_ctrl_op_map_t & bitstring_op_pairs){
-          ctrl_op_map_t bit_op_map;
-          for (const auto& bit_op_pair: bitstring_op_pairs){
-              bit_op_map[bit_op_pair.first] = bit_op_pair.second;
-          }
-          return MultiplexedRotationBox(bit_op_map);}),
-          "Construct from a list of bitstring-" CLSOBJS(Op) "pairs\n\n"
-          "All " CLSOBJS(Op) "  must share the same single-qubit rotation type: "
-          "Rx, Ry, or Rz.\n\n"
-          ":param bitstring_to_op_list: List of bitstring-" CLSOBJS(Op) "pairs\n",
-          py::arg("bistring_to_op_list"))
+      "a map from bitstrings to " CLSOBJS(Op))
       .def(
           py::init<const ctrl_op_map_t &>(),
           "Construct from a map from bitstrings to :py:class:`Op` s."
@@ -725,12 +584,6 @@ void init_boxes(py::module &m) {
           [](MultiplexedRotationBox &box) { return *box.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the box")
       .def(
-          "get_bitstring_op_pair_list",
-          [](MultiplexedRotationBox &box) {
-            return cast_map_to_vector_of_pairs(box.get_op_map());
-          },
-          ":return: the underlying bistring-op pairs")
-      .def(
           "get_op_map",
           [](MultiplexedRotationBox &box) {
             return cast_keys_to_tuples(box.get_op_map());
@@ -740,22 +593,7 @@ void init_boxes(py::module &m) {
       m, "MultiplexedU2Box",
       "A user-defined multiplexed U2 gate (i.e. uniformly controlled U2 "
       "gate) specified by a "
-      "map from bitstrings to " CLSOBJS(Op)
-      "or a list of bitstring-" CLSOBJS(Op) " pairs")
-      .def(
-              py::init([](const py_ctrl_op_map_t & bitstring_op_pairs, bool impl_diag){
-          ctrl_op_map_t bit_op_map;
-          for (const auto& bit_op_pair: bitstring_op_pairs){
-              bit_op_map[bit_op_pair.first] = bit_op_pair.second;
-          }
-          return MultiplexedU2Box(bit_op_map, impl_diag);}),
-      "Construct from a list of bitstring-" CLSOBJS(Op) "pairs\n\n"
-      "Only supports single qubit unitary gate types and "
-      ":py:class:`Unitary1qBox`.\n\n"
-      ":param op_map: List of bitstring-" CLSOBJS(Op) "pairs\n"
-      ":param impl_diag: Whether to implement the final diagonal gate, "
-      "default to True.",
-      py::arg("bistring_to_op_list"), py::arg("impl_diag") = true)
+      "map from bitstrings to " CLSOBJS(Op))
       .def(
           py::init<const ctrl_op_map_t &, bool>(),
           "Construct from a map from bitstrings to " CLSOBJS(Op) "."
@@ -770,12 +608,6 @@ void init_boxes(py::module &m) {
           [](MultiplexedU2Box &box) { return *box.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the box")
       .def(
-          "get_bitstring_op_pair_list",
-          [](MultiplexedU2Box &box) {
-          return cast_map_to_vector_of_pairs(box.get_op_map());
-          },
-          ":return: the underlying bistring-op pairs")
-      .def(
           "get_op_map",
           [](MultiplexedU2Box &box) {
             return cast_keys_to_tuples(box.get_op_map());
@@ -785,28 +617,11 @@ void init_boxes(py::module &m) {
           "get_impl_diag", &MultiplexedU2Box::get_impl_diag,
           ":return: flag indicating whether to implement the final diagonal "
           "gate.");
-
-  typedef std::vector<std::pair<std::vector<bool>, std::vector<Op_ptr>>>
-      py_ctrl_tensored_op_map_t;
-
   py::class_<
       MultiplexedTensoredU2Box, std::shared_ptr<MultiplexedTensoredU2Box>, Op>(
       m, "MultiplexedTensoredU2Box",
       "A user-defined multiplexed tensor product of U2 gates specified by a "
-      "map from bitstrings to lists of " CLSOBJS(Op)
-      "or a list of bitstring-list(" CLSOBJS(Op) ") pairs")
-      .def(
-              py::init([](const py_ctrl_tensored_op_map_t & bitstring_op_pairs){
-          ctrl_tensored_op_map_t bit_op_map;
-          for (const auto& bit_op_pair: bitstring_op_pairs){
-              bit_op_map[bit_op_pair.first] = bit_op_pair.second;
-          }
-          return MultiplexedTensoredU2Box(bit_op_map);}),
-          "Construct from a list of bitstring-" CLSOBJS(Op) "pairs\n\n"
-          "Only supports single qubit unitary gate types and "
-          ":py:class:`Unitary1qBox`.\n\n"
-          ":param bitstring_to_op_list: List of bitstring-List of " CLSOBJS(Op) " pairs\n",
-          py::arg("bistring_to_op_list"))
+      "map from bitstrings to lists of " CLSOBJS(Op))
       .def(
           py::init<const ctrl_tensored_op_map_t &>(),
           "Construct from a map from bitstrings to equal-sized lists of "
@@ -819,12 +634,6 @@ void init_boxes(py::module &m) {
           "get_circuit",
           [](MultiplexedTensoredU2Box &box) { return *box.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the box")
-      .def(
-          "get_bitstring_op_pair_list",
-          [](MultiplexedTensoredU2Box &box) {
-          return cast_map_to_vector_of_pairs(box.get_op_map());
-          },
-          ":return: the underlying bistring-op pairs")
       .def(
           "get_op_map",
           [](MultiplexedTensoredU2Box &box) {

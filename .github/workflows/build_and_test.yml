@@ -426,13 +426,11 @@ jobs:
         cd pytket/tests
         pip install -r requirements.txt
         pytest --ignore=simulator/
-    - name: Check type stubs are up-to-date and run mypy
+    - name: Run mypy
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       run: |
         pip install -U mypy
         cd pytket
-        ./stub_generation/regenerate_stubs
-        git diff --quiet pytket/_tket && echo "Stubs are up-to-date" || exit 1  # fail if stubs change after regeneration
         mypy --config-file=mypy.ini --no-incremental -p pytket -p tests
     - name: Upload package
       if: github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_changed == 'true'

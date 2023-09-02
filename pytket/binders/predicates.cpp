@@ -20,7 +20,6 @@
 #include "typecast.hpp"
 
 namespace py = pybind11;
-using json = nlohmann::json;
 
 namespace tket {
 
@@ -88,16 +87,14 @@ PYBIND11_MODULE(predicates, m) {
       .def(
           "to_dict",
           [](const PredicatePtr &predicate) {
-            return py::object(json(predicate)).cast<py::dict>();
+            return nlohmann::json(predicate);
           },
           "Return a JSON serializable dict representation of "
           "the Predicate.\n\n"
           ":return: dict representation of the Predicate.")
       .def_static(
           "from_dict",
-          [](const py::dict &predicate_dict) {
-            return json(predicate_dict).get<PredicatePtr>();
-          },
+          [](const nlohmann::json &j) { return j.get<PredicatePtr>(); },
           "Construct Predicate instance from JSON serializable "
           "dict representation of the Predicate.");
   py::class_<GateSetPredicate, std::shared_ptr<GateSetPredicate>, Predicate>(

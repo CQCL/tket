@@ -13,8 +13,8 @@
 # limitations under the License.
 
 from typing import Iterable
-from pytket.circuit import Circuit, Bit
-from pytket.pauli import Pauli, QubitPauliString
+from pytket.circuit import Circuit, Bit  # type: ignore
+from pytket.pauli import Pauli, QubitPauliString  # type: ignore
 from .operators import QubitPauliOperator
 
 

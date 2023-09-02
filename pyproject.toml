@@ -1,3 +1,7 @@
 [tool.black]
-# ignore auto generated qasm include definitions, installed packages, auto-generated stubfiles
-exclude = 'pytket/pytket/qasm/includes|^.+\.pyi$'
+# ignore auto generated qasm include definitions
+exclude = '''
+/(
+    pytket/pytket/qasm/includes
+)/
+'''

@@ -15,19 +15,19 @@
 import numpy as np
 import pytest  # type: ignore
 
-from pytket.circuit import (
+from pytket.circuit import (  # type: ignore
     ProjectorAssertionBox,
     StabiliserAssertionBox,
     Circuit,
     Qubit,
 )
 
-from pytket.passes import (
+from pytket.passes import (  # type: ignore
     DecomposeBoxes,
 )
 
-from pytket.pauli import PauliStabiliser, Pauli
-from .simulator import TketSimShotBackend
+from pytket.pauli import PauliStabiliser, Pauli  # type: ignore
+from simulator import TketSimShotBackend  # type: ignore
 
 
 def test_assertion_init() -> None:
@@ -80,7 +80,7 @@ def test_assertion_init() -> None:
 
 def test_assertion() -> None:
     # P =|00><00| tensor I + |111><111|
-    P = np.zeros((8, 8), dtype=np.complex_)
+    P = np.zeros((8, 8))
     P[0, 0] = 1
     P[1, 1] = 1
     P[7, 7] = 1

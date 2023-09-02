@@ -18,4 +18,4 @@ structure, as well as relevant methods for partitioning Pauli tensors. This modu
 provided in binary form during the PyPI installation.
 """
 
-from pytket._tket.partition import *
+from pytket._tket.partition import *  # type: ignore

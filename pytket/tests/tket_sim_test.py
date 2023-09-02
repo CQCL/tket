@@ -12,11 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pytest
-from pytket.circuit import Circuit, CircBox, QControlBox, Op, OpType
-from enum import Enum
+import pytest  # type: ignore
+from pytket.circuit import Circuit, CircBox, QControlBox, Op, OpType  # type: ignore
+from enum import Enum  # type: ignore
 import numpy as np
-import math
+import math  # type: ignore
 from typing import Any, Tuple
 
 # Note: of course, one could write many more (circuit -> unitary) tests.
@@ -227,8 +227,7 @@ def test_statevector() -> None:
         # 1D array of length 4, or as a 2D array of size 1x4".
         assert sv.shape == (4,)
         sv = sv.reshape(4, 1)
-        unitary = np.asarray([1, 0, 0, 0], dtype=np.complex128)
-        sv_with_premultiplication = circ.get_unitary_times_other(unitary)
+        sv_with_premultiplication = circ.get_unitary_times_other([1, 0, 0, 0])
         assert np.allclose(sv, sv_with_premultiplication)
 
         for entry in column_vectors_data:

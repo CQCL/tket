@@ -16,12 +16,12 @@ import tempfile
 import json
 
 from pytket.utils.spam import SpamCorrecter, compress_counts
-from pytket.circuit import Node, Circuit, Qubit
-from pytket.mapping import MappingManager, LexiLabellingMethod, LexiRouteRoutingMethod
-from pytket.architecture import Architecture
-from pytket.placement import place_with_map
-from pytket.passes import DelayMeasures
-from typing import List, Dict, Counter, Tuple, cast
+from pytket.circuit import Node, Circuit, Qubit  # type: ignore
+from pytket.mapping import MappingManager, LexiLabellingMethod, LexiRouteRoutingMethod  # type: ignore
+from pytket.architecture import Architecture  # type: ignore
+from pytket.placement import place_with_map  # type: ignore
+from pytket.passes import DelayMeasures  # type: ignore
+from typing import List, Dict, Counter, Tuple
 from pytket.utils.outcomearray import OutcomeArray
 from math import ceil
 from pytket.backends.backendresult import BackendResult
@@ -91,7 +91,7 @@ def test_spam_integration() -> None:
     )
     bellres = BackendResult(counts=bellres_counter)
     qbs = [Node("qx", i) for i in range(4)]
-    arc = Architecture([(qbs[i], qbs[i + 1]) for i in range(3)])
+    arc = Architecture([[qbs[i], qbs[i + 1]] for i in range(3)])
 
     subs = [[qbs[2], qbs[0]], [qbs[1]]]
     spam = SpamCorrecter(subs)
@@ -130,11 +130,11 @@ def test_spam_integration() -> None:
     assert check_correction(default_correct, bellres_counts)
 
     bellcc_mid = Circuit()
-    qbs_2 = bellcc_mid.add_q_register("qx", 3)
+    qbs = bellcc_mid.add_q_register("qx", 3)
     bits = bellcc_mid.add_c_register("c", 3)
-    bellcc_mid.H(qbs_2[0]).CX(qbs_2[0], qbs_2[2]).Measure(qbs_2[0], bits[0]).SWAP(
-        qbs_2[0], qbs_2[1]
-    ).Measure(qbs_2[0], bits[1]).Measure(qbs_2[2], bits[2])
+    bellcc_mid.H(qbs[0]).CX(qbs[0], qbs[2]).Measure(qbs[0], bits[0]).SWAP(
+        qbs[0], qbs[1]
+    ).Measure(qbs[0], bits[1]).Measure(qbs[2], bits[2])
 
     bell_cc_parallel_measures = spam.get_parallel_measure(bellcc_mid)
     default_correct_mid = spam.correct_counts(
@@ -509,7 +509,7 @@ def test_spam_routing() -> None:
         },
     ]
     qbs = [Node("qx", i) for i in range(9)]
-    arc = Architecture([(qbs[i], qbs[i + 1]) for i in range(8)] + [(qbs[0], qbs[4])])
+    arc = Architecture([[qbs[i], qbs[i + 1]] for i in range(8)] + [[qbs[0], qbs[4]]])
 
     testc = Circuit(4, 4).H(0).CX(0, 3).CX(1, 2).CX(0, 1).CX(3, 2).measure_all()
     routed = testc.copy()
@@ -517,8 +517,8 @@ def test_spam_routing() -> None:
     mm.route_circuit(routed, [LexiLabellingMethod(), LexiRouteRoutingMethod()])
     DelayMeasures().apply(routed)
     readout = routed.qubit_readout
-    nodes = cast(list[Node], list(readout.keys()))
-    spam = SpamCorrecter([nodes])
+
+    spam = SpamCorrecter([list(readout.keys())])
     calib_circs = spam.calibration_circuits()
 
     assert len(calib_circs) == 16

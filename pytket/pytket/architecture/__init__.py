@@ -15,4 +15,4 @@
 """The `architecture` module provides an API to interact with the
     ::py:class:`Architecture` class."""
 
-from pytket._tket.architecture import *
+from pytket._tket.architecture import *  # type: ignore

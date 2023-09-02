@@ -161,19 +161,15 @@ class LogicExp:
         """
         outset: Set[Variable] = set()
 
+        var_type = Bit if isinstance(self, BitLogicExp) else BitRegister
         for arg in self.args:
-            if isinstance(arg, LogicExp):
+            if isinstance(arg, var_type):
+                outset.add(arg)
+            elif isinstance(arg, LogicExp):
                 outset.update(arg.all_inputs())
-                continue
-            if isinstance(self, BitLogicExp):
-                if isinstance(arg, Bit):
-                    outset.add(arg)
-            else:
-                if isinstance(arg, BitRegister):
-                    outset.add(arg)
         return outset
 
-    def __eq__(self, other: object) -> bool:
+    def __eq__(self, other: ArgType) -> bool:
         if not isinstance(other, LogicExp):
             return False
         return (self.op == other.op) and (self.args == other.args)
@@ -181,7 +177,7 @@ class LogicExp:
     def to_dict(self) -> Dict[str, Any]:
         """Output JSON serializable nested dictionary."""
         out: Dict[str, Any] = {"op": str(self.op)}
-        args_ser: List[Union[Dict, Constant, List[Union[str, int]]]] = []
+        args_ser: List[Union[Dict[str, Any], Constant, List[Union[str, int]]]] = []
 
         for arg in self.args:
             if isinstance(arg, LogicExp):
@@ -201,9 +197,7 @@ class LogicExp:
         """Load from JSON serializable nested dictionary."""
         opset_name, op_name = dic["op"].split(".", 2)
         opset = BitWiseOp if opset_name == "BitWiseOp" else RegWiseOp
-        op = cast(
-            Union[BitWiseOp, RegWiseOp], next(o for o in opset if o.name == op_name)
-        )
+        op = next(o for o in opset if o.name == op_name)
         args: List[ArgType] = []
         for arg_ser in dic["args"]:
             if isinstance(arg_ser, Constant):

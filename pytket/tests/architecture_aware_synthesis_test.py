@@ -12,14 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pytket.circuit import Circuit, OpType
-from pytket.architecture import Architecture
-from pytket.passes import AASRouting, CNotSynthType, ComposePhasePolyBoxes
-from pytket.predicates import CompilationUnit
+from pytket.circuit import Circuit, OpType  # type: ignore
+from pytket.architecture import Architecture  # type: ignore
+from pytket.passes import AASRouting, CNotSynthType, ComposePhasePolyBoxes  # type: ignore
+from pytket.predicates import CompilationUnit  # type: ignore
 
 
 def test_AAS() -> None:
-    arc = Architecture([(0, 1), (1, 2), (2, 3), (3, 4)])
+    arc = Architecture([[0, 1], [1, 2], [2, 3], [3, 4]])
     circ = Circuit(5)
     circ.H(0).H(2)
     circ.CX(0, 1).CX(1, 2).CX(3, 4)
@@ -29,7 +29,7 @@ def test_AAS() -> None:
 
 
 def test_AAS_2() -> None:
-    arc = Architecture([(0, 1), (1, 2), (2, 3), (3, 4)])
+    arc = Architecture([[0, 1], [1, 2], [2, 3], [3, 4]])
     circ = Circuit(5)
     circ.H(0).H(2)
     circ.CX(0, 1).CX(1, 2).CX(3, 4)
@@ -39,7 +39,7 @@ def test_AAS_2() -> None:
 
 
 def test_AAS_3() -> None:
-    arc = Architecture([(0, 1), (1, 2), (2, 3), (3, 4)])
+    arc = Architecture([[0, 1], [1, 2], [2, 3], [3, 4]])
     circ = Circuit(5)
     circ.H(0).H(2)
     circ.CX(0, 1).CX(1, 2).CX(3, 4)
@@ -49,7 +49,7 @@ def test_AAS_3() -> None:
 
 
 def test_AAS_4() -> None:
-    arc = Architecture([(0, 1), (1, 2), (2, 3), (3, 4)])
+    arc = Architecture([[0, 1], [1, 2], [2, 3], [3, 4]])
     circ = Circuit(5)
     circ.H(0).H(2)
     circ.CX(0, 1).CX(1, 2).CX(3, 4)
@@ -59,7 +59,7 @@ def test_AAS_4() -> None:
 
 
 def test_AAS_5() -> None:
-    arc = Architecture([(0, 1), (1, 2), (2, 3), (3, 4)])
+    arc = Architecture([[0, 1], [1, 2], [2, 3], [3, 4]])
     circ = Circuit(5)
     circ.H(0).H(2)
     circ.CX(0, 1).CX(1, 2).CX(3, 4)
@@ -69,7 +69,7 @@ def test_AAS_5() -> None:
 
 
 def test_AAS_6() -> None:
-    arc = Architecture([(0, 1), (1, 2), (2, 3), (3, 4)])
+    arc = Architecture([[0, 1], [1, 2], [2, 3], [3, 4]])
     circ = Circuit(5)
     circ.H(0).H(2)
     circ.CX(0, 1).CX(1, 2).CX(3, 4)
@@ -79,7 +79,7 @@ def test_AAS_6() -> None:
 
 
 def test_AAS_7() -> None:
-    arc = Architecture([(0, 1), (1, 2), (2, 3), (3, 4)])
+    arc = Architecture([[0, 1], [1, 2], [2, 3], [3, 4]])
     circ = Circuit(5)
     circ.H(0).H(2)
     circ.CX(0, 1).CX(1, 2).CX(3, 4)
@@ -89,7 +89,7 @@ def test_AAS_7() -> None:
 
 
 def test_AAS_8() -> None:
-    arc = Architecture([(0, 1), (1, 2), (2, 3), (3, 4)])
+    arc = Architecture([[0, 1], [1, 2], [2, 3], [3, 4]])
     circ = Circuit(5)
     circ.CX(0, 1)
     circ.H(0)
@@ -105,7 +105,7 @@ def test_AAS_8() -> None:
 
 
 def test_AAS_9() -> None:
-    arc = Architecture([(0, 1), (1, 2), (2, 3), (3, 4), (4, 5), (5, 6), (6, 7), (7, 8)])
+    arc = Architecture([[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6], [6, 7], [7, 8]])
     circ = Circuit(9)
     circ.CX(0, 8).CX(8, 1).CX(1, 7).CX(7, 2).CX(2, 6).CX(6, 3).CX(3, 5).CX(5, 4)
     circ.Rz(0.5, 4)
@@ -118,7 +118,7 @@ def test_AAS_9() -> None:
 
 
 def test_AAS_10() -> None:
-    arc = Architecture([(0, 1), (1, 2), (2, 3), (3, 4), (4, 5), (5, 6)])
+    arc = Architecture([[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6]])
     circ = Circuit(7)
     circ.CX(0, 6).CX(6, 1).CX(1, 5).CX(5, 2).CX(2, 4).CX(4, 3)
     circ.Rz(0.5, 3)
@@ -131,7 +131,7 @@ def test_AAS_10() -> None:
 
 
 def test_AAS_11() -> None:
-    arc = Architecture([(0, 1), (1, 2), (2, 3), (3, 4), (4, 5), (5, 6)])
+    arc = Architecture([[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6]])
     circ = Circuit(7)
     circ.CX(0, 6).CX(6, 1).CX(1, 5).CX(5, 2).CX(2, 4).CX(4, 3)
     circ.Rz(0.5, 3)
@@ -144,7 +144,7 @@ def test_AAS_11() -> None:
 
 
 def test_AAS_12() -> None:
-    arc = Architecture([(0, 1), (1, 2), (2, 3), (3, 4), (4, 5), (5, 6)])
+    arc = Architecture([[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6]])
     circ = Circuit(7)
     circ.CX(0, 6).CX(6, 1).CX(1, 5).CX(5, 2).CX(2, 4).CX(4, 3)
     circ.Rz(0.5, 3)
@@ -157,7 +157,7 @@ def test_AAS_12() -> None:
 
 
 def test_AAS_13() -> None:
-    arc = Architecture([(0, 1), (1, 2), (2, 3), (3, 4), (4, 5), (5, 6)])
+    arc = Architecture([[0, 1], [1, 2], [2, 3], [3, 4], [4, 5], [5, 6]])
     circ = Circuit(7)
     circ.CX(0, 6).CX(6, 1).CX(1, 5).CX(5, 2).CX(2, 4).CX(4, 3)
     circ.Rz(0.5, 3)
@@ -170,7 +170,7 @@ def test_AAS_13() -> None:
 
 
 def test_AAS_14() -> None:
-    arc = Architecture([(0, 1), (1, 0), (1, 2), (2, 1)])
+    arc = Architecture([[0, 1], [1, 0], [1, 2], [2, 1]])
     circ = Circuit(3).CZ(0, 1)
     pass1 = AASRouting(arc, lookahead=1, cnotsynthtype=CNotSynthType.Rec)
     cu = CompilationUnit(circ)
@@ -181,7 +181,7 @@ def test_AAS_14() -> None:
 
 
 def test_AAS_15() -> None:
-    arc = Architecture([(0, 1), (1, 0), (1, 2), (2, 1)])
+    arc = Architecture([[0, 1], [1, 0], [1, 2], [2, 1]])
     circ = Circuit(2).CZ(0, 1)
     pass1 = AASRouting(arc, lookahead=1, cnotsynthtype=CNotSynthType.Rec)
     cu = CompilationUnit(circ)
@@ -193,7 +193,7 @@ def test_AAS_15() -> None:
 
 def test_noncontiguous_arc_phase_poly() -> None:
     # testing non-contiguous ascending named nodes
-    arc = Architecture([(0, 2)])
+    arc = Architecture([[0, 2]])
     pass1 = AASRouting(arc, lookahead=1)
     c = Circuit(2).H(0).H(1)
     pass1.apply(c)

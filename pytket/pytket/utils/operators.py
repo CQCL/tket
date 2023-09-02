@@ -13,14 +13,12 @@
 # limitations under the License.
 
 import copy
-from typing import Dict, TYPE_CHECKING, Union, List, Optional, Set, Any
-
-import numpy
+from typing import cast, Dict, TYPE_CHECKING, Union, List, Optional, Set, Any
 import numpy as np
 from sympy import Symbol, sympify, Expr, re, im  # type: ignore
-from pytket.pauli import QubitPauliString, pauli_string_mult
-from pytket.circuit import Qubit
-from pytket.utils.serialization import complex_to_list, list_to_complex
+from pytket.pauli import QubitPauliString, pauli_string_mult  # type: ignore
+from pytket.circuit import Qubit  # type: ignore
+from pytket.utils.serialization import complex_to_list, list_to_complex  # type: ignore
 
 
 CoeffType = Union[int, float, complex, Expr]
@@ -93,10 +91,8 @@ class QubitPauliOperator:
         self._dict = _dict
         self._collect_qubits()
 
-    def __eq__(self, other: object) -> bool:
-        if isinstance(other, QubitPauliOperator):
-            return self._dict == other._dict
-        return False
+    def __eq__(self, other: "QubitPauliOperator") -> bool:  # type: ignore
+        return self._dict == other._dict
 
     def __iadd__(self, addend: "QubitPauliOperator") -> "QubitPauliOperator":
         """In-place addition (+=) of QubitPauliOperators.
@@ -253,7 +249,7 @@ class QubitPauliOperator:
             if type(coeff) is str:
                 return sympify(coeff)  # type: ignore
             else:
-                return list_to_complex(coeff)
+                return cast(complex, list_to_complex(coeff))
 
         return QubitPauliOperator({get_qps(obj): get_coeff(obj) for obj in pauli_list})
 
@@ -280,14 +276,11 @@ class QubitPauliOperator:
         :return: A sparse matrix representation of the operator.
         :rtype: csc_matrix
         """
+        qubits_ = qubits
         if qubits is None:
             qubits_ = sorted(list(self._all_qubits))
-            return sum(
-                complex(coeff) * pauli.to_sparse_matrix(qubits_)
-                for pauli, coeff in self._dict.items()
-            )
         return sum(
-            complex(coeff) * pauli.to_sparse_matrix(qubits)
+            complex(coeff) * pauli.to_sparse_matrix(qubits_)
             for pauli, coeff in self._dict.items()
         )
 
@@ -310,17 +303,14 @@ class QubitPauliOperator:
         :return: The dot product of the operator with the statevector
         :rtype: numpy.ndarray
         """
-        if qubits:
-            product_sum = sum(
-                complex(coeff) * pauli.dot_state(state, qubits)
+        indexed_state = [state, qubits] if qubits else [state]
+        return cast(
+            np.ndarray,
+            sum(
+                complex(coeff) * pauli.dot_state(*indexed_state)
                 for pauli, coeff in self._dict.items()
-            )
-        else:
-            product_sum = sum(
-                complex(coeff) * pauli.dot_state(state)
-                for pauli, coeff in self._dict.items()
-            )
-        return product_sum if isinstance(product_sum, numpy.ndarray) else state
+            ),
+        )
 
     def state_expectation(
         self, state: np.ndarray, qubits: Optional[List[Qubit]] = None
@@ -341,14 +331,13 @@ class QubitPauliOperator:
         :return: The expectation value of the statevector and operator
         :rtype: complex
         """
-        if qubits:
-            return sum(
-                complex(coeff) * pauli.state_expectation(state, qubits)
+        indexed_state = [state, qubits] if qubits else [state]
+        return cast(
+            complex,
+            sum(
+                complex(coeff) * pauli.state_expectation(*indexed_state)
                 for pauli, coeff in self._dict.items()
-            )
-        return sum(
-            complex(coeff) * pauli.state_expectation(state)
-            for pauli, coeff in self._dict.items()
+            ),
         )
 
     def compress(self, abs_tol: float = 1e-10) -> None:
@@ -386,7 +375,7 @@ class QubitPauliOperator:
             del self._dict[key]
 
     def _collect_qubits(self) -> None:
-        self._all_qubits: set[Qubit] = set()
+        self._all_qubits = set()
         for key in self._dict.keys():
             for q in key.map.keys():
                 self._all_qubits.add(q)

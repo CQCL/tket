@@ -13,9 +13,9 @@
 # limitations under the License.
 
 from pytket import logging
-from pytket.circuit import Circuit, Qubit
-from pytket.pauli import Pauli, QubitPauliString
-from pytket.partition import (
+from pytket.circuit import Circuit, Qubit  # type: ignore
+from pytket.pauli import Pauli, QubitPauliString  # type: ignore
+from pytket.partition import (  # type: ignore
     PauliPartitionStrat,
     MeasurementBitMap,
     MeasurementSetup,

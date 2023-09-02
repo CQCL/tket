@@ -33,7 +33,6 @@ namespace py = pybind11;
 
 namespace tket {
 PYBIND11_MODULE(mapping, m) {
-  py::module::import("pytket._tket.architecture");
   py::class_<RoutingMethod, std::shared_ptr<RoutingMethod>>(
       m, "RoutingMethod",
       "Parent class for RoutingMethod, for inheritance purposes only, not for "

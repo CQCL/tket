@@ -17,9 +17,9 @@ import numpy as np
 import pytest  # type: ignore
 from pytket import Qubit, Circuit, OpType
 from pytket.passes import auto_rebase_pass
-from pytket.pauli import Pauli, QubitPauliString
+from pytket.pauli import Pauli, QubitPauliString  # type: ignore
 from pytket.utils.results import compare_unitaries
-from pytket.zx import (
+from pytket.zx import (  # type: ignore
     ZXDiagram,
     ZXType,
     QuantumType,
@@ -37,7 +37,7 @@ from typing import Tuple
 
 have_quimb: bool = True
 try:
-    from pytket.zx.tensor_eval import (
+    from pytket.zx.tensor_eval import (  # type: ignore
         unitary_from_quantum_diagram,
         fix_boundaries_to_binary_states,
         fix_inputs_to_binary_state,

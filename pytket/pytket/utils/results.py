@@ -12,13 +12,16 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Dict, List, Tuple, Union
+from typing import TYPE_CHECKING, Dict, List, Tuple, Union
 
 import numpy as np
-from pytket.circuit import BasisOrder
+from pytket.circuit import BasisOrder  # type: ignore
+
+if TYPE_CHECKING:
+    from pytket.circuit import Qubit  # type: ignore
 
 StateTuple = Tuple[int, ...]
-CountsDict = Dict[StateTuple, Union[int, float]]
+CountsDict = Dict[StateTuple, int]
 KwargTypes = Union[int, float, str, None]
 
 
@@ -88,7 +91,7 @@ def counts_from_shot_table(shot_table: np.ndarray) -> Dict[Tuple[int, ...], int]
     :return: Dictionary mapping observed readouts to the number of times observed.
     :rtype: Dict[Tuple[int, ...], int]
     """
-    shot_values, counts = np.unique(shot_table, axis=0, return_counts=True)
+    shot_values, counts = np.unique(shot_table, axis=0, return_counts=True)  # type: ignore
     return {tuple(s): c for s, c in zip(shot_values, counts)}
 
 
@@ -300,7 +303,7 @@ def compare_statevectors(first: np.ndarray, second: np.ndarray) -> bool:
     :return: Approximate equality.
     :rtype: bool
     """
-    return bool(np.isclose(np.abs(np.vdot(first, second)), 1))
+    return bool(np.isclose(np.abs(np.vdot(first, second)), 1))  # type: ignore
 
 
 def compare_unitaries(first: np.ndarray, second: np.ndarray) -> bool:

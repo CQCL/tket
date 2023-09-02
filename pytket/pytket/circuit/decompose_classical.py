@@ -30,14 +30,12 @@ from typing import (
     Generic,
 )
 
-from pytket._tket.unit_id import (
+from pytket._tket.circuit import (  # type: ignore
     _TEMP_BIT_NAME,
     _TEMP_BIT_REG_BASE,
     _TEMP_REG_SIZE,
     BitRegister,
     Bit,
-)
-from pytket._tket.circuit import (
     Circuit,
     OpType,
 )
@@ -172,24 +170,22 @@ def _gen_walk(
         RegWiseOp.XOR: newcirc.add_c_xor_to_registers,
     }
     if var_type is Bit:
-        op_type: Union[Type[BitWiseOp], Type[RegWiseOp]] = BitWiseOp
-        exp_type: Union[Type[BitLogicExp], Type[RegLogicExp]] = BitLogicExp
+        op_type: Type = BitWiseOp
+        exp_type: Type = BitLogicExp
+
+        def add_method(var: Variable) -> None:
+            newcirc.add_bit(var, reject_dups=False)
+
     else:
-        assert var_type is BitRegister
         op_type = RegWiseOp
         exp_type = RegLogicExp
 
-    def add_method(var: Variable) -> None:
-        if isinstance(var, Bit):
-            newcirc.add_bit(var, reject_dups=False)
-        else:
-            assert isinstance(var, BitRegister)
-            for i in range(var.size):
-                newcirc.add_bit(var.__getitem__(i), reject_dups=False)
+        def add_method(var: Variable) -> None:
+            _ = [newcirc.add_bit(b, reject_dups=False) for b in var]
 
     # method for setting bits during walk
     def set_bits(var: Variable, val: Constant, kwargs: Dict) -> None:
-        if isinstance(var, Bit):
+        if var_type is Bit:
             newcirc.add_c_setbits([bool(val)], [var], **kwargs)
         else:
             assert isinstance(var, BitRegister)
@@ -210,7 +206,6 @@ def _gen_walk(
         kwargs = kwargs or {}
         # decompose children
         for i, sub_e in filter_by_type(exp.args, exp_type):
-            assert isinstance(sub_e, (BitLogicExp, RegLogicExp))
             exp.args[i] = recursive_walk(sub_e, kwargs)
         # all args should now be Constant or Variable
         # write Constant to temporary Variable
@@ -233,13 +228,13 @@ def _gen_walk(
         # exp should now be a binary operation on args: List[Bit]
 
         try:
-            _method_map[exp.op](arg1, arg2, targ_bit, **kwargs)  # type: ignore
+            _method_map[exp.op](arg1, arg2, targ_bit, **kwargs)
         except KeyError as e:
             raise DecomposeClassicalError(
                 f"{exp.op} cannot be decomposed to TKET primitives."
                 " If targetting extended QASM you may not need to decompose."
             ) from e
-        return targ_bit  # type: ignore
+        return targ_bit
 
     return recursive_walk
 
@@ -287,7 +282,7 @@ def _decompose_expressions(circ: Circuit) -> Tuple[Circuit, bool]:
                 assert op.value in (0, 1)
                 replace_bit = replace_targets[bits[0]]
                 # temporary condition bit is available for reuse
-                bit_heap.push(replace_bit)  # type: ignore
+                bit_heap.push(replace_bit)
 
                 # write new conditional op
                 kwargs = {"condition_bits": [replace_bit], "condition_value": op.value}
@@ -307,7 +302,7 @@ def _decompose_expressions(circ: Circuit) -> Tuple[Circuit, bool]:
                 new_target = replace_targets[temp_reg]
                 for i, a in enumerate(args):
                     if a.reg_name == temp_reg.name:
-                        args[i] = Bit(new_target.name, a.index[0])  # type: ignore
+                        args[i] = Bit(new_target.name, a.index[0])
                 # operations conditional on this bit should remain so
                 replace_targets[target] = target
 
@@ -337,7 +332,7 @@ def _decompose_expressions(circ: Circuit) -> Tuple[Circuit, bool]:
 
                 reg_heap.push(out_reg)
                 comp_reg = reg_recursive_walk(pred_exp, kwargs)
-                if comp_reg.name != out_reg.name:  # type: ignore
+                if comp_reg.name != out_reg.name:
                     replace_targets[out_reg] = comp_reg
             modified = True
             continue

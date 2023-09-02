@@ -12,11 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import List, cast
+from typing import List
 from lark import Lark, Transformer
-from pytket.circuit import OpType
-from pytket.passes import BasePass, RepeatPass, SequencePass
-from pytket.passes import (
+from pytket.circuit import OpType  # type: ignore
+from pytket.passes import BasePass, RepeatPass, SequencePass  # type: ignore
+from pytket.passes import (  # type: ignore
     CliffordSimp,
     CommuteThroughMultis,
     ContextSimp,
@@ -48,8 +48,8 @@ from pytket.passes import (
     SynthesiseUMD,
     ThreeQubitSquash,
 )
-from pytket.circuit import CXConfigType
-from pytket.transform import PauliSynthStrat
+from pytket.circuit import CXConfigType  # type: ignore
+from pytket.transform import PauliSynthStrat  # type: ignore
 
 pass_grammar = """
 start: comp_pass
@@ -169,22 +169,22 @@ _NEWLINE: CR? LF
 
 
 class PassTransformer(Transformer):
-    def start(self, t: list[BasePass]) -> BasePass:
+    def start(self, t: List) -> BasePass:
         return t[0]
 
-    def comp_pass(self, t: list[BasePass]) -> BasePass:
+    def comp_pass(self, t: List) -> BasePass:
         return t[0]
 
-    def basic_pass(self, t: list[BasePass]) -> BasePass:
+    def basic_pass(self, t: list) -> BasePass:
         return t[0]
 
-    def seq_pass(self, t: list[BasePass]) -> BasePass:
+    def seq_pass(self, t: List) -> BasePass:
         return t[0]
 
-    def pass_list(self, t: list[BasePass]) -> BasePass:
+    def pass_list(self, t: List) -> BasePass:
         return SequencePass(t)
 
-    def repeat_pass(self, t: list[BasePass]) -> BasePass:
+    def repeat_pass(self, t: List) -> BasePass:
         return RepeatPass(t[0])
 
     def clifford_simp(self, t: List) -> BasePass:
@@ -223,7 +223,7 @@ class PassTransformer(Transformer):
     def delay_measures_try(self, t: List) -> BasePass:
         return DelayMeasures(True)
 
-    def euler_angle_reduction(self, t: list[OpType]) -> BasePass:
+    def euler_angle_reduction(self, t: List) -> BasePass:
         return EulerAngleReduction(t[0], t[1])
 
     def flatten_registers(self, t: List) -> BasePass:
@@ -236,8 +236,6 @@ class PassTransformer(Transformer):
         return FullPeepholeOptimise(allow_swaps=False)
 
     def guided_pauli_simp(self, t: List) -> BasePass:
-        assert isinstance(t[0], PauliSynthStrat)
-        assert isinstance(t[1], CXConfigType)
         return GuidedPauliSimp(strat=t[0], cx_config=t[1])
 
     def guided_pauli_simp_default(self, t: List) -> BasePass:
@@ -247,31 +245,24 @@ class PassTransformer(Transformer):
         return KAKDecomposition()
 
     def optimise_phase_gadgets(self, t: List) -> BasePass:
-        assert isinstance(t[0], CXConfigType)
         return OptimisePhaseGadgets(cx_config=t[0])
 
     def optimise_phase_gadgets_default(self, t: List) -> BasePass:
         return OptimisePhaseGadgets()
 
     def pauli_exponentials(self, t: List) -> BasePass:
-        assert isinstance(t[0], PauliSynthStrat)
-        assert isinstance(t[1], CXConfigType)
         return PauliExponentials(strat=t[0], cx_config=t[1])
 
     def pauli_exponentials_default(self, t: List) -> BasePass:
         return PauliExponentials()
 
     def pauli_simp(self, t: List) -> BasePass:
-        assert isinstance(t[0], PauliSynthStrat)
-        assert isinstance(t[1], CXConfigType)
         return PauliSimp(strat=t[0], cx_config=t[1])
 
     def pauli_simp_default(self, t: List) -> BasePass:
         return PauliSimp()
 
     def pauli_squash(self, t: List) -> BasePass:
-        assert isinstance(t[0], PauliSynthStrat)
-        assert isinstance(t[1], CXConfigType)
         return PauliSquash(strat=t[0], cx_config=t[1])
 
     def pauli_squash_default(self, t: List) -> BasePass:
@@ -316,7 +307,7 @@ class PassTransformer(Transformer):
     def three_qubit_squash(self, t: List) -> BasePass:
         return ThreeQubitSquash()
 
-    def cx_config_type(self, t: List[CXConfigType]) -> CXConfigType:
+    def cx_config_type(self, t: List) -> CXConfigType:
         return t[0]
 
     def cx_config_type_snake(self, t: List) -> CXConfigType:
@@ -331,7 +322,7 @@ class PassTransformer(Transformer):
     def cx_config_type_multi_q_gate(self, t: List) -> CXConfigType:
         return CXConfigType.MultiQGate
 
-    def op_type(self, t: List[OpType]) -> OpType:
+    def op_type(self, t: List) -> OpType:
         return t[0]
 
     def op_type_rx(self, t: List) -> OpType:
@@ -343,7 +334,7 @@ class PassTransformer(Transformer):
     def op_type_rz(self, t: List) -> OpType:
         return OpType.Rz
 
-    def pauli_synth_strat(self, t: List[PauliSynthStrat]) -> PauliSynthStrat:
+    def pauli_synth_strat(self, t: List) -> PauliSynthStrat:
         return t[0]
 
     def pauli_synth_strat_individual(self, t: List) -> PauliSynthStrat:
@@ -395,7 +386,7 @@ def compilation_pass_from_script(script: str) -> BasePass:
     :param script: specification of pass
     """
     tree = parser.parse(script)
-    return cast(BasePass, transformer.transform(tree))
+    return transformer.transform(tree)
 
 
 def compilation_pass_grammar() -> str:

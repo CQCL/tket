@@ -13,7 +13,8 @@
 # limitations under the License.
 
 """Handler for wasm files in pytket"""
-__path__ = __import__("pkgutil").extend_path(__path__, __name__)
+
+__path__ = __import__("pkgutil").extend_path(__path__, __name__)  # type: ignore
 
 from .wasm import (
     WasmFileHandler,

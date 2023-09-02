@@ -15,13 +15,9 @@
 from collections import defaultdict
 from itertools import combinations
 from tempfile import NamedTemporaryFile
-from typing import Optional
-
 import networkx as nx  # type: ignore
 import graphviz as gv  # type: ignore
-
-from pytket._tket.circuit import EdgeType
-from pytket.circuit import Circuit
+from pytket.circuit import Circuit  # type: ignore
 
 
 class Graph:
@@ -58,9 +54,9 @@ class Graph:
         self.input_names = input_names
         self.output_names = output_names
         self.node_data = node_data
-        self.Gnx: Optional[nx.MultiDiGraph] = None
-        self.G: Optional[gv.Digraph] = None
-        self.Gqc: Optional[gv.Graph] = None
+        self.Gnx = None
+        self.G = None
+        self.Gqc = None
         self.edge_data = defaultdict(list)
         self.port_counts: dict = defaultdict(int)
         for src_node, tgt_node, src_port, tgt_port, edge_type in edge_data:
@@ -75,7 +71,7 @@ class Graph:
         :rtype:     networkx.MultiDiGraph
         """
         if self.Gnx is not None:
-            return self.Gnx
+            return self.Gnx  # type: ignore
         Gnx = nx.MultiDiGraph()
         for node, desc in self.node_data.items():
             Gnx.add_node(node, desc=desc)
@@ -130,7 +126,7 @@ class Graph:
         :rtype:     graphviz.DiGraph
         """
         if self.G is not None:
-            return self.G
+            return self.G  # type: ignore
         G = gv.Digraph(
             "Circuit",
             strict=True,
@@ -223,10 +219,10 @@ class Graph:
                         for i in range(n_ports):
                             c.node(name=str((node, i)), xlabel=str(i), **port_node_attr)
         edge_colors = {
-            EdgeType.Quantum: q_color,
-            EdgeType.Boolean: b_color,
-            EdgeType.Classical: c_color,
-            EdgeType.WASM: w_color,
+            0: q_color,  # Quantum
+            1: b_color,  # Boolean
+            2: c_color,  # Classical
+            3: w_color,  # WASM (and other)
         }
         edge_attr = {
             "weight": "2",
@@ -286,7 +282,7 @@ class Graph:
         :rtype:     graphviz.Graph
         """
         if self.Gqc is not None:
-            return self.Gqc
+            return self.Gqc  # type: ignore
         Gnx = self.as_nx()
         Gqcnx = nx.Graph()
         for node in Gnx.nodes():

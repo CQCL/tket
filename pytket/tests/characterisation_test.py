@@ -12,14 +12,14 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pytket.circuit import Circuit, OpType, Qubit
-from pytket.tailoring import (
+from pytket.circuit import Circuit, OpType, Qubit  # type: ignore
+from pytket.tailoring import (  # type: ignore
     FrameRandomisation,
     PauliFrameRandomisation,
     UniversalFrameRandomisation,
     apply_clifford_basis_change,
 )
-from pytket.pauli import Pauli, QubitPauliString
+from pytket.pauli import Pauli, QubitPauliString  # type: ignore
 
 import pytest  # type: ignore
 

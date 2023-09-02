@@ -15,8 +15,9 @@
 import json
 from jsonschema import RefResolver, Draft7Validator  # type: ignore
 from pathlib import Path
-from pytket.circuit import Node
-from pytket.architecture import Architecture, SquareGrid, FullyConnected, RingArch
+from pytket.circuit import Node, Op, OpType, Circuit, Qubit, PhasePolyBox  # type: ignore
+from pytket.architecture import Architecture, SquareGrid, FullyConnected, RingArch  # type: ignore
+import numpy as np
 
 curr_file_path = Path(__file__).resolve().parent
 schema_dir = curr_file_path.parent.parent / "schemas"

@@ -17,4 +17,4 @@
  mapping logical circuits to physical circuits and for
  defining custom routing solutions."""
 
-from pytket._tket.mapping import *
+from pytket._tket.mapping import *  # type: ignore

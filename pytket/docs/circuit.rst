@@ -18,6 +18,25 @@ pytket.circuit
     :members:
 .. autoclass:: pytket._tket.circuit.Command
     :members:
+.. autoclass:: pytket._tket.circuit.UnitType
+    :members:
+.. autoclass:: pytket._tket.circuit.UnitID
+    :members:
+.. autoclass:: pytket._tket.circuit.Qubit
+    :special-members: __init__
+    :members:
+.. autoclass:: pytket._tket.circuit.Bit
+    :special-members: __init__
+    :members:
+.. autoclass:: pytket._tket.circuit.Node
+    :special-members: __init__
+    :members:
+.. autoclass:: pytket._tket.circuit.QubitRegister
+    :special-members: __init__, __getitem__
+    :members:
+.. autoclass:: pytket._tket.circuit.BitRegister
+    :special-members: __init__, __getitem__
+    :members:
 .. autoclass:: pytket._tket.circuit.BasisOrder
     :members:
 .. autoclass:: pytket._tket.circuit.CircBox

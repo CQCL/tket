@@ -13,10 +13,10 @@
 # limitations under the License.
 
 """Enable adding of gates with conditions on Bit or BitRegister expressions."""
-from typing import Tuple, Union
+from typing import Tuple, Union, cast
 
-from pytket.circuit import Bit, Circuit, BitRegister
-from pytket._tket.unit_id import (
+from pytket.circuit import Bit, Circuit, BitRegister  # type: ignore
+from pytket._tket.circuit import (  # type: ignore
     _TEMP_REG_SIZE,
     _TEMP_BIT_NAME,
     _TEMP_BIT_REG_BASE,
@@ -85,11 +85,7 @@ def _add_condition(
     assert isinstance(pred_exp, (RegLogicExp, BitRegister))
     if isinstance(pred_exp, RegLogicExp):
         inps = pred_exp.all_inputs()
-        reg_sizes: list[int] = []
-        for reg in inps:
-            assert isinstance(reg, BitRegister)
-            reg_sizes.append(reg.size)
-        min_reg_size = min(reg_sizes)
+        min_reg_size = min(reg.size for reg in inps)
         existing_reg_names = set(
             bit.reg_name
             for bit in circ.bits
@@ -101,10 +97,10 @@ def _add_condition(
         next_index = max(existing_reg_indices, default=-1) + 1
         temp_reg = BitRegister(f"{_TEMP_BIT_REG_BASE}_{next_index}", _TEMP_REG_SIZE)
         circ.add_c_register(temp_reg)
-        target_bits = temp_reg.to_list()[:min_reg_size]
+        target_bits = list(temp_reg)[:min_reg_size]
         circ.add_classicalexpbox_register(pred_exp, target_bits)
-    elif isinstance(pred_exp, BitRegister):
-        target_bits = pred_exp.to_list()
+    else:
+        target_bits = list(cast(BitRegister, pred_exp))
 
     minval = 0
     maxval = (1 << 32) - 1

@@ -13,8 +13,8 @@
 # limitations under the License.
 
 from typing import Union
-from sympy import Expr
-from pytket.circuit import Circuit, OpType
+from sympy import Expr  # type: ignore
+from pytket.circuit import Circuit, OpType  # type: ignore
 
 Param = Union[float, "Expr"]
 

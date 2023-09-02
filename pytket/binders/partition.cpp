@@ -18,10 +18,9 @@
 #include "binder_json.hpp"
 #include "binder_utils.hpp"
 #include "tket/MeasurementSetup/MeasurementReduction.hpp"
+#include "typecast.hpp"
 
 namespace py = pybind11;
-using json = nlohmann::json;
-
 namespace tket {
 
 PYBIND11_MODULE(partition, m) {
@@ -91,15 +90,14 @@ PYBIND11_MODULE(partition, m) {
       .def(
           "to_dict",
           [](const MeasurementSetup::MeasurementBitMap &map) {
-            return py::object(json(map)).cast<py::dict>();
+            return nlohmann::json(map);
           },
           "JSON-serializable dict representation of the MeasurementBitMap."
           "\n\n:return: dict representation of the MeasurementBitMap")
       .def_static(
           "from_dict",
-          [](const py::dict &measurement_bit_map_dict) {
-            return json(measurement_bit_map_dict)
-                .get<MeasurementSetup::MeasurementBitMap>();
+          [](const nlohmann::json &j) {
+            return j.get<MeasurementSetup::MeasurementBitMap>();
           },
           "Construct MeasurementBitMap instance from dict representation.");
 
@@ -138,16 +136,12 @@ PYBIND11_MODULE(partition, m) {
           ":return: True or False")
       .def(
           "to_dict",
-          [](const MeasurementSetup &setup) {
-            return py::object(json(setup)).cast<py::dict>();
-          },
+          [](const MeasurementSetup &setup) { return nlohmann::json(setup); },
           "JSON-serializable dict representation of the MeasurementSetup."
           "\n\n:return: dict representation of the MeasurementSetup")
       .def_static(
           "from_dict",
-          [](const py::dict &measurement_setup_dict) {
-            return json(measurement_setup_dict).get<MeasurementSetup>();
-          },
+          [](const nlohmann::json &j) { return j.get<MeasurementSetup>(); },
           "Construct MeasurementSetup instance from dict representation.");
 
   m.def(

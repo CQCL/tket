@@ -17,4 +17,4 @@
  logical circuit qubit identifiers to physical architecture node identifiers,
  for the purpose of compilation."""
 
-from pytket._tket.placement import *
+from pytket._tket.placement import *  # type: ignore
