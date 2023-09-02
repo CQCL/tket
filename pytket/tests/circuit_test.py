@@ -71,8 +71,8 @@ from math import sqrt
 import pytest  # type: ignore
 
 from hypothesis import given, settings
-import strategies as st  # type: ignore
-from useful_typedefs import ParamType  # type: ignore
+import tests.strategies as st
+from tests.useful_typedefs import ParamType
 
 curr_file_path = Path(__file__).resolve().parent
 

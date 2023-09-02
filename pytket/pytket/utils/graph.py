@@ -20,6 +20,7 @@ from typing import Optional
 import networkx as nx  # type: ignore
 import graphviz as gv  # type: ignore
 
+from pytket._tket.circuit import EdgeType
 from pytket.circuit import Circuit
 
 
@@ -60,9 +61,7 @@ class Graph:
         self.Gnx: Optional[nx.MultiDiGraph] = None
         self.G: Optional[gv.Digraph] = None
         self.Gqc: Optional[gv.Graph] = None
-        self.edge_data: dict[tuple[int, int], list[tuple[int, int, str]]] = defaultdict(
-            list
-        )
+        self.edge_data = defaultdict(list)
         self.port_counts: dict = defaultdict(int)
         for src_node, tgt_node, src_port, tgt_port, edge_type in edge_data:
             self.edge_data[(src_node, tgt_node)].append((src_port, tgt_port, edge_type))
@@ -224,10 +223,10 @@ class Graph:
                         for i in range(n_ports):
                             c.node(name=str((node, i)), xlabel=str(i), **port_node_attr)
         edge_colors = {
-            "Quantum": q_color,
-            "Boolean": b_color,
-            "Classical": c_color,
-            "WASM": w_color,
+            EdgeType.Quantum: q_color,
+            EdgeType.Boolean: b_color,
+            EdgeType.Classical: c_color,
+            EdgeType.WASM: w_color,
         }
         edge_attr = {
             "weight": "2",
