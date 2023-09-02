@@ -21,7 +21,7 @@ from collections.abc import Sequence
 
 # mypy doesn't think you can pass the tuple to Union
 BasicHashType = Union[int, float, complex, str, bool, bytes]
-_ResultIdTuple = Tuple[
+ResultIdTuple = Tuple[
     Union[Type[int], Type[float], Type[complex], Type[str], Type[bool], Type[bytes]],
     ...,
 ]
