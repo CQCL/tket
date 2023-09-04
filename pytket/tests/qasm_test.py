@@ -235,10 +235,10 @@ def test_named_conditional_barrier() -> None:
         data="cond_barrier",
     )
     qs_str: str = circuit_to_qasm_str(circ)
-    c_from_qs: Circuit = circuit_from_qasm_str(qs_str)   
+    c_from_qs: Circuit = circuit_from_qasm_str(qs_str)
     print(c_from_qs.get_commands()[1].op.op.data)
     for i, x in enumerate(c_from_qs.get_commands()):
-        print(i,x)
+        print(i, x)
     assert qs_str == circuit_to_qasm_str(c_from_qs)
 
 

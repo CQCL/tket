@@ -173,7 +173,7 @@ Vertex Circuit::add_conditional_barrier(
       sig.push_back(EdgeType::Classical);
     }
   }
-  unit_vector_t args = condition_bits;
+  bit_vector_t args = condition_bits;
   args.insert(args.end(), barrier_args.begin(), barrier_args.end());
   return add_op(
       std::make_shared<Conditional>(
