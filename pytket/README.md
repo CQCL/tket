@@ -52,6 +52,12 @@ To generate a test coverage report:
 pytest --hypothesis-seed=1 --cov=../pytket --cov-branch --cov-report=html --cov-report=xml:htmlcov/cov.xml
 ```
 
+## Stub generation
+
+Python type stubs are generated from the `pybind11` modules using mypy's `stubgen`. Changes to the
+binding code under [binders](binders) (or, in some cases, to `tket` itself) may require stub regeneration.
+See [stub_generation/README.md](stub_generation/README.md) for more information.
+
 ## Building without conan
 
 It is possible to build pytket without using conan at all: see

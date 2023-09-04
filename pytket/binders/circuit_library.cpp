@@ -14,7 +14,6 @@
 
 #include <pybind11/pybind11.h>
 
-#include "binder_utils.hpp"
 #include "tket/Circuit/CircPool.hpp"
 #include "typecast.hpp"
 
@@ -22,11 +21,7 @@ namespace py = pybind11;
 
 namespace tket {
 
-void init_library(py::module &m) {
-  /* Circuit library */
-  py::module_ library_m = m.def_submodule(
-      "_library",
-      "Library of reusable circuits and circuit generator functions.");
+PYBIND11_MODULE(circuit_library, library_m) {
   library_m.def(
       "_BRIDGE_using_CX_0", &CircPool::BRIDGE_using_CX_0,
       "Equivalent to BRIDGE, using four CX, first CX has control on qubit 0");
@@ -216,7 +211,8 @@ void init_library(py::module &m) {
       "Equivalent to YYPhase, using a TK2 gate");
   library_m.def(
       "_YYPhase_using_CX", &CircPool::YYPhase_using_CX,
-      "Equivalent to YYPhase, using CX, Rz and U3 gates");
+      "Equivalent to YYPhase, using two CX gates and one Ry, one Sdg and one S "
+      "gate.");
   library_m.def(
       "_ZZPhase_using_TK2", &CircPool::ZZPhase_using_TK2,
       "Equivalent to ZZPhase, using a TK2 gate");

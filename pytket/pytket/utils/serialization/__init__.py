@@ -12,4 +12,4 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pytket._tket.utils_serialization import *  # type: ignore
+from pytket._tket.utils_serialization import *

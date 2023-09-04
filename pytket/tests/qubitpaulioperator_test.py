@@ -22,8 +22,8 @@ import numpy as np
 from sympy import Symbol, re, im  # type: ignore
 
 from pytket.utils import QubitPauliOperator
-from pytket.pauli import Pauli, QubitPauliString, pauli_string_mult  # type: ignore
-from pytket.circuit import Qubit  # type: ignore
+from pytket.pauli import Pauli, QubitPauliString, pauli_string_mult
+from pytket.circuit import Qubit
 
 import strategies as st  # type: ignore
 

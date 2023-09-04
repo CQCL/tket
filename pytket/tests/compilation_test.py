@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from pytket.circuit import Circuit
-from pytket.passes import FullPeepholeOptimise  # type: ignore
+from pytket.passes import FullPeepholeOptimise
 
 
 def test_compilation() -> None:

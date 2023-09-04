@@ -23,7 +23,6 @@
 #include "tket/Predicates/PassGenerators.hpp"
 #include "tket/Predicates/PassLibrary.hpp"
 #include "tket/Transformations/ContextualReduction.hpp"
-#include "tket/Transformations/Decomposition.hpp"
 #include "tket/Transformations/PauliOptimisation.hpp"
 #include "tket/Transformations/Transform.hpp"
 #include "tket/Utils/Json.hpp"
@@ -33,6 +32,17 @@ namespace py = pybind11;
 using json = nlohmann::json;
 
 namespace tket {
+
+// using py::object and converting internally to json creates better stubs,
+// hence this wrapper
+typedef std::function<void(const CompilationUnit &, const py::object &)>
+    PyPassCallback;
+PassCallback from_py_pass_callback(const PyPassCallback &py_pass_callback) {
+  return [py_pass_callback](
+             const CompilationUnit &compilationUnit, const json &j) {
+    return py_pass_callback(compilationUnit, py::object(j));
+  };
+}
 
 // given keyword arguments for DecomposeTK2, return a TwoQbFidelities struct
 Transforms::TwoQbFidelities get_fidelities(const py::kwargs &kwargs) {
@@ -135,6 +145,7 @@ const PassPtr &DecomposeClassicalExp() {
 }
 
 PYBIND11_MODULE(passes, m) {
+  py::module_::import("pytket._tket.predicates");
   py::enum_<SafetyMode>(m, "SafetyMode")
       .value(
           "Audit", SafetyMode::Audit,
@@ -219,11 +230,12 @@ PYBIND11_MODULE(passes, m) {
       .def(
           "apply",
           [](const BasePass &pass, Circuit &circ,
-             const PassCallback &before_apply,
-             const PassCallback &after_apply) {
+             const PyPassCallback &before_apply,
+             const PyPassCallback &after_apply) {
             CompilationUnit cu(circ);
-            bool applied =
-                pass.apply(cu, SafetyMode::Default, before_apply, after_apply);
+            bool applied = pass.apply(
+                cu, SafetyMode::Default, from_py_pass_callback(before_apply),
+                from_py_pass_callback(after_apply));
             circ = cu.get_circ_ref();
             return applied;
           },
@@ -241,10 +253,16 @@ PYBIND11_MODULE(passes, m) {
       .def("__str__", [](const BasePass &) { return "<tket::BasePass>"; })
       .def("__repr__", &BasePass::to_string)
       .def(
-          "to_dict", &BasePass::get_config,
+          "to_dict",
+          [](const BasePass &base_pass) {
+            return py::object(base_pass.get_config()).cast<py::dict>();
+          },
           ":return: A JSON serializable dictionary representation of the Pass.")
       .def_static(
-          "from_dict", [](const json &j) { return j.get<PassPtr>(); },
+          "from_dict",
+          [](const py::dict &base_pass_dict) {
+            return json(base_pass_dict).get<PassPtr>();
+          },
           "Construct a new Pass instance from a JSON serializable dictionary "
           "representation.")
       .def(py::pickle(
@@ -435,7 +453,8 @@ PYBIND11_MODULE(passes, m) {
       "be left untouched."
       "\n\n:param squash: Whether to squash the circuit in pre-processing "
       "(default: true)."
-      "\n\nIf squash=true (default), the `GlobalisePhasedX().apply` method "
+      "\n\nIf squash=true (default), the `GlobalisePhasedX` transform's "
+      "`apply` method "
       "will always return true. "
       "For squash=false, `apply()` will return true if the circuit was "
       "changed and false otherwise.\n\n"
@@ -504,8 +523,13 @@ PYBIND11_MODULE(passes, m) {
       "already in this set."
       "\n:param tk1_replacement: A function which, given the parameters of "
       "an Rz(a)Rx(b)Rz(c) triple, returns an equivalent circuit in the "
-      "desired basis.",
-      py::arg("singleqs"), py::arg("tk1_replacement"));
+      "desired basis."
+      "\n:param always_squash_symbols: If true, always squash symbolic gates "
+      "regardless of the blow-up in complexity. Default is false, meaning that "
+      "symbolic gates are only squashed if doing so reduces the overall "
+      "symbolic complexity.",
+      py::arg("singleqs"), py::arg("tk1_replacement"),
+      py::arg("always_squash_symbols") = false);
   m.def(
       "DelayMeasures", &DelayMeasures,
       "Commutes Measure operations to the end of the circuit. Throws an "
@@ -590,7 +614,9 @@ PYBIND11_MODULE(passes, m) {
       "of an Rz(a)Rx(b)Rz(c) triple, returns an equivalent circuit in the "
       "desired basis\n"
       ":return: a pass that rebases to the given gate set (possibly including "
-      "conditional and phase operations)");
+      "conditional and phase operations)",
+      py::arg("gateset"), py::arg("tk2_replacement"),
+      py::arg("tk1_replacement"));
 
   m.def(
       "EulerAngleReduction", &gen_euler_pass,
@@ -842,11 +868,17 @@ PYBIND11_MODULE(passes, m) {
       py::arg("remove_redundancies") = true, py::arg("xcirc") = nullptr);
   m.def(
       "ContextSimp",
-      [](bool allow_classical, std::shared_ptr<const Circuit> xcirc) {
+      [](bool allow_classical,
+         std::optional<std::shared_ptr<const Circuit>> xcirc) {
+        if (xcirc.has_value()) {
+          return gen_contextual_pass(
+              allow_classical ? Transforms::AllowClassical::Yes
+                              : Transforms::AllowClassical::No,
+              std::move(xcirc.value()));
+        }
         return gen_contextual_pass(
             allow_classical ? Transforms::AllowClassical::Yes
-                            : Transforms::AllowClassical::No,
-            xcirc);
+                            : Transforms::AllowClassical::No);
       },
       "Applies simplifications enabled by knowledge of qubit state and "
       "discarded qubits."

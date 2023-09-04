@@ -1,6 +1,32 @@
 Changelog
 =========
 
+0.19.0 (September 2023)
+-----------------------
+
+Major new features:
+
+* Add ``ConjugationBox`` to express circuits that follow
+  the compute-action-uncompute pattern.
+* Added typing support for compiled modules
+
+Minor new features:
+
+* Implement equality checking for all boxes.
+* Add ``Op.is_clifford`` to python binding.
+* Single-qubit squashing ignores chains of symbolic gates if squashing them
+  would increase the overall complexity of the expressions. This behaviour can
+  be overridden using the ``always_squash_symbols`` parameter to
+  ``SquashCustom``.
+* Add ``control_state`` argument to ``QControlBox``.
+* Add ``QubitPauliTensor`` (combining ``QubitPauliString`` with a complex
+  coefficient) to python binding. This is incorporated into ``UnitaryTableau`` 
+  row inspection for phase tracking.
+
+Fixes:
+
+* Allow ``BackendResult`` objects containing no results.
+
 1.18.0 (August 2023)
 --------------------
 

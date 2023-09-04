@@ -11,15 +11,17 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from typing import cast
 
 from pytket import Circuit
-from pytket.circuit import PauliExpBox, CircBox  # type: ignore
-from pytket.partition import (  # type: ignore
+from pytket.circuit import PauliExpBox, CircBox
+from pytket.partition import (
     term_sequence,
     PauliPartitionStrat,
     GraphColourMethod,
 )
 from .operators import QubitPauliOperator
+from .._tket.unit_id import UnitID
 
 
 def gen_term_sequence_circuit(
@@ -74,5 +76,6 @@ def gen_term_sequence_circuit(
             else:
                 circ_to_box.add_phase(-coeff / 2)
         cbox = CircBox(circ_to_box)
-        circ.add_circbox(cbox, qbs)
+        unit_ids = cast(list[UnitID], qbs)
+        circ.add_circbox(cbox, unit_ids)
     return circ

@@ -14,4 +14,4 @@
 
 """This module gives basic Pauli data structures in tket."""
 
-from pytket._tket.pauli import *  # type: ignore
+from pytket._tket.pauli import *

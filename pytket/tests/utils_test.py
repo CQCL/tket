@@ -18,10 +18,10 @@ from pytket.backends.backend import Backend
 from hypothesis import strategies, given, settings, HealthCheck
 from hypothesis.strategies._internal import SearchStrategy
 
-from pytket.circuit import Qubit, Circuit, OpType  # type: ignore
-from pytket.pauli import Pauli, QubitPauliString  # type: ignore
-from pytket.partition import PauliPartitionStrat, GraphColourMethod  # type: ignore
-from pytket.transform import Transform  # type: ignore
+from pytket.circuit import Qubit, Circuit, OpType
+from pytket.pauli import Pauli, QubitPauliString
+from pytket.partition import PauliPartitionStrat, GraphColourMethod
+from pytket.transform import Transform
 from pytket.utils.expectations import (
     expectation_from_shots,
     expectation_from_counts,

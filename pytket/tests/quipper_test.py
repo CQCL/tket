@@ -17,10 +17,9 @@ from pathlib import Path
 import pytest  # type: ignore
 from pytket import Circuit
 from pytket.quipper import circuit_from_quipper
-from pytket.transform import Transform  # type: ignore
+from pytket.transform import Transform
 from pytket.utils.results import compare_unitaries
 import numpy as np
-import os
 from typing import Any
 
 curr_file_path = Path(__file__).resolve().parent

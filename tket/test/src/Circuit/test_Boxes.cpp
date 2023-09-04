@@ -21,8 +21,13 @@
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/ConjugationBox.hpp"
+#include "tket/Circuit/DiagonalBox.hpp"
+#include "tket/Circuit/Multiplexor.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
+#include "tket/Circuit/StatePreparation.hpp"
+#include "tket/Circuit/ToffoliBox.hpp"
 #include "tket/Converters/PhasePoly.hpp"
 #include "tket/Gate/SymTable.hpp"
 
@@ -782,6 +787,49 @@ SCENARIO("QControlBox", "[boxes]") {
     unit_vector_t barrier_args2{Qubit(3)};
     REQUIRE(it->get_args() == barrier_args2);
   }
+  GIVEN("Unitary2qBox controlled by state") {
+    Circuit c0(2);
+    c0.add_op<unsigned>(OpType::Rx, 0.2, {0});
+    c0.add_op<unsigned>(OpType::Ry, 1.2, {1});
+    c0.add_op<unsigned>(OpType::CX, {0, 1});
+    c0.add_op<unsigned>(OpType::Rz, 0.4, {1});
+    c0.add_op<unsigned>(OpType::H, {0});
+    c0.add_op<unsigned>(OpType::CX, {1, 0});
+    Eigen::Matrix4cd m0 = get_matrix_from_2qb_circ(c0);
+    Unitary2qBox ubox(m0);
+    Op_ptr op = std::make_shared<Unitary2qBox>(ubox);
+    QControlBox qcbox(op, 2, {0, 1});
+    std::shared_ptr<Circuit> c = qcbox.to_circuit();
+    const Eigen::MatrixXcd U = tket_sim::get_unitary(*c);
+    Eigen::MatrixXcd V = Eigen::MatrixXcd::Identity(16, 16);
+    for (unsigned i = 0; i < 4; i++) {
+      for (unsigned j = 0; j < 4; j++) {
+        V(4 + i, 4 + j) = m0(i, j);
+      }
+    }
+    REQUIRE(U.isApprox(V));
+    // check get_box_unitary is correct
+    std::optional<Eigen::MatrixXcd> box_u = qcbox.get_box_unitary();
+    REQUIRE(V.isApprox(box_u.value()));
+  }
+  GIVEN("Random unitary box controlled by state") {
+    Eigen::MatrixXcd u = random_unitary(8, 1);
+    Unitary3qBox ubox(u);
+    Op_ptr op = std::make_shared<Unitary3qBox>(ubox);
+    QControlBox qcbox(op, 3, {1, 0, 0});
+    std::shared_ptr<Circuit> c = qcbox.to_circuit();
+    const Eigen::MatrixXcd circ_u = tket_sim::get_unitary(*c);
+    Eigen::MatrixXcd V = Eigen::MatrixXcd::Identity(64, 64);
+    for (unsigned i = 0; i < 8; i++) {
+      for (unsigned j = 0; j < 8; j++) {
+        V(32 + i, 32 + j) = u(i, j);
+      }
+    }
+    REQUIRE(circ_u.isApprox(V));
+    // check get_box_unitary is correct
+    std::optional<Eigen::MatrixXcd> box_u = qcbox.get_box_unitary();
+    REQUIRE(V.isApprox(box_u.value()));
+  }
 }
 
 SCENARIO("Unitary3qBox", "[boxes]") {
@@ -833,8 +881,16 @@ SCENARIO("Checking equality", "[boxes]") {
     u.add_op<unsigned>(OpType::CX, {0, 1});
     const CircBox ubox(u);
 
+    Circuit u2(2);
+    u2.add_op<unsigned>(OpType::Ry, -0.35, {0});
+    u2.add_op<unsigned>(OpType::CX, {0, 1});
+    const CircBox ubox2(u2);
+
     WHEN("both arguments are equal") { REQUIRE(ubox == ubox); }
-    WHEN("both arguments are different") { REQUIRE(ubox != CircBox(u)); }
+    WHEN("different ids but equivalent inner circuits") {
+      REQUIRE(ubox == CircBox(u));
+    }
+    WHEN("different inner circuits") { REQUIRE(ubox != ubox2); }
   }
   GIVEN("Unitary1qBox") {
     Circuit setup(1);
@@ -843,11 +899,16 @@ SCENARIO("Checking equality", "[boxes]") {
     Unitary1qBox mbox(m);
 
     WHEN("both arguments are equal") { REQUIRE(mbox == mbox); }
-    WHEN("both arguments are different") {
-      setup.add_op<unsigned>(OpType::TK1, {0.2374, 1.0353, 0.5372}, {0});
+    WHEN("different ids but matrices are equal") {
       Eigen::Matrix2cd m2 = tket_sim::get_unitary(setup);
       Unitary1qBox mbox2(m2);
-      REQUIRE(mbox != mbox2);
+      REQUIRE(mbox == mbox2);
+    }
+    WHEN("both arguments are different") {
+      setup.add_op<unsigned>(OpType::TK1, {0.2374, 1.0353, 0.5372}, {0});
+      Eigen::Matrix2cd m3 = tket_sim::get_unitary(setup);
+      Unitary1qBox mbox3(m3);
+      REQUIRE(mbox != mbox3);
     }
   }
   GIVEN("Unitary2qBox") {
@@ -858,11 +919,16 @@ SCENARIO("Checking equality", "[boxes]") {
     Unitary2qBox mbox(m);
 
     WHEN("both arguments are equal") { REQUIRE(mbox == mbox); }
-    WHEN("both arguments are different") {
-      setup.add_op<unsigned>(OpType::CX, {1, 0});
+    WHEN("different ids but matrices are equal") {
       Eigen::Matrix4cd m2 = tket_sim::get_unitary(setup);
       Unitary2qBox mbox2(m2);
-      REQUIRE(mbox != mbox2);
+      REQUIRE(mbox == mbox2);
+    }
+    WHEN("both arguments are different") {
+      setup.add_op<unsigned>(OpType::CX, {1, 0});
+      Eigen::Matrix4cd m3 = tket_sim::get_unitary(setup);
+      Unitary2qBox mbox3(m3);
+      REQUIRE(mbox != mbox3);
     }
   }
   GIVEN("Unitary3qBox") {
@@ -874,11 +940,16 @@ SCENARIO("Checking equality", "[boxes]") {
     Unitary3qBox mbox(m);
 
     WHEN("both arguments are equal") { REQUIRE(mbox == mbox); }
-    WHEN("both arguments are different") {
-      setup.add_op<unsigned>(OpType::CX, {0, 2});
+    WHEN("different ids but matrices are equal") {
       Eigen::MatrixXcd m2 = tket_sim::get_unitary(setup);
       Unitary3qBox mbox2(m2);
-      REQUIRE(mbox != mbox2);
+      REQUIRE(mbox == mbox2);
+    }
+    WHEN("both arguments are different") {
+      setup.add_op<unsigned>(OpType::CX, {0, 2});
+      Eigen::MatrixXcd m3 = tket_sim::get_unitary(setup);
+      Unitary3qBox mbox3(m3);
+      REQUIRE(mbox != mbox3);
     }
   }
   GIVEN("ExpBox") {
@@ -888,9 +959,13 @@ SCENARIO("Checking equality", "[boxes]") {
         4., 2. + 3. * i_, 5.;
     ExpBox ebox(A, -0.5);
     WHEN("both arguments are equal") { REQUIRE(ebox == ebox); }
+    WHEN("different ids but matrices are equal") {
+      ExpBox ebox2(A, -0.5);
+      REQUIRE(ebox == ebox2);
+    }
     WHEN("both arguments are different") {
-      ExpBox ebox2(A, -0.2);
-      REQUIRE(ebox != ebox2);
+      ExpBox ebox3(A, -0.2);
+      REQUIRE(ebox != ebox3);
     }
   }
   GIVEN("Pauli gadgets") {
@@ -903,13 +978,32 @@ SCENARIO("Checking equality", "[boxes]") {
     }
   }
   GIVEN("QControlBox") {
-    Op_ptr op = get_op_ptr(OpType::X);
-    QControlBox qcbox(op);
+    Circuit u(2);
+    u.add_op<unsigned>(OpType::CX, {0, 1});
+    Op_ptr op = std::make_shared<CircBox>(CircBox(u));
+    QControlBox qcbox(op, 3, {1, 0, 1});
     WHEN("both arguments are equal") { REQUIRE(qcbox == qcbox); }
-    WHEN("both arguments are different") {
-      Op_ptr op2 = get_op_ptr(OpType::Y);
-      QControlBox qcbox2(op2);
-      REQUIRE(qcbox != qcbox2);
+    WHEN("different ids but equivalent ops") {
+      Circuit u2(2);
+      u2.add_op<unsigned>(OpType::CX, {0, 1});
+      Op_ptr op2 = std::make_shared<CircBox>(CircBox(u2));
+      QControlBox qcbox2(op2, 3, {1, 0, 1});
+      REQUIRE(qcbox == qcbox2);
+    }
+    WHEN("different ids, equivalent ops, but different types") {
+      Op_ptr op3 = get_op_ptr(OpType::CX);
+      REQUIRE(qcbox != QControlBox(op3, 3, {1, 0, 1}));
+    }
+    WHEN("different control states") {
+      REQUIRE(qcbox != QControlBox(op, 3, {0, 0, 1}));
+    }
+    WHEN("equivalent control states") {
+      REQUIRE(QControlBox(op, 3) == QControlBox(op, 3, {1, 1, 1}));
+    }
+    WHEN("all arguments are different") {
+      Op_ptr op4 = get_op_ptr(OpType::Y);
+      QControlBox qcbox4(op4);
+      REQUIRE(qcbox != qcbox4);
     }
   }
   GIVEN("PhasePolyBox") {
@@ -954,6 +1048,240 @@ SCENARIO("Checking equality", "[boxes]") {
     CHECK(g1 != g1_wrong);
     CHECK(g1_repeated != g1_wrong);
     CHECK_THROWS_AS(CustomGate(nullptr, {param3}), std::runtime_error);
+  }
+  GIVEN("ProjectorAssertionBox") {
+    Eigen::MatrixXcd bell(4, 4);
+    bell << 0.5, 0, 0, 0.5, 0, 0, 0, 0, 0, 0, 0, 0, 0.5, 0, 0, 0.5;
+    ProjectorAssertionBox box(bell);
+    WHEN("both arguments are equal") { REQUIRE(box == box); }
+    WHEN("different ids but equivalent projectors") {
+      REQUIRE(box == ProjectorAssertionBox(bell));
+    }
+    WHEN("different projectors") {
+      Eigen::MatrixXcd p(4, 4);
+      p << 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0;
+      REQUIRE(box != ProjectorAssertionBox(p));
+    }
+  }
+  GIVEN("StabiliserAssertionBox") {
+    PauliStabiliser p1 = {{Pauli::X, Pauli::X}, true};
+    PauliStabiliser p2 = {{Pauli::Z, Pauli::Z}, true};
+    PauliStabiliser p3 = {{Pauli::Z, Pauli::Z}, false};
+    StabiliserAssertionBox box({p1, p2});
+    WHEN("both arguments are equal") { REQUIRE(box == box); }
+    WHEN("different ids but equivalent stabilisers") {
+      REQUIRE(box == StabiliserAssertionBox({p1, p2}));
+    }
+    WHEN("different stabilisers") {
+      REQUIRE(box != StabiliserAssertionBox({p1, p3}));
+    }
+  }
+  GIVEN("DiagonalBox") {
+    Eigen::Vector2cd diag(i_, 1);
+    DiagonalBox box(diag);
+    WHEN("all arguments are equal") { REQUIRE(box == box); }
+    WHEN("different ids but other args are equal") {
+      DiagonalBox box2(diag);
+      REQUIRE(box == box2);
+    }
+    WHEN("arguments are different") {
+      DiagonalBox box3(diag, false);
+      REQUIRE(box != box3);
+    }
+  }
+  GIVEN("MultiplexorBox") {
+    ctrl_op_map_t op_map = {{{1}, get_op_ptr(OpType::H)}};
+    MultiplexorBox box(op_map);
+    WHEN("all arguments are equal") { REQUIRE(box == box); }
+    WHEN("different ids but other args are equal") {
+      ctrl_op_map_t op_map2 = {{{1}, get_op_ptr(OpType::H)}};
+      MultiplexorBox box2(op_map2);
+      REQUIRE(box == box2);
+    }
+    WHEN("arguments are different") {
+      ctrl_op_map_t op_map2 = {{{0}, get_op_ptr(OpType::H)}};
+      MultiplexorBox box3(op_map2);
+      REQUIRE(box != box3);
+    }
+  }
+  GIVEN("MultiplexedRotationBox") {
+    ctrl_op_map_t op_map = {{{1}, get_op_ptr(OpType::Rz, 0.7)}};
+    MultiplexedRotationBox box(op_map);
+    WHEN("all arguments are equal") { REQUIRE(box == box); }
+    WHEN("different ids but other args are equal") {
+      ctrl_op_map_t op_map2 = {{{1}, get_op_ptr(OpType::Rz, 0.7)}};
+      MultiplexedRotationBox box2(op_map2);
+      REQUIRE(box == box2);
+    }
+    WHEN("arguments are different") {
+      ctrl_op_map_t op_map2 = {{{0}, get_op_ptr(OpType::Rz, 0.7)}};
+      MultiplexedRotationBox box3(op_map2);
+      REQUIRE(box != box3);
+    }
+  }
+  GIVEN("MultiplexedU2Box") {
+    ctrl_op_map_t op_map = {{{1}, get_op_ptr(OpType::H)}};
+    MultiplexedU2Box box(op_map);
+    WHEN("all arguments are equal") { REQUIRE(box == box); }
+    WHEN("different ids but other args are equal") {
+      ctrl_op_map_t op_map2 = {{{1}, get_op_ptr(OpType::H)}};
+      MultiplexedU2Box box2(op_map2);
+      REQUIRE(box == box2);
+    }
+    WHEN("arguments are different") {
+      MultiplexedU2Box box3(op_map, false);
+      REQUIRE(box != box3);
+    }
+  }
+  GIVEN("MultiplexedTensoredU2Box") {
+    ctrl_tensored_op_map_t op_map;
+    op_map.insert({{0, 0}, {get_op_ptr(OpType::X), get_op_ptr(OpType::X)}});
+    MultiplexedTensoredU2Box box(op_map);
+    WHEN("all arguments are equal") { REQUIRE(box == box); }
+    WHEN("different ids but other args are equal") {
+      ctrl_tensored_op_map_t op_map2;
+      op_map2.insert({{0, 0}, {get_op_ptr(OpType::X), get_op_ptr(OpType::X)}});
+      MultiplexedTensoredU2Box box2(op_map2);
+      REQUIRE(box == box2);
+    }
+    WHEN("arguments are different") {
+      op_map.insert({{0, 1}, {get_op_ptr(OpType::H), get_op_ptr(OpType::X)}});
+      MultiplexedTensoredU2Box box3(op_map);
+      REQUIRE(box != box3);
+    }
+  }
+  GIVEN("StatePreparationBox") {
+    Eigen::Vector2cd diag(0, 1);
+    StatePreparationBox box(diag);
+    WHEN("all arguments are equal") { REQUIRE(box == box); }
+    WHEN("different ids but other args are equal") {
+      StatePreparationBox box2(diag);
+      REQUIRE(box == box2);
+    }
+    WHEN("arguments are different") {
+      StatePreparationBox box3(diag, false, true);
+      REQUIRE(box != box3);
+    }
+  }
+  GIVEN("ToffoliBox") {
+    state_perm_t perm;
+    perm[{0, 1}] = {1, 0};
+    perm[{1, 0}] = {0, 1};
+    ToffoliBox box(perm);
+    WHEN("all arguments are equal") { REQUIRE(box == box); }
+    WHEN("different ids but other args are equal") {
+      ToffoliBox box2(perm);
+      REQUIRE(box == box2);
+    }
+    WHEN("permutations are equivalent") {
+      state_perm_t perm2;
+      perm2[{0, 1}] = {1, 0};
+      perm2[{1, 0}] = {0, 1};
+      perm2[{1, 1}] = {1, 1};
+      ToffoliBox box2(perm2);
+      REQUIRE(box == box2);
+    }
+    WHEN("permutations are not equivalent") {
+      state_perm_t perm2;
+      perm2[{0, 1}] = {1, 0};
+      perm2[{1, 0}] = {0, 1};
+      perm2[{1, 1}] = {0, 0};
+      perm2[{0, 0}] = {1, 1};
+      ToffoliBox box2(perm2);
+      REQUIRE(box != box2);
+    }
+    WHEN("permutations are not equivalent case 2") {
+      state_perm_t perm2;
+      perm2[{1, 1}] = {0, 0};
+      perm2[{0, 0}] = {1, 1};
+      ToffoliBox box2(perm2);
+      REQUIRE(box != box2);
+    }
+    WHEN("arguments are different") {
+      ToffoliBox box2(perm, ToffoliBoxSynthStrat::Cycle);
+      REQUIRE(box != box2);
+    }
+  }
+  GIVEN("PauliExpBox") {
+    PauliExpBox pbox({Pauli::X, Pauli::Y, Pauli::Z}, 0.8);
+    WHEN("both arguments are equal") { REQUIRE(pbox == pbox); }
+    WHEN("different ids but same arguments") {
+      REQUIRE(pbox == PauliExpBox({Pauli::X, Pauli::Y, Pauli::Z}, 0.8));
+    }
+    WHEN("different ids, equivalent angle") {
+      REQUIRE(pbox == PauliExpBox({Pauli::X, Pauli::Y, Pauli::Z}, 4.8));
+    }
+    WHEN("different arguments") {
+      REQUIRE(pbox != PauliExpBox({Pauli::X, Pauli::Y, Pauli::Z}, 0.9));
+    }
+  }
+  GIVEN("PauliExpPairBox") {
+    PauliExpPairBox pbox({Pauli::X}, 1.0, {Pauli::I}, 0.0);
+    WHEN("both arguments are equal") { REQUIRE(pbox == pbox); }
+    WHEN("different ids but same arguments") {
+      REQUIRE(pbox == PauliExpPairBox({Pauli::X}, 1.0, {Pauli::I}, 0.0));
+    }
+    WHEN("different ids, equivalent angle") {
+      REQUIRE(pbox == PauliExpPairBox({Pauli::X}, 1.0, {Pauli::I}, 4.0));
+    }
+    WHEN("different arguments") {
+      REQUIRE(pbox != PauliExpPairBox({Pauli::X}, -1.0, {Pauli::I}, 0.0));
+    }
+  }
+  GIVEN("PauliExpCommutingSetBox") {
+    PauliExpCommutingSetBox pbox(
+        {{{Pauli::X}, 1.0}, {{Pauli::I}, 1.2}, {{Pauli::I}, -0.5}});
+    WHEN("both arguments are equal") { REQUIRE(pbox == pbox); }
+    WHEN("different ids but same arguments") {
+      REQUIRE(
+          pbox ==
+          PauliExpCommutingSetBox(
+              {{{Pauli::X}, 1.0}, {{Pauli::I}, 1.2}, {{Pauli::I}, -0.5}}));
+    }
+    WHEN("different ids, equivalent angles") {
+      REQUIRE(
+          pbox ==
+          PauliExpCommutingSetBox(
+              {{{Pauli::X}, -3.0}, {{Pauli::I}, 5.2}, {{Pauli::I}, -0.5}}));
+    }
+    WHEN("different arguments") {
+      REQUIRE(
+          pbox !=
+          PauliExpCommutingSetBox(
+              {{{Pauli::Y}, 1.0}, {{Pauli::I}, 1.2}, {{Pauli::I}, -0.5}}));
+    }
+  }
+  GIVEN("ConjugationBox") {
+    Circuit compute(2);
+    compute.add_op<unsigned>(OpType::CRx, 0.5, {1, 0});
+    Op_ptr compute_op = std::make_shared<CircBox>(CircBox(compute));
+    Circuit action(2);
+    action.add_op<unsigned>(OpType::H, {0});
+    Op_ptr action_op = std::make_shared<CircBox>(CircBox(action));
+    ConjugationBox box(compute_op, action_op);
+    WHEN("all arguments are equal") { REQUIRE(box == box); }
+    WHEN("different ids but equivalent ops") {
+      REQUIRE(box == ConjugationBox(compute_op, action_op));
+    }
+    WHEN("different uncompute") {
+      Circuit uncompute(2);
+      uncompute.add_op<unsigned>(OpType::CZ, {0, 1});
+      Op_ptr uncompute_op = std::make_shared<CircBox>(CircBox(uncompute));
+      REQUIRE(box != ConjugationBox(compute_op, action_op, uncompute_op));
+    }
+    WHEN("equivalent uncompute") {
+      REQUIRE(
+          box == ConjugationBox(compute_op, action_op, compute_op->dagger()));
+      REQUIRE(
+          ConjugationBox(compute_op, action_op, compute_op->dagger()) ==
+          ConjugationBox(compute_op, action_op));
+    }
+    WHEN("different args") {
+      Circuit compute_2(2);
+      compute_2.add_op<unsigned>(OpType::CZ, {0, 1});
+      Op_ptr compute_2_op = std::make_shared<CircBox>(CircBox(compute_2));
+      REQUIRE(box != ConjugationBox(compute_2_op, action_op));
+    }
   }
 }
 
