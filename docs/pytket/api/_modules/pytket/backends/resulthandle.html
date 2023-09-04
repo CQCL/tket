@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pytket.backends.resulthandle &#8212; pytket 1.18.0 documentation</title>
+    <title>pytket.backends.resulthandle &#8212; pytket 1.19.0 documentation</title>
   
   
   
@@ -157,6 +157,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../display.html">pytket.circuit.display</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../../unit_id.html">pytket.unit_id</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../pauli.html">pytket.pauli</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../passes.html">pytket.passes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../predicates.html">pytket.predicates</a></li>
@@ -344,7 +345,7 @@ document.write(`
 <span class="kn">from</span> <span class="nn">collections.abc</span> <span class="kn">import</span> <span class="n">Sequence</span>
 
 <span class="c1"># mypy doesn&#39;t think you can pass the tuple to Union</span>
-<span class="n">_BasicHashType</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">complex</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">]</span>
+<span class="n">BasicHashType</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">complex</span><span class="p">,</span> <span class="nb">str</span><span class="p">,</span> <span class="nb">bool</span><span class="p">,</span> <span class="nb">bytes</span><span class="p">]</span>
 <span class="n">_ResultIdTuple</span> <span class="o">=</span> <span class="n">Tuple</span><span class="p">[</span>
     <span class="n">Union</span><span class="p">[</span><span class="n">Type</span><span class="p">[</span><span class="nb">int</span><span class="p">],</span> <span class="n">Type</span><span class="p">[</span><span class="nb">float</span><span class="p">],</span> <span class="n">Type</span><span class="p">[</span><span class="nb">complex</span><span class="p">],</span> <span class="n">Type</span><span class="p">[</span><span class="nb">str</span><span class="p">],</span> <span class="n">Type</span><span class="p">[</span><span class="nb">bool</span><span class="p">],</span> <span class="n">Type</span><span class="p">[</span><span class="nb">bytes</span><span class="p">]],</span>
     <span class="o">...</span><span class="p">,</span>
@@ -362,7 +363,7 @@ document.write(`
 <span class="sd">    to determine this.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">_BasicHashType</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">BasicHashType</span><span class="p">):</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_identifiers</span> <span class="o">=</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">args</span><span class="p">)</span>
 
 <div class="viewcode-block" id="ResultHandle.from_str"><a class="viewcode-back" href="../../../backends.html#pytket.backends.resulthandle.ResultHandle.from_str">[docs]</a>    <span class="nd">@classmethod</span>
@@ -407,16 +408,16 @@ document.write(`
         <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_identifiers</span><span class="p">)</span>
 
     <span class="nd">@overload</span>
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">_BasicHashType</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasicHashType</span><span class="p">:</span>
         <span class="o">...</span>
 
     <span class="nd">@overload</span>
-    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">slice</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">_BasicHashType</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
+    <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="nb">slice</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">BasicHashType</span><span class="p">,</span> <span class="o">...</span><span class="p">]:</span>
         <span class="o">...</span>
 
     <span class="k">def</span> <span class="fm">__getitem__</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">key</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">slice</span><span class="p">]</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">_BasicHashType</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">_BasicHashType</span><span class="p">,</span> <span class="o">...</span><span class="p">]]:</span>
+    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Union</span><span class="p">[</span><span class="n">BasicHashType</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">[</span><span class="n">BasicHashType</span><span class="p">,</span> <span class="o">...</span><span class="p">]]:</span>
         <span class="c1"># weird logic required to make mypy happy, can&#39;t just</span>
         <span class="c1"># return self._identifiers[key]</span>
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">key</span><span class="p">,</span> <span class="nb">slice</span><span class="p">):</span>

@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pytket.circuit.logic_exp &#8212; pytket 1.18.0 documentation</title>
+    <title>pytket.circuit.logic_exp &#8212; pytket 1.19.0 documentation</title>
   
   
   
@@ -157,6 +157,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../display.html">pytket.circuit.display</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../../unit_id.html">pytket.unit_id</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../pauli.html">pytket.pauli</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../passes.html">pytket.passes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../predicates.html">pytket.predicates</a></li>
@@ -485,15 +486,19 @@ document.write(`
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="n">outset</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="n">Variable</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
 
-        <span class="n">var_type</span> <span class="o">=</span> <span class="n">Bit</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">BitLogicExp</span><span class="p">)</span> <span class="k">else</span> <span class="n">BitRegister</span>
         <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">:</span>
-            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">var_type</span><span class="p">):</span>
-                <span class="n">outset</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
-            <span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">LogicExp</span><span class="p">):</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">LogicExp</span><span class="p">):</span>
                 <span class="n">outset</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">all_inputs</span><span class="p">())</span>
+                <span class="k">continue</span>
+            <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">BitLogicExp</span><span class="p">):</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">Bit</span><span class="p">):</span>
+                    <span class="n">outset</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+            <span class="k">else</span><span class="p">:</span>
+                <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">BitRegister</span><span class="p">):</span>
+                    <span class="n">outset</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">outset</span></div>
 
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">ArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">LogicExp</span><span class="p">):</span>
             <span class="k">return</span> <span class="kc">False</span>
         <span class="k">return</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">op</span><span class="p">)</span> <span class="ow">and</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">args</span><span class="p">)</span>
@@ -501,7 +506,7 @@ document.write(`
 <div class="viewcode-block" id="LogicExp.to_dict"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.LogicExp.to_dict">[docs]</a>    <span class="k">def</span> <span class="nf">to_dict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Output JSON serializable nested dictionary.&quot;&quot;&quot;</span>
         <span class="n">out</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="s2">&quot;op&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">op</span><span class="p">)}</span>
-        <span class="n">args_ser</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">],</span> <span class="n">Constant</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]]</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="n">args_ser</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="n">Dict</span><span class="p">,</span> <span class="n">Constant</span><span class="p">,</span> <span class="n">List</span><span class="p">[</span><span class="n">Union</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">int</span><span class="p">]]]]</span> <span class="o">=</span> <span class="p">[]</span>
 
         <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">LogicExp</span><span class="p">):</span>
@@ -521,7 +526,9 @@ document.write(`
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Load from JSON serializable nested dictionary.&quot;&quot;&quot;</span>
         <span class="n">opset_name</span><span class="p">,</span> <span class="n">op_name</span> <span class="o">=</span> <span class="n">dic</span><span class="p">[</span><span class="s2">&quot;op&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">split</span><span class="p">(</span><span class="s2">&quot;.&quot;</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">opset</span> <span class="o">=</span> <span class="n">BitWiseOp</span> <span class="k">if</span> <span class="n">opset_name</span> <span class="o">==</span> <span class="s2">&quot;BitWiseOp&quot;</span> <span class="k">else</span> <span class="n">RegWiseOp</span>
-        <span class="n">op</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="n">o</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">opset</span> <span class="k">if</span> <span class="n">o</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">op_name</span><span class="p">)</span>
+        <span class="n">op</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span>
+            <span class="n">Union</span><span class="p">[</span><span class="n">BitWiseOp</span><span class="p">,</span> <span class="n">RegWiseOp</span><span class="p">],</span> <span class="nb">next</span><span class="p">(</span><span class="n">o</span> <span class="k">for</span> <span class="n">o</span> <span class="ow">in</span> <span class="n">opset</span> <span class="k">if</span> <span class="n">o</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="n">op_name</span><span class="p">)</span>
+        <span class="p">)</span>
         <span class="n">args</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ArgType</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
         <span class="k">for</span> <span class="n">arg_ser</span> <span class="ow">in</span> <span class="n">dic</span><span class="p">[</span><span class="s2">&quot;args&quot;</span><span class="p">]:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg_ser</span><span class="p">,</span> <span class="n">Constant</span><span class="p">):</span>

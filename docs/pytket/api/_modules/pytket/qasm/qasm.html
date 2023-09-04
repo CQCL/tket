@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pytket.qasm.qasm &#8212; pytket 1.18.0 documentation</title>
+    <title>pytket.qasm.qasm &#8212; pytket 1.19.0 documentation</title>
   
   
   
@@ -157,6 +157,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../display.html">pytket.circuit.display</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../../unit_id.html">pytket.unit_id</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../pauli.html">pytket.pauli</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../passes.html">pytket.passes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../predicates.html">pytket.predicates</a></li>
@@ -368,8 +369,20 @@ document.write(`
 <span class="kn">from</span> <span class="nn">sympy</span> <span class="kn">import</span> <span class="n">Symbol</span><span class="p">,</span> <span class="n">pi</span>  <span class="c1"># type: ignore</span>
 <span class="kn">from</span> <span class="nn">lark</span> <span class="kn">import</span> <span class="n">Discard</span><span class="p">,</span> <span class="n">Lark</span><span class="p">,</span> <span class="n">Token</span><span class="p">,</span> <span class="n">Transformer</span><span class="p">,</span> <span class="n">Tree</span>
 
-<span class="kn">from</span> <span class="nn">pytket.circuit</span> <span class="kn">import</span> <span class="n">_TEMP_BIT_NAME</span>  <span class="c1"># type: ignore</span>
-<span class="kn">from</span> <span class="nn">pytket.circuit</span> <span class="kn">import</span> <span class="p">(</span>  <span class="c1"># type: ignore</span>
+<span class="kn">from</span> <span class="nn">pytket.circuit</span> <span class="kn">import</span> <span class="p">(</span>
+    <span class="n">ClassicalExpBox</span><span class="p">,</span>
+    <span class="n">Command</span><span class="p">,</span>
+    <span class="n">Conditional</span><span class="p">,</span>
+    <span class="n">RangePredicateOp</span><span class="p">,</span>
+    <span class="n">SetBitsOp</span><span class="p">,</span>
+    <span class="n">CopyBitsOp</span><span class="p">,</span>
+    <span class="n">MultiBitOp</span><span class="p">,</span>
+    <span class="n">WASMOp</span><span class="p">,</span>
+    <span class="n">CustomGate</span><span class="p">,</span>
+    <span class="n">MetaOp</span><span class="p">,</span>
+<span class="p">)</span>
+<span class="kn">from</span> <span class="nn">pytket.unit_id</span> <span class="kn">import</span> <span class="n">_TEMP_BIT_NAME</span>
+<span class="kn">from</span> <span class="nn">pytket.circuit</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Bit</span><span class="p">,</span>
     <span class="n">BitRegister</span><span class="p">,</span>
     <span class="n">Circuit</span><span class="p">,</span>
@@ -391,7 +404,7 @@ document.write(`
     <span class="n">RegWiseOp</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">pytket.qasm.grammar</span> <span class="kn">import</span> <span class="n">grammar</span>
-<span class="kn">from</span> <span class="nn">pytket.passes</span> <span class="kn">import</span> <span class="n">auto_rebase_pass</span><span class="p">,</span> <span class="n">RemoveRedundancies</span>  <span class="c1"># type: ignore</span>
+<span class="kn">from</span> <span class="nn">pytket.passes</span> <span class="kn">import</span> <span class="n">auto_rebase_pass</span><span class="p">,</span> <span class="n">RemoveRedundancies</span>
 <span class="kn">from</span> <span class="nn">pytket.wasm</span> <span class="kn">import</span> <span class="n">WasmFileHandler</span>
 
 
@@ -639,7 +652,7 @@ document.write(`
         <span class="k">else</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_get_reg</span><span class="p">(</span><span class="n">arg</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">unroll_all_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Arg</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">UnitID</span><span class="p">]]:</span>
+    <span class="k">def</span> <span class="nf">unroll_all_args</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Iterable</span><span class="p">[</span><span class="n">Arg</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Iterator</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Any</span><span class="p">]]:</span>
         <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="nb">str</span><span class="p">):</span>
                 <span class="n">size</span> <span class="o">=</span> <span class="p">(</span>
@@ -848,7 +861,7 @@ document.write(`
                     <span class="k">raise</span> <span class="n">QASMParseError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not pass argument </span><span class="si">{</span><span class="n">tok</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">raise</span> <span class="n">QASMParseError</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Could not pass argument </span><span class="si">{</span><span class="n">tok</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">return</span> <span class="n">args</span><span class="p">,</span> <span class="n">line</span>  <span class="c1"># type: ignore</span>
+        <span class="k">return</span> <span class="n">args</span><span class="p">,</span> <span class="n">line</span>
 
     <span class="n">par_add</span> <span class="o">=</span> <span class="n">_bin_par_exp</span><span class="p">(</span><span class="s2">&quot;+&quot;</span><span class="p">)</span>
     <span class="n">par_sub</span> <span class="o">=</span> <span class="n">_bin_par_exp</span><span class="p">(</span><span class="s2">&quot;-&quot;</span><span class="p">)</span>
@@ -883,7 +896,7 @@ document.write(`
         <span class="k">if</span> <span class="n">tree</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <span class="s2">&quot;IARG&quot;</span><span class="p">:</span>
             <span class="n">arg</span> <span class="o">=</span> <span class="n">Bit</span><span class="p">(</span><span class="o">*</span><span class="n">_extract_reg</span><span class="p">(</span><span class="n">tree</span><span class="p">[</span><span class="mi">1</span><span class="p">]))</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">arg</span> <span class="o">=</span> <span class="n">BitRegister</span><span class="p">(</span><span class="n">tree</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">c_registers</span><span class="p">[</span><span class="n">tree</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">])</span>
+            <span class="n">arg</span> <span class="o">=</span> <span class="n">BitRegister</span><span class="p">(</span><span class="n">tree</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">c_registers</span><span class="p">[</span><span class="n">tree</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">value</span><span class="p">])</span>  <span class="c1"># type: ignore</span>
 
         <span class="n">op_enum</span> <span class="o">=</span> <span class="n">BitWiseOp</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="n">Bit</span><span class="p">)</span> <span class="k">else</span> <span class="n">RegWiseOp</span>
         <span class="n">comp</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span>
@@ -906,11 +919,11 @@ document.write(`
         <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">Bit</span><span class="p">):</span>
             <span class="k">assert</span> <span class="n">condition</span><span class="o">.</span><span class="n">op</span> <span class="ow">in</span> <span class="p">(</span><span class="n">BitWiseOp</span><span class="o">.</span><span class="n">EQ</span><span class="p">,</span> <span class="n">BitWiseOp</span><span class="o">.</span><span class="n">NEQ</span><span class="p">)</span>
             <span class="k">assert</span> <span class="n">val</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span>
-            <span class="n">condition_bits</span> <span class="o">=</span> <span class="p">[</span><span class="n">cast</span><span class="p">(</span><span class="n">Bit</span><span class="p">,</span> <span class="n">var</span><span class="p">)</span><span class="o">.</span><span class="n">to_list</span><span class="p">()]</span>
+            <span class="n">condition_bits</span> <span class="o">=</span> <span class="p">[</span><span class="n">var</span><span class="o">.</span><span class="n">to_list</span><span class="p">()]</span>
 
         <span class="k">else</span><span class="p">:</span>
             <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">var</span><span class="p">,</span> <span class="n">BitRegister</span><span class="p">)</span>
-            <span class="n">reg_bits</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unroll_all_args</span><span class="p">([</span><span class="n">cast</span><span class="p">(</span><span class="n">BitRegister</span><span class="p">,</span> <span class="n">var</span><span class="p">)</span><span class="o">.</span><span class="n">name</span><span class="p">]))</span>
+            <span class="n">reg_bits</span> <span class="o">=</span> <span class="nb">next</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">unroll_all_args</span><span class="p">([</span><span class="n">var</span><span class="o">.</span><span class="n">name</span><span class="p">]))</span>
             <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">condition</span><span class="p">,</span> <span class="n">RegEq</span><span class="p">):</span>
                 <span class="c1"># special case for base qasm</span>
                 <span class="n">condition_bits</span> <span class="o">=</span> <span class="n">reg_bits</span>
@@ -1180,7 +1193,7 @@ document.write(`
             <span class="p">)</span>
         <span class="k">if</span> <span class="ow">not</span> <span class="n">existing_op</span><span class="p">:</span>
             <span class="n">gate_circ</span><span class="o">.</span><span class="n">symbol_substitution</span><span class="p">(</span><span class="n">symbol_map</span><span class="p">)</span>
-            <span class="n">gate_circ</span><span class="o">.</span><span class="n">rename_units</span><span class="p">(</span><span class="n">rename_map</span><span class="p">)</span>
+            <span class="n">gate_circ</span><span class="o">.</span><span class="n">rename_units</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="n">Dict</span><span class="p">[</span><span class="n">UnitID</span><span class="p">,</span> <span class="n">UnitID</span><span class="p">],</span> <span class="n">rename_map</span><span class="p">))</span>
 
             <span class="bp">self</span><span class="o">.</span><span class="n">gate_dict</span><span class="p">[</span><span class="n">gate</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
                 <span class="s2">&quot;definition&quot;</span><span class="p">:</span> <span class="n">gate_circ</span><span class="o">.</span><span class="n">to_dict</span><span class="p">(),</span>
@@ -1249,7 +1262,7 @@ document.write(`
     <span class="n">cast</span><span class="p">(</span><span class="n">CircuitTransformer</span><span class="p">,</span> <span class="n">parser</span><span class="o">.</span><span class="n">options</span><span class="o">.</span><span class="n">transformer</span><span class="p">)</span><span class="o">.</span><span class="n">_reset_context</span><span class="p">(</span>
         <span class="n">reset_wasm</span><span class="o">=</span><span class="kc">False</span>
     <span class="p">)</span>
-    <span class="k">return</span> <span class="n">Circuit</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">qasm_str</span><span class="p">))</span></div>
+    <span class="k">return</span> <span class="n">Circuit</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">qasm_str</span><span class="p">))</span>  <span class="c1"># type: ignore[arg-type]</span></div>
 
 
 <div class="viewcode-block" id="circuit_from_qasm_io"><a class="viewcode-back" href="../../../qasm.html#pytket.qasm.circuit_from_qasm_io">[docs]</a><span class="k">def</span> <span class="nf">circuit_from_qasm_io</span><span class="p">(</span><span class="n">stream_in</span><span class="p">:</span> <span class="n">TextIO</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Circuit</span><span class="p">:</span>
@@ -1315,9 +1328,7 @@ document.write(`
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">TypeReg</span><span class="p">]:</span>
     <span class="k">if</span> <span class="nb">any</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">unit</span><span class="o">.</span><span class="n">index</span><span class="p">)</span> <span class="o">!=</span> <span class="mi">1</span> <span class="k">for</span> <span class="n">unit</span> <span class="ow">in</span> <span class="n">units</span><span class="p">):</span>
         <span class="k">raise</span> <span class="ne">NotImplementedError</span><span class="p">(</span><span class="s2">&quot;OPENQASM registers must use a single index&quot;</span><span class="p">)</span>
-    <span class="n">maxunits</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span>
-        <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">groupby</span><span class="p">(</span><span class="n">units</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">un</span><span class="p">:</span> <span class="n">un</span><span class="o">.</span><span class="n">reg_name</span><span class="p">)</span>  <span class="c1"># type:ignore</span>
-    <span class="p">)</span>
+    <span class="n">maxunits</span> <span class="o">=</span> <span class="nb">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="nb">max</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">groupby</span><span class="p">(</span><span class="n">units</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">un</span><span class="p">:</span> <span class="n">un</span><span class="o">.</span><span class="n">reg_name</span><span class="p">))</span>
     <span class="k">return</span> <span class="p">{</span>
         <span class="n">maxunit</span><span class="o">.</span><span class="n">reg_name</span><span class="p">:</span> <span class="n">reg_type</span><span class="p">(</span><span class="n">maxunit</span><span class="o">.</span><span class="n">reg_name</span><span class="p">,</span> <span class="n">maxunit</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">maxunit</span> <span class="ow">in</span> <span class="n">maxunits</span>
@@ -1349,20 +1360,22 @@ document.write(`
         <span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="n">op</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">op</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">-</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">op</span><span class="o">.</span><span class="n">params</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">]</span>
     <span class="k">elif</span> <span class="n">optype</span> <span class="o">==</span> <span class="n">OpType</span><span class="o">.</span><span class="n">CustomGate</span><span class="p">:</span>
         <span class="n">params</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">params</span>
-    <span class="k">return</span> <span class="p">(</span><span class="n">optype</span><span class="p">,</span> <span class="n">params</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">optype</span><span class="p">,</span> <span class="n">params</span>  <span class="c1"># type: ignore</span>
 
 
 <span class="k">def</span> <span class="nf">_get_gate_circuit</span><span class="p">(</span>
     <span class="n">optype</span><span class="p">:</span> <span class="n">OpType</span><span class="p">,</span> <span class="n">qubits</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Qubit</span><span class="p">],</span> <span class="n">symbols</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Symbol</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
 <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Circuit</span><span class="p">:</span>
     <span class="c1"># create Circuit for constructing qasm from</span>
+    <span class="n">unitids</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="n">List</span><span class="p">[</span><span class="n">UnitID</span><span class="p">],</span> <span class="n">qubits</span><span class="p">)</span>
     <span class="n">gate_circ</span> <span class="o">=</span> <span class="n">Circuit</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">qubits</span><span class="p">:</span>
         <span class="n">gate_circ</span><span class="o">.</span><span class="n">add_qubit</span><span class="p">(</span><span class="n">q</span><span class="p">)</span>
     <span class="k">if</span> <span class="n">symbols</span><span class="p">:</span>
-        <span class="n">gate_circ</span><span class="o">.</span><span class="n">add_gate</span><span class="p">(</span><span class="n">optype</span><span class="p">,</span> <span class="n">symbols</span><span class="p">,</span> <span class="n">qubits</span><span class="p">)</span>
+        <span class="n">exprs</span> <span class="o">=</span> <span class="p">[</span><span class="n">symbol</span><span class="o">.</span><span class="n">as_expr</span><span class="p">()</span> <span class="k">for</span> <span class="n">symbol</span> <span class="ow">in</span> <span class="n">symbols</span><span class="p">]</span>  <span class="c1"># type: ignore</span>
+        <span class="n">gate_circ</span><span class="o">.</span><span class="n">add_gate</span><span class="p">(</span><span class="n">optype</span><span class="p">,</span> <span class="n">exprs</span><span class="p">,</span> <span class="n">unitids</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
-        <span class="n">gate_circ</span><span class="o">.</span><span class="n">add_gate</span><span class="p">(</span><span class="n">optype</span><span class="p">,</span> <span class="n">qubits</span><span class="p">)</span>
+        <span class="n">gate_circ</span><span class="o">.</span><span class="n">add_gate</span><span class="p">(</span><span class="n">optype</span><span class="p">,</span> <span class="n">unitids</span><span class="p">)</span>
     <span class="n">auto_rebase_pass</span><span class="p">({</span><span class="n">OpType</span><span class="o">.</span><span class="n">CX</span><span class="p">,</span> <span class="n">OpType</span><span class="o">.</span><span class="n">U3</span><span class="p">})</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">gate_circ</span><span class="p">)</span>
     <span class="n">RemoveRedundancies</span><span class="p">()</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">gate_circ</span><span class="p">)</span>
 
@@ -1441,12 +1454,12 @@ document.write(`
         <span class="n">include_gate_defs</span><span class="o">.</span><span class="n">update</span><span class="p">(</span><span class="n">PARAM_EXTRA_COMMANDS</span><span class="o">.</span><span class="n">keys</span><span class="p">())</span>
         <span class="n">buffer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="s1">&#39;OPENQASM 2.0;</span><span class="se">\n</span><span class="s1">include &quot;</span><span class="si">{}</span><span class="s1">.inc&quot;;</span><span class="se">\n\n</span><span class="s1">&#39;</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">header</span><span class="p">))</span>
 
-        <span class="n">qregs</span> <span class="o">=</span> <span class="n">_retrieve_registers</span><span class="p">(</span><span class="n">circ</span><span class="o">.</span><span class="n">qubits</span><span class="p">,</span> <span class="n">QubitRegister</span><span class="p">)</span>
-        <span class="n">cregs</span> <span class="o">=</span> <span class="n">_retrieve_registers</span><span class="p">(</span><span class="n">circ</span><span class="o">.</span><span class="n">bits</span><span class="p">,</span> <span class="n">BitRegister</span><span class="p">)</span>
+        <span class="n">qregs</span> <span class="o">=</span> <span class="n">_retrieve_registers</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="nb">list</span><span class="p">[</span><span class="n">UnitID</span><span class="p">],</span> <span class="n">circ</span><span class="o">.</span><span class="n">qubits</span><span class="p">),</span> <span class="n">QubitRegister</span><span class="p">)</span>
+        <span class="n">cregs</span> <span class="o">=</span> <span class="n">_retrieve_registers</span><span class="p">(</span><span class="n">cast</span><span class="p">(</span><span class="nb">list</span><span class="p">[</span><span class="n">UnitID</span><span class="p">],</span> <span class="n">circ</span><span class="o">.</span><span class="n">bits</span><span class="p">),</span> <span class="n">BitRegister</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">qregs</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
             <span class="n">buffer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;qreg </span><span class="si">{</span><span class="n">reg</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">[</span><span class="si">{</span><span class="n">reg</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">];</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">reg</span> <span class="ow">in</span> <span class="n">cregs</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
-            <span class="n">buffer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;creg </span><span class="si">{</span><span class="n">reg</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">[</span><span class="si">{</span><span class="n">reg</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">];</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
+        <span class="k">for</span> <span class="n">bit_reg</span> <span class="ow">in</span> <span class="n">cregs</span><span class="o">.</span><span class="n">values</span><span class="p">():</span>
+            <span class="n">buffer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;creg </span><span class="si">{</span><span class="n">bit_reg</span><span class="o">.</span><span class="n">name</span><span class="si">}</span><span class="s2">[</span><span class="si">{</span><span class="n">bit_reg</span><span class="o">.</span><span class="n">size</span><span class="si">}</span><span class="s2">];</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="k">else</span><span class="p">:</span>
         <span class="c1"># gate definition, no header necessary for file</span>
         <span class="n">cregs</span> <span class="o">=</span> <span class="p">{}</span>
@@ -1455,22 +1468,24 @@ document.write(`
     <span class="n">added_gate_definitions</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
     <span class="n">range_preds</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
     <span class="k">for</span> <span class="n">command</span> <span class="ow">in</span> <span class="n">circ</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">Command</span><span class="p">)</span>
         <span class="n">checked_op</span> <span class="o">=</span> <span class="kc">True</span>
         <span class="n">op</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="n">op</span>
         <span class="n">args</span> <span class="o">=</span> <span class="n">command</span><span class="o">.</span><span class="n">args</span>
         <span class="n">optype</span><span class="p">,</span> <span class="n">params</span> <span class="o">=</span> <span class="n">_get_optype_and_params</span><span class="p">(</span><span class="n">op</span><span class="p">)</span>
         <span class="k">if</span> <span class="n">optype</span> <span class="o">==</span> <span class="n">OpType</span><span class="o">.</span><span class="n">RangePredicate</span><span class="p">:</span>
-            <span class="n">range_preds</span><span class="p">[</span><span class="n">args</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="n">command</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">RangePredicateOp</span><span class="p">)</span>
+            <span class="n">range_preds</span><span class="p">[</span><span class="n">args</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span>
             <span class="c1"># attach predicate to bit,</span>
             <span class="c1"># subsequent conditional will handle it</span>
             <span class="k">continue</span>
         <span class="k">if</span> <span class="n">optype</span> <span class="o">==</span> <span class="n">OpType</span><span class="o">.</span><span class="n">Conditional</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">Conditional</span><span class="p">)</span>
             <span class="n">bits</span> <span class="o">=</span> <span class="n">args</span><span class="p">[:</span> <span class="n">op</span><span class="o">.</span><span class="n">width</span><span class="p">]</span>
             <span class="n">control_bit</span> <span class="o">=</span> <span class="n">bits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
             <span class="k">if</span> <span class="n">control_bit</span> <span class="ow">in</span> <span class="n">range_preds</span><span class="p">:</span>
                 <span class="c1"># write range predicate in condition</span>
-                <span class="n">range_com</span> <span class="o">=</span> <span class="n">range_preds</span><span class="p">[</span><span class="n">control_bit</span><span class="p">]</span>
-                <span class="n">range_op</span> <span class="o">=</span> <span class="n">range_com</span><span class="o">.</span><span class="n">op</span>
+                <span class="n">range_op</span><span class="p">,</span> <span class="n">range_args</span> <span class="o">=</span> <span class="n">range_preds</span><span class="p">[</span><span class="n">control_bit</span><span class="p">]</span>
                 <span class="n">comparator</span><span class="p">,</span> <span class="n">value</span> <span class="o">=</span> <span class="n">_parse_range</span><span class="p">(</span><span class="n">range_op</span><span class="o">.</span><span class="n">lower</span><span class="p">,</span> <span class="n">range_op</span><span class="o">.</span><span class="n">upper</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">op</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">and</span> <span class="n">comparator</span> <span class="o">==</span> <span class="s2">&quot;==&quot;</span><span class="p">:</span>
                     <span class="n">comparator</span> <span class="o">=</span> <span class="s2">&quot;!=&quot;</span>
@@ -1478,8 +1493,11 @@ document.write(`
                     <span class="k">raise</span> <span class="n">QASMUnsupportedError</span><span class="p">(</span>
                         <span class="s2">&quot;OpenQASM conditions must be on a register&#39;s fixed value.&quot;</span>
                     <span class="p">)</span>
-                <span class="n">bits</span> <span class="o">=</span> <span class="n">range_com</span><span class="o">.</span><span class="n">args</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
-                <span class="n">variable</span> <span class="o">=</span> <span class="n">range_com</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reg_name</span>
+                <span class="n">bits</span> <span class="o">=</span> <span class="n">range_args</span><span class="p">[:</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+                <span class="n">variable</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span>
+                    <span class="nb">str</span><span class="p">,</span>
+                    <span class="n">UnitID</span><span class="p">,</span>
+                <span class="p">]</span> <span class="o">=</span> <span class="n">range_args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reg_name</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">comparator</span> <span class="o">=</span> <span class="s2">&quot;==&quot;</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">value</span>
@@ -1487,17 +1505,18 @@ document.write(`
                     <span class="n">variable</span> <span class="o">=</span> <span class="n">control_bit</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">variable</span> <span class="o">=</span> <span class="n">control_bit</span><span class="o">.</span><span class="n">reg_name</span>
-                    <span class="k">if</span> <span class="n">hqs_header</span><span class="p">(</span><span class="n">header</span><span class="p">)</span> <span class="ow">and</span> <span class="n">bits</span> <span class="o">!=</span> <span class="nb">list</span><span class="p">(</span><span class="n">cregs</span><span class="p">[</span><span class="n">variable</span><span class="p">]):</span>
+                    <span class="k">if</span> <span class="n">hqs_header</span><span class="p">(</span><span class="n">header</span><span class="p">)</span> <span class="ow">and</span> <span class="n">bits</span> <span class="o">!=</span> <span class="n">cregs</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">to_list</span><span class="p">():</span>
                         <span class="k">raise</span> <span class="n">QASMUnsupportedError</span><span class="p">(</span>
                             <span class="s2">&quot;hqslib1 QASM conditions must be an entire classical &quot;</span>
                             <span class="s2">&quot;register or a single bit&quot;</span>
                         <span class="p">)</span>
             <span class="k">if</span> <span class="ow">not</span> <span class="n">hqs_header</span><span class="p">(</span><span class="n">header</span><span class="p">):</span>
+                <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">variable</span><span class="p">,</span> <span class="nb">str</span><span class="p">)</span>
                 <span class="k">if</span> <span class="n">op</span><span class="o">.</span><span class="n">width</span> <span class="o">!=</span> <span class="n">cregs</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">size</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="n">QASMUnsupportedError</span><span class="p">(</span>
                         <span class="s2">&quot;OpenQASM conditions must be an entire classical register&quot;</span>
                     <span class="p">)</span>
-                <span class="k">if</span> <span class="n">bits</span> <span class="o">!=</span> <span class="nb">list</span><span class="p">(</span><span class="n">cregs</span><span class="p">[</span><span class="n">variable</span><span class="p">]):</span>
+                <span class="k">if</span> <span class="n">bits</span> <span class="o">!=</span> <span class="n">cregs</span><span class="p">[</span><span class="n">variable</span><span class="p">]</span><span class="o">.</span><span class="n">to_list</span><span class="p">():</span>
                     <span class="k">raise</span> <span class="n">QASMUnsupportedError</span><span class="p">(</span>
                         <span class="s2">&quot;OpenQASM conditions must be a single classical register&quot;</span>
                     <span class="p">)</span>
@@ -1510,11 +1529,12 @@ document.write(`
             <span class="c1"># global phase is ignored in QASM</span>
             <span class="k">continue</span>
         <span class="k">if</span> <span class="n">optype</span> <span class="o">==</span> <span class="n">OpType</span><span class="o">.</span><span class="n">SetBits</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">SetBitsOp</span><span class="p">)</span>
             <span class="n">creg_name</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reg_name</span>
-            <span class="n">bits</span><span class="p">,</span> <span class="n">vals</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">op</span><span class="o">.</span><span class="n">values</span><span class="p">)))</span>
+            <span class="n">bits</span><span class="p">,</span> <span class="n">vals</span> <span class="o">=</span> <span class="nb">zip</span><span class="p">(</span><span class="o">*</span><span class="nb">sorted</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">args</span><span class="p">,</span> <span class="n">op</span><span class="o">.</span><span class="n">values</span><span class="p">)))</span>  <span class="c1"># type: ignore</span>
 
             <span class="c1"># check if whole register can be set at once</span>
-            <span class="k">if</span> <span class="n">bits</span> <span class="o">==</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">cregs</span><span class="p">[</span><span class="n">creg_name</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="n">bits</span> <span class="o">==</span> <span class="nb">tuple</span><span class="p">(</span><span class="n">cregs</span><span class="p">[</span><span class="n">creg_name</span><span class="p">]</span><span class="o">.</span><span class="n">to_list</span><span class="p">()):</span>
                 <span class="n">value</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">map</span><span class="p">(</span><span class="nb">str</span><span class="p">,</span> <span class="nb">map</span><span class="p">(</span><span class="nb">int</span><span class="p">,</span> <span class="n">vals</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">]))),</span> <span class="mi">2</span><span class="p">)</span>
                 <span class="n">buffer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">creg_name</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">value</span><span class="si">}</span><span class="s2">;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
@@ -1522,26 +1542,29 @@ document.write(`
                     <span class="n">buffer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">bit</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="nb">int</span><span class="p">(</span><span class="n">value</span><span class="p">)</span><span class="si">}</span><span class="s2">;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">continue</span>
         <span class="k">if</span> <span class="n">optype</span> <span class="o">==</span> <span class="n">OpType</span><span class="o">.</span><span class="n">CopyBits</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">CopyBitsOp</span><span class="p">)</span>
             <span class="n">l_args</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">op</span><span class="o">.</span><span class="n">n_inputs</span> <span class="p">:]</span>
             <span class="n">r_args</span> <span class="o">=</span> <span class="n">args</span><span class="p">[:</span> <span class="n">op</span><span class="o">.</span><span class="n">n_inputs</span><span class="p">]</span>
             <span class="n">l_name</span> <span class="o">=</span> <span class="n">l_args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reg_name</span>
             <span class="n">r_name</span> <span class="o">=</span> <span class="n">r_args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reg_name</span>
 
             <span class="c1"># check if whole register can be set at once</span>
-            <span class="k">if</span> <span class="n">l_args</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="n">cregs</span><span class="p">[</span><span class="n">l_name</span><span class="p">])</span> <span class="ow">and</span> <span class="n">r_args</span> <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="n">cregs</span><span class="p">[</span><span class="n">r_name</span><span class="p">]):</span>
+            <span class="k">if</span> <span class="n">l_args</span> <span class="o">==</span> <span class="n">cregs</span><span class="p">[</span><span class="n">l_name</span><span class="p">]</span><span class="o">.</span><span class="n">to_list</span><span class="p">()</span> <span class="ow">and</span> <span class="n">r_args</span> <span class="o">==</span> <span class="n">cregs</span><span class="p">[</span><span class="n">r_name</span><span class="p">]</span><span class="o">.</span><span class="n">to_list</span><span class="p">():</span>
                 <span class="n">buffer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">l_name</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">r_name</span><span class="si">}</span><span class="s2">;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
                 <span class="k">for</span> <span class="n">bit_l</span><span class="p">,</span> <span class="n">bit_r</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">l_args</span><span class="p">,</span> <span class="n">r_args</span><span class="p">):</span>
                     <span class="n">buffer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">bit_l</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="n">bit_r</span><span class="si">}</span><span class="s2">;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">continue</span>
         <span class="k">if</span> <span class="n">optype</span> <span class="o">==</span> <span class="n">OpType</span><span class="o">.</span><span class="n">MultiBit</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">MultiBitOp</span><span class="p">)</span>
+            <span class="n">l_args</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">op</span><span class="o">.</span><span class="n">n_inputs</span> <span class="p">:]</span>
             <span class="n">op</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">basic_op</span>
             <span class="n">optype</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">type</span>
             <span class="n">registers_involved</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg</span><span class="o">.</span><span class="n">reg_name</span> <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">[:</span><span class="mi">2</span><span class="p">]]</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span> <span class="ow">and</span> <span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">reg_name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">registers_involved</span><span class="p">:</span>
                 <span class="c1"># there is a distinct output register</span>
                 <span class="n">registers_involved</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">reg_name</span><span class="p">)</span>
-            <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">cregs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">registers_involved</span><span class="p">]</span>
+            <span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">cregs</span><span class="p">[</span><span class="n">name</span><span class="p">]</span> <span class="k">for</span> <span class="n">name</span> <span class="ow">in</span> <span class="n">registers_involved</span><span class="p">]</span>  <span class="c1"># type: ignore</span>
         <span class="k">if</span> <span class="n">optype</span> <span class="ow">in</span> <span class="p">(</span>
             <span class="n">OpType</span><span class="o">.</span><span class="n">ExplicitPredicate</span><span class="p">,</span>
             <span class="n">OpType</span><span class="o">.</span><span class="n">ExplicitModifier</span><span class="p">,</span>
@@ -1556,12 +1579,13 @@ document.write(`
             <span class="k">continue</span>
 
         <span class="k">if</span> <span class="n">optype</span> <span class="o">==</span> <span class="n">OpType</span><span class="o">.</span><span class="n">ClassicalExpBox</span><span class="p">:</span>
-            <span class="n">out_args</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">op</span><span class="o">.</span><span class="n">get_n_i</span><span class="p">()</span> <span class="p">:]</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">ClassicalExpBox</span><span class="p">)</span>
+            <span class="n">out_args</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">UnitID</span><span class="p">]</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">op</span><span class="o">.</span><span class="n">get_n_i</span><span class="p">()</span> <span class="p">:]</span>
             <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">out_args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="n">buffer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">out_args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">get_exp</span><span class="p">())</span><span class="si">}</span><span class="s2">;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">elif</span> <span class="p">(</span>
                 <span class="n">out_args</span>
-                <span class="o">==</span> <span class="nb">list</span><span class="p">(</span><span class="n">cregs</span><span class="p">[</span><span class="n">out_args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reg_name</span><span class="p">])[:</span> <span class="n">op</span><span class="o">.</span><span class="n">get_n_io</span><span class="p">()</span> <span class="o">+</span> <span class="n">op</span><span class="o">.</span><span class="n">get_n_o</span><span class="p">()]</span>
+                <span class="o">==</span> <span class="n">cregs</span><span class="p">[</span><span class="n">out_args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reg_name</span><span class="p">]</span><span class="o">.</span><span class="n">to_list</span><span class="p">()[:</span> <span class="n">op</span><span class="o">.</span><span class="n">get_n_io</span><span class="p">()</span> <span class="o">+</span> <span class="n">op</span><span class="o">.</span><span class="n">get_n_o</span><span class="p">()]</span>
             <span class="p">):</span>
                 <span class="n">buffer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">out_args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reg_name</span><span class="si">}</span><span class="s2"> = </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">op</span><span class="o">.</span><span class="n">get_exp</span><span class="p">())</span><span class="si">}</span><span class="s2">;</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">else</span><span class="p">:</span>
@@ -1571,6 +1595,7 @@ document.write(`
                 <span class="p">)</span>
             <span class="k">continue</span>
         <span class="k">if</span> <span class="n">optype</span> <span class="o">==</span> <span class="n">OpType</span><span class="o">.</span><span class="n">WASM</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">WASMOp</span><span class="p">)</span>
             <span class="n">inputs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="n">outputs</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="p">[]</span>
             <span class="k">for</span> <span class="n">reglist</span><span class="p">,</span> <span class="n">sizes</span> <span class="ow">in</span> <span class="p">[</span>
@@ -1581,7 +1606,7 @@ document.write(`
                     <span class="n">bits</span> <span class="o">=</span> <span class="n">args</span><span class="p">[:</span><span class="n">in_width</span><span class="p">]</span>
                     <span class="n">args</span> <span class="o">=</span> <span class="n">args</span><span class="p">[</span><span class="n">in_width</span><span class="p">:]</span>
                     <span class="n">regname</span> <span class="o">=</span> <span class="n">bits</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reg_name</span>
-                    <span class="k">if</span> <span class="n">bits</span> <span class="o">!=</span> <span class="nb">list</span><span class="p">(</span><span class="n">cregs</span><span class="p">[</span><span class="n">regname</span><span class="p">]):</span>
+                    <span class="k">if</span> <span class="n">bits</span> <span class="o">!=</span> <span class="nb">list</span><span class="p">(</span><span class="n">cregs</span><span class="p">[</span><span class="n">regname</span><span class="p">]):</span>  <span class="c1"># type: ignore</span>
                         <span class="n">QASMUnsupportedError</span><span class="p">(</span><span class="s2">&quot;WASM ops must act on entire registers.&quot;</span><span class="p">)</span>
                     <span class="n">reglist</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">regname</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">outputs</span><span class="p">:</span>
@@ -1589,6 +1614,7 @@ document.write(`
             <span class="n">buffer</span><span class="o">.</span><span class="n">write</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">op</span><span class="o">.</span><span class="n">func_name</span><span class="si">}</span><span class="s2">(</span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">inputs</span><span class="p">)</span><span class="si">}</span><span class="s2">);</span><span class="se">\n</span><span class="s2">&quot;</span><span class="p">)</span>
             <span class="k">continue</span>
         <span class="k">if</span> <span class="n">optype</span> <span class="o">==</span> <span class="n">OpType</span><span class="o">.</span><span class="n">CustomGate</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">CustomGate</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">op</span><span class="o">.</span><span class="n">gate</span><span class="o">.</span><span class="n">name</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">include_gate_defs</span><span class="p">:</span>
                 <span class="c1"># unroll custom gate</span>
                 <span class="n">gate_circ</span> <span class="o">=</span> <span class="n">op</span><span class="o">.</span><span class="n">get_circuit</span><span class="p">()</span>
@@ -1613,13 +1639,14 @@ document.write(`
             <span class="c1"># that 0 &lt;= param &lt; 4</span>
             <span class="k">if</span> <span class="n">param</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                 <span class="c1"># first get in to 0 &lt;= param &lt; 2 range</span>
-                <span class="n">param</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">param</span><span class="p">))</span> <span class="o">%</span> <span class="n">Decimal</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">)</span>
+                <span class="n">param</span> <span class="o">=</span> <span class="n">Decimal</span><span class="p">(</span><span class="nb">str</span><span class="p">(</span><span class="n">param</span><span class="p">))</span> <span class="o">%</span> <span class="n">Decimal</span><span class="p">(</span><span class="s2">&quot;2&quot;</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
                 <span class="c1"># then flip 1 &lt;= param &lt; 2  range into</span>
                 <span class="c1"># -1 &lt;= param &lt; 0</span>
                 <span class="k">if</span> <span class="n">param</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
                     <span class="n">param</span> <span class="o">=</span> <span class="o">-</span><span class="mi">2</span> <span class="o">+</span> <span class="n">param</span>
-            <span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="n">param</span><span class="p">]</span>
+            <span class="n">params</span> <span class="o">=</span> <span class="p">[</span><span class="n">param</span><span class="p">]</span>  <span class="c1"># type: ignore</span>
         <span class="k">elif</span> <span class="n">optype</span> <span class="o">==</span> <span class="n">OpType</span><span class="o">.</span><span class="n">Barrier</span> <span class="ow">and</span> <span class="n">header</span> <span class="o">==</span> <span class="s2">&quot;hqslib1_dev&quot;</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">MetaOp</span><span class="p">)</span>
             <span class="k">if</span> <span class="n">op</span><span class="o">.</span><span class="n">data</span> <span class="o">==</span> <span class="s2">&quot;&quot;</span><span class="p">:</span>
                 <span class="n">opstr</span> <span class="o">=</span> <span class="n">_tk_to_qasm_noparams</span><span class="p">[</span><span class="n">optype</span><span class="p">]</span>
             <span class="k">else</span><span class="p">:</span>

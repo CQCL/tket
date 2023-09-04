@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>pytket.transform &#8212; pytket 1.18.0 documentation</title>
+    <title>pytket.transform &#8212; pytket 1.19.0 documentation</title>
   
   
   
@@ -161,6 +161,7 @@
 <li class="toctree-l2"><a class="reference internal" href="display.html">pytket.circuit.display</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="unit_id.html">pytket.unit_id</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pauli.html">pytket.pauli</a></li>
 <li class="toctree-l1"><a class="reference internal" href="passes.html">pytket.passes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="predicates.html">pytket.predicates</a></li>
@@ -469,7 +470,7 @@ document.write(`
 <em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">CommuteSQThroughSWAP</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.transform.Transform.CommuteSQThroughSWAP" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>CommuteSQThroughSWAP(avg_node_errors: Dict[pytket.circuit.Node, float]) -&gt; pytket.transform.Transform</p></li>
+<li><p>CommuteSQThroughSWAP(avg_node_errors: Dict[pytket.unit_id.Node, float]) -&gt; pytket.transform.Transform</p></li>
 </ol>
 <p>Commutes single qubit gates through SWAP gates, leaving them on the physical qubit with best fidelity for given gate type. Assumes the circuit is already mapped onto the architecture.</p>
 <dl class="field-list simple">
@@ -478,7 +479,7 @@ document.write(`
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>CommuteSQThroughSWAP(op_node_errors: Dict[pytket.circuit.Node, Dict[pytket.circuit.OpType, float]]) -&gt; pytket.transform.Transform</p></li>
+<li><p>CommuteSQThroughSWAP(op_node_errors: Dict[pytket.unit_id.Node, Dict[pytket.circuit.OpType, float]]) -&gt; pytket.transform.Transform</p></li>
 </ol>
 <p>Commutes single qubit gates through SWAP gates, leaving them on the physical qubit with best fidelity for given gate type. Assumes the circuit is already mapped onto the architecture.</p>
 <dl class="field-list simple">
@@ -548,7 +549,7 @@ document.write(`
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pytket.transform.Transform.DecomposeSWAPtoCX">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DecomposeSWAPtoCX</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arc:</span> <span class="pre">pytket.architecture.Architecture</span> <span class="pre">=</span> <span class="pre">&lt;pytket.architecture.Architecture</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">nodes=0&gt;</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.transform.Transform" title="pytket.transform.Transform"><span class="pre">pytket.transform.Transform</span></a></span></span><a class="headerlink" href="#pytket.transform.Transform.DecomposeSWAPtoCX" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">DecomposeSWAPtoCX</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arc</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="architecture.html#pytket.architecture.Architecture" title="pytket.architecture.Architecture"><span class="pre">pytket.architecture.Architecture</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.transform.Transform" title="pytket.transform.Transform"><span class="pre">pytket.transform.Transform</span></a></span></span><a class="headerlink" href="#pytket.transform.Transform.DecomposeSWAPtoCX" title="Permalink to this definition">#</a></dt>
 <dd><p>Decomposes all SWAP gates into triples of CX gates. If the SWAP is adjacent to a CX, it will prefer to insert in the direction that allows for gate cancellation. If an <code class="xref py py-class docutils literal notranslate"><span class="pre">Architecture</span></code> is provided, this will prefer to insert the CXs such that fewer need redirecting.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -584,7 +585,7 @@ document.write(`
 <dd class="field-odd"><p><strong>squash</strong> – Whether to squash the circuit in pre-processing (default: true).</p>
 </dd>
 </dl>
-<p>If squash=true (default), the <cite>GlobalisePhasedX().apply</cite> method will always returns true. For squash=false, <cite>apply()</cite> will return true if the circuit was changed and false otherwise.</p>
+<p>If squash=true (default), the <cite>GlobalisePhasedX</cite> transform’s <cite>apply</cite> method will always return true. For squash=false, <cite>apply()</cite> will return true if the circuit was changed and false otherwise.</p>
 <p>It is not recommended to use this transformation with symbolic expressions, as in certain cases a blow-up in symbolic expression sizes may occur.</p>
 </dd></dl>
 

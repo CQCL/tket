@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>pytket.architecture &#8212; pytket 1.18.0 documentation</title>
+    <title>pytket.architecture &#8212; pytket 1.19.0 documentation</title>
   
   
   
@@ -160,6 +160,7 @@
 <li class="toctree-l2"><a class="reference internal" href="display.html">pytket.circuit.display</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="unit_id.html">pytket.unit_id</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pauli.html">pytket.pauli</a></li>
 <li class="toctree-l1"><a class="reference internal" href="passes.html">pytket.passes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="predicates.html">pytket.predicates</a></li>
@@ -420,6 +421,10 @@ document.write(`
 <span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.architecture.Architecture.__init__" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
+<li><p>__init__(self: pytket.architecture.Architecture) -&gt; None</p></li>
+</ol>
+<p>Produces an empty architecture</p>
+<ol class="arabic simple" start="2">
 <li><p>__init__(self: pytket.architecture.Architecture, connections: List[Tuple[int, int]]) -&gt; None</p></li>
 </ol>
 <p>The constructor for an architecture with connectivity between qubits.</p>
@@ -428,8 +433,8 @@ document.write(`
 <dd class="field-odd"><p><strong>connections</strong> – A list of pairs representing qubit indices that can perform two-qubit operations</p>
 </dd>
 </dl>
-<ol class="arabic simple" start="2">
-<li><p>__init__(self: pytket.architecture.Architecture, connections: List[Tuple[pytket.circuit.Node, pytket.circuit.Node]]) -&gt; None</p></li>
+<ol class="arabic simple" start="3">
+<li><p>__init__(self: pytket.architecture.Architecture, connections: List[Tuple[pytket.unit_id.Node, pytket.unit_id.Node]]) -&gt; None</p></li>
 </ol>
 <p>The constructor for an architecture with connectivity between qubits.</p>
 <dl class="field-list simple">
@@ -441,25 +446,25 @@ document.write(`
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pytket.architecture.Architecture.from_dict">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">json</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.architecture.Architecture" title="pytket.architecture.Architecture"><span class="pre">pytket.architecture.Architecture</span></a></span></span><a class="headerlink" href="#pytket.architecture.Architecture.from_dict" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.architecture.Architecture" title="pytket.architecture.Architecture"><span class="pre">pytket.architecture.Architecture</span></a></span></span><a class="headerlink" href="#pytket.architecture.Architecture.from_dict" title="Permalink to this definition">#</a></dt>
 <dd><p>Construct Architecture instance from JSON serializable dict representation of the Architecture.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pytket.architecture.Architecture.get_adjacent_nodes">
-<span class="sig-name descname"><span class="pre">get_adjacent_nodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.architecture.Architecture" title="pytket.architecture.Architecture"><span class="pre">pytket.architecture.Architecture</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="circuit.html#pytket.circuit.Node" title="pytket.circuit.Node"><span class="pre">pytket.circuit.Node</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="circuit.html#pytket.circuit.Node" title="pytket.circuit.Node"><span class="pre">pytket.circuit.Node</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pytket.architecture.Architecture.get_adjacent_nodes" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_adjacent_nodes</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.architecture.Architecture" title="pytket.architecture.Architecture"><span class="pre">pytket.architecture.Architecture</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">node</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="unit_id.html#pytket.unit_id.Node" title="pytket.unit_id.Node"><span class="pre">pytket.unit_id.Node</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="unit_id.html#pytket.unit_id.Node" title="pytket.unit_id.Node"><span class="pre">pytket.unit_id.Node</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pytket.architecture.Architecture.get_adjacent_nodes" title="Permalink to this definition">#</a></dt>
 <dd><p>given a node, returns adjacent nodes in Architecture.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pytket.architecture.Architecture.get_distance">
-<span class="sig-name descname"><span class="pre">get_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.architecture.Architecture" title="pytket.architecture.Architecture"><span class="pre">pytket.architecture.Architecture</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="circuit.html#pytket.circuit.Node" title="pytket.circuit.Node"><span class="pre">pytket.circuit.Node</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="circuit.html#pytket.circuit.Node" title="pytket.circuit.Node"><span class="pre">pytket.circuit.Node</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#pytket.architecture.Architecture.get_distance" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">get_distance</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.architecture.Architecture" title="pytket.architecture.Architecture"><span class="pre">pytket.architecture.Architecture</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="unit_id.html#pytket.unit_id.Node" title="pytket.unit_id.Node"><span class="pre">pytket.unit_id.Node</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">node_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="unit_id.html#pytket.unit_id.Node" title="pytket.unit_id.Node"><span class="pre">pytket.unit_id.Node</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#pytket.architecture.Architecture.get_distance" title="Permalink to this definition">#</a></dt>
 <dd><p>given two nodes in Architecture, returns distance between them</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pytket.architecture.Architecture.to_dict">
-<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.architecture.Architecture" title="pytket.architecture.Architecture"><span class="pre">pytket.architecture.Architecture</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">json</span></span></span><a class="headerlink" href="#pytket.architecture.Architecture.to_dict" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.architecture.Architecture" title="pytket.architecture.Architecture"><span class="pre">pytket.architecture.Architecture</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#pytket.architecture.Architecture.to_dict" title="Permalink to this definition">#</a></dt>
 <dd><p>Return a JSON serializable dict representation of the Architecture.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -470,7 +475,7 @@ document.write(`
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pytket.architecture.Architecture.valid_operation">
-<span class="sig-name descname"><span class="pre">valid_operation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.architecture.Architecture" title="pytket.architecture.Architecture"><span class="pre">pytket.architecture.Architecture</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">uids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="circuit.html#pytket.circuit.Node" title="pytket.circuit.Node"><span class="pre">pytket.circuit.Node</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#pytket.architecture.Architecture.valid_operation" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">valid_operation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.architecture.Architecture" title="pytket.architecture.Architecture"><span class="pre">pytket.architecture.Architecture</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">uids</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="unit_id.html#pytket.unit_id.Node" title="pytket.unit_id.Node"><span class="pre">pytket.unit_id.Node</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#pytket.architecture.Architecture.valid_operation" title="Permalink to this definition">#</a></dt>
 <dd><p>nodes can be executed on the Architecture connectivity graph.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -513,13 +518,13 @@ document.write(`
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pytket.architecture.FullyConnected.from_dict">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">json</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.architecture.FullyConnected" title="pytket.architecture.FullyConnected"><span class="pre">pytket.architecture.FullyConnected</span></a></span></span><a class="headerlink" href="#pytket.architecture.FullyConnected.from_dict" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.architecture.FullyConnected" title="pytket.architecture.FullyConnected"><span class="pre">pytket.architecture.FullyConnected</span></a></span></span><a class="headerlink" href="#pytket.architecture.FullyConnected.from_dict" title="Permalink to this definition">#</a></dt>
 <dd><p>Construct FullyConnected instance from dict representation.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pytket.architecture.FullyConnected.to_dict">
-<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.architecture.FullyConnected" title="pytket.architecture.FullyConnected"><span class="pre">pytket.architecture.FullyConnected</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">json</span></span></span><a class="headerlink" href="#pytket.architecture.FullyConnected.to_dict" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.architecture.FullyConnected" title="pytket.architecture.FullyConnected"><span class="pre">pytket.architecture.FullyConnected</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#pytket.architecture.FullyConnected.to_dict" title="Permalink to this definition">#</a></dt>
 <dd><p>JSON-serializable dict representation of the architecture.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>

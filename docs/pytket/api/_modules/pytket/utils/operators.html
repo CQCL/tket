@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pytket.utils.operators &#8212; pytket 1.18.0 documentation</title>
+    <title>pytket.utils.operators &#8212; pytket 1.19.0 documentation</title>
   
   
   
@@ -157,6 +157,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../display.html">pytket.circuit.display</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../../unit_id.html">pytket.unit_id</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../pauli.html">pytket.pauli</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../passes.html">pytket.passes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../predicates.html">pytket.predicates</a></li>
@@ -337,12 +338,14 @@ document.write(`
 <span class="c1"># limitations under the License.</span>
 
 <span class="kn">import</span> <span class="nn">copy</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">cast</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Any</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">TYPE_CHECKING</span><span class="p">,</span> <span class="n">Union</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Set</span><span class="p">,</span> <span class="n">Any</span>
+
+<span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
 <span class="kn">from</span> <span class="nn">sympy</span> <span class="kn">import</span> <span class="n">Symbol</span><span class="p">,</span> <span class="n">sympify</span><span class="p">,</span> <span class="n">Expr</span><span class="p">,</span> <span class="n">re</span><span class="p">,</span> <span class="n">im</span>  <span class="c1"># type: ignore</span>
-<span class="kn">from</span> <span class="nn">pytket.pauli</span> <span class="kn">import</span> <span class="n">QubitPauliString</span><span class="p">,</span> <span class="n">pauli_string_mult</span>  <span class="c1"># type: ignore</span>
-<span class="kn">from</span> <span class="nn">pytket.circuit</span> <span class="kn">import</span> <span class="n">Qubit</span>  <span class="c1"># type: ignore</span>
-<span class="kn">from</span> <span class="nn">pytket.utils.serialization</span> <span class="kn">import</span> <span class="n">complex_to_list</span><span class="p">,</span> <span class="n">list_to_complex</span>  <span class="c1"># type: ignore</span>
+<span class="kn">from</span> <span class="nn">pytket.pauli</span> <span class="kn">import</span> <span class="n">QubitPauliString</span><span class="p">,</span> <span class="n">pauli_string_mult</span>
+<span class="kn">from</span> <span class="nn">pytket.circuit</span> <span class="kn">import</span> <span class="n">Qubit</span>
+<span class="kn">from</span> <span class="nn">pytket.utils.serialization</span> <span class="kn">import</span> <span class="n">complex_to_list</span><span class="p">,</span> <span class="n">list_to_complex</span>
 
 
 <span class="n">CoeffType</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">complex</span><span class="p">,</span> <span class="n">Expr</span><span class="p">]</span>
@@ -415,8 +418,10 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span> <span class="o">=</span> <span class="n">_dict</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">_collect_qubits</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s2">&quot;QubitPauliOperator&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>  <span class="c1"># type: ignore</span>
-        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_dict</span>
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">QubitPauliOperator</span><span class="p">):</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">_dict</span>
+        <span class="k">return</span> <span class="kc">False</span>
 
     <span class="k">def</span> <span class="fm">__iadd__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">addend</span><span class="p">:</span> <span class="s2">&quot;QubitPauliOperator&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;QubitPauliOperator&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;In-place addition (+=) of QubitPauliOperators.</span>
@@ -573,7 +578,7 @@ document.write(`
             <span class="k">if</span> <span class="nb">type</span><span class="p">(</span><span class="n">coeff</span><span class="p">)</span> <span class="ow">is</span> <span class="nb">str</span><span class="p">:</span>
                 <span class="k">return</span> <span class="n">sympify</span><span class="p">(</span><span class="n">coeff</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
             <span class="k">else</span><span class="p">:</span>
-                <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="nb">complex</span><span class="p">,</span> <span class="n">list_to_complex</span><span class="p">(</span><span class="n">coeff</span><span class="p">))</span>
+                <span class="k">return</span> <span class="n">list_to_complex</span><span class="p">(</span><span class="n">coeff</span><span class="p">)</span>
 
         <span class="k">return</span> <span class="n">QubitPauliOperator</span><span class="p">({</span><span class="n">get_qps</span><span class="p">(</span><span class="n">obj</span><span class="p">):</span> <span class="n">get_coeff</span><span class="p">(</span><span class="n">obj</span><span class="p">)</span> <span class="k">for</span> <span class="n">obj</span> <span class="ow">in</span> <span class="n">pauli_list</span><span class="p">})</span></div>
 
@@ -600,11 +605,14 @@ document.write(`
 <span class="sd">        :return: A sparse matrix representation of the operator.</span>
 <span class="sd">        :rtype: csc_matrix</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">qubits_</span> <span class="o">=</span> <span class="n">qubits</span>
         <span class="k">if</span> <span class="n">qubits</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="n">qubits_</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="nb">list</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_all_qubits</span><span class="p">))</span>
+            <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span>
+                <span class="nb">complex</span><span class="p">(</span><span class="n">coeff</span><span class="p">)</span> <span class="o">*</span> <span class="n">pauli</span><span class="o">.</span><span class="n">to_sparse_matrix</span><span class="p">(</span><span class="n">qubits_</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">pauli</span><span class="p">,</span> <span class="n">coeff</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="p">)</span>
         <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span>
-            <span class="nb">complex</span><span class="p">(</span><span class="n">coeff</span><span class="p">)</span> <span class="o">*</span> <span class="n">pauli</span><span class="o">.</span><span class="n">to_sparse_matrix</span><span class="p">(</span><span class="n">qubits_</span><span class="p">)</span>
+            <span class="nb">complex</span><span class="p">(</span><span class="n">coeff</span><span class="p">)</span> <span class="o">*</span> <span class="n">pauli</span><span class="o">.</span><span class="n">to_sparse_matrix</span><span class="p">(</span><span class="n">qubits</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">pauli</span><span class="p">,</span> <span class="n">coeff</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
         <span class="p">)</span></div>
 
@@ -627,14 +635,17 @@ document.write(`
 <span class="sd">        :return: The dot product of the operator with the statevector</span>
 <span class="sd">        :rtype: numpy.ndarray</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">indexed_state</span> <span class="o">=</span> <span class="p">[</span><span class="n">state</span><span class="p">,</span> <span class="n">qubits</span><span class="p">]</span> <span class="k">if</span> <span class="n">qubits</span> <span class="k">else</span> <span class="p">[</span><span class="n">state</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span>
-            <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span>
-            <span class="nb">sum</span><span class="p">(</span>
-                <span class="nb">complex</span><span class="p">(</span><span class="n">coeff</span><span class="p">)</span> <span class="o">*</span> <span class="n">pauli</span><span class="o">.</span><span class="n">dot_state</span><span class="p">(</span><span class="o">*</span><span class="n">indexed_state</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">qubits</span><span class="p">:</span>
+            <span class="n">product_sum</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+                <span class="nb">complex</span><span class="p">(</span><span class="n">coeff</span><span class="p">)</span> <span class="o">*</span> <span class="n">pauli</span><span class="o">.</span><span class="n">dot_state</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">qubits</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">pauli</span><span class="p">,</span> <span class="n">coeff</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-            <span class="p">),</span>
-        <span class="p">)</span></div>
+            <span class="p">)</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="n">product_sum</span> <span class="o">=</span> <span class="nb">sum</span><span class="p">(</span>
+                <span class="nb">complex</span><span class="p">(</span><span class="n">coeff</span><span class="p">)</span> <span class="o">*</span> <span class="n">pauli</span><span class="o">.</span><span class="n">dot_state</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+                <span class="k">for</span> <span class="n">pauli</span><span class="p">,</span> <span class="n">coeff</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="n">product_sum</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">product_sum</span><span class="p">,</span> <span class="n">numpy</span><span class="o">.</span><span class="n">ndarray</span><span class="p">)</span> <span class="k">else</span> <span class="n">state</span></div>
 
 <div class="viewcode-block" id="QubitPauliOperator.state_expectation"><a class="viewcode-back" href="../../../utils.html#pytket.utils.QubitPauliOperator.state_expectation">[docs]</a>    <span class="k">def</span> <span class="nf">state_expectation</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">state</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">qubits</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">List</span><span class="p">[</span><span class="n">Qubit</span><span class="p">]]</span> <span class="o">=</span> <span class="kc">None</span>
@@ -655,13 +666,14 @@ document.write(`
 <span class="sd">        :return: The expectation value of the statevector and operator</span>
 <span class="sd">        :rtype: complex</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">indexed_state</span> <span class="o">=</span> <span class="p">[</span><span class="n">state</span><span class="p">,</span> <span class="n">qubits</span><span class="p">]</span> <span class="k">if</span> <span class="n">qubits</span> <span class="k">else</span> <span class="p">[</span><span class="n">state</span><span class="p">]</span>
-        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span>
-            <span class="nb">complex</span><span class="p">,</span>
-            <span class="nb">sum</span><span class="p">(</span>
-                <span class="nb">complex</span><span class="p">(</span><span class="n">coeff</span><span class="p">)</span> <span class="o">*</span> <span class="n">pauli</span><span class="o">.</span><span class="n">state_expectation</span><span class="p">(</span><span class="o">*</span><span class="n">indexed_state</span><span class="p">)</span>
+        <span class="k">if</span> <span class="n">qubits</span><span class="p">:</span>
+            <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span>
+                <span class="nb">complex</span><span class="p">(</span><span class="n">coeff</span><span class="p">)</span> <span class="o">*</span> <span class="n">pauli</span><span class="o">.</span><span class="n">state_expectation</span><span class="p">(</span><span class="n">state</span><span class="p">,</span> <span class="n">qubits</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">pauli</span><span class="p">,</span> <span class="n">coeff</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
-            <span class="p">),</span>
+            <span class="p">)</span>
+        <span class="k">return</span> <span class="nb">sum</span><span class="p">(</span>
+            <span class="nb">complex</span><span class="p">(</span><span class="n">coeff</span><span class="p">)</span> <span class="o">*</span> <span class="n">pauli</span><span class="o">.</span><span class="n">state_expectation</span><span class="p">(</span><span class="n">state</span><span class="p">)</span>
+            <span class="k">for</span> <span class="n">pauli</span><span class="p">,</span> <span class="n">coeff</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span><span class="o">.</span><span class="n">items</span><span class="p">()</span>
         <span class="p">)</span></div>
 
 <div class="viewcode-block" id="QubitPauliOperator.compress"><a class="viewcode-back" href="../../../utils.html#pytket.utils.QubitPauliOperator.compress">[docs]</a>    <span class="k">def</span> <span class="nf">compress</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">abs_tol</span><span class="p">:</span> <span class="nb">float</span> <span class="o">=</span> <span class="mf">1e-10</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
@@ -699,7 +711,7 @@ document.write(`
             <span class="k">del</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span><span class="p">[</span><span class="n">key</span><span class="p">]</span></div>
 
     <span class="k">def</span> <span class="nf">_collect_qubits</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">_all_qubits</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_all_qubits</span><span class="p">:</span> <span class="nb">set</span><span class="p">[</span><span class="n">Qubit</span><span class="p">]</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">key</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
             <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">key</span><span class="o">.</span><span class="n">map</span><span class="o">.</span><span class="n">keys</span><span class="p">():</span>
                 <span class="bp">self</span><span class="o">.</span><span class="n">_all_qubits</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">q</span><span class="p">)</span></div>

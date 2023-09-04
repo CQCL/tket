@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pytket.config.pytket_config &#8212; pytket 1.18.0 documentation</title>
+    <title>pytket.config.pytket_config &#8212; pytket 1.19.0 documentation</title>
   
   
   
@@ -157,6 +157,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../display.html">pytket.circuit.display</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../../unit_id.html">pytket.unit_id</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../pauli.html">pytket.pauli</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../passes.html">pytket.passes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../predicates.html">pytket.predicates</a></li>
@@ -338,7 +339,7 @@ document.write(`
 
 <span class="kn">from</span> <span class="nn">abc</span> <span class="kn">import</span> <span class="n">ABC</span><span class="p">,</span> <span class="n">abstractmethod</span>
 <span class="kn">from</span> <span class="nn">pathlib</span> <span class="kn">import</span> <span class="n">Path</span>
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Type</span><span class="p">,</span> <span class="n">TypeVar</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Any</span><span class="p">,</span> <span class="n">ClassVar</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Optional</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">asdict</span><span class="p">,</span> <span class="n">dataclass</span>
 <span class="kn">import</span> <span class="nn">json</span>
 <span class="kn">import</span> <span class="nn">os</span>
@@ -411,9 +412,6 @@ document.write(`
     <span class="n">config</span><span class="o">.</span><span class="n">write_file</span><span class="p">(</span><span class="n">get_config_file_path</span><span class="p">())</span></div>
 
 
-<span class="n">T_ext</span> <span class="o">=</span> <span class="n">TypeVar</span><span class="p">(</span><span class="s2">&quot;T_ext&quot;</span><span class="p">,</span> <span class="n">bound</span><span class="o">=</span><span class="s2">&quot;PytketExtConfig&quot;</span><span class="p">)</span>
-
-
 <div class="viewcode-block" id="PytketExtConfig"><a class="viewcode-back" href="../../../config.html#pytket.config.PytketExtConfig">[docs]</a><span class="nd">@dataclass</span>
 <span class="k">class</span> <span class="nc">PytketExtConfig</span><span class="p">(</span><span class="n">ABC</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Abstract base class for pytket extension config classes.&quot;&quot;&quot;</span>
@@ -422,7 +420,7 @@ document.write(`
 
 <div class="viewcode-block" id="PytketExtConfig.from_extension_dict"><a class="viewcode-back" href="../../../config.html#pytket.config.PytketExtConfig.from_extension_dict">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="nd">@abstractmethod</span>
-    <span class="k">def</span> <span class="nf">from_extension_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">T_ext</span><span class="p">],</span> <span class="n">ext_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">T_ext</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">from_extension_dict</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">ext_dict</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="n">Any</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="s2">&quot;PytketExtConfig&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Abstract method to build PytketExtConfig from dictionary serialized form.&quot;&quot;&quot;</span>
         <span class="o">...</span></div>
 
@@ -431,14 +429,14 @@ document.write(`
         <span class="k">return</span> <span class="n">asdict</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="PytketExtConfig.from_pytketconfig"><a class="viewcode-back" href="../../../config.html#pytket.config.PytketExtConfig.from_pytketconfig">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_pytketconfig</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">T_ext</span><span class="p">],</span> <span class="n">p_config</span><span class="p">:</span> <span class="n">PytketConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">T_ext</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">from_pytketconfig</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">p_config</span><span class="p">:</span> <span class="n">PytketConfig</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;PytketExtConfig&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Build from PytketConfig instance.&quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">cls</span><span class="o">.</span><span class="n">ext_dict_key</span> <span class="ow">in</span> <span class="n">p_config</span><span class="o">.</span><span class="n">extensions</span><span class="p">:</span>
             <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_extension_dict</span><span class="p">(</span><span class="n">p_config</span><span class="o">.</span><span class="n">extensions</span><span class="p">[</span><span class="bp">cls</span><span class="o">.</span><span class="n">ext_dict_key</span><span class="p">])</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_extension_dict</span><span class="p">({})</span></div>
 
 <div class="viewcode-block" id="PytketExtConfig.from_default_config_file"><a class="viewcode-back" href="../../../config.html#pytket.config.PytketExtConfig.from_default_config_file">[docs]</a>    <span class="nd">@classmethod</span>
-    <span class="k">def</span> <span class="nf">from_default_config_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">:</span> <span class="n">Type</span><span class="p">[</span><span class="n">T_ext</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">T_ext</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">from_default_config_file</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;PytketExtConfig&quot;</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Load from default config file.&quot;&quot;&quot;</span>
         <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">from_pytketconfig</span><span class="p">(</span><span class="n">load_config_file</span><span class="p">())</span></div>
 

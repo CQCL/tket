@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pytket.wasm.wasm &#8212; pytket 1.18.0 documentation</title>
+    <title>pytket.wasm.wasm &#8212; pytket 1.19.0 documentation</title>
   
   
   
@@ -157,6 +157,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../display.html">pytket.circuit.display</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../../unit_id.html">pytket.unit_id</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../pauli.html">pytket.pauli</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../passes.html">pytket.passes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../predicates.html">pytket.predicates</a></li>
@@ -366,7 +367,7 @@ document.write(`
         <span class="n">LANG_TYPE_EMPTY</span><span class="p">:</span> <span class="kc">None</span><span class="p">,</span>
     <span class="p">}</span>
 
-<div class="viewcode-block" id="WasmFileHandler.__init__"><a class="viewcode-back" href="../../../wasm.html#pytket.wasm.WasmFileHandler.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">check_file</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">):</span>
+<div class="viewcode-block" id="WasmFileHandler.__init__"><a class="viewcode-back" href="../../../wasm.html#pytket.wasm.WasmFileHandler.__init__">[docs]</a>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">filepath</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">check_file</span><span class="p">:</span> <span class="nb">bool</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">int_size</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="mi">32</span><span class="p">):</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Construct a wasm file handler</span>
 
@@ -375,7 +376,18 @@ document.write(`
 <span class="sd">        :param check_file: If ``True`` checks file for compatibility with wasm</span>
 <span class="sd">          standards. If ``False`` checks are skipped.</span>
 <span class="sd">        :type check_file: bool</span>
+<span class="sd">        :param int_size: length of the integer that is used in the wasm file</span>
+<span class="sd">        :type int_size: int</span>
 <span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_int_size</span> <span class="o">=</span> <span class="n">int_size</span>
+        <span class="k">if</span> <span class="n">int_size</span> <span class="o">==</span> <span class="mi">32</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_int_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_lookup</span><span class="p">[</span><span class="n">LANG_TYPE_I32</span><span class="p">]</span>
+        <span class="k">elif</span> <span class="n">int_size</span> <span class="o">==</span> <span class="mi">64</span><span class="p">:</span>
+            <span class="bp">self</span><span class="o">.</span><span class="n">_int_type</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_lookup</span><span class="p">[</span><span class="n">LANG_TYPE_I64</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
+                <span class="s2">&quot;given integer length not valid, only 32 and 64 are allowed&quot;</span>
+            <span class="p">)</span>
 
         <span class="bp">self</span><span class="o">.</span><span class="n">_filepath</span> <span class="o">=</span> <span class="n">filepath</span>
 
@@ -427,8 +439,9 @@ document.write(`
                             <span class="p">]</span> <span class="o">*</span> <span class="n">entry</span><span class="o">.</span><span class="n">return_count</span>
                         <span class="k">else</span><span class="p">:</span>
                             <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span>
-                                <span class="sa">f</span><span class="s2">&quot;Only parameter and return values of i32 types are&quot;</span>
-                                <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;allowed, found type: </span><span class="si">{</span><span class="n">entry</span><span class="o">.</span><span class="n">return_type</span><span class="si">}</span><span class="s2">&quot;</span>
+                                <span class="sa">f</span><span class="s2">&quot;Only parameter and return values of &quot;</span>
+                                <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot;i</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_int_size</span><span class="si">}</span><span class="s2"> types are&quot;</span>
+                                <span class="o">+</span> <span class="sa">f</span><span class="s2">&quot; allowed, found type: </span><span class="si">{</span><span class="n">entry</span><span class="o">.</span><span class="n">return_type</span><span class="si">}</span><span class="s2">&quot;</span>
                             <span class="p">)</span>
                     <span class="k">elif</span> <span class="n">entry</span><span class="o">.</span><span class="n">return_count</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
                         <span class="n">function_signatures</span><span class="p">[</span><span class="n">idx</span><span class="p">][</span><span class="s2">&quot;return_types&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">[</span>
@@ -448,13 +461,13 @@ document.write(`
                 <span class="bp">self</span><span class="o">.</span><span class="n">_function_types</span> <span class="o">=</span> <span class="n">cur_sec_data</span><span class="o">.</span><span class="n">payload</span><span class="o">.</span><span class="n">types</span>
 
         <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">function_names</span><span class="p">):</span>
-            <span class="c1"># check for only i32 type in parameters and return values</span>
+            <span class="c1"># check for only integer type in parameters and return values</span>
             <span class="n">supported_function</span> <span class="o">=</span> <span class="kc">True</span>
             <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">function_signatures</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_function_types</span><span class="p">[</span><span class="n">i</span><span class="p">]][</span><span class="s2">&quot;parameter_types&quot;</span><span class="p">]:</span>
-                <span class="k">if</span> <span class="n">t</span> <span class="o">!=</span> <span class="s2">&quot;i32&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">t</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_int_type</span><span class="p">:</span>
                     <span class="n">supported_function</span> <span class="o">=</span> <span class="kc">False</span>
             <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="n">function_signatures</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">_function_types</span><span class="p">[</span><span class="n">i</span><span class="p">]][</span><span class="s2">&quot;return_types&quot;</span><span class="p">]:</span>
-                <span class="k">if</span> <span class="n">t</span> <span class="o">!=</span> <span class="s2">&quot;i32&quot;</span><span class="p">:</span>
+                <span class="k">if</span> <span class="n">t</span> <span class="o">!=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_int_type</span><span class="p">:</span>
                     <span class="n">supported_function</span> <span class="o">=</span> <span class="kc">False</span>
 
             <span class="k">if</span> <span class="n">supported_function</span><span class="p">:</span>
@@ -485,8 +498,11 @@ document.write(`
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;str representation of the contents of the wasm file&quot;&quot;&quot;</span>
         <span class="n">result</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Functions in wasm file with the uid </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_wasmfileuid</span><span class="si">}</span><span class="s2">:</span><span class="se">\n</span><span class="s2">&quot;</span>
         <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_functions</span><span class="p">:</span>
-            <span class="n">result</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;function &#39;</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">&#39; with </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_functions</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> i32 parameter(s)&quot;</span>
-            <span class="n">result</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot; and </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_functions</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> i32 return value(s)</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;function &#39;</span><span class="si">{</span><span class="n">x</span><span class="si">}</span><span class="s2">&#39; with &quot;</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_functions</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> i</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_int_size</span><span class="si">}</span><span class="s2"> parameter(s)&quot;</span>
+            <span class="n">result</span> <span class="o">+=</span> <span class="p">(</span>
+                <span class="sa">f</span><span class="s2">&quot; and </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_functions</span><span class="p">[</span><span class="n">x</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2"> i</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">_int_size</span><span class="si">}</span><span class="s2"> return value(s)</span><span class="se">\n</span><span class="s2">&quot;</span>
+            <span class="p">)</span>
 
         <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_unsupported_function</span><span class="p">:</span>
             <span class="n">result</span> <span class="o">+=</span> <span class="p">(</span>
@@ -503,9 +519,9 @@ document.write(`
 
 <span class="sd">        :param function_name: name of the function that is checked</span>
 <span class="sd">        :type function_name: str</span>
-<span class="sd">        :param number_of_parameters: number of i32 parameters of the function</span>
+<span class="sd">        :param number_of_parameters: number of integer parameters of the function</span>
 <span class="sd">        :type number_of_parameters: int</span>
-<span class="sd">        :param number_of_returns: number of i32 return values of the function</span>
+<span class="sd">        :param number_of_returns: number of integer return values of the function</span>
 <span class="sd">        :type number_of_returns: int</span>
 <span class="sd">        :return: true if the signature and the name of the function is correct&quot;&quot;&quot;</span>
 

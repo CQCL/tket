@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Index &#8212; pytket 1.18.0 documentation</title>
+    <title>Index &#8212; pytket 1.19.0 documentation</title>
   
   
   
@@ -157,6 +157,7 @@
 <li class="toctree-l2"><a class="reference internal" href="display.html">pytket.circuit.display</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="unit_id.html">pytket.unit_id</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pauli.html">pytket.pauli</a></li>
 <li class="toctree-l1"><a class="reference internal" href="passes.html">pytket.passes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="predicates.html">pytket.predicates</a></li>
@@ -364,19 +365,15 @@ document.write(`
         <li><a href="utils.html#pytket.utils.distribution.EmpiricalDistribution.__eq__">(pytket.utils.distribution.EmpiricalDistribution method)</a>
 </li>
       </ul></li>
-      <li><a href="circuit.html#pytket.circuit.BitRegister.__getitem__">__getitem__() (pytket.circuit.BitRegister method)</a>
+      <li><a href="utils.html#pytket.utils.distribution.EmpiricalDistribution.__getitem__">__getitem__() (pytket.utils.distribution.EmpiricalDistribution method)</a>
 
       <ul>
-        <li><a href="circuit.html#pytket.circuit.QubitRegister.__getitem__">(pytket.circuit.QubitRegister method)</a>
-</li>
-        <li><a href="utils.html#pytket.utils.distribution.EmpiricalDistribution.__getitem__">(pytket.utils.distribution.EmpiricalDistribution method)</a>
-</li>
         <li><a href="utils.html#pytket.utils.distribution.ProbabilityDistribution.__getitem__">(pytket.utils.distribution.ProbabilityDistribution method)</a>
 </li>
       </ul></li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.__getstate__">__getstate__() (pytket.circuit.Circuit method)</a>
 </li>
-      <li><a href="circuit_class.html#pytket.circuit.Circuit.__hash__">__hash__ (pytket.circuit.Circuit attribute)</a>
+      <li><a href="circuit_class.html#pytket.circuit.Circuit.__hash__">__hash__() (pytket.circuit.Circuit method)</a>
 </li>
       <li><a href="architecture.html#pytket.architecture.Architecture.__init__">__init__() (pytket.architecture.Architecture method)</a>
 
@@ -386,10 +383,6 @@ document.write(`
         <li><a href="architecture.html#pytket.architecture.RingArch.__init__">(pytket.architecture.RingArch method)</a>
 </li>
         <li><a href="architecture.html#pytket.architecture.SquareGrid.__init__">(pytket.architecture.SquareGrid method)</a>
-</li>
-        <li><a href="circuit.html#pytket.circuit.Bit.__init__">(pytket.circuit.Bit method)</a>
-</li>
-        <li><a href="circuit.html#pytket.circuit.BitRegister.__init__">(pytket.circuit.BitRegister method)</a>
 </li>
         <li><a href="circuit.html#pytket.circuit.CircBox.__init__">(pytket.circuit.CircBox method)</a>
 </li>
@@ -415,8 +408,6 @@ document.write(`
 </li>
         <li><a href="circuit.html#pytket.circuit.MultiplexorBox.__init__">(pytket.circuit.MultiplexorBox method)</a>
 </li>
-        <li><a href="circuit.html#pytket.circuit.Node.__init__">(pytket.circuit.Node method)</a>
-</li>
         <li><a href="circuit.html#pytket.circuit.PauliExpBox.__init__">(pytket.circuit.PauliExpBox method)</a>
 </li>
         <li><a href="circuit.html#pytket.circuit.PhasePolyBox.__init__">(pytket.circuit.PhasePolyBox method)</a>
@@ -424,10 +415,6 @@ document.write(`
         <li><a href="circuit.html#pytket.circuit.ProjectorAssertionBox.__init__">(pytket.circuit.ProjectorAssertionBox method)</a>
 </li>
         <li><a href="circuit.html#pytket.circuit.QControlBox.__init__">(pytket.circuit.QControlBox method)</a>
-</li>
-        <li><a href="circuit.html#pytket.circuit.Qubit.__init__">(pytket.circuit.Qubit method)</a>
-</li>
-        <li><a href="circuit.html#pytket.circuit.QubitRegister.__init__">(pytket.circuit.QubitRegister method)</a>
 </li>
         <li><a href="circuit.html#pytket.circuit.RangePredicateOp.__init__">(pytket.circuit.RangePredicateOp method)</a>
 </li>
@@ -493,6 +480,8 @@ document.write(`
 </li>
         <li><a href="pauli.html#pytket.pauli.QubitPauliString.__init__">(pytket.pauli.QubitPauliString method)</a>
 </li>
+        <li><a href="pauli.html#pytket.pauli.QubitPauliTensor.__init__">(pytket.pauli.QubitPauliTensor method)</a>
+</li>
         <li><a href="placement.html#pytket.placement.GraphPlacement.__init__">(pytket.placement.GraphPlacement method)</a>
 </li>
         <li><a href="placement.html#pytket.placement.LinePlacement.__init__">(pytket.placement.LinePlacement method)</a>
@@ -556,6 +545,20 @@ document.write(`
         <li><a href="transform.html#pytket.transform.PauliSynthStrat.__init__">(pytket.transform.PauliSynthStrat method)</a>
 </li>
         <li><a href="transform.html#pytket.transform.Transform.__init__">(pytket.transform.Transform method)</a>
+</li>
+        <li><a href="unit_id.html#pytket.unit_id.Bit.__init__">(pytket.unit_id.Bit method)</a>
+</li>
+        <li><a href="unit_id.html#pytket.unit_id.BitRegister.__init__">(pytket.unit_id.BitRegister method)</a>
+</li>
+        <li><a href="unit_id.html#pytket.unit_id.Node.__init__">(pytket.unit_id.Node method)</a>
+</li>
+        <li><a href="unit_id.html#pytket.unit_id.Qubit.__init__">(pytket.unit_id.Qubit method)</a>
+</li>
+        <li><a href="unit_id.html#pytket.unit_id.QubitRegister.__init__">(pytket.unit_id.QubitRegister method)</a>
+</li>
+        <li><a href="unit_id.html#pytket.unit_id.UnitID.__init__">(pytket.unit_id.UnitID method)</a>
+</li>
+        <li><a href="unit_id.html#pytket.unit_id.UnitType.__init__">(pytket.unit_id.UnitType method)</a>
 </li>
         <li><a href="zx.html#pytket.zx.CliffordGen.__init__">(pytket.zx.CliffordGen method)</a>
 </li>
@@ -683,6 +686,8 @@ document.write(`
       <li><a href="circuit_class.html#pytket.circuit.Circuit.add_classicalexpbox_bit">add_classicalexpbox_bit() (pytket.circuit.Circuit method)</a>
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.add_classicalexpbox_register">add_classicalexpbox_register() (pytket.circuit.Circuit method)</a>
+</li>
+      <li><a href="circuit_class.html#pytket.circuit.Circuit.add_conjugation_box">add_conjugation_box() (pytket.circuit.Circuit method)</a>
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.add_custom_gate">add_custom_gate() (pytket.circuit.Circuit method)</a>
 </li>
@@ -824,7 +829,7 @@ document.write(`
 </li>
       <li><a href="classical.html#pytket.circuit.logic_exp.BinaryOp">BinaryOp (class in pytket.circuit.logic_exp)</a>
 </li>
-      <li><a href="circuit.html#pytket.circuit.Bit">Bit (class in pytket.circuit)</a>
+      <li><a href="unit_id.html#pytket.unit_id.Bit">Bit (class in pytket.unit_id)</a>
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.bit_readout">bit_readout (pytket.circuit.Circuit property)</a>
 </li>
@@ -842,7 +847,7 @@ document.write(`
 </li>
       <li><a href="classical.html#pytket.circuit.logic_exp.BitOr">BitOr (class in pytket.circuit.logic_exp)</a>
 </li>
-      <li><a href="circuit.html#pytket.circuit.BitRegister">BitRegister (class in pytket.circuit)</a>
+      <li><a href="unit_id.html#pytket.unit_id.BitRegister">BitRegister (class in pytket.unit_id)</a>
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.bits">bits (pytket.circuit.Circuit property)</a>
 
@@ -951,7 +956,11 @@ document.write(`
 </li>
       </ul></li>
       <li><a href="pauli.html#pytket.pauli.PauliStabiliser.coeff">coeff (pytket.pauli.PauliStabiliser property)</a>
+
+      <ul>
+        <li><a href="pauli.html#pytket.pauli.QubitPauliTensor.coeff">(pytket.pauli.QubitPauliTensor property)</a>
 </li>
+      </ul></li>
       <li><a href="circuit.html#pytket.circuit.Command">Command (class in pytket.circuit)</a>
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.commands_of_type">commands_of_type() (pytket.circuit.Circuit method)</a>
@@ -959,7 +968,11 @@ document.write(`
       <li><a href="predicates.html#pytket.predicates.CommutableMeasuresPredicate">CommutableMeasuresPredicate (class in pytket.predicates)</a>
 </li>
       <li><a href="pauli.html#pytket.pauli.QubitPauliString.commutes_with">commutes_with() (pytket.pauli.QubitPauliString method)</a>
+
+      <ul>
+        <li><a href="pauli.html#pytket.pauli.QubitPauliTensor.commutes_with">(pytket.pauli.QubitPauliTensor method)</a>
 </li>
+      </ul></li>
       <li><a href="transform.html#pytket.transform.Transform.CommuteSQThroughSWAP">CommuteSQThroughSWAP() (pytket.transform.Transform static method)</a>
 </li>
       <li><a href="passes.html#pytket.passes.CommuteThroughMultis">CommuteThroughMultis() (in module pytket.passes)</a>
@@ -989,6 +1002,8 @@ document.write(`
       <li><a href="pauli.html#pytket.pauli.QubitPauliString.compress">compress() (pytket.pauli.QubitPauliString method)</a>
 
       <ul>
+        <li><a href="pauli.html#pytket.pauli.QubitPauliTensor.compress">(pytket.pauli.QubitPauliTensor method)</a>
+</li>
         <li><a href="utils.html#pytket.utils.QubitPauliOperator.compress">(pytket.utils.QubitPauliOperator method)</a>
 </li>
       </ul></li>
@@ -1173,6 +1188,8 @@ document.write(`
       <li><a href="pauli.html#pytket.pauli.QubitPauliString.dot_state">dot_state() (pytket.pauli.QubitPauliString method)</a>
 
       <ul>
+        <li><a href="pauli.html#pytket.pauli.QubitPauliTensor.dot_state">(pytket.pauli.QubitPauliTensor method)</a>
+</li>
         <li><a href="utils.html#pytket.utils.QubitPauliOperator.dot_state">(pytket.utils.QubitPauliOperator method)</a>
 </li>
       </ul></li>
@@ -1308,14 +1325,14 @@ document.write(`
 </li>
       <li><a href="utils.html#pytket.utils.OutcomeArray.from_ints">from_ints() (pytket.utils.OutcomeArray class method)</a>
 </li>
-      <li><a href="circuit.html#pytket.circuit.Bit.from_list">from_list() (pytket.circuit.Bit static method)</a>
+      <li><a href="pauli.html#pytket.pauli.QubitPauliString.from_list">from_list() (pytket.pauli.QubitPauliString static method)</a>
 
       <ul>
-        <li><a href="circuit.html#pytket.circuit.Node.from_list">(pytket.circuit.Node static method)</a>
+        <li><a href="unit_id.html#pytket.unit_id.Bit.from_list">(pytket.unit_id.Bit static method)</a>
 </li>
-        <li><a href="circuit.html#pytket.circuit.Qubit.from_list">(pytket.circuit.Qubit static method)</a>
+        <li><a href="unit_id.html#pytket.unit_id.Node.from_list">(pytket.unit_id.Node static method)</a>
 </li>
-        <li><a href="pauli.html#pytket.pauli.QubitPauliString.from_list">(pytket.pauli.QubitPauliString static method)</a>
+        <li><a href="unit_id.html#pytket.unit_id.Qubit.from_list">(pytket.unit_id.Qubit static method)</a>
 </li>
         <li><a href="utils.html#pytket.utils.QubitPauliOperator.from_list">(pytket.utils.QubitPauliOperator class method)</a>
 </li>
@@ -1368,6 +1385,16 @@ document.write(`
       </ul></li>
       <li><a href="backends.html#pytket.backends.backendresult.BackendResult.get_bitlist">get_bitlist() (pytket.backends.backendresult.BackendResult method)</a>
 </li>
+      <li><a href="circuit.html#pytket.circuit.MultiplexedRotationBox.get_bitstring_op_pair_list">get_bitstring_op_pair_list() (pytket.circuit.MultiplexedRotationBox method)</a>
+
+      <ul>
+        <li><a href="circuit.html#pytket.circuit.MultiplexedTensoredU2Box.get_bitstring_op_pair_list">(pytket.circuit.MultiplexedTensoredU2Box method)</a>
+</li>
+        <li><a href="circuit.html#pytket.circuit.MultiplexedU2Box.get_bitstring_op_pair_list">(pytket.circuit.MultiplexedU2Box method)</a>
+</li>
+        <li><a href="circuit.html#pytket.circuit.MultiplexorBox.get_bitstring_op_pair_list">(pytket.circuit.MultiplexorBox method)</a>
+</li>
+      </ul></li>
       <li><a href="zx.html#pytket.zx.ZXDiagram.get_boundary">get_boundary() (pytket.zx.ZXDiagram method)</a>
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.get_c_register">get_c_register() (pytket.circuit.Circuit method)</a>
@@ -1422,6 +1449,10 @@ document.write(`
 </li>
       <li><a href="config.html#pytket.config.get_config_file_path">get_config_file_path() (in module pytket.config)</a>
 </li>
+      <li><a href="circuit.html#pytket.circuit.QControlBox.get_control_state">get_control_state() (pytket.circuit.QControlBox method)</a>
+</li>
+      <li><a href="circuit.html#pytket.circuit.QControlBox.get_control_state_bits">get_control_state_bits() (pytket.circuit.QControlBox method)</a>
+</li>
       <li><a href="backends.html#pytket.backends.backendresult.BackendResult.get_counts">get_counts() (pytket.backends.backendresult.BackendResult method)</a>
 </li>
       <li><a href="circuit.html#pytket.circuit.PauliExpBox.get_cx_config">get_cx_config() (pytket.circuit.PauliExpBox method)</a>
@@ -1458,14 +1489,14 @@ document.write(`
       </ul></li>
       <li><a href="passes.html#pytket.passes.RepeatWithMetricPass.get_metric">get_metric() (pytket.passes.RepeatWithMetricPass method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="backends.html#pytket.backends.backendinfo.BackendInfo.get_misc">get_misc() (pytket.backends.backendinfo.BackendInfo method)</a>
 </li>
       <li><a href="circuit.html#pytket.circuit.QControlBox.get_n_controls">get_n_controls() (pytket.circuit.QControlBox method)</a>
 </li>
       <li><a href="circuit.html#pytket.circuit.ClassicalExpBox.get_n_i">get_n_i() (pytket.circuit.ClassicalExpBox method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="circuit.html#pytket.circuit.ClassicalExpBox.get_n_io">get_n_io() (pytket.circuit.ClassicalExpBox method)</a>
 </li>
       <li><a href="circuit.html#pytket.circuit.ClassicalExpBox.get_n_o">get_n_o() (pytket.circuit.ClassicalExpBox method)</a>
@@ -1624,7 +1655,7 @@ document.write(`
 </li>
       <li><a href="predicates.html#pytket.predicates.Predicate.implies">implies() (pytket.predicates.Predicate method)</a>
 </li>
-      <li><a href="circuit.html#pytket.circuit.UnitID.index">index (pytket.circuit.UnitID property)</a>
+      <li><a href="unit_id.html#pytket.unit_id.UnitID.index">index (pytket.unit_id.UnitID property)</a>
 </li>
       <li><a href="predicates.html#pytket.predicates.CompilationUnit.initial_map">initial_map (pytket.predicates.CompilationUnit property)</a>
 </li>
@@ -1632,11 +1663,13 @@ document.write(`
 </li>
       <li><a href="zx.html#pytket.zx.Rewrite.internalise_gadgets">internalise_gadgets() (pytket.zx.Rewrite static method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="partition.html#pytket.partition.MeasurementBitMap.invert">invert (pytket.partition.MeasurementBitMap property)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="zx.html#pytket.zx.Rewrite.io_extension">io_extension() (pytket.zx.Rewrite static method)</a>
+</li>
+      <li><a href="circuit.html#pytket.circuit.Op.is_clifford">is_clifford() (pytket.circuit.Op method)</a>
 </li>
       <li><a href="circuit.html#pytket.circuit.Op.is_clifford_type">is_clifford_type() (pytket.circuit.Op method)</a>
 </li>
@@ -1776,6 +1809,8 @@ document.write(`
 </li>
         <li><a href="transform.html#module-pytket.transform">pytket.transform</a>
 </li>
+        <li><a href="unit_id.html#module-pytket.unit_id">pytket.unit_id</a>
+</li>
         <li><a href="zx.html#module-pytket.zx">pytket.zx</a>
 </li>
         <li><a href="backends.html#module-pytket.backends">pytket.backends</a>
@@ -1886,17 +1921,11 @@ document.write(`
       <li><a href="circuit.html#pytket.circuit.BasisOrder.name">name (pytket.circuit.BasisOrder property)</a>
 
       <ul>
-        <li><a href="circuit.html#pytket.circuit.BitRegister.name">(pytket.circuit.BitRegister property)</a>
-</li>
         <li><a href="circuit.html#pytket.circuit.CustomGate.name">(pytket.circuit.CustomGate property)</a>
 </li>
         <li><a href="circuit.html#pytket.circuit.CustomGateDef.name">(pytket.circuit.CustomGateDef property)</a>
 </li>
         <li><a href="optype.html#pytket.circuit.OpType.name">(pytket.circuit.OpType property)</a>
-</li>
-        <li><a href="circuit.html#pytket.circuit.QubitRegister.name">(pytket.circuit.QubitRegister property)</a>
-</li>
-        <li><a href="circuit.html#pytket.circuit.UnitType.name">(pytket.circuit.UnitType property)</a>
 </li>
         <li><a href="logging.html#pytket.logging.level.name">(pytket.logging.level property)</a>
 </li>
@@ -1911,6 +1940,12 @@ document.write(`
         <li><a href="pauli.html#pytket.pauli.Pauli.name">(pytket.pauli.Pauli property)</a>
 </li>
         <li><a href="transform.html#pytket.transform.PauliSynthStrat.name">(pytket.transform.PauliSynthStrat property)</a>
+</li>
+        <li><a href="unit_id.html#pytket.unit_id.BitRegister.name">(pytket.unit_id.BitRegister property)</a>
+</li>
+        <li><a href="unit_id.html#pytket.unit_id.QubitRegister.name">(pytket.unit_id.QubitRegister property)</a>
+</li>
+        <li><a href="unit_id.html#pytket.unit_id.UnitType.name">(pytket.unit_id.UnitType property)</a>
 </li>
         <li><a href="zx.html#pytket.zx.QuantumType.name">(pytket.zx.QuantumType property)</a>
 </li>
@@ -1937,7 +1972,7 @@ document.write(`
 </li>
       <li><a href="predicates.html#pytket.predicates.NoClassicalControlPredicate">NoClassicalControlPredicate (class in pytket.predicates)</a>
 </li>
-      <li><a href="circuit.html#pytket.circuit.Node">Node (class in pytket.circuit)</a>
+      <li><a href="unit_id.html#pytket.unit_id.Node">Node (class in pytket.unit_id)</a>
 </li>
       <li><a href="architecture.html#pytket.architecture.Architecture.nodes">nodes (pytket.architecture.Architecture property)</a>
 
@@ -1983,8 +2018,6 @@ document.write(`
   <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="zx.html#pytket.zx.Flow.odd">odd() (pytket.zx.Flow method)</a>
 </li>
-      <li><a href="circuit.html#pytket.circuit.Bit.oldeq">oldeq() (pytket.circuit.Bit method)</a>
-</li>
       <li><a href="circuit.html#pytket.circuit.Op">Op (class in pytket.circuit)</a>
 </li>
       <li><a href="circuit.html#pytket.circuit.Command.op">op (pytket.circuit.Command property)</a>
@@ -2003,14 +2036,14 @@ document.write(`
 </li>
       <li><a href="transform.html#pytket.transform.Transform.OptimisePauliGadgets">OptimisePauliGadgets() (pytket.transform.Transform static method)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="passes.html#pytket.passes.OptimisePhaseGadgets">OptimisePhaseGadgets() (in module pytket.passes)</a>
 
       <ul>
         <li><a href="transform.html#pytket.transform.Transform.OptimisePhaseGadgets">(pytket.transform.Transform static method)</a>
 </li>
       </ul></li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="transform.html#pytket.transform.Transform.OptimisePostRouting">OptimisePostRouting() (pytket.transform.Transform static method)</a>
 </li>
       <li><a href="transform.html#pytket.transform.Transform.OptimiseStandard">OptimiseStandard() (pytket.transform.Transform static method)</a>
@@ -2086,6 +2119,8 @@ document.write(`
       <li><a href="circuit_class.html#pytket.circuit.Circuit.Phase">Phase() (pytket.circuit.Circuit method)</a>
 </li>
       <li><a href="circuit.html#pytket.circuit.PhasePolyBox.phase_polynomial">phase_polynomial (pytket.circuit.PhasePolyBox property)</a>
+</li>
+      <li><a href="circuit.html#pytket.circuit.PhasePolyBox.phase_polynomial_as_list">phase_polynomial_as_list (pytket.circuit.PhasePolyBox property)</a>
 </li>
       <li><a href="zx.html#pytket.zx.PhasedGen">PhasedGen (class in pytket.zx)</a>
 </li>
@@ -2217,6 +2252,13 @@ document.write(`
 
       <ul>
         <li><a href="transform.html#module-pytket.transform">module</a>
+</li>
+      </ul></li>
+      <li>
+    pytket.unit_id
+
+      <ul>
+        <li><a href="unit_id.html#module-pytket.unit_id">module</a>
 </li>
       </ul></li>
       <li>
@@ -2372,7 +2414,7 @@ document.write(`
 </li>
       <li><a href="zx.html#pytket.zx.QuantumType">QuantumType (class in pytket.zx)</a>
 </li>
-      <li><a href="circuit.html#pytket.circuit.Qubit">Qubit (class in pytket.circuit)</a>
+      <li><a href="unit_id.html#pytket.unit_id.Qubit">Qubit (class in pytket.unit_id)</a>
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.qubit_create">qubit_create() (pytket.circuit.Circuit method)</a>
 </li>
@@ -2384,10 +2426,10 @@ document.write(`
 </li>
       <li><a href="circuit.html#pytket.circuit.PhasePolyBox.qubit_indices">qubit_indices (pytket.circuit.PhasePolyBox property)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.qubit_is_created">qubit_is_created() (pytket.circuit.Circuit method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.qubit_is_discarded">qubit_is_discarded() (pytket.circuit.Circuit method)</a>
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.qubit_readout">qubit_readout (pytket.circuit.Circuit property)</a>
@@ -2398,7 +2440,9 @@ document.write(`
 </li>
       <li><a href="pauli.html#pytket.pauli.QubitPauliString">QubitPauliString (class in pytket.pauli)</a>
 </li>
-      <li><a href="circuit.html#pytket.circuit.QubitRegister">QubitRegister (class in pytket.circuit)</a>
+      <li><a href="pauli.html#pytket.pauli.QubitPauliTensor">QubitPauliTensor (class in pytket.pauli)</a>
+</li>
+      <li><a href="unit_id.html#pytket.unit_id.QubitRegister">QubitRegister (class in pytket.unit_id)</a>
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.qubits">qubits (pytket.circuit.Circuit property)</a>
 
@@ -2464,7 +2508,7 @@ document.write(`
 </li>
       <li><a href="classical.html#pytket.circuit.logic_exp.reg_lt">reg_lt() (in module pytket.circuit.logic_exp)</a>
 </li>
-      <li><a href="circuit.html#pytket.circuit.UnitID.reg_name">reg_name (pytket.circuit.UnitID property)</a>
+      <li><a href="unit_id.html#pytket.unit_id.UnitID.reg_name">reg_name (pytket.unit_id.UnitID property)</a>
 </li>
       <li><a href="classical.html#pytket.circuit.logic_exp.reg_neq">reg_neq() (in module pytket.circuit.logic_exp)</a>
 </li>
@@ -2666,10 +2710,10 @@ document.write(`
 </li>
       <li><a href="passes.html#pytket.passes.SimplifyMeasured">SimplifyMeasured() (in module pytket.passes)</a>
 </li>
-      <li><a href="circuit.html#pytket.circuit.BitRegister.size">size (pytket.circuit.BitRegister property)</a>
+      <li><a href="unit_id.html#pytket.unit_id.BitRegister.size">size (pytket.unit_id.BitRegister property)</a>
 
       <ul>
-        <li><a href="circuit.html#pytket.circuit.QubitRegister.size">(pytket.circuit.QubitRegister property)</a>
+        <li><a href="unit_id.html#pytket.unit_id.QubitRegister.size">(pytket.unit_id.QubitRegister property)</a>
 </li>
       </ul></li>
       <li><a href="utils.html#pytket.utils.spam.SpamCorrecter">SpamCorrecter (class in pytket.utils.spam)</a>
@@ -2682,10 +2726,10 @@ document.write(`
 </li>
       <li><a href="passes.html#pytket.passes.SquashRzPhasedX">SquashRzPhasedX() (in module pytket.passes)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="passes.html#pytket.passes.SquashTK1">SquashTK1() (in module pytket.passes)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="architecture.html#pytket.architecture.SquareGrid.squind_to_qind">squind_to_qind() (pytket.architecture.SquareGrid method)</a>
 </li>
       <li><a href="circuit.html#pytket.circuit.StabiliserAssertionBox">StabiliserAssertionBox (class in pytket.circuit)</a>
@@ -2695,6 +2739,8 @@ document.write(`
       <li><a href="pauli.html#pytket.pauli.QubitPauliString.state_expectation">state_expectation() (pytket.pauli.QubitPauliString method)</a>
 
       <ul>
+        <li><a href="pauli.html#pytket.pauli.QubitPauliTensor.state_expectation">(pytket.pauli.QubitPauliTensor method)</a>
+</li>
         <li><a href="utils.html#pytket.utils.QubitPauliOperator.state_expectation">(pytket.utils.QubitPauliOperator method)</a>
 </li>
       </ul></li>
@@ -2705,7 +2751,11 @@ document.write(`
       <li><a href="backends.html#pytket.backends.backendresult.StoredResult">StoredResult (class in pytket.backends.backendresult)</a>
 </li>
       <li><a href="pauli.html#pytket.pauli.PauliStabiliser.string">string (pytket.pauli.PauliStabiliser property)</a>
+
+      <ul>
+        <li><a href="pauli.html#pytket.pauli.QubitPauliTensor.string">(pytket.pauli.QubitPauliTensor property)</a>
 </li>
+      </ul></li>
       <li><a href="classical.html#pytket.circuit.logic_exp.RegWiseOp.SUB">SUB (pytket.circuit.logic_exp.RegWiseOp attribute)</a>
 </li>
       <li><a href="backends.html#pytket.backends.status.StatusEnum.SUBMITTED">SUBMITTED (pytket.backends.status.StatusEnum attribute)</a>
@@ -2786,8 +2836,12 @@ document.write(`
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.TK2">TK2() (pytket.circuit.Circuit method)</a>
 </li>
-      <li><a href="zx.html#pytket.zx.ZXDiagram.to_circuit">to_circuit() (pytket.zx.ZXDiagram method)</a>
+      <li><a href="tableau.html#pytket.tableau.UnitaryTableau.to_circuit">to_circuit() (pytket.tableau.UnitaryTableau method)</a>
+
+      <ul>
+        <li><a href="zx.html#pytket.zx.ZXDiagram.to_circuit">(pytket.zx.ZXDiagram method)</a>
 </li>
+      </ul></li>
       <li><a href="architecture.html#pytket.architecture.Architecture.to_dict">to_dict() (pytket.architecture.Architecture method)</a>
 
       <ul>
@@ -2834,14 +2888,18 @@ document.write(`
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.to_latex_file">to_latex_file() (pytket.circuit.Circuit method)</a>
 </li>
-      <li><a href="circuit.html#pytket.circuit.Bit.to_list">to_list() (pytket.circuit.Bit method)</a>
+      <li><a href="pauli.html#pytket.pauli.QubitPauliString.to_list">to_list() (pytket.pauli.QubitPauliString method)</a>
 
       <ul>
-        <li><a href="circuit.html#pytket.circuit.Node.to_list">(pytket.circuit.Node method)</a>
+        <li><a href="unit_id.html#pytket.unit_id.Bit.to_list">(pytket.unit_id.Bit method)</a>
 </li>
-        <li><a href="circuit.html#pytket.circuit.Qubit.to_list">(pytket.circuit.Qubit method)</a>
+        <li><a href="unit_id.html#pytket.unit_id.BitRegister.to_list">(pytket.unit_id.BitRegister method)</a>
 </li>
-        <li><a href="pauli.html#pytket.pauli.QubitPauliString.to_list">(pytket.pauli.QubitPauliString method)</a>
+        <li><a href="unit_id.html#pytket.unit_id.Node.to_list">(pytket.unit_id.Node method)</a>
+</li>
+        <li><a href="unit_id.html#pytket.unit_id.Qubit.to_list">(pytket.unit_id.Qubit method)</a>
+</li>
+        <li><a href="unit_id.html#pytket.unit_id.QubitRegister.to_list">(pytket.unit_id.QubitRegister method)</a>
 </li>
         <li><a href="utils.html#pytket.utils.QubitPauliOperator.to_list">(pytket.utils.QubitPauliOperator method)</a>
 </li>
@@ -2855,6 +2913,8 @@ document.write(`
       <li><a href="pauli.html#pytket.pauli.QubitPauliString.to_sparse_matrix">to_sparse_matrix() (pytket.pauli.QubitPauliString method)</a>
 
       <ul>
+        <li><a href="pauli.html#pytket.pauli.QubitPauliTensor.to_sparse_matrix">(pytket.pauli.QubitPauliTensor method)</a>
+</li>
         <li><a href="utils.html#pytket.utils.QubitPauliOperator.to_sparse_matrix">(pytket.utils.QubitPauliOperator method)</a>
 </li>
       </ul></li>
@@ -2871,7 +2931,7 @@ document.write(`
       <li><a href="circuit.html#pytket.circuit.Op.type">type (pytket.circuit.Op property)</a>
 
       <ul>
-        <li><a href="circuit.html#pytket.circuit.UnitID.type">(pytket.circuit.UnitID property)</a>
+        <li><a href="unit_id.html#pytket.unit_id.UnitID.type">(pytket.unit_id.UnitID property)</a>
 </li>
         <li><a href="zx.html#pytket.zx.ZXGen.type">(pytket.zx.ZXGen property)</a>
 </li>
@@ -2906,9 +2966,9 @@ document.write(`
 </li>
       <li><a href="tableau.html#pytket.tableau.UnitaryTableauBox">UnitaryTableauBox (class in pytket.tableau)</a>
 </li>
-      <li><a href="circuit.html#pytket.circuit.UnitID">UnitID (class in pytket.circuit)</a>
+      <li><a href="unit_id.html#pytket.unit_id.UnitID">UnitID (class in pytket.unit_id)</a>
 </li>
-      <li><a href="circuit.html#pytket.circuit.UnitType">UnitType (class in pytket.circuit)</a>
+      <li><a href="unit_id.html#pytket.unit_id.UnitType">UnitType (class in pytket.unit_id)</a>
 </li>
       <li><a href="tailoring.html#pytket.tailoring.UniversalFrameRandomisation">UniversalFrameRandomisation (class in pytket.tailoring)</a>
 </li>

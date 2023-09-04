@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>pytket.predicates &#8212; pytket 1.18.0 documentation</title>
+    <title>pytket.predicates &#8212; pytket 1.19.0 documentation</title>
   
   
   
@@ -160,6 +160,7 @@
 <li class="toctree-l2"><a class="reference internal" href="display.html">pytket.circuit.display</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="unit_id.html">pytket.unit_id</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pauli.html">pytket.pauli</a></li>
 <li class="toctree-l1"><a class="reference internal" href="passes.html">pytket.passes</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">pytket.predicates</a></li>
@@ -755,7 +756,7 @@ document.write(`
 </ol>
 <p>Construct from an <code class="xref py py-class docutils literal notranslate"><span class="pre">Architecture</span></code>.</p>
 <ol class="arabic simple" start="2">
-<li><p>__init__(self: pytket.predicates.PlacementPredicate, nodes: Set[pytket.circuit.Node]) -&gt; None</p></li>
+<li><p>__init__(self: pytket.predicates.PlacementPredicate, nodes: Set[pytket.unit_id.Node]) -&gt; None</p></li>
 </ol>
 <p>Construct from a set of Node.</p>
 </dd></dl>
@@ -773,7 +774,7 @@ document.write(`
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pytket.predicates.Predicate.from_dict">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">json</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.predicates.Predicate" title="pytket.predicates.Predicate"><span class="pre">pytket.predicates.Predicate</span></a></span></span><a class="headerlink" href="#pytket.predicates.Predicate.from_dict" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">dict</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.predicates.Predicate" title="pytket.predicates.Predicate"><span class="pre">pytket.predicates.Predicate</span></a></span></span><a class="headerlink" href="#pytket.predicates.Predicate.from_dict" title="Permalink to this definition">#</a></dt>
 <dd><p>Construct Predicate instance from JSON serializable dict representation of the Predicate.</p>
 </dd></dl>
 
@@ -789,7 +790,7 @@ document.write(`
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pytket.predicates.Predicate.to_dict">
-<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.predicates.Predicate" title="pytket.predicates.Predicate"><span class="pre">pytket.predicates.Predicate</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">json</span></span></span><a class="headerlink" href="#pytket.predicates.Predicate.to_dict" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">to_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.predicates.Predicate" title="pytket.predicates.Predicate"><span class="pre">pytket.predicates.Predicate</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">dict</span></span></span><a class="headerlink" href="#pytket.predicates.Predicate.to_dict" title="Permalink to this definition">#</a></dt>
 <dd><p>Return a JSON serializable dict representation of the Predicate.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>

@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pytket.utils.graph &#8212; pytket 1.18.0 documentation</title>
+    <title>pytket.utils.graph &#8212; pytket 1.19.0 documentation</title>
   
   
   
@@ -157,6 +157,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../display.html">pytket.circuit.display</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../../unit_id.html">pytket.unit_id</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../pauli.html">pytket.pauli</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../passes.html">pytket.passes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../predicates.html">pytket.predicates</a></li>
@@ -339,9 +340,12 @@ document.write(`
 <span class="kn">from</span> <span class="nn">collections</span> <span class="kn">import</span> <span class="n">defaultdict</span>
 <span class="kn">from</span> <span class="nn">itertools</span> <span class="kn">import</span> <span class="n">combinations</span>
 <span class="kn">from</span> <span class="nn">tempfile</span> <span class="kn">import</span> <span class="n">NamedTemporaryFile</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span>
+
 <span class="kn">import</span> <span class="nn">networkx</span> <span class="k">as</span> <span class="nn">nx</span>  <span class="c1"># type: ignore</span>
 <span class="kn">import</span> <span class="nn">graphviz</span> <span class="k">as</span> <span class="nn">gv</span>  <span class="c1"># type: ignore</span>
-<span class="kn">from</span> <span class="nn">pytket.circuit</span> <span class="kn">import</span> <span class="n">Circuit</span>  <span class="c1"># type: ignore</span>
+
+<span class="kn">from</span> <span class="nn">pytket.circuit</span> <span class="kn">import</span> <span class="n">Circuit</span>
 
 
 <div class="viewcode-block" id="Graph"><a class="viewcode-back" href="../../../utils.html#pytket.utils.Graph">[docs]</a><span class="k">class</span> <span class="nc">Graph</span><span class="p">:</span>
@@ -378,10 +382,12 @@ document.write(`
         <span class="bp">self</span><span class="o">.</span><span class="n">input_names</span> <span class="o">=</span> <span class="n">input_names</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">output_names</span> <span class="o">=</span> <span class="n">output_names</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">node_data</span> <span class="o">=</span> <span class="n">node_data</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">Gnx</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">G</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">Gqc</span> <span class="o">=</span> <span class="kc">None</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">edge_data</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Gnx</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">nx</span><span class="o">.</span><span class="n">MultiDiGraph</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">G</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">Digraph</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">Gqc</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="n">gv</span><span class="o">.</span><span class="n">Graph</span><span class="p">]</span> <span class="o">=</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">edge_data</span><span class="p">:</span> <span class="nb">dict</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">],</span> <span class="nb">list</span><span class="p">[</span><span class="nb">tuple</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">int</span><span class="p">,</span> <span class="nb">str</span><span class="p">]]]</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span>
+            <span class="nb">list</span>
+        <span class="p">)</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">port_counts</span><span class="p">:</span> <span class="nb">dict</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">src_node</span><span class="p">,</span> <span class="n">tgt_node</span><span class="p">,</span> <span class="n">src_port</span><span class="p">,</span> <span class="n">tgt_port</span><span class="p">,</span> <span class="n">edge_type</span> <span class="ow">in</span> <span class="n">edge_data</span><span class="p">:</span>
             <span class="bp">self</span><span class="o">.</span><span class="n">edge_data</span><span class="p">[(</span><span class="n">src_node</span><span class="p">,</span> <span class="n">tgt_node</span><span class="p">)]</span><span class="o">.</span><span class="n">append</span><span class="p">((</span><span class="n">src_port</span><span class="p">,</span> <span class="n">tgt_port</span><span class="p">,</span> <span class="n">edge_type</span><span class="p">))</span>
@@ -395,7 +401,7 @@ document.write(`
 <span class="sd">        :rtype:     networkx.MultiDiGraph</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gnx</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gnx</span>  <span class="c1"># type: ignore</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gnx</span>
         <span class="n">Gnx</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">MultiDiGraph</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">node</span><span class="p">,</span> <span class="n">desc</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">node_data</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
             <span class="n">Gnx</span><span class="o">.</span><span class="n">add_node</span><span class="p">(</span><span class="n">node</span><span class="p">,</span> <span class="n">desc</span><span class="o">=</span><span class="n">desc</span><span class="p">)</span>
@@ -450,7 +456,7 @@ document.write(`
 <span class="sd">        :rtype:     graphviz.DiGraph</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">G</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">G</span>  <span class="c1"># type: ignore</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">G</span>
         <span class="n">G</span> <span class="o">=</span> <span class="n">gv</span><span class="o">.</span><span class="n">Digraph</span><span class="p">(</span>
             <span class="s2">&quot;Circuit&quot;</span><span class="p">,</span>
             <span class="n">strict</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
@@ -543,10 +549,10 @@ document.write(`
                         <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_ports</span><span class="p">):</span>
                             <span class="n">c</span><span class="o">.</span><span class="n">node</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="nb">str</span><span class="p">((</span><span class="n">node</span><span class="p">,</span> <span class="n">i</span><span class="p">)),</span> <span class="n">xlabel</span><span class="o">=</span><span class="nb">str</span><span class="p">(</span><span class="n">i</span><span class="p">),</span> <span class="o">**</span><span class="n">port_node_attr</span><span class="p">)</span>
         <span class="n">edge_colors</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="mi">0</span><span class="p">:</span> <span class="n">q_color</span><span class="p">,</span>  <span class="c1"># Quantum</span>
-            <span class="mi">1</span><span class="p">:</span> <span class="n">b_color</span><span class="p">,</span>  <span class="c1"># Boolean</span>
-            <span class="mi">2</span><span class="p">:</span> <span class="n">c_color</span><span class="p">,</span>  <span class="c1"># Classical</span>
-            <span class="mi">3</span><span class="p">:</span> <span class="n">w_color</span><span class="p">,</span>  <span class="c1"># WASM (and other)</span>
+            <span class="s2">&quot;Quantum&quot;</span><span class="p">:</span> <span class="n">q_color</span><span class="p">,</span>
+            <span class="s2">&quot;Boolean&quot;</span><span class="p">:</span> <span class="n">b_color</span><span class="p">,</span>
+            <span class="s2">&quot;Classical&quot;</span><span class="p">:</span> <span class="n">c_color</span><span class="p">,</span>
+            <span class="s2">&quot;WASM&quot;</span><span class="p">:</span> <span class="n">w_color</span><span class="p">,</span>
         <span class="p">}</span>
         <span class="n">edge_attr</span> <span class="o">=</span> <span class="p">{</span>
             <span class="s2">&quot;weight&quot;</span><span class="p">:</span> <span class="s2">&quot;2&quot;</span><span class="p">,</span>
@@ -606,7 +612,7 @@ document.write(`
 <span class="sd">        :rtype:     graphviz.Graph</span>
 <span class="sd">        &quot;&quot;&quot;</span>
         <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gqc</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gqc</span>  <span class="c1"># type: ignore</span>
+            <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">Gqc</span>
         <span class="n">Gnx</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">as_nx</span><span class="p">()</span>
         <span class="n">Gqcnx</span> <span class="o">=</span> <span class="n">nx</span><span class="o">.</span><span class="n">Graph</span><span class="p">()</span>
         <span class="k">for</span> <span class="n">node</span> <span class="ow">in</span> <span class="n">Gnx</span><span class="o">.</span><span class="n">nodes</span><span class="p">():</span>

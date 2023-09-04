@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>pytket &#8212; pytket 1.18.0 documentation</title>
+    <title>pytket &#8212; pytket 1.19.0 documentation</title>
   
   
   
@@ -159,6 +159,7 @@
 <li class="toctree-l2"><a class="reference internal" href="display.html">pytket.circuit.display</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="unit_id.html">pytket.unit_id</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pauli.html">pytket.pauli</a></li>
 <li class="toctree-l1"><a class="reference internal" href="passes.html">pytket.passes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="predicates.html">pytket.predicates</a></li>
@@ -481,13 +482,6 @@ representations, or some new backends to submit circuits to within <code class="
 <li class="toctree-l2"><a class="reference internal" href="circuit.html#pytket.circuit.fresh_symbol"><code class="docutils literal notranslate"><span class="pre">fresh_symbol()</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="circuit.html#pytket.circuit.Op"><code class="docutils literal notranslate"><span class="pre">Op</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="circuit.html#pytket.circuit.Command"><code class="docutils literal notranslate"><span class="pre">Command</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="circuit.html#pytket.circuit.UnitType"><code class="docutils literal notranslate"><span class="pre">UnitType</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="circuit.html#pytket.circuit.UnitID"><code class="docutils literal notranslate"><span class="pre">UnitID</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="circuit.html#pytket.circuit.Qubit"><code class="docutils literal notranslate"><span class="pre">Qubit</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="circuit.html#pytket.circuit.Bit"><code class="docutils literal notranslate"><span class="pre">Bit</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="circuit.html#pytket.circuit.Node"><code class="docutils literal notranslate"><span class="pre">Node</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="circuit.html#pytket.circuit.QubitRegister"><code class="docutils literal notranslate"><span class="pre">QubitRegister</span></code></a></li>
-<li class="toctree-l2"><a class="reference internal" href="circuit.html#pytket.circuit.BitRegister"><code class="docutils literal notranslate"><span class="pre">BitRegister</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="circuit.html#pytket.circuit.BasisOrder"><code class="docutils literal notranslate"><span class="pre">BasisOrder</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="circuit.html#pytket.circuit.CircBox"><code class="docutils literal notranslate"><span class="pre">CircBox</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="circuit.html#pytket.circuit.Unitary1qBox"><code class="docutils literal notranslate"><span class="pre">Unitary1qBox</span></code></a></li>
@@ -519,10 +513,21 @@ representations, or some new backends to submit circuits to within <code class="
 <li class="toctree-l2"><a class="reference internal" href="circuit.html#pytket.circuit.DiagonalBox"><code class="docutils literal notranslate"><span class="pre">DiagonalBox</span></code></a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="unit_id.html">pytket.unit_id</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="unit_id.html#pytket.unit_id.Bit"><code class="docutils literal notranslate"><span class="pre">Bit</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="unit_id.html#pytket.unit_id.BitRegister"><code class="docutils literal notranslate"><span class="pre">BitRegister</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="unit_id.html#pytket.unit_id.Node"><code class="docutils literal notranslate"><span class="pre">Node</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="unit_id.html#pytket.unit_id.Qubit"><code class="docutils literal notranslate"><span class="pre">Qubit</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="unit_id.html#pytket.unit_id.QubitRegister"><code class="docutils literal notranslate"><span class="pre">QubitRegister</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="unit_id.html#pytket.unit_id.UnitID"><code class="docutils literal notranslate"><span class="pre">UnitID</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="unit_id.html#pytket.unit_id.UnitType"><code class="docutils literal notranslate"><span class="pre">UnitType</span></code></a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference internal" href="pauli.html">pytket.pauli</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="pauli.html#pytket.pauli.Pauli"><code class="docutils literal notranslate"><span class="pre">Pauli</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="pauli.html#pytket.pauli.PauliStabiliser"><code class="docutils literal notranslate"><span class="pre">PauliStabiliser</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="pauli.html#pytket.pauli.QubitPauliString"><code class="docutils literal notranslate"><span class="pre">QubitPauliString</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="pauli.html#pytket.pauli.QubitPauliTensor"><code class="docutils literal notranslate"><span class="pre">QubitPauliTensor</span></code></a></li>
 <li class="toctree-l2"><a class="reference internal" href="pauli.html#pytket.pauli.pauli_string_mult"><code class="docutils literal notranslate"><span class="pre">pauli_string_mult()</span></code></a></li>
 </ul>
 </li>

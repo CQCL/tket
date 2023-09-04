@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>pytket.wasm &#8212; pytket 1.18.0 documentation</title>
+    <title>pytket.wasm &#8212; pytket 1.19.0 documentation</title>
   
   
   
@@ -160,6 +160,7 @@
 <li class="toctree-l2"><a class="reference internal" href="display.html">pytket.circuit.display</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="unit_id.html">pytket.unit_id</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pauli.html">pytket.pauli</a></li>
 <li class="toctree-l1"><a class="reference internal" href="passes.html">pytket.passes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="predicates.html">pytket.predicates</a></li>
@@ -393,13 +394,13 @@ document.write(`
 <p>Handler for wasm files in pytket</p>
 <dl class="py class">
 <dt class="sig sig-object py" id="pytket.wasm.WasmFileHandler">
-<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pytket.wasm.</span></span><span class="sig-name descname"><span class="pre">WasmFileHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pytket/wasm/wasm.html#WasmFileHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pytket.wasm.WasmFileHandler" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pytket.wasm.</span></span><span class="sig-name descname"><span class="pre">WasmFileHandler</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">32</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pytket/wasm/wasm.html#WasmFileHandler"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pytket.wasm.WasmFileHandler" title="Permalink to this definition">#</a></dt>
 <dd><p>Add a wasm file to your workflow, stores a copy of the file and
 checks the function signatures of the file. Offers function to add
 a wasm op to a circuit</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pytket.wasm.WasmFileHandler.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pytket/wasm/wasm.html#WasmFileHandler.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pytket.wasm.WasmFileHandler.__init__" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filepath</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">check_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">int_size</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">32</span></span></em><span class="sig-paren">)</span><a class="reference internal" href="_modules/pytket/wasm/wasm.html#WasmFileHandler.__init__"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pytket.wasm.WasmFileHandler.__init__" title="Permalink to this definition">#</a></dt>
 <dd><p>Construct a wasm file handler</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -407,6 +408,7 @@ a wasm op to a circuit</p>
 <li><p><strong>filepath</strong> (<em>str</em>) – Path to the wasm file</p></li>
 <li><p><strong>check_file</strong> (<em>bool</em>) – If <code class="docutils literal notranslate"><span class="pre">True</span></code> checks file for compatibility with wasm
 standards. If <code class="docutils literal notranslate"><span class="pre">False</span></code> checks are skipped.</p></li>
+<li><p><strong>int_size</strong> (<em>int</em>) – length of the integer that is used in the wasm file</p></li>
 </ul>
 </dd>
 </dl>
@@ -432,8 +434,8 @@ standards. If <code class="docutils literal notranslate"><span class="pre">False
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
 <dd class="field-odd"><ul class="simple">
 <li><p><strong>function_name</strong> (<em>str</em>) – name of the function that is checked</p></li>
-<li><p><strong>number_of_parameters</strong> (<em>int</em>) – number of i32 parameters of the function</p></li>
-<li><p><strong>number_of_returns</strong> (<em>int</em>) – number of i32 return values of the function</p></li>
+<li><p><strong>number_of_parameters</strong> (<em>int</em>) – number of integer parameters of the function</p></li>
+<li><p><strong>number_of_returns</strong> (<em>int</em>) – number of integer return values of the function</p></li>
 </ul>
 </dd>
 <dt class="field-even">Returns<span class="colon">:</span></dt>

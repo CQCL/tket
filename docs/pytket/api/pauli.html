@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>pytket.pauli &#8212; pytket 1.18.0 documentation</title>
+    <title>pytket.pauli &#8212; pytket 1.19.0 documentation</title>
   
   
   
@@ -53,7 +53,7 @@
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
     <link rel="next" title="pytket.passes" href="passes.html" />
-    <link rel="prev" title="pytket.circuit.display" href="display.html" />
+    <link rel="prev" title="pytket.unit_id" href="unit_id.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -160,6 +160,7 @@
 <li class="toctree-l2"><a class="reference internal" href="display.html">pytket.circuit.display</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="unit_id.html">pytket.unit_id</a></li>
 <li class="toctree-l1 current active"><a class="current reference internal" href="#">pytket.pauli</a></li>
 <li class="toctree-l1"><a class="reference internal" href="passes.html">pytket.passes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="predicates.html">pytket.predicates</a></li>
@@ -393,6 +394,17 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.pauli.QubitPauliString.map"><code class="docutils literal notranslate"><span class="pre">QubitPauliString.map</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.pauli.QubitPauliTensor"><code class="docutils literal notranslate"><span class="pre">QubitPauliTensor</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.pauli.QubitPauliTensor.__init__"><code class="docutils literal notranslate"><span class="pre">QubitPauliTensor.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.pauli.QubitPauliTensor.commutes_with"><code class="docutils literal notranslate"><span class="pre">QubitPauliTensor.commutes_with()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.pauli.QubitPauliTensor.compress"><code class="docutils literal notranslate"><span class="pre">QubitPauliTensor.compress()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.pauli.QubitPauliTensor.dot_state"><code class="docutils literal notranslate"><span class="pre">QubitPauliTensor.dot_state()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.pauli.QubitPauliTensor.state_expectation"><code class="docutils literal notranslate"><span class="pre">QubitPauliTensor.state_expectation()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.pauli.QubitPauliTensor.to_sparse_matrix"><code class="docutils literal notranslate"><span class="pre">QubitPauliTensor.to_sparse_matrix()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.pauli.QubitPauliTensor.coeff"><code class="docutils literal notranslate"><span class="pre">QubitPauliTensor.coeff</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.pauli.QubitPauliTensor.string"><code class="docutils literal notranslate"><span class="pre">QubitPauliTensor.string</span></code></a></li>
+</ul>
+</li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.pauli.pauli_string_mult"><code class="docutils literal notranslate"><span class="pre">pauli_string_mult()</span></code></a></li>
 </ul>
             </nav>
@@ -438,7 +450,7 @@ document.write(`
 <ol class="arabic simple">
 <li><p>__init__(self: pytket.pauli.PauliStabiliser) -&gt; None</p></li>
 </ol>
-<p>Constructs an empty QubitPauliString.</p>
+<p>Constructs an empty PauliStabiliser.</p>
 <ol class="arabic simple" start="2">
 <li><p>__init__(self: pytket.pauli.PauliStabiliser, string: List[pytket.pauli.Pauli], coeff: int) -&gt; None</p></li>
 </ol>
@@ -472,17 +484,17 @@ document.write(`
 </ol>
 <p>Constructs an empty QubitPauliString.</p>
 <ol class="arabic simple" start="2">
-<li><p>__init__(self: pytket.pauli.QubitPauliString, qubit: pytket.circuit.Qubit, pauli: pytket.pauli.Pauli) -&gt; None</p></li>
+<li><p>__init__(self: pytket.pauli.QubitPauliString, qubit: pytket.unit_id.Qubit, pauli: pytket.pauli.Pauli) -&gt; None</p></li>
 </ol>
 <p>Constructs a QubitPauliString with a single Pauli term.</p>
 <ol class="arabic simple" start="3">
-<li><p>__init__(self: pytket.pauli.QubitPauliString, qubits: List[pytket.circuit.Qubit], paulis: List[pytket.pauli.Pauli]) -&gt; None</p></li>
+<li><p>__init__(self: pytket.pauli.QubitPauliString, qubits: List[pytket.unit_id.Qubit], paulis: List[pytket.pauli.Pauli]) -&gt; None</p></li>
 </ol>
 <p>Constructs a QubitPauliString from two matching lists of Qubits and Paulis.</p>
 <ol class="arabic simple" start="4">
-<li><p>__init__(self: pytket.pauli.QubitPauliString, map: Dict[pytket.circuit.Qubit, pytket.pauli.Pauli]) -&gt; None</p></li>
+<li><p>__init__(self: pytket.pauli.QubitPauliString, map: Dict[pytket.unit_id.Qubit, pytket.pauli.Pauli]) -&gt; None</p></li>
 </ol>
-<p>Construct a QubitPauliString from a QubitPauliMap.</p>
+<p>Construct a QubitPauliString from a dictionary mapping <code class="xref py py-class docutils literal notranslate"><span class="pre">Qubit</span></code> to <a class="reference internal" href="#pytket.pauli.Pauli" title="pytket.pauli.Pauli"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pauli</span></code></a>.</p>
 </dd></dl>
 
 <dl class="py method">
@@ -518,7 +530,7 @@ document.write(`
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>dot_state(self: pytket.pauli.QubitPauliString, state: numpy.ndarray[numpy.complex128[m, 1]], qubits: List[pytket.circuit.Qubit]) -&gt; numpy.ndarray[numpy.complex128[m, 1]]</p></li>
+<li><p>dot_state(self: pytket.pauli.QubitPauliString, state: numpy.ndarray[numpy.complex128[m, 1]], qubits: List[pytket.unit_id.Qubit]) -&gt; numpy.ndarray[numpy.complex128[m, 1]]</p></li>
 </ol>
 <p>Performs the dot product of the state with the pauli string. Maps the qubits of the statevector according to the ordered list <cite>qubits</cite>, with <code class="docutils literal notranslate"><span class="pre">qubits[0]</span></code> being the most significant qubit.</p>
 <dl class="field-list simple">
@@ -536,7 +548,7 @@ document.write(`
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pytket.pauli.QubitPauliString.from_list">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">json</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.pauli.QubitPauliString" title="pytket.pauli.QubitPauliString"><span class="pre">pytket.pauli.QubitPauliString</span></a></span></span><a class="headerlink" href="#pytket.pauli.QubitPauliString.from_list" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">arg0</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.pauli.QubitPauliString" title="pytket.pauli.QubitPauliString"><span class="pre">pytket.pauli.QubitPauliString</span></a></span></span><a class="headerlink" href="#pytket.pauli.QubitPauliString.from_list" title="Permalink to this definition">#</a></dt>
 <dd><p>Construct a new QubitPauliString instance from a JSON serializable list representation.</p>
 </dd></dl>
 
@@ -557,7 +569,7 @@ document.write(`
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>state_expectation(self: pytket.pauli.QubitPauliString, state: numpy.ndarray[numpy.complex128[m, 1]], qubits: List[pytket.circuit.Qubit]) -&gt; complex</p></li>
+<li><p>state_expectation(self: pytket.pauli.QubitPauliString, state: numpy.ndarray[numpy.complex128[m, 1]], qubits: List[pytket.unit_id.Qubit]) -&gt; complex</p></li>
 </ol>
 <p>Calculates the expectation value of the state with the pauli string. Maps the qubits of the statevector according to the ordered list <cite>qubits</cite>, with <code class="docutils literal notranslate"><span class="pre">qubits[0]</span></code> being the most significant qubit.</p>
 <dl class="field-list simple">
@@ -575,7 +587,7 @@ document.write(`
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pytket.pauli.QubitPauliString.to_list">
-<span class="sig-name descname"><span class="pre">to_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.pauli.QubitPauliString" title="pytket.pauli.QubitPauliString"><span class="pre">pytket.pauli.QubitPauliString</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">json</span></span></span><a class="headerlink" href="#pytket.pauli.QubitPauliString.to_list" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">to_list</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.pauli.QubitPauliString" title="pytket.pauli.QubitPauliString"><span class="pre">pytket.pauli.QubitPauliString</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span></span></span><a class="headerlink" href="#pytket.pauli.QubitPauliString.to_list" title="Permalink to this definition">#</a></dt>
 <dd><p>A JSON-serializable representation of the QubitPauliString.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Returns<span class="colon">:</span></dt>
@@ -610,7 +622,7 @@ document.write(`
 </dd>
 </dl>
 <ol class="arabic simple" start="3">
-<li><p>to_sparse_matrix(self: pytket.pauli.QubitPauliString, qubits: List[pytket.circuit.Qubit]) -&gt; scipy.sparse.csc_matrix[numpy.complex128]</p></li>
+<li><p>to_sparse_matrix(self: pytket.pauli.QubitPauliString, qubits: List[pytket.unit_id.Qubit]) -&gt; scipy.sparse.csc_matrix[numpy.complex128]</p></li>
 </ol>
 <p>Represents the sparse string as a dense string and generates the matrix for the tensor. Orders qubits according to <cite>qubits</cite> (padding with identities if they are not in the sparse string), so <code class="docutils literal notranslate"><span class="pre">qubits[0]</span></code> is the most significant bit for indexing into the matrix.</p>
 <dl class="field-list simple">
@@ -631,6 +643,171 @@ document.write(`
 <dd class="field-odd"><p>the QubitPauliString’s underlying dict mapping <code class="xref py py-class docutils literal notranslate"><span class="pre">Qubit</span></code> to <a class="reference internal" href="#pytket.pauli.Pauli" title="pytket.pauli.Pauli"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pauli</span></code></a></p>
 </dd>
 </dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pytket.pauli.QubitPauliTensor">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pytket.pauli.</span></span><span class="sig-name descname"><span class="pre">QubitPauliTensor</span></span><a class="headerlink" href="#pytket.pauli.QubitPauliTensor" title="Permalink to this definition">#</a></dt>
+<dd><p>A tensor formed by Pauli terms, consisting of a sparse map from <code class="xref py py-class docutils literal notranslate"><span class="pre">Qubit</span></code> to <a class="reference internal" href="#pytket.pauli.Pauli" title="pytket.pauli.Pauli"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pauli</span></code></a> (implemented as a <a class="reference internal" href="#pytket.pauli.QubitPauliString" title="pytket.pauli.QubitPauliString"><code class="xref py py-class docutils literal notranslate"><span class="pre">QubitPauliString</span></code></a>) and a complex coefficient.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.pauli.QubitPauliTensor.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.pauli.QubitPauliTensor.__init__" title="Permalink to this definition">#</a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic simple">
+<li><p>__init__(self: pytket.pauli.QubitPauliTensor, coeff: complex = 1.0) -&gt; None</p></li>
+</ol>
+<p>Constructs an empty QubitPauliTensor, representing the identity.</p>
+<ol class="arabic simple" start="2">
+<li><p>__init__(self: pytket.pauli.QubitPauliTensor, qubit: pytket.unit_id.Qubit, pauli: pytket.pauli.Pauli, coeff: complex = 1.0) -&gt; None</p></li>
+</ol>
+<p>Constructs a QubitPauliTensor with a single Pauli term.</p>
+<ol class="arabic simple" start="3">
+<li><p>__init__(self: pytket.pauli.QubitPauliTensor, qubits: List[pytket.unit_id.Qubit], paulis: List[pytket.pauli.Pauli], coeff: complex = 1.0) -&gt; None</p></li>
+</ol>
+<p>Constructs a QubitPauliTensor from two matching lists of Qubits and Paulis.</p>
+<ol class="arabic simple" start="4">
+<li><p>__init__(self: pytket.pauli.QubitPauliTensor, map: Dict[pytket.unit_id.Qubit, pytket.pauli.Pauli], coeff: complex = 1.0) -&gt; None</p></li>
+</ol>
+<p>Construct a QubitPauliTensor from a dictionary mapping <code class="xref py py-class docutils literal notranslate"><span class="pre">Qubit</span></code> to <a class="reference internal" href="#pytket.pauli.Pauli" title="pytket.pauli.Pauli"><code class="xref py py-class docutils literal notranslate"><span class="pre">Pauli</span></code></a>.</p>
+<ol class="arabic simple" start="5">
+<li><p>__init__(self: pytket.pauli.QubitPauliTensor, string: pytket.pauli.QubitPauliString, coeff: complex = 1.0) -&gt; None</p></li>
+</ol>
+<p>Construct a QubitPauliTensor from a QubitPauliString.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.pauli.QubitPauliTensor.commutes_with">
+<span class="sig-name descname"><span class="pre">commutes_with</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.pauli.QubitPauliTensor" title="pytket.pauli.QubitPauliTensor"><span class="pre">pytket.pauli.QubitPauliTensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">other</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.pauli.QubitPauliTensor" title="pytket.pauli.QubitPauliTensor"><span class="pre">pytket.pauli.QubitPauliTensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">bool</span></span></span><a class="headerlink" href="#pytket.pauli.QubitPauliTensor.commutes_with" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>True if the two tensors commute, else False</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.pauli.QubitPauliTensor.compress">
+<span class="sig-name descname"><span class="pre">compress</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.pauli.QubitPauliTensor" title="pytket.pauli.QubitPauliTensor"><span class="pre">pytket.pauli.QubitPauliTensor</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pytket.pauli.QubitPauliTensor.compress" title="Permalink to this definition">#</a></dt>
+<dd><p>Removes I terms to compress the sparse representation.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.pauli.QubitPauliTensor.dot_state">
+<span class="sig-name descname"><span class="pre">dot_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.pauli.QubitPauliTensor.dot_state" title="Permalink to this definition">#</a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic simple">
+<li><p>dot_state(self: pytket.pauli.QubitPauliTensor, state: numpy.ndarray[numpy.complex128[m, 1]]) -&gt; numpy.ndarray[numpy.complex128[m, 1]]</p></li>
+</ol>
+<p>Performs the dot product of the state with the pauli tensor. Maps the qubits of the statevector with sequentially-indexed qubits in the default register, with <code class="docutils literal notranslate"><span class="pre">Qubit(0)</span></code> being the most significant qubit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>state</strong> – statevector for qubits <code class="docutils literal notranslate"><span class="pre">Qubit(0)</span></code> to <code class="docutils literal notranslate"><span class="pre">Qubit(n-1)</span></code></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>dot product of operator with state</p>
+</dd>
+</dl>
+<ol class="arabic simple" start="2">
+<li><p>dot_state(self: pytket.pauli.QubitPauliTensor, state: numpy.ndarray[numpy.complex128[m, 1]], qubits: List[pytket.unit_id.Qubit]) -&gt; numpy.ndarray[numpy.complex128[m, 1]]</p></li>
+</ol>
+<p>Performs the dot product of the state with the pauli tensor. Maps the qubits of the statevector according to the ordered list <cite>qubits</cite>, with <code class="docutils literal notranslate"><span class="pre">qubits[0]</span></code> being the most significant qubit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>state</strong> – statevector</p></li>
+<li><p><strong>qubits</strong> – order of qubits in <cite>state</cite> from most to least significant</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>dot product of operator with state</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.pauli.QubitPauliTensor.state_expectation">
+<span class="sig-name descname"><span class="pre">state_expectation</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.pauli.QubitPauliTensor.state_expectation" title="Permalink to this definition">#</a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic simple">
+<li><p>state_expectation(self: pytket.pauli.QubitPauliTensor, state: numpy.ndarray[numpy.complex128[m, 1]]) -&gt; complex</p></li>
+</ol>
+<p>Calculates the expectation value of the state with the pauli operator. Maps the qubits of the statevector with sequentially-indexed qubits in the default register, with <code class="docutils literal notranslate"><span class="pre">Qubit(0)</span></code> being the most significant qubit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>state</strong> – statevector for qubits <code class="docutils literal notranslate"><span class="pre">Qubit(0)</span></code> to <code class="docutils literal notranslate"><span class="pre">Qubit(n-1)</span></code></p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>expectation value with respect to state</p>
+</dd>
+</dl>
+<ol class="arabic simple" start="2">
+<li><p>state_expectation(self: pytket.pauli.QubitPauliTensor, state: numpy.ndarray[numpy.complex128[m, 1]], qubits: List[pytket.unit_id.Qubit]) -&gt; complex</p></li>
+</ol>
+<p>Calculates the expectation value of the state with the pauli operator. Maps the qubits of the statevector according to the ordered list <cite>qubits</cite>, with <code class="docutils literal notranslate"><span class="pre">qubits[0]</span></code> being the most significant qubit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>state</strong> – statevector</p></li>
+<li><p><strong>qubits</strong> – order of qubits in <cite>state</cite> from most to least significant</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>expectation value with respect to state</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.pauli.QubitPauliTensor.to_sparse_matrix">
+<span class="sig-name descname"><span class="pre">to_sparse_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.pauli.QubitPauliTensor.to_sparse_matrix" title="Permalink to this definition">#</a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic simple">
+<li><p>to_sparse_matrix(self: pytket.pauli.QubitPauliTensor) -&gt; scipy.sparse.csc_matrix[numpy.complex128]</p></li>
+</ol>
+<p>Represents the sparse string as a dense string (without padding for extra qubits) and generates the matrix for the tensor. Uses the ILO-BE convention, so <code class="docutils literal notranslate"><span class="pre">Qubit(&quot;a&quot;,</span> <span class="pre">0)</span></code> is more significant that <code class="docutils literal notranslate"><span class="pre">Qubit(&quot;a&quot;,</span> <span class="pre">1)</span></code> and <code class="docutils literal notranslate"><span class="pre">Qubit(&quot;b&quot;)</span></code> for indexing into the matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>a sparse matrix corresponding to the tensor</p>
+</dd>
+</dl>
+<ol class="arabic simple" start="2">
+<li><p>to_sparse_matrix(self: pytket.pauli.QubitPauliTensor, n_qubits: int) -&gt; scipy.sparse.csc_matrix[numpy.complex128]</p></li>
+</ol>
+<p>Represents the sparse string as a dense string over <cite>n_qubits</cite> qubits (sequentially indexed from 0 in the default register) and generates the matrix for the tensor. Uses the ILO-BE convention, so <code class="docutils literal notranslate"><span class="pre">Qubit(0)</span></code> is the most significant bit for indexing into the matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>n_qubits</strong> – the number of qubits in the full operator</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a sparse matrix corresponding to the operator</p>
+</dd>
+</dl>
+<ol class="arabic simple" start="3">
+<li><p>to_sparse_matrix(self: pytket.pauli.QubitPauliTensor, qubits: List[pytket.unit_id.Qubit]) -&gt; scipy.sparse.csc_matrix[numpy.complex128]</p></li>
+</ol>
+<p>Represents the sparse string as a dense string and generates the matrix for the tensor. Orders qubits according to <cite>qubits</cite> (padding with identities if they are not in the sparse string), so <code class="docutils literal notranslate"><span class="pre">qubits[0]</span></code> is the most significant bit for indexing into the matrix.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><p><strong>qubits</strong> – the ordered list of qubits in the full operator</p>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>a sparse matrix corresponding to the operator</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pytket.pauli.QubitPauliTensor.coeff">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">coeff</span></span><a class="headerlink" href="#pytket.pauli.QubitPauliTensor.coeff" title="Permalink to this definition">#</a></dt>
+<dd><p>The global coefficient of the tensor</p>
+</dd></dl>
+
+<dl class="py property">
+<dt class="sig sig-object py" id="pytket.pauli.QubitPauliTensor.string">
+<em class="property"><span class="pre">property</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">string</span></span><a class="headerlink" href="#pytket.pauli.QubitPauliTensor.string" title="Permalink to this definition">#</a></dt>
+<dd><p>The QubitPauliTensor’s underlying <a class="reference internal" href="#pytket.pauli.QubitPauliString" title="pytket.pauli.QubitPauliString"><code class="xref py py-class docutils literal notranslate"><span class="pre">QubitPauliString</span></code></a></p>
 </dd></dl>
 
 </dd></dl>
@@ -660,12 +837,12 @@ document.write(`
     <div class="footer-article-item"><!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
-       href="display.html"
+       href="unit_id.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">pytket.circuit.display</p>
+        <p class="prev-next-title">pytket.unit_id</p>
       </div>
     </a>
     <a class="right-next"
@@ -716,6 +893,17 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.pauli.QubitPauliString.to_list"><code class="docutils literal notranslate"><span class="pre">QubitPauliString.to_list()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.pauli.QubitPauliString.to_sparse_matrix"><code class="docutils literal notranslate"><span class="pre">QubitPauliString.to_sparse_matrix()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.pauli.QubitPauliString.map"><code class="docutils literal notranslate"><span class="pre">QubitPauliString.map</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.pauli.QubitPauliTensor"><code class="docutils literal notranslate"><span class="pre">QubitPauliTensor</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.pauli.QubitPauliTensor.__init__"><code class="docutils literal notranslate"><span class="pre">QubitPauliTensor.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.pauli.QubitPauliTensor.commutes_with"><code class="docutils literal notranslate"><span class="pre">QubitPauliTensor.commutes_with()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.pauli.QubitPauliTensor.compress"><code class="docutils literal notranslate"><span class="pre">QubitPauliTensor.compress()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.pauli.QubitPauliTensor.dot_state"><code class="docutils literal notranslate"><span class="pre">QubitPauliTensor.dot_state()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.pauli.QubitPauliTensor.state_expectation"><code class="docutils literal notranslate"><span class="pre">QubitPauliTensor.state_expectation()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.pauli.QubitPauliTensor.to_sparse_matrix"><code class="docutils literal notranslate"><span class="pre">QubitPauliTensor.to_sparse_matrix()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.pauli.QubitPauliTensor.coeff"><code class="docutils literal notranslate"><span class="pre">QubitPauliTensor.coeff</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.pauli.QubitPauliTensor.string"><code class="docutils literal notranslate"><span class="pre">QubitPauliTensor.string</span></code></a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.pauli.pauli_string_mult"><code class="docutils literal notranslate"><span class="pre">pauli_string_mult()</span></code></a></li>

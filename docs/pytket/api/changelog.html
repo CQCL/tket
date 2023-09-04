@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Changelog &#8212; pytket 1.18.0 documentation</title>
+    <title>Changelog &#8212; pytket 1.19.0 documentation</title>
   
   
   
@@ -161,6 +161,7 @@
 <li class="toctree-l2"><a class="reference internal" href="display.html">pytket.circuit.display</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="unit_id.html">pytket.unit_id</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pauli.html">pytket.pauli</a></li>
 <li class="toctree-l1"><a class="reference internal" href="passes.html">pytket.passes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="predicates.html">pytket.predicates</a></li>
@@ -371,6 +372,7 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#september-2023">0.19.0 (September 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#august-2023">1.18.0 (August 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#july-2023">1.17.1 (July 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">1.17.0 (July 2023)</a></li>
@@ -453,6 +455,32 @@ document.write(`
                   
   <section id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this heading">#</a></h1>
+<section id="september-2023">
+<h2>0.19.0 (September 2023)<a class="headerlink" href="#september-2023" title="Permalink to this heading">#</a></h2>
+<p>Major new features:</p>
+<ul class="simple">
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">ConjugationBox</span></code> to express circuits that follow
+the compute-action-uncompute pattern.</p></li>
+<li><p>Added typing support for compiled modules</p></li>
+</ul>
+<p>Minor new features:</p>
+<ul class="simple">
+<li><p>Implement equality checking for all boxes.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">Op.is_clifford</span></code> to python binding.</p></li>
+<li><p>Single-qubit squashing ignores chains of symbolic gates if squashing them
+would increase the overall complexity of the expressions. This behaviour can
+be overridden using the <code class="docutils literal notranslate"><span class="pre">always_squash_symbols</span></code> parameter to
+<code class="docutils literal notranslate"><span class="pre">SquashCustom</span></code>.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">control_state</span></code> argument to <code class="docutils literal notranslate"><span class="pre">QControlBox</span></code>.</p></li>
+<li><p>Add <code class="docutils literal notranslate"><span class="pre">QubitPauliTensor</span></code> (combining <code class="docutils literal notranslate"><span class="pre">QubitPauliString</span></code> with a complex
+coefficient) to python binding. This is incorporated into <code class="docutils literal notranslate"><span class="pre">UnitaryTableau</span></code>
+row inspection for phase tracking.</p></li>
+</ul>
+<p>Fixes:</p>
+<ul class="simple">
+<li><p>Allow <code class="docutils literal notranslate"><span class="pre">BackendResult</span></code> objects containing no results.</p></li>
+</ul>
+</section>
 <section id="august-2023">
 <h2>1.18.0 (August 2023)<a class="headerlink" href="#august-2023" title="Permalink to this heading">#</a></h2>
 <p>Minor new features:</p>
@@ -1727,6 +1755,7 @@ circumstances.</p></li>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#september-2023">0.19.0 (September 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#august-2023">1.18.0 (August 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#july-2023">1.17.1 (July 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id1">1.17.0 (July 2023)</a></li>

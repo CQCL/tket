@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pytket.utils.outcomearray &#8212; pytket 1.18.0 documentation</title>
+    <title>pytket.utils.outcomearray &#8212; pytket 1.19.0 documentation</title>
   
   
   
@@ -157,6 +157,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../display.html">pytket.circuit.display</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../../unit_id.html">pytket.unit_id</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../pauli.html">pytket.pauli</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../passes.html">pytket.passes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../predicates.html">pytket.predicates</a></li>
@@ -342,6 +343,7 @@ document.write(`
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Counter</span><span class="p">,</span> <span class="n">List</span><span class="p">,</span> <span class="n">Sequence</span><span class="p">,</span> <span class="n">Dict</span><span class="p">,</span> <span class="n">Tuple</span><span class="p">,</span> <span class="n">Any</span><span class="p">,</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">cast</span>
 
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
+<span class="kn">import</span> <span class="nn">numpy.typing</span> <span class="k">as</span> <span class="nn">npt</span>
 <span class="kn">from</span> <span class="nn">numpy.typing</span> <span class="kn">import</span> <span class="n">ArrayLike</span>
 
 
@@ -359,7 +361,7 @@ document.write(`
 <span class="sd">    :type n_outcomes: int</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">input_array</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>  <span class="c1"># type: ignore</span>
+    <span class="k">def</span> <span class="fm">__new__</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">input_array</span><span class="p">:</span> <span class="n">npt</span><span class="o">.</span><span class="n">ArrayLike</span><span class="p">,</span> <span class="n">width</span><span class="p">:</span> <span class="nb">int</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;OutcomeArray&quot;</span><span class="p">:</span>
         <span class="c1"># Input array is an already formed ndarray instance</span>
         <span class="c1"># We first cast to be our class type</span>
         <span class="n">obj</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">asarray</span><span class="p">(</span><span class="n">input_array</span><span class="p">)</span><span class="o">.</span><span class="n">view</span><span class="p">(</span><span class="bp">cls</span><span class="p">)</span>
@@ -378,7 +380,7 @@ document.write(`
         <span class="c1"># Finally, we must return the newly created object:</span>
         <span class="k">return</span> <span class="n">obj</span>
 
-    <span class="k">def</span> <span class="nf">__array_finalize__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">):</span>  <span class="c1"># type: ignore</span>
+    <span class="k">def</span> <span class="nf">__array_finalize__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">obj</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">:</span> <span class="n">Any</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">:</span> <span class="n">Any</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
         <span class="c1"># see InfoArray.__array_finalize__ for comments</span>
         <span class="k">if</span> <span class="n">obj</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
             <span class="k">return</span>
@@ -398,11 +400,13 @@ document.write(`
 
     <span class="c1"># A numpy ndarray is explicitly unhashable (its __hash__ has type None). But as we</span>
     <span class="c1"># are dealing with integral arrays only it makes sense to define a hash.</span>
-    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>  <span class="c1"># type: ignore</span>
+    <span class="k">def</span> <span class="fm">__hash__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">int</span><span class="p">:</span>  <span class="c1"># type: ignore</span>
         <span class="k">return</span> <span class="nb">hash</span><span class="p">((</span><span class="bp">self</span><span class="o">.</span><span class="n">tobytes</span><span class="p">(),</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span><span class="p">))</span>
 
-    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="s2">&quot;OutcomeArray&quot;</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>  <span class="c1"># type: ignore</span>
-        <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
+    <span class="k">def</span> <span class="fm">__eq__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="nb">object</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">other</span><span class="p">,</span> <span class="n">OutcomeArray</span><span class="p">):</span>
+            <span class="k">return</span> <span class="nb">bool</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array_equal</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span> <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span> <span class="o">==</span> <span class="n">other</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
+        <span class="k">return</span> <span class="kc">False</span>
 
 <div class="viewcode-block" id="OutcomeArray.from_readouts"><a class="viewcode-back" href="../../../utils.html#pytket.utils.OutcomeArray.from_readouts">[docs]</a>    <span class="nd">@classmethod</span>
     <span class="k">def</span> <span class="nf">from_readouts</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">readouts</span><span class="p">:</span> <span class="n">ArrayLike</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;OutcomeArray&quot;</span><span class="p">:</span>
@@ -436,12 +440,12 @@ document.write(`
         <span class="k">if</span> <span class="n">big_endian</span><span class="p">:</span>
             <span class="n">array</span> <span class="o">=</span> <span class="bp">self</span>
         <span class="k">else</span><span class="p">:</span>
-            <span class="n">array</span> <span class="o">=</span> <span class="n">OutcomeArray</span><span class="o">.</span><span class="n">from_readouts</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fliplr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_readouts</span><span class="p">()))</span>  <span class="c1"># type: ignore</span>
+            <span class="n">array</span> <span class="o">=</span> <span class="n">OutcomeArray</span><span class="o">.</span><span class="n">from_readouts</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">fliplr</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">to_readouts</span><span class="p">()))</span>
         <span class="n">bitcapacity</span> <span class="o">=</span> <span class="n">array</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span> <span class="o">*</span> <span class="mi">8</span>
         <span class="n">intify</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">bytear</span><span class="p">:</span> <span class="n">reduce</span><span class="p">(</span>
             <span class="n">operator</span><span class="o">.</span><span class="n">or_</span><span class="p">,</span> <span class="p">(</span><span class="n">num</span> <span class="o">&lt;&lt;</span> <span class="p">(</span><span class="mi">8</span> <span class="o">*</span> <span class="n">i</span><span class="p">)</span> <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">num</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">bytear</span><span class="p">[::</span><span class="o">-</span><span class="mi">1</span><span class="p">])),</span> <span class="mi">0</span>
         <span class="p">)</span> <span class="o">&gt;&gt;</span> <span class="p">(</span><span class="n">bitcapacity</span> <span class="o">-</span> <span class="n">array</span><span class="o">.</span><span class="n">width</span><span class="p">)</span>
-        <span class="n">intar</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">apply_along_axis</span><span class="p">(</span><span class="n">intify</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">array</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+        <span class="n">intar</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">apply_along_axis</span><span class="p">(</span><span class="n">intify</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">,</span> <span class="n">array</span><span class="p">)</span>
         <span class="k">return</span> <span class="nb">list</span><span class="p">(</span><span class="n">intar</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="OutcomeArray.from_ints"><a class="viewcode-back" href="../../../utils.html#pytket.utils.OutcomeArray.from_ints">[docs]</a>    <span class="nd">@classmethod</span>
@@ -466,7 +470,7 @@ document.write(`
             <span class="nb">bin</span><span class="p">(</span><span class="n">int_val</span><span class="p">)[</span><span class="mi">2</span><span class="p">:]</span><span class="o">.</span><span class="n">zfill</span><span class="p">(</span><span class="n">width</span><span class="p">)[::</span> <span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="p">(</span><span class="ow">not</span> <span class="n">big_endian</span><span class="p">)]</span>
             <span class="k">for</span> <span class="n">int_val</span> <span class="ow">in</span> <span class="n">ints</span>
         <span class="p">)</span>
-        <span class="n">bitar</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span>  <span class="c1"># type: ignore</span>
+        <span class="n">bitar</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">frombuffer</span><span class="p">(</span>
             <span class="s2">&quot;&quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">bitstrings</span><span class="p">)</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="s2">&quot;ascii&quot;</span><span class="p">),</span> <span class="n">dtype</span><span class="o">=</span><span class="n">np</span><span class="o">.</span><span class="n">uint8</span><span class="p">,</span> <span class="n">count</span><span class="o">=</span><span class="n">n_ints</span> <span class="o">*</span> <span class="n">width</span>
         <span class="p">)</span> <span class="o">-</span> <span class="nb">ord</span><span class="p">(</span><span class="s2">&quot;0&quot;</span><span class="p">)</span>
         <span class="n">bitar</span><span class="o">.</span><span class="n">resize</span><span class="p">((</span><span class="n">n_ints</span><span class="p">,</span> <span class="n">width</span><span class="p">))</span>
@@ -478,7 +482,7 @@ document.write(`
 <span class="sd">        :return: Counter of outcome, number of instances</span>
 <span class="sd">        :rtype: Counter[OutcomeArray]</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="n">ars</span><span class="p">,</span> <span class="n">count_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>  <span class="c1"># type: ignore</span>
+        <span class="n">ars</span><span class="p">,</span> <span class="n">count_vals</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">unique</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">return_counts</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
         <span class="n">width</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">width</span>
         <span class="n">oalist</span> <span class="o">=</span> <span class="p">[</span><span class="n">OutcomeArray</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="kc">None</span><span class="p">,</span> <span class="p">:],</span> <span class="n">width</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">ars</span><span class="p">]</span>
         <span class="k">return</span> <span class="n">Counter</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">oalist</span><span class="p">,</span> <span class="n">count_vals</span><span class="p">)))</span></div>

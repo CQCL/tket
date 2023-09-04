@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pytket.passes.script &#8212; pytket 1.18.0 documentation</title>
+    <title>pytket.passes.script &#8212; pytket 1.19.0 documentation</title>
   
   
   
@@ -157,6 +157,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../display.html">pytket.circuit.display</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../../unit_id.html">pytket.unit_id</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../pauli.html">pytket.pauli</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../passes.html">pytket.passes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../predicates.html">pytket.predicates</a></li>
@@ -336,11 +337,11 @@ document.write(`
 <span class="c1"># See the License for the specific language governing permissions and</span>
 <span class="c1"># limitations under the License.</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">List</span><span class="p">,</span> <span class="n">cast</span>
 <span class="kn">from</span> <span class="nn">lark</span> <span class="kn">import</span> <span class="n">Lark</span><span class="p">,</span> <span class="n">Transformer</span>
-<span class="kn">from</span> <span class="nn">pytket.circuit</span> <span class="kn">import</span> <span class="n">OpType</span>  <span class="c1"># type: ignore</span>
-<span class="kn">from</span> <span class="nn">pytket.passes</span> <span class="kn">import</span> <span class="n">BasePass</span><span class="p">,</span> <span class="n">RepeatPass</span><span class="p">,</span> <span class="n">SequencePass</span>  <span class="c1"># type: ignore</span>
-<span class="kn">from</span> <span class="nn">pytket.passes</span> <span class="kn">import</span> <span class="p">(</span>  <span class="c1"># type: ignore</span>
+<span class="kn">from</span> <span class="nn">pytket.circuit</span> <span class="kn">import</span> <span class="n">OpType</span>
+<span class="kn">from</span> <span class="nn">pytket.passes</span> <span class="kn">import</span> <span class="n">BasePass</span><span class="p">,</span> <span class="n">RepeatPass</span><span class="p">,</span> <span class="n">SequencePass</span>
+<span class="kn">from</span> <span class="nn">pytket.passes</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">CliffordSimp</span><span class="p">,</span>
     <span class="n">CommuteThroughMultis</span><span class="p">,</span>
     <span class="n">ContextSimp</span><span class="p">,</span>
@@ -372,8 +373,8 @@ document.write(`
     <span class="n">SynthesiseUMD</span><span class="p">,</span>
     <span class="n">ThreeQubitSquash</span><span class="p">,</span>
 <span class="p">)</span>
-<span class="kn">from</span> <span class="nn">pytket.circuit</span> <span class="kn">import</span> <span class="n">CXConfigType</span>  <span class="c1"># type: ignore</span>
-<span class="kn">from</span> <span class="nn">pytket.transform</span> <span class="kn">import</span> <span class="n">PauliSynthStrat</span>  <span class="c1"># type: ignore</span>
+<span class="kn">from</span> <span class="nn">pytket.circuit</span> <span class="kn">import</span> <span class="n">CXConfigType</span>
+<span class="kn">from</span> <span class="nn">pytket.transform</span> <span class="kn">import</span> <span class="n">PauliSynthStrat</span>
 
 <span class="n">pass_grammar</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;</span>
 <span class="s2">start: comp_pass</span>
@@ -493,22 +494,22 @@ document.write(`
 
 
 <span class="k">class</span> <span class="nc">PassTransformer</span><span class="p">(</span><span class="n">Transformer</span><span class="p">):</span>
-    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BasePass</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">comp_pass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">comp_pass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BasePass</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">basic_pass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">list</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">basic_pass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BasePass</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">seq_pass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">seq_pass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BasePass</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
-    <span class="k">def</span> <span class="nf">pass_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">pass_list</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BasePass</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">SequencePass</span><span class="p">(</span><span class="n">t</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">repeat_pass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">repeat_pass</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BasePass</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">RepeatPass</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">clifford_simp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
@@ -547,7 +548,7 @@ document.write(`
     <span class="k">def</span> <span class="nf">delay_measures_try</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">DelayMeasures</span><span class="p">(</span><span class="kc">True</span><span class="p">)</span>
 
-    <span class="k">def</span> <span class="nf">euler_angle_reduction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">euler_angle_reduction</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">OpType</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">EulerAngleReduction</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">flatten_registers</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
@@ -560,6 +561,8 @@ document.write(`
         <span class="k">return</span> <span class="n">FullPeepholeOptimise</span><span class="p">(</span><span class="n">allow_swaps</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 
     <span class="k">def</span> <span class="nf">guided_pauli_simp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">PauliSynthStrat</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">CXConfigType</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">GuidedPauliSimp</span><span class="p">(</span><span class="n">strat</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cx_config</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">guided_pauli_simp_default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
@@ -569,24 +572,31 @@ document.write(`
         <span class="k">return</span> <span class="n">KAKDecomposition</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">optimise_phase_gadgets</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">CXConfigType</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">OptimisePhaseGadgets</span><span class="p">(</span><span class="n">cx_config</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">optimise_phase_gadgets_default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">OptimisePhaseGadgets</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">pauli_exponentials</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">PauliSynthStrat</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">CXConfigType</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">PauliExponentials</span><span class="p">(</span><span class="n">strat</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cx_config</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">pauli_exponentials_default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">PauliExponentials</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">pauli_simp</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">PauliSynthStrat</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">CXConfigType</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">PauliSimp</span><span class="p">(</span><span class="n">strat</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cx_config</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">pauli_simp_default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">PauliSimp</span><span class="p">()</span>
 
     <span class="k">def</span> <span class="nf">pauli_squash</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">PauliSynthStrat</span><span class="p">)</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">CXConfigType</span><span class="p">)</span>
         <span class="k">return</span> <span class="n">PauliSquash</span><span class="p">(</span><span class="n">strat</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">cx_config</span><span class="o">=</span><span class="n">t</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="nf">pauli_squash_default</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
@@ -631,7 +641,7 @@ document.write(`
     <span class="k">def</span> <span class="nf">three_qubit_squash</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">BasePass</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">ThreeQubitSquash</span><span class="p">()</span>
 
-    <span class="k">def</span> <span class="nf">cx_config_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CXConfigType</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">cx_config_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">CXConfigType</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">CXConfigType</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">cx_config_type_snake</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CXConfigType</span><span class="p">:</span>
@@ -646,7 +656,7 @@ document.write(`
     <span class="k">def</span> <span class="nf">cx_config_type_multi_q_gate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">CXConfigType</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">CXConfigType</span><span class="o">.</span><span class="n">MultiQGate</span>
 
-    <span class="k">def</span> <span class="nf">op_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OpType</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">op_type</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">OpType</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">OpType</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">op_type_rx</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OpType</span><span class="p">:</span>
@@ -658,7 +668,7 @@ document.write(`
     <span class="k">def</span> <span class="nf">op_type_rz</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">OpType</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">OpType</span><span class="o">.</span><span class="n">Rz</span>
 
-    <span class="k">def</span> <span class="nf">pauli_synth_strat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PauliSynthStrat</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">pauli_synth_strat</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">PauliSynthStrat</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">PauliSynthStrat</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">t</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="k">def</span> <span class="nf">pauli_synth_strat_individual</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">t</span><span class="p">:</span> <span class="n">List</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PauliSynthStrat</span><span class="p">:</span>
@@ -710,7 +720,7 @@ document.write(`
 <span class="sd">    :param script: specification of pass</span>
 <span class="sd">    &quot;&quot;&quot;</span>
     <span class="n">tree</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parse</span><span class="p">(</span><span class="n">script</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">tree</span><span class="p">)</span></div>
+    <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="n">BasePass</span><span class="p">,</span> <span class="n">transformer</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">tree</span><span class="p">))</span></div>
 
 
 <div class="viewcode-block" id="compilation_pass_grammar"><a class="viewcode-back" href="../../../passes.html#pytket.passes.script.compilation_pass_grammar">[docs]</a><span class="k">def</span> <span class="nf">compilation_pass_grammar</span><span class="p">()</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>

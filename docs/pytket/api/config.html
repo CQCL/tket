@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>pytket.config &#8212; pytket 1.18.0 documentation</title>
+    <title>pytket.config &#8212; pytket 1.19.0 documentation</title>
   
   
   
@@ -159,6 +159,7 @@
 <li class="toctree-l2"><a class="reference internal" href="display.html">pytket.circuit.display</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="unit_id.html">pytket.unit_id</a></li>
 <li class="toctree-l1"><a class="reference internal" href="pauli.html">pytket.pauli</a></li>
 <li class="toctree-l1"><a class="reference internal" href="passes.html">pytket.passes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="predicates.html">pytket.predicates</a></li>
@@ -470,19 +471,19 @@ defaults to None</p>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pytket.config.pytket_config.PytketExtConfig.from_default_config_file">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_default_config_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">T_ext</span></span></span><a class="reference internal" href="_modules/pytket/config/pytket_config.html#PytketExtConfig.from_default_config_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pytket.config.pytket_config.PytketExtConfig.from_default_config_file" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_default_config_file</span></span><span class="sig-paren">(</span><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.config.pytket_config.PytketExtConfig" title="pytket.config.pytket_config.PytketExtConfig"><span class="pre">PytketExtConfig</span></a></span></span><a class="reference internal" href="_modules/pytket/config/pytket_config.html#PytketExtConfig.from_default_config_file"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pytket.config.pytket_config.PytketExtConfig.from_default_config_file" title="Permalink to this definition">#</a></dt>
 <dd><p>Load from default config file.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pytket.config.pytket_config.PytketExtConfig.from_extension_dict">
-<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_extension_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ext_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">T_ext</span></span></span><a class="reference internal" href="_modules/pytket/config/pytket_config.html#PytketExtConfig.from_extension_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pytket.config.pytket_config.PytketExtConfig.from_extension_dict" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">abstract</span><span class="w"> </span><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_extension_dict</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">ext_dict</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.config.pytket_config.PytketExtConfig" title="pytket.config.pytket_config.PytketExtConfig"><span class="pre">PytketExtConfig</span></a></span></span><a class="reference internal" href="_modules/pytket/config/pytket_config.html#PytketExtConfig.from_extension_dict"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pytket.config.pytket_config.PytketExtConfig.from_extension_dict" title="Permalink to this definition">#</a></dt>
 <dd><p>Abstract method to build PytketExtConfig from dictionary serialized form.</p>
 </dd></dl>
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pytket.config.pytket_config.PytketExtConfig.from_pytketconfig">
-<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_pytketconfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.config.pytket_config.PytketConfig" title="pytket.config.pytket_config.PytketConfig"><span class="pre">PytketConfig</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">T_ext</span></span></span><a class="reference internal" href="_modules/pytket/config/pytket_config.html#PytketExtConfig.from_pytketconfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pytket.config.pytket_config.PytketExtConfig.from_pytketconfig" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">classmethod</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">from_pytketconfig</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">p_config</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.config.pytket_config.PytketConfig" title="pytket.config.pytket_config.PytketConfig"><span class="pre">PytketConfig</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.config.pytket_config.PytketExtConfig" title="pytket.config.pytket_config.PytketExtConfig"><span class="pre">PytketExtConfig</span></a></span></span><a class="reference internal" href="_modules/pytket/config/pytket_config.html#PytketExtConfig.from_pytketconfig"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pytket.config.pytket_config.PytketExtConfig.from_pytketconfig" title="Permalink to this definition">#</a></dt>
 <dd><p>Build from PytketConfig instance.</p>
 </dd></dl>
 

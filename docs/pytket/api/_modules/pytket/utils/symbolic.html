@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pytket.utils.symbolic &#8212; pytket 1.18.0 documentation</title>
+    <title>pytket.utils.symbolic &#8212; pytket 1.19.0 documentation</title>
   
   
   
@@ -157,6 +157,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../display.html">pytket.circuit.display</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../../unit_id.html">pytket.unit_id</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../pauli.html">pytket.pauli</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../passes.html">pytket.passes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../predicates.html">pytket.predicates</a></li>
@@ -363,7 +364,7 @@ document.write(`
 <span class="kn">from</span> <span class="nn">sympy.physics.quantum.qapply</span> <span class="kn">import</span> <span class="n">qapply</span>  <span class="c1"># type: ignore</span>
 <span class="kn">from</span> <span class="nn">sympy.physics.quantum.qubit</span> <span class="kn">import</span> <span class="n">Qubit</span><span class="p">,</span> <span class="n">matrix_to_qubit</span>  <span class="c1"># type: ignore</span>
 
-<span class="kn">from</span> <span class="nn">pytket.circuit</span> <span class="kn">import</span> <span class="n">Circuit</span><span class="p">,</span> <span class="n">Op</span><span class="p">,</span> <span class="n">OpType</span>  <span class="c1"># type: ignore</span>
+<span class="kn">from</span> <span class="nn">pytket.circuit</span> <span class="kn">import</span> <span class="n">Circuit</span><span class="p">,</span> <span class="n">Op</span><span class="p">,</span> <span class="n">OpType</span>
 
 <span class="c1"># gates that have an existing definition in sympy</span>
 <span class="n">_FIXED_GATE_MAP</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">OpType</span><span class="p">,</span> <span class="n">Type</span><span class="p">[</span><span class="n">symgate</span><span class="o">.</span><span class="n">Gate</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>

@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pytket.circuit.display &#8212; pytket 1.18.0 documentation</title>
+    <title>pytket.circuit.display &#8212; pytket 1.19.0 documentation</title>
   
   
   
@@ -157,6 +157,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../display.html">pytket.circuit.display</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../../unit_id.html">pytket.unit_id</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../pauli.html">pytket.pauli</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../passes.html">pytket.passes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../predicates.html">pytket.predicates</a></li>
@@ -351,7 +352,7 @@ document.write(`
 <span class="kn">from</span> <span class="nn">jinja2.utils</span> <span class="kn">import</span> <span class="n">markupsafe</span>
 <span class="kn">from</span> <span class="nn">jinja2.parser</span> <span class="kn">import</span> <span class="n">Parser</span>
 
-<span class="kn">from</span> <span class="nn">pytket.circuit</span> <span class="kn">import</span> <span class="n">Circuit</span>  <span class="c1"># type: ignore</span>
+<span class="kn">from</span> <span class="nn">pytket.circuit</span> <span class="kn">import</span> <span class="n">Circuit</span>
 
 
 <span class="c1"># js scripts to be loaded must not be parsed as template files.</span>
@@ -493,7 +494,7 @@ document.write(`
                 <span class="n">display</span><span class="p">,</span>
             <span class="p">)</span>  <span class="c1"># pylint: disable=C0415</span>
 
-            <span class="n">display</span><span class="p">(</span><span class="n">HTML</span><span class="p">(</span><span class="n">html</span><span class="p">))</span>
+            <span class="n">display</span><span class="p">(</span><span class="n">HTML</span><span class="p">(</span><span class="n">html</span><span class="p">))</span>  <span class="c1"># type: ignore</span>
             <span class="k">return</span> <span class="kc">None</span>
         <span class="k">return</span> <span class="n">html</span></div>
 

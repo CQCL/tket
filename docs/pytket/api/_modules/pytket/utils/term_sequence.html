@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pytket.utils.term_sequence &#8212; pytket 1.18.0 documentation</title>
+    <title>pytket.utils.term_sequence &#8212; pytket 1.19.0 documentation</title>
   
   
   
@@ -157,6 +157,7 @@
 <li class="toctree-l2"><a class="reference internal" href="../../../display.html">pytket.circuit.display</a></li>
 </ul>
 </li>
+<li class="toctree-l1"><a class="reference internal" href="../../../unit_id.html">pytket.unit_id</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../pauli.html">pytket.pauli</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../passes.html">pytket.passes</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../predicates.html">pytket.predicates</a></li>
@@ -335,15 +336,17 @@ document.write(`
 <span class="c1"># WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.</span>
 <span class="c1"># See the License for the specific language governing permissions and</span>
 <span class="c1"># limitations under the License.</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">cast</span>
 
 <span class="kn">from</span> <span class="nn">pytket</span> <span class="kn">import</span> <span class="n">Circuit</span>
-<span class="kn">from</span> <span class="nn">pytket.circuit</span> <span class="kn">import</span> <span class="n">PauliExpBox</span><span class="p">,</span> <span class="n">CircBox</span>  <span class="c1"># type: ignore</span>
-<span class="kn">from</span> <span class="nn">pytket.partition</span> <span class="kn">import</span> <span class="p">(</span>  <span class="c1"># type: ignore</span>
+<span class="kn">from</span> <span class="nn">pytket.circuit</span> <span class="kn">import</span> <span class="n">PauliExpBox</span><span class="p">,</span> <span class="n">CircBox</span>
+<span class="kn">from</span> <span class="nn">pytket.partition</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">term_sequence</span><span class="p">,</span>
     <span class="n">PauliPartitionStrat</span><span class="p">,</span>
     <span class="n">GraphColourMethod</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">.operators</span> <span class="kn">import</span> <span class="n">QubitPauliOperator</span>
+<span class="kn">from</span> <span class="nn">.._tket.unit_id</span> <span class="kn">import</span> <span class="n">UnitID</span>
 
 
 <div class="viewcode-block" id="gen_term_sequence_circuit"><a class="viewcode-back" href="../../../utils.html#pytket.utils.gen_term_sequence_circuit">[docs]</a><span class="k">def</span> <span class="nf">gen_term_sequence_circuit</span><span class="p">(</span>
@@ -398,7 +401,8 @@ document.write(`
             <span class="k">else</span><span class="p">:</span>
                 <span class="n">circ_to_box</span><span class="o">.</span><span class="n">add_phase</span><span class="p">(</span><span class="o">-</span><span class="n">coeff</span> <span class="o">/</span> <span class="mi">2</span><span class="p">)</span>
         <span class="n">cbox</span> <span class="o">=</span> <span class="n">CircBox</span><span class="p">(</span><span class="n">circ_to_box</span><span class="p">)</span>
-        <span class="n">circ</span><span class="o">.</span><span class="n">add_circbox</span><span class="p">(</span><span class="n">cbox</span><span class="p">,</span> <span class="n">qbs</span><span class="p">)</span>
+        <span class="n">unit_ids</span> <span class="o">=</span> <span class="n">cast</span><span class="p">(</span><span class="nb">list</span><span class="p">[</span><span class="n">UnitID</span><span class="p">],</span> <span class="n">qbs</span><span class="p">)</span>
+        <span class="n">circ</span><span class="o">.</span><span class="n">add_circbox</span><span class="p">(</span><span class="n">cbox</span><span class="p">,</span> <span class="n">unit_ids</span><span class="p">)</span>
     <span class="k">return</span> <span class="n">circ</span></div>
 </pre></div>
 
