@@ -13,3 +13,5 @@
 # limitations under the License.
 
 from pytket._tket.unit_id import *
+from pytket._tket.unit_id import _TEMP_BIT_NAME
+from pytket._tket.unit_id import _TEMP_BIT_REG_BASE

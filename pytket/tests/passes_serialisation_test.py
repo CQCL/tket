@@ -24,7 +24,7 @@ from pytket.circuit import Node, Circuit, Qubit, OpType
 from pytket.predicates import Predicate
 from pytket.architecture import Architecture
 from pytket.placement import Placement, GraphPlacement
-import pytket._tket.circuit_library as _library
+import pytket.circuit_library as _library
 
 from pytket.passes import (
     BasePass,
@@ -46,7 +46,7 @@ from pytket.mapping import (
     MultiGateReorderRoutingMethod,
     BoxDecompositionRoutingMethod,
 )
-from tests.useful_typedefs import ParamType
+from useful_typedefs import ParamType  # type: ignore
 
 
 def standard_pass_dict(content: Dict[str, Any]) -> Dict[str, Any]:

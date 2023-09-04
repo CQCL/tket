@@ -86,7 +86,7 @@ import numpy as np
 from sympy import Symbol
 from typing import Dict, Any, List, cast
 
-from tests.useful_typedefs import ParamType as Param
+from useful_typedefs import ParamType as Param  # type: ignore
 
 
 circ2 = Circuit(1)
