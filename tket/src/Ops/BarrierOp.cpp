@@ -32,21 +32,10 @@ Op_ptr BarrierOp::symbol_substitution(const SymEngine::map_basic_basic&) const {
 SymSet BarrierOp::free_symbols() const { return {}; }
 
 unsigned BarrierOp::n_qubits() const {
-  OptUInt n = desc_.n_qubits();
-  if (n == any) {
-    return std::count(signature_.begin(), signature_.end(), EdgeType::Quantum);
-  } else {
-    return n.value();
-  }
+  return std::count(signature_.begin(), signature_.end(), EdgeType::Quantum);
 }
 
-op_signature_t BarrierOp::get_signature() const {
-  std::optional<op_signature_t> sig = desc_.signature();
-  if (sig)
-    return *sig;
-  else
-    return signature_;
-}
+op_signature_t BarrierOp::get_signature() const { return signature_; }
 
 nlohmann::json BarrierOp::serialize() const {
   nlohmann::json j;
@@ -73,7 +62,9 @@ BarrierOp::~BarrierOp() {}
 
 bool BarrierOp::is_equal(const Op& op_other) const {
   const BarrierOp& other = dynamic_cast<const BarrierOp&>(op_other);
-  return (get_signature() == other.get_signature());
+  return (
+      get_signature() == other.get_signature() &&
+      get_data() == other.get_data());
 }
 
 }  // namespace tket

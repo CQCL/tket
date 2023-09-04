@@ -906,7 +906,7 @@ class Circuit {
     }
     if (is_barrier_type(type)) {
       throw CircuitInvalidity(
-          "Please use '_add_conditional_barrier' to add a conditional barrier "
+          "Please use 'add_conditional_barrier' to add a conditional barrier "
           "gate.");
     }
     Op_ptr cond = std::make_shared<Conditional>(
@@ -931,7 +931,7 @@ class Circuit {
       std::optional<std::string> opgroup = std::nullopt);
 
   Vertex add_conditional_barrier(
-      const unit_vector_t &barrier_args, const unit_vector_t &condition_bits,
+      const unit_vector_t &barrier_args, const bit_vector_t &condition_bits,
       unsigned value, const std::string &_data,
       std::optional<std::string> opgroup = std::nullopt);
 

@@ -216,7 +216,7 @@ def test_conditional_gates() -> None:
     circ.Measure(0, 0)
     circ.Measure(1, 1)
     circ.Z(0, condition_bits=[0, 1], condition_value=2)
-    circ._add_conditional_barrier([0, 1], [], [0, 1], 1, data="cond_barrier")
+    circ.add_conditional_barrier([0, 1], [], [0, 1], 1, data="cond_barrier")
     circ.Measure(0, 0, condition_bits=[0, 1], condition_value=1)
     qasm_out = str(curr_file_path / "qasm_test_files/testout5.qasm")
     circuit_to_qasm(circ, qasm_out)
@@ -228,14 +228,18 @@ def test_named_conditional_barrier() -> None:
     circ = Circuit(2, 2)
     circ.add_bit(Bit("test", 3))
     circ.Z(0, condition_bits=[0, 1], condition_value=2)
-    circ._add_conditional_barrier(
+    circ.add_conditional_barrier(
         [Qubit("q", 0), Bit("test", 3)],
         [Bit("c", 0), Bit("c", 1)],
         0,
         data="cond_barrier",
     )
     qs_str: str = circuit_to_qasm_str(circ)
-    assert qs_str == circuit_to_qasm_str(circuit_from_qasm_str(qs_str))
+    c_from_qs: Circuit = circuit_from_qasm_str(qs_str)   
+    print(c_from_qs.get_commands()[1].op.op.data)
+    for i, x in enumerate(c_from_qs.get_commands()):
+        print(i,x)
+    assert qs_str == circuit_to_qasm_str(c_from_qs)
 
 
 def test_hqs_conditional() -> None:

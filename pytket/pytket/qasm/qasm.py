@@ -370,7 +370,7 @@ class CircuitTransformer(Transformer):
                 signature.append("Q")
             else:
                 raise QASMParseError(
-                    "UnitID", arg, "in Barrier arguments is not declared."
+                    "UnitID " + arg + " in Barrier arguments is not declared."
                 )
         yield {
             "args": args,

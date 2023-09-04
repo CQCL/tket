@@ -161,7 +161,7 @@ Vertex Circuit::add_conditional_barrier(
 }
 
 Vertex Circuit::add_conditional_barrier(
-    const unit_vector_t& barrier_args, const unit_vector_t& condition_bits,
+    const unit_vector_t& barrier_args, const bit_vector_t& condition_bits,
     unsigned value, const std::string& _data,
     std::optional<std::string> opgroup) {
   op_signature_t sig;
@@ -169,6 +169,7 @@ Vertex Circuit::add_conditional_barrier(
     if (arg.type() == UnitType::Qubit) {
       sig.push_back(EdgeType::Quantum);
     } else {
+      TKET_ASSERT(arg.type() == UnitType::Bit);
       sig.push_back(EdgeType::Classical);
     }
   }

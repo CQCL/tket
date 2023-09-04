@@ -49,8 +49,7 @@ class BarrierOp : public Op {
   static Op_ptr deserialize(const nlohmann::json &j);
 
  private:
-  op_signature_t
-      signature_; /**< Types of inputs, when not deducible from op type */
+  op_signature_t signature_; /**< Types of inputs */
   /**
    * additional data given by the user, can be passed on to backend
    */
