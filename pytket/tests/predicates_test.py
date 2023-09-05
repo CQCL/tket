@@ -83,8 +83,8 @@ from pytket.placement import Placement, GraphPlacement
 from pytket.transform import Transform, PauliSynthStrat, CXConfigType
 from pytket.passes import SynthesiseOQC
 import numpy as np
-from sympy import Symbol
-from typing import Dict, Any, List, cast
+from sympy import Symbol, Expr
+from typing import Dict, Any, List, cast, Union
 
 from useful_typedefs import ParamType as Param  # type: ignore
 
