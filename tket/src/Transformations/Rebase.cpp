@@ -133,9 +133,7 @@ static bool standard_rebase_via_tk2(
       op = cond.get_op();
     }
     OpType type = op->get_type();
-    if (allowed_gates.contains(type) || type == OpType::TK2 ||
-        type == OpType::Barrier)
-      continue;
+    if (allowed_gates.contains(type) || type == OpType::Barrier) continue;
     // need to convert
     Circuit replacement = TK2_circ_from_multiq(op);
     // Find replacement Circuit for all TK2 gates

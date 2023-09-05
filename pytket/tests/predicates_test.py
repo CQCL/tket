@@ -83,8 +83,8 @@ from pytket.placement import Placement, GraphPlacement
 from pytket.transform import Transform, PauliSynthStrat, CXConfigType
 from pytket.passes import SynthesiseOQC
 import numpy as np
-from sympy import Symbol
-from typing import Dict, Any, List, cast
+from sympy import Symbol, Expr
+from typing import Dict, Any, List, cast, Union
 
 from useful_typedefs import ParamType as Param  # type: ignore
 
@@ -902,6 +902,40 @@ def test_PeepholeOptimise2Q() -> None:
     assert all(k == v for k, v in perm.items())
 
 
+def test_rebase_custom_tk2() -> None:
+    def _tk1_to_phase(
+        a: Union[Expr, float], b: Union[Expr, float], c: Union[Expr, float]
+    ) -> Circuit:
+        return Circuit(1).Rz(c, 0).Rx(b, 0).Rz(a, 0)
+
+    def _tk2_to_phase(
+        a: Union[Expr, float], b: Union[Expr, float], c: Union[Expr, float]
+    ) -> Circuit:
+        return Circuit(2).ZZPhase(c, 0, 1).YYPhase(b, 0, 1).XXPhase(a, 0, 1)
+
+    to_phase_gates = RebaseCustom(
+        {OpType.Rx, OpType.Rz, OpType.XXPhase, OpType.YYPhase, OpType.ZZPhase},
+        tk2_replacement=_tk2_to_phase,
+        tk1_replacement=_tk1_to_phase,
+    )
+
+    tk2_c = Circuit(2).TK2(0.123, 0.5634, 0.2345, 0, 1)
+    assert to_phase_gates.apply(tk2_c)
+    coms = tk2_c.get_commands()
+    assert len(coms) == 11
+    assert coms[0].op.type == OpType.Rz
+    assert coms[1].op.type == OpType.Rz
+    assert coms[2].op.type == OpType.Rx
+    assert coms[3].op.type == OpType.Rx
+    assert coms[4].op.type == OpType.ZZPhase
+    assert coms[5].op.type == OpType.YYPhase
+    assert coms[6].op.type == OpType.XXPhase
+    assert coms[7].op.type == OpType.Rx
+    assert coms[8].op.type == OpType.Rx
+    assert coms[9].op.type == OpType.Rz
+    assert coms[10].op.type == OpType.Rz
+
+
 if __name__ == "__main__":
     test_predicate_generation()
     test_compilation_unit_generation()
@@ -919,3 +953,4 @@ if __name__ == "__main__":
     test_RebaseOQC_and_SynthesiseOQC()
     test_ZZPhaseToRz()
     test_flatten_relabel_pass()
+    test_rebase_custom_tk2()
