@@ -33,15 +33,6 @@ Op_ptr MetaOp::symbol_substitution(const SymEngine::map_basic_basic&) const {
 
 SymSet MetaOp::free_symbols() const { return {}; }
 
-unsigned MetaOp::n_qubits() const {
-  OptUInt n = desc_.n_qubits();
-  if (n == any) {
-    return std::count(signature_.begin(), signature_.end(), EdgeType::Quantum);
-  } else {
-    return n.value();
-  }
-}
-
 op_signature_t MetaOp::get_signature() const {
   std::optional<op_signature_t> sig = desc_.signature();
   if (sig)
@@ -50,33 +41,8 @@ op_signature_t MetaOp::get_signature() const {
     return signature_;
 }
 
-nlohmann::json MetaOp::serialize() const {
-  nlohmann::json j;
-  j["type"] = get_type();
-  j["signature"] = get_signature();
-  j["data"] = get_data();
-  return j;
-}
-
-Op_ptr MetaOp::deserialize(const nlohmann::json& j) {
-  OpType optype = j.at("type").get<OpType>();
-  op_signature_t sig = j.at("signature").get<op_signature_t>();
-  std::string data;
-  try {
-    data = j.at("data").get<std::string>();
-  } catch (const nlohmann::json::out_of_range& e) {
-    data = "";
-  }
-  return std::make_shared<MetaOp>(optype, sig, data);
-}
-
 bool MetaOp::is_clifford() const { return true; }
 
 MetaOp::~MetaOp() {}
-
-bool MetaOp::is_equal(const Op& op_other) const {
-  const MetaOp& other = dynamic_cast<const MetaOp&>(op_other);
-  return (get_signature() == other.get_signature());
-}
 
 }  // namespace tket

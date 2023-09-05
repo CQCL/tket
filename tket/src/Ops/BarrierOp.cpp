@@ -47,12 +47,7 @@ nlohmann::json BarrierOp::serialize() const {
 
 Op_ptr BarrierOp::deserialize(const nlohmann::json& j) {
   op_signature_t sig = j.at("signature").get<op_signature_t>();
-  std::string data;
-  try {
-    data = j.at("data").get<std::string>();
-  } catch (const nlohmann::json::out_of_range& e) {
-    data = "";
-  }
+  std::string data = j.at("data").get<std::string>();
   return std::make_shared<BarrierOp>(sig, data);
 }
 

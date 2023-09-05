@@ -27,9 +27,7 @@ namespace tket {
 
 void from_json(const nlohmann::json& j, Op_ptr& op) {
   OpType optype = j.at("type").get<OpType>();
-  if (is_metaop_type(optype)) {
-    op = MetaOp::deserialize(j);
-  } else if (is_barrier_type(optype)) {
+  if (is_barrier_type(optype)) {
     op = BarrierOp::deserialize(j);
   } else if (is_box_type(optype)) {
     op = Box::deserialize(j);
