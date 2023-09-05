@@ -37,10 +37,6 @@ class MetaOp : public Op {
   bool is_clifford() const override;
 
   ~MetaOp() override;
-  /**
-   * Equality check between two MetaOp instances
-   */
-  bool is_equal(const Op &other) const override;
 
  private:
   op_signature_t
