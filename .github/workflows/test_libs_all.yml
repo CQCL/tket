@@ -14,7 +14,7 @@ jobs:
         lib: ['tklog', 'tkassert', 'tkrng', 'tktokenswap', 'tkwsm']
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up Python 3.10
       uses: actions/setup-python@v4
       with:
@@ -42,7 +42,7 @@ jobs:
       matrix:
         lib: ['tklog', 'tkassert', 'tkrng', 'tktokenswap', 'tkwsm']
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
     - name: create profile
