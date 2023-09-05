@@ -917,7 +917,19 @@ def test_rebase_custom_tk2() -> None:
 
     tk2_c = Circuit(2).TK2(0.123, 0.5634, 0.2345, 0, 1)
     assert to_phase_gates.apply(tk2_c)
-    assert len(tk2_c.get_commands()) == 11
+    coms = tk2_c.get_commands()
+    assert len(coms) == 11
+    assert coms[0].op.type == OpType.Rz
+    assert coms[1].op.type == OpType.Rz
+    assert coms[2].op.type == OpType.Rx
+    assert coms[3].op.type == OpType.Rx
+    assert coms[4].op.type == OpType.ZZPhase
+    assert coms[5].op.type == OpType.YYPhase
+    assert coms[6].op.type == OpType.XXPhase
+    assert coms[7].op.type == OpType.Rx
+    assert coms[8].op.type == OpType.Rx
+    assert coms[9].op.type == OpType.Rz
+    assert coms[10].op.type == OpType.Rz
 
 
 if __name__ == "__main__":
