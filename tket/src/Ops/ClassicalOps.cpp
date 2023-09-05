@@ -152,7 +152,13 @@ static std::shared_ptr<WASMOp> wasm_from_json(const nlohmann::json &j_class) {
 ClassicalOp::ClassicalOp(
     OpType type, unsigned n_i, unsigned n_io, unsigned n_o,
     const std::string &name)
-    : Op(type), n_i_(n_i), n_io_(n_io), n_o_(n_o), name_(name), sig_() {
+    : Op(type),
+      type_(type),
+      n_i_(n_i),
+      n_io_(n_io),
+      n_o_(n_o),
+      name_(name),
+      sig_() {
   for (unsigned i = 0; i < n_i; i++) {
     sig_.push_back(EdgeType::Boolean);
   }

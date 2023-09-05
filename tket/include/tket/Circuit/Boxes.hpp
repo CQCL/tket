@@ -200,7 +200,7 @@ class Unitary1qBox : public Box {
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &) const override {
-    return Op_ptr();
+    return std::make_shared<Unitary1qBox>(get_matrix());
   }
 
   SymSet free_symbols() const override { return {}; }
@@ -262,7 +262,8 @@ class Unitary2qBox : public Box {
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &) const override {
-    return Op_ptr();
+    return std::make_shared<Unitary2qBox>(get_matrix());
+    ;
   }
 
   SymSet free_symbols() const override { return {}; }
@@ -321,7 +322,7 @@ class Unitary3qBox : public Box {
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &) const override {
-    return Op_ptr();
+    return std::make_shared<Unitary3qBox>(get_matrix());
   }
 
   SymSet free_symbols() const override { return {}; }
@@ -386,7 +387,7 @@ class ExpBox : public Box {
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &) const override {
-    return Op_ptr();
+    return std::make_shared<ExpBox>(A_, t_);
   }
 
   SymSet free_symbols() const override { return {}; }
@@ -575,7 +576,7 @@ class ProjectorAssertionBox : public Box {
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &) const override {
-    return Op_ptr();
+    return std::make_shared<ProjectorAssertionBox>(m_);
   }
 
   SymSet free_symbols() const override { return {}; }
@@ -627,7 +628,7 @@ class StabiliserAssertionBox : public Box {
   ~StabiliserAssertionBox() override {}
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &) const override {
-    return Op_ptr();
+    return std::make_shared<StabiliserAssertionBox>(get_stabilisers());
   }
 
   SymSet free_symbols() const override { return {}; }
