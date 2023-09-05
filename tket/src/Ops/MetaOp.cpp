@@ -45,4 +45,9 @@ bool MetaOp::is_clifford() const { return true; }
 
 MetaOp::~MetaOp() {}
 
+bool MetaOp::is_equal(const Op& op_other) const {
+  const MetaOp& other = dynamic_cast<const MetaOp&>(op_other);
+  return (get_signature() == other.get_signature());
+}
+
 }  // namespace tket
