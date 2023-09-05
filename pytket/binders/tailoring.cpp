@@ -26,12 +26,16 @@ namespace py = pybind11;
 
 namespace tket {
 
-QubitPauliString apply_clifford_basis_change(
+QubitPauliTensor apply_clifford_basis_change(
     const QubitPauliString &in_pauli, const Circuit &circ) {
   UnitaryRevTableau tab = circuit_to_unitary_rev_tableau(circ);
   QubitPauliTensor new_operator =
       tab.get_row_product(QubitPauliTensor(in_pauli));
-  return new_operator.string;
+  return new_operator;
+}
+
+QubitPauliString apply_clifford_basis_change_string(const QubitPauliString &in_pauli, const Circuit &circ) {
+    return apply_clifford_basis_change(in_pauli, circ).string;
 }
 
 PYBIND11_MODULE(tailoring, m) {
@@ -163,13 +167,22 @@ PYBIND11_MODULE(tailoring, m) {
           py::arg("circuit"), py::arg("samples"))
       .def("__repr__", &UniversalFrameRandomisation::to_string);
   m.def(
-      "apply_clifford_basis_change", &apply_clifford_basis_change,
+      "apply_clifford_basis_change", &apply_clifford_basis_change_string,
       "Given Pauli operator P and Clifford circuit C, "
       "returns C_dagger.P.C in multiplication order. This ignores any -1 "
       "phase that could be introduced.\n\n:param pauli: Pauli "
       "operator being transformed. \n:param circuit: "
       "Clifford circuit acting on Pauli operator.\n"
       ":return: :py:class:`QubitPauliString` for new operator",
+      py::arg("pauli"), py::arg("circuit"));
+  m.def(
+      "apply_clifford_basis_change_tensor", &apply_clifford_basis_change,
+      "Given Pauli operator P and Clifford circuit C, "
+      "returns C_dagger.P.C in multiplication order"
+      "\n\n:param pauli: Pauli "
+      "operator being transformed. \n:param circuit: "
+      "Clifford circuit acting on Pauli operator.\n"
+      ":return: :py:class:`QubitPauliTensor` for new operator",
       py::arg("pauli"), py::arg("circuit"));
 }
 }  // namespace tket
