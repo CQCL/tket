@@ -902,6 +902,24 @@ def test_PeepholeOptimise2Q() -> None:
     assert all(k == v for k, v in perm.items())
 
 
+def test_rebase_custom_tk2() -> None:
+    def _tk1_to_phase(a: float, b: float, c: float) -> Circuit:
+        return Circuit(1).Rz(c, 0).Rx(b, 0).Rz(a, 0)
+
+    def _tk2_to_phase(a: float, b: float, c: float) -> Circuit:
+        return Circuit(2).ZZPhase(c, 0, 1).YYPhase(b, 0, 1).XXPhase(a, 0, 1)
+
+    to_phase_gates = RebaseCustom(
+        {OpType.Rx, OpType.Rz, OpType.XXPhase, OpType.YYPhase, OpType.ZZPhase},
+        tk2_replacement=_tk2_to_phase,
+        tk1_replacement=_tk1_to_phase,
+    )
+
+    tk2_c = Circuit(2).TK2(0.123, 0.5634, 0.2345, 0, 1)
+    assert to_phase_gates.apply(tk2_c)
+    assert len(tk2_c.get_commands()) == 11
+
+
 if __name__ == "__main__":
     test_predicate_generation()
     test_compilation_unit_generation()
@@ -919,3 +937,4 @@ if __name__ == "__main__":
     test_RebaseOQC_and_SynthesiseOQC()
     test_ZZPhaseToRz()
     test_flatten_relabel_pass()
+    test_rebase_custom_tk2()
