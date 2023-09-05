@@ -187,12 +187,11 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "barrier bits, conditioned on the given condition bits."
           "\n\n:param barrier_qubits: Qubit in Barrier operation."
           "\n:param barrier_bits: Bit in Barrier operation."
-          "\n:param condition_bits: Bit covering classical control "
-          "condition "
+          "\n:param condition_bits: Bit covering classical control condition "
           "of barrier operation."
           "\n:param value: Value that classical condition must have to "
           "hold (little-endian)."
-          "\n: param data: Additional data stored in Barrier operation."
+          "\n:param data: Additional data stored in Barrier operation."
           "\n:return: the new :py:class:`Circuit`",
           py::arg("barrier_qubits"), py::arg("barrier_bits"),
           py::arg("condition_bits"), py::arg("value"), py::arg("data") = "")
@@ -438,7 +437,6 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n\n:param data: additional data stored in the barrier"
           "\n:return: the new :py:class:`Circuit`",
           py::arg("units"), py::arg("data") = "")
-
       .def(
           "add_conditional_barrier",
           [](Circuit *circ, const unit_vector_t &barrier_args,
@@ -452,11 +450,10 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "barrier bits, conditioned on the given condition bits."
           "\n\n:param barrier_args: Qubit and Bit in Barrier operation."
           "\n:param condition_bits: Bit covering classical control "
-          "condition "
-          "of barrier operation."
+          " condition of barrier operation."
           "\n:param value: Value that classical condition must have to "
-          "hold (little-endian)."
-          "\n: param data: Additional data stored in Barrier operation."
+          " hold (little-endian)."
+          "\n:param data: Additional data stored in Barrier operation."
           "\n:return: the new :py:class:`Circuit`",
           py::arg("barrier_args"), py::arg("condition_bits"), py::arg("value"),
           py::arg("data") = "")
