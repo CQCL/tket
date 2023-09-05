@@ -122,7 +122,6 @@ static bool standard_rebase_via_tk2(
         tk2_replacement) {
   bool success = false;
   VertexSet bin;
-  std::cout << "It's definitely in the TK2 version. " << std::endl;
   // 1. Replace all multi-qubit gates outside the target gateset to TK2.
   for (const Vertex& v : circ.all_vertices()) {
     Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
@@ -136,9 +135,7 @@ static bool standard_rebase_via_tk2(
     OpType type = op->get_type();
     if (allowed_gates.contains(type) || type == OpType::Barrier) continue;
     // need to convert
-    std::cout << "Converting to TK2. " << std::endl;
     Circuit replacement = TK2_circ_from_multiq(op);
-    std::cout << "TK2 Circuit: " << replacement << std::endl;
     // Find replacement Circuit for all TK2 gates
     VertexSet TK2_bin;
     for (const Vertex& u : replacement.all_vertices()) {
