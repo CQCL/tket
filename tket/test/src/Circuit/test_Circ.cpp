@@ -1240,6 +1240,26 @@ SCENARIO("Functions with symbolic ops") {
     REQUIRE(op3->get_type() == OpType::PhaseGadget);
     REQUIRE(test_equiv_val(op3->get_params()[0], 0.6));
   }
+  GIVEN("A simple circuit with symbolics to instantiate, and a Barrier gate.") {
+    Circuit circ(2);
+    Sym a = SymEngine::symbol("alpha");
+    Expr alpha(a);
+    circ.add_op<unsigned>(OpType::Rx, alpha, {0});
+    circ.add_barrier({0, 1});
+    REQUIRE(circ.is_symbolic());
+    SymSet symbols = circ.free_symbols();
+    REQUIRE(symbols.size() == 1);
+    REQUIRE(symbols.find(a) != symbols.end());
+    symbol_map_t symbol_map;
+    symbol_map[a] = Expr(0.2);
+    circ.symbol_substitution(symbol_map);
+    VertexVec vertices = circ.vertices_in_order();
+    Op_ptr op2 = circ.get_Op_ptr_from_Vertex(vertices[2]);
+    Op_ptr op3 = circ.get_Op_ptr_from_Vertex(vertices[3]);
+    REQUIRE(op2->get_type() == OpType::Rx);
+    REQUIRE(test_equiv_val(op2->get_params()[0], 0.2));
+    REQUIRE(op3->get_type() == OpType::Barrier);
+  }
 }
 
 SCENARIO("Test depth_by_type method") {
