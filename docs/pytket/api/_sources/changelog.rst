@@ -1,7 +1,16 @@
 Changelog
 =========
 
-0.19.0 (September 2023)
+1.19.1 (September 2023)
+-----------------------
+
+Fixes:
+
+* Fix `RebaseCustom()` rebasing of `TK2` gates.
+* Correct implementation of `symbol_substitution()` for box types that cannot
+  contain symbols.
+
+1.19.0 (September 2023)
 -----------------------
 
 Major new features:
