@@ -26,16 +26,19 @@ namespace py = pybind11;
 
 namespace tket {
 
-QubitPauliTensor apply_clifford_basis_change(
-    const QubitPauliString &in_pauli, const Circuit &circ) {
-  UnitaryRevTableau tab = circuit_to_unitary_rev_tableau(circ);
-  QubitPauliTensor new_operator =
-      tab.get_row_product(QubitPauliTensor(in_pauli));
-  return new_operator;
+QubitPauliTensor apply_clifford_basis_change_tensor(
+    const QubitPauliTensor &in_pauli, const Circuit &circ) {
+    UnitaryRevTableau tab = circuit_to_unitary_rev_tableau(circ);
+    QubitPauliTensor new_operator =
+        tab.get_row_product(in_pauli);
+    return new_operator;
 }
 
 QubitPauliString apply_clifford_basis_change_string(const QubitPauliString &in_pauli, const Circuit &circ) {
-    return apply_clifford_basis_change(in_pauli, circ).string;
+    UnitaryRevTableau tab = circuit_to_unitary_rev_tableau(circ);
+    QubitPauliTensor new_operator =
+        tab.get_row_product(QubitPauliTensor(in_pauli));
+    return new_operator.string;
 }
 
 PYBIND11_MODULE(tailoring, m) {
@@ -176,7 +179,7 @@ PYBIND11_MODULE(tailoring, m) {
       ":return: :py:class:`QubitPauliString` for new operator",
       py::arg("pauli"), py::arg("circuit"));
   m.def(
-      "apply_clifford_basis_change_tensor", &apply_clifford_basis_change,
+      "apply_clifford_basis_change_tensor", &apply_clifford_basis_change_tensor,
       "Given Pauli operator P and Clifford circuit C, "
       "returns C_dagger.P.C in multiplication order"
       "\n\n:param pauli: Pauli "

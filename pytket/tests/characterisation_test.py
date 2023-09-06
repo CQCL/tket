@@ -20,7 +20,7 @@ from pytket.tailoring import (
     apply_clifford_basis_change,
     apply_clifford_basis_change_tensor,
 )
-from pytket.pauli import Pauli, QubitPauliString
+from pytket.pauli import Pauli, QubitPauliString, QubitPauliTensor
 
 import pytest  # type: ignore
 
@@ -117,7 +117,7 @@ def test_apply_clifford_basis_change() -> None:
     z_op = QubitPauliString(Qubit(0), Pauli.Z)
     x_op = QubitPauliString(Qubit(0), Pauli.X)
     assert apply_clifford_basis_change(z_op, circ_0) == x_op
-    t = apply_clifford_basis_change_tensor(z_op, circ_0)
+    t = apply_clifford_basis_change_tensor(QubitPauliTensor(z_op, 1.0), circ_0)
     assert t.string == x_op
     assert t.coeff == 1
 
@@ -125,14 +125,14 @@ def test_apply_clifford_basis_change() -> None:
     zz_op = QubitPauliString([Qubit(0), Qubit(1)], [Pauli.Z, Pauli.Z])
     iz_op = QubitPauliString([Qubit(0), Qubit(1)], [Pauli.I, Pauli.Z])
     assert apply_clifford_basis_change(zz_op, circ_1) == iz_op
-    t = apply_clifford_basis_change_tensor(zz_op, circ_1)
+    t = apply_clifford_basis_change_tensor(QubitPauliTensor(zz_op, 1.0), circ_1)
     assert t.string == iz_op
     assert t.coeff == 1
 
     circ_2 = Circuit(2).H(0).CX(0, 1).S(1).X(0)
     zz_op = QubitPauliString([Qubit(0), Qubit(1)], [Pauli.Z, Pauli.Z])
     assert apply_clifford_basis_change(zz_op, circ_2) == iz_op
-    t = apply_clifford_basis_change_tensor(zz_op, circ_2)
+    t = apply_clifford_basis_change_tensor(QubitPauliTensor(zz_op, 1.0), circ_2)
     assert t.string == iz_op
     assert t.coeff == -1
 
@@ -146,7 +146,7 @@ def test_apply_clifford_basis_change() -> None:
         [Qubit(0), Qubit(1), Qubit(2), Qubit(3)], [Pauli.Y, Pauli.X, Pauli.Y, Pauli.I]
     )
     assert apply_clifford_basis_change(yxzi_op, circ_3) == yxyi_op
-    t = apply_clifford_basis_change_tensor(yxzi_op, circ_3)
+    t = apply_clifford_basis_change_tensor(QubitPauliTensor(yxzi_op, 1.0), circ_3)
 
     assert t.string == yxyi_op
     assert t.coeff == 1

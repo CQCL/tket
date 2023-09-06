@@ -1,6 +1,13 @@
 Changelog
 =========
 
+(Unreleased)
+------------
+
+Minor new features:
+
+* Add ``apply_clifford_basis_change_tensor``.
+
 0.19.0 (September 2023)
 -----------------------
 
