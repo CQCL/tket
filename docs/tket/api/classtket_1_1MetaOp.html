@@ -74,8 +74,6 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-methods">Public Member Functions</a> &#124;
-<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
-<a href="#pro-methods">Protected Member Functions</a> &#124;
 <a href="classtket_1_1MetaOp-members.html">List of all members</a>  </div>
   <div class="headertitle">
 <div class="title">tket::MetaOp Class Reference</div>  </div>
@@ -115,8 +113,6 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aa501b78486c1b27758407ed184470948"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#ac74e9f3dd71c2a79be4ab7887d943fc2">SymSet</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1MetaOp.html#aa501b78486c1b27758407ed184470948">free_symbols</a> () const override</td></tr>
 <tr class="memdesc:aa501b78486c1b27758407ed184470948"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set of all free symbols occurring in operation parameters.  <a href="classtket_1_1MetaOp.html#aa501b78486c1b27758407ed184470948">More...</a><br /></td></tr>
 <tr class="separator:aa501b78486c1b27758407ed184470948"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a96e9e17180613b06b297df42fe1610c4"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1MetaOp.html#a96e9e17180613b06b297df42fe1610c4">n_qubits</a> () const override</td></tr>
-<tr class="separator:a96e9e17180613b06b297df42fe1610c4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a20df7381d08d6f95efbf6100ef75f576"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#ac9cc41e0b406b456fabc9ae1e4517ebd">op_signature_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1MetaOp.html#a20df7381d08d6f95efbf6100ef75f576">get_signature</a> () const override</td></tr>
 <tr class="memdesc:a20df7381d08d6f95efbf6100ef75f576"><td class="mdescLeft">&#160;</td><td class="mdescRight">Vector specifying type of data for each port on op.  <a href="classtket_1_1MetaOp.html#a20df7381d08d6f95efbf6100ef75f576">More...</a><br /></td></tr>
 <tr class="separator:a20df7381d08d6f95efbf6100ef75f576"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -127,11 +123,6 @@ Public Member Functions</h2></td></tr>
 <tr class="separator:a5fa139733fd6e4dee833807cdfbf5717"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a761baafcd4b045b6a50d0de09ff3c5ae"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1MetaOp.html#a761baafcd4b045b6a50d0de09ff3c5ae">~MetaOp</a> () override</td></tr>
 <tr class="separator:a761baafcd4b045b6a50d0de09ff3c5ae"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a60ac0c444fdb2beed250caf055a1c239"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1MetaOp.html#a60ac0c444fdb2beed250caf055a1c239">is_equal</a> (const <a class="el" href="classtket_1_1Op.html">Op</a> &amp;other) const override</td></tr>
-<tr class="memdesc:a60ac0c444fdb2beed250caf055a1c239"><td class="mdescLeft">&#160;</td><td class="mdescRight">Equality check between two <a class="el" href="classtket_1_1MetaOp.html">MetaOp</a> instances.  <a href="classtket_1_1MetaOp.html#a60ac0c444fdb2beed250caf055a1c239">More...</a><br /></td></tr>
-<tr class="separator:a60ac0c444fdb2beed250caf055a1c239"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aadab205395486dad5a1b2382a2ae62b2"><td class="memItemLeft" align="right" valign="top">nlohmann::json&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1MetaOp.html#aadab205395486dad5a1b2382a2ae62b2">serialize</a> () const override</td></tr>
-<tr class="separator:aadab205395486dad5a1b2382a2ae62b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pub_methods_classtket_1_1Op"><td colspan="2" onclick="javascript:toggleInherit('pub_methods_classtket_1_1Op')"><img src="closed.png" alt="-"/>&#160;Public Member Functions inherited from <a class="el" href="classtket_1_1Op.html">tket::Op</a></td></tr>
 <tr class="memitem:a0184322dc89669726f8ddae2f5b8c005 inherit pub_methods_classtket_1_1Op"><td class="memItemLeft" align="right" valign="top">virtual <a class="el" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Op.html#a0184322dc89669726f8ddae2f5b8c005">dagger</a> () const</td></tr>
 <tr class="memdesc:a0184322dc89669726f8ddae2f5b8c005 inherit pub_methods_classtket_1_1Op"><td class="mdescLeft">&#160;</td><td class="mdescRight">Inverse (of a unitary operation)  <a href="classtket_1_1Op.html#a0184322dc89669726f8ddae2f5b8c005">More...</a><br /></td></tr>
@@ -145,6 +136,8 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a785df73a0d9ae54a994564d301bdc2eb inherit pub_methods_classtket_1_1Op"><td class="memItemLeft" align="right" valign="top">virtual std::vector&lt; <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Op.html#a785df73a0d9ae54a994564d301bdc2eb">get_params_reduced</a> () const</td></tr>
 <tr class="memdesc:a785df73a0d9ae54a994564d301bdc2eb inherit pub_methods_classtket_1_1Op"><td class="mdescLeft">&#160;</td><td class="mdescRight">Sequence of phase parameters reduced to canonical range, if applicable.  <a href="classtket_1_1Op.html#a785df73a0d9ae54a994564d301bdc2eb">More...</a><br /></td></tr>
 <tr class="separator:a785df73a0d9ae54a994564d301bdc2eb inherit pub_methods_classtket_1_1Op"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6496958fad861149e35162d6536b6b44 inherit pub_methods_classtket_1_1Op"><td class="memItemLeft" align="right" valign="top">virtual unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Op.html#a6496958fad861149e35162d6536b6b44">n_qubits</a> () const</td></tr>
+<tr class="separator:a6496958fad861149e35162d6536b6b44 inherit pub_methods_classtket_1_1Op"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a02b86c2cff05e508700ad47c546fdf44 inherit pub_methods_classtket_1_1Op"><td class="memItemLeft" align="right" valign="top">virtual std::string&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Op.html#a02b86c2cff05e508700ad47c546fdf44">get_name</a> (bool latex=false) const</td></tr>
 <tr class="memdesc:a02b86c2cff05e508700ad47c546fdf44 inherit pub_methods_classtket_1_1Op"><td class="mdescLeft">&#160;</td><td class="mdescRight">String representation.  <a href="classtket_1_1Op.html#a02b86c2cff05e508700ad47c546fdf44">More...</a><br /></td></tr>
 <tr class="separator:a02b86c2cff05e508700ad47c546fdf44 inherit pub_methods_classtket_1_1Op"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -175,26 +168,21 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a8036a6e71f1a9c064f692aedb654ddec inherit pub_methods_classtket_1_1Op"><td class="memItemLeft" align="right" valign="top">virtual Eigen::MatrixXcd&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Op.html#a8036a6e71f1a9c064f692aedb654ddec">get_unitary</a> () const</td></tr>
 <tr class="memdesc:a8036a6e71f1a9c064f692aedb654ddec inherit pub_methods_classtket_1_1Op"><td class="mdescLeft">&#160;</td><td class="mdescRight">If meaningful and implemented, return the numerical unitary matrix (in ILO-BE convention) which this <a class="el" href="classtket_1_1Op.html" title="Abstract class representing an operation type.">Op</a> represents.  <a href="classtket_1_1Op.html#a8036a6e71f1a9c064f692aedb654ddec">More...</a><br /></td></tr>
 <tr class="separator:a8036a6e71f1a9c064f692aedb654ddec inherit pub_methods_classtket_1_1Op"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a77ea214cee91f2366aa4ee3f2aabcd4f inherit pub_methods_classtket_1_1Op"><td class="memItemLeft" align="right" valign="top">virtual nlohmann::json&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Op.html#a77ea214cee91f2366aa4ee3f2aabcd4f">serialize</a> () const</td></tr>
+<tr class="separator:a77ea214cee91f2366aa4ee3f2aabcd4f inherit pub_methods_classtket_1_1Op"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a275e7d96c068388cdeadb225d5e1ff74 inherit pub_methods_classtket_1_1Op"><td class="memItemLeft" align="right" valign="top">virtual&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Op.html#a275e7d96c068388cdeadb225d5e1ff74">~Op</a> ()</td></tr>
 <tr class="separator:a275e7d96c068388cdeadb225d5e1ff74 inherit pub_methods_classtket_1_1Op"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a39cd9465081544753134817fb3959a57 inherit pub_methods_classtket_1_1Op"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Op.html#a39cd9465081544753134817fb3959a57">operator==</a> (const <a class="el" href="classtket_1_1Op.html">Op</a> &amp;other) const</td></tr>
 <tr class="separator:a39cd9465081544753134817fb3959a57 inherit pub_methods_classtket_1_1Op"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
-Static Public Member Functions</h2></td></tr>
-<tr class="memitem:a542c8355231fbd51e49353bdae13bea3"><td class="memItemLeft" align="right" valign="top">static <a class="el" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1MetaOp.html#a542c8355231fbd51e49353bdae13bea3">deserialize</a> (const nlohmann::json &amp;j)</td></tr>
-<tr class="separator:a542c8355231fbd51e49353bdae13bea3"><td class="memSeparator" colspan="2">&#160;</td></tr>
-</table><table class="memberdecls">
-<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pro-methods"></a>
-Protected Member Functions</h2></td></tr>
-<tr class="memitem:a198622e3c8999841a92641fe7c3b88d1"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1MetaOp.html#a198622e3c8999841a92641fe7c3b88d1">MetaOp</a> ()</td></tr>
-<tr class="separator:a198622e3c8999841a92641fe7c3b88d1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="inherit_header pro_methods_classtket_1_1Op"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classtket_1_1Op')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classtket_1_1Op.html">tket::Op</a></td></tr>
-<tr class="memitem:a0b15cfc17edca81e9b4b4fe353ebbb93 inherit pro_methods_classtket_1_1Op"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Op.html#a0b15cfc17edca81e9b4b4fe353ebbb93">Op</a> (const <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a> &amp;type)</td></tr>
-<tr class="separator:a0b15cfc17edca81e9b4b4fe353ebbb93 inherit pro_methods_classtket_1_1Op"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1267ba5bf1c744782e6ff73cb7032da6 inherit pub_methods_classtket_1_1Op"><td class="memItemLeft" align="right" valign="top">virtual bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Op.html#a1267ba5bf1c744782e6ff73cb7032da6">is_equal</a> (const <a class="el" href="classtket_1_1Op.html">Op</a> &amp;) const</td></tr>
+<tr class="memdesc:a1267ba5bf1c744782e6ff73cb7032da6 inherit pub_methods_classtket_1_1Op"><td class="mdescLeft">&#160;</td><td class="mdescRight">Checks equality between two instances of the same class.  <a href="classtket_1_1Op.html#a1267ba5bf1c744782e6ff73cb7032da6">More...</a><br /></td></tr>
+<tr class="separator:a1267ba5bf1c744782e6ff73cb7032da6 inherit pub_methods_classtket_1_1Op"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="inherited"></a>
 Additional Inherited Members</h2></td></tr>
+<tr class="inherit_header pro_methods_classtket_1_1Op"><td colspan="2" onclick="javascript:toggleInherit('pro_methods_classtket_1_1Op')"><img src="closed.png" alt="-"/>&#160;Protected Member Functions inherited from <a class="el" href="classtket_1_1Op.html">tket::Op</a></td></tr>
+<tr class="memitem:a0b15cfc17edca81e9b4b4fe353ebbb93 inherit pro_methods_classtket_1_1Op"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Op.html#a0b15cfc17edca81e9b4b4fe353ebbb93">Op</a> (const <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a> &amp;type)</td></tr>
+<tr class="separator:a0b15cfc17edca81e9b4b4fe353ebbb93 inherit pro_methods_classtket_1_1Op"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="inherit_header pro_attribs_classtket_1_1Op"><td colspan="2" onclick="javascript:toggleInherit('pro_attribs_classtket_1_1Op')"><img src="closed.png" alt="-"/>&#160;Protected Attributes inherited from <a class="el" href="classtket_1_1Op.html">tket::Op</a></td></tr>
 <tr class="memitem:a318304f6b6c5e61bb94f2cc0875fad9c inherit pro_attribs_classtket_1_1Op"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="classtket_1_1OpDesc.html">OpDesc</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Op.html#a318304f6b6c5e61bb94f2cc0875fad9c">desc_</a></td></tr>
 <tr class="memdesc:a318304f6b6c5e61bb94f2cc0875fad9c inherit pro_attribs_classtket_1_1Op"><td class="mdescLeft">&#160;</td><td class="mdescRight">Operation descriptor.  <a href="classtket_1_1Op.html#a318304f6b6c5e61bb94f2cc0875fad9c">More...</a><br /></td></tr>
@@ -208,7 +196,7 @@ Additional Inherited Members</h2></td></tr>
 <p class="definition">Definition at line <a class="el" href="MetaOp_8hpp_source.html#l00022">22</a> of file <a class="el" href="MetaOp_8hpp_source.html">MetaOp.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
 <a id="a38c66728b47bfd499ef01ed23f4d7207"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a38c66728b47bfd499ef01ed23f4d7207">&#9670;&nbsp;</a></span>MetaOp() <span class="overload">[1/2]</span></h2>
+<h2 class="memtitle"><span class="permalink"><a href="#a38c66728b47bfd499ef01ed23f4d7207">&#9670;&nbsp;</a></span>MetaOp()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -274,66 +262,11 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="MetaOp_8cpp_source.html#l00076">76</a> of file <a class="el" href="MetaOp_8cpp_source.html">MetaOp.cpp</a>.</p>
-
-</div>
-</div>
-<a id="a198622e3c8999841a92641fe7c3b88d1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a198622e3c8999841a92641fe7c3b88d1">&#9670;&nbsp;</a></span>MetaOp() <span class="overload">[2/2]</span></h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">tket::MetaOp::MetaOp </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">protected</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="MetaOp_8cpp_source.html#l00083">83</a> of file <a class="el" href="MetaOp_8cpp_source.html">MetaOp.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="MetaOp_8cpp_source.html#l00047">47</a> of file <a class="el" href="MetaOp_8cpp_source.html">MetaOp.cpp</a>.</p>
 
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
-<a id="a542c8355231fbd51e49353bdae13bea3"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a542c8355231fbd51e49353bdae13bea3">&#9670;&nbsp;</a></span>deserialize()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname"><a class="el" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a> tket::MetaOp::deserialize </td>
-          <td>(</td>
-          <td class="paramtype">const nlohmann::json &amp;&#160;</td>
-          <td class="paramname"><em>j</em></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">static</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p class="definition">Definition at line <a class="el" href="MetaOp_8cpp_source.html#l00062">62</a> of file <a class="el" href="MetaOp_8cpp_source.html">MetaOp.cpp</a>.</p>
-
-</div>
-</div>
 <a id="aa501b78486c1b27758407ed184470948"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aa501b78486c1b27758407ed184470948">&#9670;&nbsp;</a></span>free_symbols()</h2>
 
@@ -388,7 +321,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="MetaOp_8hpp_source.html#l00037">37</a> of file <a class="el" href="MetaOp_8hpp_source.html">MetaOp.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="MetaOp_8hpp_source.html#l00035">35</a> of file <a class="el" href="MetaOp_8hpp_source.html">MetaOp.hpp</a>.</p>
 
 </div>
 </div>
@@ -419,7 +352,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implements <a class="el" href="classtket_1_1Op.html#af064c3b97d9c69ab70d622a425bf353b">tket::Op</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="MetaOp_8cpp_source.html#l00046">46</a> of file <a class="el" href="MetaOp_8cpp_source.html">MetaOp.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="MetaOp_8cpp_source.html#l00037">37</a> of file <a class="el" href="MetaOp_8cpp_source.html">MetaOp.cpp</a>.</p>
 
 </div>
 </div>
@@ -457,97 +390,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Reimplemented from <a class="el" href="classtket_1_1Op.html#afa315c1326624b437013bd990be146bd">tket::Op</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="MetaOp_8cpp_source.html#l00074">74</a> of file <a class="el" href="MetaOp_8cpp_source.html">MetaOp.cpp</a>.</p>
-
-</div>
-</div>
-<a id="a60ac0c444fdb2beed250caf055a1c239"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a60ac0c444fdb2beed250caf055a1c239">&#9670;&nbsp;</a></span>is_equal()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool tket::MetaOp::is_equal </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="classtket_1_1Op.html">Op</a> &amp;&#160;</td>
-          <td class="paramname"><em>other</em></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Equality check between two <a class="el" href="classtket_1_1MetaOp.html">MetaOp</a> instances. </p>
-
-<p>Reimplemented from <a class="el" href="classtket_1_1Op.html#a1267ba5bf1c744782e6ff73cb7032da6">tket::Op</a>.</p>
-
-<p class="definition">Definition at line <a class="el" href="MetaOp_8cpp_source.html#l00078">78</a> of file <a class="el" href="MetaOp_8cpp_source.html">MetaOp.cpp</a>.</p>
-
-</div>
-</div>
-<a id="a96e9e17180613b06b297df42fe1610c4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a96e9e17180613b06b297df42fe1610c4">&#9670;&nbsp;</a></span>n_qubits()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">unsigned tket::MetaOp::n_qubits </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Reimplemented from <a class="el" href="classtket_1_1Op.html#a6496958fad861149e35162d6536b6b44">tket::Op</a>.</p>
-
-<p class="definition">Definition at line <a class="el" href="MetaOp_8cpp_source.html#l00037">37</a> of file <a class="el" href="MetaOp_8cpp_source.html">MetaOp.cpp</a>.</p>
-
-</div>
-</div>
-<a id="aadab205395486dad5a1b2382a2ae62b2"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aadab205395486dad5a1b2382a2ae62b2">&#9670;&nbsp;</a></span>serialize()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<table class="mlabels">
-  <tr>
-  <td class="mlabels-left">
-      <table class="memname">
-        <tr>
-          <td class="memname">nlohmann::json tket::MetaOp::serialize </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td> const</td>
-        </tr>
-      </table>
-  </td>
-  <td class="mlabels-right">
-<span class="mlabels"><span class="mlabel">override</span><span class="mlabel">virtual</span></span>  </td>
-  </tr>
-</table>
-</div><div class="memdoc">
-
-<p>Reimplemented from <a class="el" href="classtket_1_1Op.html#a77ea214cee91f2366aa4ee3f2aabcd4f">tket::Op</a>.</p>
-
-<p class="definition">Definition at line <a class="el" href="MetaOp_8cpp_source.html#l00054">54</a> of file <a class="el" href="MetaOp_8cpp_source.html">MetaOp.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="MetaOp_8cpp_source.html#l00045">45</a> of file <a class="el" href="MetaOp_8cpp_source.html">MetaOp.cpp</a>.</p>
 
 </div>
 </div>

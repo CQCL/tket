@@ -114,8 +114,11 @@ Public Member Functions</h2></td></tr>
 <tr class="memdesc:a3f16f79145f5554c20b68882012adb04"><td class="mdescLeft">&#160;</td><td class="mdescRight">Number of classical bits written to.  <a href="classtket_1_1OpDesc.html#a3f16f79145f5554c20b68882012adb04">More...</a><br /></td></tr>
 <tr class="separator:a3f16f79145f5554c20b68882012adb04"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a49ecb5314605fd1018c99abbec175c56"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1OpDesc.html#a49ecb5314605fd1018c99abbec175c56">is_meta</a> () const</td></tr>
-<tr class="memdesc:a49ecb5314605fd1018c99abbec175c56"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether the 'operation' is actually an input or output or barrier.  <a href="classtket_1_1OpDesc.html#a49ecb5314605fd1018c99abbec175c56">More...</a><br /></td></tr>
+<tr class="memdesc:a49ecb5314605fd1018c99abbec175c56"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether the 'operation' is actually an input or output.  <a href="classtket_1_1OpDesc.html#a49ecb5314605fd1018c99abbec175c56">More...</a><br /></td></tr>
 <tr class="separator:a49ecb5314605fd1018c99abbec175c56"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0ee2d4c7be6c451bacca1dce28c09bc7"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1OpDesc.html#a0ee2d4c7be6c451bacca1dce28c09bc7">is_barrier</a> () const</td></tr>
+<tr class="memdesc:a0ee2d4c7be6c451bacca1dce28c09bc7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether the operation is a Barrier.  <a href="classtket_1_1OpDesc.html#a0ee2d4c7be6c451bacca1dce28c09bc7">More...</a><br /></td></tr>
+<tr class="separator:a0ee2d4c7be6c451bacca1dce28c09bc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:af4506bb28fab61351c2fad2fad207392"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1OpDesc.html#af4506bb28fab61351c2fad2fad207392">is_box</a> () const</td></tr>
 <tr class="memdesc:af4506bb28fab61351c2fad2fad207392"><td class="mdescLeft">&#160;</td><td class="mdescRight">Whether the operation is a box of some kind.  <a href="classtket_1_1OpDesc.html#af4506bb28fab61351c2fad2fad207392">More...</a><br /></td></tr>
 <tr class="separator:af4506bb28fab61351c2fad2fad207392"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -182,6 +185,27 @@ Public Member Functions</h2></td></tr>
 </div>
 </div>
 <h2 class="groupheader">Member Function Documentation</h2>
+<a id="a0ee2d4c7be6c451bacca1dce28c09bc7"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a0ee2d4c7be6c451bacca1dce28c09bc7">&#9670;&nbsp;</a></span>is_barrier()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool tket::OpDesc::is_barrier </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Whether the operation is a Barrier. </p>
+
+<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00079">79</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
+
+</div>
+</div>
 <a id="af4506bb28fab61351c2fad2fad207392"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#af4506bb28fab61351c2fad2fad207392">&#9670;&nbsp;</a></span>is_box()</h2>
 
@@ -199,7 +223,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Whether the operation is a box of some kind. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00078">78</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00081">81</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
 
 </div>
 </div>
@@ -220,7 +244,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Whether the operation is purely classical. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00084">84</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00087">87</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
 
 </div>
 </div>
@@ -241,7 +265,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Whether the operation is a Clifford gate. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00096">96</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00099">99</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
 
 </div>
 </div>
@@ -262,7 +286,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Whether the operation is for control flow. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00082">82</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00085">85</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
 
 </div>
 </div>
@@ -283,7 +307,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Whether the operation is a normal (quantum or classical) gate. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00080">80</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00083">83</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
 
 </div>
 </div>
@@ -302,9 +326,9 @@ Public Member Functions</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p>Whether the 'operation' is actually an input or output or barrier. </p>
+<p>Whether the 'operation' is actually an input or output. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00076">76</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00077">77</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
 
 </div>
 </div>
@@ -325,7 +349,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Whether the operation has no defined dagger. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00090">90</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00093">93</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
 
 </div>
 </div>
@@ -346,7 +370,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Whether the operation is a parameterised Pauli rotation. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00098">98</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00101">101</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
 
 </div>
 </div>
@@ -368,7 +392,7 @@ Public Member Functions</h2></td></tr>
 <p>Whether this is a parametrized rotation. </p>
 <p>For our purposes, an operation \( O \) is a rotation if and only if it has a single real-valued parameter which is additive in the sense that \( O(\alpha) \circ O(\beta) = O(\alpha + \beta) \). </p>
 
-<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00086">86</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00089">89</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
 
 </div>
 </div>
@@ -389,7 +413,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Whether the operation is a single-qubit unitary. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00092">92</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00095">95</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
 
 </div>
 </div>
@@ -410,7 +434,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Name in Latex representation. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00041">41</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00042">42</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
 
 </div>
 </div>
@@ -431,7 +455,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Number of classical bits read. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00058">58</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00059">59</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
 
 </div>
 </div>
@@ -452,7 +476,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Number of classical bits written to. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00067">67</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00068">68</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
 
 </div>
 </div>
@@ -473,7 +497,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Number of phase parameters. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00043">43</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00044">44</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
 
 </div>
 </div>
@@ -494,7 +518,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Number of input and output qubits. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00049">49</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00050">50</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
 
 </div>
 </div>
@@ -515,7 +539,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Name. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00039">39</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00040">40</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
 
 </div>
 </div>
@@ -544,7 +568,7 @@ Public Member Functions</h2></td></tr>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>\( n \) such that the parameter is to be regarded as an element of \( \mathbb{R} / n \mathbb{Z} \). </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00088">88</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00091">91</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
 
 </div>
 </div>
@@ -565,7 +589,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Types of each input/output. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00045">45</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00046">46</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
 
 </div>
 </div>
@@ -586,7 +610,7 @@ Public Member Functions</h2></td></tr>
 
 <p>Type of operation. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00037">37</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpDesc_8cpp_source.html#l00038">38</a> of file <a class="el" href="OpDesc_8cpp_source.html">OpDesc.cpp</a>.</p>
 
 </div>
 </div>

@@ -361,6 +361,8 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1MeasurementSetup.html">MeasurementSetup</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classtket_1_1MeasurementSetup.html" title="MeasurementSetup Captures an expectation value experiment.">MeasurementSetup</a> Captures an expectation value experiment.  <a href="classtket_1_1MeasurementSetup.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1BarrierOp.html">BarrierOp</a></td></tr>
+<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1ClassicalOp.html">ClassicalOp</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A purely classical operation.  <a href="classtket_1_1ClassicalOp.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1453,8 +1455,11 @@ Functions</h2></td></tr>
 <tr class="memdesc:ad4a4b4efb84e461d9f2f7006a5c6fd22"><td class="mdescLeft">&#160;</td><td class="mdescRight">Set of all controlled gates.  <a href="namespacetket.html#ad4a4b4efb84e461d9f2f7006a5c6fd22">More...</a><br /></td></tr>
 <tr class="separator:ad4a4b4efb84e461d9f2f7006a5c6fd22"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0a71e94920a275a8117cbcd744a6724f"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a0a71e94920a275a8117cbcd744a6724f">is_metaop_type</a> (<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a> optype)</td></tr>
-<tr class="memdesc:a0a71e94920a275a8117cbcd744a6724f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test for initial, final and barrier "ops".  <a href="namespacetket.html#a0a71e94920a275a8117cbcd744a6724f">More...</a><br /></td></tr>
+<tr class="memdesc:a0a71e94920a275a8117cbcd744a6724f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test for initial and final "ops".  <a href="namespacetket.html#a0a71e94920a275a8117cbcd744a6724f">More...</a><br /></td></tr>
 <tr class="separator:a0a71e94920a275a8117cbcd744a6724f"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8834bebb75e446292e413923ee48f3d4"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a8834bebb75e446292e413923ee48f3d4">is_barrier_type</a> (<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a> optype)</td></tr>
+<tr class="memdesc:a8834bebb75e446292e413923ee48f3d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test for Barrier "ops".  <a href="namespacetket.html#a8834bebb75e446292e413923ee48f3d4">More...</a><br /></td></tr>
+<tr class="separator:a8834bebb75e446292e413923ee48f3d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a49767defb75a93024ab7b7e7f8f6cc1d"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a49767defb75a93024ab7b7e7f8f6cc1d">is_initial_q_type</a> (<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a> optype)</td></tr>
 <tr class="memdesc:a49767defb75a93024ab7b7e7f8f6cc1d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Test for input or creation quantum "ops".  <a href="namespacetket.html#a49767defb75a93024ab7b7e7f8f6cc1d">More...</a><br /></td></tr>
 <tr class="separator:a49767defb75a93024ab7b7e7f8f6cc1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -6001,7 +6006,7 @@ template&lt;typename T &gt; </div>
 <p>Construct a zx diagram from a given circuit. </p>
 <p>Return the zx diagram and a map between the zx boundary vertices and the circuit boundary vertices. </p>
 
-<p class="definition">Definition at line <a class="el" href="ZXConverters_8cpp_source.html#l00553">553</a> of file <a class="el" href="ZXConverters_8cpp_source.html">ZXConverters.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ZXConverters_8cpp_source.html#l00558">558</a> of file <a class="el" href="ZXConverters_8cpp_source.html">ZXConverters.cpp</a>.</p>
 
 </div>
 </div>
@@ -6121,7 +6126,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ZXConverters_8cpp_source.html#l00581">581</a> of file <a class="el" href="ZXConverters_8cpp_source.html">ZXConverters.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ZXConverters_8cpp_source.html#l00586">586</a> of file <a class="el" href="ZXConverters_8cpp_source.html">ZXConverters.cpp</a>.</p>
 
 </div>
 </div>
@@ -7368,7 +7373,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ZXConverters_8cpp_source.html#l00689">689</a> of file <a class="el" href="ZXConverters_8cpp_source.html">ZXConverters.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ZXConverters_8cpp_source.html#l00694">694</a> of file <a class="el" href="ZXConverters_8cpp_source.html">ZXConverters.cpp</a>.</p>
 
 </div>
 </div>
@@ -7939,7 +7944,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="OpJson_8cpp_source.html#l00027">27</a> of file <a class="el" href="OpJson_8cpp_source.html">OpJson.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpJson_8cpp_source.html#l00028">28</a> of file <a class="el" href="OpJson_8cpp_source.html">OpJson.cpp</a>.</p>
 
 </div>
 </div>
@@ -9819,12 +9824,12 @@ circuit has no symbolic parameters</dd></dl>
   <table class="params">
     <tr><td class="paramname">chosen_type</td><td>operation type </td></tr>
     <tr><td class="paramname">param</td><td>operation parameter </td></tr>
-    <tr><td class="paramname">n_qubits</td><td>number of qubits (only necessary for gates and metaops with variable quantum arity) </td></tr>
+    <tr><td class="paramname">n_qubits</td><td>number of qubits (only necessary for gates, barrier and metaops with variable quantum arity) </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="OpPtrFunctions_8cpp_source.html#l00023">23</a> of file <a class="el" href="OpPtrFunctions_8cpp_source.html">OpPtrFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpPtrFunctions_8cpp_source.html#l00024">24</a> of file <a class="el" href="OpPtrFunctions_8cpp_source.html">OpPtrFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -9865,12 +9870,12 @@ circuit has no symbolic parameters</dd></dl>
   <table class="params">
     <tr><td class="paramname">chosen_type</td><td>operation type </td></tr>
     <tr><td class="paramname">params</td><td>operation parameters </td></tr>
-    <tr><td class="paramname">n_qubits</td><td>number of qubits (only necessary for gates and metaops with variable quantum arity) </td></tr>
+    <tr><td class="paramname">n_qubits</td><td>number of qubits (only necessary for gates, barrier and metaops with variable quantum arity) </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="OpPtrFunctions_8cpp_source.html#l00027">27</a> of file <a class="el" href="OpPtrFunctions_8cpp_source.html">OpPtrFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpPtrFunctions_8cpp_source.html#l00028">28</a> of file <a class="el" href="OpPtrFunctions_8cpp_source.html">OpPtrFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10158,7 +10163,7 @@ circuit has no symbolic parameters</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PhasePoly_8cpp_source.html#l00093">93</a> of file <a class="el" href="PhasePoly_8cpp_source.html">PhasePoly.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PhasePoly_8cpp_source.html#l00092">92</a> of file <a class="el" href="PhasePoly_8cpp_source.html">PhasePoly.cpp</a>.</p>
 
 </div>
 </div>
@@ -10345,6 +10350,28 @@ circuit has no symbolic parameters</dd></dl>
 
 </div>
 </div>
+<a id="a8834bebb75e446292e413923ee48f3d4"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8834bebb75e446292e413923ee48f3d4">&#9670;&nbsp;</a></span>is_barrier_type()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">bool tket::is_barrier_type </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a>&#160;</td>
+          <td class="paramname"><em>optype</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Test for Barrier "ops". </p>
+
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00134">134</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+
+</div>
+</div>
 <a id="aead7d1c9917e734713b8a7b4ea55ef7d"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aead7d1c9917e734713b8a7b4ea55ef7d">&#9670;&nbsp;</a></span>is_boundary_c_type()</h2>
 
@@ -10363,7 +10390,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for input or output for classical "ops". </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00152">152</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00153">153</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10385,7 +10412,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for input, creation, output or discard quantum "ops". </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00148">148</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00149">149</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10407,7 +10434,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for input, creation, output or discard "ops". </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00143">143</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00144">144</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10429,7 +10456,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for input or output for wasm "ops". </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00156">156</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00157">157</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10451,7 +10478,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for boxes (complex packaged operations) </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00164">164</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00165">165</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10473,7 +10500,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for purely classical gates derived from <a class="el" href="classtket_1_1ClassicalOp.html" title="A purely classical operation.">ClassicalOp</a>. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00254">254</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00255">255</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10495,7 +10522,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for Clifford operations. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00239">239</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00240">240</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10517,7 +10544,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for controlled gates. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00258">258</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00259">259</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10539,7 +10566,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for output or discard quantum "ops". </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00139">139</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00140">140</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10561,7 +10588,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for flowops (just for high-level control flow) </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00193">193</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00194">194</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10583,7 +10610,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for elementary gates. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00160">160</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00161">161</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10605,7 +10632,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for input or creation quantum "ops". </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00135">135</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00136">136</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10625,7 +10652,7 @@ circuit has no symbolic parameters</dd></dl>
       </table>
 </div><div class="memdoc">
 
-<p>Test for initial, final and barrier "ops". </p>
+<p>Test for initial and final "ops". </p>
 
 <p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00127">127</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
@@ -10649,7 +10676,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for gates over more than one qubit. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00214">214</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00215">215</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10671,7 +10698,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for non-invertible operations. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00227">227</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00228">228</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10693,7 +10720,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for rotations around Pauli axes. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00208">208</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00209">209</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10715,7 +10742,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for measurement and reset gates. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00250">250</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00251">251</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10767,7 +10794,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for rotations (including controlled rotations) </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00199">199</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00200">200</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10789,7 +10816,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for gates over a single qubit. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00218">218</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00219">219</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -10811,7 +10838,7 @@ circuit has no symbolic parameters</dd></dl>
 
 <p>Test for single-qubit gates that can be expressed as TK1. </p>
 
-<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00223">223</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="OpTypeFunctions_8cpp_source.html#l00224">224</a> of file <a class="el" href="OpTypeFunctions_8cpp_source.html">OpTypeFunctions.cpp</a>.</p>
 
 </div>
 </div>
@@ -11235,7 +11262,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PhasePoly_8cpp_source.html#l00304">304</a> of file <a class="el" href="PhasePoly_8cpp_source.html">PhasePoly.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PhasePoly_8cpp_source.html#l00303">303</a> of file <a class="el" href="PhasePoly_8cpp_source.html">PhasePoly.cpp</a>.</p>
 
 </div>
 </div>
@@ -11476,7 +11503,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ZXConverters_8cpp_source.html#l00662">662</a> of file <a class="el" href="ZXConverters_8cpp_source.html">ZXConverters.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ZXConverters_8cpp_source.html#l00667">667</a> of file <a class="el" href="ZXConverters_8cpp_source.html">ZXConverters.cpp</a>.</p>
 
 </div>
 </div>
@@ -12047,7 +12074,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="basic__circ__manip_8cpp_source.html#l00072">72</a> of file <a class="el" href="basic__circ__manip_8cpp_source.html">basic_circ_manip.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="basic__circ__manip_8cpp_source.html#l00073">73</a> of file <a class="el" href="basic__circ__manip_8cpp_source.html">basic_circ_manip.cpp</a>.</p>
 
 </div>
 </div>
@@ -12830,7 +12857,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ZXConverters_8cpp_source.html#l00705">705</a> of file <a class="el" href="ZXConverters_8cpp_source.html">ZXConverters.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ZXConverters_8cpp_source.html#l00710">710</a> of file <a class="el" href="ZXConverters_8cpp_source.html">ZXConverters.cpp</a>.</p>
 
 </div>
 </div>
@@ -14993,7 +15020,7 @@ template&lt;typename UnitA , typename UnitB &gt; </div>
 <p>Takes a unitary ZX diagram in MBQC form with the promise that a gflow exists. </p>
 <p>Produces an equivalent circuit using the gate extraction method from Backens et al., "There and Back Again: A Circuit Extraction Tale". </p>
 
-<p class="definition">Definition at line <a class="el" href="ZXConverters_8cpp_source.html#l00814">814</a> of file <a class="el" href="ZXConverters_8cpp_source.html">ZXConverters.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ZXConverters_8cpp_source.html#l00819">819</a> of file <a class="el" href="ZXConverters_8cpp_source.html">ZXConverters.cpp</a>.</p>
 
 </div>
 </div>
