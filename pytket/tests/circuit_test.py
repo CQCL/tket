@@ -1239,6 +1239,21 @@ def test_error_wrong_parameters() -> None:
         circ.add_gate(OpType.H, [Bit(0)])
 
 
+def test_symbol_subst() -> None:
+    # https://github.com/CQCL/tket/issues/999
+    d = Circuit(4)
+    rz_op = Op.create(OpType.Rz, 0.3)
+    pauli_x_op = Op.create(OpType.X)
+    pauli_z_op = Op.create(OpType.Z)
+    u = np.asarray([[1.0, 0.0], [0.0, -1.0]])
+    ubox = Unitary1qBox(u)
+    op_map_new = [([_0, _0], [rz_op, pauli_x_op]), ([_1, _1], [ubox, pauli_z_op])]
+    multiplexU2 = MultiplexedTensoredU2Box(op_map_new)
+    d.add_multiplexed_tensored_u2(multiplexU2, [0, 1, 2, 3])
+    d.symbol_substitution({})
+    assert len(d.get_commands()) == 1
+
+
 if __name__ == "__main__":
     test_circuit_gen()
     test_symbolic_ops()

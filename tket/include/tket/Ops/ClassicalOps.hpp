@@ -19,6 +19,8 @@
  * @brief Classical operations
  */
 
+#include <memory>
+
 #include "Op.hpp"
 #include "tket/Utils/Json.hpp"
 
@@ -48,7 +50,7 @@ class ClassicalOp : public Op {
   // Trivial overrides
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &) const override {
-    return Op_ptr();
+    return std::make_shared<ClassicalOp>(*this);
   }
   SymSet free_symbols() const override { return {}; }
   unsigned n_qubits() const override { return 0; }

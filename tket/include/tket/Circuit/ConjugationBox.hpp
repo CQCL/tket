@@ -47,7 +47,8 @@ class ConjugationBox : public Box {
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &) const override {
-    return Op_ptr();
+    // FIXME https://github.com/CQCL/tket/issues/1007
+    return std::make_shared<ConjugationBox>(*this);
   }
 
   SymSet free_symbols() const override { return {}; }

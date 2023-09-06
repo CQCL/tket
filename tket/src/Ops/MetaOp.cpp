@@ -14,6 +14,7 @@
 
 #include "tket/Ops/MetaOp.hpp"
 
+#include <memory>
 #include <typeinfo>
 
 #include "tket/OpType/EdgeType.hpp"
@@ -28,7 +29,7 @@ MetaOp::MetaOp(OpType type, op_signature_t signature, const std::string& _data)
 }
 
 Op_ptr MetaOp::symbol_substitution(const SymEngine::map_basic_basic&) const {
-  return Op_ptr();
+  return std::make_shared<MetaOp>(*this);
 }
 
 SymSet MetaOp::free_symbols() const { return {}; }

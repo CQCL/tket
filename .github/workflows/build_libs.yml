@@ -19,7 +19,7 @@ jobs:
       tkwsm: ${{ steps.filter.outputs.tkwsm }}
       libs: ${{ steps.filter.outputs.changes }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: dorny/paths-filter@v2.11.1
       id: filter
       with:
@@ -46,7 +46,7 @@ jobs:
         build_type: ['Release', 'Debug']
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: normalize line endings in conanfile and src directory
       if: matrix.os == 'windows-2022'
       # This is necessary to ensure consistent revisions across platforms.
@@ -93,7 +93,7 @@ jobs:
         lib: ${{ fromJson(needs.changes.outputs.libs) }}
         build_type: ['Release', 'Debug']
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
     - name: create profile
@@ -125,7 +125,7 @@ jobs:
     env:
       UPLOAD_PACKAGE: "NO"
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: set up container
       run: |
         docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux2014_x86_64:latest /bin/bash
