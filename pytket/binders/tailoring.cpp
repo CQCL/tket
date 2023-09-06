@@ -173,19 +173,18 @@ PYBIND11_MODULE(tailoring, m) {
       "apply_clifford_basis_change", &apply_clifford_basis_change_string,
       "Given Pauli operator P and Clifford circuit C, "
       "returns C_dagger.P.C in multiplication order. This ignores any -1 "
-      "phase that could be introduced.\n\n:param pauli: Pauli "
-      "operator being transformed. \n:param circuit: "
-      "Clifford circuit acting on Pauli operator.\n"
-      ":return: :py:class:`QubitPauliString` for new operator",
+      "phase that could be introduced. "
+      "\n\n:param pauli: Pauli operator being transformed. "
+      "\n:param circuit: Clifford circuit acting on Pauli operator. "
+      "\n:return: :py:class:`QubitPauliString` for new operator",
       py::arg("pauli"), py::arg("circuit"));
   m.def(
       "apply_clifford_basis_change_tensor", &apply_clifford_basis_change_tensor,
       "Given Pauli operator P and Clifford circuit C, "
       "returns C_dagger.P.C in multiplication order"
-      "\n\n:param pauli: Pauli "
-      "operator being transformed. \n:param circuit: "
-      "Clifford circuit acting on Pauli operator.\n"
-      ":return: :py:class:`QubitPauliTensor` for new operator",
+      "\n\n:param pauli: Pauli operator being transformed."
+      "\n:param circuit: Clifford circuit acting on Pauli operator. "
+      "\n:return: :py:class:`QubitPauliTensor` for new operator",
       py::arg("pauli"), py::arg("circuit"));
 }
 }  // namespace tket
