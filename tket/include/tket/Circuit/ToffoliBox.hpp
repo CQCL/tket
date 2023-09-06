@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include <memory>
+
 #include "Boxes.hpp"
 #include "Circuit.hpp"
 #include "tket/Utils/Json.hpp"
@@ -65,7 +67,7 @@ class ToffoliBox : public Box {
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &) const override {
-    return Op_ptr();
+    return std::make_shared<ToffoliBox>(*this);
   }
 
   SymSet free_symbols() const override { return {}; }
