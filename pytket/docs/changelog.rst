@@ -6,7 +6,8 @@ Unreleased
 
 Minor new features:
 
-* Add ``apply_clifford_basis_change_tensor``.
+* ``Circuit.add_conditional_barrier``
+* Add ``apply_clifford_basis_change_tensor`` method
 
 Fixes:
 

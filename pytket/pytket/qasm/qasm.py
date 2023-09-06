@@ -54,7 +54,7 @@ from pytket._tket.circuit import (
     MultiBitOp,
     WASMOp,
     CustomGate,
-    MetaOp,
+    BarrierOp,
 )
 from pytket._tket.unit_id import _TEMP_BIT_NAME
 from pytket.circuit import (
@@ -362,9 +362,19 @@ class CircuitTransformer(Transformer):
 
     def barr(self, tree: List[Arg]) -> Iterable[CommandDict]:
         args = [q for qs in self.unroll_all_args(tree[0]) for q in qs]
+        signature: List[str] = []
+        for arg in args:
+            if arg[0] in self.c_registers:
+                signature.append("C")
+            elif arg[0] in self.q_registers:
+                signature.append("Q")
+            else:
+                raise QASMParseError(
+                    "UnitID " + str(arg) + " in Barrier arguments is not declared."
+                )
         yield {
             "args": args,
-            "op": {"signature": ["Q"] * len(args), "type": "Barrier"},
+            "op": {"signature": signature, "type": "Barrier"},
         }
 
     def reset(self, tree: List[Token]) -> Iterable[CommandDict]:
@@ -379,7 +389,6 @@ class CircuitTransformer(Transformer):
 
         optoken = next(child_iter)
         opstr = optoken.value
-
         next_tree = next(child_iter)
         try:
             args = next(child_iter)
@@ -1321,7 +1330,7 @@ def circuit_to_qasm_io(
                     param = -2 + param
             params = [param]  # type: ignore
         elif optype == OpType.Barrier and header == "hqslib1_dev":
-            assert isinstance(op, MetaOp)
+            assert isinstance(op, BarrierOp)
             if op.data == "":
                 opstr = _tk_to_qasm_noparams[optype]
             else:

@@ -364,6 +364,7 @@ SCENARIO(
     circ.add_conditional_gate<unsigned>(OpType::CX, {}, {2, 1}, {0, 1}, 1);
     circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0, 1}, 2);
     circ.add_conditional_gate<unsigned>(OpType::CX, {}, {2, 1}, {1, 0}, 3);
+    circ.add_conditional_barrier({1, 2}, {1}, {0}, 1, "");
     circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 2}, {0, 1}, 0);
     MappingManager mm(std::make_shared<Architecture>(test_arc));
     REQUIRE(mm.route_circuit(
@@ -382,6 +383,7 @@ SCENARIO(
     Circuit circ(5, 1);
     circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
     add_2qb_gates(circ, OpType::CX, {{0, 1}, {1, 2}, {1, 3}, {1, 4}, {0, 1}});
+    circ.add_conditional_barrier({0, 1, 2}, {}, {0}, 1, "");
 
     MappingManager mm(std::make_shared<Architecture>(arc));
     REQUIRE(mm.route_circuit(

@@ -48,8 +48,11 @@ const OpTypeSet &all_controlled_gate_types();
 /** Set of all classical gates */
 const OpTypeSet &all_classical_types();
 
-/** Test for initial, final and barrier "ops" */
+/** Test for initial and final "ops" */
 bool is_metaop_type(OpType optype);
+
+/** Test for Barrier "ops" */
+bool is_barrier_type(OpType optype);
 
 /** Test for input or creation quantum "ops" */
 bool is_initial_q_type(OpType optype);
