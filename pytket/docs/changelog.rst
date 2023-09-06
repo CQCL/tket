@@ -1,7 +1,7 @@
 Changelog
 =========
 
-(Unreleased)
+Unreleased
 ------------
 
 Minor new features:
