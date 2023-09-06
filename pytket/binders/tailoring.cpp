@@ -28,17 +28,17 @@ namespace tket {
 
 QubitPauliTensor apply_clifford_basis_change_tensor(
     const QubitPauliTensor &in_pauli, const Circuit &circ) {
-    UnitaryRevTableau tab = circuit_to_unitary_rev_tableau(circ);
-    QubitPauliTensor new_operator =
-        tab.get_row_product(in_pauli);
-    return new_operator;
+  UnitaryRevTableau tab = circuit_to_unitary_rev_tableau(circ);
+  QubitPauliTensor new_operator = tab.get_row_product(in_pauli);
+  return new_operator;
 }
 
-QubitPauliString apply_clifford_basis_change_string(const QubitPauliString &in_pauli, const Circuit &circ) {
-    UnitaryRevTableau tab = circuit_to_unitary_rev_tableau(circ);
-    QubitPauliTensor new_operator =
-        tab.get_row_product(QubitPauliTensor(in_pauli));
-    return new_operator.string;
+QubitPauliString apply_clifford_basis_change_string(
+    const QubitPauliString &in_pauli, const Circuit &circ) {
+  UnitaryRevTableau tab = circuit_to_unitary_rev_tableau(circ);
+  QubitPauliTensor new_operator =
+      tab.get_row_product(QubitPauliTensor(in_pauli));
+  return new_operator.string;
 }
 
 PYBIND11_MODULE(tailoring, m) {
