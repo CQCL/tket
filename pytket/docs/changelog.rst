@@ -4,6 +4,10 @@ Changelog
 Unreleased
 ----------
 
+Minor new features:
+
+* Add ``apply_clifford_basis_change_tensor``.
+
 Fixes:
 
 * Correct implementation of `symbol_substitution()` for box types that cannot
