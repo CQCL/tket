@@ -46,7 +46,7 @@ Op_ptr UnitaryTableauBox::transpose() const {
 
 Op_ptr UnitaryTableauBox::symbol_substitution(
     const SymEngine::map_basic_basic&) const {
-  return Op_ptr();
+  return std::make_shared<UnitaryTableauBox>(*this);
 }
 
 SymSet UnitaryTableauBox::free_symbols() const { return SymSet(); }

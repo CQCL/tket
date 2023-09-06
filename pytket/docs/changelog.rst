@@ -1,6 +1,14 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Fixes:
+
+* Correct implementation of `symbol_substitution()` for box types that cannot
+  contain symbols.
+
 0.19.0 (September 2023)
 -----------------------
 
