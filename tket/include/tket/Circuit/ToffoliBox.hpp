@@ -67,8 +67,7 @@ class ToffoliBox : public Box {
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &) const override {
-    return std::make_shared<ToffoliBox>(
-        get_permutation(), get_strat(), get_rotation_axis());
+    return std::make_shared<ToffoliBox>(*this);
   }
 
   SymSet free_symbols() const override { return {}; }

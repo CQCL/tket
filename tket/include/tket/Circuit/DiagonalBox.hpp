@@ -46,7 +46,7 @@ class DiagonalBox : public Box {
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &) const override {
-    return std::make_shared<DiagonalBox>(diagonal_, upper_triangle_);
+    return std::make_shared<DiagonalBox>(*this);
   }
 
   SymSet free_symbols() const override { return {}; }

@@ -28,7 +28,7 @@ FlowOp::FlowOp(OpType type, std::optional<std::string> label)
 }
 
 Op_ptr FlowOp::symbol_substitution(const SymEngine::map_basic_basic&) const {
-  return std::make_shared<FlowOp>(get_type(), get_label());
+  return std::make_shared<FlowOp>(*this);
 }
 
 SymSet FlowOp::free_symbols() const { return {}; }

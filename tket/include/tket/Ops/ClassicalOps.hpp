@@ -50,7 +50,7 @@ class ClassicalOp : public Op {
   // Trivial overrides
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &) const override {
-    return std::make_shared<ClassicalOp>(type_, n_i_, n_io_, n_o_, name_);
+    return std::make_shared<ClassicalOp>(*this);
   }
   SymSet free_symbols() const override { return {}; }
   unsigned n_qubits() const override { return 0; }
@@ -78,7 +78,6 @@ class ClassicalOp : public Op {
   bool is_equal(const Op &other) const override;
 
  protected:
-  const OpType type_;
   const unsigned n_i_;
   const unsigned n_io_;
   const unsigned n_o_;

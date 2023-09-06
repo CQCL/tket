@@ -29,7 +29,7 @@ MetaOp::MetaOp(OpType type, op_signature_t signature, const std::string& _data)
 }
 
 Op_ptr MetaOp::symbol_substitution(const SymEngine::map_basic_basic&) const {
-  return std::make_shared<MetaOp>(get_type(), get_signature(), get_data());
+  return std::make_shared<MetaOp>(*this);
 }
 
 SymSet MetaOp::free_symbols() const { return {}; }

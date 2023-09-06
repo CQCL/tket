@@ -14,7 +14,6 @@
 
 #include "tket/Converters/UnitaryTableauBox.hpp"
 
-#include "Clifford/UnitaryTableau.hpp"
 #include "tket/Ops/OpJsonFactory.hpp"
 
 namespace tket {
@@ -47,7 +46,7 @@ Op_ptr UnitaryTableauBox::transpose() const {
 
 Op_ptr UnitaryTableauBox::symbol_substitution(
     const SymEngine::map_basic_basic&) const {
-  return std::make_shared<UnitaryTableauBox>(get_tableau());
+  return std::make_shared<UnitaryTableauBox>(*this);
 }
 
 SymSet UnitaryTableauBox::free_symbols() const { return SymSet(); }
