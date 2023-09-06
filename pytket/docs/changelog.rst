@@ -4,6 +4,10 @@ Changelog
 Unreleased
 ----------
 
+Minor new features:
+
+* ``Circuit.add_conditional_barrier``
+
 Fixes:
 
 * Correct implementation of `symbol_substitution()` for box types that cannot

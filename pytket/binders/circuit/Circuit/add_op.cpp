@@ -452,7 +452,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n:param condition_bits: Bit covering classical control "
           " condition of barrier operation."
           "\n:param value: Value that classical condition must have to "
-          " hold (little-endian)."
+          "hold (little-endian)."
           "\n:param data: Additional data stored in Barrier operation."
           "\n:return: the new :py:class:`Circuit`",
           py::arg("barrier_args"), py::arg("condition_bits"), py::arg("value"),
