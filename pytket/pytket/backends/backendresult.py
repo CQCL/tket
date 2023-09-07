@@ -34,7 +34,7 @@ import warnings
 
 import numpy as np
 
-from pytket.circuit import (  # type: ignore
+from pytket.circuit import (
     BasisOrder,
     Bit,
     Circuit,
@@ -129,7 +129,7 @@ class BackendResult:
                         )
                     )
             else:
-                setattr(self, attr, dict((uid(i), i) for i in range(lent)))
+                setattr(self, attr, dict((uid(i), i) for i in range(lent)))  # type: ignore
 
         if self.contains_measured_results:
             _bitlength = 0
@@ -138,7 +138,10 @@ class BackendResult:
                     raise ValueError(
                         "Provide either counts or shots, both is not valid."
                     )
-                _bitlength = next(self._counts.elements()).width
+                try:
+                    _bitlength = next(self._counts.elements()).width
+                except StopIteration:
+                    _bitlength = len(c_bits)
 
             if self._shots is not None:
                 _bitlength = self._shots.width
@@ -252,6 +255,7 @@ class BackendResult:
                     Counter({outcome.choose_indices(chosen_readouts): count})
                     for outcome, count in new_counts.items()
                 ),
+                Counter(),
             )
         if self._shots is not None:
             if ppcirc is not None:
@@ -369,10 +373,10 @@ class BackendResult:
                 raise InvalidResultType("No results stored.")
 
         if all(isinstance(i, Bit) for i in request_ids):
-            return self._get_measured_res(request_ids, ppcirc)
+            return self._get_measured_res(request_ids, ppcirc)  # type: ignore
 
         if all(isinstance(i, Qubit) for i in request_ids):
-            return self._get_state_res(request_ids)
+            return self._get_state_res(request_ids)  # type: ignore
 
         raise ValueError(
             "Requested UnitIds (request_ids) contain a mixture of qubits and bits."
@@ -532,10 +536,10 @@ class BackendResult:
             DeprecationWarning,
         )
         try:
-            state = self.get_state(units)
+            state = self.get_state(units)  # type: ignore
             return probs_from_state(state)
         except InvalidResultType:
-            counts = self.get_counts(units)
+            counts = self.get_counts(units)  # type: ignore
             total = sum(counts.values())
             dist = {outcome: count / total for outcome, count in counts.items()}
             return dist

@@ -1,6 +1,58 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Minor new features:
+
+* ``Circuit.add_conditional_barrier``
+* Add ``apply_clifford_basis_change_tensor`` method
+
+Fixes:
+
+* Correct implementation of `symbol_substitution()` for box types that cannot
+  contain symbols.
+
+0.19.0 (September 2023)
+-----------------------
+
+Major new features:
+
+* Add ``ConjugationBox`` to express circuits that follow
+  the compute-action-uncompute pattern.
+* Added typing support for compiled modules
+
+Minor new features:
+
+* Implement equality checking for all boxes.
+* Add ``Op.is_clifford`` to python binding.
+* Single-qubit squashing ignores chains of symbolic gates if squashing them
+  would increase the overall complexity of the expressions. This behaviour can
+  be overridden using the ``always_squash_symbols`` parameter to
+  ``SquashCustom``.
+* Add ``control_state`` argument to ``QControlBox``.
+* Add ``QubitPauliTensor`` (combining ``QubitPauliString`` with a complex
+  coefficient) to python binding. This is incorporated into ``UnitaryTableau`` 
+  row inspection for phase tracking.
+
+Fixes:
+
+* Allow ``BackendResult`` objects containing no results.
+
+1.18.0 (August 2023)
+--------------------
+
+Minor new features:
+
+* Add circuit method ``depth_2q``.
+* Add ``allow_swaps`` parameter to ``auto_rebase_pass``.
+
+Fixes:
+
+* Fix slow ``Circuit.get_statevector()``.
+
+
 1.17.1 (July 2023)
 ------------------
 

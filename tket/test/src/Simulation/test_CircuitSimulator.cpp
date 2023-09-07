@@ -176,6 +176,13 @@ SCENARIO("Simulate circuit with unsupported operations") {
         tket_sim::get_unitary(circ), Unsupported,
         MessageContains("Unsupported OpType Conditional"));
   }
+  GIVEN("Circuit with conditional barrier") {
+    Circuit circ(2, 2);
+    circ.add_conditional_barrier({0, 1}, {1}, {0}, 1, "");
+    REQUIRE_THROWS_MATCHES(
+        tket_sim::get_unitary(circ), Unsupported,
+        MessageContains("Unsupported OpType Conditional"));
+  }
 }
 
 SCENARIO("Ignored op types don't affect get unitary") {

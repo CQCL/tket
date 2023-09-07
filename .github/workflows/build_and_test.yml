@@ -28,7 +28,7 @@ jobs:
       tket_ver: ${{ steps.tket_ver.outputs.tket_ver }}
       tket_package_exists: ${{ steps.tket_package_exists.outputs.tket_package_exists }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: actions/setup-python@v4
       with:
         python-version: '3.11'
@@ -66,7 +66,7 @@ jobs:
     if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.doxyfile_changed == 'true'
     runs-on: 'ubuntu-22.04'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Check doxygen
         run: |
           sudo apt install -y doxygen graphviz
@@ -78,7 +78,7 @@ jobs:
     if: needs.check_changes.outputs.tket_changed == 'true'
     runs-on: 'macos-12'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Check C++ code formatting
         run: |
           brew update
@@ -94,7 +94,7 @@ jobs:
         os: ['ubuntu-22.04', 'macos-12']
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: apt update
       if: matrix.os == 'ubuntu-22.04'
       run: sudo apt update
@@ -144,9 +144,11 @@ jobs:
         os: ['windows-2022']
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install conan
         uses: turtlebrowser/get-conan@v1.2
+        with:
+          version: '2.0.9'
       - name: Set up conan
         id: conan-setup
         run: |
@@ -213,7 +215,7 @@ jobs:
     needs: check_changes
     if: needs.check_changes.outputs.tket_changed == 'true' && github.repository == 'CQCL/tket'
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
     - name: Set up conan
@@ -266,7 +268,7 @@ jobs:
     if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true'
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
     - name: Set up conan
@@ -361,7 +363,7 @@ jobs:
     if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true'
     runs-on: macos-12
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Select Python 3.10
       # otherwise turtlebrowser/get-conan@v1.2 fails on macos-12
       uses: actions/setup-python@v4
@@ -424,11 +426,13 @@ jobs:
         cd pytket/tests
         pip install -r requirements.txt
         pytest --ignore=simulator/
-    - name: Run mypy
+    - name: Check type stubs are up-to-date and run mypy
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
       run: |
         pip install -U mypy
         cd pytket
+        ./stub_generation/regenerate_stubs
+        git diff --quiet pytket/_tket && echo "Stubs are up-to-date" || exit 1  # fail if stubs change after regeneration
         mypy --config-file=mypy.ini --no-incremental -p pytket -p tests
     - name: Upload package
       if: github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_changed == 'true'
@@ -448,7 +452,7 @@ jobs:
     if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true'
     runs-on: windows-2022
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
     - name: Set up conan
@@ -520,7 +524,7 @@ jobs:
     needs: check_changes
     if: (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true') && github.repository == 'CQCL/tket'
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
     - name: Set up conan
@@ -616,7 +620,7 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         ref: gh-pages
     - name: Download artefact
@@ -644,7 +648,7 @@ jobs:
     if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Download artefact
       uses: actions/download-artifact@v3
       with:

@@ -1011,28 +1011,24 @@ void MappingFrontier::merge_ancilla(
 bool MappingFrontier::valid_boundary_operation(
     const ArchitecturePtr& architecture, const Op_ptr& op,
     const std::vector<Node>& uids) const {
-  // boxes are never allowed
   OpType ot = op->get_type();
-  if (is_box_type(ot)) {
-    return false;
-  }
 
   if (ot == OpType::Conditional) {
     Op_ptr cond_op_ptr = static_cast<const Conditional&>(*op).get_op();
     // conditional boxes are never allowed, too
-    OpType ot = cond_op_ptr->get_type();
+    ot = cond_op_ptr->get_type();
     while (ot == OpType::Conditional) {
       cond_op_ptr = static_cast<const Conditional&>(*op).get_op();
       ot = cond_op_ptr->get_type();
-      if (is_box_type(ot)) {
-        return false;
-      }
     }
   }
-
-  // Barriers are allways allowed
-  if (ot == OpType::Barrier) {
+  // Barriers are always allowed
+  if (is_barrier_type(ot)) {
     return true;
+  }
+  // boxes are never allowed
+  if (is_box_type(ot)) {
+    return false;
   }
 
   // this currently allows unplaced single qubits gates

@@ -23,6 +23,7 @@
 #include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/Command.hpp"
+#include "tket/Circuit/ConjugationBox.hpp"
 #include "tket/Circuit/DiagonalBox.hpp"
 #include "tket/Circuit/Multiplexor.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
@@ -70,10 +71,10 @@ bool check_circuit(const Circuit& c) {
 
 SCENARIO("Test Op serialization") {
   GIVEN("OpType") {
-    const OpTypeSet metaops = {OpType::Input,     OpType::Output,
-                               OpType::ClInput,   OpType::ClOutput,
-                               OpType::WASMInput, OpType::WASMOutput,
-                               OpType::Barrier};
+    const OpTypeSet meta_barrier_ops = {OpType::Input,     OpType::Output,
+                                        OpType::ClInput,   OpType::ClOutput,
+                                        OpType::WASMInput, OpType::WASMOutput,
+                                        OpType::Barrier};
     const OpTypeSet boxes = {
         OpType::CircBox,         OpType::Unitary1qBox,
         OpType::Unitary2qBox,    OpType::Unitary3qBox,
@@ -85,7 +86,7 @@ SCENARIO("Test Op serialization") {
 
     std::set<std::string> type_names;
     for (auto type :
-         boost::join(all_gate_types(), boost::join(metaops, boxes))) {
+         boost::join(all_gate_types(), boost::join(meta_barrier_ops, boxes))) {
       bool success_insert =
           type_names.insert(optypeinfo().at(type).name).second;
       // check all optype names are unique
@@ -225,6 +226,8 @@ SCENARIO("Test Circuit serialization") {
     c.add_conditional_gate<unsigned>(OpType::Ry, {-0.75}, {0}, {0, 1}, 1);
     c.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0, 1}, 1);
     c.add_conditional_gate<unsigned>(OpType::Measure, {}, {0, 2}, {0, 1}, 1);
+    c.add_conditional_barrier({0, 1}, {1, 2}, {0}, 0, "");
+    c.add_conditional_barrier({0}, {2}, {0, 1}, 1, "test");
 
     nlohmann::json j_box = c;
     const Circuit new_c = j_box.get<Circuit>();
@@ -432,19 +435,24 @@ SCENARIO("Test Circuit serialization") {
 
   GIVEN("QControlBox") {
     Op_ptr op = get_op_ptr(OpType::Sycamore);
-    QControlBox qcbox(op, 2);
+    QControlBox qcbox(op, 2, {1, 1});
     Circuit c(4);
     c.add_box(qcbox, {0, 1, 2, 3});
 
-    nlohmann::json j_box = c;
-    const Circuit new_c = j_box.get<Circuit>();
+    nlohmann::json j_circ = c;
+    const Circuit new_c = j_circ.get<Circuit>();
 
     const auto& qc_b =
         static_cast<const QControlBox&>(*new_c.get_commands()[0].get_op_ptr());
 
     REQUIRE(qc_b == qcbox);
-    REQUIRE(qc_b.get_n_controls() == qcbox.get_n_controls());
-    REQUIRE(*qc_b.get_op() == *qc_b.get_op());
+
+    // test backward compatibility
+    nlohmann::json j_box = std::make_shared<QControlBox>(qcbox);
+    j_box.erase("control_state");
+    Op_ptr qcbox_ptr = j_box.get<Op_ptr>();
+    const auto& qcbox2 = static_cast<const QControlBox&>(*qcbox_ptr);
+    REQUIRE(qcbox == qcbox2);
   }
 
   GIVEN("MultiplexorBox") {
@@ -598,6 +606,33 @@ SCENARIO("Test Circuit serialization") {
 
     // can use box equality check here as in this case all members are checked
     REQUIRE(pp_b == ppbox);
+  }
+
+  GIVEN("ConjugationBox") {
+    Circuit compute(2);
+    compute.add_op<unsigned>(OpType::CRx, 0.5, {1, 0});
+    Op_ptr compute_op = std::make_shared<CircBox>(CircBox(compute));
+    Circuit action(2);
+    action.add_op<unsigned>(OpType::H, {0});
+    Op_ptr action_op = std::make_shared<CircBox>(CircBox(action));
+    ConjugationBox box(compute_op, action_op);
+    nlohmann::json j_box = std::make_shared<ConjugationBox>(box);
+    // check the uncompute field is null
+    REQUIRE(
+        (j_box.at("box").contains("uncompute") &&
+         j_box.at("box").at("uncompute").is_null()));
+    Op_ptr box_ptr = j_box.get<Op_ptr>();
+    const auto& new_box = static_cast<const ConjugationBox&>(*box_ptr);
+    REQUIRE(new_box == box);
+    // uncompute is not null
+    ConjugationBox box2(compute_op, action_op, compute_op->dagger());
+    nlohmann::json j_box2 = std::make_shared<ConjugationBox>(box2);
+    REQUIRE(
+        (j_box2.at("box").contains("uncompute") &&
+         !j_box2.at("box").at("uncompute").is_null()));
+    Op_ptr box_ptr2 = j_box2.get<Op_ptr>();
+    const auto& new_box2 = static_cast<const ConjugationBox&>(*box_ptr2);
+    REQUIRE(new_box2 == box2);
   }
 
   GIVEN("Circuits with named operations") {

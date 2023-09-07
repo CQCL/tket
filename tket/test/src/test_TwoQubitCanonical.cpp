@@ -689,8 +689,9 @@ SCENARIO("two_qubit_squash with classical ops") {
         circ.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0}, 1);
     circ.add_op<unsigned>(tket::OpType::CX, {0, 1});
     circ.add_op<unsigned>(tket::OpType::CX, {0, 1});
+    circ.add_conditional_barrier({0, 1}, {}, {0}, 1, "");
     REQUIRE(Transforms::two_qubit_squash(OpType::CX).apply(circ));
-    REQUIRE(circ.n_gates() == 1);
+    REQUIRE(circ.n_gates() == 2);
     REQUIRE(circ.get_commands()[0].get_vertex() == v);
   }
   GIVEN("Circuit with conditional gates") {

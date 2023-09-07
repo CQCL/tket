@@ -12,24 +12,20 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from typing import Any, Callable, Dict, List, Optional, Tuple, TypeVar
 from collections import Counter
 import hypothesis.strategies as st
-from hypothesis.extra.numpy import arrays
-from hypothesis.strategies import *  # for reexport
 from hypothesis.strategies._internal import SearchStrategy
 from hypothesis.extra.numpy import arrays
-from typing import Any, Callable, Dict, List, Optional, Tuple, TypeVar
+from typing import Any, Callable
 
 import numpy as np
 import re
 
 from pytket import Circuit, Qubit, Bit
-from pytket._tket.circuit import BasisOrder, Node, OpType  # type: ignore
-from pytket._tket.architecture import Architecture  # type: ignore
-from pytket.pauli import Pauli, QubitPauliString  # type: ignore
+from pytket.circuit import Node, OpType
+from pytket.architecture import Architecture
+from pytket.pauli import Pauli, QubitPauliString
 from pytket.utils import QubitPauliOperator
-from pytket.utils.results import KwargTypes
 from pytket.utils.outcomearray import OutcomeArray
 from pytket.backends.backendresult import BackendResult
 from pytket.backends.backendinfo import BackendInfo

@@ -15,16 +15,18 @@
 import itertools
 from typing import List
 from pathlib import Path
-from pytket.circuit import Circuit, OpType, PauliExpBox, Node, Qubit  # type: ignore
-from pytket._tket.circuit import _library  # type: ignore
-from pytket.pauli import Pauli  # type: ignore
-from pytket.passes import (  # type: ignore
+
+import sympy
+
+from pytket.circuit import Circuit, OpType, PauliExpBox, Node, Qubit
+import pytket.circuit_library as _library
+from pytket.pauli import Pauli
+from pytket.passes import (
     RemoveRedundancies,
     KAKDecomposition,
     SquashCustom,
     SquashRzPhasedX,
     CommuteThroughMultis,
-    RebaseCustom,
     PauliSquash,
     FullPeepholeOptimise,
     DefaultMappingPass,
@@ -39,18 +41,25 @@ from pytket.passes import (  # type: ignore
     auto_rebase_pass,
     auto_squash_pass,
 )
-from pytket.predicates import CompilationUnit, NoMidMeasurePredicate  # type: ignore
+from pytket.predicates import CompilationUnit, NoMidMeasurePredicate
 from pytket.passes.auto_rebase import _CX_CIRCS, NoAutoRebase
-from pytket.transform import Transform, CXConfigType, PauliSynthStrat  # type: ignore
+from pytket.transform import Transform, CXConfigType, PauliSynthStrat
 from pytket.qasm import circuit_from_qasm
-from pytket.architecture import Architecture  # type: ignore
-from pytket.mapping import MappingManager, LexiRouteRoutingMethod, LexiLabellingMethod  # type: ignore
-from pytket.placement import Placement, GraphPlacement, LinePlacement, NoiseAwarePlacement  # type: ignore
+from pytket.architecture import Architecture
+from pytket.mapping import MappingManager, LexiRouteRoutingMethod, LexiLabellingMethod
+from pytket.placement import (
+    Placement,
+    GraphPlacement,
+    LinePlacement,
+    NoiseAwarePlacement,
+)
 
-from sympy import Symbol  # type: ignore
+from sympy import Symbol
 import numpy as np
 import json
 import pytest
+
+from useful_typedefs import ParamType  # type: ignore
 
 
 def get_test_circuit() -> Circuit:
@@ -436,7 +445,7 @@ def test_pauli_graph_synth() -> None:
         num_cxs = c.n_gates_of_type(OpType.CX)
         cx_counts.append(num_cxs)
 
-    for (i, count) in enumerate(cx_counts):
+    for i, count in enumerate(cx_counts):
         if i == 0:
             continue
         assert count < cx_counts[i - 1]
@@ -814,7 +823,7 @@ def test_full_peephole_optimise() -> None:
 
 def test_decompose_swap_to_cx() -> None:
     circ = Circuit(5)
-    arc = Architecture([[0, 1], [1, 2], [2, 3], [3, 4]])
+    arc = Architecture([(0, 1), (1, 2), (2, 3), (3, 4)])
     circ.CX(0, 1)
     circ.CX(0, 3)
     circ.CX(2, 4)
@@ -843,14 +852,14 @@ def test_decompose_swap_to_cx() -> None:
 
 
 def test_noncontiguous_DefaultMappingPass_arc() -> None:
-    arc = Architecture([[0, 2]])
+    arc = Architecture([(0, 2)])
     pass1 = DefaultMappingPass(arc)
     c = Circuit(2)
     pass1.apply(c)
 
 
 def test_RoutingPass() -> None:
-    arc = Architecture([[0, 2], [1, 3], [2, 3], [2, 4]])
+    arc = Architecture([(0, 2), (1, 3), (2, 3), (2, 4)])
     circ = Circuit(5)
     circ.CX(0, 1)
     circ.CX(0, 3)
@@ -874,7 +883,7 @@ def test_RoutingPass() -> None:
 
 
 def test_FullMappingPass() -> None:
-    arc = Architecture([[0, 2], [1, 3], [2, 3], [2, 4]])
+    arc = Architecture([(0, 2), (1, 3), (2, 3), (2, 4)])
     circ = Circuit(5)
     circ.CX(0, 1).CX(0, 3).CX(2, 4).CX(1, 4).CX(0, 4).CX(2, 1).CX(3, 0)
     cu_0 = CompilationUnit(circ)
@@ -897,7 +906,7 @@ def test_FullMappingPass() -> None:
 
 
 def test_CXMappingPass() -> None:
-    arc = Architecture([[0, 2], [1, 3], [2, 3], [2, 4]])
+    arc = Architecture([(0, 2), (1, 3), (2, 3), (2, 4)])
     circ = Circuit(5)
     circ.Y(4).CX(0, 1).S(3).CX(0, 3).H(0).CX(2, 4).CX(1, 4).Y(1).CX(0, 4).CX(2, 1).Z(
         2
@@ -924,7 +933,7 @@ def test_CXMappingPass() -> None:
 
 
 def test_DefaultMappingPass() -> None:
-    arc = Architecture([[0, 2], [1, 3], [2, 3], [2, 4]])
+    arc = Architecture([(0, 2), (1, 3), (2, 3), (2, 4)])
     circ = Circuit(5)
     circ.Y(4).CX(0, 1).S(3).CX(0, 3).H(0).CX(2, 4).CX(1, 4).Y(1).CX(0, 4).CX(2, 1).Z(
         2
@@ -947,7 +956,7 @@ def test_DefaultMappingPass() -> None:
 
 def test_CXMappingPass_correctness() -> None:
     # TKET-1045
-    arc = Architecture([[0, 1], [1, 2], [2, 3], [3, 4]])
+    arc = Architecture([(0, 1), (1, 2), (2, 3), (3, 4)])
     placer = NoiseAwarePlacement(arc)
     p = CXMappingPass(arc, placer, directed_cx=True, delay_measures=True)
     c = Circuit(3).CX(0, 1).CX(1, 2).CCX(2, 1, 0).CY(1, 0).CY(2, 1)
@@ -965,62 +974,62 @@ def test_CXMappingPass_terminates() -> None:
     )
     arc = Architecture(
         [
-            [0, 1],
-            [1, 0],
-            [1, 2],
-            [1, 4],
-            [2, 1],
-            [2, 3],
-            [3, 2],
-            [3, 5],
-            [4, 1],
-            [4, 7],
-            [5, 3],
-            [5, 8],
-            [6, 7],
-            [7, 4],
-            [7, 6],
-            [7, 10],
-            [8, 5],
-            [8, 9],
-            [8, 11],
-            [9, 8],
-            [10, 7],
-            [10, 12],
-            [11, 8],
-            [11, 14],
-            [12, 10],
-            [12, 13],
-            [12, 15],
-            [13, 12],
-            [13, 14],
-            [14, 11],
-            [14, 13],
-            [14, 16],
-            [15, 12],
-            [15, 18],
-            [16, 14],
-            [16, 19],
-            [17, 18],
-            [18, 15],
-            [18, 17],
-            [18, 21],
-            [19, 16],
-            [19, 20],
-            [19, 22],
-            [20, 19],
-            [21, 18],
-            [21, 23],
-            [22, 19],
-            [22, 25],
-            [23, 21],
-            [23, 24],
-            [24, 23],
-            [24, 25],
-            [25, 22],
-            [25, 24],
-            [25, 26],
-            [26, 25],
+            (0, 1),
+            (1, 0),
+            (1, 2),
+            (1, 4),
+            (2, 1),
+            (2, 3),
+            (3, 2),
+            (3, 5),
+            (4, 1),
+            (4, 7),
+            (5, 3),
+            (5, 8),
+            (6, 7),
+            (7, 4),
+            (7, 6),
+            (7, 10),
+            (8, 5),
+            (8, 9),
+            (8, 11),
+            (9, 8),
+            (10, 7),
+            (10, 12),
+            (11, 8),
+            (11, 14),
+            (12, 10),
+            (12, 13),
+            (12, 15),
+            (13, 12),
+            (13, 14),
+            (14, 11),
+            (14, 13),
+            (14, 16),
+            (15, 12),
+            (15, 18),
+            (16, 14),
+            (16, 19),
+            (17, 18),
+            (18, 15),
+            (18, 17),
+            (18, 21),
+            (19, 16),
+            (19, 20),
+            (19, 22),
+            (20, 19),
+            (21, 18),
+            (21, 23),
+            (22, 19),
+            (22, 25),
+            (23, 21),
+            (23, 24),
+            (24, 23),
+            (24, 25),
+            (25, 22),
+            (25, 24),
+            (25, 26),
+            (26, 25),
         ]
     )
     placer = NoiseAwarePlacement(arc, timeout=10000)
@@ -1125,7 +1134,7 @@ def test_auto_squash() -> None:
         for gate in itertools.islice(itertools.cycle(gateset), 5):
             # make a sequence of 5 gates from gateset to make sure squash does
             # something
-            params: List[float] = []
+            params: List[ParamType] = []
             while True:
                 try:
                     circ.add_gate(gate, params, [0])
@@ -1155,6 +1164,10 @@ def test_tk2_decompositions() -> None:
 
 
 def test_custom_pass() -> None:
+    def abs_float_param(param: ParamType) -> float:
+        assert isinstance(param, float)
+        return abs(param)
+
     def transform(c: "Circuit") -> "Circuit":
         c1 = Circuit()
         for q_reg in c.q_registers:
@@ -1163,7 +1176,9 @@ def test_custom_pass() -> None:
             c1.add_c_register(c_reg.name, c_reg.size)
         for cmd in c.get_commands():
             op = cmd.op
-            params = [param if abs(param) >= 0.01 else 0 for param in op.params]
+            params = [
+                param if abs_float_param(param) >= 0.01 else 0.0 for param in op.params
+            ]
             c1.add_gate(op.type, params, cmd.args)
         return c1
 
@@ -1216,6 +1231,224 @@ def test_round_angles() -> None:
     assert circ0 == circ1
 
 
+def test_auto_rebase_with_swap_cx() -> None:
+    swap_pass = auto_rebase_pass({OpType.CX, OpType.PhasedX, OpType.Rz}, True)
+    no_swap_pass = auto_rebase_pass({OpType.CX, OpType.PhasedX, OpType.Rz}, False)
+
+    c_swap = Circuit(2).ISWAPMax(0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.CX) == 1
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(1)
+    assert iqp[Qubit(1)] == Qubit(0)
+    c_no_swap = Circuit(2).ISWAPMax(0, 1)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.CX) == 2
+
+    c_swap = Circuit(2).Sycamore(0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.CX) == 2
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(1)
+    assert iqp[Qubit(1)] == Qubit(0)
+    c_no_swap = Circuit(2).Sycamore(0, 1)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.CX) == 3
+
+    c_swap = Circuit(2).ISWAP(0.3, 0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.CX) == 2
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(0)
+    assert iqp[Qubit(1)] == Qubit(1)
+    c_no_swap = Circuit(2).ISWAP(0.3, 0, 1)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.CX) == 2
+
+    c_swap = Circuit(2).ISWAPMax(0, 1).ISWAPMax(1, 0)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.CX) == 2
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(0)
+    assert iqp[Qubit(1)] == Qubit(1)
+    c_no_swap = Circuit(2).ISWAPMax(0, 1).ISWAPMax(1, 0)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.CX) == 4
+
+    c_swap = Circuit(2).SWAP(0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.CX) == 0
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(1)
+    assert iqp[Qubit(1)] == Qubit(0)
+    c_no_swap = Circuit(2).SWAP(0, 1)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.CX) == 3
+
+    c_swap = Circuit(2).ZZMax(0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.CX) == 1
+
+    c_swap = Circuit(2).CX(0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates == 1
+
+
+def test_auto_rebase_with_swap_zzmax() -> None:
+    swap_pass = auto_rebase_pass({OpType.ZZMax, OpType.PhasedX, OpType.Rz}, True)
+    no_swap_pass = auto_rebase_pass({OpType.ZZMax, OpType.PhasedX, OpType.Rz}, False)
+
+    c_swap = Circuit(2).ISWAPMax(0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.ZZMax) == 1
+    assert c_swap.n_gates == 4
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(1)
+    assert iqp[Qubit(1)] == Qubit(0)
+    c_no_swap = Circuit(2).ISWAPMax(0, 1)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.ZZMax) == 2
+    assert c_no_swap.n_gates == 13
+
+    c_swap = Circuit(2).Sycamore(0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.ZZMax) == 2
+    assert c_swap.n_gates == 11
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(1)
+    assert iqp[Qubit(1)] == Qubit(0)
+
+    c_no_swap = Circuit(2).Sycamore(0, 1)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.ZZMax) == 3
+    assert c_no_swap.n_gates == 16
+
+    c_swap = Circuit(2).ISWAP(0.3, 0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.ZZMax) == 2
+    assert c_swap.n_gates == 13
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(0)
+    assert iqp[Qubit(1)] == Qubit(1)
+    c_no_swap = Circuit(2).ISWAP(0.3, 0, 1)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.ZZMax) == 2
+    assert c_no_swap.n_gates == 13
+
+    c_swap = Circuit(2).ISWAPMax(0, 1).ISWAPMax(1, 0)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.ZZMax) == 2
+    assert c_swap.n_gates == 8
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(0)
+    assert iqp[Qubit(1)] == Qubit(1)
+    c_no_swap = Circuit(2).ISWAPMax(0, 1).ISWAPMax(1, 0)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.ZZMax) == 4
+    assert c_no_swap.n_gates == 26
+
+    c_swap = Circuit(2).SWAP(0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.ZZMax) == 0
+    assert c_swap.n_gates == 0
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(1)
+    assert iqp[Qubit(1)] == Qubit(0)
+    c_no_swap = Circuit(2).SWAP(0, 1)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.ZZMax) == 3
+    assert c_no_swap.n_gates == 16
+
+    c_swap = Circuit(2).ZZMax(0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates == 1
+
+
+def test_auto_rebase_with_swap_zzphase() -> None:
+    swap_pass = auto_rebase_pass({OpType.ZZPhase, OpType.PhasedX, OpType.Rz}, True)
+    no_swap_pass = auto_rebase_pass({OpType.ZZPhase, OpType.PhasedX, OpType.Rz}, False)
+
+    c_swap = Circuit(2).ISWAPMax(0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.ZZPhase) == 1
+    assert c_swap.n_gates == 4
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(1)
+    assert iqp[Qubit(1)] == Qubit(0)
+    c_no_swap = Circuit(2).ISWAPMax(0, 1)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.ZZPhase) == 2
+    assert c_no_swap.n_gates == 13
+
+    c_swap = Circuit(2).Sycamore(0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.ZZPhase) == 2
+    assert c_swap.n_gates == 11
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(1)
+    assert iqp[Qubit(1)] == Qubit(0)
+
+    c_no_swap = Circuit(2).Sycamore(0, 1)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.ZZPhase) == 3
+    assert c_no_swap.n_gates == 15
+
+    c_swap = Circuit(2).ISWAP(0.3, 0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.ZZPhase) == 2
+    assert c_swap.n_gates == 13
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(0)
+    assert iqp[Qubit(1)] == Qubit(1)
+    c_no_swap = Circuit(2).ISWAP(0.3, 0, 1)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.ZZPhase) == 2
+    assert c_no_swap.n_gates == 14
+
+    c_swap = Circuit(2).ISWAPMax(0, 1).ISWAPMax(1, 0)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.ZZPhase) == 2
+    assert c_swap.n_gates == 8
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(0)
+    assert iqp[Qubit(1)] == Qubit(1)
+    c_no_swap = Circuit(2).ISWAPMax(0, 1).ISWAPMax(1, 0)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.ZZPhase) == 4
+    assert c_no_swap.n_gates == 26
+
+    c_swap = Circuit(2).SWAP(0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.ZZPhase) == 0
+    assert c_swap.n_gates == 0
+    iqp = c_swap.implicit_qubit_permutation()
+    assert iqp[Qubit(0)] == Qubit(1)
+    assert iqp[Qubit(1)] == Qubit(0)
+    c_no_swap = Circuit(2).SWAP(0, 1)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates_of_type(OpType.ZZPhase) == 3
+    assert c_no_swap.n_gates == 13
+
+    c_swap = Circuit(2).ZZPhase(0.4, 0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates == 1
+
+    c_swap = Circuit(2).ZZMax(0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates_of_type(OpType.ZZPhase) == 1
+
+
+def test_auto_rebase_with_swap_tk2() -> None:
+    swap_pass = auto_rebase_pass({OpType.TK2, OpType.PhasedX, OpType.Rz}, True)
+    no_swap_pass = auto_rebase_pass({OpType.TK2, OpType.PhasedX, OpType.Rz}, False)
+    c_swap = Circuit(2).SWAP(0, 1)
+    swap_pass.apply(c_swap)
+    assert c_swap.n_gates == 0
+    c_no_swap = Circuit(2).SWAP(0, 1)
+    no_swap_pass.apply(c_no_swap)
+    assert c_no_swap.n_gates > 0
+
+
 if __name__ == "__main__":
     test_remove_redundancies()
     test_reduce_singles()
@@ -1242,3 +1475,7 @@ if __name__ == "__main__":
     test_CXMappingPass_terminates()
     test_FullMappingPass()
     test_KAK_with_ClassicalExpBox()
+    test_auto_rebase_with_swap_cx()
+    test_auto_rebase_with_swap_zzmax()
+    test_auto_rebase_with_swap_zzphase()
+    test_auto_rebase_with_swap_tk2()

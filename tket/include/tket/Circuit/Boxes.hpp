@@ -160,10 +160,7 @@ class CircBox : public Box {
   /**
    * Equality check between two CircBox instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const CircBox &other = dynamic_cast<const CircBox &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   Op_ptr dagger() const override;
 
@@ -203,7 +200,7 @@ class Unitary1qBox : public Box {
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &) const override {
-    return Op_ptr();
+    return std::make_shared<Unitary1qBox>(*this);
   }
 
   SymSet free_symbols() const override { return {}; }
@@ -211,10 +208,7 @@ class Unitary1qBox : public Box {
   /**
    * Equality check between two Unitary1qBox instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const Unitary1qBox &other = dynamic_cast<const Unitary1qBox &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   /** Get the unitary matrix correspnding to this operation */
   Eigen::Matrix2cd get_matrix() const { return m_; }
@@ -268,7 +262,7 @@ class Unitary2qBox : public Box {
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &) const override {
-    return Op_ptr();
+    return std::make_shared<Unitary2qBox>(*this);
   }
 
   SymSet free_symbols() const override { return {}; }
@@ -276,10 +270,7 @@ class Unitary2qBox : public Box {
   /**
    * Equality check between two Unitary2qBox instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const Unitary2qBox &other = dynamic_cast<const Unitary2qBox &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   /** Get the unitary matrix correspnding to this operation */
   Eigen::Matrix4cd get_matrix() const { return m_; }
@@ -330,7 +321,7 @@ class Unitary3qBox : public Box {
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &) const override {
-    return Op_ptr();
+    return std::make_shared<Unitary3qBox>(*this);
   }
 
   SymSet free_symbols() const override { return {}; }
@@ -338,10 +329,7 @@ class Unitary3qBox : public Box {
   /**
    * Equality check between two Unitary3qBox instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const Unitary3qBox &other = dynamic_cast<const Unitary3qBox &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   /** Get the unitary matrix correspnding to this operation */
   Matrix8cd get_matrix() const { return m_; }
@@ -398,7 +386,7 @@ class ExpBox : public Box {
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &) const override {
-    return Op_ptr();
+    return std::make_shared<ExpBox>(*this);
   }
 
   SymSet free_symbols() const override { return {}; }
@@ -406,10 +394,7 @@ class ExpBox : public Box {
   /**
    * Equality check between two ExpBox instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const ExpBox &other = dynamic_cast<const ExpBox &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   /** Get the hermitian matrix and phase parameter */
   std::pair<Eigen::Matrix4cd, double> get_matrix_and_phase() const {
@@ -513,8 +498,13 @@ class QControlBox : public Box {
    *
    * @param op op to control
    * @param n_controls number of qubit controls to add
+   * @param control_state control state expressed as a bit vector.
+   * If control_state is non-empty, its size should match n_controls.
+   * An empty vector is converted to an all-1s vector of length n_controls.
    */
-  explicit QControlBox(const Op_ptr &op, unsigned n_controls = 1);
+  explicit QControlBox(
+      const Op_ptr &op, unsigned n_controls = 1,
+      const std::vector<bool> &control_state = {});
 
   /**
    * Copy constructor
@@ -531,10 +521,7 @@ class QControlBox : public Box {
   /**
    * Equality check between two QControlBox instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const QControlBox &other = dynamic_cast<const QControlBox &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   std::string get_command_str(const unit_vector_t &args) const override;
 
@@ -546,6 +533,7 @@ class QControlBox : public Box {
 
   Op_ptr get_op() const { return op_; }
   unsigned get_n_controls() const { return n_controls_; }
+  std::vector<bool> get_control_state() const { return control_state_; }
 
   static Op_ptr from_json(const nlohmann::json &j);
 
@@ -554,12 +542,17 @@ class QControlBox : public Box {
  protected:
   void generate_circuit() const override;
   QControlBox()
-      : Box(OpType::QControlBox), op_(), n_controls_(0), n_inner_qubits_(0) {}
+      : Box(OpType::QControlBox),
+        op_(),
+        n_controls_(0),
+        n_inner_qubits_(0),
+        control_state_() {}
 
  private:
   const Op_ptr op_;
   const unsigned n_controls_;
   unsigned n_inner_qubits_;
+  const std::vector<bool> control_state_;
 };
 
 class ProjectorAssertionBox : public Box {
@@ -582,7 +575,7 @@ class ProjectorAssertionBox : public Box {
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &) const override {
-    return Op_ptr();
+    return std::make_shared<ProjectorAssertionBox>(*this);
   }
 
   SymSet free_symbols() const override { return {}; }
@@ -590,11 +583,7 @@ class ProjectorAssertionBox : public Box {
   /**
    * Equality check between two ProjectorAssertionBox instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const ProjectorAssertionBox &other =
-        dynamic_cast<const ProjectorAssertionBox &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   /** Get the unitary matrix correspnding to this operation */
   Eigen::MatrixXcd get_matrix() const { return m_; }
@@ -638,7 +627,7 @@ class StabiliserAssertionBox : public Box {
   ~StabiliserAssertionBox() override {}
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &) const override {
-    return Op_ptr();
+    return std::make_shared<StabiliserAssertionBox>(*this);
   }
 
   SymSet free_symbols() const override { return {}; }
@@ -646,11 +635,7 @@ class StabiliserAssertionBox : public Box {
   /**
    * Equality check between two StabiliserAssertionBox instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const StabiliserAssertionBox &other =
-        dynamic_cast<const StabiliserAssertionBox &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   /** Get the pauli stabilisers */
   PauliStabiliserList get_stabilisers() const { return paulis_; }

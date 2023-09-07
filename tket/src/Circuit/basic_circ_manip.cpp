@@ -24,6 +24,7 @@
 
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/Circuit.hpp"
+#include "tket/Ops/BarrierOp.hpp"
 #include "tket/Ops/MetaOp.hpp"
 
 namespace tket {
@@ -125,7 +126,7 @@ Vertex Circuit::add_barrier(
   sig.insert(sig.end(), cl_sig.begin(), cl_sig.end());
   std::vector<unsigned> args = qubits;
   args.insert(args.end(), bits.begin(), bits.end());
-  return add_op(std::make_shared<MetaOp>(OpType::Barrier, sig, _data), args);
+  return add_op(std::make_shared<BarrierOp>(sig, _data), args);
 }
 
 Vertex Circuit::add_barrier(
@@ -138,7 +139,48 @@ Vertex Circuit::add_barrier(
       sig.push_back(EdgeType::Classical);
     }
   }
-  return add_op(std::make_shared<MetaOp>(OpType::Barrier, sig, _data), args);
+  return add_op(std::make_shared<BarrierOp>(sig, _data), args);
+}
+
+Vertex Circuit::add_conditional_barrier(
+    const std::vector<unsigned>& barrier_qubits,
+    const std::vector<unsigned>& barrier_bits,
+    const std::vector<unsigned>& condition_bits, unsigned value,
+    const std::string& _data, std::optional<std::string> opgroup) {
+  op_signature_t sig(barrier_qubits.size(), EdgeType::Quantum);
+  sig.insert(sig.end(), barrier_bits.size(), EdgeType::Classical);
+
+  std::vector<unsigned> args = condition_bits;
+  args.insert(args.end(), barrier_qubits.begin(), barrier_qubits.end());
+  args.insert(args.end(), barrier_bits.begin(), barrier_bits.end());
+  return add_op(
+      std::make_shared<Conditional>(
+          std::make_shared<BarrierOp>(sig, _data),
+          (unsigned)condition_bits.size(), value),
+      args, opgroup);
+}
+
+Vertex Circuit::add_conditional_barrier(
+    const unit_vector_t& barrier_args, const bit_vector_t& condition_bits,
+    unsigned value, const std::string& _data,
+    std::optional<std::string> opgroup) {
+  op_signature_t sig;
+  for (const UnitID& arg : barrier_args) {
+    if (arg.type() == UnitType::Qubit) {
+      sig.push_back(EdgeType::Quantum);
+    } else {
+      TKET_ASSERT(arg.type() == UnitType::Bit);
+      sig.push_back(EdgeType::Classical);
+    }
+  }
+  unit_vector_t args;
+  args.insert(args.end(), condition_bits.begin(), condition_bits.end());
+  args.insert(args.end(), barrier_args.begin(), barrier_args.end());
+  return add_op(
+      std::make_shared<Conditional>(
+          std::make_shared<BarrierOp>(sig, _data),
+          (unsigned)condition_bits.size(), value),
+      args, opgroup);
 }
 
 std::string Circuit::get_next_c_reg_name(const std::string& reg_name) {

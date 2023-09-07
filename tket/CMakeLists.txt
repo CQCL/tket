@@ -111,6 +111,7 @@ target_sources(tket
         src/Clifford/ChoiMixTableau.cpp
         src/Clifford/SymplecticTableau.cpp
         src/Clifford/UnitaryTableau.cpp
+        src/Ops/BarrierOp.cpp
         src/Ops/FlowOp.cpp
         src/Ops/MetaOp.cpp
         src/Ops/Op.cpp
@@ -160,6 +161,7 @@ target_sources(tket
         src/Circuit/DiagonalBox.cpp
         src/Circuit/ToffoliBox.cpp
         src/Circuit/PauliExpBoxes.cpp
+        src/Circuit/ConjugationBox.cpp
         src/Circuit/Simulation/BitOperations.cpp
         src/Circuit/Simulation/CircuitSimulator.cpp
         src/Circuit/Simulation/DecomposeCircuit.cpp
@@ -277,6 +279,7 @@ target_sources(tket
         include/tket/Clifford/SymplecticTableau.hpp
         include/tket/Clifford/UnitaryTableau.hpp
         include/tket/Ops/ClassicalOps.hpp
+        include/tket/Ops/BarrierOp.hpp
         include/tket/Ops/FlowOp.hpp
         include/tket/Ops/MetaOp.hpp
         include/tket/Ops/Op.hpp
@@ -321,6 +324,7 @@ target_sources(tket
         include/tket/Circuit/ThreeQubitConversion.hpp
         include/tket/Circuit/ToffoliBox.hpp
         include/tket/Circuit/PauliExpBoxes.hpp
+        include/tket/Circuit/ConjugationBox.hpp
         include/tket/Circuit/Simulation/CircuitSimulator.hpp
         include/tket/Circuit/Simulation/PauliExpBoxUnitaryCalculator.hpp
         include/tket/Architecture/Architecture.hpp

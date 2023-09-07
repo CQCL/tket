@@ -40,6 +40,9 @@ const Circuit &CX_using_ECR();
 /** Equivalent to CX, using only ZZMax, Rx and Rz gates */
 const Circuit &CX_using_ZZMax();
 
+/** Equivalent to CX, using only ZZPhase, Rx and Rz gates */
+const Circuit &CX_using_ZZPhase();
+
 /** Equivalent to CX, using only XXPhase, Rx, Ry and Rz gates */
 const Circuit &CX_using_XXPhase_0();
 
@@ -229,7 +232,9 @@ Circuit XXPhase_using_CX(const Expr &alpha);
 /** Equivalent to YYPhase, using a TK2 gate */
 Circuit YYPhase_using_TK2(const Expr &alpha);
 
-/** Equivalent to YYPhase, using CX, Rz and U3 gates */
+/** Equivalent to YYPhase, using two CX gates and one Ry
+ * one Sdg and one S gate.
+ */
 Circuit YYPhase_using_CX(const Expr &alpha);
 
 /** Equivalent to ZZPhase, using a TK2 gate */
@@ -317,6 +322,18 @@ Circuit normalised_TK2_using_CX(
 Circuit TK2_using_CX(const Expr &alpha, const Expr &beta, const Expr &gamma);
 
 /**
+ * @brief Equivalent to TK2(α, β, γ)  up to a wire swap that is encoded in
+ * the implicit qubit permutation of the Circuit with minimal number of
+ * CX gates.
+ *
+ * A TK2-equivalent circuit with as few CX gates as possible (0, 1, 2 or 3 CX).
+ *
+ * @return Circuit Equivalent circuit, up to a wire swap, to TK2(α, β, γ).
+ */
+Circuit TK2_using_CX_and_swap(
+    const Expr &alpha, const Expr &beta, const Expr &gamma);
+
+/**
  * @brief Equivalent to TK2(α, 0, 0), using 1 ZZPhase gate.
  *
  * Using 1 ZZPhase gate we can implement any gate of the form TK2(α, 0, 0).
@@ -336,10 +353,10 @@ Circuit approx_TK2_using_1xZZPhase(const Expr &alpha);
  * This is the optimal 2-ZZPhase approximation for any TK2(α, β, γ), with
  * respect to the squared trace fidelity metric.
  *
- * Warning: in practice, we would not expect this decomposition to be attractive
- * on real hardware, as the same approximation fidelity can be obtained using
- * 2 ZZMax gates, which would typically have (same or) higher fidelity than
- * variable angle ZZPhase gates.
+ * Warning: in practice, we would not expect this decomposition to be
+ * attractive on real hardware, as the same approximation fidelity can be
+ * obtained using 2 ZZMax gates, which would typically have (same or) higher
+ * fidelity than variable angle ZZPhase gates.
  *
  * @return Circuit Equivalent circuit to TK2(α, β, 0).
  */
@@ -359,13 +376,43 @@ Circuit approx_TK2_using_2xZZPhase(const Expr &alpha, const Expr &beta);
  */
 Circuit TK2_using_ZZPhase(
     const Expr &alpha, const Expr &beta, const Expr &gamma);
+/**
+ * @brief Equivalent to TK2(α, β, γ)  up to a wire swap that is encoded in
+ * the implicit qubit permutation of the Circuit with minimal number of
+ * ZZPhase gates.
+ *
+ * A TK2-equivalent circuit with as few ZZPhase gates as possible:
+ * (0, 1, 2 or 3 ZZphase).
+ *
+ * @return Circuit Equivalent circuit, up to a wire swap, to TK2(α, β, γ).
+ */
+Circuit TK2_using_ZZPhase_and_swap(
+    const Expr &alpha, const Expr &beta, const Expr &gamma);
 
+/**
+ * @brief Either returns TK2(α, β, γ), or a wire swap and single qubit
+ * corrections
+ *
+ * @return Circuit Equivalent circuit, either a wire swap with single
+ * qubit corrections or TK2(α, β, γ).
+ */
+Circuit TK2_using_TK2_or_swap(
+    const Expr &alpha, const Expr &beta, const Expr &gamma);
 /**
  * @brief Equivalent to TK2(α, β, γ), using up to 3 ZZMax gates.
  *
  * @return Circuit equivalent to TK2(α, β, γ).
  */
 Circuit TK2_using_ZZMax(const Expr &alpha, const Expr &beta, const Expr &gamma);
+
+/**
+ * @brief Equivalent to TK2(α, β, γ), up to a wire swap that is encoded in the
+ * implicit qubit permutation of the Circuit, using up to 3 ZZMax gates.
+ *
+ * @return Circuit equivalent to TK2(α, β, γ) up to a wire swap.
+ */
+Circuit TK2_using_ZZMax_and_swap(
+    const Expr &alpha, const Expr &beta, const Expr &gamma);
 
 /** Equivalent to XXPhase3, using three TK2 gates */
 Circuit XXPhase3_using_TK2(const Expr &alpha);

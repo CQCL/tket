@@ -23,7 +23,7 @@ jobs:
     outputs:
       tket: ${{ steps.filter.outputs.tket }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: dorny/paths-filter@v2.11.1
       id: filter
       with:
@@ -39,7 +39,7 @@ jobs:
     if: needs.changes.outputs.tket == 'true' || github.event_name == 'schedule'
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
     - name: create profile
@@ -90,7 +90,7 @@ jobs:
     if: ((github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch') && needs.changes.outputs.tket == 'true') || github.event_name == 'schedule'
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Download artefact
       uses: actions/download-artifact@v3
       with:
@@ -114,7 +114,7 @@ jobs:
     if: github.event_name == 'push' && needs.changes.outputs.tket == 'true'
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         ref: gh-pages
     - name: Download artefact
@@ -143,7 +143,7 @@ jobs:
     if: github.event_name == 'schedule'
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         ref: gh-pages
     - name: Download artefact

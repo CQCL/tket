@@ -17,5 +17,5 @@ Python API module for interfacing with tket c++ implemented functions and module
 Exports class Transform
 """
 
-from pytket._tket.transform import *  # type: ignore
-from pytket._tket.circuit import CXConfigType  # type: ignore
+from pytket._tket.transform import *
+from pytket._tket.circuit import CXConfigType

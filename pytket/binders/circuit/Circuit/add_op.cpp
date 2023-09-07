@@ -12,20 +12,18 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include <pybind11/eigen.h>
-#include <pybind11/functional.h>
-#include <pybind11/operators.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
 #include <optional>
+#include <vector>
 
 #include "UnitRegister.hpp"
 #include "add_gate.hpp"
-#include "binder_utils.hpp"
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/ClassicalExpBox.hpp"
+#include "tket/Circuit/ConjugationBox.hpp"
 #include "tket/Circuit/DiagonalBox.hpp"
 #include "tket/Circuit/Multiplexor.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
@@ -33,7 +31,6 @@
 #include "tket/Circuit/ToffoliBox.hpp"
 #include "tket/Converters/PhasePoly.hpp"
 #include "tket/Gate/OpPtrFunctions.hpp"
-#include "tket/Ops/Op.hpp"
 #include "typecast.hpp"
 namespace py = pybind11;
 
@@ -176,6 +173,28 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n\n:param data: additional data stored in the barrier"
           "\n:return: the new :py:class:`Circuit`",
           py::arg("qubits"), py::arg("bits") = no_bits, py::arg("data") = "")
+      .def(
+          "add_conditional_barrier",
+          [](Circuit *circ, const std::vector<unsigned> &barrier_qubits,
+             const std::vector<unsigned> &barrier_bits,
+             const std::vector<unsigned> &condition_bits, unsigned value,
+             const std::string &_data) {
+            circ->add_conditional_barrier(
+                barrier_qubits, barrier_bits, condition_bits, value, _data);
+            return circ;
+          },
+          "Append a Conditional Barrier on the given barrier qubits and "
+          "barrier bits, conditioned on the given condition bits."
+          "\n\n:param barrier_qubits: Qubit in Barrier operation."
+          "\n:param barrier_bits: Bit in Barrier operation."
+          "\n:param condition_bits: Bit covering classical control condition "
+          "of barrier operation."
+          "\n:param value: Value that classical condition must have to "
+          "hold (little-endian)."
+          "\n:param data: Additional data stored in Barrier operation."
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("barrier_qubits"), py::arg("barrier_bits"),
+          py::arg("condition_bits"), py::arg("value"), py::arg("data") = "")
       .def(
           "add_circbox",
           [](Circuit *circ, const CircBox &box,
@@ -321,7 +340,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
 
       .def(
           "add_classicalexpbox_bit",
-          [](Circuit *circ, const py::object exp,
+          [](Circuit *circ, const py::object &exp,
              const std::vector<Bit> &outputs, const py::kwargs &kwargs) {
             auto inputs = exp.attr("all_inputs")().cast<std::set<Bit>>();
             std::vector<Bit> o_vec, io_vec;
@@ -354,7 +373,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("expression"), py::arg("target"))
       .def(
           "add_classicalexpbox_register",
-          [](Circuit *circ, const py::object exp,
+          [](Circuit *circ, const py::object &exp,
              const std::vector<Bit> &outputs, const py::kwargs &kwargs) {
             auto inputs =
                 exp.attr("all_inputs")().cast<std::set<BitRegister>>();
@@ -418,6 +437,26 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n\n:param data: additional data stored in the barrier"
           "\n:return: the new :py:class:`Circuit`",
           py::arg("units"), py::arg("data") = "")
+      .def(
+          "add_conditional_barrier",
+          [](Circuit *circ, const unit_vector_t &barrier_args,
+             const bit_vector_t &condition_bits, unsigned value,
+             const std::string &_data) {
+            circ->add_conditional_barrier(
+                barrier_args, condition_bits, value, _data);
+            return circ;
+          },
+          "Append a Conditional Barrier on the given barrier qubits and "
+          "barrier bits, conditioned on the given condition bits."
+          "\n\n:param barrier_args: Qubit and Bit in Barrier operation."
+          "\n:param condition_bits: Bit covering classical control "
+          " condition of barrier operation."
+          "\n:param value: Value that classical condition must have to "
+          "hold (little-endian)."
+          "\n:param data: Additional data stored in Barrier operation."
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("barrier_args"), py::arg("condition_bits"), py::arg("value"),
+          py::arg("data") = "")
       .def(
           "add_circbox",
           [](Circuit *circ, const CircBox &box, const unit_vector_t &args,
@@ -585,8 +624,9 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
              const std::optional<unsigned> &ancilla,
              const std::optional<std::string> &name) -> Circuit * {
             std::vector<Qubit> qubits_;
-            for (unsigned i = 0; i < qubits.size(); ++i) {
-              qubits_.push_back(Qubit(qubits[i]));
+            qubits_.reserve(qubits.size());
+            for (unsigned int qubit : qubits) {
+              qubits_.emplace_back(qubit);
             }
             std::optional<Qubit> ancilla_;
             if (ancilla == std::nullopt) {
@@ -628,8 +668,9 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
              const std::vector<unsigned> &qubits, const unsigned &ancilla,
              const std::optional<std::string> &name) -> Circuit * {
             std::vector<Qubit> qubits_;
-            for (unsigned i = 0; i < qubits.size(); ++i) {
-              qubits_.push_back(Qubit(qubits[i]));
+            qubits_.reserve(qubits.size());
+            for (unsigned int qubit : qubits) {
+              qubits_.emplace_back(qubit);
             }
             Qubit ancilla_(ancilla);
             circ->add_assertion(box, qubits_, ancilla_, name);
@@ -803,6 +844,30 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
                 circ, std::make_shared<DiagonalBox>(box), args, kwargs);
           },
           "Append a :py:class:`DiagonalBox` to the circuit.\n\n"
+          ":param box: The box to append\n"
+          ":param args: Indices of the qubits to append the box to"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("box"), py::arg("args"))
+      .def(
+          "add_conjugation_box",
+          [](Circuit *circ, const ConjugationBox &box,
+             const unit_vector_t &args, const py::kwargs &kwargs) {
+            return add_box_method(
+                circ, std::make_shared<ConjugationBox>(box), args, kwargs);
+          },
+          "Append a :py:class:`ConjugationBox` to the circuit.\n\n"
+          ":param box: The box to append\n"
+          ":param args: The qubits to append the box to"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("box"), py::arg("args"))
+      .def(
+          "add_conjugation_box",
+          [](Circuit *circ, const ConjugationBox &box,
+             const std::vector<unsigned> &args, const py::kwargs &kwargs) {
+            return add_box_method(
+                circ, std::make_shared<ConjugationBox>(box), args, kwargs);
+          },
+          "Append a :py:class:`ConjugationBox` to the circuit.\n\n"
           ":param box: The box to append\n"
           ":param args: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",

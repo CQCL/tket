@@ -14,14 +14,11 @@
 
 #include "tket/Architecture/Architecture.hpp"
 
-#include <pybind11/eigen.h>
-#include <pybind11/operators.h>
 #include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
 
 #include "binder_json.hpp"
-#include "binder_utils.hpp"
-#include "tket/Circuit/Circuit.hpp"
+#include "deleted_hash.hpp"
+#include "py_operators.hpp"
 #include "tket/Utils/Json.hpp"
 #include "typecast.hpp"
 
@@ -31,9 +28,11 @@ using json = nlohmann::json;
 namespace tket {
 
 PYBIND11_MODULE(architecture, m) {
+  py::module::import("pytket._tket.unit_id");
   py::class_<Architecture, std::shared_ptr<Architecture>>(
       m, "Architecture",
       "Class describing the connectivity of qubits on a general device.")
+      .def(py::init<>(), "Produces an empty architecture")
       .def(
           py::init([](const std::vector<std::pair<unsigned, unsigned>>
                           &connections) { return Architecture(connections); }),
@@ -77,25 +76,32 @@ PYBIND11_MODULE(architecture, m) {
           "Returns the coupling map of the Architecture as "
           "UnitIDs. ")
       .def(
-          "to_dict", [](const Architecture &arch) { return json(arch); },
+          "to_dict",
+          [](const Architecture &arch) {
+            return py::object(json(arch)).cast<py::dict>();
+          },
           "Return a JSON serializable dict representation of "
           "the Architecture."
           "\n\n:return: dict containing nodes and links.")
       .def_static(
-          "from_dict", [](const json &j) { return j.get<Architecture>(); },
+          "from_dict",
+          [](const py::dict &architecture_dict) {
+            return json(architecture_dict).get<Architecture>();
+          },
           "Construct Architecture instance from JSON serializable "
           "dict representation of the Architecture.")
       // as far as Python is concerned, Architectures are immutable
       .def(
-          "__deepcopy__",
-          [](const Architecture &arc, py::dict = py::dict()) { return arc; })
+          "__deepcopy__", [](const Architecture &arc,
+                             const py::dict & = py::dict()) { return arc; })
       .def(
           "__repr__",
           [](const Architecture &arc) {
             return "<tket::Architecture, nodes=" +
                    std::to_string(arc.n_nodes()) + ">";
           })
-      .def(py::self == py::self);
+      .def("__eq__", &py_equals<Architecture>)
+      .def("__hash__", &deletedHash<Architecture>, deletedHashDocstring);
   py::class_<SquareGrid, std::shared_ptr<SquareGrid>, Architecture>(
       m, "SquareGrid",
       "Inherited Architecture class for qubits arranged in a square lattice of "
@@ -182,25 +188,32 @@ PYBIND11_MODULE(architecture, m) {
           "FullyConnected Architecture",
           py::arg("n"), py::arg("label") = "fcNode")
       .def(
-          "__deepcopy__",
-          [](const FullyConnected &arc, py::dict = py::dict()) { return arc; })
+          "__deepcopy__", [](const FullyConnected &arc,
+                             const py::dict & = py::dict()) { return arc; })
       .def(
           "__repr__",
           [](const FullyConnected &arc) {
             return "<tket::FullyConnected, nodes=" +
                    std::to_string(arc.n_nodes()) + ">";
           })
-      .def(py::self == py::self)
+      .def("__eq__", &py_equals<FullyConnected>)
+      .def("__hash__", &deletedHash<FullyConnected>, deletedHashDocstring)
       .def_property_readonly(
           "nodes", &FullyConnected::get_all_nodes_vec,
           "All nodes of the architecture as :py:class:`Node` objects.")
       .def(
-          "to_dict", [](const FullyConnected &arch) { return json(arch); },
+          "to_dict",
+          [](const FullyConnected &arch) {
+            return py::object(json(arch)).cast<py::dict>();
+          },
           "JSON-serializable dict representation of the architecture."
           "\n\n"
           ":return: dict containing nodes")
       .def_static(
-          "from_dict", [](const json &j) { return j.get<FullyConnected>(); },
+          "from_dict",
+          [](const py::dict &fully_connected_dict) {
+            return json(fully_connected_dict).get<FullyConnected>();
+          },
           "Construct FullyConnected instance from dict representation.");
 }
 }  // namespace tket
