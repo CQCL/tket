@@ -14,7 +14,7 @@
 
 from math import pow, isclose
 import numpy as np
-import pytest  # type: ignore
+import pytest
 from pytket import Qubit, Circuit, OpType
 from pytket.passes import auto_rebase_pass
 from pytket.pauli import Pauli, QubitPauliString
@@ -32,7 +32,7 @@ from pytket.zx import (
     DirectedGen,
     ZXBox,
 )
-from sympy import sympify  # type: ignore
+from sympy import sympify
 from typing import Tuple
 
 have_quimb: bool = True

@@ -63,12 +63,12 @@ from pytket.passes import (
 from pytket.transform import Transform
 
 import numpy as np
-from scipy.linalg import block_diag  # type: ignore
-import sympy  # type: ignore
-from sympy import Symbol, pi, sympify, functions, Expr  # type: ignore
+from scipy.linalg import block_diag
+import sympy
+from sympy import Symbol, pi, sympify, functions, Expr
 from math import sqrt
 
-import pytest  # type: ignore
+import pytest
 
 from hypothesis import given, settings
 import strategies as st  # type: ignore
@@ -96,7 +96,7 @@ def phase_polynomials_are_equal(
 def json_validate(circ: Circuit) -> bool:
     serializable_form = circ.to_dict()
     validate(instance=serializable_form, schema=schema)
-    return circ == Circuit.from_dict(serializable_form)  # type: ignore
+    return circ == Circuit.from_dict(serializable_form)
 
 
 def test_op_free_symbols() -> None:
@@ -466,7 +466,7 @@ def test_boxes() -> None:
         Symbol("alpha"),  # type: ignore
         [Pauli.Y, Pauli.I, Pauli.I, Pauli.X],
         Symbol("beta"),  # type: ignore
-    )  # type: ignore
+    )
     assert ppairbox.type == OpType.PauliExpPairBox
     d.add_pauliexppairbox(ppairbox, [3, 2, 1, 0])
 
@@ -476,7 +476,7 @@ def test_boxes() -> None:
             ([Pauli.X, Pauli.X, Pauli.Y, Pauli.X], Symbol("beta")),  # type: ignore
             ([Pauli.X, Pauli.Y, Pauli.X, Pauli.X], Symbol("gamma")),  # type: ignore
         ]
-    )  # type: ignore
+    )
     assert psetbox.type == OpType.PauliExpCommutingSetBox
     d.add_pauliexpcommutingsetbox(psetbox, [0, 1, 2, 3])
 

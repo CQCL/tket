@@ -474,7 +474,7 @@ def test_cnry_decomp() -> None:
     unit1b = circ.get_unitary()
 
     # circ0 should not be equivalent to circ1b (in fact, the states are orthogonal):
-    assert abs(np.vdot(state0, state1b)) < 1e-10  # type: ignore
+    assert abs(np.vdot(state0, state1b)) < 1e-10
 
     # circ1a and circ1b should be equivalent:
     assert np.allclose(state1a, state1b)

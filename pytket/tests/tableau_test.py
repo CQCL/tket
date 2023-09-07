@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import pytest  # type: ignore
+import pytest
 from pytket.circuit import Circuit, OpType, Qubit
 from pytket.pauli import Pauli, QubitPauliTensor
 from pytket.tableau import UnitaryTableau, UnitaryTableauBox

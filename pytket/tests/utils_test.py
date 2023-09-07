@@ -45,9 +45,9 @@ from pytket.utils.symbolic import (
     circuit_to_symbolic_unitary,
 )
 from pytket.utils.stats import gate_counts
-import pytest  # type: ignore
+import pytest
 import types
-from sympy import symbols  # type: ignore
+from sympy import symbols
 from typing import Any, Callable, Tuple, Dict, List
 from simulator import TketSimShotBackend, TketSimBackend  # type: ignore
 
@@ -229,7 +229,7 @@ def test_outcomearray() -> None:
         intlist = [12, 5]
         readout_array = np.array([[1, 1, 0, 0], [0, 1, 0, 1]])
         if not big:
-            readout_array = np.fliplr(readout_array)  # type: ignore
+            readout_array = np.fliplr(readout_array)
 
         outcome_from_ints = OutcomeArray.from_ints(intlist, 4, big_endian=big)
         assert np.array_equal(outcome_from_ints.to_readouts(), readout_array)
@@ -285,7 +285,7 @@ def test_small_pauli_partition_expectation() -> None:
     ]
     for strat in strats:
         energy = complex(
-            get_operator_expectation_value(c, op, backend, n_shots, strat, seed=4)  # type: ignore
+            get_operator_expectation_value(c, op, backend, n_shots, strat, seed=4)
         )
         assert np.isclose(energy, -0.5, atol=0.01)
 
@@ -318,7 +318,7 @@ def test_medium_pauli_partition_expectation() -> None:
             energy = get_operator_expectation_value(
                 c, op, backend, n_shots, strat, GraphColourMethod.LargestFirst, seed=456
             )
-            assert np.isclose(float(np.real(energy)), 10.2, atol=0.01)  # type: ignore
+            assert np.isclose(float(np.real(energy)), 10.2, atol=0.01)
 
 
 def test_large_pauli_partition_expectation() -> None:
@@ -439,12 +439,21 @@ def test_expectation_with_pauli_i() -> None:
     ]
     for strat in strats:
         energy = complex(
-            get_operator_expectation_value(c, QubitPauliOperator({qps1: 0.0, qps2: 1.0}), backend, n_shots, strat, seed=4)  # type: ignore
+            get_operator_expectation_value(
+                c,
+                QubitPauliOperator({qps1: 0.0, qps2: 1.0}),
+                backend,
+                n_shots,
+                strat,
+                seed=4,
+            )
         )
         assert np.isclose(energy, 0.0, atol=0.01)
     for strat in strats:
         energy = complex(
-            get_operator_expectation_value(c, QubitPauliOperator({qps1: 1.0}), backend, n_shots, strat, seed=4)  # type: ignore
+            get_operator_expectation_value(
+                c, QubitPauliOperator({qps1: 1.0}), backend, n_shots, strat, seed=4
+            )
         )
         assert np.isclose(energy, 1.0, atol=0.01)
 
@@ -452,8 +461,8 @@ def test_expectation_with_pauli_i() -> None:
 def test_compare_statevectors() -> None:
     test_vec = np.array([1 + 2 * 1j, 3 + 4 * 1j, 5 + 6 * 1j, 7 + 8 * 1j])
     other_vec = test_vec + (2 - 1.2 * 1j)
-    test_vec /= np.sqrt(np.vdot(test_vec, test_vec))  # type: ignore
-    other_vec /= np.sqrt(np.vdot(other_vec, other_vec))  # type: ignore
+    test_vec /= np.sqrt(np.vdot(test_vec, test_vec))
+    other_vec /= np.sqrt(np.vdot(other_vec, other_vec))
 
     assert compare_statevectors(test_vec, test_vec)
     assert not compare_statevectors(test_vec, other_vec)
@@ -518,7 +527,7 @@ def unitary_circuits(draw: Callable[[SearchStrategy[Any]], Any]) -> Circuit:
     # available qubits as integers
     qb_strat = strategies.integers(min_value=0, max_value=n_qb - 1)
     # some symbols to sample from
-    syms = symbols("a b c d e")  # type: ignore
+    syms = symbols("a b c d e")
     c = Circuit(n_qb)
 
     optype_dict = {

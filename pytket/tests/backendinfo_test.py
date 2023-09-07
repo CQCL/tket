@@ -20,7 +20,7 @@ than a dataclass
 from json import dumps, loads
 
 from hypothesis import given, settings
-import pytest  # type: ignore
+import pytest
 
 from pytket.backends.backendinfo import BackendInfo, fully_connected_backendinfo
 from pytket.architecture import SquareGrid, RingArch, FullyConnected

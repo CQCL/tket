@@ -22,7 +22,7 @@ from pytket.partition import (
     measurement_reduction,
 )
 
-import pytest  # type: ignore
+import pytest
 import platform
 from typing import Any
 
@@ -77,11 +77,11 @@ def test_error_logging(capfd: Any) -> None:
     zi[Qubit(0)] = Pauli.Z
     mbm = MeasurementBitMap(0, [0], False)
     ms.add_result_for_term(zi, mbm)
-    logging.set_level(logging.level.err)  # type: ignore
+    logging.set_level(logging.level.err)
     assert not ms.verify()
     out = capfd.readouterr().out
     assert "[error]" in out
-    logging.set_level(logging.level.critical)  # type: ignore
+    logging.set_level(logging.level.critical)
     assert not ms.verify()
     out = capfd.readouterr().out
     assert not out

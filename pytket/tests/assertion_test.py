@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import numpy as np
-import pytest  # type: ignore
+import pytest
 
 from pytket.circuit import (
     ProjectorAssertionBox,
