@@ -24,7 +24,6 @@
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Converters/Gauss.hpp"
 #include "tket/OpType/OpType.hpp"
-#include "tket/Ops/MetaOp.hpp"
 #include "tket/Ops/OpJsonFactory.hpp"
 #include "tket/Ops/OpPtr.hpp"
 #include "tket/Utils/GraphHeaders.hpp"

@@ -356,15 +356,16 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
     circ.add_conditional_gate<unsigned>(OpType::Rz, {0.142}, {0}, {0}, 0);
     circ.add_conditional_gate<unsigned>(OpType::Rz, {0.143}, {0}, {0}, 0);
     circ.add_conditional_gate<unsigned>(OpType::Rx, {0.528}, {1}, {0}, 0);
+    circ.add_conditional_barrier({0, 1}, {}, {0}, 1, "");
     CompilationUnit cu(circ);
     squash->apply(cu);
     const Circuit& c = cu.get_circ_ref();
     c.assert_valid();
-    REQUIRE(c.n_gates() == 3);
+    REQUIRE(c.n_gates() == 4);
     std::vector<OpType> expected_optypes{
         OpType::Conditional,  // qubit 0 before CX
         OpType::Conditional,  // qubit 1 before CX
-        OpType::CX};
+        OpType::CX, OpType::Conditional};
     check_command_types(c, expected_optypes);
 
     auto cmds = c.get_commands();

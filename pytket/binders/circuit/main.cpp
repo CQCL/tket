@@ -27,6 +27,7 @@
 #include "tket/Gate/Gate.hpp"
 #include "tket/Gate/OpPtrFunctions.hpp"
 #include "tket/Gate/SymTable.hpp"
+#include "tket/Ops/BarrierOp.hpp"
 #include "tket/Ops/MetaOp.hpp"
 #include "tket/Ops/Op.hpp"
 #include "tket/Utils/Constants.hpp"
@@ -615,7 +616,7 @@ PYBIND11_MODULE(circuit, m) {
           ":return: set of symbolic parameters for the command");
 
   py::class_<MetaOp, std::shared_ptr<MetaOp>, Op>(
-      m, "MetaOp", "Meta operation, for example used as barrier")
+      m, "MetaOp", "Meta operation, such as input or output vertices.")
       .def(
           py::init<OpType, op_signature_t, const std::string &>(),
           "Construct MetaOp with optype, signature and additional data string"
@@ -624,6 +625,17 @@ PYBIND11_MODULE(circuit, m) {
           "\n:param data: additional string stored in the op",
           py::arg("type"), py::arg("signature"), py::arg("data"))
       .def_property_readonly("data", &MetaOp::get_data, "Get data from MetaOp");
+
+  py::class_<BarrierOp, std::shared_ptr<BarrierOp>, Op>(
+      m, "BarrierOp", "Barrier operations.")
+      .def(
+          py::init<op_signature_t, const std::string &>(),
+          "Construct BarrierOp with signature and additional data string"
+          "\n:param signature: signature for the op"
+          "\n:param data: additional string stored in the op",
+          py::arg("signature"), py::arg("data"))
+      .def_property_readonly(
+          "data", &BarrierOp::get_data, "Get data from BarrierOp");
 
   auto pyCircuit = py::class_<Circuit, std::shared_ptr<Circuit>>(
       m, "Circuit", py::dynamic_attr(),

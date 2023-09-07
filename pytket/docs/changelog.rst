@@ -4,6 +4,11 @@ Changelog
 1.19.1 (September 2023)
 -----------------------
 
+Minor new features:
+
+* ``Circuit.add_conditional_barrier``
+* Add ``apply_clifford_basis_change_tensor`` method
+
 Fixes:
 
 * Fix `RebaseCustom()` rebasing of `TK2` gates.

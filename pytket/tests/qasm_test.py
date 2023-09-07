@@ -216,11 +216,27 @@ def test_conditional_gates() -> None:
     circ.Measure(0, 0)
     circ.Measure(1, 1)
     circ.Z(0, condition_bits=[0, 1], condition_value=2)
+    circ.add_conditional_barrier([0, 1], [], [0, 1], 1)
     circ.Measure(0, 0, condition_bits=[0, 1], condition_value=1)
     qasm_out = str(curr_file_path / "qasm_test_files/testout5.qasm")
     circuit_to_qasm(circ, qasm_out)
     c2 = circuit_from_qasm(qasm_out)
     assert circ == c2
+
+
+def test_named_conditional_barrier() -> None:
+    circ = Circuit(2, 2)
+    circ.add_bit(Bit("test", 3))
+    circ.Z(0, condition_bits=[0, 1], condition_value=2)
+    circ.add_conditional_barrier(
+        [Qubit("q", 0), Bit("test", 3)],
+        [Bit("c", 0), Bit("c", 1)],
+        0,
+        data="cond_barrier",
+    )
+    qs_str: str = circuit_to_qasm_str(circ)
+    c_from_qs: Circuit = circuit_from_qasm_str(qs_str)
+    assert qs_str == circuit_to_qasm_str(c_from_qs)
 
 
 def test_hqs_conditional() -> None:
@@ -273,7 +289,6 @@ def test_barrier() -> None:
     c.H(0)
     c.H(2)
     c.add_barrier([0], [0], "comment")
-
     result = """OPENQASM 2.0;\ninclude "hqslib1_dev.inc";\n\nqreg q[3];
 creg c[3];\nh q[0];\nh q[2];\ncomment q[0],c[0];\n"""
     assert result == circuit_to_qasm_str(c, header="hqslib1_dev")
@@ -773,6 +788,7 @@ if __name__ == "__main__":
     test_extended_qasm()
     test_register_commands()
     test_conditional_gates()
+    test_named_conditional_barrier()
     test_hqs_conditional()
     test_hqs_conditional_params()
     test_barrier()

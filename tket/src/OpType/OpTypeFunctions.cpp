@@ -126,11 +126,12 @@ const OpTypeSet& all_controlled_gate_types() {
 
 bool is_metaop_type(OpType optype) {
   static const OpTypeSet metaops = {
-      OpType::Input,    OpType::Output,    OpType::ClInput,
-      OpType::ClOutput, OpType::WASMInput, OpType::WASMOutput,
-      OpType::Barrier,  OpType::Create,    OpType::Discard};
+      OpType::Input,     OpType::Output,     OpType::ClInput, OpType::ClOutput,
+      OpType::WASMInput, OpType::WASMOutput, OpType::Create,  OpType::Discard};
   return find_in_set(optype, metaops);
 }
+
+bool is_barrier_type(OpType optype) { return optype == OpType::Barrier; }
 
 bool is_initial_q_type(OpType optype) {
   return optype == OpType::Input || optype == OpType::Create;

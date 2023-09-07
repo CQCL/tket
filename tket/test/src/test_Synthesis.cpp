@@ -26,7 +26,7 @@
 #include "tket/Gate/Rotation.hpp"
 #include "tket/OpType/OpType.hpp"
 #include "tket/OpType/OpTypeFunctions.hpp"
-#include "tket/Ops/MetaOp.hpp"
+#include "tket/Ops/BarrierOp.hpp"
 #include "tket/Predicates/CompilationUnit.hpp"
 #include "tket/Predicates/CompilerPass.hpp"
 #include "tket/Predicates/PassLibrary.hpp"
@@ -1754,8 +1754,8 @@ SCENARIO("Test barrier blocks transforms successfully") {
     REQUIRE(circ.depth_by_type(OpType::Barrier) == 1);
     REQUIRE(circ.n_gates() == 3);  // both CXs removed
     Circuit rep(4);
-    const Op_ptr bar = std::make_shared<MetaOp>(
-        OpType::Barrier, op_signature_t(4, EdgeType::Quantum));
+    const Op_ptr bar =
+        std::make_shared<BarrierOp>(op_signature_t(4, EdgeType::Quantum));
     REQUIRE(circ.substitute_all(rep, bar));
     REQUIRE(Transforms::remove_redundancies().apply(circ));
     REQUIRE(verify_n_qubits_for_ops(circ));

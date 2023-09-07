@@ -19,16 +19,17 @@
 
 namespace tket {
 
-class MetaOp : public Op {
+class BarrierOp : public Op {
  public:
-  explicit MetaOp(
-      OpType type, op_signature_t signature = {},
-      const std::string &_data = "");
+  explicit BarrierOp(
+      op_signature_t signature = {}, const std::string &_data = "");
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &sub_map) const override;
 
   SymSet free_symbols() const override;
+
+  unsigned n_qubits() const override;
 
   op_signature_t get_signature() const override;
 
@@ -36,11 +37,19 @@ class MetaOp : public Op {
 
   bool is_clifford() const override;
 
-  ~MetaOp() override;
+  ~BarrierOp() override;
+
+  /**
+   * Equality check between two BarrierOp instances
+   */
+  bool is_equal(const Op &other) const override;
+
+  nlohmann::json serialize() const override;
+
+  static Op_ptr deserialize(const nlohmann::json &j);
 
  private:
-  op_signature_t
-      signature_; /**< Types of inputs, when not deducible from op type */
+  op_signature_t signature_; /**< Types of inputs */
   /**
    * additional data given by the user, can be passed on to backend
    */

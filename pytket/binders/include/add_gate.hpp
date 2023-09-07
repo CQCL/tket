@@ -27,9 +27,12 @@ static Circuit *add_gate_method(
     Circuit *circ, const Op_ptr &op, const std::vector<ID> &args,
     const py::kwargs &kwargs) {
   if (op->get_desc().is_meta()) {
+    throw CircuitInvalidity("Cannot add metaop to a circuit.");
+  }
+  if (op->get_desc().is_barrier()) {
     throw CircuitInvalidity(
-        "Cannot add metaop. Please use `add_barrier` to add a "
-        "barrier.");
+        "Please use `add_barrier` to add a "
+        "barrier to a circuit.");
   }
   static const std::set<std::string> allowed_kwargs = {
       "opgroup", "condition", "condition_bits", "condition_value"};
