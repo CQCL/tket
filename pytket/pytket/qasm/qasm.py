@@ -41,7 +41,7 @@ from typing import (
     Union,
     cast,
 )
-from sympy import Symbol, pi  # type: ignore
+from sympy import Symbol, pi
 from lark import Discard, Lark, Token, Transformer, Tree
 
 from pytket._tket.circuit import (

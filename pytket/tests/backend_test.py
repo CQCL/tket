@@ -16,7 +16,7 @@ from collections import Counter
 
 from hypothesis import given, settings, strategies
 import json
-import pytest  # type: ignore
+import pytest
 from typing import Any, List
 
 import numpy as np
