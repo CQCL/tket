@@ -1,15 +1,28 @@
+from typing import cast
+
 import numpy as np
 
 from pytket.circuit import Circuit, Qubit, PhasePolyBox  # type: ignore
 from pytket.passes import ComposePhasePolyBoxes, DecomposeBoxes  # type: ignore
 from pytket.utils import compare_unitaries
+from useful_typedefs import ParamType  # type: ignore
+
+PhasePolynomial = list[tuple[list[bool], ParamType]]
+
+
+def phase_polynomials_are_equal(
+    phase_poly_0: PhasePolynomial, phase_poly_1: PhasePolynomial
+) -> bool:
+    to_compare_0 = {tuple(pair[0]): pair[1] for pair in phase_poly_0}
+    to_compare_1 = {tuple(pair[0]): pair[1] for pair in phase_poly_1}
+    return to_compare_0 == to_compare_1
 
 
 def test_phase_polybox() -> None:
     c = Circuit(1, 1)
     n_qb = 1
     qubit_indices = {Qubit(0): 0}
-    phase_polynomial = {(True,): 0.1}
+    phase_polynomial: PhasePolynomial = [([True], 0.1)]
     linear_transformation = np.array([[1]])
     p_box = PhasePolyBox(n_qb, qubit_indices, phase_polynomial, linear_transformation)
 
@@ -26,8 +39,12 @@ def test_phase_polybox() -> None:
     assert p_box_ii.n_qubits == n_qb
     assert p_box.qubit_indices == qubit_indices
     assert p_box_ii.qubit_indices == qubit_indices
-    assert p_box.phase_polynomial == phase_polynomial
-    assert p_box_ii.phase_polynomial == phase_polynomial
+    assert phase_polynomials_are_equal(
+        cast(PhasePolynomial, p_box.phase_polynomial_as_list), phase_polynomial
+    )
+    assert phase_polynomials_are_equal(
+        cast(PhasePolynomial, p_box_ii.phase_polynomial_as_list), phase_polynomial
+    )
     assert np.array_equal(p_box.linear_transformation, linear_transformation)
     assert np.array_equal(p_box_ii.linear_transformation, linear_transformation)
     assert DecomposeBoxes().apply(c)
@@ -37,7 +54,7 @@ def test_phase_polybox_II() -> None:
     c = Circuit(1, 1)
     n_qb = 1
     qubit_indices = {Qubit(0): 0}
-    phase_polynomial = {(True,): 0.1, (True,): 0.3}
+    phase_polynomial: PhasePolynomial = [([True], 0.1), ([True], 0.3)]
     linear_transformation = np.array([[1]])
     p_box = PhasePolyBox(n_qb, qubit_indices, phase_polynomial, linear_transformation)
 
@@ -54,8 +71,12 @@ def test_phase_polybox_II() -> None:
     assert p_box_ii.n_qubits == n_qb
     assert p_box.qubit_indices == qubit_indices
     assert p_box_ii.qubit_indices == qubit_indices
-    assert p_box.phase_polynomial == phase_polynomial
-    assert p_box_ii.phase_polynomial == phase_polynomial
+    assert phase_polynomials_are_equal(
+        cast(PhasePolynomial, p_box.phase_polynomial_as_list), phase_polynomial
+    )
+    assert phase_polynomials_are_equal(
+        cast(PhasePolynomial, p_box_ii.phase_polynomial_as_list), phase_polynomial
+    )
     assert np.array_equal(p_box.linear_transformation, linear_transformation)
     assert np.array_equal(p_box_ii.linear_transformation, linear_transformation)
     assert DecomposeBoxes().apply(c)
@@ -65,11 +86,11 @@ def test_phase_polybox_big() -> None:
     c = Circuit(3, 3)
     n_qb = 3
     qubit_indices = {Qubit(0): 0, Qubit(1): 1, Qubit(2): 2}
-    phase_polynomial = {
-        (True, False, True): 0.333,
-        (False, False, True): 0.05,
-        (False, True, False): 1.05,
-    }
+    phase_polynomial: PhasePolynomial = [
+        ([True, False, True], 0.333),
+        ([False, False, True], 0.05),
+        ([False, True, False], 1.05),
+    ]
     linear_transformation = np.array([[1, 1, 0], [0, 1, 0], [0, 0, 1]])
     p_box = PhasePolyBox(n_qb, qubit_indices, phase_polynomial, linear_transformation)
 
@@ -83,8 +104,12 @@ def test_phase_polybox_big() -> None:
     assert p_box_ii.n_qubits == n_qb
     assert p_box.qubit_indices == qubit_indices
     assert p_box_ii.qubit_indices == qubit_indices
-    assert p_box.phase_polynomial == phase_polynomial
-    assert p_box_ii.phase_polynomial == phase_polynomial
+    assert phase_polynomials_are_equal(
+        cast(PhasePolynomial, p_box.phase_polynomial_as_list), phase_polynomial
+    )
+    assert phase_polynomials_are_equal(
+        cast(PhasePolynomial, p_box_ii.phase_polynomial_as_list), phase_polynomial
+    )
     assert np.array_equal(p_box.linear_transformation, linear_transformation)
     assert np.array_equal(p_box_ii.linear_transformation, linear_transformation)
     assert DecomposeBoxes().apply(c)
