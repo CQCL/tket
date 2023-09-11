@@ -1066,41 +1066,372 @@ def _get_gate_circuit(
     return gate_circ
 
 
-def _write_gate_definition(
-    buffer: TextIO,
-    n_qubits: int,
-    opstr: str,
-    optype: OpType,
-    header: str,
-    include_gate_defs: Set[str],
-    params: Optional[List[float]] = None,
-) -> None:
-    # start writing to stream
-    buffer.write("gate " + opstr + " ")
-    symbols: Optional[List[Symbol]] = None
-    if params:
-        # need to add parameters to gate definition
-        buffer.write("(")
-        symbols = [Symbol("param" + str(index) + "/pi") for index in range(len(params))]  # type: ignore
-        symbols_header = [Symbol("param" + str(index)) for index in range(len(params))]  # type: ignore
-        for symbol in symbols_header[:-1]:
-            buffer.write(symbol.name + ", ")
-        buffer.write(symbols_header[-1].name + ") ")
-
-    # add qubits to gate definition
-    qubit_args = [Qubit(opstr + "q" + str(index)) for index in list(range(n_qubits))]
-    for qb in qubit_args[:-1]:
-        buffer.write(str(qb) + ",")
-    buffer.write(str(qubit_args[-1]) + " {\n")
-    # get rebased circuit for constructing qasm
-    gate_circ = _get_gate_circuit(optype, qubit_args, symbols)
-    # write circuit to qasm
-    circuit_to_qasm_io(gate_circ, buffer, header, include_gate_defs)
-    buffer.write("}\n")
-
-
 def hqs_header(header: str) -> bool:
     return header in ["hqslib1", "hqslib1_dev"]
+
+
+class QasmWriter:
+    def __init__(
+        self,
+        qubits,
+        bits,
+        header: str = "qelib1",
+        include_gate_defs: Optional[Set[str]] = None,
+    ):
+        self.header = header
+        self.added_gate_definitions: Set[str] = set()
+        self.range_preds = dict()
+        self.buffer = io.StringIO()
+        self.include_module_gates = {"measure", "reset", "barrier"}
+        self.include_module_gates.update(
+            _load_include_module(header, False, True).keys()
+        )
+        if include_gate_defs is None:
+            self.include_gate_defs = self.include_module_gates
+            self.include_gate_defs.update(NOPARAM_EXTRA_COMMANDS.keys())
+            self.include_gate_defs.update(PARAM_EXTRA_COMMANDS.keys())
+            self.buffer.write('OPENQASM 2.0;\ninclude "{}.inc";\n\n'.format(header))
+            self.qregs = _retrieve_registers(cast(list[UnitID], qubits), QubitRegister)
+            self.cregs = _retrieve_registers(cast(list[UnitID], bits), BitRegister)
+            for reg in self.qregs.values():
+                self.buffer.write(f"qreg {reg.name}[{reg.size}];\n")
+            for bit_reg in self.cregs.values():
+                self.buffer.write(f"creg {bit_reg.name}[{bit_reg.size}];\n")
+        else:
+            # gate definition, no header necessary for file
+            self.include_gate_defs = include_gate_defs
+            self.cregs = {}
+            self.qregs = {}
+
+    def write_params(self, params) -> None:
+        if params is not None:
+            self.buffer.write("(")
+            for i in range(len(params)):
+                reduced = True
+                try:
+                    p = float(params[i])
+                except TypeError:
+                    reduced = False
+                    p = params[i]
+                if i < len(params) - 1:
+                    if reduced:
+                        self.buffer.write("{}*pi,".format(p))
+                    else:
+                        self.buffer.write("({})*pi,".format(p))
+                else:
+                    if reduced:
+                        self.buffer.write("{}*pi)".format(p))
+                    else:
+                        self.buffer.write("({})*pi)".format(p))
+        self.buffer.write(" ")
+
+    def write_args(self, args) -> None:
+        for i in range(len(args)):
+            self.buffer.write(args[i].__repr__())
+            if i < len(args) - 1:
+                self.buffer.write(",")
+            else:
+                self.buffer.write(";\n")
+
+    def write_gate_definition(
+        self,
+        n_qubits: int,
+        opstr: str,
+        optype: OpType,
+        n_params: Optional[int] = None,
+    ) -> None:
+        # start writing to stream
+        self.buffer.write("gate " + opstr + " ")
+        symbols: Optional[List[Symbol]] = None
+        if n_params is not None:
+            # need to add parameters to gate definition
+            self.buffer.write("(")
+            symbols = [Symbol("param" + str(index) + "/pi") for index in range(n_params)]  # type: ignore
+            symbols_header = [Symbol("param" + str(index)) for index in range(n_params)]  # type: ignore
+            for symbol in symbols_header[:-1]:
+                self.buffer.write(symbol.name + ", ")
+            self.buffer.write(symbols_header[-1].name + ") ")
+
+        # add qubits to gate definition
+        qubit_args = [
+            Qubit(opstr + "q" + str(index)) for index in list(range(n_qubits))
+        ]
+        for qb in qubit_args[:-1]:
+            self.buffer.write(str(qb) + ",")
+        self.buffer.write(str(qubit_args[-1]) + " {\n")
+        # get rebased circuit for constructing qasm
+        gate_circ = _get_gate_circuit(optype, qubit_args, symbols)
+        # write circuit to qasm
+        circuit_to_qasm_io(gate_circ, self.buffer, self.header, self.include_gate_defs)
+        self.buffer.write("}\n")
+
+    def add_range_predicate(self, op, args) -> None:
+        assert isinstance(op, RangePredicateOp)
+        # attach predicate to bit, subsequent conditional will handle it
+        self.range_preds[args[-1]] = (op, args)
+
+    def add_conditional(self, op, args) -> None:
+        assert isinstance(op, Conditional)
+        bits = args[: op.width]
+        control_bit = bits[0]
+        if control_bit in self.range_preds:
+            # write range predicate in condition
+            range_op, range_args = self.range_preds[control_bit]
+            comparator, value = _parse_range(range_op.lower, range_op.upper)
+            if op.value == 0 and comparator == "==":
+                comparator = "!="
+            if (not hqs_header(self.header)) and comparator != "==":
+                raise QASMUnsupportedError(
+                    "OpenQASM conditions must be on a register's fixed value."
+                )
+            bits = range_args[:-1]
+            variable: Union[
+                str,
+                UnitID,
+            ] = range_args[0].reg_name
+        else:
+            comparator = "=="
+            value = op.value
+            if op.width == 1 and hqs_header(self.header):
+                variable = control_bit
+            else:
+                variable = control_bit.reg_name
+                if hqs_header(self.header) and bits != self.cregs[variable].to_list():
+                    raise QASMUnsupportedError(
+                        "hqslib1 QASM conditions must be an entire classical "
+                        "register or a single bit"
+                    )
+        if not hqs_header(self.header):
+            assert isinstance(variable, str)
+            if op.width != self.cregs[variable].size:
+                raise QASMUnsupportedError(
+                    "OpenQASM conditions must be an entire classical register"
+                )
+            if bits != self.cregs[variable].to_list():
+                raise QASMUnsupportedError(
+                    "OpenQASM conditions must be a single classical register"
+                )
+        if op.op.type != OpType.Phase:
+            self.buffer.write(f"if({variable}{comparator}{value}) ")
+            self.add_op(op.op, args[op.width :])
+
+    def add_set_bits(self, op, args) -> None:
+        assert isinstance(op, SetBitsOp)
+        creg_name = args[0].reg_name
+        bits, vals = zip(*sorted(zip(args, op.values)))  # type: ignore
+        # check if whole register can be set at once
+        if bits == tuple(self.cregs[creg_name].to_list()):
+            value = int("".join(map(str, map(int, vals[::-1]))), 2)
+            self.buffer.write(f"{creg_name} = {value};\n")
+        else:
+            for bit, value in zip(bits, vals):
+                self.buffer.write(f"{bit} = {int(value)};\n")
+
+    def add_copy_bits(self, op, args) -> None:
+        assert isinstance(op, CopyBitsOp)
+        l_args = args[op.n_inputs :]
+        r_args = args[: op.n_inputs]
+        l_name = l_args[0].reg_name
+        r_name = r_args[0].reg_name
+        # check if whole register can be set at once
+        if (
+            l_args == self.cregs[l_name].to_list()
+            and r_args == self.cregs[r_name].to_list()
+        ):
+            self.buffer.write(f"{l_name} = {r_name};\n")
+        else:
+            for bit_l, bit_r in zip(l_args, r_args):
+                self.buffer.write(f"{bit_l} = {bit_r};\n")
+
+    def add_multi_bit(self, op, args) -> None:
+        assert isinstance(op, MultiBitOp)
+        registers_involved = [arg.reg_name for arg in args[:2]]
+        if len(args) > 2 and args[2].reg_name not in registers_involved:
+            # there is a distinct output register
+            registers_involved.append(args[2].reg_name)
+        self.add_op(op.basic_op, [self.cregs[name] for name in registers_involved])  # type: ignore
+
+    def add_explicit_op(self, op, args) -> None:
+        # &, ^ and | gates
+        opstr = str(op)
+        if opstr not in _classical_gatestr_map:
+            raise QASMUnsupportedError(f"Classical gate {opstr} not supported.")
+        self.buffer.write(
+            f"{args[-1]} = {args[0]} {_classical_gatestr_map[opstr]} {args[1]};\n"
+        )
+
+    def add_classical_exp_box(self, op, args) -> None:
+        assert isinstance(op, ClassicalExpBox)
+        out_args: list[UnitID] = args[op.get_n_i() :]
+        if len(out_args) == 1:
+            self.buffer.write(f"{out_args[0]} = {str(op.get_exp())};\n")
+        elif (
+            out_args
+            == self.cregs[out_args[0].reg_name].to_list()[
+                : op.get_n_io() + op.get_n_o()
+            ]
+        ):
+            self.buffer.write(f"{out_args[0].reg_name} = {str(op.get_exp())};\n")
+        else:
+            raise QASMUnsupportedError(
+                f"ClassicalExpBox only supported"
+                " for writing to a single bit or whole registers."
+            )
+
+    def add_wasm(self, op, args) -> None:
+        assert isinstance(op, WASMOp)
+        inputs: List[str] = []
+        outputs: List[str] = []
+        for reglist, sizes in [(inputs, op.input_widths), (outputs, op.output_widths)]:
+            for in_width in sizes:
+                bits = args[:in_width]
+                args = args[in_width:]
+                regname = bits[0].reg_name
+                if bits != list(self.cregs[regname]):  # type: ignore
+                    QASMUnsupportedError("WASM ops must act on entire registers.")
+                reglist.append(regname)
+        if outputs:
+            self.buffer.write(f"{', '.join(outputs)} = ")
+        self.buffer.write(f"{op.func_name}({', '.join(inputs)});\n")
+
+    def add_measure(self, args) -> None:
+        self.buffer.write(
+            "measure {q} -> {c};\n".format(q=args[0].__repr__(), c=args[1].__repr__())
+        )
+
+    def add_custom_gate(self, op, args) -> None:
+        assert isinstance(op, CustomGate)
+        if op.gate.name not in self.include_gate_defs:
+            # unroll custom gate
+            gate_circ = op.get_circuit()
+            if gate_circ.n_gates == 0:
+                raise QASMUnsupportedError(
+                    f"CustomGate {op.gate.name} has empty definition."
+                    " Empty CustomGates and opaque gates are not supported."
+                )
+            gate_circ.rename_units(dict(zip(gate_circ.qubits, args)))
+            gate_circ.symbol_substitution(dict(zip(op.gate.args, op.params)))
+            circuit_to_qasm_io(
+                gate_circ, self.buffer, self.header, self.include_gate_defs
+            )
+        else:
+            opstr = op.gate.name
+            if opstr not in self.include_gate_defs:
+                raise QASMUnsupportedError(
+                    "Gate of type {} is not supported in conversion.".format(opstr)
+                )
+            self.buffer.write(opstr)
+            self.write_params(op.params)
+            self.write_args(args)
+
+    def add_zzphase(self, params, args) -> None:
+        assert len(params) == 1
+        param = params[0]
+        # as op.params returns reduced parameters, we can assume
+        # that 0 <= param < 4
+        if param > 1:
+            # first get in to 0 <= param < 2 range
+            param = Decimal(str(param)) % Decimal("2")  # type: ignore
+            # then flip 1 <= param < 2  range into
+            # -1 <= param < 0
+            if param > 1:
+                param = -2 + param
+        self.buffer.write("RZZ")
+        self.write_params([param])  # type: ignore
+        self.write_args(args)
+
+    def add_data(self, op, args) -> None:
+        assert isinstance(op, BarrierOp)
+        if op.data == "":
+            opstr = _tk_to_qasm_noparams[OpType.Barrier]
+        else:
+            opstr = op.data
+        self.buffer.write(opstr)
+        self.buffer.write(" ")
+        self.write_args(args)
+
+    def add_gate_noparams(self, op, args) -> None:
+        self.buffer.write(_tk_to_qasm_noparams[op.type])
+        self.buffer.write(" ")
+        self.write_args(args)
+
+    def add_gate_params(self, op, args) -> None:
+        optype, params = _get_optype_and_params(op)
+        self.buffer.write(_tk_to_qasm_params[optype])
+        self.write_params(params)
+        self.write_args(args)
+
+    def add_extra_noparams(self, op, args) -> None:
+        optype = op.type
+        opstr = _tk_to_qasm_extra_noparams[optype]
+        if opstr not in self.added_gate_definitions:
+            self.added_gate_definitions.add(opstr)
+            self.write_gate_definition(op.n_qubits, opstr, optype)
+        self.buffer.write(opstr)
+        self.buffer.write(" ")
+        self.write_args(args)
+
+    def add_extra_params(self, op, args) -> None:
+        optype, params = _get_optype_and_params(op)
+        opstr = _tk_to_qasm_extra_params[optype]
+        if opstr not in self.added_gate_definitions:
+            self.added_gate_definitions.add(opstr)
+            self.write_gate_definition(op.n_qubits, opstr, optype, len(params))
+        self.buffer.write(opstr)
+        self.write_params(params)
+        self.write_args(args)
+
+    def add_op(self, op, args) -> None:
+        optype, _params = _get_optype_and_params(op)
+        if optype == OpType.RangePredicate:
+            self.add_range_predicate(op, args)
+        elif optype == OpType.Conditional:
+            self.add_conditional(op, args)
+        elif optype == OpType.Phase:
+            # global phase is ignored in QASM
+            pass
+        elif optype == OpType.SetBits:
+            self.add_set_bits(op, args)
+        elif optype == OpType.CopyBits:
+            self.add_copy_bits(op, args)
+        elif optype == OpType.MultiBit:
+            self.add_multi_bit(op, args)
+        elif optype in (OpType.ExplicitPredicate, OpType.ExplicitModifier):
+            self.add_explicit_op(op, args)
+        elif optype == OpType.ClassicalExpBox:
+            self.add_classical_exp_box(op, args)
+        elif optype == OpType.WASM:
+            self.add_wasm(op, args)
+        elif optype == OpType.Measure:
+            self.add_measure(args)
+        elif optype == OpType.CustomGate:
+            self.add_custom_gate(op, args)
+        elif hqs_header(self.header) and optype == OpType.ZZPhase:
+            # special handling for zzphase
+            self.add_zzphase(op.params, args)
+        elif optype == OpType.Barrier and self.header == "hqslib1_dev":
+            self.add_data(op, args)
+        elif (
+            optype in _tk_to_qasm_noparams
+            and _tk_to_qasm_noparams[optype] in self.include_module_gates
+        ):
+            self.add_gate_noparams(op, args)
+        elif (
+            optype in _tk_to_qasm_params
+            and _tk_to_qasm_params[optype] in self.include_module_gates
+        ):
+            self.add_gate_params(op, args)
+        elif optype in _tk_to_qasm_extra_noparams:
+            self.add_extra_noparams(op, args)
+        elif optype in _tk_to_qasm_extra_params:
+            self.add_extra_params(op, args)
+        else:
+            raise QASMUnsupportedError(
+                "Cannot print command of type: {}".format(op.get_name())
+            )
+
+    def finalize(self):
+        return _filtered_qasm_str(self.buffer.getvalue())
 
 
 def circuit_to_qasm_io(
@@ -1113,7 +1444,6 @@ def circuit_to_qasm_io(
     Note that this will not account for implicit qubit permutations in the Circuit."""
     # Write to a buffer since the output qasm might need additional filtering.
     # e.g. remove unused tket scratch bits.
-    buffer = io.StringIO()
     if any(
         circ.n_gates_of_type(typ)
         for typ in (
@@ -1130,285 +1460,9 @@ def circuit_to_qasm_io(
             "Complex classical gates not supported with qelib1: try converting with "
             "`header=hqslib1`"
         )
-    include_module_gates = {"measure", "reset", "barrier"}
-    include_module_gates.update(_load_include_module(header, False, True).keys())
-    if include_gate_defs is None:
-        include_gate_defs = include_module_gates
-        include_gate_defs.update(NOPARAM_EXTRA_COMMANDS.keys())
-        include_gate_defs.update(PARAM_EXTRA_COMMANDS.keys())
-        buffer.write('OPENQASM 2.0;\ninclude "{}.inc";\n\n'.format(header))
 
-        qregs = _retrieve_registers(cast(list[UnitID], circ.qubits), QubitRegister)
-        cregs = _retrieve_registers(cast(list[UnitID], circ.bits), BitRegister)
-        for reg in qregs.values():
-            buffer.write(f"qreg {reg.name}[{reg.size}];\n")
-        for bit_reg in cregs.values():
-            buffer.write(f"creg {bit_reg.name}[{bit_reg.size}];\n")
-    else:
-        # gate definition, no header necessary for file
-        cregs = {}
-        qregs = {}
-
-    added_gate_definitions: Set[str] = set()
-    range_preds = dict()
+    qasm_writer = QasmWriter(circ.qubits, circ.bits, header, include_gate_defs)
     for command in circ:
         assert isinstance(command, Command)
-        checked_op = True
-        op = command.op
-        args = command.args
-        optype, params = _get_optype_and_params(op)
-        if optype == OpType.RangePredicate:
-            assert isinstance(op, RangePredicateOp)
-            range_preds[args[-1]] = (op, args)
-            # attach predicate to bit,
-            # subsequent conditional will handle it
-            continue
-        if optype == OpType.Conditional:
-            assert isinstance(op, Conditional)
-            bits = args[: op.width]
-            control_bit = bits[0]
-            if control_bit in range_preds:
-                # write range predicate in condition
-                range_op, range_args = range_preds[control_bit]
-                comparator, value = _parse_range(range_op.lower, range_op.upper)
-                if op.value == 0 and comparator == "==":
-                    comparator = "!="
-                if (not hqs_header(header)) and comparator != "==":
-                    raise QASMUnsupportedError(
-                        "OpenQASM conditions must be on a register's fixed value."
-                    )
-                bits = range_args[:-1]
-                variable: Union[
-                    str,
-                    UnitID,
-                ] = range_args[0].reg_name
-            else:
-                comparator = "=="
-                value = op.value
-                if op.width == 1 and hqs_header(header):
-                    variable = control_bit
-                else:
-                    variable = control_bit.reg_name
-                    if hqs_header(header) and bits != cregs[variable].to_list():
-                        raise QASMUnsupportedError(
-                            "hqslib1 QASM conditions must be an entire classical "
-                            "register or a single bit"
-                        )
-            if not hqs_header(header):
-                assert isinstance(variable, str)
-                if op.width != cregs[variable].size:
-                    raise QASMUnsupportedError(
-                        "OpenQASM conditions must be an entire classical register"
-                    )
-                if bits != cregs[variable].to_list():
-                    raise QASMUnsupportedError(
-                        "OpenQASM conditions must be a single classical register"
-                    )
-            args = args[op.width :]
-            op = op.op
-            optype, params = _get_optype_and_params(op)
-            if optype != OpType.Phase:
-                buffer.write(f"if({variable}{comparator}{value}) ")
-        if optype == OpType.Phase:
-            # global phase is ignored in QASM
-            continue
-        if optype == OpType.SetBits:
-            assert isinstance(op, SetBitsOp)
-            creg_name = args[0].reg_name
-            bits, vals = zip(*sorted(zip(args, op.values)))  # type: ignore
-
-            # check if whole register can be set at once
-            if bits == tuple(cregs[creg_name].to_list()):
-                value = int("".join(map(str, map(int, vals[::-1]))), 2)
-                buffer.write(f"{creg_name} = {value};\n")
-            else:
-                for bit, value in zip(bits, vals):
-                    buffer.write(f"{bit} = {int(value)};\n")
-            continue
-        if optype == OpType.CopyBits:
-            assert isinstance(op, CopyBitsOp)
-            l_args = args[op.n_inputs :]
-            r_args = args[: op.n_inputs]
-            l_name = l_args[0].reg_name
-            r_name = r_args[0].reg_name
-
-            # check if whole register can be set at once
-            if l_args == cregs[l_name].to_list() and r_args == cregs[r_name].to_list():
-                buffer.write(f"{l_name} = {r_name};\n")
-            else:
-                for bit_l, bit_r in zip(l_args, r_args):
-                    buffer.write(f"{bit_l} = {bit_r};\n")
-            continue
-        if optype == OpType.MultiBit:
-            assert isinstance(op, MultiBitOp)
-            l_args = args[op.n_inputs :]
-            op = op.basic_op
-            optype = op.type
-            registers_involved = [arg.reg_name for arg in args[:2]]
-            if len(args) > 2 and args[2].reg_name not in registers_involved:
-                # there is a distinct output register
-                registers_involved.append(args[2].reg_name)
-            args = [cregs[name] for name in registers_involved]  # type: ignore
-        if optype in (
-            OpType.ExplicitPredicate,
-            OpType.ExplicitModifier,
-        ):
-            # &, ^ and | gates
-            opstr = str(op)
-            if opstr not in _classical_gatestr_map:
-                raise QASMUnsupportedError(f"Classical gate {opstr} not supported.")
-            buffer.write(
-                f"{args[-1]} = {args[0]} {_classical_gatestr_map[opstr]} {args[1]};\n"
-            )
-            continue
-
-        if optype == OpType.ClassicalExpBox:
-            assert isinstance(op, ClassicalExpBox)
-            out_args: list[UnitID] = args[op.get_n_i() :]
-            if len(out_args) == 1:
-                buffer.write(f"{out_args[0]} = {str(op.get_exp())};\n")
-            elif (
-                out_args
-                == cregs[out_args[0].reg_name].to_list()[: op.get_n_io() + op.get_n_o()]
-            ):
-                buffer.write(f"{out_args[0].reg_name} = {str(op.get_exp())};\n")
-            else:
-                raise QASMUnsupportedError(
-                    f"ClassicalExpBox only supported"
-                    " for writing to a single bit or whole registers."
-                )
-            continue
-        if optype == OpType.WASM:
-            assert isinstance(op, WASMOp)
-            inputs: List[str] = []
-            outputs: List[str] = []
-            for reglist, sizes in [
-                (inputs, op.input_widths),
-                (outputs, op.output_widths),
-            ]:
-                for in_width in sizes:
-                    bits = args[:in_width]
-                    args = args[in_width:]
-                    regname = bits[0].reg_name
-                    if bits != list(cregs[regname]):  # type: ignore
-                        QASMUnsupportedError("WASM ops must act on entire registers.")
-                    reglist.append(regname)
-            if outputs:
-                buffer.write(f"{', '.join(outputs)} = ")
-            buffer.write(f"{op.func_name}({', '.join(inputs)});\n")
-            continue
-        if optype == OpType.CustomGate:
-            assert isinstance(op, CustomGate)
-            if op.gate.name not in include_gate_defs:
-                # unroll custom gate
-                gate_circ = op.get_circuit()
-
-                if gate_circ.n_gates == 0:
-                    raise QASMUnsupportedError(
-                        f"CustomGate {op.gate.name} has empty definition."
-                        " Empty CustomGates and opaque gates are not supported."
-                    )
-                gate_circ.rename_units(dict(zip(gate_circ.qubits, args)))
-                gate_circ.symbol_substitution(dict(zip(op.gate.args, op.params)))
-
-                circuit_to_qasm_io(gate_circ, buffer, header, include_gate_defs)
-                continue
-            else:
-                opstr = op.gate.name
-        elif hqs_header(header) and optype == OpType.ZZPhase:
-            # special handling for zzphase
-            opstr = "RZZ"
-            param = op.params[0]
-            # as op.params returns reduced parameters, we can assume
-            # that 0 <= param < 4
-            if param > 1:
-                # first get in to 0 <= param < 2 range
-                param = Decimal(str(param)) % Decimal("2")  # type: ignore
-                # then flip 1 <= param < 2  range into
-                # -1 <= param < 0
-                if param > 1:
-                    param = -2 + param
-            params = [param]  # type: ignore
-        elif optype == OpType.Barrier and header == "hqslib1_dev":
-            assert isinstance(op, BarrierOp)
-            if op.data == "":
-                opstr = _tk_to_qasm_noparams[optype]
-            else:
-                opstr = op.data
-                checked_op = False
-
-        elif (
-            optype in _tk_to_qasm_noparams
-            and _tk_to_qasm_noparams[optype] in include_module_gates
-        ):
-            opstr = _tk_to_qasm_noparams[optype]
-        elif (
-            optype in _tk_to_qasm_params
-            and _tk_to_qasm_params[optype] in include_module_gates
-        ):
-            opstr = _tk_to_qasm_params[optype]
-        elif optype in _tk_to_qasm_extra_noparams:
-            opstr = _tk_to_qasm_extra_noparams[optype]
-            n_added = len(added_gate_definitions)
-            added_gate_definitions.add(opstr)
-            if len(added_gate_definitions) != n_added:
-                _write_gate_definition(
-                    buffer, op.n_qubits, opstr, optype, header, include_gate_defs
-                )
-        elif optype in _tk_to_qasm_extra_params:
-            opstr = _tk_to_qasm_extra_params[optype]
-            n_added = len(added_gate_definitions)
-            added_gate_definitions.add(opstr)
-            if len(added_gate_definitions) != n_added:
-                _write_gate_definition(
-                    buffer,
-                    op.n_qubits,
-                    opstr,
-                    optype,
-                    header,
-                    include_gate_defs,
-                    params,
-                )
-        else:
-            raise QASMUnsupportedError(
-                "Cannot print command of type: {}".format(op.get_name())
-            )
-        if checked_op and opstr not in include_gate_defs:
-            raise QASMUnsupportedError(
-                "Gate of type {} is not supported in conversion.".format(opstr)
-            )
-        buffer.write(opstr)
-        if params is not None:
-            buffer.write("(")
-            for i in range(len(params)):
-                reduced = True
-                try:
-                    p = float(params[i])
-                except TypeError:
-                    reduced = False
-                    p = params[i]
-                if i < len(params) - 1:
-                    if reduced:
-                        buffer.write("{}*pi,".format(p))
-                    else:
-                        buffer.write("({})*pi,".format(p))
-
-                else:
-                    if reduced:
-                        buffer.write("{}*pi)".format(p))
-                    else:
-                        buffer.write("({})*pi)".format(p))
-        buffer.write(" ")
-        if optype == OpType.Measure:  # assume written to only 1 bit
-            buffer.write(
-                "{q} -> {c};\n".format(q=args[0].__repr__(), c=args[1].__repr__())
-            )
-        else:
-            for i in range(len(args)):
-                buffer.write(args[i].__repr__())
-                if i < len(args) - 1:
-                    buffer.write(",")
-                else:
-                    buffer.write(";\n")
-
-    stream_out.write(_filtered_qasm_str(buffer.getvalue()))
+        qasm_writer.add_op(command.op, command.args)
+    stream_out.write(qasm_writer.finalize())
