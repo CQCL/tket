@@ -1031,6 +1031,23 @@ def _parse_range(minval: int, maxval: int) -> Tuple[str, int]:
         raise NotImplementedError("Range can only be bounded on one side.")
 
 
+def _negate_comparator(comparator: str) -> str:
+    if comparator == "==":
+        return "!="
+    elif comparator == "!=":
+        return "=="
+    elif comparator == "<=":
+        return ">"
+    elif comparator == ">":
+        return "<="
+    elif comparator == ">=":
+        return "<"
+    elif comparator == "<":
+        return ">="
+    else:
+        assert not f"Invalid comparator: {comparator}"
+
+
 def _get_optype_and_params(op: Op) -> Tuple[OpType, Optional[List[float]]]:
     optype = op.type
     params = (
@@ -1080,7 +1097,6 @@ class QasmWriter:
     ):
         self.header = header
         self.added_gate_definitions: Set[str] = set()
-        self.range_preds = dict()
         self.buffer = io.StringIO()
         self.include_module_gates = {"measure", "reset", "barrier"}
         self.include_module_gates.update(
@@ -1167,42 +1183,45 @@ class QasmWriter:
 
     def add_range_predicate(self, op, args) -> None:
         assert isinstance(op, RangePredicateOp)
-        # attach predicate to bit, subsequent conditional will handle it
-        # FIXME This is broken: if another operation writes to the bit before the
-        # conditional references it, the conditional will be based on the old value.
-        self.range_preds[args[-1]] = (op, args)
+        comparator, value = _parse_range(op.lower, op.upper)
+        if (not hqs_header(self.header)) and comparator != "==":
+            raise QASMUnsupportedError(
+                "OpenQASM conditions must be on a register's fixed value."
+            )
+        bits = args[:-1]
+        variable: Union[
+            str,
+            UnitID,
+        ] = args[0].reg_name
+        dest_bit = args[-1]
+        if not hqs_header(self.header):
+            assert isinstance(variable, str)
+            if op.width != self.cregs[variable].size:
+                raise QASMUnsupportedError(
+                    "OpenQASM conditions must be an entire classical register"
+                )
+            if bits != self.cregs[variable].to_list():
+                raise QASMUnsupportedError(
+                    "OpenQASM conditions must be a single classical register"
+                )
+        self.buffer.write(f"if({variable}{comparator}{value}) {dest_bit} = 1;\n")
+        self.buffer.write(
+            f"if({variable}{_negate_comparator(comparator)}{value}) {dest_bit} = 0;\n"
+        )
 
     def add_conditional(self, op, args) -> None:
         assert isinstance(op, Conditional)
         bits = args[: op.width]
         control_bit = bits[0]
-        if control_bit in self.range_preds:
-            # write range predicate in condition
-            range_op, range_args = self.range_preds[control_bit]
-            comparator, value = _parse_range(range_op.lower, range_op.upper)
-            if op.value == 0 and comparator == "==":
-                comparator = "!="
-            if (not hqs_header(self.header)) and comparator != "==":
-                raise QASMUnsupportedError(
-                    "OpenQASM conditions must be on a register's fixed value."
-                )
-            bits = range_args[:-1]
-            variable: Union[
-                str,
-                UnitID,
-            ] = range_args[0].reg_name
+        if op.width == 1 and hqs_header(self.header):
+            variable = control_bit
         else:
-            comparator = "=="
-            value = op.value
-            if op.width == 1 and hqs_header(self.header):
-                variable = control_bit
-            else:
-                variable = control_bit.reg_name
-                if hqs_header(self.header) and bits != self.cregs[variable].to_list():
-                    raise QASMUnsupportedError(
-                        "hqslib1 QASM conditions must be an entire classical "
-                        "register or a single bit"
-                    )
+            variable = control_bit.reg_name
+            if hqs_header(self.header) and bits != self.cregs[variable].to_list():
+                raise QASMUnsupportedError(
+                    "hqslib1 QASM conditions must be an entire classical "
+                    "register or a single bit"
+                )
         if not hqs_header(self.header):
             assert isinstance(variable, str)
             if op.width != self.cregs[variable].size:
@@ -1214,7 +1233,7 @@ class QasmWriter:
                     "OpenQASM conditions must be a single classical register"
                 )
         if op.op.type != OpType.Phase:
-            self.buffer.write(f"if({variable}{comparator}{value}) ")
+            self.buffer.write(f"if({variable}=={op.value}) ")
             self.add_op(op.op, args[op.width :])
 
     def add_set_bits(self, op, args) -> None:
