@@ -1102,7 +1102,7 @@ class LabelledStringList:
         return label
 
     def del_string(self, label: int) -> None:
-        del self.strings[label]
+        self.strings.pop(label, None)
 
     def get_full_string(self) -> str:
         return "".join(self.strings.values())
@@ -1123,6 +1123,7 @@ class QasmWriter:
             _load_include_module(header, False, True).keys()
         )
         self.strings = LabelledStringList()
+        self.range_preds = []
         if include_gate_defs is None:
             self.include_gate_defs = self.include_module_gates
             self.include_gate_defs.update(NOPARAM_EXTRA_COMMANDS.keys())
@@ -1205,6 +1206,15 @@ class QasmWriter:
         )
         self.strings.add_string("}\n")
 
+    def register_as_written(self, written_variable):
+        hits = [
+            (variable, comparator, value, dest_bit, label)
+            for (variable, comparator, value, dest_bit, label) in self.range_preds
+            if variable == written_variable
+        ]
+        for hit in hits:
+            self.range_preds.remove(hit)
+
     def add_range_predicate(self, op, args) -> None:
         assert isinstance(op, RangePredicateOp)
         comparator, value = _parse_range(op.lower, op.upper)
@@ -1228,10 +1238,20 @@ class QasmWriter:
                 raise QASMUnsupportedError(
                     "OpenQASM conditions must be a single classical register"
                 )
-        self.strings.add_string(f"if({variable}{comparator}{value}) {dest_bit} = 1;\n")
-        self.strings.add_string(
-            f"if({variable}{_negate_comparator(comparator)}{value}) {dest_bit} = 0;\n"
+        label = self.strings.add_string(
+            "".join(
+                [
+                    f"if({variable}{comparator}{value}) {dest_bit} = 1;\n",
+                    f"if({variable}{_negate_comparator(comparator)}{value}) {dest_bit} = 0;\n",
+                ]
+            )
         )
+        # Record this operation.
+        # Later f we find a conditional based on dest_bit, we can replace dest_bit with
+        # (variable, comparator, value), provided that variable hasn't been written to
+        # in the mean time. (So we must watch for that, and remove the record from the
+        # list of it is.)
+        self.range_preds.append((variable, comparator, value, dest_bit, label))
 
     def add_conditional(self, op, args) -> None:
         assert isinstance(op, Conditional)
@@ -1256,9 +1276,29 @@ class QasmWriter:
                 raise QASMUnsupportedError(
                     "OpenQASM conditions must be a single classical register"
                 )
-        if op.op.type != OpType.Phase:
+        if op.op.type == OpType.Phase:
+            # Conditional phase is ignored.
+            return
+        # Now check whether variable is actually in range_preds...
+        hits = [
+            (real_variable, comparator, value, label)
+            for (real_variable, comparator, value, dest_bit, label) in self.range_preds
+            if dest_bit == variable
+        ]
+        if not hits:
             self.strings.add_string(f"if({variable}=={op.value}) ")
-            self.add_op(op.op, args[op.width :])
+        else:
+            assert len(hits) == 1
+            real_variable, comparator, value, label = hits[0]
+            self.strings.del_string(label)
+            if op.value == 1:
+                self.strings.add_string(f"if({real_variable}{comparator}{value}) ")
+            else:
+                assert op.value == 0
+                self.strings.add_string(
+                    f"if({real_variable}{_negate_comparator(comparator)}{value}) "
+                )
+        self.add_op(op.op, args[op.width :])
 
     def add_set_bits(self, op, args) -> None:
         assert isinstance(op, SetBitsOp)
@@ -1268,9 +1308,11 @@ class QasmWriter:
         if bits == tuple(self.cregs[creg_name].to_list()):
             value = int("".join(map(str, map(int, vals[::-1]))), 2)
             self.strings.add_string(f"{creg_name} = {value};\n")
+            self.register_as_written(f"{creg_name}")
         else:
             for bit, value in zip(bits, vals):
                 self.strings.add_string(f"{bit} = {int(value)};\n")
+                self.register_as_written(f"{bit}")
 
     def add_copy_bits(self, op, args) -> None:
         assert isinstance(op, CopyBitsOp)
@@ -1284,9 +1326,11 @@ class QasmWriter:
             and r_args == self.cregs[r_name].to_list()
         ):
             self.strings.add_string(f"{l_name} = {r_name};\n")
+            self.register_as_written(f"{l_name}")
         else:
             for bit_l, bit_r in zip(l_args, r_args):
                 self.strings.add_string(f"{bit_l} = {bit_r};\n")
+                self.register_as_written(f"{bit_l}")
 
     def add_multi_bit(self, op, args) -> None:
         assert isinstance(op, MultiBitOp)
@@ -1304,12 +1348,14 @@ class QasmWriter:
         self.strings.add_string(
             f"{args[-1]} = {args[0]} {_classical_gatestr_map[opstr]} {args[1]};\n"
         )
+        self.register_as_written(f"{args[-1]}")
 
     def add_classical_exp_box(self, op, args) -> None:
         assert isinstance(op, ClassicalExpBox)
         out_args: list[UnitID] = args[op.get_n_i() :]
         if len(out_args) == 1:
             self.strings.add_string(f"{out_args[0]} = {str(op.get_exp())};\n")
+            self.register_as_written(f"{out_args[0]}")
         elif (
             out_args
             == self.cregs[out_args[0].reg_name].to_list()[
@@ -1317,6 +1363,7 @@ class QasmWriter:
             ]
         ):
             self.strings.add_string(f"{out_args[0].reg_name} = {str(op.get_exp())};\n")
+            self.register_as_written(f"{out_args[0].reg_name}")
         else:
             raise QASMUnsupportedError(
                 f"ClassicalExpBox only supported"
@@ -1338,11 +1385,12 @@ class QasmWriter:
         if outputs:
             self.strings.add_string(f"{', '.join(outputs)} = ")
         self.strings.add_string(f"{op.func_name}({', '.join(inputs)});\n")
+        for variable in outputs:
+            self.register_as_written(variable)
 
     def add_measure(self, args) -> None:
-        self.strings.add_string(
-            "measure {q} -> {c};\n".format(q=args[0].__repr__(), c=args[1].__repr__())
-        )
+        self.strings.add_string(f"measure {args[0]} -> {args[1]};\n")
+        self.register_as_written(f"{args[1]}")
 
     def add_custom_gate(self, op, args) -> None:
         assert isinstance(op, CustomGate)
