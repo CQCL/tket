@@ -1168,6 +1168,8 @@ class QasmWriter:
     def add_range_predicate(self, op, args) -> None:
         assert isinstance(op, RangePredicateOp)
         # attach predicate to bit, subsequent conditional will handle it
+        # FIXME This is broken: if another operation writes to the bit before the
+        # conditional references it, the conditional will be based on the old value.
         self.range_preds[args[-1]] = (op, args)
 
     def add_conditional(self, op, args) -> None:
