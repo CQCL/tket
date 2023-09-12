@@ -1,8 +1,8 @@
 Changelog
 =========
 
-1.20.0 (unreleased)
--------------------
+1.20.0rc1 (September 2023)
+--------------------------
 
 API changes:
 * barrier changed from MetaOp to be a BarrierOp
