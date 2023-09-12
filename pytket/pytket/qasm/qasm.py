@@ -19,6 +19,7 @@ import re
 import uuid
 
 # TODO: Output custom gates
+from collections import OrderedDict
 from importlib import import_module
 from itertools import chain, groupby
 from decimal import Decimal
@@ -996,11 +997,13 @@ def _filtered_qasm_str(qasm: str) -> str:
     return "\n".join(lines)
 
 
-def circuit_to_qasm_str(circ: Circuit, header: str = "qelib1") -> str:
+def circuit_to_qasm_str(
+    circ: Circuit, header: str = "qelib1", include_gate_defs: Optional[Set[str]] = None
+) -> str:
     """A method to generate a qasm str from a tket Circuit.
     Note that this will not account for implicit qubit permutations in the Circuit."""
     buffer = io.StringIO()
-    circuit_to_qasm_io(circ, buffer, header=header)
+    circuit_to_qasm_io(circ, buffer, header=header, include_gate_defs=include_gate_defs)
     return buffer.getvalue()
 
 
@@ -1087,6 +1090,24 @@ def hqs_header(header: str) -> bool:
     return header in ["hqslib1", "hqslib1_dev"]
 
 
+class LabelledStringList:
+    def __init__(self):
+        self.strings: OrderedDict[int, str] = OrderedDict()
+        self.label = 0
+
+    def add_string(self, string: str) -> int:
+        label = self.label
+        self.strings[label] = string
+        self.label += 1
+        return label
+
+    def del_string(self, label: int) -> None:
+        del self.strings[label]
+
+    def get_full_string(self) -> str:
+        return "".join(self.strings.values())
+
+
 class QasmWriter:
     def __init__(
         self,
@@ -1097,22 +1118,24 @@ class QasmWriter:
     ):
         self.header = header
         self.added_gate_definitions: Set[str] = set()
-        self.buffer = io.StringIO()
         self.include_module_gates = {"measure", "reset", "barrier"}
         self.include_module_gates.update(
             _load_include_module(header, False, True).keys()
         )
+        self.strings = LabelledStringList()
         if include_gate_defs is None:
             self.include_gate_defs = self.include_module_gates
             self.include_gate_defs.update(NOPARAM_EXTRA_COMMANDS.keys())
             self.include_gate_defs.update(PARAM_EXTRA_COMMANDS.keys())
-            self.buffer.write('OPENQASM 2.0;\ninclude "{}.inc";\n\n'.format(header))
+            self.strings.add_string(
+                'OPENQASM 2.0;\ninclude "{}.inc";\n\n'.format(header)
+            )
             self.qregs = _retrieve_registers(cast(list[UnitID], qubits), QubitRegister)
             self.cregs = _retrieve_registers(cast(list[UnitID], bits), BitRegister)
             for reg in self.qregs.values():
-                self.buffer.write(f"qreg {reg.name}[{reg.size}];\n")
+                self.strings.add_string(f"qreg {reg.name}[{reg.size}];\n")
             for bit_reg in self.cregs.values():
-                self.buffer.write(f"creg {bit_reg.name}[{bit_reg.size}];\n")
+                self.strings.add_string(f"creg {bit_reg.name}[{bit_reg.size}];\n")
         else:
             # gate definition, no header necessary for file
             self.include_gate_defs = include_gate_defs
@@ -1121,7 +1144,7 @@ class QasmWriter:
 
     def write_params(self, params) -> None:
         if params is not None:
-            self.buffer.write("(")
+            self.strings.add_string("(")
             for i in range(len(params)):
                 reduced = True
                 try:
@@ -1131,23 +1154,23 @@ class QasmWriter:
                     p = params[i]
                 if i < len(params) - 1:
                     if reduced:
-                        self.buffer.write("{}*pi,".format(p))
+                        self.strings.add_string("{}*pi,".format(p))
                     else:
-                        self.buffer.write("({})*pi,".format(p))
+                        self.strings.add_string("({})*pi,".format(p))
                 else:
                     if reduced:
-                        self.buffer.write("{}*pi)".format(p))
+                        self.strings.add_string("{}*pi)".format(p))
                     else:
-                        self.buffer.write("({})*pi)".format(p))
-        self.buffer.write(" ")
+                        self.strings.add_string("({})*pi)".format(p))
+        self.strings.add_string(" ")
 
     def write_args(self, args) -> None:
         for i in range(len(args)):
-            self.buffer.write(args[i].__repr__())
+            self.strings.add_string(f"{args[i]}")
             if i < len(args) - 1:
-                self.buffer.write(",")
+                self.strings.add_string(",")
             else:
-                self.buffer.write(";\n")
+                self.strings.add_string(";\n")
 
     def write_gate_definition(
         self,
@@ -1156,30 +1179,31 @@ class QasmWriter:
         optype: OpType,
         n_params: Optional[int] = None,
     ) -> None:
-        # start writing to stream
-        self.buffer.write("gate " + opstr + " ")
+        self.strings.add_string("gate " + opstr + " ")
         symbols: Optional[List[Symbol]] = None
         if n_params is not None:
             # need to add parameters to gate definition
-            self.buffer.write("(")
+            self.strings.add_string("(")
             symbols = [Symbol("param" + str(index) + "/pi") for index in range(n_params)]  # type: ignore
             symbols_header = [Symbol("param" + str(index)) for index in range(n_params)]  # type: ignore
             for symbol in symbols_header[:-1]:
-                self.buffer.write(symbol.name + ", ")
-            self.buffer.write(symbols_header[-1].name + ") ")
+                self.strings.add_string(symbol.name + ", ")
+            self.strings.add_string(symbols_header[-1].name + ") ")
 
         # add qubits to gate definition
         qubit_args = [
             Qubit(opstr + "q" + str(index)) for index in list(range(n_qubits))
         ]
         for qb in qubit_args[:-1]:
-            self.buffer.write(str(qb) + ",")
-        self.buffer.write(str(qubit_args[-1]) + " {\n")
+            self.strings.add_string(str(qb) + ",")
+        self.strings.add_string(str(qubit_args[-1]) + " {\n")
         # get rebased circuit for constructing qasm
         gate_circ = _get_gate_circuit(optype, qubit_args, symbols)
         # write circuit to qasm
-        circuit_to_qasm_io(gate_circ, self.buffer, self.header, self.include_gate_defs)
-        self.buffer.write("}\n")
+        self.strings.add_string(
+            circuit_to_qasm_str(gate_circ, self.header, self.include_gate_defs)
+        )
+        self.strings.add_string("}\n")
 
     def add_range_predicate(self, op, args) -> None:
         assert isinstance(op, RangePredicateOp)
@@ -1204,8 +1228,8 @@ class QasmWriter:
                 raise QASMUnsupportedError(
                     "OpenQASM conditions must be a single classical register"
                 )
-        self.buffer.write(f"if({variable}{comparator}{value}) {dest_bit} = 1;\n")
-        self.buffer.write(
+        self.strings.add_string(f"if({variable}{comparator}{value}) {dest_bit} = 1;\n")
+        self.strings.add_string(
             f"if({variable}{_negate_comparator(comparator)}{value}) {dest_bit} = 0;\n"
         )
 
@@ -1233,7 +1257,7 @@ class QasmWriter:
                     "OpenQASM conditions must be a single classical register"
                 )
         if op.op.type != OpType.Phase:
-            self.buffer.write(f"if({variable}=={op.value}) ")
+            self.strings.add_string(f"if({variable}=={op.value}) ")
             self.add_op(op.op, args[op.width :])
 
     def add_set_bits(self, op, args) -> None:
@@ -1243,10 +1267,10 @@ class QasmWriter:
         # check if whole register can be set at once
         if bits == tuple(self.cregs[creg_name].to_list()):
             value = int("".join(map(str, map(int, vals[::-1]))), 2)
-            self.buffer.write(f"{creg_name} = {value};\n")
+            self.strings.add_string(f"{creg_name} = {value};\n")
         else:
             for bit, value in zip(bits, vals):
-                self.buffer.write(f"{bit} = {int(value)};\n")
+                self.strings.add_string(f"{bit} = {int(value)};\n")
 
     def add_copy_bits(self, op, args) -> None:
         assert isinstance(op, CopyBitsOp)
@@ -1259,10 +1283,10 @@ class QasmWriter:
             l_args == self.cregs[l_name].to_list()
             and r_args == self.cregs[r_name].to_list()
         ):
-            self.buffer.write(f"{l_name} = {r_name};\n")
+            self.strings.add_string(f"{l_name} = {r_name};\n")
         else:
             for bit_l, bit_r in zip(l_args, r_args):
-                self.buffer.write(f"{bit_l} = {bit_r};\n")
+                self.strings.add_string(f"{bit_l} = {bit_r};\n")
 
     def add_multi_bit(self, op, args) -> None:
         assert isinstance(op, MultiBitOp)
@@ -1277,7 +1301,7 @@ class QasmWriter:
         opstr = str(op)
         if opstr not in _classical_gatestr_map:
             raise QASMUnsupportedError(f"Classical gate {opstr} not supported.")
-        self.buffer.write(
+        self.strings.add_string(
             f"{args[-1]} = {args[0]} {_classical_gatestr_map[opstr]} {args[1]};\n"
         )
 
@@ -1285,14 +1309,14 @@ class QasmWriter:
         assert isinstance(op, ClassicalExpBox)
         out_args: list[UnitID] = args[op.get_n_i() :]
         if len(out_args) == 1:
-            self.buffer.write(f"{out_args[0]} = {str(op.get_exp())};\n")
+            self.strings.add_string(f"{out_args[0]} = {str(op.get_exp())};\n")
         elif (
             out_args
             == self.cregs[out_args[0].reg_name].to_list()[
                 : op.get_n_io() + op.get_n_o()
             ]
         ):
-            self.buffer.write(f"{out_args[0].reg_name} = {str(op.get_exp())};\n")
+            self.strings.add_string(f"{out_args[0].reg_name} = {str(op.get_exp())};\n")
         else:
             raise QASMUnsupportedError(
                 f"ClassicalExpBox only supported"
@@ -1312,11 +1336,11 @@ class QasmWriter:
                     QASMUnsupportedError("WASM ops must act on entire registers.")
                 reglist.append(regname)
         if outputs:
-            self.buffer.write(f"{', '.join(outputs)} = ")
-        self.buffer.write(f"{op.func_name}({', '.join(inputs)});\n")
+            self.strings.add_string(f"{', '.join(outputs)} = ")
+        self.strings.add_string(f"{op.func_name}({', '.join(inputs)});\n")
 
     def add_measure(self, args) -> None:
-        self.buffer.write(
+        self.strings.add_string(
             "measure {q} -> {c};\n".format(q=args[0].__repr__(), c=args[1].__repr__())
         )
 
@@ -1332,8 +1356,8 @@ class QasmWriter:
                 )
             gate_circ.rename_units(dict(zip(gate_circ.qubits, args)))
             gate_circ.symbol_substitution(dict(zip(op.gate.args, op.params)))
-            circuit_to_qasm_io(
-                gate_circ, self.buffer, self.header, self.include_gate_defs
+            self.strings.add_string(
+                circuit_to_qasm_str(gate_circ, self.header, self.include_gate_defs)
             )
         else:
             opstr = op.gate.name
@@ -1341,7 +1365,7 @@ class QasmWriter:
                 raise QASMUnsupportedError(
                     "Gate of type {} is not supported in conversion.".format(opstr)
                 )
-            self.buffer.write(opstr)
+            self.strings.add_string(opstr)
             self.write_params(op.params)
             self.write_args(args)
 
@@ -1357,7 +1381,7 @@ class QasmWriter:
             # -1 <= param < 0
             if param > 1:
                 param = -2 + param
-        self.buffer.write("RZZ")
+        self.strings.add_string("RZZ")
         self.write_params([param])  # type: ignore
         self.write_args(args)
 
@@ -1367,18 +1391,18 @@ class QasmWriter:
             opstr = _tk_to_qasm_noparams[OpType.Barrier]
         else:
             opstr = op.data
-        self.buffer.write(opstr)
-        self.buffer.write(" ")
+        self.strings.add_string(opstr)
+        self.strings.add_string(" ")
         self.write_args(args)
 
     def add_gate_noparams(self, op, args) -> None:
-        self.buffer.write(_tk_to_qasm_noparams[op.type])
-        self.buffer.write(" ")
+        self.strings.add_string(_tk_to_qasm_noparams[op.type])
+        self.strings.add_string(" ")
         self.write_args(args)
 
     def add_gate_params(self, op, args) -> None:
         optype, params = _get_optype_and_params(op)
-        self.buffer.write(_tk_to_qasm_params[optype])
+        self.strings.add_string(_tk_to_qasm_params[optype])
         self.write_params(params)
         self.write_args(args)
 
@@ -1388,8 +1412,8 @@ class QasmWriter:
         if opstr not in self.added_gate_definitions:
             self.added_gate_definitions.add(opstr)
             self.write_gate_definition(op.n_qubits, opstr, optype)
-        self.buffer.write(opstr)
-        self.buffer.write(" ")
+        self.strings.add_string(opstr)
+        self.strings.add_string(" ")
         self.write_args(args)
 
     def add_extra_params(self, op, args) -> None:
@@ -1398,7 +1422,7 @@ class QasmWriter:
         if opstr not in self.added_gate_definitions:
             self.added_gate_definitions.add(opstr)
             self.write_gate_definition(op.n_qubits, opstr, optype, len(params))
-        self.buffer.write(opstr)
+        self.strings.add_string(opstr)
         self.write_params(params)
         self.write_args(args)
 
@@ -1452,7 +1476,7 @@ class QasmWriter:
             )
 
     def finalize(self):
-        return _filtered_qasm_str(self.buffer.getvalue())
+        return _filtered_qasm_str(self.strings.get_full_string())
 
 
 def circuit_to_qasm_io(
