@@ -189,7 +189,7 @@ jobs:
           restore-keys: |
             tket-static-${{ matrix.os }}-
       - name: Build tket
-        # On windows use install + build so build directory is consistent across runs (i.e. don't build from conan cache)
+        # On windows use build + export-pkg so build directory is consistent across runs (i.e. don't build from conan cache)
         # Necessary because setting ccache base_dir doesn't currently work on windows
         run: |
           conan build tket --user=tket --channel=stable -o boost/*:header_only=True -o with_all_tests=True -c tools.cmake.cmaketoolchain:generator=Ninja
