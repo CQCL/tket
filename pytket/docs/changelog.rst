@@ -1,13 +1,20 @@
 Changelog
 =========
 
-1.19.1 (September 2023)
------------------------
+1.20.0 (unreleased)
+-------------------
+
+API changes:
+* barrier changed from MetaOp to be a BarrierOp
 
 Minor new features:
 
 * ``Circuit.add_conditional_barrier``
 * Add ``apply_clifford_basis_change_tensor`` method
+
+
+1.19.1 (September 2023)
+-----------------------
 
 Fixes:
 
