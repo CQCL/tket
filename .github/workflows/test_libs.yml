@@ -137,7 +137,7 @@ jobs:
         conan export-pkg libs/${{ matrix.lib }} -s build_type=Debug -o boost/*:header_only=True -o ${{ matrix.lib }}/*:profile_coverage=True -of build/${{ matrix.lib }} -tf ""
     - name: build ${{ matrix.lib }} tests
       run: |
-        conan build   libs/${{ matrix.lib }}/test -s build_type=Debug --build=missing -o boost/*:header_only=True -o test-${{ matrix.lib }}/*:with_coverage=True -of build/${{ matrix.lib }}-tests
+        conan build libs/${{ matrix.lib }}/test -s build_type=Debug --build=missing -o boost/*:header_only=True -o test-${{ matrix.lib }}/*:with_coverage=True -of build/${{ matrix.lib }}-tests
     - name: run ${{ matrix.lib }} tests
       working-directory: ./build/${{ matrix.lib }}-tests/build/Debug
       run: ./test-${{ matrix.lib }}
