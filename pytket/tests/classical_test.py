@@ -347,7 +347,7 @@ def test_wasm_handler() -> None:
     w = wasm.WasmFileHandler("testfile.wasm")
 
     with pytest.raises(ValueError):
-        w2 = wasm.WasmFileHandler("testfile-2.wasm")
+        w2 = wasm.WasmFileHandler("notexistingfile.wasm")
 
 
 def test_wasm_function_check() -> None:
@@ -454,6 +454,51 @@ unsupported function with unvalid parameter or result type: 'add_eleven'
 unsupported function with unvalid parameter or result type: 'no_return' 
 unsupported function with unvalid parameter or result type: 'no_parameters' 
 unsupported function with unvalid parameter or result type: 'new_function' 
+"""
+    )
+
+
+def test_wasmfilehandler_repr_2() -> None:
+    w = wasm.WasmFileHandler("testfile-2.wasm", int_size=32)
+    assert (
+        repr(w)
+        == """Functions in wasm file with the uid 360e60c3b092ad735982ba49207f9c3250b111e5963fb630c69f85266172080b:
+function 'init' with 0 i32 parameter(s) and 0 i32 return value(s)
+function 'add_one' with 1 i32 parameter(s) and 1 i32 return value(s)
+function 'multi' with 2 i32 parameter(s) and 1 i32 return value(s)
+function 'add_two' with 1 i32 parameter(s) and 1 i32 return value(s)
+function 'add_something_32' with 2 i32 parameter(s) and 1 i32 return value(s)
+function 'add_eleven' with 1 i32 parameter(s) and 1 i32 return value(s)
+function 'no_return' with 1 i32 parameter(s) and 0 i32 return value(s)
+function 'no_parameters' with 0 i32 parameter(s) and 1 i32 return value(s)
+function 'new_function' with 0 i32 parameter(s) and 1 i32 return value(s)
+function 'mixed_up' with 1 i32 parameter(s) and 1 i32 return value(s)
+function 'mixed_up_2' with 2 i32 parameter(s) and 1 i32 return value(s)
+function 'mixed_up_3' with 3 i32 parameter(s) and 1 i32 return value(s)
+function 'unse_internal' with 1 i32 parameter(s) and 1 i32 return value(s)
+unsupported function with unvalid parameter or result type: 'add_something' 
+"""
+    )
+
+def test_wasmfilehandler_repr_64_2() -> None:
+    w = wasm.WasmFileHandler("testfile-2.wasm", int_size=64)
+    assert (
+        repr(w)
+        == """Functions in wasm file with the uid 360e60c3b092ad735982ba49207f9c3250b111e5963fb630c69f85266172080b:
+function 'init' with 0 i64 parameter(s) and 0 i64 return value(s)
+function 'add_something' with 1 i64 parameter(s) and 1 i64 return value(s)
+unsupported function with unvalid parameter or result type: 'add_one' 
+unsupported function with unvalid parameter or result type: 'multi' 
+unsupported function with unvalid parameter or result type: 'add_two' 
+unsupported function with unvalid parameter or result type: 'add_something_32' 
+unsupported function with unvalid parameter or result type: 'add_eleven' 
+unsupported function with unvalid parameter or result type: 'no_return' 
+unsupported function with unvalid parameter or result type: 'no_parameters' 
+unsupported function with unvalid parameter or result type: 'new_function' 
+unsupported function with unvalid parameter or result type: 'mixed_up' 
+unsupported function with unvalid parameter or result type: 'mixed_up_2' 
+unsupported function with unvalid parameter or result type: 'mixed_up_3' 
+unsupported function with unvalid parameter or result type: 'unse_internal' 
 """
     )
 
