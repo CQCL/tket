@@ -1246,7 +1246,7 @@ class QasmWriter:
         )
         self.strings.add_string("}\n")
 
-    def register_as_written(self, written_variable: str) -> None:
+    def mark_as_written(self, written_variable: str) -> None:
         hits = [
             (variable, comparator, value, dest_bit, label)
             for (variable, comparator, value, dest_bit, label) in self.range_preds
@@ -1341,11 +1341,11 @@ class QasmWriter:
         if bits == tuple(self.cregs[creg_name].to_list()):
             value = int("".join(map(str, map(int, vals[::-1]))), 2)
             self.strings.add_string(f"{creg_name} = {value};\n")
-            self.register_as_written(f"{creg_name}")
+            self.mark_as_written(f"{creg_name}")
         else:
             for bit, value in zip(bits, vals):
                 self.strings.add_string(f"{bit} = {int(value)};\n")
-                self.register_as_written(f"{bit}")
+                self.mark_as_written(f"{bit}")
 
     def add_copy_bits(self, op: CopyBitsOp, args: List[Bit]) -> None:
         l_args = args[op.n_inputs :]
@@ -1358,11 +1358,11 @@ class QasmWriter:
             and r_args == self.cregs[r_name].to_list()
         ):
             self.strings.add_string(f"{l_name} = {r_name};\n")
-            self.register_as_written(f"{l_name}")
+            self.mark_as_written(f"{l_name}")
         else:
             for bit_l, bit_r in zip(l_args, r_args):
                 self.strings.add_string(f"{bit_l} = {bit_r};\n")
-                self.register_as_written(f"{bit_l}")
+                self.mark_as_written(f"{bit_l}")
 
     def add_multi_bit(self, op: MultiBitOp, args: List[Bit]) -> None:
         assert len(args) >= 2
@@ -1380,13 +1380,13 @@ class QasmWriter:
         self.strings.add_string(
             f"{args[-1]} = {args[0]} {_classical_gatestr_map[opstr]} {args[1]};\n"
         )
-        self.register_as_written(f"{args[-1]}")
+        self.mark_as_written(f"{args[-1]}")
 
     def add_classical_exp_box(self, op: ClassicalExpBox, args: List[Bit]) -> None:
         out_args = args[op.get_n_i() :]
         if len(out_args) == 1:
             self.strings.add_string(f"{out_args[0]} = {str(op.get_exp())};\n")
-            self.register_as_written(f"{out_args[0]}")
+            self.mark_as_written(f"{out_args[0]}")
         elif (
             out_args
             == self.cregs[out_args[0].reg_name].to_list()[
@@ -1394,7 +1394,7 @@ class QasmWriter:
             ]
         ):
             self.strings.add_string(f"{out_args[0].reg_name} = {str(op.get_exp())};\n")
-            self.register_as_written(f"{out_args[0].reg_name}")
+            self.mark_as_written(f"{out_args[0].reg_name}")
         else:
             raise QASMUnsupportedError(
                 f"ClassicalExpBox only supported"
@@ -1416,11 +1416,11 @@ class QasmWriter:
             self.strings.add_string(f"{', '.join(outputs)} = ")
         self.strings.add_string(f"{op.func_name}({', '.join(inputs)});\n")
         for variable in outputs:
-            self.register_as_written(variable)
+            self.mark_as_written(variable)
 
     def add_measure(self, args: List[UnitID]) -> None:
         self.strings.add_string(f"measure {args[0]} -> {args[1]};\n")
-        self.register_as_written(f"{args[1]}")
+        self.mark_as_written(f"{args[1]}")
 
     def add_custom_gate(self, op: CustomGate, args: List[UnitID]) -> None:
         if op.gate.name not in self.include_gate_defs:
