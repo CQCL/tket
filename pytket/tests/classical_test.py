@@ -480,6 +480,7 @@ unsupported function with unvalid parameter or result type: 'add_something'
 """
     )
 
+
 def test_wasmfilehandler_repr_64_2() -> None:
     w = wasm.WasmFileHandler("testfile-2.wasm", int_size=64)
     assert (
