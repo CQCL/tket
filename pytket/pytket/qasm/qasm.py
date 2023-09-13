@@ -1294,7 +1294,7 @@ class QasmWriter:
             )
         )
         # Record this operation.
-        # Later f we find a conditional based on dest_bit, we can replace dest_bit with
+        # Later if we find a conditional based on dest_bit, we can replace dest_bit with
         # (variable, comparator, value), provided that variable hasn't been written to
         # in the mean time. (So we must watch for that, and remove the record from the
         # list if it is.)
