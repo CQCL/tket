@@ -1154,6 +1154,12 @@ class QasmWriter:
             _load_include_module(header, False, True).keys()
         )
         self.strings = LabelledStringList()
+
+        # Record of `RangePredicate` operations that set a "scratch" bit to 0 or 1
+        # depending on the value of the predicate. This list is consulted when we
+        # encounter a `Conditional` operation to see if the condition bit is one of
+        # these scratch bits, which we can then replace with the original. Whenever a
+        # classical bit is written to, we remove any references to it from this list.
         self.range_preds: List[
             Tuple[
                 str,  # variable, e.g. "c[1]"
@@ -1163,6 +1169,7 @@ class QasmWriter:
                 int,  # label, e.g. 42
             ]
         ] = []
+
         if include_gate_defs is None:
             self.include_gate_defs = self.include_module_gates
             self.include_gate_defs.update(NOPARAM_EXTRA_COMMANDS.keys())
@@ -1247,6 +1254,9 @@ class QasmWriter:
         self.strings.add_string("}\n")
 
     def mark_as_written(self, written_variable: str) -> None:
+        """Remove any references to the written-to variable in `self.range_preds`, so
+        that we don't try and replace instances of the variable with stale aliases.
+        """
         hits = [
             (variable, comparator, value, dest_bit, label)
             for (variable, comparator, value, dest_bit, label) in self.range_preds
@@ -1286,7 +1296,7 @@ class QasmWriter:
         # Later f we find a conditional based on dest_bit, we can replace dest_bit with
         # (variable, comparator, value), provided that variable hasn't been written to
         # in the mean time. (So we must watch for that, and remove the record from the
-        # list of it is.)
+        # list if it is.)
         self.range_preds.append((variable, comparator, value, dest_bit, label))
 
     def add_conditional(self, op: Conditional, args: List[UnitID]) -> None:
@@ -1313,7 +1323,7 @@ class QasmWriter:
         if op.op.type == OpType.Phase:
             # Conditional phase is ignored.
             return
-        # Now check whether variable is actually in range_preds...
+        # Check whether the variable is actually in `self.range_preds`.
         hits = [
             (real_variable, comparator, value, label)
             for (real_variable, comparator, value, dest_bit, label) in self.range_preds
