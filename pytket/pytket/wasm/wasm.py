@@ -154,7 +154,9 @@ class WasmFileHandler:
             if supported_function:
                 self._functions[x] = (
                     len(
-                        function_signatures[self._function_types[idx]]["parameter_types"]
+                        function_signatures[self._function_types[idx]][
+                            "parameter_types"
+                        ]
                     ),
                     len(function_signatures[self._function_types[idx]]["return_types"]),
                 )
