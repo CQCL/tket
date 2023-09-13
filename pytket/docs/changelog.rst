@@ -1,6 +1,14 @@
 Changelog
 =========
 
+1.20.0rc2 (September 2023)
+--------------------------
+
+Fixes:
+
+* Mixed up function index in wasm file check
+
+
 1.20.0rc1 (September 2023)
 --------------------------
 
