@@ -1287,8 +1287,9 @@ class QasmWriter:
         label = self.strings.add_string(
             "".join(
                 [
-                    f"if({variable}{comparator}{value}) {dest_bit} = 1;\n",
-                    f"if({variable}{_negate_comparator(comparator)}{value}) {dest_bit} = 0;\n",
+                    f"if({variable}{comparator}{value}) " + f"{dest_bit} = 1;\n",
+                    f"if({variable}{_negate_comparator(comparator)}{value}) "
+                    + f"{dest_bit} = 0;\n",
                 ]
             )
         )
