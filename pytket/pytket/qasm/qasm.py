@@ -1111,6 +1111,13 @@ def hqs_header(header: str) -> bool:
 
 
 class LabelledStringList:
+    """
+    Wrapper class for an ordered sequence of strings, where each string has a unique
+    label, returned when the string is added, and a string may be removed from the
+    sequence given its label. There is a method to retrieve the concatenation of all
+    strings in order.
+    """
+
     def __init__(self):
         self.strings: OrderedDict[int, str] = OrderedDict()
         self.label = 0
@@ -1129,6 +1136,11 @@ class LabelledStringList:
 
 
 class QasmWriter:
+    """
+    Helper class for converting a sequence of TKET Commands to QASM, and retrieving the
+    final QASM string afterwards.
+    """
+
     def __init__(
         self,
         qubits,
