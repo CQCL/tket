@@ -967,7 +967,8 @@ def circuit_from_qasm_wasm(
 
 
 def circuit_to_qasm(circ: Circuit, output_file: str, header: str = "qelib1") -> None:
-    """A method to generate a qasm file from a tket Circuit.
+    """Convert a Circuit to QASM and write it to a file.
+
     Note that this will not account for implicit qubit permutations in the Circuit."""
     with open(output_file, "w") as out:
         circuit_to_qasm_io(circ, out, header=header)
@@ -1000,11 +1001,30 @@ def _filtered_qasm_str(qasm: str) -> str:
 def circuit_to_qasm_str(
     circ: Circuit, header: str = "qelib1", include_gate_defs: Optional[Set[str]] = None
 ) -> str:
-    """A method to generate a qasm str from a tket Circuit.
+    """Convert a Circuit to QASM and return the string.
+
     Note that this will not account for implicit qubit permutations in the Circuit."""
-    buffer = io.StringIO()
-    circuit_to_qasm_io(circ, buffer, header=header, include_gate_defs=include_gate_defs)
-    return buffer.getvalue()
+    if any(
+        circ.n_gates_of_type(typ)
+        for typ in (
+            OpType.RangePredicate,
+            OpType.MultiBit,
+            OpType.ExplicitPredicate,
+            OpType.ExplicitModifier,
+            OpType.SetBits,
+            OpType.CopyBits,
+            OpType.ClassicalExpBox,
+        )
+    ) and (not hqs_header(header)):
+        raise QASMUnsupportedError(
+            "Complex classical gates not supported with qelib1: try converting with "
+            "`header=hqslib1`"
+        )
+    qasm_writer = QasmWriter(circ.qubits, circ.bits, header, include_gate_defs)
+    for command in circ:
+        assert isinstance(command, Command)
+        qasm_writer.add_op(command.op, command.args)
+    return qasm_writer.finalize()
 
 
 TypeReg = TypeVar("TypeReg", BitRegister, QubitRegister)
@@ -1533,29 +1553,9 @@ def circuit_to_qasm_io(
     header: str = "qelib1",
     include_gate_defs: Optional[Set[str]] = None,
 ) -> None:
-    """A method to generate a qasm text stream from a tket Circuit.
-    Note that this will not account for implicit qubit permutations in the Circuit."""
-    # Write to a buffer since the output qasm might need additional filtering.
-    # e.g. remove unused tket scratch bits.
-    if any(
-        circ.n_gates_of_type(typ)
-        for typ in (
-            OpType.RangePredicate,
-            OpType.MultiBit,
-            OpType.ExplicitPredicate,
-            OpType.ExplicitModifier,
-            OpType.SetBits,
-            OpType.CopyBits,
-            OpType.ClassicalExpBox,
-        )
-    ) and (not hqs_header(header)):
-        raise QASMUnsupportedError(
-            "Complex classical gates not supported with qelib1: try converting with "
-            "`header=hqslib1`"
-        )
+    """Convert a Circuit to QASM and write to a text stream.
 
-    qasm_writer = QasmWriter(circ.qubits, circ.bits, header, include_gate_defs)
-    for command in circ:
-        assert isinstance(command, Command)
-        qasm_writer.add_op(command.op, command.args)
-    stream_out.write(qasm_writer.finalize())
+    Note that this will not account for implicit qubit permutations in the Circuit."""
+    stream_out.write(
+        circuit_to_qasm_str(circ, header=header, include_gate_defs=include_gate_defs)
+    )
