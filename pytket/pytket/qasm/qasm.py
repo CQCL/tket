@@ -42,7 +42,7 @@ from typing import (
     Union,
     cast,
 )
-from sympy import Symbol, pi
+from sympy import Symbol, pi, Expr
 from lark import Discard, Lark, Token, Transformer, Tree
 
 from pytket._tket.circuit import (
@@ -1065,13 +1065,12 @@ def _negate_comparator(comparator: str) -> str:
         return "<="
     elif comparator == ">=":
         return "<"
-    elif comparator == "<":
-        return ">="
     else:
-        assert not f"Invalid comparator: {comparator}"
+        assert comparator == "<"
+        return ">="
 
 
-def _get_optype_and_params(op: Op) -> Tuple[OpType, Optional[List[float]]]:
+def _get_optype_and_params(op: Op) -> Tuple[OpType, Optional[List[Union[float, Expr]]]]:
     optype = op.type
     params = (
         op.params
@@ -1084,7 +1083,7 @@ def _get_optype_and_params(op: Op) -> Tuple[OpType, Optional[List[float]]]:
         params = [op.params[1], op.params[0] - 0.5, op.params[2] + 0.5]
     elif optype == OpType.CustomGate:
         params = op.params
-    return optype, params  # type: ignore
+    return optype, params
 
 
 def _get_gate_circuit(
@@ -1118,7 +1117,7 @@ class LabelledStringList:
     strings in order.
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self.strings: OrderedDict[int, str] = OrderedDict()
         self.label = 0
 
@@ -1143,8 +1142,8 @@ class QasmWriter:
 
     def __init__(
         self,
-        qubits,
-        bits,
+        qubits: List[Qubit],
+        bits: List[Bit],
         header: str = "qelib1",
         include_gate_defs: Optional[Set[str]] = None,
     ):
@@ -1155,7 +1154,15 @@ class QasmWriter:
             _load_include_module(header, False, True).keys()
         )
         self.strings = LabelledStringList()
-        self.range_preds = []
+        self.range_preds: List[
+            Tuple[
+                str,  # variable, e.g. "c[1]"
+                str,  # comparator, e.g. "=="
+                int,  # value, e.g. "1"
+                str,  # destination bit, e.g. "tk_SCRATCH_BIT[0]"
+                int,  # label, e.g. 42
+            ]
+        ] = []
         if include_gate_defs is None:
             self.include_gate_defs = self.include_module_gates
             self.include_gate_defs.update(NOPARAM_EXTRA_COMMANDS.keys())
@@ -1175,17 +1182,18 @@ class QasmWriter:
             self.cregs = {}
             self.qregs = {}
 
-    def write_params(self, params) -> None:
+    def write_params(self, params: Optional[List[Union[float, Expr]]]) -> None:
         if params is not None:
+            n_params = len(params)
             self.strings.add_string("(")
-            for i in range(len(params)):
+            for i in range(n_params):
                 reduced = True
                 try:
-                    p = float(params[i])
+                    p: Union[float, Expr] = float(params[i])
                 except TypeError:
                     reduced = False
                     p = params[i]
-                if i < len(params) - 1:
+                if i < n_params - 1:
                     if reduced:
                         self.strings.add_string("{}*pi,".format(p))
                     else:
@@ -1197,7 +1205,7 @@ class QasmWriter:
                         self.strings.add_string("({})*pi)".format(p))
         self.strings.add_string(" ")
 
-    def write_args(self, args) -> None:
+    def write_args(self, args: List[UnitID]) -> None:
         for i in range(len(args)):
             self.strings.add_string(f"{args[i]}")
             if i < len(args) - 1:
@@ -1238,7 +1246,7 @@ class QasmWriter:
         )
         self.strings.add_string("}\n")
 
-    def register_as_written(self, written_variable):
+    def register_as_written(self, written_variable: str) -> None:
         hits = [
             (variable, comparator, value, dest_bit, label)
             for (variable, comparator, value, dest_bit, label) in self.range_preds
@@ -1247,22 +1255,18 @@ class QasmWriter:
         for hit in hits:
             self.range_preds.remove(hit)
 
-    def add_range_predicate(self, op, args) -> None:
-        assert isinstance(op, RangePredicateOp)
+    def add_range_predicate(self, op: RangePredicateOp, args: List[Bit]) -> None:
         comparator, value = _parse_range(op.lower, op.upper)
         if (not hqs_header(self.header)) and comparator != "==":
             raise QASMUnsupportedError(
                 "OpenQASM conditions must be on a register's fixed value."
             )
         bits = args[:-1]
-        variable: Union[
-            str,
-            UnitID,
-        ] = args[0].reg_name
-        dest_bit = args[-1]
+        variable = args[0].reg_name
+        dest_bit = str(args[-1])
         if not hqs_header(self.header):
             assert isinstance(variable, str)
-            if op.width != self.cregs[variable].size:
+            if op.n_inputs != self.cregs[variable].size:
                 raise QASMUnsupportedError(
                     "OpenQASM conditions must be an entire classical register"
                 )
@@ -1285,12 +1289,11 @@ class QasmWriter:
         # list of it is.)
         self.range_preds.append((variable, comparator, value, dest_bit, label))
 
-    def add_conditional(self, op, args) -> None:
-        assert isinstance(op, Conditional)
+    def add_conditional(self, op: Conditional, args: List[UnitID]) -> None:
         bits = args[: op.width]
         control_bit = bits[0]
         if op.width == 1 and hqs_header(self.header):
-            variable = control_bit
+            variable = str(control_bit)
         else:
             variable = control_bit.reg_name
             if hqs_header(self.header) and bits != self.cregs[variable].to_list():
@@ -1299,7 +1302,6 @@ class QasmWriter:
                     "register or a single bit"
                 )
         if not hqs_header(self.header):
-            assert isinstance(variable, str)
             if op.width != self.cregs[variable].size:
                 raise QASMUnsupportedError(
                     "OpenQASM conditions must be an entire classical register"
@@ -1332,10 +1334,9 @@ class QasmWriter:
                 )
         self.add_op(op.op, args[op.width :])
 
-    def add_set_bits(self, op, args) -> None:
-        assert isinstance(op, SetBitsOp)
+    def add_set_bits(self, op: SetBitsOp, args: List[Bit]) -> None:
         creg_name = args[0].reg_name
-        bits, vals = zip(*sorted(zip(args, op.values)))  # type: ignore
+        bits, vals = zip(*sorted(zip(args, op.values)))
         # check if whole register can be set at once
         if bits == tuple(self.cregs[creg_name].to_list()):
             value = int("".join(map(str, map(int, vals[::-1]))), 2)
@@ -1346,8 +1347,7 @@ class QasmWriter:
                 self.strings.add_string(f"{bit} = {int(value)};\n")
                 self.register_as_written(f"{bit}")
 
-    def add_copy_bits(self, op, args) -> None:
-        assert isinstance(op, CopyBitsOp)
+    def add_copy_bits(self, op: CopyBitsOp, args: List[Bit]) -> None:
         l_args = args[op.n_inputs :]
         r_args = args[: op.n_inputs]
         l_name = l_args[0].reg_name
@@ -1364,15 +1364,15 @@ class QasmWriter:
                 self.strings.add_string(f"{bit_l} = {bit_r};\n")
                 self.register_as_written(f"{bit_l}")
 
-    def add_multi_bit(self, op, args) -> None:
-        assert isinstance(op, MultiBitOp)
+    def add_multi_bit(self, op: MultiBitOp, args: List[Bit]) -> None:
+        assert len(args) >= 2
         registers_involved = [arg.reg_name for arg in args[:2]]
         if len(args) > 2 and args[2].reg_name not in registers_involved:
             # there is a distinct output register
             registers_involved.append(args[2].reg_name)
         self.add_op(op.basic_op, [self.cregs[name] for name in registers_involved])  # type: ignore
 
-    def add_explicit_op(self, op, args) -> None:
+    def add_explicit_op(self, op: Op, args: List[Bit]) -> None:
         # &, ^ and | gates
         opstr = str(op)
         if opstr not in _classical_gatestr_map:
@@ -1382,9 +1382,8 @@ class QasmWriter:
         )
         self.register_as_written(f"{args[-1]}")
 
-    def add_classical_exp_box(self, op, args) -> None:
-        assert isinstance(op, ClassicalExpBox)
-        out_args: list[UnitID] = args[op.get_n_i() :]
+    def add_classical_exp_box(self, op: ClassicalExpBox, args: List[Bit]) -> None:
+        out_args = args[op.get_n_i() :]
         if len(out_args) == 1:
             self.strings.add_string(f"{out_args[0]} = {str(op.get_exp())};\n")
             self.register_as_written(f"{out_args[0]}")
@@ -1402,8 +1401,7 @@ class QasmWriter:
                 " for writing to a single bit or whole registers."
             )
 
-    def add_wasm(self, op, args) -> None:
-        assert isinstance(op, WASMOp)
+    def add_wasm(self, op: WASMOp, args: List[Bit]) -> None:
         inputs: List[str] = []
         outputs: List[str] = []
         for reglist, sizes in [(inputs, op.input_widths), (outputs, op.output_widths)]:
@@ -1420,12 +1418,11 @@ class QasmWriter:
         for variable in outputs:
             self.register_as_written(variable)
 
-    def add_measure(self, args) -> None:
+    def add_measure(self, args: List[UnitID]) -> None:
         self.strings.add_string(f"measure {args[0]} -> {args[1]};\n")
         self.register_as_written(f"{args[1]}")
 
-    def add_custom_gate(self, op, args) -> None:
-        assert isinstance(op, CustomGate)
+    def add_custom_gate(self, op: CustomGate, args: List[UnitID]) -> None:
         if op.gate.name not in self.include_gate_defs:
             # unroll custom gate
             gate_circ = op.get_circuit()
@@ -1449,9 +1446,7 @@ class QasmWriter:
             self.write_params(op.params)
             self.write_args(args)
 
-    def add_zzphase(self, params, args) -> None:
-        assert len(params) == 1
-        param = params[0]
+    def add_zzphase(self, param: Union[float, Expr], args: List[UnitID]) -> None:
         # as op.params returns reduced parameters, we can assume
         # that 0 <= param < 4
         if param > 1:
@@ -1462,11 +1457,10 @@ class QasmWriter:
             if param > 1:
                 param = -2 + param
         self.strings.add_string("RZZ")
-        self.write_params([param])  # type: ignore
+        self.write_params([param])
         self.write_args(args)
 
-    def add_data(self, op, args) -> None:
-        assert isinstance(op, BarrierOp)
+    def add_data(self, op: BarrierOp, args: List[UnitID]) -> None:
         if op.data == "":
             opstr = _tk_to_qasm_noparams[OpType.Barrier]
         else:
@@ -1475,18 +1469,18 @@ class QasmWriter:
         self.strings.add_string(" ")
         self.write_args(args)
 
-    def add_gate_noparams(self, op, args) -> None:
+    def add_gate_noparams(self, op: Op, args: List[UnitID]) -> None:
         self.strings.add_string(_tk_to_qasm_noparams[op.type])
         self.strings.add_string(" ")
         self.write_args(args)
 
-    def add_gate_params(self, op, args) -> None:
+    def add_gate_params(self, op: Op, args: List[UnitID]) -> None:
         optype, params = _get_optype_and_params(op)
         self.strings.add_string(_tk_to_qasm_params[optype])
         self.write_params(params)
         self.write_args(args)
 
-    def add_extra_noparams(self, op, args) -> None:
+    def add_extra_noparams(self, op: Op, args: List[UnitID]) -> None:
         optype = op.type
         opstr = _tk_to_qasm_extra_noparams[optype]
         if opstr not in self.added_gate_definitions:
@@ -1496,8 +1490,9 @@ class QasmWriter:
         self.strings.add_string(" ")
         self.write_args(args)
 
-    def add_extra_params(self, op, args) -> None:
+    def add_extra_params(self, op: Op, args: List[UnitID]) -> None:
         optype, params = _get_optype_and_params(op)
+        assert params is not None
         opstr = _tk_to_qasm_extra_params[optype]
         if opstr not in self.added_gate_definitions:
             self.added_gate_definitions.add(opstr)
@@ -1506,35 +1501,45 @@ class QasmWriter:
         self.write_params(params)
         self.write_args(args)
 
-    def add_op(self, op, args) -> None:
+    def add_op(self, op: Op, args: List[UnitID]) -> None:
         optype, _params = _get_optype_and_params(op)
         if optype == OpType.RangePredicate:
-            self.add_range_predicate(op, args)
+            assert isinstance(op, RangePredicateOp)
+            self.add_range_predicate(op, cast(List[Bit], args))
         elif optype == OpType.Conditional:
+            assert isinstance(op, Conditional)
             self.add_conditional(op, args)
         elif optype == OpType.Phase:
             # global phase is ignored in QASM
             pass
         elif optype == OpType.SetBits:
-            self.add_set_bits(op, args)
+            assert isinstance(op, SetBitsOp)
+            self.add_set_bits(op, cast(List[Bit], args))
         elif optype == OpType.CopyBits:
-            self.add_copy_bits(op, args)
+            assert isinstance(op, CopyBitsOp)
+            self.add_copy_bits(op, cast(List[Bit], args))
         elif optype == OpType.MultiBit:
-            self.add_multi_bit(op, args)
+            assert isinstance(op, MultiBitOp)
+            self.add_multi_bit(op, cast(List[Bit], args))
         elif optype in (OpType.ExplicitPredicate, OpType.ExplicitModifier):
-            self.add_explicit_op(op, args)
+            self.add_explicit_op(op, cast(List[Bit], args))
         elif optype == OpType.ClassicalExpBox:
-            self.add_classical_exp_box(op, args)
+            assert isinstance(op, ClassicalExpBox)
+            self.add_classical_exp_box(op, cast(List[Bit], args))
         elif optype == OpType.WASM:
-            self.add_wasm(op, args)
+            assert isinstance(op, WASMOp)
+            self.add_wasm(op, cast(List[Bit], args))
         elif optype == OpType.Measure:
             self.add_measure(args)
         elif optype == OpType.CustomGate:
+            assert isinstance(op, CustomGate)
             self.add_custom_gate(op, args)
         elif hqs_header(self.header) and optype == OpType.ZZPhase:
             # special handling for zzphase
-            self.add_zzphase(op.params, args)
+            assert len(op.params) == 1
+            self.add_zzphase(op.params[0], args)
         elif optype == OpType.Barrier and self.header == "hqslib1_dev":
+            assert isinstance(op, BarrierOp)
             self.add_data(op, args)
         elif (
             optype in _tk_to_qasm_noparams
@@ -1555,7 +1560,7 @@ class QasmWriter:
                 "Cannot print command of type: {}".format(op.get_name())
             )
 
-    def finalize(self):
+    def finalize(self) -> str:
         return _filtered_qasm_str(self.strings.get_full_string())
 
 

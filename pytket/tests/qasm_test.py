@@ -763,7 +763,7 @@ def test_rxxyyzz_conversion() -> None:
     assert hqslib_qs == correct_qasm
 
 
-def test_classical_assignment_order():
+def test_classical_assignment_order() -> None:
     # https://github.com/CQCL/tket/issues/1013
     circ = Circuit(1)
     reg_meas = circ.add_c_register("c0", 1)
