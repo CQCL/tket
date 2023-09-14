@@ -46,4 +46,4 @@ class TketSimWrapper:
             rev_perm = tuple(range(self._n_qubits - 1, -1, -1))
             statevector = permute_basis_indexing(statevector, rev_perm)
         statevector = permute_qubits_in_statevector(statevector, self._qmap_perm)
-        return statevector  # type: ignore
+        return statevector

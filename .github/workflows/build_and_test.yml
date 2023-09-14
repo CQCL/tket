@@ -189,17 +189,15 @@ jobs:
           restore-keys: |
             tket-static-${{ matrix.os }}-
       - name: Build tket
-        # On windows use install + build so build directory is consistent across runs (i.e. don't build from conan cache)
+        # On windows use build + export-pkg so build directory is consistent across runs (i.e. don't build from conan cache)
         # Necessary because setting ccache base_dir doesn't currently work on windows
         run: |
-          conan install tket --user=tket --channel=stable -o boost/*:header_only=True -o with_all_tests=True -c tools.cmake.cmaketoolchain:generator=Ninja
           conan build tket --user=tket --channel=stable -o boost/*:header_only=True -o with_all_tests=True -c tools.cmake.cmaketoolchain:generator=Ninja
           conan export-pkg tket --user=tket --channel=stable -o boost/*:header_only=True -o with_all_tests=True -c tools.cmake.cmaketoolchain:generator=Ninja
       - name: Upload package
         if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
         run: |
           ccache --set-config namespace=WITHOUT_TESTS
-          conan install tket --user=tket --channel=stable -o boost/*:header_only=True
           conan build tket --user=tket --channel=stable -o boost/*:header_only=True
           conan export-pkg tket --user=tket --channel=stable -o boost/*:header_only=True
           conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_3 }}

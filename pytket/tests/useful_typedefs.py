@@ -1,5 +1,5 @@
 from typing import Union
 
-from sympy import Expr  # type: ignore
+from sympy import Expr
 
 ParamType = Union[float, Expr]

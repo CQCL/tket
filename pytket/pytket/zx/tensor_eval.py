@@ -16,7 +16,7 @@
 numpy tensor features, in particular the einsum evaluation and optimisations."""
 from typing import Dict, List, Any
 from math import floor, pi, sqrt, cos, sin
-import sympy  # type: ignore
+import sympy
 import numpy as np
 from pytket.zx import (
     ZXDiagram,

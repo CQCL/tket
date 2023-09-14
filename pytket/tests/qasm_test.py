@@ -17,7 +17,7 @@ import re
 from pathlib import Path
 from typing import List
 
-import pytest  # type: ignore
+import pytest
 
 from pytket._tket.unit_id import _TEMP_BIT_NAME, _TEMP_BIT_REG_BASE
 from pytket.circuit import (
@@ -761,6 +761,29 @@ def test_rxxyyzz_conversion() -> None:
     hqslib_qs = circuit_to_qasm_str(c, header="hqslib1")
     correct_qasm = """OPENQASM 2.0;\ninclude "hqslib1.inc";\n\nqreg q[2];\nRxxyyzz(0.3*pi,0.4*pi,0.5*pi) q[0],q[1];\n"""
     assert hqslib_qs == correct_qasm
+
+
+def test_classical_assignment_order() -> None:
+    # https://github.com/CQCL/tket/issues/1013
+    circ = Circuit(1)
+    reg_meas = circ.add_c_register("c0", 1)
+    reg_cond = circ.add_c_register("c1", 1)
+    circ.add_c_setreg(0, reg_cond)
+    circ.X(0, condition=reg_eq(reg_cond, 1))
+    circ.add_c_setreg(1, reg_cond)
+    circ.X(0, condition=reg_eq(reg_cond, 1))
+    circ.Measure(Qubit(0), reg_meas[0])
+    qasm = circuit_to_qasm_str(circ, header="hqslib1").split("\n")
+    right_order = [
+        "c1 = 0;",
+        "if(c1==1) tk_SCRATCH_BIT[0] = 1;",
+        "c1 = 1;",
+        "if(tk_SCRATCH_BIT[0]==1) x q[0];",
+        "if(c1==1) x q[0];",
+    ]
+    posns = [qasm.index(line) for line in right_order]
+    for i in range(len(right_order) - 1):
+        assert posns[i] < posns[i + 1]
 
 
 if __name__ == "__main__":

@@ -404,7 +404,7 @@ class SpamCorrecter:
                 # find only qubits that are expected to be in 1 state,
                 # add xbox to given qubits
                 for flipped_qb in itertools.compress(qubits, major_state[:dim]):
-                    state_circuit.add_circbox(self.xbox, [flipped_qb])  # type: ignore[list-item]
+                    state_circuit.add_circbox(self.xbox, [flipped_qb])
             # Decompose boxes, add barriers to preserve circuit, add measures
             DecomposeBoxes().apply(state_circuit)
             for qb, cb in zip(self.all_qbs, c_reg):
@@ -438,7 +438,7 @@ class SpamCorrecter:
             self.subsets_matrix_map[qbs] = np.zeros((1 << dim,) * 2, dtype=float)
             for i in range(len(qbs)):
                 qb = qbs[i]
-                self.node_index_dict[qb] = (counter, i)  # type:ignore[index]
+                self.node_index_dict[qb] = (counter, i)
             counter += 1
 
         for result, state_info in zip(results_list, self.state_infos):
@@ -446,7 +446,7 @@ class SpamCorrecter:
             qb_bit_map = state_info[1]
             for qb_sub in self.subsets_matrix_map:
                 # bits of counts to consider
-                bits = [qb_bit_map[q] for q in qb_sub]  # type:ignore[index]
+                bits = [qb_bit_map[q] for q in qb_sub]
                 counts_dict = result.get_counts(cbits=bits)
                 for measured_state, count in counts_dict.items():
                     # intended state
