@@ -1,34 +1,24 @@
 Changelog
 =========
 
-Unreleased
-----------
-
-Fixes:
-
-* Fix handling of scratch bits in pytket-to-QASM conversion when the source bit
-  for the scratch is overwritten before the scratch bit is used in a
-  conditional.
-
-1.20.0rc2 (September 2023)
---------------------------
+1.20.0 (September 2023)
+-----------------------
 
 Fixes:
 
 * Mixed up function index in wasm file check
-
-
-1.20.0rc1 (September 2023)
---------------------------
-
-API changes:
-
-* barrier changed from MetaOp to be a BarrierOp
+* Fix handling of scratch bits in pytket-to-QASM conversion when the source bit
+  for the scratch is overwritten before the scratch bit is used in a
+  conditional.
 
 Minor new features:
 
 * ``Circuit.add_conditional_barrier``
 * Add ``apply_clifford_basis_change_tensor`` method
+
+API changes:
+
+* barrier changed from MetaOp to be a BarrierOp
 
 
 1.19.1 (September 2023)
