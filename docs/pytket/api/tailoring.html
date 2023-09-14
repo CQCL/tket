@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>pytket.tailoring &#8212; pytket 1.19.1 documentation</title>
+    <title>pytket.tailoring &#8212; pytket 1.20.0 documentation</title>
   
   
   
@@ -390,6 +390,7 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.tailoring.apply_clifford_basis_change"><code class="docutils literal notranslate"><span class="pre">apply_clifford_basis_change()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.tailoring.apply_clifford_basis_change_tensor"><code class="docutils literal notranslate"><span class="pre">apply_clifford_basis_change_tensor()</span></code></a></li>
 </ul>
             </nav>
         </div>
@@ -559,6 +560,23 @@ document.write(`
 </dl>
 </dd></dl>
 
+<dl class="py function">
+<dt class="sig sig-object py" id="pytket.tailoring.apply_clifford_basis_change_tensor">
+<span class="sig-prename descclassname"><span class="pre">pytket.tailoring.</span></span><span class="sig-name descname"><span class="pre">apply_clifford_basis_change_tensor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pauli</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="pauli.html#pytket.pauli.QubitPauliTensor" title="pytket.pauli.QubitPauliTensor"><span class="pre">pytket.pauli.QubitPauliTensor</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">circuit</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="circuit_class.html#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><span class="pre">pytket.circuit.Circuit</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="pauli.html#pytket.pauli.QubitPauliTensor" title="pytket.pauli.QubitPauliTensor"><span class="pre">pytket.pauli.QubitPauliTensor</span></a></span></span><a class="headerlink" href="#pytket.tailoring.apply_clifford_basis_change_tensor" title="Permalink to this definition">#</a></dt>
+<dd><p>Given Pauli operator P and Clifford circuit C, returns C_dagger.P.C in multiplication order</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pauli</strong> – Pauli operator being transformed.</p></li>
+<li><p><strong>circuit</strong> – Clifford circuit acting on Pauli operator.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><code class="xref py py-class docutils literal notranslate"><span class="pre">QubitPauliTensor</span></code> for new operator</p>
+</dd>
+</dl>
+</dd></dl>
+
 </section>
 
 
@@ -628,6 +646,7 @@ document.write(`
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.tailoring.apply_clifford_basis_change"><code class="docutils literal notranslate"><span class="pre">apply_clifford_basis_change()</span></code></a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.tailoring.apply_clifford_basis_change_tensor"><code class="docutils literal notranslate"><span class="pre">apply_clifford_basis_change_tensor()</span></code></a></li>
 </ul>
   </nav></div>
 

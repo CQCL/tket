@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pytket.utils.operators &#8212; pytket 1.19.1 documentation</title>
+    <title>pytket.utils.operators &#8212; pytket 1.20.0 documentation</title>
   
   
   
@@ -342,7 +342,7 @@ document.write(`
 
 <span class="kn">import</span> <span class="nn">numpy</span>
 <span class="kn">import</span> <span class="nn">numpy</span> <span class="k">as</span> <span class="nn">np</span>
-<span class="kn">from</span> <span class="nn">sympy</span> <span class="kn">import</span> <span class="n">Symbol</span><span class="p">,</span> <span class="n">sympify</span><span class="p">,</span> <span class="n">Expr</span><span class="p">,</span> <span class="n">re</span><span class="p">,</span> <span class="n">im</span>  <span class="c1"># type: ignore</span>
+<span class="kn">from</span> <span class="nn">sympy</span> <span class="kn">import</span> <span class="n">Symbol</span><span class="p">,</span> <span class="n">sympify</span><span class="p">,</span> <span class="n">Expr</span><span class="p">,</span> <span class="n">re</span><span class="p">,</span> <span class="n">im</span>
 <span class="kn">from</span> <span class="nn">pytket.pauli</span> <span class="kn">import</span> <span class="n">QubitPauliString</span><span class="p">,</span> <span class="n">pauli_string_mult</span>
 <span class="kn">from</span> <span class="nn">pytket.circuit</span> <span class="kn">import</span> <span class="n">Qubit</span>
 <span class="kn">from</span> <span class="nn">pytket.utils.serialization</span> <span class="kn">import</span> <span class="n">complex_to_list</span><span class="p">,</span> <span class="n">list_to_complex</span>
@@ -351,7 +351,7 @@ document.write(`
 <span class="n">CoeffType</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="nb">int</span><span class="p">,</span> <span class="nb">float</span><span class="p">,</span> <span class="nb">complex</span><span class="p">,</span> <span class="n">Expr</span><span class="p">]</span>
 
 <span class="k">if</span> <span class="n">TYPE_CHECKING</span><span class="p">:</span>
-    <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">csc_matrix</span>  <span class="c1"># type: ignore</span>
+    <span class="kn">from</span> <span class="nn">scipy.sparse</span> <span class="kn">import</span> <span class="n">csc_matrix</span>
 
 
 <div class="viewcode-block" id="QubitPauliOperator"><a class="viewcode-back" href="../../../utils.html#pytket.utils.QubitPauliOperator">[docs]</a><span class="k">class</span> <span class="nc">QubitPauliOperator</span><span class="p">:</span>
@@ -469,7 +469,6 @@ document.write(`
             <span class="n">result_terms</span><span class="p">:</span> <span class="n">Dict</span> <span class="o">=</span> <span class="nb">dict</span><span class="p">()</span>
             <span class="k">for</span> <span class="n">left_key</span><span class="p">,</span> <span class="n">left_value</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                 <span class="k">for</span> <span class="n">right_key</span><span class="p">,</span> <span class="n">right_value</span> <span class="ow">in</span> <span class="n">multiplier</span><span class="o">.</span><span class="n">_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
-
                     <span class="n">new_term</span><span class="p">,</span> <span class="n">bonus_coeff</span> <span class="o">=</span> <span class="n">pauli_string_mult</span><span class="p">(</span><span class="n">left_key</span><span class="p">,</span> <span class="n">right_key</span><span class="p">)</span>
                     <span class="n">new_coefficient</span> <span class="o">=</span> <span class="n">bonus_coeff</span> <span class="o">*</span> <span class="n">left_value</span> <span class="o">*</span> <span class="n">right_value</span>
 

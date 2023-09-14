@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>pytket.circuit.Circuit &#8212; pytket 1.19.1 documentation</title>
+    <title>pytket.circuit.Circuit &#8212; pytket 1.20.0 documentation</title>
   
   
   
@@ -459,6 +459,7 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.add_circuit"><code class="docutils literal notranslate"><span class="pre">Circuit.add_circuit()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.add_classicalexpbox_bit"><code class="docutils literal notranslate"><span class="pre">Circuit.add_classicalexpbox_bit()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.add_classicalexpbox_register"><code class="docutils literal notranslate"><span class="pre">Circuit.add_classicalexpbox_register()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.add_conditional_barrier"><code class="docutils literal notranslate"><span class="pre">Circuit.add_conditional_barrier()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.add_conjugation_box"><code class="docutils literal notranslate"><span class="pre">Circuit.add_conjugation_box()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.add_custom_gate"><code class="docutils literal notranslate"><span class="pre">Circuit.add_custom_gate()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.add_diagonal_box"><code class="docutils literal notranslate"><span class="pre">Circuit.add_diagonal_box()</span></code></a></li>
@@ -2518,6 +2519,47 @@ condition on a specified set of bit values.)</p>
 </dd></dl>
 
 <dl class="py method">
+<dt class="sig sig-object py" id="pytket.circuit.Circuit.add_conditional_barrier">
+<span class="sig-name descname"><span class="pre">add_conditional_barrier</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.add_conditional_barrier" title="Permalink to this definition">#</a></dt>
+<dd><p>Overloaded function.</p>
+<ol class="arabic simple">
+<li><p>add_conditional_barrier(self: pytket.circuit.Circuit, barrier_qubits: List[int], barrier_bits: List[int], condition_bits: List[int], value: int, data: str = ‘’) -&gt; pytket.circuit.Circuit</p></li>
+</ol>
+<p>Append a Conditional Barrier on the given barrier qubits and barrier bits, conditioned on the given condition bits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>barrier_qubits</strong> – Qubit in Barrier operation.</p></li>
+<li><p><strong>barrier_bits</strong> – Bit in Barrier operation.</p></li>
+<li><p><strong>condition_bits</strong> – Bit covering classical control condition of barrier operation.</p></li>
+<li><p><strong>value</strong> – Value that classical condition must have to hold (little-endian).</p></li>
+<li><p><strong>data</strong> – Additional data stored in Barrier operation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the new <a class="reference internal" href="#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">Circuit</span></code></a></p>
+</dd>
+</dl>
+<ol class="arabic simple" start="2">
+<li><p>add_conditional_barrier(self: pytket.circuit.Circuit, barrier_args: List[pytket.unit_id.UnitID], condition_bits: List[pytket.unit_id.Bit], value: int, data: str = ‘’) -&gt; pytket.circuit.Circuit</p></li>
+</ol>
+<p>Append a Conditional Barrier on the given barrier qubits and barrier bits, conditioned on the given condition bits.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>barrier_args</strong> – Qubit and Bit in Barrier operation.</p></li>
+<li><p><strong>condition_bits</strong> – Bit covering classical control  condition of barrier operation.</p></li>
+<li><p><strong>value</strong> – Value that classical condition must have to hold (little-endian).</p></li>
+<li><p><strong>data</strong> – Additional data stored in Barrier operation.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>the new <a class="reference internal" href="#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><code class="xref py py-class docutils literal notranslate"><span class="pre">Circuit</span></code></a></p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
 <dt class="sig sig-object py" id="pytket.circuit.Circuit.add_conjugation_box">
 <span class="sig-name descname"><span class="pre">add_conjugation_box</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.circuit.Circuit.add_conjugation_box" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
@@ -4301,6 +4343,7 @@ Allowed parameters are <cite>opgroup</cite>,  <cite>condition</cite> , <cite>con
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.add_circuit"><code class="docutils literal notranslate"><span class="pre">Circuit.add_circuit()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.add_classicalexpbox_bit"><code class="docutils literal notranslate"><span class="pre">Circuit.add_classicalexpbox_bit()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.add_classicalexpbox_register"><code class="docutils literal notranslate"><span class="pre">Circuit.add_classicalexpbox_register()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.add_conditional_barrier"><code class="docutils literal notranslate"><span class="pre">Circuit.add_conditional_barrier()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.add_conjugation_box"><code class="docutils literal notranslate"><span class="pre">Circuit.add_conjugation_box()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.add_custom_gate"><code class="docutils literal notranslate"><span class="pre">Circuit.add_custom_gate()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.Circuit.add_diagonal_box"><code class="docutils literal notranslate"><span class="pre">Circuit.add_diagonal_box()</span></code></a></li>

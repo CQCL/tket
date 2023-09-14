@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pytket.utils.spam &#8212; pytket 1.19.1 documentation</title>
+    <title>pytket.utils.spam &#8212; pytket 1.20.0 documentation</title>
   
   
   
@@ -729,7 +729,7 @@ document.write(`
                 <span class="c1"># find only qubits that are expected to be in 1 state,</span>
                 <span class="c1"># add xbox to given qubits</span>
                 <span class="k">for</span> <span class="n">flipped_qb</span> <span class="ow">in</span> <span class="n">itertools</span><span class="o">.</span><span class="n">compress</span><span class="p">(</span><span class="n">qubits</span><span class="p">,</span> <span class="n">major_state</span><span class="p">[:</span><span class="n">dim</span><span class="p">]):</span>
-                    <span class="n">state_circuit</span><span class="o">.</span><span class="n">add_circbox</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xbox</span><span class="p">,</span> <span class="p">[</span><span class="n">flipped_qb</span><span class="p">])</span>  <span class="c1"># type: ignore[list-item]</span>
+                    <span class="n">state_circuit</span><span class="o">.</span><span class="n">add_circbox</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">xbox</span><span class="p">,</span> <span class="p">[</span><span class="n">flipped_qb</span><span class="p">])</span>
             <span class="c1"># Decompose boxes, add barriers to preserve circuit, add measures</span>
             <span class="n">DecomposeBoxes</span><span class="p">()</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">state_circuit</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">qb</span><span class="p">,</span> <span class="n">cb</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">all_qbs</span><span class="p">,</span> <span class="n">c_reg</span><span class="p">):</span>
@@ -763,7 +763,7 @@ document.write(`
             <span class="bp">self</span><span class="o">.</span><span class="n">subsets_matrix_map</span><span class="p">[</span><span class="n">qbs</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="n">dim</span><span class="p">,)</span> <span class="o">*</span> <span class="mi">2</span><span class="p">,</span> <span class="n">dtype</span><span class="o">=</span><span class="nb">float</span><span class="p">)</span>
             <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">qbs</span><span class="p">)):</span>
                 <span class="n">qb</span> <span class="o">=</span> <span class="n">qbs</span><span class="p">[</span><span class="n">i</span><span class="p">]</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">node_index_dict</span><span class="p">[</span><span class="n">qb</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">counter</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>  <span class="c1"># type:ignore[index]</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">node_index_dict</span><span class="p">[</span><span class="n">qb</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">counter</span><span class="p">,</span> <span class="n">i</span><span class="p">)</span>
             <span class="n">counter</span> <span class="o">+=</span> <span class="mi">1</span>
 
         <span class="k">for</span> <span class="n">result</span><span class="p">,</span> <span class="n">state_info</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="n">results_list</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">state_infos</span><span class="p">):</span>
@@ -771,7 +771,7 @@ document.write(`
             <span class="n">qb_bit_map</span> <span class="o">=</span> <span class="n">state_info</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">qb_sub</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">subsets_matrix_map</span><span class="p">:</span>
                 <span class="c1"># bits of counts to consider</span>
-                <span class="n">bits</span> <span class="o">=</span> <span class="p">[</span><span class="n">qb_bit_map</span><span class="p">[</span><span class="n">q</span><span class="p">]</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">qb_sub</span><span class="p">]</span>  <span class="c1"># type:ignore[index]</span>
+                <span class="n">bits</span> <span class="o">=</span> <span class="p">[</span><span class="n">qb_bit_map</span><span class="p">[</span><span class="n">q</span><span class="p">]</span> <span class="k">for</span> <span class="n">q</span> <span class="ow">in</span> <span class="n">qb_sub</span><span class="p">]</span>
                 <span class="n">counts_dict</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">get_counts</span><span class="p">(</span><span class="n">cbits</span><span class="o">=</span><span class="n">bits</span><span class="p">)</span>
                 <span class="k">for</span> <span class="n">measured_state</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">counts_dict</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                     <span class="c1"># intended state</span>
