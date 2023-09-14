@@ -1,6 +1,15 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Fixes:
+
+* Fix handling of scratch bits in pytket-to-QASM conversion when the source bit
+  for the scratch is overwritten before the scratch bit is used in a
+  conditional.
+
 1.20.0rc2 (September 2023)
 --------------------------
 
@@ -13,6 +22,7 @@ Fixes:
 --------------------------
 
 API changes:
+
 * barrier changed from MetaOp to be a BarrierOp
 
 Minor new features:
