@@ -786,6 +786,35 @@ def test_classical_assignment_order() -> None:
         assert posns[i] < posns[i + 1]
 
 
+def test_classical_assignment_order_1() -> None:
+    circ = Circuit(1)
+    reg_meas = circ.add_c_register("c0", 1)
+    reg_cond = circ.add_c_register("c1", 1)
+    reg_aux = circ.add_c_register("c2", 1)
+    circ.add_c_setreg(0, reg_cond)
+    circ.add_c_setreg(1, reg_aux)
+    circ.add_c_xor(reg_cond[0], reg_aux[0], reg_cond[0])
+    circ.X(0, condition=reg_eq(reg_cond, 1))
+    circ.add_c_xor(reg_cond[0], reg_aux[0], reg_cond[0])
+    circ.Measure(Qubit(0), reg_meas[0])
+    qasm = circuit_to_qasm_str(circ, header="hqslib1")
+    correct_qasm = """OPENQASM 2.0;
+include "hqslib1.inc";
+
+qreg q[1];
+creg c0[1];
+creg c1[1];
+creg c2[1];
+c1 = 0;
+c2 = 1;
+c1[0] = c2[0] ^ c1[0];
+if(c1==1) x q[0];
+c1[0] = c2[0] ^ c1[0];
+measure q[0] -> c0[0];
+"""
+    assert qasm == correct_qasm
+
+
 if __name__ == "__main__":
     test_qasm_correct()
     test_qasm_qubit()
