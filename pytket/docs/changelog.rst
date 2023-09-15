@@ -7,6 +7,8 @@ Unreleased
 Fixes:
 
 * Fix ``CliffordSimp`` slow runtime issue.
+* Correct implementation of ``free_symbols()`` and ``symbol_substitution()`` for
+  ``ConjugationBox``.
 
 1.20.0 (September 2023)
 -----------------------

@@ -14,6 +14,10 @@
 
 #include "tket/Circuit/ConjugationBox.hpp"
 
+#include <memory>
+#include <optional>
+
+#include "Utils/Expression.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Ops/OpJsonFactory.hpp"
 #include "tket/Utils/HelperFunctions.hpp"
@@ -87,6 +91,35 @@ void ConjugationBox::generate_circuit() const {
     circ.add_op<unsigned>(compute_->dagger(), args);
   }
   circ_ = std::make_shared<Circuit>(circ);
+}
+
+Op_ptr ConjugationBox::symbol_substitution(
+    const SymEngine::map_basic_basic &sub_map) const {
+  if (uncompute_.has_value()) {
+    return std::make_shared<ConjugationBox>(
+        compute_->symbol_substitution(sub_map),
+        action_->symbol_substitution(sub_map),
+        uncompute_.value()->symbol_substitution(sub_map));
+  } else {
+    return std::make_shared<ConjugationBox>(
+        compute_->symbol_substitution(sub_map),
+        action_->symbol_substitution(sub_map));
+  }
+}
+
+SymSet ConjugationBox::free_symbols() const {
+  SymSet compute_syms = compute_->free_symbols();
+  SymSet action_syms = action_->free_symbols();
+  SymSet uncompute_syms;
+  if (uncompute_.has_value()) {
+    SymSet s = uncompute_.value()->free_symbols();
+    uncompute_syms.insert(s.begin(), s.end());
+  }
+  SymSet sym_set;
+  sym_set.insert(compute_syms.begin(), compute_syms.end());
+  sym_set.insert(action_syms.begin(), action_syms.end());
+  sym_set.insert(uncompute_syms.begin(), uncompute_syms.end());
+  return sym_set;
 }
 
 bool ConjugationBox::is_equal(const Op &op_other) const {
