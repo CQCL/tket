@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Fixes:
+
+* Fix ``CliffordSimp`` slow runtime issue.
+
 1.20.0 (September 2023)
 -----------------------
 
