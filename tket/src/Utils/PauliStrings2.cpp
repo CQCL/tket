@@ -230,8 +230,14 @@ int compare_containers<DensePauliMap>(
   DensePauliMap::const_iterator p1_it = first.begin();
   DensePauliMap::const_iterator p2_it = second.begin();
   while (p1_it != first.end() && p2_it != second.end()) {
-    if (*p1_it < *p2_it) return -1;
-    if (*p1_it > *p2_it) return 1;
+    if (*p1_it == Pauli::I) {
+      if (*p2_it != Pauli::I) return -1;
+    } else if (*p2_it == Pauli::I)
+      return 1;
+    else if (*p1_it < *p2_it)
+      return -1;
+    else if (*p1_it > *p2_it)
+      return 1;
     ++p1_it;
     ++p2_it;
   }

@@ -263,11 +263,6 @@ class PauliTensor {
   PauliTensor(const CoeffType &_coeff = default_coeff)
       : string(), coeff(_coeff) {}
 
-  PauliTensor(const std::initializer_list<Pauli> &paulis);
-
-  PauliTensor(
-      const std::list<Pauli> &paulis, const CoeffType &_coeff = default_coeff);
-
   PauliTensor(
       const PauliContainer &_string, const CoeffType &_coeff = default_coeff)
       : string(_string), coeff(_coeff) {}
@@ -287,9 +282,10 @@ class PauliTensor {
   }
 
   int compare(const PauliTensor<PauliContainer, CoeffType> &other) const {
-    int coeff_comp = compare_coeffs<CoeffType>(this->coeff, other.coeff);
-    if (coeff_comp != 0) return coeff_comp;
-    return compare_containers<PauliContainer>(this->string, other.string);
+    int cont_comp =
+        compare_containers<PauliContainer>(this->string, other.string);
+    if (cont_comp != 0) return cont_comp;
+    return compare_coeffs<CoeffType>(this->coeff, other.coeff);
   }
 
   bool operator==(const PauliTensor<PauliContainer, CoeffType> &other) const {
@@ -457,8 +453,8 @@ typedef PauliTensor<QubitPauliMap, no_coeff_t> SpPauliString;
 typedef PauliTensor<DensePauliMap, no_coeff_t> PauliString;
 typedef PauliTensor<QubitPauliMap, quarter_turns_t> SpPauliStabiliser;
 typedef PauliTensor<DensePauliMap, quarter_turns_t> PauliStabiliser;
-typedef PauliTensor<QubitPauliMap, Complex> SpPauliTensor;
-// typedef PauliTensor<DensePauliMap, Complex> PauliTensor;
+typedef PauliTensor<QubitPauliMap, Complex> SpCxPauliTensor;
+typedef PauliTensor<DensePauliMap, Complex> CxPauliTensor;
 typedef PauliTensor<QubitPauliMap, Expr> SpSymPauliTensor;
 typedef PauliTensor<DensePauliMap, Expr> SymPauliTensor;
 
