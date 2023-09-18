@@ -92,6 +92,10 @@ jobs:
       run: |
         conan profile detect
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
+    - name: Fix conan profile for clang toolchain
+      run: |
+        PROFILE_PATH=`conan profile path default`
+        sed -i -e 's/gnu98/gnu17/' ${PROFILE_PATH}
     - name: Build tket C++
       run: conan create tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
     - name: Build wheel
@@ -128,6 +132,8 @@ jobs:
         pyenv shell tket-${{ matrix.python-version }}
         python -m pip install -U conan
         conan profile detect --force
+        PROFILE_PATH=`conan profile path default`
+        sed -i -e 's/gnu98/gnu17/' ${PROFILE_PATH}
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force --index 0
         conan remove -c 'tket/*'
         conan create tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
