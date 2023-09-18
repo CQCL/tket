@@ -805,11 +805,14 @@ qreg q[1];
 creg c0[1];
 creg c1[1];
 creg c2[1];
+creg tk_SCRATCH_BIT[1];
 c1 = 0;
 c2 = 1;
 c1[0] = c2[0] ^ c1[0];
-if(c1==1) x q[0];
+if(c1==1) tk_SCRATCH_BIT[0] = 1;
+if(c1!=1) tk_SCRATCH_BIT[0] = 0;
 c1[0] = c2[0] ^ c1[0];
+if(tk_SCRATCH_BIT[0]==1) x q[0];
 measure q[0] -> c0[0];
 """
     assert qasm == correct_qasm
