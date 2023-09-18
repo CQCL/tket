@@ -213,7 +213,10 @@ PYBIND11_MODULE(passes, m) {
           [](const BasePass &pass, CompilationUnit &cu,
              SafetyMode safety_mode) { return pass.apply(cu, safety_mode); },
           "Apply to a :py:class:`CompilationUnit`.\n\n"
-          ":return: True if pass modified the circuit, else False",
+          ":return: True if the pass modified the circuit. Note that in some "
+          "cases the method may return True even when the circuit is "
+          "unmodified (but a return value of False definitely implies no "
+          "modification).",
           py::arg("compilation_unit"),
           py::arg("safety_mode") = SafetyMode::Default)
       .def(
@@ -285,7 +288,8 @@ PYBIND11_MODULE(passes, m) {
           "get_sequence", &SequencePass::get_sequence,
           ":return: The underlying sequence of passes.");
   py::class_<RepeatPass, std::shared_ptr<RepeatPass>, BasePass>(
-      m, "RepeatPass", "Repeat a pass until it has no effect.")
+      m, "RepeatPass",
+      "Repeat a pass until its `apply()` method returns False.")
       .def(
           py::init<const PassPtr &>(), "Construct from a compilation pass.",
           py::arg("compilation_pass"))
