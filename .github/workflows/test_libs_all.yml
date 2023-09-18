@@ -23,6 +23,11 @@ jobs:
       uses: turtlebrowser/get-conan@v1.2
     - name: create profile
       run: conan profile detect
+    - name: Fix conan profile for clang toolchain
+      if: matrix.os == 'macos-12'
+      run: |
+        PROFILE_PATH=`conan profile path default`
+        sed -i -e 's/gnu98/gnu17/' ${PROFILE_PATH}
     - name: add remote
       run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
     - name: build ${{ matrix.lib }}
@@ -48,6 +53,10 @@ jobs:
     - name: create profile
       shell: bash
       run: conan profile detect --force
+    - name: Fix conan profile for clang toolchain
+      run: |
+        PROFILE_PATH=`conan profile path default`
+        sed -i -e 's/gnu98/gnu17/' ${PROFILE_PATH}
     - name: add remote
       run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force --index 0
     - name: build ${{ matrix.lib }}
