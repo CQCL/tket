@@ -545,8 +545,7 @@ PYBIND11_MODULE(circuit, m) {
       .def(
           "get_unitary",
           [](const Op *op) {
-            const auto &gate = dynamic_cast<const Gate &>(*op);
-            return gate.get_unitary();
+            return op->get_unitary();
           })
       .def(
           "is_clifford_type",
