@@ -619,8 +619,6 @@ def test_boxes() -> None:
             command.op.get_unitary()
 
 
-
-
 def test_tofollibox_strats() -> None:
     permutation = [
         ([_0, _0, _0, _0], [_1, _1, _1, _1]),
