@@ -6,6 +6,7 @@ Unreleased
 
 Fixes:
 
+* Fix ``Op.get_unitary()`` runtime error for non gate ``Op``s.
 * Fix ``CliffordSimp`` slow runtime issue.
 * Correct implementation of ``free_symbols()`` and ``symbol_substitution()`` for
   ``ConjugationBox``.

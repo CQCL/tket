@@ -613,6 +613,12 @@ def test_boxes() -> None:
     d.add_conjugation_box(conj_box2, [Qubit(0), Qubit(1), Qubit(2)])
     assert d.n_gates == 25
     assert json_validate(d)
+    # test op.get_unitary doesn't throw
+    for command in d.get_commands():
+        if len(command.op.free_symbols()) == 0:
+            command.op.get_unitary()
+
+
 
 
 def test_tofollibox_strats() -> None:
