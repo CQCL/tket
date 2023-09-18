@@ -2,8 +2,8 @@ from typing import cast
 
 import numpy as np
 
-from pytket.circuit import Circuit, Qubit, PhasePolyBox  # type: ignore
-from pytket.passes import ComposePhasePolyBoxes, DecomposeBoxes  # type: ignore
+from pytket.circuit import Circuit, Qubit, PhasePolyBox
+from pytket.passes import ComposePhasePolyBoxes, DecomposeBoxes
 from pytket.utils import compare_unitaries
 from useful_typedefs import ParamType  # type: ignore
 
