@@ -108,5 +108,124 @@ SCENARIO("Testing equality of dense PauliTensor variants") {
   }
 }
 
+SCENARIO("Testing multiplication of sparse PauliTensor") {
+  Qubit q0 = Qubit("q", 0);
+  Qubit q1 = Qubit("q", 1);
+  Qubit q2 = Qubit("r", 0);
+  Qubit q3 = Qubit("s");
+  Qubit q4 = Qubit("t", 0, 1);
+  GIVEN("Two Pauli strings with disjoint non-trivial components") {
+    SpPauliString a(q0, Pauli::X);
+    SpPauliString b(q1, Pauli::Y);
+    SpPauliString c({{q0, Pauli::X}, {q1, Pauli::Y}});
+    REQUIRE((a * b) == c);
+  }
+  GIVEN("Multiplying by a trivial Pauli string") {
+    SpCxPauliTensor a(q0, Pauli::X, 2.);
+    SpCxPauliTensor b(q0, Pauli::X, 3. * i_);
+    REQUIRE((a * SpCxPauliTensor({}, 1.5 * i_)) == b);
+  }
+  GIVEN("Two exactly identical Pauli strings") {
+    QubitPauliMap map = {
+        {q0, Pauli::I}, {q1, Pauli::X}, {q2, Pauli::Y}, {q3, Pauli::Z}};
+    SpPauliStabiliser a(map, 3);
+    SpPauliStabiliser b({}, 2);
+    REQUIRE((a * a) == b);
+  }
+  GIVEN("Each individual Pauli combination") {
+    SpPauliStabiliser I(q0, Pauli::I);
+    SpPauliStabiliser X(q0, Pauli::X);
+    SpPauliStabiliser Y(q0, Pauli::Y);
+    SpPauliStabiliser Z(q0, Pauli::Z);
+    SpPauliStabiliser i({}, 1);
+    SpPauliStabiliser mi({}, 3);
+    REQUIRE((I * I) == I);
+    REQUIRE((I * X) == X);
+    REQUIRE((I * Y) == Y);
+    REQUIRE((I * Z) == Z);
+    REQUIRE((X * I) == X);
+    REQUIRE((X * X) == I);
+    REQUIRE((X * Y) == (i * Z));
+    REQUIRE((X * Z) == (mi * Y));
+    REQUIRE((Y * I) == Y);
+    REQUIRE((Y * X) == (mi * Z));
+    REQUIRE((Y * Y) == I);
+    REQUIRE((Y * Z) == (i * X));
+    REQUIRE((Z * I) == Z);
+    REQUIRE((Z * X) == (i * Y));
+    REQUIRE((Z * Y) == (mi * X));
+    REQUIRE((Z * Z) == I);
+  }
+  GIVEN("2*IXYZ(I) * -1.5i*XIZ(I)Y") {
+    QubitPauliMap tensor_a(
+        {{q0, Pauli::I}, {q1, Pauli::X}, {q2, Pauli::Y}, {q3, Pauli::Z}});
+    QubitPauliMap tensor_b(
+        {{q0, Pauli::X}, {q1, Pauli::I}, {q2, Pauli::Z}, {q4, Pauli::Y}});
+    SpCxPauliTensor a(tensor_a, 2.);
+    SpCxPauliTensor b(tensor_b, -1.5 * i_);
+    QubitPauliMap tensor_c(
+        {{q0, Pauli::X},
+         {q1, Pauli::X},
+         {q2, Pauli::X},
+         {q3, Pauli::Z},
+         {q4, Pauli::Y}});
+    SpCxPauliTensor c(tensor_c, 3.);
+    REQUIRE((a * b) == c);
+  }
+}
+
+SCENARIO("Testing multiplication of dense PauliTensor") {
+  GIVEN("Two Pauli strings with disjoint non-trivial components") {
+    PauliString a({Pauli::X});
+    PauliString b({Pauli::I, Pauli::Y});
+    PauliString c({Pauli::X, Pauli::Y});
+    REQUIRE((a * b) == c);
+  }
+  GIVEN("Multiplying by a trivial Pauli string") {
+    CxPauliTensor a({Pauli::X}, 2.);
+    CxPauliTensor b({Pauli::X}, 3. * i_);
+    REQUIRE((a * CxPauliTensor({}, 1.5 * i_)) == b);
+  }
+  GIVEN("Two exactly identical Pauli strings") {
+    DensePauliMap map = {Pauli::I, Pauli::X, Pauli::Y, Pauli::Z};
+    PauliStabiliser a(map, 3);
+    PauliStabiliser b({}, 2);
+    REQUIRE((a * a) == b);
+  }
+  GIVEN("Each individual Pauli combination") {
+    PauliStabiliser I({Pauli::I});
+    PauliStabiliser X({Pauli::X});
+    PauliStabiliser Y({Pauli::Y});
+    PauliStabiliser Z({Pauli::Z});
+    PauliStabiliser i({}, 1);
+    PauliStabiliser mi({}, 3);
+    REQUIRE((I * I) == I);
+    REQUIRE((I * X) == X);
+    REQUIRE((I * Y) == Y);
+    REQUIRE((I * Z) == Z);
+    REQUIRE((X * I) == X);
+    REQUIRE((X * X) == I);
+    REQUIRE((X * Y) == (i * Z));
+    REQUIRE((X * Z) == (mi * Y));
+    REQUIRE((Y * I) == Y);
+    REQUIRE((Y * X) == (mi * Z));
+    REQUIRE((Y * Y) == I);
+    REQUIRE((Y * Z) == (i * X));
+    REQUIRE((Z * I) == Z);
+    REQUIRE((Z * X) == (i * Y));
+    REQUIRE((Z * Y) == (mi * X));
+    REQUIRE((Z * Z) == I);
+  }
+  GIVEN("2*IXYZ(I) * -1.5i*XIZ(I)Y") {
+    DensePauliMap tensor_a({Pauli::I, Pauli::X, Pauli::Y, Pauli::Z});
+    DensePauliMap tensor_b({Pauli::X, Pauli::I, Pauli::Z, Pauli::I, Pauli::Y});
+    CxPauliTensor a(tensor_a, 2.);
+    CxPauliTensor b(tensor_b, -1.5 * i_);
+    DensePauliMap tensor_c({Pauli::X, Pauli::X, Pauli::X, Pauli::Z, Pauli::Y});
+    CxPauliTensor c(tensor_c, 3.);
+    REQUIRE((a * b) == c);
+  }
+}
+
 }  // namespace test_PauliString
 }  // namespace tket

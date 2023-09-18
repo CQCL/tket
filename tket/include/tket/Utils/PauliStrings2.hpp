@@ -260,8 +260,7 @@ class PauliTensor {
   PauliContainer string;
   CoeffType coeff;
 
-  PauliTensor(const CoeffType &_coeff = default_coeff)
-      : string(), coeff(_coeff) {}
+  PauliTensor() : string(), coeff(default_coeff) {}
 
   PauliTensor(
       const PauliContainer &_string, const CoeffType &_coeff = default_coeff)
