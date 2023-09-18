@@ -109,6 +109,11 @@ jobs:
       run: |
         conan profile detect
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
+    - name: Fix conan profile for clang toolchain
+      if: matrix.os == 'macos-12'
+      run: |
+        PROFILE_PATH=`conan profile path default`
+        sed -i -e 's/gnu98/gnu17/' ${PROFILE_PATH}
     - name: Install runtime test requirements
       if: matrix.os == 'ubuntu-22.04' && github.event_name == 'schedule'
       run: |
@@ -219,6 +224,10 @@ jobs:
         conan profile detect --force
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force --index 0
         conan cache clean
+    - name: Fix conan profile for clang toolchain
+      run: |
+        PROFILE_PATH=`conan profile path default`
+        sed -i -e 's/gnu98/gnu17/' ${PROFILE_PATH}
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
@@ -371,6 +380,11 @@ jobs:
       run: |
         conan profile detect
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
+    - name: Fix conan profile for clang toolchain
+      if: matrix.os == 'macos-12'
+      run: |
+        PROFILE_PATH=`conan profile path default`
+        sed -i -e 's/gnu98/gnu17/' ${PROFILE_PATH}
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
@@ -527,6 +541,10 @@ jobs:
       run: |
         conan profile detect --force
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force --index 0
+    - name: Fix conan profile for clang toolchain
+      run: |
+        PROFILE_PATH=`conan profile path default`
+        sed -i -e 's/gnu98/gnu17/' ${PROFILE_PATH}
     - name: Remove tket package from cache
       run: conan remove -c 'tket/*'
     - name: ccache
