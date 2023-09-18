@@ -381,7 +381,6 @@ jobs:
         conan profile detect
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
     - name: Fix conan profile for clang toolchain
-      if: matrix.os == 'macos-12'
       run: |
         PROFILE_PATH=`conan profile path default`
         sed -i -e 's/gnu98/gnu17/' ${PROFILE_PATH}
