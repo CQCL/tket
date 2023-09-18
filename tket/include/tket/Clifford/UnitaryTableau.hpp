@@ -78,17 +78,17 @@ class UnitaryTableau {
   /**
    * Read off an X row as a Pauli string
    */
-  QubitPauliTensor get_xrow(const Qubit& qb) const;
+  SpPauliStabiliser get_xrow(const Qubit& qb) const;
 
   /**
    * Read off a Z row as a Pauli string
    */
-  QubitPauliTensor get_zrow(const Qubit& qb) const;
+  SpPauliStabiliser get_zrow(const Qubit& qb) const;
 
   /**
-   * Combine rows into a single row according to a QubitPauliTensor
+   * Combine rows into a single row according to a SpPauliStabiliser
    */
-  QubitPauliTensor get_row_product(const QubitPauliTensor& qpt) const;
+  SpPauliStabiliser get_row_product(const SpPauliStabiliser& qpt) const;
 
   /**
    * Access all IDs for the qubits used in the tableau.
@@ -116,8 +116,8 @@ class UnitaryTableau {
    * @param half_pis The Clifford angle: {0, 1, 2, 3} represents {0, pi/2, pi,
    * -pi/2}
    */
-  void apply_pauli_at_front(const QubitPauliTensor& pauli, unsigned half_pis);
-  void apply_pauli_at_end(const QubitPauliTensor& pauli, unsigned half_pis);
+  void apply_pauli_at_front(const SpPauliStabiliser& pauli, unsigned half_pis);
+  void apply_pauli_at_end(const SpPauliStabiliser& pauli, unsigned half_pis);
 
   /**
    * Combine two tableaux in sequence.
@@ -213,17 +213,17 @@ class UnitaryRevTableau {
   /**
    * Read off an X row as a Pauli string
    */
-  QubitPauliTensor get_xrow(const Qubit& qb) const;
+  SpPauliStabiliser get_xrow(const Qubit& qb) const;
 
   /**
    * Read off a Z row as a Pauli string
    */
-  QubitPauliTensor get_zrow(const Qubit& qb) const;
+  SpPauliStabiliser get_zrow(const Qubit& qb) const;
 
   /**
-   * Combine rows into a single row according to a QubitPauliTensor
+   * Combine rows into a single row according to a SpPauliStabiliser
    */
-  QubitPauliTensor get_row_product(const QubitPauliTensor& qpt) const;
+  SpPauliStabiliser get_row_product(const SpPauliStabiliser& qpt) const;
 
   /**
    * Access all IDs for the qubits used in the tableau.
@@ -251,8 +251,8 @@ class UnitaryRevTableau {
    * @param half_pis The Clifford angle: {0, 1, 2, 3} represents {0, pi/2, pi,
    * -pi/2}
    */
-  void apply_pauli_at_front(const QubitPauliTensor& pauli, unsigned half_pis);
-  void apply_pauli_at_end(const QubitPauliTensor& pauli, unsigned half_pis);
+  void apply_pauli_at_front(const SpPauliStabiliser& pauli, unsigned half_pis);
+  void apply_pauli_at_end(const SpPauliStabiliser& pauli, unsigned half_pis);
 
   /**
    * Combine two tableaux in sequence.

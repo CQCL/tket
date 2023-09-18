@@ -43,7 +43,7 @@ class ChoiMixTableau {
    * Each row is divided into its input segment and output segment. Under the CJ
    * isomorphism, a row RxS means (in matrix multiplication order) SCR^T = C.
    * When mapped to a sparse readable representation, independent
-   * QubitPauliTensor objects are used for each segment, so we no longer expect
+   * SpPauliStabiliser objects are used for each segment, so we no longer expect
    * their individual phases to be +-1, instead only requiring this on their
    * product.
    *
@@ -56,7 +56,7 @@ class ChoiMixTableau {
   enum class TableauSegment { Input, Output };
   typedef std::pair<Qubit, TableauSegment> col_key_t;
   typedef boost::bimap<col_key_t, unsigned> tableau_col_index_t;
-  typedef std::pair<QubitPauliTensor, QubitPauliTensor> row_tensor_t;
+  typedef std::pair<SpPauliStabiliser, SpPauliStabiliser> row_tensor_t;
 
   /**
    * The actual binary tableau.
@@ -91,7 +91,7 @@ class ChoiMixTableau {
       unsigned n_ins = 0);
   /**
    * Construct a tableau directly from its rows.
-   * Each row is represented as a product of QubitPauliTensors where the first
+   * Each row is represented as a product of SpPauliStabilisers where the first
    * is over the input qubits and the second is over the outputs.
    */
   explicit ChoiMixTableau(const std::list<row_tensor_t>& rows);
@@ -162,7 +162,7 @@ class ChoiMixTableau {
    * @param seg Whether to apply the Pauli gadget over the inputs or outputs
    */
   void apply_pauli(
-      const QubitPauliTensor& pauli, unsigned half_pis,
+      const SpPauliStabiliser& pauli, unsigned half_pis,
       TableauSegment seg = TableauSegment::Output);
 
   /**

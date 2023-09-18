@@ -32,9 +32,10 @@
 #include "tket/OpType/OpTypeFunctions.hpp"
 #include "tket/OpType/OpTypeInfo.hpp"
 #include "tket/Utils/Constants.hpp"
+#include "tket/Utils/EigenConfig.hpp"
 #include "tket/Utils/Expression.hpp"
 #include "tket/Utils/Json.hpp"
-#include "tket/Utils/PauliStrings.hpp"
+#include "tket/Utils/PauliStrings2.hpp"
 #include "tket/Utils/UnitID.hpp"
 
 namespace tket {

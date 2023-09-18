@@ -81,40 +81,34 @@ UnitaryTableau::UnitaryTableau(
 
 UnitaryTableau::UnitaryTableau() : UnitaryTableau(0) {}
 
-QubitPauliTensor UnitaryTableau::get_xrow(const Qubit& qb) const {
+SpPauliStabiliser UnitaryTableau::get_xrow(const Qubit& qb) const {
   unsigned uq = qubits_.left.at(qb);
   PauliStabiliser stab = tab_.get_pauli(uq);
-  std::list<Qubit> qbs;
+  QubitPauliMap qpm;
   for (unsigned i = 0; i < qubits_.size(); ++i) {
-    qbs.push_back(qubits_.right.at(i));
+    qpm.insert({qubits_.right.at(i), stab.get(i)});
   }
-  std::list<Pauli> string = {stab.string.begin(), stab.string.end()};
-  Complex coeff = 1.;
-  if (!stab.coeff) coeff *= -1.;
-  return QubitPauliTensor(QubitPauliString(qbs, string), coeff);
+  return SpPauliStabiliser(qpm, stab.coeff);
 }
 
-QubitPauliTensor UnitaryTableau::get_zrow(const Qubit& qb) const {
+SpPauliStabiliser UnitaryTableau::get_zrow(const Qubit& qb) const {
   unsigned uqb = qubits_.left.at(qb);
   PauliStabiliser stab = tab_.get_pauli(uqb + qubits_.size());
-  std::list<Qubit> qbs;
+  QubitPauliMap qpm;
   for (unsigned i = 0; i < qubits_.size(); ++i) {
-    qbs.push_back(qubits_.right.at(i));
+    qpm.insert({qubits_.right.at(i), stab.get(i)});
   }
-  std::list<Pauli> string = {stab.string.begin(), stab.string.end()};
-  Complex coeff = 1.;
-  if (!stab.coeff) coeff *= -1.;
-  return QubitPauliTensor(QubitPauliString(qbs, string), coeff);
+  return SpPauliStabiliser(qpm, stab.coeff);
 }
 
-QubitPauliTensor UnitaryTableau::get_row_product(
-    const QubitPauliTensor& qpt) const {
-  QubitPauliTensor result(qpt.coeff);
-  for (const std::pair<const Qubit, Pauli>& p : qpt.string.map) {
+SpPauliStabiliser UnitaryTableau::get_row_product(
+    const SpPauliStabiliser& qpt) const {
+  SpPauliStabiliser result({}, qpt.coeff);
+  for (const std::pair<const Qubit, Pauli>& p : qpt.string) {
     auto qks_it = qubits_.left.find(p.first);
     if (qks_it == qubits_.left.end()) {
       // Acts as identity on p.first
-      result = result * QubitPauliTensor(p.first, p.second);
+      result = result * SpPauliStabiliser(p.first, p.second);
     } else {
       switch (p.second) {
         case Pauli::I: {
@@ -128,7 +122,7 @@ QubitPauliTensor UnitaryTableau::get_row_product(
           // Y = iXZ
           result = result * get_xrow(p.first);
           result = result * get_zrow(p.first);
-          result.coeff *= i_;
+          result.coeff += 1;
           break;
         }
         case Pauli::Z: {
@@ -284,22 +278,18 @@ void UnitaryTableau::apply_gate_at_end(OpType type, const qubit_vector_t& qbs) {
 }
 
 void UnitaryTableau::apply_pauli_at_front(
-    const QubitPauliTensor& pauli, unsigned half_pis) {
+    const SpPauliStabiliser& pauli, unsigned half_pis) {
   return apply_pauli_at_end(get_row_product(pauli), half_pis);
 }
 
 void UnitaryTableau::apply_pauli_at_end(
-    const QubitPauliTensor& pauli, unsigned half_pis) {
+    const SpPauliStabiliser& pauli, unsigned half_pis) {
   std::vector<Pauli> string(qubits_.size(), Pauli::I);
-  for (const std::pair<const Qubit, Pauli>& pair : pauli.string.map) {
+  for (const std::pair<const Qubit, Pauli>& pair : pauli.string) {
     unsigned uqb = qubits_.left.at(pair.first);
     string.at(uqb) = pair.second;
   }
-  if (pauli.coeff != 1. && pauli.coeff != -1.)
-    throw std::domain_error(
-        "Can only apply Pauli gadgets with real unit coefficients to "
-        "UnitaryTableaux");
-  tab_.apply_pauli_gadget({string, pauli.coeff == 1.}, half_pis);
+  tab_.apply_pauli_gadget(PauliStabiliser(string, pauli.coeff), half_pis);
 }
 
 UnitaryTableau UnitaryTableau::compose(
@@ -311,7 +301,7 @@ UnitaryTableau UnitaryTableau::compose(
   UnitaryTableau result = UnitaryTableau({});
   const unsigned nqb = qbs.size();
 
-  std::vector<QubitPauliTensor> rows;
+  std::vector<SpPauliStabiliser> rows;
 
   unsigned qir = 0;
   for (const Qubit& qi : qbs) {
@@ -321,8 +311,8 @@ UnitaryTableau UnitaryTableau::compose(
       rows.push_back(second.get_xrow(qi));
     } else {
       // Sum rows of second according to entries of first
-      QubitPauliTensor fxrow = first.get_xrow(qi);
-      QubitPauliTensor rxrow = second.get_row_product(fxrow);
+      SpPauliStabiliser fxrow = first.get_xrow(qi);
+      SpPauliStabiliser rxrow = second.get_row_product(fxrow);
       rows.push_back(rxrow);
     }
 
@@ -338,22 +328,21 @@ UnitaryTableau UnitaryTableau::compose(
       rows.push_back(second.get_zrow(qi));
     } else {
       // Sum rows of second according to entries of first
-      QubitPauliTensor fzrow = first.get_zrow(qi);
-      QubitPauliTensor rzrow = second.get_row_product(fzrow);
+      SpPauliStabiliser fzrow = first.get_zrow(qi);
+      SpPauliStabiliser rzrow = second.get_row_product(fzrow);
       rows.push_back(rzrow);
     }
   }
 
   // Combine row lists and convert to PauliStabilisers
-  PauliStabiliserList all_rows;
-  for (const QubitPauliTensor& row : rows) {
-    TKET_ASSERT(row.coeff == 1. || row.coeff == -1.);
+  PauliStabiliserVec all_rows;
+  for (const SpPauliStabiliser& row : rows) {
     std::vector<Pauli> ps(nqb, Pauli::I);
-    for (const std::pair<const Qubit, Pauli>& p : row.string.map) {
+    for (const std::pair<const Qubit, Pauli>& p : row.string) {
       unsigned q = result.qubits_.left.at(p.first);
       ps[q] = p.second;
     }
-    all_rows.push_back(PauliStabiliser(ps, row.coeff == 1.));
+    all_rows.push_back(PauliStabiliser(ps, row.coeff));
   }
 
   result.tab_ = SymplecticTableau(all_rows);
@@ -409,10 +398,10 @@ UnitaryTableau UnitaryTableau::dagger() const {
 
   // Correct phases
   for (unsigned i = 0; i < nqb; ++i) {
-    QubitPauliTensor xr = dag.get_xrow(qubits_.right.at(i));
-    dag.tab_.phase_(i) = get_row_product(xr).coeff == -1.;
-    QubitPauliTensor zr = dag.get_zrow(qubits_.right.at(i));
-    dag.tab_.phase_(i + nqb) = get_row_product(zr).coeff == -1.;
+    SpPauliStabiliser xr = dag.get_xrow(qubits_.right.at(i));
+    dag.tab_.phase_(i) = (get_row_product(xr).coeff % 4 == 2);
+    SpPauliStabiliser zr = dag.get_zrow(qubits_.right.at(i));
+    dag.tab_.phase_(i + nqb) = (get_row_product(zr).coeff % 4 == 2);
   }
 
   return dag;
@@ -510,16 +499,16 @@ UnitaryRevTableau::UnitaryRevTableau(const qubit_vector_t& qbs) : tab_(qbs) {}
 
 UnitaryRevTableau::UnitaryRevTableau() : tab_() {}
 
-QubitPauliTensor UnitaryRevTableau::get_xrow(const Qubit& qb) const {
+SpPauliStabiliser UnitaryRevTableau::get_xrow(const Qubit& qb) const {
   return tab_.get_xrow(qb);
 }
 
-QubitPauliTensor UnitaryRevTableau::get_zrow(const Qubit& qb) const {
+SpPauliStabiliser UnitaryRevTableau::get_zrow(const Qubit& qb) const {
   return tab_.get_zrow(qb);
 }
 
-QubitPauliTensor UnitaryRevTableau::get_row_product(
-    const QubitPauliTensor& qpt) const {
+SpPauliStabiliser UnitaryRevTableau::get_row_product(
+    const SpPauliStabiliser& qpt) const {
   return tab_.get_row_product(qpt);
 }
 
@@ -528,19 +517,19 @@ std::set<Qubit> UnitaryRevTableau::get_qubits() const {
 }
 
 void UnitaryRevTableau::apply_S_at_front(const Qubit& qb) {
-  tab_.apply_pauli_at_end(QubitPauliTensor(qb, Pauli::Z), 3);
+  tab_.apply_pauli_at_end(SpPauliStabiliser(qb, Pauli::Z), 3);
 }
 
 void UnitaryRevTableau::apply_S_at_end(const Qubit& qb) {
-  tab_.apply_pauli_at_front(QubitPauliTensor(qb, Pauli::Z), 3);
+  tab_.apply_pauli_at_front(SpPauliStabiliser(qb, Pauli::Z), 3);
 }
 
 void UnitaryRevTableau::apply_V_at_front(const Qubit& qb) {
-  tab_.apply_pauli_at_end(QubitPauliTensor(qb, Pauli::X), 3);
+  tab_.apply_pauli_at_end(SpPauliStabiliser(qb, Pauli::X), 3);
 }
 
 void UnitaryRevTableau::apply_V_at_end(const Qubit& qb) {
-  tab_.apply_pauli_at_front(QubitPauliTensor(qb, Pauli::X), 3);
+  tab_.apply_pauli_at_front(SpPauliStabiliser(qb, Pauli::X), 3);
 }
 
 void UnitaryRevTableau::apply_CX_at_front(
@@ -566,12 +555,12 @@ void UnitaryRevTableau::apply_gate_at_end(
 }
 
 void UnitaryRevTableau::apply_pauli_at_front(
-    const QubitPauliTensor& pauli, unsigned half_pis) {
+    const SpPauliStabiliser& pauli, unsigned half_pis) {
   tab_.apply_pauli_at_end(pauli, 4 - (half_pis % 4));
 }
 
 void UnitaryRevTableau::apply_pauli_at_end(
-    const QubitPauliTensor& pauli, unsigned half_pis) {
+    const SpPauliStabiliser& pauli, unsigned half_pis) {
   tab_.apply_pauli_at_front(pauli, 4 - (half_pis % 4));
 }
 

@@ -32,6 +32,13 @@ NLOHMANN_JSON_SERIALIZE_ENUM(
                {Pauli::Z, "Z"},
            });
 
+/**
+ * Whenever a decomposition choice of Pauli gadgets is presented,
+ * users may use either Snake (a.k.a. cascade, ladder), Tree (i.e. CX
+ * balanced tree) or Star (i.e. CXs target a common qubit).
+ */
+enum class CXConfigType { Snake, Tree, Star, MultiQGate };
+
 typedef std::map<Qubit, Pauli> QubitPauliMap;
 typedef std::vector<Pauli> DensePauliMap;
 
@@ -363,16 +370,18 @@ class PauliTensor {
     return conflicting_indices(string, other.string);
   }
 
-  std::enable_if<std::is_same<PauliContainer, QubitPauliMap>::value, Pauli> get(
-      const Qubit &qb) const {
+  template <typename PC = PauliContainer>
+  typename std::enable_if<std::is_same<PC, QubitPauliMap>::value, Pauli>::type
+  get(const Qubit &qb) const {
     QubitPauliMap::const_iterator i = string.find(qb);
     if (i == string.end())
       return Pauli::I;
     else
       return i->second;
   }
-  std::enable_if<std::is_same<PauliContainer, DensePauliMap>::value, Pauli> get(
-      unsigned qb) const {
+  template <typename PC = PauliContainer>
+  typename std::enable_if<std::is_same<PC, DensePauliMap>::value, Pauli>::type
+  get(unsigned qb) const {
     if (qb >= string.size())
       return Pauli::I;
     else
@@ -428,6 +437,21 @@ class PauliTensor {
         new_coeff, cast_coeff<quarter_turns_t, CoeffType>(prod.first));
     return PauliTensor<PauliContainer, CoeffType>(prod.second, new_coeff);
   }
+
+  template <typename CT = CoeffType>
+  typename std::enable_if<std::is_same<CT, Expr>::value, SymSet>::type
+  free_symbols() const {
+    return expr_free_symbols(coeff);
+  }
+  template <typename CT = CoeffType>
+  typename std::enable_if<
+      std::is_same<CT, Expr>::value,
+      PauliTensor<PauliContainer, CoeffType>>::type
+  symbol_substitution(const SymEngine::map_basic_basic &sub_map) const {
+    return PauliTensor<PauliContainer, CoeffType>(string, coeff.subs(sub_map));
+  }
+
+  unsigned size() const { return string.size(); }
 };
 
 template <typename PauliContainer, typename CoeffType>
@@ -456,5 +480,7 @@ typedef PauliTensor<QubitPauliMap, Complex> SpCxPauliTensor;
 typedef PauliTensor<DensePauliMap, Complex> CxPauliTensor;
 typedef PauliTensor<QubitPauliMap, Expr> SpSymPauliTensor;
 typedef PauliTensor<DensePauliMap, Expr> SymPauliTensor;
+
+typedef std::vector<PauliStabiliser> PauliStabiliserVec;
 
 }  // namespace tket
