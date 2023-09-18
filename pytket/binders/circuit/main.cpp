@@ -542,12 +542,7 @@ PYBIND11_MODULE(circuit, m) {
       .def("__hash__", &deletedHash<Op>, deletedHashDocstring)
       .def("__repr__", [](const Op &op) { return op.get_name(); })
       .def("free_symbols", [](const Op &op) { return op.free_symbols(); })
-      .def(
-          "get_unitary",
-          [](const Op *op) {
-            const auto &gate = dynamic_cast<const Gate &>(*op);
-            return gate.get_unitary();
-          })
+      .def("get_unitary", [](const Op *op) { return op->get_unitary(); })
       .def(
           "is_clifford_type",
           [](const Op &op) { return op.get_desc().is_clifford_gate(); },
