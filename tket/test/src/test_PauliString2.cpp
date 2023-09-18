@@ -227,5 +227,93 @@ SCENARIO("Testing multiplication of dense PauliTensor") {
   }
 }
 
+SCENARIO("Test hashing for sparse PauliTensor") {
+  GIVEN("Trivial strings") {
+    SpPauliString qps1;
+    SpPauliString qps2;
+    REQUIRE(qps1.hash_value() == qps2.hash_value());
+    WHEN("Add I Pauli") {
+      qps1.set(Qubit(0), Pauli::I);
+      REQUIRE(qps1.hash_value() == qps2.hash_value());
+    }
+  }
+  GIVEN("Nontrivial strings") {
+    QubitPauliMap qpm{
+        {Qubit(0), Pauli::Z},
+        {Qubit(1), Pauli::Y},
+        {Qubit(2), Pauli::X},
+        {Qubit(3), Pauli::I}};
+    SpPauliString qps1(qpm);
+    SpPauliString qps2(qpm);
+    qps1.set(Qubit(4), Pauli::X);
+    qps2.set(Qubit(4), Pauli::X);
+    qps2.set(Qubit(5), Pauli::I);
+    REQUIRE(qps1.hash_value() == qps2.hash_value());
+  }
+  GIVEN("Trivial tensor") {
+    SpCxPauliTensor qpt1;
+    SpCxPauliTensor qpt2;
+    REQUIRE(qpt1.hash_value() == qpt2.hash_value());
+    WHEN("Add I Pauli") {
+      qpt1.set(Qubit(0), Pauli::I);
+      REQUIRE(qpt1.hash_value() == qpt2.hash_value());
+    }
+  }
+  GIVEN("Nontrivial tensors") {
+    QubitPauliMap qpm{
+        {Qubit(0), Pauli::Z},
+        {Qubit(1), Pauli::Y},
+        {Qubit(2), Pauli::X},
+        {Qubit(3), Pauli::I}};
+    SpSymPauliTensor qpt1(qpm, .5 * i_);
+    SpSymPauliTensor qpt2(qpm, .5 * i_);
+    qpt1.set(Qubit(4), Pauli::X);
+    qpt2.set(Qubit(4), Pauli::X);
+    qpt2.set(Qubit(5), Pauli::I);
+    qpt2.set(Qubit(6), Pauli::I);
+    REQUIRE(qpt1.hash_value() == qpt2.hash_value());
+  }
+}
+
+SCENARIO("Test hashing for dense PauliTensor") {
+  GIVEN("Trivial strings") {
+    PauliString qps1;
+    PauliString qps2;
+    REQUIRE(qps1.hash_value() == qps2.hash_value());
+    WHEN("Add I Pauli") {
+      qps1.set(0, Pauli::I);
+      REQUIRE(qps1.hash_value() == qps2.hash_value());
+    }
+  }
+  GIVEN("Nontrivial strings") {
+    DensePauliMap qpm{Pauli::Z, Pauli::Y, Pauli::X, Pauli::I};
+    PauliString qps1(qpm);
+    PauliString qps2(qpm);
+    qps1.set(4, Pauli::X);
+    qps2.set(4, Pauli::X);
+    qps2.set(5, Pauli::I);
+    REQUIRE(qps1.hash_value() == qps2.hash_value());
+  }
+  GIVEN("Trivial tensor") {
+    CxPauliTensor qpt1;
+    CxPauliTensor qpt2;
+    REQUIRE(qpt1.hash_value() == qpt2.hash_value());
+    WHEN("Add I Pauli") {
+      qpt1.set(0, Pauli::I);
+      REQUIRE(qpt1.hash_value() == qpt2.hash_value());
+    }
+  }
+  GIVEN("Nontrivial tensors") {
+    DensePauliMap qpm{Pauli::Z, Pauli::Y, Pauli::X, Pauli::I};
+    SymPauliTensor qpt1(qpm, .5 * i_);
+    SymPauliTensor qpt2(qpm, .5 * i_);
+    qpt1.set(4, Pauli::X);
+    qpt2.set(4, Pauli::X);
+    qpt2.set(5, Pauli::I);
+    qpt2.set(6, Pauli::I);
+    REQUIRE(qpt1.hash_value() == qpt2.hash_value());
+  }
+}
+
 }  // namespace test_PauliString
 }  // namespace tket
