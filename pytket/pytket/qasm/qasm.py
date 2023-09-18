@@ -1261,6 +1261,7 @@ class QasmWriter:
             (variable, comparator, value, dest_bit, label)
             for (variable, comparator, value, dest_bit, label) in self.range_preds
             if variable == written_variable
+            or written_variable.startswith(variable + "[")
         ]
         for hit in hits:
             self.range_preds.remove(hit)
