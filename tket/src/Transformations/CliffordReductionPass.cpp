@@ -410,8 +410,12 @@ Subcircuit CliffordReductionPass::substitute(
   // edges.
   EdgeList future_edges;
   VertexSet v_frontier;
+  // keep track of visited vertices
+  VertexSet visited;
   for (unsigned qi = 0; qi < q_width; ++qi) {
-    v_frontier.insert(circ.target(out_edges[qi]));
+    Vertex target = circ.target(out_edges[qi]);
+    visited.insert(target);
+    v_frontier.insert(target);
   }
   while (!v_frontier.empty()) {
     EdgeSet out_edges;
@@ -424,7 +428,12 @@ Subcircuit CliffordReductionPass::substitute(
     future_edges.insert(future_edges.end(), out_edges.begin(), out_edges.end());
     VertexSet new_v_frontier;
     for (auto e : out_edges) {
-      new_v_frontier.insert(circ.target(e));
+      Vertex target = circ.target(e);
+      auto it = visited.insert(target);
+      if (it.second) {
+        // add vertex to the next frontier if the vertex has not been visited
+        new_v_frontier.insert(target);
+      }
     }
     v_frontier = std::move(new_v_frontier);
   }

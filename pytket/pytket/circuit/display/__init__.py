@@ -164,12 +164,12 @@ class CircuitRenderer:
         if jupyter:
             # If we are in a notebook, we can tell jupyter to display the html.
             # We don't import at the top in case we are not in a notebook environment.
-            from IPython.display import (  # type: ignore
+            from IPython.display import (
                 HTML,
                 display,
             )  # pylint: disable=C0415
 
-            display(HTML(html))  # type: ignore
+            display(HTML(html))
             return None
         return html
 

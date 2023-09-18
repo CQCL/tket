@@ -17,7 +17,7 @@ from typing import Dict, TYPE_CHECKING, Union, List, Optional, Set, Any
 
 import numpy
 import numpy as np
-from sympy import Symbol, sympify, Expr, re, im  # type: ignore
+from sympy import Symbol, sympify, Expr, re, im
 from pytket.pauli import QubitPauliString, pauli_string_mult
 from pytket.circuit import Qubit
 from pytket.utils.serialization import complex_to_list, list_to_complex
@@ -26,7 +26,7 @@ from pytket.utils.serialization import complex_to_list, list_to_complex
 CoeffType = Union[int, float, complex, Expr]
 
 if TYPE_CHECKING:
-    from scipy.sparse import csc_matrix  # type: ignore
+    from scipy.sparse import csc_matrix
 
 
 class QubitPauliOperator:
@@ -144,7 +144,6 @@ class QubitPauliOperator:
             result_terms: Dict = dict()
             for left_key, left_value in self._dict.items():
                 for right_key, right_value in multiplier._dict.items():
-
                     new_term, bonus_coeff = pauli_string_mult(left_key, right_key)
                     new_coefficient = bonus_coeff * left_value * right_value
 

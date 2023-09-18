@@ -68,6 +68,7 @@ class WasmFileHandler:
 
         function_signatures: list = []
         function_names: list = []
+        _func_lookup = {}
 
         if not exists(self._filepath):
             raise ValueError("wasm file not found at given path")
@@ -127,30 +128,37 @@ class WasmFileHandler:
 
             # read in list of function names
             elif cur_sec_data.id == SEC_EXPORT:
-                for entry in cur_sec_data.payload.entries:
+                f_idx = 0
+                for _, entry in enumerate(cur_sec_data.payload.entries):
                     if entry.kind == 0:
-                        function_names.append(entry.field_str.tobytes().decode())
+                        f_name = entry.field_str.tobytes().decode()
+                        function_names.append(f_name)
+                        _func_lookup[f_name] = (f_idx, entry.index)
+                        f_idx += 1
 
             # read in map of function signatures to function names
             elif cur_sec_data.id == SEC_FUNCTION:
                 self._function_types = cur_sec_data.payload.types
 
-        for i, x in enumerate(function_names):
+        for x in function_names:
             # check for only integer type in parameters and return values
             supported_function = True
-            for t in function_signatures[self._function_types[i]]["parameter_types"]:
+            idx = _func_lookup[x][1]
+            for t in function_signatures[self._function_types[idx]]["parameter_types"]:
                 if t != self._int_type:
                     supported_function = False
-            for t in function_signatures[self._function_types[i]]["return_types"]:
+            for t in function_signatures[self._function_types[idx]]["return_types"]:
                 if t != self._int_type:
                     supported_function = False
 
             if supported_function:
                 self._functions[x] = (
                     len(
-                        function_signatures[self._function_types[i]]["parameter_types"]
+                        function_signatures[self._function_types[idx]][
+                            "parameter_types"
+                        ]
                     ),
-                    len(function_signatures[self._function_types[i]]["return_types"]),
+                    len(function_signatures[self._function_types[idx]]["return_types"]),
                 )
 
             if not supported_function:

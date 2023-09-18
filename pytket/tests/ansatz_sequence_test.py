@@ -14,7 +14,7 @@
 
 from typing import Dict, Tuple, List
 import numpy as np
-import pytest  # type: ignore
+import pytest
 from pytket import Circuit
 from pytket.pauli import Pauli, QubitPauliString
 from pytket.circuit import fresh_symbol, OpType, Qubit

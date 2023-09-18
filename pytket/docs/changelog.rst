@@ -4,17 +4,42 @@ Changelog
 Unreleased
 ----------
 
+Fixes:
+
+* Fix ``CliffordSimp`` slow runtime issue.
+* Correct implementation of ``free_symbols()`` and ``symbol_substitution()`` for
+  ``ConjugationBox``.
+
+1.20.0 (September 2023)
+-----------------------
+
+Fixes:
+
+* Mixed up function index in wasm file check
+* Fix handling of scratch bits in pytket-to-QASM conversion when the source bit
+  for the scratch is overwritten before the scratch bit is used in a
+  conditional.
+
 Minor new features:
 
 * ``Circuit.add_conditional_barrier``
 * Add ``apply_clifford_basis_change_tensor`` method
 
+API changes:
+
+* barrier changed from MetaOp to be a BarrierOp
+
+
+1.19.1 (September 2023)
+-----------------------
+
 Fixes:
 
+* Fix `RebaseCustom()` rebasing of `TK2` gates.
 * Correct implementation of `symbol_substitution()` for box types that cannot
   contain symbols.
 
-0.19.0 (September 2023)
+1.19.0 (September 2023)
 -----------------------
 
 Major new features:
