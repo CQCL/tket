@@ -42,187 +42,69 @@ template <typename CoeffType>
 CoeffType default_coeff() = delete;
 
 template <>
-no_coeff_t default_coeff<no_coeff_t>() {
-  return {};
-}
+no_coeff_t default_coeff<no_coeff_t>();
 template <>
-quarter_turns_t default_coeff<quarter_turns_t>() {
-  return 0;
-}
+quarter_turns_t default_coeff<quarter_turns_t>();
 template <>
-Complex default_coeff<Complex>() {
-  return 1.;
-}
+Complex default_coeff<Complex>();
 template <>
-Expr default_coeff<Expr>() {
-  return 1;
-}
+Expr default_coeff<Expr>();
 
 template <typename OriginalContainer, typename NewContainer>
 NewContainer cast_container(const OriginalContainer &) = delete;
 
 template <>
 QubitPauliMap cast_container<QubitPauliMap, QubitPauliMap>(
-    const QubitPauliMap &cont) {
-  return cont;
-}
-
+    const QubitPauliMap &cont);
 template <>
 QubitPauliMap cast_container<DensePauliMap, QubitPauliMap>(
-    const DensePauliMap &cont) {
-  QubitPauliMap res;
-  for (unsigned i = 0; i < cont.size(); ++i) {
-    Pauli pi = cont.at(i);
-    if (pi != Pauli::I) res.insert({Qubit(i), cont.at(i)});
-  }
-  return res;
-}
-
+    const DensePauliMap &cont);
 template <>
 DensePauliMap cast_container<QubitPauliMap, DensePauliMap>(
-    const QubitPauliMap &cont) {
-  if (cont.empty()) return {};
-  unsigned max_index = 0;
-  for (const std::pair<const Qubit, Pauli> &pair : cont) {
-    if (pair.first.reg_info() != register_info_t{UnitType::Qubit, 1} ||
-        pair.first.reg_name() != q_default_reg())
-      throw std::logic_error(
-          "Cannot cast a QubitPauliMap with non-default register qubits to a "
-          "DensePauliMap");
-    unsigned i = pair.first.index().front();
-    if (i > max_index) max_index = i;
-  }
-  DensePauliMap res(max_index + 1, Pauli::I);
-  for (const std::pair<const Qubit, Pauli> &pair : cont) {
-    res.at(pair.first.index().front()) = pair.second;
-  }
-  return res;
-}
-
+    const QubitPauliMap &cont);
 template <>
 DensePauliMap cast_container<DensePauliMap, DensePauliMap>(
-    const DensePauliMap &cont) {
-  return cont;
-}
+    const DensePauliMap &cont);
 
 template <typename OriginalCoeff, typename NewCoeff>
 NewCoeff cast_coeff(const OriginalCoeff &coeff) = delete;
 
 template <>
-no_coeff_t cast_coeff<no_coeff_t, no_coeff_t>(const no_coeff_t &) {
-  return {};
-}
+no_coeff_t cast_coeff<no_coeff_t, no_coeff_t>(const no_coeff_t &);
 template <>
-quarter_turns_t cast_coeff<no_coeff_t, quarter_turns_t>(const no_coeff_t &) {
-  return 0;
-}
+quarter_turns_t cast_coeff<no_coeff_t, quarter_turns_t>(const no_coeff_t &);
 template <>
-Complex cast_coeff<no_coeff_t, Complex>(const no_coeff_t &) {
-  return 1.;
-}
+Complex cast_coeff<no_coeff_t, Complex>(const no_coeff_t &);
 template <>
-Expr cast_coeff<no_coeff_t, Expr>(const no_coeff_t &) {
-  return 1.;
-}
+Expr cast_coeff<no_coeff_t, Expr>(const no_coeff_t &);
 
 template <>
-no_coeff_t cast_coeff<quarter_turns_t, no_coeff_t>(const quarter_turns_t &) {
-  return {};
-}
+no_coeff_t cast_coeff<quarter_turns_t, no_coeff_t>(const quarter_turns_t &);
 template <>
 quarter_turns_t cast_coeff<quarter_turns_t, quarter_turns_t>(
-    const quarter_turns_t &coeff) {
-  return coeff;
-}
+    const quarter_turns_t &coeff);
 template <>
-Complex cast_coeff<quarter_turns_t, Complex>(const quarter_turns_t &coeff) {
-  switch (coeff % 4) {
-    case 0: {
-      return 1.;
-    }
-    case 1: {
-      return i_;
-    }
-    case 2: {
-      return -1.;
-    }
-    default: {
-      return -i_;
-    }
-  }
-}
+Complex cast_coeff<quarter_turns_t, Complex>(const quarter_turns_t &coeff);
 template <>
-Expr cast_coeff<quarter_turns_t, Expr>(const quarter_turns_t &coeff) {
-  switch (coeff % 4) {
-    case 0: {
-      return 1.;
-    }
-    case 1: {
-      return Expr(SymEngine::I);
-    }
-    case 2: {
-      return -1.;
-    }
-    default: {
-      return -Expr(SymEngine::I);
-    }
-  }
-}
+Expr cast_coeff<quarter_turns_t, Expr>(const quarter_turns_t &coeff);
 
 template <>
-no_coeff_t cast_coeff<Complex, no_coeff_t>(const Complex &) {
-  return {};
-}
+no_coeff_t cast_coeff<Complex, no_coeff_t>(const Complex &);
 template <>
-quarter_turns_t cast_coeff<Complex, quarter_turns_t>(const Complex &coeff) {
-  if (std::abs(coeff - 1.) < EPS)
-    return 0;
-  else if (std::abs(coeff - i_) < EPS)
-    return 1;
-  else if (std::abs(coeff + 1.) < EPS)
-    return 2;
-  else if (std::abs(coeff + i_) < EPS)
-    return 3;
-  else
-    throw std::logic_error(
-        "Could not cast PauliTensor coefficient to quarter turns: not a power "
-        "of i.");
-}
+quarter_turns_t cast_coeff<Complex, quarter_turns_t>(const Complex &coeff);
 template <>
-Complex cast_coeff<Complex, Complex>(const Complex &coeff) {
-  return coeff;
-}
+Complex cast_coeff<Complex, Complex>(const Complex &coeff);
 template <>
-Expr cast_coeff<Complex, Expr>(const Complex &coeff) {
-  return Expr(SymEngine::make_rcp<const SymEngine::ComplexDouble>(coeff));
-}
+Expr cast_coeff<Complex, Expr>(const Complex &coeff);
 
 template <>
-no_coeff_t cast_coeff<Expr, no_coeff_t>(const Expr &) {
-  return {};
-}
+no_coeff_t cast_coeff<Expr, no_coeff_t>(const Expr &);
 template <>
-quarter_turns_t cast_coeff<Expr, quarter_turns_t>(const Expr &coeff) {
-  std::optional<Complex> ev = eval_expr_c(coeff);
-  if (ev)
-    return cast_coeff<Complex, quarter_turns_t>(*ev);
-  else
-    throw std::logic_error(
-        "Could not cast symbolic PauliTensor to quarter turns.");
-}
+quarter_turns_t cast_coeff<Expr, quarter_turns_t>(const Expr &coeff);
 template <>
-Complex cast_coeff<Expr, Complex>(const Expr &coeff) {
-  std::optional<Complex> ev = eval_expr_c(coeff);
-  if (ev)
-    return *ev;
-  else
-    throw std::logic_error(
-        "Could not cast symbolic PauliTensor to complex coefficient.");
-}
+Complex cast_coeff<Expr, Complex>(const Expr &coeff);
 template <>
-Expr cast_coeff<Expr, Expr>(const Expr &coeff) {
-  return coeff;
-}
+Expr cast_coeff<Expr, Expr>(const Expr &coeff);
 
 template <typename PauliContainer>
 int compare_containers(
@@ -230,76 +112,23 @@ int compare_containers(
 
 template <>
 int compare_containers<QubitPauliMap>(
-    const QubitPauliMap &first, const QubitPauliMap &second) {
-  QubitPauliMap::const_iterator p1_it = first.begin();
-  QubitPauliMap::const_iterator p2_it = second.begin();
-  while (p1_it != first.end()) {
-    if (p1_it->second == Pauli::I) {
-      ++p1_it;
-      continue;
-    }
-    while (p2_it != second.end() && p2_it->second == Pauli::I) {
-      ++p2_it;
-    }
-    if (p2_it == second.end()) return 1;
-    // QubitPauliString order should reflect ILO
-    // i.e. IZ < ZI (Zq1 < Zq0)
-    // Hence we first order by reverse of leading qubit
-    if (p1_it->first < p2_it->first) return 1;
-    if (p2_it->first < p1_it->first) return -1;
-    // and then by increasing order of Pauli letter on the same qubit
-    if (p1_it->second < p2_it->second) return -1;
-    if (p1_it->second > p2_it->second) return 1;
-    ++p1_it;
-    ++p2_it;
-  }
-  while (p2_it != second.end() && p2_it->second == Pauli::I) {
-    ++p2_it;
-  }
-  return (p2_it == second.end()) ? 0 : -1;
-}
-
+    const QubitPauliMap &first, const QubitPauliMap &second);
 template <>
 int compare_containers<DensePauliMap>(
-    const DensePauliMap &first, const DensePauliMap &second) {
-  DensePauliMap::const_iterator p1_it = first.begin();
-  DensePauliMap::const_iterator p2_it = second.begin();
-  while (p1_it != first.end() && p2_it != second.end()) {
-    if (*p1_it < *p2_it) return -1;
-    if (*p1_it > *p2_it) return 1;
-    ++p1_it;
-    ++p2_it;
-  }
-  while (p1_it != first.end() && *p1_it == Pauli::I) ++p1_it;
-  if (p1_it != first.end()) return 1;
-  while (p2_it != second.end() && *p2_it == Pauli::I) ++p2_it;
-  return (p2_it == second.end()) ? 0 : -1;
-}
+    const DensePauliMap &first, const DensePauliMap &second);
 
 template <typename CoeffType>
 int compare_coeffs(const CoeffType &first, const CoeffType &second) = delete;
 
 template <>
-int compare_coeffs<no_coeff_t>(const no_coeff_t &, const no_coeff_t &) {
-  return 0;
-}
+int compare_coeffs<no_coeff_t>(const no_coeff_t &, const no_coeff_t &);
 template <>
 int compare_coeffs<quarter_turns_t>(
-    const quarter_turns_t &first, const quarter_turns_t &second) {
-  if (first % 4 < second % 4) return -1;
-  return (first % 4 == second % 4) ? 0 : 1;
-}
+    const quarter_turns_t &first, const quarter_turns_t &second);
 template <>
-int compare_coeffs<Complex>(const Complex &first, const Complex &second) {
-  if (first.real() < second.real()) return -1;
-  if (first.real() > second.real()) return 1;
-  if (first.imag() < second.imag()) return -1;
-  return (first.imag() == second.imag()) ? 0 : 1;
-}
+int compare_coeffs<Complex>(const Complex &first, const Complex &second);
 template <>
-int compare_coeffs<Expr>(const Expr &first, const Expr &second) {
-  return first.get_basic()->compare(second);
-}
+int compare_coeffs<Expr>(const Expr &first, const Expr &second);
 
 std::set<Qubit> common_qubits(
     const QubitPauliMap &first, const QubitPauliMap &second);
@@ -325,120 +154,31 @@ bool commuting_containers(
 
 template <>
 bool commuting_containers<QubitPauliMap>(
-    const QubitPauliMap &first, const QubitPauliMap &second) {
-  return (conflicting_qubits(first, second).size() % 2) == 0;
-}
-
+    const QubitPauliMap &first, const QubitPauliMap &second);
 template <>
 bool commuting_containers<DensePauliMap>(
-    const DensePauliMap &first, const DensePauliMap &second) {
-  return (conflicting_indices(first, second).size() % 2) == 0;
-}
+    const DensePauliMap &first, const DensePauliMap &second);
 
 template <typename PauliContainer>
 void print_paulis(std::ostream &os, const PauliContainer &paulis) = delete;
 
 template <>
-void print_paulis<QubitPauliMap>(
-    std::ostream &os, const QubitPauliMap &paulis) {
-  os << "(";
-  QubitPauliMap::const_iterator i = paulis.begin();
-  while (i != paulis.end()) {
-    switch (i->second) {
-      case Pauli::I: {
-        os << "I";
-        break;
-      }
-      case Pauli::X: {
-        os << "X";
-        break;
-      }
-      case Pauli::Y: {
-        os << "Y";
-        break;
-      }
-      case Pauli::Z: {
-        os << "Z";
-        break;
-      }
-    }
-    os << i->first.repr();
-    ++i;
-    if (i != paulis.end()) os << ", ";
-  }
-  os << ")";
-}
-
+void print_paulis<QubitPauliMap>(std::ostream &os, const QubitPauliMap &paulis);
 template <>
-void print_paulis<DensePauliMap>(
-    std::ostream &os, const DensePauliMap &paulis) {
-  for (const Pauli &p : paulis) {
-    switch (p) {
-      case Pauli::I: {
-        os << "I";
-        break;
-      }
-      case Pauli::X: {
-        os << "X";
-        break;
-      }
-      case Pauli::Y: {
-        os << "Y";
-        break;
-      }
-      case Pauli::Z: {
-        os << "Z";
-        break;
-      }
-    }
-  }
-}
+void print_paulis<DensePauliMap>(std::ostream &os, const DensePauliMap &paulis);
 
 template <typename CoeffType>
 void print_coeff(std::ostream &os, const CoeffType &coeff) = delete;
 
 template <>
-void print_coeff<no_coeff_t>(std::ostream &, const no_coeff_t &) {}
-
+void print_coeff<no_coeff_t>(std::ostream &, const no_coeff_t &);
 template <>
 void print_coeff<quarter_turns_t>(
-    std::ostream &os, const quarter_turns_t &coeff) {
-  switch (coeff % 4) {
-    case 1: {
-      os << "i*";
-      break;
-    }
-    case 2: {
-      os << "-";
-      break;
-    }
-    case 3: {
-      os << "-i*";
-      break;
-    }
-    default: {
-      break;
-    }
-  }
-}
-
+    std::ostream &os, const quarter_turns_t &coeff);
 template <>
-void print_coeff<Complex>(std::ostream &os, const Complex &coeff) {
-  if (coeff == -1.) {
-    os << "-";
-  } else if (coeff != 1.) {
-    os << coeff << "*";
-  }
-}
-
+void print_coeff<Complex>(std::ostream &os, const Complex &coeff);
 template <>
-void print_coeff<Expr>(std::ostream &os, const Expr &coeff) {
-  if (coeff == -1.) {
-    os << "-";
-  } else if (coeff != -1.) {
-    os << coeff << "*";
-  }
-}
+void print_coeff<Expr>(std::ostream &os, const Expr &coeff);
 
 template <typename PauliContainer>
 void hash_combine_paulis(std::size_t &seed, const PauliContainer &paulis) =
@@ -446,95 +186,34 @@ void hash_combine_paulis(std::size_t &seed, const PauliContainer &paulis) =
 
 template <>
 void hash_combine_paulis<QubitPauliMap>(
-    std::size_t &seed, const QubitPauliMap &paulis) {
-  for (const std::pair<const Qubit, Pauli> &qp : paulis) {
-    if (qp.second != Pauli::I) {
-      boost::hash_combine(seed, qp.first);
-      boost::hash_combine(seed, qp.second);
-    }
-  }
-}
-
+    std::size_t &seed, const QubitPauliMap &paulis);
 template <>
 void hash_combine_paulis<DensePauliMap>(
-    std::size_t &seed, const DensePauliMap &paulis) {
-  DensePauliMap::const_reverse_iterator i = paulis.rbegin();
-  while (i != paulis.rend() && *i == Pauli::I) {
-    ++i;
-  }
-  while (i != paulis.rend()) {
-    boost::hash_combine(seed, *i);
-    ++i;
-  }
-}
+    std::size_t &seed, const DensePauliMap &paulis);
 
 template <typename CoeffType>
 void hash_combine_coeff(std::size_t &seed, const CoeffType &coeff) = delete;
 
 template <>
-void hash_combine_coeff<no_coeff_t>(std::size_t &, const no_coeff_t &) {}
-
+void hash_combine_coeff<no_coeff_t>(std::size_t &, const no_coeff_t &);
 template <>
 void hash_combine_coeff<quarter_turns_t>(
-    std::size_t &seed, const quarter_turns_t &coeff) {
-  boost::hash_combine(seed, coeff % 4);
-}
-
+    std::size_t &seed, const quarter_turns_t &coeff);
 template <>
-void hash_combine_coeff<Complex>(std::size_t &seed, const Complex &coeff) {
-  boost::hash_combine(seed, coeff);
-}
-
+void hash_combine_coeff<Complex>(std::size_t &seed, const Complex &coeff);
 template <>
-void hash_combine_coeff<Expr>(std::size_t &seed, const Expr &coeff) {
-  boost::hash_combine(seed, coeff.get_basic()->hash());
-}
+void hash_combine_coeff<Expr>(std::size_t &seed, const Expr &coeff);
 
 template <typename PauliContainer>
 unsigned n_ys(const PauliContainer &paulis) = delete;
 
 template <>
-unsigned n_ys<QubitPauliMap>(const QubitPauliMap &paulis) {
-  unsigned n = 0;
-  for (const std::pair<const Qubit, Pauli> &qp : paulis) {
-    if (qp.second == Pauli::Y) ++n;
-  }
-  return n;
-}
-
+unsigned n_ys<QubitPauliMap>(const QubitPauliMap &paulis);
 template <>
-unsigned n_ys<DensePauliMap>(const DensePauliMap &paulis) {
-  unsigned n = 0;
-  for (const Pauli &p : paulis) {
-    if (p == Pauli::Y) ++n;
-  }
-  return n;
-}
+unsigned n_ys<DensePauliMap>(const DensePauliMap &paulis);
 
 const std::map<std::pair<Pauli, Pauli>, std::pair<quarter_turns_t, Pauli>> &
-get_mult_matrix() {
-  static const std::map<
-      std::pair<Pauli, Pauli>, std::pair<quarter_turns_t, Pauli>>
-      mult_matrix{
-          {{Pauli::I, Pauli::I}, {0, Pauli::I}},
-          {{Pauli::I, Pauli::X}, {0, Pauli::X}},
-          {{Pauli::I, Pauli::Y}, {0, Pauli::Y}},
-          {{Pauli::I, Pauli::Z}, {0, Pauli::Z}},
-          {{Pauli::X, Pauli::I}, {0, Pauli::X}},
-          {{Pauli::X, Pauli::X}, {0, Pauli::I}},
-          {{Pauli::X, Pauli::Y}, {1, Pauli::Z}},
-          {{Pauli::X, Pauli::Z}, {3, Pauli::Y}},
-          {{Pauli::Y, Pauli::I}, {0, Pauli::Y}},
-          {{Pauli::Y, Pauli::X}, {3, Pauli::Z}},
-          {{Pauli::Y, Pauli::Y}, {0, Pauli::I}},
-          {{Pauli::Y, Pauli::Z}, {1, Pauli::X}},
-          {{Pauli::Z, Pauli::I}, {0, Pauli::Z}},
-          {{Pauli::Z, Pauli::X}, {1, Pauli::Y}},
-          {{Pauli::Z, Pauli::Y}, {3, Pauli::X}},
-          {{Pauli::Z, Pauli::Z}, {0, Pauli::I}},
-      };
-  return mult_matrix;
-}
+get_mult_matrix();
 
 template <typename PauliContainer>
 std::pair<quarter_turns_t, PauliContainer> multiply_strings(
@@ -542,87 +221,24 @@ std::pair<quarter_turns_t, PauliContainer> multiply_strings(
 
 template <>
 std::pair<quarter_turns_t, QubitPauliMap> multiply_strings<QubitPauliMap>(
-    const QubitPauliMap &first, const QubitPauliMap &second) {
-  quarter_turns_t total_turns = 0;
-  QubitPauliMap result;
-  QubitPauliMap::const_iterator fi = first.begin();
-  QubitPauliMap::const_iterator si = second.begin();
-  while (fi != first.end()) {
-    while (si != second.end() && si->first < fi->first) {
-      result.insert(*si);
-      ++si;
-    }
-    if (si != second.end() && si->first == fi->first) {
-      // Pauli in the same position, so need to multiply
-      const std::pair<quarter_turns_t, Pauli> &prod =
-          get_mult_matrix().at({fi->second, si->second});
-      total_turns += prod.first;
-      if (prod.second != Pauli::I) {
-        result.insert({fi->first, prod.second});
-      }
-      ++si;
-    } else {
-      result.insert(*fi);
-    }
-    ++fi;
-  }
-  while (si != second.end()) {
-    result.insert(*si);
-    ++si;
-  }
-  return {total_turns, result};
-}
-
+    const QubitPauliMap &first, const QubitPauliMap &second);
 template <>
 std::pair<quarter_turns_t, DensePauliMap> multiply_strings<DensePauliMap>(
-    const DensePauliMap &first, const DensePauliMap &second) {
-  quarter_turns_t total_turns = 0;
-  DensePauliMap result;
-  DensePauliMap::const_iterator fi = first.begin();
-  DensePauliMap::const_iterator si = second.begin();
-  while (fi != first.end() && si != second.end()) {
-    const std::pair<quarter_turns_t, Pauli> &prod =
-        get_mult_matrix().at({*fi, *si});
-    total_turns += prod.first;
-    result.push_back(prod.second);
-    ++fi;
-    ++si;
-  }
-  while (fi != first.end()) {
-    result.push_back(*fi);
-    ++fi;
-  }
-  while (si != second.end()) {
-    result.push_back(*si);
-    ++si;
-  }
-  return {total_turns, result};
-}
+    const DensePauliMap &first, const DensePauliMap &second);
 
 template <typename CoeffType>
 CoeffType multiply_coeffs(const CoeffType &first, const CoeffType &second) =
     delete;
 
 template <>
-no_coeff_t multiply_coeffs<no_coeff_t>(const no_coeff_t &, const no_coeff_t &) {
-  return {};
-}
-
+no_coeff_t multiply_coeffs<no_coeff_t>(const no_coeff_t &, const no_coeff_t &);
 template <>
 quarter_turns_t multiply_coeffs<quarter_turns_t>(
-    const quarter_turns_t &first, const quarter_turns_t &second) {
-  return (first + second) % 4;
-}
-
+    const quarter_turns_t &first, const quarter_turns_t &second);
 template <>
-Complex multiply_coeffs<Complex>(const Complex &first, const Complex &second) {
-  return first * second;
-}
-
+Complex multiply_coeffs<Complex>(const Complex &first, const Complex &second);
 template <>
-Expr multiply_coeffs<Expr>(const Expr &first, const Expr &second) {
-  return first * second;
-}
+Expr multiply_coeffs<Expr>(const Expr &first, const Expr &second);
 
 template <typename PauliContainer, typename CoeffType>
 class PauliTensor {
@@ -638,8 +254,9 @@ class PauliTensor {
       "PauliTensor must either support no coefficient, quarter turns, or "
       "arbitrary complex (floating point or symbolic) coefficients.");
 
-  static const CoeffType default_coeff = tket::default_coeff<CoeffType>();
+  static const CoeffType default_coeff;
 
+ public:
   PauliContainer string;
   CoeffType coeff;
 
@@ -654,6 +271,13 @@ class PauliTensor {
   PauliTensor(
       const PauliContainer &_string, const CoeffType &_coeff = default_coeff)
       : string(_string), coeff(_coeff) {}
+
+  template <typename PC = PauliContainer>
+  PauliTensor(
+      const Qubit &q, Pauli p, const CoeffType &_coeff = default_coeff,
+      typename std::enable_if<std::is_same<PC, QubitPauliMap>::value>::type * =
+          0)
+      : string({{q, p}}), coeff(_coeff) {}
 
   template <typename CastContainer, typename CastCoeffType>
   operator PauliTensor<CastContainer, CastCoeffType>() const {
@@ -680,7 +304,8 @@ class PauliTensor {
     return compare(other) < 0;
   }
 
-  std::enable_if<std::is_same<PauliContainer, QubitPauliMap>::value, void>
+  template <typename PC = PauliContainer>
+  typename std::enable_if<std::is_same<PC, QubitPauliMap>::value>::type
   compress() {
     QubitPauliMap::iterator it = string.begin();
     while (it != string.end()) {
@@ -743,7 +368,6 @@ class PauliTensor {
     return conflicting_indices(string, other.string);
   }
 
-  template <typename OtherCoeffType>
   std::enable_if<std::is_same<PauliContainer, QubitPauliMap>::value, Pauli> get(
       const Qubit &qb) const {
     QubitPauliMap::const_iterator i = string.find(qb);
@@ -752,7 +376,6 @@ class PauliTensor {
     else
       return i->second;
   }
-  template <typename OtherCoeffType>
   std::enable_if<std::is_same<PauliContainer, DensePauliMap>::value, Pauli> get(
       unsigned qb) const {
     if (qb >= string.size())
@@ -761,8 +384,8 @@ class PauliTensor {
       return string.at(qb);
   }
 
-  template <typename OtherCoeffType>
-  std::enable_if<std::is_same<PauliContainer, QubitPauliMap>::value, void> set(
+  template <typename PC = PauliContainer>
+  typename std::enable_if<std::is_same<PC, QubitPauliMap>::value>::type set(
       const Qubit &qb, Pauli p) {
     QubitPauliMap::iterator i = string.find(qb);
     if (i == string.end()) {
@@ -774,8 +397,8 @@ class PauliTensor {
         i->second = p;
     }
   }
-  template <typename OtherCoeffType>
-  std::enable_if<std::is_same<PauliContainer, DensePauliMap>::value, void> set(
+  template <typename PC = PauliContainer>
+  typename std::enable_if<std::is_same<PC, DensePauliMap>::value>::type set(
       unsigned qb, Pauli p) {
     if (qb >= string.size()) string.resize(qb + 1, Pauli::I);
     string.at(qb) = p;
@@ -813,6 +436,10 @@ class PauliTensor {
 };
 
 template <typename PauliContainer, typename CoeffType>
+const CoeffType PauliTensor<PauliContainer, CoeffType>::default_coeff =
+    tket::default_coeff<CoeffType>();
+
+template <typename PauliContainer, typename CoeffType>
 void to_json(
     nlohmann::json &j, const PauliTensor<PauliContainer, CoeffType> &tensor) {
   j["string"] = tensor.string;
@@ -831,7 +458,7 @@ typedef PauliTensor<DensePauliMap, no_coeff_t> PauliString;
 typedef PauliTensor<QubitPauliMap, quarter_turns_t> SpPauliStabiliser;
 typedef PauliTensor<DensePauliMap, quarter_turns_t> PauliStabiliser;
 typedef PauliTensor<QubitPauliMap, Complex> SpPauliTensor;
-typedef PauliTensor<DensePauliMap, Complex> PauliTensor;
+// typedef PauliTensor<DensePauliMap, Complex> PauliTensor;
 typedef PauliTensor<QubitPauliMap, Expr> SpSymPauliTensor;
 typedef PauliTensor<DensePauliMap, Expr> SymPauliTensor;
 
