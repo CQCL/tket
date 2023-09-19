@@ -316,7 +316,8 @@ Circuit phase_poly_synthesis_int(
 
 static PhasePolyBox make_placed_ppb(
     const Architecture &arch, const PhasePolyBox &phasepolybox) {
-  Circuit circuit_ppb_place(*phasepolybox.to_circuit());
+  Circuit circuit_ppb_place =
+      phasepolybox.generate_circuit_with_original_placement();
 
   const std::string register_name = "surplus";
 
@@ -431,7 +432,7 @@ class PhasePolySynthesizer {
       const std::map<UnitID, UnitID> &forward_contiguous_uids_q,
       const std::map<UnitID, UnitID> &backward_contiguous_uids_n) {
     // define new phase poly box
-    Circuit circuit_ppb(*placed_ppb.to_circuit());
+    Circuit circuit_ppb = placed_ppb.generate_circuit_with_original_placement();
     // the aas code is implemented under the assumption that all qubits in the
     // circuit are named from 0 to n. The same assumption was made for the nodes
     // of the architecture. To make sure that this condition is fulfilled the
