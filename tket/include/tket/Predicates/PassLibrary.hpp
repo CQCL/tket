@@ -35,7 +35,7 @@ const PassPtr &DecomposeSingleQubitsTK1();
 /**
  * Recursively replaces all boxes by their decomposition using Box::to_circuit
  * @param excluded_types box types excluded from decomposition
- * @param excluded_types opgroups excluded from decomposition
+ * @param excluded_opgroups opgroups excluded from decomposition
  */
 PassPtr DecomposeBoxes(
     const std::unordered_set<OpType> &excluded_types = {},

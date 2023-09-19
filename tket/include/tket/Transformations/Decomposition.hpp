@@ -155,7 +155,7 @@ Transform decompose_PhaseGadgets();
  * Recursively replaces all boxes by their decomposition using Box::to_circuit
  * Expects: any gateset
  * @param excluded_types box types excluded from decomposition
- * @param excluded_types opgroups excluded from decomposition
+ * @param excluded_opgroups opgroups excluded from decomposition
  * returns potentially all gates
  */
 Transform decomp_boxes(

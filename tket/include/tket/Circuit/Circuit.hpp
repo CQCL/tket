@@ -1521,7 +1521,7 @@ class Circuit {
    * Box::to_circuit
    *
    * @param excluded_types box types excluded from decomposition
-   * @param excluded_types opgroups excluded from decomposition
+   * @param excluded_opgroups opgroups excluded from decomposition
    *
    * @return whether any replacements were made
    */
