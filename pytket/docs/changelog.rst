@@ -10,6 +10,7 @@ Minor new features:
   the circuit is unchanged.
 * Add optional parameters `excluded_types` and `excluded_opgroups`
   to `DecomposeBoxes`.
+* More efficient decomposition for quantum controlled `ConjugationBox`es.
 
 Fixes:
 
