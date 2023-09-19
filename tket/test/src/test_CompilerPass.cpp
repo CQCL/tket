@@ -14,6 +14,7 @@
 
 #include <algorithm>
 #include <catch2/catch_test_macros.hpp>
+#include <memory>
 #include <tkrng/RNG.hpp>
 #include <vector>
 
@@ -476,6 +477,22 @@ SCENARIO("Construct invalid sequence of loops") {
   std::vector<PassPtr> bad_passes{loop2, loop1};
   REQUIRE_NOTHROW((void)SequencePass(good_passes));
   REQUIRE_THROWS_AS((void)SequencePass(bad_passes), IncompatibleCompilerPasses);
+}
+
+SCENARIO("RepeatPass with strict checking") {
+  Circuit circ(1);
+  circ.add_op<unsigned>(OpType::PhasedX, {0.3, 0.2}, {0});
+  PassPtr pp = SquashRzPhasedX();
+  PassPtr rep_pp = std::make_shared<RepeatPass>(pp, true);
+  CompilationUnit cu(circ);
+  bool rv = rep_pp->apply(cu);
+  CHECK_FALSE(rv);
+  CHECK(cu.get_circ_ref() == circ);
+  circ.add_op<unsigned>(OpType::Rz, 0.0, {0});
+  CompilationUnit cu1(circ);
+  bool rv1 = rep_pp->apply(cu1);
+  CHECK(rv1);
+  CHECK(cu1.get_circ_ref() != circ);
 }
 
 SCENARIO("Test RepeatWithMetricPass") {
