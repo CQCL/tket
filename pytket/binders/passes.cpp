@@ -289,10 +289,12 @@ PYBIND11_MODULE(passes, m) {
           ":return: The underlying sequence of passes.");
   py::class_<RepeatPass, std::shared_ptr<RepeatPass>, BasePass>(
       m, "RepeatPass",
-      "Repeat a pass until its `apply()` method returns False.")
+      "Repeat a pass until its `apply()` method returns False, or if "
+      "`strict_check` is True until it stops modifying the circuit.")
       .def(
-          py::init<const PassPtr &>(), "Construct from a compilation pass.",
-          py::arg("compilation_pass"))
+          py::init<const PassPtr &, bool>(),
+          "Construct from a compilation pass.", py::arg("compilation_pass"),
+          py::arg("strict_check") = false)
       .def("__str__", [](const RepeatPass &) { return "<tket::BasePass>"; })
       .def(
           "get_pass", &RepeatPass::get_pass,
