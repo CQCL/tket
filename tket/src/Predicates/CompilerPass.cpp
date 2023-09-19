@@ -369,7 +369,17 @@ void from_json(const nlohmann::json& j, PassPtr& pp) {
     } else if (passname == "DecomposeArbitrarilyControlledGates") {
       pp = DecomposeArbitrarilyControlledGates();
     } else if (passname == "DecomposeBoxes") {
-      pp = DecomposeBoxes();
+      std::unordered_set<OpType> excluded_types;
+      std::unordered_set<std::string> excluded_opgroups;
+      if (content.contains("excluded_types")) {
+        excluded_types =
+            content.at("excluded_types").get<std::unordered_set<OpType>>();
+      }
+      if (content.contains("excluded_opgroups")) {
+        excluded_opgroups = content.at("excluded_opgroups")
+                                .get<std::unordered_set<std::string>>();
+      }
+      pp = DecomposeBoxes(excluded_types, excluded_opgroups);
     } else if (passname == "DecomposeClassicalExp") {
       throw PassNotSerializable(passname);
     } else if (passname == "DecomposeMultiQubitsCX") {
