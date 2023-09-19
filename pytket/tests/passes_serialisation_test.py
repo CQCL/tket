@@ -178,6 +178,13 @@ TWO_WAY_PARAM_PASSES = {
             "min_size": 10,
         }
     ),
+    "DecomposeBoxes": standard_pass_dict(
+        {
+            "name": "DecomposeBoxes",
+            "excluded_types": ["QControlBox"],
+            "excluded_opgroups": ["opgroup1"],
+        }
+    ),
     "EulerAngleReduction": standard_pass_dict(
         {
             "name": "EulerAngleReduction",
@@ -286,7 +293,6 @@ TWO_WAY_PARAM_PASSES = {
 TWO_WAY_NONPARAM_PASSES = [
     "CommuteThroughMultis",
     "DecomposeArbitrarilyControlledGates",
-    "DecomposeBoxes",
     "DecomposeMultiQubitsCX",
     "DecomposeSingleQubitsTK1",
     "RebaseTket",
