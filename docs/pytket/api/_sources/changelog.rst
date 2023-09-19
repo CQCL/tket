@@ -1,6 +1,18 @@
 Changelog
 =========
 
+1.20.1 (September 2023)
+-----------------------
+
+Fixes:
+
+* Fix ``Op.get_unitary()`` runtime error for non gate ``Op``s.
+* Fix ``CliffordSimp`` slow runtime issue.
+* Correct implementation of ``free_symbols()`` and ``symbol_substitution()`` for
+  ``ConjugationBox``.
+* Fix pytket-to-QASM conversion when individual bits of registers used in
+  range predicates are later set.
+
 1.20.0 (September 2023)
 -----------------------
 
