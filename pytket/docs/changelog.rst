@@ -4,6 +4,11 @@ Changelog
 Unreleased
 ----------
 
+Minor new features:
+
+* Add optional `strict_check` parameter to `RepeatPass` to force stopping when
+  the circuit is unchanged.
+
 Fixes:
 
 * Fix ``Op.get_unitary()`` runtime error for non gate ``Op``s.
