@@ -1520,10 +1520,14 @@ class Circuit {
    * Recursively replace each \ref Box operation by applying \ref
    * Box::to_circuit
    *
-   * @post no \ref Box operations remain
+   * @param excluded_types box types excluded from decomposition
+   * @param excluded_types opgroups excluded from decomposition
+   *
    * @return whether any replacements were made
    */
-  bool decompose_boxes_recursively();
+  bool decompose_boxes_recursively(
+      const std::unordered_set<OpType> &excluded_types = {},
+      const std::unordered_set<std::string> &excluded_opgroups = {});
 
   /////////////////
   // Other Methods//
