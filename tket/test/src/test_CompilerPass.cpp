@@ -490,6 +490,11 @@ SCENARIO("RepeatPass with strict checking") {
   bool rv = rep_pp->apply(cu);
   CHECK_FALSE(rv);
   CHECK(cu.get_circ_ref() == circ);
+  circ.add_op<unsigned>(OpType::Rz, 0.0, {0});
+  CompilationUnit cu1(circ);
+  bool rv1 = rep_pp->apply(cu1);
+  CHECK(rv1);
+  CHECK(cu1.get_circ_ref() != circ);
 }
 
 SCENARIO("Test RepeatWithMetricPass") {
