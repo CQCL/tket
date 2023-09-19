@@ -1517,18 +1517,13 @@ class Circuit {
   bool substitute_box_vertex(Vertex &vert, VertexDeletion vertex_deletion);
 
   /**
-   * Replaces each \ref Box operation by applying \ref Box::to_circuit
-   *
-   * @return whether any replacements were made
-   */
-  bool decompose_boxes();
-
-  /**
-   * Recursively apply \ref decompose_boxes
+   * Recursively replace each \ref Box operation by applying \ref
+   * Box::to_circuit
    *
    * @post no \ref Box operations remain
+   * @return whether any replacements were made
    */
-  void decompose_boxes_recursively();
+  bool decompose_boxes_recursively();
 
   /////////////////
   // Other Methods//

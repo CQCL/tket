@@ -1298,7 +1298,8 @@ Transform decompose_PhaseGadgets() {
 }
 
 Transform decomp_boxes() {
-  return Transform([](Circuit &circ) { return circ.decompose_boxes(); });
+  return Transform(
+      [](Circuit &circ) { return circ.decompose_boxes_recursively(); });
 }
 
 Transform compose_phase_poly_boxes(const unsigned min_size) {

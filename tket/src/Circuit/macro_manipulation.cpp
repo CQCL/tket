@@ -708,7 +708,7 @@ bool Circuit::substitute_box_vertex(
   return true;
 }
 
-bool Circuit::decompose_boxes() {
+bool Circuit::decompose_boxes_recursively() {
   bool success = false;
   VertexList bin;
   BGL_FORALL_VERTICES(v, dag, DAG) {
@@ -719,11 +719,6 @@ bool Circuit::decompose_boxes() {
   }
   remove_vertices(bin, GraphRewiring::No, VertexDeletion::Yes);
   return success;
-}
-
-void Circuit::decompose_boxes_recursively() {
-  while (decompose_boxes()) {
-  }
 }
 
 std::map<Bit, bool> Circuit::classical_eval(
