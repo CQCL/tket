@@ -939,6 +939,18 @@ def test_rebase_custom_tk2() -> None:
     assert coms[10].op.type == OpType.Rz
 
 
+def test_repeat_pass_strict_check() -> None:
+    # https://github.com/CQCL/tket/issues/985
+    c0 = Circuit(1).PhasedX(angle0=0.3, angle1=0.2, qubit=0)
+    squash_pass = SquashRzPhasedX()
+    c1 = c0.copy()
+    assert squash_pass.apply(c1)
+    assert c1 == c0
+    c2 = c0.copy()
+    assert not RepeatPass(squash_pass, strict_check=True).apply(c2)
+    assert c2 == c0
+
+
 def test_selectively_decompose_boxes() -> None:
     circ = Circuit(1)
     ubox = Unitary1qBox(np.array([[1, 0], [0, -1]]))

@@ -1,8 +1,13 @@
 Changelog
 =========
 
-Unreleased
-----------
+1.20.1 (September 2023)
+-----------------------
+
+Minor new features:
+
+* Add optional `strict_check` parameter to `RepeatPass` to force stopping when
+  the circuit is unchanged.
 
 Fixes:
 

@@ -254,7 +254,8 @@ nlohmann::json SequencePass::get_config() const {
   return j;
 }
 
-RepeatPass::RepeatPass(const PassPtr& pass) : pass_(pass) {
+RepeatPass::RepeatPass(const PassPtr& pass, bool strict_check)
+    : pass_(pass), strict_check_(strict_check) {
   /* check precons and postcons are compatible for repetition */
   std::tie(precons_, postcons_) = BasePass::match_passes(pass, pass);
 }

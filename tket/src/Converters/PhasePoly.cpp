@@ -268,7 +268,33 @@ PhasePolyBox::PhasePolyBox(
   signature_ = op_signature_t(n_qubits_, EdgeType::Quantum);
 }
 
+/*
+ * Note: The generate circuit method no longer uses the input qubits to rename
+ * the units of the generated circuit. This is because doing this contradicts
+ * the expectations of the decompose boxes method and was causing errors in some
+ * cases when using custom registers.
+ *
+ * Usually boxes don't know about external
+ * qubit names, because this info is stored in the way the box is wired into a
+ * circuit. For some reason the PhasePolyBox box was written so that it does
+ * know about the names of qubits it was wired to at generation time (either
+ * deduced from the circuit it was generated from or provided by a map). This
+ * internal information is used in some of the AAS compilation strategies.
+ * Although it appears to me that this could be handled in a better way I don't
+ * have time to refactor the AAS code at the moment. So I added a method
+ * generate_circuit_with_original_placement (see below) that uses the logic that
+ * the AAS code expects (the generate_circuit logic), and this is used in the
+ * AAS code.
+ */
+
 void PhasePolyBox::generate_circuit() const {
+  std::list<phase_term_t> phases;
+  for (phase_term_t phase : phase_polynomial_) phases.push_back(phase);
+  Circuit circ = gray_synth(n_qubits_, phases, linear_transformation_);
+  circ_ = std::make_shared<Circuit>(circ);
+}
+
+Circuit PhasePolyBox::generate_circuit_with_original_placement() const {
   std::list<phase_term_t> phases;
   for (phase_term_t phase : phase_polynomial_) phases.push_back(phase);
   Circuit circ = gray_synth(n_qubits_, phases, linear_transformation_);
@@ -277,7 +303,7 @@ void PhasePolyBox::generate_circuit() const {
     qmap.insert({Qubit(q_default_reg(), pair.first), pair.second});
   }
   circ.rename_units(qmap);
-  circ_ = std::make_shared<Circuit>(circ);
+  return circ;
 }
 
 PhasePolyBox::PhasePolyBox(const PhasePolyBox& other)
@@ -450,28 +476,22 @@ void CircToPhasePolyConversion::convert() {
     unit_vector_t qbs = com.get_args();
     switch (ot) {
       case OpType::CX: {
-        unsigned ctrl = qubit_indices_.at(Qubit(qbs[0]));
-        unsigned target = qubit_indices_.at(Qubit(qbs[1]));
-        input_circ_.add_op<unsigned>(ot, {ctrl, target});
+        input_circ_.add_op<UnitID>(ot, {qbs[0], qbs[1]});
         break;
       }
       case OpType::Rz: {
-        unsigned qb = qubit_indices_.at(Qubit(qbs[0]));
         auto angle = com.get_op_ptr()->get_params().at(0);
-        input_circ_.add_op<unsigned>(ot, angle, {qb});
+        input_circ_.add_op<UnitID>(ot, angle, {qbs[0]});
         break;
       }
       case OpType::H:
       case OpType::Collapse:
       case OpType::Reset: {
-        unsigned qb = qubit_indices_.at(Qubit(qbs[0]));
-        input_circ_.add_op<unsigned>(ot, {qb});
+        input_circ_.add_op<UnitID>(ot, {qbs[0]});
         break;
       }
       case OpType::Measure: {
-        unsigned qb = qubit_indices_.at(Qubit(qbs[0]));
-        unsigned b = bit_indices_.at(Bit(qbs[1]));
-        input_circ_.add_op<unsigned>(ot, {qb, b});
+        input_circ_.add_op<UnitID>(ot, {qbs[0], qbs[1]});
         break;
       }
       case OpType::Barrier: {
