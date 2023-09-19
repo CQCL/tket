@@ -680,6 +680,7 @@ def test_custom_gates() -> None:
     gatedef = CustomGateDef.define("g", setup, [a, b])
     c = Circuit(4)
     c.add_custom_gate(gatedef, [0.2, 1.3], [0, 3, 1])
+    assert json_validate(c)
     coms = c.get_commands()
     assert len(coms) == 1
     cmd0 = coms[0]
