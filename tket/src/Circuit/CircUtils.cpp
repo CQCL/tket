@@ -21,6 +21,7 @@
 
 #include "tket/Circuit/CircPool.hpp"
 #include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/ConjugationBox.hpp"
 #include "tket/Gate/GatePtr.hpp"
 #include "tket/Gate/GateUnitaryMatrixImplementations.hpp"
 #include "tket/Gate/Rotation.hpp"
@@ -618,6 +619,40 @@ static Circuit CnU1(unsigned n_controls, Expr lambda) {
   }
 }
 
+/**
+ * @brief Returns the controlled version of a ConjugationBox
+ * The returned circuit is box free
+ * @param op assumes to be ConjugationBox
+ * @param n_controls
+ * @param args qubits where the box is original placed
+ * @return Circuit
+ */
+static Circuit controlled_conjugation_box(
+    const Op_ptr &op, unsigned n_controls, const unit_vector_t &args) {
+  const ConjugationBox &conj_box = static_cast<const ConjugationBox &>(*op);
+  unsigned n_targets = args.size();
+  Op_ptr compute = conj_box.get_compute();
+  Op_ptr action = conj_box.get_action();
+  std::optional<Op_ptr> uncompute_opt = conj_box.get_uncompute();
+  Op_ptr uncompute = uncompute_opt ? uncompute_opt.value() : compute->dagger();
+  qubit_vector_t all_args(n_controls + n_targets);
+  qubit_vector_t target_args(n_targets);
+  for (unsigned i = 0; i < n_controls; i++) {
+    all_args[i] = Qubit(i);
+  }
+  for (unsigned i = 0; i < n_targets; i++) {
+    all_args[n_controls + i] = Qubit(n_controls + args[i].index()[0]);
+    target_args[i] = Qubit(n_controls + args[i].index()[0]);
+  }
+  Circuit c3(n_controls + n_targets);
+  c3.add_op(compute, target_args);
+  QControlBox controlled_action(action, n_controls);
+  c3.add_box(controlled_action, all_args);
+  c3.add_op(uncompute, target_args);
+  c3.decompose_boxes_recursively();
+  return c3;
+}
+
 static Circuit with_controls_symbolic(const Circuit &c, unsigned n_controls) {
   if (c.n_bits() != 0 || !c.is_simple()) {
     throw CircuitInvalidity("Only default qubit register allowed");
@@ -647,9 +682,6 @@ static Circuit with_controls_symbolic(const Circuit &c, unsigned n_controls) {
       if (is_projective_type(optype)) {
         throw CircuitInvalidity("Projective operations present");
       }
-      if (is_box_type(optype)) {
-        throw CircuitInvalidity("Undecomposed boxes present");
-      }
       if (is_single_qubit_type(optype)) {
         continue;
       }
@@ -659,6 +691,8 @@ static Circuit with_controls_symbolic(const Circuit &c, unsigned n_controls) {
       Circuit replacement = with_CX(as_gate_ptr(op));
       c1.substitute(replacement, v, Circuit::VertexDeletion::No);
       bin.push_back(v);
+    } else if (is_box_type(optype) && optype != OpType::ConjugationBox) {
+      throw CircuitInvalidity("Undecomposed boxes present");
     }
   }
   c1.remove_vertices(
@@ -680,6 +714,10 @@ static Circuit with_controls_symbolic(const Circuit &c, unsigned n_controls) {
         barrier_args[i] = Qubit(n_controls + args[i].index()[0]);
       }
       c2.add_op(op, barrier_args);
+      continue;
+    }
+    if (optype == OpType::ConjugationBox) {
+      c2.append(controlled_conjugation_box(op, n_controls, args));
       continue;
     }
     unsigned n_new_args = n_controls + n_args;
@@ -809,11 +847,13 @@ struct CnGateBlock {
     }
     target_qubit = args.back().index()[0];
     is_barrier = (op->get_type() == OpType::Barrier);
+    is_conjugation_box = (op->get_type() == OpType::ConjugationBox);
     is_symmetric =
         (op->get_type() == OpType::CZ || op->get_type() == OpType::CnZ ||
          op->get_type() == OpType::CU1);
-    color = is_barrier ? std::nullopt
-                       : as_gate_ptr(op)->commuting_basis(args.size() - 1);
+    color = (is_barrier || is_conjugation_box)
+                ? std::nullopt
+                : as_gate_ptr(op)->commuting_basis(args.size() - 1);
     if (color == Pauli::I) {
       throw std::invalid_argument(
           "CnGateBlock doesn't accept multi-controlled identity gate.");
@@ -822,7 +862,8 @@ struct CnGateBlock {
 
   // Check whether commute with another CnGateBlock
   bool commutes_with(const CnGateBlock &other) {
-    if (is_barrier || other.is_barrier) {
+    if (is_barrier || other.is_barrier || is_conjugation_box ||
+        other.is_conjugation_box) {
       // they commute only if they have no args in common
       std::set<unsigned> common_args;
       std::set<unsigned> args = control_qubits;
@@ -849,7 +890,8 @@ struct CnGateBlock {
 
   // Check whether can be merged with another CnGateBlock
   bool is_mergeable_with(const CnGateBlock &other) {
-    if (is_barrier || other.is_barrier) {
+    if (is_barrier || other.is_barrier || is_conjugation_box ||
+        other.is_conjugation_box) {
       return false;
     }
     // check if sizes match
@@ -905,6 +947,8 @@ struct CnGateBlock {
   std::set<unsigned> control_qubits;
   // whether the block is used as a barrier
   bool is_barrier;
+  // whether the block contains a single ConjugationBox
+  bool is_conjugation_box;
   // whether the target can act on any of its qubits
   bool is_symmetric;
   // color of the target qubit
@@ -935,18 +979,17 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
       if (is_projective_type(optype)) {
         throw CircuitInvalidity("Projective operations present");
       }
-      if (is_box_type(optype)) {
-        throw CircuitInvalidity("Undecomposed boxes present");
-      }
       if (is_single_qubit_type(optype) || is_controlled_gate_type(optype)) {
         continue;
       }
       Circuit replacement = with_CX(as_gate_ptr(op));
       c1.substitute(replacement, v, Circuit::VertexDeletion::No);
       bin.push_back(v);
+    } else if (is_box_type(optype) && optype != OpType::ConjugationBox) {
+      throw CircuitInvalidity("Undecomposed boxes present");
     } else if (
         optype != OpType::Input && optype != OpType::Output &&
-        optype != OpType::Barrier) {
+        optype != OpType::Barrier && optype != OpType::ConjugationBox) {
       throw CircuitInvalidity(
           "Cannot construct the controlled version of " + op->get_name());
     }
@@ -964,7 +1007,8 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
   for (const Command &cmd : commands) {
     // if the gate is an identity up to a phase, add it as a controlled phase
     std::optional<double> phase = std::nullopt;
-    if (cmd.get_op_ptr()->get_type() != OpType::Barrier) {
+    OpType optype = cmd.get_op_ptr()->get_type();
+    if (optype != OpType::Barrier && optype != OpType::ConjugationBox) {
       phase = cmd.get_op_ptr()->is_identity();
     }
     if (phase != std::nullopt) {
@@ -1038,6 +1082,16 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
       new_args.push_back(Qubit(b.target_qubit + n_controls));
       TKET_ASSERT(b.ops.size() == 1);
       c2.add_op(b.ops[0], new_args);
+      continue;
+    }
+    if (b.is_conjugation_box) {
+      unit_vector_t args;
+      for (const unsigned i : b.control_qubits) {
+        args.push_back(Qubit(i));
+      }
+      args.push_back(Qubit(b.target_qubit));
+      TKET_ASSERT(b.ops.size() == 1);
+      c2.append(controlled_conjugation_box(b.ops[0], n_controls, args));
       continue;
     }
     // Computes the target unitary

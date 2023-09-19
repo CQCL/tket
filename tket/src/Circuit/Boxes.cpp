@@ -399,7 +399,8 @@ void QControlBox::generate_circuit() const {
   std::vector<unsigned> qbs(n_inner_qubits_);
   std::iota(qbs.begin(), qbs.end(), 0);
   c.add_op(op_, qbs);
-  c.decompose_boxes_recursively();
+  // ConjugationBoxes will be handled by with_controls
+  c.decompose_boxes_recursively({OpType::ConjugationBox});
   Circuit x_circ(n_controls_ + n_inner_qubits_);
   for (unsigned i = 0; i < n_controls_; i++) {
     if (!control_state_.at(i)) {
