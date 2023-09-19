@@ -835,6 +835,67 @@ SCENARIO("QControlBox", "[boxes]") {
     std::optional<Eigen::MatrixXcd> box_u = qcbox.get_box_unitary();
     REQUIRE(V.isApprox(box_u.value()));
   }
+  GIVEN("numerical circuit with a ConjugationBox") {
+    Circuit compute(2);
+    Circuit action(2);
+    compute.add_op<unsigned>(OpType::CX, {1, 0});
+    action.add_op<unsigned>(OpType::Z, {0});
+    Op_ptr compute_op = std::make_shared<CircBox>(CircBox(compute));
+    Op_ptr action_op = std::make_shared<CircBox>(CircBox(action));
+    Op_ptr cj_op =
+        std::make_shared<ConjugationBox>(ConjugationBox(compute_op, action_op));
+    WHEN("Simple") {
+      QControlBox qbox(cj_op);
+      std::shared_ptr<Circuit> c = qbox.to_circuit();
+      Circuit d(3);
+      d.add_op<unsigned>(OpType::CX, {2, 1});
+      d.add_op<unsigned>(OpType::CZ, {0, 1});
+      d.add_op<unsigned>(OpType::CX, {2, 1});
+      REQUIRE(*c == d);
+    }
+    WHEN("Nested") {
+      Circuit compute_outer(3);
+      compute_outer.add_op<unsigned>(OpType::CX, {2, 1});
+      Circuit action_outer(3);
+      action_outer.add_op<unsigned>(cj_op, {1, 0});
+      Op_ptr compute_outer_op =
+          std::make_shared<CircBox>(CircBox(compute_outer));
+      Op_ptr action_outer_op = std::make_shared<CircBox>(CircBox(action_outer));
+      Op_ptr cj_op_2 = std::make_shared<ConjugationBox>(
+          ConjugationBox(compute_outer_op, action_outer_op));
+      QControlBox qbox(cj_op_2);
+      std::shared_ptr<Circuit> c = qbox.to_circuit();
+      Circuit d(4);
+      d.add_op<unsigned>(OpType::CX, {3, 2});
+      d.add_op<unsigned>(OpType::CX, {1, 2});
+      d.add_op<unsigned>(OpType::CZ, {0, 2});
+      d.add_op<unsigned>(OpType::CX, {1, 2});
+      d.add_op<unsigned>(OpType::CX, {3, 2});
+      REQUIRE(*c == d);
+    }
+  }
+  GIVEN("symbolic circuit with a ConjugationBox") {
+    Sym s = SymEngine::symbol("a");
+    Expr a = Expr(s);
+    Circuit compute(1);
+    Circuit action(1);
+    Circuit uncompute(1);
+    compute.add_op<unsigned>(OpType::Rx, a, {0});
+    action.add_op<unsigned>(OpType::Z, {0});
+    uncompute.add_op<unsigned>(OpType::Rx, a, {0});
+    Op_ptr compute_op = std::make_shared<CircBox>(CircBox(compute));
+    Op_ptr action_op = std::make_shared<CircBox>(CircBox(action));
+    Op_ptr uncompute_op = std::make_shared<CircBox>(CircBox(uncompute));
+    Op_ptr cj_op = std::make_shared<ConjugationBox>(
+        ConjugationBox(compute_op, action_op, uncompute_op));
+    QControlBox qbox(cj_op);
+    std::shared_ptr<Circuit> c = qbox.to_circuit();
+    Circuit d(2);
+    d.add_op<unsigned>(OpType::Rx, a, {1});
+    d.add_op<unsigned>(OpType::CZ, {0, 1});
+    d.add_op<unsigned>(OpType::Rx, a, {1});
+    REQUIRE(*c == d);
+  }
 }
 
 SCENARIO("Unitary3qBox", "[boxes]") {
