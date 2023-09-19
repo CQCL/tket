@@ -394,164 +394,169 @@ $(function() {
 <div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160; </div>
 <div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;<span class="keyword">static</span> <a class="code" href="classtket_1_1PhasePolyBox.html">PhasePolyBox</a> make_placed_ppb(</div>
 <div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;    <span class="keyword">const</span> <a class="code" href="classtket_1_1Architecture.html">Architecture</a> &amp;arch, <span class="keyword">const</span> <a class="code" href="classtket_1_1PhasePolyBox.html">PhasePolyBox</a> &amp;phasepolybox) {</div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;  <a class="code" href="classtket_1_1Circuit.html">Circuit</a> circuit_ppb_place(*phasepolybox.<a class="code" href="classtket_1_1Box.html#aa8189b7ff8c3c0b8fd90cbc71cf19c3f">to_circuit</a>());</div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160; </div>
-<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;  <span class="keyword">const</span> std::string register_name = <span class="stringliteral">&quot;surplus&quot;</span>;</div>
-<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160; </div>
-<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;  <span class="keywordtype">unsigned</span> qb_counter = circuit_ppb_place.n_qubits();</div>
-<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;  <span class="keywordflow">while</span> (arch.<a class="code" href="classtket_1_1graphs_1_1AbstractGraph.html#a1dd52e51660aae6f70754eb64167e8f7">n_nodes</a>() &gt; circuit_ppb_place.n_qubits()) {</div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;    <a class="code" href="classtket_1_1Qubit.html">Qubit</a> qb = <a class="code" href="classtket_1_1Qubit.html">Qubit</a>(register_name, qb_counter);</div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;    circuit_ppb_place.add_qubit(qb);</div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;    ++qb_counter;</div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;  }</div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160; </div>
-<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;  TKET_ASSERT(circuit_ppb_place.n_qubits() == arch.<a class="code" href="classtket_1_1graphs_1_1AbstractGraph.html#a1dd52e51660aae6f70754eb64167e8f7">n_nodes</a>());</div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160; </div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;  <a class="code" href="namespacetket.html#ad949814c463d9f998540c0f812e76aa6">qubit_vector_t</a> q_vec_place = circuit_ppb_place.all_qubits();</div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;  std::map&lt;Qubit, Node&gt; qubit_to_nodes_place;</div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;  <span class="keywordtype">unsigned</span> counter_place = 0;</div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160; </div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;  <span class="keywordflow">for</span> (Node no_place : arch.<a class="code" href="classtket_1_1graphs_1_1AbstractGraph.html#a9a9ac744aa2763fc45132a16b8f376f4">nodes</a>()) {</div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;    <span class="keywordflow">if</span> (counter_place &lt; circuit_ppb_place.n_qubits()) {</div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;      qubit_to_nodes_place.insert({q_vec_place[counter_place], no_place});</div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;      ++counter_place;</div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;    }</div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;  }</div>
-<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160; </div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;  circuit_ppb_place.rename_units(qubit_to_nodes_place);</div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160; </div>
-<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;  <span class="keywordflow">return</span> <a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a242d5bcfd960527a3f152c6dfe220c67">PhasePolyBox</a>(circuit_ppb_place);</div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;}</div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160; </div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;<span class="keyword">class </span>PhasePolySynthesizer {</div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160; <span class="keyword">public</span>:</div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;  PhasePolySynthesizer(</div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;      <span class="keyword">const</span> Architecture &amp;arch, <span class="keyword">const</span> PhasePolyBox &amp;phasepolybox,</div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;      <span class="keywordtype">unsigned</span> lookahead, <a class="code" href="namespacetket_1_1aas.html#af7e883680036ba6f4ba75d9729a443c5">CNotSynthType</a> cnottype)</div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;      : arch(arch),</div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;        placed_ppb(make_placed_ppb(arch, phasepolybox)),</div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;        lookahead(lookahead),</div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;        cnottype(cnottype) {}</div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160; </div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;  Circuit get_result() {</div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;    <span class="keywordflow">return</span> (cnottype == <a class="code" href="namespacetket_1_1aas.html#af7e883680036ba6f4ba75d9729a443c5a56e58494102c227a0f276756f2d7632e">CNotSynthType::HamPath</a>) ? get_result_using_hampath()</div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;                                                : get_result_standard();</div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;  }</div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160; </div>
-<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160; <span class="keyword">private</span>:</div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;  Circuit get_result_from_hampath(<span class="keyword">const</span> std::vector&lt;Node&gt; &amp;hampath) {</div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;    <span class="comment">// maps from qubits/node to int</span></div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;    std::map&lt;UnitID, UnitID&gt; forward_contiguous_uids_q;</div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;    std::map&lt;UnitID, UnitID&gt; backward_contiguous_uids_n;</div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;    <span class="comment">// extra map with node type needed for the creation of the architecture</span></div>
-<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;    std::map&lt;UnitID, Node&gt; unitid_to_int_nodes;</div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; hampath.size(); i++) {</div>
-<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;      UnitID qu_no = UnitID(hampath[i]);</div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;      <a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a> q = <a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a>(i);</div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;      Node n = Node(i);</div>
-<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;      unitid_to_int_nodes.insert({qu_no, n});</div>
-<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;      forward_contiguous_uids_q.insert({q, qu_no});</div>
-<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;      backward_contiguous_uids_n.insert({qu_no, n});</div>
-<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;    }</div>
-<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;    <span class="comment">// define new arcitecture</span></div>
-<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;    std::vector&lt;Architecture::Connection&gt; new_con;</div>
-<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> pair : arch.<a class="code" href="classtket_1_1graphs_1_1DirectedGraphBase.html#a009857b4bd485dc4eddf2fe948289d85">get_all_edges_vec</a>()) {</div>
-<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;      new_con.push_back(</div>
-<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;          {unitid_to_int_nodes[UnitID(pair.first)],</div>
-<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;           unitid_to_int_nodes[UnitID(pair.second)]});</div>
-<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;    }</div>
-<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;    Architecture con_arch(new_con);</div>
-<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;    <span class="keywordflow">return</span> make_result_from_con_arch(</div>
-<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;        con_arch, forward_contiguous_uids_q, backward_contiguous_uids_n);</div>
-<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;  }</div>
-<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160; </div>
-<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;  Circuit get_result_using_hampath() {</div>
-<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;    std::vector&lt;Node&gt; hampath = <a class="code" href="namespacetket_1_1aas.html#a8d03c5d83cbc6892bfa02b9cb4e4a697">find_hampath</a>(arch);  <span class="comment">// using default timeout</span></div>
-<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;    Circuit c0 = get_result_from_hampath(hampath);</div>
-<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;    <span class="comment">// Sometimes the reversed path gives a better circuit. Try both!</span></div>
-<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;    std::reverse(hampath.begin(), hampath.end());</div>
-<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;    Circuit c1 = get_result_from_hampath(hampath);</div>
-<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;    <span class="keywordflow">return</span> (c0.depth() &lt; c1.depth()) ? c0 : c1;</div>
-<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;  }</div>
-<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160; </div>
-<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;  Circuit get_result_standard() {</div>
-<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;    <span class="comment">// calculate iteration order</span></div>
-<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;    IterationOrder iter_order(arch);</div>
-<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;    std::vector&lt;Node&gt; node_order = iter_order.get_iterationorder();</div>
-<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;    <span class="comment">// maps from qubits/node to int</span></div>
-<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;    std::map&lt;UnitID, UnitID&gt; forward_contiguous_uids_q;</div>
-<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;    std::map&lt;UnitID, UnitID&gt; backward_contiguous_uids_n;</div>
-<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;    <span class="comment">// extra map with node type needed for the creation of the architecture</span></div>
-<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;    std::map&lt;UnitID, Node&gt; unitid_to_int_nodes;</div>
-<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; node_order.size(); i++) {</div>
-<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;      <span class="comment">// convert node to superclass type of qubit/node</span></div>
-<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;      UnitID qu_no = UnitID(node_order[i]);</div>
-<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;      <a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a> q = <a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a>(i);</div>
-<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;      Node n = Node(i);</div>
-<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;      forward_contiguous_uids_q.insert({q, qu_no});</div>
-<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;      backward_contiguous_uids_n.insert({qu_no, n});</div>
-<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;      unitid_to_int_nodes.insert({qu_no, n});</div>
-<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;    }</div>
-<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;    <span class="comment">// define new arcitecture: include only the tree edges</span></div>
-<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;    std::vector&lt;Architecture::Connection&gt; new_con;</div>
-<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> pair : iter_order.get_edgelist()) {</div>
-<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;      new_con.push_back(</div>
-<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;          {unitid_to_int_nodes[UnitID(pair.first)],</div>
-<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;           unitid_to_int_nodes[UnitID(pair.second)]});</div>
-<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;    }</div>
-<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;    Architecture con_arch(new_con);</div>
-<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;    <span class="keywordflow">return</span> make_result_from_con_arch(</div>
-<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;        con_arch, forward_contiguous_uids_q, backward_contiguous_uids_n);</div>
-<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;  }</div>
-<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160; </div>
-<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160;  Circuit make_result_from_con_arch(</div>
-<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;      <span class="keyword">const</span> Architecture &amp;con_arch,</div>
-<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;      <span class="keyword">const</span> std::map&lt;UnitID, UnitID&gt; &amp;forward_contiguous_uids_q,</div>
-<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;      <span class="keyword">const</span> std::map&lt;UnitID, UnitID&gt; &amp;backward_contiguous_uids_n) {</div>
-<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;    <span class="comment">// define new phase poly box</span></div>
-<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;    Circuit circuit_ppb(*placed_ppb.to_circuit());</div>
-<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;    <span class="comment">// the aas code is implemented under the assumption that all qubits in the</span></div>
-<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;    <span class="comment">// circuit are named from 0 to n. The same assumption was made for the nodes</span></div>
-<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;    <span class="comment">// of the architecture. To make sure that this condition is fulfilled the</span></div>
-<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;    <span class="comment">// qubits in the circuit and the architecture are renamed. The new names are</span></div>
-<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;    <span class="comment">// reverted at the end of the aas procedure. The qubits and the nodes have</span></div>
-<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;    <span class="comment">// the same name in the input.</span></div>
-<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;    circuit_ppb.rename_units(backward_contiguous_uids_n);</div>
-<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;    <a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a242d5bcfd960527a3f152c6dfe220c67">PhasePolyBox</a> new_ppb(circuit_ppb);</div>
-<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;    Circuit result =</div>
-<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;        <a class="code" href="namespacetket_1_1aas.html#a40bb54b5123ed6ac35c69144f7fbb2e4">phase_poly_synthesis_int</a>(con_arch, new_ppb, lookahead, cnottype);</div>
-<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;    result.rename_units(forward_contiguous_uids_q);</div>
-<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;    <span class="keywordflow">return</span> result;</div>
-<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;  }</div>
-<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160; </div>
-<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160;  Architecture arch;</div>
-<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;  <a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a242d5bcfd960527a3f152c6dfe220c67">PhasePolyBox</a> placed_ppb;</div>
-<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;  <span class="keywordtype">unsigned</span> lookahead;</div>
-<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;  <a class="code" href="namespacetket_1_1aas.html#af7e883680036ba6f4ba75d9729a443c5">CNotSynthType</a> cnottype;</div>
-<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;};</div>
-<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160; </div>
-<div class="line"><a name="l00455"></a><span class="lineno"><a class="line" href="namespacetket_1_1aas.html#a7dcc277d91b50f17effa5fc5a1036af3">  455</a></span>&#160;<a class="code" href="classtket_1_1Circuit.html">Circuit</a> <a class="code" href="namespacetket_1_1aas.html#a7dcc277d91b50f17effa5fc5a1036af3">phase_poly_synthesis</a>(</div>
-<div class="line"><a name="l00456"></a><span class="lineno">  456</span>&#160;    <span class="keyword">const</span> <a class="code" href="classtket_1_1Architecture.html">Architecture</a> &amp;arch, <span class="keyword">const</span> <a class="code" href="classtket_1_1PhasePolyBox.html">PhasePolyBox</a> &amp;phasepolybox,</div>
-<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;    <span class="keywordtype">unsigned</span> lookahead, <a class="code" href="namespacetket_1_1aas.html#af7e883680036ba6f4ba75d9729a443c5">CNotSynthType</a> cnottype) {</div>
-<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;  PhasePolySynthesizer pps(arch, phasepolybox, lookahead, cnottype);</div>
-<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;  <span class="keywordflow">return</span> pps.get_result();</div>
-<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;}</div>
-<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160; </div>
-<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160;}  <span class="comment">// namespace aas</span></div>
-<div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;}  <span class="comment">// namespace tket</span></div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;  <a class="code" href="classtket_1_1Circuit.html">Circuit</a> circuit_ppb_place =</div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;      phasepolybox.<a class="code" href="classtket_1_1PhasePolyBox.html#ac834bee732816253a97d46cbf744f793">generate_circuit_with_original_placement</a>();</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160; </div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;  <span class="keyword">const</span> std::string register_name = <span class="stringliteral">&quot;surplus&quot;</span>;</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160; </div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;  <span class="keywordtype">unsigned</span> qb_counter = circuit_ppb_place.<a class="code" href="classtket_1_1Circuit.html#a0baec82ad9c0308fd2655607d30caf3d">n_qubits</a>();</div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;  <span class="keywordflow">while</span> (arch.<a class="code" href="classtket_1_1graphs_1_1AbstractGraph.html#a1dd52e51660aae6f70754eb64167e8f7">n_nodes</a>() &gt; circuit_ppb_place.<a class="code" href="classtket_1_1Circuit.html#a0baec82ad9c0308fd2655607d30caf3d">n_qubits</a>()) {</div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;    <a class="code" href="classtket_1_1Qubit.html">Qubit</a> qb = <a class="code" href="classtket_1_1Qubit.html">Qubit</a>(register_name, qb_counter);</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;    circuit_ppb_place.<a class="code" href="classtket_1_1Circuit.html#acdda639822edaad4b2c10d38e2924e3a">add_qubit</a>(qb);</div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;    ++qb_counter;</div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;  }</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160; </div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;  TKET_ASSERT(circuit_ppb_place.<a class="code" href="classtket_1_1Circuit.html#a0baec82ad9c0308fd2655607d30caf3d">n_qubits</a>() == arch.<a class="code" href="classtket_1_1graphs_1_1AbstractGraph.html#a1dd52e51660aae6f70754eb64167e8f7">n_nodes</a>());</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160; </div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;  <a class="code" href="namespacetket.html#ad949814c463d9f998540c0f812e76aa6">qubit_vector_t</a> q_vec_place = circuit_ppb_place.<a class="code" href="classtket_1_1Circuit.html#a1e25972d9f6e767128fdc294a628a95b">all_qubits</a>();</div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;  std::map&lt;Qubit, Node&gt; qubit_to_nodes_place;</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;  <span class="keywordtype">unsigned</span> counter_place = 0;</div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160; </div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;  <span class="keywordflow">for</span> (Node no_place : arch.<a class="code" href="classtket_1_1graphs_1_1AbstractGraph.html#a9a9ac744aa2763fc45132a16b8f376f4">nodes</a>()) {</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;    <span class="keywordflow">if</span> (counter_place &lt; circuit_ppb_place.<a class="code" href="classtket_1_1Circuit.html#a0baec82ad9c0308fd2655607d30caf3d">n_qubits</a>()) {</div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;      qubit_to_nodes_place.insert({q_vec_place[counter_place], no_place});</div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;      ++counter_place;</div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;    }</div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;  }</div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160; </div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;  circuit_ppb_place.<a class="code" href="classtket_1_1Circuit.html#a045acc253d2d125da63c0af649bf3cd2">rename_units</a>(qubit_to_nodes_place);</div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160; </div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;  <span class="keywordflow">return</span> <a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a242d5bcfd960527a3f152c6dfe220c67">PhasePolyBox</a>(circuit_ppb_place);</div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;}</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160; </div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;<span class="keyword">class </span>PhasePolySynthesizer {</div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160; <span class="keyword">public</span>:</div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;  PhasePolySynthesizer(</div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;      <span class="keyword">const</span> Architecture &amp;arch, <span class="keyword">const</span> PhasePolyBox &amp;phasepolybox,</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;      <span class="keywordtype">unsigned</span> lookahead, <a class="code" href="namespacetket_1_1aas.html#af7e883680036ba6f4ba75d9729a443c5">CNotSynthType</a> cnottype)</div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;      : arch(arch),</div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;        placed_ppb(make_placed_ppb(arch, phasepolybox)),</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;        lookahead(lookahead),</div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;        cnottype(cnottype) {}</div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160; </div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;  Circuit get_result() {</div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;    <span class="keywordflow">return</span> (cnottype == <a class="code" href="namespacetket_1_1aas.html#af7e883680036ba6f4ba75d9729a443c5a56e58494102c227a0f276756f2d7632e">CNotSynthType::HamPath</a>) ? get_result_using_hampath()</div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;                                                : get_result_standard();</div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;  }</div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160; </div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160; <span class="keyword">private</span>:</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;  Circuit get_result_from_hampath(<span class="keyword">const</span> std::vector&lt;Node&gt; &amp;hampath) {</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;    <span class="comment">// maps from qubits/node to int</span></div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;    std::map&lt;UnitID, UnitID&gt; forward_contiguous_uids_q;</div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;    std::map&lt;UnitID, UnitID&gt; backward_contiguous_uids_n;</div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;    <span class="comment">// extra map with node type needed for the creation of the architecture</span></div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;    std::map&lt;UnitID, Node&gt; unitid_to_int_nodes;</div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; hampath.size(); i++) {</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;      UnitID qu_no = UnitID(hampath[i]);</div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;      <a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a> q = <a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a>(i);</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;      Node n = Node(i);</div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;      unitid_to_int_nodes.insert({qu_no, n});</div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;      forward_contiguous_uids_q.insert({q, qu_no});</div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;      backward_contiguous_uids_n.insert({qu_no, n});</div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;    }</div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;    <span class="comment">// define new arcitecture</span></div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;    std::vector&lt;Architecture::Connection&gt; new_con;</div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> pair : arch.<a class="code" href="classtket_1_1graphs_1_1DirectedGraphBase.html#a009857b4bd485dc4eddf2fe948289d85">get_all_edges_vec</a>()) {</div>
+<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;      new_con.push_back(</div>
+<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;          {unitid_to_int_nodes[UnitID(pair.first)],</div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;           unitid_to_int_nodes[UnitID(pair.second)]});</div>
+<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;    }</div>
+<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;    Architecture con_arch(new_con);</div>
+<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;    <span class="keywordflow">return</span> make_result_from_con_arch(</div>
+<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;        con_arch, forward_contiguous_uids_q, backward_contiguous_uids_n);</div>
+<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;  }</div>
+<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160; </div>
+<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;  Circuit get_result_using_hampath() {</div>
+<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;    std::vector&lt;Node&gt; hampath = <a class="code" href="namespacetket_1_1aas.html#a8d03c5d83cbc6892bfa02b9cb4e4a697">find_hampath</a>(arch);  <span class="comment">// using default timeout</span></div>
+<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;    Circuit c0 = get_result_from_hampath(hampath);</div>
+<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;    <span class="comment">// Sometimes the reversed path gives a better circuit. Try both!</span></div>
+<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;    std::reverse(hampath.begin(), hampath.end());</div>
+<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;    Circuit c1 = get_result_from_hampath(hampath);</div>
+<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160;    <span class="keywordflow">return</span> (c0.depth() &lt; c1.depth()) ? c0 : c1;</div>
+<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;  }</div>
+<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160; </div>
+<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;  Circuit get_result_standard() {</div>
+<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;    <span class="comment">// calculate iteration order</span></div>
+<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;    IterationOrder iter_order(arch);</div>
+<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;    std::vector&lt;Node&gt; node_order = iter_order.get_iterationorder();</div>
+<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;    <span class="comment">// maps from qubits/node to int</span></div>
+<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;    std::map&lt;UnitID, UnitID&gt; forward_contiguous_uids_q;</div>
+<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;    std::map&lt;UnitID, UnitID&gt; backward_contiguous_uids_n;</div>
+<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160;    <span class="comment">// extra map with node type needed for the creation of the architecture</span></div>
+<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;    std::map&lt;UnitID, Node&gt; unitid_to_int_nodes;</div>
+<div class="line"><a name="l00409"></a><span class="lineno">  409</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; node_order.size(); i++) {</div>
+<div class="line"><a name="l00410"></a><span class="lineno">  410</span>&#160;      <span class="comment">// convert node to superclass type of qubit/node</span></div>
+<div class="line"><a name="l00411"></a><span class="lineno">  411</span>&#160;      UnitID qu_no = UnitID(node_order[i]);</div>
+<div class="line"><a name="l00412"></a><span class="lineno">  412</span>&#160;      <a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a> q = <a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a>(i);</div>
+<div class="line"><a name="l00413"></a><span class="lineno">  413</span>&#160;      Node n = Node(i);</div>
+<div class="line"><a name="l00414"></a><span class="lineno">  414</span>&#160;      forward_contiguous_uids_q.insert({q, qu_no});</div>
+<div class="line"><a name="l00415"></a><span class="lineno">  415</span>&#160;      backward_contiguous_uids_n.insert({qu_no, n});</div>
+<div class="line"><a name="l00416"></a><span class="lineno">  416</span>&#160;      unitid_to_int_nodes.insert({qu_no, n});</div>
+<div class="line"><a name="l00417"></a><span class="lineno">  417</span>&#160;    }</div>
+<div class="line"><a name="l00418"></a><span class="lineno">  418</span>&#160;    <span class="comment">// define new arcitecture: include only the tree edges</span></div>
+<div class="line"><a name="l00419"></a><span class="lineno">  419</span>&#160;    std::vector&lt;Architecture::Connection&gt; new_con;</div>
+<div class="line"><a name="l00420"></a><span class="lineno">  420</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">auto</span> pair : iter_order.get_edgelist()) {</div>
+<div class="line"><a name="l00421"></a><span class="lineno">  421</span>&#160;      new_con.push_back(</div>
+<div class="line"><a name="l00422"></a><span class="lineno">  422</span>&#160;          {unitid_to_int_nodes[UnitID(pair.first)],</div>
+<div class="line"><a name="l00423"></a><span class="lineno">  423</span>&#160;           unitid_to_int_nodes[UnitID(pair.second)]});</div>
+<div class="line"><a name="l00424"></a><span class="lineno">  424</span>&#160;    }</div>
+<div class="line"><a name="l00425"></a><span class="lineno">  425</span>&#160;    Architecture con_arch(new_con);</div>
+<div class="line"><a name="l00426"></a><span class="lineno">  426</span>&#160;    <span class="keywordflow">return</span> make_result_from_con_arch(</div>
+<div class="line"><a name="l00427"></a><span class="lineno">  427</span>&#160;        con_arch, forward_contiguous_uids_q, backward_contiguous_uids_n);</div>
+<div class="line"><a name="l00428"></a><span class="lineno">  428</span>&#160;  }</div>
+<div class="line"><a name="l00429"></a><span class="lineno">  429</span>&#160; </div>
+<div class="line"><a name="l00430"></a><span class="lineno">  430</span>&#160;  Circuit make_result_from_con_arch(</div>
+<div class="line"><a name="l00431"></a><span class="lineno">  431</span>&#160;      <span class="keyword">const</span> Architecture &amp;con_arch,</div>
+<div class="line"><a name="l00432"></a><span class="lineno">  432</span>&#160;      <span class="keyword">const</span> std::map&lt;UnitID, UnitID&gt; &amp;forward_contiguous_uids_q,</div>
+<div class="line"><a name="l00433"></a><span class="lineno">  433</span>&#160;      <span class="keyword">const</span> std::map&lt;UnitID, UnitID&gt; &amp;backward_contiguous_uids_n) {</div>
+<div class="line"><a name="l00434"></a><span class="lineno">  434</span>&#160;    <span class="comment">// define new phase poly box</span></div>
+<div class="line"><a name="l00435"></a><span class="lineno">  435</span>&#160;    Circuit circuit_ppb = placed_ppb.generate_circuit_with_original_placement();</div>
+<div class="line"><a name="l00436"></a><span class="lineno">  436</span>&#160;    <span class="comment">// the aas code is implemented under the assumption that all qubits in the</span></div>
+<div class="line"><a name="l00437"></a><span class="lineno">  437</span>&#160;    <span class="comment">// circuit are named from 0 to n. The same assumption was made for the nodes</span></div>
+<div class="line"><a name="l00438"></a><span class="lineno">  438</span>&#160;    <span class="comment">// of the architecture. To make sure that this condition is fulfilled the</span></div>
+<div class="line"><a name="l00439"></a><span class="lineno">  439</span>&#160;    <span class="comment">// qubits in the circuit and the architecture are renamed. The new names are</span></div>
+<div class="line"><a name="l00440"></a><span class="lineno">  440</span>&#160;    <span class="comment">// reverted at the end of the aas procedure. The qubits and the nodes have</span></div>
+<div class="line"><a name="l00441"></a><span class="lineno">  441</span>&#160;    <span class="comment">// the same name in the input.</span></div>
+<div class="line"><a name="l00442"></a><span class="lineno">  442</span>&#160;    circuit_ppb.rename_units(backward_contiguous_uids_n);</div>
+<div class="line"><a name="l00443"></a><span class="lineno">  443</span>&#160;    <a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a242d5bcfd960527a3f152c6dfe220c67">PhasePolyBox</a> new_ppb(circuit_ppb);</div>
+<div class="line"><a name="l00444"></a><span class="lineno">  444</span>&#160;    Circuit result =</div>
+<div class="line"><a name="l00445"></a><span class="lineno">  445</span>&#160;        <a class="code" href="namespacetket_1_1aas.html#a40bb54b5123ed6ac35c69144f7fbb2e4">phase_poly_synthesis_int</a>(con_arch, new_ppb, lookahead, cnottype);</div>
+<div class="line"><a name="l00446"></a><span class="lineno">  446</span>&#160;    result.rename_units(forward_contiguous_uids_q);</div>
+<div class="line"><a name="l00447"></a><span class="lineno">  447</span>&#160;    <span class="keywordflow">return</span> result;</div>
+<div class="line"><a name="l00448"></a><span class="lineno">  448</span>&#160;  }</div>
+<div class="line"><a name="l00449"></a><span class="lineno">  449</span>&#160; </div>
+<div class="line"><a name="l00450"></a><span class="lineno">  450</span>&#160;  Architecture arch;</div>
+<div class="line"><a name="l00451"></a><span class="lineno">  451</span>&#160;  <a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a242d5bcfd960527a3f152c6dfe220c67">PhasePolyBox</a> placed_ppb;</div>
+<div class="line"><a name="l00452"></a><span class="lineno">  452</span>&#160;  <span class="keywordtype">unsigned</span> lookahead;</div>
+<div class="line"><a name="l00453"></a><span class="lineno">  453</span>&#160;  <a class="code" href="namespacetket_1_1aas.html#af7e883680036ba6f4ba75d9729a443c5">CNotSynthType</a> cnottype;</div>
+<div class="line"><a name="l00454"></a><span class="lineno">  454</span>&#160;};</div>
+<div class="line"><a name="l00455"></a><span class="lineno">  455</span>&#160; </div>
+<div class="line"><a name="l00456"></a><span class="lineno"><a class="line" href="namespacetket_1_1aas.html#a7dcc277d91b50f17effa5fc5a1036af3">  456</a></span>&#160;<a class="code" href="classtket_1_1Circuit.html">Circuit</a> <a class="code" href="namespacetket_1_1aas.html#a7dcc277d91b50f17effa5fc5a1036af3">phase_poly_synthesis</a>(</div>
+<div class="line"><a name="l00457"></a><span class="lineno">  457</span>&#160;    <span class="keyword">const</span> <a class="code" href="classtket_1_1Architecture.html">Architecture</a> &amp;arch, <span class="keyword">const</span> <a class="code" href="classtket_1_1PhasePolyBox.html">PhasePolyBox</a> &amp;phasepolybox,</div>
+<div class="line"><a name="l00458"></a><span class="lineno">  458</span>&#160;    <span class="keywordtype">unsigned</span> lookahead, <a class="code" href="namespacetket_1_1aas.html#af7e883680036ba6f4ba75d9729a443c5">CNotSynthType</a> cnottype) {</div>
+<div class="line"><a name="l00459"></a><span class="lineno">  459</span>&#160;  PhasePolySynthesizer pps(arch, phasepolybox, lookahead, cnottype);</div>
+<div class="line"><a name="l00460"></a><span class="lineno">  460</span>&#160;  <span class="keywordflow">return</span> pps.get_result();</div>
+<div class="line"><a name="l00461"></a><span class="lineno">  461</span>&#160;}</div>
+<div class="line"><a name="l00462"></a><span class="lineno">  462</span>&#160; </div>
+<div class="line"><a name="l00463"></a><span class="lineno">  463</span>&#160;}  <span class="comment">// namespace aas</span></div>
+<div class="line"><a name="l00464"></a><span class="lineno">  464</span>&#160;}  <span class="comment">// namespace tket</span></div>
 <div class="ttc" id="aArchitecture_8hpp_html"><div class="ttname"><a href="Architecture_8hpp.html">Architecture.hpp</a></div></div>
 <div class="ttc" id="aSteinerForest_8hpp_html"><div class="ttname"><a href="SteinerForest_8hpp.html">SteinerForest.hpp</a></div></div>
 <div class="ttc" id="aSteinerTree_8hpp_html"><div class="ttname"><a href="SteinerTree_8hpp.html">SteinerTree.hpp</a></div></div>
 <div class="ttc" id="aclasstket_1_1Architecture_html"><div class="ttname"><a href="classtket_1_1Architecture.html">tket::Architecture</a></div><div class="ttdef"><b>Definition:</b> <a href="Architecture_8hpp_source.html#l00076">Architecture.hpp:76</a></div></div>
-<div class="ttc" id="aclasstket_1_1Box_html_aa8189b7ff8c3c0b8fd90cbc71cf19c3f"><div class="ttname"><a href="classtket_1_1Box.html#aa8189b7ff8c3c0b8fd90cbc71cf19c3f">tket::Box::to_circuit</a></div><div class="ttdeci">std::shared_ptr&lt; Circuit &gt; to_circuit() const</div><div class="ttdoc">Circuit represented by box.</div><div class="ttdef"><b>Definition:</b> <a href="Boxes_8hpp_source.html#l00068">Boxes.hpp:68</a></div></div>
 <div class="ttc" id="aclasstket_1_1Circuit_html"><div class="ttname"><a href="classtket_1_1Circuit.html">tket::Circuit</a></div><div class="ttdoc">A circuit.</div><div class="ttdef"><b>Definition:</b> <a href="Circuit_8hpp_source.html#l00248">Circuit.hpp:248</a></div></div>
+<div class="ttc" id="aclasstket_1_1Circuit_html_a045acc253d2d125da63c0af649bf3cd2"><div class="ttname"><a href="classtket_1_1Circuit.html#a045acc253d2d125da63c0af649bf3cd2">tket::Circuit::rename_units</a></div><div class="ttdeci">bool rename_units(const std::map&lt; UnitA, UnitB &gt; &amp;qm)</div><div class="ttdoc">Rename all the units according to the given mapping.</div><div class="ttdef"><b>Definition:</b> <a href="Circuit_8hpp_source.html#l01669">Circuit.hpp:1669</a></div></div>
+<div class="ttc" id="aclasstket_1_1Circuit_html_a0baec82ad9c0308fd2655607d30caf3d"><div class="ttname"><a href="classtket_1_1Circuit.html#a0baec82ad9c0308fd2655607d30caf3d">tket::Circuit::n_qubits</a></div><div class="ttdeci">unsigned n_qubits() const</div><div class="ttdef"><b>Definition:</b> <a href="setters__and__getters_8cpp_source.html#l00306">setters_and_getters.cpp:306</a></div></div>
+<div class="ttc" id="aclasstket_1_1Circuit_html_a1e25972d9f6e767128fdc294a628a95b"><div class="ttname"><a href="classtket_1_1Circuit.html#a1e25972d9f6e767128fdc294a628a95b">tket::Circuit::all_qubits</a></div><div class="ttdeci">qubit_vector_t all_qubits() const</div><div class="ttdef"><b>Definition:</b> <a href="setters__and__getters_8cpp_source.html#l00142">setters_and_getters.cpp:142</a></div></div>
 <div class="ttc" id="aclasstket_1_1Circuit_html_aa55737dd6ce4273d3b1843de50022405"><div class="ttname"><a href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">tket::Circuit::add_op</a></div><div class="ttdeci">Vertex add_op(const Op_ptr &amp;op, const std::vector&lt; ID &gt; &amp;args, std::optional&lt; std::string &gt; opgroup=std::nullopt)</div><div class="ttdoc">Append an operation to the circuit.</div><div class="ttdef"><b>Definition:</b> <a href="Circuit_8hpp_source.html#l01742">Circuit.hpp:1742</a></div></div>
+<div class="ttc" id="aclasstket_1_1Circuit_html_acdda639822edaad4b2c10d38e2924e3a"><div class="ttname"><a href="classtket_1_1Circuit.html#acdda639822edaad4b2c10d38e2924e3a">tket::Circuit::add_qubit</a></div><div class="ttdeci">void add_qubit(const Qubit &amp;id, bool reject_dups=true)</div><div class="ttdef"><b>Definition:</b> <a href="basic__circ__manip_8cpp_source.html#l00432">basic_circ_manip.cpp:432</a></div></div>
 <div class="ttc" id="aclasstket_1_1Circuit_html_af2b0b0398ec8fb83914f0793a560d1ce"><div class="ttname"><a href="classtket_1_1Circuit.html#af2b0b0398ec8fb83914f0793a560d1ce">tket::Circuit::dagger</a></div><div class="ttdeci">Circuit dagger() const</div><div class="ttdef"><b>Definition:</b> <a href="macro__manipulation_8cpp_source.html#l00518">macro_manipulation.cpp:518</a></div></div>
 <div class="ttc" id="aclasstket_1_1DiagMatrix_html"><div class="ttname"><a href="classtket_1_1DiagMatrix.html">tket::DiagMatrix</a></div><div class="ttdef"><b>Definition:</b> <a href="Gauss_8hpp_source.html#l00031">Gauss.hpp:31</a></div></div>
 <div class="ttc" id="aclasstket_1_1DiagMatrix_html_a49a19d92840739a0649f77a0ef0daa97"><div class="ttname"><a href="classtket_1_1DiagMatrix.html#a49a19d92840739a0649f77a0ef0daa97">tket::DiagMatrix::is_id</a></div><div class="ttdeci">bool is_id() const</div><div class="ttdef"><b>Definition:</b> <a href="Gauss_8cpp_source.html#l00047">Gauss.cpp:47</a></div></div>
 <div class="ttc" id="aclasstket_1_1DiagMatrix_html_ab0a2ada106939814bf099e6a497f92ea"><div class="ttname"><a href="classtket_1_1DiagMatrix.html#ab0a2ada106939814bf099e6a497f92ea">tket::DiagMatrix::col_add</a></div><div class="ttdeci">void col_add(unsigned c0, unsigned c1)</div><div class="ttdef"><b>Definition:</b> <a href="Gauss_8cpp_source.html#l00032">Gauss.cpp:32</a></div></div>
 <div class="ttc" id="aclasstket_1_1PhasePolyBox_html"><div class="ttname"><a href="classtket_1_1PhasePolyBox.html">tket::PhasePolyBox</a></div><div class="ttdoc">A PhasePolyBox is capable of representing arbitrary Circuits made up of CNOT and RZ,...</div><div class="ttdef"><b>Definition:</b> <a href="PhasePoly_8hpp_source.html#l00045">PhasePoly.hpp:45</a></div></div>
 <div class="ttc" id="aclasstket_1_1PhasePolyBox_html_a0a2e6051786b990f3124ceda932a389e"><div class="ttname"><a href="classtket_1_1PhasePolyBox.html#a0a2e6051786b990f3124ceda932a389e">tket::PhasePolyBox::get_linear_transformation</a></div><div class="ttdeci">const MatrixXb &amp; get_linear_transformation() const</div><div class="ttdef"><b>Definition:</b> <a href="PhasePoly_8hpp_source.html#l00079">PhasePoly.hpp:79</a></div></div>
+<div class="ttc" id="aclasstket_1_1PhasePolyBox_html_ac834bee732816253a97d46cbf744f793"><div class="ttname"><a href="classtket_1_1PhasePolyBox.html#ac834bee732816253a97d46cbf744f793">tket::PhasePolyBox::generate_circuit_with_original_placement</a></div><div class="ttdeci">Circuit generate_circuit_with_original_placement() const</div><div class="ttdef"><b>Definition:</b> <a href="PhasePoly_8cpp_source.html#l00297">PhasePoly.cpp:297</a></div></div>
 <div class="ttc" id="aclasstket_1_1PhasePolyBox_html_ae2d95a9f06c29b94a0fa980283d78115"><div class="ttname"><a href="classtket_1_1PhasePolyBox.html#ae2d95a9f06c29b94a0fa980283d78115">tket::PhasePolyBox::get_n_qubits</a></div><div class="ttdeci">unsigned get_n_qubits() const</div><div class="ttdef"><b>Definition:</b> <a href="PhasePoly_8hpp_source.html#l00086">PhasePoly.hpp:86</a></div></div>
 <div class="ttc" id="aclasstket_1_1PhasePolyBox_html_ae94199fa287660ea85222bf8175f799e"><div class="ttname"><a href="classtket_1_1PhasePolyBox.html#ae94199fa287660ea85222bf8175f799e">tket::PhasePolyBox::get_phase_polynomial</a></div><div class="ttdeci">const PhasePolynomial &amp; get_phase_polynomial() const</div><div class="ttdef"><b>Definition:</b> <a href="PhasePoly_8hpp_source.html#l00076">PhasePoly.hpp:76</a></div></div>
 <div class="ttc" id="aclasstket_1_1Qubit_html"><div class="ttname"><a href="classtket_1_1Qubit.html">tket::Qubit</a></div><div class="ttdoc">Location holding a qubit.</div><div class="ttdef"><b>Definition:</b> <a href="UnitID_8hpp_source.html#l00153">UnitID.hpp:153</a></div></div>
@@ -580,7 +585,7 @@ $(function() {
 <div class="ttc" id="anamespacetket_1_1aas_html_a5d7e42ff2fcc3a26d82ea3d4dd415374"><div class="ttname"><a href="namespacetket_1_1aas.html#a5d7e42ff2fcc3a26d82ea3d4dd415374">tket::aas::SteinerNodeType</a></div><div class="ttdeci">SteinerNodeType</div><div class="ttdoc">Nodes in a Steiner tree may correspond to different values in the biadjacency action matrix or phase ...</div><div class="ttdef"><b>Definition:</b> <a href="SteinerTree_8hpp_source.html#l00031">SteinerTree.hpp:31</a></div></div>
 <div class="ttc" id="anamespacetket_1_1aas_html_a5d7e42ff2fcc3a26d82ea3d4dd415374ac3b5e1f7de11d645fb1da6c5415b1fa5"><div class="ttname"><a href="namespacetket_1_1aas.html#a5d7e42ff2fcc3a26d82ea3d4dd415374ac3b5e1f7de11d645fb1da6c5415b1fa5">tket::aas::SteinerNodeType::Leaf</a></div><div class="ttdeci">@ Leaf</div></div>
 <div class="ttc" id="anamespacetket_1_1aas_html_a5f5d1059ef961691f786cbd77e9af667"><div class="ttname"><a href="namespacetket_1_1aas.html#a5f5d1059ef961691f786cbd77e9af667">tket::aas::OperationList</a></div><div class="ttdeci">std::list&lt; Operation &gt; OperationList</div><div class="ttdef"><b>Definition:</b> <a href="SteinerTree_8hpp_source.html#l00023">SteinerTree.hpp:23</a></div></div>
-<div class="ttc" id="anamespacetket_1_1aas_html_a7dcc277d91b50f17effa5fc5a1036af3"><div class="ttname"><a href="namespacetket_1_1aas.html#a7dcc277d91b50f17effa5fc5a1036af3">tket::aas::phase_poly_synthesis</a></div><div class="ttdeci">Circuit phase_poly_synthesis(const Architecture &amp;arch, const PhasePolyBox &amp;phasepolybox, unsigned lookahead, CNotSynthType cnottype)</div><div class="ttdoc">main function for architecture aware synthesis in tket at the moment.</div><div class="ttdef"><b>Definition:</b> <a href="SteinerForest_8cpp_source.html#l00455">SteinerForest.cpp:455</a></div></div>
+<div class="ttc" id="anamespacetket_1_1aas_html_a7dcc277d91b50f17effa5fc5a1036af3"><div class="ttname"><a href="namespacetket_1_1aas.html#a7dcc277d91b50f17effa5fc5a1036af3">tket::aas::phase_poly_synthesis</a></div><div class="ttdeci">Circuit phase_poly_synthesis(const Architecture &amp;arch, const PhasePolyBox &amp;phasepolybox, unsigned lookahead, CNotSynthType cnottype)</div><div class="ttdoc">main function for architecture aware synthesis in tket at the moment.</div><div class="ttdef"><b>Definition:</b> <a href="SteinerForest_8cpp_source.html#l00456">SteinerForest.cpp:456</a></div></div>
 <div class="ttc" id="anamespacetket_1_1aas_html_a82842a6c803ea47fe8cce7694eaac2f1"><div class="ttname"><a href="namespacetket_1_1aas.html#a82842a6c803ea47fe8cce7694eaac2f1">tket::aas::ParityList</a></div><div class="ttdeci">std::list&lt; unsigned &gt; ParityList</div><div class="ttdef"><b>Definition:</b> <a href="SteinerForest_8hpp_source.html#l00029">SteinerForest.hpp:29</a></div></div>
 <div class="ttc" id="anamespacetket_1_1aas_html_a8d03c5d83cbc6892bfa02b9cb4e4a697"><div class="ttname"><a href="namespacetket_1_1aas.html#a8d03c5d83cbc6892bfa02b9cb4e4a697">tket::aas::find_hampath</a></div><div class="ttdeci">std::vector&lt; Node &gt; find_hampath(const Architecture &amp;arch, long timeout)</div><div class="ttdoc">Find a Hamiltonian path in the architecture.</div><div class="ttdef"><b>Definition:</b> <a href="Path_8cpp_source.html#l00153">Path.cpp:153</a></div></div>
 <div class="ttc" id="anamespacetket_1_1aas_html_a8f9cd9ba6e7643f4b7bdad7695c088b3"><div class="ttname"><a href="namespacetket_1_1aas.html#a8f9cd9ba6e7643f4b7bdad7695c088b3">tket::aas::aas_CNOT_synth</a></div><div class="ttdeci">Circuit aas_CNOT_synth(DiagMatrix &amp;CNOT_matrix, const PathHandler &amp;paths, CNotSynthType cnottype)</div><div class="ttdoc">This method uses Kissinger &amp; de Meijer's Steiner-Gauss (https://arxiv.org/abs/1904....</div><div class="ttdef"><b>Definition:</b> <a href="SteinerTree_8cpp_source.html#l00626">SteinerTree.cpp:626</a></div></div>
