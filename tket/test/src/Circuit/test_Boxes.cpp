@@ -15,7 +15,12 @@
 #include <Eigen/Core>
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_string.hpp>
+#include <memory>
 #include <tket/Circuit/ToffoliBox.hpp>
+#include <tket/OpType/OpType.hpp>
+#include <tket/Ops/Op.hpp>
+#include <tket/Ops/OpPtr.hpp>
+#include <tket/Utils/Expression.hpp>
 
 #include "../testutil.hpp"
 #include "tket/Circuit/Boxes.hpp"
@@ -1282,6 +1287,31 @@ SCENARIO("Checking equality", "[boxes]") {
       Op_ptr compute_2_op = std::make_shared<CircBox>(CircBox(compute_2));
       REQUIRE(box != ConjugationBox(compute_2_op, action_op));
     }
+  }
+  GIVEN("ConjugationBox with symbols") {
+    Sym asym = SymTable::fresh_symbol("a");
+    Expr a(asym);
+    Sym bsym = SymTable::fresh_symbol("b");
+    Expr b(bsym);
+    Sym csym = SymTable::fresh_symbol("c");
+    Expr c(csym);
+    Op_ptr compute = get_op_ptr(OpType::Rx, {a});
+    Op_ptr action = get_op_ptr(OpType::Rz, {b});
+    Op_ptr uncompute = get_op_ptr(OpType::Rx, {c});
+    ConjugationBox box0(compute, action);
+    ConjugationBox box1(compute, action, uncompute);
+    SymSet sym_set0 = box0.free_symbols();
+    CHECK(sym_set0.size() == 2);
+    SymSet sym_set1 = box1.free_symbols();
+    CHECK(sym_set1.size() == 3);
+    SymEngine::map_basic_basic sym_map;
+    sym_map[asym] = Expr(0.25);
+    sym_map[bsym] = Expr(0.75);
+    sym_map[csym] = Expr(-0.25);
+    Op_ptr sub_box0 = box0.symbol_substitution(sym_map);
+    CHECK(sub_box0->free_symbols().empty());
+    Op_ptr sub_box1 = box1.symbol_substitution(sym_map);
+    CHECK(sub_box1->free_symbols().empty());
   }
 }
 

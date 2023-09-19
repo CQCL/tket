@@ -36,6 +36,11 @@ jobs:
       run: |
         conan profile detect
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
+    - name: Fix conan profile for clang toolchain
+      if: matrix.os == 'macos-12'
+      run: |
+        PROFILE_PATH=`conan profile path default`
+        sed -i -e 's/gnu98/gnu17/' ${PROFILE_PATH}
 
     - name: authenticate to repository
       run: conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_3 }}
@@ -58,6 +63,11 @@ jobs:
       run: |
         conan profile detect --force
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force --index 0
+
+    - name: Fix conan profile for clang toolchain
+      run: |
+        PROFILE_PATH=`conan profile path default`
+        sed -i -e 's/gnu98/gnu17/' ${PROFILE_PATH}
 
     - name: authenticate to repository
       run: conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_3 }}
