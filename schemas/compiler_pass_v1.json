@@ -321,6 +321,20 @@
         "only_zeros": {
           "type": "boolean",
           "description": "Whether to restrict \"RoundAngles\" to rounding to zero."
+        },
+        "excluded_types": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "OpTypes excluded in \"DecomposeBoxes\""
+        },
+        "excluded_opgroups": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          },
+          "description": "opgroups excluded in \"DecomposeBoxes\""
         }
       },
       "required": [
@@ -793,11 +807,26 @@
           "if": {
             "properties": {
               "name": {
+                "const": "DecomposeBoxes"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "excluded_types",
+              "excluded_opgroups"
+            ],
+            "maxProperties": 3
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "name": {
                 "$comment": "List all non-parametrized passes",
                 "enum": [
                   "CommuteThroughMultis",
                   "DecomposeArbitrarilyControlledGates",
-                  "DecomposeBoxes",
                   "DecomposeMultiQubitsCX",
                   "DecomposeSingleQubitsTK1",
                   "RebaseTket",
