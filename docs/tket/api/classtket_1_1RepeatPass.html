@@ -107,8 +107,8 @@ Collaboration diagram for tket::RepeatPass:</div>
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-methods"></a>
 Public Member Functions</h2></td></tr>
-<tr class="memitem:a344a39c3595edf729740efd580c01f54"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1RepeatPass.html#a344a39c3595edf729740efd580c01f54">RepeatPass</a> (const <a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a> &amp;pass)</td></tr>
-<tr class="separator:a344a39c3595edf729740efd580c01f54"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a7537ca730c891507cb0fb5f30282f79c"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1RepeatPass.html#a7537ca730c891507cb0fb5f30282f79c">RepeatPass</a> (const <a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a> &amp;pass, bool strict_check=false)</td></tr>
+<tr class="separator:a7537ca730c891507cb0fb5f30282f79c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a12659b9abe4bf7bc27b1e6ce49ccabb3"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1RepeatPass.html#a12659b9abe4bf7bc27b1e6ce49ccabb3">apply</a> (<a class="el" href="classtket_1_1CompilationUnit.html">CompilationUnit</a> &amp;c_unit, <a class="el" href="namespacetket.html#ab65820ebbcb1ceb848e855a832420396">SafetyMode</a> safe_mode=<a class="el" href="namespacetket.html#ab65820ebbcb1ceb848e855a832420396a7a1920d61156abc05a60135aefe8bc67">SafetyMode::Default</a>, const <a class="el" href="namespacetket.html#ace4fdcd924ef34679db1575bb902d6bd">PassCallback</a> &amp;before_apply=<a class="el" href="namespacetket.html#a68d138f32c4a158dc28a3f04bb390eed">trivial_callback</a>, const <a class="el" href="namespacetket.html#ace4fdcd924ef34679db1575bb902d6bd">PassCallback</a> &amp;after_apply=<a class="el" href="namespacetket.html#a68d138f32c4a158dc28a3f04bb390eed">trivial_callback</a>) const override</td></tr>
 <tr class="memdesc:a12659b9abe4bf7bc27b1e6ce49ccabb3"><td class="mdescLeft">&#160;</td><td class="mdescRight">Apply the pass and invoke callbacks.  <a href="classtket_1_1RepeatPass.html#a12659b9abe4bf7bc27b1e6ce49ccabb3">More...</a><br /></td></tr>
 <tr class="separator:a12659b9abe4bf7bc27b1e6ce49ccabb3"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -155,10 +155,10 @@ Additional Inherited Members</h2></td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock">
-<p class="definition">Definition at line <a class="el" href="CompilerPass_8hpp_source.html#l00218">218</a> of file <a class="el" href="CompilerPass_8hpp_source.html">CompilerPass.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CompilerPass_8hpp_source.html#l00220">220</a> of file <a class="el" href="CompilerPass_8hpp_source.html">CompilerPass.hpp</a>.</p>
 </div><h2 class="groupheader">Constructor &amp; Destructor Documentation</h2>
-<a id="a344a39c3595edf729740efd580c01f54"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a344a39c3595edf729740efd580c01f54">&#9670;&nbsp;</a></span>RepeatPass()</h2>
+<a id="a7537ca730c891507cb0fb5f30282f79c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a7537ca730c891507cb0fb5f30282f79c">&#9670;&nbsp;</a></span>RepeatPass()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -170,8 +170,18 @@ Additional Inherited Members</h2></td></tr>
           <td class="memname">tket::RepeatPass::RepeatPass </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a> &amp;&#160;</td>
-          <td class="paramname"><em>pass</em></td><td>)</td>
+          <td class="paramname"><em>pass</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">bool&#160;</td>
+          <td class="paramname"><em>strict_check</em> = <code>false</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
   </td>
@@ -246,7 +256,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implements <a class="el" href="classtket_1_1BasePass.html#a30732de4bde5e9c8452ee30e06cb987a">tket::BasePass</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="CompilerPass_8hpp_source.html#l00221">221</a> of file <a class="el" href="CompilerPass_8hpp_source.html">CompilerPass.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CompilerPass_8hpp_source.html#l00223">223</a> of file <a class="el" href="CompilerPass_8hpp_source.html">CompilerPass.hpp</a>.</p>
 
 </div>
 </div>
@@ -278,7 +288,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implements <a class="el" href="classtket_1_1BasePass.html#afd0e55d007d2cd2635c634519b457ad9">tket::BasePass</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="CompilerPass_8cpp_source.html#l00268">268</a> of file <a class="el" href="CompilerPass_8cpp_source.html">CompilerPass.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CompilerPass_8cpp_source.html#l00269">269</a> of file <a class="el" href="CompilerPass_8cpp_source.html">CompilerPass.cpp</a>.</p>
 
 </div>
 </div>
@@ -305,7 +315,7 @@ Additional Inherited Members</h2></td></tr>
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="CompilerPass_8hpp_source.html#l00234">234</a> of file <a class="el" href="CompilerPass_8hpp_source.html">CompilerPass.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CompilerPass_8hpp_source.html#l00256">256</a> of file <a class="el" href="CompilerPass_8hpp_source.html">CompilerPass.hpp</a>.</p>
 
 </div>
 </div>
@@ -334,7 +344,7 @@ Additional Inherited Members</h2></td></tr>
 
 <p>Implements <a class="el" href="classtket_1_1BasePass.html#ac41c6c869d96e49a3994c113ea97c71f">tket::BasePass</a>.</p>
 
-<p class="definition">Definition at line <a class="el" href="CompilerPass_8cpp_source.html#l00262">262</a> of file <a class="el" href="CompilerPass_8cpp_source.html">CompilerPass.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CompilerPass_8cpp_source.html#l00263">263</a> of file <a class="el" href="CompilerPass_8cpp_source.html">CompilerPass.cpp</a>.</p>
 
 </div>
 </div>
