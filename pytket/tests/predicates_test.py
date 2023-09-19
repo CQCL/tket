@@ -936,6 +936,18 @@ def test_rebase_custom_tk2() -> None:
     assert coms[10].op.type == OpType.Rz
 
 
+def test_repeat_pass_strict_check() -> None:
+    # https://github.com/CQCL/tket/issues/985
+    c0 = Circuit(1).PhasedX(angle0=0.3, angle1=0.2, qubit=0)
+    squash_pass = SquashRzPhasedX()
+    c1 = c0.copy()
+    assert squash_pass.apply(c1)
+    assert c1 == c0
+    c2 = c0.copy()
+    assert not RepeatPass(squash_pass, strict_check=True).apply(c2)
+    assert c2 == c0
+
+
 if __name__ == "__main__":
     test_predicate_generation()
     test_compilation_unit_generation()
