@@ -1297,9 +1297,12 @@ Transform decompose_PhaseGadgets() {
   });
 }
 
-Transform decomp_boxes() {
-  return Transform(
-      [](Circuit &circ) { return circ.decompose_boxes_recursively(); });
+Transform decomp_boxes(
+    const std::unordered_set<OpType> &excluded_types,
+    const std::unordered_set<std::string> &excluded_opgroups) {
+  return Transform([=](Circuit &circ) {
+    return circ.decompose_boxes_recursively(excluded_types, excluded_opgroups);
+  });
 }
 
 Transform compose_phase_poly_boxes(const unsigned min_size) {

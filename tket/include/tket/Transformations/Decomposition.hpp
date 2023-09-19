@@ -152,11 +152,15 @@ Transform decompose_ZX_to_cliffords();
 Transform decompose_PhaseGadgets();
 
 /**
- * Replaces all boxes by their decomposition using Box::to_circuit
+ * Recursively replaces all boxes by their decomposition using Box::to_circuit
  * Expects: any gateset
+ * @param excluded_types box types excluded from decomposition
+ * @param excluded_types opgroups excluded from decomposition
  * returns potentially all gates
  */
-Transform decomp_boxes();
+Transform decomp_boxes(
+    const std::unordered_set<OpType>& excluded_types = {},
+    const std::unordered_set<std::string>& excluded_opgroups = {});
 
 /**
  * Replaces all CX+Rz sub circuits by PhasePolyBox
