@@ -116,6 +116,7 @@ static Transform CXs_from_phase_gadgets(CXConfigType cx_config) {
         success = true;
       }
     }
+    circ.decompose_boxes_recursively();
     return success;
   });
 }

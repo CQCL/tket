@@ -114,7 +114,7 @@ std::pair<Circuit, Complex> decompose_2cx_DV(const Eigen::Matrix4cd& U);
  * @param t phase parameter
  * @param cx_config CX configuration
  *
- * @return phase gadget
+ * @return phase gadget implementation wrapped in a ConjugationBox
  */
 Circuit phase_gadget(
     unsigned n_qubits, const Expr& t,

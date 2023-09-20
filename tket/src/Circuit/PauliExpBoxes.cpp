@@ -331,6 +331,7 @@ void PauliExpCommutingSetBox::generate_circuit() const {
   for (const std::pair<QubitPauliTensor, Expr> &pgp : gadgets) {
     append_single_pauli_gadget(phase_poly_circ, pgp.first, pgp.second);
   }
+  phase_poly_circ.decompose_boxes_recursively();
   PhasePolyBox ppbox(phase_poly_circ);
   Circuit after_synth_circ = *ppbox.to_circuit();
 

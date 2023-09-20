@@ -898,6 +898,18 @@ SCENARIO("QControlBox", "[boxes]") {
     d.add_op<unsigned>(OpType::Rx, b, {1});
     REQUIRE(*c == d);
   }
+
+  GIVEN("controlled phase_gadget") {
+    Expr a;
+    WHEN("numerical") { a = 0.3; }
+    WHEN("symbolic") {
+      Sym s = SymEngine::symbol("a");
+      a = Expr(s);
+    }
+    QControlBox qbox(get_op_ptr(OpType::PhaseGadget, {a}, 2));
+    std::shared_ptr<Circuit> c = qbox.to_circuit();
+    REQUIRE(c->count_gates(OpType::CX) == 4);
+  }
 }
 
 SCENARIO("Unitary3qBox", "[boxes]") {

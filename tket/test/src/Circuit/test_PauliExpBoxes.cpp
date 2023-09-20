@@ -28,11 +28,13 @@ namespace test_PauliExpBoxes {
 SCENARIO("Pauli gadgets", "[boxes]") {
   GIVEN("Basis Circuit check") {
     PauliExpBox pbox({Pauli::X}, 1.0);
+    auto circ = pbox.to_circuit();
+    circ->decompose_boxes_recursively();
     Circuit comp(1);
     comp.add_op<unsigned>(OpType::H, {0});
     comp.add_op<unsigned>(OpType::Rz, 1.0, {0});
     comp.add_op<unsigned>(OpType::H, {0});
-    REQUIRE(*(pbox.to_circuit()) == comp);
+    REQUIRE(*circ == comp);
   }
   GIVEN("Empty PauliExpBox compiles to empty circuit") {
     Circuit empty_circuit(0);
