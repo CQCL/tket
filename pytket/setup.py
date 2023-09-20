@@ -196,7 +196,5 @@ setup(
         "root": "..",
         "relative_to": __file__,
         "local_scheme": "node-and-timestamp",
-        "write_to": os.path.join("pytket", "pytket", "_version.py"),
-        "write_to_template": "__version__ = '{version}'",
     },
 )
