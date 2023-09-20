@@ -398,11 +398,11 @@ void append_pauli_gadget_pair(
   /*
    * Step 3: Combine circuits to give final result
    */
-  Op_ptr compute_op = std::make_shared<CircBox>(CircBox(u));
   append_single_pauli_gadget(v, pauli0, angle0);
   append_single_pauli_gadget(v, pauli1, angle1);
-  Op_ptr action_op = std::make_shared<CircBox>(CircBox(v));
-  ConjugationBox cjbox(compute_op, action_op);
+  ConjugationBox cjbox(
+      std::make_shared<CircBox>(CircBox(u)),
+      std::make_shared<CircBox>(CircBox(v)));
   circ.add_box(cjbox, u.all_qubits());
 }
 
