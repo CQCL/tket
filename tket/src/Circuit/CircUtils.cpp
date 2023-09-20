@@ -367,17 +367,20 @@ Circuit pauli_gadget(
     const std::vector<Pauli> &paulis, const Expr &t, CXConfigType cx_config) {
   unsigned n = paulis.size();
   Circuit circ(n);
+  Circuit compute(n);
+  Circuit action(n);
+  Circuit uncompute(n);
   std::vector<unsigned> qubits;
   for (unsigned i = 0; i < n; i++) {
     switch (paulis[i]) {
       case Pauli::I:
         break;
       case Pauli::X:
-        circ.add_op<unsigned>(OpType::H, {i});
+        compute.add_op<unsigned>(OpType::H, {i});
         qubits.push_back(i);
         break;
       case Pauli::Y:
-        circ.add_op<unsigned>(OpType::V, {i});
+        compute.add_op<unsigned>(OpType::V, {i});
         qubits.push_back(i);
         break;
       case Pauli::Z:
@@ -387,26 +390,31 @@ Circuit pauli_gadget(
   }
   if (qubits.empty()) {
     circ.add_phase(-t / 2);
-  } else {
-    Vertex v = circ.add_op<unsigned>(OpType::PhaseGadget, t, qubits);
-    Circuit cx_gadget = phase_gadget(circ.n_in_edges(v), t, cx_config);
-    Subcircuit sub = {circ.get_in_edges(v), circ.get_all_out_edges(v), {v}};
-    circ.substitute(cx_gadget, sub, Circuit::VertexDeletion::Yes);
-    for (unsigned i = 0; i < n; i++) {
-      switch (paulis[i]) {
-        case Pauli::I:
-          break;
-        case Pauli::X:
-          circ.add_op<unsigned>(OpType::H, {i});
-          break;
-        case Pauli::Y:
-          circ.add_op<unsigned>(OpType::Vdg, {i});
-          break;
-        case Pauli::Z:
-          break;
-      }
+    return circ;
+  }
+  Vertex v = action.add_op<unsigned>(OpType::PhaseGadget, t, qubits);
+  Circuit cx_gadget = phase_gadget(action.n_in_edges(v), t, cx_config);
+  Subcircuit sub = {action.get_in_edges(v), action.get_all_out_edges(v), {v}};
+  action.substitute(cx_gadget, sub, Circuit::VertexDeletion::Yes);
+  for (unsigned i = 0; i < n; i++) {
+    switch (paulis[i]) {
+      case Pauli::I:
+        break;
+      case Pauli::X:
+        uncompute.add_op<unsigned>(OpType::H, {i});
+        break;
+      case Pauli::Y:
+        uncompute.add_op<unsigned>(OpType::Vdg, {i});
+        break;
+      case Pauli::Z:
+        break;
     }
   }
+  ConjugationBox box(
+      std::make_shared<CircBox>(CircBox(compute)),
+      std::make_shared<CircBox>(CircBox(action)),
+      std::make_shared<CircBox>(CircBox(uncompute)));
+  circ.add_box(box, circ.all_qubits());
   return circ;
 }
 

@@ -130,6 +130,7 @@ Circuit phase_gadget(
  * @param paulis Pauli operators
  * @param t angle in half-turns
  * @param cx_config CX configuration
+ * @return Pauli gadget implementation wrapped in a ConjugationBox
  */
 Circuit pauli_gadget(
     const std::vector<Pauli>& paulis, const Expr& t,
