@@ -82,7 +82,7 @@ jobs:
       - name: Check C++ code formatting
         run: |
           brew update
-          brew install clang-format@16
+          brew install clang-format@17
           git ls-files "*.cpp" "*.hpp" | xargs clang-format -style=file --dry-run --Werror
 
   build_test_tket:
