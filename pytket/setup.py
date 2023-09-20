@@ -123,7 +123,6 @@ class ConanBuild(build_ext):
                     shutil.copy(libpath, extdir)
 
 
-setup_dir = os.path.abspath(os.path.dirname(__file__))
 plat_name = os.getenv("WHEEL_PLAT_NAME")
 
 
@@ -193,9 +192,4 @@ setup(
     include_package_data=True,
     package_data={"pytket": ["py.typed"]},
     zip_safe=False,
-    use_scm_version={
-        "root": os.path.dirname(setup_dir),
-        "write_to": os.path.join(setup_dir, "pytket", "_version.py"),
-        "write_to_template": "__version__ = '{version}'",
-    },
 )
