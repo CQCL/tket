@@ -1517,18 +1517,17 @@ class Circuit {
   bool substitute_box_vertex(Vertex &vert, VertexDeletion vertex_deletion);
 
   /**
-   * Replaces each \ref Box operation by applying \ref Box::to_circuit
+   * Recursively replace each \ref Box operation by applying \ref
+   * Box::to_circuit
+   *
+   * @param excluded_types box types excluded from decomposition
+   * @param excluded_opgroups opgroups excluded from decomposition
    *
    * @return whether any replacements were made
    */
-  bool decompose_boxes();
-
-  /**
-   * Recursively apply \ref decompose_boxes
-   *
-   * @post no \ref Box operations remain
-   */
-  void decompose_boxes_recursively();
+  bool decompose_boxes_recursively(
+      const std::unordered_set<OpType> &excluded_types = {},
+      const std::unordered_set<std::string> &excluded_opgroups = {});
 
   /////////////////
   // Other Methods//

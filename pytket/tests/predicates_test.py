@@ -17,7 +17,9 @@ from pytket.circuit import (
     Circuit,
     OpType,
     Op,
+    CircBox,
     PauliExpBox,
+    Unitary1qBox,
     Unitary2qBox,
     Node,
     Qubit,
@@ -35,6 +37,7 @@ from pytket.passes import (
     CommuteThroughMultis,
     RepeatPass,
     DecomposeMultiQubitsCX,
+    DecomposeBoxes,
     SquashTK1,
     SquashRzPhasedX,
     RepeatWithMetricPass,
@@ -948,6 +951,23 @@ def test_repeat_pass_strict_check() -> None:
     assert c2 == c0
 
 
+def test_selectively_decompose_boxes() -> None:
+    circ = Circuit(1)
+    ubox = Unitary1qBox(np.array([[1, 0], [0, -1]]))
+    ucirc = Circuit(1).add_unitary1qbox(ubox, 0)
+    cbox1 = CircBox(ucirc)
+    circ.add_circbox(cbox1, [0])
+    circ.add_unitary1qbox(ubox, 0)
+    cbox2 = CircBox(Circuit(1).X(0))
+    circ.add_circbox(cbox2, [0], opgroup="group1")
+    assert DecomposeBoxes({OpType.Unitary1qBox}, {"group1"}).apply(circ)
+    cmds = circ.get_commands()
+    assert len(cmds) == 3
+    assert cmds[0].op.type == OpType.Unitary1qBox
+    assert cmds[1].op.type == OpType.Unitary1qBox
+    assert cmds[2].op.type == OpType.CircBox
+
+
 if __name__ == "__main__":
     test_predicate_generation()
     test_compilation_unit_generation()
@@ -966,3 +986,4 @@ if __name__ == "__main__":
     test_ZZPhaseToRz()
     test_flatten_relabel_pass()
     test_rebase_custom_tk2()
+    test_selectively_decompose_boxes()

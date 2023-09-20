@@ -438,7 +438,11 @@ PYBIND11_MODULE(passes, m) {
       "CX and single-qubit gates.");
   m.def(
       "DecomposeBoxes", &DecomposeBoxes,
-      "Replaces all boxes by their decomposition into circuits.");
+      "Recursively replaces all boxes by their decomposition into circuits."
+      "\n\n:param excluded_types: box `OpType`s excluded from decomposition"
+      "\n:param excluded_opgroups: opgroups excluded from decomposition",
+      py::arg("excluded_types") = std::unordered_set<OpType>(),
+      py::arg("excluded_opgroups") = std::unordered_set<std::string>());
   m.def(
       "DecomposeClassicalExp", &DecomposeClassicalExp,
       "Replaces each :py:class:`ClassicalExpBox` by a sequence of "

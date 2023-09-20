@@ -868,6 +868,8 @@ SCENARIO("Test compiler pass serializations") {
       DecomposeArbitrarilyControlledGates,
       DecomposeArbitrarilyControlledGates())
   COMPPASSJSONTEST(DecomposeBoxes, DecomposeBoxes())
+  COMPPASSJSONTEST(
+      DecomposeBoxes2, DecomposeBoxes({OpType::CircBox}, {"opgroup1"}))
   COMPPASSJSONTEST(DecomposeMultiQubitsCX, DecomposeMultiQubitsCX())
   COMPPASSJSONTEST(DecomposeSingleQubitsTK1, DecomposeSingleQubitsTK1())
   COMPPASSJSONTEST(PeepholeOptimise2Q, PeepholeOptimise2Q())

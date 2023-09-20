@@ -184,7 +184,11 @@ PYBIND11_MODULE(transform, m) {
           py::arg("arc"))
       .def_static(
           "DecomposeBoxes", &Transforms::decomp_boxes,
-          "Decomposes all Boxed operations into elementary gates.")
+          "Recursively replaces all boxes by their decomposition into circuits."
+          "\n\n:param excluded_types: box `OpType`s excluded from decomposition"
+          "\n:param excluded_opgroups: opgroups excluded from decomposition",
+          py::arg("excluded_types") = std::unordered_set<OpType>(),
+          py::arg("excluded_opgroups") = std::unordered_set<std::string>())
       .def_static(
           "DecomposeTK2",
           [](bool allow_swaps, const py::kwargs &kwargs) {

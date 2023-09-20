@@ -18,7 +18,15 @@ from pathlib import Path
 
 import sympy
 
-from pytket.circuit import Circuit, OpType, PauliExpBox, Node, Qubit
+from pytket.circuit import (
+    Circuit,
+    OpType,
+    CircBox,
+    Unitary1qBox,
+    PauliExpBox,
+    Node,
+    Qubit,
+)
 import pytket.circuit_library as _library
 from pytket.pauli import Pauli
 from pytket.passes import (
@@ -1449,6 +1457,23 @@ def test_auto_rebase_with_swap_tk2() -> None:
     assert c_no_swap.n_gates > 0
 
 
+def test_selectively_decompose_boxes() -> None:
+    circ = Circuit(1)
+    ubox = Unitary1qBox(np.array([[1, 0], [0, -1]]))
+    ucirc = Circuit(1).add_unitary1qbox(ubox, 0)
+    cbox1 = CircBox(ucirc)
+    circ.add_circbox(cbox1, [0])
+    circ.add_unitary1qbox(ubox, 0)
+    cbox2 = CircBox(Circuit(1).X(0))
+    circ.add_circbox(cbox2, [0], opgroup="group1")
+    assert Transform.DecomposeBoxes({OpType.Unitary1qBox}, {"group1"}).apply(circ)
+    cmds = circ.get_commands()
+    assert len(cmds) == 3
+    assert cmds[0].op.type == OpType.Unitary1qBox
+    assert cmds[1].op.type == OpType.Unitary1qBox
+    assert cmds[2].op.type == OpType.CircBox
+
+
 if __name__ == "__main__":
     test_remove_redundancies()
     test_reduce_singles()
@@ -1479,3 +1504,4 @@ if __name__ == "__main__":
     test_auto_rebase_with_swap_zzmax()
     test_auto_rebase_with_swap_zzphase()
     test_auto_rebase_with_swap_tk2()
+    test_selectively_decompose_boxes()
