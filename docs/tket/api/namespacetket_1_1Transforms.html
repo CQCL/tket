@@ -241,9 +241,9 @@ Functions</h2></td></tr>
 <tr class="separator:aefaeaababb6b384030bc96a88da4d967"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a71005e0ba2d95e2bf2e2d355723a13f5"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#a71005e0ba2d95e2bf2e2d355723a13f5">decompose_PhaseGadgets</a> ()</td></tr>
 <tr class="separator:a71005e0ba2d95e2bf2e2d355723a13f5"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a373cfcdea1005b57fd2a5c6f4adbe15e"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#a373cfcdea1005b57fd2a5c6f4adbe15e">decomp_boxes</a> ()</td></tr>
-<tr class="memdesc:a373cfcdea1005b57fd2a5c6f4adbe15e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Replaces all boxes by their decomposition using <a class="el" href="classtket_1_1Box.html#aa8189b7ff8c3c0b8fd90cbc71cf19c3f" title="Circuit represented by box.">Box::to_circuit</a> Expects: any gateset returns potentially all gates.  <a href="namespacetket_1_1Transforms.html#a373cfcdea1005b57fd2a5c6f4adbe15e">More...</a><br /></td></tr>
-<tr class="separator:a373cfcdea1005b57fd2a5c6f4adbe15e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad46e4e49bdc75ad73d519e4130474337"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#ad46e4e49bdc75ad73d519e4130474337">decomp_boxes</a> (const std::unordered_set&lt; <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a> &gt; &amp;excluded_types={}, const std::unordered_set&lt; std::string &gt; &amp;excluded_opgroups={})</td></tr>
+<tr class="memdesc:ad46e4e49bdc75ad73d519e4130474337"><td class="mdescLeft">&#160;</td><td class="mdescRight">Recursively replaces all boxes by their decomposition using <a class="el" href="classtket_1_1Box.html#aa8189b7ff8c3c0b8fd90cbc71cf19c3f" title="Circuit represented by box.">Box::to_circuit</a> Expects: any gateset.  <a href="namespacetket_1_1Transforms.html#ad46e4e49bdc75ad73d519e4130474337">More...</a><br /></td></tr>
+<tr class="separator:ad46e4e49bdc75ad73d519e4130474337"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a0822ee75b1d687db1fbf6546dcd705c8"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Transform.html">Transform</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket_1_1Transforms.html#a0822ee75b1d687db1fbf6546dcd705c8">compose_phase_poly_boxes</a> (unsigned min_size=0)</td></tr>
 <tr class="memdesc:a0822ee75b1d687db1fbf6546dcd705c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Replaces all CX+Rz sub circuits by <a class="el" href="classtket_1_1PhasePolyBox.html" title="A PhasePolyBox is capable of representing arbitrary Circuits made up of CNOT and RZ,...">PhasePolyBox</a> Expects: only CX + Rz + H (and measure + reset + collapse + barrier)  <a href="namespacetket_1_1Transforms.html#a0822ee75b1d687db1fbf6546dcd705c8">More...</a><br /></td></tr>
 <tr class="separator:a0822ee75b1d687db1fbf6546dcd705c8"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -600,7 +600,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Decomposition_8cpp_source.html#l01759">1759</a> of file <a class="el" href="Decomposition_8cpp_source.html">Decomposition.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Decomposition_8cpp_source.html#l01763">1763</a> of file <a class="el" href="Decomposition_8cpp_source.html">Decomposition.cpp</a>.</p>
 
 </div>
 </div>
@@ -720,7 +720,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Decomposition_8cpp_source.html#l01861">1861</a> of file <a class="el" href="Decomposition_8cpp_source.html">Decomposition.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Decomposition_8cpp_source.html#l01865">1865</a> of file <a class="el" href="Decomposition_8cpp_source.html">Decomposition.cpp</a>.</p>
 
 </div>
 </div>
@@ -827,7 +827,7 @@ template&lt;typename T &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Transformation to perform the conversion </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Decomposition_8cpp_source.html#l01304">1304</a> of file <a class="el" href="Decomposition_8cpp_source.html">Decomposition.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Decomposition_8cpp_source.html#l01308">1308</a> of file <a class="el" href="Decomposition_8cpp_source.html">Decomposition.cpp</a>.</p>
 
 </div>
 </div>
@@ -865,12 +865,12 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Decomposition_8cpp_source.html#l01802">1802</a> of file <a class="el" href="Decomposition_8cpp_source.html">Decomposition.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Decomposition_8cpp_source.html#l01806">1806</a> of file <a class="el" href="Decomposition_8cpp_source.html">Decomposition.cpp</a>.</p>
 
 </div>
 </div>
-<a id="a373cfcdea1005b57fd2a5c6f4adbe15e"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a373cfcdea1005b57fd2a5c6f4adbe15e">&#9670;&nbsp;</a></span>decomp_boxes()</h2>
+<a id="ad46e4e49bdc75ad73d519e4130474337"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad46e4e49bdc75ad73d519e4130474337">&#9670;&nbsp;</a></span>decomp_boxes()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -878,13 +878,31 @@ template&lt;typename T &gt; </div>
         <tr>
           <td class="memname"><a class="el" href="classtket_1_1Transform.html">Transform</a> tket::Transforms::decomp_boxes </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">const std::unordered_set&lt; <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>excluded_types</em> = <code>{}</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const std::unordered_set&lt; std::string &gt; &amp;&#160;</td>
+          <td class="paramname"><em>excluded_opgroups</em> = <code>{}</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Replaces all boxes by their decomposition using <a class="el" href="classtket_1_1Box.html#aa8189b7ff8c3c0b8fd90cbc71cf19c3f" title="Circuit represented by box.">Box::to_circuit</a> Expects: any gateset returns potentially all gates. </p>
+<p>Recursively replaces all boxes by their decomposition using <a class="el" href="classtket_1_1Box.html#aa8189b7ff8c3c0b8fd90cbc71cf19c3f" title="Circuit represented by box.">Box::to_circuit</a> Expects: any gateset. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">excluded_types</td><td>box types excluded from decomposition </td></tr>
+    <tr><td class="paramname">excluded_opgroups</td><td>opgroups excluded from decomposition returns potentially all gates </td></tr>
+  </table>
+  </dd>
+</dl>
 
 <p class="definition">Definition at line <a class="el" href="Decomposition_8cpp_source.html#l01300">1300</a> of file <a class="el" href="Decomposition_8cpp_source.html">Decomposition.cpp</a>.</p>
 
@@ -905,7 +923,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Decomposition_8cpp_source.html#l01774">1774</a> of file <a class="el" href="Decomposition_8cpp_source.html">Decomposition.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Decomposition_8cpp_source.html#l01778">1778</a> of file <a class="el" href="Decomposition_8cpp_source.html">Decomposition.cpp</a>.</p>
 
 </div>
 </div>
@@ -924,7 +942,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Decomposition_8cpp_source.html#l01781">1781</a> of file <a class="el" href="Decomposition_8cpp_source.html">Decomposition.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Decomposition_8cpp_source.html#l01785">1785</a> of file <a class="el" href="Decomposition_8cpp_source.html">Decomposition.cpp</a>.</p>
 
 </div>
 </div>
@@ -943,7 +961,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Decomposition_8cpp_source.html#l01410">1410</a> of file <a class="el" href="Decomposition_8cpp_source.html">Decomposition.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Decomposition_8cpp_source.html#l01414">1414</a> of file <a class="el" href="Decomposition_8cpp_source.html">Decomposition.cpp</a>.</p>
 
 </div>
 </div>
@@ -985,7 +1003,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Decomposition_8cpp_source.html#l01489">1489</a> of file <a class="el" href="Decomposition_8cpp_source.html">Decomposition.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Decomposition_8cpp_source.html#l01493">1493</a> of file <a class="el" href="Decomposition_8cpp_source.html">Decomposition.cpp</a>.</p>
 
 </div>
 </div>
@@ -1109,7 +1127,7 @@ template&lt;typename T &gt; </div>
 
 <p>Decompose NPhasedX gates into single-qubit PhasedX gates. </p>
 
-<p class="definition">Definition at line <a class="el" href="Decomposition_8cpp_source.html#l01554">1554</a> of file <a class="el" href="Decomposition_8cpp_source.html">Decomposition.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Decomposition_8cpp_source.html#l01558">1558</a> of file <a class="el" href="Decomposition_8cpp_source.html">Decomposition.cpp</a>.</p>
 
 </div>
 </div>
@@ -1170,7 +1188,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Decomposition_8cpp_source.html#l01324">1324</a> of file <a class="el" href="Decomposition_8cpp_source.html">Decomposition.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Decomposition_8cpp_source.html#l01328">1328</a> of file <a class="el" href="Decomposition_8cpp_source.html">Decomposition.cpp</a>.</p>
 
 </div>
 </div>
@@ -1190,7 +1208,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Decomposition_8cpp_source.html#l01344">1344</a> of file <a class="el" href="Decomposition_8cpp_source.html">Decomposition.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Decomposition_8cpp_source.html#l01348">1348</a> of file <a class="el" href="Decomposition_8cpp_source.html">Decomposition.cpp</a>.</p>
 
 </div>
 </div>
@@ -1540,7 +1558,7 @@ template&lt;typename T &gt; </div>
 <p>If squash=true (default), this transform always returns true. For squash=false, it will return true if the circuit was transformed and false otherwise.</p>
 <p>It is not recommended to use this pass with symbolic expressions, as in certain cases a blow-up in symbolic expression sizes may occur. </p>
 
-<p class="definition">Definition at line <a class="el" href="Decomposition_8cpp_source.html#l01588">1588</a> of file <a class="el" href="Decomposition_8cpp_source.html">Decomposition.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Decomposition_8cpp_source.html#l01592">1592</a> of file <a class="el" href="Decomposition_8cpp_source.html">Decomposition.cpp</a>.</p>
 
 </div>
 </div>

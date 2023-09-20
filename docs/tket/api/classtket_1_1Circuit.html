@@ -595,12 +595,9 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:afdd80e9186a676c064f8698fbfcebc09"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Circuit.html#afdd80e9186a676c064f8698fbfcebc09">substitute_box_vertex</a> (<a class="el" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> &amp;vert, <a class="el" href="classtket_1_1Circuit.html#ad46024dc8be3d44e15fbcdb474552cc6">VertexDeletion</a> vertex_deletion)</td></tr>
 <tr class="memdesc:afdd80e9186a676c064f8698fbfcebc09"><td class="mdescLeft">&#160;</td><td class="mdescRight">Replaces one vertex by applying <a class="el" href="classtket_1_1Box.html#aa8189b7ff8c3c0b8fd90cbc71cf19c3f">Box::to_circuit</a>.  <a href="classtket_1_1Circuit.html#afdd80e9186a676c064f8698fbfcebc09">More...</a><br /></td></tr>
 <tr class="separator:afdd80e9186a676c064f8698fbfcebc09"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a512ea537e6bc7f1a3d371abb3e9a3799"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Circuit.html#a512ea537e6bc7f1a3d371abb3e9a3799">decompose_boxes</a> ()</td></tr>
-<tr class="memdesc:a512ea537e6bc7f1a3d371abb3e9a3799"><td class="mdescLeft">&#160;</td><td class="mdescRight">Replaces each <a class="el" href="classtket_1_1Box.html">Box</a> operation by applying <a class="el" href="classtket_1_1Box.html#aa8189b7ff8c3c0b8fd90cbc71cf19c3f">Box::to_circuit</a>.  <a href="classtket_1_1Circuit.html#a512ea537e6bc7f1a3d371abb3e9a3799">More...</a><br /></td></tr>
-<tr class="separator:a512ea537e6bc7f1a3d371abb3e9a3799"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a904db7e5b814116afeacc67317855cf1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Circuit.html#a904db7e5b814116afeacc67317855cf1">decompose_boxes_recursively</a> ()</td></tr>
-<tr class="memdesc:a904db7e5b814116afeacc67317855cf1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Recursively apply <a class="el" href="classtket_1_1Circuit.html#a512ea537e6bc7f1a3d371abb3e9a3799">decompose_boxes</a>.  <a href="classtket_1_1Circuit.html#a904db7e5b814116afeacc67317855cf1">More...</a><br /></td></tr>
-<tr class="separator:a904db7e5b814116afeacc67317855cf1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a017f266f3731467e7e2fdca4e7f5f317"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Circuit.html#a017f266f3731467e7e2fdca4e7f5f317">decompose_boxes_recursively</a> (const std::unordered_set&lt; <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a> &gt; &amp;excluded_types={}, const std::unordered_set&lt; std::string &gt; &amp;excluded_opgroups={})</td></tr>
+<tr class="memdesc:a017f266f3731467e7e2fdca4e7f5f317"><td class="mdescLeft">&#160;</td><td class="mdescRight">Recursively replace each <a class="el" href="classtket_1_1Box.html">Box</a> operation by applying <a class="el" href="classtket_1_1Box.html#aa8189b7ff8c3c0b8fd90cbc71cf19c3f">Box::to_circuit</a>.  <a href="classtket_1_1Circuit.html#a017f266f3731467e7e2fdca4e7f5f317">More...</a><br /></td></tr>
+<tr class="separator:a017f266f3731467e7e2fdca4e7f5f317"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4bec48b5aa35ddbc71e3523cd8f67f97"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Circuit.html#a4bec48b5aa35ddbc71e3523cd8f67f97">symbol_substitution</a> (const <a class="el" href="namespacetket.html#a1b74dba9cab2250364cda8a549168167">symbol_map_t</a> &amp;symbol_map)</td></tr>
 <tr class="separator:a4bec48b5aa35ddbc71e3523cd8f67f97"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa0389d010c9481a9abf4d4265cea728d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1Circuit.html#aa0389d010c9481a9abf4d4265cea728d">symbol_substitution</a> (const std::map&lt; <a class="el" href="namespacetket.html#a553aee55eda4452f31c63dc53ac06e7d">Sym</a>, double, SymEngine::RCPBasicKeyLess &gt; &amp;symbol_map)</td></tr>
@@ -1754,7 +1751,7 @@ template&lt;class ID &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>the newly-added vertex in the circuit's DAG </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01742">1742</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01741">1741</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -2608,7 +2605,7 @@ template&lt;class ID &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>output values </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="macro__manipulation_8cpp_source.html#l00729">729</a> of file <a class="el" href="macro__manipulation_8cpp_source.html">macro_manipulation.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="macro__manipulation_8cpp_source.html#l00733">733</a> of file <a class="el" href="macro__manipulation_8cpp_source.html">macro_manipulation.cpp</a>.</p>
 
 </div>
 </div>
@@ -3015,47 +3012,43 @@ template&lt;class ID &gt; </div>
 
 </div>
 </div>
-<a id="a512ea537e6bc7f1a3d371abb3e9a3799"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a512ea537e6bc7f1a3d371abb3e9a3799">&#9670;&nbsp;</a></span>decompose_boxes()</h2>
+<a id="a017f266f3731467e7e2fdca4e7f5f317"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a017f266f3731467e7e2fdca4e7f5f317">&#9670;&nbsp;</a></span>decompose_boxes_recursively()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">bool tket::Circuit::decompose_boxes </td>
+          <td class="memname">bool tket::Circuit::decompose_boxes_recursively </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">const std::unordered_set&lt; <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>excluded_types</em> = <code>{}</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const std::unordered_set&lt; std::string &gt; &amp;&#160;</td>
+          <td class="paramname"><em>excluded_opgroups</em> = <code>{}</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
-<p>Replaces each <a class="el" href="classtket_1_1Box.html">Box</a> operation by applying <a class="el" href="classtket_1_1Box.html#aa8189b7ff8c3c0b8fd90cbc71cf19c3f">Box::to_circuit</a>. </p>
+<p>Recursively replace each <a class="el" href="classtket_1_1Box.html">Box</a> operation by applying <a class="el" href="classtket_1_1Box.html#aa8189b7ff8c3c0b8fd90cbc71cf19c3f">Box::to_circuit</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">excluded_types</td><td>box types excluded from decomposition </td></tr>
+    <tr><td class="paramname">excluded_opgroups</td><td>opgroups excluded from decomposition</td></tr>
+  </table>
+  </dd>
+</dl>
 <dl class="section return"><dt>Returns</dt><dd>whether any replacements were made </dd></dl>
 
 <p class="definition">Definition at line <a class="el" href="macro__manipulation_8cpp_source.html#l00711">711</a> of file <a class="el" href="macro__manipulation_8cpp_source.html">macro_manipulation.cpp</a>.</p>
-
-</div>
-</div>
-<a id="a904db7e5b814116afeacc67317855cf1"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a904db7e5b814116afeacc67317855cf1">&#9670;&nbsp;</a></span>decompose_boxes_recursively()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void tket::Circuit::decompose_boxes_recursively </td>
-          <td>(</td>
-          <td class="paramname"></td><td>)</td>
-          <td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Recursively apply <a class="el" href="classtket_1_1Circuit.html#a512ea537e6bc7f1a3d371abb3e9a3799">decompose_boxes</a>. </p>
-<dl class="section post"><dt>Postcondition</dt><dd>no <a class="el" href="classtket_1_1Box.html">Box</a> operations remain </dd></dl>
-
-<p class="definition">Definition at line <a class="el" href="macro__manipulation_8cpp_source.html#l00724">724</a> of file <a class="el" href="macro__manipulation_8cpp_source.html">macro_manipulation.cpp</a>.</p>
 
 </div>
 </div>
@@ -3804,7 +3797,7 @@ template&lt;class ID &gt; </div>
 <p>Get the name of the circuit. </p>
 <dl class="section return"><dt>Returns</dt><dd>name </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01626">1626</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01625">1625</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -5677,7 +5670,7 @@ template&lt;typename UnitA , typename UnitB &gt; </div>
 <p>Templated method definitions.</p>
 <dl class="section return"><dt>Returns</dt><dd>true iff circuit was modified </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01669">1669</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01668">1668</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -5844,7 +5837,7 @@ template&lt;typename UnitA , typename UnitB &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01633">1633</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01632">1632</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -6833,7 +6826,7 @@ template&lt;class BoxT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01653">1653</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01652">1652</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -6851,7 +6844,7 @@ template&lt;class BoxT &gt; </div>
 
 <p>Representation as directed graph. </p>
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01651">1651</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01650">1650</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -6867,7 +6860,7 @@ template&lt;class BoxT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01650">1650</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01649">1649</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>
@@ -6931,7 +6924,7 @@ template&lt;class BoxT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01652">1652</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="Circuit_8hpp_source.html#l01651">1651</a> of file <a class="el" href="Circuit_8hpp_source.html">Circuit.hpp</a>.</p>
 
 </div>
 </div>

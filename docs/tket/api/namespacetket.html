@@ -1669,8 +1669,9 @@ Functions</h2></td></tr>
 <tr class="memitem:a4dbe1fc4216104097492df584f552f12"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a4dbe1fc4216104097492df584f552f12">ComposePhasePolyBoxes</a> (unsigned min_size=0)</td></tr>
 <tr class="memdesc:a4dbe1fc4216104097492df584f552f12"><td class="mdescLeft">&#160;</td><td class="mdescRight">converts a circuit containing all possible gates to a circuit containing only phase poly boxes + H gates (and measure + reset + collapse + barrier)  <a href="namespacetket.html#a4dbe1fc4216104097492df584f552f12">More...</a><br /></td></tr>
 <tr class="separator:a4dbe1fc4216104097492df584f552f12"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6b6653dc02103205ef74ff4df63d85db"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a6b6653dc02103205ef74ff4df63d85db">DecomposeBoxes</a> ()</td></tr>
-<tr class="separator:a6b6653dc02103205ef74ff4df63d85db"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a84c270f10d40581eade1863528c41f6b"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a84c270f10d40581eade1863528c41f6b">DecomposeBoxes</a> (const std::unordered_set&lt; <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a> &gt; &amp;excluded_types={}, const std::unordered_set&lt; std::string &gt; &amp;excluded_opgroups={})</td></tr>
+<tr class="memdesc:a84c270f10d40581eade1863528c41f6b"><td class="mdescLeft">&#160;</td><td class="mdescRight">Recursively replaces all boxes by their decomposition using <a class="el" href="classtket_1_1Box.html#aa8189b7ff8c3c0b8fd90cbc71cf19c3f" title="Circuit represented by box.">Box::to_circuit</a>.  <a href="namespacetket.html#a84c270f10d40581eade1863528c41f6b">More...</a><br /></td></tr>
+<tr class="separator:a84c270f10d40581eade1863528c41f6b"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a278646f17409e315c09ea2f3ec19af1f"><td class="memItemLeft" align="right" valign="top">const <a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a> &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a278646f17409e315c09ea2f3ec19af1f">SquashTK1</a> ()</td></tr>
 <tr class="memdesc:a278646f17409e315c09ea2f3ec19af1f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Squash sequences of single-qubit gates to TK1 gates.  <a href="namespacetket.html#a278646f17409e315c09ea2f3ec19af1f">More...</a><br /></td></tr>
 <tr class="separator:a278646f17409e315c09ea2f3ec19af1f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -6173,7 +6174,7 @@ template&lt;typename T &gt; </div>
 <p>For every two CnX gates, reorder their control qubits to improve the chance of gate cancellation</p>
 <dl class="section return"><dt>Returns</dt><dd>compilation pass to perform this transformation </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00448">448</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00449">449</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -6818,20 +6819,40 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="a6b6653dc02103205ef74ff4df63d85db"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6b6653dc02103205ef74ff4df63d85db">&#9670;&nbsp;</a></span>DecomposeBoxes()</h2>
+<a id="a84c270f10d40581eade1863528c41f6b"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a84c270f10d40581eade1863528c41f6b">&#9670;&nbsp;</a></span>DecomposeBoxes()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">const <a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a> &amp; tket::DecomposeBoxes </td>
+          <td class="memname"><a class="el" href="namespacetket.html#a16f42886ddb3e4e93daaacdd772886b1">PassPtr</a> tket::DecomposeBoxes </td>
           <td>(</td>
-          <td class="paramname"></td><td>)</td>
+          <td class="paramtype">const std::unordered_set&lt; <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>excluded_types</em> = <code>{}</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype">const std::unordered_set&lt; std::string &gt; &amp;&#160;</td>
+          <td class="paramname"><em>excluded_opgroups</em> = <code>{}</code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
+
+<p>Recursively replaces all boxes by their decomposition using <a class="el" href="classtket_1_1Box.html#aa8189b7ff8c3c0b8fd90cbc71cf19c3f" title="Circuit represented by box.">Box::to_circuit</a>. </p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">excluded_types</td><td>box types excluded from decomposition </td></tr>
+    <tr><td class="paramname">excluded_opgroups</td><td>opgroups excluded from decomposition </td></tr>
+  </table>
+  </dd>
+</dl>
 <p>Preserves Max2QubitGatesPredicate since any box with &gt;2 qubits is already invalid. Preserves <a class="el" href="classtket_1_1ConnectivityPredicate.html">ConnectivityPredicate</a> (and <a class="el" href="classtket_1_1DirectednessPredicate.html">DirectednessPredicate</a>) since the verification looks inside CircBoxes and any other boxes with &gt;2 qubits are already invalid. Most others are preserved since the predicates look within CircBoxes.</p>
 <p>Invalidates <a class="el" href="classtket_1_1GateSetPredicate.html" title="Asserts that all operations are in the specified set of types.">GateSetPredicate</a> because it doesn't look inside boxes or account for the gate set of their decomposition.</p>
 
@@ -6854,7 +6875,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00274">274</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00275">275</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -6986,7 +7007,7 @@ template&lt;typename T &gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00339">339</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00340">340</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -7454,7 +7475,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00289">289</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00290">290</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -11711,7 +11732,7 @@ template&lt;typename T &gt; </div>
 <p>After this pass, all TK2 angles will be normalised and the circuit will satisfy <code><a class="el" href="classtket_1_1NormalisedTK2Predicate.html" title="Asserts that all TK2 gates are normalised.">NormalisedTK2Predicate</a></code>.</p>
 <dl class="section return"><dt>Returns</dt><dd>compilation pass to perform this transformation </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00397">397</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00398">398</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -12878,7 +12899,7 @@ template&lt;typename T &gt; </div>
 
 <p>Remove all&amp; <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a48656da7a6e48c6887d94f4c69c731b6">OpType::Barrier</a> from the circuit. </p>
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00313">313</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00314">314</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -12899,7 +12920,7 @@ template&lt;typename T &gt; </div>
 
 <p>Remove all operations that have no <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a29c2c02a361c9d7028472e5d92cd4a54">OpType::Output</a> or <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a6c4e5627d56328e52b12a2aeb0164d0d">OpType::ClOutput</a> in their causal future. </p>
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00367">367</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00368">368</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -12922,7 +12943,7 @@ template&lt;typename T &gt; </div>
 <p>Note that if the circuit contains measurements, they may become mid-circuit measurements in the transformed circuit.</p>
 <dl class="section return"><dt>Returns</dt><dd>compilation pass to perform this transformation </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00462">462</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00463">463</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -13246,7 +13267,7 @@ template&lt;typename BoxT &gt; </div>
 
 <p>Replace all measured classical maps that are followed by Measure operations whose quantum output is discarded with classical operations following the Measure. </p>
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00379">379</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00380">380</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -13291,7 +13312,7 @@ template&lt;typename BoxT &gt; </div>
 <p>Squash single qubit gates into PhasedX and Rz gates. </p>
 <p>Commute Rzs to the back if possible. </p>
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00434">434</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00435">435</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -13312,7 +13333,7 @@ template&lt;typename BoxT &gt; </div>
 
 <p>Squash sequences of single-qubit gates to TK1 gates. </p>
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00259">259</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00260">260</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -15044,7 +15065,7 @@ template&lt;typename UnitA , typename UnitB &gt; </div>
 <p>As a resynthesis pass, this will ignore almost all optimisations achieved beforehand and may increase the cost of the circuit.</p>
 <dl class="section return"><dt>Returns</dt><dd>compilation pass to perform this transformation </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00487">487</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00488">488</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
@@ -15066,7 +15087,7 @@ template&lt;typename UnitA , typename UnitB &gt; </div>
 <p>Converts ZZPhase with angle 1 or -1 to two Rz(1) gates. </p>
 <dl class="section return"><dt>Returns</dt><dd>compilation pass to perform this transformation </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00417">417</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PassLibrary_8cpp_source.html#l00418">418</a> of file <a class="el" href="PassLibrary_8cpp_source.html">PassLibrary.cpp</a>.</p>
 
 </div>
 </div>
