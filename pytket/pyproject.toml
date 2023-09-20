@@ -1,3 +1,7 @@
 [build-system]
 requires = ["setuptools>=60", "wheel", "setuptools_scm>=8.0", "conan>=2.0", "cmake>=3.26"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools_scm]
+root = ".."
+version_file = "pytket/_version.py"

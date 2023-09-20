@@ -192,9 +192,4 @@ setup(
     include_package_data=True,
     package_data={"pytket": ["py.typed"]},
     zip_safe=False,
-    use_scm_version={
-        "root": "..",
-        "relative_to": __file__,
-        "local_scheme": "node-and-timestamp",
-    },
 )
