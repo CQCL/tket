@@ -195,8 +195,7 @@ setup(
     zip_safe=False,
     use_scm_version={
         "root": os.path.dirname(setup_dir),
-        "relative_to": os.path.join(setup_dir, "pytket"),
-        "write_to": "_version.py",
+        "write_to": os.path.join(setup_dir, "pytket", "_version.py"),
         "write_to_template": "__version__ = '{version}'",
     },
 )
