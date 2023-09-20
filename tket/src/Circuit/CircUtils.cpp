@@ -644,13 +644,13 @@ static Circuit controlled_conjugation_box(
     all_args[n_controls + i] = Qubit(n_controls + args[i].index()[0]);
     target_args[i] = Qubit(n_controls + args[i].index()[0]);
   }
-  Circuit c3(n_controls + n_targets);
-  c3.add_op(compute, target_args);
+  Circuit circ(n_controls + n_targets);
+  circ.add_op(compute, target_args);
   QControlBox controlled_action(action, n_controls);
-  c3.add_box(controlled_action, all_args);
-  c3.add_op(uncompute, target_args);
-  c3.decompose_boxes_recursively();
-  return c3;
+  circ.add_box(controlled_action, all_args);
+  circ.add_op(uncompute, target_args);
+  circ.decompose_boxes_recursively();
+  return circ;
 }
 
 static Circuit with_controls_symbolic(const Circuit &c, unsigned n_controls) {

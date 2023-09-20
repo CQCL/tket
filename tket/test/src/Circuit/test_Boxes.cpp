@@ -877,12 +877,14 @@ SCENARIO("QControlBox", "[boxes]") {
   GIVEN("symbolic circuit with a ConjugationBox") {
     Sym s = SymEngine::symbol("a");
     Expr a = Expr(s);
+    Sym s1 = SymEngine::symbol("b");
+    Expr b = Expr(s1);
     Circuit compute(1);
     Circuit action(1);
     Circuit uncompute(1);
     compute.add_op<unsigned>(OpType::Rx, a, {0});
     action.add_op<unsigned>(OpType::Z, {0});
-    uncompute.add_op<unsigned>(OpType::Rx, a, {0});
+    uncompute.add_op<unsigned>(OpType::Rx, b, {0});
     Op_ptr compute_op = std::make_shared<CircBox>(CircBox(compute));
     Op_ptr action_op = std::make_shared<CircBox>(CircBox(action));
     Op_ptr uncompute_op = std::make_shared<CircBox>(CircBox(uncompute));
@@ -893,7 +895,7 @@ SCENARIO("QControlBox", "[boxes]") {
     Circuit d(2);
     d.add_op<unsigned>(OpType::Rx, a, {1});
     d.add_op<unsigned>(OpType::CZ, {0, 1});
-    d.add_op<unsigned>(OpType::Rx, a, {1});
+    d.add_op<unsigned>(OpType::Rx, b, {1});
     REQUIRE(*c == d);
   }
 }
