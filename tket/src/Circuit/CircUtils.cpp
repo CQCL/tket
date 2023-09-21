@@ -624,7 +624,8 @@ static Circuit CnU1(unsigned n_controls, Expr lambda) {
  * The returned circuit is box free
  * @param op assumed to be ConjugationBox
  * @param n_controls
- * @param args qubits where the box is original placed
+ * @param args qubits where the box was originally placed, assumed to be qubits
+ * from the default register.
  * @return Circuit
  */
 static Circuit controlled_conjugation_box(
@@ -641,6 +642,8 @@ static Circuit controlled_conjugation_box(
     all_args[i] = Qubit(i);
   }
   for (unsigned i = 0; i < n_targets; i++) {
+    TKET_ASSERT(
+        args[i].reg_name() == q_default_reg() && args[i].reg_dim() == 1);
     all_args[n_controls + i] = Qubit(n_controls + args[i].index()[0]);
     target_args[i] = Qubit(n_controls + args[i].index()[0]);
   }
