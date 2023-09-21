@@ -622,7 +622,7 @@ static Circuit CnU1(unsigned n_controls, Expr lambda) {
 /**
  * @brief Returns the controlled version of a ConjugationBox
  * The returned circuit is box free
- * @param op assumes to be ConjugationBox
+ * @param op assumed to be ConjugationBox
  * @param n_controls
  * @param args qubits where the box is original placed
  * @return Circuit
