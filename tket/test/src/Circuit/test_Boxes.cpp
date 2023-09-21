@@ -840,8 +840,8 @@ SCENARIO("QControlBox", "[boxes]") {
     Circuit action(2);
     compute.add_op<unsigned>(OpType::CX, {1, 0});
     action.add_op<unsigned>(OpType::Z, {0});
-    Op_ptr compute_op = std::make_shared<CircBox>(CircBox(compute));
-    Op_ptr action_op = std::make_shared<CircBox>(CircBox(action));
+    Op_ptr compute_op = std::make_shared<CircBox>(compute);
+    Op_ptr action_op = std::make_shared<CircBox>(action);
     Op_ptr cj_op =
         std::make_shared<ConjugationBox>(ConjugationBox(compute_op, action_op));
     WHEN("Simple") {
@@ -858,9 +858,8 @@ SCENARIO("QControlBox", "[boxes]") {
       compute_outer.add_op<unsigned>(OpType::CX, {2, 1});
       Circuit action_outer(3);
       action_outer.add_op<unsigned>(cj_op, {1, 0});
-      Op_ptr compute_outer_op =
-          std::make_shared<CircBox>(CircBox(compute_outer));
-      Op_ptr action_outer_op = std::make_shared<CircBox>(CircBox(action_outer));
+      Op_ptr compute_outer_op = std::make_shared<CircBox>(compute_outer);
+      Op_ptr action_outer_op = std::make_shared<CircBox>(action_outer);
       Op_ptr cj_op_2 = std::make_shared<ConjugationBox>(
           ConjugationBox(compute_outer_op, action_outer_op));
       QControlBox qbox(cj_op_2);
@@ -885,9 +884,9 @@ SCENARIO("QControlBox", "[boxes]") {
     compute.add_op<unsigned>(OpType::Rx, a, {0});
     action.add_op<unsigned>(OpType::Z, {0});
     uncompute.add_op<unsigned>(OpType::Rx, b, {0});
-    Op_ptr compute_op = std::make_shared<CircBox>(CircBox(compute));
-    Op_ptr action_op = std::make_shared<CircBox>(CircBox(action));
-    Op_ptr uncompute_op = std::make_shared<CircBox>(CircBox(uncompute));
+    Op_ptr compute_op = std::make_shared<CircBox>(compute);
+    Op_ptr action_op = std::make_shared<CircBox>(action);
+    Op_ptr uncompute_op = std::make_shared<CircBox>(uncompute);
     Op_ptr cj_op = std::make_shared<ConjugationBox>(
         ConjugationBox(compute_op, action_op, uncompute_op));
     QControlBox qbox(cj_op);
@@ -897,6 +896,18 @@ SCENARIO("QControlBox", "[boxes]") {
     d.add_op<unsigned>(OpType::CZ, {0, 1});
     d.add_op<unsigned>(OpType::Rx, b, {1});
     REQUIRE(*c == d);
+  }
+
+  GIVEN("controlled phase_gadget") {
+    Expr a;
+    WHEN("numerical") { a = 0.3; }
+    WHEN("symbolic") {
+      Sym s = SymEngine::symbol("a");
+      a = Expr(s);
+    }
+    QControlBox qbox(get_op_ptr(OpType::PhaseGadget, {a}, 2));
+    std::shared_ptr<Circuit> c = qbox.to_circuit();
+    REQUIRE(c->count_gates(OpType::CX) == 4);
   }
 }
 
@@ -1048,13 +1059,13 @@ SCENARIO("Checking equality", "[boxes]") {
   GIVEN("QControlBox") {
     Circuit u(2);
     u.add_op<unsigned>(OpType::CX, {0, 1});
-    Op_ptr op = std::make_shared<CircBox>(CircBox(u));
+    Op_ptr op = std::make_shared<CircBox>(u);
     QControlBox qcbox(op, 3, {1, 0, 1});
     WHEN("both arguments are equal") { REQUIRE(qcbox == qcbox); }
     WHEN("different ids but equivalent ops") {
       Circuit u2(2);
       u2.add_op<unsigned>(OpType::CX, {0, 1});
-      Op_ptr op2 = std::make_shared<CircBox>(CircBox(u2));
+      Op_ptr op2 = std::make_shared<CircBox>(u2);
       QControlBox qcbox2(op2, 3, {1, 0, 1});
       REQUIRE(qcbox == qcbox2);
     }
@@ -1322,10 +1333,10 @@ SCENARIO("Checking equality", "[boxes]") {
   GIVEN("ConjugationBox") {
     Circuit compute(2);
     compute.add_op<unsigned>(OpType::CRx, 0.5, {1, 0});
-    Op_ptr compute_op = std::make_shared<CircBox>(CircBox(compute));
+    Op_ptr compute_op = std::make_shared<CircBox>(compute);
     Circuit action(2);
     action.add_op<unsigned>(OpType::H, {0});
-    Op_ptr action_op = std::make_shared<CircBox>(CircBox(action));
+    Op_ptr action_op = std::make_shared<CircBox>(action);
     ConjugationBox box(compute_op, action_op);
     WHEN("all arguments are equal") { REQUIRE(box == box); }
     WHEN("different ids but equivalent ops") {
@@ -1334,7 +1345,7 @@ SCENARIO("Checking equality", "[boxes]") {
     WHEN("different uncompute") {
       Circuit uncompute(2);
       uncompute.add_op<unsigned>(OpType::CZ, {0, 1});
-      Op_ptr uncompute_op = std::make_shared<CircBox>(CircBox(uncompute));
+      Op_ptr uncompute_op = std::make_shared<CircBox>(uncompute);
       REQUIRE(box != ConjugationBox(compute_op, action_op, uncompute_op));
     }
     WHEN("equivalent uncompute") {
@@ -1347,7 +1358,7 @@ SCENARIO("Checking equality", "[boxes]") {
     WHEN("different args") {
       Circuit compute_2(2);
       compute_2.add_op<unsigned>(OpType::CZ, {0, 1});
-      Op_ptr compute_2_op = std::make_shared<CircBox>(CircBox(compute_2));
+      Op_ptr compute_2_op = std::make_shared<CircBox>(compute_2);
       REQUIRE(box != ConjugationBox(compute_2_op, action_op));
     }
   }

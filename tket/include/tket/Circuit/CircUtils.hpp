@@ -114,7 +114,7 @@ std::pair<Circuit, Complex> decompose_2cx_DV(const Eigen::Matrix4cd& U);
  * @param t phase parameter
  * @param cx_config CX configuration
  *
- * @return phase gadget
+ * @return phase gadget implementation wrapped in a ConjugationBox
  */
 Circuit phase_gadget(
     unsigned n_qubits, const Expr& t,
@@ -130,6 +130,7 @@ Circuit phase_gadget(
  * @param paulis Pauli operators
  * @param t angle in half-turns
  * @param cx_config CX configuration
+ * @return Pauli gadget implementation wrapped in a ConjugationBox
  */
 Circuit pauli_gadget(
     const std::vector<Pauli>& paulis, const Expr& t,
