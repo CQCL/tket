@@ -1,10 +1,10 @@
 var searchData=
 [
-  ['q_5fin_5fhole_4622',['q_in_hole',['../structtket_1_1Subcircuit.html#ab2faecce201ae7e5f438ba628e32f8b6',1,'tket::Subcircuit']]],
-  ['q_5fout_5fhole_4623',['q_out_hole',['../structtket_1_1Subcircuit.html#adede27d92c2cf7d14c62734b53458e90',1,'tket::Subcircuit']]],
-  ['qtype_4624',['qtype',['../structtket_1_1zx_1_1WireProperties.html#aeddb01329905ed999b7e9e9e30f975e6',1,'tket::zx::WireProperties']]],
-  ['qtype_5f_4625',['qtype_',['../classtket_1_1zx_1_1BoundaryGen.html#a1bebc5d360d568e26c6c33c0c991eff9',1,'tket::zx::BoundaryGen::qtype_()'],['../classtket_1_1zx_1_1BasicGen.html#a343b65cbaf16cc98d43555501e7c6aa2',1,'tket::zx::BasicGen::qtype_()'],['../classtket_1_1zx_1_1DirectedGen.html#ab1ab8750d40e62f35fbaeb8917c307f5',1,'tket::zx::DirectedGen::qtype_()']]],
-  ['quantum_5fin_5fedges_4626',['quantum_in_edges',['../structtket_1_1GraphPlacement_1_1Frontier.html#a4a208cbce40e4347f18eb9fdb2d60541',1,'tket::GraphPlacement::Frontier']]],
-  ['quantum_5fout_5fedges_4627',['quantum_out_edges',['../structtket_1_1GraphPlacement_1_1Frontier.html#aa7d289d592cefe5ff849fdf318a7e47a',1,'tket::GraphPlacement::Frontier']]],
-  ['qubit_5findices_4628',['qubit_indices',['../structtket_1_1tket__sim_1_1internal_1_1GateNode.html#ae7175328c74368a9c98c02507548d7b9',1,'tket::tket_sim::internal::GateNode']]]
+  ['q_5fin_5fhole_4621',['q_in_hole',['../structtket_1_1Subcircuit.html#ab2faecce201ae7e5f438ba628e32f8b6',1,'tket::Subcircuit']]],
+  ['q_5fout_5fhole_4622',['q_out_hole',['../structtket_1_1Subcircuit.html#adede27d92c2cf7d14c62734b53458e90',1,'tket::Subcircuit']]],
+  ['qtype_4623',['qtype',['../structtket_1_1zx_1_1WireProperties.html#aeddb01329905ed999b7e9e9e30f975e6',1,'tket::zx::WireProperties']]],
+  ['qtype_5f_4624',['qtype_',['../classtket_1_1zx_1_1BoundaryGen.html#a1bebc5d360d568e26c6c33c0c991eff9',1,'tket::zx::BoundaryGen::qtype_()'],['../classtket_1_1zx_1_1BasicGen.html#a343b65cbaf16cc98d43555501e7c6aa2',1,'tket::zx::BasicGen::qtype_()'],['../classtket_1_1zx_1_1DirectedGen.html#ab1ab8750d40e62f35fbaeb8917c307f5',1,'tket::zx::DirectedGen::qtype_()']]],
+  ['quantum_5fin_5fedges_4625',['quantum_in_edges',['../structtket_1_1GraphPlacement_1_1Frontier.html#a4a208cbce40e4347f18eb9fdb2d60541',1,'tket::GraphPlacement::Frontier']]],
+  ['quantum_5fout_5fedges_4626',['quantum_out_edges',['../structtket_1_1GraphPlacement_1_1Frontier.html#aa7d289d592cefe5ff849fdf318a7e47a',1,'tket::GraphPlacement::Frontier']]],
+  ['qubit_5findices_4627',['qubit_indices',['../structtket_1_1tket__sim_1_1internal_1_1GateNode.html#ae7175328c74368a9c98c02507548d7b9',1,'tket::tket_sim::internal::GateNode']]]
 ];
