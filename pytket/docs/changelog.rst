@@ -11,6 +11,8 @@ Minor new features:
 * Add optional parameters ``excluded_types`` and ``excluded_opgroups``
   to ``DecomposeBoxes``.
 * More efficient decomposition for quantum controlled ``ConjugationBox``es.
+* ``PauliExpBox``, ``PauliExpPairBox``, and ``PauliExpCommutingSetBox`` are now
+  decomposed into a single ``ConjugationBox``. 
 
 1.20.1 (September 2023)
 -----------------------
