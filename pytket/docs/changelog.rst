@@ -1,6 +1,15 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Minor new features:
+
+* Add optional parameters `excluded_types` and `excluded_opgroups`
+  to `DecomposeBoxes`.
+* More efficient decomposition for quantum controlled `ConjugationBox`es.
+
 1.20.1 (September 2023)
 -----------------------
 
@@ -8,9 +17,6 @@ Minor new features:
 
 * Add optional `strict_check` parameter to `RepeatPass` to force stopping when
   the circuit is unchanged.
-* Add optional parameters `excluded_types` and `excluded_opgroups`
-  to `DecomposeBoxes`.
-* More efficient decomposition for quantum controlled `ConjugationBox`es.
 
 Fixes:
 
