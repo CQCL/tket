@@ -336,8 +336,8 @@ void PauliExpCommutingSetBox::generate_circuit() const {
   Circuit after_synth_circ = *ppbox.to_circuit();
 
   ConjugationBox box(
-      std::make_shared<CircBox>(CircBox(cliff_circ)),
-      std::make_shared<CircBox>(CircBox(after_synth_circ)));
+      std::make_shared<CircBox>(cliff_circ),
+      std::make_shared<CircBox>(after_synth_circ));
 
   circ.add_box(box, circ.all_qubits());
 

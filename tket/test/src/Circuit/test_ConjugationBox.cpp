@@ -33,10 +33,10 @@ SCENARIO("Test ConjugationBox") {
   GIVEN("Constructor with default uncompute") {
     Circuit compute(2);
     compute.add_op<unsigned>(OpType::CRx, 0.5, {1, 0});
-    Op_ptr compute_op = std::make_shared<CircBox>(CircBox(compute));
+    Op_ptr compute_op = std::make_shared<CircBox>(compute);
     Circuit action(2);
     action.add_op<unsigned>(OpType::H, {0});
-    Op_ptr action_op = std::make_shared<CircBox>(CircBox(action));
+    Op_ptr action_op = std::make_shared<CircBox>(action);
     ConjugationBox box(compute_op, action_op);
     std::shared_ptr<Circuit> c = box.to_circuit();
     Circuit d(2);
@@ -50,15 +50,15 @@ SCENARIO("Test ConjugationBox") {
     compute.add_op<unsigned>(OpType::CX, {0, 1});
     compute.add_op<unsigned>(OpType::CX, {1, 0});
     compute.add_op<unsigned>(OpType::CX, {0, 1});
-    Op_ptr compute_op = std::make_shared<CircBox>(CircBox(compute));
+    Op_ptr compute_op = std::make_shared<CircBox>(compute);
     Circuit action(2);
     action.add_op<unsigned>(OpType::H, {0});
-    Op_ptr action_op = std::make_shared<CircBox>(CircBox(action));
+    Op_ptr action_op = std::make_shared<CircBox>(action);
     Circuit uncompute(2);
     uncompute.add_op<unsigned>(OpType::CX, {1, 0});
     uncompute.add_op<unsigned>(OpType::CX, {0, 1});
     uncompute.add_op<unsigned>(OpType::CX, {1, 0});
-    Op_ptr uncompute_op = std::make_shared<CircBox>(CircBox(uncompute));
+    Op_ptr uncompute_op = std::make_shared<CircBox>(uncompute);
     ConjugationBox box(compute_op, action_op, uncompute_op);
     std::shared_ptr<Circuit> c = box.to_circuit();
     Circuit d(2);
@@ -70,10 +70,10 @@ SCENARIO("Test ConjugationBox") {
   GIVEN("Test dagger") {
     Circuit compute(2);
     compute.add_op<unsigned>(OpType::CRx, 0.5, {1, 0});
-    Op_ptr compute_op = std::make_shared<CircBox>(CircBox(compute));
+    Op_ptr compute_op = std::make_shared<CircBox>(compute);
     Circuit action(2);
     action.add_op<unsigned>(OpType::Rz, 0.5, {0});
-    Op_ptr action_op = std::make_shared<CircBox>(CircBox(action));
+    Op_ptr action_op = std::make_shared<CircBox>(action);
     WHEN("with default uncompute") {
       ConjugationBox box(compute_op, action_op);
       ConjugationBox correct_box_dagger(compute_op, action_op->dagger());
@@ -93,10 +93,10 @@ SCENARIO("Test ConjugationBox") {
   GIVEN("Test transpose") {
     Circuit compute(1);
     compute.add_op<unsigned>(OpType::TK1, {0.1, 0.2, 0.3}, {0});
-    Op_ptr compute_op = std::make_shared<CircBox>(CircBox(compute));
+    Op_ptr compute_op = std::make_shared<CircBox>(compute);
     Circuit action(1);
     action.add_op<unsigned>(OpType::TK1, {1.1, 1.2, 1.3}, {0});
-    Op_ptr action_op = std::make_shared<CircBox>(CircBox(action));
+    Op_ptr action_op = std::make_shared<CircBox>(action);
     WHEN("with default uncompute") {
       ConjugationBox box(compute_op, action_op);
       ConjugationBox correct_box_transpose(
@@ -120,20 +120,20 @@ SCENARIO("Test ConjugationBox") {
 SCENARIO("Test ConjugationBox Exceptions") {
   GIVEN("Ops with classical wires") {
     Circuit compute(2, 1);
-    Op_ptr compute_op = std::make_shared<CircBox>(CircBox(compute));
+    Op_ptr compute_op = std::make_shared<CircBox>(compute);
     Circuit action(2);
-    Op_ptr action_op = std::make_shared<CircBox>(CircBox(action));
+    Op_ptr action_op = std::make_shared<CircBox>(action);
     REQUIRE_THROWS_MATCHES(
         ConjugationBox(compute_op, action_op), std::invalid_argument,
         MessageContains("only supports quantum operations"));
   }
   GIVEN("Uncompute with classical wires") {
     Circuit compute(2);
-    Op_ptr compute_op = std::make_shared<CircBox>(CircBox(compute));
+    Op_ptr compute_op = std::make_shared<CircBox>(compute);
     Circuit action(2);
-    Op_ptr action_op = std::make_shared<CircBox>(CircBox(action));
+    Op_ptr action_op = std::make_shared<CircBox>(action);
     Circuit uncompute(2, 1);
-    Op_ptr uncompute_op = std::make_shared<CircBox>(CircBox(uncompute));
+    Op_ptr uncompute_op = std::make_shared<CircBox>(uncompute);
     REQUIRE_THROWS_MATCHES(
         ConjugationBox(compute_op, action_op, uncompute_op),
         std::invalid_argument,
@@ -141,20 +141,20 @@ SCENARIO("Test ConjugationBox Exceptions") {
   }
   GIVEN("Unmatched size") {
     Circuit compute(3);
-    Op_ptr compute_op = std::make_shared<CircBox>(CircBox(compute));
+    Op_ptr compute_op = std::make_shared<CircBox>(compute);
     Circuit action(2);
-    Op_ptr action_op = std::make_shared<CircBox>(CircBox(action));
+    Op_ptr action_op = std::make_shared<CircBox>(action);
     REQUIRE_THROWS_MATCHES(
         ConjugationBox(compute_op, action_op), std::invalid_argument,
         MessageContains("have the same number of qubits"));
   }
   GIVEN("Unmatched size caused by uncompute") {
     Circuit compute(2);
-    Op_ptr compute_op = std::make_shared<CircBox>(CircBox(compute));
+    Op_ptr compute_op = std::make_shared<CircBox>(compute);
     Circuit action(2);
-    Op_ptr action_op = std::make_shared<CircBox>(CircBox(action));
+    Op_ptr action_op = std::make_shared<CircBox>(action);
     Circuit uncompute(3);
-    Op_ptr uncompute_op = std::make_shared<CircBox>(CircBox(uncompute));
+    Op_ptr uncompute_op = std::make_shared<CircBox>(uncompute);
     REQUIRE_THROWS_MATCHES(
         ConjugationBox(compute_op, action_op, uncompute_op),
         std::invalid_argument,

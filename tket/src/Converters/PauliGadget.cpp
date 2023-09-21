@@ -401,8 +401,7 @@ void append_pauli_gadget_pair(
   append_single_pauli_gadget(v, pauli0, angle0);
   append_single_pauli_gadget(v, pauli1, angle1);
   ConjugationBox cjbox(
-      std::make_shared<CircBox>(CircBox(u)),
-      std::make_shared<CircBox>(CircBox(v)));
+      std::make_shared<CircBox>(u), std::make_shared<CircBox>(v));
   circ.add_box(cjbox, u.all_qubits());
 }
 

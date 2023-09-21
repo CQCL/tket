@@ -356,9 +356,8 @@ Circuit phase_gadget(unsigned n_qubits, const Expr &t, CXConfigType cx_config) {
     }
   }
   ConjugationBox box(
-      std::make_shared<CircBox>(CircBox(compute)),
-      std::make_shared<CircBox>(CircBox(action)),
-      std::make_shared<CircBox>(CircBox(uncompute)));
+      std::make_shared<CircBox>(compute), std::make_shared<CircBox>(action),
+      std::make_shared<CircBox>(uncompute));
   new_circ.add_box(box, new_circ.all_qubits());
   return new_circ;
 }
@@ -411,9 +410,8 @@ Circuit pauli_gadget(
     }
   }
   ConjugationBox box(
-      std::make_shared<CircBox>(CircBox(compute)),
-      std::make_shared<CircBox>(CircBox(action)),
-      std::make_shared<CircBox>(CircBox(uncompute)));
+      std::make_shared<CircBox>(compute), std::make_shared<CircBox>(action),
+      std::make_shared<CircBox>(uncompute));
   circ.add_box(box, circ.all_qubits());
   return circ;
 }
