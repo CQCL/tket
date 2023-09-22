@@ -11,6 +11,7 @@ Minor new features:
 * Add optional parameters ``excluded_types`` and ``excluded_opgroups``
   to ``DecomposeBoxes``.
 * More efficient decomposition for quantum controlled ``ConjugationBox``es.
+* New ``superpass`` for automatically compiling with the best pass from a list
 
 1.20.1 (September 2023)
 -----------------------

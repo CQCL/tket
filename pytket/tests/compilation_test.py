@@ -12,8 +12,8 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pytket.circuit import Circuit
-from pytket.passes import FullPeepholeOptimise
+from pytket.circuit import Circuit, OpType
+from pytket.passes import FullPeepholeOptimise, superpass
 
 
 def test_compilation() -> None:
@@ -152,3 +152,69 @@ def test_compilation() -> None:
         }
     )
     assert FullPeepholeOptimise().apply(c)
+
+
+def test_superpass() -> None:
+    fp = FullPeepholeOptimise()
+    fp2 = FullPeepholeOptimise(allow_swaps=False)
+
+    sp = superpass([fp, fp2])
+
+    circ = Circuit(2).H(1).H(0).H(1).H(0).X(1).CX(1, 0).CX(0, 1).CX(1, 0)
+
+    result = sp.apply(circ)
+
+    assert sp.get_result_size() == [1, 4]
+
+    assert result.depth() == min(sp.get_result_size())
+
+
+def test_superpass_ii() -> None:
+    fp = FullPeepholeOptimise()
+    fp2 = FullPeepholeOptimise(allow_swaps=False)
+
+    sp = superpass([fp, fp2])
+
+    circ = Circuit(2).H(1).H(0).H(1).H(0).X(1).CX(1, 0).CX(0, 1).CX(1, 0)
+
+    result = sp.apply(circ)
+
+    assert sp.get_result_size() == [1, 4]
+
+    assert result.depth() == min(sp.get_result_size())
+
+
+def test_superpass_iii() -> None:
+    fp = FullPeepholeOptimise()
+    fp2 = FullPeepholeOptimise(allow_swaps=False)
+
+    def count_gates(circ: Circuit) -> int:
+        return circ.n_gates_of_type(OpType.CX)
+
+    sp = superpass([fp, fp2], count_gates)
+
+    circ = Circuit(2).H(1).H(0).H(1).H(0).X(1).CX(1, 0).CX(0, 1).CX(1, 0)
+
+    result = sp.apply(circ)
+
+    assert sp.get_result_size() == [0, 3]
+
+    assert count_gates(result) == min(sp.get_result_size())
+
+
+def test_superpass_iv() -> None:
+    fp = FullPeepholeOptimise()
+    fp2 = FullPeepholeOptimise(allow_swaps=False)
+
+    def count_gates(circ: Circuit) -> int:
+        return circ.n_gates_of_type(OpType.X)
+
+    sp = superpass([fp, fp2], count_gates)
+
+    circ = Circuit(2).H(1).H(0).H(1).H(0).X(1).CX(1, 0).CX(0, 1).CX(1, 0)
+
+    result = sp.apply(circ)
+
+    assert sp.get_result_size() == [0, 0]
+
+    assert count_gates(result) == min(sp.get_result_size())
