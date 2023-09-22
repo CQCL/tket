@@ -611,10 +611,10 @@ SCENARIO("Test Circuit serialization") {
   GIVEN("ConjugationBox") {
     Circuit compute(2);
     compute.add_op<unsigned>(OpType::CRx, 0.5, {1, 0});
-    Op_ptr compute_op = std::make_shared<CircBox>(CircBox(compute));
+    Op_ptr compute_op = std::make_shared<CircBox>(compute);
     Circuit action(2);
     action.add_op<unsigned>(OpType::H, {0});
-    Op_ptr action_op = std::make_shared<CircBox>(CircBox(action));
+    Op_ptr action_op = std::make_shared<CircBox>(action);
     ConjugationBox box(compute_op, action_op);
     nlohmann::json j_box = std::make_shared<ConjugationBox>(box);
     // check the uncompute field is null

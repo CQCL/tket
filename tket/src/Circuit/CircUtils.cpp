@@ -271,6 +271,9 @@ Circuit phase_gadget(unsigned n_qubits, const Expr &t, CXConfigType cx_config) {
   // Handle n_qubits==0 as a special case, or the calculations below
   // go badly wrong.
   Circuit new_circ(n_qubits);
+  Circuit compute(n_qubits);
+  Circuit action(n_qubits);
+  Circuit uncompute(n_qubits);
   if (n_qubits == 0) {
     new_circ.add_phase(-t / 2);
     return new_circ;
@@ -279,22 +282,22 @@ Circuit phase_gadget(unsigned n_qubits, const Expr &t, CXConfigType cx_config) {
     case CXConfigType::Snake: {
       for (unsigned i = n_qubits - 1; i != 0; --i) {
         unsigned j = i - 1;
-        new_circ.add_op<unsigned>(OpType::CX, {i, j});
+        compute.add_op<unsigned>(OpType::CX, {i, j});
       }
-      new_circ.add_op<unsigned>(OpType::Rz, t, {0});
+      action.add_op<unsigned>(OpType::Rz, t, {0});
       for (unsigned i = 0; i != n_qubits - 1; ++i) {
         unsigned j = i + 1;
-        new_circ.add_op<unsigned>(OpType::CX, {j, i});
+        uncompute.add_op<unsigned>(OpType::CX, {j, i});
       }
       break;
     }
     case CXConfigType::Star: {
       for (unsigned i = n_qubits - 1; i != 0; --i) {
-        new_circ.add_op<unsigned>(OpType::CX, {i, 0});
+        compute.add_op<unsigned>(OpType::CX, {i, 0});
       }
-      new_circ.add_op<unsigned>(OpType::Rz, t, {0});
+      action.add_op<unsigned>(OpType::Rz, t, {0});
       for (unsigned i = 1; i != n_qubits; ++i) {
-        new_circ.add_op<unsigned>(OpType::CX, {i, 0});
+        uncompute.add_op<unsigned>(OpType::CX, {i, 0});
       }
       break;
     }
@@ -302,19 +305,19 @@ Circuit phase_gadget(unsigned n_qubits, const Expr &t, CXConfigType cx_config) {
       unsigned complete_layers = floor(log2(n_qubits));
       unsigned dense_end = pow(2, complete_layers);
       for (unsigned i = 0; i < n_qubits - dense_end; i++)
-        new_circ.add_op<unsigned>(
+        compute.add_op<unsigned>(
             OpType::CX, {dense_end + i, dense_end - 1 - i});
       for (unsigned step_size = 1; step_size < dense_end; step_size *= 2) {
         for (unsigned i = 0; i < dense_end; i += 2 * step_size)
-          new_circ.add_op<unsigned>(OpType::CX, {i + step_size, i});
+          compute.add_op<unsigned>(OpType::CX, {i + step_size, i});
       }
-      new_circ.add_op<unsigned>(OpType::Rz, t, {0});
+      action.add_op<unsigned>(OpType::Rz, t, {0});
       for (unsigned step_size = dense_end / 2; step_size >= 1; step_size /= 2) {
         for (unsigned i = 0; i < dense_end; i += 2 * step_size)
-          new_circ.add_op<unsigned>(OpType::CX, {i + step_size, i});
+          uncompute.add_op<unsigned>(OpType::CX, {i + step_size, i});
       }
       for (unsigned i = 0; i < n_qubits - dense_end; i++)
-        new_circ.add_op<unsigned>(
+        uncompute.add_op<unsigned>(
             OpType::CX, {dense_end + i, dense_end - 1 - i});
       break;
     }
@@ -327,31 +330,35 @@ Circuit phase_gadget(unsigned n_qubits, const Expr &t, CXConfigType cx_config) {
           // this is only equal to the CX decompositions above
           // up to phase, but phase differences are cancelled out by
           // its dagger XXPhase(-1/2) below.
-          new_circ.add_op<unsigned>(OpType::H, {i});
-          new_circ.add_op<unsigned>(OpType::H, {j});
-          new_circ.add_op<unsigned>(OpType::XXPhase3, 0.5, {i, j, 0});
+          compute.add_op<unsigned>(OpType::H, {i});
+          compute.add_op<unsigned>(OpType::H, {j});
+          compute.add_op<unsigned>(OpType::XXPhase3, 0.5, {i, j, 0});
           sign_correction *= -1;
           conjugations.push_back({i, j, 0});
         } else {
           unsigned i = q;
-          new_circ.add_op<unsigned>(OpType::CX, {i, 0});
+          compute.add_op<unsigned>(OpType::CX, {i, 0});
           conjugations.push_back({i, 0});
         }
       }
-      new_circ.add_op<unsigned>(OpType::Rz, sign_correction * t, {0});
+      action.add_op<unsigned>(OpType::Rz, sign_correction * t, {0});
       for (const auto &conj : conjugations) {
         if (conj.size() == 2) {
-          new_circ.add_op<unsigned>(OpType::CX, conj);
+          uncompute.add_op<unsigned>(OpType::CX, conj);
         } else {
           TKET_ASSERT(conj.size() == 3);
-          new_circ.add_op<unsigned>(OpType::XXPhase3, -0.5, conj);
-          new_circ.add_op<unsigned>(OpType::H, {conj[0]});
-          new_circ.add_op<unsigned>(OpType::H, {conj[1]});
+          uncompute.add_op<unsigned>(OpType::XXPhase3, -0.5, conj);
+          uncompute.add_op<unsigned>(OpType::H, {conj[0]});
+          uncompute.add_op<unsigned>(OpType::H, {conj[1]});
         }
       }
       break;
     }
   }
+  ConjugationBox box(
+      std::make_shared<CircBox>(compute), std::make_shared<CircBox>(action),
+      std::make_shared<CircBox>(uncompute));
+  new_circ.add_box(box, new_circ.all_qubits());
   return new_circ;
 }
 
@@ -359,17 +366,20 @@ Circuit pauli_gadget(
     const std::vector<Pauli> &paulis, const Expr &t, CXConfigType cx_config) {
   unsigned n = paulis.size();
   Circuit circ(n);
+  Circuit compute(n);
+  Circuit action(n);
+  Circuit uncompute(n);
   std::vector<unsigned> qubits;
   for (unsigned i = 0; i < n; i++) {
     switch (paulis[i]) {
       case Pauli::I:
         break;
       case Pauli::X:
-        circ.add_op<unsigned>(OpType::H, {i});
+        compute.add_op<unsigned>(OpType::H, {i});
         qubits.push_back(i);
         break;
       case Pauli::Y:
-        circ.add_op<unsigned>(OpType::V, {i});
+        compute.add_op<unsigned>(OpType::V, {i});
         qubits.push_back(i);
         break;
       case Pauli::Z:
@@ -379,26 +389,30 @@ Circuit pauli_gadget(
   }
   if (qubits.empty()) {
     circ.add_phase(-t / 2);
-  } else {
-    Vertex v = circ.add_op<unsigned>(OpType::PhaseGadget, t, qubits);
-    Circuit cx_gadget = phase_gadget(circ.n_in_edges(v), t, cx_config);
-    Subcircuit sub = {circ.get_in_edges(v), circ.get_all_out_edges(v), {v}};
-    circ.substitute(cx_gadget, sub, Circuit::VertexDeletion::Yes);
-    for (unsigned i = 0; i < n; i++) {
-      switch (paulis[i]) {
-        case Pauli::I:
-          break;
-        case Pauli::X:
-          circ.add_op<unsigned>(OpType::H, {i});
-          break;
-        case Pauli::Y:
-          circ.add_op<unsigned>(OpType::Vdg, {i});
-          break;
-        case Pauli::Z:
-          break;
-      }
+    return circ;
+  }
+  Vertex v = action.add_op<unsigned>(OpType::PhaseGadget, t, qubits);
+  Circuit cx_gadget = phase_gadget(action.n_in_edges(v), t, cx_config);
+  Subcircuit sub = {action.get_in_edges(v), action.get_all_out_edges(v), {v}};
+  action.substitute(cx_gadget, sub, Circuit::VertexDeletion::Yes);
+  for (unsigned i = 0; i < n; i++) {
+    switch (paulis[i]) {
+      case Pauli::I:
+        break;
+      case Pauli::X:
+        uncompute.add_op<unsigned>(OpType::H, {i});
+        break;
+      case Pauli::Y:
+        uncompute.add_op<unsigned>(OpType::Vdg, {i});
+        break;
+      case Pauli::Z:
+        break;
     }
   }
+  ConjugationBox box(
+      std::make_shared<CircBox>(compute), std::make_shared<CircBox>(action),
+      std::make_shared<CircBox>(uncompute));
+  circ.add_box(box, circ.all_qubits());
   return circ;
 }
 
@@ -558,8 +572,11 @@ Circuit with_CX(Gate_ptr op) {
       return CircPool::CU1_using_CX(params[0]);
     case OpType::CU3:
       return CircPool::CU3_using_CX(params[0], params[1], params[2]);
-    case OpType::PhaseGadget:
-      return phase_gadget(n, params[0], CXConfigType::Snake);
+    case OpType::PhaseGadget: {
+      Circuit c = phase_gadget(n, params[0], CXConfigType::Snake);
+      c.decompose_boxes_recursively();
+      return c;
+    }
     case OpType::SWAP:
       return CircPool::SWAP_using_CX_0();
     case OpType::CSWAP:
@@ -691,7 +708,18 @@ static Circuit with_controls_symbolic(const Circuit &c, unsigned n_controls) {
       if (multiq_gate_set.find(optype) != multiq_gate_set.end()) {
         continue;
       }
-      Circuit replacement = with_CX(as_gate_ptr(op));
+      Circuit replacement;
+      if (optype == OpType::PhaseGadget) {
+        replacement = phase_gadget(
+            op->n_qubits(), op->get_params()[0], CXConfigType::Snake);
+        if (replacement.n_gates() > 0) {
+          TKET_ASSERT(
+              replacement.n_gates() == 1 &&
+              replacement.count_gates(OpType::ConjugationBox) == 1);
+        }
+      } else {
+        replacement = with_CX(as_gate_ptr(op));
+      }
       c1.substitute(replacement, v, Circuit::VertexDeletion::No);
       bin.push_back(v);
     } else if (is_box_type(optype) && optype != OpType::ConjugationBox) {
@@ -985,7 +1013,18 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
       if (is_single_qubit_type(optype) || is_controlled_gate_type(optype)) {
         continue;
       }
-      Circuit replacement = with_CX(as_gate_ptr(op));
+      Circuit replacement;
+      if (optype == OpType::PhaseGadget) {
+        replacement = phase_gadget(
+            op->n_qubits(), op->get_params()[0], CXConfigType::Snake);
+        if (replacement.n_gates() > 0) {
+          TKET_ASSERT(
+              replacement.n_gates() == 1 &&
+              replacement.count_gates(OpType::ConjugationBox) == 1);
+        }
+      } else {
+        replacement = with_CX(as_gate_ptr(op));
+      }
       c1.substitute(replacement, v, Circuit::VertexDeletion::No);
       bin.push_back(v);
     } else if (is_box_type(optype) && optype != OpType::ConjugationBox) {
