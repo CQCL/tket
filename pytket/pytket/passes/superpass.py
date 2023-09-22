@@ -60,7 +60,7 @@ class superpass:
 
         return circ_list[self._result_size.index(min(self._result_size))]
 
-    def get_result_size(self):
+    def get_result_size(self) -> list[int]:
         """
         :return: scores of the circuit after compiling
           for each of the compilations passes
