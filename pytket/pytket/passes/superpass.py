@@ -54,15 +54,15 @@ class superpass:
             p.apply(c)
 
         if self._score_func is None:
-            self._result_size = [c.depth() for c in circ_list]
+            self._scores = [c.depth() for c in circ_list]
         else:
-            self._result_size = [self._score_func(c) for c in circ_list]
+            self._scores = [self._score_func(c) for c in circ_list]
 
-        return circ_list[self._result_size.index(min(self._result_size))]
+        return circ_list[self._scores.index(min(self._scores))]
 
-    def get_result_size(self) -> list[int]:
+    def get_scores(self) -> list[int]:
         """
         :return: scores of the circuit after compiling
           for each of the compilations passes
         """
-        return self._result_size
+        return self._scores

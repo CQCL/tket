@@ -164,9 +164,9 @@ def test_superpass() -> None:
 
     result = sp.apply(circ)
 
-    assert sp.get_result_size() == [1, 4]
+    assert sp.get_scores() == [1, 4]
 
-    assert result.depth() == min(sp.get_result_size())
+    assert result.depth() == min(sp.get_scores())
 
 
 def test_superpass_ii() -> None:
@@ -179,9 +179,9 @@ def test_superpass_ii() -> None:
 
     result = sp.apply(circ)
 
-    assert sp.get_result_size() == [1, 4]
+    assert sp.get_scores() == [1, 4]
 
-    assert result.depth() == min(sp.get_result_size())
+    assert result.depth() == min(sp.get_scores())
 
 
 def test_superpass_iii() -> None:
@@ -197,9 +197,9 @@ def test_superpass_iii() -> None:
 
     result = sp.apply(circ)
 
-    assert sp.get_result_size() == [0, 3]
+    assert sp.get_scores() == [0, 3]
 
-    assert count_gates(result) == min(sp.get_result_size())
+    assert count_gates(result) == min(sp.get_scores())
 
 
 def test_superpass_iv() -> None:
@@ -215,6 +215,6 @@ def test_superpass_iv() -> None:
 
     result = sp.apply(circ)
 
-    assert sp.get_result_size() == [0, 0]
+    assert sp.get_scores() == [0, 0]
 
-    assert count_gates(result) == min(sp.get_result_size())
+    assert count_gates(result) == min(sp.get_scores())
