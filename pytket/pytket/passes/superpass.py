@@ -12,10 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pytket.circuit import Circuit
-from .._tket.passes import BasePass
 import copy
 from typing import Optional, Callable
+
+from pytket.circuit import Circuit
+from .._tket.passes import BasePass
 
 
 class superpass:
