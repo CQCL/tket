@@ -13,6 +13,7 @@ For more on pytket passes see the `compilation <https://cqcl.github.io/pytket/ma
 
 
 .. automodule:: pytket._tket.passes
+    :members:
     :special-members: __init__
 
 .. automodule:: pytket.passes
