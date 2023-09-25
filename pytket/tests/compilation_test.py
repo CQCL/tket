@@ -13,8 +13,10 @@
 # limitations under the License.
 
 from pytket.circuit import Circuit, OpType
-from pytket.passes import FullPeepholeOptimise, superpass
-
+from pytket.passes import FullPeepholeOptimise, superpass, CXMappingPass
+from pytket.architecture import Architecture
+from pytket.placement import Placement
+import pytest
 
 def test_compilation() -> None:
     # TKET-2335
@@ -158,7 +160,10 @@ def test_superpass() -> None:
     fp = FullPeepholeOptimise()
     fp2 = FullPeepholeOptimise(allow_swaps=False)
 
-    sp = superpass([fp, fp2])
+    def circ_depth(circ: Circuit) -> int:
+        return circ.depth()
+
+    sp = superpass([fp, fp2], circ_depth)
 
     circ = Circuit(2).H(1).H(0).H(1).H(0).X(1).CX(1, 0).CX(0, 1).CX(1, 0)
 
@@ -169,22 +174,38 @@ def test_superpass() -> None:
     assert result.depth() == min(sp.get_scores())
 
 
-def test_superpass_ii() -> None:
+def test_superpass_wrong_pass() -> None:
     fp = FullPeepholeOptimise()
     fp2 = FullPeepholeOptimise(allow_swaps=False)
 
-    sp = superpass([fp, fp2])
+    arc = Architecture([(1,2)])
 
-    circ = Circuit(2).H(1).H(0).H(1).H(0).X(1).CX(1, 0).CX(0, 1).CX(1, 0)
+    pl = Placement(arc)
 
-    result = sp.apply(circ)
+    cxmp = CXMappingPass(arc, pl)
 
-    assert sp.get_scores() == [1, 4]
+    def circ_depth(circ: Circuit) -> int:
+        return circ.depth()
 
-    assert result.depth() == min(sp.get_scores())
+    sp = superpass([cxmp], circ_depth)
+
+    # this circuit has one more qubits than the given arc
+    circ = Circuit(3).H(1).H(0).H(1).H(0).X(1).CX(1, 0).CX(0, 1).CX(1, 2)
+
+    with pytest.raises(Exception):
+        result = sp.apply(circ)
+
+def test_superpass_empty_pass() -> None:
+
+    def circ_depth(circ: Circuit) -> int:
+        return circ.depth()
+
+    with pytest.raises(Exception):
+        sp = superpass([], circ_depth)
 
 
-def test_superpass_iii() -> None:
+
+def test_superpass_ii() -> None:
     fp = FullPeepholeOptimise()
     fp2 = FullPeepholeOptimise(allow_swaps=False)
 
@@ -202,7 +223,7 @@ def test_superpass_iii() -> None:
     assert count_gates(result) == min(sp.get_scores())
 
 
-def test_superpass_iv() -> None:
+def test_superpass_iii() -> None:
     fp = FullPeepholeOptimise()
     fp2 = FullPeepholeOptimise(allow_swaps=False)
 

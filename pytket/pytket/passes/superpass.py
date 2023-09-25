@@ -12,7 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-import copy
 from typing import Optional, Callable
 
 from pytket.circuit import Circuit
@@ -29,19 +28,20 @@ class superpass:
     def __init__(
         self,
         passlist: list[BasePass],
-        score_func: Optional[Callable[[Circuit], int]] = None,
+        score_func: Callable[[Circuit], int],
     ):
         """
         Constructs a superpass
 
         :param passlist: list of pytket compilation passes
         :param score_func: function to score the
-          results of the compilation, this is optional.
-          The default function is the circuit depth.
+          results of the compilation
         """
         self._passlist = passlist
         self._score_func = score_func
-
+        if len(self._passlist) < 1:
+            raise ValueError("passlist needs to containe at least one pass")
+        
     def apply(self, circ: Circuit) -> Circuit:
         """
         Compiles the given circuit with the best of the given passes.
@@ -50,15 +50,20 @@ class superpass:
         :return: compiled circuit
         """
         circ_list = [circ.copy() for _ in self._passlist]
+
+        self._scores: list[Optional[int]] = []
+
         for p, c in zip(self._passlist, circ_list):
-            p.apply(c)
+            try:
+                p.apply(c)
+                self._scores.append(self._score_func(c))
+            except: # in case of any error the pass should be ignored
+                self._scores.append(None)
 
-        if self._score_func is None:
-            self._scores = [c.depth() for c in circ_list]
-        else:
-            self._scores = [self._score_func(c) for c in circ_list]
-
-        return circ_list[self._scores.index(min(self._scores))]
+        try:
+            return circ_list[self._scores.index(min([x for x in self._scores if x is not None]))]
+        except ValueError:
+            raise RuntimeError("all passes have not worked on this circuit")
 
     def get_scores(self) -> list[int]:
         """
