@@ -49,7 +49,7 @@ class superpass:
         :param circ: Circuit that should be compiled
         :return: compiled circuit
         """
-        circ_list = [copy.copy(circ) for _ in self._passlist]
+        circ_list = [circ.copy() for _ in self._passlist]
         for p, c in zip(self._passlist, circ_list):
             p.apply(c)
 
