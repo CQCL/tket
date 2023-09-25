@@ -65,7 +65,7 @@ class PassSelector:
         except ValueError:
             raise RuntimeError("all passes have not worked on this circuit")
 
-    def get_scores(self) -> list[int]:
+    def get_scores(self) -> list[Optional[int]]:
         """
         :return: scores of the circuit after compiling
           for each of the compilations passes
