@@ -172,7 +172,7 @@ def test_PassSelector() -> None:
 
     assert sp.get_scores() == [1, 4]
 
-    assert result.depth() == min([x for x in sp.get_scores() if x not None])
+    assert result.depth() == min([x for x in sp.get_scores() if x is not None])
 
 
 def test_PassSelector_wrong_pass() -> None:
@@ -220,7 +220,7 @@ def test_PassSelector_ii() -> None:
 
     assert sp.get_scores() == [0, 3]
 
-    assert count_gates(result) == min([x for x in sp.get_scores() for x not None])
+    assert count_gates(result) == min([x for x in sp.get_scores() if x is not None])
 
 
 def test_PassSelector_iii() -> None:
@@ -238,4 +238,4 @@ def test_PassSelector_iii() -> None:
 
     assert sp.get_scores() == [0, 0]
 
-    assert count_gates(result) == min([x for x in sp.get_scores() for x not None])
+    assert count_gates(result) == min([x for x in sp.get_scores() if x is not None])
