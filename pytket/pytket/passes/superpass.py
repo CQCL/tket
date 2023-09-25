@@ -21,9 +21,9 @@ from .._tket.passes import BasePass
 
 class superpass:
     """
-    collection of different pytket compilation passes which are
-    all applied on the same circuit. The result of the
-    compilation is best circuit selected by a given metric.
+    Collection of pytket compilation passes which are
+    all applied to the same circuit. The result of the
+    compilation is the best circuit as selected by a given metric.
     """
 
     def __init__(
