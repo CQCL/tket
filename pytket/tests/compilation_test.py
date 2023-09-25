@@ -18,6 +18,7 @@ from pytket.architecture import Architecture
 from pytket.placement import Placement
 import pytest
 
+
 def test_compilation() -> None:
     # TKET-2335
     c = Circuit.from_dict(
@@ -178,7 +179,7 @@ def test_PassSelector_wrong_pass() -> None:
     fp = FullPeepholeOptimise()
     fp2 = FullPeepholeOptimise(allow_swaps=False)
 
-    arc = Architecture([(1,2)])
+    arc = Architecture([(1, 2)])
 
     pl = Placement(arc)
 
@@ -195,14 +196,13 @@ def test_PassSelector_wrong_pass() -> None:
     with pytest.raises(Exception):
         result = sp.apply(circ)
 
-def test_PassSelector_empty_pass() -> None:
 
+def test_PassSelector_empty_pass() -> None:
     def circ_depth(circ: Circuit) -> int:
         return circ.depth()
 
     with pytest.raises(Exception):
         sp = PassSelector([], circ_depth)
-
 
 
 def test_PassSelector_ii() -> None:

@@ -41,7 +41,7 @@ class PassSelector:
         self._score_func = score_func
         if len(self._passlist) < 1:
             raise ValueError("passlist needs to containe at least one pass")
-        
+
     def apply(self, circ: Circuit) -> Circuit:
         """
         Compiles the given circuit with the best of the given passes.
@@ -57,11 +57,13 @@ class PassSelector:
             try:
                 p.apply(c)
                 self._scores.append(self._score_func(c))
-            except: # in case of any error the pass should be ignored
+            except:  # in case of any error the pass should be ignored
                 self._scores.append(None)
 
         try:
-            return circ_list[self._scores.index(min([x for x in self._scores if x is not None]))]
+            return circ_list[
+                self._scores.index(min([x for x in self._scores if x is not None]))
+            ]
         except ValueError:
             raise RuntimeError("all passes have not worked on this circuit")
 
