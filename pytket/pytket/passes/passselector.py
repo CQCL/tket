@@ -18,7 +18,7 @@ from pytket.circuit import Circuit
 from .._tket.passes import BasePass
 
 
-class superpass:
+class PassSelector:
     """
     Collection of pytket compilation passes which are
     all applied to the same circuit. The result of the
@@ -31,7 +31,7 @@ class superpass:
         score_func: Callable[[Circuit], int],
     ):
         """
-        Constructs a superpass
+        Constructs a PassSelector
 
         :param passlist: list of pytket compilation passes
         :param score_func: function to score the
