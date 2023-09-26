@@ -301,6 +301,7 @@ def test_symbolic_circbox() -> None:
     assert not circ_box.get_circuit().is_symbolic()
     assert not c_outer.is_symbolic()
 
+
 def test_subst_4() -> None:
     # https://github.com/CQCL/tket/issues/219
     m = fresh_symbol("m")

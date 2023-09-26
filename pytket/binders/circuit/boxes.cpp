@@ -77,18 +77,19 @@ void init_boxes(py::module &m) {
       .def(
           "get_circuit", [](CircBox &cbox) { return *cbox.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the box")
-    .def(
-            "symbol_substitution",
-            [](CircBox& circ, const symbol_map_t & sub_map){
-                circ.symbol_substitution_in_place(sub_map);},
-            "In-place substitution of symbolic expressions"
-            "within underlying circuit; iterates "
-            "through each parameterised gate within the circuit"
-            "and performs the "
-            "substitution. This will not affect any symbols captured "
-            "within boxed operations.\n\n:param symbol_map: A map from "
-            "SymPy symbols to SymPy expressions",
-            py::arg("symbol_map"));
+      .def(
+          "symbol_substitution",
+          [](CircBox &circ, const symbol_map_t &sub_map) {
+            circ.symbol_substitution_in_place(sub_map);
+          },
+          "In-place substitution of symbolic expressions"
+          "within underlying circuit; iterates "
+          "through each parameterised gate within the circuit"
+          "and performs the "
+          "substitution. This will not affect any symbols captured "
+          "within boxed operations.\n\n:param symbol_map: A map from "
+          "SymPy symbols to SymPy expressions",
+          py::arg("symbol_map"));
   py::class_<Unitary1qBox, std::shared_ptr<Unitary1qBox>, Op>(
       m, "Unitary1qBox",
       "A user-defined one-qubit operation specified by a unitary matrix.")

@@ -96,8 +96,7 @@ Op_ptr CircBox::symbol_substitution(
   return std::make_shared<CircBox>(new_circ);
 }
 
-void CircBox::symbol_substitution_in_place(
-    const symbol_map_t &sub_map) {
+void CircBox::symbol_substitution_in_place(const symbol_map_t &sub_map) {
   circ_->symbol_substitution(sub_map);
 }
 
