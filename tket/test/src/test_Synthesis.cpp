@@ -16,6 +16,7 @@
 #include <numeric>
 #include <optional>
 #include <stdexcept>
+#include <tket/Circuit/Circuit.hpp>
 
 #include "CircuitsForTesting.hpp"
 #include "Simulation/ComparisonFunctions.hpp"
@@ -2331,6 +2332,15 @@ SCENARIO("Restricting ZZPhase gate angles.") {
   REQUIRE(comparison == c);
 }
 
+SCENARIO("ZZPhase_to_Rz with symbolic angles") {
+  // https://github.com/CQCL/tket/issues/1051
+  Sym asym = SymEngine::symbol("a");
+  Expr a(asym);
+  Circuit c(2);
+  c.add_op<unsigned>(OpType::ZZPhase, a, {0, 1});
+  CHECK_FALSE(Transforms::ZZPhase_to_Rz().apply(c));
+}
+
 SCENARIO("Test squash Rz PhasedX") {
   GIVEN("A simple circuit") {
     Circuit c(2);
@@ -2467,6 +2477,25 @@ SCENARIO("Test squash Rz PhasedX") {
     const Eigen::MatrixXcd u = tket_sim::get_unitary(circ);
     const Eigen::MatrixXcd v = tket_sim::get_unitary(circ2);
     REQUIRE(u.isApprox(v, ERR_EPS));
+  }
+
+  GIVEN("Another symbolic circuit") {
+    // https://github.com/CQCL/tket/issues/1052
+    Sym a = SymEngine::symbol("alpha");
+    Expr alpha(a);
+    Sym b = SymEngine::symbol("beta");
+    Expr beta(b);
+
+    Circuit circ(1);
+    circ.add_op<unsigned>(OpType::PhasedX, {alpha, beta}, {0});
+    circ.add_op<unsigned>(OpType::Rz, 0.5, {0});
+    circ.add_op<unsigned>(OpType::PhasedX, {0.5, 0.5}, {0});
+    Transforms::squash_1qb_to_Rz_PhasedX(true).apply(circ);
+    OpTypeSet allowed = {OpType::Rz, OpType::PhasedX};
+    for (const Command &cmd : circ) {
+      OpType optype = cmd.get_op_ptr()->get_type();
+      CHECK(allowed.contains(optype));
+    }
   }
 }
 

@@ -12,7 +12,12 @@ Minor new features:
   to ``DecomposeBoxes``.
 * More efficient decomposition for quantum controlled ``ConjugationBox``es.
 * ``PauliExpBox``, ``PauliExpPairBox``, and ``PauliExpCommutingSetBox`` are now
-  decomposed into a single ``ConjugationBox``. 
+  decomposed into a single ``ConjugationBox``.
+* Make ``SquashRzPhasedX`` pass always squash symbols.
+
+Fixes:
+
+* Handle symbolic angles in ``ZZPhaseToRz`` pass.
 
 1.20.1 (September 2023)
 -----------------------
