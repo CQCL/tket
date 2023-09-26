@@ -13,6 +13,7 @@ Minor new features:
 * More efficient decomposition for quantum controlled ``ConjugationBox``es.
 * ``PauliExpBox``, ``PauliExpPairBox``, and ``PauliExpCommutingSetBox`` are now
   decomposed into a single ``ConjugationBox``.
+* Make ``SquashRzPhasedX`` pass always squash symbols.
 
 Fixes:
 
