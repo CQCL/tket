@@ -2331,6 +2331,15 @@ SCENARIO("Restricting ZZPhase gate angles.") {
   REQUIRE(comparison == c);
 }
 
+SCENARIO("ZZPhase_to_Rz with symbolic angles") {
+  // https://github.com/CQCL/tket/issues/1051
+  Sym asym = SymEngine::symbol("a");
+  Expr a(asym);
+  Circuit c(2);
+  c.add_op<unsigned>(OpType::ZZPhase, a, {0, 1});
+  CHECK_FALSE(Transforms::ZZPhase_to_Rz().apply(c));
+}
+
 SCENARIO("Test squash Rz PhasedX") {
   GIVEN("A simple circuit") {
     Circuit c(2);
