@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import json
-from typing import cast
+from typing import cast, Union
 
 from jsonschema import validate  # type: ignore
 from pathlib import Path
@@ -289,7 +289,7 @@ def test_symbolic_circbox() -> None:
     c.Rx(alpha, 0)
     beta = fresh_symbol("alpha")
     c.CRz(beta * 2, 1, 0)
-    s_map = {alpha: 0.5, beta: 3.2}
+    s_map: dict[Symbol, Union[Expr, float]] = {alpha: 0.5, beta: 3.2}
     circ_box = CircBox(c)
     assert circ_box.free_symbols() == {alpha, beta}
     assert circ_box.get_circuit().is_symbolic()
