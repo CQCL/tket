@@ -97,6 +97,7 @@ Transform squash_1qb_to_Rz_PhasedX() {
   return Transform([](Circuit &circ) {
     bool reverse = false;
     bool success = decompose_ZX().apply(circ);
+    success = remove_redundancies().apply(circ) || success;
     auto squasher = std::make_unique<RzPhasedXSquasher>(reverse);
     return SingleQubitSquash(std::move(squasher), circ, reverse).squash() ||
            success;
