@@ -93,13 +93,15 @@ std::pair<Circuit, Gate_ptr> RzPhasedXSquasher::flush(
   return {replacement, rz3_gate};
 }
 
-Transform squash_1qb_to_Rz_PhasedX() {
-  return Transform([](Circuit &circ) {
+Transform squash_1qb_to_Rz_PhasedX(bool always_squash_symbols) {
+  return Transform([always_squash_symbols](Circuit &circ) {
     bool reverse = false;
     bool success = decompose_ZX().apply(circ);
     success = remove_redundancies().apply(circ) || success;
     auto squasher = std::make_unique<RzPhasedXSquasher>(reverse);
-    return SingleQubitSquash(std::move(squasher), circ, reverse).squash() ||
+    return SingleQubitSquash(
+               std::move(squasher), circ, reverse, always_squash_symbols)
+               .squash() ||
            success;
   });
 }
