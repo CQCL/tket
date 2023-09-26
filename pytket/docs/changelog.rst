@@ -14,6 +14,7 @@ Minor new features:
 * ``PauliExpBox``, ``PauliExpPairBox``, and ``PauliExpCommutingSetBox`` are now
   decomposed into a single ``ConjugationBox``.
 * Make ``SquashRzPhasedX`` pass always squash symbols.
+* Add in-place symbol_substition method for ``CircBox``
 
 Fixes:
 
