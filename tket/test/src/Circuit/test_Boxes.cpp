@@ -56,6 +56,26 @@ SCENARIO("CircBox requires simple circuits", "[boxes]") {
   REQUIRE_THROWS_AS(CircBox(circ), SimpleOnly);
 }
 
+SCENARIO("CircBox in-place symbol substitution") {
+  Sym asym = SymEngine::symbol("a");
+  Expr alpha(asym);
+  Sym bsym = SymEngine::symbol("b");
+  Expr beta(bsym);
+  Circuit test_circuit(1);
+  test_circuit.add_op<unsigned>(OpType::Rx, {alpha}, {0});
+  test_circuit.add_op<unsigned>(OpType::Ry, {beta}, {0});
+  auto circ_box = CircBox(test_circuit);
+  SymSet sym_set0 = circ_box.free_symbols();
+  CHECK(sym_set0.size() == 2);
+  double x = 0.125;
+  double y = 0.250;
+  symbol_map_t map = {{asym, x}, {bsym, y}};
+  circ_box.symbol_substitution_in_place(map);
+  SymSet sym_set1 = circ_box.free_symbols();
+  CHECK(sym_set1.empty());
+  REQUIRE(!circ_box.to_circuit()->is_symbolic());
+}
+
 SCENARIO("Using Boxes", "[boxes]") {
   GIVEN("CircBox manipulation") {
     // Empty box
