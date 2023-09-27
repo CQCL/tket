@@ -65,7 +65,7 @@ class PassSelector:
                 self._scores.index(min([x for x in self._scores if x is not None]))
             ]
         except ValueError:
-            raise RuntimeError("all passes have not worked on this circuit")
+            raise RuntimeError("No passes have successfully run on this circuit")
 
     def get_scores(self) -> list[Optional[int]]:
         """
