@@ -11,6 +11,7 @@ Minor new features:
 * Add optional parameters ``excluded_types`` and ``excluded_opgroups``
   to ``DecomposeBoxes``.
 * More efficient decomposition for quantum controlled ``ConjugationBox``es.
+* New ``PassSelector`` for automatically compiling with the best pass from a list
 * ``PauliExpBox``, ``PauliExpPairBox``, and ``PauliExpCommutingSetBox`` are now
   decomposed into a single ``ConjugationBox``.
 * Make ``SquashRzPhasedX`` pass always squash symbols.
