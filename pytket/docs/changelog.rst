@@ -14,6 +14,7 @@ Minor new features:
 * New ``PassSelector`` for automatically compiling with the best pass from a list
 * ``PauliExpBox``, ``PauliExpPairBox``, and ``PauliExpCommutingSetBox`` are now
   decomposed into a single ``ConjugationBox``.
+* Make ``SquashRzPhasedX`` pass always squash symbols.
 
 Fixes:
 

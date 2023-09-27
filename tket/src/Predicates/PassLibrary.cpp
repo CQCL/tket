@@ -434,7 +434,7 @@ const PassPtr &ZZPhaseToRz() {
 
 const PassPtr &SquashRzPhasedX() {
   static const PassPtr pp([]() {
-    Transform t = Transforms::squash_1qb_to_Rz_PhasedX();
+    Transform t = Transforms::squash_1qb_to_Rz_PhasedX(true);
     PredicatePtrMap s_ps;
     PredicateClassGuarantees g_postcons{
         {typeid(GateSetPredicate), Guarantee::Clear}};
