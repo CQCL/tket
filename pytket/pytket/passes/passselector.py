@@ -40,7 +40,7 @@ class PassSelector:
         self._passlist = passlist
         self._score_func = score_func
         if len(self._passlist) < 1:
-            raise ValueError("passlist needs to containe at least one pass")
+            raise ValueError("passlist needs to contain at least one pass")
 
     def apply(self, circ: Circuit) -> Circuit:
         """
