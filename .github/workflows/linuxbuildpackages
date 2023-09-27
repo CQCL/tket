@@ -26,7 +26,11 @@ export CONAN_CMD=${PYBIN}/conan
 cd /tket
 
 ${CONAN_CMD} profile detect
-${CONAN_CMD} remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs
+DEFAULT_PROFILE_PATH=`${CONAN_CMD} profile path default`
+PROFILE_PATH=./conan-profiles/${CONAN_PROFILE}
+diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
+cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
+${CONAN_CMD} remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
 
 # Edit this list as required:
 PACKAGES="boost/1.81.0@ \
