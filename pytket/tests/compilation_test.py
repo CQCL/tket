@@ -238,4 +238,4 @@ def test_PassSelector_iii() -> None:
 
     assert sp.get_scores() == [0, 0]
 
-    assert count_gates(result) == min([x for x in sp.get_scores() if x is not None])
+    assert count_gates(result) == min(x for x in sp.get_scores() if x is not None)
