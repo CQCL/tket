@@ -619,9 +619,8 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           (void(Circuit::*)(const symbol_map_t &)) &
               Circuit::symbol_substitution,
           "In-place substitution for symbolic expressions; iterates "
-          "through each parameterised gate and performs the "
-          "substitution. This will not affect any symbols captured "
-          "within boxed operations.\n\n:param symbol_map: A map from "
+          "through each parameterised gate/box and performs the "
+          "substitution. \n\n:param symbol_map: A map from "
           "SymPy symbols to SymPy expressions",
           py::arg("symbol_map"))
       .def(
@@ -630,9 +629,8 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
               const std::map<Sym, double, SymEngine::RCPBasicKeyLess> &)) &
               Circuit::symbol_substitution,
           "In-place substitution for symbolic expressions; iterates "
-          "through each parameterised gate and performs the "
-          "substitution. This will not affect any symbols captured "
-          "within boxed operations.\n\n:param symbol_map: A map from "
+          "through each gate/box and performs the "
+          "substitution. \n\n:param symbol_map: A map from "
           "SymPy symbols to floating-point values",
           py::arg("symbol_map"))
       .def(
