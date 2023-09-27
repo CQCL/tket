@@ -27,14 +27,19 @@ jobs:
         filters: |
           tklog:
             - 'libs/tklog/conanfile.py'
+            - '.github/workflows/build_libs.yml'
           tkassert:
             - 'libs/tkassert/conanfile.py'
+            - '.github/workflows/build_libs.yml'
           tkrng:
             - 'libs/tkrng/conanfile.py'
+            - '.github/workflows/build_libs.yml'
           tktokenswap:
             - 'libs/tktokenswap/conanfile.py'
+            - '.github/workflows/build_libs.yml'
           tkwsm:
             - 'libs/tkwsm/conanfile.py'
+            - '.github/workflows/build_libs.yml'
   build_libraries:
     name: build library
     needs: changes
