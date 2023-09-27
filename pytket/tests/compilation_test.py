@@ -172,7 +172,7 @@ def test_PassSelector() -> None:
 
     assert sp.get_scores() == [1, 4]
 
-    assert result.depth() == min([x for x in sp.get_scores() if x is not None])
+    assert result.depth() == min(x for x in sp.get_scores() if x is not None)
 
 
 def test_PassSelector_wrong_pass() -> None:
