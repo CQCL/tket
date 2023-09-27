@@ -45,6 +45,7 @@ jobs:
             - '.github/workflows/build_and_test.yml'
           pytket:
             - 'pytket/**'
+            - '.github/workflows/build_and_test.yml'
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
     - name: parse version from conanfile
