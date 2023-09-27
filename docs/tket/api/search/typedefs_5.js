@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['func_4742',['Func',['../classtket_1_1Transforms_1_1StandardSquasher.html#a0a6ee73ac87c42e5411fecd81a59a06c',1,'tket::Transforms::StandardSquasher']]]
+  ['func_4745',['Func',['../classtket_1_1Transforms_1_1StandardSquasher.html#a0a6ee73ac87c42e5411fecd81a59a06c',1,'tket::Transforms::StandardSquasher']]]
 ];
