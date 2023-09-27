@@ -39,10 +39,13 @@ jobs:
         filters: |
           tket:
             - '{tket/src/**,tket/include/**,tket/conanfile.py,tket/CMakeLists.txt,tket/cmake/**,tket/test/**,tket/proptest/**}'
+            - '.github/workflows/build_and_test.yml'
           doxyfile:
             - '{tket/Doxyfile}'
+            - '.github/workflows/build_and_test.yml'
           pytket:
             - 'pytket/**'
+            - '.github/workflows/build_and_test.yml'
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
     - name: parse version from conanfile
@@ -108,12 +111,11 @@ jobs:
     - name: Set up conan
       run: |
         conan profile detect
+        DEFAULT_PROFILE_PATH=`conan profile path default`
+        PROFILE_PATH=./conan-profiles/${{ matrix.os }}
+        diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
+        cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
-    - name: Fix conan profile for clang toolchain
-      if: matrix.os == 'macos-12'
-      run: |
-        PROFILE_PATH=`conan profile path default`
-        sed -i -e 's/gnu98/gnu17/' ${PROFILE_PATH}
     - name: Install runtime test requirements
       if: matrix.os == 'ubuntu-22.04' && github.event_name == 'schedule'
       run: |
@@ -153,9 +155,13 @@ jobs:
       - name: Install conan
         uses: turtlebrowser/get-conan@v1.2
       - name: Set up conan
-        id: conan-setup
+        shell: bash
         run: |
           conan profile detect
+          DEFAULT_PROFILE_PATH=`conan profile path default`
+          PROFILE_PATH=./conan-profiles/${{ matrix.os }}
+          diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
+          cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
           conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
       - name: normalize line endings in conanfile and src directory
         # This is necessary to ensure consistent revisions across platforms.
@@ -222,12 +228,12 @@ jobs:
     - name: Set up conan
       run: |
         conan profile detect --force
+        DEFAULT_PROFILE_PATH=`conan profile path default`
+        PROFILE_PATH=./conan-profiles/macos-armv8-clang14
+        diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
+        cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force --index 0
         conan cache clean
-    - name: Fix conan profile for clang toolchain
-      run: |
-        PROFILE_PATH=`conan profile path default`
-        sed -i -e 's/gnu98/gnu17/' ${PROFILE_PATH}
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
@@ -279,6 +285,10 @@ jobs:
     - name: Set up conan
       run: |
         conan profile detect
+        DEFAULT_PROFILE_PATH=`conan profile path default`
+        PROFILE_PATH=./conan-profiles/ubuntu-22.04
+        diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
+        cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
@@ -379,11 +389,11 @@ jobs:
     - name: Set up conan
       run: |
         conan profile detect
+        DEFAULT_PROFILE_PATH=`conan profile path default`
+        PROFILE_PATH=./conan-profiles/macos-12
+        diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
+        cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
-    - name: Fix conan profile for clang toolchain
-      run: |
-        PROFILE_PATH=`conan profile path default`
-        sed -i -e 's/gnu98/gnu17/' ${PROFILE_PATH}
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
       with:
@@ -465,8 +475,13 @@ jobs:
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
     - name: Set up conan
+      shell: bash
       run: |
         conan profile detect
+        DEFAULT_PROFILE_PATH=`conan profile path default`
+        PROFILE_PATH=./conan-profiles/windows-2022
+        diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
+        cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
     - name: normalize line endings in conanfile and src directory
       # This is necessary to ensure consistent revisions across platforms.
@@ -539,11 +554,11 @@ jobs:
     - name: Set up conan
       run: |
         conan profile detect --force
+        DEFAULT_PROFILE_PATH=`conan profile path default`
+        PROFILE_PATH=./conan-profiles/macos-armv8-clang14
+        diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
+        cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force --index 0
-    - name: Fix conan profile for clang toolchain
-      run: |
-        PROFILE_PATH=`conan profile path default`
-        sed -i -e 's/gnu98/gnu17/' ${PROFILE_PATH}
     - name: Remove tket package from cache
       run: conan remove -c 'tket/*'
     - name: ccache

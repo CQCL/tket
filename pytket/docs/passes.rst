@@ -16,6 +16,9 @@ For more on pytket passes see the `compilation <https://cqcl.github.io/pytket/ma
     :members:
     :special-members: __init__
 
+.. automodule:: pytket.passes
+    :members: PassSelector
+
 pytket.passes.script
 ~~~~~~~~~~~~~~~~~~~~
 
