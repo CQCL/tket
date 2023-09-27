@@ -42,6 +42,7 @@ jobs:
             - '.github/workflows/build_and_test.yml'
           doxyfile:
             - '{tket/Doxyfile}'
+            - '.github/workflows/build_and_test.yml'
           pytket:
             - 'pytket/**'
     - name: Install conan
