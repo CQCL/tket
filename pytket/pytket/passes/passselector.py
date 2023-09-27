@@ -62,7 +62,7 @@ class PassSelector:
 
         try:
             return circ_list[
-                self._scores.index(min([x for x in self._scores if x is not None]))
+                self._scores.index(min(x for x in self._scores if x is not None))
             ]
         except ValueError:
             raise RuntimeError("No passes have successfully run on this circuit")
