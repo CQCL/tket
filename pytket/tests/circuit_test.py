@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import json
-from typing import cast
+from typing import cast, Union
 
 from jsonschema import validate  # type: ignore
 from pathlib import Path
@@ -280,6 +280,26 @@ def test_symbolic_ops() -> None:
     assert beta.__str__() == "alpha_1"  # type: ignore
     assert np.allclose(np.asarray(commands[0].op.params), [0.5], atol=1e-10)
     assert np.allclose(np.asarray(commands[1].op.params), [2.4], atol=1e-10)
+
+
+def test_symbolic_circbox() -> None:
+    c = Circuit(2)
+    c_outer = Circuit(2)
+    alpha = Symbol("alpha")  # type: ignore
+    c.Rx(alpha, 0)
+    beta = fresh_symbol("alpha")
+    c.CRz(beta * 2, 1, 0)
+    s_map: dict[Symbol, Union[Expr, float]] = {alpha: 0.5, beta: 3.2}
+    circ_box = CircBox(c)
+    assert circ_box.free_symbols() == {alpha, beta}
+    assert circ_box.get_circuit().is_symbolic()
+    c_outer.add_circbox(circ_box, [0, 1])
+    assert c_outer.is_symbolic()
+    assert c_outer.free_symbols() == {alpha, beta}
+    circ_box.symbol_substitution(s_map)
+    assert len(circ_box.free_symbols()) == 0
+    assert not circ_box.get_circuit().is_symbolic()
+    assert not c_outer.is_symbolic()
 
 
 def test_subst_4() -> None:
