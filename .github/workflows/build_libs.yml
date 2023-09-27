@@ -146,6 +146,7 @@ jobs:
         docker cp ./libs/${{ matrix.lib }} linux_build:/
         docker cp ./libver linux_build:/
         docker cp ./.github/workflows/linuxbuildlib linux_build:/
+        docker cp ./conan-profiles linux_build:/
     - name: determine whether to upload package
       if: github.event_name == 'push'
       run: echo "UPLOAD_PACKAGE=YES" >> ${GITHUB_ENV}
