@@ -145,7 +145,9 @@ class WasmFileHandler:
             supported_function = True
             idx = _func_lookup[x][0]
             if idx < len(self._function_types):
-                for t in function_signatures[self._function_types[idx]]["parameter_types"]:
+                for t in function_signatures[self._function_types[idx]][
+                    "parameter_types"
+                ]:
                     if t != self._int_type:
                         supported_function = False
                 for t in function_signatures[self._function_types[idx]]["return_types"]:
