@@ -12,8 +12,11 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-from pytket.circuit import Circuit
-from pytket.passes import FullPeepholeOptimise
+from pytket.circuit import Circuit, OpType
+from pytket.passes import FullPeepholeOptimise, PassSelector, CXMappingPass
+from pytket.architecture import Architecture
+from pytket.placement import Placement
+import pytest
 
 
 def test_compilation() -> None:
@@ -152,3 +155,87 @@ def test_compilation() -> None:
         }
     )
     assert FullPeepholeOptimise().apply(c)
+
+
+def test_PassSelector() -> None:
+    fp = FullPeepholeOptimise()
+    fp2 = FullPeepholeOptimise(allow_swaps=False)
+
+    def circ_depth(circ: Circuit) -> int:
+        return circ.depth()
+
+    sp = PassSelector([fp, fp2], circ_depth)
+
+    circ = Circuit(2).H(1).H(0).H(1).H(0).X(1).CX(1, 0).CX(0, 1).CX(1, 0)
+
+    result = sp.apply(circ)
+
+    assert sp.get_scores() == [1, 4]
+
+    assert result.depth() == min(x for x in sp.get_scores() if x is not None)
+
+
+def test_PassSelector_wrong_pass() -> None:
+    fp = FullPeepholeOptimise()
+    fp2 = FullPeepholeOptimise(allow_swaps=False)
+
+    arc = Architecture([(1, 2)])
+
+    pl = Placement(arc)
+
+    cxmp = CXMappingPass(arc, pl)
+
+    def circ_depth(circ: Circuit) -> int:
+        return circ.depth()
+
+    sp = PassSelector([cxmp], circ_depth)
+
+    # this circuit has one more qubits than the given arc
+    circ = Circuit(3).H(1).H(0).H(1).H(0).X(1).CX(1, 0).CX(0, 1).CX(1, 2)
+
+    with pytest.raises(Exception):
+        result = sp.apply(circ)
+
+
+def test_PassSelector_empty_pass() -> None:
+    def circ_depth(circ: Circuit) -> int:
+        return circ.depth()
+
+    with pytest.raises(Exception):
+        sp = PassSelector([], circ_depth)
+
+
+def test_PassSelector_ii() -> None:
+    fp = FullPeepholeOptimise()
+    fp2 = FullPeepholeOptimise(allow_swaps=False)
+
+    def count_gates(circ: Circuit) -> int:
+        return circ.n_gates_of_type(OpType.CX)
+
+    sp = PassSelector([fp, fp2], count_gates)
+
+    circ = Circuit(2).H(1).H(0).H(1).H(0).X(1).CX(1, 0).CX(0, 1).CX(1, 0)
+
+    result = sp.apply(circ)
+
+    assert sp.get_scores() == [0, 3]
+
+    assert count_gates(result) == min(x for x in sp.get_scores() if x is not None)
+
+
+def test_PassSelector_iii() -> None:
+    fp = FullPeepholeOptimise()
+    fp2 = FullPeepholeOptimise(allow_swaps=False)
+
+    def count_gates(circ: Circuit) -> int:
+        return circ.n_gates_of_type(OpType.X)
+
+    sp = PassSelector([fp, fp2], count_gates)
+
+    circ = Circuit(2).H(1).H(0).H(1).H(0).X(1).CX(1, 0).CX(0, 1).CX(1, 0)
+
+    result = sp.apply(circ)
+
+    assert sp.get_scores() == [0, 0]
+
+    assert count_gates(result) == min(x for x in sp.get_scores() if x is not None)
