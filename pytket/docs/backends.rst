@@ -3,7 +3,7 @@ pytket.backends
 
 Contains :py:class:`Backend` abstract class and associated methods. In pytket a :py:class:`Backend` represents an interface between pytket and a quantum device or simulator. Different backends are defined in the various pytket extension modules and inherit from the core pytket :py:class:`Backend` class.
 
-There are several `example notebooks <https://github.com/CQCL/pytket/tree/main/examples#pytket-examples>`_ on pytket :py:class:`Backend`\s. If you are interested in developing your own :py:class:`Backend` or pytket extension then see the `creating backends <https://github.com/CQCL/pytket/blob/main/examples/creating_backends.ipynb>`_ tutorial.
+There are several `example notebooks <https://tket.quantinuum.com/examples>`_ on pytket :py:class:`Backend`\s. If you are interested in developing your own :py:class:`Backend` or pytket extension then see the `creating backends <https://tket.quantinuum.com/examples/creating_backends.html>`_ tutorial.
 
 Notebook tutorials specific to the :py:class:`QuantinuumBackend` can be found `here <https://github.com/CQCL/pytket-quantinuum/tree/develop/examples>`_.
 
