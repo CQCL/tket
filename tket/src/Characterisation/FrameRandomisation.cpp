@@ -18,7 +18,6 @@
 
 #include "tket/Ops/MetaOp.hpp"
 #include "tket/PauliGraph/ConjugatePauliFunctions.hpp"
-#include "tket/Utils/PauliStrings.hpp"
 
 namespace tket {
 
@@ -206,7 +205,7 @@ PauliFrameRandomisation::get_out_frame(
     }
   }
 
-  QubitPauliTensor qpt(qpm);
+  SpPauliStabiliser qpt(qpm);
 
   for (const CycleCom& cycle_op : cycle.coms_) {
     switch (cycle_op.type) {
@@ -244,7 +243,7 @@ PauliFrameRandomisation::get_out_frame(
   }
 
   OpTypeVector out_frame(in_frame.size());
-  for (const auto& entry : qpt.string.map) {
+  for (const auto& entry : qpt.string) {
     switch (entry.second) {
       case Pauli::I:
         out_frame[entry.first.index()[0]] = OpType::noop;
@@ -290,11 +289,11 @@ UniversalFrameRandomisation::get_out_frame(
     }
   }
 
-  QubitPauliTensor qpt(qpm);
+  SpPauliStabiliser qpt(qpm);
 
   for (const CycleCom& cycle_op : cycle.coms_) {
     if (cycle_op.type == OpType::Rz) {
-      Pauli frame_type = qpt.string.map[Qubit("frame", cycle_op.indices[0])];
+      Pauli frame_type = qpt.get(Qubit("frame", cycle_op.indices[0]));
       if (frame_type == Pauli::X || frame_type == Pauli::Y) {
         to_dagger.push_back(cycle_op.address);
       }
@@ -312,7 +311,7 @@ UniversalFrameRandomisation::get_out_frame(
   }
 
   OpTypeVector out_frame(in_frame.size());
-  for (const auto& entry : qpt.string.map) {
+  for (const auto& entry : qpt.string) {
     switch (entry.second) {
       case Pauli::I:
         out_frame[entry.first.index()[0]] = OpType::noop;

@@ -15,6 +15,7 @@
 #pragma once
 
 #include "tket/Utils/Constants.hpp"
+#include "tket/Utils/EigenConfig.hpp"
 #include "tket/Utils/Expression.hpp"
 #include "tket/Utils/Json.hpp"
 #include "tket/Utils/UnitID.hpp"
@@ -39,11 +40,15 @@ NLOHMANN_JSON_SERIALIZE_ENUM(
  */
 enum class CXConfigType { Snake, Tree, Star, MultiQGate };
 
+typedef Eigen::SparseMatrix<Complex, Eigen::ColMajor> CmplxSpMat;
+
 typedef std::map<Qubit, Pauli> QubitPauliMap;
 typedef std::vector<Pauli> DensePauliMap;
 
 struct no_coeff_t {};
 typedef unsigned quarter_turns_t;
+
+JSON_DECL(no_coeff_t)
 
 template <typename CoeffType>
 CoeffType default_coeff() = delete;
@@ -247,6 +252,36 @@ Complex multiply_coeffs<Complex>(const Complex &first, const Complex &second);
 template <>
 Expr multiply_coeffs<Expr>(const Expr &first, const Expr &second);
 
+template <typename PauliContainer>
+CmplxSpMat to_sparse_matrix(const PauliContainer &paulis) = delete;
+
+template <>
+CmplxSpMat to_sparse_matrix<QubitPauliMap>(const QubitPauliMap &paulis);
+template <>
+CmplxSpMat to_sparse_matrix<DensePauliMap>(const DensePauliMap &paulis);
+
+template <typename PauliContainer>
+CmplxSpMat to_sparse_matrix(const PauliContainer &paulis, unsigned n_qubits) =
+    delete;
+
+template <>
+CmplxSpMat to_sparse_matrix<QubitPauliMap>(
+    const QubitPauliMap &paulis, unsigned n_qubits);
+template <>
+CmplxSpMat to_sparse_matrix<DensePauliMap>(
+    const DensePauliMap &paulis, unsigned n_qubits);
+
+template <typename PauliContainer>
+CmplxSpMat to_sparse_matrix(
+    const PauliContainer &paulis, const qubit_vector_t &qubits) = delete;
+
+template <>
+CmplxSpMat to_sparse_matrix<QubitPauliMap>(
+    const QubitPauliMap &paulis, const qubit_vector_t &qubits);
+template <>
+CmplxSpMat to_sparse_matrix<DensePauliMap>(
+    const DensePauliMap &paulis, const qubit_vector_t &qubits);
+
 template <typename PauliContainer, typename CoeffType>
 class PauliTensor {
   static_assert(
@@ -280,9 +315,17 @@ class PauliTensor {
           0)
       : string({{q, p}}), coeff(_coeff) {}
 
+  template <typename PC = PauliContainer>
+  PauliTensor(
+      const DensePauliMap &_string, const CoeffType &_coeff = default_coeff,
+      typename std::enable_if<std::is_same<PC, QubitPauliMap>::value>::type * =
+          0)
+      : string(cast_container<DensePauliMap, QubitPauliMap>(_string)),
+        coeff(_coeff) {}
+
   template <typename CastContainer, typename CastCoeffType>
   operator PauliTensor<CastContainer, CastCoeffType>() const {
-    return PauliTensor(
+    return PauliTensor<CastContainer, CastCoeffType>(
         cast_container<PauliContainer, CastContainer>(string),
         cast_coeff<CoeffType, CastCoeffType>(coeff));
   }
@@ -324,50 +367,50 @@ class PauliTensor {
     return commuting_containers<PauliContainer>(string, other.string);
   }
 
-  template <typename OtherCoeffType>
-  std::enable_if<
-      std::is_same<PauliContainer, QubitPauliMap>::value, std::set<Qubit>>
+  template <typename OtherCoeffType, typename PC = PauliContainer>
+  typename std::enable_if<
+      std::is_same<PC, QubitPauliMap>::value, std::set<Qubit>>::type
   common_qubits(
       const PauliTensor<PauliContainer, OtherCoeffType> &other) const {
-    return common_qubits(string, other.string);
+    return tket::common_qubits(string, other.string);
   }
 
-  template <typename OtherCoeffType>
-  std::enable_if<
-      std::is_same<PauliContainer, QubitPauliMap>::value, std::set<Qubit>>
+  template <typename OtherCoeffType, typename PC = PauliContainer>
+  typename std::enable_if<
+      std::is_same<PC, QubitPauliMap>::value, std::set<Qubit>>::type
   own_qubits(const PauliTensor<PauliContainer, OtherCoeffType> &other) const {
-    return own_qubits(string, other.string);
+    return tket::own_qubits(string, other.string);
   }
 
-  template <typename OtherCoeffType>
-  std::enable_if<
-      std::is_same<PauliContainer, QubitPauliMap>::value, std::set<Qubit>>
+  template <typename OtherCoeffType, typename PC = PauliContainer>
+  typename std::enable_if<
+      std::is_same<PC, QubitPauliMap>::value, std::set<Qubit>>::type
   conflicting_qubits(
       const PauliTensor<PauliContainer, OtherCoeffType> &other) const {
-    return conflicting_qubits(string, other.string);
+    return tket::conflicting_qubits(string, other.string);
   }
 
-  template <typename OtherCoeffType>
-  std::enable_if<
-      std::is_same<PauliContainer, DensePauliMap>::value, std::set<unsigned>>
+  template <typename OtherCoeffType, typename PC = PauliContainer>
+  typename std::enable_if<
+      std::is_same<PC, DensePauliMap>::value, std::set<unsigned>>::type
   common_indices(
       const PauliTensor<PauliContainer, OtherCoeffType> &other) const {
-    return common_indices(string, other.string);
+    return tket::common_indices(string, other.string);
   }
 
-  template <typename OtherCoeffType>
-  std::enable_if<
-      std::is_same<PauliContainer, DensePauliMap>::value, std::set<unsigned>>
+  template <typename OtherCoeffType, typename PC = PauliContainer>
+  typename std::enable_if<
+      std::is_same<PC, DensePauliMap>::value, std::set<unsigned>>::type
   own_indices(const PauliTensor<PauliContainer, OtherCoeffType> &other) const {
-    return own_indices(string, other.string);
+    return tket::own_indices(string, other.string);
   }
 
-  template <typename OtherCoeffType>
-  std::enable_if<
-      std::is_same<PauliContainer, DensePauliMap>::value, std::set<unsigned>>
+  template <typename OtherCoeffType, typename PC = PauliContainer>
+  typename std::enable_if<
+      std::is_same<PC, DensePauliMap>::value, std::set<unsigned>>::type
   conflicting_indices(
       const PauliTensor<PauliContainer, OtherCoeffType> &other) const {
-    return conflicting_indices(string, other.string);
+    return tket::conflicting_indices(string, other.string);
   }
 
   template <typename PC = PauliContainer>
@@ -452,6 +495,19 @@ class PauliTensor {
   }
 
   unsigned size() const { return string.size(); }
+
+  CmplxSpMat to_sparse_matrix() const {
+    return cast_coeff<CoeffType, Complex>(coeff) *
+           tket::to_sparse_matrix<PauliContainer>(string);
+  }
+  CmplxSpMat to_sparse_matrix(const unsigned n_qubits) const {
+    return cast_coeff<CoeffType, Complex>(coeff) *
+           tket::to_sparse_matrix<PauliContainer>(string, n_qubits);
+  }
+  CmplxSpMat to_sparse_matrix(const qubit_vector_t &qubits) const {
+    return cast_coeff<CoeffType, Complex>(coeff) *
+           tket::to_sparse_matrix<PauliContainer>(string, qubits);
+  }
 };
 
 template <typename PauliContainer, typename CoeffType>

@@ -39,7 +39,7 @@ PauliGraph circuit_to_pauli_graph(const Circuit &circ) {
       QubitPauliMap qpm;
       for (unsigned i = 0; i != args.size(); ++i)
         qpm.insert({Qubit(args[i]), paulis[i]});
-      QubitPauliTensor qpt = pg.cliff_.get_row_product(QubitPauliTensor(qpm));
+      SpPauliStabiliser qpt = pg.cliff_.get_row_product(SpPauliStabiliser(qpm));
       pg.apply_pauli_gadget_at_end(qpt, phase);
     } else
       throw BadOpType(
@@ -60,9 +60,10 @@ Circuit pauli_graph_to_pauli_exp_box_circuit_individually(
     circ.add_bit(b);
   }
   for (const PauliVert &vert : pg.vertices_in_order()) {
-    const QubitPauliTensor &pauli = pg.graph_[vert].tensor_;
+    const SpPauliStabiliser &pauli = pg.graph_[vert].tensor_;
     const Expr &angle = pg.graph_[vert].angle_;
-    append_single_pauli_gadget_as_pauli_exp_box(circ, pauli, angle, cx_config);
+    append_single_pauli_gadget_as_pauli_exp_box(
+        circ, SpSymPauliTensor(pauli) * SpSymPauliTensor({}, angle), cx_config);
   }
   Circuit cliff_circuit = unitary_rev_tableau_to_circuit(pg.cliff_);
   circ.append(cliff_circuit);
@@ -85,22 +86,21 @@ Circuit pauli_graph_to_pauli_exp_box_circuit_pairwise(
   auto it = vertices.begin();
   while (it != vertices.end()) {
     PauliVert vert0 = *it;
-    const QubitPauliTensor &pauli0 = pg.graph_[vert0].tensor_;
+    const SpPauliStabiliser &pauli0 = pg.graph_[vert0].tensor_;
     const Expr &angle0 = pg.graph_[vert0].angle_;
     ++it;
     if (it == vertices.end()) {
-      // append_single_pauli_gadget(circ, pauli0, angle0, cx_config);
       append_single_pauli_gadget_as_pauli_exp_box(
-          circ, pauli0, angle0, cx_config);
+          circ, SpSymPauliTensor(pauli0) * SpSymPauliTensor({}, angle0),
+          cx_config);
     } else {
       PauliVert vert1 = *it;
-      const QubitPauliTensor &pauli1 = pg.graph_[vert1].tensor_;
+      const SpPauliStabiliser &pauli1 = pg.graph_[vert1].tensor_;
       const Expr &angle1 = pg.graph_[vert1].angle_;
       ++it;
       append_pauli_gadget_pair_as_box(
-          circ, pauli0, angle0, pauli1, angle1, cx_config);
-      // append_pauli_gadget_pair(circ, pauli0, angle0, pauli1, angle1,
-      // cx_config);
+          circ, SpSymPauliTensor(pauli0) * SpSymPauliTensor({}, angle0),
+          SpSymPauliTensor(pauli1) * SpSymPauliTensor({}, angle1), cx_config);
     }
   }
   Circuit cliff_circuit = unitary_rev_tableau_to_circuit(pg.cliff_);
@@ -129,41 +129,37 @@ Circuit pauli_graph_to_pauli_exp_box_circuit_sets(
   while (it != vertices.end()) {
     const PauliGadgetProperties &pgp = pg.graph_[*it];
     QubitOperator gadget_map;
-    gadget_map[pgp.tensor_] = pgp.angle_;
+    insert_into_gadget_map(gadget_map, pgp);
     ++it;
     while (it != vertices.end()) {
       const PauliGadgetProperties &pauli_gadget = pg.graph_[*it];
-      QubitOperator::iterator pgs_iter = gadget_map.find(pauli_gadget.tensor_);
-      if (pgs_iter != gadget_map.end()) {
-        insert_into_gadget_map(gadget_map, pauli_gadget);
-      } else {
-        bool commutes_with_all = true;
-        for (const std::pair<const QubitPauliTensor, Expr> &pv : gadget_map) {
-          if (!pauli_gadget.tensor_.commutes_with(pv.first)) {
-            commutes_with_all = false;
-            break;
-          }
+      bool commutes_with_all = true;
+      for (const std::pair<const SpPauliString, Expr> &pv : gadget_map) {
+        if (!pauli_gadget.tensor_.commutes_with(pv.first)) {
+          commutes_with_all = false;
+          break;
         }
-        if (!commutes_with_all) break;
-        insert_into_gadget_map(gadget_map, pauli_gadget);
       }
+      if (!commutes_with_all) break;
+      insert_into_gadget_map(gadget_map, pauli_gadget);
       ++it;
     }
     if (gadget_map.size() == 1) {
-      const std::pair<const QubitPauliTensor, Expr> &pgp0 = *gadget_map.begin();
+      const std::pair<const SpPauliString, Expr> &pgp0 = *gadget_map.begin();
       append_single_pauli_gadget_as_pauli_exp_box(
-          circ, pgp0.first, pgp0.second, cx_config);
+          circ, SpSymPauliTensor(pgp0.first.string, pgp0.second), cx_config);
     } else if (gadget_map.size() == 2) {
-      const std::pair<const QubitPauliTensor, Expr> &pgp0 = *gadget_map.begin();
-      const std::pair<const QubitPauliTensor, Expr> &pgp1 =
+      const std::pair<const SpPauliString, Expr> &pgp0 = *gadget_map.begin();
+      const std::pair<const SpPauliString, Expr> &pgp1 =
           *(++gadget_map.begin());
       append_pauli_gadget_pair_as_box(
-          circ, pgp0.first, pgp0.second, pgp1.first, pgp1.second, cx_config);
+          circ, SpSymPauliTensor(pgp0.first.string, pgp0.second),
+          SpSymPauliTensor(pgp1.first.string, pgp1.second), cx_config);
     } else {
-      std::list<std::pair<QubitPauliTensor, Expr>> gadgets;
-      for (const std::pair<const QubitPauliTensor, Expr> &qps_pair :
-           gadget_map) {
-        gadgets.push_back(qps_pair);
+      std::list<SpSymPauliTensor> gadgets;
+      for (const std::pair<const SpPauliString, Expr> &qps_pair : gadget_map) {
+        gadgets.push_back(
+            SpSymPauliTensor(qps_pair.first.string, qps_pair.second));
       }
       append_commuting_pauli_gadget_set_as_box(circ, gadgets, cx_config);
     }

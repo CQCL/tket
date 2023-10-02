@@ -29,7 +29,7 @@
 #include "tket/Utils/EigenConfig.hpp"
 #include "tket/Utils/Expression.hpp"
 #include "tket/Utils/Json.hpp"
-#include "tket/Utils/PauliStrings.hpp"
+#include "tket/Utils/PauliStrings2.hpp"
 
 namespace tket {
 
@@ -461,8 +461,7 @@ bool ProjectorAssertionBox::is_equal(const Op &op_other) const {
   return m_.isApprox(other.m_);
 }
 
-StabiliserAssertionBox::StabiliserAssertionBox(
-    const PauliStabiliserList &paulis)
+StabiliserAssertionBox::StabiliserAssertionBox(const PauliStabiliserVec &paulis)
     : Box(OpType::StabiliserAssertionBox),
       paulis_(paulis),
       expected_readouts_({}) {
@@ -480,15 +479,10 @@ Op_ptr StabiliserAssertionBox::dagger() const {
 }
 
 Op_ptr StabiliserAssertionBox::transpose() const {
-  PauliStabiliserList new_pauli_list;
-  for (auto &pauli : paulis_) {
-    int y_pauli_counter =
-        std::count(pauli.string.begin(), pauli.string.end(), Pauli::Y);
-    if (y_pauli_counter % 2 == 0) {
-      new_pauli_list.push_back(PauliStabiliser(pauli.string, pauli.coeff));
-    } else {
-      new_pauli_list.push_back(PauliStabiliser(pauli.string, !pauli.coeff));
-    };
+  PauliStabiliserVec new_pauli_list;
+  for (PauliStabiliser pauli : paulis_) {
+    pauli.transpose();
+    new_pauli_list.push_back(pauli);
   }
   return std::make_shared<StabiliserAssertionBox>(new_pauli_list);
 }
@@ -663,7 +657,7 @@ nlohmann::json StabiliserAssertionBox::to_json(const Op_ptr &op) {
 
 Op_ptr StabiliserAssertionBox::from_json(const nlohmann::json &j) {
   StabiliserAssertionBox box =
-      StabiliserAssertionBox(j.at("stabilisers").get<PauliStabiliserList>());
+      StabiliserAssertionBox(j.at("stabilisers").get<PauliStabiliserVec>());
   return set_box_id(
       box,
       boost::lexical_cast<boost::uuids::uuid>(j.at("id").get<std::string>()));

@@ -14,7 +14,12 @@
 
 #include "tket/Utils/PauliStrings2.hpp"
 
+#include <tkassert/Assert.hpp>
+
 namespace tket {
+
+void to_json(nlohmann::json &, const no_coeff_t &) {}
+void from_json(const nlohmann::json &, no_coeff_t &) {}
 
 template <>
 no_coeff_t default_coeff<no_coeff_t>() {
@@ -616,6 +621,105 @@ Complex multiply_coeffs<Complex>(const Complex &first, const Complex &second) {
 template <>
 Expr multiply_coeffs<Expr>(const Expr &first, const Expr &second) {
   return first * second;
+}
+
+static const CmplxSpMat const_2x2_matrix(
+    Complex tl, Complex tr, Complex bl, Complex br) {
+  CmplxSpMat m(2, 2);
+  if (tl != czero) {
+    m.insert(0, 0) = tl;
+  }
+  if (tr != czero) {
+    m.insert(0, 1) = tr;
+  }
+  if (bl != czero) {
+    m.insert(1, 0) = bl;
+  }
+  if (br != czero) {
+    m.insert(1, 1) = br;
+  }
+  return m;
+}
+
+static const CmplxSpMat &pauli_sparse_mat(Pauli p) {
+  static const CmplxSpMat I_mat = const_2x2_matrix(1, 0, 0, 1);
+  static const CmplxSpMat X_mat = const_2x2_matrix(0, 1, 1, 0);
+  static const CmplxSpMat Y_mat = const_2x2_matrix(0, -i_, i_, 0);
+  static const CmplxSpMat Z_mat = const_2x2_matrix(1, 0, 0, -1);
+  switch (p) {
+    case Pauli::X:
+      return X_mat;
+    case Pauli::Y:
+      return Y_mat;
+    case Pauli::Z:
+      return Z_mat;
+    default:
+      TKET_ASSERT(p == Pauli::I);
+      return I_mat;
+  }
+}
+
+template <>
+CmplxSpMat to_sparse_matrix<QubitPauliMap>(const QubitPauliMap &paulis) {
+  DensePauliMap matrix_paulis;
+  for (const std::pair<const Qubit, Pauli> &pair : paulis)
+    matrix_paulis.push_back(pair.second);
+  return to_sparse_matrix<DensePauliMap>(matrix_paulis);
+}
+template <>
+CmplxSpMat to_sparse_matrix<DensePauliMap>(const DensePauliMap &paulis) {
+  CmplxSpMat result = CmplxSpMat(1, 1);
+  result.insert(0, 0) = 1.;
+  for (Pauli p : paulis) {
+    const CmplxSpMat pauli_mat = pauli_sparse_mat(p);
+    result = Eigen::KroneckerProductSparse(result, pauli_mat).eval();
+  }
+  return result;
+}
+
+template <>
+CmplxSpMat to_sparse_matrix<QubitPauliMap>(
+    const QubitPauliMap &paulis, unsigned n_qubits) {
+  qubit_vector_t qubits(n_qubits);
+  for (unsigned i = 0; i < n_qubits; ++i) qubits.at(i) = Qubit(i);
+  return to_sparse_matrix<QubitPauliMap>(paulis, qubits);
+}
+template <>
+CmplxSpMat to_sparse_matrix<DensePauliMap>(
+    const DensePauliMap &paulis, unsigned n_qubits) {
+  if (n_qubits < paulis.size())
+    throw std::logic_error(
+        "Called to_sparse_matrix for fewer qubits than in the Pauli string.");
+  DensePauliMap matrix_paulis = paulis;
+  for (unsigned i = paulis.size(); i < n_qubits; ++i)
+    matrix_paulis.push_back(Pauli::I);
+  return to_sparse_matrix<DensePauliMap>(matrix_paulis);
+}
+
+template <>
+CmplxSpMat to_sparse_matrix<QubitPauliMap>(
+    const QubitPauliMap &paulis, const qubit_vector_t &qubits) {
+  DensePauliMap matrix_paulis(qubits.size(), Pauli::I);
+  std::map<Qubit, unsigned> index_map;
+  for (const Qubit &q : qubits) index_map.insert({q, index_map.size()});
+  if (index_map.size() != qubits.size())
+    throw std::logic_error(
+        "Qubit list given to to_sparse_matrix contains repeats.");
+  for (const std::pair<const Qubit, Pauli> &pair : paulis) {
+    std::map<Qubit, unsigned>::iterator found = index_map.find(pair.first);
+    if (found == index_map.end())
+      throw std::logic_error(
+          "Qubit list given to to_sparse_matrix doesn't contain " +
+          pair.first.repr());
+    matrix_paulis.at(found->second) = pair.second;
+  }
+  return to_sparse_matrix<DensePauliMap>(matrix_paulis);
+}
+template <>
+CmplxSpMat to_sparse_matrix<DensePauliMap>(
+    const DensePauliMap &paulis, const qubit_vector_t &qubits) {
+  return to_sparse_matrix<QubitPauliMap>(
+      cast_container<DensePauliMap, QubitPauliMap>(paulis), qubits);
 }
 
 }  // namespace tket

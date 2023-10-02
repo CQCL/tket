@@ -59,7 +59,7 @@ Transform pairwise_pauli_gadgets(CXConfigType cx_config) {
     // We effectively commute non-Clifford rotations to the front of the circuit
     // This gives a sequence of just Pauli gadgets (gadget_circ), followed by
     // all of the Clifford operations (clifford_circ)
-    std::vector<std::pair<QubitPauliTensor, Expr>> pauli_gadgets;
+    std::vector<SpSymPauliTensor> pauli_gadgets;
     // rx_pauli[i] specifies which Pauli gadget would be built by applying an Rx
     // rotation on qubit i and then pushing it through the Cliffords to the
     // front of the circuit. Likewise for rz_pauli with Rz rotations. Clifford
@@ -67,13 +67,13 @@ Transform pairwise_pauli_gadgets(CXConfigType cx_config) {
     // Pauli gadgets accordingly
     Circuit gadget_circ;
     Circuit clifford_circ;
-    std::map<Qubit, QubitPauliTensor> rx_pauli;
-    std::map<Qubit, QubitPauliTensor> rz_pauli;
+    std::map<Qubit, SpPauliStabiliser> rx_pauli;
+    std::map<Qubit, SpPauliStabiliser> rz_pauli;
     for (const Qubit &qb : circ.all_qubits()) {
       gadget_circ.add_qubit(qb);
       clifford_circ.add_qubit(qb);
-      rx_pauli.insert({qb, QubitPauliTensor(qb, Pauli::X)});
-      rz_pauli.insert({qb, QubitPauliTensor(qb, Pauli::Z)});
+      rx_pauli.insert({qb, SpPauliStabiliser(qb, Pauli::X)});
+      rz_pauli.insert({qb, SpPauliStabiliser(qb, Pauli::Z)});
     }
     for (const Bit &cb : circ.all_bits()) {
       gadget_circ.add_bit(cb);
@@ -88,32 +88,32 @@ Transform pairwise_pauli_gadgets(CXConfigType cx_config) {
         // Update rx_pauli and rz_pauli
         case OpType::S: {
           Qubit q(args[0]);
-          rx_pauli[q] = i_ * rz_pauli[q] * rx_pauli[q];
+          rx_pauli[q] = SpPauliStabiliser({}, 1) * rz_pauli[q] * rx_pauli[q];
           break;
         }
         case OpType::V: {
           Qubit q(args[0]);
-          rz_pauli[q] = i_ * rx_pauli[q] * rz_pauli[q];
+          rz_pauli[q] = SpPauliStabiliser({}, 1) * rx_pauli[q] * rz_pauli[q];
           break;
         }
         case OpType::Z: {
           Qubit q(args[0]);
-          rx_pauli[q] = -1. * rx_pauli[q];
+          rx_pauli[q] = SpPauliStabiliser({}, 2) * rx_pauli[q];
           break;
         }
         case OpType::X: {
           Qubit q(args[0]);
-          rz_pauli[q] = -1. * rz_pauli[q];
+          rz_pauli[q] = SpPauliStabiliser({}, 2) * rz_pauli[q];
           break;
         }
         case OpType::Sdg: {
           Qubit q(args[0]);
-          rx_pauli[q] = -i_ * rz_pauli[q] * rx_pauli[q];
+          rx_pauli[q] = SpPauliStabiliser({}, 3) * rz_pauli[q] * rx_pauli[q];
           break;
         }
         case OpType::Vdg: {
           Qubit q(args[0]);
-          rz_pauli[q] = -i_ * rx_pauli[q] * rz_pauli[q];
+          rz_pauli[q] = SpPauliStabiliser({}, 3) * rx_pauli[q] * rz_pauli[q];
           break;
         }
         case OpType::CX: {
@@ -127,13 +127,17 @@ Transform pairwise_pauli_gadgets(CXConfigType cx_config) {
         case OpType::Rz: {
           Qubit q(args[0]);
           Expr angle = (op_ptr)->get_params()[0];
-          pauli_gadgets.push_back({rz_pauli[q], angle});
+          SpSymPauliTensor g =
+              (SpSymPauliTensor)rz_pauli[q] * SpSymPauliTensor({}, angle);
+          pauli_gadgets.push_back(g);
           break;
         }
         case OpType::Rx: {
           Qubit q(args[0]);
           Expr angle = (op_ptr)->get_params()[0];
-          pauli_gadgets.push_back({rx_pauli[q], angle});
+          SpSymPauliTensor g =
+              (SpSymPauliTensor)rx_pauli[q] * SpSymPauliTensor({}, angle);
+          pauli_gadgets.push_back(g);
           break;
         }
         case OpType::noop:
@@ -164,17 +168,14 @@ Transform pairwise_pauli_gadgets(CXConfigType cx_config) {
     // Synthesise pairs of Pauli Gadgets
     unsigned g = 0;
     while (g + 1 < pauli_gadgets.size()) {
-      auto [pauli0, angle0] = pauli_gadgets[g];
-      auto [pauli1, angle1] = pauli_gadgets[g + 1];
       append_pauli_gadget_pair(
-          gadget_circ, pauli0, angle0, pauli1, angle1, cx_config);
+          gadget_circ, pauli_gadgets[g], pauli_gadgets[g + 1], cx_config);
       g += 2;
     }
     // As we synthesised Pauli gadgets 2 at a time, if there were an odd
     // number, we will have one left over, so add that one on its own
     if (g < pauli_gadgets.size()) {
-      auto [pauli, angle] = pauli_gadgets[g];
-      append_single_pauli_gadget(gadget_circ, pauli, angle, cx_config);
+      append_single_pauli_gadget(gadget_circ, pauli_gadgets[g], cx_config);
     }
     // Stitch gadget circuit and Clifford circuit together
     circ = gadget_circ >> clifford_circ;

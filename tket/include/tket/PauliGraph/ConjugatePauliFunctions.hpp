@@ -15,7 +15,7 @@
 #pragma once
 
 #include "tket/OpType/OpType.hpp"
-#include "tket/Utils/PauliStrings.hpp"
+#include "tket/Utils/PauliStrings2.hpp"
 
 namespace tket {
 
@@ -28,18 +28,18 @@ std::pair<Pauli, bool> conjugate_Pauli(
     OpType op, Pauli p, bool reverse = false);
 
 /**
- * Methods to conjugate a QubitPauliTensor with Clifford gates to
+ * Methods to conjugate a SpPauliStabiliser with Clifford gates to
  * change basis
  * Transforms P to P' such that
  * reverse = false : --P'-- = --op--P--opdg--
  * reverse = true  : --P'-- = --opdg--P--op--
  */
 void conjugate_PauliTensor(
-    QubitPauliTensor &qpt, OpType op, const Qubit &q, bool reverse = false);
+    SpPauliStabiliser &qpt, OpType op, const Qubit &q, bool reverse = false);
 void conjugate_PauliTensor(
-    QubitPauliTensor &qpt, OpType op, const Qubit &q0, const Qubit &q1);
+    SpPauliStabiliser &qpt, OpType op, const Qubit &q0, const Qubit &q1);
 void conjugate_PauliTensor(
-    QubitPauliTensor &qpt, OpType op, const Qubit &q0, const Qubit &q1,
+    SpPauliStabiliser &qpt, OpType op, const Qubit &q0, const Qubit &q1,
     const Qubit &qb2);
 
 }  // namespace tket

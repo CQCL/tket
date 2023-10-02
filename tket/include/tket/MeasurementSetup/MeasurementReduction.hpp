@@ -29,7 +29,7 @@ namespace tket {
  * https://arxiv.org/abs/1908.06942, https://arxiv.org/abs/1907.03358
  */
 MeasurementSetup measurement_reduction(
-    const std::list<QubitPauliString>& strings, PauliPartitionStrat strat,
+    const std::list<SpPauliString>& strings, PauliPartitionStrat strat,
     GraphColourMethod method = GraphColourMethod::Lazy,
     CXConfigType cx_config = CXConfigType::Snake);
 

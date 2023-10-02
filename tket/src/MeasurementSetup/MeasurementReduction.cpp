@@ -17,11 +17,11 @@
 namespace tket {
 
 MeasurementSetup measurement_reduction(
-    const std::list<QubitPauliString>& strings, PauliPartitionStrat strat,
+    const std::list<SpPauliString>& strings, PauliPartitionStrat strat,
     GraphColourMethod method, CXConfigType cx_config) {
   std::set<Qubit> qubits;
-  for (const QubitPauliString& qpt : strings) {
-    for (const std::pair<const Qubit, Pauli>& qb_p : qpt.map)
+  for (const SpPauliString& qpt : strings) {
+    for (const std::pair<const Qubit, Pauli>& qb_p : qpt.string)
       qubits.insert(qb_p.first);
   }
 
@@ -32,15 +32,14 @@ MeasurementSetup measurement_reduction(
     ++u;
   }
 
-  std::list<std::list<QubitPauliString>> all_terms =
+  std::list<std::list<SpPauliString>> all_terms =
       term_sequence(strings, strat, method);
   MeasurementSetup ms;
   unsigned i = 0;
-  for (const std::list<QubitPauliString>& terms : all_terms) {
-    std::list<std::pair<QubitPauliTensor, Expr>> gadgets;
-    for (const QubitPauliString& string : terms) {
-      QubitPauliTensor qps(string);
-      gadgets.push_back({qps, 1.});
+  for (const std::list<SpPauliString>& terms : all_terms) {
+    std::list<SpSymPauliTensor> gadgets;
+    for (const SpPauliString& string : terms) {
+      gadgets.push_back(string);
     }
 
     std::set<Qubit> mutable_qb_set(qubits);
@@ -53,17 +52,15 @@ MeasurementSetup measurement_reduction(
     }
     ms.add_measurement_circuit(cliff_circ);
 
-    std::list<std::pair<QubitPauliTensor, Expr>>::const_iterator gadgets_iter =
-        gadgets.begin();
-    for (const QubitPauliString& string : terms) {
-      const std::pair<QubitPauliTensor, Expr>& new_gadget = *gadgets_iter;
+    std::list<SpSymPauliTensor>::const_iterator gadgets_iter = gadgets.begin();
+    for (const SpPauliString& string : terms) {
+      const SpSymPauliTensor& new_gadget = *gadgets_iter;
       std::vector<unsigned> bits;
-      for (const std::pair<const Qubit, Pauli>& qp_pair :
-           new_gadget.first.string.map) {
+      for (const std::pair<const Qubit, Pauli>& qp_pair : new_gadget.string) {
         if (qp_pair.second == Pauli::Z)
           bits.push_back(qb_location_map.at(qp_pair.first));
       }
-      bool invert = (std::abs(new_gadget.first.coeff + Complex(1)) < EPS);
+      bool invert = (new_gadget.coeff == -1);
       ms.add_result_for_term(string, {i, bits, invert});
       ++gadgets_iter;
     }

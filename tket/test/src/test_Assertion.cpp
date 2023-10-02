@@ -21,7 +21,6 @@
 #include "tket/Predicates/CompilationUnit.hpp"
 #include "tket/Predicates/PassLibrary.hpp"
 #include "tket/Utils/MatrixAnalysis.hpp"
-#include "tket/Utils/PauliStrings.hpp"
 namespace tket {
 
 SCENARIO("Testing projector based assertion synthesis") {
@@ -168,10 +167,10 @@ SCENARIO("Testing stabiliser based assertion") {
     Circuit circ(3);
     circ.add_op<unsigned>(OpType::Rz, 1.5, {0});
     circ.add_op<unsigned>(OpType::CX, {1, 0});
-    PauliStabiliser pauli1 = {{Pauli::X, Pauli::X}, true};
-    PauliStabiliser pauli2 = {{Pauli::Z, Pauli::Z}, true};
-    PauliStabiliser pauli3 = {{Pauli::Z, Pauli::Z}, false};
-    PauliStabiliserList stabilisers = {pauli1, pauli2, pauli3};
+    PauliStabiliser pauli1 = {{Pauli::X, Pauli::X}, 0};
+    PauliStabiliser pauli2 = {{Pauli::Z, Pauli::Z}, 0};
+    PauliStabiliser pauli3 = {{Pauli::Z, Pauli::Z}, 2};
+    PauliStabiliserVec stabilisers = {pauli1, pauli2, pauli3};
     StabiliserAssertionBox box(stabilisers);
     circ.add_assertion(
         box, {Qubit(0), Qubit(2)}, Qubit(1), "random stabiliser");
@@ -214,9 +213,9 @@ SCENARIO("Testing stabiliser based assertion") {
     Circuit circ(3);
     circ.add_op<unsigned>(OpType::Rz, 1.5, {0});
     circ.add_op<unsigned>(OpType::CX, {1, 0});
-    PauliStabiliser pauli1 = {{Pauli::X}, true};
-    PauliStabiliser pauli2 = {{Pauli::Z}, true};
-    PauliStabiliserList stabilisers = {pauli1, pauli2};
+    PauliStabiliser pauli1 = {{Pauli::X}, 0};
+    PauliStabiliser pauli2 = {{Pauli::Z}, 0};
+    PauliStabiliserVec stabilisers = {pauli1, pauli2};
     StabiliserAssertionBox box(stabilisers);
     REQUIRE_THROWS(circ.add_assertion(
         box, {Qubit(0), Qubit(2)}, Qubit(1), "random stabiliser"));
@@ -224,21 +223,21 @@ SCENARIO("Testing stabiliser based assertion") {
 
   GIVEN("Invalid input") {
     WHEN("Empty input") {
-      PauliStabiliserList stabilisers = {};
+      PauliStabiliserVec stabilisers = {};
       REQUIRE_THROWS_AS(StabiliserAssertionBox(stabilisers), CircuitInvalidity);
     }
     WHEN("Unequal lengths") {
-      PauliStabiliser pauli1 = {{Pauli::X}, true};
-      PauliStabiliser pauli2 = {{Pauli::Z, Pauli::Z}, true};
-      PauliStabiliserList stabilisers = {pauli1, pauli2};
+      PauliStabiliser pauli1 = {{Pauli::X}, 0};
+      PauliStabiliser pauli2 = {{Pauli::Z, Pauli::Z}, 0};
+      PauliStabiliserVec stabilisers = {pauli1, pauli2};
       REQUIRE_THROWS_AS(StabiliserAssertionBox(stabilisers), CircuitInvalidity);
     }
     WHEN("Identity") {
       REQUIRE_THROWS_AS(
-          PauliStabiliser({Pauli::I, Pauli::I, Pauli::I}, true),
+          PauliStabiliser({Pauli::I, Pauli::I, Pauli::I}, 0),
           std::invalid_argument);
       REQUIRE_THROWS_AS(
-          PauliStabiliser({Pauli::I, Pauli::I, Pauli::I}, false),
+          PauliStabiliser({Pauli::I, Pauli::I, Pauli::I}, 1),
           std::invalid_argument);
     }
   }
@@ -246,14 +245,14 @@ SCENARIO("Testing stabiliser based assertion") {
 
 SCENARIO("Testing stibiliser based assertion serialization") {
   GIVEN("Serialise a stabiliser box") {
-    PauliStabiliser pauli1 = {{Pauli::X, Pauli::X}, true};
-    PauliStabiliser pauli2 = {{Pauli::Z, Pauli::Z}, true};
+    PauliStabiliser pauli1 = {{Pauli::X, Pauli::X}, 0};
+    PauliStabiliser pauli2 = {{Pauli::Z, Pauli::Z}, 0};
     nlohmann::json j_pauli1 = pauli1;
     PauliStabiliser new_pauli1 = j_pauli1.get<PauliStabiliser>();
     REQUIRE(new_pauli1 == pauli1);
-    PauliStabiliserList bell = {pauli1, pauli2};
+    PauliStabiliserVec bell = {pauli1, pauli2};
     nlohmann::json j_bell = bell;
-    PauliStabiliserList new_bell = j_bell.get<PauliStabiliserList>();
+    PauliStabiliserVec new_bell = j_bell.get<PauliStabiliserVec>();
     REQUIRE(new_bell == bell);
     StabiliserAssertionBox bell_box(new_bell);
     Circuit circ(3);

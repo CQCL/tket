@@ -230,7 +230,7 @@ SCENARIO("box daggers", "[boxes]") {
         4., 2. + 3. * i_, 5.;
     ExpBox ebox(A, -0.5);
     // PauliExpBox
-    PauliExpBox pbox({Pauli::X, Pauli::Y, Pauli::Z}, 0.8);
+    PauliExpBox pbox(SymPauliTensor({Pauli::X, Pauli::Y, Pauli::Z}, 0.8));
 
     // Put all these boxes into a circuit
     Circuit w(3);
@@ -926,10 +926,10 @@ SCENARIO("Checking equality", "[boxes]") {
   }
   GIVEN("Pauli gadgets") {
     double t = 1.687029013593215;
-    PauliExpBox pbox({Pauli::X}, t);
+    PauliExpBox pbox(SymPauliTensor({Pauli::X}, t));
     WHEN("both arguments are equal") { REQUIRE(pbox == pbox); }
     WHEN("both arguments are different") {
-      PauliExpBox pbox2({Pauli::Y}, t);
+      PauliExpBox pbox2(SymPauliTensor({Pauli::Y}, t));
       REQUIRE(pbox != pbox2);
     }
   }
@@ -1014,9 +1014,9 @@ SCENARIO("Checking equality", "[boxes]") {
     }
   }
   GIVEN("StabiliserAssertionBox") {
-    PauliStabiliser p1 = {{Pauli::X, Pauli::X}, true};
-    PauliStabiliser p2 = {{Pauli::Z, Pauli::Z}, true};
-    PauliStabiliser p3 = {{Pauli::Z, Pauli::Z}, false};
+    PauliStabiliser p1 = {{Pauli::X, Pauli::X}, 0};
+    PauliStabiliser p2 = {{Pauli::Z, Pauli::Z}, 0};
+    PauliStabiliser p3 = {{Pauli::Z, Pauli::Z}, 2};
     StabiliserAssertionBox box({p1, p2});
     WHEN("both arguments are equal") { REQUIRE(box == box); }
     WHEN("different ids but equivalent stabilisers") {
@@ -1153,52 +1153,72 @@ SCENARIO("Checking equality", "[boxes]") {
     }
   }
   GIVEN("PauliExpBox") {
-    PauliExpBox pbox({Pauli::X, Pauli::Y, Pauli::Z}, 0.8);
+    PauliExpBox pbox(SymPauliTensor({Pauli::X, Pauli::Y, Pauli::Z}, 0.8));
     WHEN("both arguments are equal") { REQUIRE(pbox == pbox); }
     WHEN("different ids but same arguments") {
-      REQUIRE(pbox == PauliExpBox({Pauli::X, Pauli::Y, Pauli::Z}, 0.8));
+      REQUIRE(
+          pbox ==
+          PauliExpBox(SymPauliTensor({Pauli::X, Pauli::Y, Pauli::Z}, 0.8)));
     }
     WHEN("different ids, equivalent angle") {
-      REQUIRE(pbox == PauliExpBox({Pauli::X, Pauli::Y, Pauli::Z}, 4.8));
+      REQUIRE(
+          pbox ==
+          PauliExpBox(SymPauliTensor({Pauli::X, Pauli::Y, Pauli::Z}, 4.8)));
     }
     WHEN("different arguments") {
-      REQUIRE(pbox != PauliExpBox({Pauli::X, Pauli::Y, Pauli::Z}, 0.9));
+      REQUIRE(
+          pbox !=
+          PauliExpBox(SymPauliTensor({Pauli::X, Pauli::Y, Pauli::Z}, 0.9)));
     }
   }
   GIVEN("PauliExpPairBox") {
-    PauliExpPairBox pbox({Pauli::X}, 1.0, {Pauli::I}, 0.0);
+    PauliExpPairBox pbox(
+        SymPauliTensor({Pauli::X}, 1.0), SymPauliTensor({Pauli::I}, 0.0));
     WHEN("both arguments are equal") { REQUIRE(pbox == pbox); }
     WHEN("different ids but same arguments") {
-      REQUIRE(pbox == PauliExpPairBox({Pauli::X}, 1.0, {Pauli::I}, 0.0));
+      REQUIRE(
+          pbox == PauliExpPairBox(
+                      SymPauliTensor({Pauli::X}, 1.0),
+                      SymPauliTensor({Pauli::I}, 0.0)));
     }
     WHEN("different ids, equivalent angle") {
-      REQUIRE(pbox == PauliExpPairBox({Pauli::X}, 1.0, {Pauli::I}, 4.0));
+      REQUIRE(
+          pbox == PauliExpPairBox(
+                      SymPauliTensor({Pauli::X}, 1.0),
+                      SymPauliTensor({Pauli::I}, 4.0)));
     }
     WHEN("different arguments") {
-      REQUIRE(pbox != PauliExpPairBox({Pauli::X}, -1.0, {Pauli::I}, 0.0));
+      REQUIRE(
+          pbox != PauliExpPairBox(
+                      SymPauliTensor({Pauli::X}, -1.0),
+                      SymPauliTensor({Pauli::I}, 0.0)));
     }
   }
   GIVEN("PauliExpCommutingSetBox") {
     PauliExpCommutingSetBox pbox(
-        {{{Pauli::X}, 1.0}, {{Pauli::I}, 1.2}, {{Pauli::I}, -0.5}});
+        {SymPauliTensor({Pauli::X}, 1.0), SymPauliTensor({Pauli::I}, 1.2),
+         SymPauliTensor({Pauli::I}, -0.5)});
     WHEN("both arguments are equal") { REQUIRE(pbox == pbox); }
     WHEN("different ids but same arguments") {
       REQUIRE(
           pbox ==
           PauliExpCommutingSetBox(
-              {{{Pauli::X}, 1.0}, {{Pauli::I}, 1.2}, {{Pauli::I}, -0.5}}));
+              {SymPauliTensor({Pauli::X}, 1.0), SymPauliTensor({Pauli::I}, 1.2),
+               SymPauliTensor({Pauli::I}, -0.5)}));
     }
     WHEN("different ids, equivalent angles") {
       REQUIRE(
-          pbox ==
-          PauliExpCommutingSetBox(
-              {{{Pauli::X}, -3.0}, {{Pauli::I}, 5.2}, {{Pauli::I}, -0.5}}));
+          pbox == PauliExpCommutingSetBox(
+                      {SymPauliTensor({Pauli::X}, -3.0),
+                       SymPauliTensor({Pauli::I}, 5.2),
+                       SymPauliTensor({Pauli::I}, -0.5)}));
     }
     WHEN("different arguments") {
       REQUIRE(
           pbox !=
           PauliExpCommutingSetBox(
-              {{{Pauli::Y}, 1.0}, {{Pauli::I}, 1.2}, {{Pauli::I}, -0.5}}));
+              {SymPauliTensor({Pauli::Y}, 1.0), SymPauliTensor({Pauli::I}, 1.2),
+               SymPauliTensor({Pauli::I}, -0.5)}));
     }
   }
 }

@@ -40,17 +40,12 @@ void MeasurementSetup::add_measurement_circuit(const Circuit &circ) {
 }
 
 void MeasurementSetup::add_result_for_term(
-    const QubitPauliString &term, const MeasurementBitMap &result) {
+    const SpPauliString &term, const MeasurementBitMap &result) {
   result_map[term].push_back(result);
 }
 
-void MeasurementSetup::add_result_for_term(
-    const QubitPauliTensor &term, const MeasurementBitMap &result) {
-  add_result_for_term(term.string, result);
-}
-
 bool MeasurementSetup::verify() const {
-  std::map<std::pair<unsigned, unsigned>, QubitPauliTensor> pauli_map;
+  std::map<std::pair<unsigned, unsigned>, SpPauliStabiliser> pauli_map;
   // Identify Paulis measured onto each bit
   for (unsigned circ_id = 0; circ_id < measurement_circs.size(); ++circ_id) {
     Circuit circ = measurement_circs[circ_id];
@@ -68,15 +63,15 @@ bool MeasurementSetup::verify() const {
       pauli_map.insert({{circ_id, readout[qb]}, tab.get_zrow(qb)});
     }
   }
-  for (const std::pair<const QubitPauliString, std::vector<MeasurementBitMap>>
+  for (const std::pair<const SpPauliString, std::vector<MeasurementBitMap>>
            &term : result_map) {
     for (const MeasurementBitMap &bits : term.second) {
-      QubitPauliTensor total;
+      SpPauliStabiliser total;
       for (unsigned bit : bits.bits) {
         total = total * pauli_map[{bits.circ_index, bit}];
       }
-      if (bits.invert) total.coeff *= -1.;
-      QubitPauliTensor term_tensor(term.first);
+      if (bits.invert) total.coeff = (total.coeff + 2) % 4;
+      SpPauliStabiliser term_tensor(term.first);
       if (total != term_tensor) {
         std::stringstream out;
         out << "Invalid MeasurementSetup: expecting to measure "
@@ -94,7 +89,7 @@ std::string MeasurementSetup::to_str() const {
   ss << "Circuits: ";
   ss << measurement_circs.size();
   ss << "\n";
-  for (const std::pair<const QubitPauliString, std::vector<MeasurementBitMap>>
+  for (const std::pair<const SpPauliString, std::vector<MeasurementBitMap>>
            &tensor_map : result_map) {
     ss << "|| ";
     ss << tensor_map.first.to_str();
@@ -123,10 +118,10 @@ void from_json(
 
 void to_json(nlohmann::json &j, const MeasurementSetup &setup) {
   std::vector<std::pair<
-      QubitPauliString, std::vector<MeasurementSetup::MeasurementBitMap>>>
+      SpPauliString, std::vector<MeasurementSetup::MeasurementBitMap>>>
       map_list;
   for (const std::pair<
-           const QubitPauliString,
+           const SpPauliString,
            std::vector<MeasurementSetup::MeasurementBitMap>> &tensor_map :
        setup.get_result_map()) {
     map_list.push_back(tensor_map);
@@ -147,7 +142,7 @@ void from_json(const nlohmann::json &j, MeasurementSetup &setup) {
     for (auto second_it = it->at(1).begin(); second_it != it->at(1).end();
          ++second_it) {
       setup.add_result_for_term(
-          it->at(0).get<QubitPauliString>(),
+          it->at(0).get<SpPauliString>(),
           second_it->get<MeasurementSetup::MeasurementBitMap>());
     }
   }

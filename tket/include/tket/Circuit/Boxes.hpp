@@ -606,7 +606,7 @@ class StabiliserAssertionBox : public Box {
    *
    * @param paulis a set of stabiliser Pauli strings
    */
-  explicit StabiliserAssertionBox(const PauliStabiliserList &paulis);
+  explicit StabiliserAssertionBox(const PauliStabiliserVec &paulis);
 
   /**
    * Copy constructor
@@ -627,7 +627,7 @@ class StabiliserAssertionBox : public Box {
   bool is_equal(const Op &op_other) const override;
 
   /** Get the pauli stabilisers */
-  PauliStabiliserList get_stabilisers() const { return paulis_; }
+  PauliStabiliserVec get_stabilisers() const { return paulis_; }
   std::vector<bool> get_expected_readouts() const { return expected_readouts_; }
 
   Op_ptr dagger() const override;
@@ -644,7 +644,7 @@ class StabiliserAssertionBox : public Box {
   void generate_circuit() const override;
 
  private:
-  const PauliStabiliserList paulis_;
+  const PauliStabiliserVec paulis_;
   // expected readouts the debug bits
   // false -> 0
   // true -> 1
