@@ -16,6 +16,7 @@ Minor new features:
   decomposed into a single ``ConjugationBox``.
 * Make ``SquashRzPhasedX`` pass always squash symbols.
 * Add in-place symbol_substition method for ``CircBox``
+* Add rendering support for 0-valued control-type gates.
 
 Fixes:
 
