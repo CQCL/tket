@@ -48,9 +48,9 @@ make install
 
 ```
 cd ${TMP_DIR}
-wget https://github.com/symengine/symengine/releases/download/v0.10.1/symengine-0.10.1.tar.gz
-tar xzvf symengine-0.10.1.tar.gz
-cd symengine-0.10.1/
+wget https://github.com/symengine/symengine/releases/download/v0.11.1/symengine-0.11.1.tar.gz
+tar xzvf symengine-0.11.1.tar.gz
+cd symengine-0.11.1/
 mkdir build
 cd build
 cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} -DBUILD_TESTS=OFF -DBUILD_BENCHMARKS=OFF ..
