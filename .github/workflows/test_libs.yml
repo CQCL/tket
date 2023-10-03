@@ -63,7 +63,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
+        os: ['ubuntu-22.04', 'macos-12', 'windows-2022', 'macos-13-xlarge']
         lib: ${{ fromJson(needs.set_libs_matrix.outputs.libs) }}
     runs-on: ${{ matrix.os }}
     steps:
@@ -89,36 +89,6 @@ jobs:
       run: conan create -o boost/*:header_only=True libs/${{ matrix.lib }}/test --build=missing --format json > test-${{ matrix.lib }}.json
     - name: run ${{ matrix.lib }} tests
       shell: bash
-      run: |
-        PKGPATH=`./rootpath test-${{ matrix.lib }}.json test-${{ matrix.lib }}`
-        cd ${PKGPATH}/bin
-        ./test-${{ matrix.lib }}
-  macos-m1:
-    name: test library (macos-m1)
-    needs: set_libs_matrix
-    if: ${{ needs.set_libs_matrix.outputs.libs != '[]' && needs.set_libs_matrix.outputs.libs != '' }}
-    runs-on: ['self-hosted', 'macOS', 'ARM64']
-    strategy:
-      fail-fast: false
-      matrix:
-        lib: ${{ fromJson(needs.set_libs_matrix.outputs.libs) }}
-    steps:
-    - uses: actions/checkout@v4
-    - name: Install conan
-      uses: turtlebrowser/get-conan@v1.2
-    - name: Set up conan
-      run: |
-        conan profile detect --force
-        DEFAULT_PROFILE_PATH=`conan profile path default`
-        PROFILE_PATH=./conan-profiles/macos-armv8-clang14
-        diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
-        cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
-        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force --index 0
-    - name: build ${{ matrix.lib }}
-      run: conan create -o boost/*:header_only=True libs/${{ matrix.lib }} --build=missing
-    - name: build ${{ matrix.lib }} tests
-      run: conan create libs/${{ matrix.lib }}/test --build=missing --format json > test-${{ matrix.lib }}.json
-    - name: run ${{ matrix.lib }} tests
       run: |
         PKGPATH=`./rootpath test-${{ matrix.lib }}.json test-${{ matrix.lib }}`
         cd ${PKGPATH}/bin
