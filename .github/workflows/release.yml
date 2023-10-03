@@ -115,7 +115,7 @@ jobs:
 
   build_macos_M1_wheels:
     name: Build macos (M1) wheels
-    runs-on: ['self-hosted', 'macOS', 'ARM64']
+    runs-on: macos-13-xlarge
     strategy:
       matrix:
         python-version: ['3.9', '3.10', '3.11']
@@ -124,40 +124,36 @@ jobs:
       with:
         fetch-depth: '0'
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-    - name: Uninstall conan
-      run: pip3 uninstall -y conan
-    - name: Build wheels
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Install conan
+      uses: turtlebrowser/get-conan@v1.2
+    - name: Set up conan
       run: |
-        eval "$(pyenv init -)"
-        pyenv shell tket-${{ matrix.python-version }}
-        python -m pip install -U conan
-        conan profile detect --force
+        conan profile detect
         DEFAULT_PROFILE_PATH=`conan profile path default`
-        PROFILE_PATH=./conan-profiles/macos-armv8-clang14
+        PROFILE_PATH=./conan-profiles/macos-13-xlarge
         diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
         cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
-        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force --index 0
-        conan remove -c 'tket/*'
-        conan create tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
-        conan remove -c "pybind11/*"
+        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
+    - name: Build tket C++
+      run: conan create tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
+    - name: Build wheel
+      run: |
         conan create recipes/pybind11
         conan create recipes/pybind11_json/all --version 0.2.13
         cd pytket
         # Ensure wheels are compatible with MacOS 11.0 and later:
         export WHEEL_PLAT_NAME=macosx_11_0_arm64
-        conan remove -c "pytket/*"
-        python -m pip uninstall -y pytket
-        python -m pip install -U pip build delocate
-        rm -rf dist
+        pip install -U pip build delocate
         python -m build
         delocate-wheel -v -w "$GITHUB_WORKSPACE/wheelhouse/" "dist/pytket-"*".whl"
     - uses: actions/upload-artifact@v3
       with:
         name: MacOS_M1_${{ matrix.python-version }}_wheel
         path: wheelhouse/
-    - name: Remove directory
-      if: always()
-      run: rm -rf wheelhouse
 
   build_Windows_wheels:
     name: Build Windows wheels
@@ -296,32 +292,31 @@ jobs:
   test_macos_M1_wheels:
     name: Test macos (M1) wheels
     needs: build_macos_M1_wheels
-    runs-on: ['self-hosted', 'macOS', 'ARM64']
+    runs-on: macos-13-xlarge
     strategy:
       matrix:
         python-version: ['3.9', '3.10', '3.11']
     steps:
-    - uses: actions/checkout@v4
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
       with:
-        path: tket
+        python-version: ${{ matrix.python-version }}
     - name: Download wheels
       uses: actions/download-artifact@v3
       with:
         name: MacOS_M1_${{ matrix.python-version }}_wheel
         path: wheelhouse/
-    - name: Install wheel and run tests
+    - uses: actions/checkout@v4
+      with:
+        path: tket
+    - name: Install wheel
       run: |
-        eval "$(pyenv init -)"
-        pyenv shell tket-${{ matrix.python-version }}
-        PKG_CONFIG_PATH="$(brew --prefix openblas)"/lib/pkgconfig pip install -U scipy
-        pip uninstall -y pytket
         pip install $GITHUB_WORKSPACE/wheelhouse/pytket-*.whl
-        cd pytket/tests
+    - name: Run tests
+      run: |
+        cd tket/pytket/tests
         pip install -r requirements.txt
         pytest --ignore=simulator/
-    - name: Remove directory
-      if: always()
-      run: rm -rf wheelhouse
 
   test_Windows_wheels:
     name: Test Windows wheels
