@@ -125,9 +125,13 @@ jobs:
         fetch-depth: '0'
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     - name: Set up Python ${{ matrix.python-version }}
+      if: matrix.python-version != '3.9'
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
+    - name: Set up Python 3.9
+      if: matrix.python-version == '3.9'
+      run: brew install python@3.9
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
     - name: Set up conan
@@ -147,8 +151,8 @@ jobs:
         cd pytket
         # Ensure wheels are compatible with MacOS 11.0 and later:
         export WHEEL_PLAT_NAME=macosx_11_0_arm64
-        pip install -U pip build delocate
-        python -m build
+        python${{ matrix.python-version }} -m pip install -U pip build delocate
+        python${{ matrix.python-version }} -m python -m build
         delocate-wheel -v -w "$GITHUB_WORKSPACE/wheelhouse/" "dist/pytket-"*".whl"
     - uses: actions/upload-artifact@v3
       with:
@@ -298,9 +302,13 @@ jobs:
         python-version: ['3.9', '3.10', '3.11']
     steps:
     - name: Set up Python ${{ matrix.python-version }}
+      if: matrix.python-version != '3.9'
       uses: actions/setup-python@v4
       with:
         python-version: ${{ matrix.python-version }}
+    - name: Set up Python 3.9
+      if: matrix.python-version == '3.9'
+      run: brew install python@3.9
     - name: Download wheels
       uses: actions/download-artifact@v3
       with:
@@ -311,12 +319,12 @@ jobs:
         path: tket
     - name: Install wheel
       run: |
-        pip install $GITHUB_WORKSPACE/wheelhouse/pytket-*.whl
+        python${{ matrix.python-version }} -m pip install $GITHUB_WORKSPACE/wheelhouse/pytket-*.whl
     - name: Run tests
       run: |
         cd tket/pytket/tests
-        pip install -r requirements.txt
-        pytest --ignore=simulator/
+        python${{ matrix.python-version }} -m pip install -r requirements.txt
+        python${{ matrix.python-version }} -m pytest --ignore=simulator/
 
   test_Windows_wheels:
     name: Test Windows wheels

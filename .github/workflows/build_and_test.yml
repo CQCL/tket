@@ -375,9 +375,7 @@ jobs:
         conan create recipes/pybind11_json/all --version 0.2.13
     - name: Set up Python (pull request)
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
-      uses: actions/setup-python@v4
-      with:
-        python-version: "3.9"
+      run: brew install python@3.9
     - name: Set up Python (push)
       if: github.event_name == 'push'
       uses: actions/setup-python@v4
@@ -391,25 +389,25 @@ jobs:
     - name: Build pytket
       run: |
         cd pytket
-        pip install -e .[ZX] -v
+        python${{ matrix.python-version }} -m pip install -e .[ZX] -v
     - name: Run doctests
       run: |
         cd pytket
-        pip install pytest
-        pytest --doctest-modules pytket
+        python${{ matrix.python-version }} -m pip install pytest
+        python${{ matrix.python-version }} -m pytest --doctest-modules pytket
     - name: Test pytket
       run: |
         cd pytket/tests
-        pip install -r requirements.txt
-        pytest --ignore=simulator/
+        python${{ matrix.python-version }} -m pip install -r requirements.txt
+        python${{ matrix.python-version }} -m pytest --ignore=simulator/
     - name: Check type stubs are up-to-date and run mypy
       if: matrix.os == 'macos-12' && (github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch')
       run: |
-        pip install -U mypy
+        python${{ matrix.python-version }} -m pip install -U mypy
         cd pytket
         ./stub_generation/regenerate_stubs
         git diff --quiet pytket/_tket && echo "Stubs are up-to-date" || exit 1  # fail if stubs change after regeneration
-        mypy --config-file=mypy.ini --no-incremental -p pytket -p tests
+        python${{ matrix.python-version }} -m mypy --config-file=mypy.ini --no-incremental -p pytket -p tests
     - name: Upload package
       if: github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_changed == 'true'
       run: |
