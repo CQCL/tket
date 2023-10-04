@@ -94,7 +94,7 @@ jobs:
     if: needs.check_changes.outputs.tket_changed == 'true'
     strategy:
       matrix:
-        os: ['ubuntu-22.04', 'macos-12']
+        os: ['ubuntu-22.04', 'macos-12', 'macos-13-xlarge']
     runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4
@@ -216,60 +216,14 @@ jobs:
           ccache -s  #show stats
           ccache -z  #show stats
 
-  build_test_tket_macos_arm64:
-    name: Build and test tket (macos-arm64)
-    runs-on: ['self-hosted', 'macOS', 'ARM64']
-    needs: check_changes
-    if: needs.check_changes.outputs.tket_changed == 'true' && github.repository == 'CQCL/tket'
-    steps:
-    - uses: actions/checkout@v4
-    - name: Install conan
-      uses: turtlebrowser/get-conan@v1.2
-    - name: Set up conan
-      run: |
-        conan profile detect --force
-        DEFAULT_PROFILE_PATH=`conan profile path default`
-        PROFILE_PATH=./conan-profiles/macos-armv8-clang14
-        diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
-        cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
-        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force --index 0
-        conan cache clean
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
-      with:
-        key: tket-static-macos-arm64
-    - name: further ccache config
-      run: |
-        ccache --set-config base_dir=${HOME}
-        ccache --set-config compiler_check=content
-        ccache --set-config namespace=WITH_TESTS
-        ccache -p
-    - name: Build tket
-      run: conan create tket --user=tket --channel=test_build -o boost/*:header_only=True -o with_all_tests=True
-    - name: Upload package
-      if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
-      run: |
-        ccache --set-config namespace=WITHOUT_TESTS
-        conan create tket --user=tket --channel=stable -o boost/*:header_only=True
-        conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_3 }}
-        conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -r=tket-libs
-
   build_test_tket_not_required:
     name: Build and test (tket)
     needs: check_changes
     if: needs.check_changes.outputs.tket_changed != 'true'
     strategy:
       matrix:
-        os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
+        os: ['ubuntu-22.04', 'macos-12', 'windows-2022', 'macos-13-xlarge']
     runs-on: ${{ matrix.os }}
-    steps:
-      - run: echo "no changes to tket"
-
-  build_test_tket_macos_arm64_not_required:
-    name: Build and test (tket)
-    runs-on: ['self-hosted', 'macOS', 'ARM64']
-    needs: check_changes
-    if: needs.check_changes.outputs.tket_changed != 'true'
     steps:
       - run: echo "no changes to tket"
 
@@ -376,7 +330,10 @@ jobs:
     name: Build and test pytket (macos)
     needs: check_changes
     if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true'
-    runs-on: macos-12
+    strategy:
+      matrix:
+        os: ['macos-12', 'macos-13-xlarge']
+    runs-on: ${{ matrix.os }}
     steps:
     - uses: actions/checkout@v4
     - name: Select Python 3.10
@@ -390,7 +347,7 @@ jobs:
       run: |
         conan profile detect
         DEFAULT_PROFILE_PATH=`conan profile path default`
-        PROFILE_PATH=./conan-profiles/macos-12
+        PROFILE_PATH=./conan-profiles/${{ matrix.os }}
         diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
         cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
@@ -418,9 +375,7 @@ jobs:
         conan create recipes/pybind11_json/all --version 0.2.13
     - name: Set up Python (pull request)
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
-      uses: actions/setup-python@v4
-      with:
-        python-version: "3.9"
+      run: brew install python@3.9
     - name: Set up Python (push)
       if: github.event_name == 'push'
       uses: actions/setup-python@v4
@@ -434,25 +389,25 @@ jobs:
     - name: Build pytket
       run: |
         cd pytket
-        pip install -e .[ZX] -v
+        python${{ matrix.python-version }} -m pip install -e .[ZX] -v
     - name: Run doctests
       run: |
         cd pytket
-        pip install pytest
-        pytest --doctest-modules pytket
+        python${{ matrix.python-version }} -m pip install pytest
+        python${{ matrix.python-version }} -m pytest --doctest-modules pytket
     - name: Test pytket
       run: |
         cd pytket/tests
-        pip install -r requirements.txt
-        pytest --ignore=simulator/
+        python${{ matrix.python-version }} -m pip install -r requirements.txt
+        python${{ matrix.python-version }} -m pytest --ignore=simulator/
     - name: Check type stubs are up-to-date and run mypy
-      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+      if: matrix.os == 'macos-12' && (github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch')
       run: |
-        pip install -U mypy
+        python${{ matrix.python-version }} -m pip install -U mypy
         cd pytket
         ./stub_generation/regenerate_stubs
         git diff --quiet pytket/_tket && echo "Stubs are up-to-date" || exit 1  # fail if stubs change after regeneration
-        mypy --config-file=mypy.ini --no-incremental -p pytket -p tests
+        python${{ matrix.python-version }} -m mypy --config-file=mypy.ini --no-incremental -p pytket -p tests
     - name: Upload package
       if: github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_changed == 'true'
       run: |
@@ -541,105 +496,6 @@ jobs:
       run: |
         conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_3 }}
         conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -r=tket-libs
-
-  build_test_pytket_macos_arm64:
-    name: Build and test pytket (macos-arm64)
-    runs-on: ['self-hosted', 'macOS', 'ARM64']
-    needs: check_changes
-    if: (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true') && github.repository == 'CQCL/tket'
-    steps:
-    - uses: actions/checkout@v4
-    - name: Install conan
-      uses: turtlebrowser/get-conan@v1.2
-    - name: Set up conan
-      run: |
-        conan profile detect --force
-        DEFAULT_PROFILE_PATH=`conan profile path default`
-        PROFILE_PATH=./conan-profiles/macos-armv8-clang14
-        diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
-        cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
-        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force --index 0
-    - name: Remove tket package from cache
-      run: conan remove -c 'tket/*'
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
-      with:
-        key: tket-dynamic-macos-arm64
-    - name: further ccache config
-      run: |
-        ccache --set-config base_dir=${HOME}
-        ccache --set-config compiler_check=content
-        ccache -p
-    - name: Build tket
-      if: needs.check_changes.outputs.tket_changed == 'true'
-      run: conan create tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
-    - name: check that version is consistent
-      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
-      run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
-    - name: Uninstall conan
-      run: pip3 uninstall -y conan
-    - name: Build and test pytket (3.9)
-      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
-      run: |
-        eval "$(pyenv init -)"
-        pyenv shell tket-3.9
-        PKG_CONFIG_PATH="$(brew --prefix openblas)"/lib/pkgconfig pip install -U scipy
-        pip install -U conan
-        conan remove -c "pybind11/*"
-        conan remove -c "pytket/*"
-        conan create recipes/pybind11
-        conan create recipes/pybind11_json/all --version 0.2.13
-        cd pytket
-        pip uninstall -y pytket
-        pip install -e .[ZX] -v
-        pytest --doctest-modules pytket
-        cd tests
-        pip install -r requirements.txt
-        pytest --ignore=simulator/
-    - name: Build and test pytket (3.10)
-      if: github.event_name == 'push'
-      run: |
-        eval "$(pyenv init -)"
-        pyenv shell tket-3.10
-        PKG_CONFIG_PATH="$(brew --prefix openblas)"/lib/pkgconfig pip install -U scipy
-        pip install -U conan
-        conan remove -c "pybind11/*"
-        conan remove -c "pytket/*"
-        conan create recipes/pybind11
-        conan create recipes/pybind11_json/all --version 0.2.13
-        cd pytket
-        pip uninstall -y pytket
-        pip install -e .[ZX] -v
-        pytest --doctest-modules pytket
-        cd tests
-        pip install -r requirements.txt
-        pytest --ignore=simulator/
-    - name: Build and test pytket (3.11)
-      if: github.event_name == 'schedule'
-      run: |
-        eval "$(pyenv init -)"
-        pyenv shell tket-3.11
-        PKG_CONFIG_PATH="$(brew --prefix openblas)"/lib/pkgconfig pip install -U scipy
-        pip install -U conan
-        conan remove -c "pybind11/*"
-        conan remove -c "pytket/*"
-        conan create recipes/pybind11
-        conan create recipes/pybind11_json/all --version 0.2.13
-        cd pytket
-        pip uninstall -y pytket
-        pip install -e .[ZX] -v
-        pytest --doctest-modules pytket
-        cd tests
-        pip install -r requirements.txt
-        pytest --ignore=simulator/
-    - name: Install conan
-      uses: turtlebrowser/get-conan@v1.2
-    - name: Upload package
-      if: github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_changed == 'true'
-      run: |
-        conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_3 }}
-        conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -r=tket-libs
-        conan remote logout tket-libs
 
   publish_pytket_coverage:
     name: Publish pytket coverage

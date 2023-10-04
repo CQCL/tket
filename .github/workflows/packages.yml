@@ -17,7 +17,7 @@ jobs:
     name: Build
     strategy:
       matrix:
-        os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
+        os: ['ubuntu-22.04', 'macos-12', 'windows-2022', 'macos-13-xlarge']
     runs-on: ${{ matrix.os }}
     steps:
 
@@ -48,35 +48,6 @@ jobs:
     - name: Install and upload packages
       shell: bash
       run: ./.github/workflows/build-external-packages
-
-  build_macos_arm64:
-    name: Build on MacOS ARM64
-    runs-on: ['self-hosted', 'macOS', 'ARM64']
-    steps:
-
-    - uses: actions/checkout@v4
-
-    - name: Install conan
-      uses: turtlebrowser/get-conan@v1.2
-
-    - name: Set up conan
-      run: |
-        conan profile detect --force
-        DEFAULT_PROFILE_PATH=`conan profile path default`
-        PROFILE_PATH=./conan-profiles/macos-armv8-clang14
-        diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
-        cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
-        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force --index 0
-
-    - name: authenticate to repository
-      run: conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_3 }}
-
-    - name: Install and upload packages
-      shell: bash
-      run: ./.github/workflows/build-external-packages
-
-    - name: unauthenticate
-      run: conan remote logout tket-libs
 
   build_manylinux_x86_64:
     name: Build on manylinux (x86_64)

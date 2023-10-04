@@ -46,7 +46,7 @@ jobs:
     if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
     strategy:
       matrix:
-        os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
+        os: ['ubuntu-22.04', 'macos-12', 'windows-2022', 'macos-13-xlarge']
         lib: ${{ fromJson(needs.changes.outputs.libs) }}
         build_type: ['Release', 'Debug']
     runs-on: ${{ matrix.os }}
@@ -93,41 +93,6 @@ jobs:
     - name: upload package
       if: github.event_name == 'push'
       run: conan upload ${{ env.LIB_LABEL }} -r=tket-libs
-  macos-m1:
-    name: build library (macos-m1)
-    needs: changes
-    if: ${{ needs.changes.outputs.libs != '[]' && needs.changes.outputs.libs != '' }}
-    runs-on: ['self-hosted', 'macOS', 'ARM64']
-    strategy:
-      matrix:
-        lib: ${{ fromJson(needs.changes.outputs.libs) }}
-        build_type: ['Release', 'Debug']
-    steps:
-    - uses: actions/checkout@v4
-    - name: Install conan
-      uses: turtlebrowser/get-conan@v1.2
-    - name: Set up conan
-      run: |
-        conan profile detect --force
-        DEFAULT_PROFILE_PATH=`conan profile path default`
-        PROFILE_PATH=./conan-profiles/macos-armv8-clang14
-        diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
-        cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
-        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force --index 0
-    - name: build ${{ matrix.lib }}
-      run: conan create -s build_type=${{ matrix.build_type }} -o boost/*:header_only=True libs/${{ matrix.lib }} --build=missing --user=tket --channel=stable --format json > ${{ matrix.lib }}.json
-    - name: authenticate to repository
-      run: conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_3 }}
-    - name: get version
-      run: |
-        lib_label=`./libver ${{ matrix.lib }}.json ${{ matrix.lib }}`
-        echo "LIB_LABEL=${lib_label}" >> $GITHUB_ENV
-    - name: upload package
-      if: github.event_name == 'push'
-      run: conan upload ${{ env.LIB_LABEL }} -r=tket-libs
-    - name: unauthenticate
-      if: always()
-      run: conan remote logout tket-libs
   manylinux:
     name: build library (manylinux)
     needs: changes
