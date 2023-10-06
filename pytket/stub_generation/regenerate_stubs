@@ -1,9 +1,11 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
 import os
 import re
 import subprocess
 from pathlib import Path
 import argparse
+import pytket
+import pkgutil
 
 
 def replace_in_file_string(file_string: str, matcher: str, replacement: str) -> tuple[str, int]:
@@ -25,8 +27,8 @@ class StubFixer:
     handle_circuit_depth_needed: bool = False
 
     def handle_args_kwargs_types(self, file_string: str) -> str:
-        modified, n_args = replace_in_file_string(file_string, "\*args", "*args: Any")
-        modified, n_kwargs = replace_in_file_string(modified, "\*\*kwargs", "**kwargs: Any")
+        modified, n_args = replace_in_file_string(file_string, "\*args(?=[^:])", "*args: Any")
+        modified, n_kwargs = replace_in_file_string(modified, "\*\*kwargs(?=[^:])", "**kwargs: Any")
         n_total = n_args + n_kwargs
         if n_total > 0 and not re.search("from typing import .*Any", modified):
             self.handle_args_kwargs_needed = True
@@ -39,13 +41,25 @@ class StubFixer:
             self.handle_set_conversion_needed = True
         return modified
 
+    def handle_forward_ref(self, file_string: str) -> str:
+        modified, n = replace_in_file_string(file_string, "ForwardRef\('LogicExp'\)", "LogicExp")
+        if n > 0:
+            self.handle_set_conversion_needed = True
+        return modified
+
     def handle_numpy_stuff(self, file_string: str) -> str:
         split_text = re.split("numpy\.ndarray\[", file_string)
         modified_text = "NDArray[".join(split_text)
         if len(split_text) > 1:
-            modified_text, _ = replace_in_file_string(modified_text, "\[.,.\]", "")
+            modified_text, _ = replace_in_file_string(modified_text, "\[., .\]", "")
             modified_text, _ = replace_in_file_string(modified_text, "NDArray\[bool\]", "NDArray[numpy.bool_]")
-            modified_text = "from numpy.typing import NDArray" + os.linesep + modified_text
+            modified_text, found = replace_in_file_string(modified_text, "from __future__ import annotations", "")
+            if found == 0:
+                modified_text = "from numpy.typing import NDArray" + os.linesep + modified_text
+            else:
+                modified_text = \
+                    "from __future__ import annotations" + os.linesep +\
+                    "from numpy.typing import NDArray" + os.linesep + modified_text
             self.handle_numpy_stuff_needed = True
             return modified_text
         return file_string
@@ -78,8 +92,20 @@ if __name__ == "__main__":
 
     pytket_dir = Path(__file__).parent.parent.resolve()
     gen_root_dir = pytket_dir
+    for mod in pkgutil.iter_modules(pytket._tket.__path__):
+        #if mod.name != "unit_id":
+        #    continue
+        print(f"Generate {mod.name}.pyi")
+        subprocess.run([
+            "pybind11-stubgen",
+            f"pytket._tket.{mod.name}",
+            "--enum-class-locations", "CXConfigType|BasisOrder|OpType:pytket._tket.circuit",
+            "--enum-class-locations", "PauliSynthStrat:pytket._tket.transform",
+            "--enum-class-locations", "GraphColourMethod|PauliPartitionStrat:pytket._tket.partition",
+            "--enum-class-locations", "SafetyMode:pytket._tket.passes",
+            "--enum-class-locations", "ZXWireType|QuantumType:pytket._tket.zx",
+            "-o", gen_root_dir])
 
-    subprocess.run(["stubgen", "-p", "pytket._tket", "-o", gen_root_dir])
     print("Cleanup:")
     stub_fixer = StubFixer()
     for path in Path(f'{gen_root_dir}/pytket/_tket').iterdir():
@@ -90,6 +116,7 @@ if __name__ == "__main__":
                 text = stub_fixer.handle_args_kwargs_types(text)
                 text = stub_fixer.handle_set_conversion(text)
                 text = stub_fixer.handle_numpy_stuff(text)
+                text = stub_fixer.handle_forward_ref(text)
 
                 # file specific stuff
                 if path.name == "circuit.pyi":
