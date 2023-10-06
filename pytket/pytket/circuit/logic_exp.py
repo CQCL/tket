@@ -178,6 +178,13 @@ class LogicExp:
             return False
         return (self.op == other.op) and (self.args == other.args)
 
+    def __str__(self) -> str:
+        if len(self.args) == 1:
+            return f"({self.op.value} {self.args[0]})"
+        if len(self.args) == 2:
+            return f"({self.args[0]} {self.op.value} {self.args[1]})"
+        return ""
+
     def to_dict(self) -> Dict[str, Any]:
         """Output JSON serializable nested dictionary."""
         out: Dict[str, Any] = {"op": str(self.op)}
