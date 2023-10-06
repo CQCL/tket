@@ -2,7 +2,11 @@ from __future__ import annotations
 import pytket._tket.circuit
 import sympy
 import typing
-__all__ = list()
+__all__ = ['BRIDGE_using_CX_0']
+def BRIDGE_using_CX_0() -> pytket._tket.circuit.Circuit:
+    """
+    Equivalent to BRIDGE, using four CX, first CX has control on qubit 0
+    """
 def _BRIDGE() -> pytket._tket.circuit.Circuit:
     """
     Just a BRIDGE[0,1,2] gate

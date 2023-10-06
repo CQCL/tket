@@ -35,18 +35,6 @@ class StubFixer:
             modified = "from typing import Any" + os.linesep + modified
         return modified
 
-    def handle_set_conversion(self, file_string: str) -> str:
-        modified, n = replace_in_file_string(file_string, "Set\[", "set[")
-        if n > 0:
-            self.handle_set_conversion_needed = True
-        return modified
-
-    def handle_forward_ref(self, file_string: str) -> str:
-        modified, n = replace_in_file_string(file_string, "ForwardRef\('LogicExp'\)", "LogicExp")
-        if n > 0:
-            self.handle_set_conversion_needed = True
-        return modified
-
     def handle_numpy_stuff(self, file_string: str) -> str:
         split_text = re.split("numpy\.ndarray\[", file_string)
         modified_text = "NDArray[".join(split_text)
@@ -64,24 +52,11 @@ class StubFixer:
             return modified_text
         return file_string
 
-    def handle_circuit_depth_problem(self, file_string: str) -> str:
-        modified, occurrences1 = replace_in_file_string_multiline(file_string, f'@overload{os.linesep}\s+def depth\(self\) -> int: \.\.\.', "def depth(self) -> int: ...")
-        modified, occurrences2 = replace_in_file_string_multiline(modified, f'@overload{os.linesep}\s+def depth\(self\) -> Any: \.\.\.{os.linesep}\s+', "")
-        modified, occurrences3 = replace_in_file_string_multiline(modified, f'@overload{os.linesep}\s+def depth_2q\(self\) -> int: \.\.\.', "def depth_2q(self) -> int: ...")
-        modified, occurrences4 = replace_in_file_string_multiline(modified, f'@overload{os.linesep}\s+def depth_2q\(self\) -> Any: \.\.\.{os.linesep}\s+', "")
-        if (occurrences1 + occurrences2 + occurrences3 + occurrences4) > 0:
-            self.handle_circuit_depth_needed = True
-        return modified
-
     def print_info(self):
         if not self.handle_args_kwargs_needed:
             print(f"Info: No file required the transformation `{self.handle_args_kwargs_types.__name__}`. Is it still needed?")
-        if not self.handle_set_conversion_needed:
-            print(f"Info: No file required the transformation `{self.handle_set_conversion.__name__}`. Is it still needed?")
         if not self.handle_numpy_stuff_needed:
             print(f"Info: No file required the transformation `{self.handle_numpy_stuff.__name__}`. Is it still needed?")
-        if not self.handle_circuit_depth_needed:
-            print(f"Info: No file required the transformation `{self.handle_circuit_depth_problem.__name__}`. Is it still needed?")
 
 
 if __name__ == "__main__":
@@ -114,13 +89,7 @@ if __name__ == "__main__":
             with path.open('r+') as file:
                 text = file.read()
                 text = stub_fixer.handle_args_kwargs_types(text)
-                text = stub_fixer.handle_set_conversion(text)
                 text = stub_fixer.handle_numpy_stuff(text)
-                text = stub_fixer.handle_forward_ref(text)
-
-                # file specific stuff
-                if path.name == "circuit.pyi":
-                    text = stub_fixer.handle_circuit_depth_problem(text)
 
             with path.open('w') as file:
                 file.write(text)

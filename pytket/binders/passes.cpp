@@ -146,6 +146,10 @@ const PassPtr &DecomposeClassicalExp() {
 
 PYBIND11_MODULE(passes, m) {
   py::module_::import("pytket._tket.predicates");
+  m.def("_sympy_import", [](){
+      return Expr();
+  }, "This function only exists so that sympy gets imported in the resulting .pyi file. "
+     "It's needed due to a bug in pybind11-stubgen's translation for Callables most likely.");
   py::enum_<SafetyMode>(m, "SafetyMode")
       .value(
           "Audit", SafetyMode::Audit,

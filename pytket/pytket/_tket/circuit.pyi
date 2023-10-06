@@ -1014,7 +1014,7 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
-    def add_barrier(self, units: list[pytket._tket.unit_id.UnitID], data: str = '') -> Circuit:
+    def add_barrier(self, units: typing.Sequence[pytket._tket.unit_id.UnitID], data: str = '') -> Circuit:
         """
         Append a Barrier on the given units
         
@@ -1272,7 +1272,7 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
-    def add_circbox(self, circbox: CircBox, args: list[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
+    def add_circbox(self, circbox: CircBox, args: typing.Sequence[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`CircBox` to the circuit.
         
@@ -1329,7 +1329,7 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
-    def add_conditional_barrier(self, barrier_args: list[pytket._tket.unit_id.UnitID], condition_bits: list[pytket._tket.unit_id.Bit], value: int, data: str = '') -> Circuit:
+    def add_conditional_barrier(self, barrier_args: typing.Sequence[pytket._tket.unit_id.UnitID], condition_bits: list[pytket._tket.unit_id.Bit], value: int, data: str = '') -> Circuit:
         """
         Append a Conditional Barrier on the given barrier qubits and barrier bits, conditioned on the given condition bits.
         
@@ -1340,7 +1340,7 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
-    def add_conjugation_box(self, box: ConjugationBox, args: list[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
+    def add_conjugation_box(self, box: ConjugationBox, args: typing.Sequence[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`ConjugationBox` to the circuit.
         
@@ -1378,7 +1378,7 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
-    def add_diagonal_box(self, box: DiagonalBox, args: list[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
+    def add_diagonal_box(self, box: DiagonalBox, args: typing.Sequence[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`DiagonalBox` to the circuit.
         
@@ -1500,7 +1500,7 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
-    def add_multiplexed_tensored_u2(self, box: MultiplexedTensoredU2Box, args: list[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
+    def add_multiplexed_tensored_u2(self, box: MultiplexedTensoredU2Box, args: typing.Sequence[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`MultiplexedTensoredU2Box` to the circuit.
         
@@ -1518,7 +1518,7 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
-    def add_multiplexedrotation(self, box: MultiplexedRotationBox, args: list[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
+    def add_multiplexedrotation(self, box: MultiplexedRotationBox, args: typing.Sequence[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`MultiplexedRotationBox` to the circuit.
         
@@ -1536,7 +1536,7 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
-    def add_multiplexedu2(self, box: MultiplexedU2Box, args: list[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
+    def add_multiplexedu2(self, box: MultiplexedU2Box, args: typing.Sequence[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`MultiplexedU2Box` to the circuit.
         
@@ -1554,7 +1554,7 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
-    def add_multiplexor(self, box: MultiplexorBox, args: list[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
+    def add_multiplexor(self, box: MultiplexorBox, args: typing.Sequence[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`MultiplexorBox` to the circuit.
         
@@ -1677,7 +1677,7 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
-    def add_qcontrolbox(self, qcontrolbox: QControlBox, args: list[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
+    def add_qcontrolbox(self, qcontrolbox: QControlBox, args: typing.Sequence[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`QControlBox` to the circuit.
         
@@ -1693,7 +1693,7 @@ class Circuit:
         :param reject_dups: Fail if there is already a qubit in this circuit with the id. Default to True
         """
     @typing.overload
-    def add_state_preparation_box(self, box: StatePreparationBox, args: list[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
+    def add_state_preparation_box(self, box: StatePreparationBox, args: typing.Sequence[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`StatePreparationBox` to the circuit.
         

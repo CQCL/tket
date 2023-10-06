@@ -7,6 +7,7 @@ import pytket._tket.placement
 import pytket._tket.predicates
 import pytket._tket.transform
 import pytket._tket.unit_id
+import sympy
 import typing
 __all__ = ['AASRouting', 'Audit', 'BasePass', 'CNotSynthType', 'CXMappingPass', 'CliffordSimp', 'CnXPairwiseDecomposition', 'CommuteThroughMultis', 'ComposePhasePolyBoxes', 'ContextSimp', 'CustomPass', 'CustomRoutingPass', 'DecomposeArbitrarilyControlledGates', 'DecomposeBoxes', 'DecomposeClassicalExp', 'DecomposeMultiQubitsCX', 'DecomposeSingleQubitsTK1', 'DecomposeSwapsToCXs', 'DecomposeSwapsToCircuit', 'DecomposeTK2', 'Default', 'DefaultMappingPass', 'DelayMeasures', 'EulerAngleReduction', 'FlattenRegisters', 'FlattenRelabelRegistersPass', 'FullMappingPass', 'FullPeepholeOptimise', 'GlobalisePhasedX', 'GuidedPauliSimp', 'HamPath', 'KAKDecomposition', 'NaivePlacementPass', 'NormaliseTK2', 'OptimisePhaseGadgets', 'PauliExponentials', 'PauliSimp', 'PauliSquash', 'PeepholeOptimise2Q', 'PlacementPass', 'RebaseCustom', 'RebaseTket', 'Rec', 'RemoveBarriers', 'RemoveDiscarded', 'RemoveImplicitQubitPermutation', 'RemoveRedundancies', 'RenameQubitsPass', 'RepeatPass', 'RepeatUntilSatisfiedPass', 'RepeatWithMetricPass', 'RoundAngles', 'RoutingPass', 'SWAP', 'SafetyMode', 'SequencePass', 'SimplifyInitial', 'SimplifyMeasured', 'SquashCustom', 'SquashRzPhasedX', 'SquashTK1', 'SynthesiseHQS', 'SynthesiseOQC', 'SynthesiseTK', 'SynthesiseTket', 'SynthesiseUMD', 'ThreeQubitSquash', 'ZXGraphlikeOptimisation', 'ZZPhaseToRz']
 class BasePass:
@@ -478,7 +479,7 @@ def PlacementPass(placer: pytket._tket.placement.Placement) -> BasePass:
     :return: a pass to relabel :py:class:`Circuit` Qubits to :py:class:`Architecture` Nodes
     """
 @typing.overload
-def RebaseCustom(gateset: set[pytket._tket.circuit.OpType], cx_replacement: pytket._tket.circuit.Circuit, tk1_replacement: typing.Callable[[Union[sympy.Expr, float], Union[sympy.Expr, float], Union[sympy.Expr, float]], pytket._tket.circuit.Circuit]) -> BasePass:
+def RebaseCustom(gateset: set[pytket._tket.circuit.OpType], cx_replacement: pytket._tket.circuit.Circuit, tk1_replacement: typing.Callable[[typing.Union[sympy.Expr, float], typing.Union[sympy.Expr, float], typing.Union[sympy.Expr, float]], pytket._tket.circuit.Circuit]) -> BasePass:
     """
     Construct a custom rebase pass, given user-defined rebases for TK1 and CX. This pass:
     
@@ -493,7 +494,7 @@ def RebaseCustom(gateset: set[pytket._tket.circuit.OpType], cx_replacement: pytk
     :return: a pass that rebases to the given gate set (possibly including conditional and phase operations)
     """
 @typing.overload
-def RebaseCustom(gateset: set[pytket._tket.circuit.OpType], tk2_replacement: typing.Callable[[Union[sympy.Expr, float], Union[sympy.Expr, float], Union[sympy.Expr, float]], pytket._tket.circuit.Circuit], tk1_replacement: typing.Callable[[Union[sympy.Expr, float], Union[sympy.Expr, float], Union[sympy.Expr, float]], pytket._tket.circuit.Circuit]) -> BasePass:
+def RebaseCustom(gateset: set[pytket._tket.circuit.OpType], tk2_replacement: typing.Callable[[typing.Union[sympy.Expr, float], typing.Union[sympy.Expr, float], typing.Union[sympy.Expr, float]], pytket._tket.circuit.Circuit], tk1_replacement: typing.Callable[[typing.Union[sympy.Expr, float], typing.Union[sympy.Expr, float], typing.Union[sympy.Expr, float]], pytket._tket.circuit.Circuit]) -> BasePass:
     """
     Construct a custom rebase pass, given user-defined rebases for TK1 and TK2. This pass:
     
@@ -564,7 +565,7 @@ def SimplifyMeasured() -> BasePass:
     """
     A pass to replace all 'classical maps' followed by measure operations whose quantum output is discarded with classical operations following the measure. (A 'classical map' is a quantum operation that acts as a permutation of the computational basis states followed by a diagonal operation.)
     """
-def SquashCustom(singleqs: set[pytket._tket.circuit.OpType], tk1_replacement: typing.Callable[[Union[sympy.Expr, float], Union[sympy.Expr, float], Union[sympy.Expr, float]], pytket._tket.circuit.Circuit], always_squash_symbols: bool = False) -> BasePass:
+def SquashCustom(singleqs: set[pytket._tket.circuit.OpType], tk1_replacement: typing.Callable[[typing.Union[sympy.Expr, float], typing.Union[sympy.Expr, float], typing.Union[sympy.Expr, float]], pytket._tket.circuit.Circuit], always_squash_symbols: bool = False) -> BasePass:
     """
     Squash sequences of single qubit gates from the target gate set into an optimal form given by `tk1_replacement`.
     
@@ -615,6 +616,10 @@ def ZZPhaseToRz() -> BasePass:
     Converts all ZZPhase gates in a circuit with angle 1 or -1 (half-turns) into two Rz gates each with a parameter value of 1 (half-turns). ZZPhase gates with parameter values other than 1 or -1 (half-turns) are left unchanged.
     
     :return: a pass to convert ZZPhase gates to Rz.
+    """
+def _sympy_import() -> sympy.Expr | float:
+    """
+    This function only exists so that sympy gets imported in the resulting .pyi file. It's needed due to a bug in pybind11-stubgens translation for Callables most likely.
     """
 Audit: SafetyMode  # value = <SafetyMode.Audit: 0>
 Default: SafetyMode  # value = <SafetyMode.Default: 1>
