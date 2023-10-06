@@ -39,18 +39,33 @@ namespace tket {
 // The typedef PhasePolynomial leads to the python type Dict[List[bool], ...],
 // which is not allowed at runtime because lists aren't hashable
 typedef std::vector<std::pair<std::vector<bool>, Expr>> PyPhasePolynomial;
+PhasePolynomial to_cpp_phase_poly(const PyPhasePolynomial& py_phase_poly){
+    return PhasePolynomial(std::make_move_iterator(py_phase_poly.begin()), std::make_move_iterator(py_phase_poly.end()));
+}
+typedef std::map<py::tket_custom::TupleVec<bool>, Expr> PyPhasePolynomial2;
+PhasePolynomial to_cpp_phase_poly(const PyPhasePolynomial2& py_phase_poly){
+    return PhasePolynomial(std::make_move_iterator(py_phase_poly.begin()), std::make_move_iterator(py_phase_poly.end()));
+}
+
 // state_perm_t has the same hashability problem
 typedef std::vector<std::pair<std::vector<bool>, std::vector<bool>>>
     py_state_perm_t;
+    state_perm_t to_cpp_state_perm_t(const py_state_perm_t& py_state_perm){
+        return state_perm_t(std::make_move_iterator(py_state_perm.begin()), std::make_move_iterator(py_state_perm.end()));
+    }
+typedef std::map<py::tket_custom::TupleVec<bool>, py::tket_custom::SequenceVec<bool>> py_state_perm_t2;
+    state_perm_t to_cpp_state_perm_t(const py_state_perm_t2& py_state_perm){
+        return state_perm_t(std::make_move_iterator(py_state_perm.begin()), std::make_move_iterator(py_state_perm.end()));
+    }
 
 // Cast the std::vector keys in a map to py::tuple, since vector is not hashable
 // in python
 template <class T1, class T2>
-std::map<py::tuple, T2> cast_keys_to_tuples(
+std::map<py::tket_custom::ReturnTuple<T1>, T2> cast_keys_to_tuples(
     const std::map<std::vector<T1>, T2> &map) {
-  std::map<py::tuple, T2> outmap;
+  std::map<py::tket_custom::ReturnTuple<T1>, T2> outmap;
   for (const auto &pair : map) {
-    outmap.insert({py::tuple(py::cast(pair.first)), pair.second});
+    outmap.insert({py::tket_custom::ReturnTuple<T1>(py::cast(pair.first)), pair.second});
   }
   return outmap;
 }
@@ -258,11 +273,7 @@ void init_boxes(py::module &m) {
       .def(
           py::init([](const py_state_perm_t &perm, ToffoliBoxSynthStrat strat,
                       OpType optype) {
-            state_perm_t statePerm;
-            for (const auto &pair : perm) {
-              statePerm[pair.first] = pair.second;
-            }
-            return ToffoliBox(statePerm, strat, optype);
+            return ToffoliBox(to_cpp_state_perm_t(perm), strat, optype);
           }),
           "Construct from a permutation of basis states\n\n"
           ":param permutation: a list of bitstring pairs\n"
@@ -275,12 +286,7 @@ void init_boxes(py::module &m) {
       .def(
           py::init(
               [](const py_state_perm_t &perm, const OpType &rotation_axis) {
-                state_perm_t statePerm;
-                for (const auto &pair : perm) {
-                  statePerm[pair.first] = pair.second;
-                }
-                return ToffoliBox(
-                    statePerm, ToffoliBoxSynthStrat::Matching, rotation_axis);
+                return ToffoliBox(to_cpp_state_perm_t(perm), ToffoliBoxSynthStrat::Matching, rotation_axis);
               }),
           "Construct from a permutation of basis states and perform synthesis "
           "using the Matching strategy\n\n"
@@ -297,18 +303,16 @@ void init_boxes(py::module &m) {
                 "The argument n_qubits is no longer needed. "
                 "Please create ToffoliBoxes without n_qubits.",
                 1);
-            state_perm_t statePerm;
-            for (const auto &pair : perm) {
-              statePerm[pair.first] = pair.second;
-            }
             return ToffoliBox(
-                statePerm, ToffoliBoxSynthStrat::Matching, rotation_axis);
+                    to_cpp_state_perm_t(perm), ToffoliBoxSynthStrat::Matching, rotation_axis);
           }),
           "Constructor for backward compatibility. Subject to deprecation.",
           py::arg("n_qubits"), py::arg("permutation"),
           py::arg("rotation_axis") = OpType::Ry)
-      .def(
-          py::init<state_perm_t, ToffoliBoxSynthStrat, OpType>(),
+      .def( py::init([](const py_state_perm_t2 &perm, ToffoliBoxSynthStrat strat,
+                              OpType optype) {
+                      return ToffoliBox(to_cpp_state_perm_t(perm), strat, optype);
+                  }),
           "Construct from a permutation of basis states\n\n"
           ":param permutation: a map between bitstrings\n"
           ":param strat: synthesis strategy\n"
@@ -318,9 +322,9 @@ void init_boxes(py::module &m) {
           py::arg("permutation"), py::arg("strat"),
           py::arg("rotation_axis") = OpType::Ry)
       .def(
-          py::init([](const state_perm_t &perm, const OpType &rotation_axis) {
+          py::init([](const py_state_perm_t2 &perm, const OpType &rotation_axis) {
             return ToffoliBox(
-                perm, ToffoliBoxSynthStrat::Matching, rotation_axis);
+                    to_cpp_state_perm_t(perm), ToffoliBoxSynthStrat::Matching, rotation_axis);
           }),
           "Construct from a permutation of basis states and perform synthesis "
           "using the Matching strategy\n\n"
@@ -329,7 +333,7 @@ void init_boxes(py::module &m) {
           "the decomposition. Can be either Rx or Ry, default to Ry.",
           py::arg("permutation"), py::arg("rotation_axis") = OpType::Ry)
       .def(
-          py::init([](unsigned n_qubits, const state_perm_t &perm,
+          py::init([](unsigned n_qubits, const py_state_perm_t2 &perm,
                       const OpType &rotation_axis) {
             (void)n_qubits;
             PyErr_WarnEx(
@@ -338,7 +342,7 @@ void init_boxes(py::module &m) {
                 "Please create ToffoliBoxes without n_qubits.",
                 1);
             return ToffoliBox(
-                perm, ToffoliBoxSynthStrat::Matching, rotation_axis);
+                    to_cpp_state_perm_t(perm), ToffoliBoxSynthStrat::Matching, rotation_axis);
           }),
           "Constructor for backward compatibility. Subject to deprecation.",
           py::arg("n_qubits"), py::arg("permutation"),
@@ -486,12 +490,12 @@ void init_boxes(py::module &m) {
       "polynomial + linear transformation")
       .def(
           py::init([](unsigned n_qb, const std::map<Qubit, unsigned> &q_ind,
-                      const PhasePolynomial &p_p, const MatrixXb &lin_trans) {
+                      const PyPhasePolynomial2 &p_p, const MatrixXb &lin_trans) {
             boost::bimap<Qubit, unsigned> bmap;
             for (const auto &pair : q_ind) {
               bmap.insert({pair.first, pair.second});
             }
-            return PhasePolyBox(n_qb, bmap, p_p, lin_trans);
+            return PhasePolyBox(n_qb, bmap, to_cpp_phase_poly(p_p), lin_trans);
           }),
           "\n\nConstruct from the number of qubits, the mapping from "
           "Qubit to index, the phase polynomial (map from bitstring "
@@ -500,17 +504,13 @@ void init_boxes(py::module &m) {
           py::arg("phase_polynomial"), py::arg("linear_transformation"))
       .def(
           py::init([](unsigned n_qb, const std::map<Qubit, unsigned> &q_ind,
-                      const PyPhasePolynomial &py_p_p,
+                      const PyPhasePolynomial &p_p,
                       const MatrixXb &lin_trans) {
             boost::bimap<Qubit, unsigned> bmap;
             for (const auto &pair : q_ind) {
               bmap.insert({pair.first, pair.second});
             }
-            PhasePolynomial p_p;
-            for (const auto &pppair : py_p_p) {
-              p_p[pppair.first] = pppair.second;
-            }
-            return PhasePolyBox(n_qb, bmap, p_p, lin_trans);
+            return PhasePolyBox(n_qb, bmap, to_cpp_phase_poly(p_p), lin_trans);
           }),
           "Construct from the number of qubits, the mapping from "
           "Qubit to index, the phase polynomial (list of bitstring "

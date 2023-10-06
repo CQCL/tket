@@ -13,7 +13,6 @@
 # limitations under the License.
 
 from dataclasses import dataclass
-import io
 import os
 import re
 import uuid

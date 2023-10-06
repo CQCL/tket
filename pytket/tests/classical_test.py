@@ -901,7 +901,7 @@ def test_decomposition_known() -> None:
     circ.CX(qreg[0], qreg[1])
     circ.CX(qreg[1], qreg[2], condition=big_exp)
 
-    circ.add_barrier(qregister_to_unit_id_list(qreg))
+    circ.add_barrier(qreg.to_list())
 
     circ.H(qreg[2], condition=reg_eq(registers[0], 3))
     circ.X(qreg[3], condition=reg_lt(registers[1], 6))

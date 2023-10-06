@@ -94,12 +94,6 @@ PYBIND11_MODULE(architecture, m) {
       .def(
           "__deepcopy__", [](const Architecture &arc,
                              const py::dict & = py::dict()) { return arc; })
-      .def(
-          "__repr__",
-          [](const Architecture &arc) {
-            return "<tket::Architecture, nodes=" +
-                   std::to_string(arc.n_nodes()) + ">";
-          })
       .def("__eq__", &py_equals<Architecture>)
       .def("__hash__", &deletedHash<Architecture>, deletedHashDocstring);
   py::class_<SquareGrid, std::shared_ptr<SquareGrid>, Architecture>(

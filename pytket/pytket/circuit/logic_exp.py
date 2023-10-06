@@ -248,6 +248,8 @@ class LogicExp:
         return self._rename_args_recursive(cmap, renamed_regs)
 
 
+BitArgType = Union["BitLogicExp", Bit, Constant]
+RegArgType = Union["RegLogicExp", BitRegister, Constant]
 class BitLogicExp(LogicExp):
     """Expression acting only on Bit or Constant types."""
 
@@ -255,6 +257,19 @@ class BitLogicExp(LogicExp):
         assert all(isinstance(a, (Bit, BitLogicExp, Constant)) for a in args)
         assert all(a in (0, 1) for a in args if isinstance(a, Constant))
         super().__init__(op, args)
+
+    def __and__(self, other: BitArgType) -> "BitLogicExp":
+        return BitLogicExp(BitWiseOp.AND, [self, other])
+    def __rand__(self, other: BitArgType) -> "BitLogicExp":
+        return BitLogicExp(BitWiseOp.AND, [self, other])
+    def __or__(self, other: BitArgType) -> "BitLogicExp":
+        return BitLogicExp(BitWiseOp.OR, [self, other])
+    def __ror__(self, other: BitArgType) -> "BitLogicExp":
+        return BitLogicExp(BitWiseOp.OR, [self, other])
+    def __xor__(self, other: BitArgType) -> "BitLogicExp":
+        return BitLogicExp(BitWiseOp.XOR, [self, other])
+    def __rxor__(self, other: BitArgType) -> "BitLogicExp":
+        return BitLogicExp(BitWiseOp.XOR, [self, other])
 
 
 class RegLogicExp(LogicExp):
@@ -264,6 +279,33 @@ class RegLogicExp(LogicExp):
         assert all(isinstance(a, (BitRegister, RegLogicExp, Constant)) for a in args)
         super().__init__(op, args)
 
+
+    def __and__(self, other: RegArgType) -> "RegLogicExp":
+        return RegLogicExp(RegWiseOp.AND, [self, other])
+    def __rand__(self, other: RegArgType) -> "RegLogicExp":
+        return RegLogicExp(RegWiseOp.AND, [self, other])
+    def __or__(self, other: RegArgType) -> "RegLogicExp":
+        return RegLogicExp(RegWiseOp.OR, [self, other])
+    def __ror__(self, other: RegArgType) -> "RegLogicExp":
+        return RegLogicExp(RegWiseOp.OR, [self, other])
+    def __xor__(self, other: RegArgType) -> "RegLogicExp":
+        return RegLogicExp(RegWiseOp.XOR, [self, other])
+    def __rxor__(self, other: RegArgType) -> "RegLogicExp":
+        return RegLogicExp(RegWiseOp.XOR, [self, other])
+    def __add__(self, other: RegArgType) -> "RegLogicExp":
+        return RegLogicExp(RegWiseOp.AND, [self, other])
+    def __sub__(self, other: RegArgType) -> "RegLogicExp":
+        return RegLogicExp(RegWiseOp.SUB, [self, other])
+    def __mul__(self, other: RegArgType) -> "RegLogicExp":
+        return RegLogicExp(RegWiseOp.MUL, [self, other])
+    def __floordiv__(self, other: RegArgType) -> "RegLogicExp":
+        return RegLogicExp(RegWiseOp.DIV, [self, other])
+    def __pow__(self, other: RegArgType) -> "RegLogicExp":
+        return RegLogicExp(RegWiseOp.POW, [self, other])
+    def __lshift__(self, other: RegArgType) -> "RegLogicExp":
+        return RegLogicExp(RegWiseOp.LSH, [self, other])
+    def __rshift__(self, other: RegArgType) -> "RegLogicExp":
+        return RegLogicExp(RegWiseOp.RSH, [self, other])
 
 class BinaryOp(LogicExp):
     """Expresion for operation on two arguments."""

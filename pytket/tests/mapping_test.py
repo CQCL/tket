@@ -68,11 +68,11 @@ def route_subcircuit_func(
     max_swaps = 1
     swaps_added = 0
     for com in circuit.get_commands():
-        rp_qubits = [permutation_map[relabelling_map[q]] for q in com.qubits]
+        rp_qubits = tuple(permutation_map[relabelling_map[q]] for q in com.qubits)
         if len(com.qubits) > 2:
             return (False, Circuit(), {}, {})
         if len(com.qubits) == 1:
-            replacement_circuit.add_gate(com.op.type, cast(list[UnitID], rp_qubits))
+            replacement_circuit.add_gate(com.op.type, rp_qubits)
         if len(com.qubits) == 2:
             if swaps_added < max_swaps:
                 for n in architecture.nodes:
@@ -92,13 +92,13 @@ def route_subcircuit_func(
 
                             permutation_map[rp_qubits[0]] = node
                             permutation_map[node] = rp_qubits[0]
-                            rp_qubits = [
+                            rp_qubits = tuple(
                                 permutation_map[relabelling_map[q]] for q in com.qubits
-                            ]
+                            )
                             swaps_added += 1
                             break
 
-            replacement_circuit.add_gate(com.op.type, cast(list[UnitID], rp_qubits))
+            replacement_circuit.add_gate(com.op.type, rp_qubits)
 
     return (
         True,

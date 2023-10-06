@@ -850,7 +850,11 @@ PYBIND11_MODULE(passes, m) {
   m.def(
       "SimplifyInitial",
       [](bool allow_classical, bool create_all_qubits, bool remove_redundancies,
-         std::shared_ptr<const Circuit> xcirc) -> PassPtr {
+         std::optional<std::shared_ptr<const Circuit>> xcirc_opt) -> PassPtr {
+          std::shared_ptr<const Circuit> xcirc = nullptr;
+          if (xcirc_opt.has_value()){
+              xcirc = xcirc_opt.value();
+          }
         PassPtr simpinit = gen_simplify_initial(
             allow_classical ? Transforms::AllowClassical::Yes
                             : Transforms::AllowClassical::No,
@@ -875,7 +879,7 @@ PYBIND11_MODULE(passes, m) {
       "transformed circuit (if omitted, an X gate is used)"
       "\n:return: a pass to perform the simplification",
       py::arg("allow_classical") = true, py::arg("create_all_qubits") = false,
-      py::arg("remove_redundancies") = true, py::arg("xcirc") = nullptr);
+      py::arg("remove_redundancies") = true, py::arg("xcirc") = py::none());
   m.def(
       "ContextSimp",
       [](bool allow_classical,

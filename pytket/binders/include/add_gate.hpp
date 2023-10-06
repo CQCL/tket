@@ -18,9 +18,17 @@
 #include <vector>
 
 #include "tket/Circuit/Circuit.hpp"
+#include "typecast.hpp"
 namespace py = pybind11;
 
 namespace tket {
+    template <typename ID>
+    static Circuit *add_gate_method_sequence(
+            Circuit *circ, const Op_ptr &op, const py::tket_custom::SequenceVec<ID> &args_seq,
+            const py::kwargs &kwargs) {
+        std::vector<ID> args = args_seq;
+        return add_gate_method(circ, op, args, kwargs);
+    }
 
 template <typename ID>
 static Circuit *add_gate_method(
