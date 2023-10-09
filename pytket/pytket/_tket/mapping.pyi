@@ -58,7 +58,7 @@ class MappingManager:
         
         :param architecture: pytket Architecture object.
         """
-    def route_circuit(self, circuit: pytket._tket.circuit.Circuit, routing_methods: list[RoutingMethod]) -> bool:
+    def route_circuit(self, circuit: pytket._tket.circuit.Circuit, routing_methods: typing.Sequence[RoutingMethod]) -> bool:
         """
         Maps from given logical circuit to physical circuit. Modification defined by route_subcircuit, but typically this proceeds by insertion of SWAP gates that permute logical qubits on physical qubits.
         
