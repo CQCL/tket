@@ -64,7 +64,7 @@ class PauliStabiliser:
         Constructs an empty PauliStabiliser.
         """
     @typing.overload
-    def __init__(self, string: list[Pauli], coeff: int) -> None:
+    def __init__(self, string: typing.Sequence[Pauli], coeff: int) -> None:
         """
         Constructs a PauliStabiliser with a list of Pauli terms.
         """
@@ -108,7 +108,7 @@ class QubitPauliString:
         Constructs a QubitPauliString with a single Pauli term.
         """
     @typing.overload
-    def __init__(self, qubits: list[pytket._tket.unit_id.Qubit], paulis: list[Pauli]) -> None:
+    def __init__(self, qubits: typing.Sequence[pytket._tket.unit_id.Qubit], paulis: typing.Sequence[Pauli]) -> None:
         """
         Constructs a QubitPauliString from two matching lists of Qubits and Paulis.
         """
@@ -144,7 +144,7 @@ class QubitPauliString:
         :return: dot product of operator with state
         """
     @typing.overload
-    def dot_state(self, state: NDArray[numpy.complex128], qubits: list[pytket._tket.unit_id.Qubit]) -> NDArray[numpy.complex128]:
+    def dot_state(self, state: NDArray[numpy.complex128], qubits: typing.Sequence[pytket._tket.unit_id.Qubit]) -> NDArray[numpy.complex128]:
         """
         Performs the dot product of the state with the pauli string. Maps the qubits of the statevector according to the ordered list `qubits`, with ``qubits[0]`` being the most significant qubit.
         
@@ -161,7 +161,7 @@ class QubitPauliString:
         :return: expectation value with respect to state
         """
     @typing.overload
-    def state_expectation(self, state: NDArray[numpy.complex128], qubits: list[pytket._tket.unit_id.Qubit]) -> complex:
+    def state_expectation(self, state: NDArray[numpy.complex128], qubits: typing.Sequence[pytket._tket.unit_id.Qubit]) -> complex:
         """
         Calculates the expectation value of the state with the pauli string. Maps the qubits of the statevector according to the ordered list `qubits`, with ``qubits[0]`` being the most significant qubit.
         
@@ -191,7 +191,7 @@ class QubitPauliString:
         :return: a sparse matrix corresponding to the operator
         """
     @typing.overload
-    def to_sparse_matrix(self, qubits: list[pytket._tket.unit_id.Qubit]) -> scipy.sparse.csc_matrix[numpy.complex128]:
+    def to_sparse_matrix(self, qubits: typing.Sequence[pytket._tket.unit_id.Qubit]) -> scipy.sparse.csc_matrix[numpy.complex128]:
         """
         Represents the sparse string as a dense string and generates the matrix for the tensor. Orders qubits according to `qubits` (padding with identities if they are not in the sparse string), so ``qubits[0]`` is the most significant bit for indexing into the matrix.
         
@@ -226,7 +226,7 @@ class QubitPauliTensor:
         Constructs a QubitPauliTensor with a single Pauli term.
         """
     @typing.overload
-    def __init__(self, qubits: list[pytket._tket.unit_id.Qubit], paulis: list[Pauli], coeff: complex = 1.0) -> None:
+    def __init__(self, qubits: typing.Sequence[pytket._tket.unit_id.Qubit], paulis: typing.Sequence[Pauli], coeff: complex = 1.0) -> None:
         """
         Constructs a QubitPauliTensor from two matching lists of Qubits and Paulis.
         """
@@ -271,7 +271,7 @@ class QubitPauliTensor:
         :return: dot product of operator with state
         """
     @typing.overload
-    def dot_state(self, state: NDArray[numpy.complex128], qubits: list[pytket._tket.unit_id.Qubit]) -> NDArray[numpy.complex128]:
+    def dot_state(self, state: NDArray[numpy.complex128], qubits: typing.Sequence[pytket._tket.unit_id.Qubit]) -> NDArray[numpy.complex128]:
         """
         Performs the dot product of the state with the pauli tensor. Maps the qubits of the statevector according to the ordered list `qubits`, with ``qubits[0]`` being the most significant qubit.
         
@@ -288,7 +288,7 @@ class QubitPauliTensor:
         :return: expectation value with respect to state
         """
     @typing.overload
-    def state_expectation(self, state: NDArray[numpy.complex128], qubits: list[pytket._tket.unit_id.Qubit]) -> complex:
+    def state_expectation(self, state: NDArray[numpy.complex128], qubits: typing.Sequence[pytket._tket.unit_id.Qubit]) -> complex:
         """
         Calculates the expectation value of the state with the pauli operator. Maps the qubits of the statevector according to the ordered list `qubits`, with ``qubits[0]`` being the most significant qubit.
         
@@ -312,7 +312,7 @@ class QubitPauliTensor:
         :return: a sparse matrix corresponding to the operator
         """
     @typing.overload
-    def to_sparse_matrix(self, qubits: list[pytket._tket.unit_id.Qubit]) -> scipy.sparse.csc_matrix[numpy.complex128]:
+    def to_sparse_matrix(self, qubits: typing.Sequence[pytket._tket.unit_id.Qubit]) -> scipy.sparse.csc_matrix[numpy.complex128]:
         """
         Represents the sparse string as a dense string and generates the matrix for the tensor. Orders qubits according to `qubits` (padding with identities if they are not in the sparse string), so ``qubits[0]`` is the most significant bit for indexing into the matrix.
         
