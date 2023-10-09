@@ -1,6 +1,5 @@
-from __future__ import annotations
 from numpy.typing import NDArray
-
+from __future__ import annotations
 import numpy
 import pytket._tket.circuit
 import pytket._tket.pauli

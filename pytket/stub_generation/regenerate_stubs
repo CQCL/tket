@@ -41,13 +41,7 @@ class StubFixer:
         if len(split_text) > 1:
             modified_text, _ = replace_in_file_string(modified_text, "\[., .\]", "")
             modified_text, _ = replace_in_file_string(modified_text, "NDArray\[bool\]", "NDArray[numpy.bool_]")
-            modified_text, found = replace_in_file_string(modified_text, "from __future__ import annotations", "")
-            if found == 0:
-                modified_text = "from numpy.typing import NDArray" + os.linesep + modified_text
-            else:
-                modified_text = \
-                    "from __future__ import annotations" + os.linesep +\
-                    "from numpy.typing import NDArray" + os.linesep + modified_text
+            modified_text = "from numpy.typing import NDArray" + os.linesep + modified_text
             self.handle_numpy_stuff_needed = True
             return modified_text
         return file_string

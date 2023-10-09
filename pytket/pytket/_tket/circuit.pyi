@@ -1,7 +1,6 @@
-from __future__ import annotations
 from numpy.typing import NDArray
 from typing import Any
-
+from __future__ import annotations
 import numpy
 import pytket._tket.architecture
 import pytket._tket.pauli
