@@ -67,7 +67,7 @@ void PauliExpBox::generate_circuit() const {
 bool PauliExpBox::is_equal(const Op &op_other) const {
   const PauliExpBox &other = dynamic_cast<const PauliExpBox &>(op_other);
   if (id_ == other.get_id()) return true;
-  return cx_config_ == other.cx_config_ && paulis_ == other.paulis_;
+  return cx_config_ == other.cx_config_ && paulis_.equiv_mod(other.paulis_, 4);
 }
 
 nlohmann::json PauliExpBox::to_json(const Op_ptr &op) {
@@ -155,14 +155,15 @@ bool PauliExpPairBox::is_equal(const Op &op_other) const {
   const PauliExpPairBox &other =
       dynamic_cast<const PauliExpPairBox &>(op_other);
   if (id_ == other.get_id()) return true;
-  return cx_config_ == other.cx_config_ && paulis0_ == other.paulis0_ &&
-         paulis1_ == other.paulis1_;
+  return cx_config_ == other.cx_config_ &&
+         paulis0_.equiv_mod(other.paulis0_, 4) &&
+         paulis1_.equiv_mod(other.paulis1_, 4);
 }
 
 nlohmann::json PauliExpPairBox::to_json(const Op_ptr &op) {
   const auto &box = static_cast<const PauliExpPairBox &>(*op);
   nlohmann::json j = core_box_json(box);
-  j["paulis0"] = box.get_paulis_pair();
+  j["paulis_pair"] = box.get_paulis_pair();
   j["phase_pair"] = box.get_phase_pair();
   j["cx_config"] = box.get_cx_config();
   return j;
@@ -314,7 +315,10 @@ bool PauliExpCommutingSetBox::is_equal(const Op &op_other) const {
   if (cx_config_ != other.cx_config_) return false;
   return std::equal(
       pauli_gadgets_.begin(), pauli_gadgets_.end(),
-      other.pauli_gadgets_.begin(), other.pauli_gadgets_.end());
+      other.pauli_gadgets_.begin(), other.pauli_gadgets_.end(),
+      [](const SymPauliTensor &a, const SymPauliTensor &b) {
+        return a.equiv_mod(b, 4);
+      });
 }
 
 nlohmann::json PauliExpCommutingSetBox::to_json(const Op_ptr &op) {

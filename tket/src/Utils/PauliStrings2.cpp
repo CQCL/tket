@@ -129,13 +129,13 @@ template <>
 Expr cast_coeff<quarter_turns_t, Expr>(const quarter_turns_t &coeff) {
   switch (coeff % 4) {
     case 0: {
-      return 1.;
+      return Expr(1);
     }
     case 1: {
       return Expr(SymEngine::I);
     }
     case 2: {
-      return -1.;
+      return Expr(-1);
     }
     default: {
       return -Expr(SymEngine::I);
@@ -452,7 +452,7 @@ template <>
 void print_coeff<Expr>(std::ostream &os, const Expr &coeff) {
   if (coeff == -1.) {
     os << "-";
-  } else if (coeff != -1.) {
+  } else if (coeff != 1.) {
     os << coeff << "*";
   }
 }

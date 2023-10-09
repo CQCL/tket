@@ -826,7 +826,7 @@ SCENARIO("Test greedy diagonalisation explicitly") {
     gadgets.push_back(SpSymPauliTensor(
         {Pauli::Z, Pauli::X, Pauli::Y, Pauli::Z, Pauli::Z, Pauli::X}, 0.226));
     gadgets.push_back(SpSymPauliTensor(
-        {Pauli::Z, Pauli::Y, Pauli::X, Pauli::Z, Pauli::Z, Pauli::Z}, 0.013));
+        {Pauli::Z, Pauli::Y, Pauli::X, Pauli::Z, Pauli::Z, Pauli::X}, 0.013));
     gadgets.push_back(SpSymPauliTensor(
         {Pauli::Z, Pauli::Y, Pauli::X, Pauli::Y, Pauli::Y, Pauli::X}, 0.952));
     gadgets.push_back(SpSymPauliTensor(
@@ -914,13 +914,13 @@ SCENARIO("Diagonalise a pair of gadgets") {
   // commuting set
   std::vector<SpSymPauliTensor> gadgets;
   gadgets.push_back(SpSymPauliTensor(
-      {Pauli::Z, Pauli::X, Pauli::X, Pauli::I, Pauli::I, Pauli::X}, 1.13));
+      {Pauli::Z, Pauli::Z, Pauli::X, Pauli::I, Pauli::I, Pauli::X}, 1.13));
   gadgets.push_back(SpSymPauliTensor(
       {Pauli::Z, Pauli::Z, Pauli::X, Pauli::Z, Pauli::Z, Pauli::I}, 0.226));
 
   Circuit correct;
   for (unsigned i = 0; i < 2; ++i) {
-    append_single_pauli_gadget(correct, gadgets.at(0));
+    append_single_pauli_gadget(correct, gadgets.at(i));
   }
   auto u_correct = tket_sim::get_unitary(correct);
 

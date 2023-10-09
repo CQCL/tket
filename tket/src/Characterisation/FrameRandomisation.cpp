@@ -242,7 +242,7 @@ PauliFrameRandomisation::get_out_frame(
     }
   }
 
-  OpTypeVector out_frame(in_frame.size());
+  OpTypeVector out_frame(in_frame.size(), OpType::noop);
   for (const auto& entry : qpt.string) {
     switch (entry.second) {
       case Pauli::I:
@@ -310,7 +310,7 @@ UniversalFrameRandomisation::get_out_frame(
     }
   }
 
-  OpTypeVector out_frame(in_frame.size());
+  OpTypeVector out_frame(in_frame.size(), OpType::noop);
   for (const auto& entry : qpt.string) {
     switch (entry.second) {
       case Pauli::I:

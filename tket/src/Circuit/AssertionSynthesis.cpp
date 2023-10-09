@@ -311,21 +311,28 @@ static unsigned add_assertion_operator(
     const Qubit &ancilla, std::vector<bool> &expected_readouts) {
   circ.add_op<Qubit>(OpType::Reset, {ancilla});
   circ.add_op<Qubit>(OpType::H, {ancilla});
+  bool identity = true;
   for (unsigned i = 0; i < pauli.size(); i++) {
     switch (pauli.string[i]) {
       case Pauli::I:
         break;
       case Pauli::X:
         circ.add_op<Qubit>(OpType::CX, {ancilla, Qubit(i)});
+        identity = false;
         break;
       case Pauli::Y:
         circ.add_op<Qubit>(OpType::CY, {ancilla, Qubit(i)});
+        identity = false;
         break;
       case Pauli::Z:
         circ.add_op<Qubit>(OpType::CZ, {ancilla, Qubit(i)});
+        identity = false;
         break;
     }
   }
+  if (identity)
+    throw std::invalid_argument(
+        "StabiliserAssertionBox cannot assert an identity.");
   circ.add_op<Qubit>(OpType::H, {ancilla});
   Bit b(debug_bit_index++);
   circ.add_bit(b);

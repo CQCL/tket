@@ -234,10 +234,10 @@ SCENARIO("Testing stabiliser based assertion") {
     }
     WHEN("Identity") {
       REQUIRE_THROWS_AS(
-          PauliStabiliser({Pauli::I, Pauli::I, Pauli::I}, 0),
+          StabiliserAssertionBox({{{Pauli::I, Pauli::I, Pauli::I}, 0}}),
           std::invalid_argument);
       REQUIRE_THROWS_AS(
-          PauliStabiliser({Pauli::I, Pauli::I, Pauli::I}, 1),
+          StabiliserAssertionBox({{{Pauli::I, Pauli::I, Pauli::I}, 1}}),
           std::invalid_argument);
     }
   }

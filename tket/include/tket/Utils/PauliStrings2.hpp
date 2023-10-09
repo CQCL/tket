@@ -349,6 +349,14 @@ class PauliTensor {
     return compare(other) < 0;
   }
 
+  template <typename CT = CoeffType>
+  typename std::enable_if<std::is_same<CT, Expr>::value, bool>::type equiv_mod(
+      const PauliTensor<PauliContainer, CoeffType> &other, unsigned n) const {
+    int cont_comp =
+        compare_containers<PauliContainer>(this->string, other.string);
+    return (cont_comp == 0) && equiv_expr(this->coeff, other.coeff, n);
+  }
+
   template <typename PC = PauliContainer>
   typename std::enable_if<std::is_same<PC, QubitPauliMap>::value>::type
   compress() {

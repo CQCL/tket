@@ -54,13 +54,13 @@ MeasurementSetup measurement_reduction(
 
     std::list<SpSymPauliTensor>::const_iterator gadgets_iter = gadgets.begin();
     for (const SpPauliString& string : terms) {
-      const SpSymPauliTensor& new_gadget = *gadgets_iter;
+      SpPauliStabiliser stab(*gadgets_iter);  // Force coeff to be real
       std::vector<unsigned> bits;
-      for (const std::pair<const Qubit, Pauli>& qp_pair : new_gadget.string) {
+      for (const std::pair<const Qubit, Pauli>& qp_pair : stab.string) {
         if (qp_pair.second == Pauli::Z)
           bits.push_back(qb_location_map.at(qp_pair.first));
       }
-      bool invert = (new_gadget.coeff == -1);
+      bool invert = (stab.coeff % 4 == 2);
       ms.add_result_for_term(string, {i, bits, invert});
       ++gadgets_iter;
     }

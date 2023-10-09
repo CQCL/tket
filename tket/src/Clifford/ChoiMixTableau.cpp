@@ -184,8 +184,8 @@ ChoiMixTableau::row_tensor_t ChoiMixTableau::get_row_product(
     result.first = result.first * row_i.first;
     result.second = result.second * row_i.second;
   }
-  result.second.coeff *= result.first.coeff;
-  result.first.coeff = 1.;
+  result.second.coeff = (result.first.coeff + result.second.coeff) % 4;
+  result.first.coeff = 0;
   return result;
 }
 
