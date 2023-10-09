@@ -192,7 +192,7 @@ class SequencePass(BasePass):
     """
     A sequence of compilation passes.
     """
-    def __init__(self, pass_list: list[BasePass]) -> None:
+    def __init__(self, pass_list: typing.Sequence[BasePass]) -> None:
         """
         Construct from a list of compilation passes arranged in order of application.
         """
@@ -266,7 +266,7 @@ def CustomPass(transform: typing.Callable[[pytket._tket.circuit.Circuit], pytket
     :param label: optional label for the pass
     :return: a pass to perform the transformation
     """
-def CustomRoutingPass(arc: pytket._tket.architecture.Architecture, config: list[pytket._tket.mapping.RoutingMethod]) -> BasePass:
+def CustomRoutingPass(arc: pytket._tket.architecture.Architecture, config: typing.Sequence[pytket._tket.mapping.RoutingMethod]) -> BasePass:
     """
     Construct a pass to route to the connectivity graph of an :py:class:`Architecture`. Edge direction is ignored. 
     
@@ -360,7 +360,7 @@ def FlattenRelabelRegistersPass(label: str = 'q') -> BasePass:
     :param label: Name to relabel remaining Qubit to, default 'q'.
     :return: A pass that removes empty wires and relabels.
     """
-def FullMappingPass(arc: pytket._tket.architecture.Architecture, placer: pytket._tket.placement.Placement, config: list[pytket._tket.mapping.RoutingMethod]) -> BasePass:
+def FullMappingPass(arc: pytket._tket.architecture.Architecture, placer: pytket._tket.placement.Placement, config: typing.Sequence[pytket._tket.mapping.RoutingMethod]) -> BasePass:
     """
     Construct a pass to relabel :py:class:`Circuit` Qubits to :py:class:`Architecture` Nodes, and then route to the connectivity graph of an :py:class:`Architecture`. Edge direction is ignored.
     
@@ -417,7 +417,7 @@ def KAKDecomposition(target_2qb_gate: pytket._tket.circuit.OpType = pytket._tket
 @typing.overload
 def KAKDecomposition(cx_fidelity: float) -> BasePass:
     ...
-def NaivePlacementPass(arc: pytket._tket.architecture.Architecture) -> BasePass:
+def NaivePlacementPass(architecture: pytket._tket.architecture.Architecture) -> BasePass:
     """
     :param architecture: The Architecture used for relabelling.
     :return: a pass to relabel :py:class:`Circuit` Qubits to :py:class:`Architecture` Nodes
