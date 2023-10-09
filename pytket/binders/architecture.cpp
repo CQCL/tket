@@ -34,7 +34,7 @@ PYBIND11_MODULE(architecture, m) {
       "Class describing the connectivity of qubits on a general device.")
       .def(py::init<>(), "Produces an empty architecture")
       .def(
-          py::init([](const std::vector<std::pair<unsigned, unsigned>>
+          py::init([](const py::tket_custom::SequenceVec<std::pair<unsigned, unsigned>>
                           &connections) { return Architecture(connections); }),
           "The constructor for an architecture with connectivity "
           "between qubits.\n\n:param connections: A list of pairs "
@@ -42,7 +42,7 @@ PYBIND11_MODULE(architecture, m) {
           "operations",
           py::arg("connections"))
       .def(
-          py::init<const std::vector<std::pair<Node, Node>> &>(),
+          py::init<const py::tket_custom::SequenceVec<std::pair<Node, Node>> &>(),
           "The constructor for an architecture with connectivity "
           "between qubits.\n\n:param connections: A list of pairs "
           "representing Nodes that can perform two-qubit operations",
@@ -59,7 +59,7 @@ PYBIND11_MODULE(architecture, m) {
           "returns distance between them",
           py::arg("node_0"), py::arg("node_1"))
       .def(
-          "valid_operation", &Architecture::valid_operation,
+          "valid_operation", [](const Architecture& arch, const py::tket_custom::SequenceVec<Node>& ids){return arch.valid_operation(ids);},
           "Returns true if the given operation acting on the given ",
           "nodes can be executed on the Architecture connectivity graph."
           "\n\n:param uids: list of UnitIDs validity is being checked for",

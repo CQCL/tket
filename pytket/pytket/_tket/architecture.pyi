@@ -25,14 +25,14 @@ class Architecture:
         Produces an empty architecture
         """
     @typing.overload
-    def __init__(self, connections: list[tuple[int, int]]) -> None:
+    def __init__(self, connections: typing.Sequence[tuple[int, int]]) -> None:
         """
         The constructor for an architecture with connectivity between qubits.
         
         :param connections: A list of pairs representing qubit indices that can perform two-qubit operations
         """
     @typing.overload
-    def __init__(self, connections: list[tuple[pytket._tket.unit_id.Node, pytket._tket.unit_id.Node]]) -> None:
+    def __init__(self, connections: typing.Sequence[tuple[pytket._tket.unit_id.Node, pytket._tket.unit_id.Node]]) -> None:
         """
         The constructor for an architecture with connectivity between qubits.
         
@@ -54,7 +54,7 @@ class Architecture:
         
         :return: dict containing nodes and links.
         """
-    def valid_operation(self, uids: list[pytket._tket.unit_id.Node]) -> bool:
+    def valid_operation(self, uids: typing.Sequence[pytket._tket.unit_id.Node]) -> bool:
         """
         nodes can be executed on the Architecture connectivity graph.
         
