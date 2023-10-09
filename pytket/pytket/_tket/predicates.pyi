@@ -30,7 +30,7 @@ class CompilationUnit:
         Construct from a circuit, with no predicates.
         """
     @typing.overload
-    def __init__(self, circuit: pytket._tket.circuit.Circuit, predicates: list[Predicate]) -> None:
+    def __init__(self, circuit: pytket._tket.circuit.Circuit, predicates: typing.Sequence[Predicate]) -> None:
         """
         Construct from a circuit and some required predicates.
         """
