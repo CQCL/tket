@@ -350,8 +350,8 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
       // Circuit composition:
       .def(
           "add_circuit",
-          [](Circuit &circ, const Circuit &circ2, const std::vector<Qubit> &qbs,
-             const std::vector<Bit> &bits) {
+          [](Circuit &circ, const Circuit &circ2, const py::tket_custom::SequenceVec<Qubit> &qbs,
+             const py::tket_custom::SequenceVec<Bit> &bits) {
             unit_map_t umap;
             unsigned i = 0;
             for (const Qubit &q : qbs) {
@@ -381,8 +381,8 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
       .def(
           "add_circuit",
           [](Circuit &circ, const Circuit &circ2,
-             const std::vector<unsigned> &qbs,
-             const std::vector<unsigned> &bits) {
+             const py::tket_custom::SequenceVec<unsigned> &qbs,
+             const py::tket_custom::SequenceVec<unsigned> &bits) {
             circ.append_qubits(circ2, qbs, bits);
             return &circ;
           },

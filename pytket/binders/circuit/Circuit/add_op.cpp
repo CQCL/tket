@@ -35,9 +35,21 @@
 namespace py = pybind11;
 
 namespace tket {
-typedef py::tket_custom::SequenceVec<UnitID> py_unit_vector_t;
 
-const bit_vector_t no_bits;
+typedef py::tket_custom::SequenceVec<UnitID> py_unit_vector_t;
+typedef py::tket_custom::SequenceVec<Bit> py_bit_vector_t;
+typedef py::tket_custom::SequenceVec<Qubit> py_qubit_vector_t;
+
+
+    const bit_vector_t no_bits;
+
+    template <typename ID>
+    static Circuit *add_gate_method_sequence_args(
+    Circuit *circ, const Op_ptr &op, const py::tket_custom::SequenceVec<ID> &args,
+    const py::kwargs &kwargs){
+        return add_gate_method(
+                circ, op, args, kwargs);
+    }
 
 template <typename ID>
 static Circuit *add_gate_method_noparams(
@@ -70,13 +82,13 @@ static Circuit *add_box_method(
 
 void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
   c.def(
-       "add_gate", &add_gate_method<unsigned>,
+       "add_gate", &add_gate_method_sequence_args<unsigned>,
        "Appends a single operation to the end of the circuit on some "
        "particular qubits/bits. The number of qubits/bits specified "
        "must match the arity of the gate.",
        py::arg("Op"), py::arg("args"))
       .def(
-          "add_gate", &add_gate_method<UnitID>,
+          "add_gate", &add_gate_method_sequence_args<UnitID>,
           "Appends a single operation to the end of the circuit on some "
           "particular qubits/bits. The number of qubits/bits specified "
           "must match the arity of the gate.",
@@ -441,7 +453,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
       .def(
           "add_conditional_barrier",
           [](Circuit *circ, const py_unit_vector_t &barrier_args,
-             const bit_vector_t &condition_bits, unsigned value,
+             const py_bit_vector_t &condition_bits, unsigned value,
              const std::string &_data) {
             circ->add_conditional_barrier(
                 barrier_args, condition_bits, value, _data);
@@ -527,7 +539,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
       .def(
           "add_pauliexpbox",
           [](Circuit *circ, const PauliExpBox &box,
-             const qubit_vector_t &qubits, const py::kwargs &kwargs) {
+             const py_qubit_vector_t &qubits, const py::kwargs &kwargs) {
             return add_box_method<UnitID>(
                 circ, std::make_shared<PauliExpBox>(box),
                 {qubits.begin(), qubits.end()}, kwargs);
@@ -540,7 +552,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
       .def(
           "add_pauliexppairbox",
           [](Circuit *circ, const PauliExpPairBox &box,
-             const qubit_vector_t &qubits, const py::kwargs &kwargs) {
+             const py_qubit_vector_t &qubits, const py::kwargs &kwargs) {
             return add_box_method<UnitID>(
                 circ, std::make_shared<PauliExpPairBox>(box),
                 {qubits.begin(), qubits.end()}, kwargs);
@@ -553,7 +565,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
       .def(
           "add_pauliexpcommutingsetbox",
           [](Circuit *circ, const PauliExpCommutingSetBox &box,
-             const qubit_vector_t &qubits, const py::kwargs &kwargs) {
+             const py_qubit_vector_t &qubits, const py::kwargs &kwargs) {
             return add_box_method<UnitID>(
                 circ, std::make_shared<PauliExpCommutingSetBox>(box),
                 {qubits.begin(), qubits.end()}, kwargs);
@@ -566,7 +578,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("pauliexpcommutingsetbox"), py::arg("qubits"))
       .def(
           "add_toffolibox",
-          [](Circuit *circ, const ToffoliBox &box, const qubit_vector_t &qubits,
+          [](Circuit *circ, const ToffoliBox &box, const py_qubit_vector_t &qubits,
              const py::kwargs &kwargs) {
             return add_box_method<UnitID>(
                 circ, std::make_shared<ToffoliBox>(box),
@@ -592,7 +604,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
       .def(
           "add_phasepolybox",
           [](Circuit *circ, const PhasePolyBox &box,
-             const qubit_vector_t &qubits, const py::kwargs &kwargs) {
+             const py_qubit_vector_t &qubits, const py::kwargs &kwargs) {
             return add_box_method<UnitID>(
                 circ, std::make_shared<PhasePolyBox>(box),
                 {qubits.begin(), qubits.end()}, kwargs);
@@ -605,7 +617,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
       .def(
           "add_custom_gate",
           [](Circuit *circ, const composite_def_ptr_t &definition,
-             const py::tket_custom::SequenceVec<Expr> &params, const qubit_vector_t &qubits,
+             const py::tket_custom::SequenceVec<Expr> &params, const py_qubit_vector_t &qubits,
              const py::kwargs &kwargs) {
             return add_box_method<UnitID>(
                 circ, std::make_shared<CustomGate>(definition, params),

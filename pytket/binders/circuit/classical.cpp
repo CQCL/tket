@@ -95,7 +95,7 @@ void init_classical(py::module& m) {
       m, "SetBitsOp",
       "An operation to set the values of Bits to some constants.")
       .def(
-          py::init<const std::vector<bool>&>(),
+          py::init<const py::tket_custom::SequenceVec<bool>&>(),
           "Construct from a table of values.", py::arg("values"))
       .def_property_readonly(
           "values", &SetBitsOp::get_values, "The values to set bits to.");
@@ -155,7 +155,7 @@ void init_classical(py::module& m) {
       "fixed-width integers).")
       .def(
           py::init<
-              unsigned, unsigned, std::vector<unsigned>, std::vector<unsigned>,
+              unsigned, unsigned, py::tket_custom::SequenceVec<unsigned>, py::tket_custom::SequenceVec<unsigned>,
               const std::string&, const std::string&>(),
           "Construct from number of bits, bitwidths of inputs and outputs, "
           "function name and module id.",

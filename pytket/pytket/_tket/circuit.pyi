@@ -13,7 +13,7 @@ class BarrierOp(Op):
     """
     Barrier operations.
     """
-    def __init__(self, signature: list[EdgeType], data: str) -> None:
+    def __init__(self, signature: typing.Sequence[EdgeType], data: str) -> None:
         """
         Construct BarrierOp with signature and additional data string
         :param signature: signature for the op
@@ -912,7 +912,7 @@ class Circuit:
         :param size: Number of wasm bits that should be added to the circuit
         """
     @typing.overload
-    def _add_wasm(self, funcname: str, wasm_uid: str, width_i_parameter: list[int], width_o_parameter: list[int], args: list[int], wasm_wire_args: list[int], **kwargs: Any) -> Circuit:
+    def _add_wasm(self, funcname: str, wasm_uid: str, width_i_parameter: typing.Sequence[int], width_o_parameter: typing.Sequence[int], args: typing.Sequence[int], wasm_wire_args: typing.Sequence[int], **kwargs: Any) -> Circuit:
         """
         Add a classical function call from a wasm file to the circuit. 
         
@@ -926,7 +926,7 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
-    def _add_wasm(self, funcname: str, wasm_uid: str, width_i_parameter: list[int], width_o_parameter: list[int], args: list[pytket._tket.unit_id.Bit], wasm_wire_args: list[int], **kwargs: Any) -> Circuit:
+    def _add_wasm(self, funcname: str, wasm_uid: str, width_i_parameter: typing.Sequence[int], width_o_parameter: typing.Sequence[int], args: typing.Sequence[pytket._tket.unit_id.Bit], wasm_wire_args: typing.Sequence[int], **kwargs: Any) -> Circuit:
         """
         Add a classical function call from a wasm file to the circuit. 
         
@@ -939,7 +939,7 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
-    def _add_wasm(self, funcname: str, wasm_uid: str, list_reg_in: list[pytket._tket.unit_id.BitRegister], list_reg_out: list[pytket._tket.unit_id.BitRegister], wasm_wire_args: list[int], **kwargs: Any) -> Circuit:
+    def _add_wasm(self, funcname: str, wasm_uid: str, list_reg_in: typing.Sequence[pytket._tket.unit_id.BitRegister], list_reg_out: typing.Sequence[pytket._tket.unit_id.BitRegister], wasm_wire_args: typing.Sequence[int], **kwargs: Any) -> Circuit:
         """
         Add a classical function call from a wasm file to the circuit. 
         
@@ -1062,7 +1062,7 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
-    def add_c_copybits(self, args_in: list[int], args_out: list[int], **kwargs: Any) -> Circuit:
+    def add_c_copybits(self, args_in: typing.Sequence[int], args_out: typing.Sequence[int], **kwargs: Any) -> Circuit:
         """
         Appends a classical copy operation
         
@@ -1072,7 +1072,7 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
-    def add_c_copybits(self, args_in: list[pytket._tket.unit_id.Bit], args_out: list[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:
+    def add_c_copybits(self, args_in: typing.Sequence[pytket._tket.unit_id.Bit], args_out: typing.Sequence[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:
         """
         See :py:meth:`add_c_copybits`.
         """
@@ -1081,14 +1081,14 @@ class Circuit:
         Copy a classical register to another. Copying is truncated to the size of the smaller of the two registers.
         """
     @typing.overload
-    def add_c_modifier(self, values: list[bool], args_in: list[int], arg_inout: int, name: str = 'ExplicitModifier', **kwargs: Any) -> Circuit:
+    def add_c_modifier(self, values: typing.Sequence[bool], args_in: typing.Sequence[int], arg_inout: int, name: str = 'ExplicitModifier', **kwargs: Any) -> Circuit:
         """
         :param name: operation name
         :param kwargs: additional arguments passed to `add_gate_method` . Allowed parameters are `opgroup`,  `condition` , `condition_bits`, `condition_value`
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
-    def add_c_modifier(self, values: list[bool], args_in: list[pytket._tket.unit_id.Bit], arg_inout: pytket._tket.unit_id.Bit, name: str = 'ExplicitModifier', **kwargs: Any) -> Circuit:
+    def add_c_modifier(self, values: typing.Sequence[bool], args_in: typing.Sequence[pytket._tket.unit_id.Bit], arg_inout: pytket._tket.unit_id.Bit, name: str = 'ExplicitModifier', **kwargs: Any) -> Circuit:
         """
         See :py:meth:`add_c_modifier`.
         """
@@ -1147,19 +1147,19 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
-    def add_c_predicate(self, values: list[bool], args_in: list[int], arg_out: int, name: str = 'ExplicitPredicate', **kwargs: Any) -> Circuit:
+    def add_c_predicate(self, values: typing.Sequence[bool], args_in: typing.Sequence[int], arg_out: int, name: str = 'ExplicitPredicate', **kwargs: Any) -> Circuit:
         """
         :param name: operation name
         :param kwargs: additional arguments passed to `add_gate_method` . Allowed parameters are `opgroup`,  `condition` , `condition_bits`, `condition_value`
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
-    def add_c_predicate(self, values: list[bool], args_in: list[pytket._tket.unit_id.Bit], arg_out: pytket._tket.unit_id.Bit, name: str = 'ExplicitPredicate', **kwargs: Any) -> Circuit:
+    def add_c_predicate(self, values: typing.Sequence[bool], args_in: typing.Sequence[pytket._tket.unit_id.Bit], arg_out: pytket._tket.unit_id.Bit, name: str = 'ExplicitPredicate', **kwargs: Any) -> Circuit:
         """
         See :py:meth:`add_c_predicate`.
         """
     @typing.overload
-    def add_c_range_predicate(self, minval: int, maxval: int, args_in: list[int], arg_out: int, **kwargs: Any) -> Circuit:
+    def add_c_range_predicate(self, minval: int, maxval: int, args_in: typing.Sequence[int], arg_out: int, **kwargs: Any) -> Circuit:
         """
         Appends a range-predicate operation to the end of the circuit.
         
@@ -1171,7 +1171,7 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
-    def add_c_range_predicate(self, minval: int, maxval: int, args_in: list[pytket._tket.unit_id.Bit], arg_out: pytket._tket.unit_id.Bit, **kwargs: Any) -> Circuit:
+    def add_c_range_predicate(self, minval: int, maxval: int, args_in: typing.Sequence[pytket._tket.unit_id.Bit], arg_out: pytket._tket.unit_id.Bit, **kwargs: Any) -> Circuit:
         """
         Appends a range-predicate operation to the end of the circuit.
         
@@ -1199,7 +1199,7 @@ class Circuit:
         :param register: BitRegister 
         """
     @typing.overload
-    def add_c_setbits(self, values: list[bool], args: list[int], **kwargs: Any) -> Circuit:
+    def add_c_setbits(self, values: typing.Sequence[bool], args: typing.Sequence[int], **kwargs: Any) -> Circuit:
         """
         Appends an operation to set some bit values.
         
@@ -1209,7 +1209,7 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
-    def add_c_setbits(self, values: list[bool], args: list[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:
+    def add_c_setbits(self, values: typing.Sequence[bool], args: typing.Sequence[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:
         """
         See :py:meth:`add_c_setbits`.
         """
@@ -1218,7 +1218,7 @@ class Circuit:
         Set a classical register to an unsigned integer value. The little-endian bitwise representation of the integer is truncated to the register size, up to _TKET_REG_WIDTH bit width. It is zero-padded if the width of the register is greater than _TKET_REG_WIDTH.
         """
     @typing.overload
-    def add_c_transform(self, values: list[int], args: list[int], name: str = 'ClassicalTransform', **kwargs: Any) -> Circuit:
+    def add_c_transform(self, values: typing.Sequence[int], args: typing.Sequence[int], name: str = 'ClassicalTransform', **kwargs: Any) -> Circuit:
         """
         Appends a purely classical transformation, defined by a table of values, to the end of the circuit.
         
@@ -1229,7 +1229,7 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
-    def add_c_transform(self, values: list[int], args: list[pytket._tket.unit_id.Bit], name: str = 'ClassicalTransform', **kwargs: Any) -> Circuit:
+    def add_c_transform(self, values: typing.Sequence[int], args: typing.Sequence[pytket._tket.unit_id.Bit], name: str = 'ClassicalTransform', **kwargs: Any) -> Circuit:
         """
         See :py:meth:`add_c_transform`.
         """
@@ -1280,7 +1280,7 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
-    def add_circuit(self, circuit: Circuit, qubits: list[pytket._tket.unit_id.Qubit], bits: list[pytket._tket.unit_id.Bit] = []) -> Circuit:
+    def add_circuit(self, circuit: Circuit, qubits: typing.Sequence[pytket._tket.unit_id.Qubit], bits: typing.Sequence[pytket._tket.unit_id.Bit] = []) -> Circuit:
         """
         In-place sequential composition of circuits, appending a copy of the argument onto the end of the circuit. Connects qubits and bits with the same behaviour as :py:meth:`add_gate`.
         
@@ -1290,7 +1290,7 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
-    def add_circuit(self, circuit: Circuit, qubits: list[int], bits: list[int] = []) -> Circuit:
+    def add_circuit(self, circuit: Circuit, qubits: typing.Sequence[int], bits: typing.Sequence[int] = []) -> Circuit:
         """
         In-place sequential composition of circuits, appending a copy of the argument onto the end of the circuit. Connects qubits and bits with the same behaviour as :py:meth:`add_gate`.
         
@@ -1328,7 +1328,7 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
-    def add_conditional_barrier(self, barrier_args: typing.Sequence[pytket._tket.unit_id.UnitID], condition_bits: list[pytket._tket.unit_id.Bit], value: int, data: str = '') -> Circuit:
+    def add_conditional_barrier(self, barrier_args: typing.Sequence[pytket._tket.unit_id.UnitID], condition_bits: typing.Sequence[pytket._tket.unit_id.Bit], value: int, data: str = '') -> Circuit:
         """
         Append a Conditional Barrier on the given barrier qubits and barrier bits, conditioned on the given condition bits.
         
@@ -1367,7 +1367,7 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
-    def add_custom_gate(self, definition: CustomGateDef, params: typing.Sequence[sympy.Expr | float], qubits: list[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
+    def add_custom_gate(self, definition: CustomGateDef, params: typing.Sequence[sympy.Expr | float], qubits: typing.Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
         """
         Append an instance of a :py:class:`CustomGateDef` to the circuit.
         
@@ -1419,12 +1419,12 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
-    def add_gate(self, Op: Op, args: list[int], **kwargs: Any) -> Circuit:
+    def add_gate(self, Op: Op, args: typing.Sequence[int], **kwargs: Any) -> Circuit:
         """
         Appends a single operation to the end of the circuit on some particular qubits/bits. The number of qubits/bits specified must match the arity of the gate.
         """
     @typing.overload
-    def add_gate(self, Op: Op, args: list[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
+    def add_gate(self, Op: Op, args: typing.Sequence[pytket._tket.unit_id.UnitID], **kwargs: Any) -> Circuit:
         """
         Appends a single operation to the end of the circuit on some particular qubits/bits. The number of qubits/bits specified must match the arity of the gate.
         """
@@ -1580,7 +1580,7 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
-    def add_pauliexpbox(self, pauliexpbox: PauliExpBox, qubits: list[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
+    def add_pauliexpbox(self, pauliexpbox: PauliExpBox, qubits: typing.Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`PauliExpBox` to the circuit.
         
@@ -1598,7 +1598,7 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
-    def add_pauliexpcommutingsetbox(self, pauliexpcommutingsetbox: PauliExpCommutingSetBox, qubits: list[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
+    def add_pauliexpcommutingsetbox(self, pauliexpcommutingsetbox: PauliExpCommutingSetBox, qubits: typing.Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`PauliExpCommutingSetBox` to the circuit.
         
@@ -1616,7 +1616,7 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
-    def add_pauliexppairbox(self, pauliexppairbox: PauliExpPairBox, qubits: list[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
+    def add_pauliexppairbox(self, pauliexppairbox: PauliExpPairBox, qubits: typing.Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`PauliExpPairBox` to the circuit.
         
@@ -1642,7 +1642,7 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
-    def add_phasepolybox(self, phasepolybox: PhasePolyBox, qubits: list[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
+    def add_phasepolybox(self, phasepolybox: PhasePolyBox, qubits: typing.Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`PhasePolyBox` to the circuit.
         
@@ -1719,7 +1719,7 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
-    def add_toffolibox(self, toffolibox: ToffoliBox, qubits: list[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
+    def add_toffolibox(self, toffolibox: ToffoliBox, qubits: typing.Sequence[pytket._tket.unit_id.Qubit], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`ToffoliBox` to the circuit.
         
@@ -1791,7 +1791,7 @@ class Circuit:
         :param qubit_2: index of target qubit 2
         :return: the new :py:class:`Circuit`
         """
-    def add_wasm(self, funcname: str, filehandler: pytket.wasm.wasm.WasmFileHandler, list_i: typing.List[int], list_o: typing.List[int], args: typing.Union[typing.List[int], typing.List[pytket._tket.unit_id.Bit]], args_wasm: typing.Optional[typing.List[int]] = None, **kwargs: typing.Any) -> Circuit:
+    def add_wasm(self, funcname: str, filehandler: pytket.wasm.wasm.WasmFileHandler, list_i: typing.Sequence[int], list_o: typing.Sequence[int], args: typing.Union[typing.Sequence[int], typing.Sequence[pytket._tket.unit_id.Bit]], args_wasm: typing.Optional[typing.Sequence[int]] = None, **kwargs: typing.Any) -> Circuit:
         """
         Add a classical function call from a wasm file to the circuit.
             
@@ -1814,7 +1814,7 @@ class Circuit:
             
         :return: the new :py:class:`Circuit`
         """
-    def add_wasm_to_reg(self, funcname: str, filehandler: pytket.wasm.wasm.WasmFileHandler, list_i: typing.List[pytket._tket.unit_id.BitRegister], list_o: typing.List[pytket._tket.unit_id.BitRegister], args_wasm: typing.Optional[typing.List[int]] = None, **kwargs: typing.Any) -> Circuit:
+    def add_wasm_to_reg(self, funcname: str, filehandler: pytket.wasm.wasm.WasmFileHandler, list_i: typing.Sequence[pytket._tket.unit_id.BitRegister], list_o: typing.Sequence[pytket._tket.unit_id.BitRegister], args_wasm: typing.Optional[typing.Sequence[int]] = None, **kwargs: typing.Any) -> Circuit:
         """
         Add a classical function call from a wasm file to the circuit.
             
@@ -2354,7 +2354,7 @@ class Command:
         """
         Hashing is not implemented for this class, attempting to hash an object will raise a type error
         """
-    def __init__(self, op: Op, args: list[pytket._tket.unit_id.UnitID]) -> None:
+    def __init__(self, op: Op, args: typing.Sequence[pytket._tket.unit_id.UnitID]) -> None:
         """
         Construct from an operation and a vector of unit IDs
         """
@@ -2448,7 +2448,7 @@ class CustomGate(Op):
     """
     A user-defined gate defined by a parametrised :py:class:`Circuit`.
     """
-    def __init__(self, gatedef: CustomGateDef, params: list[sympy.Expr | float]) -> None:
+    def __init__(self, gatedef: CustomGateDef, params: typing.Sequence[sympy.Expr | float]) -> None:
         """
         Instantiate a custom gate.
         """
@@ -2476,7 +2476,7 @@ class CustomGateDef:
     A custom unitary gate definition, given as a composition of other gates
     """
     @staticmethod
-    def define(name: str, circ: Circuit, args: list[sympy.Symbol]) -> CustomGateDef:
+    def define(name: str, circ: Circuit, args: typing.Sequence[sympy.Symbol]) -> CustomGateDef:
         """
         Define a new custom gate as a composite of other gates
         
@@ -2489,7 +2489,7 @@ class CustomGateDef:
         """
         Construct Circuit instance from JSON serializable dictionary representation of the Circuit.
         """
-    def __init__(self, arg0: str, arg1: Circuit, arg2: list[sympy.Symbol]) -> None:
+    def __init__(self, arg0: str, arg1: Circuit, arg2: typing.Sequence[sympy.Symbol]) -> None:
         ...
     def to_dict(self) -> dict:
         """
@@ -2603,7 +2603,7 @@ class MetaOp(Op):
     """
     Meta operation, such as input or output vertices.
     """
-    def __init__(self, type: OpType, signature: list[EdgeType], data: str) -> None:
+    def __init__(self, type: OpType, signature: typing.Sequence[EdgeType], data: str) -> None:
         """
         Construct MetaOp with optype, signature and additional data string
         
@@ -2650,7 +2650,7 @@ class MultiplexedRotationBox(Op):
         :param op_map: Map from bitstrings to :py:class:`Op` s
         """
     @typing.overload
-    def __init__(self, angles: list[float], axis: OpType) -> None:
+    def __init__(self, angles: typing.Sequence[float], axis: OpType) -> None:
         """
         Construct from a list of angles and the rotation axis.
         
@@ -2787,7 +2787,7 @@ class Op:
         """
     @staticmethod
     @typing.overload
-    def create(arg0: OpType, arg1: list[sympy.Expr | float]) -> Op:
+    def create(arg0: OpType, arg1: typing.Sequence[sympy.Expr | float]) -> Op:
         """
         Create an :py:class:`Op` with given type and parameters
         """
@@ -3168,7 +3168,7 @@ class PauliExpBox(Op):
     """
     An operation defined as the exponential of a tensor of Pauli operations and a (possibly symbolic) phase parameter.
     """
-    def __init__(self, paulis: list[pytket._tket.pauli.Pauli], t: sympy.Expr | float, cx_config_type: CXConfigType = CXConfigType.Tree) -> None:
+    def __init__(self, paulis: typing.Sequence[pytket._tket.pauli.Pauli], t: sympy.Expr | float, cx_config_type: CXConfigType = CXConfigType.Tree) -> None:
         """
         Construct :math:`e^{-\frac12 i \pi t \sigma_0 \otimes \sigma_1 \otimes \cdots}` from Pauli operators :math:`\sigma_i \in \{I,X,Y,Z\}` and a parameter :math:`t`.
         """
@@ -3192,7 +3192,7 @@ class PauliExpCommutingSetBox(Op):
     """
     An operation defined as a set of commuting of exponentials of atensor of Pauli operations and their (possibly symbolic) phase parameters.
     """
-    def __init__(self, pauli_gadgets: list[tuple[list[pytket._tket.pauli.Pauli], sympy.Expr | float]], cx_config_type: CXConfigType = CXConfigType.Tree) -> None:
+    def __init__(self, pauli_gadgets: typing.Sequence[tuple[typing.Sequence[pytket._tket.pauli.Pauli], sympy.Expr | float]], cx_config_type: CXConfigType = CXConfigType.Tree) -> None:
         """
         Construct a set of necessarily commuting Pauli exponentials of the form :math:`e^{-\frac12 i \pi t_j \sigma_0 \otimes \sigma_1 \otimes \cdots}` from Pauli operator strings :math:`\sigma_i \in \{I,X,Y,Z\}` and parameters :math:`t_j, j \in \{0, 1, \cdots \}`.
         """
@@ -3212,7 +3212,7 @@ class PauliExpPairBox(Op):
     """
     An operation defined as a pair of exponentials of a tensor of Pauli operations and their (possibly symbolic) phase parameters.
     """
-    def __init__(self, paulis0: list[pytket._tket.pauli.Pauli], t0: sympy.Expr | float, paulis1: list[pytket._tket.pauli.Pauli], t1: sympy.Expr | float, cx_config_type: CXConfigType = CXConfigType.Tree) -> None:
+    def __init__(self, paulis0: typing.Sequence[pytket._tket.pauli.Pauli], t0: sympy.Expr | float, paulis1: typing.Sequence[pytket._tket.pauli.Pauli], t1: sympy.Expr | float, cx_config_type: CXConfigType = CXConfigType.Tree) -> None:
         """
         Construct a pair of Pauli exponentials of the form :math:`e^{-\frac12 i \pi t_j \sigma_0 \otimes \sigma_1 \otimes \cdots}` from Pauli operator strings :math:`\sigma_i \in \{I,X,Y,Z\}` and parameters :math:`t_j, j \in \{0,1\}`.
         """
@@ -3306,7 +3306,7 @@ class QControlBox(Op):
     A user-defined controlled operation specified by an :py:class:`Op`, the number of quantum controls, and the control state expressed as an integer or a bit vector.
     """
     @typing.overload
-    def __init__(self, op: Op, n_controls: int = 1, control_state: list[bool] = []) -> None:
+    def __init__(self, op: Op, n_controls: int = 1, control_state: typing.Sequence[bool] = []) -> None:
         """
         Construct from an :py:class:`Op`, a number of quantum controls, and the control state expressed as a bit vector. The controls occupy the low-index ports of the resulting operation.
         
@@ -3370,7 +3370,7 @@ class SetBitsOp(ClassicalEvalOp):
     """
     An operation to set the values of Bits to some constants.
     """
-    def __init__(self, values: list[bool]) -> None:
+    def __init__(self, values: typing.Sequence[bool]) -> None:
         """
         Construct from a table of values.
         """
@@ -3384,14 +3384,14 @@ class StabiliserAssertionBox(Op):
     A user-defined assertion specified by a list of Pauli stabilisers.
     """
     @typing.overload
-    def __init__(self, stabilisers: list[pytket._tket.pauli.PauliStabiliser]) -> None:
+    def __init__(self, stabilisers: typing.Sequence[pytket._tket.pauli.PauliStabiliser]) -> None:
         """
         Construct from a list of Pauli stabilisers.
         
-        :param m: The list of Pauli stabilisers
+        :param stabilisers: The list of Pauli stabilisers
         """
     @typing.overload
-    def __init__(self, stabilisers: list[str]) -> None:
+    def __init__(self, stabilisers: typing.Sequence[str]) -> None:
         """
         Construct from a list of Pauli stabilisers.
         
@@ -3438,7 +3438,7 @@ class ToffoliBox(Op):
     An operation that constructs a circuit to implement the specified permutation of classical basis states.
     """
     @typing.overload
-    def __init__(self, permutation: typing.Sequence[tuple[list[bool], typing.Sequence[bool]]], strat: ToffoliBoxSynthStrat, rotation_axis: OpType = OpType.Ry) -> None:
+    def __init__(self, permutation: typing.Sequence[tuple[typing.Sequence[bool], typing.Sequence[bool]]], strat: ToffoliBoxSynthStrat, rotation_axis: OpType = OpType.Ry) -> None:
         """
         Construct from a permutation of basis states
         
@@ -3447,7 +3447,7 @@ class ToffoliBox(Op):
         :param rotation_axis: the rotation axis of the multiplexors used in the decomposition. Can be either Rx or Ry. Only applicable to the Matching strategy. Default to Ry.
         """
     @typing.overload
-    def __init__(self, permutation: typing.Sequence[tuple[list[bool], typing.Sequence[bool]]], rotation_axis: OpType = OpType.Ry) -> None:
+    def __init__(self, permutation: typing.Sequence[tuple[typing.Sequence[bool], typing.Sequence[bool]]], rotation_axis: OpType = OpType.Ry) -> None:
         """
         Construct from a permutation of basis states and perform synthesis using the Matching strategy
         
@@ -3455,7 +3455,7 @@ class ToffoliBox(Op):
         :param rotation_axis: the rotation axis of the multiplexors used in the decomposition. Can be either Rx or Ry, default to Ry.
         """
     @typing.overload
-    def __init__(self, n_qubits: int, permutation: typing.Sequence[tuple[list[bool], typing.Sequence[bool]]], rotation_axis: OpType = OpType.Ry) -> None:
+    def __init__(self, n_qubits: int, permutation: typing.Sequence[tuple[typing.Sequence[bool], typing.Sequence[bool]]], rotation_axis: OpType = OpType.Ry) -> None:
         """
         Constructor for backward compatibility. Subject to deprecation.
         """
@@ -3594,7 +3594,7 @@ class WASMOp(ClassicalOp):
     """
     An op holding an external classical call, defined by the external module id, the name of the function and the arguments. External calls can only act on entire registers (which will be interpreted as fixed-width integers).
     """
-    def __init__(self, num_bits: int, num_w: int, n_inputs: list[int], n_outputs: list[int], func_name: str, wasm_uid: str) -> None:
+    def __init__(self, num_bits: int, num_w: int, n_inputs: typing.Sequence[int], n_outputs: typing.Sequence[int], func_name: str, wasm_uid: str) -> None:
         """
         Construct from number of bits, bitwidths of inputs and outputs, function name and module id.
         """

@@ -52,7 +52,7 @@ PhasePolynomial to_cpp_phase_poly(const PyPhasePolynomial& py_phase_poly){
 }
 
 // state_perm_t has the same hashability problem
-typedef py::tket_custom::SequenceVec<std::pair<std::vector<bool>, py::tket_custom::SequenceVec<bool>>>
+typedef py::tket_custom::SequenceVec<std::pair<py::tket_custom::SequenceVec<bool>, py::tket_custom::SequenceVec<bool>>>
     py_state_perm_t;
     state_perm_t to_cpp_state_perm_t(const py_state_perm_t& py_state_perm){
         return state_perm_t(std::make_move_iterator(py_state_perm.begin()), std::make_move_iterator(py_state_perm.end()));
@@ -215,7 +215,7 @@ void init_boxes(py::module &m) {
       "operations and a (possibly symbolic) phase parameter.")
       .def(
           py::init<
-              const std::vector<Pauli> &, const Expr &, const CXConfigType &>(),
+              const py::tket_custom::SequenceVec<Pauli> &, const Expr &, const CXConfigType &>(),
           "Construct :math:`e^{-\\frac12 i \\pi t \\sigma_0 \\otimes "
           "\\sigma_1 \\otimes \\cdots}` from Pauli operators "
           ":math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and a parameter "
@@ -240,8 +240,8 @@ void init_boxes(py::module &m) {
       "operations and their (possibly symbolic) phase parameters.")
       .def(
           py::init<
-              const std::vector<Pauli> &, const Expr &,
-              const std::vector<Pauli> &, Expr, CXConfigType>(),
+              const py::tket_custom::SequenceVec<Pauli> &, const Expr &,
+              const py::tket_custom::SequenceVec<Pauli> &, Expr, CXConfigType>(),
           "Construct a pair of Pauli exponentials of the form"
           " :math:`e^{-\\frac12 i \\pi t_j \\sigma_0 \\otimes "
           "\\sigma_1 \\otimes \\cdots}` from Pauli operator strings "
@@ -270,9 +270,12 @@ void init_boxes(py::module &m) {
       "tensor of Pauli operations and their (possibly symbolic) phase "
       "parameters.")
       .def(
-          py::init<
-              const std::vector<std::pair<std::vector<Pauli>, Expr>>,
-              const CXConfigType &>(),
+          py::init([](
+              const py::tket_custom::SequenceVec<std::pair<py::tket_custom::SequenceVec<Pauli>, Expr>>& py_gadgets,
+              const CXConfigType & cx_config){
+              std::vector<std::pair<std::vector<Pauli>, Expr>> gadgets(std::make_move_iterator(py_gadgets.begin()), std::make_move_iterator(py_gadgets.end()));
+              return PauliExpCommutingSetBox(gadgets, cx_config);
+              }),
           "Construct a set of necessarily commuting Pauli exponentials of the "
           "form"
           " :math:`e^{-\\frac12 i \\pi t_j \\sigma_0 \\otimes "
@@ -408,7 +411,7 @@ void init_boxes(py::module &m) {
       ":py:class:`Op`, the number of quantum controls, and the control state "
       "expressed as an integer or a bit vector.")
       .def(
-          py::init<Op_ptr &, unsigned, std::vector<bool> &>(),
+          py::init<Op_ptr &, unsigned, py::tket_custom::SequenceVec<bool> &>(),
           "Construct from an :py:class:`Op`, a number of quantum "
           "controls, and the control state expressed as a bit vector. The "
           "controls occupy the low-index ports of the "
@@ -464,9 +467,11 @@ void init_boxes(py::module &m) {
       "A custom unitary gate definition, given as a composition of other "
       "gates")
       .def(py::init<
-           const std::string &, const Circuit &, const std::vector<Sym> &>())
+           const std::string &, const Circuit &, const py::tket_custom::SequenceVec<Sym> &>())
       .def_static(
-          "define", &CompositeGateDef::define_gate,
+          "define", [](
+                      const std::string &name, const Circuit &def,
+                      const py::tket_custom::SequenceVec<Sym> &args){return CompositeGateDef::define_gate(name, def, args);},
           "Define a new custom gate as a composite of other "
           "gates\n\n:param name: Readable name for the new "
           "gate\n:param circ: The definition of the gate as a "
@@ -505,7 +510,7 @@ void init_boxes(py::module &m) {
       m, "CustomGate",
       "A user-defined gate defined by a parametrised :py:class:`Circuit`.")
       .def(
-          py::init<const composite_def_ptr_t &, const std::vector<Expr> &>(),
+          py::init<const composite_def_ptr_t &, const py::tket_custom::SequenceVec<Expr> &>(),
           "Instantiate a custom gate.", py::arg("gatedef"), py::arg("params"))
       .def_property_readonly(
           "name", [](CustomGate &cgate) { return cgate.get_name(false); },
@@ -625,12 +630,12 @@ void init_boxes(py::module &m) {
       m, "StabiliserAssertionBox",
       "A user-defined assertion specified by a list of Pauli stabilisers.")
       .def(
-          py::init<const PauliStabiliserList>(),
+          py::init<const py::tket_custom::SequenceVec<PauliStabiliser>>(),
           "Construct from a list of Pauli stabilisers.\n\n"
-          ":param m: The list of Pauli stabilisers\n",
+          ":param stabilisers: The list of Pauli stabilisers\n",
           py::arg("stabilisers"))
       .def(
-          py::init([](const std::vector<std::string> &pauli_strings) {
+          py::init([](const py::tket_custom::SequenceVec<std::string> &pauli_strings) {
             PauliStabiliserList stabilisers;
             for (auto &raw_string : pauli_strings) {
               std::vector<Pauli> string;
@@ -736,7 +741,7 @@ void init_boxes(py::module &m) {
           ":param op_map: Map from bitstrings to " CLSOBJS(Op) "\n",
           py::arg("op_map"))
       .def(
-          py::init([](const std::vector<double> &angles, const OpType &axis) {
+          py::init([](const py::tket_custom::SequenceVec<double> &angles, const OpType &axis) {
             if (angles.size() == 0) {
               throw std::invalid_argument("Angles are empty.");
             }

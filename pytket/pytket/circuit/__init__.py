@@ -21,10 +21,8 @@ from typing import (
     Tuple,
     Type,
     Union,
-    cast,
     Callable,
-    List,
-    Optional,
+    Optional, Sequence,
 )
 
 from pytket._tket.circuit import *
@@ -63,10 +61,10 @@ def overload_add_wasm(
     self: Circuit,
     funcname: str,
     filehandler: wasm.WasmFileHandler,
-    list_i: List[int],
-    list_o: List[int],
-    args: Union[List[int], List[Bit]],
-    args_wasm: Optional[List[int]] = None,
+    list_i: Sequence[int],
+    list_o: Sequence[int],
+    args: Union[Sequence[int], Sequence[Bit]],
+    args_wasm: Optional[Sequence[int]] = None,
     **kwargs: Any,
 ) -> Circuit:
     """Add a classical function call from a wasm file to the circuit.
@@ -113,9 +111,9 @@ def overload_add_wasm_to_reg(
     self: Circuit,
     funcname: str,
     filehandler: wasm.WasmFileHandler,
-    list_i: List[BitRegister],
-    list_o: List[BitRegister],
-    args_wasm: Optional[List[int]] = None,
+    list_i: Sequence[BitRegister],
+    list_o: Sequence[BitRegister],
+    args_wasm: Optional[Sequence[int]] = None,
     **kwargs: Any,
 ) -> Circuit:
     """Add a classical function call from a wasm file to the circuit.

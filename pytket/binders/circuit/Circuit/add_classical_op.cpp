@@ -14,28 +14,23 @@
 
 #define STR(x) #x
 
-#include <pybind11/eigen.h>
-#include <pybind11/functional.h>
-#include <pybind11/operators.h>
 #include <pybind11/pybind11.h>
-#include <pybind11/stl.h>
 
 #include <bitset>
+#include <utility>
 
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Ops/ClassicalOps.hpp"
 #include "UnitRegister.hpp"
 #include "add_gate.hpp"
-#include "binder_utils.hpp"
-#include "tket/Circuit/Circuit.hpp"
-#include "tket/Gate/OpPtrFunctions.hpp"
-#include "tket/Ops/ClassicalOps.hpp"
-#include "tket/Ops/Op.hpp"
+#include "typecast.hpp"
 
 namespace py = pybind11;
 
 namespace tket {
 
 static void apply_classical_op_to_registers(
-    Circuit &circ, std::shared_ptr<const ClassicalEvalOp> op,
+    Circuit &circ, const std::shared_ptr<const ClassicalEvalOp>& op,
     const std::vector<BitRegister> &registers, const py::kwargs &kwargs) {
   unsigned n_op_args = registers.size();
   const unsigned n_bits = std::min_element(
@@ -58,8 +53,8 @@ void init_circuit_add_classical_op(
     py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
   c.def(
        "add_c_transform",
-       [](Circuit &circ, const std::vector<_tket_uint_t> &values,
-          const std::vector<unsigned> &args, const std::string &name,
+       [](Circuit &circ, const py::tket_custom::SequenceVec<_tket_uint_t> &values,
+          const py::tket_custom::SequenceVec<unsigned> &args, const std::string &name,
           const py::kwargs &kwargs) {
          unsigned n_args = args.size();
          std::shared_ptr<ClassicalTransformOp> op =
@@ -84,8 +79,8 @@ void init_circuit_add_classical_op(
        py::arg("name") = "ClassicalTransform")
       .def(
           "add_c_transform",
-          [](Circuit &circ, const std::vector<_tket_uint_t> &values,
-             const std::vector<Bit> &args, const std::string &name,
+          [](Circuit &circ, const py::tket_custom::SequenceVec<_tket_uint_t> &values,
+             const py::tket_custom::SequenceVec<Bit> &args, const std::string &name,
              const py::kwargs &kwargs) {
             unsigned n_args = args.size();
             std::shared_ptr<ClassicalTransformOp> op =
@@ -98,10 +93,10 @@ void init_circuit_add_classical_op(
           "_add_wasm",
           [](Circuit &circ, const std::string &funcname,
              const std::string &wasm_uid,
-             const std::vector<unsigned> &width_i_parameter,
-             const std::vector<unsigned> &width_o_parameter,
-             const std::vector<unsigned> &args,
-             const std::vector<unsigned> &wasm_wire_args,
+             const py::tket_custom::SequenceVec<unsigned> &width_i_parameter,
+             const py::tket_custom::SequenceVec<unsigned> &width_o_parameter,
+             const py::tket_custom::SequenceVec<unsigned> &args,
+             const py::tket_custom::SequenceVec<unsigned> &wasm_wire_args,
              const py::kwargs &kwargs) -> Circuit * {
 
             unsigned n_args = args.size();
@@ -141,10 +136,10 @@ void init_circuit_add_classical_op(
           "_add_wasm",
           [](Circuit &circ, const std::string &funcname,
              const std::string &wasm_uid,
-             const std::vector<unsigned> &width_i_parameter,
-             const std::vector<unsigned> &width_o_parameter,
-             const std::vector<Bit> &args,
-             const std::vector<unsigned> &wasm_wire_args,
+             const py::tket_custom::SequenceVec<unsigned> &width_i_parameter,
+             const py::tket_custom::SequenceVec<unsigned> &width_o_parameter,
+             const py::tket_custom::SequenceVec<Bit> &args,
+             const py::tket_custom::SequenceVec<unsigned> &wasm_wire_args,
              const py::kwargs &kwargs) -> Circuit * {
 
             unsigned n_args = args.size();
@@ -155,7 +150,7 @@ void init_circuit_add_classical_op(
 
             std::vector<UnitID> new_args;
 
-            for (auto b : args) {
+            for (const auto& b : args) {
               new_args.push_back(b);
             }
 
@@ -183,19 +178,19 @@ void init_circuit_add_classical_op(
           "_add_wasm",
           [](Circuit &circ, const std::string &funcname,
              const std::string &wasm_uid,
-             const std::vector<BitRegister> &list_reg_in,
-             const std::vector<BitRegister> &list_reg_out,
-             const std::vector<unsigned> &wasm_wire_args,
+             const py::tket_custom::SequenceVec<BitRegister> &list_reg_in,
+             const py::tket_custom::SequenceVec<BitRegister> &list_reg_out,
+             const py::tket_custom::SequenceVec<unsigned> &wasm_wire_args,
              const py::kwargs &kwargs) -> Circuit * {
             unsigned n_args = 0;
 
             unsigned ww_n = wasm_wire_args.size();
 
-            for (auto r : list_reg_in) {
+            for (const auto& r : list_reg_in) {
               n_args += r.size();
             }
 
-            for (auto r : list_reg_out) {
+            for (const auto& r : list_reg_out) {
               n_args += r.size();
             }
 
@@ -205,7 +200,7 @@ void init_circuit_add_classical_op(
 
             unsigned i = 0;
             unsigned j = 0;
-            for (auto r : list_reg_in) {
+            for (const auto& r : list_reg_in) {
               width_i_parameter[i] = r.size();
               for (unsigned k = 0; k < r.size(); ++k) {
                 args[j] = r[k];
@@ -215,7 +210,7 @@ void init_circuit_add_classical_op(
             }
 
             i = 0;
-            for (auto r : list_reg_out) {
+            for (const auto& r : list_reg_out) {
               width_o_parameter[i] = r.size();
               for (unsigned k = 0; k < r.size(); ++k) {
                 args[j] = r[k];
@@ -229,12 +224,13 @@ void init_circuit_add_classical_op(
 
             std::vector<UnitID> new_args;
 
-            for (auto b : args) {
+            new_args.reserve(args.size());
+            for (const auto& b : args) {
               new_args.push_back(b);
             }
 
-            for (auto i : wasm_wire_args) {
-              new_args.push_back(WasmState(i));
+            for (auto ii : wasm_wire_args) {
+              new_args.push_back(WasmState(ii));
             }                 
 
             return add_gate_method<UnitID>(&circ, op, new_args, kwargs);
@@ -254,8 +250,8 @@ void init_circuit_add_classical_op(
           py::arg("list_reg_out"), py::arg("wasm_wire_args"))
       .def(
           "add_c_setbits",
-          [](Circuit &circ, const std::vector<bool> &values,
-             const std::vector<unsigned> args, const py::kwargs &kwargs) {
+          [](Circuit &circ, const py::tket_custom::SequenceVec<bool> &values,
+             const py::tket_custom::SequenceVec<unsigned>& args, const py::kwargs &kwargs) {
             std::shared_ptr<SetBitsOp> op = std::make_shared<SetBitsOp>(values);
             return add_gate_method<unsigned>(&circ, op, args, kwargs);
           },
@@ -269,8 +265,8 @@ void init_circuit_add_classical_op(
           py::arg("values"), py::arg("args"))
       .def(
           "add_c_setbits",
-          [](Circuit &circ, const std::vector<bool> &values,
-             const std::vector<Bit> args, const py::kwargs &kwargs) {
+          [](Circuit &circ, const py::tket_custom::SequenceVec<bool> &values,
+             const py::tket_custom::SequenceVec<Bit>& args, const py::kwargs &kwargs) {
             std::shared_ptr<SetBitsOp> op = std::make_shared<SetBitsOp>(values);
             return add_gate_method<Bit>(&circ, op, args, kwargs);
           },
@@ -300,8 +296,8 @@ void init_circuit_add_classical_op(
           py::arg("value"), py::arg("arg"))
       .def(
           "add_c_copybits",
-          [](Circuit &circ, const std::vector<unsigned> &args_in,
-             const std::vector<unsigned> &args_out, const py::kwargs &kwargs) {
+          [](Circuit &circ, const py::tket_custom::SequenceVec<unsigned> &args_in,
+             const py::tket_custom::SequenceVec<unsigned> &args_out, const py::kwargs &kwargs) {
             unsigned n_args_in = args_in.size();
             std::shared_ptr<CopyBitsOp> op =
                 std::make_shared<CopyBitsOp>(n_args_in);
@@ -319,8 +315,8 @@ void init_circuit_add_classical_op(
           py::arg("args_in"), py::arg("args_out"))
       .def(
           "add_c_copybits",
-          [](Circuit &circ, const std::vector<Bit> &args_in,
-             const std::vector<Bit> &args_out, const py::kwargs &kwargs) {
+          [](Circuit &circ, const py::tket_custom::SequenceVec<Bit> &args_in,
+             const py::tket_custom::SequenceVec<Bit> &args_out, const py::kwargs &kwargs) {
             unsigned n_args_in = args_in.size();
             std::shared_ptr<CopyBitsOp> op =
                 std::make_shared<CopyBitsOp>(n_args_in);
@@ -351,8 +347,8 @@ void init_circuit_add_classical_op(
           py::arg("input_reg"), py::arg("output_reg"))
       .def(
           "add_c_predicate",
-          [](Circuit &circ, const std::vector<bool> &values,
-             const std::vector<unsigned> &args_in, unsigned arg_out,
+          [](Circuit &circ, const py::tket_custom::SequenceVec<bool> &values,
+             const py::tket_custom::SequenceVec<unsigned> &args_in, unsigned arg_out,
              const std::string &name, const py::kwargs &kwargs) {
             unsigned n_args_in = args_in.size();
             std::shared_ptr<ExplicitPredicateOp> op =
@@ -378,8 +374,8 @@ void init_circuit_add_classical_op(
           py::arg("name") = "ExplicitPredicate")
       .def(
           "add_c_predicate",
-          [](Circuit &circ, const std::vector<bool> &values,
-             const std::vector<Bit> &args_in, Bit arg_out,
+          [](Circuit &circ, const py::tket_custom::SequenceVec<bool> &values,
+             const py::tket_custom::SequenceVec<Bit> &args_in, const Bit& arg_out,
              const std::string &name, const py::kwargs &kwargs) {
             unsigned n_args_in = args_in.size();
             std::shared_ptr<ExplicitPredicateOp> op =
@@ -393,8 +389,8 @@ void init_circuit_add_classical_op(
           py::arg("name") = "ExplicitPredicate")
       .def(
           "add_c_modifier",
-          [](Circuit &circ, const std::vector<bool> &values,
-             const std::vector<unsigned> &args_in, unsigned arg_inout,
+          [](Circuit &circ, const py::tket_custom::SequenceVec<bool> &values,
+             const py::tket_custom::SequenceVec<unsigned> &args_in, unsigned arg_inout,
              const std::string &name, const py::kwargs &kwargs) {
             unsigned n_args_in = args_in.size();
             std::shared_ptr<ExplicitModifierOp> op =
@@ -422,8 +418,8 @@ void init_circuit_add_classical_op(
           py::arg("name") = "ExplicitModifier")
       .def(
           "add_c_modifier",
-          [](Circuit &circ, const std::vector<bool> &values,
-             const std::vector<Bit> &args_in, Bit arg_inout,
+          [](Circuit &circ, const py::tket_custom::SequenceVec<bool> &values,
+             const py::tket_custom::SequenceVec<Bit> &args_in, const Bit& arg_inout,
              const std::string &name, const py::kwargs &kwargs) {
             unsigned n_args_in = args_in.size();
             std::shared_ptr<ExplicitModifierOp> op =
@@ -464,7 +460,7 @@ void init_circuit_add_classical_op(
           py::arg("arg0_in"), py::arg("arg1_in"), py::arg("arg_out"))
       .def(
           "add_c_and",
-          [](Circuit &circ, Bit arg0_in, Bit arg1_in, Bit arg_out,
+          [](Circuit &circ, const Bit& arg0_in, const Bit& arg1_in, const Bit& arg_out,
              const py::kwargs &kwargs) {
             Op_ptr op;
             std::vector<Bit> args;
@@ -511,7 +507,7 @@ void init_circuit_add_classical_op(
           py::arg("arg0_in"), py::arg("arg1_in"), py::arg("arg_out"))
       .def(
           "add_c_or",
-          [](Circuit &circ, Bit arg0_in, Bit arg1_in, Bit arg_out,
+          [](Circuit &circ, const Bit& arg0_in, const Bit& arg1_in, const Bit& arg_out,
              const py::kwargs &kwargs) {
             Op_ptr op;
             std::vector<Bit> args;
@@ -558,7 +554,7 @@ void init_circuit_add_classical_op(
           py::arg("arg0_in"), py::arg("arg1_in"), py::arg("arg_out"))
       .def(
           "add_c_xor",
-          [](Circuit &circ, Bit arg0_in, Bit arg1_in, Bit arg_out,
+          [](Circuit &circ, const Bit& arg0_in, const Bit& arg1_in, const Bit& arg_out,
              const py::kwargs &kwargs) {
             Op_ptr op;
             std::vector<Bit> args;
@@ -595,13 +591,13 @@ void init_circuit_add_classical_op(
           "add_c_not",
           [](Circuit &circ, Bit arg_in, Bit arg_out, const py::kwargs &kwargs) {
             return add_gate_method<Bit>(
-                &circ, NotOp(), {arg_in, arg_out}, kwargs);
+                &circ, NotOp(), {std::move(arg_in), std::move(arg_out)}, kwargs);
           },
           "See :py:meth:`add_c_not`.", py::arg("arg_in"), py::arg("arg_out"))
       .def(
           "add_c_range_predicate",
           [](Circuit &circ, _tket_uint_t a, _tket_uint_t b,
-             const std::vector<unsigned> &args_in, unsigned arg_out,
+             const py::tket_custom::SequenceVec<unsigned> &args_in, unsigned arg_out,
              const py::kwargs &kwargs) {
             unsigned n_args_in = args_in.size();
             std::shared_ptr<RangePredicateOp> op =
@@ -624,7 +620,7 @@ void init_circuit_add_classical_op(
       .def(
           "add_c_range_predicate",
           [](Circuit &circ, _tket_uint_t a, _tket_uint_t b,
-             const std::vector<Bit> &args_in, Bit arg_out,
+             const py::tket_custom::SequenceVec<Bit> &args_in, const Bit& arg_out,
              const py::kwargs &kwargs) {
             unsigned n_args_in = args_in.size();
             std::shared_ptr<RangePredicateOp> op =
