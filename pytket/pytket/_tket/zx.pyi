@@ -230,7 +230,7 @@ class Rewrite:
         Guarantees that each boundary vertex is adjacent to a unique ZSpider. This adds identity chains when two boundaries are either directly connected or are adjacent to the same spider.
         """
     @staticmethod
-    def sequence(sequence: list[Rewrite]) -> Rewrite:
+    def sequence(sequence: typing.Sequence[Rewrite]) -> Rewrite:
         """
         Composes a list of :py:class:`Rewrite` s together in sequence. The apply method will return True if ANY of the individual Rewrites returned True.
         
