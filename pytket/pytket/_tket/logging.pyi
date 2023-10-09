@@ -53,9 +53,9 @@ class level:
     @property
     def value(self) -> int:
         ...
-def set_level(arg0: level) -> None:
+def set_level(log_level: level) -> None:
     """
     Set the global logging level.
     
-    :param level: Desired logging level
+    :param log_level: Desired logging level
     """
