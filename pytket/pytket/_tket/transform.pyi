@@ -301,7 +301,7 @@ class Transform:
         :param only_zeros: if True, only round angles less than :math:`\pi / 2^{n+1}` to zero, leave other angles alone (default False)
         """
     @staticmethod
-    def sequence(sequence: list[Transform]) -> Transform:
+    def sequence(sequence: typing.Sequence[Transform]) -> Transform:
         """
         Composes a list of Transforms together in sequence. The :py:meth:`apply` method will return ``True`` if ANY of the individual Transforms returned ``True``.
         
