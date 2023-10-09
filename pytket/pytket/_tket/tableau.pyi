@@ -38,14 +38,14 @@ class UnitaryTableau:
         """
     def __repr__(self) -> str:
         ...
-    def apply_gate_at_end(self, arg0: pytket._tket.circuit.OpType, arg1: list[pytket._tket.unit_id.Qubit]) -> None:
+    def apply_gate_at_end(self, type: pytket._tket.circuit.OpType, qbs: typing.Sequence[pytket._tket.unit_id.Qubit]) -> None:
         """
         Update the tableau according to adding a Clifford gate after the current unitary, i.e. updates :math:`U` to :math:`GU` for a gate :math:`G`.
         
         :param type: The :py:class:`OpType` of the gate to add. Must be an unparameterised Clifford gate type.
         :param qbs: The qubits to apply the gate to. Length must match the arity of the given gate type.
         """
-    def apply_gate_at_front(self, arg0: pytket._tket.circuit.OpType, arg1: list[pytket._tket.unit_id.Qubit]) -> None:
+    def apply_gate_at_front(self, type: pytket._tket.circuit.OpType, qbs: typing.Sequence[pytket._tket.unit_id.Qubit]) -> None:
         """
         Update the tableau according to adding a Clifford gate before the current unitary, i.e. updates :math:`U` to :math:`UG` for a gate :math:`G`.
         

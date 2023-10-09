@@ -19,10 +19,12 @@
 #include <sstream>
 
 #include "tket/Converters/UnitaryTableauBox.hpp"
+#include "typecast.hpp"
 
 namespace py = pybind11;
 namespace tket {
 
+typedef py::tket_custom::SequenceVec<Qubit> py_qubit_vector_t;
 PYBIND11_MODULE(tableau, m) {
   py::class_<UnitaryTableau>(
       m, "UnitaryTableau",
@@ -86,23 +88,25 @@ PYBIND11_MODULE(tableau, m) {
           "\n:return: The Pauli string :math:`Q` such that :math:`QU=UP`.",
           py::arg("paulis"))
       .def(
-          "apply_gate_at_front", &UnitaryTableau::apply_gate_at_front,
+          "apply_gate_at_front", [](UnitaryTableau& self, const OpType& type, const py_qubit_vector_t& qbs){return self.apply_gate_at_front(type, qbs);},
           "Update the tableau according to adding a Clifford gate before the "
           "current unitary, i.e. updates :math:`U` to :math:`UG` for a gate "
           ":math:`G`."
           "\n\n:param type: The :py:class:`OpType` of the gate to add. Must be "
           "an unparameterised Clifford gate type."
           "\n:param qbs: The qubits to apply the gate to. Length must match "
-          "the arity of the given gate type.")
+          "the arity of the given gate type.",
+          py::arg("type"), py::arg("qbs"))
       .def(
-          "apply_gate_at_end", &UnitaryTableau::apply_gate_at_end,
+          "apply_gate_at_end", [](UnitaryTableau& self, const OpType& type, const py_qubit_vector_t& qbs){return self.apply_gate_at_end(type, qbs);},
           "Update the tableau according to adding a Clifford gate after the "
           "current unitary, i.e. updates :math:`U` to :math:`GU` for a gate "
           ":math:`G`."
           "\n\n:param type: The :py:class:`OpType` of the gate to add. Must be "
           "an unparameterised Clifford gate type."
           "\n:param qbs: The qubits to apply the gate to. Length must match "
-          "the arity of the given gate type.")
+          "the arity of the given gate type.",
+          py::arg("type"), py::arg("qbs"))
       .def(
           "to_circuit", &unitary_tableau_to_circuit,
           "Synthesises a unitary :py:class:`Circuit` realising the same "
