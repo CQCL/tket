@@ -54,7 +54,7 @@ class MeasurementBitMap:
         """
         Construct MeasurementBitMap instance from dict representation.
         """
-    def __init__(self, circ_index: int, bits: list[int], invert: bool = False) -> None:
+    def __init__(self, circ_index: int, bits: typing.Sequence[int], invert: bool = False) -> None:
         """
         Constructs a MeasurementBitMap for some Clifford circuit index and bits, with an option to invert the result.
         
@@ -169,7 +169,7 @@ class PauliPartitionStrat:
     @property
     def value(self) -> int:
         ...
-def measurement_reduction(strings: list[pytket._tket.pauli.QubitPauliString], strat: PauliPartitionStrat, method: GraphColourMethod = GraphColourMethod.Lazy, cx_config: pytket._tket.circuit.CXConfigType = pytket._tket.circuit.CXConfigType.Snake) -> MeasurementSetup:
+def measurement_reduction(strings: typing.Sequence[pytket._tket.pauli.QubitPauliString], strat: PauliPartitionStrat, method: GraphColourMethod = GraphColourMethod.Lazy, cx_config: pytket._tket.circuit.CXConfigType = pytket._tket.circuit.CXConfigType.Snake) -> MeasurementSetup:
     """
     Automatically performs graph colouring and diagonalisation to reduce measurements required for Pauli strings.
     
@@ -179,7 +179,7 @@ def measurement_reduction(strings: list[pytket._tket.pauli.QubitPauliString], st
     :param cx_config: Whenever diagonalisation is required, use this configuration of CX gates
     :return: a :py:class:`MeasurementSetup` object
     """
-def term_sequence(strings: list[pytket._tket.pauli.QubitPauliString], strat: PauliPartitionStrat = PauliPartitionStrat.CommutingSets, method: GraphColourMethod = GraphColourMethod.Lazy) -> list[list[pytket._tket.pauli.QubitPauliString]]:
+def term_sequence(strings: typing.Sequence[pytket._tket.pauli.QubitPauliString], strat: PauliPartitionStrat = PauliPartitionStrat.CommutingSets, method: GraphColourMethod = GraphColourMethod.Lazy) -> list[list[pytket._tket.pauli.QubitPauliString]]:
     """
     Takes in a list of QubitPauliString objects and partitions them into mutually commuting sets according to some PauliPartitionStrat, then sequences in an arbitrary order.
     

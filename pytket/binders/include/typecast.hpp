@@ -38,8 +38,8 @@ class SequenceVec : public std::vector<T> {
 // Instead of list[T]. Should only use as a parameter type,
 // not return type (because "Sequence" as return type is ambiguous).
     template <typename T>
-    class ListVec : public std::list<T> {
-        using std::list<T>::vector;
+    class SequenceList : public std::list<T> {
+        using std::list<T>::list;
     };
 // Statically castable to a c++ vector and uses same type caster, but translates to tuple[T, ...] on python side
 // Instead of list[T]. Can be used as a parameter type or return type.
@@ -52,7 +52,7 @@ PYBIND11_NAMESPACE_BEGIN(detail)
 // This struct is copied from the struct "list_caster" in pybind11/stl.h with some minor
 // customization
 // It adds the ability to customize the type name (using a handle_type_name<T> struct)
-// and specify the python type that the object is casted too
+// and specify the python type that the object is cast too
 // Changes to the pybind11 code may warrant/require changes here
 // The struct is used to define custom type casters for the "tket_custom" types
     template <typename Type, typename Value, typename castToType>
@@ -115,7 +115,7 @@ template <typename T>
                 = const_name("Sequence[") + make_caster<T>::name + const_name("]");
 };
 template <typename T>
-    struct handle_type_name<tket_custom::ListVec<T>> {
+    struct handle_type_name<tket_custom::SequenceList<T>> {
         static constexpr auto name
                 = const_name("Sequence[") + make_caster<T>::name + const_name("]");
     };
@@ -127,7 +127,7 @@ template <typename T>
 template <typename Type>
     struct type_caster<tket_custom::SequenceVec<Type>> : tket_sequence_caster<tket_custom::SequenceVec<Type>, Type, list> {};
 template <typename Type>
-    struct type_caster<tket_custom::ListVec<Type>> : tket_sequence_caster<tket_custom::ListVec<Type>, Type, list> {};
+    struct type_caster<tket_custom::SequenceList<Type>> : tket_sequence_caster<tket_custom::SequenceList<Type>, Type, list> {};
 template <typename Type>
     struct type_caster<tket_custom::TupleVec<Type>> : tket_sequence_caster<tket_custom::TupleVec<Type>, Type, tuple> {};
 template <>
