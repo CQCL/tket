@@ -619,7 +619,7 @@ def ZZPhaseToRz() -> BasePass:
     """
 def _sympy_import() -> sympy.Expr | float:
     """
-    This function only exists so that sympy gets imported in the resulting .pyi file. It's needed due to a bug in pybind11-stubgens translation for Callables most likely.
+    This function only exists so that sympy gets imported in the resulting .pyi file. It's needed due to a bug in pybind11-stubgen's translation for Callables most likely.
     """
 Audit: SafetyMode  # value = <SafetyMode.Audit: 0>
 Default: SafetyMode  # value = <SafetyMode.Default: 1>

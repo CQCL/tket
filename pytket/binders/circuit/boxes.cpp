@@ -38,17 +38,21 @@ namespace tket {
 
 // The typedef PhasePolynomial leads to the python type Dict[List[bool], ...],
 // which is not allowed at runtime because lists aren't hashable
-typedef std::vector<std::pair<std::vector<bool>, Expr>> PyPhasePolynomial;
-PhasePolynomial to_cpp_phase_poly(const PyPhasePolynomial& py_phase_poly){
-    return PhasePolynomial(std::make_move_iterator(py_phase_poly.begin()), std::make_move_iterator(py_phase_poly.end()));
+typedef py::tket_custom::SequenceVec<std::pair<py::tket_custom::SequenceVec<bool>, Expr>> PyPhasePolynomialAlternate;
+PhasePolynomial to_cpp_phase_poly(const PyPhasePolynomialAlternate& py_phase_poly){
+    PhasePolynomial phase_poly;
+    for (const auto& pair: py_phase_poly){
+       phase_poly.insert_or_assign(pair.first, pair.second);
+    }
+    return phase_poly;
 }
-typedef std::map<py::tket_custom::TupleVec<bool>, Expr> PyPhasePolynomial2;
-PhasePolynomial to_cpp_phase_poly(const PyPhasePolynomial2& py_phase_poly){
+typedef std::map<py::tket_custom::TupleVec<bool>, Expr> PyPhasePolynomial;
+PhasePolynomial to_cpp_phase_poly(const PyPhasePolynomial& py_phase_poly){
     return PhasePolynomial(std::make_move_iterator(py_phase_poly.begin()), std::make_move_iterator(py_phase_poly.end()));
 }
 
 // state_perm_t has the same hashability problem
-typedef std::vector<std::pair<std::vector<bool>, std::vector<bool>>>
+typedef py::tket_custom::SequenceVec<std::pair<std::vector<bool>, py::tket_custom::SequenceVec<bool>>>
     py_state_perm_t;
     state_perm_t to_cpp_state_perm_t(const py_state_perm_t& py_state_perm){
         return state_perm_t(std::make_move_iterator(py_state_perm.begin()), std::make_move_iterator(py_state_perm.end()));
@@ -58,14 +62,44 @@ typedef std::map<py::tket_custom::TupleVec<bool>, py::tket_custom::SequenceVec<b
         return state_perm_t(std::make_move_iterator(py_state_perm.begin()), std::make_move_iterator(py_state_perm.end()));
     }
 
-// Cast the std::vector keys in a map to py::tuple, since vector is not hashable
+typedef py::tket_custom::SequenceVec<std::pair<py::tket_custom::SequenceVec<bool>, Op_ptr>> py_ctrl_op_map_t_alt;
+    ctrl_op_map_t to_cpp_ctrl_op_map_t(const py_ctrl_op_map_t_alt& ctrl_op_list) {
+        ctrl_op_map_t ctrl_op_map;
+        for (const auto &bit_op_pair: ctrl_op_list) {
+            ctrl_op_map.insert_or_assign(bit_op_pair.first, bit_op_pair.second);
+        }
+        return ctrl_op_map;
+    }
+typedef std::map<py::tket_custom::TupleVec<bool>, Op_ptr> py_ctrl_op_map_t;
+    ctrl_op_map_t to_cpp_ctrl_op_map_t(const py_ctrl_op_map_t& ctrl_op_map) {
+        return ctrl_op_map_t(std::make_move_iterator(ctrl_op_map.begin()), std::make_move_iterator(ctrl_op_map.end()));
+    }
+
+typedef py::tket_custom::SequenceVec<std::pair<py::tket_custom::SequenceVec<bool>, py::tket_custom::SequenceVec<Op_ptr>>>
+            py_ctrl_tensored_op_map_t_alt;
+    ctrl_tensored_op_map_t to_cpp_ctrl_op_map_t(const py_ctrl_tensored_op_map_t_alt & ctrl_op_list) {
+        ctrl_tensored_op_map_t ctrl_op_map;
+        for (const auto &bit_op_pair: ctrl_op_list) {
+            ctrl_op_map.insert_or_assign(bit_op_pair.first, bit_op_pair.second);
+        }
+        return ctrl_op_map;
+    }
+typedef std::map<py::tket_custom::TupleVec<bool>, py::tket_custom::SequenceVec<Op_ptr>>
+            py_ctrl_tensored_op_map_t;
+    ctrl_tensored_op_map_t to_cpp_ctrl_op_map_t(const py_ctrl_tensored_op_map_t & ctrl_op_map) {
+        return ctrl_tensored_op_map_t(std::make_move_iterator(ctrl_op_map.begin()), std::make_move_iterator(ctrl_op_map.end()));
+    }
+
+
+    // Cast the std::vector keys in a map to py::tuple, since vector is not hashable
 // in python
 template <class T1, class T2>
-std::map<py::tket_custom::ReturnTuple<T1>, T2> cast_keys_to_tuples(
+std::map<py::tket_custom::TupleVec<T1>, T2> cast_keys_to_tuples(
     const std::map<std::vector<T1>, T2> &map) {
-  std::map<py::tket_custom::ReturnTuple<T1>, T2> outmap;
+  std::map<py::tket_custom::TupleVec<T1>, T2> outmap;
   for (const auto &pair : map) {
-    outmap.insert({py::tket_custom::ReturnTuple<T1>(py::cast(pair.first)), pair.second});
+      py::tket_custom::TupleVec<T1> tuple_vec(std::make_move_iterator(pair.first.begin()), std::make_move_iterator(pair.first.end()));
+    outmap.emplace(tuple_vec, pair.second);
   }
   return outmap;
 }
@@ -490,7 +524,7 @@ void init_boxes(py::module &m) {
       "polynomial + linear transformation")
       .def(
           py::init([](unsigned n_qb, const std::map<Qubit, unsigned> &q_ind,
-                      const PyPhasePolynomial2 &p_p, const MatrixXb &lin_trans) {
+                      const PyPhasePolynomial &p_p, const MatrixXb &lin_trans) {
             boost::bimap<Qubit, unsigned> bmap;
             for (const auto &pair : q_ind) {
               bmap.insert({pair.first, pair.second});
@@ -504,7 +538,7 @@ void init_boxes(py::module &m) {
           py::arg("phase_polynomial"), py::arg("linear_transformation"))
       .def(
           py::init([](unsigned n_qb, const std::map<Qubit, unsigned> &q_ind,
-                      const PyPhasePolynomial &p_p,
+                      const PyPhasePolynomialAlternate &p_p,
                       const MatrixXb &lin_trans) {
             boost::bimap<Qubit, unsigned> bmap;
             for (const auto &pair : q_ind) {
@@ -514,7 +548,9 @@ void init_boxes(py::module &m) {
           }),
           "Construct from the number of qubits, the mapping from "
           "Qubit to index, the phase polynomial (list of bitstring "
-          "phase pairs) and the linear transformation (boolean matrix)",
+          "phase pairs) and the linear transformation (boolean matrix)\n\n"
+          "If any bitstring is repeated in the phase polynomial list, the last "
+          "given value for that bistring will be used",
           py::arg("n_qubits"), py::arg("qubit_indices"),
           py::arg("phase_polynomial"), py::arg("linear_transformation"))
       .def(
@@ -642,7 +678,6 @@ void init_boxes(py::module &m) {
           "get_stabilisers", &StabiliserAssertionBox::get_stabilisers,
           ":return: the list of Pauli stabilisers");
 
-  typedef std::vector<std::pair<std::vector<bool>, Op_ptr>> py_ctrl_op_map_t;
 
   py::class_<MultiplexorBox, std::shared_ptr<MultiplexorBox>, Op>(
       m, "MultiplexorBox",
@@ -651,17 +686,14 @@ void init_boxes(py::module &m) {
       "map from bitstrings to " CLSOBJS(Op)
       "or a list of bitstring-" CLSOBJS(Op) " pairs")
       .def(
-              py::init([](const py_ctrl_op_map_t & bitstring_op_pairs){
-                  ctrl_op_map_t bit_op_map;
-                  for (const auto& bit_op_pair: bitstring_op_pairs){
-                      bit_op_map[bit_op_pair.first] = bit_op_pair.second;
-                  }
-                  return MultiplexorBox(bit_op_map);}),
+              py::init([](const py_ctrl_op_map_t_alt & bitstring_op_pairs){
+                  return MultiplexorBox(to_cpp_ctrl_op_map_t(bitstring_op_pairs));}),
       "Construct from a list of bitstring-" CLSOBJS(Op) "pairs\n\n"
       ":param bitstring_to_op_list: List of bitstring-" CLSOBJS(Op) "pairs\n",
       py::arg("bistring_to_op_list"))
       .def(
-          py::init<const ctrl_op_map_t &>(),
+              py::init([](const py_ctrl_op_map_t & bitstring_op_map){
+                  return MultiplexorBox(to_cpp_ctrl_op_map_t(bitstring_op_map));}),
           "Construct from a map from bitstrings to " CLSOBJS(Op) "\n\n"
           ":param op_map: Map from bitstrings to " CLSOBJS(Op) "\n",
           py::arg("op_map"))
@@ -688,19 +720,16 @@ void init_boxes(py::module &m) {
       "a map from bitstrings to " CLSOBJS(Op)
       "or a list of bitstring-" CLSOBJS(Op) " pairs")
       .def(
-              py::init([](const py_ctrl_op_map_t & bitstring_op_pairs){
-          ctrl_op_map_t bit_op_map;
-          for (const auto& bit_op_pair: bitstring_op_pairs){
-              bit_op_map[bit_op_pair.first] = bit_op_pair.second;
-          }
-          return MultiplexedRotationBox(bit_op_map);}),
+              py::init([](const py_ctrl_op_map_t_alt & bitstring_op_pairs){
+          return MultiplexedRotationBox(to_cpp_ctrl_op_map_t(bitstring_op_pairs));}),
           "Construct from a list of bitstring-" CLSOBJS(Op) "pairs\n\n"
           "All " CLSOBJS(Op) "  must share the same single-qubit rotation type: "
           "Rx, Ry, or Rz.\n\n"
           ":param bitstring_to_op_list: List of bitstring-" CLSOBJS(Op) "pairs\n",
           py::arg("bistring_to_op_list"))
       .def(
-          py::init<const ctrl_op_map_t &>(),
+              py::init([](const py_ctrl_op_map_t & bitstring_op_map){
+                  return MultiplexedRotationBox(to_cpp_ctrl_op_map_t(bitstring_op_map));}),
           "Construct from a map from bitstrings to :py:class:`Op` s."
           "All " CLSOBJS(Op) "  must share the same single-qubit rotation type: "
           "Rx, Ry, or Rz.\n\n"
@@ -758,12 +787,8 @@ void init_boxes(py::module &m) {
       "map from bitstrings to " CLSOBJS(Op)
       "or a list of bitstring-" CLSOBJS(Op) " pairs")
       .def(
-              py::init([](const py_ctrl_op_map_t & bitstring_op_pairs, bool impl_diag){
-          ctrl_op_map_t bit_op_map;
-          for (const auto& bit_op_pair: bitstring_op_pairs){
-              bit_op_map[bit_op_pair.first] = bit_op_pair.second;
-          }
-          return MultiplexedU2Box(bit_op_map, impl_diag);}),
+              py::init([](const py_ctrl_op_map_t_alt & bitstring_op_pairs, bool impl_diag){
+          return MultiplexedU2Box(to_cpp_ctrl_op_map_t(bitstring_op_pairs), impl_diag);}),
       "Construct from a list of bitstring-" CLSOBJS(Op) "pairs\n\n"
       "Only supports single qubit unitary gate types and "
       ":py:class:`Unitary1qBox`.\n\n"
@@ -772,7 +797,8 @@ void init_boxes(py::module &m) {
       "default to True.",
       py::arg("bistring_to_op_list"), py::arg("impl_diag") = true)
       .def(
-          py::init<const ctrl_op_map_t &, bool>(),
+              py::init([](const py_ctrl_op_map_t & bitstring_op_map, bool impl_diag){
+                  return MultiplexedU2Box(to_cpp_ctrl_op_map_t(bitstring_op_map), impl_diag);}),
           "Construct from a map from bitstrings to " CLSOBJS(Op) "."
           "Only supports single qubit unitary gate types and "
           ":py:class:`Unitary1qBox`.\n\n"
@@ -801,9 +827,6 @@ void init_boxes(py::module &m) {
           ":return: flag indicating whether to implement the final diagonal "
           "gate.");
 
-  typedef std::vector<std::pair<std::vector<bool>, std::vector<Op_ptr>>>
-      py_ctrl_tensored_op_map_t;
-
   py::class_<
       MultiplexedTensoredU2Box, std::shared_ptr<MultiplexedTensoredU2Box>, Op>(
       m, "MultiplexedTensoredU2Box",
@@ -811,19 +834,16 @@ void init_boxes(py::module &m) {
       "map from bitstrings to lists of " CLSOBJS(Op)
       "or a list of bitstring-list(" CLSOBJS(Op) ") pairs")
       .def(
-              py::init([](const py_ctrl_tensored_op_map_t & bitstring_op_pairs){
-          ctrl_tensored_op_map_t bit_op_map;
-          for (const auto& bit_op_pair: bitstring_op_pairs){
-              bit_op_map[bit_op_pair.first] = bit_op_pair.second;
-          }
-          return MultiplexedTensoredU2Box(bit_op_map);}),
+              py::init([](const py_ctrl_tensored_op_map_t_alt & bitstring_op_pairs){
+          return MultiplexedTensoredU2Box(to_cpp_ctrl_op_map_t(bitstring_op_pairs));}),
           "Construct from a list of bitstring-" CLSOBJS(Op) "pairs\n\n"
           "Only supports single qubit unitary gate types and "
           ":py:class:`Unitary1qBox`.\n\n"
           ":param bitstring_to_op_list: List of bitstring-List of " CLSOBJS(Op) " pairs\n",
           py::arg("bistring_to_op_list"))
       .def(
-          py::init<const ctrl_tensored_op_map_t &>(),
+              py::init([](const py_ctrl_tensored_op_map_t & bitstring_op_map){
+                  return MultiplexedTensoredU2Box(to_cpp_ctrl_op_map_t(bitstring_op_map));}),
           "Construct from a map from bitstrings to equal-sized lists of "
           CLSOBJS(Op) ". "
           "Only supports single qubit unitary gate types and "

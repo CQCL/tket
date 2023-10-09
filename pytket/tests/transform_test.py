@@ -67,7 +67,7 @@ import numpy as np
 import json
 import pytest
 
-from useful_typedefs import ParamType  # type: ignore
+from pytket.circuit.named_types import ParamType
 
 
 def get_test_circuit() -> Circuit:

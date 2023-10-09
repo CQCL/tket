@@ -46,7 +46,7 @@ from pytket.mapping import (
     MultiGateReorderRoutingMethod,
     BoxDecompositionRoutingMethod,
 )
-from useful_typedefs import ParamType  # type: ignore
+from pytket.circuit.named_types import ParamType
 
 
 def standard_pass_dict(content: Dict[str, Any]) -> Dict[str, Any]:

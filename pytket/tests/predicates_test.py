@@ -26,6 +26,7 @@ from pytket.circuit import (
     UnitID,
     Conditional,
 )
+from pytket.circuit.named_types import ParamType
 from pytket.pauli import Pauli
 from pytket.passes import (
     SequencePass,
@@ -86,10 +87,10 @@ from pytket.placement import Placement, GraphPlacement
 from pytket.transform import Transform, PauliSynthStrat, CXConfigType
 from pytket.passes import SynthesiseOQC
 import numpy as np
-from sympy import Symbol, Expr
-from typing import Dict, Any, List, cast, Union
+from sympy import Symbol
+from typing import Dict, Any, List, cast
 
-from useful_typedefs import ParamType as Param  # type: ignore
+from pytket.circuit.named_types import ParamType as Param
 
 
 circ2 = Circuit(1)
@@ -907,12 +908,12 @@ def test_PeepholeOptimise2Q() -> None:
 
 def test_rebase_custom_tk2() -> None:
     def _tk1_to_phase(
-        a: Union[Expr, float], b: Union[Expr, float], c: Union[Expr, float]
+        a: ParamType, b: ParamType, c: ParamType
     ) -> Circuit:
         return Circuit(1).Rz(c, 0).Rx(b, 0).Rz(a, 0)
 
     def _tk2_to_phase(
-        a: Union[Expr, float], b: Union[Expr, float], c: Union[Expr, float]
+        a: ParamType, b: ParamType, c: ParamType
     ) -> Circuit:
         return Circuit(2).ZZPhase(c, 0, 1).YYPhase(b, 0, 1).XXPhase(a, 0, 1)
 

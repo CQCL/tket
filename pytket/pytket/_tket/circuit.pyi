@@ -2634,7 +2634,7 @@ class MultiplexedRotationBox(Op):
     A user-defined multiplexed rotation gate (i.e. uniformly controlled single-axis rotations) specified by a map from bitstrings to :py:class:`Op` sor a list of bitstring-:py:class:`Op` s pairs
     """
     @typing.overload
-    def __init__(self, bistring_to_op_list: list[tuple[list[bool], Op]]) -> None:
+    def __init__(self, bistring_to_op_list: typing.Sequence[tuple[typing.Sequence[bool], Op]]) -> None:
         """
         Construct from a list of bitstring-:py:class:`Op` spairs
         
@@ -2643,7 +2643,7 @@ class MultiplexedRotationBox(Op):
         :param bitstring_to_op_list: List of bitstring-:py:class:`Op` spairs
         """
     @typing.overload
-    def __init__(self, op_map: dict[list[bool], Op]) -> None:
+    def __init__(self, op_map: dict[tuple[bool, ...], Op]) -> None:
         """
         Construct from a map from bitstrings to :py:class:`Op` s.All :py:class:`Op` s  must share the same single-qubit rotation type: Rx, Ry, or Rz.
         
@@ -2674,7 +2674,7 @@ class MultiplexedTensoredU2Box(Op):
     A user-defined multiplexed tensor product of U2 gates specified by a map from bitstrings to lists of :py:class:`Op` sor a list of bitstring-list(:py:class:`Op` s) pairs
     """
     @typing.overload
-    def __init__(self, bistring_to_op_list: list[tuple[list[bool], list[Op]]]) -> None:
+    def __init__(self, bistring_to_op_list: typing.Sequence[tuple[typing.Sequence[bool], typing.Sequence[Op]]]) -> None:
         """
         Construct from a list of bitstring-:py:class:`Op` spairs
         
@@ -2683,7 +2683,7 @@ class MultiplexedTensoredU2Box(Op):
         :param bitstring_to_op_list: List of bitstring-List of :py:class:`Op` s pairs
         """
     @typing.overload
-    def __init__(self, op_map: dict[list[bool], list[Op]]) -> None:
+    def __init__(self, op_map: dict[tuple[bool, ...], typing.Sequence[Op]]) -> None:
         """
         Construct from a map from bitstrings to equal-sized lists of :py:class:`Op` s. Only supports single qubit unitary gate types and :py:class:`Unitary1qBox`.
         
@@ -2706,7 +2706,7 @@ class MultiplexedU2Box(Op):
     A user-defined multiplexed U2 gate (i.e. uniformly controlled U2 gate) specified by a map from bitstrings to :py:class:`Op` sor a list of bitstring-:py:class:`Op` s pairs
     """
     @typing.overload
-    def __init__(self, bistring_to_op_list: list[tuple[list[bool], Op]], impl_diag: bool = True) -> None:
+    def __init__(self, bistring_to_op_list: typing.Sequence[tuple[typing.Sequence[bool], Op]], impl_diag: bool = True) -> None:
         """
         Construct from a list of bitstring-:py:class:`Op` spairs
         
@@ -2716,7 +2716,7 @@ class MultiplexedU2Box(Op):
         :param impl_diag: Whether to implement the final diagonal gate, default to True.
         """
     @typing.overload
-    def __init__(self, op_map: dict[list[bool], Op], impl_diag: bool = True) -> None:
+    def __init__(self, op_map: dict[tuple[bool, ...], Op], impl_diag: bool = True) -> None:
         """
         Construct from a map from bitstrings to :py:class:`Op` s.Only supports single qubit unitary gate types and :py:class:`Unitary1qBox`.
         
@@ -2744,14 +2744,14 @@ class MultiplexorBox(Op):
     A user-defined multiplexor (i.e. uniformly controlled operations) specified by a map from bitstrings to :py:class:`Op` sor a list of bitstring-:py:class:`Op` s pairs
     """
     @typing.overload
-    def __init__(self, bistring_to_op_list: list[tuple[list[bool], Op]]) -> None:
+    def __init__(self, bistring_to_op_list: typing.Sequence[tuple[typing.Sequence[bool], Op]]) -> None:
         """
         Construct from a list of bitstring-:py:class:`Op` spairs
         
         :param bitstring_to_op_list: List of bitstring-:py:class:`Op` spairs
         """
     @typing.overload
-    def __init__(self, op_map: dict[list[bool], Op]) -> None:
+    def __init__(self, op_map: dict[tuple[bool, ...], Op]) -> None:
         """
         Construct from a map from bitstrings to :py:class:`Op` s
         
@@ -3242,9 +3242,11 @@ class PhasePolyBox(Op):
         Construct from the number of qubits, the mapping from Qubit to index, the phase polynomial (map from bitstring to phase) and the linear transformation (boolean matrix)
         """
     @typing.overload
-    def __init__(self, n_qubits: int, qubit_indices: dict[pytket._tket.unit_id.Qubit, int], phase_polynomial: list[tuple[list[bool], sympy.Expr | float]], linear_transformation: NDArray[numpy.bool_]) -> None:
+    def __init__(self, n_qubits: int, qubit_indices: dict[pytket._tket.unit_id.Qubit, int], phase_polynomial: typing.Sequence[tuple[typing.Sequence[bool], sympy.Expr | float]], linear_transformation: NDArray[numpy.bool_]) -> None:
         """
         Construct from the number of qubits, the mapping from Qubit to index, the phase polynomial (list of bitstring phase pairs) and the linear transformation (boolean matrix)
+        
+        If any bitstring is repeated in the phase polynomial list, the last given value for that bistring will be used
         """
     @typing.overload
     def __init__(self, circuit: Circuit) -> None:
@@ -3436,7 +3438,7 @@ class ToffoliBox(Op):
     An operation that constructs a circuit to implement the specified permutation of classical basis states.
     """
     @typing.overload
-    def __init__(self, permutation: list[tuple[list[bool], list[bool]]], strat: ToffoliBoxSynthStrat, rotation_axis: OpType = OpType.Ry) -> None:
+    def __init__(self, permutation: typing.Sequence[tuple[list[bool], typing.Sequence[bool]]], strat: ToffoliBoxSynthStrat, rotation_axis: OpType = OpType.Ry) -> None:
         """
         Construct from a permutation of basis states
         
@@ -3445,7 +3447,7 @@ class ToffoliBox(Op):
         :param rotation_axis: the rotation axis of the multiplexors used in the decomposition. Can be either Rx or Ry. Only applicable to the Matching strategy. Default to Ry.
         """
     @typing.overload
-    def __init__(self, permutation: list[tuple[list[bool], list[bool]]], rotation_axis: OpType = OpType.Ry) -> None:
+    def __init__(self, permutation: typing.Sequence[tuple[list[bool], typing.Sequence[bool]]], rotation_axis: OpType = OpType.Ry) -> None:
         """
         Construct from a permutation of basis states and perform synthesis using the Matching strategy
         
@@ -3453,7 +3455,7 @@ class ToffoliBox(Op):
         :param rotation_axis: the rotation axis of the multiplexors used in the decomposition. Can be either Rx or Ry, default to Ry.
         """
     @typing.overload
-    def __init__(self, n_qubits: int, permutation: list[tuple[list[bool], list[bool]]], rotation_axis: OpType = OpType.Ry) -> None:
+    def __init__(self, n_qubits: int, permutation: typing.Sequence[tuple[list[bool], typing.Sequence[bool]]], rotation_axis: OpType = OpType.Ry) -> None:
         """
         Constructor for backward compatibility. Subject to deprecation.
         """
