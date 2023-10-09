@@ -23,6 +23,7 @@
 #include "py_operators.hpp"
 #include "tket/Utils/Json.hpp"
 #include "unit_downcast.hpp"
+#include "typecast.hpp"
 
 namespace py = pybind11;
 using json = nlohmann::json;
@@ -133,7 +134,7 @@ PYBIND11_MODULE(unit_id, m) {
           "col: The column index",
           py::arg("name"), py::arg("row"), py::arg("col"))
       .def(
-          py::init<const std::string &, std::vector<unsigned> &>(),
+          py::init<const std::string &, py::tket_custom::SequenceVec<unsigned> &>(),
           "Constructs an id with an arbitrary-dimensional "
           "index\n\n:param name: The readable name for the "
           "register\n:param index: The index vector",
@@ -185,7 +186,7 @@ PYBIND11_MODULE(unit_id, m) {
           "col: The column index",
           py::arg("name"), py::arg("row"), py::arg("col"))
       .def(
-          py::init<const std::string &, std::vector<unsigned> &>(),
+          py::init<const std::string &, py::tket_custom::SequenceVec<unsigned> &>(),
           "Constructs an id with an arbitrary-dimensional "
           "index\n\n:param name: The readable name for the "
           "register\n:param index: The index vector",
@@ -231,7 +232,7 @@ PYBIND11_MODULE(unit_id, m) {
           "col: The column index\n:param layer: The layer index",
           py::arg("name"), py::arg("row"), py::arg("col"), py::arg("layer"))
       .def(
-          py::init<const std::string &, std::vector<unsigned> &>(),
+          py::init<const std::string &, py::tket_custom::SequenceVec<unsigned> &>(),
           "Constructs an id with an arbitrary-dimensional "
           "index\n\n:param name: The readable name for the "
           "register\n:param index: The index vector",

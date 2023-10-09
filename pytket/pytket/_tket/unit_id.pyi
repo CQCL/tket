@@ -49,7 +49,7 @@ class Bit(UnitID):
         :param col: The column index
         """
     @typing.overload
-    def __init__(self, name: str, index: list[int]) -> None:
+    def __init__(self, name: str, index: typing.Sequence[int]) -> None:
         """
         Constructs an id with an arbitrary-dimensional index
         
@@ -191,7 +191,7 @@ class Node(Qubit):
         :param layer: The layer index
         """
     @typing.overload
-    def __init__(self, name: str, index: list[int]) -> None:
+    def __init__(self, name: str, index: typing.Sequence[int]) -> None:
         """
         Constructs an id with an arbitrary-dimensional index
         
@@ -245,7 +245,7 @@ class Qubit(UnitID):
         :param col: The column index
         """
     @typing.overload
-    def __init__(self, name: str, index: list[int]) -> None:
+    def __init__(self, name: str, index: typing.Sequence[int]) -> None:
         """
         Constructs an id with an arbitrary-dimensional index
         
