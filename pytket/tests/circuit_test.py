@@ -271,7 +271,7 @@ def test_symbolic_ops() -> None:
     c.Rx(alpha, 0)
     beta = fresh_symbol("alpha")
     c.CRz(beta * 2, 1, 0)
-    gamma = Symbol("gamma")
+    gamma = Symbol("gamma")  # type: ignore
     # https://github.com/CQCL/tket/issues/1068
     c.Rz(exp(gamma), 1)
     s_map = {alpha: 0.5, beta: 3.2, gamma: 1}
