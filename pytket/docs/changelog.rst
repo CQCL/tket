@@ -21,6 +21,7 @@ Minor new features:
 Fixes:
 
 * Handle symbolic angles in ``ZZPhaseToRz`` pass.
+* Bind ``sympy.exp()``.
 
 1.20.1 (September 2023)
 -----------------------

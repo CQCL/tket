@@ -238,6 +238,7 @@ struct type_caster<SymEngine::Expression> {
     SECONVERT(erf, erf)
     SECONVERT(erfc, erfc)
     SECONVERT(abs, Abs)
+    SECONVERT(exp, exp)
 #undef SECONVERT
     else if (isinstance(py_expr, sympy.attr("atan2"))) {
       tuple arg_tuple = get_checked_args(py_expr, 2);
