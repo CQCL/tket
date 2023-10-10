@@ -18,7 +18,7 @@
 #include <pybind11/stl.h>
 
 #include "binder_json.hpp"
-#include "tket/Utils/PauliStrings.hpp"
+#include "tket/Utils/PauliStrings2.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;
@@ -34,7 +34,7 @@ PYBIND11_MODULE(pauli, m) {
       .value("Z", Pauli::Z)
       .export_values();
 
-  py::class_<QubitPauliString>(
+  py::class_<SpPauliString>(
       m, "QubitPauliString",
       "A string of Pauli letters from the alphabet {I, X, Y, Z}, "
       "implemented as a sparse list, indexed by qubit.")
@@ -52,21 +52,20 @@ PYBIND11_MODULE(pauli, m) {
           py::init<QubitPauliMap>(),
           "Construct a QubitPauliString from a QubitPauliMap.", py::arg("map"))
       .def(
-          "__hash__",
-          [](const QubitPauliString &qps) { return hash_value(qps); })
-      .def("__repr__", &QubitPauliString::to_str)
-      .def("__eq__", &QubitPauliString::operator==)
-      .def("__ne__", &QubitPauliString::operator!=)
-      .def("__lt__", &QubitPauliString::operator<)
-      .def("__getitem__", &QubitPauliString::get)
-      .def("__setitem__", &QubitPauliString::set)
+          "__hash__", [](const SpPauliString &qps) { return qps.hash_value(); })
+      .def("__repr__", &SpPauliString::to_str)
+      .def("__eq__", &SpPauliString::operator==)
+      .def("__ne__", &SpPauliString::operator!=)
+      .def("__lt__", &SpPauliString::operator<)
+      .def("__getitem__", &SpPauliString::get<QubitPauliMap>)
+      .def("__setitem__", &SpPauliString::set<QubitPauliMap>)
       .def_property_readonly(
-          "map", [](const QubitPauliString &qps) { return qps.map; },
+          "map", [](const SpPauliString &qps) { return qps.string; },
           ":return: the QubitPauliString's underlying dict mapping "
           ":py:class:`Qubit` to :py:class:`Pauli`")
       .def(
           "to_list",
-          [](const QubitPauliString &qps) {
+          [](const SpPauliString &qps) {
             json j = qps;
             return j;
           },
@@ -75,21 +74,21 @@ PYBIND11_MODULE(pauli, m) {
           "entries, "
           "represented as dicts.")
       .def_static(
-          "from_list", [](const json &j) { return j.get<QubitPauliString>(); },
+          "from_list", [](const json &j) { return j.get<SpPauliString>(); },
           "Construct a new QubitPauliString instance from a JSON serializable "
           "list "
           "representation.")
       .def(
-          "compress", &QubitPauliString::compress,
+          "compress", &SpPauliString::compress<QubitPauliMap>,
           "Removes I terms to compress the sparse representation.")
       .def(
-          "commutes_with", &QubitPauliString::commutes_with,
+          "commutes_with", &SpPauliString::commutes_with<no_coeff_t>,
           ":return: True if the two strings commute, else False",
           py::arg("other"))
       .def(
           "to_sparse_matrix",
-          (CmplxSpMat(QubitPauliString::*)(void) const) &
-              QubitPauliString::to_sparse_matrix,
+          (CmplxSpMat(SpPauliString::*)(void) const) &
+              SpPauliString::to_sparse_matrix,
           "Represents the sparse string as a dense string (without "
           "padding for extra qubits) and generates the matrix for the "
           "tensor. Uses the ILO-BE convention, so ``Qubit(\"a\", 0)`` "
@@ -98,8 +97,8 @@ PYBIND11_MODULE(pauli, m) {
           "\n\n:return: a sparse matrix corresponding to the operator")
       .def(
           "to_sparse_matrix",
-          (CmplxSpMat(QubitPauliString::*)(const unsigned) const) &
-              QubitPauliString::to_sparse_matrix,
+          (CmplxSpMat(SpPauliString::*)(const unsigned) const) &
+              SpPauliString::to_sparse_matrix,
           "Represents the sparse string as a dense string over "
           "`n_qubits` qubits (sequentially indexed from 0 in the "
           "default register) and generates the matrix for the tensor. "
@@ -111,8 +110,8 @@ PYBIND11_MODULE(pauli, m) {
           py::arg("n_qubits"))
       .def(
           "to_sparse_matrix",
-          (CmplxSpMat(QubitPauliString::*)(const qubit_vector_t &) const) &
-              QubitPauliString::to_sparse_matrix,
+          (CmplxSpMat(SpPauliString::*)(const qubit_vector_t &) const) &
+              SpPauliString::to_sparse_matrix,
           "Represents the sparse string as a dense string and generates "
           "the matrix for the tensor. Orders qubits according to "
           "`qubits` (padding with identities if they are not in the "
@@ -124,9 +123,8 @@ PYBIND11_MODULE(pauli, m) {
           py::arg("qubits"))
       .def(
           "dot_state",
-          (Eigen::VectorXcd(QubitPauliString::*)(const Eigen::VectorXcd &)
-               const) &
-              QubitPauliString::dot_state,
+          (Eigen::VectorXcd(SpPauliString::*)(const Eigen::VectorXcd &) const) &
+              SpPauliString::dot_state,
           "Performs the dot product of the state with the pauli string. "
           "Maps the qubits of the statevector with sequentially-indexed "
           "qubits in the default register, with ``Qubit(0)`` being the "
@@ -137,9 +135,9 @@ PYBIND11_MODULE(pauli, m) {
           py::arg("state"))
       .def(
           "dot_state",
-          (Eigen::VectorXcd(QubitPauliString::*)(
+          (Eigen::VectorXcd(SpPauliString::*)(
               const Eigen::VectorXcd &, const qubit_vector_t &) const) &
-              QubitPauliString::dot_state,
+              SpPauliString::dot_state,
           "Performs the dot product of the state with the pauli string. "
           "Maps the qubits of the statevector according to the ordered "
           "list `qubits`, with ``qubits[0]`` being the most significant "
@@ -151,8 +149,8 @@ PYBIND11_MODULE(pauli, m) {
           py::arg("state"), py::arg("qubits"))
       .def(
           "state_expectation",
-          (Complex(QubitPauliString::*)(const Eigen::VectorXcd &) const) &
-              QubitPauliString::state_expectation,
+          (Complex(SpPauliString::*)(const Eigen::VectorXcd &) const) &
+              SpPauliString::state_expectation,
           "Calculates the expectation value of the state with the pauli "
           "string. Maps the qubits of the statevector with "
           "sequentially-indexed qubits in the default register, with "
@@ -163,9 +161,9 @@ PYBIND11_MODULE(pauli, m) {
           py::arg("state"))
       .def(
           "state_expectation",
-          (Complex(QubitPauliString::*)(
+          (Complex(SpPauliString::*)(
               const Eigen::VectorXcd &, const qubit_vector_t &) const) &
-              QubitPauliString::state_expectation,
+              SpPauliString::state_expectation,
           "Calculates the expectation value of the state with the pauli "
           "string. Maps the qubits of the statevector according to the "
           "ordered list `qubits`, with ``qubits[0]`` being the most "
@@ -177,11 +175,11 @@ PYBIND11_MODULE(pauli, m) {
           py::arg("state"), py::arg("qubits"))
 
       .def(py::pickle(
-          [](const QubitPauliString &qps) {
+          [](const SpPauliString &qps) {
             /* Hackery to avoid pickling an opaque object */
             std::list<Qubit> qubits;
             std::list<Pauli> paulis;
-            for (const std::pair<const Qubit, Pauli> &qp_pair : qps.map) {
+            for (const std::pair<const Qubit, Pauli> &qp_pair : qps.string) {
               qubits.push_back(qp_pair.first);
               paulis.push_back(qp_pair.second);
             }
@@ -191,16 +189,16 @@ PYBIND11_MODULE(pauli, m) {
             if (t.size() != 2)
               throw std::runtime_error(
                   "Invalid state: tuple size: " + std::to_string(t.size()));
-            return QubitPauliString(
+            return SpPauliString(
                 t[0].cast<std::list<Qubit>>(), t[1].cast<std::list<Pauli>>());
           }));
 
   m.def(
       "pauli_string_mult",
-      [](const QubitPauliString &qps1, const QubitPauliString &qps2) {
-        QubitPauliTensor product_tensor =
-            QubitPauliTensor(qps1) * QubitPauliTensor(qps2);
-        return std::pair<QubitPauliString, Complex>(
+      [](const SpPauliString &qps1, const SpPauliString &qps2) {
+        SpCxPauliTensor product_tensor =
+            SpCxPauliTensor(qps1) * SpCxPauliTensor(qps2);
+        return std::pair<SpPauliString, Complex>(
             product_tensor.string, product_tensor.coeff);
       },
       ":return: the product of two QubitPauliString objects as a pair "
@@ -215,10 +213,10 @@ PYBIND11_MODULE(pauli, m) {
       .def(
           py::init([](const std::vector<Pauli> &string, const int &coeff) {
             if (coeff == 1) {
-              return PauliStabiliser(string, true);
+              return PauliStabiliser(string, 0);
             }
             if (coeff == -1) {
-              return PauliStabiliser(string, false);
+              return PauliStabiliser(string, 2);
             }
             throw std::invalid_argument("Coefficient must be -1 or 1.");
           }),
@@ -227,8 +225,10 @@ PYBIND11_MODULE(pauli, m) {
       .def_property_readonly(
           "coeff",
           [](const PauliStabiliser &stabiliser) {
-            if (stabiliser.coeff) return 1;
-            return -1;
+            if (stabiliser.coeff % 4 == 0) return 1;
+            if (stabiliser.coeff % 4 == 2) return -1;
+            throw std::logic_error(
+                "Cannot obtain imaginary coefficient from Pauli Stabiliser.");
           },
           "The coefficient of the stabiliser")
       .def_property_readonly(

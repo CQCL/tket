@@ -323,6 +323,30 @@ class PauliTensor {
       : string(cast_container<DensePauliMap, QubitPauliMap>(_string)),
         coeff(_coeff) {}
 
+  template <typename PC = PauliContainer>
+  PauliTensor(
+      const std::list<Qubit> &qubits, const std::list<Pauli> &paulis,
+      const CoeffType &_coeff = default_coeff,
+      typename std::enable_if<std::is_same<PC, QubitPauliMap>::value>::type * =
+          0)
+      : string(), coeff(_coeff) {
+    if (qubits.size() != paulis.size()) {
+      throw std::logic_error(
+          "Mismatch of Qubits and Paulis upon QubitPauliString "
+          "construction");
+    }
+    std::list<Pauli>::const_iterator p_it = paulis.begin();
+    for (const Qubit &qb : qubits) {
+      Pauli p = *p_it;
+      if (string.find(qb) != string.end()) {
+        throw std::logic_error(
+            "Non-unique Qubit inserted into QubitPauliString map");
+      }
+      string[qb] = p;
+      ++p_it;
+    }
+  }
+
   template <typename CastContainer, typename CastCoeffType>
   operator PauliTensor<CastContainer, CastCoeffType>() const {
     return PauliTensor<CastContainer, CastCoeffType>(
@@ -515,6 +539,36 @@ class PauliTensor {
   CmplxSpMat to_sparse_matrix(const qubit_vector_t &qubits) const {
     return cast_coeff<CoeffType, Complex>(coeff) *
            tket::to_sparse_matrix<PauliContainer>(string, qubits);
+  }
+
+  Eigen::VectorXcd dot_state(const Eigen::VectorXcd &state) const {
+    // allowing room for big states
+    unsigned long long n = state.size();
+    if (!(n && (!(n & (n - 1)))))
+      throw std::logic_error("Statevector size is not a power of two.");
+    unsigned n_qubits = 0;
+    while (n) {
+      n >>= 1;
+      ++n_qubits;
+    }
+    --n_qubits;
+    return (to_sparse_matrix(n_qubits) * state);
+  }
+  Eigen::VectorXcd dot_state(
+      const Eigen::VectorXcd &state, const qubit_vector_t &qubits) const {
+    if (state.size() != 1 << qubits.size())
+      throw std::logic_error(
+          "Size of statevector does not match number of qubits passed to "
+          "dot_state");
+    return (to_sparse_matrix(qubits) * state);
+  }
+
+  Complex state_expectation(const Eigen::VectorXcd &state) const {
+    return state.dot(dot_state(state));
+  }
+  Complex state_expectation(
+      const Eigen::VectorXcd &state, const qubit_vector_t &qubits) const {
+    return state.dot(dot_state(state, qubits));
   }
 };
 

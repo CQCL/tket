@@ -123,7 +123,7 @@ PYBIND11_MODULE(partition, m) {
       .def(
           "add_result_for_term",
           (void(MeasurementSetup::*)(
-              const QubitPauliString &,
+              const SpPauliString &,
               const MeasurementSetup::MeasurementBitMap &)) &
               MeasurementSetup::add_result_for_term,
           "Add a new Pauli string with a corresponding BitMap", py::arg("term"),
