@@ -422,8 +422,94 @@ def test_wasmfilehandler_without_init() -> None:
         w = wasm.WasmFileHandler("testfile-without-init.wasm")
 
 
+def test_wasmfilehandler_without_init_no_check() -> None:
+    w = wasm.WasmFileHandler("testfile-without-init.wasm", check_file=False)
+    c = Circuit(6, 6)
+    c0 = c.add_c_register("c0", 3)
+    c1 = c.add_c_register("c1", 4)
+    c2 = c.add_c_register("c2", 5)
+
+    c.add_wasm_to_reg("multi", w, [c0, c1], [c2])
+    c.add_wasm_to_reg("add_one", w, [c2], [c2])
+    c.add_wasm_to_reg("no_return", w, [c2], [])
+    c.add_wasm_to_reg("no_parameters", w, [], [c2])
+
+    assert c.depth() == 4
+
+
+def test_wasmfilehandler_unvalid_file_1_c_32() -> None:
+    with pytest.raises(ValueError):
+        w = wasm.WasmFileHandler(
+            "wasm-generation/wasmfromcpp/unvalid-with-print-1-emcc.wasm", int_size=32
+        )
+
+
+def test_wasmfilehandler_unvalid_file_1_c_64() -> None:
+    with pytest.raises(ValueError):
+        w = wasm.WasmFileHandler(
+            "wasm-generation/wasmfromcpp/unvalid-with-print-1-emcc.wasm", int_size=64
+        )
+
+
+def test_wasmfilehandler_unvalid_file_1_e_32() -> None:
+    with pytest.raises(ValueError):
+        w = wasm.WasmFileHandler(
+            "wasm-generation/wasmfromcpp/unvalid-with-print-2-emcc.wasm", int_size=32
+        )
+
+
+def test_wasmfilehandler_unvalid_file_1_e_64() -> None:
+    with pytest.raises(ValueError):
+        w = wasm.WasmFileHandler(
+            "wasm-generation/wasmfromcpp/unvalid-with-print-2-emcc.wasm", int_size=64
+        )
+
+
+def test_wasmfilehandler_unvalid_file_1_c_32_no_check() -> None:
+    w = wasm.WasmFileHandler(
+        "wasm-generation/wasmfromcpp/unvalid-with-print-1-emcc.wasm",
+        int_size=32,
+        check_file=False,
+    )
+
+
+def test_wasmfilehandler_unvalid_file_1_c_64_no_check() -> None:
+    w = wasm.WasmFileHandler(
+        "wasm-generation/wasmfromcpp/unvalid-with-print-1-emcc.wasm",
+        int_size=64,
+        check_file=False,
+    )
+
+
+def test_wasmfilehandler_unvalid_file_1_e_32_no_check() -> None:
+    w = wasm.WasmFileHandler(
+        "wasm-generation/wasmfromcpp/unvalid-with-print-2-emcc.wasm",
+        int_size=32,
+        check_file=False,
+    )
+
+
+def test_wasmfilehandler_unvalid_file_1_e_64_no_check() -> None:
+    w = wasm.WasmFileHandler(
+        "wasm-generation/wasmfromcpp/unvalid-with-print-2-emcc.wasm",
+        int_size=64,
+        check_file=False,
+    )
+
+
+def test_wasmfilehandler_unvalid_file_1_e_32_no_check_repr() -> None:
+    w = wasm.WasmFileHandler(
+        "wasm-generation/wasmfromcpp/unvalid-with-print-2-emcc.wasm",
+        int_size=32,
+        check_file=False,
+    )
+    with pytest.raises(ValueError):
+        repr(w)
+
+
 def test_wasmfilehandler_repr() -> None:
     w = wasm.WasmFileHandler("testfile.wasm", int_size=32)
+
     assert (
         repr(w)
         == """Functions in wasm file with the uid 6a0a29e235cd5c60353254bc2b459e631d381cdd0bded7ae6cb44afb784bd2de:
@@ -500,6 +586,87 @@ unsupported function with unvalid parameter or result type: 'mixed_up'
 unsupported function with unvalid parameter or result type: 'mixed_up_2' 
 unsupported function with unvalid parameter or result type: 'mixed_up_3' 
 unsupported function with unvalid parameter or result type: 'unse_internal' 
+"""
+    )
+
+
+def test_wasmfilehandler_collatz_clang() -> None:
+    w = wasm.WasmFileHandler(
+        "wasm-generation/wasmfromcpp/collatz-clang.wasm", int_size=32
+    )
+    assert (
+        repr(w)
+        == """Functions in wasm file with the uid 87865ffefb62549d3c6ba8bdea5313edc7bf520255694b1407fbac0a6b233f79:
+function '__wasm_call_ctors' with 0 i32 parameter(s) and 0 i32 return value(s)
+function 'init' with 0 i32 parameter(s) and 0 i32 return value(s)
+function 'collatz' with 1 i32 parameter(s) and 1 i32 return value(s)
+"""
+    )
+
+
+def test_wasmfilehandler_multivalue_clang() -> None:
+    w = wasm.WasmFileHandler(
+        "wasm-generation/wasmfromcpp/multivalue-clang.wasm", int_size=32
+    )
+    assert (
+        repr(w)
+        == """Functions in wasm file with the uid 6f821422038eec251d2f4e6bf2b9a5717b18b5c96a8a8e01fb49f080d9610f6e:
+function '__wasm_call_ctors' with 0 i32 parameter(s) and 0 i32 return value(s)
+function 'init' with 0 i32 parameter(s) and 0 i32 return value(s)
+function 'divmod' with 2 i32 parameter(s) and 2 i32 return value(s)
+"""
+    )
+
+
+def test_wasmfilehandler_cpp_emcc() -> None:
+    w = wasm.WasmFileHandler(
+        "wasm-generation/wasmfromcpp/wasm-from-cpp-11-emcc.wasm", int_size=32
+    )
+    assert (
+        repr(w)
+        == """Functions in wasm file with the uid b3777860ea6f52263d23669f0abf92c98850670922299eff3ef0c676ea46b112:
+function '__wasm_call_ctors' with 0 i32 parameter(s) and 0 i32 return value(s)
+function 'init' with 0 i32 parameter(s) and 0 i32 return value(s)
+function 'myFunction' with 1 i32 parameter(s) and 0 i32 return value(s)
+function 'myFunction2' with 7 i32 parameter(s) and 1 i32 return value(s)
+function 'myFunction3' with 11 i32 parameter(s) and 1 i32 return value(s)
+function 'mightloop_returns1' with 0 i32 parameter(s) and 1 i32 return value(s)
+function 'longrun' with 0 i32 parameter(s) and 1 i32 return value(s)
+function 'verylongrun' with 0 i32 parameter(s) and 1 i32 return value(s)
+function 'get_v' with 0 i32 parameter(s) and 1 i32 return value(s)
+function 'get_c' with 0 i32 parameter(s) and 1 i32 return value(s)
+function 'get_b' with 0 i32 parameter(s) and 1 i32 return value(s)
+function '__errno_location' with 0 i32 parameter(s) and 1 i32 return value(s)
+function '__stdio_exit' with 0 i32 parameter(s) and 0 i32 return value(s)
+function 'emscripten_stack_init' with 0 i32 parameter(s) and 0 i32 return value(s)
+function 'emscripten_stack_get_free' with 0 i32 parameter(s) and 1 i32 return value(s)
+function 'emscripten_stack_get_base' with 0 i32 parameter(s) and 1 i32 return value(s)
+function 'emscripten_stack_get_end' with 0 i32 parameter(s) and 1 i32 return value(s)
+function 'stackSave' with 0 i32 parameter(s) and 1 i32 return value(s)
+function 'stackRestore' with 1 i32 parameter(s) and 0 i32 return value(s)
+function 'stackAlloc' with 1 i32 parameter(s) and 1 i32 return value(s)
+"""
+    )
+
+
+def test_wasmfilehandler_cpp_clang() -> None:
+    w = wasm.WasmFileHandler(
+        "wasm-generation/wasmfromcpp/wasm-from-cpp-00-clang.wasm", int_size=32
+    )
+    assert (
+        repr(w)
+        == """Functions in wasm file with the uid 191e8cd233c978de9898bff0974920221b038c5d93b706bb97d4aa099368f163:
+function '__wasm_call_ctors' with 0 i32 parameter(s) and 0 i32 return value(s)
+function 'init' with 0 i32 parameter(s) and 0 i32 return value(s)
+function 'myFunction' with 1 i32 parameter(s) and 0 i32 return value(s)
+function 'myFunction2' with 7 i32 parameter(s) and 1 i32 return value(s)
+function 'myFunction3' with 11 i32 parameter(s) and 1 i32 return value(s)
+function 'mightloop_returns1' with 0 i32 parameter(s) and 1 i32 return value(s)
+function 'longrun' with 0 i32 parameter(s) and 1 i32 return value(s)
+function 'verylongrun' with 0 i32 parameter(s) and 1 i32 return value(s)
+function 'get_v' with 0 i32 parameter(s) and 1 i32 return value(s)
+function 'get_c' with 0 i32 parameter(s) and 1 i32 return value(s)
+function 'get_b' with 0 i32 parameter(s) and 1 i32 return value(s)
 """
     )
 
