@@ -2050,7 +2050,7 @@ class Circuit:
         """
         Removes any Input-Output pairs in the DAG with no intervening operations, i.e. removes untouched qubits/bits from the circuit. This may occur when optimisations recognise that the operations on a qubit reduce to the identity, or when routing adds wires to "fill out" the architecture.
         """
-    def rename_units(self, map: dict[pytket._tket.unit_id.UnitID, pytket._tket.unit_id.UnitID]) -> bool:
+    def rename_units(self, map: dict[pytket._tket.unit_id.UnitID | pytket._tket.unit_id.Qubit | pytket._tket.unit_id.Bit, pytket._tket.unit_id.UnitID | pytket._tket.unit_id.Qubit | pytket._tket.unit_id.Bit]) -> bool:
         """
         Rename qubits and bits simultaneously according to the map of ids provided
         

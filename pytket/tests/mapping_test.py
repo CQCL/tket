@@ -11,7 +11,9 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from types import MappingProxyType
 
+from pytket.circuit.named_types import UnitIdMap
 from pytket.mapping import (
     MappingManager,
     RoutingMethodCircuit,
@@ -26,13 +28,14 @@ from pytket.architecture import Architecture
 from pytket import Circuit, OpType
 from pytket.circuit import UnitID, Node, PhasePolyBox, Qubit, CircBox
 from pytket.placement import Placement
-from typing import Tuple, Dict, cast
+from typing import Tuple, Dict
 import numpy as np
+
 
 # simple deterministic heuristic used for testing purposes
 def route_subcircuit_func(
     circuit: Circuit, architecture: Architecture
-) -> Tuple[bool, Circuit, Dict[UnitID, UnitID], Dict[UnitID, UnitID]]:
+) -> Tuple[bool, Circuit, UnitIdMap, UnitIdMap]:
     #     make a replacement circuit with identical unitds
     replacement_circuit = Circuit()
     for qb in circuit.qubits:
@@ -41,24 +44,23 @@ def route_subcircuit_func(
         replacement_circuit.add_bit(bit)
 
     # "place" unassigned logical qubits to physical qubits
-    unused_nodes = list(architecture.nodes)
-    relabelling_map = dict()
+    unused_nodes: list[Node] = []
+    relabelling_map: UnitIdMap = dict()
 
-    for qb in circuit.qubits:
-        node = cast(Node, qb)
-        if node in unused_nodes:
-            unused_nodes.remove(node)
+    for node in architecture.nodes:
+        if node not in circuit.qubits:
+            unused_nodes.append(node)
 
     for qb in circuit.qubits:
         if qb not in architecture.nodes:
-            relabelling_map[qb] = cast(Qubit, unused_nodes.pop())
+            relabelling_map[qb] = unused_nodes.pop()
         else:
             #           this is so later architecture.get_distance works
             #           yes this is obviously bad, buts its a simple test heuristic so who cares?!
             relabelling_map[qb] = qb
 
-    replacement_circuit.rename_units(cast(dict[UnitID, UnitID], relabelling_map))
-    permutation_map = dict()
+    replacement_circuit.rename_units(relabelling_map)
+    permutation_map: UnitIdMap = dict()
     for qb in replacement_circuit.qubits:
         permutation_map[qb] = qb
 
@@ -103,8 +105,8 @@ def route_subcircuit_func(
     return (
         True,
         replacement_circuit,
-        cast(dict[UnitID, UnitID], relabelling_map),
-        cast(dict[UnitID, UnitID], permutation_map),
+        relabelling_map,
+        permutation_map,
     )
 
 

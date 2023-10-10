@@ -13,7 +13,6 @@
 # limitations under the License.
 
 import json
-from typing import cast, Union
 
 from jsonschema import validate  # type: ignore
 from pathlib import Path
@@ -52,7 +51,7 @@ from pytket.circuit import (
 )
 from pytket.circuit.display import get_circuit_renderer, render_circuit_as_html
 from pytket.circuit.named_types import BitstringToOpList, BitstringToTensoredOpMap, BitstringToTensoredOpList, \
-    BitstringToOpMap, ParamType
+    BitstringToOpMap, ParamType, PermutationMap
 
 from pytket.pauli import Pauli
 from pytket.passes import (
@@ -506,7 +505,7 @@ def test_boxes() -> None:
     boxes = (cbox, mbox, u2qbox, u3qbox, ebox, pbox, qcbox)
     assert all(box == box for box in boxes)
     assert all(isinstance(box, Op) for box in boxes)
-    permutation = [([_0, _0], [_1, _1]), ([_1, _1], [_0, _0])]
+    permutation: PermutationMap = {(_0, _0): (_1, _1), (_1, _1): (_0, _0)}
     tb = ToffoliBox(permutation)
     assert tb.type == OpType.ToffoliBox
     unitary = tb.get_circuit().get_unitary()

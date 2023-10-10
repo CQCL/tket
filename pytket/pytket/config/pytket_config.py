@@ -14,7 +14,7 @@
 
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Any, ClassVar, Dict, Optional
+from typing import Any, ClassVar, Dict, Optional, Self
 from dataclasses import asdict, dataclass
 import json
 import os
@@ -95,7 +95,7 @@ class PytketExtConfig(ABC):
 
     @classmethod
     @abstractmethod
-    def from_extension_dict(cls, ext_dict: Dict[str, Any]) -> "PytketExtConfig":
+    def from_extension_dict(cls, ext_dict: Dict[str, Any]) -> Self:
         """Abstract method to build PytketExtConfig from dictionary serialized form."""
         ...
 
@@ -104,14 +104,14 @@ class PytketExtConfig(ABC):
         return asdict(self)
 
     @classmethod
-    def from_pytketconfig(cls, p_config: PytketConfig) -> "PytketExtConfig":
+    def from_pytketconfig(cls, p_config: PytketConfig) -> Self:
         """Build from PytketConfig instance."""
         if cls.ext_dict_key in p_config.extensions:
             return cls.from_extension_dict(p_config.extensions[cls.ext_dict_key])
         return cls.from_extension_dict({})
 
     @classmethod
-    def from_default_config_file(cls) -> "PytketExtConfig":
+    def from_default_config_file(cls) -> Self:
         """Load from default config file."""
         return cls.from_pytketconfig(load_config_file())
 

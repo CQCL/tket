@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import operator
-from typing import Callable, Dict, List, Tuple, Type, Union, cast
+from typing import Callable, Dict, List, Tuple, Type, Union, cast, TypeVar, Generic
 import json
 from pathlib import Path
 
@@ -63,7 +63,7 @@ from pytket.circuit.logic_exp import (
     reg_lt,
     reg_neq,
     if_bit,
-    if_not_bit,
+    if_not_bit, create_bit_logic_exp, create_reg_logic_exp,
 )
 
 from pytket.passes import DecomposeClassicalExp, FlattenRegisters
@@ -74,14 +74,6 @@ curr_file_path = Path(__file__).resolve().parent
 
 with open(curr_file_path.parent.parent / "schemas/circuit_v1.json", "r") as f:
     schema = json.load(f)
-
-
-def register_to_list(br: BitRegister) -> list[Bit]:
-    return br.to_list()
-
-
-def qregister_to_unit_id_list(br: QubitRegister) -> list[UnitID]:
-    return cast(list[UnitID], br.to_list())
 
 
 def print_commands(c: Circuit) -> None:
@@ -503,36 +495,26 @@ unsupported function with unvalid parameter or result type: 'unse_internal'
 """
     )
 
-
-def gen_reg(
-    name: str, size: int, reg_type: Union[Type[BitRegister], Type[QubitRegister]]
-) -> Union[BitRegister, QubitRegister]:
-    return reg_type(name, size)
-
-
+T = TypeVar("T")
+DrawType = Callable[[SearchStrategy[T]], T]
 @strategies.composite
 def bit_register(
-    draw: Callable,
+    draw: DrawType,
     name: SearchStrategy[str] = strategies.from_regex(reg_name_regex, fullmatch=True),
     size: SearchStrategy[int] = strategies.integers(min_value=2, max_value=32),
 ) -> BitRegister:
-    return cast(
-        BitRegister,
-        gen_reg(
+    return BitRegister(
             draw(name.filter(lambda nm: not nm.startswith("q"))),
-            draw(size),
-            BitRegister,
-        ),
-    )
+            draw(size))
 
 
 @strategies.composite
 def qubit_register(
-    draw: Callable,
+    draw: DrawType,
     name: SearchStrategy[str] = strategies.from_regex(reg_name_regex, fullmatch=True),
     size: SearchStrategy[int] = strategies.integers(min_value=0, max_value=32),
 ) -> QubitRegister:
-    return cast(QubitRegister, gen_reg(draw(name), draw(size), QubitRegister))
+    return QubitRegister(draw(name), draw(size))
 
 
 @given(
@@ -551,7 +533,7 @@ def test_registers(reg: Union[BitRegister, QubitRegister], index: int) -> None:
 
 @strategies.composite
 def bits(
-    draw: Callable,
+    draw: DrawType,
     name: SearchStrategy[str] = strategies.from_regex(reg_name_regex, fullmatch=True),
     index: SearchStrategy[int] = uint32,
 ) -> Bit:
@@ -560,22 +542,20 @@ def bits(
 
 @strategies.composite
 def primitive_bit_logic_exps(
-    draw: Callable,
+    draw: DrawType,
     ops: SearchStrategy[BitWiseOp] = strategies.sampled_from(BitWiseOp),
     bits: SearchStrategy[Bit] = bits(),
 ) -> BitLogicExp:
     op = draw(ops)
-
+    args = [draw(bits)]
     exp_type = LogicExp.factory(op)
-    args: List[Bit] = [draw(bits)]
     if issubclass(exp_type, BinaryOp):
         if issubclass(exp_type, PredicateExp):
             const_compare = draw(binary_digits)
-            args.append(const_compare)
+            args.append(Bit(const_compare))
         else:
             args.append(draw(bits))
-
-    exp = exp_type(*args)  # type: ignore
+    exp = create_bit_logic_exp(op, args)
     assert isinstance(exp, BitLogicExp)
     return exp
 
@@ -607,8 +587,9 @@ def test_bit_exp(bit_exp: BitLogicExp, constants: Tuple[int, int]) -> None:
     eval_val = bit_exp.eval_vals()
 
     assert eval_val in (0, 1)
+    assert isinstance(bit_exp.op, BitWiseOp)
 
-    correct_val = op_map[cast(BitWiseOp, bit_exp.op)](*bit_exp.args)
+    correct_val = op_map[bit_exp.op](*bit_exp.args)
 
     if isinstance(correct_val, bool):
         correct_val = int(correct_val)
@@ -644,7 +625,7 @@ def primitive_reg_logic_exps(
             args.append(draw(bit_regs))
     else:
         assert issubclass(exp_type, UnaryOp)
-    exp = exp_type(*args)  # type:ignore
+    exp = create_reg_logic_exp(op, args)
     assert isinstance(exp, RegLogicExp)
     return exp
 
@@ -687,7 +668,8 @@ def test_reg_exp(reg_exp: RegLogicExp, constants: Tuple[int, int]) -> None:
         RegWiseOp.NEG,
     }
     eval_val = reg_exp.eval_vals()
-    op = cast(RegWiseOp, reg_exp.op)
+    op = reg_exp.op
+    assert isinstance(op, RegWiseOp)
 
     correct_val = reg_exp if op in unsupported_ops else op_map[op](*reg_exp.args)
     if isinstance(correct_val, bool):
@@ -757,23 +739,25 @@ def composite_reg_logic_exps(
 
 @strategies.composite
 def bit_const_predicates(
-    draw: Callable,
-    operators: SearchStrategy[Callable] = strategies.sampled_from([if_bit, if_not_bit]),
+    draw: DrawType,
     exp: SearchStrategy[BitLogicExp] = composite_bit_logic_exps(),
+    operators: SearchStrategy[Callable[[Union[Bit, BitLogicExp]], PredicateExp]] = strategies.sampled_from([if_bit, if_not_bit]),
 ) -> PredicateExp:
-    return cast(PredicateExp, draw(operators)(draw(exp)))
+    func = draw(operators)
+    arg = draw(exp)
+    return func(arg) # type: ignore
 
 
 @strategies.composite
 def reg_const_predicates(
-    draw: Callable,
+    draw: DrawType,
     exp: SearchStrategy[RegLogicExp] = composite_reg_logic_exps(),
-    operators: SearchStrategy[Callable] = strategies.sampled_from(
+    operators: SearchStrategy[Callable[[Union[RegLogicExp, BitRegister], int], PredicateExp]] = strategies.sampled_from(
         [reg_eq, reg_neq, reg_lt, reg_gt, reg_leq, reg_geq]
     ),
     constants: SearchStrategy[int] = uint32,
 ) -> PredicateExp:
-    return cast(PredicateExp, draw(operators)(draw(exp), draw(constants)))
+    return draw(operators)(draw(exp), draw(constants)) # type: ignore
 
 
 @given(condition=strategies.one_of(bit_const_predicates(), reg_const_predicates()))
@@ -796,8 +780,8 @@ def test_regpredicate(condition: PredicateExp) -> None:
                 reg_added.add(inp)
     else:
         for inp in condition.all_inputs():
-            bit = cast(Bit, inp)
-            circ.add_bit(bit, reject_dups=False)
+            assert isinstance(inp, Bit)
+            circ.add_bit(inp, reject_dups=False)
 
     circ.X(qb, condition=condition)
     assert circ.n_gates_of_type(OpType.ClassicalExpBox) == 1
@@ -885,7 +869,7 @@ def test_decomposition_known() -> None:
         for b in bits:
             c.add_bit(b)
         for br in registers:
-            for b in register_to_list(br):
+            for b in br.to_list():
                 c.add_bit(b, reject_dups=False)
         c.add_q_register(qreg.name, qreg.size)
 
@@ -945,9 +929,9 @@ def test_decomposition_known() -> None:
         qreg[1], qreg[2], condition_bits=[temp_bits[2]], condition_value=1
     )
 
-    conditioned_circ.add_barrier(qregister_to_unit_id_list(qreg))
+    conditioned_circ.add_barrier(qreg.to_list())
 
-    registers_lists = [register_to_list(reg) for reg in registers]
+    registers_lists = [reg.to_list() for reg in registers]
 
     conditioned_circ.add_c_range_predicate(3, 3, registers_lists[0], temp_bits[3])
     conditioned_circ.H(qreg[2], condition_bits=[temp_bits[3]], condition_value=1)
@@ -1012,7 +996,7 @@ def test_decomposition_known() -> None:
         qreg[1], qreg[2], condition_bits=[temp_bits[2]], condition_value=1
     )
 
-    decomposed_circ.add_barrier(qregister_to_unit_id_list(qreg))
+    decomposed_circ.add_barrier(qreg.to_list())
 
     decomposed_circ.H(qreg[2], condition_bits=[temp_bits[3]], condition_value=1)
     decomposed_circ.X(qreg[3], condition_bits=[temp_bits[4]], condition_value=1)
@@ -1027,7 +1011,7 @@ def test_decomposition_known() -> None:
         temp_reg(0), BitRegister(temp_reg(1).name, 3), temp_reg(0)
     )
     decomposed_circ.add_c_range_predicate(
-        3, 3, register_to_list(temp_reg(0))[:3], temp_bits[9]
+        3, 3, temp_reg(0).to_list()[:3], temp_bits[9]
     )
     decomposed_circ.CX(
         qreg[3], qreg[4], condition_bits=[temp_bits[9]], condition_value=1
@@ -1088,7 +1072,7 @@ def test_add_expbox_bug() -> None:
     assert com.args == [b[1], b[0]]
 
     b1 = c.add_c_register("b1", 2)
-    c.add_classicalexpbox_register(b | b1, register_to_list(b))
+    c.add_classicalexpbox_register(b | b1, b.to_list())
     com = c.get_commands()[1]
     op = com.op
     assert isinstance(op, ClassicalExpBox)
@@ -1169,22 +1153,18 @@ def test_arithmetic_ops() -> None:
     b = circ.add_c_register("b", 3)
     c = circ.add_c_register("c", 3)
 
-    circ.add_classicalexpbox_register(a + b // c, register_to_list(a))
-    circ.add_classicalexpbox_register(b << 2, register_to_list(c))
-    circ.add_classicalexpbox_register(c >> 2, register_to_list(b))
-    circ.add_classicalexpbox_register(a**c - b, register_to_list(a))
+    circ.add_classicalexpbox_register(a + b // c, a.to_list())
+    circ.add_classicalexpbox_register(b << 2, c.to_list())
+    circ.add_classicalexpbox_register(c >> 2, b.to_list())
+    circ.add_classicalexpbox_register(a**c - b, a.to_list())
 
     commands = circ.get_commands()
     assert all(com.op.type == OpType.ClassicalExpBox for com in commands)
 
-    assert commands[0].args == register_to_list(b) + register_to_list(
-        c
-    ) + register_to_list(a)
-    assert commands[1].args == register_to_list(b) + register_to_list(c)
-    assert commands[2].args == register_to_list(c) + register_to_list(b)
-    assert commands[3].args == register_to_list(b) + register_to_list(
-        c
-    ) + register_to_list(a)
+    assert commands[0].args == b.to_list() + c.to_list() + a.to_list()
+    assert commands[1].args == b.to_list() + c.to_list()
+    assert commands[2].args == c.to_list() + b.to_list()
+    assert commands[3].args == b.to_list() + c.to_list() + a.to_list()
 
     ops = [com.op for com in commands]
     assert isinstance(ops[0], ClassicalExpBox)
@@ -1226,7 +1206,7 @@ def test_renaming() -> None:
     a = circ.add_c_register("a", 3)
     b = circ.add_c_register("b", 3)
     c = circ.add_c_register("c", 3)
-    circ.add_classicalexpbox_register(a + b // c, register_to_list(a))
+    circ.add_classicalexpbox_register(a + b // c, a.to_list())
     bmap = {a[0]: d[0]}
 
     with pytest.raises(ValueError) as e:
@@ -1241,7 +1221,7 @@ def test_flatten_registers_with_classical_exps() -> None:
     a = circ.add_c_register("a", 5)
     b = circ.add_c_register("b", 5)
     c = circ.add_c_register("c", 5)
-    circ.add_classicalexpbox_register(a | b, register_to_list(c))
+    circ.add_classicalexpbox_register(a | b, c.to_list())
     with pytest.raises(RuntimeError) as e:
         FlattenRegisters().apply(circ)
     err_msg = "Unable to flatten registers"

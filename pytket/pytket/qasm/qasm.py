@@ -76,7 +76,7 @@ from pytket.circuit.logic_exp import (
     RegEq,
     RegLogicExp,
     RegNeg,
-    RegWiseOp,
+    RegWiseOp, create_bit_logic_exp, create_predicate_exp, create_logic_exp,
 )
 from pytket.qasm.grammar import grammar
 from pytket.passes import auto_rebase_pass, RemoveRedundancies
@@ -523,7 +523,7 @@ class CircuitTransformer(Transformer):
             op: Union[BitWiseOp, RegWiseOp] = BitWiseOp.XOR
         else:
             op = openum(opstr)
-        return LogicExp.factory(op)(*args)  # type: ignore
+        return create_logic_exp(op, args)
 
     def _get_logic_args(
         self, tree: Sequence[Union[Token, LogicExp]]
@@ -574,25 +574,22 @@ class CircuitTransformer(Transformer):
     ipow = lambda self, tree: self._logic_exp(tree, "**")
 
     def neg(self, tree: List[Union[Token, LogicExp]]) -> RegNeg:
-        return RegNeg(self._get_logic_args(tree)[0][0])
+        arg = self._get_logic_args(tree)[0][0]
+        assert isinstance(arg, (RegLogicExp, BitRegister, int))
+        return RegNeg(arg)
 
     def cond(self, tree: List[Token]) -> PredicateExp:
+        op: Union[BitWiseOp, RegWiseOp]
+        arg: Union[Bit, BitRegister]
         if tree[1].type == "IARG":
             arg = Bit(*_extract_reg(tree[1]))
+            op = BitWiseOp(str(tree[2]))
         else:
-            arg = BitRegister(tree[1].value, self.c_registers[tree[1].value])  # type: ignore
+            arg = BitRegister(tree[1].value, self.c_registers[tree[1].value])
+            op = RegWiseOp(str(tree[2]))
 
-        op_enum = BitWiseOp if isinstance(arg, Bit) else RegWiseOp
-        comp = cast(
-            Type[PredicateExp],
-            LogicExp.factory(
-                cast(
-                    Union[BitWiseOp, RegWiseOp],
-                    op_enum(str(tree[2])),
-                )
-            ),
-        )
-        return comp(arg, int(tree[3].value))
+        return create_predicate_exp(op, [arg, int(tree[3].value)])
+
 
     def ifc(self, tree: Sequence) -> Iterable[CommandDict]:
         condition = cast(PredicateExp, tree[0])

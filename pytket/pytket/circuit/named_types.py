@@ -18,6 +18,7 @@ from typing import Union, Sequence
 from sympy import Expr
 
 from pytket._tket.circuit import Op
+from pytket._tket.unit_id import UnitID, Qubit, Bit
 
 ParamType = Union[float, Expr]
 """Type used for circuit parameters that can either
@@ -32,3 +33,7 @@ BitstringToOpMap = dict[tuple[bool, ...], Op]
 BitstringToOpList = Sequence[tuple[Sequence[bool], Op]]
 BitstringToTensoredOpMap = dict[tuple[bool, ...], Sequence[Op]]
 BitstringToTensoredOpList = Sequence[tuple[Sequence[bool], Sequence[Op]]]
+PermutationMap = dict[tuple[bool, ...], Sequence[bool]]
+PermutationList = Sequence[tuple[Sequence[bool], Sequence[bool]]]
+UnitIdType = Union[UnitID, Qubit, Bit]
+UnitIdMap = dict[UnitIdType, UnitIdType]

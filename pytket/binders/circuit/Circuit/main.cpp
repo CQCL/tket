@@ -46,6 +46,17 @@ namespace tket {
 
 const bit_vector_t no_bits;
 
+typedef std::variant<UnitID, Qubit, Bit> PyUnitID;
+UnitID to_cpp_unitid(const PyUnitID& py_unitid){
+    if (holds_alternative<UnitID>(py_unitid)){
+        return get<UnitID>(py_unitid);
+    }
+    if (holds_alternative<Qubit>(py_unitid)){
+        return get<Qubit>(py_unitid);
+    }
+    return get<Bit>(py_unitid);
+}
+
 void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c);
 void init_circuit_add_classical_op(
     py::class_<Circuit, std::shared_ptr<Circuit>> &c);
@@ -457,12 +468,18 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "the unused indices from 0.\n\n:param number: Number of "
           "qubits to add",
           py::arg("number"))
-      .def(
-          "rename_units", &Circuit::rename_units<UnitID, UnitID>,
-          "Rename qubits and bits simultaneously according to the map "
-          "of ids provided\n\n:param map: Dictionary from current ids "
-          "to new ids",
-          py::arg("map"))
+     .def(
+                  "rename_units", [](Circuit& self, const std::map<PyUnitID, PyUnitID>& py_map){
+                      std::map<UnitID, UnitID> cpp_map;
+                      for (const auto& pair: py_map){
+                          cpp_map[to_cpp_unitid(pair.first)] = to_cpp_unitid(pair.second);
+                      }
+                      return self.rename_units(cpp_map);
+                      },
+                  "Rename qubits and bits simultaneously according to the map "
+                  "of ids provided\n\n:param map: Dictionary from current ids "
+                  "to new ids",
+                  py::arg("map"))
       .def(
           "depth", &Circuit::depth,
           // for some reason, each c.depth() in this docstring causes stubgen to
