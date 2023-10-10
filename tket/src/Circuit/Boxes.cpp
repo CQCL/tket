@@ -28,6 +28,7 @@
 #include "tket/Ops/OpPtr.hpp"
 #include "tket/Utils/EigenConfig.hpp"
 #include "tket/Utils/Expression.hpp"
+#include "tket/Utils/HelperFunctions.hpp"
 #include "tket/Utils/Json.hpp"
 #include "tket/Utils/PauliStrings2.hpp"
 
@@ -341,8 +342,19 @@ bool CustomGate::is_clifford() const {
   return true;
 }
 
-QControlBox::QControlBox(const Op_ptr &op, unsigned n_controls)
-    : Box(OpType::QControlBox), op_(op), n_controls_(n_controls) {
+QControlBox::QControlBox(
+    const Op_ptr &op, unsigned n_controls,
+    const std::vector<bool> &control_state)
+    : Box(OpType::QControlBox),
+      op_(op),
+      n_controls_(n_controls),
+      control_state_(
+          control_state.empty() ? std::vector<bool>(n_controls, true)
+                                : control_state) {
+  if (n_controls != control_state_.size()) {
+    throw CircuitInvalidity(
+        "The size of control_state doesn't match the argument n_controls");
+  }
   op_signature_t inner_sig = op_->get_signature();
   n_inner_qubits_ = inner_sig.size();
   if (std::count(inner_sig.begin(), inner_sig.end(), EdgeType::Quantum) !=
@@ -357,7 +369,8 @@ QControlBox::QControlBox(const QControlBox &other)
     : Box(other),
       op_(other.op_),
       n_controls_(other.n_controls_),
-      n_inner_qubits_(other.n_inner_qubits_) {}
+      n_inner_qubits_(other.n_inner_qubits_),
+      control_state_(other.control_state_) {}
 
 Op_ptr QControlBox::symbol_substitution(
     const SymEngine::map_basic_basic &sub_map) const {
@@ -371,9 +384,9 @@ std::string QControlBox::get_command_str(const unit_vector_t &args) const {
   std::stringstream out;
   out << "qif (";
   if (n_controls_ > 0) {
-    out << args.at(0).repr();
+    out << args.at(0).repr() << " = " << control_state_.at(0);
     for (unsigned i = 1; i < n_controls_; ++i) {
-      out << ", " << args.at(i).repr();
+      out << ", " << args.at(i).repr() << " = " << control_state_.at(i);
     }
   }
   unit_vector_t inner_args(args.begin() + n_controls_, args.end());
@@ -387,32 +400,42 @@ void QControlBox::generate_circuit() const {
   std::iota(qbs.begin(), qbs.end(), 0);
   c.add_op(op_, qbs);
   c.decompose_boxes_recursively();
+  Circuit x_circ(n_controls_ + n_inner_qubits_);
+  for (unsigned i = 0; i < n_controls_; i++) {
+    if (!control_state_.at(i)) {
+      x_circ.add_op<unsigned>(OpType::X, {i});
+    }
+  }
   c = with_controls(c, n_controls_);
-  circ_ = std::make_shared<Circuit>(c);
+  circ_ = std::make_shared<Circuit>(x_circ >> c >> x_circ);
 }
 
 Op_ptr QControlBox::dagger() const {
   const Op_ptr inner_dagger = op_->dagger();
-  return std::make_shared<QControlBox>(inner_dagger, n_controls_);
+  return std::make_shared<QControlBox>(
+      inner_dagger, n_controls_, control_state_);
 }
 
 Op_ptr QControlBox::transpose() const {
   const Op_ptr inner_transpose = op_->transpose();
-  return std::make_shared<QControlBox>(inner_transpose, n_controls_);
+  return std::make_shared<QControlBox>(
+      inner_transpose, n_controls_, control_state_);
 }
 
 std::optional<Eigen::MatrixXcd> QControlBox::get_box_unitary() const {
   const unsigned inner_sz = 1u << n_inner_qubits_;
   const unsigned sz = inner_sz << n_controls_;
   Eigen::MatrixXcd u = Eigen::MatrixXcd::Identity(sz, sz);
-  u.bottomRightCorner(inner_sz, inner_sz) = op_->get_unitary();
+  unsigned long long block_pos = bin_to_dec(control_state_) * inner_sz;
+  u.block(block_pos, block_pos, inner_sz, inner_sz) = op_->get_unitary();
   return u;
 }
 
 bool QControlBox::is_equal(const Op &op_other) const {
   const QControlBox &other = dynamic_cast<const QControlBox &>(op_other);
   if (id_ == other.get_id()) return true;
-  return n_controls_ == other.n_controls_ && *op_ == *other.op_;
+  return n_controls_ == other.n_controls_ &&
+         control_state_ == other.control_state_ && *op_ == *other.op_;
 }
 
 ProjectorAssertionBox::ProjectorAssertionBox(
@@ -621,13 +644,19 @@ nlohmann::json QControlBox::to_json(const Op_ptr &op) {
   const auto &box = static_cast<const QControlBox &>(*op);
   nlohmann::json j = core_box_json(box);
   j["n_controls"] = box.get_n_controls();
+  j["control_state"] = bin_to_dec(box.get_control_state());
   j["op"] = box.get_op();
   return j;
 }
 
 Op_ptr QControlBox::from_json(const nlohmann::json &j) {
-  QControlBox box =
-      QControlBox(j.at("op").get<Op_ptr>(), j.at("n_controls").get<unsigned>());
+  unsigned n_controls = j.at("n_controls").get<unsigned>();
+  std::vector<bool> control_state;
+  if (j.contains("control_state")) {
+    control_state =
+        dec_to_bin(j.at("control_state").get<unsigned>(), n_controls);
+  }
+  QControlBox box(j.at("op").get<Op_ptr>(), n_controls, control_state);
   return set_box_id(
       box,
       boost::lexical_cast<boost::uuids::uuid>(j.at("id").get<std::string>()));

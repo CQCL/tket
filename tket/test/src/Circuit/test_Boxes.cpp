@@ -21,6 +21,7 @@
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/ConjugationBox.hpp"
 #include "tket/Circuit/DiagonalBox.hpp"
 #include "tket/Circuit/Multiplexor.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
@@ -786,6 +787,49 @@ SCENARIO("QControlBox", "[boxes]") {
     unit_vector_t barrier_args2{Qubit(3)};
     REQUIRE(it->get_args() == barrier_args2);
   }
+  GIVEN("Unitary2qBox controlled by state") {
+    Circuit c0(2);
+    c0.add_op<unsigned>(OpType::Rx, 0.2, {0});
+    c0.add_op<unsigned>(OpType::Ry, 1.2, {1});
+    c0.add_op<unsigned>(OpType::CX, {0, 1});
+    c0.add_op<unsigned>(OpType::Rz, 0.4, {1});
+    c0.add_op<unsigned>(OpType::H, {0});
+    c0.add_op<unsigned>(OpType::CX, {1, 0});
+    Eigen::Matrix4cd m0 = get_matrix_from_2qb_circ(c0);
+    Unitary2qBox ubox(m0);
+    Op_ptr op = std::make_shared<Unitary2qBox>(ubox);
+    QControlBox qcbox(op, 2, {0, 1});
+    std::shared_ptr<Circuit> c = qcbox.to_circuit();
+    const Eigen::MatrixXcd U = tket_sim::get_unitary(*c);
+    Eigen::MatrixXcd V = Eigen::MatrixXcd::Identity(16, 16);
+    for (unsigned i = 0; i < 4; i++) {
+      for (unsigned j = 0; j < 4; j++) {
+        V(4 + i, 4 + j) = m0(i, j);
+      }
+    }
+    REQUIRE(U.isApprox(V));
+    // check get_box_unitary is correct
+    std::optional<Eigen::MatrixXcd> box_u = qcbox.get_box_unitary();
+    REQUIRE(V.isApprox(box_u.value()));
+  }
+  GIVEN("Random unitary box controlled by state") {
+    Eigen::MatrixXcd u = random_unitary(8, 1);
+    Unitary3qBox ubox(u);
+    Op_ptr op = std::make_shared<Unitary3qBox>(ubox);
+    QControlBox qcbox(op, 3, {1, 0, 0});
+    std::shared_ptr<Circuit> c = qcbox.to_circuit();
+    const Eigen::MatrixXcd circ_u = tket_sim::get_unitary(*c);
+    Eigen::MatrixXcd V = Eigen::MatrixXcd::Identity(64, 64);
+    for (unsigned i = 0; i < 8; i++) {
+      for (unsigned j = 0; j < 8; j++) {
+        V(32 + i, 32 + j) = u(i, j);
+      }
+    }
+    REQUIRE(circ_u.isApprox(V));
+    // check get_box_unitary is correct
+    std::optional<Eigen::MatrixXcd> box_u = qcbox.get_box_unitary();
+    REQUIRE(V.isApprox(box_u.value()));
+  }
 }
 
 SCENARIO("Unitary3qBox", "[boxes]") {
@@ -937,20 +981,26 @@ SCENARIO("Checking equality", "[boxes]") {
     Circuit u(2);
     u.add_op<unsigned>(OpType::CX, {0, 1});
     Op_ptr op = std::make_shared<CircBox>(CircBox(u));
-    QControlBox qcbox(op);
+    QControlBox qcbox(op, 3, {1, 0, 1});
     WHEN("both arguments are equal") { REQUIRE(qcbox == qcbox); }
     WHEN("different ids but equivalent ops") {
       Circuit u2(2);
       u2.add_op<unsigned>(OpType::CX, {0, 1});
       Op_ptr op2 = std::make_shared<CircBox>(CircBox(u2));
-      QControlBox qcbox2(op2);
+      QControlBox qcbox2(op2, 3, {1, 0, 1});
       REQUIRE(qcbox == qcbox2);
     }
     WHEN("different ids, equivalent ops, but different types") {
       Op_ptr op3 = get_op_ptr(OpType::CX);
-      REQUIRE(qcbox != QControlBox(op3));
+      REQUIRE(qcbox != QControlBox(op3, 3, {1, 0, 1}));
     }
-    WHEN("both arguments are different") {
+    WHEN("different control states") {
+      REQUIRE(qcbox != QControlBox(op, 3, {0, 0, 1}));
+    }
+    WHEN("equivalent control states") {
+      REQUIRE(QControlBox(op, 3) == QControlBox(op, 3, {1, 1, 1}));
+    }
+    WHEN("all arguments are different") {
       Op_ptr op4 = get_op_ptr(OpType::Y);
       QControlBox qcbox4(op4);
       REQUIRE(qcbox != qcbox4);
@@ -1219,6 +1269,38 @@ SCENARIO("Checking equality", "[boxes]") {
           PauliExpCommutingSetBox(
               {SymPauliTensor({Pauli::Y}, 1.0), SymPauliTensor({Pauli::I}, 1.2),
                SymPauliTensor({Pauli::I}, -0.5)}));
+    }
+  }
+  GIVEN("ConjugationBox") {
+    Circuit compute(2);
+    compute.add_op<unsigned>(OpType::CRx, 0.5, {1, 0});
+    Op_ptr compute_op = std::make_shared<CircBox>(CircBox(compute));
+    Circuit action(2);
+    action.add_op<unsigned>(OpType::H, {0});
+    Op_ptr action_op = std::make_shared<CircBox>(CircBox(action));
+    ConjugationBox box(compute_op, action_op);
+    WHEN("all arguments are equal") { REQUIRE(box == box); }
+    WHEN("different ids but equivalent ops") {
+      REQUIRE(box == ConjugationBox(compute_op, action_op));
+    }
+    WHEN("different uncompute") {
+      Circuit uncompute(2);
+      uncompute.add_op<unsigned>(OpType::CZ, {0, 1});
+      Op_ptr uncompute_op = std::make_shared<CircBox>(CircBox(uncompute));
+      REQUIRE(box != ConjugationBox(compute_op, action_op, uncompute_op));
+    }
+    WHEN("equivalent uncompute") {
+      REQUIRE(
+          box == ConjugationBox(compute_op, action_op, compute_op->dagger()));
+      REQUIRE(
+          ConjugationBox(compute_op, action_op, compute_op->dagger()) ==
+          ConjugationBox(compute_op, action_op));
+    }
+    WHEN("different args") {
+      Circuit compute_2(2);
+      compute_2.add_op<unsigned>(OpType::CZ, {0, 1});
+      Op_ptr compute_2_op = std::make_shared<CircBox>(CircBox(compute_2));
+      REQUIRE(box != ConjugationBox(compute_2_op, action_op));
     }
   }
 }

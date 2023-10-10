@@ -524,6 +524,11 @@
           "minimum": 0,
           "description": "Number of qubits a QControlBox is conditional on."
         },
+        "control_state": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Control state expressed as an integer."
+        },
         "n_i": {
           "type": "integer",
           "minimum": 0
@@ -579,6 +584,21 @@
         "diagonal": {
           "$ref": "#/definitions/matrix",
           "description": "Diagonal matrix represented by DiagonalBox."
+        },
+        "compute": {
+          "$ref": "#/definitions/operation",
+          "description": "Compute operation in ConjugationBox."
+        },
+        "action": {
+          "$ref": "#/definitions/operation",
+          "description": "Action operation in ConjugationBox."
+        },
+        "uncompute": {
+          "anyOf": [
+            {"$ref": "#/definitions/operation"},
+            {"type": "null"}
+          ],
+          "description": "Uncompute operation in ConjugationBox."
         },
         "upper_triangle": {
           "type": "boolean",
@@ -843,6 +863,24 @@
           "if": {
             "properties": {
               "type": {
+                "const": "ConjugationBox"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "compute",
+              "action"
+            ],
+            "optional": [
+              "uncompute"
+            ]
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
                 "const": "PhasePolyBox"
               }
             }
@@ -882,7 +920,8 @@
           "then": {
             "required": [
               "n_controls",
-              "op"
+              "op",
+              "control_state"
             ]
           }
         },
