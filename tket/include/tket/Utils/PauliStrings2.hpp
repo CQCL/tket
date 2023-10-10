@@ -40,6 +40,12 @@ NLOHMANN_JSON_SERIALIZE_ENUM(
  */
 enum class CXConfigType { Snake, Tree, Star, MultiQGate };
 
+NLOHMANN_JSON_SERIALIZE_ENUM(
+    CXConfigType, {{CXConfigType::Snake, "Snake"},
+                   {CXConfigType::Tree, "Tree"},
+                   {CXConfigType::Star, "Star"},
+                   {CXConfigType::MultiQGate, "MultiQGate"}});
+
 typedef Eigen::SparseMatrix<Complex, Eigen::ColMajor> CmplxSpMat;
 
 typedef std::map<Qubit, Pauli> QubitPauliMap;

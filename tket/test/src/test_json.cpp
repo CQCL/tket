@@ -1157,12 +1157,12 @@ SCENARIO("Test MeasurementSetup serializations") {
     ms.add_measurement_circuit(mc2);
     Qubit q0(q_default_reg(), 0);
     Qubit q1(q_default_reg(), 1);
-    SpPauliString ii;
-    SpPauliString zi({{q0, Pauli::Z}});
-    SpPauliString iz({{q1, Pauli::Z}});
-    SpPauliString zz({{q0, Pauli::Z}, {q1, Pauli::Z}});
-    SpPauliString xx({{q0, Pauli::X}, {q1, Pauli::X}});
-    SpPauliString yy({{q0, Pauli::Y}, {q1, Pauli::Y}});
+    QubitPauliMap ii;
+    QubitPauliMap zi({{q0, Pauli::Z}});
+    QubitPauliMap iz({{q1, Pauli::Z}});
+    QubitPauliMap zz({{q0, Pauli::Z}, {q1, Pauli::Z}});
+    QubitPauliMap xx({{q0, Pauli::X}, {q1, Pauli::X}});
+    QubitPauliMap yy({{q0, Pauli::Y}, {q1, Pauli::Y}});
     ms.add_result_for_term(ii, {0, {}, false});
     ms.add_result_for_term(zi, {0, {0}, false});
     ms.add_result_for_term(iz, {0, {1}, false});

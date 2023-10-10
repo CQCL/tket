@@ -66,7 +66,9 @@ PYBIND11_MODULE(pauli, m) {
       .def(
           "to_list",
           [](const SpPauliString &qps) {
-            json j = qps;
+            // Just return the QubitPauliMap for backwards compatibility with
+            // before templated PauliTensor
+            json j = qps.string;
             return j;
           },
           "A JSON-serializable representation of the QubitPauliString.\n\n"
@@ -74,7 +76,8 @@ PYBIND11_MODULE(pauli, m) {
           "entries, "
           "represented as dicts.")
       .def_static(
-          "from_list", [](const json &j) { return j.get<SpPauliString>(); },
+          "from_list",
+          [](const json &j) { return SpPauliString(j.get<QubitPauliMap>()); },
           "Construct a new QubitPauliString instance from a JSON serializable "
           "list "
           "representation.")
