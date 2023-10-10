@@ -13,7 +13,7 @@
 # limitations under the License.
 
 import operator
-from typing import Callable, Dict, List, Tuple, Type, Union, cast, TypeVar, Generic
+from typing import Callable, Dict, List, Tuple, Union, TypeVar
 import json
 from pathlib import Path
 
@@ -65,6 +65,7 @@ from pytket.circuit.logic_exp import (
     if_bit,
     if_not_bit, create_bit_logic_exp, create_reg_logic_exp,
 )
+from pytket.circuit.named_types import RenameUnitsMap
 
 from pytket.passes import DecomposeClassicalExp, FlattenRegisters
 
@@ -706,7 +707,7 @@ def composite_bit_logic_exps(
 
 @strategies.composite
 def composite_reg_logic_exps(
-    draw: Callable,
+    draw: DrawType,
     regs: SearchStrategy[BitRegister] = bit_register(),
     constants: SearchStrategy[int] = uint32,
     operators: SearchStrategy[Callable] = strategies.sampled_from(
@@ -734,7 +735,8 @@ def composite_reg_logic_exps(
             exp = chosen_operator(exp, second_operand)
             if isinstance(second_operand, BitRegister):
                 used_reg_names.add(second_operand.name)
-    return cast(RegLogicExp, exp)
+    assert isinstance(exp, RegLogicExp)
+    return exp
 
 
 @strategies.composite
@@ -775,8 +777,8 @@ def test_regpredicate(condition: PredicateExp) -> None:
         reg_added = set()
         for inp in condition.all_inputs():
             if inp not in reg_added:
-                reg = cast(BitRegister, inp)
-                circ.add_c_register(reg)
+                assert isinstance(inp, BitRegister)
+                circ.add_c_register(inp)
                 reg_added.add(inp)
     else:
         for inp in condition.all_inputs():
@@ -1185,7 +1187,7 @@ def test_renaming() -> None:
     circ.add_classicalexpbox_bit(a[0] & b[0] | c[0], [a[0]])
     circ.add_classicalexpbox_bit(a[0] & c[2], [c[0]])
     d = [Bit("d", index) for index in range(0, 3)]
-    bmap = cast(dict[UnitID, UnitID], {a[0]: d[0], b[0]: d[1], c[0]: d[2]})
+    bmap: RenameUnitsMap  = {a[0]: d[0], b[0]: d[1], c[0]: d[2]}
     original_commands = circ.get_commands()
     assert circ.rename_units(bmap)
     commands = circ.get_commands()

@@ -37,3 +37,4 @@ PermutationMap = dict[tuple[bool, ...], Sequence[bool]]
 PermutationList = Sequence[tuple[Sequence[bool], Sequence[bool]]]
 UnitIdType = Union[UnitID, Qubit, Bit]
 UnitIdMap = dict[UnitIdType, UnitIdType]
+RenameUnitsMap = UnitIdMap
