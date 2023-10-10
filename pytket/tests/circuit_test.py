@@ -64,7 +64,8 @@ from pytket.transform import Transform
 import numpy as np
 from scipy.linalg import block_diag
 import sympy
-from sympy import Symbol, pi, sympify, functions, Expr
+from sympy import Symbol, pi, sympify, functions, Expr, exp
+import math
 from math import sqrt
 
 import pytest
@@ -270,9 +271,12 @@ def test_symbolic_ops() -> None:
     c.Rx(alpha, 0)
     beta = fresh_symbol("alpha")
     c.CRz(beta * 2, 1, 0)
-    s_map = {alpha: 0.5, beta: 3.2}
+    gamma = Symbol("gamma")
+    # https://github.com/CQCL/tket/issues/1068
+    c.Rz(exp(gamma), 1)
+    s_map = {alpha: 0.5, beta: 3.2, gamma: 1}
     assert c.is_symbolic()
-    assert c.free_symbols() == {alpha, beta}
+    assert c.free_symbols() == {alpha, beta, gamma}
     c.symbol_substitution(s_map)
     assert not c.is_symbolic()
 
@@ -280,6 +284,7 @@ def test_symbolic_ops() -> None:
     assert beta.__str__() == "alpha_1"  # type: ignore
     assert np.allclose(np.asarray(commands[0].op.params), [0.5], atol=1e-10)
     assert np.allclose(np.asarray(commands[1].op.params), [2.4], atol=1e-10)
+    assert np.allclose(np.asarray(commands[2].op.params), [math.e], atol=1e-10)
 
 
 def test_symbolic_circbox() -> None:
