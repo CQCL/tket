@@ -73,6 +73,8 @@ bool PauliExpBox::is_equal(const Op &op_other) const {
 nlohmann::json PauliExpBox::to_json(const Op_ptr &op) {
   const auto &box = static_cast<const PauliExpBox &>(*op);
   nlohmann::json j = core_box_json(box);
+  // Serialise paulis and phase separately for backwards compatibility with
+  // before templated PauliTensor
   j["paulis"] = box.get_paulis();
   j["phase"] = box.get_phase();
   j["cx_config"] = box.get_cx_config();
@@ -163,6 +165,8 @@ bool PauliExpPairBox::is_equal(const Op &op_other) const {
 nlohmann::json PauliExpPairBox::to_json(const Op_ptr &op) {
   const auto &box = static_cast<const PauliExpPairBox &>(*op);
   nlohmann::json j = core_box_json(box);
+  // Encode pauli strings and phases separately for backwards compatibility from
+  // before templated PauliTensor
   j["paulis_pair"] = box.get_paulis_pair();
   j["phase_pair"] = box.get_phase_pair();
   j["cx_config"] = box.get_cx_config();
@@ -324,15 +328,25 @@ bool PauliExpCommutingSetBox::is_equal(const Op &op_other) const {
 nlohmann::json PauliExpCommutingSetBox::to_json(const Op_ptr &op) {
   const auto &box = static_cast<const PauliExpCommutingSetBox &>(*op);
   nlohmann::json j = core_box_json(box);
-  j["pauli_gadgets"] = box.get_pauli_gadgets();
+  // Encode SymPauliTensor as unlabelled pair of Pauli vector and Expr for
+  // backwards compatibility from before templated PauliTensor
+  std::vector<std::pair<std::vector<Pauli>, Expr>> gadget_encoding;
+  for (const SymPauliTensor &g : box.get_pauli_gadgets())
+    gadget_encoding.push_back({g.string, g.coeff});
+  j["pauli_gadgets"] = gadget_encoding;
   j["cx_config"] = box.get_cx_config();
   return j;
 }
 
 Op_ptr PauliExpCommutingSetBox::from_json(const nlohmann::json &j) {
-  PauliExpCommutingSetBox box = PauliExpCommutingSetBox(
-      j.at("pauli_gadgets").get<std::vector<SymPauliTensor>>(),
-      j.at("cx_config").get<CXConfigType>());
+  std::vector<std::pair<std::vector<Pauli>, Expr>> gadget_encoding =
+      j.at("pauli_gadgets")
+          .get<std::vector<std::pair<std::vector<Pauli>, Expr>>>();
+  std::vector<SymPauliTensor> gadgets;
+  for (const std::pair<std::vector<Pauli>, Expr> &g : gadget_encoding)
+    gadgets.push_back(SymPauliTensor(g.first, g.second));
+  PauliExpCommutingSetBox box =
+      PauliExpCommutingSetBox(gadgets, j.at("cx_config").get<CXConfigType>());
   return set_box_id(
       box,
       boost::lexical_cast<boost::uuids::uuid>(j.at("id").get<std::string>()));

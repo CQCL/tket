@@ -130,7 +130,17 @@ void to_json(nlohmann::json &j, const MeasurementSetup &setup) {
   std::sort(map_list.begin(), map_list.end(), [](auto pair1, auto pair2) {
     return pair1.first < pair2.first;
   });
-  j["result_map"] = map_list;
+  std::vector<std::pair<
+      QubitPauliMap, std::vector<MeasurementSetup::MeasurementBitMap>>>
+      map_encoding;
+  for (const std::pair<
+           SpPauliString, std::vector<MeasurementSetup::MeasurementBitMap>>
+           &tensor_map : map_list) {
+    map_encoding.push_back({tensor_map.first.string, tensor_map.second});
+  }
+  // Convert SpPauliString to QubitPauliMap for backwards compatibility with
+  // before templated PauliTensor
+  j["result_map"] = map_encoding;
   j["circs"] = setup.get_circs();
 }
 
@@ -142,7 +152,7 @@ void from_json(const nlohmann::json &j, MeasurementSetup &setup) {
     for (auto second_it = it->at(1).begin(); second_it != it->at(1).end();
          ++second_it) {
       setup.add_result_for_term(
-          it->at(0).get<SpPauliString>(),
+          SpPauliString(it->at(0).get<QubitPauliMap>()),
           second_it->get<MeasurementSetup::MeasurementBitMap>());
     }
   }
