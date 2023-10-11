@@ -40,6 +40,8 @@ jobs:
           tket:
             - '{tket/src/**,tket/include/**,tket/conanfile.py,tket/CMakeLists.txt,tket/cmake/**,tket/test/**,tket/proptest/**}'
             - '.github/workflows/build_and_test.yml'
+          tket_version_bump_necessary:
+            - '{tket/src/**,tket/include/**,tket/conanfile.py,tket/CMakeLists.txt,tket/cmake/**,tket/test/**,tket/proptest/**}'
           doxyfile:
             - '{tket/Doxyfile}'
             - '.github/workflows/build_and_test.yml'
@@ -60,7 +62,7 @@ jobs:
         tket_package_exists=`conan search -r tket-libs "tket/${{ steps.tket_ver.outputs.tket_ver }}@tket/stable" | grep "not found" > /dev/null 2>&1 && echo false || echo true`
         echo "tket_package_exists=${tket_package_exists}" >> $GITHUB_OUTPUT
     - name: Check tket version bump
-      if: github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'develop' && steps.filter.outputs.tket == 'true' && steps.test_package_exists.outputs.tket_package_exists == 'true'
+      if: github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'develop' && steps.filter.outputs.tket_version_bump_necessary == 'true' && steps.test_package_exists.outputs.tket_package_exists == 'true'
       run: exit 1
 
   check_docs_tket:
