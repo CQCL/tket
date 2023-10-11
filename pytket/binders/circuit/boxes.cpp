@@ -38,67 +38,90 @@ namespace tket {
 
 // The typedef PhasePolynomial leads to the python type Dict[List[bool], ...],
 // which is not allowed at runtime because lists aren't hashable
-typedef py::tket_custom::SequenceVec<std::pair<py::tket_custom::SequenceVec<bool>, Expr>> PyPhasePolynomialAlternate;
-PhasePolynomial to_cpp_phase_poly(const PyPhasePolynomialAlternate& py_phase_poly){
-    PhasePolynomial phase_poly;
-    for (const auto& pair: py_phase_poly){
-       phase_poly.insert_or_assign(pair.first, pair.second);
-    }
-    return phase_poly;
+typedef py::tket_custom::SequenceVec<
+    std::pair<py::tket_custom::SequenceVec<bool>, Expr>>
+    PyPhasePolynomialAlternate;
+PhasePolynomial to_cpp_phase_poly(
+    const PyPhasePolynomialAlternate &py_phase_poly) {
+  PhasePolynomial phase_poly;
+  for (const auto &pair : py_phase_poly) {
+    phase_poly.insert_or_assign(pair.first, pair.second);
+  }
+  return phase_poly;
 }
 typedef std::map<py::tket_custom::TupleVec<bool>, Expr> PyPhasePolynomial;
-PhasePolynomial to_cpp_phase_poly(const PyPhasePolynomial& py_phase_poly){
-    return PhasePolynomial(std::make_move_iterator(py_phase_poly.begin()), std::make_move_iterator(py_phase_poly.end()));
+PhasePolynomial to_cpp_phase_poly(const PyPhasePolynomial &py_phase_poly) {
+  return PhasePolynomial(
+      std::make_move_iterator(py_phase_poly.begin()),
+      std::make_move_iterator(py_phase_poly.end()));
 }
 
 // state_perm_t has the same hashability problem
-typedef py::tket_custom::SequenceVec<std::pair<py::tket_custom::SequenceVec<bool>, py::tket_custom::SequenceVec<bool>>>
+typedef py::tket_custom::SequenceVec<std::pair<
+    py::tket_custom::SequenceVec<bool>, py::tket_custom::SequenceVec<bool>>>
     py_state_perm_t;
-    state_perm_t to_cpp_state_perm_t(const py_state_perm_t& py_state_perm){
-        return state_perm_t(std::make_move_iterator(py_state_perm.begin()), std::make_move_iterator(py_state_perm.end()));
-    }
-typedef std::map<py::tket_custom::TupleVec<bool>, py::tket_custom::SequenceVec<bool>> py_state_perm_t2;
-    state_perm_t to_cpp_state_perm_t(const py_state_perm_t2& py_state_perm){
-        return state_perm_t(std::make_move_iterator(py_state_perm.begin()), std::make_move_iterator(py_state_perm.end()));
-    }
+state_perm_t to_cpp_state_perm_t(const py_state_perm_t &py_state_perm) {
+  return state_perm_t(
+      std::make_move_iterator(py_state_perm.begin()),
+      std::make_move_iterator(py_state_perm.end()));
+}
+typedef std::map<
+    py::tket_custom::TupleVec<bool>, py::tket_custom::SequenceVec<bool>>
+    py_state_perm_t2;
+state_perm_t to_cpp_state_perm_t(const py_state_perm_t2 &py_state_perm) {
+  return state_perm_t(
+      std::make_move_iterator(py_state_perm.begin()),
+      std::make_move_iterator(py_state_perm.end()));
+}
 
-typedef py::tket_custom::SequenceVec<std::pair<py::tket_custom::SequenceVec<bool>, Op_ptr>> py_ctrl_op_map_t_alt;
-    ctrl_op_map_t to_cpp_ctrl_op_map_t(const py_ctrl_op_map_t_alt& ctrl_op_list) {
-        ctrl_op_map_t ctrl_op_map;
-        for (const auto &bit_op_pair: ctrl_op_list) {
-            ctrl_op_map.insert_or_assign(bit_op_pair.first, bit_op_pair.second);
-        }
-        return ctrl_op_map;
-    }
+typedef py::tket_custom::SequenceVec<
+    std::pair<py::tket_custom::SequenceVec<bool>, Op_ptr>>
+    py_ctrl_op_map_t_alt;
+ctrl_op_map_t to_cpp_ctrl_op_map_t(const py_ctrl_op_map_t_alt &ctrl_op_list) {
+  ctrl_op_map_t ctrl_op_map;
+  for (const auto &bit_op_pair : ctrl_op_list) {
+    ctrl_op_map.insert_or_assign(bit_op_pair.first, bit_op_pair.second);
+  }
+  return ctrl_op_map;
+}
 typedef std::map<py::tket_custom::TupleVec<bool>, Op_ptr> py_ctrl_op_map_t;
-    ctrl_op_map_t to_cpp_ctrl_op_map_t(const py_ctrl_op_map_t& ctrl_op_map) {
-        return ctrl_op_map_t(std::make_move_iterator(ctrl_op_map.begin()), std::make_move_iterator(ctrl_op_map.end()));
-    }
+ctrl_op_map_t to_cpp_ctrl_op_map_t(const py_ctrl_op_map_t &ctrl_op_map) {
+  return ctrl_op_map_t(
+      std::make_move_iterator(ctrl_op_map.begin()),
+      std::make_move_iterator(ctrl_op_map.end()));
+}
 
-typedef py::tket_custom::SequenceVec<std::pair<py::tket_custom::SequenceVec<bool>, py::tket_custom::SequenceVec<Op_ptr>>>
-            py_ctrl_tensored_op_map_t_alt;
-    ctrl_tensored_op_map_t to_cpp_ctrl_op_map_t(const py_ctrl_tensored_op_map_t_alt & ctrl_op_list) {
-        ctrl_tensored_op_map_t ctrl_op_map;
-        for (const auto &bit_op_pair: ctrl_op_list) {
-            ctrl_op_map.insert_or_assign(bit_op_pair.first, bit_op_pair.second);
-        }
-        return ctrl_op_map;
-    }
-typedef std::map<py::tket_custom::TupleVec<bool>, py::tket_custom::SequenceVec<Op_ptr>>
-            py_ctrl_tensored_op_map_t;
-    ctrl_tensored_op_map_t to_cpp_ctrl_op_map_t(const py_ctrl_tensored_op_map_t & ctrl_op_map) {
-        return ctrl_tensored_op_map_t(std::make_move_iterator(ctrl_op_map.begin()), std::make_move_iterator(ctrl_op_map.end()));
-    }
+typedef py::tket_custom::SequenceVec<std::pair<
+    py::tket_custom::SequenceVec<bool>, py::tket_custom::SequenceVec<Op_ptr>>>
+    py_ctrl_tensored_op_map_t_alt;
+ctrl_tensored_op_map_t to_cpp_ctrl_op_map_t(
+    const py_ctrl_tensored_op_map_t_alt &ctrl_op_list) {
+  ctrl_tensored_op_map_t ctrl_op_map;
+  for (const auto &bit_op_pair : ctrl_op_list) {
+    ctrl_op_map.insert_or_assign(bit_op_pair.first, bit_op_pair.second);
+  }
+  return ctrl_op_map;
+}
+typedef std::map<
+    py::tket_custom::TupleVec<bool>, py::tket_custom::SequenceVec<Op_ptr>>
+    py_ctrl_tensored_op_map_t;
+ctrl_tensored_op_map_t to_cpp_ctrl_op_map_t(
+    const py_ctrl_tensored_op_map_t &ctrl_op_map) {
+  return ctrl_tensored_op_map_t(
+      std::make_move_iterator(ctrl_op_map.begin()),
+      std::make_move_iterator(ctrl_op_map.end()));
+}
 
-
-    // Cast the std::vector keys in a map to py::tuple, since vector is not hashable
+// Cast the std::vector keys in a map to py::tuple, since vector is not hashable
 // in python
 template <class T1, class T2>
 std::map<py::tket_custom::TupleVec<T1>, T2> cast_keys_to_tuples(
     const std::map<std::vector<T1>, T2> &map) {
   std::map<py::tket_custom::TupleVec<T1>, T2> outmap;
   for (const auto &pair : map) {
-      py::tket_custom::TupleVec<T1> tuple_vec(std::make_move_iterator(pair.first.begin()), std::make_move_iterator(pair.first.end()));
+    py::tket_custom::TupleVec<T1> tuple_vec(
+        std::make_move_iterator(pair.first.begin()),
+        std::make_move_iterator(pair.first.end()));
     outmap.emplace(tuple_vec, pair.second);
   }
   return outmap;
@@ -215,7 +238,8 @@ void init_boxes(py::module &m) {
       "operations and a (possibly symbolic) phase parameter.")
       .def(
           py::init<
-              const py::tket_custom::SequenceVec<Pauli> &, const Expr &, const CXConfigType &>(),
+              const py::tket_custom::SequenceVec<Pauli> &, const Expr &,
+              const CXConfigType &>(),
           "Construct :math:`e^{-\\frac12 i \\pi t \\sigma_0 \\otimes "
           "\\sigma_1 \\otimes \\cdots}` from Pauli operators "
           ":math:`\\sigma_i \\in \\{I,X,Y,Z\\}` and a parameter "
@@ -241,7 +265,8 @@ void init_boxes(py::module &m) {
       .def(
           py::init<
               const py::tket_custom::SequenceVec<Pauli> &, const Expr &,
-              const py::tket_custom::SequenceVec<Pauli> &, Expr, CXConfigType>(),
+              const py::tket_custom::SequenceVec<Pauli> &, Expr,
+              CXConfigType>(),
           "Construct a pair of Pauli exponentials of the form"
           " :math:`e^{-\\frac12 i \\pi t_j \\sigma_0 \\otimes "
           "\\sigma_1 \\otimes \\cdots}` from Pauli operator strings "
@@ -270,12 +295,15 @@ void init_boxes(py::module &m) {
       "tensor of Pauli operations and their (possibly symbolic) phase "
       "parameters.")
       .def(
-          py::init([](
-              const py::tket_custom::SequenceVec<std::pair<py::tket_custom::SequenceVec<Pauli>, Expr>>& py_gadgets,
-              const CXConfigType & cx_config){
-              std::vector<std::pair<std::vector<Pauli>, Expr>> gadgets(std::make_move_iterator(py_gadgets.begin()), std::make_move_iterator(py_gadgets.end()));
-              return PauliExpCommutingSetBox(gadgets, cx_config);
-              }),
+          py::init([](const py::tket_custom::SequenceVec<
+                          std::pair<py::tket_custom::SequenceVec<Pauli>, Expr>>
+                          &py_gadgets,
+                      const CXConfigType &cx_config) {
+            std::vector<std::pair<std::vector<Pauli>, Expr>> gadgets(
+                std::make_move_iterator(py_gadgets.begin()),
+                std::make_move_iterator(py_gadgets.end()));
+            return PauliExpCommutingSetBox(gadgets, cx_config);
+          }),
           "Construct a set of necessarily commuting Pauli exponentials of the "
           "form"
           " :math:`e^{-\\frac12 i \\pi t_j \\sigma_0 \\otimes "
@@ -323,7 +351,9 @@ void init_boxes(py::module &m) {
       .def(
           py::init(
               [](const py_state_perm_t &perm, const OpType &rotation_axis) {
-                return ToffoliBox(to_cpp_state_perm_t(perm), ToffoliBoxSynthStrat::Matching, rotation_axis);
+                return ToffoliBox(
+                    to_cpp_state_perm_t(perm), ToffoliBoxSynthStrat::Matching,
+                    rotation_axis);
               }),
           "Construct from a permutation of basis states and perform synthesis "
           "using the Matching strategy\n\n"
@@ -341,15 +371,17 @@ void init_boxes(py::module &m) {
                 "Please create ToffoliBoxes without n_qubits.",
                 1);
             return ToffoliBox(
-                    to_cpp_state_perm_t(perm), ToffoliBoxSynthStrat::Matching, rotation_axis);
+                to_cpp_state_perm_t(perm), ToffoliBoxSynthStrat::Matching,
+                rotation_axis);
           }),
           "Constructor for backward compatibility. Subject to deprecation.",
           py::arg("n_qubits"), py::arg("permutation"),
           py::arg("rotation_axis") = OpType::Ry)
-      .def( py::init([](const py_state_perm_t2 &perm, ToffoliBoxSynthStrat strat,
-                              OpType optype) {
-                      return ToffoliBox(to_cpp_state_perm_t(perm), strat, optype);
-                  }),
+      .def(
+          py::init([](const py_state_perm_t2 &perm, ToffoliBoxSynthStrat strat,
+                      OpType optype) {
+            return ToffoliBox(to_cpp_state_perm_t(perm), strat, optype);
+          }),
           "Construct from a permutation of basis states\n\n"
           ":param permutation: a map between bitstrings\n"
           ":param strat: synthesis strategy\n"
@@ -359,10 +391,12 @@ void init_boxes(py::module &m) {
           py::arg("permutation"), py::arg("strat"),
           py::arg("rotation_axis") = OpType::Ry)
       .def(
-          py::init([](const py_state_perm_t2 &perm, const OpType &rotation_axis) {
-            return ToffoliBox(
-                    to_cpp_state_perm_t(perm), ToffoliBoxSynthStrat::Matching, rotation_axis);
-          }),
+          py::init(
+              [](const py_state_perm_t2 &perm, const OpType &rotation_axis) {
+                return ToffoliBox(
+                    to_cpp_state_perm_t(perm), ToffoliBoxSynthStrat::Matching,
+                    rotation_axis);
+              }),
           "Construct from a permutation of basis states and perform synthesis "
           "using the Matching strategy\n\n"
           ":param permutation: a map between bitstrings\n"
@@ -379,7 +413,8 @@ void init_boxes(py::module &m) {
                 "Please create ToffoliBoxes without n_qubits.",
                 1);
             return ToffoliBox(
-                    to_cpp_state_perm_t(perm), ToffoliBoxSynthStrat::Matching, rotation_axis);
+                to_cpp_state_perm_t(perm), ToffoliBoxSynthStrat::Matching,
+                rotation_axis);
           }),
           "Constructor for backward compatibility. Subject to deprecation.",
           py::arg("n_qubits"), py::arg("permutation"),
@@ -467,11 +502,14 @@ void init_boxes(py::module &m) {
       "A custom unitary gate definition, given as a composition of other "
       "gates")
       .def(py::init<
-           const std::string &, const Circuit &, const py::tket_custom::SequenceVec<Sym> &>())
+           const std::string &, const Circuit &,
+           const py::tket_custom::SequenceVec<Sym> &>())
       .def_static(
-          "define", [](
-                      const std::string &name, const Circuit &def,
-                      const py::tket_custom::SequenceVec<Sym> &args){return CompositeGateDef::define_gate(name, def, args);},
+          "define",
+          [](const std::string &name, const Circuit &def,
+             const py::tket_custom::SequenceVec<Sym> &args) {
+            return CompositeGateDef::define_gate(name, def, args);
+          },
           "Define a new custom gate as a composite of other "
           "gates\n\n:param name: Readable name for the new "
           "gate\n:param circ: The definition of the gate as a "
@@ -510,7 +548,9 @@ void init_boxes(py::module &m) {
       m, "CustomGate",
       "A user-defined gate defined by a parametrised :py:class:`Circuit`.")
       .def(
-          py::init<const composite_def_ptr_t &, const py::tket_custom::SequenceVec<Expr> &>(),
+          py::init<
+              const composite_def_ptr_t &,
+              const py::tket_custom::SequenceVec<Expr> &>(),
           "Instantiate a custom gate.", py::arg("gatedef"), py::arg("params"))
       .def_property_readonly(
           "name", [](CustomGate &cgate) { return cgate.get_name(false); },
@@ -635,7 +675,8 @@ void init_boxes(py::module &m) {
           ":param stabilisers: The list of Pauli stabilisers\n",
           py::arg("stabilisers"))
       .def(
-          py::init([](const py::tket_custom::SequenceVec<std::string> &pauli_strings) {
+          py::init([](const py::tket_custom::SequenceVec<std::string>
+                          &pauli_strings) {
             PauliStabiliserList stabilisers;
             for (auto &raw_string : pauli_strings) {
               std::vector<Pauli> string;
@@ -682,7 +723,6 @@ void init_boxes(py::module &m) {
       .def(
           "get_stabilisers", &StabiliserAssertionBox::get_stabilisers,
           ":return: the list of Pauli stabilisers");
-
 
   py::class_<MultiplexorBox, std::shared_ptr<MultiplexorBox>, Op>(
       m, "MultiplexorBox",

@@ -33,7 +33,8 @@ PYBIND11_MODULE(logging, m) {
   m.def(
       "set_level", [](LogLevel level) { tket_log()->set_level(level); },
       "Set the global logging level."
-      "\n\n:param log_level: Desired logging level", py::arg("log_level"));
+      "\n\n:param log_level: Desired logging level",
+      py::arg("log_level"));
 }
 
 }  // namespace tket

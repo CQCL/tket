@@ -14,12 +14,12 @@
 
 #pragma once
 
+#include <pybind11/cast.h>
 #include <pybind11/detail/typeid.h>
 #include <pybind11/functional.h>
 #include <pybind11/operators.h>
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
-#include <pybind11/cast.h>
 
 #include "tket/Utils/Expression.hpp"
 #include "tket/Utils/Symbols.hpp"
@@ -27,109 +27,119 @@
 
 PYBIND11_NAMESPACE_BEGIN(PYBIND11_NAMESPACE)
 PYBIND11_NAMESPACE_BEGIN(tket_custom)
-// Statically castable to a c++ vector and uses same type caster, but translates to Sequence[T] on python side
-// Instead of list[T]. Should only use as a parameter type,
-// not return type (because "Sequence" as return type is ambiguous).
+// Statically castable to a c++ vector and uses same type caster, but translates
+// to Sequence[T] on python side Instead of list[T]. Should only use as a
+// parameter type, not return type (because "Sequence" as return type is
+// ambiguous).
 template <typename T>
 class SequenceVec : public std::vector<T> {
-    using std::vector<T>::vector;
+  using std::vector<T>::vector;
 };
-// Statically castable to a c++ list and uses same type caster, but translates to Sequence[T] on python side
-// Instead of list[T]. Should only use as a parameter type,
-// not return type (because "Sequence" as return type is ambiguous).
-    template <typename T>
-    class SequenceList : public std::list<T> {
-        using std::list<T>::list;
-    };
-// Statically castable to a c++ vector and uses same type caster, but translates to tuple[T, ...] on python side
-// Instead of list[T]. Can be used as a parameter type or return type.
+// Statically castable to a c++ list and uses same type caster, but translates
+// to Sequence[T] on python side Instead of list[T]. Should only use as a
+// parameter type, not return type (because "Sequence" as return type is
+// ambiguous).
+template <typename T>
+class SequenceList : public std::list<T> {
+  using std::list<T>::list;
+};
+// Statically castable to a c++ vector and uses same type caster, but translates
+// to tuple[T, ...] on python side Instead of list[T]. Can be used as a
+// parameter type or return type.
 template <typename T>
 class TupleVec : public std::vector<T> {
-    using std::vector<T>::vector;
+  using std::vector<T>::vector;
 };
 PYBIND11_NAMESPACE_END(tket_custom)
 PYBIND11_NAMESPACE_BEGIN(detail)
-// This struct is copied from the struct "list_caster" in pybind11/stl.h with some minor
-// customization
-// It adds the ability to customize the type name (using a handle_type_name<T> struct)
-// and specify the python type that the object is cast too
-// Changes to the pybind11 code may warrant/require changes here
-// The struct is used to define custom type casters for the "tket_custom" types
-    template <typename Type, typename Value, typename castToType>
-    struct tket_sequence_caster {
-        using value_conv = make_caster<Value>;
+// This struct is copied from the struct "list_caster" in pybind11/stl.h with
+// some minor customization It adds the ability to customize the type name
+// (using a handle_type_name<T> struct) and specify the python type that the
+// object is cast too Changes to the pybind11 code may warrant/require changes
+// here The struct is used to define custom type casters for the "tket_custom"
+// types
+template <typename Type, typename Value, typename castToType>
+struct tket_sequence_caster {
+  using value_conv = make_caster<Value>;
 
-        bool load(handle src, bool convert) {
-            if (!isinstance<sequence>(src) || isinstance<bytes>(src) || isinstance<str>(src)) {
-                return false;
-            }
-            auto s = reinterpret_borrow<sequence>(src);
-            value.clear();
-            reserve_maybe(s, &value);
-            for (auto it : s) {
-                value_conv conv;
-                if (!conv.load(it, convert)) {
-                    return false;
-                }
-                value.push_back(cast_op<Value &&>(std::move(conv)));
-            }
-            return true;
-        }
+  bool load(handle src, bool convert) {
+    if (!isinstance<sequence>(src) || isinstance<bytes>(src) ||
+        isinstance<str>(src)) {
+      return false;
+    }
+    auto s = reinterpret_borrow<sequence>(src);
+    value.clear();
+    reserve_maybe(s, &value);
+    for (auto it : s) {
+      value_conv conv;
+      if (!conv.load(it, convert)) {
+        return false;
+      }
+      value.push_back(cast_op<Value&&>(std::move(conv)));
+    }
+    return true;
+  }
 
-    private:
-        template <typename T = Type, enable_if_t<has_reserve_method<T>::value, int> = 0>
-        void reserve_maybe(const sequence &s, Type *) {
-            value.reserve(s.size());
-        }
-        void reserve_maybe(const sequence &, void *) {}
+ private:
+  template <
+      typename T = Type, enable_if_t<has_reserve_method<T>::value, int> = 0>
+  void reserve_maybe(const sequence& s, Type*) {
+    value.reserve(s.size());
+  }
+  void reserve_maybe(const sequence&, void*) {}
 
-    public:
-        template <typename T>
-        static handle cast(T &&src, return_value_policy policy, handle parent) {
-            if (!std::is_lvalue_reference<T>::value) {
-                policy = return_value_policy_override<Value>::policy(policy);
-            }
-            castToType l(src.size());
-            ssize_t index = 0;
-            for (auto &&value : src) {
-                auto value_ = reinterpret_steal<object>(
-                        value_conv::cast(detail::forward_like<T>(value), policy, parent));
-                if (!value_) {
-                    return handle();
-                }
-                if (std::is_same<castToType,list>::value) {
-                    PyList_SET_ITEM(l.ptr(), index++, value_.release().ptr()); // steals a reference
-                } else {
-                    static_assert(std::is_same<castToType, tuple>::value);
-                    PyTuple_SET_ITEM(l.ptr(), index++, value_.release().ptr()); // steals a reference
-                }
-            }
-            return l.release();
-        }
+ public:
+  template <typename T>
+  static handle cast(T&& src, return_value_policy policy, handle parent) {
+    if (!std::is_lvalue_reference<T>::value) {
+      policy = return_value_policy_override<Value>::policy(policy);
+    }
+    castToType l(src.size());
+    ssize_t index = 0;
+    for (auto&& value : src) {
+      auto value_ = reinterpret_steal<object>(
+          value_conv::cast(detail::forward_like<T>(value), policy, parent));
+      if (!value_) {
+        return handle();
+      }
+      if (std::is_same<castToType, list>::value) {
+        PyList_SET_ITEM(
+            l.ptr(), index++, value_.release().ptr());  // steals a reference
+      } else {
+        static_assert(std::is_same<castToType, tuple>::value);
+        PyTuple_SET_ITEM(
+            l.ptr(), index++, value_.release().ptr());  // steals a reference
+      }
+    }
+    return l.release();
+  }
 
-    PYBIND11_TYPE_CASTER(Type, handle_type_name<Type>::name);
-    };
-template <typename T>
-    struct handle_type_name<tket_custom::SequenceVec<T>> {
-        static constexpr auto name
-                = const_name("Sequence[") + make_caster<T>::name + const_name("]");
+  PYBIND11_TYPE_CASTER(Type, handle_type_name<Type>::name);
 };
 template <typename T>
-    struct handle_type_name<tket_custom::SequenceList<T>> {
-        static constexpr auto name
-                = const_name("Sequence[") + make_caster<T>::name + const_name("]");
-    };
+struct handle_type_name<tket_custom::SequenceVec<T>> {
+  static constexpr auto name =
+      const_name("Sequence[") + make_caster<T>::name + const_name("]");
+};
 template <typename T>
-    struct handle_type_name<tket_custom::TupleVec<T>> {
-        static constexpr auto name
-                = const_name("tuple[") + make_caster<T>::name + const_name(", ...]");
+struct handle_type_name<tket_custom::SequenceList<T>> {
+  static constexpr auto name =
+      const_name("Sequence[") + make_caster<T>::name + const_name("]");
+};
+template <typename T>
+struct handle_type_name<tket_custom::TupleVec<T>> {
+  static constexpr auto name =
+      const_name("tuple[") + make_caster<T>::name + const_name(", ...]");
 };
 template <typename Type>
-    struct type_caster<tket_custom::SequenceVec<Type>> : tket_sequence_caster<tket_custom::SequenceVec<Type>, Type, list> {};
+struct type_caster<tket_custom::SequenceVec<Type>>
+    : tket_sequence_caster<tket_custom::SequenceVec<Type>, Type, list> {};
 template <typename Type>
-    struct type_caster<tket_custom::SequenceList<Type>> : tket_sequence_caster<tket_custom::SequenceList<Type>, Type, list> {};
+struct type_caster<tket_custom::SequenceList<Type>>
+    : tket_sequence_caster<tket_custom::SequenceList<Type>, Type, list> {};
 template <typename Type>
-    struct type_caster<tket_custom::TupleVec<Type>> : tket_sequence_caster<tket_custom::TupleVec<Type>, Type, tuple> {};
+struct type_caster<tket_custom::TupleVec<Type>>
+    : tket_sequence_caster<tket_custom::TupleVec<Type>, Type, tuple> {};
 template <>
 struct type_caster<SymEngine::Expression> {
  public:

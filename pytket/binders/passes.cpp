@@ -146,10 +146,12 @@ const PassPtr &DecomposeClassicalExp() {
 
 PYBIND11_MODULE(passes, m) {
   py::module_::import("pytket._tket.predicates");
-  m.def("_sympy_import", [](){
-      return Expr();
-  }, "This function only exists so that sympy gets imported in the resulting .pyi file. "
-     "It's needed due to a bug in pybind11-stubgen's translation for Callables most likely.");
+  m.def(
+      "_sympy_import", []() { return Expr(); },
+      "This function only exists so that sympy gets imported in the resulting "
+      ".pyi file. "
+      "It's needed due to a bug in pybind11-stubgen's translation for "
+      "Callables most likely.");
   py::enum_<SafetyMode>(m, "SafetyMode")
       .value(
           "Audit", SafetyMode::Audit,
@@ -649,8 +651,11 @@ PYBIND11_MODULE(passes, m) {
       py::arg("q"), py::arg("p"), py::arg("strict") = false);
 
   m.def(
-      "CustomRoutingPass", [](
-                  const Architecture& arc, const py::tket_custom::SequenceVec<RoutingMethodPtr>& config){return gen_routing_pass(arc, config);},
+      "CustomRoutingPass",
+      [](const Architecture &arc,
+         const py::tket_custom::SequenceVec<RoutingMethodPtr> &config) {
+        return gen_routing_pass(arc, config);
+      },
       "Construct a pass to route to the connectivity graph of an "
       ":py:class:`Architecture`. Edge direction is ignored. "
       "\n\n"
@@ -697,9 +702,11 @@ PYBIND11_MODULE(passes, m) {
       py::arg("qubit_map"));
 
   m.def(
-      "FullMappingPass", [](
-                  const Architecture& arc, const Placement::Ptr& placement_ptr,
-                  const py::tket_custom::SequenceVec<RoutingMethodPtr>& config){return gen_full_mapping_pass(arc, placement_ptr, config);},
+      "FullMappingPass",
+      [](const Architecture &arc, const Placement::Ptr &placement_ptr,
+         const py::tket_custom::SequenceVec<RoutingMethodPtr> &config) {
+        return gen_full_mapping_pass(arc, placement_ptr, config);
+      },
       "Construct a pass to relabel :py:class:`Circuit` Qubits to "
       ":py:class:`Architecture` Nodes, and then route to the connectivity "
       "graph "
@@ -858,10 +865,10 @@ PYBIND11_MODULE(passes, m) {
       "SimplifyInitial",
       [](bool allow_classical, bool create_all_qubits, bool remove_redundancies,
          std::optional<std::shared_ptr<const Circuit>> xcirc_opt) -> PassPtr {
-          std::shared_ptr<const Circuit> xcirc = nullptr;
-          if (xcirc_opt.has_value()){
-              xcirc = xcirc_opt.value();
-          }
+        std::shared_ptr<const Circuit> xcirc = nullptr;
+        if (xcirc_opt.has_value()) {
+          xcirc = xcirc_opt.value();
+        }
         PassPtr simpinit = gen_simplify_initial(
             allow_classical ? Transforms::AllowClassical::Yes
                             : Transforms::AllowClassical::No,

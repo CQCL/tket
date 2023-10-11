@@ -88,7 +88,11 @@ PYBIND11_MODULE(tableau, m) {
           "\n:return: The Pauli string :math:`Q` such that :math:`QU=UP`.",
           py::arg("paulis"))
       .def(
-          "apply_gate_at_front", [](UnitaryTableau& self, const OpType& type, const py_qubit_vector_t& qbs){return self.apply_gate_at_front(type, qbs);},
+          "apply_gate_at_front",
+          [](UnitaryTableau& self, const OpType& type,
+             const py_qubit_vector_t& qbs) {
+            return self.apply_gate_at_front(type, qbs);
+          },
           "Update the tableau according to adding a Clifford gate before the "
           "current unitary, i.e. updates :math:`U` to :math:`UG` for a gate "
           ":math:`G`."
@@ -98,7 +102,11 @@ PYBIND11_MODULE(tableau, m) {
           "the arity of the given gate type.",
           py::arg("type"), py::arg("qbs"))
       .def(
-          "apply_gate_at_end", [](UnitaryTableau& self, const OpType& type, const py_qubit_vector_t& qbs){return self.apply_gate_at_end(type, qbs);},
+          "apply_gate_at_end",
+          [](UnitaryTableau& self, const OpType& type,
+             const py_qubit_vector_t& qbs) {
+            return self.apply_gate_at_end(type, qbs);
+          },
           "Update the tableau according to adding a Clifford gate after the "
           "current unitary, i.e. updates :math:`U` to :math:`GU` for a gate "
           ":math:`G`."

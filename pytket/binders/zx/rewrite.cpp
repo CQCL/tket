@@ -33,7 +33,10 @@ void init_rewrite(py::module &m) {
           ":return: True if any changes were made, else False.",
           py::arg("diag"))
       .def_static(
-          "sequence", [](const py::tket_custom::SequenceVec<Rewrite>& rvec){return Rewrite::sequence(rvec);},
+          "sequence",
+          [](const py::tket_custom::SequenceVec<Rewrite> &rvec) {
+            return Rewrite::sequence(rvec);
+          },
           "Composes a list of :py:class:`Rewrite` s together in sequence. The "
           "apply method will return True if ANY of the individual Rewrites "
           "returned True.\n\n:param sequence: The list of "

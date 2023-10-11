@@ -88,7 +88,10 @@ PYBIND11_MODULE(transform, m) {
           "Composes two Transforms together in sequence.\n\n>>> a >> "
           "b\n\nis equivalent to\n\n>>> sequence([a,b])")
       .def_static(
-          "sequence", [](py::tket_custom::SequenceVec<Transform> &tvec){return Transforms::sequence(tvec);},
+          "sequence",
+          [](py::tket_custom::SequenceVec<Transform> &tvec) {
+            return Transforms::sequence(tvec);
+          },
           "Composes a list of Transforms together in sequence. The "
           ":py:meth:`apply` method will return ``True`` if ANY of "
           "the individual Transforms returned ``True``."

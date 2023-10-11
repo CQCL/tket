@@ -909,14 +909,10 @@ def test_PeepholeOptimise2Q() -> None:
 
 
 def test_rebase_custom_tk2() -> None:
-    def _tk1_to_phase(
-        a: ParamType, b: ParamType, c: ParamType
-    ) -> Circuit:
+    def _tk1_to_phase(a: ParamType, b: ParamType, c: ParamType) -> Circuit:
         return Circuit(1).Rz(c, 0).Rx(b, 0).Rz(a, 0)
 
-    def _tk2_to_phase(
-        a: ParamType, b: ParamType, c: ParamType
-    ) -> Circuit:
+    def _tk2_to_phase(a: ParamType, b: ParamType, c: ParamType) -> Circuit:
         return Circuit(2).ZZPhase(c, 0, 1).YYPhase(b, 0, 1).XXPhase(a, 0, 1)
 
     to_phase_gates = RebaseCustom(

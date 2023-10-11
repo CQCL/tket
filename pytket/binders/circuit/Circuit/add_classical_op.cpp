@@ -19,10 +19,10 @@
 #include <bitset>
 #include <utility>
 
-#include "tket/Circuit/Circuit.hpp"
-#include "tket/Ops/ClassicalOps.hpp"
 #include "UnitRegister.hpp"
 #include "add_gate.hpp"
+#include "tket/Circuit/Circuit.hpp"
+#include "tket/Ops/ClassicalOps.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;
@@ -30,7 +30,7 @@ namespace py = pybind11;
 namespace tket {
 
 static void apply_classical_op_to_registers(
-    Circuit &circ, const std::shared_ptr<const ClassicalEvalOp>& op,
+    Circuit &circ, const std::shared_ptr<const ClassicalEvalOp> &op,
     const std::vector<BitRegister> &registers, const py::kwargs &kwargs) {
   unsigned n_op_args = registers.size();
   const unsigned n_bits = std::min_element(

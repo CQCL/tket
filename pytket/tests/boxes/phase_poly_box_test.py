@@ -8,8 +8,10 @@ from pytket.passes import ComposePhasePolyBoxes, DecomposeBoxes
 from pytket.utils import compare_unitaries
 from pytket.circuit.named_types import PhasePolynomialDict, PhasePolynomialSequence
 
+
 def phase_polynomials_are_equal(
-    phase_poly_0: Union[PhasePolynomialDict | PhasePolynomialSequence], phase_poly_1: Union[PhasePolynomialDict | PhasePolynomialSequence]
+    phase_poly_0: Union[PhasePolynomialDict | PhasePolynomialSequence],
+    phase_poly_1: Union[PhasePolynomialDict | PhasePolynomialSequence],
 ) -> bool:
     if isinstance(phase_poly_0, dict) and isinstance(phase_poly_1, dict):
         return phase_poly_0 == phase_poly_1
@@ -32,7 +34,9 @@ def test_phase_polybox() -> None:
     phase_polynomial_alt: PhasePolynomialSequence = [([True], 0.1)]
     linear_transformation = np.array([[1]])
     p_box = PhasePolyBox(n_qb, qubit_indices, phase_polynomial, linear_transformation)
-    p_box_alt = PhasePolyBox(n_qb, qubit_indices, phase_polynomial_alt, linear_transformation)
+    p_box_alt = PhasePolyBox(
+        n_qb, qubit_indices, phase_polynomial_alt, linear_transformation
+    )
 
     b = p_box.get_circuit()
 
@@ -51,18 +55,12 @@ def test_phase_polybox() -> None:
     assert phase_polynomials_are_equal(
         p_box.phase_polynomial_as_list, phase_polynomial_alt
     )
-    assert phase_polynomials_are_equal(
-        p_box.phase_polynomial, phase_polynomial
-    )
+    assert phase_polynomials_are_equal(p_box.phase_polynomial, phase_polynomial)
     assert phase_polynomials_are_equal(
         p_box_alt.phase_polynomial_as_list, phase_polynomial_alt
     )
-    assert phase_polynomials_are_equal(
-        p_box_alt.phase_polynomial, phase_polynomial
-    )
-    assert phase_polynomials_are_equal(
-        p_box_ii.phase_polynomial, phase_polynomial
-    )
+    assert phase_polynomials_are_equal(p_box_alt.phase_polynomial, phase_polynomial)
+    assert phase_polynomials_are_equal(p_box_ii.phase_polynomial, phase_polynomial)
     assert np.array_equal(p_box.linear_transformation, linear_transformation)
     assert np.array_equal(p_box_ii.linear_transformation, linear_transformation)
     assert DecomposeBoxes().apply(c)
@@ -76,7 +74,9 @@ def test_phase_polybox_II() -> None:
     phase_polynomial_alt: PhasePolynomialSequence = [([True], 0.1), ([True], 0.3)]
     linear_transformation = np.array([[1]])
     p_box = PhasePolyBox(n_qb, qubit_indices, phase_polynomial, linear_transformation)
-    p_box_alt = PhasePolyBox(n_qb, qubit_indices, phase_polynomial_alt, linear_transformation)
+    p_box_alt = PhasePolyBox(
+        n_qb, qubit_indices, phase_polynomial_alt, linear_transformation
+    )
 
     b = p_box.get_circuit()
 
@@ -94,21 +94,15 @@ def test_phase_polybox_II() -> None:
     print(phase_polynomial)
     print(p_box.phase_polynomial_as_list)
     print(p_box.phase_polynomial)
-    assert phase_polynomials_are_equal(
-        p_box.phase_polynomial, phase_polynomial
-    )
+    assert phase_polynomials_are_equal(p_box.phase_polynomial, phase_polynomial)
     assert phase_polynomials_are_equal(
         p_box.phase_polynomial_as_list, phase_polynomial_alt
     )
-    assert phase_polynomials_are_equal(
-        p_box_alt.phase_polynomial, phase_polynomial
-    )
+    assert phase_polynomials_are_equal(p_box_alt.phase_polynomial, phase_polynomial)
     assert phase_polynomials_are_equal(
         p_box_alt.phase_polynomial_as_list, phase_polynomial_alt
     )
-    assert phase_polynomials_are_equal(
-        p_box_ii.phase_polynomial, phase_polynomial
-    )
+    assert phase_polynomials_are_equal(p_box_ii.phase_polynomial, phase_polynomial)
     assert np.array_equal(p_box.linear_transformation, linear_transformation)
     assert np.array_equal(p_box_ii.linear_transformation, linear_transformation)
     assert DecomposeBoxes().apply(c)
@@ -130,7 +124,9 @@ def test_phase_polybox_big() -> None:
     ]
     linear_transformation = np.array([[1, 1, 0], [0, 1, 0], [0, 0, 1]])
     p_box = PhasePolyBox(n_qb, qubit_indices, phase_polynomial, linear_transformation)
-    p_box_alt = PhasePolyBox(n_qb, qubit_indices, phase_polynomial_alt, linear_transformation)
+    p_box_alt = PhasePolyBox(
+        n_qb, qubit_indices, phase_polynomial_alt, linear_transformation
+    )
 
     b = p_box.get_circuit()
 
@@ -143,21 +139,15 @@ def test_phase_polybox_big() -> None:
     assert p_box_ii.n_qubits == n_qb
     assert p_box.qubit_indices == qubit_indices
     assert p_box_ii.qubit_indices == qubit_indices
-    assert phase_polynomials_are_equal(
-        p_box.phase_polynomial, phase_polynomial
-    )
+    assert phase_polynomials_are_equal(p_box.phase_polynomial, phase_polynomial)
     assert phase_polynomials_are_equal(
         p_box.phase_polynomial_as_list, phase_polynomial_alt
     )
-    assert phase_polynomials_are_equal(
-        p_box_alt.phase_polynomial, phase_polynomial
-    )
+    assert phase_polynomials_are_equal(p_box_alt.phase_polynomial, phase_polynomial)
     assert phase_polynomials_are_equal(
         p_box_alt.phase_polynomial_as_list, phase_polynomial_alt
     )
-    assert phase_polynomials_are_equal(
-        p_box_ii.phase_polynomial, phase_polynomial
-    )
+    assert phase_polynomials_are_equal(p_box_ii.phase_polynomial, phase_polynomial)
     assert np.array_equal(p_box.linear_transformation, linear_transformation)
     assert np.array_equal(p_box_ii.linear_transformation, linear_transformation)
     assert DecomposeBoxes().apply(c)

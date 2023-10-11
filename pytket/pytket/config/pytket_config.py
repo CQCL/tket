@@ -86,7 +86,10 @@ def write_config_file(config: PytketConfig) -> None:
     """Write config to default file path."""
     config.write_file(get_config_file_path())
 
-T = TypeVar('T', bound='PytketExtConfig')
+
+T = TypeVar("T", bound="PytketExtConfig")
+
+
 @dataclass
 class PytketExtConfig(ABC):
     """Abstract base class for pytket extension config classes."""

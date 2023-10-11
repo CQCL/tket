@@ -144,7 +144,12 @@ PYBIND11_MODULE(mapping, m) {
           "Architecture object.",
           py::arg("architecture"))
       .def(
-          "route_circuit", [](const MappingManager& self, Circuit& circuit, const py::tket_custom::SequenceVec<RoutingMethodPtr>& routing_methods){return self.route_circuit(circuit, routing_methods);},
+          "route_circuit",
+          [](const MappingManager& self, Circuit& circuit,
+             const py::tket_custom::SequenceVec<RoutingMethodPtr>&
+                 routing_methods) {
+            return self.route_circuit(circuit, routing_methods);
+          },
           "Maps from given logical circuit to physical circuit. Modification "
           "defined by route_subcircuit, but typically this proceeds by "
           "insertion of SWAP gates that permute logical qubits on physical "

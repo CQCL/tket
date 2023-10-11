@@ -50,8 +50,14 @@ from pytket.circuit import (
     QubitRegister,
 )
 from pytket.circuit.display import get_circuit_renderer, render_circuit_as_html
-from pytket.circuit.named_types import BitstringToOpList, BitstringToTensoredOpMap, BitstringToTensoredOpList, \
-    BitstringToOpMap, ParamType, PermutationMap
+from pytket.circuit.named_types import (
+    BitstringToOpList,
+    BitstringToTensoredOpMap,
+    BitstringToTensoredOpList,
+    BitstringToOpMap,
+    ParamType,
+    PermutationMap,
+)
 
 from pytket.pauli import Pauli
 from pytket.passes import (
@@ -520,8 +526,14 @@ def test_boxes() -> None:
     assert d.n_gates == 10
 
     # MultiplexorBox, MultiplexedU2Box
-    op_map: BitstringToOpMap = {(_0, _0): Op.create(OpType.Rz, 0.3), (_1, _1): Op.create(OpType.H)}
-    op_map_alt: BitstringToOpList = [([_0, _0], Op.create(OpType.Rz, 0.3)), ([_1, _1], Op.create(OpType.H))]
+    op_map: BitstringToOpMap = {
+        (_0, _0): Op.create(OpType.Rz, 0.3),
+        (_1, _1): Op.create(OpType.H),
+    }
+    op_map_alt: BitstringToOpList = [
+        ([_0, _0], Op.create(OpType.Rz, 0.3)),
+        ([_1, _1], Op.create(OpType.H)),
+    ]
     multiplexor = MultiplexorBox(op_map)
     multiplexor_alt = MultiplexorBox(op_map_alt)
     assert multiplexor.get_op_map() == op_map
@@ -612,8 +624,14 @@ def test_boxes() -> None:
     rz_op = Op.create(OpType.Rz, 0.3)
     pauli_x_op = Op.create(OpType.X)
     pauli_z_op = Op.create(OpType.Z)
-    op_map_tensored: BitstringToTensoredOpMap = {(_0, _0): [rz_op, pauli_x_op], (_1, _1): [pauli_x_op, pauli_z_op]}
-    op_map_tensored_alt: BitstringToTensoredOpList = [([_0, _0], [rz_op, pauli_x_op]), ([_1, _1], [pauli_x_op, pauli_z_op])]
+    op_map_tensored: BitstringToTensoredOpMap = {
+        (_0, _0): [rz_op, pauli_x_op],
+        (_1, _1): [pauli_x_op, pauli_z_op],
+    }
+    op_map_tensored_alt: BitstringToTensoredOpList = [
+        ([_0, _0], [rz_op, pauli_x_op]),
+        ([_1, _1], [pauli_x_op, pauli_z_op]),
+    ]
     multiplexU2 = MultiplexedTensoredU2Box(op_map_tensored)
     multiplexU2_alt = MultiplexedTensoredU2Box(op_map_tensored_alt)
     assert multiplexU2.get_op_map() == op_map_tensored
@@ -1188,7 +1206,10 @@ def test_symbol_subst() -> None:
     pauli_z_op = Op.create(OpType.Z)
     u = np.asarray([[1.0, 0.0], [0.0, -1.0]])
     ubox = Unitary1qBox(u)
-    op_map_new: BitstringToTensoredOpMap = {(_0, _0): [rz_op, pauli_x_op], (_1, _1): [ubox, pauli_z_op]}
+    op_map_new: BitstringToTensoredOpMap = {
+        (_0, _0): [rz_op, pauli_x_op],
+        (_1, _1): [ubox, pauli_z_op],
+    }
     multiplexU2 = MultiplexedTensoredU2Box(op_map_new)
     d.add_multiplexed_tensored_u2(multiplexU2, [0, 1, 2, 3])
     d.symbol_substitution({})

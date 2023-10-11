@@ -155,8 +155,9 @@ void init_classical(py::module& m) {
       "fixed-width integers).")
       .def(
           py::init<
-              unsigned, unsigned, py::tket_custom::SequenceVec<unsigned>, py::tket_custom::SequenceVec<unsigned>,
-              const std::string&, const std::string&>(),
+              unsigned, unsigned, py::tket_custom::SequenceVec<unsigned>,
+              py::tket_custom::SequenceVec<unsigned>, const std::string&,
+              const std::string&>(),
           "Construct from number of bits, bitwidths of inputs and outputs, "
           "function name and module id.",
           py::arg("num_bits"), py::arg("num_w"), py::arg("n_inputs"),

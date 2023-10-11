@@ -22,7 +22,8 @@ from typing import (
     Type,
     Union,
     Callable,
-    Optional, Sequence,
+    Optional,
+    Sequence,
 )
 
 from pytket._tket.circuit import *
@@ -158,11 +159,13 @@ cls_enum_pairs_reg: Tuple[Tuple[Type, Union[Type[BitWiseOp], Type[RegWiseOp]]], 
 BitArgType = Union[BitLogicExp, Bit, Constant]
 RegArgType = Union[RegLogicExp, BitRegister, Constant]
 
+
 def gen_binary_method_bit(op: Ops) -> Callable[[BitArgType, BitArgType], BitLogicExp]:
     def logic_operation(self: BitArgType, other: BitArgType) -> BitLogicExp:
         return BitLogicExp(op, [self, other])
 
     return logic_operation
+
 
 def gen_binary_method_reg(op: Ops) -> Callable[[RegArgType, RegArgType], RegLogicExp]:
     def logic_operation(self: RegArgType, other: RegArgType) -> RegLogicExp:

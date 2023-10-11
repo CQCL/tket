@@ -76,7 +76,9 @@ from pytket.circuit.logic_exp import (
     RegEq,
     RegLogicExp,
     RegNeg,
-    RegWiseOp, create_bit_logic_exp, create_predicate_exp, create_logic_exp,
+    RegWiseOp,
+    create_predicate_exp,
+    create_logic_exp,
 )
 from pytket.qasm.grammar import grammar
 from pytket.passes import auto_rebase_pass, RemoveRedundancies
@@ -589,7 +591,6 @@ class CircuitTransformer(Transformer):
             op = RegWiseOp(str(tree[2]))
 
         return create_predicate_exp(op, [arg, int(tree[3].value)])
-
 
     def ifc(self, tree: Sequence) -> Iterable[CommandDict]:
         condition = cast(PredicateExp, tree[0])

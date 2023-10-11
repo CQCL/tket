@@ -63,7 +63,9 @@ from pytket.circuit.logic_exp import (
     reg_lt,
     reg_neq,
     if_bit,
-    if_not_bit, create_bit_logic_exp, create_reg_logic_exp,
+    if_not_bit,
+    create_bit_logic_exp,
+    create_reg_logic_exp,
 )
 from pytket.circuit.named_types import RenameUnitsMap
 
@@ -496,17 +498,18 @@ unsupported function with unvalid parameter or result type: 'unse_internal'
 """
     )
 
+
 T = TypeVar("T")
 DrawType = Callable[[SearchStrategy[T]], T]
+
+
 @strategies.composite
 def bit_register(
     draw: DrawType,
     name: SearchStrategy[str] = strategies.from_regex(reg_name_regex, fullmatch=True),
     size: SearchStrategy[int] = strategies.integers(min_value=2, max_value=32),
 ) -> BitRegister:
-    return BitRegister(
-            draw(name.filter(lambda nm: not nm.startswith("q"))),
-            draw(size))
+    return BitRegister(draw(name.filter(lambda nm: not nm.startswith("q"))), draw(size))
 
 
 @strategies.composite
@@ -743,23 +746,25 @@ def composite_reg_logic_exps(
 def bit_const_predicates(
     draw: DrawType,
     exp: SearchStrategy[BitLogicExp] = composite_bit_logic_exps(),
-    operators: SearchStrategy[Callable[[Union[Bit, BitLogicExp]], PredicateExp]] = strategies.sampled_from([if_bit, if_not_bit]),
+    operators: SearchStrategy[
+        Callable[[Union[Bit, BitLogicExp]], PredicateExp]
+    ] = strategies.sampled_from([if_bit, if_not_bit]),
 ) -> PredicateExp:
     func = draw(operators)
     arg = draw(exp)
-    return func(arg) # type: ignore
+    return func(arg)  # type: ignore
 
 
 @strategies.composite
 def reg_const_predicates(
     draw: DrawType,
     exp: SearchStrategy[RegLogicExp] = composite_reg_logic_exps(),
-    operators: SearchStrategy[Callable[[Union[RegLogicExp, BitRegister], int], PredicateExp]] = strategies.sampled_from(
-        [reg_eq, reg_neq, reg_lt, reg_gt, reg_leq, reg_geq]
-    ),
+    operators: SearchStrategy[
+        Callable[[Union[RegLogicExp, BitRegister], int], PredicateExp]
+    ] = strategies.sampled_from([reg_eq, reg_neq, reg_lt, reg_gt, reg_leq, reg_geq]),
     constants: SearchStrategy[int] = uint32,
 ) -> PredicateExp:
-    return draw(operators)(draw(exp), draw(constants)) # type: ignore
+    return draw(operators)(draw(exp), draw(constants))  # type: ignore
 
 
 @given(condition=strategies.one_of(bit_const_predicates(), reg_const_predicates()))
@@ -1012,9 +1017,7 @@ def test_decomposition_known() -> None:
     decomposed_circ.add_c_or_to_registers(
         temp_reg(0), BitRegister(temp_reg(1).name, 3), temp_reg(0)
     )
-    decomposed_circ.add_c_range_predicate(
-        3, 3, temp_reg(0).to_list()[:3], temp_bits[9]
-    )
+    decomposed_circ.add_c_range_predicate(3, 3, temp_reg(0).to_list()[:3], temp_bits[9])
     decomposed_circ.CX(
         qreg[3], qreg[4], condition_bits=[temp_bits[9]], condition_value=1
     )
@@ -1187,7 +1190,7 @@ def test_renaming() -> None:
     circ.add_classicalexpbox_bit(a[0] & b[0] | c[0], [a[0]])
     circ.add_classicalexpbox_bit(a[0] & c[2], [c[0]])
     d = [Bit("d", index) for index in range(0, 3)]
-    bmap: RenameUnitsMap  = {a[0]: d[0], b[0]: d[1], c[0]: d[2]}
+    bmap: RenameUnitsMap = {a[0]: d[0], b[0]: d[1], c[0]: d[2]}
     original_commands = circ.get_commands()
     assert circ.rename_units(bmap)
     commands = circ.get_commands()

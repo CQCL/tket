@@ -28,7 +28,7 @@ using json = nlohmann::json;
 
 namespace tket {
 
-    typedef py::tket_custom::SequenceVec<Qubit> py_qubit_vector_t;
+typedef py::tket_custom::SequenceVec<Qubit> py_qubit_vector_t;
 PYBIND11_MODULE(pauli, m) {
   py::module::import("pytket._tket.unit_id");
   py::enum_<Pauli>(m, "Pauli")
@@ -48,7 +48,9 @@ PYBIND11_MODULE(pauli, m) {
           "Constructs a QubitPauliString with a single Pauli term.",
           py::arg("qubit"), py::arg("pauli"))
       .def(
-          py::init<py::tket_custom::SequenceList<Qubit>, py::tket_custom::SequenceList<Pauli>>(),
+          py::init<
+              py::tket_custom::SequenceList<Qubit>,
+              py::tket_custom::SequenceList<Pauli>>(),
           "Constructs a QubitPauliString from two matching lists of "
           "Qubits and Paulis.",
           py::arg("qubits"), py::arg("paulis"))
@@ -119,8 +121,9 @@ PYBIND11_MODULE(pauli, m) {
           py::arg("n_qubits"))
       .def(
           "to_sparse_matrix",
-          [](const QubitPauliString& self, const py_qubit_vector_t & qubits){
-              return self.to_sparse_matrix(qubits);},
+          [](const QubitPauliString &self, const py_qubit_vector_t &qubits) {
+            return self.to_sparse_matrix(qubits);
+          },
           "Represents the sparse string as a dense string and generates "
           "the matrix for the tensor. Orders qubits according to "
           "`qubits` (padding with identities if they are not in the "
@@ -145,9 +148,10 @@ PYBIND11_MODULE(pauli, m) {
           py::arg("state"))
       .def(
           "dot_state",
-          [](const QubitPauliString& self,
-              const Eigen::VectorXcd & state, const py_qubit_vector_t & qubits){
-              return self.dot_state(state, qubits);},
+          [](const QubitPauliString &self, const Eigen::VectorXcd &state,
+             const py_qubit_vector_t &qubits) {
+            return self.dot_state(state, qubits);
+          },
           "Performs the dot product of the state with the pauli string. "
           "Maps the qubits of the statevector according to the ordered "
           "list `qubits`, with ``qubits[0]`` being the most significant "
@@ -159,8 +163,9 @@ PYBIND11_MODULE(pauli, m) {
           py::arg("state"), py::arg("qubits"))
       .def(
           "state_expectation",
-          [](const QubitPauliString& self, const Eigen::VectorXcd & state){
-              return self.state_expectation(state);},
+          [](const QubitPauliString &self, const Eigen::VectorXcd &state) {
+            return self.state_expectation(state);
+          },
           "Calculates the expectation value of the state with the pauli "
           "string. Maps the qubits of the statevector with "
           "sequentially-indexed qubits in the default register, with "
@@ -171,8 +176,10 @@ PYBIND11_MODULE(pauli, m) {
           py::arg("state"))
       .def(
           "state_expectation",
-          [](const QubitPauliString & self,
-              const Eigen::VectorXcd & state, const py_qubit_vector_t & qubits){ return self.state_expectation(state, qubits); },
+          [](const QubitPauliString &self, const Eigen::VectorXcd &state,
+             const py_qubit_vector_t &qubits) {
+            return self.state_expectation(state, qubits);
+          },
           "Calculates the expectation value of the state with the pauli "
           "string. Maps the qubits of the statevector according to the "
           "ordered list `qubits`, with ``qubits[0]`` being the most "
@@ -220,7 +227,8 @@ PYBIND11_MODULE(pauli, m) {
       "with a +/- 1 coefficient.")
       .def(py::init<>(), "Constructs an empty PauliStabiliser.")
       .def(
-          py::init([](const py::tket_custom::SequenceVec<Pauli> &string, const int &coeff) {
+          py::init([](const py::tket_custom::SequenceVec<Pauli> &string,
+                      const int &coeff) {
             if (coeff == 1) {
               return PauliStabiliser(string, true);
             }
@@ -261,7 +269,8 @@ PYBIND11_MODULE(pauli, m) {
           py::arg("qubit"), py::arg("pauli"), py::arg("coeff") = 1.)
       .def(
           py::init([](const py::tket_custom::SequenceList<Qubit> &qubits,
-                      const py::tket_custom::SequenceList<Pauli> &paulis, const Complex &coeff) {
+                      const py::tket_custom::SequenceList<Pauli> &paulis,
+                      const Complex &coeff) {
             return QubitPauliTensor(QubitPauliString(qubits, paulis), coeff);
           }),
           "Constructs a QubitPauliTensor from two matching lists of "
