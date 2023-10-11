@@ -1,7 +1,6 @@
-from typing import Union, Sequence, Mapping
+from typing import Union
 
 import numpy as np
-from sympy import Expr
 
 from pytket.circuit import Circuit, Qubit, PhasePolyBox
 from pytket.passes import ComposePhasePolyBoxes, DecomposeBoxes
@@ -10,8 +9,8 @@ from pytket.circuit.named_types import PhasePolynomialDict, PhasePolynomialSeque
 
 
 def phase_polynomials_are_equal(
-    phase_poly_0: Union[PhasePolynomialDict | PhasePolynomialSequence],
-    phase_poly_1: Union[PhasePolynomialDict | PhasePolynomialSequence],
+    phase_poly_0: Union[PhasePolynomialDict, PhasePolynomialSequence],
+    phase_poly_1: Union[PhasePolynomialDict, PhasePolynomialSequence],
 ) -> bool:
     if isinstance(phase_poly_0, dict) and isinstance(phase_poly_1, dict):
         return phase_poly_0 == phase_poly_1
