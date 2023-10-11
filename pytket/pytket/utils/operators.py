@@ -71,7 +71,7 @@ class QubitPauliOperator:
         return self._dict[key]
 
     def get(self, key: QubitPauliString, default: CoeffType) -> CoeffType:
-        return self._dict.get(key, default)
+        return self._dict.get(key, default)  # type: ignore
 
     def __setitem__(self, key: QubitPauliString, value: CoeffType) -> None:
         """Update value in dictionary ([]). Automatically converts value into sympy
