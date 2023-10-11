@@ -404,6 +404,7 @@ jobs:
       if: matrix.os == 'macos-12' && (github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch')
       run: |
         python${{ matrix.python-version }} -m pip install -U mypy
+        python${{ matrix.python-version }} -m pip install -U pybind11-stubgen
         cd pytket
         ./stub_generation/regenerate_stubs
         git diff --quiet pytket/_tket && echo "Stubs are up-to-date" || exit 1  # fail if stubs change after regeneration
