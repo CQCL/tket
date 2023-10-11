@@ -17,6 +17,7 @@ Minor new features:
 * Make ``SquashRzPhasedX`` pass always squash symbols.
 * Add in-place symbol_substition method for ``CircBox``
 * Add rendering support for 0-valued control-type gates.
+* Typing improvements
 
 Fixes:
 
