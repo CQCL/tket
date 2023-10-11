@@ -807,16 +807,14 @@ Circuit::SliceIterator::SliceIterator(const Circuit& circ)
 
   // Add all vertices that have no Quantum or Classical edges (e.g. Phase) and
   // no Boolean inputs:
-  VertexList loners;
   BGL_FORALL_VERTICES(v, circ.dag, DAG) {
     if (circ.n_in_edges(v) == 0 &&
         circ.n_out_edges_of_type(v, EdgeType::Quantum) == 0 &&
         circ.n_out_edges_of_type(v, EdgeType::Classical) == 0 &&
         circ.n_out_edges_of_type(v, EdgeType::WASM) == 0) {
-      loners.push_back(v);
+      cut_.slice->push_back(v);
     }
   }
-  cut_.slice->insert(cut_.slice->end(), loners.begin(), loners.end());
 }
 
 Circuit::SliceIterator::SliceIterator(
