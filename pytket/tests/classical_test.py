@@ -437,69 +437,69 @@ def test_wasmfilehandler_without_init_no_check() -> None:
     assert c.depth() == 4
 
 
-def test_wasmfilehandler_unvalid_file_1_c_32() -> None:
+def test_wasmfilehandler_invalid_file_1_c_32() -> None:
     with pytest.raises(ValueError):
         w = wasm.WasmFileHandler(
-            "wasm-generation/wasmfromcpp/unvalid-with-print-1-emcc.wasm", int_size=32
+            "wasm-generation/wasmfromcpp/invalid-with-print-1-emcc.wasm", int_size=32
         )
 
 
-def test_wasmfilehandler_unvalid_file_1_c_64() -> None:
+def test_wasmfilehandler_invalid_file_1_c_64() -> None:
     with pytest.raises(ValueError):
         w = wasm.WasmFileHandler(
-            "wasm-generation/wasmfromcpp/unvalid-with-print-1-emcc.wasm", int_size=64
+            "wasm-generation/wasmfromcpp/invalid-with-print-1-emcc.wasm", int_size=64
         )
 
 
-def test_wasmfilehandler_unvalid_file_1_e_32() -> None:
+def test_wasmfilehandler_invalid_file_1_e_32() -> None:
     with pytest.raises(ValueError):
         w = wasm.WasmFileHandler(
-            "wasm-generation/wasmfromcpp/unvalid-with-print-2-emcc.wasm", int_size=32
+            "wasm-generation/wasmfromcpp/invalid-with-print-2-emcc.wasm", int_size=32
         )
 
 
-def test_wasmfilehandler_unvalid_file_1_e_64() -> None:
+def test_wasmfilehandler_invalid_file_1_e_64() -> None:
     with pytest.raises(ValueError):
         w = wasm.WasmFileHandler(
-            "wasm-generation/wasmfromcpp/unvalid-with-print-2-emcc.wasm", int_size=64
+            "wasm-generation/wasmfromcpp/invalid-with-print-2-emcc.wasm", int_size=64
         )
 
 
-def test_wasmfilehandler_unvalid_file_1_c_32_no_check() -> None:
+def test_wasmfilehandler_invalid_file_1_c_32_no_check() -> None:
     w = wasm.WasmFileHandler(
-        "wasm-generation/wasmfromcpp/unvalid-with-print-1-emcc.wasm",
+        "wasm-generation/wasmfromcpp/invalid-with-print-1-emcc.wasm",
         int_size=32,
         check_file=False,
     )
 
 
-def test_wasmfilehandler_unvalid_file_1_c_64_no_check() -> None:
+def test_wasmfilehandler_invalid_file_1_c_64_no_check() -> None:
     w = wasm.WasmFileHandler(
-        "wasm-generation/wasmfromcpp/unvalid-with-print-1-emcc.wasm",
+        "wasm-generation/wasmfromcpp/invalid-with-print-1-emcc.wasm",
         int_size=64,
         check_file=False,
     )
 
 
-def test_wasmfilehandler_unvalid_file_1_e_32_no_check() -> None:
+def test_wasmfilehandler_invalid_file_1_e_32_no_check() -> None:
     w = wasm.WasmFileHandler(
-        "wasm-generation/wasmfromcpp/unvalid-with-print-2-emcc.wasm",
+        "wasm-generation/wasmfromcpp/invalid-with-print-2-emcc.wasm",
         int_size=32,
         check_file=False,
     )
 
 
-def test_wasmfilehandler_unvalid_file_1_e_64_no_check() -> None:
+def test_wasmfilehandler_invalid_file_1_e_64_no_check() -> None:
     w = wasm.WasmFileHandler(
-        "wasm-generation/wasmfromcpp/unvalid-with-print-2-emcc.wasm",
+        "wasm-generation/wasmfromcpp/invalid-with-print-2-emcc.wasm",
         int_size=64,
         check_file=False,
     )
 
 
-def test_wasmfilehandler_unvalid_file_1_e_32_no_check_repr() -> None:
+def test_wasmfilehandler_invalid_file_1_e_32_no_check_repr() -> None:
     w = wasm.WasmFileHandler(
-        "wasm-generation/wasmfromcpp/unvalid-with-print-2-emcc.wasm",
+        "wasm-generation/wasmfromcpp/invalid-with-print-2-emcc.wasm",
         int_size=32,
         check_file=False,
     )
@@ -521,7 +521,7 @@ function 'add_eleven' with 1 i32 parameter(s) and 1 i32 return value(s)
 function 'no_return' with 1 i32 parameter(s) and 0 i32 return value(s)
 function 'no_parameters' with 0 i32 parameter(s) and 1 i32 return value(s)
 function 'new_function' with 0 i32 parameter(s) and 1 i32 return value(s)
-unsupported function with unvalid parameter or result type: 'add_something' 
+unsupported function with invalid parameter or result type: 'add_something' 
 """
     )
 
@@ -533,13 +533,13 @@ def test_wasmfilehandler_repr_64() -> None:
         == """Functions in wasm file with the uid 6a0a29e235cd5c60353254bc2b459e631d381cdd0bded7ae6cb44afb784bd2de:
 function 'init' with 0 i64 parameter(s) and 0 i64 return value(s)
 function 'add_something' with 1 i64 parameter(s) and 1 i64 return value(s)
-unsupported function with unvalid parameter or result type: 'add_one' 
-unsupported function with unvalid parameter or result type: 'multi' 
-unsupported function with unvalid parameter or result type: 'add_two' 
-unsupported function with unvalid parameter or result type: 'add_eleven' 
-unsupported function with unvalid parameter or result type: 'no_return' 
-unsupported function with unvalid parameter or result type: 'no_parameters' 
-unsupported function with unvalid parameter or result type: 'new_function' 
+unsupported function with invalid parameter or result type: 'add_one' 
+unsupported function with invalid parameter or result type: 'multi' 
+unsupported function with invalid parameter or result type: 'add_two' 
+unsupported function with invalid parameter or result type: 'add_eleven' 
+unsupported function with invalid parameter or result type: 'no_return' 
+unsupported function with invalid parameter or result type: 'no_parameters' 
+unsupported function with invalid parameter or result type: 'new_function' 
 """
     )
 
@@ -562,7 +562,7 @@ function 'mixed_up' with 1 i32 parameter(s) and 1 i32 return value(s)
 function 'mixed_up_2' with 2 i32 parameter(s) and 1 i32 return value(s)
 function 'mixed_up_3' with 3 i32 parameter(s) and 1 i32 return value(s)
 function 'unse_internal' with 1 i32 parameter(s) and 1 i32 return value(s)
-unsupported function with unvalid parameter or result type: 'add_something' 
+unsupported function with invalid parameter or result type: 'add_something' 
 """
     )
 
@@ -574,18 +574,18 @@ def test_wasmfilehandler_repr_64_2() -> None:
         == """Functions in wasm file with the uid 360e60c3b092ad735982ba49207f9c3250b111e5963fb630c69f85266172080b:
 function 'init' with 0 i64 parameter(s) and 0 i64 return value(s)
 function 'add_something' with 1 i64 parameter(s) and 1 i64 return value(s)
-unsupported function with unvalid parameter or result type: 'add_one' 
-unsupported function with unvalid parameter or result type: 'multi' 
-unsupported function with unvalid parameter or result type: 'add_two' 
-unsupported function with unvalid parameter or result type: 'add_something_32' 
-unsupported function with unvalid parameter or result type: 'add_eleven' 
-unsupported function with unvalid parameter or result type: 'no_return' 
-unsupported function with unvalid parameter or result type: 'no_parameters' 
-unsupported function with unvalid parameter or result type: 'new_function' 
-unsupported function with unvalid parameter or result type: 'mixed_up' 
-unsupported function with unvalid parameter or result type: 'mixed_up_2' 
-unsupported function with unvalid parameter or result type: 'mixed_up_3' 
-unsupported function with unvalid parameter or result type: 'unse_internal' 
+unsupported function with invalid parameter or result type: 'add_one' 
+unsupported function with invalid parameter or result type: 'multi' 
+unsupported function with invalid parameter or result type: 'add_two' 
+unsupported function with invalid parameter or result type: 'add_something_32' 
+unsupported function with invalid parameter or result type: 'add_eleven' 
+unsupported function with invalid parameter or result type: 'no_return' 
+unsupported function with invalid parameter or result type: 'no_parameters' 
+unsupported function with invalid parameter or result type: 'new_function' 
+unsupported function with invalid parameter or result type: 'mixed_up' 
+unsupported function with invalid parameter or result type: 'mixed_up_2' 
+unsupported function with invalid parameter or result type: 'mixed_up_3' 
+unsupported function with invalid parameter or result type: 'unse_internal' 
 """
     )
 

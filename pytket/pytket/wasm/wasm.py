@@ -149,7 +149,7 @@ class WasmFileHandler:
                 idx = _func_lookup[x][1]
 
                 if idx >= len(self._function_types):
-                    raise ValueError("unvalid wasm file")
+                    raise ValueError("invalid wasm file")
 
                 for t in function_signatures[self._function_types[idx]][
                     "parameter_types"
@@ -212,7 +212,7 @@ You can skip the check by setting 'check_file' to False."""
 
             for x in self._unsupported_function:
                 result += (
-                    f"unsupported function with unvalid "
+                    f"unsupported function with invalid "
                     f"parameter or result type: '{x}' \n"
                 )
 
