@@ -22,9 +22,10 @@ jobs:
     name: Check tket library version
     runs-on: ubuntu-22.04
     outputs:
+      tket_or_workflow_changed: ${{ steps.filter.outputs.tket_or_workflow }}
       tket_changed: ${{ steps.filter.outputs.tket }}
-      doxyfile_changed: ${{ steps.filter.outputs.doxyfile }}
-      pytket_changed: ${{ steps.filter.outputs.pytket }}
+      doxyfile_or_workflow_changed: ${{ steps.filter.outputs.doxyfile_or_workflow }}
+      pytket_or_workflow_changed: ${{ steps.filter.outputs.pytket_or_workflow }}
       tket_ver: ${{ steps.tket_ver.outputs.tket_ver }}
       tket_package_exists: ${{ steps.tket_package_exists.outputs.tket_package_exists }}
     steps:
@@ -39,13 +40,13 @@ jobs:
         filters: |
           tket:
             - '{tket/src/**,tket/include/**,tket/conanfile.py,tket/CMakeLists.txt,tket/cmake/**,tket/test/**,tket/proptest/**}'
-            - '.github/workflows/build_and_test.yml'
-          tket_version_bump_necessary:
+          tket_or_workflow:
             - '{tket/src/**,tket/include/**,tket/conanfile.py,tket/CMakeLists.txt,tket/cmake/**,tket/test/**,tket/proptest/**}'
-          doxyfile:
+            - '.github/workflows/build_and_test.yml'
+          doxyfile_or_workflow:
             - '{tket/Doxyfile}'
             - '.github/workflows/build_and_test.yml'
-          pytket:
+          pytket_or_workflow:
             - 'pytket/**'
             - '.github/workflows/build_and_test.yml'
     - name: Install conan
@@ -62,13 +63,13 @@ jobs:
         tket_package_exists=`conan search -r tket-libs "tket/${{ steps.tket_ver.outputs.tket_ver }}@tket/stable" | grep "not found" > /dev/null 2>&1 && echo false || echo true`
         echo "tket_package_exists=${tket_package_exists}" >> $GITHUB_OUTPUT
     - name: Check tket version bump
-      if: github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'develop' && steps.filter.outputs.tket_version_bump_necessary == 'true' && steps.test_package_exists.outputs.tket_package_exists == 'true'
+      if: github.event_name == 'pull_request' && github.event.pull_request.base.ref == 'develop' && steps.filter.outputs.tket == 'true' && steps.test_package_exists.outputs.tket_package_exists == 'true'
       run: exit 1
 
   check_docs_tket:
     name: Check documentation build
     needs: check_changes
-    if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.doxyfile_changed == 'true'
+    if: needs.check_changes.outputs.tket_or_workflow_changed == 'true' || needs.check_changes.outputs.doxyfile_or_workflow_changed == 'true'
     runs-on: 'ubuntu-22.04'
     steps:
       - uses: actions/checkout@v4
@@ -80,7 +81,7 @@ jobs:
   check_format_tket:
     name: Check C++ code formatting
     needs: check_changes
-    if: needs.check_changes.outputs.tket_changed == 'true'
+    if: needs.check_changes.outputs.tket_or_workflow_changed == 'true'
     runs-on: 'macos-12'
     steps:
       - uses: actions/checkout@v4
@@ -93,7 +94,7 @@ jobs:
   build_test_tket:
     name: Build and test (tket)
     needs: check_changes
-    if: needs.check_changes.outputs.tket_changed == 'true'
+    if: needs.check_changes.outputs.tket_or_workflow_changed == 'true'
     strategy:
       matrix:
         os: ['ubuntu-22.04', 'macos-12', 'macos-13-xlarge']
@@ -147,7 +148,7 @@ jobs:
   build_test_tket_windows:
     name: Build and test (tket)
     needs: check_changes
-    if: needs.check_changes.outputs.tket_changed == 'true'
+    if: needs.check_changes.outputs.tket_or_workflow_changed == 'true'
     strategy:
       matrix:
         os: ['windows-2022']
@@ -221,7 +222,7 @@ jobs:
   build_test_tket_not_required:
     name: Build and test (tket)
     needs: check_changes
-    if: needs.check_changes.outputs.tket_changed != 'true'
+    if: needs.check_changes.outputs.tket_or_workflow_changed != 'true'
     strategy:
       matrix:
         os: ['ubuntu-22.04', 'macos-12', 'windows-2022', 'macos-13-xlarge']
@@ -232,7 +233,7 @@ jobs:
   build_test_pytket_ubuntu:
     name: Build and test pytket (ubuntu)
     needs: check_changes
-    if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true'
+    if: needs.check_changes.outputs.tket_or_workflow_changed == 'true' || needs.check_changes.outputs.pytket_or_workflow_changed == 'true'
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
@@ -331,7 +332,7 @@ jobs:
   build_test_pytket_macos:
     name: Build and test pytket (macos)
     needs: check_changes
-    if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true'
+    if: needs.check_changes.outputs.tket_or_workflow_changed == 'true' || needs.check_changes.outputs.pytket_or_workflow_changed == 'true'
     strategy:
       matrix:
         os: ['macos-12', 'macos-13-xlarge']
@@ -426,7 +427,7 @@ jobs:
     # See https://ccache.dev/manual/4.8.2.html#_cache_statistics for more info on what that means. I myself haven't fully understood.
     # Giving up for now
     needs: check_changes
-    if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true'
+    if: needs.check_changes.outputs.tket_or_workflow_changed == 'true' || needs.check_changes.outputs.pytket_or_workflow_changed == 'true'
     runs-on: windows-2022
     steps:
     - uses: actions/checkout@v4
