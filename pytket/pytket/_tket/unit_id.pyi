@@ -101,6 +101,8 @@ class BitRegister:
         :param name: Name of the register.
         :param size: Size of register.
         """
+    def __iter__(self) -> BitRegister:
+        ...
     def __len__(self) -> int:
         ...
     def __lshift__(self, other: typing.Union[pytket.circuit.logic_exp.RegLogicExp, pytket._tket.unit_id.BitRegister, int]) -> pytket.circuit.logic_exp.RegLogicExp:
@@ -108,6 +110,8 @@ class BitRegister:
     def __lt__(self, arg0: BitRegister) -> bool:
         ...
     def __mul__(self, other: typing.Union[pytket.circuit.logic_exp.RegLogicExp, pytket._tket.unit_id.BitRegister, int]) -> pytket.circuit.logic_exp.RegLogicExp:
+        ...
+    def __next__(self) -> Bit:
         ...
     def __or__(self, other: typing.Union[pytket.circuit.logic_exp.RegLogicExp, pytket._tket.unit_id.BitRegister, int]) -> pytket.circuit.logic_exp.RegLogicExp:
         ...
@@ -130,6 +134,14 @@ class BitRegister:
     def __xor__(self, other: typing.Union[pytket.circuit.logic_exp.RegLogicExp, pytket._tket.unit_id.BitRegister, int]) -> pytket.circuit.logic_exp.RegLogicExp:
         ...
     def to_list(self) -> list[Bit]:
+        ...
+    @property
+    def _current(self) -> int:
+        """
+        Internal property for iteration.
+        """
+    @_current.setter
+    def _current(self, arg1: int) -> None:
         ...
     @property
     def name(self) -> str:
@@ -281,15 +293,27 @@ class QubitRegister:
         :param name: Name of the register.
         :param size: Size of register.
         """
+    def __iter__(self) -> QubitRegister:
+        ...
     def __len__(self) -> int:
         ...
     def __lt__(self, arg0: QubitRegister) -> bool:
+        ...
+    def __next__(self) -> Qubit:
         ...
     def __repr__(self) -> str:
         ...
     def __str__(self) -> str:
         ...
     def to_list(self) -> list[Qubit]:
+        ...
+    @property
+    def _current(self) -> int:
+        """
+        Internal property for iteration.
+        """
+    @_current.setter
+    def _current(self, arg1: int) -> None:
         ...
     @property
     def name(self) -> str:

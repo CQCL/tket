@@ -15,3 +15,25 @@
 from pytket._tket.unit_id import *
 from pytket._tket.unit_id import _TEMP_BIT_NAME
 from pytket._tket.unit_id import _TEMP_BIT_REG_BASE
+
+
+def _bitregister_next(self: BitRegister) -> Bit:
+    if self._current < self.size:
+        result = self[self._current]
+        self._current += 1
+        return result
+    else:
+        raise StopIteration
+
+
+def _qubitregister_next(self: QubitRegister) -> Qubit:
+    if self._current < self.size:
+        result = self[self._current]
+        self._current += 1
+        return result
+    else:
+        raise StopIteration
+
+
+setattr(BitRegister, "__next__", _bitregister_next)
+setattr(QubitRegister, "__next__", _qubitregister_next)

@@ -656,17 +656,14 @@ class CircuitTransformer(Transformer):
     def _calc_exp_io(
         self, exp: LogicExp, out_args: List
     ) -> Tuple[List[List], Dict[str, Any]]:
-        all_inps: Set[Tuple[str, int]] = set(
-            map(
-                lambda b: (b.reg_name, b.index[0]),
-                chain.from_iterable(
-                    (
-                        [inp] if isinstance(inp, Bit) else iter(inp)
-                        for inp in exp.all_inputs()
-                    )
-                ),
-            )
-        )
+        all_inps: Set[Tuple[str, int]] = set()
+        for inp in exp.all_inputs():
+            if isinstance(inp, Bit):
+                all_inps.add((inp.reg_name, inp.index[0]))
+            else:
+                assert isinstance(inp, BitRegister)
+                for bit in inp:
+                    all_inps.add((bit.reg_name, bit.index[0]))
         outs = (_hashable_uid(arg) for arg in out_args)
         o = []
         io = []
@@ -1418,7 +1415,7 @@ class QasmWriter:
                 bits = args[:in_width]
                 args = args[in_width:]
                 regname = bits[0].reg_name
-                if bits != list(self.cregs[regname]):  # type: ignore
+                if bits != list(self.cregs[regname]):
                     QASMUnsupportedError("WASM ops must act on entire registers.")
                 reglist.append(regname)
         if outputs:
