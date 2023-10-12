@@ -274,12 +274,9 @@ def test_backendresult() -> None:
 
     backres_counts = BackendResult(c_bits=cbits, counts=outcomeA.counts())
     assert backres_counts.get_result().counts == outcomeA.counts()
-    assert (
-        backres_counts.get_result([cbits[4], cbits[7]]).counts[  # type: ignore
-            OutcomeArray.from_readouts([[1, 1]])
-        ]
-        == 2
-    )
+    counter = backres_counts.get_result([cbits[4], cbits[7]]).counts
+    assert counter is not None
+    assert counter[OutcomeArray.from_readouts([[1, 1]])] == 2
     testvec = [1 + 1j, 3 + 4j, 1 + 1j, 3 + 4j]
     teststate = np.array(testvec)
     teststate /= np.sqrt(teststate.conjugate().dot(teststate))
