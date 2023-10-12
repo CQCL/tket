@@ -454,9 +454,9 @@ jobs:
              }
     - name: ninja ccache setup
         # This is what hendrikmuhs/ccache-action does, but for windows (theirs is buggy on windows)
-      id: ninja-ccache-setup
+      id: ccache-setup
       run: |
-        choco upgrade ccache ninja
+        choco upgrade ccache
         $ccache_dir = ccache --get-config cache_dir
         echo ccache_dir=$ccache_dir >> $env:GITHUB_OUTPUT
         ccache --set-config=max_size='500M'
@@ -472,13 +472,14 @@ jobs:
     - name: ccache windows
       uses: actions/cache@v3
       with:
-        path: ${{ steps.ninja-ccache-setup.outputs.ccache_dir }}
+        path: ${{ steps.ccache-setup.outputs.ccache_dir }}
         key: tket-dynamic-visual-studio-windows-2022-${{ steps.current_time.outputs.formattedTime }}
         restore-keys: |
           tket-dynamic-visual-studio-windows-2022
     - name: Build tket
       if: needs.check_changes.outputs.tket_changed == 'true'
       run: |
+        ccache --shimgen-help
         $env:TKET_VSGEN_CCACHE_EXE = 'C:\\ProgramData\\chocolatey\\lib\\ccache\\tools\\ccache-4.8.3-windows-x86_64\\ccache.exe'
         conan build tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
         conan export-pkg tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf `"`"
