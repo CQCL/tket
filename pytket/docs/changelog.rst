@@ -18,6 +18,7 @@ Minor new features:
 * Add in-place symbol_substition method for ``CircBox``
 * Add rendering support for 0-valued control-type gates.
 * Typing improvements
+* Make ``BitRegister`` and ``QubitRegister`` iterable
 
 Fixes:
 
