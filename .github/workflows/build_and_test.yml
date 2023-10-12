@@ -479,6 +479,7 @@ jobs:
     - name: Build tket
       if: needs.check_changes.outputs.tket_changed == 'true'
       run: |
+        $env:TKET_VSGEN_CCACHE_EXE = 'C:\\ProgramData\\chocolatey\\lib\\ccache\\tools\\ccache-4.8.3-windows-x86_64\\ccache.exe'
         conan build tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
         conan export-pkg tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf `"`"
     - name: Install tket
