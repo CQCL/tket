@@ -219,7 +219,7 @@ def get_operator_expectation_value(
         results = backend.get_results(handles)
         for pauli_string in measurement_expectation.results:
             bitmaps = measurement_expectation.results[pauli_string]
-            coeff = operator[pauli_string]
+            string_coeff = operator[pauli_string]
             for bm in bitmaps:
                 index = bm.circ_index
                 aritysum = 0.0
@@ -229,13 +229,21 @@ def get_operator_expectation_value(
                     for row, count in counts.items():
                         aritysum += count * (sum(row[i] for i in bm.bits) % 2)
                         total_shots += count
-                    e = ((-1) ** bm.invert) * coeff * (-2 * aritysum / total_shots + 1)
+                    e = (
+                        ((-1) ** bm.invert)
+                        * string_coeff
+                        * (-2 * aritysum / total_shots + 1)
+                    )
                     energy += complex(e)
                 elif backend.supports_shots:
                     shots = results[index].get_shots()
                     for row in shots:
                         aritysum += sum(row[i] for i in bm.bits) % 2
-                    e = ((-1) ** bm.invert) * coeff * (-2 * aritysum / len(shots) + 1)
+                    e = (
+                        ((-1) ** bm.invert)
+                        * string_coeff
+                        * (-2 * aritysum / len(shots) + 1)
+                    )
                     energy += complex(e)
                 else:
                     raise ValueError("Backend does not support counts or shots")

@@ -146,6 +146,12 @@ const PassPtr &DecomposeClassicalExp() {
 
 PYBIND11_MODULE(passes, m) {
   py::module_::import("pytket._tket.predicates");
+  m.def(
+      "_sympy_import", []() { return Expr(); },
+      "This function only exists so that sympy gets imported in the resulting "
+      ".pyi file. "
+      "It's needed due to a bug in pybind11-stubgen's translation for "
+      "Callables most likely.");
   py::enum_<SafetyMode>(m, "SafetyMode")
       .value(
           "Audit", SafetyMode::Audit,
@@ -279,7 +285,7 @@ PYBIND11_MODULE(passes, m) {
   py::class_<SequencePass, std::shared_ptr<SequencePass>, BasePass>(
       m, "SequencePass", "A sequence of compilation passes.")
       .def(
-          py::init<const std::vector<PassPtr> &>(),
+          py::init<const py::tket_custom::SequenceVec<PassPtr> &>(),
           "Construct from a list of compilation passes arranged in "
           "order of application.",
           py::arg("pass_list"))
@@ -645,7 +651,11 @@ PYBIND11_MODULE(passes, m) {
       py::arg("q"), py::arg("p"), py::arg("strict") = false);
 
   m.def(
-      "CustomRoutingPass", &gen_routing_pass,
+      "CustomRoutingPass",
+      [](const Architecture &arc,
+         const py::tket_custom::SequenceVec<RoutingMethodPtr> &config) {
+        return gen_routing_pass(arc, config);
+      },
       "Construct a pass to route to the connectivity graph of an "
       ":py:class:`Architecture`. Edge direction is ignored. "
       "\n\n"
@@ -674,7 +684,7 @@ PYBIND11_MODULE(passes, m) {
       ":param architecture: The Architecture used for relabelling."
       "\n:return: a pass to relabel :py:class:`Circuit` Qubits to "
       ":py:class:`Architecture` Nodes",
-      py::arg("arc"));
+      py::arg("architecture"));
 
   m.def(
       "FlattenRelabelRegistersPass", &gen_flatten_relabel_registers_pass,
@@ -692,7 +702,11 @@ PYBIND11_MODULE(passes, m) {
       py::arg("qubit_map"));
 
   m.def(
-      "FullMappingPass", &gen_full_mapping_pass,
+      "FullMappingPass",
+      [](const Architecture &arc, const Placement::Ptr &placement_ptr,
+         const py::tket_custom::SequenceVec<RoutingMethodPtr> &config) {
+        return gen_full_mapping_pass(arc, placement_ptr, config);
+      },
       "Construct a pass to relabel :py:class:`Circuit` Qubits to "
       ":py:class:`Architecture` Nodes, and then route to the connectivity "
       "graph "
@@ -850,13 +864,13 @@ PYBIND11_MODULE(passes, m) {
   m.def(
       "SimplifyInitial",
       [](bool allow_classical, bool create_all_qubits, bool remove_redundancies,
-         std::shared_ptr<const Circuit> xcirc) -> PassPtr {
+         std::optional<std::shared_ptr<const Circuit>> xcirc_opt) -> PassPtr {
         PassPtr simpinit = gen_simplify_initial(
             allow_classical ? Transforms::AllowClassical::Yes
                             : Transforms::AllowClassical::No,
             create_all_qubits ? Transforms::CreateAllQubits::Yes
                               : Transforms::CreateAllQubits::No,
-            xcirc);
+            xcirc_opt.value_or(nullptr));
         if (remove_redundancies) {
           std::vector<PassPtr> seq = {simpinit, RemoveRedundancies()};
           return std::make_shared<SequencePass>(seq);
@@ -875,7 +889,7 @@ PYBIND11_MODULE(passes, m) {
       "transformed circuit (if omitted, an X gate is used)"
       "\n:return: a pass to perform the simplification",
       py::arg("allow_classical") = true, py::arg("create_all_qubits") = false,
-      py::arg("remove_redundancies") = true, py::arg("xcirc") = nullptr);
+      py::arg("remove_redundancies") = true, py::arg("xcirc") = py::none());
   m.def(
       "ContextSimp",
       [](bool allow_classical,

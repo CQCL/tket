@@ -26,6 +26,7 @@ from pytket.circuit import (
     UnitID,
     Conditional,
 )
+from pytket.circuit.named_types import ParamType, RenameUnitsMap
 from pytket.pauli import Pauli
 from pytket.passes import (
     SequencePass,
@@ -86,10 +87,10 @@ from pytket.placement import Placement, GraphPlacement
 from pytket.transform import Transform, PauliSynthStrat, CXConfigType
 from pytket.passes import SynthesiseOQC
 import numpy as np
-from sympy import Symbol, Expr
-from typing import Dict, Any, List, cast, Union
+from sympy import Symbol
+from typing import Dict, Any, List
 
-from useful_typedefs import ParamType as Param  # type: ignore
+from pytket.circuit.named_types import ParamType as Param
 
 
 circ2 = Circuit(1)
@@ -856,20 +857,22 @@ def test_conditional_phase() -> None:
     rebase.apply(c)
     cond_cmds = [cmd for cmd in c.get_commands() if cmd.op.type == OpType.Conditional]
     assert len(cond_cmds) > 0
-    assert any(
-        cast(Conditional, cond_cmd.op).op.type not in target_gateset
-        for cond_cmd in cond_cmds
-    )
+    any_check_list = []
+    for cond_cmd in cond_cmds:
+        op = cond_cmd.op
+        assert isinstance(op, Conditional)
+        any_check_list.append(op.op.type not in target_gateset)
+    assert any(any_check_list)
 
 
 def test_flatten_relabel_pass() -> None:
     c = Circuit(3)
     c.H(1).H(2)
-    rename_map = dict()
+    rename_map: RenameUnitsMap = dict()
     rename_map[Qubit(0)] = Qubit("a", 4)
     rename_map[Qubit(1)] = Qubit("b", 7)
     rename_map[Qubit(2)] = Qubit("a", 2)
-    c.rename_units(cast(dict[UnitID, UnitID], rename_map))
+    c.rename_units(rename_map)
 
     cu = CompilationUnit(c)
     FlattenRelabelRegistersPass("a").apply(cu)
@@ -906,14 +909,10 @@ def test_PeepholeOptimise2Q() -> None:
 
 
 def test_rebase_custom_tk2() -> None:
-    def _tk1_to_phase(
-        a: Union[Expr, float], b: Union[Expr, float], c: Union[Expr, float]
-    ) -> Circuit:
+    def _tk1_to_phase(a: ParamType, b: ParamType, c: ParamType) -> Circuit:
         return Circuit(1).Rz(c, 0).Rx(b, 0).Rz(a, 0)
 
-    def _tk2_to_phase(
-        a: Union[Expr, float], b: Union[Expr, float], c: Union[Expr, float]
-    ) -> Circuit:
+    def _tk2_to_phase(a: ParamType, b: ParamType, c: ParamType) -> Circuit:
         return Circuit(2).ZZPhase(c, 0, 1).YYPhase(b, 0, 1).XXPhase(a, 0, 1)
 
     to_phase_gates = RebaseCustom(
