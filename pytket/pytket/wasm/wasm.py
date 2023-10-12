@@ -90,7 +90,7 @@ class WasmFileHandler:
         # to use in pytket (because of types that are not i32)
         self._unsupported_function = []
 
-        try:
+        if self._check_file:
 
             mod_iter = iter(decode_module(self._wasm_file))
             _, _ = next(mod_iter)
@@ -177,15 +177,6 @@ class WasmFileHandler:
                 if not supported_function:
                     self._unsupported_function.append(x)
 
-        except:
-            if self._check_file:
-                raise ValueError(
-                    """It was not possible to parse and check the wasm file.
-It could be the case, that the file might still work.
-You can skip the check by setting 'check_file' to False."""
-                )
-
-        if self._check_file:
             if "init" not in self._functions:
                 raise ValueError("wasm file needs to contain a function named 'init'")
 
