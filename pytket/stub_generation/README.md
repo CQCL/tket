@@ -15,6 +15,15 @@ modules acceptable for `mypy` (see below).
 
 ## Binder code tips and tricks
 
+### Binding enums
+
+`pybind11-stubgen` needs help finding enum classes. If you add a new enum class binding, you
+need to indicate its location using a `--enum-class-locations` argument to `pybind11-stubgen` in the
+`regenerate_stubs` script. For an enum `MyEnum` in a python module `pytket._tket.some_module`, the correct
+argument is: `--enum-class-locations MyEnum:pytket._tket.some_module`. See the examples. The part before
+the colon is treated as a regex and multiple enums in a module can be discovered using 
+`--enum-class-locations MyEnum1|MyEnum2:pytket._tket.some_module`.
+
 ### When defining `__eq__`, `__ne__`
 
 > tldr: Use the custom equality checkers `py_equals` and `py_not_equals` from [py_operators.hpp](../binders/include/py_operators.hpp) to define `__eq__` and `__ne__` for
