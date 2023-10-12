@@ -53,11 +53,11 @@ class TupleVec : public std::vector<T> {
 PYBIND11_NAMESPACE_END(tket_custom)
 PYBIND11_NAMESPACE_BEGIN(detail)
 // This struct is copied from the struct "list_caster" in pybind11/stl.h with
-// some minor customization It adds the ability to customize the type name
+// some minor customization. It adds the ability to customize the type name
 // (using a handle_type_name<T> struct) and specify the python type that the
-// object is cast too Changes to the pybind11 code may warrant/require changes
-// here The struct is used to define custom type casters for the "tket_custom"
-// types
+// object is cast to. Changes to the pybind11 code may warrant/require changes
+// here. The struct is used to define custom type casters for the "tket_custom"
+// types.
 template <typename Type, typename Value, typename castToType>
 struct tket_sequence_caster {
   using value_conv = make_caster<Value>;
