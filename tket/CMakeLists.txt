@@ -39,10 +39,11 @@ endif()
 if (CMAKE_GENERATOR MATCHES "Visual Studio" AND DEFINED ENV{TKET_VSGEN_CCACHE_EXE})
     file(COPY_FILE
             $ENV{TKET_VSGEN_CCACHE_EXE} ${CMAKE_BINARY_DIR}/cl.exe ONLY_IF_DIFFERENT)
+    message("-> Setting ccache ($ENV{TKET_VSGEN_CCACHE_EXE}) as compiler launcher for generator ${CMAKE_GENERATOR}")
 
     # By default Visual Studio generators will use /Zi which is not compatible
     # with ccache, so tell Visual Studio to use /Z7 instead.
-    message(STATUS "Setting MSVC debug information format to 'Embedded'")
+    message(STATUS "   Setting MSVC debug information format to 'Embedded'")
     set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<$<CONFIG:Debug,RelWithDebInfo>:Embedded>")
 
     set(CMAKE_VS_GLOBALS
@@ -56,8 +57,7 @@ else()
     find_program(CCACHE_PROGRAM ccache)
     if(CCACHE_PROGRAM)
             set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
-            message("-> Setting ccache (${CCACHE_PROGRAM} as compiler launcher for generator ${CMAKE_GENERATOR}")
-            message("-> This is only supported for the Ninja and Makefile generators")
+            message("-> Setting ccache (${CCACHE_PROGRAM}) as compiler launcher for generator ${CMAKE_GENERATOR}")
     endif ()
 endif()
 
