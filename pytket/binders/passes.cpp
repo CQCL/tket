@@ -865,16 +865,12 @@ PYBIND11_MODULE(passes, m) {
       "SimplifyInitial",
       [](bool allow_classical, bool create_all_qubits, bool remove_redundancies,
          std::optional<std::shared_ptr<const Circuit>> xcirc_opt) -> PassPtr {
-        std::shared_ptr<const Circuit> xcirc = nullptr;
-        if (xcirc_opt.has_value()) {
-          xcirc = xcirc_opt.value();
-        }
         PassPtr simpinit = gen_simplify_initial(
             allow_classical ? Transforms::AllowClassical::Yes
                             : Transforms::AllowClassical::No,
             create_all_qubits ? Transforms::CreateAllQubits::Yes
                               : Transforms::CreateAllQubits::No,
-            xcirc);
+            xcirc_opt.value_or(nullptr));
         if (remove_redundancies) {
           std::vector<PassPtr> seq = {simpinit, RemoveRedundancies()};
           return std::make_shared<SequencePass>(seq);
