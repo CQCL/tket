@@ -54,9 +54,11 @@ void declare_register(py::module &m, const std::string &typestr) {
             return typestr + "(\"" + reg.name() + "\", " +
                    std::to_string(reg.size()) + ")";
           })
-      .def("__iter__", [](UnitRegister<T> &reg){
-          reg.set_current(0);
-          return reg;
+      .def(
+          "__iter__",
+          [](UnitRegister<T> &reg) {
+            reg.set_current(0);
+            return reg;
           })
       .def_property(
           "name", &UnitRegister<T>::name, &UnitRegister<T>::set_name,
@@ -65,7 +67,7 @@ void declare_register(py::module &m, const std::string &typestr) {
           "size", &UnitRegister<T>::size, &UnitRegister<T>::set_size,
           "Size of register.")
       .def_property(
-           "_current", &UnitRegister<T>::current, &UnitRegister<T>::set_current,
+          "_current", &UnitRegister<T>::current, &UnitRegister<T>::set_current,
           "Internal property for iteration.")
       .def("to_list", &UnitRegister<T>::to_vector)
       .def(

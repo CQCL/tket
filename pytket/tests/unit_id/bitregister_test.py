@@ -23,4 +23,3 @@ def test_iteration() -> None:
         assert bit.reg_name == "test"
         assert bit.index[0] == test_current
         test_current += 1
-
