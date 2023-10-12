@@ -1216,6 +1216,22 @@ def test_symbol_subst() -> None:
     assert len(d.get_commands()) == 1
 
 
+def test_phase_order() -> None:
+    # https://github.com/CQCL/tket/issues/1073
+    c = Circuit(2)
+    c.Ry(0.0, 1)
+    c.add_gate(OpType.Phase, [0.0], [])
+    c.add_gate(OpType.Phase, [0.5], [])
+    c.add_gate(OpType.Phase, [0.0], [])
+    c.Ry(0.0, 0)
+    c.X(0)
+    c.ISWAP(0.0, 1, 0)
+    c.CVdg(0, 1)
+    for _ in range(100):
+        c1 = c.copy()
+        assert c == c1
+
+
 if __name__ == "__main__":
     test_circuit_gen()
     test_symbolic_ops()
