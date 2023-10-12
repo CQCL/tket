@@ -34,9 +34,11 @@ class UnitRegister {
 
   std::string name() const { return name_; }
   std::size_t size() const { return size_; }
+  std::size_t current() const { return current_; }
 
   void set_name(const std::string &new_name) { name_ = new_name; }
   void set_size(const std::size_t &new_size) { size_ = new_size; }
+  void set_current(const std::size_t &new_current) { current_ = new_current; }
 
   bool contains(const T &unit) const {
     const std::vector<unsigned> index = unit.index();
@@ -73,6 +75,7 @@ class UnitRegister {
  private:
   std::string name_;
   std::size_t size_;
+  std::size_t current_;
 };
 
 typedef UnitRegister<Bit> BitRegister;
