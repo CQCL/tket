@@ -18,4 +18,4 @@ The circuit module provides an API to interact with the tket
 mitigation. This module is provided in binary form during the PyPI installation.
 """
 
-from pytket._tket.tailoring import *  # type: ignore
+from pytket._tket.tailoring import *

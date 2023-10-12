@@ -23,7 +23,6 @@
 #include "tket/Predicates/PassGenerators.hpp"
 #include "tket/Predicates/PassLibrary.hpp"
 #include "tket/Transformations/ContextualReduction.hpp"
-#include "tket/Transformations/Decomposition.hpp"
 #include "tket/Transformations/PauliOptimisation.hpp"
 #include "tket/Transformations/Transform.hpp"
 #include "tket/Utils/Json.hpp"
@@ -33,6 +32,17 @@ namespace py = pybind11;
 using json = nlohmann::json;
 
 namespace tket {
+
+// using py::object and converting internally to json creates better stubs,
+// hence this wrapper
+typedef std::function<void(const CompilationUnit &, const py::object &)>
+    PyPassCallback;
+PassCallback from_py_pass_callback(const PyPassCallback &py_pass_callback) {
+  return [py_pass_callback](
+             const CompilationUnit &compilationUnit, const json &j) {
+    return py_pass_callback(compilationUnit, py::object(j));
+  };
+}
 
 // given keyword arguments for DecomposeTK2, return a TwoQbFidelities struct
 Transforms::TwoQbFidelities get_fidelities(const py::kwargs &kwargs) {
@@ -135,6 +145,7 @@ const PassPtr &DecomposeClassicalExp() {
 }
 
 PYBIND11_MODULE(passes, m) {
+  py::module_::import("pytket._tket.predicates");
   py::enum_<SafetyMode>(m, "SafetyMode")
       .value(
           "Audit", SafetyMode::Audit,
@@ -202,7 +213,10 @@ PYBIND11_MODULE(passes, m) {
           [](const BasePass &pass, CompilationUnit &cu,
              SafetyMode safety_mode) { return pass.apply(cu, safety_mode); },
           "Apply to a :py:class:`CompilationUnit`.\n\n"
-          ":return: True if pass modified the circuit, else False",
+          ":return: True if the pass modified the circuit. Note that in some "
+          "cases the method may return True even when the circuit is "
+          "unmodified (but a return value of False definitely implies no "
+          "modification).",
           py::arg("compilation_unit"),
           py::arg("safety_mode") = SafetyMode::Default)
       .def(
@@ -219,11 +233,12 @@ PYBIND11_MODULE(passes, m) {
       .def(
           "apply",
           [](const BasePass &pass, Circuit &circ,
-             const PassCallback &before_apply,
-             const PassCallback &after_apply) {
+             const PyPassCallback &before_apply,
+             const PyPassCallback &after_apply) {
             CompilationUnit cu(circ);
-            bool applied =
-                pass.apply(cu, SafetyMode::Default, before_apply, after_apply);
+            bool applied = pass.apply(
+                cu, SafetyMode::Default, from_py_pass_callback(before_apply),
+                from_py_pass_callback(after_apply));
             circ = cu.get_circ_ref();
             return applied;
           },
@@ -241,10 +256,16 @@ PYBIND11_MODULE(passes, m) {
       .def("__str__", [](const BasePass &) { return "<tket::BasePass>"; })
       .def("__repr__", &BasePass::to_string)
       .def(
-          "to_dict", &BasePass::get_config,
+          "to_dict",
+          [](const BasePass &base_pass) {
+            return py::object(base_pass.get_config()).cast<py::dict>();
+          },
           ":return: A JSON serializable dictionary representation of the Pass.")
       .def_static(
-          "from_dict", [](const json &j) { return j.get<PassPtr>(); },
+          "from_dict",
+          [](const py::dict &base_pass_dict) {
+            return json(base_pass_dict).get<PassPtr>();
+          },
           "Construct a new Pass instance from a JSON serializable dictionary "
           "representation.")
       .def(py::pickle(
@@ -267,10 +288,13 @@ PYBIND11_MODULE(passes, m) {
           "get_sequence", &SequencePass::get_sequence,
           ":return: The underlying sequence of passes.");
   py::class_<RepeatPass, std::shared_ptr<RepeatPass>, BasePass>(
-      m, "RepeatPass", "Repeat a pass until it has no effect.")
+      m, "RepeatPass",
+      "Repeat a pass until its `apply()` method returns False, or if "
+      "`strict_check` is True until it stops modifying the circuit.")
       .def(
-          py::init<const PassPtr &>(), "Construct from a compilation pass.",
-          py::arg("compilation_pass"))
+          py::init<const PassPtr &, bool>(),
+          "Construct from a compilation pass.", py::arg("compilation_pass"),
+          py::arg("strict_check") = false)
       .def("__str__", [](const RepeatPass &) { return "<tket::BasePass>"; })
       .def(
           "get_pass", &RepeatPass::get_pass,
@@ -414,7 +438,11 @@ PYBIND11_MODULE(passes, m) {
       "CX and single-qubit gates.");
   m.def(
       "DecomposeBoxes", &DecomposeBoxes,
-      "Replaces all boxes by their decomposition into circuits.");
+      "Recursively replaces all boxes by their decomposition into circuits."
+      "\n\n:param excluded_types: box `OpType`s excluded from decomposition"
+      "\n:param excluded_opgroups: opgroups excluded from decomposition",
+      py::arg("excluded_types") = std::unordered_set<OpType>(),
+      py::arg("excluded_opgroups") = std::unordered_set<std::string>());
   m.def(
       "DecomposeClassicalExp", &DecomposeClassicalExp,
       "Replaces each :py:class:`ClassicalExpBox` by a sequence of "
@@ -435,7 +463,8 @@ PYBIND11_MODULE(passes, m) {
       "be left untouched."
       "\n\n:param squash: Whether to squash the circuit in pre-processing "
       "(default: true)."
-      "\n\nIf squash=true (default), the `GlobalisePhasedX().apply` method "
+      "\n\nIf squash=true (default), the `GlobalisePhasedX` transform's "
+      "`apply` method "
       "will always return true. "
       "For squash=false, `apply()` will return true if the circuit was "
       "changed and false otherwise.\n\n"
@@ -465,7 +494,7 @@ PYBIND11_MODULE(passes, m) {
       "Removes gate-inverse pairs, merges rotations, removes identity "
       "rotations, and removes redundant gates before measurement. Does not "
       "add any new gate types.\n\n"
-      "When merging rotations with the same op group name, the merged"
+      "When merging rotations with the same op group name, the merged "
       "operation keeps the same name.");
   m.def(
       "SynthesiseHQS", &SynthesiseHQS,
@@ -504,8 +533,13 @@ PYBIND11_MODULE(passes, m) {
       "already in this set."
       "\n:param tk1_replacement: A function which, given the parameters of "
       "an Rz(a)Rx(b)Rz(c) triple, returns an equivalent circuit in the "
-      "desired basis.",
-      py::arg("singleqs"), py::arg("tk1_replacement"));
+      "desired basis."
+      "\n:param always_squash_symbols: If true, always squash symbolic gates "
+      "regardless of the blow-up in complexity. Default is false, meaning that "
+      "symbolic gates are only squashed if doing so reduces the overall "
+      "symbolic complexity.",
+      py::arg("singleqs"), py::arg("tk1_replacement"),
+      py::arg("always_squash_symbols") = false);
   m.def(
       "DelayMeasures", &DelayMeasures,
       "Commutes Measure operations to the end of the circuit. Throws an "
@@ -590,7 +624,9 @@ PYBIND11_MODULE(passes, m) {
       "of an Rz(a)Rx(b)Rz(c) triple, returns an equivalent circuit in the "
       "desired basis\n"
       ":return: a pass that rebases to the given gate set (possibly including "
-      "conditional and phase operations)");
+      "conditional and phase operations)",
+      py::arg("gateset"), py::arg("tk2_replacement"),
+      py::arg("tk1_replacement"));
 
   m.def(
       "EulerAngleReduction", &gen_euler_pass,
@@ -611,8 +647,9 @@ PYBIND11_MODULE(passes, m) {
   m.def(
       "CustomRoutingPass", &gen_routing_pass,
       "Construct a pass to route to the connectivity graph of an "
-      ":py:class:`Architecture`. Edge direction is ignored."
-      "\n:return: a pass that routes to the given device architecture",
+      ":py:class:`Architecture`. Edge direction is ignored. "
+      "\n\n"
+      ":return: a pass that routes to the given device architecture ",
       py::arg("arc"), py::arg("config"));
 
   m.def(
@@ -621,7 +658,8 @@ PYBIND11_MODULE(passes, m) {
       ":py:class:`Architecture`. Edge direction is ignored. "
       "Uses :py:class:`LexiLabellingMethod` and "
       ":py:class:`LexiRouteRoutingMethod`."
-      "\n:return: a pass that routes to the given device architecture",
+      "\n\n"
+      ":return: a pass that routes to the given device architecture",
       py::arg("arc"));
 
   m.def(
@@ -647,8 +685,10 @@ PYBIND11_MODULE(passes, m) {
       py::arg("label") = q_default_reg());
 
   m.def(
-      "RenameQubitsPass", &gen_rename_qubits_pass, "Rename some or all qubits.",
-      "\n\n:param qubit_map: map from old to new qubit names",
+      "RenameQubitsPass", &gen_rename_qubits_pass,
+      "Rename some or all qubits. "
+      "\n\n"
+      ":param qubit_map: map from old to new qubit names ",
       py::arg("qubit_map"));
 
   m.def(
@@ -838,11 +878,17 @@ PYBIND11_MODULE(passes, m) {
       py::arg("remove_redundancies") = true, py::arg("xcirc") = nullptr);
   m.def(
       "ContextSimp",
-      [](bool allow_classical, std::shared_ptr<const Circuit> xcirc) {
+      [](bool allow_classical,
+         std::optional<std::shared_ptr<const Circuit>> xcirc) {
+        if (xcirc.has_value()) {
+          return gen_contextual_pass(
+              allow_classical ? Transforms::AllowClassical::Yes
+                              : Transforms::AllowClassical::No,
+              std::move(xcirc.value()));
+        }
         return gen_contextual_pass(
             allow_classical ? Transforms::AllowClassical::Yes
-                            : Transforms::AllowClassical::No,
-            xcirc);
+                            : Transforms::AllowClassical::No);
       },
       "Applies simplifications enabled by knowledge of qubit state and "
       "discarded qubits."
@@ -855,8 +901,12 @@ PYBIND11_MODULE(passes, m) {
 
   m.def(
       "ZZPhaseToRz", &ZZPhaseToRz,
-      "Converts ZZPhase gates with angle pi or -pi to two Rz gates with"
-      "angle pi.\n:return: a pass to convert ZZPhase gates to Rz");
+      "Converts all ZZPhase gates in a circuit with angle 1 or -1 (half-turns) "
+      "into two Rz gates each with a parameter value of 1 (half-turns). "
+      "ZZPhase gates with parameter values other than 1 or -1 "
+      "(half-turns) are left "
+      "unchanged.\n\n"
+      ":return: a pass to convert ZZPhase gates to Rz.");
 
   m.def(
       "CnXPairwiseDecomposition", &CnXPairwiseDecomposition,
@@ -866,9 +916,9 @@ PYBIND11_MODULE(passes, m) {
 
   m.def(
       "RoundAngles", &RoundAngles,
-      "Round angles to the nearest :math:`\\pi / 2^n`."
-      "\n\n:param n: precision parameter, must be >= 0 and < 32",
-      "\n\n:param only_zeros: if True, only round angles less than "
+      "Round angles to the nearest :math:`\\pi / 2^n`. "
+      "\n\n:param n: precision parameter, must be >= 0 and < 32 "
+      "\n:param only_zeros: if True, only round angles less than "
       ":math:`\\pi / 2^{n+1}` to zero, leave other angles alone (default "
       "False)",
       py::arg("n"), py::arg("only_zeros") = false);
@@ -889,6 +939,7 @@ PYBIND11_MODULE(passes, m) {
       "\n\n"
       ":param transform: function taking a :py:class:`Circuit` as an argument "
       "and returning a new transformed circuit"
+      "\n"
       ":param label: optional label for the pass"
       "\n:return: a pass to perform the transformation",
       py::arg("transform"), py::arg("label") = "");

@@ -14,7 +14,8 @@
 
 """Module exposing various types of compiler pass."""
 
-from pytket._tket.passes import *  # type: ignore
+from pytket._tket.passes import *
 
 from .script import compilation_pass_from_script, compilation_pass_grammar
 from .auto_rebase import auto_rebase_pass, auto_squash_pass
+from .passselector import PassSelector

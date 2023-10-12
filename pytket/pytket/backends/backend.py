@@ -31,11 +31,13 @@ from types import ModuleType
 
 from typing_extensions import Literal
 
-from pytket.circuit import Bit, Circuit, OpType  # type: ignore
-from pytket.passes import BasePass  # type: ignore
-from pytket.predicates import Predicate  # type: ignore
+from pytket.circuit import Bit, Circuit, OpType
+from pytket.passes import BasePass
+from pytket.pauli import QubitPauliString
+from pytket.predicates import Predicate
 from pytket.utils.outcomearray import OutcomeArray
 from pytket.utils.results import KwargTypes
+from pytket.utils import QubitPauliOperator
 
 from .backend_exceptions import (
     CircuitNotValidError,
@@ -107,7 +109,6 @@ class Backend(ABC):
     def _check_all_circuits(
         self, circuits: Iterable[Circuit], nomeasure_warn: Optional[bool] = None
     ) -> bool:
-
         if nomeasure_warn is None:
             nomeasure_warn = not (
                 self._supports_state
@@ -265,7 +266,6 @@ class Backend(ABC):
         valid_check: bool = True,
         **kwargs: KwargTypes,
     ) -> List[ResultHandle]:
-
         """
         Submit circuits to the backend for running. The results will be stored
         in the backend's result cache to be retrieved by the corresponding
@@ -645,3 +645,13 @@ class Backend(ABC):
             n_shots_list = list(map(lambda n: n or 0, n_shots_list))
 
         return n_shots_list
+
+    def get_pauli_expectation_value(
+        self, state_circuit: Circuit, pauli: QubitPauliString
+    ) -> complex:
+        raise NotImplementedError
+
+    def get_operator_expectation_value(
+        self, state_circuit: Circuit, operator: QubitPauliOperator
+    ) -> complex:
+        raise NotImplementedError

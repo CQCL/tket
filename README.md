@@ -15,9 +15,11 @@ For full API documentation, as well as a comprehensive user manual and a
 selection of example notebooks, please follow the links from the
 [pytket](https://github.com/CQCL/pytket) main page.
 
-Note that the various pytket extensions (which allow pytket to interface with
-other software packages and with quantum devices) live in the separate
-[pytket-extensions](https://github.com/CQCL/pytket-extensions) repository.
+In addition to the core pytket package there are pytket extension modules which allow pytket to interface with quantum devices and simulators. Some extensions also provide interoperability with other software libraries such as qiskit, cirq and pennylane.
+
+For a list of available pytket extensions see the [extensions index page](https://cqcl.github.io/pytket-extensions/api/index.html).
+
+These extensions are installed as separate python packages and the source code for each extension lives in its own github repository.
 
 If you would like to build tket yourself and help to improve it, read on!
 

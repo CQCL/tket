@@ -30,8 +30,6 @@ class MetaOp : public Op {
 
   SymSet free_symbols() const override;
 
-  unsigned n_qubits() const override;
-
   op_signature_t get_signature() const override;
 
   std::string get_data() const { return data_; }
@@ -39,18 +37,6 @@ class MetaOp : public Op {
   bool is_clifford() const override;
 
   ~MetaOp() override;
-
-  /**
-   * Equality check between two MetaOp instances
-   */
-  bool is_equal(const Op &other) const override;
-
-  nlohmann::json serialize() const override;
-
-  static Op_ptr deserialize(const nlohmann::json &j);
-
- protected:
-  MetaOp();
 
  private:
   op_signature_t

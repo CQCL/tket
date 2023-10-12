@@ -229,31 +229,32 @@ PassPtr ComposePhasePolyBoxes(const unsigned min_size) {
   return std::make_shared<StandardPass>(precons, t, postcon, j);
 }
 
-const PassPtr &DecomposeBoxes() {
-  static const PassPtr pp([]() {
-    Transform t = Transforms::decomp_boxes();
-    PredicatePtrMap s_ps;
-    /**
-     * Preserves Max2QubitGatesPredicate since any box with >2 qubits is
-     * already invalid.
-     * Preserves ConnectivityPredicate (and DirectednessPredicate) since the
-     * verification looks inside CircBoxes and any other boxes with >2
-     * qubits are already invalid.
-     * Most others are preserved since the predicates look within CircBoxes.
-     *
-     * Invalidates GateSetPredicate because it doesn't look inside boxes or
-     * account for the gate set of their decomposition.
-     */
-    PredicateClassGuarantees g_postcons = {
-        {typeid(GateSetPredicate), Guarantee::Clear},
-    };
-    PostConditions postcon{s_ps, g_postcons, Guarantee::Preserve};
-    // record pass config
-    nlohmann::json j;
-    j["name"] = "DecomposeBoxes";
-    return std::make_shared<StandardPass>(s_ps, t, postcon, j);
-  }());
-  return pp;
+PassPtr DecomposeBoxes(
+    const std::unordered_set<OpType> &excluded_types,
+    const std::unordered_set<std::string> &excluded_opgroups) {
+  Transform t = Transforms::decomp_boxes(excluded_types, excluded_opgroups);
+  PredicatePtrMap s_ps;
+  /**
+   * Preserves Max2QubitGatesPredicate since any box with >2 qubits is
+   * already invalid.
+   * Preserves ConnectivityPredicate (and DirectednessPredicate) since the
+   * verification looks inside CircBoxes and any other boxes with >2
+   * qubits are already invalid.
+   * Most others are preserved since the predicates look within CircBoxes.
+   *
+   * Invalidates GateSetPredicate because it doesn't look inside boxes or
+   * account for the gate set of their decomposition.
+   */
+  PredicateClassGuarantees g_postcons = {
+      {typeid(GateSetPredicate), Guarantee::Clear},
+  };
+  PostConditions postcon{s_ps, g_postcons, Guarantee::Preserve};
+  // record pass config
+  nlohmann::json j;
+  j["name"] = "DecomposeBoxes";
+  j["excluded_types"] = excluded_types;
+  j["excluded_opgroups"] = excluded_opgroups;
+  return std::make_shared<StandardPass>(s_ps, t, postcon, j);
 }
 
 const PassPtr &SquashTK1() {
@@ -433,7 +434,7 @@ const PassPtr &ZZPhaseToRz() {
 
 const PassPtr &SquashRzPhasedX() {
   static const PassPtr pp([]() {
-    Transform t = Transforms::squash_1qb_to_Rz_PhasedX();
+    Transform t = Transforms::squash_1qb_to_Rz_PhasedX(true);
     PredicatePtrMap s_ps;
     PredicateClassGuarantees g_postcons{
         {typeid(GateSetPredicate), Guarantee::Clear}};

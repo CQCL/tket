@@ -17,14 +17,17 @@
 #include <pybind11/stl.h>
 
 #include <sstream>
+#include <tket/Circuit/Circuit.hpp>
 
 #include "binder_json.hpp"
 #include "binder_utils.hpp"
+#include "deleted_hash.hpp"
+#include "py_operators.hpp"
 #include "tket/Circuit/Command.hpp"
 #include "tket/Gate/Gate.hpp"
 #include "tket/Gate/OpPtrFunctions.hpp"
 #include "tket/Gate/SymTable.hpp"
-#include "tket/Ops/ClassicalOps.hpp"
+#include "tket/Ops/BarrierOp.hpp"
 #include "tket/Ops/MetaOp.hpp"
 #include "tket/Ops/Op.hpp"
 #include "tket/Utils/Constants.hpp"
@@ -36,14 +39,14 @@ using json = nlohmann::json;
 
 namespace tket {
 
-void init_unitid(py::module &m);
-void init_circuit(py::module &m);
+void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &);
 void init_classical(py::module &m);
 void init_boxes(py::module &m);
-void init_library(py::module &m);
 
 PYBIND11_MODULE(circuit, m) {
-  init_unitid(m);
+  py::module::import("pytket._tket.unit_id");
+  py::module::import("pytket._tket.pauli");
+  py::module::import("pytket._tket.architecture");
   py::enum_<CXConfigType>(
       m, "CXConfigType",
       "Enum for available configurations for CXs upon decompose phase "
@@ -62,52 +65,12 @@ PYBIND11_MODULE(circuit, m) {
           "MultiQGate", CXConfigType::MultiQGate,
           "Support for multi-qubit architectures, decomposing to 3-qubit "
           "XXPhase3 gates instead of CXs where possible.");
-  py::class_<Op, std::shared_ptr<Op>>(
-      m, "Op", "Encapsulates operation information")
-      .def_static(
-          "create",
-          [](OpType optype) { return get_op_ptr(optype, std::vector<Expr>()); },
-          "Create an :py:class:`Op` with given type")
-      .def_static(
-          "create",
-          [](OpType optype, Expr param) { return get_op_ptr(optype, param); },
-          "Create an :py:class:`Op` with given type and parameter")
-      .def_static(
-          "create",
-          [](OpType optype, const std::vector<Expr> &params) {
-            return get_op_ptr(optype, params);
-          },
-          "Create an :py:class:`Op` with given type and parameters")
-      .def_property_readonly(
-          "type", &Op::get_type, "Type of op being performed")
-      .def_property_readonly(
-          "params", &Op::get_params_reduced,
-          "Angular parameters of the op, in half-turns (e.g. 1.0 "
-          "half-turns is :math:`\\pi` radians). The parameters "
-          "returned are constrained to the appropriate canonical "
-          "range, which is usually the half-open interval [0,2) but "
-          "for some operations (e.g. Rx, Ry and Rz) is [0,4).")
-      .def_property_readonly(
-          "n_qubits", &Op::n_qubits, "Number of qubits of op")
-      .def_property_readonly("dagger", &Op::dagger, "Dagger of op")
-      .def_property_readonly("transpose", &Op::transpose, "Transpose of op")
-      .def(
-          "get_name", &Op::get_name, "String representation of op",
-          py::arg("latex") = false)
-      .def("__eq__", &Op::operator==)
-      .def("__repr__", [](const Op &op) { return op.get_name(); })
-      .def("free_symbols", [](const Op &op) { return op.free_symbols(); })
-      .def(
-          "get_unitary",
-          [](const Op *op) {
-            const auto &gate = static_cast<const Gate &>(*op);
-            return gate.get_unitary();
-          })
-      .def(
-          "is_clifford_type",
-          [](const Op &op) { return op.get_desc().is_clifford_gate(); })
-      .def("is_gate", [](const Op &op) { return op.get_desc().is_gate(); });
-
+  py::enum_<EdgeType>(
+      m, "EdgeType", "Type of a wire in a circuit or input to an op")
+      .value("Boolean", EdgeType::Boolean)
+      .value("Classical", EdgeType::Classical)
+      .value("Quantum", EdgeType::Quantum)
+      .value("WASM", EdgeType::WASM);
   // NOTE: Sphinx does not automatically pick up the docstring for OpType
   py::enum_<OpType>(
       m, "OpType",
@@ -538,8 +501,60 @@ PYBIND11_MODULE(circuit, m) {
           "A box for synthesising a diagonal unitary matrix into a sequence of "
           "multiplexed-Rz gates")
       .def_static(
-          "from_name", [](const json &j) { return j.get<OpType>(); },
+          "from_name",
+          [](const py::str &name) { return json(name).get<OpType>(); },
           "Construct from name");
+  py::class_<Op, std::shared_ptr<Op>>(
+      m, "Op", "Encapsulates operation information")
+      .def_static(
+          "create",
+          [](OpType optype) { return get_op_ptr(optype, std::vector<Expr>()); },
+          "Create an :py:class:`Op` with given type")
+      .def_static(
+          "create",
+          [](OpType optype, const Expr &param) {
+            return get_op_ptr(optype, param);
+          },
+          "Create an :py:class:`Op` with given type and parameter")
+      .def_static(
+          "create",
+          [](OpType optype, const std::vector<Expr> &params) {
+            return get_op_ptr(optype, params);
+          },
+          "Create an :py:class:`Op` with given type and parameters")
+      .def_property_readonly(
+          "type", &Op::get_type, "Type of op being performed")
+      .def_property_readonly(
+          "params", &Op::get_params_reduced,
+          "Angular parameters of the op, in half-turns (e.g. 1.0 "
+          "half-turns is :math:`\\pi` radians). The parameters "
+          "returned are constrained to the appropriate canonical "
+          "range, which is usually the half-open interval [0,2) but "
+          "for some operations (e.g. Rx, Ry and Rz) is [0,4).")
+      .def_property_readonly(
+          "n_qubits", &Op::n_qubits, "Number of qubits of op")
+      .def_property_readonly("dagger", &Op::dagger, "Dagger of op")
+      .def_property_readonly("transpose", &Op::transpose, "Transpose of op")
+      .def(
+          "get_name", &Op::get_name, "String representation of op",
+          py::arg("latex") = false)
+      .def("__eq__", &py_equals<Op>)
+      .def("__hash__", &deletedHash<Op>, deletedHashDocstring)
+      .def("__repr__", [](const Op &op) { return op.get_name(); })
+      .def("free_symbols", [](const Op &op) { return op.free_symbols(); })
+      .def("get_unitary", [](const Op *op) { return op->get_unitary(); })
+      .def(
+          "is_clifford_type",
+          [](const Op &op) { return op.get_desc().is_clifford_gate(); },
+          "Check if the operation is one of the Clifford `OpType`s.")
+      .def(
+          "is_clifford", [](const Op &op) { return op.is_clifford(); },
+          "Test whether the operation is in the Clifford group. A return value "
+          "of true guarantees that the operation is Clifford. However, the "
+          "converse is not the case as some Clifford operations may not be "
+          "detected as such.")
+      .def("is_gate", [](const Op &op) { return op.get_desc().is_gate(); });
+
   py::enum_<BasisOrder>(
       m, "BasisOrder",
       "Enum for readout basis and ordering.\n"
@@ -573,7 +588,8 @@ PYBIND11_MODULE(circuit, m) {
           py::init<const Op_ptr, unit_vector_t>(),
           "Construct from an operation and a vector of unit IDs", py::arg("op"),
           py::arg("args"))
-      .def("__eq__", &Command::operator==)
+      .def("__eq__", &py_equals<Command>)
+      .def("__hash__", &deletedHash<Command>, deletedHashDocstring)
       .def("__repr__", &Command::to_str)
       .def_property_readonly(
           "op", &Command::get_op_ptr, "Operation for this command.")
@@ -595,7 +611,7 @@ PYBIND11_MODULE(circuit, m) {
           ":return: set of symbolic parameters for the command");
 
   py::class_<MetaOp, std::shared_ptr<MetaOp>, Op>(
-      m, "MetaOp", "Meta operation, for example used as barrier")
+      m, "MetaOp", "Meta operation, such as input or output vertices.")
       .def(
           py::init<OpType, op_signature_t, const std::string &>(),
           "Construct MetaOp with optype, signature and additional data string"
@@ -605,10 +621,29 @@ PYBIND11_MODULE(circuit, m) {
           py::arg("type"), py::arg("signature"), py::arg("data"))
       .def_property_readonly("data", &MetaOp::get_data, "Get data from MetaOp");
 
-  init_library(m);
+  py::class_<BarrierOp, std::shared_ptr<BarrierOp>, Op>(
+      m, "BarrierOp", "Barrier operations.")
+      .def(
+          py::init<op_signature_t, const std::string &>(),
+          "Construct BarrierOp with signature and additional data string"
+          "\n:param signature: signature for the op"
+          "\n:param data: additional string stored in the op",
+          py::arg("signature"), py::arg("data"))
+      .def_property_readonly(
+          "data", &BarrierOp::get_data, "Get data from BarrierOp");
+
+  auto pyCircuit = py::class_<Circuit, std::shared_ptr<Circuit>>(
+      m, "Circuit", py::dynamic_attr(),
+      "Encapsulates a quantum circuit using a DAG representation.\n\n>>> "
+      "from pytket import Circuit\n>>> c = Circuit(4,2) # Create a circuit "
+      "with 4 qubits and 2 classical bits"
+      "\n>>> c.H(0) # Apply a gate to qubit 0\n>>> "
+      "c.Rx(0.5,1) # Angles of rotation are expressed in half-turns "
+      "(i.e. 0.5 means PI/2)\n>>> c.Measure(1,0) # Measure qubit 1, saving "
+      "result in bit 0");
   init_boxes(m);
   init_classical(m);
-  init_circuit(m);
+  def_circuit(pyCircuit);
 
   m.def(
       "fresh_symbol", &SymTable::fresh_symbol,

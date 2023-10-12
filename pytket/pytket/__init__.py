@@ -14,9 +14,11 @@
 
 """Python Interface to CQC tket
 """
-from pytket.circuit import (  # type: ignore
+from pytket.circuit import (
     Circuit,
     OpType,
+)
+from pytket.unit_id import (
     Qubit,
     Bit,
 )
@@ -33,4 +35,4 @@ if not pytket_config_file.exists():
     config = PytketConfig.default()
     config.write_file(pytket_config_file)
 
-__path__ = __import__("pkgutil").extend_path(__path__, __name__)  # type: ignore
+__path__ = __import__("pkgutil").extend_path(__path__, __name__)

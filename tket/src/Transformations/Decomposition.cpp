@@ -578,7 +578,6 @@ static double get_ZZPhase_fidelity(
 static double get_CX_fidelity(const std::array<double, 3> &k, unsigned nb_cx) {
   TKET_ASSERT(nb_cx < 4);
   auto [a, b, c] = k;
-
   // gate fidelity achievable with 0,...,3 cnots
   // this is fully determined by the information content k and is optimal
   // see PhysRevA 71.062331 (2005) for more details on this
@@ -1298,8 +1297,12 @@ Transform decompose_PhaseGadgets() {
   });
 }
 
-Transform decomp_boxes() {
-  return Transform([](Circuit &circ) { return circ.decompose_boxes(); });
+Transform decomp_boxes(
+    const std::unordered_set<OpType> &excluded_types,
+    const std::unordered_set<std::string> &excluded_opgroups) {
+  return Transform([=](Circuit &circ) {
+    return circ.decompose_boxes_recursively(excluded_types, excluded_opgroups);
+  });
 }
 
 Transform compose_phase_poly_boxes(const unsigned min_size) {

@@ -836,9 +836,9 @@ class Circuit {
   Vertex add_op(
       OpType type, const std::vector<Expr> &params, const std::vector<ID> &args,
       std::optional<std::string> opgroup = std::nullopt) {
-    if (is_metaop_type(type)) {
+    if (is_metaop_type(type) || is_barrier_type(type)) {
       throw CircuitInvalidity(
-          "Cannot add metaop. Please use `add_barrier` to add a "
+          "Cannot add metaop or barrier. Please use `add_barrier` to add a "
           "barrier.");
     }
     return add_op(get_op_ptr(type, params, args.size()), args, opgroup);
@@ -904,6 +904,11 @@ class Circuit {
     if (is_metaop_type(type)) {
       throw CircuitInvalidity("Cannot add a conditional metaop.");
     }
+    if (is_barrier_type(type)) {
+      throw CircuitInvalidity(
+          "Please use 'add_conditional_barrier' to add a conditional barrier "
+          "gate.");
+    }
     Op_ptr cond = std::make_shared<Conditional>(
         get_op_ptr(type, params, (unsigned)args.size()), (unsigned)bits.size(),
         value);
@@ -917,6 +922,18 @@ class Circuit {
       const std::vector<unsigned> &bits = {}, const std::string &_data = "");
 
   Vertex add_barrier(const unit_vector_t &args, const std::string &_data = "");
+
+  Vertex add_conditional_barrier(
+      const std::vector<unsigned> &barrier_qubits,
+      const std::vector<unsigned> &barrier_bits,
+      const std::vector<unsigned> &condition_bits, unsigned value,
+      const std::string &_data,
+      std::optional<std::string> opgroup = std::nullopt);
+
+  Vertex add_conditional_barrier(
+      const unit_vector_t &barrier_args, const bit_vector_t &condition_bits,
+      unsigned value, const std::string &_data,
+      std::optional<std::string> opgroup = std::nullopt);
 
   /**
    * Add a postfix to a classical register name if the register exists
@@ -1183,6 +1200,17 @@ class Circuit {
    * @return depth
    */
   unsigned depth_by_types(const OpTypeSet &_types) const;
+
+  /**
+   * Depth of circuit restricting to 2-qubit operations, excluding barriers.
+   *
+   * This is the number of vertices in the longest path through the
+   * sub-DAG consisting of vertices with 2 quantum wires,
+   * excluding vertices representing barrier operations.
+   *
+   * @return depth
+   */
+  unsigned depth_2q() const;
 
   std::map<Vertex, unit_set_t> vertex_unit_map() const;
   std::map<Vertex, unsigned> vertex_depth_map() const;
@@ -1489,18 +1517,17 @@ class Circuit {
   bool substitute_box_vertex(Vertex &vert, VertexDeletion vertex_deletion);
 
   /**
-   * Replaces each \ref Box operation by applying \ref Box::to_circuit
+   * Recursively replace each \ref Box operation by applying \ref
+   * Box::to_circuit
+   *
+   * @param excluded_types box types excluded from decomposition
+   * @param excluded_opgroups opgroups excluded from decomposition
    *
    * @return whether any replacements were made
    */
-  bool decompose_boxes();
-
-  /**
-   * Recursively apply \ref decompose_boxes
-   *
-   * @post no \ref Box operations remain
-   */
-  void decompose_boxes_recursively();
+  bool decompose_boxes_recursively(
+      const std::unordered_set<OpType> &excluded_types = {},
+      const std::unordered_set<std::string> &excluded_opgroups = {});
 
   /////////////////
   // Other Methods//

@@ -22,9 +22,9 @@ The versions should match the current requirements as specified in the relevant
 
 ```
 cd ${TMP_DIR}
-wget -O boost_1_82_0.tar.gz https://sourceforge.net/projects/boost/files/boost/1.82.0/boost_1_82_0.tar.gz/download
-tar xzvf boost_1_82_0.tar.gz
-cd boost_1_82_0/
+wget -O boost_1_83_0.tar.gz https://sourceforge.net/projects/boost/files/boost/1.83.0/boost_1_83_0.tar.gz/download
+tar xzvf boost_1_83_0.tar.gz
+cd boost_1_83_0/
 ./bootstrap.sh --prefix=${INSTALL_DIR}
 ./b2
 ./b2 install
@@ -48,9 +48,9 @@ make install
 
 ```
 cd ${TMP_DIR}
-wget https://github.com/symengine/symengine/releases/download/v0.10.1/symengine-0.10.1.tar.gz
-tar xzvf symengine-0.10.1.tar.gz
-cd symengine-0.10.1/
+wget https://github.com/symengine/symengine/releases/download/v0.11.1/symengine-0.11.1.tar.gz
+tar xzvf symengine-0.11.1.tar.gz
+cd symengine-0.11.1/
 mkdir build
 cd build
 cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} -DBUILD_TESTS=OFF -DBUILD_BENCHMARKS=OFF ..
@@ -119,9 +119,9 @@ cmake --install .
 
 ```
 cd ${TMP_DIR}
-wget https://github.com/pybind/pybind11/archive/refs/tags/v2.10.4.tar.gz
-tar xzvf v2.10.4.tar.gz
-cd pybind11-2.10.4/
+wget https://github.com/pybind/pybind11/archive/refs/tags/v2.11.1.tar.gz
+tar xzvf v2.11.1.tar.gz
+cd pybind11-2.11.1/
 mkdir build
 cd build
 cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} -DPYBIND11_TEST=OFF ..

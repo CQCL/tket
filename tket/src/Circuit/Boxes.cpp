@@ -28,6 +28,7 @@
 #include "tket/Ops/OpPtr.hpp"
 #include "tket/Utils/EigenConfig.hpp"
 #include "tket/Utils/Expression.hpp"
+#include "tket/Utils/HelperFunctions.hpp"
 #include "tket/Utils/Json.hpp"
 #include "tket/Utils/PauliStrings.hpp"
 
@@ -95,6 +96,10 @@ Op_ptr CircBox::symbol_substitution(
   return std::make_shared<CircBox>(new_circ);
 }
 
+void CircBox::symbol_substitution_in_place(const symbol_map_t &sub_map) {
+  circ_->symbol_substitution(sub_map);
+}
+
 SymSet CircBox::free_symbols() const { return to_circuit()->free_symbols(); }
 
 Op_ptr CircBox::dagger() const {
@@ -103,6 +108,12 @@ Op_ptr CircBox::dagger() const {
 
 Op_ptr CircBox::transpose() const {
   return std::make_shared<CircBox>(circ_->transpose());
+}
+
+bool CircBox::is_equal(const Op &op_other) const {
+  const CircBox &other = dynamic_cast<const CircBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  return circ_->circuit_equality(*other.circ_, {}, false);
 }
 
 Unitary1qBox::Unitary1qBox(const Eigen::Matrix2cd &m)
@@ -140,6 +151,12 @@ void Unitary1qBox::generate_circuit() const {
   circ_->add_phase(tk1_params[3]);
 }
 
+bool Unitary1qBox::is_equal(const Op &op_other) const {
+  const Unitary1qBox &other = dynamic_cast<const Unitary1qBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  return m_.isApprox(other.m_);
+}
+
 Unitary2qBox::Unitary2qBox(const Eigen::Matrix4cd &m, BasisOrder basis)
     : Box(OpType::Unitary2qBox),
       m_(basis == BasisOrder::ilo ? m : reverse_indexing(m)) {
@@ -165,6 +182,12 @@ void Unitary2qBox::generate_circuit() const {
   circ_ = std::make_shared<Circuit>(two_qubit_canonical(m_));
 }
 
+bool Unitary2qBox::is_equal(const Op &op_other) const {
+  const Unitary2qBox &other = dynamic_cast<const Unitary2qBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  return m_.isApprox(other.m_);
+}
+
 Unitary3qBox::Unitary3qBox(const Matrix8cd &m, BasisOrder basis)
     : Box(OpType::Unitary3qBox),
       m_(basis == BasisOrder::ilo ? m : reverse_indexing(m)) {}
@@ -186,6 +209,12 @@ void Unitary3qBox::generate_circuit() const {
   circ_ = std::make_shared<Circuit>(three_qubit_tk_synthesis(m_));
 }
 
+bool Unitary3qBox::is_equal(const Op &op_other) const {
+  const Unitary3qBox &other = dynamic_cast<const Unitary3qBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  return m_.isApprox(other.m_);
+}
+
 ExpBox::ExpBox(const Eigen::Matrix4cd &A, double t, BasisOrder basis)
     : Box(OpType::ExpBox),
       A_(basis == BasisOrder::ilo ? A : reverse_indexing(A)),
@@ -203,6 +232,14 @@ Op_ptr ExpBox::dagger() const { return std::make_shared<ExpBox>(A_, -t_); }
 
 Op_ptr ExpBox::transpose() const {
   return std::make_shared<ExpBox>(A_.transpose(), t_);
+}
+
+bool ExpBox::is_equal(const Op &op_other) const {
+  const ExpBox &other = dynamic_cast<const ExpBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  std::optional<Eigen::MatrixXcd> m = get_box_unitary();
+  std::optional<Eigen::MatrixXcd> other_m = other.get_box_unitary();
+  return m.value().isApprox(other_m.value());
 }
 
 std::optional<Eigen::MatrixXcd> ExpBox::get_box_unitary() const {
@@ -309,8 +346,19 @@ bool CustomGate::is_clifford() const {
   return true;
 }
 
-QControlBox::QControlBox(const Op_ptr &op, unsigned n_controls)
-    : Box(OpType::QControlBox), op_(op), n_controls_(n_controls) {
+QControlBox::QControlBox(
+    const Op_ptr &op, unsigned n_controls,
+    const std::vector<bool> &control_state)
+    : Box(OpType::QControlBox),
+      op_(op),
+      n_controls_(n_controls),
+      control_state_(
+          control_state.empty() ? std::vector<bool>(n_controls, true)
+                                : control_state) {
+  if (n_controls != control_state_.size()) {
+    throw CircuitInvalidity(
+        "The size of control_state doesn't match the argument n_controls");
+  }
   op_signature_t inner_sig = op_->get_signature();
   n_inner_qubits_ = inner_sig.size();
   if (std::count(inner_sig.begin(), inner_sig.end(), EdgeType::Quantum) !=
@@ -325,7 +373,8 @@ QControlBox::QControlBox(const QControlBox &other)
     : Box(other),
       op_(other.op_),
       n_controls_(other.n_controls_),
-      n_inner_qubits_(other.n_inner_qubits_) {}
+      n_inner_qubits_(other.n_inner_qubits_),
+      control_state_(other.control_state_) {}
 
 Op_ptr QControlBox::symbol_substitution(
     const SymEngine::map_basic_basic &sub_map) const {
@@ -339,9 +388,9 @@ std::string QControlBox::get_command_str(const unit_vector_t &args) const {
   std::stringstream out;
   out << "qif (";
   if (n_controls_ > 0) {
-    out << args.at(0).repr();
+    out << args.at(0).repr() << " = " << control_state_.at(0);
     for (unsigned i = 1; i < n_controls_; ++i) {
-      out << ", " << args.at(i).repr();
+      out << ", " << args.at(i).repr() << " = " << control_state_.at(i);
     }
   }
   unit_vector_t inner_args(args.begin() + n_controls_, args.end());
@@ -354,27 +403,44 @@ void QControlBox::generate_circuit() const {
   std::vector<unsigned> qbs(n_inner_qubits_);
   std::iota(qbs.begin(), qbs.end(), 0);
   c.add_op(op_, qbs);
-  c.decompose_boxes_recursively();
+  // ConjugationBoxes will be handled by with_controls
+  c.decompose_boxes_recursively({OpType::ConjugationBox});
+  Circuit x_circ(n_controls_ + n_inner_qubits_);
+  for (unsigned i = 0; i < n_controls_; i++) {
+    if (!control_state_.at(i)) {
+      x_circ.add_op<unsigned>(OpType::X, {i});
+    }
+  }
   c = with_controls(c, n_controls_);
-  circ_ = std::make_shared<Circuit>(c);
+  circ_ = std::make_shared<Circuit>(x_circ >> c >> x_circ);
 }
 
 Op_ptr QControlBox::dagger() const {
   const Op_ptr inner_dagger = op_->dagger();
-  return std::make_shared<QControlBox>(inner_dagger, n_controls_);
+  return std::make_shared<QControlBox>(
+      inner_dagger, n_controls_, control_state_);
 }
 
 Op_ptr QControlBox::transpose() const {
   const Op_ptr inner_transpose = op_->transpose();
-  return std::make_shared<QControlBox>(inner_transpose, n_controls_);
+  return std::make_shared<QControlBox>(
+      inner_transpose, n_controls_, control_state_);
 }
 
 std::optional<Eigen::MatrixXcd> QControlBox::get_box_unitary() const {
   const unsigned inner_sz = 1u << n_inner_qubits_;
   const unsigned sz = inner_sz << n_controls_;
   Eigen::MatrixXcd u = Eigen::MatrixXcd::Identity(sz, sz);
-  u.bottomRightCorner(inner_sz, inner_sz) = op_->get_unitary();
+  unsigned long long block_pos = bin_to_dec(control_state_) * inner_sz;
+  u.block(block_pos, block_pos, inner_sz, inner_sz) = op_->get_unitary();
   return u;
+}
+
+bool QControlBox::is_equal(const Op &op_other) const {
+  const QControlBox &other = dynamic_cast<const QControlBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  return n_controls_ == other.n_controls_ &&
+         control_state_ == other.control_state_ && *op_ == *other.op_;
 }
 
 ProjectorAssertionBox::ProjectorAssertionBox(
@@ -414,6 +480,13 @@ void ProjectorAssertionBox::generate_circuit() const {
   std::tie(c, expected_readouts_) = projector_assertion_synthesis(m_);
   c.decompose_boxes_recursively();
   circ_ = std::make_shared<Circuit>(c);
+}
+
+bool ProjectorAssertionBox::is_equal(const Op &op_other) const {
+  const ProjectorAssertionBox &other =
+      dynamic_cast<const ProjectorAssertionBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  return m_.isApprox(other.m_);
 }
 
 StabiliserAssertionBox::StabiliserAssertionBox(
@@ -461,6 +534,13 @@ op_signature_t StabiliserAssertionBox::get_signature() const {
   op_signature_t bs(circ_ptr->n_bits(), EdgeType::Classical);
   qubs.insert(qubs.end(), bs.begin(), bs.end());
   return qubs;
+}
+
+bool StabiliserAssertionBox::is_equal(const Op &op_other) const {
+  const StabiliserAssertionBox &other =
+      dynamic_cast<const StabiliserAssertionBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  return paulis_ == other.paulis_;
 }
 
 nlohmann::json core_box_json(const Box &box) {
@@ -575,13 +655,19 @@ nlohmann::json QControlBox::to_json(const Op_ptr &op) {
   const auto &box = static_cast<const QControlBox &>(*op);
   nlohmann::json j = core_box_json(box);
   j["n_controls"] = box.get_n_controls();
+  j["control_state"] = bin_to_dec(box.get_control_state());
   j["op"] = box.get_op();
   return j;
 }
 
 Op_ptr QControlBox::from_json(const nlohmann::json &j) {
-  QControlBox box =
-      QControlBox(j.at("op").get<Op_ptr>(), j.at("n_controls").get<unsigned>());
+  unsigned n_controls = j.at("n_controls").get<unsigned>();
+  std::vector<bool> control_state;
+  if (j.contains("control_state")) {
+    control_state =
+        dec_to_bin(j.at("control_state").get<unsigned>(), n_controls);
+  }
+  QControlBox box(j.at("op").get<Op_ptr>(), n_controls, control_state);
   return set_box_id(
       box,
       boost::lexical_cast<boost::uuids::uuid>(j.at("id").get<std::string>()));

@@ -708,6 +708,21 @@ unsigned Circuit::depth_by_types(const OpTypeSet& _types) const {
   return count;
 }
 
+unsigned Circuit::depth_2q() const {
+  unsigned count = 0;
+  std::function<bool(Op_ptr)> skip_func = [&](Op_ptr op) {
+    return (op->n_qubits() != 2 || op->get_type() == OpType::Barrier);
+  };
+  Circuit::SliceIterator slice_iter(*this, skip_func);
+  if (!(*slice_iter).empty()) count++;
+  while (!slice_iter.finished()) {
+    slice_iter.cut_ = this->next_cut(
+        slice_iter.cut_.u_frontier, slice_iter.cut_.b_frontier, skip_func);
+    if (!(*slice_iter).empty()) count++;
+  }
+  return count;
+}
+
 std::map<Vertex, unit_set_t> Circuit::vertex_unit_map() const {
   std::map<Vertex, unit_set_t> map;
   BGL_FORALL_VERTICES(v, dag, DAG) { map[v] = {}; }
@@ -792,16 +807,14 @@ Circuit::SliceIterator::SliceIterator(const Circuit& circ)
 
   // Add all vertices that have no Quantum or Classical edges (e.g. Phase) and
   // no Boolean inputs:
-  VertexSet loners;
   BGL_FORALL_VERTICES(v, circ.dag, DAG) {
     if (circ.n_in_edges(v) == 0 &&
         circ.n_out_edges_of_type(v, EdgeType::Quantum) == 0 &&
         circ.n_out_edges_of_type(v, EdgeType::Classical) == 0 &&
         circ.n_out_edges_of_type(v, EdgeType::WASM) == 0) {
-      loners.insert(v);
+      cut_.slice->push_back(v);
     }
   }
-  cut_.slice->insert(cut_.slice->end(), loners.begin(), loners.end());
 }
 
 Circuit::SliceIterator::SliceIterator(

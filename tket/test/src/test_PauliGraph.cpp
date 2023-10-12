@@ -985,6 +985,7 @@ SCENARIO("Diagonalise a pair of gadgets") {
     CXConfigType config = CXConfigType::MultiQGate;
     append_pauli_gadget_pair(
         circ, tensors[0], exprs[0], tensors[1], exprs[1], config);
+    circ.decompose_boxes_recursively();
     THEN("XXPhase3 were used") {
       REQUIRE(circ.count_gates(OpType::XXPhase3) == 2);
     }

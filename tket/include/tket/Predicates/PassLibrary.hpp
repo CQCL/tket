@@ -31,7 +31,15 @@ const PassPtr &DecomposeArbitrarilyControlledGates();
 // but does not break if it encounters others
 const PassPtr &DecomposeMultiQubitsCX();
 const PassPtr &DecomposeSingleQubitsTK1();
-const PassPtr &DecomposeBoxes();
+
+/**
+ * Recursively replaces all boxes by their decomposition using Box::to_circuit
+ * @param excluded_types box types excluded from decomposition
+ * @param excluded_opgroups opgroups excluded from decomposition
+ */
+PassPtr DecomposeBoxes(
+    const std::unordered_set<OpType> &excluded_types = {},
+    const std::unordered_set<std::string> &excluded_opgroups = {});
 
 /**
  * converts a circuit containing all possible gates to a circuit containing only

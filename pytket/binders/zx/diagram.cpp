@@ -12,6 +12,10 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+#include <memory>
+
+#include "deleted_hash.hpp"
+#include "py_operators.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Converters/Converters.hpp"
 #include "tket/Utils/GraphHeaders.hpp"
@@ -139,7 +143,7 @@ void ZXDiagramPybind::init_zxdiagram(py::module& m) {
           ":param type: :py:class:`ZXType` to filter by, from "
           "{:py:meth:`ZXType.Input`, :py:meth:`ZXType.Output`, "
           ":py:meth:`ZXType.Open`, None}. Defaults to None."
-          ":param qtype: :py:class:`QuantumType` to filter by, from "
+          "\n\n:param qtype: :py:class:`QuantumType` to filter by, from "
           "{:py:meth:`QuantumType.Quantum`, :py:meth:`QuantumType.Classical`, "
           "None}. Defaults to None.",
           py::arg("type") = std::nullopt, py::arg("qtype") = std::nullopt)
@@ -565,7 +569,7 @@ PYBIND11_MODULE(zx, m) {
       "functions on a :py:class:`ZXVert` that is not present in the given "
       ":py:class:`ZXDiagram`.")
       .def("__repr__", &ZXVertWrapper::to_string)
-      .def("__eq__", &ZXVertWrapper::operator==)
+      .def("__eq__", &py_equals<ZXVertWrapper>)
       .def("__hash__", [](const ZXVertWrapper& v) {
         return py::hash(py::str(v.to_string()));
       });
@@ -576,7 +580,7 @@ PYBIND11_MODULE(zx, m) {
       "invalidated by rewrites. Exceptions or errors may occur if calling "
       "functions on a :py:class:`ZXWire` that is not present in the given "
       ":py:class:`ZXDiagram`.")
-      .def("__eq__", [](const Wire& a, const Wire& b) { return a == b; })
+      .def("__eq__", &py_equals<Wire>)
       .def("__hash__", [](const Wire& w) {
         std::stringstream st;
         st << w;
@@ -604,7 +608,8 @@ PYBIND11_MODULE(zx, m) {
       .def_property_readonly(
           "qtype", &ZXGen::get_qtype,
           "The :py:class:`QuantumType` of the generator (if applicable).")
-      .def("__eq__", &ZXGen::operator==)
+      .def("__eq__", &py_equals<ZXGen>)
+      .def("__hash__", &deletedHash<ZXGen>, deletedHashDocstring)
       .def("__repr__", [](const ZXGen& gen) { return gen.get_name(); });
   py::class_<PhasedGen, std::shared_ptr<PhasedGen>, ZXGen>(
       m, "PhasedGen",

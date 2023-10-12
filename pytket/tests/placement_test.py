@@ -13,10 +13,10 @@
 # limitations under the License.
 
 from pathlib import Path
-from pytket import Circuit  # type: ignore
-from pytket.circuit import Node, Qubit  # type: ignore
-from pytket.architecture import Architecture, FullyConnected  # type: ignore
-from pytket.placement import (  # type: ignore
+from pytket import Circuit
+from pytket.circuit import Node, Qubit
+from pytket.architecture import Architecture, FullyConnected
+from pytket.placement import (
     Placement,
     LinePlacement,
     GraphPlacement,
@@ -24,9 +24,9 @@ from pytket.placement import (  # type: ignore
     place_with_map,
     place_fully_connected,
 )
-from pytket.passes import PauliSimp, DefaultMappingPass  # type: ignore
-from pytket.mapping import MappingManager, LexiRouteRoutingMethod, LexiLabellingMethod  # type: ignore
-from pytket.qasm import circuit_from_qasm  # type: ignore
+from pytket.passes import PauliSimp, DefaultMappingPass
+from pytket.mapping import MappingManager, LexiRouteRoutingMethod, LexiLabellingMethod
+from pytket.qasm import circuit_from_qasm
 
 import json
 import pytest
@@ -199,50 +199,71 @@ def test_big_placement() -> None:
     )
     arc = Architecture(
         [
-            [0, 1],
-            [0, 14],
-            [1, 0],
-            [1, 2],
-            [1, 13],
-            [2, 1],
-            [2, 3],
-            [2, 12],
-            [3, 2],
-            [3, 4],
-            [3, 11],
-            [4, 3],
-            [4, 5],
-            [4, 10],
-            [5, 4],
-            [5, 6],
-            [5, 9],
-            [6, 5],
-            [6, 8],
-            [7, 8],
-            [8, 6],
-            [8, 7],
-            [8, 9],
-            [9, 5],
-            [9, 8],
-            [9, 10],
-            [10, 4],
-            [10, 9],
-            [10, 11],
-            [11, 3],
-            [11, 10],
-            [11, 12],
-            [12, 2],
-            [12, 11],
-            [12, 13],
-            [13, 1],
-            [13, 12],
-            [13, 14],
-            [14, 0],
-            [14, 13],
+            (0, 1),
+            (0, 14),
+            (1, 0),
+            (1, 2),
+            (1, 13),
+            (2, 1),
+            (2, 3),
+            (2, 12),
+            (3, 2),
+            (3, 4),
+            (3, 11),
+            (4, 3),
+            (4, 5),
+            (4, 10),
+            (5, 4),
+            (5, 6),
+            (5, 9),
+            (6, 5),
+            (6, 8),
+            (7, 8),
+            (8, 6),
+            (8, 7),
+            (8, 9),
+            (9, 5),
+            (9, 8),
+            (9, 10),
+            (10, 4),
+            (10, 9),
+            (10, 11),
+            (11, 3),
+            (11, 10),
+            (11, 12),
+            (12, 2),
+            (12, 11),
+            (12, 13),
+            (13, 1),
+            (13, 12),
+            (13, 14),
+            (14, 0),
+            (14, 13),
         ]
     )
     assert PauliSimp().apply(c)
     assert DefaultMappingPass(arc).apply(c)
+
+
+def test_large_error_rate_noise_aware() -> None:
+    nodes = [Node(i) for i in range(3)]
+    arc = Architecture([(nodes[0], nodes[1]), (nodes[1], nodes[2])])
+    nap = NoiseAwarePlacement(
+        arc,
+        {},
+        {
+            (nodes[0], nodes[1]): 0.2,
+            (nodes[1], nodes[0]): 0.5,
+            (nodes[1], nodes[2]): 2,
+            (nodes[2], nodes[1]): 1,
+        },
+    )
+
+    c = Circuit(2).CX(0, 1)
+
+    placement_map = nap.get_placement_map(c)
+    assert placement_map[Qubit(0)] == Node(0)
+    assert placement_map[Qubit(1)] == Node(1)
 
 
 if __name__ == "__main__":
@@ -253,3 +274,4 @@ if __name__ == "__main__":
     test_big_placement()
     test_place_fully_connected()
     test_placement_config()
+    test_large_error_rate_noise_aware()
