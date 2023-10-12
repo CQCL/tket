@@ -26,9 +26,6 @@ PYBIND11_MODULE(circuit_library, library_m) {
       "BRIDGE_using_CX_0", &CircPool::BRIDGE_using_CX_0,
       "Equivalent to BRIDGE, using four CX, first CX has control on qubit 0");
   library_m.def(
-      "_BRIDGE_using_CX_0", &CircPool::BRIDGE_using_CX_0,
-      "Equivalent to BRIDGE, using four CX, first CX has control on qubit 0");
-  library_m.def(
       "_BRIDGE_using_CX_1", &CircPool::BRIDGE_using_CX_1,
       "Equivalent to BRIDGE, using four CX, first CX has control on qubit 1");
   library_m.def(
