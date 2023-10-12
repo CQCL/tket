@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from pytket._tket.circuit_library import (
-    _BRIDGE_using_CX_0,
+    BRIDGE_using_CX_0,
     _BRIDGE_using_CX_1,
     _CX_using_TK2,
     _TK2_using_CX,
