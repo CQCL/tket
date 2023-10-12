@@ -469,14 +469,14 @@ jobs:
       uses: actions/cache@v3
       with:
         path: ${{ steps.ninja-ccache-setup.outputs.ccache_dir }}
-        key: tket-dynamic-windows-${{ steps.current_time.outputs.formattedTime }}
+        key: tket-dynamic-visual-studio-windows-2022-${{ steps.current_time.outputs.formattedTime }}
         restore-keys: |
-          tket-dynamic-windows-2022
+          tket-dynamic-visual-studio-windows-2022
     - name: Build tket
       if: needs.check_changes.outputs.tket_changed == 'true'
       run: |
-        conan build tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -c tools.cmake.cmaketoolchain:generator=Ninja
-        conan export-pkg tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf `"`" -c tools.cmake.cmaketoolchain:generator=Ninja
+        conan build tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
+        conan export-pkg tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf `"`"
     - name: Install tket
       if: needs.check_changes.outputs.tket_changed != 'true'
       run: conan install --requires tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True

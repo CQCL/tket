@@ -37,9 +37,8 @@ endif()
 find_program(CCACHE_PROGRAM ccache)
 if(CCACHE_PROGRAM)
     if (CMAKE_GENERATOR MATCHES "Visual Studio")
-        file(COPY_FILE
-                ${CCACHE_PROGRAM} ${CMAKE_BINARY_DIR}/cl.exe
-                ONLY_IF_DIFFERENT)
+        file(CREATE_LINK
+                ${CCACHE_PROGRAM} ${CMAKE_BINARY_DIR}/cl.exe)
 
         # By default Visual Studio generators will use /Zi which is not compatible
         # with ccache, so tell Visual Studio to use /Z7 instead.
