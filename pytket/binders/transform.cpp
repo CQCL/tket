@@ -170,7 +170,7 @@ PYBIND11_MODULE(transform, m) {
           "prefer to insert the CXs such that fewer need redirecting."
           "\n\n:param arc: Device architecture used to specify a "
           "preference for CX direction",
-          py::arg("arc") = Architecture())
+          py::arg("arc"))
       .def_static(
           "DecomposeBRIDGE", &Transforms::decompose_BRIDGE_to_CX,
           "Decomposes all BRIDGE gates into CX gates.")
@@ -184,7 +184,11 @@ PYBIND11_MODULE(transform, m) {
           py::arg("arc"))
       .def_static(
           "DecomposeBoxes", &Transforms::decomp_boxes,
-          "Decomposes all Boxed operations into elementary gates.")
+          "Recursively replaces all boxes by their decomposition into circuits."
+          "\n\n:param excluded_types: box `OpType`s excluded from decomposition"
+          "\n:param excluded_opgroups: opgroups excluded from decomposition",
+          py::arg("excluded_types") = std::unordered_set<OpType>(),
+          py::arg("excluded_opgroups") = std::unordered_set<std::string>())
       .def_static(
           "DecomposeTK2",
           [](bool allow_swaps, const py::kwargs &kwargs) {
@@ -379,8 +383,9 @@ PYBIND11_MODULE(transform, m) {
           "be left untouched."
           "\n\n:param squash: Whether to squash the circuit in pre-processing "
           "(default: true)."
-          "\n\nIf squash=true (default), the `GlobalisePhasedX().apply` method "
-          "will always returns true. "
+          "\n\nIf squash=true (default), the `GlobalisePhasedX` transform's "
+          "`apply` method "
+          "will always return true. "
           "For squash=false, `apply()` will return true if the circuit was "
           "changed and false otherwise.\n\n"
           "It is not recommended to use this transformation with symbolic "

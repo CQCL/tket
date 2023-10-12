@@ -110,7 +110,8 @@ Transform squash_1qb_to_pqp(
 Transform squash_factory(
     const OpTypeSet& singleqs,
     const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
-        tk1_replacement);
+        tk1_replacement,
+    bool always_squash_symbols = false);
 
 // commutes single qubit gates through SWAP gates, leaving them on the
 // PhysicalQubit with best fidelity for the given OP Expects: any single qubit
@@ -139,9 +140,13 @@ Transform normalise_TK2();
 
 /**
  * @brief Squash single qubit gates into PhasedX and Rz gates.
+ *
  * Commute Rzs to the back if possible.
+ *
+ * @param always_squash_symbols whether to squash symbols regardless of
+ *        complexity increase
  */
-Transform squash_1qb_to_Rz_PhasedX();
+Transform squash_1qb_to_Rz_PhasedX(bool always_squash_symbols = false);
 
 /**
  * Generate a transform that rounds all angles to the nearest \f$ \pi / 2^n \f$.

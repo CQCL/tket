@@ -18,4 +18,4 @@ Exports classes and tools for binary tableau representations of Clifford
 unitaries/states.
 """
 
-from pytket._tket.tableau import *  # type: ignore
+from pytket._tket.tableau import *

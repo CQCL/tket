@@ -16,7 +16,7 @@
 
 #include <random>
 
-#include "tket/Ops/MetaOp.hpp"
+#include "tket/Ops/BarrierOp.hpp"
 #include "tket/PauliGraph/ConjugatePauliFunctions.hpp"
 #include "tket/Utils/PauliStrings.hpp"
 
@@ -97,7 +97,7 @@ void add_noop_frames(std::vector<Cycle>& cycles, Circuit& circ) {
       full_cycle.add_vertex_pair({input_noop_vert, output_noop_vert});
     }
     std::vector<EdgeType> sig(barrier_ins.size(), EdgeType::Quantum);
-    Op_ptr o_ptr = std::make_shared<MetaOp>(OpType::Barrier, sig);
+    Op_ptr o_ptr = std::make_shared<BarrierOp>(sig);
     Vertex input_barrier_vert = circ.add_vertex(o_ptr);
     Vertex output_barrier_vert = circ.add_vertex(o_ptr);
     circ.rewire(input_barrier_vert, barrier_ins, sig);

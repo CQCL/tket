@@ -17,11 +17,11 @@ from functools import lru_cache
 
 from math import ceil, log2
 from collections import OrderedDict
-from typing import Dict, Iterable, List, Tuple, Counter, cast, Optional
+from typing import Dict, Iterable, List, Tuple, Counter, cast, Optional, Callable, Union
 import numpy as np
-from pytket.circuit import Circuit, Qubit, Bit, Node, CircBox, OpType  # type: ignore
+from pytket.circuit import Circuit, Qubit, Bit, Node, CircBox, OpType
 from pytket.backends import Backend
-from pytket.passes import DecomposeBoxes, FlattenRegisters  # type: ignore
+from pytket.passes import DecomposeBoxes, FlattenRegisters
 from pytket.backends.backendresult import BackendResult
 from pytket.utils.outcomearray import OutcomeArray
 from pytket.utils.results import CountsDict, StateTuple
@@ -47,9 +47,11 @@ def compress_counts(
     :return: Filtered counts
     :rtype: CountsDict
     """
-    valprocess = (lambda x: int(round(x))) if round_to_int else (lambda x: x)  # type: ignore
+    valprocess: Callable[[float], Union[int, float]] = (
+        lambda x: int(round(x)) if round_to_int else x
+    )
     processed_pairs = (
-        (key, valprocess(val)) for key, val in counts.items() if val > tol  # type: ignore
+        (key, valprocess(val)) for key, val in counts.items() if val > tol
     )
     return {key: val for key, val in processed_pairs if val > 0}
 
@@ -339,8 +341,11 @@ class SpamCorrecter:
 
         self.all_qbs = [qb for subset in qubit_subsets for qb in subset]
 
+        def to_tuple(inp: list[Node]) -> tuple:
+            return tuple(inp)
+
         self.subsets_matrix_map = OrderedDict.fromkeys(
-            sorted(map(tuple, self.correlations), key=len, reverse=True)
+            sorted(map(to_tuple, self.correlations), key=len, reverse=True)
         )
         # ordered from largest to smallest via OrderedDict & sorted
         self.subset_dimensions = [len(subset) for subset in self.subsets_matrix_map]
@@ -526,7 +531,7 @@ class SpamCorrecter:
                         "Measured qubit {} is not characterised by "
                         "SpamCorrecter".format(q)
                     )
-                unused_qbs.remove(q)
+                unused_qbs.remove(q)  # type:ignore[arg-type]
                 char_bits_order.append(mapping[q])
             correction_matrices.extend(
                 reduce_matrices(
@@ -549,7 +554,7 @@ class SpamCorrecter:
         if method == "invert":
             try:
                 subinverts = [
-                    np.linalg.inv(submatrix) for submatrix in correction_matrices  # type: ignore
+                    np.linalg.inv(submatrix) for submatrix in correction_matrices
                 ]
             except np.linalg.LinAlgError:
                 raise ValueError(

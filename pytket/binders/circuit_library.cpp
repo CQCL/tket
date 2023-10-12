@@ -14,7 +14,6 @@
 
 #include <pybind11/pybind11.h>
 
-#include "binder_utils.hpp"
 #include "tket/Circuit/CircPool.hpp"
 #include "typecast.hpp"
 
@@ -22,11 +21,7 @@ namespace py = pybind11;
 
 namespace tket {
 
-void init_library(py::module &m) {
-  /* Circuit library */
-  py::module_ library_m = m.def_submodule(
-      "_library",
-      "Library of reusable circuits and circuit generator functions.");
+PYBIND11_MODULE(circuit_library, library_m) {
   library_m.def(
       "_BRIDGE_using_CX_0", &CircPool::BRIDGE_using_CX_0,
       "Equivalent to BRIDGE, using four CX, first CX has control on qubit 0");
@@ -40,6 +35,13 @@ void init_library(py::module &m) {
       "_TK2_using_CX", &CircPool::TK2_using_CX,
       "Given expressions α, β and γ, return circuit equivalent to "
       "TK2(α, β, γ) using up to 3 CX and single-qubit gates.\n\n"
+      "The decomposition minimizes the number of CX gates.");
+  library_m.def(
+      "_TK2_using_CX_and_swap", &CircPool::TK2_using_CX_and_swap,
+      "Given expressions α, β and γ, return circuit equivalent to "
+      "TK2(α, β, γ), up to a wire swap that is encoded in the implicit "
+      "qubit permutation of the Circuit, using up to 3 CX and single-qubit "
+      "gates.\n\n"
       "The decomposition minimizes the number of CX gates.");
   library_m.def(
       "_approx_TK2_using_1xCX", &CircPool::approx_TK2_using_1xCX,
@@ -68,6 +70,9 @@ void init_library(py::module &m) {
   library_m.def(
       "_CX_using_ZZMax", &CircPool::CX_using_ZZMax,
       "Equivalent to CX, using only ZZMax, Rx and Rz gates");
+  library_m.def(
+      "_CX_using_ZZPhase", &CircPool::CX_using_ZZPhase,
+      "Equivalent to CX, using only ZZPhase, Rx and Rz gates");
   library_m.def(
       "_CX_using_XXPhase_0", &CircPool::CX_using_XXPhase_0,
       "Equivalent to CX, using only XXPhase, Rx, Ry and Rz gates");
@@ -206,7 +211,8 @@ void init_library(py::module &m) {
       "Equivalent to YYPhase, using a TK2 gate");
   library_m.def(
       "_YYPhase_using_CX", &CircPool::YYPhase_using_CX,
-      "Equivalent to YYPhase, using CX, Rz and U3 gates");
+      "Equivalent to YYPhase, using two CX gates and one Ry, one Sdg and one S "
+      "gate.");
   library_m.def(
       "_ZZPhase_using_TK2", &CircPool::ZZPhase_using_TK2,
       "Equivalent to ZZPhase, using a TK2 gate");
@@ -216,6 +222,14 @@ void init_library(py::module &m) {
   library_m.def(
       "_TK2_using_ZZPhase", &CircPool::TK2_using_ZZPhase,
       "Equivalent to TK2, using 3 ZZPhase gates");
+  library_m.def(
+      "_TK2_using_ZZPhase_and_swap", &CircPool::TK2_using_ZZPhase_and_swap,
+      "Equivalent to TK2, up to a wire swap that is encoded in the implicit "
+      "qubit permutation of the Circuit, using up to 3 ZZPhase gates.");
+  library_m.def(
+      "_TK2_using_TK2_or_swap", &CircPool::TK2_using_TK2_or_swap,
+      "Either the exact TK2, or a wire swap encoded in the implicit qubit "
+      "permutation of the Circuit and single qubit gates.");
   library_m.def(
       "_approx_TK2_using_1xZZPhase", &CircPool::approx_TK2_using_1xZZPhase,
       "Approximate equivalent to TK2, using 1 ZZPhase gate and single-qubit "
@@ -227,6 +241,10 @@ void init_library(py::module &m) {
   library_m.def(
       "_TK2_using_ZZMax", &CircPool::TK2_using_ZZMax,
       "Equivalent to TK2, using up to 3 ZZMax gates.");
+  library_m.def(
+      "_TK2_using_ZZMax_and_swap", &CircPool::TK2_using_ZZMax_and_swap,
+      "Equivalent to TK2, up to a wire swap that is encoded in the implicit "
+      "qubit permutation of the Circuit, using up to 3 ZZMax gates.");
   library_m.def(
       "_XXPhase3_using_TK2", &CircPool::XXPhase3_using_TK2,
       "Equivalent to XXPhase3, using three TK2 gates");

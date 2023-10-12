@@ -27,7 +27,7 @@ from jinja2.ext import Extension
 from jinja2.utils import markupsafe
 from jinja2.parser import Parser
 
-from pytket.circuit import Circuit  # type: ignore
+from pytket.circuit import Circuit
 
 
 # js scripts to be loaded must not be parsed as template files.
@@ -164,7 +164,7 @@ class CircuitRenderer:
         if jupyter:
             # If we are in a notebook, we can tell jupyter to display the html.
             # We don't import at the top in case we are not in a notebook environment.
-            from IPython.display import (  # type: ignore
+            from IPython.display import (
                 HTML,
                 display,
             )  # pylint: disable=C0415

@@ -14,6 +14,8 @@
 
 #include "tket/Ops/FlowOp.hpp"
 
+#include <memory>
+
 #include "tket/OpType/OpTypeInfo.hpp"
 
 namespace tket {
@@ -26,7 +28,7 @@ FlowOp::FlowOp(OpType type, std::optional<std::string> label)
 }
 
 Op_ptr FlowOp::symbol_substitution(const SymEngine::map_basic_basic&) const {
-  return Op_ptr();
+  return std::make_shared<FlowOp>(*this);
 }
 
 SymSet FlowOp::free_symbols() const { return {}; }

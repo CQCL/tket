@@ -17,6 +17,7 @@
 #include <iostream>
 
 #include "tket/Circuit/CircUtils.hpp"
+#include "tket/Circuit/ConjugationBox.hpp"
 #include "tket/Converters/PauliGadget.hpp"
 #include "tket/Converters/PhasePoly.hpp"
 #include "tket/Diagonalisation/Diagonalisation.hpp"
@@ -70,6 +71,13 @@ Op_ptr PauliExpBox::symbol_substitution(
 void PauliExpBox::generate_circuit() const {
   Circuit circ = pauli_gadget(paulis_, t_, cx_config_);
   circ_ = std::make_shared<Circuit>(circ);
+}
+
+bool PauliExpBox::is_equal(const Op &op_other) const {
+  const PauliExpBox &other = dynamic_cast<const PauliExpBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  return equiv_expr(t_, other.t_, 4) && cx_config_ == other.cx_config_ &&
+         paulis_ == other.paulis_;
 }
 
 nlohmann::json PauliExpBox::to_json(const Op_ptr &op) {
@@ -168,6 +176,15 @@ void PauliExpPairBox::generate_circuit() const {
   append_pauli_gadget_pair(
       circ, pauli_tensor0, t0_, pauli_tensor1, t1_, cx_config_);
   circ_ = std::make_shared<Circuit>(circ);
+}
+
+bool PauliExpPairBox::is_equal(const Op &op_other) const {
+  const PauliExpPairBox &other =
+      dynamic_cast<const PauliExpPairBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  return cx_config_ == other.cx_config_ && equiv_expr(t0_, other.t0_, 4) &&
+         equiv_expr(t1_, other.t1_, 4) && paulis0_ == other.paulis0_ &&
+         paulis1_ == other.paulis1_;
 }
 
 nlohmann::json PauliExpPairBox::to_json(const Op_ptr &op) {
@@ -296,7 +313,8 @@ Op_ptr PauliExpCommutingSetBox::symbol_substitution(
 }
 
 void PauliExpCommutingSetBox::generate_circuit() const {
-  Circuit circ = Circuit(pauli_gadgets_[0].first.size());
+  unsigned n_qubits = pauli_gadgets_[0].first.size();
+  Circuit circ(n_qubits);
 
   std::list<std::pair<QubitPauliTensor, Expr>> gadgets;
   for (const auto &pauli_gadget : pauli_gadgets_) {
@@ -304,24 +322,46 @@ void PauliExpCommutingSetBox::generate_circuit() const {
         QubitPauliTensor(pauli_gadget.first), pauli_gadget.second);
   }
   std::set<Qubit> qubits;
-  for (unsigned i = 0; i < pauli_gadgets_[0].first.size(); i++)
-    qubits.insert(Qubit(i));
+  for (unsigned i = 0; i < n_qubits; i++) qubits.insert(Qubit(i));
 
   Circuit cliff_circ = mutual_diagonalise(gadgets, qubits, cx_config_);
-  circ.append(cliff_circ);
 
-  Circuit phase_poly_circ = Circuit(pauli_gadgets_[0].first.size());
+  Circuit phase_poly_circ(n_qubits);
 
   for (const std::pair<QubitPauliTensor, Expr> &pgp : gadgets) {
     append_single_pauli_gadget(phase_poly_circ, pgp.first, pgp.second);
   }
+  phase_poly_circ.decompose_boxes_recursively();
   PhasePolyBox ppbox(phase_poly_circ);
   Circuit after_synth_circ = *ppbox.to_circuit();
 
-  circ.append(after_synth_circ);
-  circ.append(cliff_circ.dagger());
+  ConjugationBox box(
+      std::make_shared<CircBox>(cliff_circ),
+      std::make_shared<CircBox>(after_synth_circ));
+
+  circ.add_box(box, circ.all_qubits());
 
   circ_ = std::make_shared<Circuit>(circ);
+}
+
+// check two gadges are semantically equal
+static bool gadget_compare(
+    const std::vector<std::pair<std::vector<Pauli>, Expr>> &g1,
+    const std::vector<std::pair<std::vector<Pauli>, Expr>> &g2) {
+  return std::equal(
+      g1.begin(), g1.end(), g2.begin(), g2.end(),
+      [](const std::pair<std::vector<Pauli>, Expr> &a,
+         const std::pair<std::vector<Pauli>, Expr> &b) {
+        return a.first == b.first && equiv_expr(a.second, b.second, 4);
+      });
+}
+
+bool PauliExpCommutingSetBox::is_equal(const Op &op_other) const {
+  const PauliExpCommutingSetBox &other =
+      dynamic_cast<const PauliExpCommutingSetBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  return cx_config_ == other.cx_config_ &&
+         gadget_compare(pauli_gadgets_, other.pauli_gadgets_);
 }
 
 nlohmann::json PauliExpCommutingSetBox::to_json(const Op_ptr &op) {

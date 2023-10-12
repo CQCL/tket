@@ -24,18 +24,21 @@
 #include "tket/Utils/Symbols.hpp"
 #include "unit_downcast.hpp"
 
-namespace pybind11 {
+PYBIND11_NAMESPACE_BEGIN(PYBIND11_NAMESPACE)
 
-namespace detail {
+PYBIND11_NAMESPACE_BEGIN(detail)
 
 template <>
 struct type_caster<SymEngine::Expression> {
  public:
-  PYBIND11_TYPE_CASTER(SymEngine::Expression, _("Expression"));
+  PYBIND11_TYPE_CASTER(
+      SymEngine::Expression, const_name("Union[sympy.Expr, float]"));
+
   static void assert_tuple_length(tuple t, unsigned len) {
     if (t.size() != len)
       throw std::logic_error("Sympy expression is not well-formed");
   };
+
   static tuple get_checked_args(handle py_expr, unsigned expected_len) {
     tuple arg_tuple = py_expr.attr("args");
     if (arg_tuple.size() != expected_len) {
@@ -47,13 +50,14 @@ struct type_caster<SymEngine::Expression> {
     }
     return arg_tuple;
   }
+
   static tket::Expr sympy_to_expr(handle py_expr) {
     pybind11::module sympy = pybind11::module::import("sympy");
     handle numbers = sympy.attr("core").attr("numbers");
 
     if (isinstance(py_expr, sympy.attr("Symbol"))) {
-      handle name = py_expr.attr("name");
-      tket::Sym sym = SymEngine::symbol(name.cast<std::string>());
+      handle expr_name = py_expr.attr("name");
+      tket::Sym sym = SymEngine::symbol(expr_name.cast<std::string>());
       return tket::Expr(sym);
     } else if (isinstance(py_expr, sympy.attr("Mul"))) {
       tuple arg_tuple = py_expr.attr("args");
@@ -132,6 +136,7 @@ struct type_caster<SymEngine::Expression> {
     SECONVERT(erf, erf)
     SECONVERT(erfc, erfc)
     SECONVERT(abs, Abs)
+    SECONVERT(exp, exp)
 #undef SECONVERT
     else if (isinstance(py_expr, sympy.attr("atan2"))) {
       tuple arg_tuple = get_checked_args(py_expr, 2);
@@ -159,6 +164,7 @@ struct type_caster<SymEngine::Expression> {
     }
     return false;
   }
+
   static object basic_to_sympy(const tket::ExprPtr& e_) {
     pybind11::module sympy = pybind11::module::import("sympy");
     switch (e_->get_type_code()) {
@@ -219,14 +225,14 @@ struct type_caster<SymEngine::Expression> {
       case SymEngine::TypeID::SYMENGINE_CONSTANT: {
         const SymEngine::Constant* c =
             dynamic_cast<const SymEngine::Constant*>(e_.get());
-        std::string name = c->get_name();
-        if (name == "E") {
+        std::string c_name = c->get_name();
+        if (c_name == "E") {
           return sympy.attr("E");
-        } else if (name == "pi") {
+        } else if (c_name == "pi") {
           return sympy.attr("pi");
         } else {
           throw std::logic_error(
-              "Unable to convert SymEngine constant " + name);
+              "Unable to convert SymEngine constant " + c_name);
         }
       }
       case SymEngine::TypeID::SYMENGINE_INFTY: {
@@ -293,6 +299,7 @@ struct type_caster<SymEngine::Expression> {
       }
     }
   }
+
   static handle cast(
       SymEngine::Expression src, return_value_policy /* policy */,
       handle /* parent */) {
@@ -308,7 +315,8 @@ struct type_caster<SymEngine::Expression> {
 template <>
 struct type_caster<SymEngine::RCP<const SymEngine::Symbol>> {
  public:
-  PYBIND11_TYPE_CASTER(SymEngine::RCP<const SymEngine::Symbol>, _("Symbol"));
+  PYBIND11_TYPE_CASTER(
+      SymEngine::RCP<const SymEngine::Symbol>, const_name("sympy.Symbol"));
   bool load(handle src, bool) {
     pybind11::module sympy = pybind11::module::import("sympy");
     if (!isinstance(src, sympy.attr("Symbol"))) return false;
@@ -318,9 +326,10 @@ struct type_caster<SymEngine::RCP<const SymEngine::Symbol>> {
   static handle cast(
       SymEngine::RCP<const SymEngine::Symbol> src,
       return_value_policy /* policy */, handle /* parent */) {
-    pybind11::module sympy = pybind11::module::import("sympy");
+    pybind11::module sympy = pybind11::module_::import("sympy");
     return sympy.attr("Symbol")(src->get_name()).release();
   }
 };
-}  // namespace detail
-}  // namespace pybind11
+// namespace detail
+PYBIND11_NAMESPACE_END(detail)
+PYBIND11_NAMESPACE_END(PYBIND11_NAMESPACE)

@@ -83,17 +83,22 @@ std::unique_ptr<AbstractSquasher> StandardSquasher::clone() const {
 static bool standard_squash(
     Circuit &circ, const OpTypeSet &singleqs,
     const std::function<Circuit(const Expr &, const Expr &, const Expr &)>
-        &tk1_replacement) {
+        &tk1_replacement,
+    bool always_squash_symbols) {
   auto squasher = std::make_unique<StandardSquasher>(singleqs, tk1_replacement);
-  return SingleQubitSquash(std::move(squasher), circ, false).squash();
+  return SingleQubitSquash(
+             std::move(squasher), circ, false, always_squash_symbols)
+      .squash();
 }
 
 Transform squash_factory(
     const OpTypeSet &singleqs,
     const std::function<Circuit(const Expr &, const Expr &, const Expr &)>
-        &tk1_replacement) {
+        &tk1_replacement,
+    bool always_squash_symbols) {
   return Transform([=](Circuit &circ) {
-    return standard_squash(circ, singleqs, tk1_replacement);
+    return standard_squash(
+        circ, singleqs, tk1_replacement, always_squash_symbols);
   });
 }
 

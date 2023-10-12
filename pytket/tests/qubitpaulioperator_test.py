@@ -16,14 +16,14 @@ import copy
 from hypothesis import given, settings
 import json
 import pickle
-import pytest  # type: ignore
+import pytest
 
 import numpy as np
-from sympy import Symbol, re, im  # type: ignore
+from sympy import Symbol, re, im
 
 from pytket.utils import QubitPauliOperator
-from pytket.pauli import Pauli, QubitPauliString, pauli_string_mult  # type: ignore
-from pytket.circuit import Qubit  # type: ignore
+from pytket.pauli import Pauli, QubitPauliString, pauli_string_mult
+from pytket.circuit import Qubit
 
 import strategies as st  # type: ignore
 
@@ -131,7 +131,7 @@ def test_QubitPauliOperator_matrices() -> None:
     assert named_op.state_expectation(state, named_qbs) == 2
 
     assert np.array_equal(
-        np.kron(op_mat, np.eye(2)),  # type: ignore
+        np.kron(op_mat, np.eye(2)),
         named_op.to_sparse_matrix(named_qbs + [Qubit("a", 1)]).toarray(),
     )
 

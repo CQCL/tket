@@ -14,12 +14,12 @@
 
 from math import pow, isclose
 import numpy as np
-import pytest  # type: ignore
+import pytest
 from pytket import Qubit, Circuit, OpType
 from pytket.passes import auto_rebase_pass
-from pytket.pauli import Pauli, QubitPauliString  # type: ignore
+from pytket.pauli import Pauli, QubitPauliString
 from pytket.utils.results import compare_unitaries
-from pytket.zx import (  # type: ignore
+from pytket.zx import (
     ZXDiagram,
     ZXType,
     QuantumType,
@@ -32,12 +32,12 @@ from pytket.zx import (  # type: ignore
     DirectedGen,
     ZXBox,
 )
-from sympy import sympify  # type: ignore
+from sympy import sympify
 from typing import Tuple
 
 have_quimb: bool = True
 try:
-    from pytket.zx.tensor_eval import (  # type: ignore
+    from pytket.zx.tensor_eval import (
         unitary_from_quantum_diagram,
         fix_boundaries_to_binary_states,
         fix_inputs_to_binary_state,

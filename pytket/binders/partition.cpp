@@ -18,9 +18,10 @@
 #include "binder_json.hpp"
 #include "binder_utils.hpp"
 #include "tket/MeasurementSetup/MeasurementReduction.hpp"
-#include "typecast.hpp"
 
 namespace py = pybind11;
+using json = nlohmann::json;
+
 namespace tket {
 
 PYBIND11_MODULE(partition, m) {
@@ -30,7 +31,8 @@ PYBIND11_MODULE(partition, m) {
       .value(
           "NonConflictingSets", PauliPartitionStrat::NonConflictingSets,
           "Build sets of Pauli tensors in which each qubit has the "
-          "same Pauli or Pauli.I. Requires no additional CX gates.")
+          "same Pauli or Pauli.I. Requires no additional CX gates "
+          "for diagonalisation.")
       .value(
           "CommutingSets", PauliPartitionStrat::CommutingSets,
           "Build sets of mutually commuting Pauli tensors. Requires "
@@ -89,14 +91,15 @@ PYBIND11_MODULE(partition, m) {
       .def(
           "to_dict",
           [](const MeasurementSetup::MeasurementBitMap &map) {
-            return nlohmann::json(map);
+            return py::object(json(map)).cast<py::dict>();
           },
           "JSON-serializable dict representation of the MeasurementBitMap."
           "\n\n:return: dict representation of the MeasurementBitMap")
       .def_static(
           "from_dict",
-          [](const nlohmann::json &j) {
-            return j.get<MeasurementSetup::MeasurementBitMap>();
+          [](const py::dict &measurement_bit_map_dict) {
+            return json(measurement_bit_map_dict)
+                .get<MeasurementSetup::MeasurementBitMap>();
           },
           "Construct MeasurementBitMap instance from dict representation.");
 
@@ -135,12 +138,16 @@ PYBIND11_MODULE(partition, m) {
           ":return: True or False")
       .def(
           "to_dict",
-          [](const MeasurementSetup &setup) { return nlohmann::json(setup); },
+          [](const MeasurementSetup &setup) {
+            return py::object(json(setup)).cast<py::dict>();
+          },
           "JSON-serializable dict representation of the MeasurementSetup."
           "\n\n:return: dict representation of the MeasurementSetup")
       .def_static(
           "from_dict",
-          [](const nlohmann::json &j) { return j.get<MeasurementSetup>(); },
+          [](const py::dict &measurement_setup_dict) {
+            return json(measurement_setup_dict).get<MeasurementSetup>();
+          },
           "Construct MeasurementSetup instance from dict representation.");
 
   m.def(

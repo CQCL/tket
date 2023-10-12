@@ -266,6 +266,13 @@ SCENARIO("Check converting gates to spiders") {
     REQUIRE(zx.n_wires() == 2);
     REQUIRE_NOTHROW(zx.check_validity());
   }
+  GIVEN("Conditional Barrier") {
+    Circuit circ(2, 2);
+    circ.add_conditional_barrier(
+        std::vector<unsigned>{0, 1}, std::vector<unsigned>{0},
+        std::vector<unsigned>{1}, 1, "");
+    REQUIRE_THROWS_AS(circuit_to_zx(circ), Unsupported);
+  }
   GIVEN("noop") {
     Circuit circ(1);
     circ.add_op<unsigned>(OpType::noop, {0});

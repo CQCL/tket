@@ -16,26 +16,25 @@ from collections import Counter
 
 from hypothesis import given, settings, strategies
 import json
-import pytest  # type: ignore
+import pytest
 from typing import Any, List
 
 import numpy as np
 
-from pytket.circuit import Circuit, OpType, BasisOrder, Qubit, Bit, Node  # type: ignore
-from pytket.predicates import CompilationUnit  # type: ignore
-from pytket.passes import PauliSimp, CliffordSimp, ContextSimp  # type: ignore
-from pytket.mapping import MappingManager, LexiRouteRoutingMethod, LexiLabellingMethod  # type: ignore
-from pytket.architecture import Architecture  # type: ignore
+from pytket.circuit import Circuit, OpType, BasisOrder, Qubit, Bit, Node
+from pytket.predicates import CompilationUnit
+from pytket.passes import PauliSimp, CliffordSimp
+from pytket.mapping import MappingManager, LexiRouteRoutingMethod, LexiLabellingMethod
+from pytket.architecture import Architecture
 from pytket.utils.outcomearray import OutcomeArray, readout_counts
 from pytket.utils.prepare import prepare_circuit
-from pytket.backends import CircuitNotValidError
 from pytket.backends.backend import Backend, ResultHandleTypeError
 from pytket.backends.resulthandle import ResultHandle
 from pytket.backends.backendresult import BackendResult
 from pytket.backends.backend_exceptions import InvalidResultType, CircuitNotRunError
 from pytket.backends.status import CircuitStatus, StatusEnum
 
-import strategies as st  # type: ignore
+from strategies import outcomearrays, backendresults  # type: ignore
 from simulator import TketSimShotBackend, TketSimBackend  # type: ignore
 
 
@@ -393,14 +392,14 @@ def test_backendresult_ppcirc_init() -> None:
     assert counts == Counter({(0, 0): 1, (0, 1): 2, (1, 1): 3, (1, 0): 4})
 
 
-@given(st.outcomearrays())
+@given(outcomearrays())
 def test_outcomearray_serialization(outcome: OutcomeArray) -> None:
     serializable = outcome.to_dict()
     assert OutcomeArray.from_dict(serializable) == outcome
     assert json.loads(json.dumps(serializable)) == serializable
 
 
-@given(st.backendresults())
+@given(backendresults())
 def test_backendresult_serialization(backres: BackendResult) -> None:
     serializable = backres.to_dict()
     assert BackendResult.from_dict(serializable) == backres
@@ -561,7 +560,7 @@ def test_postprocess_2() -> None:
 def test_postprocess_3() -> None:
     b = TketSimShotBackend(ignore_measures=True)
     qbs = [Node("qn", i) for i in range(4)]
-    arc = Architecture([[qbs[i], qbs[i + 1]] for i in range(3)])
+    arc = Architecture([(qbs[i], qbs[i + 1]) for i in range(3)])
     c = Circuit(3, 3).H(0).CX(0, 2).measure_all()
 
     mm = MappingManager(arc)
@@ -587,6 +586,12 @@ def test_postprocess_4() -> None:
     r = b.get_result(h)
     counts = r.get_counts()
     assert all(readout[0] == 1 for readout in counts.keys())
+
+
+def test_empty_backenresult() -> None:
+    # https://github.com/CQCL/tket/issues/961
+    r = BackendResult(counts=Counter(), c_bits=[Bit(name="A", index=0)])
+    assert r.get_counts() == Counter()
 
 
 if __name__ == "__main__":
