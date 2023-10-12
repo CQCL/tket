@@ -62,8 +62,6 @@ if __name__ == "__main__":
     pytket_dir = Path(__file__).parent.parent.resolve()
     gen_root_dir = pytket_dir
     for mod in pkgutil.iter_modules(pytket._tket.__path__):
-        #if mod.name != "unit_id":
-        #    continue
         print(f"Generate {mod.name}.pyi")
         subprocess.run([
             "pybind11-stubgen",
