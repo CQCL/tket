@@ -15,7 +15,7 @@
 #include <catch2/catch_test_macros.hpp>
 
 #include "CircuitsForTesting.hpp"
-#include "Predicates/PassLibrary.hpp"
+#include "tket/Predicates/PassLibrary.hpp"
 #include "testutil.hpp"
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/CircUtils.hpp"
