@@ -476,11 +476,17 @@ jobs:
         key: tket-dynamic-visual-studio-windows-2022-${{ steps.current_time.outputs.formattedTime }}
         restore-keys: |
           tket-dynamic-visual-studio-windows-2022
+    - name: get ccache version
+      id: ccache-ver
+      shell: bash
+      run: |
+        ccache_ver=$(choco list -e ccache | grep "ccache" | grep -ioE '[0-9]+\.[0-9]+\.[0-9]+')
+        echo "Found ccache version ${ccache_ver}"
+        echo "ccache_ver=${ccache_ver}" >> $GITHUB_OUTPUT
     - name: Build tket
       if: needs.check_changes.outputs.tket_changed == 'true'
       run: |
-        ccache --shimgen-help
-        $env:TKET_VSGEN_CCACHE_EXE = 'C:\\ProgramData\\chocolatey\\lib\\ccache\\tools\\ccache-4.8.3-windows-x86_64\\ccache.exe'
+        $env:TKET_VSGEN_CCACHE_EXE = 'C:\\ProgramData\\chocolatey\\lib\\ccache\\tools\\ccache-${{ steps.ccache-ver.outputs.ccache_ver }}-windows-x86_64\\ccache.exe' 
         conan build tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
         conan export-pkg tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf `"`"
     - name: Install tket
