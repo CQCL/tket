@@ -478,16 +478,22 @@ jobs:
           tket-dynamic-visual-studio-windows-2022
     - name: find ccache binary path
       id: find-ccache
-      shell: bash
+      shell: python
       run: |
-        ccache --shimgen-help | grep -ioE 'C:\\ProgramData\\Chocolatey\\lib\\ccache\\tools\\.+\\ccache.exe'
-        ccache_bin="`ccache --shimgen-help | grep -ioE 'C:\\ProgramData\\Chocolatey\\lib\\ccache\\tools\\.+\\ccache.exe'`"
-        echo "Found ccache binary at ${ccache_bin}"
-        echo "ccache_binary=${ccache_bin}" >> $GITHUB_OUTPUT
+        import os
+        import subprocess
+        import re
+
+        shimgen_help = subprocess.check_output(["ccache", "--shimgen-help"], text=True)
+        ccache_bin = re.search(r"C:\\+ProgramData\\+Chocolatey\\+lib\\+ccache\\+tools\\+ccache-4\.8\.3-windows-x86_64\\+ccache\.exe", shimgen_help).group()
+        print(f"Found ccache binary at {ccache_bin}")
+        with open(os.environ["GITHUB_OUTPUT"], "a") as f:
+            print("{0}={1}".format("ccache_binary", ccache_bin), file=f)
+
     - name: Build tket
       if: needs.check_changes.outputs.tket_changed == 'true'
       run: |
-        $env:TKET_VSGEN_CCACHE_EXE = 'C:\\ProgramData\\chocolatey\\lib\\ccache\\tools\\ccache-4.8.3-windows-x86_64\\ccache.exe'
+        $env:TKET_VSGEN_CCACHE_EXE = ${{ steps.find-ccache.outputs.ccache_binary }} 
         conan build tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
         conan export-pkg tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf `"`"
     - name: Install tket
