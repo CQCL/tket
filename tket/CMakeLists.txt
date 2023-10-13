@@ -37,8 +37,7 @@ endif()
 
 # ccache stuff
 if (CMAKE_GENERATOR MATCHES "Visual Studio" AND DEFINED ENV{TKET_VSGEN_CCACHE_EXE})
-    file(COPY_FILE
-            $ENV{TKET_VSGEN_CCACHE_EXE} ${CMAKE_BINARY_DIR}/cl.exe ONLY_IF_DIFFERENT)
+    file(COPY_FILE $ENV{TKET_VSGEN_CCACHE_EXE} ${CMAKE_BINARY_DIR}/cl.exe ONLY_IF_DIFFERENT)
     message("-> Setting ccache ($ENV{TKET_VSGEN_CCACHE_EXE}) as compiler launcher for generator ${CMAKE_GENERATOR}")
 
     # By default Visual Studio generators will use /Zi which is not compatible
@@ -47,17 +46,17 @@ if (CMAKE_GENERATOR MATCHES "Visual Studio" AND DEFINED ENV{TKET_VSGEN_CCACHE_EX
     set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<$<CONFIG:Debug,RelWithDebInfo>:Embedded>")
 
     set(CMAKE_VS_GLOBALS
-            "CLToolExe=cl.exe"
-            "CLToolPath=${CMAKE_BINARY_DIR}"
-            "TrackFileAccess=false"
-            "UseMultiToolTask=true"
-            "DebugInformationFormat=OldStyle"
+        "CLToolExe=cl.exe"
+        "CLToolPath=${CMAKE_BINARY_DIR}"
+        "TrackFileAccess=false"
+        "UseMultiToolTask=true"
+        "DebugInformationFormat=OldStyle"
     )
 else()
     find_program(CCACHE_PROGRAM ccache)
     if(CCACHE_PROGRAM)
-            set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
-            message("-> Setting ccache (${CCACHE_PROGRAM}) as compiler launcher for generator ${CMAKE_GENERATOR}")
+        set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
+        message("-> Setting ccache (${CCACHE_PROGRAM}) as compiler launcher for generator ${CMAKE_GENERATOR}")
     endif ()
 endif()
 
