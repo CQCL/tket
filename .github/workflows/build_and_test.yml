@@ -431,27 +431,27 @@ jobs:
     runs-on: windows-2022
     steps:
     - uses: actions/checkout@v4
-    - name: Install conan
-      uses: turtlebrowser/get-conan@v1.2
-    - name: Set up conan
-      shell: bash
-      run: |
-        conan profile detect
-        DEFAULT_PROFILE_PATH=`conan profile path default`
-        PROFILE_PATH=./conan-profiles/windows-2022
-        diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
-        cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
-        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
-    - name: normalize line endings in conanfile and src directory
-      # This is necessary to ensure consistent revisions across platforms.
-      # Conan's revision hash is composed of hashes of all the exported files,
-      # so we must normalize the line endings in these.
-      run: |
-             $tket_files = Get-ChildItem "tket" -File -Recurse
-             foreach ($f in $tket_files) {
-             $normalized_file = [IO.File]::ReadAllText($f) -replace "`r`n", "`n"
-             [IO.File]::WriteAllText($f, $normalized_file)
-             }
+    #- name: Install conan
+    #  uses: turtlebrowser/get-conan@v1.2
+    #- name: Set up conan
+    #  shell: bash
+    #  run: |
+    #    conan profile detect
+    #    DEFAULT_PROFILE_PATH=`conan profile path default`
+    #    PROFILE_PATH=./conan-profiles/windows-2022
+    #    diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
+    #    cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
+    #    conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
+    #- name: normalize line endings in conanfile and src directory
+    #  # This is necessary to ensure consistent revisions across platforms.
+    #  # Conan's revision hash is composed of hashes of all the exported files,
+    #  # so we must normalize the line endings in these.
+    #  run: |
+    #         $tket_files = Get-ChildItem "tket" -File -Recurse
+    #         foreach ($f in $tket_files) {
+    #         $normalized_file = [IO.File]::ReadAllText($f) -replace "`r`n", "`n"
+    #         [IO.File]::WriteAllText($f, $normalized_file)
+    #         }
     - name: ccache setup
         # This is what hendrikmuhs/ccache-action does, but for windows (theirs is buggy on windows)
       id: ccache-setup
@@ -464,86 +464,80 @@ jobs:
         ccache --set-config compiler_check=content
         ccache --set-config namespace=WITH_TESTS
         ccache -p
-    - name: Get current time
-      uses: josStorer/get-current-time@v2.1.1
-      id: current_time
-      with:
-        format: YYYYMMDDHHmmss
-    - name: ccache windows
-      uses: actions/cache@v3
-      with:
-        path: ${{ steps.ccache-setup.outputs.ccache_dir }}
-        key: tket-dynamic-visual-studio-windows-2022-${{ steps.current_time.outputs.formattedTime }}
-        restore-keys: |
-          tket-dynamic-visual-studio-windows-2022
-    - name: find ccache binary path
-      id: find-ccache
-      shell: python
+    #- name: Get current time
+    #  uses: josStorer/get-current-time@v2.1.1
+    #  id: current_time
+    #  with:
+    #    format: YYYYMMDDHHmmss
+    #- name: ccache windows
+    #  uses: actions/cache@v3
+    #  with:
+    #    path: ${{ steps.ccache-setup.outputs.ccache_dir }}
+    #    key: tket-dynamic-visual-studio-windows-2022-${{ steps.current_time.outputs.formattedTime }}
+    #    restore-keys: |
+    #      tket-dynamic-visual-studio-windows-2022
+    - name: get ccache version
+      id: ccache-ver
+      shell: bash
       run: |
-        import os
-        import subprocess
-        import re
-
-        shimgen_help = subprocess.check_output(["ccache", "--shimgen-help"], text=True)
-        ccache_bin = re.search(r"C:\\+ProgramData\\+Chocolatey\\+lib\\+ccache\\+tools\\+ccache-4\.8\.3-windows-x86_64\\+ccache\.exe", shimgen_help).group()
-        print(f"Found ccache binary at {ccache_bin}")
-        with open(os.environ["GITHUB_OUTPUT"], "a") as f:
-            print("{0}={1}".format("ccache_binary", ccache_bin), file=f)
-
+        choco list -e ccache | grep "ccache" | grep -ioE '[0-9]+\.[0-9]+\.[0-9]+'
+        ccache_ver=$(choco list -e ccache | grep "ccache" | grep -ioE '[0-9]+\.[0-9]+\.[0-9]+')
+        echo "ccache_ver=${ccache_ver}" >> $GITHUB_OUTPUT
     - name: Build tket
       if: needs.check_changes.outputs.tket_changed == 'true'
       run: |
-        $env:TKET_VSGEN_CCACHE_EXE = ${{ steps.find-ccache.outputs.ccache_binary }} 
-        conan build tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
-        conan export-pkg tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf `"`"
-    - name: Install tket
-      if: needs.check_changes.outputs.tket_changed != 'true'
-      run: conan install --requires tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
-    - name: check that version is consistent
-      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
-      run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
-    - name: Install pytket requirements
-      run: |
-        conan create recipes/pybind11
-        conan create recipes/pybind11_json/all --version 0.2.13
-    - name: Set up Python (3.9)
-      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
-      uses: actions/setup-python@v4
-      with:
-        python-version: "3.9"
-    - name: Set up Python (3.10)
-      if: github.event_name == 'push'
-      uses: actions/setup-python@v4
-      with:
-        python-version: "3.10"
-    - name: Set up Python (3.11)
-      if: github.event_name == 'schedule'
-      uses: actions/setup-python@v4
-      with:
-        python-version: "3.11"
-    - name: Build pytket
-      run: |
-        cd pytket
-        pip install -e .[ZX] -v
-    - name: Run doctests
-      run: |
-        cd pytket
-        pip install pytest
-        pytest --doctest-modules pytket
-    - name: Test pytket
-      run: |
-        cd pytket/tests
-        pip install -r requirements.txt
-        pytest --ignore=simulator/
-    - name: Upload package
-      if: github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_changed == 'true'
-      run: |
-        conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_3 }}
-        conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -r=tket-libs
-    - name: ccache stats
-      run: |
-        ccache -s  #show stats
-        ccache -z  #show stats
+        $env:TKET_VSGEN_CCACHE_EXE = 'C:\\ProgramData\\chocolatey\\lib\\ccache\\tools\\ccache-${{ steps.ccache-ver.outputs.ccache_ver }}-windows-x86_64\\ccache.exe' 
+        echo $env:TKET_VSGEN_CCACHE_EXE
+      #  conan build tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
+      #  conan export-pkg tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf `"`"
+    #- name: Install tket
+    #  if: needs.check_changes.outputs.tket_changed != 'true'
+    #  run: conan install --requires tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
+    #- name: check that version is consistent
+    #  if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+    #  run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
+    #- name: Install pytket requirements
+    #  run: |
+    #    conan create recipes/pybind11
+    #    conan create recipes/pybind11_json/all --version 0.2.13
+    #- name: Set up Python (3.9)
+    #  if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+    #  uses: actions/setup-python@v4
+    #  with:
+    #    python-version: "3.9"
+    #- name: Set up Python (3.10)
+    #  if: github.event_name == 'push'
+    #  uses: actions/setup-python@v4
+    #  with:
+    #    python-version: "3.10"
+    #- name: Set up Python (3.11)
+    #  if: github.event_name == 'schedule'
+    #  uses: actions/setup-python@v4
+    #  with:
+    #    python-version: "3.11"
+    #- name: Build pytket
+    #  run: |
+    #    cd pytket
+    #    pip install -e .[ZX] -v
+    #- name: Run doctests
+    #  run: |
+    #    cd pytket
+    #    pip install pytest
+    #    pytest --doctest-modules pytket
+    #- name: Test pytket
+    #  run: |
+    #    cd pytket/tests
+    #    pip install -r requirements.txt
+    #    pytest --ignore=simulator/
+    #- name: Upload package
+    #  if: github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_changed == 'true'
+    #  run: |
+    #    conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_3 }}
+    #    conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -r=tket-libs
+    #- name: ccache stats
+    #  run: |
+    #    ccache -s  #show stats
+    #    ccache -z  #show stats
 
   publish_pytket_coverage:
     name: Publish pytket coverage
