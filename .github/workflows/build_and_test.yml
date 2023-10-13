@@ -420,12 +420,6 @@ jobs:
 
   build_test_pytket_windows:
     name: Build and test pytket (windows)
-    # I could not get ccache working for this build
-    # Building tket as a dynamic library currently fails with the Ninja and Makefiles Generators and ccache is set up is more difficult with the Visual Studio generator
-    # I tried to get ccache working with the Visual Studio generator using the suggestions here: https://github.com/ccache/ccache/wiki/MS-Visual-Studio#usage-with-cmake
-    # I was able to get ccache to wrap the compiler invocations, but all files are reported as uncacheable, due to "No input file"
-    # See https://ccache.dev/manual/4.8.2.html#_cache_statistics for more info on what that means. I myself haven't fully understood.
-    # Giving up for now
     needs: check_changes
     if: needs.check_changes.outputs.tket_or_workflow_changed == 'true' || needs.check_changes.outputs.pytket_or_workflow_changed == 'true'
     runs-on: windows-2022
