@@ -53,8 +53,10 @@ class TupleVec : public std::vector<T> {
 };
 
 // Make some custom named py::object's
-class LogicExpression: public object {
-    PYBIND11_OBJECT_DEFAULT(LogicExpression, object, [](PyObject *){return true;})
+class LogicExpression : public object {
+  PYBIND11_OBJECT_DEFAULT(LogicExpression, object, [](PyObject*) {
+    return true;
+  })
 };
 class BitLogicExpression : public LogicExpression {
   using LogicExpression::LogicExpression;
@@ -143,14 +145,19 @@ struct handle_type_name<tket_custom::TupleVec<T>> {
   static constexpr auto name =
       const_name("tuple[") + make_caster<T>::name + const_name(", ...]");
 };
-    template<> struct handle_type_name<tket_custom::LogicExpression> {
-        static constexpr auto name = const_name("pytket.circuit.logic_exp.LogicExp");
-    };
-template<> struct handle_type_name<tket_custom::BitLogicExpression> {
-  static constexpr auto name = const_name("pytket.circuit.logic_exp.BitLogicExp");
+template <>
+struct handle_type_name<tket_custom::LogicExpression> {
+  static constexpr auto name = const_name("pytket.circuit.logic_exp.LogicExp");
 };
-template<> struct handle_type_name<tket_custom::BitRegisterLogicExpression> {
-  static constexpr auto name = const_name("pytket.circuit.logic_exp.RegLogicExp");
+template <>
+struct handle_type_name<tket_custom::BitLogicExpression> {
+  static constexpr auto name =
+      const_name("pytket.circuit.logic_exp.BitLogicExp");
+};
+template <>
+struct handle_type_name<tket_custom::BitRegisterLogicExpression> {
+  static constexpr auto name =
+      const_name("pytket.circuit.logic_exp.RegLogicExp");
 };
 template <typename Type>
 struct type_caster<tket_custom::SequenceVec<Type>>

@@ -54,7 +54,9 @@ from .logic_exp import (
     reg_gt,
     reg_leq,
     reg_lt,
-    reg_neq, create_reg_logic_exp, create_bit_logic_exp,
+    reg_neq,
+    create_reg_logic_exp,
+    create_bit_logic_exp,
 )
 
 
@@ -157,14 +159,18 @@ BitArgType = Union[BitLogicExp, Bit, Constant]
 RegArgType = Union[RegLogicExp, BitRegister, Constant]
 
 
-def gen_binary_method_bit(op: BitWiseOp) -> Callable[[BitArgType, BitArgType], BitLogicExp]:
+def gen_binary_method_bit(
+    op: BitWiseOp,
+) -> Callable[[BitArgType, BitArgType], BitLogicExp]:
     def logic_operation(self: BitArgType, other: BitArgType) -> BitLogicExp:
         return create_bit_logic_exp(op, [self, other])
 
     return logic_operation
 
 
-def gen_binary_method_reg(op: RegWiseOp) -> Callable[[RegArgType, RegArgType], RegLogicExp]:
+def gen_binary_method_reg(
+    op: RegWiseOp,
+) -> Callable[[RegArgType, RegArgType], RegLogicExp]:
     def logic_operation(self: RegArgType, other: RegArgType) -> RegLogicExp:
         return create_reg_logic_exp(op, [self, other])
 
