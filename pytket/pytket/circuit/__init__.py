@@ -151,12 +151,8 @@ setattr(Circuit, "add_wasm_to_reg", overload_add_wasm_to_reg)
 # overload operators for Bit, BitRegister and expressions over these
 # such that the operation returns a LogicExp describing the operation
 
-cls_enum_pairs_reg: Tuple[Tuple[Type, Union[Type[BitWiseOp], Type[RegWiseOp]]], ...] = (
-    (BitRegister, RegWiseOp),
-)
-
-BitArgType = Union[BitLogicExp, Bit, Constant]
-RegArgType = Union[RegLogicExp, BitRegister, Constant]
+BitArgType = Union[LogicExp, Bit, Constant]
+RegArgType = Union[LogicExp, BitRegister, Constant]
 
 
 def gen_binary_method_bit(
@@ -183,18 +179,16 @@ setattr(Bit, "__or__", gen_binary_method_bit(BitWiseOp.OR))
 setattr(Bit, "__ror__", gen_binary_method_bit(BitWiseOp.OR))
 setattr(Bit, "__xor__", gen_binary_method_bit(BitWiseOp.XOR))
 setattr(Bit, "__rxor__", gen_binary_method_bit(BitWiseOp.XOR))
-
-for clas, enum in cls_enum_pairs_reg:
-    setattr(clas, "__and__", gen_binary_method_reg(RegWiseOp.AND))
-    setattr(clas, "__rand__", gen_binary_method_reg(RegWiseOp.AND))
-    setattr(clas, "__or__", gen_binary_method_reg(RegWiseOp.OR))
-    setattr(clas, "__ror__", gen_binary_method_reg(RegWiseOp.OR))
-    setattr(clas, "__xor__", gen_binary_method_reg(RegWiseOp.XOR))
-    setattr(clas, "__rxor__", gen_binary_method_reg(RegWiseOp.XOR))
-    setattr(clas, "__add__", gen_binary_method_reg(RegWiseOp.ADD))
-    setattr(clas, "__sub__", gen_binary_method_reg(RegWiseOp.SUB))
-    setattr(clas, "__mul__", gen_binary_method_reg(RegWiseOp.MUL))
-    setattr(clas, "__floordiv__", gen_binary_method_reg(RegWiseOp.DIV))
-    setattr(clas, "__pow__", gen_binary_method_reg(RegWiseOp.POW))
-    setattr(clas, "__lshift__", gen_binary_method_reg(RegWiseOp.LSH))
-    setattr(clas, "__rshift__", gen_binary_method_reg(RegWiseOp.RSH))
+setattr(BitRegister, "__and__", gen_binary_method_reg(RegWiseOp.AND))
+setattr(BitRegister, "__rand__", gen_binary_method_reg(RegWiseOp.AND))
+setattr(BitRegister, "__or__", gen_binary_method_reg(RegWiseOp.OR))
+setattr(BitRegister, "__ror__", gen_binary_method_reg(RegWiseOp.OR))
+setattr(BitRegister, "__xor__", gen_binary_method_reg(RegWiseOp.XOR))
+setattr(BitRegister, "__rxor__", gen_binary_method_reg(RegWiseOp.XOR))
+setattr(BitRegister, "__add__", gen_binary_method_reg(RegWiseOp.ADD))
+setattr(BitRegister, "__sub__", gen_binary_method_reg(RegWiseOp.SUB))
+setattr(BitRegister, "__mul__", gen_binary_method_reg(RegWiseOp.MUL))
+setattr(BitRegister, "__floordiv__", gen_binary_method_reg(RegWiseOp.DIV))
+setattr(BitRegister, "__pow__", gen_binary_method_reg(RegWiseOp.POW))
+setattr(BitRegister, "__lshift__", gen_binary_method_reg(RegWiseOp.LSH))
+setattr(BitRegister, "__rshift__", gen_binary_method_reg(RegWiseOp.RSH))
