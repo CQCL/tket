@@ -207,28 +207,27 @@ class PauliExpCommutingSetBox : public Box {
  * circuit.
  *
  * @param circ The circuit to append the box to
- * @param pauli The pauli operator of the gadget
- * @param angle The rotation angle of the Pauli gadget in half-turns
+ * @param pauli The pauli operator of the gadget; coefficient gives the rotation
+ * angle in half-turns
  * @param cx_config The CX configuration to be used during synthesis
  */
 void append_single_pauli_gadget_as_pauli_exp_box(
-    Circuit &circ, const QubitPauliTensor &pauli, Expr angle,
-    CXConfigType cx_config);
+    Circuit &circ, const SpSymPauliTensor &pauli, CXConfigType cx_config);
 
 /**
  * Constructs a PauliExpPairBox for a pair of pauli gadgets and appends it to a
  * circuit. The pauli gadgets may or may not commute, so the ordering matters.
  *
  * @param circ The circuit to append the box to
- * @param pauli0 The pauli operator of the first gadget
- * @param angle0 The rotation angle of the first Pauli gadget in half-turns
- * @param pauli1 The pauli operator of the second gadget
- * @param angle1 The rotation angle of the second Pauli gadget in half-turns
+ * @param pauli0 The pauli operator of the first gadget; coefficient gives the
+ * rotation angle in half-turns
+ * @param pauli1 The pauli operator of the second gadget; coefficient gives the
+ * rotation angle in half-turns
  * @param cx_config The CX configuration to be used during synthesis
  */
 void append_pauli_gadget_pair_as_box(
-    Circuit &circ, const QubitPauliTensor &pauli0, Expr angle0,
-    const QubitPauliTensor &pauli1, Expr angle1, CXConfigType cx_config);
+    Circuit &circ, const SpSymPauliTensor &pauli0,
+    const SpSymPauliTensor &pauli1, CXConfigType cx_config);
 
 /**
  * Constructs a PauliExpCommutingSetBox for a set of mutually commuting pauli
@@ -237,12 +236,12 @@ void append_pauli_gadget_pair_as_box(
  * circuits.
  *
  * @param circ The circuit to append the box to
- * @param gadgets Description of the pauli gadgets as pairs of the angle of
- * rotation (in half-turns) and the Pauli operator the rotation acts about
+ * @param gadgets Description of the pauli gadgets; coefficients give the
+ * rotation angles in half-turns
  * @param cx_config The CX configuration to be used during synthesis
  */
 void append_commuting_pauli_gadget_set_as_box(
-    Circuit &circ, const std::list<std::pair<QubitPauliTensor, Expr>> &gadgets,
+    Circuit &circ, const std::list<SpSymPauliTensor> &gadgets,
     CXConfigType cx_config);
 
 }  // namespace tket
