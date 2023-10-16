@@ -20,11 +20,11 @@ than a dataclass
 from json import dumps, loads
 
 from hypothesis import given, settings
-import pytest  # type: ignore
+import pytest
 
 from pytket.backends.backendinfo import BackendInfo, fully_connected_backendinfo
-from pytket.architecture import SquareGrid, RingArch, FullyConnected  # type: ignore
-from pytket.circuit import OpType, Node  # type: ignore
+from pytket.architecture import SquareGrid, RingArch, FullyConnected
+from pytket.circuit import OpType, Node
 
 import strategies as st  # type: ignore
 

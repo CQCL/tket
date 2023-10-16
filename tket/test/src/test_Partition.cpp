@@ -36,8 +36,8 @@ SCENARIO("Small sets of Gadgets are partitioned correctly") {
   GIVEN("No gadgets") {
     for (auto colouring_method : colouring_methods) {
       for (PauliPartitionStrat strat : strats) {
-        std::list<QubitPauliString> tensors;
-        std::list<std::list<QubitPauliString>> void_terms =
+        std::list<SpPauliString> tensors;
+        std::list<std::list<SpPauliString>> void_terms =
             term_sequence(tensors, strat, colouring_method);
         REQUIRE(void_terms.empty());
       }
@@ -49,13 +49,13 @@ SCENARIO("Small sets of Gadgets are partitioned correctly") {
     Qubit q0(0);
     Qubit q1(1);
     Qubit q2(2);
-    QubitPauliString qp_map0({{q0, Pauli::I}, {q1, Pauli::X}, {q2, Pauli::Y}});
-    QubitPauliString qp_map1({{q0, Pauli::Z}, {q1, Pauli::Z}, {q2, Pauli::Y}});
-    std::list<QubitPauliString> tensors{qp_map0, qp_map1};
+    SpPauliString qp_map0({{q0, Pauli::I}, {q1, Pauli::X}, {q2, Pauli::Y}});
+    SpPauliString qp_map1({{q0, Pauli::Z}, {q1, Pauli::Z}, {q2, Pauli::Y}});
+    std::list<SpPauliString> tensors{qp_map0, qp_map1};
 
     for (auto colouring_method : colouring_methods) {
       for (PauliPartitionStrat strat : strats) {
-        std::list<std::list<QubitPauliString>> terms =
+        std::list<std::list<SpPauliString>> terms =
             term_sequence(tensors, strat, colouring_method);
 
         REQUIRE(terms.size() == 2);
@@ -67,20 +67,20 @@ SCENARIO("Small sets of Gadgets are partitioned correctly") {
     }
   }
   GIVEN("Three partitions of four gadgets") {
-    QubitPauliString qp_map0(Qubit(0), Pauli::I);
-    QubitPauliString qp_map1(Qubit(0), Pauli::X);
-    QubitPauliString qp_map2(Qubit(0), Pauli::Y);
-    QubitPauliString qp_map3(Qubit(0), Pauli::Z);
-    std::list<QubitPauliString> tensors{qp_map0, qp_map1, qp_map2, qp_map3};
+    SpPauliString qp_map0(Qubit(0), Pauli::I);
+    SpPauliString qp_map1(Qubit(0), Pauli::X);
+    SpPauliString qp_map2(Qubit(0), Pauli::Y);
+    SpPauliString qp_map3(Qubit(0), Pauli::Z);
+    std::list<SpPauliString> tensors{qp_map0, qp_map1, qp_map2, qp_map3};
 
     for (auto colouring_method : colouring_methods) {
       for (PauliPartitionStrat strat : strats) {
-        std::list<std::list<QubitPauliString>> terms =
+        std::list<std::list<SpPauliString>> terms =
             term_sequence(tensors, strat, colouring_method);
 
         REQUIRE(terms.size() == 3);
         unsigned total_terms = 0;
-        for (const std::list<QubitPauliString>& g_map : terms) {
+        for (const std::list<SpPauliString>& g_map : terms) {
           REQUIRE((g_map.size() == 1 || g_map.size() == 2));
           total_terms += g_map.size();
         }

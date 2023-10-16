@@ -87,6 +87,8 @@ class PhasePolyBox : public Box {
 
   static Op_ptr from_json(const nlohmann::json &j);
 
+  Circuit generate_circuit_with_original_placement() const;
+
   static nlohmann::json to_json(const Op_ptr &op);
 
  protected:

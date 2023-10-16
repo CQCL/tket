@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include <memory>
+
 #include "Boxes.hpp"
 #include "Circuit.hpp"
 #include "tket/Utils/Json.hpp"
@@ -46,7 +48,7 @@ class StatePreparationBox : public Box {
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &) const override {
-    return Op_ptr();
+    return std::make_shared<StatePreparationBox>(*this);
   }
 
   SymSet free_symbols() const override { return {}; }

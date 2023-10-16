@@ -524,6 +524,11 @@
           "minimum": 0,
           "description": "Number of qubits a QControlBox is conditional on."
         },
+        "control_state": {
+          "type": "integer",
+          "minimum": 0,
+          "description": "Control state expressed as an integer."
+        },
         "n_i": {
           "type": "integer",
           "minimum": 0
@@ -579,6 +584,21 @@
         "diagonal": {
           "$ref": "#/definitions/matrix",
           "description": "Diagonal matrix represented by DiagonalBox."
+        },
+        "compute": {
+          "$ref": "#/definitions/operation",
+          "description": "Compute operation in ConjugationBox."
+        },
+        "action": {
+          "$ref": "#/definitions/operation",
+          "description": "Action operation in ConjugationBox."
+        },
+        "uncompute": {
+          "anyOf": [
+            {"$ref": "#/definitions/operation"},
+            {"type": "null"}
+          ],
+          "description": "Uncompute operation in ConjugationBox."
         },
         "upper_triangle": {
           "type": "boolean",
@@ -656,7 +676,8 @@
           "then": {
             "required": [
               "matrix"
-            ]
+            ],
+            "maxProperties": 3
           }
         },
         {
@@ -670,7 +691,8 @@
           "then": {
             "required": [
               "matrix"
-            ]
+            ],
+            "maxProperties": 3
           }
         },
         {
@@ -685,7 +707,8 @@
             "required": [
               "matrix",
               "phase"
-            ]
+            ],
+            "maxProperties": 4
           }
         },
         {
@@ -701,7 +724,8 @@
               "paulis",
               "phase",
               "cx_config"
-            ]
+            ],
+            "maxProperties": 5
           }
         },
         {
@@ -717,7 +741,8 @@
               "paulis_pair",
               "phase_pair",
               "cx_config"
-            ]
+            ],
+            "maxProperties": 5
           }
         },
         {
@@ -732,7 +757,8 @@
             "required": [
               "pauli_gadgets",
               "cx_config"
-            ]
+            ],
+            "maxProperties": 4
           }
         },
         {
@@ -748,7 +774,8 @@
               "permutation",
               "rotation_axis",
               "strat"
-            ]
+            ],
+            "maxProperties": 5
           }
         },
         {
@@ -762,7 +789,8 @@
           "then": {
             "required": [
               "op_map"
-            ]
+            ],
+            "maxProperties": 3
           }
         },
         {
@@ -776,7 +804,8 @@
           "then": {
             "required": [
               "op_map"
-            ]
+            ],
+            "maxProperties": 3
           }
         },
         {
@@ -791,7 +820,8 @@
             "required": [
               "op_map",
               "impl_diag"
-            ]
+            ],
+            "maxProperties": 4
           }
         },
         {
@@ -805,7 +835,8 @@
           "then": {
             "required": [
               "op_map"
-            ]
+            ],
+            "maxProperties": 3
           }
         },
         {
@@ -821,7 +852,8 @@
               "statevector",
               "is_inverse",
               "with_initial_reset"
-            ]
+            ],
+            "maxProperties": 5
           }
         },
         {
@@ -836,7 +868,27 @@
             "required": [
               "diagonal",
               "upper_triangle"
-            ]
+            ],
+            "maxProperties": 4
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
+                "const": "ConjugationBox"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "compute",
+              "action"
+            ],
+            "optional": [
+              "uncompute"
+            ],
+            "maxProperties": 5
           }
         },
         {
@@ -853,14 +905,15 @@
               "qubit_indices",
               "phase_polynomial",
               "linear_transformation"
-            ]
+            ],
+            "maxProperties": 6
           }
         },
         {
           "if": {
             "properties": {
               "type": {
-                "const": "Composite"
+                "const": "CustomGate"
               }
             }
           },
@@ -868,7 +921,8 @@
             "required": [
               "gate",
               "params"
-            ]
+            ],
+            "maxProperties": 4
           }
         },
         {
@@ -882,8 +936,10 @@
           "then": {
             "required": [
               "n_controls",
-              "op"
-            ]
+              "op",
+              "control_state"
+            ],
+            "maxProperties": 5
           }
         },
         {
@@ -900,7 +956,8 @@
               "n_io",
               "n_o",
               "exp"
-            ]
+            ],
+            "maxProperties": 6
           }
         },
         {
@@ -914,7 +971,8 @@
           "then": {
             "required": [
               "tab"
-            ]
+            ],
+            "maxProperties": 3
           }
         }
       ]

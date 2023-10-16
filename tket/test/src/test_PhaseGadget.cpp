@@ -286,8 +286,11 @@ SCENARIO("Decompose phase gadgets") {
     for (unsigned i = 0; i < n_qubits; ++i) {
       nZ.push_back(Pauli::Z);
     }
-    Circuit circ = pauli_gadget(QubitPauliTensor(nZ), 0.2);
-    return std::make_pair(circ, phase_gadget(n_qubits, 0.2, config));
+    Circuit pauli_gadget_circ = pauli_gadget(nZ, 0.2);
+    pauli_gadget_circ.decompose_boxes_recursively();
+    Circuit phase_gadget_circ = phase_gadget(n_qubits, 0.2, config);
+    phase_gadget_circ.decompose_boxes_recursively();
+    return std::make_pair(pauli_gadget_circ, phase_gadget_circ);
   };
   GIVEN("Trivial gadget on 0 qubits") {
     auto [circ, decomp] = get_circ_decomposition(0, CXConfigType::Star);

@@ -11,8 +11,10 @@
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
+from types import MappingProxyType
 
-from pytket.mapping import (  # type: ignore
+from pytket.circuit.named_types import UnitIdMap
+from pytket.mapping import (
     MappingManager,
     RoutingMethodCircuit,
     LexiRouteRoutingMethod,
@@ -22,17 +24,18 @@ from pytket.mapping import (  # type: ignore
     MultiGateReorderRoutingMethod,
     BoxDecompositionRoutingMethod,
 )
-from pytket.architecture import Architecture  # type: ignore
+from pytket.architecture import Architecture
 from pytket import Circuit, OpType
-from pytket.circuit import Node, PhasePolyBox, Qubit, CircBox  # type: ignore
-from pytket.placement import Placement  # type: ignore
+from pytket.circuit import UnitID, Node, PhasePolyBox, Qubit, CircBox
+from pytket.placement import Placement
 from typing import Tuple, Dict
 import numpy as np
+
 
 # simple deterministic heuristic used for testing purposes
 def route_subcircuit_func(
     circuit: Circuit, architecture: Architecture
-) -> Tuple[bool, Circuit, Dict[Node, Node], Dict[Node, Node]]:
+) -> Tuple[bool, Circuit, UnitIdMap, UnitIdMap]:
     #     make a replacement circuit with identical unitds
     replacement_circuit = Circuit()
     for qb in circuit.qubits:
@@ -41,12 +44,12 @@ def route_subcircuit_func(
         replacement_circuit.add_bit(bit)
 
     # "place" unassigned logical qubits to physical qubits
-    unused_nodes = list(architecture.nodes)
-    relabelling_map = dict()
+    unused_nodes: list[Node] = []
+    relabelling_map: UnitIdMap = dict()
 
-    for qb in circuit.qubits:
-        if qb in unused_nodes:
-            unused_nodes.remove(qb)
+    for node in architecture.nodes:
+        if node not in circuit.qubits:
+            unused_nodes.append(node)
 
     for qb in circuit.qubits:
         if qb not in architecture.nodes:
@@ -57,7 +60,7 @@ def route_subcircuit_func(
             relabelling_map[qb] = qb
 
     replacement_circuit.rename_units(relabelling_map)
-    permutation_map = dict()
+    permutation_map: UnitIdMap = dict()
     for qb in replacement_circuit.qubits:
         permutation_map[qb] = qb
 
@@ -67,7 +70,7 @@ def route_subcircuit_func(
     max_swaps = 1
     swaps_added = 0
     for com in circuit.get_commands():
-        rp_qubits = [permutation_map[relabelling_map[q]] for q in com.qubits]
+        rp_qubits = tuple(permutation_map[relabelling_map[q]] for q in com.qubits)
         if len(com.qubits) > 2:
             return (False, Circuit(), {}, {})
         if len(com.qubits) == 1:
@@ -91,27 +94,32 @@ def route_subcircuit_func(
 
                             permutation_map[rp_qubits[0]] = node
                             permutation_map[node] = rp_qubits[0]
-                            rp_qubits = [
+                            rp_qubits = tuple(
                                 permutation_map[relabelling_map[q]] for q in com.qubits
-                            ]
+                            )
                             swaps_added += 1
                             break
 
             replacement_circuit.add_gate(com.op.type, rp_qubits)
 
-    return (True, replacement_circuit, relabelling_map, permutation_map)
+    return (
+        True,
+        replacement_circuit,
+        relabelling_map,
+        permutation_map,
+    )
 
 
 def route_subcircuit_func_false(
     circuit: Circuit, architecture: Architecture
-) -> Tuple[bool, Circuit, Dict[Node, Node], Dict[Node, Node]]:
+) -> Tuple[bool, Circuit, Dict[UnitID, UnitID], Dict[UnitID, UnitID]]:
     return (False, Circuit(), {}, {})
 
 
 def test_LexiRouteRoutingMethod() -> None:
     test_c = Circuit(3).CX(0, 1).CX(0, 2).CX(1, 2)
     nodes = [Node("test", 0), Node("test", 1), Node("test", 2)]
-    test_a = Architecture([[nodes[0], nodes[1]], [nodes[1], nodes[2]]])
+    test_a = Architecture([(nodes[0], nodes[1]), (nodes[1], nodes[2])])
     test_mm = MappingManager(test_a)
     test_mm.route_circuit(test_c, [LexiLabellingMethod(), LexiRouteRoutingMethod()])
     routed_commands = test_c.get_commands()
@@ -130,15 +138,17 @@ def test_AASRouteRoutingMethod() -> None:
     test_c = Circuit(3, 3)
     n_qb = 3
     qubit_indices = {Qubit(0): 0, Qubit(1): 1, Qubit(2): 2}
-    phase_polynomial = {(True, False, True): 0.333, (False, False, True): 0.05}
+    phase_polynomial = [([True, False, True], 0.333), ([False, False, True], 0.05)]
     linear_transformation = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-    p_box = PhasePolyBox(n_qb, qubit_indices, phase_polynomial, linear_transformation)
+    p_box = PhasePolyBox(
+        n_qb, qubit_indices, list(phase_polynomial), linear_transformation
+    )
 
     test_c.add_phasepolybox(p_box, [0, 1, 2])
 
     test_c.CX(0, 1).CX(0, 2).CX(1, 2)
     nodes = [Node("test", 0), Node("test", 1), Node("test", 2)]
-    test_a = Architecture([[nodes[0], nodes[1]], [nodes[1], nodes[2]]])
+    test_a = Architecture([(nodes[0], nodes[1]), (nodes[1], nodes[2])])
     test_mm = MappingManager(test_a)
     test_mm.route_circuit(
         test_c,
@@ -155,14 +165,16 @@ def test_AASRouteRoutingMethod_2() -> None:
     test_c = Circuit(3, 3)
     n_qb = 3
     qubit_indices = {Qubit(0): 0, Qubit(1): 1, Qubit(2): 2}
-    phase_polynomial = {(True, False, False): 0.333}
+    phase_polynomial = [([True, False, False], 0.333)]
     linear_transformation = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-    p_box = PhasePolyBox(n_qb, qubit_indices, phase_polynomial, linear_transformation)
+    p_box = PhasePolyBox(
+        n_qb, qubit_indices, list(phase_polynomial), linear_transformation
+    )
 
     test_c.add_phasepolybox(p_box, [0, 1, 2])
 
     nodes = [Node("test", 0), Node("test", 1), Node("test", 2)]
-    test_a = Architecture([[nodes[0], nodes[1]], [nodes[1], nodes[2]]])
+    test_a = Architecture([(nodes[0], nodes[1]), (nodes[1], nodes[2])])
     test_mm = MappingManager(test_a)
     test_mm.route_circuit(
         test_c,
@@ -184,14 +196,16 @@ def test_AASRouteRoutingMethod_3() -> None:
     test_c = Circuit(3, 3)
     n_qb = 3
     qubit_indices = {Qubit(0): 0, Qubit(1): 1, Qubit(2): 2}
-    phase_polynomial = {(True, True, False): 0.333}
+    phase_polynomial = [([True, True, False], 0.333)]
     linear_transformation = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-    p_box = PhasePolyBox(n_qb, qubit_indices, phase_polynomial, linear_transformation)
+    p_box = PhasePolyBox(
+        n_qb, qubit_indices, list(phase_polynomial), linear_transformation
+    )
 
     test_c.add_phasepolybox(p_box, [0, 1, 2])
 
     nodes = [Node("test", 0), Node("test", 1), Node("test", 2)]
-    test_a = Architecture([[nodes[0], nodes[1]], [nodes[1], nodes[2]]])
+    test_a = Architecture([(nodes[0], nodes[1]), (nodes[1], nodes[2])])
     test_mm = MappingManager(test_a)
     test_mm.route_circuit(
         test_c,
@@ -215,15 +229,17 @@ def test_AASRouteRoutingMethod_4() -> None:
     test_c = Circuit(3, 3)
     n_qb = 3
     qubit_indices = {Qubit(0): 0, Qubit(1): 1, Qubit(2): 2}
-    phase_polynomial = {(True, True, False): 0.333}
+    phase_polynomial = [([True, True, False], 0.333)]
     linear_transformation = np.array([[1, 0, 0], [0, 1, 0], [0, 0, 1]])
-    p_box = PhasePolyBox(n_qb, qubit_indices, phase_polynomial, linear_transformation)
+    p_box = PhasePolyBox(
+        n_qb, qubit_indices, list(phase_polynomial), linear_transformation
+    )
 
     test_c.add_phasepolybox(p_box, [0, 1, 2])
     test_c.CX(0, 1)
 
     nodes = [Node("test", 0), Node("test", 1), Node("test", 2)]
-    test_a = Architecture([[nodes[0], nodes[1]], [nodes[1], nodes[2]]])
+    test_a = Architecture([(nodes[0], nodes[1]), (nodes[1], nodes[2])])
     test_mm = MappingManager(test_a)
     test_mm.route_circuit(
         test_c,
@@ -250,7 +266,7 @@ def test_AASRouteRoutingMethod_4() -> None:
 def test_RoutingMethodCircuit_custom() -> None:
     test_c = Circuit(3).CX(0, 1).CX(0, 2).CX(1, 2)
     nodes = [Node("test", 0), Node("test", 1), Node("test", 2)]
-    test_a = Architecture([[nodes[0], nodes[1]], [nodes[1], nodes[2]]])
+    test_a = Architecture([(nodes[0], nodes[1]), (nodes[1], nodes[2])])
 
     test_mm = MappingManager(test_a)
     test_mm.route_circuit(
@@ -274,7 +290,7 @@ def test_RoutingMethodCircuit_custom() -> None:
 def test_RoutingMethodCircuit_custom_list() -> None:
     test_c = Circuit(3).CX(0, 1).CX(0, 2).CX(1, 2)
     nodes = [Node("test", 0), Node("test", 1), Node("test", 2)]
-    test_a = Architecture([[nodes[0], nodes[1]], [nodes[1], nodes[2]]])
+    test_a = Architecture([(nodes[0], nodes[1]), (nodes[1], nodes[2])])
 
     test_mm = MappingManager(test_a)
     test_mm.route_circuit(
@@ -319,7 +335,7 @@ def test_RoutingMethodCircuit_custom_list() -> None:
 
 def test_basic_mapping() -> None:
     circ = Circuit(5)
-    arc = Architecture([[0, 1], [1, 2], [2, 3], [3, 4]])
+    arc = Architecture([(0, 1), (1, 2), (2, 3), (3, 4)])
     circ.CX(0, 1)
     circ.CX(0, 3)
     circ.CX(2, 4)
@@ -341,7 +357,7 @@ def test_basic_mapping() -> None:
 
 def test_MultiGateReorderRoutingMethod() -> None:
     circ = Circuit(5)
-    arc = Architecture([[0, 1], [1, 2], [2, 3], [3, 4]])
+    arc = Architecture([(0, 1), (1, 2), (2, 3), (3, 4)])
     # Invalid opration
     circ.CZ(0, 2)
     # Valid operations that can all be commuted to the front
@@ -368,7 +384,7 @@ def test_MultiGateReorderRoutingMethod() -> None:
 
 def test_MultiGateReorderRoutingMethod_with_LexiLabelling() -> None:
     circ = Circuit(4)
-    arc = Architecture([[0, 1], [1, 2], [2, 3], [0, 3]])
+    arc = Architecture([(0, 1), (1, 2), (2, 3), (0, 3)])
 
     # LexiLabellingMethod should label the circuit such that the following 4 ops are valid
     circ.CX(0, 1)
@@ -401,7 +417,7 @@ def test_MultiGateReorderRoutingMethod_with_LexiLabelling() -> None:
 def test_BoxDecompositionRoutingMethod() -> None:
     circ = Circuit(5)
     sub_circ = Circuit(5)
-    arc = Architecture([[0, 1], [1, 2], [2, 3], [3, 4]])
+    arc = Architecture([(0, 1), (1, 2), (2, 3), (3, 4)])
     # Invalid oprations
     sub_circ.CZ(0, 2)
     sub_circ.CZ(1, 3)

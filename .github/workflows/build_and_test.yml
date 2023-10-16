@@ -22,13 +22,14 @@ jobs:
     name: Check tket library version
     runs-on: ubuntu-22.04
     outputs:
+      tket_or_workflow_changed: ${{ steps.filter.outputs.tket_or_workflow }}
       tket_changed: ${{ steps.filter.outputs.tket }}
-      doxyfile_changed: ${{ steps.filter.outputs.doxyfile }}
-      pytket_changed: ${{ steps.filter.outputs.pytket }}
+      doxyfile_or_workflow_changed: ${{ steps.filter.outputs.doxyfile_or_workflow }}
+      pytket_or_workflow_changed: ${{ steps.filter.outputs.pytket_or_workflow }}
       tket_ver: ${{ steps.tket_ver.outputs.tket_ver }}
       tket_package_exists: ${{ steps.tket_package_exists.outputs.tket_package_exists }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: actions/setup-python@v4
       with:
         python-version: '3.11'
@@ -39,10 +40,15 @@ jobs:
         filters: |
           tket:
             - '{tket/src/**,tket/include/**,tket/conanfile.py,tket/CMakeLists.txt,tket/cmake/**,tket/test/**,tket/proptest/**}'
-          doxyfile:
+          tket_or_workflow:
+            - '{tket/src/**,tket/include/**,tket/conanfile.py,tket/CMakeLists.txt,tket/cmake/**,tket/test/**,tket/proptest/**}'
+            - '.github/workflows/build_and_test.yml'
+          doxyfile_or_workflow:
             - '{tket/Doxyfile}'
-          pytket:
+            - '.github/workflows/build_and_test.yml'
+          pytket_or_workflow:
             - 'pytket/**'
+            - '.github/workflows/build_and_test.yml'
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
     - name: parse version from conanfile
@@ -63,10 +69,10 @@ jobs:
   check_docs_tket:
     name: Check documentation build
     needs: check_changes
-    if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.doxyfile_changed == 'true'
+    if: needs.check_changes.outputs.tket_or_workflow_changed == 'true' || needs.check_changes.outputs.doxyfile_or_workflow_changed == 'true'
     runs-on: 'ubuntu-22.04'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Check doxygen
         run: |
           sudo apt install -y doxygen graphviz
@@ -75,26 +81,26 @@ jobs:
   check_format_tket:
     name: Check C++ code formatting
     needs: check_changes
-    if: needs.check_changes.outputs.tket_changed == 'true'
+    if: needs.check_changes.outputs.tket_or_workflow_changed == 'true'
     runs-on: 'macos-12'
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Check C++ code formatting
         run: |
           brew update
-          brew install clang-format@16
+          brew install clang-format@17
           git ls-files "*.cpp" "*.hpp" | xargs clang-format -style=file --dry-run --Werror
 
   build_test_tket:
     name: Build and test (tket)
     needs: check_changes
-    if: needs.check_changes.outputs.tket_changed == 'true'
+    if: needs.check_changes.outputs.tket_or_workflow_changed == 'true'
     strategy:
       matrix:
-        os: ['ubuntu-22.04', 'macos-12']
+        os: ['ubuntu-22.04', 'macos-12', 'macos-13-xlarge']
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: apt update
       if: matrix.os == 'ubuntu-22.04'
       run: sudo apt update
@@ -108,6 +114,10 @@ jobs:
     - name: Set up conan
       run: |
         conan profile detect
+        DEFAULT_PROFILE_PATH=`conan profile path default`
+        PROFILE_PATH=./conan-profiles/${{ matrix.os }}
+        diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
+        cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
     - name: Install runtime test requirements
       if: matrix.os == 'ubuntu-22.04' && github.event_name == 'schedule'
@@ -138,19 +148,23 @@ jobs:
   build_test_tket_windows:
     name: Build and test (tket)
     needs: check_changes
-    if: needs.check_changes.outputs.tket_changed == 'true'
+    if: needs.check_changes.outputs.tket_or_workflow_changed == 'true'
     strategy:
       matrix:
         os: ['windows-2022']
     runs-on: ${{ matrix.os }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Install conan
         uses: turtlebrowser/get-conan@v1.2
       - name: Set up conan
-        id: conan-setup
+        shell: bash
         run: |
           conan profile detect
+          DEFAULT_PROFILE_PATH=`conan profile path default`
+          PROFILE_PATH=./conan-profiles/${{ matrix.os }}
+          diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
+          cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
           conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
       - name: normalize line endings in conanfile and src directory
         # This is necessary to ensure consistent revisions across platforms.
@@ -187,17 +201,15 @@ jobs:
           restore-keys: |
             tket-static-${{ matrix.os }}-
       - name: Build tket
-        # On windows use install + build so build directory is consistent across runs (i.e. don't build from conan cache)
+        # On windows use build + export-pkg so build directory is consistent across runs (i.e. don't build from conan cache)
         # Necessary because setting ccache base_dir doesn't currently work on windows
         run: |
-          conan install tket --user=tket --channel=stable -o boost/*:header_only=True -o with_all_tests=True -c tools.cmake.cmaketoolchain:generator=Ninja
           conan build tket --user=tket --channel=stable -o boost/*:header_only=True -o with_all_tests=True -c tools.cmake.cmaketoolchain:generator=Ninja
           conan export-pkg tket --user=tket --channel=stable -o boost/*:header_only=True -o with_all_tests=True -c tools.cmake.cmaketoolchain:generator=Ninja
       - name: Upload package
         if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
         run: |
           ccache --set-config namespace=WITHOUT_TESTS
-          conan install tket --user=tket --channel=stable -o boost/*:header_only=True
           conan build tket --user=tket --channel=stable -o boost/*:header_only=True
           conan export-pkg tket --user=tket --channel=stable -o boost/*:header_only=True
           conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_3 }}
@@ -207,71 +219,33 @@ jobs:
           ccache -s  #show stats
           ccache -z  #show stats
 
-  build_test_tket_macos_arm64:
-    name: Build and test tket (macos-arm64)
-    runs-on: ['self-hosted', 'macOS', 'ARM64']
-    needs: check_changes
-    if: needs.check_changes.outputs.tket_changed == 'true' && github.repository == 'CQCL/tket'
-    steps:
-    - uses: actions/checkout@v3
-    - name: Install conan
-      uses: turtlebrowser/get-conan@v1.2
-    - name: Set up conan
-      run: |
-        conan profile detect --force
-        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force --index 0
-        conan cache clean
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
-      with:
-        key: tket-static-macos-arm64
-    - name: further ccache config
-      run: |
-        ccache --set-config base_dir=${HOME}
-        ccache --set-config compiler_check=content
-        ccache --set-config namespace=WITH_TESTS
-        ccache -p
-    - name: Build tket
-      run: conan create tket --user=tket --channel=test_build -o boost/*:header_only=True -o with_all_tests=True
-    - name: Upload package
-      if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
-      run: |
-        ccache --set-config namespace=WITHOUT_TESTS
-        conan create tket --user=tket --channel=stable -o boost/*:header_only=True
-        conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_3 }}
-        conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -r=tket-libs
-
   build_test_tket_not_required:
     name: Build and test (tket)
     needs: check_changes
-    if: needs.check_changes.outputs.tket_changed != 'true'
+    if: needs.check_changes.outputs.tket_or_workflow_changed != 'true'
     strategy:
       matrix:
-        os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
+        os: ['ubuntu-22.04', 'macos-12', 'windows-2022', 'macos-13-xlarge']
     runs-on: ${{ matrix.os }}
-    steps:
-      - run: echo "no changes to tket"
-
-  build_test_tket_macos_arm64_not_required:
-    name: Build and test (tket)
-    runs-on: ['self-hosted', 'macOS', 'ARM64']
-    needs: check_changes
-    if: needs.check_changes.outputs.tket_changed != 'true'
     steps:
       - run: echo "no changes to tket"
 
   build_test_pytket_ubuntu:
     name: Build and test pytket (ubuntu)
     needs: check_changes
-    if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true'
+    if: needs.check_changes.outputs.tket_or_workflow_changed == 'true' || needs.check_changes.outputs.pytket_or_workflow_changed == 'true'
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
     - name: Set up conan
       run: |
         conan profile detect
+        DEFAULT_PROFILE_PATH=`conan profile path default`
+        PROFILE_PATH=./conan-profiles/ubuntu-22.04
+        diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
+        cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
@@ -358,10 +332,13 @@ jobs:
   build_test_pytket_macos:
     name: Build and test pytket (macos)
     needs: check_changes
-    if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true'
-    runs-on: macos-12
+    if: needs.check_changes.outputs.tket_or_workflow_changed == 'true' || needs.check_changes.outputs.pytket_or_workflow_changed == 'true'
+    strategy:
+      matrix:
+        os: ['macos-12', 'macos-13-xlarge']
+    runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Select Python 3.10
       # otherwise turtlebrowser/get-conan@v1.2 fails on macos-12
       uses: actions/setup-python@v4
@@ -372,6 +349,10 @@ jobs:
     - name: Set up conan
       run: |
         conan profile detect
+        DEFAULT_PROFILE_PATH=`conan profile path default`
+        PROFILE_PATH=./conan-profiles/${{ matrix.os }}
+        diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
+        cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
     - name: ccache
       uses: hendrikmuhs/ccache-action@v1.2
@@ -397,9 +378,7 @@ jobs:
         conan create recipes/pybind11_json/all --version 0.2.13
     - name: Set up Python (pull request)
       if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
-      uses: actions/setup-python@v4
-      with:
-        python-version: "3.9"
+      run: brew install python@3.9
     - name: Set up Python (push)
       if: github.event_name == 'push'
       uses: actions/setup-python@v4
@@ -413,23 +392,26 @@ jobs:
     - name: Build pytket
       run: |
         cd pytket
-        pip install -e .[ZX] -v
+        python${{ matrix.python-version }} -m pip install -e .[ZX] -v
     - name: Run doctests
       run: |
         cd pytket
-        pip install pytest
-        pytest --doctest-modules pytket
+        python${{ matrix.python-version }} -m pip install pytest
+        python${{ matrix.python-version }} -m pytest --doctest-modules pytket
     - name: Test pytket
       run: |
         cd pytket/tests
-        pip install -r requirements.txt
-        pytest --ignore=simulator/
-    - name: Run mypy
-      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
+        python${{ matrix.python-version }} -m pip install -r requirements.txt
+        python${{ matrix.python-version }} -m pytest --ignore=simulator/
+    - name: Check type stubs are up-to-date and run mypy
+      if: matrix.os == 'macos-12' && (github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch')
       run: |
-        pip install -U mypy
+        python${{ matrix.python-version }} -m pip install -U mypy
+        python${{ matrix.python-version }} -m pip install -U pybind11-stubgen
         cd pytket
-        mypy --config-file=mypy.ini --no-incremental -p pytket -p tests
+        ./stub_generation/regenerate_stubs
+        git diff --quiet pytket/_tket && echo "Stubs are up-to-date" || exit 1  # fail if stubs change after regeneration
+        python${{ matrix.python-version }} -m mypy --config-file=mypy.ini --no-incremental -p pytket -p tests
     - name: Upload package
       if: github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_changed == 'true'
       run: |
@@ -438,22 +420,21 @@ jobs:
 
   build_test_pytket_windows:
     name: Build and test pytket (windows)
-    # I could not get ccache working for this build
-    # Building tket as a dynamic library currently fails with the Ninja and Makefiles Generators and ccache is set up is more difficult with the Visual Studio generator
-    # I tried to get ccache working with the Visual Studio generator using the suggestions here: https://github.com/ccache/ccache/wiki/MS-Visual-Studio#usage-with-cmake
-    # I was able to get ccache to wrap the compiler invocations, but all files are reported as uncacheable, due to "No input file"
-    # See https://ccache.dev/manual/4.8.2.html#_cache_statistics for more info on what that means. I myself haven't fully understood.
-    # Giving up for now
     needs: check_changes
-    if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true'
+    if: needs.check_changes.outputs.tket_or_workflow_changed == 'true' || needs.check_changes.outputs.pytket_or_workflow_changed == 'true'
     runs-on: windows-2022
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
     - name: Set up conan
+      shell: bash
       run: |
         conan profile detect
+        DEFAULT_PROFILE_PATH=`conan profile path default`
+        PROFILE_PATH=./conan-profiles/windows-2022
+        diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
+        cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
     - name: normalize line endings in conanfile and src directory
       # This is necessary to ensure consistent revisions across platforms.
@@ -465,10 +446,43 @@ jobs:
              $normalized_file = [IO.File]::ReadAllText($f) -replace "`r`n", "`n"
              [IO.File]::WriteAllText($f, $normalized_file)
              }
+    - name: ccache setup
+        # This is what hendrikmuhs/ccache-action does, but for windows (theirs is buggy on windows)
+      id: ccache-setup
+      run: |
+        choco upgrade ccache
+        $ccache_dir = ccache --get-config cache_dir
+        echo ccache_dir=$ccache_dir >> $env:GITHUB_OUTPUT
+        ccache --set-config=max_size='500M'
+        ccache --set-config=compression=true
+        ccache --set-config compiler_check=content
+        ccache --set-config namespace=WITH_TESTS
+        ccache -p
+    - name: Get current time
+      uses: josStorer/get-current-time@v2.1.1
+      id: current_time
+      with:
+        format: YYYYMMDDHHmmss
+    - name: ccache windows
+      uses: actions/cache@v3
+      with:
+        path: ${{ steps.ccache-setup.outputs.ccache_dir }}
+        key: tket-dynamic-visual-studio-windows-2022-${{ steps.current_time.outputs.formattedTime }}
+        restore-keys: |
+          tket-dynamic-visual-studio-windows-2022
+    - name: get ccache version
+      id: ccache-ver
+      shell: bash
+      run: |
+        ccache_ver=$(choco list -e ccache | grep "ccache" | grep -ioE '[0-9]+\.[0-9]+\.[0-9]+')
+        echo "Found ccache version ${ccache_ver}"
+        echo "ccache_ver=${ccache_ver}" >> $GITHUB_OUTPUT
     - name: Build tket
       if: needs.check_changes.outputs.tket_changed == 'true'
       run: |
-        conan create tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf `"`"
+        $env:TKET_VSGEN_CCACHE_EXE = 'C:\\ProgramData\\chocolatey\\lib\\ccache\\tools\\ccache-${{ steps.ccache-ver.outputs.ccache_ver }}-windows-x86_64\\ccache.exe' 
+        conan build tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
+        conan export-pkg tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf `"`"
     - name: Install tket
       if: needs.check_changes.outputs.tket_changed != 'true'
       run: conan install --requires tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
@@ -513,101 +527,10 @@ jobs:
       run: |
         conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_3 }}
         conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -r=tket-libs
-
-  build_test_pytket_macos_arm64:
-    name: Build and test pytket (macos-arm64)
-    runs-on: ['self-hosted', 'macOS', 'ARM64']
-    needs: check_changes
-    if: (needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true') && github.repository == 'CQCL/tket'
-    steps:
-    - uses: actions/checkout@v3
-    - name: Install conan
-      uses: turtlebrowser/get-conan@v1.2
-    - name: Set up conan
+    - name: ccache stats
       run: |
-        conan profile detect --force
-        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force --index 0
-    - name: Remove tket package from cache
-      run: conan remove -c 'tket/*'
-    - name: ccache
-      uses: hendrikmuhs/ccache-action@v1.2
-      with:
-        key: tket-dynamic-macos-arm64
-    - name: further ccache config
-      run: |
-        ccache --set-config base_dir=${HOME}
-        ccache --set-config compiler_check=content
-        ccache -p
-    - name: Build tket
-      if: needs.check_changes.outputs.tket_changed == 'true'
-      run: conan create tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
-    - name: check that version is consistent
-      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
-      run: ./.github/workflows/check-tket-reqs  ${{ needs.check_changes.outputs.tket_ver }}
-    - name: Uninstall conan
-      run: pip3 uninstall -y conan
-    - name: Build and test pytket (3.9)
-      if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
-      run: |
-        eval "$(pyenv init -)"
-        pyenv shell tket-3.9
-        PKG_CONFIG_PATH="$(brew --prefix openblas)"/lib/pkgconfig pip install -U scipy
-        pip install -U conan
-        conan remove -c "pybind11/*"
-        conan remove -c "pytket/*"
-        conan create recipes/pybind11
-        conan create recipes/pybind11_json/all --version 0.2.13
-        cd pytket
-        pip uninstall -y pytket
-        pip install -e .[ZX] -v
-        pytest --doctest-modules pytket
-        cd tests
-        pip install -r requirements.txt
-        pytest --ignore=simulator/
-    - name: Build and test pytket (3.10)
-      if: github.event_name == 'push'
-      run: |
-        eval "$(pyenv init -)"
-        pyenv shell tket-3.10
-        PKG_CONFIG_PATH="$(brew --prefix openblas)"/lib/pkgconfig pip install -U scipy
-        pip install -U conan
-        conan remove -c "pybind11/*"
-        conan remove -c "pytket/*"
-        conan create recipes/pybind11
-        conan create recipes/pybind11_json/all --version 0.2.13
-        cd pytket
-        pip uninstall -y pytket
-        pip install -e .[ZX] -v
-        pytest --doctest-modules pytket
-        cd tests
-        pip install -r requirements.txt
-        pytest --ignore=simulator/
-    - name: Build and test pytket (3.11)
-      if: github.event_name == 'schedule'
-      run: |
-        eval "$(pyenv init -)"
-        pyenv shell tket-3.11
-        PKG_CONFIG_PATH="$(brew --prefix openblas)"/lib/pkgconfig pip install -U scipy
-        pip install -U conan
-        conan remove -c "pybind11/*"
-        conan remove -c "pytket/*"
-        conan create recipes/pybind11
-        conan create recipes/pybind11_json/all --version 0.2.13
-        cd pytket
-        pip uninstall -y pytket
-        pip install -e .[ZX] -v
-        pytest --doctest-modules pytket
-        cd tests
-        pip install -r requirements.txt
-        pytest --ignore=simulator/
-    - name: Install conan
-      uses: turtlebrowser/get-conan@v1.2
-    - name: Upload package
-      if: github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_changed == 'true'
-      run: |
-        conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_3 }}
-        conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -r=tket-libs
-        conan remote logout tket-libs
+        ccache -s  #show stats
+        ccache -z  #show stats
 
   publish_pytket_coverage:
     name: Publish pytket coverage
@@ -616,7 +539,7 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         ref: gh-pages
     - name: Download artefact
@@ -644,7 +567,7 @@ jobs:
     if: github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Download artefact
       uses: actions/download-artifact@v3
       with:

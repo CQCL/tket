@@ -19,8 +19,8 @@ only suitable for very small (up to 5 qubit) circuits."""
 from typing import Callable, Dict, List, Optional, Type, Union, cast
 
 import numpy as np
-import sympy  # type: ignore
-from sympy import (  # type: ignore
+import sympy
+from sympy import (
     BlockDiagMatrix,
     BlockMatrix,
     Expr,
@@ -33,13 +33,13 @@ from sympy import (  # type: ignore
     eye,
     zeros,
 )
-from sympy.physics.quantum import gate as symgate  # type: ignore
-from sympy.physics.quantum import represent  # type: ignore
-from sympy.physics.quantum.tensorproduct import matrix_tensor_product  # type: ignore
-from sympy.physics.quantum.qapply import qapply  # type: ignore
-from sympy.physics.quantum.qubit import Qubit, matrix_to_qubit  # type: ignore
+from sympy.physics.quantum import gate as symgate
+from sympy.physics.quantum import represent
+from sympy.physics.quantum.tensorproduct import matrix_tensor_product
+from sympy.physics.quantum.qapply import qapply
+from sympy.physics.quantum.qubit import Qubit, matrix_to_qubit
 
-from pytket.circuit import Circuit, Op, OpType  # type: ignore
+from pytket.circuit import Circuit, Op, OpType
 
 # gates that have an existing definition in sympy
 _FIXED_GATE_MAP: Dict[OpType, Type[symgate.Gate]] = {

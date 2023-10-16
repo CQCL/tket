@@ -37,7 +37,6 @@
 #include "tket/Transformations/Replacement.hpp"
 #include "tket/Transformations/Transform.hpp"
 #include "tket/Utils/MatrixAnalysis.hpp"
-#include "tket/Utils/PauliStrings.hpp"
 
 namespace tket {
 namespace test_Circ {
@@ -1240,6 +1239,26 @@ SCENARIO("Functions with symbolic ops") {
     REQUIRE(op3->get_type() == OpType::PhaseGadget);
     REQUIRE(test_equiv_val(op3->get_params()[0], 0.6));
   }
+  GIVEN("A simple circuit with symbolics to instantiate, and a Barrier gate.") {
+    Circuit circ(2);
+    Sym a = SymEngine::symbol("alpha");
+    Expr alpha(a);
+    circ.add_op<unsigned>(OpType::Rx, alpha, {0});
+    circ.add_barrier({0, 1});
+    REQUIRE(circ.is_symbolic());
+    SymSet symbols = circ.free_symbols();
+    REQUIRE(symbols.size() == 1);
+    REQUIRE(symbols.find(a) != symbols.end());
+    symbol_map_t symbol_map;
+    symbol_map[a] = Expr(0.2);
+    circ.symbol_substitution(symbol_map);
+    VertexVec vertices = circ.vertices_in_order();
+    Op_ptr op2 = circ.get_Op_ptr_from_Vertex(vertices[2]);
+    Op_ptr op3 = circ.get_Op_ptr_from_Vertex(vertices[3]);
+    REQUIRE(op2->get_type() == OpType::Rx);
+    REQUIRE(test_equiv_val(op2->get_params()[0], 0.2));
+    REQUIRE(op3->get_type() == OpType::Barrier);
+  }
 }
 
 SCENARIO("Test depth_by_type method") {
@@ -2010,8 +2029,7 @@ SCENARIO("Decomposing a multi-qubit operation into CXs") {
     WHEN("ZX circuit replacement") { rep = CX_ZX_circ_from_op(op); }
 
     const auto u = tket_sim::get_unitary(rep);
-    const QubitPauliString pauliop(
-        {{Qubit(0), Pauli::Z}, {Qubit(1), Pauli::Z}});
+    const PauliString pauliop({Pauli::Z, Pauli::Z});
     Eigen::MatrixXcd exponent = -pauliop.to_sparse_matrix(2) * 0.15 * PI * i_;
     Eigen::MatrixXcd correct = exponent.exp();
     REQUIRE((u - correct).cwiseAbs().sum() < ERR_EPS);
@@ -2065,8 +2083,7 @@ SCENARIO("Decomposing a multi-qubit operation into CXs") {
     WHEN("ZX circuit replacement") { rep = CX_ZX_circ_from_op(op); }
 
     const auto u = tket_sim::get_unitary(rep);
-    const QubitPauliString pauliop(
-        {{Qubit(0), Pauli::X}, {Qubit(1), Pauli::X}});
+    const PauliString pauliop({Pauli::X, Pauli::X});
     Eigen::MatrixXcd exponent = -pauliop.to_sparse_matrix(2) * 0.25 * PI * i_;
     Eigen::MatrixXcd correct = exponent.exp();
     REQUIRE((u - correct).cwiseAbs().sum() < ERR_EPS);
@@ -2081,12 +2098,9 @@ SCENARIO("Decomposing a multi-qubit operation into CXs") {
     WHEN("ZX circuit replacement") { rep = CX_ZX_circ_from_op(op); }
 
     const auto u = tket_sim::get_unitary(rep);
-    const QubitPauliString pauliop01(
-        {{Qubit(0), Pauli::X}, {Qubit(1), Pauli::X}, {Qubit(2), Pauli::I}});
-    const QubitPauliString pauliop12(
-        {{Qubit(0), Pauli::I}, {Qubit(1), Pauli::X}, {Qubit(2), Pauli::X}});
-    const QubitPauliString pauliop02(
-        {{Qubit(0), Pauli::X}, {Qubit(1), Pauli::I}, {Qubit(2), Pauli::X}});
+    const PauliString pauliop01({Pauli::X, Pauli::X, Pauli::I});
+    const PauliString pauliop12({Pauli::I, Pauli::X, Pauli::X});
+    const PauliString pauliop02({Pauli::X, Pauli::I, Pauli::X});
     Eigen::MatrixXcd exponent =
         -(pauliop01.to_sparse_matrix(3) + pauliop12.to_sparse_matrix(3) +
           pauliop02.to_sparse_matrix(3)) *
@@ -2105,8 +2119,7 @@ SCENARIO("Decomposing a multi-qubit operation into CXs") {
     WHEN("ZX circuit replacement") { rep = CX_ZX_circ_from_op(op); }
 
     const auto u = tket_sim::get_unitary(rep);
-    const QubitPauliString pauliop(
-        {{Qubit(0), Pauli::Z}, {Qubit(1), Pauli::Z}});
+    const PauliString pauliop({Pauli::Z, Pauli::Z});
     Eigen::MatrixXcd exponent = -pauliop.to_sparse_matrix(2) * 0.25 * PI * i_;
     Eigen::MatrixXcd correct = exponent.exp();
     REQUIRE((u - correct).cwiseAbs().sum() < ERR_EPS);
@@ -2373,7 +2386,7 @@ SCENARIO("Decomposing a single qubit gate") {
     WHEN("ZX circuit replacement") { rep = CX_ZX_circ_from_op(op); }
 
     const auto u = tket_sim::get_unitary(rep);
-    const QubitPauliString pauliop({{Qubit(0), Pauli::X}});
+    const PauliString pauliop({Pauli::X});
     Eigen::MatrixXcd exponent = -pauliop.to_sparse_matrix(1) * 0.15 * PI * i_;
     Eigen::MatrixXcd correct = exponent.exp();
     REQUIRE((u - correct).cwiseAbs().sum() < ERR_EPS);
@@ -2392,7 +2405,7 @@ SCENARIO("Decomposing a single qubit gate") {
     WHEN("ZX circuit replacement") { rep = CX_ZX_circ_from_op(op); }
 
     const auto u = tket_sim::get_unitary(rep);
-    const QubitPauliString pauliop({{Qubit(0), Pauli::Y}});
+    const PauliString pauliop({Pauli::Y});
     Eigen::MatrixXcd exponent = -pauliop.to_sparse_matrix(1) * 0.2 * PI * i_;
     Eigen::MatrixXcd correct = exponent.exp();
     REQUIRE((u - correct).cwiseAbs().sum() < ERR_EPS);
@@ -2411,7 +2424,7 @@ SCENARIO("Decomposing a single qubit gate") {
     WHEN("ZX circuit replacement") { rep = CX_ZX_circ_from_op(op); }
 
     const auto u = tket_sim::get_unitary(rep);
-    const QubitPauliString pauliop({{Qubit(0), Pauli::Z}});
+    const PauliString pauliop({Pauli::Z});
     Eigen::MatrixXcd exponent = -pauliop.to_sparse_matrix(1) * 0.35 * PI * i_;
     Eigen::MatrixXcd correct = exponent.exp();
     REQUIRE((u - correct).cwiseAbs().sum() < ERR_EPS);
@@ -2450,11 +2463,10 @@ SCENARIO("Decomposing a single qubit gate") {
     WHEN("ZX circuit replacement") { rep = CX_ZX_circ_from_op(op); }
 
     const auto u = tket_sim::get_unitary(rep);
-    const QubitPauliString pauliop({{Qubit(0), Pauli::Z}});
+    const PauliString pauliop({Pauli::Z});
     Eigen::MatrixXcd exponent = -pauliop.to_sparse_matrix(1) * 0.65 * PI * i_;
     Eigen::MatrixXcd phaser = exponent.exp();
-    exponent = -QubitPauliString({{Qubit(0), Pauli::X}}).to_sparse_matrix(1) *
-               0.3 * PI * i_;
+    exponent = -PauliString({Pauli::X}).to_sparse_matrix(1) * 0.3 * PI * i_;
     Eigen::MatrixXcd correct = phaser * exponent.exp() * phaser.adjoint();
     REQUIRE((u - correct).cwiseAbs().sum() < ERR_EPS);
   }
@@ -3116,6 +3128,208 @@ SCENARIO("check edge type in rewire function") {
 
     REQUIRE_THROWS_AS(c.rewire(v, ins, types), CircuitInvalidity);
   }
+}
+void check_conditional_circuit(Circuit& c) {
+  // Confirm that the DAG is constructed appropriately by checking
+  // in and out edges of all vertices
+  std::vector<Vertex> vertices = c.all_vertices();
+  // First check Quantum and Classical input and output vertices
+  // have expected number of out edges in interesting cases
+  REQUIRE(c.n_out_edges_of_type(vertices[8], EdgeType::Classical) == 1);
+  REQUIRE(c.n_out_edges_of_type(vertices[8], EdgeType::Boolean) == 1);
+  REQUIRE(c.n_out_edges_of_type(vertices[10], EdgeType::Classical) == 1);
+  REQUIRE(c.n_out_edges_of_type(vertices[10], EdgeType::Boolean) == 2);
+  REQUIRE(c.n_out_edges_of_type(vertices[12], EdgeType::Classical) == 1);
+  REQUIRE(c.n_out_edges_of_type(vertices[12], EdgeType::Boolean) == 2);
+  REQUIRE(c.n_out_edges_of_type(vertices[14], EdgeType::Classical) == 1);
+  REQUIRE(c.n_out_edges_of_type(vertices[14], EdgeType::Boolean) == 2);
+
+  // Conditional gate 0
+  REQUIRE(c.n_in_edges_of_type(vertices[18], EdgeType::Quantum) == 1);
+  REQUIRE(c.n_in_edges_of_type(vertices[18], EdgeType::Classical) == 0);
+  REQUIRE(c.n_in_edges_of_type(vertices[18], EdgeType::Boolean) == 1);
+  REQUIRE(c.n_out_edges_of_type(vertices[18], EdgeType::Quantum) == 1);
+  REQUIRE(c.n_out_edges_of_type(vertices[18], EdgeType::Classical) == 0);
+  REQUIRE(c.n_out_edges_of_type(vertices[18], EdgeType::Boolean) == 0);
+  Op_ptr op_0 = c.get_Op_ptr_from_Vertex(vertices[18]);
+  const Conditional& con_0 = static_cast<const Conditional&>(*op_0);
+  REQUIRE(con_0.get_type() == OpType::Conditional);
+  Op_ptr barrier_0 = con_0.get_op();
+  REQUIRE(barrier_0->get_type() == OpType::Barrier);
+  op_signature_t sig_0 = {EdgeType::Quantum};
+  REQUIRE(barrier_0->get_signature() == sig_0);
+
+  // Conditional gate 1
+  REQUIRE(c.n_in_edges_of_type(vertices[19], EdgeType::Quantum) == 2);
+  REQUIRE(c.n_in_edges_of_type(vertices[19], EdgeType::Classical) == 1);
+  REQUIRE(c.n_in_edges_of_type(vertices[19], EdgeType::Boolean) == 2);
+  REQUIRE(c.n_out_edges_of_type(vertices[19], EdgeType::Quantum) == 2);
+  REQUIRE(c.n_out_edges_of_type(vertices[19], EdgeType::Classical) == 1);
+  REQUIRE(c.n_out_edges_of_type(vertices[19], EdgeType::Boolean) == 0);
+  Op_ptr op_1 = c.get_Op_ptr_from_Vertex(vertices[19]);
+  const Conditional& con_1 = static_cast<const Conditional&>(*op_1);
+  REQUIRE(con_1.get_type() == OpType::Conditional);
+  Op_ptr barrier_1 = con_1.get_op();
+  REQUIRE(barrier_1->get_type() == OpType::Barrier);
+  op_signature_t sig_1 = {
+      EdgeType::Quantum, EdgeType::Quantum, EdgeType::Classical};
+  REQUIRE(barrier_1->get_signature() == sig_1);
+
+  // Conditional gate 2
+  REQUIRE(c.n_in_edges_of_type(vertices[20], EdgeType::Quantum) == 1);
+  REQUIRE(c.n_in_edges_of_type(vertices[20], EdgeType::Classical) == 1);
+  REQUIRE(c.n_in_edges_of_type(vertices[20], EdgeType::Boolean) == 2);
+  REQUIRE(c.n_out_edges_of_type(vertices[20], EdgeType::Quantum) == 1);
+  REQUIRE(c.n_out_edges_of_type(vertices[20], EdgeType::Classical) == 1);
+  REQUIRE(c.n_out_edges_of_type(vertices[20], EdgeType::Boolean) == 0);
+  Op_ptr op_2 = c.get_Op_ptr_from_Vertex(vertices[20]);
+  const Conditional& con_2 = static_cast<const Conditional&>(*op_2);
+  REQUIRE(con_2.get_type() == OpType::Conditional);
+  Op_ptr barrier_2 = con_2.get_op();
+  REQUIRE(barrier_2->get_type() == OpType::Barrier);
+  op_signature_t sig_2 = {EdgeType::Quantum, EdgeType::Classical};
+  REQUIRE(barrier_2->get_signature() == sig_2);
+
+  // Conditional gate 3
+  REQUIRE(c.n_in_edges_of_type(vertices[21], EdgeType::Quantum) == 2);
+  REQUIRE(c.n_in_edges_of_type(vertices[21], EdgeType::Classical) == 3);
+  REQUIRE(c.n_in_edges_of_type(vertices[21], EdgeType::Boolean) == 1);
+  REQUIRE(c.n_out_edges_of_type(vertices[21], EdgeType::Quantum) == 2);
+  REQUIRE(c.n_out_edges_of_type(vertices[21], EdgeType::Classical) == 3);
+  REQUIRE(c.n_out_edges_of_type(vertices[21], EdgeType::Boolean) == 2);
+  Op_ptr op_3 = c.get_Op_ptr_from_Vertex(vertices[21]);
+  const Conditional& con_3 = static_cast<const Conditional&>(*op_3);
+  REQUIRE(con_3.get_type() == OpType::Conditional);
+  Op_ptr barrier_3 = con_3.get_op();
+  REQUIRE(barrier_3->get_type() == OpType::Barrier);
+  op_signature_t sig_3 = {
+      EdgeType::Quantum, EdgeType::Quantum, EdgeType::Classical,
+      EdgeType::Classical, EdgeType::Classical};
+  REQUIRE(barrier_3->get_signature() == sig_3);
+
+  // Conditional gate 4
+  REQUIRE(c.n_in_edges_of_type(vertices[22], EdgeType::Quantum) == 2);
+  REQUIRE(c.n_in_edges_of_type(vertices[22], EdgeType::Classical) == 1);
+  REQUIRE(c.n_in_edges_of_type(vertices[22], EdgeType::Boolean) == 2);
+  REQUIRE(c.n_out_edges_of_type(vertices[22], EdgeType::Quantum) == 2);
+  REQUIRE(c.n_out_edges_of_type(vertices[22], EdgeType::Classical) == 1);
+  REQUIRE(c.n_out_edges_of_type(vertices[22], EdgeType::Boolean) == 0);
+  Op_ptr op_4 = c.get_Op_ptr_from_Vertex(vertices[22]);
+  const Conditional& con_4 = static_cast<const Conditional&>(*op_4);
+  REQUIRE(con_4.get_type() == OpType::Conditional);
+  Op_ptr barrier_4 = con_4.get_op();
+  REQUIRE(barrier_4->get_type() == OpType::Barrier);
+  op_signature_t sig_4 = {
+      EdgeType::Quantum, EdgeType::Quantum, EdgeType::Classical};
+  REQUIRE(barrier_4->get_signature() == sig_4);
+
+  // Conditional gate 5
+  REQUIRE(c.n_in_edges_of_type(vertices[23], EdgeType::Quantum) == 4);
+  REQUIRE(c.n_in_edges_of_type(vertices[23], EdgeType::Classical) == 3);
+  REQUIRE(c.n_in_edges_of_type(vertices[23], EdgeType::Boolean) == 1);
+  REQUIRE(c.n_out_edges_of_type(vertices[23], EdgeType::Quantum) == 4);
+  REQUIRE(c.n_out_edges_of_type(vertices[23], EdgeType::Classical) == 3);
+  REQUIRE(c.n_out_edges_of_type(vertices[23], EdgeType::Boolean) == 0);
+  Op_ptr op_5 = c.get_Op_ptr_from_Vertex(vertices[23]);
+  const Conditional& con_5 = static_cast<const Conditional&>(*op_5);
+  REQUIRE(con_5.get_type() == OpType::Conditional);
+  Op_ptr barrier_5 = con_5.get_op();
+  REQUIRE(barrier_5->get_type() == OpType::Barrier);
+  op_signature_t sig_5 = {EdgeType::Quantum,   EdgeType::Quantum,
+                          EdgeType::Quantum,   EdgeType::Quantum,
+                          EdgeType::Classical, EdgeType::Classical,
+                          EdgeType::Classical};
+  REQUIRE(barrier_5->get_signature() == sig_5);
+
+  // Conditional gate 6
+  REQUIRE(c.n_in_edges_of_type(vertices[25], EdgeType::Quantum) == 4);
+  REQUIRE(c.n_in_edges_of_type(vertices[25], EdgeType::Classical) == 3);
+  REQUIRE(c.n_in_edges_of_type(vertices[25], EdgeType::Boolean) == 1);
+  REQUIRE(c.n_out_edges_of_type(vertices[25], EdgeType::Quantum) == 4);
+  REQUIRE(c.n_out_edges_of_type(vertices[25], EdgeType::Classical) == 3);
+  REQUIRE(c.n_out_edges_of_type(vertices[25], EdgeType::Boolean) == 0);
+  Op_ptr op_6 = c.get_Op_ptr_from_Vertex(vertices[25]);
+  const Conditional& con_6 = static_cast<const Conditional&>(*op_6);
+  REQUIRE(con_6.get_type() == OpType::Conditional);
+  Op_ptr barrier_6 = con_6.get_op();
+  REQUIRE(barrier_6->get_type() == OpType::Barrier);
+  op_signature_t sig_6 = {EdgeType::Quantum,   EdgeType::Quantum,
+                          EdgeType::Quantum,   EdgeType::Quantum,
+                          EdgeType::Classical, EdgeType::Classical,
+                          EdgeType::Classical};
+  REQUIRE(barrier_6->get_signature() == sig_6);
+}
+
+SCENARIO("Check Circuit::add_conditional_barrier.") {
+  GIVEN(
+      "Add various forms of valid conditional barrier using the unsigned "
+      "constructor.") {
+    Circuit c(4, 5);
+    std::vector<unsigned> c_empty = {};
+    std::vector<unsigned> c_0 = {0};
+    std::vector<unsigned> c_3 = {3};
+    std::vector<unsigned> c_4 = {4};
+    std::vector<unsigned> c_01 = {0, 1};
+    std::vector<unsigned> c_02 = {0, 2};
+    std::vector<unsigned> c_12 = {1, 2};
+    std::vector<unsigned> c_13 = {1, 3};
+    std::vector<unsigned> c_012 = {0, 1, 2};
+    std::vector<unsigned> c_0123 = {0, 1, 2, 3};
+
+    c.add_conditional_barrier(c_0, c_empty, c_0, 0, "");
+    c.add_conditional_barrier(c_01, c_0, c_12, 1, "");
+    c.add_conditional_barrier(c_0, c_0, c_12, 1, "");
+    c.add_conditional_barrier(c_13, c_012, c_3, 0, "test");
+    c.add_conditional_barrier(c_02, c_0, c_12, 1, "test1");
+    c.add_conditional_barrier(c_0123, c_012, c_3, 0, "test1");
+    c.add_measure(3, 4);
+    c.add_conditional_barrier(c_0123, c_012, c_4, 0, "test2");
+    check_conditional_circuit(c);
+  }
+  GIVEN(
+      "Add various forms of valid conditional barrier using the  unitid "
+      "constructor.") {
+    Circuit c(4, 5);
+    c.add_conditional_barrier({Qubit(0)}, {Bit(0)}, 0, "");
+    c.add_conditional_barrier(
+        {Qubit(0), Qubit(1), Bit(0)}, {Bit(1), Bit(2)}, 1, "");
+    c.add_conditional_barrier({Qubit(0), Bit(0)}, {Bit(1), Bit(2)}, 1, "");
+    c.add_conditional_barrier(
+        {Qubit(1), Qubit(3), Bit(0), Bit(1), Bit(2)}, {Bit(3)}, 0, "test");
+    c.add_conditional_barrier(
+        {Qubit(0), Qubit(2), Bit(0)}, {Bit(1), Bit(2)}, 1, "test1");
+    c.add_conditional_barrier(
+        {Qubit(0), Qubit(1), Qubit(2), Qubit(3), Bit(0), Bit(1), Bit(2)},
+        {Bit(3)}, 0, "test1");
+    c.add_measure(Qubit(3), Bit(4));
+    c.add_conditional_barrier(
+        {Qubit(0), Qubit(1), Qubit(2), Qubit(3), Bit(0), Bit(1), Bit(2)},
+        {Bit(4)}, 0, "test2");
+    check_conditional_circuit(c);
+  }
+}
+
+SCENARIO("Check decompose_boxes_recursively") {
+  Circuit circ(2);
+  Circuit c0(1);
+  Eigen::Matrix2cd m;
+  m << 0, -1, 1, 0;
+  Unitary1qBox u1box(m);
+  c0.add_box(u1box, {0});
+  CircBox cbox(c0);
+  circ.add_box(cbox, {0});
+  circ.add_box(u1box, {0});
+  Op_ptr op = get_op_ptr(OpType::X);
+  QControlBox qcbox(op);
+  circ.add_box(qcbox, {0, 1}, "opgroup1");
+  circ.add_box(qcbox, {0, 1}, "opgroup2");
+  circ.decompose_boxes_recursively({OpType::Unitary1qBox}, {"opgroup1"});
+  std::vector<Command> cmds = circ.get_commands();
+  REQUIRE(cmds.size() == 4);
+  REQUIRE(cmds[0].get_op_ptr()->get_type() == OpType::Unitary1qBox);
+  REQUIRE(cmds[1].get_op_ptr()->get_type() == OpType::Unitary1qBox);
+  REQUIRE(cmds[2].get_op_ptr()->get_type() == OpType::QControlBox);
+  REQUIRE(cmds[3].get_op_ptr()->get_type() == OpType::CX);
 }
 
 }  // namespace test_Circ

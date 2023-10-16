@@ -1,8 +1,80 @@
 Changelog
 =========
 
-Unreleased
-----------
+1.21.0 (October 2023)
+---------------------
+
+Minor new features:
+
+* Add optional ``strict_check`` parameter to ``RepeatPass`` to force stopping when
+  the circuit is unchanged.
+* Add optional parameters ``excluded_types`` and ``excluded_opgroups``
+  to ``DecomposeBoxes``.
+* More efficient decomposition for quantum controlled ``ConjugationBox``es.
+* New ``PassSelector`` for automatically compiling with the best pass from a list
+* ``PauliExpBox``, ``PauliExpPairBox``, and ``PauliExpCommutingSetBox`` are now
+  decomposed into a single ``ConjugationBox``.
+* Make ``SquashRzPhasedX`` pass always squash symbols.
+* Add in-place symbol_substition method for ``CircBox``
+* Add rendering support for 0-valued control-type gates.
+* Typing improvements
+* Make ``BitRegister`` and ``QubitRegister`` iterable
+
+Fixes:
+
+* Handle symbolic angles in ``ZZPhaseToRz`` pass.
+* Bind ``sympy.exp()``.
+* Ensure determinate command order for circuits containing Phase operations.
+
+1.20.1 (September 2023)
+-----------------------
+
+Fixes:
+
+* Fix ``Op.get_unitary()`` runtime error for non gate ``Op``s.
+* Fix ``CliffordSimp`` slow runtime issue.
+* Correct implementation of ``free_symbols()`` and ``symbol_substitution()`` for
+  ``ConjugationBox``.
+* Fix pytket-to-QASM conversion when individual bits of registers used in
+  range predicates are later set.
+
+1.20.0 (September 2023)
+-----------------------
+
+Fixes:
+
+* Mixed up function index in wasm file check
+* Fix handling of scratch bits in pytket-to-QASM conversion when the source bit
+  for the scratch is overwritten before the scratch bit is used in a
+  conditional.
+
+Minor new features:
+
+* ``Circuit.add_conditional_barrier``
+* Add ``apply_clifford_basis_change_tensor`` method
+
+API changes:
+
+* barrier changed from MetaOp to be a BarrierOp
+
+
+1.19.1 (September 2023)
+-----------------------
+
+Fixes:
+
+* Fix `RebaseCustom()` rebasing of `TK2` gates.
+* Correct implementation of `symbol_substitution()` for box types that cannot
+  contain symbols.
+
+1.19.0 (September 2023)
+-----------------------
+
+Major new features:
+
+* Add ``ConjugationBox`` to express circuits that follow
+  the compute-action-uncompute pattern.
+* Added typing support for compiled modules
 
 Minor new features:
 
@@ -12,6 +84,10 @@ Minor new features:
   would increase the overall complexity of the expressions. This behaviour can
   be overridden using the ``always_squash_symbols`` parameter to
   ``SquashCustom``.
+* Add ``control_state`` argument to ``QControlBox``.
+* Add ``QubitPauliTensor`` (combining ``QubitPauliString`` with a complex
+  coefficient) to python binding. This is incorporated into ``UnitaryTableau`` 
+  row inspection for phase tracking.
 
 Fixes:
 

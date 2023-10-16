@@ -35,15 +35,7 @@ mkdir -p ~/texmf/tex/latex
 wget http://mirrors.ctan.org/graphics/pgf/contrib/quantikz/tikzlibraryquantikz.code.tex -P ~/texmf/tex/latex
 ```
 
-To install the dependencies for tket to be built and run with unit and proptests run:
-
-```shell
-conan install tket --build=missing -o "boost/*":header_only=True -o with_all_tests=True
-```
-use `with_test` in the place of `with_all_tests` to add only the necessary unit test dependencies or `with_proptest`
-for only proptest dependencies.
-
-To (re-)build and run all tests, use:
+To build tket and its dependencies and run all unit and property tests, use:
 
 ```shell
 conan build tket --build=missing -o "boost/*":header_only=True -o with_all_tests=True
@@ -95,8 +87,7 @@ If using gcc and with gcovr installed (`pip install gcovr`), a test coverage
 report can be generated using the following sequence of commands:
 
 ```shell
-conan install tket --user=tket --channel=stable -s build_type=Debug --build=missing -o "boost/*":header_only=True -o "tket/*":profile_coverage=True -o "test-tket/*":with_coverage=True -o with_test=True -of build/tket
-conan build tket --user=tket --channel=stable -s build_type=Debug -o "boost/*":header_only=True -o "tket/*":profile_coverage=True -o "test-tket/*":with_coverage=True -o with_test=True -of build/tket
+conan build tket --user=tket --channel=stable -s build_type=Debug --build=missing -o "boost/*":header_only=True -o "tket/*":profile_coverage=True -o "test-tket/*":with_coverage=True -o with_test=True -of build/tket
 
 mkdir test-coverage
 gcovr --print-summary --html --html-details -r ./tket --exclude-lines-by-pattern '.*\bTKET_ASSERT\(.*\);' --object-directory ${PWD}/build/tket/build/Debug/CMakeFiles/tket.dir/src -o test-coverage/index.html --decisions

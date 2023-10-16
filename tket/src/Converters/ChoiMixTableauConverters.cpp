@@ -512,8 +512,8 @@ void ChoiMixBuilder::solve_initialised_subspace() {
   for (unsigned r = tab.get_n_rows(); r-- > n_collapsed;) {
     // r always refers to the final row in the tableau
     ChoiMixTableau::row_tensor_t row = tab.get_row(r);
-    if (row.first.string.map.size() != 0 || row.second.string.map.size() != 1 ||
-        row.second.string.map.begin()->second != Pauli::Z)
+    if (row.first.size() != 0 || row.second.size() != 1 ||
+        row.second.string.begin()->second != Pauli::Z)
       throw std::logic_error(
           "Unexpected error during initialisation identification in "
           "ChoiMixTableau synthesis");

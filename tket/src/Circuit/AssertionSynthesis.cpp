@@ -280,7 +280,7 @@ std::tuple<Circuit, std::vector<bool>> projector_assertion_synthesis(
 }
 
 static unsigned get_n_qubits_from_stabilisers(
-    const PauliStabiliserList &paulis) {
+    const PauliStabiliserVec &paulis) {
   if (paulis.size() == 0) {
     throw CircuitInvalidity("Stabilisers cannot be empty");
   }
@@ -311,21 +311,28 @@ static unsigned add_assertion_operator(
     const Qubit &ancilla, std::vector<bool> &expected_readouts) {
   circ.add_op<Qubit>(OpType::Reset, {ancilla});
   circ.add_op<Qubit>(OpType::H, {ancilla});
-  for (unsigned i = 0; i < pauli.string.size(); i++) {
+  bool identity = true;
+  for (unsigned i = 0; i < pauli.size(); i++) {
     switch (pauli.string[i]) {
       case Pauli::I:
         break;
       case Pauli::X:
         circ.add_op<Qubit>(OpType::CX, {ancilla, Qubit(i)});
+        identity = false;
         break;
       case Pauli::Y:
         circ.add_op<Qubit>(OpType::CY, {ancilla, Qubit(i)});
+        identity = false;
         break;
       case Pauli::Z:
         circ.add_op<Qubit>(OpType::CZ, {ancilla, Qubit(i)});
+        identity = false;
         break;
     }
   }
+  if (identity)
+    throw std::invalid_argument(
+        "StabiliserAssertionBox cannot assert an identity.");
   circ.add_op<Qubit>(OpType::H, {ancilla});
   Bit b(debug_bit_index++);
   circ.add_bit(b);
@@ -336,7 +343,7 @@ static unsigned add_assertion_operator(
 
 // Assume all Pauli stabilisers have equal lengths and no identity
 std::tuple<Circuit, std::vector<bool>> stabiliser_assertion_synthesis(
-    const PauliStabiliserList &paulis) {
+    const PauliStabiliserVec &paulis) {
   unsigned n_qubits = get_n_qubits_from_stabilisers(paulis);
   std::vector<bool> expected_readouts;
   Circuit circ(n_qubits);

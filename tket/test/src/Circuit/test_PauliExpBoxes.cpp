@@ -27,12 +27,14 @@ namespace test_PauliExpBoxes {
 
 SCENARIO("Pauli gadgets", "[boxes]") {
   GIVEN("Basis Circuit check") {
-    PauliExpBox pbox({Pauli::X}, 1.0);
+    PauliExpBox pbox(SymPauliTensor({Pauli::X}, 1.0));
+    auto circ = pbox.to_circuit();
+    circ->decompose_boxes_recursively();
     Circuit comp(1);
     comp.add_op<unsigned>(OpType::H, {0});
     comp.add_op<unsigned>(OpType::Rz, 1.0, {0});
     comp.add_op<unsigned>(OpType::H, {0});
-    REQUIRE(*(pbox.to_circuit()) == comp);
+    REQUIRE(*circ == comp);
   }
   GIVEN("Empty PauliExpBox compiles to empty circuit") {
     Circuit empty_circuit(0);
@@ -44,8 +46,8 @@ SCENARIO("Pauli gadgets", "[boxes]") {
     // ---PauliExpBox([X], t)----Rx(-t)--- should be the identity
     double t = 1.687029013593215;
     Circuit c(1);
-    std::vector<Pauli> pauli_x = {Pauli::X};
-    PauliExpBox pbox(pauli_x, t);
+    DensePauliMap pauli_x = {Pauli::X};
+    PauliExpBox pbox(SymPauliTensor(pauli_x, t));
     REQUIRE(pbox.get_paulis() == pauli_x);
     c.add_box(pbox, uvec{0});
     c.add_op<unsigned>(OpType::Rx, -t, {0});
@@ -56,7 +58,7 @@ SCENARIO("Pauli gadgets", "[boxes]") {
     // ---PauliExpBox([Y], t)----Ry(-t)--- should be the identity
     double t = 1.6791969622440162;
     Circuit c(1);
-    PauliExpBox pbox({Pauli::Y}, t);
+    PauliExpBox pbox(SymPauliTensor({Pauli::Y}, t));
     c.add_box(pbox, uvec{0});
     c.add_op<unsigned>(OpType::Ry, -t, {0});
     Eigen::Matrix2Xcd u = tket_sim::get_unitary(c);
@@ -66,7 +68,7 @@ SCENARIO("Pauli gadgets", "[boxes]") {
     // ---PauliExpBox([Z], t)----Rz(-t)--- should be the identity
     double t = 1.7811410013115163;
     Circuit c(1);
-    PauliExpBox pbox({Pauli::Z}, t);
+    PauliExpBox pbox(SymPauliTensor({Pauli::Z}, t));
     c.add_box(pbox, uvec{0});
     c.add_op<unsigned>(OpType::Rz, -t, {0});
     Eigen::Matrix2Xcd u = tket_sim::get_unitary(c);
@@ -79,7 +81,7 @@ SCENARIO("Pauli gadgets", "[boxes]") {
     ExpBox ebox(a, +0.5 * PI * t);
     Circuit c(2);
     c.add_box(ebox, {0, 1});
-    PauliExpBox pbox({Pauli::I, Pauli::I}, t);
+    PauliExpBox pbox(SymPauliTensor({Pauli::I, Pauli::I}, t));
     c.add_box(pbox, {0, 1});
     Eigen::MatrixXcd u = tket_sim::get_unitary(c);
     REQUIRE((u - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
@@ -91,7 +93,7 @@ SCENARIO("Pauli gadgets", "[boxes]") {
     ExpBox ebox(a, +0.5 * PI * t);
     Circuit c(2);
     c.add_box(ebox, {0, 1});
-    PauliExpBox pbox({Pauli::I, Pauli::X}, t);
+    PauliExpBox pbox(SymPauliTensor({Pauli::I, Pauli::X}, t));
     c.add_box(pbox, {0, 1});
     Eigen::MatrixXcd u = tket_sim::get_unitary(c);
     REQUIRE((u - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
@@ -103,7 +105,7 @@ SCENARIO("Pauli gadgets", "[boxes]") {
     ExpBox ebox(a, +0.5 * PI * t);
     Circuit c(2);
     c.add_box(ebox, {0, 1});
-    PauliExpBox pbox({Pauli::I, Pauli::Y}, t);
+    PauliExpBox pbox(SymPauliTensor({Pauli::I, Pauli::Y}, t));
     c.add_box(pbox, {0, 1});
     Eigen::MatrixXcd u = tket_sim::get_unitary(c);
     REQUIRE((u - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
@@ -115,7 +117,7 @@ SCENARIO("Pauli gadgets", "[boxes]") {
     ExpBox ebox(a, +0.5 * PI * t);
     Circuit c(2);
     c.add_box(ebox, {0, 1});
-    PauliExpBox pbox({Pauli::I, Pauli::Z}, t);
+    PauliExpBox pbox(SymPauliTensor({Pauli::I, Pauli::Z}, t));
     c.add_box(pbox, {0, 1});
     Eigen::MatrixXcd u = tket_sim::get_unitary(c);
     REQUIRE((u - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
@@ -127,7 +129,7 @@ SCENARIO("Pauli gadgets", "[boxes]") {
     ExpBox ebox(a, +0.5 * PI * t);
     Circuit c(2);
     c.add_box(ebox, {0, 1});
-    PauliExpBox pbox({Pauli::X, Pauli::I}, t);
+    PauliExpBox pbox(SymPauliTensor({Pauli::X, Pauli::I}, t));
     c.add_box(pbox, {0, 1});
     Eigen::MatrixXcd u = tket_sim::get_unitary(c);
     REQUIRE((u - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
@@ -139,7 +141,7 @@ SCENARIO("Pauli gadgets", "[boxes]") {
     ExpBox ebox(a, +0.5 * PI * t);
     Circuit c(2);
     c.add_box(ebox, {0, 1});
-    PauliExpBox pbox({Pauli::X, Pauli::X}, t);
+    PauliExpBox pbox(SymPauliTensor({Pauli::X, Pauli::X}, t));
     c.add_box(pbox, {0, 1});
     Eigen::MatrixXcd u = tket_sim::get_unitary(c);
     REQUIRE((u - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
@@ -151,7 +153,7 @@ SCENARIO("Pauli gadgets", "[boxes]") {
     ExpBox ebox(a, +0.5 * PI * t);
     Circuit c(2);
     c.add_box(ebox, {0, 1});
-    PauliExpBox pbox({Pauli::X, Pauli::Y}, t);
+    PauliExpBox pbox(SymPauliTensor({Pauli::X, Pauli::Y}, t));
     c.add_box(pbox, {0, 1});
     Eigen::MatrixXcd u = tket_sim::get_unitary(c);
     REQUIRE((u - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
@@ -163,7 +165,7 @@ SCENARIO("Pauli gadgets", "[boxes]") {
     ExpBox ebox(a, +0.5 * PI * t);
     Circuit c(2);
     c.add_box(ebox, {0, 1});
-    PauliExpBox pbox({Pauli::X, Pauli::Z}, t);
+    PauliExpBox pbox(SymPauliTensor({Pauli::X, Pauli::Z}, t));
     c.add_box(pbox, {0, 1});
     Eigen::MatrixXcd u = tket_sim::get_unitary(c);
     REQUIRE((u - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
@@ -175,7 +177,7 @@ SCENARIO("Pauli gadgets", "[boxes]") {
     ExpBox ebox(a, +0.5 * PI * t);
     Circuit c(2);
     c.add_box(ebox, {0, 1});
-    PauliExpBox pbox({Pauli::Y, Pauli::I}, t);
+    PauliExpBox pbox(SymPauliTensor({Pauli::Y, Pauli::I}, t));
     c.add_box(pbox, {0, 1});
     Eigen::MatrixXcd u = tket_sim::get_unitary(c);
     REQUIRE((u - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
@@ -187,7 +189,7 @@ SCENARIO("Pauli gadgets", "[boxes]") {
     ExpBox ebox(a, +0.5 * PI * t);
     Circuit c(2);
     c.add_box(ebox, {0, 1});
-    PauliExpBox pbox({Pauli::Y, Pauli::X}, t);
+    PauliExpBox pbox(SymPauliTensor({Pauli::Y, Pauli::X}, t));
     c.add_box(pbox, {0, 1});
     Eigen::MatrixXcd u = tket_sim::get_unitary(c);
     REQUIRE((u - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
@@ -199,7 +201,7 @@ SCENARIO("Pauli gadgets", "[boxes]") {
     ExpBox ebox(a, +0.5 * PI * t);
     Circuit c(2);
     c.add_box(ebox, {0, 1});
-    PauliExpBox pbox({Pauli::Y, Pauli::Y}, t);
+    PauliExpBox pbox(SymPauliTensor({Pauli::Y, Pauli::Y}, t));
     c.add_box(pbox, {0, 1});
     Eigen::MatrixXcd u = tket_sim::get_unitary(c);
     REQUIRE((u - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
@@ -211,7 +213,7 @@ SCENARIO("Pauli gadgets", "[boxes]") {
     ExpBox ebox(a, +0.5 * PI * t);
     Circuit c(2);
     c.add_box(ebox, {0, 1});
-    PauliExpBox pbox({Pauli::Y, Pauli::Z}, t);
+    PauliExpBox pbox(SymPauliTensor({Pauli::Y, Pauli::Z}, t));
     c.add_box(pbox, {0, 1});
     Eigen::MatrixXcd u = tket_sim::get_unitary(c);
     REQUIRE((u - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
@@ -223,7 +225,7 @@ SCENARIO("Pauli gadgets", "[boxes]") {
     ExpBox ebox(a, +0.5 * PI * t);
     Circuit c(2);
     c.add_box(ebox, {0, 1});
-    PauliExpBox pbox({Pauli::Z, Pauli::I}, t);
+    PauliExpBox pbox(SymPauliTensor({Pauli::Z, Pauli::I}, t));
     c.add_box(pbox, {0, 1});
     Eigen::MatrixXcd u = tket_sim::get_unitary(c);
     REQUIRE((u - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
@@ -235,7 +237,7 @@ SCENARIO("Pauli gadgets", "[boxes]") {
     ExpBox ebox(a, +0.5 * PI * t);
     Circuit c(2);
     c.add_box(ebox, {0, 1});
-    PauliExpBox pbox({Pauli::Z, Pauli::X}, t);
+    PauliExpBox pbox(SymPauliTensor({Pauli::Z, Pauli::X}, t));
     c.add_box(pbox, {0, 1});
     Eigen::MatrixXcd u = tket_sim::get_unitary(c);
     REQUIRE((u - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
@@ -247,7 +249,7 @@ SCENARIO("Pauli gadgets", "[boxes]") {
     ExpBox ebox(a, +0.5 * PI * t);
     Circuit c(2);
     c.add_box(ebox, {0, 1});
-    PauliExpBox pbox({Pauli::Z, Pauli::Y}, t);
+    PauliExpBox pbox(SymPauliTensor({Pauli::Z, Pauli::Y}, t));
     c.add_box(pbox, {0, 1});
     Eigen::MatrixXcd u = tket_sim::get_unitary(c);
     REQUIRE((u - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
@@ -259,43 +261,50 @@ SCENARIO("Pauli gadgets", "[boxes]") {
     ExpBox ebox(a, +0.5 * PI * t);
     Circuit c(2);
     c.add_box(ebox, {0, 1});
-    PauliExpBox pbox({Pauli::Z, Pauli::Z}, t);
+    PauliExpBox pbox(SymPauliTensor({Pauli::Z, Pauli::Z}, t));
     c.add_box(pbox, {0, 1});
     Eigen::MatrixXcd u = tket_sim::get_unitary(c);
     REQUIRE((u - Eigen::Matrix4cd::Identity()).cwiseAbs().sum() < ERR_EPS);
   }
   GIVEN("complex coefficient") {
     Expr ei{SymEngine::I};
-    PauliExpBox pebox({Pauli::Z}, ei);
+    PauliExpBox pebox(SymPauliTensor({Pauli::Z}, ei));
     Expr p = pebox.get_phase();
     REQUIRE(p == ei);
   }
 }
 SCENARIO("Pauli gadget pairs", "[boxes]") {
   GIVEN("Basis Circuit check") {
-    PauliExpPairBox pbox({Pauli::X}, 1.0, {Pauli::I}, 0.0);
+    PauliExpPairBox pbox(
+        SymPauliTensor({Pauli::X}, 1.0), SymPauliTensor({Pauli::I}, 0.0));
+    auto circ = pbox.to_circuit();
+    circ->decompose_boxes_recursively();
     Circuit comp(1);
     comp.add_op<unsigned>(OpType::H, {0});
     comp.add_op<unsigned>(OpType::Rz, 1.0, {0});
     comp.add_op<unsigned>(OpType::H, {0});
-    REQUIRE(*(pbox.to_circuit()) == comp);
+    REQUIRE(*circ == comp);
   }
   GIVEN("Empty PauliExpPairBox compiles to empty circuit") {
     Circuit empty_circuit(0);
     PauliExpPairBox pbox;
     auto empty_pbox_circuit = pbox.to_circuit();
+    empty_pbox_circuit->decompose_boxes_recursively();
     REQUIRE(*empty_pbox_circuit == empty_circuit);
   }
   GIVEN("Construction with two pauli strings of different length throws") {
-    auto pauli_string0 = std::vector<Pauli>({Pauli::X, Pauli::Z});
-    auto pauli_string1 = std::vector<Pauli>({Pauli::X, Pauli::Z, Pauli::I});
+    DensePauliMap pauli_string0{Pauli::X, Pauli::Z};
+    DensePauliMap pauli_string1{Pauli::X, Pauli::Z, Pauli::I};
     REQUIRE_THROWS_AS(
-        PauliExpPairBox(pauli_string0, 1.0, pauli_string1, 1.0),
+        PauliExpPairBox(
+            SymPauliTensor(pauli_string0, 1.0),
+            SymPauliTensor(pauli_string1, 1.0)),
         PauliExpBoxInvalidity);
   }
   GIVEN("is_clifford test cases") {
     SECTION("Empty Paulis") {
-      REQUIRE(PauliExpPairBox({}, 1.2, {}, 0.1).is_clifford());
+      REQUIRE(PauliExpPairBox(SymPauliTensor({}, 1.2), SymPauliTensor({}, 0.1))
+                  .is_clifford());
     }
     SECTION("Various phases") {
       auto phase_case = GENERATE(
@@ -307,8 +316,8 @@ SCENARIO("Pauli gadget pairs", "[boxes]") {
           std::make_tuple(0.5, 2.0, true), std::make_tuple(0.0, 0.3, false),
           std::make_tuple(0.1, 0.3, false), std::make_tuple(1.1, 2.0, false));
       auto pbox = PauliExpPairBox(
-          {Pauli::X, Pauli::Y}, get<0>(phase_case), {Pauli::X, Pauli::Y},
-          get<1>(phase_case));
+          SymPauliTensor({Pauli::X, Pauli::Y}, get<0>(phase_case)),
+          SymPauliTensor({Pauli::X, Pauli::Y}, get<1>(phase_case)));
       REQUIRE(pbox.is_clifford() == get<2>(phase_case));
     }
   }
@@ -317,23 +326,32 @@ SCENARIO("Pauli gadget pairs", "[boxes]") {
     auto b = SymTable::fresh_symbol("b");
     auto ea = Expr(a);
     auto eb = Expr(b);
-    auto paulis0 = std::vector<Pauli>{Pauli::X};
-    auto paulis1 = std::vector<Pauli>{Pauli::Z};
-    REQUIRE(PauliExpPairBox(paulis0, 0.2, paulis1, 0.4).free_symbols().empty());
+    DensePauliMap paulis0{Pauli::X};
+    DensePauliMap paulis1{Pauli::Z};
+    REQUIRE(PauliExpPairBox(
+                SymPauliTensor(paulis0, 0.2), SymPauliTensor(paulis1, 0.4))
+                .free_symbols()
+                .empty());
     REQUIRE(
-        PauliExpPairBox(paulis0, ea, paulis1, 0.4).free_symbols() == SymSet{a});
+        PauliExpPairBox(
+            SymPauliTensor(paulis0, ea), SymPauliTensor(paulis1, 0.4))
+            .free_symbols() == SymSet{a});
     REQUIRE(
-        PauliExpPairBox(paulis0, 1.0, paulis1, eb).free_symbols() == SymSet{b});
+        PauliExpPairBox(
+            SymPauliTensor(paulis0, 1.0), SymPauliTensor(paulis1, eb))
+            .free_symbols() == SymSet{b});
     REQUIRE(
-        PauliExpPairBox(paulis0, ea, paulis1, eb).free_symbols() ==
-        SymSet{a, b});
+        PauliExpPairBox(
+            SymPauliTensor(paulis0, ea), SymPauliTensor(paulis1, eb))
+            .free_symbols() == SymSet{a, b});
   }
   GIVEN("dagger") {
     auto ea = Expr(SymTable::fresh_symbol("a"));
-    auto paulis0 = std::vector<Pauli>{Pauli::X};
-    auto paulis1 = std::vector<Pauli>{Pauli::Z};
+    DensePauliMap paulis0{Pauli::X};
+    DensePauliMap paulis1{Pauli::Z};
     auto cx_config = CXConfigType::Star;
-    auto box = PauliExpPairBox(paulis0, ea, paulis1, 0.4, cx_config);
+    auto box = PauliExpPairBox(
+        SymPauliTensor(paulis0, ea), SymPauliTensor(paulis1, 0.4), cx_config);
     auto dagger_box =
         std::dynamic_pointer_cast<const PauliExpPairBox>(box.dagger());
 
@@ -347,14 +365,13 @@ SCENARIO("Pauli gadget pairs", "[boxes]") {
   }
   GIVEN("transpose") {
     auto ea = Expr(SymTable::fresh_symbol("a"));
-    auto paulis0 =
-        std::vector<Pauli>{Pauli::X, Pauli::Y, Pauli::Z, Pauli::I, Pauli::Y};
-    auto paulis1 =
-        std::vector<Pauli>{Pauli::Y, Pauli::Y, Pauli::Z, Pauli::I, Pauli::Y};
+    DensePauliMap paulis0{Pauli::X, Pauli::Y, Pauli::Z, Pauli::I, Pauli::Y};
+    DensePauliMap paulis1{Pauli::Y, Pauli::Y, Pauli::Z, Pauli::I, Pauli::Y};
     auto cx_config = CXConfigType::MultiQGate;
 
     WHEN("paulis1 contains odd number of Y") {
-      auto box = PauliExpPairBox(paulis0, ea, paulis1, 0.4, cx_config);
+      auto box = PauliExpPairBox(
+          SymPauliTensor(paulis0, ea), SymPauliTensor(paulis1, 0.4), cx_config);
       auto transpose_box =
           std::dynamic_pointer_cast<const PauliExpPairBox>(box.transpose());
       const auto [actual_paulis0, actual_paulis1] =
@@ -370,7 +387,8 @@ SCENARIO("Pauli gadget pairs", "[boxes]") {
 
     std::swap(paulis0, paulis1);
     WHEN("paulis0 contains odd number of Y") {
-      auto box = PauliExpPairBox(paulis0, ea, paulis1, 0.4, cx_config);
+      auto box = PauliExpPairBox(
+          SymPauliTensor(paulis0, ea), SymPauliTensor(paulis1, 0.4), cx_config);
       auto transpose_box =
           std::dynamic_pointer_cast<const PauliExpPairBox>(box.transpose());
       const auto [actual_paulis0, actual_paulis1] =
@@ -389,10 +407,11 @@ SCENARIO("Pauli gadget pairs", "[boxes]") {
     auto b = SymTable::fresh_symbol("b");
     auto ea = Expr(a);
     auto eb = Expr(b);
-    auto paulis0 = std::vector<Pauli>{Pauli::X};
-    auto paulis1 = std::vector<Pauli>{Pauli::Z};
+    DensePauliMap paulis0{Pauli::X};
+    DensePauliMap paulis1{Pauli::Z};
 
-    auto box = PauliExpPairBox(paulis0, ea, paulis1, eb);
+    auto box = PauliExpPairBox(
+        SymPauliTensor(paulis0, ea), SymPauliTensor(paulis1, eb));
 
     WHEN("only first phase is substituted") {
       SymEngine::map_basic_basic sub_map{std::make_pair(a, Expr(0.8))};
@@ -428,40 +447,42 @@ SCENARIO("Pauli gadget commuting sets", "[boxes]") {
   GIVEN("Basis Circuit check") {
     PauliExpCommutingSetBox pbox(
         {{{Pauli::X}, 1.0}, {{Pauli::I}, 0.0}, {{Pauli::I}, 0.0}});
+    auto circ = pbox.to_circuit();
+    circ->decompose_boxes_recursively();
     Circuit comp(1);
     comp.add_op<unsigned>(OpType::H, {0});
     comp.add_op<unsigned>(OpType::Rz, 1.0, {0});
     comp.add_op<unsigned>(OpType::H, {0});
-    REQUIRE(*(pbox.to_circuit()) == comp);
+    REQUIRE(*circ == comp);
   }
   GIVEN("Empty PauliExpPairBox compiles to empty circuit") {
     Circuit empty_circuit(0);
     PauliExpCommutingSetBox pbox;
     auto empty_pbox_circuit = pbox.to_circuit();
+    empty_pbox_circuit->decompose_boxes_recursively();
     REQUIRE(*empty_pbox_circuit == empty_circuit);
   }
   GIVEN("Construction with no gadgets throws") {
     REQUIRE_THROWS_AS(
-        PauliExpCommutingSetBox(
-            std::vector<std::pair<std::vector<Pauli>, Expr>>{}),
+        PauliExpCommutingSetBox(std::vector<SymPauliTensor>{}),
         PauliExpBoxInvalidity);
   }
   GIVEN("Construction with pauli strings of different length throws") {
-    auto pauli_string0 = std::vector<Pauli>({Pauli::X, Pauli::Z});
-    auto pauli_string1 = std::vector<Pauli>({Pauli::X, Pauli::I});
-    auto pauli_string2 = std::vector<Pauli>({Pauli::X, Pauli::Z, Pauli::I});
+    DensePauliMap pauli_string0{Pauli::X, Pauli::Z};
+    DensePauliMap pauli_string1{Pauli::X, Pauli::I};
+    DensePauliMap pauli_string2{Pauli::X, Pauli::Z, Pauli::I};
     REQUIRE_THROWS_AS(
         PauliExpCommutingSetBox({
-            {pauli_string0, 1.0},
-            {pauli_string1, 1.0},
-            {pauli_string2, 1.0},
+            SymPauliTensor(pauli_string0, 1.0),
+            SymPauliTensor(pauli_string1, 1.0),
+            SymPauliTensor(pauli_string2, 1.0),
         }),
         PauliExpBoxInvalidity);
   }
   GIVEN("Construction with non-commuting pauli strings throws") {
-    auto pauli_string0 = std::vector<Pauli>({Pauli::X, Pauli::Z});
-    auto pauli_string1 = std::vector<Pauli>({Pauli::Z, Pauli::I});
-    auto pauli_string2 = std::vector<Pauli>({Pauli::X, Pauli::Z});
+    DensePauliMap pauli_string0{Pauli::X, Pauli::Z};
+    DensePauliMap pauli_string1{Pauli::Z, Pauli::I};
+    DensePauliMap pauli_string2{Pauli::X, Pauli::Z};
     REQUIRE_THROWS_AS(
         PauliExpCommutingSetBox({
             {pauli_string0, 1.0},
@@ -554,12 +575,12 @@ SCENARIO("Pauli gadget commuting sets", "[boxes]") {
     auto pauli_gadgets = dagger_box->get_pauli_gadgets();
 
     REQUIRE(pauli_gadgets.size() == 3);
-    REQUIRE(pauli_gadgets[0].first == paulis0);
-    REQUIRE(pauli_gadgets[0].second == -phase0);
-    REQUIRE(pauli_gadgets[1].first == paulis1);
-    REQUIRE(pauli_gadgets[1].second == -phase1);
-    REQUIRE(pauli_gadgets[2].first == paulis2);
-    REQUIRE(pauli_gadgets[2].second == -phase2);
+    REQUIRE(pauli_gadgets[0].string == paulis0);
+    REQUIRE(pauli_gadgets[0].coeff == -phase0);
+    REQUIRE(pauli_gadgets[1].string == paulis1);
+    REQUIRE(pauli_gadgets[1].coeff == -phase1);
+    REQUIRE(pauli_gadgets[2].string == paulis2);
+    REQUIRE(pauli_gadgets[2].coeff == -phase2);
     REQUIRE(dagger_box->get_cx_config() == cx_config);
   }
   GIVEN("transpose") {
@@ -585,14 +606,14 @@ SCENARIO("Pauli gadget commuting sets", "[boxes]") {
     auto pauli_gadgets = transpose_box->get_pauli_gadgets();
 
     REQUIRE(pauli_gadgets.size() == 4);
-    REQUIRE(pauli_gadgets[0].first == paulis0);
-    REQUIRE(pauli_gadgets[0].second == phase0);
-    REQUIRE(pauli_gadgets[1].first == paulis1);
-    REQUIRE(pauli_gadgets[1].second == -phase1);
-    REQUIRE(pauli_gadgets[2].first == paulis2);
-    REQUIRE(pauli_gadgets[2].second == phase2);
-    REQUIRE(pauli_gadgets[3].first == paulis3);
-    REQUIRE(pauli_gadgets[3].second == -phase3);
+    REQUIRE(pauli_gadgets[0].string == paulis0);
+    REQUIRE(pauli_gadgets[0].coeff == phase0);
+    REQUIRE(pauli_gadgets[1].string == paulis1);
+    REQUIRE(pauli_gadgets[1].coeff == -phase1);
+    REQUIRE(pauli_gadgets[2].string == paulis2);
+    REQUIRE(pauli_gadgets[2].coeff == phase2);
+    REQUIRE(pauli_gadgets[3].string == paulis3);
+    REQUIRE(pauli_gadgets[3].coeff == -phase3);
     REQUIRE(transpose_box->get_cx_config() == cx_config);
   }
   GIVEN("symbol_substitution") {
@@ -616,34 +637,34 @@ SCENARIO("Pauli gadget commuting sets", "[boxes]") {
     auto sub_box1 = std::dynamic_pointer_cast<const PauliExpCommutingSetBox>(
         box.symbol_substitution(sub_map1));
     auto pauli_gadgets1 = sub_box1->get_pauli_gadgets();
-    REQUIRE(pauli_gadgets1[0].second == sub_a);
-    REQUIRE(pauli_gadgets1[1].second == eb);
-    REQUIRE(pauli_gadgets1[2].second == ec);
+    REQUIRE(pauli_gadgets1[0].coeff == sub_a);
+    REQUIRE(pauli_gadgets1[1].coeff == eb);
+    REQUIRE(pauli_gadgets1[2].coeff == ec);
 
     SymEngine::map_basic_basic sub_map2{std::make_pair(b, sub_b)};
     auto sub_box2 = std::dynamic_pointer_cast<const PauliExpCommutingSetBox>(
         box.symbol_substitution(sub_map2));
     auto pauli_gadgets2 = sub_box2->get_pauli_gadgets();
-    REQUIRE(pauli_gadgets2[0].second == ea);
-    REQUIRE(pauli_gadgets2[1].second == sub_b);
-    REQUIRE(pauli_gadgets2[2].second == ec);
+    REQUIRE(pauli_gadgets2[0].coeff == ea);
+    REQUIRE(pauli_gadgets2[1].coeff == sub_b);
+    REQUIRE(pauli_gadgets2[2].coeff == ec);
 
     SymEngine::map_basic_basic sub_map3{std::make_pair(c, sub_c)};
     auto sub_box3 = std::dynamic_pointer_cast<const PauliExpCommutingSetBox>(
         box.symbol_substitution(sub_map3));
     auto pauli_gadgets3 = sub_box3->get_pauli_gadgets();
-    REQUIRE(pauli_gadgets3[0].second == ea);
-    REQUIRE(pauli_gadgets3[1].second == eb);
-    REQUIRE(pauli_gadgets3[2].second == sub_c);
+    REQUIRE(pauli_gadgets3[0].coeff == ea);
+    REQUIRE(pauli_gadgets3[1].coeff == eb);
+    REQUIRE(pauli_gadgets3[2].coeff == sub_c);
 
     sub_map1.merge(sub_map2);
     sub_map1.merge(sub_map3);
     auto sub_box4 = std::dynamic_pointer_cast<const PauliExpCommutingSetBox>(
         box.symbol_substitution(sub_map1));
     auto pauli_gadgets4 = sub_box4->get_pauli_gadgets();
-    REQUIRE(pauli_gadgets4[0].second == sub_a);
-    REQUIRE(pauli_gadgets4[1].second == sub_b);
-    REQUIRE(pauli_gadgets4[2].second == sub_c);
+    REQUIRE(pauli_gadgets4[0].coeff == sub_a);
+    REQUIRE(pauli_gadgets4[1].coeff == sub_b);
+    REQUIRE(pauli_gadgets4[2].coeff == sub_c);
   }
 }
 

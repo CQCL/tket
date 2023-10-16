@@ -116,7 +116,7 @@ SCENARIO("Correct updates of SymplecticTableau") {
     SymplecticTableau tab2 = get_initial_stab_destab_tab();
     tab0.apply_S(0);
     tab1.apply_pauli_gadget(
-        PauliStabiliser({Pauli::Z, Pauli::I, Pauli::I}, true), 1);
+        PauliStabiliser({Pauli::Z, Pauli::I, Pauli::I}, 0), 1);
     tab2.apply_gate(OpType::S, {0});
     std::stringstream tabstr;
     tabstr << tab0;
@@ -141,7 +141,7 @@ SCENARIO("Correct updates of SymplecticTableau") {
     SymplecticTableau tab2 = get_initial_stab_destab_tab();
     tab0.apply_V(0);
     tab1.apply_pauli_gadget(
-        PauliStabiliser({Pauli::X, Pauli::I, Pauli::I}, true), 1);
+        PauliStabiliser({Pauli::X, Pauli::I, Pauli::I}, 0), 1);
     tab2.apply_gate(OpType::V, {0});
     std::stringstream tabstr;
     tabstr << tab0;
@@ -166,17 +166,17 @@ SCENARIO("Correct updates of SymplecticTableau") {
     SymplecticTableau tab3 = get_initial_stab_destab_tab();
     tab0.apply_CX(0, 1);
     tab1.apply_pauli_gadget(
-        PauliStabiliser({Pauli::Z, Pauli::I, Pauli::I}, true), 1);
+        PauliStabiliser({Pauli::Z, Pauli::I, Pauli::I}, 0), 1);
     tab1.apply_pauli_gadget(
-        PauliStabiliser({Pauli::I, Pauli::X, Pauli::I}, true), 1);
+        PauliStabiliser({Pauli::I, Pauli::X, Pauli::I}, 0), 1);
     tab1.apply_pauli_gadget(
-        PauliStabiliser({Pauli::Z, Pauli::X, Pauli::I}, false), 1);
+        PauliStabiliser({Pauli::Z, Pauli::X, Pauli::I}, 2), 1);
     tab2.apply_pauli_gadget(
-        PauliStabiliser({Pauli::Z, Pauli::I, Pauli::I}, true), 3);
+        PauliStabiliser({Pauli::Z, Pauli::I, Pauli::I}, 0), 3);
     tab2.apply_pauli_gadget(
-        PauliStabiliser({Pauli::I, Pauli::X, Pauli::I}, true), 3);
+        PauliStabiliser({Pauli::I, Pauli::X, Pauli::I}, 0), 3);
     tab2.apply_pauli_gadget(
-        PauliStabiliser({Pauli::Z, Pauli::X, Pauli::I}, false), 3);
+        PauliStabiliser({Pauli::Z, Pauli::X, Pauli::I}, 2), 3);
     tab3.apply_gate(OpType::CX, {0, 1});
     std::stringstream tabstr;
     tabstr << tab0;
@@ -197,12 +197,12 @@ SCENARIO("Correct updates of SymplecticTableau") {
 SCENARIO("Correct creation of UnitaryTableau") {
   GIVEN("An identity circuit") {
     UnitaryTableau tab(3);
-    REQUIRE(tab.get_zrow(Qubit(0)) == QubitPauliTensor(Qubit(0), Pauli::Z, 1.));
-    REQUIRE(tab.get_zrow(Qubit(1)) == QubitPauliTensor(Qubit(1), Pauli::Z, 1.));
-    REQUIRE(tab.get_zrow(Qubit(2)) == QubitPauliTensor(Qubit(2), Pauli::Z, 1.));
-    REQUIRE(tab.get_xrow(Qubit(0)) == QubitPauliTensor(Qubit(0), Pauli::X, 1.));
-    REQUIRE(tab.get_xrow(Qubit(1)) == QubitPauliTensor(Qubit(1), Pauli::X, 1.));
-    REQUIRE(tab.get_xrow(Qubit(2)) == QubitPauliTensor(Qubit(2), Pauli::X, 1.));
+    REQUIRE(tab.get_zrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::Z));
+    REQUIRE(tab.get_zrow(Qubit(1)) == SpPauliStabiliser(Qubit(1), Pauli::Z));
+    REQUIRE(tab.get_zrow(Qubit(2)) == SpPauliStabiliser(Qubit(2), Pauli::Z));
+    REQUIRE(tab.get_xrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::X));
+    REQUIRE(tab.get_xrow(Qubit(1)) == SpPauliStabiliser(Qubit(1), Pauli::X));
+    REQUIRE(tab.get_xrow(Qubit(2)) == SpPauliStabiliser(Qubit(2), Pauli::X));
   }
   GIVEN("A single S gate") {
     UnitaryTableau tab0(3);
@@ -215,11 +215,11 @@ SCENARIO("Correct creation of UnitaryTableau") {
     tab1.apply_S_at_end(Qubit(0));
     tab2.apply_gate_at_front(OpType::S, {Qubit(0)});
     tab3.apply_gate_at_end(OpType::S, {Qubit(0)});
-    tab4.apply_pauli_at_front(QubitPauliTensor(Qubit(0), Pauli::Z), 1);
-    tab5.apply_pauli_at_end(QubitPauliTensor(Qubit(0), Pauli::Z), 1);
+    tab4.apply_pauli_at_front(SpPauliStabiliser(Qubit(0), Pauli::Z), 1);
+    tab5.apply_pauli_at_end(SpPauliStabiliser(Qubit(0), Pauli::Z), 1);
     // Phases should match those in the tests for SymplecticTableau
-    CHECK(tab0.get_zrow(Qubit(0)) == QubitPauliTensor(Qubit(0), Pauli::Z, 1.));
-    CHECK(tab0.get_xrow(Qubit(0)) == QubitPauliTensor(Qubit(0), Pauli::Y, 1.));
+    CHECK(tab0.get_zrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::Z));
+    CHECK(tab0.get_xrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::Y));
     CHECK(tab0 == tab1);
     CHECK(tab0 == tab2);
     CHECK(tab0 == tab3);
@@ -237,10 +237,10 @@ SCENARIO("Correct creation of UnitaryTableau") {
     tab1.apply_V_at_end(Qubit(0));
     tab2.apply_gate_at_front(OpType::V, {Qubit(0)});
     tab3.apply_gate_at_end(OpType::V, {Qubit(0)});
-    tab4.apply_pauli_at_front(QubitPauliTensor(Qubit(0), Pauli::X), 1);
-    tab5.apply_pauli_at_end(QubitPauliTensor(Qubit(0), Pauli::X), 1);
-    CHECK(tab0.get_zrow(Qubit(0)) == QubitPauliTensor(Qubit(0), Pauli::Y, -1.));
-    CHECK(tab0.get_xrow(Qubit(0)) == QubitPauliTensor(Qubit(0), Pauli::X, 1.));
+    tab4.apply_pauli_at_front(SpPauliStabiliser(Qubit(0), Pauli::X), 1);
+    tab5.apply_pauli_at_end(SpPauliStabiliser(Qubit(0), Pauli::X), 1);
+    CHECK(tab0.get_zrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::Y, 2));
+    CHECK(tab0.get_xrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::X, 0));
     CHECK(tab0 == tab1);
     CHECK(tab0 == tab2);
     CHECK(tab0 == tab3);
@@ -260,8 +260,8 @@ SCENARIO("Correct creation of UnitaryTableau") {
     tab3.apply_gate_at_end(OpType::Vdg, {Qubit(0)});
     tab3.apply_gate_at_end(OpType::Sdg, {Qubit(0)});
     tab3.apply_gate_at_end(OpType::Vdg, {Qubit(0)});
-    CHECK(tab0.get_zrow(Qubit(0)) == QubitPauliTensor(Qubit(0), Pauli::X, 1.));
-    CHECK(tab0.get_xrow(Qubit(0)) == QubitPauliTensor(Qubit(0), Pauli::Z, 1.));
+    CHECK(tab0.get_zrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::X));
+    CHECK(tab0.get_xrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::Z));
     CHECK(tab0 == tab1);
     CHECK(tab0 == tab2);
     CHECK(tab0 == tab3);
@@ -273,22 +273,22 @@ SCENARIO("Correct creation of UnitaryTableau") {
     UnitaryTableau tab3(3);
     tab0.apply_CX_at_front(Qubit(0), Qubit(1));
     tab1.apply_CX_at_end(Qubit(0), Qubit(1));
-    tab2.apply_pauli_at_front(QubitPauliTensor(Qubit(0), Pauli::Z), 1);
-    tab2.apply_pauli_at_front(QubitPauliTensor(Qubit(1), Pauli::X), 1);
+    tab2.apply_pauli_at_front(SpPauliStabiliser(Qubit(0), Pauli::Z), 1);
+    tab2.apply_pauli_at_front(SpPauliStabiliser(Qubit(1), Pauli::X), 1);
     tab2.apply_pauli_at_front(
-        QubitPauliTensor(std::list<Pauli>{Pauli::Z, Pauli::X}), 3);
-    tab3.apply_pauli_at_end(QubitPauliTensor(Qubit(0), Pauli::Z), 3);
-    tab3.apply_pauli_at_end(QubitPauliTensor(Qubit(1), Pauli::X), 3);
+        SpPauliStabiliser(DensePauliMap{Pauli::Z, Pauli::X}), 3);
+    tab3.apply_pauli_at_end(SpPauliStabiliser(Qubit(0), Pauli::Z), 3);
+    tab3.apply_pauli_at_end(SpPauliStabiliser(Qubit(1), Pauli::X), 3);
     tab3.apply_pauli_at_end(
-        QubitPauliTensor(std::list<Pauli>{Pauli::Z, Pauli::X}), 1);
-    CHECK(tab0.get_zrow(Qubit(0)) == QubitPauliTensor(Qubit(0), Pauli::Z, 1.));
-    CHECK(tab0.get_xrow(Qubit(1)) == QubitPauliTensor(Qubit(1), Pauli::X, 1.));
+        SpPauliStabiliser(DensePauliMap{Pauli::Z, Pauli::X}), 1);
+    CHECK(tab0.get_zrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::Z));
+    CHECK(tab0.get_xrow(Qubit(1)) == SpPauliStabiliser(Qubit(1), Pauli::X));
     CHECK(
         tab0.get_zrow(Qubit(1)) ==
-        QubitPauliTensor(std::list<Pauli>({Pauli::Z, Pauli::Z})));
+        SpPauliStabiliser(DensePauliMap{Pauli::Z, Pauli::Z}));
     CHECK(
         tab0.get_xrow(Qubit(0)) ==
-        QubitPauliTensor(std::list<Pauli>({Pauli::X, Pauli::X})));
+        SpPauliStabiliser(DensePauliMap{Pauli::X, Pauli::X}));
     CHECK(tab0 == tab1);
     CHECK(tab0 == tab2);
     CHECK(tab0 == tab3);
@@ -317,8 +317,7 @@ SCENARIO("Correct creation of UnitaryTableau") {
   GIVEN("A PI/2 rotation") {
     Circuit circ = get_test_circ();
     UnitaryTableau tab = circuit_to_unitary_tableau(circ);
-    QubitPauliTensor pauli =
-        QubitPauliTensor(std::list<Pauli>{Pauli::X, Pauli::Y, Pauli::Z});
+    SpPauliStabiliser pauli(DensePauliMap{Pauli::X, Pauli::Y, Pauli::Z});
     tab.apply_pauli_at_end(pauli, 3);
 
     add_ops_list_two_to_circuit(circ, OpType::Sdg);
@@ -327,8 +326,7 @@ SCENARIO("Correct creation of UnitaryTableau") {
   }
   GIVEN("A PI/2 rotation at front") {
     UnitaryTableau tab = get_tableau_with_gates_applied_at_front();
-    QubitPauliTensor pauli =
-        QubitPauliTensor(std::list<Pauli>({Pauli::X, Pauli::Y, Pauli::Z}));
+    SpPauliStabiliser pauli(DensePauliMap{Pauli::X, Pauli::Y, Pauli::Z});
     tab.apply_pauli_at_front(pauli, 1);
 
     Circuit circ(3);
@@ -398,12 +396,12 @@ SCENARIO("Synthesis of circuits from UnitaryTableau") {
 SCENARIO("Correct creation of UnitaryRevTableau") {
   GIVEN("An identity circuit") {
     UnitaryRevTableau tab(3);
-    REQUIRE(tab.get_zrow(Qubit(0)) == QubitPauliTensor(Qubit(0), Pauli::Z, 1.));
-    REQUIRE(tab.get_zrow(Qubit(1)) == QubitPauliTensor(Qubit(1), Pauli::Z, 1.));
-    REQUIRE(tab.get_zrow(Qubit(2)) == QubitPauliTensor(Qubit(2), Pauli::Z, 1.));
-    REQUIRE(tab.get_xrow(Qubit(0)) == QubitPauliTensor(Qubit(0), Pauli::X, 1.));
-    REQUIRE(tab.get_xrow(Qubit(1)) == QubitPauliTensor(Qubit(1), Pauli::X, 1.));
-    REQUIRE(tab.get_xrow(Qubit(2)) == QubitPauliTensor(Qubit(2), Pauli::X, 1.));
+    REQUIRE(tab.get_zrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::Z));
+    REQUIRE(tab.get_zrow(Qubit(1)) == SpPauliStabiliser(Qubit(1), Pauli::Z));
+    REQUIRE(tab.get_zrow(Qubit(2)) == SpPauliStabiliser(Qubit(2), Pauli::Z));
+    REQUIRE(tab.get_xrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::X));
+    REQUIRE(tab.get_xrow(Qubit(1)) == SpPauliStabiliser(Qubit(1), Pauli::X));
+    REQUIRE(tab.get_xrow(Qubit(2)) == SpPauliStabiliser(Qubit(2), Pauli::X));
   }
   GIVEN("A single S gate") {
     UnitaryRevTableau tab0(3);
@@ -416,14 +414,14 @@ SCENARIO("Correct creation of UnitaryRevTableau") {
     tab1.apply_S_at_front(Qubit(0));
     tab2.apply_gate_at_end(OpType::S, {Qubit(0)});
     tab3.apply_gate_at_front(OpType::S, {Qubit(0)});
-    tab4.apply_pauli_at_end(QubitPauliTensor(Qubit(0), Pauli::Z), 1);
-    tab5.apply_pauli_at_front(QubitPauliTensor(Qubit(0), Pauli::Z), 1);
+    tab4.apply_pauli_at_end(SpPauliStabiliser(Qubit(0), Pauli::Z), 1);
+    tab5.apply_pauli_at_front(SpPauliStabiliser(Qubit(0), Pauli::Z), 1);
     // Reading the stabilizers in the reverse direction changes how we apply the
     // Pauli reorder rules to determine the correct phase:
     // U Q e^{-i P pi/4} = U e^{-i P pi/4}.
     // (iPQ) iZX = -Y
-    CHECK(tab0.get_zrow(Qubit(0)) == QubitPauliTensor(Qubit(0), Pauli::Z, 1.));
-    CHECK(tab0.get_xrow(Qubit(0)) == QubitPauliTensor(Qubit(0), Pauli::Y, -1.));
+    CHECK(tab0.get_zrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::Z, 0));
+    CHECK(tab0.get_xrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::Y, 2));
     CHECK(tab0 == tab1);
     CHECK(tab0 == tab2);
     CHECK(tab0 == tab3);
@@ -441,11 +439,11 @@ SCENARIO("Correct creation of UnitaryRevTableau") {
     tab1.apply_V_at_front(Qubit(0));
     tab2.apply_gate_at_end(OpType::V, {Qubit(0)});
     tab3.apply_gate_at_front(OpType::V, {Qubit(0)});
-    tab4.apply_pauli_at_end(QubitPauliTensor(Qubit(0), Pauli::X), 1);
-    tab5.apply_pauli_at_front(QubitPauliTensor(Qubit(0), Pauli::X), 1);
+    tab4.apply_pauli_at_end(SpPauliStabiliser(Qubit(0), Pauli::X), 1);
+    tab5.apply_pauli_at_front(SpPauliStabiliser(Qubit(0), Pauli::X), 1);
     // iXZ = +Y
-    CHECK(tab0.get_zrow(Qubit(0)) == QubitPauliTensor(Qubit(0), Pauli::Y, 1.));
-    CHECK(tab0.get_xrow(Qubit(0)) == QubitPauliTensor(Qubit(0), Pauli::X, 1.));
+    CHECK(tab0.get_zrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::Y));
+    CHECK(tab0.get_xrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::X));
     CHECK(tab0 == tab1);
     CHECK(tab0 == tab2);
     CHECK(tab0 == tab3);
@@ -457,10 +455,8 @@ SCENARIO("Correct creation of UnitaryRevTableau") {
     UnitaryRevTableau tab1(3);
     tab0.apply_gate_at_end(OpType::H, {Qubit(0)});
     tab1.apply_gate_at_front(OpType::H, {Qubit(0)});
-    REQUIRE(
-        tab0.get_zrow(Qubit(0)) == QubitPauliTensor(Qubit(0), Pauli::X, 1.));
-    REQUIRE(
-        tab0.get_xrow(Qubit(0)) == QubitPauliTensor(Qubit(0), Pauli::Z, 1.));
+    REQUIRE(tab0.get_zrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::X));
+    REQUIRE(tab0.get_xrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::Z));
     REQUIRE(tab0 == tab1);
   }
   GIVEN("A single CX gate") {
@@ -468,16 +464,14 @@ SCENARIO("Correct creation of UnitaryRevTableau") {
     UnitaryRevTableau tab1(3);
     tab0.apply_CX_at_end(Qubit(0), Qubit(1));
     tab1.apply_CX_at_front(Qubit(0), Qubit(1));
-    REQUIRE(
-        tab0.get_zrow(Qubit(0)) == QubitPauliTensor(Qubit(0), Pauli::Z, 1.));
-    REQUIRE(
-        tab0.get_xrow(Qubit(1)) == QubitPauliTensor(Qubit(1), Pauli::X, 1.));
+    REQUIRE(tab0.get_zrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::Z));
+    REQUIRE(tab0.get_xrow(Qubit(1)) == SpPauliStabiliser(Qubit(1), Pauli::X));
     REQUIRE(
         tab0.get_zrow(Qubit(1)) ==
-        QubitPauliTensor(std::list<Pauli>({Pauli::Z, Pauli::Z})));
+        SpPauliStabiliser(DensePauliMap{Pauli::Z, Pauli::Z}));
     REQUIRE(
         tab0.get_xrow(Qubit(0)) ==
-        QubitPauliTensor(std::list<Pauli>({Pauli::X, Pauli::X})));
+        SpPauliStabiliser(DensePauliMap{Pauli::X, Pauli::X}));
     REQUIRE(tab0 == tab1);
     std::stringstream tabstr;
     tabstr << tab0;
@@ -500,8 +494,7 @@ SCENARIO("Correct creation of UnitaryRevTableau") {
   GIVEN("A PI/2 rotation") {
     Circuit circ = get_test_circ();
     UnitaryRevTableau tab = circuit_to_unitary_rev_tableau(circ);
-    QubitPauliTensor pauli =
-        QubitPauliTensor(std::list<Pauli>{Pauli::X, Pauli::Y, Pauli::Z});
+    SpPauliStabiliser pauli(DensePauliMap{Pauli::X, Pauli::Y, Pauli::Z});
     tab.apply_pauli_at_end(pauli, 3);
 
     add_ops_list_two_to_circuit(circ, OpType::Sdg);
@@ -510,8 +503,7 @@ SCENARIO("Correct creation of UnitaryRevTableau") {
   }
   GIVEN("A PI/2 rotation at front") {
     UnitaryRevTableau tab = get_rev_tableau_with_gates_applied_at_front();
-    QubitPauliTensor pauli =
-        QubitPauliTensor(std::list<Pauli>({Pauli::X, Pauli::Y, Pauli::Z}));
+    SpPauliStabiliser pauli(DensePauliMap{Pauli::X, Pauli::Y, Pauli::Z});
     tab.apply_pauli_at_front(pauli, 1);
 
     Circuit circ(3);
@@ -639,19 +631,19 @@ SCENARIO("Unitary inversions") {
 
 SCENARIO("Compare SymplecticTableau and UnitaryTableau") {
   GIVEN("The same sequence of gates, compare string representations") {
-    SymplecticTableau stab(PauliStabiliserList{
-        {{Pauli::X, Pauli::I, Pauli::I}, true},
-        {{Pauli::I, Pauli::X, Pauli::I}, true},
-        {{Pauli::I, Pauli::I, Pauli::X}, true},
-        {{Pauli::Z, Pauli::I, Pauli::I}, true},
-        {{Pauli::I, Pauli::Z, Pauli::I}, true},
-        {{Pauli::I, Pauli::I, Pauli::Z}, true},
+    SymplecticTableau stab(PauliStabiliserVec{
+        {DensePauliMap{Pauli::X, Pauli::I, Pauli::I}},
+        {DensePauliMap{Pauli::I, Pauli::X, Pauli::I}},
+        {DensePauliMap{Pauli::I, Pauli::I, Pauli::X}},
+        {DensePauliMap{Pauli::Z, Pauli::I, Pauli::I}},
+        {DensePauliMap{Pauli::I, Pauli::Z, Pauli::I}},
+        {DensePauliMap{Pauli::I, Pauli::I, Pauli::Z}},
     });
     // Paulis cancel with subsequent gadget
     stab.apply_gate(OpType::X, uvec{0});
     stab.apply_gate(OpType::Y, uvec{1});
     stab.apply_gate(OpType::Z, uvec{2});
-    stab.apply_pauli_gadget({{Pauli::X, Pauli::Y, Pauli::Z}, true}, 2);
+    stab.apply_pauli_gadget({DensePauliMap{Pauli::X, Pauli::Y, Pauli::Z}}, 2);
     // CY and CZ combine to Sdg(0), CX(0, 1)
     stab.apply_gate(OpType::CY, uvec{0, 1});
     stab.apply_gate(OpType::CZ, uvec{0, 1});
@@ -675,8 +667,7 @@ SCENARIO("Compare SymplecticTableau and UnitaryTableau") {
     utab.apply_gate_at_front(OpType::SWAP, {Qubit(1), Qubit(2)});
     utab.apply_gate_at_front(OpType::CZ, {Qubit(0), Qubit(1)});
     utab.apply_gate_at_front(OpType::CY, {Qubit(0), Qubit(1)});
-    utab.apply_pauli_at_front(
-        QubitPauliTensor{{Pauli::X, Pauli::Y, Pauli::Z}}, 2);
+    utab.apply_pauli_at_front({DensePauliMap{Pauli::X, Pauli::Y, Pauli::Z}}, 2);
     utab.apply_gate_at_front(OpType::X, {Qubit(0)});
     utab.apply_gate_at_front(OpType::Y, {Qubit(1)});
     utab.apply_gate_at_front(OpType::Z, {Qubit(2)});

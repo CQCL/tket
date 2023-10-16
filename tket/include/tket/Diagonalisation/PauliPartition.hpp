@@ -32,7 +32,7 @@ class UnknownPauliPartitionStrat : public std::logic_error {
  */
 
 typedef boost::adjacency_list<
-    boost::vecS, boost::vecS, boost::undirectedS, QubitPauliString>
+    boost::vecS, boost::vecS, boost::undirectedS, SpPauliString>
     PauliACGraph;
 
 typedef boost::graph_traits<PauliACGraph>::vertex_descriptor PauliACVertex;
@@ -83,10 +83,10 @@ enum class GraphColourMethod {
 class PauliPartitionerGraph {
  public:
   explicit PauliPartitionerGraph(
-      const std::list<QubitPauliString>& strings, PauliPartitionStrat strat);
+      const std::list<SpPauliString>& strings, PauliPartitionStrat strat);
 
   // KEY: the colour  VALUE: all the Pauli strings assigned that colour.
-  std::map<unsigned, std::list<QubitPauliString>> partition_paulis(
+  std::map<unsigned, std::list<SpPauliString>> partition_paulis(
       GraphColourMethod method) const;
 
  private:
@@ -95,12 +95,12 @@ class PauliPartitionerGraph {
 
 /**
  * Partitions a QubitOperator into lists of mutually commuting gadgets.
- * Assumes that each `QubitPauliString` is unique and does not attempt
+ * Assumes that each `SpPauliString` is unique and does not attempt
  * to combine them. If it is given non-unique tensors it will produce
  * inefficient results.
  */
-std::list<std::list<QubitPauliString>> term_sequence(
-    const std::list<QubitPauliString>& strings, PauliPartitionStrat strat,
+std::list<std::list<SpPauliString>> term_sequence(
+    const std::list<SpPauliString>& strings, PauliPartitionStrat strat,
     GraphColourMethod method = GraphColourMethod::Lazy);
 
 }  // namespace tket

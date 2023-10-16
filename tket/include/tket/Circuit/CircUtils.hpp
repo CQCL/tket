@@ -18,7 +18,7 @@
 #include "DAGDefs.hpp"
 #include "tket/Gate/GatePtr.hpp"
 #include "tket/Utils/EigenConfig.hpp"
-#include "tket/Utils/PauliStrings.hpp"
+#include "tket/Utils/PauliTensor.hpp"
 
 namespace tket {
 
@@ -116,7 +116,7 @@ Expr pauli_angle_convert_or_throw(Complex pauliCoeff, const Expr& angle);
  * @param angle phase parameter
  * @param cx_config CX configuration
  *
- * @return phase gadget
+ * @return phase gadget implementation wrapped in a ConjugationBox
  */
 Circuit phase_gadget(
     unsigned n_qubits, const Expr& angle,
@@ -132,6 +132,7 @@ Circuit phase_gadget(
  * @param paulis Pauli operators
  * @param angle angle in half-turns
  * @param cx_config CX configuration
+ * @return Pauli gadget implementation wrapped in a ConjugationBox
  */
 Circuit pauli_gadget(
     QubitPauliTensor paulis, Expr angle,

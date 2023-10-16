@@ -25,8 +25,8 @@ namespace tket {
  * qubit Clifford to make all Paulis I or Z
  */
 void check_easy_diagonalise(
-    std::list<std::pair<QubitPauliTensor, Expr>> &gadgets,
-    std::set<Qubit> &qubits, Circuit &circ);
+    std::list<SpSymPauliTensor> &gadgets, std::set<Qubit> &qubits,
+    Circuit &circ);
 
 /**
  * Given two qubits, attempt to find a basis in which a single CX will
@@ -34,7 +34,7 @@ void check_easy_diagonalise(
  */
 std::optional<std::pair<Pauli, Pauli>> check_pair_compatibility(
     const Qubit &qb1, const Qubit &qb2,
-    const std::list<std::pair<QubitPauliTensor, Expr>> &gadgets);
+    const std::list<SpSymPauliTensor> &gadgets);
 
 /**
  * Diagonalise a qubit greedily by finding the Pauli Gadget with
@@ -42,9 +42,8 @@ std::optional<std::pair<Pauli, Pauli>> check_pair_compatibility(
  * single qubit Cliffords and CXs to make it a `ZIII...I` string
  */
 void greedy_diagonalise(
-    const std::list<std::pair<QubitPauliTensor, Expr>> &gadgets,
-    std::set<Qubit> &qubits, Conjugations &conjugations, Circuit &circ,
-    CXConfigType cx_config);
+    const std::list<SpSymPauliTensor> &gadgets, std::set<Qubit> &qubits,
+    Conjugations &conjugations, Circuit &circ, CXConfigType cx_config);
 
 /**
  * Diagonalise a mutually commuting set of Pauli strings. Modifies the
@@ -52,13 +51,13 @@ void greedy_diagonalise(
  * required to generate the initial set.
  */
 Circuit mutual_diagonalise(
-    std::list<std::pair<QubitPauliTensor, Expr>> &gadgets,
-    std::set<Qubit> qubits, CXConfigType cx_config);
+    std::list<SpSymPauliTensor> &gadgets, std::set<Qubit> qubits,
+    CXConfigType cx_config);
 /**
- * Applies Clifford conjugations to a QubitPauliTensor
+ * Applies Clifford conjugations to a SpSymPauliTensor
  */
 void apply_conjugations(
-    QubitPauliTensor &qps, const Conjugations &conjugations);
+    SpSymPauliTensor &qps, const Conjugations &conjugations);
 
 /**
  * Given a Pauli tensor P, produces a short Clifford circuit C which maps P to Z

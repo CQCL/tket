@@ -15,10 +15,10 @@
 """ BackendInfo class: additional information on Backends """
 
 from dataclasses import dataclass, field, asdict
-from typing import Any, Dict, List, Optional, Set, cast, Tuple, Union
+from typing import Any, Dict, List, Optional, Set, Tuple, Union
 
-from pytket.architecture import Architecture, FullyConnected  # type: ignore
-from pytket.circuit import Node, OpType  # type: ignore
+from pytket.architecture import Architecture, FullyConnected
+from pytket.circuit import Node, OpType
 
 _OpTypeErrs = Dict[OpType, float]
 _Edge = Tuple[Node, Node]
@@ -199,7 +199,7 @@ class BackendInfo:
         :return: List of nodes.
         :rtype: List[Node]
         """
-        return cast(List[Node], self.architecture.nodes)
+        return self.architecture.nodes
 
     @property
     def n_nodes(self) -> int:

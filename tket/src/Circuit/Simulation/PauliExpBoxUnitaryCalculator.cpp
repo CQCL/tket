@@ -18,7 +18,6 @@
 #include <tkassert/Assert.hpp>
 
 #include "tket/Circuit/PauliExpBoxes.hpp"
-#include "tket/Utils/PauliStrings.hpp"
 
 namespace tket {
 namespace tket_sim {
@@ -69,9 +68,8 @@ struct PauliExpBoxUnitaryCalculator {
   const std::map<Pauli, std::array<Entry, 2>> pauli_map;
 
   // The tensor product matrix, all factors of i removed.
-  // Although QubitPauliString and QubitPauliTensor could probably
-  // be made to do the work for us, they are more complicated
-  // than we need.
+  // Although PauliTensor could probably be made to do the work for us, it is
+  // more complicated than we need.
   std::vector<Entry> sparse_matrix;
 
   // The number of Y which occurred.
@@ -170,10 +168,6 @@ void PauliExpBoxUnitaryCalculator::fill_triplets(double phase) {
   set_diagonals.clear();
 
   for (const auto& entry : sparse_matrix) {
-    // In Utils\PauliStrings.hpp, there is
-    //  QubitPauliTensor operator*(Complex a, const QubitPauliTensor &qpt),
-    // which messes up ordinary std statements like std::complex * int.
-    // Not really a problem, but can be unexpected.
     std::complex<double> value =
         matrix_coefficient * std::complex<double>(entry.value());
 

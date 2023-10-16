@@ -155,6 +155,8 @@ class CircBox : public Box {
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &sub_map) const override;
 
+  void symbol_substitution_in_place(const symbol_map_t &sub_map);
+
   SymSet free_symbols() const override;
 
   /**
@@ -200,7 +202,7 @@ class Unitary1qBox : public Box {
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &) const override {
-    return Op_ptr();
+    return std::make_shared<Unitary1qBox>(*this);
   }
 
   SymSet free_symbols() const override { return {}; }
@@ -262,7 +264,7 @@ class Unitary2qBox : public Box {
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &) const override {
-    return Op_ptr();
+    return std::make_shared<Unitary2qBox>(*this);
   }
 
   SymSet free_symbols() const override { return {}; }
@@ -321,7 +323,7 @@ class Unitary3qBox : public Box {
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &) const override {
-    return Op_ptr();
+    return std::make_shared<Unitary3qBox>(*this);
   }
 
   SymSet free_symbols() const override { return {}; }
@@ -386,7 +388,7 @@ class ExpBox : public Box {
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &) const override {
-    return Op_ptr();
+    return std::make_shared<ExpBox>(*this);
   }
 
   SymSet free_symbols() const override { return {}; }
@@ -498,8 +500,13 @@ class QControlBox : public Box {
    *
    * @param op op to control
    * @param n_controls number of qubit controls to add
+   * @param control_state control state expressed as a bit vector.
+   * If control_state is non-empty, its size should match n_controls.
+   * An empty vector is converted to an all-1s vector of length n_controls.
    */
-  explicit QControlBox(const Op_ptr &op, unsigned n_controls = 1);
+  explicit QControlBox(
+      const Op_ptr &op, unsigned n_controls = 1,
+      const std::vector<bool> &control_state = {});
 
   /**
    * Copy constructor
@@ -528,6 +535,7 @@ class QControlBox : public Box {
 
   Op_ptr get_op() const { return op_; }
   unsigned get_n_controls() const { return n_controls_; }
+  std::vector<bool> get_control_state() const { return control_state_; }
 
   static Op_ptr from_json(const nlohmann::json &j);
 
@@ -536,12 +544,17 @@ class QControlBox : public Box {
  protected:
   void generate_circuit() const override;
   QControlBox()
-      : Box(OpType::QControlBox), op_(), n_controls_(0), n_inner_qubits_(0) {}
+      : Box(OpType::QControlBox),
+        op_(),
+        n_controls_(0),
+        n_inner_qubits_(0),
+        control_state_() {}
 
  private:
   const Op_ptr op_;
   const unsigned n_controls_;
   unsigned n_inner_qubits_;
+  const std::vector<bool> control_state_;
 };
 
 class ProjectorAssertionBox : public Box {
@@ -564,7 +577,7 @@ class ProjectorAssertionBox : public Box {
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &) const override {
-    return Op_ptr();
+    return std::make_shared<ProjectorAssertionBox>(*this);
   }
 
   SymSet free_symbols() const override { return {}; }
@@ -606,7 +619,7 @@ class StabiliserAssertionBox : public Box {
    *
    * @param paulis a set of stabiliser Pauli strings
    */
-  explicit StabiliserAssertionBox(const PauliStabiliserList &paulis);
+  explicit StabiliserAssertionBox(const PauliStabiliserVec &paulis);
 
   /**
    * Copy constructor
@@ -616,7 +629,7 @@ class StabiliserAssertionBox : public Box {
   ~StabiliserAssertionBox() override {}
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &) const override {
-    return Op_ptr();
+    return std::make_shared<StabiliserAssertionBox>(*this);
   }
 
   SymSet free_symbols() const override { return {}; }
@@ -627,7 +640,7 @@ class StabiliserAssertionBox : public Box {
   bool is_equal(const Op &op_other) const override;
 
   /** Get the pauli stabilisers */
-  PauliStabiliserList get_stabilisers() const { return paulis_; }
+  PauliStabiliserVec get_stabilisers() const { return paulis_; }
   std::vector<bool> get_expected_readouts() const { return expected_readouts_; }
 
   Op_ptr dagger() const override;
@@ -644,7 +657,7 @@ class StabiliserAssertionBox : public Box {
   void generate_circuit() const override;
 
  private:
-  const PauliStabiliserList paulis_;
+  const PauliStabiliserVec paulis_;
   // expected readouts the debug bits
   // false -> 0
   // true -> 1

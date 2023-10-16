@@ -311,6 +311,11 @@ BoundaryVertMap circuit_to_zx_recursive(
           }
           op = cond.get_op();
         }
+        if (is_barrier_type(op->get_type())) {
+          throw Unsupported(
+              "Cannot convert conditional barrier operations to a ZX node. \n");
+        }
+
         unsigned port_conditions_size =
             static_cast<unsigned>(port_conditions.size());
         // Convert the underlying op to zx.

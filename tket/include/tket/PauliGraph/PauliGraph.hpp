@@ -20,14 +20,14 @@
 #include "tket/Clifford/UnitaryTableau.hpp"
 #include "tket/Utils/Expression.hpp"
 #include "tket/Utils/GraphHeaders.hpp"
-#include "tket/Utils/PauliStrings.hpp"
+#include "tket/Utils/PauliTensor.hpp"
 #include "tket/Utils/SequencedContainers.hpp"
 
 namespace tket {
 class Gate;
 
 struct PauliGadgetProperties {
-  QubitPauliTensor tensor_;
+  SpPauliStabiliser tensor_;
   Expr angle_;
 };
 
@@ -146,7 +146,7 @@ class PauliGraph {
    * tableau.
    */
   void apply_pauli_gadget_at_end(
-      const QubitPauliTensor &pauli, const Expr &angle);
+      const SpPauliStabiliser &pauli, const Expr &angle);
 };
 
 }  // namespace tket

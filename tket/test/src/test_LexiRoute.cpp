@@ -459,6 +459,7 @@ SCENARIO("Test LexiRoute::solve and LexiRoute::solve_labelling") {
     circ.add_op<UnitID>(OpType::Measure, {qubits[1], Bit(0)});
     circ.add_op<UnitID>(OpType::CX, {qubits[4], qubits[5]});
     circ.add_op<UnitID>(OpType::Measure, {qubits[3], Bit(0)});
+    circ.add_conditional_barrier({0, 1, 2}, {}, {0}, 1, "");
     // n0 -- n1 -- n2 -- n3 -- n4
     //             |     |
     //             n5    n7
@@ -473,7 +474,7 @@ SCENARIO("Test LexiRoute::solve and LexiRoute::solve_labelling") {
 
     lr.solve(4);
     std::vector<Command> commands = mf->circuit_.get_commands();
-    REQUIRE(commands.size() == 7);
+    REQUIRE(commands.size() == 8);
     Command swap_c = commands[1];
     unit_vector_t uids = {nodes[1], nodes[2]};
     REQUIRE(swap_c.get_args() == uids);

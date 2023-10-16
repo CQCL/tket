@@ -23,8 +23,8 @@
 namespace tket {
 
 void check_easy_diagonalise(
-    std::list<std::pair<QubitPauliTensor, Expr>> &gadgets,
-    std::set<Qubit> &qubits, Circuit &circ) {
+    std::list<SpSymPauliTensor> &gadgets, std::set<Qubit> &qubits,
+    Circuit &circ) {
   Conjugations conjugations;
   std::set<Qubit>::iterator qb_iter = qubits.begin();
   for (std::set<Qubit>::iterator next = qb_iter; qb_iter != qubits.end();
@@ -32,11 +32,8 @@ void check_easy_diagonalise(
     ++next;
     Pauli p1 = Pauli::I;
     bool remove_qb = true;
-    for (const std::pair<QubitPauliTensor, Expr> &pgp : gadgets) {
-      std::map<tket::Qubit, tket::Pauli>::const_iterator map_iter =
-          pgp.first.string.map.find(*qb_iter);
-      if (map_iter == pgp.first.string.map.end()) continue;
-      Pauli p2 = map_iter->second;
+    for (const SpSymPauliTensor &gadget : gadgets) {
+      Pauli p2 = gadget.get(*qb_iter);
       if (p2 == Pauli::I) continue;
       if (p1 == Pauli::I) {
         p1 = p2;
@@ -60,21 +57,20 @@ void check_easy_diagonalise(
         case Pauli::Z:
           break;
         default:
-          throw UnknownPauli();
+          throw std::logic_error(
+              "Unknown Pauli encountered in checking diagonalisation");
       }
       qubits.erase(qb_iter);
     }
   }
-  for (std::list<std::pair<QubitPauliTensor, Expr>>::iterator iter =
-           gadgets.begin();
-       iter != gadgets.end(); ++iter) {
-    apply_conjugations(iter->first, conjugations);
+  for (SpSymPauliTensor &gadget : gadgets) {
+    apply_conjugations(gadget, conjugations);
   }
 }
 
 std::optional<std::pair<Pauli, Pauli>> check_pair_compatibility(
     const Qubit &qb1, const Qubit &qb2,
-    const std::list<std::pair<QubitPauliTensor, Expr>> &gadgets) {
+    const std::list<SpSymPauliTensor> &gadgets) {
   if (qb1 == qb2) return std::nullopt;
 
   /* Do exhaustive search for a Pauli A and Pauli B that
@@ -83,20 +79,9 @@ std::optional<std::pair<Pauli, Pauli>> check_pair_compatibility(
   for (Pauli pauli1 : paulis) {
     for (Pauli pauli2 : paulis) {
       bool found_pair = true;
-      for (const std::pair<QubitPauliTensor, Expr> &pgp : gadgets) {
-        Pauli inner_p_1;
-        QubitPauliMap::const_iterator iter1 = pgp.first.string.map.find(qb1);
-        if (iter1 == pgp.first.string.map.end())
-          inner_p_1 = Pauli::I;
-        else
-          inner_p_1 = iter1->second;
-
-        Pauli inner_p_2;
-        QubitPauliMap::const_iterator iter2 = pgp.first.string.map.find(qb2);
-        if (iter2 == pgp.first.string.map.end())
-          inner_p_2 = Pauli::I;
-        else
-          inner_p_2 = iter2->second;
+      for (const SpSymPauliTensor &gadget : gadgets) {
+        Pauli inner_p_1 = gadget.get(qb1);
+        Pauli inner_p_2 = gadget.get(qb2);
 
         if (inner_p_1 == Pauli::I || inner_p_1 == pauli1) {
           if (!(inner_p_2 == Pauli::I || inner_p_2 == pauli2)) {
@@ -120,23 +105,18 @@ std::optional<std::pair<Pauli, Pauli>> check_pair_compatibility(
 }
 
 void greedy_diagonalise(
-    const std::list<std::pair<QubitPauliTensor, Expr>> &gadgets,
-    std::set<Qubit> &qubits, Conjugations &conjugations, Circuit &circ,
-    CXConfigType cx_config) {
+    const std::list<SpSymPauliTensor> &gadgets, std::set<Qubit> &qubits,
+    Conjugations &conjugations, Circuit &circ, CXConfigType cx_config) {
   unsigned total_counter = UINT_MAX;
   QubitPauliMap to_diag;
-  for (std::list<std::pair<QubitPauliTensor, Expr>>::const_iterator pgp_iter =
-           gadgets.begin();
-       pgp_iter != gadgets.end(); ++pgp_iter) {
+  for (const SpSymPauliTensor &gadget : gadgets) {
     unsigned support_counter = 0;
     QubitPauliMap to_diag_candidates;
     for (const Qubit &qb : qubits) {
-      QubitPauliMap::const_iterator pauli_iter =
-          pgp_iter->first.string.map.find(qb);
-      if (pauli_iter == pgp_iter->first.string.map.end()) continue;
-      if (pauli_iter->second != Pauli::I) {
+      Pauli p = gadget.get(qb);
+      if (p != Pauli::I) {
         ++support_counter;
-        to_diag_candidates.insert(*pauli_iter);
+        to_diag_candidates.insert({qb, p});
       }
     }
     if (support_counter < total_counter && support_counter > 1) {
@@ -147,11 +127,9 @@ void greedy_diagonalise(
   if (to_diag.empty()) {
     throw std::logic_error("Brute Force Diagonalise can't find a candidate!");
   }
-  for (QubitPauliMap::iterator qb_p_iter = to_diag.begin();
-       qb_p_iter != to_diag.end(); ++qb_p_iter) {
-    const Qubit &qb = qb_p_iter->first;
-    Pauli p = qb_p_iter->second;
-    switch (p) {
+  for (const std::pair<const Qubit, Pauli> &qp : to_diag) {
+    const Qubit &qb = qp.first;
+    switch (qp.second) {
       case Pauli::X: {
         conjugations.push_back({OpType::H, {qb}});
         circ.add_op<Qubit>(OpType::H, {qb});
@@ -167,7 +145,7 @@ void greedy_diagonalise(
       }
       case Pauli::I:
       default:
-        throw UnknownPauli();
+        throw std::logic_error("Unknown Pauli in greedy diagonalisation.");
     }
   }
   qubit_vector_t diag_qubits;
@@ -238,15 +216,15 @@ void greedy_diagonalise(
       break;
     }
     default:
-      throw UnknownCXConfigType();
+      throw std::logic_error("Unknown CXConfigType in greedy diagonalisation.");
   }
   qubits.erase(first_qb);
 }
 
 /* Diagonalise a set of Pauli Gadgets simultaneously using Cliffords*/
 Circuit mutual_diagonalise(
-    std::list<std::pair<QubitPauliTensor, Expr>> &gadgets,
-    std::set<Qubit> qubits, CXConfigType cx_config) {
+    std::list<SpSymPauliTensor> &gadgets, std::set<Qubit> qubits,
+    CXConfigType cx_config) {
   Circuit cliff_circ;
   for (const Qubit &qb : qubits) {
     cliff_circ.add_qubit(qb);
@@ -292,7 +270,7 @@ Circuit mutual_diagonalise(
         }
         case Pauli::I:
         default:
-          throw UnknownPauli();
+          throw std::logic_error("Unknown Pauli in mutual diagonalisation.");
       }
       switch (p2) {
         case Pauli::X: {
@@ -310,7 +288,7 @@ Circuit mutual_diagonalise(
         }
         case Pauli::I:
         default:
-          throw UnknownPauli();
+          throw std::logic_error("Unknown Pauli in mutual diagonalisation.");
       }
       conjugations.push_back({OpType::CX, {qb_a, qb_b}});
       cliff_circ.add_op<Qubit>(OpType::CX, {qb_a, qb_b});
@@ -321,10 +299,8 @@ Circuit mutual_diagonalise(
     if (!found_match) {
       greedy_diagonalise(gadgets, qubits, conjugations, cliff_circ, cx_config);
     }
-    for (std::list<std::pair<QubitPauliTensor, Expr>>::iterator iter =
-             gadgets.begin();
-         iter != gadgets.end(); ++iter) {
-      apply_conjugations(iter->first, conjugations);
+    for (SpSymPauliTensor &gadget : gadgets) {
+      apply_conjugations(gadget, conjugations);
     }
     // we may have made some easy-to-remove qubits
     check_easy_diagonalise(gadgets, qubits, cliff_circ);
@@ -333,7 +309,8 @@ Circuit mutual_diagonalise(
 }
 
 void apply_conjugations(
-    QubitPauliTensor &qps, const Conjugations &conjugations) {
+    SpSymPauliTensor &qps, const Conjugations &conjugations) {
+  SpPauliStabiliser stab(qps.string);
   for (const auto &optype_qubit_pair : conjugations) {
     OpType ot = optype_qubit_pair.first;
     const qubit_vector_t &qbs = optype_qubit_pair.second;
@@ -348,18 +325,21 @@ void apply_conjugations(
       case OpType::Vdg:
       case OpType::X:
       case OpType::Z:
-        conjugate_PauliTensor(qps, ot, qbs[0]);
+        conjugate_PauliTensor(stab, ot, qbs[0]);
         break;
       case OpType::CX:
-        conjugate_PauliTensor(qps, ot, qbs[0], qbs[1]);
+        conjugate_PauliTensor(stab, ot, qbs[0], qbs[1]);
         break;
       case OpType::XXPhase3:
-        conjugate_PauliTensor(qps, ot, qbs[0], qbs[1], qbs[2]);
+        conjugate_PauliTensor(stab, ot, qbs[0], qbs[1], qbs[2]);
         break;
       default:
-        throw UnknownOpType();
+        throw std::logic_error(
+            "Unknown OpType received when applying conjugations.");
     }
   }
+  qps.string = stab.string;
+  qps.coeff *= cast_coeff<quarter_turns_t, Expr>(stab.coeff);
 }
 
 std::pair<Circuit, Qubit> reduce_pauli_to_z(

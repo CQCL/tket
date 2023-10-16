@@ -480,6 +480,7 @@ SCENARIO("Three-qubit squash") {
       c.add_op<unsigned>(OpType::CX, {i % 3, (i + 1) % 3});
       c.add_op<unsigned>(OpType::Rz, 0.25, {(i + 1) % 3});
     }
+    c.add_conditional_barrier({0, 1}, {}, {0}, 1, "");
     c.add_conditional_gate<unsigned>(OpType::X, {}, {0}, {0}, 1);
     for (unsigned i = 11; i < 22; i++) {
       c.add_op<unsigned>(OpType::H, {i % 3});
@@ -489,13 +490,14 @@ SCENARIO("Three-qubit squash") {
     CHECK_FALSE(Transforms::three_qubit_squash().apply(c));
   }
   GIVEN("A circuit with a barrier") {
-    Circuit c(3);
+    Circuit c(3, 1);
     for (unsigned i = 0; i < 11; i++) {
       c.add_op<unsigned>(OpType::H, {i % 3});
       c.add_op<unsigned>(OpType::CX, {i % 3, (i + 1) % 3});
       c.add_op<unsigned>(OpType::Rz, 0.25, {(i + 1) % 3});
     }
     c.add_barrier({0, 1, 2});
+    c.add_conditional_barrier({0, 2, 1}, {}, {0}, 1, "");
     for (unsigned i = 11; i < 22; i++) {
       c.add_op<unsigned>(OpType::H, {i % 3});
       c.add_op<unsigned>(OpType::CX, {i % 3, (i + 1) % 3});
