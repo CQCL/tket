@@ -20,7 +20,9 @@
 
 #include "UnitRegister.hpp"
 #include "binder_json.hpp"
+#include "py_operators.hpp"
 #include "tket/Utils/Json.hpp"
+#include "typecast.hpp"
 #include "unit_downcast.hpp"
 
 namespace py = pybind11;
@@ -42,7 +44,7 @@ void declare_register(py::module &m, const std::string &typestr) {
           py::arg("name"), py::arg("size"))
       .def("__getitem__", &UnitRegister<T>::operator[])
       .def("__lt__", &UnitRegister<T>::operator<)
-      .def("__eq__", &UnitRegister<T>::operator==)
+      .def("__eq__", &py_equals<UnitRegister<T>>)
       .def("__contains__", &UnitRegister<T>::contains)
       .def("__len__", &UnitRegister<T>::size)
       .def("__str__", &UnitRegister<T>::name)
@@ -52,12 +54,22 @@ void declare_register(py::module &m, const std::string &typestr) {
             return typestr + "(\"" + reg.name() + "\", " +
                    std::to_string(reg.size()) + ")";
           })
+      .def(
+          "__iter__",
+          [](UnitRegister<T> &reg) {
+            reg.set_current(0);
+            return reg;
+          })
       .def_property(
           "name", &UnitRegister<T>::name, &UnitRegister<T>::set_name,
           "Name of register.")
       .def_property(
           "size", &UnitRegister<T>::size, &UnitRegister<T>::set_size,
           "Size of register.")
+      .def_property(
+          "_current", &UnitRegister<T>::current, &UnitRegister<T>::set_current,
+          "Internal property for iteration.")
+      .def("to_list", &UnitRegister<T>::to_vector)
       .def(
           "__hash__",
           [](const UnitRegister<T> &reg) {
@@ -70,7 +82,8 @@ void declare_register(py::module &m, const std::string &typestr) {
         return UnitRegister<T>(reg);
       });
 }
-void init_unitid(py::module &m) {
+
+PYBIND11_MODULE(unit_id, m) {
   m.attr("_TEMP_REG_SIZE") = _TKET_REG_WIDTH;
   m.attr("_TEMP_BIT_NAME") = "tk_SCRATCH_BIT";
   m.attr("_TEMP_BIT_REG_BASE") = "tk_SCRATCH_BITREG";
@@ -86,14 +99,14 @@ void init_unitid(py::module &m) {
   py::class_<UnitID>(
       m, "UnitID", "A handle to a computational unit (e.g. qubit, bit)")
       .def(py::init<>())
-      .def("__eq__", &UnitID::operator==)
+      .def("__eq__", &py_equals<UnitID>)
       .def("__lt__", &UnitID::operator<)
       .def("__repr__", &UnitID::repr)
       .def("__hash__", [](const UnitID &id) { return hash_value(id); })
       .def("__copy__", [](const UnitID &id) { return UnitID(id); })
       .def(
-          "__deepcopy__", [](const UnitID &id, py::dict) { return UnitID(id); })
-      .def(py::self == py::self)
+          "__deepcopy__",
+          [](const UnitID &id, const py::dict &) { return UnitID(id); })
       .def_property_readonly(
           "reg_name", &UnitID::reg_name, "Readable name of register")
       .def_property_readonly(
@@ -130,7 +143,8 @@ void init_unitid(py::module &m) {
           "col: The column index",
           py::arg("name"), py::arg("row"), py::arg("col"))
       .def(
-          py::init<const std::string &, std::vector<unsigned> &>(),
+          py::init<
+              const std::string &, py::tket_custom::SequenceVec<unsigned> &>(),
           "Constructs an id with an arbitrary-dimensional "
           "index\n\n:param name: The readable name for the "
           "register\n:param index: The index vector",
@@ -147,11 +161,13 @@ void init_unitid(py::module &m) {
                 t[0].cast<std::string>(), t[1].cast<std::vector<unsigned>>());
           }))
       .def(
-          "to_list", [](const Qubit &q) { return json(q); },
+          "to_list",
+          [](const Qubit &q) { return py::object(json(q)).cast<py::list>(); },
           ":return: a JSON serializable list representation of "
           "the Qubit")
       .def_static(
-          "from_list", [](const json &j) { return j.get<Qubit>(); },
+          "from_list",
+          [](const py::list &py_list) { return json(py_list).get<Qubit>(); },
           "Construct Qubit instance from JSON serializable "
           "list representation of the Qubit.");
 
@@ -180,18 +196,23 @@ void init_unitid(py::module &m) {
           "col: The column index",
           py::arg("name"), py::arg("row"), py::arg("col"))
       .def(
-          py::init<const std::string &, std::vector<unsigned> &>(),
+          py::init<
+              const std::string &, py::tket_custom::SequenceVec<unsigned> &>(),
           "Constructs an id with an arbitrary-dimensional "
           "index\n\n:param name: The readable name for the "
           "register\n:param index: The index vector",
           py::arg("name"), py::arg("index"))
+      .def("__eq__", &py_equals<Bit>)
+      .def("__hash__", [](const Bit &b) { return hash_value(b); })
       .def(
-          "to_list", [](const Bit &b) { return json(b); },
+          "to_list",
+          [](const Bit &b) { return py::object(json(b)).cast<py::list>(); },
           "Return a JSON serializable list representation of "
           "the Bit."
           "\n\n:return: list containing register name and index")
       .def_static(
-          "from_list", [](const json &j) { return j.get<Bit>(); },
+          "from_list",
+          [](const py::list &py_list) { return json(py_list).get<Bit>(); },
           "Construct Bit instance from JSON serializable "
           "list representation of the Bit.");
 
@@ -222,17 +243,20 @@ void init_unitid(py::module &m) {
           "col: The column index\n:param layer: The layer index",
           py::arg("name"), py::arg("row"), py::arg("col"), py::arg("layer"))
       .def(
-          py::init<const std::string &, std::vector<unsigned> &>(),
+          py::init<
+              const std::string &, py::tket_custom::SequenceVec<unsigned> &>(),
           "Constructs an id with an arbitrary-dimensional "
           "index\n\n:param name: The readable name for the "
           "register\n:param index: The index vector",
           py::arg("name"), py::arg("index"))
       .def(
-          "to_list", [](const Node &n) { return json(n); },
+          "to_list",
+          [](const Node &n) { return py::object(json(n)).cast<py::list>(); },
           ":return: a JSON serializable list representation of "
           "the Node")
       .def_static(
-          "from_list", [](const json &j) { return j.get<Node>(); },
+          "from_list",
+          [](const py::list &py_list) { return json(py_list).get<Node>(); },
           "Construct Node instance from JSON serializable "
           "list representation of the Node.");
   declare_register<Bit>(m, bit_reg_name);

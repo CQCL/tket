@@ -17,6 +17,7 @@
 #include <iostream>
 
 #include "tket/Circuit/CircUtils.hpp"
+#include "tket/Circuit/ConjugationBox.hpp"
 #include "tket/Converters/PauliGadget.hpp"
 #include "tket/Converters/PhasePoly.hpp"
 #include "tket/Diagonalisation/Diagonalisation.hpp"
@@ -285,29 +286,32 @@ Op_ptr PauliExpCommutingSetBox::symbol_substitution(
 }
 
 void PauliExpCommutingSetBox::generate_circuit() const {
-  Circuit circ = Circuit(pauli_gadgets_[0].size());
+  unsigned n_qubits = pauli_gadgets_[0].size();
+  Circuit circ(n_qubits);
 
   std::list<SpSymPauliTensor> gadgets;
   for (const auto &pauli_gadget : pauli_gadgets_) {
     gadgets.push_back((SpSymPauliTensor)pauli_gadget);
   }
   std::set<Qubit> qubits;
-  for (unsigned i = 0; i < pauli_gadgets_[0].size(); i++)
-    qubits.insert(Qubit(i));
+  for (unsigned i = 0; i < n_qubits; i++) qubits.insert(Qubit(i));
 
   Circuit cliff_circ = mutual_diagonalise(gadgets, qubits, cx_config_);
-  circ.append(cliff_circ);
 
-  Circuit phase_poly_circ = Circuit(pauli_gadgets_[0].size());
+  Circuit phase_poly_circ(n_qubits);
 
   for (const SpSymPauliTensor &pgp : gadgets) {
     append_single_pauli_gadget(phase_poly_circ, pgp);
   }
+  phase_poly_circ.decompose_boxes_recursively();
   PhasePolyBox ppbox(phase_poly_circ);
   Circuit after_synth_circ = *ppbox.to_circuit();
 
-  circ.append(after_synth_circ);
-  circ.append(cliff_circ.dagger());
+  ConjugationBox box(
+      std::make_shared<CircBox>(cliff_circ),
+      std::make_shared<CircBox>(after_synth_circ));
+
+  circ.add_box(box, circ.all_qubits());
 
   circ_ = std::make_shared<Circuit>(circ);
 }

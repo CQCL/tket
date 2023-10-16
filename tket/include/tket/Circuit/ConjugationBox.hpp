@@ -45,12 +45,9 @@ class ConjugationBox : public Box {
   ConjugationBox(const ConjugationBox &other);
   ~ConjugationBox() override {}
 
-  Op_ptr symbol_substitution(
-      const SymEngine::map_basic_basic &) const override {
-    return Op_ptr();
-  }
+  Op_ptr symbol_substitution(const SymEngine::map_basic_basic &) const override;
 
-  SymSet free_symbols() const override { return {}; }
+  SymSet free_symbols() const override;
 
   /**
    * Equality check between two ConjugationBox instances

@@ -16,6 +16,7 @@
 
 #include "tket/Gate/Gate.hpp"
 #include "tket/Gate/SymTable.hpp"
+#include "tket/Ops/BarrierOp.hpp"
 #include "tket/Ops/MetaOp.hpp"
 
 namespace tket {
@@ -29,6 +30,8 @@ Op_ptr get_op_ptr(
   if (is_gate_type(chosen_type)) {
     SymTable::register_symbols(expr_free_symbols(params));
     return std::make_shared<const Gate>(chosen_type, params, n_qubits);
+  } else if (is_barrier_type(chosen_type)) {
+    return std::make_shared<const BarrierOp>();
   } else {
     return std::make_shared<const MetaOp>(chosen_type);
   }

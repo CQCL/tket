@@ -14,7 +14,7 @@
 
 """Backends for connecting to devices and simulators directly from pytket"""
 
-__path__ = __import__("pkgutil").extend_path(__path__, __name__)  # type: ignore
+__path__ = __import__("pkgutil").extend_path(__path__, __name__)
 
 from .backend import Backend
 from .resulthandle import ResultHandle

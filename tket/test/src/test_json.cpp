@@ -71,10 +71,10 @@ bool check_circuit(const Circuit& c) {
 
 SCENARIO("Test Op serialization") {
   GIVEN("OpType") {
-    const OpTypeSet metaops = {OpType::Input,     OpType::Output,
-                               OpType::ClInput,   OpType::ClOutput,
-                               OpType::WASMInput, OpType::WASMOutput,
-                               OpType::Barrier};
+    const OpTypeSet meta_barrier_ops = {OpType::Input,     OpType::Output,
+                                        OpType::ClInput,   OpType::ClOutput,
+                                        OpType::WASMInput, OpType::WASMOutput,
+                                        OpType::Barrier};
     const OpTypeSet boxes = {
         OpType::CircBox,         OpType::Unitary1qBox,
         OpType::Unitary2qBox,    OpType::Unitary3qBox,
@@ -86,7 +86,7 @@ SCENARIO("Test Op serialization") {
 
     std::set<std::string> type_names;
     for (auto type :
-         boost::join(all_gate_types(), boost::join(metaops, boxes))) {
+         boost::join(all_gate_types(), boost::join(meta_barrier_ops, boxes))) {
       bool success_insert =
           type_names.insert(optypeinfo().at(type).name).second;
       // check all optype names are unique
@@ -226,6 +226,8 @@ SCENARIO("Test Circuit serialization") {
     c.add_conditional_gate<unsigned>(OpType::Ry, {-0.75}, {0}, {0, 1}, 1);
     c.add_conditional_gate<unsigned>(OpType::CX, {}, {0, 1}, {0, 1}, 1);
     c.add_conditional_gate<unsigned>(OpType::Measure, {}, {0, 2}, {0, 1}, 1);
+    c.add_conditional_barrier({0, 1}, {1, 2}, {0}, 0, "");
+    c.add_conditional_barrier({0}, {2}, {0, 1}, 1, "test");
 
     nlohmann::json j_box = c;
     const Circuit new_c = j_box.get<Circuit>();
@@ -609,10 +611,10 @@ SCENARIO("Test Circuit serialization") {
   GIVEN("ConjugationBox") {
     Circuit compute(2);
     compute.add_op<unsigned>(OpType::CRx, 0.5, {1, 0});
-    Op_ptr compute_op = std::make_shared<CircBox>(CircBox(compute));
+    Op_ptr compute_op = std::make_shared<CircBox>(compute);
     Circuit action(2);
     action.add_op<unsigned>(OpType::H, {0});
-    Op_ptr action_op = std::make_shared<CircBox>(CircBox(action));
+    Op_ptr action_op = std::make_shared<CircBox>(action);
     ConjugationBox box(compute_op, action_op);
     nlohmann::json j_box = std::make_shared<ConjugationBox>(box);
     // check the uncompute field is null
@@ -866,6 +868,8 @@ SCENARIO("Test compiler pass serializations") {
       DecomposeArbitrarilyControlledGates,
       DecomposeArbitrarilyControlledGates())
   COMPPASSJSONTEST(DecomposeBoxes, DecomposeBoxes())
+  COMPPASSJSONTEST(
+      DecomposeBoxes2, DecomposeBoxes({OpType::CircBox}, {"opgroup1"}))
   COMPPASSJSONTEST(DecomposeMultiQubitsCX, DecomposeMultiQubitsCX())
   COMPPASSJSONTEST(DecomposeSingleQubitsTK1, DecomposeSingleQubitsTK1())
   COMPPASSJSONTEST(PeepholeOptimise2Q, PeepholeOptimise2Q())

@@ -96,6 +96,10 @@ Op_ptr CircBox::symbol_substitution(
   return std::make_shared<CircBox>(new_circ);
 }
 
+void CircBox::symbol_substitution_in_place(const symbol_map_t &sub_map) {
+  circ_->symbol_substitution(sub_map);
+}
+
 SymSet CircBox::free_symbols() const { return to_circuit()->free_symbols(); }
 
 Op_ptr CircBox::dagger() const {
@@ -399,7 +403,8 @@ void QControlBox::generate_circuit() const {
   std::vector<unsigned> qbs(n_inner_qubits_);
   std::iota(qbs.begin(), qbs.end(), 0);
   c.add_op(op_, qbs);
-  c.decompose_boxes_recursively();
+  // ConjugationBoxes will be handled by with_controls
+  c.decompose_boxes_recursively({OpType::ConjugationBox});
   Circuit x_circ(n_controls_ + n_inner_qubits_);
   for (unsigned i = 0; i < n_controls_; i++) {
     if (!control_state_.at(i)) {

@@ -19,7 +19,7 @@ jobs:
       tkrng: ${{ steps.filter.outputs.tkrng }}
       libs: ${{ steps.filter.outputs.changes }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - uses: dorny/paths-filter@v2.11.1
       id: filter
       with:
@@ -63,54 +63,32 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
+        os: ['ubuntu-22.04', 'macos-12', 'windows-2022', 'macos-13-xlarge']
         lib: ${{ fromJson(needs.set_libs_matrix.outputs.libs) }}
     runs-on: ${{ matrix.os }}
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Set up Python 3.10
       uses: actions/setup-python@v4
       with:
         python-version: '3.10'
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
-    - name: create profile
-      run: conan profile detect
-    - name: add remote
-      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
+    - name: Set up conan
+      shell: bash
+      run: |
+        conan profile detect
+        DEFAULT_PROFILE_PATH=`conan profile path default`
+        PROFILE_PATH=./conan-profiles/${{ matrix.os }}
+        diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
+        cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
+        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
     - name: build ${{ matrix.lib }}
       run: conan create libs/${{ matrix.lib }} -o boost/*:header_only=True --build=missing
     - name: build ${{ matrix.lib }} tests
       run: conan create -o boost/*:header_only=True libs/${{ matrix.lib }}/test --build=missing --format json > test-${{ matrix.lib }}.json
     - name: run ${{ matrix.lib }} tests
       shell: bash
-      run: |
-        PKGPATH=`./rootpath test-${{ matrix.lib }}.json test-${{ matrix.lib }}`
-        cd ${PKGPATH}/bin
-        ./test-${{ matrix.lib }}
-  macos-m1:
-    name: test library (macos-m1)
-    needs: set_libs_matrix
-    if: ${{ needs.set_libs_matrix.outputs.libs != '[]' && needs.set_libs_matrix.outputs.libs != '' }}
-    runs-on: ['self-hosted', 'macOS', 'ARM64']
-    strategy:
-      fail-fast: false
-      matrix:
-        lib: ${{ fromJson(needs.set_libs_matrix.outputs.libs) }}
-    steps:
-    - uses: actions/checkout@v3
-    - name: Install conan
-      uses: turtlebrowser/get-conan@v1.2
-    - name: create profile
-      shell: bash
-      run: conan profile detect --force
-    - name: set remotes
-      run: conan remote add --force tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
-    - name: build ${{ matrix.lib }}
-      run: conan create -o boost/*:header_only=True libs/${{ matrix.lib }} --build=missing
-    - name: build ${{ matrix.lib }} tests
-      run: conan create libs/${{ matrix.lib }}/test --build=missing --format json > test-${{ matrix.lib }}.json
-    - name: run ${{ matrix.lib }} tests
       run: |
         PKGPATH=`./rootpath test-${{ matrix.lib }}.json test-${{ matrix.lib }}`
         cd ${PKGPATH}/bin
@@ -124,21 +102,23 @@ jobs:
         lib: ${{ fromJson(needs.set_libs_matrix.outputs.libs) }}
     runs-on: 'ubuntu-22.04'
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
-    - name: create profile
-      run: conan profile detect
-    - name: add remote
-      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
+    - name: Set up conan
+      run: |
+        conan profile detect
+        DEFAULT_PROFILE_PATH=`conan profile path default`
+        PROFILE_PATH=./conan-profiles/ubuntu-22.04
+        diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
+        cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
+        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
     - name: build ${{ matrix.lib }}
       run: |
-        conan install libs/${{ matrix.lib }} -s build_type=Debug --build=missing -o boost/*:header_only=True -o ${{ matrix.lib }}/*:profile_coverage=True -of build/${{ matrix.lib }}
-        conan build libs/${{ matrix.lib }} -s build_type=Debug -o boost/*:header_only=True -o ${{ matrix.lib }}/*:profile_coverage=True -of build/${{ matrix.lib }}
+        conan build libs/${{ matrix.lib }} -s build_type=Debug --build=missing -o boost/*:header_only=True -o ${{ matrix.lib }}/*:profile_coverage=True -of build/${{ matrix.lib }}
         conan export-pkg libs/${{ matrix.lib }} -s build_type=Debug -o boost/*:header_only=True -o ${{ matrix.lib }}/*:profile_coverage=True -of build/${{ matrix.lib }} -tf ""
     - name: build ${{ matrix.lib }} tests
       run: |
-        conan install libs/${{ matrix.lib }}/test -s build_type=Debug --build=missing -o boost/*:header_only=True -o test-${{ matrix.lib }}/*:with_coverage=True -of build/${{ matrix.lib }}-tests
         conan build libs/${{ matrix.lib }}/test -s build_type=Debug --build=missing -o boost/*:header_only=True -o test-${{ matrix.lib }}/*:with_coverage=True -of build/${{ matrix.lib }}-tests
     - name: run ${{ matrix.lib }} tests
       working-directory: ./build/${{ matrix.lib }}-tests/build/Debug
@@ -173,7 +153,7 @@ jobs:
     concurrency: gh_pages
     runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
       with:
         ref: gh-pages
     - name: download artefact

@@ -29,7 +29,7 @@ API reference: https://cqcl.github.io/tket/pytket/api/
 
 To get started using pytket see the [user manual](https://cqcl.github.io/pytket/manual/index.html).
 
-For worked examples using TKET see our [examples repository](https://github.com/CQCL/pytket/tree/main/examples).
+For worked examples using TKET see our [notebook examples](https://tket.quantinuum.com/examples).
 
 ## Support and Discussion
 

@@ -26,7 +26,16 @@ namespace py = pybind11;
 
 namespace tket {
 
-SpPauliString apply_clifford_basis_change(
+SpCxPauliTensor apply_clifford_basis_change_tensor(
+    const SpCxPauliTensor &in_pauli, const Circuit &circ) {
+  SpPauliStabiliser in_string(in_pauli.string);
+  UnitaryRevTableau tab = circuit_to_unitary_rev_tableau(circ);
+  SpCxPauliTensor new_operator = tab.get_row_product(in_string);
+  new_operator.coeff *= in_pauli.coeff;
+  return new_operator;
+}
+
+SpPauliString apply_clifford_basis_change_string(
     const SpPauliString &in_pauli, const Circuit &circ) {
   UnitaryRevTableau tab = circuit_to_unitary_rev_tableau(circ);
   SpPauliStabiliser new_operator =
@@ -163,13 +172,21 @@ PYBIND11_MODULE(tailoring, m) {
           py::arg("circuit"), py::arg("samples"))
       .def("__repr__", &UniversalFrameRandomisation::to_string);
   m.def(
-      "apply_clifford_basis_change", &apply_clifford_basis_change,
+      "apply_clifford_basis_change", &apply_clifford_basis_change_string,
       "Given Pauli operator P and Clifford circuit C, "
       "returns C_dagger.P.C in multiplication order. This ignores any -1 "
-      "phase that could be introduced.\n\n:param pauli: Pauli "
-      "operator being transformed. \n:param circuit: "
-      "Clifford circuit acting on Pauli operator.\n"
-      ":return: :py:class:`QubitPauliString` for new operator",
+      "phase that could be introduced. "
+      "\n\n:param pauli: Pauli operator being transformed. "
+      "\n:param circuit: Clifford circuit acting on Pauli operator. "
+      "\n:return: :py:class:`QubitPauliString` for new operator",
+      py::arg("pauli"), py::arg("circuit"));
+  m.def(
+      "apply_clifford_basis_change_tensor", &apply_clifford_basis_change_tensor,
+      "Given Pauli operator P and Clifford circuit C, "
+      "returns C_dagger.P.C in multiplication order"
+      "\n\n:param pauli: Pauli operator being transformed."
+      "\n:param circuit: Clifford circuit acting on Pauli operator. "
+      "\n:return: :py:class:`QubitPauliTensor` for new operator",
       py::arg("pauli"), py::arg("circuit"));
 }
 }  // namespace tket

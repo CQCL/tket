@@ -17,6 +17,7 @@
 #include "tket/Gate/Gate.hpp"
 #include "tket/OpType/OpType.hpp"
 #include "tket/OpType/OpTypeFunctions.hpp"
+#include "tket/Ops/BarrierOp.hpp"
 #include "tket/Ops/ClassicalOps.hpp"
 #include "tket/Ops/MetaOp.hpp"
 #include "tket/Ops/OpPtr.hpp"
@@ -26,8 +27,8 @@ namespace tket {
 
 void from_json(const nlohmann::json& j, Op_ptr& op) {
   OpType optype = j.at("type").get<OpType>();
-  if (is_metaop_type(optype)) {
-    op = MetaOp::deserialize(j);
+  if (is_barrier_type(optype)) {
+    op = BarrierOp::deserialize(j);
   } else if (is_box_type(optype)) {
     op = Box::deserialize(j);
   } else if (optype == OpType::Conditional) {

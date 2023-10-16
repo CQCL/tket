@@ -23,7 +23,6 @@
 #include "tket/Predicates/PassGenerators.hpp"
 #include "tket/Predicates/PassLibrary.hpp"
 #include "tket/Transformations/ContextualReduction.hpp"
-#include "tket/Transformations/Decomposition.hpp"
 #include "tket/Transformations/PauliOptimisation.hpp"
 #include "tket/Transformations/Transform.hpp"
 #include "tket/Utils/Json.hpp"
@@ -33,6 +32,17 @@ namespace py = pybind11;
 using json = nlohmann::json;
 
 namespace tket {
+
+// using py::object and converting internally to json creates better stubs,
+// hence this wrapper
+typedef std::function<void(const CompilationUnit &, const py::object &)>
+    PyPassCallback;
+PassCallback from_py_pass_callback(const PyPassCallback &py_pass_callback) {
+  return [py_pass_callback](
+             const CompilationUnit &compilationUnit, const json &j) {
+    return py_pass_callback(compilationUnit, py::object(j));
+  };
+}
 
 // given keyword arguments for DecomposeTK2, return a TwoQbFidelities struct
 Transforms::TwoQbFidelities get_fidelities(const py::kwargs &kwargs) {
@@ -135,6 +145,13 @@ const PassPtr &DecomposeClassicalExp() {
 }
 
 PYBIND11_MODULE(passes, m) {
+  py::module_::import("pytket._tket.predicates");
+  m.def(
+      "_sympy_import", []() { return Expr(); },
+      "This function only exists so that sympy gets imported in the resulting "
+      ".pyi file. "
+      "It's needed due to a bug in pybind11-stubgen's translation for "
+      "Callables most likely.");
   py::enum_<SafetyMode>(m, "SafetyMode")
       .value(
           "Audit", SafetyMode::Audit,
@@ -202,7 +219,10 @@ PYBIND11_MODULE(passes, m) {
           [](const BasePass &pass, CompilationUnit &cu,
              SafetyMode safety_mode) { return pass.apply(cu, safety_mode); },
           "Apply to a :py:class:`CompilationUnit`.\n\n"
-          ":return: True if pass modified the circuit, else False",
+          ":return: True if the pass modified the circuit. Note that in some "
+          "cases the method may return True even when the circuit is "
+          "unmodified (but a return value of False definitely implies no "
+          "modification).",
           py::arg("compilation_unit"),
           py::arg("safety_mode") = SafetyMode::Default)
       .def(
@@ -219,11 +239,12 @@ PYBIND11_MODULE(passes, m) {
       .def(
           "apply",
           [](const BasePass &pass, Circuit &circ,
-             const PassCallback &before_apply,
-             const PassCallback &after_apply) {
+             const PyPassCallback &before_apply,
+             const PyPassCallback &after_apply) {
             CompilationUnit cu(circ);
-            bool applied =
-                pass.apply(cu, SafetyMode::Default, before_apply, after_apply);
+            bool applied = pass.apply(
+                cu, SafetyMode::Default, from_py_pass_callback(before_apply),
+                from_py_pass_callback(after_apply));
             circ = cu.get_circ_ref();
             return applied;
           },
@@ -241,10 +262,16 @@ PYBIND11_MODULE(passes, m) {
       .def("__str__", [](const BasePass &) { return "<tket::BasePass>"; })
       .def("__repr__", &BasePass::to_string)
       .def(
-          "to_dict", &BasePass::get_config,
+          "to_dict",
+          [](const BasePass &base_pass) {
+            return py::object(base_pass.get_config()).cast<py::dict>();
+          },
           ":return: A JSON serializable dictionary representation of the Pass.")
       .def_static(
-          "from_dict", [](const json &j) { return j.get<PassPtr>(); },
+          "from_dict",
+          [](const py::dict &base_pass_dict) {
+            return json(base_pass_dict).get<PassPtr>();
+          },
           "Construct a new Pass instance from a JSON serializable dictionary "
           "representation.")
       .def(py::pickle(
@@ -258,7 +285,7 @@ PYBIND11_MODULE(passes, m) {
   py::class_<SequencePass, std::shared_ptr<SequencePass>, BasePass>(
       m, "SequencePass", "A sequence of compilation passes.")
       .def(
-          py::init<const std::vector<PassPtr> &>(),
+          py::init<const py::tket_custom::SequenceVec<PassPtr> &>(),
           "Construct from a list of compilation passes arranged in "
           "order of application.",
           py::arg("pass_list"))
@@ -267,10 +294,13 @@ PYBIND11_MODULE(passes, m) {
           "get_sequence", &SequencePass::get_sequence,
           ":return: The underlying sequence of passes.");
   py::class_<RepeatPass, std::shared_ptr<RepeatPass>, BasePass>(
-      m, "RepeatPass", "Repeat a pass until it has no effect.")
+      m, "RepeatPass",
+      "Repeat a pass until its `apply()` method returns False, or if "
+      "`strict_check` is True until it stops modifying the circuit.")
       .def(
-          py::init<const PassPtr &>(), "Construct from a compilation pass.",
-          py::arg("compilation_pass"))
+          py::init<const PassPtr &, bool>(),
+          "Construct from a compilation pass.", py::arg("compilation_pass"),
+          py::arg("strict_check") = false)
       .def("__str__", [](const RepeatPass &) { return "<tket::BasePass>"; })
       .def(
           "get_pass", &RepeatPass::get_pass,
@@ -414,7 +444,11 @@ PYBIND11_MODULE(passes, m) {
       "CX and single-qubit gates.");
   m.def(
       "DecomposeBoxes", &DecomposeBoxes,
-      "Replaces all boxes by their decomposition into circuits.");
+      "Recursively replaces all boxes by their decomposition into circuits."
+      "\n\n:param excluded_types: box `OpType`s excluded from decomposition"
+      "\n:param excluded_opgroups: opgroups excluded from decomposition",
+      py::arg("excluded_types") = std::unordered_set<OpType>(),
+      py::arg("excluded_opgroups") = std::unordered_set<std::string>());
   m.def(
       "DecomposeClassicalExp", &DecomposeClassicalExp,
       "Replaces each :py:class:`ClassicalExpBox` by a sequence of "
@@ -435,7 +469,8 @@ PYBIND11_MODULE(passes, m) {
       "be left untouched."
       "\n\n:param squash: Whether to squash the circuit in pre-processing "
       "(default: true)."
-      "\n\nIf squash=true (default), the `GlobalisePhasedX().apply` method "
+      "\n\nIf squash=true (default), the `GlobalisePhasedX` transform's "
+      "`apply` method "
       "will always return true. "
       "For squash=false, `apply()` will return true if the circuit was "
       "changed and false otherwise.\n\n"
@@ -595,7 +630,9 @@ PYBIND11_MODULE(passes, m) {
       "of an Rz(a)Rx(b)Rz(c) triple, returns an equivalent circuit in the "
       "desired basis\n"
       ":return: a pass that rebases to the given gate set (possibly including "
-      "conditional and phase operations)");
+      "conditional and phase operations)",
+      py::arg("gateset"), py::arg("tk2_replacement"),
+      py::arg("tk1_replacement"));
 
   m.def(
       "EulerAngleReduction", &gen_euler_pass,
@@ -614,7 +651,11 @@ PYBIND11_MODULE(passes, m) {
       py::arg("q"), py::arg("p"), py::arg("strict") = false);
 
   m.def(
-      "CustomRoutingPass", &gen_routing_pass,
+      "CustomRoutingPass",
+      [](const Architecture &arc,
+         const py::tket_custom::SequenceVec<RoutingMethodPtr> &config) {
+        return gen_routing_pass(arc, config);
+      },
       "Construct a pass to route to the connectivity graph of an "
       ":py:class:`Architecture`. Edge direction is ignored. "
       "\n\n"
@@ -643,7 +684,7 @@ PYBIND11_MODULE(passes, m) {
       ":param architecture: The Architecture used for relabelling."
       "\n:return: a pass to relabel :py:class:`Circuit` Qubits to "
       ":py:class:`Architecture` Nodes",
-      py::arg("arc"));
+      py::arg("architecture"));
 
   m.def(
       "FlattenRelabelRegistersPass", &gen_flatten_relabel_registers_pass,
@@ -661,7 +702,11 @@ PYBIND11_MODULE(passes, m) {
       py::arg("qubit_map"));
 
   m.def(
-      "FullMappingPass", &gen_full_mapping_pass,
+      "FullMappingPass",
+      [](const Architecture &arc, const Placement::Ptr &placement_ptr,
+         const py::tket_custom::SequenceVec<RoutingMethodPtr> &config) {
+        return gen_full_mapping_pass(arc, placement_ptr, config);
+      },
       "Construct a pass to relabel :py:class:`Circuit` Qubits to "
       ":py:class:`Architecture` Nodes, and then route to the connectivity "
       "graph "
@@ -819,13 +864,13 @@ PYBIND11_MODULE(passes, m) {
   m.def(
       "SimplifyInitial",
       [](bool allow_classical, bool create_all_qubits, bool remove_redundancies,
-         std::shared_ptr<const Circuit> xcirc) -> PassPtr {
+         std::optional<std::shared_ptr<const Circuit>> xcirc_opt) -> PassPtr {
         PassPtr simpinit = gen_simplify_initial(
             allow_classical ? Transforms::AllowClassical::Yes
                             : Transforms::AllowClassical::No,
             create_all_qubits ? Transforms::CreateAllQubits::Yes
                               : Transforms::CreateAllQubits::No,
-            xcirc);
+            xcirc_opt.value_or(nullptr));
         if (remove_redundancies) {
           std::vector<PassPtr> seq = {simpinit, RemoveRedundancies()};
           return std::make_shared<SequencePass>(seq);
@@ -844,14 +889,20 @@ PYBIND11_MODULE(passes, m) {
       "transformed circuit (if omitted, an X gate is used)"
       "\n:return: a pass to perform the simplification",
       py::arg("allow_classical") = true, py::arg("create_all_qubits") = false,
-      py::arg("remove_redundancies") = true, py::arg("xcirc") = nullptr);
+      py::arg("remove_redundancies") = true, py::arg("xcirc") = py::none());
   m.def(
       "ContextSimp",
-      [](bool allow_classical, std::shared_ptr<const Circuit> xcirc) {
+      [](bool allow_classical,
+         std::optional<std::shared_ptr<const Circuit>> xcirc) {
+        if (xcirc.has_value()) {
+          return gen_contextual_pass(
+              allow_classical ? Transforms::AllowClassical::Yes
+                              : Transforms::AllowClassical::No,
+              std::move(xcirc.value()));
+        }
         return gen_contextual_pass(
             allow_classical ? Transforms::AllowClassical::Yes
-                            : Transforms::AllowClassical::No,
-            xcirc);
+                            : Transforms::AllowClassical::No);
       },
       "Applies simplifications enabled by knowledge of qubit state and "
       "discarded qubits."

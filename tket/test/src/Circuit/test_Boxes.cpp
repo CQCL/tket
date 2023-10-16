@@ -15,7 +15,12 @@
 #include <Eigen/Core>
 #include <catch2/catch_test_macros.hpp>
 #include <catch2/matchers/catch_matchers_string.hpp>
+#include <memory>
 #include <tket/Circuit/ToffoliBox.hpp>
+#include <tket/OpType/OpType.hpp>
+#include <tket/Ops/Op.hpp>
+#include <tket/Ops/OpPtr.hpp>
+#include <tket/Utils/Expression.hpp>
 
 #include "../testutil.hpp"
 #include "tket/Circuit/Boxes.hpp"
@@ -49,6 +54,26 @@ SCENARIO("CircBox requires simple circuits", "[boxes]") {
   circ.rename_units(qubit_map);
   REQUIRE(!circ.is_simple());
   REQUIRE_THROWS_AS(CircBox(circ), SimpleOnly);
+}
+
+SCENARIO("CircBox in-place symbol substitution") {
+  Sym asym = SymEngine::symbol("a");
+  Expr alpha(asym);
+  Sym bsym = SymEngine::symbol("b");
+  Expr beta(bsym);
+  Circuit test_circuit(1);
+  test_circuit.add_op<unsigned>(OpType::Rx, {alpha}, {0});
+  test_circuit.add_op<unsigned>(OpType::Ry, {beta}, {0});
+  auto circ_box = CircBox(test_circuit);
+  SymSet sym_set0 = circ_box.free_symbols();
+  CHECK(sym_set0.size() == 2);
+  double x = 0.125;
+  double y = 0.250;
+  symbol_map_t map = {{asym, x}, {bsym, y}};
+  circ_box.symbol_substitution_in_place(map);
+  SymSet sym_set1 = circ_box.free_symbols();
+  CHECK(sym_set1.empty());
+  REQUIRE(!circ_box.to_circuit()->is_symbolic());
 }
 
 SCENARIO("Using Boxes", "[boxes]") {
@@ -830,6 +855,80 @@ SCENARIO("QControlBox", "[boxes]") {
     std::optional<Eigen::MatrixXcd> box_u = qcbox.get_box_unitary();
     REQUIRE(V.isApprox(box_u.value()));
   }
+  GIVEN("numerical circuit with a ConjugationBox") {
+    Circuit compute(2);
+    Circuit action(2);
+    compute.add_op<unsigned>(OpType::CX, {1, 0});
+    action.add_op<unsigned>(OpType::Z, {0});
+    Op_ptr compute_op = std::make_shared<CircBox>(compute);
+    Op_ptr action_op = std::make_shared<CircBox>(action);
+    Op_ptr cj_op =
+        std::make_shared<ConjugationBox>(ConjugationBox(compute_op, action_op));
+    WHEN("Simple") {
+      QControlBox qbox(cj_op);
+      std::shared_ptr<Circuit> c = qbox.to_circuit();
+      Circuit d(3);
+      d.add_op<unsigned>(OpType::CX, {2, 1});
+      d.add_op<unsigned>(OpType::CZ, {0, 1});
+      d.add_op<unsigned>(OpType::CX, {2, 1});
+      REQUIRE(*c == d);
+    }
+    WHEN("Nested") {
+      Circuit compute_outer(3);
+      compute_outer.add_op<unsigned>(OpType::CX, {2, 1});
+      Circuit action_outer(3);
+      action_outer.add_op<unsigned>(cj_op, {1, 0});
+      Op_ptr compute_outer_op = std::make_shared<CircBox>(compute_outer);
+      Op_ptr action_outer_op = std::make_shared<CircBox>(action_outer);
+      Op_ptr cj_op_2 = std::make_shared<ConjugationBox>(
+          ConjugationBox(compute_outer_op, action_outer_op));
+      QControlBox qbox(cj_op_2);
+      std::shared_ptr<Circuit> c = qbox.to_circuit();
+      Circuit d(4);
+      d.add_op<unsigned>(OpType::CX, {3, 2});
+      d.add_op<unsigned>(OpType::CX, {1, 2});
+      d.add_op<unsigned>(OpType::CZ, {0, 2});
+      d.add_op<unsigned>(OpType::CX, {1, 2});
+      d.add_op<unsigned>(OpType::CX, {3, 2});
+      REQUIRE(*c == d);
+    }
+  }
+  GIVEN("symbolic circuit with a ConjugationBox") {
+    Sym s = SymEngine::symbol("a");
+    Expr a = Expr(s);
+    Sym s1 = SymEngine::symbol("b");
+    Expr b = Expr(s1);
+    Circuit compute(1);
+    Circuit action(1);
+    Circuit uncompute(1);
+    compute.add_op<unsigned>(OpType::Rx, a, {0});
+    action.add_op<unsigned>(OpType::Z, {0});
+    uncompute.add_op<unsigned>(OpType::Rx, b, {0});
+    Op_ptr compute_op = std::make_shared<CircBox>(compute);
+    Op_ptr action_op = std::make_shared<CircBox>(action);
+    Op_ptr uncompute_op = std::make_shared<CircBox>(uncompute);
+    Op_ptr cj_op = std::make_shared<ConjugationBox>(
+        ConjugationBox(compute_op, action_op, uncompute_op));
+    QControlBox qbox(cj_op);
+    std::shared_ptr<Circuit> c = qbox.to_circuit();
+    Circuit d(2);
+    d.add_op<unsigned>(OpType::Rx, a, {1});
+    d.add_op<unsigned>(OpType::CZ, {0, 1});
+    d.add_op<unsigned>(OpType::Rx, b, {1});
+    REQUIRE(*c == d);
+  }
+
+  GIVEN("controlled phase_gadget") {
+    Expr a;
+    WHEN("numerical") { a = 0.3; }
+    WHEN("symbolic") {
+      Sym s = SymEngine::symbol("a");
+      a = Expr(s);
+    }
+    QControlBox qbox(get_op_ptr(OpType::PhaseGadget, {a}, 2));
+    std::shared_ptr<Circuit> c = qbox.to_circuit();
+    REQUIRE(c->count_gates(OpType::CX) == 4);
+  }
 }
 
 SCENARIO("Unitary3qBox", "[boxes]") {
@@ -980,13 +1079,13 @@ SCENARIO("Checking equality", "[boxes]") {
   GIVEN("QControlBox") {
     Circuit u(2);
     u.add_op<unsigned>(OpType::CX, {0, 1});
-    Op_ptr op = std::make_shared<CircBox>(CircBox(u));
+    Op_ptr op = std::make_shared<CircBox>(u);
     QControlBox qcbox(op, 3, {1, 0, 1});
     WHEN("both arguments are equal") { REQUIRE(qcbox == qcbox); }
     WHEN("different ids but equivalent ops") {
       Circuit u2(2);
       u2.add_op<unsigned>(OpType::CX, {0, 1});
-      Op_ptr op2 = std::make_shared<CircBox>(CircBox(u2));
+      Op_ptr op2 = std::make_shared<CircBox>(u2);
       QControlBox qcbox2(op2, 3, {1, 0, 1});
       REQUIRE(qcbox == qcbox2);
     }
@@ -1274,10 +1373,10 @@ SCENARIO("Checking equality", "[boxes]") {
   GIVEN("ConjugationBox") {
     Circuit compute(2);
     compute.add_op<unsigned>(OpType::CRx, 0.5, {1, 0});
-    Op_ptr compute_op = std::make_shared<CircBox>(CircBox(compute));
+    Op_ptr compute_op = std::make_shared<CircBox>(compute);
     Circuit action(2);
     action.add_op<unsigned>(OpType::H, {0});
-    Op_ptr action_op = std::make_shared<CircBox>(CircBox(action));
+    Op_ptr action_op = std::make_shared<CircBox>(action);
     ConjugationBox box(compute_op, action_op);
     WHEN("all arguments are equal") { REQUIRE(box == box); }
     WHEN("different ids but equivalent ops") {
@@ -1286,7 +1385,7 @@ SCENARIO("Checking equality", "[boxes]") {
     WHEN("different uncompute") {
       Circuit uncompute(2);
       uncompute.add_op<unsigned>(OpType::CZ, {0, 1});
-      Op_ptr uncompute_op = std::make_shared<CircBox>(CircBox(uncompute));
+      Op_ptr uncompute_op = std::make_shared<CircBox>(uncompute);
       REQUIRE(box != ConjugationBox(compute_op, action_op, uncompute_op));
     }
     WHEN("equivalent uncompute") {
@@ -1299,9 +1398,34 @@ SCENARIO("Checking equality", "[boxes]") {
     WHEN("different args") {
       Circuit compute_2(2);
       compute_2.add_op<unsigned>(OpType::CZ, {0, 1});
-      Op_ptr compute_2_op = std::make_shared<CircBox>(CircBox(compute_2));
+      Op_ptr compute_2_op = std::make_shared<CircBox>(compute_2);
       REQUIRE(box != ConjugationBox(compute_2_op, action_op));
     }
+  }
+  GIVEN("ConjugationBox with symbols") {
+    Sym asym = SymTable::fresh_symbol("a");
+    Expr a(asym);
+    Sym bsym = SymTable::fresh_symbol("b");
+    Expr b(bsym);
+    Sym csym = SymTable::fresh_symbol("c");
+    Expr c(csym);
+    Op_ptr compute = get_op_ptr(OpType::Rx, {a});
+    Op_ptr action = get_op_ptr(OpType::Rz, {b});
+    Op_ptr uncompute = get_op_ptr(OpType::Rx, {c});
+    ConjugationBox box0(compute, action);
+    ConjugationBox box1(compute, action, uncompute);
+    SymSet sym_set0 = box0.free_symbols();
+    CHECK(sym_set0.size() == 2);
+    SymSet sym_set1 = box1.free_symbols();
+    CHECK(sym_set1.size() == 3);
+    SymEngine::map_basic_basic sym_map;
+    sym_map[asym] = Expr(0.25);
+    sym_map[bsym] = Expr(0.75);
+    sym_map[csym] = Expr(-0.25);
+    Op_ptr sub_box0 = box0.symbol_substitution(sym_map);
+    CHECK(sub_box0->free_symbols().empty());
+    Op_ptr sub_box1 = box1.symbol_substitution(sym_map);
+    CHECK(sub_box1->free_symbols().empty());
   }
 }
 

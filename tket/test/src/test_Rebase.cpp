@@ -290,12 +290,14 @@ SCENARIO("Building rebases with rebase_factory") {
     Circuit circ(2, 1);
     circ.add_op<unsigned>(OpType::T, {0});
     circ.add_conditional_gate<unsigned>(OpType::H, {}, {1}, {0}, 1);
+    circ.add_conditional_barrier({0, 1}, {}, {0}, 1, "");
     Transforms::rebase_tket().apply(circ);
     Circuit correct(2, 1);
     correct.add_op<unsigned>(OpType::TK1, {0, 0, 0.25}, {0});
     correct.add_conditional_gate<unsigned>(
         OpType::TK1, {0.5, 0.5, 0.5}, {1}, {0}, 1);
     correct.add_conditional_gate<unsigned>(OpType::Phase, {0.5}, {}, {0}, 1);
+    correct.add_conditional_barrier({0, 1}, {}, {0}, 1, "");
     correct.add_phase(0.125);
     REQUIRE(circ == correct);
   }

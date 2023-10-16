@@ -18,6 +18,8 @@
 #include <pybind11/stl.h>
 
 #include "binder_json.hpp"
+#include "deleted_hash.hpp"
+#include "py_operators.hpp"
 #include "tket/Utils/PauliStrings2.hpp"
 #include "typecast.hpp"
 
@@ -26,7 +28,9 @@ using json = nlohmann::json;
 
 namespace tket {
 
+typedef py::tket_custom::SequenceVec<Qubit> py_qubit_vector_t;
 PYBIND11_MODULE(pauli, m) {
+  py::module::import("pytket._tket.unit_id");
   py::enum_<Pauli>(m, "Pauli")
       .value("I", Pauli::I)
       .value("X", Pauli::X)
@@ -44,18 +48,22 @@ PYBIND11_MODULE(pauli, m) {
           "Constructs a QubitPauliString with a single Pauli term.",
           py::arg("qubit"), py::arg("pauli"))
       .def(
-          py::init<std::list<Qubit>, std::list<Pauli>>(),
+          py::init<
+              py::tket_custom::SequenceList<Qubit>,
+              py::tket_custom::SequenceList<Pauli>>(),
           "Constructs a QubitPauliString from two matching lists of "
           "Qubits and Paulis.",
           py::arg("qubits"), py::arg("paulis"))
       .def(
           py::init<QubitPauliMap>(),
-          "Construct a QubitPauliString from a QubitPauliMap.", py::arg("map"))
+          "Construct a QubitPauliString from a dictionary mapping "
+          ":py:class:`Qubit` to :py:class:`Pauli`.",
+          py::arg("map"))
       .def(
           "__hash__", [](const SpPauliString &qps) { return qps.hash_value(); })
       .def("__repr__", &SpPauliString::to_str)
-      .def("__eq__", &SpPauliString::operator==)
-      .def("__ne__", &SpPauliString::operator!=)
+      .def("__eq__", &py_equals<SpPauliString>)
+      .def("__ne__", &py_not_equals<SpPauliString>)
       .def("__lt__", &SpPauliString::operator<)
       .def("__getitem__", &SpPauliString::get<QubitPauliMap>)
       .def("__setitem__", &SpPauliString::set<QubitPauliMap>)
@@ -68,8 +76,7 @@ PYBIND11_MODULE(pauli, m) {
           [](const SpPauliString &qps) {
             // Just return the QubitPauliMap for backwards compatibility with
             // before templated PauliTensor
-            json j = qps.string;
-            return j;
+            return py::object(json(qps.string)).cast<py::list>();
           },
           "A JSON-serializable representation of the QubitPauliString.\n\n"
           ":return: a list of :py:class:`Qubit`-to-:py:class:`Pauli` "
@@ -77,7 +84,10 @@ PYBIND11_MODULE(pauli, m) {
           "represented as dicts.")
       .def_static(
           "from_list",
-          [](const json &j) { return SpPauliString(j.get<QubitPauliMap>()); },
+          [](const py::list &qubit_pauli_string_list) {
+            return SpPauliString(
+                json(qubit_pauli_string_list).get<QubitPauliMap>());
+          },
           "Construct a new QubitPauliString instance from a JSON serializable "
           "list "
           "representation.")
@@ -113,8 +123,9 @@ PYBIND11_MODULE(pauli, m) {
           py::arg("n_qubits"))
       .def(
           "to_sparse_matrix",
-          (CmplxSpMat(SpPauliString::*)(const qubit_vector_t &) const) &
-              SpPauliString::to_sparse_matrix,
+          [](const SpPauliString &self, const py_qubit_vector_t &qubits) {
+            return self.to_sparse_matrix(qubits);
+          },
           "Represents the sparse string as a dense string and generates "
           "the matrix for the tensor. Orders qubits according to "
           "`qubits` (padding with identities if they are not in the "
@@ -138,9 +149,10 @@ PYBIND11_MODULE(pauli, m) {
           py::arg("state"))
       .def(
           "dot_state",
-          (Eigen::VectorXcd(SpPauliString::*)(
-              const Eigen::VectorXcd &, const qubit_vector_t &) const) &
-              SpPauliString::dot_state,
+          [](const SpPauliString &self, const Eigen::VectorXcd &state,
+             const py_qubit_vector_t &qubits) {
+            return self.dot_state(state, qubits);
+          },
           "Performs the dot product of the state with the pauli string. "
           "Maps the qubits of the statevector according to the ordered "
           "list `qubits`, with ``qubits[0]`` being the most significant "
@@ -152,8 +164,9 @@ PYBIND11_MODULE(pauli, m) {
           py::arg("state"), py::arg("qubits"))
       .def(
           "state_expectation",
-          (Complex(SpPauliString::*)(const Eigen::VectorXcd &) const) &
-              SpPauliString::state_expectation,
+          [](const SpPauliString &self, const Eigen::VectorXcd &state) {
+            return self.state_expectation(state);
+          },
           "Calculates the expectation value of the state with the pauli "
           "string. Maps the qubits of the statevector with "
           "sequentially-indexed qubits in the default register, with "
@@ -164,9 +177,10 @@ PYBIND11_MODULE(pauli, m) {
           py::arg("state"))
       .def(
           "state_expectation",
-          (Complex(SpPauliString::*)(
-              const Eigen::VectorXcd &, const qubit_vector_t &) const) &
-              SpPauliString::state_expectation,
+          [](const SpPauliString &self, const Eigen::VectorXcd &state,
+             const py_qubit_vector_t &qubits) {
+            return self.state_expectation(state, qubits);
+          },
           "Calculates the expectation value of the state with the pauli "
           "string. Maps the qubits of the statevector according to the "
           "ordered list `qubits`, with ``qubits[0]`` being the most "
@@ -212,9 +226,10 @@ PYBIND11_MODULE(pauli, m) {
       m, "PauliStabiliser",
       "A string of Pauli letters from the alphabet {I, X, Y, Z} "
       "with a +/- 1 coefficient.")
-      .def(py::init<>(), "Constructs an empty QubitPauliString.")
+      .def(py::init<>(), "Constructs an empty PauliStabiliser.")
       .def(
-          py::init([](const std::vector<Pauli> &string, const int &coeff) {
+          py::init([](const py::tket_custom::SequenceVec<Pauli> &string,
+                      const int &coeff) {
             if (coeff == 1) {
               return PauliStabiliser(string, 0);
             }
@@ -238,8 +253,176 @@ PYBIND11_MODULE(pauli, m) {
           "string",
           [](const PauliStabiliser &stabiliser) { return stabiliser.string; },
           "The list of Pauli terms")
-      .def("__eq__", &PauliStabiliser::operator==)
-      .def("__ne__", &PauliStabiliser::operator!=);
-}
+      .def("__eq__", &py_equals<PauliStabiliser>)
+      .def("__hash__", &deletedHash<PauliStabiliser>, deletedHashDocstring)
+      .def("__ne__", &py_not_equals<PauliStabiliser>);
 
+  py::class_<SpCxPauliTensor>(
+      m, "QubitPauliTensor",
+      "A tensor formed by Pauli terms, consisting of a sparse map from "
+      ":py:class:`Qubit` to :py:class:`Pauli` (implemented as a "
+      ":py:class:`QubitPauliString`) and a complex coefficient.")
+      .def(
+          py::init<Complex>(),
+          "Constructs an empty QubitPauliTensor, representing the identity.",
+          py::arg("coeff") = 1.)
+      .def(
+          py::init<Qubit, Pauli, Complex>(),
+          "Constructs a QubitPauliTensor with a single Pauli term.",
+          py::arg("qubit"), py::arg("pauli"), py::arg("coeff") = 1.)
+      .def(
+          py::init([](const py::tket_custom::SequenceList<Qubit> &qubits,
+                      const py::tket_custom::SequenceList<Pauli> &paulis,
+                      const Complex &coeff) {
+            return QubitPauliTensor(QubitPauliString(qubits, paulis), coeff);
+          }),
+          "Constructs a QubitPauliTensor from two matching lists of "
+          "Qubits and Paulis.",
+          py::arg("qubits"), py::arg("paulis"), py::arg("coeff") = 1.)
+      .def(
+          py::init<QubitPauliMap, Complex>(),
+          "Construct a QubitPauliTensor from a dictionary mapping "
+          ":py:class:`Qubit` to :py:class:`Pauli`.",
+          py::arg("map"), py::arg("coeff") = 1.)
+      .def(
+          py::init<SpPauliString, Complex>(),
+          "Construct a QubitPauliTensor from a QubitPauliString.",
+          py::arg("string"), py::arg("coeff") = 1.)
+      .def(
+          "__hash__",
+          [](const SpCxPauliTensor &qps) { return hash_value(qps); })
+      .def("__repr__", &SpCxPauliTensor::to_str)
+      .def("__eq__", &py_equals<SpCxPauliTensor>)
+      .def("__ne__", &py_not_equals<SpCxPauliTensor>)
+      .def("__lt__", &SpCxPauliTensor::operator<)
+      .def("__getitem__", &SpCxPauliTensor::get<QubitPauliMap>)
+      .def("__setitem__", &SpCxPauliTensor::set<QubitPauliMap>)
+      .def(py::self * py::self)
+      .def(Complex() * py::self)
+      .def_readwrite(
+          "string", &SpCxPauliTensor::string,
+          "The QubitPauliTensor's underlying :py:class:`QubitPauliString`")
+      .def_readwrite(
+          "coeff", &SpCxPauliTensor::coeff,
+          "The global coefficient of the tensor")
+      .def(
+          "compress", &SpCxPauliTensor::compress,
+          "Removes I terms to compress the sparse representation.")
+      .def(
+          "commutes_with", &SpCxPauliTensor::commutes_with,
+          ":return: True if the two tensors commute, else False",
+          py::arg("other"))
+      .def(
+          "to_sparse_matrix",
+          [](const SpCxPauliTensor &qpt) { return qpt.to_sparse_matrix(); },
+          "Represents the sparse string as a dense string (without "
+          "padding for extra qubits) and generates the matrix for the "
+          "tensor. Uses the ILO-BE convention, so ``Qubit(\"a\", 0)`` "
+          "is more significant that ``Qubit(\"a\", 1)`` and "
+          "``Qubit(\"b\")`` for indexing into the matrix."
+          "\n\n:return: a sparse matrix corresponding to the tensor")
+      .def(
+          "to_sparse_matrix",
+          [](const SpCxPauliTensor &qpt, unsigned n_qubits) {
+            return qpt.to_sparse_matrix(n_qubits);
+          },
+          "Represents the sparse string as a dense string over "
+          "`n_qubits` qubits (sequentially indexed from 0 in the "
+          "default register) and generates the matrix for the tensor. "
+          "Uses the ILO-BE convention, so ``Qubit(0)`` is the most "
+          "significant bit for indexing into the matrix."
+          "\n\n:param n_qubits: the number of qubits in the full "
+          "operator"
+          "\n:return: a sparse matrix corresponding to the operator",
+          py::arg("n_qubits"))
+      .def(
+          "to_sparse_matrix",
+          [](const SpCxPauliTensor &qpt, const py_qubit_vector_t &qubits) {
+            return qpt.to_sparse_matrix(qubits);
+          },
+          "Represents the sparse string as a dense string and generates "
+          "the matrix for the tensor. Orders qubits according to "
+          "`qubits` (padding with identities if they are not in the "
+          "sparse string), so ``qubits[0]`` is the most significant bit "
+          "for indexing into the matrix."
+          "\n\n:param qubits: the ordered list of qubits in the full "
+          "operator"
+          "\n:return: a sparse matrix corresponding to the operator",
+          py::arg("qubits"))
+      .def(
+          "dot_state",
+          [](const SpCxPauliTensor &qpt, const Eigen::VectorXcd &state) {
+            return qpt.dot_state(state);
+          },
+          "Performs the dot product of the state with the pauli tensor. "
+          "Maps the qubits of the statevector with sequentially-indexed "
+          "qubits in the default register, with ``Qubit(0)`` being the "
+          "most significant qubit."
+          "\n\n:param state: statevector for qubits ``Qubit(0)`` to "
+          "``Qubit(n-1)``"
+          "\n:return: dot product of operator with state",
+          py::arg("state"))
+      .def(
+          "dot_state",
+          [](const SpCxPauliTensor &qpt, const Eigen::VectorXcd &state,
+             const py_qubit_vector_t &qubits) {
+            return qpt.dot_state(state, qubits);
+          },
+          "Performs the dot product of the state with the pauli tensor. "
+          "Maps the qubits of the statevector according to the ordered "
+          "list `qubits`, with ``qubits[0]`` being the most significant "
+          "qubit."
+          "\n\n:param state: statevector"
+          "\n:param qubits: order of qubits in `state` from most to "
+          "least significant"
+          "\n:return: dot product of operator with state",
+          py::arg("state"), py::arg("qubits"))
+      .def(
+          "state_expectation",
+          [](const SpCxPauliTensor &qpt, const Eigen::VectorXcd &state) {
+            return qpt.state_expectation(state);
+          },
+          "Calculates the expectation value of the state with the pauli "
+          "operator. Maps the qubits of the statevector with "
+          "sequentially-indexed qubits in the default register, with "
+          "``Qubit(0)`` being the most significant qubit."
+          "\n\n:param state: statevector for qubits ``Qubit(0)`` to "
+          "``Qubit(n-1)``"
+          "\n:return: expectation value with respect to state",
+          py::arg("state"))
+      .def(
+          "state_expectation",
+          [](const SpCxPauliTensor &qpt, const Eigen::VectorXcd &state,
+             const py_qubit_vector_t &qubits) {
+            return qpt.state_expectation(state, qubits);
+          },
+          "Calculates the expectation value of the state with the pauli "
+          "operator. Maps the qubits of the statevector according to the "
+          "ordered list `qubits`, with ``qubits[0]`` being the most "
+          "significant qubit."
+          "\n\n:param state: statevector"
+          "\n:param qubits: order of qubits in `state` from most to "
+          "least significant"
+          "\n:return: expectation value with respect to state",
+          py::arg("state"), py::arg("qubits"))
+
+      .def(py::pickle(
+          [](const SpCxPauliTensor &qpt) {
+            std::list<Qubit> qubits;
+            std::list<Pauli> paulis;
+            for (const std::pair<const Qubit, Pauli> &qp_pair : qpt.string) {
+              qubits.push_back(qp_pair.first);
+              paulis.push_back(qp_pair.second);
+            }
+            return py::make_tuple(qubits, paulis, qpt.coeff);
+          },
+          [](const py::tuple &t) {
+            if (t.size() != 3)
+              throw std::runtime_error(
+                  "Invalid state: tuple size: " + std::to_string(t.size()));
+            return SpCxPauliTensor(
+                t[0].cast<std::list<Qubit>>(), t[1].cast<std::list<Pauli>>(),
+                t[2].cast<Complex>());
+          }));
+}
 }  // namespace tket

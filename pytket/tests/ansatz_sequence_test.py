@@ -14,13 +14,13 @@
 
 from typing import Dict, Tuple, List
 import numpy as np
-import pytest  # type: ignore
+import pytest
 from pytket import Circuit
-from pytket.pauli import Pauli, QubitPauliString  # type: ignore
-from pytket.circuit import fresh_symbol, OpType, Qubit  # type: ignore
+from pytket.pauli import Pauli, QubitPauliString
+from pytket.circuit import fresh_symbol, OpType, Qubit
 from pytket.utils import gen_term_sequence_circuit, QubitPauliOperator
-from pytket.transform import Transform  # type: ignore
-from pytket.partition import PauliPartitionStrat, GraphColourMethod  # type: ignore
+from pytket.transform import Transform
+from pytket.partition import PauliPartitionStrat, GraphColourMethod
 
 
 def test_basic_sequence() -> None:

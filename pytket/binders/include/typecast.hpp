@@ -14,6 +14,7 @@
 
 #pragma once
 
+#include <pybind11/cast.h>
 #include <pybind11/detail/typeid.h>
 #include <pybind11/functional.h>
 #include <pybind11/operators.h>
@@ -24,18 +25,132 @@
 #include "tket/Utils/Symbols.hpp"
 #include "unit_downcast.hpp"
 
-namespace pybind11 {
+PYBIND11_NAMESPACE_BEGIN(PYBIND11_NAMESPACE)
+PYBIND11_NAMESPACE_BEGIN(tket_custom)
+// Statically castable to a c++ vector and uses same type caster, but translates
+// to Sequence[T] on python side Instead of list[T]. Should only use as a
+// parameter type, not return type (because "Sequence" as return type is
+// ambiguous).
+template <typename T>
+class SequenceVec : public std::vector<T> {
+  using std::vector<T>::vector;
+};
+// Statically castable to a c++ list and uses same type caster, but translates
+// to Sequence[T] on python side Instead of list[T]. Should only use as a
+// parameter type, not return type (because "Sequence" as return type is
+// ambiguous).
+template <typename T>
+class SequenceList : public std::list<T> {
+  using std::list<T>::list;
+};
+// Statically castable to a c++ vector and uses same type caster, but translates
+// to tuple[T, ...] on python side Instead of list[T]. Can be used as a
+// parameter type or return type.
+template <typename T>
+class TupleVec : public std::vector<T> {
+  using std::vector<T>::vector;
+};
+PYBIND11_NAMESPACE_END(tket_custom)
+PYBIND11_NAMESPACE_BEGIN(detail)
+// This struct is copied from the struct "list_caster" in pybind11/stl.h with
+// some minor customization. It adds the ability to customize the type name
+// (using a handle_type_name<T> struct) and specify the python type that the
+// object is cast to. Changes to the pybind11 code may warrant/require changes
+// here. The struct is used to define custom type casters for the "tket_custom"
+// types.
+template <typename Type, typename Value, typename castToType>
+struct tket_sequence_caster {
+  using value_conv = make_caster<Value>;
 
-namespace detail {
+  bool load(handle src, bool convert) {
+    if (!isinstance<sequence>(src) || isinstance<bytes>(src) ||
+        isinstance<str>(src)) {
+      return false;
+    }
+    auto s = reinterpret_borrow<sequence>(src);
+    value.clear();
+    reserve_maybe(s, &value);
+    for (auto it : s) {
+      value_conv conv;
+      if (!conv.load(it, convert)) {
+        return false;
+      }
+      value.push_back(cast_op<Value&&>(std::move(conv)));
+    }
+    return true;
+  }
 
+ private:
+  template <
+      typename T = Type, enable_if_t<has_reserve_method<T>::value, int> = 0>
+  void reserve_maybe(const sequence& s, Type*) {
+    value.reserve(s.size());
+  }
+  void reserve_maybe(const sequence&, void*) {}
+
+ public:
+  template <typename T>
+  static handle cast(T&& src, return_value_policy policy, handle parent) {
+    if (!std::is_lvalue_reference<T>::value) {
+      policy = return_value_policy_override<Value>::policy(policy);
+    }
+    castToType l(src.size());
+    ssize_t index = 0;
+    for (auto&& value : src) {
+      auto value_ = reinterpret_steal<object>(
+          value_conv::cast(detail::forward_like<T>(value), policy, parent));
+      if (!value_) {
+        return handle();
+      }
+      if (std::is_same<castToType, list>::value) {
+        PyList_SET_ITEM(
+            l.ptr(), index++, value_.release().ptr());  // steals a reference
+      } else {
+        static_assert(std::is_same<castToType, tuple>::value);
+        PyTuple_SET_ITEM(
+            l.ptr(), index++, value_.release().ptr());  // steals a reference
+      }
+    }
+    return l.release();
+  }
+
+  PYBIND11_TYPE_CASTER(Type, handle_type_name<Type>::name);
+};
+template <typename T>
+struct handle_type_name<tket_custom::SequenceVec<T>> {
+  static constexpr auto name =
+      const_name("Sequence[") + make_caster<T>::name + const_name("]");
+};
+template <typename T>
+struct handle_type_name<tket_custom::SequenceList<T>> {
+  static constexpr auto name =
+      const_name("Sequence[") + make_caster<T>::name + const_name("]");
+};
+template <typename T>
+struct handle_type_name<tket_custom::TupleVec<T>> {
+  static constexpr auto name =
+      const_name("tuple[") + make_caster<T>::name + const_name(", ...]");
+};
+template <typename Type>
+struct type_caster<tket_custom::SequenceVec<Type>>
+    : tket_sequence_caster<tket_custom::SequenceVec<Type>, Type, list> {};
+template <typename Type>
+struct type_caster<tket_custom::SequenceList<Type>>
+    : tket_sequence_caster<tket_custom::SequenceList<Type>, Type, list> {};
+template <typename Type>
+struct type_caster<tket_custom::TupleVec<Type>>
+    : tket_sequence_caster<tket_custom::TupleVec<Type>, Type, tuple> {};
 template <>
 struct type_caster<SymEngine::Expression> {
  public:
-  PYBIND11_TYPE_CASTER(SymEngine::Expression, _("Expression"));
+  PYBIND11_TYPE_CASTER(
+      SymEngine::Expression, const_name("typing.Union[sympy.Expr, float]"));
+
   static void assert_tuple_length(tuple t, unsigned len) {
     if (t.size() != len)
       throw std::logic_error("Sympy expression is not well-formed");
   };
+
   static tuple get_checked_args(handle py_expr, unsigned expected_len) {
     tuple arg_tuple = py_expr.attr("args");
     if (arg_tuple.size() != expected_len) {
@@ -47,13 +162,14 @@ struct type_caster<SymEngine::Expression> {
     }
     return arg_tuple;
   }
+
   static tket::Expr sympy_to_expr(handle py_expr) {
     pybind11::module sympy = pybind11::module::import("sympy");
     handle numbers = sympy.attr("core").attr("numbers");
 
     if (isinstance(py_expr, sympy.attr("Symbol"))) {
-      handle name = py_expr.attr("name");
-      tket::Sym sym = SymEngine::symbol(name.cast<std::string>());
+      handle expr_name = py_expr.attr("name");
+      tket::Sym sym = SymEngine::symbol(expr_name.cast<std::string>());
       return tket::Expr(sym);
     } else if (isinstance(py_expr, sympy.attr("Mul"))) {
       tuple arg_tuple = py_expr.attr("args");
@@ -132,6 +248,7 @@ struct type_caster<SymEngine::Expression> {
     SECONVERT(erf, erf)
     SECONVERT(erfc, erfc)
     SECONVERT(abs, Abs)
+    SECONVERT(exp, exp)
 #undef SECONVERT
     else if (isinstance(py_expr, sympy.attr("atan2"))) {
       tuple arg_tuple = get_checked_args(py_expr, 2);
@@ -159,6 +276,7 @@ struct type_caster<SymEngine::Expression> {
     }
     return false;
   }
+
   static object basic_to_sympy(const tket::ExprPtr& e_) {
     pybind11::module sympy = pybind11::module::import("sympy");
     switch (e_->get_type_code()) {
@@ -219,14 +337,14 @@ struct type_caster<SymEngine::Expression> {
       case SymEngine::TypeID::SYMENGINE_CONSTANT: {
         const SymEngine::Constant* c =
             dynamic_cast<const SymEngine::Constant*>(e_.get());
-        std::string name = c->get_name();
-        if (name == "E") {
+        std::string c_name = c->get_name();
+        if (c_name == "E") {
           return sympy.attr("E");
-        } else if (name == "pi") {
+        } else if (c_name == "pi") {
           return sympy.attr("pi");
         } else {
           throw std::logic_error(
-              "Unable to convert SymEngine constant " + name);
+              "Unable to convert SymEngine constant " + c_name);
         }
       }
       case SymEngine::TypeID::SYMENGINE_INFTY: {
@@ -293,6 +411,7 @@ struct type_caster<SymEngine::Expression> {
       }
     }
   }
+
   static handle cast(
       SymEngine::Expression src, return_value_policy /* policy */,
       handle /* parent */) {
@@ -308,7 +427,8 @@ struct type_caster<SymEngine::Expression> {
 template <>
 struct type_caster<SymEngine::RCP<const SymEngine::Symbol>> {
  public:
-  PYBIND11_TYPE_CASTER(SymEngine::RCP<const SymEngine::Symbol>, _("Symbol"));
+  PYBIND11_TYPE_CASTER(
+      SymEngine::RCP<const SymEngine::Symbol>, const_name("sympy.Symbol"));
   bool load(handle src, bool) {
     pybind11::module sympy = pybind11::module::import("sympy");
     if (!isinstance(src, sympy.attr("Symbol"))) return false;
@@ -318,9 +438,10 @@ struct type_caster<SymEngine::RCP<const SymEngine::Symbol>> {
   static handle cast(
       SymEngine::RCP<const SymEngine::Symbol> src,
       return_value_policy /* policy */, handle /* parent */) {
-    pybind11::module sympy = pybind11::module::import("sympy");
+    pybind11::module sympy = pybind11::module_::import("sympy");
     return sympy.attr("Symbol")(src->get_name()).release();
   }
 };
-}  // namespace detail
-}  // namespace pybind11
+// namespace detail
+PYBIND11_NAMESPACE_END(detail)
+PYBIND11_NAMESPACE_END(PYBIND11_NAMESPACE)

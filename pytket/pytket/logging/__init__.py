@@ -14,4 +14,4 @@
 
 """Module to control visibility of internal logging from tket."""
 
-from pytket._tket.logging import *  # type: ignore
+from pytket._tket.logging import *

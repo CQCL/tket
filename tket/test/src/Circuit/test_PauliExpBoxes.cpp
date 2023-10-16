@@ -28,11 +28,13 @@ namespace test_PauliExpBoxes {
 SCENARIO("Pauli gadgets", "[boxes]") {
   GIVEN("Basis Circuit check") {
     PauliExpBox pbox(SymPauliTensor({Pauli::X}, 1.0));
+    auto circ = pbox.to_circuit();
+    circ->decompose_boxes_recursively();
     Circuit comp(1);
     comp.add_op<unsigned>(OpType::H, {0});
     comp.add_op<unsigned>(OpType::Rz, 1.0, {0});
     comp.add_op<unsigned>(OpType::H, {0});
-    REQUIRE(*(pbox.to_circuit()) == comp);
+    REQUIRE(*circ == comp);
   }
   GIVEN("Empty PauliExpBox compiles to empty circuit") {
     Circuit empty_circuit(0);
@@ -273,18 +275,20 @@ SCENARIO("Pauli gadgets", "[boxes]") {
 }
 SCENARIO("Pauli gadget pairs", "[boxes]") {
   GIVEN("Basis Circuit check") {
-    PauliExpPairBox pbox(
-        SymPauliTensor({Pauli::X}, 1.0), SymPauliTensor({Pauli::I}, 0.0));
+    PauliExpPairBox pbox(SymPauliTensor({Pauli::X}, 1.0), SymPauliTensor({Pauli::I}, 0.0));
+    auto circ = pbox.to_circuit();
+    circ->decompose_boxes_recursively();
     Circuit comp(1);
     comp.add_op<unsigned>(OpType::H, {0});
     comp.add_op<unsigned>(OpType::Rz, 1.0, {0});
     comp.add_op<unsigned>(OpType::H, {0});
-    REQUIRE(*(pbox.to_circuit()) == comp);
+    REQUIRE(*circ == comp);
   }
   GIVEN("Empty PauliExpPairBox compiles to empty circuit") {
     Circuit empty_circuit(0);
     PauliExpPairBox pbox;
     auto empty_pbox_circuit = pbox.to_circuit();
+    empty_pbox_circuit->decompose_boxes_recursively();
     REQUIRE(*empty_pbox_circuit == empty_circuit);
   }
   GIVEN("Construction with two pauli strings of different length throws") {
@@ -441,18 +445,20 @@ SCENARIO("Pauli gadget pairs", "[boxes]") {
 SCENARIO("Pauli gadget commuting sets", "[boxes]") {
   GIVEN("Basis Circuit check") {
     PauliExpCommutingSetBox pbox(
-        {SymPauliTensor({Pauli::X}, 1.0), SymPauliTensor({Pauli::I}, 0.0),
-         SymPauliTensor({Pauli::I}, 0.0)});
+        {{{Pauli::X}, 1.0}, {{Pauli::I}, 0.0}, {{Pauli::I}, 0.0}});
+    auto circ = pbox.to_circuit();
+    circ->decompose_boxes_recursively();
     Circuit comp(1);
     comp.add_op<unsigned>(OpType::H, {0});
     comp.add_op<unsigned>(OpType::Rz, 1.0, {0});
     comp.add_op<unsigned>(OpType::H, {0});
-    REQUIRE(*(pbox.to_circuit()) == comp);
+    REQUIRE(*circ == comp);
   }
   GIVEN("Empty PauliExpPairBox compiles to empty circuit") {
     Circuit empty_circuit(0);
     PauliExpCommutingSetBox pbox;
     auto empty_pbox_circuit = pbox.to_circuit();
+    empty_pbox_circuit->decompose_boxes_recursively();
     REQUIRE(*empty_pbox_circuit == empty_circuit);
   }
   GIVEN("Construction with no gadgets throws") {

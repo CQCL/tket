@@ -21,18 +21,20 @@ from typing import (
     Tuple,
     Type,
     Union,
-    cast,
     Callable,
-    List,
     Optional,
+    Sequence,
 )
 
-from pytket._tket.circuit import *  # type: ignore
-from pytket._tket.circuit import Bit, BitRegister, Circuit
+from pytket._tket.circuit import *
+from pytket._tket.circuit import Circuit
+
+from pytket._tket.unit_id import *
+from pytket._tket.unit_id import Bit, BitRegister
 
 # prefixes for assertion bits
-from pytket._tket.circuit import _DEBUG_ZERO_REG_PREFIX, _DEBUG_ONE_REG_PREFIX  # type: ignore
-from pytket._tket.pauli import Pauli  # type: ignore
+from pytket._tket.unit_id import _DEBUG_ZERO_REG_PREFIX, _DEBUG_ONE_REG_PREFIX
+from pytket._tket.pauli import Pauli
 
 from pytket import wasm
 
@@ -41,7 +43,7 @@ from .logic_exp import (
     BitWiseOp,
     RegLogicExp,
     RegWiseOp,
-    ArgType,
+    Constant,
     LogicExp,
     BinaryOp,
     Ops,
@@ -56,28 +58,15 @@ from .logic_exp import (
 )
 
 
-# Add ability to compare Bit equality with arbitrary class
-Bit.oldeq = Bit.__eq__
-
-
-def overload_biteq(self: Bit, other: Any) -> bool:
-    if not isinstance(other, Bit):
-        return False
-    return cast(bool, self.oldeq(other))
-
-
-setattr(Bit, "__eq__", overload_biteq)
-
-
-def overload_add_wasm(  # type: ignore
+def overload_add_wasm(
     self: Circuit,
     funcname: str,
     filehandler: wasm.WasmFileHandler,
-    list_i: List[int],
-    list_o: List[int],
-    args: Union[List[int], List[Bit]],
-    args_wasm: Optional[List[int]] = None,
-    **kwargs,
+    list_i: Sequence[int],
+    list_o: Sequence[int],
+    args: Union[Sequence[int], Sequence[Bit]],
+    args_wasm: Optional[Sequence[int]] = None,
+    **kwargs: Any,
 ) -> Circuit:
     """Add a classical function call from a wasm file to the circuit.
     \n\n:param funcname: name of the function that is called
@@ -119,14 +108,14 @@ def overload_add_wasm(  # type: ignore
 setattr(Circuit, "add_wasm", overload_add_wasm)
 
 
-def overload_add_wasm_to_reg(  # type: ignore
+def overload_add_wasm_to_reg(
     self: Circuit,
     funcname: str,
     filehandler: wasm.WasmFileHandler,
-    list_i: List[BitRegister],
-    list_o: List[BitRegister],
-    args_wasm: Optional[List[int]] = None,
-    **kwargs,
+    list_i: Sequence[BitRegister],
+    list_o: Sequence[BitRegister],
+    args_wasm: Optional[Sequence[int]] = None,
+    **kwargs: Any,
 ) -> Circuit:
     """Add a classical function call from a wasm file to the circuit.
     \n\n:param funcname: name of the function that is called
@@ -159,35 +148,51 @@ setattr(Circuit, "add_wasm_to_reg", overload_add_wasm_to_reg)
 
 # overload operators for Bit, BitRegister and expressions over these
 # such that the operation returns a LogicExp describing the operation
-cls_enum_pairs: Tuple[Tuple[Type, Union[Type[BitWiseOp], Type[RegWiseOp]]], ...] = (
+cls_enum_pairs_bit: Tuple[Tuple[Type, Union[Type[BitWiseOp], Type[RegWiseOp]]], ...] = (
     (Bit, BitWiseOp),
-    (BitLogicExp, BitWiseOp),
-    (BitRegister, RegWiseOp),
-    (RegLogicExp, RegWiseOp),
 )
 
+cls_enum_pairs_reg: Tuple[Tuple[Type, Union[Type[BitWiseOp], Type[RegWiseOp]]], ...] = (
+    (BitRegister, RegWiseOp),
+)
 
-def gen_binary_method(op: Ops) -> Callable[[ArgType, ArgType], BinaryOp]:
-    def logic_operation(self: ArgType, other: ArgType) -> BinaryOp:
-        return cast(Type[BinaryOp], LogicExp.factory(op))(self, other)
+BitArgType = Union[BitLogicExp, Bit, Constant]
+RegArgType = Union[RegLogicExp, BitRegister, Constant]
+
+
+def gen_binary_method_bit(op: Ops) -> Callable[[BitArgType, BitArgType], BitLogicExp]:
+    def logic_operation(self: BitArgType, other: BitArgType) -> BitLogicExp:
+        return BitLogicExp(op, [self, other])
 
     return logic_operation
 
 
-for clas, enum in cls_enum_pairs:
-    setattr(clas, "__and__", gen_binary_method(enum.AND))
-    setattr(clas, "__rand__", gen_binary_method(enum.AND))
-    setattr(clas, "__or__", gen_binary_method(enum.OR))
-    setattr(clas, "__ror__", gen_binary_method(enum.OR))
-    setattr(clas, "__xor__", gen_binary_method(enum.XOR))
-    setattr(clas, "__rxor__", gen_binary_method(enum.XOR))
+def gen_binary_method_reg(op: Ops) -> Callable[[RegArgType, RegArgType], RegLogicExp]:
+    def logic_operation(self: RegArgType, other: RegArgType) -> RegLogicExp:
+        return RegLogicExp(op, [self, other])
+
+    return logic_operation
 
 
-for clas in (BitRegister, RegLogicExp):
-    setattr(clas, "__add__", gen_binary_method(RegWiseOp.ADD))
-    setattr(clas, "__sub__", gen_binary_method(RegWiseOp.SUB))
-    setattr(clas, "__mul__", gen_binary_method(RegWiseOp.MUL))
-    setattr(clas, "__floordiv__", gen_binary_method(RegWiseOp.DIV))
-    setattr(clas, "__pow__", gen_binary_method(RegWiseOp.POW))
-    setattr(clas, "__lshift__", gen_binary_method(RegWiseOp.LSH))
-    setattr(clas, "__rshift__", gen_binary_method(RegWiseOp.RSH))
+for clas, enum in cls_enum_pairs_bit:
+    setattr(clas, "__and__", gen_binary_method_bit(enum.AND))
+    setattr(clas, "__rand__", gen_binary_method_bit(enum.AND))
+    setattr(clas, "__or__", gen_binary_method_bit(enum.OR))
+    setattr(clas, "__ror__", gen_binary_method_bit(enum.OR))
+    setattr(clas, "__xor__", gen_binary_method_bit(enum.XOR))
+    setattr(clas, "__rxor__", gen_binary_method_bit(enum.XOR))
+
+for clas, enum in cls_enum_pairs_reg:
+    setattr(clas, "__and__", gen_binary_method_reg(enum.AND))
+    setattr(clas, "__rand__", gen_binary_method_reg(enum.AND))
+    setattr(clas, "__or__", gen_binary_method_reg(enum.OR))
+    setattr(clas, "__ror__", gen_binary_method_reg(enum.OR))
+    setattr(clas, "__xor__", gen_binary_method_reg(enum.XOR))
+    setattr(clas, "__rxor__", gen_binary_method_reg(enum.XOR))
+    setattr(clas, "__add__", gen_binary_method_reg(RegWiseOp.ADD))
+    setattr(clas, "__sub__", gen_binary_method_reg(RegWiseOp.SUB))
+    setattr(clas, "__mul__", gen_binary_method_reg(RegWiseOp.MUL))
+    setattr(clas, "__floordiv__", gen_binary_method_reg(RegWiseOp.DIV))
+    setattr(clas, "__pow__", gen_binary_method_reg(RegWiseOp.POW))
+    setattr(clas, "__lshift__", gen_binary_method_reg(RegWiseOp.LSH))
+    setattr(clas, "__rshift__", gen_binary_method_reg(RegWiseOp.RSH))

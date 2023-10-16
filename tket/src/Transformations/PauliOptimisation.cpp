@@ -180,6 +180,7 @@ Transform pairwise_pauli_gadgets(CXConfigType cx_config) {
     // Stitch gadget circuit and Clifford circuit together
     circ = gadget_circ >> clifford_circ;
     circ.add_phase(t);
+    circ.decompose_boxes_recursively();
     clifford_simp().apply(circ);
     return true;
   });

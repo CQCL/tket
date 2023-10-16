@@ -13,9 +13,9 @@
 # limitations under the License.
 
 from typing import Optional, Tuple
-from pytket.circuit import Circuit  # type: ignore
-from pytket.passes import ContextSimp  # type: ignore
-from pytket.transform import separate_classical  # type: ignore
+from pytket.circuit import Circuit
+from pytket.passes import ContextSimp
+from pytket.transform import separate_classical
 
 
 def prepare_circuit(
@@ -50,4 +50,4 @@ def prepare_circuit(
     c.qubit_create_all()
     c.qubit_discard_all()
     ContextSimp(allow_classical, xcirc).apply(c)
-    return separate_classical(c)  # type: ignore
+    return separate_classical(c)

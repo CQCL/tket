@@ -13,18 +13,28 @@
 # limitations under the License.
 
 import copy
-from typing import cast, Dict, TYPE_CHECKING, Union, List, Optional, Set, Any
+from typing import Dict, TYPE_CHECKING, Union, List, Optional, Set, Any
+
+import numpy
 import numpy as np
-from sympy import Symbol, sympify, Expr, re, im  # type: ignore
-from pytket.pauli import QubitPauliString, pauli_string_mult  # type: ignore
-from pytket.circuit import Qubit  # type: ignore
-from pytket.utils.serialization import complex_to_list, list_to_complex  # type: ignore
+from sympy import Symbol, sympify, Expr, re, im
+from pytket.pauli import QubitPauliString, pauli_string_mult
+from pytket.circuit import Qubit
+from pytket.utils.serialization import complex_to_list, list_to_complex
 
 
-CoeffType = Union[int, float, complex, Expr]
+CoeffTypeAccepted = Union[int, float, complex, Expr]
+CoeffTypeConverted = Union[Expr]
 
 if TYPE_CHECKING:
-    from scipy.sparse import csc_matrix  # type: ignore
+    from scipy.sparse import csc_matrix
+
+
+def _coeff_convert(coeff: Union[CoeffTypeAccepted, str]) -> CoeffTypeConverted:
+    sympy_val = sympify(coeff)  # type: ignore
+    if not isinstance(sympy_val, Expr):
+        raise ValueError("Unsupported value for QubitPauliString coefficient")
+    return sympy_val
 
 
 class QubitPauliOperator:
@@ -53,25 +63,26 @@ class QubitPauliOperator:
 
     def __init__(
         self,
-        dictionary: Optional[Dict[QubitPauliString, CoeffType]] = None,
+        dictionary: Optional[Dict[QubitPauliString, CoeffTypeAccepted]] = None,
     ) -> None:
-        self._dict = dict()
+        self._dict: Dict[QubitPauliString, CoeffTypeConverted] = dict()
         if dictionary:
-            self._dict = dict(
-                (key, sympify(value)) for key, value in dictionary.items()  # type: ignore
-            )
+            for key, value in dictionary.items():
+                self._dict[key] = _coeff_convert(value)
         self._collect_qubits()
 
     def __repr__(self) -> str:
         return self._dict.__repr__()
 
-    def __getitem__(self, key: QubitPauliString) -> Any:
+    def __getitem__(self, key: QubitPauliString) -> CoeffTypeConverted:
         return self._dict[key]
 
-    def get(self, key: QubitPauliString, default: CoeffType) -> CoeffType:
-        return self._dict.get(key, default)
+    def get(
+        self, key: QubitPauliString, default: CoeffTypeAccepted
+    ) -> CoeffTypeConverted:
+        return self._dict.get(key, _coeff_convert(default))
 
-    def __setitem__(self, key: QubitPauliString, value: CoeffType) -> None:
+    def __setitem__(self, key: QubitPauliString, value: CoeffTypeAccepted) -> None:
         """Update value in dictionary ([]). Automatically converts value into sympy
         Expr.
 
@@ -80,19 +91,21 @@ class QubitPauliOperator:
         :param value: Associated coefficient
         :type value: Union[int, float, complex, Expr]
         """
-        self._dict[key] = sympify(value)  # type: ignore
+        self._dict[key] = _coeff_convert(value)
         self._all_qubits.update(key.map.keys())
 
-    def __getstate__(self) -> dict:
+    def __getstate__(self) -> Dict[QubitPauliString, CoeffTypeConverted]:
         return self._dict
 
-    def __setstate__(self, _dict: Dict[QubitPauliString, CoeffType]) -> None:
+    def __setstate__(self, _dict: Dict[QubitPauliString, CoeffTypeConverted]) -> None:
         # values assumed to be already sympified
         self._dict = _dict
         self._collect_qubits()
 
-    def __eq__(self, other: "QubitPauliOperator") -> bool:  # type: ignore
-        return self._dict == other._dict
+    def __eq__(self, other: object) -> bool:
+        if isinstance(other, QubitPauliOperator):
+            return self._dict == other._dict
+        return False
 
     def __iadd__(self, addend: "QubitPauliOperator") -> "QubitPauliOperator":
         """In-place addition (+=) of QubitPauliOperators.
@@ -124,7 +137,7 @@ class QubitPauliOperator:
         return summand
 
     def __imul__(
-        self, multiplier: Union[int, float, complex, Expr, "QubitPauliOperator"]
+        self, multiplier: Union[float, Expr, "QubitPauliOperator"]
     ) -> "QubitPauliOperator":
         """In-place multiplication (*=) with QubitPauliOperator or scalar.
         Multiply coefficients and terms.
@@ -140,7 +153,6 @@ class QubitPauliOperator:
             result_terms: Dict = dict()
             for left_key, left_value in self._dict.items():
                 for right_key, right_value in multiplier._dict.items():
-
                     new_term, bonus_coeff = pauli_string_mult(left_key, right_key)
                     new_coefficient = bonus_coeff * left_value * right_value
 
@@ -154,7 +166,7 @@ class QubitPauliOperator:
             return self
 
         # Handle scalars.
-        elif isinstance(multiplier, (int, float, complex, Expr)):
+        elif isinstance(multiplier, (float, Expr)):
             for key in self._dict:
                 self[key] *= multiplier
             return self
@@ -166,7 +178,7 @@ class QubitPauliOperator:
             )
 
     def __mul__(
-        self, multiplier: Union[int, float, complex, Expr, "QubitPauliOperator"]
+        self, multiplier: Union[float, Expr, "QubitPauliOperator"]
     ) -> "QubitPauliOperator":
         """Multiplication (*) by QubitPauliOperator or scalar.
 
@@ -179,7 +191,7 @@ class QubitPauliOperator:
         product *= multiplier
         return product
 
-    def __rmul__(self, multiplier: CoeffType) -> "QubitPauliOperator":
+    def __rmul__(self, multiplier: CoeffTypeAccepted) -> "QubitPauliOperator":
         """Multiplication (*) by a scalar.
         We only define __rmul__ for scalars because left multiply is
         queried as default behaviour, and is used for
@@ -190,7 +202,7 @@ class QubitPauliOperator:
         :return: Product operator
         :rtype: QubitPauliOperator
         """
-        return self * multiplier
+        return self * _coeff_convert(multiplier)
 
     @property
     def all_qubits(self) -> Set[Qubit]:
@@ -208,7 +220,7 @@ class QubitPauliOperator:
         :type symbol_dict: Dict[Symbol, complex]
         """
         for key, value in self._dict.items():
-            self._dict[key] = value.subs(symbol_dict)
+            self._dict[key] = value.subs(symbol_dict)  # type: ignore
 
     def to_list(self) -> List[Dict[str, Any]]:
         """Generate a list serialized representation of QubitPauliOperator,
@@ -244,12 +256,12 @@ class QubitPauliOperator:
         def get_qps(obj: Dict[str, Any]) -> QubitPauliString:
             return QubitPauliString.from_list(obj["string"])
 
-        def get_coeff(obj: Dict[str, Any]) -> CoeffType:
+        def get_coeff(obj: Dict[str, Any]) -> CoeffTypeConverted:
             coeff = obj["coefficient"]
             if type(coeff) is str:
-                return sympify(coeff)  # type: ignore
+                return _coeff_convert(coeff)
             else:
-                return cast(complex, list_to_complex(coeff))
+                return _coeff_convert(list_to_complex(coeff))
 
         return QubitPauliOperator({get_qps(obj): get_coeff(obj) for obj in pauli_list})
 
@@ -276,11 +288,14 @@ class QubitPauliOperator:
         :return: A sparse matrix representation of the operator.
         :rtype: csc_matrix
         """
-        qubits_ = qubits
         if qubits is None:
             qubits_ = sorted(list(self._all_qubits))
+            return sum(
+                complex(coeff) * pauli.to_sparse_matrix(qubits_)
+                for pauli, coeff in self._dict.items()
+            )
         return sum(
-            complex(coeff) * pauli.to_sparse_matrix(qubits_)
+            complex(coeff) * pauli.to_sparse_matrix(qubits)
             for pauli, coeff in self._dict.items()
         )
 
@@ -303,14 +318,17 @@ class QubitPauliOperator:
         :return: The dot product of the operator with the statevector
         :rtype: numpy.ndarray
         """
-        indexed_state = [state, qubits] if qubits else [state]
-        return cast(
-            np.ndarray,
-            sum(
-                complex(coeff) * pauli.dot_state(*indexed_state)
+        if qubits:
+            product_sum = sum(
+                complex(coeff) * pauli.dot_state(state, qubits)
                 for pauli, coeff in self._dict.items()
-            ),
-        )
+            )
+        else:
+            product_sum = sum(
+                complex(coeff) * pauli.dot_state(state)
+                for pauli, coeff in self._dict.items()
+            )
+        return product_sum if isinstance(product_sum, numpy.ndarray) else state
 
     def state_expectation(
         self, state: np.ndarray, qubits: Optional[List[Qubit]] = None
@@ -331,13 +349,14 @@ class QubitPauliOperator:
         :return: The expectation value of the statevector and operator
         :rtype: complex
         """
-        indexed_state = [state, qubits] if qubits else [state]
-        return cast(
-            complex,
-            sum(
-                complex(coeff) * pauli.state_expectation(*indexed_state)
+        if qubits:
+            return sum(
+                complex(coeff) * pauli.state_expectation(state, qubits)
                 for pauli, coeff in self._dict.items()
-            ),
+            )
+        return sum(
+            complex(coeff) * pauli.state_expectation(state)
+            for pauli, coeff in self._dict.items()
         )
 
     def compress(self, abs_tol: float = 1e-10) -> None:
@@ -362,7 +381,7 @@ class QubitPauliOperator:
 
         to_delete = []
         for key, value in self._dict.items():
-            placeholder = value.subs({s: 1 for s in value.free_symbols})
+            placeholder = value.subs({s: 1 for s in value.free_symbols})  # type: ignore
             if abs(re(placeholder)) <= abs_tol:
                 if abs(im(placeholder)) <= abs_tol:
                     to_delete.append(key)
@@ -375,7 +394,7 @@ class QubitPauliOperator:
             del self._dict[key]
 
     def _collect_qubits(self) -> None:
-        self._all_qubits = set()
+        self._all_qubits: set[Qubit] = set()
         for key in self._dict.keys():
             for q in key.map.keys():
                 self._all_qubits.add(q)
