@@ -14,10 +14,10 @@
 
 #include <catch2/catch_test_macros.hpp>
 
-#include "tket/Utils/PauliStrings2.hpp"
+#include "tket/Utils/PauliTensor.hpp"
 
 namespace tket {
-namespace test_PauliString {
+namespace test_PauliTensor {
 
 SCENARIO("Testing equality of sparse PauliTensor variants") {
   Qubit q0 = Qubit("q", 0);
@@ -315,5 +315,5 @@ SCENARIO("Test hashing for dense PauliTensor") {
   }
 }
 
-}  // namespace test_PauliString
+}  // namespace test_PauliTensor
 }  // namespace tket

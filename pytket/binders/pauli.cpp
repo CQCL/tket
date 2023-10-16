@@ -20,7 +20,7 @@
 #include "binder_json.hpp"
 #include "deleted_hash.hpp"
 #include "py_operators.hpp"
-#include "tket/Utils/PauliStrings2.hpp"
+#include "tket/Utils/PauliTensor.hpp"
 #include "typecast.hpp"
 
 namespace py = pybind11;

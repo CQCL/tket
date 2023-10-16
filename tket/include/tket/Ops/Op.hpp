@@ -35,7 +35,7 @@
 #include "tket/Utils/EigenConfig.hpp"
 #include "tket/Utils/Expression.hpp"
 #include "tket/Utils/Json.hpp"
-#include "tket/Utils/PauliStrings2.hpp"
+#include "tket/Utils/PauliTensor.hpp"
 #include "tket/Utils/UnitID.hpp"
 
 namespace tket {

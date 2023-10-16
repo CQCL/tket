@@ -16,7 +16,7 @@
 
 #include "tket/OpType/OpType.hpp"
 #include "tket/Utils/MatrixAnalysis.hpp"
-#include "tket/Utils/PauliStrings2.hpp"
+#include "tket/Utils/PauliTensor.hpp"
 
 namespace tket {
 

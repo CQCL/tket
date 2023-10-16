@@ -16,7 +16,7 @@
 
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Utils/Json.hpp"
-#include "tket/Utils/PauliStrings2.hpp"
+#include "tket/Utils/PauliTensor.hpp"
 
 namespace tket {
 

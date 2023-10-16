@@ -28,7 +28,7 @@
 #include "tket/OpType/OpTypeInfo.hpp"
 #include "tket/Ops/Op.hpp"
 #include "tket/Utils/Expression.hpp"
-#include "tket/Utils/PauliStrings2.hpp"
+#include "tket/Utils/PauliTensor.hpp"
 
 namespace tket {
 using std::stringstream;

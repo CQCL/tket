@@ -20,7 +20,7 @@
 #include "tket/Clifford/UnitaryTableau.hpp"
 #include "tket/Utils/Expression.hpp"
 #include "tket/Utils/GraphHeaders.hpp"
-#include "tket/Utils/PauliStrings2.hpp"
+#include "tket/Utils/PauliTensor.hpp"
 #include "tket/Utils/SequencedContainers.hpp"
 
 namespace tket {
