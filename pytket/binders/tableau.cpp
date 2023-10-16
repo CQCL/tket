@@ -69,19 +69,31 @@ PYBIND11_MODULE(tableau, m) {
             return str.str();
           })
       .def(
-          "get_xrow", &UnitaryTableau::get_xrow,
+          "get_xrow",
+          [](const UnitaryTableau& tab, const Qubit& qb) {
+            return SpCxPauliTensor(tab.get_xrow(qb));
+          },
           "Read off an X row as a Pauli string."
           "\n\n:param qb: The qubits whose X row to read off."
           "\n:return: The Pauli string :math:`P` such that :math:`PU=UX_{qb}`.",
           py::arg("qb"))
       .def(
-          "get_zrow", &UnitaryTableau::get_zrow,
+          "get_zrow",
+          [](const UnitaryTableau& tab, const Qubit& qb) {
+            return SpCxPauliTensor(tab.get_zrow(qb));
+          },
           "Read off an Z row as a Pauli string."
           "\n\n:param qb: The qubits whose Z row to read off."
           "\n:return: The Pauli string :math:`P` such that :math:`PU=UZ_{qb}`.",
           py::arg("qb"))
       .def(
-          "get_row_product", &UnitaryTableau::get_row_product,
+          "get_row_product",
+          [](const UnitaryTableau& tab, const SpCxPauliTensor& paulis) {
+            SpCxPauliTensor res =
+                tab.get_row_product(SpPauliStabiliser(paulis.string));
+            res.coeff *= paulis.coeff;
+            return res;
+          },
           "Combine rows to yield the effect of a given Pauli string."
           "\n\n:param paulis: The Pauli string :math:`P` to consider at the "
           "input."

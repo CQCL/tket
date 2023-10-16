@@ -263,7 +263,8 @@ PYBIND11_MODULE(pauli, m) {
       ":py:class:`Qubit` to :py:class:`Pauli` (implemented as a "
       ":py:class:`QubitPauliString`) and a complex coefficient.")
       .def(
-          py::init<Complex>(),
+          py::init(
+              [](const Complex &coeff) { return SpCxPauliTensor({}, coeff); }),
           "Constructs an empty QubitPauliTensor, representing the identity.",
           py::arg("coeff") = 1.)
       .def(
@@ -274,7 +275,7 @@ PYBIND11_MODULE(pauli, m) {
           py::init([](const py::tket_custom::SequenceList<Qubit> &qubits,
                       const py::tket_custom::SequenceList<Pauli> &paulis,
                       const Complex &coeff) {
-            return QubitPauliTensor(QubitPauliString(qubits, paulis), coeff);
+            return SpCxPauliTensor(qubits, paulis, coeff);
           }),
           "Constructs a QubitPauliTensor from two matching lists of "
           "Qubits and Paulis.",
@@ -285,12 +286,14 @@ PYBIND11_MODULE(pauli, m) {
           ":py:class:`Qubit` to :py:class:`Pauli`.",
           py::arg("map"), py::arg("coeff") = 1.)
       .def(
-          py::init<SpPauliString, Complex>(),
+          py::init([](const SpPauliString &qps, const Complex &c) {
+            return SpCxPauliTensor(qps.string, c);
+          }),
           "Construct a QubitPauliTensor from a QubitPauliString.",
           py::arg("string"), py::arg("coeff") = 1.)
       .def(
           "__hash__",
-          [](const SpCxPauliTensor &qps) { return hash_value(qps); })
+          [](const SpCxPauliTensor &qps) { return qps.hash_value(); })
       .def("__repr__", &SpCxPauliTensor::to_str)
       .def("__eq__", &py_equals<SpCxPauliTensor>)
       .def("__ne__", &py_not_equals<SpCxPauliTensor>)
@@ -298,18 +301,31 @@ PYBIND11_MODULE(pauli, m) {
       .def("__getitem__", &SpCxPauliTensor::get<QubitPauliMap>)
       .def("__setitem__", &SpCxPauliTensor::set<QubitPauliMap>)
       .def(py::self * py::self)
-      .def(Complex() * py::self)
-      .def_readwrite(
-          "string", &SpCxPauliTensor::string,
+      .def(
+          "__mul__",
+          [](const Complex &c, const SpCxPauliTensor &qpt) {
+            return SpCxPauliTensor(qpt.string, qpt.coeff * c);
+          },
+          py::is_operator())
+      .def_property(
+          "string",
+          [](const SpCxPauliTensor &qpt) {
+            // Return as SpPauliString for backwards compatibility with before
+            // templated PauliTensor
+            return SpPauliString(qpt.string);
+          },
+          [](SpCxPauliTensor &qpt, const SpPauliString &qps) {
+            qpt.string = qps.string;
+          },
           "The QubitPauliTensor's underlying :py:class:`QubitPauliString`")
       .def_readwrite(
           "coeff", &SpCxPauliTensor::coeff,
           "The global coefficient of the tensor")
       .def(
-          "compress", &SpCxPauliTensor::compress,
+          "compress", &SpCxPauliTensor::compress<QubitPauliMap>,
           "Removes I terms to compress the sparse representation.")
       .def(
-          "commutes_with", &SpCxPauliTensor::commutes_with,
+          "commutes_with", &SpCxPauliTensor::commutes_with<Complex>,
           ":return: True if the two tensors commute, else False",
           py::arg("other"))
       .def(
