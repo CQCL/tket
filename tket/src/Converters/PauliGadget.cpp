@@ -369,9 +369,13 @@ void append_pauli_gadget_pair(
    */
   append_single_pauli_gadget(v, pauli0);
   append_single_pauli_gadget(v, pauli1);
+  // ConjugationBox components must be in the default register
+  qubit_vector_t all_qubits = u.all_qubits();
+  u.flatten_registers();
+  v.flatten_registers();
   ConjugationBox cjbox(
       std::make_shared<CircBox>(u), std::make_shared<CircBox>(v));
-  circ.add_box(cjbox, u.all_qubits());
+  circ.add_box(cjbox, all_qubits);
 }
 
 }  // namespace tket
