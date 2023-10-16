@@ -1,6 +1,31 @@
 Changelog
 =========
 
+1.21.0 (October 2023)
+---------------------
+
+Minor new features:
+
+* Add optional ``strict_check`` parameter to ``RepeatPass`` to force stopping when
+  the circuit is unchanged.
+* Add optional parameters ``excluded_types`` and ``excluded_opgroups``
+  to ``DecomposeBoxes``.
+* More efficient decomposition for quantum controlled ``ConjugationBox``es.
+* New ``PassSelector`` for automatically compiling with the best pass from a list
+* ``PauliExpBox``, ``PauliExpPairBox``, and ``PauliExpCommutingSetBox`` are now
+  decomposed into a single ``ConjugationBox``.
+* Make ``SquashRzPhasedX`` pass always squash symbols.
+* Add in-place symbol_substition method for ``CircBox``
+* Add rendering support for 0-valued control-type gates.
+* Typing improvements
+* Make ``BitRegister`` and ``QubitRegister`` iterable
+
+Fixes:
+
+* Handle symbolic angles in ``ZZPhaseToRz`` pass.
+* Bind ``sympy.exp()``.
+* Ensure determinate command order for circuits containing Phase operations.
+
 1.20.1 (September 2023)
 -----------------------
 

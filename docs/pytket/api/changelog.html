@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Changelog &#8212; pytket 1.20.1 documentation</title>
+    <title>Changelog &#8212; pytket 1.21.0 documentation</title>
   
   
   
@@ -19,12 +19,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
 
   
-  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=ac02cc09edc035673794" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -37,9 +37,9 @@
     <link rel="stylesheet" type="text/css" href="_static/custom.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=927b94d3fcb96560df09" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=927b94d3fcb96560df09" />
-  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=927b94d3fcb96560df09"></script>
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
+  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/doctools.js"></script>
@@ -159,7 +159,7 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket/manual/index.html">Manual</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket-extensions/api/index.html">Extensions</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/CQCL/pytket/tree/main/examples">Example notebooks</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/examples">Example notebooks</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
 <ul class="nav bd-sidenav">
@@ -382,59 +382,60 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#october-2023">1.21.0 (October 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#september-2023">1.20.1 (September 2023)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">1.20.0 (September 2023)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">1.19.1 (September 2023)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">1.19.0 (September 2023)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">1.20.0 (September 2023)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">1.19.1 (September 2023)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">1.19.0 (September 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#august-2023">1.18.0 (August 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#july-2023">1.17.1 (July 2023)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">1.17.0 (July 2023)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">1.17.0 (July 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#june-2023">1.16.0 (June 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#may-2023">1.15.0 (May 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#april-2023">1.14.0 (April 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#march-2023">1.13.2 (March 2023)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">1.13.1 (March 2023)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">1.13.0 (March 2023)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">1.13.1 (March 2023)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">1.13.0 (March 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#january-2023">1.11.1 (January 2023)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">1.11.0 (January 2023)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">1.11.0 (January 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#december-2022">1.10.0 (December 2022)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">1.9.1 (December 2022)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">1.9.1 (December 2022)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#november-2022">1.9.0 (November 2022)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">1.8.1 (November 2022)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">1.8.0 (November 2022)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">1.8.1 (November 2022)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">1.8.0 (November 2022)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#october-2022">1.7.3 (October 2022)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#september-2022">1.6.1 (September 2022)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">1.6.0 (September 2022)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">1.6.0 (September 2022)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#august-2022">1.5.2 (August 2022)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">1.5.1 (August 2022)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">1.5.0 (August 2022)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">1.5.1 (August 2022)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id21">1.5.0 (August 2022)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#july-2022">1.4.3 (July 2022)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">1.4.2 (July 2022)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id21">1.4.1 (July 2022)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id22">1.4.2 (July 2022)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id23">1.4.1 (July 2022)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#june-2022">1.3.0 (June 2022)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#may-2022">1.2.2 (May 2022)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id22">1.2.1 (May 2022)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id24">1.2.1 (May 2022)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#april-2022">1.1.0 (April 2022)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#march-2022">1.0.1 (March 2022)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id23">1.0.0 (March 2022)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id25">1.0.0 (March 2022)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#february-2022">0.19.2 (February 2022)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id24">0.19.1 (February 2022)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id25">0.19.0 (February 2022)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id26">0.19.1 (February 2022)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id27">0.19.0 (February 2022)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#january-2022">0.18.0 (January 2022)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#november-2021">0.17.0 (November 2021)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#october-2021">0.16.0 (October 2021)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#september-2021">0.15.0 (September 2021)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id26">0.14.0 (September 2021)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id28">0.14.0 (September 2021)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#july-2021">0.13.0 (July 2021)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#june-2021">0.12.0 (June 2021)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#may-2021">0.11.0 (May 2021)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id27">0.10.1 (May 2021)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id29">0.10.1 (May 2021)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#april-2021">0.10.0 (April 2021)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#march-2021">0.9.0 (March 2021)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id28">0.8.0 (March 2021)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id30">0.8.0 (March 2021)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#february-2021">0.7.2 (February 2021)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id29">0.7.1 (February 2021)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id30">0.7.0 (February 2021)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id31">0.7.1 (February 2021)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id32">0.7.0 (February 2021)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#october-2020">0.6.1 (October 2020)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#september-2020">0.6.0 (September 2020)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#august-2020">0.5.7 (August 2020)</a></li>
@@ -446,11 +447,11 @@ document.write(`
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#august-2019">0.3.0 (August 2019)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#july-2019">0.2.3 (July 2019)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#june-2019">0.2.2 (June 2019)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id31">0.2.1 (June 2019)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id32">0.2.0 (June 2019)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id33">0.2.1 (June 2019)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id34">0.2.0 (June 2019)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#april-2019">0.1.6 (April 2019)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id33">0.1.5 (April 2019)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id34">0.1.4 (April 2019)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id35">0.1.5 (April 2019)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id36">0.1.4 (April 2019)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#march-2019">0.1.3 (March 2019)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#february-2019">0.1.2 (February 2019)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#december-2018">0.1.0 (December 2018)</a></li>
@@ -468,11 +469,36 @@ document.write(`
                   
   <section id="changelog">
 <h1>Changelog<a class="headerlink" href="#changelog" title="Permalink to this heading">#</a></h1>
+<section id="october-2023">
+<h2>1.21.0 (October 2023)<a class="headerlink" href="#october-2023" title="Permalink to this heading">#</a></h2>
+<p>Minor new features:</p>
+<ul class="simple">
+<li><p>Add optional <code class="docutils literal notranslate"><span class="pre">strict_check</span></code> parameter to <code class="docutils literal notranslate"><span class="pre">RepeatPass</span></code> to force stopping when
+the circuit is unchanged.</p></li>
+<li><p>Add optional parameters <code class="docutils literal notranslate"><span class="pre">excluded_types</span></code> and <code class="docutils literal notranslate"><span class="pre">excluded_opgroups</span></code>
+to <code class="docutils literal notranslate"><span class="pre">DecomposeBoxes</span></code>.</p></li>
+<li><p>More efficient decomposition for quantum controlled <a href="#id1"><span class="problematic" id="id2">``</span></a>ConjugationBox``es.</p></li>
+<li><p>New <code class="docutils literal notranslate"><span class="pre">PassSelector</span></code> for automatically compiling with the best pass from a list</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">PauliExpBox</span></code>, <code class="docutils literal notranslate"><span class="pre">PauliExpPairBox</span></code>, and <code class="docutils literal notranslate"><span class="pre">PauliExpCommutingSetBox</span></code> are now
+decomposed into a single <code class="docutils literal notranslate"><span class="pre">ConjugationBox</span></code>.</p></li>
+<li><p>Make <code class="docutils literal notranslate"><span class="pre">SquashRzPhasedX</span></code> pass always squash symbols.</p></li>
+<li><p>Add in-place symbol_substition method for <code class="docutils literal notranslate"><span class="pre">CircBox</span></code></p></li>
+<li><p>Add rendering support for 0-valued control-type gates.</p></li>
+<li><p>Typing improvements</p></li>
+<li><p>Make <code class="docutils literal notranslate"><span class="pre">BitRegister</span></code> and <code class="docutils literal notranslate"><span class="pre">QubitRegister</span></code> iterable</p></li>
+</ul>
+<p>Fixes:</p>
+<ul class="simple">
+<li><p>Handle symbolic angles in <code class="docutils literal notranslate"><span class="pre">ZZPhaseToRz</span></code> pass.</p></li>
+<li><p>Bind <code class="docutils literal notranslate"><span class="pre">sympy.exp()</span></code>.</p></li>
+<li><p>Ensure determinate command order for circuits containing Phase operations.</p></li>
+</ul>
+</section>
 <section id="september-2023">
 <h2>1.20.1 (September 2023)<a class="headerlink" href="#september-2023" title="Permalink to this heading">#</a></h2>
 <p>Fixes:</p>
 <ul class="simple">
-<li><p>Fix <code class="docutils literal notranslate"><span class="pre">Op.get_unitary()</span></code> runtime error for non gate <a href="#id1"><span class="problematic" id="id2">``</span></a>Op``s.</p></li>
+<li><p>Fix <code class="docutils literal notranslate"><span class="pre">Op.get_unitary()</span></code> runtime error for non gate <a href="#id3"><span class="problematic" id="id4">``</span></a>Op``s.</p></li>
 <li><p>Fix <code class="docutils literal notranslate"><span class="pre">CliffordSimp</span></code> slow runtime issue.</p></li>
 <li><p>Correct implementation of <code class="docutils literal notranslate"><span class="pre">free_symbols()</span></code> and <code class="docutils literal notranslate"><span class="pre">symbol_substitution()</span></code> for
 <code class="docutils literal notranslate"><span class="pre">ConjugationBox</span></code>.</p></li>
@@ -480,8 +506,8 @@ document.write(`
 range predicates are later set.</p></li>
 </ul>
 </section>
-<section id="id3">
-<h2>1.20.0 (September 2023)<a class="headerlink" href="#id3" title="Permalink to this heading">#</a></h2>
+<section id="id5">
+<h2>1.20.0 (September 2023)<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h2>
 <p>Fixes:</p>
 <ul class="simple">
 <li><p>Mixed up function index in wasm file check</p></li>
@@ -499,8 +525,8 @@ conditional.</p></li>
 <li><p>barrier changed from MetaOp to be a BarrierOp</p></li>
 </ul>
 </section>
-<section id="id4">
-<h2>1.19.1 (September 2023)<a class="headerlink" href="#id4" title="Permalink to this heading">#</a></h2>
+<section id="id6">
+<h2>1.19.1 (September 2023)<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h2>
 <p>Fixes:</p>
 <ul class="simple">
 <li><p>Fix <cite>RebaseCustom()</cite> rebasing of <cite>TK2</cite> gates.</p></li>
@@ -508,8 +534,8 @@ conditional.</p></li>
 contain symbols.</p></li>
 </ul>
 </section>
-<section id="id5">
-<h2>1.19.0 (September 2023)<a class="headerlink" href="#id5" title="Permalink to this heading">#</a></h2>
+<section id="id7">
+<h2>1.19.0 (September 2023)<a class="headerlink" href="#id7" title="Permalink to this heading">#</a></h2>
 <p>Major new features:</p>
 <ul class="simple">
 <li><p>Add <code class="docutils literal notranslate"><span class="pre">ConjugationBox</span></code> to express circuits that follow
@@ -560,8 +586,8 @@ environments.</p></li>
 <li><p>Prefer <code class="docutils literal notranslate"><span class="pre">ZZPhase</span></code> to <code class="docutils literal notranslate"><span class="pre">CX</span></code> or <code class="docutils literal notranslate"><span class="pre">ZZMax</span></code> when using <code class="docutils literal notranslate"><span class="pre">auto_rebase_pass()</span></code>.</p></li>
 </ul>
 </section>
-<section id="id6">
-<h2>1.17.0 (July 2023)<a class="headerlink" href="#id6" title="Permalink to this heading">#</a></h2>
+<section id="id8">
+<h2>1.17.0 (July 2023)<a class="headerlink" href="#id8" title="Permalink to this heading">#</a></h2>
 <p>Minor new features:</p>
 <ul class="simple">
 <li><p><cite>Circuit.get_unitary()</cite> and <cite>Circuit.get_statevector()</cite> now work for circuits
@@ -643,15 +669,15 @@ qubits to a default register named after a passed label.</p></li>
 <li><p>Multiply symbolic parameters in auto-generated gate definitions by “/pi” in <code class="docutils literal notranslate"><span class="pre">circuit_to_qasm_io</span></code></p></li>
 </ul>
 </section>
-<section id="id7">
-<h2>1.13.1 (March 2023)<a class="headerlink" href="#id7" title="Permalink to this heading">#</a></h2>
+<section id="id9">
+<h2>1.13.1 (March 2023)<a class="headerlink" href="#id9" title="Permalink to this heading">#</a></h2>
 <p>Fixes:</p>
 <ul class="simple">
 <li><p>Throw error rather than abort when trying to add qubit or bit with existing name.</p></li>
 </ul>
 </section>
-<section id="id8">
-<h2>1.13.0 (March 2023)<a class="headerlink" href="#id8" title="Permalink to this heading">#</a></h2>
+<section id="id10">
+<h2>1.13.0 (March 2023)<a class="headerlink" href="#id10" title="Permalink to this heading">#</a></h2>
 <p>Major new features:</p>
 <ul class="simple">
 <li><p>New <code class="docutils literal notranslate"><span class="pre">StatePreparationBox</span></code> to prepare arbitrary quantum states.</p></li>
@@ -672,7 +698,7 @@ targeting <code class="docutils literal notranslate"><span class="pre">OpType.TK
 </ul>
 <p>Fixes:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">DelayMeasures</span></code> pass now correctly handles circuits with <a href="#id9"><span class="problematic" id="id10">``</span></a>CircBox``es.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">DelayMeasures</span></code> pass now correctly handles circuits with <a href="#id11"><span class="problematic" id="id12">``</span></a>CircBox``es.</p></li>
 <li><p><code class="docutils literal notranslate"><span class="pre">get_op_map</span></code> in multiplexor boxes return unhashable python dictionaries.</p></li>
 </ul>
 </section>
@@ -683,8 +709,8 @@ targeting <code class="docutils literal notranslate"><span class="pre">OpType.TK
 <li><p>Support for MacOS &gt;= 11.0 on both x86_64 and arm64.</p></li>
 </ul>
 </section>
-<section id="id11">
-<h2>1.11.0 (January 2023)<a class="headerlink" href="#id11" title="Permalink to this heading">#</a></h2>
+<section id="id13">
+<h2>1.11.0 (January 2023)<a class="headerlink" href="#id13" title="Permalink to this heading">#</a></h2>
 <p>Major new features:</p>
 <ul class="simple">
 <li><p>New boxes to implement multiplexor gates (i.e. uniformly controlled operations):
@@ -722,8 +748,8 @@ graph synthesis.</p></li>
 larger than one bit, or reordered registers.</p></li>
 </ul>
 </section>
-<section id="id12">
-<h2>1.9.1 (December 2022)<a class="headerlink" href="#id12" title="Permalink to this heading">#</a></h2>
+<section id="id14">
+<h2>1.9.1 (December 2022)<a class="headerlink" href="#id14" title="Permalink to this heading">#</a></h2>
 <p>Minor new features:</p>
 <ul class="simple">
 <li><p>New <code class="docutils literal notranslate"><span class="pre">view_browser</span></code> function for opening a browser with circuit render.</p></li>
@@ -766,16 +792,16 @@ for manipulating distributions, and methods to extract them from
 <code class="docutils literal notranslate"><span class="pre">BackendResult</span></code> objects.</p></li>
 </ul>
 </section>
-<section id="id13">
-<h2>1.8.1 (November 2022)<a class="headerlink" href="#id13" title="Permalink to this heading">#</a></h2>
+<section id="id15">
+<h2>1.8.1 (November 2022)<a class="headerlink" href="#id15" title="Permalink to this heading">#</a></h2>
 <p>Fixes:</p>
 <ul class="simple">
 <li><p>Incorrect qasm filtering.</p></li>
 <li><p>Make graph placement work with multi-qubit barriers.</p></li>
 </ul>
 </section>
-<section id="id14">
-<h2>1.8.0 (November 2022)<a class="headerlink" href="#id14" title="Permalink to this heading">#</a></h2>
+<section id="id16">
+<h2>1.8.0 (November 2022)<a class="headerlink" href="#id16" title="Permalink to this heading">#</a></h2>
 <p>Minor new features:</p>
 <ul class="simple">
 <li><p>New <code class="docutils literal notranslate"><span class="pre">OpType::Phase</span></code> 0-qubit gate affecting global phase.</p></li>
@@ -825,8 +851,8 @@ when the circuit contains measurements.</p></li>
 <li><p>Fix critical issue with compilation of circuits containing conditional gates.</p></li>
 </ul>
 </section>
-<section id="id15">
-<h2>1.6.0 (September 2022)<a class="headerlink" href="#id15" title="Permalink to this heading">#</a></h2>
+<section id="id17">
+<h2>1.6.0 (September 2022)<a class="headerlink" href="#id17" title="Permalink to this heading">#</a></h2>
 <ul class="simple">
 <li><p>New <code class="docutils literal notranslate"><span class="pre">ToffoliBox</span></code> for constructing circuits that implement permutations of
 basis states.</p></li>
@@ -839,11 +865,11 @@ basis states.</p></li>
 <li><p>Prefer <cite>ZZPhase</cite> in <code class="docutils literal notranslate"><span class="pre">DecomposeTK2</span></code> if it results in the same fidelity but
 fewer two-qubit gates.</p></li>
 <li><p>Add <code class="docutils literal notranslate"><span class="pre">SquashRzPhasedX</span></code> pass to squash single qubit gates into
-<code class="docutils literal notranslate"><span class="pre">Rz</span></code> and <code class="docutils literal notranslate"><span class="pre">PhasedX</span></code> gates while trying to commute <a href="#id16"><span class="problematic" id="id17">``</span></a>Rz``s to the back.</p></li>
+<code class="docutils literal notranslate"><span class="pre">Rz</span></code> and <code class="docutils literal notranslate"><span class="pre">PhasedX</span></code> gates while trying to commute <a href="#id18"><span class="problematic" id="id19">``</span></a>Rz``s to the back.</p></li>
 </ul>
 </section>
-<section id="id18">
-<h2>1.5.1 (August 2022)<a class="headerlink" href="#id18" title="Permalink to this heading">#</a></h2>
+<section id="id20">
+<h2>1.5.1 (August 2022)<a class="headerlink" href="#id20" title="Permalink to this heading">#</a></h2>
 <p>Minor new features:</p>
 <ul class="simple">
 <li><p>Improve <code class="docutils literal notranslate"><span class="pre">FullPeepholeOptimise</span></code> performance.</p></li>
@@ -855,8 +881,8 @@ fewer two-qubit gates.</p></li>
 <li><p>Floating point inaccuracies in <code class="docutils literal notranslate"><span class="pre">NormalisedTK2Predicate</span></code>.</p></li>
 </ul>
 </section>
-<section id="id19">
-<h2>1.5.0 (August 2022)<a class="headerlink" href="#id19" title="Permalink to this heading">#</a></h2>
+<section id="id21">
+<h2>1.5.0 (August 2022)<a class="headerlink" href="#id21" title="Permalink to this heading">#</a></h2>
 <p>Minor new features:</p>
 <ul class="simple">
 <li><p>Add support for TK2 gate in <code class="docutils literal notranslate"><span class="pre">KAKDecomposition</span></code>.</p></li>
@@ -891,15 +917,15 @@ decompose two-qubit operations up to implicit wire swaps.</p></li>
 <li><p>Further relax assertion in <code class="docutils literal notranslate"><span class="pre">replace_TK2_2CX</span></code>.</p></li>
 </ul>
 </section>
-<section id="id20">
-<h2>1.4.2 (July 2022)<a class="headerlink" href="#id20" title="Permalink to this heading">#</a></h2>
+<section id="id22">
+<h2>1.4.2 (July 2022)<a class="headerlink" href="#id22" title="Permalink to this heading">#</a></h2>
 <p>Fixes:</p>
 <ul class="simple">
 <li><p>Relax assertion in replace_TK2_2CX to avoid crash due to rounding errors.</p></li>
 </ul>
 </section>
-<section id="id21">
-<h2>1.4.1 (July 2022)<a class="headerlink" href="#id21" title="Permalink to this heading">#</a></h2>
+<section id="id23">
+<h2>1.4.1 (July 2022)<a class="headerlink" href="#id23" title="Permalink to this heading">#</a></h2>
 <p>Minor new features:</p>
 <ul class="simple">
 <li><p>New <code class="docutils literal notranslate"><span class="pre">NormalisedTK2Predicate</span></code> predicate and <code class="docutils literal notranslate"><span class="pre">NormaliseTK2</span></code> pass.</p></li>
@@ -947,8 +973,8 @@ external WASM calls.</p></li>
 <li><p>Faster QASM parsing, capable of parsing extended grammar.</p></li>
 </ul>
 </section>
-<section id="id22">
-<h2>1.2.1 (May 2022)<a class="headerlink" href="#id22" title="Permalink to this heading">#</a></h2>
+<section id="id24">
+<h2>1.2.1 (May 2022)<a class="headerlink" href="#id24" title="Permalink to this heading">#</a></h2>
 <p>Minor new features:</p>
 <ul class="simple">
 <li><p>Added explicit constructors for various Python classes.</p></li>
@@ -985,8 +1011,8 @@ compilation of some symbolic circuits.</p></li>
 <li><p>Fix problem with unassigned ancilla qubits during mapping.</p></li>
 </ul>
 </section>
-<section id="id23">
-<h2>1.0.0 (March 2022)<a class="headerlink" href="#id23" title="Permalink to this heading">#</a></h2>
+<section id="id25">
+<h2>1.0.0 (March 2022)<a class="headerlink" href="#id25" title="Permalink to this heading">#</a></h2>
 <p>API changes:</p>
 <ul class="simple">
 <li><p><code class="docutils literal notranslate"><span class="pre">Rebase&lt;Target&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">SquashHQS</span></code> methods are removed. Specifically:</p>
@@ -1059,16 +1085,16 @@ well as edges in second architecture.</p></li>
 <li><p>Fix issue with jinja2 by updating dependency.</p></li>
 </ul>
 </section>
-<section id="id24">
-<h2>0.19.1 (February 2022)<a class="headerlink" href="#id24" title="Permalink to this heading">#</a></h2>
+<section id="id26">
+<h2>0.19.1 (February 2022)<a class="headerlink" href="#id26" title="Permalink to this heading">#</a></h2>
 <p>Fixes:</p>
 <ul class="simple">
 <li><p>Fix regression in <code class="docutils literal notranslate"><span class="pre">Circuit.symbol_substitution</span></code> causing incorrect values to
 be substituted in some cases.</p></li>
 </ul>
 </section>
-<section id="id25">
-<h2>0.19.0 (February 2022)<a class="headerlink" href="#id25" title="Permalink to this heading">#</a></h2>
+<section id="id27">
+<h2>0.19.0 (February 2022)<a class="headerlink" href="#id27" title="Permalink to this heading">#</a></h2>
 <p>Major new features:</p>
 <ul class="simple">
 <li><p>New box types for Clifford tableaux.</p></li>
@@ -1159,8 +1185,8 @@ from a simple textual specification.</p></li>
 <li><p>The transform <code class="docutils literal notranslate"><span class="pre">OptimisePostRouting</span></code> transforms to TK1 instead of U gates.</p></li>
 </ul>
 </section>
-<section id="id26">
-<h2>0.14.0 (September 2021)<a class="headerlink" href="#id26" title="Permalink to this heading">#</a></h2>
+<section id="id28">
+<h2>0.14.0 (September 2021)<a class="headerlink" href="#id28" title="Permalink to this heading">#</a></h2>
 <p>Major new features:</p>
 <ul class="simple">
 <li><p>New <code class="docutils literal notranslate"><span class="pre">Circuit.add_assertion</span></code> method for applying quantum assertions to circuits.</p></li>
@@ -1254,8 +1280,8 @@ compilation can still be achieved with <cite>backend.default_compilation_pass().
 <li><p>New <code class="docutils literal notranslate"><span class="pre">RebaseOQC</span></code> pass.</p></li>
 </ul>
 </section>
-<section id="id27">
-<h2>0.10.1 (May 2021)<a class="headerlink" href="#id27" title="Permalink to this heading">#</a></h2>
+<section id="id29">
+<h2>0.10.1 (May 2021)<a class="headerlink" href="#id29" title="Permalink to this heading">#</a></h2>
 <p>Minor new features:</p>
 <ul class="simple">
 <li><p>New <code class="docutils literal notranslate"><span class="pre">PauliSquash</span></code> pass combining <code class="docutils literal notranslate"><span class="pre">PauliSimp</span></code> with <code class="docutils literal notranslate"><span class="pre">FullPeepholeOptimise</span></code>.</p></li>
@@ -1300,8 +1326,8 @@ now all have authentication or workspace parameters that can be set in config fi
 <li><p>Several small bugfixes.</p></li>
 </ul>
 </section>
-<section id="id28">
-<h2>0.8.0 (March 2021)<a class="headerlink" href="#id28" title="Permalink to this heading">#</a></h2>
+<section id="id30">
+<h2>0.8.0 (March 2021)<a class="headerlink" href="#id30" title="Permalink to this heading">#</a></h2>
 <p>API changes:</p>
 <ul class="simple">
 <li><p>All extension modules moved to <cite>pytket.extensions</cite> namespace.</p></li>
@@ -1332,8 +1358,8 @@ now all have authentication or workspace parameters that can be set in config fi
 <li><p>Fix memory corruption with symbolic circuits on Windows.</p></li>
 </ul>
 </section>
-<section id="id29">
-<h2>0.7.1 (February 2021)<a class="headerlink" href="#id29" title="Permalink to this heading">#</a></h2>
+<section id="id31">
+<h2>0.7.1 (February 2021)<a class="headerlink" href="#id31" title="Permalink to this heading">#</a></h2>
 <p>Minor new features:</p>
 <ul class="simple">
 <li><p>Option to store encrypted Honeywell password (not recommended).</p></li>
@@ -1360,8 +1386,8 @@ now all have authentication or workspace parameters that can be set in config fi
 <li><p><code class="docutils literal notranslate"><span class="pre">pytket-qulacs</span></code>: 0.4.0</p></li>
 </ul>
 </section>
-<section id="id30">
-<h2>0.7.0 (February 2021)<a class="headerlink" href="#id30" title="Permalink to this heading">#</a></h2>
+<section id="id32">
+<h2>0.7.0 (February 2021)<a class="headerlink" href="#id32" title="Permalink to this heading">#</a></h2>
 <p>Major new features:</p>
 <ul class="simple">
 <li><p>Subsitution of named operations with other operations, boxes or circuits.</p></li>
@@ -1663,8 +1689,8 @@ circumstances.</p></li>
 <li><p>Minor bug fixes, examples and documentation</p></li>
 </ul>
 </section>
-<section id="id31">
-<h2>0.2.1 (June 2019)<a class="headerlink" href="#id31" title="Permalink to this heading">#</a></h2>
+<section id="id33">
+<h2>0.2.1 (June 2019)<a class="headerlink" href="#id33" title="Permalink to this heading">#</a></h2>
 <p>Updates:</p>
 <ul class="simple">
 <li><p>Extra support for appending Circuits from Matrices and Exponents</p></li>
@@ -1672,8 +1698,8 @@ circumstances.</p></li>
 <li><p>Fixed bugs in backends</p></li>
 </ul>
 </section>
-<section id="id32">
-<h2>0.2.0 (June 2019)<a class="headerlink" href="#id32" title="Permalink to this heading">#</a></h2>
+<section id="id34">
+<h2>0.2.0 (June 2019)<a class="headerlink" href="#id34" title="Permalink to this heading">#</a></h2>
 <p>New Features:</p>
 <ul class="simple">
 <li><p>Support for circuits and simulation using ProjectQ (0.4.2)</p></li>
@@ -1698,15 +1724,15 @@ circumstances.</p></li>
 <li><p>Decomposition and routing bug fixes</p></li>
 </ul>
 </section>
-<section id="id33">
-<h2>0.1.5 (April 2019)<a class="headerlink" href="#id33" title="Permalink to this heading">#</a></h2>
+<section id="id35">
+<h2>0.1.5 (April 2019)<a class="headerlink" href="#id35" title="Permalink to this heading">#</a></h2>
 <p>New Features:</p>
 <ul class="simple">
 <li><p>Enabled conversions from 4x4 unitary matrices to 2 qubit circuit</p></li>
 </ul>
 </section>
-<section id="id34">
-<h2>0.1.4 (April 2019)<a class="headerlink" href="#id34" title="Permalink to this heading">#</a></h2>
+<section id="id36">
+<h2>0.1.4 (April 2019)<a class="headerlink" href="#id36" title="Permalink to this heading">#</a></h2>
 <p>Updates:</p>
 <ul class="simple">
 <li><p>Bug fix patch for routing and performance improvements</p></li>
@@ -1804,59 +1830,60 @@ circumstances.</p></li>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#october-2023">1.21.0 (October 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#september-2023">1.20.1 (September 2023)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id3">1.20.0 (September 2023)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id4">1.19.1 (September 2023)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">1.19.0 (September 2023)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id5">1.20.0 (September 2023)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">1.19.1 (September 2023)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">1.19.0 (September 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#august-2023">1.18.0 (August 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#july-2023">1.17.1 (July 2023)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id6">1.17.0 (July 2023)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">1.17.0 (July 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#june-2023">1.16.0 (June 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#may-2023">1.15.0 (May 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#april-2023">1.14.0 (April 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#march-2023">1.13.2 (March 2023)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id7">1.13.1 (March 2023)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id8">1.13.0 (March 2023)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id9">1.13.1 (March 2023)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id10">1.13.0 (March 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#january-2023">1.11.1 (January 2023)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id11">1.11.0 (January 2023)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">1.11.0 (January 2023)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#december-2022">1.10.0 (December 2022)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id12">1.9.1 (December 2022)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">1.9.1 (December 2022)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#november-2022">1.9.0 (November 2022)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id13">1.8.1 (November 2022)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id14">1.8.0 (November 2022)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">1.8.1 (November 2022)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id16">1.8.0 (November 2022)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#october-2022">1.7.3 (October 2022)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#september-2022">1.6.1 (September 2022)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id15">1.6.0 (September 2022)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id17">1.6.0 (September 2022)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#august-2022">1.5.2 (August 2022)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id18">1.5.1 (August 2022)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id19">1.5.0 (August 2022)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">1.5.1 (August 2022)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id21">1.5.0 (August 2022)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#july-2022">1.4.3 (July 2022)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id20">1.4.2 (July 2022)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id21">1.4.1 (July 2022)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id22">1.4.2 (July 2022)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id23">1.4.1 (July 2022)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#june-2022">1.3.0 (June 2022)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#may-2022">1.2.2 (May 2022)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id22">1.2.1 (May 2022)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id24">1.2.1 (May 2022)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#april-2022">1.1.0 (April 2022)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#march-2022">1.0.1 (March 2022)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id23">1.0.0 (March 2022)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id25">1.0.0 (March 2022)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#february-2022">0.19.2 (February 2022)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id24">0.19.1 (February 2022)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id25">0.19.0 (February 2022)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id26">0.19.1 (February 2022)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id27">0.19.0 (February 2022)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#january-2022">0.18.0 (January 2022)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#november-2021">0.17.0 (November 2021)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#october-2021">0.16.0 (October 2021)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#september-2021">0.15.0 (September 2021)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id26">0.14.0 (September 2021)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id28">0.14.0 (September 2021)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#july-2021">0.13.0 (July 2021)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#june-2021">0.12.0 (June 2021)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#may-2021">0.11.0 (May 2021)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id27">0.10.1 (May 2021)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id29">0.10.1 (May 2021)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#april-2021">0.10.0 (April 2021)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#march-2021">0.9.0 (March 2021)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id28">0.8.0 (March 2021)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id30">0.8.0 (March 2021)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#february-2021">0.7.2 (February 2021)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id29">0.7.1 (February 2021)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id30">0.7.0 (February 2021)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id31">0.7.1 (February 2021)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id32">0.7.0 (February 2021)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#october-2020">0.6.1 (October 2020)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#september-2020">0.6.0 (September 2020)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#august-2020">0.5.7 (August 2020)</a></li>
@@ -1868,11 +1895,11 @@ circumstances.</p></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#august-2019">0.3.0 (August 2019)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#july-2019">0.2.3 (July 2019)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#june-2019">0.2.2 (June 2019)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id31">0.2.1 (June 2019)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id32">0.2.0 (June 2019)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id33">0.2.1 (June 2019)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id34">0.2.0 (June 2019)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#april-2019">0.1.6 (April 2019)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id33">0.1.5 (April 2019)</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id34">0.1.4 (April 2019)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id35">0.1.5 (April 2019)</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#id36">0.1.4 (April 2019)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#march-2019">0.1.3 (March 2019)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#february-2019">0.1.2 (February 2019)</a></li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#december-2018">0.1.0 (December 2018)</a></li>
@@ -1924,8 +1951,8 @@ By Quantinuum
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=927b94d3fcb96560df09"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=927b94d3fcb96560df09"></script>
+  <script src="_static/scripts/bootstrap.js?digest=ac02cc09edc035673794"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794"></script>
 
   <footer class="bd-footer">
   </footer>

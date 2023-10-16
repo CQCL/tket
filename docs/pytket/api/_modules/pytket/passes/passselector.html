@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pytket.utils.stats &#8212; pytket 1.21.0 documentation</title>
+    <title>pytket.passes.passselector &#8212; pytket 1.21.0 documentation</title>
   
   
   
@@ -49,7 +49,7 @@
     <script src="../../../_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/pytket/utils/stats';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = '_modules/pytket/passes/passselector';</script>
     <link rel="index" title="Index" href="../../../genindex.html" />
     <link rel="search" title="Search" href="../../../search.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
@@ -256,7 +256,7 @@
       
       
       
-      <li><a href="https://github.com/CQCL/tket/issues/new?title=Issue%20on%20page%20%2F_modules/pytket/utils/stats.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/CQCL/tket/issues/new?title=Issue%20on%20page%20%2F_modules/pytket/passes/passselector.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -332,7 +332,7 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <h1>Source code for pytket.utils.stats</h1><div class="highlight"><pre>
+  <h1>Source code for pytket.passes.passselector</h1><div class="highlight"><pre>
 <span></span><span class="c1"># Copyright 2019-2023 Cambridge Quantum Computing</span>
 <span class="c1">#</span>
 <span class="c1"># Licensed under the Apache License, Version 2.0 (the &quot;License&quot;);</span>
@@ -347,18 +347,67 @@ document.write(`
 <span class="c1"># See the License for the specific language governing permissions and</span>
 <span class="c1"># limitations under the License.</span>
 
-<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Counter</span>
-<span class="kn">from</span> <span class="nn">pytket.circuit</span> <span class="kn">import</span> <span class="n">Circuit</span><span class="p">,</span> <span class="n">OpType</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Optional</span><span class="p">,</span> <span class="n">Callable</span>
+
+<span class="kn">from</span> <span class="nn">pytket.circuit</span> <span class="kn">import</span> <span class="n">Circuit</span>
+<span class="kn">from</span> <span class="nn">.._tket.passes</span> <span class="kn">import</span> <span class="n">BasePass</span>
 
 
-<div class="viewcode-block" id="gate_counts"><a class="viewcode-back" href="../../../utils.html#pytket.utils.stats.gate_counts">[docs]</a><span class="k">def</span> <span class="nf">gate_counts</span><span class="p">(</span><span class="n">circ</span><span class="p">:</span> <span class="n">Circuit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Counter</span><span class="p">[</span><span class="n">OpType</span><span class="p">]:</span>
+<div class="viewcode-block" id="PassSelector"><a class="viewcode-back" href="../../../passes.html#pytket.passes.PassSelector">[docs]</a><span class="k">class</span> <span class="nc">PassSelector</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Count the number of gates of each type in a circuit.</span>
-
-<span class="sd">    :param circ: circuit</span>
-<span class="sd">    :return: count of gates of each type</span>
+<span class="sd">    Collection of pytket compilation passes which are</span>
+<span class="sd">    all applied to the same circuit. The result of the</span>
+<span class="sd">    compilation is the best circuit as selected by a given metric.</span>
 <span class="sd">    &quot;&quot;&quot;</span>
-    <span class="k">return</span> <span class="n">Counter</span><span class="p">(</span><span class="n">cmd</span><span class="o">.</span><span class="n">op</span><span class="o">.</span><span class="n">type</span> <span class="k">for</span> <span class="n">cmd</span> <span class="ow">in</span> <span class="n">circ</span><span class="p">)</span></div>
+
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span>
+        <span class="bp">self</span><span class="p">,</span>
+        <span class="n">passlist</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">BasePass</span><span class="p">],</span>
+        <span class="n">score_func</span><span class="p">:</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Circuit</span><span class="p">],</span> <span class="nb">int</span><span class="p">],</span>
+    <span class="p">):</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Constructs a PassSelector</span>
+
+<span class="sd">        :param passlist: list of pytket compilation passes</span>
+<span class="sd">        :param score_func: function to score the</span>
+<span class="sd">          results of the compilation</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_passlist</span> <span class="o">=</span> <span class="n">passlist</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">_score_func</span> <span class="o">=</span> <span class="n">score_func</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_passlist</span><span class="p">)</span> <span class="o">&lt;</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;passlist needs to contain at least one pass&quot;</span><span class="p">)</span>
+
+<div class="viewcode-block" id="PassSelector.apply"><a class="viewcode-back" href="../../../passes.html#pytket.passes.PassSelector.apply">[docs]</a>    <span class="k">def</span> <span class="nf">apply</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">circ</span><span class="p">:</span> <span class="n">Circuit</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Circuit</span><span class="p">:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        Compiles the given circuit with the best of the given passes.</span>
+
+<span class="sd">        :param circ: Circuit that should be compiled</span>
+<span class="sd">        :return: compiled circuit</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="n">circ_list</span> <span class="o">=</span> <span class="p">[</span><span class="n">circ</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="k">for</span> <span class="n">_</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_passlist</span><span class="p">]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">_scores</span><span class="p">:</span> <span class="nb">list</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span> <span class="o">=</span> <span class="p">[]</span>
+
+        <span class="k">for</span> <span class="n">p</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="nb">zip</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_passlist</span><span class="p">,</span> <span class="n">circ_list</span><span class="p">):</span>
+            <span class="k">try</span><span class="p">:</span>
+                <span class="n">p</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">c</span><span class="p">)</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">_score_func</span><span class="p">(</span><span class="n">c</span><span class="p">))</span>
+            <span class="k">except</span><span class="p">:</span>  <span class="c1"># in case of any error the pass should be ignored</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_scores</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="kc">None</span><span class="p">)</span>
+
+        <span class="k">try</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">circ_list</span><span class="p">[</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">_scores</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="nb">min</span><span class="p">(</span><span class="n">x</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scores</span> <span class="k">if</span> <span class="n">x</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">))</span>
+            <span class="p">]</span>
+        <span class="k">except</span> <span class="ne">ValueError</span><span class="p">:</span>
+            <span class="k">raise</span> <span class="ne">RuntimeError</span><span class="p">(</span><span class="s2">&quot;No passes have successfully run on this circuit&quot;</span><span class="p">)</span></div>
+
+<div class="viewcode-block" id="PassSelector.get_scores"><a class="viewcode-back" href="../../../passes.html#pytket.passes.PassSelector.get_scores">[docs]</a>    <span class="k">def</span> <span class="nf">get_scores</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">list</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]:</span>
+<span class="w">        </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">        :return: scores of the circuit after compiling</span>
+<span class="sd">          for each of the compilations passes</span>
+<span class="sd">        &quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_scores</span></div></div>
 </pre></div>
 
                 </article>

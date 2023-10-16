@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pytket.utils.expectations &#8212; pytket 1.20.1 documentation</title>
+    <title>pytket.utils.expectations &#8212; pytket 1.21.0 documentation</title>
   
   
   
@@ -18,12 +18,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../_static/styles/theme.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
-<link href="../../../_static/styles/bootstrap.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
-<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
+  <link href="../../../_static/styles/theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
 
   
-  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
+  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=ac02cc09edc035673794" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -36,9 +36,9 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=927b94d3fcb96560df09" />
-<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=927b94d3fcb96560df09" />
-  <script src="../../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=927b94d3fcb96560df09"></script>
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
+  <script src="../../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
 
     <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/doctools.js"></script>
@@ -155,7 +155,7 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket/manual/index.html">Manual</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket-extensions/api/index.html">Extensions</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/CQCL/pytket/tree/main/examples">Example notebooks</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/examples">Example notebooks</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
 <ul class="nav bd-sidenav">
@@ -554,7 +554,7 @@ document.write(`
         <span class="n">results</span> <span class="o">=</span> <span class="n">backend</span><span class="o">.</span><span class="n">get_results</span><span class="p">(</span><span class="n">handles</span><span class="p">)</span>
         <span class="k">for</span> <span class="n">pauli_string</span> <span class="ow">in</span> <span class="n">measurement_expectation</span><span class="o">.</span><span class="n">results</span><span class="p">:</span>
             <span class="n">bitmaps</span> <span class="o">=</span> <span class="n">measurement_expectation</span><span class="o">.</span><span class="n">results</span><span class="p">[</span><span class="n">pauli_string</span><span class="p">]</span>
-            <span class="n">coeff</span> <span class="o">=</span> <span class="n">operator</span><span class="p">[</span><span class="n">pauli_string</span><span class="p">]</span>
+            <span class="n">string_coeff</span> <span class="o">=</span> <span class="n">operator</span><span class="p">[</span><span class="n">pauli_string</span><span class="p">]</span>
             <span class="k">for</span> <span class="n">bm</span> <span class="ow">in</span> <span class="n">bitmaps</span><span class="p">:</span>
                 <span class="n">index</span> <span class="o">=</span> <span class="n">bm</span><span class="o">.</span><span class="n">circ_index</span>
                 <span class="n">aritysum</span> <span class="o">=</span> <span class="mf">0.0</span>
@@ -564,13 +564,21 @@ document.write(`
                     <span class="k">for</span> <span class="n">row</span><span class="p">,</span> <span class="n">count</span> <span class="ow">in</span> <span class="n">counts</span><span class="o">.</span><span class="n">items</span><span class="p">():</span>
                         <span class="n">aritysum</span> <span class="o">+=</span> <span class="n">count</span> <span class="o">*</span> <span class="p">(</span><span class="nb">sum</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">bm</span><span class="o">.</span><span class="n">bits</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span><span class="p">)</span>
                         <span class="n">total_shots</span> <span class="o">+=</span> <span class="n">count</span>
-                    <span class="n">e</span> <span class="o">=</span> <span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="n">bm</span><span class="o">.</span><span class="n">invert</span><span class="p">)</span> <span class="o">*</span> <span class="n">coeff</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">aritysum</span> <span class="o">/</span> <span class="n">total_shots</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="n">e</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="n">bm</span><span class="o">.</span><span class="n">invert</span><span class="p">)</span>
+                        <span class="o">*</span> <span class="n">string_coeff</span>
+                        <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">aritysum</span> <span class="o">/</span> <span class="n">total_shots</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="p">)</span>
                     <span class="n">energy</span> <span class="o">+=</span> <span class="nb">complex</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
                 <span class="k">elif</span> <span class="n">backend</span><span class="o">.</span><span class="n">supports_shots</span><span class="p">:</span>
                     <span class="n">shots</span> <span class="o">=</span> <span class="n">results</span><span class="p">[</span><span class="n">index</span><span class="p">]</span><span class="o">.</span><span class="n">get_shots</span><span class="p">()</span>
                     <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">shots</span><span class="p">:</span>
                         <span class="n">aritysum</span> <span class="o">+=</span> <span class="nb">sum</span><span class="p">(</span><span class="n">row</span><span class="p">[</span><span class="n">i</span><span class="p">]</span> <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">bm</span><span class="o">.</span><span class="n">bits</span><span class="p">)</span> <span class="o">%</span> <span class="mi">2</span>
-                    <span class="n">e</span> <span class="o">=</span> <span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="n">bm</span><span class="o">.</span><span class="n">invert</span><span class="p">)</span> <span class="o">*</span> <span class="n">coeff</span> <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">aritysum</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">shots</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="n">e</span> <span class="o">=</span> <span class="p">(</span>
+                        <span class="p">((</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="o">**</span> <span class="n">bm</span><span class="o">.</span><span class="n">invert</span><span class="p">)</span>
+                        <span class="o">*</span> <span class="n">string_coeff</span>
+                        <span class="o">*</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span> <span class="o">*</span> <span class="n">aritysum</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">shots</span><span class="p">)</span> <span class="o">+</span> <span class="mi">1</span><span class="p">)</span>
+                    <span class="p">)</span>
                     <span class="n">energy</span> <span class="o">+=</span> <span class="nb">complex</span><span class="p">(</span><span class="n">e</span><span class="p">)</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Backend does not support counts or shots&quot;</span><span class="p">)</span>
@@ -638,8 +646,8 @@ By Quantinuum
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../../_static/scripts/bootstrap.js?digest=927b94d3fcb96560df09"></script>
-<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=927b94d3fcb96560df09"></script>
+  <script src="../../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794"></script>
 
   <footer class="bd-footer">
   </footer>

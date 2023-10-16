@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pytket.circuit.logic_exp &#8212; pytket 1.20.1 documentation</title>
+    <title>pytket.circuit.logic_exp &#8212; pytket 1.21.0 documentation</title>
   
   
   
@@ -18,12 +18,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../_static/styles/theme.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
-<link href="../../../_static/styles/bootstrap.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
-<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
+  <link href="../../../_static/styles/theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
 
   
-  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
+  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=ac02cc09edc035673794" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -36,9 +36,9 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=927b94d3fcb96560df09" />
-<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=927b94d3fcb96560df09" />
-  <script src="../../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=927b94d3fcb96560df09"></script>
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
+  <script src="../../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
 
     <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/doctools.js"></script>
@@ -155,7 +155,7 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket/manual/index.html">Manual</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket-extensions/api/index.html">Extensions</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/CQCL/pytket/tree/main/examples">Example notebooks</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/examples">Example notebooks</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
 <ul class="nav bd-sidenav">
@@ -351,7 +351,6 @@ document.write(`
 <span class="sd"> expressions over Bit and BitRegister.&quot;&quot;&quot;</span>
 <span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="p">(</span>
     <span class="n">Any</span><span class="p">,</span>
-    <span class="n">Callable</span><span class="p">,</span>
     <span class="n">Iterable</span><span class="p">,</span>
     <span class="n">Set</span><span class="p">,</span>
     <span class="n">Tuple</span><span class="p">,</span>
@@ -363,6 +362,7 @@ document.write(`
     <span class="n">Iterator</span><span class="p">,</span>
     <span class="n">TypeVar</span><span class="p">,</span>
     <span class="n">cast</span><span class="p">,</span>
+    <span class="n">Sequence</span><span class="p">,</span>
 <span class="p">)</span>
 <span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
 <span class="kn">from</span> <span class="nn">dataclasses</span> <span class="kn">import</span> <span class="n">dataclass</span>
@@ -413,12 +413,13 @@ document.write(`
 
 <span class="n">Ops</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">BitWiseOp</span><span class="p">,</span> <span class="n">RegWiseOp</span><span class="p">]</span>  <span class="c1"># all op enum types</span>
 
+
 <span class="n">Constant</span> <span class="o">=</span> <span class="nb">int</span>  <span class="c1"># constants in expression</span>
 <span class="n">Variable</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">Bit</span><span class="p">,</span> <span class="n">BitRegister</span><span class="p">]</span>  <span class="c1"># variables in expression</span>
 <span class="n">ArgType</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="s2">&quot;LogicExp&quot;</span><span class="p">,</span> <span class="n">Variable</span><span class="p">,</span> <span class="n">Constant</span><span class="p">]</span>  <span class="c1"># all possible arguments in expression</span>
 
 
-<div class="viewcode-block" id="LogicExp"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.LogicExp">[docs]</a><span class="nd">@dataclass</span>
+<div class="viewcode-block" id="LogicExp"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.LogicExp">[docs]</a><span class="nd">@dataclass</span><span class="p">(</span><span class="n">init</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
 <span class="k">class</span> <span class="nc">LogicExp</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Logical expressions over Bit or BitRegister.</span>
 <span class="sd">    Encoded as a tree of expressions&quot;&quot;&quot;</span>
@@ -432,36 +433,53 @@ document.write(`
     <span class="k">def</span> <span class="nf">factory</span><span class="p">(</span><span class="bp">cls</span><span class="p">,</span> <span class="n">op</span><span class="p">:</span> <span class="n">Ops</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Type</span><span class="p">[</span><span class="s2">&quot;LogicExp&quot;</span><span class="p">]:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Return matching operation class for enum.&quot;&quot;&quot;</span>
         <span class="c1"># RegNeg cannot be initialised this way as &quot;-&quot; clashes with SUB</span>
-        <span class="k">if</span> <span class="ow">not</span> <span class="bp">cls</span><span class="o">.</span><span class="n">op_cls_dict</span><span class="p">:</span>
-            <span class="bp">cls</span><span class="o">.</span><span class="n">op_cls_dict</span> <span class="o">=</span> <span class="p">{</span>
-                <span class="n">cl</span><span class="o">.</span><span class="n">op</span><span class="p">:</span> <span class="n">cl</span>  <span class="c1"># type:ignore</span>
-                <span class="k">for</span> <span class="n">cl</span> <span class="ow">in</span> <span class="p">(</span>
-                    <span class="n">BitAnd</span><span class="p">,</span>
-                    <span class="n">BitOr</span><span class="p">,</span>
-                    <span class="n">BitXor</span><span class="p">,</span>
-                    <span class="n">BitNot</span><span class="p">,</span>
-                    <span class="n">BitEq</span><span class="p">,</span>
-                    <span class="n">BitNeq</span><span class="p">,</span>
-                    <span class="n">RegAnd</span><span class="p">,</span>
-                    <span class="n">RegOr</span><span class="p">,</span>
-                    <span class="n">RegXor</span><span class="p">,</span>
-                    <span class="n">RegAdd</span><span class="p">,</span>
-                    <span class="n">RegSub</span><span class="p">,</span>
-                    <span class="n">RegMul</span><span class="p">,</span>
-                    <span class="n">RegDiv</span><span class="p">,</span>
-                    <span class="n">RegPow</span><span class="p">,</span>
-                    <span class="n">RegLsh</span><span class="p">,</span>
-                    <span class="n">RegRsh</span><span class="p">,</span>
-                    <span class="n">RegEq</span><span class="p">,</span>
-                    <span class="n">RegNeq</span><span class="p">,</span>
-                    <span class="n">RegLt</span><span class="p">,</span>
-                    <span class="n">RegGt</span><span class="p">,</span>
-                    <span class="n">RegLeq</span><span class="p">,</span>
-                    <span class="n">RegGeq</span><span class="p">,</span>
-                    <span class="n">RegNot</span><span class="p">,</span>
-                <span class="p">)</span>
-            <span class="p">}</span>
-        <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">op_cls_dict</span><span class="p">[</span><span class="n">op</span><span class="p">]</span></div>
+        <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">BitWiseOp</span><span class="o">.</span><span class="n">AND</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">BitAnd</span>
+        <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">BitWiseOp</span><span class="o">.</span><span class="n">OR</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">BitOr</span>
+        <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">BitWiseOp</span><span class="o">.</span><span class="n">XOR</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">BitXor</span>
+        <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">BitWiseOp</span><span class="o">.</span><span class="n">NOT</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">BitNot</span>
+        <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">BitWiseOp</span><span class="o">.</span><span class="n">EQ</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">BitEq</span>
+        <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">BitWiseOp</span><span class="o">.</span><span class="n">NEQ</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">BitNeq</span>
+        <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">AND</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">RegAnd</span>
+        <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">OR</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">RegOr</span>
+        <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">XOR</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">RegXor</span>
+        <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">ADD</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">RegAdd</span>
+        <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">SUB</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">RegSub</span>
+        <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">MUL</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">RegMul</span>
+        <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">DIV</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">RegDiv</span>
+        <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">POW</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">RegPow</span>
+        <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">LSH</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">RegLsh</span>
+        <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">RSH</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">RegRsh</span>
+        <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">EQ</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">RegEq</span>
+        <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">NEQ</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">RegNeq</span>
+        <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">LT</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">RegLt</span>
+        <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">GT</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">RegGt</span>
+        <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">LEQ</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">RegLeq</span>
+        <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">GEQ</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">RegGeq</span>
+        <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">NOT</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">RegNot</span>
+        <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;op type not supported&quot;</span><span class="p">)</span></div>
 
 <div class="viewcode-block" id="LogicExp.set_value"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.LogicExp.set_value">[docs]</a>    <span class="k">def</span> <span class="nf">set_value</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">var</span><span class="p">:</span> <span class="n">Variable</span><span class="p">,</span> <span class="n">val</span><span class="p">:</span> <span class="n">Constant</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
 <span class="w">        </span><span class="sd">&quot;&quot;&quot;Set value of var to val recursively.&quot;&quot;&quot;</span>
@@ -550,10 +568,7 @@ document.write(`
                     <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">LogicExp</span><span class="o">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">arg_ser</span><span class="p">))</span>
                 <span class="k">else</span><span class="p">:</span>
                     <span class="n">args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">BitRegister</span><span class="p">(</span><span class="n">arg_ser</span><span class="p">[</span><span class="s2">&quot;name&quot;</span><span class="p">],</span> <span class="n">arg_ser</span><span class="p">[</span><span class="s2">&quot;size&quot;</span><span class="p">]))</span>
-        <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">SUB</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
-            <span class="k">return</span> <span class="n">RegNeg</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
-        <span class="k">else</span><span class="p">:</span>
-            <span class="k">return</span> <span class="bp">cls</span><span class="o">.</span><span class="n">factory</span><span class="p">(</span><span class="n">op</span><span class="p">)(</span><span class="o">*</span><span class="n">args</span><span class="p">)</span>  <span class="c1"># type: ignore</span></div>
+        <span class="k">return</span> <span class="n">create_logic_exp</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span></div>
 
     <span class="k">def</span> <span class="nf">_rename_args_recursive</span><span class="p">(</span>
         <span class="bp">self</span><span class="p">,</span> <span class="n">cmap</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">Bit</span><span class="p">,</span> <span class="n">Bit</span><span class="p">],</span> <span class="n">renamed_regs</span><span class="p">:</span> <span class="n">Set</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
@@ -583,28 +598,77 @@ document.write(`
         <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">_rename_args_recursive</span><span class="p">(</span><span class="n">cmap</span><span class="p">,</span> <span class="n">renamed_regs</span><span class="p">)</span></div></div>
 
 
+<span class="n">BitArgType</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">LogicExp</span><span class="p">,</span> <span class="n">Bit</span><span class="p">,</span> <span class="n">Constant</span><span class="p">]</span>
+<span class="n">RegArgType</span> <span class="o">=</span> <span class="n">Union</span><span class="p">[</span><span class="n">LogicExp</span><span class="p">,</span> <span class="n">BitRegister</span><span class="p">,</span> <span class="n">Constant</span><span class="p">]</span>
+
+
 <div class="viewcode-block" id="BitLogicExp"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.BitLogicExp">[docs]</a><span class="k">class</span> <span class="nc">BitLogicExp</span><span class="p">(</span><span class="n">LogicExp</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Expression acting only on Bit or Constant types.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">:</span> <span class="n">Ops</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ArgType</span><span class="p">]):</span>
-        <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="p">(</span><span class="n">Bit</span><span class="p">,</span> <span class="n">BitLogicExp</span><span class="p">,</span> <span class="n">Constant</span><span class="p">))</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">args</span><span class="p">)</span>
-        <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="n">a</span> <span class="ow">in</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">1</span><span class="p">)</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">args</span> <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="n">Constant</span><span class="p">))</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span></div>
+    <span class="k">def</span> <span class="fm">__and__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">BitArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BitAnd&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">BitAnd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__rand__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">BitArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BitAnd&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">BitAnd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">BitArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BitOr&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">BitOr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__ror__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">BitArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BitOr&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">BitOr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__xor__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">BitArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BitXor&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">BitXor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__rxor__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">BitArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;BitXor&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">BitXor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="RegLogicExp"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.RegLogicExp">[docs]</a><span class="k">class</span> <span class="nc">RegLogicExp</span><span class="p">(</span><span class="n">LogicExp</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Expression acting only on BitRegister or Constant types.&quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">op</span><span class="p">:</span> <span class="n">Ops</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">ArgType</span><span class="p">]):</span>
-        <span class="k">assert</span> <span class="nb">all</span><span class="p">(</span><span class="nb">isinstance</span><span class="p">(</span><span class="n">a</span><span class="p">,</span> <span class="p">(</span><span class="n">BitRegister</span><span class="p">,</span> <span class="n">RegLogicExp</span><span class="p">,</span> <span class="n">Constant</span><span class="p">))</span> <span class="k">for</span> <span class="n">a</span> <span class="ow">in</span> <span class="n">args</span><span class="p">)</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">args</span><span class="p">)</span></div>
+    <span class="k">def</span> <span class="fm">__and__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RegAnd&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RegAnd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__rand__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RegAnd&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RegAnd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__or__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RegOr&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RegOr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__ror__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RegOr&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RegOr</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__xor__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RegXor&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RegXor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__rxor__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RegXor&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RegXor</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__add__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RegAdd&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RegAdd</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__sub__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RegSub&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RegSub</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__mul__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RegMul&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RegMul</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__floordiv__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RegDiv&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RegDiv</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__pow__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RegPow&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RegPow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__lshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RegLsh&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RegLsh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="fm">__rshift__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="s2">&quot;RegRsh&quot;</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">RegRsh</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">other</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="BinaryOp"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.BinaryOp">[docs]</a><span class="k">class</span> <span class="nc">BinaryOp</span><span class="p">(</span><span class="n">LogicExp</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Expresion for operation on two arguments.&quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg1</span><span class="p">:</span> <span class="n">ArgType</span><span class="p">,</span> <span class="n">arg2</span><span class="p">:</span> <span class="n">ArgType</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">op</span><span class="p">,</span> <span class="p">[</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">op</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s2">)&quot;</span></div>
@@ -612,9 +676,6 @@ document.write(`
 
 <div class="viewcode-block" id="UnaryOp"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.UnaryOp">[docs]</a><span class="k">class</span> <span class="nc">UnaryOp</span><span class="p">(</span><span class="n">LogicExp</span><span class="p">):</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Expression for operation on one argument.&quot;&quot;&quot;</span>
-
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg</span><span class="p">:</span> <span class="n">ArgType</span><span class="p">):</span>
-        <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">op</span><span class="p">,</span> <span class="p">[</span><span class="n">arg</span><span class="p">])</span>
 
     <span class="k">def</span> <span class="fm">__str__</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">str</span><span class="p">:</span>
         <span class="k">return</span> <span class="sa">f</span><span class="s2">&quot;(</span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">op</span><span class="o">.</span><span class="n">value</span><span class="si">}</span><span class="s2"> </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s2">)&quot;</span></div>
@@ -645,11 +706,15 @@ document.write(`
 
 
 <div class="viewcode-block" id="BitAnd"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.BitAnd">[docs]</a><span class="k">class</span> <span class="nc">BitAnd</span><span class="p">(</span><span class="n">And</span><span class="p">,</span> <span class="n">BitLogicExp</span><span class="p">):</span>
-    <span class="n">op</span> <span class="o">=</span> <span class="n">BitWiseOp</span><span class="o">.</span><span class="n">AND</span></div>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg1</span><span class="p">:</span> <span class="n">BitArgType</span><span class="p">,</span> <span class="n">arg2</span><span class="p">:</span> <span class="n">BitArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="n">BitWiseOp</span><span class="o">.</span><span class="n">AND</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="BitOr"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.BitOr">[docs]</a><span class="k">class</span> <span class="nc">BitOr</span><span class="p">(</span><span class="n">Or</span><span class="p">,</span> <span class="n">BitLogicExp</span><span class="p">):</span>
-    <span class="n">op</span> <span class="o">=</span> <span class="n">BitWiseOp</span><span class="o">.</span><span class="n">OR</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg1</span><span class="p">:</span> <span class="n">BitArgType</span><span class="p">,</span> <span class="n">arg2</span><span class="p">:</span> <span class="n">BitArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="n">BitWiseOp</span><span class="o">.</span><span class="n">OR</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">]</span>
 
 <div class="viewcode-block" id="BitOr.eval_vals"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.BitOr.eval_vals">[docs]</a>    <span class="k">def</span> <span class="nf">eval_vals</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">ArgType</span><span class="p">:</span>
         <span class="n">rval</span><span class="p">:</span> <span class="n">ArgType</span> <span class="o">=</span> <span class="nb">super</span><span class="p">()</span><span class="o">.</span><span class="n">eval_vals</span><span class="p">()</span>
@@ -659,11 +724,15 @@ document.write(`
 
 
 <div class="viewcode-block" id="BitXor"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.BitXor">[docs]</a><span class="k">class</span> <span class="nc">BitXor</span><span class="p">(</span><span class="n">Xor</span><span class="p">,</span> <span class="n">BitLogicExp</span><span class="p">):</span>
-    <span class="n">op</span> <span class="o">=</span> <span class="n">BitWiseOp</span><span class="o">.</span><span class="n">XOR</span></div>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg1</span><span class="p">:</span> <span class="n">BitArgType</span><span class="p">,</span> <span class="n">arg2</span><span class="p">:</span> <span class="n">BitArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="n">BitWiseOp</span><span class="o">.</span><span class="n">XOR</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="BitNot"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.BitNot">[docs]</a><span class="k">class</span> <span class="nc">BitNot</span><span class="p">(</span><span class="n">UnaryOp</span><span class="p">,</span> <span class="n">BitLogicExp</span><span class="p">):</span>
-    <span class="n">op</span> <span class="o">=</span> <span class="n">BitWiseOp</span><span class="o">.</span><span class="n">NOT</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg1</span><span class="p">:</span> <span class="n">BitArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="n">BitWiseOp</span><span class="o">.</span><span class="n">NOT</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg1</span><span class="p">]</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_const_eval</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Constant</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Constant</span><span class="p">:</span>
@@ -671,51 +740,75 @@ document.write(`
 
 
 <div class="viewcode-block" id="RegAnd"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.RegAnd">[docs]</a><span class="k">class</span> <span class="nc">RegAnd</span><span class="p">(</span><span class="n">And</span><span class="p">,</span> <span class="n">RegLogicExp</span><span class="p">):</span>
-    <span class="n">op</span> <span class="o">=</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">AND</span></div>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg1</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">,</span> <span class="n">arg2</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">AND</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="RegOr"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.RegOr">[docs]</a><span class="k">class</span> <span class="nc">RegOr</span><span class="p">(</span><span class="n">Or</span><span class="p">,</span> <span class="n">RegLogicExp</span><span class="p">):</span>
-    <span class="n">op</span> <span class="o">=</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">OR</span></div>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg1</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">,</span> <span class="n">arg2</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">OR</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="RegXor"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.RegXor">[docs]</a><span class="k">class</span> <span class="nc">RegXor</span><span class="p">(</span><span class="n">Xor</span><span class="p">,</span> <span class="n">RegLogicExp</span><span class="p">):</span>
-    <span class="n">op</span> <span class="o">=</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">XOR</span></div>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg1</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">,</span> <span class="n">arg2</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">XOR</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="RegAdd"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.RegAdd">[docs]</a><span class="k">class</span> <span class="nc">RegAdd</span><span class="p">(</span><span class="n">BinaryOp</span><span class="p">,</span> <span class="n">RegLogicExp</span><span class="p">):</span>
-    <span class="n">op</span> <span class="o">=</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">ADD</span></div>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg1</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">,</span> <span class="n">arg2</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">ADD</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="RegSub"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.RegSub">[docs]</a><span class="k">class</span> <span class="nc">RegSub</span><span class="p">(</span><span class="n">BinaryOp</span><span class="p">,</span> <span class="n">RegLogicExp</span><span class="p">):</span>
-    <span class="n">op</span> <span class="o">=</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">SUB</span></div>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg1</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">,</span> <span class="n">arg2</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">SUB</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="RegMul"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.RegMul">[docs]</a><span class="k">class</span> <span class="nc">RegMul</span><span class="p">(</span><span class="n">BinaryOp</span><span class="p">,</span> <span class="n">RegLogicExp</span><span class="p">):</span>
-    <span class="n">op</span> <span class="o">=</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">MUL</span></div>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg1</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">,</span> <span class="n">arg2</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">MUL</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="RegDiv"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.RegDiv">[docs]</a><span class="k">class</span> <span class="nc">RegDiv</span><span class="p">(</span><span class="n">BinaryOp</span><span class="p">,</span> <span class="n">RegLogicExp</span><span class="p">):</span>
-    <span class="n">op</span> <span class="o">=</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">DIV</span></div>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg1</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">,</span> <span class="n">arg2</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">DIV</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="RegPow"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.RegPow">[docs]</a><span class="k">class</span> <span class="nc">RegPow</span><span class="p">(</span><span class="n">BinaryOp</span><span class="p">,</span> <span class="n">RegLogicExp</span><span class="p">):</span>
-    <span class="n">op</span> <span class="o">=</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">POW</span></div>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg1</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">,</span> <span class="n">arg2</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">POW</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="RegLsh"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.RegLsh">[docs]</a><span class="k">class</span> <span class="nc">RegLsh</span><span class="p">(</span><span class="n">BinaryOp</span><span class="p">,</span> <span class="n">RegLogicExp</span><span class="p">):</span>
-    <span class="n">op</span> <span class="o">=</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">LSH</span></div>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg1</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">,</span> <span class="n">arg2</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">LSH</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="RegNeg"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.RegNeg">[docs]</a><span class="k">class</span> <span class="nc">RegNeg</span><span class="p">(</span><span class="n">UnaryOp</span><span class="p">,</span> <span class="n">RegLogicExp</span><span class="p">):</span>
-    <span class="n">op</span> <span class="o">=</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">NEG</span></div>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg1</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">NEG</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg1</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="RegNot"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.RegNot">[docs]</a><span class="k">class</span> <span class="nc">RegNot</span><span class="p">(</span><span class="n">UnaryOp</span><span class="p">,</span> <span class="n">RegLogicExp</span><span class="p">):</span>
-    <span class="n">op</span> <span class="o">=</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">NOT</span></div>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg1</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">NOT</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg1</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="RegRsh"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.RegRsh">[docs]</a><span class="k">class</span> <span class="nc">RegRsh</span><span class="p">(</span><span class="n">BinaryOp</span><span class="p">,</span> <span class="n">RegLogicExp</span><span class="p">):</span>
-    <span class="n">op</span> <span class="o">=</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">RSH</span></div>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg1</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">,</span> <span class="n">arg2</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">RSH</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="PredicateExp"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.PredicateExp">[docs]</a><span class="k">class</span> <span class="nc">PredicateExp</span><span class="p">(</span><span class="n">BinaryOp</span><span class="p">):</span>
@@ -738,23 +831,33 @@ document.write(`
 
 
 <div class="viewcode-block" id="BitEq"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.BitEq">[docs]</a><span class="k">class</span> <span class="nc">BitEq</span><span class="p">(</span><span class="n">Eq</span><span class="p">,</span> <span class="n">BitLogicExp</span><span class="p">):</span>
-    <span class="n">op</span> <span class="o">=</span> <span class="n">BitWiseOp</span><span class="o">.</span><span class="n">EQ</span></div>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg1</span><span class="p">:</span> <span class="n">BitArgType</span><span class="p">,</span> <span class="n">arg2</span><span class="p">:</span> <span class="n">BitArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="n">BitWiseOp</span><span class="o">.</span><span class="n">EQ</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="BitNeq"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.BitNeq">[docs]</a><span class="k">class</span> <span class="nc">BitNeq</span><span class="p">(</span><span class="n">Neq</span><span class="p">,</span> <span class="n">BitLogicExp</span><span class="p">):</span>
-    <span class="n">op</span> <span class="o">=</span> <span class="n">BitWiseOp</span><span class="o">.</span><span class="n">NEQ</span></div>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg1</span><span class="p">:</span> <span class="n">BitArgType</span><span class="p">,</span> <span class="n">arg2</span><span class="p">:</span> <span class="n">BitArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="n">BitWiseOp</span><span class="o">.</span><span class="n">NEQ</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="RegEq"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.RegEq">[docs]</a><span class="k">class</span> <span class="nc">RegEq</span><span class="p">(</span><span class="n">Eq</span><span class="p">,</span> <span class="n">RegLogicExp</span><span class="p">):</span>
-    <span class="n">op</span> <span class="o">=</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">EQ</span></div>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg1</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">,</span> <span class="n">arg2</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">EQ</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="RegNeq"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.RegNeq">[docs]</a><span class="k">class</span> <span class="nc">RegNeq</span><span class="p">(</span><span class="n">Neq</span><span class="p">,</span> <span class="n">RegLogicExp</span><span class="p">):</span>
-    <span class="n">op</span> <span class="o">=</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">NEQ</span></div>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg1</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">,</span> <span class="n">arg2</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">NEQ</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">]</span></div>
 
 
 <div class="viewcode-block" id="RegLt"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.RegLt">[docs]</a><span class="k">class</span> <span class="nc">RegLt</span><span class="p">(</span><span class="n">PredicateExp</span><span class="p">,</span> <span class="n">RegLogicExp</span><span class="p">):</span>
-    <span class="n">op</span> <span class="o">=</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">LT</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg1</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">,</span> <span class="n">arg2</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">LT</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">]</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_const_eval</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Constant</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Constant</span><span class="p">:</span>
@@ -762,7 +865,9 @@ document.write(`
 
 
 <div class="viewcode-block" id="RegGt"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.RegGt">[docs]</a><span class="k">class</span> <span class="nc">RegGt</span><span class="p">(</span><span class="n">PredicateExp</span><span class="p">,</span> <span class="n">RegLogicExp</span><span class="p">):</span>
-    <span class="n">op</span> <span class="o">=</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">GT</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg1</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">,</span> <span class="n">arg2</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">GT</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">]</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_const_eval</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Constant</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Constant</span><span class="p">:</span>
@@ -770,7 +875,9 @@ document.write(`
 
 
 <div class="viewcode-block" id="RegLeq"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.RegLeq">[docs]</a><span class="k">class</span> <span class="nc">RegLeq</span><span class="p">(</span><span class="n">PredicateExp</span><span class="p">,</span> <span class="n">RegLogicExp</span><span class="p">):</span>
-    <span class="n">op</span> <span class="o">=</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">LEQ</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg1</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">,</span> <span class="n">arg2</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">LEQ</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">]</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_const_eval</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Constant</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Constant</span><span class="p">:</span>
@@ -778,44 +885,50 @@ document.write(`
 
 
 <div class="viewcode-block" id="RegGeq"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.RegGeq">[docs]</a><span class="k">class</span> <span class="nc">RegGeq</span><span class="p">(</span><span class="n">PredicateExp</span><span class="p">,</span> <span class="n">RegLogicExp</span><span class="p">):</span>
-    <span class="n">op</span> <span class="o">=</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">GEQ</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">arg1</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">,</span> <span class="n">arg2</span><span class="p">:</span> <span class="n">RegArgType</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">op</span> <span class="o">=</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">GEQ</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">args</span> <span class="o">=</span> <span class="p">[</span><span class="n">arg1</span><span class="p">,</span> <span class="n">arg2</span><span class="p">]</span>
 
     <span class="nd">@staticmethod</span>
     <span class="k">def</span> <span class="nf">_const_eval</span><span class="p">(</span><span class="n">args</span><span class="p">:</span> <span class="n">List</span><span class="p">[</span><span class="n">Constant</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">Constant</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">&gt;=</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span></div>
 
 
-<span class="c1"># utility to define register comparison methods</span>
-<span class="k">def</span> <span class="nf">gen_regpredicate</span><span class="p">(</span>
-    <span class="n">op</span><span class="p">:</span> <span class="n">Ops</span><span class="p">,</span>
-<span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Union</span><span class="p">[</span><span class="n">RegLogicExp</span><span class="p">,</span> <span class="n">BitRegister</span><span class="p">],</span> <span class="n">Constant</span><span class="p">],</span> <span class="n">PredicateExp</span><span class="p">]:</span>
-    <span class="k">def</span> <span class="nf">const_predicate</span><span class="p">(</span>
-        <span class="n">register</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">RegLogicExp</span><span class="p">,</span> <span class="n">BitRegister</span><span class="p">],</span> <span class="n">value</span><span class="p">:</span> <span class="n">Constant</span>
-    <span class="p">)</span> <span class="o">-&gt;</span> <span class="n">PredicateExp</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">cast</span><span class="p">(</span><span class="n">Type</span><span class="p">[</span><span class="n">PredicateExp</span><span class="p">],</span> <span class="n">LogicExp</span><span class="o">.</span><span class="n">factory</span><span class="p">(</span><span class="n">op</span><span class="p">))(</span><span class="n">register</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span>
-
-    <span class="k">return</span> <span class="n">const_predicate</span>
+<div class="viewcode-block" id="reg_eq"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.reg_eq">[docs]</a><span class="k">def</span> <span class="nf">reg_eq</span><span class="p">(</span><span class="n">register</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">RegLogicExp</span><span class="p">,</span> <span class="n">BitRegister</span><span class="p">],</span> <span class="n">value</span><span class="p">:</span> <span class="n">Constant</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RegLogicExp</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to express a BitRegister equality predicate, i.e.</span>
+<span class="sd">    for a register ``r``, ``(r == 5)`` is expressed as ``reg_eq(r, 5)``&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">RegEq</span><span class="p">(</span><span class="n">register</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
 
-<span class="n">reg_eq</span> <span class="o">=</span> <span class="n">gen_regpredicate</span><span class="p">(</span><span class="n">RegWiseOp</span><span class="o">.</span><span class="n">EQ</span><span class="p">)</span>
-<span class="n">reg_eq</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;Function to express a BitRegister equality predicate, i.e.</span>
-<span class="s2">    for a register ``r``, ``(r == 5)`` is expressed as ``reg_eq(r, 5)``&quot;&quot;&quot;</span>
-<span class="n">reg_neq</span> <span class="o">=</span> <span class="n">gen_regpredicate</span><span class="p">(</span><span class="n">RegWiseOp</span><span class="o">.</span><span class="n">NEQ</span><span class="p">)</span>
-<span class="n">reg_neq</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;Function to express a BitRegister inequality predicate, i.e.</span>
-<span class="s2">    for a register ``r``, ``(r != 5)`` is expressed as ``reg_neq(r, 5)``&quot;&quot;&quot;</span>
-<span class="n">reg_lt</span> <span class="o">=</span> <span class="n">gen_regpredicate</span><span class="p">(</span><span class="n">RegWiseOp</span><span class="o">.</span><span class="n">LT</span><span class="p">)</span>
-<span class="n">reg_lt</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;Function to express a BitRegister less than predicate, i.e.</span>
-<span class="s2">    for a register ``r``, ``(r &lt; 5)`` is expressed as ``reg_lt(r, 5)``&quot;&quot;&quot;</span>
-<span class="n">reg_gt</span> <span class="o">=</span> <span class="n">gen_regpredicate</span><span class="p">(</span><span class="n">RegWiseOp</span><span class="o">.</span><span class="n">GT</span><span class="p">)</span>
-<span class="n">reg_gt</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;Function to express a BitRegister greater than predicate, i.e.</span>
-<span class="s2">    for a register ``r``, ``(r &gt; 5)`` is expressed as ``reg_gt(r, 5)``&quot;&quot;&quot;</span>
-<span class="n">reg_leq</span> <span class="o">=</span> <span class="n">gen_regpredicate</span><span class="p">(</span><span class="n">RegWiseOp</span><span class="o">.</span><span class="n">LEQ</span><span class="p">)</span>
-<span class="n">reg_leq</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;Function to express a BitRegister less than or equal to predicate,</span>
-<span class="s2">    i.e. for a register ``r``, ``(r &lt;= 5)`` is expressed as ``reg_leq(r, 5)``&quot;&quot;&quot;</span>
-<span class="n">reg_geq</span> <span class="o">=</span> <span class="n">gen_regpredicate</span><span class="p">(</span><span class="n">RegWiseOp</span><span class="o">.</span><span class="n">GEQ</span><span class="p">)</span>
-<span class="n">reg_geq</span><span class="o">.</span><span class="vm">__doc__</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;Function to express a BitRegister greater than or equal to</span>
-<span class="s2">    predicate, i.e. for a register ``r``, ``(r &gt;= 5)`` is expressed as</span>
-<span class="s2">    ``reg_geq(r, 5)``&quot;&quot;&quot;</span>
+<div class="viewcode-block" id="reg_neq"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.reg_neq">[docs]</a><span class="k">def</span> <span class="nf">reg_neq</span><span class="p">(</span><span class="n">register</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">RegLogicExp</span><span class="p">,</span> <span class="n">BitRegister</span><span class="p">],</span> <span class="n">value</span><span class="p">:</span> <span class="n">Constant</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RegLogicExp</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to express a BitRegister inequality predicate, i.e.</span>
+<span class="sd">    for a register ``r``, ``(r != 5)`` is expressed as ``reg_neq(r, 5)``&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">RegNeq</span><span class="p">(</span><span class="n">register</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="reg_lt"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.reg_lt">[docs]</a><span class="k">def</span> <span class="nf">reg_lt</span><span class="p">(</span><span class="n">register</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">RegLogicExp</span><span class="p">,</span> <span class="n">BitRegister</span><span class="p">],</span> <span class="n">value</span><span class="p">:</span> <span class="n">Constant</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RegLogicExp</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to express a BitRegister less than predicate, i.e.</span>
+<span class="sd">    for a register ``r``, ``(r &lt; 5)`` is expressed as ``reg_lt(r, 5)``&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">RegLt</span><span class="p">(</span><span class="n">register</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="reg_gt"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.reg_gt">[docs]</a><span class="k">def</span> <span class="nf">reg_gt</span><span class="p">(</span><span class="n">register</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">RegLogicExp</span><span class="p">,</span> <span class="n">BitRegister</span><span class="p">],</span> <span class="n">value</span><span class="p">:</span> <span class="n">Constant</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RegLogicExp</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to express a BitRegister greater than predicate, i.e.</span>
+<span class="sd">    for a register ``r``, ``(r &gt; 5)`` is expressed as ``reg_gt(r, 5)``&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">RegGt</span><span class="p">(</span><span class="n">register</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="reg_leq"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.reg_leq">[docs]</a><span class="k">def</span> <span class="nf">reg_leq</span><span class="p">(</span><span class="n">register</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">RegLogicExp</span><span class="p">,</span> <span class="n">BitRegister</span><span class="p">],</span> <span class="n">value</span><span class="p">:</span> <span class="n">Constant</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RegLogicExp</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to express a BitRegister less than or equal to predicate,</span>
+<span class="sd">    i.e. for a register ``r``, ``(r &lt;= 5)`` is expressed as ``reg_leq(r, 5)``&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">RegLeq</span><span class="p">(</span><span class="n">register</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
+
+
+<div class="viewcode-block" id="reg_geq"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.reg_geq">[docs]</a><span class="k">def</span> <span class="nf">reg_geq</span><span class="p">(</span><span class="n">register</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">RegLogicExp</span><span class="p">,</span> <span class="n">BitRegister</span><span class="p">],</span> <span class="n">value</span><span class="p">:</span> <span class="n">Constant</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">RegLogicExp</span><span class="p">:</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Function to express a BitRegister greater than or equal to</span>
+<span class="sd">    predicate, i.e. for a register ``r``, ``(r &gt;= 5)`` is expressed as</span>
+<span class="sd">    ``reg_geq(r, 5)``&quot;&quot;&quot;</span>
+    <span class="k">return</span> <span class="n">RegGeq</span><span class="p">(</span><span class="n">register</span><span class="p">,</span> <span class="n">value</span><span class="p">)</span></div>
 
 
 <div class="viewcode-block" id="if_bit"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.if_bit">[docs]</a><span class="k">def</span> <span class="nf">if_bit</span><span class="p">(</span><span class="n">bit</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Bit</span><span class="p">,</span> <span class="n">BitLogicExp</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">PredicateExp</span><span class="p">:</span>
@@ -826,6 +939,147 @@ document.write(`
 <div class="viewcode-block" id="if_not_bit"><a class="viewcode-back" href="../../../classical.html#pytket.circuit.logic_exp.if_not_bit">[docs]</a><span class="k">def</span> <span class="nf">if_not_bit</span><span class="p">(</span><span class="n">bit</span><span class="p">:</span> <span class="n">Union</span><span class="p">[</span><span class="n">Bit</span><span class="p">,</span> <span class="n">BitLogicExp</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">PredicateExp</span><span class="p">:</span>
 <span class="w">    </span><span class="sd">&quot;&quot;&quot;Equivalent of ``if not bit:``.&quot;&quot;&quot;</span>
     <span class="k">return</span> <span class="n">BitEq</span><span class="p">(</span><span class="n">bit</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span></div>
+
+
+<span class="k">def</span> <span class="nf">create_bit_logic_exp</span><span class="p">(</span><span class="n">op</span><span class="p">:</span> <span class="n">BitWiseOp</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">BitArgType</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">BitLogicExp</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">BitWiseOp</span><span class="o">.</span><span class="n">AND</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="n">BitAnd</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">BitWiseOp</span><span class="o">.</span><span class="n">OR</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="n">BitOr</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">BitWiseOp</span><span class="o">.</span><span class="n">XOR</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="n">BitXor</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">BitWiseOp</span><span class="o">.</span><span class="n">NOT</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">BitNot</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">BitWiseOp</span><span class="o">.</span><span class="n">EQ</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="n">BitEq</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">BitWiseOp</span><span class="o">.</span><span class="n">NEQ</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="n">BitNeq</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+
+<span class="k">def</span> <span class="nf">create_reg_logic_exp</span><span class="p">(</span><span class="n">op</span><span class="p">:</span> <span class="n">RegWiseOp</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">RegArgType</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">RegLogicExp</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">AND</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="n">RegAnd</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">OR</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="n">RegOr</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">XOR</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="n">RegXor</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">ADD</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="n">RegAdd</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">SUB</span><span class="p">:</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">RegSub</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">:</span>
+            <span class="k">return</span> <span class="n">RegNeg</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">NEG</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">RegNeg</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">MUL</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="n">RegMul</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">DIV</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="n">RegDiv</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">POW</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="n">RegPow</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">LSH</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="n">RegLsh</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">RSH</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="n">RegRsh</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">EQ</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="n">RegEq</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">NEQ</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="n">RegNeq</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">LT</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="n">RegLt</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">GT</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="n">RegGt</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">LEQ</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="n">RegLeq</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">GEQ</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">return</span> <span class="n">RegGeq</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">NOT</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span>
+        <span class="k">return</span> <span class="n">RegNot</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;op type not supported&quot;</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">create_logic_exp</span><span class="p">(</span><span class="n">op</span><span class="p">:</span> <span class="n">Ops</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">ArgType</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">LogicExp</span><span class="p">:</span>
+    <span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">BitWiseOp</span><span class="p">):</span>
+        <span class="n">bit_args</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="p">(</span><span class="n">BitLogicExp</span><span class="p">,</span> <span class="n">Bit</span><span class="p">,</span> <span class="n">Constant</span><span class="p">))</span>
+            <span class="n">bit_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">create_bit_logic_exp</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">bit_args</span><span class="p">)</span>
+    <span class="k">else</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">RegWiseOp</span><span class="p">)</span>
+        <span class="n">reg_args</span> <span class="o">=</span> <span class="p">[]</span>
+        <span class="k">for</span> <span class="n">arg</span> <span class="ow">in</span> <span class="n">args</span><span class="p">:</span>
+            <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">arg</span><span class="p">,</span> <span class="p">(</span><span class="n">RegLogicExp</span><span class="p">,</span> <span class="n">BitRegister</span><span class="p">,</span> <span class="n">Constant</span><span class="p">))</span>
+            <span class="n">reg_args</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">arg</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">create_reg_logic_exp</span><span class="p">(</span><span class="n">op</span><span class="p">,</span> <span class="n">reg_args</span><span class="p">)</span>
+
+
+<span class="k">def</span> <span class="nf">create_predicate_exp</span><span class="p">(</span><span class="n">op</span><span class="p">:</span> <span class="n">Ops</span><span class="p">,</span> <span class="n">args</span><span class="p">:</span> <span class="n">Sequence</span><span class="p">[</span><span class="n">ArgType</span><span class="p">])</span> <span class="o">-&gt;</span> <span class="n">PredicateExp</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">BitWiseOp</span><span class="o">.</span><span class="n">EQ</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="n">BitLogicExp</span><span class="p">,</span> <span class="n">Bit</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">(</span><span class="n">BitLogicExp</span><span class="p">,</span> <span class="n">Bit</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">BitEq</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">BitWiseOp</span><span class="o">.</span><span class="n">NEQ</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="n">BitLogicExp</span><span class="p">,</span> <span class="n">Bit</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">(</span><span class="n">BitLogicExp</span><span class="p">,</span> <span class="n">Bit</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">BitNeq</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">EQ</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="n">RegLogicExp</span><span class="p">,</span> <span class="n">BitRegister</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">(</span><span class="n">RegLogicExp</span><span class="p">,</span> <span class="n">BitRegister</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">RegEq</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">NEQ</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="n">RegLogicExp</span><span class="p">,</span> <span class="n">BitRegister</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">(</span><span class="n">RegLogicExp</span><span class="p">,</span> <span class="n">BitRegister</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">RegNeq</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">LT</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="n">RegLogicExp</span><span class="p">,</span> <span class="n">BitRegister</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">(</span><span class="n">RegLogicExp</span><span class="p">,</span> <span class="n">BitRegister</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">RegLt</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">GT</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="n">RegLogicExp</span><span class="p">,</span> <span class="n">BitRegister</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">(</span><span class="n">RegLogicExp</span><span class="p">,</span> <span class="n">BitRegister</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">RegGt</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">LEQ</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="n">RegLogicExp</span><span class="p">,</span> <span class="n">BitRegister</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">(</span><span class="n">RegLogicExp</span><span class="p">,</span> <span class="n">BitRegister</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">RegLeq</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">if</span> <span class="n">op</span> <span class="o">==</span> <span class="n">RegWiseOp</span><span class="o">.</span><span class="n">GEQ</span><span class="p">:</span>
+        <span class="k">assert</span> <span class="nb">len</span><span class="p">(</span><span class="n">args</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="p">(</span><span class="n">RegLogicExp</span><span class="p">,</span> <span class="n">BitRegister</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span>
+        <span class="k">assert</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="p">(</span><span class="n">RegLogicExp</span><span class="p">,</span> <span class="n">BitRegister</span><span class="p">,</span> <span class="nb">int</span><span class="p">))</span>
+        <span class="k">return</span> <span class="n">RegGeq</span><span class="p">(</span><span class="n">args</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">args</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+    <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;op type not supported&quot;</span><span class="p">)</span>
 
 
 <span class="c1">#  ConstPredicate is deprecated in favour of PredicateExp</span>
@@ -891,8 +1145,8 @@ By Quantinuum
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../../_static/scripts/bootstrap.js?digest=927b94d3fcb96560df09"></script>
-<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=927b94d3fcb96560df09"></script>
+  <script src="../../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794"></script>
 
   <footer class="bd-footer">
   </footer>

@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>pytket.zx &#8212; pytket 1.20.1 documentation</title>
+    <title>pytket.zx &#8212; pytket 1.21.0 documentation</title>
   
   
   
@@ -19,12 +19,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
 
   
-  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=ac02cc09edc035673794" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -37,9 +37,9 @@
     <link rel="stylesheet" type="text/css" href="_static/custom.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=927b94d3fcb96560df09" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=927b94d3fcb96560df09" />
-  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=927b94d3fcb96560df09"></script>
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
+  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/doctools.js"></script>
@@ -158,7 +158,7 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket/manual/index.html">Manual</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket-extensions/api/index.html">Extensions</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/CQCL/pytket/tree/main/examples">Example notebooks</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/examples">Example notebooks</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
 <ul class="current nav bd-sidenav">
@@ -643,7 +643,7 @@ document.write(`
 <dd><p>Specialisation of <a class="reference internal" href="#pytket.zx.ZXGen" title="pytket.zx.ZXGen"><code class="xref py py-class docutils literal notranslate"><span class="pre">ZXGen</span></code></a> for arbitrary-arity, symmetric generators with a single continuous parameter.</p>
 <dl class="py method">
 <dt class="sig sig-object py" id="pytket.zx.PhasedGen.__init__">
-<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.PhasedGen" title="pytket.zx.PhasedGen"><span class="pre">pytket.zx.PhasedGen</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">zxtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXType" title="pytket.zx.ZXType"><span class="pre">pytket.zx.ZXType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sympy.Expr</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.QuantumType" title="pytket.zx.QuantumType"><span class="pre">pytket.zx.QuantumType</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">QuantumType.Quantum</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pytket.zx.PhasedGen.__init__" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.PhasedGen" title="pytket.zx.PhasedGen"><span class="pre">pytket.zx.PhasedGen</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">zxtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXType" title="pytket.zx.ZXType"><span class="pre">pytket.zx.ZXType</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">param</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">sympy.Expr</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qtype</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.QuantumType" title="pytket.zx.QuantumType"><span class="pre">pytket.zx.QuantumType</span></a></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">QuantumType.Quantum</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pytket.zx.PhasedGen.__init__" title="Permalink to this definition">#</a></dt>
 <dd><p>Construct from a ZX type, parameter and quantum type.</p>
 </dd></dl>
 
@@ -817,7 +817,7 @@ document.write(`
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pytket.zx.Rewrite.sequence">
-<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sequence</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">List</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><span class="pre">pytket.zx.Rewrite</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><span class="pre">pytket.zx.Rewrite</span></a></span></span><a class="headerlink" href="#pytket.zx.Rewrite.sequence" title="Permalink to this definition">#</a></dt>
+<em class="property"><span class="pre">static</span><span class="w"> </span></em><span class="sig-name descname"><span class="pre">sequence</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">sequence</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><span class="pre">pytket.zx.Rewrite</span></a><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><span class="pre">pytket.zx.Rewrite</span></a></span></span><a class="headerlink" href="#pytket.zx.Rewrite.sequence" title="Permalink to this definition">#</a></dt>
 <dd><p>Composes a list of <a class="reference internal" href="#pytket.zx.Rewrite" title="pytket.zx.Rewrite"><code class="xref py py-class docutils literal notranslate"><span class="pre">Rewrite</span></code></a> s together in sequence. The apply method will return True if ANY of the individual Rewrites returned True.</p>
 <dl class="field-list simple">
 <dt class="field-odd">Parameters<span class="colon">:</span></dt>
@@ -964,7 +964,7 @@ document.write(`
 </dd>
 </dl>
 <ol class="arabic simple" start="4">
-<li><p>add_vertex(self: pytket.zx.ZXDiagram, type: pytket.zx.ZXType, param: Union[sympy.Expr, float], qtype: pytket.zx.QuantumType = &lt;QuantumType.Quantum: 0&gt;) -&gt; pytket.zx.ZXVert</p></li>
+<li><p>add_vertex(self: pytket.zx.ZXDiagram, type: pytket.zx.ZXType, param: typing.Union[sympy.Expr, float], qtype: pytket.zx.QuantumType = &lt;QuantumType.Quantum: 0&gt;) -&gt; pytket.zx.ZXVert</p></li>
 </ol>
 <p>Adds a new vertex to the diagram for a parameterised, doubleable generator type.</p>
 <dl class="field-list simple">
@@ -1120,7 +1120,7 @@ document.write(`
 
 <dl class="py method">
 <dt class="sig sig-object py" id="pytket.zx.ZXDiagram.multiply_scalar">
-<span class="sig-name descname"><span class="pre">multiply_scalar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">scalar</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">sympy.Expr</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.multiply_scalar" title="Permalink to this definition">#</a></dt>
+<span class="sig-name descname"><span class="pre">multiply_scalar</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.zx.ZXDiagram" title="pytket.zx.ZXDiagram"><span class="pre">pytket.zx.ZXDiagram</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">scalar</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Union</span><span class="p"><span class="pre">[</span></span><span class="pre">sympy.Expr</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">float</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pytket.zx.ZXDiagram.multiply_scalar" title="Permalink to this definition">#</a></dt>
 <dd><p>Multiplies the global scalar by a numerical (possibly symbolic) constant.</p>
 </dd></dl>
 
@@ -1171,7 +1171,7 @@ document.write(`
 <span class="sig-name descname"><span class="pre">symbol_substitution</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="o"><span class="pre">*</span></span><span class="n"><span class="pre">args</span></span></em>, <em class="sig-param"><span class="o"><span class="pre">**</span></span><span class="n"><span class="pre">kwargs</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pytket.zx.ZXDiagram.symbol_substitution" title="Permalink to this definition">#</a></dt>
 <dd><p>Overloaded function.</p>
 <ol class="arabic simple">
-<li><p>symbol_substitution(self: pytket.zx.ZXDiagram, symbol_map: Dict[sympy.Symbol, Union[sympy.Expr, float]]) -&gt; None</p></li>
+<li><p>symbol_substitution(self: pytket.zx.ZXDiagram, symbol_map: Dict[sympy.Symbol, typing.Union[sympy.Expr, float]]) -&gt; None</p></li>
 </ol>
 <p>In-place substitution for symbolic expressions; iterated through each parameterised vertex and performs the substitution. This will not affect any symbols captured within boxed operations.</p>
 <dl class="field-list simple">
@@ -1283,7 +1283,7 @@ document.write(`
 </ol>
 <p>Create a boundary type generator.</p>
 <ol class="arabic simple" start="2">
-<li><p>create(type: pytket.zx.ZXType, param: Union[sympy.Expr, float], qtype: pytket.zx.QuantumType = &lt;QuantumType.Quantum: 0&gt;) -&gt; pytket.zx.ZXGen</p></li>
+<li><p>create(type: pytket.zx.ZXType, param: typing.Union[sympy.Expr, float], qtype: pytket.zx.QuantumType = &lt;QuantumType.Quantum: 0&gt;) -&gt; pytket.zx.ZXGen</p></li>
 </ol>
 <p>Create a boundary type generator.</p>
 </dd></dl>
@@ -1613,8 +1613,8 @@ By Quantinuum
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=927b94d3fcb96560df09"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=927b94d3fcb96560df09"></script>
+  <script src="_static/scripts/bootstrap.js?digest=ac02cc09edc035673794"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794"></script>
 
   <footer class="bd-footer">
   </footer>

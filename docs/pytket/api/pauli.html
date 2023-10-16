@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>pytket.pauli &#8212; pytket 1.20.1 documentation</title>
+    <title>pytket.pauli &#8212; pytket 1.21.0 documentation</title>
   
   
   
@@ -19,12 +19,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
 
   
-  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=ac02cc09edc035673794" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -37,9 +37,9 @@
     <link rel="stylesheet" type="text/css" href="_static/custom.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=927b94d3fcb96560df09" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=927b94d3fcb96560df09" />
-  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=927b94d3fcb96560df09"></script>
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
+  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/doctools.js"></script>
@@ -158,7 +158,7 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket/manual/index.html">Manual</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket-extensions/api/index.html">Extensions</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/CQCL/pytket/tree/main/examples">Example notebooks</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/examples">Example notebooks</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
 <ul class="current nav bd-sidenav">
@@ -462,7 +462,7 @@ document.write(`
 </ol>
 <p>Constructs an empty PauliStabiliser.</p>
 <ol class="arabic simple" start="2">
-<li><p>__init__(self: pytket.pauli.PauliStabiliser, string: List[pytket.pauli.Pauli], coeff: int) -&gt; None</p></li>
+<li><p>__init__(self: pytket.pauli.PauliStabiliser, string: Sequence[pytket.pauli.Pauli], coeff: int) -&gt; None</p></li>
 </ol>
 <p>Constructs a PauliStabiliser with a list of Pauli terms.</p>
 </dd></dl>
@@ -498,7 +498,7 @@ document.write(`
 </ol>
 <p>Constructs a QubitPauliString with a single Pauli term.</p>
 <ol class="arabic simple" start="3">
-<li><p>__init__(self: pytket.pauli.QubitPauliString, qubits: List[pytket.unit_id.Qubit], paulis: List[pytket.pauli.Pauli]) -&gt; None</p></li>
+<li><p>__init__(self: pytket.pauli.QubitPauliString, qubits: Sequence[pytket.unit_id.Qubit], paulis: Sequence[pytket.pauli.Pauli]) -&gt; None</p></li>
 </ol>
 <p>Constructs a QubitPauliString from two matching lists of Qubits and Paulis.</p>
 <ol class="arabic simple" start="4">
@@ -540,7 +540,7 @@ document.write(`
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>dot_state(self: pytket.pauli.QubitPauliString, state: numpy.ndarray[numpy.complex128[m, 1]], qubits: List[pytket.unit_id.Qubit]) -&gt; numpy.ndarray[numpy.complex128[m, 1]]</p></li>
+<li><p>dot_state(self: pytket.pauli.QubitPauliString, state: numpy.ndarray[numpy.complex128[m, 1]], qubits: Sequence[pytket.unit_id.Qubit]) -&gt; numpy.ndarray[numpy.complex128[m, 1]]</p></li>
 </ol>
 <p>Performs the dot product of the state with the pauli string. Maps the qubits of the statevector according to the ordered list <cite>qubits</cite>, with <code class="docutils literal notranslate"><span class="pre">qubits[0]</span></code> being the most significant qubit.</p>
 <dl class="field-list simple">
@@ -579,7 +579,7 @@ document.write(`
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>state_expectation(self: pytket.pauli.QubitPauliString, state: numpy.ndarray[numpy.complex128[m, 1]], qubits: List[pytket.unit_id.Qubit]) -&gt; complex</p></li>
+<li><p>state_expectation(self: pytket.pauli.QubitPauliString, state: numpy.ndarray[numpy.complex128[m, 1]], qubits: Sequence[pytket.unit_id.Qubit]) -&gt; complex</p></li>
 </ol>
 <p>Calculates the expectation value of the state with the pauli string. Maps the qubits of the statevector according to the ordered list <cite>qubits</cite>, with <code class="docutils literal notranslate"><span class="pre">qubits[0]</span></code> being the most significant qubit.</p>
 <dl class="field-list simple">
@@ -632,7 +632,7 @@ document.write(`
 </dd>
 </dl>
 <ol class="arabic simple" start="3">
-<li><p>to_sparse_matrix(self: pytket.pauli.QubitPauliString, qubits: List[pytket.unit_id.Qubit]) -&gt; scipy.sparse.csc_matrix[numpy.complex128]</p></li>
+<li><p>to_sparse_matrix(self: pytket.pauli.QubitPauliString, qubits: Sequence[pytket.unit_id.Qubit]) -&gt; scipy.sparse.csc_matrix[numpy.complex128]</p></li>
 </ol>
 <p>Represents the sparse string as a dense string and generates the matrix for the tensor. Orders qubits according to <cite>qubits</cite> (padding with identities if they are not in the sparse string), so <code class="docutils literal notranslate"><span class="pre">qubits[0]</span></code> is the most significant bit for indexing into the matrix.</p>
 <dl class="field-list simple">
@@ -674,7 +674,7 @@ document.write(`
 </ol>
 <p>Constructs a QubitPauliTensor with a single Pauli term.</p>
 <ol class="arabic simple" start="3">
-<li><p>__init__(self: pytket.pauli.QubitPauliTensor, qubits: List[pytket.unit_id.Qubit], paulis: List[pytket.pauli.Pauli], coeff: complex = 1.0) -&gt; None</p></li>
+<li><p>__init__(self: pytket.pauli.QubitPauliTensor, qubits: Sequence[pytket.unit_id.Qubit], paulis: Sequence[pytket.pauli.Pauli], coeff: complex = 1.0) -&gt; None</p></li>
 </ol>
 <p>Constructs a QubitPauliTensor from two matching lists of Qubits and Paulis.</p>
 <ol class="arabic simple" start="4">
@@ -720,7 +720,7 @@ document.write(`
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>dot_state(self: pytket.pauli.QubitPauliTensor, state: numpy.ndarray[numpy.complex128[m, 1]], qubits: List[pytket.unit_id.Qubit]) -&gt; numpy.ndarray[numpy.complex128[m, 1]]</p></li>
+<li><p>dot_state(self: pytket.pauli.QubitPauliTensor, state: numpy.ndarray[numpy.complex128[m, 1]], qubits: Sequence[pytket.unit_id.Qubit]) -&gt; numpy.ndarray[numpy.complex128[m, 1]]</p></li>
 </ol>
 <p>Performs the dot product of the state with the pauli tensor. Maps the qubits of the statevector according to the ordered list <cite>qubits</cite>, with <code class="docutils literal notranslate"><span class="pre">qubits[0]</span></code> being the most significant qubit.</p>
 <dl class="field-list simple">
@@ -753,7 +753,7 @@ document.write(`
 </dd>
 </dl>
 <ol class="arabic simple" start="2">
-<li><p>state_expectation(self: pytket.pauli.QubitPauliTensor, state: numpy.ndarray[numpy.complex128[m, 1]], qubits: List[pytket.unit_id.Qubit]) -&gt; complex</p></li>
+<li><p>state_expectation(self: pytket.pauli.QubitPauliTensor, state: numpy.ndarray[numpy.complex128[m, 1]], qubits: Sequence[pytket.unit_id.Qubit]) -&gt; complex</p></li>
 </ol>
 <p>Calculates the expectation value of the state with the pauli operator. Maps the qubits of the statevector according to the ordered list <cite>qubits</cite>, with <code class="docutils literal notranslate"><span class="pre">qubits[0]</span></code> being the most significant qubit.</p>
 <dl class="field-list simple">
@@ -795,7 +795,7 @@ document.write(`
 </dd>
 </dl>
 <ol class="arabic simple" start="3">
-<li><p>to_sparse_matrix(self: pytket.pauli.QubitPauliTensor, qubits: List[pytket.unit_id.Qubit]) -&gt; scipy.sparse.csc_matrix[numpy.complex128]</p></li>
+<li><p>to_sparse_matrix(self: pytket.pauli.QubitPauliTensor, qubits: Sequence[pytket.unit_id.Qubit]) -&gt; scipy.sparse.csc_matrix[numpy.complex128]</p></li>
 </ol>
 <p>Represents the sparse string as a dense string and generates the matrix for the tensor. Orders qubits according to <cite>qubits</cite> (padding with identities if they are not in the sparse string), so <code class="docutils literal notranslate"><span class="pre">qubits[0]</span></code> is the most significant bit for indexing into the matrix.</p>
 <dl class="field-list simple">
@@ -960,8 +960,8 @@ By Quantinuum
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=927b94d3fcb96560df09"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=927b94d3fcb96560df09"></script>
+  <script src="_static/scripts/bootstrap.js?digest=ac02cc09edc035673794"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794"></script>
 
   <footer class="bd-footer">
   </footer>

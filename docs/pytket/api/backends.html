@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>pytket.backends &#8212; pytket 1.20.1 documentation</title>
+    <title>pytket.backends &#8212; pytket 1.21.0 documentation</title>
   
   
   
@@ -19,12 +19,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
 
   
-  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=ac02cc09edc035673794" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -37,9 +37,9 @@
     <link rel="stylesheet" type="text/css" href="_static/custom.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=927b94d3fcb96560df09" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=927b94d3fcb96560df09" />
-  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=927b94d3fcb96560df09"></script>
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
+  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/doctools.js"></script>
@@ -158,7 +158,7 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket/manual/index.html">Manual</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket-extensions/api/index.html">Extensions</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/CQCL/pytket/tree/main/examples">Example notebooks</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/examples">Example notebooks</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
 <ul class="current nav bd-sidenav">
@@ -505,7 +505,7 @@ document.write(`
   <section id="pytket-backends">
 <h1>pytket.backends<a class="headerlink" href="#pytket-backends" title="Permalink to this heading">#</a></h1>
 <p>Contains <code class="xref py py-class docutils literal notranslate"><span class="pre">Backend</span></code> abstract class and associated methods. In pytket a <code class="xref py py-class docutils literal notranslate"><span class="pre">Backend</span></code> represents an interface between pytket and a quantum device or simulator. Different backends are defined in the various pytket extension modules and inherit from the core pytket <code class="xref py py-class docutils literal notranslate"><span class="pre">Backend</span></code> class.</p>
-<p>There are several <a class="reference external" href="https://github.com/CQCL/pytket/tree/main/examples#pytket-examples">example notebooks</a> on pytket <code class="xref py py-class docutils literal notranslate"><span class="pre">Backend</span></code>s. If you are interested in developing your own <code class="xref py py-class docutils literal notranslate"><span class="pre">Backend</span></code> or pytket extension then see the <a class="reference external" href="https://github.com/CQCL/pytket/blob/main/examples/creating_backends.ipynb">creating backends</a> tutorial.</p>
+<p>There are several <a class="reference external" href="https://tket.quantinuum.com/examples">example notebooks</a> on pytket <code class="xref py py-class docutils literal notranslate"><span class="pre">Backend</span></code>s. If you are interested in developing your own <code class="xref py py-class docutils literal notranslate"><span class="pre">Backend</span></code> or pytket extension then see the <a class="reference external" href="https://tket.quantinuum.com/examples/creating_backends.html">creating backends</a> tutorial.</p>
 <p>Notebook tutorials specific to the <code class="xref py py-class docutils literal notranslate"><span class="pre">QuantinuumBackend</span></code> can be found <a class="reference external" href="https://github.com/CQCL/pytket-quantinuum/tree/develop/examples">here</a>.</p>
 <p>See also the <a class="reference external" href="https://cqcl.github.io/pytket/manual/manual_backend.html">Running on backends</a> section of the pytket user manual.</p>
 <span class="target" id="module-pytket.backends"></span><p>Backends for connecting to devices and simulators directly from pytket</p>
@@ -1799,8 +1799,8 @@ By Quantinuum
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=927b94d3fcb96560df09"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=927b94d3fcb96560df09"></script>
+  <script src="_static/scripts/bootstrap.js?digest=ac02cc09edc035673794"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794"></script>
 
   <footer class="bd-footer">
   </footer>

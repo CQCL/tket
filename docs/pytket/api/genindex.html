@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Index &#8212; pytket 1.20.1 documentation</title>
+    <title>Index &#8212; pytket 1.21.0 documentation</title>
   
   
   
@@ -18,12 +18,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
 
   
-  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=927b94d3fcb96560df09" rel="stylesheet" />
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=ac02cc09edc035673794" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -36,9 +36,9 @@
     <link rel="stylesheet" type="text/css" href="_static/custom.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=927b94d3fcb96560df09" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=927b94d3fcb96560df09" />
-  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=927b94d3fcb96560df09"></script>
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
+  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/doctools.js"></script>
@@ -155,7 +155,7 @@
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket/manual/index.html">Manual</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket-extensions/api/index.html">Extensions</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://github.com/CQCL/pytket/tree/main/examples">Example notebooks</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/examples">Example notebooks</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
 <ul class="nav bd-sidenav">
@@ -401,6 +401,8 @@ document.write(`
         <li><a href="circuit.html#pytket.circuit.ClassicalEvalOp.__init__">(pytket.circuit.ClassicalEvalOp method)</a>
 </li>
         <li><a href="circuit.html#pytket.circuit.ClassicalOp.__init__">(pytket.circuit.ClassicalOp method)</a>
+</li>
+        <li><a href="circuit.html#pytket.circuit.ConjugationBox.__init__">(pytket.circuit.ConjugationBox method)</a>
 </li>
         <li><a href="circuit.html#pytket.circuit.CopyBitsOp.__init__">(pytket.circuit.CopyBitsOp method)</a>
 </li>
@@ -786,6 +788,8 @@ document.write(`
 </li>
         <li><a href="zx.html#pytket.zx.Rewrite.apply">(pytket.zx.Rewrite method)</a>
 </li>
+        <li><a href="passes.html#pytket.passes.PassSelector.apply">(pytket.passes.PassSelector method)</a>
+</li>
       </ul></li>
       <li><a href="tailoring.html#pytket.tailoring.apply_clifford_basis_change">apply_clifford_basis_change() (in module pytket.tailoring)</a>
 </li>
@@ -1030,6 +1034,8 @@ document.write(`
 </li>
       </ul></li>
       <li><a href="circuit.html#pytket.circuit.Conditional">Conditional (class in pytket.circuit)</a>
+</li>
+      <li><a href="circuit.html#pytket.circuit.ConjugationBox">ConjugationBox (class in pytket.circuit)</a>
 </li>
       <li><a href="predicates.html#pytket.predicates.ConnectivityPredicate">ConnectivityPredicate (class in pytket.predicates)</a>
 </li>
@@ -1387,6 +1393,8 @@ document.write(`
 </li>
       <li><a href="classical.html#pytket.circuit.logic_exp.RegWiseOp.GEQ">GEQ (pytket.circuit.logic_exp.RegWiseOp attribute)</a>
 </li>
+      <li><a href="circuit.html#pytket.circuit.ConjugationBox.get_action">get_action() (pytket.circuit.ConjugationBox method)</a>
+</li>
       <li><a href="architecture.html#pytket.architecture.Architecture.get_adjacent_nodes">get_adjacent_nodes() (pytket.architecture.Architecture method)</a>
 </li>
       <li><a href="tailoring.html#pytket.tailoring.FrameRandomisation.get_all_circuits">get_all_circuits() (pytket.tailoring.FrameRandomisation method)</a>
@@ -1416,6 +1424,8 @@ document.write(`
       <li><a href="circuit.html#pytket.circuit.CircBox.get_circuit">get_circuit() (pytket.circuit.CircBox method)</a>
 
       <ul>
+        <li><a href="circuit.html#pytket.circuit.ConjugationBox.get_circuit">(pytket.circuit.ConjugationBox method)</a>
+</li>
         <li><a href="circuit.html#pytket.circuit.CustomGate.get_circuit">(pytket.circuit.CustomGate method)</a>
 </li>
         <li><a href="circuit.html#pytket.circuit.DiagonalBox.get_circuit">(pytket.circuit.DiagonalBox method)</a>
@@ -1460,6 +1470,8 @@ document.write(`
       <li><a href="backends.html#pytket.backends.Backend.get_compiled_circuit">get_compiled_circuit() (pytket.backends.Backend method)</a>
 </li>
       <li><a href="backends.html#pytket.backends.Backend.get_compiled_circuits">get_compiled_circuits() (pytket.backends.Backend method)</a>
+</li>
+      <li><a href="circuit.html#pytket.circuit.ConjugationBox.get_compute">get_compute() (pytket.circuit.ConjugationBox method)</a>
 </li>
       <li><a href="config.html#pytket.config.get_config_file_path">get_config_file_path() (in module pytket.config)</a>
 </li>
@@ -1583,6 +1595,8 @@ document.write(`
 </li>
       <li><a href="tableau.html#pytket.tableau.UnitaryTableau.get_row_product">get_row_product() (pytket.tableau.UnitaryTableau method)</a>
 </li>
+      <li><a href="passes.html#pytket.passes.PassSelector.get_scores">get_scores() (pytket.passes.PassSelector method)</a>
+</li>
       <li><a href="passes.html#pytket.passes.SequencePass.get_sequence">get_sequence() (pytket.passes.SequencePass method)</a>
 </li>
       <li><a href="backends.html#pytket.backends.backendresult.BackendResult.get_shots">get_shots() (pytket.backends.backendresult.BackendResult method)</a>
@@ -1600,6 +1614,8 @@ document.write(`
       <li><a href="circuit.html#pytket.circuit.ToffoliBox.get_strat">get_strat() (pytket.circuit.ToffoliBox method)</a>
 </li>
       <li><a href="tableau.html#pytket.tableau.UnitaryTableauBox.get_tableau">get_tableau() (pytket.tableau.UnitaryTableauBox method)</a>
+</li>
+      <li><a href="circuit.html#pytket.circuit.ConjugationBox.get_uncompute">get_uncompute() (pytket.circuit.ConjugationBox method)</a>
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.get_unitary">get_unitary() (pytket.circuit.Circuit method)</a>
 
@@ -1842,6 +1858,8 @@ document.write(`
         <li><a href="classical.html#module-pytket.circuit.logic_exp">pytket.circuit.logic_exp</a>
 </li>
         <li><a href="config.html#module-pytket.config">pytket.config</a>
+</li>
+        <li><a href="passes.html#module-pytket.passes">pytket.passes</a>
 </li>
         <li><a href="passes.html#module-pytket.passes.auto_rebase">pytket.passes.auto_rebase</a>
 </li>
@@ -2098,6 +2116,8 @@ document.write(`
         <li><a href="circuit.html#pytket.circuit.Op.params">(pytket.circuit.Op property)</a>
 </li>
       </ul></li>
+      <li><a href="passes.html#pytket.passes.PassSelector">PassSelector (class in pytket.passes)</a>
+</li>
       <li><a href="pauli.html#pytket.pauli.Pauli">Pauli (class in pytket.pauli)</a>
 </li>
       <li><a href="pauli.html#pytket.pauli.pauli_string_mult">pauli_string_mult() (in module pytket.pauli)</a>
@@ -2336,6 +2356,13 @@ document.write(`
 
       <ul>
         <li><a href="config.html#module-pytket.config">module</a>
+</li>
+      </ul></li>
+      <li>
+    pytket.passes
+
+      <ul>
+        <li><a href="passes.html#module-pytket.passes">module</a>
 </li>
       </ul></li>
       <li>
@@ -2742,10 +2769,10 @@ document.write(`
 </li>
       <li><a href="passes.html#pytket.passes.SquashTK1">SquashTK1() (in module pytket.passes)</a>
 </li>
-  </ul></td>
-  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="architecture.html#pytket.architecture.SquareGrid.squind_to_qind">squind_to_qind() (pytket.architecture.SquareGrid method)</a>
 </li>
+  </ul></td>
+  <td style="width: 33%; vertical-align: top;"><ul>
       <li><a href="circuit.html#pytket.circuit.StabiliserAssertionBox">StabiliserAssertionBox (class in pytket.circuit)</a>
 </li>
       <li><a href="backends.html#pytket.backends.backendresult.StoredResult.state">state (pytket.backends.backendresult.StoredResult attribute)</a>
@@ -2808,9 +2835,11 @@ document.write(`
 </li>
       <li><a href="circuit_class.html#pytket.circuit.Circuit.Sycamore">Sycamore() (pytket.circuit.Circuit method)</a>
 </li>
-      <li><a href="circuit_class.html#pytket.circuit.Circuit.symbol_substitution">symbol_substitution() (pytket.circuit.Circuit method)</a>
+      <li><a href="circuit.html#pytket.circuit.CircBox.symbol_substitution">symbol_substitution() (pytket.circuit.CircBox method)</a>
 
       <ul>
+        <li><a href="circuit_class.html#pytket.circuit.Circuit.symbol_substitution">(pytket.circuit.Circuit method)</a>
+</li>
         <li><a href="zx.html#pytket.zx.ZXDiagram.symbol_substitution">(pytket.zx.ZXDiagram method)</a>
 </li>
       </ul></li>
@@ -3202,8 +3231,8 @@ By Quantinuum
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=927b94d3fcb96560df09"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=927b94d3fcb96560df09"></script>
+  <script src="_static/scripts/bootstrap.js?digest=ac02cc09edc035673794"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794"></script>
 
   <footer class="bd-footer">
   </footer>
