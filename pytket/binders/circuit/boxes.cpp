@@ -264,9 +264,10 @@ void init_boxes(py::module &m) {
       "An operation defined as a pair of exponentials of a tensor of Pauli "
       "operations and their (possibly symbolic) phase parameters.")
       .def(
-          py::init([](const py::tket_custom::SequenceVec<Pauli> &paulis0, Expr t0,
-                      const py::tket_custom::SequenceVec<Pauli> &paulis1, Expr t1,
-                      CXConfigType config) {
+          py::init([](const py::tket_custom::SequenceVec<Pauli> &paulis0,
+                      Expr t0,
+                      const py::tket_custom::SequenceVec<Pauli> &paulis1,
+                      Expr t1, CXConfigType config) {
             return PauliExpPairBox(
                 SymPauliTensor(paulis0, t0), SymPauliTensor(paulis1, t1),
                 config);
@@ -299,11 +300,13 @@ void init_boxes(py::module &m) {
       "tensor of Pauli operations and their (possibly symbolic) phase "
       "parameters.")
       .def(
-          py::init([](const py::tket_custom::SequenceVec<std::pair<py::tket_custom::SequenceVec<Pauli>, Expr>>
+          py::init([](const py::tket_custom::SequenceVec<
+                          std::pair<py::tket_custom::SequenceVec<Pauli>, Expr>>
                           &pauli_gadgets,
                       CXConfigType config) {
             std::vector<SymPauliTensor> gadgets;
-            for (const std::pair<py::tket_custom::SequenceVec<Pauli>, Expr> &g : pauli_gadgets)
+            for (const std::pair<py::tket_custom::SequenceVec<Pauli>, Expr> &g :
+                 pauli_gadgets)
               gadgets.push_back(SymPauliTensor(g.first, g.second));
             return PauliExpCommutingSetBox(gadgets, config);
           }),

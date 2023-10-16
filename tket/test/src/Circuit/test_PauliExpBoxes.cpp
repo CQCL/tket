@@ -275,7 +275,8 @@ SCENARIO("Pauli gadgets", "[boxes]") {
 }
 SCENARIO("Pauli gadget pairs", "[boxes]") {
   GIVEN("Basis Circuit check") {
-    PauliExpPairBox pbox(SymPauliTensor({Pauli::X}, 1.0), SymPauliTensor({Pauli::I}, 0.0));
+    PauliExpPairBox pbox(
+        SymPauliTensor({Pauli::X}, 1.0), SymPauliTensor({Pauli::I}, 0.0));
     auto circ = pbox.to_circuit();
     circ->decompose_boxes_recursively();
     Circuit comp(1);
