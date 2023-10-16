@@ -98,7 +98,7 @@ add_executable(test-tket
     src/TokenSwapping/test_SwapsFromQubitMapping.cpp
     src/TokenSwapping/test_VariousPartialTsa.cpp
     src/Architecture/test_SubgraphMonomorphisms.cpp
-    src/test_PauliString2.cpp
+    src/test_PauliTensor.cpp
     src/Ops/test_ClassicalOps.cpp
     src/Ops/test_Expression.cpp
     src/Ops/test_Ops.cpp
