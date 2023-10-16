@@ -361,7 +361,7 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
 
       .def(
           "add_classicalexpbox_bit",
-          [](Circuit *circ, const py::object &exp,
+          [](Circuit *circ, const py::tket_custom::BitLogicExpression &exp,
              const py::tket_custom::SequenceVec<Bit> &outputs,
              const py::kwargs &kwargs) {
             auto inputs = exp.attr("all_inputs")().cast<std::set<Bit>>();
@@ -384,7 +384,8 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
             o_vec.insert(o_vec.begin(), inputs.begin(), inputs.end());
             return add_box_method<Bit>(
                 circ,
-                std::make_shared<ClassicalExpBox<py::object>>(
+                std::make_shared<
+                    ClassicalExpBox<py::tket_custom::LogicExpression>>(
                     n_i, n_io, n_o, exp),
                 o_vec, kwargs);
           },
@@ -395,7 +396,8 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           py::arg("expression"), py::arg("target"))
       .def(
           "add_classicalexpbox_register",
-          [](Circuit *circ, const py::object &exp,
+          [](Circuit *circ,
+             const py::tket_custom::BitRegisterLogicExpression &exp,
              const py::tket_custom::SequenceVec<Bit> &outputs,
              const py::kwargs &kwargs) {
             auto inputs =
@@ -423,7 +425,8 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
             o_vec.insert(o_vec.begin(), all_bits.begin(), all_bits.end());
             return add_box_method<Bit>(
                 circ,
-                std::make_shared<ClassicalExpBox<py::object>>(
+                std::make_shared<
+                    ClassicalExpBox<py::tket_custom::LogicExpression>>(
                     n_i, n_io, n_o, exp),
                 o_vec, kwargs);
           },

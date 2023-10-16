@@ -84,7 +84,7 @@ Variable = Union[Bit, BitRegister]  # variables in expression
 ArgType = Union["LogicExp", Variable, Constant]  # all possible arguments in expression
 
 
-@dataclass
+@dataclass(init=False)
 class LogicExp:
     """Logical expressions over Bit or BitRegister.
     Encoded as a tree of expressions"""
@@ -196,13 +196,6 @@ class LogicExp:
             return False
         return (self.op == other.op) and (self.args == other.args)
 
-    def __str__(self) -> str:
-        if len(self.args) == 1:
-            return f"({self.op.value} {self.args[0]})"
-        if len(self.args) == 2:
-            return f"({self.args[0]} {self.op.value} {self.args[1]})"
-        return ""
-
     def to_dict(self) -> Dict[str, Any]:
         """Output JSON serializable nested dictionary."""
         out: Dict[str, Any] = {"op": str(self.op)}
@@ -270,81 +263,72 @@ class LogicExp:
         return self._rename_args_recursive(cmap, renamed_regs)
 
 
-BitArgType = Union["BitLogicExp", Bit, Constant]
-RegArgType = Union["RegLogicExp", BitRegister, Constant]
+BitArgType = Union[LogicExp, Bit, Constant]
+RegArgType = Union[LogicExp, BitRegister, Constant]
 
 
 class BitLogicExp(LogicExp):
     """Expression acting only on Bit or Constant types."""
 
-    def __init__(self, op: Ops, args: List[ArgType]):
-        assert all(isinstance(a, (Bit, BitLogicExp, Constant)) for a in args)
-        assert all(a in (0, 1) for a in args if isinstance(a, Constant))
-        super().__init__(op, args)
-
-    def __and__(self, other: BitArgType) -> "BitLogicExp":
+    def __and__(self, other: BitArgType) -> "BitAnd":
         return BitAnd(self, other)
 
-    def __rand__(self, other: BitArgType) -> "BitLogicExp":
+    def __rand__(self, other: BitArgType) -> "BitAnd":
         return BitAnd(self, other)
 
-    def __or__(self, other: BitArgType) -> "BitLogicExp":
+    def __or__(self, other: BitArgType) -> "BitOr":
         return BitOr(self, other)
 
-    def __ror__(self, other: BitArgType) -> "BitLogicExp":
+    def __ror__(self, other: BitArgType) -> "BitOr":
         return BitOr(self, other)
 
-    def __xor__(self, other: BitArgType) -> "BitLogicExp":
+    def __xor__(self, other: BitArgType) -> "BitXor":
         return BitXor(self, other)
 
-    def __rxor__(self, other: BitArgType) -> "BitLogicExp":
+    def __rxor__(self, other: BitArgType) -> "BitXor":
         return BitXor(self, other)
 
 
 class RegLogicExp(LogicExp):
     """Expression acting only on BitRegister or Constant types."""
 
-    def __init__(self, op: Ops, args: List[ArgType]):
-        assert all(isinstance(a, (BitRegister, RegLogicExp, Constant)) for a in args)
-        super().__init__(op, args)
-
-    def __and__(self, other: RegArgType) -> "RegLogicExp":
+    def __and__(self, other: RegArgType) -> "RegAnd":
         return RegAnd(self, other)
 
-    def __rand__(self, other: RegArgType) -> "RegLogicExp":
+    def __rand__(self, other: RegArgType) -> "RegAnd":
         return RegAnd(self, other)
 
-    def __or__(self, other: RegArgType) -> "RegLogicExp":
+    def __or__(self, other: RegArgType) -> "RegOr":
         return RegOr(self, other)
 
-    def __ror__(self, other: RegArgType) -> "RegLogicExp":
+    def __ror__(self, other: RegArgType) -> "RegOr":
         return RegOr(self, other)
 
-    def __xor__(self, other: RegArgType) -> "RegLogicExp":
+    def __xor__(self, other: RegArgType) -> "RegXor":
         return RegXor(self, other)
 
-    def __rxor__(self, other: RegArgType) -> "RegLogicExp":
+    def __rxor__(self, other: RegArgType) -> "RegXor":
         return RegXor(self, other)
 
-    def __add__(self, other: RegArgType) -> "RegLogicExp":
+    def __add__(self, other: RegArgType) -> "RegAdd":
         return RegAdd(self, other)
 
-    def __sub__(self, other: RegArgType) -> "RegLogicExp":
+    def __sub__(self, other: RegArgType) -> "RegSub":
         return RegSub(self, other)
 
-    def __mul__(self, other: RegArgType) -> "RegLogicExp":
+    def __mul__(self, other: RegArgType) -> "RegMul":
         return RegMul(self, other)
 
-    def __floordiv__(self, other: RegArgType) -> "RegLogicExp":
+    def __floordiv__(self, other: RegArgType) -> "RegDiv":
         return RegDiv(self, other)
 
-    def __pow__(self, other: RegArgType) -> "RegLogicExp":
+    def __pow__(self, other: RegArgType) -> "RegPow":
         return RegPow(self, other)
 
-    def __lshift__(self, other: RegArgType) -> "RegLogicExp":
+    def __lshift__(self, other: RegArgType) -> "RegLsh":
         return RegLsh(self, other)
 
-    def __rshift__(self, other: RegArgType) -> "RegLogicExp":
+    def __rshift__(self, other: RegArgType) -> "RegRsh":
         return RegRsh(self, other)
 
 
@@ -388,12 +372,14 @@ class Xor(BinaryOp):
 
 class BitAnd(And, BitLogicExp):
     def __init__(self, arg1: BitArgType, arg2: BitArgType) -> None:
-        super().__init__(BitWiseOp.AND, [arg1, arg2])
+        self.op = BitWiseOp.AND
+        self.args = [arg1, arg2]
 
 
 class BitOr(Or, BitLogicExp):
     def __init__(self, arg1: BitArgType, arg2: BitArgType) -> None:
-        super().__init__(BitWiseOp.OR, [arg1, arg2])
+        self.op = BitWiseOp.OR
+        self.args = [arg1, arg2]
 
     def eval_vals(self) -> ArgType:
         rval: ArgType = super().eval_vals()
@@ -404,12 +390,14 @@ class BitOr(Or, BitLogicExp):
 
 class BitXor(Xor, BitLogicExp):
     def __init__(self, arg1: BitArgType, arg2: BitArgType) -> None:
-        super().__init__(BitWiseOp.XOR, [arg1, arg2])
+        self.op = BitWiseOp.XOR
+        self.args = [arg1, arg2]
 
 
 class BitNot(UnaryOp, BitLogicExp):
     def __init__(self, arg1: BitArgType) -> None:
-        super().__init__(BitWiseOp.NOT, [arg1])
+        self.op = BitWiseOp.NOT
+        self.args = [arg1]
 
     @staticmethod
     def _const_eval(args: List[Constant]) -> Constant:
@@ -418,68 +406,77 @@ class BitNot(UnaryOp, BitLogicExp):
 
 class RegAnd(And, RegLogicExp):
     def __init__(self, arg1: RegArgType, arg2: RegArgType) -> None:
-        super().__init__(RegWiseOp.AND, [arg1, arg2])
+        self.op = RegWiseOp.AND
+        self.args = [arg1, arg2]
 
 
 class RegOr(Or, RegLogicExp):
     def __init__(self, arg1: RegArgType, arg2: RegArgType) -> None:
-        super().__init__(RegWiseOp.OR, [arg1, arg2])
+        self.op = RegWiseOp.OR
+        self.args = [arg1, arg2]
 
 
 class RegXor(Xor, RegLogicExp):
     def __init__(self, arg1: RegArgType, arg2: RegArgType) -> None:
-        super().__init__(RegWiseOp.XOR, [arg1, arg2])
+        self.op = RegWiseOp.XOR
+        self.args = [arg1, arg2]
 
 
 class RegAdd(BinaryOp, RegLogicExp):
     def __init__(self, arg1: RegArgType, arg2: RegArgType) -> None:
-        super().__init__(RegWiseOp.ADD, [arg1, arg2])
+        self.op = RegWiseOp.ADD
+        self.args = [arg1, arg2]
 
 
 class RegSub(BinaryOp, RegLogicExp):
     def __init__(self, arg1: RegArgType, arg2: RegArgType) -> None:
-        super().__init__(RegWiseOp.SUB, [arg1, arg2])
+        self.op = RegWiseOp.SUB
+        self.args = [arg1, arg2]
 
 
 class RegMul(BinaryOp, RegLogicExp):
     def __init__(self, arg1: RegArgType, arg2: RegArgType) -> None:
-        super().__init__(RegWiseOp.MUL, [arg1, arg2])
+        self.op = RegWiseOp.MUL
+        self.args = [arg1, arg2]
 
 
 class RegDiv(BinaryOp, RegLogicExp):
     def __init__(self, arg1: RegArgType, arg2: RegArgType) -> None:
-        super().__init__(RegWiseOp.DIV, [arg1, arg2])
+        self.op = RegWiseOp.DIV
+        self.args = [arg1, arg2]
 
 
 class RegPow(BinaryOp, RegLogicExp):
     def __init__(self, arg1: RegArgType, arg2: RegArgType) -> None:
-        super().__init__(RegWiseOp.POW, [arg1, arg2])
+        self.op = RegWiseOp.POW
+        self.args = [arg1, arg2]
 
 
 class RegLsh(BinaryOp, RegLogicExp):
     def __init__(self, arg1: RegArgType, arg2: RegArgType) -> None:
-        super().__init__(RegWiseOp.LSH, [arg1, arg2])
+        self.op = RegWiseOp.LSH
+        self.args = [arg1, arg2]
 
 
 class RegNeg(UnaryOp, RegLogicExp):
     def __init__(self, arg1: RegArgType) -> None:
-        super().__init__(RegWiseOp.NEG, [arg1])
+        self.op = RegWiseOp.NEG
+        self.args = [arg1]
 
 
 class RegNot(UnaryOp, RegLogicExp):
     def __init__(self, arg1: RegArgType) -> None:
-        super().__init__(RegWiseOp.NOT, [arg1])
+        self.op = RegWiseOp.NOT
+        self.args = [arg1]
 
 
 class RegRsh(BinaryOp, RegLogicExp):
     def __init__(self, arg1: RegArgType, arg2: RegArgType) -> None:
-        super().__init__(RegWiseOp.RSH, [arg1, arg2])
+        self.op = RegWiseOp.RSH
+        self.args = [arg1, arg2]
 
 
 class PredicateExp(BinaryOp):
-    def __init__(self, op: Ops, arg1: ArgType, arg2: ArgType) -> None:
-        super().__init__(op, [arg1, arg2])
-
     """
     A binary predicate where the arguments are either
     Bits, BitRegisters, or Constants.
@@ -500,27 +497,32 @@ class Neq(PredicateExp):
 
 class BitEq(Eq, BitLogicExp):
     def __init__(self, arg1: BitArgType, arg2: BitArgType) -> None:
-        super().__init__(BitWiseOp.EQ, arg1, arg2)
+        self.op = BitWiseOp.EQ
+        self.args = [arg1, arg2]
 
 
 class BitNeq(Neq, BitLogicExp):
     def __init__(self, arg1: BitArgType, arg2: BitArgType) -> None:
-        super().__init__(BitWiseOp.NEQ, arg1, arg2)
+        self.op = BitWiseOp.NEQ
+        self.args = [arg1, arg2]
 
 
 class RegEq(Eq, RegLogicExp):
     def __init__(self, arg1: RegArgType, arg2: RegArgType) -> None:
-        super().__init__(RegWiseOp.EQ, arg1, arg2)
+        self.op = RegWiseOp.EQ
+        self.args = [arg1, arg2]
 
 
 class RegNeq(Neq, RegLogicExp):
     def __init__(self, arg1: RegArgType, arg2: RegArgType) -> None:
-        super().__init__(RegWiseOp.NEQ, arg1, arg2)
+        self.op = RegWiseOp.NEQ
+        self.args = [arg1, arg2]
 
 
 class RegLt(PredicateExp, RegLogicExp):
     def __init__(self, arg1: RegArgType, arg2: RegArgType) -> None:
-        super().__init__(RegWiseOp.LT, arg1, arg2)
+        self.op = RegWiseOp.LT
+        self.args = [arg1, arg2]
 
     @staticmethod
     def _const_eval(args: List[Constant]) -> Constant:
@@ -529,7 +531,8 @@ class RegLt(PredicateExp, RegLogicExp):
 
 class RegGt(PredicateExp, RegLogicExp):
     def __init__(self, arg1: RegArgType, arg2: RegArgType) -> None:
-        super().__init__(RegWiseOp.GT, arg1, arg2)
+        self.op = RegWiseOp.GT
+        self.args = [arg1, arg2]
 
     @staticmethod
     def _const_eval(args: List[Constant]) -> Constant:
@@ -538,7 +541,8 @@ class RegGt(PredicateExp, RegLogicExp):
 
 class RegLeq(PredicateExp, RegLogicExp):
     def __init__(self, arg1: RegArgType, arg2: RegArgType) -> None:
-        super().__init__(RegWiseOp.LEQ, arg1, arg2)
+        self.op = RegWiseOp.LEQ
+        self.args = [arg1, arg2]
 
     @staticmethod
     def _const_eval(args: List[Constant]) -> Constant:
@@ -547,7 +551,8 @@ class RegLeq(PredicateExp, RegLogicExp):
 
 class RegGeq(PredicateExp, RegLogicExp):
     def __init__(self, arg1: RegArgType, arg2: RegArgType) -> None:
-        super().__init__(RegWiseOp.GEQ, arg1, arg2)
+        self.op = RegWiseOp.GEQ
+        self.args = [arg1, arg2]
 
     @staticmethod
     def _const_eval(args: List[Constant]) -> Constant:
