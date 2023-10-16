@@ -341,7 +341,7 @@ std::set<unsigned> conflicting_indices(
   for (unsigned i = 0; i < min_size; ++i) {
     Pauli p = first.at(i);
     Pauli p2 = second.at(i);
-    if (p != Pauli::I && p2 != Pauli::I & p != p2) conflicts.insert(i);
+    if (p != Pauli::I && p2 != Pauli::I && p != p2) conflicts.insert(i);
   }
   return conflicts;
 }
@@ -701,7 +701,8 @@ CmplxSpMat to_sparse_matrix<QubitPauliMap>(
     const QubitPauliMap &paulis, const qubit_vector_t &qubits) {
   DensePauliMap matrix_paulis(qubits.size(), Pauli::I);
   std::map<Qubit, unsigned> index_map;
-  for (const Qubit &q : qubits) index_map.insert({q, index_map.size()});
+  for (const Qubit &q : qubits)
+    index_map.insert({q, (unsigned)index_map.size()});
   if (index_map.size() != qubits.size())
     throw std::logic_error(
         "Qubit list given to to_sparse_matrix contains repeats.");
