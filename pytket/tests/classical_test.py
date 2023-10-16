@@ -1418,12 +1418,9 @@ def test_flatten_registers_with_classical_exps() -> None:
 def test_box_equality_check() -> None:
     exp1 = Bit(2) & Bit(3)
     exp2 = Bit(1) & Bit(3)
-    exp3 = Bit(1)
     ceb1 = ClassicalExpBox(2, 0, 1, exp1)
     ceb2 = ClassicalExpBox(2, 0, 1, exp2)
-    ceb3 = ClassicalExpBox(1, 0, 1, exp3)
     assert ceb1 != ceb2
-    assert ceb1 != ceb3
     assert ceb1 == ceb1
     assert ceb1 == ClassicalExpBox(2, 0, 1, exp1)
 

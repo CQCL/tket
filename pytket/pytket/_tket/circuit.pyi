@@ -5,6 +5,7 @@ import numpy
 import pytket._tket.architecture
 import pytket._tket.pauli
 import pytket._tket.unit_id
+import pytket.circuit.logic_exp
 import pytket.wasm.wasm
 import sympy
 import typing
@@ -1299,7 +1300,7 @@ class Circuit:
         :param bits: List mapping the (default register) bits of `circuit` to the (default register) bits of `self`
         :return: the new :py:class:`Circuit`
         """
-    def add_classicalexpbox_bit(self, expression: typing.Any, target: typing.Sequence[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:
+    def add_classicalexpbox_bit(self, expression: pytket.circuit.logic_exp.BitLogicExp, target: typing.Sequence[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`ClassicalExpBox` over Bit to the circuit.
         
@@ -1307,7 +1308,7 @@ class Circuit:
         :param args: Indices of the qubits to append the box to
         :return: the new :py:class:`Circuit`
         """
-    def add_classicalexpbox_register(self, expression: typing.Any, target: typing.Sequence[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:
+    def add_classicalexpbox_register(self, expression: pytket.circuit.logic_exp.RegLogicExp, target: typing.Sequence[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:
         """
         Append a :py:class:`ClassicalExpBox` over BitRegister to the circuit.
         
@@ -2301,7 +2302,7 @@ class ClassicalExpBox(Op):
     """
     A box for holding classical expressions on Bits.
     """
-    def __init__(self, n_i: int, n_io: int, n_o: int, exp: typing.Any) -> None:
+    def __init__(self, n_i: int, n_io: int, n_o: int, exp: pytket.circuit.logic_exp.LogicExp) -> None:
         """
         Construct from signature (number of input, input/output, and output bits) and expression.
         """
@@ -2309,7 +2310,7 @@ class ClassicalExpBox(Op):
         """
         Check whether two ClassicalExpBox are equal in content
         """
-    def get_exp(self) -> typing.Any:
+    def get_exp(self) -> pytket.circuit.logic_exp.LogicExp:
         """
         :return: the classical expression
         """
