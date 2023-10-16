@@ -333,7 +333,7 @@ class QubitPauliTensor:
         The QubitPauliTensor's underlying :py:class:`QubitPauliString`
         """
     @string.setter
-    def string(self, arg0: QubitPauliString) -> None:
+    def string(self, arg1: QubitPauliString) -> None:
         ...
 def pauli_string_mult(qubitpaulistring1: QubitPauliString, qubitpaulistring2: QubitPauliString) -> tuple[QubitPauliString, complex]:
     """

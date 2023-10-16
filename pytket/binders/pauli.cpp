@@ -302,8 +302,8 @@ PYBIND11_MODULE(pauli, m) {
       .def("__setitem__", &SpCxPauliTensor::set<QubitPauliMap>)
       .def(py::self * py::self)
       .def(
-          "__mul__",
-          [](const Complex &c, const SpCxPauliTensor &qpt) {
+          "__rmul__",
+          [](const SpCxPauliTensor &qpt, const Complex &c) {
             return SpCxPauliTensor(qpt.string, qpt.coeff * c);
           },
           py::is_operator())
