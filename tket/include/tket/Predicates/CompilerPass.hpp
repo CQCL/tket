@@ -214,18 +214,40 @@ class SequencePass : public BasePass {
   std::vector<PassPtr> seq_;
 };
 
-/* Repeats a Pass until it returns `false` */
+/* Repeats a Pass until it returns `false`, or if `strict_check` is `true`
+ * until it stops modifying the circuit.
+ */
 class RepeatPass : public BasePass {
  public:
-  explicit RepeatPass(const PassPtr& pass);
+  explicit RepeatPass(const PassPtr& pass, bool strict_check = false);
   bool apply(
       CompilationUnit& c_unit, SafetyMode safe_mode = SafetyMode::Default,
       const PassCallback& before_apply = trivial_callback,
       const PassCallback& after_apply = trivial_callback) const override {
     before_apply(c_unit, this->get_config());
     bool success = false;
-    while (pass_->apply(c_unit, safe_mode, before_apply, after_apply))
-      success = true;
+    if (strict_check_) {
+      Circuit c0 = c_unit.get_circ_ref();
+      bool keep_going = true;
+      while (keep_going) {
+        bool rv = pass_->apply(c_unit, safe_mode, before_apply, after_apply);
+        if (rv) {
+          const Circuit& c1 = c_unit.get_circ_ref();
+          if (c0 == c1) {
+            keep_going = false;
+          } else {
+            keep_going = true;
+            success = true;
+            c0 = c1;
+          }
+        } else {
+          keep_going = false;
+        }
+      }
+    } else {
+      while (pass_->apply(c_unit, safe_mode, before_apply, after_apply))
+        success = true;
+    }
     after_apply(c_unit, this->get_config());
     return success;
   }
@@ -235,6 +257,7 @@ class RepeatPass : public BasePass {
 
  private:
   PassPtr pass_;
+  bool strict_check_;
 };
 
 class RepeatWithMetricPass : public BasePass {

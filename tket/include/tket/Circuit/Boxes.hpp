@@ -155,6 +155,8 @@ class CircBox : public Box {
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &sub_map) const override;
 
+  void symbol_substitution_in_place(const symbol_map_t &sub_map);
+
   SymSet free_symbols() const override;
 
   /**

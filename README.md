@@ -87,11 +87,23 @@ Chocolatey on Windows:
 choco install ninja ccache
 ```
 
-If installed, `ccache` is used automatically. `ninja` can be set as the default generator
-using the following command:
-```shell
-echo "tools.cmake.cmaketoolchain:generator = Ninja" >> $(conan config home)/global.conf
-```
+On MacOS/Linux:
+
+- If installed, `ccache` is used automatically
+- `ninja` must either be set as the default Cmake generator using the following command:
+  ```shell
+  echo "tools.cmake.cmaketoolchain:generator = Ninja" >> $(conan config home)/global.conf
+  ```
+  or be specified on a command-by-command basis by providing the argument
+  `-c tools.cmake.cmaketoolchain:generator=Ninja` to conan
+
+On Windows:
+- Set `ninja` as generator as described above (less reliable than the default `Visual Studio` generator)
+- `ccache` will be used automatically *only* when using `Ninja` or `Makefile` as the Cmake generator. It can
+  also be used with `Visual Studio` generators by setting the environment
+  variable `TKET_VSGEN_CCACHE_EXE` to the path of the `ccache` executable. **Note: this
+  must be the path to the actual binary, not a symlink or shim (as used by Chocolatey)**. If using Chocolatey
+  to install `ccache`, you can find the path to the binary using `ccache --shimgen-help`
 
 
 ### Building and testing the utility libraries

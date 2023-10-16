@@ -257,7 +257,9 @@ PYBIND11_MODULE(predicates, m) {
           py::init<const Circuit &>(),
           "Construct from a circuit, with no predicates.", py::arg("circuit"))
       .def(
-          py::init<const Circuit &, const std::vector<PredicatePtr> &>(),
+          py::init<
+              const Circuit &,
+              const py::tket_custom::SequenceVec<PredicatePtr> &>(),
           "Construct from a circuit and some required predicates.",
           py::arg("circuit"), py::arg("predicates"))
       .def(

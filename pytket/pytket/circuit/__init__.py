@@ -21,10 +21,9 @@ from typing import (
     Tuple,
     Type,
     Union,
-    cast,
     Callable,
-    List,
     Optional,
+    Sequence,
 )
 
 from pytket._tket.circuit import *
@@ -44,7 +43,7 @@ from .logic_exp import (
     BitWiseOp,
     RegLogicExp,
     RegWiseOp,
-    ArgType,
+    Constant,
     LogicExp,
     BinaryOp,
     Ops,
@@ -56,6 +55,8 @@ from .logic_exp import (
     reg_leq,
     reg_lt,
     reg_neq,
+    create_reg_logic_exp,
+    create_bit_logic_exp,
 )
 
 
@@ -63,10 +64,10 @@ def overload_add_wasm(
     self: Circuit,
     funcname: str,
     filehandler: wasm.WasmFileHandler,
-    list_i: List[int],
-    list_o: List[int],
-    args: Union[List[int], List[Bit]],
-    args_wasm: Optional[List[int]] = None,
+    list_i: Sequence[int],
+    list_o: Sequence[int],
+    args: Union[Sequence[int], Sequence[Bit]],
+    args_wasm: Optional[Sequence[int]] = None,
     **kwargs: Any,
 ) -> Circuit:
     """Add a classical function call from a wasm file to the circuit.
@@ -113,9 +114,9 @@ def overload_add_wasm_to_reg(
     self: Circuit,
     funcname: str,
     filehandler: wasm.WasmFileHandler,
-    list_i: List[BitRegister],
-    list_o: List[BitRegister],
-    args_wasm: Optional[List[int]] = None,
+    list_i: Sequence[BitRegister],
+    list_o: Sequence[BitRegister],
+    args_wasm: Optional[Sequence[int]] = None,
     **kwargs: Any,
 ) -> Circuit:
     """Add a classical function call from a wasm file to the circuit.
@@ -149,35 +150,45 @@ setattr(Circuit, "add_wasm_to_reg", overload_add_wasm_to_reg)
 
 # overload operators for Bit, BitRegister and expressions over these
 # such that the operation returns a LogicExp describing the operation
-cls_enum_pairs: Tuple[Tuple[Type, Union[Type[BitWiseOp], Type[RegWiseOp]]], ...] = (
-    (Bit, BitWiseOp),
-    (BitLogicExp, BitWiseOp),
-    (BitRegister, RegWiseOp),
-    (RegLogicExp, RegWiseOp),
-)
+
+BitArgType = Union[LogicExp, Bit, Constant]
+RegArgType = Union[LogicExp, BitRegister, Constant]
 
 
-def gen_binary_method(op: Ops) -> Callable[[ArgType, ArgType], BinaryOp]:
-    def logic_operation(self: ArgType, other: ArgType) -> BinaryOp:
-        return cast(Type[BinaryOp], LogicExp.factory(op))(self, other)
+def gen_binary_method_bit(
+    op: BitWiseOp,
+) -> Callable[[BitArgType, BitArgType], BitLogicExp]:
+    def logic_operation(self: BitArgType, other: BitArgType) -> BitLogicExp:
+        return create_bit_logic_exp(op, [self, other])
 
     return logic_operation
 
 
-for clas, enum in cls_enum_pairs:
-    setattr(clas, "__and__", gen_binary_method(enum.AND))
-    setattr(clas, "__rand__", gen_binary_method(enum.AND))
-    setattr(clas, "__or__", gen_binary_method(enum.OR))
-    setattr(clas, "__ror__", gen_binary_method(enum.OR))
-    setattr(clas, "__xor__", gen_binary_method(enum.XOR))
-    setattr(clas, "__rxor__", gen_binary_method(enum.XOR))
+def gen_binary_method_reg(
+    op: RegWiseOp,
+) -> Callable[[RegArgType, RegArgType], RegLogicExp]:
+    def logic_operation(self: RegArgType, other: RegArgType) -> RegLogicExp:
+        return create_reg_logic_exp(op, [self, other])
+
+    return logic_operation
 
 
-for clas in (BitRegister, RegLogicExp):
-    setattr(clas, "__add__", gen_binary_method(RegWiseOp.ADD))
-    setattr(clas, "__sub__", gen_binary_method(RegWiseOp.SUB))
-    setattr(clas, "__mul__", gen_binary_method(RegWiseOp.MUL))
-    setattr(clas, "__floordiv__", gen_binary_method(RegWiseOp.DIV))
-    setattr(clas, "__pow__", gen_binary_method(RegWiseOp.POW))
-    setattr(clas, "__lshift__", gen_binary_method(RegWiseOp.LSH))
-    setattr(clas, "__rshift__", gen_binary_method(RegWiseOp.RSH))
+setattr(Bit, "__and__", gen_binary_method_bit(BitWiseOp.AND))
+setattr(Bit, "__rand__", gen_binary_method_bit(BitWiseOp.AND))
+setattr(Bit, "__or__", gen_binary_method_bit(BitWiseOp.OR))
+setattr(Bit, "__ror__", gen_binary_method_bit(BitWiseOp.OR))
+setattr(Bit, "__xor__", gen_binary_method_bit(BitWiseOp.XOR))
+setattr(Bit, "__rxor__", gen_binary_method_bit(BitWiseOp.XOR))
+setattr(BitRegister, "__and__", gen_binary_method_reg(RegWiseOp.AND))
+setattr(BitRegister, "__rand__", gen_binary_method_reg(RegWiseOp.AND))
+setattr(BitRegister, "__or__", gen_binary_method_reg(RegWiseOp.OR))
+setattr(BitRegister, "__ror__", gen_binary_method_reg(RegWiseOp.OR))
+setattr(BitRegister, "__xor__", gen_binary_method_reg(RegWiseOp.XOR))
+setattr(BitRegister, "__rxor__", gen_binary_method_reg(RegWiseOp.XOR))
+setattr(BitRegister, "__add__", gen_binary_method_reg(RegWiseOp.ADD))
+setattr(BitRegister, "__sub__", gen_binary_method_reg(RegWiseOp.SUB))
+setattr(BitRegister, "__mul__", gen_binary_method_reg(RegWiseOp.MUL))
+setattr(BitRegister, "__floordiv__", gen_binary_method_reg(RegWiseOp.DIV))
+setattr(BitRegister, "__pow__", gen_binary_method_reg(RegWiseOp.POW))
+setattr(BitRegister, "__lshift__", gen_binary_method_reg(RegWiseOp.LSH))
+setattr(BitRegister, "__rshift__", gen_binary_method_reg(RegWiseOp.RSH))

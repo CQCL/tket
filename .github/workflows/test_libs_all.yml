@@ -10,7 +10,7 @@ jobs:
     name: test library
     strategy:
       matrix:
-        os: ['ubuntu-22.04', 'macos-12', 'windows-2022']
+        os: ['ubuntu-22.04', 'macos-12', 'windows-2022', 'macos-13-xlarge']
         lib: ['tklog', 'tkassert', 'tkrng', 'tktokenswap', 'tkwsm']
     runs-on: ${{ matrix.os }}
     steps:
@@ -21,49 +21,21 @@ jobs:
         python-version: '3.10'
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
-    - name: create profile
-      run: conan profile detect
-    - name: Fix conan profile for clang toolchain
-      if: matrix.os == 'macos-12'
+    - name: Set up conan
+      shell: bash
       run: |
-        PROFILE_PATH=`conan profile path default`
-        sed -i -e 's/gnu98/gnu17/' ${PROFILE_PATH}
-    - name: add remote
-      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
+        conan profile detect
+        DEFAULT_PROFILE_PATH=`conan profile path default`
+        PROFILE_PATH=./conan-profiles/${{ matrix.os }}
+        diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
+        cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
+        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
     - name: build ${{ matrix.lib }}
       run: conan create libs/${{ matrix.lib }} --build=missing -o boost/*:header_only=True
     - name: build ${{ matrix.lib }} tests
       run: conan create libs/${{ matrix.lib }}/test --build=missing -o boost/*:header_only=True --format json > test-${{ matrix.lib }}.json
     - name: run ${{ matrix.lib }} tests
       shell: bash
-      run: |
-        PKGPATH=`./rootpath test-${{ matrix.lib }}.json test-${{ matrix.lib }}`
-        cd ${PKGPATH}/bin
-        ./test-${{ matrix.lib }}
-  macos-m1:
-    name: test library (macos-m1)
-    runs-on: ['self-hosted', 'macOS', 'ARM64']
-    strategy:
-      matrix:
-        lib: ['tklog', 'tkassert', 'tkrng', 'tktokenswap', 'tkwsm']
-    steps:
-    - uses: actions/checkout@v4
-    - name: Install conan
-      uses: turtlebrowser/get-conan@v1.2
-    - name: create profile
-      shell: bash
-      run: conan profile detect --force
-    - name: Fix conan profile for clang toolchain
-      run: |
-        PROFILE_PATH=`conan profile path default`
-        sed -i -e 's/gnu98/gnu17/' ${PROFILE_PATH}
-    - name: add remote
-      run: conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force --index 0
-    - name: build ${{ matrix.lib }}
-      run: conan create libs/${{ matrix.lib }} --build=missing -o boost/*:header_only=True
-    - name: build ${{ matrix.lib }} tests
-      run: conan create libs/${{ matrix.lib }}/test --build=missing -o boost/*:header_only=True --format json > test-${{ matrix.lib }}.json
-    - name: run ${{ matrix.lib }} tests
       run: |
         PKGPATH=`./rootpath test-${{ matrix.lib }}.json test-${{ matrix.lib }}`
         cd ${PKGPATH}/bin

@@ -15,6 +15,7 @@
 #include "tket/Converters/PauliGadget.hpp"
 
 #include "tket/Circuit/CircUtils.hpp"
+#include "tket/Circuit/ConjugationBox.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
 
 namespace tket {
@@ -266,6 +267,7 @@ void append_pauli_gadget_pair(
   for (const Qubit &qb : just1) u.add_qubit(qb);
   for (const Qubit &qb : match) u.add_qubit(qb);
   for (const Qubit &qb : mismatch) u.add_qubit(qb);
+  Circuit v(u);
 
   /*
    * Step 2.i: Remove (almost) all matches by converting to Z basis and applying
@@ -396,11 +398,11 @@ void append_pauli_gadget_pair(
   /*
    * Step 3: Combine circuits to give final result
    */
-  circ.append(u);
-  append_single_pauli_gadget(circ, pauli0, angle0);
-  append_single_pauli_gadget(circ, pauli1, angle1);
-  Circuit udg = u.dagger();
-  circ.append(udg);
+  append_single_pauli_gadget(v, pauli0, angle0);
+  append_single_pauli_gadget(v, pauli1, angle1);
+  ConjugationBox cjbox(
+      std::make_shared<CircBox>(u), std::make_shared<CircBox>(v));
+  circ.add_box(cjbox, u.all_qubits());
 }
 
 }  // namespace tket

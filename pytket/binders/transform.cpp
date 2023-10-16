@@ -88,7 +88,10 @@ PYBIND11_MODULE(transform, m) {
           "Composes two Transforms together in sequence.\n\n>>> a >> "
           "b\n\nis equivalent to\n\n>>> sequence([a,b])")
       .def_static(
-          "sequence", &Transforms::sequence,
+          "sequence",
+          [](py::tket_custom::SequenceVec<Transform> &tvec) {
+            return Transforms::sequence(tvec);
+          },
           "Composes a list of Transforms together in sequence. The "
           ":py:meth:`apply` method will return ``True`` if ANY of "
           "the individual Transforms returned ``True``."
@@ -184,7 +187,11 @@ PYBIND11_MODULE(transform, m) {
           py::arg("arc"))
       .def_static(
           "DecomposeBoxes", &Transforms::decomp_boxes,
-          "Decomposes all Boxed operations into elementary gates.")
+          "Recursively replaces all boxes by their decomposition into circuits."
+          "\n\n:param excluded_types: box `OpType`s excluded from decomposition"
+          "\n:param excluded_opgroups: opgroups excluded from decomposition",
+          py::arg("excluded_types") = std::unordered_set<OpType>(),
+          py::arg("excluded_opgroups") = std::unordered_set<std::string>())
       .def_static(
           "DecomposeTK2",
           [](bool allow_swaps, const py::kwargs &kwargs) {

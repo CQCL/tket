@@ -46,6 +46,17 @@ namespace tket {
 
 const bit_vector_t no_bits;
 
+typedef std::variant<UnitID, Qubit, Bit> PyUnitID;
+UnitID to_cpp_unitid(const PyUnitID &py_unitid) {
+  if (holds_alternative<UnitID>(py_unitid)) {
+    return get<UnitID>(py_unitid);
+  }
+  if (holds_alternative<Qubit>(py_unitid)) {
+    return get<Qubit>(py_unitid);
+  }
+  return get<Bit>(py_unitid);
+}
+
 void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c);
 void init_circuit_add_classical_op(
     py::class_<Circuit, std::shared_ptr<Circuit>> &c);
@@ -350,8 +361,9 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
       // Circuit composition:
       .def(
           "add_circuit",
-          [](Circuit &circ, const Circuit &circ2, const std::vector<Qubit> &qbs,
-             const std::vector<Bit> &bits) {
+          [](Circuit &circ, const Circuit &circ2,
+             const py::tket_custom::SequenceVec<Qubit> &qbs,
+             const py::tket_custom::SequenceVec<Bit> &bits) {
             unit_map_t umap;
             unsigned i = 0;
             for (const Qubit &q : qbs) {
@@ -381,8 +393,8 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
       .def(
           "add_circuit",
           [](Circuit &circ, const Circuit &circ2,
-             const std::vector<unsigned> &qbs,
-             const std::vector<unsigned> &bits) {
+             const py::tket_custom::SequenceVec<unsigned> &qbs,
+             const py::tket_custom::SequenceVec<unsigned> &bits) {
             circ.append_qubits(circ2, qbs, bits);
             return &circ;
           },
@@ -458,7 +470,14 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "qubits to add",
           py::arg("number"))
       .def(
-          "rename_units", &Circuit::rename_units<UnitID, UnitID>,
+          "rename_units",
+          [](Circuit &self, const std::map<PyUnitID, PyUnitID> &py_map) {
+            std::map<UnitID, UnitID> cpp_map;
+            for (const auto &pair : py_map) {
+              cpp_map[to_cpp_unitid(pair.first)] = to_cpp_unitid(pair.second);
+            }
+            return self.rename_units(cpp_map);
+          },
           "Rename qubits and bits simultaneously according to the map "
           "of ids provided\n\n:param map: Dictionary from current ids "
           "to new ids",
@@ -619,9 +638,8 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           (void(Circuit::*)(const symbol_map_t &)) &
               Circuit::symbol_substitution,
           "In-place substitution for symbolic expressions; iterates "
-          "through each parameterised gate and performs the "
-          "substitution. This will not affect any symbols captured "
-          "within boxed operations.\n\n:param symbol_map: A map from "
+          "through each parameterised gate/box and performs the "
+          "substitution. \n\n:param symbol_map: A map from "
           "SymPy symbols to SymPy expressions",
           py::arg("symbol_map"))
       .def(
@@ -630,9 +648,8 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
               const std::map<Sym, double, SymEngine::RCPBasicKeyLess> &)) &
               Circuit::symbol_substitution,
           "In-place substitution for symbolic expressions; iterates "
-          "through each parameterised gate and performs the "
-          "substitution. This will not affect any symbols captured "
-          "within boxed operations.\n\n:param symbol_map: A map from "
+          "through each gate/box and performs the "
+          "substitution. \n\n:param symbol_map: A map from "
           "SymPy symbols to floating-point values",
           py::arg("symbol_map"))
       .def(

@@ -143,7 +143,7 @@ SCENARIO("Test state preparation") {
     c.add_op<unsigned>(OpType::H, {2});
     c.add_box(prep, {0, 1});
     REQUIRE(c.count_gates(OpType::Reset) == 0);
-    c.decompose_boxes();
+    c.decompose_boxes_recursively();
     REQUIRE(c.count_gates(OpType::Reset) == 2);
   }
 }

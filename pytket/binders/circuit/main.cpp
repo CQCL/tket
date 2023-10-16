@@ -39,6 +39,9 @@ using json = nlohmann::json;
 
 namespace tket {
 
+typedef py::tket_custom::SequenceVec<EdgeType> py_op_signature_t;
+typedef py::tket_custom::SequenceVec<UnitID> py_unit_vector_t;
+
 void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &);
 void init_classical(py::module &m);
 void init_boxes(py::module &m);
@@ -518,7 +521,7 @@ PYBIND11_MODULE(circuit, m) {
           "Create an :py:class:`Op` with given type and parameter")
       .def_static(
           "create",
-          [](OpType optype, const std::vector<Expr> &params) {
+          [](OpType optype, const py::tket_custom::SequenceVec<Expr> &params) {
             return get_op_ptr(optype, params);
           },
           "Create an :py:class:`Op` with given type and parameters")
@@ -585,7 +588,7 @@ PYBIND11_MODULE(circuit, m) {
       "A single quantum command in the circuit, defined by the Op, the "
       "qubits it acts on, and the op group name if any.")
       .def(
-          py::init<const Op_ptr, unit_vector_t>(),
+          py::init<const Op_ptr, py_unit_vector_t>(),
           "Construct from an operation and a vector of unit IDs", py::arg("op"),
           py::arg("args"))
       .def("__eq__", &py_equals<Command>)
@@ -613,7 +616,7 @@ PYBIND11_MODULE(circuit, m) {
   py::class_<MetaOp, std::shared_ptr<MetaOp>, Op>(
       m, "MetaOp", "Meta operation, such as input or output vertices.")
       .def(
-          py::init<OpType, op_signature_t, const std::string &>(),
+          py::init<OpType, py_op_signature_t, const std::string &>(),
           "Construct MetaOp with optype, signature and additional data string"
           "\n\n:param type: type for the meta op"
           "\n:param signature: signature for the op"
@@ -624,7 +627,7 @@ PYBIND11_MODULE(circuit, m) {
   py::class_<BarrierOp, std::shared_ptr<BarrierOp>, Op>(
       m, "BarrierOp", "Barrier operations.")
       .def(
-          py::init<op_signature_t, const std::string &>(),
+          py::init<py_op_signature_t, const std::string &>(),
           "Construct BarrierOp with signature and additional data string"
           "\n:param signature: signature for the op"
           "\n:param data: additional string stored in the op",

@@ -3317,5 +3317,28 @@ SCENARIO("Check Circuit::add_conditional_barrier.") {
   }
 }
 
+SCENARIO("Check decompose_boxes_recursively") {
+  Circuit circ(2);
+  Circuit c0(1);
+  Eigen::Matrix2cd m;
+  m << 0, -1, 1, 0;
+  Unitary1qBox u1box(m);
+  c0.add_box(u1box, {0});
+  CircBox cbox(c0);
+  circ.add_box(cbox, {0});
+  circ.add_box(u1box, {0});
+  Op_ptr op = get_op_ptr(OpType::X);
+  QControlBox qcbox(op);
+  circ.add_box(qcbox, {0, 1}, "opgroup1");
+  circ.add_box(qcbox, {0, 1}, "opgroup2");
+  circ.decompose_boxes_recursively({OpType::Unitary1qBox}, {"opgroup1"});
+  std::vector<Command> cmds = circ.get_commands();
+  REQUIRE(cmds.size() == 4);
+  REQUIRE(cmds[0].get_op_ptr()->get_type() == OpType::Unitary1qBox);
+  REQUIRE(cmds[1].get_op_ptr()->get_type() == OpType::Unitary1qBox);
+  REQUIRE(cmds[2].get_op_ptr()->get_type() == OpType::QControlBox);
+  REQUIRE(cmds[3].get_op_ptr()->get_type() == OpType::CX);
+}
+
 }  // namespace test_Circ
 }  // namespace tket

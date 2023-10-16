@@ -27,7 +27,7 @@ jobs:
     - name: Run build
       run: |
         docker start linux_build
-        docker exec -e PY_TAG="cp3${{ matrix.python3-version }}-cp3${{ matrix.python3-version }}" linux_build /bin/bash -c "/tket/.github/workflows/linuxbuildwheel"
+        docker exec -e PY_TAG="cp3${{ matrix.python3-version }}-cp3${{ matrix.python3-version }}" -e CONAN_PROFILE=linux-x86_64-gcc10-libstdc++ linux_build /bin/bash -c "/tket/.github/workflows/linuxbuildwheel"
         mkdir wheelhouse
         docker cp linux_build:/tket/pytket/audited/. wheelhouse/
     - uses: actions/upload-artifact@v3
@@ -55,7 +55,7 @@ jobs:
       run: |
         export DOCKER_HOST=unix://${HOME}/.docker/run/docker.sock
         docker start linux_build
-        docker exec -e PY_TAG="cp3${{ matrix.python3-version }}-cp3${{ matrix.python3-version }}" linux_build /bin/bash -c "/tket/.github/workflows/linuxbuildwheel"
+        docker exec -e PY_TAG="cp3${{ matrix.python3-version }}-cp3${{ matrix.python3-version }}" -e CONAN_PROFILE=linux-armv8-gcc10-libstdc++ linux_build /bin/bash -c "/tket/.github/workflows/linuxbuildwheel"
         mkdir wheelhouse
         docker cp linux_build:/tket/pytket/audited/. wheelhouse/
     - name: Remove container
@@ -91,11 +91,11 @@ jobs:
     - name: Set up conan
       run: |
         conan profile detect
+        DEFAULT_PROFILE_PATH=`conan profile path default`
+        PROFILE_PATH=./conan-profiles/macos-11
+        diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
+        cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
-    - name: Fix conan profile for clang toolchain
-      run: |
-        PROFILE_PATH=`conan profile path default`
-        sed -i -e 's/gnu98/gnu17/' ${PROFILE_PATH}
     - name: Build tket C++
       run: conan create tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
     - name: Build wheel
@@ -115,7 +115,7 @@ jobs:
 
   build_macos_M1_wheels:
     name: Build macos (M1) wheels
-    runs-on: ['self-hosted', 'macOS', 'ARM64']
+    runs-on: macos-13-xlarge
     strategy:
       matrix:
         python-version: ['3.9', '3.10', '3.11']
@@ -124,38 +124,40 @@ jobs:
       with:
         fetch-depth: '0'
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
-    - name: Uninstall conan
-      run: pip3 uninstall -y conan
-    - name: Build wheels
+    - name: Set up Python ${{ matrix.python-version }}
+      if: matrix.python-version != '3.9'
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Set up Python 3.9
+      if: matrix.python-version == '3.9'
+      run: brew install python@3.9
+    - name: Install conan
+      uses: turtlebrowser/get-conan@v1.2
+    - name: Set up conan
       run: |
-        eval "$(pyenv init -)"
-        pyenv shell tket-${{ matrix.python-version }}
-        python -m pip install -U conan
-        conan profile detect --force
-        PROFILE_PATH=`conan profile path default`
-        sed -i -e 's/gnu98/gnu17/' ${PROFILE_PATH}
-        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --force --index 0
-        conan remove -c 'tket/*'
-        conan create tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
-        conan remove -c "pybind11/*"
+        conan profile detect
+        DEFAULT_PROFILE_PATH=`conan profile path default`
+        PROFILE_PATH=./conan-profiles/macos-13-xlarge
+        diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
+        cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
+        conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
+    - name: Build tket C++
+      run: conan create tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf ""
+    - name: Build wheel
+      run: |
         conan create recipes/pybind11
         conan create recipes/pybind11_json/all --version 0.2.13
         cd pytket
         # Ensure wheels are compatible with MacOS 11.0 and later:
         export WHEEL_PLAT_NAME=macosx_11_0_arm64
-        conan remove -c "pytket/*"
-        python -m pip uninstall -y pytket
-        python -m pip install -U pip build delocate
-        rm -rf dist
-        python -m build
+        python${{ matrix.python-version }} -m pip install -U pip build delocate
+        python${{ matrix.python-version }} -m build
         delocate-wheel -v -w "$GITHUB_WORKSPACE/wheelhouse/" "dist/pytket-"*".whl"
     - uses: actions/upload-artifact@v3
       with:
         name: MacOS_M1_${{ matrix.python-version }}_wheel
         path: wheelhouse/
-    - name: Remove directory
-      if: always()
-      run: rm -rf wheelhouse
 
   build_Windows_wheels:
     name: Build Windows wheels
@@ -171,8 +173,13 @@ jobs:
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
     - name: Set up conan
+      shell: bash
       run: |
         conan profile detect
+        DEFAULT_PROFILE_PATH=`conan profile path default`
+        PROFILE_PATH=./conan-profiles/windows-2022
+        diff ${DEFAULT_PROFILE_PATH} ${PROFILE_PATH} || true
+        cp ${PROFILE_PATH} ${DEFAULT_PROFILE_PATH}
         conan remote add tket-libs https://quantinuumsw.jfrog.io/artifactory/api/conan/tket1-libs --index 0
     - name: Build tket
       run: conan create tket --user tket --channel stable --build=missing -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf `"`"
@@ -289,32 +296,35 @@ jobs:
   test_macos_M1_wheels:
     name: Test macos (M1) wheels
     needs: build_macos_M1_wheels
-    runs-on: ['self-hosted', 'macOS', 'ARM64']
+    runs-on: macos-13-xlarge
     strategy:
       matrix:
         python-version: ['3.9', '3.10', '3.11']
     steps:
-    - uses: actions/checkout@v4
+    - name: Set up Python ${{ matrix.python-version }}
+      if: matrix.python-version != '3.9'
+      uses: actions/setup-python@v4
       with:
-        path: tket
+        python-version: ${{ matrix.python-version }}
+    - name: Set up Python 3.9
+      if: matrix.python-version == '3.9'
+      run: brew install python@3.9
     - name: Download wheels
       uses: actions/download-artifact@v3
       with:
         name: MacOS_M1_${{ matrix.python-version }}_wheel
         path: wheelhouse/
-    - name: Install wheel and run tests
+    - uses: actions/checkout@v4
+      with:
+        path: tket
+    - name: Install wheel
       run: |
-        eval "$(pyenv init -)"
-        pyenv shell tket-${{ matrix.python-version }}
-        PKG_CONFIG_PATH="$(brew --prefix openblas)"/lib/pkgconfig pip install -U scipy
-        pip uninstall -y pytket
-        pip install $GITHUB_WORKSPACE/wheelhouse/pytket-*.whl
-        cd pytket/tests
-        pip install -r requirements.txt
-        pytest --ignore=simulator/
-    - name: Remove directory
-      if: always()
-      run: rm -rf wheelhouse
+        python${{ matrix.python-version }} -m pip install $GITHUB_WORKSPACE/wheelhouse/pytket-*.whl
+    - name: Run tests
+      run: |
+        cd tket/pytket/tests
+        python${{ matrix.python-version }} -m pip install -r requirements.txt
+        python${{ matrix.python-version }} -m pytest --ignore=simulator/
 
   test_Windows_wheels:
     name: Test Windows wheels

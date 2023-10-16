@@ -16,7 +16,7 @@ import json
 import pytest
 from jsonschema import RefResolver, Draft7Validator, ValidationError  # type: ignore
 from pathlib import Path
-from typing import Any, Dict, List, cast
+from typing import Any, Dict, List
 
 from sympy import Expr
 
@@ -46,7 +46,7 @@ from pytket.mapping import (
     MultiGateReorderRoutingMethod,
     BoxDecompositionRoutingMethod,
 )
-from useful_typedefs import ParamType  # type: ignore
+from pytket.circuit.named_types import ParamType
 
 
 def standard_pass_dict(content: Dict[str, Any]) -> Dict[str, Any]:
@@ -178,6 +178,13 @@ TWO_WAY_PARAM_PASSES = {
             "min_size": 10,
         }
     ),
+    "DecomposeBoxes": standard_pass_dict(
+        {
+            "name": "DecomposeBoxes",
+            "excluded_types": ["QControlBox"],
+            "excluded_opgroups": ["opgroup1"],
+        }
+    ),
     "EulerAngleReduction": standard_pass_dict(
         {
             "name": "EulerAngleReduction",
@@ -286,7 +293,6 @@ TWO_WAY_PARAM_PASSES = {
 TWO_WAY_NONPARAM_PASSES = [
     "CommuteThroughMultis",
     "DecomposeArbitrarilyControlledGates",
-    "DecomposeBoxes",
     "DecomposeMultiQubitsCX",
     "DecomposeSingleQubitsTK1",
     "RebaseTket",
@@ -658,9 +664,11 @@ def test_pass_deserialisation_only() -> None:
     dm_pass = DefaultMappingPass(arc)
     assert dm_pass.to_dict()["pass_class"] == "SequencePass"
     assert isinstance(dm_pass, SequencePass)
-    p_pass = cast(SequencePass, dm_pass.get_sequence()[0]).get_sequence()[0]
-    r_pass = cast(SequencePass, dm_pass.get_sequence()[0]).get_sequence()[1]
-    np_pass = cast(SequencePass, dm_pass.get_sequence()[0]).get_sequence()[2]
+    dm_pass_0 = dm_pass.get_sequence()[0]
+    assert isinstance(dm_pass_0, SequencePass)
+    p_pass = dm_pass_0.get_sequence()[0]
+    r_pass = dm_pass_0.get_sequence()[1]
+    np_pass = dm_pass_0.get_sequence()[2]
     d_pass = dm_pass.get_sequence()[1]
     assert d_pass.to_dict()["StandardPass"]["name"] == "DelayMeasures"
     assert d_pass.to_dict()["StandardPass"]["allow_partial"] == False

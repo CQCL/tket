@@ -17,13 +17,16 @@ from pytket.circuit import (
     Circuit,
     OpType,
     Op,
+    CircBox,
     PauliExpBox,
+    Unitary1qBox,
     Unitary2qBox,
     Node,
     Qubit,
     UnitID,
     Conditional,
 )
+from pytket.circuit.named_types import ParamType, RenameUnitsMap
 from pytket.pauli import Pauli
 from pytket.passes import (
     SequencePass,
@@ -35,6 +38,7 @@ from pytket.passes import (
     CommuteThroughMultis,
     RepeatPass,
     DecomposeMultiQubitsCX,
+    DecomposeBoxes,
     SquashTK1,
     SquashRzPhasedX,
     RepeatWithMetricPass,
@@ -83,10 +87,10 @@ from pytket.placement import Placement, GraphPlacement
 from pytket.transform import Transform, PauliSynthStrat, CXConfigType
 from pytket.passes import SynthesiseOQC
 import numpy as np
-from sympy import Symbol, Expr
-from typing import Dict, Any, List, cast, Union
+from sympy import Symbol
+from typing import Dict, Any, List
 
-from useful_typedefs import ParamType as Param  # type: ignore
+from pytket.circuit.named_types import ParamType as Param
 
 
 circ2 = Circuit(1)
@@ -853,20 +857,22 @@ def test_conditional_phase() -> None:
     rebase.apply(c)
     cond_cmds = [cmd for cmd in c.get_commands() if cmd.op.type == OpType.Conditional]
     assert len(cond_cmds) > 0
-    assert any(
-        cast(Conditional, cond_cmd.op).op.type not in target_gateset
-        for cond_cmd in cond_cmds
-    )
+    any_check_list = []
+    for cond_cmd in cond_cmds:
+        op = cond_cmd.op
+        assert isinstance(op, Conditional)
+        any_check_list.append(op.op.type not in target_gateset)
+    assert any(any_check_list)
 
 
 def test_flatten_relabel_pass() -> None:
     c = Circuit(3)
     c.H(1).H(2)
-    rename_map = dict()
+    rename_map: RenameUnitsMap = dict()
     rename_map[Qubit(0)] = Qubit("a", 4)
     rename_map[Qubit(1)] = Qubit("b", 7)
     rename_map[Qubit(2)] = Qubit("a", 2)
-    c.rename_units(cast(dict[UnitID, UnitID], rename_map))
+    c.rename_units(rename_map)
 
     cu = CompilationUnit(c)
     FlattenRelabelRegistersPass("a").apply(cu)
@@ -903,14 +909,10 @@ def test_PeepholeOptimise2Q() -> None:
 
 
 def test_rebase_custom_tk2() -> None:
-    def _tk1_to_phase(
-        a: Union[Expr, float], b: Union[Expr, float], c: Union[Expr, float]
-    ) -> Circuit:
+    def _tk1_to_phase(a: ParamType, b: ParamType, c: ParamType) -> Circuit:
         return Circuit(1).Rz(c, 0).Rx(b, 0).Rz(a, 0)
 
-    def _tk2_to_phase(
-        a: Union[Expr, float], b: Union[Expr, float], c: Union[Expr, float]
-    ) -> Circuit:
+    def _tk2_to_phase(a: ParamType, b: ParamType, c: ParamType) -> Circuit:
         return Circuit(2).ZZPhase(c, 0, 1).YYPhase(b, 0, 1).XXPhase(a, 0, 1)
 
     to_phase_gates = RebaseCustom(
@@ -936,6 +938,35 @@ def test_rebase_custom_tk2() -> None:
     assert coms[10].op.type == OpType.Rz
 
 
+def test_repeat_pass_strict_check() -> None:
+    # https://github.com/CQCL/tket/issues/985
+    c0 = Circuit(1).PhasedX(angle0=0.3, angle1=0.2, qubit=0)
+    squash_pass = SquashRzPhasedX()
+    c1 = c0.copy()
+    assert squash_pass.apply(c1)
+    assert c1 == c0
+    c2 = c0.copy()
+    assert not RepeatPass(squash_pass, strict_check=True).apply(c2)
+    assert c2 == c0
+
+
+def test_selectively_decompose_boxes() -> None:
+    circ = Circuit(1)
+    ubox = Unitary1qBox(np.array([[1, 0], [0, -1]]))
+    ucirc = Circuit(1).add_unitary1qbox(ubox, 0)
+    cbox1 = CircBox(ucirc)
+    circ.add_circbox(cbox1, [0])
+    circ.add_unitary1qbox(ubox, 0)
+    cbox2 = CircBox(Circuit(1).X(0))
+    circ.add_circbox(cbox2, [0], opgroup="group1")
+    assert DecomposeBoxes({OpType.Unitary1qBox}, {"group1"}).apply(circ)
+    cmds = circ.get_commands()
+    assert len(cmds) == 3
+    assert cmds[0].op.type == OpType.Unitary1qBox
+    assert cmds[1].op.type == OpType.Unitary1qBox
+    assert cmds[2].op.type == OpType.CircBox
+
+
 if __name__ == "__main__":
     test_predicate_generation()
     test_compilation_unit_generation()
@@ -954,3 +985,4 @@ if __name__ == "__main__":
     test_ZZPhaseToRz()
     test_flatten_relabel_pass()
     test_rebase_custom_tk2()
+    test_selectively_decompose_boxes()
