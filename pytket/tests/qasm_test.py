@@ -605,8 +605,8 @@ def test_scratch_bits_filtering() -> None:
     creg a[1];
     creg b[1];
     creg d[2];
-    creg {_TEMP_BIT_NAME}[100];
-    creg {_TEMP_BIT_NAME}_1[100];
+    creg {_TEMP_BIT_NAME}[32];
+    creg {_TEMP_BIT_NAME}_1[32];
     {_TEMP_BIT_NAME}[0] = (a[0] ^ b[0]);
     if({_TEMP_BIT_NAME}[0]==1) x q[0];
     """
