@@ -941,7 +941,13 @@ def circuit_from_qasm(
     encoding: str = "utf-8",
     maxwidth: int = 32,
 ) -> Circuit:
-    """A method to generate a tket Circuit from a qasm file"""
+    """A method to generate a tket Circuit from a qasm file.
+
+    :param input_file: path to qasm file; filename must have ``.qasm`` extension
+    :param encoding: file encoding (default utf-8)
+    :param maxwidth: maximum allowed width of classical registers (default 32)
+    :return: pytket circuit
+    """
     ext = os.path.splitext(input_file)[-1]
     if ext != ".qasm":
         raise TypeError("Can only convert .qasm files")
@@ -954,7 +960,12 @@ def circuit_from_qasm(
 
 
 def circuit_from_qasm_str(qasm_str: str, maxwidth: int = 32) -> Circuit:
-    """A method to generate a tket Circuit from a qasm str"""
+    """A method to generate a tket Circuit from a qasm string.
+
+    :param qasm_str: qasm string
+    :param maxwidth: maximum allowed width of classical registers (default 32)
+    :return: pytket circuit
+    """
     global g_parser
     set_parser(maxwidth=maxwidth)
     assert g_parser is not None
@@ -975,7 +986,14 @@ def circuit_from_qasm_wasm(
     encoding: str = "utf-8",
     maxwidth: int = 32,
 ) -> Circuit:
-    """A method to generate a tket Circuit from a qasm str and external WASM module."""
+    """A method to generate a tket Circuit from a qasm string and external WASM module.
+
+    :param input_file: path to qasm file; filename must have ``.qasm`` extension
+    :param wasm_file: path to WASM file containing functions used in qasm
+    :param encoding: encoding of qasm file (default utf-8)
+    :param maxwidth: maximum allowed width of classical registers (default 32)
+    :return: pytket circuit
+    """
     global g_parser
     wasm_module = WasmFileHandler(str(wasm_file))
     set_parser(maxwidth=maxwidth)
@@ -989,7 +1007,13 @@ def circuit_to_qasm(
 ) -> None:
     """Convert a Circuit to QASM and write it to a file.
 
-    Note that this will not account for implicit qubit permutations in the Circuit."""
+    Note that this will not account for implicit qubit permutations in the Circuit.
+
+    :param circ: pytket circuit
+    :param output_file: path to output qasm file
+    :param header: qasm header (default "qelib1")
+    :param maxwidth: maximum allowed width of classical registers (default 32)
+    """
     with open(output_file, "w") as out:
         circuit_to_qasm_io(circ, out, header=header, maxwidth=maxwidth)
 
@@ -1026,7 +1050,15 @@ def circuit_to_qasm_str(
 ) -> str:
     """Convert a Circuit to QASM and return the string.
 
-    Note that this will not account for implicit qubit permutations in the Circuit."""
+    Note that this will not account for implicit qubit permutations in the Circuit.
+
+    :param circ: pytket circuit
+    :param header: qasm header (default "qelib1")
+    :param output_file: path to output qasm file
+    :param include_gate_defs: optional set of gates to include
+    :param maxwidth: maximum allowed width of classical registers (default 32)
+    :return: qasm string
+    """
     if any(
         circ.n_gates_of_type(typ)
         for typ in (
@@ -1616,7 +1648,14 @@ def circuit_to_qasm_io(
 ) -> None:
     """Convert a Circuit to QASM and write to a text stream.
 
-    Note that this will not account for implicit qubit permutations in the Circuit."""
+    Note that this will not account for implicit qubit permutations in the Circuit.
+
+    :param circ: pytket circuit
+    :param stream_out: text stream to be written to
+    :param header: qasm header (default "qelib1")
+    :param include_gate_defs: optional set of gates to include
+    :param maxwidth: maximum allowed width of classical registers (default 32)
+    """
     stream_out.write(
         circuit_to_qasm_str(
             circ, header=header, include_gate_defs=include_gate_defs, maxwidth=maxwidth
