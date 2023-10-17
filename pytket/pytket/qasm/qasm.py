@@ -1079,6 +1079,11 @@ def circuit_to_qasm_str(
             "Complex classical gates not supported with qelib1: try converting with "
             "`header=hqslib1`"
         )
+    if any(bit.index[0] >= maxwidth for bit in circ.bits):
+        raise QASMUnsupportedError(
+            f"Circuit contains a classical register larger than {maxwidth}: try "
+            "setting the `maxwidth` parameter to a higher value."
+        )
     qasm_writer = QasmWriter(
         circ.qubits, circ.bits, header, include_gate_defs, maxwidth
     )
