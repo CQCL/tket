@@ -353,6 +353,12 @@ class CircuitTransformer(Transformer):
 
     def creg(self, tree: List[Token]) -> None:
         name, size = _extract_reg(tree[0])
+        if size > self.maxwidth:
+            raise QASMUnsupportedError(
+                f"Circuit contains classical register {name} of size {size} > "
+                f"{self.maxwidth}: try setting the `maxwidth` parameter to a larger "
+                "value."
+            )
         self.c_registers[Reg(name)] = size
 
     def qreg(self, tree: List[Token]) -> None:
