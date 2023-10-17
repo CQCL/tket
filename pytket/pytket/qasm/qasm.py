@@ -1007,6 +1007,8 @@ def circuit_to_qasm(
 ) -> None:
     """Convert a Circuit to QASM and write it to a file.
 
+    Classical bits in the pytket circuit must be singly-indexed.
+
     Note that this will not account for implicit qubit permutations in the Circuit.
 
     :param circ: pytket circuit
@@ -1049,6 +1051,8 @@ def circuit_to_qasm_str(
     maxwidth: int = 32,
 ) -> str:
     """Convert a Circuit to QASM and return the string.
+
+    Classical bits in the pytket circuit must be singly-indexed.
 
     Note that this will not account for implicit qubit permutations in the Circuit.
 
@@ -1647,6 +1651,8 @@ def circuit_to_qasm_io(
     maxwidth: int = 32,
 ) -> None:
     """Convert a Circuit to QASM and write to a text stream.
+
+    Classical bits in the pytket circuit must be singly-indexed.
 
     Note that this will not account for implicit qubit permutations in the Circuit.
 
