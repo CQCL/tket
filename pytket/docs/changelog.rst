@@ -1,6 +1,14 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Minor new features:
+
+* Add optional parameter to QASM conversion methods to set the maximum allowed
+  width of classical registers (default 32).
+
 1.21.0 (October 2023)
 ---------------------
 

@@ -605,8 +605,8 @@ def test_scratch_bits_filtering() -> None:
     creg a[1];
     creg b[1];
     creg d[2];
-    creg {_TEMP_BIT_NAME}[100];
-    creg {_TEMP_BIT_NAME}_1[100];
+    creg {_TEMP_BIT_NAME}[32];
+    creg {_TEMP_BIT_NAME}_1[32];
     {_TEMP_BIT_NAME}[0] = (a[0] ^ b[0]);
     if({_TEMP_BIT_NAME}[0]==1) x q[0];
     """
@@ -816,6 +816,25 @@ if(tk_SCRATCH_BIT[0]==1) x q[0];
 measure q[0] -> c0[0];
 """
     assert qasm == correct_qasm
+
+
+def test_max_reg_width() -> None:
+    circ_in = Circuit(1, 33)
+    circ_in.H(0).Measure(0, 32)
+    with pytest.raises(QASMUnsupportedError):
+        circuit_to_qasm_str(circ_in)
+    qasm_out = circuit_to_qasm_str(circ_in, maxwidth=64)
+    assert "measure q[0] -> c[32];" in qasm_out
+    qasm_in = """OPENQASM 2.0;
+include "qelib1.inc";
+qreg q[1];
+creg c[33];
+h q[0];
+measure q[0] -> c[32];"""
+    with pytest.raises(QASMUnsupportedError):
+        circuit_from_qasm_str(qasm_in)
+    circ_out = circuit_from_qasm_str(qasm_in, maxwidth=64)
+    assert len(circ_out.bits) == 33
 
 
 if __name__ == "__main__":
