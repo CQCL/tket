@@ -12,12 +12,14 @@ in {
     name = "binders";
     nativeBuildInputs = [
       super.cmake
-      super.pkgconfig
-      super.python3.pkgs.pybind11
+      super.pkg-config
+      super.python3Packages.pybind11
       super.pybind11_json
     ];
     cmakeFlags = [ "-DBUILD_SHARED_LIBS=ON" ];
-    propagatedBuildInputs = [ super.tket ];
+    propagatedBuildInputs = [
+      super.tket
+    ];
     unpackPhase = ''
       cp -r ${../pytket/binders} binders;
       cp ${../pytket/CMakeLists.txt} CMakeLists.txt;
@@ -77,7 +79,7 @@ in {
       export HOME=$TMPDIR;
       chmod 700 $TMPDIR/test_root/tests/qasm_test_files;
       cd test_root/tests;
-      python -m pytest
+      python -m pytest -s .
     '';
     doCheck = true;
   };

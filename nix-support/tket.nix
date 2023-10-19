@@ -21,7 +21,7 @@ in {
     nativeBuildInputs = [ super.cmake ];
     propagatedBuildInputs = super.tklibs
       ++ [ super.boost super.symengine super.eigen super.nlohmann_json ];
-    cmakeFlags = [ "-DBUILD_SHARED_LIBS=ON" ];
+    cmakeFlags = [ "-DBUILD_SHARED_LIBS=ON" "-DINSTALL_NAME_DIR=OFF" ];
     inherit postFixup;
   };
 

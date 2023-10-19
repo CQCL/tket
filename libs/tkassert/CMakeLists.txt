@@ -22,6 +22,8 @@ find_package(tklog CONFIG REQUIRED)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+option(INSTALL_NAME_DIR "Set the install name dir for the library to @loader_path for Apple targets" ON)
+
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
@@ -35,7 +37,7 @@ if(WIN32)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS yes)
 endif()
 
-if(APPLE)
+if(APPLE AND INSTALL_NAME_DIR)
     set(CMAKE_INSTALL_NAME_DIR "@loader_path")
     set(CMAKE_BUILD_WITH_INSTALL_NAME_DIR ON)
 endif()
