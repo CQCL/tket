@@ -90,61 +90,67 @@ class WasmFileHandler:
         # to use in pytket (because of types that are not i32)
         self._unsupported_function = []
 
-        mod_iter = iter(decode_module(self._wasm_file))
-        _, _ = next(mod_iter)
+        if self._check_file:
 
-        for _, cur_sec_data in mod_iter:
-            # read in list of function signatures
-            if cur_sec_data.id == SEC_TYPE:
-                for idx, entry in enumerate(cur_sec_data.payload.entries):
-                    function_signatures.append({})
-                    function_signatures[idx]["parameter_types"] = [
-                        self.type_lookup[pt] for pt in entry.param_types
-                    ]
-                    if entry.return_count > 1:
-                        if (
-                            isinstance(entry.return_type, list)
-                            and len(entry.return_type) == entry.return_count
-                        ):
-                            function_signatures[idx]["return_types"] = [
-                                self.type_lookup[rt] for rt in entry.return_type
-                            ]
-                        elif isinstance(entry.return_type, int):
+            mod_iter = iter(decode_module(self._wasm_file))
+            _, _ = next(mod_iter)
+
+            for _, cur_sec_data in mod_iter:
+                # read in list of function signatures
+                if cur_sec_data.id == SEC_TYPE:
+                    for idx, entry in enumerate(cur_sec_data.payload.entries):
+                        function_signatures.append({})
+                        function_signatures[idx]["parameter_types"] = [
+                            self.type_lookup[pt] for pt in entry.param_types
+                        ]
+                        if entry.return_count > 1:
+                            if (
+                                isinstance(entry.return_type, list)
+                                and len(entry.return_type) == entry.return_count
+                            ):
+                                function_signatures[idx]["return_types"] = [
+                                    self.type_lookup[rt] for rt in entry.return_type
+                                ]
+                            elif isinstance(entry.return_type, int):
+                                function_signatures[idx]["return_types"] = [
+                                    self.type_lookup[entry.return_type]
+                                ] * entry.return_count
+                            else:
+                                raise ValueError(
+                                    f"Only parameter and return values of "
+                                    + f"i{self._int_size} types are"
+                                    + f" allowed, found type: {entry.return_type}"
+                                )
+                        elif entry.return_count == 1:
                             function_signatures[idx]["return_types"] = [
                                 self.type_lookup[entry.return_type]
-                            ] * entry.return_count
+                            ]
                         else:
-                            raise ValueError(
-                                f"Only parameter and return values of "
-                                + f"i{self._int_size} types are"
-                                + f" allowed, found type: {entry.return_type}"
-                            )
-                    elif entry.return_count == 1:
-                        function_signatures[idx]["return_types"] = [
-                            self.type_lookup[entry.return_type]
-                        ]
-                    else:
-                        function_signatures[idx]["return_types"] = []
+                            function_signatures[idx]["return_types"] = []
 
-            # read in list of function names
-            elif cur_sec_data.id == SEC_EXPORT:
-                f_idx = 0
-                for _, entry in enumerate(cur_sec_data.payload.entries):
-                    if entry.kind == 0:
-                        f_name = entry.field_str.tobytes().decode()
-                        function_names.append(f_name)
-                        _func_lookup[f_name] = (f_idx, entry.index)
-                        f_idx += 1
+                # read in list of function names
+                elif cur_sec_data.id == SEC_EXPORT:
+                    f_idx = 0
+                    for _, entry in enumerate(cur_sec_data.payload.entries):
+                        if entry.kind == 0:
+                            f_name = entry.field_str.tobytes().decode()
+                            function_names.append(f_name)
+                            _func_lookup[f_name] = (f_idx, entry.index)
+                            f_idx += 1
 
-            # read in map of function signatures to function names
-            elif cur_sec_data.id == SEC_FUNCTION:
-                self._function_types = cur_sec_data.payload.types
+                # read in map of function signatures to function names
+                elif cur_sec_data.id == SEC_FUNCTION:
+                    self._function_types = cur_sec_data.payload.types
 
-        for x in function_names:
-            # check for only integer type in parameters and return values
-            supported_function = True
-            idx = _func_lookup[x][0]
-            if idx < len(self._function_types):
+            for x in function_names:
+
+                # check for only integer type in parameters and return values
+                supported_function = True
+                idx = _func_lookup[x][1]
+
+                if idx >= len(self._function_types):
+                    raise ValueError("invalid wasm file")
+
                 for t in function_signatures[self._function_types[idx]][
                     "parameter_types"
                 ]:
@@ -153,30 +159,32 @@ class WasmFileHandler:
                 for t in function_signatures[self._function_types[idx]]["return_types"]:
                     if t != self._int_type:
                         supported_function = False
-            else:
-                supported_function = False
 
-            if supported_function:
-                self._functions[x] = (
-                    len(
-                        function_signatures[self._function_types[idx]][
-                            "parameter_types"
-                        ]
-                    ),
-                    len(function_signatures[self._function_types[idx]]["return_types"]),
-                )
+                if supported_function:
+                    self._functions[x] = (
+                        len(
+                            function_signatures[self._function_types[idx]][
+                                "parameter_types"
+                            ]
+                        ),
+                        len(
+                            function_signatures[self._function_types[idx]][
+                                "return_types"
+                            ]
+                        ),
+                    )
 
-            if not supported_function:
-                self._unsupported_function.append(x)
+                if not supported_function:
+                    self._unsupported_function.append(x)
 
-        if "init" not in self._functions:
-            raise ValueError("wasm file needs to contain a function named 'init'")
+            if "init" not in self._functions:
+                raise ValueError("wasm file needs to contain a function named 'init'")
 
-        if self._functions["init"][0] != 0:
-            raise ValueError("init function should not have any parameter")
+            if self._functions["init"][0] != 0:
+                raise ValueError("init function should not have any parameter")
 
-        if self._functions["init"][1] != 0:
-            raise ValueError("init function should not have any results")
+            if self._functions["init"][1] != 0:
+                raise ValueError("init function should not have any results")
 
     def __str__(self) -> str:
         """str representation of the wasm file"""
@@ -184,20 +192,27 @@ class WasmFileHandler:
 
     def __repr__(self) -> str:
         """str representation of the contents of the wasm file"""
-        result = f"Functions in wasm file with the uid {self._wasmfileuid}:\n"
-        for x in self._functions:
-            result += f"function '{x}' with "
-            result += f"{self._functions[x][0]} i{self._int_size} parameter(s)"
-            result += (
-                f" and {self._functions[x][1]} i{self._int_size} return value(s)\n"
-            )
+        if self._check_file:
+            result = f"Functions in wasm file with the uid {self._wasmfileuid}:\n"
+            for x in self._functions:
+                result += f"function '{x}' with "
+                result += f"{self._functions[x][0]} i{self._int_size} parameter(s)"
+                result += (
+                    f" and {self._functions[x][1]} i{self._int_size} return value(s)\n"
+                )
 
-        for x in self._unsupported_function:
-            result += (
-                f"unsupported function with unvalid parameter or result type: '{x}' \n"
-            )
+            for x in self._unsupported_function:
+                result += (
+                    f"unsupported function with invalid "
+                    f"parameter or result type: '{x}' \n"
+                )
 
-        return result
+            return result
+        else:
+            raise ValueError(
+                """the content of the wasm file can only be printed if the
+wasm file was checked"""
+            )
 
     def check_function(
         self, function_name: str, number_of_parameters: int, number_of_returns: int
@@ -213,7 +228,7 @@ class WasmFileHandler:
         :type number_of_returns: int
         :return: true if the signature and the name of the function is correct"""
 
-        return (
+        return not self._check_file or (
             (function_name in self._functions)
             and (self._functions[function_name][0] == number_of_parameters)
             and (self._functions[function_name][1] == number_of_returns)

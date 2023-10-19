@@ -22,9 +22,10 @@ jobs:
     name: Check tket library version
     runs-on: ubuntu-22.04
     outputs:
+      tket_or_workflow_changed: ${{ steps.filter.outputs.tket_or_workflow }}
       tket_changed: ${{ steps.filter.outputs.tket }}
-      doxyfile_changed: ${{ steps.filter.outputs.doxyfile }}
-      pytket_changed: ${{ steps.filter.outputs.pytket }}
+      doxyfile_or_workflow_changed: ${{ steps.filter.outputs.doxyfile_or_workflow }}
+      pytket_or_workflow_changed: ${{ steps.filter.outputs.pytket_or_workflow }}
       tket_ver: ${{ steps.tket_ver.outputs.tket_ver }}
       tket_package_exists: ${{ steps.tket_package_exists.outputs.tket_package_exists }}
     steps:
@@ -39,11 +40,13 @@ jobs:
         filters: |
           tket:
             - '{tket/src/**,tket/include/**,tket/conanfile.py,tket/CMakeLists.txt,tket/cmake/**,tket/test/**,tket/proptest/**}'
+          tket_or_workflow:
+            - '{tket/src/**,tket/include/**,tket/conanfile.py,tket/CMakeLists.txt,tket/cmake/**,tket/test/**,tket/proptest/**}'
             - '.github/workflows/build_and_test.yml'
-          doxyfile:
+          doxyfile_or_workflow:
             - '{tket/Doxyfile}'
             - '.github/workflows/build_and_test.yml'
-          pytket:
+          pytket_or_workflow:
             - 'pytket/**'
             - '.github/workflows/build_and_test.yml'
     - name: Install conan
@@ -66,7 +69,7 @@ jobs:
   check_docs_tket:
     name: Check documentation build
     needs: check_changes
-    if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.doxyfile_changed == 'true'
+    if: needs.check_changes.outputs.tket_or_workflow_changed == 'true' || needs.check_changes.outputs.doxyfile_or_workflow_changed == 'true'
     runs-on: 'ubuntu-22.04'
     steps:
       - uses: actions/checkout@v4
@@ -78,7 +81,7 @@ jobs:
   check_format_tket:
     name: Check C++ code formatting
     needs: check_changes
-    if: needs.check_changes.outputs.tket_changed == 'true'
+    if: needs.check_changes.outputs.tket_or_workflow_changed == 'true'
     runs-on: 'macos-12'
     steps:
       - uses: actions/checkout@v4
@@ -91,7 +94,7 @@ jobs:
   build_test_tket:
     name: Build and test (tket)
     needs: check_changes
-    if: needs.check_changes.outputs.tket_changed == 'true'
+    if: needs.check_changes.outputs.tket_or_workflow_changed == 'true'
     strategy:
       matrix:
         os: ['ubuntu-22.04', 'macos-12', 'macos-13-xlarge']
@@ -145,7 +148,7 @@ jobs:
   build_test_tket_windows:
     name: Build and test (tket)
     needs: check_changes
-    if: needs.check_changes.outputs.tket_changed == 'true'
+    if: needs.check_changes.outputs.tket_or_workflow_changed == 'true'
     strategy:
       matrix:
         os: ['windows-2022']
@@ -219,7 +222,7 @@ jobs:
   build_test_tket_not_required:
     name: Build and test (tket)
     needs: check_changes
-    if: needs.check_changes.outputs.tket_changed != 'true'
+    if: needs.check_changes.outputs.tket_or_workflow_changed != 'true'
     strategy:
       matrix:
         os: ['ubuntu-22.04', 'macos-12', 'windows-2022', 'macos-13-xlarge']
@@ -230,7 +233,7 @@ jobs:
   build_test_pytket_ubuntu:
     name: Build and test pytket (ubuntu)
     needs: check_changes
-    if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true'
+    if: needs.check_changes.outputs.tket_or_workflow_changed == 'true' || needs.check_changes.outputs.pytket_or_workflow_changed == 'true'
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
@@ -329,7 +332,7 @@ jobs:
   build_test_pytket_macos:
     name: Build and test pytket (macos)
     needs: check_changes
-    if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true'
+    if: needs.check_changes.outputs.tket_or_workflow_changed == 'true' || needs.check_changes.outputs.pytket_or_workflow_changed == 'true'
     strategy:
       matrix:
         os: ['macos-12', 'macos-13-xlarge']
@@ -404,6 +407,7 @@ jobs:
       if: matrix.os == 'macos-12' && (github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch')
       run: |
         python${{ matrix.python-version }} -m pip install -U mypy
+        python${{ matrix.python-version }} -m pip install -U pybind11-stubgen
         cd pytket
         ./stub_generation/regenerate_stubs
         git diff --quiet pytket/_tket && echo "Stubs are up-to-date" || exit 1  # fail if stubs change after regeneration
@@ -416,14 +420,8 @@ jobs:
 
   build_test_pytket_windows:
     name: Build and test pytket (windows)
-    # I could not get ccache working for this build
-    # Building tket as a dynamic library currently fails with the Ninja and Makefiles Generators and ccache is set up is more difficult with the Visual Studio generator
-    # I tried to get ccache working with the Visual Studio generator using the suggestions here: https://github.com/ccache/ccache/wiki/MS-Visual-Studio#usage-with-cmake
-    # I was able to get ccache to wrap the compiler invocations, but all files are reported as uncacheable, due to "No input file"
-    # See https://ccache.dev/manual/4.8.2.html#_cache_statistics for more info on what that means. I myself haven't fully understood.
-    # Giving up for now
     needs: check_changes
-    if: needs.check_changes.outputs.tket_changed == 'true' || needs.check_changes.outputs.pytket_changed == 'true'
+    if: needs.check_changes.outputs.tket_or_workflow_changed == 'true' || needs.check_changes.outputs.pytket_or_workflow_changed == 'true'
     runs-on: windows-2022
     steps:
     - uses: actions/checkout@v4
@@ -448,10 +446,43 @@ jobs:
              $normalized_file = [IO.File]::ReadAllText($f) -replace "`r`n", "`n"
              [IO.File]::WriteAllText($f, $normalized_file)
              }
+    - name: ccache setup
+        # This is what hendrikmuhs/ccache-action does, but for windows (theirs is buggy on windows)
+      id: ccache-setup
+      run: |
+        choco upgrade ccache
+        $ccache_dir = ccache --get-config cache_dir
+        echo ccache_dir=$ccache_dir >> $env:GITHUB_OUTPUT
+        ccache --set-config=max_size='500M'
+        ccache --set-config=compression=true
+        ccache --set-config compiler_check=content
+        ccache --set-config namespace=WITH_TESTS
+        ccache -p
+    - name: Get current time
+      uses: josStorer/get-current-time@v2.1.1
+      id: current_time
+      with:
+        format: YYYYMMDDHHmmss
+    - name: ccache windows
+      uses: actions/cache@v3
+      with:
+        path: ${{ steps.ccache-setup.outputs.ccache_dir }}
+        key: tket-dynamic-visual-studio-windows-2022-${{ steps.current_time.outputs.formattedTime }}
+        restore-keys: |
+          tket-dynamic-visual-studio-windows-2022
+    - name: get ccache version
+      id: ccache-ver
+      shell: bash
+      run: |
+        ccache_ver=$(choco list -e ccache | grep "ccache" | grep -ioE '[0-9]+\.[0-9]+\.[0-9]+')
+        echo "Found ccache version ${ccache_ver}"
+        echo "ccache_ver=${ccache_ver}" >> $GITHUB_OUTPUT
     - name: Build tket
       if: needs.check_changes.outputs.tket_changed == 'true'
       run: |
-        conan create tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf `"`"
+        $env:TKET_VSGEN_CCACHE_EXE = 'C:\\ProgramData\\chocolatey\\lib\\ccache\\tools\\ccache-${{ steps.ccache-ver.outputs.ccache_ver }}-windows-x86_64\\ccache.exe' 
+        conan build tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
+        conan export-pkg tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf `"`"
     - name: Install tket
       if: needs.check_changes.outputs.tket_changed != 'true'
       run: conan install --requires tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
@@ -496,6 +527,10 @@ jobs:
       run: |
         conan remote login -p ${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }} tket-libs ${{ secrets.JFROG_ARTIFACTORY_USER_3 }}
         conan upload tket/${{ needs.check_changes.outputs.tket_ver }}@tket/stable -r=tket-libs
+    - name: ccache stats
+      run: |
+        ccache -s  #show stats
+        ccache -z  #show stats
 
   publish_pytket_coverage:
     name: Publish pytket coverage

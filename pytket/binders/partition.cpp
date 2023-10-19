@@ -18,6 +18,7 @@
 #include "binder_json.hpp"
 #include "binder_utils.hpp"
 #include "tket/MeasurementSetup/MeasurementReduction.hpp"
+#include "typecast.hpp"
 
 namespace py = pybind11;
 using json = nlohmann::json;
@@ -70,7 +71,7 @@ PYBIND11_MODULE(partition, m) {
       "MeasurementBitMap optionally inverts "
       "the result.")
       .def(
-          py::init<unsigned, std::vector<unsigned> &, bool>(),
+          py::init<unsigned, py::tket_custom::SequenceVec<unsigned> &, bool>(),
           "Constructs a MeasurementBitMap for some Clifford circuit "
           "index and bits, with an option to invert the result."
           "\n\n:param circ_index: which measurement circuit the "
@@ -151,7 +152,12 @@ PYBIND11_MODULE(partition, m) {
           "Construct MeasurementSetup instance from dict representation.");
 
   m.def(
-      "measurement_reduction", measurement_reduction,
+      "measurement_reduction",
+      [](const py::tket_custom::SequenceList<QubitPauliString> &strings,
+         PauliPartitionStrat strat, GraphColourMethod method,
+         CXConfigType cx_config) {
+        return measurement_reduction(strings, strat, method, cx_config);
+      },
       "Automatically performs graph colouring and diagonalisation to "
       "reduce measurements required for Pauli strings."
       "\n\n:param strings: A list of `QubitPauliString` objects to be "
@@ -166,7 +172,11 @@ PYBIND11_MODULE(partition, m) {
       py::arg("cx_config") = CXConfigType::Snake);
 
   m.def(
-      "term_sequence", term_sequence,
+      "term_sequence",
+      [](const py::tket_custom::SequenceList<QubitPauliString> &strings,
+         PauliPartitionStrat strat, GraphColourMethod method) {
+        return term_sequence(strings, strat, method);
+      },
       "Takes in a list of QubitPauliString objects and partitions them "
       "into mutually commuting sets according to some PauliPartitionStrat, "
       "then sequences in an arbitrary order."

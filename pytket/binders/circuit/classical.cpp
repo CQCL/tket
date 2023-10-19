@@ -32,8 +32,11 @@ using json = nlohmann::json;
 namespace tket {
 
 template <>
-json ClassicalExpBox<py::object>::to_json(const Op_ptr& op) {
-  const auto& box = static_cast<const ClassicalExpBox<py::object>&>(*op);
+json ClassicalExpBox<py::tket_custom::LogicExpression>::to_json(
+    const Op_ptr& op) {
+  const auto& box =
+      static_cast<const ClassicalExpBox<py::tket_custom::LogicExpression>&>(
+          *op);
   json j = core_box_json(box);
   j["n_i"] = box.get_n_i();
   j["n_io"] = box.get_n_io();
@@ -43,21 +46,24 @@ json ClassicalExpBox<py::object>::to_json(const Op_ptr& op) {
 }
 
 template <>
-Op_ptr ClassicalExpBox<py::object>::from_json(const json& j) {
+Op_ptr ClassicalExpBox<py::tket_custom::LogicExpression>::from_json(
+    const json& j) {
   py::module logic_exp = py::module::import("pytket.circuit.logic_exp");
-  ClassicalExpBox<py::object> box = ClassicalExpBox<py::object>(
-      j.at("n_i").get<unsigned>(), j.at("n_io").get<unsigned>(),
-      j.at("n_o").get<unsigned>(),
-      logic_exp.attr("LogicExp")
-          .attr("from_dict")(j.at("exp").get<py::dict>()));
+  ClassicalExpBox<py::tket_custom::LogicExpression> box =
+      ClassicalExpBox<py::tket_custom::LogicExpression>(
+          j.at("n_i").get<unsigned>(), j.at("n_io").get<unsigned>(),
+          j.at("n_o").get<unsigned>(),
+          logic_exp.attr("LogicExp")
+              .attr("from_dict")(j.at("exp").get<py::dict>()));
   return set_box_id(
       box,
       boost::lexical_cast<boost::uuids::uuid>(j.at("id").get<std::string>()));
 }
 
 bool registered_cexpbox = OpJsonFactory::register_method(
-    OpType::ClassicalExpBox, ClassicalExpBox<py::object>::from_json,
-    ClassicalExpBox<py::object>::to_json);
+    OpType::ClassicalExpBox,
+    ClassicalExpBox<py::tket_custom::LogicExpression>::from_json,
+    ClassicalExpBox<py::tket_custom::LogicExpression>::to_json);
 
 void init_classical(py::module& m) {
   py::class_<Conditional, std::shared_ptr<Conditional>, Op>(
@@ -95,7 +101,7 @@ void init_classical(py::module& m) {
       m, "SetBitsOp",
       "An operation to set the values of Bits to some constants.")
       .def(
-          py::init<const std::vector<bool>&>(),
+          py::init<const py::tket_custom::SequenceVec<bool>&>(),
           "Construct from a table of values.", py::arg("values"))
       .def_property_readonly(
           "values", &SetBitsOp::get_values, "The values to set bits to.");
@@ -124,28 +130,34 @@ void init_classical(py::module& m) {
       .def_property_readonly(
           "lower", &RangePredicateOp::lower, "Inclusive lower bound.");
   py::class_<
-      ClassicalExpBox<py::object>, std::shared_ptr<ClassicalExpBox<py::object>>,
-      Op>(
+      ClassicalExpBox<py::tket_custom::LogicExpression>,
+      std::shared_ptr<ClassicalExpBox<py::tket_custom::LogicExpression>>, Op>(
       m, "ClassicalExpBox", "A box for holding classical expressions on Bits.")
       .def(
-          py::init<unsigned, unsigned, unsigned, py::object>(),
+          py::init<
+              unsigned, unsigned, unsigned, py::tket_custom::LogicExpression>(),
           "Construct from signature (number of input, input/output, and output "
           "bits) and expression.",
           py::arg("n_i"), py::arg("n_io"), py::arg("n_o"), py::arg("exp"))
       .def(
-          "get_exp", &ClassicalExpBox<py::object>::get_exp,
+          "get_exp",
+          &ClassicalExpBox<py::tket_custom::LogicExpression>::get_exp,
           ":return: the classical expression")
       .def(
-          "get_n_i", &ClassicalExpBox<py::object>::get_n_i,
+          "get_n_i",
+          &ClassicalExpBox<py::tket_custom::LogicExpression>::get_n_i,
           ":return: the number of pure inputs to the box.")
       .def(
-          "get_n_io", &ClassicalExpBox<py::object>::get_n_io,
+          "get_n_io",
+          &ClassicalExpBox<py::tket_custom::LogicExpression>::get_n_io,
           ":return: the number of inputs/outputs to the box.")
       .def(
-          "get_n_o", &ClassicalExpBox<py::object>::get_n_o,
+          "get_n_o",
+          &ClassicalExpBox<py::tket_custom::LogicExpression>::get_n_o,
           ":return: the number of pure outputs from the box.")
       .def(
-          "content_equality", &ClassicalExpBox<py::object>::content_equality,
+          "content_equality",
+          &ClassicalExpBox<py::tket_custom::LogicExpression>::content_equality,
           "Check whether two ClassicalExpBox are equal in content");
   py::class_<WASMOp, std::shared_ptr<WASMOp>, ClassicalOp>(
       m, "WASMOp",
@@ -155,8 +167,9 @@ void init_classical(py::module& m) {
       "fixed-width integers).")
       .def(
           py::init<
-              unsigned, unsigned, std::vector<unsigned>, std::vector<unsigned>,
-              const std::string&, const std::string&>(),
+              unsigned, unsigned, py::tket_custom::SequenceVec<unsigned>,
+              py::tket_custom::SequenceVec<unsigned>, const std::string&,
+              const std::string&>(),
           "Construct from number of bits, bitwidths of inputs and outputs, "
           "function name and module id.",
           py::arg("num_bits"), py::arg("num_w"), py::arg("n_inputs"),

@@ -13,7 +13,7 @@
 # limitations under the License.
 
 from dataclasses import dataclass
-from typing import Any, ClassVar, Dict, Optional, Type, Iterator, cast
+from typing import Any, ClassVar, Dict, Optional, Type, Iterator
 import json
 from pathlib import Path
 
@@ -78,7 +78,7 @@ def test_sample_extconfig(pytket_config: PytketConfig) -> None:
 
     assert "tests_sample" in load_config_file().extensions
 
-    ext_config = cast(SampleExtConfig, SampleExtConfig.from_default_config_file())
+    ext_config = SampleExtConfig.from_default_config_file()
     assert ext_config.field1 == "foo"
     assert ext_config.field2 is None
 
@@ -87,5 +87,5 @@ def test_sample_extconfig(pytket_config: PytketConfig) -> None:
 
     ext_config.update_default_config_file()
 
-    new_ext_config = cast(SampleExtConfig, SampleExtConfig.from_default_config_file())
+    new_ext_config = SampleExtConfig.from_default_config_file()
     assert new_ext_config.field1 == "bar" and new_ext_config.field2 == 2

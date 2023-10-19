@@ -6,6 +6,14 @@ Unreleased
 
 Minor new features:
 
+* Add optional parameter to QASM conversion methods to set the maximum allowed
+  width of classical registers (default 32).
+
+1.21.0 (October 2023)
+---------------------
+
+Minor new features:
+
 * Add optional ``strict_check`` parameter to ``RepeatPass`` to force stopping when
   the circuit is unchanged.
 * Add optional parameters ``excluded_types`` and ``excluded_opgroups``
@@ -17,6 +25,8 @@ Minor new features:
 * Make ``SquashRzPhasedX`` pass always squash symbols.
 * Add in-place symbol_substition method for ``CircBox``
 * Add rendering support for 0-valued control-type gates.
+* Typing improvements
+* Make ``BitRegister`` and ``QubitRegister`` iterable
 
 Fixes:
 
