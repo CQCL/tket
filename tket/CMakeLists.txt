@@ -117,6 +117,9 @@ target_link_libraries(tket PRIVATE tkassert::tkassert)
 target_link_libraries(tket PRIVATE tkrng::tkrng)
 target_link_libraries(tket PRIVATE tktokenswap::tktokenswap)
 target_link_libraries(tket PRIVATE tkwsm::tkwsm)
+IF(APPLE)
+    target_link_libraries(tket PRIVATE "-flat_namespace")
+ENDIF()
 
 target_sources(tket
     PRIVATE

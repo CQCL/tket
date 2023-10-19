@@ -71,6 +71,9 @@ target_include_directories(tkwsm PUBLIC
 target_link_libraries(tkwsm PRIVATE tkassert::tkassert)
 target_link_libraries(tkwsm PRIVATE tkrng::tkrng)
 target_link_libraries(tkwsm PRIVATE Boost::headers)
+IF(APPLE)
+    target_link_libraries(tkwsm PRIVATE "-flat_namespace")
+ENDIF()
 
 target_sources(tkwsm
     PRIVATE

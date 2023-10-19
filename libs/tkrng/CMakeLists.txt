@@ -64,6 +64,9 @@ target_include_directories(tkrng PUBLIC
     $<INSTALL_INTERFACE:include/tkrng>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tkrng>)
 
+IF(APPLE)
+    target_link_libraries(tkrng PRIVATE "-flat_namespace")
+ENDIF()
 target_sources(tkrng
     PRIVATE src/RNG.cpp
     PUBLIC FILE_SET HEADERS

@@ -73,6 +73,10 @@ target_link_libraries(tktokenswap PRIVATE tkassert::tkassert)
 target_link_libraries(tktokenswap PRIVATE tkrng::tkrng)
 target_link_libraries(tktokenswap PRIVATE Boost::headers)
 
+IF(APPLE)
+    target_link_libraries(tktokenswap PRIVATE "-flat_namespace")
+ENDIF()
+
 target_sources(tktokenswap
     PRIVATE
         src/BestFullTsa.cpp

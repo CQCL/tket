@@ -64,6 +64,10 @@ target_include_directories(tklog PUBLIC
     $<INSTALL_INTERFACE:include/tklog>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tklog>)
 
+IF(APPLE)
+    target_link_libraries(tklog PRIVATE "-flat_namespace")
+ENDIF()
+
 target_sources(tklog
     PRIVATE src/TketLog.cpp
     PUBLIC FILE_SET HEADERS
