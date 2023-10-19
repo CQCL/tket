@@ -7,6 +7,15 @@ let
     builtins.elemAt versions 0
   else
     "0.0.0";
+
+  jsonschema-4180 = super.python3Packages.jsonschema.overrideAttrs (_: rec {
+    version = "4.18.0";
+    src = super.fetchPypi {
+      pname = "jsonschema";
+      version = "4.18.0";
+      hash = sha256:jK9bV6mQqY6bOYMu88s1wXb+MxQUJStuGyb9WGb4kaQ=;
+    };
+  });
 in {
   binders = super.stdenv.mkDerivation {
     name = "binders";
@@ -72,9 +81,8 @@ in {
       py
       hypothesis
       docker
-      jsonschema
       opt-einsum
-    ];
+    ] ++ [jsonschema-4180];
     checkPhase = ''
       export HOME=$TMPDIR;
       chmod 700 $TMPDIR/test_root/tests/qasm_test_files;
