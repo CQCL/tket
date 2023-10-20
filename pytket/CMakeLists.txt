@@ -92,6 +92,9 @@ list(APPEND lib_deps
 if (WIN32)
     list(APPEND lib_deps bcrypt) # For boost::uuid
 endif()
+if (APPLE)
+    list(APPEND lib_deps "-flat_namespace")
+endif()
 
 set(HEADER_FILES
         binders/include/add_gate.hpp

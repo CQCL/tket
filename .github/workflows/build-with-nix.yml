@@ -1,0 +1,20 @@
+name: build with nix
+on:
+  schedule:
+    # 01:00 every Sunday morning
+    - cron: '0 1 * * 0'
+  workflow_dispatch: {}
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+jobs:
+  build_and_test:
+    strategy:
+      matrix:
+        os: ['ubuntu-22.04', 'macos-12']
+    runs-on: ${{matrix.os}}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: cachix/install-nix-action@v20
+    - name: Build and test tket
+      run: nix flake check
