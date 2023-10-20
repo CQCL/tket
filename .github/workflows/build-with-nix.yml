@@ -18,7 +18,7 @@ jobs:
   build_and_test:
     strategy:
       matrix:
-        os: ['ubuntu-22.04', 'macos-13']
+        os: ['ubuntu-22.04', 'macos-13-xlarge']
     runs-on: ${{matrix.os}}
     steps:
     - uses: actions/checkout@v3

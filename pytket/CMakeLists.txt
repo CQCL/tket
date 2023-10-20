@@ -94,9 +94,6 @@ if (WIN32)
 endif()
 if (APPLE)
     list(APPEND lib_deps "-flat_namespace")
-    message("Is being detected as apple")
-else()
-    message("Is not being detected as apple")
 endif()
 
 set(HEADER_FILES
