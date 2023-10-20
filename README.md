@@ -126,9 +126,9 @@ building and testing pytket.
 
 ### Nix Support
 
-Tket and pytket are available as a Nix flake. See the [README](nix-support/README.md)
-in the `nix-support` directory for instructions on building and testing tket and pytket
-through Nix, and on how to use it within a Nix project.
+Tket and pytket are available as a Nix flake, with support for Linux and Apple Silicon systems.
+See the [README](nix-support/README.md) in the `nix-support` directory for instructions
+on building and testing tket and pytket through Nix, and on how to use it within a Nix project.
 
 ## API documentation
 

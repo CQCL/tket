@@ -25,7 +25,7 @@ jobs:
     - uses: cachix/install-nix-action@v23
     - uses: actions/cache@v3
       with:
-        path: /nix
-        key: nix-${{matrix.os}}
+        path: /nix/store
+        key: nix-store-${{matrix.os}}
     - name: Build and test tket
       run: nix flake check -L
