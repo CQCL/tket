@@ -110,6 +110,8 @@ static Eigen::MatrixXcd get_unitary_or_throw(
     CASE_RETURN_0P(CVdg)
     CASE_RETURN_0P(CSX)
     CASE_RETURN_0P(CSXdg)
+    CASE_RETURN_0P(CS)
+    CASE_RETURN_0P(CSdg)
     CASE_RETURN_0P(SWAP)
     CASE_RETURN_0P(ZZMax)
     CASE_RETURN_0P(Sycamore)

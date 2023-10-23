@@ -57,6 +57,8 @@ const std::map<OpType, OpTypeInfo>& optypeinfo() {
       {OpType::CVdg, {"CVdg", "$CV^\\dagger$", {}, doubleq}},
       {OpType::CSX, {"CSX", "CSX", {}, doubleq}},
       {OpType::CSXdg, {"CSXdg", "$CSX^\\dagger$", {}, doubleq}},
+      {OpType::CS, {"CS", "CS", {}, doubleq}},
+      {OpType::CSdg, {"CSdg", "$CS^\\dagger$", {}, doubleq}},
       {OpType::CRz, {"CRz", "CRz", {4}, doubleq}},
       {OpType::CRx, {"CRx", "CRx", {4}, doubleq}},
       {OpType::CRy, {"CRy", "CRy", {4}, doubleq}},
