@@ -390,10 +390,51 @@ def test_wasm_function_check_5() -> None:
     c = Circuit(20, 20)
     c0 = c.add_c_register("c0", 53)
     c1 = c.add_c_register("c1", 4)
+
+    with pytest.raises(ValueError):
+        c.add_wasm_to_reg("add_one", w, [c0], [c1])
+
+
+def test_wasm_function_check_6() -> None:
+    w = wasm.WasmFileHandler("testfile.wasm")
+    c = Circuit(20, 20)
+    c0 = c.add_c_register("c0", 32)
+    c1 = c.add_c_register("c1", 4)
+
+    c.add_wasm_to_reg("add_one", w, [c0], [c1])
+    assert c.depth() == 1
+
+
+def test_wasm_function_check_7() -> None:
+    w = wasm.WasmFileHandler("testfile.wasm", int_size=32)
+    c = Circuit(20, 20)
+    c0 = c.add_c_register("c0", 32)
+    c1 = c.add_c_register("c1", 4)
+
+    c.add_wasm_to_reg("add_one", w, [c0], [c1])
+    assert c.depth() == 1
+
+
+def test_wasm_function_check_8() -> None:
+    w = wasm.WasmFileHandler("testfile.wasm", int_size=64)
+    c = Circuit(20, 20)
+    c0 = c.add_c_register("c0", 32)
+    c1 = c.add_c_register("c1", 4)
+    c2 = c.add_c_register("c2", 5)
+
+    c.add_wasm_to_reg("add_something", w, [c0], [c1])
+    assert c.depth() == 1
+
+
+def test_wasm_function_check_9() -> None:
+    w = wasm.WasmFileHandler("testfile.wasm", int_size=64)
+    c = Circuit(20, 20)
+    c0 = c.add_c_register("c0", 53)
+    c1 = c.add_c_register("c1", 4)
     c2 = c.add_c_register("c2", 5)
 
     with pytest.raises(ValueError):
-        c.add_wasm_to_reg("add_one", w, [c0], [c1, c2])
+        c.add_wasm_to_reg("add_something", w, [c0], [c1])
 
 
 def test_add_wasm_to_reg() -> None:
