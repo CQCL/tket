@@ -23,6 +23,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - uses: cachix/install-nix-action@v23
-    - uses: DeterminateSystems/magix-nix-cache-action@v2
+    - uses: DeterminateSystems/magic-nix-cache-action@v2
     - name: Build and test tket
       run: nix flake check -L
