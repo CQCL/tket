@@ -132,6 +132,8 @@ NOPARAM_COMMANDS = {
     "cy": OpType.CY,
     "ch": OpType.CH,
     "csx": OpType.CSX,
+    "cs": OpType.CS,
+    "csdg": OpType.CSdg,
     "ccx": OpType.CCX,
     "c3x": OpType.CnX,
     "c4x": OpType.CnX,
