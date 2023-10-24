@@ -224,236 +224,244 @@ $(function() {
 <div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;          gate_name &lt;&lt; <a class="code" href="namespacetket.html#a218e50abe75d86161d9b5ef3e556877f">get_op_ptr</a>(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ac332d91d28127102474faa4c74e67044">OpType::SXdg</a>)-&gt;get_name(<span class="keyword">true</span>);</div>
 <div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;          <span class="keywordflow">break</span>;</div>
 <div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;        }</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;        <span class="keywordflow">default</span>: {</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;        }</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;      }</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;      <span class="keywordtype">int</span> control_index = line_ids.at(args.at(0));</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;      <span class="keywordtype">int</span> target_index = line_ids.at(args.at(1));</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;      lines.at(control_index).buffer &lt;&lt; <span class="stringliteral">&quot;\\ctrl{&quot;</span></div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;                                     &lt;&lt; target_index - control_index &lt;&lt; <span class="stringliteral">&quot;} &amp; &quot;</span>;</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;      lines.at(control_index).depth++;</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;      lines.at(target_index).buffer &lt;&lt; <span class="stringliteral">&quot;\\gate{\\text{&quot;</span> &lt;&lt; gate_name.str()</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;                                    &lt;&lt; <span class="stringliteral">&quot;}} &amp; &quot;</span>;</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;      lines.at(target_index).depth++;</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;      <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    }</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    <span class="keywordflow">case</span> <a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a833e36d1a5a93dedb10c85f50ced9ce7">OpType::CX</a>: {</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;      <span class="keywordtype">int</span> control_index = line_ids.at(args.at(0));</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;      <span class="keywordtype">int</span> target_index = line_ids.at(args.at(1));</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;      lines.at(control_index).buffer &lt;&lt; <span class="stringliteral">&quot;\\ctrl{&quot;</span></div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;                                     &lt;&lt; target_index - control_index &lt;&lt; <span class="stringliteral">&quot;} &amp; &quot;</span>;</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;      lines.at(control_index).depth++;</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;      lines.at(target_index).buffer &lt;&lt; <span class="stringliteral">&quot;\\targ{} &amp; &quot;</span>;</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;      lines.at(target_index).depth++;</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;      <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;    }</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;    <span class="keywordflow">case</span> <a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a928568b84963ceb76aaaa2cae9afdbfa">OpType::CZ</a>: {</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;      <span class="keywordtype">int</span> control_index = line_ids.at(args.at(0));</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;      <span class="keywordtype">int</span> target_index = line_ids.at(args.at(1));</div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;      lines.at(control_index).buffer &lt;&lt; <span class="stringliteral">&quot;\\ctrl{&quot;</span></div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;                                     &lt;&lt; target_index - control_index &lt;&lt; <span class="stringliteral">&quot;} &amp; &quot;</span>;</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;      lines.at(control_index).depth++;</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;      lines.at(target_index).buffer &lt;&lt; <span class="stringliteral">&quot;\\control{} &amp; &quot;</span>;</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;      lines.at(target_index).depth++;</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;      <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;    }</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;    <span class="keywordflow">case</span> <a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a0cbbe0321e0c40dfa77a159ef6bfad6b">OpType::Measure</a>: {</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;      <span class="keywordtype">int</span> qb_index = line_ids.at(args.at(0));</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;      <span class="keywordtype">int</span> cb_index = line_ids.at(args.at(1));</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;      lines.at(qb_index).buffer &lt;&lt; <span class="stringliteral">&quot;\\meter{} \\vcw{&quot;</span> &lt;&lt; cb_index - qb_index</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;                                &lt;&lt; <span class="stringliteral">&quot;} &amp; &quot;</span>;</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;      lines.at(qb_index).depth++;</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;      lines.at(cb_index).buffer &lt;&lt; <span class="stringliteral">&quot;\\cw &amp; &quot;</span>;</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;      lines.at(cb_index).depth++;</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;      <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;    }</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;    <span class="keywordflow">case</span> <a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a2b31634e3cfef1bfdd7d0d2cdfdc3f9d">OpType::Collapse</a>: {</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;      <span class="keywordtype">int</span> qb_index = line_ids.at(args.at(0));</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;      lines.at(qb_index).buffer &lt;&lt; <span class="stringliteral">&quot;\\meter{} &amp; &quot;</span>;</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;        <span class="keywordflow">case</span> <a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a8d7e99c73cd5a10adaaf4c9f9a520368">OpType::CS</a>: {</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;          gate_name &lt;&lt; <a class="code" href="namespacetket.html#a218e50abe75d86161d9b5ef3e556877f">get_op_ptr</a>(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5dbc98dcc983a70728bd082d1a47546e">OpType::S</a>)-&gt;get_name(<span class="keyword">true</span>);</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;          <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;        }</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;        <span class="keywordflow">case</span> <a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a51e429d094741de84d87c7571c3dd603">OpType::CSdg</a>: {</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;          gate_name &lt;&lt; <a class="code" href="namespacetket.html#a218e50abe75d86161d9b5ef3e556877f">get_op_ptr</a>(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a045a4026bb27931de3a4ad5e8c368659">OpType::Sdg</a>)-&gt;get_name(<span class="keyword">true</span>);</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;          <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;        }</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;        <span class="keywordflow">default</span>: {</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;        }</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;      }</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;      <span class="keywordtype">int</span> control_index = line_ids.at(args.at(0));</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;      <span class="keywordtype">int</span> target_index = line_ids.at(args.at(1));</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;      lines.at(control_index).buffer &lt;&lt; <span class="stringliteral">&quot;\\ctrl{&quot;</span></div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;                                     &lt;&lt; target_index - control_index &lt;&lt; <span class="stringliteral">&quot;} &amp; &quot;</span>;</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;      lines.at(control_index).depth++;</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;      lines.at(target_index).buffer &lt;&lt; <span class="stringliteral">&quot;\\gate{\\text{&quot;</span> &lt;&lt; gate_name.str()</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;                                    &lt;&lt; <span class="stringliteral">&quot;}} &amp; &quot;</span>;</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;      lines.at(target_index).depth++;</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;      <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;    }</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;    <span class="keywordflow">case</span> <a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a833e36d1a5a93dedb10c85f50ced9ce7">OpType::CX</a>: {</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;      <span class="keywordtype">int</span> control_index = line_ids.at(args.at(0));</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;      <span class="keywordtype">int</span> target_index = line_ids.at(args.at(1));</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;      lines.at(control_index).buffer &lt;&lt; <span class="stringliteral">&quot;\\ctrl{&quot;</span></div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;                                     &lt;&lt; target_index - control_index &lt;&lt; <span class="stringliteral">&quot;} &amp; &quot;</span>;</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;      lines.at(control_index).depth++;</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;      lines.at(target_index).buffer &lt;&lt; <span class="stringliteral">&quot;\\targ{} &amp; &quot;</span>;</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;      lines.at(target_index).depth++;</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;      <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;    }</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;    <span class="keywordflow">case</span> <a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a928568b84963ceb76aaaa2cae9afdbfa">OpType::CZ</a>: {</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;      <span class="keywordtype">int</span> control_index = line_ids.at(args.at(0));</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;      <span class="keywordtype">int</span> target_index = line_ids.at(args.at(1));</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;      lines.at(control_index).buffer &lt;&lt; <span class="stringliteral">&quot;\\ctrl{&quot;</span></div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;                                     &lt;&lt; target_index - control_index &lt;&lt; <span class="stringliteral">&quot;} &amp; &quot;</span>;</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;      lines.at(control_index).depth++;</div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;      lines.at(target_index).buffer &lt;&lt; <span class="stringliteral">&quot;\\control{} &amp; &quot;</span>;</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;      lines.at(target_index).depth++;</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;      <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;    }</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;    <span class="keywordflow">case</span> <a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a0cbbe0321e0c40dfa77a159ef6bfad6b">OpType::Measure</a>: {</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;      <span class="keywordtype">int</span> qb_index = line_ids.at(args.at(0));</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;      <span class="keywordtype">int</span> cb_index = line_ids.at(args.at(1));</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;      lines.at(qb_index).buffer &lt;&lt; <span class="stringliteral">&quot;\\meter{} \\vcw{&quot;</span> &lt;&lt; cb_index - qb_index</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;                                &lt;&lt; <span class="stringliteral">&quot;} &amp; &quot;</span>;</div>
 <div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;      lines.at(qb_index).depth++;</div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;      <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;    }</div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;    <span class="keywordflow">case</span> <a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a46fc23bc4e4d57e5469a39658a6dd3e8">OpType::SWAP</a>: {</div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;      <span class="keywordtype">int</span> qb0_index = line_ids.at(args.at(0));</div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;      <span class="keywordtype">int</span> qb1_index = line_ids.at(args.at(1));</div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;      lines.at(qb0_index).buffer &lt;&lt; <span class="stringliteral">&quot;\\swap{&quot;</span> &lt;&lt; qb1_index - qb0_index</div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;                                 &lt;&lt; <span class="stringliteral">&quot;} &amp; &quot;</span>;</div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;      lines.at(qb0_index).depth++;</div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;      lines.at(qb1_index).buffer &lt;&lt; <span class="stringliteral">&quot;\\targX{} &amp; &quot;</span>;</div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;      lines.at(qb1_index).depth++;</div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;      <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;    }</div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;    <span class="keywordflow">case</span> <a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a0bdf2d4fd224397ee888ae5ed535ed6c">OpType::QControlBox</a>: {</div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;      <span class="keyword">const</span> <a class="code" href="classtket_1_1QControlBox.html">QControlBox</a>&amp; box = <span class="keyword">static_cast&lt;</span><span class="keyword">const </span><a class="code" href="classtket_1_1QControlBox.html">QControlBox</a>&amp;<span class="keyword">&gt;</span>(*op);</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;      <span class="keywordtype">unsigned</span> n_controls = box.<a class="code" href="classtket_1_1QControlBox.html#aaca49814d117fa56cbdc537c1b8dc04f">get_n_controls</a>();</div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;      <span class="keywordtype">int</span> max_index = 0;</div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;      <a class="code" href="namespacetket.html#ab5d7d59fd0591d97f8e298235db6ee27">unit_vector_t</a> target_args;</div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;      <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = n_controls; i &lt; args.size(); ++i) {</div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;        target_args.push_back(args[i]);</div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;        <span class="keywordtype">int</span> index = line_ids.at(args[i]);</div>
-<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;        <span class="keywordflow">if</span> (index &gt; max_index) max_index = index;</div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;      }</div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;      <a class="code" href="namespacetket.html#a3a0240d1e7ccf9f2730f0ed111f171ca">add_latex_for_command</a>(context, <a class="code" href="classtket_1_1Command.html">Command</a>(box.<a class="code" href="classtket_1_1QControlBox.html#a14ea670ed362b45a0490e203874f5852">get_op</a>(), target_args));</div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;      <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; n_controls; ++i) {</div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;        <span class="keywordtype">int</span> index = line_ids.at(args[i]);</div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;        lines.at(index).buffer &lt;&lt; <span class="stringliteral">&quot;\\ctrl{&quot;</span> &lt;&lt; max_index - index &lt;&lt; <span class="stringliteral">&quot;} &amp; &quot;</span>;</div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;        lines.at(index).depth++;</div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;      }</div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;      <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;    }</div>
-<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;    <span class="keywordflow">case</span> <a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a9d3afea73e90192d96dda8d38c87a4fe">OpType::Conditional</a>: {</div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;      <span class="keyword">const</span> <a class="code" href="classtket_1_1Conditional.html">Conditional</a>&amp; box = <span class="keyword">static_cast&lt;</span><span class="keyword">const </span><a class="code" href="classtket_1_1Conditional.html">Conditional</a>&amp;<span class="keyword">&gt;</span>(*op);</div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;      <span class="keywordtype">unsigned</span> n_controls = box.<a class="code" href="classtket_1_1Conditional.html#a1ab7bba4e542a62c10fb3928a58488d6">get_width</a>();</div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;      <span class="keywordtype">int</span> max_index = 0;</div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;      <a class="code" href="namespacetket.html#ab5d7d59fd0591d97f8e298235db6ee27">unit_vector_t</a> target_args;</div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;      <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = n_controls; i &lt; args.size(); ++i) {</div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;        target_args.push_back(args[i]);</div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;        <span class="keywordtype">int</span> index = line_ids.at(args[i]);</div>
-<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;        <span class="keywordflow">if</span> (index &gt; max_index) max_index = index;</div>
-<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;      }</div>
-<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;      <a class="code" href="namespacetket.html#a3a0240d1e7ccf9f2730f0ed111f171ca">add_latex_for_command</a>(context, <a class="code" href="classtket_1_1Command.html">Command</a>(box.<a class="code" href="classtket_1_1Conditional.html#ab7608e854d63f262895583b328c75424">get_op</a>(), target_args));</div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;      <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; n_controls; ++i) {</div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;        <span class="keywordtype">int</span> index = line_ids.at(args[i]);</div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;        lines.at(index).buffer &lt;&lt; <span class="stringliteral">&quot;\\cwbend{&quot;</span> &lt;&lt; max_index - index &lt;&lt; <span class="stringliteral">&quot;} &amp; &quot;</span>;</div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;        lines.at(index).depth++;</div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;      }</div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;      <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;    }</div>
-<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;    <span class="keywordflow">default</span>: {</div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;      <span class="keywordtype">unsigned</span> min_index = std::numeric_limits&lt;unsigned&gt;::max();</div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;      <span class="keywordtype">unsigned</span> max_index = 0;</div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;      <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="classtket_1_1UnitID.html">UnitID</a>&amp; arg : args) {</div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;        <span class="keywordtype">unsigned</span> index = line_ids.at(arg);</div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;        <span class="keywordflow">if</span> (index &lt; min_index) min_index = index;</div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;        <span class="keywordflow">if</span> (index &gt; max_index) max_index = index;</div>
-<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;      }</div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;      lines.at(min_index).buffer &lt;&lt; <span class="stringliteral">&quot;\\gate[&quot;</span> &lt;&lt; (max_index + 1 - min_index)</div>
-<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;                                 &lt;&lt; <span class="stringliteral">&quot;]{\\text{&quot;</span> + op-&gt;get_name(<span class="keyword">true</span>) + <span class="stringliteral">&quot;}} &amp; &quot;</span>;</div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;      lines.at(min_index).depth++;</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;      lines.at(cb_index).buffer &lt;&lt; <span class="stringliteral">&quot;\\cw &amp; &quot;</span>;</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;      lines.at(cb_index).depth++;</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;      <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;    }</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;    <span class="keywordflow">case</span> <a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a2b31634e3cfef1bfdd7d0d2cdfdc3f9d">OpType::Collapse</a>: {</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;      <span class="keywordtype">int</span> qb_index = line_ids.at(args.at(0));</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;      lines.at(qb_index).buffer &lt;&lt; <span class="stringliteral">&quot;\\meter{} &amp; &quot;</span>;</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;      lines.at(qb_index).depth++;</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;      <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;    }</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;    <span class="keywordflow">case</span> <a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a46fc23bc4e4d57e5469a39658a6dd3e8">OpType::SWAP</a>: {</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;      <span class="keywordtype">int</span> qb0_index = line_ids.at(args.at(0));</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;      <span class="keywordtype">int</span> qb1_index = line_ids.at(args.at(1));</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;      lines.at(qb0_index).buffer &lt;&lt; <span class="stringliteral">&quot;\\swap{&quot;</span> &lt;&lt; qb1_index - qb0_index</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;                                 &lt;&lt; <span class="stringliteral">&quot;} &amp; &quot;</span>;</div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;      lines.at(qb0_index).depth++;</div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;      lines.at(qb1_index).buffer &lt;&lt; <span class="stringliteral">&quot;\\targX{} &amp; &quot;</span>;</div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;      lines.at(qb1_index).depth++;</div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;      <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;    }</div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;    <span class="keywordflow">case</span> <a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a0bdf2d4fd224397ee888ae5ed535ed6c">OpType::QControlBox</a>: {</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;      <span class="keyword">const</span> <a class="code" href="classtket_1_1QControlBox.html">QControlBox</a>&amp; box = <span class="keyword">static_cast&lt;</span><span class="keyword">const </span><a class="code" href="classtket_1_1QControlBox.html">QControlBox</a>&amp;<span class="keyword">&gt;</span>(*op);</div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;      <span class="keywordtype">unsigned</span> n_controls = box.<a class="code" href="classtket_1_1QControlBox.html#aaca49814d117fa56cbdc537c1b8dc04f">get_n_controls</a>();</div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;      <span class="keywordtype">int</span> max_index = 0;</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;      <a class="code" href="namespacetket.html#ab5d7d59fd0591d97f8e298235db6ee27">unit_vector_t</a> target_args;</div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;      <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = n_controls; i &lt; args.size(); ++i) {</div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;        target_args.push_back(args[i]);</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;        <span class="keywordtype">int</span> index = line_ids.at(args[i]);</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;        <span class="keywordflow">if</span> (index &gt; max_index) max_index = index;</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;      }</div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;      <a class="code" href="namespacetket.html#a3a0240d1e7ccf9f2730f0ed111f171ca">add_latex_for_command</a>(context, <a class="code" href="classtket_1_1Command.html">Command</a>(box.<a class="code" href="classtket_1_1QControlBox.html#a14ea670ed362b45a0490e203874f5852">get_op</a>(), target_args));</div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;      <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; n_controls; ++i) {</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;        <span class="keywordtype">int</span> index = line_ids.at(args[i]);</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;        lines.at(index).buffer &lt;&lt; <span class="stringliteral">&quot;\\ctrl{&quot;</span> &lt;&lt; max_index - index &lt;&lt; <span class="stringliteral">&quot;} &amp; &quot;</span>;</div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;        lines.at(index).depth++;</div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;      }</div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;      <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;    }</div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;    <span class="keywordflow">case</span> <a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a9d3afea73e90192d96dda8d38c87a4fe">OpType::Conditional</a>: {</div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;      <span class="keyword">const</span> <a class="code" href="classtket_1_1Conditional.html">Conditional</a>&amp; box = <span class="keyword">static_cast&lt;</span><span class="keyword">const </span><a class="code" href="classtket_1_1Conditional.html">Conditional</a>&amp;<span class="keyword">&gt;</span>(*op);</div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;      <span class="keywordtype">unsigned</span> n_controls = box.<a class="code" href="classtket_1_1Conditional.html#a1ab7bba4e542a62c10fb3928a58488d6">get_width</a>();</div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;      <span class="keywordtype">int</span> max_index = 0;</div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;      <a class="code" href="namespacetket.html#ab5d7d59fd0591d97f8e298235db6ee27">unit_vector_t</a> target_args;</div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;      <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = n_controls; i &lt; args.size(); ++i) {</div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;        target_args.push_back(args[i]);</div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;        <span class="keywordtype">int</span> index = line_ids.at(args[i]);</div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;        <span class="keywordflow">if</span> (index &gt; max_index) max_index = index;</div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;      }</div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;      <a class="code" href="namespacetket.html#a3a0240d1e7ccf9f2730f0ed111f171ca">add_latex_for_command</a>(context, <a class="code" href="classtket_1_1Command.html">Command</a>(box.<a class="code" href="classtket_1_1Conditional.html#ab7608e854d63f262895583b328c75424">get_op</a>(), target_args));</div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;      <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; n_controls; ++i) {</div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;        <span class="keywordtype">int</span> index = line_ids.at(args[i]);</div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;        lines.at(index).buffer &lt;&lt; <span class="stringliteral">&quot;\\cwbend{&quot;</span> &lt;&lt; max_index - index &lt;&lt; <span class="stringliteral">&quot;} &amp; &quot;</span>;</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;        lines.at(index).depth++;</div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;      }</div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;      <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;    }</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;    <span class="keywordflow">default</span>: {</div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;      <span class="keywordtype">unsigned</span> min_index = std::numeric_limits&lt;unsigned&gt;::max();</div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;      <span class="keywordtype">unsigned</span> max_index = 0;</div>
 <div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;      <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="classtket_1_1UnitID.html">UnitID</a>&amp; arg : args) {</div>
 <div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;        <span class="keywordtype">unsigned</span> index = line_ids.at(arg);</div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;        <span class="keywordflow">if</span> (index != min_index) {</div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;          lines.at(index).buffer &lt;&lt; <span class="stringliteral">&quot;&amp; &quot;</span>;</div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;          lines.at(index).depth++;</div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;        }</div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;      }</div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;    }</div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;  }</div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;}</div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160; </div>
-<div class="line"><a name="l00266"></a><span class="lineno"><a class="line" href="classtket_1_1Circuit.html#a014744d953226e7ad17bd6e4d5e91ec0">  266</a></span>&#160;std::string <a class="code" href="classtket_1_1Circuit.html#a014744d953226e7ad17bd6e4d5e91ec0">Circuit::to_latex_str</a>()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;  <span class="comment">// Initial header</span></div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;  std::stringstream buffer;</div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;  buffer &lt;&lt; <span class="stringliteral">&quot;\\documentclass[tikz]{standalone}\n&quot;</span>;</div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;  buffer &lt;&lt; <span class="stringliteral">&quot;\\usetikzlibrary{quantikz}\n&quot;</span>;</div>
-<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;  buffer &lt;&lt; <span class="stringliteral">&quot;\\begin{document}\n&quot;</span>;</div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;  buffer &lt;&lt; <span class="stringliteral">&quot;\\begin{quantikz}\n&quot;</span>;</div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;        <span class="keywordflow">if</span> (index &lt; min_index) min_index = index;</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;        <span class="keywordflow">if</span> (index &gt; max_index) max_index = index;</div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;      }</div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;      lines.at(min_index).buffer &lt;&lt; <span class="stringliteral">&quot;\\gate[&quot;</span> &lt;&lt; (max_index + 1 - min_index)</div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;                                 &lt;&lt; <span class="stringliteral">&quot;]{\\text{&quot;</span> + op-&gt;get_name(<span class="keyword">true</span>) + <span class="stringliteral">&quot;}} &amp; &quot;</span>;</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;      lines.at(min_index).depth++;</div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;      <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="classtket_1_1UnitID.html">UnitID</a>&amp; arg : args) {</div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;        <span class="keywordtype">unsigned</span> index = line_ids.at(arg);</div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;        <span class="keywordflow">if</span> (index != min_index) {</div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;          lines.at(index).buffer &lt;&lt; <span class="stringliteral">&quot;&amp; &quot;</span>;</div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;          lines.at(index).depth++;</div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;        }</div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;      }</div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;    }</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;  }</div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;}</div>
 <div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160; </div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;  <span class="comment">// Wire labels</span></div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;  LatexContext context;</div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;  std::map&lt;UnitID, unsigned&gt;&amp; line_ids = context.line_ids;</div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;  std::vector&lt;LineBufferInfo&gt;&amp; lines = context.lines;</div>
-<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="classtket_1_1Qubit.html">Qubit</a>&amp; qb : this-&gt;<a class="code" href="classtket_1_1Circuit.html#a1e25972d9f6e767128fdc294a628a95b">all_qubits</a>()) {</div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;    <span class="keywordtype">unsigned</span> n_lines = lines.size();</div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;    line_ids.insert({qb, n_lines});</div>
-<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;    LineBufferInfo&amp; line = *lines.emplace(lines.end());</div>
-<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;    line.buffer &lt;&lt; <span class="stringliteral">&quot;\\lstick{&quot;</span> + qb.repr() + <span class="stringliteral">&quot;} &amp; &quot;</span>;</div>
-<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;    line.is_quantum = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;  }</div>
-<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="classtket_1_1Bit.html">Bit</a>&amp; cb : this-&gt;<a class="code" href="classtket_1_1Circuit.html#a79b731d8d4d889642d254aa394abf828">all_bits</a>()) {</div>
-<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;    <span class="keywordtype">unsigned</span> n_lines = lines.size();</div>
-<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;    line_ids.insert({cb, n_lines});</div>
-<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;    LineBufferInfo&amp; line = *lines.emplace(lines.end());</div>
-<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;    line.buffer &lt;&lt; <span class="stringliteral">&quot;\\lstick{&quot;</span> + cb.repr() + <span class="stringliteral">&quot;} &amp; &quot;</span>;</div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;    line.is_quantum = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;  }</div>
-<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160; </div>
-<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;  <span class="comment">// Commands</span></div>
-<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="classtket_1_1Command.html">Command</a>&amp; com : this-&gt;<a class="code" href="classtket_1_1Circuit.html#aef592b95607e089ca574a85e5331471b">get_commands</a>()) {</div>
-<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;    std::set&lt;unsigned&gt; used_lines;</div>
-<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;    <span class="keywordtype">unsigned</span> min_index = std::numeric_limits&lt;unsigned&gt;::max();</div>
-<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;    <span class="keywordtype">unsigned</span> max_index = 0;</div>
-<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="classtket_1_1UnitID.html">UnitID</a>&amp; arg : com.get_args()) {</div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;      used_lines.insert(line_ids.at(arg));</div>
-<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;    }</div>
-<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> index : used_lines) {</div>
-<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;      <span class="keywordflow">if</span> (index &lt; min_index) min_index = index;</div>
-<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;      <span class="keywordflow">if</span> (index &gt; max_index) max_index = index;</div>
-<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;    }</div>
-<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160; </div>
-<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;    <span class="keywordtype">unsigned</span> max_depth = 0;</div>
-<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> index = min_index; index &lt;= max_index; index++) {</div>
-<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;      <span class="keywordflow">if</span> (lines.at(index).depth &gt; max_depth) max_depth = lines.at(index).depth;</div>
-<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;    }</div>
-<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> index : used_lines) {</div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;      <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> d = lines.at(index).depth; d &lt; max_depth; d++) {</div>
-<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;        <span class="keywordflow">if</span> (lines.at(index).is_quantum) {</div>
-<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;          lines.at(index).buffer &lt;&lt; <span class="stringliteral">&quot;\\qw &amp; &quot;</span>;</div>
-<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;        } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;          lines.at(index).buffer &lt;&lt; <span class="stringliteral">&quot;\\cw &amp; &quot;</span>;</div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;        }</div>
-<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;      }</div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;      lines.at(index).depth = max_depth;</div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;    }</div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160; </div>
-<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;    <a class="code" href="namespacetket.html#a3a0240d1e7ccf9f2730f0ed111f171ca">add_latex_for_command</a>(context, com);</div>
-<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160; </div>
-<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> index = min_index; index &lt;= max_index; index++) {</div>
-<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;      <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> d = lines.at(index).depth; d &lt;= max_depth; d++) {</div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;        <span class="keywordflow">if</span> (lines.at(index).is_quantum) {</div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;          lines.at(index).buffer &lt;&lt; <span class="stringliteral">&quot;\\qw &amp; &quot;</span>;</div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;        } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;          lines.at(index).buffer &lt;&lt; <span class="stringliteral">&quot;\\cw &amp; &quot;</span>;</div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;        }</div>
-<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;      }</div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;      lines.at(index).depth = max_depth + 1;</div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;    }</div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;  }</div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160; </div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;  <span class="comment">// Fill out ends</span></div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;  <span class="keywordtype">unsigned</span> max_depth = 0;</div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> LineBufferInfo&amp; l : lines) {</div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;    <span class="keywordflow">if</span> (l.depth &gt; max_depth) max_depth = l.depth;</div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;  }</div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;  <span class="keywordflow">for</span> (LineBufferInfo&amp; l : lines) {</div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> d = l.depth; d &lt; max_depth; d++) {</div>
-<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;      <span class="keywordflow">if</span> (l.is_quantum) {</div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;        l.buffer &lt;&lt; <span class="stringliteral">&quot;\\qw &amp; &quot;</span>;</div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;      } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;        l.buffer &lt;&lt; <span class="stringliteral">&quot;\\cw &amp; &quot;</span>;</div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;      }</div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;    }</div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;  }</div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;  <span class="keywordflow">for</span> (LineBufferInfo&amp; l : lines) {</div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;    <span class="keywordflow">if</span> (l.is_quantum) {</div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;      l.buffer &lt;&lt; <span class="stringliteral">&quot;\\qw \\\\&quot;</span>;</div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;      l.buffer &lt;&lt; <span class="stringliteral">&quot;\\cw \\\\&quot;</span>;</div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;    }</div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;  }</div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160; </div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;  <span class="comment">// Build up overall buffer</span></div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;  <span class="keywordflow">for</span> (LineBufferInfo&amp; l : lines) {</div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;    buffer &lt;&lt; l.buffer.str() &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;  }</div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;  buffer &lt;&lt; <span class="stringliteral">&quot;\\end{quantikz}\n&quot;</span>;</div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;  buffer &lt;&lt; <span class="stringliteral">&quot;\\end{document}&quot;</span>;</div>
-<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160; </div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;  <span class="keywordflow">return</span> buffer.str();</div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;}</div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160; </div>
-<div class="line"><a name="l00367"></a><span class="lineno"><a class="line" href="classtket_1_1Circuit.html#a0cad2f510994e1c2b7a148e7bbca5a54">  367</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classtket_1_1Circuit.html#a0cad2f510994e1c2b7a148e7bbca5a54">Circuit::to_latex_file</a>(<span class="keyword">const</span> std::string&amp; filename)<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;  std::ofstream file(filename);</div>
-<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;  file &lt;&lt; <a class="code" href="classtket_1_1Circuit.html#a014744d953226e7ad17bd6e4d5e91ec0">to_latex_str</a>();</div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;}</div>
+<div class="line"><a name="l00274"></a><span class="lineno"><a class="line" href="classtket_1_1Circuit.html#a014744d953226e7ad17bd6e4d5e91ec0">  274</a></span>&#160;std::string <a class="code" href="classtket_1_1Circuit.html#a014744d953226e7ad17bd6e4d5e91ec0">Circuit::to_latex_str</a>()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;  <span class="comment">// Initial header</span></div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;  std::stringstream buffer;</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;  buffer &lt;&lt; <span class="stringliteral">&quot;\\documentclass[tikz]{standalone}\n&quot;</span>;</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;  buffer &lt;&lt; <span class="stringliteral">&quot;\\usetikzlibrary{quantikz}\n&quot;</span>;</div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;  buffer &lt;&lt; <span class="stringliteral">&quot;\\begin{document}\n&quot;</span>;</div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;  buffer &lt;&lt; <span class="stringliteral">&quot;\\begin{quantikz}\n&quot;</span>;</div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160; </div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;  <span class="comment">// Wire labels</span></div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;  LatexContext context;</div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;  std::map&lt;UnitID, unsigned&gt;&amp; line_ids = context.line_ids;</div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;  std::vector&lt;LineBufferInfo&gt;&amp; lines = context.lines;</div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="classtket_1_1Qubit.html">Qubit</a>&amp; qb : this-&gt;<a class="code" href="classtket_1_1Circuit.html#a1e25972d9f6e767128fdc294a628a95b">all_qubits</a>()) {</div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;    <span class="keywordtype">unsigned</span> n_lines = lines.size();</div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;    line_ids.insert({qb, n_lines});</div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;    LineBufferInfo&amp; line = *lines.emplace(lines.end());</div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;    line.buffer &lt;&lt; <span class="stringliteral">&quot;\\lstick{&quot;</span> + qb.repr() + <span class="stringliteral">&quot;} &amp; &quot;</span>;</div>
+<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;    line.is_quantum = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;  }</div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="classtket_1_1Bit.html">Bit</a>&amp; cb : this-&gt;<a class="code" href="classtket_1_1Circuit.html#a79b731d8d4d889642d254aa394abf828">all_bits</a>()) {</div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;    <span class="keywordtype">unsigned</span> n_lines = lines.size();</div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;    line_ids.insert({cb, n_lines});</div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;    LineBufferInfo&amp; line = *lines.emplace(lines.end());</div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;    line.buffer &lt;&lt; <span class="stringliteral">&quot;\\lstick{&quot;</span> + cb.repr() + <span class="stringliteral">&quot;} &amp; &quot;</span>;</div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;    line.is_quantum = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;  }</div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160; </div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;  <span class="comment">// Commands</span></div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="classtket_1_1Command.html">Command</a>&amp; com : this-&gt;<a class="code" href="classtket_1_1Circuit.html#aef592b95607e089ca574a85e5331471b">get_commands</a>()) {</div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;    std::set&lt;unsigned&gt; used_lines;</div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;    <span class="keywordtype">unsigned</span> min_index = std::numeric_limits&lt;unsigned&gt;::max();</div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;    <span class="keywordtype">unsigned</span> max_index = 0;</div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="classtket_1_1UnitID.html">UnitID</a>&amp; arg : com.get_args()) {</div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;      used_lines.insert(line_ids.at(arg));</div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;    }</div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> index : used_lines) {</div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;      <span class="keywordflow">if</span> (index &lt; min_index) min_index = index;</div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;      <span class="keywordflow">if</span> (index &gt; max_index) max_index = index;</div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;    }</div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160; </div>
+<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;    <span class="keywordtype">unsigned</span> max_depth = 0;</div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> index = min_index; index &lt;= max_index; index++) {</div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;      <span class="keywordflow">if</span> (lines.at(index).depth &gt; max_depth) max_depth = lines.at(index).depth;</div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;    }</div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> index : used_lines) {</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;      <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> d = lines.at(index).depth; d &lt; max_depth; d++) {</div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;        <span class="keywordflow">if</span> (lines.at(index).is_quantum) {</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;          lines.at(index).buffer &lt;&lt; <span class="stringliteral">&quot;\\qw &amp; &quot;</span>;</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;          lines.at(index).buffer &lt;&lt; <span class="stringliteral">&quot;\\cw &amp; &quot;</span>;</div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;        }</div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;      }</div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;      lines.at(index).depth = max_depth;</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;    }</div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160; </div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;    <a class="code" href="namespacetket.html#a3a0240d1e7ccf9f2730f0ed111f171ca">add_latex_for_command</a>(context, com);</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160; </div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> index = min_index; index &lt;= max_index; index++) {</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;      <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> d = lines.at(index).depth; d &lt;= max_depth; d++) {</div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;        <span class="keywordflow">if</span> (lines.at(index).is_quantum) {</div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;          lines.at(index).buffer &lt;&lt; <span class="stringliteral">&quot;\\qw &amp; &quot;</span>;</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;        } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;          lines.at(index).buffer &lt;&lt; <span class="stringliteral">&quot;\\cw &amp; &quot;</span>;</div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;        }</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;      }</div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;      lines.at(index).depth = max_depth + 1;</div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;    }</div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;  }</div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160; </div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;  <span class="comment">// Fill out ends</span></div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;  <span class="keywordtype">unsigned</span> max_depth = 0;</div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> LineBufferInfo&amp; l : lines) {</div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;    <span class="keywordflow">if</span> (l.depth &gt; max_depth) max_depth = l.depth;</div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;  }</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;  <span class="keywordflow">for</span> (LineBufferInfo&amp; l : lines) {</div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> d = l.depth; d &lt; max_depth; d++) {</div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;      <span class="keywordflow">if</span> (l.is_quantum) {</div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;        l.buffer &lt;&lt; <span class="stringliteral">&quot;\\qw &amp; &quot;</span>;</div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;      } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;        l.buffer &lt;&lt; <span class="stringliteral">&quot;\\cw &amp; &quot;</span>;</div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;      }</div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;    }</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;  }</div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;  <span class="keywordflow">for</span> (LineBufferInfo&amp; l : lines) {</div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;    <span class="keywordflow">if</span> (l.is_quantum) {</div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;      l.buffer &lt;&lt; <span class="stringliteral">&quot;\\qw \\\\&quot;</span>;</div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;      l.buffer &lt;&lt; <span class="stringliteral">&quot;\\cw \\\\&quot;</span>;</div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;    }</div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;  }</div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160; </div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;  <span class="comment">// Build up overall buffer</span></div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;  <span class="keywordflow">for</span> (LineBufferInfo&amp; l : lines) {</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;    buffer &lt;&lt; l.buffer.str() &lt;&lt; <span class="stringliteral">&quot;\n&quot;</span>;</div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;  }</div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;  buffer &lt;&lt; <span class="stringliteral">&quot;\\end{quantikz}\n&quot;</span>;</div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;  buffer &lt;&lt; <span class="stringliteral">&quot;\\end{document}&quot;</span>;</div>
 <div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160; </div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;}  <span class="comment">// namespace tket</span></div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;  <span class="keywordflow">return</span> buffer.str();</div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;}</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160; </div>
+<div class="line"><a name="l00375"></a><span class="lineno"><a class="line" href="classtket_1_1Circuit.html#a0cad2f510994e1c2b7a148e7bbca5a54">  375</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classtket_1_1Circuit.html#a0cad2f510994e1c2b7a148e7bbca5a54">Circuit::to_latex_file</a>(<span class="keyword">const</span> std::string&amp; filename)<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;  std::ofstream file(filename);</div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;  file &lt;&lt; <a class="code" href="classtket_1_1Circuit.html#a014744d953226e7ad17bd6e4d5e91ec0">to_latex_str</a>();</div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;}</div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160; </div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;}  <span class="comment">// namespace tket</span></div>
 <div class="ttc" id="aBoxes_8hpp_html"><div class="ttname"><a href="Boxes_8hpp.html">Boxes.hpp</a></div></div>
 <div class="ttc" id="aCircuit_8hpp_html"><div class="ttname"><a href="Circuit_8hpp.html">Circuit.hpp</a></div></div>
 <div class="ttc" id="aOpType_8hpp_html"><div class="ttname"><a href="OpType_8hpp.html">OpType.hpp</a></div></div>
 <div class="ttc" id="aclasstket_1_1Bit_html"><div class="ttname"><a href="classtket_1_1Bit.html">tket::Bit</a></div><div class="ttdoc">Location holding a bit.</div><div class="ttdef"><b>Definition:</b> <a href="UnitID_8hpp_source.html#l00191">UnitID.hpp:191</a></div></div>
-<div class="ttc" id="aclasstket_1_1Circuit_html_a014744d953226e7ad17bd6e4d5e91ec0"><div class="ttname"><a href="classtket_1_1Circuit.html#a014744d953226e7ad17bd6e4d5e91ec0">tket::Circuit::to_latex_str</a></div><div class="ttdeci">std::string to_latex_str() const</div><div class="ttdef"><b>Definition:</b> <a href="latex__drawing_8cpp_source.html#l00266">latex_drawing.cpp:266</a></div></div>
-<div class="ttc" id="aclasstket_1_1Circuit_html_a0cad2f510994e1c2b7a148e7bbca5a54"><div class="ttname"><a href="classtket_1_1Circuit.html#a0cad2f510994e1c2b7a148e7bbca5a54">tket::Circuit::to_latex_file</a></div><div class="ttdeci">void to_latex_file(const std::string &amp;filename) const</div><div class="ttdef"><b>Definition:</b> <a href="latex__drawing_8cpp_source.html#l00367">latex_drawing.cpp:367</a></div></div>
+<div class="ttc" id="aclasstket_1_1Circuit_html_a014744d953226e7ad17bd6e4d5e91ec0"><div class="ttname"><a href="classtket_1_1Circuit.html#a014744d953226e7ad17bd6e4d5e91ec0">tket::Circuit::to_latex_str</a></div><div class="ttdeci">std::string to_latex_str() const</div><div class="ttdef"><b>Definition:</b> <a href="latex__drawing_8cpp_source.html#l00274">latex_drawing.cpp:274</a></div></div>
+<div class="ttc" id="aclasstket_1_1Circuit_html_a0cad2f510994e1c2b7a148e7bbca5a54"><div class="ttname"><a href="classtket_1_1Circuit.html#a0cad2f510994e1c2b7a148e7bbca5a54">tket::Circuit::to_latex_file</a></div><div class="ttdeci">void to_latex_file(const std::string &amp;filename) const</div><div class="ttdef"><b>Definition:</b> <a href="latex__drawing_8cpp_source.html#l00375">latex_drawing.cpp:375</a></div></div>
 <div class="ttc" id="aclasstket_1_1Circuit_html_a1e25972d9f6e767128fdc294a628a95b"><div class="ttname"><a href="classtket_1_1Circuit.html#a1e25972d9f6e767128fdc294a628a95b">tket::Circuit::all_qubits</a></div><div class="ttdeci">qubit_vector_t all_qubits() const</div><div class="ttdef"><b>Definition:</b> <a href="setters__and__getters_8cpp_source.html#l00142">setters_and_getters.cpp:142</a></div></div>
 <div class="ttc" id="aclasstket_1_1Circuit_html_a79b731d8d4d889642d254aa394abf828"><div class="ttname"><a href="classtket_1_1Circuit.html#a79b731d8d4d889642d254aa394abf828">tket::Circuit::all_bits</a></div><div class="ttdeci">bit_vector_t all_bits() const</div><div class="ttdef"><b>Definition:</b> <a href="setters__and__getters_8cpp_source.html#l00172">setters_and_getters.cpp:172</a></div></div>
 <div class="ttc" id="aclasstket_1_1Circuit_html_aef592b95607e089ca574a85e5331471b"><div class="ttname"><a href="classtket_1_1Circuit.html#aef592b95607e089ca574a85e5331471b">tket::Circuit::get_commands</a></div><div class="ttdeci">std::vector&lt; Command &gt; get_commands() const</div><div class="ttdoc">Get the sequence of commands comprising the circuit.</div><div class="ttdef"><b>Definition:</b> <a href="Circuit_8cpp_source.html#l00098">Circuit.cpp:98</a></div></div>
@@ -469,6 +477,7 @@ $(function() {
 <div class="ttc" id="aclasstket_1_1Qubit_html"><div class="ttname"><a href="classtket_1_1Qubit.html">tket::Qubit</a></div><div class="ttdoc">Location holding a qubit.</div><div class="ttdef"><b>Definition:</b> <a href="UnitID_8hpp_source.html#l00153">UnitID.hpp:153</a></div></div>
 <div class="ttc" id="aclasstket_1_1UnitID_html"><div class="ttname"><a href="classtket_1_1UnitID.html">tket::UnitID</a></div><div class="ttdoc">Location holding a bit or qubit of information.</div><div class="ttdef"><b>Definition:</b> <a href="UnitID_8hpp_source.html#l00067">UnitID.hpp:67</a></div></div>
 <div class="ttc" id="anamespacetket_html"><div class="ttname"><a href="namespacetket.html">tket</a></div><div class="ttdoc">Defines tket::DeviceCharacterisation, used in NoiseAwarePlacement and in commute_SQ_gates_through_SWA...</div><div class="ttdef"><b>Definition:</b> <a href="Path_8cpp_source.html#l00019">Path.cpp:19</a></div></div>
+<div class="ttc" id="anamespacetket_html_a13e81344da4794f2648eb9a7b286fcf3a045a4026bb27931de3a4ad5e8c368659"><div class="ttname"><a href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a045a4026bb27931de3a4ad5e8c368659">tket::OpType::Sdg</a></div><div class="ttdeci">@ Sdg</div></div>
 <div class="ttc" id="anamespacetket_html_a13e81344da4794f2648eb9a7b286fcf3a0bdf2d4fd224397ee888ae5ed535ed6c"><div class="ttname"><a href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a0bdf2d4fd224397ee888ae5ed535ed6c">tket::OpType::QControlBox</a></div><div class="ttdeci">@ QControlBox</div><div class="ttdoc">See QControlBox.</div></div>
 <div class="ttc" id="anamespacetket_html_a13e81344da4794f2648eb9a7b286fcf3a0cbbe0321e0c40dfa77a159ef6bfad6b"><div class="ttname"><a href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a0cbbe0321e0c40dfa77a159ef6bfad6b">tket::OpType::Measure</a></div><div class="ttdeci">@ Measure</div><div class="ttdoc">Measure a qubit, producing a classical output.</div></div>
 <div class="ttc" id="anamespacetket_html_a13e81344da4794f2648eb9a7b286fcf3a0d992e25a3f319f4011ff52a6143a7d3"><div class="ttname"><a href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a0d992e25a3f319f4011ff52a6143a7d3">tket::OpType::CVdg</a></div><div class="ttdeci">@ CVdg</div><div class="ttdoc">Controlled OpType::Vdg.</div></div>
@@ -478,13 +487,16 @@ $(function() {
 <div class="ttc" id="anamespacetket_html_a13e81344da4794f2648eb9a7b286fcf3a2b31634e3cfef1bfdd7d0d2cdfdc3f9d"><div class="ttname"><a href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a2b31634e3cfef1bfdd7d0d2cdfdc3f9d">tket::OpType::Collapse</a></div><div class="ttdeci">@ Collapse</div><div class="ttdoc">Measure a qubit producing no output.</div></div>
 <div class="ttc" id="anamespacetket_html_a13e81344da4794f2648eb9a7b286fcf3a360491a482e329423dbf01217091c0dd"><div class="ttname"><a href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a360491a482e329423dbf01217091c0dd">tket::OpType::CSXdg</a></div><div class="ttdeci">@ CSXdg</div><div class="ttdoc">Controlled OpType::SXdg.</div></div>
 <div class="ttc" id="anamespacetket_html_a13e81344da4794f2648eb9a7b286fcf3a46fc23bc4e4d57e5469a39658a6dd3e8"><div class="ttname"><a href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a46fc23bc4e4d57e5469a39658a6dd3e8">tket::OpType::SWAP</a></div><div class="ttdeci">@ SWAP</div><div class="ttdoc">Swap two qubits.</div></div>
+<div class="ttc" id="anamespacetket_html_a13e81344da4794f2648eb9a7b286fcf3a51e429d094741de84d87c7571c3dd603"><div class="ttname"><a href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a51e429d094741de84d87c7571c3dd603">tket::OpType::CSdg</a></div><div class="ttdeci">@ CSdg</div><div class="ttdoc">Controlled OpType::Sdg.</div></div>
 <div class="ttc" id="anamespacetket_html_a13e81344da4794f2648eb9a7b286fcf3a5206560a306a2e085a437fd258eb57ce"><div class="ttname"><a href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5206560a306a2e085a437fd258eb57ce">tket::OpType::V</a></div><div class="ttdeci">@ V</div></div>
 <div class="ttc" id="anamespacetket_html_a13e81344da4794f2648eb9a7b286fcf3a5d4369573a67272ed096dfe722d2bde7"><div class="ttname"><a href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5d4369573a67272ed096dfe722d2bde7">tket::OpType::CRx</a></div><div class="ttdeci">@ CRx</div><div class="ttdoc">Controlled OpType::Rx.</div></div>
 <div class="ttc" id="anamespacetket_html_a13e81344da4794f2648eb9a7b286fcf3a5da1165c4fc7303c06fad0030e475a28"><div class="ttname"><a href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5da1165c4fc7303c06fad0030e475a28">tket::OpType::CSWAP</a></div><div class="ttdeci">@ CSWAP</div><div class="ttdoc">Controlled OpType::SWAP.</div></div>
+<div class="ttc" id="anamespacetket_html_a13e81344da4794f2648eb9a7b286fcf3a5dbc98dcc983a70728bd082d1a47546e"><div class="ttname"><a href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5dbc98dcc983a70728bd082d1a47546e">tket::OpType::S</a></div><div class="ttdeci">@ S</div></div>
 <div class="ttc" id="anamespacetket_html_a13e81344da4794f2648eb9a7b286fcf3a5f36659cd231606e67248c8a6476b0b6"><div class="ttname"><a href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5f36659cd231606e67248c8a6476b0b6">tket::OpType::CCX</a></div><div class="ttdeci">@ CCX</div><div class="ttdoc">Controlled OpType::CX.</div></div>
 <div class="ttc" id="anamespacetket_html_a13e81344da4794f2648eb9a7b286fcf3a7c6ef42ae9f1c29a4b3af0f23800b3fc"><div class="ttname"><a href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a7c6ef42ae9f1c29a4b3af0f23800b3fc">tket::OpType::CnZ</a></div><div class="ttdeci">@ CnZ</div><div class="ttdoc">Multiply-controlled OpType::Z.</div></div>
 <div class="ttc" id="anamespacetket_html_a13e81344da4794f2648eb9a7b286fcf3a81465dfe73bb1986ad9e50af49e1f983"><div class="ttname"><a href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a81465dfe73bb1986ad9e50af49e1f983">tket::OpType::Vdg</a></div><div class="ttdeci">@ Vdg</div></div>
 <div class="ttc" id="anamespacetket_html_a13e81344da4794f2648eb9a7b286fcf3a833e36d1a5a93dedb10c85f50ced9ce7"><div class="ttname"><a href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a833e36d1a5a93dedb10c85f50ced9ce7">tket::OpType::CX</a></div><div class="ttdeci">@ CX</div><div class="ttdoc">Controlled OpType::X.</div></div>
+<div class="ttc" id="anamespacetket_html_a13e81344da4794f2648eb9a7b286fcf3a8d7e99c73cd5a10adaaf4c9f9a520368"><div class="ttname"><a href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a8d7e99c73cd5a10adaaf4c9f9a520368">tket::OpType::CS</a></div><div class="ttdeci">@ CS</div><div class="ttdoc">Controlled OpType::S.</div></div>
 <div class="ttc" id="anamespacetket_html_a13e81344da4794f2648eb9a7b286fcf3a9025a1ae8c64158622b7428028f0d2bd"><div class="ttname"><a href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a9025a1ae8c64158622b7428028f0d2bd">tket::OpType::CY</a></div><div class="ttdeci">@ CY</div><div class="ttdoc">Controlled OpType::Y.</div></div>
 <div class="ttc" id="anamespacetket_html_a13e81344da4794f2648eb9a7b286fcf3a928568b84963ceb76aaaa2cae9afdbfa"><div class="ttname"><a href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a928568b84963ceb76aaaa2cae9afdbfa">tket::OpType::CZ</a></div><div class="ttdeci">@ CZ</div><div class="ttdoc">Controlled OpType::Z.</div></div>
 <div class="ttc" id="anamespacetket_html_a13e81344da4794f2648eb9a7b286fcf3a9d3afea73e90192d96dda8d38c87a4fe"><div class="ttname"><a href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a9d3afea73e90192d96dda8d38c87a4fe">tket::OpType::Conditional</a></div><div class="ttdeci">@ Conditional</div><div class="ttdoc">See Conditional.</div></div>
