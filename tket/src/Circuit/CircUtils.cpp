@@ -562,6 +562,10 @@ Circuit with_CX(Gate_ptr op) {
       return CircPool::CSX_using_CX();
     case OpType::CSXdg:
       return CircPool::CSXdg_using_CX();
+    case OpType::CS:
+      return CircPool::CS_using_CX();
+    case OpType::CSdg:
+      return CircPool::CSdg_using_CX();
     case OpType::CRz:
       return CircPool::CRz_using_CX(params[0]);
     case OpType::CRx:
@@ -831,6 +835,10 @@ static Eigen::Matrix2cd get_target_op_matrix(const Op_ptr &op) {
       return Gate(OpType::SX, {}, 1).get_unitary();
     case OpType::CSXdg:
       return Gate(OpType::SXdg, {}, 1).get_unitary();
+    case OpType::CS:
+      return Gate(OpType::S, {}, 1).get_unitary();
+    case OpType::CSdg:
+      return Gate(OpType::Sdg, {}, 1).get_unitary();
     case OpType::CV:
       return Gate(OpType::V, {}, 1).get_unitary();
     case OpType::CVdg:

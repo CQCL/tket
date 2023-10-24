@@ -57,6 +57,8 @@ from pytket._tket.circuit_library import (
     CVdg_using_CX,
     CSX_using_CX,
     CSXdg_using_CX,
+    CS_using_CX,
+    CSdg_using_CX,
     CSWAP_using_CX,
     ECR_using_CX,
     ZZMax_using_CX,

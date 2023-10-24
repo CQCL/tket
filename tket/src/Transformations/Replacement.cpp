@@ -269,6 +269,8 @@ Circuit CX_ZX_circ_from_op(const Op_ptr op) {
     case OpType::CVdg:
     case OpType::CSX:
     case OpType::CSXdg:
+    case OpType::CS:
+    case OpType::CSdg:
     case OpType::CRz:
     case OpType::CRx:
     case OpType::CRy:

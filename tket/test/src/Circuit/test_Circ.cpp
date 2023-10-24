@@ -1984,6 +1984,43 @@ SCENARIO("Decomposing a multi-qubit operation into CXs") {
     REQUIRE((u - correct).cwiseAbs().sum() < ERR_EPS);
   }
 
+  GIVEN("A CS gate") {
+    Circuit circ(2);
+    Vertex v = circ.add_op<unsigned>(OpType::CS, {0, 1});
+    const Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+    Circuit rep;
+    WHEN("Default circuit replacement") { rep = CX_circ_from_multiq(op); }
+    WHEN("ZX circuit replacement") { rep = CX_ZX_circ_from_op(op); }
+
+    const auto u = tket_sim::get_unitary(rep);
+    Eigen::MatrixXcd correct(4, 4);
+    // clang-format off
+        correct << 1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, i_;
+    // clang-format on
+    REQUIRE((u - correct).cwiseAbs().sum() < ERR_EPS);
+  }
+  GIVEN("A CSdg gate") {
+    Circuit circ(2);
+    Vertex v = circ.add_op<unsigned>(OpType::CSdg, {0, 1});
+    const Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+    Circuit rep;
+    WHEN("Default circuit replacement") { rep = CX_circ_from_multiq(op); }
+    WHEN("ZX circuit replacement") { rep = CX_ZX_circ_from_op(op); }
+
+    const auto u = tket_sim::get_unitary(rep);
+    Eigen::MatrixXcd correct(4, 4);
+    // clang-format off
+        correct << 1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, -i_;
+    // clang-format on
+    REQUIRE((u - correct).cwiseAbs().sum() < ERR_EPS);
+  }
+
   GIVEN("A CU1 gate") {
     Circuit circ(2);
     Vertex v = circ.add_op<unsigned>(OpType::CU1, 0.5, {0, 1});

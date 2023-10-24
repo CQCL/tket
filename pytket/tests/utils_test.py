@@ -565,6 +565,8 @@ def unitary_circuits(draw: Callable[[SearchStrategy[Any]], Any]) -> Circuit:
                 OpType.CVdg,
                 OpType.CSX,
                 OpType.CSXdg,
+                OpType.CS,
+                OpType.CSdg,
                 OpType.SWAP,
                 OpType.ISWAPMax,
                 OpType.Sycamore,
