@@ -817,6 +817,33 @@ measure q[0] -> c0[0];
 """
     assert qasm == correct_qasm
 
+def test_classical_expbox_arg_order() -> None:
+    qasm = """
+    OPENQASM 2.0;
+    include "hqslib1.inc";
+    
+    qreg q[1];
+    
+    creg a[4];
+    creg b[4];
+    creg c[4];
+    creg d[4];
+    
+    c = a ^ b | d;
+    """
+
+    circ = circuit_from_qasm_str(qasm)
+    args = circ.get_commands()[0].args
+    expected_symbol_order = ["a", "b", "d", "c"]
+    expected_index_order = [0, 1, 2, 3]
+    assert len(args) == 4*4
+    arg_index = 0
+    for symbol in expected_symbol_order:
+        for index in expected_index_order:
+            assert args[arg_index].reg_name == symbol
+            assert args[arg_index].index[0] == index
+            arg_index += 1
+
 
 if __name__ == "__main__":
     test_qasm_correct()
@@ -853,3 +880,4 @@ if __name__ == "__main__":
     test_header_stops_gate_definition()
     test_tk2_definition()
     test_rxxyyzz_conversion()
+    test_classical_expbox_arg_order()
