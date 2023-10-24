@@ -84,7 +84,7 @@ def _add_condition(
 
     assert isinstance(pred_exp, (RegLogicExp, BitRegister))
     if isinstance(pred_exp, RegLogicExp):
-        inps = pred_exp.all_inputs()
+        inps = pred_exp.all_inputs_ordered()
         reg_sizes: list[int] = []
         for reg in inps:
             assert isinstance(reg, BitRegister)

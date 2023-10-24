@@ -665,14 +665,14 @@ class CircuitTransformer(Transformer):
     def _calc_exp_io(
         self, exp: LogicExp, out_args: List
     ) -> Tuple[List[List], Dict[str, Any]]:
-        all_inps: Set[Tuple[str, int]] = set()
-        for inp in exp.all_inputs():
+        all_inps: list[Tuple[str, int]] = []
+        for inp in exp.all_inputs_ordered():
             if isinstance(inp, Bit):
-                all_inps.add((inp.reg_name, inp.index[0]))
+                all_inps.append((inp.reg_name, inp.index[0]))
             else:
                 assert isinstance(inp, BitRegister)
                 for bit in inp:
-                    all_inps.add((bit.reg_name, bit.index[0]))
+                    all_inps.append((bit.reg_name, bit.index[0]))
         outs = (_hashable_uid(arg) for arg in out_args)
         o = []
         io = []

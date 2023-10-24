@@ -10,6 +10,11 @@ Minor new features:
   width of classical registers (default 32).
 * New ``OpType.CS`` and ``OpType.CSdg``.
 
+Fixes:
+
+* When converting QASM expressions to ``ClassicalExpBox``, preserve the ordering
+  of the bits in the expression in the resulting ``cmd.args``
+
 1.21.0 (October 2023)
 ---------------------
 

@@ -191,6 +191,26 @@ class LogicExp:
                     outset.add(arg)
         return outset
 
+    def all_inputs_ordered(self) -> list[Variable]:
+        """
+        :return: All variables involved in expression, in order of first appearance.
+        :rtype: list[Variable]
+        """
+        # use dict[Variable, None] instead of set[Variable] to preserve order
+        outset: dict[Variable, None] = {}
+
+        for arg in self.args:
+            if isinstance(arg, LogicExp):
+                outset.update(dict.fromkeys(arg.all_inputs_ordered()))
+                continue
+            if isinstance(self, BitLogicExp):
+                if isinstance(arg, Bit):
+                    outset[arg] = None
+            else:
+                if isinstance(arg, BitRegister):
+                    outset[arg] = None
+        return list(outset)
+
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, LogicExp):
             return False
