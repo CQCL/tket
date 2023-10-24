@@ -30,6 +30,8 @@ find_package(tkwsm CONFIG REQUIRED)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+option(INSTALL_NAME_DIR "Set the install name dir for the library to @loader_path for Apple targets" ON)
+
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
@@ -62,7 +64,7 @@ endif()
 
 if(WIN32)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS yes)
-elseif(APPLE)
+elseif(APPLE AND INSTALL_NAME_DIR)
     # set correct install_name
     set(CMAKE_INSTALL_NAME_DIR "@loader_path")
     set(CMAKE_BUILD_WITH_INSTALL_NAME_DIR ON)
@@ -83,6 +85,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     # Work around gcc bug related to std::optional.
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-error=maybe-uninitialized")
 endif()
+
 
 add_library(tket)
 
@@ -114,6 +117,9 @@ target_link_libraries(tket PRIVATE tkassert::tkassert)
 target_link_libraries(tket PRIVATE tkrng::tkrng)
 target_link_libraries(tket PRIVATE tktokenswap::tktokenswap)
 target_link_libraries(tket PRIVATE tkwsm::tkwsm)
+IF(APPLE)
+    target_link_libraries(tket PRIVATE "-flat_namespace")
+ENDIF()
 
 target_sources(tket
     PRIVATE

@@ -124,6 +124,12 @@ building and testing tket as a standalone C++ library.
 See the [README](pytket/README.md) in the `pytket` directory for instructions on
 building and testing pytket.
 
+### Nix Support
+
+Tket and pytket are available as a Nix flake. See the [README](nix-support/README.md)
+in the `nix-support` directory for instructions on building and testing tket and pytket
+through Nix, and on how to use it within a Nix project.
+
 ## API documentation
 
 The `tket` (C++) API documentation (generated with `doxygen`, and still rather
