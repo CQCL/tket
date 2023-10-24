@@ -817,6 +817,7 @@ measure q[0] -> c0[0];
 """
     assert qasm == correct_qasm
 
+
 def test_classical_expbox_arg_order() -> None:
     qasm = """
     OPENQASM 2.0;
@@ -836,7 +837,7 @@ def test_classical_expbox_arg_order() -> None:
     args = circ.get_commands()[0].args
     expected_symbol_order = ["a", "b", "d", "c"]
     expected_index_order = [0, 1, 2, 3]
-    assert len(args) == 4*4
+    assert len(args) == 4 * 4
     arg_index = 0
     for symbol in expected_symbol_order:
         for index in expected_index_order:
