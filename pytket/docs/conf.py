@@ -97,6 +97,7 @@ html_theme = "sphinx_book_theme"
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
+
 html_theme_options = {
     "repository_url": "https://github.com/CQCL/tket",
     "use_repository_button": True,
@@ -107,6 +108,8 @@ html_theme_options = {
         "image_dark": "_static/Quantinuum_logo_white.png",
     },
 }
+
+html_show_sphinx = True
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
