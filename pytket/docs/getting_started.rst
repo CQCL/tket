@@ -102,7 +102,7 @@ The following code snippet will show how to compile a circuit to run on an IBM d
     circ = Circuit(3).X(0).CCX(0, 1, 2)
     nairobi_device = IBMQBackend('ibm_nairobi')
 
-    # Compile Circuit to use supported gates of IBMQ Belem
+    # Compile Circuit to use supported gates of IBMQ Nairobi
     compiled_circ = nairobi_device.get_compiled_circuit(circ)
     result = backend.run_circuit(compiled_circ, n_shots=100)
 
