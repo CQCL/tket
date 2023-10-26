@@ -100,10 +100,10 @@ The following code snippet will show how to compile a circuit to run on an IBM d
     from pytket.extensions.qiskit import IBMQBackend
 
     circ = Circuit(3).X(0).CCX(0, 1, 2)
-    belem_device = IBMQBackend('ibmq_belem')
+    nairobi_device = IBMQBackend('ibmq_nairobi')
 
     # Compile Circuit to use supported gates of IBMQ Belem
-    compiled_circ = belem_device.get_compiled_circuit(circ)
+    compiled_circ = nairobi_device.get_compiled_circuit(circ)
     result = backend.run_circuit(compiled_circ, n_shots=100)
 
 Here the default compilation pass is applied by :py:meth:`IBMQBackend.get_compiled_circuit`. See `this page <https://cqcl.github.io/pytket-qiskit/api/index.html#default-compilation>`_ for more details.
