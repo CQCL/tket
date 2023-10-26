@@ -13,7 +13,9 @@
 # limitations under the License.
 
 import json
-from jsonschema import RefResolver, Draft7Validator  # type: ignore
+from referencing import Registry
+from referencing.jsonschema import DRAFT7
+from jsonschema import Draft7Validator
 from pathlib import Path
 from pytket.circuit import Node
 from pytket.architecture import Architecture, SquareGrid, FullyConnected, RingArch
@@ -27,15 +29,14 @@ with open(schema_dir / "architecture_v1.json", "r") as f:
 with open(schema_dir / "fullyconnected_v1.json", "r") as f:
     fc_schema = json.load(f)
 
-schema_store = {
-    circ_schema["$id"]: circ_schema,
-    arch_schema["$id"]: arch_schema,
-    fc_schema["$id"]: fc_schema,
-}
-arch_validator_resolver = RefResolver.from_schema(arch_schema, store=schema_store)
-arch_validator = Draft7Validator(arch_schema, resolver=arch_validator_resolver)
-fc_validator_resolver = RefResolver.from_schema(fc_schema, store=schema_store)
-fc_validator = Draft7Validator(fc_schema, resolver=fc_validator_resolver)
+schema_store = [
+    (circ_schema["$id"], DRAFT7.create_resource(circ_schema)),
+    (arch_schema["$id"], DRAFT7.create_resource(arch_schema)),
+    (fc_schema["$id"], DRAFT7.create_resource(fc_schema)),
+]
+registry = Registry().with_resources(schema_store)
+arch_validator = Draft7Validator(arch_schema, registry=registry)
+fc_validator = Draft7Validator(fc_schema, registry=registry)
 
 
 def check_arch_serialisation(arch: Architecture) -> None:

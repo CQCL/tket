@@ -296,7 +296,7 @@
           "description": "Minimal number of CX gates in each phase in \"ComposePhasePolyBoxes\"."
         },
         "routing_config": {
-          "$ref": "#definitions/routing_config"
+          "$ref": "#/definitions/routing_config"
         },
         "fidelities": {
           "type": "object",
