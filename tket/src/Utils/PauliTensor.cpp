@@ -271,7 +271,14 @@ int compare_coeffs<Complex>(const Complex &first, const Complex &second) {
 }
 template <>
 int compare_coeffs<Expr>(const Expr &first, const Expr &second) {
-  return first.get_basic()->compare(second);
+  // Comparison of SymEngine expressions will distinguish between e.g. integer
+  // 1, double 1., and complex 1., so only use for actual symbolic expressions
+  std::optional<Complex> reduced_first = eval_expr_c(first);
+  std::optional<Complex> reduced_second = eval_expr_c(second);
+  if (reduced_first && reduced_second)
+    return compare_coeffs<Complex>(*reduced_first, *reduced_second);
+  else
+    return first.get_basic()->compare(second);
 }
 
 std::set<Qubit> common_qubits(
