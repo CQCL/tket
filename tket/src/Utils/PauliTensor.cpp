@@ -450,10 +450,11 @@ void print_coeff<Complex>(std::ostream &os, const Complex &coeff) {
 
 template <>
 void print_coeff<Expr>(std::ostream &os, const Expr &coeff) {
-  if (coeff == -1.) {
+  // Expressions distinguish integers from floating-points
+  if (coeff == -1. || coeff == -1) {
     os << "-";
-  } else if (coeff != 1.) {
-    os << coeff << "*";
+  } else if (coeff != 1. && coeff != 1) {
+    os << "(" << coeff << ")*";
   }
 }
 
