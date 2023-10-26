@@ -1275,9 +1275,9 @@ class QasmWriter:
             for bit_reg in self.cregs.values():
                 if regname_regex.match(bit_reg.name) is None:
                     raise QASMUnsupportedError(
-                        f"Invalid register name '{bit_reg.name}'. QASM register names must "
-                        "begin with a lowercase letter and may only contain lowercase "
-                        "and uppercase letters, numbers, and underscores. "
+                        f"Invalid register name '{bit_reg.name}'. QASM register names "
+                        "must begin with a lowercase letter and may only contain "
+                        "lowercase and uppercase letters, numbers, and underscores. "
                         "Try renaming the register with `rename_units` first."
                     )
                 self.strings.add_string(f"creg {bit_reg.name}[{bit_reg.size}];\n")
