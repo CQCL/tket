@@ -16,7 +16,7 @@ import json
 import pytest
 from referencing import Registry
 from referencing.jsonschema import DRAFT7
-from jsonschema import Draft7Validator, ValidationError
+from jsonschema import Draft7Validator, ValidationError  # type: ignore
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -417,7 +417,7 @@ schema_store = [
     (plact_schema["$id"], DRAFT7.create_resource(plact_schema)),
     (pred_schema["$id"], DRAFT7.create_resource(pred_schema)),
 ]
-registry = Registry().with_resources(schema_store)
+registry: Registry = Registry().with_resources(schema_store)
 pass_validator = Draft7Validator(pass_schema, registry=registry)
 predicate_validator = Draft7Validator(pred_schema, registry=registry)
 

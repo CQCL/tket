@@ -15,7 +15,7 @@
 import json
 from referencing import Registry
 from referencing.jsonschema import DRAFT7
-from jsonschema import Draft7Validator
+from jsonschema import Draft7Validator  # type: ignore
 from pathlib import Path
 from pytket.circuit import Node
 from pytket.architecture import Architecture, SquareGrid, FullyConnected, RingArch
@@ -34,7 +34,7 @@ schema_store = [
     (arch_schema["$id"], DRAFT7.create_resource(arch_schema)),
     (fc_schema["$id"], DRAFT7.create_resource(fc_schema)),
 ]
-registry = Registry().with_resources(schema_store)
+registry: Registry = Registry().with_resources(schema_store)
 arch_validator = Draft7Validator(arch_schema, registry=registry)
 fc_validator = Draft7Validator(fc_schema, registry=registry)
 
