@@ -882,10 +882,10 @@ def test_register_name_check() -> None:
     qb = Qubit("Q", 0)
     c.add_qubit(qb)
     c.H(qb)
-    with pytest.raises(QASMUnsupportedError) as e:
+    with pytest.raises(QASMUnsupportedError) as e2:
         qasm = circuit_to_qasm_str(c)
     err_msg = "Invalid register name 'Q'"
-    assert err_msg in str(e.value)
+    assert err_msg in str(e2.value)
 
 
 if __name__ == "__main__":
