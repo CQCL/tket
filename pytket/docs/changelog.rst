@@ -14,6 +14,8 @@ Fixes:
 
 * When converting QASM expressions to ``ClassicalExpBox``, preserve the ordering
   of the bits in the expression in the resulting ``cmd.args``
+* Fix incorrect serialisation of ``PauliExpPairBox`` when the Pauli strings are of
+  length 2.
 
 1.21.0 (October 2023)
 ---------------------
