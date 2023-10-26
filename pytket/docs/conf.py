@@ -55,7 +55,6 @@ release = "1.21.0"
 extensions = [
     "sphinx.ext.autodoc",
     "sphinx.ext.autosummary",
-    "sphinx.ext.intersphinx",
     "sphinx.ext.mathjax",
     "sphinx.ext.viewcode",
     "sphinx_copybutton",
@@ -87,10 +86,6 @@ language = "en"
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = ["_build", "Thumbs.db", ".DS_Store"]
 
-# The name of the Pygments (syntax highlighting) style to use.
-pygments_style = "borland"
-
-
 # -- Options for HTML output -------------------------------------------------
 
 # The theme to use for HTML and HTML Help pages.  See the documentation for
@@ -102,10 +97,12 @@ html_theme = "sphinx_book_theme"
 # further.  For a list of options available for each theme, see the
 # documentation.
 #
+
 html_theme_options = {
     "repository_url": "https://github.com/CQCL/tket",
     "use_repository_button": True,
     "use_issues_button": True,
+    "navigation_with_keys": True,
     "logo": {
         "image_light": "_static/Quantinuum_logo_black.png",
         "image_dark": "_static/Quantinuum_logo_white.png",
