@@ -223,11 +223,19 @@ _all_string_maps = {
 }
 
 unit_regex = re.compile(r"([a-z][a-zA-Z0-9_]*)\[([\d]+)\]")
+regname_regex = re.compile(r"^[a-z][a-zA-Z0-9_]*$")
 
 
 def _extract_reg(var: Token) -> Tuple[str, int]:
     match = unit_regex.match(var.value)
-    assert match is not None
+    if match is None:
+        raise QASMParseError(
+            f"Invalid register definition '{var.value}'. Register definitions "
+            "must follow the pattern '<name> [<size in integer>]'. "
+            "For example, 'q [5]'. QASM register names must begin with a "
+            "lowercase letter and may only contain lowercase and uppercase "
+            "letters, numbers, and underscores."
+        )
     return match.group(1), int(match.group(2))
 
 
@@ -1256,8 +1264,22 @@ class QasmWriter:
             self.qregs = _retrieve_registers(cast(list[UnitID], qubits), QubitRegister)
             self.cregs = _retrieve_registers(cast(list[UnitID], bits), BitRegister)
             for reg in self.qregs.values():
+                if regname_regex.match(reg.name) is None:
+                    raise QASMUnsupportedError(
+                        f"Invalid register name '{reg.name}'. QASM register names must "
+                        "begin with a lowercase letter and may only contain lowercase "
+                        "and uppercase letters, numbers, and underscores. "
+                        "Try renaming the register with `rename_units` first."
+                    )
                 self.strings.add_string(f"qreg {reg.name}[{reg.size}];\n")
             for bit_reg in self.cregs.values():
+                if regname_regex.match(bit_reg.name) is None:
+                    raise QASMUnsupportedError(
+                        f"Invalid register name '{bit_reg.name}'. QASM register names "
+                        "must begin with a lowercase letter and may only contain "
+                        "lowercase and uppercase letters, numbers, and underscores. "
+                        "Try renaming the register with `rename_units` first."
+                    )
                 self.strings.add_string(f"creg {bit_reg.name}[{bit_reg.size}];\n")
         else:
             # gate definition, no header necessary for file
