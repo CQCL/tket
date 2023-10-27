@@ -190,7 +190,12 @@ bool PauliExpPairBox::is_equal(const Op &op_other) const {
 nlohmann::json PauliExpPairBox::to_json(const Op_ptr &op) {
   const auto &box = static_cast<const PauliExpPairBox &>(*op);
   nlohmann::json j = core_box_json(box);
-  j["paulis_pair"] = box.get_paulis_pair();
+  auto paulis_pair = box.get_paulis_pair();
+  // use vector to avoid serialising into a dictionary if the Pauli strings are
+  // of length 2
+  std::vector<std::vector<Pauli>> paulis_vec{
+      paulis_pair.first, paulis_pair.second};
+  j["paulis_pair"] = paulis_vec;
   j["phase_pair"] = box.get_phase_pair();
   j["cx_config"] = box.get_cx_config();
   return j;
