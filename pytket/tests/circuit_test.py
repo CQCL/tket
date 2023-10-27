@@ -48,6 +48,7 @@ from pytket.circuit import (
     Bit,
     BitRegister,
     QubitRegister,
+    CXConfigType,
 )
 from pytket.circuit.display import get_circuit_renderer, render_circuit_as_html
 from pytket.circuit.named_types import (
@@ -674,6 +675,15 @@ def test_boxes() -> None:
             command.op.get_unitary()
 
 
+def test_pauliexp_pair_box_serialisation() -> None:
+    # https://github.com/CQCL/tket/issues/1084
+    p = PauliExpPairBox(
+        [Pauli.Z, Pauli.X], 0.5, [Pauli.X, Pauli.Z], 0.2, CXConfigType.MultiQGate
+    )
+    c = Circuit(2).add_pauliexppairbox(p, [0, 1])
+    assert json_validate(c)
+
+
 def test_tofollibox_strats() -> None:
     permutation = [
         ([_0, _0, _0, _0], [_1, _1, _1, _1]),
@@ -1261,3 +1271,4 @@ if __name__ == "__main__":
     test_measuring_registers()
     test_multi_controlled_gates()
     test_counting_n_qubit_gates()
+    test_pauliexp_pair_box_serialisation()
