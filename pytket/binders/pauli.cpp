@@ -243,10 +243,7 @@ PYBIND11_MODULE(pauli, m) {
       .def_property_readonly(
           "coeff",
           [](const PauliStabiliser &stabiliser) {
-            if (stabiliser.coeff % 4 == 0) return 1;
-            if (stabiliser.coeff % 4 == 2) return -1;
-            throw std::logic_error(
-                "Cannot obtain imaginary coefficient from Pauli Stabiliser.");
+            return stabiliser.is_real_negative() ? -1 : 1;
           },
           "The coefficient of the stabiliser")
       .def_property_readonly(

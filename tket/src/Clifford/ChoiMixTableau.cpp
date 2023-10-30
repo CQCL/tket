@@ -115,7 +115,7 @@ ChoiMixTableau::ChoiMixTableau(const std::list<row_tensor_t>& rows)
       if (qb.second == Pauli::X || qb.second == Pauli::Y) xmat(r, c) = true;
       if (qb.second == Pauli::Z || qb.second == Pauli::Y) zmat(r, c) = true;
     }
-    phase(r) = (row.first.coeff + row.second.coeff % 4 == 2);
+    phase(r) = row.first.is_real_negative() ^ row.second.is_real_negative();
     ++r;
   }
   tab_ = SymplecticTableau(xmat, zmat, phase);

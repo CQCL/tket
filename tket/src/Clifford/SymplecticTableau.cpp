@@ -94,7 +94,7 @@ SymplecticTableau::SymplecticTableau(const PauliStabiliserVec &rows) {
       xmat_(i, q) = (p == Pauli::X) || (p == Pauli::Y);
       zmat_(i, q) = (p == Pauli::Z) || (p == Pauli::Y);
     }
-    phase_(i) = (stab.coeff % 4 == 2);
+    phase_(i) = stab.is_real_negative();
   }
 }
 
@@ -288,7 +288,7 @@ void SymplecticTableau::apply_pauli_gadget(
     pauli_xrow(i) = (p == Pauli::X) || (p == Pauli::Y);
     pauli_zrow(i) = (p == Pauli::Z) || (p == Pauli::Y);
   }
-  bool phase = (pauli.coeff % 4 == 2) ^ (half_pis == 3);
+  bool phase = pauli.is_real_negative() ^ (half_pis == 3);
 
   for (unsigned i = 0; i < n_rows_; ++i) {
     bool anti = false;

@@ -337,7 +337,7 @@ static unsigned add_assertion_operator(
   Bit b(debug_bit_index++);
   circ.add_bit(b);
   circ.add_op<UnitID>(OpType::Measure, {ancilla, b});
-  expected_readouts.push_back(!pauli.coeff);
+  expected_readouts.push_back(pauli.is_real_negative());
   return debug_bit_index;
 }
 

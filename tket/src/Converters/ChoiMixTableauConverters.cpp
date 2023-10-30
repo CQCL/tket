@@ -617,7 +617,7 @@ std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(const ChoiMixTableau& t) {
           "synthesis");
     Qubit initialised_qb = row.second.string.begin()->first;
     out_circ.qubit_create(initialised_qb);
-    if (row.second.coeff % 4 == 2) {
+    if (row.second.is_real_negative()) {
       out_circ.add_op<Qubit>(OpType::X, {initialised_qb});
     }
     zero_initialised.insert(initialised_qb);

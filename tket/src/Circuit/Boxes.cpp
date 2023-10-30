@@ -689,7 +689,7 @@ nlohmann::json StabiliserAssertionBox::to_json(const Op_ptr &op) {
   // backwards compatibility with before templated PauliTensor
   std::vector<std::pair<std::vector<Pauli>, bool>> stabiliser_encoding;
   for (const PauliStabiliser &stab : box.get_stabilisers())
-    stabiliser_encoding.push_back({stab.string, (stab.coeff % 4 == 0)});
+    stabiliser_encoding.push_back({stab.string, !stab.is_real_negative()});
   j["stabilisers"] = stabiliser_encoding;
   return j;
 }
