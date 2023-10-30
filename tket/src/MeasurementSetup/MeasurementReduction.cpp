@@ -60,8 +60,7 @@ MeasurementSetup measurement_reduction(
         if (qp_pair.second == Pauli::Z)
           bits.push_back(qb_location_map.at(qp_pair.first));
       }
-      bool invert = (stab.coeff % 4 == 2);
-      ms.add_result_for_term(string, {i, bits, invert});
+      ms.add_result_for_term(string, {i, bits, stab.is_real_negative()});
       ++gadgets_iter;
     }
     ++i;

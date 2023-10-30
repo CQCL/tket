@@ -1207,6 +1207,28 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n\n:return: the new :py:class:`Circuit`",
           py::arg("control_qubit"), py::arg("target_qubit"))
       .def(
+          "CS",
+          [](Circuit *circ, unsigned ctrl, unsigned trgt,
+             const py::kwargs &kwargs) {
+            return add_gate_method_noparams<unsigned>(
+                circ, OpType::CS, {ctrl, trgt}, kwargs);
+          },
+          "Appends a CS gate on the wires for the specified control "
+          "and target qubits."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("control_qubit"), py::arg("target_qubit"))
+      .def(
+          "CSdg",
+          [](Circuit *circ, unsigned ctrl, unsigned trgt,
+             const py::kwargs &kwargs) {
+            return add_gate_method_noparams<unsigned>(
+                circ, OpType::CSdg, {ctrl, trgt}, kwargs);
+          },
+          "Appends a CSdg gate on the wires for the specified control "
+          "and target qubits."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("control_qubit"), py::arg("target_qubit"))
+      .def(
           "CRz",
           [](Circuit *circ, const Expr &angle, unsigned ctrl, unsigned trgt,
              const py::kwargs &kwargs) {
@@ -1794,6 +1816,28 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
                 circ, OpType::CSXdg, {ctrl, trgt}, kwargs);
           },
           "Appends a CSXdg gate on the wires for the specified control "
+          "and target qubits."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("control_qubit"), py::arg("target_qubit"))
+      .def(
+          "CS",
+          [](Circuit *circ, const Qubit &ctrl, const Qubit &trgt,
+             const py::kwargs &kwargs) {
+            return add_gate_method_noparams<UnitID>(
+                circ, OpType::CS, {ctrl, trgt}, kwargs);
+          },
+          "Appends a CS gate on the wires for the specified control "
+          "and target qubits."
+          "\n\n:return: the new :py:class:`Circuit`",
+          py::arg("control_qubit"), py::arg("target_qubit"))
+      .def(
+          "CSdg",
+          [](Circuit *circ, const Qubit &ctrl, const Qubit &trgt,
+             const py::kwargs &kwargs) {
+            return add_gate_method_noparams<UnitID>(
+                circ, OpType::CSdg, {ctrl, trgt}, kwargs);
+          },
+          "Appends a CSdg gate on the wires for the specified control "
           "and target qubits."
           "\n\n:return: the new :py:class:`Circuit`",
           py::arg("control_qubit"), py::arg("target_qubit"))

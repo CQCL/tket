@@ -48,6 +48,7 @@ from pytket.circuit import (
     Bit,
     BitRegister,
     QubitRegister,
+    CXConfigType,
 )
 from pytket.circuit.display import get_circuit_renderer, render_circuit_as_html
 from pytket.circuit.named_types import (
@@ -203,13 +204,15 @@ def test_circuit_gen() -> None:
     c.FSim(0.2, 0.4, 0, 1)
     c.Sycamore(1, 2)
     c.ISWAPMax(2, 3)
+    c.CS(0, 2)
+    c.CSdg(1, 2)
 
     assert c.n_qubits == 4
-    assert c._n_vertices() == 45
-    assert c.n_gates == 29
+    assert c._n_vertices() == 47
+    assert c.n_gates == 31
 
     commands = c.get_commands()
-    assert len(commands) == 29
+    assert len(commands) == 31
     assert str(commands[0]) == "X q[0];"
     assert str(commands[2]) == "CX q[2], q[0];"
     assert str(commands[4]) == "CRz(0.5) q[0], q[3];"
@@ -237,6 +240,8 @@ def test_circuit_gen() -> None:
     assert str(commands[26]) == "FSim(0.2, 0.4) q[0], q[1];"
     assert str(commands[27]) == "Sycamore q[1], q[2];"
     assert str(commands[28]) == "ISWAPMax q[2], q[3];"
+    assert str(commands[29]) == "CS q[0], q[2];"
+    assert str(commands[30]) == "CSdg q[1], q[2];"
 
     assert commands[14].qubits == [Qubit(3)]
     assert commands[14].bits == [Bit(3)]
@@ -670,6 +675,15 @@ def test_boxes() -> None:
             command.op.get_unitary()
 
 
+def test_pauliexp_pair_box_serialisation() -> None:
+    # https://github.com/CQCL/tket/issues/1084
+    p = PauliExpPairBox(
+        [Pauli.Z, Pauli.X], 0.5, [Pauli.X, Pauli.Z], 0.2, CXConfigType.MultiQGate
+    )
+    c = Circuit(2).add_pauliexppairbox(p, [0, 1])
+    assert json_validate(c)
+
+
 def test_tofollibox_strats() -> None:
     permutation = [
         ([_0, _0, _0, _0], [_1, _1, _1, _1]),
@@ -784,6 +798,12 @@ def test_str() -> None:
     c = Circuit(2).CSXdg(0, 1)
     op = c.get_commands()[0].op
     assert op.__str__() == "CSXdg"
+    c = Circuit(2).CS(0, 1)
+    op = c.get_commands()[0].op
+    assert op.__str__() == "CS"
+    c = Circuit(2).CSdg(0, 1)
+    op = c.get_commands()[0].op
+    assert op.__str__() == "CSdg"
     c = Circuit(1).SX(0)
     op = c.get_commands()[0].op
     assert op.__str__() == "SX"
@@ -1053,6 +1073,11 @@ def test_op_dagger_transpose() -> None:
     sxdg = Op.create(OpType.SXdg)
     assert sx.dagger == sxdg
     assert sx.transpose == sx
+    cs = Op.create(OpType.CS)
+    csdg = Op.create(OpType.CSdg)
+    assert cs.dagger == csdg
+    assert cs.transpose == cs
+    assert csdg.transpose == csdg
 
 
 def test_clifford_checking() -> None:
@@ -1246,3 +1271,4 @@ if __name__ == "__main__":
     test_measuring_registers()
     test_multi_controlled_gates()
     test_counting_n_qubit_gates()
+    test_pauliexp_pair_box_serialisation()

@@ -153,6 +153,12 @@ SCENARIO("Transforms::remove_redundancies removes typical redundancies") {
           TestGate{OpType::CSX, {0, 1}}, TestGate{OpType::CSXdg, {1, 0}},
           false},
       TestCase{
+          "Cancelling CSdg=CS (same port order)",
+          TestGate{OpType::CSdg, {0, 1}}, TestGate{OpType::CS, {0, 1}}, true},
+      TestCase{
+          "Cancelling CSdg=CS (swapped port order)",
+          TestGate{OpType::CSdg, {0, 1}}, TestGate{OpType::CS, {1, 0}}, true},
+      TestCase{
           "Cancelling CCXs (same port order)", TestGate{OpType::CCX, {0, 1, 2}},
           TestGate{OpType::CCX, {0, 1, 2}}, true},
       TestCase{

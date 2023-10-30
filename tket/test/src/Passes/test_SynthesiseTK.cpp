@@ -80,7 +80,9 @@ SCENARIO("SynthesiseTK correctness") {
     c.add_op<unsigned>(OpType::noop, {1});
     c.add_op<unsigned>(OpType::ZZMax, {0, 1});
     c.add_op<unsigned>(OpType::Sycamore, {1, 0});
+    c.add_op<unsigned>(OpType::CSdg, {1, 0});
     c.add_op<unsigned>(OpType::ISWAPMax, {0, 1});
+    c.add_op<unsigned>(OpType::CS, {0, 1});
     check_synthesise_tk(c);
   }
   GIVEN("A circuit with (>2)-qubit gates") {

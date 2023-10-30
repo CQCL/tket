@@ -451,9 +451,9 @@ UnitaryTableau UnitaryTableau::dagger() const {
   // Correct phases
   for (unsigned i = 0; i < nqb; ++i) {
     SpPauliStabiliser xr = dag.get_xrow(qubits_.right.at(i));
-    dag.tab_.phase_(i) = (get_row_product(xr).coeff % 4 == 2);
+    dag.tab_.phase_(i) = get_row_product(xr).is_real_negative();
     SpPauliStabiliser zr = dag.get_zrow(qubits_.right.at(i));
-    dag.tab_.phase_(i + nqb) = (get_row_product(zr).coeff % 4 == 2);
+    dag.tab_.phase_(i + nqb) = get_row_product(zr).is_real_negative();
   }
 
   return dag;

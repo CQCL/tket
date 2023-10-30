@@ -108,6 +108,175 @@ SCENARIO("Testing equality of dense PauliTensor variants") {
   }
 }
 
+SCENARIO("Testing casting between different PauliTensor variants") {
+  GIVEN("Casting between different coefficient types") {
+    SpPauliString a1{};
+    SpPauliStabiliser b1{};
+    SpPauliStabiliser bi({}, 1);
+    SpPauliStabiliser bm1({}, 2);
+    SpPauliStabiliser bmi({}, 3);
+    SpCxPauliTensor c1{};
+    SpCxPauliTensor ci({}, i_);
+    SpCxPauliTensor cm1({}, -1.);
+    SpCxPauliTensor cmi({}, -i_);
+    SpCxPauliTensor cval({}, 0.48 - 2.3 * i_);
+    SpSymPauliTensor d1{};
+    SpSymPauliTensor di({}, Expr(SymEngine::I));
+    SpSymPauliTensor dm1({}, -1.);
+    SpSymPauliTensor dmi({}, -Expr(SymEngine::I));
+    SpSymPauliTensor dval({}, 0.48 - 2.3 * i_);
+    SpSymPauliTensor dsym({}, Expr("a"));
+
+    CHECK((SpPauliString)a1 == a1);
+    CHECK((SpPauliString)b1 == a1);
+    CHECK((SpPauliString)c1 == a1);
+    CHECK((SpPauliString)d1 == a1);
+    CHECK((SpPauliStabiliser)a1 == b1);
+    CHECK((SpPauliStabiliser)b1 == b1);
+    CHECK((SpPauliStabiliser)c1 == b1);
+    CHECK((SpPauliStabiliser)d1 == b1);
+    CHECK((SpCxPauliTensor)a1 == c1);
+    CHECK((SpCxPauliTensor)b1 == c1);
+    CHECK((SpCxPauliTensor)c1 == c1);
+    CHECK((SpCxPauliTensor)d1 == c1);
+    CHECK((SpSymPauliTensor)a1 == d1);
+    CHECK((SpSymPauliTensor)b1 == d1);
+    CHECK((SpSymPauliTensor)c1 == d1);
+    CHECK((SpSymPauliTensor)d1 == d1);
+
+    CHECK((SpPauliString)bi == a1);
+    CHECK((SpPauliString)ci == a1);
+    CHECK((SpPauliString)di == a1);
+    CHECK((SpPauliStabiliser)bi == bi);
+    CHECK((SpPauliStabiliser)ci == bi);
+    CHECK((SpPauliStabiliser)di == bi);
+    CHECK((SpCxPauliTensor)bi == ci);
+    CHECK((SpCxPauliTensor)ci == ci);
+    CHECK((SpCxPauliTensor)di == ci);
+    CHECK((SpSymPauliTensor)bi == di);
+    CHECK((SpSymPauliTensor)ci == di);
+    CHECK((SpSymPauliTensor)di == di);
+
+    CHECK((SpPauliString)bm1 == a1);
+    CHECK((SpPauliString)cm1 == a1);
+    CHECK((SpPauliString)dm1 == a1);
+    CHECK((SpPauliStabiliser)bm1 == bm1);
+    CHECK((SpPauliStabiliser)cm1 == bm1);
+    CHECK((SpPauliStabiliser)dm1 == bm1);
+    CHECK((SpCxPauliTensor)bm1 == cm1);
+    CHECK((SpCxPauliTensor)cm1 == cm1);
+    CHECK((SpCxPauliTensor)dm1 == cm1);
+    CHECK((SpSymPauliTensor)bm1 == dm1);
+    CHECK((SpSymPauliTensor)cm1 == dm1);
+    CHECK((SpSymPauliTensor)dm1 == dm1);
+
+    CHECK((SpPauliString)bmi == a1);
+    CHECK((SpPauliString)cmi == a1);
+    CHECK((SpPauliString)dmi == a1);
+    CHECK((SpPauliStabiliser)bmi == bmi);
+    CHECK((SpPauliStabiliser)cmi == bmi);
+    CHECK((SpPauliStabiliser)dmi == bmi);
+    CHECK((SpCxPauliTensor)bmi == cmi);
+    CHECK((SpCxPauliTensor)cmi == cmi);
+    CHECK((SpCxPauliTensor)dmi == cmi);
+    CHECK((SpSymPauliTensor)bmi == dmi);
+    CHECK((SpSymPauliTensor)cmi == dmi);
+    CHECK((SpSymPauliTensor)dmi == dmi);
+
+    CHECK((SpPauliString)cval == a1);
+    CHECK((SpPauliString)dval == a1);
+    REQUIRE_THROWS((SpPauliStabiliser)cval);
+    REQUIRE_THROWS((SpPauliStabiliser)dval);
+    CHECK((SpCxPauliTensor)cval == cval);
+    CHECK((SpCxPauliTensor)dval == cval);
+    CHECK((SpSymPauliTensor)cval == dval);
+    CHECK((SpSymPauliTensor)dval == dval);
+
+    CHECK((SpPauliString)dsym == a1);
+    REQUIRE_THROWS((SpPauliStabiliser)dsym);
+    REQUIRE_THROWS((SpCxPauliTensor)dsym);
+    CHECK((SpSymPauliTensor)dsym == dsym);
+  }
+  GIVEN("Casting between different Pauli containers") {
+    PauliString ps({Pauli::I, Pauli::X, Pauli::Y});
+    SpPauliString sps({Qubit(1), Qubit(2)}, {Pauli::X, Pauli::Y});
+    SpPauliString non_default(Qubit("a", 0), Pauli::Z);
+
+    CHECK((SpPauliString)ps == sps);
+    CHECK((SpPauliString)sps == sps);
+    CHECK((PauliString)ps == ps);
+    CHECK((PauliString)sps == ps);
+    CHECK((SpPauliString)non_default == non_default);
+    REQUIRE_THROWS((PauliString)non_default);
+  }
+}
+
+SCENARIO("Qubit partitions") {
+  GIVEN("Sparse PauliTensors") {
+    std::vector<Qubit> qs{Qubit(0),           Qubit("a", 0), Qubit("a", 1),
+                          Qubit("b", {0, 0}), Qubit("c", 4), Qubit("p", 12),
+                          Qubit("anc", 0),    Qubit(2)};
+    std::list<Qubit> qsl{qs.begin(), qs.end()};
+    SpPauliString xxyyzzii(
+        qsl, {Pauli::X, Pauli::X, Pauli::Y, Pauli::Y, Pauli::Z, Pauli::Z,
+              Pauli::I, Pauli::I});
+    SpPauliString ixyxyziz(
+        qsl, {Pauli::I, Pauli::X, Pauli::Y, Pauli::X, Pauli::Y, Pauli::Z,
+              Pauli::I, Pauli::Z});
+    xxyyzzii.compress();
+
+    // Common qubits should ignore Pauli::I matches
+    CHECK(
+        xxyyzzii.common_qubits(ixyxyziz) ==
+        std::set<Qubit>{qs[1], qs[2], qs[5]});
+    CHECK(
+        xxyyzzii.conflicting_qubits(ixyxyziz) == std::set<Qubit>{qs[3], qs[4]});
+    CHECK(xxyyzzii.own_qubits(ixyxyziz) == std::set<Qubit>{qs[0]});
+    CHECK(ixyxyziz.own_qubits(xxyyzzii) == std::set<Qubit>{qs[7]});
+  }
+  GIVEN("Dense PauliTensors") {
+    PauliString xxyyzzii(
+        {Pauli::X, Pauli::X, Pauli::Y, Pauli::Y, Pauli::Z, Pauli::Z, Pauli::I});
+    PauliString ixyxyziz(
+        {Pauli::I, Pauli::X, Pauli::Y, Pauli::X, Pauli::Y, Pauli::Z, Pauli::I,
+         Pauli::Z});
+
+    // Common indices should ignore Pauli::I matches
+    CHECK(xxyyzzii.common_indices(ixyxyziz) == std::set<unsigned>{1, 2, 5});
+    CHECK(xxyyzzii.conflicting_indices(ixyxyziz) == std::set<unsigned>{3, 4});
+    CHECK(xxyyzzii.own_indices(ixyxyziz) == std::set<unsigned>{0});
+    CHECK(ixyxyziz.own_indices(xxyyzzii) == std::set<unsigned>{7});
+  }
+}
+
+SCENARIO("String formatting of PauliTensor") {
+  CHECK(SpPauliString().to_str() == "()");
+  CHECK(SpPauliStabiliser({}, 0).to_str() == "()");
+  CHECK(SpPauliStabiliser({}, 1).to_str() == "i*()");
+  CHECK(SpPauliStabiliser({}, 2).to_str() == "-()");
+  CHECK(SpPauliStabiliser({}, 3).to_str() == "-i*()");
+  CHECK(SpCxPauliTensor({}, 1.).to_str() == "()");
+  CHECK(SpCxPauliTensor({}, -1.).to_str() == "-()");
+  CHECK(SpCxPauliTensor({}, 4.2 + 0.87 * i_).to_str() == "(4.2,0.87)*()");
+  CHECK(SpSymPauliTensor({}, 1.).to_str() == "()");
+  CHECK(SpSymPauliTensor({}, -1.).to_str() == "-()");
+  CHECK(
+      SpSymPauliTensor({}, 4.2 + 0.87 * Expr(SymEngine::I)).to_str() ==
+      "(4.2 + 0.87*I)*()");
+  CHECK(SpSymPauliTensor({}, Expr("2*a")).to_str() == "(2*a)*()");
+
+  CHECK(
+      SpPauliString({{Qubit("a", 2), Pauli::X},
+                     {Qubit("a", 0), Pauli::Z},
+                     {Qubit("b", 0), Pauli::I},
+                     {Qubit("b", 1), Pauli::Y}})
+          .to_str() == "(Za[0], Xa[2], Ib[0], Yb[1])");
+  CHECK(
+      PauliString({Pauli::I, Pauli::Z, Pauli::X, Pauli::Y, Pauli::I})
+          .to_str() == "IZXYI");
+  CHECK(PauliStabiliser({Pauli::X, Pauli::Y}, 2).to_str() == "-XY");
+}
+
 SCENARIO("Testing multiplication of sparse PauliTensor") {
   Qubit q0 = Qubit("q", 0);
   Qubit q1 = Qubit("q", 1);
@@ -294,6 +463,12 @@ SCENARIO("Test hashing for dense PauliTensor") {
     qps2.set(5, Pauli::I);
     REQUIRE(qps1.hash_value() == qps2.hash_value());
   }
+  GIVEN("Stabilisers") {
+    DensePauliMap pm{Pauli::Z, Pauli::Y, Pauli::X, Pauli::I};
+    PauliStabiliser ps1(pm, 2);
+    PauliStabiliser ps2(pm, 6);
+    REQUIRE(ps1.hash_value() == ps2.hash_value());
+  }
   GIVEN("Trivial tensor") {
     CxPauliTensor qpt1;
     CxPauliTensor qpt2;
@@ -312,6 +487,93 @@ SCENARIO("Test hashing for dense PauliTensor") {
     qpt2.set(5, Pauli::I);
     qpt2.set(6, Pauli::I);
     REQUIRE(qpt1.hash_value() == qpt2.hash_value());
+  }
+}
+
+SCENARIO("Test matrix evaluation") {
+  GIVEN("Default ordering") {
+    SpPauliString ixs({Qubit(0), Qubit(1)}, {Pauli::I, Pauli::X});
+    PauliString ixd({Pauli::I, Pauli::X});
+    CmplxSpMat ix(4, 4);
+    ix.insert(0, 1) = 1.;
+    ix.insert(1, 0) = 1.;
+    ix.insert(2, 3) = 1.;
+    ix.insert(3, 2) = 1.;
+    // Eigen sparse matrices don't have an equality check, isApprox is the
+    // nearest
+    CHECK(ixs.to_sparse_matrix().isApprox(ix));
+    CHECK(ixd.to_sparse_matrix().isApprox(ix));
+    SpPauliString ixq({{Qubit("b", 0), Pauli::X}, {Qubit("a", 1), Pauli::I}});
+    CHECK(ixq.to_sparse_matrix().isApprox(ix));
+  }
+  GIVEN("Padding to n qubits") {
+    SpPauliString ixs(DensePauliMap{Pauli::I, Pauli::X});
+    PauliString ixd({Pauli::I, Pauli::X});
+    CmplxSpMat ixi(8, 8);
+    ixi.insert(0, 2) = 1.;
+    ixi.insert(1, 3) = 1.;
+    ixi.insert(2, 0) = 1.;
+    ixi.insert(3, 1) = 1.;
+    ixi.insert(4, 6) = 1.;
+    ixi.insert(5, 7) = 1.;
+    ixi.insert(6, 4) = 1.;
+    ixi.insert(7, 5) = 1.;
+    CHECK(ixs.to_sparse_matrix(3).isApprox(ixi));
+    CHECK(ixd.to_sparse_matrix(3).isApprox(ixi));
+  }
+  GIVEN("Custom qubit ordering") {
+    SpPauliString ixs(DensePauliMap{Pauli::I, Pauli::X});
+    PauliString ixd({Pauli::I, Pauli::X});
+    CmplxSpMat xi(4, 4);
+    xi.insert(0, 2) = 1.;
+    xi.insert(1, 3) = 1.;
+    xi.insert(2, 0) = 1.;
+    xi.insert(3, 1) = 1.;
+    CmplxSpMat ixi(8, 8);
+    ixi.insert(0, 2) = 1.;
+    ixi.insert(1, 3) = 1.;
+    ixi.insert(2, 0) = 1.;
+    ixi.insert(3, 1) = 1.;
+    ixi.insert(4, 6) = 1.;
+    ixi.insert(5, 7) = 1.;
+    ixi.insert(6, 4) = 1.;
+    ixi.insert(7, 5) = 1.;
+    CHECK(ixs.to_sparse_matrix({Qubit(1), Qubit(0)}).isApprox(xi));
+    CHECK(ixs.to_sparse_matrix({Qubit(2), Qubit(1), Qubit(0)}).isApprox(ixi));
+    CHECK(ixd.to_sparse_matrix({Qubit(1), Qubit(0)}).isApprox(xi));
+    CHECK(ixd.to_sparse_matrix({Qubit(2), Qubit(1), Qubit(0)}).isApprox(ixi));
+  }
+  GIVEN("Different strings") {
+    PauliString xyzd({Pauli::X, Pauli::Y, Pauli::Z});
+    CmplxSpMat xyz(8, 8);
+    xyz.insert(0, 6) = -i_;
+    xyz.insert(1, 7) = i_;
+    xyz.insert(2, 4) = i_;
+    xyz.insert(3, 5) = -i_;
+    xyz.insert(4, 2) = -i_;
+    xyz.insert(5, 3) = i_;
+    xyz.insert(6, 0) = i_;
+    xyz.insert(7, 1) = -i_;
+    CHECK(xyzd.to_sparse_matrix().isApprox(xyz));
+  }
+  GIVEN("Different coefficients") {
+    CmplxSpMat ix(4, 4);
+    ix.insert(0, 1) = 1.;
+    ix.insert(1, 0) = 1.;
+    ix.insert(2, 3) = 1.;
+    ix.insert(3, 2) = 1.;
+    DensePauliMap ixd{Pauli::I, Pauli::X};
+    CHECK(PauliString(ixd).to_sparse_matrix().isApprox(ix));
+    CHECK(PauliStabiliser(ixd, 0).to_sparse_matrix().isApprox(ix));
+    CHECK(PauliStabiliser(ixd, 1).to_sparse_matrix().isApprox(i_ * ix));
+    CHECK(PauliStabiliser(ixd, 2).to_sparse_matrix().isApprox(-ix));
+    CHECK(PauliStabiliser(ixd, 3).to_sparse_matrix().isApprox(-i_ * ix));
+    CHECK(CxPauliTensor(ixd, 4.2 + 0.1 * i_)
+              .to_sparse_matrix()
+              .isApprox(Complex(4.2 + 0.1 * i_) * ix));
+    CHECK(SymPauliTensor(ixd, 4.2 + 0.1 * i_)
+              .to_sparse_matrix()
+              .isApprox(Complex(4.2 + 0.1 * i_) * ix));
   }
 }
 

@@ -168,20 +168,6 @@ void conjugate_PauliTensor(
     throw BadOpType(
         "3qb-Conjugations of Pauli strings only defined for XXPhase3", op);
   }
-  // Conjugations equiv = {{OpType::H, {q1}},      {OpType::CX, {q1, q2}},
-  //                       {OpType::CX, {q1, q0}}, {OpType::H, {q0}},
-  //                       {OpType::H, {q1}},      {OpType::CX, {q0, q2}},
-  //                       {OpType::H, {q0}},      {OpType::X, {q0}},
-  //                       {OpType::X, {q1}},      {OpType::X, {q2}}};
-
-  // for (auto [op, qbs] : equiv) {
-  //   if (qbs.size() == 1) {
-  //     conjugate_PauliTensor(qpt, op, qbs[0]);
-  //   } else {
-  //     TKET_ASSERT(qbs.size() == 2);
-  //     conjugate_PauliTensor(qpt, op, qbs[0], qbs[1]);
-  //   }
-  // }
   SpPauliStabiliser xxi_i({{q0, Pauli::X}, {q1, Pauli::X}}, 1);
   SpPauliStabiliser xix_i({{q0, Pauli::X}, {q2, Pauli::X}}, 1);
   SpPauliStabiliser ixx_i({{q1, Pauli::X}, {q2, Pauli::X}}, 1);

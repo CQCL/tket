@@ -146,6 +146,14 @@ void add_latex_for_command(LatexContext& context, const Command& command) {
           gate_name << get_op_ptr(OpType::SXdg)->get_name(true);
           break;
         }
+        case OpType::CS: {
+          gate_name << get_op_ptr(OpType::S)->get_name(true);
+          break;
+        }
+        case OpType::CSdg: {
+          gate_name << get_op_ptr(OpType::Sdg)->get_name(true);
+          break;
+        }
         default: {
         }
       }

@@ -623,6 +623,18 @@ const Circuit &CSXdg_using_CX() {
   return *C;
 }
 
+const Circuit &CS_using_CX() {
+  static std::unique_ptr<const Circuit> C =
+      std::make_unique<Circuit>([]() { return CU1_using_CX(0.5); }());
+  return *C;
+}
+
+const Circuit &CSdg_using_CX() {
+  static std::unique_ptr<const Circuit> C =
+      std::make_unique<Circuit>([]() { return CU1_using_CX(-0.5); }());
+  return *C;
+}
+
 const Circuit &CSWAP_using_CX() {
   static std::unique_ptr<const Circuit> C = std::make_unique<Circuit>([]() {
     Circuit c(3);

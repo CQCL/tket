@@ -323,7 +323,14 @@ void init_boxes(py::module &m) {
           [](PauliExpCommutingSetBox &pbox) { return *pbox.to_circuit(); },
           ":return: the :py:class:`Circuit` described by the box")
       .def(
-          "get_paulis", &PauliExpCommutingSetBox::get_pauli_gadgets,
+          "get_paulis",
+          [](const PauliExpCommutingSetBox &pbox) {
+            // For backwards compatibility with before templated PauliTensor
+            std::vector<std::pair<DensePauliMap, Expr>> gadgets;
+            for (const SymPauliTensor &g : pbox.get_pauli_gadgets())
+              gadgets.push_back({g.string, g.coeff});
+            return gadgets;
+          },
           ":return: the corresponding list of Pauli gadgets")
       .def(
           "get_cx_config", &PauliExpCommutingSetBox::get_cx_config,

@@ -517,14 +517,14 @@ void ChoiMixBuilder::solve_initialised_subspace() {
       throw std::logic_error(
           "Unexpected error during initialisation identification in "
           "ChoiMixTableau synthesis");
-    Qubit initialised_qb = row.second.string.map.begin()->first;
+    Qubit initialised_qb = row.second.string.begin()->first;
     // Multiply other rows to remove Z_qb components
     unsigned qb_col = tab.col_index_.left.at(ChoiMixTableau::col_key_t{
         initialised_qb, ChoiMixTableau::TableauSegment::Output});
     for (unsigned s = 0; s < r; ++s)
       if (tab.tab_.zmat(s, qb_col)) tab.tab_.row_mult(r, s);
     // Initialise with correct phase
-    if (row.second.coeff == -1.)
+    if (row.second.is_real_negative())
       out_circ_tp.add_op<Qubit>(OpType::X, {initialised_qb});
     tab.remove_row(r);
     zero_initialised.insert(initialised_qb);

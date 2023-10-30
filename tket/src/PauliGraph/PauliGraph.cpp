@@ -297,7 +297,7 @@ void PauliGraph::apply_pauli_gadget_at_end(
     if (pauli.commutes_with(compare_pauli)) {
       if (pauli.string == compare_pauli.string) {
         // Identical strings - we can merge vertices
-        if (pauli.coeff == compare_pauli.coeff) {
+        if (pauli.is_real_negative() == compare_pauli.is_real_negative()) {
           graph_[to_compare].angle_ += angle;
         } else {
           graph_[to_compare].angle_ -= angle;

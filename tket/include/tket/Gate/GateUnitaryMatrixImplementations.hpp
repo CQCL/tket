@@ -60,6 +60,8 @@ struct GateUnitaryMatrixImplementations {
   static const Eigen::Matrix2cd& SXdg();
   static const Eigen::Matrix4cd& CSX();
   static const Eigen::Matrix4cd& CSXdg();
+  static const Eigen::Matrix4cd& CS();
+  static const Eigen::Matrix4cd& CSdg();
 
   static Eigen::Matrix2cd Rx(double value);
   static Eigen::Matrix2cd Ry(double value);

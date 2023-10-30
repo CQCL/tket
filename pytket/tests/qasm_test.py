@@ -605,8 +605,8 @@ def test_scratch_bits_filtering() -> None:
     creg a[1];
     creg b[1];
     creg d[2];
-    creg {_TEMP_BIT_NAME}[100];
-    creg {_TEMP_BIT_NAME}_1[100];
+    creg {_TEMP_BIT_NAME}[32];
+    creg {_TEMP_BIT_NAME}_1[32];
     {_TEMP_BIT_NAME}[0] = (a[0] ^ b[0]);
     if({_TEMP_BIT_NAME}[0]==1) x q[0];
     """
@@ -818,6 +818,76 @@ measure q[0] -> c0[0];
     assert qasm == correct_qasm
 
 
+def test_max_reg_width() -> None:
+    circ_in = Circuit(1, 33)
+    circ_in.H(0).Measure(0, 32)
+    with pytest.raises(QASMUnsupportedError):
+        circuit_to_qasm_str(circ_in)
+    qasm_out = circuit_to_qasm_str(circ_in, maxwidth=64)
+    assert "measure q[0] -> c[32];" in qasm_out
+    qasm_in = """OPENQASM 2.0;
+include "qelib1.inc";
+qreg q[1];
+creg c[33];
+h q[0];
+measure q[0] -> c[32];"""
+    with pytest.raises(QASMUnsupportedError):
+        circuit_from_qasm_str(qasm_in)
+    circ_out = circuit_from_qasm_str(qasm_in, maxwidth=64)
+    assert len(circ_out.bits) == 33
+
+
+def test_classical_expbox_arg_order() -> None:
+    qasm = """
+    OPENQASM 2.0;
+    include "hqslib1.inc";
+    
+    qreg q[1];
+    
+    creg a[4];
+    creg b[4];
+    creg c[4];
+    creg d[4];
+    
+    c = a ^ b | d;
+    """
+
+    circ = circuit_from_qasm_str(qasm)
+    args = circ.get_commands()[0].args
+    expected_symbol_order = ["a", "b", "d", "c"]
+    expected_index_order = [0, 1, 2, 3]
+    assert len(args) == 4 * 4
+    arg_index = 0
+    for symbol in expected_symbol_order:
+        for index in expected_index_order:
+            assert args[arg_index].reg_name == symbol
+            assert args[arg_index].index[0] == index
+            arg_index += 1
+
+
+def test_register_name_check() -> None:
+    # register names must have the expression [a-z][a-zA-Z0-9_]*
+    qasm = """
+    OPENQASM 2.0;
+    include "hqslib1.inc";
+    
+    qreg Q[1];
+    """
+    with pytest.raises(QASMParseError) as e:
+        circ = circuit_from_qasm_str(qasm)
+    err_msg = "Invalid register definition 'Q[1]'"
+    assert err_msg in str(e.value)
+
+    c = Circuit()
+    qb = Qubit("Q", 0)
+    c.add_qubit(qb)
+    c.H(qb)
+    with pytest.raises(QASMUnsupportedError) as e2:
+        qasm = circuit_to_qasm_str(c)
+    err_msg = "Invalid register name 'Q'"
+    assert err_msg in str(e2.value)
+
+
 if __name__ == "__main__":
     test_qasm_correct()
     test_qasm_qubit()
@@ -853,3 +923,5 @@ if __name__ == "__main__":
     test_header_stops_gate_definition()
     test_tk2_definition()
     test_rxxyyzz_conversion()
+    test_classical_expbox_arg_order()
+    test_register_name_check()

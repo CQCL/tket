@@ -736,7 +736,7 @@ SCENARIO("Conjugating Cliffords through Pauli tensors") {
       conjugate_PauliTensor(qpt, OpType::H, qb0);
       THEN("X becomes Z") {
         REQUIRE(qpt.get(qb0) == Pauli::Z);
-        REQUIRE(qpt.coeff % 4 == 0);
+        REQUIRE(qpt.is_real_negative() == false);
       }
     }
     WHEN("Commuting a X through qb0") {
@@ -744,7 +744,7 @@ SCENARIO("Conjugating Cliffords through Pauli tensors") {
       conjugate_PauliTensor(qpt, OpType::X, qb0);
       THEN("X remains X") {
         REQUIRE(qpt.get(qb0) == Pauli::X);
-        REQUIRE(qpt.coeff % 4 == 0);
+        REQUIRE(qpt.is_real_negative() == false);
       }
     }
     WHEN("Commuting a X through qb1") {
@@ -752,7 +752,7 @@ SCENARIO("Conjugating Cliffords through Pauli tensors") {
       conjugate_PauliTensor(qpt, OpType::X, qb1);
       THEN("Y becomes -Y") {
         REQUIRE(qpt.get(qb1) == Pauli::Y);
-        REQUIRE(qpt.coeff % 4 == 2);
+        REQUIRE(qpt.is_real_negative() == true);
       }
     }
     WHEN("Commuting a CX through qb0-qb1") {
@@ -761,7 +761,7 @@ SCENARIO("Conjugating Cliffords through Pauli tensors") {
       THEN("XY becomes YZ") {
         REQUIRE(qpt.get(qb0) == Pauli::Y);
         REQUIRE(qpt.get(qb1) == Pauli::Z);
-        REQUIRE(qpt.coeff % 4 == 0);
+        REQUIRE(qpt.is_real_negative() == false);
       }
     }
     WHEN("Commuting an XXPhase3 through qb0-qb1-qb2") {
@@ -771,7 +771,7 @@ SCENARIO("Conjugating Cliffords through Pauli tensors") {
         REQUIRE(qpt.get(qb0) == Pauli::X);
         REQUIRE(qpt.get(qb1) == Pauli::Z);
         REQUIRE(qpt.get(qb2) == Pauli::Y);
-        REQUIRE(qpt.coeff % 4 == 2);
+        REQUIRE(qpt.is_real_negative() == true);
       }
     }
   }
@@ -783,7 +783,7 @@ SCENARIO("Conjugating Cliffords through Pauli tensors") {
         REQUIRE(qpt.get(qb0) == Pauli::X);
         REQUIRE(qpt.get(qb1) == Pauli::X);
         REQUIRE(qpt.get(qb2) == Pauli::X);
-        REQUIRE(qpt.coeff % 4 == 0);
+        REQUIRE(qpt.is_real_negative() == false);
       }
     }
   }

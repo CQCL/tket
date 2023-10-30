@@ -2,7 +2,7 @@ from __future__ import annotations
 import pytket._tket.circuit
 import sympy
 import typing
-__all__ = ['BRIDGE', 'BRIDGE_using_CX_0', 'BRIDGE_using_CX_1', 'C3X_normal_decomp', 'C4X_normal_decomp', 'CCX', 'CCX_modulo_phase_shift', 'CCX_normal_decomp', 'CH_using_CX', 'CRx_using_CX', 'CRx_using_TK2', 'CRy_using_CX', 'CRy_using_TK2', 'CRz_using_CX', 'CRz_using_TK2', 'CSWAP_using_CX', 'CSX_using_CX', 'CSXdg_using_CX', 'CU1_using_CX', 'CU1_using_TK2', 'CU3_using_CX', 'CV_using_CX', 'CVdg_using_CX', 'CX', 'CX_S_CX_reduced', 'CX_S_V_XC_reduced', 'CX_VS_CX_reduced', 'CX_V_CX_reduced', 'CX_V_S_XC_reduced', 'CX_XC_reduced', 'CX_using_ECR', 'CX_using_TK2', 'CX_using_XXPhase_0', 'CX_using_XXPhase_1', 'CX_using_ZZMax', 'CX_using_ZZPhase', 'CX_using_flipped_CX', 'CY_using_CX', 'CZ_using_CX', 'ECR_using_CX', 'ESWAP_using_CX', 'ESWAP_using_TK2', 'FSim_using_CX', 'FSim_using_TK2', 'H_CZ_H', 'ISWAP_using_CX', 'ISWAP_using_TK2', 'NPhasedX_using_PhasedX', 'PhasedISWAP_using_CX', 'PhasedISWAP_using_TK2', 'SWAP_using_CX_0', 'SWAP_using_CX_1', 'TK1_to_PhasedXRz', 'TK1_to_RzH', 'TK1_to_RzRx', 'TK1_to_RzSX', 'TK1_to_TK1', 'TK2_using_3xCX', 'TK2_using_CX', 'TK2_using_CX_and_swap', 'TK2_using_TK2_or_swap', 'TK2_using_ZZMax', 'TK2_using_ZZMax_and_swap', 'TK2_using_ZZPhase', 'TK2_using_ZZPhase_and_swap', 'TK2_using_normalised_TK2', 'X', 'X1_CX', 'XXPhase3_using_CX', 'XXPhase3_using_TK2', 'XXPhase_using_CX', 'XXPhase_using_TK2', 'YYPhase_using_CX', 'YYPhase_using_TK2', 'Z0_CX', 'ZZMax_using_CX', 'ZZPhase_using_CX', 'ZZPhase_using_TK2', 'approx_TK2_using_1xCX', 'approx_TK2_using_1xZZPhase', 'approx_TK2_using_2xCX', 'approx_TK2_using_2xZZPhase', 'ladder_down', 'ladder_down_2', 'ladder_up', 'two_Rz1']
+__all__ = ['BRIDGE', 'BRIDGE_using_CX_0', 'BRIDGE_using_CX_1', 'C3X_normal_decomp', 'C4X_normal_decomp', 'CCX', 'CCX_modulo_phase_shift', 'CCX_normal_decomp', 'CH_using_CX', 'CRx_using_CX', 'CRx_using_TK2', 'CRy_using_CX', 'CRy_using_TK2', 'CRz_using_CX', 'CRz_using_TK2', 'CSWAP_using_CX', 'CSX_using_CX', 'CSXdg_using_CX', 'CS_using_CX', 'CSdg_using_CX', 'CU1_using_CX', 'CU1_using_TK2', 'CU3_using_CX', 'CV_using_CX', 'CVdg_using_CX', 'CX', 'CX_S_CX_reduced', 'CX_S_V_XC_reduced', 'CX_VS_CX_reduced', 'CX_V_CX_reduced', 'CX_V_S_XC_reduced', 'CX_XC_reduced', 'CX_using_ECR', 'CX_using_TK2', 'CX_using_XXPhase_0', 'CX_using_XXPhase_1', 'CX_using_ZZMax', 'CX_using_ZZPhase', 'CX_using_flipped_CX', 'CY_using_CX', 'CZ_using_CX', 'ECR_using_CX', 'ESWAP_using_CX', 'ESWAP_using_TK2', 'FSim_using_CX', 'FSim_using_TK2', 'H_CZ_H', 'ISWAP_using_CX', 'ISWAP_using_TK2', 'NPhasedX_using_PhasedX', 'PhasedISWAP_using_CX', 'PhasedISWAP_using_TK2', 'SWAP_using_CX_0', 'SWAP_using_CX_1', 'TK1_to_PhasedXRz', 'TK1_to_RzH', 'TK1_to_RzRx', 'TK1_to_RzSX', 'TK1_to_TK1', 'TK2_using_3xCX', 'TK2_using_CX', 'TK2_using_CX_and_swap', 'TK2_using_TK2_or_swap', 'TK2_using_ZZMax', 'TK2_using_ZZMax_and_swap', 'TK2_using_ZZPhase', 'TK2_using_ZZPhase_and_swap', 'TK2_using_normalised_TK2', 'X', 'X1_CX', 'XXPhase3_using_CX', 'XXPhase3_using_TK2', 'XXPhase_using_CX', 'XXPhase_using_TK2', 'YYPhase_using_CX', 'YYPhase_using_TK2', 'Z0_CX', 'ZZMax_using_CX', 'ZZPhase_using_CX', 'ZZPhase_using_TK2', 'approx_TK2_using_1xCX', 'approx_TK2_using_1xZZPhase', 'approx_TK2_using_2xCX', 'approx_TK2_using_2xZZPhase', 'ladder_down', 'ladder_down_2', 'ladder_up', 'two_Rz1']
 def BRIDGE() -> pytket._tket.circuit.Circuit:
     """
     Just a BRIDGE[0,1,2] gate
@@ -74,6 +74,14 @@ def CSX_using_CX() -> pytket._tket.circuit.Circuit:
 def CSXdg_using_CX() -> pytket._tket.circuit.Circuit:
     """
     Equivalent to CSXdg, using CX and single-qubit gates
+    """
+def CS_using_CX() -> pytket._tket.circuit.Circuit:
+    """
+    Equivalent to CS, using CX and single-qubit gates
+    """
+def CSdg_using_CX() -> pytket._tket.circuit.Circuit:
+    """
+    Equivalent to CSdg, using CX and single-qubit gates
     """
 def CU1_using_CX(arg0: sympy.Expr | float) -> pytket._tket.circuit.Circuit:
     """
@@ -388,6 +396,14 @@ def _CSX_using_CX() -> pytket._tket.circuit.Circuit:
 def _CSXdg_using_CX() -> pytket._tket.circuit.Circuit:
     """
     Equivalent to CSXdg, using CX and single-qubit gates
+    """
+def _CS_using_CX() -> pytket._tket.circuit.Circuit:
+    """
+    Equivalent to CS, using CX and single-qubit gates
+    """
+def _CSdg_using_CX() -> pytket._tket.circuit.Circuit:
+    """
+    Equivalent to CSdg, using CX and single-qubit gates
     """
 def _CU1_using_CX(arg0: sympy.Expr | float) -> pytket._tket.circuit.Circuit:
     """
