@@ -275,7 +275,7 @@ typedef std::vector<Pauli> DensePauliMap;
  * @param cont The Pauli container to convert to another type.
  */
 template <typename OriginalContainer, typename NewContainer>
-NewContainer cast_container(const OriginalContainer &) = delete;
+NewContainer cast_container(const OriginalContainer &cont) = delete;
 template <>
 QubitPauliMap cast_container<QubitPauliMap, QubitPauliMap>(
     const QubitPauliMap &cont);
