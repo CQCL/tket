@@ -170,6 +170,10 @@ gate csx a, b {
   cu1(pi / 2) a, b;
   h b;
 }
+// controlled-S
+gate cs a,b {cu1(pi/2) a,b;}
+// controlled-conjugate S
+gate csdg a,b {cu1(-pi/2) a,b;}
 // controlled-U gate
 gate cu(theta, phi, lamb, gamma) c, t {
   p(gamma) c;

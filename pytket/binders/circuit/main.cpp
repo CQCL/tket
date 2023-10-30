@@ -209,6 +209,10 @@ PYBIND11_MODULE(circuit, m) {
       .value(
           "CSXdg", OpType::CSXdg,
           "Controlled :math:`\\mathrm{SX}^{\\dagger}` gate")
+      .value("CS", OpType::CS, "Controlled :math:`\\mathrm{S}` gate")
+      .value(
+          "CSdg", OpType::CSdg,
+          "Controlled :math:`\\mathrm{S}^{\\dagger}` gate")
       .value(
           "CRz", OpType::CRz,
           ":math:`(\\alpha) \\mapsto` Controlled "

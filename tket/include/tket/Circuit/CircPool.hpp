@@ -181,6 +181,12 @@ const Circuit &CSX_using_CX();
 /** Equivalent to CSXdg, using CX and single-qubit gates */
 const Circuit &CSXdg_using_CX();
 
+/** Equivalent to CS, using CX and single-qubit gates */
+const Circuit &CS_using_CX();
+
+/** Equivalent to CSdg, using CX and single-qubit gates */
+const Circuit &CSdg_using_CX();
+
 /** Equivalent to CSWAP, using CX and single-qubit gates */
 const Circuit &CSWAP_using_CX();
 

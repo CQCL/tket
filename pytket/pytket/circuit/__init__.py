@@ -135,6 +135,21 @@ def overload_add_wasm_to_reg(
     if args_wasm is None:
         args_wasm = [0]
 
+    if filehandler._check_file:
+        for reg in list_i:
+            if reg.size > 32:
+                raise ValueError(
+                    """wasm is only supporting 32 bit size registers,
+please use only registers of at most 32 bits"""
+                )
+
+        for reg in list_o:
+            if reg.size > 32:
+                raise ValueError(
+                    """wasm is only supporting 32 bit size registers,
+please use only registers of at most 32 bits"""
+                )
+
     if filehandler.check_function(funcname, len(list_i), len(list_o)):
         if (len(args_wasm)) > 0:
             self._add_w_register(max(args_wasm) + 1)

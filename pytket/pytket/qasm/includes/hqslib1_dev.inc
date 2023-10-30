@@ -186,6 +186,10 @@ gate cu3(theta, phi, lam) c, t
 }
 // controlled-sqrt(X)
 gate csx a,b { h b; cu1(pi/2) a,b; h b; }
+// controlled-S
+gate cs a,b {cu1(pi/2) a,b;}
+// controlled-conjugate S
+gate csdg a,b {cu1(-pi/2) a,b;}
 // controlled-U gate
 gate cu(theta,phi,lam,gamma) c, t
 { p(gamma) c;

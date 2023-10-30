@@ -4,6 +4,7 @@
 *.egg-info
 *.o
 *.so
+*.swp
 .cache
 .eggs
 .hypothesis

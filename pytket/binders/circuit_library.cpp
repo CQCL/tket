@@ -159,6 +159,12 @@ PYBIND11_MODULE(circuit_library, library_m) {
       "CSXdg_using_CX", &CircPool::CSXdg_using_CX,
       "Equivalent to CSXdg, using CX and single-qubit gates");
   library_m.def(
+      "CS_using_CX", &CircPool::CS_using_CX,
+      "Equivalent to CS, using CX and single-qubit gates");
+  library_m.def(
+      "CSdg_using_CX", &CircPool::CSdg_using_CX,
+      "Equivalent to CSdg, using CX and single-qubit gates");
+  library_m.def(
       "CSWAP_using_CX", &CircPool::CSWAP_using_CX,
       "Equivalent to CSWAP, using CX and single-qubit gates ");
   library_m.def(
@@ -424,6 +430,12 @@ PYBIND11_MODULE(circuit_library, library_m) {
   library_m.def(
       "_CSXdg_using_CX", &CircPool::CSXdg_using_CX,
       "Equivalent to CSXdg, using CX and single-qubit gates");
+  library_m.def(
+      "_CS_using_CX", &CircPool::CS_using_CX,
+      "Equivalent to CS, using CX and single-qubit gates");
+  library_m.def(
+      "_CSdg_using_CX", &CircPool::CSdg_using_CX,
+      "Equivalent to CSdg, using CX and single-qubit gates");
   library_m.def(
       "_CSWAP_using_CX", &CircPool::CSWAP_using_CX,
       "Equivalent to CSWAP, using CX and single-qubit gates ");
