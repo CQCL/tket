@@ -82,7 +82,6 @@ Licensed under the `Apache 2 License <http://www.apache.org/licenses/LICENSE-2.0
     changelog.rst
     install.rst
     faqs.rst 
-    opensource.rst
 
 .. toctree::
     :caption: More Documentation:
