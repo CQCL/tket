@@ -42,5 +42,5 @@ std::tuple<Circuit, std::vector<bool>> projector_assertion_synthesis(
  * readouts
  */
 std::tuple<Circuit, std::vector<bool>> stabiliser_assertion_synthesis(
-    const PauliStabiliserList &paulis);
+    const PauliStabiliserVec &paulis);
 }  // namespace tket

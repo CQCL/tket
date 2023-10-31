@@ -80,10 +80,10 @@ ChoiMixTableau::ChoiMixTableau(const std::list<row_tensor_t>& rows)
   std::set<Qubit> in_qubits;
   std::set<Qubit> out_qubits;
   for (const row_tensor_t& row : rows) {
-    for (const std::pair<const Qubit, Pauli>& qb : row.first.string.map) {
+    for (const std::pair<const Qubit, Pauli>& qb : row.first.string) {
       in_qubits.insert(qb.first);
     }
-    for (const std::pair<const Qubit, Pauli>& qb : row.second.string.map) {
+    for (const std::pair<const Qubit, Pauli>& qb : row.second.string) {
       out_qubits.insert(qb.first);
     }
   }
@@ -103,26 +103,19 @@ ChoiMixTableau::ChoiMixTableau(const std::list<row_tensor_t>& rows)
   VectorXb phase = VectorXb::Zero(n_rows);
   unsigned r = 0;
   for (const row_tensor_t& row : rows) {
-    for (const std::pair<const Qubit, Pauli>& qb : row.first.string.map) {
+    for (const std::pair<const Qubit, Pauli>& qb : row.first.string) {
       unsigned c =
           col_index_.left.at(col_key_t{qb.first, TableauSegment::Input});
       if (qb.second == Pauli::X || qb.second == Pauli::Y) xmat(r, c) = true;
       if (qb.second == Pauli::Z || qb.second == Pauli::Y) zmat(r, c) = true;
     }
-    for (const std::pair<const Qubit, Pauli>& qb : row.second.string.map) {
+    for (const std::pair<const Qubit, Pauli>& qb : row.second.string) {
       unsigned c =
           col_index_.left.at(col_key_t{qb.first, TableauSegment::Output});
       if (qb.second == Pauli::X || qb.second == Pauli::Y) xmat(r, c) = true;
       if (qb.second == Pauli::Z || qb.second == Pauli::Y) zmat(r, c) = true;
     }
-    Complex ph = row.first.coeff * row.second.coeff;
-    if (std::abs(ph - 1.) < EPS)
-      phase(r) = false;
-    else if (std::abs(ph + 1.) < EPS)
-      phase(r) = true;
-    else
-      throw std::invalid_argument(
-          "Phase coefficient of a Choi tableau row must be +-1");
+    phase(r) = row.first.is_real_negative() ^ row.second.is_real_negative();
     ++r;
   }
   tab_ = SymplecticTableau(xmat, zmat, phase);
@@ -163,9 +156,7 @@ ChoiMixTableau::row_tensor_t ChoiMixTableau::stab_to_row_tensor(
         out_qpm.insert({col.first, p});
     }
   }
-  return {
-      QubitPauliTensor(in_qpm),
-      QubitPauliTensor(out_qpm, stab.coeff ? 1. : -1.)};
+  return {SpPauliStabiliser(in_qpm), SpPauliStabiliser(out_qpm, stab.coeff)};
 }
 
 PauliStabiliser ChoiMixTableau::row_tensor_to_stab(
@@ -174,12 +165,11 @@ PauliStabiliser ChoiMixTableau::row_tensor_to_stab(
   for (unsigned i = 0; i < col_index_.size(); ++i) {
     col_key_t qb = col_index_.right.at(i);
     if (qb.second == TableauSegment::Input)
-      ps.push_back(ten.first.string.get(qb.first));
+      ps.push_back(ten.first.get(qb.first));
     else
-      ps.push_back(ten.second.string.get(qb.first));
+      ps.push_back(ten.second.get(qb.first));
   }
-  return PauliStabiliser(
-      ps, std::abs(ten.first.coeff * ten.second.coeff - 1.) < EPS);
+  return PauliStabiliser(ps, (ten.first.coeff + ten.second.coeff) % 4);
 }
 
 ChoiMixTableau::row_tensor_t ChoiMixTableau::get_row(unsigned i) const {
@@ -194,8 +184,8 @@ ChoiMixTableau::row_tensor_t ChoiMixTableau::get_row_product(
     result.first = result.first * row_i.first;
     result.second = result.second * row_i.second;
   }
-  result.second.coeff *= result.first.coeff;
-  result.first.coeff = 1.;
+  result.second.coeff = (result.first.coeff + result.second.coeff) % 4;
+  result.first.coeff = 0;
   return result;
 }
 
@@ -389,14 +379,10 @@ void ChoiMixTableau::apply_gate(
 }
 
 void ChoiMixTableau::apply_pauli(
-    const QubitPauliTensor& pauli, unsigned half_pis, TableauSegment seg) {
-  if (std::abs(pauli.coeff - 1.) > EPS && std::abs(pauli.coeff + 1.) > EPS)
-    throw std::invalid_argument(
-        "In ChoiMixTableau::apply_pauli, can only rotate about a "
-        "QubitPauliTensor with coeff +-1");
+    const SpPauliStabiliser& pauli, unsigned half_pis, TableauSegment seg) {
   PauliStabiliser ps;
   if (seg == TableauSegment::Input) {
-    QubitPauliTensor tr = pauli;
+    SpPauliStabiliser tr = pauli;
     tr.transpose();
     ps = row_tensor_to_stab({tr, {}});
   } else {

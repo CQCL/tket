@@ -20,119 +20,88 @@
 
 namespace tket {
 
-Expr pauli_angle_convert_or_throw(Complex pauliCoeff, const Expr &angle) {
-  if (pauliCoeff == -1.) {
-    return -1 * angle;
-  }
-  if (pauliCoeff != 1.) {
-    throw CircuitInvalidity("Pauli coefficient must be +/- 1");
-  }
-  return angle;
-}
-
 void append_single_pauli_gadget(
-    Circuit &circ, const QubitPauliTensor &pauli, Expr angle,
-    CXConfigType cx_config) {
-  auto converted_angle = pauli_angle_convert_or_throw(pauli.coeff, angle);
-
+    Circuit &circ, const SpSymPauliTensor &pauli, CXConfigType cx_config) {
   std::vector<Pauli> string;
   unit_map_t mapping;
   unsigned i = 0;
-  for (const std::pair<const Qubit, Pauli> &term : pauli.string.map) {
+  for (const std::pair<const Qubit, Pauli> &term : pauli.string) {
     string.push_back(term.second);
     mapping.insert({Qubit(q_default_reg(), i), term.first});
     i++;
   }
-  Circuit gadget = pauli_gadget(string, converted_angle, cx_config);
+  Circuit gadget = pauli_gadget(string, pauli.coeff, cx_config);
   circ.append_with_map(gadget, mapping);
 }
 
 void append_single_pauli_gadget_as_pauli_exp_box(
-    Circuit &circ, const QubitPauliTensor &pauli, Expr angle,
-    CXConfigType cx_config) {
-  auto converted_angle = pauli_angle_convert_or_throw(pauli.coeff, angle);
-
+    Circuit &circ, const SpSymPauliTensor &pauli, CXConfigType cx_config) {
   std::vector<Pauli> string;
   std::vector<Qubit> mapping;
-  for (const std::pair<const Qubit, Pauli> &term : pauli.string.map) {
+  for (const std::pair<const Qubit, Pauli> &term : pauli.string) {
     string.push_back(term.second);
     mapping.push_back(term.first);
   }
-  PauliExpBox box(string, converted_angle, cx_config);
+  PauliExpBox box(SymPauliTensor(string, pauli.coeff), cx_config);
   circ.add_box(box, mapping);
 }
 
 void append_pauli_gadget_pair_as_box(
-    Circuit &circ, const QubitPauliTensor &pauli0, Expr angle0,
-    const QubitPauliTensor &pauli1, Expr angle1, CXConfigType cx_config) {
-  auto converted_angle0 = pauli_angle_convert_or_throw(pauli0.coeff, angle0);
-  auto converted_angle1 = pauli_angle_convert_or_throw(pauli1.coeff, angle1);
-
+    Circuit &circ, const SpSymPauliTensor &pauli0,
+    const SpSymPauliTensor &pauli1, CXConfigType cx_config) {
   std::vector<Qubit> mapping;
   std::vector<Pauli> paulis0;
   std::vector<Pauli> paulis1;
-
-  QubitPauliString pauli0_string(pauli0.string);
-  QubitPauliString pauli1_string(pauli1.string);
-
-  // remove any identities
-  pauli0_string.compress();
-  pauli1_string.compress();
-
+  QubitPauliMap p1map = pauli1.string;
   // add paulis for qubits in pauli0_string
-  for (const std::pair<const Qubit, Pauli> &term : pauli0_string.map) {
+  for (const std::pair<const Qubit, Pauli> &term : pauli0.string) {
     mapping.push_back(term.first);
     paulis0.push_back(term.second);
-    auto found = pauli1_string.map.find(term.first);
-    if (found == pauli1_string.map.end()) {
+    auto found = p1map.find(term.first);
+    if (found == p1map.end()) {
       paulis1.push_back(Pauli::I);
     } else {
       paulis1.push_back(found->second);
-      pauli1_string.map.erase(found);
+      p1map.erase(found);
     }
   }
   // add paulis for qubits in pauli1_string that weren't in pauli0_string
-  for (const std::pair<const Qubit, Pauli> &term : pauli1_string.map) {
+  for (const std::pair<const Qubit, Pauli> &term : p1map) {
     mapping.push_back(term.first);
     paulis1.push_back(term.second);
     paulis0.push_back(Pauli::I);  // If pauli0_string contained qubit, would
                                   // have been handled above
   }
   PauliExpPairBox box(
-      paulis0, converted_angle0, paulis1, converted_angle1, cx_config);
+      SymPauliTensor(paulis0, pauli0.coeff),
+      SymPauliTensor(paulis1, pauli1.coeff), cx_config);
   circ.add_box(box, mapping);
 }
 
 void append_commuting_pauli_gadget_set_as_box(
-    Circuit &circ, const std::list<std::pair<QubitPauliTensor, Expr>> &gadgets,
+    Circuit &circ, const std::list<SpSymPauliTensor> &gadgets,
     CXConfigType cx_config) {
-  // Translate to QubitPauliTensors to vectors of Paulis of same length
+  // Translate SpSymPauliTensors to vectors of Paulis of same length
   // Preserves ordering of qubits
 
   std::set<Qubit> all_qubits;
-  for (const auto &gadget : gadgets) {
-    for (const auto &qubit_pauli : gadget.first.string.map) {
+  for (const SpSymPauliTensor &gadget : gadgets) {
+    for (const std::pair<const Qubit, Pauli> &qubit_pauli : gadget.string) {
       all_qubits.insert(qubit_pauli.first);
     }
   }
 
   std::vector<Qubit> mapping;
-  for (const auto &qubit : all_qubits) {
+  for (const Qubit &qubit : all_qubits) {
     mapping.push_back(qubit);
   }
 
-  std::vector<std::pair<std::vector<Pauli>, Expr>> pauli_gadgets;
-  for (const auto &gadget : gadgets) {
-    auto &new_gadget = pauli_gadgets.emplace_back(std::make_pair(
-        std::vector<Pauli>(),
-        pauli_angle_convert_or_throw(gadget.first.coeff, gadget.second)));
-    for (const auto &qubit : mapping) {
-      auto found = gadget.first.string.map.find(qubit);
-      if (found == gadget.first.string.map.end()) {
-        new_gadget.first.push_back(Pauli::I);
-      } else {
-        new_gadget.first.push_back(found->second);
-      }
+  std::vector<SymPauliTensor> pauli_gadgets;
+  for (const SpSymPauliTensor &gadget : gadgets) {
+    SymPauliTensor &new_gadget =
+        pauli_gadgets.emplace_back(DensePauliMap{}, gadget.coeff);
+    for (const Qubit &qubit : mapping) {
+      new_gadget.string.push_back(gadget.get(qubit));
     }
   }
 
@@ -141,8 +110,8 @@ void append_commuting_pauli_gadget_set_as_box(
 }
 
 static void reduce_shared_qs_by_CX_snake(
-    Circuit &circ, std::set<Qubit> &match, QubitPauliTensor &pauli0,
-    QubitPauliTensor &pauli1) {
+    Circuit &circ, std::set<Qubit> &match, SpSymPauliTensor &pauli0,
+    SpSymPauliTensor &pauli1) {
   unsigned match_size = match.size();
   while (match_size > 1) {  // We allow one match left over
     auto it = --match.end();
@@ -151,30 +120,30 @@ static void reduce_shared_qs_by_CX_snake(
     Qubit helper = *match.rbegin();
     // extend CX snake
     circ.add_op<Qubit>(OpType::CX, {to_eliminate, helper});
-    pauli0.string.map.erase(to_eliminate);
-    pauli1.string.map.erase(to_eliminate);
+    pauli0.string.erase(to_eliminate);
+    pauli1.string.erase(to_eliminate);
     match_size--;
   }
 }
 
 static void reduce_shared_qs_by_CX_star(
-    Circuit &circ, std::set<Qubit> &match, QubitPauliTensor &pauli0,
-    QubitPauliTensor &pauli1) {
+    Circuit &circ, std::set<Qubit> &match, SpSymPauliTensor &pauli0,
+    SpSymPauliTensor &pauli1) {
   std::set<Qubit>::iterator iter = match.begin();
   for (std::set<Qubit>::iterator next = match.begin(); match.size() > 1;
        iter = next) {
     ++next;
     Qubit to_eliminate = *iter;
     circ.add_op<Qubit>(OpType::CX, {to_eliminate, *match.rbegin()});
-    pauli0.string.map.erase(to_eliminate);
-    pauli1.string.map.erase(to_eliminate);
+    pauli0.string.erase(to_eliminate);
+    pauli1.string.erase(to_eliminate);
     match.erase(iter);
   }
 }
 
 static void reduce_shared_qs_by_CX_tree(
-    Circuit &circ, std::set<Qubit> &match, QubitPauliTensor &pauli0,
-    QubitPauliTensor &pauli1) {
+    Circuit &circ, std::set<Qubit> &match, SpSymPauliTensor &pauli0,
+    SpSymPauliTensor &pauli1) {
   while (match.size() > 1) {
     std::set<Qubit> remaining;
     std::set<Qubit>::iterator it = match.begin();
@@ -186,8 +155,8 @@ static void reduce_shared_qs_by_CX_tree(
         Qubit to_eliminate = *it;
         it++;
         circ.add_op<Qubit>(OpType::CX, {to_eliminate, maintained});
-        pauli0.string.map.erase(to_eliminate);
-        pauli1.string.map.erase(to_eliminate);
+        pauli0.string.erase(to_eliminate);
+        pauli1.string.erase(to_eliminate);
       }
     }
     match = remaining;
@@ -195,8 +164,8 @@ static void reduce_shared_qs_by_CX_tree(
 }
 
 static void reduce_shared_qs_by_CX_multiqgate(
-    Circuit &circ, std::set<Qubit> &match, QubitPauliTensor &pauli0,
-    QubitPauliTensor &pauli1) {
+    Circuit &circ, std::set<Qubit> &match, SpSymPauliTensor &pauli0,
+    SpSymPauliTensor &pauli1) {
   if (match.size() <= 1) {
     return;
   }
@@ -208,21 +177,21 @@ static void reduce_shared_qs_by_CX_multiqgate(
       // use CX
       Qubit to_eliminate = *iter;
       match.erase(iter);
-      pauli0.string.map.erase(to_eliminate);
-      pauli1.string.map.erase(to_eliminate);
+      pauli0.string.erase(to_eliminate);
+      pauli1.string.erase(to_eliminate);
 
       circ.add_op<Qubit>(OpType::CX, {to_eliminate, target});
     } else {
       // use XXPhase3
       Qubit to_eliminate1 = *iter;
       match.erase(iter++);
-      pauli0.string.map.erase(to_eliminate1);
-      pauli1.string.map.erase(to_eliminate1);
+      pauli0.string.erase(to_eliminate1);
+      pauli1.string.erase(to_eliminate1);
 
       Qubit to_eliminate2 = *iter;
       match.erase(iter);
-      pauli0.string.map.erase(to_eliminate2);
-      pauli1.string.map.erase(to_eliminate2);
+      pauli0.string.erase(to_eliminate2);
+      pauli1.string.erase(to_eliminate2);
 
       circ.add_op<Qubit>(OpType::H, {to_eliminate1});
       circ.add_op<Qubit>(OpType::H, {to_eliminate2});
@@ -234,8 +203,8 @@ static void reduce_shared_qs_by_CX_multiqgate(
 }
 
 void append_pauli_gadget_pair(
-    Circuit &circ, QubitPauliTensor pauli0, Expr angle0,
-    QubitPauliTensor pauli1, Expr angle1, CXConfigType cx_config) {
+    Circuit &circ, SpSymPauliTensor pauli0, SpSymPauliTensor pauli1,
+    CXConfigType cx_config) {
   /*
    * Cowtan, Dilkes, Duncan, Simmons, Sivarajah: Phase Gadget Synthesis for
    * Shallow Circuits, Lemma 4.9
@@ -274,16 +243,16 @@ void append_pauli_gadget_pair(
    * CXs
    */
   for (const Qubit &qb : match) {
-    switch (pauli0.string.map.at(qb)) {
+    switch (pauli0.get(qb)) {
       case Pauli::X:
         u.add_op<Qubit>(OpType::H, {qb});
-        pauli0.string.map.at(qb) = Pauli::Z;
-        pauli1.string.map.at(qb) = Pauli::Z;
+        pauli0.set(qb, Pauli::Z);
+        pauli1.set(qb, Pauli::Z);
         break;
       case Pauli::Y:
         u.add_op<Qubit>(OpType::V, {qb});
-        pauli0.string.map.at(qb) = Pauli::Z;
-        pauli1.string.map.at(qb) = Pauli::Z;
+        pauli0.set(qb, Pauli::Z);
+        pauli1.set(qb, Pauli::Z);
         break;
       default:
         break;
@@ -307,15 +276,16 @@ void append_pauli_gadget_pair(
       break;
     }
     default:
-      throw UnknownCXConfigType();
+      throw std::logic_error(
+          "Unknown CXConfigType received when decomposing gadget.");
   }
   /*
    * Step 2.ii: Convert mismatches to Z in pauli0 and X in pauli1
    */
   for (const Qubit &qb : mismatch) {
-    switch (pauli0.string.map.at(qb)) {
+    switch (pauli0.get(qb)) {
       case Pauli::X: {
-        switch (pauli1.string.map.at(qb)) {
+        switch (pauli1.get(qb)) {
           case Pauli::Y:
             u.add_op<Qubit>(OpType::Sdg, {qb});
             u.add_op<Qubit>(OpType::Vdg, {qb});
@@ -329,7 +299,7 @@ void append_pauli_gadget_pair(
         break;
       }
       case Pauli::Y: {
-        switch (pauli1.string.map.at(qb)) {
+        switch (pauli1.get(qb)) {
           case Pauli::X:
             u.add_op<Qubit>(OpType::V, {qb});
             break;
@@ -343,13 +313,12 @@ void append_pauli_gadget_pair(
         break;
       }
       default: {  // Necessarily Z
-        if (pauli1.string.map.at(qb) == Pauli::Y)
-          u.add_op<Qubit>(OpType::Sdg, {qb});
+        if (pauli1.get(qb) == Pauli::Y) u.add_op<Qubit>(OpType::Sdg, {qb});
         // No need to act if already X
       }
     }
-    pauli0.string.map.at(qb) = Pauli::Z;
-    pauli1.string.map.at(qb) = Pauli::X;
+    pauli0.set(qb, Pauli::Z);
+    pauli1.set(qb, Pauli::X);
   }
 
   /*
@@ -366,8 +335,8 @@ void append_pauli_gadget_pair(
       u.add_op<Qubit>(OpType::S, {mismatch_used});
       u.add_op<Qubit>(OpType::CX, {last_match, mismatch_used});
       u.add_op<Qubit>(OpType::Sdg, {mismatch_used});
-      pauli0.string.map.erase(last_match);
-      pauli1.string.map.erase(last_match);
+      pauli0.string.erase(last_match);
+      pauli1.string.erase(last_match);
     } else {
       just0.insert(last_match);
       just1.insert(last_match);
@@ -388,8 +357,8 @@ void append_pauli_gadget_pair(
     } else {
       Qubit x_in_1 = *mis_it;
       u.add_op<Qubit>(OpType::CX, {x_in_1, z_in_0});
-      pauli0.string.map.erase(x_in_1);
-      pauli1.string.map.erase(z_in_0);
+      pauli0.string.erase(x_in_1);
+      pauli1.string.erase(z_in_0);
       just1.insert(x_in_1);
       mis_it++;
     }
@@ -398,11 +367,15 @@ void append_pauli_gadget_pair(
   /*
    * Step 3: Combine circuits to give final result
    */
-  append_single_pauli_gadget(v, pauli0, angle0);
-  append_single_pauli_gadget(v, pauli1, angle1);
+  append_single_pauli_gadget(v, pauli0);
+  append_single_pauli_gadget(v, pauli1);
+  // ConjugationBox components must be in the default register
+  qubit_vector_t all_qubits = u.all_qubits();
+  u.flatten_registers();
+  v.flatten_registers();
   ConjugationBox cjbox(
       std::make_shared<CircBox>(u), std::make_shared<CircBox>(v));
-  circ.add_box(cjbox, u.all_qubits());
+  circ.add_box(cjbox, all_qubits);
 }
 
 }  // namespace tket

@@ -16,7 +16,7 @@
 
 #include "tket/OpType/OpType.hpp"
 #include "tket/Utils/MatrixAnalysis.hpp"
-#include "tket/Utils/PauliStrings.hpp"
+#include "tket/Utils/PauliTensor.hpp"
 
 namespace tket {
 
@@ -92,7 +92,7 @@ class SymplecticTableau {
    */
   explicit SymplecticTableau(
       const MatrixXb &xmat, const MatrixXb &zmat, const VectorXb &phase);
-  explicit SymplecticTableau(const PauliStabiliserList &rows);
+  explicit SymplecticTableau(const PauliStabiliserVec &rows);
 
   /**
    * Other required constructors

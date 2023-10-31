@@ -17,7 +17,7 @@
 #include <stdexcept>
 
 #include "tket/Circuit/Circuit.hpp"
-#include "tket/Utils/PauliStrings.hpp"
+#include "tket/Utils/PauliTensor.hpp"
 
 namespace tket {
 
@@ -32,12 +32,12 @@ class ImplicitPermutationNotAllowed : public std::logic_error {
  * Automatically uses Snake CX configuration
  *
  * @param circ circuit to append to
- * @param pauli Pauli operators and their respective qubits
- * @param angle angle in half-turns
+ * @param pauli Pauli operators and their respective qubits; coefficient gives
+ * rotation angle in half-turns
  * @param cx_config which type of CX configuration to decompose into
  */
 void append_single_pauli_gadget(
-    Circuit& circ, const QubitPauliTensor& pauli, Expr angle,
+    Circuit& circ, const SpSymPauliTensor& pauli,
     CXConfigType cx_config = CXConfigType::Snake);
 
 /**
@@ -46,13 +46,12 @@ void append_single_pauli_gadget(
  * Automatically uses Snake CX configuration
  *
  * @param circ circuit to append to
- * @param pauli Pauli operators and their respective qubits
- * @param angle angle in half-turns
+ * @param pauli Pauli operators and their respective qubits; coefficient gives
+ * rotation angle in half-turns
  * @param cx_config which type of CX configuration to decompose into
  */
 void append_single_pauli_gadget_as_pauli_exp_box(
-    Circuit& circ, const QubitPauliTensor& pauli, Expr angle,
-    CXConfigType cx_config);
+    Circuit& circ, const SpSymPauliTensor& pauli, CXConfigType cx_config);
 
 /**
  * Append a pair of Pauli gadgets to the end of a given circuit.
@@ -63,23 +62,22 @@ void append_single_pauli_gadget_as_pauli_exp_box(
  * (!shallow) Uses the original method with naive arrangement of CXs.
  *
  * @param circ circuit to append to
- * @param pauli0 first Pauli string
- * @param angle0 angle for \p pauli0 (half-turns)
- * @param pauli1 second Pauli string
- * @param angle1 angle for \p pauli1 (half-turns)
+ * @param pauli0 first Pauli string; coefficient gives rotation angle in
+ * half-turns
+ * @param pauli1 second Pauli string; coefficient gives rotation angle in
+ * half-turns
  * @param cx_config which type of CX configuration to decompose into
  */
 void append_pauli_gadget_pair(
-    Circuit& circ, QubitPauliTensor pauli0, Expr angle0,
-    QubitPauliTensor pauli1, Expr angle1,
+    Circuit& circ, SpSymPauliTensor pauli0, SpSymPauliTensor pauli1,
     CXConfigType cx_config = CXConfigType::Snake);
 
 void append_pauli_gadget_pair_as_box(
-    Circuit& circ, const QubitPauliTensor& pauli0, Expr angle0,
-    const QubitPauliTensor& pauli1, Expr angle1, CXConfigType cx_config);
+    Circuit& circ, const SpSymPauliTensor& pauli0,
+    const SpSymPauliTensor& pauli1, CXConfigType cx_config);
 
 void append_commuting_pauli_gadget_set_as_box(
-    Circuit& circ, const std::list<std::pair<QubitPauliTensor, Expr>>& gadgets,
+    Circuit& circ, const std::list<SpSymPauliTensor>& gadgets,
     CXConfigType cx_config);
 
 }  // namespace tket

@@ -242,7 +242,7 @@ SCENARIO("Check op retrieval overloads are working correctly.", "[ops]") {
     double t = 0.5;
     // Construct a Pauli box with an even number of Y-gates
     const PauliExpBox pbox_e(
-        {Pauli::X, Pauli::Y, Pauli::Z, Pauli::Y, Pauli::X}, t);
+        SymPauliTensor({Pauli::X, Pauli::Y, Pauli::Z, Pauli::Y, Pauli::X}, t));
     const Op_ptr pbox_t_ptr = pbox_e.transpose();
     // Casting the PauliExpBox type
     std::shared_ptr<const PauliExpBox> pbox_t =
@@ -251,7 +251,8 @@ SCENARIO("Check op retrieval overloads are working correctly.", "[ops]") {
     REQUIRE(pbox_t->get_phase() == t);
 
     // Construct a Pauli box with an odd number of Y-gates
-    const PauliExpBox pbox_o({Pauli::X, Pauli::Y, Pauli::Z, Pauli::X}, t);
+    const PauliExpBox pbox_o(
+        SymPauliTensor({Pauli::X, Pauli::Y, Pauli::Z, Pauli::X}, t));
     const Op_ptr pbox_o_t_ptr = pbox_o.transpose();
     // Casting the PauliExpBox type
     std::shared_ptr<const PauliExpBox> pbox_o_t =

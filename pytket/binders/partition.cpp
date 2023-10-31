@@ -126,7 +126,7 @@ PYBIND11_MODULE(partition, m) {
       .def(
           "add_result_for_term",
           (void(MeasurementSetup::*)(
-              const QubitPauliString &,
+              const SpPauliString &,
               const MeasurementSetup::MeasurementBitMap &)) &
               MeasurementSetup::add_result_for_term,
           "Add a new Pauli string with a corresponding BitMap", py::arg("term"),
@@ -153,7 +153,7 @@ PYBIND11_MODULE(partition, m) {
 
   m.def(
       "measurement_reduction",
-      [](const py::tket_custom::SequenceList<QubitPauliString> &strings,
+      [](const py::tket_custom::SequenceList<SpPauliString> &strings,
          PauliPartitionStrat strat, GraphColourMethod method,
          CXConfigType cx_config) {
         return measurement_reduction(strings, strat, method, cx_config);
@@ -173,7 +173,7 @@ PYBIND11_MODULE(partition, m) {
 
   m.def(
       "term_sequence",
-      [](const py::tket_custom::SequenceList<QubitPauliString> &strings,
+      [](const py::tket_custom::SequenceList<SpPauliString> &strings,
          PauliPartitionStrat strat, GraphColourMethod method) {
         return term_sequence(strings, strat, method);
       },

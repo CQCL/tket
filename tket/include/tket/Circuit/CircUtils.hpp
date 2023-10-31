@@ -18,7 +18,7 @@
 #include "DAGDefs.hpp"
 #include "tket/Gate/GatePtr.hpp"
 #include "tket/Utils/EigenConfig.hpp"
-#include "tket/Utils/PauliStrings.hpp"
+#include "tket/Utils/PauliTensor.hpp"
 
 namespace tket {
 

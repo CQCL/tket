@@ -1171,9 +1171,9 @@ SCENARIO("Test Pauli Graph Synthesis Pass") {
       Transforms::PauliSynthStrat::Sets, CXConfigType::Star);
   GIVEN("Two PauliExpBoxes") {
     Circuit circ(3, "test");
-    PauliExpBox peb({Pauli::Z, Pauli::X, Pauli::Z}, 0.333);
+    PauliExpBox peb({{Pauli::Z, Pauli::X, Pauli::Z}, 0.333});
     circ.add_box(peb, {0, 1, 2});
-    PauliExpBox peb2({Pauli::Y, Pauli::X, Pauli::X}, 0.174);
+    PauliExpBox peb2({{Pauli::Y, Pauli::X, Pauli::X}, 0.174});
     circ.add_box(peb2, {0, 1, 2});
 
     CompilationUnit cu(circ);

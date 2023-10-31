@@ -99,20 +99,20 @@ std::pair<Pauli, bool> conjugate_Pauli(OpType op, Pauli p, bool reverse) {
 }
 
 void conjugate_PauliTensor(
-    QubitPauliTensor& qpt, OpType op, const Qubit& q, bool reverse) {
-  QubitPauliMap::iterator it = qpt.string.map.find(q);
-  if (it == qpt.string.map.end()) {
+    SpPauliStabiliser& qpt, OpType op, const Qubit& q, bool reverse) {
+  QubitPauliMap::iterator it = qpt.string.find(q);
+  if (it == qpt.string.end()) {
     return;
   }
   std::pair<Pauli, bool> conj = conjugate_Pauli(op, it->second, reverse);
   it->second = conj.first;
   if (conj.second) {
-    qpt.coeff *= -1;
+    qpt.coeff = (qpt.coeff + 2) % 4;
   }
 }
 
 void conjugate_PauliTensor(
-    QubitPauliTensor& qpt, OpType op, const Qubit& q0, const Qubit& q1) {
+    SpPauliStabiliser& qpt, OpType op, const Qubit& q0, const Qubit& q1) {
   static const std::map<std::pair<Pauli, Pauli>, std::tuple<Pauli, Pauli, bool>>
       cx_conj_lut{
           {{Pauli::I, Pauli::I}, {Pauli::I, Pauli::I, false}},
@@ -135,29 +135,18 @@ void conjugate_PauliTensor(
   if (op != OpType::CX) {
     throw BadOpType("Conjugations of Pauli strings only defined for CXs", op);
   }
-  QubitPauliMap::iterator it0 = qpt.string.map.find(q0);
-  QubitPauliMap::iterator it1 = qpt.string.map.find(q1);
-  Pauli p0, p1;
-  if (it0 == qpt.string.map.end()) {
-    p0 = Pauli::I;
-  } else {
-    p0 = it0->second;
-  }
-  if (it1 == qpt.string.map.end()) {
-    p1 = Pauli::I;
-  } else {
-    p1 = it1->second;
-  }
+  Pauli p0 = qpt.get(q0);
+  Pauli p1 = qpt.get(q1);
   std::tuple<Pauli, Pauli, bool> conj = cx_conj_lut.at({p0, p1});
-  qpt.string.map[q0] = std::get<0>(conj);
-  qpt.string.map[q1] = std::get<1>(conj);
+  qpt.set(q0, std::get<0>(conj));
+  qpt.set(q1, std::get<1>(conj));
   if (std::get<2>(conj)) {
-    qpt.coeff *= -1;
+    qpt.coeff = (qpt.coeff + 2) % 4;
   }
 }
 
 void conjugate_PauliTensor(
-    QubitPauliTensor& qpt, OpType op, const Qubit& q0, const Qubit& q1,
+    SpPauliStabiliser& qpt, OpType op, const Qubit& q0, const Qubit& q1,
     const Qubit& q2) {
   /* XXPhase3 gates used for conjugations always implicitly use angle π/2
    * i.e. XXPhase3(1/2). Note that up to phase the 3-qb gate is self-inverse:
@@ -179,20 +168,12 @@ void conjugate_PauliTensor(
     throw BadOpType(
         "3qb-Conjugations of Pauli strings only defined for XXPhase3", op);
   }
-  Conjugations equiv = {{OpType::H, {q1}},      {OpType::CX, {q1, q2}},
-                        {OpType::CX, {q1, q0}}, {OpType::H, {q0}},
-                        {OpType::H, {q1}},      {OpType::CX, {q0, q2}},
-                        {OpType::H, {q0}},      {OpType::X, {q0}},
-                        {OpType::X, {q1}},      {OpType::X, {q2}}};
-
-  for (auto [op, qbs] : equiv) {
-    if (qbs.size() == 1) {
-      conjugate_PauliTensor(qpt, op, qbs[0]);
-    } else {
-      TKET_ASSERT(qbs.size() == 2);
-      conjugate_PauliTensor(qpt, op, qbs[0], qbs[1]);
-    }
-  }
+  SpPauliStabiliser xxi_i({{q0, Pauli::X}, {q1, Pauli::X}}, 1);
+  SpPauliStabiliser xix_i({{q0, Pauli::X}, {q2, Pauli::X}}, 1);
+  SpPauliStabiliser ixx_i({{q1, Pauli::X}, {q2, Pauli::X}}, 1);
+  if (!xxi_i.commutes_with(qpt)) qpt = qpt * xxi_i;
+  if (!xix_i.commutes_with(qpt)) qpt = qpt * xix_i;
+  if (!ixx_i.commutes_with(qpt)) qpt = qpt * ixx_i;
 }
 
 }  // namespace tket

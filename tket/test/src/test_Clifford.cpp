@@ -27,7 +27,6 @@
 #include "tket/Transformations/OptimisationPass.hpp"
 #include "tket/Transformations/Rebase.hpp"
 #include "tket/Transformations/Transform.hpp"
-#include "tket/Utils/PauliStrings.hpp"
 
 namespace tket {
 namespace test_Clifford {

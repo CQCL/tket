@@ -126,7 +126,7 @@ target_sources(tket
         src/Utils/UnitID.cpp
         src/Utils/HelperFunctions.cpp
         src/Utils/MatrixAnalysis.cpp
-        src/Utils/PauliStrings.cpp
+        src/Utils/PauliTensor.cpp
         src/Utils/CosSinDecomposition.cpp
         src/Utils/Expression.cpp
         src/OpType/OpDesc.cpp
@@ -291,7 +291,7 @@ target_sources(tket
         include/tket/Utils/HelperFunctions.hpp
         include/tket/Utils/Json.hpp
         include/tket/Utils/MatrixAnalysis.hpp
-        include/tket/Utils/PauliStrings.hpp
+        include/tket/Utils/PauliTensor.hpp
         include/tket/Utils/SequencedContainers.hpp
         include/tket/Utils/Symbols.hpp
         include/tket/Utils/UnitID.hpp

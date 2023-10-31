@@ -207,7 +207,7 @@ SCENARIO("Correct creation of PauliGraphs") {
     circ.add_op<unsigned>(OpType::ZZPhase, 0.2, {0, 1});
     circ.add_op<unsigned>(OpType::Vdg, {0});
     circ.add_op<unsigned>(OpType::H, {1});
-    PauliExpBox peb({Pauli::Y, Pauli::X}, 0.333);
+    PauliExpBox peb({{Pauli::Y, Pauli::X}, 0.333});
     circ.add_box(peb, {0, 1});
     PauliGraph pg = circuit_to_pauli_graph(circ);
     REQUIRE(pg.n_vertices() == 1);
@@ -292,7 +292,7 @@ static void add_ops_to_prepend_2(Circuit& circ) {
 SCENARIO("Test mutual diagonalisation of fully commuting sets") {
   GIVEN("A 2 qb Identity gadget") {
     Circuit circ(2);
-    PauliExpBox peb({Pauli::I, Pauli::I}, 0.333);
+    PauliExpBox peb({{Pauli::I, Pauli::I}, 0.333});
     circ.add_box(peb, {0, 1});
     const auto& prepend = CircuitsForTesting::get().prepend_2qb_circuit;
     Circuit test1 = prepend >> circ;
@@ -308,7 +308,7 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
   GIVEN("2 qb 1 Pauli gadget circuit") {
     const auto& prepend = CircuitsForTesting::get().prepend_2qb_circuit;
     Circuit circ(2);
-    PauliExpBox peb({Pauli::Z, Pauli::X}, 0.333);
+    PauliExpBox peb({{Pauli::Z, Pauli::X}, 0.333});
     circ.add_box(peb, {0, 1});
     Circuit test1 = prepend >> circ;
 
@@ -321,9 +321,9 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
   GIVEN("2 qb 2 Pauli gadget circuit") {
     const auto& prepend = CircuitsForTesting::get().prepend_2qb_circuit;
     Circuit circ(2);
-    PauliExpBox peb({Pauli::Z, Pauli::X}, 0.333);
+    PauliExpBox peb({{Pauli::Z, Pauli::X}, 0.333});
     circ.add_box(peb, {0, 1});
-    PauliExpBox peb2({Pauli::Y, Pauli::Y}, 0.174);
+    PauliExpBox peb2({{Pauli::Y, Pauli::Y}, 0.174});
     circ.add_box(peb2, {0, 1});
     Circuit test1 = prepend >> circ;
 
@@ -345,11 +345,11 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
     std::map<Sym, double, SymEngine::RCPBasicKeyLess> symbol_map = {
         {a, 0.3112}, {b, 1.178}, {c, -0.911}};
 
-    PauliExpBox peb({Pauli::Z, Pauli::Z}, ea);
+    PauliExpBox peb({{Pauli::Z, Pauli::Z}, ea});
     circ.add_box(peb, {0, 1});
-    PauliExpBox peb2({Pauli::X, Pauli::X}, eb);
+    PauliExpBox peb2({{Pauli::X, Pauli::X}, eb});
     circ.add_box(peb2, {0, 1});
-    PauliExpBox peb3({Pauli::Y, Pauli::Y}, ec);
+    PauliExpBox peb3({{Pauli::Y, Pauli::Y}, ec});
     circ.add_box(peb3, {0, 1});
     Circuit test1 = prepend >> circ;
     test1.symbol_substitution(symbol_map);
@@ -373,11 +373,11 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
     std::map<Sym, double, SymEngine::RCPBasicKeyLess> symbol_map = {
         {a, 0.3112}, {b, 1.178}, {c, -0.911}};
 
-    PauliExpBox peb({Pauli::Z, Pauli::Z}, ea);
+    PauliExpBox peb({{Pauli::Z, Pauli::Z}, ea});
     circ.add_box(peb, {0, 1});
-    PauliExpBox peb2({Pauli::I, Pauli::X}, eb);
+    PauliExpBox peb2({{Pauli::I, Pauli::X}, eb});
     circ.add_box(peb2, {0, 1});
-    PauliExpBox peb3({Pauli::Y, Pauli::I}, ec);
+    PauliExpBox peb3({{Pauli::Y, Pauli::I}, ec});
     circ.add_box(peb3, {0, 1});
     Circuit test1 = prepend >> circ;
     REQUIRE(test1.is_symbolic());
@@ -396,9 +396,9 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
     add_ops_to_prepend_1(prepend);
 
     Circuit circ(3);
-    PauliExpBox peb({Pauli::Z, Pauli::X, Pauli::Z}, 0.333);
+    PauliExpBox peb({{Pauli::Z, Pauli::X, Pauli::Z}, 0.333});
     circ.add_box(peb, {0, 1, 2});
-    PauliExpBox peb2({Pauli::Y, Pauli::X, Pauli::X}, 0.174);
+    PauliExpBox peb2({{Pauli::Y, Pauli::X, Pauli::X}, 0.174});
     circ.add_box(peb2, {0, 1, 2});
     Circuit test1 = prepend >> circ;
     PauliGraph pg = circuit_to_pauli_graph(circ);
@@ -412,11 +412,11 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
     add_ops_to_prepend_1(prepend);
 
     Circuit circ(4);
-    PauliExpBox peb({Pauli::Z, Pauli::Z, Pauli::Z, Pauli::Z}, 0.333);
+    PauliExpBox peb({{Pauli::Z, Pauli::Z, Pauli::Z, Pauli::Z}, 0.333});
     circ.add_box(peb, {0, 1, 2, 3});
-    PauliExpBox peb2({Pauli::X, Pauli::Z, Pauli::X, Pauli::I}, 0.233);
+    PauliExpBox peb2({{Pauli::X, Pauli::Z, Pauli::X, Pauli::I}, 0.233});
     circ.add_box(peb2, {0, 1, 2, 3});
-    PauliExpBox peb3({Pauli::X, Pauli::X, Pauli::X, Pauli::X}, 0.174);
+    PauliExpBox peb3({{Pauli::X, Pauli::X, Pauli::X, Pauli::X}, 0.174});
     circ.add_box(peb3, {0, 1, 2, 3});
     Circuit test1 = prepend >> circ;
 
@@ -444,17 +444,17 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
     CircuitsForTesting::add_initial_prepend_ops(circ);
     add_ops_to_prepend_1(circ);
 
-    PauliExpBox peb({Pauli::Z, Pauli::Y, Pauli::X}, 0.333);
+    PauliExpBox peb({{Pauli::Z, Pauli::Y, Pauli::X}, 0.333});
     circ.add_box(peb, {0, 1, 2});
-    PauliExpBox peb2({Pauli::Y, Pauli::Z, Pauli::X}, 0.174);
+    PauliExpBox peb2({{Pauli::Y, Pauli::Z, Pauli::X}, 0.174});
     circ.add_box(peb2, {0, 1, 2});
-    PauliExpBox peb3({Pauli::Y, Pauli::Z, Pauli::I}, 0.567);
+    PauliExpBox peb3({{Pauli::Y, Pauli::Z, Pauli::I}, 0.567});
     circ.add_box(peb3, {0, 1, 2});
-    PauliExpBox peb4({Pauli::Z, Pauli::Y, Pauli::I}, 1.849);
+    PauliExpBox peb4({{Pauli::Z, Pauli::Y, Pauli::I}, 1.849});
     circ.add_box(peb4, {0, 1, 2});
-    PauliExpBox peb5({Pauli::X, Pauli::X, Pauli::X}, 1.67);
+    PauliExpBox peb5({{Pauli::X, Pauli::X, Pauli::X}, 1.67});
     circ.add_box(peb5, {0, 1, 2});
-    PauliExpBox peb6({Pauli::X, Pauli::X, Pauli::I}, 0.83);
+    PauliExpBox peb6({{Pauli::X, Pauli::X, Pauli::I}, 0.83});
     circ.add_box(peb6, {0, 1, 2});
     Circuit test1 = circ;
 
@@ -573,21 +573,21 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
         {a, 0.3112}, {b, 1.178}, {c, -0.911}, {d, 0.7122},
         {e, 1.102},  {f, 0.151}, {g, 1.223},  {h, 1.666}};
 
-    PauliExpBox peb0({Pauli::X, Pauli::X, Pauli::X, Pauli::Y}, ea);
+    PauliExpBox peb0({{Pauli::X, Pauli::X, Pauli::X, Pauli::Y}, ea});
     circ.add_box(peb0, {0, 1, 2, 3});
-    PauliExpBox peb1({Pauli::X, Pauli::X, Pauli::Y, Pauli::X}, eb);
+    PauliExpBox peb1({{Pauli::X, Pauli::X, Pauli::Y, Pauli::X}, eb});
     circ.add_box(peb1, {0, 1, 2, 3});
-    PauliExpBox peb2({Pauli::X, Pauli::Y, Pauli::X, Pauli::X}, ec);
+    PauliExpBox peb2({{Pauli::X, Pauli::Y, Pauli::X, Pauli::X}, ec});
     circ.add_box(peb2, {0, 1, 2, 3});
-    PauliExpBox peb3({Pauli::X, Pauli::Y, Pauli::Y, Pauli::Y}, ed);
+    PauliExpBox peb3({{Pauli::X, Pauli::Y, Pauli::Y, Pauli::Y}, ed});
     circ.add_box(peb3, {0, 1, 2, 3});
-    PauliExpBox peb4({Pauli::Y, Pauli::X, Pauli::X, Pauli::X}, ee);
+    PauliExpBox peb4({{Pauli::Y, Pauli::X, Pauli::X, Pauli::X}, ee});
     circ.add_box(peb4, {0, 1, 2, 3});
-    PauliExpBox peb5({Pauli::Y, Pauli::X, Pauli::Y, Pauli::Y}, ef);
+    PauliExpBox peb5({{Pauli::Y, Pauli::X, Pauli::Y, Pauli::Y}, ef});
     circ.add_box(peb5, {0, 1, 2, 3});
-    PauliExpBox peb6({Pauli::Y, Pauli::Y, Pauli::X, Pauli::Y}, eg);
+    PauliExpBox peb6({{Pauli::Y, Pauli::Y, Pauli::X, Pauli::Y}, eg});
     circ.add_box(peb6, {0, 1, 2, 3});
-    PauliExpBox peb7({Pauli::Y, Pauli::Y, Pauli::Y, Pauli::X}, eh);
+    PauliExpBox peb7({{Pauli::Y, Pauli::Y, Pauli::Y, Pauli::X}, eh});
     circ.add_box(peb7, {0, 1, 2, 3});
 
     Circuit test1 = prepend >> circ;
@@ -619,13 +619,13 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
     std::map<Sym, double, SymEngine::RCPBasicKeyLess> symbol_map = {
         {a, 0.3112}, {b, 1.178}, {c, -0.911}, {d, 0.7122}};
 
-    PauliExpBox peb0({Pauli::Y, Pauli::Z, Pauli::X, Pauli::I}, ea);
+    PauliExpBox peb0({{Pauli::Y, Pauli::Z, Pauli::X, Pauli::I}, ea});
     circ.add_box(peb0, {0, 1, 2, 3});
-    PauliExpBox peb1({Pauli::X, Pauli::Z, Pauli::Y, Pauli::I}, eb);
+    PauliExpBox peb1({{Pauli::X, Pauli::Z, Pauli::Y, Pauli::I}, eb});
     circ.add_box(peb1, {0, 1, 2, 3});
-    PauliExpBox peb2({Pauli::I, Pauli::Y, Pauli::Z, Pauli::X}, ec);
+    PauliExpBox peb2({{Pauli::I, Pauli::Y, Pauli::Z, Pauli::X}, ec});
     circ.add_box(peb2, {0, 1, 2, 3});
-    PauliExpBox peb3({Pauli::I, Pauli::X, Pauli::Y, Pauli::Z}, ed);
+    PauliExpBox peb3({{Pauli::I, Pauli::X, Pauli::Y, Pauli::Z}, ed});
     circ.add_box(peb3, {0, 1, 2, 3});
 
     Circuit test1 = prepend >> circ;
@@ -667,19 +667,19 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
         {a, 0.3112}, {b, 1.178}, {c, -0.911}, {d, 0.7122},
         {e, 1.102},  {f, 0.151}, {g, 1.223}};
 
-    PauliExpBox peb0({Pauli::I, Pauli::X, Pauli::Z, Pauli::I, Pauli::Z}, ea);
+    PauliExpBox peb0({{Pauli::I, Pauli::X, Pauli::Z, Pauli::I, Pauli::Z}, ea});
     circ.add_box(peb0, {0, 1, 2, 3, 4});
-    PauliExpBox peb1({Pauli::I, Pauli::Y, Pauli::I, Pauli::Z, Pauli::Y}, eb);
+    PauliExpBox peb1({{Pauli::I, Pauli::Y, Pauli::I, Pauli::Z, Pauli::Y}, eb});
     circ.add_box(peb1, {0, 1, 2, 3, 4});
-    PauliExpBox peb2({Pauli::X, Pauli::X, Pauli::I, Pauli::Y, Pauli::I}, ec);
+    PauliExpBox peb2({{Pauli::X, Pauli::X, Pauli::I, Pauli::Y, Pauli::I}, ec});
     circ.add_box(peb2, {0, 1, 2, 3, 4});
-    PauliExpBox peb3({Pauli::Y, Pauli::Y, Pauli::X, Pauli::I, Pauli::I}, ed);
+    PauliExpBox peb3({{Pauli::Y, Pauli::Y, Pauli::X, Pauli::I, Pauli::I}, ed});
     circ.add_box(peb3, {0, 1, 2, 3, 4});
-    PauliExpBox peb4({Pauli::Z, Pauli::I, Pauli::Y, Pauli::X, Pauli::X}, ee);
+    PauliExpBox peb4({{Pauli::Z, Pauli::I, Pauli::Y, Pauli::X, Pauli::X}, ee});
     circ.add_box(peb4, {0, 1, 2, 3, 4});
-    PauliExpBox peb5({Pauli::Z, Pauli::X, Pauli::I, Pauli::Z, Pauli::Z}, ef);
+    PauliExpBox peb5({{Pauli::Z, Pauli::X, Pauli::I, Pauli::Z, Pauli::Z}, ef});
     circ.add_box(peb5, {0, 1, 2, 3, 4});
-    PauliExpBox peb6({Pauli::Z, Pauli::Y, Pauli::Z, Pauli::I, Pauli::Y}, eg);
+    PauliExpBox peb6({{Pauli::Z, Pauli::Y, Pauli::Z, Pauli::I, Pauli::Y}, eg});
     circ.add_box(peb6, {0, 1, 2, 3, 4});
 
     Circuit test1 = prepend >> circ;
@@ -730,90 +730,68 @@ SCENARIO("Test mutual diagonalisation of fully commuting sets") {
 
 SCENARIO("Conjugating Cliffords through Pauli tensors") {
   GIVEN("A 3qb XYZ pauli tensor") {
-    QubitPauliTensor qpt({Pauli::X, Pauli::Y, Pauli::Z});
+    SpPauliStabiliser qpt(DensePauliMap{Pauli::X, Pauli::Y, Pauli::Z});
     WHEN("Commuting a Hadamard through qb0") {
       Qubit qb0(0);
       conjugate_PauliTensor(qpt, OpType::H, qb0);
-      auto it = qpt.string.map.find(qb0);
-      REQUIRE(it != qpt.string.map.end());
       THEN("X becomes Z") {
-        REQUIRE(it->second == Pauli::Z);
-        REQUIRE(std::abs(qpt.coeff - 1.) < EPS);
+        REQUIRE(qpt.get(qb0) == Pauli::Z);
+        REQUIRE(qpt.is_real_negative() == false);
       }
     }
     WHEN("Commuting a X through qb0") {
       Qubit qb0(0);
       conjugate_PauliTensor(qpt, OpType::X, qb0);
-      auto it = qpt.string.map.find(qb0);
-      REQUIRE(it != qpt.string.map.end());
       THEN("X remains X") {
-        REQUIRE(it->second == Pauli::X);
-        REQUIRE(std::abs(qpt.coeff - 1.) < EPS);
+        REQUIRE(qpt.get(qb0) == Pauli::X);
+        REQUIRE(qpt.is_real_negative() == false);
       }
     }
     WHEN("Commuting a X through qb1") {
       Qubit qb1(1);
       conjugate_PauliTensor(qpt, OpType::X, qb1);
-      auto it = qpt.string.map.find(qb1);
-      REQUIRE(it != qpt.string.map.end());
       THEN("Y becomes -Y") {
-        REQUIRE(it->second == Pauli::Y);
-        REQUIRE(std::abs(qpt.coeff + 1.) < EPS);
+        REQUIRE(qpt.get(qb1) == Pauli::Y);
+        REQUIRE(qpt.is_real_negative() == true);
       }
     }
     WHEN("Commuting a CX through qb0-qb1") {
       Qubit qb0(0), qb1(1);
       conjugate_PauliTensor(qpt, OpType::CX, qb0, qb1);
-      auto it0 = qpt.string.map.find(qb0);
-      auto it1 = qpt.string.map.find(qb1);
-      REQUIRE(it0 != qpt.string.map.end());
-      REQUIRE(it1 != qpt.string.map.end());
       THEN("XY becomes YZ") {
-        REQUIRE(it0->second == Pauli::Y);
-        REQUIRE(it1->second == Pauli::Z);
-        REQUIRE(std::abs(qpt.coeff - 1.) < EPS);
+        REQUIRE(qpt.get(qb0) == Pauli::Y);
+        REQUIRE(qpt.get(qb1) == Pauli::Z);
+        REQUIRE(qpt.is_real_negative() == false);
       }
     }
     WHEN("Commuting an XXPhase3 through qb0-qb1-qb2") {
       Qubit qb0(0), qb1(1), qb2(2);
       conjugate_PauliTensor(qpt, OpType::XXPhase3, qb0, qb1, qb2);
-      auto it0 = qpt.string.map.find(qb0);
-      auto it1 = qpt.string.map.find(qb1);
-      auto it2 = qpt.string.map.find(qb2);
-      REQUIRE(it0 != qpt.string.map.end());
-      REQUIRE(it1 != qpt.string.map.end());
-      REQUIRE(it2 != qpt.string.map.end());
       THEN("XYZ becomes -XZY") {
-        REQUIRE(it0->second == Pauli::X);
-        REQUIRE(it1->second == Pauli::Z);
-        REQUIRE(it2->second == Pauli::Y);
-        REQUIRE(std::abs(qpt.coeff + 1.) < EPS);
+        REQUIRE(qpt.get(qb0) == Pauli::X);
+        REQUIRE(qpt.get(qb1) == Pauli::Z);
+        REQUIRE(qpt.get(qb2) == Pauli::Y);
+        REQUIRE(qpt.is_real_negative() == true);
       }
     }
   }
   GIVEN("A 3qb XXX pauli tensor") {
-    QubitPauliTensor qpt({Pauli::X, Pauli::X, Pauli::X});
+    SpPauliStabiliser qpt(DensePauliMap{Pauli::X, Pauli::X, Pauli::X});
     WHEN("Commuting an XXPhase3 through qb0-qb1-qb2") {
       Qubit qb0(0), qb1(1), qb2(2);
-      auto it0 = qpt.string.map.find(qb0);
-      auto it1 = qpt.string.map.find(qb1);
-      auto it2 = qpt.string.map.find(qb2);
-      REQUIRE(it0 != qpt.string.map.end());
-      REQUIRE(it1 != qpt.string.map.end());
-      REQUIRE(it2 != qpt.string.map.end());
       THEN("XXX remains XXX") {
-        REQUIRE(it0->second == Pauli::X);
-        REQUIRE(it1->second == Pauli::X);
-        REQUIRE(it2->second == Pauli::X);
-        REQUIRE(std::abs(qpt.coeff - 1.) < EPS);
+        REQUIRE(qpt.get(qb0) == Pauli::X);
+        REQUIRE(qpt.get(qb1) == Pauli::X);
+        REQUIRE(qpt.get(qb2) == Pauli::X);
+        REQUIRE(qpt.is_real_negative() == false);
       }
     }
   }
 }
 
 SCENARIO("Test greedy diagonalisation explicitly") {
-  auto is_diagonal = [](const QubitPauliTensor& qpt) {
-    for (auto [qb, p] : qpt.string.map) {
+  auto is_diagonal = [](const SpSymPauliTensor& qpt) {
+    for (auto [qb, p] : qpt.string) {
       if (p != Pauli::I && p != Pauli::Z) {
         return false;
       }
@@ -821,45 +799,38 @@ SCENARIO("Test greedy diagonalisation explicitly") {
     return true;
   };
 
-  auto apply_strategy =
-      [](std::list<std::pair<QubitPauliTensor, Expr>>& gadgets,
-         std::set<Qubit>& qubits, Circuit& cliff_circ,
-         const CXConfigType config) {
-        while (!qubits.empty()) {
-          Conjugations conjugations;
-          greedy_diagonalise(gadgets, qubits, conjugations, cliff_circ, config);
-          for (auto& [g, expr] : gadgets) {
-            apply_conjugations(g, conjugations);
-          }
-          check_easy_diagonalise(gadgets, qubits, cliff_circ);
-        }
-      };
+  auto apply_strategy = [](std::list<SpSymPauliTensor>& gadgets,
+                           std::set<Qubit>& qubits, Circuit& cliff_circ,
+                           const CXConfigType config) {
+    while (!qubits.empty()) {
+      Conjugations conjugations;
+      greedy_diagonalise(gadgets, qubits, conjugations, cliff_circ, config);
+      for (auto& g : gadgets) {
+        apply_conjugations(g, conjugations);
+      }
+      check_easy_diagonalise(gadgets, qubits, cliff_circ);
+    }
+  };
   GIVEN("A large-ish set of PauliTensor") {
     unsigned n_qbs = 6;
     std::set<Qubit> qbs;
     for (unsigned i = 0; i < n_qbs; ++i) qbs.insert(Qubit(i));
 
-    std::list<std::pair<QubitPauliTensor, Expr>> gadgets;
+    std::list<SpSymPauliTensor> gadgets;
     Conjugations conjugations;
     Circuit cliff_circ(n_qbs);
 
     // commuting set
-    std::vector<QubitPauliTensor> tensors;
-    tensors.push_back(QubitPauliTensor(
-        {Pauli::Z, Pauli::Z, Pauli::Z, Pauli::X, Pauli::X, Pauli::X}));
-    tensors.push_back(QubitPauliTensor(
-        {Pauli::Z, Pauli::X, Pauli::Y, Pauli::Z, Pauli::Z, Pauli::X}));
-    tensors.push_back(QubitPauliTensor(
-        {Pauli::Z, Pauli::Y, Pauli::X, Pauli::Z, Pauli::Z, Pauli::X}));
-    tensors.push_back(QubitPauliTensor(
-        {Pauli::Z, Pauli::Y, Pauli::X, Pauli::Y, Pauli::Y, Pauli::X}));
-    tensors.push_back(QubitPauliTensor(
-        {Pauli::X, Pauli::Z, Pauli::Z, Pauli::Y, Pauli::Y, Pauli::Y}));
-    std::vector<Expr> exprs{1.13, 0.226, 0.013, 0.952, 1.88};
-
-    for (unsigned i = 0; i < 5; ++i) {
-      gadgets.push_back({tensors[i], exprs[i]});
-    }
+    gadgets.push_back(SpSymPauliTensor(
+        {Pauli::Z, Pauli::Z, Pauli::Z, Pauli::X, Pauli::X, Pauli::X}, 1.13));
+    gadgets.push_back(SpSymPauliTensor(
+        {Pauli::Z, Pauli::X, Pauli::Y, Pauli::Z, Pauli::Z, Pauli::X}, 0.226));
+    gadgets.push_back(SpSymPauliTensor(
+        {Pauli::Z, Pauli::Y, Pauli::X, Pauli::Z, Pauli::Z, Pauli::X}, 0.013));
+    gadgets.push_back(SpSymPauliTensor(
+        {Pauli::Z, Pauli::Y, Pauli::X, Pauli::Y, Pauli::Y, Pauli::X}, 0.952));
+    gadgets.push_back(SpSymPauliTensor(
+        {Pauli::X, Pauli::Z, Pauli::Z, Pauli::Y, Pauli::Y, Pauli::Y}, 1.88));
 
     WHEN("a single run with Snake configuration") {
       CXConfigType cx_config = CXConfigType::Snake;
@@ -874,7 +845,7 @@ SCENARIO("Test greedy diagonalisation explicitly") {
       apply_strategy(gadgets, qbs, cliff_circ, cx_config);
       THEN("gadgets are diagonal") {
         for (const auto& g : gadgets) {
-          REQUIRE(is_diagonal(g.first));
+          REQUIRE(is_diagonal(g));
         }
       }
     }
@@ -891,7 +862,7 @@ SCENARIO("Test greedy diagonalisation explicitly") {
       apply_strategy(gadgets, qbs, cliff_circ, cx_config);
       THEN("gadgets are diagonal") {
         for (const auto& g : gadgets) {
-          REQUIRE(is_diagonal(g.first));
+          REQUIRE(is_diagonal(g));
         }
       }
     }
@@ -908,7 +879,7 @@ SCENARIO("Test greedy diagonalisation explicitly") {
       apply_strategy(gadgets, qbs, cliff_circ, cx_config);
       THEN("gadgets are diagonal") {
         for (const auto& g : gadgets) {
-          REQUIRE(is_diagonal(g.first));
+          REQUIRE(is_diagonal(g));
         }
       }
     }
@@ -925,7 +896,7 @@ SCENARIO("Test greedy diagonalisation explicitly") {
       apply_strategy(gadgets, qbs, cliff_circ, cx_config);
       THEN("gadgets are diagonal") {
         for (const auto& g : gadgets) {
-          REQUIRE(is_diagonal(g.first));
+          REQUIRE(is_diagonal(g));
         }
       }
     }
@@ -941,23 +912,21 @@ SCENARIO("Diagonalise a pair of gadgets") {
   Circuit circ(n_qbs);
 
   // commuting set
-  std::vector<QubitPauliTensor> tensors;
-  tensors.push_back(QubitPauliTensor(
-      {Pauli::Z, Pauli::Z, Pauli::X, Pauli::I, Pauli::I, Pauli::X}));
-  tensors.push_back(QubitPauliTensor(
-      {Pauli::Z, Pauli::Z, Pauli::X, Pauli::Z, Pauli::Z, Pauli::I}));
-  std::vector<Expr> exprs{1.13, 0.226};
+  std::vector<SpSymPauliTensor> gadgets;
+  gadgets.push_back(SpSymPauliTensor(
+      {Pauli::Z, Pauli::Z, Pauli::X, Pauli::I, Pauli::I, Pauli::X}, 1.13));
+  gadgets.push_back(SpSymPauliTensor(
+      {Pauli::Z, Pauli::Z, Pauli::X, Pauli::Z, Pauli::Z, Pauli::I}, 0.226));
 
   Circuit correct;
   for (unsigned i = 0; i < 2; ++i) {
-    append_single_pauli_gadget(correct, tensors[i], exprs[i]);
+    append_single_pauli_gadget(correct, gadgets.at(i));
   }
   auto u_correct = tket_sim::get_unitary(correct);
 
   GIVEN("Snake configuration") {
     CXConfigType config = CXConfigType::Snake;
-    append_pauli_gadget_pair(
-        circ, tensors[0], exprs[0], tensors[1], exprs[1], config);
+    append_pauli_gadget_pair(circ, gadgets.at(0), gadgets.at(1), config);
     THEN("Unitary is correct") {
       auto u_res = tket_sim::get_unitary(circ);
       REQUIRE((u_correct - u_res).cwiseAbs().sum() < ERR_EPS);
@@ -965,8 +934,7 @@ SCENARIO("Diagonalise a pair of gadgets") {
   }
   GIVEN("Star configuration") {
     CXConfigType config = CXConfigType::Star;
-    append_pauli_gadget_pair(
-        circ, tensors[0], exprs[0], tensors[1], exprs[1], config);
+    append_pauli_gadget_pair(circ, gadgets.at(0), gadgets.at(1), config);
     THEN("Unitary is correct") {
       auto u_res = tket_sim::get_unitary(circ);
       REQUIRE((u_correct - u_res).cwiseAbs().sum() < ERR_EPS);
@@ -974,8 +942,7 @@ SCENARIO("Diagonalise a pair of gadgets") {
   }
   GIVEN("Tree configuration") {
     CXConfigType config = CXConfigType::Tree;
-    append_pauli_gadget_pair(
-        circ, tensors[0], exprs[0], tensors[1], exprs[1], config);
+    append_pauli_gadget_pair(circ, gadgets.at(0), gadgets.at(1), config);
     THEN("Unitary is correct") {
       auto u_res = tket_sim::get_unitary(circ);
       REQUIRE((u_correct - u_res).cwiseAbs().sum() < ERR_EPS);
@@ -983,8 +950,7 @@ SCENARIO("Diagonalise a pair of gadgets") {
   }
   GIVEN("MultiQGate configuration") {
     CXConfigType config = CXConfigType::MultiQGate;
-    append_pauli_gadget_pair(
-        circ, tensors[0], exprs[0], tensors[1], exprs[1], config);
+    append_pauli_gadget_pair(circ, gadgets.at(0), gadgets.at(1), config);
     circ.decompose_boxes_recursively();
     THEN("XXPhase3 were used") {
       REQUIRE(circ.count_gates(OpType::XXPhase3) == 2);
