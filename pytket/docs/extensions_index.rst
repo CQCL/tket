@@ -30,6 +30,9 @@ A full list of available pytket backends is shown below.
 QPUs
 ----
 
+`QuantinuumBackend <https://tket.quantinuum.com/extensions/pytket-quantinuum/api.html#pytket.extensions.quantinuum.QuantinuumBackend>`_
+- Interface to a remote Quantinuum device or simulator. There are currently two Quantinuum devices offered (H1-1 and H2-1).
+
 `IBMQBackend <https://tket.quantinuum.com/extensions/pytket-qiskit/api.html#pytket.extensions.qiskit.IBMQBackend>`_
 - A backend for running circuits on remote IBMQ devices.
 
@@ -41,9 +44,6 @@ QPUs
 
 `AQTBackend <https://cqcl.github.io/pytket-aqt/api/api.html#pytket.extensions.aqt.AQTBackend>`_
 - Interface to an AQT device or simulator.
-
-`QuantinuumBackend <https://tket.quantinuum.com/extensions/pytket-quantinuum/api.html#pytket.extensions.quantinuum.QuantinuumBackend>`_
-- Interface to a remote Quantinuum device or simulator. There are currently two Quantinuum devices offered (H1-1 and H1-2).
 
 `IQMBackend <https://tket.quantinuum.com/extensions/pytket-iqm/api.html#pytket.extensions.iqm.IQMBackend>`_
 - Interface to an IQM device or simulator.
