@@ -27,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2023-10-27 09:23:55</td>
+      <td>2023-10-31 14:08:04</td>
     </tr>
     <tr>
       <th scrope="row">Warnings:</th>
@@ -45,9 +45,9 @@
     </tr>
     <tr>
       <th scope="row">Lines:</th>
-      <td>116</td>
-      <td>128</td>
-      <td class="coverage-high">90.6%</td>
+      <td>113</td>
+      <td>125</td>
+      <td class="coverage-high">90.4%</td>
     </tr>
     <tr>
       <th scope="row">Functions:</th>
@@ -63,9 +63,9 @@
     </tr>
     <tr>
       <th scope="row">Decisions:</th>
-      <td>35</td>
-      <td>46</td>
-      <td class="coverage-medium">76.1%</td>
+      <td>37</td>
+      <td>48</td>
+      <td class="coverage-medium">77.1%</td>
     </tr>
   </table>
 </div>
@@ -85,7 +85,7 @@
     </tr>
     <tr>
       <td>
-        <a href="#l105">tket::AbstractGraphData::AbstractGraphData(boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::undirectedS, tket::QubitPauliString, boost::no_property, boost::no_property, boost::listS&gt; const&amp;)</a>
+        <a href="#l105">tket::AbstractGraphData::AbstractGraphData(boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::undirectedS, tket::PauliTensor&lt;std::map&lt;tket::Qubit, tket::Pauli, std::less&lt;tket::Qubit&gt;, std::allocator&lt;std::pair&lt;tket::Qubit const, tket::Pauli&gt; &gt; &gt;, tket::no_coeff_t&gt;, boost::no_property, boost::no_property, boost::listS&gt; const&amp;)</a>
       </td>
       <td>
         <a href="#l105">105</a>
@@ -107,7 +107,7 @@
     </tr>
     <tr>
       <td>
-        <a href="#l85">tket::AbstractGraphData::get_vertex_id(tket::QubitPauliString const&amp;)</a>
+        <a href="#l85">tket::AbstractGraphData::get_vertex_id(tket::PauliTensor&lt;std::map&lt;tket::Qubit, tket::Pauli, std::less&lt;tket::Qubit&gt;, std::allocator&lt;std::pair&lt;tket::Qubit const, tket::Pauli&gt; &gt; &gt;, tket::no_coeff_t&gt; const&amp;)</a>
       </td>
       <td>
         <a href="#l85">85</a>
@@ -129,7 +129,7 @@
     </tr>
     <tr>
       <td>
-        <a href="#l26">tket::PauliPartitionerGraph::PauliPartitionerGraph(std::__cxx11::list&lt;tket::QubitPauliString, std::allocator&lt;tket::QubitPauliString&gt; &gt; const&amp;, tket::PauliPartitionStrat)</a>
+        <a href="#l26">tket::PauliPartitionerGraph::PauliPartitionerGraph(std::__cxx11::list&lt;tket::PauliTensor&lt;std::map&lt;tket::Qubit, tket::Pauli, std::less&lt;tket::Qubit&gt;, std::allocator&lt;std::pair&lt;tket::Qubit const, tket::Pauli&gt; &gt; &gt;, tket::no_coeff_t&gt;, std::allocator&lt;tket::PauliTensor&lt;std::map&lt;tket::Qubit, tket::Pauli, std::less&lt;tket::Qubit&gt;, std::allocator&lt;std::pair&lt;tket::Qubit const, tket::Pauli&gt; &gt; &gt;, tket::no_coeff_t&gt; &gt; &gt; const&amp;, tket::PauliPartitionStrat)</a>
       </td>
       <td>
         <a href="#l26">26</a>
@@ -151,7 +151,7 @@
     </tr>
     <tr>
       <td>
-        <a href="#l129">tket::get_partitioned_paulis_for_exhaustive_method(boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::undirectedS, tket::QubitPauliString, boost::no_property, boost::no_property, boost::listS&gt; const&amp;)</a>
+        <a href="#l129">tket::get_partitioned_paulis_for_exhaustive_method(boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::undirectedS, tket::PauliTensor&lt;std::map&lt;tket::Qubit, tket::Pauli, std::less&lt;tket::Qubit&gt;, std::allocator&lt;std::pair&lt;tket::Qubit const, tket::Pauli&gt; &gt; &gt;, tket::no_coeff_t&gt;, boost::no_property, boost::no_property, boost::listS&gt; const&amp;)</a>
       </td>
       <td>
         <a href="#l129">129</a>
@@ -162,7 +162,7 @@
     </tr>
     <tr>
       <td>
-        <a href="#l157">tket::get_partitioned_paulis_for_largest_first_method(boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::undirectedS, tket::QubitPauliString, boost::no_property, boost::no_property, boost::listS&gt; const&amp;)</a>
+        <a href="#l157">tket::get_partitioned_paulis_for_largest_first_method(boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::undirectedS, tket::PauliTensor&lt;std::map&lt;tket::Qubit, tket::Pauli, std::less&lt;tket::Qubit&gt;, std::allocator&lt;std::pair&lt;tket::Qubit const, tket::Pauli&gt; &gt; &gt;, tket::no_coeff_t&gt;, boost::no_property, boost::no_property, boost::listS&gt; const&amp;)</a>
       </td>
       <td>
         <a href="#l157">157</a>
@@ -173,7 +173,7 @@
     </tr>
     <tr>
       <td>
-        <a href="#l161">tket::get_partitioned_paulis_for_largest_first_method(boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::undirectedS, tket::QubitPauliString, boost::no_property, boost::no_property, boost::listS&gt; const&amp;)::{lambda(unsigned int, unsigned int)#1}::operator()(unsigned int, unsigned int) const</a>
+        <a href="#l161">tket::get_partitioned_paulis_for_largest_first_method(boost::adjacency_list&lt;boost::vecS, boost::vecS, boost::undirectedS, tket::PauliTensor&lt;std::map&lt;tket::Qubit, tket::Pauli, std::less&lt;tket::Qubit&gt;, std::allocator&lt;std::pair&lt;tket::Qubit const, tket::Pauli&gt; &gt; &gt;, tket::no_coeff_t&gt;, boost::no_property, boost::no_property, boost::listS&gt; const&amp;)::{lambda(unsigned int, unsigned int)#1}::operator()(unsigned int, unsigned int) const</a>
       </td>
       <td>
         <a href="#l161">161</a>
@@ -184,7 +184,7 @@
     </tr>
     <tr>
       <td>
-        <a href="#l206">tket::get_term_sequence_for_lazy_colouring_method(std::__cxx11::list&lt;tket::QubitPauliString, std::allocator&lt;tket::QubitPauliString&gt; &gt; const&amp;, tket::PauliPartitionStrat)</a>
+        <a href="#l206">tket::get_term_sequence_for_lazy_colouring_method(std::__cxx11::list&lt;tket::PauliTensor&lt;std::map&lt;tket::Qubit, tket::Pauli, std::less&lt;tket::Qubit&gt;, std::allocator&lt;std::pair&lt;tket::Qubit const, tket::Pauli&gt; &gt; &gt;, tket::no_coeff_t&gt;, std::allocator&lt;tket::PauliTensor&lt;std::map&lt;tket::Qubit, tket::Pauli, std::less&lt;tket::Qubit&gt;, std::allocator&lt;std::pair&lt;tket::Qubit const, tket::Pauli&gt; &gt; &gt;, tket::no_coeff_t&gt; &gt; &gt; const&amp;, tket::PauliPartitionStrat)</a>
       </td>
       <td>
         <a href="#l206">206</a>
@@ -195,24 +195,24 @@
     </tr>
     <tr>
       <td>
-        <a href="#l254">tket::get_term_sequence_with_constructed_dependency_graph(std::__cxx11::list&lt;tket::QubitPauliString, std::allocator&lt;tket::QubitPauliString&gt; &gt; const&amp;, tket::PauliPartitionStrat, tket::GraphColourMethod)</a>
+        <a href="#l251">tket::get_term_sequence_with_constructed_dependency_graph(std::__cxx11::list&lt;tket::PauliTensor&lt;std::map&lt;tket::Qubit, tket::Pauli, std::less&lt;tket::Qubit&gt;, std::allocator&lt;std::pair&lt;tket::Qubit const, tket::Pauli&gt; &gt; &gt;, tket::no_coeff_t&gt;, std::allocator&lt;tket::PauliTensor&lt;std::map&lt;tket::Qubit, tket::Pauli, std::less&lt;tket::Qubit&gt;, std::allocator&lt;std::pair&lt;tket::Qubit const, tket::Pauli&gt; &gt; &gt;, tket::no_coeff_t&gt; &gt; &gt; const&amp;, tket::PauliPartitionStrat, tket::GraphColourMethod)</a>
       </td>
       <td>
-        <a href="#l254">254</a>
+        <a href="#l251">251</a>
       </td>
       <td>
-        <a href="#l254"> called 12 times</a>
+        <a href="#l251"> called 12 times</a>
       </td>
     </tr>
     <tr>
       <td>
-        <a href="#l269">tket::term_sequence(std::__cxx11::list&lt;tket::QubitPauliString, std::allocator&lt;tket::QubitPauliString&gt; &gt; const&amp;, tket::PauliPartitionStrat, tket::GraphColourMethod)</a>
+        <a href="#l266">tket::term_sequence(std::__cxx11::list&lt;tket::PauliTensor&lt;std::map&lt;tket::Qubit, tket::Pauli, std::less&lt;tket::Qubit&gt;, std::allocator&lt;std::pair&lt;tket::Qubit const, tket::Pauli&gt; &gt; &gt;, tket::no_coeff_t&gt;, std::allocator&lt;tket::PauliTensor&lt;std::map&lt;tket::Qubit, tket::Pauli, std::less&lt;tket::Qubit&gt;, std::allocator&lt;std::pair&lt;tket::Qubit const, tket::Pauli&gt; &gt; &gt;, tket::no_coeff_t&gt; &gt; &gt; const&amp;, tket::PauliPartitionStrat, tket::GraphColourMethod)</a>
       </td>
       <td>
-        <a href="#l269">269</a>
+        <a href="#l266">266</a>
       </td>
       <td>
-        <a href="#l269"> called 24 times</a>
+        <a href="#l266"> called 24 times</a>
       </td>
     </tr>
   </table>
@@ -478,7 +478,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">12</td>
-      <td class="src coveredLine"><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">QubitPauliString</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">strings</span><span class="p">,</span><span class="w"> </span><span class="n">PauliPartitionStrat</span><span class="w"> </span><span class="n">strat</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">SpPauliString</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">strings</span><span class="p">,</span><span class="w"> </span><span class="n">PauliPartitionStrat</span><span class="w"> </span><span class="n">strat</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l28" href="#l28">28</a></td>
@@ -519,7 +519,7 @@
         </details>
       </td>
       <td class="linecount coveredLine">36</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">QubitPauliString</span><span class="o">&amp;</span><span class="w"> </span><span class="n">tensor</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">strings</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">SpPauliString</span><span class="o">&amp;</span><span class="w"> </span><span class="n">tensor</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">strings</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l30" href="#l30">30</a></td>
@@ -979,7 +979,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="kt">size_t</span><span class="w"> </span><span class="nf">get_vertex_id</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">QubitPauliString</span><span class="o">&amp;</span><span class="w"> </span><span class="n">pauli_string</span><span class="p">);</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="kt">size_t</span><span class="w"> </span><span class="nf">get_vertex_id</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">SpPauliString</span><span class="o">&amp;</span><span class="w"> </span><span class="n">pauli_string</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l68" href="#l68">68</a></td>
@@ -1033,7 +1033,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="n">QubitPauliString</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">size_t</span><span class="o">&gt;</span><span class="w"></span></td>
+      <td class="src "><span class="w">      </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="n">SpPauliString</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="kt">size_t</span><span class="o">&gt;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l74" href="#l74">74</a></td>
@@ -1150,7 +1150,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">QubitPauliString</span><span class="o">&amp;</span><span class="w"> </span><span class="n">pauli_string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src "><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">SpPauliString</span><span class="o">&amp;</span><span class="w"> </span><span class="n">pauli_string</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l87" href="#l87">87</a></td>
@@ -1634,7 +1634,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="k">static</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">QubitPauliString</span><span class="o">&gt;&gt;</span><span class="w"></span></td>
+      <td class="src "><span class="k">static</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">SpPauliString</span><span class="o">&gt;&gt;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l129" href="#l129">129</a></td>
@@ -1722,7 +1722,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">6</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">QubitPauliString</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">colour_map</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">SpPauliString</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">colour_map</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l137" href="#l137">137</a></td>
@@ -1764,7 +1764,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">12</td>
-      <td class="src coveredLine"><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">QubitPauliString</span><span class="o">&amp;</span><span class="w"> </span><span class="n">vertex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">entry</span><span class="p">.</span><span class="n">first</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">SpPauliString</span><span class="o">&amp;</span><span class="w"> </span><span class="n">vertex</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">entry</span><span class="p">.</span><span class="n">first</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l140" href="#l140">140</a></td>
@@ -1940,7 +1940,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="k">static</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">QubitPauliString</span><span class="o">&gt;&gt;</span><span class="w"></span></td>
+      <td class="src "><span class="k">static</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">SpPauliString</span><span class="o">&gt;&gt;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l157" href="#l157">157</a></td>
@@ -2179,7 +2179,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">6</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">QubitPauliString</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">colour_map</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">SpPauliString</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">colour_map</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l179" href="#l179">179</a></td>
@@ -2290,7 +2290,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">QubitPauliString</span><span class="o">&gt;&gt;</span><span class="w"></span></td>
+      <td class="src "><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">SpPauliString</span><span class="o">&gt;&gt;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l187" href="#l187">187</a></td>
@@ -2494,7 +2494,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="k">static</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">QubitPauliString</span><span class="o">&gt;&gt;</span><span class="w"></span></td>
+      <td class="src "><span class="k">static</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">SpPauliString</span><span class="o">&gt;&gt;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l206" href="#l206">206</a></td>
@@ -2512,7 +2512,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">QubitPauliString</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">strings</span><span class="p">,</span><span class="w"> </span><span class="n">PauliPartitionStrat</span><span class="w"> </span><span class="n">strat</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src "><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">SpPauliString</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">strings</span><span class="p">,</span><span class="w"> </span><span class="n">PauliPartitionStrat</span><span class="w"> </span><span class="n">strat</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l208" href="#l208">208</a></td>
@@ -2521,7 +2521,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">12</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">QubitPauliString</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">terms</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">SpPauliString</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">terms</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l209" href="#l209">209</a></td>
@@ -2544,7 +2544,7 @@
         </details>
       </td>
       <td class="linecount coveredLine">64</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">QubitPauliString</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qpt</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">strings</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">SpPauliString</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qpt</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">strings</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l210" href="#l210">210</a></td>
@@ -2632,48 +2632,28 @@
     <tr class="source-line">
       <td class="lineno"><a id="l216" href="#l216">216</a></td>
       <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">42</td>
-      <td class="src coveredLine"><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">QubitPauliString</span><span class="o">&gt;&gt;::</span><span class="n">iterator</span><span class="w"> </span><span class="n">term_iter</span><span class="w"> </span><span class="o">=</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l217" href="#l217">217</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">42</td>
-      <td class="src coveredLine"><span class="w">             </span><span class="n">terms</span><span class="p">.</span><span class="n">begin</span><span class="p">();</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l218" href="#l218">218</a></td>
-      <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/2</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 3 taken 69 times.</div>
-          <div class="takenBranch">&check; Branch 4 taken 20 times.</div>
+          <div class="takenBranch">&check; Branch 5 taken 69 times.</div>
+          <div class="takenBranch">&check; Branch 6 taken 20 times.</div>
         </div>
         </details>
       </td>
       <td class="linedecision">
+        <details class="linedecisionDetails">
+          <summary class="linedecisionSummary">2/2</summary>
+          <div class="linedecisionContents">
+            <div class="takenDecision">&check; Decision 'true' taken 69 times.</div>
+            <div class="takenDecision">&check; Decision 'false' taken 20 times.</div>
+          </div>
+        </details>
       </td>
       <td class="linecount coveredLine">89</td>
-      <td class="src coveredLine"><span class="w">         </span><span class="n">term_iter</span><span class="w"> </span><span class="o">!=</span><span class="w"> </span><span class="n">terms</span><span class="p">.</span><span class="n">end</span><span class="p">();</span><span class="w"> </span><span class="o">++</span><span class="n">term_iter</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">    </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">SpPauliString</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">qpt_list</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">terms</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l219" href="#l219">219</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount coveredLine">69</td>
-      <td class="src coveredLine"><span class="w">      </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">QubitPauliString</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">qpt_list</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">*</span><span class="n">term_iter</span><span class="p">;</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l220" href="#l220">220</a></td>
+      <td class="lineno"><a id="l217" href="#l217">217</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -2682,7 +2662,7 @@
       <td class="src coveredLine"><span class="w">      </span><span class="kt">bool</span><span class="w"> </span><span class="n">viable_bin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l221" href="#l221">221</a></td>
+      <td class="lineno"><a id="l218" href="#l218">218</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/2</summary>
@@ -2702,10 +2682,10 @@
         </details>
       </td>
       <td class="linecount coveredLine">139</td>
-      <td class="src coveredLine"><span class="w">      </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">QubitPauliString</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qpt2</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">qpt_list</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">      </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">SpPauliString</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qpt2</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">qpt_list</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l222" href="#l222">222</a></td>
+      <td class="lineno"><a id="l219" href="#l219">219</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/3</summary>
@@ -2722,7 +2702,7 @@
       <td class="src coveredLine"><span class="w">        </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">strat</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l223" href="#l223">223</a></td>
+      <td class="lineno"><a id="l220" href="#l220">220</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -2737,7 +2717,7 @@
       <td class="src coveredLine"><span class="w">          </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">PauliPartitionStrat</span><span class="o">::</span><span class="n">NonConflictingSets</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l224" href="#l224">224</a></td>
+      <td class="lineno"><a id="l221" href="#l221">221</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -2753,7 +2733,7 @@
       <td class="src coveredLine"><span class="w">            </span><span class="kt">bool</span><span class="w"> </span><span class="n">conflict</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="o">!</span><span class="n">qpt</span><span class="p">.</span><span class="n">conflicting_qubits</span><span class="p">(</span><span class="n">qpt2</span><span class="p">).</span><span class="n">empty</span><span class="p">();</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l225" href="#l225">225</a></td>
+      <td class="lineno"><a id="l222" href="#l222">222</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/2</summary>
@@ -2776,7 +2756,7 @@
       <td class="src coveredLine"><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">conflict</span><span class="p">)</span><span class="w"> </span><span class="n">viable_bin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l226" href="#l226">226</a></td>
+      <td class="lineno"><a id="l223" href="#l223">223</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -2785,7 +2765,7 @@
       <td class="src coveredLine"><span class="w">            </span><span class="k">break</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l227" href="#l227">227</a></td>
+      <td class="lineno"><a id="l224" href="#l224">224</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -2794,7 +2774,7 @@
       <td class="src "><span class="w">          </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l228" href="#l228">228</a></td>
+      <td class="lineno"><a id="l225" href="#l225">225</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -2809,7 +2789,7 @@
       <td class="src coveredLine"><span class="w">          </span><span class="k">case</span><span class="w"> </span><span class="p">(</span><span class="n">PauliPartitionStrat</span><span class="o">::</span><span class="n">CommutingSets</span><span class="p">)</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l229" href="#l229">229</a></td>
+      <td class="lineno"><a id="l226" href="#l226">226</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">3/4</summary>
@@ -2834,13 +2814,46 @@
       <td class="src coveredLine"><span class="w">            </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="o">!</span><span class="n">qpt</span><span class="p">.</span><span class="n">commutes_with</span><span class="p">(</span><span class="n">qpt2</span><span class="p">))</span><span class="w"> </span><span class="n">viable_bin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">false</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l230" href="#l230">230</a></td>
+      <td class="lineno"><a id="l227" href="#l227">227</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">62</td>
       <td class="src coveredLine"><span class="w">            </span><span class="k">break</span><span class="p">;</span><span class="w"></span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l228" href="#l228">228</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount "></td>
+      <td class="src "><span class="w">          </span><span class="p">}</span><span class="w"></span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l229" href="#l229">229</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+        <details class="linedecisionDetails">
+          <summary class="linedecisionSummary">0/1</summary>
+          <div class="linedecisionContents">
+            <div class="notTakenDecision">&cross; Decision 'true' not taken.</div>
+          </div>
+        </details>
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">          </span><span class="k">default</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+    </tr>
+    <tr class="source-line">
+      <td class="lineno"><a id="l230" href="#l230">230</a></td>
+      <td class="linebranch">
+      </td>
+      <td class="linedecision">
+      </td>
+      <td class="linecount uncoveredLine">&cross;</td>
+      <td class="src uncoveredLine"><span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">UnknownPauliPartitionStrat</span><span class="p">();</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l231" href="#l231">231</a></td>
@@ -2856,45 +2869,12 @@
       <td class="linebranch">
       </td>
       <td class="linedecision">
-        <details class="linedecisionDetails">
-          <summary class="linedecisionSummary">0/1</summary>
-          <div class="linedecisionContents">
-            <div class="notTakenDecision">&cross; Decision 'true' not taken.</div>
-          </div>
-        </details>
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">          </span><span class="k">default</span><span class="o">:</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l233" href="#l233">233</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">            </span><span class="k">throw</span><span class="w"> </span><span class="n">UnknownPauliPartitionStrat</span><span class="p">();</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l234" href="#l234">234</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="w">          </span><span class="p">}</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l235" href="#l235">235</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
       </td>
       <td class="linecount "></td>
       <td class="src "><span class="w">        </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l236" href="#l236">236</a></td>
+      <td class="lineno"><a id="l233" href="#l233">233</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -2903,7 +2883,7 @@
       <td class="src "></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l237" href="#l237">237</a></td>
+      <td class="lineno"><a id="l234" href="#l234">234</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/2</summary>
@@ -2926,7 +2906,7 @@
       <td class="src coveredLine"><span class="w">        </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">viable_bin</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">false</span><span class="p">)</span><span class="w"> </span><span class="k">break</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l238" href="#l238">238</a></td>
+      <td class="lineno"><a id="l235" href="#l235">235</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -2935,7 +2915,7 @@
       <td class="src "><span class="w">      </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l239" href="#l239">239</a></td>
+      <td class="lineno"><a id="l236" href="#l236">236</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/2</summary>
@@ -2958,23 +2938,23 @@
       <td class="src coveredLine"><span class="w">      </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">viable_bin</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l240" href="#l240">240</a></td>
+      <td class="lineno"><a id="l237" href="#l237">237</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
         <div class="linebranchContents">
-          <div class="takenBranch">&check; Branch 2 taken 22 times.</div>
-          <div class="notTakenBranch">&cross; Branch 3 not taken.</div>
+          <div class="takenBranch">&check; Branch 1 taken 22 times.</div>
+          <div class="notTakenBranch">&cross; Branch 2 not taken.</div>
         </div>
         </details>
       </td>
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">22</td>
-      <td class="src coveredLine"><span class="w">        </span><span class="n">term_iter</span><span class="o">-&gt;</span><span class="n">push_back</span><span class="p">(</span><span class="n">qpt</span><span class="p">);</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">        </span><span class="n">qpt_list</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">qpt</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l241" href="#l241">241</a></td>
+      <td class="lineno"><a id="l238" href="#l238">238</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -2983,7 +2963,7 @@
       <td class="src coveredLine"><span class="w">        </span><span class="n">found_bin</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="nb">true</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l242" href="#l242">242</a></td>
+      <td class="lineno"><a id="l239" href="#l239">239</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -2992,7 +2972,7 @@
       <td class="src coveredLine"><span class="w">        </span><span class="k">break</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l243" href="#l243">243</a></td>
+      <td class="lineno"><a id="l240" href="#l240">240</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -3001,7 +2981,7 @@
       <td class="src "><span class="w">      </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l244" href="#l244">244</a></td>
+      <td class="lineno"><a id="l241" href="#l241">241</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -3010,7 +2990,7 @@
       <td class="src "><span class="w">    </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l245" href="#l245">245</a></td>
+      <td class="lineno"><a id="l242" href="#l242">242</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -3019,7 +2999,7 @@
       <td class="src "></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l246" href="#l246">246</a></td>
+      <td class="lineno"><a id="l243" href="#l243">243</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/2</summary>
@@ -3042,7 +3022,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="k">if</span><span class="w"> </span><span class="p">(</span><span class="n">found_bin</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="nb">false</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l247" href="#l247">247</a></td>
+      <td class="lineno"><a id="l244" href="#l244">244</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">5/10</summary>
@@ -3066,7 +3046,7 @@
       <td class="src coveredLine"><span class="w">      </span><span class="n">terms</span><span class="p">.</span><span class="n">push_back</span><span class="p">({</span><span class="n">qpt</span><span class="p">});</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l248" href="#l248">248</a></td>
+      <td class="lineno"><a id="l245" href="#l245">245</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -3075,7 +3055,7 @@
       <td class="src "><span class="w">    </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l249" href="#l249">249</a></td>
+      <td class="lineno"><a id="l246" href="#l246">246</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -3084,7 +3064,7 @@
       <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l250" href="#l250">250</a></td>
+      <td class="lineno"><a id="l247" href="#l247">247</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -3093,7 +3073,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">terms</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l251" href="#l251">251</a></td>
+      <td class="lineno"><a id="l248" href="#l248">248</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -3102,7 +3082,7 @@
       <td class="src uncoveredLine"><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l252" href="#l252">252</a></td>
+      <td class="lineno"><a id="l249" href="#l249">249</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -3111,16 +3091,16 @@
       <td class="src "></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l253" href="#l253">253</a></td>
+      <td class="lineno"><a id="l250" href="#l250">250</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="k">static</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">QubitPauliString</span><span class="o">&gt;&gt;</span><span class="w"></span></td>
+      <td class="src "><span class="k">static</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">SpPauliString</span><span class="o">&gt;&gt;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l254" href="#l254">254</a></td>
+      <td class="lineno"><a id="l251" href="#l251">251</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -3129,16 +3109,16 @@
       <td class="src coveredLine"><span class="n">get_term_sequence_with_constructed_dependency_graph</span><span class="p">(</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l255" href="#l255">255</a></td>
+      <td class="lineno"><a id="l252" href="#l252">252</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">QubitPauliString</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">strings</span><span class="p">,</span><span class="w"> </span><span class="n">PauliPartitionStrat</span><span class="w"> </span><span class="n">strat</span><span class="p">,</span><span class="w"></span></td>
+      <td class="src "><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">SpPauliString</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">strings</span><span class="p">,</span><span class="w"> </span><span class="n">PauliPartitionStrat</span><span class="w"> </span><span class="n">strat</span><span class="p">,</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l256" href="#l256">256</a></td>
+      <td class="lineno"><a id="l253" href="#l253">253</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -3147,16 +3127,16 @@
       <td class="src "><span class="w">    </span><span class="n">GraphColourMethod</span><span class="w"> </span><span class="n">method</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l257" href="#l257">257</a></td>
+      <td class="lineno"><a id="l254" href="#l254">254</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">12</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">QubitPauliString</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">terms</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">SpPauliString</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">terms</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l258" href="#l258">258</a></td>
+      <td class="lineno"><a id="l255" href="#l255">255</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -3172,16 +3152,16 @@
       <td class="src coveredLine"><span class="w">  </span><span class="n">PauliPartitionerGraph</span><span class="w"> </span><span class="nf">pp</span><span class="p">(</span><span class="n">strings</span><span class="p">,</span><span class="w"> </span><span class="n">strat</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l259" href="#l259">259</a></td>
+      <td class="lineno"><a id="l256" href="#l256">256</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">QubitPauliString</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">colour_map</span><span class="w"> </span><span class="o">=</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">SpPauliString</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">colour_map</span><span class="w"> </span><span class="o">=</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l260" href="#l260">260</a></td>
+      <td class="lineno"><a id="l257" href="#l257">257</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -3197,7 +3177,7 @@
       <td class="src coveredLine"><span class="w">      </span><span class="n">pp</span><span class="p">.</span><span class="n">partition_paulis</span><span class="p">(</span><span class="n">method</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l261" href="#l261">261</a></td>
+      <td class="lineno"><a id="l258" href="#l258">258</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -3206,16 +3186,16 @@
       <td class="src "></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l262" href="#l262">262</a></td>
+      <td class="lineno"><a id="l259" href="#l259">259</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">12</td>
-      <td class="src coveredLine"><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="kt">unsigned</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">QubitPauliString</span><span class="o">&gt;&gt;&amp;</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">  </span><span class="k">for</span><span class="w"> </span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">pair</span><span class="o">&lt;</span><span class="k">const</span><span class="w"> </span><span class="kt">unsigned</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">SpPauliString</span><span class="o">&gt;&gt;&amp;</span><span class="w"> </span><span class="n">colour_pair</span><span class="w"> </span><span class="o">:</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l263" href="#l263">263</a></td>
+      <td class="lineno"><a id="l260" href="#l260">260</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/2</summary>
@@ -3228,10 +3208,10 @@
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">44</td>
-      <td class="src coveredLine"><span class="w">           </span><span class="nl">colour_pair</span><span class="w"> </span><span class="p">:</span><span class="w"> </span><span class="n">colour_map</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="w">       </span><span class="n">colour_map</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l264" href="#l264">264</a></td>
+      <td class="lineno"><a id="l261" href="#l261">261</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">1/2</summary>
@@ -3247,7 +3227,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="n">terms</span><span class="p">.</span><span class="n">push_back</span><span class="p">(</span><span class="n">colour_pair</span><span class="p">.</span><span class="n">second</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l265" href="#l265">265</a></td>
+      <td class="lineno"><a id="l262" href="#l262">262</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -3256,7 +3236,7 @@
       <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l266" href="#l266">266</a></td>
+      <td class="lineno"><a id="l263" href="#l263">263</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -3265,7 +3245,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">terms</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l267" href="#l267">267</a></td>
+      <td class="lineno"><a id="l264" href="#l264">264</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -3274,7 +3254,7 @@
       <td class="src coveredLine"><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l268" href="#l268">268</a></td>
+      <td class="lineno"><a id="l265" href="#l265">265</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -3283,25 +3263,25 @@
       <td class="src "></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l269" href="#l269">269</a></td>
+      <td class="lineno"><a id="l266" href="#l266">266</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
       </td>
       <td class="linecount coveredLine">24</td>
-      <td class="src coveredLine"><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">QubitPauliString</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">term_sequence</span><span class="p">(</span><span class="w"></span></td>
+      <td class="src coveredLine"><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">SpPauliString</span><span class="o">&gt;&gt;</span><span class="w"> </span><span class="n">term_sequence</span><span class="p">(</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l270" href="#l270">270</a></td>
+      <td class="lineno"><a id="l267" href="#l267">267</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">QubitPauliString</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">strings</span><span class="p">,</span><span class="w"> </span><span class="n">PauliPartitionStrat</span><span class="w"> </span><span class="n">strat</span><span class="p">,</span><span class="w"></span></td>
+      <td class="src "><span class="w">    </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">list</span><span class="o">&lt;</span><span class="n">SpPauliString</span><span class="o">&gt;&amp;</span><span class="w"> </span><span class="n">strings</span><span class="p">,</span><span class="w"> </span><span class="n">PauliPartitionStrat</span><span class="w"> </span><span class="n">strat</span><span class="p">,</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l271" href="#l271">271</a></td>
+      <td class="lineno"><a id="l268" href="#l268">268</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -3310,7 +3290,7 @@
       <td class="src "><span class="w">    </span><span class="n">GraphColourMethod</span><span class="w"> </span><span class="n">method</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l272" href="#l272">272</a></td>
+      <td class="lineno"><a id="l269" href="#l269">269</a></td>
       <td class="linebranch">
         <details class="linebranchDetails">
         <summary class="linebranchSummary">2/3</summary>
@@ -3327,7 +3307,7 @@
       <td class="src coveredLine"><span class="w">  </span><span class="k">switch</span><span class="w"> </span><span class="p">(</span><span class="n">method</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l273" href="#l273">273</a></td>
+      <td class="lineno"><a id="l270" href="#l270">270</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -3342,7 +3322,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="n">GraphColourMethod</span><span class="o">::</span><span class="n">Lazy</span><span class="o">:</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l274" href="#l274">274</a></td>
+      <td class="lineno"><a id="l271" href="#l271">271</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -3351,7 +3331,7 @@
       <td class="src coveredLine"><span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">get_term_sequence_for_lazy_colouring_method</span><span class="p">(</span><span class="n">strings</span><span class="p">,</span><span class="w"> </span><span class="n">strat</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l275" href="#l275">275</a></td>
+      <td class="lineno"><a id="l272" href="#l272">272</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -3360,7 +3340,7 @@
       <td class="src "></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l276" href="#l276">276</a></td>
+      <td class="lineno"><a id="l273" href="#l273">273</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -3375,7 +3355,7 @@
       <td class="src coveredLine"><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="n">GraphColourMethod</span><span class="o">::</span><span class="n">LargestFirst</span><span class="o">:</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l277" href="#l277">277</a></td>
+      <td class="lineno"><a id="l274" href="#l274">274</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -3384,7 +3364,7 @@
       <td class="src "><span class="w">      </span><span class="c1">// Deliberate fall through</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l278" href="#l278">278</a></td>
+      <td class="lineno"><a id="l275" href="#l275">275</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -3393,7 +3373,7 @@
       <td class="src "><span class="w">    </span><span class="k">case</span><span class="w"> </span><span class="n">GraphColourMethod</span><span class="o">::</span><span class="n">Exhaustive</span><span class="o">:</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l279" href="#l279">279</a></td>
+      <td class="lineno"><a id="l276" href="#l276">276</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -3402,7 +3382,7 @@
       <td class="src "><span class="w">      </span><span class="k">return</span><span class="w"> </span><span class="n">get_term_sequence_with_constructed_dependency_graph</span><span class="p">(</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l280" href="#l280">280</a></td>
+      <td class="lineno"><a id="l277" href="#l277">277</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -3417,7 +3397,7 @@
       <td class="src coveredLine"><span class="w">          </span><span class="n">strings</span><span class="p">,</span><span class="w"> </span><span class="n">strat</span><span class="p">,</span><span class="w"> </span><span class="n">method</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l281" href="#l281">281</a></td>
+      <td class="lineno"><a id="l278" href="#l278">278</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -3432,7 +3412,7 @@
       <td class="src uncoveredLine"><span class="w">    </span><span class="k">default</span><span class="o">:</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l282" href="#l282">282</a></td>
+      <td class="lineno"><a id="l279" href="#l279">279</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -3441,7 +3421,7 @@
       <td class="src uncoveredLine"><span class="w">      </span><span class="k">throw</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">logic_error</span><span class="p">(</span><span class="s">&quot;term_sequence : unknown graph colouring method&quot;</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l283" href="#l283">283</a></td>
+      <td class="lineno"><a id="l280" href="#l280">280</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -3450,7 +3430,7 @@
       <td class="src "><span class="w">  </span><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l284" href="#l284">284</a></td>
+      <td class="lineno"><a id="l281" href="#l281">281</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -3459,7 +3439,7 @@
       <td class="src "><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l285" href="#l285">285</a></td>
+      <td class="lineno"><a id="l282" href="#l282">282</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -3468,7 +3448,7 @@
       <td class="src "></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l286" href="#l286">286</a></td>
+      <td class="lineno"><a id="l283" href="#l283">283</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
@@ -3477,7 +3457,7 @@
       <td class="src "><span class="p">}</span><span class="w">  </span><span class="c1">// namespace tket</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l287" href="#l287">287</a></td>
+      <td class="lineno"><a id="l284" href="#l284">284</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">

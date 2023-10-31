@@ -27,7 +27,7 @@
     </tr>
     <tr>
       <th scope="row">Date:</th>
-      <td>2023-10-27 09:23:55</td>
+      <td>2023-10-31 14:08:04</td>
     </tr>
   </table>
 </div>
@@ -850,7 +850,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">QubitPauliTensor</span><span class="w"> </span><span class="nf">get_xrow</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Qubit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qb</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="n">SpPauliStabiliser</span><span class="w"> </span><span class="nf">get_xrow</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Qubit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qb</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l82" href="#l82">82</a></td>
@@ -895,7 +895,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">QubitPauliTensor</span><span class="w"> </span><span class="nf">get_zrow</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Qubit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qb</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="n">SpPauliStabiliser</span><span class="w"> </span><span class="nf">get_zrow</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Qubit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qb</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l87" href="#l87">87</a></td>
@@ -922,7 +922,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Combine rows into a single row according to a QubitPauliTensor</span></td>
+      <td class="src "><span class="cm">   * Combine rows into a single row according to a SpPauliStabiliser</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l90" href="#l90">90</a></td>
@@ -940,7 +940,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">QubitPauliTensor</span><span class="w"> </span><span class="nf">get_row_product</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">QubitPauliTensor</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qpt</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="n">SpPauliStabiliser</span><span class="w"> </span><span class="nf">get_row_product</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">SpPauliStabiliser</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qpt</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l92" href="#l92">92</a></td>
@@ -1192,7 +1192,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">apply_pauli_at_front</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">QubitPauliTensor</span><span class="o">&amp;</span><span class="w"> </span><span class="n">pauli</span><span class="p">,</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="n">half_pis</span><span class="p">);</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">apply_pauli_at_front</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">SpPauliStabiliser</span><span class="o">&amp;</span><span class="w"> </span><span class="n">pauli</span><span class="p">,</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="n">half_pis</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l120" href="#l120">120</a></td>
@@ -1201,7 +1201,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">apply_pauli_at_end</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">QubitPauliTensor</span><span class="o">&amp;</span><span class="w"> </span><span class="n">pauli</span><span class="p">,</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="n">half_pis</span><span class="p">);</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">apply_pauli_at_end</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">SpPauliStabiliser</span><span class="o">&amp;</span><span class="w"> </span><span class="n">pauli</span><span class="p">,</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="n">half_pis</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l121" href="#l121">121</a></td>
@@ -2065,7 +2065,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">QubitPauliTensor</span><span class="w"> </span><span class="nf">get_xrow</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Qubit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qb</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="n">SpPauliStabiliser</span><span class="w"> </span><span class="nf">get_xrow</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Qubit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qb</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l217" href="#l217">217</a></td>
@@ -2110,7 +2110,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">QubitPauliTensor</span><span class="w"> </span><span class="nf">get_zrow</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Qubit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qb</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="n">SpPauliStabiliser</span><span class="w"> </span><span class="nf">get_zrow</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">Qubit</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qb</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l222" href="#l222">222</a></td>
@@ -2137,7 +2137,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Combine rows into a single row according to a QubitPauliTensor</span></td>
+      <td class="src "><span class="cm">   * Combine rows into a single row according to a SpPauliStabiliser</span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l225" href="#l225">225</a></td>
@@ -2155,7 +2155,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="n">QubitPauliTensor</span><span class="w"> </span><span class="nf">get_row_product</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">QubitPauliTensor</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qpt</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="n">SpPauliStabiliser</span><span class="w"> </span><span class="nf">get_row_product</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">SpPauliStabiliser</span><span class="o">&amp;</span><span class="w"> </span><span class="n">qpt</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l227" href="#l227">227</a></td>
@@ -2407,7 +2407,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">apply_pauli_at_front</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">QubitPauliTensor</span><span class="o">&amp;</span><span class="w"> </span><span class="n">pauli</span><span class="p">,</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="n">half_pis</span><span class="p">);</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">apply_pauli_at_front</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">SpPauliStabiliser</span><span class="o">&amp;</span><span class="w"> </span><span class="n">pauli</span><span class="p">,</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="n">half_pis</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l255" href="#l255">255</a></td>
@@ -2416,7 +2416,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">apply_pauli_at_end</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">QubitPauliTensor</span><span class="o">&amp;</span><span class="w"> </span><span class="n">pauli</span><span class="p">,</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="n">half_pis</span><span class="p">);</span><span class="w"></span></td>
+      <td class="src "><span class="w">  </span><span class="kt">void</span><span class="w"> </span><span class="nf">apply_pauli_at_end</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">SpPauliStabiliser</span><span class="o">&amp;</span><span class="w"> </span><span class="n">pauli</span><span class="p">,</span><span class="w"> </span><span class="kt">unsigned</span><span class="w"> </span><span class="n">half_pis</span><span class="p">);</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l256" href="#l256">256</a></td>
