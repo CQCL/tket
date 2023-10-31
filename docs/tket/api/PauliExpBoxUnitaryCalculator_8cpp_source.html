@@ -96,234 +96,227 @@ $(function() {
 <div class="line"><a name="l00018"></a><span class="lineno">   18</span>&#160;<span class="preprocessor">#include &lt;tkassert/Assert.hpp&gt;</span></div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160; </div>
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="PauliExpBoxes_8hpp.html">tket/Circuit/PauliExpBoxes.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="preprocessor">#include &quot;<a class="code" href="PauliStrings_8hpp.html">tket/Utils/PauliStrings.hpp</a>&quot;</span></div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacetket.html">tket</a> {</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">namespace </span>tket_sim {</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;<span class="keyword">namespace </span>internal {</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160; </div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="comment">// A nonzero entry in the matrix containing only 1,0,-1 values,</span></div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="comment">// which we will build up for the tensor product</span></div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;<span class="comment">// (taking out a factor of i from Y).</span></div>
-<div class="line"><a name="l00030"></a><span class="lineno"><a class="line" href="namespacetket_1_1tket__sim_1_1internal.html#ad7276cafb560bb6a1bea70d6b4d95fe3">   30</a></span>&#160;<span class="keyword">typedef</span> Eigen::Triplet&lt;int&gt; <a class="code" href="namespacetket_1_1tket__sim_1_1internal.html#ad7276cafb560bb6a1bea70d6b4d95fe3">Entry</a>;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;<span class="keyword">static</span> std::map&lt;Pauli, std::array&lt;Entry, 2&gt;&gt; get_pauli_map() {</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;  std::map&lt;Pauli, std::array&lt;Entry, 2&gt;&gt; result;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;  {</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keyword">auto</span>&amp; i_matr = result[<a class="code" href="namespacestd__clifford__decomp.html#ae884a740cf1249e01bfee84f628baea8">Pauli::I</a>];</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    i_matr[0] = <a class="code" href="namespacetket_1_1tket__sim_1_1internal.html#ad7276cafb560bb6a1bea70d6b4d95fe3">Entry</a>(0, 0, 1);</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    i_matr[1] = <a class="code" href="namespacetket_1_1tket__sim_1_1internal.html#ad7276cafb560bb6a1bea70d6b4d95fe3">Entry</a>(1, 1, 1);</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;  }</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  {</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="keyword">auto</span>&amp; x_matr = result[<a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#a6c515798b8a4da2f27042009ea8dd3f9">Pauli::X</a>];</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    x_matr[0] = <a class="code" href="namespacetket_1_1tket__sim_1_1internal.html#ad7276cafb560bb6a1bea70d6b4d95fe3">Entry</a>(0, 1, 1);</div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    x_matr[1] = <a class="code" href="namespacetket_1_1tket__sim_1_1internal.html#ad7276cafb560bb6a1bea70d6b4d95fe3">Entry</a>(1, 0, 1);</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  }</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  {</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="comment">// Remove a factor of i.</span></div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keyword">auto</span>&amp; y_matr = result[<a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#ade2e0c760b21b1e3e259bdef97f17186">Pauli::Y</a>];</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    y_matr[0] = <a class="code" href="namespacetket_1_1tket__sim_1_1internal.html#ad7276cafb560bb6a1bea70d6b4d95fe3">Entry</a>(0, 1, -1);</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;    y_matr[1] = <a class="code" href="namespacetket_1_1tket__sim_1_1internal.html#ad7276cafb560bb6a1bea70d6b4d95fe3">Entry</a>(1, 0, 1);</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;  }</div>
-<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;  {</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keyword">auto</span>&amp; z_matr = result[<a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#a50e494b6c0479f509addc00437f7d321">Pauli::Z</a>];</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    z_matr[0] = <a class="code" href="namespacetket_1_1tket__sim_1_1internal.html#ad7276cafb560bb6a1bea70d6b4d95fe3">Entry</a>(0, 0, 1);</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;    z_matr[1] = <a class="code" href="namespacetket_1_1tket__sim_1_1internal.html#ad7276cafb560bb6a1bea70d6b4d95fe3">Entry</a>(1, 1, -1);</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;  }</div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;  <span class="keywordflow">return</span> result;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;}</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="comment">// The tensor product of the left and right entries.</span></div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;<span class="keyword">static</span> <a class="code" href="namespacetket_1_1tket__sim_1_1internal.html#ad7276cafb560bb6a1bea70d6b4d95fe3">Entry</a> get_combined_entry(<span class="keyword">const</span> <a class="code" href="namespacetket_1_1tket__sim_1_1internal.html#ad7276cafb560bb6a1bea70d6b4d95fe3">Entry</a>&amp; left, <span class="keyword">const</span> <a class="code" href="namespacetket_1_1tket__sim_1_1internal.html#ad7276cafb560bb6a1bea70d6b4d95fe3">Entry</a>&amp; right) {</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;  <span class="keywordflow">return</span> <a class="code" href="namespacetket_1_1tket__sim_1_1internal.html#ad7276cafb560bb6a1bea70d6b4d95fe3">Entry</a>(</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;      2 * left.row() + right.row(), 2 * left.col() + right.col(),</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;      left.value() * right.value());</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;}</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="keyword">namespace </span>{</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="comment">// To save repeated reallocation, build the data up inside here.</span></div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;<span class="keyword">struct </span>PauliExpBoxUnitaryCalculator {</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;  <span class="comment">// The two nonzero entries of the 2x2 matrix.</span></div>
-<div class="line"><a name="l00069"></a><span class="lineno"><a class="line" href="PauliExpBoxUnitaryCalculator_8cpp.html#a380f93057af19b1002e364ed69056ead">   69</a></span>&#160;  <span class="keyword">const</span> std::map&lt;Pauli, std::array&lt;Entry, 2&gt;&gt; <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a380f93057af19b1002e364ed69056ead">pauli_map</a>;</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;  <span class="comment">// The tensor product matrix, all factors of i removed.</span></div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;  <span class="comment">// Although QubitPauliString and QubitPauliTensor could probably</span></div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;  <span class="comment">// be made to do the work for us, they are more complicated</span></div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;  <span class="comment">// than we need.</span></div>
-<div class="line"><a name="l00075"></a><span class="lineno"><a class="line" href="PauliExpBoxUnitaryCalculator_8cpp.html#a18f40d868659f805dc19df9a7946b5bb">   75</a></span>&#160;  std::vector&lt;Entry&gt; <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a18f40d868659f805dc19df9a7946b5bb">sparse_matrix</a>;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160; </div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;  <span class="comment">// The number of Y which occurred.</span></div>
-<div class="line"><a name="l00078"></a><span class="lineno"><a class="line" href="PauliExpBoxUnitaryCalculator_8cpp.html#ad475dede438df5f57696ae07808aaf19">   78</a></span>&#160;  <span class="keywordtype">unsigned</span> <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#ad475dede438df5f57696ae07808aaf19">power_of_i</a>;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160; </div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;  <span class="comment">// A work vector to avoid repeated reallocation.</span></div>
-<div class="line"><a name="l00081"></a><span class="lineno"><a class="line" href="PauliExpBoxUnitaryCalculator_8cpp.html#a23911bb057532d3ca07f1a3635169e71">   81</a></span>&#160;  std::vector&lt;TripletCd&gt; <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a23911bb057532d3ca07f1a3635169e71">triplets</a>;</div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;  <span class="comment">// We need to remember which diagonal entries were filled,</span></div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;  <span class="comment">// to construct the final triplets.</span></div>
-<div class="line"><a name="l00085"></a><span class="lineno"><a class="line" href="PauliExpBoxUnitaryCalculator_8cpp.html#a9b60156981a682bef8c041510437aa8e">   85</a></span>&#160;  std::vector&lt;unsigned&gt; <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a9b60156981a682bef8c041510437aa8e">set_diagonals</a>;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;  <span class="comment">// In the tensor product of the given entry in &quot;sparse_matrix&quot;</span></div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;  <span class="comment">// with the new 2x2 Pauli matrix on the right,</span></div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;  <span class="comment">// add the new entries to &quot;sparse_matrix&quot;</span></div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;  <span class="comment">// (including changing the existing entry).</span></div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;  <span class="comment">// I.e., each entry in &quot;sparse_matrix&quot; is a 1 or -1,</span></div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;  <span class="comment">// which adds two more +/-1 values to the list of nonzero entries</span></div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;  <span class="comment">// (whilst being removed itself),</span></div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;  <span class="comment">// since we take out a factor of i from Y.</span></div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;  <span class="keywordtype">void</span> add_entries(<span class="keywordtype">unsigned</span> sparse_matrix_index, <a class="code" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> pauli);</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;  <span class="comment">// Call this to begin entering a new Pauli string &quot;manually&quot;.</span></div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;  <span class="keywordtype">void</span> clear();</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160; </div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;  <span class="comment">// Add a single Pauli to the RIGHT of the current tensor product.</span></div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;  <span class="keywordtype">void</span> append(<a class="code" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> pauli);</div>
+<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacetket.html">tket</a> {</div>
+<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160;<span class="keyword">namespace </span>tket_sim {</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">namespace </span>internal {</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160; </div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="comment">// A nonzero entry in the matrix containing only 1,0,-1 values,</span></div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;<span class="comment">// which we will build up for the tensor product</span></div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="comment">// (taking out a factor of i from Y).</span></div>
+<div class="line"><a name="l00029"></a><span class="lineno"><a class="line" href="namespacetket_1_1tket__sim_1_1internal.html#ad7276cafb560bb6a1bea70d6b4d95fe3">   29</a></span>&#160;<span class="keyword">typedef</span> Eigen::Triplet&lt;int&gt; <a class="code" href="namespacetket_1_1tket__sim_1_1internal.html#ad7276cafb560bb6a1bea70d6b4d95fe3">Entry</a>;</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keyword">static</span> std::map&lt;Pauli, std::array&lt;Entry, 2&gt;&gt; get_pauli_map() {</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;  std::map&lt;Pauli, std::array&lt;Entry, 2&gt;&gt; result;</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;  {</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <span class="keyword">auto</span>&amp; i_matr = result[<a class="code" href="namespacestd__clifford__decomp.html#ae884a740cf1249e01bfee84f628baea8">Pauli::I</a>];</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    i_matr[0] = <a class="code" href="namespacetket_1_1tket__sim_1_1internal.html#ad7276cafb560bb6a1bea70d6b4d95fe3">Entry</a>(0, 0, 1);</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    i_matr[1] = <a class="code" href="namespacetket_1_1tket__sim_1_1internal.html#ad7276cafb560bb6a1bea70d6b4d95fe3">Entry</a>(1, 1, 1);</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;  }</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;  {</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;    <span class="keyword">auto</span>&amp; x_matr = result[<a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#a6c515798b8a4da2f27042009ea8dd3f9">Pauli::X</a>];</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    x_matr[0] = <a class="code" href="namespacetket_1_1tket__sim_1_1internal.html#ad7276cafb560bb6a1bea70d6b4d95fe3">Entry</a>(0, 1, 1);</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    x_matr[1] = <a class="code" href="namespacetket_1_1tket__sim_1_1internal.html#ad7276cafb560bb6a1bea70d6b4d95fe3">Entry</a>(1, 0, 1);</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;  }</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;  {</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="comment">// Remove a factor of i.</span></div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;    <span class="keyword">auto</span>&amp; y_matr = result[<a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#ade2e0c760b21b1e3e259bdef97f17186">Pauli::Y</a>];</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    y_matr[0] = <a class="code" href="namespacetket_1_1tket__sim_1_1internal.html#ad7276cafb560bb6a1bea70d6b4d95fe3">Entry</a>(0, 1, -1);</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;    y_matr[1] = <a class="code" href="namespacetket_1_1tket__sim_1_1internal.html#ad7276cafb560bb6a1bea70d6b4d95fe3">Entry</a>(1, 0, 1);</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;  }</div>
+<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160;  {</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <span class="keyword">auto</span>&amp; z_matr = result[<a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#a50e494b6c0479f509addc00437f7d321">Pauli::Z</a>];</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    z_matr[0] = <a class="code" href="namespacetket_1_1tket__sim_1_1internal.html#ad7276cafb560bb6a1bea70d6b4d95fe3">Entry</a>(0, 0, 1);</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    z_matr[1] = <a class="code" href="namespacetket_1_1tket__sim_1_1internal.html#ad7276cafb560bb6a1bea70d6b4d95fe3">Entry</a>(1, 1, -1);</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  }</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;  <span class="keywordflow">return</span> result;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;}</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160; </div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;<span class="comment">// The tensor product of the left and right entries.</span></div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;<span class="keyword">static</span> <a class="code" href="namespacetket_1_1tket__sim_1_1internal.html#ad7276cafb560bb6a1bea70d6b4d95fe3">Entry</a> get_combined_entry(<span class="keyword">const</span> <a class="code" href="namespacetket_1_1tket__sim_1_1internal.html#ad7276cafb560bb6a1bea70d6b4d95fe3">Entry</a>&amp; left, <span class="keyword">const</span> <a class="code" href="namespacetket_1_1tket__sim_1_1internal.html#ad7276cafb560bb6a1bea70d6b4d95fe3">Entry</a>&amp; right) {</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  <span class="keywordflow">return</span> <a class="code" href="namespacetket_1_1tket__sim_1_1internal.html#ad7276cafb560bb6a1bea70d6b4d95fe3">Entry</a>(</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;      2 * left.row() + right.row(), 2 * left.col() + right.col(),</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;      left.value() * right.value());</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;}</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;<span class="keyword">namespace </span>{</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;<span class="comment">// To save repeated reallocation, build the data up inside here.</span></div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;<span class="keyword">struct </span>PauliExpBoxUnitaryCalculator {</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;  <span class="comment">// The two nonzero entries of the 2x2 matrix.</span></div>
+<div class="line"><a name="l00068"></a><span class="lineno"><a class="line" href="PauliExpBoxUnitaryCalculator_8cpp.html#a380f93057af19b1002e364ed69056ead">   68</a></span>&#160;  <span class="keyword">const</span> std::map&lt;Pauli, std::array&lt;Entry, 2&gt;&gt; <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a380f93057af19b1002e364ed69056ead">pauli_map</a>;</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160; </div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;  <span class="comment">// The tensor product matrix, all factors of i removed.</span></div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;  <span class="comment">// Although PauliTensor could probably be made to do the work for us, it is</span></div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;  <span class="comment">// more complicated than we need.</span></div>
+<div class="line"><a name="l00073"></a><span class="lineno"><a class="line" href="PauliExpBoxUnitaryCalculator_8cpp.html#a18f40d868659f805dc19df9a7946b5bb">   73</a></span>&#160;  std::vector&lt;Entry&gt; <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a18f40d868659f805dc19df9a7946b5bb">sparse_matrix</a>;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;  <span class="comment">// The number of Y which occurred.</span></div>
+<div class="line"><a name="l00076"></a><span class="lineno"><a class="line" href="PauliExpBoxUnitaryCalculator_8cpp.html#ad475dede438df5f57696ae07808aaf19">   76</a></span>&#160;  <span class="keywordtype">unsigned</span> <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#ad475dede438df5f57696ae07808aaf19">power_of_i</a>;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;  <span class="comment">// A work vector to avoid repeated reallocation.</span></div>
+<div class="line"><a name="l00079"></a><span class="lineno"><a class="line" href="PauliExpBoxUnitaryCalculator_8cpp.html#a23911bb057532d3ca07f1a3635169e71">   79</a></span>&#160;  std::vector&lt;TripletCd&gt; <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a23911bb057532d3ca07f1a3635169e71">triplets</a>;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;  <span class="comment">// We need to remember which diagonal entries were filled,</span></div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;  <span class="comment">// to construct the final triplets.</span></div>
+<div class="line"><a name="l00083"></a><span class="lineno"><a class="line" href="PauliExpBoxUnitaryCalculator_8cpp.html#a9b60156981a682bef8c041510437aa8e">   83</a></span>&#160;  std::vector&lt;unsigned&gt; <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a9b60156981a682bef8c041510437aa8e">set_diagonals</a>;</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;  <span class="comment">// In the tensor product of the given entry in &quot;sparse_matrix&quot;</span></div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;  <span class="comment">// with the new 2x2 Pauli matrix on the right,</span></div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;  <span class="comment">// add the new entries to &quot;sparse_matrix&quot;</span></div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;  <span class="comment">// (including changing the existing entry).</span></div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;  <span class="comment">// I.e., each entry in &quot;sparse_matrix&quot; is a 1 or -1,</span></div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;  <span class="comment">// which adds two more +/-1 values to the list of nonzero entries</span></div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;  <span class="comment">// (whilst being removed itself),</span></div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;  <span class="comment">// since we take out a factor of i from Y.</span></div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;  <span class="keywordtype">void</span> add_entries(<span class="keywordtype">unsigned</span> sparse_matrix_index, <a class="code" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> pauli);</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160; </div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;  <span class="comment">// Call this to begin entering a new Pauli string &quot;manually&quot;.</span></div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;  <span class="keywordtype">void</span> clear();</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160; </div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;  <span class="comment">// Add a single Pauli to the RIGHT of the current tensor product.</span></div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;  <span class="keywordtype">void</span> append(<a class="code" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> pauli);</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160; </div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;  <span class="keywordtype">void</span> fill_triplets(<span class="keywordtype">double</span> phase);</div>
 <div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160; </div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;  <span class="keywordtype">void</span> fill_triplets(<span class="keywordtype">double</span> phase);</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;  PauliExpBoxUnitaryCalculator();</div>
 <div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160; </div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;  PauliExpBoxUnitaryCalculator();</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;  <span class="keyword">static</span> PauliExpBoxUnitaryCalculator&amp; get();</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;};</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160; </div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;PauliExpBoxUnitaryCalculator&amp; PauliExpBoxUnitaryCalculator::get() {</div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;  <span class="keyword">static</span> PauliExpBoxUnitaryCalculator calculator;</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;  <span class="keywordflow">return</span> calculator;</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;}</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; </div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;PauliExpBoxUnitaryCalculator::PauliExpBoxUnitaryCalculator()</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    : <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a380f93057af19b1002e364ed69056ead">pauli_map</a>(get_pauli_map()) {}</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160; </div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;<span class="keywordtype">void</span> PauliExpBoxUnitaryCalculator::clear() {</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;  <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a18f40d868659f805dc19df9a7946b5bb">sparse_matrix</a>.resize(1);</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;  <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a18f40d868659f805dc19df9a7946b5bb">sparse_matrix</a>[0] = <a class="code" href="namespacetket_1_1tket__sim_1_1internal.html#ad7276cafb560bb6a1bea70d6b4d95fe3">Entry</a>(0, 0, 1);</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;  <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#ad475dede438df5f57696ae07808aaf19">power_of_i</a> = 0;</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;  <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a23911bb057532d3ca07f1a3635169e71">triplets</a>.clear();</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;}</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160; </div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;<span class="keywordtype">void</span> PauliExpBoxUnitaryCalculator::add_entries(</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    <span class="keywordtype">unsigned</span> sparse_matrix_index, <a class="code" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> pauli) {</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;  TKET_ASSERT(sparse_matrix_index &lt; <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a18f40d868659f805dc19df9a7946b5bb">sparse_matrix</a>.size());</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;  <span class="keyword">const</span> <span class="keyword">auto</span>&amp; single_pauli = <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a380f93057af19b1002e364ed69056ead">pauli_map</a>.at(pauli);</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;  <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a18f40d868659f805dc19df9a7946b5bb">sparse_matrix</a>.push_back(</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;      get_combined_entry(<a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a18f40d868659f805dc19df9a7946b5bb">sparse_matrix</a>[sparse_matrix_index], single_pauli[0]));</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;  <span class="comment">// Overwrite existing entry.</span></div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;  <span class="comment">// The reference is valid until after the new entry returns!</span></div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;  <span class="keyword">auto</span>&amp; existing_entry = <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a18f40d868659f805dc19df9a7946b5bb">sparse_matrix</a>[sparse_matrix_index];</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;  existing_entry = get_combined_entry(existing_entry, single_pauli[1]);</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;}</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160; </div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;<span class="keywordtype">void</span> PauliExpBoxUnitaryCalculator::append(<a class="code" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> pauli) {</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;  <span class="keyword">const</span> <span class="keyword">auto</span> current_size = <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a18f40d868659f805dc19df9a7946b5bb">sparse_matrix</a>.size();</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;  <span class="keywordflow">if</span> (pauli == <a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#ade2e0c760b21b1e3e259bdef97f17186">Pauli::Y</a>) {</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    ++<a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#ad475dede438df5f57696ae07808aaf19">power_of_i</a>;</div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;  }</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> ii = 0; ii &lt; current_size; ++ii) {</div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    add_entries(ii, pauli);</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;  }</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;}</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160; </div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;<span class="keywordtype">void</span> PauliExpBoxUnitaryCalculator::fill_triplets(<span class="keywordtype">double</span> phase) {</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;  <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a23911bb057532d3ca07f1a3635169e71">triplets</a>.reserve(<a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a18f40d868659f805dc19df9a7946b5bb">sparse_matrix</a>.size());</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;  <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a23911bb057532d3ca07f1a3635169e71">triplets</a>.clear();</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160; </div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;  <span class="comment">// If   M^2 = I   then exp(itM) = cos(t)I + i.sin(t)M.</span></div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">double</span> angle = -0.5 * <a class="code" href="namespacetket.html#aeb9514facc20f8f193747a8196f7614d">PI</a> * phase;</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">double</span> cc = std::cos(angle);</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">double</span> ss = std::sin(angle);</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160; </div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;  <span class="comment">// TODO: efficiency: (i) check if cos(t) or sin(t) is nearly zero;</span></div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;  <span class="comment">// (ii): fill the I coefficients FIRST, so we don&#39;t have to bother with</span></div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;  <span class="comment">//      &quot;set_diagonals&quot; (as we can overwrite diagonal entries directly).</span></div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;  <span class="keyword">const</span> std::complex&lt;double&gt; identity_coefficient(cc);</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160; </div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;  <span class="comment">// We took out factors of i from M (coming from Pauli Y),</span></div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;  <span class="comment">// so have to put them back in.</span></div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;  <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#ad475dede438df5f57696ae07808aaf19">power_of_i</a> = <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#ad475dede438df5f57696ae07808aaf19">power_of_i</a> % 4;</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;  <span class="keyword">const</span> <span class="keyword">auto</span> matrix_coefficient =</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;      std::polar(1.0, 0.5 * (<a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#ad475dede438df5f57696ae07808aaf19">power_of_i</a> + 1) * <a class="code" href="namespacetket.html#aeb9514facc20f8f193747a8196f7614d">PI</a>) * ss;</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160; </div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;  <span class="comment">// When we form the sparse representation of the matrix exp(itM),</span></div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;  <span class="comment">// we must check which diagonal entries were missed out,</span></div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;  <span class="comment">// coming from the cos(t)I term.</span></div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;  <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a9b60156981a682bef8c041510437aa8e">set_diagonals</a>.clear();</div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160; </div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; entry : <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a18f40d868659f805dc19df9a7946b5bb">sparse_matrix</a>) {</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;    <span class="comment">// In Utils\PauliStrings.hpp, there is</span></div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;    <span class="comment">//  QubitPauliTensor operator*(Complex a, const QubitPauliTensor &amp;qpt),</span></div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;    <span class="comment">// which messes up ordinary std statements like std::complex * int.</span></div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    <span class="comment">// Not really a problem, but can be unexpected.</span></div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;    std::complex&lt;double&gt; value =</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;        matrix_coefficient * std::complex&lt;double&gt;(entry.value());</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160; </div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;    <span class="keywordflow">if</span> (entry.row() == entry.col()) {</div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;      <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a9b60156981a682bef8c041510437aa8e">set_diagonals</a>.push_back(entry.row());</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;      value += identity_coefficient;</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;    }</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;    <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a23911bb057532d3ca07f1a3635169e71">triplets</a>.emplace_back(entry.row(), entry.col(), value);</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;  }</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;  <span class="comment">// Complexity: let there be k diagonals set, out of N, and you want</span></div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;  <span class="comment">// the other N-k (remembering that N = 2^n can be large).</span></div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;  <span class="comment">// Here, we storing the diagonals we DON&#39;T want in a std::vector, sort them,</span></div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;  <span class="comment">// then select the OTHER elements. This takes time</span></div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;  <span class="comment">// O(k.log k) + O(N.log k) time (with pretty small O constants,</span></div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;  <span class="comment">// since sorting a std::vector is fast).</span></div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;  <span class="keyword">static</span> PauliExpBoxUnitaryCalculator&amp; get();</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;};</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; </div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;PauliExpBoxUnitaryCalculator&amp; PauliExpBoxUnitaryCalculator::get() {</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;  <span class="keyword">static</span> PauliExpBoxUnitaryCalculator calculator;</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;  <span class="keywordflow">return</span> calculator;</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;}</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160; </div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;PauliExpBoxUnitaryCalculator::PauliExpBoxUnitaryCalculator()</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    : <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a380f93057af19b1002e364ed69056ead">pauli_map</a>(get_pauli_map()) {}</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160; </div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;<span class="keywordtype">void</span> PauliExpBoxUnitaryCalculator::clear() {</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;  <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a18f40d868659f805dc19df9a7946b5bb">sparse_matrix</a>.resize(1);</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;  <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a18f40d868659f805dc19df9a7946b5bb">sparse_matrix</a>[0] = <a class="code" href="namespacetket_1_1tket__sim_1_1internal.html#ad7276cafb560bb6a1bea70d6b4d95fe3">Entry</a>(0, 0, 1);</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;  <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#ad475dede438df5f57696ae07808aaf19">power_of_i</a> = 0;</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;  <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a23911bb057532d3ca07f1a3635169e71">triplets</a>.clear();</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;}</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160; </div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;<span class="keywordtype">void</span> PauliExpBoxUnitaryCalculator::add_entries(</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    <span class="keywordtype">unsigned</span> sparse_matrix_index, <a class="code" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> pauli) {</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;  TKET_ASSERT(sparse_matrix_index &lt; <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a18f40d868659f805dc19df9a7946b5bb">sparse_matrix</a>.size());</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;  <span class="keyword">const</span> <span class="keyword">auto</span>&amp; single_pauli = <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a380f93057af19b1002e364ed69056ead">pauli_map</a>.at(pauli);</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;  <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a18f40d868659f805dc19df9a7946b5bb">sparse_matrix</a>.push_back(</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;      get_combined_entry(<a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a18f40d868659f805dc19df9a7946b5bb">sparse_matrix</a>[sparse_matrix_index], single_pauli[0]));</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;  <span class="comment">// Overwrite existing entry.</span></div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;  <span class="comment">// The reference is valid until after the new entry returns!</span></div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;  <span class="keyword">auto</span>&amp; existing_entry = <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a18f40d868659f805dc19df9a7946b5bb">sparse_matrix</a>[sparse_matrix_index];</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;  existing_entry = get_combined_entry(existing_entry, single_pauli[1]);</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;}</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160; </div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;<span class="keywordtype">void</span> PauliExpBoxUnitaryCalculator::append(<a class="code" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> pauli) {</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;  <span class="keyword">const</span> <span class="keyword">auto</span> current_size = <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a18f40d868659f805dc19df9a7946b5bb">sparse_matrix</a>.size();</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;  <span class="keywordflow">if</span> (pauli == <a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#ade2e0c760b21b1e3e259bdef97f17186">Pauli::Y</a>) {</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;    ++<a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#ad475dede438df5f57696ae07808aaf19">power_of_i</a>;</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;  }</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> ii = 0; ii &lt; current_size; ++ii) {</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    add_entries(ii, pauli);</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;  }</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;}</div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160; </div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;<span class="keywordtype">void</span> PauliExpBoxUnitaryCalculator::fill_triplets(<span class="keywordtype">double</span> phase) {</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;  <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a23911bb057532d3ca07f1a3635169e71">triplets</a>.reserve(<a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a18f40d868659f805dc19df9a7946b5bb">sparse_matrix</a>.size());</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;  <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a23911bb057532d3ca07f1a3635169e71">triplets</a>.clear();</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160; </div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;  <span class="comment">// If   M^2 = I   then exp(itM) = cos(t)I + i.sin(t)M.</span></div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">double</span> angle = -0.5 * <a class="code" href="namespacetket.html#aeb9514facc20f8f193747a8196f7614d">PI</a> * phase;</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">double</span> cc = std::cos(angle);</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;  <span class="keyword">const</span> <span class="keywordtype">double</span> ss = std::sin(angle);</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160; </div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;  <span class="comment">// TODO: efficiency: (i) check if cos(t) or sin(t) is nearly zero;</span></div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;  <span class="comment">// (ii): fill the I coefficients FIRST, so we don&#39;t have to bother with</span></div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;  <span class="comment">//      &quot;set_diagonals&quot; (as we can overwrite diagonal entries directly).</span></div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;  <span class="keyword">const</span> std::complex&lt;double&gt; identity_coefficient(cc);</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160; </div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;  <span class="comment">// We took out factors of i from M (coming from Pauli Y),</span></div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;  <span class="comment">// so have to put them back in.</span></div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;  <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#ad475dede438df5f57696ae07808aaf19">power_of_i</a> = <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#ad475dede438df5f57696ae07808aaf19">power_of_i</a> % 4;</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;  <span class="keyword">const</span> <span class="keyword">auto</span> matrix_coefficient =</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;      std::polar(1.0, 0.5 * (<a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#ad475dede438df5f57696ae07808aaf19">power_of_i</a> + 1) * <a class="code" href="namespacetket.html#aeb9514facc20f8f193747a8196f7614d">PI</a>) * ss;</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160; </div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;  <span class="comment">// When we form the sparse representation of the matrix exp(itM),</span></div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;  <span class="comment">// we must check which diagonal entries were missed out,</span></div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;  <span class="comment">// coming from the cos(t)I term.</span></div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;  <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a9b60156981a682bef8c041510437aa8e">set_diagonals</a>.clear();</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160; </div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span>&amp; entry : <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a18f40d868659f805dc19df9a7946b5bb">sparse_matrix</a>) {</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;    std::complex&lt;double&gt; value =</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;        matrix_coefficient * std::complex&lt;double&gt;(entry.value());</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160; </div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;    <span class="keywordflow">if</span> (entry.row() == entry.col()) {</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;      <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a9b60156981a682bef8c041510437aa8e">set_diagonals</a>.push_back(entry.row());</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;      value += identity_coefficient;</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;    }</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a23911bb057532d3ca07f1a3635169e71">triplets</a>.emplace_back(entry.row(), entry.col(), value);</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;  }</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;  <span class="comment">// Complexity: let there be k diagonals set, out of N, and you want</span></div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;  <span class="comment">// the other N-k (remembering that N = 2^n can be large).</span></div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;  <span class="comment">// Here, we storing the diagonals we DON&#39;T want in a std::vector, sort them,</span></div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;  <span class="comment">// then select the OTHER elements. This takes time</span></div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;  <span class="comment">// O(k.log k) + O(N.log k) time (with pretty small O constants,</span></div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;  <span class="comment">// since sorting a std::vector is fast).</span></div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;  <span class="comment">//</span></div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;  <span class="comment">// If instead we use std::set to store all diagonals,</span></div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;  <span class="comment">// remove each as it is set, and finally iterate through the</span></div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;  <span class="comment">// REMAINING elements, it would be</span></div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;  <span class="comment">// O(N.log N) + O((N-k).log N) + O(k.log k) time.</span></div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;  <span class="comment">// This is probably a bit worse.</span></div>
 <div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;  <span class="comment">//</span></div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;  <span class="comment">// If instead we use std::set to store all diagonals,</span></div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;  <span class="comment">// remove each as it is set, and finally iterate through the</span></div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;  <span class="comment">// REMAINING elements, it would be</span></div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;  <span class="comment">// O(N.log N) + O((N-k).log N) + O(k.log k) time.</span></div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;  <span class="comment">// This is probably a bit worse.</span></div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;  <span class="comment">//</span></div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;  <span class="comment">// If we really wanted to speed it up, we&#39;d use bit operations.</span></div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;  std::sort(<a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a9b60156981a682bef8c041510437aa8e">set_diagonals</a>.begin(), <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a9b60156981a682bef8c041510437aa8e">set_diagonals</a>.end());</div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> ii = 0; ii &lt; <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a18f40d868659f805dc19df9a7946b5bb">sparse_matrix</a>.size(); ++ii) {</div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;    <span class="keywordflow">if</span> (!std::binary_search(<a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a9b60156981a682bef8c041510437aa8e">set_diagonals</a>.cbegin(), <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a9b60156981a682bef8c041510437aa8e">set_diagonals</a>.cend(), ii)) {</div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;      <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a23911bb057532d3ca07f1a3635169e71">triplets</a>.emplace_back(ii, ii, identity_coefficient);</div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;    }</div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;  }</div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;}</div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;}  <span class="comment">// namespace</span></div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160; </div>
-<div class="line"><a name="l00209"></a><span class="lineno"><a class="line" href="namespacetket_1_1tket__sim_1_1internal.html#a4d7433e6383e1111f7cd2c08faeb264a">  209</a></span>&#160;std::vector&lt;TripletCd&gt; <a class="code" href="namespacetket_1_1tket__sim_1_1internal.html#a4d7433e6383e1111f7cd2c08faeb264a">get_triplets</a>(<span class="keyword">const</span> <a class="code" href="classtket_1_1PauliExpBox.html">PauliExpBox</a>&amp; box) {</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;  <span class="keyword">const</span> <span class="keyword">auto</span> phase_optional = <a class="code" href="namespacetket.html#a741f7a00246fe7f3797c1c410374ebe1">eval_expr</a>(box.<a class="code" href="classtket_1_1PauliExpBox.html#a3adbef764967bda7d889b629311841bb">get_phase</a>());</div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;  <span class="keywordflow">if</span> (!phase_optional) {</div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;    <span class="keywordflow">throw</span> <a class="code" href="classtket_1_1SymbolsNotSupported.html">SymbolsNotSupported</a>(</div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;        <span class="stringliteral">&quot;PauliExpBoxUnitaryCalculator called &quot;</span></div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;        <span class="stringliteral">&quot;with symbolic phase parameter&quot;</span>);</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;  <span class="comment">// If we really wanted to speed it up, we&#39;d use bit operations.</span></div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;  std::sort(<a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a9b60156981a682bef8c041510437aa8e">set_diagonals</a>.begin(), <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a9b60156981a682bef8c041510437aa8e">set_diagonals</a>.end());</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> ii = 0; ii &lt; <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a18f40d868659f805dc19df9a7946b5bb">sparse_matrix</a>.size(); ++ii) {</div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;    <span class="keywordflow">if</span> (!std::binary_search(<a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a9b60156981a682bef8c041510437aa8e">set_diagonals</a>.cbegin(), <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a9b60156981a682bef8c041510437aa8e">set_diagonals</a>.cend(), ii)) {</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;      <a class="code" href="PauliExpBoxUnitaryCalculator_8cpp.html#a23911bb057532d3ca07f1a3635169e71">triplets</a>.emplace_back(ii, ii, identity_coefficient);</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;    }</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;  }</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;}</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;}  <span class="comment">// namespace</span></div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160; </div>
+<div class="line"><a name="l00203"></a><span class="lineno"><a class="line" href="namespacetket_1_1tket__sim_1_1internal.html#a4d7433e6383e1111f7cd2c08faeb264a">  203</a></span>&#160;std::vector&lt;TripletCd&gt; <a class="code" href="namespacetket_1_1tket__sim_1_1internal.html#a4d7433e6383e1111f7cd2c08faeb264a">get_triplets</a>(<span class="keyword">const</span> <a class="code" href="classtket_1_1PauliExpBox.html">PauliExpBox</a>&amp; box) {</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;  <span class="keyword">const</span> <span class="keyword">auto</span> phase_optional = <a class="code" href="namespacetket.html#a741f7a00246fe7f3797c1c410374ebe1">eval_expr</a>(box.<a class="code" href="classtket_1_1PauliExpBox.html#a3adbef764967bda7d889b629311841bb">get_phase</a>());</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;  <span class="keywordflow">if</span> (!phase_optional) {</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;    <span class="keywordflow">throw</span> <a class="code" href="classtket_1_1SymbolsNotSupported.html">SymbolsNotSupported</a>(</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;        <span class="stringliteral">&quot;PauliExpBoxUnitaryCalculator called &quot;</span></div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;        <span class="stringliteral">&quot;with symbolic phase parameter&quot;</span>);</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;  }</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;  <span class="keyword">const</span> <span class="keyword">auto</span> pauli_string = box.<a class="code" href="classtket_1_1PauliExpBox.html#adb1941d953cd65a12cd2cd9a85d14cdc">get_paulis</a>();</div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;  <span class="keyword">auto</span>&amp; calculator = PauliExpBoxUnitaryCalculator::get();</div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;  calculator.clear();</div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">auto</span> pauli : pauli_string) {</div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;    calculator.append(pauli);</div>
 <div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;  }</div>
-<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;  <span class="keyword">const</span> <span class="keyword">auto</span> pauli_string = box.<a class="code" href="classtket_1_1PauliExpBox.html#adb1941d953cd65a12cd2cd9a85d14cdc">get_paulis</a>();</div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;  <span class="keyword">auto</span>&amp; calculator = PauliExpBoxUnitaryCalculator::get();</div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;  calculator.clear();</div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">auto</span> pauli : pauli_string) {</div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;    calculator.append(pauli);</div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;  }</div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;  calculator.fill_triplets(phase_optional.value());</div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;  <span class="keywordflow">return</span> calculator.triplets;</div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;}</div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160; </div>
-<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;}  <span class="comment">// namespace internal</span></div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;}  <span class="comment">// namespace tket_sim</span></div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;}  <span class="comment">// namespace tket</span></div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;  calculator.fill_triplets(phase_optional.value());</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;  <span class="keywordflow">return</span> calculator.triplets;</div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;}</div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160; </div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;}  <span class="comment">// namespace internal</span></div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;}  <span class="comment">// namespace tket_sim</span></div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;}  <span class="comment">// namespace tket</span></div>
 <div class="ttc" id="aGateUnitaryMatrixFixedMatrices_8cpp_html_a50e494b6c0479f509addc00437f7d321"><div class="ttname"><a href="GateUnitaryMatrixFixedMatrices_8cpp.html#a50e494b6c0479f509addc00437f7d321">Z</a></div><div class="ttdeci">Eigen::Matrix2cd Z</div><div class="ttdef"><b>Definition:</b> <a href="GateUnitaryMatrixFixedMatrices_8cpp_source.html#l00027">GateUnitaryMatrixFixedMatrices.cpp:27</a></div></div>
 <div class="ttc" id="aGateUnitaryMatrixFixedMatrices_8cpp_html_a6c515798b8a4da2f27042009ea8dd3f9"><div class="ttname"><a href="GateUnitaryMatrixFixedMatrices_8cpp.html#a6c515798b8a4da2f27042009ea8dd3f9">X</a></div><div class="ttdeci">Eigen::Matrix2cd X</div><div class="ttdef"><b>Definition:</b> <a href="GateUnitaryMatrixFixedMatrices_8cpp_source.html#l00025">GateUnitaryMatrixFixedMatrices.cpp:25</a></div></div>
 <div class="ttc" id="aGateUnitaryMatrixFixedMatrices_8cpp_html_ade2e0c760b21b1e3e259bdef97f17186"><div class="ttname"><a href="GateUnitaryMatrixFixedMatrices_8cpp.html#ade2e0c760b21b1e3e259bdef97f17186">Y</a></div><div class="ttdeci">Eigen::Matrix2cd Y</div><div class="ttdef"><b>Definition:</b> <a href="GateUnitaryMatrixFixedMatrices_8cpp_source.html#l00026">GateUnitaryMatrixFixedMatrices.cpp:26</a></div></div>
-<div class="ttc" id="aPauliExpBoxUnitaryCalculator_8cpp_html_a18f40d868659f805dc19df9a7946b5bb"><div class="ttname"><a href="PauliExpBoxUnitaryCalculator_8cpp.html#a18f40d868659f805dc19df9a7946b5bb">sparse_matrix</a></div><div class="ttdeci">std::vector&lt; Entry &gt; sparse_matrix</div><div class="ttdef"><b>Definition:</b> <a href="PauliExpBoxUnitaryCalculator_8cpp_source.html#l00075">PauliExpBoxUnitaryCalculator.cpp:75</a></div></div>
-<div class="ttc" id="aPauliExpBoxUnitaryCalculator_8cpp_html_a23911bb057532d3ca07f1a3635169e71"><div class="ttname"><a href="PauliExpBoxUnitaryCalculator_8cpp.html#a23911bb057532d3ca07f1a3635169e71">triplets</a></div><div class="ttdeci">std::vector&lt; TripletCd &gt; triplets</div><div class="ttdef"><b>Definition:</b> <a href="PauliExpBoxUnitaryCalculator_8cpp_source.html#l00081">PauliExpBoxUnitaryCalculator.cpp:81</a></div></div>
-<div class="ttc" id="aPauliExpBoxUnitaryCalculator_8cpp_html_a380f93057af19b1002e364ed69056ead"><div class="ttname"><a href="PauliExpBoxUnitaryCalculator_8cpp.html#a380f93057af19b1002e364ed69056ead">pauli_map</a></div><div class="ttdeci">const std::map&lt; Pauli, std::array&lt; Entry, 2 &gt; &gt; pauli_map</div><div class="ttdef"><b>Definition:</b> <a href="PauliExpBoxUnitaryCalculator_8cpp_source.html#l00069">PauliExpBoxUnitaryCalculator.cpp:69</a></div></div>
-<div class="ttc" id="aPauliExpBoxUnitaryCalculator_8cpp_html_a9b60156981a682bef8c041510437aa8e"><div class="ttname"><a href="PauliExpBoxUnitaryCalculator_8cpp.html#a9b60156981a682bef8c041510437aa8e">set_diagonals</a></div><div class="ttdeci">std::vector&lt; unsigned &gt; set_diagonals</div><div class="ttdef"><b>Definition:</b> <a href="PauliExpBoxUnitaryCalculator_8cpp_source.html#l00085">PauliExpBoxUnitaryCalculator.cpp:85</a></div></div>
-<div class="ttc" id="aPauliExpBoxUnitaryCalculator_8cpp_html_ad475dede438df5f57696ae07808aaf19"><div class="ttname"><a href="PauliExpBoxUnitaryCalculator_8cpp.html#ad475dede438df5f57696ae07808aaf19">power_of_i</a></div><div class="ttdeci">unsigned power_of_i</div><div class="ttdef"><b>Definition:</b> <a href="PauliExpBoxUnitaryCalculator_8cpp_source.html#l00078">PauliExpBoxUnitaryCalculator.cpp:78</a></div></div>
+<div class="ttc" id="aPauliExpBoxUnitaryCalculator_8cpp_html_a18f40d868659f805dc19df9a7946b5bb"><div class="ttname"><a href="PauliExpBoxUnitaryCalculator_8cpp.html#a18f40d868659f805dc19df9a7946b5bb">sparse_matrix</a></div><div class="ttdeci">std::vector&lt; Entry &gt; sparse_matrix</div><div class="ttdef"><b>Definition:</b> <a href="PauliExpBoxUnitaryCalculator_8cpp_source.html#l00073">PauliExpBoxUnitaryCalculator.cpp:73</a></div></div>
+<div class="ttc" id="aPauliExpBoxUnitaryCalculator_8cpp_html_a23911bb057532d3ca07f1a3635169e71"><div class="ttname"><a href="PauliExpBoxUnitaryCalculator_8cpp.html#a23911bb057532d3ca07f1a3635169e71">triplets</a></div><div class="ttdeci">std::vector&lt; TripletCd &gt; triplets</div><div class="ttdef"><b>Definition:</b> <a href="PauliExpBoxUnitaryCalculator_8cpp_source.html#l00079">PauliExpBoxUnitaryCalculator.cpp:79</a></div></div>
+<div class="ttc" id="aPauliExpBoxUnitaryCalculator_8cpp_html_a380f93057af19b1002e364ed69056ead"><div class="ttname"><a href="PauliExpBoxUnitaryCalculator_8cpp.html#a380f93057af19b1002e364ed69056ead">pauli_map</a></div><div class="ttdeci">const std::map&lt; Pauli, std::array&lt; Entry, 2 &gt; &gt; pauli_map</div><div class="ttdef"><b>Definition:</b> <a href="PauliExpBoxUnitaryCalculator_8cpp_source.html#l00068">PauliExpBoxUnitaryCalculator.cpp:68</a></div></div>
+<div class="ttc" id="aPauliExpBoxUnitaryCalculator_8cpp_html_a9b60156981a682bef8c041510437aa8e"><div class="ttname"><a href="PauliExpBoxUnitaryCalculator_8cpp.html#a9b60156981a682bef8c041510437aa8e">set_diagonals</a></div><div class="ttdeci">std::vector&lt; unsigned &gt; set_diagonals</div><div class="ttdef"><b>Definition:</b> <a href="PauliExpBoxUnitaryCalculator_8cpp_source.html#l00083">PauliExpBoxUnitaryCalculator.cpp:83</a></div></div>
+<div class="ttc" id="aPauliExpBoxUnitaryCalculator_8cpp_html_ad475dede438df5f57696ae07808aaf19"><div class="ttname"><a href="PauliExpBoxUnitaryCalculator_8cpp.html#ad475dede438df5f57696ae07808aaf19">power_of_i</a></div><div class="ttdeci">unsigned power_of_i</div><div class="ttdef"><b>Definition:</b> <a href="PauliExpBoxUnitaryCalculator_8cpp_source.html#l00076">PauliExpBoxUnitaryCalculator.cpp:76</a></div></div>
 <div class="ttc" id="aPauliExpBoxUnitaryCalculator_8hpp_html"><div class="ttname"><a href="PauliExpBoxUnitaryCalculator_8hpp.html">PauliExpBoxUnitaryCalculator.hpp</a></div></div>
 <div class="ttc" id="aPauliExpBoxes_8hpp_html"><div class="ttname"><a href="PauliExpBoxes_8hpp.html">PauliExpBoxes.hpp</a></div></div>
-<div class="ttc" id="aPauliStrings_8hpp_html"><div class="ttname"><a href="PauliStrings_8hpp.html">PauliStrings.hpp</a></div></div>
 <div class="ttc" id="aclasstket_1_1PauliExpBox_html"><div class="ttname"><a href="classtket_1_1PauliExpBox.html">tket::PauliExpBox</a></div><div class="ttdoc">Operation defined as the exponential of a tensor of Pauli operators.</div><div class="ttdef"><b>Definition:</b> <a href="PauliExpBoxes_8hpp_source.html#l00030">PauliExpBoxes.hpp:30</a></div></div>
-<div class="ttc" id="aclasstket_1_1PauliExpBox_html_a3adbef764967bda7d889b629311841bb"><div class="ttname"><a href="classtket_1_1PauliExpBox.html#a3adbef764967bda7d889b629311841bb">tket::PauliExpBox::get_phase</a></div><div class="ttdeci">Expr get_phase() const</div><div class="ttdoc">Get the phase parameter.</div><div class="ttdef"><b>Definition:</b> <a href="PauliExpBoxes_8hpp_source.html#l00066">PauliExpBoxes.hpp:66</a></div></div>
-<div class="ttc" id="aclasstket_1_1PauliExpBox_html_adb1941d953cd65a12cd2cd9a85d14cdc"><div class="ttname"><a href="classtket_1_1PauliExpBox.html#adb1941d953cd65a12cd2cd9a85d14cdc">tket::PauliExpBox::get_paulis</a></div><div class="ttdeci">std::vector&lt; Pauli &gt; get_paulis() const</div><div class="ttdoc">Get the Pauli string.</div><div class="ttdef"><b>Definition:</b> <a href="PauliExpBoxes_8hpp_source.html#l00063">PauliExpBoxes.hpp:63</a></div></div>
+<div class="ttc" id="aclasstket_1_1PauliExpBox_html_a3adbef764967bda7d889b629311841bb"><div class="ttname"><a href="classtket_1_1PauliExpBox.html#a3adbef764967bda7d889b629311841bb">tket::PauliExpBox::get_phase</a></div><div class="ttdeci">Expr get_phase() const</div><div class="ttdoc">Get the phase parameter.</div><div class="ttdef"><b>Definition:</b> <a href="PauliExpBoxes_8hpp_source.html#l00067">PauliExpBoxes.hpp:67</a></div></div>
+<div class="ttc" id="aclasstket_1_1PauliExpBox_html_adb1941d953cd65a12cd2cd9a85d14cdc"><div class="ttname"><a href="classtket_1_1PauliExpBox.html#adb1941d953cd65a12cd2cd9a85d14cdc">tket::PauliExpBox::get_paulis</a></div><div class="ttdeci">std::vector&lt; Pauli &gt; get_paulis() const</div><div class="ttdoc">Get the Pauli string.</div><div class="ttdef"><b>Definition:</b> <a href="PauliExpBoxes_8hpp_source.html#l00064">PauliExpBoxes.hpp:64</a></div></div>
 <div class="ttc" id="aclasstket_1_1SymbolsNotSupported_html"><div class="ttname"><a href="classtket_1_1SymbolsNotSupported.html">tket::SymbolsNotSupported</a></div><div class="ttdoc">Exception indicating that symbolic values are not supported.</div><div class="ttdef"><b>Definition:</b> <a href="Expression_8hpp_source.html#l00224">Expression.hpp:224</a></div></div>
 <div class="ttc" id="anamespacestd__clifford__decomp_html_ae884a740cf1249e01bfee84f628baea8"><div class="ttname"><a href="namespacestd__clifford__decomp.html#ae884a740cf1249e01bfee84f628baea8">std_clifford_decomp.I</a></div><div class="ttdeci">I</div><div class="ttdef"><b>Definition:</b> <a href="std__clifford__decomp_8py_source.html#l00027">std_clifford_decomp.py:27</a></div></div>
-<div class="ttc" id="anamespacetket_1_1tket__sim_1_1internal_html_a4d7433e6383e1111f7cd2c08faeb264a"><div class="ttname"><a href="namespacetket_1_1tket__sim_1_1internal.html#a4d7433e6383e1111f7cd2c08faeb264a">tket::tket_sim::internal::get_triplets</a></div><div class="ttdeci">std::vector&lt; TripletCd &gt; get_triplets(const PauliExpBox &amp;box)</div><div class="ttdoc">Returns the triplets which make up the sparse unitary matrix of the given box, in ILO-BE convention.</div><div class="ttdef"><b>Definition:</b> <a href="PauliExpBoxUnitaryCalculator_8cpp_source.html#l00209">PauliExpBoxUnitaryCalculator.cpp:209</a></div></div>
-<div class="ttc" id="anamespacetket_1_1tket__sim_1_1internal_html_ad7276cafb560bb6a1bea70d6b4d95fe3"><div class="ttname"><a href="namespacetket_1_1tket__sim_1_1internal.html#ad7276cafb560bb6a1bea70d6b4d95fe3">tket::tket_sim::internal::Entry</a></div><div class="ttdeci">Eigen::Triplet&lt; int &gt; Entry</div><div class="ttdef"><b>Definition:</b> <a href="PauliExpBoxUnitaryCalculator_8cpp_source.html#l00030">PauliExpBoxUnitaryCalculator.cpp:30</a></div></div>
+<div class="ttc" id="anamespacetket_1_1tket__sim_1_1internal_html_a4d7433e6383e1111f7cd2c08faeb264a"><div class="ttname"><a href="namespacetket_1_1tket__sim_1_1internal.html#a4d7433e6383e1111f7cd2c08faeb264a">tket::tket_sim::internal::get_triplets</a></div><div class="ttdeci">std::vector&lt; TripletCd &gt; get_triplets(const PauliExpBox &amp;box)</div><div class="ttdoc">Returns the triplets which make up the sparse unitary matrix of the given box, in ILO-BE convention.</div><div class="ttdef"><b>Definition:</b> <a href="PauliExpBoxUnitaryCalculator_8cpp_source.html#l00203">PauliExpBoxUnitaryCalculator.cpp:203</a></div></div>
+<div class="ttc" id="anamespacetket_1_1tket__sim_1_1internal_html_ad7276cafb560bb6a1bea70d6b4d95fe3"><div class="ttname"><a href="namespacetket_1_1tket__sim_1_1internal.html#ad7276cafb560bb6a1bea70d6b4d95fe3">tket::tket_sim::internal::Entry</a></div><div class="ttdeci">Eigen::Triplet&lt; int &gt; Entry</div><div class="ttdef"><b>Definition:</b> <a href="PauliExpBoxUnitaryCalculator_8cpp_source.html#l00029">PauliExpBoxUnitaryCalculator.cpp:29</a></div></div>
 <div class="ttc" id="anamespacetket_html"><div class="ttname"><a href="namespacetket.html">tket</a></div><div class="ttdoc">Defines tket::DeviceCharacterisation, used in NoiseAwarePlacement and in commute_SQ_gates_through_SWA...</div><div class="ttdef"><b>Definition:</b> <a href="Path_8cpp_source.html#l00019">Path.cpp:19</a></div></div>
-<div class="ttc" id="anamespacetket_html_a342a289d54f4f5f5a405373c07aca66a"><div class="ttname"><a href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">tket::Pauli</a></div><div class="ttdeci">Pauli</div><div class="ttdoc">Symbols for the Pauli operators (and identity)</div><div class="ttdef"><b>Definition:</b> <a href="PauliStrings_8hpp_source.html#l00059">PauliStrings.hpp:59</a></div></div>
+<div class="ttc" id="anamespacetket_html_a342a289d54f4f5f5a405373c07aca66a"><div class="ttname"><a href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">tket::Pauli</a></div><div class="ttdeci">Pauli</div><div class="ttdoc">Symbols for the Pauli operators (and identity)</div><div class="ttdef"><b>Definition:</b> <a href="PauliTensor_8hpp_source.html#l00026">PauliTensor.hpp:26</a></div></div>
 <div class="ttc" id="anamespacetket_html_a741f7a00246fe7f3797c1c410374ebe1"><div class="ttname"><a href="namespacetket.html#a741f7a00246fe7f3797c1c410374ebe1">tket::eval_expr</a></div><div class="ttdeci">std::optional&lt; double &gt; eval_expr(const Expr &amp;e)</div><div class="ttdef"><b>Definition:</b> <a href="Expression_8cpp_source.html#l00059">Expression.cpp:59</a></div></div>
 <div class="ttc" id="anamespacetket_html_aeb9514facc20f8f193747a8196f7614d"><div class="ttname"><a href="namespacetket.html#aeb9514facc20f8f193747a8196f7614d">tket::PI</a></div><div class="ttdeci">constexpr double PI</div><div class="ttdef"><b>Definition:</b> <a href="Constants_8hpp_source.html#l00041">Constants.hpp:41</a></div></div>
 </div><!-- fragment --></div><!-- contents -->

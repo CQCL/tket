@@ -1,8 +1,0 @@
-<map id="tket::QubitPauliTensor" name="tket::QubitPauliTensor">
-<area shape="rect" id="node1" title="A tensor of Pauli terms ." alt="" coords="79,349,242,376"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,260,185,287"/>
-<area shape="rect" id="node3" href="$classtket_1_1QubitPauliString.html" title="A string of Pauli letters from the alphabet {I, X, Y, Z}, implemented as a sparse list,..." alt="" coords="209,260,368,287"/>
-<area shape="rect" id="node4" title=" " alt="" coords="197,171,380,197"/>
-<area shape="rect" id="node5" href="$classtket_1_1Qubit.html" title="Location holding a qubit." alt="" coords="243,81,334,108"/>
-<area shape="rect" id="node6" href="$classtket_1_1UnitID.html" title="Location holding a bit or qubit of information." alt="" coords="241,5,337,32"/>
-</map>

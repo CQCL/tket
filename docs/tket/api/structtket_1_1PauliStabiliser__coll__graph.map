@@ -1,4 +1,0 @@
-<map id="tket::PauliStabiliser" name="tket::PauliStabiliser">
-<area shape="rect" id="node1" title="A simple struct for Pauli strings with +/&#45; phase, used to represent Pauli strings in a stabiliser sub..." alt="" coords="8,95,155,121"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,5,157,32"/>
-</map>

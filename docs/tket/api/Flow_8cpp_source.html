@@ -368,8 +368,8 @@ $(function() {
 <div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;  <span class="keywordtype">unsigned</span> n_correctors = correctors.size();</div>
 <div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;  <span class="keywordtype">unsigned</span> n_preserve = preserve.size();</div>
 <div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;  <span class="keywordtype">unsigned</span> n_to_solve = to_solve.size();</div>
-<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;  <span class="keywordtype">unsigned</span> n_ys = ys.size();</div>
-<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;  <a class="code" href="namespacetket.html#afc6a69cf78c26da6848112274764acc6">MatrixXb</a> mat = MatrixXb::Zero(n_preserve + n_ys, n_correctors + n_to_solve);</div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;  <span class="keywordtype">unsigned</span> <a class="code" href="namespacetket.html#a18094ef273470992416cb0bb45c71386">n_ys</a> = ys.size();</div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;  <a class="code" href="namespacetket.html#afc6a69cf78c26da6848112274764acc6">MatrixXb</a> mat = MatrixXb::Zero(n_preserve + <a class="code" href="namespacetket.html#a18094ef273470992416cb0bb45c71386">n_ys</a>, n_correctors + n_to_solve);</div>
 <div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;  <span class="comment">// Build adjacency matrix</span></div>
 <div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;  <span class="keywordflow">for</span> (boost::bimap&lt;ZXVert, unsigned&gt;::const_iterator it = correctors.begin(),</div>
 <div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;                                                      end = correctors.end();</div>
@@ -434,7 +434,7 @@ $(function() {
 <div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;  <span class="comment">// Gaussian elimination</span></div>
 <div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;  std::vector&lt;std::pair&lt;unsigned, unsigned&gt;&gt; row_ops =</div>
 <div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;      <a class="code" href="namespacetket.html#af8c225a8ea66be8b88f6b7ef09e9c93c">gaussian_elimination_row_ops</a>(</div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;          mat.block(0, 0, n_preserve + n_ys, n_correctors));</div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;          mat.block(0, 0, n_preserve + <a class="code" href="namespacetket.html#a18094ef273470992416cb0bb45c71386">n_ys</a>, n_correctors));</div>
 <div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> std::pair&lt;unsigned, unsigned&gt;&amp; op : row_ops) {</div>
 <div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> j = 0; j &lt; n_correctors + n_to_solve; ++j) {</div>
 <div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;      mat(op.second, j) ^= mat(op.first, j);</div>
@@ -445,7 +445,7 @@ $(function() {
 <div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;  <span class="comment">// For each row i, pick a corrector j for which mat(i,j) == true, else</span></div>
 <div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;  <span class="comment">// determine that row i has zero lhs</span></div>
 <div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;  std::map&lt;unsigned, ZXVert&gt; row_corrector;</div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; n_preserve + n_ys; ++i) {</div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; n_preserve + <a class="code" href="namespacetket.html#a18094ef273470992416cb0bb45c71386">n_ys</a>; ++i) {</div>
 <div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> j = 0; j &lt; n_correctors; ++j) {</div>
 <div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;      <span class="keywordflow">if</span> (mat(i, j)) {</div>
 <div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;        row_corrector.insert({i, correctors.right.at(j)});</div>
@@ -459,7 +459,7 @@ $(function() {
 <div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; n_to_solve; ++i) {</div>
 <div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;    <span class="keywordtype">bool</span> fail = <span class="keyword">false</span>;</div>
 <div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;    <a class="code" href="namespacetket_1_1zx.html#aca91507248f36336bee890c7f97ffc3d">ZXVertSeqSet</a> c_i;</div>
-<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> j = 0; j &lt; n_preserve + n_ys; ++j) {</div>
+<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> j = 0; j &lt; n_preserve + <a class="code" href="namespacetket.html#a18094ef273470992416cb0bb45c71386">n_ys</a>; ++j) {</div>
 <div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;      <span class="keywordflow">if</span> (mat(j, n_correctors + i)) {</div>
 <div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;        <span class="keyword">auto</span> found = row_corrector.find(j);</div>
 <div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;        <span class="keywordflow">if</span> (found == row_corrector.end()) {</div>
@@ -609,7 +609,7 @@ $(function() {
 <div class="line"><a name="l00531"></a><span class="lineno">  531</span>&#160;  boost::bimap&lt;ZXVert, unsigned&gt; ys;</div>
 <div class="line"><a name="l00532"></a><span class="lineno">  532</span>&#160;  <span class="keywordtype">unsigned</span> n_correctors = 0;</div>
 <div class="line"><a name="l00533"></a><span class="lineno">  533</span>&#160;  <span class="keywordtype">unsigned</span> n_preserve = 0;</div>
-<div class="line"><a name="l00534"></a><span class="lineno">  534</span>&#160;  <span class="keywordtype">unsigned</span> n_ys = 0;</div>
+<div class="line"><a name="l00534"></a><span class="lineno">  534</span>&#160;  <span class="keywordtype">unsigned</span> <a class="code" href="namespacetket.html#a18094ef273470992416cb0bb45c71386">n_ys</a> = 0;</div>
 <div class="line"><a name="l00535"></a><span class="lineno">  535</span>&#160; </div>
 <div class="line"><a name="l00536"></a><span class="lineno">  536</span>&#160;  BGL_FORALL_VERTICES(v, *diag.graph, <a class="code" href="namespacetket_1_1zx.html#a9f6e55a9bc3137cdeec27ddd4076e589">ZXGraph</a>) {</div>
 <div class="line"><a name="l00537"></a><span class="lineno">  537</span>&#160;    <span class="keywordflow">switch</span> (diag.<a class="code" href="classtket_1_1zx_1_1ZXDiagram.html#a0379edfb3a75b9b2d8f39bf9cf0513c1">get_zxtype</a>(v)) {</div>
@@ -638,8 +638,8 @@ $(function() {
 <div class="line"><a name="l00560"></a><span class="lineno">  560</span>&#160;        <span class="keywordflow">break</span>;</div>
 <div class="line"><a name="l00561"></a><span class="lineno">  561</span>&#160;      }</div>
 <div class="line"><a name="l00562"></a><span class="lineno">  562</span>&#160;      <span class="keywordflow">case</span> <a class="code" href="namespacetket_1_1zx.html#ab1dacff6605c3bc8caa5f7fa6e3f5646a0c145a13e49b47abccd510e5c899d80c">ZXType::PY</a>: {</div>
-<div class="line"><a name="l00563"></a><span class="lineno">  563</span>&#160;        ys.insert({v, n_ys});</div>
-<div class="line"><a name="l00564"></a><span class="lineno">  564</span>&#160;        ++n_ys;</div>
+<div class="line"><a name="l00563"></a><span class="lineno">  563</span>&#160;        ys.insert({v, <a class="code" href="namespacetket.html#a18094ef273470992416cb0bb45c71386">n_ys</a>});</div>
+<div class="line"><a name="l00564"></a><span class="lineno">  564</span>&#160;        ++<a class="code" href="namespacetket.html#a18094ef273470992416cb0bb45c71386">n_ys</a>;</div>
 <div class="line"><a name="l00565"></a><span class="lineno">  565</span>&#160;        <span class="comment">// Can use non-input Xs and Ys to correct</span></div>
 <div class="line"><a name="l00566"></a><span class="lineno">  566</span>&#160;        <span class="keywordflow">if</span> (inputs.find(v) == inputs.end()) {</div>
 <div class="line"><a name="l00567"></a><span class="lineno">  567</span>&#160;          correctors.insert({v, n_correctors});</div>
@@ -652,7 +652,7 @@ $(function() {
 <div class="line"><a name="l00574"></a><span class="lineno">  574</span>&#160;    }</div>
 <div class="line"><a name="l00575"></a><span class="lineno">  575</span>&#160;  }</div>
 <div class="line"><a name="l00576"></a><span class="lineno">  576</span>&#160; </div>
-<div class="line"><a name="l00577"></a><span class="lineno">  577</span>&#160;  <a class="code" href="namespacetket.html#afc6a69cf78c26da6848112274764acc6">MatrixXb</a> mat = MatrixXb::Zero(n_preserve + n_ys, n_correctors);</div>
+<div class="line"><a name="l00577"></a><span class="lineno">  577</span>&#160;  <a class="code" href="namespacetket.html#afc6a69cf78c26da6848112274764acc6">MatrixXb</a> mat = MatrixXb::Zero(n_preserve + <a class="code" href="namespacetket.html#a18094ef273470992416cb0bb45c71386">n_ys</a>, n_correctors);</div>
 <div class="line"><a name="l00578"></a><span class="lineno">  578</span>&#160; </div>
 <div class="line"><a name="l00579"></a><span class="lineno">  579</span>&#160;  <span class="comment">// Build adjacency matrix</span></div>
 <div class="line"><a name="l00580"></a><span class="lineno">  580</span>&#160;  <span class="keywordflow">for</span> (boost::bimap&lt;ZXVert, unsigned&gt;::const_iterator it = correctors.begin(),</div>
@@ -699,7 +699,7 @@ $(function() {
 <div class="line"><a name="l00621"></a><span class="lineno">  621</span>&#160;       it != end; ++it) {</div>
 <div class="line"><a name="l00622"></a><span class="lineno">  622</span>&#160;    <a class="code" href="namespacetket_1_1zx.html#aca91507248f36336bee890c7f97ffc3d">ZXVertSeqSet</a> fset{it-&gt;left};</div>
 <div class="line"><a name="l00623"></a><span class="lineno">  623</span>&#160;    <span class="keywordtype">bool</span> new_row_corrector = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00624"></a><span class="lineno">  624</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; n_preserve + n_ys; ++i) {</div>
+<div class="line"><a name="l00624"></a><span class="lineno">  624</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; n_preserve + <a class="code" href="namespacetket.html#a18094ef273470992416cb0bb45c71386">n_ys</a>; ++i) {</div>
 <div class="line"><a name="l00625"></a><span class="lineno">  625</span>&#160;      <span class="keywordflow">if</span> (mat(i, it-&gt;right)) {</div>
 <div class="line"><a name="l00626"></a><span class="lineno">  626</span>&#160;        <span class="keyword">auto</span> inserted = row_corrector.insert({i, it-&gt;left});</div>
 <div class="line"><a name="l00627"></a><span class="lineno">  627</span>&#160;        <span class="keywordflow">if</span> (inserted.second) {</div>
@@ -759,6 +759,7 @@ $(function() {
 <div class="ttc" id="anamespacetket_1_1zx_html_ab82aa2ff06a696ddcf79a5c2074497a7"><div class="ttname"><a href="namespacetket_1_1zx.html#ab82aa2ff06a696ddcf79a5c2074497a7">tket::zx::is_boundary_type</a></div><div class="ttdeci">bool is_boundary_type(ZXType type)</div><div class="ttdoc">Helper functions to identify various groups of ZXTypes.</div><div class="ttdef"><b>Definition:</b> <a href="ZXGenerator_8cpp_source.html#l00034">ZXGenerator.cpp:34</a></div></div>
 <div class="ttc" id="anamespacetket_1_1zx_html_aca91507248f36336bee890c7f97ffc3d"><div class="ttname"><a href="namespacetket_1_1zx.html#aca91507248f36336bee890c7f97ffc3d">tket::zx::ZXVertSeqSet</a></div><div class="ttdeci">sequence_set_t&lt; ZXVert &gt; ZXVertSeqSet</div><div class="ttdef"><b>Definition:</b> <a href="ZXDiagramImpl_8hpp_source.html#l00107">ZXDiagramImpl.hpp:107</a></div></div>
 <div class="ttc" id="anamespacetket_html"><div class="ttname"><a href="namespacetket.html">tket</a></div><div class="ttdoc">Defines tket::DeviceCharacterisation, used in NoiseAwarePlacement and in commute_SQ_gates_through_SWA...</div><div class="ttdef"><b>Definition:</b> <a href="Path_8cpp_source.html#l00019">Path.cpp:19</a></div></div>
+<div class="ttc" id="anamespacetket_html_a18094ef273470992416cb0bb45c71386"><div class="ttname"><a href="namespacetket.html#a18094ef273470992416cb0bb45c71386">tket::n_ys</a></div><div class="ttdeci">unsigned n_ys(const PauliContainer &amp;paulis)=delete</div><div class="ttdoc">Return the number of Pauli::Ys in the container.</div></div>
 <div class="ttc" id="anamespacetket_html_a28f9577cad4f1a896981f6105029ac03"><div class="ttname"><a href="namespacetket.html#a28f9577cad4f1a896981f6105029ac03">tket::sequenced_map_t</a></div><div class="ttdeci">boost::multi_index::multi_index_container&lt; std::pair&lt; A, B &gt;, boost::multi_index::indexed_by&lt; boost::multi_index::ordered_unique&lt; boost::multi_index::tag&lt; TagKey &gt;, boost::multi_index::member&lt; std::pair&lt; A, B &gt;, A, &amp;std::pair&lt; A, B &gt;::first &gt; &gt;, boost::multi_index::sequenced&lt; boost::multi_index::tag&lt; TagSeq &gt; &gt;&gt; &gt; sequenced_map_t</div><div class="ttdef"><b>Definition:</b> <a href="SequencedContainers_8hpp_source.html#l00044">SequencedContainers.hpp:51</a></div></div>
 <div class="ttc" id="anamespacetket_html_af8c225a8ea66be8b88f6b7ef09e9c93c"><div class="ttname"><a href="namespacetket.html#af8c225a8ea66be8b88f6b7ef09e9c93c">tket::gaussian_elimination_row_ops</a></div><div class="ttdeci">std::vector&lt; std::pair&lt; unsigned, unsigned &gt; &gt; gaussian_elimination_row_ops(const MatrixXb &amp;a, unsigned blocksize)</div><div class="ttdef"><b>Definition:</b> <a href="MatrixAnalysis_8cpp_source.html#l00096">MatrixAnalysis.cpp:96</a></div></div>
 <div class="ttc" id="anamespacetket_html_afc6a69cf78c26da6848112274764acc6"><div class="ttname"><a href="namespacetket.html#afc6a69cf78c26da6848112274764acc6">tket::MatrixXb</a></div><div class="ttdeci">Eigen::Matrix&lt; bool, Eigen::Dynamic, Eigen::Dynamic &gt; MatrixXb</div><div class="ttdef"><b>Definition:</b> <a href="MatrixAnalysis_8hpp_source.html#l00027">MatrixAnalysis.hpp:27</a></div></div>

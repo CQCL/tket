@@ -1,9 +1,4 @@
 <map id="tket::PauliGadgetProperties" name="tket::PauliGadgetProperties">
-<area shape="rect" id="node1" title=" " alt="" coords="61,439,260,465"/>
-<area shape="rect" id="node2" href="$classtket_1_1QubitPauliTensor.html" title="A tensor of Pauli terms ." alt="" coords="79,349,242,376"/>
-<area shape="rect" id="node3" title=" " alt="" coords="5,260,185,287"/>
-<area shape="rect" id="node4" href="$classtket_1_1QubitPauliString.html" title="A string of Pauli letters from the alphabet {I, X, Y, Z}, implemented as a sparse list,..." alt="" coords="209,260,368,287"/>
-<area shape="rect" id="node5" title=" " alt="" coords="197,171,380,197"/>
-<area shape="rect" id="node6" href="$classtket_1_1Qubit.html" title="Location holding a qubit." alt="" coords="243,81,334,108"/>
-<area shape="rect" id="node7" href="$classtket_1_1UnitID.html" title="Location holding a bit or qubit of information." alt="" coords="241,5,337,32"/>
+<area shape="rect" id="node1" title=" " alt="" coords="5,124,204,151"/>
+<area shape="rect" id="node2" href="$classtket_1_1PauliTensor.html" title=" " alt="" coords="17,5,192,61"/>
 </map>

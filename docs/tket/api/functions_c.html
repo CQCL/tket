@@ -98,11 +98,11 @@ $(function() {
 <li>canonical_column_order()
 : <a class="el" href="classtket_1_1ChoiMixTableau.html#aa3ebf4481705b5c43035c05829fdd053">tket::ChoiMixTableau</a>
 </li>
-<li>cause
-: <a class="el" href="structtket_1_1GateUnitaryMatrixError.html#a9f165fd48d17834d0317ddfe4e9f2ee5">tket::GateUnitaryMatrixError</a>
-</li>
 <li>Cause
 : <a class="el" href="structtket_1_1GateUnitaryMatrixError.html#af611ef0f8913f3c63ce098c0050f12a1">tket::GateUnitaryMatrixError</a>
+</li>
+<li>cause
+: <a class="el" href="structtket_1_1GateUnitaryMatrixError.html#a9f165fd48d17834d0317ddfe4e9f2ee5">tket::GateUnitaryMatrixError</a>
 </li>
 <li>CCX()
 : <a class="el" href="structtket_1_1internal_1_1GateUnitaryMatrixImplementations.html#aa1afb3c4e813ea2c89f7669d93933f64">tket::internal::GateUnitaryMatrixImplementations</a>
@@ -233,8 +233,7 @@ $(function() {
 : <a class="el" href="structtket_1_1internal_1_1GateUnitaryMatrixImplementations.html#ab8106ad041bdafcd8f6cb4d3aab86c28">tket::internal::GateUnitaryMatrixImplementations</a>
 </li>
 <li>coeff
-: <a class="el" href="structtket_1_1PauliStabiliser.html#a3570de3b7aef3166bf6a09a2178df8aa">tket::PauliStabiliser</a>
-, <a class="el" href="classtket_1_1QubitPauliTensor.html#a9af660c3f53e792977fd3f1bcd31792f">tket::QubitPauliTensor</a>
+: <a class="el" href="classtket_1_1PauliTensor.html#a6b88652d81a2a1221bc45f7c86f6add2">tket::PauliTensor&lt; PauliContainer, CoeffType &gt;</a>
 </li>
 <li>col_add()
 : <a class="el" href="classtket_1_1DiagMatrix.html#ab0a2ada106939814bf099e6a497f92ea">tket::DiagMatrix</a>
@@ -264,7 +263,7 @@ $(function() {
 : <a class="el" href="structtket_1_1graphs_1_1GraphColouringResult.html#aec1c8fd8b14e627cb1474652adac3a47">tket::graphs::GraphColouringResult</a>
 </li>
 <li>Command()
-: <a class="el" href="classtket_1_1Command.html#ad37acaaed84d749a8f6d891218b3afef">tket::Command</a>
+: <a class="el" href="classtket_1_1Command.html#a7d57c516a1570a47c643eb7dc3306c5a">tket::Command</a>
 </li>
 <li>command2op()
 : <a class="el" href="classtket_1_1Circuit.html#a909248849447d12d5e67c85578333774">tket::Circuit</a>
@@ -275,13 +274,14 @@ $(function() {
 <li>CommandIterator()
 : <a class="el" href="classtket_1_1Circuit_1_1CommandIterator.html#ac311b5af7da1ac7e76bceb3fc2f45ba9">tket::Circuit::CommandIterator</a>
 </li>
+<li>common_indices()
+: <a class="el" href="classtket_1_1PauliTensor.html#af5ce12e82ab4975a4149357cc515717d">tket::PauliTensor&lt; PauliContainer, CoeffType &gt;</a>
+</li>
 <li>common_qubits()
-: <a class="el" href="classtket_1_1QubitPauliString.html#a8bfc188975024b3727e9296cb070eae8">tket::QubitPauliString</a>
-, <a class="el" href="classtket_1_1QubitPauliTensor.html#aca40ec7a0b581fe5e4fcd902094d7025">tket::QubitPauliTensor</a>
+: <a class="el" href="classtket_1_1PauliTensor.html#a7741e17f9cfd2775e834ab1a2135da3a">tket::PauliTensor&lt; PauliContainer, CoeffType &gt;</a>
 </li>
 <li>commutes_with()
-: <a class="el" href="classtket_1_1QubitPauliString.html#a3451a5c4739ffcafdd8f5c55c066ebf1">tket::QubitPauliString</a>
-, <a class="el" href="classtket_1_1QubitPauliTensor.html#a47a263f2f7b10db20984d1c30956df77">tket::QubitPauliTensor</a>
+: <a class="el" href="classtket_1_1PauliTensor.html#a036e565acbe4614620483824a700cebd">tket::PauliTensor&lt; PauliContainer, CoeffType &gt;</a>
 </li>
 <li>commutes_with_basis()
 : <a class="el" href="classtket_1_1Circuit.html#a5fcb3a1be94920c17a9e864ee81ea7b0">tket::Circuit</a>
@@ -294,7 +294,7 @@ $(function() {
 , <a class="el" href="classtket_1_1Op.html#a8ed2c005331129c54b910933c20af354">tket::Op</a>
 </li>
 <li>compare()
-: <a class="el" href="classtket_1_1QubitPauliString.html#a607e1e796f1d3060bc0209801e26b6df">tket::QubitPauliString</a>
+: <a class="el" href="classtket_1_1PauliTensor.html#a21fcfec0729f3456c8a8a229d6940979">tket::PauliTensor&lt; PauliContainer, CoeffType &gt;</a>
 </li>
 <li>CompilationUnit()
 : <a class="el" href="classtket_1_1CompilationUnit.html#a5c1ee05fd36eaaab316d4d613b253f3e">tket::CompilationUnit</a>
@@ -311,8 +311,7 @@ $(function() {
 : <a class="el" href="classtket_1_1CompositeGateDef.html#af93e28f6445b88d0cae8fb9a63f19d20">tket::CompositeGateDef</a>
 </li>
 <li>compress()
-: <a class="el" href="classtket_1_1QubitPauliString.html#a62cb2551500feaac71af409b7beec6e6">tket::QubitPauliString</a>
-, <a class="el" href="classtket_1_1QubitPauliTensor.html#a9863028b3349529f006257e069062b62">tket::QubitPauliTensor</a>
+: <a class="el" href="classtket_1_1PauliTensor.html#adf374e0ff6702cc59fbafaf112395939">tket::PauliTensor&lt; PauliContainer, CoeffType &gt;</a>
 </li>
 <li>coms_
 : <a class="el" href="classtket_1_1Cycle.html#a6c4867154b0e0e218dd29807bb4ae229">tket::Cycle</a>
@@ -323,9 +322,11 @@ $(function() {
 <li>conditional_circuit()
 : <a class="el" href="classtket_1_1Circuit.html#af4d3ac5e93d00b15e708b550ddcbb28c">tket::Circuit</a>
 </li>
+<li>conflicting_indices()
+: <a class="el" href="classtket_1_1PauliTensor.html#ab4b47da2b04ead28e9143a5c79e443f4">tket::PauliTensor&lt; PauliContainer, CoeffType &gt;</a>
+</li>
 <li>conflicting_qubits()
-: <a class="el" href="classtket_1_1QubitPauliString.html#a027f7ae0cb798754b0fd5baf89e08658">tket::QubitPauliString</a>
-, <a class="el" href="classtket_1_1QubitPauliTensor.html#aa9dd93ef21bf085d56e1232631e44be6">tket::QubitPauliTensor</a>
+: <a class="el" href="classtket_1_1PauliTensor.html#a6747a796a44b21b5bd3880e361d9a117">tket::PauliTensor&lt; PauliContainer, CoeffType &gt;</a>
 </li>
 <li>conjugate()
 : <a class="el" href="classtket_1_1UnitaryRevTableau.html#a94a86a24639af672e66419f76f702968">tket::UnitaryRevTableau</a>

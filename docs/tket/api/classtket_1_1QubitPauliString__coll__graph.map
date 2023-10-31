@@ -1,6 +1,0 @@
-<map id="tket::QubitPauliString" name="tket::QubitPauliString">
-<area shape="rect" id="node1" title="A string of Pauli letters from the alphabet {I, X, Y, Z}, implemented as a sparse list,..." alt="" coords="17,260,176,287"/>
-<area shape="rect" id="node2" title=" " alt="" coords="5,171,188,197"/>
-<area shape="rect" id="node3" href="$classtket_1_1Qubit.html" title="Location holding a qubit." alt="" coords="51,81,142,108"/>
-<area shape="rect" id="node4" href="$classtket_1_1UnitID.html" title="Location holding a bit or qubit of information." alt="" coords="49,5,145,32"/>
-</map>

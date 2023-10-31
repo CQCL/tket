@@ -98,392 +98,365 @@ $(function() {
 <div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160; </div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespacetket.html">tket</a> {</div>
 <div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
-<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="namespacetket.html#a9f68fb4ab6e021ef3cb3174094f2d194">   23</a></span>&#160;<a class="code" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> <a class="code" href="namespacetket.html#a9f68fb4ab6e021ef3cb3174094f2d194">pauli_angle_convert_or_throw</a>(<a class="code" href="namespacetket.html#a68999408b52ab2f0f191f814ec93f4de">Complex</a> pauliCoeff, <span class="keyword">const</span> <a class="code" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;angle) {</div>
-<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;  <span class="keywordflow">if</span> (pauliCoeff == -1.) {</div>
-<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;    <span class="keywordflow">return</span> -1 * angle;</div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;  }</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;  <span class="keywordflow">if</span> (pauliCoeff != 1.) {</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    <span class="keywordflow">throw</span> <a class="code" href="classtket_1_1CircuitInvalidity.html">CircuitInvalidity</a>(<span class="stringliteral">&quot;Pauli coefficient must be +/- 1&quot;</span>);</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;  }</div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;  <span class="keywordflow">return</span> angle;</div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;}</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
-<div class="line"><a name="l00033"></a><span class="lineno"><a class="line" href="namespacetket.html#a8e72f1332998ecf4ef5d1047cfe5a95d">   33</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespacetket.html#a8e72f1332998ecf4ef5d1047cfe5a95d">append_single_pauli_gadget</a>(</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    <a class="code" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ, <span class="keyword">const</span> <a class="code" href="classtket_1_1QubitPauliTensor.html">QubitPauliTensor</a> &amp;pauli, <a class="code" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> angle,</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <a class="code" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config) {</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;  <span class="keyword">auto</span> converted_angle = <a class="code" href="namespacetket.html#a9f68fb4ab6e021ef3cb3174094f2d194">pauli_angle_convert_or_throw</a>(pauli.<a class="code" href="classtket_1_1QubitPauliTensor.html#a9af660c3f53e792977fd3f1bcd31792f">coeff</a>, angle);</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160; </div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;  std::vector&lt;Pauli&gt; string;</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  <a class="code" href="namespacetket.html#aa08fc2d553413efa43b68fa1269fba77">unit_map_t</a> mapping;</div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  <span class="keywordtype">unsigned</span> i = 0;</div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> std::pair&lt;const Qubit, Pauli&gt; &amp;term : pauli.<a class="code" href="classtket_1_1QubitPauliTensor.html#a437838e8949b35fef8905b0449a06b4b">string</a>.<a class="code" href="classtket_1_1QubitPauliString.html#a466db7bf816c2fb885837060295edf7f">map</a>) {</div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="namespacetket.html#a02e0b3d958235646ebb3528e5116f3cf">   23</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespacetket.html#a02e0b3d958235646ebb3528e5116f3cf">append_single_pauli_gadget</a>(</div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;    <a class="code" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ, <span class="keyword">const</span> <a class="code" href="classtket_1_1PauliTensor.html">SpSymPauliTensor</a> &amp;pauli, <a class="code" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config) {</div>
+<div class="line"><a name="l00025"></a><span class="lineno">   25</span>&#160;  std::vector&lt;Pauli&gt; string;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;  <a class="code" href="namespacetket.html#aa08fc2d553413efa43b68fa1269fba77">unit_map_t</a> mapping;</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;  <span class="keywordtype">unsigned</span> i = 0;</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> std::pair&lt;const Qubit, Pauli&gt; &amp;term : pauli.<a class="code" href="classtket_1_1PauliTensor.html#ac2e83f786fff6d2beddaf22d2725972d">string</a>) {</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;    <span class="keywordtype">string</span>.push_back(term.second);</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    mapping.insert({<a class="code" href="classtket_1_1Qubit.html">Qubit</a>(<a class="code" href="namespacetket.html#a392f41338f191768e8b7ac91b19bc8ce">q_default_reg</a>(), i), term.first});</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    i++;</div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;  }</div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;  <a class="code" href="classtket_1_1Circuit.html">Circuit</a> gadget = <a class="code" href="namespacetket.html#ab2b635e296bb273b8fa514314b1c2e8a">pauli_gadget</a>(<span class="keywordtype">string</span>, pauli.<a class="code" href="classtket_1_1PauliTensor.html#a6b88652d81a2a1221bc45f7c86f6add2">coeff</a>, cx_config);</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;  circ.<a class="code" href="classtket_1_1Circuit.html#a2fec16adb15410648e73d337953c8304">append_with_map</a>(gadget, mapping);</div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;}</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160; </div>
+<div class="line"><a name="l00037"></a><span class="lineno"><a class="line" href="namespacetket.html#a1e00ff5a6aec18a4625b60845438cfcf">   37</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespacetket.html#a1e00ff5a6aec18a4625b60845438cfcf">append_single_pauli_gadget_as_pauli_exp_box</a>(</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    <a class="code" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ, <span class="keyword">const</span> <a class="code" href="classtket_1_1PauliTensor.html">SpSymPauliTensor</a> &amp;pauli, <a class="code" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config) {</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;  std::vector&lt;Pauli&gt; string;</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;  std::vector&lt;Qubit&gt; mapping;</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> std::pair&lt;const Qubit, Pauli&gt; &amp;term : pauli.<a class="code" href="classtket_1_1PauliTensor.html#ac2e83f786fff6d2beddaf22d2725972d">string</a>) {</div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="keywordtype">string</span>.push_back(term.second);</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    mapping.insert({<a class="code" href="classtket_1_1Qubit.html">Qubit</a>(<a class="code" href="namespacetket.html#a392f41338f191768e8b7ac91b19bc8ce">q_default_reg</a>(), i), term.first});</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    i++;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;  }</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;  <a class="code" href="classtket_1_1Circuit.html">Circuit</a> gadget = <a class="code" href="namespacetket.html#ab2b635e296bb273b8fa514314b1c2e8a">pauli_gadget</a>(<span class="keywordtype">string</span>, converted_angle, cx_config);</div>
-<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;  circ.<a class="code" href="classtket_1_1Circuit.html#a2fec16adb15410648e73d337953c8304">append_with_map</a>(gadget, mapping);</div>
-<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160;}</div>
-<div class="line"><a name="l00049"></a><span class="lineno">   49</span>&#160; </div>
-<div class="line"><a name="l00050"></a><span class="lineno"><a class="line" href="namespacetket.html#a49402af2e1793a0721eab83470c49ff1">   50</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespacetket.html#a49402af2e1793a0721eab83470c49ff1">append_single_pauli_gadget_as_pauli_exp_box</a>(</div>
-<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <a class="code" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ, <span class="keyword">const</span> <a class="code" href="classtket_1_1QubitPauliTensor.html">QubitPauliTensor</a> &amp;pauli, <a class="code" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> angle,</div>
-<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;    <a class="code" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config) {</div>
-<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  <span class="keyword">auto</span> converted_angle = <a class="code" href="namespacetket.html#a9f68fb4ab6e021ef3cb3174094f2d194">pauli_angle_convert_or_throw</a>(pauli.<a class="code" href="classtket_1_1QubitPauliTensor.html#a9af660c3f53e792977fd3f1bcd31792f">coeff</a>, angle);</div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160; </div>
-<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;  std::vector&lt;Pauli&gt; string;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  std::vector&lt;Qubit&gt; mapping;</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> std::pair&lt;const Qubit, Pauli&gt; &amp;term : pauli.<a class="code" href="classtket_1_1QubitPauliTensor.html#a437838e8949b35fef8905b0449a06b4b">string</a>.<a class="code" href="classtket_1_1QubitPauliString.html#a466db7bf816c2fb885837060295edf7f">map</a>) {</div>
-<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    <span class="keywordtype">string</span>.push_back(term.second);</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    mapping.push_back(term.first);</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;  }</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;  <a class="code" href="classtket_1_1PauliExpBox.html">PauliExpBox</a> box(<span class="keywordtype">string</span>, converted_angle, cx_config);</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;  circ.<a class="code" href="classtket_1_1Circuit.html#ab318d01a5d43faf2b240ca2db4fae917">add_box</a>(box, mapping);</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;}</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00065"></a><span class="lineno"><a class="line" href="namespacetket.html#abfe5f8996f4929afa5e5ec01de4ac19b">   65</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespacetket.html#abfe5f8996f4929afa5e5ec01de4ac19b">append_pauli_gadget_pair_as_box</a>(</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <a class="code" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ, <span class="keyword">const</span> <a class="code" href="classtket_1_1QubitPauliTensor.html">QubitPauliTensor</a> &amp;pauli0, <a class="code" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> angle0,</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    <span class="keyword">const</span> <a class="code" href="classtket_1_1QubitPauliTensor.html">QubitPauliTensor</a> &amp;pauli1, <a class="code" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> angle1, <a class="code" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config) {</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;  <span class="keyword">auto</span> converted_angle0 = <a class="code" href="namespacetket.html#a9f68fb4ab6e021ef3cb3174094f2d194">pauli_angle_convert_or_throw</a>(pauli0.<a class="code" href="classtket_1_1QubitPauliTensor.html#a9af660c3f53e792977fd3f1bcd31792f">coeff</a>, angle0);</div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;  <span class="keyword">auto</span> converted_angle1 = <a class="code" href="namespacetket.html#a9f68fb4ab6e021ef3cb3174094f2d194">pauli_angle_convert_or_throw</a>(pauli1.<a class="code" href="classtket_1_1QubitPauliTensor.html#a9af660c3f53e792977fd3f1bcd31792f">coeff</a>, angle1);</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160; </div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;  std::vector&lt;Qubit&gt; mapping;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;  std::vector&lt;Pauli&gt; paulis0;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;  std::vector&lt;Pauli&gt; paulis1;</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160; </div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;  <a class="code" href="classtket_1_1QubitPauliString.html">QubitPauliString</a> pauli0_string(pauli0.<a class="code" href="classtket_1_1QubitPauliTensor.html#a437838e8949b35fef8905b0449a06b4b">string</a>);</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;  <a class="code" href="classtket_1_1QubitPauliString.html">QubitPauliString</a> pauli1_string(pauli1.<a class="code" href="classtket_1_1QubitPauliTensor.html#a437838e8949b35fef8905b0449a06b4b">string</a>);</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160; </div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;  <span class="comment">// remove any identities</span></div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;  pauli0_string.<a class="code" href="classtket_1_1QubitPauliString.html#a62cb2551500feaac71af409b7beec6e6">compress</a>();</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;  pauli1_string.<a class="code" href="classtket_1_1QubitPauliString.html#a62cb2551500feaac71af409b7beec6e6">compress</a>();</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;  <span class="comment">// add paulis for qubits in pauli0_string</span></div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> std::pair&lt;const Qubit, Pauli&gt; &amp;term : pauli0_string.<a class="code" href="classtket_1_1QubitPauliString.html#a466db7bf816c2fb885837060295edf7f">map</a>) {</div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    mapping.push_back(term.first);</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;    paulis0.push_back(term.second);</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <span class="keyword">auto</span> found = pauli1_string.<a class="code" href="classtket_1_1QubitPauliString.html#a466db7bf816c2fb885837060295edf7f">map</a>.find(term.first);</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <span class="keywordflow">if</span> (found == pauli1_string.<a class="code" href="classtket_1_1QubitPauliString.html#a466db7bf816c2fb885837060295edf7f">map</a>.end()) {</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;      paulis1.push_back(<a class="code" href="namespacestd__clifford__decomp.html#ae884a740cf1249e01bfee84f628baea8">Pauli::I</a>);</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;      paulis1.push_back(found-&gt;second);</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;      pauli1_string.<a class="code" href="classtket_1_1QubitPauliString.html#a466db7bf816c2fb885837060295edf7f">map</a>.erase(found);</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    }</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;  }</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;  <span class="comment">// add paulis for qubits in pauli1_string that weren&#39;t in pauli0_string</span></div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> std::pair&lt;const Qubit, Pauli&gt; &amp;term : pauli1_string.<a class="code" href="classtket_1_1QubitPauliString.html#a466db7bf816c2fb885837060295edf7f">map</a>) {</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    mapping.push_back(term.first);</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    paulis1.push_back(term.second);</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    paulis0.push_back(<a class="code" href="namespacestd__clifford__decomp.html#ae884a740cf1249e01bfee84f628baea8">Pauli::I</a>);  <span class="comment">// If pauli0_string contained qubit, would</span></div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;                                  <span class="comment">// have been handled above</span></div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;  }</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;  <a class="code" href="classtket_1_1PauliExpPairBox.html">PauliExpPairBox</a> box(</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;      paulis0, converted_angle0, paulis1, converted_angle1, cx_config);</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;  circ.<a class="code" href="classtket_1_1Circuit.html#ab318d01a5d43faf2b240ca2db4fae917">add_box</a>(box, mapping);</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;}</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
-<div class="line"><a name="l00106"></a><span class="lineno"><a class="line" href="namespacetket.html#a8ec10f2f1ca4d7c09f847af4f3984f8b">  106</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespacetket.html#a8ec10f2f1ca4d7c09f847af4f3984f8b">append_commuting_pauli_gadget_set_as_box</a>(</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    <a class="code" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ, <span class="keyword">const</span> std::list&lt;std::pair&lt;QubitPauliTensor, Expr&gt;&gt; &amp;gadgets,</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    <a class="code" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config) {</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;  <span class="comment">// Translate to QubitPauliTensors to vectors of Paulis of same length</span></div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;  <span class="comment">// Preserves ordering of qubits</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    mapping.push_back(term.first);</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  }</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;  <a class="code" href="classtket_1_1PauliExpBox.html">PauliExpBox</a> box(<a class="code" href="namespacetket.html#ad5f7b9aaddfa158da0f7b68516b32cc7">SymPauliTensor</a>(<span class="keywordtype">string</span>, pauli.<a class="code" href="classtket_1_1PauliTensor.html#a6b88652d81a2a1221bc45f7c86f6add2">coeff</a>), cx_config);</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;  circ.<a class="code" href="classtket_1_1Circuit.html#ab318d01a5d43faf2b240ca2db4fae917">add_box</a>(box, mapping);</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;}</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
+<div class="line"><a name="l00049"></a><span class="lineno"><a class="line" href="namespacetket.html#a0b111a9e16a263a75d0863a774114dec">   49</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespacetket.html#a0b111a9e16a263a75d0863a774114dec">append_pauli_gadget_pair_as_box</a>(</div>
+<div class="line"><a name="l00050"></a><span class="lineno">   50</span>&#160;    <a class="code" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ, <span class="keyword">const</span> <a class="code" href="classtket_1_1PauliTensor.html">SpSymPauliTensor</a> &amp;pauli0,</div>
+<div class="line"><a name="l00051"></a><span class="lineno">   51</span>&#160;    <span class="keyword">const</span> <a class="code" href="classtket_1_1PauliTensor.html">SpSymPauliTensor</a> &amp;pauli1, <a class="code" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config) {</div>
+<div class="line"><a name="l00052"></a><span class="lineno">   52</span>&#160;  std::vector&lt;Qubit&gt; mapping;</div>
+<div class="line"><a name="l00053"></a><span class="lineno">   53</span>&#160;  std::vector&lt;Pauli&gt; paulis0;</div>
+<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;  std::vector&lt;Pauli&gt; paulis1;</div>
+<div class="line"><a name="l00055"></a><span class="lineno">   55</span>&#160;  <a class="code" href="namespacetket.html#a5d170f953029bfd42ce8a82ef89fb814">QubitPauliMap</a> p1map = pauli1.<a class="code" href="classtket_1_1PauliTensor.html#ac2e83f786fff6d2beddaf22d2725972d">string</a>;</div>
+<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  <span class="comment">// add paulis for qubits in pauli0_string</span></div>
+<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> std::pair&lt;const Qubit, Pauli&gt; &amp;term : pauli0.<a class="code" href="classtket_1_1PauliTensor.html#ac2e83f786fff6d2beddaf22d2725972d">string</a>) {</div>
+<div class="line"><a name="l00058"></a><span class="lineno">   58</span>&#160;    mapping.push_back(term.first);</div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;    paulis0.push_back(term.second);</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;    <span class="keyword">auto</span> found = p1map.find(term.first);</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    <span class="keywordflow">if</span> (found == p1map.end()) {</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;      paulis1.push_back(<a class="code" href="namespacestd__clifford__decomp.html#ae884a740cf1249e01bfee84f628baea8">Pauli::I</a>);</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;      paulis1.push_back(found-&gt;second);</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;      p1map.erase(found);</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    }</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;  }</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;  <span class="comment">// add paulis for qubits in pauli1_string that weren&#39;t in pauli0_string</span></div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> std::pair&lt;const Qubit, Pauli&gt; &amp;term : p1map) {</div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    mapping.push_back(term.first);</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    paulis1.push_back(term.second);</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    paulis0.push_back(<a class="code" href="namespacestd__clifford__decomp.html#ae884a740cf1249e01bfee84f628baea8">Pauli::I</a>);  <span class="comment">// If pauli0_string contained qubit, would</span></div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;                                  <span class="comment">// have been handled above</span></div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;  }</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;  <a class="code" href="classtket_1_1PauliExpPairBox.html">PauliExpPairBox</a> box(</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;      <a class="code" href="namespacetket.html#ad5f7b9aaddfa158da0f7b68516b32cc7">SymPauliTensor</a>(paulis0, pauli0.<a class="code" href="classtket_1_1PauliTensor.html#a6b88652d81a2a1221bc45f7c86f6add2">coeff</a>),</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;      <a class="code" href="classtket_1_1PauliTensor.html">SymPauliTensor</a>(paulis1, pauli1.<a class="code" href="classtket_1_1PauliTensor.html#a6b88652d81a2a1221bc45f7c86f6add2">coeff</a>), cx_config);</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;  circ.<a class="code" href="classtket_1_1Circuit.html#ab318d01a5d43faf2b240ca2db4fae917">add_box</a>(box, mapping);</div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;}</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160; </div>
+<div class="line"><a name="l00081"></a><span class="lineno"><a class="line" href="namespacetket.html#a6640b4018600cebef09f986daf87bed1">   81</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespacetket.html#a6640b4018600cebef09f986daf87bed1">append_commuting_pauli_gadget_set_as_box</a>(</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;    <a class="code" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ, <span class="keyword">const</span> std::list&lt;SpSymPauliTensor&gt; &amp;gadgets,</div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;    <a class="code" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config) {</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;  <span class="comment">// Translate SpSymPauliTensors to vectors of Paulis of same length</span></div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;  <span class="comment">// Preserves ordering of qubits</span></div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;  std::set&lt;Qubit&gt; all_qubits;</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="classtket_1_1PauliTensor.html">SpSymPauliTensor</a> &amp;gadget : gadgets) {</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> std::pair&lt;const Qubit, Pauli&gt; &amp;qubit_pauli : gadget.string) {</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;      all_qubits.insert(qubit_pauli.first);</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    }</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;  }</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160; </div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;  std::vector&lt;Qubit&gt; mapping;</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="classtket_1_1Qubit.html">Qubit</a> &amp;qubit : all_qubits) {</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    mapping.push_back(qubit);</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;  }</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;  std::vector&lt;SymPauliTensor&gt; pauli_gadgets;</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="classtket_1_1PauliTensor.html">SpSymPauliTensor</a> &amp;gadget : gadgets) {</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <a class="code" href="classtket_1_1PauliTensor.html">SymPauliTensor</a> &amp;new_gadget =</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;        pauli_gadgets.emplace_back(<a class="code" href="namespacetket.html#a95a55c13860dc28bd46f6b624ccef716">DensePauliMap</a>{}, gadget.coeff);</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="classtket_1_1Qubit.html">Qubit</a> &amp;qubit : mapping) {</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;      new_gadget.<a class="code" href="classtket_1_1PauliTensor.html#ac2e83f786fff6d2beddaf22d2725972d">string</a>.push_back(gadget.get(qubit));</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    }</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;  }</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160; </div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;  <a class="code" href="classtket_1_1PauliExpCommutingSetBox.html">PauliExpCommutingSetBox</a> box(pauli_gadgets, cx_config);</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;  circ.<a class="code" href="classtket_1_1Circuit.html#ab318d01a5d43faf2b240ca2db4fae917">add_box</a>(box, mapping);</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;}</div>
 <div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160; </div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;  std::set&lt;Qubit&gt; all_qubits;</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;gadget : gadgets) {</div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;qubit_pauli : gadget.first.string.map) {</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;      all_qubits.insert(qubit_pauli.first);</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    }</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;  }</div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160; </div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;  std::vector&lt;Qubit&gt; mapping;</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;qubit : all_qubits) {</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    mapping.push_back(qubit);</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;  }</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160; </div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;  std::vector&lt;std::pair&lt;std::vector&lt;Pauli&gt;, <a class="code" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a>&gt;&gt; pauli_gadgets;</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;gadget : gadgets) {</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;    <span class="keyword">auto</span> &amp;new_gadget = pauli_gadgets.emplace_back(std::make_pair(</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;        std::vector&lt;Pauli&gt;(),</div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;        <a class="code" href="namespacetket.html#a9f68fb4ab6e021ef3cb3174094f2d194">pauli_angle_convert_or_throw</a>(gadget.first.coeff, gadget.second)));</div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keyword">auto</span> &amp;qubit : mapping) {</div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;      <span class="keyword">auto</span> found = gadget.first.string.map.find(qubit);</div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;      <span class="keywordflow">if</span> (found == gadget.first.string.map.end()) {</div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;        new_gadget.first.push_back(<a class="code" href="namespacestd__clifford__decomp.html#ae884a740cf1249e01bfee84f628baea8">Pauli::I</a>);</div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;      } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;        new_gadget.first.push_back(found-&gt;second);</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;      }</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    }</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;  }</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160; </div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;  <a class="code" href="classtket_1_1PauliExpCommutingSetBox.html">PauliExpCommutingSetBox</a> box(pauli_gadgets, cx_config);</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;  circ.<a class="code" href="classtket_1_1Circuit.html#ab318d01a5d43faf2b240ca2db4fae917">add_box</a>(box, mapping);</div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;}</div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160; </div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> reduce_shared_qs_by_CX_snake(</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;    Circuit &amp;circ, std::set&lt;Qubit&gt; &amp;match, QubitPauliTensor &amp;pauli0,</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    QubitPauliTensor &amp;pauli1) {</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;  <span class="keywordtype">unsigned</span> match_size = match.size();</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;  <span class="keywordflow">while</span> (match_size &gt; 1) {  <span class="comment">// We allow one match left over</span></div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    <span class="keyword">auto</span> it = --match.end();</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    Qubit to_eliminate = *it;</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;    match.erase(it);</div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;    Qubit helper = *match.rbegin();</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    <span class="comment">// extend CX snake</span></div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;    circ.add_op&lt;Qubit&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a833e36d1a5a93dedb10c85f50ced9ce7">OpType::CX</a>, {to_eliminate, helper});</div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;    pauli0.string.map.erase(to_eliminate);</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    pauli1.string.map.erase(to_eliminate);</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;    match_size--;</div>
-<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;  }</div>
-<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;}</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160; </div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> reduce_shared_qs_by_CX_star(</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    Circuit &amp;circ, std::set&lt;Qubit&gt; &amp;match, QubitPauliTensor &amp;pauli0,</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    QubitPauliTensor &amp;pauli1) {</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;  std::set&lt;Qubit&gt;::iterator iter = match.begin();</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;  <span class="keywordflow">for</span> (std::set&lt;Qubit&gt;::iterator next = match.begin(); match.size() &gt; 1;</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;       iter = next) {</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;    ++next;</div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;    <a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a> to_eliminate = *iter;</div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    circ.add_op&lt;<a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a>&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a833e36d1a5a93dedb10c85f50ced9ce7">OpType::CX</a>, {to_eliminate, *match.rbegin()});</div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;    pauli0.string.map.erase(to_eliminate);</div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;    pauli1.string.map.erase(to_eliminate);</div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;    match.erase(iter);</div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;  }</div>
-<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;}</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160; </div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> reduce_shared_qs_by_CX_tree(</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    Circuit &amp;circ, std::set&lt;Qubit&gt; &amp;match, QubitPauliTensor &amp;pauli0,</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;    QubitPauliTensor &amp;pauli1) {</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;  <span class="keywordflow">while</span> (match.size() &gt; 1) {</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;    std::set&lt;Qubit&gt; remaining;</div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;    std::set&lt;Qubit&gt;::iterator it = match.begin();</div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;    <span class="keywordflow">while</span> (it != match.end()) {</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;      <a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a> maintained = *it;</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;      it++;</div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;      remaining.insert(maintained);</div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;      <span class="keywordflow">if</span> (it != match.end()) {</div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;        <a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a> to_eliminate = *it;</div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;        it++;</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;        circ.add_op&lt;<a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a>&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a833e36d1a5a93dedb10c85f50ced9ce7">OpType::CX</a>, {to_eliminate, maintained});</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;        pauli0.string.map.erase(to_eliminate);</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;        pauli1.string.map.erase(to_eliminate);</div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;      }</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;    }</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;    match = remaining;</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;  }</div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;}</div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160; </div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> reduce_shared_qs_by_CX_multiqgate(</div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;    Circuit &amp;circ, std::set&lt;Qubit&gt; &amp;match, QubitPauliTensor &amp;pauli0,</div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;    QubitPauliTensor &amp;pauli1) {</div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;  <span class="keywordflow">if</span> (match.size() &lt;= 1) {</div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;    <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> reduce_shared_qs_by_CX_snake(</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;    Circuit &amp;circ, std::set&lt;Qubit&gt; &amp;match, <a class="code" href="namespacetket.html#a9057ac1ab3d826ae457ee3e03ac93974">SpSymPauliTensor</a> &amp;pauli0,</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;    <a class="code" href="namespacetket.html#a9057ac1ab3d826ae457ee3e03ac93974">SpSymPauliTensor</a> &amp;pauli1) {</div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;  <span class="keywordtype">unsigned</span> match_size = match.size();</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;  <span class="keywordflow">while</span> (match_size &gt; 1) {  <span class="comment">// We allow one match left over</span></div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;    <span class="keyword">auto</span> it = --match.end();</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;    Qubit to_eliminate = *it;</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;    match.erase(it);</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    Qubit helper = *match.rbegin();</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    <span class="comment">// extend CX snake</span></div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    circ.add_op&lt;Qubit&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a833e36d1a5a93dedb10c85f50ced9ce7">OpType::CX</a>, {to_eliminate, helper});</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;    pauli0.string.erase(to_eliminate);</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    pauli1.string.erase(to_eliminate);</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;    match_size--;</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;  }</div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;}</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160; </div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> reduce_shared_qs_by_CX_star(</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;    Circuit &amp;circ, std::set&lt;Qubit&gt; &amp;match, <a class="code" href="namespacetket.html#a9057ac1ab3d826ae457ee3e03ac93974">SpSymPauliTensor</a> &amp;pauli0,</div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;    <a class="code" href="namespacetket.html#a9057ac1ab3d826ae457ee3e03ac93974">SpSymPauliTensor</a> &amp;pauli1) {</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;  std::set&lt;Qubit&gt;::iterator iter = match.begin();</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;  <span class="keywordflow">for</span> (std::set&lt;Qubit&gt;::iterator next = match.begin(); match.size() &gt; 1;</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;       iter = next) {</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    ++next;</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;    <a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a> to_eliminate = *iter;</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;    circ.add_op&lt;<a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a>&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a833e36d1a5a93dedb10c85f50ced9ce7">OpType::CX</a>, {to_eliminate, *match.rbegin()});</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;    pauli0.string.erase(to_eliminate);</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;    pauli1.string.erase(to_eliminate);</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    match.erase(iter);</div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;  }</div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;}</div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160; </div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> reduce_shared_qs_by_CX_tree(</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    Circuit &amp;circ, std::set&lt;Qubit&gt; &amp;match, <a class="code" href="namespacetket.html#a9057ac1ab3d826ae457ee3e03ac93974">SpSymPauliTensor</a> &amp;pauli0,</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;    <a class="code" href="namespacetket.html#a9057ac1ab3d826ae457ee3e03ac93974">SpSymPauliTensor</a> &amp;pauli1) {</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;  <span class="keywordflow">while</span> (match.size() &gt; 1) {</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    std::set&lt;Qubit&gt; remaining;</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    std::set&lt;Qubit&gt;::iterator it = match.begin();</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;    <span class="keywordflow">while</span> (it != match.end()) {</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;      <a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a> maintained = *it;</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;      it++;</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;      remaining.insert(maintained);</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;      <span class="keywordflow">if</span> (it != match.end()) {</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;        <a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a> to_eliminate = *it;</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;        it++;</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160;        circ.add_op&lt;<a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a>&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a833e36d1a5a93dedb10c85f50ced9ce7">OpType::CX</a>, {to_eliminate, maintained});</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;        pauli0.string.erase(to_eliminate);</div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;        pauli1.string.erase(to_eliminate);</div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;      }</div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    }</div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    match = remaining;</div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;  }</div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;}</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160; </div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;<span class="keyword">static</span> <span class="keywordtype">void</span> reduce_shared_qs_by_CX_multiqgate(</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;    Circuit &amp;circ, std::set&lt;Qubit&gt; &amp;match, <a class="code" href="namespacetket.html#a9057ac1ab3d826ae457ee3e03ac93974">SpSymPauliTensor</a> &amp;pauli0,</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;    <a class="code" href="namespacetket.html#a9057ac1ab3d826ae457ee3e03ac93974">SpSymPauliTensor</a> &amp;pauli1) {</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;  <span class="keywordflow">if</span> (match.size() &lt;= 1) {</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;    <span class="keywordflow">return</span>;</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;  }</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;  <span class="comment">// last qubit is target</span></div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;  <a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a> target = *match.rbegin();</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;  <span class="keywordflow">while</span> (match.size() &gt; 1) {</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;    std::set&lt;Qubit&gt;::iterator iter = match.begin();</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;    <span class="keywordflow">if</span> (match.size() == 2) {</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;      <span class="comment">// use CX</span></div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;      <a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a> to_eliminate = *iter;</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;      match.erase(iter);</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;      pauli0.string.erase(to_eliminate);</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;      pauli1.string.erase(to_eliminate);</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160; </div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;      circ.add_op&lt;<a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a>&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a833e36d1a5a93dedb10c85f50ced9ce7">OpType::CX</a>, {to_eliminate, target});</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;      <span class="comment">// use XXPhase3</span></div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;      <a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a> to_eliminate1 = *iter;</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;      match.erase(iter++);</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;      pauli0.string.erase(to_eliminate1);</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;      pauli1.string.erase(to_eliminate1);</div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160; </div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;      <a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a> to_eliminate2 = *iter;</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;      match.erase(iter);</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;      pauli0.string.erase(to_eliminate2);</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;      pauli1.string.erase(to_eliminate2);</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160; </div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;      circ.add_op&lt;<a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a>&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ac1d9f50f86825a1a2302ec2449c17196">OpType::H</a>, {to_eliminate1});</div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;      circ.add_op&lt;<a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a>&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ac1d9f50f86825a1a2302ec2449c17196">OpType::H</a>, {to_eliminate2});</div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;      circ.add_op&lt;<a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a>&gt;(</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;          <a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aa74b5165b09b6b760a36c69c5465b527">OpType::XXPhase3</a>, 0.5, {to_eliminate1, to_eliminate2, target});</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;      circ.add_op&lt;<a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a>&gt;(<a class="code" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66aa02129bb861061d1a052c592e2dc6b383">OpType::X</a>, {target});</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;    }</div>
 <div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;  }</div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;  <span class="comment">// last qubit is target</span></div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;  <a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a> target = *match.rbegin();</div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;  <span class="keywordflow">while</span> (match.size() &gt; 1) {</div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;    std::set&lt;Qubit&gt;::iterator iter = match.begin();</div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;    <span class="keywordflow">if</span> (match.size() == 2) {</div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;      <span class="comment">// use CX</span></div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;      <a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a> to_eliminate = *iter;</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;      match.erase(iter);</div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;      pauli0.string.map.erase(to_eliminate);</div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;      pauli1.string.map.erase(to_eliminate);</div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160; </div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;      circ.add_op&lt;<a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a>&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a833e36d1a5a93dedb10c85f50ced9ce7">OpType::CX</a>, {to_eliminate, target});</div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;      <span class="comment">// use XXPhase3</span></div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;      <a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a> to_eliminate1 = *iter;</div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;      match.erase(iter++);</div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;      pauli0.string.map.erase(to_eliminate1);</div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;      pauli1.string.map.erase(to_eliminate1);</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;}</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160; </div>
+<div class="line"><a name="l00205"></a><span class="lineno"><a class="line" href="namespacetket.html#a730a1a18e9c5e2840642bae56051be84">  205</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespacetket.html#a730a1a18e9c5e2840642bae56051be84">append_pauli_gadget_pair</a>(</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;    <a class="code" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ, <a class="code" href="classtket_1_1PauliTensor.html">SpSymPauliTensor</a> pauli0, <a class="code" href="classtket_1_1PauliTensor.html">SpSymPauliTensor</a> pauli1,</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;    <a class="code" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config) {</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;  <span class="comment">/*</span></div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;<span class="comment">   * Cowtan, Dilkes, Duncan, Simmons, Sivarajah: Phase Gadget Synthesis for</span></div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;<span class="comment">   * Shallow Circuits, Lemma 4.9</span></div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;<span class="comment">   * Let s and t be Pauli strings; then there exists a Clifford unitary U such</span></div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;<span class="comment">   * that</span></div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;<span class="comment">   * P(a, s) . P(b, t) = U . P(a, s&#39;) . P(b, t&#39;) . U^\dagger</span></div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;<span class="comment">   * where s&#39; and t&#39; are Pauli strings with intersection at most 1.</span></div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;<span class="comment">   *</span></div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;<span class="comment">   * Follows the procedure to reduce the intersection of the gadgets and then</span></div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;<span class="comment">   * synthesises the remainder individually.</span></div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;<span class="comment">   */</span></div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;  pauli0.<a class="code" href="classtket_1_1PauliTensor.html#adf374e0ff6702cc59fbafaf112395939">compress</a>();</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;  pauli1.<a class="code" href="classtket_1_1PauliTensor.html#adf374e0ff6702cc59fbafaf112395939">compress</a>();</div>
 <div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160; </div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;      <a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a> to_eliminate2 = *iter;</div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;      match.erase(iter);</div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;      pauli0.string.map.erase(to_eliminate2);</div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;      pauli1.string.map.erase(to_eliminate2);</div>
-<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160; </div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;      circ.add_op&lt;<a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a>&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ac1d9f50f86825a1a2302ec2449c17196">OpType::H</a>, {to_eliminate1});</div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;      circ.add_op&lt;<a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a>&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ac1d9f50f86825a1a2302ec2449c17196">OpType::H</a>, {to_eliminate2});</div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;      circ.add_op&lt;<a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a>&gt;(</div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;          <a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aa74b5165b09b6b760a36c69c5465b527">OpType::XXPhase3</a>, 0.5, {to_eliminate1, to_eliminate2, target});</div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;      circ.add_op&lt;<a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a>&gt;(<a class="code" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66aa02129bb861061d1a052c592e2dc6b383">OpType::X</a>, {target});</div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;    }</div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;  }</div>
-<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;}</div>
-<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160; </div>
-<div class="line"><a name="l00236"></a><span class="lineno"><a class="line" href="namespacetket.html#aa4cafa843d160e028e5d01bed9bb5e1a">  236</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="namespacetket.html#aa4cafa843d160e028e5d01bed9bb5e1a">append_pauli_gadget_pair</a>(</div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;    <a class="code" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ, <a class="code" href="classtket_1_1QubitPauliTensor.html">QubitPauliTensor</a> pauli0, <a class="code" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> angle0,</div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;    <a class="code" href="classtket_1_1QubitPauliTensor.html">QubitPauliTensor</a> pauli1, <a class="code" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> angle1, <a class="code" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config) {</div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;  <span class="comment">/*</span></div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;<span class="comment">   * Cowtan, Dilkes, Duncan, Simmons, Sivarajah: Phase Gadget Synthesis for</span></div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;<span class="comment">   * Shallow Circuits, Lemma 4.9</span></div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;<span class="comment">   * Let s and t be Pauli strings; then there exists a Clifford unitary U such</span></div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;<span class="comment">   * that</span></div>
-<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;<span class="comment">   * P(a, s) . P(b, t) = U . P(a, s&#39;) . P(b, t&#39;) . U^\dagger</span></div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;<span class="comment">   * where s&#39; and t&#39; are Pauli strings with intersection at most 1.</span></div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;<span class="comment">   *</span></div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;<span class="comment">   * Follows the procedure to reduce the intersection of the gadgets and then</span></div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;<span class="comment">   * synthesises the remainder individually.</span></div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;<span class="comment">   */</span></div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;  pauli0.<a class="code" href="classtket_1_1QubitPauliTensor.html#a9863028b3349529f006257e069062b62">compress</a>();</div>
-<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;  pauli1.<a class="code" href="classtket_1_1QubitPauliTensor.html#a9863028b3349529f006257e069062b62">compress</a>();</div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160; </div>
-<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;  <span class="comment">/*</span></div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;<span class="comment">   * Step 1: Partition qubits into those just affected by pauli0 (just0) and</span></div>
-<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;<span class="comment">   * pauli1 (just1), and those in both which either match or don&#39;t</span></div>
-<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;<span class="comment">   */</span></div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;  std::set&lt;Qubit&gt; just0 = pauli0.<a class="code" href="classtket_1_1QubitPauliTensor.html#ae02862a2ab5e7e08e86c112e4f5c7dba">own_qubits</a>(pauli1);</div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;  std::set&lt;Qubit&gt; just1 = pauli1.<a class="code" href="classtket_1_1QubitPauliTensor.html#ae02862a2ab5e7e08e86c112e4f5c7dba">own_qubits</a>(pauli0);</div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;  std::set&lt;Qubit&gt; match = pauli0.<a class="code" href="classtket_1_1QubitPauliTensor.html#aca40ec7a0b581fe5e4fcd902094d7025">common_qubits</a>(pauli1);</div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;  std::set&lt;Qubit&gt; mismatch = pauli0.<a class="code" href="classtket_1_1QubitPauliTensor.html#aa9dd93ef21bf085d56e1232631e44be6">conflicting_qubits</a>(pauli1);</div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160; </div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;  <span class="comment">/*</span></div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;<span class="comment">   * Step 2: Build the unitary U that minimises the intersection of the gadgets.</span></div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;<span class="comment">   */</span></div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;  <a class="code" href="classtket_1_1Circuit.html">Circuit</a> u;</div>
-<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="classtket_1_1Qubit.html">Qubit</a> &amp;qb : just0) u.<a class="code" href="classtket_1_1Circuit.html#acdda639822edaad4b2c10d38e2924e3a">add_qubit</a>(qb);</div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="classtket_1_1Qubit.html">Qubit</a> &amp;qb : just1) u.<a class="code" href="classtket_1_1Circuit.html#acdda639822edaad4b2c10d38e2924e3a">add_qubit</a>(qb);</div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="classtket_1_1Qubit.html">Qubit</a> &amp;qb : match) u.<a class="code" href="classtket_1_1Circuit.html#acdda639822edaad4b2c10d38e2924e3a">add_qubit</a>(qb);</div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="classtket_1_1Qubit.html">Qubit</a> &amp;qb : mismatch) u.<a class="code" href="classtket_1_1Circuit.html#acdda639822edaad4b2c10d38e2924e3a">add_qubit</a>(qb);</div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;  <a class="code" href="classtket_1_1Circuit.html">Circuit</a> v(u);</div>
-<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160; </div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;  <span class="comment">/*</span></div>
-<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;<span class="comment">   * Step 2.i: Remove (almost) all matches by converting to Z basis and applying</span></div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;<span class="comment">   * CXs</span></div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;<span class="comment">   */</span></div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="classtket_1_1Qubit.html">Qubit</a> &amp;qb : match) {</div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;    <span class="keywordflow">switch</span> (pauli0.<a class="code" href="classtket_1_1QubitPauliTensor.html#a437838e8949b35fef8905b0449a06b4b">string</a>.<a class="code" href="classtket_1_1QubitPauliString.html#a466db7bf816c2fb885837060295edf7f">map</a>.at(qb)) {</div>
-<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;      <span class="keywordflow">case</span> <a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#a6c515798b8a4da2f27042009ea8dd3f9">Pauli::X</a>:</div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;        u.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<a class="code" href="classtket_1_1Qubit.html">Qubit</a>&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ac1d9f50f86825a1a2302ec2449c17196">OpType::H</a>, {qb});</div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;        pauli0.<a class="code" href="classtket_1_1QubitPauliTensor.html#a437838e8949b35fef8905b0449a06b4b">string</a>.<a class="code" href="classtket_1_1QubitPauliString.html#a466db7bf816c2fb885837060295edf7f">map</a>.at(qb) = <a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#a50e494b6c0479f509addc00437f7d321">Pauli::Z</a>;</div>
-<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;        pauli1.<a class="code" href="classtket_1_1QubitPauliTensor.html#a437838e8949b35fef8905b0449a06b4b">string</a>.<a class="code" href="classtket_1_1QubitPauliString.html#a466db7bf816c2fb885837060295edf7f">map</a>.at(qb) = <a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#a50e494b6c0479f509addc00437f7d321">Pauli::Z</a>;</div>
-<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;        <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;      <span class="keywordflow">case</span> <a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#ade2e0c760b21b1e3e259bdef97f17186">Pauli::Y</a>:</div>
-<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;        u.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<a class="code" href="classtket_1_1Qubit.html">Qubit</a>&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5206560a306a2e085a437fd258eb57ce">OpType::V</a>, {qb});</div>
-<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;        pauli0.<a class="code" href="classtket_1_1QubitPauliTensor.html#a437838e8949b35fef8905b0449a06b4b">string</a>.<a class="code" href="classtket_1_1QubitPauliString.html#a466db7bf816c2fb885837060295edf7f">map</a>.at(qb) = <a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#a50e494b6c0479f509addc00437f7d321">Pauli::Z</a>;</div>
-<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;        pauli1.<a class="code" href="classtket_1_1QubitPauliTensor.html#a437838e8949b35fef8905b0449a06b4b">string</a>.<a class="code" href="classtket_1_1QubitPauliString.html#a466db7bf816c2fb885837060295edf7f">map</a>.at(qb) = <a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#a50e494b6c0479f509addc00437f7d321">Pauli::Z</a>;</div>
-<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;        <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;      <span class="keywordflow">default</span>:</div>
-<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;        <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;    }</div>
-<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;  }</div>
-<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;  <span class="keywordflow">switch</span> (cx_config) {</div>
-<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;    <span class="keywordflow">case</span> <a class="code" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a>: {</div>
-<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;      reduce_shared_qs_by_CX_snake(u, match, pauli0, pauli1);</div>
-<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;      <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;    }</div>
-<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;    <span class="keywordflow">case</span> <a class="code" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7a26f93e6e68e28a698377e941cb59f29a">CXConfigType::Star</a>: {</div>
-<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;      reduce_shared_qs_by_CX_star(u, match, pauli0, pauli1);</div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;      <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;    }</div>
-<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;    <span class="keywordflow">case</span> <a class="code" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7a3b0c14770e6bd663518496da60f524da">CXConfigType::Tree</a>: {</div>
-<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;      reduce_shared_qs_by_CX_tree(u, match, pauli0, pauli1);</div>
-<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;      <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;    }</div>
-<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;    <span class="keywordflow">case</span> <a class="code" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7ad1686c37858b90b38175370793144fba">CXConfigType::MultiQGate</a>: {</div>
-<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;      reduce_shared_qs_by_CX_multiqgate(u, match, pauli0, pauli1);</div>
-<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;      <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;    }</div>
-<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;    <span class="keywordflow">default</span>:</div>
-<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;      <span class="keywordflow">throw</span> <a class="code" href="classtket_1_1UnknownCXConfigType.html">UnknownCXConfigType</a>();</div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;  }</div>
-<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;  <span class="comment">/*</span></div>
-<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;<span class="comment">   * Step 2.ii: Convert mismatches to Z in pauli0 and X in pauli1</span></div>
-<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;<span class="comment">   */</span></div>
-<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="classtket_1_1Qubit.html">Qubit</a> &amp;qb : mismatch) {</div>
-<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;    <span class="keywordflow">switch</span> (pauli0.<a class="code" href="classtket_1_1QubitPauliTensor.html#a437838e8949b35fef8905b0449a06b4b">string</a>.<a class="code" href="classtket_1_1QubitPauliString.html#a466db7bf816c2fb885837060295edf7f">map</a>.at(qb)) {</div>
-<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;      <span class="keywordflow">case</span> <a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#a6c515798b8a4da2f27042009ea8dd3f9">Pauli::X</a>: {</div>
-<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;        <span class="keywordflow">switch</span> (pauli1.<a class="code" href="classtket_1_1QubitPauliTensor.html#a437838e8949b35fef8905b0449a06b4b">string</a>.<a class="code" href="classtket_1_1QubitPauliString.html#a466db7bf816c2fb885837060295edf7f">map</a>.at(qb)) {</div>
-<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;          <span class="keywordflow">case</span> <a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#ade2e0c760b21b1e3e259bdef97f17186">Pauli::Y</a>:</div>
-<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;            u.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<a class="code" href="classtket_1_1Qubit.html">Qubit</a>&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a045a4026bb27931de3a4ad5e8c368659">OpType::Sdg</a>, {qb});</div>
-<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;            u.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<a class="code" href="classtket_1_1Qubit.html">Qubit</a>&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a81465dfe73bb1986ad9e50af49e1f983">OpType::Vdg</a>, {qb});</div>
-<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;            <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;          <span class="keywordflow">case</span> <a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#a50e494b6c0479f509addc00437f7d321">Pauli::Z</a>:</div>
-<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;            u.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<a class="code" href="classtket_1_1Qubit.html">Qubit</a>&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ac1d9f50f86825a1a2302ec2449c17196">OpType::H</a>, {qb});</div>
-<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;            <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;          <span class="keywordflow">default</span>:</div>
-<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;            <span class="keywordflow">break</span>;  <span class="comment">// Cannot hit this case</span></div>
-<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;        }</div>
-<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;        <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;      }</div>
-<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;      <span class="keywordflow">case</span> <a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#ade2e0c760b21b1e3e259bdef97f17186">Pauli::Y</a>: {</div>
-<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;        <span class="keywordflow">switch</span> (pauli1.<a class="code" href="classtket_1_1QubitPauliTensor.html#a437838e8949b35fef8905b0449a06b4b">string</a>.<a class="code" href="classtket_1_1QubitPauliString.html#a466db7bf816c2fb885837060295edf7f">map</a>.at(qb)) {</div>
-<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;          <span class="keywordflow">case</span> <a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#a6c515798b8a4da2f27042009ea8dd3f9">Pauli::X</a>:</div>
-<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;            u.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<a class="code" href="classtket_1_1Qubit.html">Qubit</a>&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5206560a306a2e085a437fd258eb57ce">OpType::V</a>, {qb});</div>
-<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;            <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;          <span class="keywordflow">case</span> <a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#a50e494b6c0479f509addc00437f7d321">Pauli::Z</a>:</div>
-<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;            u.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<a class="code" href="classtket_1_1Qubit.html">Qubit</a>&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5206560a306a2e085a437fd258eb57ce">OpType::V</a>, {qb});</div>
-<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;            u.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<a class="code" href="classtket_1_1Qubit.html">Qubit</a>&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5dbc98dcc983a70728bd082d1a47546e">OpType::S</a>, {qb});</div>
-<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;            <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;          <span class="keywordflow">default</span>:</div>
-<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;            <span class="keywordflow">break</span>;  <span class="comment">// Cannot hit this case</span></div>
-<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;        }</div>
-<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;        <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;      }</div>
-<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;      <span class="keywordflow">default</span>: {  <span class="comment">// Necessarily Z</span></div>
-<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;        <span class="keywordflow">if</span> (pauli1.<a class="code" href="classtket_1_1QubitPauliTensor.html#a437838e8949b35fef8905b0449a06b4b">string</a>.<a class="code" href="classtket_1_1QubitPauliString.html#a466db7bf816c2fb885837060295edf7f">map</a>.at(qb) == <a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#ade2e0c760b21b1e3e259bdef97f17186">Pauli::Y</a>)</div>
-<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;          u.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<a class="code" href="classtket_1_1Qubit.html">Qubit</a>&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a045a4026bb27931de3a4ad5e8c368659">OpType::Sdg</a>, {qb});</div>
-<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;        <span class="comment">// No need to act if already X</span></div>
-<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;      }</div>
-<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;    }</div>
-<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;    pauli0.<a class="code" href="classtket_1_1QubitPauliTensor.html#a437838e8949b35fef8905b0449a06b4b">string</a>.<a class="code" href="classtket_1_1QubitPauliString.html#a466db7bf816c2fb885837060295edf7f">map</a>.at(qb) = <a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#a50e494b6c0479f509addc00437f7d321">Pauli::Z</a>;</div>
-<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;    pauli1.<a class="code" href="classtket_1_1QubitPauliTensor.html#a437838e8949b35fef8905b0449a06b4b">string</a>.<a class="code" href="classtket_1_1QubitPauliString.html#a466db7bf816c2fb885837060295edf7f">map</a>.at(qb) = <a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#a6c515798b8a4da2f27042009ea8dd3f9">Pauli::X</a>;</div>
-<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;  }</div>
-<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160; </div>
-<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;  <span class="comment">/*</span></div>
-<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;<span class="comment">   * Step 2.iii: Remove the final matching qubit against a mismatch if one</span></div>
-<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;<span class="comment">   * exists, otherwise allow both gadgets to build it</span></div>
-<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;<span class="comment">   */</span></div>
-<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;  <span class="keywordflow">if</span> (!match.empty()) {</div>
-<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;    Qubit last_match = *match.begin();</div>
-<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;    match.erase(last_match);</div>
-<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;    <span class="keywordflow">if</span> (!mismatch.empty()) {</div>
-<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;      Qubit mismatch_used =</div>
-<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;          *mismatch.rbegin();  <span class="comment">// Prefer to use the one that may be left over</span></div>
-<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;                               <span class="comment">// after reducing pairs</span></div>
-<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;      u.add_op&lt;Qubit&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5dbc98dcc983a70728bd082d1a47546e">OpType::S</a>, {mismatch_used});</div>
-<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;      u.add_op&lt;<a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a>&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a833e36d1a5a93dedb10c85f50ced9ce7">OpType::CX</a>, {last_match, mismatch_used});</div>
-<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;      u.add_op&lt;<a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a>&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a045a4026bb27931de3a4ad5e8c368659">OpType::Sdg</a>, {mismatch_used});</div>
-<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;      pauli0.string.map.erase(last_match);</div>
-<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;      pauli1.string.map.erase(last_match);</div>
-<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;      just0.insert(last_match);</div>
-<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;      just1.insert(last_match);</div>
-<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;    }</div>
-<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;  }</div>
-<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160; </div>
-<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;  <span class="comment">/*</span></div>
-<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;<span class="comment">   * Step 2.iv: Reduce pairs of mismatches to different qubits.</span></div>
-<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;<span class="comment">   * Allow both gadgets to build a remaining qubit if it exists.</span></div>
-<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160;<span class="comment">   */</span></div>
-<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;  std::set&lt;Qubit&gt;::iterator mis_it = mismatch.begin();</div>
-<div class="line"><a name="l00382"></a><span class="lineno">  382</span>&#160;  <span class="keywordflow">while</span> (mis_it != mismatch.end()) {</div>
-<div class="line"><a name="l00383"></a><span class="lineno">  383</span>&#160;    <a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a> z_in_0 = *mis_it;</div>
-<div class="line"><a name="l00384"></a><span class="lineno">  384</span>&#160;    just0.insert(z_in_0);</div>
-<div class="line"><a name="l00385"></a><span class="lineno">  385</span>&#160;    mis_it++;</div>
-<div class="line"><a name="l00386"></a><span class="lineno">  386</span>&#160;    <span class="keywordflow">if</span> (mis_it == mismatch.end()) {</div>
-<div class="line"><a name="l00387"></a><span class="lineno">  387</span>&#160;      just1.insert(z_in_0);</div>
-<div class="line"><a name="l00388"></a><span class="lineno">  388</span>&#160;    } <span class="keywordflow">else</span> {</div>
-<div class="line"><a name="l00389"></a><span class="lineno">  389</span>&#160;      <a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a> x_in_1 = *mis_it;</div>
-<div class="line"><a name="l00390"></a><span class="lineno">  390</span>&#160;      u.add_op&lt;<a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a>&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a833e36d1a5a93dedb10c85f50ced9ce7">OpType::CX</a>, {x_in_1, z_in_0});</div>
-<div class="line"><a name="l00391"></a><span class="lineno">  391</span>&#160;      pauli0.string.map.erase(x_in_1);</div>
-<div class="line"><a name="l00392"></a><span class="lineno">  392</span>&#160;      pauli1.string.map.erase(z_in_0);</div>
-<div class="line"><a name="l00393"></a><span class="lineno">  393</span>&#160;      just1.insert(x_in_1);</div>
-<div class="line"><a name="l00394"></a><span class="lineno">  394</span>&#160;      mis_it++;</div>
-<div class="line"><a name="l00395"></a><span class="lineno">  395</span>&#160;    }</div>
-<div class="line"><a name="l00396"></a><span class="lineno">  396</span>&#160;  }</div>
-<div class="line"><a name="l00397"></a><span class="lineno">  397</span>&#160; </div>
-<div class="line"><a name="l00398"></a><span class="lineno">  398</span>&#160;  <span class="comment">/*</span></div>
-<div class="line"><a name="l00399"></a><span class="lineno">  399</span>&#160;<span class="comment">   * Step 3: Combine circuits to give final result</span></div>
-<div class="line"><a name="l00400"></a><span class="lineno">  400</span>&#160;<span class="comment">   */</span></div>
-<div class="line"><a name="l00401"></a><span class="lineno">  401</span>&#160;  <a class="code" href="namespacetket.html#a8e72f1332998ecf4ef5d1047cfe5a95d">append_single_pauli_gadget</a>(v, pauli0, angle0);</div>
-<div class="line"><a name="l00402"></a><span class="lineno">  402</span>&#160;  <a class="code" href="namespacetket.html#a8e72f1332998ecf4ef5d1047cfe5a95d">append_single_pauli_gadget</a>(v, pauli1, angle1);</div>
-<div class="line"><a name="l00403"></a><span class="lineno">  403</span>&#160;  <a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a228a4b87ea0227593dbfb130b0d4ea5c">ConjugationBox</a> cjbox(</div>
-<div class="line"><a name="l00404"></a><span class="lineno">  404</span>&#160;      std::make_shared&lt;CircBox&gt;(u), std::make_shared&lt;CircBox&gt;(v));</div>
-<div class="line"><a name="l00405"></a><span class="lineno">  405</span>&#160;  circ.add_box(cjbox, u.all_qubits());</div>
-<div class="line"><a name="l00406"></a><span class="lineno">  406</span>&#160;}</div>
-<div class="line"><a name="l00407"></a><span class="lineno">  407</span>&#160; </div>
-<div class="line"><a name="l00408"></a><span class="lineno">  408</span>&#160;}  <span class="comment">// namespace tket</span></div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;  <span class="comment">/*</span></div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;<span class="comment">   * Step 1: Partition qubits into those just affected by pauli0 (just0) and</span></div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;<span class="comment">   * pauli1 (just1), and those in both which either match or don&#39;t</span></div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;<span class="comment">   */</span></div>
+<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;  std::set&lt;Qubit&gt; just0 = pauli0.<a class="code" href="classtket_1_1PauliTensor.html#a2fa43f87c4db80535b9ebc88b3278282">own_qubits</a>(pauli1);</div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;  std::set&lt;Qubit&gt; just1 = pauli1.<a class="code" href="classtket_1_1PauliTensor.html#a2fa43f87c4db80535b9ebc88b3278282">own_qubits</a>(pauli0);</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;  std::set&lt;Qubit&gt; match = pauli0.<a class="code" href="classtket_1_1PauliTensor.html#a7741e17f9cfd2775e834ab1a2135da3a">common_qubits</a>(pauli1);</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;  std::set&lt;Qubit&gt; mismatch = pauli0.<a class="code" href="classtket_1_1PauliTensor.html#a6747a796a44b21b5bd3880e361d9a117">conflicting_qubits</a>(pauli1);</div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160; </div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;  <span class="comment">/*</span></div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;<span class="comment">   * Step 2: Build the unitary U that minimises the intersection of the gadgets.</span></div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;<span class="comment">   */</span></div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;  <a class="code" href="classtket_1_1Circuit.html">Circuit</a> u;</div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="classtket_1_1Qubit.html">Qubit</a> &amp;qb : just0) u.<a class="code" href="classtket_1_1Circuit.html#acdda639822edaad4b2c10d38e2924e3a">add_qubit</a>(qb);</div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="classtket_1_1Qubit.html">Qubit</a> &amp;qb : just1) u.<a class="code" href="classtket_1_1Circuit.html#acdda639822edaad4b2c10d38e2924e3a">add_qubit</a>(qb);</div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="classtket_1_1Qubit.html">Qubit</a> &amp;qb : match) u.<a class="code" href="classtket_1_1Circuit.html#acdda639822edaad4b2c10d38e2924e3a">add_qubit</a>(qb);</div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="classtket_1_1Qubit.html">Qubit</a> &amp;qb : mismatch) u.<a class="code" href="classtket_1_1Circuit.html#acdda639822edaad4b2c10d38e2924e3a">add_qubit</a>(qb);</div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;  <a class="code" href="classtket_1_1Circuit.html">Circuit</a> v(u);</div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160; </div>
+<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;  <span class="comment">/*</span></div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;<span class="comment">   * Step 2.i: Remove (almost) all matches by converting to Z basis and applying</span></div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;<span class="comment">   * CXs</span></div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;<span class="comment">   */</span></div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="classtket_1_1Qubit.html">Qubit</a> &amp;qb : match) {</div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;    <span class="keywordflow">switch</span> (pauli0.<a class="code" href="classtket_1_1PauliTensor.html#a970d05f5611a898b83ae0f6bf5e958a2">get</a>(qb)) {</div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;      <span class="keywordflow">case</span> <a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#a6c515798b8a4da2f27042009ea8dd3f9">Pauli::X</a>:</div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;        u.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<a class="code" href="classtket_1_1Qubit.html">Qubit</a>&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ac1d9f50f86825a1a2302ec2449c17196">OpType::H</a>, {qb});</div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;        pauli0.<a class="code" href="classtket_1_1PauliTensor.html#afb2afd0411579f5550a365723c8626c6">set</a>(qb, <a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#a50e494b6c0479f509addc00437f7d321">Pauli::Z</a>);</div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;        pauli1.<a class="code" href="classtket_1_1PauliTensor.html#afb2afd0411579f5550a365723c8626c6">set</a>(qb, <a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#a50e494b6c0479f509addc00437f7d321">Pauli::Z</a>);</div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;        <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;      <span class="keywordflow">case</span> <a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#ade2e0c760b21b1e3e259bdef97f17186">Pauli::Y</a>:</div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;        u.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<a class="code" href="classtket_1_1Qubit.html">Qubit</a>&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5206560a306a2e085a437fd258eb57ce">OpType::V</a>, {qb});</div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;        pauli0.<a class="code" href="classtket_1_1PauliTensor.html#afb2afd0411579f5550a365723c8626c6">set</a>(qb, <a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#a50e494b6c0479f509addc00437f7d321">Pauli::Z</a>);</div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;        pauli1.<a class="code" href="classtket_1_1PauliTensor.html#afb2afd0411579f5550a365723c8626c6">set</a>(qb, <a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#a50e494b6c0479f509addc00437f7d321">Pauli::Z</a>);</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;        <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;      <span class="keywordflow">default</span>:</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;        <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;    }</div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;  }</div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;  <span class="keywordflow">switch</span> (cx_config) {</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;    <span class="keywordflow">case</span> <a class="code" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a>: {</div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;      reduce_shared_qs_by_CX_snake(u, match, pauli0, pauli1);</div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;      <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;    }</div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;    <span class="keywordflow">case</span> <a class="code" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7a26f93e6e68e28a698377e941cb59f29a">CXConfigType::Star</a>: {</div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;      reduce_shared_qs_by_CX_star(u, match, pauli0, pauli1);</div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;      <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;    }</div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;    <span class="keywordflow">case</span> <a class="code" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7a3b0c14770e6bd663518496da60f524da">CXConfigType::Tree</a>: {</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;      reduce_shared_qs_by_CX_tree(u, match, pauli0, pauli1);</div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;      <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;    }</div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;    <span class="keywordflow">case</span> <a class="code" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7ad1686c37858b90b38175370793144fba">CXConfigType::MultiQGate</a>: {</div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;      reduce_shared_qs_by_CX_multiqgate(u, match, pauli0, pauli1);</div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;      <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;    }</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;    <span class="keywordflow">default</span>:</div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;      <span class="keywordflow">throw</span> std::logic_error(</div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;          <span class="stringliteral">&quot;Unknown CXConfigType received when decomposing gadget.&quot;</span>);</div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;  }</div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;  <span class="comment">/*</span></div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;<span class="comment">   * Step 2.ii: Convert mismatches to Z in pauli0 and X in pauli1</span></div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;<span class="comment">   */</span></div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="classtket_1_1Qubit.html">Qubit</a> &amp;qb : mismatch) {</div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;    <span class="keywordflow">switch</span> (pauli0.<a class="code" href="classtket_1_1PauliTensor.html#a970d05f5611a898b83ae0f6bf5e958a2">get</a>(qb)) {</div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;      <span class="keywordflow">case</span> <a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#a6c515798b8a4da2f27042009ea8dd3f9">Pauli::X</a>: {</div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;        <span class="keywordflow">switch</span> (pauli1.<a class="code" href="classtket_1_1PauliTensor.html#a970d05f5611a898b83ae0f6bf5e958a2">get</a>(qb)) {</div>
+<div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;          <span class="keywordflow">case</span> <a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#ade2e0c760b21b1e3e259bdef97f17186">Pauli::Y</a>:</div>
+<div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;            u.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<a class="code" href="classtket_1_1Qubit.html">Qubit</a>&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a045a4026bb27931de3a4ad5e8c368659">OpType::Sdg</a>, {qb});</div>
+<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;            u.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<a class="code" href="classtket_1_1Qubit.html">Qubit</a>&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a81465dfe73bb1986ad9e50af49e1f983">OpType::Vdg</a>, {qb});</div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;          <span class="keywordflow">case</span> <a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#a50e494b6c0479f509addc00437f7d321">Pauli::Z</a>:</div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;            u.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<a class="code" href="classtket_1_1Qubit.html">Qubit</a>&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ac1d9f50f86825a1a2302ec2449c17196">OpType::H</a>, {qb});</div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;          <span class="keywordflow">default</span>:</div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;            <span class="keywordflow">break</span>;  <span class="comment">// Cannot hit this case</span></div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;        }</div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;        <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;      }</div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;      <span class="keywordflow">case</span> <a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#ade2e0c760b21b1e3e259bdef97f17186">Pauli::Y</a>: {</div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;        <span class="keywordflow">switch</span> (pauli1.<a class="code" href="classtket_1_1PauliTensor.html#a970d05f5611a898b83ae0f6bf5e958a2">get</a>(qb)) {</div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;          <span class="keywordflow">case</span> <a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#a6c515798b8a4da2f27042009ea8dd3f9">Pauli::X</a>:</div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;            u.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<a class="code" href="classtket_1_1Qubit.html">Qubit</a>&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5206560a306a2e085a437fd258eb57ce">OpType::V</a>, {qb});</div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;          <span class="keywordflow">case</span> <a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#a50e494b6c0479f509addc00437f7d321">Pauli::Z</a>:</div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;            u.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<a class="code" href="classtket_1_1Qubit.html">Qubit</a>&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5206560a306a2e085a437fd258eb57ce">OpType::V</a>, {qb});</div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;            u.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<a class="code" href="classtket_1_1Qubit.html">Qubit</a>&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5dbc98dcc983a70728bd082d1a47546e">OpType::S</a>, {qb});</div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;          <span class="keywordflow">default</span>:</div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;            <span class="keywordflow">break</span>;  <span class="comment">// Cannot hit this case</span></div>
+<div class="line"><a name="l00312"></a><span class="lineno">  312</span>&#160;        }</div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;        <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;      }</div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;      <span class="keywordflow">default</span>: {  <span class="comment">// Necessarily Z</span></div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160;        <span class="keywordflow">if</span> (pauli1.<a class="code" href="classtket_1_1PauliTensor.html#a970d05f5611a898b83ae0f6bf5e958a2">get</a>(qb) == <a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#ade2e0c760b21b1e3e259bdef97f17186">Pauli::Y</a>) u.<a class="code" href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">add_op</a>&lt;<a class="code" href="classtket_1_1Qubit.html">Qubit</a>&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a045a4026bb27931de3a4ad5e8c368659">OpType::Sdg</a>, {qb});</div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;        <span class="comment">// No need to act if already X</span></div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;      }</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160;    }</div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;    pauli0.<a class="code" href="classtket_1_1PauliTensor.html#afb2afd0411579f5550a365723c8626c6">set</a>(qb, <a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#a50e494b6c0479f509addc00437f7d321">Pauli::Z</a>);</div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;    pauli1.<a class="code" href="classtket_1_1PauliTensor.html#afb2afd0411579f5550a365723c8626c6">set</a>(qb, <a class="code" href="GateUnitaryMatrixFixedMatrices_8cpp.html#a6c515798b8a4da2f27042009ea8dd3f9">Pauli::X</a>);</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;  }</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160; </div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;  <span class="comment">/*</span></div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;<span class="comment">   * Step 2.iii: Remove the final matching qubit against a mismatch if one</span></div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;<span class="comment">   * exists, otherwise allow both gadgets to build it</span></div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;<span class="comment">   */</span></div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;  <span class="keywordflow">if</span> (!match.empty()) {</div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;    Qubit last_match = *match.begin();</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;    match.erase(last_match);</div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;    <span class="keywordflow">if</span> (!mismatch.empty()) {</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;      Qubit mismatch_used =</div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;          *mismatch.rbegin();  <span class="comment">// Prefer to use the one that may be left over</span></div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;                               <span class="comment">// after reducing pairs</span></div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;      u.add_op&lt;Qubit&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5dbc98dcc983a70728bd082d1a47546e">OpType::S</a>, {mismatch_used});</div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;      u.add_op&lt;<a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a>&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a833e36d1a5a93dedb10c85f50ced9ce7">OpType::CX</a>, {last_match, mismatch_used});</div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;      u.add_op&lt;<a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a>&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a045a4026bb27931de3a4ad5e8c368659">OpType::Sdg</a>, {mismatch_used});</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;      pauli0.string.erase(last_match);</div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;      pauli1.string.erase(last_match);</div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;      just0.insert(last_match);</div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;      just1.insert(last_match);</div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;    }</div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;  }</div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160; </div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;  <span class="comment">/*</span></div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;<span class="comment">   * Step 2.iv: Reduce pairs of mismatches to different qubits.</span></div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;<span class="comment">   * Allow both gadgets to build a remaining qubit if it exists.</span></div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;<span class="comment">   */</span></div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;  std::set&lt;Qubit&gt;::iterator mis_it = mismatch.begin();</div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;  <span class="keywordflow">while</span> (mis_it != mismatch.end()) {</div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;    <a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a> z_in_0 = *mis_it;</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;    just0.insert(z_in_0);</div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;    mis_it++;</div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;    <span class="keywordflow">if</span> (mis_it == mismatch.end()) {</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;      just1.insert(z_in_0);</div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;    } <span class="keywordflow">else</span> {</div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160;      <a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a> x_in_1 = *mis_it;</div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;      u.add_op&lt;<a class="code" href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">Qubit</a>&gt;(<a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a833e36d1a5a93dedb10c85f50ced9ce7">OpType::CX</a>, {x_in_1, z_in_0});</div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;      pauli0.string.erase(x_in_1);</div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;      pauli1.string.erase(z_in_0);</div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;      just1.insert(x_in_1);</div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;      mis_it++;</div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;    }</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;  }</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160; </div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;  <span class="comment">/*</span></div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;<span class="comment">   * Step 3: Combine circuits to give final result</span></div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;<span class="comment">   */</span></div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;  <a class="code" href="namespacetket.html#a02e0b3d958235646ebb3528e5116f3cf">append_single_pauli_gadget</a>(v, pauli0);</div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;  <a class="code" href="namespacetket.html#a02e0b3d958235646ebb3528e5116f3cf">append_single_pauli_gadget</a>(v, pauli1);</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;  <span class="comment">// ConjugationBox components must be in the default register</span></div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;  <a class="code" href="namespacetket.html#ad949814c463d9f998540c0f812e76aa6">qubit_vector_t</a> all_qubits = u.all_qubits();</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;  u.flatten_registers();</div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;  v.flatten_registers();</div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;  <a class="code" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a228a4b87ea0227593dbfb130b0d4ea5c">ConjugationBox</a> cjbox(</div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;      std::make_shared&lt;CircBox&gt;(u), std::make_shared&lt;CircBox&gt;(v));</div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;  circ.add_box(cjbox, all_qubits);</div>
+<div class="line"><a name="l00379"></a><span class="lineno">  379</span>&#160;}</div>
+<div class="line"><a name="l00380"></a><span class="lineno">  380</span>&#160; </div>
+<div class="line"><a name="l00381"></a><span class="lineno">  381</span>&#160;}  <span class="comment">// namespace tket</span></div>
 <div class="ttc" id="aCircUtils_8hpp_html"><div class="ttname"><a href="CircUtils_8hpp.html">CircUtils.hpp</a></div></div>
 <div class="ttc" id="aConjugationBox_8hpp_html"><div class="ttname"><a href="ConjugationBox_8hpp.html">ConjugationBox.hpp</a></div></div>
 <div class="ttc" id="aGateUnitaryMatrixFixedMatrices_8cpp_html_a50e494b6c0479f509addc00437f7d321"><div class="ttname"><a href="GateUnitaryMatrixFixedMatrices_8cpp.html#a50e494b6c0479f509addc00437f7d321">Z</a></div><div class="ttdeci">Eigen::Matrix2cd Z</div><div class="ttdef"><b>Definition:</b> <a href="GateUnitaryMatrixFixedMatrices_8cpp_source.html#l00027">GateUnitaryMatrixFixedMatrices.cpp:27</a></div></div>
@@ -491,29 +464,28 @@ $(function() {
 <div class="ttc" id="aGateUnitaryMatrixFixedMatrices_8cpp_html_ade2e0c760b21b1e3e259bdef97f17186"><div class="ttname"><a href="GateUnitaryMatrixFixedMatrices_8cpp.html#ade2e0c760b21b1e3e259bdef97f17186">Y</a></div><div class="ttdeci">Eigen::Matrix2cd Y</div><div class="ttdef"><b>Definition:</b> <a href="GateUnitaryMatrixFixedMatrices_8cpp_source.html#l00026">GateUnitaryMatrixFixedMatrices.cpp:26</a></div></div>
 <div class="ttc" id="aPauliExpBoxes_8hpp_html"><div class="ttname"><a href="PauliExpBoxes_8hpp.html">PauliExpBoxes.hpp</a></div></div>
 <div class="ttc" id="aPauliGadget_8hpp_html"><div class="ttname"><a href="PauliGadget_8hpp.html">PauliGadget.hpp</a></div></div>
-<div class="ttc" id="aclasstket_1_1CircuitInvalidity_html"><div class="ttname"><a href="classtket_1_1CircuitInvalidity.html">tket::CircuitInvalidity</a></div><div class="ttdef"><b>Definition:</b> <a href="Circuit_8hpp_source.html#l00195">Circuit.hpp:195</a></div></div>
 <div class="ttc" id="aclasstket_1_1Circuit_html"><div class="ttname"><a href="classtket_1_1Circuit.html">tket::Circuit</a></div><div class="ttdoc">A circuit.</div><div class="ttdef"><b>Definition:</b> <a href="Circuit_8hpp_source.html#l00248">Circuit.hpp:248</a></div></div>
 <div class="ttc" id="aclasstket_1_1Circuit_html_a2fec16adb15410648e73d337953c8304"><div class="ttname"><a href="classtket_1_1Circuit.html#a2fec16adb15410648e73d337953c8304">tket::Circuit::append_with_map</a></div><div class="ttdeci">void append_with_map(const Circuit &amp;c2, const unit_map_t &amp;qm)</div><div class="ttdef"><b>Definition:</b> <a href="macro__manipulation_8cpp_source.html#l00138">macro_manipulation.cpp:138</a></div></div>
 <div class="ttc" id="aclasstket_1_1Circuit_html_aa55737dd6ce4273d3b1843de50022405"><div class="ttname"><a href="classtket_1_1Circuit.html#aa55737dd6ce4273d3b1843de50022405">tket::Circuit::add_op</a></div><div class="ttdeci">Vertex add_op(const Op_ptr &amp;op, const std::vector&lt; ID &gt; &amp;args, std::optional&lt; std::string &gt; opgroup=std::nullopt)</div><div class="ttdoc">Append an operation to the circuit.</div><div class="ttdef"><b>Definition:</b> <a href="Circuit_8hpp_source.html#l01741">Circuit.hpp:1741</a></div></div>
 <div class="ttc" id="aclasstket_1_1Circuit_html_ab318d01a5d43faf2b240ca2db4fae917"><div class="ttname"><a href="classtket_1_1Circuit.html#ab318d01a5d43faf2b240ca2db4fae917">tket::Circuit::add_box</a></div><div class="ttdeci">Vertex add_box(const BoxT &amp;box, const std::vector&lt; ID &gt; &amp;args, std::optional&lt; std::string &gt; opgroup=std::nullopt)</div><div class="ttdoc">Append a box to the circuit.</div><div class="ttdef"><b>Definition:</b> <a href="Circuit_8hpp_source.html#l00881">Circuit.hpp:881</a></div></div>
 <div class="ttc" id="aclasstket_1_1Circuit_html_acdda639822edaad4b2c10d38e2924e3a"><div class="ttname"><a href="classtket_1_1Circuit.html#acdda639822edaad4b2c10d38e2924e3a">tket::Circuit::add_qubit</a></div><div class="ttdeci">void add_qubit(const Qubit &amp;id, bool reject_dups=true)</div><div class="ttdef"><b>Definition:</b> <a href="basic__circ__manip_8cpp_source.html#l00432">basic_circ_manip.cpp:432</a></div></div>
 <div class="ttc" id="aclasstket_1_1PauliExpBox_html"><div class="ttname"><a href="classtket_1_1PauliExpBox.html">tket::PauliExpBox</a></div><div class="ttdoc">Operation defined as the exponential of a tensor of Pauli operators.</div><div class="ttdef"><b>Definition:</b> <a href="PauliExpBoxes_8hpp_source.html#l00030">PauliExpBoxes.hpp:30</a></div></div>
-<div class="ttc" id="aclasstket_1_1PauliExpCommutingSetBox_html"><div class="ttname"><a href="classtket_1_1PauliExpCommutingSetBox.html">tket::PauliExpCommutingSetBox</a></div><div class="ttdef"><b>Definition:</b> <a href="PauliExpBoxes_8hpp_source.html#l00154">PauliExpBoxes.hpp:154</a></div></div>
+<div class="ttc" id="aclasstket_1_1PauliExpCommutingSetBox_html"><div class="ttname"><a href="classtket_1_1PauliExpCommutingSetBox.html">tket::PauliExpCommutingSetBox</a></div><div class="ttdef"><b>Definition:</b> <a href="PauliExpBoxes_8hpp_source.html#l00151">PauliExpBoxes.hpp:151</a></div></div>
 <div class="ttc" id="aclasstket_1_1PauliExpPairBox_html"><div class="ttname"><a href="classtket_1_1PauliExpPairBox.html">tket::PauliExpPairBox</a></div><div class="ttdef"><b>Definition:</b> <a href="PauliExpBoxes_8hpp_source.html#l00091">PauliExpBoxes.hpp:91</a></div></div>
-<div class="ttc" id="aclasstket_1_1QubitPauliString_html"><div class="ttname"><a href="classtket_1_1QubitPauliString.html">tket::QubitPauliString</a></div><div class="ttdoc">A string of Pauli letters from the alphabet {I, X, Y, Z}, implemented as a sparse list,...</div><div class="ttdef"><b>Definition:</b> <a href="PauliStrings_8hpp_source.html#l00088">PauliStrings.hpp:88</a></div></div>
-<div class="ttc" id="aclasstket_1_1QubitPauliString_html_a466db7bf816c2fb885837060295edf7f"><div class="ttname"><a href="classtket_1_1QubitPauliString.html#a466db7bf816c2fb885837060295edf7f">tket::QubitPauliString::map</a></div><div class="ttdeci">QubitPauliMap map</div><div class="ttdef"><b>Definition:</b> <a href="PauliStrings_8hpp_source.html#l00090">PauliStrings.hpp:90</a></div></div>
-<div class="ttc" id="aclasstket_1_1QubitPauliString_html_a62cb2551500feaac71af409b7beec6e6"><div class="ttname"><a href="classtket_1_1QubitPauliString.html#a62cb2551500feaac71af409b7beec6e6">tket::QubitPauliString::compress</a></div><div class="ttdeci">void compress()</div><div class="ttdoc">Removes I terms to compress the sparse representation.</div><div class="ttdef"><b>Definition:</b> <a href="PauliStrings_8cpp_source.html#l00290">PauliStrings.cpp:290</a></div></div>
-<div class="ttc" id="aclasstket_1_1QubitPauliTensor_html"><div class="ttname"><a href="classtket_1_1QubitPauliTensor.html">tket::QubitPauliTensor</a></div><div class="ttdoc">A tensor of Pauli terms .</div><div class="ttdef"><b>Definition:</b> <a href="PauliStrings_8hpp_source.html#l00356">PauliStrings.hpp:356</a></div></div>
-<div class="ttc" id="aclasstket_1_1QubitPauliTensor_html_a437838e8949b35fef8905b0449a06b4b"><div class="ttname"><a href="classtket_1_1QubitPauliTensor.html#a437838e8949b35fef8905b0449a06b4b">tket::QubitPauliTensor::string</a></div><div class="ttdeci">QubitPauliString string</div><div class="ttdef"><b>Definition:</b> <a href="PauliStrings_8hpp_source.html#l00362">PauliStrings.hpp:362</a></div></div>
-<div class="ttc" id="aclasstket_1_1QubitPauliTensor_html_a9863028b3349529f006257e069062b62"><div class="ttname"><a href="classtket_1_1QubitPauliTensor.html#a9863028b3349529f006257e069062b62">tket::QubitPauliTensor::compress</a></div><div class="ttdeci">void compress()</div><div class="ttdoc">Removes I terms to compress the sparse representation.</div><div class="ttdef"><b>Definition:</b> <a href="PauliStrings_8cpp_source.html#l00496">PauliStrings.cpp:496</a></div></div>
-<div class="ttc" id="aclasstket_1_1QubitPauliTensor_html_a9af660c3f53e792977fd3f1bcd31792f"><div class="ttname"><a href="classtket_1_1QubitPauliTensor.html#a9af660c3f53e792977fd3f1bcd31792f">tket::QubitPauliTensor::coeff</a></div><div class="ttdeci">Complex coeff</div><div class="ttdef"><b>Definition:</b> <a href="PauliStrings_8hpp_source.html#l00363">PauliStrings.hpp:363</a></div></div>
-<div class="ttc" id="aclasstket_1_1QubitPauliTensor_html_aa9dd93ef21bf085d56e1232631e44be6"><div class="ttname"><a href="classtket_1_1QubitPauliTensor.html#aa9dd93ef21bf085d56e1232631e44be6">tket::QubitPauliTensor::conflicting_qubits</a></div><div class="ttdeci">std::set&lt; Qubit &gt; conflicting_qubits(const QubitPauliTensor &amp;other) const</div><div class="ttdoc">Finds qubits with different (non-trivial) Pauli terms.</div><div class="ttdef"><b>Definition:</b> <a href="PauliStrings_8cpp_source.html#l00512">PauliStrings.cpp:512</a></div></div>
-<div class="ttc" id="aclasstket_1_1QubitPauliTensor_html_aca40ec7a0b581fe5e4fcd902094d7025"><div class="ttname"><a href="classtket_1_1QubitPauliTensor.html#aca40ec7a0b581fe5e4fcd902094d7025">tket::QubitPauliTensor::common_qubits</a></div><div class="ttdeci">std::set&lt; Qubit &gt; common_qubits(const QubitPauliTensor &amp;other) const</div><div class="ttdoc">Finds qubits with the same (non-trivial) Pauli term.</div><div class="ttdef"><b>Definition:</b> <a href="PauliStrings_8cpp_source.html#l00502">PauliStrings.cpp:502</a></div></div>
-<div class="ttc" id="aclasstket_1_1QubitPauliTensor_html_ae02862a2ab5e7e08e86c112e4f5c7dba"><div class="ttname"><a href="classtket_1_1QubitPauliTensor.html#ae02862a2ab5e7e08e86c112e4f5c7dba">tket::QubitPauliTensor::own_qubits</a></div><div class="ttdeci">std::set&lt; Qubit &gt; own_qubits(const QubitPauliTensor &amp;other) const</div><div class="ttdoc">Finds qubits that only occur in this tensor.</div><div class="ttdef"><b>Definition:</b> <a href="PauliStrings_8cpp_source.html#l00507">PauliStrings.cpp:507</a></div></div>
+<div class="ttc" id="aclasstket_1_1PauliTensor_html"><div class="ttname"><a href="classtket_1_1PauliTensor.html">tket::PauliTensor</a></div><div class="ttdoc">PauliTensor&lt;PauliContainer, CoeffType&gt;</div><div class="ttdef"><b>Definition:</b> <a href="PauliTensor_8hpp_source.html#l00522">PauliTensor.hpp:522</a></div></div>
+<div class="ttc" id="aclasstket_1_1PauliTensor_html_a2fa43f87c4db80535b9ebc88b3278282"><div class="ttname"><a href="classtket_1_1PauliTensor.html#a2fa43f87c4db80535b9ebc88b3278282">tket::PauliTensor::own_qubits</a></div><div class="ttdeci">std::enable_if&lt; std::is_same&lt; PC, QubitPauliMap &gt;::value, std::set&lt; Qubit &gt; &gt;::type own_qubits(const PauliTensor&lt; PauliContainer, OtherCoeffType &gt; &amp;other) const</div><div class="ttdoc">Find the set of Qubits on which this has a non-trivial Pauli (X, Y, Z) but other either doesn't conta...</div><div class="ttdef"><b>Definition:</b> <a href="PauliTensor_8hpp_source.html#l00702">PauliTensor.hpp:702</a></div></div>
+<div class="ttc" id="aclasstket_1_1PauliTensor_html_a6747a796a44b21b5bd3880e361d9a117"><div class="ttname"><a href="classtket_1_1PauliTensor.html#a6747a796a44b21b5bd3880e361d9a117">tket::PauliTensor::conflicting_qubits</a></div><div class="ttdeci">std::enable_if&lt; std::is_same&lt; PC, QubitPauliMap &gt;::value, std::set&lt; Qubit &gt; &gt;::type conflicting_qubits(const PauliTensor&lt; PauliContainer, OtherCoeffType &gt; &amp;other) const</div><div class="ttdoc">Find the set of Qubits on which this and other have distinct non-trivial Paulis (X,...</div><div class="ttdef"><b>Definition:</b> <a href="PauliTensor_8hpp_source.html#l00713">PauliTensor.hpp:713</a></div></div>
+<div class="ttc" id="aclasstket_1_1PauliTensor_html_a6b88652d81a2a1221bc45f7c86f6add2"><div class="ttname"><a href="classtket_1_1PauliTensor.html#a6b88652d81a2a1221bc45f7c86f6add2">tket::PauliTensor::coeff</a></div><div class="ttdeci">CoeffType coeff</div><div class="ttdef"><b>Definition:</b> <a href="PauliTensor_8hpp_source.html#l00539">PauliTensor.hpp:539</a></div></div>
+<div class="ttc" id="aclasstket_1_1PauliTensor_html_a7741e17f9cfd2775e834ab1a2135da3a"><div class="ttname"><a href="classtket_1_1PauliTensor.html#a7741e17f9cfd2775e834ab1a2135da3a">tket::PauliTensor::common_qubits</a></div><div class="ttdeci">std::enable_if&lt; std::is_same&lt; PC, QubitPauliMap &gt;::value, std::set&lt; Qubit &gt; &gt;::type common_qubits(const PauliTensor&lt; PauliContainer, OtherCoeffType &gt; &amp;other) const</div><div class="ttdoc">Find the set of Qubits on which this and other have the same non-trivial Pauli (X,...</div><div class="ttdef"><b>Definition:</b> <a href="PauliTensor_8hpp_source.html#l00690">PauliTensor.hpp:690</a></div></div>
+<div class="ttc" id="aclasstket_1_1PauliTensor_html_a970d05f5611a898b83ae0f6bf5e958a2"><div class="ttname"><a href="classtket_1_1PauliTensor.html#a970d05f5611a898b83ae0f6bf5e958a2">tket::PauliTensor::get</a></div><div class="ttdeci">std::enable_if&lt; std::is_same&lt; PC, QubitPauliMap &gt;::value, Pauli &gt;::type get(const Qubit &amp;qb) const</div><div class="ttdoc">Gets the Pauli at the given index within the string.</div><div class="ttdef"><b>Definition:</b> <a href="PauliTensor_8hpp_source.html#l00761">PauliTensor.hpp:761</a></div></div>
+<div class="ttc" id="aclasstket_1_1PauliTensor_html_ac2e83f786fff6d2beddaf22d2725972d"><div class="ttname"><a href="classtket_1_1PauliTensor.html#ac2e83f786fff6d2beddaf22d2725972d">tket::PauliTensor::string</a></div><div class="ttdeci">PauliContainer string</div><div class="ttdef"><b>Definition:</b> <a href="PauliTensor_8hpp_source.html#l00538">PauliTensor.hpp:538</a></div></div>
+<div class="ttc" id="aclasstket_1_1PauliTensor_html_adf374e0ff6702cc59fbafaf112395939"><div class="ttname"><a href="classtket_1_1PauliTensor.html#adf374e0ff6702cc59fbafaf112395939">tket::PauliTensor::compress</a></div><div class="ttdeci">std::enable_if&lt; std::is_same&lt; PC, QubitPauliMap &gt;::value &gt;::type compress()</div><div class="ttdoc">Compress a sparse PauliTensor by removing identity terms.</div><div class="ttdef"><b>Definition:</b> <a href="PauliTensor_8hpp_source.html#l00663">PauliTensor.hpp:663</a></div></div>
+<div class="ttc" id="aclasstket_1_1PauliTensor_html_afb2afd0411579f5550a365723c8626c6"><div class="ttname"><a href="classtket_1_1PauliTensor.html#afb2afd0411579f5550a365723c8626c6">tket::PauliTensor::set</a></div><div class="ttdeci">std::enable_if&lt; std::is_same&lt; PC, QubitPauliMap &gt;::value &gt;::type set(const Qubit &amp;qb, Pauli p)</div><div class="ttdoc">Sets the Pauli at the given index within the string.</div><div class="ttdef"><b>Definition:</b> <a href="PauliTensor_8hpp_source.html#l00781">PauliTensor.hpp:781</a></div></div>
 <div class="ttc" id="aclasstket_1_1Qubit_html"><div class="ttname"><a href="classtket_1_1Qubit.html">tket::Qubit</a></div><div class="ttdoc">Location holding a qubit.</div><div class="ttdef"><b>Definition:</b> <a href="UnitID_8hpp_source.html#l00153">UnitID.hpp:153</a></div></div>
-<div class="ttc" id="aclasstket_1_1UnknownCXConfigType_html"><div class="ttname"><a href="classtket_1_1UnknownCXConfigType.html">tket::UnknownCXConfigType</a></div><div class="ttdef"><b>Definition:</b> <a href="PauliStrings_8hpp_source.html#l00043">PauliStrings.hpp:43</a></div></div>
 <div class="ttc" id="anamespacestd__clifford__decomp_html_ae884a740cf1249e01bfee84f628baea8"><div class="ttname"><a href="namespacestd__clifford__decomp.html#ae884a740cf1249e01bfee84f628baea8">std_clifford_decomp.I</a></div><div class="ttdeci">I</div><div class="ttdef"><b>Definition:</b> <a href="std__clifford__decomp_8py_source.html#l00027">std_clifford_decomp.py:27</a></div></div>
 <div class="ttc" id="anamespacetket_html"><div class="ttname"><a href="namespacetket.html">tket</a></div><div class="ttdoc">Defines tket::DeviceCharacterisation, used in NoiseAwarePlacement and in commute_SQ_gates_through_SWA...</div><div class="ttdef"><b>Definition:</b> <a href="Path_8cpp_source.html#l00019">Path.cpp:19</a></div></div>
+<div class="ttc" id="anamespacetket_html_a02e0b3d958235646ebb3528e5116f3cf"><div class="ttname"><a href="namespacetket.html#a02e0b3d958235646ebb3528e5116f3cf">tket::append_single_pauli_gadget</a></div><div class="ttdeci">void append_single_pauli_gadget(Circuit &amp;circ, const SpSymPauliTensor &amp;pauli, CXConfigType cx_config)</div><div class="ttdoc">Append a Pauli gadget to the end of a given circuit.</div><div class="ttdef"><b>Definition:</b> <a href="PauliGadget_8cpp_source.html#l00023">PauliGadget.cpp:23</a></div></div>
+<div class="ttc" id="anamespacetket_html_a0b111a9e16a263a75d0863a774114dec"><div class="ttname"><a href="namespacetket.html#a0b111a9e16a263a75d0863a774114dec">tket::append_pauli_gadget_pair_as_box</a></div><div class="ttdeci">void append_pauli_gadget_pair_as_box(Circuit &amp;circ, const SpSymPauliTensor &amp;pauli0, const SpSymPauliTensor &amp;pauli1, CXConfigType cx_config)</div><div class="ttdef"><b>Definition:</b> <a href="PauliGadget_8cpp_source.html#l00049">PauliGadget.cpp:49</a></div></div>
 <div class="ttc" id="anamespacetket_html_a13e81344da4794f2648eb9a7b286fcf3a045a4026bb27931de3a4ad5e8c368659"><div class="ttname"><a href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a045a4026bb27931de3a4ad5e8c368659">tket::OpType::Sdg</a></div><div class="ttdeci">@ Sdg</div></div>
 <div class="ttc" id="anamespacetket_html_a13e81344da4794f2648eb9a7b286fcf3a228a4b87ea0227593dbfb130b0d4ea5c"><div class="ttname"><a href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a228a4b87ea0227593dbfb130b0d4ea5c">tket::OpType::ConjugationBox</a></div><div class="ttdeci">@ ConjugationBox</div><div class="ttdoc">See ConjugationBox.</div></div>
 <div class="ttc" id="anamespacetket_html_a13e81344da4794f2648eb9a7b286fcf3a5206560a306a2e085a437fd258eb57ce"><div class="ttname"><a href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a5206560a306a2e085a437fd258eb57ce">tket::OpType::V</a></div><div class="ttdeci">@ V</div></div>
@@ -522,24 +494,24 @@ $(function() {
 <div class="ttc" id="anamespacetket_html_a13e81344da4794f2648eb9a7b286fcf3a833e36d1a5a93dedb10c85f50ced9ce7"><div class="ttname"><a href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a833e36d1a5a93dedb10c85f50ced9ce7">tket::OpType::CX</a></div><div class="ttdeci">@ CX</div><div class="ttdoc">Controlled OpType::X.</div></div>
 <div class="ttc" id="anamespacetket_html_a13e81344da4794f2648eb9a7b286fcf3aa74b5165b09b6b760a36c69c5465b527"><div class="ttname"><a href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3aa74b5165b09b6b760a36c69c5465b527">tket::OpType::XXPhase3</a></div><div class="ttdeci">@ XXPhase3</div><div class="ttdoc">Three-qubit phase MSGate.</div></div>
 <div class="ttc" id="anamespacetket_html_a13e81344da4794f2648eb9a7b286fcf3ac1d9f50f86825a1a2302ec2449c17196"><div class="ttname"><a href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3ac1d9f50f86825a1a2302ec2449c17196">tket::OpType::H</a></div><div class="ttdeci">@ H</div></div>
+<div class="ttc" id="anamespacetket_html_a1e00ff5a6aec18a4625b60845438cfcf"><div class="ttname"><a href="namespacetket.html#a1e00ff5a6aec18a4625b60845438cfcf">tket::append_single_pauli_gadget_as_pauli_exp_box</a></div><div class="ttdeci">void append_single_pauli_gadget_as_pauli_exp_box(Circuit &amp;circ, const SpSymPauliTensor &amp;pauli, CXConfigType cx_config)</div><div class="ttdoc">Append a Pauli gadget to the end of a given circuit as a PauliExpBox.</div><div class="ttdef"><b>Definition:</b> <a href="PauliGadget_8cpp_source.html#l00037">PauliGadget.cpp:37</a></div></div>
 <div class="ttc" id="anamespacetket_html_a342a289d54f4f5f5a405373c07aca66aa02129bb861061d1a052c592e2dc6b383"><div class="ttname"><a href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66aa02129bb861061d1a052c592e2dc6b383">tket::X</a></div><div class="ttdeci">@ X</div></div>
-<div class="ttc" id="anamespacetket_html_a372ac8e74a26d74ac66c0a2233f532c7"><div class="ttname"><a href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">tket::CXConfigType</a></div><div class="ttdeci">CXConfigType</div><div class="ttdoc">Whenever a decomposition choice of Pauli gadgets is presented, users may use either Snake (a....</div><div class="ttdef"><b>Definition:</b> <a href="PauliStrings_8hpp_source.html#l00074">PauliStrings.hpp:74</a></div></div>
+<div class="ttc" id="anamespacetket_html_a372ac8e74a26d74ac66c0a2233f532c7"><div class="ttname"><a href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">tket::CXConfigType</a></div><div class="ttdeci">CXConfigType</div><div class="ttdoc">Whenever a decomposition choice of Pauli gadgets is presented, users may use either Snake (a....</div><div class="ttdef"><b>Definition:</b> <a href="PauliTensor_8hpp_source.html#l00041">PauliTensor.hpp:41</a></div></div>
 <div class="ttc" id="anamespacetket_html_a372ac8e74a26d74ac66c0a2233f532c7a26f93e6e68e28a698377e941cb59f29a"><div class="ttname"><a href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7a26f93e6e68e28a698377e941cb59f29a">tket::CXConfigType::Star</a></div><div class="ttdeci">@ Star</div></div>
 <div class="ttc" id="anamespacetket_html_a372ac8e74a26d74ac66c0a2233f532c7a3b0c14770e6bd663518496da60f524da"><div class="ttname"><a href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7a3b0c14770e6bd663518496da60f524da">tket::CXConfigType::Tree</a></div><div class="ttdeci">@ Tree</div></div>
 <div class="ttc" id="anamespacetket_html_a372ac8e74a26d74ac66c0a2233f532c7ad1686c37858b90b38175370793144fba"><div class="ttname"><a href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7ad1686c37858b90b38175370793144fba">tket::CXConfigType::MultiQGate</a></div><div class="ttdeci">@ MultiQGate</div></div>
 <div class="ttc" id="anamespacetket_html_a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c"><div class="ttname"><a href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">tket::CXConfigType::Snake</a></div><div class="ttdeci">@ Snake</div></div>
 <div class="ttc" id="anamespacetket_html_a392f41338f191768e8b7ac91b19bc8ce"><div class="ttname"><a href="namespacetket.html#a392f41338f191768e8b7ac91b19bc8ce">tket::q_default_reg</a></div><div class="ttdeci">const std::string &amp; q_default_reg()</div><div class="ttdef"><b>Definition:</b> <a href="UnitID_8cpp_source.html#l00072">UnitID.cpp:72</a></div></div>
-<div class="ttc" id="anamespacetket_html_a49402af2e1793a0721eab83470c49ff1"><div class="ttname"><a href="namespacetket.html#a49402af2e1793a0721eab83470c49ff1">tket::append_single_pauli_gadget_as_pauli_exp_box</a></div><div class="ttdeci">void append_single_pauli_gadget_as_pauli_exp_box(Circuit &amp;circ, const QubitPauliTensor &amp;pauli, Expr angle, CXConfigType cx_config)</div><div class="ttdoc">Append a Pauli gadget to the end of a given circuit as a PauliExpBox.</div><div class="ttdef"><b>Definition:</b> <a href="PauliGadget_8cpp_source.html#l00050">PauliGadget.cpp:50</a></div></div>
-<div class="ttc" id="anamespacetket_html_a6817cd1c8a5630b406c86a59173edd21"><div class="ttname"><a href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">tket::Expr</a></div><div class="ttdeci">SymEngine::Expression Expr</div><div class="ttdoc">Representation of a phase as a multiple of .</div><div class="ttdef"><b>Definition:</b> <a href="Expression_8hpp_source.html#l00034">Expression.hpp:34</a></div></div>
-<div class="ttc" id="anamespacetket_html_a68999408b52ab2f0f191f814ec93f4de"><div class="ttname"><a href="namespacetket.html#a68999408b52ab2f0f191f814ec93f4de">tket::Complex</a></div><div class="ttdeci">std::complex&lt; double &gt; Complex</div><div class="ttdoc">Complex number.</div><div class="ttdef"><b>Definition:</b> <a href="Constants_8hpp_source.html#l00029">Constants.hpp:29</a></div></div>
-<div class="ttc" id="anamespacetket_html_a8e72f1332998ecf4ef5d1047cfe5a95d"><div class="ttname"><a href="namespacetket.html#a8e72f1332998ecf4ef5d1047cfe5a95d">tket::append_single_pauli_gadget</a></div><div class="ttdeci">void append_single_pauli_gadget(Circuit &amp;circ, const QubitPauliTensor &amp;pauli, Expr angle, CXConfigType cx_config)</div><div class="ttdoc">Append a Pauli gadget to the end of a given circuit.</div><div class="ttdef"><b>Definition:</b> <a href="PauliGadget_8cpp_source.html#l00033">PauliGadget.cpp:33</a></div></div>
-<div class="ttc" id="anamespacetket_html_a8ec10f2f1ca4d7c09f847af4f3984f8b"><div class="ttname"><a href="namespacetket.html#a8ec10f2f1ca4d7c09f847af4f3984f8b">tket::append_commuting_pauli_gadget_set_as_box</a></div><div class="ttdeci">void append_commuting_pauli_gadget_set_as_box(Circuit &amp;circ, const std::list&lt; std::pair&lt; QubitPauliTensor, Expr &gt;&gt; &amp;gadgets, CXConfigType cx_config)</div><div class="ttdef"><b>Definition:</b> <a href="PauliGadget_8cpp_source.html#l00106">PauliGadget.cpp:106</a></div></div>
-<div class="ttc" id="anamespacetket_html_a9f68fb4ab6e021ef3cb3174094f2d194"><div class="ttname"><a href="namespacetket.html#a9f68fb4ab6e021ef3cb3174094f2d194">tket::pauli_angle_convert_or_throw</a></div><div class="ttdeci">Expr pauli_angle_convert_or_throw(Complex pauliCoeff, const Expr &amp;angle)</div><div class="ttdef"><b>Definition:</b> <a href="PauliGadget_8cpp_source.html#l00023">PauliGadget.cpp:23</a></div></div>
+<div class="ttc" id="anamespacetket_html_a5d170f953029bfd42ce8a82ef89fb814"><div class="ttname"><a href="namespacetket.html#a5d170f953029bfd42ce8a82ef89fb814">tket::QubitPauliMap</a></div><div class="ttdeci">std::map&lt; Qubit, Pauli &gt; QubitPauliMap</div><div class="ttdoc">A sparse, Qubit-indexed Pauli container.</div><div class="ttdef"><b>Definition:</b> <a href="PauliTensor_8hpp_source.html#l00254">PauliTensor.hpp:254</a></div></div>
+<div class="ttc" id="anamespacetket_html_a6640b4018600cebef09f986daf87bed1"><div class="ttname"><a href="namespacetket.html#a6640b4018600cebef09f986daf87bed1">tket::append_commuting_pauli_gadget_set_as_box</a></div><div class="ttdeci">void append_commuting_pauli_gadget_set_as_box(Circuit &amp;circ, const std::list&lt; SpSymPauliTensor &gt; &amp;gadgets, CXConfigType cx_config)</div><div class="ttdef"><b>Definition:</b> <a href="PauliGadget_8cpp_source.html#l00081">PauliGadget.cpp:81</a></div></div>
+<div class="ttc" id="anamespacetket_html_a730a1a18e9c5e2840642bae56051be84"><div class="ttname"><a href="namespacetket.html#a730a1a18e9c5e2840642bae56051be84">tket::append_pauli_gadget_pair</a></div><div class="ttdeci">void append_pauli_gadget_pair(Circuit &amp;circ, SpSymPauliTensor pauli0, SpSymPauliTensor pauli1, CXConfigType cx_config)</div><div class="ttdoc">Append a pair of Pauli gadgets to the end of a given circuit.</div><div class="ttdef"><b>Definition:</b> <a href="PauliGadget_8cpp_source.html#l00205">PauliGadget.cpp:205</a></div></div>
+<div class="ttc" id="anamespacetket_html_a9057ac1ab3d826ae457ee3e03ac93974"><div class="ttname"><a href="namespacetket.html#a9057ac1ab3d826ae457ee3e03ac93974">tket::SpSymPauliTensor</a></div><div class="ttdeci">PauliTensor&lt; QubitPauliMap, Expr &gt; SpSymPauliTensor</div><div class="ttdef"><b>Definition:</b> <a href="PauliTensor_8hpp_source.html#l01046">PauliTensor.hpp:1046</a></div></div>
+<div class="ttc" id="anamespacetket_html_a95a55c13860dc28bd46f6b624ccef716"><div class="ttname"><a href="namespacetket.html#a95a55c13860dc28bd46f6b624ccef716">tket::DensePauliMap</a></div><div class="ttdeci">std::vector&lt; Pauli &gt; DensePauliMap</div><div class="ttdoc">A dense, unsigned-indexed Pauli container.</div><div class="ttdef"><b>Definition:</b> <a href="PauliTensor_8hpp_source.html#l00267">PauliTensor.hpp:267</a></div></div>
 <div class="ttc" id="anamespacetket_html_aa08fc2d553413efa43b68fa1269fba77"><div class="ttname"><a href="namespacetket.html#aa08fc2d553413efa43b68fa1269fba77">tket::unit_map_t</a></div><div class="ttdeci">std::map&lt; UnitID, UnitID &gt; unit_map_t</div><div class="ttdef"><b>Definition:</b> <a href="UnitID_8hpp_source.html#l00311">UnitID.hpp:311</a></div></div>
-<div class="ttc" id="anamespacetket_html_aa4cafa843d160e028e5d01bed9bb5e1a"><div class="ttname"><a href="namespacetket.html#aa4cafa843d160e028e5d01bed9bb5e1a">tket::append_pauli_gadget_pair</a></div><div class="ttdeci">void append_pauli_gadget_pair(Circuit &amp;circ, QubitPauliTensor pauli0, Expr angle0, QubitPauliTensor pauli1, Expr angle1, CXConfigType cx_config)</div><div class="ttdoc">Append a pair of Pauli gadgets to the end of a given circuit.</div><div class="ttdef"><b>Definition:</b> <a href="PauliGadget_8cpp_source.html#l00236">PauliGadget.cpp:236</a></div></div>
 <div class="ttc" id="anamespacetket_html_ab2b635e296bb273b8fa514314b1c2e8a"><div class="ttname"><a href="namespacetket.html#ab2b635e296bb273b8fa514314b1c2e8a">tket::pauli_gadget</a></div><div class="ttdeci">Circuit pauli_gadget(const std::vector&lt; Pauli &gt; &amp;paulis, const Expr &amp;t, CXConfigType cx_config)</div><div class="ttdoc">Construct a 'Pauli gadget' corresponding to a tensor of Pauli operators.</div><div class="ttdef"><b>Definition:</b> <a href="CircUtils_8cpp_source.html#l00365">CircUtils.cpp:365</a></div></div>
 <div class="ttc" id="anamespacetket_html_ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3"><div class="ttname"><a href="namespacetket.html#ab638aca8b1f14267ebf40f93686b7ac9a5f83fcd60e4ce6b24764786c609fddf3">tket::UnitType::Qubit</a></div><div class="ttdeci">@ Qubit</div></div>
-<div class="ttc" id="anamespacetket_html_abfe5f8996f4929afa5e5ec01de4ac19b"><div class="ttname"><a href="namespacetket.html#abfe5f8996f4929afa5e5ec01de4ac19b">tket::append_pauli_gadget_pair_as_box</a></div><div class="ttdeci">void append_pauli_gadget_pair_as_box(Circuit &amp;circ, const QubitPauliTensor &amp;pauli0, Expr angle0, const QubitPauliTensor &amp;pauli1, Expr angle1, CXConfigType cx_config)</div><div class="ttdef"><b>Definition:</b> <a href="PauliGadget_8cpp_source.html#l00065">PauliGadget.cpp:65</a></div></div>
+<div class="ttc" id="anamespacetket_html_ad5f7b9aaddfa158da0f7b68516b32cc7"><div class="ttname"><a href="namespacetket.html#ad5f7b9aaddfa158da0f7b68516b32cc7">tket::SymPauliTensor</a></div><div class="ttdeci">PauliTensor&lt; DensePauliMap, Expr &gt; SymPauliTensor</div><div class="ttdef"><b>Definition:</b> <a href="PauliTensor_8hpp_source.html#l01047">PauliTensor.hpp:1047</a></div></div>
+<div class="ttc" id="anamespacetket_html_ad949814c463d9f998540c0f812e76aa6"><div class="ttname"><a href="namespacetket.html#ad949814c463d9f998540c0f812e76aa6">tket::qubit_vector_t</a></div><div class="ttdeci">std::vector&lt; Qubit &gt; qubit_vector_t</div><div class="ttdef"><b>Definition:</b> <a href="UnitID_8hpp_source.html#l00314">UnitID.hpp:314</a></div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
