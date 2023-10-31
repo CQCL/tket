@@ -87,9 +87,8 @@ Licensed under the `Apache 2 License <http://www.apache.org/licenses/LICENSE-2.0
     :caption: More Documentation:
     :maxdepth: 1
     
-    extensions_index.rst
     Manual <https://cqcl.github.io/pytket/manual/index.html>
-    Extensions <https://cqcl.github.io/pytket-extensions/api/index.html>
+    extensions_index.rst
     Example notebooks <https://tket.quantinuum.com/examples>
 
 .. toctree::
