@@ -209,6 +209,13 @@ SCENARIO("Testing casting between different PauliTensor variants") {
     CHECK((SpPauliString)non_default == non_default);
     REQUIRE_THROWS((PauliString)non_default);
   }
+  GIVEN("Casting coefficient, keeping dense container") {
+    DensePauliMap dpm{Pauli::X, Pauli::I, Pauli::Z};
+    CHECK((PauliStabiliser)PauliString(dpm) == PauliStabiliser(dpm));
+    CHECK(
+        (SymPauliTensor)CxPauliTensor(dpm, 0.87 + 1.2 * i_) ==
+        SymPauliTensor(dpm, Expr(0.87 + 1.2 * i_)));
+  }
 }
 
 SCENARIO("Qubit partitions") {
@@ -275,6 +282,12 @@ SCENARIO("String formatting of PauliTensor") {
       PauliString({Pauli::I, Pauli::Z, Pauli::X, Pauli::Y, Pauli::I})
           .to_str() == "IZXYI");
   CHECK(PauliStabiliser({Pauli::X, Pauli::Y}, 2).to_str() == "-XY");
+  CHECK(
+      CxPauliTensor({Pauli::Z, Pauli::Z, Pauli::I}, 3.1 - 0.1 * i_).to_str() ==
+      "(3.1,-0.1)*ZZI");
+  CHECK(
+      SymPauliTensor(DensePauliMap(5, Pauli::Y), Expr("k")).to_str() ==
+      "(k)*YYYYY");
 }
 
 SCENARIO("Testing multiplication of sparse PauliTensor") {
@@ -299,6 +312,7 @@ SCENARIO("Testing multiplication of sparse PauliTensor") {
         {q0, Pauli::I}, {q1, Pauli::X}, {q2, Pauli::Y}, {q3, Pauli::Z}};
     SpPauliStabiliser a(map, 3);
     SpPauliStabiliser b({}, 2);
+    REQUIRE((a * a).get(q0) == Pauli::I);
     REQUIRE((a * a) == b);
   }
   GIVEN("Each individual Pauli combination") {
@@ -488,6 +502,34 @@ SCENARIO("Test hashing for dense PauliTensor") {
     qpt2.set(6, Pauli::I);
     REQUIRE(qpt1.hash_value() == qpt2.hash_value());
   }
+}
+
+SCENARIO("json serialisation of PauliTensor") {
+  PauliString xyz({Pauli::X, Pauli::Y, Pauli::Z});
+  nlohmann::json j = xyz;
+  CHECK(j.get<PauliString>() == xyz);
+  SpPauliString za(Qubit("a", 0), Pauli::Z);
+  j = za;
+  CHECK(j.get<SpPauliString>() == za);
+  PauliStabiliser zz({Pauli::Z, Pauli::Z}, 3);
+  j = zz;
+  CHECK(j.get<PauliStabiliser>() == zz);
+  SpPauliStabiliser ziz({Pauli::Z, Pauli::I, Pauli::Z}, 2);
+  j = ziz;
+  CHECK(j.get<SpPauliStabiliser>() == ziz);
+  CxPauliTensor yiy({Pauli::Y, Pauli::I, Pauli::Y}, 0.2 * i_);
+  j = yiy;
+  CHECK(j.get<CxPauliTensor>() == yiy);
+  SpCxPauliTensor xb(Qubit("b", {1, 0}), Pauli::X, -2.3);
+  j = xb;
+  CHECK(j.get<SpCxPauliTensor>() == xb);
+  SymPauliTensor izyx({Pauli::I, Pauli::Z, Pauli::Y, Pauli::X}, Expr("g"));
+  j = izyx;
+  CHECK(j.get<SymPauliTensor>() == izyx);
+  SpSymPauliTensor xaxb(
+      {Qubit("a", 0), Qubit("b")}, {Pauli::X, Pauli::X}, -1.98);
+  j = xaxb;
+  CHECK(j.get<SpSymPauliTensor>() == xaxb);
 }
 
 SCENARIO("Test matrix evaluation") {
