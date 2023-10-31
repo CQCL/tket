@@ -15,7 +15,7 @@ The additional modules can be installed adding the extension name to the install
 The types of ``Backend`` available in pytket are the following
 
 Types of Backend
-================
+----------------
 
 * **QPUs** - These are real quantum computers that return shots based results. E.g the `QuantinuumBackend <https://tket.quantinuum.com/extensions/pytket-quantinuum/api.html#pytket.extensions.quantinuum.QuantinuumBackend>`_ .
 * **Cloud Access** - Cloud backends allow pytket to interface with cloud platforms to access additional QPUs and simulators. E.g `BraketBackend <https://tket.quantinuum.com/extensions/pytket-braket/api.html#pytket.extensions.braket.BraketBackend>`_ .
@@ -28,7 +28,8 @@ Types of Backend
 A full list of available pytket backends is shown below.
 
 QPUs
-====
+----
+
 `IBMQBackend <https://tket.quantinuum.com/extensions/pytket-qiskit/api.html#pytket.extensions.qiskit.IBMQBackend>`_
 - A backend for running circuits on remote IBMQ devices.
 
@@ -48,7 +49,7 @@ QPUs
 - Interface to an IQM device or simulator.
 
 Cloud Access
-============
+------------
 
 `AzureBackend <https://cqcl.github.io/pytket-qsharp/api/api.html#pytket.extensions.qsharp.AzureBackend>`_
 - Backend for running circuits remotely using Azure Quantum devices and simulators.
@@ -57,7 +58,7 @@ Cloud Access
 - Interface to Amazon Braket service.
 
 Emulators
-=========
+---------
 
 `IBMQEmulatorBackend`_ - A backend which uses the `AerBackend <https://tket.quantinuum.com/extensions/pytket-qiskit/api.html#pytket.extensions.qiskit.AerBackend>`_ to emulate the behavior of IBMQBackend.
 
@@ -65,7 +66,7 @@ Emulators
 - The QuantinuumBackend has two available emulators namely H1-1E and H1-2E. These are device specific emulators for the H1-1 and H1-2 devices. These emualtors run remotely on a server.
 
 Statevector Simulators
-=======================
+----------------------
 
 `CirqStateSampleBackend <https://tket.quantinuum.com/extensions/pytket-cirq/api.html#pytket.extensions.cirq.CirqStateSampleBackend>`_
 - Backend for Cirq statevector simulator sampling.
@@ -81,12 +82,12 @@ Statevector Simulators
 - Backend for running statevector simulations on the ProjectQ simulator.
 
 Unitary Simulators
-==================
+------------------
 
 `AerUnitaryBackend`_ - Backend for running simulations on the Qiskit Aer unitary simulator.
 
-Density Matrix Simulator
-========================
+Density Matrix Simulators
+-------------------------
 
 `CirqDensityMatrixSampleBackend`_
 - Backend for Cirq density matrix simulator sampling.
@@ -95,7 +96,7 @@ Density Matrix Simulator
 - Backend for Cirq density matrix simulator density_matrix return.
 
 Clifford Simulators
-===================
+-------------------
 
 `CirqCliffordSampleBackend <https://tket.quantinuum.com/extensions/pytket-cirq/api.html#pytket.extensions.cirq.CirqCliffordSampleBackend>`_
 - Backend for Cirq Clifford simulator sampling.
@@ -109,7 +110,7 @@ Clifford Simulators
 - Backend for simulating Clifford circuits using Stim.
 
 Other
-=====
+-----
 
 `AerBackend <https://tket.quantinuum.com/extensions/pytket-qiskit/api.html#pytket.extensions.qiskit.AerBackend>`_
 - Backend for running simulations on the Qiskit Aer QASM simulator. This simulator is noiseless by default but can take a user defined ``NoiseModel``.
