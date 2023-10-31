@@ -1,4 +1,4 @@
-Extension Modules
+pytket extensions
 =================
 
 The pytket extensions are separate python modules which allow pytket to interface with backends from a range of providers including quantum devices from Quantinuum and IBM.
