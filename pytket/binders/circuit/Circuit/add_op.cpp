@@ -15,6 +15,7 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
+#include <Utils/UnitID.hpp>
 #include <optional>
 #include <vector>
 
@@ -25,6 +26,7 @@
 #include "tket/Circuit/ClassicalExpBox.hpp"
 #include "tket/Circuit/ConjugationBox.hpp"
 #include "tket/Circuit/DiagonalBox.hpp"
+#include "tket/Circuit/DummyBox.hpp"
 #include "tket/Circuit/Multiplexor.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Circuit/StatePreparation.hpp"
@@ -333,6 +335,30 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "\n:return: the new :py:class:`Circuit`",
           py::arg("toffolibox"), py::arg("qubits"))
       .def(
+          "add_dummybox",
+          [](Circuit *circ, const DummyBox &box,
+             const py::tket_custom::SequenceVec<unsigned> &qubits,
+             const py::tket_custom::SequenceVec<unsigned> &bits,
+             const py::kwargs &kwargs) {
+            std::vector<UnitID> args;
+            for (unsigned i : qubits) {
+              args.push_back(Qubit(i));
+            }
+            for (unsigned i : bits) {
+              args.push_back(Bit(i));
+            }
+            return add_box_method<UnitID>(
+                circ, std::make_shared<DummyBox>(box), args, kwargs);
+          },
+          "Append a :py:class:`DummyBox` to the circuit."
+          "\n\n:param dummybox: The box to append"
+          "\n:param qubits: Indices (in the default register) of the qubits to "
+          "append the box to"
+          "\n:param bits: Indices of the bits (in the default register) to "
+          "append the box to"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("dummybox"), py::arg("qubits"), py::arg("bits"))
+      .def(
           "add_qcontrolbox",
           [](Circuit *circ, const QControlBox &box,
              const py::tket_custom::SequenceVec<unsigned> &args,
@@ -603,6 +629,22 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
           "qubits: Indices of the qubits to append the box to"
           "\n:return: the new :py:class:`Circuit`",
           py::arg("toffolibox"), py::arg("qubits"))
+      .def(
+          "add_dummybox",
+          [](Circuit *circ, const DummyBox &box,
+             const py_qubit_vector_t &qubits, const py_bit_vector_t &bits,
+             const py::kwargs &kwargs) {
+            std::vector<UnitID> args = {qubits.begin(), qubits.end()};
+            args.insert(args.end(), bits.begin(), bits.end());
+            return add_box_method<UnitID>(
+                circ, std::make_shared<DummyBox>(box), args, kwargs);
+          },
+          "Append a :py:class:`DummyBox` to the circuit."
+          "\n\n:param dummybox: The box to append"
+          "\n:param qubits: Qubits to append the box to"
+          "\n:param bits: Bits to append the box to"
+          "\n:return: the new :py:class:`Circuit`",
+          py::arg("dummybox"), py::arg("qubits"), py::arg("bits"))
       .def(
           "add_qcontrolbox",
           [](Circuit *circ, const QControlBox &box,

@@ -29,6 +29,7 @@
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/Command.hpp"
+#include "tket/Circuit/DummyBox.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Circuit/ToffoliBox.hpp"
@@ -760,6 +761,17 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "Substitute all ops with the given name for the given box."
           "The replacement boxes retain the same name.\n\n"
           ":param box: the replacement ToffoliBox\n"
+          ":param opgroup: the name of the operations group to replace\n"
+          ":return: whether any replacements were made",
+          py::arg("box"), py::arg("opgroup"))
+      .def(
+          "substitute_named",
+          [](Circuit &circ, const DummyBox &box, const std::string &opgroup) {
+            return circ.substitute_named(box, opgroup);
+          },
+          "Substitute all ops with the given name for the given box."
+          "The replacement boxes retain the same name.\n\n"
+          ":param box: the replacement DummyBox\n"
           ":param opgroup: the name of the operations group to replace\n"
           ":return: whether any replacements were made",
           py::arg("box"), py::arg("opgroup"))
