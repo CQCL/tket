@@ -44,6 +44,11 @@ class DummyBox : public Box {
    */
   DummyBox(const ResourceData &resource_data_);
 
+  /**
+   * Copy constructor
+   */
+  DummyBox(const DummyBox &other);
+
  protected:
   /**
    * @brief Throw an exception.
