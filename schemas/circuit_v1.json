@@ -782,6 +782,23 @@
           "if": {
             "properties": {
               "type": {
+                "const": "DummyBox"
+              }
+            }
+          },
+          "then": {
+            "required": [
+              "n_qubits",
+              "n_bits",
+              "resource_data"
+            ],
+            "maxProperties": 5
+          }
+        },
+        {
+          "if": {
+            "properties": {
+              "type": {
                 "const": "MultiplexorBox"
               }
             }

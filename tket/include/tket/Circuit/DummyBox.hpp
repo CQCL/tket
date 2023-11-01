@@ -16,6 +16,7 @@
 
 #include "Boxes.hpp"
 #include "ResourceData.hpp"
+#include "tket/Utils/Json.hpp"
 
 namespace tket {
 
@@ -40,9 +41,12 @@ class DummyBox : public Box {
   /**
    * @brief Construct a new instance from some resource data.
    *
+   * @param n_qubits number of qubits
+   * @param n_bits number of bits
    * @param resource_data_ resource data
    */
-  DummyBox(const ResourceData &resource_data_);
+  DummyBox(
+      unsigned n_qubits, unsigned n_bits, const ResourceData &resource_data_);
 
   /**
    * Copy constructor
@@ -56,7 +60,18 @@ class DummyBox : public Box {
 
   SymSet free_symbols() const override { return {}; }
 
+  bool is_equal(const Op &op_other) const override;
+
+  unsigned get_n_qubits() const;
+  unsigned get_n_bits() const;
   ResourceData get_resource_data() const;
+
+  op_signature_t get_signature() const override;
+
+  static Op_ptr from_json(const nlohmann::json &j);
+
+  static nlohmann::json to_json(const Op_ptr &op);
+
  protected:
   /**
    * @brief Throw an exception.
@@ -68,6 +83,8 @@ class DummyBox : public Box {
   void generate_circuit() const override;
 
  private:
+  const unsigned n_qubits;
+  const unsigned n_bits;
   const ResourceData resource_data;
 };
 

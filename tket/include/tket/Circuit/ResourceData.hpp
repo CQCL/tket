@@ -28,6 +28,9 @@ template <arithmetic T>
 struct ResourceBounds {
   T min;
   T max;
+  bool operator==(const ResourceBounds<T>& other) const {
+    return min == other.min && max == other.max;
+  }
 };
 
 struct ResourceData {
@@ -35,6 +38,20 @@ struct ResourceData {
   ResourceBounds<unsigned> GateDepth;
   std::map<OpType, ResourceBounds<unsigned>> OpTypeDepth;
   ResourceBounds<unsigned> TwoQubitGateDepth;
+  bool operator==(const ResourceData& other) const;
 };
+
+template <arithmetic T>
+void to_json(nlohmann::json& j, const ResourceBounds<T>& bounds) {
+  j["min"] = bounds.min;
+  j["max"] = bounds.max;
+}
+template <arithmetic T>
+void from_json(const nlohmann::json& j, ResourceBounds<T>& bounds) {
+  bounds.min = j.at("min").get<T>();
+  bounds.max = j.at("max").get<T>();
+}
+
+JSON_DECL(ResourceData)
 
 }  // namespace tket
