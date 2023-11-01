@@ -127,7 +127,7 @@ Other
 
 .. toctree::
    :caption: Extensions:
-   :maxdepth: 1
+   :maxdepth: 0
 
    pytket-aqt <https://cqcl.github.io/pytket-aqt/api/index.html>
    pytket-braket <https://tket.quantinuum.com/extensions/pytket-braket>
@@ -147,14 +147,6 @@ Other
    pytket-qulacs <https://tket.quantinuum.com/extensions/pytket-qulacs>
    pytket-qujax <https://cqcl.github.io/pytket-qujax/api/index.html>
    pytket-stim <https://tket.quantinuum.com/extensions/pytket-stim>
-
-.. toctree::
-   :caption: More Documentation:
-   :maxdepth: 1
-
-   pytket <https://tket.quantinuum.com/api-docs/>
-   Manual <https://tket.quantinuum.com/user-manual/>
-   Example notebooks <https://tket.quantinuum.com/examples/> 
 
 
 .. _pytket: https://tket.quantinuum.com/tket/pytket/api/
