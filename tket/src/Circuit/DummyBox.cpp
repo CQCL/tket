@@ -14,7 +14,12 @@
 
 #include "tket/Circuit/DummyBox.hpp"
 
+#include "Circuit/ResourceData.hpp"
+
 namespace tket {
+
+DummyBox::DummyBox(const ResourceData &resource_data_)
+    : Box(OpType::DummyBox), resource_data(resource_data_) {}
 
 void DummyBox::generate_circuit() const { throw DummyBoxNotDecomposable(); }
 

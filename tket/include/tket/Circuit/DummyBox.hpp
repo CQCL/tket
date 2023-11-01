@@ -15,6 +15,7 @@
 #pragma once
 
 #include "Boxes.hpp"
+#include "ResourceData.hpp"
 
 namespace tket {
 
@@ -35,6 +36,14 @@ class DummyBoxNotDecomposable : public std::logic_error {
  * on gate counts and depth. A circuit containing such a box cannot be executed.
  */
 class DummyBox : public Box {
+ public:
+  /**
+   * @brief Construct a new instance from some resource data.
+   *
+   * @param resource_data_ resource data
+   */
+  DummyBox(const ResourceData &resource_data_);
+
  protected:
   /**
    * @brief Throw an exception.
@@ -44,6 +53,9 @@ class DummyBox : public Box {
    * @throws DummyBoxNotDecomposable
    */
   void generate_circuit() const override;
+
+ private:
+  const ResourceData resource_data;
 };
 
 }  // namespace tket
