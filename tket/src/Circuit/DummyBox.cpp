@@ -24,6 +24,7 @@ DummyBox::DummyBox(const ResourceData &resource_data_)
 DummyBox::DummyBox(const DummyBox &other)
     : Box(other), resource_data(other.resource_data) {}
 
+ResourceData DummyBox::get_resource_data() const { return resource_data; }
 void DummyBox::generate_circuit() const { throw DummyBoxNotDecomposable(); }
 
 }  // namespace tket

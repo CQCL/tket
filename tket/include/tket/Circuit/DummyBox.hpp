@@ -55,6 +55,8 @@ class DummyBox : public Box {
   }
 
   SymSet free_symbols() const override { return {}; }
+
+  ResourceData get_resource_data() const;
  protected:
   /**
    * @brief Throw an exception.
