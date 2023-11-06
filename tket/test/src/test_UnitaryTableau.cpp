@@ -247,11 +247,59 @@ SCENARIO("Correct creation of UnitaryTableau") {
     CHECK(tab0 == tab4);
     CHECK(tab0 == tab5);
   }
+  GIVEN("A single Z gate") {
+    UnitaryTableau tab0(3);
+    UnitaryTableau tab1(3);
+    UnitaryTableau tab2(3);
+    UnitaryTableau tab3(3);
+    UnitaryTableau tab4(3);
+    UnitaryTableau tab5(3);
+    tab0.apply_gate_at_front(OpType::Z, {Qubit(0)});
+    tab1.apply_gate_at_end(OpType::Z, {Qubit(0)});
+    tab2.apply_gate_at_front(OpType::S, {Qubit(0)});
+    tab2.apply_gate_at_front(OpType::S, {Qubit(0)});
+    tab3.apply_gate_at_end(OpType::Sdg, {Qubit(0)});
+    tab3.apply_gate_at_end(OpType::Sdg, {Qubit(0)});
+    tab4.apply_Z_at_front(Qubit(0));
+    tab5.apply_Z_at_end(Qubit(0));
+    CHECK(tab0.get_zrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::Z));
+    CHECK(tab0.get_xrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::X, 2));
+    CHECK(tab0 == tab1);
+    CHECK(tab0 == tab2);
+    CHECK(tab0 == tab3);
+    CHECK(tab0 == tab4);
+    CHECK(tab0 == tab5);
+  }
+  GIVEN("A single X gate") {
+    UnitaryTableau tab0(3);
+    UnitaryTableau tab1(3);
+    UnitaryTableau tab2(3);
+    UnitaryTableau tab3(3);
+    UnitaryTableau tab4(3);
+    UnitaryTableau tab5(3);
+    tab0.apply_gate_at_front(OpType::X, {Qubit(0)});
+    tab1.apply_gate_at_end(OpType::X, {Qubit(0)});
+    tab2.apply_gate_at_front(OpType::V, {Qubit(0)});
+    tab2.apply_gate_at_front(OpType::V, {Qubit(0)});
+    tab3.apply_gate_at_end(OpType::Vdg, {Qubit(0)});
+    tab3.apply_gate_at_end(OpType::Vdg, {Qubit(0)});
+    tab4.apply_X_at_front(Qubit(0));
+    tab5.apply_X_at_end(Qubit(0));
+    CHECK(tab0.get_zrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::Z, 2));
+    CHECK(tab0.get_xrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::X));
+    CHECK(tab0 == tab1);
+    CHECK(tab0 == tab2);
+    CHECK(tab0 == tab3);
+    CHECK(tab0 == tab4);
+    CHECK(tab0 == tab5);
+  }
   GIVEN("A single H gate") {
     UnitaryTableau tab0(3);
     UnitaryTableau tab1(3);
     UnitaryTableau tab2(3);
     UnitaryTableau tab3(3);
+    UnitaryTableau tab4(3);
+    UnitaryTableau tab5(3);
     tab0.apply_gate_at_front(OpType::H, {Qubit(0)});
     tab1.apply_gate_at_end(OpType::H, {Qubit(0)});
     tab2.apply_gate_at_front(OpType::S, {Qubit(0)});
@@ -260,11 +308,15 @@ SCENARIO("Correct creation of UnitaryTableau") {
     tab3.apply_gate_at_end(OpType::Vdg, {Qubit(0)});
     tab3.apply_gate_at_end(OpType::Sdg, {Qubit(0)});
     tab3.apply_gate_at_end(OpType::Vdg, {Qubit(0)});
+    tab4.apply_H_at_front(Qubit(0));
+    tab5.apply_H_at_end(Qubit(0));
     CHECK(tab0.get_zrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::X));
     CHECK(tab0.get_xrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::Z));
     CHECK(tab0 == tab1);
     CHECK(tab0 == tab2);
     CHECK(tab0 == tab3);
+    CHECK(tab0 == tab4);
+    CHECK(tab0 == tab5);
   }
   GIVEN("A single CX gate") {
     UnitaryTableau tab0(3);
@@ -450,14 +502,52 @@ SCENARIO("Correct creation of UnitaryRevTableau") {
     CHECK(tab0 == tab4);
     CHECK(tab0 == tab5);
   }
+  GIVEN("A single Z gate") {
+    UnitaryRevTableau tab0(3);
+    UnitaryRevTableau tab1(3);
+    UnitaryRevTableau tab2(3);
+    UnitaryRevTableau tab3(3);
+    tab0.apply_gate_at_end(OpType::Z, {Qubit(0)});
+    tab1.apply_gate_at_front(OpType::Z, {Qubit(0)});
+    tab2.apply_Z_at_end(Qubit(0));
+    tab3.apply_Z_at_front(Qubit(0));
+    REQUIRE(tab0.get_zrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::Z));
+    REQUIRE(
+        tab0.get_xrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::X, 2));
+    REQUIRE(tab0 == tab1);
+    REQUIRE(tab0 == tab2);
+    REQUIRE(tab0 == tab3);
+  }
+  GIVEN("A single X gate") {
+    UnitaryRevTableau tab0(3);
+    UnitaryRevTableau tab1(3);
+    UnitaryRevTableau tab2(3);
+    UnitaryRevTableau tab3(3);
+    tab0.apply_gate_at_end(OpType::X, {Qubit(0)});
+    tab1.apply_gate_at_front(OpType::X, {Qubit(0)});
+    tab2.apply_X_at_end(Qubit(0));
+    tab3.apply_X_at_front(Qubit(0));
+    REQUIRE(
+        tab0.get_zrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::Z, 2));
+    REQUIRE(tab0.get_xrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::X));
+    REQUIRE(tab0 == tab1);
+    REQUIRE(tab0 == tab2);
+    REQUIRE(tab0 == tab3);
+  }
   GIVEN("A single H gate") {
     UnitaryRevTableau tab0(3);
     UnitaryRevTableau tab1(3);
+    UnitaryRevTableau tab2(3);
+    UnitaryRevTableau tab3(3);
     tab0.apply_gate_at_end(OpType::H, {Qubit(0)});
     tab1.apply_gate_at_front(OpType::H, {Qubit(0)});
+    tab2.apply_H_at_end(Qubit(0));
+    tab3.apply_H_at_front(Qubit(0));
     REQUIRE(tab0.get_zrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::X));
     REQUIRE(tab0.get_xrow(Qubit(0)) == SpPauliStabiliser(Qubit(0), Pauli::Z));
     REQUIRE(tab0 == tab1);
+    REQUIRE(tab0 == tab2);
+    REQUIRE(tab0 == tab3);
   }
   GIVEN("A single CX gate") {
     UnitaryRevTableau tab0(3);
