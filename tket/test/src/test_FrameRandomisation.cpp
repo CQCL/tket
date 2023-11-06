@@ -358,5 +358,19 @@ SCENARIO(
   }
 }
 
+SCENARIO("Frame Randomisation Segmentation Fault") {
+  // https://github.com/CQCL/tket/issues/1015
+  PauliFrameRandomisation pfr;
+  Circuit c(4);
+  c.add_op<unsigned>(OpType::CX, {0, 2});
+  c.add_op<unsigned>(OpType::Z, {0});
+  c.add_op<unsigned>(OpType::CX, {0, 3});
+  c.add_op<unsigned>(OpType::Z, {0});
+  c.add_op<unsigned>(OpType::CX, {0, 3});
+  c.add_op<unsigned>(OpType::CX, {0, 1});
+  std::vector<Circuit> circs = pfr.sample_randomisation_circuits(c, 1);
+  CHECK(circs.size() == 1);
+}
+
 }  // namespace test_FrameRandomisation
 }  // namespace tket

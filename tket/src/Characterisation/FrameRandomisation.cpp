@@ -79,8 +79,17 @@ void add_noop_frames(std::vector<Cycle>& cycles, Circuit& circ) {
         in_edge = (*it).second;
       }
 
+      // boundary in edges can be equal to other boundary out edges
+      // rewiring a vertex into these in edges replace the edge
+      // first see if its been rewired and use new edge if necessary
+      Edge out_edge = boundary.second;
+      it = replacement_rewiring_edges.find(out_edge);
+      if (it != replacement_rewiring_edges.end()) {
+        out_edge = (*it).second;
+      }
+
       circ.rewire(input_noop_vert, {in_edge}, {EdgeType::Quantum});
-      circ.rewire(output_noop_vert, {boundary.second}, {EdgeType::Quantum});
+      circ.rewire(output_noop_vert, {out_edge}, {EdgeType::Quantum});
 
       // Can guarantee both have one output edge only as just rewired
       Edge input_noop_out_edge =
@@ -91,8 +100,11 @@ void add_noop_frames(std::vector<Cycle>& cycles, Circuit& circ) {
       barrier_ins.push_back(input_noop_out_edge);
       barrier_outs.push_back(output_noop_in_edge);
 
-      replacement_rewiring_edges[boundary.second] =
+      replacement_rewiring_edges[out_edge] =
           circ.get_out_edges_of_type(output_noop_vert, EdgeType::Quantum)[0];
+      replacement_rewiring_edges[in_edge] =
+          circ.get_in_edges_of_type(input_noop_vert, EdgeType::Quantum)[0];
+
       full_cycle.add_vertex_pair({input_noop_vert, output_noop_vert});
     }
     std::vector<EdgeType> sig(barrier_ins.size(), EdgeType::Quantum);
@@ -462,8 +474,11 @@ std::vector<Circuit> FrameRandomisation::sample_randomisation_circuits(
     throw FrameRandomisationError(
         std::string("Circuit has no gates with OpType in Cycle OpTypes."));
   }
+
   add_noop_frames(all_cycles, circuit_);
+
   std::vector<unsigned> frame_sizes = get_frame_sizes(all_cycles).first;
+
   std::vector<std::vector<OpTypeVector>> all_samples =
       get_all_samples(samples, frame_sizes);
   std::vector<Circuit> output_circuit_list =
