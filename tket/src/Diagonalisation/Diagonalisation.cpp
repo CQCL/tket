@@ -594,6 +594,7 @@ std::pair<Circuit, std::optional<Qubit>> reduce_overlap_of_paulis(
             u.add_op<Qubit>(OpType::H, {qb});
             break;
           default:
+            TKET_ASSERT(false);
             break;  // Cannot hit this case
         }
         break;
@@ -608,6 +609,7 @@ std::pair<Circuit, std::optional<Qubit>> reduce_overlap_of_paulis(
             u.add_op<Qubit>(OpType::S, {qb});
             break;
           default:
+            TKET_ASSERT(false);
             break;  // Cannot hit this case
         }
         break;
