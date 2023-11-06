@@ -370,6 +370,35 @@ static ctrl_op_map_t op_map_transpose(const ctrl_op_map_t &op_map) {
   return new_op_map;
 }
 
+static bool opmap_it_equal(
+    const std::pair<std::vector<bool>, Op_ptr> &lhs,
+    const std::pair<std::vector<bool>, Op_ptr> &rhs) {
+  return lhs.first == rhs.first && *lhs.second == *rhs.second;
+}
+static bool tensored_opmap_it_equal(
+    const std::pair<std::vector<bool>, std::vector<Op_ptr>> &lhs,
+    const std::pair<std::vector<bool>, std::vector<Op_ptr>> &rhs) {
+  return lhs.first == rhs.first &&
+         std::equal(
+             lhs.second.begin(), lhs.second.end(), rhs.second.begin(),
+             rhs.second.end(),
+             [](const Op_ptr &a, const Op_ptr &b) { return *a == *b; });
+}
+
+// Check if two ctrl_op_map_t are semantically equal.
+static bool opmap_compare(
+    const ctrl_op_map_t &map1, const ctrl_op_map_t &map2) {
+  return std::equal(
+      map1.begin(), map1.end(), map2.begin(), map2.end(), opmap_it_equal);
+}
+// Check if two ctrl_tensored_op_map_t are semantically equal.
+static bool opmap_compare(
+    const ctrl_tensored_op_map_t &map1, const ctrl_tensored_op_map_t &map2) {
+  return std::equal(
+      map1.begin(), map1.end(), map2.begin(), map2.end(),
+      tensored_opmap_it_equal);
+}
+
 MultiplexorBox::MultiplexorBox(const ctrl_op_map_t &op_map)
     : Box(OpType::MultiplexorBox), op_map_(op_map) {
   auto it = op_map.begin();
@@ -409,6 +438,12 @@ Op_ptr MultiplexorBox::transpose() const {
 op_signature_t MultiplexorBox::get_signature() const {
   op_signature_t qubits(n_controls_ + n_targets_, EdgeType::Quantum);
   return qubits;
+}
+
+bool MultiplexorBox::is_equal(const Op &op_other) const {
+  const MultiplexorBox &other = dynamic_cast<const MultiplexorBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  return opmap_compare(op_map_, other.op_map_);
 }
 
 nlohmann::json MultiplexorBox::to_json(const Op_ptr &op) {
@@ -492,6 +527,13 @@ Op_ptr MultiplexedRotationBox::transpose() const {
 op_signature_t MultiplexedRotationBox::get_signature() const {
   op_signature_t qubits(n_controls_ + 1, EdgeType::Quantum);
   return qubits;
+}
+
+bool MultiplexedRotationBox::is_equal(const Op &op_other) const {
+  const MultiplexedRotationBox &other =
+      dynamic_cast<const MultiplexedRotationBox &>(op_other);
+  if (id_ == other.get_id()) return true;
+  return opmap_compare(op_map_, other.op_map_);
 }
 
 nlohmann::json MultiplexedRotationBox::to_json(const Op_ptr &op) {
@@ -595,6 +637,14 @@ Op_ptr MultiplexedU2Box::transpose() const {
 op_signature_t MultiplexedU2Box::get_signature() const {
   op_signature_t qubits(n_controls_ + 1, EdgeType::Quantum);
   return qubits;
+}
+
+bool MultiplexedU2Box::is_equal(const Op &op_other) const {
+  const MultiplexedU2Box &other =
+      dynamic_cast<const MultiplexedU2Box &>(op_other);
+  if (id_ == other.get_id()) return true;
+  return impl_diag_ == other.impl_diag_ &&
+         opmap_compare(op_map_, other.op_map_);
 }
 
 nlohmann::json MultiplexedU2Box::to_json(const Op_ptr &op) {
@@ -786,6 +836,13 @@ Op_ptr MultiplexedTensoredU2Box::transpose() const {
 op_signature_t MultiplexedTensoredU2Box::get_signature() const {
   op_signature_t qubits(n_controls_ + n_targets_, EdgeType::Quantum);
   return qubits;
+}
+
+bool MultiplexedTensoredU2Box::is_equal(const Op &op_other) const {
+  const MultiplexedTensoredU2Box &other =
+      dynamic_cast<const MultiplexedTensoredU2Box &>(op_other);
+  if (id_ == other.get_id()) return true;
+  return opmap_compare(op_map_, other.op_map_);
 }
 
 nlohmann::json MultiplexedTensoredU2Box::to_json(const Op_ptr &op) {

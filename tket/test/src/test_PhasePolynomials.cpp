@@ -20,6 +20,7 @@
 #include "tket/Circuit/CircUtils.hpp"
 #include "tket/Converters/PhasePoly.hpp"
 #include "tket/Predicates/CompilerPass.hpp"
+#include "tket/Predicates/PassLibrary.hpp"
 #include "tket/Transformations/Decomposition.hpp"
 #include "tket/Transformations/Rebase.hpp"
 #include "tket/Transformations/Transform.hpp"
@@ -111,6 +112,36 @@ SCENARIO("Test basic phase polynomial creation") {
       correct_basis_map.row(0)[i] = 1;
     }
     REQUIRE(basis_map == correct_basis_map);
+  }
+}
+SCENARIO("Test phase polynomial creation and decomposition") {
+  GIVEN("default registers") {
+    Circuit circ(3);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::CX, {0, 2});
+    PhasePolyBox ppbox(circ);
+
+    Circuit d(3);
+    d.add_box(ppbox, {0, 1, 2});
+    CompilationUnit cu(d);
+    DecomposeBoxes()->apply(cu);
+    auto result = cu.get_circ_ref();
+    REQUIRE(test_unitary_comparison(circ, result));
+  }
+  GIVEN("custom registers") {
+    Circuit circ;
+    auto a_reg = circ.add_q_register("a", 2);
+    auto b_reg = circ.add_q_register("b", 1);
+    circ.add_op<UnitID>(OpType::CX, {a_reg[0], b_reg[0]});
+    circ.add_op<UnitID>(OpType::CX, {a_reg[1], a_reg[0]});
+    PhasePolyBox ppbox(circ);
+
+    Circuit d(3);
+    d.add_box(ppbox, {0, 1, 2});
+    CompilationUnit cu(d);
+    DecomposeBoxes()->apply(cu);
+    auto result = cu.get_circ_ref();
+    REQUIRE(test_unitary_comparison(circ, result));
   }
 }
 

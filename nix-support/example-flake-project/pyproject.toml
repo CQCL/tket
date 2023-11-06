@@ -1,0 +1,9 @@
+[project]
+name = "examples"
+version = "0.0.1"
+dependencies = ["pytket"]
+
+[project.scripts]
+entanglement = "examples.basic_circuits:entanglement_circuit"
+teleport = "examples.basic_circuits:teleport_circuit"
+

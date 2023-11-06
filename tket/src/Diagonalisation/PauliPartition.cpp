@@ -24,9 +24,9 @@
 namespace tket {
 
 PauliPartitionerGraph::PauliPartitionerGraph(
-    const std::list<QubitPauliString>& strings, PauliPartitionStrat strat) {
+    const std::list<SpPauliString>& strings, PauliPartitionStrat strat) {
   pac_graph = {};
-  for (const QubitPauliString& tensor : strings) {
+  for (const SpPauliString& tensor : strings) {
     PauliACVertex new_vert = boost::add_vertex(tensor, pac_graph);
     BGL_FORALL_VERTICES(v, pac_graph, PauliACGraph) {
       if (v != new_vert) {
@@ -64,13 +64,13 @@ class AbstractGraphData {
 
   // Return the ID of the string (and also assign a new ID if the string
   // was not seen before); the eventual IDs will form an interval {0,1,2,...,n}.
-  std::size_t get_vertex_id(const QubitPauliString& pauli_string);
+  std::size_t get_vertex_id(const SpPauliString& pauli_string);
 
   typedef
       // KEY: the Pauli string present in a vertex
       // VALUE: an integer label for that vertex.
       //      The labels will be a contiguous interval {0,1,2,...,m}.
-      std::map<QubitPauliString, std::size_t>
+      std::map<SpPauliString, std::size_t>
           VertexMap;
 
   const graphs::AdjacencyData& get_adjacency_data() const;
@@ -83,7 +83,7 @@ class AbstractGraphData {
 };
 
 std::size_t AbstractGraphData::get_vertex_id(
-    const QubitPauliString& pauli_string) {
+    const SpPauliString& pauli_string) {
   const auto citer = m_vertex_map.find(pauli_string);
   if (citer != m_vertex_map.cend()) {
     return citer->second;
@@ -125,7 +125,7 @@ AbstractGraphData::AbstractGraphData(const PauliACGraph& pac_graph)
   }
 }
 
-static std::map<unsigned, std::list<QubitPauliString>>
+static std::map<unsigned, std::list<SpPauliString>>
 get_partitioned_paulis_for_exhaustive_method(const PauliACGraph& pac_graph) {
   const AbstractGraphData data(pac_graph);
   const graphs::GraphColouringResult colouring =
@@ -133,10 +133,10 @@ get_partitioned_paulis_for_exhaustive_method(const PauliACGraph& pac_graph) {
 
   TKET_ASSERT(data.get_vertex_map().size() == colouring.colours.size());
 
-  std::map<unsigned, std::list<QubitPauliString>> colour_map;
+  std::map<unsigned, std::list<SpPauliString>> colour_map;
 
   for (const auto& entry : data.get_vertex_map()) {
-    const QubitPauliString& vertex = entry.first;
+    const SpPauliString& vertex = entry.first;
     const std::size_t id = entry.second;
     TKET_ASSERT(id < colouring.colours.size());
 
@@ -153,7 +153,7 @@ get_partitioned_paulis_for_exhaustive_method(const PauliACGraph& pac_graph) {
   return colour_map;
 }
 
-static std::map<unsigned, std::list<QubitPauliString>>
+static std::map<unsigned, std::list<SpPauliString>>
 get_partitioned_paulis_for_largest_first_method(const PauliACGraph& pac_graph) {
   std::vector<unsigned> order_vec(boost::num_vertices(pac_graph));
   std::iota(order_vec.begin(), order_vec.end(), 0);
@@ -175,7 +175,7 @@ get_partitioned_paulis_for_largest_first_method(const PauliACGraph& pac_graph) {
           order_vec.begin(), boost::identity_property_map()),
       colour_prop_map);
 
-  std::map<unsigned, std::list<QubitPauliString>> colour_map;
+  std::map<unsigned, std::list<SpPauliString>> colour_map;
   BGL_FORALL_VERTICES(v, pac_graph, PauliACGraph) {
     unsigned v_colour = colour_prop_map[v];
     colour_map[v_colour].push_back(pac_graph[v]);
@@ -183,7 +183,7 @@ get_partitioned_paulis_for_largest_first_method(const PauliACGraph& pac_graph) {
   return colour_map;
 }
 
-std::map<unsigned, std::list<QubitPauliString>>
+std::map<unsigned, std::list<SpPauliString>>
 PauliPartitionerGraph::partition_paulis(GraphColourMethod method) const {
   switch (method) {
     case GraphColourMethod::LargestFirst:
@@ -202,23 +202,20 @@ PauliPartitionerGraph::partition_paulis(GraphColourMethod method) const {
   }
 }
 
-static std::list<std::list<QubitPauliString>>
+static std::list<std::list<SpPauliString>>
 get_term_sequence_for_lazy_colouring_method(
-    const std::list<QubitPauliString>& strings, PauliPartitionStrat strat) {
-  std::list<std::list<QubitPauliString>> terms;
-  for (const QubitPauliString& qpt : strings) {
+    const std::list<SpPauliString>& strings, PauliPartitionStrat strat) {
+  std::list<std::list<SpPauliString>> terms;
+  for (const SpPauliString& qpt : strings) {
     if (terms.empty()) {
       terms.push_back({qpt});
       continue;
     }
 
     bool found_bin = false;
-    for (std::list<std::list<QubitPauliString>>::iterator term_iter =
-             terms.begin();
-         term_iter != terms.end(); ++term_iter) {
-      const std::list<QubitPauliString>& qpt_list = *term_iter;
+    for (std::list<SpPauliString>& qpt_list : terms) {
       bool viable_bin = true;
-      for (const QubitPauliString& qpt2 : qpt_list) {
+      for (const SpPauliString& qpt2 : qpt_list) {
         switch (strat) {
           case (PauliPartitionStrat::NonConflictingSets): {
             bool conflict = !qpt.conflicting_qubits(qpt2).empty();
@@ -237,7 +234,7 @@ get_term_sequence_for_lazy_colouring_method(
         if (viable_bin == false) break;
       }
       if (viable_bin) {
-        term_iter->push_back(qpt);
+        qpt_list.push_back(qpt);
         found_bin = true;
         break;
       }
@@ -250,24 +247,24 @@ get_term_sequence_for_lazy_colouring_method(
   return terms;
 }
 
-static std::list<std::list<QubitPauliString>>
+static std::list<std::list<SpPauliString>>
 get_term_sequence_with_constructed_dependency_graph(
-    const std::list<QubitPauliString>& strings, PauliPartitionStrat strat,
+    const std::list<SpPauliString>& strings, PauliPartitionStrat strat,
     GraphColourMethod method) {
-  std::list<std::list<QubitPauliString>> terms;
+  std::list<std::list<SpPauliString>> terms;
   PauliPartitionerGraph pp(strings, strat);
-  std::map<unsigned, std::list<QubitPauliString>> colour_map =
+  std::map<unsigned, std::list<SpPauliString>> colour_map =
       pp.partition_paulis(method);
 
-  for (const std::pair<const unsigned, std::list<QubitPauliString>>&
-           colour_pair : colour_map) {
+  for (const std::pair<const unsigned, std::list<SpPauliString>>& colour_pair :
+       colour_map) {
     terms.push_back(colour_pair.second);
   }
   return terms;
 }
 
-std::list<std::list<QubitPauliString>> term_sequence(
-    const std::list<QubitPauliString>& strings, PauliPartitionStrat strat,
+std::list<std::list<SpPauliString>> term_sequence(
+    const std::list<SpPauliString>& strings, PauliPartitionStrat strat,
     GraphColourMethod method) {
   switch (method) {
     case GraphColourMethod::Lazy:

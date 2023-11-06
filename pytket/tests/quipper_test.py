@@ -14,20 +14,19 @@
 
 from pathlib import Path
 
-import pytest  # type: ignore
+import pytest
 from pytket import Circuit
 from pytket.quipper import circuit_from_quipper
-from pytket.transform import Transform  # type: ignore
+from pytket.transform import Transform
 from pytket.utils.results import compare_unitaries
 import numpy as np
-import os
 from typing import Any
 
 curr_file_path = Path(__file__).resolve().parent
 
 
 def approx_equal_up_to_phase(s0: np.ndarray, s1: np.ndarray, eps: float) -> bool:
-    d = np.vdot(s0, s1)  # type: ignore
+    d = np.vdot(s0, s1)
     return bool(abs(abs(d) - 1) < eps)
 
 

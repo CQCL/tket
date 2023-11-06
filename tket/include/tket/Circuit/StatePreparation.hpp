@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include <memory>
+
 #include "Boxes.hpp"
 #include "Circuit.hpp"
 #include "tket/Utils/Json.hpp"
@@ -46,7 +48,7 @@ class StatePreparationBox : public Box {
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &) const override {
-    return Op_ptr();
+    return std::make_shared<StatePreparationBox>(*this);
   }
 
   SymSet free_symbols() const override { return {}; }
@@ -54,11 +56,7 @@ class StatePreparationBox : public Box {
   /**
    * Equality check between two StatePreparationBox instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const StatePreparationBox &other =
-        dynamic_cast<const StatePreparationBox &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   Op_ptr dagger() const override;
 

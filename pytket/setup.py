@@ -14,13 +14,9 @@
 
 import multiprocessing
 import os
-import platform
-import re
 import subprocess
-import sys
 import json
 import shutil
-from distutils.version import LooseVersion
 import setuptools  # type: ignore
 from setuptools import setup, Extension
 from setuptools.command.build_ext import build_ext  # type: ignore
@@ -38,6 +34,8 @@ binders = [
     "logging",
     "utils_serialization",
     "circuit",
+    "circuit_library",
+    "unit_id",
     "passes",
     "predicates",
     "partition",
@@ -76,9 +74,7 @@ class CMakeBuild(build_ext):
         ext_suffix = get_config_var("EXT_SUFFIX")
         lib_names.extend(f"{binder}{ext_suffix}" for binder in binders)
         # TODO make the above generic
-        if os.path.exists(extdir):
-            shutil.rmtree(extdir)
-        os.makedirs(extdir)
+        os.makedirs(extdir, exist_ok=True)
         for lib_name in lib_names:
             shutil.copy(os.path.join(lib_folder, lib_name), extdir)
 
@@ -112,9 +108,7 @@ class ConanBuild(build_ext):
         # Collect the paths to the libraries to package together
         conaninfo = json.loads(jsonstr)
         nodes = conaninfo["graph"]["nodes"]
-        if os.path.exists(extdir):
-            shutil.rmtree(extdir)
-        os.makedirs(extdir)
+        os.makedirs(extdir, exist_ok=True)
         for comp in ["tklog", "tket", "pytket"]:
             compnodes = [
                 node for _, node in nodes.items() if node["ref"].startswith(comp + "/")
@@ -129,8 +123,37 @@ class ConanBuild(build_ext):
                     shutil.copy(libpath, extdir)
 
 
-setup_dir = os.path.abspath(os.path.dirname(__file__))
+class NixBuild(build_ext):
+    def run(self):
+        self.check_extensions_list(self.extensions)
+        extdir = os.path.abspath(
+            os.path.dirname(self.get_ext_fullpath(self.extensions[0].name))
+        )
+        if os.path.exists(extdir):
+            shutil.rmtree(extdir)
+        os.makedirs(extdir)
+
+        nix_ldflags = os.environ["NIX_LDFLAGS"].split()
+        build_inputs = os.environ["propagatedBuildInputs"].split()
+
+        binders = [f"{l}/lib" for l in build_inputs if "-binders" in l]
+        for binder in binders:
+            for lib in os.listdir(binder):
+                libpath = os.path.join(binder, lib)
+                if not os.path.isdir(libpath):
+                    shutil.copy(libpath, extdir)
+
+
 plat_name = os.getenv("WHEEL_PLAT_NAME")
+
+
+def get_build_ext():
+    if os.getenv("USE_NIX"):
+        return NixBuild
+    elif os.getenv("NO_CONAN"):
+        return CMakeBuild
+    else:
+        return ConanBuild
 
 
 class bdist_wheel(_bdist_wheel):
@@ -180,7 +203,7 @@ setup(
         CMakeExtension("pytket._tket.{}".format(binder)) for binder in binders
     ],
     cmdclass={
-        "build_ext": CMakeBuild if os.getenv("NO_CONAN") else ConanBuild,
+        "build_ext": get_build_ext(),
         "bdist_wheel": bdist_wheel,
     },
     classifiers=[
@@ -199,9 +222,4 @@ setup(
     include_package_data=True,
     package_data={"pytket": ["py.typed"]},
     zip_safe=False,
-    use_scm_version={
-        "root": os.path.dirname(setup_dir),
-        "write_to": os.path.join(setup_dir, "pytket", "_version.py"),
-        "write_to_template": "__version__ = '{version}'",
-    },
 )

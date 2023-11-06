@@ -27,7 +27,7 @@ from typing import (
     Counter,
 )
 import numpy as np
-from scipy.stats import rv_discrete  # type: ignore
+from scipy.stats import rv_discrete
 
 Number = Union[float, complex]
 T0 = TypeVar("T0")

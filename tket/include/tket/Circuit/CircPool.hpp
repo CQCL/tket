@@ -181,6 +181,12 @@ const Circuit &CSX_using_CX();
 /** Equivalent to CSXdg, using CX and single-qubit gates */
 const Circuit &CSXdg_using_CX();
 
+/** Equivalent to CS, using CX and single-qubit gates */
+const Circuit &CS_using_CX();
+
+/** Equivalent to CSdg, using CX and single-qubit gates */
+const Circuit &CSdg_using_CX();
+
 /** Equivalent to CSWAP, using CX and single-qubit gates */
 const Circuit &CSWAP_using_CX();
 
@@ -232,7 +238,9 @@ Circuit XXPhase_using_CX(const Expr &alpha);
 /** Equivalent to YYPhase, using a TK2 gate */
 Circuit YYPhase_using_TK2(const Expr &alpha);
 
-/** Equivalent to YYPhase, using CX, Rz and U3 gates */
+/** Equivalent to YYPhase, using two CX gates and one Ry
+ * one Sdg and one S gate.
+ */
 Circuit YYPhase_using_CX(const Expr &alpha);
 
 /** Equivalent to ZZPhase, using a TK2 gate */

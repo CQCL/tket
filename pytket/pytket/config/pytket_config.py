@@ -14,7 +14,7 @@
 
 from abc import ABC, abstractmethod
 from pathlib import Path
-from typing import Any, ClassVar, Dict, Optional, Type, TypeVar
+from typing import Any, ClassVar, Dict, Optional, TypeVar, Type
 from dataclasses import asdict, dataclass
 import json
 import os
@@ -87,7 +87,7 @@ def write_config_file(config: PytketConfig) -> None:
     config.write_file(get_config_file_path())
 
 
-T_ext = TypeVar("T_ext", bound="PytketExtConfig")
+T = TypeVar("T", bound="PytketExtConfig")
 
 
 @dataclass
@@ -98,7 +98,7 @@ class PytketExtConfig(ABC):
 
     @classmethod
     @abstractmethod
-    def from_extension_dict(cls: Type[T_ext], ext_dict: Dict[str, Any]) -> T_ext:
+    def from_extension_dict(cls: Type[T], ext_dict: Dict[str, Any]) -> T:
         """Abstract method to build PytketExtConfig from dictionary serialized form."""
         ...
 
@@ -107,14 +107,14 @@ class PytketExtConfig(ABC):
         return asdict(self)
 
     @classmethod
-    def from_pytketconfig(cls: Type[T_ext], p_config: PytketConfig) -> T_ext:
+    def from_pytketconfig(cls: Type[T], p_config: PytketConfig) -> T:
         """Build from PytketConfig instance."""
         if cls.ext_dict_key in p_config.extensions:
             return cls.from_extension_dict(p_config.extensions[cls.ext_dict_key])
         return cls.from_extension_dict({})
 
     @classmethod
-    def from_default_config_file(cls: Type[T_ext]) -> T_ext:
+    def from_default_config_file(cls: Type[T]) -> T:
         """Load from default config file."""
         return cls.from_pytketconfig(load_config_file())
 

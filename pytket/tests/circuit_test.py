@@ -13,11 +13,12 @@
 # limitations under the License.
 
 import json
+
 from jsonschema import validate  # type: ignore
 from pathlib import Path
 import pickle
 
-from pytket.circuit import (  # type: ignore
+from pytket.circuit import (
     Circuit,
     Op,
     OpType,
@@ -33,12 +34,12 @@ from pytket.circuit import (  # type: ignore
     MultiplexedTensoredU2Box,
     StatePreparationBox,
     DiagonalBox,
+    ConjugationBox,
     ExpBox,
     PauliExpBox,
     PauliExpPairBox,
     PauliExpCommutingSetBox,
     QControlBox,
-    PhasePolyBox,
     ToffoliBox,
     ToffoliBoxSynthStrat,
     CustomGateDef,
@@ -47,21 +48,35 @@ from pytket.circuit import (  # type: ignore
     Bit,
     BitRegister,
     QubitRegister,
+    CXConfigType,
 )
 from pytket.circuit.display import get_circuit_renderer, render_circuit_as_html
+from pytket.circuit.named_types import (
+    BitstringToOpList,
+    BitstringToTensoredOpMap,
+    BitstringToTensoredOpList,
+    BitstringToOpMap,
+    ParamType,
+    PermutationMap,
+)
 
-from pytket.pauli import Pauli  # type: ignore
-from pytket.passes import PauliSimp, CliffordSimp, SynthesiseTket, DecomposeBoxes, RemoveRedundancies  # type: ignore
-from pytket.predicates import CompilationUnit  # type: ignore
-from pytket.transform import Transform, PauliSynthStrat  # type: ignore
+from pytket.pauli import Pauli
+from pytket.passes import (
+    CliffordSimp,
+    SynthesiseTket,
+    DecomposeBoxes,
+    RemoveRedundancies,
+)
+from pytket.transform import Transform
 
 import numpy as np
-from scipy.linalg import block_diag  # type: ignore
-import sympy  # type: ignore
-from sympy import Symbol, pi, sympify, functions  # type: ignore
+from scipy.linalg import block_diag
+import sympy
+from sympy import Symbol, pi, sympify, functions, Expr, exp
+import math
 from math import sqrt
 
-import pytest  # type: ignore
+import pytest
 
 from hypothesis import given, settings
 import strategies as st  # type: ignore
@@ -71,11 +86,14 @@ curr_file_path = Path(__file__).resolve().parent
 with open(curr_file_path.parent.parent / "schemas/circuit_v1.json", "r") as f:
     schema = json.load(f)
 
+_0 = False
+_1 = True
+
 
 def json_validate(circ: Circuit) -> bool:
     serializable_form = circ.to_dict()
     validate(instance=serializable_form, schema=schema)
-    return circ == Circuit.from_dict(serializable_form)  # type: ignore
+    return circ == Circuit.from_dict(serializable_form)
 
 
 def test_op_free_symbols() -> None:
@@ -99,6 +117,7 @@ def test_circuit_transpose() -> None:
     commands = c_t.get_commands()
     assert str(commands[0]) == "CX q[0], q[1];"
     assert str(commands[1]) == "Unitary2qBox q[1], q[0];"
+    assert isinstance(commands[1].op, Unitary2qBox)
     assert commands[1].op.get_matrix().all() == u.transpose().all()
 
 
@@ -113,6 +132,7 @@ def test_circuit_dagger() -> None:
     assert str(commands[0]) == "CnRy(3.7) q[0], q[1];"
     assert commands[0].qubits == [Qubit(0), Qubit(1)]
     assert str(commands[1]) == "Unitary2qBox q[1], q[0];"
+    assert isinstance(commands[1].op, Unitary2qBox)
     assert commands[1].op.get_matrix().all() == u.conj().transpose().all()
 
 
@@ -184,13 +204,15 @@ def test_circuit_gen() -> None:
     c.FSim(0.2, 0.4, 0, 1)
     c.Sycamore(1, 2)
     c.ISWAPMax(2, 3)
+    c.CS(0, 2)
+    c.CSdg(1, 2)
 
     assert c.n_qubits == 4
-    assert c._n_vertices() == 45
-    assert c.n_gates == 29
+    assert c._n_vertices() == 47
+    assert c.n_gates == 31
 
     commands = c.get_commands()
-    assert len(commands) == 29
+    assert len(commands) == 31
     assert str(commands[0]) == "X q[0];"
     assert str(commands[2]) == "CX q[2], q[0];"
     assert str(commands[4]) == "CRz(0.5) q[0], q[3];"
@@ -218,6 +240,8 @@ def test_circuit_gen() -> None:
     assert str(commands[26]) == "FSim(0.2, 0.4) q[0], q[1];"
     assert str(commands[27]) == "Sycamore q[1], q[2];"
     assert str(commands[28]) == "ISWAPMax q[2], q[3];"
+    assert str(commands[29]) == "CS q[0], q[2];"
+    assert str(commands[30]) == "CSdg q[1], q[2];"
 
     assert commands[14].qubits == [Qubit(3)]
     assert commands[14].bits == [Bit(3)]
@@ -259,16 +283,40 @@ def test_symbolic_ops() -> None:
     c.Rx(alpha, 0)
     beta = fresh_symbol("alpha")
     c.CRz(beta * 2, 1, 0)
-    s_map = {alpha: 0.5, beta: 3.2}
+    gamma = Symbol("gamma")  # type: ignore
+    # https://github.com/CQCL/tket/issues/1068
+    c.Rz(exp(gamma), 1)
+    s_map = {alpha: 0.5, beta: 3.2, gamma: 1}
     assert c.is_symbolic()
-    assert c.free_symbols() == set([alpha, beta])
+    assert c.free_symbols() == {alpha, beta, gamma}
     c.symbol_substitution(s_map)
     assert not c.is_symbolic()
 
     commands = c.get_commands()
-    assert beta.__str__() == "alpha_1"
-    assert np.allclose(commands[0].op.params, [0.5], atol=1e-10)
-    assert np.allclose(commands[1].op.params, [2.4], atol=1e-10)
+    assert beta.__str__() == "alpha_1"  # type: ignore
+    assert np.allclose(np.asarray(commands[0].op.params), [0.5], atol=1e-10)
+    assert np.allclose(np.asarray(commands[1].op.params), [2.4], atol=1e-10)
+    assert np.allclose(np.asarray(commands[2].op.params), [math.e], atol=1e-10)
+
+
+def test_symbolic_circbox() -> None:
+    c = Circuit(2)
+    c_outer = Circuit(2)
+    alpha = Symbol("alpha")  # type: ignore
+    c.Rx(alpha, 0)
+    beta = fresh_symbol("alpha")
+    c.CRz(beta * 2, 1, 0)
+    s_map: dict[Symbol, ParamType] = {alpha: 0.5, beta: 3.2}
+    circ_box = CircBox(c)
+    assert circ_box.free_symbols() == {alpha, beta}
+    assert circ_box.get_circuit().is_symbolic()
+    c_outer.add_circbox(circ_box, [0, 1])
+    assert c_outer.is_symbolic()
+    assert c_outer.free_symbols() == {alpha, beta}
+    circ_box.symbol_substitution(s_map)
+    assert len(circ_box.free_symbols()) == 0
+    assert not circ_box.get_circuit().is_symbolic()
+    assert not c_outer.is_symbolic()
 
 
 def test_subst_4() -> None:
@@ -278,12 +326,12 @@ def test_subst_4() -> None:
     a = m / 4
     c.add_gate(OpType.Rx, a, [0])
     c.symbol_substitution({m: 4})
-    angle = c.get_commands()[0].op.params[0]
+    angle = float(c.get_commands()[0].op.params[0])
     assert np.isclose(angle, 1.0)
 
 
 def test_sympy_conversion() -> None:
-    def get_type_tree(expr: sympy.Expr) -> str:
+    def get_type_tree(expr: Expr) -> str:
         # Format e.g. "<class 'sympy.core.numbers.Pi'>" to "Pi"
         tree_str = str(type(expr)).rsplit(".", 1)[-1].split("'")[0]
         if len(expr.args) != 0:
@@ -306,7 +354,9 @@ def test_sympy_conversion() -> None:
         c = Circuit(1)
         c.Rz(sympify(expr_string), 0)  # type: ignore
         com = c.get_commands()[0]
-        assert get_type_tree(com.op.params[0]) == type_tree
+        param0 = com.op.params[0]
+        assert isinstance(param0, Expr)
+        assert get_type_tree(param0) == type_tree
 
 
 def test_4x4_matrix_to_circ() -> None:
@@ -346,7 +396,14 @@ def test_8x8_matrix_to_circ() -> None:
 
 def test_exp_to_circ() -> None:
     PI = float(pi.evalf())
-    u = np.asarray([[1, 0, 0, 0], [0, -1, 0, 0], [0, 0, -1, 0], [0, 0, 0, 1]]) * -PI / 4
+    u = (
+        np.asarray(
+            [[1, 0, 0, 0], [0, -1, 0, 0], [0, 0, -1, 0], [0, 0, 0, 1]],
+            dtype=np.complex_,
+        )
+        * -PI
+        / 4
+    )
     ebox = ExpBox(u, 1.0)
     c = Circuit(2)
     c.add_expbox(ebox, 0, 1)
@@ -434,7 +491,7 @@ def test_boxes() -> None:
         Symbol("alpha"),  # type: ignore
         [Pauli.Y, Pauli.I, Pauli.I, Pauli.X],
         Symbol("beta"),  # type: ignore
-    )  # type: ignore
+    )
     assert ppairbox.type == OpType.PauliExpPairBox
     d.add_pauliexppairbox(ppairbox, [3, 2, 1, 0])
 
@@ -444,7 +501,7 @@ def test_boxes() -> None:
             ([Pauli.X, Pauli.X, Pauli.Y, Pauli.X], Symbol("beta")),  # type: ignore
             ([Pauli.X, Pauli.Y, Pauli.X, Pauli.X], Symbol("gamma")),  # type: ignore
         ]
-    )  # type: ignore
+    )
     assert psetbox.type == OpType.PauliExpCommutingSetBox
     d.add_pauliexpcommutingsetbox(psetbox, [0, 1, 2, 3])
 
@@ -464,8 +521,7 @@ def test_boxes() -> None:
     boxes = (cbox, mbox, u2qbox, u3qbox, ebox, pbox, qcbox)
     assert all(box == box for box in boxes)
     assert all(isinstance(box, Op) for box in boxes)
-
-    permutation = {(0, 0): (1, 1), (1, 1): (0, 0)}
+    permutation: PermutationMap = {(_0, _0): (_1, _1), (_1, _1): (_0, _0)}
     tb = ToffoliBox(permutation)
     assert tb.type == OpType.ToffoliBox
     unitary = tb.get_circuit().get_unitary()
@@ -475,13 +531,27 @@ def test_boxes() -> None:
     assert d.n_gates == 10
 
     # MultiplexorBox, MultiplexedU2Box
-    op_map = {(0, 0): Op.create(OpType.Rz, 0.3), (1, 1): Op.create(OpType.H)}
+    op_map: BitstringToOpMap = {
+        (_0, _0): Op.create(OpType.Rz, 0.3),
+        (_1, _1): Op.create(OpType.H),
+    }
+    op_map_alt: BitstringToOpList = [
+        ([_0, _0], Op.create(OpType.Rz, 0.3)),
+        ([_1, _1], Op.create(OpType.H)),
+    ]
     multiplexor = MultiplexorBox(op_map)
-    out_op_map = multiplexor.get_op_map()
-    assert all(op_map[key] == out_op_map[key] for key in op_map)
+    multiplexor_alt = MultiplexorBox(op_map_alt)
+    assert multiplexor.get_op_map() == op_map
+    assert multiplexor_alt.get_op_map() == op_map
+    assert multiplexor.get_bitstring_op_pair_list() == op_map_alt
+    assert multiplexor_alt.get_bitstring_op_pair_list() == op_map_alt
+
     ucu2_box = MultiplexedU2Box(op_map)
-    out_op_map = ucu2_box.get_op_map()
-    assert all(op_map[key] == out_op_map[key] for key in op_map)
+    ucu2_box_alt = MultiplexedU2Box(op_map_alt)
+    assert ucu2_box.get_op_map() == op_map
+    assert ucu2_box_alt.get_op_map() == op_map
+    assert ucu2_box.get_bitstring_op_pair_list() == op_map_alt
+    assert ucu2_box_alt.get_bitstring_op_pair_list() == op_map_alt
     c0 = multiplexor.get_circuit()
     DecomposeBoxes().apply(c0)
     unitary0 = c0.get_unitary()
@@ -503,11 +573,21 @@ def test_boxes() -> None:
     d.add_multiplexedu2(ucu2_box, [0, 1, 2])
     assert d.n_gates == 14
     # MultiplexedRotationBox
-    op_map = {(0, 0): Op.create(OpType.Rz, 0.3), (1, 1): Op.create(OpType.Rz, 1.7)}
-    multiplexor = MultiplexedRotationBox(op_map)
-    out_op_map = multiplexor.get_op_map()
-    assert all(op_map[key] == out_op_map[key] for key in op_map)
-    c0 = multiplexor.get_circuit()
+    op_map = {
+        (_0, _0): Op.create(OpType.Rz, 0.3),
+        (_1, _1): Op.create(OpType.Rz, 1.7),
+    }
+    op_map_alt = [
+        ([_0, _0], Op.create(OpType.Rz, 0.3)),
+        ([_1, _1], Op.create(OpType.Rz, 1.7)),
+    ]
+    multiplexed_rot = MultiplexedRotationBox(op_map)
+    multiplexed_rot_alt = MultiplexedRotationBox(op_map_alt)
+    assert multiplexed_rot.get_op_map() == op_map
+    assert multiplexed_rot_alt.get_op_map() == op_map
+    assert multiplexed_rot.get_bitstring_op_pair_list() == op_map_alt
+    assert multiplexed_rot_alt.get_bitstring_op_pair_list() == op_map_alt
+    c0 = multiplexed_rot.get_circuit()
     unitary = c0.get_unitary()
     comparison = block_diag(
         Circuit(1).Rz(0.3, 0).get_unitary(),
@@ -516,13 +596,13 @@ def test_boxes() -> None:
         Circuit(1).Rz(1.7, 0).get_unitary(),
     )
     assert np.allclose(unitary, comparison)
-    d.add_multiplexedrotation(multiplexor, [Qubit(0), Qubit(1), Qubit(2)])
-    d.add_multiplexedrotation(multiplexor, [1, 2, 0])
+    d.add_multiplexedrotation(multiplexed_rot, [Qubit(0), Qubit(1), Qubit(2)])
+    d.add_multiplexedrotation(multiplexed_rot, [1, 2, 0])
     assert d.n_gates == 16
-    multiplexor = MultiplexedRotationBox([0.3, 0, 0, 1.7], OpType.Rz)
-    unitary = multiplexor.get_circuit().get_unitary()
+    multiplexed_rot = MultiplexedRotationBox([0.3, 0, 0, 1.7], OpType.Rz)
+    unitary = multiplexed_rot.get_circuit().get_unitary()
     assert np.allclose(unitary, comparison)
-    d.add_multiplexedrotation(multiplexor, [Qubit(0), Qubit(1), Qubit(2)])
+    d.add_multiplexedrotation(multiplexed_rot, [Qubit(0), Qubit(1), Qubit(2)])
     assert d.n_gates == 17
     # StatePreparationBox
     state = np.array([np.sqrt(0.125)] * 8)
@@ -549,11 +629,21 @@ def test_boxes() -> None:
     rz_op = Op.create(OpType.Rz, 0.3)
     pauli_x_op = Op.create(OpType.X)
     pauli_z_op = Op.create(OpType.Z)
-    op_map = {(0, 0): [rz_op, pauli_x_op], (1, 1): [pauli_x_op, pauli_z_op]}
-    multiplexor = MultiplexedTensoredU2Box(op_map)
-    out_op_map = multiplexor.get_op_map()
-    assert all(op_map[key] == out_op_map[key] for key in op_map)
-    c0 = multiplexor.get_circuit()
+    op_map_tensored: BitstringToTensoredOpMap = {
+        (_0, _0): [rz_op, pauli_x_op],
+        (_1, _1): [pauli_x_op, pauli_z_op],
+    }
+    op_map_tensored_alt: BitstringToTensoredOpList = [
+        ([_0, _0], [rz_op, pauli_x_op]),
+        ([_1, _1], [pauli_x_op, pauli_z_op]),
+    ]
+    multiplexU2 = MultiplexedTensoredU2Box(op_map_tensored)
+    multiplexU2_alt = MultiplexedTensoredU2Box(op_map_tensored_alt)
+    assert multiplexU2.get_op_map() == op_map_tensored
+    assert multiplexU2_alt.get_op_map() == op_map_tensored
+    assert multiplexU2.get_bitstring_op_pair_list() == op_map_tensored_alt
+    assert multiplexU2_alt.get_bitstring_op_pair_list() == op_map_tensored_alt
+    c0 = multiplexU2.get_circuit()
     unitary = c0.get_unitary()
     comparison = block_diag(
         np.kron(rz_op.get_unitary(), pauli_x_op.get_unitary()),
@@ -561,15 +651,44 @@ def test_boxes() -> None:
         np.eye(4),
         np.kron(pauli_x_op.get_unitary(), pauli_z_op.get_unitary()),
     )
-    d.add_multiplexed_tensored_u2(multiplexor, [Qubit(0), Qubit(1), Qubit(2), Qubit(3)])
-    d.add_multiplexed_tensored_u2(multiplexor, [3, 2, 1, 0])
+    d.add_multiplexed_tensored_u2(multiplexU2, [Qubit(0), Qubit(1), Qubit(2), Qubit(3)])
+    d.add_multiplexed_tensored_u2(multiplexU2, [3, 2, 1, 0])
     assert np.allclose(unitary, comparison)
     assert d.n_gates == 23
+    # ConjugationBox
+    compute = CircBox(Circuit(3).CX(0, 1).CX(1, 2))
+    action = CircBox(Circuit(3).H(2))
+    conj_box1 = ConjugationBox(compute, action)
+    assert conj_box1.get_compute() == compute
+    assert conj_box1.get_action() == action
+    assert conj_box1.get_uncompute() is None
+    uncompute = CircBox(Circuit(3).CX(1, 2).CX(0, 1))
+    conj_box2 = ConjugationBox(compute, action, uncompute)
+    assert conj_box2.get_uncompute() == uncompute
+    d.add_conjugation_box(conj_box1, [0, 1, 2])
+    d.add_conjugation_box(conj_box2, [Qubit(0), Qubit(1), Qubit(2)])
+    assert d.n_gates == 25
     assert json_validate(d)
+    # test op.get_unitary doesn't throw
+    for command in d.get_commands():
+        if len(command.op.free_symbols()) == 0:
+            command.op.get_unitary()
+
+
+def test_pauliexp_pair_box_serialisation() -> None:
+    # https://github.com/CQCL/tket/issues/1084
+    p = PauliExpPairBox(
+        [Pauli.Z, Pauli.X], 0.5, [Pauli.X, Pauli.Z], 0.2, CXConfigType.MultiQGate
+    )
+    c = Circuit(2).add_pauliexppairbox(p, [0, 1])
+    assert json_validate(c)
 
 
 def test_tofollibox_strats() -> None:
-    permutation = {(0, 0, 0, 0): (1, 1, 1, 1), (1, 1, 1, 1): (0, 0, 0, 0)}
+    permutation = [
+        ([_0, _0, _0, _0], [_1, _1, _1, _1]),
+        ([_1, _1, _1, _1], [_0, _0, _0, _0]),
+    ]
     tb = ToffoliBox(permutation, ToffoliBoxSynthStrat.Cycle)
     assert tb.type == OpType.ToffoliBox
     assert tb.get_strat() == ToffoliBoxSynthStrat.Cycle
@@ -611,9 +730,9 @@ def test_u1q_stability() -> None:
     op = ubox.get_circuit().get_commands()[0].op
     assert op.type == OpType.TK1
     a, b, c = op.params
-    assert np.isfinite(a)
-    assert np.isfinite(b)
-    assert np.isfinite(c)
+    assert np.isfinite(float(a))
+    assert np.isfinite(float(b))
+    assert np.isfinite(float(c))
 
 
 def test_custom_gates() -> None:
@@ -626,6 +745,7 @@ def test_custom_gates() -> None:
     gatedef = CustomGateDef.define("g", setup, [a, b])
     c = Circuit(4)
     c.add_custom_gate(gatedef, [0.2, 1.3], [0, 3, 1])
+    assert json_validate(c)
     coms = c.get_commands()
     assert len(coms) == 1
     cmd0 = coms[0]
@@ -649,7 +769,7 @@ def test_errors() -> None:
     c.Rz(0.5, 0)
     c.Rz(0, 0)
     with pytest.raises(TypeError):
-        c.Rz(0, "a")
+        c.Rz(0, "a")  # type: ignore
     assert c.get_commands()[0].free_symbols() == set([a])
 
 
@@ -678,6 +798,12 @@ def test_str() -> None:
     c = Circuit(2).CSXdg(0, 1)
     op = c.get_commands()[0].op
     assert op.__str__() == "CSXdg"
+    c = Circuit(2).CS(0, 1)
+    op = c.get_commands()[0].op
+    assert op.__str__() == "CS"
+    c = Circuit(2).CSdg(0, 1)
+    op = c.get_commands()[0].op
+    assert op.__str__() == "CSdg"
     c = Circuit(1).SX(0)
     op = c.get_commands()[0].op
     assert op.__str__() == "SX"
@@ -926,91 +1052,6 @@ def test_opgroups() -> None:
     assert c.opgroups == {"cx0", "cx1", "cx2"}
 
 
-def test_phase_polybox() -> None:
-    c = Circuit(1, 1)
-    n_qb = 1
-    qubit_indices = {Qubit(0): 0}
-    phase_polynomial = {(True,): 0.1}
-    linear_transformation = np.array([[1]])
-    p_box = PhasePolyBox(n_qb, qubit_indices, phase_polynomial, linear_transformation)
-
-    b = p_box.get_circuit()
-
-    p_box_ii = PhasePolyBox(b)
-
-    c.add_phasepolybox(p_box, [0])
-    c.add_phasepolybox(p_box, [Qubit(0)])
-
-    c.add_phasepolybox(p_box_ii, [0])
-
-    assert p_box.n_qubits == n_qb
-    assert p_box_ii.n_qubits == n_qb
-    assert p_box.qubit_indices == qubit_indices
-    assert p_box_ii.qubit_indices == qubit_indices
-    assert p_box.phase_polynomial == phase_polynomial
-    assert p_box_ii.phase_polynomial == phase_polynomial
-    assert np.array_equal(p_box.linear_transformation, linear_transformation)
-    assert np.array_equal(p_box_ii.linear_transformation, linear_transformation)
-    assert DecomposeBoxes().apply(c)
-
-
-def test_phase_polybox_II() -> None:
-    c = Circuit(1, 1)
-    n_qb = 1
-    qubit_indices = {Qubit(0): 0}
-    phase_polynomial = {(True,): 0.1, (True,): 0.3}
-    linear_transformation = np.array([[1]])
-    p_box = PhasePolyBox(n_qb, qubit_indices, phase_polynomial, linear_transformation)
-
-    b = p_box.get_circuit()
-
-    p_box_ii = PhasePolyBox(b)
-
-    c.add_phasepolybox(p_box, [0])
-    c.add_phasepolybox(p_box, [Qubit(0)])
-
-    c.add_phasepolybox(p_box_ii, [0])
-
-    assert p_box.n_qubits == n_qb
-    assert p_box_ii.n_qubits == n_qb
-    assert p_box.qubit_indices == qubit_indices
-    assert p_box_ii.qubit_indices == qubit_indices
-    assert p_box.phase_polynomial == phase_polynomial
-    assert p_box_ii.phase_polynomial == phase_polynomial
-    assert np.array_equal(p_box.linear_transformation, linear_transformation)
-    assert np.array_equal(p_box_ii.linear_transformation, linear_transformation)
-    assert DecomposeBoxes().apply(c)
-
-
-def test_phase_polybox_big() -> None:
-    c = Circuit(3, 3)
-    n_qb = 3
-    qubit_indices = {Qubit(0): 0, Qubit(1): 1, Qubit(2): 2}
-    phase_polynomial = {
-        (True, False, True): 0.333,
-        (False, False, True): 0.05,
-        (False, True, False): 1.05,
-    }
-    linear_transformation = np.array([[1, 1, 0], [0, 1, 0], [0, 0, 1]])
-    p_box = PhasePolyBox(n_qb, qubit_indices, phase_polynomial, linear_transformation)
-
-    b = p_box.get_circuit()
-
-    p_box_ii = PhasePolyBox(b)
-
-    c.add_phasepolybox(p_box, [0, 1, 2])
-    c.add_phasepolybox(p_box_ii, [0, 1, 2])
-    assert p_box.n_qubits == n_qb
-    assert p_box_ii.n_qubits == n_qb
-    assert p_box.qubit_indices == qubit_indices
-    assert p_box_ii.qubit_indices == qubit_indices
-    assert p_box.phase_polynomial == phase_polynomial
-    assert p_box_ii.phase_polynomial == phase_polynomial
-    assert np.array_equal(p_box.linear_transformation, linear_transformation)
-    assert np.array_equal(p_box_ii.linear_transformation, linear_transformation)
-    assert DecomposeBoxes().apply(c)
-
-
 def test_depth() -> None:
     c = Circuit(3)
     c.H(0).H(1).CX(1, 2).CZ(0, 1).H(1).CZ(1, 2)
@@ -1032,6 +1073,11 @@ def test_op_dagger_transpose() -> None:
     sxdg = Op.create(OpType.SXdg)
     assert sx.dagger == sxdg
     assert sx.transpose == sx
+    cs = Op.create(OpType.CS)
+    csdg = Op.create(OpType.CSdg)
+    assert cs.dagger == csdg
+    assert cs.transpose == cs
+    assert csdg.transpose == csdg
 
 
 def test_clifford_checking() -> None:
@@ -1049,6 +1095,17 @@ def test_clifford_checking() -> None:
     assert rz2.is_clifford_type() == False
     m = c.get_commands()[5].op
     assert m.is_clifford_type() == False
+
+
+def test_clifford_evaluation() -> None:
+    c = Circuit(2, 1)
+    c.Rx(0, 0).ISWAP(1, 0, 1).Rz(0.3, 0)
+    rx = c.get_commands()[0].op
+    assert rx.is_clifford()
+    iswap = c.get_commands()[1].op
+    assert iswap.is_clifford()
+    rz = c.get_commands()[2].op
+    assert rz.is_clifford() == False
 
 
 def test_getting_registers() -> None:
@@ -1144,10 +1201,60 @@ def test_counting_n_qubit_gates() -> None:
     assert c.n_nqb_gates(5) == 1
 
 
+def test_qcontrol_box_constructors() -> None:
+    # only one argument
+    qcbox1 = QControlBox(Op.create(OpType.S))
+    # two arguments
+    qcbox2 = QControlBox(Op.create(OpType.S), 1)
+    # all arguments. state expressed as an integer
+    qcbox3 = QControlBox(Op.create(OpType.S), 2, 1)
+    # all arguments. state expressed as a bit vector
+    qcbox4 = QControlBox(Op.create(OpType.S), 2, [_0, _1])
+    assert qcbox1 == qcbox2
+    assert qcbox3 == qcbox4
+    assert qcbox1.get_control_state() == 1
+    assert qcbox3.get_control_state() == 1
+    assert qcbox3.get_control_state_bits() == [0, 1]
+
+
 def test_error_wrong_parameters() -> None:
     circ = Circuit(1, 1)
     with pytest.raises(RuntimeError):
         circ.add_gate(OpType.H, [Bit(0)])
+
+
+def test_symbol_subst() -> None:
+    # https://github.com/CQCL/tket/issues/999
+    d = Circuit(4)
+    rz_op = Op.create(OpType.Rz, 0.3)
+    pauli_x_op = Op.create(OpType.X)
+    pauli_z_op = Op.create(OpType.Z)
+    u = np.asarray([[1.0, 0.0], [0.0, -1.0]])
+    ubox = Unitary1qBox(u)
+    op_map_new: BitstringToTensoredOpMap = {
+        (_0, _0): [rz_op, pauli_x_op],
+        (_1, _1): [ubox, pauli_z_op],
+    }
+    multiplexU2 = MultiplexedTensoredU2Box(op_map_new)
+    d.add_multiplexed_tensored_u2(multiplexU2, [0, 1, 2, 3])
+    d.symbol_substitution({})
+    assert len(d.get_commands()) == 1
+
+
+def test_phase_order() -> None:
+    # https://github.com/CQCL/tket/issues/1073
+    c = Circuit(2)
+    c.Ry(0.0, 1)
+    c.add_gate(OpType.Phase, [0.0], [])
+    c.add_gate(OpType.Phase, [0.5], [])
+    c.add_gate(OpType.Phase, [0.0], [])
+    c.Ry(0.0, 0)
+    c.X(0)
+    c.ISWAP(0.0, 1, 0)
+    c.CVdg(0, 1)
+    for _ in range(100):
+        c1 = c.copy()
+        assert c == c1
 
 
 if __name__ == "__main__":
@@ -1160,6 +1267,8 @@ if __name__ == "__main__":
     test_str()
     test_phase()
     test_clifford_checking()
+    test_clifford_evaluation()
     test_measuring_registers()
     test_multi_controlled_gates()
     test_counting_n_qubit_gates()
+    test_pauliexp_pair_box_serialisation()

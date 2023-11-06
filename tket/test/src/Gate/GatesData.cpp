@@ -39,10 +39,10 @@ static GatesData get_data() {
       OpType::TK1,
   };
   data.input_data[2][0] = {
-      OpType::CX,   OpType::CY,    OpType::CZ,       OpType::CH,
-      OpType::CV,   OpType::CVdg,  OpType::CSX,      OpType::CSXdg,
-      OpType::SWAP, OpType::ZZMax, OpType::Sycamore, OpType::ISWAPMax,
-      OpType::ECR,
+      OpType::CX,       OpType::CY,       OpType::CZ,   OpType::CH,
+      OpType::CV,       OpType::CVdg,     OpType::CSX,  OpType::CSXdg,
+      OpType::CS,       OpType::CSdg,     OpType::SWAP, OpType::ZZMax,
+      OpType::Sycamore, OpType::ISWAPMax, OpType::ECR,
   };
   data.input_data[2][1] = {
       OpType::CRx,         OpType::CRy,     OpType::CRz,

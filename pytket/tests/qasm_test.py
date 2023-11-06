@@ -17,10 +17,10 @@ import re
 from pathlib import Path
 from typing import List
 
-import pytest  # type: ignore
+import pytest
 
-from pytket._tket.circuit import _TEMP_BIT_NAME, _TEMP_BIT_REG_BASE  # type: ignore
-from pytket.circuit import (  # type: ignore
+from pytket._tket.unit_id import _TEMP_BIT_NAME, _TEMP_BIT_REG_BASE
+from pytket.circuit import (
     Circuit,
     OpType,
     fresh_symbol,
@@ -33,6 +33,8 @@ from pytket.circuit import (  # type: ignore
     reg_leq,
     reg_geq,
     if_not_bit,
+    BitRegister,
+    CustomGate,
 )
 from pytket.circuit.decompose_classical import DecomposeClassicalError
 from pytket.qasm import (
@@ -51,10 +53,14 @@ from pytket.qasm.includes.load_includes import (
     _write_decls,
     _load_gdict,
 )
-from pytket.transform import Transform  # type: ignore
-from pytket.passes import DecomposeClassicalExp, DecomposeBoxes  # type: ignore
+from pytket.transform import Transform
+from pytket.passes import DecomposeClassicalExp, DecomposeBoxes
 
 curr_file_path = Path(__file__).resolve().parent
+
+
+def register_to_list(br: BitRegister) -> list[Bit]:
+    return [br[i] for i in range(br.size)]
 
 
 def test_qasm_correct() -> None:
@@ -210,11 +216,27 @@ def test_conditional_gates() -> None:
     circ.Measure(0, 0)
     circ.Measure(1, 1)
     circ.Z(0, condition_bits=[0, 1], condition_value=2)
+    circ.add_conditional_barrier([0, 1], [], [0, 1], 1)
     circ.Measure(0, 0, condition_bits=[0, 1], condition_value=1)
     qasm_out = str(curr_file_path / "qasm_test_files/testout5.qasm")
     circuit_to_qasm(circ, qasm_out)
     c2 = circuit_from_qasm(qasm_out)
     assert circ == c2
+
+
+def test_named_conditional_barrier() -> None:
+    circ = Circuit(2, 2)
+    circ.add_bit(Bit("test", 3))
+    circ.Z(0, condition_bits=[0, 1], condition_value=2)
+    circ.add_conditional_barrier(
+        [Qubit("q", 0), Bit("test", 3)],
+        [Bit("c", 0), Bit("c", 1)],
+        0,
+        data="cond_barrier",
+    )
+    qs_str: str = circuit_to_qasm_str(circ)
+    c_from_qs: Circuit = circuit_from_qasm_str(qs_str)
+    assert qs_str == circuit_to_qasm_str(c_from_qs)
 
 
 def test_hqs_conditional() -> None:
@@ -224,8 +246,8 @@ def test_hqs_conditional() -> None:
     d = c.add_c_register("c", 10)
 
     c.add_c_setbits([True], [a[0]])
-    c.add_c_setbits([False, True] + [False] * 6, list(a))
-    c.add_c_setbits([True, True] + [False] * 8, list(b))
+    c.add_c_setbits([False, True] + [False] * 6, register_to_list(a))
+    c.add_c_setbits([True, True] + [False] * 8, register_to_list(b))
 
     c.X(0, condition=reg_eq(a ^ b, 1))
     c.X(0, condition=(a[0] ^ b[0]))
@@ -256,7 +278,7 @@ def test_hqs_conditional() -> None:
         assert "HQS OpenQASM conditions must act on one bit" in str(errorinfo.value)
 
     copy2 = c.copy()
-    copy2.add_c_range_predicate(2, 5, list(d), b[0])
+    copy2.add_c_range_predicate(2, 5, register_to_list(d), b[0])
     with pytest.raises(Exception) as errorinfo:
         circuit_to_qasm_str(copy1, header="hqslib1")
         assert "Range can only be bounded on one side" in str(errorinfo.value)
@@ -267,7 +289,6 @@ def test_barrier() -> None:
     c.H(0)
     c.H(2)
     c.add_barrier([0], [0], "comment")
-
     result = """OPENQASM 2.0;\ninclude "hqslib1_dev.inc";\n\nqreg q[3];
 creg c[3];\nh q[0];\nh q[2];\ncomment q[0],c[0];\n"""
     assert result == circuit_to_qasm_str(c, header="hqslib1_dev")
@@ -506,6 +527,7 @@ def test_custom_gate_with_barrier() -> None:
     assert len(cmds) == 1
     op = cmds[0].op
     assert op.type == OpType.CustomGate
+    assert isinstance(op, CustomGate)
     opcirc = op.get_circuit()
     opcmds = opcirc.get_commands()
     assert len(opcmds) == 1
@@ -583,8 +605,8 @@ def test_scratch_bits_filtering() -> None:
     creg a[1];
     creg b[1];
     creg d[2];
-    creg {_TEMP_BIT_NAME}[100];
-    creg {_TEMP_BIT_NAME}_1[100];
+    creg {_TEMP_BIT_NAME}[32];
+    creg {_TEMP_BIT_NAME}_1[32];
     {_TEMP_BIT_NAME}[0] = (a[0] ^ b[0]);
     if({_TEMP_BIT_NAME}[0]==1) x q[0];
     """
@@ -741,6 +763,131 @@ def test_rxxyyzz_conversion() -> None:
     assert hqslib_qs == correct_qasm
 
 
+def test_classical_assignment_order() -> None:
+    # https://github.com/CQCL/tket/issues/1013
+    circ = Circuit(1)
+    reg_meas = circ.add_c_register("c0", 1)
+    reg_cond = circ.add_c_register("c1", 1)
+    circ.add_c_setreg(0, reg_cond)
+    circ.X(0, condition=reg_eq(reg_cond, 1))
+    circ.add_c_setreg(1, reg_cond)
+    circ.X(0, condition=reg_eq(reg_cond, 1))
+    circ.Measure(Qubit(0), reg_meas[0])
+    qasm = circuit_to_qasm_str(circ, header="hqslib1").split("\n")
+    right_order = [
+        "c1 = 0;",
+        "if(c1==1) tk_SCRATCH_BIT[0] = 1;",
+        "c1 = 1;",
+        "if(tk_SCRATCH_BIT[0]==1) x q[0];",
+        "if(c1==1) x q[0];",
+    ]
+    posns = [qasm.index(line) for line in right_order]
+    for i in range(len(right_order) - 1):
+        assert posns[i] < posns[i + 1]
+
+
+def test_classical_assignment_order_1() -> None:
+    circ = Circuit(1)
+    reg_meas = circ.add_c_register("c0", 1)
+    reg_cond = circ.add_c_register("c1", 1)
+    reg_aux = circ.add_c_register("c2", 1)
+    circ.add_c_setreg(0, reg_cond)
+    circ.add_c_setreg(1, reg_aux)
+    circ.add_c_xor(reg_cond[0], reg_aux[0], reg_cond[0])
+    circ.X(0, condition=reg_eq(reg_cond, 1))
+    circ.add_c_xor(reg_cond[0], reg_aux[0], reg_cond[0])
+    circ.Measure(Qubit(0), reg_meas[0])
+    qasm = circuit_to_qasm_str(circ, header="hqslib1")
+    correct_qasm = """OPENQASM 2.0;
+include "hqslib1.inc";
+
+qreg q[1];
+creg c0[1];
+creg c1[1];
+creg c2[1];
+creg tk_SCRATCH_BIT[1];
+c1 = 0;
+c2 = 1;
+c1[0] = c2[0] ^ c1[0];
+if(c1==1) tk_SCRATCH_BIT[0] = 1;
+if(c1!=1) tk_SCRATCH_BIT[0] = 0;
+c1[0] = c2[0] ^ c1[0];
+if(tk_SCRATCH_BIT[0]==1) x q[0];
+measure q[0] -> c0[0];
+"""
+    assert qasm == correct_qasm
+
+
+def test_max_reg_width() -> None:
+    circ_in = Circuit(1, 33)
+    circ_in.H(0).Measure(0, 32)
+    with pytest.raises(QASMUnsupportedError):
+        circuit_to_qasm_str(circ_in)
+    qasm_out = circuit_to_qasm_str(circ_in, maxwidth=64)
+    assert "measure q[0] -> c[32];" in qasm_out
+    qasm_in = """OPENQASM 2.0;
+include "qelib1.inc";
+qreg q[1];
+creg c[33];
+h q[0];
+measure q[0] -> c[32];"""
+    with pytest.raises(QASMUnsupportedError):
+        circuit_from_qasm_str(qasm_in)
+    circ_out = circuit_from_qasm_str(qasm_in, maxwidth=64)
+    assert len(circ_out.bits) == 33
+
+
+def test_classical_expbox_arg_order() -> None:
+    qasm = """
+    OPENQASM 2.0;
+    include "hqslib1.inc";
+    
+    qreg q[1];
+    
+    creg a[4];
+    creg b[4];
+    creg c[4];
+    creg d[4];
+    
+    c = a ^ b | d;
+    """
+
+    circ = circuit_from_qasm_str(qasm)
+    args = circ.get_commands()[0].args
+    expected_symbol_order = ["a", "b", "d", "c"]
+    expected_index_order = [0, 1, 2, 3]
+    assert len(args) == 4 * 4
+    arg_index = 0
+    for symbol in expected_symbol_order:
+        for index in expected_index_order:
+            assert args[arg_index].reg_name == symbol
+            assert args[arg_index].index[0] == index
+            arg_index += 1
+
+
+def test_register_name_check() -> None:
+    # register names must have the expression [a-z][a-zA-Z0-9_]*
+    qasm = """
+    OPENQASM 2.0;
+    include "hqslib1.inc";
+    
+    qreg Q[1];
+    """
+    with pytest.raises(QASMParseError) as e:
+        circ = circuit_from_qasm_str(qasm)
+    err_msg = "Invalid register definition 'Q[1]'"
+    assert err_msg in str(e.value)
+
+    c = Circuit()
+    qb = Qubit("Q", 0)
+    c.add_qubit(qb)
+    c.H(qb)
+    with pytest.raises(QASMUnsupportedError) as e2:
+        qasm = circuit_to_qasm_str(c)
+    err_msg = "Invalid register name 'Q'"
+    assert err_msg in str(e2.value)
+
+
 if __name__ == "__main__":
     test_qasm_correct()
     test_qasm_qubit()
@@ -766,6 +913,7 @@ if __name__ == "__main__":
     test_extended_qasm()
     test_register_commands()
     test_conditional_gates()
+    test_named_conditional_barrier()
     test_hqs_conditional()
     test_hqs_conditional_params()
     test_barrier()
@@ -775,3 +923,5 @@ if __name__ == "__main__":
     test_header_stops_gate_definition()
     test_tk2_definition()
     test_rxxyyzz_conversion()
+    test_classical_expbox_arg_order()
+    test_register_name_check()

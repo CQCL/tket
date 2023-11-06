@@ -60,11 +60,8 @@ If using gcc and with gcovr installed (`pip install gcovr`), a test coverage
 report can be generated using the following sequence of commands:
 
 ```shell
-conan install libs/tkxxx -s build_type=Debug --build=missing -o boost/*:header_only=True -o tkxxx/*:profile_coverage=True -of build/tkxxx
-conan build libs/tkxxx -s build_type=Debug -o boost/*:header_only=True -o tkxxx/*:profile_coverage=True -of build/tkxxx
+conan build libs/tkxxx -s build_type=Debug --build=missing -o boost/*:header_only=True -o tkxxx/*:profile_coverage=True -of build/tkxxx
 conan export-pkg libs/tkxxx -s build_type=Debug -o boost/*:header_only=True -o tkxxx/*:profile_coverage=True -of build/tkxxx -tf ""
-
-conan install libs/tkxxx/test -s build_type=Debug --build=missing -o boost/*:header_only=True -o test-tkxxx/*:with_coverage=True -of build/tkxxx-tests
 conan build libs/tkxxx/test -s build_type=Debug --build=missing -o boost/*:header_only=True -o test-tkxxx/*:with_coverage=True -of build/tkxxx-tests
 cd ./build/tkxxx-tests/build/Debug
 ./test-tkxxx

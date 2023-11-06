@@ -92,12 +92,13 @@ class ClassicalExpBox : public ClassicalExpBoxBase {
   SymSet free_symbols() const override { return SymSet(); }
 
   /**
-   * Equality check between two CircBox instances
+   * Equality check between two ClassicalExpBox instances
    */
   bool is_equal(const Op &op_other) const override {
     const ClassicalExpBox &other =
         dynamic_cast<const ClassicalExpBox &>(op_other);
-    return id_ == other.get_id();
+    if (id_ == other.get_id()) return true;
+    return content_equality(other);
   }
 
   op_signature_t get_signature() const override { return sig_; }

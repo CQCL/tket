@@ -28,7 +28,7 @@
 #include "tket/OpType/OpTypeInfo.hpp"
 #include "tket/Ops/Op.hpp"
 #include "tket/Utils/Expression.hpp"
-#include "tket/Utils/PauliStrings.hpp"
+#include "tket/Utils/PauliTensor.hpp"
 
 namespace tket {
 using std::stringstream;
@@ -92,6 +92,12 @@ Op_ptr Gate::dagger() const {
     }
     case OpType::CSXdg: {
       return get_op_ptr(OpType::CSX);
+    }
+    case OpType::CS: {
+      return get_op_ptr(OpType::CSdg);
+    }
+    case OpType::CSdg: {
+      return get_op_ptr(OpType::CS);
     }
     case OpType::Phase:
     case OpType::CRz:
@@ -185,6 +191,8 @@ Op_ptr Gate::transpose() const {
     case OpType::CVdg:
     case OpType::CSX:
     case OpType::CSXdg:
+    case OpType::CS:
+    case OpType::CSdg:
     case OpType::CCX:
     case OpType::noop:
     case OpType::CSWAP:
@@ -503,6 +511,8 @@ bool Gate::has_symmetry(unsigned port1, unsigned port2) const {
     case OpType::FSim:
     case OpType::Sycamore:
     case OpType::TK2:
+    case OpType::CS:
+    case OpType::CSdg:
     case OpType::CU1: {
       // symmetric
       return true;
@@ -814,6 +824,8 @@ std::optional<Pauli> Gate::commuting_basis(unsigned i) const {
     }
     case OpType::CZ:
     case OpType::CRz:
+    case OpType::CS:
+    case OpType::CSdg:
     case OpType::CU1:
     case OpType::PhaseGadget:
     case OpType::ZZMax:

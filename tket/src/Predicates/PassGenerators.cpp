@@ -107,8 +107,10 @@ PassPtr gen_rebase_pass_via_tk2(
 PassPtr gen_squash_pass(
     const OpTypeSet& singleqs,
     const std::function<Circuit(const Expr&, const Expr&, const Expr&)>&
-        tk1_replacement) {
-  Transform t = Transforms::squash_factory(singleqs, tk1_replacement);
+        tk1_replacement,
+    bool always_squash_symbols) {
+  Transform t = Transforms::squash_factory(
+      singleqs, tk1_replacement, always_squash_symbols);
   PostConditions postcon = {{}, {}, Guarantee::Preserve};
   PredicatePtrMap precons;
   // record pass config
@@ -117,6 +119,7 @@ PassPtr gen_squash_pass(
   j["basis_singleqs"] = singleqs;
   j["basis_tk1_replacement"] =
       "SERIALIZATION OF FUNCTIONS IS NOT YET SUPPORTED";
+  j["always_squash_symbols"] = always_squash_symbols;
   return std::make_shared<StandardPass>(precons, t, postcon, j);
 }
 
@@ -425,11 +428,7 @@ PassPtr aas_routing_pass(
       switch (ot) {
         case OpType::PhasePolyBox: {
           Op_ptr op = com.get_op_ptr();
-          const PhasePolyBox& b = static_cast<const PhasePolyBox&>(*op);
-
-          Circuit b_circ(*b.to_circuit());
-
-          PhasePolyBox ppb(b_circ);
+          const auto& ppb = dynamic_cast<const PhasePolyBox&>(*op);
 
           Circuit result =
               aas::phase_poly_synthesis(arc, ppb, lookahead, cnotsynthtype);

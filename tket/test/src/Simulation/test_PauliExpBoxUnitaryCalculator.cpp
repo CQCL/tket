@@ -43,7 +43,7 @@ struct GroupPropertyPauliTester {
     const auto matrix_size = get_matrix_size(pauli_string.size());
 
     for (unsigned ii = 0; ii < phases.size(); ++ii) {
-      PauliExpBox pe_box(pauli_string, phases[ii]);
+      PauliExpBox pe_box(SymPauliTensor(pauli_string, phases[ii]));
       const auto triplets = tket_sim::internal::get_triplets(pe_box);
       sparse_matrices[ii] = get_sparse_square_matrix(triplets, matrix_size);
     }
@@ -58,7 +58,7 @@ struct GroupPropertyPauliTester {
     CHECK(dense_matr1.isApprox(dense_matr2));
 
     // Inverse.
-    PauliExpBox pe_box(pauli_string, -phases[0]);
+    PauliExpBox pe_box(SymPauliTensor(pauli_string, -phases[0]));
     const auto triplets = tket_sim::internal::get_triplets(pe_box);
     sparse_matrices[1] = get_sparse_square_matrix(triplets, matrix_size);
     dense_matr1 = sparse_matrices[0] * sparse_matrices[1];
@@ -106,7 +106,7 @@ struct DirectTensorProductTester {
 
   void test(const std::vector<Pauli>& pauli_string) {
     const auto matrix_size = get_matrix_size(pauli_string.size());
-    PauliExpBox pe_box(pauli_string, phase);
+    PauliExpBox pe_box(SymPauliTensor(pauli_string, phase));
     const auto triplets = tket_sim::internal::get_triplets(pe_box);
     sparse_matrix = get_sparse_square_matrix(triplets, matrix_size);
     dense_matrix = sparse_matrix;
@@ -181,7 +181,7 @@ struct CompareWithSimulatorPauliTester {
     REQUIRE(simulator_result.rows() == matr_size);
     REQUIRE(simulator_result.cols() == matr_size);
 
-    PauliExpBox pe_box(paulis, phase[0]);
+    PauliExpBox pe_box(SymPauliTensor(paulis, phase[0]));
     const auto triplets = tket_sim::internal::get_triplets(pe_box);
     result = get_sparse_square_matrix(triplets, matr_size);
     dense_result = result;

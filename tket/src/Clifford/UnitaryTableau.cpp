@@ -81,40 +81,34 @@ UnitaryTableau::UnitaryTableau(
 
 UnitaryTableau::UnitaryTableau() : UnitaryTableau(0) {}
 
-QubitPauliTensor UnitaryTableau::get_xrow(const Qubit& qb) const {
+SpPauliStabiliser UnitaryTableau::get_xrow(const Qubit& qb) const {
   unsigned uq = qubits_.left.at(qb);
   PauliStabiliser stab = tab_.get_pauli(uq);
-  std::list<Qubit> qbs;
+  QubitPauliMap qpm;
   for (unsigned i = 0; i < qubits_.size(); ++i) {
-    qbs.push_back(qubits_.right.at(i));
+    qpm.insert({qubits_.right.at(i), stab.get(i)});
   }
-  std::list<Pauli> string = {stab.string.begin(), stab.string.end()};
-  Complex coeff = 1.;
-  if (!stab.coeff) coeff *= -1.;
-  return QubitPauliTensor(QubitPauliString(qbs, string), coeff);
+  return SpPauliStabiliser(qpm, stab.coeff);
 }
 
-QubitPauliTensor UnitaryTableau::get_zrow(const Qubit& qb) const {
+SpPauliStabiliser UnitaryTableau::get_zrow(const Qubit& qb) const {
   unsigned uqb = qubits_.left.at(qb);
   PauliStabiliser stab = tab_.get_pauli(uqb + qubits_.size());
-  std::list<Qubit> qbs;
+  QubitPauliMap qpm;
   for (unsigned i = 0; i < qubits_.size(); ++i) {
-    qbs.push_back(qubits_.right.at(i));
+    qpm.insert({qubits_.right.at(i), stab.get(i)});
   }
-  std::list<Pauli> string = {stab.string.begin(), stab.string.end()};
-  Complex coeff = 1.;
-  if (!stab.coeff) coeff *= -1.;
-  return QubitPauliTensor(QubitPauliString(qbs, string), coeff);
+  return SpPauliStabiliser(qpm, stab.coeff);
 }
 
-QubitPauliTensor UnitaryTableau::get_row_product(
-    const QubitPauliTensor& qpt) const {
-  QubitPauliTensor result(qpt.coeff);
-  for (const std::pair<const Qubit, Pauli>& p : qpt.string.map) {
+SpPauliStabiliser UnitaryTableau::get_row_product(
+    const SpPauliStabiliser& qpt) const {
+  SpPauliStabiliser result({}, qpt.coeff);
+  for (const std::pair<const Qubit, Pauli>& p : qpt.string) {
     auto qks_it = qubits_.left.find(p.first);
     if (qks_it == qubits_.left.end()) {
       // Acts as identity on p.first
-      result = result * QubitPauliTensor(p.first, p.second);
+      result = result * SpPauliStabiliser(p.first, p.second);
     } else {
       switch (p.second) {
         case Pauli::I: {
@@ -128,7 +122,7 @@ QubitPauliTensor UnitaryTableau::get_row_product(
           // Y = iXZ
           result = result * get_xrow(p.first);
           result = result * get_zrow(p.first);
-          result.coeff *= i_;
+          result.coeff += 1;
           break;
         }
         case Pauli::Z: {
@@ -161,6 +155,16 @@ void UnitaryTableau::apply_S_at_end(const Qubit& qb) {
   tab_.apply_S(uqb);
 }
 
+void UnitaryTableau::apply_Z_at_front(const Qubit& qb) {
+  unsigned uqb = qubits_.left.at(qb);
+  tab_.phase(uqb) = !tab_.phase(uqb);
+}
+
+void UnitaryTableau::apply_Z_at_end(const Qubit& qb) {
+  unsigned uqb = qubits_.left.at(qb);
+  tab_.apply_Z(uqb);
+}
+
 void UnitaryTableau::apply_V_at_front(const Qubit& qb) {
   unsigned uqb = qubits_.left.at(qb);
   tab_.row_mult(uqb, uqb + qubits_.size(), -i_);
@@ -169,6 +173,31 @@ void UnitaryTableau::apply_V_at_front(const Qubit& qb) {
 void UnitaryTableau::apply_V_at_end(const Qubit& qb) {
   unsigned uqb = qubits_.left.at(qb);
   tab_.apply_V(uqb);
+}
+
+void UnitaryTableau::apply_X_at_front(const Qubit& qb) {
+  unsigned uqb = qubits_.left.at(qb);
+  tab_.phase(uqb + qubits_.size()) = !tab_.phase(uqb + qubits_.size());
+}
+
+void UnitaryTableau::apply_X_at_end(const Qubit& qb) {
+  unsigned uqb = qubits_.left.at(qb);
+  tab_.apply_X(uqb);
+}
+
+void UnitaryTableau::apply_H_at_front(const Qubit& qb) {
+  unsigned uqb = qubits_.left.at(qb);
+  unsigned n_qubits = qubits_.size();
+  bool temp = tab_.phase(uqb);
+  tab_.phase(uqb) = tab_.phase(uqb + n_qubits);
+  tab_.phase(uqb + n_qubits) = temp;
+  tab_.xmat.row(uqb).swap(tab_.xmat.row(uqb + n_qubits));
+  tab_.zmat.row(uqb).swap(tab_.zmat.row(uqb + n_qubits));
+}
+
+void UnitaryTableau::apply_H_at_end(const Qubit& qb) {
+  unsigned uqb = qubits_.left.at(qb);
+  tab_.apply_H(uqb);
 }
 
 void UnitaryTableau::apply_CX_at_front(
@@ -190,20 +219,16 @@ void UnitaryTableau::apply_gate_at_front(
     OpType type, const qubit_vector_t& qbs) {
   switch (type) {
     case OpType::Z: {
-      apply_S_at_front(qbs.at(0));
-      apply_S_at_front(qbs.at(0));
+      apply_Z_at_front(qbs.at(0));
       break;
     }
     case OpType::X: {
-      apply_V_at_front(qbs.at(0));
-      apply_V_at_front(qbs.at(0));
+      apply_X_at_front(qbs.at(0));
       break;
     }
     case OpType::Y: {
-      apply_S_at_front(qbs.at(0));
-      apply_S_at_front(qbs.at(0));
-      apply_V_at_front(qbs.at(0));
-      apply_V_at_front(qbs.at(0));
+      apply_Z_at_front(qbs.at(0));
+      apply_X_at_front(qbs.at(0));
       break;
     }
     case OpType::S: {
@@ -212,8 +237,7 @@ void UnitaryTableau::apply_gate_at_front(
     }
     case OpType::Sdg: {
       apply_S_at_front(qbs.at(0));
-      apply_S_at_front(qbs.at(0));
-      apply_S_at_front(qbs.at(0));
+      apply_Z_at_front(qbs.at(0));
       break;
     }
     case OpType::V:
@@ -224,14 +248,11 @@ void UnitaryTableau::apply_gate_at_front(
     case OpType::Vdg:
     case OpType::SXdg: {
       apply_V_at_front(qbs.at(0));
-      apply_V_at_front(qbs.at(0));
-      apply_V_at_front(qbs.at(0));
+      apply_X_at_front(qbs.at(0));
       break;
     }
     case OpType::H: {
-      apply_S_at_front(qbs.at(0));
-      apply_V_at_front(qbs.at(0));
-      apply_S_at_front(qbs.at(0));
+      apply_H_at_front(qbs.at(0));
       break;
     }
     case OpType::CX: {
@@ -242,18 +263,13 @@ void UnitaryTableau::apply_gate_at_front(
       apply_S_at_front(qbs.at(1));
       apply_CX_at_front(qbs.at(0), qbs.at(1));
       apply_S_at_front(qbs.at(1));
-      apply_S_at_front(qbs.at(1));
-      apply_S_at_front(qbs.at(1));
+      apply_Z_at_front(qbs.at(1));
       break;
     }
     case OpType::CZ: {
-      apply_S_at_front(qbs.at(1));
-      apply_V_at_front(qbs.at(1));
-      apply_S_at_front(qbs.at(1));
+      apply_H_at_front(qbs.at(1));
       apply_CX_at_front(qbs.at(0), qbs.at(1));
-      apply_S_at_front(qbs.at(1));
-      apply_V_at_front(qbs.at(1));
-      apply_S_at_front(qbs.at(1));
+      apply_H_at_front(qbs.at(1));
       break;
     }
     case OpType::SWAP: {
@@ -267,25 +283,19 @@ void UnitaryTableau::apply_gate_at_front(
       break;
     }
     case OpType::ZZMax: {
-      apply_S_at_front(qbs.at(1));
-      apply_V_at_front(qbs.at(1));
-      apply_S_at_front(qbs.at(1));
+      apply_H_at_front(qbs.at(1));
       apply_S_at_front(qbs.at(0));
       apply_V_at_front(qbs.at(1));
       apply_CX_at_front(qbs.at(0), qbs.at(1));
-      apply_S_at_front(qbs.at(1));
-      apply_V_at_front(qbs.at(1));
-      apply_S_at_front(qbs.at(1));
+      apply_H_at_front(qbs.at(1));
       break;
     }
     case OpType::ECR: {
       apply_CX_at_front(qbs.at(0), qbs.at(1));
-      apply_V_at_front(qbs.at(0));
-      apply_V_at_front(qbs.at(0));
+      apply_X_at_front(qbs.at(0));
       apply_S_at_front(qbs.at(0));
       apply_V_at_front(qbs.at(1));
-      apply_V_at_front(qbs.at(1));
-      apply_V_at_front(qbs.at(1));
+      apply_X_at_front(qbs.at(1));
       break;
     }
     case OpType::ISWAPMax: {
@@ -293,17 +303,10 @@ void UnitaryTableau::apply_gate_at_front(
       apply_V_at_front(qbs.at(1));
       apply_CX_at_front(qbs.at(0), qbs.at(1));
       apply_V_at_front(qbs.at(0));
-      apply_V_at_front(qbs.at(0));
-      apply_V_at_front(qbs.at(0));
       apply_S_at_front(qbs.at(1));
-      apply_S_at_front(qbs.at(1));
-      apply_S_at_front(qbs.at(1));
+      apply_Z_at_front(qbs.at(1));
       apply_CX_at_front(qbs.at(0), qbs.at(1));
       apply_V_at_front(qbs.at(0));
-      apply_V_at_front(qbs.at(0));
-      apply_V_at_front(qbs.at(0));
-      apply_V_at_front(qbs.at(1));
-      apply_V_at_front(qbs.at(1));
       apply_V_at_front(qbs.at(1));
       break;
     }
@@ -327,22 +330,18 @@ void UnitaryTableau::apply_gate_at_end(OpType type, const qubit_vector_t& qbs) {
 }
 
 void UnitaryTableau::apply_pauli_at_front(
-    const QubitPauliTensor& pauli, unsigned half_pis) {
+    const SpPauliStabiliser& pauli, unsigned half_pis) {
   return apply_pauli_at_end(get_row_product(pauli), half_pis);
 }
 
 void UnitaryTableau::apply_pauli_at_end(
-    const QubitPauliTensor& pauli, unsigned half_pis) {
+    const SpPauliStabiliser& pauli, unsigned half_pis) {
   std::vector<Pauli> string(qubits_.size(), Pauli::I);
-  for (const std::pair<const Qubit, Pauli>& pair : pauli.string.map) {
+  for (const std::pair<const Qubit, Pauli>& pair : pauli.string) {
     unsigned uqb = qubits_.left.at(pair.first);
     string.at(uqb) = pair.second;
   }
-  if (pauli.coeff != 1. && pauli.coeff != -1.)
-    throw std::domain_error(
-        "Can only apply Pauli gadgets with real unit coefficients to "
-        "UnitaryTableaux");
-  tab_.apply_pauli_gadget({string, pauli.coeff == 1.}, half_pis);
+  tab_.apply_pauli_gadget(PauliStabiliser(string, pauli.coeff), half_pis);
 }
 
 UnitaryTableau UnitaryTableau::compose(
@@ -354,7 +353,7 @@ UnitaryTableau UnitaryTableau::compose(
   UnitaryTableau result = UnitaryTableau({});
   const unsigned nqb = qbs.size();
 
-  std::vector<QubitPauliTensor> rows;
+  std::vector<SpPauliStabiliser> rows;
 
   unsigned qir = 0;
   for (const Qubit& qi : qbs) {
@@ -364,8 +363,8 @@ UnitaryTableau UnitaryTableau::compose(
       rows.push_back(second.get_xrow(qi));
     } else {
       // Sum rows of second according to entries of first
-      QubitPauliTensor fxrow = first.get_xrow(qi);
-      QubitPauliTensor rxrow = second.get_row_product(fxrow);
+      SpPauliStabiliser fxrow = first.get_xrow(qi);
+      SpPauliStabiliser rxrow = second.get_row_product(fxrow);
       rows.push_back(rxrow);
     }
 
@@ -381,22 +380,21 @@ UnitaryTableau UnitaryTableau::compose(
       rows.push_back(second.get_zrow(qi));
     } else {
       // Sum rows of second according to entries of first
-      QubitPauliTensor fzrow = first.get_zrow(qi);
-      QubitPauliTensor rzrow = second.get_row_product(fzrow);
+      SpPauliStabiliser fzrow = first.get_zrow(qi);
+      SpPauliStabiliser rzrow = second.get_row_product(fzrow);
       rows.push_back(rzrow);
     }
   }
 
   // Combine row lists and convert to PauliStabilisers
-  PauliStabiliserList all_rows;
-  for (const QubitPauliTensor& row : rows) {
-    TKET_ASSERT(row.coeff == 1. || row.coeff == -1.);
+  PauliStabiliserVec all_rows;
+  for (const SpPauliStabiliser& row : rows) {
     std::vector<Pauli> ps(nqb, Pauli::I);
-    for (const std::pair<const Qubit, Pauli>& p : row.string.map) {
+    for (const std::pair<const Qubit, Pauli>& p : row.string) {
       unsigned q = result.qubits_.left.at(p.first);
       ps[q] = p.second;
     }
-    all_rows.push_back(PauliStabiliser(ps, row.coeff == 1.));
+    all_rows.push_back(PauliStabiliser(ps, row.coeff));
   }
 
   result.tab_ = SymplecticTableau(all_rows);
@@ -437,8 +435,8 @@ UnitaryTableau UnitaryTableau::dagger() const {
     for (unsigned j = 0; j < nqb; ++j) {
       // Take effect of some input on some output and invert
       auto inv_cell = invert_cell_map().at(
-          {BoolPauli{tab_.xmat_(i, j), tab_.zmat_(i, j)},
-           BoolPauli{tab_.xmat_(i + nqb, j), tab_.zmat_(i + nqb, j)}});
+          {BoolPauli{tab_.xmat(i, j), tab_.zmat(i, j)},
+           BoolPauli{tab_.xmat(i + nqb, j), tab_.zmat(i + nqb, j)}});
       // Transpose tableau and fill in cell
       dxx(j, i) = inv_cell.first.x;
       dxz(j, i) = inv_cell.first.z;
@@ -452,10 +450,10 @@ UnitaryTableau UnitaryTableau::dagger() const {
 
   // Correct phases
   for (unsigned i = 0; i < nqb; ++i) {
-    QubitPauliTensor xr = dag.get_xrow(qubits_.right.at(i));
-    dag.tab_.phase_(i) = get_row_product(xr).coeff == -1.;
-    QubitPauliTensor zr = dag.get_zrow(qubits_.right.at(i));
-    dag.tab_.phase_(i + nqb) = get_row_product(zr).coeff == -1.;
+    SpPauliStabiliser xr = dag.get_xrow(qubits_.right.at(i));
+    dag.tab_.phase(i) = get_row_product(xr).is_real_negative();
+    SpPauliStabiliser zr = dag.get_zrow(qubits_.right.at(i));
+    dag.tab_.phase(i + nqb) = get_row_product(zr).is_real_negative();
   }
 
   return dag;
@@ -476,14 +474,14 @@ std::ostream& operator<<(std::ostream& os, const UnitaryTableau& tab) {
   unsigned nqs = tab.qubits_.size();
   for (unsigned i = 0; i < nqs; ++i) {
     Qubit qi = tab.qubits_.right.at(i);
-    os << "X@" << qi.repr() << "\t->\t" << tab.tab_.xmat_.row(i) << "   "
-       << tab.tab_.zmat_.row(i) << "   " << tab.tab_.phase_(i) << std::endl;
+    os << "X@" << qi.repr() << "\t->\t" << tab.tab_.xmat.row(i) << "   "
+       << tab.tab_.zmat.row(i) << "   " << tab.tab_.phase(i) << std::endl;
   }
   os << "--" << std::endl;
   for (unsigned i = 0; i < nqs; ++i) {
     Qubit qi = tab.qubits_.right.at(i);
-    os << "Z@" << qi.repr() << "\t->\t" << tab.tab_.xmat_.row(i + nqs) << "   "
-       << tab.tab_.zmat_.row(i + nqs) << "   " << tab.tab_.phase_(i + nqs)
+    os << "Z@" << qi.repr() << "\t->\t" << tab.tab_.xmat.row(i + nqs) << "   "
+       << tab.tab_.zmat.row(i + nqs) << "   " << tab.tab_.phase(i + nqs)
        << std::endl;
   }
   return os;
@@ -500,13 +498,13 @@ bool UnitaryTableau::operator==(const UnitaryTableau& other) const {
     for (unsigned j = 0; j < nq; ++j) {
       Qubit qj = qubits_.right.at(j);
       unsigned oj = other.qubits_.left.at(qj);
-      if (tab_.xmat_(i, j) != other.tab_.xmat_(oi, oj)) return false;
-      if (tab_.zmat_(i, j) != other.tab_.zmat_(oi, oj)) return false;
-      if (tab_.xmat_(i + nq, j) != other.tab_.xmat_(oi + nq, oj)) return false;
-      if (tab_.zmat_(i + nq, j) != other.tab_.zmat_(oi + nq, oj)) return false;
+      if (tab_.xmat(i, j) != other.tab_.xmat(oi, oj)) return false;
+      if (tab_.zmat(i, j) != other.tab_.zmat(oi, oj)) return false;
+      if (tab_.xmat(i + nq, j) != other.tab_.xmat(oi + nq, oj)) return false;
+      if (tab_.zmat(i + nq, j) != other.tab_.zmat(oi + nq, oj)) return false;
     }
-    if (tab_.phase_(i) != other.tab_.phase_(oi)) return false;
-    if (tab_.phase_(i + nq) != other.tab_.phase_(oi + nq)) return false;
+    if (tab_.phase(i) != other.tab_.phase(oi)) return false;
+    if (tab_.phase(i + nq) != other.tab_.phase(oi + nq)) return false;
   }
 
   return true;
@@ -553,16 +551,16 @@ UnitaryRevTableau::UnitaryRevTableau(const qubit_vector_t& qbs) : tab_(qbs) {}
 
 UnitaryRevTableau::UnitaryRevTableau() : tab_() {}
 
-QubitPauliTensor UnitaryRevTableau::get_xrow(const Qubit& qb) const {
+SpPauliStabiliser UnitaryRevTableau::get_xrow(const Qubit& qb) const {
   return tab_.get_xrow(qb);
 }
 
-QubitPauliTensor UnitaryRevTableau::get_zrow(const Qubit& qb) const {
+SpPauliStabiliser UnitaryRevTableau::get_zrow(const Qubit& qb) const {
   return tab_.get_zrow(qb);
 }
 
-QubitPauliTensor UnitaryRevTableau::get_row_product(
-    const QubitPauliTensor& qpt) const {
+SpPauliStabiliser UnitaryRevTableau::get_row_product(
+    const SpPauliStabiliser& qpt) const {
   return tab_.get_row_product(qpt);
 }
 
@@ -571,19 +569,43 @@ std::set<Qubit> UnitaryRevTableau::get_qubits() const {
 }
 
 void UnitaryRevTableau::apply_S_at_front(const Qubit& qb) {
-  tab_.apply_pauli_at_end(QubitPauliTensor(qb, Pauli::Z), 3);
+  tab_.apply_pauli_at_end(SpPauliStabiliser(qb, Pauli::Z), 3);
 }
 
 void UnitaryRevTableau::apply_S_at_end(const Qubit& qb) {
-  tab_.apply_pauli_at_front(QubitPauliTensor(qb, Pauli::Z), 3);
+  tab_.apply_pauli_at_front(SpPauliStabiliser(qb, Pauli::Z), 3);
+}
+
+void UnitaryRevTableau::apply_Z_at_front(const Qubit& qb) {
+  tab_.apply_Z_at_end(qb);
+}
+
+void UnitaryRevTableau::apply_Z_at_end(const Qubit& qb) {
+  tab_.apply_Z_at_front(qb);
 }
 
 void UnitaryRevTableau::apply_V_at_front(const Qubit& qb) {
-  tab_.apply_pauli_at_end(QubitPauliTensor(qb, Pauli::X), 3);
+  tab_.apply_pauli_at_end(SpPauliStabiliser(qb, Pauli::X), 3);
 }
 
 void UnitaryRevTableau::apply_V_at_end(const Qubit& qb) {
-  tab_.apply_pauli_at_front(QubitPauliTensor(qb, Pauli::X), 3);
+  tab_.apply_pauli_at_front(SpPauliStabiliser(qb, Pauli::X), 3);
+}
+
+void UnitaryRevTableau::apply_X_at_front(const Qubit& qb) {
+  tab_.apply_X_at_end(qb);
+}
+
+void UnitaryRevTableau::apply_X_at_end(const Qubit& qb) {
+  tab_.apply_X_at_front(qb);
+}
+
+void UnitaryRevTableau::apply_H_at_front(const Qubit& qb) {
+  tab_.apply_H_at_end(qb);
+}
+
+void UnitaryRevTableau::apply_H_at_end(const Qubit& qb) {
+  tab_.apply_H_at_front(qb);
 }
 
 void UnitaryRevTableau::apply_CX_at_front(
@@ -649,12 +671,12 @@ void UnitaryRevTableau::apply_gate_at_end(
 }
 
 void UnitaryRevTableau::apply_pauli_at_front(
-    const QubitPauliTensor& pauli, unsigned half_pis) {
+    const SpPauliStabiliser& pauli, unsigned half_pis) {
   tab_.apply_pauli_at_end(pauli, 4 - (half_pis % 4));
 }
 
 void UnitaryRevTableau::apply_pauli_at_end(
-    const QubitPauliTensor& pauli, unsigned half_pis) {
+    const SpPauliStabiliser& pauli, unsigned half_pis) {
   tab_.apply_pauli_at_front(pauli, 4 - (half_pis % 4));
 }
 
@@ -687,16 +709,16 @@ std::ostream& operator<<(std::ostream& os, const UnitaryRevTableau& tab) {
   unsigned nqs = tab.tab_.qubits_.size();
   for (unsigned i = 0; i < nqs; ++i) {
     Qubit qi = tab.tab_.qubits_.right.at(i);
-    os << tab.tab_.tab_.xmat_.row(i) << "   " << tab.tab_.tab_.zmat_.row(i)
-       << "   " << tab.tab_.tab_.phase_(i) << "\t->\t"
+    os << tab.tab_.tab_.xmat.row(i) << "   " << tab.tab_.tab_.zmat.row(i)
+       << "   " << tab.tab_.tab_.phase(i) << "\t->\t"
        << "X@" << qi.repr() << std::endl;
   }
   os << "--" << std::endl;
   for (unsigned i = 0; i < nqs; ++i) {
     Qubit qi = tab.tab_.qubits_.right.at(i);
-    os << tab.tab_.tab_.xmat_.row(i + nqs) << "   "
-       << tab.tab_.tab_.zmat_.row(i + nqs) << "   "
-       << tab.tab_.tab_.phase_(i + nqs) << "\t->\t"
+    os << tab.tab_.tab_.xmat.row(i + nqs) << "   "
+       << tab.tab_.tab_.zmat.row(i + nqs) << "   "
+       << tab.tab_.tab_.phase(i + nqs) << "\t->\t"
        << "Z@" << qi.repr() << std::endl;
   }
   return os;

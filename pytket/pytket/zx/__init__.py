@@ -17,4 +17,4 @@ Python API module for interfacing with tket c++ implemented functions and module
 Exports class ZXDiagram and associated tools.
 """
 
-from pytket._tket.zx import *  # type: ignore
+from pytket._tket.zx import *

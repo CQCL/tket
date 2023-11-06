@@ -33,10 +33,10 @@ SCENARIO("verify_measurement_setup") {
     ms.add_measurement_circuit(mc);
     Qubit q0(q_default_reg(), 0);
     Qubit q1(q_default_reg(), 1);
-    QubitPauliString ii;
-    QubitPauliString zi({{q0, Pauli::Z}});
-    QubitPauliString iz({{q1, Pauli::Z}});
-    QubitPauliString zz({{q0, Pauli::Z}, {q1, Pauli::Z}});
+    SpPauliString ii;
+    SpPauliString zi({{q0, Pauli::Z}});
+    SpPauliString iz({{q1, Pauli::Z}});
+    SpPauliString zz({{q0, Pauli::Z}, {q1, Pauli::Z}});
     ms.add_result_for_term(ii, {0, {}, false});
     ms.add_result_for_term(zi, {0, {0}, false});
     ms.add_result_for_term(iz, {0, {1}, false});
@@ -56,7 +56,7 @@ SCENARIO("verify_measurement_setup") {
     ms.add_measurement_circuit(mc1);
     Qubit q0(q_default_reg(), 0);
     Qubit q1(q_default_reg(), 1);
-    QubitPauliString zi({{q0, Pauli::Z}});
+    SpPauliString zi({{q0, Pauli::Z}});
     ms.add_result_for_term(zi, {0, {0}, false});
     ms.add_result_for_term(zi, {1, {0}, false});
     REQUIRE(ms.verify());
@@ -68,7 +68,7 @@ SCENARIO("verify_measurement_setup") {
     mc.add_measure(0, 0);
     ms.add_measurement_circuit(mc);
     Qubit q0(q_default_reg(), 0);
-    QubitPauliString z({{q0, Pauli::Z}});
+    SpPauliString z({{q0, Pauli::Z}});
     ms.add_result_for_term(z, {0, {0}, true});
     REQUIRE(ms.verify());
   }
@@ -83,17 +83,17 @@ SCENARIO("verify_measurement_setup") {
     Qubit q0(q_default_reg(), 0);
     Qubit q1(q_default_reg(), 1);
     WHEN("Wrong parity") {
-      QubitPauliString zi({{q0, Pauli::Z}});
+      SpPauliString zi({{q0, Pauli::Z}});
       ms.add_result_for_term(zi, {0, {0}, false});
       REQUIRE_FALSE(ms.verify());
     }
     WHEN("Wrong string") {
-      QubitPauliString ix({{q1, Pauli::X}});
+      SpPauliString ix({{q1, Pauli::X}});
       ms.add_result_for_term(ix, {0, {1}, false});
       REQUIRE_FALSE(ms.verify());
     }
     WHEN("Wrong bit set") {
-      QubitPauliString iy({{q1, Pauli::Y}});
+      SpPauliString iy({{q1, Pauli::Y}});
       ms.add_result_for_term(iy, {0, {0, 1}, false});
       REQUIRE_FALSE(ms.verify());
     }
@@ -149,18 +149,18 @@ SCENARIO("verify_measurement_setup") {
     Qubit q2(q_default_reg(), 2);
     Qubit q3(q_default_reg(), 3);
 
-    QubitPauliTensor x0(q0, Pauli::X);
-    QubitPauliTensor y0(q0, Pauli::Y);
-    QubitPauliTensor z0(q0, Pauli::Z);
-    QubitPauliTensor x1(q1, Pauli::X);
-    QubitPauliTensor y1(q1, Pauli::Y);
-    QubitPauliTensor z1(q1, Pauli::Z);
-    QubitPauliTensor x2(q2, Pauli::X);
-    QubitPauliTensor y2(q2, Pauli::Y);
-    QubitPauliTensor z2(q2, Pauli::Z);
-    QubitPauliTensor x3(q3, Pauli::X);
-    QubitPauliTensor y3(q3, Pauli::Y);
-    QubitPauliTensor z3(q3, Pauli::Z);
+    SpPauliString x0(q0, Pauli::X);
+    SpPauliString y0(q0, Pauli::Y);
+    SpPauliString z0(q0, Pauli::Z);
+    SpPauliString x1(q1, Pauli::X);
+    SpPauliString y1(q1, Pauli::Y);
+    SpPauliString z1(q1, Pauli::Z);
+    SpPauliString x2(q2, Pauli::X);
+    SpPauliString y2(q2, Pauli::Y);
+    SpPauliString z2(q2, Pauli::Z);
+    SpPauliString x3(q3, Pauli::X);
+    SpPauliString y3(q3, Pauli::Y);
+    SpPauliString z3(q3, Pauli::Z);
 
     ms.add_result_for_term(z0, {1, {0}, false});
     ms.add_result_for_term(z0 * z1, {1, {0, 1}, false});
@@ -289,24 +289,24 @@ SCENARIO("verify_measurement_setup") {
     Qubit q4(q_default_reg(), 4);
     Qubit q5(q_default_reg(), 5);
 
-    QubitPauliTensor x0(q0, Pauli::X);
-    QubitPauliTensor y0(q0, Pauli::Y);
-    QubitPauliTensor z0(q0, Pauli::Z);
-    QubitPauliTensor x1(q1, Pauli::X);
-    QubitPauliTensor y1(q1, Pauli::Y);
-    QubitPauliTensor z1(q1, Pauli::Z);
-    QubitPauliTensor x2(q2, Pauli::X);
-    QubitPauliTensor y2(q2, Pauli::Y);
-    QubitPauliTensor z2(q2, Pauli::Z);
-    QubitPauliTensor x3(q3, Pauli::X);
-    QubitPauliTensor y3(q3, Pauli::Y);
-    QubitPauliTensor z3(q3, Pauli::Z);
-    QubitPauliTensor x4(q4, Pauli::X);
-    QubitPauliTensor y4(q4, Pauli::Y);
-    QubitPauliTensor z4(q4, Pauli::Z);
-    QubitPauliTensor x5(q5, Pauli::X);
-    QubitPauliTensor y5(q5, Pauli::Y);
-    QubitPauliTensor z5(q5, Pauli::Z);
+    SpPauliString x0(q0, Pauli::X);
+    SpPauliString y0(q0, Pauli::Y);
+    SpPauliString z0(q0, Pauli::Z);
+    SpPauliString x1(q1, Pauli::X);
+    SpPauliString y1(q1, Pauli::Y);
+    SpPauliString z1(q1, Pauli::Z);
+    SpPauliString x2(q2, Pauli::X);
+    SpPauliString y2(q2, Pauli::Y);
+    SpPauliString z2(q2, Pauli::Z);
+    SpPauliString x3(q3, Pauli::X);
+    SpPauliString y3(q3, Pauli::Y);
+    SpPauliString z3(q3, Pauli::Z);
+    SpPauliString x4(q4, Pauli::X);
+    SpPauliString y4(q4, Pauli::Y);
+    SpPauliString z4(q4, Pauli::Z);
+    SpPauliString x5(q5, Pauli::X);
+    SpPauliString y5(q5, Pauli::Y);
+    SpPauliString z5(q5, Pauli::Z);
 
     ms.add_result_for_term(y0 * z1 * y2 * z3, {0, {0, 1, 3}, false});
     ms.add_result_for_term(

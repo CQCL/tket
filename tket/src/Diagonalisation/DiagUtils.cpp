@@ -18,14 +18,14 @@ namespace tket {
 
 void insert_into_gadget_map(
     QubitOperator &gadget_map, const PauliGadgetProperties &pgp) {
-  QubitOperator::iterator iter = gadget_map.find(pgp.tensor_);
+  SpSymPauliTensor gadget(pgp.tensor_);
+  gadget.coeff *= pgp.angle_;
+  SpPauliString ps(gadget);
+  QubitOperator::iterator iter = gadget_map.find(ps);
   if (iter == gadget_map.end())
-    gadget_map[pgp.tensor_] = pgp.angle_;
+    gadget_map[ps] = gadget.coeff;
   else {
-    QubitPauliTensor string_to_insert = pgp.tensor_ * iter->first;
-    Expr ang_to_insert = pgp.angle_ * iter->second;
-    gadget_map.erase(iter);
-    gadget_map[string_to_insert] = ang_to_insert;
+    iter->second += gadget.coeff;
   }
 }
 

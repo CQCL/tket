@@ -176,6 +176,13 @@ SCENARIO("Simulate circuit with unsupported operations") {
         tket_sim::get_unitary(circ), Unsupported,
         MessageContains("Unsupported OpType Conditional"));
   }
+  GIVEN("Circuit with conditional barrier") {
+    Circuit circ(2, 2);
+    circ.add_conditional_barrier({0, 1}, {1}, {0}, 1, "");
+    REQUIRE_THROWS_MATCHES(
+        tket_sim::get_unitary(circ), Unsupported,
+        MessageContains("Unsupported OpType Conditional"));
+  }
 }
 
 SCENARIO("Ignored op types don't affect get unitary") {
@@ -454,6 +461,22 @@ SCENARIO("Unitaries for controlled operations") {
     V(2, 3) = 0.5 * (1. + i_);
     V(3, 2) = 0.5 * (1. + i_);
     V(3, 3) = 0.5 * (1. - i_);
+    REQUIRE(U.isApprox(V));
+  }
+  GIVEN("CS") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::CS, {0, 1});
+    const Eigen::MatrixXcd U = tket_sim::get_unitary(circ);
+    Eigen::MatrixXcd V = Eigen::MatrixXcd::Identity(4, 4);
+    V(3, 3) = i_;
+    REQUIRE(U.isApprox(V));
+  }
+  GIVEN("CSdg") {
+    Circuit circ(2);
+    circ.add_op<unsigned>(OpType::CSdg, {0, 1});
+    const Eigen::MatrixXcd U = tket_sim::get_unitary(circ);
+    Eigen::MatrixXcd V = Eigen::MatrixXcd::Identity(4, 4);
+    V(3, 3) = -i_;
     REQUIRE(U.isApprox(V));
   }
   GIVEN("CU1") {

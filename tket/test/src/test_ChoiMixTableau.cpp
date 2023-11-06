@@ -83,20 +83,20 @@ SCENARIO("Correct creation of ChoiMixTableau") {
     tab.gaussian_form();
     REQUIRE(
         tab.get_row(0) == ChoiMixTableau::row_tensor_t{
-                              QubitPauliTensor(Qubit(0), Pauli::X),
-                              QubitPauliTensor(Qubit(0), Pauli::X)});
+                              SpPauliStabiliser(Qubit(0), Pauli::X),
+                              SpPauliStabiliser(Qubit(0), Pauli::X)});
     REQUIRE(
         tab.get_row(1) == ChoiMixTableau::row_tensor_t{
-                              QubitPauliTensor(Qubit(0), Pauli::Z),
-                              QubitPauliTensor(Qubit(0), Pauli::Z)});
+                              SpPauliStabiliser(Qubit(0), Pauli::Z),
+                              SpPauliStabiliser(Qubit(0), Pauli::Z)});
     REQUIRE(
-        tab.get_row(2) ==
-        ChoiMixTableau::row_tensor_t{{}, QubitPauliTensor(Qubit(2), Pauli::Z)});
+        tab.get_row(2) == ChoiMixTableau::row_tensor_t{
+                              {}, SpPauliStabiliser(Qubit(2), Pauli::Z)});
     REQUIRE(
         tab.get_row_product({0, 1}) ==
         ChoiMixTableau::row_tensor_t{
-            QubitPauliTensor(Qubit(0), Pauli::Y),
-            QubitPauliTensor(Qubit(0), Pauli::Y)});
+            SpPauliStabiliser(Qubit(0), Pauli::Y),
+            SpPauliStabiliser(Qubit(0), Pauli::Y)});
     THEN("Serialize and deserialize") {
       nlohmann::json j_tab = tab;
       ChoiMixTableau tab2{{}};
@@ -119,46 +119,46 @@ SCENARIO("Correct creation of ChoiMixTableau") {
     // e^{-i Z pi/4} X id X = (-iZX) e^{-i Z pi/4} X = +Y S X
     REQUIRE(
         tab.get_row(0) == ChoiMixTableau::row_tensor_t{
-                              QubitPauliTensor(Qubit(0), Pauli::X),
-                              QubitPauliTensor(Qubit(0), Pauli::Y)});
+                              SpPauliStabiliser(Qubit(0), Pauli::X),
+                              SpPauliStabiliser(Qubit(0), Pauli::Y)});
     REQUIRE(
         tab.get_row(1) == ChoiMixTableau::row_tensor_t{
-                              QubitPauliTensor(Qubit(0), Pauli::Z),
-                              QubitPauliTensor(Qubit(0), Pauli::Z)});
+                              SpPauliStabiliser(Qubit(0), Pauli::Z),
+                              SpPauliStabiliser(Qubit(0), Pauli::Z)});
     REQUIRE(
-        tab.get_row(2) ==
-        ChoiMixTableau::row_tensor_t{QubitPauliTensor(Qubit(1), Pauli::Z), {}});
+        tab.get_row(2) == ChoiMixTableau::row_tensor_t{
+                              SpPauliStabiliser(Qubit(1), Pauli::Z), {}});
     REQUIRE(
-        tab.get_row(3) ==
-        ChoiMixTableau::row_tensor_t{{}, QubitPauliTensor(Qubit(2), Pauli::Z)});
+        tab.get_row(3) == ChoiMixTableau::row_tensor_t{
+                              {}, SpPauliStabiliser(Qubit(2), Pauli::Z)});
     // Applying an S at the input end adds up to a net Z
     tab.apply_S(Qubit(0), ChoiMixTableau::TableauSegment::Input);
     tab.canonical_column_order();
     tab.gaussian_form();
     REQUIRE(
         tab.get_row(0) == ChoiMixTableau::row_tensor_t{
-                              QubitPauliTensor(Qubit(0), Pauli::X),
-                              QubitPauliTensor(Qubit(0), Pauli::X, -1.)});
+                              SpPauliStabiliser(Qubit(0), Pauli::X),
+                              SpPauliStabiliser(Qubit(0), Pauli::X, 2)});
     REQUIRE(
         tab.get_row(1) == ChoiMixTableau::row_tensor_t{
-                              QubitPauliTensor(Qubit(0), Pauli::Z),
-                              QubitPauliTensor(Qubit(0), Pauli::Z)});
+                              SpPauliStabiliser(Qubit(0), Pauli::Z),
+                              SpPauliStabiliser(Qubit(0), Pauli::Z)});
     REQUIRE(
-        tab.get_row(2) ==
-        ChoiMixTableau::row_tensor_t{QubitPauliTensor(Qubit(1), Pauli::Z), {}});
+        tab.get_row(2) == ChoiMixTableau::row_tensor_t{
+                              SpPauliStabiliser(Qubit(1), Pauli::Z), {}});
     REQUIRE(
-        tab.get_row(3) ==
-        ChoiMixTableau::row_tensor_t{{}, QubitPauliTensor(Qubit(2), Pauli::Z)});
+        tab.get_row(3) == ChoiMixTableau::row_tensor_t{
+                              {}, SpPauliStabiliser(Qubit(2), Pauli::Z)});
     THEN("Compare to explicitly generated tableau") {
       std::list<ChoiMixTableau::row_tensor_t> rows;
       rows.push_back(
-          {QubitPauliTensor(Qubit(0), Pauli::X),
-           QubitPauliTensor(Qubit(0), Pauli::X, -1.)});
+          {SpPauliStabiliser(Qubit(0), Pauli::X),
+           SpPauliStabiliser(Qubit(0), Pauli::X, 2)});
       rows.push_back(
-          {QubitPauliTensor(Qubit(0), Pauli::Z),
-           QubitPauliTensor(Qubit(0), Pauli::Z)});
-      rows.push_back({QubitPauliTensor(Qubit(1), Pauli::Z), {}});
-      rows.push_back({{}, QubitPauliTensor(Qubit(2), Pauli::Z)});
+          {SpPauliStabiliser(Qubit(0), Pauli::Z),
+           SpPauliStabiliser(Qubit(0), Pauli::Z)});
+      rows.push_back({SpPauliStabiliser(Qubit(1), Pauli::Z), {}});
+      rows.push_back({{}, SpPauliStabiliser(Qubit(2), Pauli::Z)});
       ChoiMixTableau tab2(rows);
       tab2.canonical_column_order();
       REQUIRE(tab == tab2);
@@ -174,56 +174,56 @@ SCENARIO("Correct creation of ChoiMixTableau") {
     tab.gaussian_form();
     REQUIRE(
         tab.get_row(0) == ChoiMixTableau::row_tensor_t{
-                              QubitPauliTensor(Qubit(0), Pauli::X),
-                              QubitPauliTensor(Qubit(0), Pauli::X)});
+                              SpPauliStabiliser(Qubit(0), Pauli::X),
+                              SpPauliStabiliser(Qubit(0), Pauli::X)});
     REQUIRE(
         tab.get_row(1) == ChoiMixTableau::row_tensor_t{
-                              QubitPauliTensor(Qubit(0), Pauli::Z),
-                              QubitPauliTensor(Qubit(0), Pauli::Z)});
+                              SpPauliStabiliser(Qubit(0), Pauli::Z),
+                              SpPauliStabiliser(Qubit(0), Pauli::Z)});
     // Affecting the input segment should give the same effect as for
     // UnitaryRevTableau
     REQUIRE(
-        tab.get_row(2) ==
-        ChoiMixTableau::row_tensor_t{QubitPauliTensor(Qubit(1), Pauli::Y), {}});
+        tab.get_row(2) == ChoiMixTableau::row_tensor_t{
+                              SpPauliStabiliser(Qubit(1), Pauli::Y), {}});
     // Affecting the output segment should give the same effect as for
     // UnitaryTableau
     REQUIRE(
         tab.get_row(3) == ChoiMixTableau::row_tensor_t{
-                              {}, QubitPauliTensor(Qubit(2), Pauli::Y, -1.)});
+                              {}, SpPauliStabiliser(Qubit(2), Pauli::Y, 2)});
     // Check V on identity
     tab.apply_V(Qubit(0), ChoiMixTableau::TableauSegment::Output);
     REQUIRE(
         tab.get_row(0) == ChoiMixTableau::row_tensor_t{
-                              QubitPauliTensor(Qubit(0), Pauli::X),
-                              QubitPauliTensor(Qubit(0), Pauli::X)});
+                              SpPauliStabiliser(Qubit(0), Pauli::X),
+                              SpPauliStabiliser(Qubit(0), Pauli::X)});
     // e^{-i X pi/4} Z C Z = (-iXZ) e^{-i X pi/4} C Z = -Y V C Z
     REQUIRE(
         tab.get_row(1) == ChoiMixTableau::row_tensor_t{
-                              QubitPauliTensor(Qubit(0), Pauli::Z),
-                              QubitPauliTensor(Qubit(0), Pauli::Y, -1.)});
+                              SpPauliStabiliser(Qubit(0), Pauli::Z),
+                              SpPauliStabiliser(Qubit(0), Pauli::Y, 2)});
     REQUIRE(
-        tab.get_row(2) ==
-        ChoiMixTableau::row_tensor_t{QubitPauliTensor(Qubit(1), Pauli::Y), {}});
+        tab.get_row(2) == ChoiMixTableau::row_tensor_t{
+                              SpPauliStabiliser(Qubit(1), Pauli::Y), {}});
     REQUIRE(
         tab.get_row(3) == ChoiMixTableau::row_tensor_t{
-                              {}, QubitPauliTensor(Qubit(2), Pauli::Y, -1.)});
+                              {}, SpPauliStabiliser(Qubit(2), Pauli::Y, 2)});
     // Applying a V at the input end adds up to a net X
     tab.apply_V(Qubit(0), ChoiMixTableau::TableauSegment::Input);
     tab.gaussian_form();
     REQUIRE(
         tab.get_row(0) == ChoiMixTableau::row_tensor_t{
-                              QubitPauliTensor(Qubit(0), Pauli::X),
-                              QubitPauliTensor(Qubit(0), Pauli::X)});
+                              SpPauliStabiliser(Qubit(0), Pauli::X),
+                              SpPauliStabiliser(Qubit(0), Pauli::X)});
     REQUIRE(
         tab.get_row(1) == ChoiMixTableau::row_tensor_t{
-                              QubitPauliTensor(Qubit(0), Pauli::Z),
-                              QubitPauliTensor(Qubit(0), Pauli::Z, -1.)});
+                              SpPauliStabiliser(Qubit(0), Pauli::Z),
+                              SpPauliStabiliser(Qubit(0), Pauli::Z, 2)});
     REQUIRE(
-        tab.get_row(2) ==
-        ChoiMixTableau::row_tensor_t{QubitPauliTensor(Qubit(1), Pauli::Y), {}});
+        tab.get_row(2) == ChoiMixTableau::row_tensor_t{
+                              SpPauliStabiliser(Qubit(1), Pauli::Y), {}});
     REQUIRE(
         tab.get_row(3) == ChoiMixTableau::row_tensor_t{
-                              {}, QubitPauliTensor(Qubit(2), Pauli::Y, -1.)});
+                              {}, SpPauliStabiliser(Qubit(2), Pauli::Y, 2)});
   }
   GIVEN("Applying CX gates") {
     ChoiMixTableau tab(4);
@@ -240,27 +240,27 @@ SCENARIO("Correct creation of ChoiMixTableau") {
     REQUIRE(
         tab.get_row(0) ==
         ChoiMixTableau::row_tensor_t{
-            QubitPauliTensor(Qubit(0), Pauli::X),
-            QubitPauliTensor({{Qubit(0), Pauli::X}, {Qubit(1), Pauli::X}})});
+            SpPauliStabiliser(Qubit(0), Pauli::X),
+            SpPauliStabiliser({{Qubit(0), Pauli::X}, {Qubit(1), Pauli::X}})});
     REQUIRE(
         tab.get_row(1) == ChoiMixTableau::row_tensor_t{
-                              QubitPauliTensor(Qubit(0), Pauli::Z),
-                              QubitPauliTensor(Qubit(0), Pauli::Z)});
+                              SpPauliStabiliser(Qubit(0), Pauli::Z),
+                              SpPauliStabiliser(Qubit(0), Pauli::Z)});
     REQUIRE(
         tab.get_row(2) == ChoiMixTableau::row_tensor_t{
-                              QubitPauliTensor(Qubit(1), Pauli::X),
-                              QubitPauliTensor(Qubit(1), Pauli::X)});
+                              SpPauliStabiliser(Qubit(1), Pauli::X),
+                              SpPauliStabiliser(Qubit(1), Pauli::X)});
     REQUIRE(
         tab.get_row(3) ==
         ChoiMixTableau::row_tensor_t{
-            QubitPauliTensor(Qubit(1), Pauli::Z),
-            QubitPauliTensor({{Qubit(0), Pauli::Z}, {Qubit(1), Pauli::Z}})});
+            SpPauliStabiliser(Qubit(1), Pauli::Z),
+            SpPauliStabiliser({{Qubit(0), Pauli::Z}, {Qubit(1), Pauli::Z}})});
     REQUIRE(
-        tab.get_row(4) ==
-        ChoiMixTableau::row_tensor_t{QubitPauliTensor(Qubit(2), Pauli::Z), {}});
+        tab.get_row(4) == ChoiMixTableau::row_tensor_t{
+                              SpPauliStabiliser(Qubit(2), Pauli::Z), {}});
     REQUIRE(
-        tab.get_row(5) ==
-        ChoiMixTableau::row_tensor_t{{}, QubitPauliTensor(Qubit(3), Pauli::Z)});
+        tab.get_row(5) == ChoiMixTableau::row_tensor_t{
+                              {}, SpPauliStabiliser(Qubit(3), Pauli::Z)});
     // CX on input cancels back to original
     tab.apply_CX(Qubit(0), Qubit(1), ChoiMixTableau::TableauSegment::Input);
     tab.gaussian_form();
@@ -272,30 +272,30 @@ SCENARIO("Correct creation of ChoiMixTableau") {
     REQUIRE(
         tab.get_row(0) ==
         ChoiMixTableau::row_tensor_t{
-            QubitPauliTensor({{Qubit(0), Pauli::X}, {Qubit(2), Pauli::X}}),
-            QubitPauliTensor(Qubit(0), Pauli::X)});
+            SpPauliStabiliser({{Qubit(0), Pauli::X}, {Qubit(2), Pauli::X}}),
+            SpPauliStabiliser(Qubit(0), Pauli::X)});
     REQUIRE(
         tab.get_row(1) == ChoiMixTableau::row_tensor_t{
-                              QubitPauliTensor(Qubit(0), Pauli::Z),
-                              QubitPauliTensor(Qubit(0), Pauli::Z)});
+                              SpPauliStabiliser(Qubit(0), Pauli::Z),
+                              SpPauliStabiliser(Qubit(0), Pauli::Z)});
     REQUIRE(
         tab.get_row(2) ==
         ChoiMixTableau::row_tensor_t{
-            QubitPauliTensor(Qubit(1), Pauli::X),
-            QubitPauliTensor({{Qubit(1), Pauli::X}, {Qubit(3), Pauli::X}})});
+            SpPauliStabiliser(Qubit(1), Pauli::X),
+            SpPauliStabiliser({{Qubit(1), Pauli::X}, {Qubit(3), Pauli::X}})});
     REQUIRE(
         tab.get_row(3) == ChoiMixTableau::row_tensor_t{
-                              QubitPauliTensor(Qubit(1), Pauli::Z),
-                              QubitPauliTensor(Qubit(1), Pauli::Z)});
+                              SpPauliStabiliser(Qubit(1), Pauli::Z),
+                              SpPauliStabiliser(Qubit(1), Pauli::Z)});
     REQUIRE(
         tab.get_row(4) == ChoiMixTableau::row_tensor_t{
-                              QubitPauliTensor(Qubit(2), Pauli::Z),
-                              QubitPauliTensor(Qubit(0), Pauli::Z)});
+                              SpPauliStabiliser(Qubit(2), Pauli::Z),
+                              SpPauliStabiliser(Qubit(0), Pauli::Z)});
     REQUIRE(
         tab.get_row(5) ==
         ChoiMixTableau::row_tensor_t{
             {},
-            QubitPauliTensor({{Qubit(1), Pauli::Z}, {Qubit(3), Pauli::Z}})});
+            SpPauliStabiliser({{Qubit(1), Pauli::Z}, {Qubit(3), Pauli::Z}})});
   }
   GIVEN("A full circuit") {
     Circuit circ = get_test_circ();
@@ -308,7 +308,7 @@ SCENARIO("Correct creation of ChoiMixTableau") {
   GIVEN("A PI/2 rotation at end") {
     Circuit circ = get_test_circ();
     ChoiMixTableau tab = circuit_to_cm_tableau(circ);
-    QubitPauliTensor pauli{
+    SpPauliStabiliser pauli{
         {{Qubit(0), Pauli::X}, {Qubit(1), Pauli::Y}, {Qubit(2), Pauli::Z}}};
     tab.apply_pauli(pauli, 3);
     tab.gaussian_form();
@@ -320,10 +320,7 @@ SCENARIO("Correct creation of ChoiMixTableau") {
   }
   GIVEN("A PI/2 rotation at front") {
     ChoiMixTableau tab = get_tableau_with_gates_applied_at_front();
-    QubitPauliTensor pauli =
-        QubitPauliTensor(Qubit(q_default_reg(), 0), Pauli::X) *
-        QubitPauliTensor(Qubit(q_default_reg(), 1), Pauli::Y) *
-        QubitPauliTensor(Qubit(q_default_reg(), 2), Pauli::Z);
+    SpPauliStabiliser pauli({Pauli::X, Pauli::Y, Pauli::Z});
     tab.apply_pauli(pauli, 1, ChoiMixTableau::TableauSegment::Input);
     tab.gaussian_form();
 
@@ -373,26 +370,26 @@ SCENARIO("Correct creation of ChoiMixTableau") {
     REQUIRE(
         tab.get_row(0) ==
         ChoiMixTableau::row_tensor_t{
-            QubitPauliTensor(Qubit(1), Pauli::X),
-            QubitPauliTensor(
-                {{Qubit(0), Pauli::X}, {Qubit(2), Pauli::X}}, -1.)});
+            SpPauliStabiliser(Qubit(1), Pauli::X),
+            SpPauliStabiliser(
+                {{Qubit(0), Pauli::X}, {Qubit(2), Pauli::X}}, 2)});
     REQUIRE(
         tab.get_row(1) == ChoiMixTableau::row_tensor_t{
-                              QubitPauliTensor(Qubit(1), Pauli::Z),
-                              QubitPauliTensor(Qubit(0), Pauli::Z, -1.)});
+                              SpPauliStabiliser(Qubit(1), Pauli::Z),
+                              SpPauliStabiliser(Qubit(0), Pauli::Z, 2)});
     REQUIRE(
         tab.get_row(2) == ChoiMixTableau::row_tensor_t{
-                              QubitPauliTensor(Qubit(2), Pauli::X),
-                              QubitPauliTensor(Qubit(2), Pauli::X)});
+                              SpPauliStabiliser(Qubit(2), Pauli::X),
+                              SpPauliStabiliser(Qubit(2), Pauli::X)});
     REQUIRE(
         tab.get_row(3) ==
         ChoiMixTableau::row_tensor_t{
-            QubitPauliTensor(Qubit(2), Pauli::Z),
-            QubitPauliTensor(
-                {{Qubit(0), Pauli::Z}, {Qubit(2), Pauli::Z}}, -1.)});
+            SpPauliStabiliser(Qubit(2), Pauli::Z),
+            SpPauliStabiliser(
+                {{Qubit(0), Pauli::Z}, {Qubit(2), Pauli::Z}}, 2)});
     REQUIRE(
-        tab.get_row(4) ==
-        ChoiMixTableau::row_tensor_t{{}, QubitPauliTensor(Qubit(1), Pauli::Z)});
+        tab.get_row(4) == ChoiMixTableau::row_tensor_t{
+                              {}, SpPauliStabiliser(Qubit(1), Pauli::Z)});
   }
   GIVEN("Combining post-selections and discarding") {
     ChoiMixTableau tab(5);
@@ -575,8 +572,7 @@ SCENARIO("Synthesis of circuits from ChoiMixTableaus") {
     Eigen::VectorXcd res_sv = tket_sim::get_statevector(res_uni);
     for (unsigned r = 0; r < tab.get_n_rows(); ++r) {
       ChoiMixTableau::row_tensor_t rrow = tab.get_row(r);
-      Eigen::MatrixXcd outmat =
-          rrow.second.string.to_sparse_matrix(3) * rrow.second.coeff;
+      Eigen::MatrixXcd outmat = rrow.second.to_sparse_matrix(3);
       CHECK((outmat * res_sv).isApprox(res_sv));
     }
   }
@@ -617,8 +613,8 @@ SCENARIO("Synthesis of circuits from ChoiMixTableaus") {
     Eigen::VectorXcd as_state = tket_sim::get_statevector(res_uni_dag);
     for (unsigned r = 0; r < tab.get_n_rows(); ++r) {
       ChoiMixTableau::row_tensor_t rrow = tab.get_row(r);
-      CmplxSpMat rmat = rrow.first.string.to_sparse_matrix(3) *
-                        rrow.first.coeff * rrow.second.coeff;
+      CmplxSpMat rmat = rrow.first.to_sparse_matrix(3);
+      if (rrow.second.is_real_negative()) rmat *= -1.;
       Eigen::MatrixXcd rmatd = rmat;
       CHECK((rmat * as_state).isApprox(as_state));
     }
@@ -652,11 +648,9 @@ SCENARIO("Synthesis of circuits from ChoiMixTableaus") {
     Eigen::MatrixXcd res_u = tket_sim::get_unitary(res_uni.first);
     for (unsigned r = 0; r < tab.get_n_rows(); ++r) {
       ChoiMixTableau::row_tensor_t rrow = tab.get_row(r);
-      CmplxSpMat inmat =
-          rrow.first.string.to_sparse_matrix(5) * rrow.first.coeff;
+      CmplxSpMat inmat = rrow.first.to_sparse_matrix(5);
       Eigen::MatrixXcd inmatd = inmat;
-      CmplxSpMat outmat =
-          rrow.second.string.to_sparse_matrix(5) * rrow.second.coeff;
+      CmplxSpMat outmat = rrow.second.to_sparse_matrix(5);
       Eigen::MatrixXcd outmatd = outmat;
       CHECK((outmatd * res_u * inmatd).isApprox(res_u));
     }
@@ -695,15 +689,14 @@ SCENARIO("Synthesis of circuits from ChoiMixTableaus") {
     Eigen::MatrixXcd res_iso = res_u * init_proj;
     for (unsigned r = 0; r < tab.get_n_rows(); ++r) {
       ChoiMixTableau::row_tensor_t rrow = tab.get_row(r);
-      CmplxSpMat inmat =
-          rrow.first.string.to_sparse_matrix(5) * rrow.first.coeff;
+      CmplxSpMat inmat = rrow.first.to_sparse_matrix(5);
       Eigen::MatrixXcd inmatd = inmat;
       QubitPauliMap outstr;
-      for (const std::pair<const Qubit, Pauli>& qp : rrow.second.string.map)
+      for (const std::pair<const Qubit, Pauli>& qp : rrow.second.string)
         outstr.insert({res_uni.second.at(qp.first), qp.second});
-      CmplxSpMat outmat =
-          QubitPauliString(outstr).to_sparse_matrix(5) * rrow.second.coeff;
+      CmplxSpMat outmat = SpPauliString(outstr).to_sparse_matrix(5);
       Eigen::MatrixXcd outmatd = outmat;
+      if (rrow.second.is_real_negative()) outmatd *= -1.;
       CHECK((outmatd * res_iso * inmatd).isApprox(res_iso));
     }
   }
@@ -743,15 +736,14 @@ SCENARIO("Synthesis of circuits from ChoiMixTableaus") {
     Eigen::MatrixXcd res_iso = res_u * init_proj;
     for (unsigned r = 0; r < tab.get_n_rows(); ++r) {
       ChoiMixTableau::row_tensor_t rrow = tab.get_row(r);
-      CmplxSpMat inmat =
-          rrow.first.string.to_sparse_matrix(5) * rrow.first.coeff;
+      CmplxSpMat inmat = rrow.first.to_sparse_matrix(5);
       Eigen::MatrixXcd inmatd = inmat;
       QubitPauliMap outstr;
-      for (const std::pair<const Qubit, Pauli>& qp : rrow.second.string.map)
+      for (const std::pair<const Qubit, Pauli>& qp : rrow.second.string)
         outstr.insert({res_uni.second.at(qp.first), qp.second});
-      CmplxSpMat outmat =
-          QubitPauliString(outstr).to_sparse_matrix(5) * rrow.second.coeff;
+      CmplxSpMat outmat = SpPauliString(outstr).to_sparse_matrix(5);
       Eigen::MatrixXcd outmatd = outmat;
+      if (rrow.second.is_real_negative()) outmatd *= -1.;
       CHECK((outmatd * res_iso * inmatd).isApprox(res_iso));
     }
   }
@@ -764,22 +756,21 @@ SCENARIO("Synthesis of circuits from ChoiMixTableaus") {
     Eigen::MatrixXcd res_u = tket_sim::get_unitary(res_uni.first);
     // q[0] was removed from the tableau by postselection so need to infer
     // position in res_uni.second from the other qubits
-    QubitPauliString zzz{Pauli::Z, Pauli::Z, Pauli::Z};
-    zzz.map.at(res_uni.second.at(Qubit(1))) = Pauli::I;
-    zzz.map.at(res_uni.second.at(Qubit(2))) = Pauli::I;
+    SpPauliString zzz({Pauli::Z, Pauli::Z, Pauli::Z});
+    zzz.set(res_uni.second.at(Qubit(1)), Pauli::I);
+    zzz.set(res_uni.second.at(Qubit(2)), Pauli::I);
     Eigen::MatrixXcd z0 = zzz.to_sparse_matrix(3);
     Eigen::MatrixXcd res_proj = 0.5 * (res_u + (z0 * res_u));
     for (unsigned r = 0; r < tab.get_n_rows(); ++r) {
       ChoiMixTableau::row_tensor_t rrow = tab.get_row(r);
-      CmplxSpMat inmat =
-          rrow.first.string.to_sparse_matrix(3) * rrow.first.coeff;
+      CmplxSpMat inmat = rrow.first.to_sparse_matrix(3);
       Eigen::MatrixXcd inmatd = inmat;
       QubitPauliMap outstr;
-      for (const std::pair<const Qubit, Pauli>& qp : rrow.second.string.map)
+      for (const std::pair<const Qubit, Pauli>& qp : rrow.second.string)
         outstr.insert({res_uni.second.at(qp.first), qp.second});
-      CmplxSpMat outmat =
-          QubitPauliString(outstr).to_sparse_matrix(3) * rrow.second.coeff;
+      CmplxSpMat outmat = SpPauliString(outstr).to_sparse_matrix(3);
       Eigen::MatrixXcd outmatd = outmat;
+      if (rrow.second.is_real_negative()) outmatd *= -1.;
       CHECK((outmatd * res_proj * inmatd).isApprox(res_proj));
     }
   }
@@ -795,8 +786,8 @@ SCENARIO("Synthesis of circuits from ChoiMixTableaus") {
     Eigen::VectorXcd res_sv = tket_sim::get_statevector(res);
     for (unsigned r = 0; r < tab.get_n_rows(); ++r) {
       ChoiMixTableau::row_tensor_t rrow = tab.get_row(r);
-      Eigen::MatrixXcd inmat = rrow.first.string.to_sparse_matrix(3) *
-                               rrow.first.coeff * rrow.second.coeff;
+      Eigen::MatrixXcd inmat = rrow.first.to_sparse_matrix(3);
+      if (rrow.second.is_real_negative()) inmat *= -1.;
       CHECK((inmat * res_sv).isApprox(res_sv));
     }
   }
@@ -850,24 +841,22 @@ SCENARIO("Synthesis of circuits from ChoiMixTableaus") {
     Eigen::MatrixXcd res_u = tket_sim::get_unitary(res_uni.first);
     qubit_vector_t res_qbs = res_uni.first.all_qubits();
     // q[1] has no input terms, so initialise it
-    QubitPauliString z1{Qubit(1), Pauli::Z};
+    SpPauliString z1({Qubit(1), Pauli::Z});
     Eigen::MatrixXcd z1u = z1.to_sparse_matrix(res_qbs);
     res_u = 0.5 * (res_u + (res_u * z1u));
     // q[0] has no output terms, so postselect it
-    QubitPauliString z0{res_uni.second.at(Qubit(0)), Pauli::Z};
+    SpPauliString z0({res_uni.second.at(Qubit(0)), Pauli::Z});
     Eigen::MatrixXcd z0u = z0.to_sparse_matrix(res_qbs);
     res_u = 0.5 * (res_u + (z0u * res_u));
 
     for (unsigned r = 0; r < tab.get_n_rows(); ++r) {
       ChoiMixTableau::row_tensor_t rrow = tab.get_row(r);
-      Eigen::MatrixXcd inmat =
-          rrow.first.string.to_sparse_matrix(res_qbs) * rrow.first.coeff;
+      Eigen::MatrixXcd inmat = rrow.first.to_sparse_matrix(res_qbs);
       QubitPauliMap outstr;
-      for (const std::pair<const Qubit, Pauli>& qp : rrow.second.string.map)
+      for (const std::pair<const Qubit, Pauli>& qp : rrow.second.string)
         outstr.insert({res_uni.second.at(qp.first), qp.second});
-      Eigen::MatrixXcd outmat =
-          QubitPauliString(outstr).to_sparse_matrix(res_qbs) *
-          rrow.second.coeff;
+      Eigen::MatrixXcd outmat = SpPauliString(outstr).to_sparse_matrix(res_qbs);
+      if (rrow.second.is_real_negative()) outmat *= -1.;
       CHECK((outmat * res_u * inmat).isApprox(res_u));
     }
   }
@@ -875,14 +864,14 @@ SCENARIO("Synthesis of circuits from ChoiMixTableaus") {
       "A custom tableau with overlapping initialised and post-selected "
       "qubits") {
     std::list<ChoiMixTableau::row_tensor_t> rows{
-        {QubitPauliTensor({Pauli::Z, Pauli::X, Pauli::I}), {}},
-        {QubitPauliTensor({Pauli::X, Pauli::Y, Pauli::Z}), {}},
-        {{}, QubitPauliTensor({Pauli::X, Pauli::X, Pauli::I})},
-        {{}, QubitPauliTensor({Pauli::I, Pauli::X, Pauli::X})},
-        {QubitPauliTensor({Pauli::I, Pauli::I, Pauli::Z}),
-         QubitPauliTensor({Pauli::Z, Pauli::Z, Pauli::Z})},
-        {QubitPauliTensor({Pauli::Z, Pauli::I, Pauli::X}),
-         QubitPauliTensor({Pauli::I, Pauli::I, Pauli::X})},
+        {SpPauliStabiliser({Pauli::Z, Pauli::X, Pauli::I}), {}},
+        {SpPauliStabiliser({Pauli::X, Pauli::Y, Pauli::Z}), {}},
+        {{}, SpPauliStabiliser({Pauli::X, Pauli::X, Pauli::I})},
+        {{}, SpPauliStabiliser({Pauli::I, Pauli::X, Pauli::X})},
+        {SpPauliStabiliser({Pauli::I, Pauli::I, Pauli::Z}),
+         SpPauliStabiliser({Pauli::Z, Pauli::Z, Pauli::Z})},
+        {SpPauliStabiliser({Pauli::Z, Pauli::I, Pauli::X}),
+         SpPauliStabiliser({Pauli::I, Pauli::I, Pauli::X})},
     };
     ChoiMixTableau tab(rows);
     REQUIRE_THROWS(cm_tableau_to_unitary_extension_circuit(tab));
@@ -908,30 +897,28 @@ SCENARIO("Synthesis of circuits from ChoiMixTableaus") {
     Eigen::MatrixXcd res_u = tket_sim::get_unitary(res_uni.first);
     qubit_vector_t res_qbs = res_uni.first.all_qubits();
     // initialise q[3] and q[4]
-    QubitPauliString z3i{Qubit(3), Pauli::Z};
+    SpPauliString z3i{Qubit(3), Pauli::Z};
     Eigen::MatrixXcd z3iu = z3i.to_sparse_matrix(res_qbs);
     res_u = 0.5 * (res_u + (res_u * z3iu));
-    QubitPauliString z4i{Qubit(4), Pauli::Z};
+    SpPauliString z4i{Qubit(4), Pauli::Z};
     Eigen::MatrixXcd z4iu = z4i.to_sparse_matrix(res_qbs);
     res_u = 0.5 * (res_u + (res_u * z4iu));
     // post-select q[3] and q[4]
-    QubitPauliString z3o{res_uni.second.at(Qubit(3)), Pauli::Z};
+    SpPauliString z3o{res_uni.second.at(Qubit(3)), Pauli::Z};
     Eigen::MatrixXcd z3ou = z3o.to_sparse_matrix(res_qbs);
     res_u = 0.5 * (res_u + (z3ou * res_u));
-    QubitPauliString z4o{res_uni.second.at(Qubit(4)), Pauli::Z};
+    SpPauliString z4o{res_uni.second.at(Qubit(4)), Pauli::Z};
     Eigen::MatrixXcd z4ou = z4o.to_sparse_matrix(res_qbs);
     res_u = 0.5 * (res_u + (z4ou * res_u));
 
     for (unsigned r = 0; r < tab.get_n_rows(); ++r) {
       ChoiMixTableau::row_tensor_t rrow = tab.get_row(r);
-      Eigen::MatrixXcd inmat =
-          rrow.first.string.to_sparse_matrix(res_qbs) * rrow.first.coeff;
+      Eigen::MatrixXcd inmat = rrow.first.to_sparse_matrix(res_qbs);
       QubitPauliMap outstr;
-      for (const std::pair<const Qubit, Pauli>& qp : rrow.second.string.map)
+      for (const std::pair<const Qubit, Pauli>& qp : rrow.second.string)
         outstr.insert({res_uni.second.at(qp.first), qp.second});
-      Eigen::MatrixXcd outmat =
-          QubitPauliString(outstr).to_sparse_matrix(res_qbs) *
-          rrow.second.coeff;
+      Eigen::MatrixXcd outmat = SpPauliString(outstr).to_sparse_matrix(res_qbs);
+      if (rrow.second.is_real_negative()) outmat *= -1.;
       CHECK((outmat * res_u * inmat).isApprox(res_u));
     }
   }

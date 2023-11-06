@@ -21,6 +21,7 @@
 
 #include "tket/Circuit/CircPool.hpp"
 #include "tket/Circuit/Circuit.hpp"
+#include "tket/Circuit/ConjugationBox.hpp"
 #include "tket/Diagonalisation/Diagonalisation.hpp"
 #include "tket/Gate/GatePtr.hpp"
 #include "tket/Gate/GateUnitaryMatrixImplementations.hpp"
@@ -279,56 +280,77 @@ Expr pauli_angle_convert_or_throw(Complex pauliCoeff, const Expr &angle) {
 
 Circuit phase_gadget(unsigned n_qubits, const Expr &t, CXConfigType cx_config) {
   return pauli_gadget(
-      QubitPauliTensor(std::list<Pauli>(n_qubits, Pauli::Z)), t, cx_config);
+      SpSymPauliTensor(DensePauliMap(n_qubits, Pauli::Z), t), cx_config);
 }
 
-Circuit pauli_gadget(
-    QubitPauliTensor pauli, Expr angle, CXConfigType cx_config) {
-  Expr converted_angle = pauli_angle_convert_or_throw(pauli.coeff, angle);
-  if (pauli.string.is_identity()) {
-    Circuit phase_circ(pauli.string.map.size());
-    phase_circ.add_phase(-converted_angle / 2);
+Circuit pauli_gadget(SpSymPauliTensor paulis, CXConfigType cx_config) {
+  if (SpPauliString(paulis.string) == SpPauliString{}) {
+    Circuit phase_circ(paulis.size());
+    phase_circ.add_phase(-paulis.coeff / 2);
     return phase_circ;
   }
-  std::pair<Circuit, Qubit> diag = reduce_pauli_to_z(pauli, cx_config);
-  Circuit undiag = diag.first.dagger();
-  diag.first.add_op<Qubit>(OpType::Rz, converted_angle, {diag.second});
-  diag.first.append(undiag);
-  return diag.first;
+  std::pair<Circuit, Qubit> diag =
+      reduce_pauli_to_z(SpPauliStabiliser(paulis.string), cx_config);
+  Circuit compute = diag.first;
+  qubit_vector_t all_qubits = compute.all_qubits();
+  unit_map_t mapping = compute.flatten_registers();
+  Circuit action(all_qubits.size());
+  action.add_op<UnitID>(OpType::Rz, paulis.coeff, {mapping.at(diag.second)});
+  Circuit circ(all_qubits, {});
+  ConjugationBox box(
+      std::make_shared<CircBox>(compute), std::make_shared<CircBox>(action));
+  circ.add_box(box, all_qubits);
+  return circ;
 }
 
 Circuit pauli_gadget_pair(
-    QubitPauliTensor pauli0, Expr angle0, QubitPauliTensor pauli1, Expr angle1,
+    SpSymPauliTensor paulis0, SpSymPauliTensor paulis1,
     CXConfigType cx_config) {
-  Expr converted_angle0 = pauli_angle_convert_or_throw(pauli0.coeff, angle0);
-  Expr converted_angle1 = pauli_angle_convert_or_throw(pauli1.coeff, angle1);
-  if (pauli0.string.is_identity()) {
-    Circuit p1_circ = pauli_gadget(pauli1, converted_angle1, cx_config);
-    p1_circ.add_phase(-converted_angle0 / 2);
+  if (SpPauliString(paulis0.string) == SpPauliString{}) {
+    Circuit p1_circ = pauli_gadget(paulis1, cx_config);
+    p1_circ.add_phase(-paulis0.coeff / 2);
     return p1_circ;
-  } else if (pauli1.string.is_identity()) {
-    Circuit p0_circ = pauli_gadget(pauli0, converted_angle0, cx_config);
-    p0_circ.add_phase(-converted_angle1 / 2);
+  } else if (SpPauliString(paulis1.string) == SpPauliString{}) {
+    Circuit p0_circ = pauli_gadget(paulis0, cx_config);
+    p0_circ.add_phase(-paulis1.coeff / 2);
     return p0_circ;
   }
-  if (pauli0.commutes_with(pauli1)) {
-    std::tuple<Circuit, Qubit, Qubit> diag =
-        reduce_commuting_paulis_to_zi_iz(pauli0, pauli1, cx_config);
+  if (paulis0.commutes_with(paulis1)) {
+    std::tuple<Circuit, Qubit, Qubit> diag = reduce_commuting_paulis_to_zi_iz(
+        SpPauliStabiliser(paulis0.string), SpPauliStabiliser(paulis1.string),
+        cx_config);
     Circuit &diag_circ = std::get<0>(diag);
-    Circuit undiag_circ = diag_circ.dagger();
-    diag_circ.add_op<Qubit>(OpType::Rz, converted_angle0, {std::get<1>(diag)});
-    diag_circ.add_op<Qubit>(OpType::Rz, converted_angle1, {std::get<2>(diag)});
-    diag_circ.append(undiag_circ);
-    return diag_circ;
+    qubit_vector_t all_qubits = diag_circ.all_qubits();
+    unit_map_t mapping = diag_circ.flatten_registers();
+    Circuit rot_circ(all_qubits.size());
+    rot_circ.add_op<UnitID>(
+        OpType::Rz, paulis0.coeff, {mapping.at(std::get<1>(diag))});
+    rot_circ.add_op<UnitID>(
+        OpType::Rz, paulis1.coeff, {mapping.at(std::get<2>(diag))});
+    ConjugationBox box(
+        std::make_shared<CircBox>(diag_circ),
+        std::make_shared<CircBox>(rot_circ));
+    Circuit circ(all_qubits, {});
+    circ.add_box(box, all_qubits);
+    return circ;
   } else {
-    std::pair<Circuit, Qubit> diag =
-        reduce_anticommuting_paulis_to_z_x(pauli0, pauli1, cx_config);
+    std::pair<Circuit, Qubit> diag = reduce_anticommuting_paulis_to_z_x(
+        SpPauliStabiliser(paulis0.string), SpPauliStabiliser(paulis1.string),
+        cx_config);
     Circuit &diag_circ = diag.first;
-    Circuit undiag_circ = diag_circ.dagger();
-    diag_circ.add_op<Qubit>(OpType::Rz, converted_angle0, {diag.second});
-    diag_circ.add_op<Qubit>(OpType::Rx, converted_angle1, {diag.second});
-    diag_circ.append(undiag_circ);
-    return diag_circ;
+    qubit_vector_t all_qubits = diag_circ.all_qubits();
+    unit_map_t mapping = diag_circ.flatten_registers();
+    Circuit rot_circ(all_qubits.size());
+    rot_circ.add_op<UnitID>(
+        OpType::Rz, paulis0.coeff, {mapping.at(diag.second)});
+    rot_circ.add_op<UnitID>(
+        OpType::Rx, paulis1.coeff, {mapping.at(diag.second)});
+    ConjugationBox box(
+        std::make_shared<CircBox>(diag_circ),
+        std::make_shared<CircBox>(rot_circ));
+    Circuit circ(all_qubits, {});
+    circ.add_box(box, all_qubits);
+    return circ;
   }
 }
 
@@ -478,6 +500,10 @@ Circuit with_CX(Gate_ptr op) {
       return CircPool::CSX_using_CX();
     case OpType::CSXdg:
       return CircPool::CSXdg_using_CX();
+    case OpType::CS:
+      return CircPool::CS_using_CX();
+    case OpType::CSdg:
+      return CircPool::CSdg_using_CX();
     case OpType::CRz:
       return CircPool::CRz_using_CX(params[0]);
     case OpType::CRx:
@@ -488,8 +514,11 @@ Circuit with_CX(Gate_ptr op) {
       return CircPool::CU1_using_CX(params[0]);
     case OpType::CU3:
       return CircPool::CU3_using_CX(params[0], params[1], params[2]);
-    case OpType::PhaseGadget:
-      return phase_gadget(n, params[0], CXConfigType::Snake);
+    case OpType::PhaseGadget: {
+      Circuit c = phase_gadget(n, params[0], CXConfigType::Snake);
+      c.decompose_boxes_recursively();
+      return c;
+    }
     case OpType::SWAP:
       return CircPool::SWAP_using_CX_0();
     case OpType::CSWAP:
@@ -549,6 +578,43 @@ static Circuit CnU1(unsigned n_controls, Expr lambda) {
   }
 }
 
+/**
+ * @brief Returns the controlled version of a ConjugationBox
+ * The returned circuit is box free
+ * @param op assumed to be ConjugationBox
+ * @param n_controls
+ * @param args qubits where the box was originally placed, assumed to be qubits
+ * from the default register.
+ * @return Circuit
+ */
+static Circuit controlled_conjugation_box(
+    const Op_ptr &op, unsigned n_controls, const unit_vector_t &args) {
+  const ConjugationBox &conj_box = static_cast<const ConjugationBox &>(*op);
+  unsigned n_targets = args.size();
+  Op_ptr compute = conj_box.get_compute();
+  Op_ptr action = conj_box.get_action();
+  std::optional<Op_ptr> uncompute_opt = conj_box.get_uncompute();
+  Op_ptr uncompute = uncompute_opt ? uncompute_opt.value() : compute->dagger();
+  qubit_vector_t all_args(n_controls + n_targets);
+  qubit_vector_t target_args(n_targets);
+  for (unsigned i = 0; i < n_controls; i++) {
+    all_args[i] = Qubit(i);
+  }
+  for (unsigned i = 0; i < n_targets; i++) {
+    TKET_ASSERT(
+        args[i].reg_name() == q_default_reg() && args[i].reg_dim() == 1);
+    all_args[n_controls + i] = Qubit(n_controls + args[i].index()[0]);
+    target_args[i] = Qubit(n_controls + args[i].index()[0]);
+  }
+  Circuit circ(n_controls + n_targets);
+  circ.add_op(compute, target_args);
+  QControlBox controlled_action(action, n_controls);
+  circ.add_box(controlled_action, all_args);
+  circ.add_op(uncompute, target_args);
+  circ.decompose_boxes_recursively();
+  return circ;
+}
+
 static Circuit with_controls_symbolic(const Circuit &c, unsigned n_controls) {
   if (c.n_bits() != 0 || !c.is_simple()) {
     throw CircuitInvalidity("Only default qubit register allowed");
@@ -578,18 +644,28 @@ static Circuit with_controls_symbolic(const Circuit &c, unsigned n_controls) {
       if (is_projective_type(optype)) {
         throw CircuitInvalidity("Projective operations present");
       }
-      if (is_box_type(optype)) {
-        throw CircuitInvalidity("Undecomposed boxes present");
-      }
       if (is_single_qubit_type(optype)) {
         continue;
       }
       if (multiq_gate_set.find(optype) != multiq_gate_set.end()) {
         continue;
       }
-      Circuit replacement = with_CX(as_gate_ptr(op));
+      Circuit replacement;
+      if (optype == OpType::PhaseGadget) {
+        replacement = phase_gadget(
+            op->n_qubits(), op->get_params()[0], CXConfigType::Snake);
+        if (replacement.n_gates() > 0) {
+          TKET_ASSERT(
+              replacement.n_gates() == 1 &&
+              replacement.count_gates(OpType::ConjugationBox) == 1);
+        }
+      } else {
+        replacement = with_CX(as_gate_ptr(op));
+      }
       c1.substitute(replacement, v, Circuit::VertexDeletion::No);
       bin.push_back(v);
+    } else if (is_box_type(optype) && optype != OpType::ConjugationBox) {
+      throw CircuitInvalidity("Undecomposed boxes present");
     }
   }
   c1.remove_vertices(
@@ -611,6 +687,10 @@ static Circuit with_controls_symbolic(const Circuit &c, unsigned n_controls) {
         barrier_args[i] = Qubit(n_controls + args[i].index()[0]);
       }
       c2.add_op(op, barrier_args);
+      continue;
+    }
+    if (optype == OpType::ConjugationBox) {
+      c2.append(controlled_conjugation_box(op, n_controls, args));
       continue;
     }
     unsigned n_new_args = n_controls + n_args;
@@ -693,6 +773,10 @@ static Eigen::Matrix2cd get_target_op_matrix(const Op_ptr &op) {
       return Gate(OpType::SX, {}, 1).get_unitary();
     case OpType::CSXdg:
       return Gate(OpType::SXdg, {}, 1).get_unitary();
+    case OpType::CS:
+      return Gate(OpType::S, {}, 1).get_unitary();
+    case OpType::CSdg:
+      return Gate(OpType::Sdg, {}, 1).get_unitary();
     case OpType::CV:
       return Gate(OpType::V, {}, 1).get_unitary();
     case OpType::CVdg:
@@ -740,11 +824,13 @@ struct CnGateBlock {
     }
     target_qubit = args.back().index()[0];
     is_barrier = (op->get_type() == OpType::Barrier);
+    is_conjugation_box = (op->get_type() == OpType::ConjugationBox);
     is_symmetric =
         (op->get_type() == OpType::CZ || op->get_type() == OpType::CnZ ||
          op->get_type() == OpType::CU1);
-    color = is_barrier ? std::nullopt
-                       : as_gate_ptr(op)->commuting_basis(args.size() - 1);
+    color = (is_barrier || is_conjugation_box)
+                ? std::nullopt
+                : as_gate_ptr(op)->commuting_basis(args.size() - 1);
     if (color == Pauli::I) {
       throw std::invalid_argument(
           "CnGateBlock doesn't accept multi-controlled identity gate.");
@@ -753,7 +839,8 @@ struct CnGateBlock {
 
   // Check whether commute with another CnGateBlock
   bool commutes_with(const CnGateBlock &other) {
-    if (is_barrier || other.is_barrier) {
+    if (is_barrier || other.is_barrier || is_conjugation_box ||
+        other.is_conjugation_box) {
       // they commute only if they have no args in common
       std::set<unsigned> common_args;
       std::set<unsigned> args = control_qubits;
@@ -780,7 +867,8 @@ struct CnGateBlock {
 
   // Check whether can be merged with another CnGateBlock
   bool is_mergeable_with(const CnGateBlock &other) {
-    if (is_barrier || other.is_barrier) {
+    if (is_barrier || other.is_barrier || is_conjugation_box ||
+        other.is_conjugation_box) {
       return false;
     }
     // check if sizes match
@@ -836,6 +924,8 @@ struct CnGateBlock {
   std::set<unsigned> control_qubits;
   // whether the block is used as a barrier
   bool is_barrier;
+  // whether the block contains a single ConjugationBox
+  bool is_conjugation_box;
   // whether the target can act on any of its qubits
   bool is_symmetric;
   // color of the target qubit
@@ -866,18 +956,28 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
       if (is_projective_type(optype)) {
         throw CircuitInvalidity("Projective operations present");
       }
-      if (is_box_type(optype)) {
-        throw CircuitInvalidity("Undecomposed boxes present");
-      }
       if (is_single_qubit_type(optype) || is_controlled_gate_type(optype)) {
         continue;
       }
-      Circuit replacement = with_CX(as_gate_ptr(op));
+      Circuit replacement;
+      if (optype == OpType::PhaseGadget) {
+        replacement = phase_gadget(
+            op->n_qubits(), op->get_params()[0], CXConfigType::Snake);
+        if (replacement.n_gates() > 0) {
+          TKET_ASSERT(
+              replacement.n_gates() == 1 &&
+              replacement.count_gates(OpType::ConjugationBox) == 1);
+        }
+      } else {
+        replacement = with_CX(as_gate_ptr(op));
+      }
       c1.substitute(replacement, v, Circuit::VertexDeletion::No);
       bin.push_back(v);
+    } else if (is_box_type(optype) && optype != OpType::ConjugationBox) {
+      throw CircuitInvalidity("Undecomposed boxes present");
     } else if (
         optype != OpType::Input && optype != OpType::Output &&
-        optype != OpType::Barrier) {
+        optype != OpType::Barrier && optype != OpType::ConjugationBox) {
       throw CircuitInvalidity(
           "Cannot construct the controlled version of " + op->get_name());
     }
@@ -895,7 +995,8 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
   for (const Command &cmd : commands) {
     // if the gate is an identity up to a phase, add it as a controlled phase
     std::optional<double> phase = std::nullopt;
-    if (cmd.get_op_ptr()->get_type() != OpType::Barrier) {
+    OpType optype = cmd.get_op_ptr()->get_type();
+    if (optype != OpType::Barrier && optype != OpType::ConjugationBox) {
       phase = cmd.get_op_ptr()->is_identity();
     }
     if (phase != std::nullopt) {
@@ -969,6 +1070,16 @@ static Circuit with_controls_numerical(const Circuit &c, unsigned n_controls) {
       new_args.push_back(Qubit(b.target_qubit + n_controls));
       TKET_ASSERT(b.ops.size() == 1);
       c2.add_op(b.ops[0], new_args);
+      continue;
+    }
+    if (b.is_conjugation_box) {
+      unit_vector_t args;
+      for (const unsigned i : b.control_qubits) {
+        args.push_back(Qubit(i));
+      }
+      args.push_back(Qubit(b.target_qubit));
+      TKET_ASSERT(b.ops.size() == 1);
+      c2.append(controlled_conjugation_box(b.ops[0], n_controls, args));
       continue;
     }
     // Computes the target unitary

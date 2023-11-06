@@ -14,6 +14,8 @@
 
 #pragma once
 
+#include <memory>
+
 #include "Boxes.hpp"
 #include "Circuit.hpp"
 #include "tket/Utils/Json.hpp"
@@ -44,7 +46,7 @@ class DiagonalBox : public Box {
 
   Op_ptr symbol_substitution(
       const SymEngine::map_basic_basic &) const override {
-    return Op_ptr();
+    return std::make_shared<DiagonalBox>(*this);
   }
 
   SymSet free_symbols() const override { return {}; }
@@ -52,10 +54,7 @@ class DiagonalBox : public Box {
   /**
    * Equality check between two DiagonalBox instances
    */
-  bool is_equal(const Op &op_other) const override {
-    const DiagonalBox &other = dynamic_cast<const DiagonalBox &>(op_other);
-    return id_ == other.get_id();
-  }
+  bool is_equal(const Op &op_other) const override;
 
   Op_ptr dagger() const override;
   Op_ptr transpose() const override;

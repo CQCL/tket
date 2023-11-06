@@ -81,6 +81,7 @@ Circuit multi_controlled_to_2q(
 
 Circuit TK2_circ_from_multiq(const Op_ptr op) {
   OpDesc desc = op->get_desc();
+  std::vector<Expr> params = op->get_params();
   if (!desc.is_gate())
     throw BadOpType(
         "Can only build replacement circuits for basic gates", desc.type());
@@ -91,6 +92,12 @@ Circuit TK2_circ_from_multiq(const Op_ptr op) {
     case OpType::CnY:
       // TODO We should be able to do better than this.
       return multi_controlled_to_2q(op, OpType::TK2);
+    case OpType::XXPhase:
+      return CircPool::XXPhase_using_TK2(params[0]);
+    case OpType::YYPhase:
+      return CircPool::YYPhase_using_TK2(params[0]);
+    case OpType::ZZPhase:
+      return CircPool::ZZPhase_using_TK2(params[0]);
     default:
       return with_TK2(as_gate_ptr(op));
   }
@@ -262,6 +269,8 @@ Circuit CX_ZX_circ_from_op(const Op_ptr op) {
     case OpType::CVdg:
     case OpType::CSX:
     case OpType::CSXdg:
+    case OpType::CS:
+    case OpType::CSdg:
     case OpType::CRz:
     case OpType::CRx:
     case OpType::CRy:

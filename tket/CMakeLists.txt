@@ -30,20 +30,41 @@ find_package(tkwsm CONFIG REQUIRED)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+option(INSTALL_NAME_DIR "Set the install name dir for the library to @loader_path for Apple targets" ON)
+
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
 
-find_program(CCACHE_PROGRAM ccache)
-if(CCACHE_PROGRAM)
-  set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
-  message("-> Setting ccache (${CCACHE_PROGRAM} as compiler launcher for generator ${CMAKE_GENERATOR}")
-  message("-> This is only supported for the Ninja and Makefile generators")
+
+# ccache stuff
+if (CMAKE_GENERATOR MATCHES "Visual Studio" AND DEFINED ENV{TKET_VSGEN_CCACHE_EXE})
+    file(COPY_FILE $ENV{TKET_VSGEN_CCACHE_EXE} ${CMAKE_BINARY_DIR}/cl.exe ONLY_IF_DIFFERENT)
+    message("-> Setting ccache ($ENV{TKET_VSGEN_CCACHE_EXE}) as compiler launcher for generator ${CMAKE_GENERATOR}")
+
+    # By default Visual Studio generators will use /Zi which is not compatible
+    # with ccache, so tell Visual Studio to use /Z7 instead.
+    message(STATUS "   Setting MSVC debug information format to 'Embedded'")
+    set(CMAKE_MSVC_DEBUG_INFORMATION_FORMAT "$<$<CONFIG:Debug,RelWithDebInfo>:Embedded>")
+
+    set(CMAKE_VS_GLOBALS
+        "CLToolExe=cl.exe"
+        "CLToolPath=${CMAKE_BINARY_DIR}"
+        "TrackFileAccess=false"
+        "UseMultiToolTask=true"
+        "DebugInformationFormat=OldStyle"
+    )
+else()
+    find_program(CCACHE_PROGRAM ccache)
+    if(CCACHE_PROGRAM)
+        set_property(GLOBAL PROPERTY RULE_LAUNCH_COMPILE "${CCACHE_PROGRAM}")
+        message("-> Setting ccache (${CCACHE_PROGRAM}) as compiler launcher for generator ${CMAKE_GENERATOR}")
+    endif ()
 endif()
 
 if(WIN32)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS yes)
-elseif(APPLE)
+elseif(APPLE AND INSTALL_NAME_DIR)
     # set correct install_name
     set(CMAKE_INSTALL_NAME_DIR "@loader_path")
     set(CMAKE_BUILD_WITH_INSTALL_NAME_DIR ON)
@@ -64,6 +85,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     # Work around gcc bug related to std::optional.
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-error=maybe-uninitialized")
 endif()
+
 
 add_library(tket)
 
@@ -95,13 +117,16 @@ target_link_libraries(tket PRIVATE tkassert::tkassert)
 target_link_libraries(tket PRIVATE tkrng::tkrng)
 target_link_libraries(tket PRIVATE tktokenswap::tktokenswap)
 target_link_libraries(tket PRIVATE tkwsm::tkwsm)
+IF(APPLE)
+    target_link_libraries(tket PRIVATE "-flat_namespace")
+ENDIF()
 
 target_sources(tket
     PRIVATE
         src/Utils/UnitID.cpp
         src/Utils/HelperFunctions.cpp
         src/Utils/MatrixAnalysis.cpp
-        src/Utils/PauliStrings.cpp
+        src/Utils/PauliTensor.cpp
         src/Utils/CosSinDecomposition.cpp
         src/Utils/Expression.cpp
         src/OpType/OpDesc.cpp
@@ -111,6 +136,7 @@ target_sources(tket
         src/Clifford/ChoiMixTableau.cpp
         src/Clifford/SymplecticTableau.cpp
         src/Clifford/UnitaryTableau.cpp
+        src/Ops/BarrierOp.cpp
         src/Ops/FlowOp.cpp
         src/Ops/MetaOp.cpp
         src/Ops/Op.cpp
@@ -161,6 +187,7 @@ target_sources(tket
         src/Circuit/DiagonalBox.cpp
         src/Circuit/ToffoliBox.cpp
         src/Circuit/PauliExpBoxes.cpp
+        src/Circuit/ConjugationBox.cpp
         src/Circuit/Simulation/BitOperations.cpp
         src/Circuit/Simulation/CircuitSimulator.cpp
         src/Circuit/Simulation/DecomposeCircuit.cpp
@@ -265,7 +292,7 @@ target_sources(tket
         include/tket/Utils/HelperFunctions.hpp
         include/tket/Utils/Json.hpp
         include/tket/Utils/MatrixAnalysis.hpp
-        include/tket/Utils/PauliStrings.hpp
+        include/tket/Utils/PauliTensor.hpp
         include/tket/Utils/SequencedContainers.hpp
         include/tket/Utils/Symbols.hpp
         include/tket/Utils/UnitID.hpp
@@ -278,6 +305,7 @@ target_sources(tket
         include/tket/Clifford/SymplecticTableau.hpp
         include/tket/Clifford/UnitaryTableau.hpp
         include/tket/Ops/ClassicalOps.hpp
+        include/tket/Ops/BarrierOp.hpp
         include/tket/Ops/FlowOp.hpp
         include/tket/Ops/MetaOp.hpp
         include/tket/Ops/Op.hpp
@@ -323,6 +351,7 @@ target_sources(tket
         include/tket/Circuit/ThreeQubitConversion.hpp
         include/tket/Circuit/ToffoliBox.hpp
         include/tket/Circuit/PauliExpBoxes.hpp
+        include/tket/Circuit/ConjugationBox.hpp
         include/tket/Circuit/Simulation/CircuitSimulator.hpp
         include/tket/Circuit/Simulation/PauliExpBoxUnitaryCalculator.hpp
         include/tket/Architecture/Architecture.hpp

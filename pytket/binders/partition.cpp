@@ -21,6 +21,8 @@
 #include "typecast.hpp"
 
 namespace py = pybind11;
+using json = nlohmann::json;
+
 namespace tket {
 
 PYBIND11_MODULE(partition, m) {
@@ -69,7 +71,7 @@ PYBIND11_MODULE(partition, m) {
       "MeasurementBitMap optionally inverts "
       "the result.")
       .def(
-          py::init<unsigned, std::vector<unsigned> &, bool>(),
+          py::init<unsigned, py::tket_custom::SequenceVec<unsigned> &, bool>(),
           "Constructs a MeasurementBitMap for some Clifford circuit "
           "index and bits, with an option to invert the result."
           "\n\n:param circ_index: which measurement circuit the "
@@ -90,14 +92,15 @@ PYBIND11_MODULE(partition, m) {
       .def(
           "to_dict",
           [](const MeasurementSetup::MeasurementBitMap &map) {
-            return nlohmann::json(map);
+            return py::object(json(map)).cast<py::dict>();
           },
           "JSON-serializable dict representation of the MeasurementBitMap."
           "\n\n:return: dict representation of the MeasurementBitMap")
       .def_static(
           "from_dict",
-          [](const nlohmann::json &j) {
-            return j.get<MeasurementSetup::MeasurementBitMap>();
+          [](const py::dict &measurement_bit_map_dict) {
+            return json(measurement_bit_map_dict)
+                .get<MeasurementSetup::MeasurementBitMap>();
           },
           "Construct MeasurementBitMap instance from dict representation.");
 
@@ -123,7 +126,7 @@ PYBIND11_MODULE(partition, m) {
       .def(
           "add_result_for_term",
           (void(MeasurementSetup::*)(
-              const QubitPauliString &,
+              const SpPauliString &,
               const MeasurementSetup::MeasurementBitMap &)) &
               MeasurementSetup::add_result_for_term,
           "Add a new Pauli string with a corresponding BitMap", py::arg("term"),
@@ -136,16 +139,25 @@ PYBIND11_MODULE(partition, m) {
           ":return: True or False")
       .def(
           "to_dict",
-          [](const MeasurementSetup &setup) { return nlohmann::json(setup); },
+          [](const MeasurementSetup &setup) {
+            return py::object(json(setup)).cast<py::dict>();
+          },
           "JSON-serializable dict representation of the MeasurementSetup."
           "\n\n:return: dict representation of the MeasurementSetup")
       .def_static(
           "from_dict",
-          [](const nlohmann::json &j) { return j.get<MeasurementSetup>(); },
+          [](const py::dict &measurement_setup_dict) {
+            return json(measurement_setup_dict).get<MeasurementSetup>();
+          },
           "Construct MeasurementSetup instance from dict representation.");
 
   m.def(
-      "measurement_reduction", measurement_reduction,
+      "measurement_reduction",
+      [](const py::tket_custom::SequenceList<SpPauliString> &strings,
+         PauliPartitionStrat strat, GraphColourMethod method,
+         CXConfigType cx_config) {
+        return measurement_reduction(strings, strat, method, cx_config);
+      },
       "Automatically performs graph colouring and diagonalisation to "
       "reduce measurements required for Pauli strings."
       "\n\n:param strings: A list of `QubitPauliString` objects to be "
@@ -160,7 +172,11 @@ PYBIND11_MODULE(partition, m) {
       py::arg("cx_config") = CXConfigType::Snake);
 
   m.def(
-      "term_sequence", term_sequence,
+      "term_sequence",
+      [](const py::tket_custom::SequenceList<SpPauliString> &strings,
+         PauliPartitionStrat strat, GraphColourMethod method) {
+        return term_sequence(strings, strat, method);
+      },
       "Takes in a list of QubitPauliString objects and partitions them "
       "into mutually commuting sets according to some PauliPartitionStrat, "
       "then sequences in an arbitrary order."

@@ -71,7 +71,7 @@ LICENCE
 Licensed under the `Apache 2 License <http://www.apache.org/licenses/LICENSE-2.0>`_.
 
 .. _Getting Started: getting_started.html
-.. _examples: https://github.com/CQCL/pytket/tree/main/examples
+.. _examples: https://tket.quantinuum.com/examples
 .. _Quantinuum: https://www.quantinuum.com/
 
 .. toctree::
@@ -81,16 +81,14 @@ Licensed under the `Apache 2 License <http://www.apache.org/licenses/LICENSE-2.0
     getting_started.rst
     changelog.rst
     install.rst
-    faqs.rst 
-    opensource.rst
+    faqs.rst
 
 .. toctree::
     :caption: More Documentation:
-    :maxdepth: 1
     
     Manual <https://cqcl.github.io/pytket/manual/index.html>
-    Extensions <https://cqcl.github.io/pytket-extensions/api/index.html>
-    Example notebooks <https://github.com/CQCL/pytket/tree/main/examples>
+    extensions_index.rst  
+    Example notebooks <https://tket.quantinuum.com/examples>
 
 .. toctree::
     :caption: API Reference:
@@ -98,6 +96,7 @@ Licensed under the `Apache 2 License <http://www.apache.org/licenses/LICENSE-2.0
 
     backends.rst
     circuit.rst
+    unit_id.rst
     pauli.rst
     passes.rst
     predicates.rst

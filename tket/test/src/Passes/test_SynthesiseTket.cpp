@@ -27,10 +27,11 @@ SCENARIO("SynthesiseTket with conditionals") {
   c.add_c_register("c", 1);
   c.add_conditional_gate<unsigned>(OpType::CnRy, {0.25}, {0, 1}, {0}, 0);
   c.add_conditional_gate<unsigned>(OpType::Ry, {0.125}, {1}, {0}, 0);
+  c.add_conditional_barrier({0, 1}, {}, {0}, 1, "");
   CompilationUnit cu(c);
   SynthesiseTket()->apply(cu);
   Circuit c1 = cu.get_circ_ref();
-  REQUIRE(c1.n_gates() == 5);
+  REQUIRE(c1.n_gates() == 6);
 }
 
 }  // namespace test_SynthesiseTket

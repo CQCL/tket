@@ -18,18 +18,11 @@
 
 namespace tket {
 
-struct cmp_tensors {
-  bool operator()(
-      const QubitPauliTensor &qps1, const QubitPauliTensor &qps2) const {
-    return (qps1.string < qps2.string);
-  }
-};
-
 /**
  * QubitOperator, defined to be useful for diagonalisation and
  * partitioning.
  */
-typedef std::map<QubitPauliTensor, Expr, cmp_tensors> QubitOperator;
+typedef std::map<SpPauliString, Expr> QubitOperator;
 
 void insert_into_gadget_map(
     QubitOperator &gadget_map, const PauliGadgetProperties &pgp);

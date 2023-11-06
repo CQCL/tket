@@ -80,10 +80,10 @@ ChoiMixTableau::ChoiMixTableau(const std::list<row_tensor_t>& rows)
   std::set<Qubit> in_qubits;
   std::set<Qubit> out_qubits;
   for (const row_tensor_t& row : rows) {
-    for (const std::pair<const Qubit, Pauli>& qb : row.first.string.map) {
+    for (const std::pair<const Qubit, Pauli>& qb : row.first.string) {
       in_qubits.insert(qb.first);
     }
-    for (const std::pair<const Qubit, Pauli>& qb : row.second.string.map) {
+    for (const std::pair<const Qubit, Pauli>& qb : row.second.string) {
       out_qubits.insert(qb.first);
     }
   }
@@ -104,29 +104,21 @@ ChoiMixTableau::ChoiMixTableau(const std::list<row_tensor_t>& rows)
   unsigned r = 0;
   for (const row_tensor_t& row : rows) {
     unsigned n_ys = 0;
-    for (const std::pair<const Qubit, Pauli>& qb : row.first.string.map) {
+    for (const std::pair<const Qubit, Pauli>& qb : row.first.string) {
       unsigned c =
           col_index_.left.at(col_key_t{qb.first, TableauSegment::Input});
       if (qb.second == Pauli::X || qb.second == Pauli::Y) xmat(r, c) = true;
       if (qb.second == Pauli::Z || qb.second == Pauli::Y) zmat(r, c) = true;
       if (qb.second == Pauli::Y) ++n_ys;
     }
-    for (const std::pair<const Qubit, Pauli>& qb : row.second.string.map) {
+    for (const std::pair<const Qubit, Pauli>& qb : row.second.string) {
       unsigned c =
           col_index_.left.at(col_key_t{qb.first, TableauSegment::Output});
       if (qb.second == Pauli::X || qb.second == Pauli::Y) xmat(r, c) = true;
       if (qb.second == Pauli::Z || qb.second == Pauli::Y) zmat(r, c) = true;
     }
-    Complex ph = row.first.coeff * row.second.coeff;
-    // Transpose lhs
-    if (n_ys % 2 == 1) ph *= -1;
-    if (std::abs(ph - 1.) < EPS)
-      phase(r) = false;
-    else if (std::abs(ph + 1.) < EPS)
-      phase(r) = true;
-    else
-      throw std::invalid_argument(
-          "Phase coefficient of a Choi tableau row must be +-1");
+    phase(r) = row.first.is_real_negative() ^ row.second.is_real_negative() ^
+               (n_ys % 2 == 1);
     ++r;
   }
   tab_ = SymplecticTableau(xmat, zmat, phase);
@@ -175,9 +167,7 @@ ChoiMixTableau::row_tensor_t ChoiMixTableau::stab_to_row_tensor(
         out_qpm.insert({col.first, p});
     }
   }
-  return {
-      QubitPauliTensor(in_qpm),
-      QubitPauliTensor(out_qpm, stab.coeff ? 1. : -1.)};
+  return {SpPauliStabiliser(in_qpm), SpPauliStabiliser(out_qpm, stab.coeff)};
 }
 
 PauliStabiliser ChoiMixTableau::row_tensor_to_stab(
@@ -186,19 +176,18 @@ PauliStabiliser ChoiMixTableau::row_tensor_to_stab(
   for (unsigned i = 0; i < col_index_.size(); ++i) {
     col_key_t qb = col_index_.right.at(i);
     if (qb.second == TableauSegment::Input)
-      ps.push_back(ten.first.string.get(qb.first));
+      ps.push_back(ten.first.get(qb.first));
     else
-      ps.push_back(ten.second.string.get(qb.first));
+      ps.push_back(ten.second.get(qb.first));
   }
-  return PauliStabiliser(
-      ps, std::abs(ten.first.coeff * ten.second.coeff - 1.) < EPS);
+  return PauliStabiliser(ps, (ten.first.coeff + ten.second.coeff) % 4);
 }
 
 ChoiMixTableau::row_tensor_t ChoiMixTableau::get_row(unsigned i) const {
   ChoiMixTableau::row_tensor_t res = stab_to_row_tensor(tab_.get_pauli(i));
   res.first.transpose();
-  res.second.coeff *= res.first.coeff;
-  res.first.coeff = 1.;
+  res.second.coeff = (res.first.coeff + res.second.coeff) % 4;
+  res.first.coeff = 0;
   return res;
 }
 
@@ -211,8 +200,8 @@ ChoiMixTableau::row_tensor_t ChoiMixTableau::get_row_product(
     result.second = result.second * row_i.second;
   }
   result.first.transpose();
-  result.second.coeff *= result.first.coeff;
-  result.first.coeff = 1.;
+  result.second.coeff = (result.first.coeff + result.second.coeff) % 4;
+  result.first.coeff = 0;
   return result;
 }
 
@@ -221,9 +210,24 @@ void ChoiMixTableau::apply_S(const Qubit& qb, TableauSegment seg) {
   tab_.apply_S(col);
 }
 
+void ChoiMixTableau::apply_Z(const Qubit& qb, TableauSegment seg) {
+  unsigned col = col_index_.left.at(col_key_t{qb, seg});
+  tab_.apply_Z(col);
+}
+
 void ChoiMixTableau::apply_V(const Qubit& qb, TableauSegment seg) {
   unsigned col = col_index_.left.at(col_key_t{qb, seg});
   tab_.apply_V(col);
+}
+
+void ChoiMixTableau::apply_X(const Qubit& qb, TableauSegment seg) {
+  unsigned col = col_index_.left.at(col_key_t{qb, seg});
+  tab_.apply_X(col);
+}
+
+void ChoiMixTableau::apply_H(const Qubit& qb, TableauSegment seg) {
+  unsigned col = col_index_.left.at(col_key_t{qb, seg});
+  tab_.apply_H(col);
 }
 
 void ChoiMixTableau::apply_CX(
@@ -237,20 +241,16 @@ void ChoiMixTableau::apply_gate(
     OpType type, const qubit_vector_t& qbs, TableauSegment seg) {
   switch (type) {
     case OpType::Z: {
-      apply_S(qbs.at(0), seg);
-      apply_S(qbs.at(0), seg);
+      apply_Z(qbs.at(0), seg);
       break;
     }
     case OpType::X: {
-      apply_V(qbs.at(0), seg);
-      apply_V(qbs.at(0), seg);
+      apply_X(qbs.at(0), seg);
       break;
     }
     case OpType::Y: {
-      apply_S(qbs.at(0), seg);
-      apply_S(qbs.at(0), seg);
-      apply_V(qbs.at(0), seg);
-      apply_V(qbs.at(0), seg);
+      apply_Z(qbs.at(0), seg);
+      apply_X(qbs.at(0), seg);
       break;
     }
     case OpType::S: {
@@ -259,8 +259,7 @@ void ChoiMixTableau::apply_gate(
     }
     case OpType::Sdg: {
       apply_S(qbs.at(0), seg);
-      apply_S(qbs.at(0), seg);
-      apply_S(qbs.at(0), seg);
+      apply_Z(qbs.at(0), seg);
       break;
     }
     case OpType::SX:
@@ -271,14 +270,11 @@ void ChoiMixTableau::apply_gate(
     case OpType::SXdg:
     case OpType::Vdg: {
       apply_V(qbs.at(0), seg);
-      apply_V(qbs.at(0), seg);
-      apply_V(qbs.at(0), seg);
+      apply_X(qbs.at(0), seg);
       break;
     }
     case OpType::H: {
-      apply_S(qbs.at(0), seg);
-      apply_V(qbs.at(0), seg);
-      apply_S(qbs.at(0), seg);
+      apply_H(qbs.at(0), seg);
       break;
     }
     case OpType::CX: {
@@ -290,25 +286,19 @@ void ChoiMixTableau::apply_gate(
         apply_S(qbs.at(1), seg);
         apply_CX(qbs.at(0), qbs.at(1), seg);
         apply_S(qbs.at(1), seg);
-        apply_S(qbs.at(1), seg);
-        apply_S(qbs.at(1), seg);
+        apply_Z(qbs.at(1), seg);
       } else {
         apply_S(qbs.at(1), seg);
-        apply_S(qbs.at(1), seg);
-        apply_S(qbs.at(1), seg);
+        apply_Z(qbs.at(1), seg);
         apply_CX(qbs.at(0), qbs.at(1), seg);
         apply_S(qbs.at(1), seg);
       }
       break;
     }
     case OpType::CZ: {
-      apply_S(qbs.at(1), seg);
-      apply_V(qbs.at(1), seg);
-      apply_S(qbs.at(1), seg);
+      apply_H(qbs.at(1), seg);
       apply_CX(qbs.at(0), qbs.at(1), seg);
-      apply_S(qbs.at(1), seg);
-      apply_V(qbs.at(1), seg);
-      apply_S(qbs.at(1), seg);
+      apply_H(qbs.at(1), seg);
       break;
     }
     case OpType::ZZMax: {
@@ -319,16 +309,14 @@ void ChoiMixTableau::apply_gate(
     }
     case OpType::ECR: {
       if (seg == TableauSegment::Input) {
-        apply_V(qbs.at(0), seg);
-        apply_V(qbs.at(0), seg);
+        apply_X(qbs.at(0), seg);
         apply_S(qbs.at(0), seg);
         apply_V(qbs.at(1), seg);
         apply_CX(qbs.at(0), qbs.at(1), seg);
       } else {
         apply_CX(qbs.at(0), qbs.at(1), seg);
         apply_S(qbs.at(0), seg);
-        apply_V(qbs.at(0), seg);
-        apply_V(qbs.at(0), seg);
+        apply_X(qbs.at(0), seg);
         apply_V(qbs.at(1), seg);
       }
       break;
@@ -339,8 +327,7 @@ void ChoiMixTableau::apply_gate(
       apply_CX(qbs.at(0), qbs.at(1), seg);
       apply_V(qbs.at(0), seg);
       apply_S(qbs.at(1), seg);
-      apply_S(qbs.at(1), seg);
-      apply_S(qbs.at(1), seg);
+      apply_Z(qbs.at(1), seg);
       apply_CX(qbs.at(0), qbs.at(1), seg);
       apply_V(qbs.at(0), seg);
       apply_V(qbs.at(1), seg);
@@ -368,28 +355,25 @@ void ChoiMixTableau::apply_gate(
         // reinsert qubit initialised to maximally mixed state (no coherent
         // stabilizers)
         col_index_.insert({{qbs.at(0), TableauSegment::Input}, col});
-        tab_.xmat_.conservativeResize(rows, col + 1);
-        tab_.xmat_.col(col) = MatrixXb::Zero(rows, 1);
-        tab_.zmat_.conservativeResize(rows, col + 1);
-        tab_.zmat_.col(col) = MatrixXb::Zero(rows, 1);
-        ++tab_.n_qubits_;
+        tab_.xmat.conservativeResize(rows, col + 1);
+        tab_.xmat.col(col) = MatrixXb::Zero(rows, 1);
+        tab_.zmat.conservativeResize(rows, col + 1);
+        tab_.zmat.col(col) = MatrixXb::Zero(rows, 1);
       } else {
         discard_qubit(qbs.at(0), TableauSegment::Output);
         unsigned col = get_n_boundaries();
         unsigned rows = get_n_rows();
         // reinsert qubit initialised to |0> (add a Z stabilizer)
         col_index_.insert({{qbs.at(0), TableauSegment::Output}, col});
-        tab_.xmat_.conservativeResize(rows + 1, col + 1);
-        tab_.xmat_.col(col) = MatrixXb::Zero(rows + 1, 1);
-        tab_.xmat_.row(rows) = MatrixXb::Zero(1, col + 1);
-        tab_.zmat_.conservativeResize(rows + 1, col + 1);
-        tab_.zmat_.col(col) = MatrixXb::Zero(rows + 1, 1);
-        tab_.zmat_.row(rows) = MatrixXb::Zero(1, col + 1);
-        tab_.zmat_(rows, col) = true;
-        tab_.phase_.conservativeResize(rows + 1);
-        tab_.phase_(rows) = false;
-        ++tab_.n_rows_;
-        ++tab_.n_qubits_;
+        tab_.xmat.conservativeResize(rows + 1, col + 1);
+        tab_.xmat.col(col) = MatrixXb::Zero(rows + 1, 1);
+        tab_.xmat.row(rows) = MatrixXb::Zero(1, col + 1);
+        tab_.zmat.conservativeResize(rows + 1, col + 1);
+        tab_.zmat.col(col) = MatrixXb::Zero(rows + 1, 1);
+        tab_.zmat.row(rows) = MatrixXb::Zero(1, col + 1);
+        tab_.zmat(rows, col) = true;
+        tab_.phase.conservativeResize(rows + 1);
+        tab_.phase(rows) = false;
       }
       break;
     }
@@ -406,14 +390,10 @@ void ChoiMixTableau::apply_gate(
 }
 
 void ChoiMixTableau::apply_pauli(
-    const QubitPauliTensor& pauli, unsigned half_pis, TableauSegment seg) {
-  if (std::abs(pauli.coeff - 1.) > EPS && std::abs(pauli.coeff + 1.) > EPS)
-    throw std::invalid_argument(
-        "In ChoiMixTableau::apply_pauli, can only rotate about a "
-        "QubitPauliTensor with coeff +-1");
+    const SpPauliStabiliser& pauli, unsigned half_pis, TableauSegment seg) {
   PauliStabiliser ps;
   if (seg == TableauSegment::Input) {
-    QubitPauliTensor tr = pauli;
+    SpPauliStabiliser tr = pauli;
     tr.transpose();
     ps = row_tensor_to_stab({tr, {}});
   } else {
@@ -430,10 +410,10 @@ void ChoiMixTableau::post_select(const Qubit& qb, TableauSegment seg) {
   unsigned n_cols = get_n_boundaries();
   unsigned col = col_index_.left.at(col_key_t{qb, seg});
   for (unsigned r = 0; r < n_rows; ++r) {
-    if (tab_.zmat_(r, col)) {
+    if (tab_.zmat(r, col)) {
       bool only_z = true;
       for (unsigned c = 0; c < n_cols; ++c) {
-        if ((tab_.xmat_(r, c) || tab_.zmat_(r, c)) && (c != col)) {
+        if ((tab_.xmat(r, c) || tab_.zmat(r, c)) && (c != col)) {
           only_z = false;
           break;
         }
@@ -441,7 +421,7 @@ void ChoiMixTableau::post_select(const Qubit& qb, TableauSegment seg) {
       if (!only_z) break;  // Not deterministic
       // From here, we know we are in a deterministic case
       // If deterministically fail, throw an exception
-      if (tab_.phase_(r))
+      if (tab_.phase(r))
         throw std::logic_error(
             "Post-selecting a tableau fails deterministically");
       // Otherwise, we succeed and remove the stabilizer
@@ -454,7 +434,7 @@ void ChoiMixTableau::post_select(const Qubit& qb, TableauSegment seg) {
   // Isolate a single row with an X (if one exists)
   std::optional<unsigned> x_row = std::nullopt;
   for (unsigned r = 0; r < n_rows; ++r) {
-    if (tab_.xmat_(r, col)) {
+    if (tab_.xmat(r, col)) {
       if (x_row) {
         // Already found another row with an X, so combine them
         tab_.row_mult(*x_row, r);
@@ -477,7 +457,7 @@ void ChoiMixTableau::discard_qubit(const Qubit& qb, TableauSegment seg) {
   // Isolate a single row with an X (if one exists)
   std::optional<unsigned> x_row = std::nullopt;
   for (unsigned r = 0; r < get_n_rows(); ++r) {
-    if (tab_.xmat_(r, col)) {
+    if (tab_.xmat(r, col)) {
       if (x_row) {
         // Already found another row with an X, so combine them
         tab_.row_mult(*x_row, r);
@@ -495,7 +475,7 @@ void ChoiMixTableau::discard_qubit(const Qubit& qb, TableauSegment seg) {
   // Isolate a single row with a Z (if one exists)
   std::optional<unsigned> z_row = std::nullopt;
   for (unsigned r = 0; r < get_n_rows(); ++r) {
-    if (tab_.zmat_(r, col)) {
+    if (tab_.zmat(r, col)) {
       if (z_row) {
         // Already found another row with a Z, so combine them
         tab_.row_mult(*z_row, r);
@@ -518,7 +498,7 @@ void ChoiMixTableau::collapse_qubit(const Qubit& qb, TableauSegment seg) {
   // Isolate a single row with an X (if one exists)
   std::optional<unsigned> x_row = std::nullopt;
   for (unsigned r = 0; r < get_n_rows(); ++r) {
-    if (tab_.xmat_(r, col)) {
+    if (tab_.xmat(r, col)) {
       if (x_row) {
         // Already found another row with an X, so combine them
         tab_.row_mult(*x_row, r);
@@ -557,14 +537,13 @@ void ChoiMixTableau::remove_row(unsigned row) {
   unsigned n_rows = get_n_rows();
   unsigned n_cols = get_n_boundaries();
   if (row < n_rows - 1) {
-    tab_.xmat_.row(row) = tab_.xmat_.row(n_rows - 1);
-    tab_.zmat_.row(row) = tab_.zmat_.row(n_rows - 1);
-    tab_.phase_(row) = tab_.phase_(n_rows - 1);
+    tab_.xmat.row(row) = tab_.xmat.row(n_rows - 1);
+    tab_.zmat.row(row) = tab_.zmat.row(n_rows - 1);
+    tab_.phase(row) = tab_.phase(n_rows - 1);
   }
-  tab_.xmat_.conservativeResize(n_rows - 1, n_cols);
-  tab_.zmat_.conservativeResize(n_rows - 1, n_cols);
-  tab_.phase_.conservativeResize(n_rows - 1);
-  --tab_.n_rows_;
+  tab_.xmat.conservativeResize(n_rows - 1, n_cols);
+  tab_.zmat.conservativeResize(n_rows - 1, n_cols);
+  tab_.phase.conservativeResize(n_rows - 1);
 }
 
 void ChoiMixTableau::remove_col(unsigned col) {
@@ -575,11 +554,11 @@ void ChoiMixTableau::remove_col(unsigned col) {
   unsigned n_rows = get_n_rows();
   unsigned n_cols = get_n_boundaries();
   if (col < n_cols - 1) {
-    tab_.xmat_.col(col) = tab_.xmat_.col(n_cols - 1);
-    tab_.zmat_.col(col) = tab_.zmat_.col(n_cols - 1);
+    tab_.xmat.col(col) = tab_.xmat.col(n_cols - 1);
+    tab_.zmat.col(col) = tab_.zmat.col(n_cols - 1);
   }
-  tab_.xmat_.conservativeResize(n_rows, n_cols - 1);
-  tab_.zmat_.conservativeResize(n_rows, n_cols - 1);
+  tab_.xmat.conservativeResize(n_rows, n_cols - 1);
+  tab_.zmat.conservativeResize(n_rows, n_cols - 1);
   col_index_.right.erase(col);
   if (col < n_cols - 1) {
     tableau_col_index_t::right_iterator it = col_index_.right.find(n_cols - 1);
@@ -587,7 +566,6 @@ void ChoiMixTableau::remove_col(unsigned col) {
     col_index_.right.erase(it);
     col_index_.insert({last, col});
   }
-  --tab_.n_qubits_;
 }
 
 void ChoiMixTableau::canonical_column_order(TableauSegment first) {
@@ -624,10 +602,10 @@ void ChoiMixTableau::canonical_column_order(TableauSegment first) {
   for (unsigned j = 0; j < i; ++j) {
     col_key_t key = new_index.right.at(j);
     unsigned c = col_index_.left.at(key);
-    xmat.col(j) = tab_.xmat_.col(c);
-    zmat.col(j) = tab_.zmat_.col(c);
+    xmat.col(j) = tab_.xmat.col(c);
+    zmat.col(j) = tab_.zmat.col(c);
   }
-  tab_ = SymplecticTableau(xmat, zmat, tab_.phase_);
+  tab_ = SymplecticTableau(xmat, zmat, tab_.phase);
   col_index_ = new_index;
 }
 
@@ -665,12 +643,12 @@ ChoiMixTableau ChoiMixTableau::compose(
   }
   MatrixXb fullx(f_rows + s_rows, f_cols + s_cols),
       fullz(f_rows + s_rows, f_cols + s_cols);
-  fullx << first.tab_.xmat_, MatrixXb::Zero(f_rows, s_cols),
-      MatrixXb::Zero(s_rows, f_cols), second.tab_.xmat_;
-  fullz << first.tab_.zmat_, MatrixXb::Zero(f_rows, s_cols),
-      MatrixXb::Zero(s_rows, f_cols), second.tab_.zmat_;
+  fullx << first.tab_.xmat, MatrixXb::Zero(f_rows, s_cols),
+      MatrixXb::Zero(s_rows, f_cols), second.tab_.xmat;
+  fullz << first.tab_.zmat, MatrixXb::Zero(f_rows, s_cols),
+      MatrixXb::Zero(s_rows, f_cols), second.tab_.zmat;
   VectorXb fullph(f_rows + s_rows);
-  fullph << first.tab_.phase_, second.tab_.phase_;
+  fullph << first.tab_.phase, second.tab_.phase;
   ChoiMixTableau combined(fullx, fullz, fullph, 0);
   // For each connecting pair of qubits, compose via a Bell post-selection
   for (unsigned i = 0; i < f_cols; ++i) {

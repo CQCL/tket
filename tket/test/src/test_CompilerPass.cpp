@@ -14,6 +14,7 @@
 
 #include <algorithm>
 #include <catch2/catch_test_macros.hpp>
+#include <memory>
 #include <tkrng/RNG.hpp>
 #include <vector>
 
@@ -25,7 +26,6 @@
 #include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Mapping/LexiLabelling.hpp"
-#include "tket/Mapping/LexiRoute.hpp"
 #include "tket/OpType/OpType.hpp"
 #include "tket/OpType/OpTypeFunctions.hpp"
 #include "tket/Ops/ClassicalOps.hpp"
@@ -38,7 +38,6 @@
 #include "tket/Transformations/MeasurePass.hpp"
 #include "tket/Transformations/OptimisationPass.hpp"
 #include "tket/Transformations/PauliOptimisation.hpp"
-#include "tket/Transformations/Rebase.hpp"
 #include "tket/Utils/Expression.hpp"
 #include "tket/Utils/UnitID.hpp"
 namespace tket {
@@ -356,15 +355,16 @@ SCENARIO("Test making (mostly routing) passes using PassGenerators") {
     circ.add_conditional_gate<unsigned>(OpType::Rz, {0.142}, {0}, {0}, 0);
     circ.add_conditional_gate<unsigned>(OpType::Rz, {0.143}, {0}, {0}, 0);
     circ.add_conditional_gate<unsigned>(OpType::Rx, {0.528}, {1}, {0}, 0);
+    circ.add_conditional_barrier({0, 1}, {}, {0}, 1, "");
     CompilationUnit cu(circ);
     squash->apply(cu);
     const Circuit& c = cu.get_circ_ref();
     c.assert_valid();
-    REQUIRE(c.n_gates() == 3);
+    REQUIRE(c.n_gates() == 4);
     std::vector<OpType> expected_optypes{
         OpType::Conditional,  // qubit 0 before CX
         OpType::Conditional,  // qubit 1 before CX
-        OpType::CX};
+        OpType::CX, OpType::Conditional};
     check_command_types(c, expected_optypes);
 
     auto cmds = c.get_commands();
@@ -477,6 +477,22 @@ SCENARIO("Construct invalid sequence of loops") {
   std::vector<PassPtr> bad_passes{loop2, loop1};
   REQUIRE_NOTHROW((void)SequencePass(good_passes));
   REQUIRE_THROWS_AS((void)SequencePass(bad_passes), IncompatibleCompilerPasses);
+}
+
+SCENARIO("RepeatPass with strict checking") {
+  Circuit circ(1);
+  circ.add_op<unsigned>(OpType::PhasedX, {0.3, 0.2}, {0});
+  PassPtr pp = SquashRzPhasedX();
+  PassPtr rep_pp = std::make_shared<RepeatPass>(pp, true);
+  CompilationUnit cu(circ);
+  bool rv = rep_pp->apply(cu);
+  CHECK_FALSE(rv);
+  CHECK(cu.get_circ_ref() == circ);
+  circ.add_op<unsigned>(OpType::Rz, 0.0, {0});
+  CompilationUnit cu1(circ);
+  bool rv1 = rep_pp->apply(cu1);
+  CHECK(rv1);
+  CHECK(cu1.get_circ_ref() != circ);
 }
 
 SCENARIO("Test RepeatWithMetricPass") {
@@ -769,6 +785,16 @@ SCENARIO("PeepholeOptimise2Q and FullPeepholeOptimise") {
     CompilationUnit cu1(circ1);
     REQUIRE(FullPeepholeOptimise()->apply(cu1));
   }
+  GIVEN("Symbolic circuit, FullPeepholeOptimise TK2") {
+    // https://github.com/CQCL/tket/issues/963
+    Sym a = SymEngine::symbol("a");
+    Circuit circ(3);
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::Rz, Expr(a), {0});
+    circ.add_op<unsigned>(OpType::CX, {0, 2});
+    CompilationUnit cu(circ);
+    REQUIRE(FullPeepholeOptimise(true, OpType::TK2)->apply(cu));
+  }
   GIVEN("YYPhase") {
     // TKET-1302
     Circuit circ(2);
@@ -863,6 +889,19 @@ SCENARIO("rebase and decompose PhasePolyBox test") {
     circ.add_op<unsigned>(OpType::X, {0});
     circ.add_op<unsigned>(OpType::Y, {0});
     circ.add_op<unsigned>(OpType::CX, {0, 1});
+
+    CompilationUnit cu(circ);
+    REQUIRE(ComposePhasePolyBoxes()->apply(cu));
+    Circuit result = cu.get_circ_ref();
+
+    REQUIRE(test_unitary_comparison(circ, result));
+  }
+  GIVEN("rebase and compose with custom registers") {
+    Circuit circ;
+    auto a_reg = circ.add_q_register("a", 2);
+    auto b_reg = circ.add_q_register("b", 1);
+    circ.add_op<UnitID>(OpType::CX, {a_reg[0], b_reg[0]});
+    circ.add_op<UnitID>(OpType::CX, {a_reg[1], a_reg[0]});
 
     CompilationUnit cu(circ);
     REQUIRE(ComposePhasePolyBoxes()->apply(cu));
@@ -1132,9 +1171,9 @@ SCENARIO("Test Pauli Graph Synthesis Pass") {
       Transforms::PauliSynthStrat::Sets, CXConfigType::Star);
   GIVEN("Two PauliExpBoxes") {
     Circuit circ(3, "test");
-    PauliExpBox peb({Pauli::Z, Pauli::X, Pauli::Z}, 0.333);
+    PauliExpBox peb({{Pauli::Z, Pauli::X, Pauli::Z}, 0.333});
     circ.add_box(peb, {0, 1, 2});
-    PauliExpBox peb2({Pauli::Y, Pauli::X, Pauli::X}, 0.174);
+    PauliExpBox peb2({{Pauli::Y, Pauli::X, Pauli::X}, 0.174});
     circ.add_box(peb2, {0, 1, 2});
 
     CompilationUnit cu(circ);
@@ -1958,6 +1997,33 @@ SCENARIO("Custom rebase pass with implicit wire swaps.") {
     auto u1 = tket_sim::get_unitary(c);
     auto u2 = tket_sim::get_unitary(cu.get_circ_ref());
     REQUIRE(u1.isApprox(u2));
+  }
+}
+
+SCENARIO(
+    "Test FullPeepholeOptimise for short sequences of YYPhase, XXPhase and "
+    "ZZPhase.") {
+  GIVEN("YYPhase(0.3)") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::YYPhase, 0.3, {0, 1});
+    CompilationUnit cu(c);
+    CHECK(SynthesiseTK()->apply(cu));
+    REQUIRE(cu.get_circ_ref().n_gates() == 1);
+  }
+  GIVEN("XXPhase(0.3)") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::XXPhase, 0.3, {0, 1});
+    CompilationUnit cu(c);
+    CHECK(SynthesiseTK()->apply(cu));
+    REQUIRE(cu.get_circ_ref().n_gates() == 1);
+  }
+
+  GIVEN("ZZPhase(0.3)") {
+    Circuit c(2);
+    c.add_op<unsigned>(OpType::ZZPhase, 0.3, {0, 1});
+    CompilationUnit cu(c);
+    CHECK(SynthesiseTK()->apply(cu));
+    REQUIRE(cu.get_circ_ref().n_gates() == 1);
   }
 }
 }  // namespace test_CompilerPass
