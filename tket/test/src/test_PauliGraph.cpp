@@ -927,8 +927,7 @@ SCENARIO("Diagonalise a pair of gadgets") {
   GIVEN("Snake configuration") {
     CXConfigType config = CXConfigType::Snake;
 
-    circ.append(
-        pauli_gadget_pair(gadgets.at(0), gadgets.at(1), config));
+    circ.append(pauli_gadget_pair(gadgets.at(0), gadgets.at(1), config));
     THEN("Unitary is correct") {
       auto u_res = tket_sim::get_unitary(circ);
       REQUIRE((u_correct - u_res).cwiseAbs().sum() < ERR_EPS);
@@ -936,8 +935,7 @@ SCENARIO("Diagonalise a pair of gadgets") {
   }
   GIVEN("Star configuration") {
     CXConfigType config = CXConfigType::Star;
-    circ.append(
-        pauli_gadget_pair(gadgets.at(0), gadgets.at(1), config));
+    circ.append(pauli_gadget_pair(gadgets.at(0), gadgets.at(1), config));
     THEN("Unitary is correct") {
       auto u_res = tket_sim::get_unitary(circ);
       REQUIRE((u_correct - u_res).cwiseAbs().sum() < ERR_EPS);
@@ -945,8 +943,7 @@ SCENARIO("Diagonalise a pair of gadgets") {
   }
   GIVEN("Tree configuration") {
     CXConfigType config = CXConfigType::Tree;
-    circ.append(
-        pauli_gadget_pair(gadgets.at(0), gadgets.at(1), config));
+    circ.append(pauli_gadget_pair(gadgets.at(0), gadgets.at(1), config));
     THEN("Unitary is correct") {
       auto u_res = tket_sim::get_unitary(circ);
       REQUIRE((u_correct - u_res).cwiseAbs().sum() < ERR_EPS);
@@ -954,10 +951,10 @@ SCENARIO("Diagonalise a pair of gadgets") {
   }
   GIVEN("MultiQGate configuration") {
     CXConfigType config = CXConfigType::MultiQGate;
-    circ.append(
-        pauli_gadget_pair(gadgets.at(0), gadgets.at(1), config));
+    circ.append(pauli_gadget_pair(gadgets.at(0), gadgets.at(1), config));
     THEN(
         "XXPhase3 were used for both mutual reduction and individual gadgets") {
+      Transforms::decomp_boxes().apply(circ);
       REQUIRE(circ.count_gates(OpType::XXPhase3) == 4);
     }
     THEN("Unitary is correct") {

@@ -68,7 +68,7 @@ void apply_conjugations(
  * qubit i where the Z ends up.
  */
 std::pair<Circuit, Qubit> reduce_pauli_to_z(
-    const QubitPauliTensor &pauli, CXConfigType cx_config);
+    const SpPauliStabiliser &pauli, CXConfigType cx_config);
 
 /**
  * Given a pair of anticommuting Pauli tensors P0, P1, produces a short Clifford
@@ -80,7 +80,7 @@ std::pair<Circuit, Qubit> reduce_pauli_to_z(
  * diagonalised. Returns the circuit C and the qubit i where the Z and X end up.
  */
 std::pair<Circuit, Qubit> reduce_anticommuting_paulis_to_z_x(
-    QubitPauliTensor pauli0, QubitPauliTensor pauli1, CXConfigType cx_config);
+    SpPauliStabiliser pauli0, SpPauliStabiliser pauli1, CXConfigType cx_config);
 
 /**
  * Given a pair of commuting Pauli tensors P0, P1, produces a short Clifford
@@ -92,6 +92,6 @@ std::pair<Circuit, Qubit> reduce_anticommuting_paulis_to_z_x(
  * Returns the circuit C and the qubits i and j where the Zs end up.
  */
 std::tuple<Circuit, Qubit, Qubit> reduce_commuting_paulis_to_zi_iz(
-    QubitPauliTensor pauli0, QubitPauliTensor pauli1, CXConfigType cx_config);
+    SpPauliStabiliser pauli0, SpPauliStabiliser pauli1, CXConfigType cx_config);
 
 }  // namespace tket

@@ -117,7 +117,8 @@ ChoiMixTableau::ChoiMixTableau(const std::list<row_tensor_t>& rows)
       if (qb.second == Pauli::X || qb.second == Pauli::Y) xmat(r, c) = true;
       if (qb.second == Pauli::Z || qb.second == Pauli::Y) zmat(r, c) = true;
     }
-    phase(r) = row.first.is_real_negative() ^ row.second.is_real_negative();
+    phase(r) = row.first.is_real_negative() ^ row.second.is_real_negative() ^
+               (n_ys % 2 == 1);
     ++r;
   }
   tab_ = SymplecticTableau(xmat, zmat, phase);
@@ -185,8 +186,8 @@ PauliStabiliser ChoiMixTableau::row_tensor_to_stab(
 ChoiMixTableau::row_tensor_t ChoiMixTableau::get_row(unsigned i) const {
   ChoiMixTableau::row_tensor_t res = stab_to_row_tensor(tab_.get_pauli(i));
   res.first.transpose();
-  res.second.coeff *= res.first.coeff;
-  res.first.coeff = 1.;
+  res.second.coeff = (res.first.coeff + res.second.coeff) % 4;
+  res.first.coeff = 0;
   return res;
 }
 

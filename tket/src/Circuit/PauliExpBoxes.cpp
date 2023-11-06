@@ -18,7 +18,6 @@
 
 #include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/ConjugationBox.hpp"
-#include "tket/Converters/PauliGadget.hpp"
 #include "tket/Converters/PhasePoly.hpp"
 #include "tket/Diagonalisation/Diagonalisation.hpp"
 #include "tket/Ops/OpJsonFactory.hpp"
@@ -61,7 +60,11 @@ Op_ptr PauliExpBox::symbol_substitution(
 }
 
 void PauliExpBox::generate_circuit() const {
-  Circuit circ = pauli_gadget(paulis_.string, paulis_.coeff, cx_config_);
+  // paulis_ gets cast to a sparse form, so circuit from pauli_gadget will only
+  // contain qubits with {X, Y, Z}; appending it to a blank circuit containing
+  // all qubits makes the size of the circuit fixed
+  Circuit circ(paulis_.size());
+  circ.append(pauli_gadget(paulis_, cx_config_));
   circ_ = std::make_shared<Circuit>(circ);
 }
 
@@ -149,8 +152,12 @@ Op_ptr PauliExpPairBox::symbol_substitution(
 }
 
 void PauliExpPairBox::generate_circuit() const {
-  Circuit circ = Circuit(paulis0_.size());
-  append_pauli_gadget_pair(circ, paulis0_, paulis1_, cx_config_);
+  // paulis0_ and paulis1_ gets cast to a sparse form, so circuit from
+  // pauli_gadget_pair will only contain qubits with {X, Y, Z} on at least one;
+  // appending it to a blank circuit containing all qubits makes the size of the
+  // circuit fixed
+  Circuit circ(paulis0_.size());
+  circ.append(pauli_gadget_pair(paulis0_, paulis1_, cx_config_));
   circ_ = std::make_shared<Circuit>(circ);
 }
 
@@ -306,7 +313,7 @@ void PauliExpCommutingSetBox::generate_circuit() const {
   Circuit phase_poly_circ(n_qubits);
 
   for (const SpSymPauliTensor &pgp : gadgets) {
-    append_single_pauli_gadget(phase_poly_circ, pgp, CXConfigType::Snake);
+    phase_poly_circ.append(pauli_gadget(pgp, CXConfigType::Snake));
   }
   phase_poly_circ.decompose_boxes_recursively();
   PhasePolyBox ppbox(phase_poly_circ);
@@ -377,7 +384,7 @@ void append_single_pauli_gadget_as_pauli_exp_box(
 
 void append_pauli_gadget_pair_as_box(
     Circuit &circ, const SpSymPauliTensor &pauli0,
-    const SpSymPaulITensor &pauli1, CXConfigType cx_config) {
+    const SpSymPauliTensor &pauli1, CXConfigType cx_config) {
   std::vector<Qubit> mapping;
   std::vector<Pauli> paulis0;
   std::vector<Pauli> paulis1;

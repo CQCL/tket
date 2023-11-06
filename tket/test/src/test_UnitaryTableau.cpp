@@ -300,16 +300,16 @@ SCENARIO("Correct creation of UnitaryTableau") {
     REQUIRE(tab == rev_tab);
     Eigen::MatrixXcd circ_u = tket_sim::get_unitary(circ);
     for (unsigned q = 0; q < 3; ++q) {
-      CmplxSpMat xq = QubitPauliString(Qubit(q), Pauli::X).to_sparse_matrix(3);
+      CmplxSpMat xq = SpPauliString(Qubit(q), Pauli::X).to_sparse_matrix(3);
       Eigen::MatrixXcd xqd = xq;
-      QubitPauliTensor xrow = tab.get_xrow(Qubit(q));
-      CmplxSpMat xrowmat = xrow.string.to_sparse_matrix(3) * xrow.coeff;
+      PauliStabiliser xrow = tab.get_xrow(Qubit(q));
+      CmplxSpMat xrowmat = xrow.to_sparse_matrix(3);
       Eigen::MatrixXcd xrowmatd = xrowmat;
       CHECK((xrowmatd * circ_u * xqd).isApprox(circ_u));
-      CmplxSpMat zq = QubitPauliString(Qubit(q), Pauli::Z).to_sparse_matrix(3);
+      CmplxSpMat zq = SpPauliString(Qubit(q), Pauli::Z).to_sparse_matrix(3);
       Eigen::MatrixXcd zqd = zq;
-      QubitPauliTensor zrow = tab.get_zrow(Qubit(q));
-      CmplxSpMat zrowmat = zrow.string.to_sparse_matrix(3) * zrow.coeff;
+      PauliStabiliser zrow = tab.get_zrow(Qubit(q));
+      CmplxSpMat zrowmat = zrow.to_sparse_matrix(3);
       Eigen::MatrixXcd zrowmatd = zrowmat;
       CHECK((zrowmatd * circ_u * zqd).isApprox(circ_u));
     }

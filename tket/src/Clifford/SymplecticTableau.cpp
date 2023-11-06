@@ -85,10 +85,10 @@ SymplecticTableau::SymplecticTableau(const PauliStabiliserVec &rows) {
           "Tableau must have the same number of qubits in each row.");
     for (unsigned q = 0; q < n_qubits; ++q) {
       const Pauli &p = stab.get(q);
-      xmat_(i, q) = (p == Pauli::X) || (p == Pauli::Y);
-      zmat_(i, q) = (p == Pauli::Z) || (p == Pauli::Y);
+      xmat(i, q) = (p == Pauli::X) || (p == Pauli::Y);
+      zmat(i, q) = (p == Pauli::Z) || (p == Pauli::Y);
     }
-    phase_(i) = stab.is_real_negative();
+    phase(i) = stab.is_real_negative();
   }
 }
 
@@ -101,7 +101,7 @@ PauliStabiliser SymplecticTableau::get_pauli(unsigned i) const {
   for (unsigned q = 0; q < n_qubits; ++q) {
     str[q] = BoolPauli{xmat(i, q), zmat(i, q)}.to_pauli();
   }
-  return PauliStabiliser(str, phase_(i) ? 2 : 0);
+  return PauliStabiliser(str, phase(i) ? 2 : 0);
 }
 
 std::ostream &operator<<(std::ostream &os, const SymplecticTableau &tab) {

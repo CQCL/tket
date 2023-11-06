@@ -284,19 +284,21 @@ Circuit phase_gadget(unsigned n_qubits, const Expr &t, CXConfigType cx_config) {
 }
 
 Circuit pauli_gadget(SpSymPauliTensor paulis, CXConfigType cx_config) {
-  if (SpPauliString(paulis.string) == {}) {
+  if (SpPauliString(paulis.string) == SpPauliString{}) {
     Circuit phase_circ(paulis.size());
     phase_circ.add_phase(-paulis.coeff / 2);
     return phase_circ;
   }
-  std::pair<Circuit, Qubit> diag = reduce_pauli_to_z(paulis, cx_config);
-  Circuit compute = diag.first.dagger();
+  std::pair<Circuit, Qubit> diag =
+      reduce_pauli_to_z(SpPauliStabiliser(paulis.string), cx_config);
+  Circuit compute = diag.first;
   qubit_vector_t all_qubits = compute.all_qubits();
-  compute.flatten_registers();
-  Circuit circ(all_qubits);
+  unit_map_t mapping = compute.flatten_registers();
+  Circuit action(all_qubits.size());
+  action.add_op<UnitID>(OpType::Rz, paulis.coeff, {mapping.at(diag.second)});
+  Circuit circ(all_qubits, {});
   ConjugationBox box(
-      std::make_shard<CircBox>(diag.first.dagger()),
-      get_op_ptr(OpType::Rz, paulis.coeff));
+      std::make_shared<CircBox>(compute), std::make_shared<CircBox>(action));
   circ.add_box(box, all_qubits);
   return circ;
 }
@@ -304,18 +306,19 @@ Circuit pauli_gadget(SpSymPauliTensor paulis, CXConfigType cx_config) {
 Circuit pauli_gadget_pair(
     SpSymPauliTensor paulis0, SpSymPauliTensor paulis1,
     CXConfigType cx_config) {
-  if (SpPauliString(paulis0.string) == {}) {
+  if (SpPauliString(paulis0.string) == SpPauliString{}) {
     Circuit p1_circ = pauli_gadget(paulis1, cx_config);
     p1_circ.add_phase(-paulis0.coeff / 2);
     return p1_circ;
-  } else if (SpPauliString(paulis1.string) == {}) {
+  } else if (SpPauliString(paulis1.string) == SpPauliString{}) {
     Circuit p0_circ = pauli_gadget(paulis0, cx_config);
     p0_circ.add_phase(-paulis1.coeff / 2);
     return p0_circ;
   }
   if (paulis0.commutes_with(paulis1)) {
-    std::tuple<Circuit, Qubit, Qubit> diag =
-        reduce_commuting_paulis_to_zi_iz(paulis0, paulis1, cx_config);
+    std::tuple<Circuit, Qubit, Qubit> diag = reduce_commuting_paulis_to_zi_iz(
+        SpPauliStabiliser(paulis0.string), SpPauliStabiliser(paulis1.string),
+        cx_config);
     Circuit &diag_circ = std::get<0>(diag);
     qubit_vector_t all_qubits = diag_circ.all_qubits();
     unit_map_t mapping = diag_circ.flatten_registers();
@@ -327,24 +330,25 @@ Circuit pauli_gadget_pair(
     ConjugationBox box(
         std::make_shared<CircBox>(diag_circ),
         std::make_shared<CircBox>(rot_circ));
-    Circuit circ(all_qubits);
+    Circuit circ(all_qubits, {});
     circ.add_box(box, all_qubits);
     return circ;
   } else {
-    std::pair<Circuit, Qubit> diag =
-        reduce_anticommuting_paulis_to_z_x(paulis0, paulis1, cx_config);
+    std::pair<Circuit, Qubit> diag = reduce_anticommuting_paulis_to_z_x(
+        SpPauliStabiliser(paulis0.string), SpPauliStabiliser(paulis1.string),
+        cx_config);
     Circuit &diag_circ = diag.first;
     qubit_vector_t all_qubits = diag_circ.all_qubits();
     unit_map_t mapping = diag_circ.flatten_registers();
     Circuit rot_circ(all_qubits.size());
     rot_circ.add_op<UnitID>(
-        OpType::Rz, paulis0.coeff, {mapping.at(std::get<1>(diag))});
+        OpType::Rz, paulis0.coeff, {mapping.at(diag.second)});
     rot_circ.add_op<UnitID>(
-        OpType::Rx, paulis1.coeff, {mapping.at(std::get<2>(diag))});
+        OpType::Rx, paulis1.coeff, {mapping.at(diag.second)});
     ConjugationBox box(
         std::make_shared<CircBox>(diag_circ),
         std::make_shared<CircBox>(rot_circ));
-    Circuit circ(all_qubits);
+    Circuit circ(all_qubits, {});
     circ.add_box(box, all_qubits);
     return circ;
   }
