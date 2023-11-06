@@ -504,6 +504,8 @@ static void reduce_shared_qs_by_CX_multiqgate(
       circ.add_op<Qubit>(OpType::X, {target});
     }
   }
+  qps.string = stab.string;
+  qps.coeff *= cast_coeff<quarter_turns_t, Expr>(stab.coeff);
 }
 
 std::pair<Circuit, std::optional<Qubit>> reduce_overlap_of_paulis(
