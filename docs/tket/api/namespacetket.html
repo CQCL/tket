@@ -284,8 +284,6 @@ Classes</h2></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1DiagMatrix.html">DiagMatrix</a></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1ImplicitPermutationNotAllowed.html">ImplicitPermutationNotAllowed</a></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1PhasePolyBox.html">PhasePolyBox</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">A <a class="el" href="classtket_1_1PhasePolyBox.html" title="A PhasePolyBox is capable of representing arbitrary Circuits made up of CNOT and RZ,...">PhasePolyBox</a> is capable of representing arbitrary Circuits made up of CNOT and RZ, as a PhasePolynomial plus a boolean matrix representing an additional linear transformation.  <a href="classtket_1_1PhasePolyBox.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1183,12 +1181,15 @@ Functions</h2></td></tr>
 <tr class="memitem:acc11b8e101bb501b2172dfa29cb489b2"><td class="memItemLeft" align="right" valign="top">std::pair&lt; <a class="el" href="classtket_1_1Circuit.html">Circuit</a>, <a class="el" href="namespacetket.html#a68999408b52ab2f0f191f814ec93f4de">Complex</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#acc11b8e101bb501b2172dfa29cb489b2">decompose_2cx_DV</a> (const Eigen::Matrix4cd &amp;U)</td></tr>
 <tr class="memdesc:acc11b8e101bb501b2172dfa29cb489b2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Decompose a unitary matrix into a 2-CXs preceding a diagonal operator.  <a href="namespacetket.html#acc11b8e101bb501b2172dfa29cb489b2">More...</a><br /></td></tr>
 <tr class="separator:acc11b8e101bb501b2172dfa29cb489b2"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a64338a10354fa6c0943251f9056f8f98"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a64338a10354fa6c0943251f9056f8f98">phase_gadget</a> (unsigned n_qubits, const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;t, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config=<a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a>)</td></tr>
-<tr class="memdesc:a64338a10354fa6c0943251f9056f8f98"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a phase gadget.  <a href="namespacetket.html#a64338a10354fa6c0943251f9056f8f98">More...</a><br /></td></tr>
-<tr class="separator:a64338a10354fa6c0943251f9056f8f98"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab2b635e296bb273b8fa514314b1c2e8a"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#ab2b635e296bb273b8fa514314b1c2e8a">pauli_gadget</a> (const std::vector&lt; <a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> &gt; &amp;paulis, const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;t, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config=<a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a>)</td></tr>
-<tr class="memdesc:ab2b635e296bb273b8fa514314b1c2e8a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a 'Pauli gadget' corresponding to a tensor of Pauli operators.  <a href="namespacetket.html#ab2b635e296bb273b8fa514314b1c2e8a">More...</a><br /></td></tr>
-<tr class="separator:ab2b635e296bb273b8fa514314b1c2e8a"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a40a215291c867e01d1a770806ed5ae31"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a40a215291c867e01d1a770806ed5ae31">phase_gadget</a> (unsigned n_qubits, const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;angle, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config=<a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a>)</td></tr>
+<tr class="memdesc:a40a215291c867e01d1a770806ed5ae31"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a phase gadget.  <a href="namespacetket.html#a40a215291c867e01d1a770806ed5ae31">More...</a><br /></td></tr>
+<tr class="separator:a40a215291c867e01d1a770806ed5ae31"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a8039d52b51ab9fc94cb96843259670d2"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a8039d52b51ab9fc94cb96843259670d2">pauli_gadget</a> (<a class="el" href="namespacetket.html#a9057ac1ab3d826ae457ee3e03ac93974">SpSymPauliTensor</a> paulis, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config=<a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a>)</td></tr>
+<tr class="memdesc:a8039d52b51ab9fc94cb96843259670d2"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a 'Pauli gadget' corresponding to a tensor of Pauli operators.  <a href="namespacetket.html#a8039d52b51ab9fc94cb96843259670d2">More...</a><br /></td></tr>
+<tr class="separator:a8039d52b51ab9fc94cb96843259670d2"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a64fe1970d81607636f96c3bab5f8ff30"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a64fe1970d81607636f96c3bab5f8ff30">pauli_gadget_pair</a> (<a class="el" href="namespacetket.html#a9057ac1ab3d826ae457ee3e03ac93974">SpSymPauliTensor</a> paulis0, <a class="el" href="namespacetket.html#a9057ac1ab3d826ae457ee3e03ac93974">SpSymPauliTensor</a> paulis1, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config=<a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a>)</td></tr>
+<tr class="memdesc:a64fe1970d81607636f96c3bab5f8ff30"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a circuit realising a pair of Pauli gadgets with the fewest two-qubit gates.  <a href="namespacetket.html#a64fe1970d81607636f96c3bab5f8ff30">More...</a><br /></td></tr>
+<tr class="separator:a64fe1970d81607636f96c3bab5f8ff30"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2f9b9cde1c0e762f1c626f0cfde54efa"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a2f9b9cde1c0e762f1c626f0cfde54efa">replace_CX_with_TK2</a> (<a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;c)</td></tr>
 <tr class="memdesc:a2f9b9cde1c0e762f1c626f0cfde54efa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Utility function to replace all CX gates with TK2 and single-qubit gates.  <a href="namespacetket.html#a2f9b9cde1c0e762f1c626f0cfde54efa">More...</a><br /></td></tr>
 <tr class="separator:a2f9b9cde1c0e762f1c626f0cfde54efa"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1221,6 +1222,15 @@ Functions</h2></td></tr>
 <tr class="separator:a9e34ddb30dbc05b8b1fb0167e55e0587"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ab5cfd76224bd2a945c23f62bb1ed1fc7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#ab5cfd76224bd2a945c23f62bb1ed1fc7">from_json</a> (const nlohmann::json &amp;j, <a class="el" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a> &amp;op)</td></tr>
 <tr class="separator:ab5cfd76224bd2a945c23f62bb1ed1fc7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a1e00ff5a6aec18a4625b60845438cfcf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a1e00ff5a6aec18a4625b60845438cfcf">append_single_pauli_gadget_as_pauli_exp_box</a> (<a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ, const <a class="el" href="namespacetket.html#a9057ac1ab3d826ae457ee3e03ac93974">SpSymPauliTensor</a> &amp;pauli, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config)</td></tr>
+<tr class="memdesc:a1e00ff5a6aec18a4625b60845438cfcf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a <a class="el" href="classtket_1_1PauliExpBox.html" title="Operation defined as the exponential of a tensor of Pauli operators.">PauliExpBox</a> for a single pauli gadget and appends it to a circuit.  <a href="namespacetket.html#a1e00ff5a6aec18a4625b60845438cfcf">More...</a><br /></td></tr>
+<tr class="separator:a1e00ff5a6aec18a4625b60845438cfcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a0b111a9e16a263a75d0863a774114dec"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a0b111a9e16a263a75d0863a774114dec">append_pauli_gadget_pair_as_box</a> (<a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ, const <a class="el" href="namespacetket.html#a9057ac1ab3d826ae457ee3e03ac93974">SpSymPauliTensor</a> &amp;pauli0, const <a class="el" href="namespacetket.html#a9057ac1ab3d826ae457ee3e03ac93974">SpSymPauliTensor</a> &amp;pauli1, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config)</td></tr>
+<tr class="memdesc:a0b111a9e16a263a75d0863a774114dec"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a <a class="el" href="classtket_1_1PauliExpPairBox.html">PauliExpPairBox</a> for a pair of pauli gadgets and appends it to a circuit.  <a href="namespacetket.html#a0b111a9e16a263a75d0863a774114dec">More...</a><br /></td></tr>
+<tr class="separator:a0b111a9e16a263a75d0863a774114dec"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6640b4018600cebef09f986daf87bed1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a6640b4018600cebef09f986daf87bed1">append_commuting_pauli_gadget_set_as_box</a> (<a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ, const std::list&lt; <a class="el" href="namespacetket.html#a9057ac1ab3d826ae457ee3e03ac93974">SpSymPauliTensor</a> &gt; &amp;gadgets, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config)</td></tr>
+<tr class="memdesc:a6640b4018600cebef09f986daf87bed1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a <a class="el" href="classtket_1_1PauliExpCommutingSetBox.html">PauliExpCommutingSetBox</a> for a set of mutually commuting pauli gadgets and appends it to a circuit.  <a href="namespacetket.html#a6640b4018600cebef09f986daf87bed1">More...</a><br /></td></tr>
+<tr class="separator:a6640b4018600cebef09f986daf87bed1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a4e01316d325719d3e3eab4d5e49e21d4"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a4e01316d325719d3e3eab4d5e49e21d4">three_qubit_synthesis</a> (const Eigen::MatrixXcd &amp;U)</td></tr>
 <tr class="memdesc:a4e01316d325719d3e3eab4d5e49e21d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">Synthesise a 3-qubit circuit from an arbitrary 8x8 unitary.  <a href="namespacetket.html#a4e01316d325719d3e3eab4d5e49e21d4">More...</a><br /></td></tr>
 <tr class="separator:a4e01316d325719d3e3eab4d5e49e21d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -1263,24 +1273,14 @@ Functions</h2></td></tr>
 <tr class="memitem:a6939a2a1867b041c3e8574c4ca0783fa"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1ChoiMixTableau.html">ChoiMixTableau</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a6939a2a1867b041c3e8574c4ca0783fa">circuit_to_cm_tableau</a> (const <a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ)</td></tr>
 <tr class="memdesc:a6939a2a1867b041c3e8574c4ca0783fa"><td class="mdescLeft">&#160;</td><td class="mdescRight">Construct a <a class="el" href="classtket_1_1ChoiMixTableau.html">ChoiMixTableau</a> for a given circuit.  <a href="namespacetket.html#a6939a2a1867b041c3e8574c4ca0783fa">More...</a><br /></td></tr>
 <tr class="separator:a6939a2a1867b041c3e8574c4ca0783fa"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab2da96adecae9dcf9259abe9a3a72ef6"><td class="memItemLeft" align="right" valign="top">std::pair&lt; <a class="el" href="classtket_1_1Circuit.html">Circuit</a>, <a class="el" href="namespacetket.html#aa08fc2d553413efa43b68fa1269fba77">unit_map_t</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#ab2da96adecae9dcf9259abe9a3a72ef6">cm_tableau_to_circuit</a> (const <a class="el" href="classtket_1_1ChoiMixTableau.html">ChoiMixTableau</a> &amp;circ)</td></tr>
-<tr class="memdesc:ab2da96adecae9dcf9259abe9a3a72ef6"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a circuit producing the same effect as a <a class="el" href="classtket_1_1ChoiMixTableau.html">ChoiMixTableau</a>.  <a href="namespacetket.html#ab2da96adecae9dcf9259abe9a3a72ef6">More...</a><br /></td></tr>
-<tr class="separator:ab2da96adecae9dcf9259abe9a3a72ef6"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a34249b3e790fc1072646e021232abfa5"><td class="memItemLeft" align="right" valign="top">std::pair&lt; <a class="el" href="classtket_1_1Circuit.html">Circuit</a>, <a class="el" href="namespacetket.html#a450cc2961f11bfc1999916262675f08f">qubit_map_t</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a34249b3e790fc1072646e021232abfa5">cm_tableau_to_exact_circuit</a> (const <a class="el" href="classtket_1_1ChoiMixTableau.html">ChoiMixTableau</a> &amp;tab, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config=<a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a>)</td></tr>
+<tr class="memdesc:a34249b3e790fc1072646e021232abfa5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Constructs a circuit producing the same effect as a <a class="el" href="classtket_1_1ChoiMixTableau.html">ChoiMixTableau</a>.  <a href="namespacetket.html#a34249b3e790fc1072646e021232abfa5">More...</a><br /></td></tr>
+<tr class="separator:a34249b3e790fc1072646e021232abfa5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:af0aed98bf83eb77100fb939167b0aac3"><td class="memItemLeft" align="right" valign="top">std::pair&lt; <a class="el" href="classtket_1_1Circuit.html">Circuit</a>, <a class="el" href="namespacetket.html#a450cc2961f11bfc1999916262675f08f">qubit_map_t</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#af0aed98bf83eb77100fb939167b0aac3">cm_tableau_to_unitary_extension_circuit</a> (const <a class="el" href="classtket_1_1ChoiMixTableau.html">ChoiMixTableau</a> &amp;tab, const std::vector&lt; <a class="el" href="classtket_1_1Qubit.html">Qubit</a> &gt; &amp;init_names={}, const std::vector&lt; <a class="el" href="classtket_1_1Qubit.html">Qubit</a> &gt; &amp;post_names={}, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config=<a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a>)</td></tr>
+<tr class="memdesc:af0aed98bf83eb77100fb939167b0aac3"><td class="mdescLeft">&#160;</td><td class="mdescRight">We define a unitary extension of a <a class="el" href="classtket_1_1ChoiMixTableau.html">ChoiMixTableau</a> to be a unitary circuit whose stabilizer group contain all the rows of the <a class="el" href="classtket_1_1ChoiMixTableau.html">ChoiMixTableau</a> and possibly more.  <a href="namespacetket.html#af0aed98bf83eb77100fb939167b0aac3">More...</a><br /></td></tr>
+<tr class="separator:af0aed98bf83eb77100fb939167b0aac3"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a2ee84900c6f189caa05834c34389a824"><td class="memItemLeft" align="right" valign="top">std::ostream &amp;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a2ee84900c6f189caa05834c34389a824">operator&lt;&lt;</a> (std::ostream &amp;out, const <a class="el" href="classtket_1_1DiagMatrix.html">DiagMatrix</a> &amp;diam)</td></tr>
 <tr class="separator:a2ee84900c6f189caa05834c34389a824"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a02e0b3d958235646ebb3528e5116f3cf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a02e0b3d958235646ebb3528e5116f3cf">append_single_pauli_gadget</a> (<a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ, const <a class="el" href="namespacetket.html#a9057ac1ab3d826ae457ee3e03ac93974">SpSymPauliTensor</a> &amp;pauli, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config=<a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a>)</td></tr>
-<tr class="memdesc:a02e0b3d958235646ebb3528e5116f3cf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append a Pauli gadget to the end of a given circuit.  <a href="namespacetket.html#a02e0b3d958235646ebb3528e5116f3cf">More...</a><br /></td></tr>
-<tr class="separator:a02e0b3d958235646ebb3528e5116f3cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1e00ff5a6aec18a4625b60845438cfcf"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a1e00ff5a6aec18a4625b60845438cfcf">append_single_pauli_gadget_as_pauli_exp_box</a> (<a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ, const <a class="el" href="namespacetket.html#a9057ac1ab3d826ae457ee3e03ac93974">SpSymPauliTensor</a> &amp;pauli, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config)</td></tr>
-<tr class="memdesc:a1e00ff5a6aec18a4625b60845438cfcf"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append a Pauli gadget to the end of a given circuit as a <a class="el" href="classtket_1_1PauliExpBox.html" title="Operation defined as the exponential of a tensor of Pauli operators.">PauliExpBox</a>.  <a href="namespacetket.html#a1e00ff5a6aec18a4625b60845438cfcf">More...</a><br /></td></tr>
-<tr class="separator:a1e00ff5a6aec18a4625b60845438cfcf"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a0b111a9e16a263a75d0863a774114dec"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a0b111a9e16a263a75d0863a774114dec">append_pauli_gadget_pair_as_box</a> (<a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ, const <a class="el" href="namespacetket.html#a9057ac1ab3d826ae457ee3e03ac93974">SpSymPauliTensor</a> &amp;pauli0, const <a class="el" href="namespacetket.html#a9057ac1ab3d826ae457ee3e03ac93974">SpSymPauliTensor</a> &amp;pauli1, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config)</td></tr>
-<tr class="separator:a0b111a9e16a263a75d0863a774114dec"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a6640b4018600cebef09f986daf87bed1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a6640b4018600cebef09f986daf87bed1">append_commuting_pauli_gadget_set_as_box</a> (<a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ, const std::list&lt; <a class="el" href="namespacetket.html#a9057ac1ab3d826ae457ee3e03ac93974">SpSymPauliTensor</a> &gt; &amp;gadgets, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config)</td></tr>
-<tr class="separator:a6640b4018600cebef09f986daf87bed1"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a730a1a18e9c5e2840642bae56051be84"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a730a1a18e9c5e2840642bae56051be84">append_pauli_gadget_pair</a> (<a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ, <a class="el" href="namespacetket.html#a9057ac1ab3d826ae457ee3e03ac93974">SpSymPauliTensor</a> pauli0, <a class="el" href="namespacetket.html#a9057ac1ab3d826ae457ee3e03ac93974">SpSymPauliTensor</a> pauli1, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config=<a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a>)</td></tr>
-<tr class="memdesc:a730a1a18e9c5e2840642bae56051be84"><td class="mdescLeft">&#160;</td><td class="mdescRight">Append a pair of Pauli gadgets to the end of a given circuit.  <a href="namespacetket.html#a730a1a18e9c5e2840642bae56051be84">More...</a><br /></td></tr>
-<tr class="separator:a730a1a18e9c5e2840642bae56051be84"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a572fb16dcb271724a0df5a5e5ded02cf"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1PauliGraph.html">PauliGraph</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a572fb16dcb271724a0df5a5e5ded02cf">circuit_to_pauli_graph</a> (const <a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;circ)</td></tr>
 <tr class="separator:a572fb16dcb271724a0df5a5e5ded02cf"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afd183bc3aae0fc1875b47f95cec11e64"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1Circuit.html">Circuit</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#afd183bc3aae0fc1875b47f95cec11e64">pauli_graph_to_pauli_exp_box_circuit_individually</a> (const <a class="el" href="classtket_1_1PauliGraph.html">PauliGraph</a> &amp;pg, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config=<a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a>)</td></tr>
@@ -1346,6 +1346,17 @@ Functions</h2></td></tr>
 <tr class="memitem:a17fb29fb3a8e4b09645b98b7c38a2f6d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a17fb29fb3a8e4b09645b98b7c38a2f6d">apply_conjugations</a> (<a class="el" href="namespacetket.html#a9057ac1ab3d826ae457ee3e03ac93974">SpSymPauliTensor</a> &amp;qps, const <a class="el" href="namespacetket.html#af68c3d1ae6d4e2b35060ce06befbb61d">Conjugations</a> &amp;conjugations)</td></tr>
 <tr class="memdesc:a17fb29fb3a8e4b09645b98b7c38a2f6d"><td class="mdescLeft">&#160;</td><td class="mdescRight">Applies Clifford conjugations to a SpSymPauliTensor.  <a href="namespacetket.html#a17fb29fb3a8e4b09645b98b7c38a2f6d">More...</a><br /></td></tr>
 <tr class="separator:a17fb29fb3a8e4b09645b98b7c38a2f6d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad9cbe38f94b72851f7c07db92b8af08e"><td class="memItemLeft" align="right" valign="top">std::pair&lt; <a class="el" href="classtket_1_1Circuit.html">Circuit</a>, <a class="el" href="classtket_1_1Qubit.html">Qubit</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#ad9cbe38f94b72851f7c07db92b8af08e">reduce_pauli_to_z</a> (const <a class="el" href="namespacetket.html#a4b6bb7d61ffc058d41f92fa203ddffaf">SpPauliStabiliser</a> &amp;pauli, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config)</td></tr>
+<tr class="memdesc:ad9cbe38f94b72851f7c07db92b8af08e"><td class="mdescLeft">&#160;</td><td class="mdescRight">Given a Pauli tensor P, produces a short Clifford circuit C which maps P to Z on a single qubit, i.e.  <a href="namespacetket.html#ad9cbe38f94b72851f7c07db92b8af08e">More...</a><br /></td></tr>
+<tr class="separator:ad9cbe38f94b72851f7c07db92b8af08e"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a4289ca1c02119f60cea7050f58a3accf"><td class="memItemLeft" align="right" valign="top">std::pair&lt; <a class="el" href="classtket_1_1Circuit.html">Circuit</a>, std::optional&lt; <a class="el" href="classtket_1_1Qubit.html">Qubit</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a4289ca1c02119f60cea7050f58a3accf">reduce_overlap_of_paulis</a> (<a class="el" href="namespacetket.html#a4b6bb7d61ffc058d41f92fa203ddffaf">SpPauliStabiliser</a> &amp;pauli0, <a class="el" href="namespacetket.html#a4b6bb7d61ffc058d41f92fa203ddffaf">SpPauliStabiliser</a> &amp;pauli1, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config)</td></tr>
+<tr class="separator:a4289ca1c02119f60cea7050f58a3accf"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a21db812c1fbf83f445e7a19631586093"><td class="memItemLeft" align="right" valign="top">std::pair&lt; <a class="el" href="classtket_1_1Circuit.html">Circuit</a>, <a class="el" href="classtket_1_1Qubit.html">Qubit</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a21db812c1fbf83f445e7a19631586093">reduce_anticommuting_paulis_to_z_x</a> (<a class="el" href="namespacetket.html#a4b6bb7d61ffc058d41f92fa203ddffaf">SpPauliStabiliser</a> pauli0, <a class="el" href="namespacetket.html#a4b6bb7d61ffc058d41f92fa203ddffaf">SpPauliStabiliser</a> pauli1, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config)</td></tr>
+<tr class="memdesc:a21db812c1fbf83f445e7a19631586093"><td class="mdescLeft">&#160;</td><td class="mdescRight">Given a pair of anticommuting Pauli tensors P0, P1, produces a short Clifford circuit C which maps P0 to Z and P1 to X on the same qubit, i.e.  <a href="namespacetket.html#a21db812c1fbf83f445e7a19631586093">More...</a><br /></td></tr>
+<tr class="separator:a21db812c1fbf83f445e7a19631586093"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6bb56e0db5199b1747863ae33e616a1c"><td class="memItemLeft" align="right" valign="top">std::tuple&lt; <a class="el" href="classtket_1_1Circuit.html">Circuit</a>, <a class="el" href="classtket_1_1Qubit.html">Qubit</a>, <a class="el" href="classtket_1_1Qubit.html">Qubit</a> &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a6bb56e0db5199b1747863ae33e616a1c">reduce_commuting_paulis_to_zi_iz</a> (<a class="el" href="namespacetket.html#a4b6bb7d61ffc058d41f92fa203ddffaf">SpPauliStabiliser</a> pauli0, <a class="el" href="namespacetket.html#a4b6bb7d61ffc058d41f92fa203ddffaf">SpPauliStabiliser</a> pauli1, <a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a> cx_config)</td></tr>
+<tr class="memdesc:a6bb56e0db5199b1747863ae33e616a1c"><td class="mdescLeft">&#160;</td><td class="mdescRight">Given a pair of commuting Pauli tensors P0, P1, produces a short Clifford circuit C which maps P0 and P1 to Z on different qubits, i.e.  <a href="namespacetket.html#a6bb56e0db5199b1747863ae33e616a1c">More...</a><br /></td></tr>
+<tr class="separator:a6bb56e0db5199b1747863ae33e616a1c"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a829aa71448a24707faab84888d1351b8"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a829aa71448a24707faab84888d1351b8">insert_into_gadget_map</a> (<a class="el" href="namespacetket.html#ae0b84b39477514376664e3e9b5dd3e3b">QubitOperator</a> &amp;gadget_map, const <a class="el" href="structtket_1_1PauliGadgetProperties.html">PauliGadgetProperties</a> &amp;pgp)</td></tr>
 <tr class="separator:a829aa71448a24707faab84888d1351b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aa452b69ab77e6daaff1f6cc8ef98faa2"><td class="memItemLeft" align="right" valign="top">std::list&lt; std::list&lt; <a class="el" href="namespacetket.html#a9ae9a8df997149fdb38426b995d6d9a3">SpPauliString</a> &gt; &gt;&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#aa452b69ab77e6daaff1f6cc8ef98faa2">term_sequence</a> (const std::list&lt; <a class="el" href="namespacetket.html#a9ae9a8df997149fdb38426b995d6d9a3">SpPauliString</a> &gt; &amp;strings, <a class="el" href="namespacetket.html#a2d578ba7a7267e8172ac6a302fab7f67">PauliPartitionStrat</a> strat, <a class="el" href="namespacetket.html#a4e74bb747130174e23260df03944dd0c">GraphColourMethod</a> method=<a class="el" href="namespacetket.html#a4e74bb747130174e23260df03944dd0ca46a9ebdb80117bfa1f0cdea65438290a">GraphColourMethod::Lazy</a>)</td></tr>
@@ -2094,9 +2105,6 @@ Functions</h2></td></tr>
 <tr class="separator:a341757251e63fcd3f5051c6a419ad53f"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:ace65639a172eceb82c9450b01962070f"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#ace65639a172eceb82c9450b01962070f">NLOHMANN_JSON_SERIALIZE_ENUM</a> (<a class="el" href="namespacetket.html#aaa9022e831653e0daea704d481725e3b">ToffoliBoxSynthStrat</a>, {{<a class="el" href="namespacetket.html#aaa9022e831653e0daea704d481725e3baca1b12f70c0a8471440324a11e4590af">ToffoliBoxSynthStrat::Matching</a>, &quot;Matching&quot;}, {ToffoliBoxSynthStrat::Cycle, &quot;Cycle&quot;}})</td></tr>
 <tr class="separator:ace65639a172eceb82c9450b01962070f"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a927111948a205d5c6f6bf3a2a9a80305"><td class="memItemLeft" align="right" valign="top">bool&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a927111948a205d5c6f6bf3a2a9a80305">conjugate_with_xxphase3</a> (const <a class="el" href="classtket_1_1Qubit.html">Qubit</a> &amp;qb_a, const <a class="el" href="classtket_1_1Qubit.html">Qubit</a> &amp;qb_b, <a class="el" href="namespacetket.html#af68c3d1ae6d4e2b35060ce06befbb61d">Conjugations</a> &amp;conjugations, <a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;cliff_circ)</td></tr>
-<tr class="memdesc:a927111948a205d5c6f6bf3a2a9a80305"><td class="mdescLeft">&#160;</td><td class="mdescRight">Given two qubits on which to conjugate a CX gate, try to conjugate with a XXPhase3 instead.  <a href="namespacetket.html#a927111948a205d5c6f6bf3a2a9a80305">More...</a><br /></td></tr>
-<tr class="separator:a927111948a205d5c6f6bf3a2a9a80305"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:afea94a814298f2916861f89d770c6421"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#afea94a814298f2916861f89d770c6421">JSON_DECL</a> (<a class="el" href="classtket_1_1LexiRouteRoutingMethod.html">LexiRouteRoutingMethod</a>)</td></tr>
 <tr class="separator:afea94a814298f2916861f89d770c6421"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a12bacf012e5406a98076bc81d69170cf"><td class="memItemLeft" align="right" valign="top">&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespacetket.html#a12bacf012e5406a98076bc81d69170cf">JSON_DECL</a> (<a class="el" href="classtket_1_1RoutingMethod.html">RoutingMethod</a>)</td></tr>
@@ -5596,61 +5604,18 @@ template&lt;typename A , typename B &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PauliGadget_8cpp_source.html#l00081">81</a> of file <a class="el" href="PauliGadget_8cpp_source.html">PauliGadget.cpp</a>.</p>
-
-</div>
-</div>
-<a id="a730a1a18e9c5e2840642bae56051be84"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a730a1a18e9c5e2840642bae56051be84">&#9670;&nbsp;</a></span>append_pauli_gadget_pair()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void tket::append_pauli_gadget_pair </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;&#160;</td>
-          <td class="paramname"><em>circ</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespacetket.html#a9057ac1ab3d826ae457ee3e03ac93974">SpSymPauliTensor</a>&#160;</td>
-          <td class="paramname"><em>pauli0</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespacetket.html#a9057ac1ab3d826ae457ee3e03ac93974">SpSymPauliTensor</a>&#160;</td>
-          <td class="paramname"><em>pauli1</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a>&#160;</td>
-          <td class="paramname"><em>cx_config</em> = <code><a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a></code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Append a pair of Pauli gadgets to the end of a given circuit. </p>
-<p>(shallow) Uses an adapted arrangement of CX that gives balanced trees over the matching qubits to improve depth. Better performance is not guaranteed as CXs may not align for cancellation and it can be harder to route. (!shallow) Uses the original method with naive arrangement of CXs.</p>
+<p>Constructs a <a class="el" href="classtket_1_1PauliExpCommutingSetBox.html">PauliExpCommutingSetBox</a> for a set of mutually commuting pauli gadgets and appends it to a circuit. </p>
+<p>As the pauli gadgets all commute, the ordering does not matter semantically, but may yield different synthesised circuits.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">circ</td><td>circuit to append to </td></tr>
-    <tr><td class="paramname">pauli0</td><td>first Pauli string; coefficient gives rotation angle in half-turns </td></tr>
-    <tr><td class="paramname">pauli1</td><td>second Pauli string; coefficient gives rotation angle in half-turns </td></tr>
-    <tr><td class="paramname">cx_config</td><td>which type of CX configuration to decompose into </td></tr>
+    <tr><td class="paramname">circ</td><td>The circuit to append the box to </td></tr>
+    <tr><td class="paramname">gadgets</td><td>Description of the pauli gadgets; coefficients give the rotation angles in half-turns </td></tr>
+    <tr><td class="paramname">cx_config</td><td>The CX configuration to be used during synthesis </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="PauliGadget_8cpp_source.html#l00205">205</a> of file <a class="el" href="PauliGadget_8cpp_source.html">PauliGadget.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliExpBoxes_8cpp_source.html#l00417">417</a> of file <a class="el" href="PauliExpBoxes_8cpp_source.html">PauliExpBoxes.cpp</a>.</p>
 
 </div>
 </div>
@@ -5692,54 +5657,19 @@ template&lt;typename A , typename B &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PauliGadget_8cpp_source.html#l00049">49</a> of file <a class="el" href="PauliGadget_8cpp_source.html">PauliGadget.cpp</a>.</p>
-
-</div>
-</div>
-<a id="a02e0b3d958235646ebb3528e5116f3cf"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a02e0b3d958235646ebb3528e5116f3cf">&#9670;&nbsp;</a></span>append_single_pauli_gadget()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">void tket::append_single_pauli_gadget </td>
-          <td>(</td>
-          <td class="paramtype"><a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;&#160;</td>
-          <td class="paramname"><em>circ</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="namespacetket.html#a9057ac1ab3d826ae457ee3e03ac93974">SpSymPauliTensor</a> &amp;&#160;</td>
-          <td class="paramname"><em>pauli</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a>&#160;</td>
-          <td class="paramname"><em>cx_config</em> = <code><a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a></code>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Append a Pauli gadget to the end of a given circuit. </p>
-<p>Automatically uses Snake CX configuration</p>
+<p>Constructs a <a class="el" href="classtket_1_1PauliExpPairBox.html">PauliExpPairBox</a> for a pair of pauli gadgets and appends it to a circuit. </p>
+<p>The pauli gadgets may or may not commute, so the ordering matters.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">circ</td><td>circuit to append to </td></tr>
-    <tr><td class="paramname">pauli</td><td>Pauli operators and their respective qubits; coefficient gives rotation angle in half-turns </td></tr>
-    <tr><td class="paramname">cx_config</td><td>which type of CX configuration to decompose into </td></tr>
+    <tr><td class="paramname">circ</td><td>The circuit to append the box to </td></tr>
+    <tr><td class="paramname">pauli0</td><td>The pauli operator of the first gadget; coefficient gives the rotation angle in half-turns </td></tr>
+    <tr><td class="paramname">pauli1</td><td>The pauli operator of the second gadget; coefficient gives the rotation angle in half-turns </td></tr>
+    <tr><td class="paramname">cx_config</td><td>The CX configuration to be used during synthesis </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="PauliGadget_8cpp_source.html#l00023">23</a> of file <a class="el" href="PauliGadget_8cpp_source.html">PauliGadget.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliExpBoxes_8cpp_source.html#l00385">385</a> of file <a class="el" href="PauliExpBoxes_8cpp_source.html">PauliExpBoxes.cpp</a>.</p>
 
 </div>
 </div>
@@ -5775,18 +5705,17 @@ template&lt;typename A , typename B &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p>Append a Pauli gadget to the end of a given circuit as a <a class="el" href="classtket_1_1PauliExpBox.html" title="Operation defined as the exponential of a tensor of Pauli operators.">PauliExpBox</a>. </p>
-<p>Automatically uses Snake CX configuration</p>
+<p>Constructs a <a class="el" href="classtket_1_1PauliExpBox.html" title="Operation defined as the exponential of a tensor of Pauli operators.">PauliExpBox</a> for a single pauli gadget and appends it to a circuit. </p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">circ</td><td>circuit to append to </td></tr>
-    <tr><td class="paramname">pauli</td><td>Pauli operators and their respective qubits; coefficient gives rotation angle in half-turns </td></tr>
-    <tr><td class="paramname">cx_config</td><td>which type of CX configuration to decompose into </td></tr>
+    <tr><td class="paramname">circ</td><td>The circuit to append the box to </td></tr>
+    <tr><td class="paramname">pauli</td><td>The pauli operator of the gadget; coefficient gives the rotation angle in half-turns </td></tr>
+    <tr><td class="paramname">cx_config</td><td>The CX configuration to be used during synthesis </td></tr>
   </table>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="PauliGadget_8cpp_source.html#l00037">37</a> of file <a class="el" href="PauliGadget_8cpp_source.html">PauliGadget.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliExpBoxes_8cpp_source.html#l00373">373</a> of file <a class="el" href="PauliExpBoxes_8cpp_source.html">PauliExpBoxes.cpp</a>.</p>
 
 </div>
 </div>
@@ -6797,7 +6726,7 @@ template&lt;typename T &gt; </div>
 <p>Construct a <a class="el" href="classtket_1_1ChoiMixTableau.html">ChoiMixTableau</a> for a given circuit. </p>
 <p>Will incorporate qubit initialisations and discarding into the circuit. Will throw an exception if it contains non-Clifford gates. </p>
 
-<p class="definition">Definition at line <a class="el" href="ChoiMixTableauConverters_8cpp_source.html#l00023">23</a> of file <a class="el" href="ChoiMixTableauConverters_8cpp_source.html">ChoiMixTableauConverters.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableauConverters_8cpp_source.html#l00022">22</a> of file <a class="el" href="ChoiMixTableauConverters_8cpp_source.html">ChoiMixTableauConverters.cpp</a>.</p>
 
 </div>
 </div>
@@ -6817,7 +6746,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="PauliGraphConverters_8cpp_source.html#l00025">25</a> of file <a class="el" href="PauliGraphConverters_8cpp_source.html">PauliGraphConverters.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliGraphConverters_8cpp_source.html#l00024">24</a> of file <a class="el" href="PauliGraphConverters_8cpp_source.html">PauliGraphConverters.cpp</a>.</p>
 
 </div>
 </div>
@@ -6837,7 +6766,7 @@ template&lt;typename T &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="UnitaryTableauConverters_8cpp_source.html#l00258">258</a> of file <a class="el" href="UnitaryTableauConverters_8cpp_source.html">UnitaryTableauConverters.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitaryTableauConverters_8cpp_source.html#l00250">250</a> of file <a class="el" href="UnitaryTableauConverters_8cpp_source.html">UnitaryTableauConverters.cpp</a>.</p>
 
 </div>
 </div>
@@ -7007,27 +6936,89 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="ab2da96adecae9dcf9259abe9a3a72ef6"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab2da96adecae9dcf9259abe9a3a72ef6">&#9670;&nbsp;</a></span>cm_tableau_to_circuit()</h2>
+<a id="a34249b3e790fc1072646e021232abfa5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a34249b3e790fc1072646e021232abfa5">&#9670;&nbsp;</a></span>cm_tableau_to_exact_circuit()</h2>
 
 <div class="memitem">
 <div class="memproto">
       <table class="memname">
         <tr>
-          <td class="memname">std::pair&lt; <a class="el" href="classtket_1_1Circuit.html">Circuit</a>, <a class="el" href="namespacetket.html#aa08fc2d553413efa43b68fa1269fba77">unit_map_t</a> &gt; tket::cm_tableau_to_circuit </td>
+          <td class="memname">std::pair&lt; <a class="el" href="classtket_1_1Circuit.html">Circuit</a>, <a class="el" href="namespacetket.html#a450cc2961f11bfc1999916262675f08f">qubit_map_t</a> &gt; tket::cm_tableau_to_exact_circuit </td>
           <td>(</td>
           <td class="paramtype">const <a class="el" href="classtket_1_1ChoiMixTableau.html">ChoiMixTableau</a> &amp;&#160;</td>
-          <td class="paramname"><em>circ</em></td><td>)</td>
+          <td class="paramname"><em>tab</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
           <td></td>
+          <td class="paramtype"><a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a>&#160;</td>
+          <td class="paramname"><em>cx_config</em> = <code><a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a></code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
         </tr>
       </table>
 </div><div class="memdoc">
 
 <p>Constructs a circuit producing the same effect as a <a class="el" href="classtket_1_1ChoiMixTableau.html">ChoiMixTableau</a>. </p>
-<p>Uses a naive synthesis method until we develop a good heuristic. Since <a class="el" href="classtket_1_1Circuit.html" title="A circuit.">Circuit</a> does not support distinct qubit addresses for inputs and outputs, also returns a map from the output qubit IDs in the tableau to their corresponding outputs in the circuit </p>
-<p>THE PLAN: We first identify and solve all post-selections by Gaussian elimination and diagonalisation of the input-only rows. This provides us with better guarantees about the form of the stabilizers generated by the remaining tableau - specifically that every possible stabilizer will involve at least some output portion, so out_qb will always be set in later sections of the synthesis. Diagonalisation of the input-only rows reduces them to just Z strings but not necessarily over a minimal number of qubits. This can be achieved by taking the Z matrix of these rows and performing row-wise Gaussian elimination. The leading 1s indicate which qubits we are isolating them onto and the rest gives the CXs required to reduce them to just the leading qubits. After all post-selections have been identified, we enter the main loop of handling all other inputs and reducing them one at a time to either an identity wire or Z-decoherence (<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a2b31634e3cfef1bfdd7d0d2cdfdc3f9d" title="Measure a qubit producing no output.">OpType::Collapse</a>) connected to an output, or to a discard. Let in_qb be this qubit to be solved. Pick a row containing X_in_qb (if one exists). Since it must contain some non-identity component in the output segment, we can pick one of these to be out_qb and apply unitary gates at the input and output to reduce the row to X_in_qb X_out_qb. We do the same with Z (if a row exists) to necessarily give Z_in_qb Z_out_qb by commutativity properties, or we pick out_qb here if no X row was found. If we had both an X row and a Z row, we have reduced it to an identity wire just fine. If we have only one of them, e.g. X_in_qb X_out_qb, we wish to make it the only row with X on either in_qb or out_qb to leave a decoherence channel. We note that any other row containing X_out_qb must have some other P_out2, since their combination cannot leave an empty output segment. So we can apply a unitary gate to eliminate the X_out_qb on the other row. By doing output-first gaussian elimination on the output sub-tableau ignoring the target row and X_out_qb column, for each such row with X_out_qb there is some other output column P_out2 for which it is the unique entry, so we can be sure that applying the unitary gate does not add X_out_qb onto other rows. Having this strategy available to make it the unique row with X_out_qb still allows us to make it the unique row with X_in_qb by row combinations. Once all rows with inputs have been eliminated, any unsolved inputs must have been discarded and the remaining tableau is an inverse diagonalisation tableau (only outputs).</p>
+<p>Since <a class="el" href="classtket_1_1Circuit.html" title="A circuit.">Circuit</a> does not support distinct qubit addresses for inputs and outputs, also returns a map from the output qubit IDs in the tableau to their corresponding outputs in the circuit.</p>
+<p>The circuit produced will be the (possibly non-unitary) channel whose stabilisers are exactly those of the tableau and no more, using initialisations, post-selections, discards, resets, and collapses to ensure this. It will automatically reuse qubits so no more qubits will be needed than max(tab.get_n_inputs(), tab.get_n_outputs()).</p>
+<p>Example 1: ZXI -&gt; () YYZ -&gt; () This becomes a diagonalisation circuit followed by post-selections.</p>
+<p>Example 2: Z -&gt; ZZ X -&gt; IY Z -&gt; -XX Combining the first and last rows reveals an initialisation is required for I -&gt; YY. Since there are two output qubits, at least one of them does not already exist in the input fragment so we can freely add an extra qubit on the input side, initialise it and apply a unitary mapping IZ -&gt; YY.</p>
+<p>Example 3: ZX -&gt; IZ II -&gt; ZI We require an initialised qubit for the final row, but both input and output spaces only have q[0] and q[1], of which both inputs need to be open for the first row. We can obtain an initialised qubit by resetting a qubit after reducing the first row to only a single qubit. </p>
 
-<p class="definition">Definition at line <a class="el" href="ChoiMixTableauConverters_8cpp_source.html#l00039">39</a> of file <a class="el" href="ChoiMixTableauConverters_8cpp_source.html">ChoiMixTableauConverters.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableauConverters_8cpp_source.html#l00148">148</a> of file <a class="el" href="ChoiMixTableauConverters_8cpp_source.html">ChoiMixTableauConverters.cpp</a>.</p>
+
+</div>
+</div>
+<a id="af0aed98bf83eb77100fb939167b0aac3"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#af0aed98bf83eb77100fb939167b0aac3">&#9670;&nbsp;</a></span>cm_tableau_to_unitary_extension_circuit()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::pair&lt; <a class="el" href="classtket_1_1Circuit.html">Circuit</a>, <a class="el" href="namespacetket.html#a450cc2961f11bfc1999916262675f08f">qubit_map_t</a> &gt; tket::cm_tableau_to_unitary_extension_circuit </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classtket_1_1ChoiMixTableau.html">ChoiMixTableau</a> &amp;&#160;</td>
+          <td class="paramname"><em>tab</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="classtket_1_1Qubit.html">Qubit</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>init_names</em> = <code>{}</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype">const std::vector&lt; <a class="el" href="classtket_1_1Qubit.html">Qubit</a> &gt; &amp;&#160;</td>
+          <td class="paramname"><em>post_names</em> = <code>{}</code>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a>&#160;</td>
+          <td class="paramname"><em>cx_config</em> = <code><a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a></code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>We define a unitary extension of a <a class="el" href="classtket_1_1ChoiMixTableau.html">ChoiMixTableau</a> to be a unitary circuit whose stabilizer group contain all the rows of the <a class="el" href="classtket_1_1ChoiMixTableau.html">ChoiMixTableau</a> and possibly more. </p>
+<p>This is useful when we are treating the <a class="el" href="classtket_1_1ChoiMixTableau.html">ChoiMixTableau</a> as a means to encode a diagonalisation problem, since we are generally looking for a unitary as we may wish to apply the inverse afterwards (e.g. conjugating some rotations to implement a set of Pauli gadgets).</p>
+<p>Not every <a class="el" href="classtket_1_1ChoiMixTableau.html">ChoiMixTableau</a> can be extended to a unitary by just adding rows, e.g. if it requires any initialisation or post-selections. In this case, the unitary circuit is extended with additional input qubits which are assumed to be zero-initialised, and additional output qubits which are assumed to be post-selected. The synthesis guarantees that, if we take the unitary, initialise all designated inputs, and post-select on all designated outputs, every row from the original tableau is a stabiliser for the remaining projector. When not enough additional qubit names are provided, an error is thrown.</p>
+<p>Example 1: ZXI -&gt; () YYZ -&gt; () Since, in exact synthesis, at least two post-selections would be required, we pick two names from post_names. This is then a diagonalisation circuit which maps each row to an arbitrary diagonal string over post_names.</p>
+<p>Example 2: Z -&gt; ZZ X -&gt; IY Z -&gt; -XX Combining the first and last rows reveals an initialisation is required for I -&gt; YY. We extend the inputs with a qubit from init_names. The initialisation can manifest as either altering the first row to ZZ -&gt; ZZ or the last row to ZZ -&gt; -XX.</p>
+<p>Example 3: ZX -&gt; IZ II -&gt; ZI We require an initialised qubit for the final row, but both input and output spaces only have q[0] and q[1], of which both inputs need to be open for the first row. Unlike exact synthesis, we cannot reuse qubits, so the returned circuit will be over 3 qubits, extending with a name from init_names. </p>
+
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableauConverters_8cpp_source.html#l00162">162</a> of file <a class="el" href="ChoiMixTableauConverters_8cpp_source.html">ChoiMixTableauConverters.cpp</a>.</p>
 
 </div>
 </div>
@@ -7843,49 +7834,6 @@ template&lt;&gt; </div>
 
 </div>
 </div>
-<a id="a927111948a205d5c6f6bf3a2a9a80305"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a927111948a205d5c6f6bf3a2a9a80305">&#9670;&nbsp;</a></span>conjugate_with_xxphase3()</h2>
-
-<div class="memitem">
-<div class="memproto">
-      <table class="memname">
-        <tr>
-          <td class="memname">bool tket::conjugate_with_xxphase3 </td>
-          <td>(</td>
-          <td class="paramtype">const <a class="el" href="classtket_1_1Qubit.html">Qubit</a> &amp;&#160;</td>
-          <td class="paramname"><em>qb_a</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="classtket_1_1Qubit.html">Qubit</a> &amp;&#160;</td>
-          <td class="paramname"><em>qb_b</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="namespacetket.html#af68c3d1ae6d4e2b35060ce06befbb61d">Conjugations</a> &amp;&#160;</td>
-          <td class="paramname"><em>conjugations</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype"><a class="el" href="classtket_1_1Circuit.html">Circuit</a> &amp;&#160;</td>
-          <td class="paramname"><em>cliff_circ</em>&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td></td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Given two qubits on which to conjugate a CX gate, try to conjugate with a XXPhase3 instead. </p>
-<p>If successful, undoes conjugations that must be undone and replaces it with XXPhase3 conjugation. Returns true if successful and false otherwise. </p>
-
-</div>
-</div>
 <a id="ae59b1c8af5fd1f007e39cfd0d4289751"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#ae59b1c8af5fd1f007e39cfd0d4289751">&#9670;&nbsp;</a></span>convert_u_frontier_to_edges()</h2>
 
@@ -8178,7 +8126,7 @@ template&lt;&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>circuit and parameter defining diagonal operator </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="CircUtils_8cpp_source.html#l00262">262</a> of file <a class="el" href="CircUtils_8cpp_source.html">CircUtils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CircUtils_8cpp_source.html#l00263">263</a> of file <a class="el" href="CircUtils_8cpp_source.html">CircUtils.cpp</a>.</p>
 
 </div>
 </div>
@@ -8208,7 +8156,7 @@ template&lt;&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>circuit and parameter defining diagonal operator </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="CircUtils_8cpp_source.html#l00255">255</a> of file <a class="el" href="CircUtils_8cpp_source.html">CircUtils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CircUtils_8cpp_source.html#l00256">256</a> of file <a class="el" href="CircUtils_8cpp_source.html">CircUtils.cpp</a>.</p>
 
 </div>
 </div>
@@ -9231,7 +9179,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00700">700</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00709">709</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -9261,7 +9209,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00685">685</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00694">694</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -9803,7 +9751,7 @@ template&lt;typename PauliContainer , typename CoeffType &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="SymplecticTableau_8cpp_source.html#l00396">396</a> of file <a class="el" href="SymplecticTableau_8cpp_source.html">SymplecticTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SymplecticTableau_8cpp_source.html#l00429">429</a> of file <a class="el" href="SymplecticTableau_8cpp_source.html">SymplecticTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -9833,7 +9781,7 @@ template&lt;typename PauliContainer , typename CoeffType &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="UnitaryTableau_8cpp_source.html#l00619">619</a> of file <a class="el" href="UnitaryTableau_8cpp_source.html">UnitaryTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitaryTableau_8cpp_source.html#l00735">735</a> of file <a class="el" href="UnitaryTableau_8cpp_source.html">UnitaryTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -9863,7 +9811,7 @@ template&lt;typename PauliContainer , typename CoeffType &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="UnitaryTableau_8cpp_source.html#l00470">470</a> of file <a class="el" href="UnitaryTableau_8cpp_source.html">UnitaryTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitaryTableau_8cpp_source.html#l00522">522</a> of file <a class="el" href="UnitaryTableau_8cpp_source.html">UnitaryTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -11151,7 +11099,7 @@ template&lt;typename PauliContainer , typename CoeffType &gt; </div>
 operation has no symbolic parameters</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>corresponding unitary matrix </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="CircUtils_8cpp_source.html#l00038">38</a> of file <a class="el" href="CircUtils_8cpp_source.html">CircUtils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CircUtils_8cpp_source.html#l00039">39</a> of file <a class="el" href="CircUtils_8cpp_source.html">CircUtils.cpp</a>.</p>
 
 </div>
 </div>
@@ -11184,7 +11132,7 @@ circuit has no symbolic parameters </dd></dl>
 <dl class="section post"><dt>Postcondition</dt><dd>matrix is in <a class="el" href="namespacetket.html#a72f88f920d51eb69a8614990da593fa6aeb211843251cc3ba399a91150d48c5e8">BasisOrder::ilo</a></dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>corresponding unitary matrix </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="CircUtils_8cpp_source.html#l00064">64</a> of file <a class="el" href="CircUtils_8cpp_source.html">CircUtils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CircUtils_8cpp_source.html#l00065">65</a> of file <a class="el" href="CircUtils_8cpp_source.html">CircUtils.cpp</a>.</p>
 
 </div>
 </div>
@@ -11216,7 +11164,7 @@ circuit has no symbolic parameters </dd></dl>
 circuit has no symbolic parameters</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>corresponding unitary matrix </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="CircUtils_8cpp_source.html#l00048">48</a> of file <a class="el" href="CircUtils_8cpp_source.html">CircUtils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CircUtils_8cpp_source.html#l00049">49</a> of file <a class="el" href="CircUtils_8cpp_source.html">CircUtils.cpp</a>.</p>
 
 </div>
 </div>
@@ -13757,7 +13705,7 @@ template&lt;&gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>std::tuple&lt;<a class="el" href="classtket_1_1Circuit.html" title="A circuit.">Circuit</a>, std::array&lt;Expr, 3&gt;, <a class="el" href="classtket_1_1Circuit.html" title="A circuit.">Circuit</a>&gt; pre circuit, normalised TK2 angles and post circuit (in this order) </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="CircUtils_8cpp_source.html#l01249">1249</a> of file <a class="el" href="CircUtils_8cpp_source.html">CircUtils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CircUtils_8cpp_source.html#l01177">1177</a> of file <a class="el" href="CircUtils_8cpp_source.html">CircUtils.cpp</a>.</p>
 
 </div>
 </div>
@@ -13928,7 +13876,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00669">669</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00678">678</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -13988,7 +13936,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="SymplecticTableau_8cpp_source.html#l00112">112</a> of file <a class="el" href="SymplecticTableau_8cpp_source.html">SymplecticTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SymplecticTableau_8cpp_source.html#l00107">107</a> of file <a class="el" href="SymplecticTableau_8cpp_source.html">SymplecticTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -14018,7 +13966,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="UnitaryTableau_8cpp_source.html#l00592">592</a> of file <a class="el" href="UnitaryTableau_8cpp_source.html">UnitaryTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitaryTableau_8cpp_source.html#l00708">708</a> of file <a class="el" href="UnitaryTableau_8cpp_source.html">UnitaryTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -14048,7 +13996,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="UnitaryTableau_8cpp_source.html#l00421">421</a> of file <a class="el" href="UnitaryTableau_8cpp_source.html">UnitaryTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitaryTableau_8cpp_source.html#l00473">473</a> of file <a class="el" href="UnitaryTableau_8cpp_source.html">UnitaryTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -14367,8 +14315,8 @@ template&lt;&gt; </div>
 
 </div>
 </div>
-<a id="ab2b635e296bb273b8fa514314b1c2e8a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ab2b635e296bb273b8fa514314b1c2e8a">&#9670;&nbsp;</a></span>pauli_gadget()</h2>
+<a id="a8039d52b51ab9fc94cb96843259670d2"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a8039d52b51ab9fc94cb96843259670d2">&#9670;&nbsp;</a></span>pauli_gadget()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -14376,14 +14324,8 @@ template&lt;&gt; </div>
         <tr>
           <td class="memname"><a class="el" href="classtket_1_1Circuit.html">Circuit</a> tket::pauli_gadget </td>
           <td>(</td>
-          <td class="paramtype">const std::vector&lt; <a class="el" href="namespacetket.html#a342a289d54f4f5f5a405373c07aca66a">Pauli</a> &gt; &amp;&#160;</td>
+          <td class="paramtype"><a class="el" href="namespacetket.html#a9057ac1ab3d826ae457ee3e03ac93974">SpSymPauliTensor</a>&#160;</td>
           <td class="paramname"><em>paulis</em>, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;&#160;</td>
-          <td class="paramname"><em>t</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -14403,15 +14345,61 @@ template&lt;&gt; </div>
 <p>The returned circuit implements the unitary operator \( e^{-\frac12 i \pi t \sigma_0 \otimes \sigma_1 \otimes \cdots} \) where \( \sigma_i \in \{I,X,Y,Z\} \) are the Pauli operators.</p>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
-    <tr><td class="paramname">paulis</td><td>Pauli operators </td></tr>
-    <tr><td class="paramname">t</td><td>angle in half-turns </td></tr>
+    <tr><td class="paramname">paulis</td><td>Pauli operators; coefficient gives rotation angle in half-turns </td></tr>
     <tr><td class="paramname">cx_config</td><td>CX configuration </td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>Pauli gadget implementation wrapped in a <a class="el" href="classtket_1_1ConjugationBox.html" title="Box to express computations that follow the compute-action-uncompute pattern.">ConjugationBox</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="CircUtils_8cpp_source.html#l00365">365</a> of file <a class="el" href="CircUtils_8cpp_source.html">CircUtils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CircUtils_8cpp_source.html#l00276">276</a> of file <a class="el" href="CircUtils_8cpp_source.html">CircUtils.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a64fe1970d81607636f96c3bab5f8ff30"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a64fe1970d81607636f96c3bab5f8ff30">&#9670;&nbsp;</a></span>pauli_gadget_pair()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="classtket_1_1Circuit.html">Circuit</a> tket::pauli_gadget_pair </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacetket.html#a9057ac1ab3d826ae457ee3e03ac93974">SpSymPauliTensor</a>&#160;</td>
+          <td class="paramname"><em>paulis0</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetket.html#a9057ac1ab3d826ae457ee3e03ac93974">SpSymPauliTensor</a>&#160;</td>
+          <td class="paramname"><em>paulis1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a>&#160;</td>
+          <td class="paramname"><em>cx_config</em> = <code><a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7adfa90f1b4eb3affbd3b46af34ed2477c">CXConfigType::Snake</a></code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Construct a circuit realising a pair of Pauli gadgets with the fewest two-qubit gates. </p>
+<p>The returned circuit implements the unitary e^{-i pi angle1 paulis1 / 2} e^{-i pi angle0 paulis0 / 2}, i.e. a gadget of angle0 about paulis0 followed by a gadget of angle1 about paulis1.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramname">paulis0</td><td>Pauli operators for first gadget; coefficient gives rotation angle in half-turns </td></tr>
+    <tr><td class="paramname">paulis1</td><td>Pauli operators for second gadget; coefficient gives rotation angle in half-turns </td></tr>
+    <tr><td class="paramname">cx_config</td><td>CX configuration </td></tr>
+  </table>
+  </dd>
+</dl>
+
+<p class="definition">Definition at line <a class="el" href="CircUtils_8cpp_source.html#l00296">296</a> of file <a class="el" href="CircUtils_8cpp_source.html">CircUtils.cpp</a>.</p>
 
 </div>
 </div>
@@ -14444,7 +14432,7 @@ template&lt;&gt; </div>
 <p>Synthesises a circuit equivalent to the <a class="el" href="classtket_1_1PauliGraph.html" title="Dependency graph of a circuit wrt Pauli Gadgets.">PauliGraph</a> by adding each pauli gadget to the circuit as a <a class="el" href="classtket_1_1PauliExpBox.html" title="Operation defined as the exponential of a tensor of Pauli operators.">PauliExpBox</a> individually in the order given by TopSortIterator. </p>
 <p>The tableau is then synthesised at the end. </p>
 
-<p class="definition">Definition at line <a class="el" href="PauliGraphConverters_8cpp_source.html#l00053">53</a> of file <a class="el" href="PauliGraphConverters_8cpp_source.html">PauliGraphConverters.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliGraphConverters_8cpp_source.html#l00052">52</a> of file <a class="el" href="PauliGraphConverters_8cpp_source.html">PauliGraphConverters.cpp</a>.</p>
 
 </div>
 </div>
@@ -14476,7 +14464,7 @@ template&lt;&gt; </div>
 
 <p>Synthesises a circuit equivalent to the <a class="el" href="classtket_1_1PauliGraph.html" title="Dependency graph of a circuit wrt Pauli Gadgets.">PauliGraph</a> by inserting pairs of pauli gadgets as PauliExpPairBoxes into the circuit The tableau is then synthesised at the end. </p>
 
-<p class="definition">Definition at line <a class="el" href="PauliGraphConverters_8cpp_source.html#l00076">76</a> of file <a class="el" href="PauliGraphConverters_8cpp_source.html">PauliGraphConverters.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliGraphConverters_8cpp_source.html#l00075">75</a> of file <a class="el" href="PauliGraphConverters_8cpp_source.html">PauliGraphConverters.cpp</a>.</p>
 
 </div>
 </div>
@@ -14511,7 +14499,7 @@ template&lt;&gt; </div>
 <li>Currently follows a greedy set-building method *&zwj;/ </li>
 </ul>
 
-<p class="definition">Definition at line <a class="el" href="PauliGraphConverters_8cpp_source.html#l00115">115</a> of file <a class="el" href="PauliGraphConverters_8cpp_source.html">PauliGraphConverters.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="PauliGraphConverters_8cpp_source.html#l00114">114</a> of file <a class="el" href="PauliGraphConverters_8cpp_source.html">PauliGraphConverters.cpp</a>.</p>
 
 </div>
 </div>
@@ -14575,8 +14563,8 @@ template&lt;&gt; </div>
 
 </div>
 </div>
-<a id="a64338a10354fa6c0943251f9056f8f98"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a64338a10354fa6c0943251f9056f8f98">&#9670;&nbsp;</a></span>phase_gadget()</h2>
+<a id="a40a215291c867e01d1a770806ed5ae31"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a40a215291c867e01d1a770806ed5ae31">&#9670;&nbsp;</a></span>phase_gadget()</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -14591,7 +14579,7 @@ template&lt;&gt; </div>
           <td class="paramkey"></td>
           <td></td>
           <td class="paramtype">const <a class="el" href="namespacetket.html#a6817cd1c8a5630b406c86a59173edd21">Expr</a> &amp;&#160;</td>
-          <td class="paramname"><em>t</em>, </td>
+          <td class="paramname"><em>angle</em>, </td>
         </tr>
         <tr>
           <td class="paramkey"></td>
@@ -14611,14 +14599,14 @@ template&lt;&gt; </div>
 <dl class="params"><dt>Parameters</dt><dd>
   <table class="params">
     <tr><td class="paramname">n_qubits</td><td>number of qubits </td></tr>
-    <tr><td class="paramname">t</td><td>phase parameter </td></tr>
+    <tr><td class="paramname">angle</td><td>phase parameter </td></tr>
     <tr><td class="paramname">cx_config</td><td>CX configuration</td></tr>
   </table>
   </dd>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>phase gadget implementation wrapped in a <a class="el" href="classtket_1_1ConjugationBox.html" title="Box to express computations that follow the compute-action-uncompute pattern.">ConjugationBox</a> </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="CircUtils_8cpp_source.html#l00270">270</a> of file <a class="el" href="CircUtils_8cpp_source.html">CircUtils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CircUtils_8cpp_source.html#l00271">271</a> of file <a class="el" href="CircUtils_8cpp_source.html">CircUtils.cpp</a>.</p>
 
 </div>
 </div>
@@ -15020,6 +15008,156 @@ template&lt;&gt; </div>
 
 </div>
 </div>
+<a id="a21db812c1fbf83f445e7a19631586093"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a21db812c1fbf83f445e7a19631586093">&#9670;&nbsp;</a></span>reduce_anticommuting_paulis_to_z_x()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::pair&lt; <a class="el" href="classtket_1_1Circuit.html">Circuit</a>, <a class="el" href="classtket_1_1Qubit.html">Qubit</a> &gt; tket::reduce_anticommuting_paulis_to_z_x </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacetket.html#a4b6bb7d61ffc058d41f92fa203ddffaf">SpPauliStabiliser</a>&#160;</td>
+          <td class="paramname"><em>pauli0</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetket.html#a4b6bb7d61ffc058d41f92fa203ddffaf">SpPauliStabiliser</a>&#160;</td>
+          <td class="paramname"><em>pauli1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a>&#160;</td>
+          <td class="paramname"><em>cx_config</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Given a pair of anticommuting Pauli tensors P0, P1, produces a short Clifford circuit C which maps P0 to Z and P1 to X on the same qubit, i.e. </p>
+<p>Z_i C P0 = C = X_i C P1. This can be viewed as the components required to synthesise a pair of noncommuting Pauli gadgets C^dag RX(b)_i RZ(a)_i C = exp(-i pi b P1/2) exp(-i pi a P0/2) (up to global phase). This is not strictly a diagonalisation because anticommuting strings cannot be simultaneously diagonalised. Returns the circuit C and the qubit i where the Z and X end up. </p>
+<p>Reduce each remaining Pauli to the shared mismatching qubit. Since reduce_pauli_to_Z does not allow us to pick the final qubit, we reserve the mismatching qubit, call reduce_pauli_to_Z on the rest, and add a CX.</p>
+
+<p class="definition">Definition at line <a class="el" href="Diagonalisation_8cpp_source.html#l00695">695</a> of file <a class="el" href="Diagonalisation_8cpp_source.html">Diagonalisation.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a6bb56e0db5199b1747863ae33e616a1c"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a6bb56e0db5199b1747863ae33e616a1c">&#9670;&nbsp;</a></span>reduce_commuting_paulis_to_zi_iz()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::tuple&lt; <a class="el" href="classtket_1_1Circuit.html">Circuit</a>, <a class="el" href="classtket_1_1Qubit.html">Qubit</a>, <a class="el" href="classtket_1_1Qubit.html">Qubit</a> &gt; tket::reduce_commuting_paulis_to_zi_iz </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacetket.html#a4b6bb7d61ffc058d41f92fa203ddffaf">SpPauliStabiliser</a>&#160;</td>
+          <td class="paramname"><em>pauli0</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetket.html#a4b6bb7d61ffc058d41f92fa203ddffaf">SpPauliStabiliser</a>&#160;</td>
+          <td class="paramname"><em>pauli1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a>&#160;</td>
+          <td class="paramname"><em>cx_config</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Given a pair of commuting Pauli tensors P0, P1, produces a short Clifford circuit C which maps P0 and P1 to Z on different qubits, i.e. </p>
+<p>Z_i C P0 = C = Z_j C P1. This can be viewed as the components required to synthesise a pair of commuting Pauli gadgets C^dag RZ(b)_j RZ(a)_i C = exp(-i pi b P1/2) exp(-i pi a P0/2) (up to global phase), or as a mutual diagonalisation of two Pauli strings along with CXs to reduce them to independent, individual qubits. Returns the circuit C and the qubits i and j where the Zs end up. </p>
+<p>Reduce each remaining Pauli to a single qubit.</p>
+
+<p class="definition">Definition at line <a class="el" href="Diagonalisation_8cpp_source.html#l00731">731</a> of file <a class="el" href="Diagonalisation_8cpp_source.html">Diagonalisation.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a4289ca1c02119f60cea7050f58a3accf"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a4289ca1c02119f60cea7050f58a3accf">&#9670;&nbsp;</a></span>reduce_overlap_of_paulis()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::pair&lt;<a class="el" href="classtket_1_1Circuit.html">Circuit</a>, std::optional&lt;<a class="el" href="classtket_1_1Qubit.html">Qubit</a>&gt; &gt; tket::reduce_overlap_of_paulis </td>
+          <td>(</td>
+          <td class="paramtype"><a class="el" href="namespacetket.html#a4b6bb7d61ffc058d41f92fa203ddffaf">SpPauliStabiliser</a> &amp;&#160;</td>
+          <td class="paramname"><em>pauli0</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetket.html#a4b6bb7d61ffc058d41f92fa203ddffaf">SpPauliStabiliser</a> &amp;&#160;</td>
+          <td class="paramname"><em>pauli1</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a>&#160;</td>
+          <td class="paramname"><em>cx_config</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="Diagonalisation_8cpp_source.html#l00509">509</a> of file <a class="el" href="Diagonalisation_8cpp_source.html">Diagonalisation.cpp</a>.</p>
+
+</div>
+</div>
+<a id="ad9cbe38f94b72851f7c07db92b8af08e"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad9cbe38f94b72851f7c07db92b8af08e">&#9670;&nbsp;</a></span>reduce_pauli_to_z()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">std::pair&lt; <a class="el" href="classtket_1_1Circuit.html">Circuit</a>, <a class="el" href="classtket_1_1Qubit.html">Qubit</a> &gt; tket::reduce_pauli_to_z </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="namespacetket.html#a4b6bb7d61ffc058d41f92fa203ddffaf">SpPauliStabiliser</a> &amp;&#160;</td>
+          <td class="paramname"><em>pauli</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="namespacetket.html#a372ac8e74a26d74ac66c0a2233f532c7">CXConfigType</a>&#160;</td>
+          <td class="paramname"><em>cx_config</em>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Given a Pauli tensor P, produces a short Clifford circuit C which maps P to Z on a single qubit, i.e. </p>
+<p>Z_i C P = C. This can be viewed as the components required to synthesise a single Pauli gadget C^dag RZ(a)_i C = exp(-i pi a P/2) (up to global phase), or as a diagonalisation of a single Pauli string along with CXs to reduce it to a single qubit. Returns the circuit C and the qubit i where the Z ends up. </p>
+<p>This is only equal to the CX decompositions above up to phase, but phase differences are cancelled out by its dagger</p>
+
+<p class="definition">Definition at line <a class="el" href="Diagonalisation_8cpp_source.html#l00345">345</a> of file <a class="el" href="Diagonalisation_8cpp_source.html">Diagonalisation.cpp</a>.</p>
+
+</div>
+</div>
 <a id="a8e75964715bb5f8f6b2c0a97aa2c3183"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a8e75964715bb5f8f6b2c0a97aa2c3183">&#9670;&nbsp;</a></span>remove_all_gadgets()</h2>
 
@@ -15164,7 +15302,7 @@ template&lt;&gt; </div>
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="CircUtils_8cpp_source.html#l00419">419</a> of file <a class="el" href="CircUtils_8cpp_source.html">CircUtils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CircUtils_8cpp_source.html#l00347">347</a> of file <a class="el" href="CircUtils_8cpp_source.html">CircUtils.cpp</a>.</p>
 
 </div>
 </div>
@@ -15969,7 +16107,7 @@ template&lt;typename BoxT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00691">691</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00700">700</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -15999,7 +16137,7 @@ template&lt;typename BoxT &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00681">681</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00690">690</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -16571,7 +16709,7 @@ template&lt;typename PauliContainer , typename CoeffType &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="SymplecticTableau_8cpp_source.html#l00388">388</a> of file <a class="el" href="SymplecticTableau_8cpp_source.html">SymplecticTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="SymplecticTableau_8cpp_source.html#l00421">421</a> of file <a class="el" href="SymplecticTableau_8cpp_source.html">SymplecticTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -16601,7 +16739,7 @@ template&lt;typename PauliContainer , typename CoeffType &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="UnitaryTableau_8cpp_source.html#l00615">615</a> of file <a class="el" href="UnitaryTableau_8cpp_source.html">UnitaryTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitaryTableau_8cpp_source.html#l00731">731</a> of file <a class="el" href="UnitaryTableau_8cpp_source.html">UnitaryTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -16631,7 +16769,7 @@ template&lt;typename PauliContainer , typename CoeffType &gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="UnitaryTableau_8cpp_source.html#l00461">461</a> of file <a class="el" href="UnitaryTableau_8cpp_source.html">UnitaryTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitaryTableau_8cpp_source.html#l00513">513</a> of file <a class="el" href="UnitaryTableau_8cpp_source.html">UnitaryTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -17133,7 +17271,7 @@ template&lt;&gt; </div>
 <dl class="section post"><dt>Postcondition</dt><dd><a class="el" href="classtket_1_1Circuit.html" title="A circuit.">Circuit</a> consists of one normalised TK2 and single-qubit gates, or of up to 3 CX and single-qubit gates.</dd></dl>
 <dl class="section return"><dt>Returns</dt><dd>circuit implementing U exactly </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="CircUtils_8cpp_source.html#l00146">146</a> of file <a class="el" href="CircUtils_8cpp_source.html">CircUtils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CircUtils_8cpp_source.html#l00147">147</a> of file <a class="el" href="CircUtils_8cpp_source.html">CircUtils.cpp</a>.</p>
 
 </div>
 </div>
@@ -17153,7 +17291,7 @@ template&lt;&gt; </div>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="UnitaryTableauConverters_8cpp_source.html#l00264">264</a> of file <a class="el" href="UnitaryTableauConverters_8cpp_source.html">UnitaryTableauConverters.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="UnitaryTableauConverters_8cpp_source.html#l00256">256</a> of file <a class="el" href="UnitaryTableauConverters_8cpp_source.html">UnitaryTableauConverters.cpp</a>.</p>
 
 </div>
 </div>
@@ -17330,7 +17468,7 @@ template&lt;typename UnitA , typename UnitB &gt; </div>
 <code>c</code> has no implicit wireswaps </dd></dl>
 <dl class="section post"><dt>Postcondition</dt><dd>the returned circuit has a single default qubit register, whose initial qubits act as the controls over the other qubits, which correspond to those of <code>c</code> in the same order </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="CircUtils_8cpp_source.html#l01236">1236</a> of file <a class="el" href="CircUtils_8cpp_source.html">CircUtils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CircUtils_8cpp_source.html#l01164">1164</a> of file <a class="el" href="CircUtils_8cpp_source.html">CircUtils.cpp</a>.</p>
 
 </div>
 </div>
@@ -17359,7 +17497,7 @@ template&lt;typename UnitA , typename UnitB &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>circuit representing the operation </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="CircUtils_8cpp_source.html#l00528">528</a> of file <a class="el" href="CircUtils_8cpp_source.html">CircUtils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CircUtils_8cpp_source.html#l00456">456</a> of file <a class="el" href="CircUtils_8cpp_source.html">CircUtils.cpp</a>.</p>
 
 </div>
 </div>
@@ -17388,7 +17526,7 @@ template&lt;typename UnitA , typename UnitB &gt; </div>
 </dl>
 <dl class="section return"><dt>Returns</dt><dd>circuit representing the operation </dd></dl>
 
-<p class="definition">Definition at line <a class="el" href="CircUtils_8cpp_source.html#l00424">424</a> of file <a class="el" href="CircUtils_8cpp_source.html">CircUtils.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="CircUtils_8cpp_source.html#l00352">352</a> of file <a class="el" href="CircUtils_8cpp_source.html">CircUtils.cpp</a>.</p>
 
 </div>
 </div>

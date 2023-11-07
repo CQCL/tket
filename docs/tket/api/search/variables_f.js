@@ -1,17 +1,17 @@
 var searchData=
 [
-  ['p_4751',['p',['../structtket_1_1RevInteractionPoint.html#ac7c61c630475423b63fa089f21224994',1,'tket::RevInteractionPoint::p()'],['../structtket_1_1InteractionPoint.html#a3d74f1542697afb9704a2388adc119a1',1,'tket::InteractionPoint::p()']]],
-  ['param_5f_4752',['param_',['../classtket_1_1zx_1_1PhasedGen.html#a7be470ce97bbddbc542e9f93c124bb6e',1,'tket::zx::PhasedGen::param_()'],['../classtket_1_1zx_1_1CliffordGen.html#a112687aae0a8c963c879ad4621a505ce',1,'tket::zx::CliffordGen::param_()']]],
-  ['param_5fmod_4753',['param_mod',['../structtket_1_1OpTypeInfo.html#a4b63dc0039ee861b47b52bc31316fae3',1,'tket::OpTypeInfo']]],
-  ['parents_4754',['parents',['../classtket_1_1graphs_1_1detail_1_1TreeSearchBase.html#a3cd51b04c9fc77a7dad1ddf8bba0b15f',1,'tket::graphs::detail::TreeSearchBase']]],
-  ['pauli_5fmap_4755',['pauli_map',['../PauliExpBoxUnitaryCalculator_8cpp.html#a380f93057af19b1002e364ed69056ead',1,'PauliExpBoxUnitaryCalculator.cpp']]],
-  ['phase_4756',['phase',['../structtket_1_1InteractionPoint.html#aca22004d177d64d8c888cebfdfa970f7',1,'tket::InteractionPoint::phase()'],['../structtket_1_1RevInteractionPoint.html#acb7b5530e0fe9c7582d9443bc69d7efd',1,'tket::RevInteractionPoint::phase()']]],
-  ['pi_4757',['PI',['../namespacetket.html#aeb9514facc20f8f193747a8196f7614d',1,'tket']]],
-  ['point0_4758',['point0',['../structtket_1_1InteractionMatch.html#aa24dc899215dc167da235615c8b75c07',1,'tket::InteractionMatch']]],
-  ['point1_4759',['point1',['../structtket_1_1InteractionMatch.html#a4bbf88dc6672d2531636abcf6c73c669',1,'tket::InteractionMatch']]],
-  ['ports_4760',['ports',['../structtket_1_1EdgeProperties.html#a0f985b19014b5af833dacc7b2eb13c11',1,'tket::EdgeProperties']]],
-  ['postcons_5f_4761',['postcons_',['../classtket_1_1BasePass.html#a80c889ff7173ff26b93d3e71e5ed628a',1,'tket::BasePass']]],
-  ['power_5fof_5fi_4762',['power_of_i',['../PauliExpBoxUnitaryCalculator_8cpp.html#ad475dede438df5f57696ae07808aaf19',1,'PauliExpBoxUnitaryCalculator.cpp']]],
-  ['precons_5f_4763',['precons_',['../classtket_1_1BasePass.html#ae0f08b68726cb052134fe14df03ffb7a',1,'tket::BasePass']]],
-  ['prev_5fb_5ffrontier_5f_4764',['prev_b_frontier_',['../classtket_1_1Circuit_1_1SliceIterator.html#adb080058ba6007c8b57c374cdacfbb7a',1,'tket::Circuit::SliceIterator']]]
+  ['p_4776',['p',['../structtket_1_1RevInteractionPoint.html#ac7c61c630475423b63fa089f21224994',1,'tket::RevInteractionPoint::p()'],['../structtket_1_1InteractionPoint.html#a3d74f1542697afb9704a2388adc119a1',1,'tket::InteractionPoint::p()']]],
+  ['param_5f_4777',['param_',['../classtket_1_1zx_1_1PhasedGen.html#a7be470ce97bbddbc542e9f93c124bb6e',1,'tket::zx::PhasedGen::param_()'],['../classtket_1_1zx_1_1CliffordGen.html#a112687aae0a8c963c879ad4621a505ce',1,'tket::zx::CliffordGen::param_()']]],
+  ['param_5fmod_4778',['param_mod',['../structtket_1_1OpTypeInfo.html#a4b63dc0039ee861b47b52bc31316fae3',1,'tket::OpTypeInfo']]],
+  ['parents_4779',['parents',['../classtket_1_1graphs_1_1detail_1_1TreeSearchBase.html#a3cd51b04c9fc77a7dad1ddf8bba0b15f',1,'tket::graphs::detail::TreeSearchBase']]],
+  ['pauli_5fmap_4780',['pauli_map',['../PauliExpBoxUnitaryCalculator_8cpp.html#a380f93057af19b1002e364ed69056ead',1,'PauliExpBoxUnitaryCalculator.cpp']]],
+  ['phase_4781',['phase',['../classtket_1_1SymplecticTableau.html#a6e839850f774af00670924a56582f058',1,'tket::SymplecticTableau::phase()'],['../structtket_1_1InteractionPoint.html#aca22004d177d64d8c888cebfdfa970f7',1,'tket::InteractionPoint::phase()'],['../structtket_1_1RevInteractionPoint.html#acb7b5530e0fe9c7582d9443bc69d7efd',1,'tket::RevInteractionPoint::phase()']]],
+  ['pi_4782',['PI',['../namespacetket.html#aeb9514facc20f8f193747a8196f7614d',1,'tket']]],
+  ['point0_4783',['point0',['../structtket_1_1InteractionMatch.html#aa24dc899215dc167da235615c8b75c07',1,'tket::InteractionMatch']]],
+  ['point1_4784',['point1',['../structtket_1_1InteractionMatch.html#a4bbf88dc6672d2531636abcf6c73c669',1,'tket::InteractionMatch']]],
+  ['ports_4785',['ports',['../structtket_1_1EdgeProperties.html#a0f985b19014b5af833dacc7b2eb13c11',1,'tket::EdgeProperties']]],
+  ['postcons_5f_4786',['postcons_',['../classtket_1_1BasePass.html#a80c889ff7173ff26b93d3e71e5ed628a',1,'tket::BasePass']]],
+  ['power_5fof_5fi_4787',['power_of_i',['../PauliExpBoxUnitaryCalculator_8cpp.html#ad475dede438df5f57696ae07808aaf19',1,'PauliExpBoxUnitaryCalculator.cpp']]],
+  ['precons_5f_4788',['precons_',['../classtket_1_1BasePass.html#ae0f08b68726cb052134fe14df03ffb7a',1,'tket::BasePass']]],
+  ['prev_5fb_5ffrontier_5f_4789',['prev_b_frontier_',['../classtket_1_1Circuit_1_1SliceIterator.html#adb080058ba6007c8b57c374cdacfbb7a',1,'tket::Circuit::SliceIterator']]]
 ];

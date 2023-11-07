@@ -144,6 +144,12 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:aa100a7f3e521d8db26680594daa7b9cd"><td class="memItemLeft" align="right" valign="top">unsigned&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1ChoiMixTableau.html#aa100a7f3e521d8db26680594daa7b9cd">get_n_outputs</a> () const</td></tr>
 <tr class="memdesc:aa100a7f3e521d8db26680594daa7b9cd"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get the number of boundaries representing outputs from the process.  <a href="classtket_1_1ChoiMixTableau.html#aa100a7f3e521d8db26680594daa7b9cd">More...</a><br /></td></tr>
 <tr class="separator:aa100a7f3e521d8db26680594daa7b9cd"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2a77c488e2d156b10d39f00d2eb1a083"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#ad949814c463d9f998540c0f812e76aa6">qubit_vector_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1ChoiMixTableau.html#a2a77c488e2d156b10d39f00d2eb1a083">input_qubits</a> () const</td></tr>
+<tr class="memdesc:a2a77c488e2d156b10d39f00d2eb1a083"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get all qubit names present in the input segment.  <a href="classtket_1_1ChoiMixTableau.html#a2a77c488e2d156b10d39f00d2eb1a083">More...</a><br /></td></tr>
+<tr class="separator:a2a77c488e2d156b10d39f00d2eb1a083"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a95a64df3b4658484bf29dbd4750b50f1"><td class="memItemLeft" align="right" valign="top"><a class="el" href="namespacetket.html#ad949814c463d9f998540c0f812e76aa6">qubit_vector_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1ChoiMixTableau.html#a95a64df3b4658484bf29dbd4750b50f1">output_qubits</a> () const</td></tr>
+<tr class="memdesc:a95a64df3b4658484bf29dbd4750b50f1"><td class="mdescLeft">&#160;</td><td class="mdescRight">Get all qubit names present in the output segment.  <a href="classtket_1_1ChoiMixTableau.html#a95a64df3b4658484bf29dbd4750b50f1">More...</a><br /></td></tr>
+<tr class="separator:a95a64df3b4658484bf29dbd4750b50f1"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a04b2f0a46ec27a0eeee1b7a08a3ebd9f"><td class="memItemLeft" align="right" valign="top"><a class="el" href="classtket_1_1ChoiMixTableau.html#a7d910146d345afcb4b21c2803a15c467">row_tensor_t</a>&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1ChoiMixTableau.html#a04b2f0a46ec27a0eeee1b7a08a3ebd9f">get_row</a> (unsigned i) const</td></tr>
 <tr class="memdesc:a04b2f0a46ec27a0eeee1b7a08a3ebd9f"><td class="mdescLeft">&#160;</td><td class="mdescRight">Read off a row as a Pauli string.  <a href="classtket_1_1ChoiMixTableau.html#a04b2f0a46ec27a0eeee1b7a08a3ebd9f">More...</a><br /></td></tr>
 <tr class="separator:a04b2f0a46ec27a0eeee1b7a08a3ebd9f"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -153,8 +159,14 @@ Public Member Functions</h2></td></tr>
 <tr class="memitem:a19d2f32cd520b09348d8c411856f90e7"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1ChoiMixTableau.html#a19d2f32cd520b09348d8c411856f90e7">apply_S</a> (const <a class="el" href="classtket_1_1Qubit.html">Qubit</a> &amp;qb, <a class="el" href="classtket_1_1ChoiMixTableau.html#a4b7e94f491c095670df54eb2557257ab">TableauSegment</a> seg=<a class="el" href="classtket_1_1ChoiMixTableau.html#a4b7e94f491c095670df54eb2557257aba29c2c02a361c9d7028472e5d92cd4a54">TableauSegment::Output</a>)</td></tr>
 <tr class="memdesc:a19d2f32cd520b09348d8c411856f90e7"><td class="mdescLeft">&#160;</td><td class="mdescRight"><a class="el" href="classtket_1_1Transform.html" title="A transformation of a circuit that preserves its semantics.">Transform</a> the tableau according to consuming a Clifford gate at either end of the circuit.  <a href="classtket_1_1ChoiMixTableau.html#a19d2f32cd520b09348d8c411856f90e7">More...</a><br /></td></tr>
 <tr class="separator:a19d2f32cd520b09348d8c411856f90e7"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:add2e98a1e17a445a790671546bc6b97d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1ChoiMixTableau.html#add2e98a1e17a445a790671546bc6b97d">apply_Z</a> (const <a class="el" href="classtket_1_1Qubit.html">Qubit</a> &amp;qb, <a class="el" href="classtket_1_1ChoiMixTableau.html#a4b7e94f491c095670df54eb2557257ab">TableauSegment</a> seg=<a class="el" href="classtket_1_1ChoiMixTableau.html#a4b7e94f491c095670df54eb2557257aba29c2c02a361c9d7028472e5d92cd4a54">TableauSegment::Output</a>)</td></tr>
+<tr class="separator:add2e98a1e17a445a790671546bc6b97d"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aad67f682d38d975df33827668aa1a1a1"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1ChoiMixTableau.html#aad67f682d38d975df33827668aa1a1a1">apply_V</a> (const <a class="el" href="classtket_1_1Qubit.html">Qubit</a> &amp;qb, <a class="el" href="classtket_1_1ChoiMixTableau.html#a4b7e94f491c095670df54eb2557257ab">TableauSegment</a> seg=<a class="el" href="classtket_1_1ChoiMixTableau.html#a4b7e94f491c095670df54eb2557257aba29c2c02a361c9d7028472e5d92cd4a54">TableauSegment::Output</a>)</td></tr>
 <tr class="separator:aad67f682d38d975df33827668aa1a1a1"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a2c8a8dc2770c68be890c0abbcce8cd1d"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1ChoiMixTableau.html#a2c8a8dc2770c68be890c0abbcce8cd1d">apply_X</a> (const <a class="el" href="classtket_1_1Qubit.html">Qubit</a> &amp;qb, <a class="el" href="classtket_1_1ChoiMixTableau.html#a4b7e94f491c095670df54eb2557257ab">TableauSegment</a> seg=<a class="el" href="classtket_1_1ChoiMixTableau.html#a4b7e94f491c095670df54eb2557257aba29c2c02a361c9d7028472e5d92cd4a54">TableauSegment::Output</a>)</td></tr>
+<tr class="separator:a2c8a8dc2770c68be890c0abbcce8cd1d"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad24397df5882c0dcd8907cdc4df3c894"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1ChoiMixTableau.html#ad24397df5882c0dcd8907cdc4df3c894">apply_H</a> (const <a class="el" href="classtket_1_1Qubit.html">Qubit</a> &amp;qb, <a class="el" href="classtket_1_1ChoiMixTableau.html#a4b7e94f491c095670df54eb2557257ab">TableauSegment</a> seg=<a class="el" href="classtket_1_1ChoiMixTableau.html#a4b7e94f491c095670df54eb2557257aba29c2c02a361c9d7028472e5d92cd4a54">TableauSegment::Output</a>)</td></tr>
+<tr class="separator:ad24397df5882c0dcd8907cdc4df3c894"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aacc0c42c40981d150ab2e8ea8daca487"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1ChoiMixTableau.html#aacc0c42c40981d150ab2e8ea8daca487">apply_CX</a> (const <a class="el" href="classtket_1_1Qubit.html">Qubit</a> &amp;control, const <a class="el" href="classtket_1_1Qubit.html">Qubit</a> &amp;target, <a class="el" href="classtket_1_1ChoiMixTableau.html#a4b7e94f491c095670df54eb2557257ab">TableauSegment</a> seg=<a class="el" href="classtket_1_1ChoiMixTableau.html#a4b7e94f491c095670df54eb2557257aba29c2c02a361c9d7028472e5d92cd4a54">TableauSegment::Output</a>)</td></tr>
 <tr class="separator:aacc0c42c40981d150ab2e8ea8daca487"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aac05f7e6d2aa704947bde8824db0a089"><td class="memItemLeft" align="right" valign="top">void&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classtket_1_1ChoiMixTableau.html#aac05f7e6d2aa704947bde8824db0a089">apply_gate</a> (<a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3">OpType</a> type, const <a class="el" href="namespacetket.html#ad949814c463d9f998540c0f812e76aa6">qubit_vector_t</a> &amp;qbs, <a class="el" href="classtket_1_1ChoiMixTableau.html#a4b7e94f491c095670df54eb2557257ab">TableauSegment</a> seg=<a class="el" href="classtket_1_1ChoiMixTableau.html#a4b7e94f491c095670df54eb2557257aba29c2c02a361c9d7028472e5d92cd4a54">TableauSegment::Output</a>)</td></tr>
@@ -222,7 +234,7 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8hpp_source.html#l00057">57</a> of file <a class="el" href="ChoiMixTableau_8hpp_source.html">ChoiMixTableau.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8hpp_source.html#l00058">58</a> of file <a class="el" href="ChoiMixTableau_8hpp_source.html">ChoiMixTableau.hpp</a>.</p>
 
 </div>
 </div>
@@ -238,7 +250,7 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8hpp_source.html#l00059">59</a> of file <a class="el" href="ChoiMixTableau_8hpp_source.html">ChoiMixTableau.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8hpp_source.html#l00060">60</a> of file <a class="el" href="ChoiMixTableau_8hpp_source.html">ChoiMixTableau.hpp</a>.</p>
 
 </div>
 </div>
@@ -254,7 +266,7 @@ Friends</h2></td></tr>
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8hpp_source.html#l00058">58</a> of file <a class="el" href="ChoiMixTableau_8hpp_source.html">ChoiMixTableau.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8hpp_source.html#l00059">59</a> of file <a class="el" href="ChoiMixTableau_8hpp_source.html">ChoiMixTableau.hpp</a>.</p>
 
 </div>
 </div>
@@ -283,14 +295,14 @@ Friends</h2></td></tr>
 <p>Based on the mixed stabiliser tableau representation of Audenaert &amp; Pleino 2005 (doi:10.1088/1367-2630/7/1/170), commonly used for representing a stabilizer code in QEC. We make use of the Choi-Jamiolkovski isomorphism to represent processes with inputs via the mixed tableau of their Choi state.</p>
 <p>Rows correspond to generators for the stabilizers of the mixed process, i.e. Pauli measurements with expectation value 1. We will refer to these as "coherent stabilizers" or "coherent subgroup". With mixed states, there may exist additional Pauli operators which leave the state unchanged but do have expectation value 0, which we will refer to as "decoherent
 stabilizers" (i.e. the logical operators of the corresponding stabiliser code). The extra generators for these are not stored since they can be derived through commutation with the coherent subgroup. Similarly, destabilisers (detectable errors) can be derived. A future implementation may wish to always store the decoherent stabilizers and destabilisers for faster updates.</p>
-<p>Each row is divided into its input segment and output segment. Under the CJ isomorphism, a row RxS means (in matrix multiplication order) SCR^T = C. When mapped to a sparse readable representation, independent SpPauliStabiliser objects are used for each segment, so we no longer expect their individual phases to be +-1, instead only requiring this on their product.</p>
+<p>Each row is divided into its input segment and output segment. Under the CJ isomorphism, a row RxS means (in matrix multiplication order) SCR^T = C. When mapped to a sparse readable representation, independent SpPauliStabiliser objects are used for each segment, so we no longer expect their individual phases to be +-1, instead only requiring this on their product. <a class="el" href="classtket_1_1ChoiMixTableau.html#a04b2f0a46ec27a0eeee1b7a08a3ebd9f" title="Read off a row as a Pauli string.">get_row()</a> will automatically transpose the input segment term so it is presented as RxS s.t. SCR = C.</p>
 <p>Columns of the tableau are indexed by pair of <a class="el" href="classtket_1_1Qubit.html" title="Location holding a qubit.">Qubit</a> id and a tag to distinguish input vs output. Rows are not maintained in any particular order, though the <code><a class="el" href="classtket_1_1ChoiMixTableau.html#abeb259811d8d80efe5727a916a393e0e" title="Reduces the underlying SymplecticTableau to its Gaussian/row-echelon form.">gaussian_form()</a></code> method will bring it into row-reduced echelon form. </p>
 <table class="fieldtable">
 <tr><th colspan="2">Enumerator</th></tr><tr><td class="fieldname"><a id="a4b7e94f491c095670df54eb2557257aba324118a6721dd6b8a9b9f4e327df2bf5"></a>Input&#160;</td><td class="fielddoc"></td></tr>
 <tr><td class="fieldname"><a id="a4b7e94f491c095670df54eb2557257aba29c2c02a361c9d7028472e5d92cd4a54"></a>Output&#160;</td><td class="fielddoc"></td></tr>
 </table>
 
-<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8hpp_source.html#l00056">56</a> of file <a class="el" href="ChoiMixTableau_8hpp_source.html">ChoiMixTableau.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8hpp_source.html#l00057">57</a> of file <a class="el" href="ChoiMixTableau_8hpp_source.html">ChoiMixTableau.hpp</a>.</p>
 
 </div>
 </div>
@@ -441,7 +453,7 @@ stabilizers" (i.e. the logical operators of the corresponding stabiliser code). 
 </div><div class="memdoc">
 
 <p>Construct a tableau directly from its rows. </p>
-<p>Each row is represented as a product of SpPauliStabilisers where the first is over the input qubits and the second is over the outputs. </p>
+<p>Each row is represented as a product of SpPauliStabilisers where the first is over the input qubits and the second is over the outputs. A row RxS is a pair s.t. SCR = C </p>
 
 <p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00078">78</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
 
@@ -534,7 +546,7 @@ stabilizers" (i.e. the logical operators of the corresponding stabiliser code). 
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00202">202</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00233">233</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -570,7 +582,37 @@ stabilizers" (i.e. the logical operators of the corresponding stabiliser code). 
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00209">209</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00240">240</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
+
+</div>
+</div>
+<a id="ad24397df5882c0dcd8907cdc4df3c894"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad24397df5882c0dcd8907cdc4df3c894">&#9670;&nbsp;</a></span>apply_H()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tket::ChoiMixTableau::apply_H </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classtket_1_1Qubit.html">Qubit</a> &amp;&#160;</td>
+          <td class="paramname"><em>qb</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classtket_1_1ChoiMixTableau.html#a4b7e94f491c095670df54eb2557257ab">TableauSegment</a>&#160;</td>
+          <td class="paramname"><em>seg</em> = <code><a class="el" href="classtket_1_1ChoiMixTableau.html#a4b7e94f491c095670df54eb2557257aba29c2c02a361c9d7028472e5d92cd4a54">TableauSegment::Output</a></code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00228">228</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -617,7 +659,7 @@ stabilizers" (i.e. the logical operators of the corresponding stabiliser code). 
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00381">381</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00392">392</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -650,7 +692,7 @@ stabilizers" (i.e. the logical operators of the corresponding stabiliser code). 
 <p><a class="el" href="classtket_1_1Transform.html" title="A transformation of a circuit that preserves its semantics.">Transform</a> the tableau according to consuming a Clifford gate at either end of the circuit. </p>
 <p>Applying a gate to the inputs really consumes its transpose via the CJ isomorphism. The basic gates considered here are all self-transpose, and the method for other Clifford gates handles the transposition internally by reversing the order of application. For multi-qubit gates, the qubits applied must either be all inputs or all outputs. </p>
 
-<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00192">192</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00208">208</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -680,7 +722,67 @@ stabilizers" (i.e. the logical operators of the corresponding stabiliser code). 
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00197">197</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00218">218</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a2c8a8dc2770c68be890c0abbcce8cd1d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2c8a8dc2770c68be890c0abbcce8cd1d">&#9670;&nbsp;</a></span>apply_X()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tket::ChoiMixTableau::apply_X </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classtket_1_1Qubit.html">Qubit</a> &amp;&#160;</td>
+          <td class="paramname"><em>qb</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classtket_1_1ChoiMixTableau.html#a4b7e94f491c095670df54eb2557257ab">TableauSegment</a>&#160;</td>
+          <td class="paramname"><em>seg</em> = <code><a class="el" href="classtket_1_1ChoiMixTableau.html#a4b7e94f491c095670df54eb2557257aba29c2c02a361c9d7028472e5d92cd4a54">TableauSegment::Output</a></code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00223">223</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
+
+</div>
+</div>
+<a id="add2e98a1e17a445a790671546bc6b97d"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#add2e98a1e17a445a790671546bc6b97d">&#9670;&nbsp;</a></span>apply_Z()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname">void tket::ChoiMixTableau::apply_Z </td>
+          <td>(</td>
+          <td class="paramtype">const <a class="el" href="classtket_1_1Qubit.html">Qubit</a> &amp;&#160;</td>
+          <td class="paramname"><em>qb</em>, </td>
+        </tr>
+        <tr>
+          <td class="paramkey"></td>
+          <td></td>
+          <td class="paramtype"><a class="el" href="classtket_1_1ChoiMixTableau.html#a4b7e94f491c095670df54eb2557257ab">TableauSegment</a>&#160;</td>
+          <td class="paramname"><em>seg</em> = <code><a class="el" href="classtket_1_1ChoiMixTableau.html#a4b7e94f491c095670df54eb2557257aba29c2c02a361c9d7028472e5d92cd4a54">TableauSegment::Output</a></code>&#160;</td>
+        </tr>
+        <tr>
+          <td></td>
+          <td>)</td>
+          <td></td><td></td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00213">213</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -702,7 +804,7 @@ stabilizers" (i.e. the logical operators of the corresponding stabiliser code). 
 
 <p>Permutes columns into a canonical order: chosen segment first, subordered in ILO. </p>
 
-<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00548">548</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00557">557</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -735,7 +837,7 @@ stabilizers" (i.e. the logical operators of the corresponding stabiliser code). 
 <p>Performs the effect of an <a class="el" href="namespacetket.html#a13e81344da4794f2648eb9a7b286fcf3a2b31634e3cfef1bfdd7d0d2cdfdc3f9d" title="Measure a qubit producing no output.">OpType::Collapse</a> gate on the qubit. </p>
 <p>I.e. non-destructively measure the qubit in the Z basis and ignore the result. </p>
 
-<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00485">485</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00496">496</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -783,7 +885,7 @@ stabilizers" (i.e. the logical operators of the corresponding stabiliser code). 
   </dd>
 </dl>
 
-<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00605">605</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00614">614</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -816,7 +918,7 @@ stabilizers" (i.e. the logical operators of the corresponding stabiliser code). 
 <p>Discards a qubit of the Choi state. </p>
 <p>Over the input system, this corresponds to initialising in the maximally-mixed state. Over the output system, this corresponds to a true discard/partial trace. </p>
 
-<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00444">444</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00455">455</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -837,7 +939,7 @@ stabilizers" (i.e. the logical operators of the corresponding stabiliser code). 
 
 <p>Reduces the underlying <a class="el" href="classtket_1_1SymplecticTableau.html">SymplecticTableau</a> to its Gaussian/row-echelon form. </p>
 
-<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00589">589</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00598">598</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -859,7 +961,7 @@ stabilizers" (i.e. the logical operators of the corresponding stabiliser code). 
 <p>Get the total number of qubits/boundaries of the process. </p>
 <p>The number of boundaries is the sum of inputs and outputs. The number of binary columns in the full symplectic representation is 2*n_boundaries+1. </p>
 
-<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00126">126</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00129">129</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -880,7 +982,7 @@ stabilizers" (i.e. the logical operators of the corresponding stabiliser code). 
 
 <p>Get the number of boundaries representing inputs to the process. </p>
 
-<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00128">128</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00131">131</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -901,7 +1003,7 @@ stabilizers" (i.e. the logical operators of the corresponding stabiliser code). 
 
 <p>Get the number of boundaries representing outputs from the process. </p>
 
-<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00137">137</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00133">133</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -922,7 +1024,7 @@ stabilizers" (i.e. the logical operators of the corresponding stabiliser code). 
 
 <p>Get the number of rows in the tableau. </p>
 
-<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00124">124</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00127">127</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -943,8 +1045,9 @@ stabilizers" (i.e. the logical operators of the corresponding stabiliser code). 
 </div><div class="memdoc">
 
 <p>Read off a row as a Pauli string. </p>
+<p>Returns a pair of Pauli strings RxS such that SCR = C </p>
 
-<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00175">175</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00186">186</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -965,8 +1068,30 @@ stabilizers" (i.e. the logical operators of the corresponding stabiliser code). 
 </div><div class="memdoc">
 
 <p>Combine rows into a single row. </p>
+<p>Returns a pair of Pauli strings RxS such that SCR = C </p>
 
-<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00179">179</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00194">194</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a2a77c488e2d156b10d39f00d2eb1a083"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a2a77c488e2d156b10d39f00d2eb1a083">&#9670;&nbsp;</a></span>input_qubits()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacetket.html#ad949814c463d9f998540c0f812e76aa6">qubit_vector_t</a> tket::ChoiMixTableau::input_qubits </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get all qubit names present in the input segment. </p>
+
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00137">137</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -1038,7 +1163,28 @@ stabilizers" (i.e. the logical operators of the corresponding stabiliser code). 
       </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00677">677</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00686">686</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
+
+</div>
+</div>
+<a id="a95a64df3b4658484bf29dbd4750b50f1"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a95a64df3b4658484bf29dbd4750b50f1">&#9670;&nbsp;</a></span>output_qubits()</h2>
+
+<div class="memitem">
+<div class="memproto">
+      <table class="memname">
+        <tr>
+          <td class="memname"><a class="el" href="namespacetket.html#ad949814c463d9f998540c0f812e76aa6">qubit_vector_t</a> tket::ChoiMixTableau::output_qubits </td>
+          <td>(</td>
+          <td class="paramname"></td><td>)</td>
+          <td> const</td>
+        </tr>
+      </table>
+</div><div class="memdoc">
+
+<p>Get all qubit names present in the output segment. </p>
+
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00147">147</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -1071,7 +1217,7 @@ stabilizers" (i.e. the logical operators of the corresponding stabiliser code). 
 <p>Post-select a qubit of the Choi state in |0&gt;. </p>
 <p>Over the input system, this corresponds to initialising in the |0&gt; state. Over the output system, this corresponds to a true post-selection. Throws an exception if post-selection has a zero chance of success. </p>
 
-<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00394">394</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00405">405</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -1094,7 +1240,7 @@ stabilizers" (i.e. the logical operators of the corresponding stabiliser code). 
 <p>Removes a row from the tableau. </p>
 <p>The final row is shifted into its place. </p>
 
-<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00507">507</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00518">518</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -1126,7 +1272,7 @@ stabilizers" (i.e. the logical operators of the corresponding stabiliser code). 
 
 <p>Renames qubits. </p>
 
-<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00591">591</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00600">600</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -1165,7 +1311,7 @@ stabilizers" (i.e. the logical operators of the corresponding stabiliser code). 
 </table>
 </div><div class="memdoc">
 
-<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00669">669</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8cpp_source.html#l00678">678</a> of file <a class="el" href="ChoiMixTableau_8cpp_source.html">ChoiMixTableau.cpp</a>.</p>
 
 </div>
 </div>
@@ -1184,7 +1330,7 @@ stabilizers" (i.e. the logical operators of the corresponding stabiliser code). 
 
 <p>Map between column indices and the corresponding qubit ID and type. </p>
 
-<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8hpp_source.html#l00069">69</a> of file <a class="el" href="ChoiMixTableau_8hpp_source.html">ChoiMixTableau.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8hpp_source.html#l00070">70</a> of file <a class="el" href="ChoiMixTableau_8hpp_source.html">ChoiMixTableau.hpp</a>.</p>
 
 </div>
 </div>
@@ -1202,7 +1348,7 @@ stabilizers" (i.e. the logical operators of the corresponding stabiliser code). 
 
 <p>The actual binary tableau. </p>
 
-<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8hpp_source.html#l00064">64</a> of file <a class="el" href="ChoiMixTableau_8hpp_source.html">ChoiMixTableau.hpp</a>.</p>
+<p class="definition">Definition at line <a class="el" href="ChoiMixTableau_8hpp_source.html#l00065">65</a> of file <a class="el" href="ChoiMixTableau_8hpp_source.html">ChoiMixTableau.hpp</a>.</p>
 
 </div>
 </div>
