@@ -403,11 +403,11 @@ SCENARIO("Test Circuit serialization") {
 
   GIVEN("DummyBox") {
     ResourceData data{
-        {{OpType::H, ResourceBounds<unsigned>{3, 4}},
-         {OpType::CX, ResourceBounds<unsigned>{2, 8}}},
-        ResourceBounds<unsigned>{2, 3},
-        {{OpType::CX, ResourceBounds<unsigned>{2, 8}}},
-        ResourceBounds<unsigned>{4, 8}};
+        {{OpType::H, ResourceBounds<unsigned>(3, 4)},
+         {OpType::CX, ResourceBounds<unsigned>(2, 8)}},
+        ResourceBounds<unsigned>(2, 3),
+        {{OpType::CX, ResourceBounds<unsigned>(2, 8)}},
+        ResourceBounds<unsigned>(4, 8)};
     DummyBox dbox(2, 0, data);
     Circuit c(2);
     c.add_box(dbox, {0, 1});

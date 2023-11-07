@@ -31,6 +31,9 @@ struct ResourceBounds {
   bool operator==(const ResourceBounds<T>& other) const {
     return min == other.min && max == other.max;
   }
+  ResourceBounds() : min(0), max(0) {}
+  ResourceBounds(T val) : min(val), max(val) {}
+  ResourceBounds(T minval, T maxval) : min(minval), max(maxval) {}
 };
 
 struct ResourceData {
