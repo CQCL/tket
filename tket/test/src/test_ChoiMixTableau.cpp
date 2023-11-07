@@ -560,11 +560,14 @@ SCENARIO("Synthesis of circuits from ChoiMixTableaus") {
   }
   GIVEN("A partial Clifford state (tests mixed initialisations)") {
     Circuit circ(3);
-    circ.add_op<unsigned>(OpType::Collapse, {1});
     add_ops_list_one_to_circuit(circ);
+    circ.add_op<unsigned>(OpType::Collapse, {1});
     circ.qubit_create_all();
     ChoiMixTableau tab = circuit_to_cm_tableau(circ);
     Circuit res = cm_tableau_to_exact_circuit(tab).first;
+    CHECK(res.created_qubits().size() == 3);
+    CHECK(res.discarded_qubits().size() == 0);
+    CHECK(res.count_gates(OpType::Collapse) == 1);
     ChoiMixTableau res_tab = circuit_to_cm_tableau(res);
     REQUIRE(res_tab == tab);
     Circuit res_uni =
