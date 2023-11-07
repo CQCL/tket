@@ -268,16 +268,6 @@ std::pair<Circuit, Complex> decompose_2cx_DV(const Eigen::Matrix4cd &U) {
   return {circ, std::conj(z0)};
 }
 
-Expr pauli_angle_convert_or_throw(Complex pauliCoeff, const Expr &angle) {
-  if (pauliCoeff == -1.) {
-    return -1 * angle;
-  }
-  if (pauliCoeff != 1.) {
-    throw CircuitInvalidity("Pauli coefficient must be +/- 1");
-  }
-  return angle;
-}
-
 Circuit phase_gadget(unsigned n_qubits, const Expr &t, CXConfigType cx_config) {
   return pauli_gadget(
       SpSymPauliTensor(DensePauliMap(n_qubits, Pauli::Z), t), cx_config);
