@@ -18,7 +18,6 @@
 
 #include "tket/Circuit/CircUtils.hpp"
 #include "tket/Circuit/ConjugationBox.hpp"
-#include "tket/Converters/PauliGadget.hpp"
 #include "tket/Converters/PhasePoly.hpp"
 #include "tket/Diagonalisation/Diagonalisation.hpp"
 #include "tket/Ops/OpJsonFactory.hpp"
@@ -61,7 +60,11 @@ Op_ptr PauliExpBox::symbol_substitution(
 }
 
 void PauliExpBox::generate_circuit() const {
-  Circuit circ = pauli_gadget(paulis_.string, paulis_.coeff, cx_config_);
+  // paulis_ gets cast to a sparse form, so circuit from pauli_gadget will only
+  // contain qubits with {X, Y, Z}; appending it to a blank circuit containing
+  // all qubits makes the size of the circuit fixed
+  Circuit circ(paulis_.size());
+  circ.append(pauli_gadget(paulis_, cx_config_));
   circ_ = std::make_shared<Circuit>(circ);
 }
 
@@ -149,8 +152,12 @@ Op_ptr PauliExpPairBox::symbol_substitution(
 }
 
 void PauliExpPairBox::generate_circuit() const {
-  Circuit circ = Circuit(paulis0_.size());
-  append_pauli_gadget_pair(circ, paulis0_, paulis1_, cx_config_);
+  // paulis0_ and paulis1_ gets cast to a sparse form, so circuit from
+  // pauli_gadget_pair will only contain qubits with {X, Y, Z} on at least one;
+  // appending it to a blank circuit containing all qubits makes the size of the
+  // circuit fixed
+  Circuit circ(paulis0_.size());
+  circ.append(pauli_gadget_pair(paulis0_, paulis1_, cx_config_));
   circ_ = std::make_shared<Circuit>(circ);
 }
 
@@ -306,7 +313,7 @@ void PauliExpCommutingSetBox::generate_circuit() const {
   Circuit phase_poly_circ(n_qubits);
 
   for (const SpSymPauliTensor &pgp : gadgets) {
-    append_single_pauli_gadget(phase_poly_circ, pgp);
+    phase_poly_circ.append(pauli_gadget(pgp, CXConfigType::Snake));
   }
   phase_poly_circ.decompose_boxes_recursively();
   PhasePolyBox ppbox(phase_poly_circ);
@@ -362,5 +369,80 @@ Op_ptr PauliExpCommutingSetBox::from_json(const nlohmann::json &j) {
 }
 
 REGISTER_OPFACTORY(PauliExpCommutingSetBox, PauliExpCommutingSetBox)
+
+void append_single_pauli_gadget_as_pauli_exp_box(
+    Circuit &circ, const SpSymPauliTensor &pauli, CXConfigType cx_config) {
+  std::vector<Pauli> string;
+  std::vector<Qubit> mapping;
+  for (const std::pair<const Qubit, Pauli> &term : pauli.string) {
+    string.push_back(term.second);
+    mapping.push_back(term.first);
+  }
+  PauliExpBox box(SymPauliTensor(string, pauli.coeff), cx_config);
+  circ.add_box(box, mapping);
+}
+
+void append_pauli_gadget_pair_as_box(
+    Circuit &circ, const SpSymPauliTensor &pauli0,
+    const SpSymPauliTensor &pauli1, CXConfigType cx_config) {
+  std::vector<Qubit> mapping;
+  std::vector<Pauli> paulis0;
+  std::vector<Pauli> paulis1;
+  QubitPauliMap p1map = pauli1.string;
+  // add paulis for qubits in pauli0_string
+  for (const std::pair<const Qubit, Pauli> &term : pauli0.string) {
+    mapping.push_back(term.first);
+    paulis0.push_back(term.second);
+    auto found = p1map.find(term.first);
+    if (found == p1map.end()) {
+      paulis1.push_back(Pauli::I);
+    } else {
+      paulis1.push_back(found->second);
+      p1map.erase(found);
+    }
+  }
+  // add paulis for qubits in pauli1_string that weren't in pauli0_string
+  for (const std::pair<const Qubit, Pauli> &term : p1map) {
+    mapping.push_back(term.first);
+    paulis1.push_back(term.second);
+    paulis0.push_back(Pauli::I);  // If pauli0_string contained qubit, would
+                                  // have been handled above
+  }
+  PauliExpPairBox box(
+      SymPauliTensor(paulis0, pauli0.coeff),
+      SymPauliTensor(paulis1, pauli1.coeff), cx_config);
+  circ.add_box(box, mapping);
+}
+
+void append_commuting_pauli_gadget_set_as_box(
+    Circuit &circ, const std::list<SpSymPauliTensor> &gadgets,
+    CXConfigType cx_config) {
+  // Translate from QubitPauliTensors to vectors of Paulis of same length
+  // Preserves ordering of qubits
+
+  std::set<Qubit> all_qubits;
+  for (const SpSymPauliTensor &gadget : gadgets) {
+    for (const std::pair<const Qubit, Pauli> &qubit_pauli : gadget.string) {
+      all_qubits.insert(qubit_pauli.first);
+    }
+  }
+
+  std::vector<Qubit> mapping;
+  for (const auto &qubit : all_qubits) {
+    mapping.push_back(qubit);
+  }
+
+  std::vector<SymPauliTensor> pauli_gadgets;
+  for (const SpSymPauliTensor &gadget : gadgets) {
+    SymPauliTensor &new_gadget =
+        pauli_gadgets.emplace_back(DensePauliMap{}, gadget.coeff);
+    for (const Qubit &qubit : mapping) {
+      new_gadget.string.push_back(gadget.get(qubit));
+    }
+  }
+
+  PauliExpCommutingSetBox box(pauli_gadgets, cx_config);
+  circ.add_box(box, mapping);
+}
 
 }  // namespace tket
