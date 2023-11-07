@@ -32,8 +32,8 @@ PGOp::~PGOp() {}
 PGOp::PGOp(PGOpType type) : type_(type) {}
 
 bool PGOp::commutes_with(const PGOp& other) const {
-  for (const QubitPauliTensor& t : active_paulis()) {
-    for (const QubitPauliTensor& ot : other.active_paulis()) {
+  for (const SpPauliStabiliser& t : active_paulis()) {
+    for (const SpPauliStabiliser& ot : other.active_paulis()) {
       if (!t.commutes_with(ot)) return false;
     }
   }
@@ -63,17 +63,16 @@ bit_vector_t PGOp::write_bits() const { return {}; }
  * PGRotation Implementation
  */
 
-const QubitPauliTensor& PGRotation::get_tensor() const { return tensor_; }
+const SpPauliStabiliser& PGRotation::get_tensor() const { return tensor_; }
 
 const Expr& PGRotation::get_angle() const { return angle_; }
 
-PGRotation::PGRotation(const QubitPauliTensor& tensor, const Expr& angle)
+PGRotation::PGRotation(const SpPauliStabiliser& tensor, const Expr& angle)
     : PGOp(PGOpType::Rotation), tensor_(tensor), angle_(angle) {
-  if (std::abs(tensor.coeff + 1.) < EPS) {
-    angle_ *= -1.;
-    tensor_.coeff = 1.;
-  } else if (std::abs(tensor.coeff - 1.) >= EPS)
-    throw PGError("Invalid coefficient in tensor for PauliGraph rotation");
+  if (tensor.is_real_negative()) {
+    angle_ *= -1;
+    tensor_.coeff = 0;
+  }
 }
 
 SymSet PGRotation::free_symbols() const { return expr_free_symbols(angle_); }
@@ -94,11 +93,11 @@ bool PGRotation::is_equal(const PGOp& op_other) const {
   return (tensor_ == other.tensor_) && equiv_expr(angle_, other.angle_, 2.);
 }
 
-std::vector<QubitPauliTensor> PGRotation::active_paulis() const {
+std::vector<SpPauliStabiliser> PGRotation::active_paulis() const {
   return {tensor_};
 }
 
-QubitPauliTensor& PGRotation::port(unsigned p) {
+SpPauliStabiliser& PGRotation::port(unsigned p) {
   if (p != 0)
     throw PGError(
         "Cannot dereference port on PGRotation: " + std::to_string(p));
@@ -109,18 +108,16 @@ QubitPauliTensor& PGRotation::port(unsigned p) {
  * PGCliffordRot Implementation
  */
 
-const QubitPauliTensor& PGCliffordRot::get_tensor() const { return tensor_; }
+const SpPauliStabiliser& PGCliffordRot::get_tensor() const { return tensor_; }
 
 unsigned PGCliffordRot::get_angle() const { return angle_; }
 
-PGCliffordRot::PGCliffordRot(const QubitPauliTensor& tensor, unsigned angle)
+PGCliffordRot::PGCliffordRot(const SpPauliStabiliser& tensor, unsigned angle)
     : PGOp(PGOpType::CliffordRot), tensor_(tensor), angle_(angle) {
-  if (tensor_.coeff == -1.) {
+  if (tensor.is_real_negative()) {
     angle_ = (4 - angle) % 4;
-    tensor_.coeff = 1.;
-  } else if (tensor_.coeff != 1.)
-    throw PGError(
-        "Invalid coefficient in tensor for PauliGraph Clifford rotation");
+    tensor_.coeff = 0;
+  }
 }
 
 SymSet PGCliffordRot::free_symbols() const { return {}; }
@@ -141,11 +138,11 @@ bool PGCliffordRot::is_equal(const PGOp& op_other) const {
   return (tensor_ == other.tensor_) && (angle_ % 4 == other.angle_ % 4);
 }
 
-std::vector<QubitPauliTensor> PGCliffordRot::active_paulis() const {
+std::vector<SpPauliStabiliser> PGCliffordRot::active_paulis() const {
   return {tensor_};
 }
 
-QubitPauliTensor& PGCliffordRot::port(unsigned p) {
+SpPauliStabiliser& PGCliffordRot::port(unsigned p) {
   if (p != 0)
     throw PGError(
         "Cannot dereference port on PGCliffordRot: " + std::to_string(p));
@@ -156,14 +153,14 @@ QubitPauliTensor& PGCliffordRot::port(unsigned p) {
  * PGMeasure Implementation
  */
 
-const QubitPauliTensor& PGMeasure::get_tensor() const { return tensor_; }
+const SpPauliStabiliser& PGMeasure::get_tensor() const { return tensor_; }
 
 const Bit& PGMeasure::get_target() const { return target_; }
 
-PGMeasure::PGMeasure(const QubitPauliTensor& tensor, const Bit& target)
+PGMeasure::PGMeasure(const SpPauliStabiliser& tensor, const Bit& target)
     : PGOp(PGOpType::Measure), tensor_(tensor), target_(target) {
-  if (tensor_.coeff != 1. && tensor_.coeff != -1.)
-    throw PGError("Invalid coefficient in tensor for PauliGraph measurement");
+  // Assert that tensor has a real coefficient
+  tensor.is_real_negative();
 }
 
 SymSet PGMeasure::free_symbols() const { return {}; }
@@ -184,11 +181,11 @@ bool PGMeasure::is_equal(const PGOp& op_other) const {
   return (tensor_ == other.tensor_) && (target_ == other.target_);
 }
 
-std::vector<QubitPauliTensor> PGMeasure::active_paulis() const {
+std::vector<SpPauliStabiliser> PGMeasure::active_paulis() const {
   return {tensor_};
 }
 
-QubitPauliTensor& PGMeasure::port(unsigned p) {
+SpPauliStabiliser& PGMeasure::port(unsigned p) {
   if (p != 0)
     throw PGError("Cannot dereference port on PGMeasure: " + std::to_string(p));
   return tensor_;
@@ -200,14 +197,13 @@ bit_vector_t PGMeasure::write_bits() const { return {target_}; }
  * PGDecoherence Implementation
  */
 
-const QubitPauliTensor& PGDecoherence::get_tensor() const { return tensor_; }
+const SpPauliStabiliser& PGDecoherence::get_tensor() const { return tensor_; }
 
-PGDecoherence::PGDecoherence(const QubitPauliTensor& tensor)
+PGDecoherence::PGDecoherence(const SpPauliStabiliser& tensor)
     : PGOp(PGOpType::Decoherence), tensor_(tensor) {
-  if (tensor_.coeff == -1.)
-    tensor_.coeff = 1.;
-  else if (tensor_.coeff != 1.)
-    throw PGError("Invalid coefficient in tensor for PauliGraph decoherence");
+  if (tensor.is_real_negative()) {
+    tensor_.coeff = 0;
+  }
 }
 
 SymSet PGDecoherence::free_symbols() const { return {}; }
@@ -228,11 +224,11 @@ bool PGDecoherence::is_equal(const PGOp& op_other) const {
   return tensor_ == other.tensor_;
 }
 
-std::vector<QubitPauliTensor> PGDecoherence::active_paulis() const {
+std::vector<SpPauliStabiliser> PGDecoherence::active_paulis() const {
   return {tensor_};
 }
 
-QubitPauliTensor& PGDecoherence::port(unsigned p) {
+SpPauliStabiliser& PGDecoherence::port(unsigned p) {
   if (p != 0)
     throw PGError(
         "Cannot dereference port on PGDecoherence: " + std::to_string(p));
@@ -243,16 +239,15 @@ QubitPauliTensor& PGDecoherence::port(unsigned p) {
  * PGReset Implementation
  */
 
-const QubitPauliTensor& PGReset::get_stab() const { return stab_; }
+const SpPauliStabiliser& PGReset::get_stab() const { return stab_; }
 
-const QubitPauliTensor& PGReset::get_destab() const { return destab_; }
+const SpPauliStabiliser& PGReset::get_destab() const { return destab_; }
 
-PGReset::PGReset(const QubitPauliTensor& stab, const QubitPauliTensor& destab)
+PGReset::PGReset(const SpPauliStabiliser& stab, const SpPauliStabiliser& destab)
     : PGOp(PGOpType::Reset), stab_(stab), destab_(destab) {
-  if (destab_.coeff == -1.)
-    destab_.coeff = 1.;
-  else if (destab_.coeff != 1. || (stab_.coeff != 1. && stab_.coeff != -1.))
-    throw PGError("Invalid coefficient in tensor for PauliGraph reset");
+  if (destab.is_real_negative()) destab_.coeff = 0;
+  // Assert that stab has a real coefficient
+  stab.is_real_negative();
 }
 
 SymSet PGReset::free_symbols() const { return {}; }
@@ -274,11 +269,11 @@ bool PGReset::is_equal(const PGOp& op_other) const {
 
 unsigned PGReset::n_paulis() const { return 2; }
 
-std::vector<QubitPauliTensor> PGReset::active_paulis() const {
+std::vector<SpPauliStabiliser> PGReset::active_paulis() const {
   return {stab_, destab_};
 }
 
-QubitPauliTensor& PGReset::port(unsigned p) {
+SpPauliStabiliser& PGReset::port(unsigned p) {
   if (p == 0)
     return stab_;
   else if (p == 1)
@@ -330,11 +325,11 @@ bool PGConditional::is_equal(const PGOp& op_other) const {
 
 unsigned PGConditional::n_paulis() const { return inner_->n_paulis(); }
 
-std::vector<QubitPauliTensor> PGConditional::active_paulis() const {
+std::vector<SpPauliStabiliser> PGConditional::active_paulis() const {
   return inner_->active_paulis();
 }
 
-QubitPauliTensor& PGConditional::port(unsigned p) { return inner_->port(p); }
+SpPauliStabiliser& PGConditional::port(unsigned p) { return inner_->port(p); }
 
 bit_vector_t PGConditional::read_bits() const {
   bit_vector_t bits = inner_->read_bits();
@@ -345,53 +340,67 @@ bit_vector_t PGConditional::read_bits() const {
 bit_vector_t PGConditional::write_bits() const { return inner_->write_bits(); }
 
 /**
- * PGStabilizer Implementation
+ * PGStabAssertion Implementation
  */
 
-const QubitPauliTensor& PGStabilizer::get_stab() const { return stab_; }
+const SpPauliStabiliser& PGStabAssertion::get_stab() const { return stab_; }
 
-const QubitPauliTensor& PGStabilizer::get_anc_z() const { return anc_z_; }
+const SpPauliStabiliser& PGStabAssertion::get_anc_z() const { return anc_z_; }
 
-const QubitPauliTensor& PGStabilizer::get_anc_x() const { return anc_x_; }
+const SpPauliStabiliser& PGStabAssertion::get_anc_x() const { return anc_x_; }
 
-const Bit& PGStabilizer::get_target() const { return target_; }
+const Bit& PGStabAssertion::get_target() const { return target_; }
 
-PGStabilizer::PGStabilizer(
-    const QubitPauliTensor& stab, const QubitPauliTensor& anc_z,
-    const QubitPauliTensor& anc_x, const Bit& target)
-    : PGOp(PGOpType::Stabilizer),
+PGStabAssertion::PGStabAssertion(
+    const SpPauliStabiliser& stab, const SpPauliStabiliser& anc_z,
+    const SpPauliStabiliser& anc_x, const Bit& target)
+    : PGOp(PGOpType::StabAssertion),
       stab_(stab),
       anc_z_(anc_z),
       anc_x_(anc_x),
-      target_(target) {}
+      target_(target) {
+  if (anc_x.is_real_negative()) anc_x_.coeff = 0;
+  // Assert that stab and anc_z have real coefficients
+  stab.is_real_negative();
+  anc_z.is_real_negative();
+}
 
-SymSet PGStabilizer::free_symbols() const { return {}; }
+SymSet PGStabAssertion::free_symbols() const { return {}; }
 
-PGOp_ptr PGStabilizer::symbol_substitution(
+PGOp_ptr PGStabAssertion::symbol_substitution(
     const SymEngine::map_basic_basic&) const {
   return PGOp_ptr();
 }
 
-std::string PGStabilizer::get_name(bool) const {
+std::string PGStabAssertion::get_name(bool) const {
   std::stringstream str;
-  str << "Stab(" << stab_.to_str() << ")";
+  str << "Stab(" << stab_.to_str() << " -> " << target_.repr() << "; "
+      << anc_z_.to_str() << ", " << anc_x_.to_str() << ")";
   return str.str();
 }
 
-bool PGStabilizer::is_equal(const PGOp& op_other) const {
-  const PGStabilizer& other = dynamic_cast<const PGStabilizer&>(op_other);
-  return (stab_ == other.stab_);
+bool PGStabAssertion::is_equal(const PGOp& op_other) const {
+  const PGStabAssertion& other = dynamic_cast<const PGStabAssertion&>(op_other);
+  return (stab_ == other.stab_) && (anc_z_ == other.anc_z_) &&
+         (anc_x_ == other.anc_x_) && (target_ == other.target_);
 }
 
-std::vector<QubitPauliTensor> PGStabilizer::active_paulis() const {
-  return {stab_};
+std::vector<SpPauliStabiliser> PGStabAssertion::active_paulis() const {
+  return {stab_, anc_z_, anc_x_};
 }
 
-QubitPauliTensor& PGStabilizer::port(unsigned p) {
-  if (p != 0)
-    throw PGError(
-        "Cannot dereference port on PGStabilizer: " + std::to_string(p));
-  return stab_;
+SpPauliStabiliser& PGStabAssertion::port(unsigned p) {
+  switch (p) {
+    case 0:
+      return stab_;
+    case 1:
+      return anc_z_;
+    case 2:
+      return anc_x_;
+    default:
+      throw PGError(
+          "Cannot dereference port of PGStabAssertion: " + std::to_string(p));
+  }
 }
 
 /**
@@ -436,15 +445,14 @@ bool PGInputTableau::is_equal(const PGOp& op_other) const {
 
 unsigned PGInputTableau::n_paulis() const { return rows_.size(); }
 
-std::vector<QubitPauliTensor> PGInputTableau::active_paulis() const {
-  std::vector<QubitPauliTensor> paulis;
-  for (unsigned i = 0; i < rows_.size(); ++i) {
-    paulis.push_back(rows_.at(i).second);
-  }
+std::vector<SpPauliStabiliser> PGInputTableau::active_paulis() const {
+  std::vector<SpPauliStabiliser> paulis;
+  for (const ChoiMixTableau::row_tensor_t& row : rows_)
+    paulis.push_back(row.second);
   return paulis;
 }
 
-QubitPauliTensor& PGInputTableau::port(unsigned p) {
+SpPauliStabiliser& PGInputTableau::port(unsigned p) {
   if (p >= rows_.size())
     throw PGError(
         "Cannot dereference port on PGInputTableau: " + std::to_string(p));
@@ -493,15 +501,14 @@ bool PGOutputTableau::is_equal(const PGOp& op_other) const {
 
 unsigned PGOutputTableau::n_paulis() const { return rows_.size(); }
 
-std::vector<QubitPauliTensor> PGOutputTableau::active_paulis() const {
-  std::vector<QubitPauliTensor> paulis;
-  for (unsigned i = 0; i < rows_.size(); ++i) {
-    paulis.push_back(rows_.at(i).first);
-  }
+std::vector<SpPauliStabiliser> PGOutputTableau::active_paulis() const {
+  std::vector<SpPauliStabiliser> paulis;
+  for (const ChoiMixTableau::row_tensor_t& row : rows_)
+    paulis.push_back(row.first);
   return paulis;
 }
 
-QubitPauliTensor& PGOutputTableau::port(unsigned p) {
+SpPauliStabiliser& PGOutputTableau::port(unsigned p) {
   if (p >= rows_.size())
     throw PGError(
         "Cannot dereference port on PGOutputTableau: " + std::to_string(p));
@@ -586,7 +593,7 @@ PGVert PauliGraph::add_vertex_at_end(PGOp_ptr op) {
   for (unsigned i = 0; i < op->n_paulis(); ++i) {
     pauli_index_.insert({mat_offset + i, v, i});
     pauli_ac_.col(mat_offset + i).setZero();
-    for (const std::pair<const Qubit, Pauli>& qp : op->port(i).string.map)
+    for (const std::pair<const Qubit, Pauli>& qp : op->port(i).string)
       qubits_.insert(qp.first);
   }
   for (const Bit& b : op->read_bits()) bits_.insert(b);
@@ -605,12 +612,12 @@ PGVert PauliGraph::add_vertex_at_end(PGOp_ptr op) {
     final_tableau_ = v;
   }
   // Find ancestors in the anticommutation matrix
-  std::vector<QubitPauliTensor> active = op->active_paulis();
+  std::vector<SpPauliStabiliser> active = op->active_paulis();
   for (unsigned i = 0; i < active.size(); ++i) {
     for (const PGPauli& prev_pauli : pauli_index_.get<TagID>()) {
       if (prev_pauli.vert == v) continue;
       PGOp_ptr other_op = c_graph_[prev_pauli.vert];
-      QubitPauliTensor other_pauli = other_op->port(prev_pauli.port);
+      SpPauliStabiliser other_pauli = other_op->port(prev_pauli.port);
       pauli_ac_(mat_offset + i, prev_pauli.index) =
           !active.at(i).commutes_with(other_pauli);
     }
@@ -641,14 +648,15 @@ PGVert PauliGraph::add_vertex_at_end(PGOp_ptr op) {
 }
 
 void PauliGraph::multiply_strings(
-    unsigned source_r, unsigned target_r, Complex coeff) {
+    unsigned source_r, unsigned target_r, quarter_turns_t coeff) {
   PGPauli source_pgp = *pauli_index_.get<TagID>().find(source_r);
   PGOp_ptr source_op = c_graph_[source_pgp.vert];
   PGPauli target_pgp = *pauli_index_.get<TagID>().find(target_r);
   PGOp_ptr target_op = c_graph_[target_pgp.vert];
   // Update strings in PGOps
-  target_op->port(target_pgp.port) = coeff * source_op->port(source_pgp.port) *
-                                     target_op->port(target_pgp.port);
+  SpPauliStabiliser& target_port = target_op->port(target_pgp.port);
+  target_port = source_op->port(source_pgp.port) * target_port;
+  target_port.coeff = (target_port.coeff + coeff) % 4;
   // Update anticommutation matrix
   for (unsigned i = 0; i < pauli_ac_.rows(); ++i) {
     pauli_ac_(i, target_pgp.index) =
@@ -746,10 +754,10 @@ void PauliGraph::verify() const {
       }
       // Check Pauli history contains all anti-commuting terms and all active
       // qubits are registered
-      std::vector<QubitPauliTensor> paulis = op->active_paulis();
+      std::vector<SpPauliStabiliser> paulis = op->active_paulis();
       for (auto it = range.first; it != range.second; ++it) {
-        const QubitPauliTensor& tensor = paulis.at(it->port);
-        for (const std::pair<const Qubit, Pauli>& qp : tensor.string.map) {
+        const SpPauliStabiliser& tensor = paulis.at(it->port);
+        for (const std::pair<const Qubit, Pauli>& qp : tensor.string) {
           if (qubits_.find(qp.first) == qubits_.end())
             throw PGError(
                 "PGOp interacts with unregistered qubit: " + op->get_name());

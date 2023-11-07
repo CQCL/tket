@@ -90,7 +90,8 @@ typedef unsigned quarter_turns_t;
  * Expr; a symbolic expression for a (possibly complex) coefficient. This tends
  * to be used in the context of Pauli exponentials of tracking the rotation
  * angle (along with its phase), where such synthesis functions map cP to
- * exp(i*cP*pi/2) (i.e. the coefficient is the angle of rotation in half-turns).
+ * exp(-i*cP*pi/2) (i.e. the coefficient is the angle of rotation in
+ * half-turns).
  */
 
 /**

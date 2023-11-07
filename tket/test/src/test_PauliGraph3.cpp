@@ -220,7 +220,7 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     circ.add_op<unsigned>(OpType::ZZPhase, 0.2, {0, 1});
     circ.add_op<unsigned>(OpType::Vdg, {0});
     circ.add_op<unsigned>(OpType::H, {1});
-    PauliExpBox peb({Pauli::Y, Pauli::X}, 0.333);
+    PauliExpBox peb(SymPauliTensor({Pauli::Y, Pauli::X}, 0.333));
     circ.add_box(peb, {0, 1});
     PauliGraph pg = circuit_to_pauli_graph3(circ);
     REQUIRE_NOTHROW(pg.verify());
