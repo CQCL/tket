@@ -19,7 +19,7 @@ from conan.errors import ConanInvalidConfiguration
 
 class TktokenswapConan(ConanFile):
     name = "tktokenswap"
-    version = "0.3.5"
+    version = "0.3.6"
     package_type = "library"
     license = "Apache 2"
     url = "https://github.com/CQCL/tket"
@@ -71,6 +71,6 @@ class TktokenswapConan(ConanFile):
 
     def requirements(self):
         self.requires("tklog/0.3.3@tket/stable")
-        self.requires("tkassert/0.3.3@tket/stable", transitive_headers=True)
+        self.requires("tkassert/0.3.4@tket/stable", transitive_headers=True)
         self.requires("tkrng/0.3.3@tket/stable")
         self.requires("boost/1.83.0", transitive_libs=False)
