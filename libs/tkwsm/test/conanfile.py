@@ -60,6 +60,6 @@ class test_tkwsmRecipe(ConanFile):
 
     def requirements(self):
         self.requires("tkwsm/0.3.5")
-        self.requires("tkassert/0.3.3@tket/stable")
+        self.requires("tkassert/0.3.4@tket/stable")
         self.requires("tkrng/0.3.3@tket/stable")
         self.requires("catch2/3.3.2")
