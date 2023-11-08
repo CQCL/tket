@@ -72,5 +72,5 @@ gcovr --print-summary --html --html-details -r ./libs/tkxxx --exclude-lines-by-p
 
 ## Building without conan
 
-It is possible to build the libraries without using conan at all: see
+It is possible to build the libraries without using conan: see
 [here](../build-without-conan.md) for instructions.
