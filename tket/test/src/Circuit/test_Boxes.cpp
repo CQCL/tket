@@ -873,6 +873,18 @@ SCENARIO("QControlBox", "[boxes]") {
       d.add_op<unsigned>(OpType::CX, {2, 1});
       REQUIRE(*c == d);
     }
+    WHEN("Wrapped in a CircBox") {
+      Circuit inner_circ(4);
+      inner_circ.add_op<unsigned>(cj_op, {1, 3});
+      Op_ptr circbox_op = std::make_shared<CircBox>(inner_circ);
+      QControlBox qbox(circbox_op);
+      std::shared_ptr<Circuit> c = qbox.to_circuit();
+      Circuit d(5);
+      d.add_op<unsigned>(OpType::CX, {4, 2});
+      d.add_op<unsigned>(OpType::CZ, {0, 2});
+      d.add_op<unsigned>(OpType::CX, {4, 2});
+      REQUIRE(*c == d);
+    }
     WHEN("Nested") {
       Circuit compute_outer(3);
       compute_outer.add_op<unsigned>(OpType::CX, {2, 1});
@@ -928,6 +940,20 @@ SCENARIO("QControlBox", "[boxes]") {
     QControlBox qbox(get_op_ptr(OpType::PhaseGadget, {a}, 2));
     std::shared_ptr<Circuit> c = qbox.to_circuit();
     REQUIRE(c->count_gates(OpType::CX) == 4);
+  }
+  GIVEN("controlled PauliExpBox") {
+    // https://github.com/CQCL/tket/issues/1109
+    PauliExpBox pbox(
+        SymPauliTensor({Pauli::I, Pauli::Z, Pauli::I, Pauli::I}, 0.7));
+    Op_ptr op = std::make_shared<PauliExpBox>(pbox);
+    QControlBox qbox(op);
+    std::shared_ptr<Circuit> c = qbox.to_circuit();
+    // construct the expected circuit
+    Circuit correct_inner(4);
+    correct_inner.add_op<unsigned>(OpType::Rz, 0.7, {1});
+    QControlBox correct_qbox(std::make_shared<CircBox>(correct_inner));
+    std::shared_ptr<Circuit> d = correct_qbox.to_circuit();
+    REQUIRE(*c == *d);
   }
 }
 
