@@ -866,6 +866,13 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "\n\n:param optype: operation type"
           "\n\n:return: list of :py:class:`Command`",
           py::arg("optype"))
+      .def(
+          "get_resources", &Circuit::get_resources,
+          "Calculate the overall resources of the circuit."
+          "\n\nThis takes account of the data stored in each "
+          "py:class:`DummyBox` within the circuit, as well as other gates, "
+          "to compute upper and lower bounds."
+          "\n\n:return: bounds on resources of the circuit")
       .def_property_readonly(
           "_dag_data",
           [](Circuit &circ) {
