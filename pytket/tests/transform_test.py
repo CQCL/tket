@@ -1048,31 +1048,31 @@ def test_CXMappingPass_terminates() -> None:
 
 def test_auto_rebase() -> None:
     pass_params = [
-        ({OpType.CX, OpType.Rz, OpType.Rx}, _library._CX(), _library._TK1_to_RzRx),
+        ({OpType.CX, OpType.Rz, OpType.Rx}, _library.CX(), _library.TK1_to_RzRx),
         (
             {OpType.CZ, OpType.Rz, OpType.SX, OpType.ZZPhase},
             _CX_CIRCS[OpType.CZ](),
-            _library._TK1_to_RzSX,
+            _library.TK1_to_RzSX,
         ),
         (
             {OpType.ZZMax, OpType.T, OpType.Rz, OpType.H},
-            _library._CX_using_ZZMax(),
-            _library._TK1_to_RzH,
+            _library.CX_using_ZZMax(),
+            _library.TK1_to_RzH,
         ),
         (
             {OpType.XXPhase, OpType.T, OpType.Rz, OpType.H},
-            _library._CX_using_XXPhase_0(),
-            _library._TK1_to_RzH,
+            _library.CX_using_XXPhase_0(),
+            _library.TK1_to_RzH,
         ),
         (
             {OpType.ECR, OpType.PhasedX, OpType.Rz, OpType.CnX},
-            _library._CX_using_ECR(),
-            _library._TK1_to_PhasedXRz,
+            _library.CX_using_ECR(),
+            _library.TK1_to_PhasedXRz,
         ),
         (
             {OpType.CX, OpType.TK1, OpType.U3, OpType.CnX},
-            _library._CX(),
-            _library._TK1_to_TK1,
+            _library.CX(),
+            _library.TK1_to_TK1,
         ),
     ]
 
@@ -1114,26 +1114,26 @@ def test_auto_rebase() -> None:
 
 def test_auto_squash() -> None:
     pass_params = [
-        ({OpType.Rz, OpType.Rx}, _library._TK1_to_RzRx),
+        ({OpType.Rz, OpType.Rx}, _library.TK1_to_RzRx),
         (
             {OpType.Rz, OpType.SX},
-            _library._TK1_to_RzSX,
+            _library.TK1_to_RzSX,
         ),
         (
             {OpType.T, OpType.Rz, OpType.H},
-            _library._TK1_to_RzH,
+            _library.TK1_to_RzH,
         ),
         (
             {OpType.T, OpType.Rz, OpType.H},
-            _library._TK1_to_RzH,
+            _library.TK1_to_RzH,
         ),
         (
             {OpType.PhasedX, OpType.Rz},
-            _library._TK1_to_PhasedXRz,
+            _library.TK1_to_PhasedXRz,
         ),
         (
             {OpType.TK1, OpType.U3},
-            _library._TK1_to_TK1,
+            _library.TK1_to_TK1,
         ),
     ]
 
