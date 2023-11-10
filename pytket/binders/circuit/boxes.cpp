@@ -462,7 +462,7 @@ void init_boxes(py::module &m) {
   py::class_<ResourceBounds<unsigned>>(
       m, "ResourceBounds",
       "Structure holding a minimum and maximum value of some resource, where "
-      "both values are unsigned integers")
+      "both values are unsigned integers.")
       .def(
           py::init([](unsigned min, unsigned max) {
             if (min > max) {
@@ -489,7 +489,12 @@ void init_boxes(py::module &m) {
           ":return: the maximum value");
   py::class_<ResourceData>(
       m, "ResourceData",
-      "An object holding resource data for use in a :py:class:`DummyBox`.")
+      "An object holding resource data for use in a :py:class:`DummyBox`."
+      "\n\nThe object holds several fields representing minimum and maximum "
+      "values for certain resources. The absence of an :py:class:`OpType` in "
+      "one of these fields is interpreted as the absence of gates of that type "
+      "in the (imagined) circuit."
+      "\n\nSee :py:meth:`Circuit.get_resources` for how to use this data.")
       .def(
           py::init([](std::map<OpType, ResourceBounds<unsigned>> op_type_count,
                       ResourceBounds<unsigned> gate_depth,
