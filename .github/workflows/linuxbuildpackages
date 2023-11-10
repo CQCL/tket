@@ -38,10 +38,10 @@ PACKAGES="boost/1.81.0@ \
           gmp/6.2.1@ \
           symengine/0.9.0@ \
           tklog/0.3.3@tket/stable \
-          tkassert/0.3.3@tket/stable \
+          tkassert/0.3.4@tket/stable \
           tkrng/0.3.3@tket/stable \
-          tktokenswap/0.3.3@tket/stable \
-          tkwsm/0.3.3@tket/stable"
+          tktokenswap/0.3.6@tket/stable \
+          tkwsm/0.3.6@tket/stable"
 
 for PACKAGE in ${PACKAGES}
 do

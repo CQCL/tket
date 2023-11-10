@@ -155,6 +155,16 @@ void UnitaryTableau::apply_S_at_end(const Qubit& qb) {
   tab_.apply_S(uqb);
 }
 
+void UnitaryTableau::apply_Z_at_front(const Qubit& qb) {
+  unsigned uqb = qubits_.left.at(qb);
+  tab_.phase(uqb) = !tab_.phase(uqb);
+}
+
+void UnitaryTableau::apply_Z_at_end(const Qubit& qb) {
+  unsigned uqb = qubits_.left.at(qb);
+  tab_.apply_Z(uqb);
+}
+
 void UnitaryTableau::apply_V_at_front(const Qubit& qb) {
   unsigned uqb = qubits_.left.at(qb);
   tab_.row_mult(uqb, uqb + qubits_.size(), -i_);
@@ -163,6 +173,31 @@ void UnitaryTableau::apply_V_at_front(const Qubit& qb) {
 void UnitaryTableau::apply_V_at_end(const Qubit& qb) {
   unsigned uqb = qubits_.left.at(qb);
   tab_.apply_V(uqb);
+}
+
+void UnitaryTableau::apply_X_at_front(const Qubit& qb) {
+  unsigned uqb = qubits_.left.at(qb);
+  tab_.phase(uqb + qubits_.size()) = !tab_.phase(uqb + qubits_.size());
+}
+
+void UnitaryTableau::apply_X_at_end(const Qubit& qb) {
+  unsigned uqb = qubits_.left.at(qb);
+  tab_.apply_X(uqb);
+}
+
+void UnitaryTableau::apply_H_at_front(const Qubit& qb) {
+  unsigned uqb = qubits_.left.at(qb);
+  unsigned n_qubits = qubits_.size();
+  bool temp = tab_.phase(uqb);
+  tab_.phase(uqb) = tab_.phase(uqb + n_qubits);
+  tab_.phase(uqb + n_qubits) = temp;
+  tab_.xmat.row(uqb).swap(tab_.xmat.row(uqb + n_qubits));
+  tab_.zmat.row(uqb).swap(tab_.zmat.row(uqb + n_qubits));
+}
+
+void UnitaryTableau::apply_H_at_end(const Qubit& qb) {
+  unsigned uqb = qubits_.left.at(qb);
+  tab_.apply_H(uqb);
 }
 
 void UnitaryTableau::apply_CX_at_front(
@@ -184,20 +219,16 @@ void UnitaryTableau::apply_gate_at_front(
     OpType type, const qubit_vector_t& qbs) {
   switch (type) {
     case OpType::Z: {
-      apply_S_at_front(qbs.at(0));
-      apply_S_at_front(qbs.at(0));
+      apply_Z_at_front(qbs.at(0));
       break;
     }
     case OpType::X: {
-      apply_V_at_front(qbs.at(0));
-      apply_V_at_front(qbs.at(0));
+      apply_X_at_front(qbs.at(0));
       break;
     }
     case OpType::Y: {
-      apply_S_at_front(qbs.at(0));
-      apply_S_at_front(qbs.at(0));
-      apply_V_at_front(qbs.at(0));
-      apply_V_at_front(qbs.at(0));
+      apply_Z_at_front(qbs.at(0));
+      apply_X_at_front(qbs.at(0));
       break;
     }
     case OpType::S: {
@@ -206,24 +237,22 @@ void UnitaryTableau::apply_gate_at_front(
     }
     case OpType::Sdg: {
       apply_S_at_front(qbs.at(0));
-      apply_S_at_front(qbs.at(0));
-      apply_S_at_front(qbs.at(0));
+      apply_Z_at_front(qbs.at(0));
       break;
     }
-    case OpType::V: {
+    case OpType::V:
+    case OpType::SX: {
       apply_V_at_front(qbs.at(0));
       break;
     }
-    case OpType::Vdg: {
+    case OpType::Vdg:
+    case OpType::SXdg: {
       apply_V_at_front(qbs.at(0));
-      apply_V_at_front(qbs.at(0));
-      apply_V_at_front(qbs.at(0));
+      apply_X_at_front(qbs.at(0));
       break;
     }
     case OpType::H: {
-      apply_S_at_front(qbs.at(0));
-      apply_V_at_front(qbs.at(0));
-      apply_S_at_front(qbs.at(0));
+      apply_H_at_front(qbs.at(0));
       break;
     }
     case OpType::CX: {
@@ -234,18 +263,13 @@ void UnitaryTableau::apply_gate_at_front(
       apply_S_at_front(qbs.at(1));
       apply_CX_at_front(qbs.at(0), qbs.at(1));
       apply_S_at_front(qbs.at(1));
-      apply_S_at_front(qbs.at(1));
-      apply_S_at_front(qbs.at(1));
+      apply_Z_at_front(qbs.at(1));
       break;
     }
     case OpType::CZ: {
-      apply_S_at_front(qbs.at(1));
-      apply_V_at_front(qbs.at(1));
-      apply_S_at_front(qbs.at(1));
+      apply_H_at_front(qbs.at(1));
       apply_CX_at_front(qbs.at(0), qbs.at(1));
-      apply_S_at_front(qbs.at(1));
-      apply_V_at_front(qbs.at(1));
-      apply_S_at_front(qbs.at(1));
+      apply_H_at_front(qbs.at(1));
       break;
     }
     case OpType::SWAP: {
@@ -256,6 +280,34 @@ void UnitaryTableau::apply_gate_at_front(
     }
     case OpType::BRIDGE: {
       apply_CX_at_front(qbs.at(0), qbs.at(2));
+      break;
+    }
+    case OpType::ZZMax: {
+      apply_H_at_front(qbs.at(1));
+      apply_S_at_front(qbs.at(0));
+      apply_V_at_front(qbs.at(1));
+      apply_CX_at_front(qbs.at(0), qbs.at(1));
+      apply_H_at_front(qbs.at(1));
+      break;
+    }
+    case OpType::ECR: {
+      apply_CX_at_front(qbs.at(0), qbs.at(1));
+      apply_X_at_front(qbs.at(0));
+      apply_S_at_front(qbs.at(0));
+      apply_V_at_front(qbs.at(1));
+      apply_X_at_front(qbs.at(1));
+      break;
+    }
+    case OpType::ISWAPMax: {
+      apply_V_at_front(qbs.at(0));
+      apply_V_at_front(qbs.at(1));
+      apply_CX_at_front(qbs.at(0), qbs.at(1));
+      apply_V_at_front(qbs.at(0));
+      apply_S_at_front(qbs.at(1));
+      apply_Z_at_front(qbs.at(1));
+      apply_CX_at_front(qbs.at(0), qbs.at(1));
+      apply_V_at_front(qbs.at(0));
+      apply_V_at_front(qbs.at(1));
       break;
     }
     case OpType::noop:
@@ -383,8 +435,8 @@ UnitaryTableau UnitaryTableau::dagger() const {
     for (unsigned j = 0; j < nqb; ++j) {
       // Take effect of some input on some output and invert
       auto inv_cell = invert_cell_map().at(
-          {BoolPauli{tab_.xmat_(i, j), tab_.zmat_(i, j)},
-           BoolPauli{tab_.xmat_(i + nqb, j), tab_.zmat_(i + nqb, j)}});
+          {BoolPauli{tab_.xmat(i, j), tab_.zmat(i, j)},
+           BoolPauli{tab_.xmat(i + nqb, j), tab_.zmat(i + nqb, j)}});
       // Transpose tableau and fill in cell
       dxx(j, i) = inv_cell.first.x;
       dxz(j, i) = inv_cell.first.z;
@@ -399,9 +451,9 @@ UnitaryTableau UnitaryTableau::dagger() const {
   // Correct phases
   for (unsigned i = 0; i < nqb; ++i) {
     SpPauliStabiliser xr = dag.get_xrow(qubits_.right.at(i));
-    dag.tab_.phase_(i) = get_row_product(xr).is_real_negative();
+    dag.tab_.phase(i) = get_row_product(xr).is_real_negative();
     SpPauliStabiliser zr = dag.get_zrow(qubits_.right.at(i));
-    dag.tab_.phase_(i + nqb) = get_row_product(zr).is_real_negative();
+    dag.tab_.phase(i + nqb) = get_row_product(zr).is_real_negative();
   }
 
   return dag;
@@ -422,14 +474,14 @@ std::ostream& operator<<(std::ostream& os, const UnitaryTableau& tab) {
   unsigned nqs = tab.qubits_.size();
   for (unsigned i = 0; i < nqs; ++i) {
     Qubit qi = tab.qubits_.right.at(i);
-    os << "X@" << qi.repr() << "\t->\t" << tab.tab_.xmat_.row(i) << "   "
-       << tab.tab_.zmat_.row(i) << "   " << tab.tab_.phase_(i) << std::endl;
+    os << "X@" << qi.repr() << "\t->\t" << tab.tab_.xmat.row(i) << "   "
+       << tab.tab_.zmat.row(i) << "   " << tab.tab_.phase(i) << std::endl;
   }
   os << "--" << std::endl;
   for (unsigned i = 0; i < nqs; ++i) {
     Qubit qi = tab.qubits_.right.at(i);
-    os << "Z@" << qi.repr() << "\t->\t" << tab.tab_.xmat_.row(i + nqs) << "   "
-       << tab.tab_.zmat_.row(i + nqs) << "   " << tab.tab_.phase_(i + nqs)
+    os << "Z@" << qi.repr() << "\t->\t" << tab.tab_.xmat.row(i + nqs) << "   "
+       << tab.tab_.zmat.row(i + nqs) << "   " << tab.tab_.phase(i + nqs)
        << std::endl;
   }
   return os;
@@ -446,13 +498,13 @@ bool UnitaryTableau::operator==(const UnitaryTableau& other) const {
     for (unsigned j = 0; j < nq; ++j) {
       Qubit qj = qubits_.right.at(j);
       unsigned oj = other.qubits_.left.at(qj);
-      if (tab_.xmat_(i, j) != other.tab_.xmat_(oi, oj)) return false;
-      if (tab_.zmat_(i, j) != other.tab_.zmat_(oi, oj)) return false;
-      if (tab_.xmat_(i + nq, j) != other.tab_.xmat_(oi + nq, oj)) return false;
-      if (tab_.zmat_(i + nq, j) != other.tab_.zmat_(oi + nq, oj)) return false;
+      if (tab_.xmat(i, j) != other.tab_.xmat(oi, oj)) return false;
+      if (tab_.zmat(i, j) != other.tab_.zmat(oi, oj)) return false;
+      if (tab_.xmat(i + nq, j) != other.tab_.xmat(oi + nq, oj)) return false;
+      if (tab_.zmat(i + nq, j) != other.tab_.zmat(oi + nq, oj)) return false;
     }
-    if (tab_.phase_(i) != other.tab_.phase_(oi)) return false;
-    if (tab_.phase_(i + nq) != other.tab_.phase_(oi + nq)) return false;
+    if (tab_.phase(i) != other.tab_.phase(oi)) return false;
+    if (tab_.phase(i + nq) != other.tab_.phase(oi + nq)) return false;
   }
 
   return true;
@@ -524,12 +576,36 @@ void UnitaryRevTableau::apply_S_at_end(const Qubit& qb) {
   tab_.apply_pauli_at_front(SpPauliStabiliser(qb, Pauli::Z), 3);
 }
 
+void UnitaryRevTableau::apply_Z_at_front(const Qubit& qb) {
+  tab_.apply_Z_at_end(qb);
+}
+
+void UnitaryRevTableau::apply_Z_at_end(const Qubit& qb) {
+  tab_.apply_Z_at_front(qb);
+}
+
 void UnitaryRevTableau::apply_V_at_front(const Qubit& qb) {
   tab_.apply_pauli_at_end(SpPauliStabiliser(qb, Pauli::X), 3);
 }
 
 void UnitaryRevTableau::apply_V_at_end(const Qubit& qb) {
   tab_.apply_pauli_at_front(SpPauliStabiliser(qb, Pauli::X), 3);
+}
+
+void UnitaryRevTableau::apply_X_at_front(const Qubit& qb) {
+  tab_.apply_X_at_end(qb);
+}
+
+void UnitaryRevTableau::apply_X_at_end(const Qubit& qb) {
+  tab_.apply_X_at_front(qb);
+}
+
+void UnitaryRevTableau::apply_H_at_front(const Qubit& qb) {
+  tab_.apply_H_at_end(qb);
+}
+
+void UnitaryRevTableau::apply_H_at_end(const Qubit& qb) {
+  tab_.apply_H_at_front(qb);
 }
 
 void UnitaryRevTableau::apply_CX_at_front(
@@ -544,14 +620,54 @@ void UnitaryRevTableau::apply_CX_at_end(
 
 void UnitaryRevTableau::apply_gate_at_front(
     OpType type, const qubit_vector_t& qbs) {
-  if (type != OpType::Phase)
-    tab_.apply_gate_at_end(get_op_ptr(type)->dagger()->get_type(), qbs);
+  // Handle types whose dagger is not an optype
+  switch (type) {
+    case OpType::ZZMax: {
+      tab_.apply_gate_at_end(OpType::ZZMax, qbs);
+      tab_.apply_gate_at_end(OpType::Z, {qbs.at(0)});
+      tab_.apply_gate_at_end(OpType::Z, {qbs.at(1)});
+      break;
+    }
+    case OpType::ISWAPMax: {
+      tab_.apply_gate_at_end(OpType::ISWAPMax, qbs);
+      tab_.apply_gate_at_end(OpType::Z, {qbs.at(0)});
+      tab_.apply_gate_at_end(OpType::Z, {qbs.at(1)});
+      break;
+    }
+    case OpType::Phase: {
+      break;
+    }
+    default: {
+      tab_.apply_gate_at_end(get_op_ptr(type)->dagger()->get_type(), qbs);
+      break;
+    }
+  }
 }
 
 void UnitaryRevTableau::apply_gate_at_end(
     OpType type, const qubit_vector_t& qbs) {
-  if (type != OpType::Phase)
-    tab_.apply_gate_at_front(get_op_ptr(type)->dagger()->get_type(), qbs);
+  // Handle types whose dagger is not an optype
+  switch (type) {
+    case OpType::ZZMax: {
+      tab_.apply_gate_at_front(OpType::ZZMax, qbs);
+      tab_.apply_gate_at_front(OpType::Z, {qbs.at(0)});
+      tab_.apply_gate_at_front(OpType::Z, {qbs.at(1)});
+      break;
+    }
+    case OpType::ISWAPMax: {
+      tab_.apply_gate_at_front(OpType::ISWAPMax, qbs);
+      tab_.apply_gate_at_front(OpType::Z, {qbs.at(0)});
+      tab_.apply_gate_at_front(OpType::Z, {qbs.at(1)});
+      break;
+    }
+    case OpType::Phase: {
+      break;
+    }
+    default: {
+      tab_.apply_gate_at_front(get_op_ptr(type)->dagger()->get_type(), qbs);
+      break;
+    }
+  }
 }
 
 void UnitaryRevTableau::apply_pauli_at_front(
@@ -593,16 +709,16 @@ std::ostream& operator<<(std::ostream& os, const UnitaryRevTableau& tab) {
   unsigned nqs = tab.tab_.qubits_.size();
   for (unsigned i = 0; i < nqs; ++i) {
     Qubit qi = tab.tab_.qubits_.right.at(i);
-    os << tab.tab_.tab_.xmat_.row(i) << "   " << tab.tab_.tab_.zmat_.row(i)
-       << "   " << tab.tab_.tab_.phase_(i) << "\t->\t"
+    os << tab.tab_.tab_.xmat.row(i) << "   " << tab.tab_.tab_.zmat.row(i)
+       << "   " << tab.tab_.tab_.phase(i) << "\t->\t"
        << "X@" << qi.repr() << std::endl;
   }
   os << "--" << std::endl;
   for (unsigned i = 0; i < nqs; ++i) {
     Qubit qi = tab.tab_.qubits_.right.at(i);
-    os << tab.tab_.tab_.xmat_.row(i + nqs) << "   "
-       << tab.tab_.tab_.zmat_.row(i + nqs) << "   "
-       << tab.tab_.tab_.phase_(i + nqs) << "\t->\t"
+    os << tab.tab_.tab_.xmat.row(i + nqs) << "   "
+       << tab.tab_.tab_.zmat.row(i + nqs) << "   "
+       << tab.tab_.tab_.phase(i + nqs) << "\t->\t"
        << "Z@" << qi.repr() << std::endl;
   }
   return os;

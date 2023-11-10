@@ -16,6 +16,7 @@ Fixes:
   of the bits in the expression in the resulting ``cmd.args``
 * Fix incorrect serialisation of ``PauliExpPairBox`` when the Pauli strings are of
   length 2.
+* Fix incorrect controlled ``ConjugationBox`` handling.
 
 1.21.0 (October 2023)
 ---------------------

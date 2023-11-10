@@ -589,7 +589,7 @@ def test_pass_deserialisation_only() -> None:
     cx = Circuit(2)
     cx.CX(0, 1)
     pz_rebase = RebaseCustom(
-        {OpType.CX, OpType.PhasedX, OpType.Rz}, cx, _library._TK1_to_TK1
+        {OpType.CX, OpType.PhasedX, OpType.Rz}, cx, _library.TK1_to_TK1
     )
     assert pz_rebase.to_dict()["StandardPass"]["name"] == "RebaseCustom"
     assert set(pz_rebase.to_dict()["StandardPass"]["basis_allowed"]) == {

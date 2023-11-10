@@ -26,11 +26,11 @@ class NoAutoRebase(Exception):
 
 
 _CX_CIRCS: Dict[OpType, Callable[[], "Circuit"]] = {
-    OpType.CX: _library._CX,
-    OpType.ZZMax: _library._CX_using_ZZMax,
-    OpType.XXPhase: _library._CX_using_XXPhase_0,
-    OpType.ECR: _library._CX_using_ECR,
-    OpType.CZ: _library._H_CZ_H,
+    OpType.CX: _library.CX,
+    OpType.ZZMax: _library.CX_using_ZZMax,
+    OpType.XXPhase: _library.CX_using_XXPhase_0,
+    OpType.ECR: _library.CX_using_ECR,
+    OpType.CZ: _library.H_CZ_H,
 }
 
 
@@ -40,16 +40,16 @@ def _TK2_using_TK2(a: Param, b: Param, c: Param) -> Circuit:
 
 _TK2_CIRCS: Dict[OpType, Callable[[Param, Param, Param], "Circuit"]] = {
     OpType.TK2: _TK2_using_TK2,
-    OpType.ZZPhase: _library._TK2_using_ZZPhase,
-    OpType.CX: _library._TK2_using_CX,
-    OpType.ZZMax: _library._TK2_using_ZZMax,
+    OpType.ZZPhase: _library.TK2_using_ZZPhase,
+    OpType.CX: _library.TK2_using_CX,
+    OpType.ZZMax: _library.TK2_using_ZZMax,
 }
 
 _TK2_CIRCS_WIRE_SWAP: Dict[OpType, Callable[[Param, Param, Param], "Circuit"]] = {
-    OpType.TK2: _library._TK2_using_TK2_or_swap,
-    OpType.ZZPhase: _library._TK2_using_ZZPhase_and_swap,
-    OpType.CX: _library._TK2_using_CX_and_swap,
-    OpType.ZZMax: _library._TK2_using_ZZMax_and_swap,
+    OpType.TK2: _library.TK2_using_TK2_or_swap,
+    OpType.ZZPhase: _library.TK2_using_ZZPhase_and_swap,
+    OpType.CX: _library.TK2_using_CX_and_swap,
+    OpType.ZZMax: _library.TK2_using_ZZMax_and_swap,
 }
 
 
@@ -92,14 +92,14 @@ def get_tk2_decomposition(
 
 
 _TK1_circs: Dict[FrozenSet[OpType], Callable[[Param, Param, Param], "Circuit"]] = {
-    frozenset({OpType.TK1}): _library._TK1_to_TK1,
-    frozenset({OpType.PhasedX, OpType.Rz}): _library._TK1_to_PhasedXRz,
-    frozenset({OpType.Rx, OpType.Rz}): _library._TK1_to_RzRx,
+    frozenset({OpType.TK1}): _library.TK1_to_TK1,
+    frozenset({OpType.PhasedX, OpType.Rz}): _library.TK1_to_PhasedXRz,
+    frozenset({OpType.Rx, OpType.Rz}): _library.TK1_to_RzRx,
     frozenset({OpType.Ry, OpType.Rx}): _TK1_to_RxRy,
-    frozenset({OpType.Rz, OpType.H}): _library._TK1_to_RzH,
+    frozenset({OpType.Rz, OpType.H}): _library.TK1_to_RzH,
     frozenset({OpType.Rz, OpType.SX, OpType.X}): _TK1_to_X_SX_Rz,
     frozenset({OpType.Rz, OpType.SX}): _TK1_to_X_SX_Rz,
-    frozenset({OpType.Rz, OpType.SX}): _library._TK1_to_RzSX,
+    frozenset({OpType.Rz, OpType.SX}): _library.TK1_to_RzSX,
     frozenset({OpType.U3}): _TK1_to_U,
 }
 
@@ -144,7 +144,7 @@ def auto_rebase_pass(gateset: Set[OpType], allow_swaps: bool = False) -> BasePas
     # if the gateset has CX but not TK2, and implicit wire swaps not allowed:
     # rebase via CX
     if OpType.CX in gateset and OpType.TK2 not in gateset and not allow_swaps:
-        return RebaseCustom(gateset, _library._CX(), tk1)
+        return RebaseCustom(gateset, _library.CX(), tk1)
     # in other cases, try to rebase via TK2 first
     try:
         return RebaseCustom(gateset, get_tk2_decomposition(gateset, allow_swaps), tk1)

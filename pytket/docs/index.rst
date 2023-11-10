@@ -81,14 +81,13 @@ Licensed under the `Apache 2 License <http://www.apache.org/licenses/LICENSE-2.0
     getting_started.rst
     changelog.rst
     install.rst
-    faqs.rst 
+    faqs.rst
 
 .. toctree::
     :caption: More Documentation:
-    :maxdepth: 1
     
     Manual <https://tket.quantinuum.com/user-manual/>
-    Extensions <https://cqcl.github.io/pytket-extensions/api/index.html>
+    extensions_index.rst  
     Example notebooks <https://tket.quantinuum.com/examples>
 
 .. toctree::
