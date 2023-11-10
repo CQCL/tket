@@ -20,6 +20,7 @@
 #include <Circuit/ResourceData.hpp>
 #include <OpType/OpType.hpp>
 #include <memory>
+#include <sstream>
 
 #include "binder_json.hpp"
 #include "binder_utils.hpp"
@@ -529,7 +530,32 @@ void init_boxes(py::module &m) {
           [](const ResourceData &resource_data) {
             return resource_data.TwoQubitGateDepth;
           },
-          ":return: bounds on the two-qubit-gate depth");
+          ":return: bounds on the two-qubit-gate depth")
+      .def("__repr__", [](const ResourceData &resource_data) {
+        std::stringstream ss;
+        ss << "ResourceData(";
+        ss << "op_type_count={";
+        for (const auto &pair : resource_data.OpTypeCount) {
+          ss << "OpType." << optypeinfo().at(pair.first).name << ": "
+             << "ResourceBounds(" << pair.second.min << ", " << pair.second.max
+             << "), ";
+        }
+        ss << "}, ";
+        ss << "gate_depth=ResourceBounds(" << resource_data.GateDepth.min
+           << ", " << resource_data.GateDepth.max << "), ";
+        ss << "op_type_depth={";
+        for (const auto &pair : resource_data.OpTypeDepth) {
+          ss << "OpType." << optypeinfo().at(pair.first).name << ": "
+             << "ResourceBounds(" << pair.second.min << ", " << pair.second.max
+             << "), ";
+        }
+        ss << "}, ";
+        ss << "two_qubit_gate_depth=ResourceBounds("
+           << resource_data.TwoQubitGateDepth.min << ", "
+           << resource_data.TwoQubitGateDepth.max << ")";
+        ss << ")";
+        return ss.str();
+      });
   py::class_<DummyBox, std::shared_ptr<DummyBox>, Op>(
       m, "DummyBox",
       "A placeholder operation that holds resource data. This box type cannot "
