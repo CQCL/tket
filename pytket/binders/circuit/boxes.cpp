@@ -17,8 +17,6 @@
 #include <pybind11/eigen.h>
 #include <pybind11/pybind11.h>
 
-#include <Circuit/ResourceData.hpp>
-#include <OpType/OpType.hpp>
 #include <memory>
 #include <sstream>
 
@@ -30,9 +28,11 @@
 #include "tket/Circuit/DummyBox.hpp"
 #include "tket/Circuit/Multiplexor.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
+#include "tket/Circuit/ResourceData.hpp"
 #include "tket/Circuit/StatePreparation.hpp"
 #include "tket/Circuit/ToffoliBox.hpp"
 #include "tket/Converters/PhasePoly.hpp"
+#include "tket/OpType/OpType.hpp"
 #include "tket/Utils/HelperFunctions.hpp"
 #include "tket/Utils/Json.hpp"
 #include "typecast.hpp"

@@ -15,7 +15,6 @@
 #include <pybind11/pybind11.h>
 #include <pybind11/stl.h>
 
-#include <Utils/UnitID.hpp>
 #include <optional>
 #include <vector>
 
@@ -33,6 +32,7 @@
 #include "tket/Circuit/ToffoliBox.hpp"
 #include "tket/Converters/PhasePoly.hpp"
 #include "tket/Gate/OpPtrFunctions.hpp"
+#include "tket/Utils/UnitID.hpp"
 #include "typecast.hpp"
 namespace py = pybind11;
 

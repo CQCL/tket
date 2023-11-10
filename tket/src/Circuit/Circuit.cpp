@@ -14,22 +14,22 @@
 
 #include "tket/Circuit/Circuit.hpp"
 
-#include <Assert.hpp>
 #include <algorithm>
 #include <fstream>
 #include <numeric>
 #include <optional>
 #include <set>
 #include <string>
+#include <tkassert/Assert.hpp>
 #include <tklog/TketLog.hpp>
 #include <utility>
 
-#include "Circuit/DAGDefs.hpp"
-#include "Circuit/DummyBox.hpp"
-#include "Circuit/ResourceData.hpp"
-#include "OpType/OpDesc.hpp"
-#include "OpType/OpType.hpp"
-#include "OpType/OpTypeFunctions.hpp"
+#include "tket/Circuit/DAGDefs.hpp"
+#include "tket/Circuit/DummyBox.hpp"
+#include "tket/Circuit/ResourceData.hpp"
+#include "tket/OpType/OpDesc.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/OpType/OpTypeFunctions.hpp"
 #include "tket/Utils/Expression.hpp"
 #include "tket/Utils/GraphHeaders.hpp"
 #include "tket/Utils/HelperFunctions.hpp"
