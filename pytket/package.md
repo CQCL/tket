@@ -27,7 +27,7 @@ official Python distribution instead.
 
 API reference: https://cqcl.github.io/tket/pytket/api/
 
-To get started using pytket see the [user manual](https://cqcl.github.io/pytket/manual/index.html).
+To get started using pytket see the [user manual](https://tket.quantinuum.com/user-manual/).
 
 For worked examples using TKET see our [notebook examples](https://tket.quantinuum.com/examples).
 
