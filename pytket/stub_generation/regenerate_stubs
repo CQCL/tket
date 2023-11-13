@@ -78,25 +78,26 @@ if __name__ == "__main__":
     pytket_dir = Path(__file__).parent.parent.resolve()
     gen_root_dir = pytket_dir
     for mod in pkgutil.iter_modules(pytket._tket.__path__):
-        print(f"Generate {mod.name}.pyi")
-        subprocess.run(
-            [
-                "pybind11-stubgen",
-                f"pytket._tket.{mod.name}",
-                "--enum-class-locations",
-                "CXConfigType|BasisOrder|OpType:pytket._tket.circuit",
-                "--enum-class-locations",
-                "PauliSynthStrat:pytket._tket.transform",
-                "--enum-class-locations",
-                "GraphColourMethod|PauliPartitionStrat:pytket._tket.partition",
-                "--enum-class-locations",
-                "SafetyMode:pytket._tket.passes",
-                "--enum-class-locations",
-                "ZXWireType|QuantumType:pytket._tket.zx",
-                "-o",
-                gen_root_dir,
-            ]
-        )
+        if not mod.name.startswith("lib"):
+            print(f"Generate {mod.name}.pyi")
+            subprocess.run(
+                [
+                    "pybind11-stubgen",
+                    f"pytket._tket.{mod.name}",
+                    "--enum-class-locations",
+                    "CXConfigType|BasisOrder|OpType:pytket._tket.circuit",
+                    "--enum-class-locations",
+                    "PauliSynthStrat:pytket._tket.transform",
+                    "--enum-class-locations",
+                    "GraphColourMethod|PauliPartitionStrat:pytket._tket.partition",
+                    "--enum-class-locations",
+                    "SafetyMode:pytket._tket.passes",
+                    "--enum-class-locations",
+                    "ZXWireType|QuantumType:pytket._tket.zx",
+                    "-o",
+                    gen_root_dir,
+                ]
+            )
 
     print("Cleanup:")
     stub_fixer = StubFixer()
