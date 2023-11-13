@@ -392,6 +392,8 @@ bool PGStabAssertion::is_equal(const PGOp& op_other) const {
          (anc_x_ == other.anc_x_) && (target_ == other.target_);
 }
 
+unsigned PGStabAssertion::n_paulis() const { return 3; }
+
 std::vector<SpPauliStabiliser> PGStabAssertion::active_paulis() const {
   return {stab_, anc_z_, anc_x_};
 }

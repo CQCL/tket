@@ -524,6 +524,7 @@ class PGStabAssertion : public PGOp {
       const SymEngine::map_basic_basic& sub_map) const override;
   virtual std::string get_name(bool latex = false) const override;
   virtual bool is_equal(const PGOp& other) const override;
+  virtual unsigned n_paulis() const override;
   virtual std::vector<SpPauliStabiliser> active_paulis() const override;
   virtual SpPauliStabiliser& port(unsigned p) override;
 

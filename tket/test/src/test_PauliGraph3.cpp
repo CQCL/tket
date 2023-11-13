@@ -25,6 +25,17 @@ namespace test_PauliGraph3 {
 
 using namespace pg;
 
+bool comp_seqs(
+    const std::list<PGOp_ptr>& seq1, const std::list<PGOp_ptr>& seq2) {
+  if (seq1.size() != seq2.size()) return false;
+  std::list<PGOp_ptr>::const_iterator it2 = seq2.begin();
+  for (const PGOp_ptr& op1 : seq1) {
+    if (*op1 != **it2) return false;
+    ++it2;
+  }
+  return true;
+}
+
 SCENARIO("Correct creation of refactored PauliGraphs") {
   GIVEN("A Clifford circuit") {
     Circuit circ(3);
@@ -228,16 +239,6 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     REQUIRE(test_unitary_comparison(circ, res, true));
   }
   GIVEN("Teleportation") {
-    auto comp_seqs = [](const std::list<PGOp_ptr>& seq1,
-                        const std::list<PGOp_ptr>& seq2) {
-      if (seq1.size() != seq2.size()) return false;
-      std::list<PGOp_ptr>::const_iterator it2 = seq2.begin();
-      for (const PGOp_ptr& op1 : seq1) {
-        if (*op1 != **it2) return false;
-        ++it2;
-      }
-      return true;
-    };
     Circuit circ(3, 2);
     circ.add_op<unsigned>(OpType::H, {1});
     circ.add_op<unsigned>(OpType::CX, {1, 2});
@@ -321,6 +322,68 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     Circuit res = pauli_graph3_to_circuit_individual(pg);
     REQUIRE(res.count_gates(OpType::Sycamore) == 1);
     REQUIRE(test_unitary_comparison(circ, res, true));
+  }
+  GIVEN("Some stabiliser assertions") {
+    Circuit circ(3);
+    circ.add_op<unsigned>(OpType::Rz, 1.5, {0});
+    circ.add_op<unsigned>(OpType::CX, {1, 0});
+    PauliStabiliser pauli1 = {{Pauli::X, Pauli::X}, 0};
+    PauliStabiliser pauli2 = {{Pauli::Z, Pauli::Z}, 0};
+    PauliStabiliser pauli3 = {{Pauli::Y, Pauli::Y}, 2};
+    PauliStabiliserVec stabilisers = {pauli1, pauli2, pauli3};
+    StabiliserAssertionBox box(stabilisers);
+    circ.add_assertion(box, {Qubit(0), Qubit(2)}, Qubit(1));
+    circ.add_assertion(box, {Qubit(0), Qubit(2)}, Qubit(1));
+    PauliGraph pg = circuit_to_pauli_graph3(circ);
+    REQUIRE_NOTHROW(pg.verify());
+    std::list<PGOp_ptr> sequence = pg.pgop_sequence();
+    SpPauliStabiliser anc_z(Qubit(1), Pauli::Z);
+    SpPauliStabiliser anc_x(DensePauliMap{Pauli::X, Pauli::X});
+    std::list<PGOp_ptr> correct_sequence{
+        std::make_shared<PGInputTableau>(ChoiMixTableau(3)),
+        std::make_shared<PGRotation>(
+            SpPauliStabiliser(Qubit(0), Pauli::Z), 1.5),
+        std::make_shared<PGStabAssertion>(
+            SpPauliStabiliser({Pauli::X, Pauli::I, Pauli::X}), anc_z, anc_x,
+            Bit(c_debug_zero_prefix() + "_" + c_debug_default_name(), 0)),
+        std::make_shared<PGStabAssertion>(
+            SpPauliStabiliser({Pauli::Z, Pauli::Z, Pauli::Z}), anc_z, anc_x,
+            Bit(c_debug_zero_prefix() + "_" + c_debug_default_name(), 1)),
+        std::make_shared<PGStabAssertion>(
+            SpPauliStabiliser({Pauli::Y, Pauli::Z, Pauli::Y}, 2), anc_z, anc_x,
+            Bit(c_debug_one_prefix() + "_" + c_debug_default_name(), 0)),
+        std::make_shared<PGStabAssertion>(
+            SpPauliStabiliser({Pauli::X, Pauli::I, Pauli::X}), anc_z, anc_x,
+            Bit(c_debug_zero_prefix() + "_" + c_debug_default_name() + "(1)",
+                0)),
+        std::make_shared<PGStabAssertion>(
+            SpPauliStabiliser({Pauli::Z, Pauli::Z, Pauli::Z}), anc_z, anc_x,
+            Bit(c_debug_zero_prefix() + "_" + c_debug_default_name() + "(1)",
+                1)),
+        std::make_shared<PGStabAssertion>(
+            SpPauliStabiliser({Pauli::Y, Pauli::Z, Pauli::Y}, 2), anc_z, anc_x,
+            Bit(c_debug_one_prefix() + "_" + c_debug_default_name() + "(1)",
+                0)),
+        std::make_shared<PGOutputTableau>(ChoiMixTableau({
+            {SpPauliStabiliser({Pauli::Z, Pauli::Z, Pauli::I}),
+             SpPauliStabiliser(Qubit(0), Pauli::Z)},
+            {SpPauliStabiliser(Qubit(0), Pauli::X),
+             SpPauliStabiliser(Qubit(0), Pauli::X)},
+            {SpPauliStabiliser(Qubit(1), Pauli::Z),
+             SpPauliStabiliser(Qubit(1), Pauli::Z)},
+            {SpPauliStabiliser({Pauli::X, Pauli::X, Pauli::I}),
+             SpPauliStabiliser(Qubit(1), Pauli::X)},
+            {SpPauliStabiliser(Qubit(2), Pauli::Z),
+             SpPauliStabiliser(Qubit(2), Pauli::Z)},
+            {SpPauliStabiliser(Qubit(2), Pauli::X),
+             SpPauliStabiliser(Qubit(2), Pauli::X)},
+        }))};
+    CHECK(comp_seqs(sequence, correct_sequence));
+    Circuit res = pauli_graph3_to_circuit_individual(pg);
+    REQUIRE(res.count_gates(OpType::StabiliserAssertionBox) == 6);
+    PauliGraph res_pg = circuit_to_pauli_graph3(res);
+    std::list<PGOp_ptr> res_sequence = res_pg.pgop_sequence();
+    CHECK(comp_seqs(res_sequence, correct_sequence));
   }
 }
 

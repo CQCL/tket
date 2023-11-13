@@ -317,12 +317,14 @@ std::vector<PGOp_ptr> op_to_pgops(
       const StabiliserAssertionBox& box =
           dynamic_cast<const StabiliserAssertionBox&>(*op);
       PauliStabiliserVec stabs = box.get_stabilisers();
-      Qubit anc(args.at(args.size() - 2));
-      Bit target(args.at(args.size() - 1));
+      unsigned n_qbs = args.size() - stabs.size();
+      Qubit anc(args.at(n_qbs - 1));
       SpPauliStabiliser anc_z = tab.get_zrow(anc);
       SpPauliStabiliser anc_x = tab.get_xrow(anc);
       std::vector<PGOp_ptr> ops;
-      for (const PauliStabiliser& stab : stabs) {
+      for (unsigned i = 0; i < stabs.size(); ++i) {
+        const PauliStabiliser& stab = stabs.at(i);
+        Bit target(args.at(n_qbs + i));
         QubitPauliMap qpm;
         for (unsigned q = 0; q < stab.string.size(); ++q) {
           qpm.insert({Qubit(args.at(q)), stab.string.at(q)});
@@ -448,7 +450,7 @@ std::pair<Op_ptr, unit_vector_t> pgop_to_inner_command(
       unit_vector_t args = {qubits.at(0), qubits.at(1), stab.get_target()};
       return {
           std::make_shared<StabiliserAssertionBox>(
-              PauliStabiliserVec{PauliStabiliser({Pauli::Z}, true)}),
+              PauliStabiliserVec{PauliStabiliser({Pauli::Z}, 0)}),
           args};
     }
     default: {
