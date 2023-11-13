@@ -397,7 +397,16 @@ std::pair<Op_ptr, unit_vector_t> pgop_to_inner_command(
     }
     case PGOpType::CliffordRot: {
       const PGCliffordRot& crot = dynamic_cast<const PGCliffordRot&>(*pgop);
-      return {get_op_ptr(OpType::Rz, 0.5 * crot.get_angle()), {qubits.front()}};
+      switch (crot.get_angle() % 4) {
+        case 1:
+          return {get_op_ptr(OpType::S), {qubits.front()}};
+        case 2:
+          return {get_op_ptr(OpType::Z), {qubits.front()}};
+        case 3:
+          return {get_op_ptr(OpType::Sdg), {qubits.front()}};
+        default:
+          return {};
+      }
     }
     case PGOpType::Measure: {
       const PGMeasure& meas = dynamic_cast<const PGMeasure&>(*pgop);
@@ -526,62 +535,32 @@ Circuit pauli_graph3_to_circuit_individual(
   Circuit circ(
       qubit_vector_t{pg.qubits_.begin(), pg.qubits_.end()},
       bit_vector_t{pg.bits_.begin(), pg.bits_.end()});
-  sequence_set_t<PGVert> remaining;
-  BGL_FORALL_VERTICES(v, pg.c_graph_, PGClassicalGraph) { remaining.insert(v); }
-  while (!remaining.empty()) {
-    std::list<PGVert> initials;
-    for (const PGVert& v : remaining.get<TagSeq>()) {
-      bool initial = true;
-      auto in_edge_range = boost::in_edges(v, pg.c_graph_);
-      for (auto it = in_edge_range.first; it != in_edge_range.second; ++it) {
-        if (remaining.find(boost::source(*it, pg.c_graph_)) !=
-            remaining.end()) {
-          initial = false;
-          break;
+  std::list<PGOp_ptr> pgop_sequence = pg.pgop_sequence();
+  for (const PGOp_ptr& pgop : pgop_sequence) {
+    if (pgop->get_type() == PGOpType::InputTableau ||
+        pgop->get_type() == PGOpType::OutputTableau) {
+      std::list<ChoiMixTableau::row_tensor_t> rows;
+      if (pgop->get_type() == PGOpType::InputTableau) {
+        PGInputTableau& tab_op = dynamic_cast<PGInputTableau&>(*pgop);
+        for (unsigned i = 0; i < tab_op.n_paulis(); ++i) {
+          rows.push_back(tab_op.get_full_row(i));
         }
-      }
-      if (!initial) continue;
-      auto range = pg.pauli_index_.get<TagOp>().equal_range(v);
-      for (auto it = range.first; it != range.second; ++it) {
-        for (const PGPauli& c_pauli : pg.pauli_index_.get<pg::TagID>()) {
-          if (pg.pauli_ac_(it->index, c_pauli.index) &&
-              (remaining.find(c_pauli.vert) != remaining.end())) {
-            initial = false;
-            break;
-          }
-        }
-      }
-      if (initial) initials.push_back(v);
-    }
-    auto& lookup = remaining.get<TagKey>();
-    for (const PGVert& v : initials) {
-      lookup.erase(lookup.find(v));
-      PGOp_ptr pgop = pg.c_graph_[v];
-      if (pgop->get_type() == PGOpType::InputTableau ||
-          pgop->get_type() == PGOpType::OutputTableau) {
-        std::list<ChoiMixTableau::row_tensor_t> rows;
-        if (pgop->get_type() == PGOpType::InputTableau) {
-          PGInputTableau& tab_op = dynamic_cast<PGInputTableau&>(*pgop);
-          for (unsigned i = 0; i < tab_op.n_paulis(); ++i) {
-            rows.push_back(tab_op.get_full_row(i));
-          }
-        } else {
-          PGOutputTableau& tab_op = dynamic_cast<PGOutputTableau&>(*pgop);
-          for (unsigned i = 0; i < tab_op.n_paulis(); ++i) {
-            rows.push_back(tab_op.get_full_row(i));
-          }
-        }
-        ChoiMixTableau tab(rows);
-        std::pair<Circuit, qubit_map_t> tab_circ =
-            cm_tableau_to_exact_circuit(tab, cx_config);
-        qubit_map_t perm;
-        for (const std::pair<const Qubit, Qubit>& p : tab_circ.second)
-          perm.insert({p.second, p.first});
-        tab_circ.first.permute_boundary_output(perm);
-        circ.append(tab_circ.first);
       } else {
-        circ.append(pgop_to_circuit(pgop));
+        PGOutputTableau& tab_op = dynamic_cast<PGOutputTableau&>(*pgop);
+        for (unsigned i = 0; i < tab_op.n_paulis(); ++i) {
+          rows.push_back(tab_op.get_full_row(i));
+        }
       }
+      ChoiMixTableau tab(rows);
+      std::pair<Circuit, qubit_map_t> tab_circ =
+          cm_tableau_to_exact_circuit(tab, cx_config);
+      qubit_map_t perm;
+      for (const std::pair<const Qubit, Qubit>& p : tab_circ.second)
+        perm.insert({p.second, p.first});
+      tab_circ.first.permute_boundary_output(perm);
+      circ.append(tab_circ.first);
+    } else {
+      circ.append(pgop_to_circuit(pgop));
     }
   }
   return circ;

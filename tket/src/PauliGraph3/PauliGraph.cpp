@@ -14,6 +14,8 @@
 
 #include "tket/PauliGraph3/PauliGraph.hpp"
 
+#include "tket/Utils/SequencedContainers.hpp"
+
 namespace tket {
 namespace pg {
 
@@ -310,10 +312,15 @@ PGOp_ptr PGConditional::symbol_substitution(
 std::string PGConditional::get_name(bool latex) const {
   std::stringstream str;
   str << "[";
+  bool first = true;
   for (const Bit& b : args_) {
-    str << b.repr() << ", ";
+    if (first)
+      first = false;
+    else
+      str << ", ";
+    str << b.repr();
   }
-  str << "\b\b] == " << value_ << " ? " << inner_->get_name(latex);
+  str << "] == " << value_ << " ? " << inner_->get_name(latex);
   return str.str();
 }
 
@@ -835,6 +842,43 @@ void PauliGraph::verify() const {
   }
   if (consumed.size() != boost::num_vertices(c_graph_))
     throw PGError("Cannot obtain a topological ordering of PauliGraph");
+}
+
+std::list<PGOp_ptr> PauliGraph::pgop_sequence() const {
+  std::list<PGOp_ptr> sequence;
+  sequence_set_t<PGVert> remaining;
+  BGL_FORALL_VERTICES(v, c_graph_, PGClassicalGraph) { remaining.insert(v); }
+  while (!remaining.empty()) {
+    std::list<PGVert> initials;
+    for (const PGVert& v : remaining.get<TagSeq>()) {
+      bool initial = true;
+      auto in_edge_range = boost::in_edges(v, c_graph_);
+      for (auto it = in_edge_range.first; it != in_edge_range.second; ++it) {
+        if (remaining.find(boost::source(*it, c_graph_)) != remaining.end()) {
+          initial = false;
+          break;
+        }
+      }
+      if (!initial) continue;
+      auto range = pauli_index_.get<TagOp>().equal_range(v);
+      for (auto it = range.first; it != range.second; ++it) {
+        for (const PGPauli& c_pauli : pauli_index_.get<pg::TagID>()) {
+          if (pauli_ac_(it->index, c_pauli.index) &&
+              (remaining.find(c_pauli.vert) != remaining.end())) {
+            initial = false;
+            break;
+          }
+        }
+      }
+      if (initial) initials.push_back(v);
+    }
+    auto& lookup = remaining.get<TagKey>();
+    for (const PGVert& v : initials) {
+      sequence.push_back(c_graph_[v]);
+      lookup.erase(lookup.find(v));
+    }
+  }
+  return sequence;
 }
 
 }  // namespace pg

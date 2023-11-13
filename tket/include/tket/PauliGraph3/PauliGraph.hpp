@@ -785,6 +785,12 @@ class PauliGraph {
    */
   void verify() const;
 
+  /**
+   * Returns all PGOps in a valid topological sort of the diagram. The exact
+   * order depends on the internal order of vertices in c_graph_.
+   */
+  std::list<PGOp_ptr> pgop_sequence() const;
+
   friend PauliGraph tket::circuit_to_pauli_graph3(const tket::Circuit& circ);
   friend tket::Circuit tket::pauli_graph3_to_circuit_individual(
       const PauliGraph& pg, CXConfigType cx_config);
