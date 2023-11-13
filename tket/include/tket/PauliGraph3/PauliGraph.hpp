@@ -32,7 +32,8 @@ class Circuit;
 class Op;
 typedef std::shared_ptr<const Op> Op_ptr;
 
-pg::PauliGraph circuit_to_pauli_graph3(const Circuit& circ);
+pg::PauliGraph circuit_to_pauli_graph3(
+    const Circuit& circ, bool collect_cliffords);
 Circuit pauli_graph3_to_circuit_individual(
     const pg::PauliGraph& pg, CXConfigType cx_config);
 
@@ -792,7 +793,8 @@ class PauliGraph {
    */
   std::list<PGOp_ptr> pgop_sequence() const;
 
-  friend PauliGraph tket::circuit_to_pauli_graph3(const tket::Circuit& circ);
+  friend PauliGraph tket::circuit_to_pauli_graph3(
+      const tket::Circuit& circ, bool collect_cliffords);
   friend tket::Circuit tket::pauli_graph3_to_circuit_individual(
       const PauliGraph& pg, CXConfigType cx_config);
 

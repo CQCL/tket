@@ -242,9 +242,9 @@ std::vector<PGOp_ptr> op_to_pgops(
       const Gate& g = dynamic_cast<const Gate&>(*op);
       SpPauliStabiliser zq = tab.get_zrow(q);
       return {
-          std::make_shared<PGRotation>(zq, g.get_params().at(0)),
+          std::make_shared<PGRotation>(zq, g.get_params().at(2)),
           std::make_shared<PGRotation>(tab.get_xrow(q), g.get_params().at(1)),
-          std::make_shared<PGRotation>(zq, g.get_params().at(2))};
+          std::make_shared<PGRotation>(zq, g.get_params().at(0))};
     }
     case OpType::PhaseGadget: {
       const Gate& g = dynamic_cast<const Gate&>(*op);
@@ -366,7 +366,8 @@ std::vector<PGOp_ptr> op_to_pgops(
   }
 }
 
-pg::PauliGraph circuit_to_pauli_graph3(const Circuit& circ) {
+pg::PauliGraph circuit_to_pauli_graph3(
+    const Circuit& circ, bool collect_cliffords) {
   pg::PauliGraph res;
   ChoiMixTableau initial(circ.all_qubits());
   for (const Qubit& q : circ.created_qubits())
@@ -376,7 +377,7 @@ pg::PauliGraph circuit_to_pauli_graph3(const Circuit& circ) {
   for (const Command& com : circ) {
     unit_vector_t args = com.get_args();
     for (const PGOp_ptr& pgop :
-         op_to_pgops(com.get_op_ptr(), args, final_u, true))
+         op_to_pgops(com.get_op_ptr(), args, final_u, collect_cliffords))
       res.add_vertex_at_end(pgop);
   }
   std::list<ChoiMixTableau::row_tensor_t> final_rows;

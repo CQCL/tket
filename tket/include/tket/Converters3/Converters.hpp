@@ -36,7 +36,8 @@ std::pair<Circuit, qubit_map_t> cm_tableau_to_unitary_extension_circuit(
  * recorded as part of the PGInputTableau, and discards are incorporated into
  * the accumulated tableau to give the PGOutputTableau.
  */
-pg::PauliGraph circuit_to_pauli_graph3(const Circuit& circ);
+pg::PauliGraph circuit_to_pauli_graph3(
+    const Circuit& circ, bool collect_cliffords = true);
 
 /**
  * Synthesises a circuit equivalent to the PauliGraph by synthesising each
@@ -45,26 +46,6 @@ pg::PauliGraph circuit_to_pauli_graph3(const Circuit& circ);
  * ChoiMixTableau.
  */
 Circuit pauli_graph3_to_circuit_individual(
-    const pg::PauliGraph& pg, CXConfigType cx_config = CXConfigType::Snake);
-
-/**
- * Synthesises a circuit equivalent to the PauliGraph by collecting pairs of
- * adjacent pauli gadgets when possible and synthesising them simultaneously
- * using the method detailed in Cowtan et al. Phase Gadget Synthesis for Shallow
- * Circuits, Lemma 4.9. The tableaux are synthesised at each end using the
- * default synthesis method for ChoiMixTableau.
- */
-
-Circuit pauli_graph3_to_circuit_pairwise(
-    const pg::PauliGraph& pg, CXConfigType cx_config = CXConfigType::Snake);
-
-/**
- * Synthesises a circuit equivalent to the PauliGraph by collecting sets of
- * mutually commuting pauli gadgets and simultaneously diagonalizing them and
- * synthesising as a phase polynomial. The tableaux are synthesised at each end
- * using the default synthesis method for ChoiMixTableau.
- */
-Circuit pauli_graph3_to_circuit_sets(
     const pg::PauliGraph& pg, CXConfigType cx_config = CXConfigType::Snake);
 
 namespace pg {

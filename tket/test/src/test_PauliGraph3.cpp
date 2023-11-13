@@ -291,13 +291,14 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     std::list<PGOp_ptr> res_sequence = res_pg.pgop_sequence();
     CHECK(comp_seqs(res_sequence, correct_sequence));
   }
-  GIVEN("A conjugated Reset") {
+  GIVEN("A conjugated Reset and Collapse") {
     Circuit circ(3);
     circ.add_op<unsigned>(OpType::H, {1});
     circ.add_op<unsigned>(OpType::CX, {1, 2});
     circ.add_op<unsigned>(OpType::CZ, {1, 0});
     circ.add_op<unsigned>(OpType::Reset, {1});
     circ.add_op<unsigned>(OpType::CY, {0, 2});
+    circ.add_op<unsigned>(OpType::Collapse, {2});
     circ.add_op<unsigned>(OpType::ZZMax, {1, 2});
     circ.add_op<unsigned>(OpType::V, {1});
     PauliGraph pg = circuit_to_pauli_graph3(circ);
@@ -384,6 +385,28 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     PauliGraph res_pg = circuit_to_pauli_graph3(res);
     std::list<PGOp_ptr> res_sequence = res_pg.pgop_sequence();
     CHECK(comp_seqs(res_sequence, correct_sequence));
+  }
+  GIVEN("Don't collect cliffords") {
+    Circuit circ(3);
+    circ.add_op<unsigned>(OpType::Y, {0});
+    circ.add_op<unsigned>(OpType::Sdg, {1});
+    circ.add_op<unsigned>(OpType::V, {2});
+    circ.add_op<unsigned>(OpType::H, {0});
+    circ.add_op<unsigned>(OpType::CX, {0, 1});
+    circ.add_op<unsigned>(OpType::CY, {2, 0});
+    circ.add_op<unsigned>(OpType::PhaseGadget, 0.198, {0, 1, 2});
+    circ.add_op<unsigned>(OpType::S, {1});
+    circ.add_op<unsigned>(OpType::Vdg, {2});
+    circ.add_op<unsigned>(OpType::CZ, {1, 2});
+    circ.add_op<unsigned>(OpType::ZZMax, {1, 2});
+    circ.add_op<unsigned>(OpType::SWAP, {0, 2});
+    circ.add_op<unsigned>(OpType::YYPhase, 1.387, {0, 1});
+    circ.add_op<unsigned>(OpType::TK1, {0.98, 0.2, 1.87}, {1});
+    circ.add_op<unsigned>(OpType::TK2, {1.34, 0.23, 1.42}, {1, 0});
+    PauliGraph pg = circuit_to_pauli_graph3(circ, false);
+    REQUIRE_NOTHROW(pg.verify());
+    Circuit res = pauli_graph3_to_circuit_individual(pg);
+    REQUIRE(test_unitary_comparison(circ, res, true));
   }
 }
 
