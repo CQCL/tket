@@ -27,6 +27,7 @@ pytket/tests/qasm_test_files/testout3.qasm
 pytket/tests/qasm_test_files/testout4.qasm
 pytket/tests/qasm_test_files/testout5.qasm
 pytket/tests/qasm_test_files/testout6.qasm
+test-coverage
 
 # IDEs
 .idea
