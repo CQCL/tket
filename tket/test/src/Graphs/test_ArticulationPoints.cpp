@@ -145,7 +145,8 @@ SCENARIO("Find APs of disconnected nodes") {
 }
 
 SCENARIO("Test APs in Architecture", "[architectures],[routing]") {
-  Architecture arc({{0, 1}, {1, 2}, {2, 3}});
+  Architecture arc(
+      std::vector<std::pair<unsigned, unsigned>>{{0, 1}, {1, 2}, {2, 3}});
   node_set_t ap = arc.get_articulation_points();
 
   GIVEN("Removing node that preserves connected graph") {
@@ -157,7 +158,8 @@ SCENARIO("Test APs in Architecture", "[architectures],[routing]") {
     REQUIRE(ap.find(Node(2)) != ap.end());
   }
 
-  Architecture arc2({{0, 1}, {0, 2}, {0, 3}, {2, 3}});
+  Architecture arc2(std::vector<std::pair<unsigned, unsigned>>{
+      {0, 1}, {0, 2}, {0, 3}, {2, 3}});
   ap = arc2.get_articulation_points();
   REQUIRE(ap.find(Node(0)) != ap.end());
 
