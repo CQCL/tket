@@ -16,7 +16,7 @@ We can set the ``header`` argument in the qasm conversion functions as follows.
 
     qasm_str = circuit_to_qasm_str(circ, header="hqslib1")
 
-.. note:: Unlike pytket backends, the qasm converters do not handle `implicit qubit permutations <https://cqcl.github.io/pytket/manual/manual_circuit.html#implicit-qubit-permutations>`_. In other words if a circuit containing an implicit qubit permutation is converted to a qasm file the implicit permutation will not be accounted for and the circuit will be missing this permutation when reimported.
+.. note:: Unlike pytket backends, the qasm converters do not handle `implicit qubit permutations <https://tket.quantinuum.com/user-manual/manual_circuit.html#implicit-qubit-permutations>`_. In other words if a circuit containing an implicit qubit permutation is converted to a qasm file the implicit permutation will not be accounted for and the circuit will be missing this permutation when reimported.
 
 .. automodule:: pytket.qasm
     :members: circuit_from_qasm, circuit_from_qasm_wasm, circuit_to_qasm, circuit_from_qasm_str, circuit_to_qasm_str, circuit_from_qasm_io, circuit_to_qasm_io

@@ -7,7 +7,7 @@ There are several `example notebooks <https://tket.quantinuum.com/examples>`_ on
 
 Notebook tutorials specific to the :py:class:`QuantinuumBackend` can be found `here <https://github.com/CQCL/pytket-quantinuum/tree/develop/examples>`_.
 
-See also the `Running on backends <https://cqcl.github.io/pytket/manual/manual_backend.html>`_ section of the pytket user manual.
+See also the `Running on backends <https://tket.quantinuum.com/user-manual/manual_backend.html>`_ section of the pytket user manual.
 
 .. automodule:: pytket.backends
     :members: backend

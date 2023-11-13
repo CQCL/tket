@@ -9,7 +9,7 @@ Also there are special purpose passes such as `OptimisePhaseGadgets <https://cqc
 
 Rebase passes can be used to convert a circuit to a desired gateset. See `RebaseCustom <https://cqcl.github.io/tket/pytket/api/passes.html#pytket.passes.RebaseCustom>`_ and `auto_rebase_pass <https://cqcl.github.io/tket/pytket/api/passes.html#module-pytket.passes.auto_rebase>`_.
 
-For more on pytket passes see the `compilation <https://cqcl.github.io/pytket/manual/manual_compiler.html>`_ section of the user manual or the `notebook tutorials <https://tket.quantinuum.com/examples>`_
+For more on pytket passes see the `compilation <https://tket.quantinuum.com/user-manual/manual_compiler.html>`_ section of the user manual or the `notebook tutorials <https://tket.quantinuum.com/examples>`_
 
 
 .. automodule:: pytket._tket.passes
