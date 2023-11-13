@@ -17,8 +17,8 @@
 
 #include "testutil.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
-#include "tket/Converters3/Converters.hpp"
-#include "tket/PauliGraph3/PauliGraph.hpp"
+#include "tket/PauliGraphRefactor/Converters.hpp"
+#include "tket/PauliGraphRefactor/PauliGraph.hpp"
 
 namespace tket {
 namespace test_PauliGraph3 {

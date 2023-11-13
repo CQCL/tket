@@ -15,7 +15,7 @@
 #pragma once
 
 #include "tket/Circuit/Circuit.hpp"
-#include "tket/PauliGraph3/PauliGraph.hpp"
+#include "tket/PauliGraphRefactor/PauliGraph.hpp"
 
 namespace tket {
 

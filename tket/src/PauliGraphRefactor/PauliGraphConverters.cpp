@@ -16,10 +16,10 @@
 #include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Clifford/ChoiMixTableau.hpp"
 #include "tket/Clifford/UnitaryTableau.hpp"
-#include "tket/Converters3/Converters.hpp"
 #include "tket/Diagonalisation/Diagonalisation.hpp"
 #include "tket/Gate/Gate.hpp"
 #include "tket/PauliGraph/ConjugatePauliFunctions.hpp"
+#include "tket/PauliGraphRefactor/Converters.hpp"
 
 namespace tket {
 

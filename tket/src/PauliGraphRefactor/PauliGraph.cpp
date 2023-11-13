@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-#include "tket/PauliGraph3/PauliGraph.hpp"
+#include "tket/PauliGraphRefactor/PauliGraph.hpp"
 
 #include "tket/Utils/SequencedContainers.hpp"
 
