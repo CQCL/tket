@@ -164,7 +164,8 @@ target_sources(tket
         src/Gate/GateUnitarySparseMatrix.cpp
         src/PauliGraph/ConjugatePauliFunctions.cpp
         src/PauliGraph/PauliGraph.cpp
-        src/PauliGraph3/PauliGraph.cpp
+        src/PauliGraphRefactor/PauliGraph.cpp
+        src/PauliGraphRefactor/PauliGraphConverters.cpp
         src/Circuit/Boxes.cpp
         src/Circuit/Circuit.cpp
         src/Circuit/CircuitJson.cpp
@@ -229,7 +230,6 @@ target_sources(tket
         src/Converters/UnitaryTableauBox.cpp
         src/Converters/UnitaryTableauConverters.cpp
         src/Converters/ZXConverters.cpp
-        src/Converters3/PauliGraphConverters.cpp
         src/Placement/Frontier.cpp
         src/Placement/Placement.cpp
         src/Placement/GraphPlacement.cpp
@@ -335,7 +335,8 @@ target_sources(tket
         include/tket/Gate/SymTable.hpp
         include/tket/PauliGraph/ConjugatePauliFunctions.hpp
         include/tket/PauliGraph/PauliGraph.hpp
-        include/tket/PauliGraph3/PauliGraph.hpp
+        include/tket/PauliGraphRefactor/Converters.hpp
+        include/tket/PauliGraphRefactor/PauliGraph.hpp
         include/tket/Circuit/AssertionSynthesis.hpp
         include/tket/Circuit/Boxes.hpp
         include/tket/Circuit/CircPool.hpp
@@ -377,7 +378,6 @@ target_sources(tket
         include/tket/Converters/Gauss.hpp
         include/tket/Converters/PhasePoly.hpp
         include/tket/Converters/UnitaryTableauBox.hpp
-        include/tket/Converters3/Converters.hpp
         include/tket/Placement/NeighbourPlacements.hpp
         include/tket/Placement/Placement.hpp
         include/tket/Placement/QubitGraph.hpp

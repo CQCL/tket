@@ -15,7 +15,7 @@
 #include <catch2/catch_test_macros.hpp>
 #include <fstream>
 
-#include "testutil.hpp"
+#include "../testutil.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/PauliGraphRefactor/Converters.hpp"
 #include "tket/PauliGraphRefactor/PauliGraph.hpp"
