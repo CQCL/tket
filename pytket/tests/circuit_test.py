@@ -1273,7 +1273,7 @@ def test_dummy_box() -> None:
     cmds = c.get_commands()
     assert len(cmds) == 1
     op = cmds[0].op
-    assert op.type == OpType.DummyBox
+    assert type(op) is DummyBox
     resource_data1 = op.get_resource_data()
     op_type_count = resource_data1.get_op_type_count()
     assert op_type_count[OpType.T].get_min() == 10
