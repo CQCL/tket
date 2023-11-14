@@ -644,6 +644,65 @@
             "Matching"
           ],
           "definition": "Strategies for synthesising \"ToffoliBoxes\""
+        },
+        "resource_bound": {
+          "type": "object",
+          "properties": {
+            "max": {
+              "type": "integer",
+              "minimum": 0
+            },
+            "min": {
+              "type": "integer",
+              "minimum": 0
+            }
+          },
+          "required": [
+            "max",
+            "min"
+          ],
+          "additionalProperties": false
+        },
+        "optype_resource_bound": {
+          "type": "array",
+          "items": [
+            {
+              "type": "string"
+            },
+            {
+              "$ref": "#/definitions/box/properties/resource_bound"
+            }
+          ]
+        },
+        "resource_data": {
+          "type": "object",
+          "properties": {
+            "gate_depth": {
+              "$ref": "#/definitions/box/properties/resource_bound"
+            },
+            "two_qubit_gate_depth": {
+              "$ref": "#/definitions/box/properties/resource_bound"
+            },
+            "op_type_count": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/box/properties/optype_resource_bound"
+              }
+            },
+            "op_type_depth": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/box/properties/optype_resource_bound"
+              }
+            }
+          },
+          "required": [
+            "gate_depth",
+            "two_qubit_gate_depth",
+            "op_type_count",
+            "op_type_depth"
+          ],
+          "additionalProperties": false
         }
       },
       "required": [
