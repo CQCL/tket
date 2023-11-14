@@ -138,7 +138,7 @@ jobs:
     - name: Build tket
       run: conan create tket -s build_type=Release --user=tket --channel=stable -o boost/*:header_only=True -o with_all_tests=True
     - name: Upload package
-      if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+      if: github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_changed == 'true'
       run: |
         ccache --set-config namespace=WITHOUT_TESTS
         conan create tket --user=tket --channel=stable -o boost/*:header_only=True
@@ -207,7 +207,7 @@ jobs:
           conan build tket --user=tket --channel=stable -o boost/*:header_only=True -o with_all_tests=True -c tools.cmake.cmaketoolchain:generator=Ninja
           conan export-pkg tket --user=tket --channel=stable -o boost/*:header_only=True -o with_all_tests=True -c tools.cmake.cmaketoolchain:generator=Ninja
       - name: Upload package
-        if: github.event_name == 'push' && github.ref == 'refs/heads/develop'
+        if: github.event_name == 'push' && github.ref == 'refs/heads/develop' && needs.check_changes.outputs.tket_changed == 'true'
         run: |
           ccache --set-config namespace=WITHOUT_TESTS
           conan build tket --user=tket --channel=stable -o boost/*:header_only=True
