@@ -23,7 +23,7 @@
     </tr>
     <tr>
       <th scope="row">File:</th>
-      <td>include/tket/OpType/OpTypeInfo.hpp</td>
+      <td>src/Circuit/ResourceData.cpp</td>
     </tr>
     <tr>
       <th scope="row">Date:</th>
@@ -41,21 +41,21 @@
     </tr>
     <tr>
       <th scope="row">Lines:</th>
-      <td>0</td>
-      <td>4</td>
-      <td class="coverage-none">0.0%</td>
+      <td>16</td>
+      <td>16</td>
+      <td class="coverage-high">100.0%</td>
     </tr>
     <tr>
       <th scope="row">Functions:</th>
-      <td>0</td>
       <td>3</td>
-      <td class="coverage-none">0.0%</td>
+      <td>3</td>
+      <td class="coverage-high">100.0%</td>
     </tr>
     <tr>
       <th scope="row">Branches:</th>
-      <td>0</td>
       <td>8</td>
-      <td class="coverage-none">0.0%</td>
+      <td>16</td>
+      <td class="coverage-low">50.0%</td>
     </tr>
     <tr>
       <th scope="row">Decisions:</th>
@@ -81,35 +81,35 @@
     </tr>
     <tr>
       <td>
-        <a href="#l54">tket::BadOpType::BadOpType(std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt; const&amp;, tket::OpType)</a>
+        <a href="#l21">tket::ResourceData::operator==(tket::ResourceData const&amp;) const</a>
       </td>
       <td>
-        <a href="#l54">54</a>
+        <a href="#l21">21</a>
       </td>
       <td>
-        <a href="#l54"> not called</a>
-      </td>
-    </tr>
-    <tr>
-      <td>
-        <a href="#l56">tket::BadOpType::BadOpType(tket::OpType)</a>
-      </td>
-      <td>
-        <a href="#l56">56</a>
-      </td>
-      <td>
-        <a href="#l56"> not called</a>
+        <a href="#l21"> called 1 time</a>
       </td>
     </tr>
     <tr>
       <td>
-        <a href="#l34">tket::OpTypeInfo::n_params() const</a>
+        <a href="#l34">tket::from_json(nlohmann::json_abi_v3_11_2::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::json_abi_v3_11_2::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt; const&amp;, tket::ResourceData&amp;)</a>
       </td>
       <td>
         <a href="#l34">34</a>
       </td>
       <td>
-        <a href="#l34"> not called</a>
+        <a href="#l34"> called 1 time</a>
+      </td>
+    </tr>
+    <tr>
+      <td>
+        <a href="#l27">tket::to_json(nlohmann::json_abi_v3_11_2::basic_json&lt;std::map, std::vector, std::__cxx11::basic_string&lt;char, std::char_traits&lt;char&gt;, std::allocator&lt;char&gt; &gt;, bool, long, unsigned long, double, std::allocator, nlohmann::json_abi_v3_11_2::adl_serializer, std::vector&lt;unsigned char, std::allocator&lt;unsigned char&gt; &gt; &gt;&amp;, tket::ResourceData const&amp;)</a>
+      </td>
+      <td>
+        <a href="#l27">27</a>
+      </td>
+      <td>
+        <a href="#l27"> called 1 time</a>
       </td>
     </tr>
   </table>
@@ -260,7 +260,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#pragma once</span></td>
+      <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;tket/Circuit/ResourceData.hpp&quot;</span><span class="cp"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l16" href="#l16">16</a></td>
@@ -278,7 +278,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;map&gt;</span><span class="cp"></span></td>
+      <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;tket/Utils/Json.hpp&quot;</span><span class="cp"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l18" href="#l18">18</a></td>
@@ -287,7 +287,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;optional&gt;</span><span class="cp"></span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l19" href="#l19">19</a></td>
@@ -296,7 +296,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&lt;string&gt;</span><span class="cp"></span></td>
+      <td class="src "><span class="k">namespace</span><span class="w"> </span><span class="nn">tket</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l20" href="#l20">20</a></td>
@@ -313,26 +313,44 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;EdgeType.hpp&quot;</span><span class="cp"></span></td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine"><span class="kt">bool</span><span class="w"> </span><span class="n">ResourceData</span><span class="o">::</span><span class="k">operator</span><span class="o">==</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">ResourceData</span><span class="o">&amp;</span><span class="w"> </span><span class="n">other</span><span class="p">)</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l22" href="#l22">22</a></td>
       <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">1/2</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 2 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 3 not taken.</div>
+        </div>
+        </details>
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="cp">#include</span><span class="w"> </span><span class="cpf">&quot;OpType.hpp&quot;</span><span class="cp"></span></td>
+      <td class="linecount coveredLine">2</td>
+      <td class="src coveredLine"><span class="w">  </span><span class="k">return</span><span class="w"> </span><span class="n">OpTypeCount</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">other</span><span class="p">.</span><span class="n">OpTypeCount</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"> </span><span class="n">GateDepth</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">other</span><span class="p">.</span><span class="n">GateDepth</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l23" href="#l23">23</a></td>
       <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">3/6</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 0 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 1 not taken.</div>
+          <div class="takenBranch">&check; Branch 3 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 4 not taken.</div>
+          <div class="takenBranch">&check; Branch 5 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 6 not taken.</div>
+        </div>
+        </details>
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="linecount coveredLine">3</td>
+      <td class="src coveredLine"><span class="w">         </span><span class="n">OpTypeDepth</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">other</span><span class="p">.</span><span class="n">OpTypeDepth</span><span class="w"> </span><span class="o">&amp;&amp;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l24" href="#l24">24</a></td>
@@ -340,8 +358,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="k">namespace</span><span class="w"> </span><span class="nn">tket</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="linecount coveredLine">2</td>
+      <td class="src coveredLine"><span class="w">         </span><span class="n">TwoQubitGateDepth</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">other</span><span class="p">.</span><span class="n">TwoQubitGateDepth</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l25" href="#l25">25</a></td>
@@ -350,7 +368,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l26" href="#l26">26</a></td>
@@ -359,7 +377,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">/**</span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l27" href="#l27">27</a></td>
@@ -367,44 +385,72 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="cm"> * General information about an \p OpType</span></td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine"><span class="kt">void</span><span class="w"> </span><span class="n">to_json</span><span class="p">(</span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="o">&amp;</span><span class="w"> </span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="n">ResourceData</span><span class="o">&amp;</span><span class="w"> </span><span class="n">data</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l28" href="#l28">28</a></td>
       <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">1/2</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 2 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 3 not taken.</div>
+        </div>
+        </details>
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="cm"> */</span><span class="w"></span></td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine"><span class="w">  </span><span class="n">j</span><span class="p">[</span><span class="s">&quot;op_type_count&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">.</span><span class="n">OpTypeCount</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l29" href="#l29">29</a></td>
       <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">1/2</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 2 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 3 not taken.</div>
+        </div>
+        </details>
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="k">struct</span><span class="w"> </span><span class="nc">OpTypeInfo</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine"><span class="w">  </span><span class="n">j</span><span class="p">[</span><span class="s">&quot;gate_depth&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">.</span><span class="n">GateDepth</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l30" href="#l30">30</a></td>
       <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">1/2</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 2 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 3 not taken.</div>
+        </div>
+        </details>
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">name</span><span class="p">;</span><span class="w">       </span><span class="cm">/**&lt; name */</span><span class="w"></span></td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine"><span class="w">  </span><span class="n">j</span><span class="p">[</span><span class="s">&quot;op_type_depth&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">.</span><span class="n">OpTypeDepth</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l31" href="#l31">31</a></td>
       <td class="linebranch">
+        <details class="linebranchDetails">
+        <summary class="linebranchSummary">1/2</summary>
+        <div class="linebranchContents">
+          <div class="takenBranch">&check; Branch 2 taken 1 times.</div>
+          <div class="notTakenBranch">&cross; Branch 3 not taken.</div>
+        </div>
+        </details>
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="n">latex_name</span><span class="p">;</span><span class="w"> </span><span class="cm">/**&lt; name in Latex representation */</span><span class="w"></span></td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine"><span class="w">  </span><span class="n">j</span><span class="p">[</span><span class="s">&quot;two_qubit_gate_depth&quot;</span><span class="p">]</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">data</span><span class="p">.</span><span class="n">TwoQubitGateDepth</span><span class="p">;</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l32" href="#l32">32</a></td>
@@ -412,8 +458,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine"><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l33" href="#l33">33</a></td>
@@ -422,7 +468,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="cm">/** Number of phase parameters */</span><span class="w"></span></td>
+      <td class="src "></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l34" href="#l34">34</a></td>
@@ -430,8 +476,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">  </span><span class="kt">unsigned</span><span class="w"> </span><span class="nf">n_params</span><span class="p">()</span><span class="w"> </span><span class="k">const</span><span class="w"> </span><span class="p">{</span><span class="w"> </span><span class="k">return</span><span class="w"> </span><span class="n">param_mod</span><span class="p">.</span><span class="n">size</span><span class="p">();</span><span class="w"> </span><span class="p">}</span><span class="w"></span></td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine"><span class="kt">void</span><span class="w"> </span><span class="n">from_json</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">nlohmann</span><span class="o">::</span><span class="n">json</span><span class="o">&amp;</span><span class="w"> </span><span class="n">j</span><span class="p">,</span><span class="w"> </span><span class="n">ResourceData</span><span class="o">&amp;</span><span class="w"> </span><span class="n">data</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l35" href="#l35">35</a></td>
@@ -440,7 +486,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "></td>
+      <td class="src "><span class="w">  </span><span class="n">data</span><span class="p">.</span><span class="n">OpTypeCount</span><span class="w"> </span><span class="o">=</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l36" href="#l36">36</a></td>
@@ -448,8 +494,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="cm">/**</span></td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine"><span class="w">      </span><span class="n">j</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;op_type_count&quot;</span><span class="p">).</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="n">OpType</span><span class="p">,</span><span class="w"> </span><span class="n">ResourceBounds</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;&gt;&gt;</span><span class="p">();</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l37" href="#l37">37</a></td>
@@ -457,8 +503,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="cm">   * Moduli of parameters.</span></td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine"><span class="w">  </span><span class="n">data</span><span class="p">.</span><span class="n">GateDepth</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">j</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;gate_depth&quot;</span><span class="p">).</span><span class="n">get</span><span class="o">&lt;</span><span class="n">ResourceBounds</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;&gt;</span><span class="p">();</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l38" href="#l38">38</a></td>
@@ -467,7 +513,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   *</span></td>
+      <td class="src "><span class="w">  </span><span class="n">data</span><span class="p">.</span><span class="n">OpTypeDepth</span><span class="w"> </span><span class="o">=</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l39" href="#l39">39</a></td>
@@ -475,8 +521,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="cm">   * This is a vector whose i&#39;th entry is the least n &gt; 0 such that adding n</span></td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine"><span class="w">      </span><span class="n">j</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;op_type_depth&quot;</span><span class="p">).</span><span class="n">get</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="n">OpType</span><span class="p">,</span><span class="w"> </span><span class="n">ResourceBounds</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;&gt;&gt;</span><span class="p">();</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l40" href="#l40">40</a></td>
@@ -485,7 +531,7 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="cm">   * to the i&#39;th parameter leaves the operation unchanged.</span></td>
+      <td class="src "><span class="w">  </span><span class="n">data</span><span class="p">.</span><span class="n">TwoQubitGateDepth</span><span class="w"> </span><span class="o">=</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l41" href="#l41">41</a></td>
@@ -493,8 +539,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="cm">   */</span><span class="w"></span></td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine"><span class="w">      </span><span class="n">j</span><span class="p">.</span><span class="n">at</span><span class="p">(</span><span class="s">&quot;two_qubit_gate_depth&quot;</span><span class="p">).</span><span class="n">get</span><span class="o">&lt;</span><span class="n">ResourceBounds</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;&gt;</span><span class="p">();</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l42" href="#l42">42</a></td>
@@ -502,8 +548,8 @@
       </td>
       <td class="linedecision">
       </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">vector</span><span class="o">&lt;</span><span class="kt">unsigned</span><span class="o">&gt;</span><span class="w"> </span><span class="n">param_mod</span><span class="p">;</span><span class="w"></span></td>
+      <td class="linecount coveredLine">1</td>
+      <td class="src coveredLine"><span class="p">}</span><span class="w"></span></td>
     </tr>
     <tr class="source-line">
       <td class="lineno"><a id="l43" href="#l43">43</a></td>
@@ -521,145 +567,10 @@
       <td class="linedecision">
       </td>
       <td class="linecount "></td>
-      <td class="src "><span class="w">  </span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">optional</span><span class="o">&lt;</span><span class="n">op_signature_t</span><span class="o">&gt;</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l45" href="#l45">45</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="w">      </span><span class="n">signature</span><span class="p">;</span><span class="w"> </span><span class="cm">/** types of inputs and outputs */</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l46" href="#l46">46</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="p">};</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l47" href="#l47">47</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l48" href="#l48">48</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="cm">/** Information including name and shape of each operation type */</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l49" href="#l49">49</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">map</span><span class="o">&lt;</span><span class="n">OpType</span><span class="p">,</span><span class="w"> </span><span class="n">OpTypeInfo</span><span class="o">&gt;</span><span class="w"> </span><span class="o">&amp;</span><span class="n">optypeinfo</span><span class="p">();</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l50" href="#l50">50</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l51" href="#l51">51</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="cm">/** Operation type not valid in the current context */</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l52" href="#l52">52</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="k">class</span><span class="w"> </span><span class="nc">BadOpType</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">logic_error</span><span class="w"> </span><span class="p">{</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l53" href="#l53">53</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="w"> </span><span class="k">public</span><span class="o">:</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l54" href="#l54">54</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">  </span><span class="n">BadOpType</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">string</span><span class="w"> </span><span class="o">&amp;</span><span class="n">message</span><span class="p">,</span><span class="w"> </span><span class="n">OpType</span><span class="w"> </span><span class="n">optype</span><span class="p">)</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l55" href="#l55">55</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">      </span><span class="o">:</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">logic_error</span><span class="p">(</span><span class="n">message</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="s">&quot;: &quot;</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="n">optypeinfo</span><span class="p">().</span><span class="n">at</span><span class="p">(</span><span class="n">optype</span><span class="p">).</span><span class="n">name</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l56" href="#l56">56</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount uncoveredLine">&cross;</td>
-      <td class="src uncoveredLine"><span class="w">  </span><span class="k">explicit</span><span class="w"> </span><span class="n">BadOpType</span><span class="p">(</span><span class="n">OpType</span><span class="w"> </span><span class="n">optype</span><span class="p">)</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">BadOpType</span><span class="p">(</span><span class="s">&quot;Bad operation type&quot;</span><span class="p">,</span><span class="w"> </span><span class="n">optype</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l57" href="#l57">57</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "><span class="p">};</span><span class="w"></span></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l58" href="#l58">58</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
-      <td class="src "></td>
-    </tr>
-    <tr class="source-line">
-      <td class="lineno"><a id="l59" href="#l59">59</a></td>
-      <td class="linebranch">
-      </td>
-      <td class="linedecision">
-      </td>
-      <td class="linecount "></td>
       <td class="src "><span class="p">}</span><span class="w">  </span><span class="c1">// namespace tket</span></td>
     </tr>
     <tr class="source-line">
-      <td class="lineno"><a id="l60" href="#l60">60</a></td>
+      <td class="lineno"><a id="l45" href="#l45">45</a></td>
       <td class="linebranch">
       </td>
       <td class="linedecision">
