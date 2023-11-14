@@ -1,7 +1,7 @@
 <map id="include/tket/ArchAwareSynth" name="include/tket/ArchAwareSynth">
 <area shape="rect" id="node1" href="dir_3aae3de30bb768cfc8ec223ba5137c72.html" title="Circuit" alt="" coords="53,244,125,292"/>
 <area shape="rect" id="node6" href="dir_c841b5efcc984abdbed030c4c9202c93.html" title="Utils" alt="" coords="168,436,240,484"/>
-<area shape="rect" id="edge15-headlabel" href="dir_000005_000020.html" title="27" alt="" coords="179,409,197,423"/>
+<area shape="rect" id="edge15-headlabel" href="dir_000005_000020.html" title="28" alt="" coords="179,409,197,423"/>
 <area shape="rect" id="node2" href="dir_5203c0d6d890d782c111076a610aa9e3.html" title="Placement" alt="" coords="53,148,144,196"/>
 <area shape="rect" id="edge3-headlabel" href="dir_000017_000005.html" title="1" alt="" coords="97,219,106,234"/>
 <area shape="rect" id="node3" href="dir_759b4cf8789b41309cb92109f4c73e0a.html" title="Architecture" alt="" coords="149,244,251,292"/>
