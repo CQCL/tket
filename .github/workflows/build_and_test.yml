@@ -219,17 +219,6 @@ jobs:
           ccache -s  #show stats
           ccache -z  #show stats
 
-  build_test_tket_not_required:
-    name: Build and test (tket)
-    needs: check_changes
-    if: needs.check_changes.outputs.tket_or_workflow_changed != 'true'
-    strategy:
-      matrix:
-        os: ['ubuntu-22.04', 'macos-12', 'windows-2022', 'macos-13-xlarge']
-    runs-on: ${{ matrix.os }}
-    steps:
-      - run: echo "no changes to tket"
-
   build_test_pytket_ubuntu:
     name: Build and test pytket (ubuntu)
     needs: check_changes
@@ -577,3 +566,39 @@ jobs:
       run: |
         wget https://cqcl.github.io/tket/pytket/test-coverage/cov.xml -O oldcov.xml
         ./.github/workflows/compare-pytket-coverage oldcov.xml pytket-test-coverage/cov.xml
+
+  check_all_build_and_test_jobs_successful:
+    name: All build and test jobs successful (or skipped)
+    needs:
+      - check_changes
+      - check_docs_tket
+      - check_format_tket
+      - build_test_tket
+      - build_test_tket_windows
+      - publish_pytket_coverage
+      - build_test_pytket_macos
+      - build_test_pytket_ubuntu
+      - build_test_pytket_windows
+      - publish_pytket_coverage
+      - check_pytket_coverage
+    if: always()
+    runs-on: ubuntu-22.04
+    steps:
+      - shell: python
+        name: Check job results
+        run: |
+          results = [
+              "${{ needs.check_changes.result }}",
+              "${{ needs.check_docs_tket.result }}",
+              "${{ needs.check_format_tket.result }}",
+              "${{ needs.build_test_tket.result }}",
+              "${{ needs.build_test_tket_windows.result }}",
+              "${{ needs.publish_pytket_coverage.result }}",
+              "${{ needs.build_test_pytket_macos.result }}",
+              "${{ needs.build_test_pytket_ubuntu.result }}",
+              "${{ needs.build_test_pytket_windows.result }}"
+              "${{ needs.publish_pytket_coverage.result }}",
+              "${{ needs.check_pytket_coverage.result }}",
+          ]
+          if "failure" in results or "cancelled" in results:
+              raise Exception
