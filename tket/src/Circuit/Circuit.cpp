@@ -409,7 +409,8 @@ ResourceData Circuit::get_resources() /*const*/ {
         } else {
           data.GateDepth = {1};
           data.OpTypeDepth[optype] = {1};
-          if (OpDesc(optype).n_qubits() == 2) {
+          if (OpDesc(optype).is_gate() &&
+              get_Op_ptr_from_Vertex(v)->n_qubits() == 2) {
             data.TwoQubitGateDepth = {1};
           }
           op_type_count[optype].min += 1;
