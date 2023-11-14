@@ -1278,6 +1278,7 @@ def test_dummy_box() -> None:
     op_type_count = resource_data1.get_op_type_count()
     assert op_type_count[OpType.T].get_min() == 10
     assert op_type_count[OpType.T].get_max() == 20
+    assert json_validate(c)
 
 
 def test_resources() -> None:
