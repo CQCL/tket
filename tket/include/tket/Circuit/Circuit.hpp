@@ -46,6 +46,7 @@
 #include "Command.hpp"
 #include "Conditional.hpp"
 #include "DAGDefs.hpp"
+#include "ResourceData.hpp"
 #include "tket/Gate/OpPtrFunctions.hpp"
 #include "tket/Utils/Constants.hpp"
 #include "tket/Utils/GraphHeaders.hpp"
@@ -1650,6 +1651,16 @@ class Circuit {
   boundary_t boundary;
   std::vector<WasmState> wasmwire;
   std::size_t _number_of_wasm_wires = 0;
+
+  /**
+   * Calculate the overall resources of the circuit.
+   *
+   * This takes account of the data stored in each \ref DummyBox within the
+   * circuit, as well as other gates, to compute upper and lower bounds.
+   *
+   * @return bounds on resources of the circuit
+   */
+  ResourceData get_resources() /*const*/;
 
  private:
   std::optional<std::string>

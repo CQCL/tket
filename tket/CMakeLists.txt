@@ -168,6 +168,8 @@ target_sources(tket
         src/Circuit/Circuit.cpp
         src/Circuit/CircuitJson.cpp
         src/Circuit/CommandJson.cpp
+        src/Circuit/ResourceData.cpp
+        src/Circuit/DummyBox.cpp
         src/Circuit/macro_manipulation.cpp
         src/Circuit/basic_circ_manip.cpp
         src/Circuit/latex_drawing.cpp
@@ -343,12 +345,14 @@ target_sources(tket
         include/tket/Circuit/Conditional.hpp
         include/tket/Circuit/DAGDefs.hpp
         include/tket/Circuit/DiagonalBox.hpp
+        include/tket/Circuit/DummyBox.hpp
         include/tket/Circuit/Multiplexor.hpp
         include/tket/Circuit/StatePreparation.hpp
         include/tket/Circuit/ThreeQubitConversion.hpp
         include/tket/Circuit/ToffoliBox.hpp
         include/tket/Circuit/PauliExpBoxes.hpp
         include/tket/Circuit/ConjugationBox.hpp
+        include/tket/Circuit/ResourceData.hpp
         include/tket/Circuit/Simulation/CircuitSimulator.hpp
         include/tket/Circuit/Simulation/PauliExpBoxUnitaryCalculator.hpp
         include/tket/Architecture/Architecture.hpp

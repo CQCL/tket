@@ -9,7 +9,7 @@ import pytket.circuit.logic_exp
 import pytket.wasm.wasm
 import sympy
 import typing
-__all__ = ['BarrierOp', 'BasisOrder', 'CXConfigType', 'CircBox', 'Circuit', 'ClassicalEvalOp', 'ClassicalExpBox', 'ClassicalOp', 'Command', 'Conditional', 'ConjugationBox', 'CopyBitsOp', 'CustomGate', 'CustomGateDef', 'DiagonalBox', 'EdgeType', 'ExpBox', 'MetaOp', 'MultiBitOp', 'MultiplexedRotationBox', 'MultiplexedTensoredU2Box', 'MultiplexedU2Box', 'MultiplexorBox', 'Op', 'OpType', 'PauliExpBox', 'PauliExpCommutingSetBox', 'PauliExpPairBox', 'PhasePolyBox', 'ProjectorAssertionBox', 'QControlBox', 'RangePredicateOp', 'SetBitsOp', 'StabiliserAssertionBox', 'StatePreparationBox', 'ToffoliBox', 'ToffoliBoxSynthStrat', 'Unitary1qBox', 'Unitary2qBox', 'Unitary3qBox', 'WASMOp', 'fresh_symbol']
+__all__ = ['BarrierOp', 'BasisOrder', 'CXConfigType', 'CircBox', 'Circuit', 'ClassicalEvalOp', 'ClassicalExpBox', 'ClassicalOp', 'Command', 'Conditional', 'ConjugationBox', 'CopyBitsOp', 'CustomGate', 'CustomGateDef', 'DiagonalBox', 'DummyBox', 'EdgeType', 'ExpBox', 'MetaOp', 'MultiBitOp', 'MultiplexedRotationBox', 'MultiplexedTensoredU2Box', 'MultiplexedU2Box', 'MultiplexorBox', 'Op', 'OpType', 'PauliExpBox', 'PauliExpCommutingSetBox', 'PauliExpPairBox', 'PhasePolyBox', 'ProjectorAssertionBox', 'QControlBox', 'RangePredicateOp', 'ResourceBounds', 'ResourceData', 'SetBitsOp', 'StabiliserAssertionBox', 'StatePreparationBox', 'ToffoliBox', 'ToffoliBoxSynthStrat', 'Unitary1qBox', 'Unitary2qBox', 'Unitary3qBox', 'WASMOp', 'fresh_symbol']
 class BarrierOp(Op):
     """
     Barrier operations.
@@ -1424,6 +1424,26 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
+    def add_dummybox(self, dummybox: DummyBox, qubits: typing.Sequence[int], bits: typing.Sequence[int], **kwargs: Any) -> Circuit:
+        """
+        Append a :py:class:`DummyBox` to the circuit.
+        
+        :param dummybox: The box to append
+        :param qubits: Indices (in the default register) of the qubits to append the box to
+        :param bits: Indices of the bits (in the default register) to append the box to
+        :return: the new :py:class:`Circuit`
+        """
+    @typing.overload
+    def add_dummybox(self, dummybox: DummyBox, qubits: typing.Sequence[pytket._tket.unit_id.Qubit], bits: typing.Sequence[pytket._tket.unit_id.Bit], **kwargs: Any) -> Circuit:
+        """
+        Append a :py:class:`DummyBox` to the circuit.
+        
+        :param dummybox: The box to append
+        :param qubits: Qubits to append the box to
+        :param bits: Bits to append the box to
+        :return: the new :py:class:`Circuit`
+        """
+    @typing.overload
     def add_expbox(self, expbox: ExpBox, qubit_0: int, qubit_1: int, **kwargs: Any) -> Circuit:
         """
         Append an :py:class:`ExpBox` to the circuit.
@@ -1977,6 +1997,64 @@ class Circuit:
         :param name: name for the register
         :return: the retrieved :py:class:`QubitRegister`
         """
+    def get_resources(self) -> ResourceData:
+        """
+        Calculate the overall resources of the circuit.
+        
+        This takes account of the data stored in each py:class:`DummyBox` within the circuit, as well as other gates, to compute upper and lower bounds.
+        
+        :return: bounds on resources of the circuit
+        
+        >>> resource_data0 = ResourceData(
+        ...     op_type_count={
+        ...         OpType.T: ResourceBounds(1, 2),
+        ...         OpType.H: ResourceBounds(0, 1),
+        ...         OpType.CX: ResourceBounds(1, 2),
+        ...         OpType.CZ: ResourceBounds(3, 3),
+        ...     },
+        ...     gate_depth=ResourceBounds(5, 8),
+        ...     op_type_depth={
+        ...         OpType.T: ResourceBounds(0, 10),
+        ...         OpType.H: ResourceBounds(0, 10),
+        ...         OpType.CX: ResourceBounds(1, 2),
+        ...         OpType.CZ: ResourceBounds(3, 3),
+        ...     },
+        ...     two_qubit_gate_depth=ResourceBounds(4, 5),
+        ... )
+        >>> dbox0 = DummyBox(n_qubits=2, n_bits=0, resource_data=resource_data0)
+        >>> resource_data1 = ResourceData(
+        ...     op_type_count={
+        ...         OpType.T: ResourceBounds(2, 2),
+        ...         OpType.H: ResourceBounds(1, 1),
+        ...         OpType.CX: ResourceBounds(2, 3),
+        ...         OpType.CZ: ResourceBounds(3, 5),
+        ...     },
+        ...     gate_depth=ResourceBounds(5, 10),
+        ...     op_type_depth={
+        ...         OpType.T: ResourceBounds(1, 2),
+        ...         OpType.H: ResourceBounds(2, 4),
+        ...         OpType.CX: ResourceBounds(1, 1),
+        ...         OpType.CZ: ResourceBounds(3, 4),
+        ...     },
+        ...     two_qubit_gate_depth=ResourceBounds(3, 5),
+        ... )
+        >>> dbox1 = DummyBox(n_qubits=3, n_bits=0, resource_data=resource_data1)
+        >>> c = (
+        ...     Circuit(3)
+        ...     .H(0)
+        ...     .CX(1, 2)
+        ...     .CX(0, 1)
+        ...     .T(2)
+        ...     .H(1)
+        ...     .add_dummybox(dbox0, , [])
+        ...     .CZ(1, 2)
+        ...     .add_dummybox(dbox1, [0, 1, 2], [])
+        ...     .H(2)
+        ... )
+        >>> resource_data = c.get_resources()
+        >>> print(resource_data)
+        ResourceData(op_type_count={OpType.T: ResourceBounds(4, 5), OpType.H: ResourceBounds(4, 5), OpType.CX: ResourceBounds(5, 7), OpType.CZ: ResourceBounds(7, 9), }, gate_depth=ResourceBounds(15, 23), op_type_depth={OpType.T: ResourceBounds(2, 12), OpType.H: ResourceBounds(5, 17), OpType.CX: ResourceBounds(4, 5), OpType.CZ: ResourceBounds(7, 8), }, two_qubit_gate_depth=ResourceBounds(10, 13))
+        """
     def get_statevector(self) -> NDArray[numpy.complex128]:
         """
         Calculate the unitary matrix of the circuit, using ILO-BE convention, applied to the column vector (1,0,0...), which is thus another column vector. Due to pybind11 and numpy peculiarities, to treat the result as a genuine column vector and perform further matrix multiplication, you need to call .reshape(rows,1) to get a 2D matrix with the correct dimensions.
@@ -2171,6 +2249,15 @@ class Circuit:
         Substitute all ops with the given name for the given box.The replacement boxes retain the same name.
         
         :param box: the replacement ToffoliBox
+        :param opgroup: the name of the operations group to replace
+        :return: whether any replacements were made
+        """
+    @typing.overload
+    def substitute_named(self, box: DummyBox, opgroup: str) -> bool:
+        """
+        Substitute all ops with the given name for the given box.The replacement boxes retain the same name.
+        
+        :param box: the replacement DummyBox
         :param opgroup: the name of the operations group to replace
         :return: whether any replacements were made
         """
@@ -2566,6 +2653,26 @@ class DiagonalBox(Op):
     def is_upper_triangle(self) -> bool:
         """
         :return: the upper_triangle flag
+        """
+class DummyBox(Op):
+    """
+    A placeholder operation that holds resource data. This box type cannot be decomposed into a circuit. It only serves to record resource data for a region of a circuit: for example, upper and lower bounds on gate counts and depth. A circuit containing such a box cannot be executed.
+    """
+    def __init__(self, n_qubits: int, n_bits: int, resource_data: ResourceData) -> None:
+        """
+        Construct a new instance from some resource data.
+        """
+    def get_n_bits(self) -> int:
+        """
+        :return: the number of bits covered by the box
+        """
+    def get_n_qubits(self) -> int:
+        """
+        :return: the number of qubits covered by the box
+        """
+    def get_resource_data(self) -> ResourceData:
+        """
+        :return: the associated resource data
         """
 class EdgeType:
     """
@@ -2997,6 +3104,8 @@ class OpType:
     
       ToffoliBox : A permutation of classical basis states
     
+      DummyBox : A placeholder operation that holds resource data
+    
       CustomGate : :math:`(\alpha, \beta, \ldots) \mapsto` A user-defined operation, based on a :py:class:`Circuit` :math:`C` with parameters :math:`\alpha, \beta, \ldots` substituted in place of bound symbolic variables in :math:`C`, as defined by the :py:class:`CustomGateDef`.
     
       Conditional : An operation to be applied conditionally on the value of some classical register
@@ -3096,6 +3205,7 @@ class OpType:
     CopyBits: typing.ClassVar[OpType]  # value = <OpType.CopyBits: 16>
     CustomGate: typing.ClassVar[OpType]  # value = <OpType.CustomGate: 93>
     DiagonalBox: typing.ClassVar[OpType]  # value = <OpType.DiagonalBox: 101>
+    DummyBox: typing.ClassVar[OpType]  # value = <OpType.DummyBox: 109>
     ECR: typing.ClassVar[OpType]  # value = <OpType.ECR: 66>
     ESWAP: typing.ClassVar[OpType]  # value = <OpType.ESWAP: 75>
     ExpBox: typing.ClassVar[OpType]  # value = <OpType.ExpBox: 88>
@@ -3158,7 +3268,7 @@ class OpType:
     Z: typing.ClassVar[OpType]  # value = <OpType.Z: 22>
     ZZMax: typing.ClassVar[OpType]  # value = <OpType.ZZMax: 70>
     ZZPhase: typing.ClassVar[OpType]  # value = <OpType.ZZPhase: 73>
-    __members__: typing.ClassVar[dict[str, OpType]]  # value = {'Phase': <OpType.Phase: 21>, 'Z': <OpType.Z: 22>, 'X': <OpType.X: 23>, 'Y': <OpType.Y: 24>, 'S': <OpType.S: 25>, 'Sdg': <OpType.Sdg: 26>, 'T': <OpType.T: 27>, 'Tdg': <OpType.Tdg: 28>, 'V': <OpType.V: 29>, 'Vdg': <OpType.Vdg: 30>, 'SX': <OpType.SX: 31>, 'SXdg': <OpType.SXdg: 32>, 'H': <OpType.H: 33>, 'Rx': <OpType.Rx: 34>, 'Ry': <OpType.Ry: 35>, 'Rz': <OpType.Rz: 36>, 'U1': <OpType.U1: 39>, 'U2': <OpType.U2: 38>, 'U3': <OpType.U3: 37>, 'TK1': <OpType.TK1: 40>, 'TK2': <OpType.TK2: 41>, 'CX': <OpType.CX: 42>, 'CY': <OpType.CY: 43>, 'CZ': <OpType.CZ: 44>, 'CH': <OpType.CH: 45>, 'CV': <OpType.CV: 46>, 'CVdg': <OpType.CVdg: 47>, 'CSX': <OpType.CSX: 48>, 'CSXdg': <OpType.CSXdg: 49>, 'CS': <OpType.CS: 50>, 'CSdg': <OpType.CSdg: 51>, 'CRz': <OpType.CRz: 52>, 'CRx': <OpType.CRx: 53>, 'CRy': <OpType.CRy: 54>, 'CU1': <OpType.CU1: 55>, 'CU3': <OpType.CU3: 56>, 'CCX': <OpType.CCX: 58>, 'ECR': <OpType.ECR: 66>, 'SWAP': <OpType.SWAP: 59>, 'CSWAP': <OpType.CSWAP: 60>, 'noop': <OpType.noop: 62>, 'Barrier': <OpType.Barrier: 8>, 'Label': <OpType.Label: 9>, 'Branch': <OpType.Branch: 10>, 'Goto': <OpType.Goto: 11>, 'Stop': <OpType.Stop: 12>, 'BRIDGE': <OpType.BRIDGE: 61>, 'Measure': <OpType.Measure: 63>, 'Reset': <OpType.Reset: 65>, 'CircBox': <OpType.CircBox: 84>, 'PhasePolyBox': <OpType.PhasePolyBox: 94>, 'Unitary1qBox': <OpType.Unitary1qBox: 85>, 'Unitary2qBox': <OpType.Unitary2qBox: 86>, 'Unitary3qBox': <OpType.Unitary3qBox: 87>, 'ExpBox': <OpType.ExpBox: 88>, 'PauliExpBox': <OpType.PauliExpBox: 89>, 'PauliExpPairBox': <OpType.PauliExpPairBox: 90>, 'PauliExpCommutingSetBox': <OpType.PauliExpCommutingSetBox: 91>, 'QControlBox': <OpType.QControlBox: 95>, 'ToffoliBox': <OpType.ToffoliBox: 107>, 'CustomGate': <OpType.CustomGate: 93>, 'Conditional': <OpType.Conditional: 104>, 'ISWAP': <OpType.ISWAP: 67>, 'PhasedISWAP': <OpType.PhasedISWAP: 79>, 'XXPhase': <OpType.XXPhase: 71>, 'YYPhase': <OpType.YYPhase: 72>, 'ZZPhase': <OpType.ZZPhase: 73>, 'XXPhase3': <OpType.XXPhase3: 74>, 'PhasedX': <OpType.PhasedX: 68>, 'NPhasedX': <OpType.NPhasedX: 69>, 'CnRy': <OpType.CnRy: 80>, 'CnX': <OpType.CnX: 81>, 'CnY': <OpType.CnY: 83>, 'CnZ': <OpType.CnZ: 82>, 'ZZMax': <OpType.ZZMax: 70>, 'ESWAP': <OpType.ESWAP: 75>, 'FSim': <OpType.FSim: 76>, 'Sycamore': <OpType.Sycamore: 77>, 'ISWAPMax': <OpType.ISWAPMax: 78>, 'ClassicalTransform': <OpType.ClassicalTransform: 13>, 'WASM': <OpType.WASM: 14>, 'SetBits': <OpType.SetBits: 15>, 'CopyBits': <OpType.CopyBits: 16>, 'RangePredicate': <OpType.RangePredicate: 17>, 'ExplicitPredicate': <OpType.ExplicitPredicate: 18>, 'ExplicitModifier': <OpType.ExplicitModifier: 19>, 'MultiBit': <OpType.MultiBit: 20>, 'ClassicalExpBox': <OpType.ClassicalExpBox: 103>, 'MultiplexorBox': <OpType.MultiplexorBox: 96>, 'MultiplexedRotationBox': <OpType.MultiplexedRotationBox: 97>, 'MultiplexedU2Box': <OpType.MultiplexedU2Box: 98>, 'MultiplexedTensoredU2Box': <OpType.MultiplexedTensoredU2Box: 99>, 'StatePreparationBox': <OpType.StatePreparationBox: 100>, 'DiagonalBox': <OpType.DiagonalBox: 101>}
+    __members__: typing.ClassVar[dict[str, OpType]]  # value = {'Phase': <OpType.Phase: 21>, 'Z': <OpType.Z: 22>, 'X': <OpType.X: 23>, 'Y': <OpType.Y: 24>, 'S': <OpType.S: 25>, 'Sdg': <OpType.Sdg: 26>, 'T': <OpType.T: 27>, 'Tdg': <OpType.Tdg: 28>, 'V': <OpType.V: 29>, 'Vdg': <OpType.Vdg: 30>, 'SX': <OpType.SX: 31>, 'SXdg': <OpType.SXdg: 32>, 'H': <OpType.H: 33>, 'Rx': <OpType.Rx: 34>, 'Ry': <OpType.Ry: 35>, 'Rz': <OpType.Rz: 36>, 'U1': <OpType.U1: 39>, 'U2': <OpType.U2: 38>, 'U3': <OpType.U3: 37>, 'TK1': <OpType.TK1: 40>, 'TK2': <OpType.TK2: 41>, 'CX': <OpType.CX: 42>, 'CY': <OpType.CY: 43>, 'CZ': <OpType.CZ: 44>, 'CH': <OpType.CH: 45>, 'CV': <OpType.CV: 46>, 'CVdg': <OpType.CVdg: 47>, 'CSX': <OpType.CSX: 48>, 'CSXdg': <OpType.CSXdg: 49>, 'CS': <OpType.CS: 50>, 'CSdg': <OpType.CSdg: 51>, 'CRz': <OpType.CRz: 52>, 'CRx': <OpType.CRx: 53>, 'CRy': <OpType.CRy: 54>, 'CU1': <OpType.CU1: 55>, 'CU3': <OpType.CU3: 56>, 'CCX': <OpType.CCX: 58>, 'ECR': <OpType.ECR: 66>, 'SWAP': <OpType.SWAP: 59>, 'CSWAP': <OpType.CSWAP: 60>, 'noop': <OpType.noop: 62>, 'Barrier': <OpType.Barrier: 8>, 'Label': <OpType.Label: 9>, 'Branch': <OpType.Branch: 10>, 'Goto': <OpType.Goto: 11>, 'Stop': <OpType.Stop: 12>, 'BRIDGE': <OpType.BRIDGE: 61>, 'Measure': <OpType.Measure: 63>, 'Reset': <OpType.Reset: 65>, 'CircBox': <OpType.CircBox: 84>, 'PhasePolyBox': <OpType.PhasePolyBox: 94>, 'Unitary1qBox': <OpType.Unitary1qBox: 85>, 'Unitary2qBox': <OpType.Unitary2qBox: 86>, 'Unitary3qBox': <OpType.Unitary3qBox: 87>, 'ExpBox': <OpType.ExpBox: 88>, 'PauliExpBox': <OpType.PauliExpBox: 89>, 'PauliExpPairBox': <OpType.PauliExpPairBox: 90>, 'PauliExpCommutingSetBox': <OpType.PauliExpCommutingSetBox: 91>, 'QControlBox': <OpType.QControlBox: 95>, 'ToffoliBox': <OpType.ToffoliBox: 107>, 'DummyBox': <OpType.DummyBox: 109>, 'CustomGate': <OpType.CustomGate: 93>, 'Conditional': <OpType.Conditional: 104>, 'ISWAP': <OpType.ISWAP: 67>, 'PhasedISWAP': <OpType.PhasedISWAP: 79>, 'XXPhase': <OpType.XXPhase: 71>, 'YYPhase': <OpType.YYPhase: 72>, 'ZZPhase': <OpType.ZZPhase: 73>, 'XXPhase3': <OpType.XXPhase3: 74>, 'PhasedX': <OpType.PhasedX: 68>, 'NPhasedX': <OpType.NPhasedX: 69>, 'CnRy': <OpType.CnRy: 80>, 'CnX': <OpType.CnX: 81>, 'CnY': <OpType.CnY: 83>, 'CnZ': <OpType.CnZ: 82>, 'ZZMax': <OpType.ZZMax: 70>, 'ESWAP': <OpType.ESWAP: 75>, 'FSim': <OpType.FSim: 76>, 'Sycamore': <OpType.Sycamore: 77>, 'ISWAPMax': <OpType.ISWAPMax: 78>, 'ClassicalTransform': <OpType.ClassicalTransform: 13>, 'WASM': <OpType.WASM: 14>, 'SetBits': <OpType.SetBits: 15>, 'CopyBits': <OpType.CopyBits: 16>, 'RangePredicate': <OpType.RangePredicate: 17>, 'ExplicitPredicate': <OpType.ExplicitPredicate: 18>, 'ExplicitModifier': <OpType.ExplicitModifier: 19>, 'MultiBit': <OpType.MultiBit: 20>, 'ClassicalExpBox': <OpType.ClassicalExpBox: 103>, 'MultiplexorBox': <OpType.MultiplexorBox: 96>, 'MultiplexedRotationBox': <OpType.MultiplexedRotationBox: 97>, 'MultiplexedU2Box': <OpType.MultiplexedU2Box: 98>, 'MultiplexedTensoredU2Box': <OpType.MultiplexedTensoredU2Box: 99>, 'StatePreparationBox': <OpType.StatePreparationBox: 100>, 'DiagonalBox': <OpType.DiagonalBox: 101>}
     noop: typing.ClassVar[OpType]  # value = <OpType.noop: 62>
     @staticmethod
     def from_name(arg0: str) -> OpType:
@@ -3400,6 +3510,60 @@ class RangePredicateOp(ClassicalEvalOp):
     def upper(self) -> int:
         """
         Inclusive upper bound.
+        """
+class ResourceBounds:
+    """
+    Structure holding a minimum and maximum value of some resource, where both values are unsigned integers.
+    """
+    def __init__(self, min: int, max: int) -> None:
+        """
+        Constructs a ResourceBounds object.
+        
+        :param min: minimum value
+        :param max: maximum value
+        """
+    def get_max(self) -> int:
+        """
+        :return: the maximum value
+        """
+    def get_min(self) -> int:
+        """
+        :return: the minimum value
+        """
+class ResourceData:
+    """
+    An object holding resource data for use in a :py:class:`DummyBox`.
+    
+    The object holds several fields representing minimum and maximum values for certain resources. The absence of an :py:class:`OpType` in one of these fields is interpreted as the absence of gates of that type in the (imagined) circuit.
+    
+    See :py:meth:`Circuit.get_resources` for how to use this data.
+    """
+    def __init__(self, op_type_count: dict[OpType, ResourceBounds], gate_depth: ResourceBounds, op_type_depth: dict[OpType, ResourceBounds], two_qubit_gate_depth: ResourceBounds) -> None:
+        """
+        Constructs a ResourceData object.
+        
+        :param op_type_count: dictionary of counts of selected :py:class:`OpType`
+        :param gate_depth: overall gate depth
+        :param op_type_depth: dictionary of depths of selected :py:class:`OpType`
+        :param two_qubit_gate_depth: overall two-qubit-gate depth
+        """
+    def __repr__(self) -> str:
+        ...
+    def get_gate_depth(self) -> ResourceBounds:
+        """
+        :return: bounds on the gate depth
+        """
+    def get_op_type_count(self) -> dict[OpType, ResourceBounds]:
+        """
+        :return: bounds on the op type count
+        """
+    def get_op_type_depth(self) -> dict[OpType, ResourceBounds]:
+        """
+        :return: bounds on the op type depth
+        """
+    def get_two_qubit_gate_depth(self) -> ResourceBounds:
+        """
+        :return: bounds on the two-qubit-gate depth
         """
 class SetBitsOp(ClassicalEvalOp):
     """
