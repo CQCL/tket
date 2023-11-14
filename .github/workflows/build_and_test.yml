@@ -393,7 +393,7 @@ jobs:
         python${{ matrix.python-version }} -m pip install -r requirements.txt
         python${{ matrix.python-version }} -m pytest --ignore=simulator/
     - name: Check type stubs are up-to-date and run mypy
-      if: matrix.os == 'macos-12' && (github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch')
+      if: matrix.os == 'macos-13-xlarge' && (github.event_name == 'pull_request' || github.event_name == 'workflow_dispatch')
       run: |
         python${{ matrix.python-version }} -m pip install -U mypy
         python${{ matrix.python-version }} -m pip install -U pybind11-stubgen
