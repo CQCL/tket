@@ -1,8 +1,8 @@
 Changelog
 =========
 
-Unreleased
-----------
+1.22.0 (November 2023)
+----------------------
 
 Minor new features:
 
