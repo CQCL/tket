@@ -21,6 +21,10 @@ Fixes:
   length 2.
 * Fix incorrect controlled ``ConjugationBox`` handling.
 
+General:
+
+* Drop support for MacOS 11.
+
 1.21.0 (October 2023)
 ---------------------
 
