@@ -31,3 +31,6 @@ pytket/tests/qasm_test_files/testout6.qasm
 # IDEs
 .idea
 .vscode
+
+#nix
+result

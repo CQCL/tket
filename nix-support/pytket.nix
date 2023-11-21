@@ -55,6 +55,7 @@ in {
       cp -r ${../pytket/pytket} pytket;
       cp ${../pytket/package.md} package.md;
       cp -r ${../schemas} schemas;
+      cp -r ${../pytket/mypy.ini} mypy.ini;
 
       # The usual build depends on setuptools-scm to extract the version.
       # We have already extracted the version within nix, so we can simply
@@ -80,6 +81,7 @@ in {
       } $out/lib/python${super.python3.pythonVersion}/site-packages/pytket/circuit/display/static;
     '';
     checkInputs = with super.python3.pkgs; [
+      mypy
       pytest
       pytest-cov
       pytest-benchmark
@@ -90,6 +92,11 @@ in {
     ] ++ [jsonschema-4180];
     checkPhase = ''
       export HOME=$TMPDIR;
+
+      # run mypy
+      python -m mypy --config-file=mypy.ini --no-incremental -p pytket -p test_root.tests;
+
+      # run tests
       chmod 700 $TMPDIR/test_root/tests/qasm_test_files;
       cd test_root/tests;
       python -m pytest -s .
