@@ -148,7 +148,6 @@ class NixBuild(build_ext):
                 shutil.copy(os.path.join("pytket/_tket", interface_file), extdir)
 
 
-
 plat_name = os.getenv("WHEEL_PLAT_NAME")
 
 
