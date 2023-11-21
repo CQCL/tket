@@ -74,10 +74,10 @@ in {
       # these directories aren't copied by setup.py, so we do it manually
       cp -r ${
         ../pytket/pytket/circuit/display/js
-      } $out/lib/python3.10/site-packages/pytket/circuit/display/js;
+      } $out/lib/python${super.python3.pythonVersion}/site-packages/pytket/circuit/display/js;
       cp -r ${
         ../pytket/pytket/circuit/display/static
-      } $out/lib/python3.10/site-packages/pytket/circuit/display/static;
+      } $out/lib/python${super.python3.pythonVersion}/site-packages/pytket/circuit/display/static;
     '';
     checkInputs = with super.python3.pkgs; [
       pytest
