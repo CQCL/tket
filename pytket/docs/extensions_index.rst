@@ -63,7 +63,7 @@ Emulators
 `IBMQEmulatorBackend`_ - A backend which uses the `AerBackend <https://tket.quantinuum.com/extensions/pytket-qiskit/api.html#pytket.extensions.qiskit.AerBackend>`_ to emulate the behavior of IBMQBackend.
 
 `QuantinuumBackend <https://tket.quantinuum.com/extensions/pytket-quantinuum/api.html#pytket.extensions.quantinuum.QuantinuumBackend>`_
-- The QuantinuumBackend has two available emulators namely H1-1E and H1-2E. These are device specific emulators for the H1-1 and H1-2 devices. These emualtors run remotely on a server.
+- The QuantinuumBackend has two available emulators namely H1-1E and H2-1E. These are device specific emulators for the H1-1 and H2-1 devices. These emulators run remotely on a server.
 
 Statevector Simulators
 ----------------------
