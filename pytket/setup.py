@@ -142,6 +142,7 @@ class NixBuild(build_ext):
                 libpath = os.path.join(binder, lib)
                 if not os.path.isdir(libpath):
                     shutil.copy(libpath, extdir)
+
         for interface_file in os.listdir("pytket/_tket"):
             if interface_file.endswith(".pyi") or interface_file.endswith(".py"):
                 shutil.copy(os.path.join("pytket/_tket", interface_file), extdir)
