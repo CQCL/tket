@@ -8,7 +8,7 @@
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>pytket.passes.auto_rebase &#8212; pytket 1.21.0 documentation</title>
+    <title>pytket.passes.auto_rebase &#8212; pytket 1.22.0 documentation</title>
   
   
   
@@ -18,12 +18,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="../../../_static/styles/theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-<link href="../../../_static/styles/bootstrap.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+  <link href="../../../_static/styles/theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="../../../_static/styles/bootstrap.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="../../../_static/styles/pydata-sphinx-theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
 
   
-  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+  <link href="../../../_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="../../../_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -36,9 +36,9 @@
     <link rel="stylesheet" type="text/css" href="../../../_static/custom.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
-<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
-  <script src="../../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
+  <link rel="preload" as="script" href="../../../_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6" />
+<link rel="preload" as="script" href="../../../_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6" />
+  <script src="../../../_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=365ca57ee442770a23c6"></script>
 
     <script data-url_root="../../../" id="documentation_options" src="../../../_static/documentation_options.js"></script>
     <script src="../../../_static/doctools.js"></script>
@@ -131,13 +131,14 @@
   
   
   
+  
     
     
       
     
     
-    <img src="../../../_static/Quantinuum_logo_black.png" class="logo__image only-light" alt="Logo image"/>
-    <script>document.write(`<img src="../../../_static/Quantinuum_logo_white.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+    <img src="../../../_static/Quantinuum_logo_black.png" class="logo__image only-light" alt="pytket 1.22.0 documentation - Home"/>
+    <script>document.write(`<img src="../../../_static/Quantinuum_logo_white.png" class="logo__image only-dark" alt="pytket 1.22.0 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -149,18 +150,38 @@
 <li class="toctree-l1"><a class="reference internal" href="../../../changelog.html">Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../install.html">Installation Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../../../faqs.html">TKET FAQs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="../../../opensource.html">Open Source Attribution</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">More Documentation:</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket/manual/index.html">Manual</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket-extensions/api/index.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/">TKET website</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/user-manual/">Manual</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../extensions.html">pytket extensions</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference external" href="https://cqcl.github.io/pytket-aqt/api/index.html">pytket-aqt</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-braket">pytket-braket</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-cirq">pytket-cirq</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-quantinuum">pytket-ionq</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-iqm">pytket-iqm</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-pennylane">pytket-pennylane</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-projectq">pytket-projectq</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-pyquil">pytket-pyquil</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-pysimplex">pytket-pysimplex</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-pyzx">pytket-pyzx</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qir">pytket-qir</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qir">pytket-qiskit</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://cqcl.github.io/pytket-qsharp/api/index.html">pytket-qsharp</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-quantinuum">pytket-quantinuum</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-cutensornet">pytket-cutensornet</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qulacs">pytket-qulacs</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://cqcl.github.io/pytket-qujax/api/index.html">pytket-qujax</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-stim">pytket-stim</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/examples">Example notebooks</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
 <ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="../../../backends.html">pytket.backends</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="../../../circuit.html">pytket.circuit</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="../../../circuit.html">pytket.circuit</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="../../../circuit_class.html">pytket.circuit.Circuit</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../optype.html">pytket.circuit.OpType</a></li>
 <li class="toctree-l2"><a class="reference internal" href="../../../classical.html">pytket.circuit.logic_exp</a></li>
@@ -361,11 +382,11 @@ document.write(`
 
 
 <span class="n">_CX_CIRCS</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">OpType</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[],</span> <span class="s2">&quot;Circuit&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="n">OpType</span><span class="o">.</span><span class="n">CX</span><span class="p">:</span> <span class="n">_library</span><span class="o">.</span><span class="n">_CX</span><span class="p">,</span>
-    <span class="n">OpType</span><span class="o">.</span><span class="n">ZZMax</span><span class="p">:</span> <span class="n">_library</span><span class="o">.</span><span class="n">_CX_using_ZZMax</span><span class="p">,</span>
-    <span class="n">OpType</span><span class="o">.</span><span class="n">XXPhase</span><span class="p">:</span> <span class="n">_library</span><span class="o">.</span><span class="n">_CX_using_XXPhase_0</span><span class="p">,</span>
-    <span class="n">OpType</span><span class="o">.</span><span class="n">ECR</span><span class="p">:</span> <span class="n">_library</span><span class="o">.</span><span class="n">_CX_using_ECR</span><span class="p">,</span>
-    <span class="n">OpType</span><span class="o">.</span><span class="n">CZ</span><span class="p">:</span> <span class="n">_library</span><span class="o">.</span><span class="n">_H_CZ_H</span><span class="p">,</span>
+    <span class="n">OpType</span><span class="o">.</span><span class="n">CX</span><span class="p">:</span> <span class="n">_library</span><span class="o">.</span><span class="n">CX</span><span class="p">,</span>
+    <span class="n">OpType</span><span class="o">.</span><span class="n">ZZMax</span><span class="p">:</span> <span class="n">_library</span><span class="o">.</span><span class="n">CX_using_ZZMax</span><span class="p">,</span>
+    <span class="n">OpType</span><span class="o">.</span><span class="n">XXPhase</span><span class="p">:</span> <span class="n">_library</span><span class="o">.</span><span class="n">CX_using_XXPhase_0</span><span class="p">,</span>
+    <span class="n">OpType</span><span class="o">.</span><span class="n">ECR</span><span class="p">:</span> <span class="n">_library</span><span class="o">.</span><span class="n">CX_using_ECR</span><span class="p">,</span>
+    <span class="n">OpType</span><span class="o">.</span><span class="n">CZ</span><span class="p">:</span> <span class="n">_library</span><span class="o">.</span><span class="n">H_CZ_H</span><span class="p">,</span>
 <span class="p">}</span>
 
 
@@ -375,16 +396,16 @@ document.write(`
 
 <span class="n">_TK2_CIRCS</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">OpType</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Param</span><span class="p">,</span> <span class="n">Param</span><span class="p">,</span> <span class="n">Param</span><span class="p">],</span> <span class="s2">&quot;Circuit&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
     <span class="n">OpType</span><span class="o">.</span><span class="n">TK2</span><span class="p">:</span> <span class="n">_TK2_using_TK2</span><span class="p">,</span>
-    <span class="n">OpType</span><span class="o">.</span><span class="n">ZZPhase</span><span class="p">:</span> <span class="n">_library</span><span class="o">.</span><span class="n">_TK2_using_ZZPhase</span><span class="p">,</span>
-    <span class="n">OpType</span><span class="o">.</span><span class="n">CX</span><span class="p">:</span> <span class="n">_library</span><span class="o">.</span><span class="n">_TK2_using_CX</span><span class="p">,</span>
-    <span class="n">OpType</span><span class="o">.</span><span class="n">ZZMax</span><span class="p">:</span> <span class="n">_library</span><span class="o">.</span><span class="n">_TK2_using_ZZMax</span><span class="p">,</span>
+    <span class="n">OpType</span><span class="o">.</span><span class="n">ZZPhase</span><span class="p">:</span> <span class="n">_library</span><span class="o">.</span><span class="n">TK2_using_ZZPhase</span><span class="p">,</span>
+    <span class="n">OpType</span><span class="o">.</span><span class="n">CX</span><span class="p">:</span> <span class="n">_library</span><span class="o">.</span><span class="n">TK2_using_CX</span><span class="p">,</span>
+    <span class="n">OpType</span><span class="o">.</span><span class="n">ZZMax</span><span class="p">:</span> <span class="n">_library</span><span class="o">.</span><span class="n">TK2_using_ZZMax</span><span class="p">,</span>
 <span class="p">}</span>
 
 <span class="n">_TK2_CIRCS_WIRE_SWAP</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">OpType</span><span class="p">,</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Param</span><span class="p">,</span> <span class="n">Param</span><span class="p">,</span> <span class="n">Param</span><span class="p">],</span> <span class="s2">&quot;Circuit&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="n">OpType</span><span class="o">.</span><span class="n">TK2</span><span class="p">:</span> <span class="n">_library</span><span class="o">.</span><span class="n">_TK2_using_TK2_or_swap</span><span class="p">,</span>
-    <span class="n">OpType</span><span class="o">.</span><span class="n">ZZPhase</span><span class="p">:</span> <span class="n">_library</span><span class="o">.</span><span class="n">_TK2_using_ZZPhase_and_swap</span><span class="p">,</span>
-    <span class="n">OpType</span><span class="o">.</span><span class="n">CX</span><span class="p">:</span> <span class="n">_library</span><span class="o">.</span><span class="n">_TK2_using_CX_and_swap</span><span class="p">,</span>
-    <span class="n">OpType</span><span class="o">.</span><span class="n">ZZMax</span><span class="p">:</span> <span class="n">_library</span><span class="o">.</span><span class="n">_TK2_using_ZZMax_and_swap</span><span class="p">,</span>
+    <span class="n">OpType</span><span class="o">.</span><span class="n">TK2</span><span class="p">:</span> <span class="n">_library</span><span class="o">.</span><span class="n">TK2_using_TK2_or_swap</span><span class="p">,</span>
+    <span class="n">OpType</span><span class="o">.</span><span class="n">ZZPhase</span><span class="p">:</span> <span class="n">_library</span><span class="o">.</span><span class="n">TK2_using_ZZPhase_and_swap</span><span class="p">,</span>
+    <span class="n">OpType</span><span class="o">.</span><span class="n">CX</span><span class="p">:</span> <span class="n">_library</span><span class="o">.</span><span class="n">TK2_using_CX_and_swap</span><span class="p">,</span>
+    <span class="n">OpType</span><span class="o">.</span><span class="n">ZZMax</span><span class="p">:</span> <span class="n">_library</span><span class="o">.</span><span class="n">TK2_using_ZZMax_and_swap</span><span class="p">,</span>
 <span class="p">}</span>
 
 
@@ -427,14 +448,14 @@ document.write(`
 
 
 <span class="n">_TK1_circs</span><span class="p">:</span> <span class="n">Dict</span><span class="p">[</span><span class="n">FrozenSet</span><span class="p">[</span><span class="n">OpType</span><span class="p">],</span> <span class="n">Callable</span><span class="p">[[</span><span class="n">Param</span><span class="p">,</span> <span class="n">Param</span><span class="p">,</span> <span class="n">Param</span><span class="p">],</span> <span class="s2">&quot;Circuit&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="p">{</span>
-    <span class="nb">frozenset</span><span class="p">({</span><span class="n">OpType</span><span class="o">.</span><span class="n">TK1</span><span class="p">}):</span> <span class="n">_library</span><span class="o">.</span><span class="n">_TK1_to_TK1</span><span class="p">,</span>
-    <span class="nb">frozenset</span><span class="p">({</span><span class="n">OpType</span><span class="o">.</span><span class="n">PhasedX</span><span class="p">,</span> <span class="n">OpType</span><span class="o">.</span><span class="n">Rz</span><span class="p">}):</span> <span class="n">_library</span><span class="o">.</span><span class="n">_TK1_to_PhasedXRz</span><span class="p">,</span>
-    <span class="nb">frozenset</span><span class="p">({</span><span class="n">OpType</span><span class="o">.</span><span class="n">Rx</span><span class="p">,</span> <span class="n">OpType</span><span class="o">.</span><span class="n">Rz</span><span class="p">}):</span> <span class="n">_library</span><span class="o">.</span><span class="n">_TK1_to_RzRx</span><span class="p">,</span>
+    <span class="nb">frozenset</span><span class="p">({</span><span class="n">OpType</span><span class="o">.</span><span class="n">TK1</span><span class="p">}):</span> <span class="n">_library</span><span class="o">.</span><span class="n">TK1_to_TK1</span><span class="p">,</span>
+    <span class="nb">frozenset</span><span class="p">({</span><span class="n">OpType</span><span class="o">.</span><span class="n">PhasedX</span><span class="p">,</span> <span class="n">OpType</span><span class="o">.</span><span class="n">Rz</span><span class="p">}):</span> <span class="n">_library</span><span class="o">.</span><span class="n">TK1_to_PhasedXRz</span><span class="p">,</span>
+    <span class="nb">frozenset</span><span class="p">({</span><span class="n">OpType</span><span class="o">.</span><span class="n">Rx</span><span class="p">,</span> <span class="n">OpType</span><span class="o">.</span><span class="n">Rz</span><span class="p">}):</span> <span class="n">_library</span><span class="o">.</span><span class="n">TK1_to_RzRx</span><span class="p">,</span>
     <span class="nb">frozenset</span><span class="p">({</span><span class="n">OpType</span><span class="o">.</span><span class="n">Ry</span><span class="p">,</span> <span class="n">OpType</span><span class="o">.</span><span class="n">Rx</span><span class="p">}):</span> <span class="n">_TK1_to_RxRy</span><span class="p">,</span>
-    <span class="nb">frozenset</span><span class="p">({</span><span class="n">OpType</span><span class="o">.</span><span class="n">Rz</span><span class="p">,</span> <span class="n">OpType</span><span class="o">.</span><span class="n">H</span><span class="p">}):</span> <span class="n">_library</span><span class="o">.</span><span class="n">_TK1_to_RzH</span><span class="p">,</span>
+    <span class="nb">frozenset</span><span class="p">({</span><span class="n">OpType</span><span class="o">.</span><span class="n">Rz</span><span class="p">,</span> <span class="n">OpType</span><span class="o">.</span><span class="n">H</span><span class="p">}):</span> <span class="n">_library</span><span class="o">.</span><span class="n">TK1_to_RzH</span><span class="p">,</span>
     <span class="nb">frozenset</span><span class="p">({</span><span class="n">OpType</span><span class="o">.</span><span class="n">Rz</span><span class="p">,</span> <span class="n">OpType</span><span class="o">.</span><span class="n">SX</span><span class="p">,</span> <span class="n">OpType</span><span class="o">.</span><span class="n">X</span><span class="p">}):</span> <span class="n">_TK1_to_X_SX_Rz</span><span class="p">,</span>
     <span class="nb">frozenset</span><span class="p">({</span><span class="n">OpType</span><span class="o">.</span><span class="n">Rz</span><span class="p">,</span> <span class="n">OpType</span><span class="o">.</span><span class="n">SX</span><span class="p">}):</span> <span class="n">_TK1_to_X_SX_Rz</span><span class="p">,</span>
-    <span class="nb">frozenset</span><span class="p">({</span><span class="n">OpType</span><span class="o">.</span><span class="n">Rz</span><span class="p">,</span> <span class="n">OpType</span><span class="o">.</span><span class="n">SX</span><span class="p">}):</span> <span class="n">_library</span><span class="o">.</span><span class="n">_TK1_to_RzSX</span><span class="p">,</span>
+    <span class="nb">frozenset</span><span class="p">({</span><span class="n">OpType</span><span class="o">.</span><span class="n">Rz</span><span class="p">,</span> <span class="n">OpType</span><span class="o">.</span><span class="n">SX</span><span class="p">}):</span> <span class="n">_library</span><span class="o">.</span><span class="n">TK1_to_RzSX</span><span class="p">,</span>
     <span class="nb">frozenset</span><span class="p">({</span><span class="n">OpType</span><span class="o">.</span><span class="n">U3</span><span class="p">}):</span> <span class="n">_TK1_to_U</span><span class="p">,</span>
 <span class="p">}</span>
 
@@ -479,7 +500,7 @@ document.write(`
     <span class="c1"># if the gateset has CX but not TK2, and implicit wire swaps not allowed:</span>
     <span class="c1"># rebase via CX</span>
     <span class="k">if</span> <span class="n">OpType</span><span class="o">.</span><span class="n">CX</span> <span class="ow">in</span> <span class="n">gateset</span> <span class="ow">and</span> <span class="n">OpType</span><span class="o">.</span><span class="n">TK2</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">gateset</span> <span class="ow">and</span> <span class="ow">not</span> <span class="n">allow_swaps</span><span class="p">:</span>
-        <span class="k">return</span> <span class="n">RebaseCustom</span><span class="p">(</span><span class="n">gateset</span><span class="p">,</span> <span class="n">_library</span><span class="o">.</span><span class="n">_CX</span><span class="p">(),</span> <span class="n">tk1</span><span class="p">)</span>
+        <span class="k">return</span> <span class="n">RebaseCustom</span><span class="p">(</span><span class="n">gateset</span><span class="p">,</span> <span class="n">_library</span><span class="o">.</span><span class="n">CX</span><span class="p">(),</span> <span class="n">tk1</span><span class="p">)</span>
     <span class="c1"># in other cases, try to rebase via TK2 first</span>
     <span class="k">try</span><span class="p">:</span>
         <span class="k">return</span> <span class="n">RebaseCustom</span><span class="p">(</span><span class="n">gateset</span><span class="p">,</span> <span class="n">get_tk2_decomposition</span><span class="p">(</span><span class="n">gateset</span><span class="p">,</span> <span class="n">allow_swaps</span><span class="p">),</span> <span class="n">tk1</span><span class="p">)</span>
@@ -567,8 +588,8 @@ By Quantinuum
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="../../../_static/scripts/bootstrap.js?digest=ac02cc09edc035673794"></script>
-<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794"></script>
+  <script src="../../../_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6"></script>
+<script src="../../../_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6"></script>
 
   <footer class="bd-footer">
   </footer>

@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>pytket.logging &#8212; pytket 1.21.0 documentation</title>
+    <title>pytket.logging &#8212; pytket 1.22.0 documentation</title>
   
   
   
@@ -19,12 +19,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
 
   
-  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -37,9 +37,9 @@
     <link rel="stylesheet" type="text/css" href="_static/custom.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
-  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6" />
+  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=365ca57ee442770a23c6"></script>
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/doctools.js"></script>
@@ -134,13 +134,14 @@
   
   
   
+  
     
     
       
     
     
-    <img src="_static/Quantinuum_logo_black.png" class="logo__image only-light" alt="Logo image"/>
-    <script>document.write(`<img src="_static/Quantinuum_logo_white.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+    <img src="_static/Quantinuum_logo_black.png" class="logo__image only-light" alt="pytket 1.22.0 documentation - Home"/>
+    <script>document.write(`<img src="_static/Quantinuum_logo_white.png" class="logo__image only-dark" alt="pytket 1.22.0 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -152,18 +153,38 @@
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faqs.html">TKET FAQs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="opensource.html">Open Source Attribution</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">More Documentation:</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket/manual/index.html">Manual</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket-extensions/api/index.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/">TKET website</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/user-manual/">Manual</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="extensions.html">pytket extensions</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference external" href="https://cqcl.github.io/pytket-aqt/api/index.html">pytket-aqt</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-braket">pytket-braket</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-cirq">pytket-cirq</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-quantinuum">pytket-ionq</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-iqm">pytket-iqm</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-pennylane">pytket-pennylane</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-projectq">pytket-projectq</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-pyquil">pytket-pyquil</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-pysimplex">pytket-pysimplex</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-pyzx">pytket-pyzx</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qir">pytket-qir</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qir">pytket-qiskit</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://cqcl.github.io/pytket-qsharp/api/index.html">pytket-qsharp</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-quantinuum">pytket-quantinuum</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-cutensornet">pytket-cutensornet</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qulacs">pytket-qulacs</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://cqcl.github.io/pytket-qujax/api/index.html">pytket-qujax</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-stim">pytket-stim</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/examples">Example notebooks</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="backends.html">pytket.backends</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="circuit.html">pytket.circuit</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="circuit.html">pytket.circuit</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="circuit_class.html">pytket.circuit.Circuit</a></li>
 <li class="toctree-l2"><a class="reference internal" href="optype.html">pytket.circuit.OpType</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classical.html">pytket.circuit.logic_exp</a></li>
@@ -526,8 +547,8 @@ By Quantinuum
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=ac02cc09edc035673794"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794"></script>
+  <script src="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6"></script>
 
   <footer class="bd-footer">
   </footer>

@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>Installation Troubleshooting &#8212; pytket 1.22.0 documentation</title>
+    <title>pytket extensions &#8212; pytket 1.22.0 documentation</title>
   
   
   
@@ -50,11 +50,11 @@
     <script src="_static/scripts/sphinx-book-theme.js?digest=5a5c038af52cf7bc1a1ec88eea08e6366ee68824"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@jupyter-widgets/html-manager@^1.0.1/dist/embed-amd.js"></script>
-    <script>DOCUMENTATION_OPTIONS.pagename = 'install';</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'extensions';</script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
-    <link rel="next" title="TKET FAQs" href="faqs.html" />
-    <link rel="prev" title="Changelog" href="changelog.html" />
+    <link rel="next" title="pytket.backends" href="backends.html" />
+    <link rel="prev" title="TKET FAQs" href="faqs.html" />
   <meta name="viewport" content="width=device-width, initial-scale=1"/>
   <meta name="docsearch:language" content="en"/>
   </head>
@@ -148,17 +148,17 @@
         <div class="sidebar-primary-item"><nav class="bd-links" id="bd-docs-nav" aria-label="Main">
     <div class="bd-toc-item navbar-nav active">
         <p aria-level="2" class="caption" role="heading"><span class="caption-text">Introduction:</span></p>
-<ul class="current nav bd-sidenav">
+<ul class="nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="getting_started.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
-<li class="toctree-l1 current active"><a class="current reference internal" href="#">Installation Troubleshooting</a></li>
+<li class="toctree-l1"><a class="reference internal" href="install.html">Installation Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faqs.html">TKET FAQs</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">More Documentation:</span></p>
-<ul class="nav bd-sidenav">
+<ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/">TKET website</a></li>
 <li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/user-manual/">Manual</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="extensions.html">pytket extensions</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">pytket extensions</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference external" href="https://cqcl.github.io/pytket-aqt/api/index.html">pytket-aqt</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-braket">pytket-braket</a></li>
 <li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-cirq">pytket-cirq</a></li>
@@ -280,7 +280,7 @@
       
       
       
-      <li><a href="https://github.com/CQCL/tket/issues/new?title=Issue%20on%20page%20%2Finstall.html&body=Your%20issue%20content%20here." target="_blank"
+      <li><a href="https://github.com/CQCL/tket/issues/new?title=Issue%20on%20page%20%2Fextensions.html&body=Your%20issue%20content%20here." target="_blank"
    class="btn btn-sm btn-source-issues-button dropdown-item"
    title="Open an issue"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -310,7 +310,7 @@
       
       
       
-      <li><a href="_sources/install.rst" target="_blank"
+      <li><a href="_sources/extensions.rst" target="_blank"
    class="btn btn-sm btn-download-source-button dropdown-item"
    title="Download source file"
    data-bs-placement="left" data-bs-toggle="tooltip"
@@ -392,7 +392,7 @@ document.write(`
               
 
 <div id="jb-print-docs-body" class="onlyprint">
-    <h1>Installation Troubleshooting</h1>
+    <h1>pytket extensions</h1>
     <!-- Table of contents -->
     <div id="print-main-content">
         <div id="jb-print-toc">
@@ -402,17 +402,15 @@ document.write(`
             </div>
             <nav aria-label="Page">
                 <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#general-installation-instructions">General Installation Instructions</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-tket-from-source">Building TKET from source</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation-faqs">Installation FAQs</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#is-there-a-build-of-pytket-for-my-system">Is there a build of <code class="docutils literal notranslate"><span class="pre">pytket</span></code> for my system?</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#can-i-build-tket-from-source-without-using-conan">Can I build TKET from source without using conan?</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#do-all-versions-of-pytket-work-with-windows">Do all versions of <code class="docutils literal notranslate"><span class="pre">pytket</span></code> work with Windows?</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket-installed-but-modules-mentioned-in-the-docs-could-not-be-found-why"><code class="docutils literal notranslate"><span class="pre">pytket</span></code> installed but modules mentioned in the docs could not be found. Why?</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#when-i-ran-pip-install-pytket-i-could-only-get-an-old-version-what-gives">When I ran <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pytket</span></code>, I could only get an old version. What gives?</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#i-ve-tried-the-recommended-actions-here-and-it-still-won-t-work-what-can-i-do">I’ve tried the recommended actions here and it still won’t work! What can I do?</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#types-of-backend">Types of Backend</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#qpus">QPUs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cloud-access">Cloud Access</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#emulators">Emulators</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#statevector-simulators">Statevector Simulators</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unitary-simulators">Unitary Simulators</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#density-matrix-simulators">Density Matrix Simulators</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clifford-simulators">Clifford Simulators</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#other">Other</a></li>
 </ul>
             </nav>
         </div>
@@ -424,74 +422,122 @@ document.write(`
 <div id="searchbox"></div>
                 <article class="bd-article" role="main">
                   
-  <section id="installation-troubleshooting">
-<h1>Installation Troubleshooting<a class="headerlink" href="#installation-troubleshooting" title="Permalink to this heading">#</a></h1>
-<section id="general-installation-instructions">
-<h2>General Installation Instructions<a class="headerlink" href="#general-installation-instructions" title="Permalink to this heading">#</a></h2>
-<p>To install the core <code class="docutils literal notranslate"><span class="pre">pytket</span></code> package, run</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">pytket</span>
+  <section id="pytket-extensions">
+<h1>pytket extensions<a class="headerlink" href="#pytket-extensions" title="Permalink to this heading">#</a></h1>
+<p>The pytket extensions are separate python modules which allow pytket to interface with backends from a range of providers including quantum devices from Quantinuum and IBM.
+In pytket a <code class="docutils literal notranslate"><span class="pre">Backend</span></code> represents a connection to a QPU (Quantum Processing Unit) or simulator for processing quantum circuits. One can also access additional quantum devices and simulators via the cloud through the extensions for <a class="reference external" href="https://cqcl.github.io/pytket-qsharp/api/api.html#pytket.extensions.qsharp.AzureBackend">Azure</a> and <a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-braket/api/api.html#pytket.extensions.braket.BraketBackend">Braket</a> .</p>
+<p>Additionally, the extensions allow pytket to cross-compile circuits from different quantum computing libraries with the extensions for <a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qiskit/api/index.html">qiskit</a>, <a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-cirq/api/index.html">cirq</a> and <a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-pennylane/api/index.html">pennylane</a> . This enables pytket’s compilation features to be used in conjunction with other software tools.</p>
+<p>The additional modules can be installed adding the extension name to the installation command for pytket. For example pytket-quantinuum can be installed by running</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">pytket</span><span class="o">-</span><span class="n">quantinuum</span>
 </pre></div>
 </div>
-<p>If the <code class="docutils literal notranslate"><span class="pre">pip</span></code> command is linked to a Python 2 distribution, you will need to replace it with <code class="docutils literal notranslate"><span class="pre">pip3</span></code> and use <code class="docutils literal notranslate"><span class="pre">python3</span></code> for running your code, or use <code class="docutils literal notranslate"><span class="pre">python</span> <span class="pre">-m</span> <span class="pre">pip</span></code>.</p>
-<p>The additional modules <code class="docutils literal notranslate"><span class="pre">pytket-X</span></code> (where <code class="docutils literal notranslate"><span class="pre">X</span></code> is <code class="docutils literal notranslate"><span class="pre">qiskit</span></code>, <code class="docutils literal notranslate"><span class="pre">pyquil</span></code>, etc.) can be installed in the same way, as</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">pytket</span><span class="o">-</span><span class="n">X</span>
-</pre></div>
+<p>The types of <code class="docutils literal notranslate"><span class="pre">Backend</span></code> available in pytket are the following</p>
+<section id="types-of-backend">
+<h2>Types of Backend<a class="headerlink" href="#types-of-backend" title="Permalink to this heading">#</a></h2>
+<ul class="simple">
+<li><p><strong>QPUs</strong> - These are real quantum computers that return shots based results. E.g the <a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-quantinuum/api.html#pytket.extensions.quantinuum.QuantinuumBackend">QuantinuumBackend</a> .</p></li>
+<li><p><strong>Cloud Access</strong> - Cloud backends allow pytket to interface with cloud platforms to access additional QPUs and simulators. E.g <a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-braket/api.html#pytket.extensions.braket.BraketBackend">BraketBackend</a> .</p></li>
+<li><p><strong>Emulators</strong> - These classically simulate a circuit and produce shots based results. Sometimes emulators use a noise model and have connectivity constraints to emulate real QPUs. E.g. <a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qiskit/api/api.html#pytket.extensions.qiskit.IBMQEmulatorBackend">IBMQEmulatorBackend</a></p></li>
+<li><p><strong>Statevector Simulators</strong> - Calculates the pure quantum state prepared by a circuit returning a vector/ndarray. Examples of statevector simulators are the <a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-pyquil/api/api.html#pytket.extensions.pyquil.ForestStateBackend">ForestStateBackend</a> and the <a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qiskit/api.html#pytket.extensions.qiskit.AerStateBackend">AerStateBackend</a>.</p></li>
+<li><p><strong>Unitary Simulators</strong> - Unitary simulators calculate the unitary operator that is applied by a circuit. A unitary matrix/ndarray is returned <a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qiskit/api/api.html#pytket.extensions.qiskit.AerUnitaryBackend">AerUnitaryBackend</a> is an example of such a simulator.</p></li>
+<li><p><strong>Density Matrix Simulators</strong> - These simulators compute the density matrix prepared by a circuit. The result can be a statistical mixture of states in contrast to statevector simulation. E.g. <a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-cirq/api/api.html#pytket.extensions.cirq.CirqDensityMatrixSampleBackend">CirqDensityMatrixSampleBackend</a></p></li>
+<li><p><strong>Other specialised simulators</strong> - There are extensions for simulating specific types of circuit. For instance the <a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-simplex/api.html#pytket.extensions.pysimplex.SimplexBackend">SimplexBackend</a> is designed to simulate Clifford circuits.</p></li>
+</ul>
+<p>A full list of available pytket backends is shown below.</p>
+</section>
+<section id="qpus">
+<h2>QPUs<a class="headerlink" href="#qpus" title="Permalink to this heading">#</a></h2>
+<p><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-quantinuum/api.html#pytket.extensions.quantinuum.QuantinuumBackend">QuantinuumBackend</a>
+- Interface to a remote Quantinuum device or simulator. There are currently two Quantinuum devices offered (H1-1 and H2-1).</p>
+<p><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qiskit/api.html#pytket.extensions.qiskit.IBMQBackend">IBMQBackend</a>
+- A backend for running circuits on remote IBMQ devices.</p>
+<p><a class="reference external" href="https://cqcl.github.io/pytket-ionq/api/api.html#pytket.extensions.ionq.IonQBackend">IonQBackend</a>
+- A backend for running circuits on remote IONQ devices.</p>
+<p><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-pyquil/api.html#pytket.extensions.pyquil.ForestBackend">ForestBackend</a>
+- A backend for running circuits on remote Rigetti devices.</p>
+<p><a class="reference external" href="https://cqcl.github.io/pytket-aqt/api/api.html#pytket.extensions.aqt.AQTBackend">AQTBackend</a>
+- Interface to an AQT device or simulator.</p>
+<p><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-iqm/api.html#pytket.extensions.iqm.IQMBackend">IQMBackend</a>
+- Interface to an IQM device or simulator.</p>
+</section>
+<section id="cloud-access">
+<h2>Cloud Access<a class="headerlink" href="#cloud-access" title="Permalink to this heading">#</a></h2>
+<p><a class="reference external" href="https://cqcl.github.io/pytket-qsharp/api/api.html#pytket.extensions.qsharp.AzureBackend">AzureBackend</a>
+- Backend for running circuits remotely using Azure Quantum devices and simulators.</p>
+<p><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-braket/api.html#pytket.extensions.braket.BraketBackend">BraketBackend</a>
+- Interface to Amazon Braket service.</p>
+</section>
+<section id="emulators">
+<h2>Emulators<a class="headerlink" href="#emulators" title="Permalink to this heading">#</a></h2>
+<p><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qiskit/api/api.html#pytket.extensions.qiskit.IBMQEmulatorBackend">IBMQEmulatorBackend</a> - A backend which uses the <a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qiskit/api.html#pytket.extensions.qiskit.AerBackend">AerBackend</a> to emulate the behavior of IBMQBackend.</p>
+<p><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-quantinuum/api.html#pytket.extensions.quantinuum.QuantinuumBackend">QuantinuumBackend</a>
+- The QuantinuumBackend has two available emulators namely H1-1E and H2-1E. These are device specific emulators for the H1-1 and H2-1 devices. These emulators run remotely on a server.</p>
+</section>
+<section id="statevector-simulators">
+<h2>Statevector Simulators<a class="headerlink" href="#statevector-simulators" title="Permalink to this heading">#</a></h2>
+<p><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-cirq/api.html#pytket.extensions.cirq.CirqStateSampleBackend">CirqStateSampleBackend</a>
+- Backend for Cirq statevector simulator sampling.</p>
+<p><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-cirq/api.html#pytket.extensions.cirq.CirqStateSimBackend">CirqStateSimBackend</a>
+- Backend for Cirq statevector simulator state return.</p>
+<p><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qiskit/api.html#pytket.extensions.qiskit.AerStateBackend">AerStateBackend</a> - Backend for running simulations on the Qiskit Aer Statevector simulator.</p>
+<p><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-pyquil/api/api.html#pytket.extensions.pyquil.ForestStateBackend">ForestStateBackend</a> - State-based interface to a Rigetti device.</p>
+<p><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-projectq/api.html#pytket.extensions.projectq.ProjectQBackend">ProjectQBackend</a>
+- Backend for running statevector simulations on the ProjectQ simulator.</p>
+</section>
+<section id="unitary-simulators">
+<h2>Unitary Simulators<a class="headerlink" href="#unitary-simulators" title="Permalink to this heading">#</a></h2>
+<p><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qiskit/api/api.html#pytket.extensions.qiskit.AerUnitaryBackend">AerUnitaryBackend</a> - Backend for running simulations on the Qiskit Aer unitary simulator.</p>
+</section>
+<section id="density-matrix-simulators">
+<h2>Density Matrix Simulators<a class="headerlink" href="#density-matrix-simulators" title="Permalink to this heading">#</a></h2>
+<p><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-cirq/api/api.html#pytket.extensions.cirq.CirqDensityMatrixSampleBackend">CirqDensityMatrixSampleBackend</a>
+- Backend for Cirq density matrix simulator sampling.</p>
+<p><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-cirq/api.html#pytket.extensions.cirq.CirqDensityMatrixSimBackend">CirqDensityMatrixSimBackend</a>
+- Backend for Cirq density matrix simulator density_matrix return.</p>
+</section>
+<section id="clifford-simulators">
+<h2>Clifford Simulators<a class="headerlink" href="#clifford-simulators" title="Permalink to this heading">#</a></h2>
+<p><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-cirq/api.html#pytket.extensions.cirq.CirqCliffordSampleBackend">CirqCliffordSampleBackend</a>
+- Backend for Cirq Clifford simulator sampling.</p>
+<p><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-cirq/api.html#pytket.extensions.cirq.CirqCliffordSimBackend">CirqCliffordSimBackend</a>
+- Backend for Cirq Clifford simulator state return.</p>
+<p><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-simplex/api.html#pytket.extensions.pysimplex.SimplexBackend">SimplexBackend</a>- Backend for simulating Clifford circuits using pysimplex.</p>
+<p><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-stim/api.html#pytket.extensions.stim.StimBackend">StimBackend</a>
+- Backend for simulating Clifford circuits using Stim.</p>
+</section>
+<section id="other">
+<h2>Other<a class="headerlink" href="#other" title="Permalink to this heading">#</a></h2>
+<p><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qiskit/api.html#pytket.extensions.qiskit.AerBackend">AerBackend</a>
+- Backend for running simulations on the Qiskit Aer QASM simulator. This simulator is noiseless by default but can take a user defined <code class="docutils literal notranslate"><span class="pre">NoiseModel</span></code>.</p>
+<p><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qulacs/api.html#pytket.extensions.qulacs.QulacsBackend">QulacsBackend</a>
+- Backend for running simulations of variational quantum circuits on the Qulacs simulator.</p>
+<p><a class="reference external" href="https://cqcl.github.io/pytket-qsharp/api/api.html#pytket.extensions.qsharp.QsharpSimulatorBackend">QsharpSimulatorBackend</a>
+- Backend for simulating a circuit using the QDK.</p>
+<p><a class="reference external" href="https://cqcl.github.io/pytket-qsharp/api/api.html#pytket.extensions.qsharp.QsharpToffoliSimulatorBackend">QsharpToffoliSimulatorBackend</a>
+- Backend for simulating a Toffoli circuit using the QDK.</p>
+<div class="toctree-wrapper compound">
+<p aria-level="2" class="caption" role="heading"><span class="caption-text">Extensions:</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket-aqt/api/index.html">pytket-aqt</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-braket">pytket-braket</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-cirq">pytket-cirq</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-quantinuum">pytket-ionq</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-iqm">pytket-iqm</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-pennylane">pytket-pennylane</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-projectq">pytket-projectq</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-pyquil">pytket-pyquil</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-pysimplex">pytket-pysimplex</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-pyzx">pytket-pyzx</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qir">pytket-qir</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qir">pytket-qiskit</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket-qsharp/api/index.html">pytket-qsharp</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-quantinuum">pytket-quantinuum</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-cutensornet">pytket-cutensornet</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qulacs">pytket-qulacs</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket-qujax/api/index.html">pytket-qujax</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-stim">pytket-stim</a></li>
+</ul>
 </div>
-<p>You can update your installation to the most recent version using</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="o">--</span><span class="n">upgrade</span> <span class="n">pytket</span>
-</pre></div>
-</div>
-</section>
-<section id="building-tket-from-source">
-<h2>Building TKET from source<a class="headerlink" href="#building-tket-from-source" title="Permalink to this heading">#</a></h2>
-<p>TKET can be built from source by compiling the C++. This is now possible on MacOS, Windows and Linux (including ARM Linux).</p>
-<p>For instructions on how to do this see the <a class="reference external" href="https://github.com/CQCL/tket#how-to-build-tket-and-pytket">tket repository README</a>.</p>
-</section>
-<section id="installation-faqs">
-<h2>Installation FAQs<a class="headerlink" href="#installation-faqs" title="Permalink to this heading">#</a></h2>
-<section id="is-there-a-build-of-pytket-for-my-system">
-<h3>Is there a build of <code class="docutils literal notranslate"><span class="pre">pytket</span></code> for my system?<a class="headerlink" href="#is-there-a-build-of-pytket-for-my-system" title="Permalink to this heading">#</a></h3>
-<p>The core pytket package, as well as the separate extension modules are available on PyPI. Wheels are built to work on Linux, MacOS and Windows with Python versions 3.9, 3.10, or 3.11, and <code class="docutils literal notranslate"><span class="pre">pip</span></code> version 20.0.0+.</p>
-<div class="admonition note">
-<p class="admonition-title">Note</p>
-<p>On M1-based Macs running in native (arm64) mode, this command may fail
-because of an issue installing <code class="docutils literal notranslate"><span class="pre">scipy</span></code>. To fix this:</p>
-<ol class="arabic simple">
-<li><p>Install <a class="reference external" href="https://brew.sh/">brew</a> (if you haven’t already);</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">brew</span> <span class="pre">install</span> <span class="pre">openblas</span></code>;</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">-U</span> <span class="pre">pip</span> <span class="pre">wheel</span></code>;</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">OPENBLAS=&quot;$(brew</span> <span class="pre">--prefix</span> <span class="pre">openblas)&quot;</span> <span class="pre">pip</span> <span class="pre">install</span> <span class="pre">scipy</span></code>;</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pytket</span></code></p></li>
-</ol>
-</div>
-</section>
-<section id="can-i-build-tket-from-source-without-using-conan">
-<h3>Can I build TKET from source without using conan?<a class="headerlink" href="#can-i-build-tket-from-source-without-using-conan" title="Permalink to this heading">#</a></h3>
-<p>Yes, this is possible. To do so this follow <a class="reference external" href="https://github.com/CQCL/tket/blob/develop/build-without-conan.md">this guide</a> .</p>
-</section>
-<section id="do-all-versions-of-pytket-work-with-windows">
-<h3>Do all versions of <code class="docutils literal notranslate"><span class="pre">pytket</span></code> work with Windows?<a class="headerlink" href="#do-all-versions-of-pytket-work-with-windows" title="Permalink to this heading">#</a></h3>
-<p><code class="docutils literal notranslate"><span class="pre">pytket</span></code> versions 0.6 and above are compatible with most recent versions of Windows. LTSC versions of Windows are not supported and an <a class="reference external" href="https://github.com/CQCL/pytket/issues/36">issue</a> has been reported with these.</p>
-</section>
-<section id="pytket-installed-but-modules-mentioned-in-the-docs-could-not-be-found-why">
-<h3><code class="docutils literal notranslate"><span class="pre">pytket</span></code> installed but modules mentioned in the docs could not be found. Why?<a class="headerlink" href="#pytket-installed-but-modules-mentioned-in-the-docs-could-not-be-found-why" title="Permalink to this heading">#</a></h3>
-<p>Some of the modules concerning interaction with another software package (e.g. <code class="docutils literal notranslate"><span class="pre">qiskit</span></code>, <code class="docutils literal notranslate"><span class="pre">pyquil</span></code>, etc.) need to be installed separately.</p>
-<p>Otherwise, this may be that the version of <code class="docutils literal notranslate"><span class="pre">pytket</span></code> you obtained is not the most recent version released. We only publish our docs for the most recent version of <code class="docutils literal notranslate"><span class="pre">pytket</span></code>.</p>
-</section>
-<section id="when-i-ran-pip-install-pytket-i-could-only-get-an-old-version-what-gives">
-<h3>When I ran <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pytket</span></code>, I could only get an old version. What gives?<a class="headerlink" href="#when-i-ran-pip-install-pytket-i-could-only-get-an-old-version-what-gives" title="Permalink to this heading">#</a></h3>
-<p>At a couple of points in the development of the software, we had to increase the system requirements. Obtaining an old version from PyPI is likely the result of that being the most recent version compliant with your system.</p>
-<p>One possibility is that you are using an old version of <code class="docutils literal notranslate"><span class="pre">pip</span></code> that cannot accept the more recent Linux builds. Try running <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">--upgrade</span> <span class="pre">pip</span></code> to upgrade it to the most recent version and upgrade <code class="docutils literal notranslate"><span class="pre">pytket</span></code>.</p>
-<p>As of pytket release 1.11.0 installing the latest version of pytket requires python version 3.9, 3.10 or 3.11. If you have an older version of python then you will need to upgrade it to use the latest version of pytket and the extensions.</p>
-<p>There is a <a class="reference external" href="https://github.com/CQCL/tket/issues/926">known issue</a> with
-installing pytket in a conda environment on MacOS: you may not be able to
-install versions more recent then 1.11.0. The only known remedy is to use an
-official Python distribution instead.</p>
-</section>
-<section id="i-ve-tried-the-recommended-actions-here-and-it-still-won-t-work-what-can-i-do">
-<h3>I’ve tried the recommended actions here and it still won’t work! What can I do?<a class="headerlink" href="#i-ve-tried-the-recommended-actions-here-and-it-still-won-t-work-what-can-i-do" title="Permalink to this heading">#</a></h3>
-<p>There is an  <a class="reference external" href="http://github.com/CQCL/tket/issues">issue tracker</a> on github for current issues. You might find others who have had similar problems there. If not, feel free to add an issue describing your problem and our development team will try to diagnose it and get back to you as soon as possible.</p>
-</section>
 </section>
 </section>
 
@@ -507,20 +553,20 @@ official Python distribution instead.</p>
                   <!-- Previous / next buttons -->
 <div class="prev-next-area">
     <a class="left-prev"
-       href="changelog.html"
+       href="faqs.html"
        title="previous page">
       <i class="fa-solid fa-angle-left"></i>
       <div class="prev-next-info">
         <p class="prev-next-subtitle">previous</p>
-        <p class="prev-next-title">Changelog</p>
+        <p class="prev-next-title">TKET FAQs</p>
       </div>
     </a>
     <a class="right-next"
-       href="faqs.html"
+       href="backends.html"
        title="next page">
       <div class="prev-next-info">
         <p class="prev-next-subtitle">next</p>
-        <p class="prev-next-title">TKET FAQs</p>
+        <p class="prev-next-title">pytket.backends</p>
       </div>
       <i class="fa-solid fa-angle-right"></i>
     </a>
@@ -539,17 +585,15 @@ official Python distribution instead.</p>
   </div>
   <nav class="bd-toc-nav page-toc">
     <ul class="visible nav section-nav flex-column">
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#general-installation-instructions">General Installation Instructions</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#building-tket-from-source">Building TKET from source</a></li>
-<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#installation-faqs">Installation FAQs</a><ul class="nav section-nav flex-column">
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#is-there-a-build-of-pytket-for-my-system">Is there a build of <code class="docutils literal notranslate"><span class="pre">pytket</span></code> for my system?</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#can-i-build-tket-from-source-without-using-conan">Can I build TKET from source without using conan?</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#do-all-versions-of-pytket-work-with-windows">Do all versions of <code class="docutils literal notranslate"><span class="pre">pytket</span></code> work with Windows?</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket-installed-but-modules-mentioned-in-the-docs-could-not-be-found-why"><code class="docutils literal notranslate"><span class="pre">pytket</span></code> installed but modules mentioned in the docs could not be found. Why?</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#when-i-ran-pip-install-pytket-i-could-only-get-an-old-version-what-gives">When I ran <code class="docutils literal notranslate"><span class="pre">pip</span> <span class="pre">install</span> <span class="pre">pytket</span></code>, I could only get an old version. What gives?</a></li>
-<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#i-ve-tried-the-recommended-actions-here-and-it-still-won-t-work-what-can-i-do">I’ve tried the recommended actions here and it still won’t work! What can I do?</a></li>
-</ul>
-</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#types-of-backend">Types of Backend</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#qpus">QPUs</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cloud-access">Cloud Access</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#emulators">Emulators</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#statevector-simulators">Statevector Simulators</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#unitary-simulators">Unitary Simulators</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#density-matrix-simulators">Density Matrix Simulators</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#clifford-simulators">Clifford Simulators</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#other">Other</a></li>
 </ul>
   </nav></div>
 

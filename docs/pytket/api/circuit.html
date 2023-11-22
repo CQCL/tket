@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>pytket.circuit &#8212; pytket 1.21.0 documentation</title>
+    <title>pytket.circuit &#8212; pytket 1.22.0 documentation</title>
   
   
   
@@ -19,12 +19,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
 
   
-  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -37,9 +37,9 @@
     <link rel="stylesheet" type="text/css" href="_static/custom.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
-  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6" />
+  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=365ca57ee442770a23c6"></script>
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/doctools.js"></script>
@@ -135,13 +135,14 @@
   
   
   
+  
     
     
       
     
     
-    <img src="_static/Quantinuum_logo_black.png" class="logo__image only-light" alt="Logo image"/>
-    <script>document.write(`<img src="_static/Quantinuum_logo_white.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+    <img src="_static/Quantinuum_logo_black.png" class="logo__image only-light" alt="pytket 1.22.0 documentation - Home"/>
+    <script>document.write(`<img src="_static/Quantinuum_logo_white.png" class="logo__image only-dark" alt="pytket 1.22.0 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -153,18 +154,38 @@
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faqs.html">TKET FAQs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="opensource.html">Open Source Attribution</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">More Documentation:</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket/manual/index.html">Manual</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket-extensions/api/index.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/">TKET website</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/user-manual/">Manual</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="extensions.html">pytket extensions</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference external" href="https://cqcl.github.io/pytket-aqt/api/index.html">pytket-aqt</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-braket">pytket-braket</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-cirq">pytket-cirq</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-quantinuum">pytket-ionq</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-iqm">pytket-iqm</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-pennylane">pytket-pennylane</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-projectq">pytket-projectq</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-pyquil">pytket-pyquil</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-pysimplex">pytket-pysimplex</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-pyzx">pytket-pyzx</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qir">pytket-qir</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qir">pytket-qiskit</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://cqcl.github.io/pytket-qsharp/api/index.html">pytket-qsharp</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-quantinuum">pytket-quantinuum</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-cutensornet">pytket-cutensornet</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qulacs">pytket-qulacs</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://cqcl.github.io/pytket-qujax/api/index.html">pytket-qujax</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-stim">pytket-stim</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/examples">Example notebooks</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="backends.html">pytket.backends</a></li>
-<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">pytket.circuit</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 current active has-children"><a class="current reference internal" href="#">pytket.circuit</a><input checked="" class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="circuit_class.html">pytket.circuit.Circuit</a></li>
 <li class="toctree-l2"><a class="reference internal" href="optype.html">pytket.circuit.OpType</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classical.html">pytket.circuit.logic_exp</a></li>
@@ -610,6 +631,28 @@ document.write(`
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.ConjugationBox.get_circuit"><code class="docutils literal notranslate"><span class="pre">ConjugationBox.get_circuit()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.ConjugationBox.get_compute"><code class="docutils literal notranslate"><span class="pre">ConjugationBox.get_compute()</span></code></a></li>
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.ConjugationBox.get_uncompute"><code class="docutils literal notranslate"><span class="pre">ConjugationBox.get_uncompute()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.ResourceBounds"><code class="docutils literal notranslate"><span class="pre">ResourceBounds</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.ResourceBounds.__init__"><code class="docutils literal notranslate"><span class="pre">ResourceBounds.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.ResourceBounds.get_max"><code class="docutils literal notranslate"><span class="pre">ResourceBounds.get_max()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.ResourceBounds.get_min"><code class="docutils literal notranslate"><span class="pre">ResourceBounds.get_min()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.ResourceData"><code class="docutils literal notranslate"><span class="pre">ResourceData</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.ResourceData.__init__"><code class="docutils literal notranslate"><span class="pre">ResourceData.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.ResourceData.__repr__"><code class="docutils literal notranslate"><span class="pre">ResourceData.__repr__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.ResourceData.get_gate_depth"><code class="docutils literal notranslate"><span class="pre">ResourceData.get_gate_depth()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.ResourceData.get_op_type_count"><code class="docutils literal notranslate"><span class="pre">ResourceData.get_op_type_count()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.ResourceData.get_op_type_depth"><code class="docutils literal notranslate"><span class="pre">ResourceData.get_op_type_depth()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.ResourceData.get_two_qubit_gate_depth"><code class="docutils literal notranslate"><span class="pre">ResourceData.get_two_qubit_gate_depth()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.DummyBox"><code class="docutils literal notranslate"><span class="pre">DummyBox</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.DummyBox.__init__"><code class="docutils literal notranslate"><span class="pre">DummyBox.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.DummyBox.get_n_bits"><code class="docutils literal notranslate"><span class="pre">DummyBox.get_n_bits()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.DummyBox.get_n_qubits"><code class="docutils literal notranslate"><span class="pre">DummyBox.get_n_qubits()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.DummyBox.get_resource_data"><code class="docutils literal notranslate"><span class="pre">DummyBox.get_resource_data()</span></code></a></li>
 </ul>
 </li>
 </ul>
@@ -2228,6 +2271,157 @@ Every backend and matrix-based box has a BasisOrder option which can toggle betw
 
 </dd></dl>
 
+<dl class="py class">
+<dt class="sig sig-object py" id="pytket.circuit.ResourceBounds">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pytket.circuit.</span></span><span class="sig-name descname"><span class="pre">ResourceBounds</span></span><a class="headerlink" href="#pytket.circuit.ResourceBounds" title="Permalink to this definition">#</a></dt>
+<dd><p>Structure holding a minimum and maximum value of some resource, where both values are unsigned integers.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.circuit.ResourceBounds.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.circuit.ResourceBounds" title="pytket.circuit.ResourceBounds"><span class="pre">pytket.circuit.ResourceBounds</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">min</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">max</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pytket.circuit.ResourceBounds.__init__" title="Permalink to this definition">#</a></dt>
+<dd><p>Constructs a ResourceBounds object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>min</strong> – minimum value</p></li>
+<li><p><strong>max</strong> – maximum value</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.circuit.ResourceBounds.get_max">
+<span class="sig-name descname"><span class="pre">get_max</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.circuit.ResourceBounds" title="pytket.circuit.ResourceBounds"><span class="pre">pytket.circuit.ResourceBounds</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#pytket.circuit.ResourceBounds.get_max" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the maximum value</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.circuit.ResourceBounds.get_min">
+<span class="sig-name descname"><span class="pre">get_min</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.circuit.ResourceBounds" title="pytket.circuit.ResourceBounds"><span class="pre">pytket.circuit.ResourceBounds</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#pytket.circuit.ResourceBounds.get_min" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the minimum value</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pytket.circuit.ResourceData">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pytket.circuit.</span></span><span class="sig-name descname"><span class="pre">ResourceData</span></span><a class="headerlink" href="#pytket.circuit.ResourceData" title="Permalink to this definition">#</a></dt>
+<dd><p>An object holding resource data for use in a <a class="reference internal" href="#pytket.circuit.DummyBox" title="pytket.circuit.DummyBox"><code class="xref py py-class docutils literal notranslate"><span class="pre">DummyBox</span></code></a>.</p>
+<p>The object holds several fields representing minimum and maximum values for certain resources. The absence of an <a class="reference internal" href="optype.html#pytket.circuit.OpType" title="pytket.circuit.OpType"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpType</span></code></a> in one of these fields is interpreted as the absence of gates of that type in the (imagined) circuit.</p>
+<p>See <a class="reference internal" href="circuit_class.html#pytket.circuit.Circuit.get_resources" title="pytket.circuit.Circuit.get_resources"><code class="xref py py-meth docutils literal notranslate"><span class="pre">Circuit.get_resources()</span></code></a> for how to use this data.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.circuit.ResourceData.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.circuit.ResourceData" title="pytket.circuit.ResourceData"><span class="pre">pytket.circuit.ResourceData</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_type_count</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="optype.html#pytket.circuit.OpType" title="pytket.circuit.OpType"><span class="pre">pytket.circuit.OpType</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#pytket.circuit.ResourceBounds" title="pytket.circuit.ResourceBounds"><span class="pre">pytket.circuit.ResourceBounds</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gate_depth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.circuit.ResourceBounds" title="pytket.circuit.ResourceBounds"><span class="pre">pytket.circuit.ResourceBounds</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">op_type_depth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="optype.html#pytket.circuit.OpType" title="pytket.circuit.OpType"><span class="pre">pytket.circuit.OpType</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#pytket.circuit.ResourceBounds" title="pytket.circuit.ResourceBounds"><span class="pre">pytket.circuit.ResourceBounds</span></a><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">two_qubit_gate_depth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.circuit.ResourceBounds" title="pytket.circuit.ResourceBounds"><span class="pre">pytket.circuit.ResourceBounds</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pytket.circuit.ResourceData.__init__" title="Permalink to this definition">#</a></dt>
+<dd><p>Constructs a ResourceData object.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>op_type_count</strong> – dictionary of counts of selected <a class="reference internal" href="optype.html#pytket.circuit.OpType" title="pytket.circuit.OpType"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpType</span></code></a></p></li>
+<li><p><strong>gate_depth</strong> – overall gate depth</p></li>
+<li><p><strong>op_type_depth</strong> – dictionary of depths of selected <a class="reference internal" href="optype.html#pytket.circuit.OpType" title="pytket.circuit.OpType"><code class="xref py py-class docutils literal notranslate"><span class="pre">OpType</span></code></a></p></li>
+<li><p><strong>two_qubit_gate_depth</strong> – overall two-qubit-gate depth</p></li>
+</ul>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.circuit.ResourceData.__repr__">
+<span class="sig-name descname"><span class="pre">__repr__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.circuit.ResourceData" title="pytket.circuit.ResourceData"><span class="pre">pytket.circuit.ResourceData</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="headerlink" href="#pytket.circuit.ResourceData.__repr__" title="Permalink to this definition">#</a></dt>
+<dd></dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.circuit.ResourceData.get_gate_depth">
+<span class="sig-name descname"><span class="pre">get_gate_depth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.circuit.ResourceData" title="pytket.circuit.ResourceData"><span class="pre">pytket.circuit.ResourceData</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.circuit.ResourceBounds" title="pytket.circuit.ResourceBounds"><span class="pre">pytket.circuit.ResourceBounds</span></a></span></span><a class="headerlink" href="#pytket.circuit.ResourceData.get_gate_depth" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bounds on the gate depth</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.circuit.ResourceData.get_op_type_count">
+<span class="sig-name descname"><span class="pre">get_op_type_count</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.circuit.ResourceData" title="pytket.circuit.ResourceData"><span class="pre">pytket.circuit.ResourceData</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="optype.html#pytket.circuit.OpType" title="pytket.circuit.OpType"><span class="pre">pytket.circuit.OpType</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#pytket.circuit.ResourceBounds" title="pytket.circuit.ResourceBounds"><span class="pre">pytket.circuit.ResourceBounds</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pytket.circuit.ResourceData.get_op_type_count" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bounds on the op type count</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.circuit.ResourceData.get_op_type_depth">
+<span class="sig-name descname"><span class="pre">get_op_type_depth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.circuit.ResourceData" title="pytket.circuit.ResourceData"><span class="pre">pytket.circuit.ResourceData</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Dict</span><span class="p"><span class="pre">[</span></span><a class="reference internal" href="optype.html#pytket.circuit.OpType" title="pytket.circuit.OpType"><span class="pre">pytket.circuit.OpType</span></a><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#pytket.circuit.ResourceBounds" title="pytket.circuit.ResourceBounds"><span class="pre">pytket.circuit.ResourceBounds</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pytket.circuit.ResourceData.get_op_type_depth" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bounds on the op type depth</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.circuit.ResourceData.get_two_qubit_gate_depth">
+<span class="sig-name descname"><span class="pre">get_two_qubit_gate_depth</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.circuit.ResourceData" title="pytket.circuit.ResourceData"><span class="pre">pytket.circuit.ResourceData</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.circuit.ResourceBounds" title="pytket.circuit.ResourceBounds"><span class="pre">pytket.circuit.ResourceBounds</span></a></span></span><a class="headerlink" href="#pytket.circuit.ResourceData.get_two_qubit_gate_depth" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>bounds on the two-qubit-gate depth</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
+<dl class="py class">
+<dt class="sig sig-object py" id="pytket.circuit.DummyBox">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pytket.circuit.</span></span><span class="sig-name descname"><span class="pre">DummyBox</span></span><a class="headerlink" href="#pytket.circuit.DummyBox" title="Permalink to this definition">#</a></dt>
+<dd><p>A placeholder operation that holds resource data. This box type cannot be decomposed into a circuit. It only serves to record resource data for a region of a circuit: for example, upper and lower bounds on gate counts and depth. A circuit containing such a box cannot be executed.</p>
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.circuit.DummyBox.__init__">
+<span class="sig-name descname"><span class="pre">__init__</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.circuit.DummyBox" title="pytket.circuit.DummyBox"><span class="pre">pytket.circuit.DummyBox</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_qubits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">n_bits</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">resource_data</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.circuit.ResourceData" title="pytket.circuit.ResourceData"><span class="pre">pytket.circuit.ResourceData</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="headerlink" href="#pytket.circuit.DummyBox.__init__" title="Permalink to this definition">#</a></dt>
+<dd><p>Construct a new instance from some resource data.</p>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.circuit.DummyBox.get_n_bits">
+<span class="sig-name descname"><span class="pre">get_n_bits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.circuit.DummyBox" title="pytket.circuit.DummyBox"><span class="pre">pytket.circuit.DummyBox</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#pytket.circuit.DummyBox.get_n_bits" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the number of bits covered by the box</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.circuit.DummyBox.get_n_qubits">
+<span class="sig-name descname"><span class="pre">get_n_qubits</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.circuit.DummyBox" title="pytket.circuit.DummyBox"><span class="pre">pytket.circuit.DummyBox</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">int</span></span></span><a class="headerlink" href="#pytket.circuit.DummyBox.get_n_qubits" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the number of qubits covered by the box</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py method">
+<dt class="sig sig-object py" id="pytket.circuit.DummyBox.get_resource_data">
+<span class="sig-name descname"><span class="pre">get_resource_data</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">self</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="#pytket.circuit.DummyBox" title="pytket.circuit.DummyBox"><span class="pre">pytket.circuit.DummyBox</span></a></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="#pytket.circuit.ResourceData" title="pytket.circuit.ResourceData"><span class="pre">pytket.circuit.ResourceData</span></a></span></span><a class="headerlink" href="#pytket.circuit.DummyBox.get_resource_data" title="Permalink to this definition">#</a></dt>
+<dd><dl class="field-list simple">
+<dt class="field-odd">Returns<span class="colon">:</span></dt>
+<dd class="field-odd"><p>the associated resource data</p>
+</dd>
+</dl>
+</dd></dl>
+
+</dd></dl>
+
 </section>
 
 
@@ -2504,6 +2698,28 @@ Every backend and matrix-based box has a BasisOrder option which can toggle betw
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.ConjugationBox.get_uncompute"><code class="docutils literal notranslate"><span class="pre">ConjugationBox.get_uncompute()</span></code></a></li>
 </ul>
 </li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.ResourceBounds"><code class="docutils literal notranslate"><span class="pre">ResourceBounds</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.ResourceBounds.__init__"><code class="docutils literal notranslate"><span class="pre">ResourceBounds.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.ResourceBounds.get_max"><code class="docutils literal notranslate"><span class="pre">ResourceBounds.get_max()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.ResourceBounds.get_min"><code class="docutils literal notranslate"><span class="pre">ResourceBounds.get_min()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.ResourceData"><code class="docutils literal notranslate"><span class="pre">ResourceData</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.ResourceData.__init__"><code class="docutils literal notranslate"><span class="pre">ResourceData.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.ResourceData.__repr__"><code class="docutils literal notranslate"><span class="pre">ResourceData.__repr__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.ResourceData.get_gate_depth"><code class="docutils literal notranslate"><span class="pre">ResourceData.get_gate_depth()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.ResourceData.get_op_type_count"><code class="docutils literal notranslate"><span class="pre">ResourceData.get_op_type_count()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.ResourceData.get_op_type_depth"><code class="docutils literal notranslate"><span class="pre">ResourceData.get_op_type_depth()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.ResourceData.get_two_qubit_gate_depth"><code class="docutils literal notranslate"><span class="pre">ResourceData.get_two_qubit_gate_depth()</span></code></a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.DummyBox"><code class="docutils literal notranslate"><span class="pre">DummyBox</span></code></a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.DummyBox.__init__"><code class="docutils literal notranslate"><span class="pre">DummyBox.__init__()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.DummyBox.get_n_bits"><code class="docutils literal notranslate"><span class="pre">DummyBox.get_n_bits()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.DummyBox.get_n_qubits"><code class="docutils literal notranslate"><span class="pre">DummyBox.get_n_qubits()</span></code></a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#pytket.circuit.DummyBox.get_resource_data"><code class="docutils literal notranslate"><span class="pre">DummyBox.get_resource_data()</span></code></a></li>
+</ul>
+</li>
 </ul>
   </nav></div>
 
@@ -2551,8 +2767,8 @@ By Quantinuum
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=ac02cc09edc035673794"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794"></script>
+  <script src="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6"></script>
 
   <footer class="bd-footer">
   </footer>

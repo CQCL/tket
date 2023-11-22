@@ -9,7 +9,7 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.18.1: http://docutils.sourceforge.net/" />
 
-    <title>pytket.qasm &#8212; pytket 1.21.0 documentation</title>
+    <title>pytket.qasm &#8212; pytket 1.22.0 documentation</title>
   
   
   
@@ -19,12 +19,12 @@
   </script>
   
   <!-- Loaded before other Sphinx assets -->
-  <link href="_static/styles/theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-<link href="_static/styles/bootstrap.css?digest=ac02cc09edc035673794" rel="stylesheet" />
-<link href="_static/styles/pydata-sphinx-theme.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+  <link href="_static/styles/theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
 
   
-  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=ac02cc09edc035673794" rel="stylesheet" />
+  <link href="_static/vendor/fontawesome/6.1.2/css/all.min.css?digest=365ca57ee442770a23c6" rel="stylesheet" />
   <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-solid-900.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-brands-400.woff2" />
 <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.1.2/webfonts/fa-regular-400.woff2" />
@@ -37,9 +37,9 @@
     <link rel="stylesheet" type="text/css" href="_static/custom.css" />
   
   <!-- Pre-loaded scripts that we'll load fully later -->
-  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=ac02cc09edc035673794" />
-<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794" />
-  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=ac02cc09edc035673794"></script>
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6" />
+  <script src="_static/vendor/fontawesome/6.1.2/js/all.min.js?digest=365ca57ee442770a23c6"></script>
 
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
     <script src="_static/doctools.js"></script>
@@ -134,13 +134,14 @@
   
   
   
+  
     
     
       
     
     
-    <img src="_static/Quantinuum_logo_black.png" class="logo__image only-light" alt="Logo image"/>
-    <script>document.write(`<img src="_static/Quantinuum_logo_white.png" class="logo__image only-dark" alt="Logo image"/>`);</script>
+    <img src="_static/Quantinuum_logo_black.png" class="logo__image only-light" alt="pytket 1.22.0 documentation - Home"/>
+    <script>document.write(`<img src="_static/Quantinuum_logo_white.png" class="logo__image only-dark" alt="pytket 1.22.0 documentation - Home"/>`);</script>
   
   
 </a></div>
@@ -152,18 +153,38 @@
 <li class="toctree-l1"><a class="reference internal" href="changelog.html">Changelog</a></li>
 <li class="toctree-l1"><a class="reference internal" href="install.html">Installation Troubleshooting</a></li>
 <li class="toctree-l1"><a class="reference internal" href="faqs.html">TKET FAQs</a></li>
-<li class="toctree-l1"><a class="reference internal" href="opensource.html">Open Source Attribution</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">More Documentation:</span></p>
 <ul class="nav bd-sidenav">
-<li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket/manual/index.html">Manual</a></li>
-<li class="toctree-l1"><a class="reference external" href="https://cqcl.github.io/pytket-extensions/api/index.html">Extensions</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/">TKET website</a></li>
+<li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/user-manual/">Manual</a></li>
+<li class="toctree-l1 has-children"><a class="reference internal" href="extensions.html">pytket extensions</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l2"><a class="reference external" href="https://cqcl.github.io/pytket-aqt/api/index.html">pytket-aqt</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-braket">pytket-braket</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-cirq">pytket-cirq</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-quantinuum">pytket-ionq</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-iqm">pytket-iqm</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-pennylane">pytket-pennylane</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-projectq">pytket-projectq</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-pyquil">pytket-pyquil</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-pysimplex">pytket-pysimplex</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-pyzx">pytket-pyzx</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qir">pytket-qir</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qir">pytket-qiskit</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://cqcl.github.io/pytket-qsharp/api/index.html">pytket-qsharp</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-quantinuum">pytket-quantinuum</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-cutensornet">pytket-cutensornet</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-qulacs">pytket-qulacs</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://cqcl.github.io/pytket-qujax/api/index.html">pytket-qujax</a></li>
+<li class="toctree-l2"><a class="reference external" href="https://tket.quantinuum.com/extensions/pytket-stim">pytket-stim</a></li>
+</ul>
+</li>
 <li class="toctree-l1"><a class="reference external" href="https://tket.quantinuum.com/examples">Example notebooks</a></li>
 </ul>
 <p aria-level="2" class="caption" role="heading"><span class="caption-text">API Reference:</span></p>
 <ul class="current nav bd-sidenav">
 <li class="toctree-l1"><a class="reference internal" href="backends.html">pytket.backends</a></li>
-<li class="toctree-l1 has-children"><a class="reference internal" href="circuit.html">pytket.circuit</a><input class="toctree-checkbox" id="toctree-checkbox-1" name="toctree-checkbox-1" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-1"><i class="fa-solid fa-chevron-down"></i></label><ul>
+<li class="toctree-l1 has-children"><a class="reference internal" href="circuit.html">pytket.circuit</a><input class="toctree-checkbox" id="toctree-checkbox-2" name="toctree-checkbox-2" type="checkbox"/><label class="toctree-toggle" for="toctree-checkbox-2"><i class="fa-solid fa-chevron-down"></i></label><ul>
 <li class="toctree-l2"><a class="reference internal" href="circuit_class.html">pytket.circuit.Circuit</a></li>
 <li class="toctree-l2"><a class="reference internal" href="optype.html">pytket.circuit.OpType</a></li>
 <li class="toctree-l2"><a class="reference internal" href="classical.html">pytket.circuit.logic_exp</a></li>
@@ -414,52 +435,126 @@ We can set the <code class="docutils literal notranslate"><span class="pre">head
 </div>
 <div class="admonition note">
 <p class="admonition-title">Note</p>
-<p>Unlike pytket backends, the qasm converters do not handle <a class="reference external" href="https://cqcl.github.io/pytket/manual/manual_circuit.html#implicit-qubit-permutations">implicit qubit permutations</a>. In other words if a circuit containing an implicit qubit permutation is converted to a qasm file the implicit permutation will not be accounted for and the circuit will be missing this permutation when reimported.</p>
+<p>Unlike pytket backends, the qasm converters do not handle <a class="reference external" href="https://tket.quantinuum.com/user-manual/manual_circuit.html#implicit-qubit-permutations">implicit qubit permutations</a>. In other words if a circuit containing an implicit qubit permutation is converted to a qasm file the implicit permutation will not be accounted for and the circuit will be missing this permutation when reimported.</p>
 </div>
 <span class="target" id="module-pytket.qasm"></span><p>Parser from OPENQASM to tket Circuits</p>
 <dl class="py function">
 <dt class="sig sig-object py" id="pytket.qasm.circuit_from_qasm">
-<span class="sig-prename descclassname"><span class="pre">pytket.qasm.</span></span><span class="sig-name descname"><span class="pre">circuit_from_qasm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">PathLike</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'utf-8'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="circuit_class.html#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><span class="pre">Circuit</span></a></span></span><a class="reference internal" href="_modules/pytket/qasm/qasm.html#circuit_from_qasm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pytket.qasm.circuit_from_qasm" title="Permalink to this definition">#</a></dt>
-<dd><p>A method to generate a tket Circuit from a qasm file</p>
+<span class="sig-prename descclassname"><span class="pre">pytket.qasm.</span></span><span class="sig-name descname"><span class="pre">circuit_from_qasm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">PathLike</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'utf-8'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxwidth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">32</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="circuit_class.html#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><span class="pre">Circuit</span></a></span></span><a class="reference internal" href="_modules/pytket/qasm/qasm.html#circuit_from_qasm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pytket.qasm.circuit_from_qasm" title="Permalink to this definition">#</a></dt>
+<dd><p>A method to generate a tket Circuit from a qasm file.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_file</strong> – path to qasm file; filename must have <code class="docutils literal notranslate"><span class="pre">.qasm</span></code> extension</p></li>
+<li><p><strong>encoding</strong> – file encoding (default utf-8)</p></li>
+<li><p><strong>maxwidth</strong> – maximum allowed width of classical registers (default 32)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>pytket circuit</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pytket.qasm.circuit_from_qasm_io">
-<span class="sig-prename descclassname"><span class="pre">pytket.qasm.</span></span><span class="sig-name descname"><span class="pre">circuit_from_qasm_io</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream_in</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextIO</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="circuit_class.html#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><span class="pre">Circuit</span></a></span></span><a class="reference internal" href="_modules/pytket/qasm/qasm.html#circuit_from_qasm_io"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pytket.qasm.circuit_from_qasm_io" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pytket.qasm.</span></span><span class="sig-name descname"><span class="pre">circuit_from_qasm_io</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">stream_in</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextIO</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxwidth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">32</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="circuit_class.html#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><span class="pre">Circuit</span></a></span></span><a class="reference internal" href="_modules/pytket/qasm/qasm.html#circuit_from_qasm_io"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pytket.qasm.circuit_from_qasm_io" title="Permalink to this definition">#</a></dt>
 <dd><p>A method to generate a tket Circuit from a qasm text stream</p>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pytket.qasm.circuit_from_qasm_str">
-<span class="sig-prename descclassname"><span class="pre">pytket.qasm.</span></span><span class="sig-name descname"><span class="pre">circuit_from_qasm_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qasm_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="circuit_class.html#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><span class="pre">Circuit</span></a></span></span><a class="reference internal" href="_modules/pytket/qasm/qasm.html#circuit_from_qasm_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pytket.qasm.circuit_from_qasm_str" title="Permalink to this definition">#</a></dt>
-<dd><p>A method to generate a tket Circuit from a qasm str</p>
+<span class="sig-prename descclassname"><span class="pre">pytket.qasm.</span></span><span class="sig-name descname"><span class="pre">circuit_from_qasm_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qasm_str</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxwidth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">32</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="circuit_class.html#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><span class="pre">Circuit</span></a></span></span><a class="reference internal" href="_modules/pytket/qasm/qasm.html#circuit_from_qasm_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pytket.qasm.circuit_from_qasm_str" title="Permalink to this definition">#</a></dt>
+<dd><p>A method to generate a tket Circuit from a qasm string.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>qasm_str</strong> – qasm string</p></li>
+<li><p><strong>maxwidth</strong> – maximum allowed width of classical registers (default 32)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>pytket circuit</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pytket.qasm.circuit_from_qasm_wasm">
-<span class="sig-prename descclassname"><span class="pre">pytket.qasm.</span></span><span class="sig-name descname"><span class="pre">circuit_from_qasm_wasm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">PathLike</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wasm_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">PathLike</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'utf-8'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="circuit_class.html#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><span class="pre">Circuit</span></a></span></span><a class="reference internal" href="_modules/pytket/qasm/qasm.html#circuit_from_qasm_wasm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pytket.qasm.circuit_from_qasm_wasm" title="Permalink to this definition">#</a></dt>
-<dd><p>A method to generate a tket Circuit from a qasm str and external WASM module.</p>
+<span class="sig-prename descclassname"><span class="pre">pytket.qasm.</span></span><span class="sig-name descname"><span class="pre">circuit_from_qasm_wasm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">input_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">PathLike</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">wasm_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">PathLike</span><span class="p"><span class="pre">[</span></span><span class="pre">Any</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">encoding</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'utf-8'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxwidth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">32</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><a class="reference internal" href="circuit_class.html#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><span class="pre">Circuit</span></a></span></span><a class="reference internal" href="_modules/pytket/qasm/qasm.html#circuit_from_qasm_wasm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pytket.qasm.circuit_from_qasm_wasm" title="Permalink to this definition">#</a></dt>
+<dd><p>A method to generate a tket Circuit from a qasm string and external WASM module.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>input_file</strong> – path to qasm file; filename must have <code class="docutils literal notranslate"><span class="pre">.qasm</span></code> extension</p></li>
+<li><p><strong>wasm_file</strong> – path to WASM file containing functions used in qasm</p></li>
+<li><p><strong>encoding</strong> – encoding of qasm file (default utf-8)</p></li>
+<li><p><strong>maxwidth</strong> – maximum allowed width of classical registers (default 32)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>pytket circuit</p>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pytket.qasm.circuit_to_qasm">
-<span class="sig-prename descclassname"><span class="pre">pytket.qasm.</span></span><span class="sig-name descname"><span class="pre">circuit_to_qasm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circ</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="circuit_class.html#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><span class="pre">Circuit</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'qelib1'</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pytket/qasm/qasm.html#circuit_to_qasm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pytket.qasm.circuit_to_qasm" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pytket.qasm.</span></span><span class="sig-name descname"><span class="pre">circuit_to_qasm</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circ</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="circuit_class.html#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><span class="pre">Circuit</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">output_file</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'qelib1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxwidth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">32</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pytket/qasm/qasm.html#circuit_to_qasm"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pytket.qasm.circuit_to_qasm" title="Permalink to this definition">#</a></dt>
 <dd><p>Convert a Circuit to QASM and write it to a file.</p>
+<p>Classical bits in the pytket circuit must be singly-indexed.</p>
 <p>Note that this will not account for implicit qubit permutations in the Circuit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>circ</strong> – pytket circuit</p></li>
+<li><p><strong>output_file</strong> – path to output qasm file</p></li>
+<li><p><strong>header</strong> – qasm header (default “qelib1”)</p></li>
+<li><p><strong>maxwidth</strong> – maximum allowed width of classical registers (default 32)</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pytket.qasm.circuit_to_qasm_io">
-<span class="sig-prename descclassname"><span class="pre">pytket.qasm.</span></span><span class="sig-name descname"><span class="pre">circuit_to_qasm_io</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circ</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="circuit_class.html#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><span class="pre">Circuit</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">stream_out</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextIO</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'qelib1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_gate_defs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pytket/qasm/qasm.html#circuit_to_qasm_io"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pytket.qasm.circuit_to_qasm_io" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pytket.qasm.</span></span><span class="sig-name descname"><span class="pre">circuit_to_qasm_io</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circ</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="circuit_class.html#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><span class="pre">Circuit</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">stream_out</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">TextIO</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'qelib1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_gate_defs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxwidth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">32</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">None</span></span></span><a class="reference internal" href="_modules/pytket/qasm/qasm.html#circuit_to_qasm_io"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pytket.qasm.circuit_to_qasm_io" title="Permalink to this definition">#</a></dt>
 <dd><p>Convert a Circuit to QASM and write to a text stream.</p>
+<p>Classical bits in the pytket circuit must be singly-indexed.</p>
 <p>Note that this will not account for implicit qubit permutations in the Circuit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>circ</strong> – pytket circuit</p></li>
+<li><p><strong>stream_out</strong> – text stream to be written to</p></li>
+<li><p><strong>header</strong> – qasm header (default “qelib1”)</p></li>
+<li><p><strong>include_gate_defs</strong> – optional set of gates to include</p></li>
+<li><p><strong>maxwidth</strong> – maximum allowed width of classical registers (default 32)</p></li>
+</ul>
+</dd>
+</dl>
 </dd></dl>
 
 <dl class="py function">
 <dt class="sig sig-object py" id="pytket.qasm.circuit_to_qasm_str">
-<span class="sig-prename descclassname"><span class="pre">pytket.qasm.</span></span><span class="sig-name descname"><span class="pre">circuit_to_qasm_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circ</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="circuit_class.html#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><span class="pre">Circuit</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'qelib1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_gate_defs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/pytket/qasm/qasm.html#circuit_to_qasm_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pytket.qasm.circuit_to_qasm_str" title="Permalink to this definition">#</a></dt>
+<span class="sig-prename descclassname"><span class="pre">pytket.qasm.</span></span><span class="sig-name descname"><span class="pre">circuit_to_qasm_str</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">circ</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><a class="reference internal" href="circuit_class.html#pytket.circuit.Circuit" title="pytket.circuit.Circuit"><span class="pre">Circuit</span></a></span></em>, <em class="sig-param"><span class="n"><span class="pre">header</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'qelib1'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">include_gate_defs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Set</span><span class="p"><span class="pre">[</span></span><span class="pre">str</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">maxwidth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">32</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">str</span></span></span><a class="reference internal" href="_modules/pytket/qasm/qasm.html#circuit_to_qasm_str"><span class="viewcode-link"><span class="pre">[source]</span></span></a><a class="headerlink" href="#pytket.qasm.circuit_to_qasm_str" title="Permalink to this definition">#</a></dt>
 <dd><p>Convert a Circuit to QASM and return the string.</p>
+<p>Classical bits in the pytket circuit must be singly-indexed.</p>
 <p>Note that this will not account for implicit qubit permutations in the Circuit.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>circ</strong> – pytket circuit</p></li>
+<li><p><strong>header</strong> – qasm header (default “qelib1”)</p></li>
+<li><p><strong>output_file</strong> – path to output qasm file</p></li>
+<li><p><strong>include_gate_defs</strong> – optional set of gates to include</p></li>
+<li><p><strong>maxwidth</strong> – maximum allowed width of classical registers (default 32)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>qasm string</p>
+</dd>
+</dl>
 </dd></dl>
 
 </section>
@@ -562,8 +657,8 @@ By Quantinuum
   </div>
   
   <!-- Scripts loaded after <body> so the DOM is not blocked -->
-  <script src="_static/scripts/bootstrap.js?digest=ac02cc09edc035673794"></script>
-<script src="_static/scripts/pydata-sphinx-theme.js?digest=ac02cc09edc035673794"></script>
+  <script src="_static/scripts/bootstrap.js?digest=365ca57ee442770a23c6"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=365ca57ee442770a23c6"></script>
 
   <footer class="bd-footer">
   </footer>

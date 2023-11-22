@@ -19,7 +19,7 @@ If you have issues installing ``pytket`` please visit the `installation troubles
 To use ``pytket``, you can simply import the appropriate modules into your python code or in an interactive Python notebook. We can build circuits directly using the ``pytket`` interface by creating a blank circuit and adding gates in the order we want to apply them.
 
 See the `Getting Started`_ page for a basic tutorial on using
-``pytket``. To get more in depth on features, see the `examples`_. See the `pytket user manual <https://cqcl.github.io/pytket/manual/index.html>`_ for an extensive introduction to ``pytket`` functionality and how to use it.
+``pytket``. To get more in depth on features, see the `examples`_. See the `pytket user manual <https://tket.quantinuum.com/user-manual/index.html>`_ for an extensive introduction to ``pytket`` functionality and how to use it.
 
 Extensions
 ~~~~~~~~~~
@@ -81,15 +81,14 @@ Licensed under the `Apache 2 License <http://www.apache.org/licenses/LICENSE-2.0
     getting_started.rst
     changelog.rst
     install.rst
-    faqs.rst 
-    opensource.rst
+    faqs.rst
 
 .. toctree::
     :caption: More Documentation:
-    :maxdepth: 1
     
-    Manual <https://cqcl.github.io/pytket/manual/index.html>
-    Extensions <https://cqcl.github.io/pytket-extensions/api/index.html>
+    TKET website <https://tket.quantinuum.com/>
+    Manual <https://tket.quantinuum.com/user-manual/>
+    extensions.rst  
     Example notebooks <https://tket.quantinuum.com/examples>
 
 .. toctree::
