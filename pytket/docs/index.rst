@@ -78,16 +78,16 @@ Licensed under the `Apache 2 License <http://www.apache.org/licenses/LICENSE-2.0
     :caption: Overview:
     :maxdepth: 1
 
-    self
+    API docs home <self> 
     getting_started.rst
     changelog.rst
     install.rst
+    TKET website <https://tket.quantinuum.com/>
     faqs.rst
 
 .. toctree::
     :caption: More Documentation:
     
-    TKET website <https://tket.quantinuum.com/>
     Manual <https://tket.quantinuum.com/user-manual/>
     extensions.rst  
     Example notebooks <https://tket.quantinuum.com/examples>
