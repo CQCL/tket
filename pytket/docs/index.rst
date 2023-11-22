@@ -75,9 +75,10 @@ Licensed under the `Apache 2 License <http://www.apache.org/licenses/LICENSE-2.0
 .. _Quantinuum: https://www.quantinuum.com/
 
 .. toctree::
-    :caption: Introduction:
+    :caption: Overview:
     :maxdepth: 1
 
+    self
     getting_started.rst
     changelog.rst
     install.rst
