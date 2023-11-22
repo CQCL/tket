@@ -1,6 +1,32 @@
 Changelog
 =========
 
+1.22.0 (November 2023)
+----------------------
+
+Minor new features:
+
+* Add optional parameter to QASM conversion methods to set the maximum allowed
+  width of classical registers (default 32).
+* New ``OpType.CS`` and ``OpType.CSdg``.
+* New classes ``ResourceBounds``, ``ResourceData`` and ``DummyBox``, and method
+  ``Circuit.get_resources()``, allowing reasoning about resource requirements
+  on circuit templates.
+
+Fixes:
+
+* When converting QASM expressions to ``ClassicalExpBox``, preserve the ordering
+  of the bits in the expression in the resulting ``cmd.args``
+* Fix incorrect serialisation of ``PauliExpPairBox`` when the Pauli strings are of
+  length 2.
+* Fix incorrect controlled ``ConjugationBox`` handling.
+
+General:
+
+* Drop support for MacOS 11.
+
+`Full changelog <https://github.com/CQCL/tket/compare/v1.21.0...v1.22.0>`_
+
 1.21.0 (October 2023)
 ---------------------
 

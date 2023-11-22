@@ -123,7 +123,37 @@ class ConanBuild(build_ext):
                     shutil.copy(libpath, extdir)
 
 
+class NixBuild(build_ext):
+    def run(self):
+        self.check_extensions_list(self.extensions)
+        extdir = os.path.abspath(
+            os.path.dirname(self.get_ext_fullpath(self.extensions[0].name))
+        )
+        if os.path.exists(extdir):
+            shutil.rmtree(extdir)
+        os.makedirs(extdir)
+
+        nix_ldflags = os.environ["NIX_LDFLAGS"].split()
+        build_inputs = os.environ["propagatedBuildInputs"].split()
+
+        binders = [f"{l}/lib" for l in build_inputs if "-binders" in l]
+        for binder in binders:
+            for lib in os.listdir(binder):
+                libpath = os.path.join(binder, lib)
+                if not os.path.isdir(libpath):
+                    shutil.copy(libpath, extdir)
+
+
 plat_name = os.getenv("WHEEL_PLAT_NAME")
+
+
+def get_build_ext():
+    if os.getenv("USE_NIX"):
+        return NixBuild
+    elif os.getenv("NO_CONAN"):
+        return CMakeBuild
+    else:
+        return ConanBuild
 
 
 class bdist_wheel(_bdist_wheel):
@@ -173,7 +203,7 @@ setup(
         CMakeExtension("pytket._tket.{}".format(binder)) for binder in binders
     ],
     cmdclass={
-        "build_ext": CMakeBuild if os.getenv("NO_CONAN") else ConanBuild,
+        "build_ext": get_build_ext(),
         "bdist_wheel": bdist_wheel,
     },
     classifiers=[

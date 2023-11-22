@@ -37,7 +37,6 @@
 #include "tket/Transformations/Replacement.hpp"
 #include "tket/Transformations/Transform.hpp"
 #include "tket/Utils/MatrixAnalysis.hpp"
-#include "tket/Utils/PauliStrings.hpp"
 
 namespace tket {
 namespace test_Circ {
@@ -1984,6 +1983,43 @@ SCENARIO("Decomposing a multi-qubit operation into CXs") {
     REQUIRE((u - correct).cwiseAbs().sum() < ERR_EPS);
   }
 
+  GIVEN("A CS gate") {
+    Circuit circ(2);
+    Vertex v = circ.add_op<unsigned>(OpType::CS, {0, 1});
+    const Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+    Circuit rep;
+    WHEN("Default circuit replacement") { rep = CX_circ_from_multiq(op); }
+    WHEN("ZX circuit replacement") { rep = CX_ZX_circ_from_op(op); }
+
+    const auto u = tket_sim::get_unitary(rep);
+    Eigen::MatrixXcd correct(4, 4);
+    // clang-format off
+        correct << 1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, i_;
+    // clang-format on
+    REQUIRE((u - correct).cwiseAbs().sum() < ERR_EPS);
+  }
+  GIVEN("A CSdg gate") {
+    Circuit circ(2);
+    Vertex v = circ.add_op<unsigned>(OpType::CSdg, {0, 1});
+    const Op_ptr op = circ.get_Op_ptr_from_Vertex(v);
+    Circuit rep;
+    WHEN("Default circuit replacement") { rep = CX_circ_from_multiq(op); }
+    WHEN("ZX circuit replacement") { rep = CX_ZX_circ_from_op(op); }
+
+    const auto u = tket_sim::get_unitary(rep);
+    Eigen::MatrixXcd correct(4, 4);
+    // clang-format off
+        correct << 1, 0, 0, 0,
+            0, 1, 0, 0,
+            0, 0, 1, 0,
+            0, 0, 0, -i_;
+    // clang-format on
+    REQUIRE((u - correct).cwiseAbs().sum() < ERR_EPS);
+  }
+
   GIVEN("A CU1 gate") {
     Circuit circ(2);
     Vertex v = circ.add_op<unsigned>(OpType::CU1, 0.5, {0, 1});
@@ -2030,8 +2066,7 @@ SCENARIO("Decomposing a multi-qubit operation into CXs") {
     WHEN("ZX circuit replacement") { rep = CX_ZX_circ_from_op(op); }
 
     const auto u = tket_sim::get_unitary(rep);
-    const QubitPauliString pauliop(
-        {{Qubit(0), Pauli::Z}, {Qubit(1), Pauli::Z}});
+    const PauliString pauliop({Pauli::Z, Pauli::Z});
     Eigen::MatrixXcd exponent = -pauliop.to_sparse_matrix(2) * 0.15 * PI * i_;
     Eigen::MatrixXcd correct = exponent.exp();
     REQUIRE((u - correct).cwiseAbs().sum() < ERR_EPS);
@@ -2085,8 +2120,7 @@ SCENARIO("Decomposing a multi-qubit operation into CXs") {
     WHEN("ZX circuit replacement") { rep = CX_ZX_circ_from_op(op); }
 
     const auto u = tket_sim::get_unitary(rep);
-    const QubitPauliString pauliop(
-        {{Qubit(0), Pauli::X}, {Qubit(1), Pauli::X}});
+    const PauliString pauliop({Pauli::X, Pauli::X});
     Eigen::MatrixXcd exponent = -pauliop.to_sparse_matrix(2) * 0.25 * PI * i_;
     Eigen::MatrixXcd correct = exponent.exp();
     REQUIRE((u - correct).cwiseAbs().sum() < ERR_EPS);
@@ -2101,12 +2135,9 @@ SCENARIO("Decomposing a multi-qubit operation into CXs") {
     WHEN("ZX circuit replacement") { rep = CX_ZX_circ_from_op(op); }
 
     const auto u = tket_sim::get_unitary(rep);
-    const QubitPauliString pauliop01(
-        {{Qubit(0), Pauli::X}, {Qubit(1), Pauli::X}, {Qubit(2), Pauli::I}});
-    const QubitPauliString pauliop12(
-        {{Qubit(0), Pauli::I}, {Qubit(1), Pauli::X}, {Qubit(2), Pauli::X}});
-    const QubitPauliString pauliop02(
-        {{Qubit(0), Pauli::X}, {Qubit(1), Pauli::I}, {Qubit(2), Pauli::X}});
+    const PauliString pauliop01({Pauli::X, Pauli::X, Pauli::I});
+    const PauliString pauliop12({Pauli::I, Pauli::X, Pauli::X});
+    const PauliString pauliop02({Pauli::X, Pauli::I, Pauli::X});
     Eigen::MatrixXcd exponent =
         -(pauliop01.to_sparse_matrix(3) + pauliop12.to_sparse_matrix(3) +
           pauliop02.to_sparse_matrix(3)) *
@@ -2125,8 +2156,7 @@ SCENARIO("Decomposing a multi-qubit operation into CXs") {
     WHEN("ZX circuit replacement") { rep = CX_ZX_circ_from_op(op); }
 
     const auto u = tket_sim::get_unitary(rep);
-    const QubitPauliString pauliop(
-        {{Qubit(0), Pauli::Z}, {Qubit(1), Pauli::Z}});
+    const PauliString pauliop({Pauli::Z, Pauli::Z});
     Eigen::MatrixXcd exponent = -pauliop.to_sparse_matrix(2) * 0.25 * PI * i_;
     Eigen::MatrixXcd correct = exponent.exp();
     REQUIRE((u - correct).cwiseAbs().sum() < ERR_EPS);
@@ -2393,7 +2423,7 @@ SCENARIO("Decomposing a single qubit gate") {
     WHEN("ZX circuit replacement") { rep = CX_ZX_circ_from_op(op); }
 
     const auto u = tket_sim::get_unitary(rep);
-    const QubitPauliString pauliop({{Qubit(0), Pauli::X}});
+    const PauliString pauliop({Pauli::X});
     Eigen::MatrixXcd exponent = -pauliop.to_sparse_matrix(1) * 0.15 * PI * i_;
     Eigen::MatrixXcd correct = exponent.exp();
     REQUIRE((u - correct).cwiseAbs().sum() < ERR_EPS);
@@ -2412,7 +2442,7 @@ SCENARIO("Decomposing a single qubit gate") {
     WHEN("ZX circuit replacement") { rep = CX_ZX_circ_from_op(op); }
 
     const auto u = tket_sim::get_unitary(rep);
-    const QubitPauliString pauliop({{Qubit(0), Pauli::Y}});
+    const PauliString pauliop({Pauli::Y});
     Eigen::MatrixXcd exponent = -pauliop.to_sparse_matrix(1) * 0.2 * PI * i_;
     Eigen::MatrixXcd correct = exponent.exp();
     REQUIRE((u - correct).cwiseAbs().sum() < ERR_EPS);
@@ -2431,7 +2461,7 @@ SCENARIO("Decomposing a single qubit gate") {
     WHEN("ZX circuit replacement") { rep = CX_ZX_circ_from_op(op); }
 
     const auto u = tket_sim::get_unitary(rep);
-    const QubitPauliString pauliop({{Qubit(0), Pauli::Z}});
+    const PauliString pauliop({Pauli::Z});
     Eigen::MatrixXcd exponent = -pauliop.to_sparse_matrix(1) * 0.35 * PI * i_;
     Eigen::MatrixXcd correct = exponent.exp();
     REQUIRE((u - correct).cwiseAbs().sum() < ERR_EPS);
@@ -2470,11 +2500,10 @@ SCENARIO("Decomposing a single qubit gate") {
     WHEN("ZX circuit replacement") { rep = CX_ZX_circ_from_op(op); }
 
     const auto u = tket_sim::get_unitary(rep);
-    const QubitPauliString pauliop({{Qubit(0), Pauli::Z}});
+    const PauliString pauliop({Pauli::Z});
     Eigen::MatrixXcd exponent = -pauliop.to_sparse_matrix(1) * 0.65 * PI * i_;
     Eigen::MatrixXcd phaser = exponent.exp();
-    exponent = -QubitPauliString({{Qubit(0), Pauli::X}}).to_sparse_matrix(1) *
-               0.3 * PI * i_;
+    exponent = -PauliString({Pauli::X}).to_sparse_matrix(1) * 0.3 * PI * i_;
     Eigen::MatrixXcd correct = phaser * exponent.exp() * phaser.adjoint();
     REQUIRE((u - correct).cwiseAbs().sum() < ERR_EPS);
   }

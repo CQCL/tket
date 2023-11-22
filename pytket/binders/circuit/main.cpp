@@ -209,6 +209,10 @@ PYBIND11_MODULE(circuit, m) {
       .value(
           "CSXdg", OpType::CSXdg,
           "Controlled :math:`\\mathrm{SX}^{\\dagger}` gate")
+      .value("CS", OpType::CS, "Controlled :math:`\\mathrm{S}` gate")
+      .value(
+          "CSdg", OpType::CSdg,
+          "Controlled :math:`\\mathrm{S}^{\\dagger}` gate")
       .value(
           "CRz", OpType::CRz,
           ":math:`(\\alpha) \\mapsto` Controlled "
@@ -326,6 +330,9 @@ PYBIND11_MODULE(circuit, m) {
       .value(
           "ToffoliBox", OpType::ToffoliBox,
           "A permutation of classical basis states")
+      .value(
+          "DummyBox", OpType::DummyBox,
+          "A placeholder operation that holds resource data")
       .value(
           "CustomGate", OpType::CustomGate,
           ":math:`(\\alpha, \\beta, \\ldots) \\mapsto` A user-defined "

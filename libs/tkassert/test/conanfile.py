@@ -19,7 +19,7 @@ from conan.errors import ConanInvalidConfiguration
 
 class test_tkassertRecipe(ConanFile):
     name = "test-tkassert"
-    version = "0.3.3"
+    version = "0.3.4"
     package_type = "application"
     license = "Apache 2"
     url = "https://github.com/CQCL/tket"
@@ -59,5 +59,5 @@ class test_tkassertRecipe(ConanFile):
         cmake.install()
 
     def requirements(self):
-        self.requires("tkassert/0.3.3")
+        self.requires("tkassert/0.3.4")
         self.requires("catch2/3.3.2")

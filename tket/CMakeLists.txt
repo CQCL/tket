@@ -30,6 +30,8 @@ find_package(tkwsm CONFIG REQUIRED)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+option(INSTALL_NAME_DIR "Set the install name dir for the library to @loader_path for Apple targets" ON)
+
 if(NOT CMAKE_BUILD_TYPE)
   set(CMAKE_BUILD_TYPE Release)
 endif()
@@ -62,7 +64,7 @@ endif()
 
 if(WIN32)
     set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS yes)
-elseif(APPLE)
+elseif(APPLE AND INSTALL_NAME_DIR)
     # set correct install_name
     set(CMAKE_INSTALL_NAME_DIR "@loader_path")
     set(CMAKE_BUILD_WITH_INSTALL_NAME_DIR ON)
@@ -83,6 +85,7 @@ if(CMAKE_CXX_COMPILER_ID STREQUAL "GNU")
     # Work around gcc bug related to std::optional.
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-error=maybe-uninitialized")
 endif()
+
 
 add_library(tket)
 
@@ -114,13 +117,16 @@ target_link_libraries(tket PRIVATE tkassert::tkassert)
 target_link_libraries(tket PRIVATE tkrng::tkrng)
 target_link_libraries(tket PRIVATE tktokenswap::tktokenswap)
 target_link_libraries(tket PRIVATE tkwsm::tkwsm)
+IF(APPLE)
+    target_link_libraries(tket PRIVATE "-flat_namespace")
+ENDIF()
 
 target_sources(tket
     PRIVATE
         src/Utils/UnitID.cpp
         src/Utils/HelperFunctions.cpp
         src/Utils/MatrixAnalysis.cpp
-        src/Utils/PauliStrings.cpp
+        src/Utils/PauliTensor.cpp
         src/Utils/CosSinDecomposition.cpp
         src/Utils/Expression.cpp
         src/OpType/OpDesc.cpp
@@ -162,6 +168,8 @@ target_sources(tket
         src/Circuit/Circuit.cpp
         src/Circuit/CircuitJson.cpp
         src/Circuit/CommandJson.cpp
+        src/Circuit/ResourceData.cpp
+        src/Circuit/DummyBox.cpp
         src/Circuit/macro_manipulation.cpp
         src/Circuit/basic_circ_manip.cpp
         src/Circuit/latex_drawing.cpp
@@ -216,7 +224,6 @@ target_sources(tket
         src/ZX/MBQCRewrites.cpp
         src/ZX/ZXRWSequences.cpp
         src/Converters/ChoiMixTableauConverters.cpp
-        src/Converters/PauliGadget.cpp
         src/Converters/PauliGraphConverters.cpp
         src/Converters/Gauss.cpp
         src/Converters/PhasePoly.cpp
@@ -285,7 +292,7 @@ target_sources(tket
         include/tket/Utils/HelperFunctions.hpp
         include/tket/Utils/Json.hpp
         include/tket/Utils/MatrixAnalysis.hpp
-        include/tket/Utils/PauliStrings.hpp
+        include/tket/Utils/PauliTensor.hpp
         include/tket/Utils/SequencedContainers.hpp
         include/tket/Utils/Symbols.hpp
         include/tket/Utils/UnitID.hpp
@@ -338,12 +345,14 @@ target_sources(tket
         include/tket/Circuit/Conditional.hpp
         include/tket/Circuit/DAGDefs.hpp
         include/tket/Circuit/DiagonalBox.hpp
+        include/tket/Circuit/DummyBox.hpp
         include/tket/Circuit/Multiplexor.hpp
         include/tket/Circuit/StatePreparation.hpp
         include/tket/Circuit/ThreeQubitConversion.hpp
         include/tket/Circuit/ToffoliBox.hpp
         include/tket/Circuit/PauliExpBoxes.hpp
         include/tket/Circuit/ConjugationBox.hpp
+        include/tket/Circuit/ResourceData.hpp
         include/tket/Circuit/Simulation/CircuitSimulator.hpp
         include/tket/Circuit/Simulation/PauliExpBoxUnitaryCalculator.hpp
         include/tket/Architecture/Architecture.hpp
@@ -367,7 +376,6 @@ target_sources(tket
         include/tket/ZX/ZXGenerator.hpp
         include/tket/Converters/Converters.hpp
         include/tket/Converters/Gauss.hpp
-        include/tket/Converters/PauliGadget.hpp
         include/tket/Converters/PhasePoly.hpp
         include/tket/Converters/UnitaryTableauBox.hpp
         include/tket/Placement/NeighbourPlacements.hpp

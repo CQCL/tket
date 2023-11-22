@@ -14,14 +14,22 @@
 
 #include "tket/Circuit/Circuit.hpp"
 
+#include <algorithm>
 #include <fstream>
 #include <numeric>
 #include <optional>
 #include <set>
 #include <string>
+#include <tkassert/Assert.hpp>
 #include <tklog/TketLog.hpp>
 #include <utility>
 
+#include "tket/Circuit/DAGDefs.hpp"
+#include "tket/Circuit/DummyBox.hpp"
+#include "tket/Circuit/ResourceData.hpp"
+#include "tket/OpType/OpDesc.hpp"
+#include "tket/OpType/OpType.hpp"
+#include "tket/OpType/OpTypeFunctions.hpp"
 #include "tket/Utils/Expression.hpp"
 #include "tket/Utils/GraphHeaders.hpp"
 #include "tket/Utils/HelperFunctions.hpp"
@@ -36,17 +44,17 @@ namespace tket {
 // information apart from qubit path and slices can be seen easily.
 // Very useful for debugging and eyeball comparison of circuits.
 // out << "\nrankdir=\"LR\"" <--- put this in for Left-Right circuit
-void Circuit::to_graphviz(std::ostream &out) const {
+void Circuit::to_graphviz(std::ostream& out) const {
   IndexMap im = index_map();
 
   out << "digraph G {\n";
   out << "{ rank = same\n";
-  for (const Vertex &v : all_inputs()) {
+  for (const Vertex& v : all_inputs()) {
     out << im[v] << " ";
   }
   out << "}\n";
   out << "{ rank = same\n";
-  for (const Vertex &v : all_outputs()) {
+  for (const Vertex& v : all_outputs()) {
     out << im[v] << " ";
   }
   out << "}\n";
@@ -66,7 +74,7 @@ void Circuit::to_graphviz(std::ostream &out) const {
   out << "}";
 }
 
-void Circuit::to_graphviz_file(const std::string &filename) const {
+void Circuit::to_graphviz_file(const std::string& filename) const {
   std::ofstream dot_file(filename);
   to_graphviz(dot_file);
 }
@@ -140,9 +148,9 @@ Expr Circuit::get_phase() const {
 
 void Circuit::add_phase(Expr a) { phase += a; }
 
-void Circuit::symbol_substitution(const symbol_map_t &symbol_map) {
+void Circuit::symbol_substitution(const symbol_map_t& symbol_map) {
   SymEngine::map_basic_basic sub_map;
-  for (const std::pair<const Sym, Expr> &p : symbol_map) {
+  for (const std::pair<const Sym, Expr>& p : symbol_map) {
     ExprPtr s = p.first;
     ExprPtr e = p.second;
     // This is a workaround for a symengine issue: symengine currently has poor
@@ -158,7 +166,7 @@ void Circuit::symbol_substitution(const symbol_map_t &symbol_map) {
 }
 
 void Circuit::symbol_substitution(
-    const std::map<Sym, double, SymEngine::RCPBasicKeyLess> &symbol_map) {
+    const std::map<Sym, double, SymEngine::RCPBasicKeyLess>& symbol_map) {
   symbol_map_t s_map;
   for (std::pair<Sym, Expr> p : symbol_map) {
     s_map[p.first] = Expr(p.second);
@@ -192,7 +200,7 @@ bool Circuit::is_symbolic() const { return !free_symbols().empty(); }
 // check aspects of circuit for equality, and optionally throw exceptions when
 // not met
 bool Circuit::circuit_equality(
-    const Circuit &other, const std::set<Check> &except,
+    const Circuit& other, const std::set<Check>& except,
     bool throw_error) const {
   bool check = true;
   check &= check_iterators_equality(*this, other);
@@ -265,9 +273,9 @@ bool Circuit::circuit_equality(
 // depth)
 // TODO:: rewrite to work with classical boxes
 bool Circuit::in_causal_order(
-    const Vertex &target, const Vertex &from, bool forward,
-    const std::map<Vertex, unsigned> &v_to_depth,
-    const std::map<Vertex, unit_set_t> &v_to_units, bool strict) const {
+    const Vertex& target, const Vertex& from, bool forward,
+    const std::map<Vertex, unsigned>& v_to_depth,
+    const std::map<Vertex, unit_set_t>& v_to_units, bool strict) const {
   unsigned target_depth = v_to_depth.at(target);
   if (!strict && from == target) return true;
   if (v_to_depth.at(from) >= target_depth) return false;
@@ -285,7 +293,7 @@ bool Circuit::in_causal_order(
   std::set<Vertex, Comp> to_search(c);
   if (forward) {
     VertexVec succs = get_successors(from);
-    for (const Vertex &s : succs) {
+    for (const Vertex& s : succs) {
       if (v_to_depth.find(s) != v_to_depth.end()) {
         to_search.insert(s);
       }
@@ -300,14 +308,14 @@ bool Circuit::in_causal_order(
     to_search.erase(to_search.begin());
     if (v_to_depth.at(v) > target_depth) continue;
     unit_set_t v_units = v_to_units.at(v);
-    for (const UnitID &u : lookup_units) {
+    for (const UnitID& u : lookup_units) {
       if (v_units.find(u) != v_units.end()) {
         return true;
       }
     }
     if (forward) {
       VertexVec succs = get_successors(v);
-      for (const Vertex &s : succs) {
+      for (const Vertex& s : succs) {
         if (v_to_depth.find(s) != v_to_depth.end()) {
           to_search.insert(s);
         }
@@ -318,6 +326,107 @@ bool Circuit::in_causal_order(
     }
   }
   return false;
+}
+
+// Update depth fields of `data` for a vertex with data for the vertex's
+// predecessors `preds`, which is assumed to be already stored in `datamap`.
+static void update_from_predecessors(
+    ResourceData& data, const VertexVec& preds,
+    const std::map<Vertex, ResourceData>& datamap) {
+  std::vector<ResourceData> pre_data;
+  for (const Vertex& pre_v : preds) {
+    pre_data.push_back(datamap.at(pre_v));
+  }
+  // 1. GateDepth
+  data.GateDepth.min += std::max_element(
+                            pre_data.begin(), pre_data.end(),
+                            [](const ResourceData& a, const ResourceData& b) {
+                              return a.GateDepth.min < b.GateDepth.min;
+                            })
+                            ->GateDepth.min;
+  data.GateDepth.max += std::max_element(
+                            pre_data.begin(), pre_data.end(),
+                            [](const ResourceData& a, const ResourceData& b) {
+                              return a.GateDepth.max < b.GateDepth.max;
+                            })
+                            ->GateDepth.max;
+  // 2. OpTypeDepth
+  std::map<OpType, unsigned> min_depths;
+  std::map<OpType, unsigned> max_depths;
+  for (const ResourceData& pre_v_data : pre_data) {
+    for (const auto& pair : pre_v_data.OpTypeDepth) {
+      if (pair.second.min > min_depths[pair.first]) {
+        min_depths[pair.first] = pair.second.min;
+      }
+      if (pair.second.max > max_depths[pair.first]) {
+        max_depths[pair.first] = pair.second.max;
+      }
+    }
+  }
+  for (const auto& pair : min_depths) {
+    data.OpTypeDepth[pair.first].min += min_depths[pair.first];
+  }
+  for (const auto& pair : max_depths) {
+    data.OpTypeDepth[pair.first].max += max_depths[pair.first];
+  }
+  // 3. TwoQubitGateDepth
+  data.TwoQubitGateDepth.min +=
+      std::max_element(
+          pre_data.begin(), pre_data.end(),
+          [](const ResourceData& a, const ResourceData& b) {
+            return a.TwoQubitGateDepth.min < b.TwoQubitGateDepth.min;
+          })
+          ->TwoQubitGateDepth.min;
+  data.TwoQubitGateDepth.max +=
+      std::max_element(
+          pre_data.begin(), pre_data.end(),
+          [](const ResourceData& a, const ResourceData& b) {
+            return a.TwoQubitGateDepth.max < b.TwoQubitGateDepth.max;
+          })
+          ->TwoQubitGateDepth.max;
+}
+
+ResourceData Circuit::get_resources() /*const*/ {
+  // Traverse the DAG in topological order. At each vertex compute a new
+  // ResourceData based on the ResourceData already computed for its immediate
+  // predecessors. Compute final ResourceData based on terminal nodes.
+  const VertexVec vertices = vertices_in_order();
+  std::map<Vertex, ResourceData> datamap;
+  std::map<OpType, ResourceBounds<unsigned>> op_type_count;
+  for (const Vertex& v : vertices) {
+    ResourceData data;
+    OpType optype = get_OpType_from_Vertex(v);
+    if (!is_initial_type(optype)) {
+      if (!is_final_type(optype)) {
+        if (optype == OpType::DummyBox) {
+          const DummyBox& dbox =
+              static_cast<const DummyBox&>(*get_Op_ptr_from_Vertex(v));
+          data = dbox.get_resource_data();
+          for (const auto& pair : data.OpTypeCount) {
+            op_type_count[pair.first].min += pair.second.min;
+            op_type_count[pair.first].max += pair.second.max;
+          }
+        } else {
+          data.GateDepth = {1};
+          data.OpTypeDepth[optype] = {1};
+          if (OpDesc(optype).is_gate() &&
+              get_Op_ptr_from_Vertex(v)->n_qubits() == 2) {
+            data.TwoQubitGateDepth = {1};
+          }
+          op_type_count[optype].min += 1;
+          op_type_count[optype].max += 1;
+        }
+      }
+      // Aggregate with predecessors
+      update_from_predecessors(data, get_predecessors(v), datamap);
+    }
+    datamap[v] = data;
+  }
+  // Finally aggregate outputs
+  ResourceData final_data;
+  update_from_predecessors(final_data, all_outputs(), datamap);
+  final_data.OpTypeCount = op_type_count;
+  return final_data;
 }
 
 }  // namespace tket

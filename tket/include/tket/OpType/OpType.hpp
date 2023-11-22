@@ -340,6 +340,32 @@ enum class OpType {
   CSXdg,
 
   /**
+   * Controlled \ref OpType::S
+   *
+   * \f$ \left[ \begin{array}{cccc}
+   * 1 & 0 & 0 & 0 \\
+   * 0 & 1 & 0 & 0 \\
+   * 0 & 0 & 1 & 0 \\
+   * 0 & 0 & 0 & i
+   * \end{array} \right] =
+   * \mathrm{CU1}(\frac12) \f$
+   */
+  CS,
+
+  /**
+   * Controlled \ref OpType::Sdg
+   *
+   * \f$ \left[ \begin{array}{cccc}
+   * 1 & 0 & 0 & 0 \\
+   * 0 & 1 & 0 & 0 \\
+   * 0 & 0 & 1 & 0 \\
+   * 0 & 0 & 0 & -i
+   * \end{array} \right] =
+   * \mathrm{CU1}(-\frac12) \f$
+   */
+  CSdg,
+
+  /**
    * Controlled \ref OpType::Rz
    *
    * \f$ \mathrm{CRz}(\alpha) = \left[ \begin{array}{cccc} 1 & 0 & 0 & 0 \\ 0
@@ -693,7 +719,12 @@ enum class OpType {
   /**
    * See \ref UnitaryTableauBox
    */
-  UnitaryTableauBox
+  UnitaryTableauBox,
+
+  /**
+   * See \ref DummyBox
+   */
+  DummyBox
 };
 
 JSON_DECL(OpType)

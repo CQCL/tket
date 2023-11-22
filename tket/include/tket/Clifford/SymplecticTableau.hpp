@@ -16,15 +16,9 @@
 
 #include "tket/OpType/OpType.hpp"
 #include "tket/Utils/MatrixAnalysis.hpp"
-#include "tket/Utils/PauliStrings.hpp"
+#include "tket/Utils/PauliTensor.hpp"
 
 namespace tket {
-
-// Forward declare friend classes for converters
-class ChoiMixTableau;
-class UnitaryTableau;
-class UnitaryRevTableau;
-class Circuit;
 
 /**
  * Boolean encoding of Pauli
@@ -92,7 +86,7 @@ class SymplecticTableau {
    */
   explicit SymplecticTableau(
       const MatrixXb &xmat, const MatrixXb &zmat, const VectorXb &phase);
-  explicit SymplecticTableau(const PauliStabiliserList &rows);
+  explicit SymplecticTableau(const PauliStabiliserVec &rows);
 
   /**
    * Other required constructors
@@ -136,10 +130,13 @@ class SymplecticTableau {
   void row_mult(unsigned ra, unsigned rw, Complex coeff = 1.);
 
   /**
-   * Applies an S/V/CX gate to the given qubit(s)
+   * Applies a chosen gate to the given qubit(s)
    */
   void apply_S(unsigned qb);
+  void apply_Z(unsigned qb);
   void apply_V(unsigned qb);
+  void apply_X(unsigned qb);
+  void apply_H(unsigned qb);
   void apply_CX(unsigned qc, unsigned qt);
   void apply_gate(OpType type, const std::vector<unsigned> &qbs);
 
@@ -173,29 +170,19 @@ class SymplecticTableau {
    */
   void gaussian_form();
 
- private:
-  /**
-   * Number of rows
-   */
-  unsigned n_rows_;
-
-  /**
-   * Number of qubits in each row
-   */
-  unsigned n_qubits_;
-
   /**
    * Tableau contents
    */
-  MatrixXb xmat_;
-  MatrixXb zmat_;
-  VectorXb phase_;
+  MatrixXb xmat;
+  MatrixXb zmat;
+  VectorXb phase;
 
   /**
    * Complex conjugate of the state by conjugating rows
    */
   SymplecticTableau conjugate() const;
 
+ private:
   /**
    * Helper methods for manipulating the tableau when applying gates
    */
@@ -206,18 +193,6 @@ class SymplecticTableau {
   void col_mult(
       const MatrixXb::ColXpr &a, const MatrixXb::ColXpr &b, bool flip,
       MatrixXb::ColXpr &w, VectorXb &pw);
-
-  friend class UnitaryTableau;
-  friend class ChoiMixTableau;
-  friend Circuit unitary_tableau_to_circuit(const UnitaryTableau &tab);
-  friend std::pair<Circuit, unit_map_t> cm_tableau_to_circuit(
-      const ChoiMixTableau &tab);
-  friend std::ostream &operator<<(std::ostream &os, const UnitaryTableau &tab);
-  friend std::ostream &operator<<(
-      std::ostream &os, const UnitaryRevTableau &tab);
-
-  friend void to_json(nlohmann::json &j, const SymplecticTableau &tab);
-  friend void from_json(const nlohmann::json &j, SymplecticTableau &tab);
 };
 
 JSON_DECL(SymplecticTableau)

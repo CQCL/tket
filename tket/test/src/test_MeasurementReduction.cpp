@@ -21,11 +21,11 @@ namespace test_MeasurementReduction {
 
 SCENARIO("Some QubitOperators") {
   GIVEN("4 string QubitOperator") {
-    QubitPauliString qp_map0(Qubit(0), Pauli::I);
-    QubitPauliString qp_map1(Qubit(0), Pauli::X);
-    QubitPauliString qp_map2(Qubit(0), Pauli::Y);
-    QubitPauliString qp_map3(Qubit(0), Pauli::Z);
-    std::list<QubitPauliString> pts{qp_map0, qp_map1, qp_map2, qp_map3};
+    SpPauliString qp_map0(Qubit(0), Pauli::I);
+    SpPauliString qp_map1(Qubit(0), Pauli::X);
+    SpPauliString qp_map2(Qubit(0), Pauli::Y);
+    SpPauliString qp_map3(Qubit(0), Pauli::Z);
+    std::list<SpPauliString> pts{qp_map0, qp_map1, qp_map2, qp_map3};
 
     WHEN("Commuting sets") {
       MeasurementSetup measurements =
@@ -44,15 +44,15 @@ SCENARIO("Some QubitOperators") {
     }
   }
   GIVEN("7 string QubitOperator") {
-    QubitPauliString qp_map0(Qubit(0), Pauli::Z);
-    QubitPauliString qp_map1(Qubit(1), Pauli::Z);
-    QubitPauliString qp_map2(Qubit(2), Pauli::Z);
-    QubitPauliString qp_map3(Qubit(3), Pauli::Z);
-    QubitPauliString qp_map4({Pauli::Z, Pauli::Z, Pauli::Z, Pauli::Z});
-    QubitPauliString qp_map5({Pauli::X, Pauli::X, Pauli::Y, Pauli::Y});
-    QubitPauliString qp_map6({Pauli::Y, Pauli::Y, Pauli::X, Pauli::X});
-    std::list<QubitPauliString> pts{qp_map0, qp_map1, qp_map2, qp_map3,
-                                    qp_map4, qp_map5, qp_map6};
+    SpPauliString qp_map0(Qubit(0), Pauli::Z);
+    SpPauliString qp_map1(Qubit(1), Pauli::Z);
+    SpPauliString qp_map2(Qubit(2), Pauli::Z);
+    SpPauliString qp_map3(Qubit(3), Pauli::Z);
+    SpPauliString qp_map4({Pauli::Z, Pauli::Z, Pauli::Z, Pauli::Z});
+    SpPauliString qp_map5({Pauli::X, Pauli::X, Pauli::Y, Pauli::Y});
+    SpPauliString qp_map6({Pauli::Y, Pauli::Y, Pauli::X, Pauli::X});
+    std::list<SpPauliString> pts{qp_map0, qp_map1, qp_map2, qp_map3,
+                                 qp_map4, qp_map5, qp_map6};
 
     WHEN("Commuting sets") {
       MeasurementSetup measurements =
@@ -68,17 +68,17 @@ SCENARIO("Some QubitOperators") {
     }
   }
   GIVEN("8 strings over 4 qubits") {
-    QubitPauliString qp_map0({Pauli::X, Pauli::X, Pauli::X, Pauli::Y});
-    QubitPauliString qp_map1({Pauli::X, Pauli::X, Pauli::Y, Pauli::X});
-    QubitPauliString qp_map2({Pauli::X, Pauli::Y, Pauli::X, Pauli::X});
-    QubitPauliString qp_map3({Pauli::X, Pauli::Y, Pauli::Y, Pauli::Y});
-    QubitPauliString qp_map4({Pauli::Y, Pauli::X, Pauli::X, Pauli::X});
-    QubitPauliString qp_map5({Pauli::Y, Pauli::X, Pauli::Y, Pauli::Y});
-    QubitPauliString qp_map6({Pauli::Y, Pauli::Y, Pauli::X, Pauli::Y});
-    QubitPauliString qp_map7({Pauli::Y, Pauli::Y, Pauli::Y, Pauli::X});
-    QubitPauliString qp_map8({Pauli::I, Pauli::I, Pauli::I, Pauli::I});
-    std::list<QubitPauliString> pts{qp_map0, qp_map1, qp_map2, qp_map3, qp_map4,
-                                    qp_map5, qp_map6, qp_map7, qp_map8};
+    SpPauliString qp_map0({Pauli::X, Pauli::X, Pauli::X, Pauli::Y});
+    SpPauliString qp_map1({Pauli::X, Pauli::X, Pauli::Y, Pauli::X});
+    SpPauliString qp_map2({Pauli::X, Pauli::Y, Pauli::X, Pauli::X});
+    SpPauliString qp_map3({Pauli::X, Pauli::Y, Pauli::Y, Pauli::Y});
+    SpPauliString qp_map4({Pauli::Y, Pauli::X, Pauli::X, Pauli::X});
+    SpPauliString qp_map5({Pauli::Y, Pauli::X, Pauli::Y, Pauli::Y});
+    SpPauliString qp_map6({Pauli::Y, Pauli::Y, Pauli::X, Pauli::Y});
+    SpPauliString qp_map7({Pauli::Y, Pauli::Y, Pauli::Y, Pauli::X});
+    SpPauliString qp_map8({Pauli::I, Pauli::I, Pauli::I, Pauli::I});
+    std::list<SpPauliString> pts{qp_map0, qp_map1, qp_map2, qp_map3, qp_map4,
+                                 qp_map5, qp_map6, qp_map7, qp_map8};
     WHEN("Commuting sets") {
       MeasurementSetup measurements =
           measurement_reduction(pts, PauliPartitionStrat::CommutingSets);

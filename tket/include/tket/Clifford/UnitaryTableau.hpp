@@ -78,17 +78,17 @@ class UnitaryTableau {
   /**
    * Read off an X row as a Pauli string
    */
-  QubitPauliTensor get_xrow(const Qubit& qb) const;
+  SpPauliStabiliser get_xrow(const Qubit& qb) const;
 
   /**
    * Read off a Z row as a Pauli string
    */
-  QubitPauliTensor get_zrow(const Qubit& qb) const;
+  SpPauliStabiliser get_zrow(const Qubit& qb) const;
 
   /**
-   * Combine rows into a single row according to a QubitPauliTensor
+   * Combine rows into a single row according to a SpPauliStabiliser
    */
-  QubitPauliTensor get_row_product(const QubitPauliTensor& qpt) const;
+  SpPauliStabiliser get_row_product(const SpPauliStabiliser& qpt) const;
 
   /**
    * Access all IDs for the qubits used in the tableau.
@@ -101,8 +101,14 @@ class UnitaryTableau {
    */
   void apply_S_at_front(const Qubit& qb);
   void apply_S_at_end(const Qubit& qb);
+  void apply_Z_at_front(const Qubit& qb);
+  void apply_Z_at_end(const Qubit& qb);
   void apply_V_at_front(const Qubit& qb);
   void apply_V_at_end(const Qubit& qb);
+  void apply_X_at_front(const Qubit& qb);
+  void apply_X_at_end(const Qubit& qb);
+  void apply_H_at_front(const Qubit& qb);
+  void apply_H_at_end(const Qubit& qb);
   void apply_CX_at_front(const Qubit& control, const Qubit& target);
   void apply_CX_at_end(const Qubit& control, const Qubit& target);
   void apply_gate_at_front(OpType type, const qubit_vector_t& qbs);
@@ -116,8 +122,8 @@ class UnitaryTableau {
    * @param half_pis The Clifford angle: {0, 1, 2, 3} represents {0, pi/2, pi,
    * -pi/2}
    */
-  void apply_pauli_at_front(const QubitPauliTensor& pauli, unsigned half_pis);
-  void apply_pauli_at_end(const QubitPauliTensor& pauli, unsigned half_pis);
+  void apply_pauli_at_front(const SpPauliStabiliser& pauli, unsigned half_pis);
+  void apply_pauli_at_end(const SpPauliStabiliser& pauli, unsigned half_pis);
 
   /**
    * Combine two tableaux in sequence.
@@ -213,17 +219,17 @@ class UnitaryRevTableau {
   /**
    * Read off an X row as a Pauli string
    */
-  QubitPauliTensor get_xrow(const Qubit& qb) const;
+  SpPauliStabiliser get_xrow(const Qubit& qb) const;
 
   /**
    * Read off a Z row as a Pauli string
    */
-  QubitPauliTensor get_zrow(const Qubit& qb) const;
+  SpPauliStabiliser get_zrow(const Qubit& qb) const;
 
   /**
-   * Combine rows into a single row according to a QubitPauliTensor
+   * Combine rows into a single row according to a SpPauliStabiliser
    */
-  QubitPauliTensor get_row_product(const QubitPauliTensor& qpt) const;
+  SpPauliStabiliser get_row_product(const SpPauliStabiliser& qpt) const;
 
   /**
    * Access all IDs for the qubits used in the tableau.
@@ -236,8 +242,14 @@ class UnitaryRevTableau {
    */
   void apply_S_at_front(const Qubit& qb);
   void apply_S_at_end(const Qubit& qb);
+  void apply_Z_at_front(const Qubit& qb);
+  void apply_Z_at_end(const Qubit& qb);
   void apply_V_at_front(const Qubit& qb);
   void apply_V_at_end(const Qubit& qb);
+  void apply_X_at_front(const Qubit& qb);
+  void apply_X_at_end(const Qubit& qb);
+  void apply_H_at_front(const Qubit& qb);
+  void apply_H_at_end(const Qubit& qb);
   void apply_CX_at_front(const Qubit& control, const Qubit& target);
   void apply_CX_at_end(const Qubit& control, const Qubit& target);
   void apply_gate_at_front(OpType type, const qubit_vector_t& qbs);
@@ -251,8 +263,8 @@ class UnitaryRevTableau {
    * @param half_pis The Clifford angle: {0, 1, 2, 3} represents {0, pi/2, pi,
    * -pi/2}
    */
-  void apply_pauli_at_front(const QubitPauliTensor& pauli, unsigned half_pis);
-  void apply_pauli_at_end(const QubitPauliTensor& pauli, unsigned half_pis);
+  void apply_pauli_at_front(const SpPauliStabiliser& pauli, unsigned half_pis);
+  void apply_pauli_at_end(const SpPauliStabiliser& pauli, unsigned half_pis);
 
   /**
    * Combine two tableaux in sequence.

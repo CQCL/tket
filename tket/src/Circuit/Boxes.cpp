@@ -30,7 +30,7 @@
 #include "tket/Utils/Expression.hpp"
 #include "tket/Utils/HelperFunctions.hpp"
 #include "tket/Utils/Json.hpp"
-#include "tket/Utils/PauliStrings.hpp"
+#include "tket/Utils/PauliTensor.hpp"
 
 namespace tket {
 
@@ -489,8 +489,7 @@ bool ProjectorAssertionBox::is_equal(const Op &op_other) const {
   return m_.isApprox(other.m_);
 }
 
-StabiliserAssertionBox::StabiliserAssertionBox(
-    const PauliStabiliserList &paulis)
+StabiliserAssertionBox::StabiliserAssertionBox(const PauliStabiliserVec &paulis)
     : Box(OpType::StabiliserAssertionBox),
       paulis_(paulis),
       expected_readouts_({}) {
@@ -508,15 +507,10 @@ Op_ptr StabiliserAssertionBox::dagger() const {
 }
 
 Op_ptr StabiliserAssertionBox::transpose() const {
-  PauliStabiliserList new_pauli_list;
-  for (auto &pauli : paulis_) {
-    int y_pauli_counter =
-        std::count(pauli.string.begin(), pauli.string.end(), Pauli::Y);
-    if (y_pauli_counter % 2 == 0) {
-      new_pauli_list.push_back(PauliStabiliser(pauli.string, pauli.coeff));
-    } else {
-      new_pauli_list.push_back(PauliStabiliser(pauli.string, !pauli.coeff));
-    };
+  PauliStabiliserVec new_pauli_list;
+  for (PauliStabiliser pauli : paulis_) {
+    pauli.transpose();
+    new_pauli_list.push_back(pauli);
   }
   return std::make_shared<StabiliserAssertionBox>(new_pauli_list);
 }
@@ -691,13 +685,23 @@ Op_ptr ProjectorAssertionBox::from_json(const nlohmann::json &j) {
 nlohmann::json StabiliserAssertionBox::to_json(const Op_ptr &op) {
   const auto &box = static_cast<const StabiliserAssertionBox &>(*op);
   nlohmann::json j = core_box_json(box);
-  j["stabilisers"] = box.get_stabilisers();
+  // Encode PauliStabiliser as Pauli vector and bool (true iff coeff 0) for
+  // backwards compatibility with before templated PauliTensor
+  std::vector<std::pair<std::vector<Pauli>, bool>> stabiliser_encoding;
+  for (const PauliStabiliser &stab : box.get_stabilisers())
+    stabiliser_encoding.push_back({stab.string, !stab.is_real_negative()});
+  j["stabilisers"] = stabiliser_encoding;
   return j;
 }
 
 Op_ptr StabiliserAssertionBox::from_json(const nlohmann::json &j) {
-  StabiliserAssertionBox box =
-      StabiliserAssertionBox(j.at("stabilisers").get<PauliStabiliserList>());
+  std::vector<std::pair<std::vector<Pauli>, bool>> stabiliser_encoding =
+      j.at("stabilisers")
+          .get<std::vector<std::pair<std::vector<Pauli>, bool>>>();
+  PauliStabiliserVec stabs;
+  for (const std::pair<std::vector<Pauli>, bool> &stab : stabiliser_encoding)
+    stabs.push_back(PauliStabiliser(stab.first, stab.second ? 0 : 2));
+  StabiliserAssertionBox box = StabiliserAssertionBox(stabs);
   return set_box_id(
       box,
       boost::lexical_cast<boost::uuids::uuid>(j.at("id").get<std::string>()));

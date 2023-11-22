@@ -25,6 +25,7 @@
 #include "tket/Circuit/Command.hpp"
 #include "tket/Circuit/ConjugationBox.hpp"
 #include "tket/Circuit/DiagonalBox.hpp"
+#include "tket/Circuit/DummyBox.hpp"
 #include "tket/Circuit/Multiplexor.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
@@ -322,7 +323,7 @@ SCENARIO("Test Circuit serialization") {
   GIVEN("PauliExpBoxes") {
     Circuit c(4, 2, "paulibox");
     PauliExpBox pbox(
-        {Pauli::X, Pauli::Y, Pauli::I, Pauli::Z}, -0.72521,
+        {{Pauli::X, Pauli::Y, Pauli::I, Pauli::Z}, -0.72521},
         CXConfigType::MultiQGate);
     c.add_box(pbox, {0, 1, 2, 3});
     nlohmann::json j_pbox = c;
@@ -340,8 +341,8 @@ SCENARIO("Test Circuit serialization") {
   GIVEN("PauliExpPairBoxes") {
     Circuit c(4, 2, "paulipairbox");
     PauliExpPairBox pbox(
-        {Pauli::X, Pauli::Y, Pauli::I, Pauli::Z}, -0.72521,
-        {Pauli::X, Pauli::I, Pauli::I, Pauli::X}, -0.32421,
+        {{Pauli::X, Pauli::Y, Pauli::I, Pauli::Z}, -0.72521},
+        {{Pauli::X, Pauli::I, Pauli::I, Pauli::X}, -0.32421},
         CXConfigType::MultiQGate);
     c.add_box(pbox, {0, 1, 2, 3});
     nlohmann::json j_pbox = c;
@@ -398,6 +399,23 @@ SCENARIO("Test Circuit serialization") {
     REQUIRE(t_b.get_permutation() == tbox.get_permutation());
     REQUIRE(t_b.get_rotation_axis() == tbox.get_rotation_axis());
     REQUIRE(t_b == tbox);
+  }
+
+  GIVEN("DummyBox") {
+    ResourceData data{
+        {{OpType::H, ResourceBounds<unsigned>(3, 4)},
+         {OpType::CX, ResourceBounds<unsigned>(2, 8)}},
+        ResourceBounds<unsigned>(2, 3),
+        {{OpType::CX, ResourceBounds<unsigned>(2, 8)}},
+        ResourceBounds<unsigned>(4, 8)};
+    DummyBox dbox(2, 0, data);
+    Circuit c(2);
+    c.add_box(dbox, {0, 1});
+    nlohmann::json j_c = c;
+    Circuit c1 = j_c.get<Circuit>();
+    const auto& dbox1 =
+        static_cast<const DummyBox&>(*c1.get_commands()[0].get_op_ptr());
+    REQUIRE(dbox == dbox1);
   }
 
   GIVEN("CustomGate") {
@@ -1147,12 +1165,12 @@ SCENARIO("Test compiler pass combinator serializations") {
   }
 }
 
-SCENARIO("Test QubitPauliString serialization") {
-  QubitPauliString qps(
+SCENARIO("Test PauliTensor serialization") {
+  SpPauliString qps(
       {{Qubit(2), Pauli::X}, {Qubit(7), Pauli::Y}, {Qubit(0), Pauli::I}});
 
   nlohmann::json j_qps = qps;
-  QubitPauliString new_qps = j_qps.get<QubitPauliString>();
+  SpPauliString new_qps = j_qps.get<SpPauliString>();
 
   REQUIRE(qps == new_qps);
 }
@@ -1194,12 +1212,12 @@ SCENARIO("Test MeasurementSetup serializations") {
     ms.add_measurement_circuit(mc2);
     Qubit q0(q_default_reg(), 0);
     Qubit q1(q_default_reg(), 1);
-    QubitPauliString ii;
-    QubitPauliString zi({{q0, Pauli::Z}});
-    QubitPauliString iz({{q1, Pauli::Z}});
-    QubitPauliString zz({{q0, Pauli::Z}, {q1, Pauli::Z}});
-    QubitPauliString xx({{q0, Pauli::X}, {q1, Pauli::X}});
-    QubitPauliString yy({{q0, Pauli::Y}, {q1, Pauli::Y}});
+    QubitPauliMap ii;
+    QubitPauliMap zi({{q0, Pauli::Z}});
+    QubitPauliMap iz({{q1, Pauli::Z}});
+    QubitPauliMap zz({{q0, Pauli::Z}, {q1, Pauli::Z}});
+    QubitPauliMap xx({{q0, Pauli::X}, {q1, Pauli::X}});
+    QubitPauliMap yy({{q0, Pauli::Y}, {q1, Pauli::Y}});
     ms.add_result_for_term(ii, {0, {}, false});
     ms.add_result_for_term(zi, {0, {0}, false});
     ms.add_result_for_term(iz, {0, {1}, false});

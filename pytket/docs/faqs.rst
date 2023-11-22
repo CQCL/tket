@@ -14,7 +14,7 @@ There are two types of rebase
 2) :py:class:`RebaseCustom` - This can be used instead of `auto_rebase_pass` in cases where there is no hardcoded conversion available. 
 In this case the user will have to specify how to implement TKET's {TK1, CX} or {TK1, TK2} operations in terms of the target :py:class:`OpType` s. 
 
-See the manual section on `rebases <https://cqcl.github.io/pytket/manual/manual_compiler.html#rebases>`_ for examples.
+See the manual section on `rebases <https://tket.quantinuum.com/user-manual/manual_compiler.html#rebases>`_ for examples.
 
 Unitary Synthesis
 -----------------
@@ -22,7 +22,7 @@ Q: Can TKET generate a circuit to implement a unitary operator of my choice?
 
 A: Yes but only up to three qubits at present. This can be done with :py:class:`Unitary3qBox`.
 
-See the manual section on `unitary synthesis <https://cqcl.github.io/pytket/manual/manual_circuit.html#boxes-for-unitary-synthesis>`_ .
+See the manual section on `unitary synthesis <https://tket.quantinuum.com/user-manual/manual_circuit.html#boxes-for-unitary-synthesis>`_ .
 
 
 Qiskit to TKET Conversion

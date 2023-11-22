@@ -26,19 +26,21 @@ namespace py = pybind11;
 
 namespace tket {
 
-QubitPauliTensor apply_clifford_basis_change_tensor(
-    const QubitPauliTensor &in_pauli, const Circuit &circ) {
+SpCxPauliTensor apply_clifford_basis_change_tensor(
+    const SpCxPauliTensor &in_pauli, const Circuit &circ) {
+  SpPauliStabiliser in_string(in_pauli.string);
   UnitaryRevTableau tab = circuit_to_unitary_rev_tableau(circ);
-  QubitPauliTensor new_operator = tab.get_row_product(in_pauli);
+  SpCxPauliTensor new_operator = tab.get_row_product(in_string);
+  new_operator.coeff *= in_pauli.coeff;
   return new_operator;
 }
 
-QubitPauliString apply_clifford_basis_change_string(
-    const QubitPauliString &in_pauli, const Circuit &circ) {
+SpPauliString apply_clifford_basis_change_string(
+    const SpPauliString &in_pauli, const Circuit &circ) {
   UnitaryRevTableau tab = circuit_to_unitary_rev_tableau(circ);
-  QubitPauliTensor new_operator =
-      tab.get_row_product(QubitPauliTensor(in_pauli));
-  return new_operator.string;
+  SpPauliStabiliser new_operator =
+      tab.get_row_product(SpPauliStabiliser(in_pauli));
+  return SpPauliString(new_operator.string);
 }
 
 PYBIND11_MODULE(tailoring, m) {

@@ -26,22 +26,22 @@ bool find_in_set(const OpType& val, const OpTypeSet& set) {
 
 const OpTypeSet& all_gate_types() {
   static const OpTypeSet optypes{
-      OpType::Z,           OpType::X,        OpType::Y,        OpType::S,
-      OpType::Sdg,         OpType::T,        OpType::Tdg,      OpType::V,
-      OpType::Vdg,         OpType::SX,       OpType::SXdg,     OpType::H,
-      OpType::Rx,          OpType::Ry,       OpType::Rz,       OpType::U3,
-      OpType::U2,          OpType::U1,       OpType::TK1,      OpType::CX,
-      OpType::CY,          OpType::CZ,       OpType::CH,       OpType::CV,
-      OpType::CVdg,        OpType::CSX,      OpType::CSXdg,    OpType::CRz,
-      OpType::CRx,         OpType::CRy,      OpType::CU1,      OpType::CU3,
-      OpType::PhaseGadget, OpType::CCX,      OpType::SWAP,     OpType::CSWAP,
-      OpType::noop,        OpType::Measure,  OpType::Reset,    OpType::ECR,
-      OpType::ISWAP,       OpType::PhasedX,  OpType::ZZMax,    OpType::XXPhase,
-      OpType::YYPhase,     OpType::ZZPhase,  OpType::CnRy,     OpType::CnX,
-      OpType::CnZ,         OpType::CnY,      OpType::BRIDGE,   OpType::Collapse,
-      OpType::ESWAP,       OpType::FSim,     OpType::Sycamore, OpType::ISWAPMax,
-      OpType::PhasedISWAP, OpType::XXPhase3, OpType::NPhasedX, OpType::TK2,
-      OpType::Phase};
+      OpType::Z,        OpType::X,        OpType::Y,           OpType::S,
+      OpType::Sdg,      OpType::T,        OpType::Tdg,         OpType::V,
+      OpType::Vdg,      OpType::SX,       OpType::SXdg,        OpType::H,
+      OpType::Rx,       OpType::Ry,       OpType::Rz,          OpType::U3,
+      OpType::U2,       OpType::U1,       OpType::TK1,         OpType::CX,
+      OpType::CY,       OpType::CZ,       OpType::CH,          OpType::CV,
+      OpType::CVdg,     OpType::CSX,      OpType::CSXdg,       OpType::CS,
+      OpType::CSdg,     OpType::CRz,      OpType::CRx,         OpType::CRy,
+      OpType::CU1,      OpType::CU3,      OpType::PhaseGadget, OpType::CCX,
+      OpType::SWAP,     OpType::CSWAP,    OpType::noop,        OpType::Measure,
+      OpType::Reset,    OpType::ECR,      OpType::ISWAP,       OpType::PhasedX,
+      OpType::ZZMax,    OpType::XXPhase,  OpType::YYPhase,     OpType::ZZPhase,
+      OpType::CnRy,     OpType::CnX,      OpType::CnZ,         OpType::CnY,
+      OpType::BRIDGE,   OpType::Collapse, OpType::ESWAP,       OpType::FSim,
+      OpType::Sycamore, OpType::ISWAPMax, OpType::PhasedISWAP, OpType::XXPhase3,
+      OpType::NPhasedX, OpType::TK2,      OpType::Phase};
   static std::unique_ptr<const OpTypeSet> gates =
       std::make_unique<const OpTypeSet>(optypes);
   return *gates;
@@ -49,18 +49,19 @@ const OpTypeSet& all_gate_types() {
 
 const OpTypeSet& all_multi_qubit_types() {
   static const OpTypeSet optypes{
-      OpType::CX,       OpType::CY,          OpType::CZ,
-      OpType::CH,       OpType::CV,          OpType::CVdg,
-      OpType::CSX,      OpType::CSXdg,       OpType::CRz,
-      OpType::CRx,      OpType::CRy,         OpType::CU1,
-      OpType::CU3,      OpType::PhaseGadget, OpType::CCX,
-      OpType::SWAP,     OpType::CSWAP,       OpType::ECR,
-      OpType::ISWAP,    OpType::ZZMax,       OpType::XXPhase,
-      OpType::YYPhase,  OpType::ZZPhase,     OpType::CnRy,
-      OpType::CnX,      OpType::CnZ,         OpType::CnY,
-      OpType::BRIDGE,   OpType::ESWAP,       OpType::FSim,
-      OpType::Sycamore, OpType::ISWAPMax,    OpType::PhasedISWAP,
-      OpType::XXPhase3, OpType::NPhasedX,    OpType::TK2};
+      OpType::CX,          OpType::CY,          OpType::CZ,
+      OpType::CH,          OpType::CV,          OpType::CVdg,
+      OpType::CSX,         OpType::CSXdg,       OpType::CS,
+      OpType::CSdg,        OpType::CRz,         OpType::CRx,
+      OpType::CRy,         OpType::CU1,         OpType::CU3,
+      OpType::PhaseGadget, OpType::CCX,         OpType::SWAP,
+      OpType::CSWAP,       OpType::ECR,         OpType::ISWAP,
+      OpType::ZZMax,       OpType::XXPhase,     OpType::YYPhase,
+      OpType::ZZPhase,     OpType::CnRy,        OpType::CnX,
+      OpType::CnZ,         OpType::CnY,         OpType::BRIDGE,
+      OpType::ESWAP,       OpType::FSim,        OpType::Sycamore,
+      OpType::ISWAPMax,    OpType::PhasedISWAP, OpType::XXPhase3,
+      OpType::NPhasedX,    OpType::TK2};
   static std::unique_ptr<const OpTypeSet> gates =
       std::make_unique<const OpTypeSet>(optypes);
   return *gates;
@@ -115,10 +116,10 @@ const OpTypeSet& all_projective_types() {
 
 const OpTypeSet& all_controlled_gate_types() {
   static const OpTypeSet optypes{
-      OpType::CX,   OpType::CCX,   OpType::CnX, OpType::CnZ,  OpType::CnY,
-      OpType::CSX,  OpType::CSXdg, OpType::CV,  OpType::CVdg, OpType::CRx,
-      OpType::CnRy, OpType::CRy,   OpType::CY,  OpType::CRz,  OpType::CZ,
-      OpType::CH,   OpType::CU1,   OpType::CU3};
+      OpType::CX,   OpType::CCX,   OpType::CnX,  OpType::CnZ,  OpType::CnY,
+      OpType::CSX,  OpType::CSXdg, OpType::CS,   OpType::CSdg, OpType::CV,
+      OpType::CVdg, OpType::CRx,   OpType::CnRy, OpType::CRy,  OpType::CY,
+      OpType::CRz,  OpType::CZ,    OpType::CH,   OpType::CU1,  OpType::CU3};
   static std::unique_ptr<const OpTypeSet> gates =
       std::make_unique<const OpTypeSet>(optypes);
   return *gates;
@@ -139,6 +140,16 @@ bool is_initial_q_type(OpType optype) {
 
 bool is_final_q_type(OpType optype) {
   return optype == OpType::Output || optype == OpType::Discard;
+}
+
+bool is_initial_type(OpType optype) {
+  return optype == OpType::Input || optype == OpType::Create ||
+         optype == OpType::ClInput || optype == OpType::WASMInput;
+}
+
+bool is_final_type(OpType optype) {
+  return optype == OpType::Output || optype == OpType::Discard ||
+         optype == OpType::ClOutput || optype == OpType::WASMOutput;
 }
 
 bool is_boundary_type(OpType optype) {
@@ -187,7 +198,8 @@ bool is_box_type(OpType optype) {
       OpType::ProjectorAssertionBox,
       OpType::StabiliserAssertionBox,
       OpType::UnitaryTableauBox,
-      OpType::ToffoliBox};
+      OpType::ToffoliBox,
+      OpType::DummyBox};
   return find_in_set(optype, boxes);
 }
 

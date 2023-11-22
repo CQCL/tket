@@ -98,7 +98,7 @@ add_executable(test-tket
     src/TokenSwapping/test_SwapsFromQubitMapping.cpp
     src/TokenSwapping/test_VariousPartialTsa.cpp
     src/Architecture/test_SubgraphMonomorphisms.cpp
-    src/test_PauliString.cpp
+    src/test_PauliTensor.cpp
     src/Ops/test_ClassicalOps.cpp
     src/Ops/test_Expression.cpp
     src/Ops/test_Ops.cpp
@@ -119,8 +119,10 @@ add_executable(test-tket
     src/Circuit/test_DiagonalBox.cpp
     src/Circuit/test_ToffoliBox.cpp
     src/Circuit/test_ConjugationBox.cpp
+    src/Circuit/test_DummyBox.cpp
     src/test_UnitaryTableau.cpp
     src/test_ChoiMixTableau.cpp
+    src/test_Diagonalisation.cpp
     src/test_PhasePolynomials.cpp
     src/test_PauliGraph.cpp
     src/test_Architectures.cpp

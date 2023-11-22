@@ -14,7 +14,9 @@
 
 import json
 import pytest
-from jsonschema import RefResolver, Draft7Validator, ValidationError  # type: ignore
+from referencing import Registry
+from referencing.jsonschema import DRAFT7
+from jsonschema import Draft7Validator, ValidationError  # type: ignore
 from pathlib import Path
 from typing import Any, Dict, List
 
@@ -408,19 +410,16 @@ with open(schema_dir / "placement_v1.json", "r") as f:
 with open(schema_dir / "predicate_v1.json", "r") as f:
     pred_schema = json.load(f)
 
-schema_store = {
-    pass_schema["$id"]: pass_schema,
-    circ_schema["$id"]: circ_schema,
-    arch_schema["$id"]: arch_schema,
-    plact_schema["$id"]: plact_schema,
-    pred_schema["$id"]: pred_schema,
-}
-pass_validator_resolver = RefResolver.from_schema(pass_schema, store=schema_store)
-pass_validator = Draft7Validator(pass_schema, resolver=pass_validator_resolver)
-predicate_validator_resolver = RefResolver.from_schema(pred_schema, store=schema_store)
-predicate_validator = Draft7Validator(
-    pred_schema, resolver=predicate_validator_resolver
-)
+schema_store = [
+    (pass_schema["$id"], DRAFT7.create_resource(pass_schema)),
+    (circ_schema["$id"], DRAFT7.create_resource(circ_schema)),
+    (arch_schema["$id"], DRAFT7.create_resource(arch_schema)),
+    (plact_schema["$id"], DRAFT7.create_resource(plact_schema)),
+    (pred_schema["$id"], DRAFT7.create_resource(pred_schema)),
+]
+registry: Registry = Registry().with_resources(schema_store)
+pass_validator = Draft7Validator(pass_schema, registry=registry)
+predicate_validator = Draft7Validator(pred_schema, registry=registry)
 
 
 def check_pass_serialisation(
@@ -590,7 +589,7 @@ def test_pass_deserialisation_only() -> None:
     cx = Circuit(2)
     cx.CX(0, 1)
     pz_rebase = RebaseCustom(
-        {OpType.CX, OpType.PhasedX, OpType.Rz}, cx, _library._TK1_to_TK1
+        {OpType.CX, OpType.PhasedX, OpType.Rz}, cx, _library.TK1_to_TK1
     )
     assert pz_rebase.to_dict()["StandardPass"]["name"] == "RebaseCustom"
     assert set(pz_rebase.to_dict()["StandardPass"]["basis_allowed"]) == {

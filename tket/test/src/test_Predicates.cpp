@@ -270,7 +270,7 @@ SCENARIO("Test CliffordCircuitPredicate") {
   CircBox cbox(circ);
   Circuit circ1(8);
   circ1.add_box(cbox, {0, 1, 2, 3, 4, 5, 6, 7});
-  PauliExpBox pebox({Pauli::Y, Pauli::Z}, 0.5);
+  PauliExpBox pebox(SymPauliTensor({Pauli::Y, Pauli::Z}, 0.5));
   circ1.add_box(pebox, {0, 1});
   Circuit setup(2);
   Sym a = SymTable::fresh_symbol("a");

@@ -48,6 +48,10 @@ from pytket.circuit import (
     Bit,
     BitRegister,
     QubitRegister,
+    CXConfigType,
+    ResourceBounds,
+    ResourceData,
+    DummyBox,
 )
 from pytket.circuit.display import get_circuit_renderer, render_circuit_as_html
 from pytket.circuit.named_types import (
@@ -203,13 +207,15 @@ def test_circuit_gen() -> None:
     c.FSim(0.2, 0.4, 0, 1)
     c.Sycamore(1, 2)
     c.ISWAPMax(2, 3)
+    c.CS(0, 2)
+    c.CSdg(1, 2)
 
     assert c.n_qubits == 4
-    assert c._n_vertices() == 45
-    assert c.n_gates == 29
+    assert c._n_vertices() == 47
+    assert c.n_gates == 31
 
     commands = c.get_commands()
-    assert len(commands) == 29
+    assert len(commands) == 31
     assert str(commands[0]) == "X q[0];"
     assert str(commands[2]) == "CX q[2], q[0];"
     assert str(commands[4]) == "CRz(0.5) q[0], q[3];"
@@ -237,6 +243,8 @@ def test_circuit_gen() -> None:
     assert str(commands[26]) == "FSim(0.2, 0.4) q[0], q[1];"
     assert str(commands[27]) == "Sycamore q[1], q[2];"
     assert str(commands[28]) == "ISWAPMax q[2], q[3];"
+    assert str(commands[29]) == "CS q[0], q[2];"
+    assert str(commands[30]) == "CSdg q[1], q[2];"
 
     assert commands[14].qubits == [Qubit(3)]
     assert commands[14].bits == [Bit(3)]
@@ -670,6 +678,15 @@ def test_boxes() -> None:
             command.op.get_unitary()
 
 
+def test_pauliexp_pair_box_serialisation() -> None:
+    # https://github.com/CQCL/tket/issues/1084
+    p = PauliExpPairBox(
+        [Pauli.Z, Pauli.X], 0.5, [Pauli.X, Pauli.Z], 0.2, CXConfigType.MultiQGate
+    )
+    c = Circuit(2).add_pauliexppairbox(p, [0, 1])
+    assert json_validate(c)
+
+
 def test_tofollibox_strats() -> None:
     permutation = [
         ([_0, _0, _0, _0], [_1, _1, _1, _1]),
@@ -784,6 +801,12 @@ def test_str() -> None:
     c = Circuit(2).CSXdg(0, 1)
     op = c.get_commands()[0].op
     assert op.__str__() == "CSXdg"
+    c = Circuit(2).CS(0, 1)
+    op = c.get_commands()[0].op
+    assert op.__str__() == "CS"
+    c = Circuit(2).CSdg(0, 1)
+    op = c.get_commands()[0].op
+    assert op.__str__() == "CSdg"
     c = Circuit(1).SX(0)
     op = c.get_commands()[0].op
     assert op.__str__() == "SX"
@@ -1053,6 +1076,11 @@ def test_op_dagger_transpose() -> None:
     sxdg = Op.create(OpType.SXdg)
     assert sx.dagger == sxdg
     assert sx.transpose == sx
+    cs = Op.create(OpType.CS)
+    csdg = Op.create(OpType.CSdg)
+    assert cs.dagger == csdg
+    assert cs.transpose == cs
+    assert csdg.transpose == csdg
 
 
 def test_clifford_checking() -> None:
@@ -1232,6 +1260,99 @@ def test_phase_order() -> None:
         assert c == c1
 
 
+def test_dummy_box() -> None:
+    resource_data = ResourceData(
+        op_type_count={OpType.T: ResourceBounds(10, 20)},
+        gate_depth=ResourceBounds(5, 8),
+        op_type_depth={OpType.CZ: ResourceBounds(3, 6), OpType.T: ResourceBounds(4, 6)},
+        two_qubit_gate_depth=ResourceBounds(4, 5),
+    )
+    dbox = DummyBox(n_qubits=3, n_bits=1, resource_data=resource_data)
+    c = Circuit(4, 2)
+    c.add_dummybox(dbox, [0, 2, 3], [1])
+    cmds = c.get_commands()
+    assert len(cmds) == 1
+    op = cmds[0].op
+    assert type(op) is DummyBox
+    resource_data1 = op.get_resource_data()
+    op_type_count = resource_data1.get_op_type_count()
+    assert op_type_count[OpType.T].get_min() == 10
+    assert op_type_count[OpType.T].get_max() == 20
+    assert json_validate(c)
+
+
+def test_resources() -> None:
+    resource_data0 = ResourceData(
+        op_type_count={
+            OpType.T: ResourceBounds(1, 2),
+            OpType.H: ResourceBounds(0, 1),
+            OpType.CX: ResourceBounds(1, 2),
+            OpType.CZ: ResourceBounds(3, 3),
+        },
+        gate_depth=ResourceBounds(5, 8),
+        op_type_depth={
+            OpType.T: ResourceBounds(0, 10),
+            OpType.H: ResourceBounds(0, 10),
+            OpType.CX: ResourceBounds(1, 2),
+            OpType.CZ: ResourceBounds(3, 3),
+        },
+        two_qubit_gate_depth=ResourceBounds(4, 5),
+    )
+    dbox0 = DummyBox(n_qubits=2, n_bits=0, resource_data=resource_data0)
+    resource_data1 = ResourceData(
+        op_type_count={
+            OpType.T: ResourceBounds(2, 2),
+            OpType.H: ResourceBounds(1, 1),
+            OpType.CX: ResourceBounds(2, 3),
+            OpType.CZ: ResourceBounds(3, 5),
+        },
+        gate_depth=ResourceBounds(5, 10),
+        op_type_depth={
+            OpType.T: ResourceBounds(1, 2),
+            OpType.H: ResourceBounds(2, 4),
+            OpType.CX: ResourceBounds(1, 1),
+            OpType.CZ: ResourceBounds(3, 4),
+        },
+        two_qubit_gate_depth=ResourceBounds(3, 5),
+    )
+    dbox1 = DummyBox(n_qubits=3, n_bits=0, resource_data=resource_data1)
+    c = Circuit(3)
+    c.H(0)
+    c.CX(1, 2)
+    c.CX(0, 1)
+    c.T(2)
+    c.H(1)
+    c.add_dummybox(dbox0, [0, 1], [])
+    c.CZ(1, 2)
+    c.add_dummybox(dbox1, [0, 1, 2], [])
+    c.H(2)
+    resource_data = c.get_resources()
+    op_type_count = resource_data.get_op_type_count()
+    assert op_type_count[OpType.T].get_min() == 4
+    assert op_type_count[OpType.T].get_max() == 5
+    assert op_type_count[OpType.H].get_min() == 4
+    assert op_type_count[OpType.H].get_max() == 5
+    assert op_type_count[OpType.CX].get_min() == 5
+    assert op_type_count[OpType.CX].get_max() == 7
+    assert op_type_count[OpType.CZ].get_min() == 7
+    assert op_type_count[OpType.CZ].get_max() == 9
+    gate_depth = resource_data.get_gate_depth()
+    assert gate_depth.get_min() == 15
+    assert gate_depth.get_max() == 23
+    op_type_depth = resource_data.get_op_type_depth()
+    assert op_type_depth[OpType.T].get_min() == 2
+    assert op_type_depth[OpType.T].get_max() == 12
+    assert op_type_depth[OpType.H].get_min() == 5
+    assert op_type_depth[OpType.H].get_max() == 17
+    assert op_type_depth[OpType.CX].get_min() == 4
+    assert op_type_depth[OpType.CX].get_max() == 5
+    assert op_type_depth[OpType.CZ].get_min() == 7
+    assert op_type_depth[OpType.CZ].get_max() == 8
+    two_qubit_gate_depth = resource_data.get_two_qubit_gate_depth()
+    assert two_qubit_gate_depth.get_min() == 10
+    assert two_qubit_gate_depth.get_max() == 13
+
+
 if __name__ == "__main__":
     test_circuit_gen()
     test_symbolic_ops()
@@ -1246,3 +1367,4 @@ if __name__ == "__main__":
     test_measuring_registers()
     test_multi_controlled_gates()
     test_counting_n_qubit_gates()
+    test_pauliexp_pair_box_serialisation()

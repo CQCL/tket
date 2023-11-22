@@ -36,6 +36,8 @@ struct FixedData {
   Eigen::Matrix2cd SXdg;
   Eigen::Matrix4cd CSX;
   Eigen::Matrix4cd CSXdg;
+  Eigen::Matrix4cd CS;
+  Eigen::Matrix4cd CSdg;
   Eigen::Matrix4cd CX;
   Eigen::Matrix4cd CY;
   Eigen::Matrix4cd CZ;
@@ -106,6 +108,8 @@ struct FixedData {
     CVdg = GateUnitaryMatrixUtils::get_controlled_gate_unitary(Vdg);
     CSX = GateUnitaryMatrixUtils::get_controlled_gate_unitary(SX);
     CSXdg = GateUnitaryMatrixUtils::get_controlled_gate_unitary(SXdg);
+    CS = GateUnitaryMatrixUtils::get_controlled_gate_unitary(S);
+    CSdg = GateUnitaryMatrixUtils::get_controlled_gate_unitary(Sdg);
 
     // Accuracy notes: std::sqrt is guaranteed by IEEE 754
     // but std::sin, std::cos are not (although C++ is not guaranteed
@@ -170,6 +174,8 @@ GATE_FUNCTION_2Q(CV)
 GATE_FUNCTION_2Q(CVdg)
 GATE_FUNCTION_2Q(CSX)
 GATE_FUNCTION_2Q(CSXdg)
+GATE_FUNCTION_2Q(CS)
+GATE_FUNCTION_2Q(CSdg)
 GATE_FUNCTION_2Q(ZZMax)
 GATE_FUNCTION_2Q(Sycamore)
 GATE_FUNCTION_2Q(ISWAPMax)

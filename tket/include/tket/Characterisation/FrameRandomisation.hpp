@@ -106,7 +106,7 @@ class PauliFrameRandomisation : public FrameRandomisation {
   }
 
  protected:
-  //   QubitPauliTensor class used to find "out_frame"
+  //   PauliTensor class used to find "out_frame"
   std::pair<OpTypeVector, std::vector<Vertex>> get_out_frame(
       const OpTypeVector& in_frame, const Cycle& cycle);
 };
@@ -121,7 +121,7 @@ class UniversalFrameRandomisation : public FrameRandomisation {
   virtual ~UniversalFrameRandomisation() {}
 
  protected:
-  //   QubitPauliTensor class used to find "out_frame"
+  //   PauliTensor class used to find "out_frame"
   std::pair<OpTypeVector, std::vector<Vertex>> get_out_frame(
       const OpTypeVector& in_frame, const Cycle& cycle);
 };
