@@ -1,8 +1,8 @@
 Changelog
 =========
 
-Unreleased
-----------
+1.22.0 (November 2023)
+----------------------
 
 Minor new features:
 
@@ -24,6 +24,8 @@ Fixes:
 General:
 
 * Drop support for MacOS 11.
+
+`Full changelog <https://github.com/CQCL/tket/compare/v1.21.0...v1.22.0>`_
 
 1.21.0 (October 2023)
 ---------------------

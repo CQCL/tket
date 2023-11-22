@@ -38,9 +38,9 @@ copyright = "2023 Quantinuum"
 author = "Quantinuum"
 
 # The short X.Y version
-version = "1.21"
+version = "1.22"
 # The full version, including alpha/beta/rc tags
-release = "1.21.0"
+release = "1.22.0"
 
 
 # -- General configuration ---------------------------------------------------
