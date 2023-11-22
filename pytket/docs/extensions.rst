@@ -95,7 +95,9 @@ Density Matrix Simulators
 `CirqDensityMatrixSimBackend <https://tket.quantinuum.com/extensions/pytket-cirq/api.html#pytket.extensions.cirq.CirqDensityMatrixSimBackend>`_
 - Backend for Cirq density matrix simulator density_matrix return.
 
-`QulacsBackend`_ - This has a configurable density matrix simulation option. Use ``QulacsBackend(result_type="density_matrix")``.
+`QulacsBackend`_ - This has a configurable density matrix simulation option. 
+
+Use ``QulacsBackend(result_type="density_matrix")``.
 
 Clifford Simulators
 -------------------
