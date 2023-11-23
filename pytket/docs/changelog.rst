@@ -1,6 +1,13 @@
 Changelog
 =========
 
+Unreleased
+----------
+
+Deprecations:
+
+* Deprecate ``SynthesiseHQS`` pass.
+
 1.22.0 (November 2023)
 ----------------------
 
