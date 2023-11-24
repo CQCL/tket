@@ -21,7 +21,7 @@ those using an older version of pytket, keep up to date by installing with the
 There are separate packages for managing the interoperability between pytket and
 other quantum software packages which can also be installed via PyPI. For
 details of these, see the
-`pytket extensions <https://tket.quantinuum.com/extensions/>`_ documentation.
+`pytket extensions <https://tket.quantinuum.com/api-docs/extensions>`_ documentation.
 
 
 The quantum circuit is an abstraction of computation using quantum resources,
@@ -72,7 +72,7 @@ for an extensive tutorial on pytket, providing a gentle introduction to its
 features and how to run circuits on backend devices, with worked examples.
 
 In pytket there is also a generic :py:class:`Backend` interface. This represents a connection to a quantum device or simulator.
-It's possible to run circuits on platforms from different providers through the `extension modules <https://tket.quantinuum.com/extensions/>`_.
+It's possible to run circuits on platforms from different providers through the `extension modules <https://tket.quantinuum.com/api-docs/extensions>`_.
 
 ::
 
