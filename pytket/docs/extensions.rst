@@ -140,7 +140,7 @@ Other
    pytket-pysimplex <https://tket.quantinuum.com/extensions/pytket-pysimplex>
    pytket-pyzx <https://tket.quantinuum.com/extensions/pytket-pyzx>
    pytket-qir <https://tket.quantinuum.com/extensions/pytket-qir>
-   pytket-qiskit <https://tket.quantinuum.com/extensions/pytket-qir>
+   pytket-qiskit <https://tket.quantinuum.com/extensions/pytket-qiskit>
    pytket-qsharp <https://cqcl.github.io/pytket-qsharp/api/index.html>
    pytket-quantinuum <https://tket.quantinuum.com/extensions/pytket-quantinuum>
    pytket-cutensornet <https://tket.quantinuum.com/extensions/pytket-cutensornet> 
