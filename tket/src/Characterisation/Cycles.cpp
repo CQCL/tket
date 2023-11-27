@@ -147,7 +147,6 @@ void CycleFinder::order_keys(
             bad_keys.insert(*it);
             goto new_loop;
           }
-
   new_loop : {}
   }
 
