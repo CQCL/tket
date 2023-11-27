@@ -147,7 +147,8 @@ void CycleFinder::order_keys(
             bad_keys.insert(*it);
             goto new_loop;
           }
-  new_loop : {}
+
+  new_loop: {}
   }
 
   for (const unsigned& key : bad_keys) old_keys.erase(key);
