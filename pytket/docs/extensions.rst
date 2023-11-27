@@ -132,7 +132,7 @@ Other
    pytket-aqt <https://cqcl.github.io/pytket-aqt/api/index.html>
    pytket-braket <https://tket.quantinuum.com/extensions/pytket-braket>
    pytket-cirq <https://tket.quantinuum.com/extensions/pytket-cirq>
-   pytket-ionq <https://tket.quantinuum.com/extensions/pytket-quantinuum>
+   pytket-ionq <https://cqcl.github.io/pytket-ionq/api/index.html>
    pytket-iqm <https://tket.quantinuum.com/extensions/pytket-iqm>
    pytket-pennylane <https://tket.quantinuum.com/extensions/pytket-pennylane>
    pytket-projectq <https://tket.quantinuum.com/extensions/pytket-projectq>
@@ -140,7 +140,7 @@ Other
    pytket-pysimplex <https://tket.quantinuum.com/extensions/pytket-pysimplex>
    pytket-pyzx <https://tket.quantinuum.com/extensions/pytket-pyzx>
    pytket-qir <https://tket.quantinuum.com/extensions/pytket-qir>
-   pytket-qiskit <https://tket.quantinuum.com/extensions/pytket-qir>
+   pytket-qiskit <https://tket.quantinuum.com/extensions/pytket-qiskit>
    pytket-qsharp <https://cqcl.github.io/pytket-qsharp/api/index.html>
    pytket-quantinuum <https://tket.quantinuum.com/extensions/pytket-quantinuum>
    pytket-cutensornet <https://tket.quantinuum.com/extensions/pytket-cutensornet> 

@@ -1,9 +1,13 @@
 Changelog
 =========
 
-1.23.0 (Unreleased)
--------------------
+Unreleased
+----------
 
+Deprecations:
+
+* Deprecate ``SynthesiseHQS`` pass.
+* 
 Fixes:
 * Fix `PauliFrameRandomisation.sample_circuits`.
 
