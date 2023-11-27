@@ -7,8 +7,9 @@ Unreleased
 Deprecations:
 
 * Deprecate ``SynthesiseHQS`` pass.
-* 
+  
 Fixes:
+
 * Fix `PauliFrameRandomisation.sample_circuits`.
 
 1.22.0 (November 2023)
