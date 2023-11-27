@@ -1,6 +1,12 @@
 Changelog
 =========
 
+1.23.0 (Unreleased)
+-------------------
+
+Fixes:
+* Fix `PauliFrameRandomisation.sample_circuits`.
+
 1.22.0 (November 2023)
 ----------------------
 

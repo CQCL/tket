@@ -148,7 +148,7 @@ void CycleFinder::order_keys(
             goto new_loop;
           }
 
-  new_loop: {}
+  new_loop : {}
   }
 
   for (const unsigned& key : bad_keys) old_keys.erase(key);
@@ -256,25 +256,27 @@ std::vector<Cycle> CycleFinder::get_cycles() {
       Edge in_edge = pair.second;
       if (circ.get_edgetype(in_edge) != EdgeType::Classical) {
         Vertex in_vert = circ.source(pair.second);
-
         // if vertex is type from types, then vertex is in slice and need
         // in_edge. else can ignore.
         if (cycle_types_.find(circ.get_OpType_from_Vertex(in_vert)) !=
             cycle_types_.end()) {
           in_edge = circ.get_last_edge(in_vert, pair.second);
         }
-
-        cycle_out_edges.insert({in_edge, pair.first});
-        bt.uid_to_key.insert({pair.first, bt.key});
-        Cycle new_cycle({{in_edge, in_edge}}, {{}});
-        bt.key_to_cycle[bt.key] = new_cycle;
-        bt.history.push_back({pair.first});
-        bt.key++;
+        if (std::find(
+                slice_iter.cut_.slice->begin(), slice_iter.cut_.slice->end(),
+                circ.source(pair.second)) != slice_iter.cut_.slice->end()) {
+          cycle_out_edges.insert({in_edge, pair.first});
+          bt.uid_to_key.insert({pair.first, bt.key});
+          Cycle new_cycle({{in_edge, in_edge}}, {{}});
+          bt.key_to_cycle[bt.key] = new_cycle;
+          bt.history.push_back({pair.first});
+          bt.key++;
+        }
       }
     }
     // extend cycles automatically merges cycles that can be merge due to
     // overlapping multi-qubit gates
-    extend_cycles(slice_iter.cut_);
+    this->extend_cycles(slice_iter.cut_);
     cycle_out_edges = {};
     for (const std::pair<UnitID, Edge>& pair :
          slice_iter.cut_.u_frontier->get<TagKey>()) {
@@ -285,7 +287,7 @@ std::vector<Cycle> CycleFinder::get_cycles() {
     slice_iter.cut_ = circ.next_cut(
         slice_iter.cut_.u_frontier, slice_iter.cut_.b_frontier, skip_func);
     if (!(*slice_iter).empty()) {
-      extend_cycles(slice_iter.cut_);
+      this->extend_cycles(slice_iter.cut_);
     }
   }
 
