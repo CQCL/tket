@@ -384,7 +384,7 @@ SCENARIO("Frame Randomisation non-real DAG") {
   std::vector<Circuit> circs =
       pfr.sample_randomisation_circuits(cu.get_circ_ref(), 1);
   CHECK(circs.size() == 1);
-  TKET_ASSERT(circs[0].get_commands().size() == 107);
+  CHECK(circs[0].get_commands().size() == 107);
 }
 
 }  // namespace test_FrameRandomisation
