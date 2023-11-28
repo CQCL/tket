@@ -23,7 +23,7 @@ from conan.errors import ConanInvalidConfiguration
 
 class TketConan(ConanFile):
     name = "tket"
-    version = "1.2.68"
+    version = "1.2.69"
     package_type = "library"
     license = "Apache 2"
     homepage = "https://github.com/CQCL/tket"
