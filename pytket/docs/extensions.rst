@@ -36,9 +36,6 @@ QPUs
 `IBMQBackend <https://tket.quantinuum.com/extensions/pytket-qiskit/api.html#pytket.extensions.qiskit.IBMQBackend>`_
 - A backend for running circuits on remote IBMQ devices.
 
-`IonQBackend <https://cqcl.github.io/pytket-ionq/api/api.html#pytket.extensions.ionq.IonQBackend>`_
-- A backend for running circuits on remote IONQ devices.
-
 `ForestBackend <https://tket.quantinuum.com/extensions/pytket-pyquil/api.html#pytket.extensions.pyquil.ForestBackend>`_
 - A backend for running circuits on remote Rigetti devices.
 
@@ -95,6 +92,10 @@ Density Matrix Simulators
 `CirqDensityMatrixSimBackend <https://tket.quantinuum.com/extensions/pytket-cirq/api.html#pytket.extensions.cirq.CirqDensityMatrixSimBackend>`_
 - Backend for Cirq density matrix simulator density_matrix return.
 
+`QulacsBackend`_ - This has a configurable density matrix simulation option. 
+
+Use ``QulacsBackend(result_type="density_matrix")``.
+
 Clifford Simulators
 -------------------
 
@@ -132,7 +133,6 @@ Other
    pytket-aqt <https://cqcl.github.io/pytket-aqt/api/index.html>
    pytket-braket <https://tket.quantinuum.com/extensions/pytket-braket>
    pytket-cirq <https://tket.quantinuum.com/extensions/pytket-cirq>
-   pytket-ionq <https://tket.quantinuum.com/extensions/pytket-quantinuum>
    pytket-iqm <https://tket.quantinuum.com/extensions/pytket-iqm>
    pytket-pennylane <https://tket.quantinuum.com/extensions/pytket-pennylane>
    pytket-projectq <https://tket.quantinuum.com/extensions/pytket-projectq>
@@ -157,3 +157,4 @@ Other
 .. _AerUnitaryBackend: https://tket.quantinuum.com/extensions/pytket-qiskit/api/api.html#pytket.extensions.qiskit.AerUnitaryBackend
 .. _CirqDensityMatrixSampleBackend: https://tket.quantinuum.com/extensions/pytket-cirq/api/api.html#pytket.extensions.cirq.CirqDensityMatrixSampleBackend
 .. _SimplexBackend: https://tket.quantinuum.com/extensions/pytket-simplex/api.html#pytket.extensions.pysimplex.SimplexBackend
+.. _QulacsBackend: https://tket.quantinuum.com/extensions/pytket-qulacs/api.html#pytket.extensions.qulacs.QulacsBackend
