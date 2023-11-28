@@ -75,7 +75,7 @@ Licensed under the `Apache 2 License <http://www.apache.org/licenses/LICENSE-2.0
 .. _Quantinuum: https://www.quantinuum.com/
 
 .. toctree::
-    :caption: Introduction:
+    :caption: Overview:
     :maxdepth: 1
 
     getting_started.rst
@@ -84,12 +84,13 @@ Licensed under the `Apache 2 License <http://www.apache.org/licenses/LICENSE-2.0
     faqs.rst
 
 .. toctree::
-    :caption: More Documentation:
+    :caption: pytket documentation:
     
-    TKET website <https://tket.quantinuum.com/>
-    Manual <https://tket.quantinuum.com/user-manual/>
-    extensions.rst  
+    pytket API docs <https://tket.quantinuum.com/api-docs/>
+    extensions.rst
+    Manual <https://tket.quantinuum.com/user-manual>
     Example notebooks <https://tket.quantinuum.com/examples>
+    TKET website <https://tket.quantinuum.com/>
 
 .. toctree::
     :caption: API Reference:
