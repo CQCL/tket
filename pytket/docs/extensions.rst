@@ -36,9 +36,6 @@ QPUs
 `IBMQBackend <https://tket.quantinuum.com/extensions/pytket-qiskit/api.html#pytket.extensions.qiskit.IBMQBackend>`_
 - A backend for running circuits on remote IBMQ devices.
 
-`IonQBackend <https://cqcl.github.io/pytket-ionq/api/api.html#pytket.extensions.ionq.IonQBackend>`_
-- A backend for running circuits on remote IONQ devices.
-
 `ForestBackend <https://tket.quantinuum.com/extensions/pytket-pyquil/api.html#pytket.extensions.pyquil.ForestBackend>`_
 - A backend for running circuits on remote Rigetti devices.
 
@@ -132,7 +129,6 @@ Other
    pytket-aqt <https://cqcl.github.io/pytket-aqt/api/index.html>
    pytket-braket <https://tket.quantinuum.com/extensions/pytket-braket>
    pytket-cirq <https://tket.quantinuum.com/extensions/pytket-cirq>
-   pytket-ionq <https://cqcl.github.io/pytket-ionq/api/index.html>
    pytket-iqm <https://tket.quantinuum.com/extensions/pytket-iqm>
    pytket-pennylane <https://tket.quantinuum.com/extensions/pytket-pennylane>
    pytket-projectq <https://tket.quantinuum.com/extensions/pytket-projectq>
