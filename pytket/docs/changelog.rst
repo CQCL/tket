@@ -8,6 +8,12 @@ Deprecations:
 
 * Deprecate ``SynthesiseHQS`` pass.
 
+Fixes:
+
+* Ensure that squashing long sequences of gates via unitary multiplication does
+  not produce non-unitary results due to rounding errors.
+
+
 1.22.0 (November 2023)
 ----------------------
 
