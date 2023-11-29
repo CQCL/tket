@@ -583,7 +583,7 @@ def SquashTK1() -> BasePass:
     """
 def SynthesiseHQS() -> BasePass:
     """
-    Optimises and converts a circuit consisting of CX and single-qubit gates into one containing only ZZMax, PhasedX, Rz and Phase.
+    Optimises and converts a circuit consisting of CX and single-qubit gates into one containing only ZZMax, PhasedX, Rz and Phase. DEPRECATED: will be removed after pytket 1.25.
     """
 def SynthesiseOQC() -> BasePass:
     """

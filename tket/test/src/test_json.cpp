@@ -25,6 +25,7 @@
 #include "tket/Circuit/Command.hpp"
 #include "tket/Circuit/ConjugationBox.hpp"
 #include "tket/Circuit/DiagonalBox.hpp"
+#include "tket/Circuit/DummyBox.hpp"
 #include "tket/Circuit/Multiplexor.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
@@ -398,6 +399,23 @@ SCENARIO("Test Circuit serialization") {
     REQUIRE(t_b.get_permutation() == tbox.get_permutation());
     REQUIRE(t_b.get_rotation_axis() == tbox.get_rotation_axis());
     REQUIRE(t_b == tbox);
+  }
+
+  GIVEN("DummyBox") {
+    ResourceData data{
+        {{OpType::H, ResourceBounds<unsigned>(3, 4)},
+         {OpType::CX, ResourceBounds<unsigned>(2, 8)}},
+        ResourceBounds<unsigned>(2, 3),
+        {{OpType::CX, ResourceBounds<unsigned>(2, 8)}},
+        ResourceBounds<unsigned>(4, 8)};
+    DummyBox dbox(2, 0, data);
+    Circuit c(2);
+    c.add_box(dbox, {0, 1});
+    nlohmann::json j_c = c;
+    Circuit c1 = j_c.get<Circuit>();
+    const auto& dbox1 =
+        static_cast<const DummyBox&>(*c1.get_commands()[0].get_op_ptr());
+    REQUIRE(dbox == dbox1);
   }
 
   GIVEN("CustomGate") {

@@ -2,7 +2,7 @@ pytket
 ======
 
 ``pytket`` is a python module for interfacing with tket, a quantum computing toolkit and optimising compiler developed by `Quantinuum`_. We currently support circuits and device architectures from
-`numerous providers <https://cqcl.github.io/pytket-extensions/api/index.html>`_, allowing the
+`numerous providers <https://tket.quantinuum.com/api-docs/extensions>`_, allowing the
 tket tools to be used in conjunction with projects on their platforms.
 
 ``pytket`` is available for Python 3.9, 3.10 and 3.11, on Linux, MacOS and
@@ -19,7 +19,7 @@ If you have issues installing ``pytket`` please visit the `installation troubles
 To use ``pytket``, you can simply import the appropriate modules into your python code or in an interactive Python notebook. We can build circuits directly using the ``pytket`` interface by creating a blank circuit and adding gates in the order we want to apply them.
 
 See the `Getting Started`_ page for a basic tutorial on using
-``pytket``. To get more in depth on features, see the `examples`_. See the `pytket user manual <https://cqcl.github.io/pytket/manual/index.html>`_ for an extensive introduction to ``pytket`` functionality and how to use it.
+``pytket``. To get more in depth on features, see the `examples`_. See the `pytket user manual <https://tket.quantinuum.com/user-manual/index.html>`_ for an extensive introduction to ``pytket`` functionality and how to use it.
 
 Extensions
 ~~~~~~~~~~
@@ -38,7 +38,7 @@ To install the ``pytket-quantinuum`` package use the following command.
     pip install pytket-quantinuum
 
 The extensions supported by tket are described
-`here <https://cqcl.github.io/pytket-extensions/api/index.html>`_.
+`here <https://tket.quantinuum.com/api-docs/extensions>`_.
 
 How to cite
 ~~~~~~~~~~~
@@ -75,21 +75,22 @@ Licensed under the `Apache 2 License <http://www.apache.org/licenses/LICENSE-2.0
 .. _Quantinuum: https://www.quantinuum.com/
 
 .. toctree::
-    :caption: Introduction:
+    :caption: Overview:
     :maxdepth: 1
 
     getting_started.rst
     changelog.rst
     install.rst
-    faqs.rst 
+    faqs.rst
 
 .. toctree::
-    :caption: More Documentation:
-    :maxdepth: 1
+    :caption: pytket documentation:
     
-    Manual <https://cqcl.github.io/pytket/manual/index.html>
-    Extensions <https://cqcl.github.io/pytket-extensions/api/index.html>
+    pytket API docs <https://tket.quantinuum.com/api-docs/>
+    extensions.rst
+    Manual <https://tket.quantinuum.com/user-manual>
     Example notebooks <https://tket.quantinuum.com/examples>
+    TKET website <https://tket.quantinuum.com/>
 
 .. toctree::
     :caption: API Reference:

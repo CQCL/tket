@@ -21,7 +21,7 @@ those using an older version of pytket, keep up to date by installing with the
 There are separate packages for managing the interoperability between pytket and
 other quantum software packages which can also be installed via PyPI. For
 details of these, see the
-`pytket-extensions <https://cqcl.github.io/pytket-extensions/api/index.html>`_ documentation.
+`pytket extensions <https://tket.quantinuum.com/api-docs/extensions>`_ documentation.
 
 
 The quantum circuit is an abstraction of computation using quantum resources,
@@ -67,12 +67,12 @@ Or, if an extension module like ``pytket-qiskit`` is installed:
     c = qiskit_to_tk(qc)
 
 See the
-`pytket user manual <https://cqcl.github.io/pytket/manual/index.html>`_
+`pytket user manual <https://tket.quantinuum.com/user-manual/index.html>`_
 for an extensive tutorial on pytket, providing a gentle introduction to its
 features and how to run circuits on backend devices, with worked examples.
 
 In pytket there is also a generic :py:class:`Backend` interface. This represents a connection to a quantum device or simulator.
-It's possible to run circuits on platforms from different providers through the `extension modules <https://cqcl.github.io/pytket-extensions/api/index.html>`_.
+It's possible to run circuits on platforms from different providers through the `extension modules <https://tket.quantinuum.com/api-docs/extensions>`_.
 
 ::
 
@@ -109,4 +109,4 @@ The following code snippet will show how to compile a circuit to run on an IBM d
 Here the default compilation pass is applied by :py:meth:`IBMQBackend.get_compiled_circuit`. See `this page <https://cqcl.github.io/pytket-qiskit/api/index.html#default-compilation>`_ for more details.
 
 As an alternative, We can experiment with constructing our own circuit compilation routines in pytket. Passes from the :py:mod:`pytket.passes` module can be applied individually or composed in sequence. 
-See the section of the user manual on `circuit compilation <https://cqcl.github.io/pytket/manual/manual_compiler.html>`_ and the corresponding `notebook example <https://github.com/CQCL/pytket/blob/main/examples/compilation_example.ipynb>`_ for more.
+See the section of the user manual on `circuit compilation <https://tket.quantinuum.com/user-manual/manual_compiler.html>`_ and the corresponding `notebook example <https://github.com/CQCL/pytket/blob/main/examples/compilation_example.ipynb>`_ for more.

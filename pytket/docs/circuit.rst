@@ -103,3 +103,12 @@ pytket.circuit
 .. autoclass:: pytket._tket.circuit.ConjugationBox
     :special-members:
     :members:
+.. autoclass:: pytket._tket.circuit.ResourceBounds
+    :special-members:
+    :members:
+.. autoclass:: pytket._tket.circuit.ResourceData
+    :special-members:
+    :members:
+.. autoclass:: pytket._tket.circuit.DummyBox
+    :special-members:
+    :members:

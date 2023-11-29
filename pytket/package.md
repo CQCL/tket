@@ -16,7 +16,7 @@ To install the pytket extension modules add a hyphen and the extension name to t
 
 `` pip install pytket-quantinuum ``
 
-For a list of pytket extensions see this page: https://cqcl.github.io/pytket-extensions/api/index.html.
+For a list of pytket extensions see this page: https://tket.quantinuum.com/api-docs/extensions.
 
 _Warning._ There is a [known issue](https://github.com/CQCL/tket/issues/926)
 with installing pytket in a conda environment on MacOS: you may not be able to
@@ -27,7 +27,7 @@ official Python distribution instead.
 
 API reference: https://cqcl.github.io/tket/pytket/api/
 
-To get started using pytket see the [user manual](https://cqcl.github.io/pytket/manual/index.html).
+To get started using pytket see the [user manual](https://tket.quantinuum.com/user-manual/).
 
 For worked examples using TKET see our [notebook examples](https://tket.quantinuum.com/examples).
 

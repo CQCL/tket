@@ -65,7 +65,7 @@ ENDIF()
 target_include_directories(tkassert PUBLIC
     $<INSTALL_INTERFACE:include/tkassert>
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include/tkassert>)
-target_link_libraries(tkassert PRIVATE tklog::tklog)
+target_link_libraries(tkassert PUBLIC tklog::tklog)
 IF(APPLE)
     target_link_libraries(tkassert PRIVATE "-flat_namespace")
 ENDIF()

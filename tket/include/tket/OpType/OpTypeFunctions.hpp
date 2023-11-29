@@ -60,6 +60,12 @@ bool is_initial_q_type(OpType optype);
 /** Test for output or discard quantum "ops" */
 bool is_final_q_type(OpType optype);
 
+/** Test for input "ops" */
+bool is_initial_type(OpType optype);
+
+/** Test for output "ops" */
+bool is_final_type(OpType optype);
+
 /** Test for input, creation, output or discard "ops" */
 bool is_boundary_type(OpType optype);
 

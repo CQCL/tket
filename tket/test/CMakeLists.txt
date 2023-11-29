@@ -119,8 +119,10 @@ add_executable(test-tket
     src/Circuit/test_DiagonalBox.cpp
     src/Circuit/test_ToffoliBox.cpp
     src/Circuit/test_ConjugationBox.cpp
+    src/Circuit/test_DummyBox.cpp
     src/test_UnitaryTableau.cpp
     src/test_ChoiMixTableau.cpp
+    src/test_Diagonalisation.cpp
     src/test_PhasePolynomials.cpp
     src/test_PauliGraph.cpp
     src/test_Architectures.cpp
