@@ -1,10 +1,10 @@
 var searchData=
 [
-  ['b_5ffrontier_5ft_4909',['b_frontier_t',['../namespacetket.html#a6cb7640bbe52f39e335b22ed5c81f0d9',1,'tket']]],
-  ['bimapvalue_4910',['BimapValue',['../namespacetket.html#a115e18920526eb5ba5da4ac04784e297',1,'tket']]],
-  ['bit_5fmap_5ft_4911',['bit_map_t',['../namespacetket.html#a4bb3d48f4976ea191fe38001bf89aec4',1,'tket']]],
-  ['bit_5fvector_5ft_4912',['bit_vector_t',['../namespacetket.html#a7ca6fb5376375fd07368df37fd799fb2',1,'tket']]],
-  ['boundary_5ft_4913',['boundary_t',['../namespacetket.html#a776ae83dbb63eb09e6f5a234b45ef137',1,'tket']]],
-  ['boundaryvertmap_4914',['BoundaryVertMap',['../namespacetket.html#ae345d8140331bb066807c745031a6635',1,'tket']]],
-  ['bundlevec_4915',['BundleVec',['../namespacetket.html#abfc57e380c9724e60716b815a28befdf',1,'tket']]]
+  ['b_5ffrontier_5ft_4913',['b_frontier_t',['../namespacetket.html#a6cb7640bbe52f39e335b22ed5c81f0d9',1,'tket']]],
+  ['bimapvalue_4914',['BimapValue',['../namespacetket.html#a115e18920526eb5ba5da4ac04784e297',1,'tket']]],
+  ['bit_5fmap_5ft_4915',['bit_map_t',['../namespacetket.html#a4bb3d48f4976ea191fe38001bf89aec4',1,'tket']]],
+  ['bit_5fvector_5ft_4916',['bit_vector_t',['../namespacetket.html#a7ca6fb5376375fd07368df37fd799fb2',1,'tket']]],
+  ['boundary_5ft_4917',['boundary_t',['../namespacetket.html#a776ae83dbb63eb09e6f5a234b45ef137',1,'tket']]],
+  ['boundaryvertmap_4918',['BoundaryVertMap',['../namespacetket.html#ae345d8140331bb066807c745031a6635',1,'tket']]],
+  ['bundlevec_4919',['BundleVec',['../namespacetket.html#abfc57e380c9724e60716b815a28befdf',1,'tket']]]
 ];

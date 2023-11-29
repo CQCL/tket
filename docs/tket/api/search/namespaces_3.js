@@ -1,16 +1,16 @@
 var searchData=
 [
-  ['aas_2808',['aas',['../namespacetket_1_1aas.html',1,'tket']]],
-  ['circpool_2809',['CircPool',['../namespacetket_1_1CircPool.html',1,'tket']]],
-  ['delaymeasures_2810',['DelayMeasures',['../namespacetket_1_1Transforms_1_1DelayMeasures.html',1,'tket::Transforms']]],
-  ['detail_2811',['detail',['../namespacetket_1_1graphs_1_1detail.html',1,'tket::graphs::detail'],['../namespacetket_1_1graphs_1_1utils_1_1detail.html',1,'tket::graphs::utils::detail']]],
-  ['graphs_2812',['graphs',['../namespacetket_1_1graphs.html',1,'tket']]],
-  ['internal_2813',['internal',['../namespacetket_1_1internal.html',1,'tket::internal'],['../namespacetket_1_1tket__sim_1_1internal.html',1,'tket::tket_sim::internal']]],
-  ['test_5fops_2814',['test_Ops',['../namespacetket_1_1test__Ops.html',1,'tket']]],
-  ['tket_2815',['tket',['../namespacetket.html',1,'']]],
-  ['tket_5fsim_2816',['tket_sim',['../namespacetket_1_1tket__sim.html',1,'tket']]],
-  ['transforms_2817',['Transforms',['../namespacetket_1_1Transforms.html',1,'tket']]],
-  ['utils_2818',['utils',['../namespacetket_1_1graphs_1_1utils.html',1,'tket::graphs']]],
-  ['weightedsubgraphmonomorphism_2819',['WeightedSubgraphMonomorphism',['../namespacetket_1_1WeightedSubgraphMonomorphism.html',1,'tket']]],
-  ['zx_2820',['zx',['../namespacetket_1_1zx.html',1,'tket']]]
+  ['aas_2810',['aas',['../namespacetket_1_1aas.html',1,'tket']]],
+  ['circpool_2811',['CircPool',['../namespacetket_1_1CircPool.html',1,'tket']]],
+  ['delaymeasures_2812',['DelayMeasures',['../namespacetket_1_1Transforms_1_1DelayMeasures.html',1,'tket::Transforms']]],
+  ['detail_2813',['detail',['../namespacetket_1_1graphs_1_1detail.html',1,'tket::graphs::detail'],['../namespacetket_1_1graphs_1_1utils_1_1detail.html',1,'tket::graphs::utils::detail']]],
+  ['graphs_2814',['graphs',['../namespacetket_1_1graphs.html',1,'tket']]],
+  ['internal_2815',['internal',['../namespacetket_1_1internal.html',1,'tket::internal'],['../namespacetket_1_1tket__sim_1_1internal.html',1,'tket::tket_sim::internal']]],
+  ['test_5fops_2816',['test_Ops',['../namespacetket_1_1test__Ops.html',1,'tket']]],
+  ['tket_2817',['tket',['../namespacetket.html',1,'']]],
+  ['tket_5fsim_2818',['tket_sim',['../namespacetket_1_1tket__sim.html',1,'tket']]],
+  ['transforms_2819',['Transforms',['../namespacetket_1_1Transforms.html',1,'tket']]],
+  ['utils_2820',['utils',['../namespacetket_1_1graphs_1_1utils.html',1,'tket::graphs']]],
+  ['weightedsubgraphmonomorphism_2821',['WeightedSubgraphMonomorphism',['../namespacetket_1_1WeightedSubgraphMonomorphism.html',1,'tket']]],
+  ['zx_2822',['zx',['../namespacetket_1_1zx.html',1,'tket']]]
 ];
