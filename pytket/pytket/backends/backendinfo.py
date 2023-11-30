@@ -144,7 +144,7 @@ class BackendInfo:
     :param name: Class name of the backend.
     :param device_name: Name of the device.
     :param version: Pytket-extension version installed when creating object.
-    :param architecture: Device connectivity.
+    :param architecture: Optional device connectivity.
     :param gate_set: Set of supported gate types.
     :param n_cl_reg: number of classical registers supported.
     :param supports_fast_feedforward: Flag for hardware support of fast feedforward.
@@ -172,7 +172,7 @@ class BackendInfo:
     device_name: Optional[str]
     version: str
     # hardware constraints
-    architecture: Union[Architecture, FullyConnected]
+    architecture: Optional[Union[Architecture, FullyConnected]]
     gate_set: Set[OpType]
     n_cl_reg: Optional[int] = None
     # additional feature support
@@ -194,17 +194,21 @@ class BackendInfo:
     @property
     def nodes(self) -> List[Node]:
         """
-        List of device nodes of the backend.
+        List of device nodes of the backend. Returns empty list
+        if the `architecture` field is not provided.
 
         :return: List of nodes.
         :rtype: List[Node]
         """
+        if self.architecture is None:
+            return []
         return self.architecture.nodes
 
     @property
     def n_nodes(self) -> int:
         """
-        Number of nodes in the architecture of the device.
+        Number of nodes in the architecture of the device. Returns 0
+        if the `architecture` field is not provided.
 
         :return: Number of nodes.
         :rtype: int
@@ -246,7 +250,8 @@ class BackendInfo:
         """
 
         self_dict = asdict(self)
-        self_dict["architecture"] = self_dict["architecture"].to_dict()
+        if self_dict["architecture"] is not None:
+            self_dict["architecture"] = self_dict["architecture"].to_dict()
         self_dict["gate_set"] = [op.value for op in self_dict["gate_set"]]
         self_dict["all_node_gate_errors"] = _serialize_all_node_gate_errors(
             self_dict["all_node_gate_errors"]
@@ -279,10 +284,11 @@ class BackendInfo:
         """
         args = dict(**d)
         arch = args["architecture"]
-        if "links" in arch:
-            args["architecture"] = Architecture.from_dict(args["architecture"])
-        else:
-            args["architecture"] = FullyConnected.from_dict(args["architecture"])
+        if arch is not None:
+            if "links" in arch:
+                args["architecture"] = Architecture.from_dict(args["architecture"])
+            else:
+                args["architecture"] = FullyConnected.from_dict(args["architecture"])
         args["gate_set"] = {OpType(op) for op in args["gate_set"]}
         args["all_node_gate_errors"] = _deserialize_all_node_gate_errors(
             args["all_node_gate_errors"]

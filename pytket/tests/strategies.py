@@ -166,7 +166,7 @@ def backendinfo(
     device_name = draw(st.text(min_size=1, max_size=30))
     version = draw(st.text(min_size=1, max_size=5))
     # hardware constraints
-    arc = draw(architecture())
+    arc = draw(st.one_of(st.none(), architecture()))
     gate_set = draw(st.sets(optypes()))
     supports_fast_feedforward = draw(st.booleans())
     supports_reset = draw(st.booleans())
