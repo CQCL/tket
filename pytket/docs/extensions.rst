@@ -145,7 +145,7 @@ Other
    pytket-quantinuum <https://tket.quantinuum.com/extensions/pytket-quantinuum>
    pytket-cutensornet <https://tket.quantinuum.com/extensions/pytket-cutensornet> 
    pytket-qulacs <https://tket.quantinuum.com/extensions/pytket-qulacs>
-   pytket-qujax <https://cqcl.github.io/pytket-qujax/api/index.html>
+   pytket-qujax <https://tket.quantinuum.com/extensions/pytket-qujax>
    pytket-stim <https://tket.quantinuum.com/extensions/pytket-stim>
 
 
