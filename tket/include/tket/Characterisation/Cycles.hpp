@@ -109,7 +109,7 @@ class CycleFinder {
   std::map<Edge, UnitID> cycle_out_edges;
 
   // Stores data structures for tracking created Cycles and associated UnitID's
-  CycleHistory bt;
+  CycleHistory cycle_history;
 
   // Given a new CutFrontier object, creates new cycles from interior vertices
   // and merges them with previous cycles where possible

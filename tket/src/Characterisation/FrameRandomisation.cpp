@@ -45,8 +45,23 @@ std::string FrameRandomisation::to_string() const {
 // Wires Identity gates into each cycle edge. Identity gates then relabelled
 // with Ops from OpTypeSet to create instances of Frame Randomisation
 void add_noop_frames(std::vector<Cycle>& cycles, Circuit& circ) {
+  IndexMap imap = circ.index_map();
+
   std::map<Edge, Edge> replacement_rewiring_edges;
+  std::cout << "There are " << cycles.size() << " cycles. " << std::endl;
+  unsigned counter = 0;
   for (Cycle& full_cycle : cycles) {
+    std::cout << "This cycle " <<  counter << " has " << full_cycle.size() << " edges."
+              << std::endl;
+      counter++;
+    std::cout << "Vertices of edges in cycle: ";
+    for (auto com : full_cycle.coms_) {
+      std::cout << imap[com.address] << " ";
+    }
+    std::cout << std::endl;
+  }
+  for (Cycle& full_cycle : cycles) {
+    circ.to_graphviz_file("/Users/silasdilkes/code/tket-public/test.dot");
     std::vector<edge_pair_t> cycle = full_cycle.boundary_edges_;
     // wire "noop" vertices into each cycle edge
     // these are later relabelled with frame gates
@@ -66,6 +81,14 @@ void add_noop_frames(std::vector<Cycle>& cycles, Circuit& circ) {
 
     EdgeVec barrier_ins;
     EdgeVec barrier_outs;
+
+    std::cout << "\n\nCycle has " << cycle.size() << " edges " << std::endl;
+    std::cout << "Indices of vertices in cycle: " << std::endl;
+    for (auto com : full_cycle.coms_) {
+      std::cout << imap[com.address] << " ";
+    }
+    std::cout << std::endl;
+    
     for (const std::pair<Edge, Edge>& boundary : cycle) {
       Vertex input_noop_vert = circ.add_vertex(OpType::noop);
       Vertex output_noop_vert = circ.add_vertex(OpType::noop);
@@ -76,6 +99,7 @@ void add_noop_frames(std::vector<Cycle>& cycles, Circuit& circ) {
       std::map<Edge, Edge>::iterator it =
           replacement_rewiring_edges.find(in_edge);
       if (it != replacement_rewiring_edges.end()) {
+        std::cout << "Replacement in edge!" << std::endl;
         in_edge = (*it).second;
       }
 
@@ -85,8 +109,10 @@ void add_noop_frames(std::vector<Cycle>& cycles, Circuit& circ) {
       Edge out_edge = boundary.second;
       it = replacement_rewiring_edges.find(out_edge);
       if (it != replacement_rewiring_edges.end()) {
+        std::cout << "Replacement out edge!" << std::endl;
         out_edge = (*it).second;
-      }
+      } 
+
 
       circ.rewire(input_noop_vert, {in_edge}, {EdgeType::Quantum});
       circ.rewire(output_noop_vert, {out_edge}, {EdgeType::Quantum});
@@ -100,8 +126,12 @@ void add_noop_frames(std::vector<Cycle>& cycles, Circuit& circ) {
       barrier_ins.push_back(input_noop_out_edge);
       barrier_outs.push_back(output_noop_in_edge);
 
-      replacement_rewiring_edges[out_edge] =
-          circ.get_out_edges_of_type(output_noop_vert, EdgeType::Quantum)[0];
+      // replacement_rewiring_edges[out_edge] =
+          // circ.get_out_edges_of_type(output_noop_vert, EdgeType::Quantum)[0];/
+      replacement_rewiring_edges.insert({out_edge, circ.get_out_edges_of_type(output_noop_vert, EdgeType::Quantum)[0]});
+      // replacement_rewiring_edges[in_edge] =
+          // circ.get_in_edges_of_type(input_noop_vert, EdgeType::Quantum)[0];
+      replacement_rewiring_edges.insert({in_edge, circ.get_in_edges_of_type(input_noop_vert, EdgeType::Quantum)[0]});
       full_cycle.add_vertex_pair({input_noop_vert, output_noop_vert});
     }
     std::vector<EdgeType> sig(barrier_ins.size(), EdgeType::Quantum);
@@ -111,6 +141,8 @@ void add_noop_frames(std::vector<Cycle>& cycles, Circuit& circ) {
     circ.rewire(input_barrier_vert, barrier_ins, sig);
     circ.rewire(output_barrier_vert, barrier_outs, sig);
   }
+  std::vector<Command> commands = circ.get_commands();
+  std::cout << "All cycles finished. " << std::endl;
 }
 
 std::vector<std::vector<OpTypeVector>> get_all_frame_permutations(
@@ -473,10 +505,14 @@ std::vector<Circuit> FrameRandomisation::sample_randomisation_circuits(
   }
   add_noop_frames(all_cycles, circuit_);
   std::vector<unsigned> frame_sizes = get_frame_sizes(all_cycles).first;
+  std::cout << "get sizes done " << std::endl;
   std::vector<std::vector<OpTypeVector>> all_samples =
       get_all_samples(samples, frame_sizes);
+  std::cout << "get samples done " << std::endl;
   std::vector<Circuit> output_circuit_list =
       label_frames(all_samples, all_cycles);
+
+  std::cout << "label frames done " << std::endl;
   return output_circuit_list;
 }
 
