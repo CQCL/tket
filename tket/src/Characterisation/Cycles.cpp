@@ -92,16 +92,10 @@ std::pair<unsigned, std::set<unsigned>> CycleFinder::make_cycle(
   // Get UnitID, add to uids for new boundary, keep note of all old boundary
   // keys for merging set new boundary key, add new edges to new boundary update
   // cycle out edges if the edge can't be found
-  // std::cout << "\nMake Cycle for " << circ.index_map()[v] << std::endl;
 
   for (const Edge& e : out_edges) {
     UnitID uid = unitid_from_unit_frontier(cut.u_frontier, e);
     new_boundary_uids.insert(uid);
-    // bool r = this->cycle_history.uid_to_key.find(uid) ==
-    //          this->cycle_history.uid_to_key.end();
-    // std::cout << r << " " << this->cycle_history.uid_to_key[uid] << " "
-    //           << uid.repr() << std::endl;
-
     old_boundary_keys.insert(this->cycle_history.uid_to_key[uid]);
     // boundary key associated with given edge e not included
     // i.e. e's associated in edge isn't a cycle out edge
@@ -135,7 +129,6 @@ std::pair<unsigned, std::set<unsigned>> CycleFinder::make_cycle(
   Cycle new_cycle(
       new_cycle_boundary, {{circ.get_OpType_from_Vertex(v), op_indices, v}});
   this->cycle_history.key_to_cycle[this->cycle_history.key] = {new_cycle};
-
 
   this->cycle_history.history.push_back(
       std::vector<UnitID>(new_boundary_uids.begin(), new_boundary_uids.end()));
@@ -185,7 +178,6 @@ std::pair<unsigned, std::set<unsigned>> CycleFinder::make_cycle(
             for (const UnitID& b : history_uids) {
               if (a == b) {
                 not_mergeable_keys.insert(candidate_cycle_key);
-
               }
             }
           }
@@ -280,28 +272,7 @@ void Cycle::merge(Cycle& new_cycle) {
 
 void CycleFinder::merge_cycles(unsigned new_key, std::set<unsigned>& old_keys) {
   // boundary_keys is a std::set<unsigned> so is ordered
-  // std::cout << "\nMerge cycles" << std::endl;
-  // std::cout << "New key: " << new_key;
-  // for(auto x : this->cycle_history.history[new_key]){
-  //   std::cout << x.repr() << " ";
-  // }
-  // std::cout << std::endl;
-  // std::cout << "\nOld keys: " << std::endl;
-  // for(auto k : old_keys){
-  //   std::cout << k << " ";
-  //   for(auto x : this->cycle_history.history[k]){
-  //     std::cout << x.repr() << " ";
-  //   }
-  //   std::cout << std::endl;
-  // }
-  // std::cout << std::endl;
   order_keys(new_key, old_keys);
-  // std::cout << "New old keys: " << std::endl;
-  // for(auto k : old_keys){
-  //   std::cout << k << " ";
-  // }
-  // std::cout << std::endl;
-
   // all cycles corresponding to keys in boundary_keys should be merged into
   // boundary with smallest value
   std::set<unsigned>::iterator it = old_keys.begin();
@@ -323,13 +294,11 @@ void CycleFinder::merge_cycles(unsigned new_key, std::set<unsigned>& old_keys) {
 }
 
 void CycleFinder::extend_cycles(const CutFrontier& cut) {
-  // std::cout << "\n\nExtend cycles" << std::endl;
   // For each vertex in slice
   // Make a new "cycle"
   // If any in edge to new cycle matches an out edge to a previous cycle,
   // attempt to merge cycles together
   for (const Vertex& v : *cut.slice) {
-    // std::cout << "Trying to extend: " << circ.index_map()[v] << std::endl;
     EdgeVec out_edges = circ.get_out_edges_of_type(v, EdgeType::Quantum);
     // Compare EdgeType::Quantum "in_edges" of vertex in slice to collection of
     // out edges from "active" boundaries If an "in_edge" is not equivalent to
@@ -364,14 +333,6 @@ std::vector<Cycle> CycleFinder::get_cycles() {
             cycle_types_.end()) {
           in_edge = circ.get_last_edge(in_vert, pair.second);
         }
-        // if (std::find(
-        //         slice_iter.cut_.slice->begin(), slice_iter.cut_.slice->end(),
-        //         circ.source(pair.second)) != slice_iter.cut_.slice->end()) {
-
-        //   std::cout <<
-
-        //   }
-        // std::cout << "valid edge! " << pair.first.repr() << std::endl;
         cycle_out_edges.insert({in_edge, pair.first});
         this->cycle_history.uid_to_key.insert(
             {pair.first, this->cycle_history.key});
@@ -379,7 +340,6 @@ std::vector<Cycle> CycleFinder::get_cycles() {
         this->cycle_history.key_to_cycle[this->cycle_history.key] = new_cycle;
         this->cycle_history.history.push_back({pair.first});
         this->cycle_history.key++;
-        // }
       }
     }
     // extend cycles automatically merges cycles that can be merge due to
@@ -416,16 +376,6 @@ std::vector<Cycle> CycleFinder::get_cycles() {
     }
     output_cycles.push_back(entry.second);
   }
-
-  // std::cout << "what was the history?" << std::endl;
-  // for (unsigned i = 0; i < this->cycle_history.history.size(); i++) {
-  //   std::cout << "Cycle: " << i << std::endl;
-  //   for (auto h : this->cycle_history.history[i]) {
-  //     std::cout << h.repr() << " ";
-  //   }
-  //   std::cout << std::endl;
-  // }
-
   return output_cycles;
 }
 }  // namespace tket

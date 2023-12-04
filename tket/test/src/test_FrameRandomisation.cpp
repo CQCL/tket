@@ -157,10 +157,10 @@ namespace test_FrameRandomisation {
 // }
 
 // static void test_command_types(
-//     const AllCircuitsResult& result, const std::vector<Circuit>& all_circuits,
-//     unsigned number_of_commands, const ParameterValues& values = {},
-//     OpType op_with_parameter = OpType::noop,
-//     unsigned index_for_command_with_parameter = 9999) {
+//     const AllCircuitsResult& result, const std::vector<Circuit>&
+//     all_circuits, unsigned number_of_commands, const ParameterValues& values
+//     = {}, OpType op_with_parameter = OpType::noop, unsigned
+//     index_for_command_with_parameter = 9999) {
 //   for (const auto& outer_entry : result) {
 //     const auto& circuit_index = outer_entry.first;
 //     const auto commands = all_circuits[circuit_index].get_commands();
@@ -195,7 +195,8 @@ namespace test_FrameRandomisation {
 //   entry_h[{OpType::Y}] = {OpType::X};
 //   init[OpType::CX] = entry_cx;
 //   init[OpType::H] = entry_h;
-//   FrameRandomisation fr({OpType::CX, OpType::H}, {OpType::X, OpType::Y}, init);
+//   FrameRandomisation fr({OpType::CX, OpType::H}, {OpType::X, OpType::Y},
+//   init);
 
 //   GIVEN("A two-qubit circuit with one CX gate.") {
 //     Circuit circ(2);
@@ -206,15 +207,17 @@ namespace test_FrameRandomisation {
 //     const std::vector<Circuit> all_circuits = fr.get_all_circuits(circ);
 //     REQUIRE(all_circuits.size() == 4);
 //     REQUIRE(
-//         std::find(all_circuits.begin(), all_circuits.end(), two_circuits[0]) !=
-//         all_circuits.end());
+//         std::find(all_circuits.begin(), all_circuits.end(), two_circuits[0])
+//         != all_circuits.end());
 //     for (const Circuit& circ : all_circuits) {
 //       const auto coms = circ.get_commands();
 //       REQUIRE(coms.size() == 7);
 //       REQUIRE(
-//           coms[0].get_op_ptr()->get_type() != coms[5].get_op_ptr()->get_type());
+//           coms[0].get_op_ptr()->get_type() !=
+//           coms[5].get_op_ptr()->get_type());
 //       REQUIRE(
-//           coms[1].get_op_ptr()->get_type() != coms[6].get_op_ptr()->get_type());
+//           coms[1].get_op_ptr()->get_type() !=
+//           coms[6].get_op_ptr()->get_type());
 //     }
 //   }
 //   GIVEN("A two-qubit circuit with three cycles.") {
@@ -232,8 +235,8 @@ namespace test_FrameRandomisation {
 //     add_four_ops();
 //     const std::vector<Circuit> all_circuits = fr.get_all_circuits(circ);
 //     REQUIRE(all_circuits.size() == 64);
-//     const std::vector<unsigned> indices_a{1, 2, 8, 11, 12, 18, 19, 22, 23, 29};
-//     const std::vector<unsigned> indices_b{7, 28};
+//     const std::vector<unsigned> indices_a{1, 2, 8, 11, 12, 18, 19, 22, 23,
+//     29}; const std::vector<unsigned> indices_b{7, 28};
 
 //     const AllCircuitsResult expected_result{
 //         {0, {{OpType::X, indices_a}, {OpType::Y, indices_b}}},
@@ -338,7 +341,8 @@ namespace test_FrameRandomisation {
 //     "Test that sample_cycles returns correct number of cycles using "
 //     "PowerCycle.") {
 //   const auto test_sample_cycles_from_power_cycle =
-//       [](unsigned multiplier, const Circuit& circ, unsigned number_of_tests) {
+//       [](unsigned multiplier, const Circuit& circ, unsigned number_of_tests)
+//       {
 //         PowerCycle pc;
 //         for (unsigned nn = 1; nn <= number_of_tests; ++nn) {
 //           const auto sample_cycles = pc.sample_cycles(circ, nn, 1);
@@ -354,8 +358,8 @@ namespace test_FrameRandomisation {
 //   }
 //   GIVEN("A 5-qubit circuit.") {
 //     Circuit circ(5);
-//     add_2qb_gates(circ, OpType::CX, {{0, 1}, {2, 1}, {3, 2}, {3, 4}, {0, 1}});
-//     add_1qb_gates(circ, OpType::S, {3, 2, 4});
+//     add_2qb_gates(circ, OpType::CX, {{0, 1}, {2, 1}, {3, 2}, {3, 4}, {0,
+//     1}}); add_1qb_gates(circ, OpType::S, {3, 2, 4});
 //     test_sample_cycles_from_power_cycle(20, circ, 4);
 //   }
 // }
@@ -397,7 +401,7 @@ SCENARIO("Frame Randomisation non-real DAG") {
     std::vector<Circuit> circs =
         pfr.sample_randomisation_circuits(cu.get_circ_ref(), 1);
     CHECK(circs.size() == 1);
-    std::cout << circs[0].get_commands().size()  << std::endl;
+    std::cout << circs[0].get_commands().size() << std::endl;
     CHECK(circs[0].get_commands().size() == 293);
   }
   GIVEN("CnX gate with 5 controls") {
@@ -431,7 +435,7 @@ SCENARIO("Frame Randomisation non-real DAG") {
     std::vector<Circuit> circs =
         pfr.sample_randomisation_circuits(cu.get_circ_ref(), 1);
     CHECK(circs.size() == 1);
-    std::cout << circs[0].get_commands().size()  << std::endl;
+    std::cout << circs[0].get_commands().size() << std::endl;
     CHECK(circs[0].get_commands().size() == 1570);
   }
 }
