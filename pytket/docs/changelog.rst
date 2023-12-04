@@ -4,6 +4,10 @@ Changelog
 Unreleased
 ----------
 
+API changes:
+
+* Make the ``architecture`` field in ``BackendInfo`` optional.
+
 Deprecations:
 
 * Deprecate ``SynthesiseHQS`` pass.
@@ -11,6 +15,12 @@ Deprecations:
 Fixes:
 
 * Fix `PauliFrameRandomisation.sample_circuits`.
+
+Fixes:
+
+* Ensure that squashing long sequences of gates via unitary multiplication does
+  not produce non-unitary results due to rounding errors.
+
 
 1.22.0 (November 2023)
 ----------------------

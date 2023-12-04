@@ -15,6 +15,7 @@
 #pragma once
 
 #include <array>
+#include <tklog/TketLog.hpp>
 #include <vector>
 
 #include "EigenConfig.hpp"
@@ -176,5 +177,48 @@ bool in_weyl_chamber(const std::array<Expr, 3> &k);
  * @brief Get an nth root of a 2x2 unitary matrix.
  */
 Eigen::Matrix2cd nth_root(const Eigen::Matrix2cd &u, unsigned long long n);
+
+template <class MatrixT>
+static inline MatrixT clamp_to_unitary(const MatrixT &A) {
+  if (is_unitary(A)) {
+    return A;
+  } else {
+    tket_log()->warn(
+        "Non-unitary product of matrices assumed unitary: "
+        "presuming rounding error and applying correction.");
+    // Fact: if A is an arbitrary complex matrix, and
+    //   A = U * S * V^+
+    // is its singular-value decomposition, then
+    //   U * V^+
+    // is the unitary matrix closest to A in the Frobenius norm.
+    // See e.g. https://math.stackexchange.com/a/2215371 for a proof.
+    Eigen::JacobiSVD<MatrixT, Eigen::NoQRPreconditioner> svd(
+        A, Eigen::DecompositionOptions::ComputeFullU |
+               Eigen::DecompositionOptions::ComputeFullV);
+    return svd.matrixU() * svd.matrixV().adjoint();
+  }
+}
+
+/**
+ * Compute the product of two unitary matrices, with error correction.
+ *
+ * The arguments are assumed to be unitary.
+ */
+template <class MatrixT>
+MatrixT unitary_product2(const MatrixT &U, const MatrixT &V) {
+  MatrixT A = U * V;
+  return clamp_to_unitary(A);
+}
+
+/**
+ * Compute the product of three unitary matrices, with error correction.
+ *
+ * The arguments are assumed to be unitary.
+ */
+template <class MatrixT>
+MatrixT unitary_product3(const MatrixT &U, const MatrixT &V, const MatrixT &W) {
+  MatrixT A = U * V * W;
+  return clamp_to_unitary(A);
+}
 
 }  // namespace tket
