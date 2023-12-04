@@ -4,6 +4,10 @@ Changelog
 Unreleased
 ----------
 
+API changes:
+
+* Make the ``architecture`` field in ``BackendInfo`` optional.
+
 Deprecations:
 
 * Deprecate ``SynthesiseHQS`` pass.
