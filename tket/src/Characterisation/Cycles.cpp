@@ -170,16 +170,15 @@ std::pair<unsigned, std::set<unsigned>> CycleFinder::make_cycle(
         if (std::find(
                 history_uids.begin(), history_uids.end(), not_present_uid) !=
             history_uids.end()) {
-          // => the not present uid is in this cycle
-          // now we check the overlap
-          //
-          for (const UnitID& a :
-               this->cycle_history.history[candidate_cycle_key]) {
-            for (const UnitID& b : history_uids) {
-              if (a == b) {
-                not_mergeable_keys.insert(candidate_cycle_key);
-              }
-            }
+          std::vector<UnitID> intersection;
+          std::vector<UnitID> candidates =
+              cycle_history.history[candidate_cycle_key];
+          std::set_intersection(
+              candidates.begin(), candidates.end(), history_uids.begin(),
+              history_uids.end(), std::back_inserter(intersection));
+          if (!intersection.empty()) {
+            not_mergeable_keys.insert(candidate_cycle_key);
+            break;
           }
         }
       }

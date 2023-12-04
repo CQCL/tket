@@ -45,8 +45,6 @@ std::string FrameRandomisation::to_string() const {
 // Wires Identity gates into each cycle edge. Identity gates then relabelled
 // with Ops from OpTypeSet to create instances of Frame Randomisation
 void add_noop_frames(std::vector<Cycle>& cycles, Circuit& circ) {
-  IndexMap imap = circ.index_map();
-
   std::map<Edge, Edge> replacement_rewiring_edges;
   for (Cycle& full_cycle : cycles) {
     std::vector<edge_pair_t> cycle = full_cycle.boundary_edges_;
