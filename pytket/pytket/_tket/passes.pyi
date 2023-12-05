@@ -607,7 +607,7 @@ def ThreeQubitSquash(allow_swaps: bool = True) -> BasePass:
     """
     Squash three-qubit subcircuits into subcircuits having fewer CX gates, when possible, and apply Clifford simplification.
     
-    The circuit to which this is applied must consist of single-qubit, classical and CX gates.
+    The circuit to which this is applied must consist of single-qubit, pure-classical and CX gates, and Measure, Collapse, Reset, Phase and conditional gates.
     
     :param allow_swaps: whether to allow implicit wire swaps
     """
