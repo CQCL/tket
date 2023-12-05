@@ -2339,6 +2339,8 @@ class Circuit:
         """
         Get all classical registers.
         
+        This property is only valid if the bits in the circuit are organized into registers (i.e. all bit indices are single numbers and all sets of bits with the same string identifier consist of bits indexed consecutively from zero).
+        
         :return: List of :py:class:`BitRegister`
         """
     @property
@@ -2391,6 +2393,8 @@ class Circuit:
     def q_registers(self) -> list[pytket._tket.unit_id.QubitRegister]:
         """
         Get all quantum registers.
+        
+        This property is only valid if the qubits in the circuit are organized into registers (i.e. all qubit indices are single numbers and all sets of qubits with the same string identifier consist of qubits indexed consecutively from zero).
         
         :return: List of :py:class:`QubitRegister`
         """

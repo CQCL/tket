@@ -410,6 +410,8 @@ def KAKDecomposition(target_2qb_gate: pytket._tket.circuit.OpType = pytket._tket
     
     Using the `allow_swaps=True` (default) option, qubits will be swapped when convenient to further reduce the two-qubit gate count (only applicable when decomposing to CX gates).
     
+    Note that gates containing symbolic parameters are not squashed.
+    
     :param target_2qb_gate: OpType to decompose to. Either TK2 or CX.
     :param cx_fidelity: Estimated CX gate fidelity, used when target_2qb_gate=CX.
     :param allow_swaps: Whether to allow implicit wire swaps.
@@ -488,10 +490,10 @@ def RebaseCustom(gateset: set[pytket._tket.circuit.OpType], cx_replacement: pytk
     3. converts any single-qubit gates not in the gate type set to the form :math:`\mathrm{Rz}(a)\mathrm{Rx}(b)\mathrm{Rz}(c)` (in matrix-multiplication order, i.e. reverse order in the circuit);
     4. applies the `tk1_replacement` function to each of these triples :math:`(a,b,c)` to generate replacement circuits.
     
-    :param gateset: the allowed operations in the rebased circuit
+    :param gateset: the allowed operations in the rebased circuit (in addition, Measure, Reset and Collapse operations are always allowed and are left alone; conditional operations may be present; and Phase gates may also be introduced by the rebase)
     :param cx_replacement: the equivalent circuit to replace a CX gate using two qubit gates from the desired basis (can use any single qubit OpTypes)
     :param tk1_replacement: a function which, given the parameters of an Rz(a)Rx(b)Rz(c) triple, returns an equivalent circuit in the desired basis
-    :return: a pass that rebases to the given gate set (possibly including conditional and phase operations)
+    :return: a pass that rebases to the given gate set (possibly including conditional and phase operations, and Measure, Reset and Collapse)
     """
 @typing.overload
 def RebaseCustom(gateset: set[pytket._tket.circuit.OpType], tk2_replacement: typing.Callable[[typing.Union[sympy.Expr, float], typing.Union[sympy.Expr, float], typing.Union[sympy.Expr, float]], pytket._tket.circuit.Circuit], tk1_replacement: typing.Callable[[typing.Union[sympy.Expr, float], typing.Union[sympy.Expr, float], typing.Union[sympy.Expr, float]], pytket._tket.circuit.Circuit]) -> BasePass:
@@ -503,14 +505,14 @@ def RebaseCustom(gateset: set[pytket._tket.circuit.OpType], tk2_replacement: typ
     3. converts any single-qubit gates not in the gate type set to TK1;
     4. if TK2 is not in `gateset`. applies the `tk1_replacement` function to each TK1(a,b,c).
     
-    :param gateset: the allowed operations in the rebased circuit
+    :param gateset: the allowed operations in the rebased circuit (in addition, Measure, Reset and Collapse operations are always allowed and are left alone; conditional operations may be present; and Phase gates may also be introduced by the rebase)
     :param tk2_replacement: a function which, given the parameters (a,b,c) of an XXPhase(a)YYPhase(b)ZZPhase(c) triple, returns an equivalent circuit in the desired basis
     :param tk1_replacement: a function which, given the parameters (a,b,c) of an Rz(a)Rx(b)Rz(c) triple, returns an equivalent circuit in the desired basis
-    :return: a pass that rebases to the given gate set (possibly including conditional and phase operations)
+    :return: a pass that rebases to the given gate set (possibly including conditional and phase operations, and Measure, Reset and Collapse)
     """
 def RebaseTket() -> BasePass:
     """
-    Converts all gates to CX, TK1 and Phase.
+    Converts all gates to CX, TK1 and Phase. (Any Measure, Reset and Collapse operations are left untouched; Conditional gates are also allowed.)
     """
 def RemoveBarriers() -> BasePass:
     """
