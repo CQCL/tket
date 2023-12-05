@@ -11,6 +11,10 @@ API changes:
 Deprecations:
 
 * Deprecate ``SynthesiseHQS`` pass.
+  
+Fixes:
+
+* Fix `PauliFrameRandomisation.sample_circuits`.
 
 Fixes:
 
