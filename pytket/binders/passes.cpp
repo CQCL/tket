@@ -496,7 +496,11 @@ PYBIND11_MODULE(passes, m) {
       "2-qubit gate (which may be CX or TK2) and TK1 gates."
       "\n\n:param allow_swaps: whether to allow implicit wire swaps",
       py::arg("allow_swaps") = true, py::arg("target_2qb_gate") = OpType::CX);
-  m.def("RebaseTket", &RebaseTket, "Converts all gates to CX, TK1 and Phase.");
+  m.def(
+      "RebaseTket", &RebaseTket,
+      "Converts all gates to CX, TK1 and Phase. "
+      "(Any Measure, Reset and Collapse operations are left untouched; "
+      "Conditional gates are also allowed.)");
   m.def(
       "RemoveRedundancies", &RemoveRedundancies,
       "Removes gate-inverse pairs, merges rotations, removes identity "
@@ -606,7 +610,10 @@ PYBIND11_MODULE(passes, m) {
       "4. applies the `tk1_replacement` function to each of these triples "
       ":math:`(a,b,c)` to generate replacement circuits."
       "\n\n"
-      ":param gateset: the allowed operations in the rebased circuit"
+      ":param gateset: the allowed operations in the rebased circuit "
+      "(in addition, Measure, Reset and Collapse operations are always allowed "
+      "and are left alone; conditional operations may be present; and Phase "
+      "gates may also be introduced by the rebase)"
       "\n:param cx_replacement: the equivalent circuit to replace a CX gate "
       "using two qubit gates from the desired basis (can use any single qubit "
       "OpTypes)"
@@ -614,7 +621,8 @@ PYBIND11_MODULE(passes, m) {
       "Rz(a)Rx(b)Rz(c) triple, returns an equivalent circuit in the desired "
       "basis"
       "\n:return: a pass that rebases to the given gate set (possibly "
-      "including conditional and phase operations)",
+      "including conditional and phase operations, and Measure, Reset and "
+      "Collapse)",
       py::arg("gateset"), py::arg("cx_replacement"),
       py::arg("tk1_replacement"));
 
@@ -631,7 +639,10 @@ PYBIND11_MODULE(passes, m) {
       "4. if TK2 is not in `gateset`. applies the `tk1_replacement` function "
       "to each TK1(a,b,c)."
       "\n\n"
-      ":param gateset: the allowed operations in the rebased circuit\n"
+      ":param gateset: the allowed operations in the rebased circuit "
+      "(in addition, Measure, Reset and Collapse operations are always allowed "
+      "and are left alone; conditional operations may be present; and Phase "
+      "gates may also be introduced by the rebase)\n"
       ":param tk2_replacement: a function which, given the parameters (a,b,c) "
       "of an XXPhase(a)YYPhase(b)ZZPhase(c) triple, returns an equivalent "
       "circuit in the desired basis\n"
@@ -639,7 +650,7 @@ PYBIND11_MODULE(passes, m) {
       "of an Rz(a)Rx(b)Rz(c) triple, returns an equivalent circuit in the "
       "desired basis\n"
       ":return: a pass that rebases to the given gate set (possibly including "
-      "conditional and phase operations)",
+      "conditional and phase operations, and Measure, Reset and Collapse)",
       py::arg("gateset"), py::arg("tk2_replacement"),
       py::arg("tk1_replacement"));
 
