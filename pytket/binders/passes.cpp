@@ -435,6 +435,8 @@ PYBIND11_MODULE(passes, m) {
       "ThreeQubitSquash", &ThreeQubitSquash,
       "Squash three-qubit subcircuits into subcircuits having fewer CX gates, "
       "when possible, and apply Clifford simplification."
+      "\n\nThe circuit to which this is applied must consist of single-qubit, "
+      "classical and CX gates."
       "\n\n:param allow_swaps: whether to allow implicit wire swaps",
       py::arg("allow_swaps") = true);
   m.def(
