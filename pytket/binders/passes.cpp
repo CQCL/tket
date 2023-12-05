@@ -373,6 +373,7 @@ PYBIND11_MODULE(passes, m) {
       "Using the `allow_swaps=True` (default) option, qubits will be "
       "swapped when convenient to further reduce the two-qubit gate count "
       "(only applicable when decomposing to CX gates).\n\n"
+      "Note that gates containing symbolic parameters are not squashed.\n\n"
       ":param target_2qb_gate: OpType to decompose to. Either TK2 or CX.\n"
       ":param cx_fidelity: Estimated CX gate fidelity, used when "
       "target_2qb_gate=CX.\n"
