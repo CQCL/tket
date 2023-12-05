@@ -271,8 +271,12 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
             }
             return b_regs;
           },
-          "Get all classical registers.\n\n:return: List of "
-          ":py:class:`BitRegister`")
+          "Get all classical registers.\n\n"
+          "This property is only valid if the bits in the circuit are "
+          "organized into registers (i.e. all bit indices are single numbers "
+          "and all sets of bits with the same string identifier consist of "
+          "bits indexed consecutively from zero).\n\n"
+          ":return: List of :py:class:`BitRegister`")
       .def(
           "get_q_register",
           [](Circuit &circ, const std::string &name) {
@@ -307,8 +311,12 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
             }
             return q_regs;
           },
-          "Get all quantum registers.\n\n:return: List of "
-          ":py:class:`QubitRegister`")
+          "Get all quantum registers.\n\n"
+          "This property is only valid if the qubits in the circuit are "
+          "organized into registers (i.e. all qubit indices are single numbers "
+          "and all sets of qubits with the same string identifier consist of "
+          "qubits indexed consecutively from zero).\n\n"
+          ":return: List of :py:class:`QubitRegister`")
       .def(
           "add_qubit", &Circuit::add_qubit,
           "Constructs a single qubit with the given id.\n\n:param id: "
