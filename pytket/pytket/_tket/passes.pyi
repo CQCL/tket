@@ -318,7 +318,7 @@ def DecomposeTK2(allow_swaps: bool = True, **kwargs: Any) -> BasePass:
     
     If no fidelities are provided, the TK2 gates will be decomposed exactly using CX gates. For equal fidelities, ZZPhase will be prefered over ZZMax and CX if the decomposition results in fewer two-qubit gates.
     
-    All TK2 gate parameters must be normalised, i.e. they must satisfy `NormalisedTK2Predicate`.
+    All TK2 gate parameters must be normalised, i.e. they must satisfy `NormalisedTK2Predicate`. (This can be achieved by applying the :py:meth:`NormaliseTK2` pass beforehand.)
     
     Using the `allow_swaps=True` (default) option, qubits will be swapped when convenient to reduce the two-qubit gate count of the decomposed TK2.
     
@@ -606,6 +606,8 @@ def SynthesiseUMD() -> BasePass:
 def ThreeQubitSquash(allow_swaps: bool = True) -> BasePass:
     """
     Squash three-qubit subcircuits into subcircuits having fewer CX gates, when possible, and apply Clifford simplification.
+    
+    The circuit to which this is applied must consist of single-qubit, classical and CX gates.
     
     :param allow_swaps: whether to allow implicit wire swaps
     """
