@@ -157,236 +157,303 @@ $(function() {
 <div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keywordtype">unsigned</span>&amp; key : all_erased) erase_from.erase(key);</div>
 <div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;}</div>
 <div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="comment">// Adds a new cycle to bt.key_to_cycle</span></div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="comment">// Adds a new cycle to this-&gt;cycle_history.key_to_cycle</span></div>
 <div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;std::pair&lt;unsigned, std::set&lt;unsigned&gt;&gt; CycleFinder::make_cycle(</div>
 <div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;    <span class="keyword">const</span> <a class="code" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a>&amp; v, <span class="keyword">const</span> <a class="code" href="namespacetket.html#a814cee1be1a70fcc4a804f93212b5013">EdgeVec</a>&amp; out_edges, <span class="keyword">const</span> CutFrontier&amp; cut) {</div>
 <div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;  <span class="comment">// Make a new boundary, add it to &quot;all_boundaries&quot;, update &quot;boundary_key&quot; map</span></div>
 <div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;  std::vector&lt;edge_pair_t&gt; new_cycle_boundary;</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;  std::vector&lt;UnitID&gt; new_boundary_uids;</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;  std::set&lt;UnitID&gt; new_boundary_uids;</div>
 <div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;  std::set&lt;unsigned&gt; old_boundary_keys;</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;  std::set&lt;unsigned&gt; banned_keys;</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160; </div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;  <span class="comment">// Get UnitID, add to uids for new boundary, keep note of all old boundary</span></div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;  <span class="comment">// keys for merging set new boundary key, add new edges to new boundary update</span></div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;  <span class="comment">// cycle out edges if the edge can&#39;t be found</span></div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="namespacetket.html#a6a99d9f2b64decd8803090cc890e1e7d">Edge</a>&amp; e : out_edges) {</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    UnitID uid = unitid_from_unit_frontier(cut.u_frontier, e);</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    new_boundary_uids.push_back(uid);</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    old_boundary_keys.insert(bt.<a class="code" href="structtket_1_1CycleHistory.html#af9cd316f450417880c749dfd466f63ef">uid_to_key</a>[uid]);</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160; </div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    <span class="comment">// boundary key associated with given edge e not included</span></div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <span class="comment">// i.e. e&#39;s associated in edge isn&#39;t a cycle out edge</span></div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="comment">// i.e. some other non-cycle gate has been passed</span></div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    <span class="keywordflow">if</span> (cycle_out_edges.find(circ.<a class="code" href="classtket_1_1Circuit.html#ab4a20262a5bafa273a324b5d236708b6">get_last_edge</a>(v, e)) ==</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;        cycle_out_edges.end()) {</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;      banned_keys.insert(bt.<a class="code" href="structtket_1_1CycleHistory.html#af9cd316f450417880c749dfd466f63ef">uid_to_key</a>[uid]);</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    }</div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    bt.<a class="code" href="structtket_1_1CycleHistory.html#af9cd316f450417880c749dfd466f63ef">uid_to_key</a>[uid] = bt.<a class="code" href="structtket_1_1CycleHistory.html#a9dffb730e1ba50b3180ac904f37b69b8">key</a>;</div>
-<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;    new_cycle_boundary.push_back({circ.<a class="code" href="classtket_1_1Circuit.html#ab4a20262a5bafa273a324b5d236708b6">get_last_edge</a>(v, e), e});</div>
-<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;    update_cycle_out_edges(uid, e);</div>
-<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;  }</div>
-<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160; </div>
-<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;  std::vector&lt;unsigned&gt; op_indices(out_edges.size());</div>
-<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;  std::iota(op_indices.begin(), op_indices.end(), 0);</div>
-<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;  <span class="comment">// Edges in port ordering</span></div>
-<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160;  <a class="code" href="namespacetket.html#aaa9022e831653e0daea704d481725e3ba46e4c9ef8686e58a89edb553aba6d938">Cycle</a> new_cycle(</div>
-<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;      new_cycle_boundary, {{circ.<a class="code" href="classtket_1_1Circuit.html#aed06b975de918021ca3fb1716498c6d1">get_OpType_from_Vertex</a>(v), op_indices, v}});</div>
-<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;  bt.<a class="code" href="structtket_1_1CycleHistory.html#a057f9f9324500412bdaea75334f476bf">key_to_cycle</a>[bt.<a class="code" href="structtket_1_1CycleHistory.html#a9dffb730e1ba50b3180ac904f37b69b8">key</a>] = {new_cycle};</div>
-<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160; </div>
-<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;  bt.<a class="code" href="structtket_1_1CycleHistory.html#a71c0cabe832a7dfa8ecbbaf7920ae4e3">history</a>.push_back(new_boundary_uids);</div>
-<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keywordtype">unsigned</span>&amp; key : banned_keys) {</div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;    erase_keys(key, old_boundary_keys);</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;  }</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;  std::pair&lt;unsigned, std::set&lt;unsigned&gt;&gt; return_keys = {</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;      bt.<a class="code" href="structtket_1_1CycleHistory.html#a9dffb730e1ba50b3180ac904f37b69b8">key</a>, old_boundary_keys};</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;  bt.<a class="code" href="structtket_1_1CycleHistory.html#a9dffb730e1ba50b3180ac904f37b69b8">key</a>++;</div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;  <span class="keywordflow">return</span> return_keys;</div>
-<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;}</div>
-<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160; </div>
-<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;<span class="comment">// &quot;old_keys&quot; returned gives keys for boundaries to be merged together</span></div>
-<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;<span class="comment">// these &quot;old_keys&quot; are keys corresponding to boundaries UnitIDs in new boundary</span></div>
-<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160;<span class="comment">// were in previously if two keys in passed old_keys have overlapping UnitIDs,</span></div>
-<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;<span class="comment">// then they cannot be merged in this case, remove the &#39;earlier&#39; boundary from</span></div>
-<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;<span class="comment">// keys to be merged</span></div>
-<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;<span class="keywordtype">void</span> CycleFinder::order_keys(</div>
-<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;    <span class="keywordtype">unsigned</span>&amp; new_key, std::set&lt;unsigned&gt;&amp; old_keys)<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;  std::set&lt;unsigned&gt; bad_keys;</div>
-<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;  <span class="keywordflow">for</span> (std::set&lt;unsigned&gt;::iterator it = old_keys.begin(); it != old_keys.end();</div>
-<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;       ++it) {</div>
-<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;    std::set&lt;unsigned&gt;::iterator jt = it;</div>
-<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;    std::advance(jt, 1);</div>
-<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;    <span class="comment">// if either std::vector&lt;UnitID&gt; has common UnitIDs then one is causally</span></div>
-<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;    <span class="comment">// blocked. remove smaller key from keys from set as not a candidate for</span></div>
-<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;    <span class="comment">// merging into</span></div>
-<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;    <span class="keywordflow">for</span> (; jt != old_keys.end(); ++jt)</div>
-<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;      <span class="keywordflow">for</span> (<span class="keyword">const</span> UnitID&amp; u0 : bt.<a class="code" href="structtket_1_1CycleHistory.html#a71c0cabe832a7dfa8ecbbaf7920ae4e3">history</a>[*it])</div>
-<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">const</span> UnitID&amp; u1 : bt.<a class="code" href="structtket_1_1CycleHistory.html#a71c0cabe832a7dfa8ecbbaf7920ae4e3">history</a>[*jt])</div>
-<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;          <span class="keywordflow">if</span> (u0 == u1) {</div>
-<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;            bad_keys.insert(*it);</div>
-<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;            <span class="keywordflow">goto</span> new_loop;</div>
-<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;          }</div>
-<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160; </div>
-<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;  new_loop: {}</div>
-<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;  }</div>
-<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160; </div>
-<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keywordtype">unsigned</span>&amp; key : bad_keys) old_keys.erase(key);</div>
-<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;  old_keys.insert(new_key);</div>
-<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;}</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;  std::set&lt;unsigned&gt; not_mergeable_keys;</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;  std::set&lt;UnitID&gt; not_mergeable_uids;</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160; </div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;  <span class="comment">// Get UnitID, add to uids for new boundary, keep note of all old boundary</span></div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;  <span class="comment">// keys for merging set new boundary key, add new edges to new boundary update</span></div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;  <span class="comment">// cycle out edges if the edge can&#39;t be found</span></div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160; </div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="namespacetket.html#a6a99d9f2b64decd8803090cc890e1e7d">Edge</a>&amp; e : out_edges) {</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    UnitID uid = unitid_from_unit_frontier(cut.u_frontier, e);</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    new_boundary_uids.insert(uid);</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    old_boundary_keys.insert(this-&gt;cycle_history.<a class="code" href="structtket_1_1CycleHistory.html#af9cd316f450417880c749dfd466f63ef">uid_to_key</a>[uid]);</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    <span class="comment">// boundary key associated with given edge e not included</span></div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="comment">// i.e. e&#39;s associated in edge isn&#39;t a cycle out edge</span></div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    <span class="comment">// i.e. some other non-cycle gate has been passed</span></div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;    <span class="comment">// if the edge going into the vertex is not in a previous cycle</span></div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;    <span class="comment">// then it can&#39;t be merged with that cycle</span></div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;    <span class="keywordflow">if</span> (cycle_out_edges.find(circ.<a class="code" href="classtket_1_1Circuit.html#ab4a20262a5bafa273a324b5d236708b6">get_last_edge</a>(v, e)) ==</div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;        cycle_out_edges.end()) {</div>
+<div class="line"><a name="l00108"></a><span class="lineno">  108</span>&#160;      not_mergeable_keys.insert(this-&gt;cycle_history.<a class="code" href="structtket_1_1CycleHistory.html#af9cd316f450417880c749dfd466f63ef">uid_to_key</a>[uid]);</div>
+<div class="line"><a name="l00109"></a><span class="lineno">  109</span>&#160;    }</div>
+<div class="line"><a name="l00110"></a><span class="lineno">  110</span>&#160;    this-&gt;cycle_history.<a class="code" href="structtket_1_1CycleHistory.html#af9cd316f450417880c749dfd466f63ef">uid_to_key</a>[uid] = this-&gt;cycle_history.<a class="code" href="structtket_1_1CycleHistory.html#a9dffb730e1ba50b3180ac904f37b69b8">key</a>;</div>
+<div class="line"><a name="l00111"></a><span class="lineno">  111</span>&#160;    new_cycle_boundary.push_back({circ.<a class="code" href="classtket_1_1Circuit.html#ab4a20262a5bafa273a324b5d236708b6">get_last_edge</a>(v, e), e});</div>
+<div class="line"><a name="l00112"></a><span class="lineno">  112</span>&#160;    update_cycle_out_edges(uid, e);</div>
+<div class="line"><a name="l00113"></a><span class="lineno">  113</span>&#160;  }</div>
+<div class="line"><a name="l00114"></a><span class="lineno">  114</span>&#160; </div>
+<div class="line"><a name="l00115"></a><span class="lineno">  115</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keywordtype">unsigned</span>&amp; key : old_boundary_keys) {</div>
+<div class="line"><a name="l00116"></a><span class="lineno">  116</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> UnitID&amp; uid : this-&gt;cycle_history.<a class="code" href="structtket_1_1CycleHistory.html#a71c0cabe832a7dfa8ecbbaf7920ae4e3">history</a>[key]) {</div>
+<div class="line"><a name="l00117"></a><span class="lineno">  117</span>&#160;      <span class="keywordflow">if</span> (not_mergeable_uids.find(uid) != not_mergeable_uids.end()) {</div>
+<div class="line"><a name="l00118"></a><span class="lineno">  118</span>&#160;        not_mergeable_keys.insert(key);</div>
+<div class="line"><a name="l00119"></a><span class="lineno">  119</span>&#160;        <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;      }</div>
+<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;    }</div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;  }</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160; </div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;  std::vector&lt;unsigned&gt; op_indices(out_edges.size());</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;  std::iota(op_indices.begin(), op_indices.end(), 0);</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160;  <span class="comment">// Edges in port ordering</span></div>
+<div class="line"><a name="l00127"></a><span class="lineno">  127</span>&#160;  <a class="code" href="namespacetket.html#aaa9022e831653e0daea704d481725e3ba46e4c9ef8686e58a89edb553aba6d938">Cycle</a> new_cycle(</div>
+<div class="line"><a name="l00128"></a><span class="lineno">  128</span>&#160;      new_cycle_boundary, {{circ.<a class="code" href="classtket_1_1Circuit.html#aed06b975de918021ca3fb1716498c6d1">get_OpType_from_Vertex</a>(v), op_indices, v}});</div>
+<div class="line"><a name="l00129"></a><span class="lineno">  129</span>&#160;  this-&gt;cycle_history.<a class="code" href="structtket_1_1CycleHistory.html#a057f9f9324500412bdaea75334f476bf">key_to_cycle</a>[this-&gt;cycle_history.<a class="code" href="structtket_1_1CycleHistory.html#a9dffb730e1ba50b3180ac904f37b69b8">key</a>] = {new_cycle};</div>
+<div class="line"><a name="l00130"></a><span class="lineno">  130</span>&#160; </div>
+<div class="line"><a name="l00131"></a><span class="lineno">  131</span>&#160;  this-&gt;cycle_history.<a class="code" href="structtket_1_1CycleHistory.html#a71c0cabe832a7dfa8ecbbaf7920ae4e3">history</a>.push_back(</div>
+<div class="line"><a name="l00132"></a><span class="lineno">  132</span>&#160;      std::vector&lt;UnitID&gt;(new_boundary_uids.begin(), new_boundary_uids.end()));</div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keywordtype">unsigned</span>&amp; key : not_mergeable_keys) {</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;    erase_keys(key, old_boundary_keys);</div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;  }</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160; </div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160;  not_mergeable_keys.clear();</div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160; </div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;  <span class="comment">// For each candidate cycle &quot;cycle&quot; given as an unsigned key</span></div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160;  <span class="comment">// For all UnitID &quot;uid&quot; in &quot;v&quot; that are not in &quot;cycle&quot;</span></div>
+<div class="line"><a name="l00141"></a><span class="lineno">  141</span>&#160;  <span class="comment">// For all cycles between cycle_history.uid_to_key[uid] and &quot;cycle&quot;</span></div>
+<div class="line"><a name="l00142"></a><span class="lineno">  142</span>&#160;  <span class="comment">// If a cycle contains both &quot;uid&quot; and any &quot;uid&quot; from &quot;cycle&quot;</span></div>
+<div class="line"><a name="l00143"></a><span class="lineno">  143</span>&#160;  <span class="comment">// Set the key as not to be merged</span></div>
+<div class="line"><a name="l00144"></a><span class="lineno">  144</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keywordtype">unsigned</span>&amp; candidate_cycle_key : old_boundary_keys) {</div>
+<div class="line"><a name="l00145"></a><span class="lineno">  145</span>&#160;    std::vector&lt;UnitID&gt; candidate_cycle_uid =</div>
+<div class="line"><a name="l00146"></a><span class="lineno">  146</span>&#160;        this-&gt;cycle_history.<a class="code" href="structtket_1_1CycleHistory.html#a71c0cabe832a7dfa8ecbbaf7920ae4e3">history</a>[candidate_cycle_key];</div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;    std::set&lt;UnitID&gt; not_present_uids;</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> UnitID&amp; candidate_uids : new_boundary_uids) {</div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;      <span class="keywordflow">if</span> (std::find(</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160;              candidate_cycle_uid.begin(), candidate_cycle_uid.end(),</div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;              candidate_uids) == candidate_cycle_uid.end()) {</div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;        not_present_uids.insert(candidate_uids);</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;      }</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160;    }</div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    <span class="comment">// not_present_uids now contains UnitID in the new cycle that are not in the</span></div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;    <span class="comment">// cycle represented by &quot;candidate_cycle_key&quot;</span></div>
 <div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160; </div>
-<div class="line"><a name="l00158"></a><span class="lineno"><a class="line" href="classtket_1_1Cycle.html#afa10626ff19c11ee66312098d0be7cb1">  158</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classtket_1_1Cycle.html#afa10626ff19c11ee66312098d0be7cb1">Cycle::update_coms_indices</a>(</div>
-<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;    <span class="keyword">const</span> std::map&lt;unsigned, unsigned&gt;&amp; new_indices) {</div>
-<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160;  <span class="keywordflow">for</span> (<a class="code" href="structtket_1_1CycleCom.html">CycleCom</a>&amp; com : <a class="code" href="classtket_1_1Cycle.html#a6c4867154b0e0e218dd29807bb4ae229">coms_</a>) {</div>
-<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span>&amp; index : com.indices) {</div>
-<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;      index = new_indices.at(index);</div>
-<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;    }</div>
-<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;  }</div>
-<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;}</div>
-<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160; </div>
-<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;<span class="comment">// new cycle is made</span></div>
-<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;<span class="comment">// it may need to be immediately merged into other cycles</span></div>
-<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;<span class="comment">// 1) check for overlap of UnitID between cycles of &quot;old_keys&quot;</span></div>
-<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;<span class="comment">// if overlap, remove lowest value key from set</span></div>
-<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;<span class="comment">// 2) add &quot;new_key&quot; to &quot;old_keys&quot;, merge all boundaries into corresponding</span></div>
-<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;<span class="comment">// boundary to highest value &quot;old_key&quot;</span></div>
-<div class="line"><a name="l00173"></a><span class="lineno"><a class="line" href="classtket_1_1Cycle.html#ada7affae277ecdcbb10d2f93c72830dc">  173</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classtket_1_1Cycle.html#ada7affae277ecdcbb10d2f93c72830dc">Cycle::merge</a>(<a class="code" href="classtket_1_1Cycle.html">Cycle</a>&amp; new_cycle) {</div>
-<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;  <span class="comment">// iterate through edges in boundary of new_cycle</span></div>
-<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;  std::map&lt;unsigned, unsigned&gt; new_indices;</div>
-<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; new_cycle.<a class="code" href="classtket_1_1Cycle.html#a8fd8c7cd4a65e2ae1b24e4b813cad998">boundary_edges_</a>.size(); i++) {</div>
-<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;    <span class="keywordtype">bool</span> match = <span class="keyword">false</span>;</div>
-<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> j = 0; j &lt; <a class="code" href="classtket_1_1Cycle.html#a8fd8c7cd4a65e2ae1b24e4b813cad998">boundary_edges_</a>.size(); j++) {</div>
-<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;      <span class="comment">// if in edge of boundary of new_cycle matches out of edge *this, update</span></div>
-<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;      <span class="comment">// *this out edge</span></div>
-<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;      <span class="keywordflow">if</span> (<a class="code" href="classtket_1_1Cycle.html#a8fd8c7cd4a65e2ae1b24e4b813cad998">boundary_edges_</a>[j].second == new_cycle.<a class="code" href="classtket_1_1Cycle.html#a8fd8c7cd4a65e2ae1b24e4b813cad998">boundary_edges_</a>[i].first) {</div>
-<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;        <a class="code" href="classtket_1_1Cycle.html#a8fd8c7cd4a65e2ae1b24e4b813cad998">boundary_edges_</a>[j].second = new_cycle.<a class="code" href="classtket_1_1Cycle.html#a8fd8c7cd4a65e2ae1b24e4b813cad998">boundary_edges_</a>[i].second;</div>
-<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;        <span class="comment">// As CycleCom are labelled by basic indexing system, where indexing is</span></div>
-<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;        <span class="comment">// related to position edge has in boundary Update CycleCom in new_cycle</span></div>
-<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160;        <span class="comment">// s.t. edges with index i now have index j update commands in new_cycle</span></div>
-<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;        <span class="comment">// to match edgesindexing of *this for now, store new indexing</span></div>
-<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;        new_indices[i] = j;</div>
-<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;        match = <span class="keyword">true</span>;</div>
-<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;        <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;      }</div>
-<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;    }</div>
-<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;    <span class="keywordflow">if</span> (!match) {</div>
-<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;      <a class="code" href="classtket_1_1Cycle.html#a8fd8c7cd4a65e2ae1b24e4b813cad998">boundary_edges_</a>.push_back(new_cycle.<a class="code" href="classtket_1_1Cycle.html#a8fd8c7cd4a65e2ae1b24e4b813cad998">boundary_edges_</a>[i]);</div>
-<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;      new_indices[i] = <a class="code" href="classtket_1_1Cycle.html#a8fd8c7cd4a65e2ae1b24e4b813cad998">boundary_edges_</a>.size() - 1;</div>
-<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160;    }</div>
-<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;  }</div>
-<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;  <span class="comment">// update CycleCom indices in new_cycle</span></div>
-<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;  new_cycle.<a class="code" href="classtket_1_1Cycle.html#afa10626ff19c11ee66312098d0be7cb1">update_coms_indices</a>(new_indices);</div>
-<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;  <a class="code" href="classtket_1_1Cycle.html#a6c4867154b0e0e218dd29807bb4ae229">coms_</a>.insert(<a class="code" href="classtket_1_1Cycle.html#a6c4867154b0e0e218dd29807bb4ae229">coms_</a>.end(), new_cycle.<a class="code" href="classtket_1_1Cycle.html#a6c4867154b0e0e218dd29807bb4ae229">coms_</a>.begin(), new_cycle.<a class="code" href="classtket_1_1Cycle.html#a6c4867154b0e0e218dd29807bb4ae229">coms_</a>.end());</div>
-<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;}</div>
-<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160; </div>
-<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;<span class="keywordtype">void</span> CycleFinder::merge_cycles(<span class="keywordtype">unsigned</span> new_key, std::set&lt;unsigned&gt;&amp; old_keys) {</div>
-<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;  <span class="comment">// boundary_keys is a std::set&lt;unsigned&gt; so is ordered</span></div>
-<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;  order_keys(new_key, old_keys);</div>
-<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;  <span class="comment">// all cycles corresponding to keys in boundary_keys should be merged into</span></div>
-<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;  <span class="comment">// boundary with smallest value</span></div>
-<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;  std::set&lt;unsigned&gt;::iterator it = old_keys.begin();</div>
-<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;  <span class="keywordtype">unsigned</span> base_key = *it;</div>
-<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;  std::advance(it, 1);</div>
-<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;  <span class="keywordflow">for</span> (; it != old_keys.end(); ++it) {</div>
-<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;    <span class="keywordtype">unsigned</span> merge_key = *it;</div>
-<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;    bt.<a class="code" href="structtket_1_1CycleHistory.html#a057f9f9324500412bdaea75334f476bf">key_to_cycle</a>[base_key].merge(bt.<a class="code" href="structtket_1_1CycleHistory.html#a057f9f9324500412bdaea75334f476bf">key_to_cycle</a>[merge_key]);</div>
-<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;    bt.<a class="code" href="structtket_1_1CycleHistory.html#a057f9f9324500412bdaea75334f476bf">key_to_cycle</a>.erase(merge_key);</div>
-<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;    <span class="comment">// update bt.history for &quot;base_key&quot;</span></div>
-<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="classtket_1_1UnitID.html">UnitID</a>&amp; u0 : bt.<a class="code" href="structtket_1_1CycleHistory.html#a71c0cabe832a7dfa8ecbbaf7920ae4e3">history</a>[merge_key]) {</div>
-<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;      bt.<a class="code" href="structtket_1_1CycleHistory.html#af9cd316f450417880c749dfd466f63ef">uid_to_key</a>[u0] = base_key;</div>
-<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;      <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="classtket_1_1UnitID.html">UnitID</a>&amp; u1 : bt.<a class="code" href="structtket_1_1CycleHistory.html#a71c0cabe832a7dfa8ecbbaf7920ae4e3">history</a>[base_key])</div>
-<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160;        <span class="keywordflow">if</span> (u0 == u1) <span class="keywordflow">break</span>;</div>
-<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;      bt.<a class="code" href="structtket_1_1CycleHistory.html#a71c0cabe832a7dfa8ecbbaf7920ae4e3">history</a>[base_key].push_back(u0);</div>
-<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;    }</div>
-<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160;  }</div>
-<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;}</div>
-<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160; </div>
-<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;<span class="keywordtype">void</span> CycleFinder::extend_cycles(<span class="keyword">const</span> CutFrontier&amp; cut) {</div>
-<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160;  <span class="comment">// For each vertex in slice</span></div>
-<div class="line"><a name="l00226"></a><span class="lineno">  226</span>&#160;  <span class="comment">// Make a new &quot;cycle&quot;</span></div>
-<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;  <span class="comment">// If any in edge to new cycle matches an out edge to a previous cycle,</span></div>
-<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;  <span class="comment">// attempt to merge cycles together</span></div>
-<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a>&amp; v : *cut.slice) {</div>
-<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;    <a class="code" href="namespacetket.html#a814cee1be1a70fcc4a804f93212b5013">EdgeVec</a> in_edges = circ.<a class="code" href="classtket_1_1Circuit.html#aa82f5195c87799eea4ff531e775731e5">get_in_edges_of_type</a>(v, <a class="code" href="namespacetket.html#a4c73a949b027dea7f23b1d5a1bdd526ea033b1e7914d380b381c8b7f9f131328d">EdgeType::Quantum</a>);</div>
-<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;    <a class="code" href="namespacetket.html#a814cee1be1a70fcc4a804f93212b5013">EdgeVec</a> out_edges = circ.<a class="code" href="classtket_1_1Circuit.html#af3ed007d540da78e5363389404e25843">get_out_edges_of_type</a>(v, <a class="code" href="namespacetket.html#a4c73a949b027dea7f23b1d5a1bdd526ea033b1e7914d380b381c8b7f9f131328d">EdgeType::Quantum</a>);</div>
-<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;    <span class="comment">// Compare EdgeType::Quantum &quot;in_edges&quot; of vertex in slice to collection of</span></div>
-<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;    <span class="comment">// out edges from &quot;active&quot; boundaries If an &quot;in_edge&quot; is not equivalent to</span></div>
-<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160;    <span class="comment">// an out edge from &quot;active&quot; boundary, implies vertex needs to start a new</span></div>
-<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;    <span class="comment">// boundary</span></div>
-<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;    std::pair&lt;unsigned, std::set&lt;unsigned&gt;&gt; all_keys =</div>
-<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;        make_cycle(v, out_edges, cut);</div>
-<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;    <span class="keywordflow">if</span> (all_keys.second.size() &gt; 0) {</div>
-<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;      merge_cycles(all_keys.first, all_keys.second);</div>
-<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;    }</div>
-<div class="line"><a name="l00241"></a><span class="lineno">  241</span>&#160;  }</div>
-<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;}</div>
-<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160; </div>
-<div class="line"><a name="l00244"></a><span class="lineno"><a class="line" href="classtket_1_1CycleFinder.html#a9a031272425dfe33e66a62f03e06b93b">  244</a></span>&#160;std::vector&lt;Cycle&gt; <a class="code" href="classtket_1_1CycleFinder.html#a9a031272425dfe33e66a62f03e06b93b">CycleFinder::get_cycles</a>() {</div>
-<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;  std::function&lt;bool(<a class="code" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a>)&gt; skip_func = [&amp;](<a class="code" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a> op) {</div>
-<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;    <span class="keywordflow">return</span> (cycle_types_.find(op-&gt;get_type()) == cycle_types_.end());</div>
-<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;  };</div>
-<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160; </div>
-<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;  <a class="code" href="classtket_1_1Circuit_1_1SliceIterator.html">Circuit::SliceIterator</a> slice_iter(circ, skip_func);</div>
-<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;  bt.<a class="code" href="structtket_1_1CycleHistory.html#a9dffb730e1ba50b3180ac904f37b69b8">key</a> = 0;</div>
-<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160; </div>
-<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;  <span class="comment">// initialization</span></div>
-<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;  <span class="keywordflow">if</span> (!(*slice_iter).empty()) {</div>
-<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> std::pair&lt;UnitID, Edge&gt;&amp; pair :</div>
-<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;         slice_iter.<a class="code" href="classtket_1_1Circuit_1_1SliceIterator.html#afb08db8c84d7d6eea5711d6b8fb8001a">cut_</a>.<a class="code" href="structtket_1_1CutFrontier.html#a4e4d98f29de591e929461265bd5db0e6">u_frontier</a>-&gt;get&lt;<a class="code" href="structtket_1_1TagKey.html">TagKey</a>&gt;()) {</div>
-<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;      <a class="code" href="namespacetket.html#a6a99d9f2b64decd8803090cc890e1e7d">Edge</a> in_edge = pair.second;</div>
-<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;      <span class="keywordflow">if</span> (circ.<a class="code" href="classtket_1_1Circuit.html#a26d7fe7443ea870ffdfd0bf99dd23de1">get_edgetype</a>(in_edge) != <a class="code" href="namespacetket.html#a4c73a949b027dea7f23b1d5a1bdd526ea2091523979dbedcad728958414922c72">EdgeType::Classical</a>) {</div>
-<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;        <a class="code" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> in_vert = circ.<a class="code" href="classtket_1_1Circuit.html#a90c4935d28c1c7a05a5430862afb3c3f">source</a>(pair.second);</div>
-<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160; </div>
-<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;        <span class="comment">// if vertex is type from types, then vertex is in slice and need</span></div>
-<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;        <span class="comment">// in_edge. else can ignore.</span></div>
-<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;        <span class="keywordflow">if</span> (cycle_types_.find(circ.<a class="code" href="classtket_1_1Circuit.html#aed06b975de918021ca3fb1716498c6d1">get_OpType_from_Vertex</a>(in_vert)) !=</div>
-<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;            cycle_types_.end()) {</div>
-<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;          in_edge = circ.<a class="code" href="classtket_1_1Circuit.html#ab4a20262a5bafa273a324b5d236708b6">get_last_edge</a>(in_vert, pair.second);</div>
-<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;        }</div>
-<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160; </div>
-<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;        cycle_out_edges.insert({in_edge, pair.first});</div>
-<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;        bt.<a class="code" href="structtket_1_1CycleHistory.html#af9cd316f450417880c749dfd466f63ef">uid_to_key</a>.insert({pair.first, bt.<a class="code" href="structtket_1_1CycleHistory.html#a9dffb730e1ba50b3180ac904f37b69b8">key</a>});</div>
-<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160;        <a class="code" href="classtket_1_1Cycle.html">Cycle</a> new_cycle({{in_edge, in_edge}}, {{}});</div>
-<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;        bt.<a class="code" href="structtket_1_1CycleHistory.html#a057f9f9324500412bdaea75334f476bf">key_to_cycle</a>[bt.<a class="code" href="structtket_1_1CycleHistory.html#a9dffb730e1ba50b3180ac904f37b69b8">key</a>] = new_cycle;</div>
-<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;        bt.<a class="code" href="structtket_1_1CycleHistory.html#a71c0cabe832a7dfa8ecbbaf7920ae4e3">history</a>.push_back({pair.first});</div>
-<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;        bt.<a class="code" href="structtket_1_1CycleHistory.html#a9dffb730e1ba50b3180ac904f37b69b8">key</a>++;</div>
-<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;      }</div>
-<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;    }</div>
-<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;    <span class="comment">// extend cycles automatically merges cycles that can be merge due to</span></div>
-<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;    <span class="comment">// overlapping multi-qubit gates</span></div>
-<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;    extend_cycles(slice_iter.<a class="code" href="classtket_1_1Circuit_1_1SliceIterator.html#afb08db8c84d7d6eea5711d6b8fb8001a">cut_</a>);</div>
-<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;    cycle_out_edges = {};</div>
-<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> std::pair&lt;UnitID, Edge&gt;&amp; pair :</div>
-<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;         slice_iter.<a class="code" href="classtket_1_1Circuit_1_1SliceIterator.html#afb08db8c84d7d6eea5711d6b8fb8001a">cut_</a>.<a class="code" href="structtket_1_1CutFrontier.html#a4e4d98f29de591e929461265bd5db0e6">u_frontier</a>-&gt;get&lt;<a class="code" href="structtket_1_1TagKey.html">TagKey</a>&gt;()) {</div>
-<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;      cycle_out_edges.insert({pair.second, pair.first});</div>
-<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;    }</div>
-<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;  }</div>
-<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;  <span class="keywordflow">while</span> (!slice_iter.<a class="code" href="classtket_1_1Circuit_1_1SliceIterator.html#ae77eb37d19aeee24be84b45d0dca99ab">finished</a>()) {</div>
-<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;    slice_iter.<a class="code" href="classtket_1_1Circuit_1_1SliceIterator.html#afb08db8c84d7d6eea5711d6b8fb8001a">cut_</a> = circ.<a class="code" href="classtket_1_1Circuit.html#a2ebae664d0aa640623bcd263d299b9e6">next_cut</a>(</div>
-<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;        slice_iter.<a class="code" href="classtket_1_1Circuit_1_1SliceIterator.html#afb08db8c84d7d6eea5711d6b8fb8001a">cut_</a>.<a class="code" href="structtket_1_1CutFrontier.html#a4e4d98f29de591e929461265bd5db0e6">u_frontier</a>, slice_iter.<a class="code" href="classtket_1_1Circuit_1_1SliceIterator.html#afb08db8c84d7d6eea5711d6b8fb8001a">cut_</a>.<a class="code" href="structtket_1_1CutFrontier.html#a2983ae9617d24ed9bf0fe2dbfe2c5dd0">b_frontier</a>, skip_func);</div>
-<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;    <span class="keywordflow">if</span> (!(*slice_iter).empty()) {</div>
-<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;      extend_cycles(slice_iter.<a class="code" href="classtket_1_1Circuit_1_1SliceIterator.html#afb08db8c84d7d6eea5711d6b8fb8001a">cut_</a>);</div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;    <span class="comment">// We now iterate through all cycles between these UnitIDs&#39; most recent</span></div>
+<div class="line"><a name="l00159"></a><span class="lineno">  159</span>&#160;    <span class="comment">// cycles and our target cycle</span></div>
+<div class="line"><a name="l00160"></a><span class="lineno">  160</span>&#160; </div>
+<div class="line"><a name="l00161"></a><span class="lineno">  161</span>&#160;    <span class="comment">// If any of these cycles have both a non-present uid and any uid in the</span></div>
+<div class="line"><a name="l00162"></a><span class="lineno">  162</span>&#160;    <span class="comment">// target cycle then this key is not mergeable and would lead to a &quot;cycle in</span></div>
+<div class="line"><a name="l00163"></a><span class="lineno">  163</span>&#160;    <span class="comment">// the DAG&quot; (different type of cycle)</span></div>
+<div class="line"><a name="l00164"></a><span class="lineno">  164</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> UnitID&amp; not_present_uid : not_present_uids) {</div>
+<div class="line"><a name="l00165"></a><span class="lineno">  165</span>&#160;      <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = candidate_cycle_key;</div>
+<div class="line"><a name="l00166"></a><span class="lineno">  166</span>&#160;           i &lt; this-&gt;cycle_history.<a class="code" href="structtket_1_1CycleHistory.html#af9cd316f450417880c749dfd466f63ef">uid_to_key</a>[not_present_uid]; i++) {</div>
+<div class="line"><a name="l00167"></a><span class="lineno">  167</span>&#160;        std::vector&lt;UnitID&gt; history_uids = this-&gt;cycle_history.<a class="code" href="structtket_1_1CycleHistory.html#a71c0cabe832a7dfa8ecbbaf7920ae4e3">history</a>[i];</div>
+<div class="line"><a name="l00168"></a><span class="lineno">  168</span>&#160;        <span class="keywordflow">if</span> (std::find(</div>
+<div class="line"><a name="l00169"></a><span class="lineno">  169</span>&#160;                history_uids.begin(), history_uids.end(), not_present_uid) !=</div>
+<div class="line"><a name="l00170"></a><span class="lineno">  170</span>&#160;            history_uids.end()) {</div>
+<div class="line"><a name="l00171"></a><span class="lineno">  171</span>&#160;          std::vector&lt;UnitID&gt; intersection;</div>
+<div class="line"><a name="l00172"></a><span class="lineno">  172</span>&#160;          std::vector&lt;UnitID&gt; candidates =</div>
+<div class="line"><a name="l00173"></a><span class="lineno">  173</span>&#160;              cycle_history.<a class="code" href="structtket_1_1CycleHistory.html#a71c0cabe832a7dfa8ecbbaf7920ae4e3">history</a>[candidate_cycle_key];</div>
+<div class="line"><a name="l00174"></a><span class="lineno">  174</span>&#160;          std::set_intersection(</div>
+<div class="line"><a name="l00175"></a><span class="lineno">  175</span>&#160;              candidates.begin(), candidates.end(), history_uids.begin(),</div>
+<div class="line"><a name="l00176"></a><span class="lineno">  176</span>&#160;              history_uids.end(), std::back_inserter(intersection));</div>
+<div class="line"><a name="l00177"></a><span class="lineno">  177</span>&#160;          <span class="keywordflow">if</span> (!intersection.empty()) {</div>
+<div class="line"><a name="l00178"></a><span class="lineno">  178</span>&#160;            not_mergeable_keys.insert(candidate_cycle_key);</div>
+<div class="line"><a name="l00179"></a><span class="lineno">  179</span>&#160;            <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00180"></a><span class="lineno">  180</span>&#160;          }</div>
+<div class="line"><a name="l00181"></a><span class="lineno">  181</span>&#160;        }</div>
+<div class="line"><a name="l00182"></a><span class="lineno">  182</span>&#160;      }</div>
+<div class="line"><a name="l00183"></a><span class="lineno">  183</span>&#160;    }</div>
+<div class="line"><a name="l00184"></a><span class="lineno">  184</span>&#160;  }</div>
+<div class="line"><a name="l00185"></a><span class="lineno">  185</span>&#160; </div>
+<div class="line"><a name="l00186"></a><span class="lineno">  186</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keywordtype">unsigned</span>&amp; key : not_mergeable_keys) {</div>
+<div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;    erase_keys(key, old_boundary_keys);</div>
+<div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;  }</div>
+<div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160; </div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;  std::pair&lt;unsigned, std::set&lt;unsigned&gt;&gt; return_keys = {</div>
+<div class="line"><a name="l00191"></a><span class="lineno">  191</span>&#160;      this-&gt;cycle_history.<a class="code" href="structtket_1_1CycleHistory.html#a9dffb730e1ba50b3180ac904f37b69b8">key</a>, old_boundary_keys};</div>
+<div class="line"><a name="l00192"></a><span class="lineno">  192</span>&#160;  this-&gt;cycle_history.<a class="code" href="structtket_1_1CycleHistory.html#a9dffb730e1ba50b3180ac904f37b69b8">key</a>++;</div>
+<div class="line"><a name="l00193"></a><span class="lineno">  193</span>&#160;  <span class="keywordflow">return</span> return_keys;</div>
+<div class="line"><a name="l00194"></a><span class="lineno">  194</span>&#160;}</div>
+<div class="line"><a name="l00195"></a><span class="lineno">  195</span>&#160; </div>
+<div class="line"><a name="l00196"></a><span class="lineno">  196</span>&#160;<span class="comment">// &quot;old_keys&quot; returned gives keys for boundaries to be merged together</span></div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;<span class="comment">// these &quot;old_keys&quot; are keys corresponding to boundaries UnitIDs in new boundary</span></div>
+<div class="line"><a name="l00198"></a><span class="lineno">  198</span>&#160;<span class="comment">// were in previously if two keys in passed old_keys have overlapping UnitIDs,</span></div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;<span class="comment">// then they cannot be merged in this case, remove the &#39;earlier&#39; boundary from</span></div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;<span class="comment">// keys to be merged</span></div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160;<span class="keywordtype">void</span> CycleFinder::order_keys(</div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;    <span class="keywordtype">unsigned</span>&amp; new_key, std::set&lt;unsigned&gt;&amp; old_keys)<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00203"></a><span class="lineno">  203</span>&#160;  std::set&lt;unsigned&gt; bad_keys;</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;  <span class="keywordflow">for</span> (std::set&lt;unsigned&gt;::iterator it = old_keys.begin(); it != old_keys.end();</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;       ++it) {</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;    std::set&lt;unsigned&gt;::iterator jt = it;</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160;    std::advance(jt, 1);</div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;    <span class="comment">// if either std::vector&lt;UnitID&gt; has common UnitIDs then one is causally</span></div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;    <span class="comment">// blocked. remove smaller key from keys from set as not a candidate for</span></div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;    <span class="comment">// merging into</span></div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160;    <span class="keywordflow">for</span> (; jt != old_keys.end(); ++jt)</div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;      <span class="keywordflow">for</span> (<span class="keyword">const</span> UnitID&amp; u0 : this-&gt;cycle_history.<a class="code" href="structtket_1_1CycleHistory.html#a71c0cabe832a7dfa8ecbbaf7920ae4e3">history</a>[*it])</div>
+<div class="line"><a name="l00213"></a><span class="lineno">  213</span>&#160;        <span class="keywordflow">for</span> (<span class="keyword">const</span> UnitID&amp; u1 : this-&gt;cycle_history.<a class="code" href="structtket_1_1CycleHistory.html#a71c0cabe832a7dfa8ecbbaf7920ae4e3">history</a>[*jt])</div>
+<div class="line"><a name="l00214"></a><span class="lineno">  214</span>&#160;          <span class="keywordflow">if</span> (u0 == u1) {</div>
+<div class="line"><a name="l00215"></a><span class="lineno">  215</span>&#160;            bad_keys.insert(*it);</div>
+<div class="line"><a name="l00216"></a><span class="lineno">  216</span>&#160;            <span class="keywordflow">goto</span> new_loop;</div>
+<div class="line"><a name="l00217"></a><span class="lineno">  217</span>&#160;          }</div>
+<div class="line"><a name="l00218"></a><span class="lineno">  218</span>&#160; </div>
+<div class="line"><a name="l00219"></a><span class="lineno">  219</span>&#160;  new_loop: {}</div>
+<div class="line"><a name="l00220"></a><span class="lineno">  220</span>&#160;  }</div>
+<div class="line"><a name="l00221"></a><span class="lineno">  221</span>&#160; </div>
+<div class="line"><a name="l00222"></a><span class="lineno">  222</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <span class="keywordtype">unsigned</span>&amp; key : bad_keys) old_keys.erase(key);</div>
+<div class="line"><a name="l00223"></a><span class="lineno">  223</span>&#160;  old_keys.insert(new_key);</div>
+<div class="line"><a name="l00224"></a><span class="lineno">  224</span>&#160;}</div>
+<div class="line"><a name="l00225"></a><span class="lineno">  225</span>&#160; </div>
+<div class="line"><a name="l00226"></a><span class="lineno"><a class="line" href="classtket_1_1Cycle.html#afa10626ff19c11ee66312098d0be7cb1">  226</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classtket_1_1Cycle.html#afa10626ff19c11ee66312098d0be7cb1">Cycle::update_coms_indices</a>(</div>
+<div class="line"><a name="l00227"></a><span class="lineno">  227</span>&#160;    <span class="keyword">const</span> std::map&lt;unsigned, unsigned&gt;&amp; new_indices) {</div>
+<div class="line"><a name="l00228"></a><span class="lineno">  228</span>&#160;  <span class="keywordflow">for</span> (<a class="code" href="structtket_1_1CycleCom.html">CycleCom</a>&amp; com : <a class="code" href="classtket_1_1Cycle.html#a6c4867154b0e0e218dd29807bb4ae229">coms_</a>) {</div>
+<div class="line"><a name="l00229"></a><span class="lineno">  229</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span>&amp; index : com.indices) {</div>
+<div class="line"><a name="l00230"></a><span class="lineno">  230</span>&#160;      index = new_indices.at(index);</div>
+<div class="line"><a name="l00231"></a><span class="lineno">  231</span>&#160;    }</div>
+<div class="line"><a name="l00232"></a><span class="lineno">  232</span>&#160;  }</div>
+<div class="line"><a name="l00233"></a><span class="lineno">  233</span>&#160;}</div>
+<div class="line"><a name="l00234"></a><span class="lineno">  234</span>&#160; </div>
+<div class="line"><a name="l00235"></a><span class="lineno">  235</span>&#160;<span class="comment">// new cycle is made</span></div>
+<div class="line"><a name="l00236"></a><span class="lineno">  236</span>&#160;<span class="comment">// it may need to be immediately merged into other cycles</span></div>
+<div class="line"><a name="l00237"></a><span class="lineno">  237</span>&#160;<span class="comment">// 1) check for overlap of UnitID between cycles of &quot;old_keys&quot;</span></div>
+<div class="line"><a name="l00238"></a><span class="lineno">  238</span>&#160;<span class="comment">// if overlap, remove lowest value key from set</span></div>
+<div class="line"><a name="l00239"></a><span class="lineno">  239</span>&#160;<span class="comment">// 2) add &quot;new_key&quot; to &quot;old_keys&quot;, merge all boundaries into corresponding</span></div>
+<div class="line"><a name="l00240"></a><span class="lineno">  240</span>&#160;<span class="comment">// boundary to highest value &quot;old_key&quot;</span></div>
+<div class="line"><a name="l00241"></a><span class="lineno"><a class="line" href="classtket_1_1Cycle.html#ada7affae277ecdcbb10d2f93c72830dc">  241</a></span>&#160;<span class="keywordtype">void</span> <a class="code" href="classtket_1_1Cycle.html#ada7affae277ecdcbb10d2f93c72830dc">Cycle::merge</a>(<a class="code" href="classtket_1_1Cycle.html">Cycle</a>&amp; new_cycle) {</div>
+<div class="line"><a name="l00242"></a><span class="lineno">  242</span>&#160;  <span class="comment">// iterate through edges in boundary of new_cycle</span></div>
+<div class="line"><a name="l00243"></a><span class="lineno">  243</span>&#160;  std::map&lt;unsigned, unsigned&gt; new_indices;</div>
+<div class="line"><a name="l00244"></a><span class="lineno">  244</span>&#160;  <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> i = 0; i &lt; new_cycle.<a class="code" href="classtket_1_1Cycle.html#a8fd8c7cd4a65e2ae1b24e4b813cad998">boundary_edges_</a>.size(); i++) {</div>
+<div class="line"><a name="l00245"></a><span class="lineno">  245</span>&#160;    <span class="keywordtype">bool</span> match = <span class="keyword">false</span>;</div>
+<div class="line"><a name="l00246"></a><span class="lineno">  246</span>&#160;    <span class="keywordflow">for</span> (<span class="keywordtype">unsigned</span> j = 0; j &lt; <a class="code" href="classtket_1_1Cycle.html#a8fd8c7cd4a65e2ae1b24e4b813cad998">boundary_edges_</a>.size(); j++) {</div>
+<div class="line"><a name="l00247"></a><span class="lineno">  247</span>&#160;      <span class="comment">// if in edge of boundary of new_cycle matches out of edge *this, update</span></div>
+<div class="line"><a name="l00248"></a><span class="lineno">  248</span>&#160;      <span class="comment">// *this out edge</span></div>
+<div class="line"><a name="l00249"></a><span class="lineno">  249</span>&#160;      <span class="keywordflow">if</span> (<a class="code" href="classtket_1_1Cycle.html#a8fd8c7cd4a65e2ae1b24e4b813cad998">boundary_edges_</a>[j].second == new_cycle.<a class="code" href="classtket_1_1Cycle.html#a8fd8c7cd4a65e2ae1b24e4b813cad998">boundary_edges_</a>[i].first) {</div>
+<div class="line"><a name="l00250"></a><span class="lineno">  250</span>&#160;        <a class="code" href="classtket_1_1Cycle.html#a8fd8c7cd4a65e2ae1b24e4b813cad998">boundary_edges_</a>[j].second = new_cycle.<a class="code" href="classtket_1_1Cycle.html#a8fd8c7cd4a65e2ae1b24e4b813cad998">boundary_edges_</a>[i].second;</div>
+<div class="line"><a name="l00251"></a><span class="lineno">  251</span>&#160;        <span class="comment">// As CycleCom are labelled by basic indexing system, where indexing is</span></div>
+<div class="line"><a name="l00252"></a><span class="lineno">  252</span>&#160;        <span class="comment">// related to position edge has in boundary Update CycleCom in new_cycle</span></div>
+<div class="line"><a name="l00253"></a><span class="lineno">  253</span>&#160;        <span class="comment">// s.t. edges with index i now have index j update commands in new_cycle</span></div>
+<div class="line"><a name="l00254"></a><span class="lineno">  254</span>&#160;        <span class="comment">// to match edgesindexing of *this for now, store new indexing</span></div>
+<div class="line"><a name="l00255"></a><span class="lineno">  255</span>&#160;        new_indices[i] = j;</div>
+<div class="line"><a name="l00256"></a><span class="lineno">  256</span>&#160;        match = <span class="keyword">true</span>;</div>
+<div class="line"><a name="l00257"></a><span class="lineno">  257</span>&#160;        <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00258"></a><span class="lineno">  258</span>&#160;      }</div>
+<div class="line"><a name="l00259"></a><span class="lineno">  259</span>&#160;    }</div>
+<div class="line"><a name="l00260"></a><span class="lineno">  260</span>&#160;    <span class="keywordflow">if</span> (!match) {</div>
+<div class="line"><a name="l00261"></a><span class="lineno">  261</span>&#160;      <a class="code" href="classtket_1_1Cycle.html#a8fd8c7cd4a65e2ae1b24e4b813cad998">boundary_edges_</a>.push_back(new_cycle.<a class="code" href="classtket_1_1Cycle.html#a8fd8c7cd4a65e2ae1b24e4b813cad998">boundary_edges_</a>[i]);</div>
+<div class="line"><a name="l00262"></a><span class="lineno">  262</span>&#160;      new_indices[i] = <a class="code" href="classtket_1_1Cycle.html#a8fd8c7cd4a65e2ae1b24e4b813cad998">boundary_edges_</a>.size() - 1;</div>
+<div class="line"><a name="l00263"></a><span class="lineno">  263</span>&#160;    }</div>
+<div class="line"><a name="l00264"></a><span class="lineno">  264</span>&#160;  }</div>
+<div class="line"><a name="l00265"></a><span class="lineno">  265</span>&#160;  <span class="comment">// update CycleCom indices in new_cycle</span></div>
+<div class="line"><a name="l00266"></a><span class="lineno">  266</span>&#160;  new_cycle.<a class="code" href="classtket_1_1Cycle.html#afa10626ff19c11ee66312098d0be7cb1">update_coms_indices</a>(new_indices);</div>
+<div class="line"><a name="l00267"></a><span class="lineno">  267</span>&#160;  <a class="code" href="classtket_1_1Cycle.html#a6c4867154b0e0e218dd29807bb4ae229">coms_</a>.insert(<a class="code" href="classtket_1_1Cycle.html#a6c4867154b0e0e218dd29807bb4ae229">coms_</a>.end(), new_cycle.<a class="code" href="classtket_1_1Cycle.html#a6c4867154b0e0e218dd29807bb4ae229">coms_</a>.begin(), new_cycle.<a class="code" href="classtket_1_1Cycle.html#a6c4867154b0e0e218dd29807bb4ae229">coms_</a>.end());</div>
+<div class="line"><a name="l00268"></a><span class="lineno">  268</span>&#160;}</div>
+<div class="line"><a name="l00269"></a><span class="lineno">  269</span>&#160; </div>
+<div class="line"><a name="l00270"></a><span class="lineno">  270</span>&#160;<span class="keywordtype">void</span> CycleFinder::merge_cycles(<span class="keywordtype">unsigned</span> new_key, std::set&lt;unsigned&gt;&amp; old_keys) {</div>
+<div class="line"><a name="l00271"></a><span class="lineno">  271</span>&#160;  <span class="comment">// boundary_keys is a std::set&lt;unsigned&gt; so is ordered</span></div>
+<div class="line"><a name="l00272"></a><span class="lineno">  272</span>&#160;  order_keys(new_key, old_keys);</div>
+<div class="line"><a name="l00273"></a><span class="lineno">  273</span>&#160;  <span class="comment">// all cycles corresponding to keys in boundary_keys should be merged into</span></div>
+<div class="line"><a name="l00274"></a><span class="lineno">  274</span>&#160;  <span class="comment">// boundary with smallest value</span></div>
+<div class="line"><a name="l00275"></a><span class="lineno">  275</span>&#160;  std::set&lt;unsigned&gt;::iterator it = old_keys.begin();</div>
+<div class="line"><a name="l00276"></a><span class="lineno">  276</span>&#160;  <span class="keywordtype">unsigned</span> base_key = *it;</div>
+<div class="line"><a name="l00277"></a><span class="lineno">  277</span>&#160;  std::advance(it, 1);</div>
+<div class="line"><a name="l00278"></a><span class="lineno">  278</span>&#160;  <span class="keywordflow">for</span> (; it != old_keys.end(); ++it) {</div>
+<div class="line"><a name="l00279"></a><span class="lineno">  279</span>&#160;    <span class="keywordtype">unsigned</span> merge_key = *it;</div>
+<div class="line"><a name="l00280"></a><span class="lineno">  280</span>&#160;    this-&gt;cycle_history.<a class="code" href="structtket_1_1CycleHistory.html#a057f9f9324500412bdaea75334f476bf">key_to_cycle</a>[base_key].merge(</div>
+<div class="line"><a name="l00281"></a><span class="lineno">  281</span>&#160;        this-&gt;cycle_history.<a class="code" href="structtket_1_1CycleHistory.html#a057f9f9324500412bdaea75334f476bf">key_to_cycle</a>[merge_key]);</div>
+<div class="line"><a name="l00282"></a><span class="lineno">  282</span>&#160;    this-&gt;cycle_history.<a class="code" href="structtket_1_1CycleHistory.html#a057f9f9324500412bdaea75334f476bf">key_to_cycle</a>.erase(merge_key);</div>
+<div class="line"><a name="l00283"></a><span class="lineno">  283</span>&#160;    <span class="comment">// update this-&gt;cycle_history.history for &quot;base_key&quot;</span></div>
+<div class="line"><a name="l00284"></a><span class="lineno">  284</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="classtket_1_1UnitID.html">UnitID</a>&amp; u0 : this-&gt;cycle_history.<a class="code" href="structtket_1_1CycleHistory.html#a71c0cabe832a7dfa8ecbbaf7920ae4e3">history</a>[merge_key]) {</div>
+<div class="line"><a name="l00285"></a><span class="lineno">  285</span>&#160;      this-&gt;cycle_history.<a class="code" href="structtket_1_1CycleHistory.html#af9cd316f450417880c749dfd466f63ef">uid_to_key</a>[u0] = base_key;</div>
+<div class="line"><a name="l00286"></a><span class="lineno">  286</span>&#160;      <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="classtket_1_1UnitID.html">UnitID</a>&amp; u1 : this-&gt;cycle_history.<a class="code" href="structtket_1_1CycleHistory.html#a71c0cabe832a7dfa8ecbbaf7920ae4e3">history</a>[base_key])</div>
+<div class="line"><a name="l00287"></a><span class="lineno">  287</span>&#160;        <span class="keywordflow">if</span> (u0 == u1) <span class="keywordflow">break</span>;</div>
+<div class="line"><a name="l00288"></a><span class="lineno">  288</span>&#160;      this-&gt;cycle_history.<a class="code" href="structtket_1_1CycleHistory.html#a71c0cabe832a7dfa8ecbbaf7920ae4e3">history</a>[base_key].push_back(u0);</div>
 <div class="line"><a name="l00289"></a><span class="lineno">  289</span>&#160;    }</div>
 <div class="line"><a name="l00290"></a><span class="lineno">  290</span>&#160;  }</div>
-<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160; </div>
-<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160;  <span class="comment">// Skim Cycle type from CycleHistory.key_to_cycle</span></div>
-<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;  <span class="comment">// Discard any Cycles with only Input Gates</span></div>
-<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;  std::vector&lt;Cycle&gt; output_cycles;</div>
-<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;  <span class="keywordflow">for</span> (std::pair&lt;unsigned, Cycle&gt; entry : bt.<a class="code" href="structtket_1_1CycleHistory.html#a057f9f9324500412bdaea75334f476bf">key_to_cycle</a>) {</div>
-<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;    <span class="keywordflow">if</span> (entry.second.coms_.size() == 0) {</div>
-<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;      <span class="keywordflow">throw</span> CycleError(std::string(<span class="stringliteral">&quot;Cycle with no internal gates.&quot;</span>));</div>
-<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;    }</div>
-<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;    <span class="keywordflow">if</span> (entry.second.boundary_edges_[0].first ==</div>
-<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;        entry.second.boundary_edges_[0].second) {</div>
-<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;      <span class="keywordflow">continue</span>;</div>
-<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;    }</div>
-<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;    <span class="keywordflow">if</span> (entry.second.size() &gt; circ.<a class="code" href="classtket_1_1Circuit.html#a0baec82ad9c0308fd2655607d30caf3d">n_qubits</a>()) {</div>
-<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;      <span class="keywordflow">throw</span> CycleError(</div>
-<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;          std::string(<span class="stringliteral">&quot;Cycle has a larger frame than Circuit has qubits.&quot;</span>));</div>
-<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;    }</div>
-<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;    output_cycles.push_back(entry.second);</div>
-<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;  }</div>
-<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;  <span class="keywordflow">return</span> output_cycles;</div>
+<div class="line"><a name="l00291"></a><span class="lineno">  291</span>&#160;}</div>
+<div class="line"><a name="l00292"></a><span class="lineno">  292</span>&#160; </div>
+<div class="line"><a name="l00293"></a><span class="lineno">  293</span>&#160;<span class="keywordtype">void</span> CycleFinder::extend_cycles(<span class="keyword">const</span> CutFrontier&amp; cut) {</div>
+<div class="line"><a name="l00294"></a><span class="lineno">  294</span>&#160;  <span class="comment">// For each vertex in slice</span></div>
+<div class="line"><a name="l00295"></a><span class="lineno">  295</span>&#160;  <span class="comment">// Make a new &quot;cycle&quot;</span></div>
+<div class="line"><a name="l00296"></a><span class="lineno">  296</span>&#160;  <span class="comment">// If any in edge to new cycle matches an out edge to a previous cycle,</span></div>
+<div class="line"><a name="l00297"></a><span class="lineno">  297</span>&#160;  <span class="comment">// attempt to merge cycles together</span></div>
+<div class="line"><a name="l00298"></a><span class="lineno">  298</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a>&amp; v : *cut.slice) {</div>
+<div class="line"><a name="l00299"></a><span class="lineno">  299</span>&#160;    <a class="code" href="namespacetket.html#a814cee1be1a70fcc4a804f93212b5013">EdgeVec</a> out_edges = circ.<a class="code" href="classtket_1_1Circuit.html#af3ed007d540da78e5363389404e25843">get_out_edges_of_type</a>(v, <a class="code" href="namespacetket.html#a4c73a949b027dea7f23b1d5a1bdd526ea033b1e7914d380b381c8b7f9f131328d">EdgeType::Quantum</a>);</div>
+<div class="line"><a name="l00300"></a><span class="lineno">  300</span>&#160;    <span class="comment">// Compare EdgeType::Quantum &quot;in_edges&quot; of vertex in slice to collection of</span></div>
+<div class="line"><a name="l00301"></a><span class="lineno">  301</span>&#160;    <span class="comment">// out edges from &quot;active&quot; boundaries If an &quot;in_edge&quot; is not equivalent to</span></div>
+<div class="line"><a name="l00302"></a><span class="lineno">  302</span>&#160;    <span class="comment">// an out edge from &quot;active&quot; boundary, implies vertex needs to start a new</span></div>
+<div class="line"><a name="l00303"></a><span class="lineno">  303</span>&#160;    <span class="comment">// boundary</span></div>
+<div class="line"><a name="l00304"></a><span class="lineno">  304</span>&#160;    std::pair&lt;unsigned, std::set&lt;unsigned&gt;&gt; all_keys =</div>
+<div class="line"><a name="l00305"></a><span class="lineno">  305</span>&#160;        make_cycle(v, out_edges, cut);</div>
+<div class="line"><a name="l00306"></a><span class="lineno">  306</span>&#160;    <span class="keywordflow">if</span> (all_keys.second.size() &gt; 0) {</div>
+<div class="line"><a name="l00307"></a><span class="lineno">  307</span>&#160;      merge_cycles(all_keys.first, all_keys.second);</div>
+<div class="line"><a name="l00308"></a><span class="lineno">  308</span>&#160;    }</div>
+<div class="line"><a name="l00309"></a><span class="lineno">  309</span>&#160;  }</div>
 <div class="line"><a name="l00310"></a><span class="lineno">  310</span>&#160;}</div>
-<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160;}  <span class="comment">// namespace tket</span></div>
+<div class="line"><a name="l00311"></a><span class="lineno">  311</span>&#160; </div>
+<div class="line"><a name="l00312"></a><span class="lineno"><a class="line" href="classtket_1_1CycleFinder.html#a9a031272425dfe33e66a62f03e06b93b">  312</a></span>&#160;std::vector&lt;Cycle&gt; <a class="code" href="classtket_1_1CycleFinder.html#a9a031272425dfe33e66a62f03e06b93b">CycleFinder::get_cycles</a>() {</div>
+<div class="line"><a name="l00313"></a><span class="lineno">  313</span>&#160;  std::function&lt;bool(<a class="code" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a>)&gt; skip_func = [&amp;](<a class="code" href="namespacetket.html#a75405147f5ffd3ff1ff1118fba63bcd0">Op_ptr</a> op) {</div>
+<div class="line"><a name="l00314"></a><span class="lineno">  314</span>&#160;    <span class="keywordflow">return</span> (cycle_types_.find(op-&gt;get_type()) == cycle_types_.end());</div>
+<div class="line"><a name="l00315"></a><span class="lineno">  315</span>&#160;  };</div>
+<div class="line"><a name="l00316"></a><span class="lineno">  316</span>&#160; </div>
+<div class="line"><a name="l00317"></a><span class="lineno">  317</span>&#160;  <a class="code" href="classtket_1_1Circuit_1_1SliceIterator.html">Circuit::SliceIterator</a> slice_iter(circ, skip_func);</div>
+<div class="line"><a name="l00318"></a><span class="lineno">  318</span>&#160;  this-&gt;cycle_history.<a class="code" href="structtket_1_1CycleHistory.html#a9dffb730e1ba50b3180ac904f37b69b8">key</a> = 0;</div>
+<div class="line"><a name="l00319"></a><span class="lineno">  319</span>&#160; </div>
+<div class="line"><a name="l00320"></a><span class="lineno">  320</span>&#160;  <span class="comment">// initialization</span></div>
+<div class="line"><a name="l00321"></a><span class="lineno">  321</span>&#160;  <span class="keywordflow">if</span> (!(*slice_iter).empty()) {</div>
+<div class="line"><a name="l00322"></a><span class="lineno">  322</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> std::pair&lt;UnitID, Edge&gt;&amp; pair :</div>
+<div class="line"><a name="l00323"></a><span class="lineno">  323</span>&#160;         slice_iter.<a class="code" href="classtket_1_1Circuit_1_1SliceIterator.html#afb08db8c84d7d6eea5711d6b8fb8001a">cut_</a>.<a class="code" href="structtket_1_1CutFrontier.html#a4e4d98f29de591e929461265bd5db0e6">u_frontier</a>-&gt;get&lt;<a class="code" href="structtket_1_1TagKey.html">TagKey</a>&gt;()) {</div>
+<div class="line"><a name="l00324"></a><span class="lineno">  324</span>&#160;      <a class="code" href="namespacetket.html#a6a99d9f2b64decd8803090cc890e1e7d">Edge</a> in_edge = pair.second;</div>
+<div class="line"><a name="l00325"></a><span class="lineno">  325</span>&#160;      <span class="keywordflow">if</span> (circ.<a class="code" href="classtket_1_1Circuit.html#a26d7fe7443ea870ffdfd0bf99dd23de1">get_edgetype</a>(in_edge) != <a class="code" href="namespacetket.html#a4c73a949b027dea7f23b1d5a1bdd526ea2091523979dbedcad728958414922c72">EdgeType::Classical</a>) {</div>
+<div class="line"><a name="l00326"></a><span class="lineno">  326</span>&#160;        <a class="code" href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">Vertex</a> in_vert = circ.<a class="code" href="classtket_1_1Circuit.html#a90c4935d28c1c7a05a5430862afb3c3f">source</a>(pair.second);</div>
+<div class="line"><a name="l00327"></a><span class="lineno">  327</span>&#160;        <span class="comment">// if vertex is type from types, then vertex is in slice and need</span></div>
+<div class="line"><a name="l00328"></a><span class="lineno">  328</span>&#160;        <span class="comment">// in_edge. else can ignore.</span></div>
+<div class="line"><a name="l00329"></a><span class="lineno">  329</span>&#160;        <span class="keywordflow">if</span> (cycle_types_.find(circ.<a class="code" href="classtket_1_1Circuit.html#aed06b975de918021ca3fb1716498c6d1">get_OpType_from_Vertex</a>(in_vert)) !=</div>
+<div class="line"><a name="l00330"></a><span class="lineno">  330</span>&#160;            cycle_types_.end()) {</div>
+<div class="line"><a name="l00331"></a><span class="lineno">  331</span>&#160;          in_edge = circ.<a class="code" href="classtket_1_1Circuit.html#ab4a20262a5bafa273a324b5d236708b6">get_last_edge</a>(in_vert, pair.second);</div>
+<div class="line"><a name="l00332"></a><span class="lineno">  332</span>&#160;        }</div>
+<div class="line"><a name="l00333"></a><span class="lineno">  333</span>&#160;        cycle_out_edges.insert({in_edge, pair.first});</div>
+<div class="line"><a name="l00334"></a><span class="lineno">  334</span>&#160;        this-&gt;cycle_history.<a class="code" href="structtket_1_1CycleHistory.html#af9cd316f450417880c749dfd466f63ef">uid_to_key</a>.insert(</div>
+<div class="line"><a name="l00335"></a><span class="lineno">  335</span>&#160;            {pair.first, this-&gt;cycle_history.<a class="code" href="structtket_1_1CycleHistory.html#a9dffb730e1ba50b3180ac904f37b69b8">key</a>});</div>
+<div class="line"><a name="l00336"></a><span class="lineno">  336</span>&#160;        <a class="code" href="classtket_1_1Cycle.html">Cycle</a> new_cycle({{in_edge, in_edge}}, {{}});</div>
+<div class="line"><a name="l00337"></a><span class="lineno">  337</span>&#160;        this-&gt;cycle_history.<a class="code" href="structtket_1_1CycleHistory.html#a057f9f9324500412bdaea75334f476bf">key_to_cycle</a>[this-&gt;cycle_history.<a class="code" href="structtket_1_1CycleHistory.html#a9dffb730e1ba50b3180ac904f37b69b8">key</a>] = new_cycle;</div>
+<div class="line"><a name="l00338"></a><span class="lineno">  338</span>&#160;        this-&gt;cycle_history.<a class="code" href="structtket_1_1CycleHistory.html#a71c0cabe832a7dfa8ecbbaf7920ae4e3">history</a>.push_back({pair.first});</div>
+<div class="line"><a name="l00339"></a><span class="lineno">  339</span>&#160;        this-&gt;cycle_history.<a class="code" href="structtket_1_1CycleHistory.html#a9dffb730e1ba50b3180ac904f37b69b8">key</a>++;</div>
+<div class="line"><a name="l00340"></a><span class="lineno">  340</span>&#160;      }</div>
+<div class="line"><a name="l00341"></a><span class="lineno">  341</span>&#160;    }</div>
+<div class="line"><a name="l00342"></a><span class="lineno">  342</span>&#160;    <span class="comment">// extend cycles automatically merges cycles that can be merge due to</span></div>
+<div class="line"><a name="l00343"></a><span class="lineno">  343</span>&#160;    <span class="comment">// overlapping multi-qubit gates</span></div>
+<div class="line"><a name="l00344"></a><span class="lineno">  344</span>&#160;    this-&gt;extend_cycles(slice_iter.<a class="code" href="classtket_1_1Circuit_1_1SliceIterator.html#afb08db8c84d7d6eea5711d6b8fb8001a">cut_</a>);</div>
+<div class="line"><a name="l00345"></a><span class="lineno">  345</span>&#160;    cycle_out_edges = {};</div>
+<div class="line"><a name="l00346"></a><span class="lineno">  346</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> std::pair&lt;UnitID, Edge&gt;&amp; pair :</div>
+<div class="line"><a name="l00347"></a><span class="lineno">  347</span>&#160;         slice_iter.<a class="code" href="classtket_1_1Circuit_1_1SliceIterator.html#afb08db8c84d7d6eea5711d6b8fb8001a">cut_</a>.<a class="code" href="structtket_1_1CutFrontier.html#a4e4d98f29de591e929461265bd5db0e6">u_frontier</a>-&gt;get&lt;<a class="code" href="structtket_1_1TagKey.html">TagKey</a>&gt;()) {</div>
+<div class="line"><a name="l00348"></a><span class="lineno">  348</span>&#160;      cycle_out_edges.insert({pair.second, pair.first});</div>
+<div class="line"><a name="l00349"></a><span class="lineno">  349</span>&#160;    }</div>
+<div class="line"><a name="l00350"></a><span class="lineno">  350</span>&#160;  }</div>
+<div class="line"><a name="l00351"></a><span class="lineno">  351</span>&#160;  <span class="keywordflow">while</span> (!slice_iter.<a class="code" href="classtket_1_1Circuit_1_1SliceIterator.html#ae77eb37d19aeee24be84b45d0dca99ab">finished</a>()) {</div>
+<div class="line"><a name="l00352"></a><span class="lineno">  352</span>&#160;    slice_iter.<a class="code" href="classtket_1_1Circuit_1_1SliceIterator.html#afb08db8c84d7d6eea5711d6b8fb8001a">cut_</a> = circ.<a class="code" href="classtket_1_1Circuit.html#a2ebae664d0aa640623bcd263d299b9e6">next_cut</a>(</div>
+<div class="line"><a name="l00353"></a><span class="lineno">  353</span>&#160;        slice_iter.<a class="code" href="classtket_1_1Circuit_1_1SliceIterator.html#afb08db8c84d7d6eea5711d6b8fb8001a">cut_</a>.<a class="code" href="structtket_1_1CutFrontier.html#a4e4d98f29de591e929461265bd5db0e6">u_frontier</a>, slice_iter.<a class="code" href="classtket_1_1Circuit_1_1SliceIterator.html#afb08db8c84d7d6eea5711d6b8fb8001a">cut_</a>.<a class="code" href="structtket_1_1CutFrontier.html#a2983ae9617d24ed9bf0fe2dbfe2c5dd0">b_frontier</a>, skip_func);</div>
+<div class="line"><a name="l00354"></a><span class="lineno">  354</span>&#160;    <span class="keywordflow">if</span> (!(*slice_iter).empty()) {</div>
+<div class="line"><a name="l00355"></a><span class="lineno">  355</span>&#160;      this-&gt;extend_cycles(slice_iter.<a class="code" href="classtket_1_1Circuit_1_1SliceIterator.html#afb08db8c84d7d6eea5711d6b8fb8001a">cut_</a>);</div>
+<div class="line"><a name="l00356"></a><span class="lineno">  356</span>&#160;    }</div>
+<div class="line"><a name="l00357"></a><span class="lineno">  357</span>&#160;  }</div>
+<div class="line"><a name="l00358"></a><span class="lineno">  358</span>&#160; </div>
+<div class="line"><a name="l00359"></a><span class="lineno">  359</span>&#160;  <span class="comment">// Skim Cycle type from CycleHistory.key_to_cycle</span></div>
+<div class="line"><a name="l00360"></a><span class="lineno">  360</span>&#160;  <span class="comment">// Discard any Cycles with only Input Gates</span></div>
+<div class="line"><a name="l00361"></a><span class="lineno">  361</span>&#160;  std::vector&lt;Cycle&gt; output_cycles;</div>
+<div class="line"><a name="l00362"></a><span class="lineno">  362</span>&#160;  <span class="keywordflow">for</span> (std::pair&lt;unsigned, Cycle&gt; entry : this-&gt;cycle_history.<a class="code" href="structtket_1_1CycleHistory.html#a057f9f9324500412bdaea75334f476bf">key_to_cycle</a>) {</div>
+<div class="line"><a name="l00363"></a><span class="lineno">  363</span>&#160;    <span class="keywordflow">if</span> (entry.second.coms_.size() == 0) {</div>
+<div class="line"><a name="l00364"></a><span class="lineno">  364</span>&#160;      <span class="keywordflow">throw</span> CycleError(std::string(<span class="stringliteral">&quot;Cycle with no internal gates.&quot;</span>));</div>
+<div class="line"><a name="l00365"></a><span class="lineno">  365</span>&#160;    }</div>
+<div class="line"><a name="l00366"></a><span class="lineno">  366</span>&#160;    <span class="keywordflow">if</span> (entry.second.boundary_edges_[0].first ==</div>
+<div class="line"><a name="l00367"></a><span class="lineno">  367</span>&#160;        entry.second.boundary_edges_[0].second) {</div>
+<div class="line"><a name="l00368"></a><span class="lineno">  368</span>&#160;      <span class="keywordflow">continue</span>;</div>
+<div class="line"><a name="l00369"></a><span class="lineno">  369</span>&#160;    }</div>
+<div class="line"><a name="l00370"></a><span class="lineno">  370</span>&#160;    <span class="keywordflow">if</span> (entry.second.size() &gt; circ.<a class="code" href="classtket_1_1Circuit.html#a0baec82ad9c0308fd2655607d30caf3d">n_qubits</a>()) {</div>
+<div class="line"><a name="l00371"></a><span class="lineno">  371</span>&#160;      <span class="keywordflow">throw</span> CycleError(</div>
+<div class="line"><a name="l00372"></a><span class="lineno">  372</span>&#160;          std::string(<span class="stringliteral">&quot;Cycle has a larger frame than Circuit has qubits.&quot;</span>));</div>
+<div class="line"><a name="l00373"></a><span class="lineno">  373</span>&#160;    }</div>
+<div class="line"><a name="l00374"></a><span class="lineno">  374</span>&#160;    output_cycles.push_back(entry.second);</div>
+<div class="line"><a name="l00375"></a><span class="lineno">  375</span>&#160;  }</div>
+<div class="line"><a name="l00376"></a><span class="lineno">  376</span>&#160;  <span class="keywordflow">return</span> output_cycles;</div>
+<div class="line"><a name="l00377"></a><span class="lineno">  377</span>&#160;}</div>
+<div class="line"><a name="l00378"></a><span class="lineno">  378</span>&#160;}  <span class="comment">// namespace tket</span></div>
 <div class="ttc" id="aCycles_8hpp_html"><div class="ttname"><a href="Cycles_8hpp.html">Cycles.hpp</a></div></div>
 <div class="ttc" id="aclasstket_1_1Circuit_1_1SliceIterator_html"><div class="ttname"><a href="classtket_1_1Circuit_1_1SliceIterator.html">tket::Circuit::SliceIterator</a></div><div class="ttdef"><b>Definition:</b> <a href="Circuit_8hpp_source.html#l00260">Circuit.hpp:260</a></div></div>
 <div class="ttc" id="aclasstket_1_1Circuit_1_1SliceIterator_html_ae77eb37d19aeee24be84b45d0dca99ab"><div class="ttname"><a href="classtket_1_1Circuit_1_1SliceIterator.html#ae77eb37d19aeee24be84b45d0dca99ab">tket::Circuit::SliceIterator::finished</a></div><div class="ttdeci">bool finished() const</div><div class="ttdef"><b>Definition:</b> <a href="macro__circ__info_8cpp_source.html#l00871">macro_circ_info.cpp:871</a></div></div>
@@ -395,11 +462,10 @@ $(function() {
 <div class="ttc" id="aclasstket_1_1Circuit_html_a26d7fe7443ea870ffdfd0bf99dd23de1"><div class="ttname"><a href="classtket_1_1Circuit.html#a26d7fe7443ea870ffdfd0bf99dd23de1">tket::Circuit::get_edgetype</a></div><div class="ttdeci">EdgeType get_edgetype(const Edge &amp;edge) const</div><div class="ttdef"><b>Definition:</b> <a href="setters__and__getters_8cpp_source.html#l00420">setters_and_getters.cpp:420</a></div></div>
 <div class="ttc" id="aclasstket_1_1Circuit_html_a2ebae664d0aa640623bcd263d299b9e6"><div class="ttname"><a href="classtket_1_1Circuit.html#a2ebae664d0aa640623bcd263d299b9e6">tket::Circuit::next_cut</a></div><div class="ttdeci">CutFrontier next_cut(std::shared_ptr&lt; const unit_frontier_t &gt; u_frontier, std::shared_ptr&lt; const b_frontier_t &gt; b_frontier) const</div><div class="ttdef"><b>Definition:</b> <a href="macro__circ__info_8cpp_source.html#l00401">macro_circ_info.cpp:401</a></div></div>
 <div class="ttc" id="aclasstket_1_1Circuit_html_a90c4935d28c1c7a05a5430862afb3c3f"><div class="ttname"><a href="classtket_1_1Circuit.html#a90c4935d28c1c7a05a5430862afb3c3f">tket::Circuit::source</a></div><div class="ttdeci">Vertex source(const Edge &amp;e) const</div><div class="ttdef"><b>Definition:</b> <a href="Circuit_8hpp_source.html#l00652">Circuit.hpp:652</a></div></div>
-<div class="ttc" id="aclasstket_1_1Circuit_html_aa82f5195c87799eea4ff531e775731e5"><div class="ttname"><a href="classtket_1_1Circuit.html#aa82f5195c87799eea4ff531e775731e5">tket::Circuit::get_in_edges_of_type</a></div><div class="ttdeci">EdgeVec get_in_edges_of_type(const Vertex &amp;vert, EdgeType et) const</div><div class="ttdoc">All inward edges of given type, ordered by port number.</div><div class="ttdef"><b>Definition:</b> <a href="setters__and__getters_8cpp_source.html#l00446">setters_and_getters.cpp:446</a></div></div>
 <div class="ttc" id="aclasstket_1_1Circuit_html_ab4a20262a5bafa273a324b5d236708b6"><div class="ttname"><a href="classtket_1_1Circuit.html#ab4a20262a5bafa273a324b5d236708b6">tket::Circuit::get_last_edge</a></div><div class="ttdeci">Edge get_last_edge(const Vertex &amp;vert, const Edge &amp;out_edge) const</div><div class="ttdef"><b>Definition:</b> <a href="setters__and__getters_8cpp_source.html#l00676">setters_and_getters.cpp:676</a></div></div>
 <div class="ttc" id="aclasstket_1_1Circuit_html_aed06b975de918021ca3fb1716498c6d1"><div class="ttname"><a href="classtket_1_1Circuit.html#aed06b975de918021ca3fb1716498c6d1">tket::Circuit::get_OpType_from_Vertex</a></div><div class="ttdeci">OpType get_OpType_from_Vertex(const Vertex &amp;vert) const</div><div class="ttdef"><b>Definition:</b> <a href="setters__and__getters_8cpp_source.html#l00656">setters_and_getters.cpp:656</a></div></div>
 <div class="ttc" id="aclasstket_1_1Circuit_html_af3ed007d540da78e5363389404e25843"><div class="ttname"><a href="classtket_1_1Circuit.html#af3ed007d540da78e5363389404e25843">tket::Circuit::get_out_edges_of_type</a></div><div class="ttdeci">EdgeVec get_out_edges_of_type(const Vertex &amp;vert, EdgeType et) const</div><div class="ttdoc">All outward edges of given type, ordered by port number.</div><div class="ttdef"><b>Definition:</b> <a href="setters__and__getters_8cpp_source.html#l00499">setters_and_getters.cpp:499</a></div></div>
-<div class="ttc" id="aclasstket_1_1CycleFinder_html_a9a031272425dfe33e66a62f03e06b93b"><div class="ttname"><a href="classtket_1_1CycleFinder.html#a9a031272425dfe33e66a62f03e06b93b">tket::CycleFinder::get_cycles</a></div><div class="ttdeci">std::vector&lt; Cycle &gt; get_cycles()</div><div class="ttdef"><b>Definition:</b> <a href="Cycles_8cpp_source.html#l00244">Cycles.cpp:244</a></div></div>
+<div class="ttc" id="aclasstket_1_1CycleFinder_html_a9a031272425dfe33e66a62f03e06b93b"><div class="ttname"><a href="classtket_1_1CycleFinder.html#a9a031272425dfe33e66a62f03e06b93b">tket::CycleFinder::get_cycles</a></div><div class="ttdeci">std::vector&lt; Cycle &gt; get_cycles()</div><div class="ttdef"><b>Definition:</b> <a href="Cycles_8cpp_source.html#l00312">Cycles.cpp:312</a></div></div>
 <div class="ttc" id="aclasstket_1_1Cycle_html"><div class="ttname"><a href="classtket_1_1Cycle.html">tket::Cycle</a></div><div class="ttdef"><b>Definition:</b> <a href="Cycles_8hpp_source.html#l00035">Cycles.hpp:35</a></div></div>
 <div class="ttc" id="aclasstket_1_1Cycle_html_a2afead1e9e615396f724f227ac1bc1dd"><div class="ttname"><a href="classtket_1_1Cycle.html#a2afead1e9e615396f724f227ac1bc1dd">tket::Cycle::get_frame</a></div><div class="ttdeci">std::vector&lt; std::pair&lt; Vertex, Vertex &gt; &gt; get_frame() const</div><div class="ttdef"><b>Definition:</b> <a href="Cycles_8cpp_source.html#l00032">Cycles.cpp:32</a></div></div>
 <div class="ttc" id="aclasstket_1_1Cycle_html_a36031f57e22e36a9c362451f10fe690d"><div class="ttname"><a href="classtket_1_1Cycle.html#a36031f57e22e36a9c362451f10fe690d">tket::Cycle::update_boundary</a></div><div class="ttdeci">void update_boundary(const Edge &amp;source_edge, const Edge &amp;replacement_edge)</div><div class="ttdef"><b>Definition:</b> <a href="Cycles_8cpp_source.html#l00059">Cycles.cpp:59</a></div></div>
@@ -407,8 +473,8 @@ $(function() {
 <div class="ttc" id="aclasstket_1_1Cycle_html_a8fd8c7cd4a65e2ae1b24e4b813cad998"><div class="ttname"><a href="classtket_1_1Cycle.html#a8fd8c7cd4a65e2ae1b24e4b813cad998">tket::Cycle::boundary_edges_</a></div><div class="ttdeci">std::vector&lt; edge_pair_t &gt; boundary_edges_</div><div class="ttdef"><b>Definition:</b> <a href="Cycles_8hpp_source.html#l00069">Cycles.hpp:69</a></div></div>
 <div class="ttc" id="aclasstket_1_1Cycle_html_aab67471adf37fcfa26d7ffbd0332f7b4"><div class="ttname"><a href="classtket_1_1Cycle.html#aab67471adf37fcfa26d7ffbd0332f7b4">tket::Cycle::size</a></div><div class="ttdeci">unsigned size() const</div><div class="ttdef"><b>Definition:</b> <a href="Cycles_8cpp_source.html#l00026">Cycles.cpp:26</a></div></div>
 <div class="ttc" id="aclasstket_1_1Cycle_html_acaeb82a7c590824bdf112cfb147f5913"><div class="ttname"><a href="classtket_1_1Cycle.html#acaeb82a7c590824bdf112cfb147f5913">tket::Cycle::add_vertex_pair</a></div><div class="ttdeci">void add_vertex_pair(const std::pair&lt; Vertex, Vertex &gt; &amp;verts)</div><div class="ttdef"><b>Definition:</b> <a href="Cycles_8cpp_source.html#l00028">Cycles.cpp:28</a></div></div>
-<div class="ttc" id="aclasstket_1_1Cycle_html_ada7affae277ecdcbb10d2f93c72830dc"><div class="ttname"><a href="classtket_1_1Cycle.html#ada7affae277ecdcbb10d2f93c72830dc">tket::Cycle::merge</a></div><div class="ttdeci">void merge(Cycle &amp;new_cycle)</div><div class="ttdef"><b>Definition:</b> <a href="Cycles_8cpp_source.html#l00173">Cycles.cpp:173</a></div></div>
-<div class="ttc" id="aclasstket_1_1Cycle_html_afa10626ff19c11ee66312098d0be7cb1"><div class="ttname"><a href="classtket_1_1Cycle.html#afa10626ff19c11ee66312098d0be7cb1">tket::Cycle::update_coms_indices</a></div><div class="ttdeci">void update_coms_indices(const std::map&lt; unsigned, unsigned &gt; &amp;new_indices)</div><div class="ttdef"><b>Definition:</b> <a href="Cycles_8cpp_source.html#l00158">Cycles.cpp:158</a></div></div>
+<div class="ttc" id="aclasstket_1_1Cycle_html_ada7affae277ecdcbb10d2f93c72830dc"><div class="ttname"><a href="classtket_1_1Cycle.html#ada7affae277ecdcbb10d2f93c72830dc">tket::Cycle::merge</a></div><div class="ttdeci">void merge(Cycle &amp;new_cycle)</div><div class="ttdef"><b>Definition:</b> <a href="Cycles_8cpp_source.html#l00241">Cycles.cpp:241</a></div></div>
+<div class="ttc" id="aclasstket_1_1Cycle_html_afa10626ff19c11ee66312098d0be7cb1"><div class="ttname"><a href="classtket_1_1Cycle.html#afa10626ff19c11ee66312098d0be7cb1">tket::Cycle::update_coms_indices</a></div><div class="ttdeci">void update_coms_indices(const std::map&lt; unsigned, unsigned &gt; &amp;new_indices)</div><div class="ttdef"><b>Definition:</b> <a href="Cycles_8cpp_source.html#l00226">Cycles.cpp:226</a></div></div>
 <div class="ttc" id="aclasstket_1_1UnitID_html"><div class="ttname"><a href="classtket_1_1UnitID.html">tket::UnitID</a></div><div class="ttdoc">Location holding a bit or qubit of information.</div><div class="ttdef"><b>Definition:</b> <a href="UnitID_8hpp_source.html#l00067">UnitID.hpp:67</a></div></div>
 <div class="ttc" id="anamespacetket_html"><div class="ttname"><a href="namespacetket.html">tket</a></div><div class="ttdoc">Defines tket::DeviceCharacterisation, used in NoiseAwarePlacement and in commute_SQ_gates_through_SWA...</div><div class="ttdef"><b>Definition:</b> <a href="Path_8cpp_source.html#l00019">Path.cpp:19</a></div></div>
 <div class="ttc" id="anamespacetket_html_a0bf6a146dadc36738e597ab8892a09f5"><div class="ttname"><a href="namespacetket.html#a0bf6a146dadc36738e597ab8892a09f5">tket::Vertex</a></div><div class="ttdeci">boost::graph_traits&lt; DAG &gt;::vertex_descriptor Vertex</div><div class="ttdef"><b>Definition:</b> <a href="DAGDefs_8hpp_source.html#l00072">DAGDefs.hpp:72</a></div></div>
