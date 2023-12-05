@@ -106,7 +106,6 @@ std::pair<unsigned, std::set<unsigned>> CycleFinder::make_cycle(
     if (cycle_out_edges.find(circ.get_last_edge(v, e)) ==
         cycle_out_edges.end()) {
       not_mergeable_keys.insert(this->cycle_history.uid_to_key[uid]);
-      // not_mergeable_uids.insert(uid);
     }
     this->cycle_history.uid_to_key[uid] = this->cycle_history.key;
     new_cycle_boundary.push_back({circ.get_last_edge(v, e), e});
@@ -117,8 +116,7 @@ std::pair<unsigned, std::set<unsigned>> CycleFinder::make_cycle(
     for (const UnitID& uid : this->cycle_history.history[key]) {
       if (not_mergeable_uids.find(uid) != not_mergeable_uids.end()) {
         not_mergeable_keys.insert(key);
-        // break;
-        continue;
+        break;
       }
     }
   }
@@ -157,7 +155,7 @@ std::pair<unsigned, std::set<unsigned>> CycleFinder::make_cycle(
     // not_present_uids now contains UnitID in the new cycle that are not in the
     // cycle represented by "candidate_cycle_key"
 
-    // We now iterate through all cycles between these UnitID's most recent
+    // We now iterate through all cycles between these UnitIDs' most recent
     // cycles and our target cycle
 
     // If any of these cycles have both a non-present uid and any uid in the
