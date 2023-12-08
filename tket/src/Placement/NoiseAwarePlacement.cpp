@@ -133,6 +133,9 @@ std::vector<std::map<Qubit, Node>> NoiseAwarePlacement::get_all_placement_maps(
       all_node_errors.push_back(
           {this->characterisation_.get_error(node), node});
     }
+    // make sure all_node_errors goes from best->worst error rates
+    // N.B. `get_error` returns "0", i.e. no error, if the `Node` passed
+    // is not held in the characterisation
     std::sort(
         all_node_errors.begin(), all_node_errors.end(),
         [](const auto& lhs, const auto& rhs) {
@@ -142,6 +145,7 @@ std::vector<std::map<Qubit, Node>> NoiseAwarePlacement::get_all_placement_maps(
     std::vector<Qubit> circ_qubits = circ_.all_qubits();
     TKET_ASSERT(all_node_errors.size() >= circ_qubits.size());
     std::map<Qubit, Node> placement_map;
+    // assign circuit qubits to Node with best error rate
     for (std::size_t i = 0; i < circ_qubits.size(); i++) {
       placement_map.insert({circ_qubits[i], all_node_errors[i].second});
     }
