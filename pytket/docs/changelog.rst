@@ -17,7 +17,7 @@ Fixes:
 * Ensure that squashing long sequences of gates via unitary multiplication does
   not produce non-unitary results due to rounding errors.
 * Fix `PauliFrameRandomisation.sample_circuits`.
-* For `Circuit` with no 2-qubit gates, `NoiseAwarePlacement` now assigns `Qubit` to `Node` in `Architecture``
+* For `Circuit` with no 2-qubit gates, `NoiseAwarePlacement` now assigns `Qubit` to `Node` in `Architecture`
   with lowest reported error rates.
 
 
