@@ -67,7 +67,7 @@
             <a id="nextFileLink" class="nav" href="index.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.3.2">coverage.py v7.3.2</a>,
-            created at 2023-12-11 16:07 +0000
+            created at 2023-12-12 12:37 +0000
         </p>
         <aside class="hidden">
             <button type="button" class="button_next_chunk" data-shortcut="j"/>
@@ -283,7 +283,7 @@
     <p class="run"><span class="n"><a id="t199" href="#t199">199</a></span><span class="t">        <span class="nam">tensor_list</span><span class="op">.</span><span class="nam">append</span><span class="op">(</span><span class="nam">qt</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t200" href="#t200">200</a></span><span class="t">    <span class="nam">net</span> <span class="op">=</span> <span class="nam">qtn</span><span class="op">.</span><span class="nam">TensorNetwork</span><span class="op">(</span><span class="nam">tensor_list</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t201" href="#t201">201</a></span><span class="t">    <span class="nam">net</span><span class="op">.</span><span class="nam">full_simplify_</span><span class="op">(</span><span class="nam">seq</span><span class="op">=</span><span class="str">"ADCR"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
-    <p class="run"><span class="n"><a id="t202" href="#t202">202</a></span><span class="t">    <span class="nam">res_ten</span> <span class="op">=</span> <span class="nam">net</span><span class="op">.</span><span class="nam">contract</span><span class="op">(</span><span class="nam">output_inds</span><span class="op">=</span><span class="nam">res_indices</span><span class="op">,</span> <span class="nam">optimize</span><span class="op">=</span><span class="str">"random-greedy"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
+    <p class="run"><span class="n"><a id="t202" href="#t202">202</a></span><span class="t">    <span class="nam">res_ten</span> <span class="op">=</span> <span class="nam">net</span><span class="op">.</span><span class="nam">contract</span><span class="op">(</span><span class="nam">output_inds</span><span class="op">=</span><span class="nam">res_indices</span><span class="op">,</span> <span class="nam">optimize</span><span class="op">=</span><span class="str">"greedy"</span><span class="op">)</span>&nbsp;</span><span class="r"></span></p>
     <p class="pln"><span class="n"><a id="t203" href="#t203">203</a></span><span class="t">    <span class="nam">result</span><span class="op">:</span> <span class="nam">np</span><span class="op">.</span><span class="nam">ndarray</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t204" href="#t204">204</a></span><span class="t">    <span class="key">if</span> <span class="nam">type</span><span class="op">(</span><span class="nam">res_ten</span><span class="op">)</span> <span class="op">==</span> <span class="nam">qtn</span><span class="op">.</span><span class="nam">Tensor</span><span class="op">:</span>&nbsp;</span><span class="r"></span></p>
     <p class="run"><span class="n"><a id="t205" href="#t205">205</a></span><span class="t">        <span class="nam">result</span> <span class="op">=</span> <span class="nam">res_ten</span><span class="op">.</span><span class="nam">data</span>&nbsp;</span><span class="r"></span></p>
@@ -420,7 +420,7 @@
             <a id="nextFileLink" class="nav" href="index.html">&#xbb; next</a>
             &nbsp; &nbsp; &nbsp;
             <a class="nav" href="https://coverage.readthedocs.io/en/7.3.2">coverage.py v7.3.2</a>,
-            created at 2023-12-11 16:07 +0000
+            created at 2023-12-12 12:37 +0000
         </p>
     </div>
 </footer>
