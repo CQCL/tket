@@ -199,7 +199,7 @@ def _tensor_from_basic_diagram(diag: ZXDiagram) -> np.ndarray:
         tensor_list.append(qt)
     net = qtn.TensorNetwork(tensor_list)
     net.full_simplify_(seq="ADCR")
-    res_ten = net.contract(output_inds=res_indices, optimize="random-greedy")
+    res_ten = net.contract(output_inds=res_indices, optimize="greedy")
     result: np.ndarray
     if type(res_ten) == qtn.Tensor:
         result = res_ten.data
