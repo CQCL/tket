@@ -25,13 +25,29 @@ namespace test_PauliGraph3 {
 
 using namespace pg;
 
-bool comp_seqs(
-    const std::list<PGOp_ptr>& seq1, const std::list<PGOp_ptr>& seq2) {
+bool comp_seqs(const std::list<PGOp_ptr>& seq1, std::list<PGOp_ptr> seq2) {
   if (seq1.size() != seq2.size()) return false;
-  std::list<PGOp_ptr>::const_iterator it2 = seq2.begin();
+  // If operations commute, they may appear in a different order. We can
+  // identify the reordering by searching for each element of seq1 in seq2 and
+  // checking they can be reordered through any skipped elements to get to the
+  // position in seq1. We iterate through seq1 and for each element we search
+  // through seq2 until we find it. If it is found, we need it to commute with
+  // every preceding unmatched operation in seq2 to bring it to the front. We
+  // pop it from seq2 so it only contains the unmatched operations.
   for (const PGOp_ptr& op1 : seq1) {
-    if (*op1 != **it2) return false;
-    ++it2;
+    auto it2 = seq2.begin();
+    bool found = false;
+    while (it2 != seq2.end()) {
+      if (*op1 == *(*it2)) {
+        found = true;
+        seq2.erase(it2);
+        break;
+      } else if (!op1->commutes_with(*(*it2))) {
+        return false;
+      }
+      ++it2;
+    }
+    if (!found) return false;
   }
   return true;
 }
@@ -532,18 +548,18 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     Circuit circ(3, 2);
     circ.add_op<unsigned>(OpType::Rz, 1.35, {0});
     circ.add_op<unsigned>(OpType::CX, {1, 0});
-    circ.add_measure<unsigned>(0, 0);
-    circ.add_measure<unsigned>(2, 1);
+    circ.add_measure(0, 0);
+    circ.add_measure(2, 1);
     PauliGraph pg = circuit_to_pauli_graph3(circ);
     REQUIRE_NOTHROW(pg.verify());
     SpPauliStabiliser zzi(DensePauliMap{Pauli::Z, Pauli::Z});
     std::list<PGOp_ptr> correct_sequence{
         std::make_shared<PGInputTableau>(ChoiMixTableau(3)),
+        std::make_shared<PGMeasure>(
+            SpPauliStabiliser(Qubit(2), Pauli::Z), Bit(1)),
         std::make_shared<PGRotation>(
             SpPauliStabiliser(Qubit(0), Pauli::Z), 1.35),
         std::make_shared<PGMeasure>(zzi, Bit(0)),
-        std::make_shared<PGMeasure>(
-            SpPauliStabiliser(Qubit(2), Pauli::Z), Bit(1)),
         std::make_shared<PGOutputTableau>(ChoiMixTableau({
             {zzi, SpPauliStabiliser(Qubit(0), Pauli::Z)},
             {SpPauliStabiliser(Qubit(0), Pauli::X),

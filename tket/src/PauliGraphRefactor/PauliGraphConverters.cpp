@@ -619,6 +619,7 @@ std::pair<std::list<PGOp_ptr>, std::map<Qubit, Bit>> rotations_and_end_measures(
     const PGMeasure& pgm = dynamic_cast<PGMeasure&>(*m);
     SpPauliStabiliser paulis = pgm.get_tensor();
     if (out_tab) paulis = out_tab->get_row_product(paulis);
+    paulis.compress();
     Bit target = pgm.get_target();
     // Assert measurement is Z on a single qubit
     if (paulis.size() != 1 || paulis.string.begin()->second != Pauli::Z)
@@ -631,7 +632,7 @@ std::pair<std::list<PGOp_ptr>, std::map<Qubit, Bit>> rotations_and_end_measures(
     bool new_bit = bits_used.insert(target).second;
     if (!new_qubit || !new_bit)
       throw PGError(
-          "In legacy synthesis, measurement cannot be performed "
+          "In legacy synthesis, measurements cannot be performed "
           "simultaneously");
   }
   return {rotations, measure_map};
