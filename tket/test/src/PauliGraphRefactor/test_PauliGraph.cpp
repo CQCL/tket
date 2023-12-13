@@ -528,6 +528,61 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     REQUIRE(res.count_gates(OpType::Sycamore) == 1);
     REQUIRE(test_unitary_comparison(circ, res, true));
   }
+  GIVEN("Some end-of-circuit measurements") {
+    Circuit circ(3, 2);
+    circ.add_op<unsigned>(OpType::Rz, 1.35, {0});
+    circ.add_op<unsigned>(OpType::CX, {1, 0});
+    circ.add_measure<unsigned>(0, 0);
+    circ.add_measure<unsigned>(2, 1);
+    PauliGraph pg = circuit_to_pauli_graph3(circ);
+    REQUIRE_NOTHROW(pg.verify());
+    SpPauliStabiliser zzi(DensePauliMap{Pauli::Z, Pauli::Z});
+    std::list<PGOp_ptr> correct_sequence{
+        std::make_shared<PGInputTableau>(ChoiMixTableau(3)),
+        std::make_shared<PGRotation>(
+            SpPauliStabiliser(Qubit(0), Pauli::Z), 1.35),
+        std::make_shared<PGMeasure>(zzi, Bit(0)),
+        std::make_shared<PGMeasure>(
+            SpPauliStabiliser(Qubit(2), Pauli::Z), Bit(1)),
+        std::make_shared<PGOutputTableau>(ChoiMixTableau({
+            {zzi, SpPauliStabiliser(Qubit(0), Pauli::Z)},
+            {SpPauliStabiliser(Qubit(0), Pauli::X),
+             SpPauliStabiliser(Qubit(0), Pauli::X)},
+            {SpPauliStabiliser(Qubit(1), Pauli::Z),
+             SpPauliStabiliser(Qubit(1), Pauli::Z)},
+            {SpPauliStabiliser({Pauli::X, Pauli::X, Pauli::I}),
+             SpPauliStabiliser(Qubit(1), Pauli::X)},
+            {SpPauliStabiliser(Qubit(2), Pauli::Z),
+             SpPauliStabiliser(Qubit(2), Pauli::Z)},
+            {SpPauliStabiliser(Qubit(2), Pauli::X),
+             SpPauliStabiliser(Qubit(2), Pauli::X)},
+        }))};
+    CHECK(comp_seqs(pg.pgop_sequence(), correct_sequence));
+    WHEN("Legacy individual synthesis") {
+      Circuit res = pauli_graph3_to_pauli_exp_box_circuit_individually(pg);
+      CHECK(res.count_gates(OpType::Measure) == 2);
+      PauliGraph res_pg = circuit_to_pauli_graph3(res);
+      CHECK(comp_seqs(res_pg.pgop_sequence(), correct_sequence));
+    }
+    WHEN("Legacy pairwise synthesis") {
+      Circuit res = pauli_graph3_to_pauli_exp_box_circuit_pairwise(pg);
+      CHECK(res.count_gates(OpType::Measure) == 2);
+      PauliGraph res_pg = circuit_to_pauli_graph3(res);
+      CHECK(comp_seqs(res_pg.pgop_sequence(), correct_sequence));
+    }
+    WHEN("Legacy setwise synthesis") {
+      Circuit res = pauli_graph3_to_pauli_exp_box_circuit_sets(pg);
+      CHECK(res.count_gates(OpType::Measure) == 2);
+      PauliGraph res_pg = circuit_to_pauli_graph3(res);
+      CHECK(comp_seqs(res_pg.pgop_sequence(), correct_sequence));
+    }
+    WHEN("General individual synthesis") {
+      Circuit res = pauli_graph3_to_circuit_individual(pg);
+      CHECK(res.count_gates(OpType::Measure) == 2);
+      PauliGraph res_pg = circuit_to_pauli_graph3(res);
+      CHECK(comp_seqs(res_pg.pgop_sequence(), correct_sequence));
+    }
+  }
   GIVEN("Some stabiliser assertions") {
     Circuit circ(3);
     circ.add_op<unsigned>(OpType::Rz, 1.5, {0});
