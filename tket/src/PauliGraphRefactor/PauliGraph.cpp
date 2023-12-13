@@ -915,5 +915,24 @@ std::list<PGOp_ptr> PauliGraph::pgop_sequence() const {
   return sequence;
 }
 
+void PauliGraph::symbol_substitution(
+    const SymEngine::map_basic_basic& sub_map) {
+  BGL_FORALL_VERTICES(v, c_graph_, PGClassicalGraph) {
+    PGOp_ptr new_op = get_vertex_PGOp_ptr(v)->symbol_substitution(sub_map);
+    if (new_op) c_graph_[v] = new_op;
+  }
+}
+
+SymSet PauliGraph::free_symbols() const {
+  SymSet symbols;
+  BGL_FORALL_VERTICES(v, c_graph_, PGClassicalGraph) {
+    SymSet s = get_vertex_PGOp_ptr(v)->free_symbols();
+    symbols.insert(s.begin(), s.end());
+  }
+  return symbols;
+}
+
+bool PauliGraph::is_symbolic() const { return !free_symbols().empty(); }
+
 }  // namespace pg
 }  // namespace tket

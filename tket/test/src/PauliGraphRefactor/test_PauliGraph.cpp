@@ -590,6 +590,33 @@ SCENARIO("Correct creation of refactored PauliGraphs") {
     std::list<PGOp_ptr> res_sequence = res_pg.pgop_sequence();
     CHECK(comp_seqs(res_sequence, correct_sequence));
   }
+  GIVEN("A symbolic circuit") {
+    SymEngine::map_basic_basic sub_map;
+    Sym a = SymEngine::symbol("a");
+    sub_map[a] = Expr(0.8);
+    Sym b = SymEngine::symbol("b");
+    sub_map[b] = Expr(1.3);
+    Sym c = SymEngine::symbol("c");
+    sub_map[c] = Expr(-0.2);
+    Circuit circ(3);
+    circ.add_op<unsigned>(OpType::H, {1});
+    circ.add_op<unsigned>(OpType::CX, {1, 2});
+    circ.add_op<unsigned>(OpType::CZ, {1, 0});
+    circ.add_op<unsigned>(OpType::FSim, {Expr(a), Expr(b)}, {1, 2});
+    circ.add_op<unsigned>(OpType::CY, {0, 2});
+    circ.add_op<unsigned>(OpType::ZZPhase, {2 * Expr(c)}, {1, 2});
+    circ.add_op<unsigned>(OpType::V, {1});
+    PauliGraph pg = circuit_to_pauli_graph3(circ);
+    REQUIRE_NOTHROW(pg.verify());
+    CHECK(pg.free_symbols() == SymSet{a, b, c});
+    pg.symbol_substitution(sub_map);
+    REQUIRE_NOTHROW(pg.verify());
+    CHECK_FALSE(pg.is_symbolic());
+    Circuit res = pauli_graph3_to_circuit_individual(pg);
+    REQUIRE(res.count_gates(OpType::FSim) == 1);
+    circ.symbol_substitution(sub_map);
+    REQUIRE(test_unitary_comparison(circ, res, true));
+  }
   GIVEN("Don't collect cliffords") {
     Circuit circ(3);
     circ.add_op<unsigned>(OpType::Y, {0});

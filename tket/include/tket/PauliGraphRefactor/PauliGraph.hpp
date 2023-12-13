@@ -830,6 +830,19 @@ class PauliGraph {
    */
   std::list<PGOp_ptr> pgop_sequence() const;
 
+  /**
+   * Symbolic substitution: replaces each PGOp in the PauliGraph according to
+   * the substitution map sending some set of symbols (not necessarily the same
+   * as free_symbols()) to some other expressions.
+   */
+  void symbol_substitution(const SymEngine::map_basic_basic& sub_map);
+
+  // Set of all free symbols occurring in operation parameters
+  SymSet free_symbols() const;
+
+  // Whether the PauliGraph's operations contain any symbolic parameters
+  bool is_symbolic() const;
+
  private:
   MatrixXb pauli_ac_;
   PGIndex pauli_index_;
