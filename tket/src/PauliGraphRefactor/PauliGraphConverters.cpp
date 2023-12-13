@@ -20,6 +20,7 @@
 #include "tket/Gate/Gate.hpp"
 #include "tket/PauliGraph/ConjugatePauliFunctions.hpp"
 #include "tket/PauliGraphRefactor/Converters.hpp"
+#include "tket/Transformations/PauliOptimisation.hpp"
 
 namespace tket {
 
@@ -535,26 +536,23 @@ Circuit pgop_to_circuit(const PGOp_ptr& pgop) {
 
 Circuit pauli_graph3_to_circuit_individual(
     const pg::PauliGraph& pg, CXConfigType cx_config) {
+  const std::set<Qubit>& qubits = pg.get_qubits();
+  const std::set<Bit>& bits = pg.get_bits();
   Circuit circ(
-      qubit_vector_t{pg.qubits_.begin(), pg.qubits_.end()},
-      bit_vector_t{pg.bits_.begin(), pg.bits_.end()});
+      qubit_vector_t{qubits.begin(), qubits.end()},
+      bit_vector_t{bits.begin(), bits.end()});
   std::list<PGOp_ptr> pgop_sequence = pg.pgop_sequence();
   for (const PGOp_ptr& pgop : pgop_sequence) {
     if (pgop->get_type() == PGOpType::InputTableau ||
         pgop->get_type() == PGOpType::OutputTableau) {
-      std::list<ChoiMixTableau::row_tensor_t> rows;
+      ChoiMixTableau tab(0);
       if (pgop->get_type() == PGOpType::InputTableau) {
         PGInputTableau& tab_op = dynamic_cast<PGInputTableau&>(*pgop);
-        for (unsigned i = 0; i < tab_op.n_paulis(); ++i) {
-          rows.push_back(tab_op.get_full_row(i));
-        }
+        tab = tab_op.to_cm_tableau();
       } else {
         PGOutputTableau& tab_op = dynamic_cast<PGOutputTableau&>(*pgop);
-        for (unsigned i = 0; i < tab_op.n_paulis(); ++i) {
-          rows.push_back(tab_op.get_full_row(i));
-        }
+        tab = tab_op.to_cm_tableau();
       }
-      ChoiMixTableau tab(rows);
       std::pair<Circuit, qubit_map_t> tab_circ =
           cm_tableau_to_exact_circuit(tab, cx_config);
       qubit_map_t perm;
@@ -567,6 +565,255 @@ Circuit pauli_graph3_to_circuit_individual(
     }
   }
   return circ;
+}
+
+/*******************************************************************************
+ * LEGACY SYNTHESIS METHODS
+ ******************************************************************************/
+
+// A helper method which, given the output tableau as a UnitaryTableau,
+// separates the ops into rotations and measures, commuting all measurements to
+// the end and checking they can all be performed simultaneously
+std::pair<std::list<PGOp_ptr>, std::map<Qubit, Bit>> rotations_and_end_measures(
+    const pg::PauliGraph& pg, const std::optional<UnitaryTableau>& out_tab) {
+  std::list<PGOp_ptr> all_pgops = pg.pgop_sequence();
+  std::list<PGOp_ptr> rotations;
+  std::list<PGOp_ptr> measures;
+  for (const PGOp_ptr& pgp : all_pgops) {
+    switch (pgp->get_type()) {
+      case PGOpType::InputTableau:
+      case PGOpType::OutputTableau: {
+        // Start or end of list
+        break;
+      }
+      case PGOpType::Rotation:
+      case PGOpType::CliffordRot: {
+        // Check all measures encountered so far can commute through
+        for (const PGOp_ptr& m : measures) {
+          if (!m->commutes_with(*pgp))
+            throw PGError(
+                "In legacy synthesis, cannot commute " + m->get_name() +
+                " through " + pgp->get_name());
+        }
+        // Add a rotation to the end of the list
+        rotations.push_back(pgp);
+        break;
+      }
+      case PGOpType::Measure: {
+        // Add to measures list
+        measures.push_back(pgp);
+        break;
+      }
+      default: {
+        // Cannot synthesise other vertex kinds using legacy methods
+        throw PGError(
+            "Cannot synthesise PGOp using legacy synthesis: " +
+            pgp->get_name());
+      }
+    }
+  }
+  std::map<Qubit, Bit> measure_map;
+  std::set<Bit> bits_used;
+  for (const PGOp_ptr& m : measures) {
+    //  Push through output tableau to give measurement at the end
+    const PGMeasure& pgm = dynamic_cast<PGMeasure&>(*m);
+    SpPauliStabiliser paulis = pgm.get_tensor();
+    if (out_tab) paulis = out_tab->get_row_product(paulis);
+    Bit target = pgm.get_target();
+    // Assert measurement is Z on a single qubit
+    if (paulis.size() != 1 || paulis.string.begin()->second != Pauli::Z)
+      throw PGError(
+          "In legacy synthesis, an end-of-circuit measurement is not a simple "
+          "Z measurement");
+    // Assert qubits and bits in measurements are disjoint
+    bool new_qubit =
+        measure_map.insert({paulis.string.begin()->first, target}).second;
+    bool new_bit = bits_used.insert(target).second;
+    if (!new_qubit || !new_bit)
+      throw PGError(
+          "In legacy synthesis, measurement cannot be performed "
+          "simultaneously");
+  }
+  return {rotations, measure_map};
+}
+
+SpSymPauliTensor gadget_from_rotation(const PGOp_ptr& pgop) {
+  switch (pgop->get_type()) {
+    case PGOpType::Rotation: {
+      PGRotation& r = dynamic_cast<PGRotation&>(*pgop);
+      const SpPauliStabiliser& pauli = r.get_tensor();
+      const Expr& angle = r.get_angle();
+      return SpSymPauliTensor(pauli) * SpSymPauliTensor({}, angle);
+    }
+    case PGOpType::CliffordRot: {
+      PGCliffordRot& r = dynamic_cast<PGCliffordRot&>(*pgop);
+      const SpPauliStabiliser& pauli = r.get_tensor();
+      unsigned angle = r.get_angle();
+      return SpSymPauliTensor(pauli) * SpSymPauliTensor({}, angle * 0.5);
+    }
+    default: {
+      // Only Rotation and CliffordRot are identified as rotations by
+      // rotations_and_end_measures
+      TKET_ASSERT(false);
+    }
+  }
+}
+
+void append_rotations_to_circuit_individually(
+    Circuit& circ, const std::list<PGOp_ptr>& rotations,
+    CXConfigType cx_config) {
+  for (const PGOp_ptr& pgop : rotations) {
+    append_single_pauli_gadget_as_pauli_exp_box(
+        circ, gadget_from_rotation(pgop), cx_config);
+  }
+}
+
+void append_rotations_to_circuit_pairwise(
+    Circuit& circ, const std::list<PGOp_ptr>& rotations,
+    CXConfigType cx_config) {
+  auto it = rotations.begin();
+  while (it != rotations.end()) {
+    SpSymPauliTensor gadget0 = gadget_from_rotation(*it);
+    ++it;
+    if (it == rotations.end()) {
+      append_single_pauli_gadget_as_pauli_exp_box(circ, gadget0, cx_config);
+    } else {
+      SpSymPauliTensor gadget1 = gadget_from_rotation(*it);
+      ++it;
+      // The new PauliGraph does not automatically merge rotations on
+      // construction, leaving this for an explicit rewrite. However, the
+      // diagonalisation in pairwise synthesis fails if identical strings are
+      // provided. If this is the case, merge them into one gadget here.
+      if (SpPauliString(gadget0) == SpPauliString(gadget1)) {
+        gadget0.coeff += gadget1.coeff;
+        append_single_pauli_gadget_as_pauli_exp_box(circ, gadget0, cx_config);
+      } else {
+        append_pauli_gadget_pair_as_box(circ, gadget0, gadget1, cx_config);
+      }
+    }
+  }
+}
+
+void append_rotations_to_circuit_setwise(
+    Circuit& circ, const std::list<PGOp_ptr>& rotations,
+    CXConfigType cx_config) {
+  auto it = rotations.begin();
+  while (it != rotations.end()) {
+    std::map<SpPauliString, SpSymPauliTensor> gadget_map;
+    SpSymPauliTensor gadget = gadget_from_rotation(*it);
+    gadget_map.insert({gadget.string, gadget});
+    ++it;
+    while (it != rotations.end()) {
+      SpSymPauliTensor gadget = gadget_from_rotation(*it);
+      bool commutes_with_all = true;
+      for (const std::pair<const SpPauliString, SpSymPauliTensor>& g :
+           gadget_map) {
+        if (!gadget.commutes_with(g.first)) {
+          commutes_with_all = false;
+          break;
+        }
+      }
+      if (!commutes_with_all) break;
+      // Merge any gadgets with identical strings which may not have been merged
+      // by explicit rewrites on the PauliGraph.
+      auto inserted = gadget_map.insert({gadget.string, gadget});
+      if (!inserted.second) inserted.first->second.coeff += gadget.coeff;
+      ++it;
+    }
+    if (gadget_map.size() == 1) {
+      SpSymPauliTensor g = gadget_map.begin()->second;
+      append_single_pauli_gadget_as_pauli_exp_box(circ, g, cx_config);
+    } else if (gadget_map.size() == 2) {
+      SpSymPauliTensor g0 = gadget_map.begin()->second;
+      SpSymPauliTensor g1 = (++gadget_map.begin())->second;
+      append_pauli_gadget_pair_as_box(circ, g0, g1, cx_config);
+    } else {
+      std::list<SpSymPauliTensor> gadget_list;
+      for (const std::pair<const SpPauliString, SpSymPauliTensor>& g :
+           gadget_map)
+        gadget_list.push_back(g.second);
+      append_commuting_pauli_gadget_set_as_box(circ, gadget_list, cx_config);
+    }
+  }
+}
+
+Circuit pauli_graph3_to_circuit_legacy(
+    const pg::PauliGraph& pg, CXConfigType cx_config,
+    Transforms::PauliSynthStrat strat) {
+  // Assert incoming and outgoing tableau is unitary and get UnitaryTableaus
+  const std::set<Qubit>& qubits = pg.get_qubits();
+  const std::set<Bit>& bits = pg.get_bits();
+  Circuit circ(
+      qubit_vector_t{qubits.begin(), qubits.end()},
+      bit_vector_t{bits.begin(), bits.end()});
+  // Synthesise input tableau
+  std::optional<PGVert> itab_v = pg.get_input_tableau();
+  if (itab_v) {
+    PGOp_ptr pgop = pg.get_vertex_PGOp_ptr(*itab_v);
+    PGInputTableau& tab_op = dynamic_cast<PGInputTableau&>(*pgop);
+    ChoiMixTableau cmtab = tab_op.to_cm_tableau();
+    UnitaryTableau in_utab = cm_tableau_to_unitary_tableau(cmtab);
+    Circuit in_cliff_circuit = unitary_tableau_to_circuit(in_utab);
+    circ.append(in_cliff_circuit);
+  }
+  // Assert form is legacy-compatible and push measures to the end
+  std::optional<UnitaryTableau> out_utab = std::nullopt;
+  std::optional<PGVert> otab_v = pg.get_output_tableau();
+  if (otab_v) {
+    PGOp_ptr pgop = pg.get_vertex_PGOp_ptr(*otab_v);
+    PGOutputTableau& tab_op = dynamic_cast<PGOutputTableau&>(*pgop);
+    ChoiMixTableau cmtab = tab_op.to_cm_tableau();
+    out_utab = cm_tableau_to_unitary_tableau(cmtab);
+  }
+  std::list<PGOp_ptr> rotations;
+  std::map<Qubit, Bit> end_measures;
+  std::tie(rotations, end_measures) = rotations_and_end_measures(pg, out_utab);
+  // Synthesise rotations in order
+  switch (strat) {
+    case Transforms::PauliSynthStrat::Individual: {
+      append_rotations_to_circuit_individually(circ, rotations, cx_config);
+      break;
+    }
+    case Transforms::PauliSynthStrat::Pairwise: {
+      append_rotations_to_circuit_pairwise(circ, rotations, cx_config);
+      break;
+    }
+    case Transforms::PauliSynthStrat::Sets: {
+      append_rotations_to_circuit_setwise(circ, rotations, cx_config);
+      break;
+    }
+    default: {
+      TKET_ASSERT(false);
+    }
+  }
+  // Synthesise output tableau
+  if (out_utab) {
+    Circuit out_cliff_circuit = unitary_tableau_to_circuit(*out_utab);
+    circ.append(out_cliff_circuit);
+  }
+  // Add measures
+  for (const std::pair<const Qubit, Bit>& m : end_measures) {
+    circ.add_measure(m.first, m.second);
+  }
+  return circ;
+}
+
+Circuit pauli_graph3_to_pauli_exp_box_circuit_individually(
+    const pg::PauliGraph& pg, CXConfigType cx_config) {
+  return pauli_graph3_to_circuit_legacy(
+      pg, cx_config, Transforms::PauliSynthStrat::Individual);
+}
+
+Circuit pauli_graph3_to_pauli_exp_box_circuit_pairwise(
+    const pg::PauliGraph& pg, CXConfigType cx_config) {
+  return pauli_graph3_to_circuit_legacy(
+      pg, cx_config, Transforms::PauliSynthStrat::Pairwise);
+}
+
+Circuit pauli_graph3_to_pauli_exp_box_circuit_sets(
+    const pg::PauliGraph& pg, CXConfigType cx_config) {
+  return pauli_graph3_to_circuit_legacy(
+      pg, cx_config, Transforms::PauliSynthStrat::Sets);
 }
 
 }  // namespace tket

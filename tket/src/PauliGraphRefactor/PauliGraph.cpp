@@ -424,6 +424,14 @@ const ChoiMixTableau::row_tensor_t& PGInputTableau::get_full_row(
   return rows_.at(p);
 }
 
+ChoiMixTableau PGInputTableau::to_cm_tableau() const {
+  std::list<ChoiMixTableau::row_tensor_t> rows;
+  for (unsigned i = 0; i < n_paulis(); ++i) {
+    rows.push_back(get_full_row(i));
+  }
+  return ChoiMixTableau(rows);
+}
+
 PGInputTableau::PGInputTableau(const ChoiMixTableau& tableau)
     : PGOp(PGOpType::InputTableau), rows_() {
   for (unsigned i = 0; i < tableau.get_n_rows(); ++i)
@@ -478,6 +486,14 @@ const ChoiMixTableau::row_tensor_t& PGOutputTableau::get_full_row(
     throw PGError(
         "Cannot dereference row on PGOutputTableau: " + std::to_string(p));
   return rows_.at(p);
+}
+
+ChoiMixTableau PGOutputTableau::to_cm_tableau() const {
+  std::list<ChoiMixTableau::row_tensor_t> rows;
+  for (unsigned i = 0; i < n_paulis(); ++i) {
+    rows.push_back(get_full_row(i));
+  }
+  return ChoiMixTableau(rows);
 }
 
 PGOutputTableau::PGOutputTableau(const ChoiMixTableau& tableau)
@@ -549,6 +565,22 @@ PauliGraph::PauliGraph(const std::set<Qubit>& qubits, const std::set<Bit>& bits)
       last_reads_(),
       initial_tableau_(std::nullopt),
       final_tableau_(std::nullopt) {}
+
+const std::set<Qubit>& PauliGraph::get_qubits() const { return qubits_; }
+
+const std::set<Bit>& PauliGraph::get_bits() const { return bits_; }
+
+std::optional<PGVert> PauliGraph::get_input_tableau() const {
+  return initial_tableau_;
+}
+
+std::optional<PGVert> PauliGraph::get_output_tableau() const {
+  return final_tableau_;
+}
+
+PGOp_ptr PauliGraph::get_vertex_PGOp_ptr(const PGVert& v) const {
+  return c_graph_[v];
+}
 
 void PauliGraph::to_graphviz(std::ostream& out) const {
   out << "digraph G {\ncompound = true;\n";

@@ -40,6 +40,42 @@ pg::PauliGraph circuit_to_pauli_graph3(
     const Circuit& circ, bool collect_cliffords = true);
 
 /**
+ * THIS IS A LEGACY METHOD DESIGNED TO REPLICATE THE SYNTHESIS METHODS FOR THE
+ * EXISTING PAULIGRAPH
+ *
+ * Synthesises a circuit equivalent to the PauliGraph by adding each
+ * pauli gadget to the circuit as a PauliExpBox individually
+ * in the order given by TopSortIterator.
+ * The tableau is then synthesised at the end.
+ */
+Circuit pauli_graph3_to_pauli_exp_box_circuit_individually(
+    const pg::PauliGraph& pg, CXConfigType cx_config = CXConfigType::Snake);
+
+/**
+ * THIS IS A LEGACY METHOD DESIGNED TO REPLICATE THE SYNTHESIS METHODS FOR THE
+ * EXISTING PAULIGRAPH
+ *
+ * Synthesises a circuit equivalent to the PauliGraph by inserting pairs of
+ * pauli gadgets as PauliExpPairBoxes into the circuit
+ * The tableau is then synthesised at the end.
+ */
+Circuit pauli_graph3_to_pauli_exp_box_circuit_pairwise(
+    const pg::PauliGraph& pg, CXConfigType cx_config = CXConfigType::Snake);
+
+/**
+ * THIS IS A LEGACY METHOD DESIGNED TO REPLICATE THE SYNTHESIS METHODS FOR THE
+ * EXISTING PAULIGRAPH
+ *
+ * Synthesises a circuit equivalent to the PauliGraph by building
+ * sets of mutually commuting pauli gadgets and
+ * inserting them into the circuit as PauliExpCommutingSetBoxes
+ * The tableau is then synthesised at the end.
+ */
+
+Circuit pauli_graph3_to_pauli_exp_box_circuit_sets(
+    const pg::PauliGraph& pg, CXConfigType cx_config = CXConfigType::Snake);
+
+/**
  * Synthesises a circuit equivalent to the PauliGraph by synthesising each
  * vertex individually in the order given by TopSortIterator. The tableaux are
  * synthesised at each end using the default synthesis method for

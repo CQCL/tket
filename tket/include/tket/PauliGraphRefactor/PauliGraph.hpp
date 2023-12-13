@@ -20,24 +20,12 @@
 #include "tket/Utils/PauliTensor.hpp"
 
 namespace tket {
-
-// Forwards declarations for friends and internal uses
 namespace pg {
-class PauliGraph;
+
+// Forwards declarations for internal uses
 class PGOp;
 // Not const as we wish for these to be updated in-place
 typedef std::shared_ptr<PGOp> PGOp_ptr;
-}  // namespace pg
-class Circuit;
-class Op;
-typedef std::shared_ptr<const Op> Op_ptr;
-
-pg::PauliGraph circuit_to_pauli_graph3(
-    const Circuit& circ, bool collect_cliffords);
-Circuit pauli_graph3_to_circuit_individual(
-    const pg::PauliGraph& pg, CXConfigType cx_config);
-
-namespace pg {
 
 class PGError : public std::logic_error {
  public:
@@ -554,6 +542,12 @@ class PGInputTableau : public PGOp {
   const ChoiMixTableau::row_tensor_t& get_full_row(unsigned p) const;
 
   /**
+   * Combine all rows back into a ChoiMixTableau object for a complete view of
+   * the process.
+   */
+  ChoiMixTableau to_cm_tableau() const;
+
+  /**
    * Constructs an input tableau operation from the given tableau.
    */
   PGInputTableau(const ChoiMixTableau& tableau);
@@ -596,6 +590,12 @@ class PGOutputTableau : public PGOp {
    * means SCR = C.
    */
   const ChoiMixTableau::row_tensor_t& get_full_row(unsigned p) const;
+
+  /**
+   * Combine all rows back into a ChoiMixTableau object for a complete view of
+   * the process.
+   */
+  ChoiMixTableau to_cm_tableau() const;
 
   /**
    * Constructs an output tableau operation from the given tableau.
@@ -765,6 +765,43 @@ class PauliGraph {
       const std::set<Qubit>& qubits, const std::set<Bit>& bits = {});
 
   /**
+   * Get a reference to the set of all qubits used in the Circuit captured. Such
+   * qubits may not be open boundaries, as they may be initialised and discarded
+   * in the input and output tableaux.
+   */
+  const std::set<Qubit>& get_qubits() const;
+
+  /**
+   * Get a reference to the set of all classical bits used in the Circuit
+   * captured.
+   */
+  const std::set<Bit>& get_bits() const;
+
+  /**
+   * Get the vertex of the unique PGInputTableau. If no such vertex exists, it
+   * is interpreted as an identity process, and this method returns
+   * std::nullopt.
+   */
+  std::optional<PGVert> get_input_tableau() const;
+
+  /**
+   * Get the vertex of the unique PGOutputTableau. If no such vertex exists, it
+   * is interpreted as an identity process, and this method returns
+   * std::nullopt.
+   */
+  std::optional<PGVert> get_output_tableau() const;
+
+  /**
+   * Given a PGVert within the PauliGraph, looks up the PGOp_ptr stored there.
+   * This does not actively verify that the PGVert belongs to this PauliGraph
+   * (errors such as segmentation faults may occur if misused). The PGOp_ptr is
+   * a non-const shared pointer to the internal data, so even though this method
+   * is marked const it is possible to update internal data of the PauliGraph by
+   * modifying the PGOp through this pointer.
+   */
+  PGOp_ptr get_vertex_PGOp_ptr(const PGVert& v) const;
+
+  /**
    * Writes a graphviz representation of the PauliGraph to a stream. Use this
    * for visualisation. Each vertex in the PauliGraph is represented as a
    * cluster of graphviz vertices (one per active Pauli). Classical dependencies
@@ -792,11 +829,6 @@ class PauliGraph {
    * order depends on the internal order of vertices in c_graph_.
    */
   std::list<PGOp_ptr> pgop_sequence() const;
-
-  friend PauliGraph tket::circuit_to_pauli_graph3(
-      const tket::Circuit& circ, bool collect_cliffords);
-  friend tket::Circuit tket::pauli_graph3_to_circuit_individual(
-      const PauliGraph& pg, CXConfigType cx_config);
 
  private:
   MatrixXb pauli_ac_;
