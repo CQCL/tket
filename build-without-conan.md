@@ -34,10 +34,10 @@ cd boost_1_83_0/
 
 ```
 cd ${TMP_DIR}
-wget https://gmplib.org/download/gmp/gmp-6.2.1.tar.bz2
-bzip2 -dk gmp-6.2.1.tar.bz2
-tar xvf gmp-6.2.1.tar
-cd gmp-6.2.1/
+wget https://gmplib.org/download/gmp/gmp-6.3.0.tar.bz2
+bzip2 -dk gmp-6.3.0.tar.bz2
+tar xvf gmp-6.3.0.tar
+cd gmp-6.3.0/
 ./configure --prefix=${INSTALL_DIR} --enable-cxx=yes
 make
 make check
@@ -48,9 +48,9 @@ make install
 
 ```
 cd ${TMP_DIR}
-wget https://github.com/symengine/symengine/releases/download/v0.11.1/symengine-0.11.1.tar.gz
-tar xzvf symengine-0.11.1.tar.gz
-cd symengine-0.11.1/
+wget https://github.com/symengine/symengine/releases/download/v0.11.2/symengine-0.11.2.tar.gz
+tar xzvf symengine-0.11.2.tar.gz
+cd symengine-0.11.2/
 mkdir build
 cd build
 cmake -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} -DBUILD_TESTS=OFF -DBUILD_BENCHMARKS=OFF ..
