@@ -719,7 +719,12 @@ enum class OpType {
   /**
    * See \ref UnitaryTableauBox
    */
-  UnitaryTableauBox
+  UnitaryTableauBox,
+
+  /**
+   * See \ref DummyBox
+   */
+  DummyBox
 };
 
 JSON_DECL(OpType)

@@ -63,8 +63,6 @@ def test_reduction() -> None:
         assert measurements.verify()
 
 
-# readouterr() doesn't seem to work correctly on Windows, so skip. TODO investigate.
-@pytest.mark.skipif(platform.system() == "Windows", reason="issues with readouterr()")
 def test_error_logging(capfd: Any) -> None:
     ms = MeasurementSetup()
     circ = Circuit(2, 2)

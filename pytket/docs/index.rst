@@ -2,7 +2,7 @@ pytket
 ======
 
 ``pytket`` is a python module for interfacing with tket, a quantum computing toolkit and optimising compiler developed by `Quantinuum`_. We currently support circuits and device architectures from
-`numerous providers <https://cqcl.github.io/pytket-extensions/api/index.html>`_, allowing the
+`numerous providers <https://tket.quantinuum.com/api-docs/extensions>`_, allowing the
 tket tools to be used in conjunction with projects on their platforms.
 
 ``pytket`` is available for Python 3.9, 3.10 and 3.11, on Linux, MacOS and
@@ -38,7 +38,7 @@ To install the ``pytket-quantinuum`` package use the following command.
     pip install pytket-quantinuum
 
 The extensions supported by tket are described
-`here <https://cqcl.github.io/pytket-extensions/api/index.html>`_.
+`here <https://tket.quantinuum.com/api-docs/extensions>`_.
 
 How to cite
 ~~~~~~~~~~~
@@ -75,7 +75,7 @@ Licensed under the `Apache 2 License <http://www.apache.org/licenses/LICENSE-2.0
 .. _Quantinuum: https://www.quantinuum.com/
 
 .. toctree::
-    :caption: Introduction:
+    :caption: Overview:
     :maxdepth: 1
 
     getting_started.rst
@@ -84,11 +84,13 @@ Licensed under the `Apache 2 License <http://www.apache.org/licenses/LICENSE-2.0
     faqs.rst
 
 .. toctree::
-    :caption: More Documentation:
+    :caption: pytket documentation:
     
-    Manual <https://tket.quantinuum.com/user-manual/>
-    extensions_index.rst  
+    pytket API docs <https://tket.quantinuum.com/api-docs/>
+    extensions.rst
+    Manual <https://tket.quantinuum.com/user-manual>
     Example notebooks <https://tket.quantinuum.com/examples>
+    TKET website <https://tket.quantinuum.com/>
 
 .. toctree::
     :caption: API Reference:

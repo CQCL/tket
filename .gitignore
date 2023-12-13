@@ -32,3 +32,6 @@ test-coverage
 # IDEs
 .idea
 .vscode
+
+#nix
+result

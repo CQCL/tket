@@ -331,6 +331,9 @@ PYBIND11_MODULE(circuit, m) {
           "ToffoliBox", OpType::ToffoliBox,
           "A permutation of classical basis states")
       .value(
+          "DummyBox", OpType::DummyBox,
+          "A placeholder operation that holds resource data")
+      .value(
           "CustomGate", OpType::CustomGate,
           ":math:`(\\alpha, \\beta, \\ldots) \\mapsto` A user-defined "
           "operation, based on a :py:class:`Circuit` :math:`C` with "

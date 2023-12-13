@@ -4,11 +4,34 @@ Changelog
 Unreleased
 ----------
 
+API changes:
+
+* Make the ``architecture`` field in ``BackendInfo`` optional.
+
+Deprecations:
+
+* Deprecate ``SynthesiseHQS`` pass.
+  
+Fixes:
+
+* Ensure that squashing long sequences of gates via unitary multiplication does
+  not produce non-unitary results due to rounding errors.
+* Fix `PauliFrameRandomisation.sample_circuits`.
+* For `Circuit` with no 2-qubit gates, `NoiseAwarePlacement` now assigns `Qubit` to `Node` in `Architecture`
+  with lowest reported error rates.
+
+
+1.22.0 (November 2023)
+----------------------
+
 Minor new features:
 
 * Add optional parameter to QASM conversion methods to set the maximum allowed
   width of classical registers (default 32).
 * New ``OpType.CS`` and ``OpType.CSdg``.
+* New classes ``ResourceBounds``, ``ResourceData`` and ``DummyBox``, and method
+  ``Circuit.get_resources()``, allowing reasoning about resource requirements
+  on circuit templates.
 
 Fixes:
 
@@ -17,6 +40,12 @@ Fixes:
 * Fix incorrect serialisation of ``PauliExpPairBox`` when the Pauli strings are of
   length 2.
 * Fix incorrect controlled ``ConjugationBox`` handling.
+
+General:
+
+* Drop support for MacOS 11.
+
+`Full changelog <https://github.com/CQCL/tket/compare/v1.21.0...v1.22.0>`_
 
 1.21.0 (October 2023)
 ---------------------

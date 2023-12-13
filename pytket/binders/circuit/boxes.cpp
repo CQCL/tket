@@ -17,16 +17,22 @@
 #include <pybind11/eigen.h>
 #include <pybind11/pybind11.h>
 
+#include <memory>
+#include <sstream>
+
 #include "binder_json.hpp"
 #include "binder_utils.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/ConjugationBox.hpp"
 #include "tket/Circuit/DiagonalBox.hpp"
+#include "tket/Circuit/DummyBox.hpp"
 #include "tket/Circuit/Multiplexor.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
+#include "tket/Circuit/ResourceData.hpp"
 #include "tket/Circuit/StatePreparation.hpp"
 #include "tket/Circuit/ToffoliBox.hpp"
 #include "tket/Converters/PhasePoly.hpp"
+#include "tket/OpType/OpType.hpp"
 #include "tket/Utils/HelperFunctions.hpp"
 #include "tket/Utils/Json.hpp"
 #include "typecast.hpp"
@@ -453,6 +459,130 @@ void init_boxes(py::module &m) {
       .def(
           "get_rotation_axis", &ToffoliBox::get_rotation_axis,
           ":return: the rotation axis");
+  py::class_<ResourceBounds<unsigned>>(
+      m, "ResourceBounds",
+      "Structure holding a minimum and maximum value of some resource, where "
+      "both values are unsigned integers.")
+      .def(
+          py::init([](unsigned min, unsigned max) {
+            if (min > max) {
+              throw std::invalid_argument(
+                  "minimum must be less than or equal to maximum");
+            }
+            return ResourceBounds<unsigned>{min, max};
+          }),
+          "Constructs a ResourceBounds object.\n\n"
+          ":param min: minimum value\n"
+          ":param max: maximum value\n",
+          py::arg("min"), py::arg("max"))
+      .def(
+          "get_min",
+          [](const ResourceBounds<unsigned> &resource_bounds) {
+            return resource_bounds.min;
+          },
+          ":return: the minimum value")
+      .def(
+          "get_max",
+          [](const ResourceBounds<unsigned> &resource_bounds) {
+            return resource_bounds.max;
+          },
+          ":return: the maximum value");
+  py::class_<ResourceData>(
+      m, "ResourceData",
+      "An object holding resource data for use in a :py:class:`DummyBox`."
+      "\n\nThe object holds several fields representing minimum and maximum "
+      "values for certain resources. The absence of an :py:class:`OpType` in "
+      "one of these fields is interpreted as the absence of gates of that type "
+      "in the (imagined) circuit."
+      "\n\nSee :py:meth:`Circuit.get_resources` for how to use this data.")
+      .def(
+          py::init([](std::map<OpType, ResourceBounds<unsigned>> op_type_count,
+                      ResourceBounds<unsigned> gate_depth,
+                      std::map<OpType, ResourceBounds<unsigned>> op_type_depth,
+                      ResourceBounds<unsigned> two_qubit_gate_depth) {
+            return ResourceData{
+                op_type_count, gate_depth, op_type_depth, two_qubit_gate_depth};
+          }),
+          "Constructs a ResourceData object.\n\n"
+          ":param op_type_count: dictionary of counts of selected "
+          ":py:class:`OpType`\n"
+          ":param gate_depth: overall gate depth\n"
+          ":param op_type_depth: dictionary of depths of selected "
+          ":py:class:`OpType`\n"
+          ":param two_qubit_gate_depth: overall two-qubit-gate depth",
+          py::arg("op_type_count"), py::arg("gate_depth"),
+          py::arg("op_type_depth"), py::arg("two_qubit_gate_depth"))
+      .def(
+          "get_op_type_count",
+          [](const ResourceData &resource_data) {
+            return resource_data.OpTypeCount;
+          },
+          ":return: bounds on the op type count")
+      .def(
+          "get_gate_depth",
+          [](const ResourceData &resource_data) {
+            return resource_data.GateDepth;
+          },
+          ":return: bounds on the gate depth")
+      .def(
+          "get_op_type_depth",
+          [](const ResourceData &resource_data) {
+            return resource_data.OpTypeDepth;
+          },
+          ":return: bounds on the op type depth")
+      .def(
+          "get_two_qubit_gate_depth",
+          [](const ResourceData &resource_data) {
+            return resource_data.TwoQubitGateDepth;
+          },
+          ":return: bounds on the two-qubit-gate depth")
+      .def("__repr__", [](const ResourceData &resource_data) {
+        std::stringstream ss;
+        ss << "ResourceData(";
+        ss << "op_type_count={";
+        for (const auto &pair : resource_data.OpTypeCount) {
+          ss << "OpType." << optypeinfo().at(pair.first).name << ": "
+             << "ResourceBounds(" << pair.second.min << ", " << pair.second.max
+             << "), ";
+        }
+        ss << "}, ";
+        ss << "gate_depth=ResourceBounds(" << resource_data.GateDepth.min
+           << ", " << resource_data.GateDepth.max << "), ";
+        ss << "op_type_depth={";
+        for (const auto &pair : resource_data.OpTypeDepth) {
+          ss << "OpType." << optypeinfo().at(pair.first).name << ": "
+             << "ResourceBounds(" << pair.second.min << ", " << pair.second.max
+             << "), ";
+        }
+        ss << "}, ";
+        ss << "two_qubit_gate_depth=ResourceBounds("
+           << resource_data.TwoQubitGateDepth.min << ", "
+           << resource_data.TwoQubitGateDepth.max << ")";
+        ss << ")";
+        return ss.str();
+      });
+  py::class_<DummyBox, std::shared_ptr<DummyBox>, Op>(
+      m, "DummyBox",
+      "A placeholder operation that holds resource data. This box type cannot "
+      "be decomposed into a circuit. It only serves to record resource data "
+      "for a region of a circuit: for example, upper and lower bounds on gate "
+      "counts and depth. A circuit containing such a box cannot be executed.")
+      .def(
+          py::init([](unsigned n_qubits, unsigned n_bits,
+                      const ResourceData &resource_data) {
+            return DummyBox(n_qubits, n_bits, resource_data);
+          }),
+          "Construct a new instance from some resource data.",
+          py::arg("n_qubits"), py::arg("n_bits"), py::arg("resource_data"))
+      .def(
+          "get_n_qubits", &DummyBox::get_n_qubits,
+          ":return: the number of qubits covered by the box")
+      .def(
+          "get_n_bits", &DummyBox::get_n_bits,
+          ":return: the number of bits covered by the box")
+      .def(
+          "get_resource_data", &DummyBox::get_resource_data,
+          ":return: the associated resource data");
   py::class_<QControlBox, std::shared_ptr<QControlBox>, Op>(
       m, "QControlBox",
       "A user-defined controlled operation specified by an "

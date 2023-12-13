@@ -72,7 +72,9 @@ void Circuit::assert_valid() const {  //
 VertexVec Circuit::all_inputs() const {
   VertexVec ins = q_inputs();
   VertexVec c_ins = c_inputs();
+  VertexVec w_ins = w_inputs();
   ins.insert(ins.end(), c_ins.begin(), c_ins.end());
+  ins.insert(ins.end(), w_ins.begin(), w_ins.end());
   return ins;
 }
 
@@ -107,7 +109,9 @@ VertexVec Circuit::w_inputs() const {
 VertexVec Circuit::all_outputs() const {
   VertexVec outs = q_outputs();
   VertexVec c_outs = c_outputs();
+  VertexVec w_outs = w_outputs();
   outs.insert(outs.end(), c_outs.begin(), c_outs.end());
+  outs.insert(outs.end(), w_outs.begin(), w_outs.end());
   return outs;
 }
 

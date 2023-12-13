@@ -142,6 +142,16 @@ bool is_final_q_type(OpType optype) {
   return optype == OpType::Output || optype == OpType::Discard;
 }
 
+bool is_initial_type(OpType optype) {
+  return optype == OpType::Input || optype == OpType::Create ||
+         optype == OpType::ClInput || optype == OpType::WASMInput;
+}
+
+bool is_final_type(OpType optype) {
+  return optype == OpType::Output || optype == OpType::Discard ||
+         optype == OpType::ClOutput || optype == OpType::WASMOutput;
+}
+
 bool is_boundary_type(OpType optype) {
   return is_boundary_q_type(optype) || is_boundary_c_type(optype) ||
          is_boundary_w_type(optype);
@@ -188,7 +198,8 @@ bool is_box_type(OpType optype) {
       OpType::ProjectorAssertionBox,
       OpType::StabiliserAssertionBox,
       OpType::UnitaryTableauBox,
-      OpType::ToffoliBox};
+      OpType::ToffoliBox,
+      OpType::DummyBox};
   return find_in_set(optype, boxes);
 }
 

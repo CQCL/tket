@@ -29,6 +29,7 @@
 #include "tket/Circuit/Boxes.hpp"
 #include "tket/Circuit/Circuit.hpp"
 #include "tket/Circuit/Command.hpp"
+#include "tket/Circuit/DummyBox.hpp"
 #include "tket/Circuit/PauliExpBoxes.hpp"
 #include "tket/Circuit/Simulation/CircuitSimulator.hpp"
 #include "tket/Circuit/ToffoliBox.hpp"
@@ -270,8 +271,12 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
             }
             return b_regs;
           },
-          "Get all classical registers.\n\n:return: List of "
-          ":py:class:`BitRegister`")
+          "Get all classical registers.\n\n"
+          "This property is only valid if the bits in the circuit are "
+          "organized into registers (i.e. all bit indices are single numbers "
+          "and all sets of bits with the same string identifier consist of "
+          "bits indexed consecutively from zero).\n\n"
+          ":return: List of :py:class:`BitRegister`")
       .def(
           "get_q_register",
           [](Circuit &circ, const std::string &name) {
@@ -306,8 +311,12 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
             }
             return q_regs;
           },
-          "Get all quantum registers.\n\n:return: List of "
-          ":py:class:`QubitRegister`")
+          "Get all quantum registers.\n\n"
+          "This property is only valid if the qubits in the circuit are "
+          "organized into registers (i.e. all qubit indices are single numbers "
+          "and all sets of qubits with the same string identifier consist of "
+          "qubits indexed consecutively from zero).\n\n"
+          ":return: List of :py:class:`QubitRegister`")
       .def(
           "add_qubit", &Circuit::add_qubit,
           "Constructs a single qubit with the given id.\n\n:param id: "
@@ -765,6 +774,17 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           py::arg("box"), py::arg("opgroup"))
       .def(
           "substitute_named",
+          [](Circuit &circ, const DummyBox &box, const std::string &opgroup) {
+            return circ.substitute_named(box, opgroup);
+          },
+          "Substitute all ops with the given name for the given box."
+          "The replacement boxes retain the same name.\n\n"
+          ":param box: the replacement DummyBox\n"
+          ":param opgroup: the name of the operations group to replace\n"
+          ":return: whether any replacements were made",
+          py::arg("box"), py::arg("opgroup"))
+      .def(
+          "substitute_named",
           [](Circuit &circ, const QControlBox &box,
              const std::string &opgroup) {
             return circ.substitute_named(box, opgroup);
@@ -854,6 +874,71 @@ void def_circuit(py::class_<Circuit, std::shared_ptr<Circuit>> &pyCircuit) {
           "\n\n:param optype: operation type"
           "\n\n:return: list of :py:class:`Command`",
           py::arg("optype"))
+      .def(
+          "get_resources", &Circuit::get_resources,
+          "Calculate the overall resources of the circuit."
+          "\n\nThis takes account of the data stored in each "
+          "py:class:`DummyBox` within the circuit, as well as other gates, "
+          "to compute upper and lower bounds."
+          "\n\n:return: bounds on resources of the circuit"
+          "\n\n"
+          ">>> resource_data0 = ResourceData(\n"
+          "...     op_type_count={\n"
+          "...         OpType.T: ResourceBounds(1, 2),\n"
+          "...         OpType.H: ResourceBounds(0, 1),\n"
+          "...         OpType.CX: ResourceBounds(1, 2),\n"
+          "...         OpType.CZ: ResourceBounds(3, 3),\n"
+          "...     },\n"
+          "...     gate_depth=ResourceBounds(5, 8),\n"
+          "...     op_type_depth={\n"
+          "...         OpType.T: ResourceBounds(0, 10),\n"
+          "...         OpType.H: ResourceBounds(0, 10),\n"
+          "...         OpType.CX: ResourceBounds(1, 2),\n"
+          "...         OpType.CZ: ResourceBounds(3, 3),\n"
+          "...     },\n"
+          "...     two_qubit_gate_depth=ResourceBounds(4, 5),\n"
+          "... )\n"
+          ">>> dbox0 = DummyBox(n_qubits=2, n_bits=0, "
+          "resource_data=resource_data0)\n"
+          ">>> resource_data1 = ResourceData(\n"
+          "...     op_type_count={\n"
+          "...         OpType.T: ResourceBounds(2, 2),\n"
+          "...         OpType.H: ResourceBounds(1, 1),\n"
+          "...         OpType.CX: ResourceBounds(2, 3),\n"
+          "...         OpType.CZ: ResourceBounds(3, 5),\n"
+          "...     },\n"
+          "...     gate_depth=ResourceBounds(5, 10),\n"
+          "...     op_type_depth={\n"
+          "...         OpType.T: ResourceBounds(1, 2),\n"
+          "...         OpType.H: ResourceBounds(2, 4),\n"
+          "...         OpType.CX: ResourceBounds(1, 1),\n"
+          "...         OpType.CZ: ResourceBounds(3, 4),\n"
+          "...     },\n"
+          "...     two_qubit_gate_depth=ResourceBounds(3, 5),\n"
+          "... )\n"
+          ">>> dbox1 = DummyBox(n_qubits=3, n_bits=0, "
+          "resource_data=resource_data1)\n"
+          ">>> c = (\n"
+          "...     Circuit(3)\n"
+          "...     .H(0)\n"
+          "...     .CX(1, 2)\n"
+          "...     .CX(0, 1)\n"
+          "...     .T(2)\n"
+          "...     .H(1)\n"
+          "...     .add_dummybox(dbox0, [0, 1], [])\n"
+          "...     .CZ(1, 2)\n"
+          "...     .add_dummybox(dbox1, [0, 1, 2], [])\n"
+          "...     .H(2)\n"
+          "... )\n"
+          ">>> resource_data = c.get_resources()\n"
+          ">>> print(resource_data)\n"
+          "ResourceData(op_type_count={OpType.T: ResourceBounds(4, 5), "
+          "OpType.H: ResourceBounds(4, 5), OpType.CX: ResourceBounds(5, 7), "
+          "OpType.CZ: ResourceBounds(7, 9), }, gate_depth=ResourceBounds(15, "
+          "23), op_type_depth={OpType.T: ResourceBounds(2, 12), OpType.H: "
+          "ResourceBounds(5, 17), OpType.CX: ResourceBounds(4, 5), OpType.CZ: "
+          "ResourceBounds(7, 8), }, two_qubit_gate_depth=ResourceBounds(10, "
+          "13))")
       .def_property_readonly(
           "_dag_data",
           [](Circuit &circ) {

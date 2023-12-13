@@ -38,6 +38,9 @@ pytket.circuit
 .. autoclass:: pytket._tket.circuit.PauliExpBox
     :special-members:
     :members:
+.. autoclass:: pytket._tket.circuit.PauliExpPairBox
+    :special-members:
+    :members:
 .. autoclass:: pytket._tket.circuit.ToffoliBox
     :special-members:
     :members:
@@ -101,5 +104,14 @@ pytket.circuit
     :special-members:
     :members:
 .. autoclass:: pytket._tket.circuit.ConjugationBox
+    :special-members:
+    :members:
+.. autoclass:: pytket._tket.circuit.ResourceBounds
+    :special-members:
+    :members:
+.. autoclass:: pytket._tket.circuit.ResourceData
+    :special-members:
+    :members:
+.. autoclass:: pytket._tket.circuit.DummyBox
     :special-members:
     :members:

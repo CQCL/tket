@@ -49,6 +49,9 @@ from pytket.circuit import (
     BitRegister,
     QubitRegister,
     CXConfigType,
+    ResourceBounds,
+    ResourceData,
+    DummyBox,
 )
 from pytket.circuit.display import get_circuit_renderer, render_circuit_as_html
 from pytket.circuit.named_types import (
@@ -1255,6 +1258,99 @@ def test_phase_order() -> None:
     for _ in range(100):
         c1 = c.copy()
         assert c == c1
+
+
+def test_dummy_box() -> None:
+    resource_data = ResourceData(
+        op_type_count={OpType.T: ResourceBounds(10, 20)},
+        gate_depth=ResourceBounds(5, 8),
+        op_type_depth={OpType.CZ: ResourceBounds(3, 6), OpType.T: ResourceBounds(4, 6)},
+        two_qubit_gate_depth=ResourceBounds(4, 5),
+    )
+    dbox = DummyBox(n_qubits=3, n_bits=1, resource_data=resource_data)
+    c = Circuit(4, 2)
+    c.add_dummybox(dbox, [0, 2, 3], [1])
+    cmds = c.get_commands()
+    assert len(cmds) == 1
+    op = cmds[0].op
+    assert type(op) is DummyBox
+    resource_data1 = op.get_resource_data()
+    op_type_count = resource_data1.get_op_type_count()
+    assert op_type_count[OpType.T].get_min() == 10
+    assert op_type_count[OpType.T].get_max() == 20
+    assert json_validate(c)
+
+
+def test_resources() -> None:
+    resource_data0 = ResourceData(
+        op_type_count={
+            OpType.T: ResourceBounds(1, 2),
+            OpType.H: ResourceBounds(0, 1),
+            OpType.CX: ResourceBounds(1, 2),
+            OpType.CZ: ResourceBounds(3, 3),
+        },
+        gate_depth=ResourceBounds(5, 8),
+        op_type_depth={
+            OpType.T: ResourceBounds(0, 10),
+            OpType.H: ResourceBounds(0, 10),
+            OpType.CX: ResourceBounds(1, 2),
+            OpType.CZ: ResourceBounds(3, 3),
+        },
+        two_qubit_gate_depth=ResourceBounds(4, 5),
+    )
+    dbox0 = DummyBox(n_qubits=2, n_bits=0, resource_data=resource_data0)
+    resource_data1 = ResourceData(
+        op_type_count={
+            OpType.T: ResourceBounds(2, 2),
+            OpType.H: ResourceBounds(1, 1),
+            OpType.CX: ResourceBounds(2, 3),
+            OpType.CZ: ResourceBounds(3, 5),
+        },
+        gate_depth=ResourceBounds(5, 10),
+        op_type_depth={
+            OpType.T: ResourceBounds(1, 2),
+            OpType.H: ResourceBounds(2, 4),
+            OpType.CX: ResourceBounds(1, 1),
+            OpType.CZ: ResourceBounds(3, 4),
+        },
+        two_qubit_gate_depth=ResourceBounds(3, 5),
+    )
+    dbox1 = DummyBox(n_qubits=3, n_bits=0, resource_data=resource_data1)
+    c = Circuit(3)
+    c.H(0)
+    c.CX(1, 2)
+    c.CX(0, 1)
+    c.T(2)
+    c.H(1)
+    c.add_dummybox(dbox0, [0, 1], [])
+    c.CZ(1, 2)
+    c.add_dummybox(dbox1, [0, 1, 2], [])
+    c.H(2)
+    resource_data = c.get_resources()
+    op_type_count = resource_data.get_op_type_count()
+    assert op_type_count[OpType.T].get_min() == 4
+    assert op_type_count[OpType.T].get_max() == 5
+    assert op_type_count[OpType.H].get_min() == 4
+    assert op_type_count[OpType.H].get_max() == 5
+    assert op_type_count[OpType.CX].get_min() == 5
+    assert op_type_count[OpType.CX].get_max() == 7
+    assert op_type_count[OpType.CZ].get_min() == 7
+    assert op_type_count[OpType.CZ].get_max() == 9
+    gate_depth = resource_data.get_gate_depth()
+    assert gate_depth.get_min() == 15
+    assert gate_depth.get_max() == 23
+    op_type_depth = resource_data.get_op_type_depth()
+    assert op_type_depth[OpType.T].get_min() == 2
+    assert op_type_depth[OpType.T].get_max() == 12
+    assert op_type_depth[OpType.H].get_min() == 5
+    assert op_type_depth[OpType.H].get_max() == 17
+    assert op_type_depth[OpType.CX].get_min() == 4
+    assert op_type_depth[OpType.CX].get_max() == 5
+    assert op_type_depth[OpType.CZ].get_min() == 7
+    assert op_type_depth[OpType.CZ].get_max() == 8
+    two_qubit_gate_depth = resource_data.get_two_qubit_gate_depth()
+    assert two_qubit_gate_depth.get_min() == 10
+    assert two_qubit_gate_depth.get_max() == 13
 
 
 if __name__ == "__main__":
