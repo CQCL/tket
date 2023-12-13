@@ -624,6 +624,13 @@ void ChoiMixTableau::rename_qubits(
   col_index_ = new_index;
 }
 
+bool ChoiMixTableau::is_unitary() const {
+  // A pure process has as many rows as boundary qubits (sum of inputs and
+  // outputs); in the case of an n-qubit unitary, this is 2n rows
+  return (get_n_rows() == get_n_boundaries()) &&
+         (input_qubits() == output_qubits());
+}
+
 ChoiMixTableau ChoiMixTableau::compose(
     const ChoiMixTableau& first, const ChoiMixTableau& second) {
   // Merge tableau into a single one with only output qubits with default

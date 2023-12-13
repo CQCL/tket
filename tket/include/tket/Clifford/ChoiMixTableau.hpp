@@ -231,6 +231,11 @@ class ChoiMixTableau {
   void rename_qubits(const qubit_map_t& qmap, TableauSegment seg);
 
   /**
+   * Check whether the process described by the tableau is a unitary
+   */
+  bool is_unitary() const;
+
+  /**
    * Combine two tableaux in sequence/parallel.
    * Any matching output qubits of first and input qubits of second will be
    * contracted, and others will be added in parallel. Throws an exception if
