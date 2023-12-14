@@ -2,7 +2,7 @@ pytket.circuit
 ==================================
 .. toctree::
    :caption: Classes:
-   :maxdepth: 2
+   :maxdepth: 1
 
    circuit_class.rst
    optype.rst
