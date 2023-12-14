@@ -206,7 +206,7 @@ epub_title = project
 # A list of files that should not be packed into the epub file.
 epub_exclude_files = ["search.html"]
 
-autodoc_member_order = "groupwise"
+autodoc_member_order = "bysource"
 
 # The following code is for resolving broken hyperlinks in the doc.
 
