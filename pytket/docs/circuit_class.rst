@@ -66,7 +66,7 @@ condition on a specified set of bit values.)
 
    .. automethod:: add_c_and_to_registers
 
-   .. authomethod:: add_c_copybits
+   .. automethod:: add_c_copybits
 
 
    
