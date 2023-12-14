@@ -24,6 +24,9 @@ condition on a specified set of bit values.)
 .. autoclass:: pytket._tket.circuit.Circuit
    :special-members: __init__, __eq__, __iter__, __mul__, __repr__, __rshift__, __str__, __getstate__, __setstate__, __hash__
 
+   Basic Circuit construction
+   --------------------------
+
    .. automethod:: add_gate
 
    .. automethod:: add_circuit
@@ -32,29 +35,74 @@ condition on a specified set of bit values.)
 
    .. automethod:: add_qubit
 
+   .. automethod:: add_q_register
+
+   .. automethod:: add_c_register
+
    .. automethod:: add_phase
-   
+
    .. automethod:: add_blank_wires
+
+   .. automethod:: flatten_registers
+
+   Circuit Analysis
+   ----------------
+
+   .. autoproperty:: n_qubits
+
+   .. autoproperty:: n_bits
+
+   .. autoproperty:: phase
+
+   .. autoproperty:: qubits
+
+   .. autoproperty:: bits
+
+   .. autoproperty:: q_registers
+
+   .. autoproperty:: c_registers
+
+   .. autoproperty:: n_gates
+
+   .. autoproperty:: qubit_readout
+
+   .. autoproperty:: opgroups
+
+   .. autoproperty:: is_simple
 
    .. automethod:: commands_of_type
 
+   .. automethod:: ops_of_type
+
+   .. automethod:: n_gates_of_type
+
+   .. automethod:: n_1qb_gates
+
+   .. automethod:: n_2qb_gates
+
+   .. automethod:: n_nqb_gates
+
+   .. automethod:: free_symbols
+
    .. automethod:: depth
-   
+
    .. automethod:: depth_2q
 
    .. automethod:: depth_by_type 
 
+   .. automethod:: get_commands
+
    .. automethod:: add_barrier
 
-   .. automethod:: flatten_registers
+   Circuit Serialisation
+   ---------------------
 
    .. automethod:: from_dict
 
    .. automethod:: to_dict
 
-   .. automethod:: free_symbols
-
-   .. automethod:: get_commands
+   Statevectors and Unitaries
+   --------------------------
 
    .. automethod:: get_statevector
 
