@@ -60,4 +60,4 @@ class test_tkassertRecipe(ConanFile):
 
     def requirements(self):
         self.requires("tkassert/0.3.4")
-        self.requires("catch2/3.3.2")
+        self.requires("catch2/3.5.0")
