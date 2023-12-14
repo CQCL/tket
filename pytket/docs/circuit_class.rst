@@ -22,5 +22,51 @@ condition on a specified set of bit values.)
 
 .. currentmodule:: pytket._tket.circuit.Circuit
 .. autoclass:: pytket._tket.circuit.Circuit
-   :special-members:
-   :members:
+   :special-members: __init__, __eq__, __iter__, __mul__, __repr__, __rshift__, __str__, __getstate__, __setstate__, __hash__
+
+   .. automethod:: add_gate
+
+   .. automethod:: add_circuit
+
+   .. automethod:: add_bit
+
+   .. automethod:: add_qubit
+
+   .. automethod:: add_phase
+   
+   .. automethod:: add_blank_wires
+
+   .. automethod:: commands_of_type
+
+   .. automethod:: depth
+   
+   .. automethod:: depth_2q
+
+   .. automethod:: depth_by_type 
+
+   .. automethod:: add_barrier
+
+   .. automethod:: flatten_registers
+
+   .. automethod:: from_dict
+
+   .. automethod:: to_dict
+
+   .. automethod:: free_symbols
+
+   .. automethod:: get_commands
+
+   .. automethod:: get_statevector
+
+   .. automethod:: get_unitary
+
+   .. automethod:: get_unitary_times_other
+
+   .. automethod:: add_c_and
+
+   .. automethod:: add_c_and_to_registers
+
+   .. authomethod:: add_c_copybits
+
+
+   
