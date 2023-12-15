@@ -24,16 +24,15 @@ condition on a specified set of bit values.)
 .. autoclass:: pytket._tket.circuit.Circuit
    :special-members: __init__, __eq__, __iter__, __mul__, __repr__, __rshift__, __str__, __getstate__, __setstate__, __hash__
 
-   Basic Circuit construction
-   --------------------------
-
    .. automethod:: add_gate
+
+   .. automethod:: append
 
    .. automethod:: add_circuit
 
-   .. automethod:: add_bit
-
    .. automethod:: add_qubit
+
+   .. automethod:: add_bit
 
    .. automethod:: add_q_register
 
@@ -43,10 +42,9 @@ condition on a specified set of bit values.)
 
    .. automethod:: add_blank_wires
 
-   .. automethod:: flatten_registers
+   .. automethod:: remove_blank_wires
 
-   Circuit Analysis
-   ----------------
+   .. automethod:: flatten_registers
 
    .. autoproperty:: n_qubits
 
@@ -94,15 +92,13 @@ condition on a specified set of bit values.)
 
    .. automethod:: add_barrier
 
-   Circuit Serialisation
-   ---------------------
+   .. automethod:: add_wasm
+
+   .. automethod:: add_wasm_to_reg
 
    .. automethod:: from_dict
 
    .. automethod:: to_dict
-
-   Statevectors and Unitaries
-   --------------------------
 
    .. automethod:: get_statevector
 
@@ -110,11 +106,194 @@ condition on a specified set of bit values.)
 
    .. automethod:: get_unitary_times_other
 
+   .. automethod:: dagger
+
+   .. automethod:: transpose
+
+   .. automethod:: copy
+
+   .. automethod:: get_resources
+
    .. automethod:: add_c_and
+
+   .. automethod:: add_c_or
+
+   .. automethod:: add_c_xor
+   
+   .. automethod:: add_c_range_predicate
 
    .. automethod:: add_c_and_to_registers
 
+   .. automethod:: add_c_or_to_registers
+
+   .. automethod:: add_c_xor_to_registers
+
+   .. automethod:: add_c_not_to_registers
+
    .. automethod:: add_c_copybits
 
+   .. automethod:: add_c_copyreg
 
+   .. automethod:: add_c_setreg
+
+   .. automethod:: add_c_setbits
+
+   .. automethod:: add_c_predicate
+
+   .. automethod:: 
    
+   .. automethod:: 
+
+   .. automethod:: qubit_create
+
+   .. automethod:: qubit_create_all
+
+   .. automethod:: qubit_discard
+
+   .. automethod:: qubit_discard_all
+
+   .. automethod:: qubit_is_created
+   
+   .. automethod:: qubit_is_discarded
+   
+   .. automethod:: 
+
+   .. automethod:: 
+
+   .. automethod:: 
+
+   .. automethod:: 
+
+   .. automethod:: 
+   
+   .. automethod:: 
+
+   Convenience methods for appending circuit operations
+
+   .. automethod:: H
+
+   .. automethod:: X
+
+   .. automethod:: Y
+
+   .. automethod:: Z
+
+   .. automethod:: S
+
+   .. automethod:: Sdg
+
+   .. automethod:: SX
+
+   .. automethod:: SXdg
+
+   .. automethod:: T
+
+   .. automethod:: Tdg
+
+   .. automethod:: V
+
+   .. automethod:: Vdg
+
+   .. automethod:: Rx
+
+   .. automethod:: Ry
+
+   .. automethod:: Rz
+
+   .. automethod:: PhasedX
+
+   .. automethod:: TK1
+
+   .. automethod:: U1
+
+   .. automethod:: U2
+   
+   .. automethod:: U3
+
+   .. automethod:: CX
+
+   .. automethod:: CY
+
+   .. automethod:: CZ
+
+   .. automethod:: CS
+
+   .. automethod:: CSdg
+
+   .. automethod:: CV
+
+   .. automethod:: CVdg
+
+   .. automethod:: CSX
+
+   .. automethod:: CSXdg
+
+   .. automethod:: CH
+
+   .. automethod:: CV
+
+   .. automethod:: ECR
+
+   .. automethod:: CRx
+
+   .. automethod:: CRy
+
+   .. automethod:: CRz
+
+   .. automethod:: Measure
+
+   .. automethod:: measure_all
+
+   .. automethod:: measure_register
+
+   .. automethod:: Reset
+
+   .. automethod:: Phase
+   
+   .. automethod:: SWAP
+
+   .. automethod:: ISWAP
+
+   .. automethod:: ISWAPMax
+
+   .. automethod:: CCX
+
+   .. automethod:: CSWAP
+
+   .. automethod:: ESWAP
+
+   .. automethod:: ISWAP
+
+   .. automethod:: ISWAPMax
+   
+   .. automethod:: PhasedISWAP
+
+   .. automethod:: FSim
+
+   .. automethod:: Sycamore
+   
+   .. automethod:: XXPhase
+
+   .. automethod:: XXPhase3
+
+   .. automethod:: YYPhase
+
+   .. automethod:: ZZPhase
+
+   .. automethod:: 
+
+   .. automethod:: 
+   
+   .. automethod:: 
+   
+   .. automethod:: 
+
+   .. automethod:: 
+
+   .. automethod:: 
+
+   .. automethod:: 
+
+   .. automethod:: 
+   
+   .. automethod:: 
