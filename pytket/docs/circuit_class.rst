@@ -20,7 +20,7 @@ following keyword arguments are supported:
 ``condition``, or using the pair ``condition_bits`` and ``condition_value`` to
 condition on a specified set of bit values.)
 
-.. currentmodule:: pytket._tket.circuit.Circuit
+.. currentmodule:: pytket.circuit.Circuit
 .. autoclass:: pytket.circuit.Circuit
    :special-members: __init__, __eq__, __iter__, __mul__, __repr__, __rshift__, __str__, __getstate__, __setstate__, __hash__
 
@@ -255,8 +255,6 @@ condition on a specified set of bit values.)
    .. automethod:: measure_all
 
    .. automethod:: measure_register
-
-   .. automethod:: Reset
 
    .. automethod:: Phase
    
