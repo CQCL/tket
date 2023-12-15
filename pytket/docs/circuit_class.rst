@@ -36,9 +36,15 @@ condition on a specified set of bit values.)
 
    .. automethod:: add_q_register
 
+   .. automethod:: get_q_register
+
    .. automethod:: add_c_register
 
+   .. automethod:: get_c_register
+
    .. automethod:: add_phase
+
+   .. automethod:: rename_units
 
    .. automethod:: add_blank_wires
 
@@ -138,11 +144,15 @@ condition on a specified set of bit values.)
 
    .. automethod:: add_c_setbits
 
+   .. automethod:: add_c_transform
+
+   .. automethod:: add_c_modifier
+      
    .. automethod:: add_c_predicate
 
-   .. automethod:: 
-   
-   .. automethod:: 
+   .. automethod:: add_classicalexpbox_bit
+
+   .. automethod:: add_classicalexpbox_register
 
    .. automethod:: qubit_create
 
@@ -156,17 +166,14 @@ condition on a specified set of bit values.)
    
    .. automethod:: qubit_is_discarded
    
-   .. automethod:: 
+   .. automethod:: replace_SWAPs
 
-   .. automethod:: 
+   .. automethod:: replace_implicit_wire_swaps
 
-   .. automethod:: 
+   .. automethod:: implicit_qubit_permutation
 
-   .. automethod:: 
+   .. automethod:: to_latex_file
 
-   .. automethod:: 
-   
-   .. automethod:: 
 
    Convenience methods for appending circuit operations
 
@@ -280,20 +287,60 @@ condition on a specified set of bit values.)
 
    .. automethod:: ZZPhase
 
-   .. automethod:: 
+   Methods for adding circuit boxes
+   --------------------------------
 
-   .. automethod:: 
+   Note that for adding boxes to a circuit the :py:meth:`Circuit.add_gate` method is sufficient to append any :py:class:`OpType` to a :py:class:`Circuit`.
+
+   .. jupyter-input::
+
+      from pytket.circuit import Circuit, CircBox
+     
+      sub_circ = Circuit(2).CX(0, 1).Rz(0.25, 1).CX(0, 1)
+
+      box = CircBox(sub_circ)
+
+      bigger_circ = Circuit(3)
+
+      # Equivalent to bigger_circ.add_circbox(box, [0, 1, 2])
+      bigger_circ.add_gate(box, [0, 1, 2])
+
+   .. automethod:: add_circbox
+
+   .. automethod:: add_unitary1qbox
    
-   .. automethod:: 
+   .. automethod:: add_unitary2qbox
    
-   .. automethod:: 
+   .. automethod:: add_unitary3qbox
 
-   .. automethod:: 
+   .. automethod:: add_expbox
 
-   .. automethod:: 
+   .. automethod:: add_pauliexpbox
 
-   .. automethod:: 
+   .. automethod:: add_pauliexppairbox
 
-   .. automethod:: 
+   .. automethod:: add_pauliexpcommutingsetbox
+
+   .. automethod:: add_toffolibox
    
-   .. automethod:: 
+   .. automethod:: add_dummybox
+
+   .. automethod:: add_qcontrolbox
+   
+   .. automethod:: add_custom_gate
+
+   .. automethod:: add_assertion
+
+   .. automethod:: add_multiplexor
+
+   .. automethod:: add_multiplexedrotation
+   
+   .. automethod:: add_multiplexedu2
+      
+   .. automethod:: add_state_preparation_box
+
+   .. automethod:: add_diagonal_box
+
+   .. automethod:: add_conjugation_box
+   
+
