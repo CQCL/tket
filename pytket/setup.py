@@ -65,7 +65,12 @@ class CMakeBuild(build_ext):
             ["cmake", f"-DCMAKE_INSTALL_PREFIX={install_dir}", os.pardir], cwd=build_dir
         )
         subprocess.run(
-            ["cmake", "--build", os.curdir, f"-j{multiprocessing.cpu_count()}"],
+            [
+                "cmake",
+                "--build",
+                os.curdir,
+                f"-j{os.getenv('PYTKET_CMAKE_N_THREADS', multiprocessing.cpu_count())}",
+            ],
             cwd=build_dir,
         )
         subprocess.run(["cmake", "--install", os.curdir], cwd=build_dir)

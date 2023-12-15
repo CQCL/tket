@@ -255,3 +255,7 @@ This needs the shared `tklog` and `tket` libraries to be installed.
 cd ${TKET_DIR}/pytket
 NO_CONAN=1 pip install -v -e .
 ```
+
+(You can use the environment variable `PYTKET_CMAKE_N_THREADS` to restrict the
+number of threads used in the above command; otherwise one thread per CPU is
+used.)
