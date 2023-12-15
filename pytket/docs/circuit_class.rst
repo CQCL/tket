@@ -258,10 +258,6 @@ condition on a specified set of bit values.)
    
    .. automethod:: SWAP
 
-   .. automethod:: ISWAP
-
-   .. automethod:: ISWAPMax
-
    .. automethod:: CCX
 
    .. automethod:: CSWAP
