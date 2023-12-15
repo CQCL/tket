@@ -21,7 +21,7 @@ following keyword arguments are supported:
 condition on a specified set of bit values.)
 
 .. currentmodule:: pytket._tket.circuit.Circuit
-.. autoclass:: pytket._tket.circuit.Circuit
+.. autoclass:: pytket.circuit.Circuit
    :special-members: __init__, __eq__, __iter__, __mul__, __repr__, __rshift__, __str__, __getstate__, __setstate__, __hash__
 
    .. automethod:: add_gate
