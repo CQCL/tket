@@ -1,7 +1,7 @@
 pytket.circuit
 ==================================
 .. toctree::
-   :caption: Classes:
+   :caption: Submodules:
    :maxdepth: 1
 
    circuit_class.rst
