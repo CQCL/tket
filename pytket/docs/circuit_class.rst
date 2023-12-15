@@ -177,6 +177,9 @@ condition on a specified set of bit values.)
 
    Convenience methods for appending circuit operations
 
+   .. Note:: For adding gates to a circuit the :py:meth:`Circuit.add_gate` method is sufficient to append any :py:class:`OpType` to a :py:class:`Circuit`. 
+      Some gates can only be added with :py:meth:`Circuit.add_gate`. For other more commonly used operations these can be added to a :py:class:`Circuit` directly using the convenience methods below.
+
    .. automethod:: H
 
    .. automethod:: X
@@ -290,7 +293,7 @@ condition on a specified set of bit values.)
    Methods for adding circuit boxes
    --------------------------------
 
-   Note that for adding boxes to a circuit the :py:meth:`Circuit.add_gate` method is sufficient to append any :py:class:`OpType` to a :py:class:`Circuit`.
+   .. Note:: For adding boxes to a circuit the :py:meth:`Circuit.add_gate` method is sufficient to append any :py:class:`OpType` to a :py:class:`Circuit`.
 
    .. jupyter-input::
 
