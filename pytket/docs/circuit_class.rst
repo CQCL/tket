@@ -240,8 +240,6 @@ condition on a specified set of bit values.)
 
    .. automethod:: CH
 
-   .. automethod:: CV
-
    .. automethod:: ECR
 
    .. automethod:: CRx
