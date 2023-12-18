@@ -95,7 +95,7 @@ jobs:
     steps:
     - uses: actions/checkout@v4
     - name: Download artefact
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: test_coverage
         path: test-coverage/
@@ -121,7 +121,7 @@ jobs:
       with:
         ref: gh-pages
     - name: Download artefact
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: test_coverage
         path: test-coverage/
@@ -150,7 +150,7 @@ jobs:
       with:
         ref: gh-pages
     - name: Download artefact
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
       with:
         name: test_coverage
         path: test-coverage/
