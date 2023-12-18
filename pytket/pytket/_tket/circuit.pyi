@@ -471,6 +471,20 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
+    def Reset(self, qubit: int, **kwargs: Any) -> Circuit:
+        """
+        Appends a Reset operation. Sets a qubit to the Z-basis 0 state. Non-unitary operation.
+        
+        :return: the new :py:class:`Circuit`
+        """
+    @typing.overload
+    def Reset(self, qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+        """
+        Appends a Reset operation. Sets a qubit to the Z-basis 0 state. Non-unitary operation.
+        
+        :return: the new :py:class:`Circuit`
+        """
+    @typing.overload
     def Measure(self, qubit: int, bit_index: int, **kwargs: Any) -> Circuit:
         """
         Appends a single-qubit measurement in the computational (Z) basis.
