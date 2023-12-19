@@ -1073,7 +1073,8 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
             return add_gate_method_noparams<unsigned>(
                 circ, OpType::Reset, {qb}, kwargs);
           },
-          "Appends a Reset operation. Sets a qubit to the Z-basis 0 state. Non-unitary operation."
+          "Appends a Reset operation. Sets a qubit to the Z-basis 0 state. "
+          "Non-unitary operation."
           "\n\n:return: the new :py:class:`Circuit`",
           py::arg("qubit"))
       .def(
@@ -1695,7 +1696,8 @@ void init_circuit_add_op(py::class_<Circuit, std::shared_ptr<Circuit>> &c) {
             return add_gate_method_noparams<UnitID>(
                 circ, OpType::Reset, {qb}, kwargs);
           },
-          "Appends a Reset operation. Sets a qubit to the Z-basis 0 state. Non-unitary operation."
+          "Appends a Reset operation. Sets a qubit to the Z-basis 0 state. "
+          "Non-unitary operation."
           "\n\n:return: the new :py:class:`Circuit`",
           py::arg("qubit"))
       .def(
