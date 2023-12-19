@@ -16,6 +16,8 @@
 
 #include "testutil.hpp"
 #include "tket/Characterisation/FrameRandomisation.hpp"
+#include "tket/Predicates/CompilationUnit.hpp"
+#include "tket/Predicates/PassLibrary.hpp"
 #include "tket/Transformations/Rebase.hpp"
 #include "tket/Transformations/Transform.hpp"
 
@@ -355,6 +357,79 @@ SCENARIO(
     add_2qb_gates(circ, OpType::CX, {{0, 1}, {2, 1}, {3, 2}, {3, 4}, {0, 1}});
     add_1qb_gates(circ, OpType::S, {3, 2, 4});
     test_sample_cycles_from_power_cycle(20, circ, 4);
+  }
+}
+
+SCENARIO("Frame Randomisation Segmentation Fault") {
+  // https://github.com/CQCL/tket/issues/1015
+  PauliFrameRandomisation pfr;
+  Circuit c(4);
+  c.add_op<unsigned>(OpType::CX, {0, 2});
+  c.add_op<unsigned>(OpType::Z, {0});
+  c.add_op<unsigned>(OpType::CX, {0, 3});
+  c.add_op<unsigned>(OpType::Z, {0});
+  c.add_op<unsigned>(OpType::CX, {0, 3});
+  c.add_op<unsigned>(OpType::CX, {0, 1});
+  std::vector<Circuit> circs = pfr.sample_randomisation_circuits(c, 1);
+  CHECK(circs.size() == 1);
+}
+
+SCENARIO("Frame Randomisation non-real DAG") {
+  // https://github.com/CQCL/tket/issues/1015
+  GIVEN("CnX gate with 3 controls") {
+    PauliFrameRandomisation pfr;
+    Circuit c(4);
+    c.add_op<unsigned>(OpType::CnX, {0, 1, 2, 3});
+    CompilationUnit cu(c);
+    RebaseTket()->apply(cu);
+    std::vector<Circuit> circs =
+        pfr.sample_randomisation_circuits(cu.get_circ_ref(), 1);
+    CHECK(circs.size() == 1);
+    CHECK(circs[0].get_commands().size() == 107);
+  }
+  GIVEN("CnX gate with 4 controls") {
+    PauliFrameRandomisation pfr;
+    Circuit c(5);
+    c.add_op<unsigned>(OpType::CnX, {0, 1, 2, 3, 4});
+    CompilationUnit cu(c);
+    RebaseTket()->apply(cu);
+    std::vector<Circuit> circs =
+        pfr.sample_randomisation_circuits(cu.get_circ_ref(), 1);
+    CHECK(circs.size() == 1);
+    CHECK(circs[0].get_commands().size() == 293);
+  }
+  GIVEN("CnX gate with 5 controls") {
+    PauliFrameRandomisation pfr;
+    Circuit c(6);
+    c.add_op<unsigned>(OpType::CnX, {0, 1, 2, 3, 4, 5});
+    CompilationUnit cu(c);
+    RebaseTket()->apply(cu);
+    std::vector<Circuit> circs =
+        pfr.sample_randomisation_circuits(cu.get_circ_ref(), 1);
+    CHECK(circs.size() == 1);
+    CHECK(circs[0].get_commands().size() == 742);
+  }
+  GIVEN("CnX gate with 6 controls") {
+    PauliFrameRandomisation pfr;
+    Circuit c(7);
+    c.add_op<unsigned>(OpType::CnX, {0, 1, 2, 3, 4, 5, 6});
+    CompilationUnit cu(c);
+    RebaseTket()->apply(cu);
+    std::vector<Circuit> circs =
+        pfr.sample_randomisation_circuits(cu.get_circ_ref(), 1);
+    CHECK(circs.size() == 1);
+    CHECK(circs[0].get_commands().size() == 1118);
+  }
+  GIVEN("CnX gate with 7 controls") {
+    PauliFrameRandomisation pfr;
+    Circuit c(8);
+    c.add_op<unsigned>(OpType::CnX, {0, 1, 2, 3, 4, 5, 6, 7});
+    CompilationUnit cu(c);
+    RebaseTket()->apply(cu);
+    std::vector<Circuit> circs =
+        pfr.sample_randomisation_circuits(cu.get_circ_ref(), 1);
+    CHECK(circs.size() == 1);
+    CHECK(circs[0].get_commands().size() == 1570);
   }
 }
 

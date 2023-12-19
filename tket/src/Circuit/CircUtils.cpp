@@ -57,7 +57,7 @@ Eigen::Matrix2cd get_matrix_from_circ(const Circuit &circ) {
   if (N == 2) return factor * Eigen::Matrix2cd::Identity();
   Eigen::Matrix2cd m = get_matrix(circ, qpath[N - 2]);
   for (unsigned x = N - 3; x >= 1; --x) {
-    m = m * get_matrix(circ, qpath[x]);
+    m = unitary_product2(m, get_matrix(circ, qpath[x]));
   }
   return factor * m;
 }
@@ -138,7 +138,7 @@ Eigen::Matrix4cd get_matrix_from_2qb_circ(const Circuit &circ) {
   SliceVec slices = circ.get_slices();
   for (const Slice &s : slices) {
     for (const Vertex &v : s) {
-      m = v_to_op[v] * m;
+      m = unitary_product2(v_to_op[v], m);
     }
   }
   return std::exp(i_ * PI * eval_expr(circ.get_phase()).value()) * m;
@@ -188,7 +188,8 @@ Circuit two_qubit_canonical(const Eigen::Matrix4cd &U, OpType target_2qb_gate) {
       OpType::TK1, {angles_q1.begin(), angles_q1.end() - 1}, {1});
 
   // this fixes phase if decomposition is exact
-  Eigen::Matrix4cd reminder = get_matrix_from_2qb_circ(result).adjoint() * U;
+  Eigen::Matrix4cd V = get_matrix_from_2qb_circ(result).adjoint();
+  Eigen::Matrix4cd reminder = unitary_product2(V, U);
   const Complex phase = reminder(0, 0);  // reminder = phase * I
   result.add_phase(arg(phase) / PI);
   return result;
@@ -401,8 +402,8 @@ Circuit with_TK2(Gate_ptr op) {
             {angles_K2a[0], angles_K2a[1], angles_K2a[2], 0}),
         get_matrix_from_tk1_angles(
             {angles_K2b[0], angles_K2b[1], angles_K2b[2], 0}));
-    Eigen::Matrix4cd V = V_K1 * V_A * V_K2;
-    Eigen::Matrix4cd R = V.adjoint() * U;
+    Eigen::Matrix4cd V_adj = unitary_product3(V_K1, V_A, V_K2).adjoint();
+    Eigen::Matrix4cd R = unitary_product2(V_adj, U);
     const Complex phase = R(0, 0);  // R = phase * I
     c.add_phase(arg(phase) / PI);
 
@@ -907,7 +908,7 @@ struct CnGateBlock {
   Eigen::Matrix2cd get_target_unitary() const {
     Eigen::Matrix2cd m = Eigen::Matrix2cd::Identity();
     for (const Op_ptr &op : ops) {
-      m = get_target_op_matrix(op) * m;
+      m = unitary_product2(get_target_op_matrix(op), m);
     }
     return m;
   }
