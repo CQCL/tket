@@ -515,6 +515,20 @@ class Circuit:
         :return: the new :py:class:`Circuit`
         """
     @typing.overload
+    def Reset(self, qubit: int, **kwargs: Any) -> Circuit:
+        """
+        Appends a Reset operation. Sets a qubit to the Z-basis 0 state. Non-unitary operation.
+        
+        :return: the new :py:class:`Circuit`
+        """
+    @typing.overload
+    def Reset(self, qubit: pytket._tket.unit_id.Qubit, **kwargs: Any) -> Circuit:
+        """
+        Appends a Reset operation. Sets a qubit to the Z-basis 0 state. Non-unitary operation.
+        
+        :return: the new :py:class:`Circuit`
+        """
+    @typing.overload
     def Rx(self, angle: sympy.Expr | float, qubit: int, **kwargs: Any) -> Circuit:
         """
         Appends an Rx gate with a possibly symbolic angle (specified in half-turns).
