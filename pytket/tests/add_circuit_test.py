@@ -16,21 +16,23 @@ from pytket import Circuit, OpType
 import pytest
 
 
-def gen_bell_state() -> Circuit:
+def gen_bell_state(reset_start: bool = False) -> Circuit:
     circ = Circuit(2)
+    if reset_start:
+        circ = circ.Reset(0).Reset(1)
     circ.H(0)
     circ.CX(0, 1)
     return circ
 
 
 def test_direct_add() -> None:
-    a = gen_bell_state()
+    a = gen_bell_state(True)
     b = Circuit(1)
     b.add_gate(OpType.X, [0])
     a.add_circuit(b, [0])
-    assert a.n_gates == 3
+    assert a.n_gates == 5
     assert a.n_qubits == 2
-    assert a.depth() == 3
+    assert a.depth() == 4
 
 
 def test_swap_add() -> None:

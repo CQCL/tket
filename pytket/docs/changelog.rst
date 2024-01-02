@@ -19,6 +19,7 @@ Fixes:
 * Fix `PauliFrameRandomisation.sample_circuits`.
 * For `Circuit` with no 2-qubit gates, `NoiseAwarePlacement` now assigns `Qubit` to `Node` in `Architecture`
   with lowest reported error rates.
+* Fix invalid registers returned by ``Circuit.q_registers`` and ``Circuit.c_registers``.
 
 
 1.22.0 (November 2023)
