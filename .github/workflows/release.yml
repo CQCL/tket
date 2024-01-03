@@ -14,7 +14,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        python3-version: ['9', '10', '11']
+        python3-version: ['10', '11', '12']
     steps:
     - uses: actions/checkout@v4
       with:
@@ -40,7 +40,7 @@ jobs:
     runs-on: ['self-hosted', 'macOS', 'ARM64']
     strategy:
       matrix:
-        python3-version: ['9', '10', '11']
+        python3-version: ['10', '11', '12']
     steps:
     - uses: actions/checkout@v4
       with:
@@ -76,7 +76,7 @@ jobs:
     runs-on: macos-12
     strategy:
       matrix:
-        python-version: ['3.9', '3.10', '3.11']
+        python-version: ['3.10', '3.11', '3.12']
     steps:
     - uses: actions/checkout@v4
       with:
@@ -118,20 +118,16 @@ jobs:
     runs-on: macos-13-xlarge
     strategy:
       matrix:
-        python-version: ['3.9', '3.10', '3.11']
+        python-version: ['3.10', '3.11', '3.12']
     steps:
     - uses: actions/checkout@v4
       with:
         fetch-depth: '0'
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     - name: Set up Python ${{ matrix.python-version }}
-      if: matrix.python-version != '3.9'
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Set up Python 3.9
-      if: matrix.python-version == '3.9'
-      run: brew install python@3.9
     - name: Install conan
       uses: turtlebrowser/get-conan@v1.2
     - name: Set up conan
@@ -164,7 +160,7 @@ jobs:
     runs-on: windows-2022
     strategy:
       matrix:
-        python-version: ['3.9', '3.10', '3.11']
+        python-version: ['3.10', '3.11', '3.12']
     steps:
     - uses: actions/checkout@v4
       with:
@@ -205,7 +201,7 @@ jobs:
     runs-on: ubuntu-22.04
     strategy:
       matrix:
-        python3-version: ['9', '10', '11']
+        python3-version: ['10', '11', '12']
     steps:
       - name: Set up Python 3.${{ matrix.python3-version }}
         uses: actions/setup-python@v5
@@ -234,7 +230,7 @@ jobs:
     runs-on: ['self-hosted', 'macOS', 'ARM64']
     strategy:
       matrix:
-        python3-version: ['9', '10', '11']
+        python3-version: ['10', '11', '12']
     steps:
     - uses: actions/checkout@v4
       with:
@@ -269,7 +265,7 @@ jobs:
     strategy:
       matrix:
         os: ['macos-12', 'macos-13']
-        python-version: ['3.9', '3.10', '3.11']
+        python-version: ['3.10', '3.11', '3.12']
     runs-on: ${{ matrix.os }}
     steps:
     - name: Set up Python ${{ matrix.python-version }}
@@ -299,16 +295,12 @@ jobs:
     runs-on: macos-13-xlarge
     strategy:
       matrix:
-        python-version: ['3.9', '3.10', '3.11']
+        python-version: ['3.10', '3.11', '3.12']
     steps:
     - name: Set up Python ${{ matrix.python-version }}
-      if: matrix.python-version != '3.9'
       uses: actions/setup-python@v5
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Set up Python 3.9
-      if: matrix.python-version == '3.9'
-      run: brew install python@3.9
     - name: Download wheels
       uses: actions/download-artifact@v4
       with:
@@ -332,7 +324,7 @@ jobs:
     runs-on: windows-2022
     strategy:
       matrix:
-        python-version: ['3.9', '3.10', '3.11']
+        python-version: ['3.10', '3.11', '3.12']
     steps:
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v5
@@ -384,19 +376,19 @@ jobs:
     runs-on: ubuntu-22.04
     steps:
     - uses: actions/checkout@v4
-    - name: Set up Python 3.10
+    - name: Set up Python 3.11
       uses: actions/setup-python@v5
       with:
-        python-version: '3.10'
+        python-version: '3.11'
     - name: Download wheels
       uses: actions/download-artifact@v4
       with:
-        name: Linux_3.10_wheel
+        name: Linux_3.11_wheel
         path: wheelhouse/
     - name: Install pip, wheel
       run: pip install -U pip wheel
     - name: Install pytket
-      run: for w in `find wheelhouse/ -type f -name "*-cp310-cp310-*.whl"` ; do pip install $w ; done
+      run: for w in `find wheelhouse/ -type f -name "*-cp311-cp311-*.whl"` ; do pip install $w ; done
     - name: Install docs dependencies
       run: pip install -r pytket/docs/requirements.txt
     - name: Build docs
