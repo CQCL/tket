@@ -4,6 +4,10 @@ Changelog
 Unreleased
 ----------
 
+General:
+
+* Python 3.12 support added; 3.9 dropped.
+
 API changes:
 
 * Make the ``architecture`` field in ``BackendInfo`` optional.
