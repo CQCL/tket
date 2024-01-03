@@ -459,17 +459,19 @@ jobs:
         key: tket-dynamic-visual-studio-windows-2022-${{ steps.current_time.outputs.formattedTime }}
         restore-keys: |
           tket-dynamic-visual-studio-windows-2022
-    - name: get ccache version
-      id: ccache-ver
+    - name: get ccache path
+      id: ccache-path
       shell: bash
       run: |
-        ccache_ver=$(choco list -e ccache | grep "ccache" | grep -ioE '[0-9]+\.[0-9]+\.[0-9]+')
-        echo "Found ccache version ${ccache_ver}"
-        echo "ccache_ver=${ccache_ver}" >> $GITHUB_OUTPUT
+        ccache --shimgen-noop > ccache-info.txt || true
+        a=$(cat ccache-info.txt | grep executable)
+        # strip off the initial "  path to executable: "
+        b=${a:22}
+        echo "ccache_path=${b}" >> $GITHUB_OUTPUT
     - name: Build tket
       if: needs.check_changes.outputs.tket_changed == 'true'
       run: |
-        $env:TKET_VSGEN_CCACHE_EXE = 'C:\\ProgramData\\chocolatey\\lib\\ccache\\tools\\ccache-${{ steps.ccache-ver.outputs.ccache_ver }}-windows-x86_64\\ccache.exe' 
+        $env:TKET_VSGEN_CCACHE_EXE = '${{ steps.ccache-path.outputs.ccache_path }}'
         conan build tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True
         conan export-pkg tket --user tket --channel stable -o boost/*:header_only=True -o tklog/*:shared=True -o tket/*:shared=True -tf `"`"
     - name: Install tket
