@@ -22,12 +22,12 @@ jobs:
     - run: git fetch --depth=1 origin +refs/tags/*:refs/tags/*
     - name: Set up container
       run: |
-        docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux2014_x86_64:latest /bin/bash
+        docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux_2_28_x86_64:latest /bin/bash
         docker cp . linux_build:/tket/
     - name: Run build
       run: |
         docker start linux_build
-        docker exec -e PY_TAG="cp3${{ matrix.python3-version }}-cp3${{ matrix.python3-version }}" -e CONAN_PROFILE=linux-x86_64-gcc10-libstdc++ linux_build /bin/bash -c "/tket/.github/workflows/linuxbuildwheel"
+        docker exec -e PY_TAG="cp3${{ matrix.python3-version }}-cp3${{ matrix.python3-version }}" -e CONAN_PROFILE=linux-x86_64-gcc12 linux_build /bin/bash -c "/tket/.github/workflows/linuxbuildwheel"
         mkdir wheelhouse
         docker cp linux_build:/tket/pytket/audited/. wheelhouse/
     - uses: actions/upload-artifact@v4
@@ -49,13 +49,13 @@ jobs:
     - name: Set up container
       run: |
         export DOCKER_HOST=unix://${HOME}/.docker/run/docker.sock
-        docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux2014_aarch64:latest /bin/bash
+        docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux_2_28_aarch64:latest /bin/bash
         docker cp . linux_build:/tket/
     - name: Run build
       run: |
         export DOCKER_HOST=unix://${HOME}/.docker/run/docker.sock
         docker start linux_build
-        docker exec -e PY_TAG="cp3${{ matrix.python3-version }}-cp3${{ matrix.python3-version }}" -e CONAN_PROFILE=linux-armv8-gcc10-libstdc++ linux_build /bin/bash -c "/tket/.github/workflows/linuxbuildwheel"
+        docker exec -e PY_TAG="cp3${{ matrix.python3-version }}-cp3${{ matrix.python3-version }}" -e CONAN_PROFILE=linux-armv8-gcc12 linux_build /bin/bash -c "/tket/.github/workflows/linuxbuildwheel"
         mkdir wheelhouse
         docker cp linux_build:/tket/pytket/audited/. wheelhouse/
     - name: Remove container
@@ -247,7 +247,7 @@ jobs:
     - name: Set up container
       run: |
         export DOCKER_HOST=unix://${HOME}/.docker/run/docker.sock
-        docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux2014_aarch64:latest /bin/bash
+        docker create --name linux_build -i -v /:/host quay.io/pypa/manylinux_2_28_aarch64:latest /bin/bash
         docker cp . linux_build:/tket/
     - name: Run tests
       run: |
