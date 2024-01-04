@@ -64,7 +64,7 @@ jobs:
     - name: Install and upload packages
       run: |
         docker start linux_build
-        docker exec -e JFROG_ARTIFACTORY_TOKEN_3="${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }}" -e JFROG_ARTIFACTORY_USER_3="${{ secrets.JFROG_ARTIFACTORY_USER_3 }}" -e CONAN_PROFILE=linux-x86_64-gcc10-libstdc++ linux_build /bin/bash -c "/tket/.github/workflows/linuxbuildpackages"
+        docker exec -e JFROG_ARTIFACTORY_TOKEN_3="${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }}" -e JFROG_ARTIFACTORY_USER_3="${{ secrets.JFROG_ARTIFACTORY_USER_3 }}" -e CONAN_PROFILE=linux-x86_64-gcc12 linux_build /bin/bash -c "/tket/.github/workflows/linuxbuildpackages"
 
   build_manylinux_aarch64:
     name: Build on manylinux (aarch64)
@@ -84,7 +84,7 @@ jobs:
       run: |
         export DOCKER_HOST=unix://${HOME}/.docker/run/docker.sock
         docker start linux_build
-        docker exec -e JFROG_ARTIFACTORY_TOKEN_3="${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }}" -e JFROG_ARTIFACTORY_USER_3="${{ secrets.JFROG_ARTIFACTORY_USER_3 }}" -e CONAN_PROFILE=linux-armv8-gcc10-libstdc++ linux_build /bin/bash -c "/tket/.github/workflows/linuxbuildpackages"
+        docker exec -e JFROG_ARTIFACTORY_TOKEN_3="${{ secrets.JFROG_ARTIFACTORY_TOKEN_3 }}" -e JFROG_ARTIFACTORY_USER_3="${{ secrets.JFROG_ARTIFACTORY_USER_3 }}" -e CONAN_PROFILE=linux-armv8-gcc12 linux_build /bin/bash -c "/tket/.github/workflows/linuxbuildpackages"
 
     - name: Remove container
       if: always()
