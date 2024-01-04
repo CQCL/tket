@@ -134,54 +134,55 @@ $(function() {
 <div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;}</div>
 <div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
 <div class="line"><a name="l00058"></a><span class="lineno"><a class="line" href="classtket_1_1CompilationUnit.html#af3dc5df37cf3d4a90678eb4610a38e2d">   58</a></span>&#160;std::string <a class="code" href="classtket_1_1CompilationUnit.html#af3dc5df37cf3d4a90678eb4610a38e2d">CompilationUnit::to_string</a>()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  std::string str = <span class="stringliteral">&quot;~~~CompilationUnit~~~\n&lt;tket::Circuit qubits=&quot;</span> +</div>
-<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;                    std::to_string(circ_.<a class="code" href="classtket_1_1Circuit.html#a0baec82ad9c0308fd2655607d30caf3d">n_qubits</a>()) +</div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;                    <span class="stringliteral">&quot;, gates=&quot;</span> + std::to_string(circ_.<a class="code" href="classtket_1_1Circuit.html#a807df5b6bc08a6649396d392c54eee90">n_gates</a>()) + <span class="stringliteral">&quot;&gt;\n&quot;</span>;</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160; </div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;  <span class="keywordflow">if</span> (!target_preds.empty()) {</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    str += <span class="stringliteral">&quot;Target Predicates:\n&quot;</span>;</div>
-<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="namespacetket.html#ad4d9946324fd31184912125c6f7a0576">TypePredicatePair</a>&amp; pp : target_preds) {</div>
-<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;      str += (<span class="stringliteral">&quot;  &quot;</span> + pp.second-&gt;to_string() + <span class="stringliteral">&quot;\n&quot;</span>);</div>
-<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;    }</div>
-<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;  } <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;    str += <span class="stringliteral">&quot;Target Predicates empty\n&quot;</span>;</div>
-<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;  <span class="keywordflow">if</span> (!cache_.empty()) {</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;    str += <span class="stringliteral">&quot;Cache:\n&quot;</span>;</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> std::pair&lt;<span class="keyword">const</span> std::type_index, std::pair&lt;PredicatePtr, bool&gt;&gt;&amp;</div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;             tp : cache_) {</div>
-<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;      str += (<span class="stringliteral">&quot; &quot;</span> + tp.second.first-&gt;to_string() + <span class="stringliteral">&quot; :: &quot;</span>);</div>
-<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;      str += tp.second.second ? <span class="stringliteral">&quot;True\n&quot;</span> : <span class="stringliteral">&quot;False\n&quot;</span>;</div>
-<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;    }</div>
-<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;  } <span class="keywordflow">else</span></div>
-<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;    str += <span class="stringliteral">&quot;Cache empty\n&quot;</span>;</div>
-<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;  <span class="keywordflow">return</span> str;</div>
-<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;}</div>
-<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160; </div>
-<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160;<span class="keywordtype">void</span> CompilationUnit::empty_cache()<span class="keyword"> const </span>{ cache_ = {}; }</div>
-<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160; </div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="keywordtype">void</span> CompilationUnit::initialize_cache()<span class="keyword"> const </span>{</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;  <span class="keywordflow">if</span> (!cache_.empty())</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;    <span class="keywordflow">throw</span> std::logic_error(<span class="stringliteral">&quot;PredicateCache must be empty to be initialized&quot;</span>);</div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="namespacetket.html#ad4d9946324fd31184912125c6f7a0576">TypePredicatePair</a>&amp; pr : target_preds) {</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;    <span class="keyword">const</span> Predicate&amp; p = *(pr.second);</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    std::type_index ti = <span class="keyword">typeid</span>(p);</div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    <span class="keywordflow">if</span> (cache_.find(ti) != cache_.end())</div>
-<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;      <span class="keywordflow">throw</span> std::logic_error(<span class="stringliteral">&quot;Duplicate verify type in Predicate list&quot;</span>);</div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;    <span class="keywordtype">bool</span> to_cache = <a class="code" href="classtket_1_1CompilationUnit.html#a6efa42420ef5d2d8649f26017f027d80">calc_predicate</a>(p);</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    cache_.insert({ti, {pr.second, to_cache}});</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;  }</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;}</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160; </div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;<span class="keywordtype">void</span> CompilationUnit::initialize_maps() {</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;  <span class="keywordflow">if</span> (maps) <span class="keywordflow">throw</span> std::logic_error(<span class="stringliteral">&quot;Maps already initialized&quot;</span>);</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;  maps = std::make_shared&lt;unit_bimaps_t&gt;();</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> UnitID&amp; u : circ_.<a class="code" href="classtket_1_1Circuit.html#a7c8bb7410047dfd8085e272eb2cdd1bb">all_units</a>()) {</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    maps-&gt;initial.insert({u, u});</div>
-<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    maps-&gt;final.insert({u, u});</div>
-<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;  }</div>
-<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;}</div>
-<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160; </div>
-<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160;}  <span class="comment">// namespace tket</span></div>
+<div class="line"><a name="l00059"></a><span class="lineno">   59</span>&#160;  std::stringstream s;</div>
+<div class="line"><a name="l00060"></a><span class="lineno">   60</span>&#160;  s &lt;&lt; <span class="stringliteral">&quot;~~~CompilationUnit~~~&quot;</span> &lt;&lt; std::endl</div>
+<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;    &lt;&lt; <span class="stringliteral">&quot;&lt;tket::Circuit qubits=&quot;</span> &lt;&lt; circ_.<a class="code" href="classtket_1_1Circuit.html#a0baec82ad9c0308fd2655607d30caf3d">n_qubits</a>()</div>
+<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    &lt;&lt; <span class="stringliteral">&quot;, gates=&quot;</span> &lt;&lt; circ_.<a class="code" href="classtket_1_1Circuit.html#a807df5b6bc08a6649396d392c54eee90">n_gates</a>() &lt;&lt; <span class="stringliteral">&quot;&gt;&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160; </div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;  <span class="keywordflow">if</span> (!target_preds.empty()) {</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;    s &lt;&lt; <span class="stringliteral">&quot;Target Predicates:&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="namespacetket.html#ad4d9946324fd31184912125c6f7a0576">TypePredicatePair</a>&amp; pp : target_preds) {</div>
+<div class="line"><a name="l00067"></a><span class="lineno">   67</span>&#160;      s &lt;&lt; <span class="stringliteral">&quot;  &quot;</span> &lt;&lt; pp.second-&gt;to_string() &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00068"></a><span class="lineno">   68</span>&#160;    }</div>
+<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;  } <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00070"></a><span class="lineno">   70</span>&#160;    s &lt;&lt; <span class="stringliteral">&quot;Target Predicates empty&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;  <span class="keywordflow">if</span> (!cache_.empty()) {</div>
+<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;    s &lt;&lt; <span class="stringliteral">&quot;Cache:&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160;    <span class="keywordflow">for</span> (<span class="keyword">const</span> std::pair&lt;<span class="keyword">const</span> std::type_index, std::pair&lt;PredicatePtr, bool&gt;&gt;&amp;</div>
+<div class="line"><a name="l00074"></a><span class="lineno">   74</span>&#160;             tp : cache_) {</div>
+<div class="line"><a name="l00075"></a><span class="lineno">   75</span>&#160;      s &lt;&lt; <span class="stringliteral">&quot; &quot;</span> &lt;&lt; tp.second.first-&gt;to_string()</div>
+<div class="line"><a name="l00076"></a><span class="lineno">   76</span>&#160;        &lt;&lt; <span class="stringliteral">&quot; :: &quot;</span> &lt;&lt; ((tp.second.second) ? <span class="stringliteral">&quot;True&quot;</span> : <span class="stringliteral">&quot;False&quot;</span>) &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00077"></a><span class="lineno">   77</span>&#160;    }</div>
+<div class="line"><a name="l00078"></a><span class="lineno">   78</span>&#160;  } <span class="keywordflow">else</span></div>
+<div class="line"><a name="l00079"></a><span class="lineno">   79</span>&#160;    s &lt;&lt; <span class="stringliteral">&quot;Cache empty&quot;</span> &lt;&lt; std::endl;</div>
+<div class="line"><a name="l00080"></a><span class="lineno">   80</span>&#160;  <span class="keywordflow">return</span> s.str();</div>
+<div class="line"><a name="l00081"></a><span class="lineno">   81</span>&#160;}</div>
+<div class="line"><a name="l00082"></a><span class="lineno">   82</span>&#160; </div>
+<div class="line"><a name="l00083"></a><span class="lineno">   83</span>&#160;<span class="keywordtype">void</span> CompilationUnit::empty_cache()<span class="keyword"> const </span>{ cache_ = {}; }</div>
+<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160; </div>
+<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="keywordtype">void</span> CompilationUnit::initialize_cache()<span class="keyword"> const </span>{</div>
+<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160;  <span class="keywordflow">if</span> (!cache_.empty())</div>
+<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;    <span class="keywordflow">throw</span> std::logic_error(<span class="stringliteral">&quot;PredicateCache must be empty to be initialized&quot;</span>);</div>
+<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> <a class="code" href="namespacetket.html#ad4d9946324fd31184912125c6f7a0576">TypePredicatePair</a>&amp; pr : target_preds) {</div>
+<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160;    <span class="keyword">const</span> Predicate&amp; p = *(pr.second);</div>
+<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;    std::type_index ti = <span class="keyword">typeid</span>(p);</div>
+<div class="line"><a name="l00091"></a><span class="lineno">   91</span>&#160;    <span class="keywordflow">if</span> (cache_.find(ti) != cache_.end())</div>
+<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;      <span class="keywordflow">throw</span> std::logic_error(<span class="stringliteral">&quot;Duplicate verify type in Predicate list&quot;</span>);</div>
+<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;    <span class="keywordtype">bool</span> to_cache = <a class="code" href="classtket_1_1CompilationUnit.html#a6efa42420ef5d2d8649f26017f027d80">calc_predicate</a>(p);</div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    cache_.insert({ti, {pr.second, to_cache}});</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;  }</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;}</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160; </div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;<span class="keywordtype">void</span> CompilationUnit::initialize_maps() {</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;  <span class="keywordflow">if</span> (maps) <span class="keywordflow">throw</span> std::logic_error(<span class="stringliteral">&quot;Maps already initialized&quot;</span>);</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;  maps = std::make_shared&lt;unit_bimaps_t&gt;();</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;  <span class="keywordflow">for</span> (<span class="keyword">const</span> UnitID&amp; u : circ_.<a class="code" href="classtket_1_1Circuit.html#a7c8bb7410047dfd8085e272eb2cdd1bb">all_units</a>()) {</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;    maps-&gt;initial.insert({u, u});</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160;    maps-&gt;final.insert({u, u});</div>
+<div class="line"><a name="l00104"></a><span class="lineno">  104</span>&#160;  }</div>
+<div class="line"><a name="l00105"></a><span class="lineno">  105</span>&#160;}</div>
+<div class="line"><a name="l00106"></a><span class="lineno">  106</span>&#160; </div>
+<div class="line"><a name="l00107"></a><span class="lineno">  107</span>&#160;}  <span class="comment">// namespace tket</span></div>
 <div class="ttc" id="aCompilationUnit_8hpp_html"><div class="ttname"><a href="CompilationUnit_8hpp.html">CompilationUnit.hpp</a></div></div>
 <div class="ttc" id="aUnitID_8hpp_html"><div class="ttname"><a href="UnitID_8hpp.html">UnitID.hpp</a></div><div class="ttdoc">Named registers of arrays of (quantum or classical) nodes.</div></div>
 <div class="ttc" id="aclasstket_1_1Circuit_html"><div class="ttname"><a href="classtket_1_1Circuit.html">tket::Circuit</a></div><div class="ttdoc">A circuit.</div><div class="ttdef"><b>Definition:</b> <a href="Circuit_8hpp_source.html#l00249">Circuit.hpp:249</a></div></div>
