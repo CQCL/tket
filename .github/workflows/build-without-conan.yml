@@ -189,10 +189,10 @@ jobs:
         cmake -GNinja -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} -DBUILD_SHARED_LIBS=1 -DCMAKE_BUILD_WITH_INSTALL_RPATH=1 -DCMAKE_INSTALL_RPATH="\${ORIGIN}" ..
         cmake --build  . -j2
         cmake --install .
-    - name: Set up Python 3.10
+    - name: Set up Python 3.11
       uses: actions/setup-python@v5
       with:
-        python-version: "3.10"
+        python-version: '3.11'
     - name: Install pytket
       run: |
         cd pytket
