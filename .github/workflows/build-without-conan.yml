@@ -74,9 +74,9 @@ jobs:
     - name: Install catch2
       run: |
         cd ${TMP_DIR}
-        wget https://github.com/catchorg/Catch2/archive/refs/tags/v3.5.0.tar.gz
-        tar xzvf v3.5.0.tar.gz
-        cd Catch2-3.5.0/
+        wget https://github.com/catchorg/Catch2/archive/refs/tags/v3.5.1.tar.gz
+        tar xzvf v3.5.1.tar.gz
+        cd Catch2-3.5.1/
         mkdir build
         cd build
         cmake -GNinja -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} ..
@@ -85,9 +85,9 @@ jobs:
     - name: Install rapidcheck
       run: |
         cd ${TMP_DIR}
-        wget https://github.com/emil-e/rapidcheck/archive/8fafda42e732164db58003e542196e94a28481f9.zip
-        unzip 8fafda42e732164db58003e542196e94a28481f9.zip
-        cd rapidcheck-8fafda42e732164db58003e542196e94a28481f9/
+        wget https://github.com/emil-e/rapidcheck/archive/1c91f40e64d87869250cfb610376c629307bf77d.zip
+        unzip 1c91f40e64d87869250cfb610376c629307bf77d.zip
+        cd rapidcheck-1c91f40e64d87869250cfb610376c629307bf77d/
         mkdir build
         cd build
         cmake -GNinja -DCMAKE_INSTALL_PREFIX=${INSTALL_DIR} ..
